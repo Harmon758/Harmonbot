@@ -1,0 +1,421 @@
+;;;;; Weather
+;changed user msg to channel msg in places
+;edited help
+;removed old section
+;removed version history
+;removed requirements
+;changed .notice to .msg in places
+;changed wu_nick to capital
+;working on showing options when multiple results
+;changed some timers to instant one line outputs
+;changed formatting
+
+;weather underground for mIRC v5.41 by eqrunner
+;http://www.hawkee.com/snippet/7010/
+
+/*
+-- COMMANDS --
+!w  or !weather [zipcode|city,state|city,country|airport] = will return weather current conditions.
+!current [zipcode|city,state|city,country|airport] = will return current conditions.
+!forecast [zipcode|city,state|city,country|airport] = will give detailed 3 day forecast (for us)
+!forecast[1-10] [zipcode|city,state|city,country|airport] = will send from 1 day up to 10 day forecast to $nick that requested. (to prevent chan flooding)
+!alerts [zipcode|city,state|city,country|airport] = will tell you if there are any weather alerts in your area.
+!alertinfo [zipcode|city,state|city,country|airport] = will send $nick the detailed report of alerts in said area
+!time [zipcode|city,state|city,country|airport] = will return current time.
+!almanac [zipcode|city,state|city,country|airport] = will return the record highs and lows.
+
+-- REGISTER --
+Register - Each user can assign a default location with themself. So in the future they can use just the command ( !weather, or !forecast, or !alerts, etc)
+![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will link user to said default location
+![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will CHANGE users default if they already have registured.
+![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] REMOVE = will remove the users default location
+User can use any of the !commands to registure. !weather register 90210, will work just as well as !time register 90210
+
+-- HELP --
+![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] [?|help] = Will message user the list of above commands just as they are written.
+
+-- Switch --
+![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] [ON|OFF] = Will turn the script ON or OFF. Currently only set for Ops only.
+
+-- NOTES- -
+Notes from wunderground:
+We don't support old style abbreviations like Conn. for Connecticut, use CT
+If you are searching for an international city, try the name of the country or province
+Don't use provinces for non-us cities (ie: Vancouver, BC)
+Zipcodes only work in Canada, UK and the US
+*/
+
+on *:CONNECT: {
+  if ($hget(wu_reg) == $null) { hmake wu_reg 100 }
+  if ($isfile(wu_reg.dat)) { hload wu_reg wu_reg.dat }
+}
+ON *:DISCONNECT: { if ($hget(wu_reg)) { hsave -o wu_reg wu_reg.dat } }
+on $*:INPUT:#: { if ($regex($1,/^[!](w|weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si)) wunderground $1- }
+on $*:text:/^[!](w|weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si:#: { wunderground $1- }
+
+;-----------------------------------------------------------------------------
+; Preperation
+;-----------------------------------------------------------------------------
+
+alias wunderground {
+  ;botabuse 
+  unset %wu_*
+  ;--- Preperation. Sets up all the variables needed for the script ---
+  set %wu_command $1
+  set %wu_2 $2
+  set %wu_location $capital($2-)
+  set %wu_3 $3
+  set %wu_3_long $3-
+  set %wu_nick $capital($nick)
+  set %wu_network $network
+  set %wu_chan $chan
+  set %wu_host api.wunderground.com
+  set %wu_api ***REMOVED***
+  set %wu_result_count 0
+  ;--- Registration Check. Checks to see if the $nick already has a 'default' location on file ---
+  if ($2 == $null) { 
+    if ($hget(wu_reg,%wu_nick) != $null) { set %wu_location $hget(wu_reg,%wu_nick) }
+    if ($hget(wu_reg,%wu_nick) == $null) {
+      .msg %wu_chan $capital($nick) Please specify a location $1 [zipcode|city,state|city,country|airport]
+      wu_cleanup
+    }
+  }
+  ;--- Modify Registration and Help and ON/OFF Switch ---
+  if ($2 != $null) {
+    if (%wu_2 == register) && (%wu_3 != $null) {
+      hadd -m wu_reg %wu_nick %wu_3_long
+      .msg %wu_chan %wu_nick , you are now linked to %wu_3_long
+      set %wu_location $hget(wu_reg,%wu_nick)
+    }
+    if (%wu_2 == remove) {
+      hdel wu_reg %wu_nick
+      .msg %wu_chan %wu_nick , your location association has been removed. 
+      wu_cleanup
+      halt
+    }
+    ;--- Checks to see if the $2 is an already registured nick. ---
+    if ($hget(wu_reg,%wu_2) != $null) { set %wu_location $hget(wu_reg,%wu_2) }
+    if (%wu_2 == ?) || (%wu_2 == help) { 
+      wu_help 
+      wu_cleanup
+      halt
+    }
+    ;--- Below is used to turn the script on or off, but only if user is an op of a channel ---
+    if (%wu_2 == on) || (%wu_2 == off) && (%wu_nick isop %wu_chan) {
+      if (%wu_2 == on) {
+        set $+(%,wunderground_,%wu_chan) ON
+        .msg %wu_chan %wu_nick , !weather script is now ON
+        wu_cleanup
+        halt   
+      }
+      if (%wu_2 == off) {
+        set $+(%,wunderground_,%wu_chan) OFF
+        .msg %wu_chan %wu_nick , !weather script is now OFF
+        wu_cleanup
+        halt     
+      }
+    } ;end of %wu_on/off
+    ;--- Default for a channel ---
+    ;if ($2 == shoutdrive) && (%wu_network == iPocalypse) { set %wu_location 90046 } ; end of Default for a channel
+  } ;end of ($2 != $null)
+  ;--- Checks if wunderground is supposed to be OFF for the channel --
+  if ($($+(%,wunderground_,%wu_chan),2) == OFF) {
+    wu_cleanup
+    halt
+  }
+  ;---Command Prep. Checks command to see which data file it will be pulling from depending on command entered ---
+  ;Reformats City, State to the corrected  /State/City.xml
+  if ($chr(44) isin %wu_location) {
+    var %wu_location_city $replace($gettok(%wu_location,1,44),$chr(32),$chr(95))
+    var %wu_location_state $remove($gettok(%wu_location,2,44),$chr(32))
+    set %wu_address $+(/,%wu_location_state,/,%wu_location_city)
+  }
+  if ($chr(44) !isin %wu_location) { set %wu_address $replace(%wu_location,$chr(32),$chr(95)) }
+  ;-- Sets specific %wu_links depending on what is requested.
+  ;-- Weather --
+  if (%wu_command == !w )  set %wu_command !weather
+  if (%wu_command == !weather) || (%wu_command == !current) || (%wu_command == !time) { set %wu_link $+(/api/,%wu_api,/conditions/q/,%wu_address,.xml) } ;Eample: set %wu_link $+(/api/154dfe245e155eee1/conditions/q/20721.xml)
+  ;-- Forecast --
+  ;- Below finds out if it is a !forecast or a !forecast[1-10]. If there is a number, then it strips the number and sets %wu_command back to !forecast5 so remainder of the code works. and creates a %wu_forecast_count to be used after the sock closes.
+  if ($left(%wu_command,9) == !forecast) {
+    if ($mid(%wu_command,10,0) > 0)  {
+      set %wu_forecast_count $remove(%wu_command,!forecast) 
+      ; ^ removes !forecast, leaving only the number
+      if (%wu_forecast_count > 10) set %wu_forecast_count 10 
+      ; ^ If number is greater than 10. Changes it to 10. (no one wants 999 days of forecast)
+      set %wu_command !forecast5
+      ; ^ resets %wu_command back to !forecast5 so the rest of the code works.
+    }
+  }
+  if (%wu_command == !forecast) || (%wu_command == !forecast5) { set %wu_link $+(/api/,%wu_api,/forecast10day/q/,%wu_address,.xml) }
+  ;-- Alerts --
+  if (%wu_command == !alert) set %wu_command !alerts
+  if (%wu_command == !alertsinfo) set %wu_command !alertinfo
+  if (%wu_command == !alerts) || (%wu_command == !alertinfo) { 
+    set %wu_link $+(/api/,%wu_api,/alerts/q/,%wu_address,.xml)
+    set %wu_a_count 0
+  }
+  ;-- Almanac --
+  if (%wu_command == !almanac) { set %wu_link $+(/api/,%wu_api,/almanac/q/,%wu_address,.xml) }
+  sockopen wunderground %wu_host 80
+}
+
+;-----------------------------------------------------------------------------
+; SOCKETS
+;-----------------------------------------------------------------------------
+
+on *:sockopen:wunderground: {
+  sockwrite -n $sockname GET %wu_link HTTP/1.1
+  sockwrite -n $sockname Host: %wu_host
+  sockwrite -n $sockname $crlf
+}
+on *:sockread:wunderground: {
+  sockread %wu_temp
+  if ($regex(%wu_temp,/([[:xdigit:]]{2});/)) { set %wu_temp $replace(%wu_temp,$+(&#x,$regml(1),;),$chr($base($regml(1),16,10))) }
+  set %wu_temp $regsubex(%wu_temp,/[\46\43](\d+)\73/g,$chr(\1))
+  set %wu_temp $replacex(%wu_temp,&quot;,",&amp;lt;,<,&amp;rt;,>,&amp;deg;,°,&amp;,&)
+  if (<name> isin %wu_temp) && (%wu_name == $null) %wu_name = $remove(%wu_temp,<name>,</name>,$chr(9))
+  ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
+  ;checks for an error
+  if (<error> isin %wu_temp) set %wu_error Error
+  if (%wu_error == Error) && (<description> isin %wu_temp) { set %wu_error_description $remove(%wu_temp,<description>,</description>,$chr(9)) }
+  if (<results> isin %wu_temp) set %wu_results ON
+  if (%wu_results == ON) {
+    if (<result> isin %wu_temp) inc %wu_result_count 
+    if (<city> isin %wu_temp) set $+(%,wu_result_city,%wu_result_count) $remove(%wu_temp,<city>,</city>,$chr(9))
+    if (<state> isin %wu_temp) set $+(%,wu_result_state,%wu_result_count) $remove(%wu_temp,<state>,</state>,$chr(9))
+    if (<country_name> isin %wu_temp) set $+(%,wu_result_country_name,%wu_result_count) $remove(%wu_temp,<country_name>,</country_name>,$chr(9))
+  }
+  ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
+  ;--- Variables for Weather, Current and Time Command ---
+  if (%wu_command == !weather) || (%wu_command == !current) || (%wu_command == !time) { 
+    if (<full> isin %wu_temp) && (%wu_full == $null) %wu_full = $remove(%wu_temp,<full>,</full>,$chr(9)) 
+    if (<city> isin %wu_temp) && (%wu_city == $null) %wu_city = $remove(%wu_temp,<city>,</city>,$chr(9)) 
+    if (<state> isin %wu_temp) && (%wu_state == $null) %wu_state = $remove(%wu_temp,<state>,</state>,$chr(9)) 
+    if (<state_name> isin %wu_temp) && (%wu_state_name == $null) %wu_state_name = $remove(%wu_temp,<state_name>,</state_name>,$chr(9)) 
+    if (<country> isin %wu_temp) && (%wu_country == $null)  %wu_country = $remove(%wu_temp,<country>,</country>,$chr(9)) 
+    if (<country_iso3166> isin %wu_temp) && (%wu_country_iso3166 == $null) %wu_country_iso3166 = $remove(%wu_temp,<country_iso3166>,</country_iso3166>,$chr(9)) 
+    if (<zip> isin %wu_temp) && (%wu_zip == $null)  %wu_zip = $remove(%wu_temp,<zip>,</zip>,$chr(9)) 
+    if (<latitude> isin %wu_temp) && (%wu_latitude == $null) %wu_latitude = $remove(%wu_temp,<latitude>,</latitude>,$chr(9)) 
+    if (<longitude> isin %wu_temp) && (%wu_longitude == $null) %wu_longitude = $remove(%wu_temp,<longitude>,</longitude>,$chr(9)) 
+    if (<elevation> isin %wu_temp) && (%wu_elevation == $null) %wu_elevation = $remove(%wu_temp,<elevation>,</elevation>,$chr(9)) 
+    if (<local_time_rfc822> isin %wu_temp) %wu_local_time_rfc822 = $remove(%wu_temp,<local_time_rfc822>,</local_time_rfc822>,$chr(9)) 
+    if (<weather> isin %wu_temp) %wu_weather = $remove(%wu_temp,<weather>,</weather>,$chr(9)) 
+    if (<temperature_string> isin %wu_temp) %wu_temperature_string = $remove(%wu_temp,<temperature_string>,</temperature_string>,$chr(9)) 
+    if (<temp_f> isin %wu_temp) %wu_temp_f = $remove(%wu_temp,<temp_f>,</temp_f>,$chr(9))
+    if (<temp_c> isin %wu_temp) %wu_temp_c = $remove(%wu_temp,<temp_c>,</temp_c>,$chr(9)) 
+    if (<relative_humidity> isin %wu_temp) %wu_relative_humidity = $remove(%wu_temp,<relative_humidity>,</relative_humidity>,$chr(9)) 
+    if (<wind_string> isin %wu_temp) %wu_wind_string = $remove(%wu_temp,<wind_string>,</wind_string>,$chr(9)) 
+    if (<wind_dir> isin %wu_temp) %wu_wind_dir = $remove(%wu_temp,<wind_dir>,</wind_dir>,$chr(9)) 
+    if (<wind_degrees> isin %wu_temp) %wu_wind_degrees = $remove(%wu_temp,<wind_degrees>,</wind_degrees>,$chr(9)) 
+    if (<wind_mph> isin %wu_temp) %wu_wind_mph = $remove(%wu_temp,<wind_mph>,</wind_mph>,$chr(9)) 
+    if (<wind_gust_mph> isin %wu_temp) %wu_wind_gust_mph = $remove(%wu_temp,<wind_gust_mph>,</wind_gust_mph>,$chr(9)) 
+    if (<pressure_string> isin %wu_temp) %wu_pressure_string = $remove(%wu_temp,<pressure_string>,</pressure_string>,$chr(9)) 
+    if (<pressure_mb> isin %wu_temp) %wu_pressure_mb = $remove(%wu_temp,<pressure_mb>,</pressure_mb>,$chr(9))
+    if (<pressure_in> isin %wu_temp) %wu_pressure_in = $remove(%wu_temp,<pressure_in>,</pressure_in>,$chr(9))
+    if (<dewpoint_string> isin %wu_temp) %wu_dewpoint_string = $remove(%wu_temp,<dewpoint_string>,</dewpoint_string>,$chr(9))
+    if (<dewpoint_f> isin %wu_temp) %wu_dewpoint_f = $remove(%wu_temp,<dewpoint_f>,</dewpoint_f>,$chr(9))
+    if (<dewpoint_c> isin %wu_temp) %wu_dewpoint_c = $remove(%wu_temp,<dewpoint_c>,</dewpoint_c>,$chr(9))
+    if (<heat_index_string> isin %wu_temp) %wu_heat_index_string = $remove(%wu_temp,<heat_index_string>,</heat_index_string>,$chr(9))
+    if (<heat_index_f> isin %wu_temp) %wu_heat_index_f = $remove(%wu_temp,<heat_index_f>,</heat_index_f>,$chr(9))
+    if (<heat_index_c> isin %wu_temp) %wu_heat_index_c = $remove(%wu_temp,<heat_index_c>,</heat_index_c>,$chr(9))
+    if (<windchill_string> isin %wu_temp) %wu_windchill_string = $remove(%wu_temp,<windchill_string>,</windchill_string>,$chr(9))
+    if (<windchill_f> isin %wu_temp) %wu_windchill_f = $remove(%wu_temp,<windchill_f>,</windchill_f>,$chr(9))
+    if (<windchill_c> isin %wu_temp) %wu_windchill_c = $remove(%wu_temp,<windchill_c>,</windchill_c>,$chr(9))
+    if (<visibility_mi> isin %wu_temp) %wu_visibility_mi = $remove(%wu_temp,<visibility_mi>,</visibility_mi>,$chr(9))
+    if (<visibility_km> isin %wu_temp) %wu_visibility_km = $remove(%wu_temp,<visibility_km>,</visibility_km>,$chr(9))
+  }
+  ;--- Variables for Forecast Command ---
+  if (%wu_command == !forecast) || (%wu_command == !forecast5) {
+    if (<simpleforecast> isin %wu_temp) set %wu_period 1
+    set %wu_temp $remove(%wu_temp,<![CDATA[,]]>)
+    if (<period> isin %wu_temp) set %wu_period $remove(%wu_temp,<period>,</period>,$chr(9),$chr(32))
+    ;-- Detailed Forecast --
+    if (%wu_command == !forecast) {
+      if (<title> isin %wu_temp) set $+(%,wu_df_title_,%wu_period) $remove(%wu_temp,<title>,</title>,$chr(9))
+      if (<fcttext> isin %wu_temp) set $+(%,wu_df_fcttext_,%wu_period) $remove(%wu_temp,<fcttext>,</fcttext>,$chr(9))
+      if (<fcttext_metric> isin %wu_temp) set $+(%,wu_df_fcttext_metric_,%wu_period) $remove(%wu_temp,<fcttext_metric>,</fcttext_metric>,$chr(9))
+      if (<pop> isin %wu_temp) set $+(%,wu_df_pop_,%wu_period) $remove(%wu_temp,<pop>,</pop>,$chr(9))
+      ; pop = possibility of precipitation 
+    }
+    ;-- Simple Forecast --
+    if (%wu_command == !forecast5) {
+      if (<simpleforecast> isin %wu_temp) set %wu_period 1
+      ;-- Resets %wu_period to 1 when entering the <simpleforecast> section
+      if (</forecastday> isin %wu_temp) inc %wu_period
+      ;-- Need the increase becasue the <period> is after the <weekday>
+      if (<weekday> isin %wu_temp) set $+(%,wu_sf_weekday_,%wu_period) $remove(%wu_temp,<weekday>,</weekday>,$chr(9))
+      if (<high> isin %wu_temp) set %wu_sf_temp high
+      if (<low> isin %wu_temp) set %wu_sf_temp low
+      if (<fahrenheit> isin %wu_temp) set $+(%,wu_sf_fahrenheit_,%wu_sf_temp,_,%wu_period) $+($remove(%wu_temp,<fahrenheit>,</fahrenheit>,$chr(9)),$chr(176),F)
+      if (<celsius> isin %wu_temp) set $+(%,wu_sf_celsius_,%wu_sf_temp,_,%wu_period) $+($remove(%wu_temp,<celsius>,</celsius>,$chr(9)),$chr(176),C)
+      if (<conditions> isin %wu_temp) set $+(%,wu_sf_conditions_,%wu_period) $remove(%wu_temp,<conditions>,</conditions>,$chr(9))
+    }
+  }
+  ;--- Variables for Alerts Command ---
+  if (%wu_command == !alerts) || (%wu_command == !alertinfo) { 
+    ;-- Counts the amount of alerts.
+    if (<alert> isin %wu_temp) { inc %wu_a_i | inc %wu_a_count }
+    ;-- Writes variables for each alert. 
+    if (<type> isin %wu_temp) set $+(%,wu_a,%wu_a_i,_type) $remove(%wu_temp,<type>,</type>,$chr(9)) 
+    if (<description> isin %wu_temp) set $+(%,wu_a,%wu_a_i,_description) $remove(%wu_temp,<description>,</description>,$chr(9))
+    if (<date> isin %wu_temp) set $+(%,wu_a,%wu_a_i,_date) $remove(%wu_temp,<date>,</date>,$chr(9))
+    if (<expires> isin %wu_temp) set $+(%,wu_a,%wu_a_i,_expires) $remove(%wu_temp,<expires>,</expires>,$chr(9))
+    if (</message> isin %wu_temp) { set %wu_msg OFF | set $+(%,wu_a,%wu_a_i,_count) $(%wu_msg_c,2) | set %wu_msg_c 0 }
+    if (%wu_msg == ON) {
+      inc %wu_msg_gc
+      inc %wu_msg_c 
+      set $+(%,wu_a,%wu_a_i,_message,%wu_msg_c) %wu_temp
+    }
+    if (<message> isin %wu_temp) { set %wu_msg ON }
+  }
+  ;--- Variables for Almanac ---
+  if (%wu_command == !almanac) {
+    if (<airport_code> isin %wu_temp) {
+      set %wu_airport $remove(%wu_temp,<airport_code>,</airport_code>,$chr(9))
+      if (%wu_airport == $null) {
+        set %wu_almanac_error NotFound
+        sockclose wunderground
+        wu_sockclose
+      }
+    }
+    if (<temp_high> isin %wu_temp) set %wu_almanac_temp high
+    if (<temp_low> isin %wu_temp) set %wu_almanac_temp low
+    if (<normal> isin %wu_temp) set %wu_almanac_rate normal
+    if (<record> isin %wu_temp) set %wu_almanac_rate record
+    if (<F> isin %wu_temp)  set $+(%,wu_almanac_,%wu_almanac_rate,_,%wu_almanac_temp,_F) $+($remove(%wu_temp,<F>,</F>,$chr(9)),$chr(176),F)
+    if (<C> isin %wu_temp)  set $+(%,wu_almanac_,%wu_almanac_rate,_,%wu_almanac_temp,_C) $+($remove(%wu_temp,<C>,</C>,$chr(9)),$chr(176),C)
+    if (<recordyear> isin %wu_temp) set $+(%,wu_almanac_,%wu_almanac_temp,_year) $remove(%wu_temp,<recordyear>,</recordyear>,$chr(9))
+  }
+  ;--- End of xml ---
+  if (</response> isin %wu_temp) {
+    ; This is so at the end of the reading, it immedely closes the socket and moves on, instead of waiting for the connection to time out.
+    sockclose wunderground
+    wu_sockclose
+  }
+}
+
+;-----------------------------------------------------------------------------
+; RESULT
+;-----------------------------------------------------------------------------
+
+alias wu_sockclose {
+  ;--- Spacers. Such as -|-  |  and -|
+  set %wu_space $+($chr(45),$chr(124),$chr(45))
+  set %wu_space2 $+($chr(32),$chr(124),$chr(32))
+  set %wu_spaceend $+($chr(45),$chr(124))
+  ;--- Removes + sign from address variable
+  set %wu_address $replace(%wu_address,$chr(43),$chr(32)) 
+  ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
+  ; Error? Was there an error?
+  if (%wu_error == error) {
+    msg %wu_chan %wu_nick , Error: %wu_error_description
+    wu_cleanup 
+    halt
+  }
+  /*
+  if (%wu_results == ON) {
+    msg %wu_chan %wu_nick , %wu_result_count Found. Please be more specific
+    wu_cleanup
+    halt
+  }
+  */
+  if (%wu_results == ON) {
+    var %options
+    msg %wu_chan %wu_nick , %wu_result_count Found. Please be more specific:
+    set %wu_results_int 1
+    while (%wu_results_int <= %wu_result_count) {
+      .timer 1  %wu_result_count %options = %options $+(%wu_results_int,$chr(58)) $+($($+(%,wu_result_city,%wu_results_int),2),$chr(44)) $+($($+(%,wu_result_state,%wu_results_int),2),$chr(44)) $($+(%,wu_result_country_name,%wu_result_int),2) %wu_space2
+      .timer 1  %wu_result_count inc  %wu_results_int
+    }
+    .timer 1  %wu_result_count msg %wu_chan Options: %options
+    .timer 1  %wu_result_count wu_cleanup
+    halt
+  }
+  ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
+  if (%wu_command == !weather) { msg %wu_chan %wu_nick , %wu_full $+ : %wu_weather and $+(%wu_temp_f,$chr(176),F,$chr(47),%wu_temp_c,$chr(176),C) }  
+  if (%wu_command == !current) { 
+    msg %wu_chan %wu_nick , %wu_full $+ : %wu_weather and $+(%wu_temp_f,$chr(176),F,$chr(47),%wu_temp_c,$chr(176),C) $&
+      $+ %wu_space2 Heat Index: $+(%wu_heat_index_f,$chr(176),F,$chr(47),%wu_heat_index_c,$chr(176),C) $&
+      $+ %wu_space2 Winds %wu_wind_string $&
+      $+ %wu_space2 Windchill: $+(%wu_windchill_f,$chr(176),F,$chr(47),%wu_windchill_c,$chr(176),C) $&
+      $+ %wu_space2 Pressure: $+(%wu_pressure_in,in,$chr(47),%wu_pressure_mb,mb) $&
+      $+ %wu_space2 Humidity: %wu_relative_humidity $&
+      $+ %wu_space2 Dew: $+(%wu_dewpoint_f,$chr(176),F,$chr(47),%wu_dewpoint_c,$chr(176),C) $&
+      $+ %wu_space2 Visiblity: $+(%wu_visibility_mi,mi,$chr(47),%wu_visibility_km,km)
+  }
+  if (%wu_command == !time) {
+    ; Military time format (Straight from the code):
+    msg %wu_chan %wu_nick , %wu_full $+ : %wu_local_time_rfc822
+    ; Standard time format (modified):
+    ; Coming soon, maybe.
+  }
+  if (%wu_command == !forecast) {
+    msg %wu_chan %wu_nick , %wu_location $+ : %wu_df_title_0 $+ : %wu_df_fcttext_0 %wu_space2 %wu_df_title_1 $+ : %wu_df_fcttext_1 $&
+      $+ %wu_space2 %wu_df_title_2 $+ : %wu_df_fcttext_2 %wu_space2 %wu_df_title_3 $+ : %wu_df_fcttext_3 
+  }
+  if (%wu_command == !forecast5) {
+    var %forecast
+    set %wu_f_i 1
+    while (%wu_f_i <= %wu_forecast_count) {
+      ; Setup variables
+      set %wu_sf_dow $($+(%,wu_sf_weekday_,%wu_f_i),2)
+      set %wu_sf_con $($+(%,wu_sf_conditions_,%wu_f_i),2)
+      set %wu_sf_fh $($+(%,wu_sf_fahrenheit_high_,%wu_f_i),2)
+      set %wu_sf_ch $($+(%,wu_sf_celsius_high_,%wu_f_i),2)
+      set %wu_sf_fl $($+(%,wu_sf_fahrenheit_low_,%wu_f_i),2)
+      set %wu_sf_cl $($+(%,wu_sf_celsius_low_,%wu_f_i),2)
+      ; msg nick: DayOfWeek: CurrentCondition. High: 00°F(00°C) - Low: 00°F(00°C)
+      %forecast = %forecast %wu_sf_dow $+ : %wu_sf_con $+ . High: $+(%wu_sf_fh,$chr(40),%wu_sf_ch,$chr(41)) , Low: $+(%wu_sf_fl,$chr(40),%wu_sf_cl,$chr(41)) %wu_space2
+      inc %wu_f_i
+    }
+    msg %wu_chan %wu_nick , %wu_location : %forecast
+  }
+  if (%wu_command == !alerts) {
+    if (%wu_a_count == 0) msg %wu_chan %wu_nick , %wu_location $+ : No Alerts
+    if (%wu_a_count > 0) {
+      var %alerts
+      var %i 1
+      while (%i <= %wu_a_count) {
+        %alerts = %alerts %wu_a_start $($+(%,wu_a,%i,_description),2) till $($+(%,wu_a,%i,_expires),2) %wu_a_end %wu_space2
+        inc %i
+      }
+      msg %wu_chan %wu_nick , %wu_location $+ : %wu_a_count Alerts: %alerts Use $chr(2) !alertinfo $chr(2) [zipcode|city,state|city,country|airport] for alert details
+    }
+  }
+  if (%wu_command == !alertinfo) {
+    if (%wu_a_count == 0) msg %wu_chan %wu_nick , %wu_location $+ : No Alerts
+    if (%wu_a_count > 0) {
+      var %alertinfo
+      set %wu_alert_total_alerts 1
+      ; Used to count the while loops compared to the original total of Alerts. Aka, what Alert are we on. 
+      while (%wu_alert_total_alerts <= %wu_a_count) {     ;Is the tally of alerts less than or equal to the Total a_counts
+        set %wu_alert_alert_message 1
+        %alertinfo = %alertinfo $chr(2) $($+(%,wu_a,%wu_alert_total_alerts,_description),2) $chr(2) from $($+(%,wu_a,%wu_alert_total_alerts,_date),2) till $($+(%,wu_a,%wu_alert_total_alerts,_expires),2)
+        while (%wu_alert_alert_message <= $($+(%,wu_a,%wu_alert_total_alerts,_count),2)) {
+          %alertinfo = %alertinfo $($+(%,wu_a,%wu_alert_total_alerts,_message,%wu_alert_alert_message),2)
+          inc %wu_alert_alert_message
+        }
+        inc %wu_alert_total_alerts
+      }
+      msg %wu_chan %wu_nick , %wu_location $+ : %wu_a_count Alerts %wu_space2 %alertinfo
+    }
+  }
+  if (%wu_command == !almanac) {
+    if (%wu_almanac_error == NotFound) && (%wu_name == $null) msg %wu_chan Location Not Found. Try location near an airport.
+    if (%wu_almanac_error == $null) && (%wu_name != $null) msg %wu_chan %wu_name Found. No data provided.
+    if (%wu_almanac_error == $null) && (%wu_name == $null) {
+      msg %wu_chan %wu_nick , %wu_airport Airport: Normal High: $+(%wu_almanac_normal_high_F,$chr(47),%wu_almanac_normal_high_C) $&
+        $+ , Normal Low: $+(%wu_almanac_normal_low_F,$chr(47),%wu_almanac_normal_low_C) $&
+        $+ %wu_space2 Record High: $+(%wu_almanac_record_high_F,$chr(47),%wu_almanac_record_high_C) in %wu_almanac_high_year $&
+        $+ , Record Low: $+(%wu_almanac_record_low_F,$chr(47),%wu_almanac_record_low_C,) in %wu_almanac_low_year
+    }
+  }
+  wu_cleanup
+}
+alias wu_help {
+  msg %wu_chan Weather Commands: !weather !current !forecast !forecast5 !alerts !alertinfo !time !almanac -|- Use these commands with your desired location. You can also set a default location for yourself. Just type: !weather REGISTER [location]. To be removed from the list, simply type !weather REMOVE. After you have registered, you can simply use !weather and it will bring up your default
+  ;!weather [zipcode|city,state|city,country|airport] Examples: !weather 90210 - !weather Beverly Hills, CA - !weather LAX - !weather E2J4C7
+  wu_cleanup
+}
+alias wu_cleanup { unset %wu_* }
