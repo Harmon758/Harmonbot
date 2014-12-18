@@ -1,3 +1,4 @@
+; ***REMOVED***
 ;;;;; Weather
 ;changed user msg to channel msg in places
 ;edited help
@@ -6,16 +7,17 @@
 ;removed requirements
 ;changed .notice to .msg in places
 ;changed wu_nick to capital
-;working on showing options when multiple results
+;changed to show options on one line when multiple results
 ;changed some timers to instant one line outputs
 ;changed formatting
+;removed !w
 
 ;weather underground for mIRC v5.41 by eqrunner
 ;http://www.hawkee.com/snippet/7010/
 
 /*
 -- COMMANDS --
-!w  or !weather [zipcode|city,state|city,country|airport] = will return weather current conditions.
+!weather [zipcode|city,state|city,country|airport] = will return weather current conditions.
 !current [zipcode|city,state|city,country|airport] = will return current conditions.
 !forecast [zipcode|city,state|city,country|airport] = will give detailed 3 day forecast (for us)
 !forecast[1-10] [zipcode|city,state|city,country|airport] = will send from 1 day up to 10 day forecast to $nick that requested. (to prevent chan flooding)
@@ -26,16 +28,16 @@
 
 -- REGISTER --
 Register - Each user can assign a default location with themself. So in the future they can use just the command ( !weather, or !forecast, or !alerts, etc)
-![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will link user to said default location
-![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will CHANGE users default if they already have registured.
-![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] REMOVE = will remove the users default location
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will link user to said default location
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will CHANGE users default if they already have registured.
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] REMOVE = will remove the users default location
 User can use any of the !commands to registure. !weather register 90210, will work just as well as !time register 90210
 
 -- HELP --
-![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] [?|help] = Will message user the list of above commands just as they are written.
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] [?|help] = Will message user the list of above commands just as they are written.
 
 -- Switch --
-![w|forecast|forecast5|alerts|alertinfo|time|current|almanac] [ON|OFF] = Will turn the script ON or OFF. Currently only set for Ops only.
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] [ON|OFF] = Will turn the script ON or OFF. Currently only set for Ops only.
 
 -- NOTES- -
 Notes from wunderground:
@@ -50,8 +52,8 @@ on *:CONNECT: {
   if ($isfile(wu_reg.dat)) { hload wu_reg wu_reg.dat }
 }
 ON *:DISCONNECT: { if ($hget(wu_reg)) { hsave -o wu_reg wu_reg.dat } }
-on $*:INPUT:#: { if ($regex($1,/^[!](w|weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si)) wunderground $1- }
-on $*:text:/^[!](w|weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si:#: { wunderground $1- }
+on $*:INPUT:#: { if ($regex($1,/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si)) wunderground $1- }
+on $*:text:/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si:#: { wunderground $1- }
 
 ;-----------------------------------------------------------------------------
 ; Preperation
@@ -133,7 +135,6 @@ alias wunderground {
   if ($chr(44) !isin %wu_location) { set %wu_address $replace(%wu_location,$chr(32),$chr(95)) }
   ;-- Sets specific %wu_links depending on what is requested.
   ;-- Weather --
-  if (%wu_command == !w )  set %wu_command !weather
   if (%wu_command == !weather) || (%wu_command == !current) || (%wu_command == !time) { set %wu_link $+(/api/,%wu_api,/conditions/q/,%wu_address,.xml) } ;Eample: set %wu_link $+(/api/154dfe245e155eee1/conditions/q/20721.xml)
   ;-- Forecast --
   ;- Below finds out if it is a !forecast or a !forecast[1-10]. If there is a number, then it strips the number and sets %wu_command back to !forecast5 so remainder of the code works. and creates a %wu_forecast_count to be used after the sock closes.
@@ -322,14 +323,13 @@ alias wu_sockclose {
   */
   if (%wu_results == ON) {
     var %options
-    msg %wu_chan %wu_nick , %wu_result_count Found. Please be more specific:
     set %wu_results_int 1
     while (%wu_results_int <= %wu_result_count) {
-      .timer 1  %wu_result_count %options = %options $+(%wu_results_int,$chr(58)) $+($($+(%,wu_result_city,%wu_results_int),2),$chr(44)) $+($($+(%,wu_result_state,%wu_results_int),2),$chr(44)) $($+(%,wu_result_country_name,%wu_result_int),2) %wu_space2
-      .timer 1  %wu_result_count inc  %wu_results_int
+      %options = %options $+($($+(%,wu_result_city,%wu_results_int),2),$chr(44)) $($+(%,wu_result_state,%wu_results_int),2) $($+(%,wu_result_country_name,%wu_results_int),2) %wu_space2
+      inc %wu_results_int
     }
-    .timer 1  %wu_result_count msg %wu_chan Options: %options
-    .timer 1  %wu_result_count wu_cleanup
+    msg %wu_chan %wu_nick , %wu_result_count found. Please be more specific. Options: %options
+    wu_cleanup
     halt
   }
   ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
@@ -414,7 +414,7 @@ alias wu_sockclose {
   wu_cleanup
 }
 alias wu_help {
-  msg %wu_chan Weather Commands: !weather !current !forecast !forecast5 !alerts !alertinfo !time !almanac -|- Use these commands with your desired location. You can also set a default location for yourself. Just type: !weather REGISTER [location]. To be removed from the list, simply type !weather REMOVE. After you have registered, you can simply use !weather and it will bring up your default
+  msg %wu_chan Weather Commands: !weather !current !forecast !forecast5 !alerts !alertinfo !time !almanac $+($chr(32),$chr(124),$chr(32)) Use these commands with your desired location. You can also set a default location for yourself. Just type: !weather REGISTER [location]. To be removed from the list, simply type !weather REMOVE. After you have registered, you can simply use !weather and it will bring up your default
   ;!weather [zipcode|city,state|city,country|airport] Examples: !weather 90210 - !weather Beverly Hills, CA - !weather LAX - !weather E2J4C7
   wu_cleanup
 }
