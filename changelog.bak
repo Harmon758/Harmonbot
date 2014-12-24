@@ -1,4 +1,18 @@
 ; ***REMOVED***
+; 12/23/14
+; lb to kg made
+; kg to lb made
+; total xp made
+; added lots of unit conversions
+; fixed + added commands + options
+; added ehp in different file
+; moved changelog to new file
+; moved unit conversions to new file
+; moved whatis to new file
+; moved roulette to new file
+; moved rps to new file
+; implemented with inc
+; updated commands list, whatis, etc.
 ; 12/18/14
 ; added 3accs
 ; added 3accs on/off

@@ -1,5 +1,7 @@
 ; ***REMOVED***
-on *:text:!unitconversions*:#:{ msg # !lbtokg !kgtolb !fttom !mtoft !fitom !mtofi !gtooz !oztog !mitokm !kmtomi !ozttog !gtoozt !ozttooz !oztoozt }
+on *:text:!unitconversions*:#:{ msg # !ctof !ftoc !lbtokg !kgtolb !fttom !mtoft !fitom !mtofi !gtooz !oztog !mitokm !kmtomi !ozttog !gtoozt !ozttooz !oztoozt }
+on *:text:!ctof*:#:{ if ($2 isnum) msg # $2 °C = $calc($2 * 9 / 5 + 32) °F }
+on *:text:!ftoc*:#:{ if ($2 isnum) { msg # $2 °F = $calc(($2 - 32) * 5 / 9) °C } }
 on *:text:!lbtokg*:#:{ if ($2 isnum) msg # $2 lb = $calc($2 * .45359237) kg }
 on *:text:!kgtolb*:#:{ if ($2 isnum) msg # $2 kg = $calc($2 * 2.2046) lb }
 on *:text:!fttom*:#:{ if ($2 isnum) msg # $2 ft = $calc($2 * 0.3048) m }
