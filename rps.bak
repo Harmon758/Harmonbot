@@ -1,0 +1,37 @@
+on *:text:!rps*:#: {
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$2,32)) {
+      set %rps.status on 
+      msg # RPS is on.
+      return
+    }
+    if ($istok(off,$2,32)) {
+      set %rps.status off 
+      msg # RPS is off.
+      return
+    }
+  }
+  if (%rps.status == off) { return }
+  if ($2 == scissors) {
+    var %scissors = $rand(1,3)
+    if (%scissors == 1) { msg # ROCK -- Rock beats Scissors! You lose, $capital($nick) ! }
+    if (%scissors == 2) { msg # PAPER -- Hmm, I lose. Congrats, $capital($nick) }
+    if (%scissors == 3) { msg # SCISSORS -- Dang it, it's a draw. }
+    return
+  }
+  if ($2 == paper) {
+    var %paper = $rand(1,3)
+    if (%paper == 1) { msg # SCISSORS -- Scissors beats Paper! You lose, $capital($nick) ! }
+    if (%paper == 2) { msg # ROCK -- Hmm, I lose. Congrats, $capital($nick) }
+    if (%paper == 3) { msg # PAPER -- Dang it, it's a draw. }
+    return
+  }
+  if ($2 == rock) {
+    var %rock = $rand(1,3)
+    if (%rock == 1) { msg # PAPER -- Paper beats Rock! You lose, $capital($nick) ! }
+    if (%rock == 2) { msg # SCISSORS -- Hmm, I lose. Congrats, $capital($nick) }
+    if (%rock == 3) { msg # ROCK -- Dang it, it's a draw. }
+    return
+  }
+  msg # $capital($nick) is a cheater. Reported.
+}

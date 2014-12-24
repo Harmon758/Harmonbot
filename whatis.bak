@@ -1,0 +1,64 @@
+on *:text:!whatis*:#:{
+  if (!$2) { msg # What is what? }
+  elseif ($2 == !07rswiki) { msg # Use !07rswiki _ to look something up on 2007scape Wiki. }
+  elseif ($2 == !120) { msg # Use !120 and I will tell you the exact amount of xp for lvl 120. }
+  elseif ($2 == !bday) { msg # Use !bday to find out the time left until Mikki's birthday. }
+  elseif ($2 == cache) { msg # $guthixiancache }
+  elseif ($2 == !cache) { msg # Use !cache to find out the time until the next Guthixian Cache. }
+  elseif ($2 == !calc) { msg # Use !calc to perform basic arithmetic. Valid operations and operators: + - * / k m b }
+  elseif ($2 == !caught) { msg # Use !caught _ for Mikki to catch someone. }
+  elseif ($2 == cheese) { msg # $cheese }
+  elseif ($2 == !cheese) { msg # Use !cheese to find out what cheese is. }
+  elseif ($2 == !clan) { msg # Use !clan to find out what clans Mikki is in. }
+  elseif ($2 == !cml) { msg # Use !cml for Mikki's Crystal Math Labs link. }
+  elseif ($2 == !commands) { msg # Use !commands and I will tell you my commands. }
+  elseif ($2 == !emotes) { msg # Use !emotes to see Mikki's subscriber emotes. }
+  elseif ($2 == !grats) { msg # Use !grats to congratulate someone. (Optional: !grats Name) }
+  elseif ($2 == guthixiancache) { msg # $guthixiancache }
+  elseif ($2 == !guthixiancache) { msg # Use !guthixiancache to find out what Guthixian Cache is. }
+  elseif ($2 == harmonbot) { msg # That's me! }
+  elseif ($2 == !help) { msg # See !help }
+  elseif ($2 == !highfive) { msg # Use !highfive _ to high five someone. }
+  elseif ($2 == illuminati) { msg # $illuminati }
+  elseif ($2 == !illuminati) { msg # Use !illuminati to find out what the Illuminati is. }
+  elseif ($2 == ironman) { msg # $ironman }
+  elseif ($2 == !ironman) { msg # Use !ironman to find out what Ironman Mode is. }
+  elseif ($2 == !lag) { msg # Use !lag when Mikki is lagging. }
+  elseif ($2 == life) { msg # $life }
+  elseif ($2 == !life) { msg # Use !life to find out what life is. }
+  elseif ($2 == !links) { msg # Use !links for links to Mikki's Twitter and Youtube. }
+  elseif ($2 == love) { msg # $love }
+  elseif ($2 == !love) { msg # Use !love to find out what love is. }
+  elseif ($2 == mikki || $2 == mikkiscape) { msg # That's who you're watching! }
+  elseif ($2 == !mods) { msg # Use !mods to see what mods are currently in the chat. }
+  elseif ($2 == !music) { msg # Use !music to see Mikki's Spotify playlist. }
+  elseif ($2 == !nightbot) { msg # See !nighbot }
+  elseif ($2 == !noob) { msg # Use !noob _ to call someone a noob. }
+  elseif ($2 == !pi) { msg # Use !pi for an approximate value of pi. }
+  elseif ($2 == !poke) { msg # Use !poke _ to poke someone. }
+  elseif ($2 == !randomviewer) { msg # Use !randomviewer to select a random person watching the stream. }
+  elseif ($2 == !rc) { msg # Use !rc to find out Mikki's current Runecrafting levels. }
+  elseif ($2 == !remindcache) { msg # Use !remindcache _ and I will remind you _ minutes before Guthixian Cache. (Default is 5 if no _ given) }
+  elseif ($2 == !repair) { msg # Use !repair to remind Mikki to repair her pouch. }
+  elseif ($2 == !roulette) { msg # Use !roulette to play roulette. Mod only options: on, off }
+  elseif ($2 == !rps) { msg # Use !rps _ to play rock, paper, scissors. Options: rock, paper, scissors; Mod only: on, off }
+  elseif ($2 == !rswiki) { msg # Use !rswiki _ to look something up on Runescape Wiki. }
+  elseif ($2 == !runetracker) { msg # Use !runetracker for Mikki's Runetracker links. }
+  elseif ($2 == !spotify) { msg # Use !spotify to see Mikki's Spotify playlist. }
+  elseif ($2 == stats) { msg # $stats }
+  elseif ($2 == !stats) { msg # Use !stats to see Mikki's stats. }
+  elseif ($2 == !subscribe) { msg # Use !suscribe for the link to subscribe to Mikkiscape. }
+  elseif ($2 == !tick) { msg # Use !tick to see how many ticks Mikki has wasted. }
+  elseif ($2 == !time) { msg # Use !time to find out Mikki's current time. }
+  elseif ($2 == !tns) { msg # Use !tns to support #TeamNoSleep. }
+  elseif ($2 == !uptime) { msg # Use !uptime to find out how long Mikki has been streaming. }
+  elseif ($2 == !weather) { msg # See !weather help }
+  elseif ($2 == !whatis) { msg # That's the command you just used! Use it and I will tell you what certain things or commands are. }
+  elseif ($2 == !wiki) { msg # Use !wiki _ to look something up on Wikipedia. }
+  elseif ($2 == zezima) { msg # $zezima }
+  elseif ($2 == !zezima) { msg # Use !zezima to find out who Zezima is. }
+  elseif ($2 isnum && $4 isnum && ($3 == + || $3 == - || $3 == * || $3 == / || $3 == ^ || $3 == %)) {
+    msg # $2- = $calc($2-)
+  }
+  else { msg # I don't know what that is. Try $rswiki($2-) or $rswiki07($2-) or $wiki($2-) }
+}

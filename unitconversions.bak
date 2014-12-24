@@ -1,0 +1,15 @@
+; ***REMOVED***
+on *:text:!lbtokg*:#:{ if ($2 isnum) msg # $2 lb = $calc($2 * .45359237) kg }
+on *:text:!kgtolb*:#:{ if ($2 isnum) msg # $2 kg = $calc($2 * 2.2046) lb }
+on *:text:!fttom*:#:{ if ($2 isnum) msg # $2 ft = $calc($2 * 0.3048) m }
+on *:text:!mtoft*:#:{ if ($2 isnum) msg # $2 m = $calc($2 * 3.2808) ft }
+on *:text:!fitom*:#:{ if ($2 isnum) if ($3 isnum) msg # $2 ft $3 in = $calc(($2 + $3 / 12) * 0.3048) m }
+on *:text:!mtofi*:#:{ if ($2 isnum) msg # $2 m = $floor($calc($2 * 39.370 / 12)) ft $calc($2 * 39.370 - $floor($calc($2 * 39.370 / 12)) * 12) in }
+on *:text:!gtooz*:#:{ if ($2 isnum) msg # $2 g = $calc($2 * 0.035274) oz }
+on *:text:!oztog*:#:{ if ($2 isnum) msg # $2 oz = $calc($2 / 0.035274) g }
+on *:text:!mitokm*:#:{ if ($2 isnum) msg # $2 mi = $calc($2 / 0.62137) km }
+on *:text:!kmtomi*:#:{ if ($2 isnum) msg # $2 km = $calc($2 * 0.62137) mi }
+on *:text:!ozttog*:#:{ if ($2 isnum) msg # $2 ozt = $calc($2 / 0.032151) g }
+on *:text:!gtoozt*:#:{ if ($2 isnum) msg # $2 g = $calc($2 * 0.032151) oz }
+on *:text:!ozttooz*:#:{ if ($2 isnum) msg # $2 ozt = $calc($2 * 1.09714996656) oz }
+on *:text:!oztoozt*:#:{ if ($2 isnum) msg # $2 oz = $calc($2 * 0.911452427176) ozt }
