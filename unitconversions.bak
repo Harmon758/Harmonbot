@@ -1,4 +1,5 @@
 ; ***REMOVED***
+on *:text:!unitconversions*:#:{ msg # !lbtokg !kgtolb !fttom !mtoft !fitom !mtofi !gtooz !oztog !mitokm !kmtomi !ozttog !gtoozt !ozttooz !oztoozt }
 on *:text:!lbtokg*:#:{ if ($2 isnum) msg # $2 lb = $calc($2 * .45359237) kg }
 on *:text:!kgtolb*:#:{ if ($2 isnum) msg # $2 kg = $calc($2 * 2.2046) lb }
 on *:text:!fttom*:#:{ if ($2 isnum) msg # $2 ft = $calc($2 * 0.3048) m }
