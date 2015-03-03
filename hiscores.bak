@@ -5,7 +5,10 @@
 ; Format: !hiscores <username> <skill/total> <rs3/07/rs3ironman/rs3hcironman/07ironman/07hcironman> <level/rank/xp>
 ; added !hi, fixed, merge with !hello
 ; added total, added !hiscore !highscore !highscores aliases, fixed !hi
-; add user custom, minigames, commas, adjust mikki skill commands
+; 3/3/15
+; added commas to numbers
+; add user custom, minigames, adjust mikki skill commands
+;
 
 on *:text:!hiscores*:#:{ $hiscores($1, $2, $3, $4, $5) }
 on *:text:!hiscore*:#:{ $hiscores($1, $2, $3, $4, $5) }
@@ -173,6 +176,7 @@ on *:SOCKREAD:hiscores: {
   if (!$sockerr) {
     var %sockreader
     sockread %sockreader
+    echo %sockreader
     tokenize 32 %sockreader
     inc %hiscores_counter
     if ($gettok(%sockreader, 2, 32) == 404) {
