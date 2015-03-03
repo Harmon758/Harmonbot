@@ -1,5 +1,9 @@
 ; ***REMOVED***
 ; to add
+; !ehp
+; ehp
+; all weather commands
+; tick
 ; !99rc !con !thief !thieving !warbands !pray !fletch !indecent !asylum !hello !remindwarbands !rotation !google !imfeelinglucky !slay
 on *:text:!whatis*:#:{
   if (!$2) { msg # What is what? }
