@@ -1,4 +1,6 @@
 ; ***REMOVED***
+; to add
+; !99rc !con !thief !thieving !warbands !pray !fletch !indecent !asylum !hello !remindwarbands !rotation !google !imfeelinglucky !slay
 on *:text:!whatis*:#:{
   if (!$2) { msg # What is what? }
   elseif ($2 == !07rswiki) { msg # Use !07rswiki _ to look something up on 2007scape Wiki. }
@@ -32,7 +34,8 @@ on *:text:!whatis*:#:{
   elseif ($2 == !harmonbot) { msg # Use !harmonbot to find out who Harmonbot is. }
   elseif ($2 == !help) { msg # See !help }
   elseif ($2 == !highfive) { msg # Use !highfive _ to high five someone. }
-  elseif ($2 == !indecentcode) { msg # Use !indecentcode _ to look someone up on IndecentCode. }
+  elseif ($2 == !hiscores) { msg # Use !hiscores to look someone up on the RS Hiscores. Default is rs3 and level. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> }
+  elseif ($2 == !indecentcodehs) { msg # Use !indecentcode _ to look someone up on IndecentCode highscores. }
   elseif ($2 == illuminati) { msg # $illuminati }
   elseif ($2 == !illuminati) { msg # Use !illuminati to find out what the Illuminati is. }
   elseif ($2 == ironman) { msg # $ironman }

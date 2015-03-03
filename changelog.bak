@@ -1,4 +1,12 @@
 ; ***REMOVED***
+; 2/9/15
+; added !pray !prayer !fletch !fletching !indecent !asylum !hello !remindwarbands
+; added this broadcaster to !noob
+; 2/1/15
+; added !99rc
+; added construction - !con !construction
+; added thieving - !thief !thieving
+; added warbands - !warbands
 ; 12/23/14
 ; lb to kg made
 ; kg to lb made
@@ -12,7 +20,7 @@
 ; moved roulette to new file
 ; moved rps to new file
 ; implemented with inc
-; updated commands list, whatis, etc.
+; organized, updated commands list, whatis, etc.
 ; 12/18/14
 ; added 3accs
 ; added 3accs on/off
