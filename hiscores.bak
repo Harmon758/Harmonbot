@@ -176,8 +176,7 @@ on *:SOCKREAD:hiscores: {
   if (!$sockerr) {
     var %sockreader
     sockread %sockreader
-    echo %sockreader
-    tokenize 32 %sockreader
+    ; tokenize 32 %sockreader
     inc %hiscores_counter
     if ($gettok(%sockreader, 2, 32) == 404) {
       %message Username not found.

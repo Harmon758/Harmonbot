@@ -1,3 +1,4 @@
+; ***REMOVED***
 on *:text:!rps*:#: {
   if ($nick isop #) && ($2) {
     if ($istok(on,$2,32)) {

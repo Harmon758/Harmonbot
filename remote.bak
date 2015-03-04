@@ -125,352 +125,364 @@ n122=  else { msg # Invalid Operation. }
 n123=}
 n124=*/
 n125=on *:text:!calc*:#: msg # $iif($regsubex($remove($2-,$chr(32),$chr(44)),/((^|[+-/^*%]+)(([0-9]|\56)+)(k|m|b)|(^|[+-/^*%]+)(([0-9]|\56)+)|(^|[+-/^*%]+)(\50(.+?)\51))/ig,),Syntax Error,$iif(!$2,Syntax Error,$2- = $regsubex($ticks,$calc($regsubex($ticks,$remove($2-,$chr(44),$chr(32)),/(^|[+-/*%]+|[+-/*%]+\50)(([0-9]|\56)+)(k|m|b)/ig,\1 $+ ( $+ \2 $+ $iif(\4 == b,*1000000000,$iif(\4 == m,*1000000,*1000)) $+ ))),/\G([+-]?\d+?)(?=(?:\d{3})++(?=\.\d++$|$))/g,\1 $+ $chr(44)))) 
-n126=on *:text:!caught*:#:{ if ($2) { msg # Mikki has caught a wild $capital($2-) $+ ! } else { msg # Mikki has caught a wild $capital($nick) $+ ! } }
-n127=on *:text:!cheese*:#:{ msg # $cheese }
-n128=on *:text:!clan*:#:{ msg # $clan }
-n129=on *:text:!cml*:#:{ msg # $cml }
-n130=on *:text:!con*:#:{ msg # $construction }
-n131=; on *:text:!countdown*:#:{ msg # $my_duration($timeleft($ctime(December 18 2014 03:00:00))) }
-n132=on *:text:!emotes*:#:{ msg # $emotes }
-n133=on *:text:!fish*:#:{ msg # $fishing }
-n134=on *:text:!fletch*:#:{ msg # $fletching }
-n135=on *:text:!glory*:#:{ msg # Don't kill yourself, Mikki. }
-n136=on *:text:!google*:#: { msg # google.com/search?q= $+ $replace($2-,$chr(32),$chr(43)) }
-n137=on *:text:!grats*:#:{ if ($2) { msg # Congratulations, $capital($2-) $+ !!!!! } else { msg # Congratulations!!!!! } }
-n138=on *:text:!guthixiancache*:#:{ msg # $guthixiancache }
-n139=on *:text:!harmon*:#:{ msg # Harmon is my creator. }
-n140=on *:text:!harmonbot*:#:{ msg # That's me! }
-n141=on *:text:!hello*:#:{
-n142=  if (!$2 || $2- == harmonbot) { msg # Hello, $capital($nick) $+ ! }
-n143=  else { msg # $capital($2-) $+ , $capital($nick) says hello! }
-n144=}
-n145=on *:text:!help*:#:{ msg # Use !whatis _ and I will tell you what certain things or commands are. }
-n146=on *:text:!highfive*:#:{ 
-n147=  if ($2 == random) { msg # $capital($nick) highfives $randomviewer $+ ! }
-n148=  elseif ($2) { msg # $capital($nick) highfives $capital($2-) $+ ! }
-n149=  else { msg # $capital($nick) highfives no one $+ . :-/ }
+n126=on *:text:!caught*:#:{
+n127=  if ($2) { msg # Mikki has caught a wild $capital($2-) $+ ! }
+n128=  else { msg # Mikki has caught a wild $capital($nick) $+ ! }
+n129=}
+n130=on *:text:!cheese*:#:{ msg # $cheese }
+n131=on *:text:!clan*:#:{ msg # $clan }
+n132=on *:text:!cml*:#:{ msg # $cml }
+n133=on *:text:!con*:#:{ msg # $construction }
+n134=; on *:text:!countdown*:#:{ msg # $my_duration($timeleft($ctime(December 18 2014 03:00:00))) }
+n135=on *:text:!emotes*:#:{ msg # $emotes }
+n136=on *:text:!fish*:#:{ msg # $fishing }
+n137=on *:text:!fletch*:#:{ msg # $fletching }
+n138=on *:text:!glory*:#:{ msg # Don't kill yourself, Mikki. }
+n139=on *:text:!google*:#: { msg # google.com/search?q= $+ $replace($2-,$chr(32),$chr(43)) }
+n140=on *:text:!grats*:#:{
+n141=  if ($2) { msg # Congratulations, $capital($2-) $+ !!!!! }
+n142=  else { msg # Congratulations!!!!! }
+n143=}
+n144=on *:text:!guthixiancache*:#:{ msg # $guthixiancache }
+n145=on *:text:!harmon*:#:{ msg # Harmon is my creator. }
+n146=on *:text:!harmonbot*:#:{ msg # That's me! }
+n147=on *:text:!hello*:#:{
+n148=  if (!$2 || $2- == harmonbot) { msg # Hello, $capital($nick) $+ ! }
+n149=  else { msg # $capital($2-) $+ , $capital($nick) says hello! }
 n150=}
-n151=on *:text:!hi*:#:{
-n152=  if ($1 == !hiscores || $1 == !hiscore || $1 == !highscore || $1 == !highscores) { return }
-n153=  if (!$2 || $2- == harmonbot) { msg # Hello, $capital($nick) $+ ! }
-n154=  else { msg # $capital($2-) $+ , $capital($nick) says hello! }
-n155=}
-n156=on *:text:!hug*:#:{
-n157=  if ($2) { msg # $capital($nick) hugs $capital($2-) $+ ! }
-n158=  else { msg # $capital($nick) hugs $capital($nick) $+ . o_O }
-n159=}
-n160=on *:text:!illuminati*:#:{ msg # $illuminati }
-n161=on *:text:!imfeelinglucky*:#: { msg # google.com/search?btnI&q= $+ $replace($2-,$chr(32),$chr(43)) }
-n162=on *:text:!indecentcodehs*:#:{ msg # indecentcode.com/hs/index.php?id= $+ $replace($2-,$chr(32),$chr(43)) }
-n163=on *:text:!indecent*:#:{ msg # http://www.indecentcode.com/ }
-n164=;on *:text:!ironman*:#:{ msg # $ironman }
-n165=on *:text:!lag*:#:{ msg # #StreamingProblems }
-n166=on *:text:!level*:#:{
-n167=  if ($2 isnum && $2 >= 1 && $2 < 127) {
-n168=    var %2 = $floor($2)
-n169=    var %level = 1
-n170=    var %xp = 0
-n171=    while (%level != %2) {
-n172=      %xp = $calc(%xp + $floor($calc(%level + 300 * 2 ^ (%level / 7))))
-n173=      inc %level
-n174=    }
-n175=    %xp = $floor($calc(%xp / 4))
-n176=    msg # Level %2 = $bytes(%xp,bd) xp
-n177=  }
-n178=  elseif ($2 isnum && $2 > 9000) { msg # It's over 9000! }
-n179=  elseif ($2 isnum && $2 == 9000) { msg # Almost there. }
-n180=  elseif ($2 isnum && $2 > 126 && $2 < 9000) { msg # I was gonna calculate xp at Level $2. Then I took an arrow to the knee. }
-n181=  else { msg # Level $2- does not exist or there is a syntax error. }
-n182=}
-n183=on *:text:!life*:#:{ msg # $life }
-n184=on *:text:!links*:#:{ msg # $links }
-n185=on *:text:!love*:#:{ msg # $love }
-n186=on *:text:!mine*:#:{ msg # $mining }
-n187=on *:text:!mining*:#:{ msg # $mining }
-n188=on *:text:!mikkitime*:#:{ msg # It is currently $asctime($calc($gmt + 3600 * 8),h:nn tt) on $asctime($calc($gmt + 3600 * 8),mmmm d) in Western Australia (GMT+8). }
-n189=on *:text:!mikki*:#:{ msg # Mikki is awesome~ }
-n190=on *:text:!mods*:#:{
-n191=  var %t = 0
-n192=  while (%t <= $nick(#,0,o)) {
-n193=    var %tmod = $iif(%tmod,%tmod $capital($nick(#,%t,o)),$capital($nick(#,%t,o)))
-n194=    inc %t
-n195=  }
-n196=  msg # Mods Online: $iif(%tmod,%tmod,None)
-n197=}
-n198=on *:text:!music*:#:{ msg # $music }
-n199=on *:text:!nightbot*:#:{ msg # !noob Nightbot }
-n200=on *:text:!noob*:#:{
-n201=  if ($2) {
-n202=    if ($count($remove($2-,+,-,_), harmonbot) != 0) { msg # I am not a noob. }
-n203=    elseif ($count($remove($2-,+,-,_), harmon758) != 0 || $count($remove($2-,+,-,_), harmon) != 0 || $count($remove($2-,+,-,_), my creator) != 0 || $count($remove($2-,+,-,_), my owner) != 0 || $count($remove($2-,+,-,_), who created me) != 0 || $count($remove($2-,+,-,_), who made me) != 0 || $count($remove($2-,+,-,_), 758) != 0 || $count($remove($2-,+,-,_), nomrah) != 0) { msg # Harmon is not a noob. }
-n204=    elseif ($count($remove($2-,+,-,_), mikkiscape) != 0 || $count($remove($2-,+,-,_), mikki) != 0 || $count($remove($2-,+,-,_), mikhala) != 0 || $count($remove($2-,+,-,_), this streamer) != 0 || $count($remove($2-,+,-,_), this broadcaster) != 0) { msg # Mikki is not a noob. How dare you. }
-n205=    elseif ($2 == i) { msg # $capital($nick) $+ , you are a noob. }
-n206=    elseif ($count($2-, Ϻ) != 0 || $count($2-, ᴹ) != 0 || $count($2-, ᴵ) != 0 || $count($2-, ᴷ) != 0 || $count($2-, Μ) != 0 || $count($2-, Ι) != 0 || $count($2-, Κ) != 0 $&
-n207=      || $count($2-, Η) != 0 || $count($2-, ⁪) != 0) { msg # $capital($nick) $+ , no special characters, you noob. Reported. }
-n208=    elseif ($nick == sathonscape) { msg # Sathonscape is a noob. }
-n209=    else { msg # $capital($2-) is a noob. }
-n210=  }
-n211=  else { msg # $capital($nick) $+ , you are a noob. }
-n212=}
-n213=on *:text:!pi*:#:{ 
-n214=  if ($nick isop #) { msg # 3.14159265358979323846264338327 9502884197169399375105820974944 5923078164062862089986280348253 4211706798214808651328230664709 3844609550582231725359408128481 1174502841027019385211055596446 2294895493038196442881097566593 3446128475648233786783165271201 9091456485669234603486104543266 4821339360726024914127372458700 6606315588174881520920962829254 0917153643678925903600113305305 4882046652138414695194151160943 3057270365759591953092186117381 9326117931051185480744623799627 4956735188575272489122793818301 1949129833673362440656643086021 3949463952247371907021798609437 }
-n215=  else { msg # 3.14 }
-n216=}
-n217=on *:text:!poke*:#:{
-n218=  if ($2 == random) { msg # $capital($nick) pokes $randomviewer $+ ! }
-n219=  if ($2) { msg # $capital($nick) pokes $capital($2-) $+ ! }
-n220=  else { msg # $capital($nick) pokes no one $+ . o_O }
-n221=}
-n222=on *:text:!pouch*:#:{ msg # $repair }
-n223=on *:text:!pray*:#:{ msg # $prayer }
-n224=on *:text:!puppy*:#:{ msg # RalpherZ }
-n225=on *:text:!randomviewer*:#:{ msg # $randomviewer }
-n226=on *:text:!rc*:#:{ msg # $rc }
-n227=on *:text:!remindcache*:#:{
-n228=  var %timeleft = $timeleft(0, 10800)
-n229=  if ($2 isnum) {
-n230=    var %offset = $calc($2 * 60), %msgtime = $calc(%timeleft - %offset)
-n231=    msg # $capital($nick) $+ , I'll remind you $my_duration(%offset) before Guthixian Cache.
-n232=    if (%msgtime isnum 0-) .timer 1 %msgtime msg # $capital($nick) $+ , Guthixian Cache is in $my_duration(%offset)!
-n233=  }
-n234=  else {
-n235=    var %offset = 300, %msgtime = $calc(%timeleft - %offset)
-n236=    msg # $capital($nick) $+ , I'll remind you 5 minutes before Guthixian Cache.
-n237=    if (%msgtime isnum 0-) .timer 1 %msgtime msg # $capital($nick) $+ , Guthixian Cache is in 5 minutes!
-n238=  }
-n239=}
-n240=on *:text:!remindwarbands*:#:{
-n241=  var %timeleft = $timeleft(0, 25200)
-n242=  if ($2 isnum) {
-n243=    var %offset = $calc($2 * 60), %msgtime = $calc(%timeleft - %offset)
-n244=    msg # $capital($nick) $+ , I'll remind you $my_duration(%offset) before Warbands.
-n245=    if (%msgtime isnum 0-) .timer 1 %msgtime msg # $capital($nick) $+ , Warbands is in $my_duration(%offset)!
-n246=  }
-n247=  else {
-n248=    var %offset = 300, %msgtime = $calc(%timeleft - %offset)
-n249=    msg # $capital($nick) $+ , I'll remind you 5 minutes before Warbands.
-n250=    if (%msgtime isnum 0-) .timer 1 %msgtime msg # $capital($nick) $+ , Warbands is in 5 minutes!
-n251=  }
-n252=}
-n253=on *:text:!repair*:#: { msg # $repair }
-n254=on *:text:!rotation*:#:{ msg # Meilyr -> Hefin -> (Bank) Crwys (Bank) -> Cadarn -> Amlodd -> Trahaearn (Bank) --- VOS @ Iorwerth or Ithell - Do instead of Cadarn }
-n255=on *:text:!rswiki*:#:{ msg # $rswiki($2-) }
-n256=on *:text:!rswiki07*:#:{ msg # $rswiki07($2-) }
-n257=on *:text:!runecrafting*:#:{ msg # $rc }
-n258=on *:text:!runetracker*:#:{ msg # $runetracker }
-n259=on *:text:!slay*:#:{ msg # $slayer }
-n260=on *:text:!spotify*:#:{ msg # $music }
-n261=on *:text:!stats*:#:{ msg # $stats }
-n262=on *:text:!subscribe*:#:{ msg # $suscribe }
-n263=on *:text:!thief*:#:{ msg # $thieving }
-n264=on *:text:!thieving*:#:{ msg # $thieving }
-n265=on *:text:!tick*:#:{
-n266=  inc %ticks
-n267=  msg # Mikki has wasted %ticks ticks. http://i.imgur.com/bSCnFb1.png
-n268=}
-n269=on *:text:!tns*:#:{ msg # #TeamNoSleep }
-n270=on *:text:!totalxp*:#:{ msg # $totalxp }
-n271=on *:text:!warbands*:#:{
-n272=  var %timeleft = $timeleft(0, 25200)
-n273=  if (%timeleft isnum 0-) msg # $my_duration(%timeleft) until Warbands.
-n274=}
-n275=on *:text:!wiki*:#: { msg # $wiki($2-) }
-n276=on *:text:!xpat*:#:{
-n277=  var %2 = $remove($2,$chr(44))
-n278=  if (%2 isnum && %2 >= 0 && %2 < 200000001) {
-n279=    var %2 = $floor(%2)
-n280=    var %level = 1
-n281=    var %xp = 0
-n282=    while (%2 >= %xp) {
-n283=      %xp = $calc(%xp * 4)
-n284=      %xp = $calc(%xp + $floor($calc(%level + 300 * 2 ^ (%level / 7))))
-n285=      %xp = $calc(%xp / 4)
-n286=      inc %level
-n287=    }
-n288=    %level = %level - 1
-n289=    msg # $bytes(%2,bd) xp = level %level
-n290=  }
-n291=  elseif (%2 isnum) { msg # You can't have that much xp! }
-n292=  else { msg # Syntax error. }
-n293=}
-n294=on *:text:!xpbetween*:#:{
-n295=  if ($2 isnum && $2 >= 1 && $2 < 127 && $3 isnum && $3 >= 1 && $3 < 127 && $2 < $3) {
-n296=    var %2 = $floor($2)
-n297=    var %3 = $floor($3)
-n298=    var %level = 1
-n299=    var %xp = 0
-n300=    var %startxp = 0
-n301=    var %betweenxp = 0
-n302=    while (%level != %3) {
-n303=      %xp = $calc(%xp + $floor($calc(%level + 300 * 2 ^ (%level / 7))))
-n304=      inc %level
-n305=      if (%level == %2) { %startxp = $floor($calc(%xp / 4)) }
-n306=    }
-n307=    %betweenxp = $calc($floor($calc(%xp / 4)) - %startxp)
-n308=    msg # $bytes(%betweenxp,bd) xp between level %2 and level %3
-n309=  }
-n310=  else { msg # Syntax error. }
-n311=}
-n312=on *:text:!zezima*:#: { msg # $zezima }
-n313=
-n314=on *:text:*3 accs*:#:{
-n315=  if ($nick isop #) && ($2) {
-n316=    if ($istok(on,$3,32)) {
-n317=      set %3accs.status on 
-n318=      msg # 3 accs is on.
-n319=      return
-n320=    }
-n321=    if ($istok(off,$3,32)) {
-n322=      set %3accs.status off 
-n323=      msg # 3 accs is off.
-n324=      return
-n325=    }
-n326=  }
-n327=  if (%3accs.status == off) { return }
-n328=  else {
-n329=    inc %3accs
-n330=    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
-n331=  }
-n332=}
-n333=on *:text:*3 accounts*:#:{
-n334=  if ($nick isop #) && ($2) {
-n335=    if ($istok(on,$3,32)) {
-n336=      set %3accs.status on 
-n337=      msg # 3 accs is on.
-n338=      return
-n339=    }
-n340=    if ($istok(off,$3,32)) {
-n341=      set %3accs.status off 
-n342=      msg # 3 accs is off.
-n343=      return
-n344=    }
-n345=  }
-n346=  if (%3accs.status == off) { return }
-n347=  else {
-n348=    inc %3accs
-n349=    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
-n350=  }
-n351=}
-n352=on *:text:*three accounts*:#:{
-n353=  if ($nick isop #) && ($2) {
-n354=    if ($istok(on,$3,32)) {
-n355=      set %3accs.status on 
-n356=      msg # 3 accs is on.
-n357=      return
-n358=    }
-n359=    if ($istok(off,$3,32)) {
-n360=      set %3accs.status off 
-n361=      msg # 3 accs is off.
-n362=      return
-n363=    }
-n364=  }
-n365=  if (%3accs.status == off) { return }
-n366=  else {
-n367=    inc %3accs
-n368=    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
-n369=  }
-n370=}
-n371=on *:text:*three accs*:#:{
-n372=  if ($nick isop #) && ($2) {
-n373=    if ($istok(on,$3,32)) {
-n374=      set %3accs.status on 
-n375=      msg # 3 accs is on.
-n376=      return
-n377=    }
-n378=    if ($istok(off,$3,32)) {
-n379=      set %3accs.status off 
-n380=      msg # 3 accs is off.
-n381=      return
-n382=    }
-n383=  }
-n384=  if (%3accs.status == off) { return }
-n385=  else {
-n386=    inc %3accs
-n387=    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
-n388=  }
-n389=}
-n390=
-n391=on *:text:*happy birthday*:#:{ msg # Happy Birthday! }
-n392=on *:text:*happy bday*:#:{ msg # Happy Birthday! } 
-n393=
-n394=on *:text:!uptime*:#:{
-n395=  sockclose uptime
-n396=  sockopen uptime nightdev.com 80
-n397=}
-n398=on *:sockopen:uptime:{
-n399=  if ($sockerr) { sockclose $sockname | halt }
-n400=  sockwrite -n $sockname GET /hosted/uptime.php?channel=mikkiscape HTTP/1.1
-n401=  sockwrite -n $sockname Host: nightdev.com $crlf $+ $crlf
-n402=}
-n403=on *:sockread:uptime:{
-n404=  if ($sockerr) { sockclose $sockname }
-n405=  var %streamodata
-n406=  sockread %streamodata
-n407=  if ($regex(%streamodata,(.*)minutes)) { msg #mikkiscape $regml(1) minutes }
-n408=  if ($regex(%streamodata,(.*)live.)) { msg #mikkiscape Mikki is offline. }
+n151=on *:text:!help*:#:{ msg # Use !whatis _ and I will tell you what certain things or commands are. }
+n152=on *:text:!highfive*:#:{ 
+n153=  if ($2 == random) { msg # $capital($nick) highfives $randomviewer $+ ! }
+n154=  elseif ($2) { msg # $capital($nick) highfives $capital($2-) $+ ! }
+n155=  else { msg # $capital($nick) highfives no one $+ . :-/ }
+n156=}
+n157=on *:text:!hi*:#:{
+n158=  if ($1 == !hiscores || $1 == !hiscore || $1 == !highscore || $1 == !highscores) { return }
+n159=  if (!$2 || $2- == harmonbot) { msg # Hello, $capital($nick) $+ ! }
+n160=  else { msg # $capital($2-) $+ , $capital($nick) says hello! }
+n161=}
+n162=on *:text:!hug*:#:{
+n163=  if ($2) { msg # $capital($nick) hugs $capital($2-) $+ ! }
+n164=  else { msg # $capital($nick) hugs $capital($nick) $+ . o_O }
+n165=}
+n166=on *:text:!illuminati*:#:{ msg # $illuminati }
+n167=on *:text:!imfeelinglucky*:#: { msg # google.com/search?btnI&q= $+ $replace($2-,$chr(32),$chr(43)) }
+n168=on *:text:!indecentcodehs*:#:{ msg # indecentcode.com/hs/index.php?id= $+ $replace($2-,$chr(32),$chr(43)) }
+n169=on *:text:!indecent*:#:{ msg # http://www.indecentcode.com/ }
+n170=on *:text:!ironman*:#:{ msg # $ironman }
+n171=on *:text:!lag*:#:{ msg # #StreamingProblems }
+n172=on *:text:!level*:#:{
+n173=  if (!$2) { msg # Please enter a level. }
+n174=  elseif ($2 isnum && $2 >= 1 && $2 < 127) {
+n175=    var %2 = $floor($2)
+n176=    var %level = 1
+n177=    var %xp = 0
+n178=    while (%level != %2) {
+n179=      %xp = $calc(%xp + $floor($calc(%level + 300 * 2 ^ (%level / 7))))
+n180=      inc %level
+n181=    }
+n182=    %xp = $floor($calc(%xp / 4))
+n183=    msg # Level %2 = $bytes(%xp,bd) xp
+n184=  }
+n185=  elseif ($2 isnum && $2 > 9000) { msg # It's over 9000! }
+n186=  elseif ($2 isnum && $2 == 9000) { msg # Almost there. }
+n187=  elseif ($2 isnum && $2 > 126 && $2 < 9000) { msg # I was gonna calculate xp at Level $2. Then I took an arrow to the knee. }
+n188=  else { msg # Level $2- does not exist or there is a syntax error. }
+n189=}
+n190=on *:text:!life*:#:{ msg # $life }
+n191=on *:text:!links*:#:{ msg # $links }
+n192=on *:text:!love*:#:{ msg # $love }
+n193=on *:text:!mine*:#:{ msg # $mining }
+n194=on *:text:!mining*:#:{ msg # $mining }
+n195=on *:text:!mikkitime*:#:{ msg # It is currently $asctime($calc($gmt + 3600 * 8),h:nn tt) on $asctime($calc($gmt + 3600 * 8),mmmm d) in Western Australia (GMT+8). }
+n196=on *:text:!mikki*:#:{ msg # Mikki is awesome~ }
+n197=on *:text:!mods*:#:{
+n198=  var %t = 0
+n199=  while (%t <= $nick(#,0,o)) {
+n200=    var %tmod = $iif(%tmod,%tmod $capital($nick(#,%t,o)),$capital($nick(#,%t,o)))
+n201=    inc %t
+n202=  }
+n203=  msg # Mods Online: $iif(%tmod,%tmod,None)
+n204=}
+n205=on *:text:!music*:#:{ msg # $music }
+n206=on *:text:!nightbot*:#:{ msg # !noob Nightbot }
+n207=on *:text:!noob*:#:{
+n208=  if ($2) {
+n209=    if ($count($remove($2-,+,-,_), harmonbot) != 0) { msg # I am not a noob. }
+n210=    elseif ($count($remove($2-,+,-,_), harmon758) != 0 || $count($remove($2-,+,-,_), harmon) != 0 || $count($remove($2-,+,-,_), my creator) != 0 || $count($remove($2-,+,-,_), my owner) != 0 || $count($remove($2-,+,-,_), who created me) != 0 || $count($remove($2-,+,-,_), who made me) != 0 || $count($remove($2-,+,-,_), 758) != 0 || $count($remove($2-,+,-,_), nomrah) != 0) { msg # Harmon is not a noob. }
+n211=    elseif ($count($remove($2-,+,-,_), mikkiscape) != 0 || $count($remove($2-,+,-,_), mikki) != 0 || $count($remove($2-,+,-,_), mikhala) != 0 || $count($remove($2-,+,-,_), this streamer) != 0 || $count($remove($2-,+,-,_), this broadcaster) != 0) { msg # Mikki is not a noob. How dare you. }
+n212=    elseif ($2 == i) { msg # $capital($nick) $+ , you are a noob. }
+n213=    elseif ($count($2-, Ϻ) != 0 || $count($2-, ᴹ) != 0 || $count($2-, ᴵ) != 0 || $count($2-, ᴷ) != 0 || $count($2-, Μ) != 0 || $count($2-, Ι) != 0 || $count($2-, Κ) != 0 $&
+n214=      || $count($2-, Η) != 0 || $count($2-, ⁪) != 0) { msg # $capital($nick) $+ , no special characters, you noob. Reported. }
+n215=    elseif ($nick == sathonscape) { msg # Sathonscape is a noob. }
+n216=    else { msg # $capital($2-) is a noob. }
+n217=  }
+n218=  else { msg # $capital($nick) $+ , you are a noob. }
+n219=}
+n220=on *:text:!pi*:#:{ 
+n221=  if ($nick isop #) { msg # 3.14159265358979323846264338327 9502884197169399375105820974944 5923078164062862089986280348253 4211706798214808651328230664709 3844609550582231725359408128481 1174502841027019385211055596446 2294895493038196442881097566593 3446128475648233786783165271201 9091456485669234603486104543266 4821339360726024914127372458700 6606315588174881520920962829254 0917153643678925903600113305305 4882046652138414695194151160943 3057270365759591953092186117381 9326117931051185480744623799627 4956735188575272489122793818301 1949129833673362440656643086021 3949463952247371907021798609437 }
+n222=  else { msg # 3.14 }
+n223=}
+n224=on *:text:!poke*:#:{
+n225=  if ($2 == random) { msg # $capital($nick) pokes $randomviewer $+ ! }
+n226=  if ($2) { msg # $capital($nick) pokes $capital($2-) $+ ! }
+n227=  else { msg # $capital($nick) pokes no one $+ . o_O }
+n228=}
+n229=on *:text:!pouch*:#:{ msg # $repair }
+n230=on *:text:!pray*:#:{ msg # $prayer }
+n231=on *:text:!puppy*:#:{ msg # RalpherZ }
+n232=on *:text:!randomviewer*:#:{ msg # $randomviewer }
+n233=on *:text:!rc*:#:{ msg # $rc }
+n234=on *:text:!remindcache*:#:{
+n235=  var %timeleft = $timeleft(0, 10800)
+n236=  if ($2 isnum) {
+n237=    var %offset = $calc($2 * 60), %msgtime = $calc(%timeleft - %offset)
+n238=    msg # $capital($nick) $+ , I'll remind you $my_duration(%offset) before Guthixian Cache.
+n239=    if (%msgtime isnum 0-) .timer 1 %msgtime msg # $capital($nick) $+ , Guthixian Cache is in $my_duration(%offset)!
+n240=  }
+n241=  else {
+n242=    var %offset = 300, %msgtime = $calc(%timeleft - %offset)
+n243=    msg # $capital($nick) $+ , I'll remind you 5 minutes before Guthixian Cache.
+n244=    if (%msgtime isnum 0-) .timer 1 %msgtime msg # $capital($nick) $+ , Guthixian Cache is in 5 minutes!
+n245=  }
+n246=}
+n247=on *:text:!remindwarbands*:#:{
+n248=  var %timeleft = $timeleft(0, 25200)
+n249=  if ($2 isnum) {
+n250=    var %offset = $calc($2 * 60), %msgtime = $calc(%timeleft - %offset)
+n251=    msg # $capital($nick) $+ , I'll remind you $my_duration(%offset) before Warbands.
+n252=    if (%msgtime isnum 0-) .timer 1 %msgtime msg # $capital($nick) $+ , Warbands is in $my_duration(%offset)!
+n253=  }
+n254=  else {
+n255=    var %offset = 300, %msgtime = $calc(%timeleft - %offset)
+n256=    msg # $capital($nick) $+ , I'll remind you 5 minutes before Warbands.
+n257=    if (%msgtime isnum 0-) .timer 1 %msgtime msg # $capital($nick) $+ , Warbands is in 5 minutes!
+n258=  }
+n259=}
+n260=on *:text:!repair*:#: { msg # $repair }
+n261=on *:text:!rng*:#: {
+n262=  if ($2 isnum) { msg # $rand(1,$2) }
+n263=  else { msg # $rand(1,10) }
+n264=}
+n265=on *:text:!rotation*:#:{ msg # Meilyr -> Hefin -> (Bank) Crwys (Bank) -> Cadarn -> Amlodd -> Trahaearn (Bank) --- VOS @ Iorwerth or Ithell - Do instead of Cadarn }
+n266=on *:text:!rswiki*:#:{ msg # $rswiki($2-) }
+n267=on *:text:!rswiki07*:#:{ msg # $rswiki07($2-) }
+n268=on *:text:!runecrafting*:#:{ msg # $rc }
+n269=on *:text:!runetracker*:#:{ msg # $runetracker }
+n270=on *:text:!slay*:#:{ msg # $slayer }
+n271=on *:text:!spotify*:#:{ msg # $music }
+n272=on *:text:!stats*:#:{ msg # $stats }
+n273=on *:text:!subscribe*:#:{ msg # $suscribe }
+n274=on *:text:!thief*:#:{ msg # $thieving }
+n275=on *:text:!thieving*:#:{ msg # $thieving }
+n276=on *:text:!tick*:#:{
+n277=  inc %ticks
+n278=  msg # Mikki has wasted %ticks ticks. http://i.imgur.com/bSCnFb1.png
+n279=}
+n280=on *:text:!tns*:#:{ msg # #TeamNoSleep }
+n281=on *:text:!totalxp*:#:{ msg # $totalxp }
+n282=on *:text:!warbands*:#:{
+n283=  var %timeleft = $timeleft(0, 25200)
+n284=  if (%timeleft isnum 0-) msg # $my_duration(%timeleft) until Warbands.
+n285=}
+n286=on *:text:!wiki*:#: { msg # $wiki($2-) }
+n287=on *:text:!xpat*:#:{
+n288=  var %2 = $remove($2,$chr(44))
+n289=  if (!$2) { msg # Please enter xp. }
+n290=  elseif (%2 isnum && %2 >= 0 && %2 < 200000001) {
+n291=    var %2 = $floor(%2)
+n292=    var %level = 1
+n293=    var %xp = 0
+n294=    while (%2 >= %xp) {
+n295=      %xp = $calc(%xp * 4)
+n296=      %xp = $calc(%xp + $floor($calc(%level + 300 * 2 ^ (%level / 7))))
+n297=      %xp = $calc(%xp / 4)
+n298=      inc %level
+n299=    }
+n300=    %level = %level - 1
+n301=    msg # $bytes(%2,bd) xp = level %level
+n302=  }
+n303=  elseif (%2 isnum) { msg # You can't have that much xp! }
+n304=  else { msg # Syntax error. }
+n305=}
+n306=on *:text:!xpbetween*:#:{
+n307=  if ($2 isnum && $2 >= 1 && $2 < 127 && $3 isnum && $3 >= 1 && $3 < 127 && $2 < $3) {
+n308=    var %2 = $floor($2)
+n309=    var %3 = $floor($3)
+n310=    var %level = 1
+n311=    var %xp = 0
+n312=    var %startxp = 0
+n313=    var %betweenxp = 0
+n314=    while (%level != %3) {
+n315=      %xp = $calc(%xp + $floor($calc(%level + 300 * 2 ^ (%level / 7))))
+n316=      inc %level
+n317=      if (%level == %2) { %startxp = $floor($calc(%xp / 4)) }
+n318=    }
+n319=    %betweenxp = $calc($floor($calc(%xp / 4)) - %startxp)
+n320=    msg # $bytes(%betweenxp,bd) xp between level %2 and level %3
+n321=  }
+n322=  else { msg # Syntax error. }
+n323=}
+n324=on *:text:!zezima*:#: { msg # $zezima }
+n325=
+n326=on *:text:*3 accs*:#:{
+n327=  if ($nick isop #) && ($2) {
+n328=    if ($istok(on,$3,32)) {
+n329=      set %3accs.status on 
+n330=      msg # 3 accs is on.
+n331=      return
+n332=    }
+n333=    if ($istok(off,$3,32)) {
+n334=      set %3accs.status off 
+n335=      msg # 3 accs is off.
+n336=      return
+n337=    }
+n338=  }
+n339=  if (%3accs.status == off) { return }
+n340=  else {
+n341=    inc %3accs
+n342=    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
+n343=  }
+n344=}
+n345=on *:text:*3 accounts*:#:{
+n346=  if ($nick isop #) && ($2) {
+n347=    if ($istok(on,$3,32)) {
+n348=      set %3accs.status on 
+n349=      msg # 3 accs is on.
+n350=      return
+n351=    }
+n352=    if ($istok(off,$3,32)) {
+n353=      set %3accs.status off 
+n354=      msg # 3 accs is off.
+n355=      return
+n356=    }
+n357=  }
+n358=  if (%3accs.status == off) { return }
+n359=  else {
+n360=    inc %3accs
+n361=    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
+n362=  }
+n363=}
+n364=on *:text:*three accounts*:#:{
+n365=  if ($nick isop #) && ($2) {
+n366=    if ($istok(on,$3,32)) {
+n367=      set %3accs.status on 
+n368=      msg # 3 accs is on.
+n369=      return
+n370=    }
+n371=    if ($istok(off,$3,32)) {
+n372=      set %3accs.status off 
+n373=      msg # 3 accs is off.
+n374=      return
+n375=    }
+n376=  }
+n377=  if (%3accs.status == off) { return }
+n378=  else {
+n379=    inc %3accs
+n380=    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
+n381=  }
+n382=}
+n383=on *:text:*three accs*:#:{
+n384=  if ($nick isop #) && ($2) {
+n385=    if ($istok(on,$3,32)) {
+n386=      set %3accs.status on 
+n387=      msg # 3 accs is on.
+n388=      return
+n389=    }
+n390=    if ($istok(off,$3,32)) {
+n391=      set %3accs.status off 
+n392=      msg # 3 accs is off.
+n393=      return
+n394=    }
+n395=  }
+n396=  if (%3accs.status == off) { return }
+n397=  else {
+n398=    inc %3accs
+n399=    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
+n400=  }
+n401=}
+n402=
+n403=on *:text:*happy birthday*:#:{ msg # Happy Birthday! }
+n404=on *:text:*happy bday*:#:{ msg # Happy Birthday! } 
+n405=
+n406=on *:text:!uptime*:#:{
+n407=  sockclose uptime
+n408=  sockopen uptime nightdev.com 80
 n409=}
-n410=
-n411=alias timeleft {
-n412=  var %start = $1, %interval = $2, %timeleft
-n413=  if ($ctime <= %start) || (!%interval) { %timeleft = $calc(%start - $ctime) }
-n414=  else { %timeleft = $calc(%interval - ($ctime - %start) % %interval) }
-n415=  return %timeleft
-n416=}
-n417=
-n418=alias my_duration {
-n419=  var %secs = $1, %my_duration
-n420=  if (%secs > 604800) {
-n421=    %my_duration = %my_duration $floor($calc(%secs / 604800)) weeks
-n422=    %secs = $calc(%secs - $floor($calc(%secs / 604800)) * 604800)
-n423=  }
-n424=  if (%secs > 86400) {
-n425=    %my_duration = %my_duration $floor($calc(%secs / 86400)) days
-n426=    %secs = $calc(%secs - $floor($calc(%secs / 86400)) * 86400)
-n427=  }
-n428=  if (%secs > 3600) {
-n429=    %my_duration = %my_duration $floor($calc(%secs / 3600)) hours
-n430=    %secs = $calc(%secs - $floor($calc(%secs / 3600)) * 3600)
-n431=  }
-n432=  if (%secs > 60) {
-n433=    %my_duration = %my_duration $floor($calc(%secs / 60)) minutes
-n434=    %secs = $calc(%secs - $floor($calc(%secs / 60)) * 60)
+n410=on *:sockopen:uptime:{
+n411=  if ($sockerr) { sockclose $sockname | halt }
+n412=  sockwrite -n $sockname GET /hosted/uptime.php?channel=mikkiscape HTTP/1.1
+n413=  sockwrite -n $sockname Host: nightdev.com $crlf $+ $crlf
+n414=}
+n415=on *:sockread:uptime:{
+n416=  if ($sockerr) { sockclose $sockname }
+n417=  var %streamodata
+n418=  sockread %streamodata
+n419=  if ($regex(%streamodata,(.*)minutes)) { msg #mikkiscape $regml(1) minutes }
+n420=  if ($regex(%streamodata,(.*)live.)) { msg #mikkiscape Mikki is offline. }
+n421=}
+n422=
+n423=alias timeleft {
+n424=  var %start = $1, %interval = $2, %timeleft
+n425=  if ($ctime <= %start) || (!%interval) { %timeleft = $calc(%start - $ctime) }
+n426=  else { %timeleft = $calc(%interval - ($ctime - %start) % %interval) }
+n427=  return %timeleft
+n428=}
+n429=
+n430=alias my_duration {
+n431=  var %secs = $1, %my_duration
+n432=  if (%secs > 604800) {
+n433=    %my_duration = %my_duration $floor($calc(%secs / 604800)) weeks
+n434=    %secs = $calc(%secs - $floor($calc(%secs / 604800)) * 604800)
 n435=  }
-n436=  if (%secs != 0) {
-n437=    %my_duration = %my_duration %secs seconds
-n438=  }
-n439=  return %my_duration
-n440=}
-n441=
-n442=; alias safe return $decode( $encode($1-,m),m )
-n443=
-n444=alias capital return $upper($left($1,1)) $+ $mid($1,2-)
-n445=alias rswiki return runescape.wikia.com/wiki/ $+ $replace($1-,$chr(32),$chr(95))
-n446=alias rswiki07 return 2007.runescape.wikia.com/wiki/ $+ $replace($1-,$chr(32),$chr(95))
-n447=alias wiki return wikipedia.org/wiki/ $+ $replace($1-,$chr(32),$chr(95))
-n448=
-n449=alias cheese return http://en.wikipedia.org/wiki/Cheese
-n450=alias cml return http://crystalmathlabs.com/tracker/track.php?player=aru
-n451=alias construction return Main: 19m || OSRS: 75/99 || Ironman: 46/99
-n452=alias clan return || RS3 Clan || http://services.runescape.com/m=clan-home/clan/Gum || OSRS Clan || http://services.runescape.com/m=forum/forums.ws?320,321,920,65349188
-n453=alias emotes return http://puu.sh/b1hyR.jpg
-n454=alias fishing return Main: 20m || OSRS: 99/99 || Ironman: 83/99
-n455=alias fletching return Main: 44m || OSRS: 68/99 || Ironman: 77/99
-n456=alias guthixiancache return runescape.wikia.com/wiki/Guthixian_Cache
-n457=alias illuminati return http://en.wikipedia.org/wiki/Illuminati
-n458=alias links return Twitter: https://twitter.com/mikkiscape YouTube: https://www.youtube.com/user/mikscape
-n459=alias ironman return runescape.wikia.com/wiki/Ironman_Mode
-n460=alias life return http://en.wikipedia.org/wiki/Life
-n461=alias love return http://en.wikipedia.org/wiki/Love https://www.youtube.com/watch?v=xhrBDcQq2DM
-n462=alias mining return Main: 119m || OSRS: 99/99 || Ironman: 61/99
-n463=alias music return http://open.spotify.com/user/mikkirs/playlist/5OBCdMNiGiTRGL0cqWL9CT
-n464=alias prayer return Main: 37m || OSRS: 99/99 || Ironman: 51/99
-n465=alias randomviewer return $capital($nick(#,$rand(1,$nick(#,0))))
-n466=alias rc return Main: 33m || OSRS: 99/99 || Ironman: 91/99
-n467=alias repair return REPAIR POUCH! REPAIR POUCH! REPAIR POUCH! REPAIR POUCH!
-n468=alias runetracker return || Main || http://runetracker.org/track-mikki || Ironman || http://runetracker.org/track-fe+mikki
-n469=alias slayer return Main: 200m || OSRS: 62/99 || Ironman: 61/99
-n470=alias stats return || Main || http://www.indecentcode.com/hs/index.php?id=mikki --- || OSRS || http://www.indecentcode.com/oldschool/index.php?id=aru || Ironman || http://indecentcode.com/hs/index.php?id=Fe+Mikki
-n471=alias thieving return Main: 143m || OSRS: 99/99 || Ironman: 70/99
-n472=alias totalxp return Main: 2.48b || OSRS: 164m || Ironman: 40m
-n473=alias suscribe return https://secure.twitch.tv/products/mikkiscape/ticket
-n474=alias zezima return http://rsplayers.wikia.com/wiki/Zezima
+n436=  if (%secs > 86400) {
+n437=    %my_duration = %my_duration $floor($calc(%secs / 86400)) days
+n438=    %secs = $calc(%secs - $floor($calc(%secs / 86400)) * 86400)
+n439=  }
+n440=  if (%secs > 3600) {
+n441=    %my_duration = %my_duration $floor($calc(%secs / 3600)) hours
+n442=    %secs = $calc(%secs - $floor($calc(%secs / 3600)) * 3600)
+n443=  }
+n444=  if (%secs > 60) {
+n445=    %my_duration = %my_duration $floor($calc(%secs / 60)) minutes
+n446=    %secs = $calc(%secs - $floor($calc(%secs / 60)) * 60)
+n447=  }
+n448=  if (%secs != 0) {
+n449=    %my_duration = %my_duration %secs seconds
+n450=  }
+n451=  return %my_duration
+n452=}
+n453=
+n454=; alias safe return $decode( $encode($1-,m),m )
+n455=
+n456=alias capital return $upper($left($1,1)) $+ $mid($1,2-)
+n457=alias rswiki return runescape.wikia.com/wiki/ $+ $replace($1-,$chr(32),$chr(95))
+n458=alias rswiki07 return 2007.runescape.wikia.com/wiki/ $+ $replace($1-,$chr(32),$chr(95))
+n459=alias wiki return wikipedia.org/wiki/ $+ $replace($1-,$chr(32),$chr(95))
+n460=
+n461=alias cheese return http://en.wikipedia.org/wiki/Cheese
+n462=alias cml return http://crystalmathlabs.com/tracker/track.php?player=aru
+n463=alias construction return Main: 19m || OSRS: 75/99 || Ironman: 46/99
+n464=alias clan return || RS3 Clan || http://services.runescape.com/m=clan-home/clan/Gum || OSRS Clan || http://services.runescape.com/m=forum/forums.ws?320,321,920,65349188
+n465=alias emotes return http://puu.sh/b1hyR.jpg
+n466=alias fishing return Main: 20m || OSRS: 99/99 || Ironman: 83/99
+n467=alias fletching return Main: 44m || OSRS: 68/99 || Ironman: 77/99
+n468=alias guthixiancache return runescape.wikia.com/wiki/Guthixian_Cache
+n469=alias illuminati return http://en.wikipedia.org/wiki/Illuminati
+n470=alias links return Twitter: https://twitter.com/mikkiscape YouTube: https://www.youtube.com/user/mikscape
+n471=alias ironman return runescape.wikia.com/wiki/Ironman_Mode
+n472=alias life return http://en.wikipedia.org/wiki/Life
+n473=alias love return http://en.wikipedia.org/wiki/Love https://www.youtube.com/watch?v=xhrBDcQq2DM
+n474=alias mining return Main: 119m || OSRS: 99/99 || Ironman: 61/99
+n475=alias music return http://open.spotify.com/user/mikkirs/playlist/5OBCdMNiGiTRGL0cqWL9CT
+n476=alias prayer return Main: 37m || OSRS: 99/99 || Ironman: 51/99
+n477=alias randomviewer return $capital($nick(#,$rand(1,$nick(#,0))))
+n478=alias rc return Main: 33m || OSRS: 99/99 || Ironman: 91/99
+n479=alias repair return REPAIR POUCH! REPAIR POUCH! REPAIR POUCH! REPAIR POUCH!
+n480=alias runetracker return || Main || http://runetracker.org/track-mikki || Ironman || http://runetracker.org/track-fe+mikki
+n481=alias slayer return Main: 200m || OSRS: 62/99 || Ironman: 61/99
+n482=alias stats return || Main || http://www.indecentcode.com/hs/index.php?id=mikki --- || OSRS || http://www.indecentcode.com/oldschool/index.php?id=aru || Ironman || http://indecentcode.com/hs/index.php?id=Fe+Mikki
+n483=alias thieving return Main: 143m || OSRS: 99/99 || Ironman: 70/99
+n484=alias totalxp return Main: 2.48b || OSRS: 164m || Ironman: 40m
+n485=alias suscribe return https://secure.twitch.tv/products/mikkiscape/ticket
+n486=alias zezima return http://rsplayers.wikia.com/wiki/Zezima

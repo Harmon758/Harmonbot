@@ -1,6 +1,10 @@
 ; ***REMOVED***
 on *:text:!rps*:#: {
-  if ($nick isop #) && ($2) {
+  if (!$2) {
+    msg # Please specify rock, paper, or scissors.
+    return
+  }
+  if ($nick isop #) {
     if ($istok(on,$2,32)) {
       set %rps.status on 
       msg # RPS is on.
