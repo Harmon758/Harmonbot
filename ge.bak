@@ -10,12 +10,13 @@ on *:text:!ge*:#:{
     msg # Please specify an item.
     return
   }
-  t %message msg $chan
-  set %ge_item  se$replace($2-,$chr(32),$chr(43))
+  set %message msg $chan
+  set %ge_item $replace($2-,$chr(32),$chr(43))
   set %ge_item2 $capital($lower($2-))
   set %ge_url /index.php?search= $+ %ge_item
-  sockopen ge itemdb.biz 80
-  timer 1 1 ge
+  set %item_id 0
+  sockopen ge www.itemdb.biz 80
+  timer 1 2 ge
 }
 
 alias ge {
@@ -24,9 +25,9 @@ alias ge {
     var %price = $json(%url,item,current,price)
     var %name = $json(%url,item,name)
     if (%name) { %message Price of %name $+ : %price gp }
-    else { %message Item $2- not found. }
+    else { %message Item %ge_item2 not found. Blame itemdb.biz. }
   }
-  else { %message Item $2- not found. }
+  else { %message Item %ge_item2 not found. Blame itemdb.biz. }
   /*
   else {
     var %category = 0
@@ -39,7 +40,7 @@ alias ge {
       var %name = $json(%url,items,0,name)
       %message Price of %name $+ : %price gp
     }
-    else { %message Item $2- not found. }
+    else { %message Item %ge_item2 not found. }
   }
   */
   return
@@ -47,7 +48,7 @@ alias ge {
 
 on *:SOCKOPEN:ge: {
   sockwrite -nt $sockname GET %ge_url HTTP/1.1
-  sockwrite -nt $sockname Host: itemdb.biz
+  sockwrite -nt $sockname Host: www.itemdb.biz
   sockwrite $sockname $crlf
 }
 
@@ -67,6 +68,7 @@ on *:SOCKREAD:ge: {
       else {
         var %regex_return = $regex(%sockreader,<center><b>(.*?)</b></center>)
         set %item_id $regml(1)
+        sockclose ge
       }
     }
     elseif (*Your search returned no results.* iswm %sockreader) {
@@ -84,8 +86,8 @@ on *:text:!zybez*:#:{
   var %url = http://forums.zybez.net/runescape-2007-prices/api/item/ $+ $replace($2-,$chr(32),$chr(43))
   var %price = $left($json(%url,average),-3)
   var %name = $json(%url,name)
-  if (%name) { %message Average price of %name $+ : %price gp }
-  else { %message Item $2- not found. }
+  if (%name) { msg # Average price of %name $+ : %price gp }
+  else { msg # Item $2- not found. }
 }
 
 /*

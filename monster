@@ -15,6 +15,6 @@ on *:text:!monster*:#:{
   if ($json(%url,aggressive) == $true) { var %monster_aggressive = Yes }
   else { var %monster_aggressive = No }
   if (%monster_id) { msg # $json(%url,name) $+ , $json(%url,description) $+ , Level: $json(%url,level) $+ , Weakness: $json(%url,weakness) $&
-    $+ , XP/Kill: $json(%url,xp) $+ , Lifepoints: $json(%url,lifepoints) $+ , Members: %monster_members $+ , Agressive: %monster_aggressive }
+    $+ , XP/Kill: $json(%url,xp) $+ , Lifepoints: $json(%url,lifepoints) $+ , Members: %monster_members $+ , Aggressive: %monster_aggressive }
   else { msg # Monster $2- not found. }
 }

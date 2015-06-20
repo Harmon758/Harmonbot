@@ -10,9 +10,7 @@
 ; add user custom, minigames, adjust mikki skill commands
 ;
 
-on *:text:!hiscores*:#:{ $hiscores($1, $2, $3, $4, $5) }
 on *:text:!hiscore*:#:{ $hiscores($1, $2, $3, $4, $5) }
-on *:text:!highscores*:#:{ $hiscores($1, $2, $3, $4, $5) }
 on *:text:!highscore*:#:{ $hiscores($1, $2, $3, $4, $5) }
 
 alias hiscores {
@@ -128,7 +126,7 @@ alias hiscores {
     set %hiscores_skill Divination
   }
   else {
-    msg # That is not a valid skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> 
+    %message That is not a valid username/skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> 
     return
   }
   if ($4 == rs3) {
@@ -183,7 +181,7 @@ on *:SOCKREAD:hiscores: {
       sockclose hiscores
     }
     if (%hiscores_counter == %hiscores_skill_number) {
-      var %hiscores_display = $bytes($gettok(%sockreader, %hiscores_option, 44),bd)
+      set %hiscores_display $bytes($gettok(%sockreader, %hiscores_option, 44),bd)
       if (%hiscores_skill == Total) {
         if (%hiscores_option == 2) { %message $capital(%hiscores_username) $+ 's total level is %hiscores_display $+ . }
         else if (%hiscores_option == 1) { %message $capital(%hiscores_username) is rank %hiscores_display overall $+ . }

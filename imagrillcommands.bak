@@ -1,0 +1,99 @@
+; ***REMOVED***
+on *:text:!imagrillcommands*:#:{ msg # !arts !artsdictionary !artstime !cats !death !edate !fail !fortune !googer !humage !pets !sneeze !troll }
+
+on *:text:!artsdictionary*:#imagrill: { msg # Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. }
+on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 8 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 8 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 8 + $daylight),ddd) $+ .) in Southern California (UTC- $+ $calc(8 - $daylight / 3600) $+ ). }
+on *:text:!arts*:#imagrill:{ msg # Arts is awesome~ }
+on *:text:!cats*:#imagrill:{ msg # Motorboat, Bandit, Squeak }
+on *:text:!fortune*:#imagrill:{ msg # ☺ The time is right to make new friends. ☺ }
+on *:text:!googer*:#imagrill: { msg # google.com/search?q= $+ $replace($2-,$chr(32),$chr(43)) "RAISE YOUR GOOGERS" -Arts }
+on *:text:!humage*:#imagrill:{ msg # We are only humage. -Arts }
+on *:text:!pets*:#imagrill:{ msg # Eddy + Legio Secundulus }
+
+on *:text:!fail*:#:{
+  inc %fail
+  msg # Fail $chr(35) $+ %fail $+ . http://imgur.com/FWv07A9
+}
+
+on *:text:!caught*:#imagrill:{
+  if ($2 == random) { msg # Arts has caught a wild $randomviewer $+ ! }
+  elseif ($2) { msg # Arts has caught a wild $capital($2-) $+ ! }
+  else { msg # Arts has caught a wild $capital($nick) $+ ! }
+}
+
+on *:text:!sneeze*:#imagrill:{
+  if (!$2 || $2 > 10 || $2 < 2 ) { msg # Bless you! }
+  else {
+    var %counter = $2
+    var %message = Bless you!
+    while (%counter > 1) {
+      %message = %message Bless you!
+      %counter = %counter - 1
+    }
+    msg # %message
+  }
+}
+
+on *:text:!edate*:#:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$2,32)) {
+      set %!edate.status on 
+      msg # !edate is on.
+      return
+    }
+    if ($istok(off,$2,32)) {
+      set %!edate.status off 
+      msg # !edate is off.
+      return
+    }
+  }
+  if (%!edate.status == off) { return }
+  else {
+    inc %edate
+    msg # Arts has %edate edates.
+  }
+}
+
+on *:text:!troll*:#imagrill:{
+  if ($nick isop #) && ($2 == inc) {
+    if ($3 isnum) { inc %troll $3 }
+    else { inc %troll }
+    msg # There have been %troll trolls.
+  }
+  else { msg # There have been %troll trolls. }
+}
+
+on *:text:!death*:#imagrill:{
+  if ($nick isop #) && ($2 == inc) {
+    inc %death
+    msg # Arts has died %death times.
+  }
+  else { msg # Arts has died %death times. }
+}
+
+on *:text:*yawn*:#imagrill:{ msg # Yawwwwwn }
+
+on *:text:!24h*:#imagrill:{ msg # $my_duration($timeleft($ctime(June 20 2015 12:00:00))) until 24 hour stream ends! }
+; $my_duration($timeleft($ctime(June 19 2015 12:00:00))) until 24 hour stream!
+
+on *:text:do *u play os*:#imagrill:{ msg # $osrs }
+on *:text:do *u play old school*:#imagrill:{ msg # $osrs }
+on *:text:*tried os*?*:#imagrill:{ msg # $osrs }
+on *:text:*tried old school*?*:#imagrill:{ msg # $osrs }
+on *:text:*stats?:#imagrill:{ msg # $imagrill.stats }
+on *:text:what level is your*:#imagrill:{ msg # $imagrill.stats }
+on *:text:what*s your*level*:#imagrill:{ msg # $imagrill.stats }
+on *:text:what*s your*stats*:#imagrill:{ msg # $imagrill.stats }
+on *:text:*u maxed*?*:#imagrill:{ msg # $imagrill.stats }
+on *:text:what*s your*xp*?:#imagrill:{ msg # $imagrill.stats }
+on *:text:*show stats*:#imagrill:{ msg # $imagrill.stats }
+on *:text:*any 99*s*?*:#imagrill:{ msg # $imagrill.stats }
+on *:text:*you got comp*?*:#imagrill:{ msg # $imagrill.stats }
+on *:text:*u comped*?*:#imagrill:{ msg # $imagrill.stats }
+on *:text:*total level*?*:#imagrill:{ msg # $imagrill.stats }
+on *:text:*total xp*?*:#:{ msg # $imagrill.stats }
+on *:text:*you 2595*?*:#imagrill:{ msg # $imagrill.stats }
+on *:text:*any 120*?*:#imagrill:{ msg # $imagrill.stats }
+
+alias osrs return She doesn't play Old School RuneScape at the moment. She plans to play in the future.
+alias imagrill.stats return http://runetrack.com/profile.php?user=arts

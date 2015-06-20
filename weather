@@ -54,9 +54,13 @@ on *:CONNECT: {
   if ($hget(wu_reg) == $null) { hmake wu_reg 100 }
   if ($isfile(wu_reg.dat)) { hload wu_reg wu_reg.dat }
 }
-ON *:DISCONNECT: { if ($hget(wu_reg)) { hsave -o wu_reg wu_reg.dat } }
+on *:DISCONNECT: { if ($hget(wu_reg)) { hsave -o wu_reg wu_reg.dat } }
 on $*:INPUT:#: { if ($regex($1,/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si)) wunderground $1- }
-on $*:text:/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si:#: { wunderground $1- }
+on $*:text:/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si:#: {
+  if ($1 == !weather || $1 == !forecast || $1 == !forecast? || $1 == !alert || $1 == !alerts || $1 == !alertinfo || $1 == !alerts info || $1 == !time || $1 == !current || $1 == !almanac) {
+    wunderground $1-
+  }
+}
 
 ;-----------------------------------------------------------------------------
 ; Preperation
@@ -89,12 +93,12 @@ alias wunderground {
   if ($2 != $null) {
     if (%wu_2 == register) && (%wu_3 != $null) {
       hadd -m wu_reg %wu_nick %wu_3_long
-      .msg %wu_chan %wu_nick , you are now linked to %wu_3_long
+      .msg %wu_chan %wu_nick $+ , you are now linked to %wu_3_long
       set %wu_location $hget(wu_reg,%wu_nick)
     }
     if (%wu_2 == remove) {
       hdel wu_reg %wu_nick
-      .msg %wu_chan %wu_nick , your location association has been removed. 
+      .msg %wu_chan %wu_nick $+ , your location association has been removed. 
       wu_cleanup
       halt
     }
@@ -109,13 +113,13 @@ alias wunderground {
     if (%wu_2 == on) || (%wu_2 == off) && (%wu_nick isop %wu_chan) {
       if (%wu_2 == on) {
         set $+(%,wunderground_,%wu_chan) ON
-        .msg %wu_chan %wu_nick , !weather script is now ON
+        .msg %wu_chan %wu_nick $+ , !weather script is now ON
         wu_cleanup
         halt   
       }
       if (%wu_2 == off) {
         set $+(%,wunderground_,%wu_chan) OFF
-        .msg %wu_chan %wu_nick , !weather script is now OFF
+        .msg %wu_chan %wu_nick $+ , !weather script is now OFF
         wu_cleanup
         halt     
       }
@@ -313,7 +317,7 @@ alias wu_sockclose {
   ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
   ; Error? Was there an error?
   if (%wu_error == error) {
-    msg %wu_chan %wu_nick , Error: %wu_error_description
+    msg %wu_chan %wu_nick $+ , Error: %wu_error_description
     wu_cleanup 
     halt
   }
@@ -324,19 +328,19 @@ alias wu_sockclose {
       %options = %options $+($($+(%,wu_result_city,%wu_results_int),2),$chr(44)) $($+(%,wu_result_state,%wu_results_int),2) $($+(%,wu_result_country_name,%wu_results_int),2) %wu_space2
       inc %wu_results_int
     }
-    msg %wu_chan %wu_nick , %wu_result_count found. Please be more specific. Options: %options
+    msg %wu_chan %wu_nick $+ , %wu_result_count found. Please be more specific. Options: %options
     wu_cleanup
     halt
   }
   elseif (%wu_results == ON) {
-    msg %wu_chan %wu_nick , %wu_result_count Found. Please be more specific
+    msg %wu_chan %wu_nick $+ , %wu_result_count Found. Please be more specific
     wu_cleanup
     halt
   }
   ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
-  if (%wu_command == !weather) { msg %wu_chan %wu_nick , %wu_full $+ : %wu_weather and $+(%wu_temp_f,$chr(176),F,$chr(47),%wu_temp_c,$chr(176),C) }  
+  if (%wu_command == !weather) { msg %wu_chan %wu_nick $+ , %wu_full $+ : %wu_weather and $+(%wu_temp_f,$chr(176),F,$chr(47),%wu_temp_c,$chr(176),C) }  
   if (%wu_command == !current) { 
-    msg %wu_chan %wu_nick , %wu_full $+ : %wu_weather and $+(%wu_temp_f,$chr(176),F,$chr(47),%wu_temp_c,$chr(176),C) $&
+    msg %wu_chan %wu_nick $+ , %wu_full $+ : %wu_weather and $+(%wu_temp_f,$chr(176),F,$chr(47),%wu_temp_c,$chr(176),C) $&
       $+ %wu_space2 Heat Index: $+(%wu_heat_index_f,$chr(176),F,$chr(47),%wu_heat_index_c,$chr(176),C) $&
       $+ %wu_space2 Winds %wu_wind_string $&
       $+ %wu_space2 Windchill: $+(%wu_windchill_f,$chr(176),F,$chr(47),%wu_windchill_c,$chr(176),C) $&
@@ -347,12 +351,12 @@ alias wu_sockclose {
   }
   if (%wu_command == !time) {
     ; Military time format (Straight from the code):
-    msg %wu_chan %wu_nick , %wu_full $+ : %wu_local_time_rfc822
+    msg %wu_chan %wu_nick $+ , %wu_full $+ : %wu_local_time_rfc822
     ; Standard time format (modified):
     ; Coming soon, maybe.
   }
   if (%wu_command == !forecast) {
-    msg %wu_chan %wu_nick , %wu_location $+ : %wu_df_title_0 $+ : %wu_df_fcttext_0 %wu_space2 %wu_df_title_1 $+ : %wu_df_fcttext_1 $&
+    msg %wu_chan %wu_nick $+ , %wu_location $+ : %wu_df_title_0 $+ : %wu_df_fcttext_0 %wu_space2 %wu_df_title_1 $+ : %wu_df_fcttext_1 $&
       $+ %wu_space2 %wu_df_title_2 $+ : %wu_df_fcttext_2 %wu_space2 %wu_df_title_3 $+ : %wu_df_fcttext_3 
   }
   if (%wu_command == !forecast5) {
@@ -370,7 +374,7 @@ alias wu_sockclose {
       %forecast = %forecast %wu_sf_dow $+ : %wu_sf_con $+ . High: $+(%wu_sf_fh,$chr(40),%wu_sf_ch,$chr(41)) , Low: $+(%wu_sf_fl,$chr(40),%wu_sf_cl,$chr(41)) %wu_space2
       inc %wu_f_i
     }
-    msg %wu_chan %wu_nick , %wu_location : %forecast
+    msg %wu_chan %wu_nick $+ , %wu_location : %forecast
   }
   if (%wu_command == !alerts) {
     if (%wu_a_count == 0) msg %wu_chan %wu_nick , %wu_location $+ : No Alerts
@@ -381,11 +385,11 @@ alias wu_sockclose {
         %alerts = %alerts %wu_a_start $($+(%,wu_a,%i,_description),2) till $($+(%,wu_a,%i,_expires),2) %wu_a_end %wu_space2
         inc %i
       }
-      msg %wu_chan %wu_nick , %wu_location $+ : %wu_a_count Alerts: %alerts Use $chr(2) !alertinfo $chr(2) [zipcode|city,state|city,country|airport] for alert details
+      msg %wu_chan %wu_nick $+ , %wu_location $+ : %wu_a_count Alerts: %alerts Use $chr(2) !alertinfo $chr(2) [zipcode|city,state|city,country|airport] for alert details
     }
   }
   if (%wu_command == !alertinfo) {
-    if (%wu_a_count == 0) msg %wu_chan %wu_nick , %wu_location $+ : No Alerts
+    if (%wu_a_count == 0) msg %wu_chan %wu_nick $+ , %wu_location $+ : No Alerts
     if (%wu_a_count > 0) {
       var %alertinfo
       set %wu_alert_total_alerts 1
@@ -399,14 +403,14 @@ alias wu_sockclose {
         }
         inc %wu_alert_total_alerts
       }
-      msg %wu_chan %wu_nick , %wu_location $+ : %wu_a_count Alerts %wu_space2 %alertinfo
+      msg %wu_chan %wu_nick $+ , %wu_location $+ : %wu_a_count Alerts %wu_space2 %alertinfo
     }
   }
   if (%wu_command == !almanac) {
     if (%wu_almanac_error == NotFound) && (%wu_name == $null) msg %wu_chan Location Not Found. Try location near an airport.
     if (%wu_almanac_error == $null) && (%wu_name != $null) msg %wu_chan %wu_name Found. No data provided.
     if (%wu_almanac_error == $null) && (%wu_name == $null) {
-      msg %wu_chan %wu_nick , %wu_airport Airport: Normal High: $+(%wu_almanac_normal_high_F,$chr(47),%wu_almanac_normal_high_C) $&
+      msg %wu_chan %wu_nick $+ , %wu_airport Airport: Normal High: $+(%wu_almanac_normal_high_F,$chr(47),%wu_almanac_normal_high_C) $&
         $+ , Normal Low: $+(%wu_almanac_normal_low_F,$chr(47),%wu_almanac_normal_low_C) $&
         $+ %wu_space2 Record High: $+(%wu_almanac_record_high_F,$chr(47),%wu_almanac_record_high_C) in %wu_almanac_high_year $&
         $+ , Record Low: $+(%wu_almanac_record_low_F,$chr(47),%wu_almanac_record_low_C,) in %wu_almanac_low_year

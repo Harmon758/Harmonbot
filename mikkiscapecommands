@@ -1,0 +1,160 @@
+; ***REMOVED***
+on *:text:!mikkiscapecommands*:#:{ msg # !99rc !bday !caught !clan !cml !con !emotes !fish !fletch !glory !links !mine !mining !mikki !mikkitime !music !pi !pouch $&
+  !pray !rc !repair !rotation !runecrafting !slay !spotify !stats !subscribe !thief !thieving !tick !totalxp }
+
+on *:text:!skype*:#mikkiscape:{ msg # skype.xp }
+
+on *:text:*alt*:#mikkiscape:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$2,32)) {
+      set %alt.status on 
+      msg # alt is on.
+      return
+    }
+    if ($istok(off,$2,32)) {
+      set %alt.status off 
+      msg # alt is off.
+      return
+    }
+  }
+  if (%alt.status == off) { return }
+  else {
+    msg # Bad $capital($nick) $+ !
+  }
+}
+
+on *:text:!99rc*:#mikkiscape:{ msg # 99 RC Highlight: http://www.twitch.tv/mikkiscape/v/3734516 }
+on *:text:!bday*:#mikkiscape:{ msg # $my_duration($timeleft($ctime(December 20 2015 10:00:00))) until Mikki's birthday! }
+on *:text:!caught*:#mikkiscape:{
+  if ($2 == random) { msg # Mikki has caught a wild $randomviewer $+ ! }
+  elseif ($2) { msg # Mikki has caught a wild $capital($2-) $+ ! }
+  else { msg # Mikki has caught a wild $capital($nick) $+ ! }
+}
+on *:text:!clan*:#mikkiscape:{ msg # $clan }
+on *:text:!cml*:#mikkiscape:{ msg # $cml }
+on *:text:!con*:#mikkiscape:{ msg # $construction }
+on *:text:!emotes*:#mikkiscape:{ msg # $emotes }
+on *:text:!fish*:#mikkiscape:{ msg # $fishing }
+on *:text:!fletch*:#mikkiscape:{ msg # $fletching }
+on *:text:!glory*:#mikkiscape:{ msg # Don't kill yourself, Mikki. }
+on *:text:!links*:#mikkiscape:{ msg # $links }
+on *:text:!mine*:#mikkiscape:{ msg # $mining }
+on *:text:!mining*:#mikkiscape:{ msg # $mining }
+on *:text:!mikkitime*:#mikkiscape:{ msg # It is currently $asctime($calc($gmt + 3600 * 8),h:nn tt) on $asctime($calc($gmt + 3600 * 8),mmmm d) in Western Australia (GMT+8). }
+on *:text:!mikki*:#mikkiscape:{ msg # Mikki is awesome~ }
+on *:text:!music*:#mikkiscape:{ msg # $music }
+on *:text:!pi*:#mikkiscape:{ 
+  if ($nick isop #) { msg # 3.14159265358979323846264338327 9502884197169399375105820974944 5923078164062862089986280348253 4211706798214808651328230664709 3844609550582231725359408128481 1174502841027019385211055596446 2294895493038196442881097566593 3446128475648233786783165271201 9091456485669234603486104543266 4821339360726024914127372458700 6606315588174881520920962829254 0917153643678925903600113305305 4882046652138414695194151160943 3057270365759591953092186117381 9326117931051185480744623799627 4956735188575272489122793818301 1949129833673362440656643086021 3949463952247371907021798609437 }
+  else { msg # 3.14 }
+}
+on *:text:!pouch*:#mikkiscape:{ msg # $repair }
+on *:text:!pray*:#mikkiscape:{ msg # $prayer }
+on *:text:!rc*:#mikkiscape:{ msg # $rc }
+on *:text:!repair*:#mikkiscape: { msg # $repair }
+on *:text:!rotation*:#mikkiscape:{ msg # Meilyr -> Hefin -> (Bank) Crwys (Bank) -> Cadarn -> Amlodd -> Trahaearn (Bank) --- VOS @ Iorwerth or Ithell - Do instead of Cadarn }
+on *:text:!runecrafting*:#mikkiscape:{ msg # $rc }
+on *:text:!slay*:#mikkiscape:{ msg # $slayer }
+on *:text:!spotify*:#mikkiscape:{ msg # $music }
+on *:text:!stats*:#mikkiscape:{ msg # $stats }
+on *:text:!subscribe*:#mikkiscape:{ msg # $suscribe }
+on *:text:!thief*:#mikkiscape:{ msg # $thieving }
+on *:text:!thieving*:#mikkiscape:{ msg # $thieving }
+on *:text:!tick*:#mikkiscape:{
+  inc %ticks
+  msg # Mikki has wasted %ticks ticks. http://i.imgur.com/bSCnFb1.png
+}
+on *:text:!totalxp*:#mikkiscape:{ msg # $totalxp }
+
+on *:text:*3 accs*:#mikkiscape:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$3,32)) {
+      set %3accs.status on 
+      msg # 3 accs is on.
+      return
+    }
+    if ($istok(off,$3,32)) {
+      set %3accs.status off 
+      msg # 3 accs is off.
+      return
+    }
+  }
+  if (%3accs.status == off) { return }
+  else {
+    inc %3accs
+    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
+  }
+}
+on *:text:*3 accounts*:#mikkiscape:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$3,32)) {
+      set %3accs.status on 
+      msg # 3 accs is on.
+      return
+    }
+    if ($istok(off,$3,32)) {
+      set %3accs.status off 
+      msg # 3 accs is off.
+      return
+    }
+  }
+  if (%3accs.status == off) { return }
+  else {
+    inc %3accs
+    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
+  }
+}
+on *:text:*three accounts*:#mikkiscape:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$3,32)) {
+      set %3accs.status on 
+      msg # 3 accs is on.
+      return
+    }
+    if ($istok(off,$3,32)) {
+      set %3accs.status off 
+      msg # 3 accs is off.
+      return
+    }
+  }
+  if (%3accs.status == off) { return }
+  else {
+    inc %3accs
+    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
+  }
+}
+on *:text:*three accs*:#mikkiscape:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$3,32)) {
+      set %3accs.status on 
+      msg # 3 accs is on.
+      return
+    }
+    if ($istok(off,$3,32)) {
+      set %3accs.status off 
+      msg # 3 accs is off.
+      return
+    }
+  }
+  if (%3accs.status == off) { return }
+  else {
+    inc %3accs
+    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
+  }
+}
+
+alias clan return || RS3 Clan || http://services.runescape.com/m=clan-home/clan/Gum || OSRS Clan || http://services.runescape.com/m=forum/forums.ws?320,321,920,65349188
+alias cml return http://crystalmathlabs.com/tracker/track.php?player=aru
+alias emotes return http://puu.sh/b1hyR.jpg
+alias fishing return Main: 20m || OSRS: 99/99 || Ironman: 83/99
+alias fletching return Main: 44m || OSRS: 68/99 || Ironman: 77/99
+alias links return Twitter: https://twitter.com/mikkiscape YouTube: https://www.youtube.com/user/mikscape
+alias mining return Main: 119m || OSRS: 99/99 || Ironman: 61/99
+alias prayer return Main: 37m || OSRS: 99/99 || Ironman: 51/99
+alias rc return Main: 33m || OSRS: 99/99 || Ironman: 91/99
+alias repair return REPAIR POUCH! REPAIR POUCH! REPAIR POUCH! REPAIR POUCH!
+alias runetracker return || Main || http://runetracker.org/track-mikki || Ironman || http://runetracker.org/track-fe+mikki
+alias slayer return Main: 200m || OSRS: 62/99 || Ironman: 61/99
+alias stats return || Main || http://www.indecentcode.com/hs/index.php?id=mikki --- || OSRS || http://www.indecentcode.com/oldschool/index.php?id=aru || Ironman || http://indecentcode.com/hs/index.php?id=Fe+Mikki
+alias thieving return Main: 143m || OSRS: 99/99 || Ironman: 70/99
+alias totalxp return Main: 2.48b || OSRS: 164m || Ironman: 40m
+alias suscribe return https://secure.twitch.tv/products/mikkiscape/ticket
