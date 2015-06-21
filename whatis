@@ -10,7 +10,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !07rswiki) { msg # Use !07rswiki _ to look something up on 2007scape Wiki. }
   elseif ($2 == !120) { msg # Use !120 and I will tell you the exact amount of xp for lvl 120. }
   elseif ($2 == !122) { msg # Use !122 and I will tell you the exact amount of xp for lvl 122. }
-  elseif ($2 == !adventure) { msg # !adventure <command> is a Harmonbot game where you can attack other people. Current commands are register, remove, health, attack <username>, respawn, death. You can also /w harmonbot <command>. }
+  elseif ($2 == !adventure) { msg # !adventure <command> is a Harmonbot game where you can attack other people. Current commands are register, remove, health, attack <username>, respawn, death, users. You can also /w harmonbot <command>. }
   elseif ($2 == arts || $2 == imagrill || $2 == sarah) { msg # That's who you're watching! }
   elseif ($2 == australianified) { msg # A fanatic humage time traveler. }
   elseif ($2 == bandit) { msg # Bandit is one of Arts's cats. }

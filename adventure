@@ -1,17 +1,5 @@
 ; ***REMOVED***
-
-/*
-raw *:*: {
-  if $nick == tmi.twitch.tv {
-    if whisper isin $rawmsg {
-      tokenize 59 $rawmsg
-      var %displayname $remove($2, display-name=)
-      /msg jtv /w %displayname Whispering function in progress.
-    }
-  }
-}
-*/
-
+; --- Check for Whispers ---
 raw *:*: {
   if $nick == tmi.twitch.tv {
     if whisper isin $rawmsg {
@@ -20,95 +8,100 @@ raw *:*: {
       var %message $gettok($5, 3, 58)
       var %command $gettok(%message, 1, 32)
       var %option $gettok(%message, 2, 32)
+      set %adventure.source whisper
       /msg jtv /w %displayname $capital($adventure(%displayname, %command, %option))
     }
   }
 }
-
+; --- !adventure in Chat ---
 on *:text:!adventure*:#:{
   if ($nick isop #) && ($2) {
     if ($2 == on) {
-      set %!adventure.status. $+ $chan on 
+      set %!adventure.status. $+ $chan on
       msg # !adventure is on.
       return
     }
     if ($2 == off) {
-      set %!adventure.status. $+ $chan off 
+      set %!adventure.status. $+ $chan off
       msg # !adventure is off.
       return
     }
   }
   if (%!adventure.status. [ $+ [ $chan ] ] == off) { return }
-  else { msg # $capital($nick) $+ , $adventure($nick, $2, $3) }
-}
-
-alias adventure {
-  var %user = $1, %command = $2
-  if ($3) { var %option = $3 }
-  if (%command == register) && (%adventure. [ $+ [ %user ] ] == $null) {
-    set %adventure. $+ %user 1 100 0
-    var %message = you have registered for !adventure!
-  }
-  elseif (%command == register) && ($gettok(%adventure. [ $+ [ %user ] ], 1, 32) == 0) {
-    set %adventure. $+ %user 1 $right(%adventure. [ $+ [ %user ] ], -2)
-    var %message = $capital(%user) $+ , you have registered for !adventure!
-  }
-  elseif (%command != register) && (%adventure. [ $+ [ %user ] ] == $null) {
-    var %message = you need to !adventure register!
-  }
-  elseif (%command == remove) {
-    set %adventure. $+ %user 0 $right(%adventure. [ $+ [ %user ] ], -2)
-    var %message = you have been removed from !adventure.
-  }
-  elseif (%command == respawn) && ($gettok(%adventure. [ $+ [ %user ] ], 2, 32) > 0) {
-    var %message = you're not dead yet!
-  }
-  elseif (%command == respawn) && ($gettok(%adventure. [ $+ [ %user ] ], 2, 32) <= 0) {
-    set %adventure. $+ %user 1 100 $calc($right(%adventure. [ $+ [ %user ] ], 1) + 1)
-    var %message = you have been magically resurrected!
-  }
-  elseif ($gettok(%adventure. [ $+ [ %user ] ], 2, 32) <= 0) {
-    var %message = you are dead! You must !adventure respawn.
-  }
-  elseif (%command == health) {
-    var %message = your health is $gettok(%adventure. [ $+ [ %user ] ], 2, 32) $+ .
-  }
-  elseif (%command == attack) && (%adventure. [ $+ [ %option ] ] != $null) {
-    if ($gettok(%adventure. [ $+ [ %option ] ], 1, 32) == 0) {
-      var %message = that person doesn't play !adventure.
-      return
-    }
-    if (%option == harmonbot) {
-      set %adventure. [ $+ [ %user ] ] 1 0 $right(%adventure. [ $+ [ %user ] ], 1)
-      var %message = before you can attack, Harmonbot completely annihilates you. Oh dear, you are dead!
-      return
-    }
-    if ($gettok(%adventure. [ $+ [ %option ] ], 2, 32) <= 0) {
-      var %message = $capital(%option) is already dead!
-      return
-    }
-    var %damage = $rand(1,10)
-    set %adventure. [ $+ [ %option ] ] 1 $calc($gettok(%adventure. [ $+ [ %option ] ], 2, 32) - %damage) $right(%adventure. [ $+ [ %option ] ], 1)
-    if ($gettok(%adventure. [ $+ [ %option ] ], 2, 32) <= 0) {
-      var %message = you have done %damage damage to and killed $capital(%option) $+ ! Your health is $gettok(%adventure. [ $+ [ %user ] ], 2, 32) $+ .
-    }
-    else { var %message = you have done %damage damage to $capital(%option) $+ . $capital(%option) $+ 's health is now $gettok(%adventure. [ $+ [ %option ] ], 2, 32) $+ . Your health is $gettok(%adventure. [ $+ [ %user ] ], 2, 32) $+ .
-    }
-  }
-  elseif (%command == attack) && (%adventure. [ $+ [ %option ] ] == $null) {
-    var %message = that person doesn't play !adventure.
-  }
-  elseif (%command == death || %command == deaths) && (%adventure. [ $+ [ %option ] ] != $null) {
-    var %message = $capital(%option) has $gettok(%adventure. [ $+ [ %option ] ], 3, 32) deaths.
-  }
-  elseif (%command == death || %command == deaths) && %option && (%adventure. [ $+ [ %option ] ] == $null) {
-    var %message = that person doesn't play !adventure.
-  }
-  elseif (%command == death || %command == deaths) {
-    var %message = you have $gettok(%adventure. [ $+ [ %user ] ], 3, 32) deaths.
-  }
   else {
-    var %message = that's not a valid option.
+    set %adventure.source chat
+    msg # $capital($nick) $+ , $adventure($nick, $2, $3)
   }
-  return %message
+}
+; --- Main Adventure Processing ---
+alias adventure {
+  var %user = $1, %command = $2, %option = $3
+  var %user_variables = $eval(%adventure. [ $+ [ %user ] ] ,0)
+  var %user_playing = $eval($gettok( [ %user_variables ] , 1, 32),0)
+  var %user_health = $eval($gettok( [ %user_variables ] , 2, 32),0)
+  var %user_deaths = $eval($gettok( [ %user_variables ] , 3, 32),0)
+  var %option_variables = $eval(%adventure. [ $+ [ %option ] ],0)
+  var %option_playing = $eval($gettok( [ %option_variables ] , 1, 32),0)
+  var %option_health = $eval($gettok( [ %option_variables ] , 2, 32),0)
+  var %option_deaths = $eval($gettok( [ %option_variables ] , 3, 32),0)
+  if (%command == $null) { return !adventure <command> is a Harmonbot game where you can attack other people. Current commands are register, remove, health, attack <username>, respawn, death, users. You can also /w harmonbot <command>. }
+  ; elseif (%command == users) { return some currently registered users: harmon758, harmonbot, imagrill, australianified, pmfornudes, purringles, grim104720472, agrocto, dark_bomb, fujcake, kaetakara, mufiinzzrs, jakedasake, darkchidori, jingly_jess, jepapaiskaal, rsbatman, lilyhdd, hoornkoekje, lordrazrs, assassinscorpion, hobgobmike, aodjosk, liquiddata }
+  elseif (%command == users) {
+    var %users = %adventure.users
+    var %num_users = $numtok(%users,32)
+    while ($numtok(%users_list,32) < 10) {
+      var %rand = $rand(1,%num_users)
+      var %users_list = %users_list $gettok(%users,%rand,32)
+      var %users = $deltok(%users,%rand,32)
+      var %num_users = %num_users - 1
+    }
+    return some currently registered users: %users_list
+  }
+  elseif (%command == register) && ($eval(%user_variables,2) == $null) {
+    set %adventure. $+ %user 1 100 0
+    set %adventure.users = %adventure.users %user
+    return you have registered for !adventure!
+  }
+  elseif (%command == register) && ($eval(%user_playing,2) == 0) {
+    set %adventure. $+ %user 1 $right($eval(%user_variables,2), -2)
+    return you have re-registered for !adventure!
+  }
+  elseif (%command == register) && ($eval(%user_playing,2) == 1) {
+    return you are already registered!
+  }
+  elseif (%command != register) && ($eval(%user_variables,2) == $null) { return you need to !adventure register! }
+  elseif (%command == remove) {
+    set %adventure. $+ %user 0 $right($eval(%user_variables,2), -2)
+    return you have been removed from !adventure.
+  }
+  elseif (%command == respawn) && ($eval(%user_health,2) > 0) { return you're not dead yet! }
+  elseif (%command == respawn) && ($eval(%user_health,2) <= 0) {
+    set %adventure. $+ %user 1 100 $calc($right($eval(%user_variables,2), 1) + 1)
+    return you have been magically resurrected!
+  }
+  elseif ($eval(%user_health,2) <= 0) { return you are dead! You must !adventure respawn. }
+  elseif (%command == health) && ($eval(%option_variables,2) != $null) { return $capital(%option) has $eval(%option_health,2) health. }
+  elseif (%command == health) && %option && ($eval(%option_variables,2) == $null) { return that person doesn't play !adventure. }
+  elseif (%command == health) { return your health is $eval(%user_health,2) $+ . }
+  elseif (%command == attack) && ($eval(%option_variables,2) != $null) {
+    if ($eval(%option_playing,2) == 0) { return that person has removed themselves from !adventure. }
+    if (%option == harmonbot) {
+      set %adventure. $+ %user 1 0 $right($eval(%user_variables,2), 1)
+      return before you can attack, Harmonbot completely annihilates you. Oh dear, you are dead!
+    }
+    if ($eval(%option_health,2) <= 0) { return $capital(%option) is already dead! }
+    var %damage = $rand(1,10)
+    set %adventure. $+ %option 1 $calc($eval(%option_health,2) - %damage) $right($eval(%option_variables,2), 1)
+    if ($eval(%option_health,2) <= 0) { return you have done %damage damage to and killed $capital(%option) $+ ! Your health is $eval(%user_health,2) $+ . }
+    else {
+      if (%adventure.source == whisper) { /msg jtv /w %option $capital(%user) has attacked you and done %damage damage to you! Your health is now $eval(%option_health,2) $+ . $capital(%user) %+ 's health is $eval(%user_health,2) %+ . }
+      return you have done %damage damage to $capital(%option) $+ . $capital(%option) $+ 's health is now $eval(%option_health,2) $+ . Your health is $eval(%user_health,2) $+ .
+    }
+  }
+  elseif (%command == attack) && ($eval(%option_variables,2) == $null) { return that person doesn't play !adventure. }
+  elseif (%command == death || %command == deaths) && ($eval(%option_variables,2) != $null) { return $capital(%option) has $eval(%option_deaths,2) deaths. }
+  elseif (%command == death || %command == deaths) && %option && ($eval(%option_variables,2) == $null) { return that person doesn't play !adventure. }
+  elseif (%command == death || %command == deaths) { return you have $eval(%user_deaths,2) deaths. }
+  else { return that's not a valid option. }
+  return Error
 }
