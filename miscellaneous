@@ -1,0 +1,34 @@
+; ***REMOVED***
+;
+on *:text:!120*:#:{ msg # 104,273,167 xp }
+on *:text:!122*:#:{ msg # 127,110,260 xp }
+on *:text:!asylum*:#:{ msg # http://services.runescape.com/m=hiscore_oldschool/a=869/hiscorepersonal.ws?user1=Asylum }
+on *:text:!cheese*:#:{ msg # $cheese }
+on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2015 18:00:00))) until Christmas! }
+on *:text:!guthixiancache*:#:{ msg # $guthixiancache }
+on *:text:!harmonbot*:#:{ msg # That's me! }
+on *:text:!harmon*:#:{ msg # Harmon is my creator. }
+on *:text:!help*:#:{ msg # Use !whatis _ and I will tell you what certain things or commands are. See !commands for commands. }
+on *:text:!hobgobmike*:#:{ msg # Idek }
+on *:text:!indecent*:#:{ msg # http://www.indecentcode.com/ }
+on *:text:!illuminati*:#:{ msg # $illuminati }
+on *:text:!ironman*:#:{ msg # $ironman }
+on *:text:!lag*:#:{ msg # #StreamingProblems }
+on *:text:!life*:#:{ msg # $life }
+on *:text:!love*:#:{ msg # $love }
+on *:text:!kitty*:#:{ msg # BionicBunion }
+on *:text:!nightbot*:#:{ msg # !noob Nightbot }
+on *:text:!no:#:{ msg # No means no. }
+on *:text:!nudes*:#:{ msg # You wish. }
+on *:text:!puppy*:#:{ msg # FrankerZ }
+; on *:text:!puppy*:#:{ msg # RalpherZ }
+on *:text:!tns*:#:{ msg # #TeamNoSleep }
+on *:text:!zezima*:#: { msg # $zezima }
+
+alias cheese return http://en.wikipedia.org/wiki/Cheese
+alias guthixiancache return runescape.wikia.com/wiki/Guthixian_Cache
+alias illuminati return http://en.wikipedia.org/wiki/Illuminati
+alias ironman return runescape.wikia.com/wiki/Ironman_Mode
+alias life return http://en.wikipedia.org/wiki/Life
+alias love return http://en.wikipedia.org/wiki/Love https://www.youtube.com/watch?v=HEXWRTEbj1I
+alias zezima return http://rsplayers.wikia.com/wiki/Zezima

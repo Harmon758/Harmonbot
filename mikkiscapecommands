@@ -1,27 +1,5 @@
 ; ***REMOVED***
-on *:text:!mikkiscapecommands*:#:{ msg # !99rc !bday !caught !clan !cml !con !emotes !fish !fletch !glory !links !mine !mining !mikki !mikkitime !music !pi !pouch $&
-  !pray !rc !repair !rotation !runecrafting !slay !spotify !stats !subscribe !thief !thieving !tick !totalxp }
-
-on *:text:!skype*:#mikkiscape:{ msg # skype.xp }
-
-on *:text:*alt*:#mikkiscape:{
-  if ($nick isop #) && ($2) {
-    if ($istok(on,$2,32)) {
-      set %alt.status on 
-      msg # alt is on.
-      return
-    }
-    if ($istok(off,$2,32)) {
-      set %alt.status off 
-      msg # alt is off.
-      return
-    }
-  }
-  if (%alt.status == off) { return }
-  else {
-    msg # Bad $capital($nick) $+ !
-  }
-}
+;
 
 on *:text:!99rc*:#mikkiscape:{ msg # 99 RC Highlight: http://www.twitch.tv/mikkiscape/v/3734516 }
 on *:text:!bday*:#mikkiscape:{ msg # $my_duration($timeleft($ctime(December 20 2015 10:00:00))) until Mikki's birthday! }
@@ -53,6 +31,8 @@ on *:text:!rc*:#mikkiscape:{ msg # $rc }
 on *:text:!repair*:#mikkiscape: { msg # $repair }
 on *:text:!rotation*:#mikkiscape:{ msg # Meilyr -> Hefin -> (Bank) Crwys (Bank) -> Cadarn -> Amlodd -> Trahaearn (Bank) --- VOS @ Iorwerth or Ithell - Do instead of Cadarn }
 on *:text:!runecrafting*:#mikkiscape:{ msg # $rc }
+on *:text:!runetracker*:#:{ msg # $runetracker }
+on *:text:!skype*:#mikkiscape:{ msg # skype.xp }
 on *:text:!slay*:#mikkiscape:{ msg # $slayer }
 on *:text:!spotify*:#mikkiscape:{ msg # $music }
 on *:text:!stats*:#mikkiscape:{ msg # $stats }
@@ -65,64 +45,7 @@ on *:text:!tick*:#mikkiscape:{
 }
 on *:text:!totalxp*:#mikkiscape:{ msg # $totalxp }
 
-on *:text:*3 accs*:#mikkiscape:{
-  if ($nick isop #) && ($2) {
-    if ($istok(on,$3,32)) {
-      set %3accs.status on 
-      msg # 3 accs is on.
-      return
-    }
-    if ($istok(off,$3,32)) {
-      set %3accs.status off 
-      msg # 3 accs is off.
-      return
-    }
-  }
-  if (%3accs.status == off) { return }
-  else {
-    inc %3accs
-    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
-  }
-}
-on *:text:*3 accounts*:#mikkiscape:{
-  if ($nick isop #) && ($2) {
-    if ($istok(on,$3,32)) {
-      set %3accs.status on 
-      msg # 3 accs is on.
-      return
-    }
-    if ($istok(off,$3,32)) {
-      set %3accs.status off 
-      msg # 3 accs is off.
-      return
-    }
-  }
-  if (%3accs.status == off) { return }
-  else {
-    inc %3accs
-    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
-  }
-}
-on *:text:*three accounts*:#mikkiscape:{
-  if ($nick isop #) && ($2) {
-    if ($istok(on,$3,32)) {
-      set %3accs.status on 
-      msg # 3 accs is on.
-      return
-    }
-    if ($istok(off,$3,32)) {
-      set %3accs.status off 
-      msg # 3 accs is off.
-      return
-    }
-  }
-  if (%3accs.status == off) { return }
-  else {
-    inc %3accs
-    msg # Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
-  }
-}
-on *:text:*three accs*:#mikkiscape:{
+on $*:text:/.*(3 accs|3 accounts|three accs|three accounts)/Si:#mikkiscape:{
   if ($nick isop #) && ($2) {
     if ($istok(on,$3,32)) {
       set %3accs.status on 
@@ -142,6 +65,25 @@ on *:text:*three accs*:#mikkiscape:{
   }
 }
 
+on *:text:*alt*:#mikkiscape:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$2,32)) {
+      set %alt.status on 
+      msg # alt is on.
+      return
+    }
+    if ($istok(off,$2,32)) {
+      set %alt.status off 
+      msg # alt is off.
+      return
+    }
+  }
+  if (%alt.status == off) { return }
+  else {
+    msg # Bad $capital($nick) $+ !
+  }
+}
+
 alias clan return || RS3 Clan || http://services.runescape.com/m=clan-home/clan/Gum || OSRS Clan || http://services.runescape.com/m=forum/forums.ws?320,321,920,65349188
 alias cml return http://crystalmathlabs.com/tracker/track.php?player=aru
 alias emotes return http://puu.sh/b1hyR.jpg
@@ -149,6 +91,7 @@ alias fishing return Main: 20m || OSRS: 99/99 || Ironman: 83/99
 alias fletching return Main: 44m || OSRS: 68/99 || Ironman: 77/99
 alias links return Twitter: https://twitter.com/mikkiscape YouTube: https://www.youtube.com/user/mikscape
 alias mining return Main: 119m || OSRS: 99/99 || Ironman: 61/99
+alias music return http://open.spotify.com/user/mikkirs/playlist/5OBCdMNiGiTRGL0cqWL9CT
 alias prayer return Main: 37m || OSRS: 99/99 || Ironman: 51/99
 alias rc return Main: 33m || OSRS: 99/99 || Ironman: 91/99
 alias repair return REPAIR POUCH! REPAIR POUCH! REPAIR POUCH! REPAIR POUCH!

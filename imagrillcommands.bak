@@ -1,19 +1,19 @@
 ; ***REMOVED***
-on *:text:!imagrillcommands*:#:{ msg # !arts !artsdictionary !artstime !cats !death !edate !fail !fortune !googer !humage !pets !sneeze !troll }
-
-on *:text:!artsdictionary*:#imagrill: { msg # Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. }
+;
+on *:text:!artsdictionary*:#imagrill: { msg # Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. Quantent. }
 on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 8 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 8 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 8 + $daylight),ddd) $+ .) in Southern California (UTC- $+ $calc(8 - $daylight / 3600) $+ ). }
 on *:text:!arts*:#imagrill:{ msg # Arts is awesome~ }
 on *:text:!cats*:#imagrill:{ msg # Motorboat, Bandit, Squeak }
+on *:text:!dream*:#imagrill:{ msg # It's all the cat's dream! }
 on *:text:!fortune*:#imagrill:{ msg # ☺ The time is right to make new friends. ☺ }
 on *:text:!googer*:#imagrill: { msg # google.com/search?q= $+ $replace($2-,$chr(32),$chr(43)) "RAISE YOUR GOOGERS" -Arts }
 on *:text:!humage*:#imagrill:{ msg # We are only humage. -Arts }
+on *:text:!moo*:#imagrill:{ msg # "The cat moo'ed. It's not even dead." http://gyazo.com/52073e6b1de0066bf63d779768abe5c1 }
 on *:text:!pets*:#imagrill:{ msg # Eddy + Legio Secundulus }
 
-on *:text:!fail*:#:{
-  inc %fail
-  msg # Fail $chr(35) $+ %fail $+ . http://imgur.com/FWv07A9
-}
+on $*:text:/^[!](rebirth1|re;birth1)/Si:#imagrill:{ msg # http://hyperdimensionneptunia.wikia.com/wiki/Hyperdimension_Neptunia_Re;Birth_1 }
+on *:text:!muted*:#imagrill:{ msg # MIC MUTED! }
+on *:text:!save*:#imagrill:{ msg # Don't forget to l̶o̶a̶d̶ save. }
 
 on *:text:!caught*:#imagrill:{
   if ($2 == random) { msg # Arts has caught a wild $randomviewer $+ ! }
@@ -21,16 +21,31 @@ on *:text:!caught*:#imagrill:{
   else { msg # Arts has caught a wild $capital($nick) $+ ! }
 }
 
-on *:text:!sneeze*:#imagrill:{
-  if (!$2 || $2 > 10 || $2 < 2 ) { msg # Bless you! }
-  else {
-    var %counter = $2
-    var %message = Bless you!
-    while (%counter > 1) {
-      %message = %message Bless you!
-      %counter = %counter - 1
+on *:text:!death*:#imagrill:{
+  if ($nick isop #) && ($2 == inc) {
+    inc %arts.death
+    msg # Arts has died %arts.death times.
+  }
+  else { msg # Arts has died %arts.death times. }
+}
+
+on *:text:!ed8*:#:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$2,32)) {
+      set %!edate.status on 
+      msg # !ed8 is on.
+      return
     }
-    msg # %message
+    if ($istok(off,$2,32)) {
+      set %!edate.status off 
+      msg # !ed8 is off.
+      return
+    }
+  }
+  if (%!edate.status == off) { return }
+  else {
+    inc %edate
+    msg # Arts has %edate ed8's.
   }
 }
 
@@ -54,6 +69,24 @@ on *:text:!edate*:#:{
   }
 }
 
+on *:text:!fail*:#:{
+  inc %fail
+  msg # Fail $chr(35) $+ %fail $+ . http://imgur.com/FWv07A9
+}
+
+on *:text:!sneeze*:#imagrill:{
+  if (!$2 || $2 > 10 || $2 < 2 ) { msg # Bless you! }
+  else {
+    var %counter = $2
+    var %message = Bless you!
+    while (%counter > 1) {
+      %message = %message Bless you!
+      %counter = %counter - 1
+    }
+    msg # %message
+  }
+}
+
 on *:text:!troll*:#imagrill:{
   if ($nick isop #) && ($2 == inc) {
     if ($3 isnum) { inc %troll $3 }
@@ -63,17 +96,9 @@ on *:text:!troll*:#imagrill:{
   else { msg # There have been %troll trolls. }
 }
 
-on *:text:!death*:#imagrill:{
-  if ($nick isop #) && ($2 == inc) {
-    inc %death
-    msg # Arts has died %death times.
-  }
-  else { msg # Arts has died %death times. }
-}
-
 on *:text:*yawn*:#imagrill:{ msg # Yawwwwwn }
 
-on *:text:!24h*:#imagrill:{ msg # $my_duration($timeleft($ctime(June 20 2015 12:00:00))) until 24 hour stream ends! }
+; on *:text:!24h*:#imagrill:{ msg # $my_duration($timeleft($ctime(June 20 2015 12:00:00))) until 24 hour stream ends! }
 ; $my_duration($timeleft($ctime(June 19 2015 12:00:00))) until 24 hour stream!
 
 on *:text:do *u play os*:#imagrill:{ msg # $osrs }

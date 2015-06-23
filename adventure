@@ -59,7 +59,7 @@ alias adventure {
   }
   elseif (%command == register) && ($eval(%user_variables,2) == $null) {
     set %adventure. $+ %user 1 100 0
-    set %adventure.users = %adventure.users %user
+    set %adventure.users %adventure.users %user
     return you have registered for !adventure!
   }
   elseif (%command == register) && ($eval(%user_playing,2) == 0) {

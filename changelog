@@ -1,4 +1,30 @@
 ; ***REMOVED***
+;
+; 3/13/15
+; fixed !ge
+; 3/10/15
+; added !ge, !zybez, !monster
+; added simple !whatis ehp
+; added random to !caught !hug
+; fixed !poke random
+; added !viewers
+; 3/3/15
+; removed spaces before commas
+; organized
+; added randomviewer alias
+; added random to !highfive, !poke
+; 2/17/15
+; added no options and harmonbot to !hello
+; removed spaces before commas
+; added !bye
+; reordered !mikki and !mikkitime, added * to !mikki
+; added !hug, fixed !poke
+; 2/12/15
+; added !slay
+; added alt
+; added 3 different accounts?
+; added !str !range !def ?
+; add? stats? show stats
 ; 2/10/15
 ; changed !indecentcode to !indecentcodehs
 ; added !rotation

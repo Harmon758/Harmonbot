@@ -76,12 +76,14 @@ on *:text:!whatis*:#:{
   elseif ($2 == !mtoft) { msg # Use !mtoft _ to convert from meters (m) to feet (ft). }
   elseif ($2 == !music) { msg # Use !music to see Mikki's Spotify playlist. }
   elseif ($2 == !nightbot) { msg # See !nighbot }
+  elseif ($2 == !nudes) { msg # See !nudes }
   elseif ($2 == !noob) { msg # Use !noob _ to call someone a noob. }
   elseif ($2 == !oztog) { msg # Use !oztog _ to convert from ounces (oz) to grams (g). }
   elseif ($2 == !oztoozt) { msg # Use !oztoozt _ to convert from ounces (oz) to troy ounces (oz t). }
   elseif ($2 == !ozttog) { msg # Use !ozttog _ to convert from troy ounces (oz t) to grams (g). }
   elseif ($2 == !ozttooz) { msg # Use !ozttooz _ to convert from troy ounces (oz t) to ounces (oz). }
   elseif ($2 == !pi) { msg # Use !pi for an approximate value of pi. }
+  elseif ($2 == pmfornudes) { msg # PM him for nud's }
   elseif ($2 == !poke) { msg # Use !poke _ to poke someone. }
   elseif ($2 == !pouch) { msg # Use !pouch to remind Mikki to repair her pouch. }
   elseif ($2 == !puppy) { msg # See !puppy }

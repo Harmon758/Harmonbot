@@ -44,7 +44,7 @@ alias adventure {
   var %option_playing = $eval($gettok( [ %option_variables ] , 1, 32),0)
   var %option_health = $eval($gettok( [ %option_variables ] , 2, 32),0)
   var %option_deaths = $eval($gettok( [ %option_variables ] , 3, 32),0)
-  if (%command == $null) { return !adventure <command> is a Harmonbot game where you can attack other people. Current commands are register, remove, health, attack <username>, respawn, death. You can also /w harmonbot <command>. }
+  if (%command == $null) { return !adventure <command> is a Harmonbot game where you can attack other people. Current commands are register, remove, health, attack <username>, respawn, death, users. You can also /w harmonbot <command>. }
   ; elseif (%command == users) { return some currently registered users: harmon758, harmonbot, imagrill, australianified, pmfornudes, purringles, grim104720472, agrocto, dark_bomb, fujcake, kaetakara, mufiinzzrs, jakedasake, darkchidori, jingly_jess, jepapaiskaal, rsbatman, lilyhdd, hoornkoekje, lordrazrs, assassinscorpion, hobgobmike, aodjosk, liquiddata }
   elseif (%command == users) {
     var %users = %adventure.users
