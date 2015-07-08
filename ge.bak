@@ -84,7 +84,7 @@ on *:text:!zybez*:#:{
     return
   }
   var %url = http://forums.zybez.net/runescape-2007-prices/api/item/ $+ $replace($2-,$chr(32),$chr(43))
-  var %price = $left($json(%url,average),-3)
+  var %price = $json(%url,average)
   var %name = $json(%url,name)
   if (%name) { msg # Average price of %name $+ : %price gp }
   else { msg # Item $2- not found. }
@@ -185,10 +185,10 @@ alias json {
   }
 }
 alias jsonclearcache {
-  if ($com(jsonidentifier)) {
-    if (!$1) { noop $com(jsonidentifier,executestatement,1,bstr,urlcache = {}) }
-    else { echo -a $com(jsonidentifier,executestatement,1,bstr,urlcache[" $+ $1 $+ "] = "") }
-  }
+  ;if ($com(jsonidentifier)) {
+  if (!$1) { noop $com(jsonidentifier,executestatement,1,bstr,urlcache = {}) }
+  else { echo -a $com(jsonidentifier,executestatement,1,bstr,urlcache[" $+ $1 $+ "] = "") }
+  ;}
 }
 alias json.enc {
   json.comcheck

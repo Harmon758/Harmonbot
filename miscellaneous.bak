@@ -4,6 +4,7 @@ on *:text:!120*:#:{ msg # 104,273,167 xp }
 on *:text:!122*:#:{ msg # 127,110,260 xp }
 on *:text:!asylum*:#:{ msg # http://services.runescape.com/m=hiscore_oldschool/a=869/hiscorepersonal.ws?user1=Asylum }
 on *:text:!cheese*:#:{ msg # $cheese }
+on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2015 18:00:00))) until Christmas! }
 on *:text:!guthixiancache*:#:{ msg # $guthixiancache }
 on *:text:!harmonbot*:#:{ msg # That's me! }
 on *:text:!harmon*:#:{ msg # Harmon is my creator. }
@@ -17,6 +18,7 @@ on *:text:!life*:#:{ msg # $life }
 on *:text:!love*:#:{ msg # $love }
 on *:text:!kitty*:#:{ msg # BionicBunion }
 on *:text:!nightbot*:#:{ msg # !noob Nightbot }
+on *:text:!no:#:{ msg # No means no. }
 on *:text:!nudes*:#:{ msg # You wish. }
 on *:text:!puppy*:#:{ msg # FrankerZ }
 ; on *:text:!puppy*:#:{ msg # RalpherZ }

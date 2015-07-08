@@ -4,15 +4,18 @@
 ; ehp
 ; all weather commands
 ; tick
-; !99rc !con !thief !thieving !warbands !pray !fletch !indecent !asylum !hello !remindwarbands !rotation !google !imfeelinglucky !slay
+; !99rc !con !thief !thieving !warbands !pray !fletch !indecent !asylum !hello !remindwarbands !rotation !imfeelinglucky !slay
+; other commands
 on *:text:!whatis*:#:{
   if (!$2) { msg # What is what? }
   elseif ($2 == !07rswiki) { msg # Use !07rswiki _ to look something up on 2007scape Wiki. }
   elseif ($2 == !120) { msg # Use !120 and I will tell you the exact amount of xp for lvl 120. }
   elseif ($2 == !122) { msg # Use !122 and I will tell you the exact amount of xp for lvl 122. }
+  elseif ($2 == !additionalcommands1 || $2 == !additionalcommands2) { Use !additionalcommands[1-2] for additional miscellaneous commands. }
   elseif ($2 == !adventure) { msg # !adventure <command> is a Harmonbot game where you can attack other people. Current commands are register, remove, health, attack <username>, respawn, death, users. You can also /w harmonbot <command>. }
   elseif ($2 == arts || $2 == imagrill || $2 == sarah) { msg # That's who you're watching! }
-  elseif ($2 == australianified) { msg # A fanatic humage time traveler. }
+  elseif ($2 == australianified) { msg # A 90-year-old fanatic humage time traveler with a 10 foot beard. He wo's. }
+  elseif ($2 == !averagefps) { msg # Use !averagefps to check the average frames per second (fps) of the stream so far. }
   elseif ($2 == bandit) { msg # Bandit is one of Arts's cats. }
   elseif ($2 == !bday) { msg # Use !bday to find out the time left until Mikki's birthday. }
   elseif ($2 == cache) { msg # $guthixiancache }
@@ -34,12 +37,14 @@ on *:text:!whatis*:#:{
   elseif ($2 == !ftoc) { msg # Use !ftoc _ to convert from Fahrenheit (°F) to Celcius (°C). }
   elseif ($2 == !fttom) { msg # Use !fttom _ to convert from feet (ft) to meters (m). }
   elseif ($2 == !glory) { msg # Use !glory to remind Mikki to change her glory amulet. }
+  elseif ($2 == !google) { msg # See !google google }
   elseif ($2 == googer) { msg # See !googer googer }
-  elseif ($2 == !grats) { msg # Use !grats to congratulate someone. (Optional: !grats Name) }
+  elseif ($2 == !grats ) { msg # Use !grats to congratulate someone. (Optional: !grats Name) }
   elseif ($2 == !gtooz) { msg # Use !gtooz _ to convert from grams (g) to ounces (oz). }
   elseif ($2 == !gtoozt) { msg # Use !gtoozt _ to convert from grams (g) to troy ounces (oz t). }
   elseif ($2 == guthixiancache) { msg # $guthixiancache }
   elseif ($2 == !guthixiancache) { msg # Use !guthixiancache to find out what Guthixian Cache is. }
+  elseif ($2 == !gz ) { msg # Use !gz to congratulate someone. (Optional: !gz <name>) }
   elseif ($2 == harmon || $2 == harmon758) { msg # Harmon is my creator. }
   elseif ($2 == !harmon) { msg # Use !harmon to find out who Harmon is. }
   elseif ($2 == harmonbot) { msg # That's me! }
@@ -76,6 +81,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !mtoft) { msg # Use !mtoft _ to convert from meters (m) to feet (ft). }
   elseif ($2 == !music) { msg # Use !music to see Mikki's Spotify playlist. }
   elseif ($2 == !nightbot) { msg # See !nighbot }
+  elseif ($2 == !nudes) { msg # See !nudes }
   elseif ($2 == !noob) { msg # Use !noob _ to call someone a noob. }
   elseif ($2 == !oztog) { msg # Use !oztog _ to convert from ounces (oz) to grams (g). }
   elseif ($2 == !oztoozt) { msg # Use !oztoozt _ to convert from ounces (oz) to troy ounces (oz t). }
@@ -122,5 +128,6 @@ on *:text:!whatis*:#:{
   elseif ($2 isnum && $4 isnum && ($3 == + || $3 == - || $3 == * || $3 == / || $3 == ^ || $3 == %)) {
     msg # $2- = $calc($2-)
   }
+  elseif ($define($2)) { msg # %define_word $+ : $define($2) }
   else { msg # I don't know what that is. Try $rswiki($2-) or $rswiki07($2-) or $wiki($2-) }
 }

@@ -117,7 +117,7 @@ alias hiscores {
     set %hiscores_skill_number 35
     set %hiscores_skill Summoning
   }
-  else if (($3 == dungeoneering || $3 == dung) && (!$4 || $4 == rs3 || $4 == rs3ironman || $4 == rs3hcironman)) {
+  else if (($3 == dungeoneering || $3 == dung || $3 == dg) && (!$4 || $4 == rs3 || $4 == rs3ironman || $4 == rs3hcironman)) {
     set %hiscores_skill_number 36
     set %hiscores_skill Dungeoneering
   }
@@ -126,7 +126,7 @@ alias hiscores {
     set %hiscores_skill Divination
   }
   else {
-    %message That is not a valid skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> 
+    %message That is not a valid username/skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> 
     return
   }
   if ($4 == rs3) {

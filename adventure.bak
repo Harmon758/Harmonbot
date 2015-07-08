@@ -59,7 +59,7 @@ alias adventure {
   }
   elseif (%command == register) && ($eval(%user_variables,2) == $null) {
     set %adventure. $+ %user 1 100 0
-    set %adventure.users = %adventure.users %user
+    set %adventure.users %adventure.users %user
     return you have registered for !adventure!
   }
   elseif (%command == register) && ($eval(%user_playing,2) == 0) {
@@ -73,6 +73,11 @@ alias adventure {
   elseif (%command == remove) {
     set %adventure. $+ %user 0 $right($eval(%user_variables,2), -2)
     return you have been removed from !adventure.
+  }
+  elseif (%command == respawn) && ($nick == harmon758 || $nick == imagrill) && ($eval(%option_variables,2) != $null) {
+    if (eval(%option_health,2) > 0) { return $capital(%option) isn't dead yet! }
+    set %adventure. $+ %option 1 100 $calc($right($eval(%option_variables,2), 1) + 1)
+    return you have magically resurrected $capital(%option) $+ .
   }
   elseif (%command == respawn) && ($eval(%user_health,2) > 0) { return you're not dead yet! }
   elseif (%command == respawn) && ($eval(%user_health,2) <= 0) {
@@ -98,6 +103,17 @@ alias adventure {
       return you have done %damage damage to $capital(%option) $+ . $capital(%option) $+ 's health is now $eval(%option_health,2) $+ . Your health is $eval(%user_health,2) $+ .
     }
   }
+  elseif (%command == ko) && ($nick == harmon758 || $nick == imagrill) && ($eval(%option_variables,2) != $null) {
+    if ($eval(%option_playing,2) == 0) { return that person has removed themselves from !adventure. }
+    if (%option == harmonbot) {
+      set %adventure. $+ %user 1 0 $right($eval(%user_variables,2), 1)
+      return before you can attack, Harmonbot completely annihilates you. Oh dear, you are dead!
+    }
+    if ($eval(%option_health,2) <= 0) { return $capital(%option) is already dead! }
+    set %adventure. $+ %option 1 0 $right($eval(%option_variables,2), 1)
+    return you have KO'ed $capital(%option) $+ !
+  }
+  elseif (%command == ko) && ($nick != harmon758) && ($nick != imagrill) { return nice try. }
   elseif (%command == attack) && ($eval(%option_variables,2) == $null) { return that person doesn't play !adventure. }
   elseif (%command == death || %command == deaths) && ($eval(%option_variables,2) != $null) { return $capital(%option) has $eval(%option_deaths,2) deaths. }
   elseif (%command == death || %command == deaths) && %option && ($eval(%option_variables,2) == $null) { return that person doesn't play !adventure. }

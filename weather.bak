@@ -57,7 +57,7 @@ on *:CONNECT: {
 on *:DISCONNECT: { if ($hget(wu_reg)) { hsave -o wu_reg wu_reg.dat } }
 on $*:INPUT:#: { if ($regex($1,/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si)) wunderground $1- }
 on $*:text:/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si:#: {
-  if($1 == !weather || $1 == !forecast || $1 == !forecast? || $1 == !alert || $1 == !alerts || $1 == !alertinfo || $1 == !alerts info || $1 == !time || $1 == !current || $1 == !almanac) {
+  if ($1 == !weather || $1 == !forecast || $1 == !forecast? || $1 == !alert || $1 == !alerts || $1 == !alertinfo || $1 == !alerts info || $1 == !time || $1 == !current || $1 == !almanac) {
     wunderground $1-
   }
 }
