@@ -13,7 +13,6 @@ on *:text:!audiodefine*:#:{
 on *:text:!randomword*:#:{
   var %url = http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key=***REMOVED***&?ticks= $+ $ticks
   msg # $json(%url,word)
-  $jsonclearcache(%url)
 }
 
 alias define {

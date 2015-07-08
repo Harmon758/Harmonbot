@@ -1,5 +1,5 @@
-;
-
+; ***REMOVED***
+; 
 on *:text:!define*:#:{
   if ($define($2)) { msg # $capital(%define_word) $+ : $define($2) }
   else { msg # Definition not found. }
