@@ -8,13 +8,14 @@ on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2015 1
 on *:text:!gj*:#:{ msg # Omega Good Job! }
 on *:text:!guthixiancache*:#:{ msg # $guthixiancache }
 on *:text:!harmonbot*:#:{ msg # That's me! }
-on *:text:!harmon*:#:{ msg # Harmon is my creator. }
+on *:text:!harmon:#:{ msg # Harmon is my creator. }
 on *:text:!help*:#:{ msg # Use !whatis _ and I will tell you what certain things or commands are. See !commands for commands. }
 on *:text:!hobgobmike*:#:{ msg # Idek }
 on *:text:!indecent*:#:{ msg # http://www.indecentcode.com/ }
 on *:text:!illuminati*:#:{ msg # $illuminati }
 on *:text:!ironman*:#:{ msg # $ironman }
-on *:text:!justdoit*:#:{ msg # https://www.youtube.com/watch?v=nuHfVn_cfHU }
+; on *:text:!justdoit*:#:{ msg # https://www.youtube.com/watch?v=nuHfVn_cfHU }
+on *:text:!justdoit*:#:{ msg # https://www.youtube.com/watch?v=DvVUBZy_MHE }
 on *:text:!lag*:#:{ msg # #StreamingProblems }
 on *:text:!life*:#:{ msg # $life }
 on *:text:!love*:#:{ msg # $love }

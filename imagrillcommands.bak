@@ -1,12 +1,15 @@
 ; ***REMOVED***
 ;
-on *:text:!altstats*:#imagrill:{ msg # http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=nomondwagons }
-on *:text:!artsdictionary2*:#imagrill: { msg # Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. }
+on *:text:!altstats*:#imagrill:{ msg # http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=arts+go+rawr }
+; http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=nomondwagons
+on *:text:!artsdictionary2*:#imagrill: { msg # Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. }
 on *:text:!artsdictionary*:#imagrill: { msg # Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. Quantent. Horsebirdunicorndonkey. Chaotic Bandos Helm. Wooden Bronze Bar. Dagonfoot. }
-on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 8 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 8 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 8 + $daylight),ddd) $+ .) in Southern California (UTC- $+ $calc(8 - $daylight / 3600) $+ ). }
+;on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 8 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 8 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 8 + $daylight),ddd) $+ .) in Southern California (UTC- $+ $calc(8 - $daylight / 3600) $+ ). }
+on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 5 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 5 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 5 + $daylight),ddd) $+ .) in the Eastern Time Zone (UTC- $+ $calc(5 - $daylight / 3600) $+ ). }
 on *:text:!arts*:#imagrill:{ msg # Arts is awesome~ }
 on *:text:!aus*:#imagrill:{ msg # He's a 90-year-old fanatic humage time traveler with a 10 foot beard. He wo's. }
-on *:text:!blue*:#imagrill:{ msg # Someone hair dyed my blue -Arts }
+on *:text:!banana*:#imagrill:{ msg # https://youtu.be/jc86EFjLFV4?t=1m49s }
+on *:text:!bluehair*:#imagrill:{ msg # Someone hair dyed my blue -Arts }
 on *:text:!catonhead*:#imagrill:{ msg # http://imgur.com/JwsV4w0 http://imgur.com/H0CiNbw }
 on *:text:!cats*:#imagrill:{ msg # Motorboat, Bandit, Squeak }
 on *:text:!caught*:#imagrill:{
@@ -23,19 +26,20 @@ on *:text:!death*:#imagrill:{
 }
 on *:text:!dream*:#imagrill:{ msg # It's all the cat's dream! }
 on *:text:!dwarf*:#imagrill:{ msg # Sarah = 5 letters, Dwarf - 5 letters, Sarah = Dwarf -LeonardoDiCaprino }
-on *:text:!ed8*:#:{ if ($on/off($1, $2, !edate, Arts has %edate ed8's., !ed8) == msg) { inc %edate } }
-on *:text:!edate*:#:{ if ($on/off($1, $2, !edate, Arts has %edate edates.) == msg) { inc %edate } }
-on *:text:!fail*:#:{
+on *:text:!ed8*:#imagrill:{ if ($on/off($1, $2, !edate, Arts has %edate ed8's., !ed8) == msg) { inc %edate } }
+on *:text:!edate*:#imagrill:{ if ($on/off($1, $2, !edate, Arts has %edate edates.) == msg) { inc %edate } }
+on *:text:!fail*:#imagrill:{
   inc %fail
   msg # Fail $chr(35) $+ %fail $+ . http://imgur.com/FWv07A9
 }
 on *:text:!fortune*:#imagrill:{ msg # ☺ The time is right to make new friends. ☺ http://imgur.com/miulgIl }
 on *:text:!googer*:#imagrill: { msg # google.com/search?q= $+ $replace($2-,$chr(32),$chr(43)) "RAISE YOUR GOOGERS" -Arts }
-on *:text:!hair*:#imagrill:{ msg # Arts is cosplaying as a Rune Dragon }
+on *:text:!hair*:#imagrill:{ msg # Arts is cosplaying as a Rune Dragon that turned into an Adamant Dragon }
 on *:text:!humage*:#imagrill:{ msg # We are only humage. -Arts }
 on *:text:!modabuse*:#imagrill:{ msg # "I literally stomped on Kae" "I wrecked his face so hard" -Arts }
 on *:text:!moo*:#imagrill:{ msg # "The cat moo'ed. It's not even dead." http://gyazo.com/52073e6b1de0066bf63d779768abe5c1 }
 on *:text:!muted*:#imagrill:{ msg # MIC MUTED! }
+on *:text:!nudrage*:#imagrill:{ msg # http://gfycat.com/RightDeliriousFairyfly }
 on *:text:!omg*:#imagrill:{ msg # "I swear to the banana god" -Arts }
 on *:text:!p:#imagrill:{ msg # PMForNud pls }
 on *:text:!pets*:#imagrill:{ msg # Eddy + Legio Secundulus }
@@ -56,6 +60,7 @@ on *:text:!sneeze*:#imagrill:{
   }
 }
 on *:text:!soab*:#imagrill:{ msg # "Son of a banana" -Arts }
+on *:text:!tits*:#imagrill:{ msg # https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg }
 on *:text:!troll*:#imagrill:{
   if ($nick isop #) && ($2 == inc) {
     if ($3 isnum) { inc %troll $3 }
@@ -66,6 +71,11 @@ on *:text:!troll*:#imagrill:{
 }
 on *:text:!tutorial*:#imagrill:{ msg # She needed a tutorial for tutorial island Keepo -SoundShell }
 on *:text:!week*:#imagrill:{ msg # "Todays a busy week for me" -Arts }
+on *:text:!yawn*:#imagrill:{ msg # Yawwwwwn }
+
+
+on $*:text:/^[!]\72(3)/Si:#imagrill:{ msg # http://puu.sh/iE7ik.jpg }
+
 
 on $*:text:/.*\72\|/Si:#imagrill:{ var %return = $on/off($1, $2, -.-, http://imgur.com/cbgVzj7, :|) }
 on *:text:*-.-*:#imagrill:{ var %return = $on/off($1, $2, -.-, http://imgur.com/cbgVzj7) }
@@ -73,20 +83,53 @@ on $*:text:/.*\72(3)/Si:#imagrill:{ var %return = $on/off($1, $2, :3, http://puu
 on *:text:!addcom !h harmo pls:#imagrill:{ msg # !delcom !h }
 on $*:text:/.*\72p/Si:#imagrill:{ var %return = $on/off($1, $2, :P, http://imgur.com/p3GH9uE http://imgur.com/xpCiJKh) }
 on *:text:*banana*:#imagrill:{ var %return = $on/off($1, $2, banana, BANANA http://imgur.com/TtRH7vU http://imgur.com/kTX3qa1) }
-on *:text:*failfish*:#imagrill:{ msg # http://imgur.com/CtscIDh }
+on *:text:*failfish*:#imagrill:{ var %return = $on/off($1, $2, failfish, http://imgur.com/CtscIDh) }
 on *:text:*lick it*:#imagrill:{ msg # http://imgur.com/aCqNXmV }
 on *:text:*yawn*:#imagrill:{ var %return = $on/off($1, $2, yawn, Yawwwwwn) }
 
 
-;http://services.runescape.com/m=rswiki/en/Pronunciation_Guide
+on *:text:!fingerscrossed*:#imagrill:{ msg # http://imgur.com/vmQCJ2L }
+on *:text:!scooter*:#imagrill:{ msg # http://imgur.com/WNj2HbM }
+on *:text:!rude*:#imagrill:{ msg # https://www.youtube.com/watch?v=IYdX9geon6U }
+;on *:text:!osrs*:#imagrill:{ msg # $osrs }
+on *:text:!hype*:#imagrill:{ msg # http://i.imgur.com/L090lvT.gif }
+;!banana
+;!yawn
+on *:text:!harmonwhy*:#imagrill:{ msg # http://imgur.com/gIYIPWP }
+on *:text:!metap*:#imagrill:{ msg # http://imgur.com/JWLTeIX }
+on *:text:!cf1337*:#imagrill:{ msg # http://imgur.com/m6Rrhme }
+;on *:text:!twitter*:#imagrill:{ msg # https://twitter.com/ArtsGoesBananas }
+on *:text:!pc*:#imagrill:{ msg # http://www.frys.com/product/8356507 }
+on *:text:!blue*:#imagrill:{ msg # Blue = Green }
+on *:text:!green*:#imagrill:{ msg # Green = Blue }
+;changed !blue to !bluehair
+on *:text:!knees*:#imagrill:{ msg # Those patellas. }
+on *:text:!mrsanderstorm*:#imagrill:{ msg # Mrs. Anderstorm }
+; on *:text:!12h*:#imagrill:{ msg # $my_duration($timeleft($ctime(July 19 2015 03:11:00))) until 12 hour stream ends! }
+on *:text:!stats*:#imagrill:{ var %return = $on/off($1, $2, !stats, $imagrill.stats) }
+;on *:text:!dad*:#imagrill:{ var %return = $on/off($1, $2, !dad, Arts's father has a condition called trigeminal neuralgia - http://en.wikipedia.org/wiki/Trigeminal_neuralgia More people commit suicide due to the pain this causes than anything else.) }
+on *:text:!are*:#imagrill:{ msg # We aren't are - Arts }
+on *:text:!omid*:#imagrill:{ msg # OMID EXPOSED :( http://imgur.com/GGslRLF }
+
+; mew http://puu.sh/iS3DJ/f9ecf90d69.jpg
+; http://imgur.com/yJiAs8G
+
+/*
+on *:text:!pi*:#imagrill:{ 
+  if ($nick isop #) { msg # 3.14159265358979323846264338327 9502884197169399375105820974944 5923078164062862089986280348253 4211706798214808651328230664709 3844609550582231725359408128481 1174502841027019385211055596446 2294895493038196442881097566593 3446128475648233786783165271201 9091456485669234603486104543266 4821339360726024914127372458700 6606315588174881520920962829254 0917153643678925903600113305305 4882046652138414695194151160943 3057270365759591953092186117381 9326117931051185480744623799627 4956735188575272489122793818301 1949129833673362440656643086021 3949463952247371907021798609437 }
+  else { msg # 3.14 }
+}
+*/
+
+; http://services.runescape.com/m=rswiki/en/Pronunciation_Guide
 
 ; on *:text:!24h*:#imagrill:{ msg # $my_duration($timeleft($ctime(June 20 2015 12:00:00))) until 24 hour stream ends! }
 ; $my_duration($timeleft($ctime(June 19 2015 12:00:00))) until 24 hour stream!
 
-on *:text:do *u play os*:#imagrill:{ msg # $osrs }
-on *:text:do *u play old school*:#imagrill:{ msg # $osrs }
-on *:text:*tried os*?*:#imagrill:{ msg # $osrs }
-on *:text:*tried old school*?*:#imagrill:{ msg # $osrs }
+;on *:text:do *u play os*:#imagrill:{ msg # $osrs }
+;on *:text:do *u play old school*:#imagrill:{ msg # $osrs }
+;on *:text:*tried os*?*:#imagrill:{ msg # $osrs }
+;on *:text:*tried old school*?*:#imagrill:{ msg # $osrs }
 on *:text:*stats?:#imagrill:{ msg # $imagrill.stats }
 on *:text:what level is your*:#imagrill:{ msg # $imagrill.stats }
 on *:text:what*s your*level*:#imagrill:{ msg # $imagrill.stats }
@@ -98,12 +141,13 @@ on *:text:*any 99*s*?*:#imagrill:{ msg # $imagrill.stats }
 on *:text:*you got comp*?*:#imagrill:{ msg # $imagrill.stats }
 on *:text:*u comped*?*:#imagrill:{ msg # $imagrill.stats }
 on *:text:*total level*?*:#imagrill:{ msg # $imagrill.stats }
-on *:text:*total xp*?*:#:{ msg # $imagrill.stats }
+on *:text:*total xp*?*:#imagrill:{ msg # $imagrill.stats }
 on *:text:*you 2595*?*:#imagrill:{ msg # $imagrill.stats }
 on *:text:*any 120*?*:#imagrill:{ msg # $imagrill.stats }
 
 alias osrs return She doesn't play Old School RuneScape at the moment. She plans to play in the future.
-alias imagrill.stats return http://runetrack.com/profile.php?user=arts
+; alias imagrill.stats return Main: http://runetrack.com/profile.php?user=arts Alt: http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=arts+go+rawr OSRS: http://services.runescape.com/m=hiscore_oldschool/hiscorepersonal.ws?user1=Arts+FC
+alias imagrill.stats return Main: http://runetrack.com/profile.php?user=arts OSRS: http://services.runescape.com/m=hiscore_oldschool/hiscorepersonal.ws?user1=Arts+FC
 
 on *:text:*:#imagrill:{
   if ($nick != pmfornudes) && ($1 == pmpls) && ($2) {

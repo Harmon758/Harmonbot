@@ -185,10 +185,10 @@ alias json {
   }
 }
 alias jsonclearcache {
-  ;if ($com(jsonidentifier)) {
-  if (!$1) { noop $com(jsonidentifier,executestatement,1,bstr,urlcache = {}) }
-  else { echo -a $com(jsonidentifier,executestatement,1,bstr,urlcache[" $+ $1 $+ "] = "") }
-  ;}
+  if ($com(jsonidentifier)) {
+    if (!$1) { noop $com(jsonidentifier,executestatement,1,bstr,urlcache = {}) }
+    else { echo -a $com(jsonidentifier,executestatement,1,bstr,urlcache[" $+ $1 $+ "] = "") }
+  }
 }
 alias json.enc {
   json.comcheck

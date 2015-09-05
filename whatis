@@ -13,7 +13,10 @@ on *:text:!whatis*:#:{
   elseif ($2 == !122) { msg # Use !122 and I will tell you the exact amount of xp for lvl 122. }
   elseif ($2 == !additionalcommands1 || $2 == !additionalcommands2) { Use !additionalcommands[1-2] for additional miscellaneous commands. }
   elseif ($2 == !adventure) { msg # !adventure <command> is a Harmonbot game where you can attack other people. Current commands are register, remove, health, attack <username>, respawn, death, users. You can also /w harmonbot <command>. }
-  elseif ($2 == arts || $2 == imagrill || $2 == sarah) { msg # That's who you're watching! }
+  elseif ($2 == arts || $2 == imagrill || $2 == sarah) {
+    if ($mid($chan,2-) == imagrill) { msg # That's who you're watching! }
+    else { msg # Imagrill is another streamer I frequent. }
+  }
   elseif ($2 == australianified) { msg # A 90-year-old fanatic humage time traveler with a 10 foot beard. He wo's. }
   elseif ($2 == !averagefps) { msg # Use !averagefps to check the average frames per second (fps) of the stream so far. }
   elseif ($2 == bandit) { msg # Bandit is one of Arts's cats. }
@@ -71,7 +74,10 @@ on *:text:!whatis*:#:{
   elseif ($2 == man) { msg # https://en.wikipedia.org/wiki/Man }
   elseif ($2 == !mine) { msg # Use !mine to see Mikki's Mining levels. }
   elseif ($2 == !mining) { msg # Use !mining to see Mikki's Mining levels. }
-  elseif ($2 == mikki || $2 == mikkiscape) { msg # That's who you're watching! }
+  elseif ($2 == mikki || $2 == mikkiscape) {
+    if ($mid($chan,2-) == mikkiscape) { msg # That's who you're watching! }
+    else { msg # Mikkiscape is another streamer I frequent. }
+  }
   elseif ($2 == !mikki) { msg # See !mikki }
   elseif ($2 == !mikkitime) { msg # Use !mikkitime to find out what time it is for Mikki. }
   elseif ($2 == !mitokm) { msg # Use !mitokm _ to convert from miles (mi) to kilometers (km). }
@@ -81,6 +87,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !mtoft) { msg # Use !mtoft _ to convert from meters (m) to feet (ft). }
   elseif ($2 == !music) { msg # Use !music to see Mikki's Spotify playlist. }
   elseif ($2 == !nightbot) { msg # See !nighbot }
+  elseif ($2 == nig) { msg # Nice try, 2kjax. }
   elseif ($2 == !nudes) { msg # See !nudes }
   elseif ($2 == !noob) { msg # Use !noob _ to call someone a noob. }
   elseif ($2 == !oztog) { msg # Use !oztog _ to convert from ounces (oz) to grams (g). }

@@ -155,7 +155,7 @@ alias json {
 
     ;if the interface hasnt been open and initialized, do it.
     json.comcheck
-    if (!$timer(jsonclearcache)) { .timerjsonclearcache -o 0 300 jsonclearcache }
+    if (!$timer(jsonclearcache)) { .timerjsonclearcache -o 0 60 jsonclearcache }
 
     ;get the list of parameters
     while (%x <= $0) {

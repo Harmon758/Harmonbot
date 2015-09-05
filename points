@@ -1,0 +1,59 @@
+
+; https://api.twitch.tv/kraken/streams/imagrill
+; https://tmi.twitch.tv/group/user/imagrill/chatters
+
+on *:text:!points*:#:{
+  if ($nick isop #) && ($2) {
+    if ($istok(on,$2,32)) {
+      set %points.status. $+ $chan on 
+      msg # !points is on.
+      .timerpoints [ $+ [ $chan ] ] 0 60 .points $chan
+      return
+    }
+    if ($istok(off,$2,32)) {
+      set %points.status. $+ $chan off
+      msg # !points is off.
+      .timerpoints [ $+ [ $chan ] ] off
+      return
+    }
+    if (%points. [ $+ [ $chan ] $+ ] . [ $+ [ $2 ] ]) {
+      msg # $capital($2) has %points. [ $+ [ $chan ] $+ ] . [ $+ [ $2 ] ] points.
+      return
+    }
+  }
+  if (%points.status. [ $+ [ $chan ] ] == off) { return }
+  if (($nick == $mid($chan,2-) || $nick == harmon758) && $2) {
+    if ($2 == add) {
+      if (%points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ]) {
+        if ($4 isnum) {
+          %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] = %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] + $4
+          msg # $4 point(s) have been added for $capital($3) $+ . $capital($3) now has %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] points.
+        }
+        else { msg # $capital($nick) $+ , that's not a valid number. }
+      }
+      else { msg # $capital($nick) $+ , that's not a valid username. }
+    }
+    return
+  }
+  if (%points. [ $+ [ $chan ] $+ ] . [ $+ [ $nick ] ]) { msg # $capital($nick) $+ , you have %points. [ $+ [ $chan ] $+ ] . [ $+ [ $nick ] ] points. }
+}
+
+alias points {
+  var %url = https://api.twitch.tv/kraken/streams/ $+ $mid($1,2-)
+  if ($json(%url,stream) == $null) { return }
+  %url = https://tmi.twitch.tv/group/user/  $+ $mid($1,2-) $+ /chatters
+  var %counter = 0
+  while ($json(%url,chatters,moderators,%counter)) {
+    var %name = $json(%url,chatters,moderators,%counter)
+    if (%points. [ $+ [ $1 ] $+ ] . [ $+ [ %name ] ]) { inc %points. [ $+ [ $1 ] $+ ] . [ $+ [ %name ] ] }
+    else { set %points. $+ $1 $+ . $+ %name 1 }
+    inc %counter
+  }
+  %counter = 0
+  while ($json(%url,chatters,viewers,%counter)) {
+    var %name = $json(%url,chatters,viewers,%counter)
+    if (%points. [ $+ [ $1 ] $+ ] . [ $+ [ %name ] ]) { inc %points. [ $+ [ $1 ] $+ ] . [ $+ [ %name ] ] }
+    else { set %points. $+ $1 $+ . $+ %name 1 }
+    inc %counter
+  }
+}

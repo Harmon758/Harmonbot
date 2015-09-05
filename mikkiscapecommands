@@ -48,7 +48,7 @@ on $*:text:/.*(3 accs|3 accounts|three accs|three accounts)/Si:#mikkiscape:{
   var %msg = Yes, Mikki is playing 3 accounts. This question has been asked %3accs times.
   if ($on/off($1, $3, 3accs, %msg, 3 accs) == msg) { inc %3accs }
 }
-on *:text:*alt*:#mikkiscape:{ $on/off($1, $2, alt, Bad $capital($nick) $+ !) }
+on *:text:*alt*:#mikkiscape:{ var %msg = $on/off($1, $2, alt, Bad $capital($nick) $+ !) }
 
 alias clan return || RS3 Clan || http://services.runescape.com/m=clan-home/clan/Gum || OSRS Clan || http://services.runescape.com/m=forum/forums.ws?320,321,920,65349188
 alias cml return http://crystalmathlabs.com/tracker/track.php?player=aru
@@ -63,7 +63,7 @@ alias rc return Main: 33m || OSRS: 99/99 || Ironman: 91/99
 alias repair return REPAIR POUCH! REPAIR POUCH! REPAIR POUCH! REPAIR POUCH!
 alias runetracker return || Main || http://runetracker.org/track-mikki || Ironman || http://runetracker.org/track-fe+mikki
 alias slayer return Main: 200m || OSRS: 62/99 || Ironman: 61/99
-alias stats return || Main || http://www.indecentcode.com/hs/index.php?id=mikki --- || OSRS || http://www.indecentcode.com/oldschool/index.php?id=aru || Ironman || http://indecentcode.com/hs/index.php?id=Fe+Mikki
+alias stats return || Main || http://www.indecentcode.com/hs/index.php?id=mikki --- || OSRS || http://www.indecentcode.com/oldschool/index.php?id=aru || Ironman || http://indecentcode.com/hs/index.php?id=fe+mikki ----- || OSRS Alt || http://indecentcode.com/oldschool/index.php?id=alahkim
 alias thieving return Main: 143m || OSRS: 99/99 || Ironman: 70/99
 alias totalxp return Main: 2.48b || OSRS: 164m || Ironman: 40m
 alias suscribe return https://secure.twitch.tv/products/mikkiscape/ticket
