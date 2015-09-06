@@ -1,5 +1,6 @@
 ; ***REMOVED***
 ; --- Check for Whispers ---
+/*
 raw *:*: {
   if $nick == tmi.twitch.tv {
     if whisper isin $rawmsg {
@@ -13,6 +14,7 @@ raw *:*: {
     }
   }
 }
+*/
 ; --- !adventure in Chat ---
 on *:text:!adventure*:#:{
   if ($nick isop #) && ($2) {

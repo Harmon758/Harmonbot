@@ -75,7 +75,7 @@ alias adventure {
     return you have been removed from !adventure.
   }
   elseif (%command == respawn) && ($nick == harmon758 || $nick == imagrill) && ($eval(%option_variables,2) != $null) {
-    if (eval(%option_health,2) > 0) { return $capital(%option) isn't dead yet! }
+    if ($eval(%option_health,2) > 0) { return $capital(%option) isn't dead yet! }
     set %adventure. $+ %option 1 100 $calc($right($eval(%option_variables,2), 1) + 1)
     return you have magically resurrected $capital(%option) $+ .
   }
