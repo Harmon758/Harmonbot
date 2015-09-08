@@ -14,7 +14,6 @@ on *:text:!hobgobmike*:#:{ msg # Idek }
 on *:text:!indecent*:#:{ msg # http://www.indecentcode.com/ }
 on *:text:!illuminati*:#:{ msg # $illuminati }
 on *:text:!ironman*:#:{ msg # $ironman }
-; on *:text:!justdoit*:#:{ msg # https://www.youtube.com/watch?v=nuHfVn_cfHU }
 on *:text:!justdoit*:#:{ msg # https://www.youtube.com/watch?v=DvVUBZy_MHE }
 on *:text:!lag*:#:{ msg # #StreamingProblems }
 on *:text:!life*:#:{ msg # $life }
@@ -36,5 +35,6 @@ alias life return http://en.wikipedia.org/wiki/Life
 alias love return http://en.wikipedia.org/wiki/Love https://www.youtube.com/watch?v=HEXWRTEbj1I
 alias zezima return http://rsplayers.wikia.com/wiki/Zezima
 
---old--
+; --old--
 ; on *:text:!countdown*:#:{ msg # $my_duration($timeleft($ctime(December 18 2014 03:00:00))) }
+; on *:text:!justdoit*:#:{ msg # https://www.youtube.com/watch?v=nuHfVn_cfHU }

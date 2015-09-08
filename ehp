@@ -1,4 +1,5 @@
 ; ***REMOVED***
+;
 on *:text:!ehp*:#:{
   if (!$2) { msg # Please specify a skill and amount of xp. }
   elseif ($2 isnum) { msg # Please specify a skill. }

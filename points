@@ -1,6 +1,7 @@
 
 ; https://api.twitch.tv/kraken/streams/imagrill
 ; https://tmi.twitch.tv/group/user/imagrill/chatters
+; points.minutes
 
 on *:text:!points*:#:{
   if ($nick isop #) && ($2) {
@@ -8,52 +9,97 @@ on *:text:!points*:#:{
       set %points.status. $+ $chan on 
       msg # !points is on.
       .timerpoints [ $+ [ $chan ] ] 0 60 .points $chan
-      return
     }
-    if ($istok(off,$2,32)) {
+    elseif ($istok(off,$2,32)) {
       set %points.status. $+ $chan off
       msg # !points is off.
       .timerpoints [ $+ [ $chan ] ] off
-      return
     }
-    if (%points. [ $+ [ $chan ] $+ ] . [ $+ [ $2 ] ]) {
-      msg # $capital($2) has %points. [ $+ [ $chan ] $+ ] . [ $+ [ $2 ] ] points.
-      return
+    elseif ($points.findname($chan, $2)) {
+      var %line = $points.findname($chan, $2)
+      var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $2, 1, 32)
+      var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
+      msg # $capital($2) has %points points.
     }
   }
-  if (%points.status. [ $+ [ $chan ] ] == off) { return }
-  if (($nick == $mid($chan,2-) || $nick == harmon758) && $2) {
+  elseif (%points.status. [ $+ [ $chan ] ] == off) { return }
+  elseif (($nick == $mid($chan,2-) || $nick == harmon758) && $2) {
     if ($2 == add) {
       if (%points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ]) {
         if ($4 isnum) {
-          %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] = %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] + $4
-          msg # $4 point(s) have been added for $capital($3) $+ . $capital($3) now has %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] points.
+          ;%points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] = %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] + $4
+          ;msg # $4 point(s) have been added for $capital($3) $+ . $capital($3) now has %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] points.
         }
         else { msg # $capital($nick) $+ , that's not a valid number. }
       }
       else { msg # $capital($nick) $+ , that's not a valid username. }
     }
-    return
   }
-  if (%points. [ $+ [ $chan ] $+ ] . [ $+ [ $nick ] ]) { msg # $capital($nick) $+ , you have %points. [ $+ [ $chan ] $+ ] . [ $+ [ $nick ] ] points. }
+  elseif ($points.findname($chan, $nick)) {
+    var %line = $points.findname($chan, $nick)
+    var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $nick, 1, 32)
+    var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
+    msg # $capital($nick) $+ , you have %points points.
+  }
 }
 
 alias points {
+  if (%points.status. [ $+ [ $1 ] ] == off) { .timerpoints [ $+ [ $1 ] ] off }
   var %url = https://api.twitch.tv/kraken/streams/ $+ $mid($1,2-)
-  if ($json(%url,stream) == $null) { return }
+  if ($json(%url,stream) == $null && $1 != #harmon758) { return }
   %url = https://tmi.twitch.tv/group/user/  $+ $mid($1,2-) $+ /chatters
   var %counter = 0
   while ($json(%url,chatters,moderators,%counter)) {
     var %name = $json(%url,chatters,moderators,%counter)
-    if (%points. [ $+ [ $1 ] $+ ] . [ $+ [ %name ] ]) { inc %points. [ $+ [ $1 ] $+ ] . [ $+ [ %name ] ] }
-    else { set %points. $+ $1 $+ . $+ %name 1 }
+    $points.processname($1, %name)
     inc %counter
   }
   %counter = 0
   while ($json(%url,chatters,viewers,%counter)) {
     var %name = $json(%url,chatters,viewers,%counter)
-    if (%points. [ $+ [ $1 ] $+ ] . [ $+ [ %name ] ]) { inc %points. [ $+ [ $1 ] $+ ] . [ $+ [ %name ] ] }
-    else { set %points. $+ $1 $+ . $+ %name 1 }
+    $points.processname($1, %name)
     inc %counter
   }
+}
+
+alias points.processname {
+  ;if (%points. [ $+ [ $1 ] $+ ] . [ $+ [ $2 ] ]) { inc %points. [ $+ [ $1 ] $+ ] . [ $+ [ $2 ] ] }
+  ;else { set %points. $+ $1 $+ . $+ $2 1 }
+  if (%points. [ $+ [ $1 ] $+ ] . [ $+ [ $2 ] ] && $points.findname($1, $2) == 0) {
+    var %line = %points. [ $+ [ $1 ] $+ ] .lines 
+    set %points. $+ $1 $+ .names $+ %line %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %line ] ] $2
+    set %points. $+ $1 $+ .points $+ %line %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ] [ %points. [ $+ [ $1 ] $+ ] . [ $+ [ $2 ] ] ]
+    unset %points. $+ $1 $+ . $+ $2
+  }
+  elseif ($points.findname($1, $2)) {
+    var %line = $points.findname($1, $2)
+    var %name_number = $findtok( [ %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %line ] ] ] , $2, 1, 32)
+    var %points = $gettok( [ %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
+    inc %points
+    set %points. $+ $1 $+ .points $+ %line $puttok( [ %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ] ] , %points, %name_number, 32)
+    var %minutes = $gettok( [ %points. [ $+ [ $1 ] $+ ] .minutes [ $+ [ %line ] ] ] , %name_number, 32)
+    inc %minutes
+    set %points. $+ $1 $+ .minutes $+ %line $puttok( [ %points. [ $+ [ $1 ] $+ ] .minutes [ $+ [ %line ] ] ] , %minutes, %name_number, 32)
+  }
+  else {
+    var %line = %points. [ $+ [ $1 ] $+ ] .lines
+    set %points. $+ $1 $+ .names $+ %line %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %line ] ]  $2
+    set %points. $+ $1 $+ .points $+ %line %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ]  1
+  }
+}
+
+alias points.findname {
+  var %lines = %points. [ $+ [ $1 ] $+ ] .lines
+  var %counter = 1
+  while (%counter <= %lines) {
+    if ($findtok( [ %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %counter ] ] ] , $2, 0, 32) == 1) { return %counter }
+    inc %counter
+  }
+  return 0
+}
+
+on *:text:!ptesting*:#:{
+  set %points.#imagrill.minutes1 %points.#imagrill.points1
+  set %points.#imagrill.minutes2 %points.#imagrill.points2
+  set %points.#imagrill.minutes3 %points.#imagrill.points3
 }
