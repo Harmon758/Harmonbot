@@ -2,7 +2,7 @@
 ;
 on *:text:!altstats*:#imagrill:{ msg # http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=arts+go+rawr }
 ; http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=nomondwagons
-on *:text:!artsdictionary2*:#imagrill: { msg # Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. Skelington. Tunce. Milay. Edimoo. }
+on *:text:!artsdictionary2*:#imagrill: { msg # Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. Skelington. Tunce. Milay. Edimoo. Right Meow. Pershon. }
 on *:text:!artsdictionary*:#imagrill: { msg # Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. Quantent. Horsebirdunicorndonkey. Chaotic Bandos Helm. Wooden Bronze Bar. Dagonfoot. }
 ;on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 8 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 8 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 8 + $daylight),ddd) $+ .) in Southern California (UTC- $+ $calc(8 - $daylight / 3600) $+ ). }
 on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 5 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 5 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 5 + $daylight),ddd) $+ .) in the Eastern Time Zone (UTC- $+ $calc(5 - $daylight / 3600) $+ ). }
@@ -39,10 +39,10 @@ on *:text:!humage*:#imagrill:{ msg # We are only humage. -Arts }
 on *:text:!modabuse*:#imagrill:{ msg # "I literally stomped on Kae" "I wrecked his face so hard" -Arts }
 on *:text:!moo*:#imagrill:{ msg # "The cat moo'ed. It's not even dead." http://gyazo.com/52073e6b1de0066bf63d779768abe5c1 }
 on *:text:!muted*:#imagrill:{ msg # MIC MUTED! }
-on *:text:!nudrage*:#imagrill:{ msg # http://gfycat.com/RightDeliriousFairyfly }
+on *:text:!nudrage*:#imagrill:{ msg # http://gfycat.com/RightDeliriousFairyfly https://www.youtube.com/watch?v=MybuZImohq4 }
 on *:text:!omg*:#imagrill:{ msg # "I swear to the banana god" -Arts }
 on *:text:!p:#imagrill:{ msg # PMForNud pls }
-on *:text:!pets*:#imagrill:{ msg # Eddy + Legio Secundulus }
+on *:text:!pets*:#imagrill:{ msg # Eddy + Legio Secundulus + Prime Hatchling }
 on *:text:!pudding*:#imagrill:{ msg # The pudding is mightier than the sword. -Compa }
 on $*:text:/^[!](rebirth1|re;birth1)/Si:#imagrill:{ msg # http://hyperdimensionneptunia.wikia.com/wiki/Hyperdimension_Neptunia_Re;Birth_1 }
 on *:text:!save*:#imagrill:{ msg # Don't forget to l̶o̶a̶d̶ save. }
@@ -110,6 +110,7 @@ on *:text:!stats*:#imagrill:{ var %return = $on/off($1, $2, !stats, $imagrill.st
 ;on *:text:!dad*:#imagrill:{ var %return = $on/off($1, $2, !dad, Arts's father has a condition called trigeminal neuralgia - http://en.wikipedia.org/wiki/Trigeminal_neuralgia More people commit suicide due to the pain this causes than anything else.) }
 on *:text:!are*:#imagrill:{ msg # We aren't are - Arts }
 on *:text:!omid*:#imagrill:{ msg # OMID EXPOSED :( http://imgur.com/GGslRLF }
+on *:text:*show tits*:#imagrill:{ msg # https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg }
 
 on *:text:!h:#imagrill:{ msg # !delcom !h }
 on *:text:!harm:#imagrill:{ msg # !delcom !harm }

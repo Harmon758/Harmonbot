@@ -1,45 +1,98 @@
 
 ; https://api.twitch.tv/kraken/streams/imagrill
 ; https://tmi.twitch.tv/group/user/imagrill/chatters
-; points.minutes
 
 on *:text:!points*:#:{
   if ($nick isop #) && ($2) {
-    if ($istok(on,$2,32)) {
+    if ($2 == on) {
       set %points.status. $+ $chan on 
       msg # !points is on.
       .timerpoints [ $+ [ $chan ] ] 0 60 .points $chan
     }
-    elseif ($istok(off,$2,32)) {
+    elseif ($2 == off) {
       set %points.status. $+ $chan off
       msg # !points is off.
       .timerpoints [ $+ [ $chan ] ] off
+    }
+    elseif ($2 == top) {
+      if ($3 isnum && $3 <= 100) { var %top_number = $int($3) }
+      else { var %top_number = 10 }
+      var %top_list = Top: 
+      var %lines = %points. [ $+ [ $chan ] $+ ] .lines
+      var %counter = 1
+      var %all_names
+      var %all_points
+      while (%counter <= %lines) {
+        %all_points = %all_points %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %counter ] ]
+        inc %counter
+      }
+      var %sorted_points = $sorttok(%all_points, 32, nr)
+      var %top_sorted_points = $gettok(%sorted_points, 1- $+ [ %top_number ], 32)
+      var %previous = -1
+      var %same_count = 0
+      while ($numtok(%top_sorted_points, 32) > 0) {
+        var %number = $gettok(%top_sorted_points, 1, 32)
+        if (%previous == %number) { inc %same_count }
+        else { %same_count = 0 }
+        var %name_number = $findtok(%all_points, %number, $calc(1 + %same_count), 32)
+        %counter = 1
+        while (%name_number > $numtok(%points. [ $+ [ $chan ] $+ ] .names [ $+ [ %counter ] ], 32)) {
+          %name_number = %name_number - $numtok(%points. [ $+ [ $chan ] $+ ] .names [ $+ [ %counter ] ], 32)
+          inc %counter
+        }
+        var %name = $gettok(%points. [ $+ [ $chan ] $+ ] .names [ $+ [ %counter ] ], %name_number, 32)
+        var %top_list = %top_list $capital(%name) $+ : $gettok(%top_sorted_points, 1, 32) 
+        %top_sorted_points = $deltok(%top_sorted_points, 1, 32)
+        %previous = %number
+      }
+      msg # %top_list
     }
     elseif ($points.findname($chan, $2)) {
       var %line = $points.findname($chan, $2)
       var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $2, 1, 32)
       var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
-      msg # $capital($2) has %points points.
+      var %all_points
+      var %counter = 1
+      var %lines = %points. [ $+ [ $chan ] $+ ] .lines
+      while (%counter <= %lines) {
+        %all_points = %all_points %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %counter ] ]
+        inc %counter
+      }
+      var %sorted_points = $sorttok(%all_points, 32, nr)
+      var %rank = $findtok(%sorted_points, %points, 1, 32)
+      msg # $capital($2) is rank %rank with %points points.
+    }
+    elseif ($nick == $mid($chan,2-) || $nick == harmon758) {
+      if ($2 == add) {
+        if ($points.findname($chan, $3)) {
+          if ($4 isnum) {
+            var %line = $points.findname($chan, $3)
+            var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $3, 1, 32)
+            var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32) + $4
+            set %points. $+ $chan $+ .points $+ %line $puttok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %points, %name_number, 32)
+            msg # $4 point(s) have been added for $capital($3) $+ . $capital($3) now has %points points.
+          }
+          else { msg # $capital($nick) $+ , that's not a valid number. }
+        }
+        else { msg # $capital($nick) $+ , that's not a valid username. }
+      }
     }
   }
   elseif (%points.status. [ $+ [ $chan ] ] == off) { return }
-  elseif (($nick == $mid($chan,2-) || $nick == harmon758) && $2) {
-    if ($2 == add) {
-      if (%points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ]) {
-        if ($4 isnum) {
-          ;%points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] = %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] + $4
-          ;msg # $4 point(s) have been added for $capital($3) $+ . $capital($3) now has %points. [ $+ [ $chan ] $+ ] . [ $+ [ $3 ] ] points.
-        }
-        else { msg # $capital($nick) $+ , that's not a valid number. }
-      }
-      else { msg # $capital($nick) $+ , that's not a valid username. }
-    }
-  }
   elseif ($points.findname($chan, $nick)) {
     var %line = $points.findname($chan, $nick)
     var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $nick, 1, 32)
     var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
-    msg # $capital($nick) $+ , you have %points points.
+    var %all_points
+    var %counter = 1
+    var %lines = %points. [ $+ [ $chan ] $+ ] .lines
+    while (%counter <= %lines) {
+      %all_points = %all_points %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %counter ] ]
+      inc %counter
+    }
+    var %sorted_points = $sorttok(%all_points, 32, nr)
+    var %rank = $findtok(%sorted_points, %points, 1, 32)
+    msg # $capital($nick) $+ , you are rank %rank with %points points.
   }
 }
 
@@ -63,15 +116,7 @@ alias points {
 }
 
 alias points.processname {
-  ;if (%points. [ $+ [ $1 ] $+ ] . [ $+ [ $2 ] ]) { inc %points. [ $+ [ $1 ] $+ ] . [ $+ [ $2 ] ] }
-  ;else { set %points. $+ $1 $+ . $+ $2 1 }
-  if (%points. [ $+ [ $1 ] $+ ] . [ $+ [ $2 ] ] && $points.findname($1, $2) == 0) {
-    var %line = %points. [ $+ [ $1 ] $+ ] .lines 
-    set %points. $+ $1 $+ .names $+ %line %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %line ] ] $2
-    set %points. $+ $1 $+ .points $+ %line %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ] [ %points. [ $+ [ $1 ] $+ ] . [ $+ [ $2 ] ] ]
-    unset %points. $+ $1 $+ . $+ $2
-  }
-  elseif ($points.findname($1, $2)) {
+  if ($points.findname($1, $2)) {
     var %line = $points.findname($1, $2)
     var %name_number = $findtok( [ %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %line ] ] ] , $2, 1, 32)
     var %points = $gettok( [ %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
@@ -83,8 +128,9 @@ alias points.processname {
   }
   else {
     var %line = %points. [ $+ [ $1 ] $+ ] .lines
-    set %points. $+ $1 $+ .names $+ %line %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %line ] ]  $2
-    set %points. $+ $1 $+ .points $+ %line %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ]  1
+    set %points. $+ $1 $+ .names $+ %line %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %line ] ] $2
+    set %points. $+ $1 $+ .points $+ %line %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ] 1
+    set %points. $+ $1 $+ .minutes $+ %line %points. [ $+ [ $1 ] $+ ] .minutes [ $+ [ %line ] ] 1
   }
 }
 
@@ -98,8 +144,4 @@ alias points.findname {
   return 0
 }
 
-on *:text:!ptesting*:#:{
-  set %points.#imagrill.minutes1 %points.#imagrill.points1
-  set %points.#imagrill.minutes2 %points.#imagrill.points2
-  set %points.#imagrill.minutes3 %points.#imagrill.points3
-}
+on *:text:!ptesting*:#:{}

@@ -1,0 +1,101 @@
+
+;
+;https://www.googleapis.com/youtube/v3/videos?id=VIDEOID&key=***REMOVED***&part=snippet,contentDetails,statistics
+;***REMOVED***
+
+on *:text:*youtube.com/watch?v=*:#: {
+  noop $regex($strip($1-),.*youtube.*\/watch\?v=(.{11})&?.*)
+  var %videoid = $regml(1)
+  var %url = https://www.googleapis.com/youtube/v3/videos?id= $+ %videoid $+ &key=***REMOVED***&part=snippet,contentDetails,statistics
+  if ($json(%url,pageInfo,totalResults)) {
+    var %title = $json(%url,items,0,snippet,title)
+    noop $regex($json(%url,items,0,contentDetails,duration),P([0-9]*Y)?([0-9]*M)?([0-9]*W)?([0-9]*D)?T([0-9]*H)?([0-9]*M)?([0-9]*S))
+    var %counter = $regml(0)
+    var %length
+    while (%counter != 0) {
+      %length = $lower($regml(%counter)) %length
+      dec %counter
+    }
+    var %likes = $json(%url,items,0,statistics,likeCount)
+    var %dislikes = $json(%url,items,0,statistics,dislikeCount)
+    var %likepercentage = $round($calc(%likes / (%likes + %dislikes) * 100), 2)
+    %likes = $bytes(%likes,bd)
+    %dislikes = $bytes(%dislikes,bd)
+    var %views = $bytes($json(%url,items,0,statistics,viewCount),bd)
+    var %channel = $json(%url,items,0,snippet,channelTitle)
+    noop $regex($strip($json(%url,items,0,snippet,publishedAt)),(.*)T.*)
+    var %published = $regml(1)
+    msg # ( $+ $capital($nick) $+ ) %title $chr(124) Length: %length $chr(124) Likes: %likes $+ , Dislikes: %dislikes ( $+ %likepercentage $+ $chr(37) $+ ) $chr(124) Views: %views $chr(124) %channel on %published
+  }
+  else { msg # ( $+ $capital($nick) $+ ) Video not found. }
+}
+
+on *:text:!twitterapitest:#: { 
+  sockclose twitterapi
+  set %twitterapi.channel $chan
+  sockopen -e twitterapi api.twitter.com 443
+}
+
+on *:SOCKOPEN:twitterapi: {
+  sockwrite -n $sockname GET /1.1/statuses/show.json?id=646753423136677890 HTTP/1.1
+  sockwrite -n $sockname Host: api.twitter.com
+  sockwrite -n $sockname Authorization: Bearer ***REMOVED***
+  sockwrite -n $sockname
+}
+
+on *:SOCKREAD:twitterapi: {
+  if (!$sockerr) {
+    while (1) {
+      var %temp
+      sockread %temp
+      echo -ag sockread: %temp
+      if ($sockbr == 0) {
+        echo -ag sockread: %temp
+        echo -ag $sock($sockname).rq
+        sockclose twitterapi
+        return
+      }
+    }
+  }
+}
+
+/*
+on *:text:!twitterapitest:#: { 
+  sockclose twitterapi
+  set %twitterapi.channel $chan
+  sockopen -e twitterapi api.twitter.com 443
+}
+
+on *:SOCKOPEN:twitterapi: {
+  sockwrite -n $sockname POST /oauth2/token HTTP/1.1
+  sockwrite -n $sockname Host: api.twitter.com
+  sockwrite -n $sockname Authorization: Basic ***REMOVED***
+  sockwrite -n $sockname Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+  sockwrite -n $sockname Content-Length: 29
+  sockwrite -n $sockname
+  sockwrite $sockname grant_type=client_credentials
+}
+
+on *:SOCKREAD:twitterapi: {
+  if (!$sockerr) {
+    while (1) {
+      var %temp
+      sockread %temp
+      if (*bearer* iswm %temp) {
+        echo -ag sockread: %temp
+        sockclose twitterapi
+        return
+      }
+    }
+  }
+}
+
+on *:sockclose:twitterapi: {
+  if (!$sockerr) {
+    var %a
+    sockread -f %a
+    if ($sockbr == 0) return
+    echo -a > %a
+  }
+}
+*/
