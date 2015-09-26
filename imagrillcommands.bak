@@ -2,7 +2,7 @@
 ;
 on *:text:!altstats*:#imagrill:{ msg # http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=arts+go+rawr }
 ; http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=nomondwagons
-on *:text:!artsdictionary2*:#imagrill: { msg # Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. Skelington. Tunce. Milay. Edimoo. Right Meow. }
+on *:text:!artsdictionary2*:#imagrill: { msg # Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. Skelington. Tunce. Milay. Edimoo. Right Meow. Pershon. }
 on *:text:!artsdictionary*:#imagrill: { msg # Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. Quantent. Horsebirdunicorndonkey. Chaotic Bandos Helm. Wooden Bronze Bar. Dagonfoot. }
 ;on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 8 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 8 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 8 + $daylight),ddd) $+ .) in Southern California (UTC- $+ $calc(8 - $daylight / 3600) $+ ). }
 on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 5 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 5 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 5 + $daylight),ddd) $+ .) in the Eastern Time Zone (UTC- $+ $calc(5 - $daylight / 3600) $+ ). }
@@ -109,7 +109,7 @@ on *:text:!mrsanderstorm*:#imagrill:{ msg # Mrs. Anderstorm }
 on *:text:!stats*:#imagrill:{ var %return = $on/off($1, $2, !stats, $imagrill.stats) }
 ;on *:text:!dad*:#imagrill:{ var %return = $on/off($1, $2, !dad, Arts's father has a condition called trigeminal neuralgia - http://en.wikipedia.org/wiki/Trigeminal_neuralgia More people commit suicide due to the pain this causes than anything else.) }
 on *:text:!are*:#imagrill:{ msg # We aren't are - Arts }
-on *:text:!omid*:#imagrill:{ msg # OMID EXPOSED :( http://imgur.com/GGslRLF }
+on *:text:!omid*:#imagrill:{ msg # OMID EXPOSED :( http://imgur.com/GGslRLF http://imgur.com/jPPPncs }
 on *:text:*show tits*:#imagrill:{ msg # https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg }
 
 on *:text:!h:#imagrill:{ msg # !delcom !h }
@@ -117,6 +117,17 @@ on *:text:!harm:#imagrill:{ msg # !delcom !harm }
 on *:text:!herm:#imagrill:{ msg # !delcom !herm }
 on *:text:!hermy:#imagrill:{ msg # !delcom !hermy }
 on *:text:!hermit:#imagrill:{ msg # !delcom !hermit }
+
+on *:text:!like*:#:{
+  var %words = $numtok($2-, 32)
+  var %counter = 1
+  var %output = like $2-
+  while (%counter < %words) {
+    %output = $instok(%output, like, $calc(%counter * 2 + 1), 32)
+    inc %counter
+  }
+  noop $on/off($1, $2, !like, %output)
+}
 
 ; mew http://puu.sh/iS3DJ/f9ecf90d69.jpg
 ; http://imgur.com/yJiAs8G

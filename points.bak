@@ -18,23 +18,28 @@ on *:text:!points*:#:{
       if ($3 isnum && $3 <= 100) { var %top_number = $int($3) }
       else { var %top_number = 10 }
       var %top_list = Top: 
-      var %lines = %points. [ $+ [ $chan ] $+ ] .lines
       var %counter = 1
-      var %all_names
-      var %all_points
-      while (%counter <= %lines) {
-        %all_points = %all_points %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %counter ] ]
+      var %top_sorted_points
+      $points.writefiles($chan)
+      while (%counter <= %top_number) {
+        var %top_sorted_points = %top_sorted_points $read( [ points. [ $+ [ $chan ] $+ ] .sorted.txt ] , nt, %counter)
         inc %counter
       }
-      var %sorted_points = $sorttok(%all_points, 32, nr)
-      var %top_sorted_points = $gettok(%sorted_points, 1- $+ [ %top_number ], 32)
       var %previous = -1
       var %same_count = 0
       while ($numtok(%top_sorted_points, 32) > 0) {
         var %number = $gettok(%top_sorted_points, 1, 32)
         if (%previous == %number) { inc %same_count }
         else { %same_count = 0 }
-        var %name_number = $findtok(%all_points, %number, $calc(1 + %same_count), 32)
+        ;var %name_number = $findtok(%all_points, %number, $calc(1 + %same_count), 32)
+        noop $read( [ points. [ $+ [ $chan ] $+ ] .txt ] , nst, %number)
+        var %name_number = $readn
+        %counter = %same_count
+        while (%counter) {
+          noop $read( [ points. [ $+ [ $chan ] $+ ] .txt ] , nst, %number, $calc($readn + 1))
+          %name_number = $readn
+          dec %counter
+        }
         %counter = 1
         while (%name_number > $numtok(%points. [ $+ [ $chan ] $+ ] .names [ $+ [ %counter ] ], 32)) {
           %name_number = %name_number - $numtok(%points. [ $+ [ $chan ] $+ ] .names [ $+ [ %counter ] ], 32)
@@ -51,15 +56,7 @@ on *:text:!points*:#:{
       var %line = $points.findname($chan, $2)
       var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $2, 1, 32)
       var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
-      var %all_points
-      var %counter = 1
-      var %lines = %points. [ $+ [ $chan ] $+ ] .lines
-      while (%counter <= %lines) {
-        %all_points = %all_points %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %counter ] ]
-        inc %counter
-      }
-      var %sorted_points = $sorttok(%all_points, 32, nr)
-      var %rank = $findtok(%sorted_points, %points, 1, 32)
+      var %rank = $points.findrank($chan, %points)
       msg # $capital($2) is rank %rank with %points points.
     }
     elseif ($nick == $mid($chan,2-) || $nick == harmon758) {
@@ -83,15 +80,7 @@ on *:text:!points*:#:{
     var %line = $points.findname($chan, $nick)
     var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $nick, 1, 32)
     var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
-    var %all_points
-    var %counter = 1
-    var %lines = %points. [ $+ [ $chan ] $+ ] .lines
-    while (%counter <= %lines) {
-      %all_points = %all_points %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %counter ] ]
-      inc %counter
-    }
-    var %sorted_points = $sorttok(%all_points, 32, nr)
-    var %rank = $findtok(%sorted_points, %points, 1, 32)
+    var %rank = $points.findrank($chan, %points)
     msg # $capital($nick) $+ , you are rank %rank with %points points.
   }
 }
@@ -115,6 +104,16 @@ alias points {
   }
 }
 
+alias points.findname {
+  var %lines = %points. [ $+ [ $1 ] $+ ] .lines
+  var %counter = 1
+  while (%counter <= %lines) {
+    if ($findtok( [ %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %counter ] ] ] , $2, 0, 32) == 1) { return %counter }
+    inc %counter
+  }
+  return 0
+}
+
 alias points.processname {
   if ($points.findname($1, $2)) {
     var %line = $points.findname($1, $2)
@@ -134,16 +133,28 @@ alias points.processname {
   }
 }
 
-alias points.findname {
+alias points.writefiles {
   var %lines = %points. [ $+ [ $1 ] $+ ] .lines
   var %counter = 1
+  write -c points. [ $+ [ $1 ] $+ ] .txt
+  write -c points. [ $+ [ $1 ] $+ ] .sorted.txt
   while (%counter <= %lines) {
-    if ($findtok( [ %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %counter ] ] ] , $2, 0, 32) == 1) { return %counter }
+    var %numberofpoints = $numtok( [ %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %counter ] ] ] , 32)
+    var %counter2 = 1
+    while (%counter2 <= %numberofpoints) {
+      write points. [ $+ [ $1 ] $+ ] .txt  $gettok( [ %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %counter ] ] ] , %counter2, 32)
+      inc %counter2
+    }
     inc %counter
   }
-  return 0
+  filter -ffcute 1 32 points. [ $+ [ $1 ] $+ ] .txt points. [ $+ [ $1 ] $+ ] .sorted.txt
 }
 
-on *:text:!ptesting*:#:{
-
+alias points.findrank {
+  $points.writefiles($1)
+  noop $read(points. [ $+ [ $1 ] $+ ] .sorted.txt, nst, $2)
+  if ($readn) { return $readn }
+  else { return -1 }
 }
+
+on *:text:!ptesting*:#:{  }

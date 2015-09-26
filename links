@@ -1,6 +1,9 @@
 
+; ***REMOVED***
+; links/api's
 ;
 ;https://www.googleapis.com/youtube/v3/videos?id=VIDEOID&key=***REMOVED***&part=snippet,contentDetails,statistics
+;***REMOVED***
 ;***REMOVED***
 
 on *:text:*youtube.com/watch?v=*:#: {
@@ -30,6 +33,44 @@ on *:text:*youtube.com/watch?v=*:#: {
   else { msg # ( $+ $capital($nick) $+ ) Video not found. }
 }
 
+on *:text:!longurl*:#: {
+  if ($nick isop #) && ($2) {
+    var %url = http://api.longurl.org/v2/expand?url= $+ $2 $+ &title=1&format=json
+    if ($json(%url, title)) { msg # $json(%url, title) $+ : $json(%url, long-url) }
+    else { msg # $json(%url, long-url) }
+  }
+}
+
+on *:text:!translate*:#: {
+  var %url = https://translate.yandex.net/api/v1.5/tr.json/translate?key=***REMOVED***&lang=en&text= $+ $2-
+  msg # $json(%url, text, 0)
+}
+
+on *:text:!news*:#: {
+  if (!$2) { msg # $capital($nick) $+ , please enter a search parameter. } | return
+  var %url = https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q= $+ $2-
+  var %results = $json(%url, responseData, results, 0)
+  if (%results) {
+    var %content = $json(%url, responseData, results, 0, content)
+    var %unescapedurl = $json(%url, responseData, results, 0, unescapedUrl)
+    var %title = $json(%url, responseData, results, 0, titleNoFormatting)
+    var %publisher = $json(%url, responseData, results, 0, publisher)
+    var %date = $json(%url, responseData, results, 0, publishedDate)
+    msg # ( $+ $capital($nick) $+ ) %title $+ : %content
+    msg # %publisher on %date $chr(124) %unescapedurl
+  }
+  else { msg # ( $+ $capital($nick) $+ ) No news results found. }
+}
+
+on *:text:*http*:#: {
+  noop $regex($strip($1-),.*https?:\/\/(.*) )
+  var %url = http://decenturl.com/api-title?u= $+ $regml(1)
+  var %title = $json(%url, 1)
+  msg # ( $+ $capital($nick) $+ ) Title: %title )
+}
+
+;---
+
 on *:text:!twitterapitest:#: { 
   sockclose twitterapi
   set %twitterapi.channel $chan
@@ -40,7 +81,7 @@ on *:SOCKOPEN:twitterapi: {
   sockwrite -n $sockname GET /1.1/statuses/show.json?id=646753423136677890 HTTP/1.1
   sockwrite -n $sockname Host: api.twitter.com
   sockwrite -n $sockname Authorization: Bearer ***REMOVED***
-  sockwrite -n $sockname
+  sockwrite -n $sockname $crlf
 }
 
 on *:SOCKREAD:twitterapi: {
@@ -56,6 +97,15 @@ on *:SOCKREAD:twitterapi: {
         return
       }
     }
+  }
+}
+
+on *:sockclose:twitterapi: {
+  if (!$sockerr) {
+    var %a
+    sockread -f %a
+    if ($sockbr == 0) return
+    echo -a > %a
   }
 }
 

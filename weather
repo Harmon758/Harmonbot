@@ -17,6 +17,8 @@
 ;http://www.hawkee.com/snippet/7010/
 ;
 ; commands: !alert !alertinfo !alerts !alertsinfo !almanac !current !forecast !forecast[1-10] !time !weather
+;
+; http://www.wunderground.com/?apiref=9c058cf3508b0cc4
 
 /*
 -- COMMANDS --

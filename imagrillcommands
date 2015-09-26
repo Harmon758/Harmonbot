@@ -77,15 +77,15 @@ on *:text:!yawn*:#imagrill:{ msg # Yawwwwwn }
 on $*:text:/^[!]\72(3)/Si:#imagrill:{ msg # http://puu.sh/iE7ik.jpg }
 
 
-on $*:text:/.*\72\|/Si:#imagrill:{ var %return = $on/off($1, $2, -.-, http://imgur.com/cbgVzj7, :|) }
-on *:text:*-.-*:#imagrill:{ var %return = $on/off($1, $2, -.-, http://imgur.com/cbgVzj7) }
-on $*:text:/.*\72(3)/Si:#imagrill:{ var %return = $on/off($1, $2, :3, http://puu.sh/iE7ik.jpg) }
+on $*:text:/.*\72\|/Si:#imagrill:{ noop $on/off($1, $2, -.-, http://imgur.com/cbgVzj7, :|) }
+on *:text:*-.-*:#imagrill:{ noop $on/off($1, $2, -.-, http://imgur.com/cbgVzj7) }
+on $*:text:/.*\72(3)/Si:#imagrill:{ noop $on/off($1, $2, :3, http://puu.sh/iE7ik.jpg) }
 on *:text:!addcom !h harmo pls:#imagrill:{ msg # !delcom !h }
-on $*:text:/.*\72p/Si:#imagrill:{ var %return = $on/off($1, $2, :P, http://imgur.com/p3GH9uE http://imgur.com/xpCiJKh) }
-on *:text:*banana*:#imagrill:{ var %return = $on/off($1, $2, banana, BANANA http://imgur.com/TtRH7vU http://imgur.com/kTX3qa1) }
-on *:text:*failfish*:#imagrill:{ var %return = $on/off($1, $2, failfish, http://imgur.com/CtscIDh) }
+on $*:text:/.*\72p/Si:#imagrill:{ noop $on/off($1, $2, :P, http://imgur.com/p3GH9uE http://imgur.com/xpCiJKh) }
+on *:text:*banana*:#imagrill:{ noop $on/off($1, $2, banana, BANANA http://imgur.com/TtRH7vU http://imgur.com/kTX3qa1) }
+on *:text:*failfish*:#imagrill:{ noop $on/off($1, $2, failfish, http://imgur.com/CtscIDh) }
 on *:text:*lick it*:#imagrill:{ msg # http://imgur.com/aCqNXmV }
-on *:text:*yawn*:#imagrill:{ var %return = $on/off($1, $2, yawn, Yawwwwwn) }
+on *:text:*yawn*:#imagrill:{ noop $on/off($1, $2, yawn, Yawwwwwn) }
 
 
 on *:text:!fingerscrossed*:#imagrill:{ msg # http://imgur.com/vmQCJ2L }
@@ -106,10 +106,10 @@ on *:text:!green*:#imagrill:{ msg # Green = Blue }
 on *:text:!knees*:#imagrill:{ msg # Those patellas. }
 on *:text:!mrsanderstorm*:#imagrill:{ msg # Mrs. Anderstorm }
 ; on *:text:!12h*:#imagrill:{ msg # $my_duration($timeleft($ctime(July 19 2015 03:11:00))) until 12 hour stream ends! }
-on *:text:!stats*:#imagrill:{ var %return = $on/off($1, $2, !stats, $imagrill.stats) }
-;on *:text:!dad*:#imagrill:{ var %return = $on/off($1, $2, !dad, Arts's father has a condition called trigeminal neuralgia - http://en.wikipedia.org/wiki/Trigeminal_neuralgia More people commit suicide due to the pain this causes than anything else.) }
+on *:text:!stats*:#imagrill:{ noop $on/off($1, $2, !stats, $imagrill.stats) }
+;on *:text:!dad*:#imagrill:{ noop $on/off($1, $2, !dad, Arts's father has a condition called trigeminal neuralgia - http://en.wikipedia.org/wiki/Trigeminal_neuralgia More people commit suicide due to the pain this causes than anything else.) }
 on *:text:!are*:#imagrill:{ msg # We aren't are - Arts }
-on *:text:!omid*:#imagrill:{ msg # OMID EXPOSED :( http://imgur.com/GGslRLF }
+on *:text:!omid*:#imagrill:{ msg # OMID EXPOSED :( http://imgur.com/GGslRLF http://imgur.com/jPPPncs }
 on *:text:*show tits*:#imagrill:{ msg # https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg }
 
 on *:text:!h:#imagrill:{ msg # !delcom !h }
@@ -117,6 +117,17 @@ on *:text:!harm:#imagrill:{ msg # !delcom !harm }
 on *:text:!herm:#imagrill:{ msg # !delcom !herm }
 on *:text:!hermy:#imagrill:{ msg # !delcom !hermy }
 on *:text:!hermit:#imagrill:{ msg # !delcom !hermit }
+
+on *:text:!like*:#:{
+  var %words = $numtok($2-, 32)
+  var %counter = 1
+  var %output = like $2-
+  while (%counter < %words) {
+    %output = $instok(%output, like, $calc(%counter * 2 + 1), 32)
+    inc %counter
+  }
+  noop $on/off($1, $2, !like, %output)
+}
 
 ; mew http://puu.sh/iS3DJ/f9ecf90d69.jpg
 ; http://imgur.com/yJiAs8G
