@@ -1,22 +1,17 @@
 ; ***REMOVED***
 ;
 on *:text:!99rc*:#mikkiscape:{ msg # 99 RC Highlight: http://www.twitch.tv/mikkiscape/v/3734516 }
-on *:text:!bday*:#mikkiscape:{ msg # $my_duration($timeleft($ctime(December 20 2015 10:00:00))) until Mikki's birthday! }
+on *:text:!bday*:#mikkiscape:{ msg # $my_duration($timeleft($ctime(December 20 2016 10:00:00))) until Mikki's birthday! }
 on *:text:!caught*:#mikkiscape:{
   if ($2 == random) { msg # Mikki has caught a wild $randomviewer $+ ! }
   elseif ($2) { msg # Mikki has caught a wild $capital($2-) $+ ! }
   else { msg # Mikki has caught a wild $capital($nick) $+ ! }
 }
-on *:text:!clan*:#mikkiscape:{ msg # $clan }
+;on *:text:!clan*:#mikkiscape:{ msg # $clan }
 on *:text:!cml*:#mikkiscape:{ msg # $cml }
-on *:text:!con*:#mikkiscape:{ msg # $construction }
 on *:text:!emotes*:#mikkiscape:{ msg # $emotes }
-on *:text:!fish*:#mikkiscape:{ msg # $fishing }
-on *:text:!fletch*:#mikkiscape:{ msg # $fletching }
 on *:text:!glory*:#mikkiscape:{ msg # Don't kill yourself, Mikki. }
 on *:text:!links*:#mikkiscape:{ msg # $links }
-on *:text:!mine*:#mikkiscape:{ msg # $mining }
-on *:text:!mining*:#mikkiscape:{ msg # $mining }
 on *:text:!mikkitime*:#mikkiscape:{ msg # It is currently $asctime($calc($gmt + 3600 * 8),h:nn tt) on $asctime($calc($gmt + 3600 * 8),mmmm d) in Western Australia (GMT+8). }
 on *:text:!mikki*:#mikkiscape:{ msg # Mikki is awesome~ }
 on *:text:!music*:#mikkiscape:{ msg # $music }
@@ -25,19 +20,39 @@ on *:text:!pi*:#mikkiscape:{
   else { msg # 3.14 }
 }
 on *:text:!pouch*:#mikkiscape:{ msg # $repair }
-on *:text:!pray*:#mikkiscape:{ msg # $prayer }
-on *:text:!rc*:#mikkiscape:{ msg # $rc }
 on *:text:!repair*:#mikkiscape: { msg # $repair }
 on *:text:!rotation*:#mikkiscape:{ msg # Meilyr -> Hefin -> (Bank) Crwys (Bank) -> Cadarn -> Amlodd -> Trahaearn (Bank) --- VOS @ Iorwerth or Ithell - Do instead of Cadarn }
-on *:text:!runecrafting*:#mikkiscape:{ msg # $rc }
 on *:text:!runetracker*:#:{ msg # $runetracker }
 on *:text:!skype*:#mikkiscape:{ msg # skype.xp }
-on *:text:!slay*:#mikkiscape:{ msg # $slayer }
 on *:text:!spotify*:#mikkiscape:{ msg # $music }
-on *:text:!stats*:#mikkiscape:{ msg # $stats }
+on *:text:!stats*:#mikkiscape:{
+  if ($2- == fe mikki) { msg # Fe Mikki (RS3 Ironman) http://indecentcode.com/hs/index.php?id=fe+mikki }
+  elseif ($2- == mik is 1000k) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=mik+is+1000k }
+  elseif ($3) { 
+    if ($2 == mikki || $2 == makster || $2 == gumnut || $2 == crystalmikki || $2 == mikkiberg888 || $2 == discomikki13 || $2 == mikkibrim) { noop $hiscores($1, $2, $3, rs3, $4) }
+    elseif ($2 == mik && $3 == is && $4 == 1000k) { noop $hiscores($1, mik_is_1000k, $5, rs3, $6) }
+    elseif ($2 == aru || $2 == alakhim) { noop $hiscores($1, $2, $3, 07, $4) }
+    elseif ($2 == fe mikki) { noop $hiscores($1, fe_mikki, $4, rs3ironman, $5) }
+    else {
+      msg # Please specify an account. Accounts: Mikki, Aru, Fe Mikki, Alakhim, Mik is 1000k, Mikonor, Makster, Gumnut, CrystalMikki, Mikkiberg888, DiscoMikki13, Mikkibrim
+      return
+    }
+    set %channel #
+    timer 1 2 hiscores_print
+  }
+  elseif ($2 == mikki) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=mikki }
+  elseif ($2 == aru) { msg # Aru (OSRS Main) http://www.indecentcode.com/oldschool/index.php?id=aru }
+  elseif ($2 == alakhim) { msg # Alakhim (OSRS Alt) http://indecentcode.com/oldschool/index.php?id=alahkim }
+  elseif ($2 == mikonor) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=mikonor }
+  elseif ($2 == makster) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=makster }
+  elseif ($2 == gumnut) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=gumnut }
+  elseif ($2 == crystalmikki) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=crystalmikki }
+  elseif ($2 == mikkiberg888) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=mikkiberg888 }
+  elseif ($2 == discomikki13) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=discomikki13 }
+  elseif ($2 == mikkibrim) { msg # Mikki (RS3 Main) http://www.indecentcode.com/hs/index.php?id=mikkibrim }
+  else { msg # Please specify an account. Accounts: Mikki, Aru, Fe Mikki, Alakhim, Mik is 1000k, Mikonor, Makster, Gumnut, CrystalMikki, Mikkiberg888, DiscoMikki13, Mikkibrim }
+}
 on *:text:!subscribe*:#mikkiscape:{ msg # $suscribe }
-on *:text:!thief*:#mikkiscape:{ msg # $thieving }
-on *:text:!thieving*:#mikkiscape:{ msg # $thieving }
 on *:text:!tick*:#mikkiscape:{
   inc %ticks
   msg # Mikki has wasted %ticks ticks. http://i.imgur.com/bSCnFb1.png
@@ -53,17 +68,8 @@ on *:text:*alt*:#mikkiscape:{ var %msg = $on/off($1, $2, alt, Bad $capital($nick
 alias clan return || RS3 Clan || http://services.runescape.com/m=clan-home/clan/Gum || OSRS Clan || http://services.runescape.com/m=forum/forums.ws?320,321,920,65349188
 alias cml return http://crystalmathlabs.com/tracker/track.php?player=aru
 alias emotes return http://puu.sh/b1hyR.jpg
-alias fishing return Main: 20m || OSRS: 99/99 || Ironman: 83/99
-alias fletching return Main: 44m || OSRS: 68/99 || Ironman: 77/99
-alias links return Twitter: https://twitter.com/mikkiscape YouTube: https://www.youtube.com/user/mikscape
-alias mining return Main: 119m || OSRS: 99/99 || Ironman: 61/99
+alias links return Twitter: https://twitter.com/mikki_rs Tumblr: http://mikki-rs.tumblr.com/ YouTube: https://www.youtube.com/user/mikscape
 alias music return http://open.spotify.com/user/mikkirs/playlist/5OBCdMNiGiTRGL0cqWL9CT
-alias prayer return Main: 37m || OSRS: 99/99 || Ironman: 51/99
-alias rc return Main: 33m || OSRS: 99/99 || Ironman: 91/99
 alias repair return REPAIR POUCH! REPAIR POUCH! REPAIR POUCH! REPAIR POUCH!
 alias runetracker return || Main || http://runetracker.org/track-mikki || Ironman || http://runetracker.org/track-fe+mikki
-alias slayer return Main: 200m || OSRS: 62/99 || Ironman: 61/99
-alias stats return || Main || http://www.indecentcode.com/hs/index.php?id=mikki --- || OSRS || http://www.indecentcode.com/oldschool/index.php?id=aru || Ironman || http://indecentcode.com/hs/index.php?id=fe+mikki ----- || OSRS Alt || http://indecentcode.com/oldschool/index.php?id=alahkim
-alias thieving return Main: 143m || OSRS: 99/99 || Ironman: 70/99
-alias totalxp return Main: 2.48b || OSRS: 164m || Ironman: 40m
 alias suscribe return https://secure.twitch.tv/products/mikkiscape/ticket

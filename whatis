@@ -96,6 +96,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !ozttooz) { msg # Use !ozttooz _ to convert from troy ounces (oz t) to ounces (oz). }
   elseif ($2 == !pi) { msg # Use !pi for an approximate value of pi. }
   elseif ($2 == pmfornudes) { msg # PM him for nud's }
+  elseif ($2 == !points) { msg # You get 1 point for every minute that you are watching the stream while it's online. As of right now, they're not used for anything. }
   elseif ($2 == !poke) { msg # Use !poke _ to poke someone. }
   elseif ($2 == !pouch) { msg # Use !pouch to remind Mikki to repair her pouch. }
   elseif ($2 == !puppy) { msg # See !puppy }
@@ -136,5 +137,5 @@ on *:text:!whatis*:#:{
     msg # $2- = $calc($2-)
   }
   elseif ($define($2)) { msg # $capital(%define_word) $+ : $define($2) }
-  else { msg # I don't know what that is. Try $rswiki($2-) or $rswiki07($2-) or $wiki($2-) }
+  else { msg # I don't know what that is. Try !google !wiki !rswiki !rswiki07 }
 }

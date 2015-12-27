@@ -34,7 +34,7 @@ on *:text:!fail*:#imagrill:{
 }
 on *:text:!fortune*:#imagrill:{ msg # ☺ The time is right to make new friends. ☺ http://imgur.com/miulgIl }
 on *:text:!googer*:#imagrill: { msg # google.com/search?q= $+ $replace($2-,$chr(32),$chr(43)) "RAISE YOUR GOOGERS" -Arts }
-on *:text:!hair*:#imagrill:{ msg # Arts is cosplaying as a Rune Dragon that turned into an Adamant Dragon }
+on *:text:!hair*:#:{ msg # Arts is cosplaying as a R̶u̶n̶e̶ ̶D̶r̶a̶g̶o̶n̶ A̶d̶a̶m̶a̶n̶t̶ ̶D̶r̶a̶g̶o̶n̶ Red/Black Dragon }
 on *:text:!humage*:#imagrill:{ msg # We are only humage. -Arts }
 on *:text:!modabuse*:#imagrill:{ msg # "I literally stomped on Kae" "I wrecked his face so hard" -Arts }
 on *:text:!moo*:#imagrill:{ msg # "The cat moo'ed. It's not even dead." http://gyazo.com/52073e6b1de0066bf63d779768abe5c1 }
@@ -42,7 +42,7 @@ on *:text:!muted*:#imagrill:{ msg # MIC MUTED! }
 on *:text:!nudrage*:#imagrill:{ msg # http://gfycat.com/RightDeliriousFairyfly https://www.youtube.com/watch?v=MybuZImohq4 }
 on *:text:!omg*:#imagrill:{ msg # "I swear to the banana god" -Arts }
 on *:text:!p:#imagrill:{ msg # PMForNud pls }
-on *:text:!pets*:#imagrill:{ msg # Eddy + Legio Secundulus + Prime Hatchling }
+on *:text:!pets*:#imagrill:{ msg # Pets (KC): Eddy (~30) + Legio Secundulus (167) + Prime Hatchling (2000) }
 on *:text:!pudding*:#imagrill:{ msg # The pudding is mightier than the sword. -Compa }
 on $*:text:/^[!](rebirth1|re;birth1)/Si:#imagrill:{ msg # http://hyperdimensionneptunia.wikia.com/wiki/Hyperdimension_Neptunia_Re;Birth_1 }
 on *:text:!save*:#imagrill:{ msg # Don't forget to l̶o̶a̶d̶ save. }
@@ -77,15 +77,15 @@ on *:text:!yawn*:#imagrill:{ msg # Yawwwwwn }
 on $*:text:/^[!]\72(3)/Si:#imagrill:{ msg # http://puu.sh/iE7ik.jpg }
 
 
-on $*:text:/.*\72\|/Si:#imagrill:{ var %return = $on/off($1, $2, -.-, http://imgur.com/cbgVzj7, :|) }
-on *:text:*-.-*:#imagrill:{ var %return = $on/off($1, $2, -.-, http://imgur.com/cbgVzj7) }
-on $*:text:/.*\72(3)/Si:#imagrill:{ var %return = $on/off($1, $2, :3, http://puu.sh/iE7ik.jpg) }
+on $*:text:/.*\72\|/Si:#imagrill:{ noop $on/off($1, $2, -.-, http://imgur.com/cbgVzj7, :|) }
+on *:text:*-.-*:#imagrill:{ noop $on/off($1, $2, -.-, http://imgur.com/cbgVzj7) }
+on $*:text:/.*\72(3)/Si:#imagrill:{ noop $on/off($1, $2, :3, http://puu.sh/iE7ik.jpg) }
 on *:text:!addcom !h harmo pls:#imagrill:{ msg # !delcom !h }
-on $*:text:/.*\72p/Si:#imagrill:{ var %return = $on/off($1, $2, :P, http://imgur.com/p3GH9uE http://imgur.com/xpCiJKh) }
-on *:text:*banana*:#imagrill:{ var %return = $on/off($1, $2, banana, BANANA http://imgur.com/TtRH7vU http://imgur.com/kTX3qa1) }
-on *:text:*failfish*:#imagrill:{ var %return = $on/off($1, $2, failfish, http://imgur.com/CtscIDh) }
+on $*:text:/.*\72p/Si:#imagrill:{ noop $on/off($1, $2, :P, http://imgur.com/p3GH9uE http://imgur.com/xpCiJKh) }
+on *:text:*banana*:#imagrill:{ noop $on/off($1, $2, banana, BANANA http://imgur.com/TtRH7vU http://imgur.com/kTX3qa1) }
+on *:text:*failfish*:#imagrill:{ noop $on/off($1, $2, failfish, http://imgur.com/CtscIDh) }
 on *:text:*lick it*:#imagrill:{ msg # http://imgur.com/aCqNXmV }
-on *:text:*yawn*:#imagrill:{ var %return = $on/off($1, $2, yawn, Yawwwwwn) }
+on *:text:*yawn*:#imagrill:{ noop $on/off($1, $2, yawn, Yawwwwwn) }
 
 
 on *:text:!fingerscrossed*:#imagrill:{ msg # http://imgur.com/vmQCJ2L }
@@ -106,8 +106,8 @@ on *:text:!green*:#imagrill:{ msg # Green = Blue }
 on *:text:!knees*:#imagrill:{ msg # Those patellas. }
 on *:text:!mrsanderstorm*:#imagrill:{ msg # Mrs. Anderstorm }
 ; on *:text:!12h*:#imagrill:{ msg # $my_duration($timeleft($ctime(July 19 2015 03:11:00))) until 12 hour stream ends! }
-on *:text:!stats*:#imagrill:{ var %return = $on/off($1, $2, !stats, $imagrill.stats) }
-;on *:text:!dad*:#imagrill:{ var %return = $on/off($1, $2, !dad, Arts's father has a condition called trigeminal neuralgia - http://en.wikipedia.org/wiki/Trigeminal_neuralgia More people commit suicide due to the pain this causes than anything else.) }
+on *:text:!stats*:#imagrill:{ noop $on/off($1, $2, !stats, $imagrill.stats) }
+;on *:text:!dad*:#imagrill:{ noop $on/off($1, $2, !dad, Arts's father has a condition called trigeminal neuralgia - http://en.wikipedia.org/wiki/Trigeminal_neuralgia More people commit suicide due to the pain this causes than anything else.) }
 on *:text:!are*:#imagrill:{ msg # We aren't are - Arts }
 on *:text:!omid*:#imagrill:{ msg # OMID EXPOSED :( http://imgur.com/GGslRLF http://imgur.com/jPPPncs }
 on *:text:*show tits*:#imagrill:{ msg # https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg }
@@ -117,6 +117,18 @@ on *:text:!harm:#imagrill:{ msg # !delcom !harm }
 on *:text:!herm:#imagrill:{ msg # !delcom !herm }
 on *:text:!hermy:#imagrill:{ msg # !delcom !hermy }
 on *:text:!hermit:#imagrill:{ msg # !delcom !hermit }
+
+on *:text:!dsdeaths*:#imagrill:{
+  if ($nick isop #) && ($2 == inc) {
+    inc %arts.dsdeaths
+    msg # Arts has died %arts.dsdeaths times.
+  }
+  else { msg # Arts has died %arts.dsdeaths times. }
+}
+on *:text:!mic*:#imagrill:{
+  inc %arts.mic
+  msg # Arts's mic has acted up %arts.mic times
+}
 
 on *:text:!like*:#:{
   var %words = $numtok($2-, 32)

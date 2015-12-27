@@ -34,7 +34,7 @@ on *:text:!fail*:#imagrill:{
 }
 on *:text:!fortune*:#imagrill:{ msg # ☺ The time is right to make new friends. ☺ http://imgur.com/miulgIl }
 on *:text:!googer*:#imagrill: { msg # google.com/search?q= $+ $replace($2-,$chr(32),$chr(43)) "RAISE YOUR GOOGERS" -Arts }
-on *:text:!hair*:#imagrill:{ msg # Arts is cosplaying as a Rune Dragon that turned into an Adamant Dragon }
+on *:text:!hair*:#:{ msg # Arts is cosplaying as a R̶u̶n̶e̶ ̶D̶r̶a̶g̶o̶n̶ A̶d̶a̶m̶a̶n̶t̶ ̶D̶r̶a̶g̶o̶n̶ Red/Black Dragon }
 on *:text:!humage*:#imagrill:{ msg # We are only humage. -Arts }
 on *:text:!modabuse*:#imagrill:{ msg # "I literally stomped on Kae" "I wrecked his face so hard" -Arts }
 on *:text:!moo*:#imagrill:{ msg # "The cat moo'ed. It's not even dead." http://gyazo.com/52073e6b1de0066bf63d779768abe5c1 }
@@ -42,7 +42,7 @@ on *:text:!muted*:#imagrill:{ msg # MIC MUTED! }
 on *:text:!nudrage*:#imagrill:{ msg # http://gfycat.com/RightDeliriousFairyfly https://www.youtube.com/watch?v=MybuZImohq4 }
 on *:text:!omg*:#imagrill:{ msg # "I swear to the banana god" -Arts }
 on *:text:!p:#imagrill:{ msg # PMForNud pls }
-on *:text:!pets*:#imagrill:{ msg # Eddy + Legio Secundulus + Prime Hatchling }
+on *:text:!pets*:#imagrill:{ msg # Pets (KC): Eddy (~30) + Legio Secundulus (167) + Prime Hatchling (2000) }
 on *:text:!pudding*:#imagrill:{ msg # The pudding is mightier than the sword. -Compa }
 on $*:text:/^[!](rebirth1|re;birth1)/Si:#imagrill:{ msg # http://hyperdimensionneptunia.wikia.com/wiki/Hyperdimension_Neptunia_Re;Birth_1 }
 on *:text:!save*:#imagrill:{ msg # Don't forget to l̶o̶a̶d̶ save. }
@@ -117,6 +117,18 @@ on *:text:!harm:#imagrill:{ msg # !delcom !harm }
 on *:text:!herm:#imagrill:{ msg # !delcom !herm }
 on *:text:!hermy:#imagrill:{ msg # !delcom !hermy }
 on *:text:!hermit:#imagrill:{ msg # !delcom !hermit }
+
+on *:text:!dsdeaths*:#imagrill:{
+  if ($nick isop #) && ($2 == inc) {
+    inc %arts.dsdeaths
+    msg # Arts has died %arts.dsdeaths times.
+  }
+  else { msg # Arts has died %arts.dsdeaths times. }
+}
+on *:text:!mic*:#imagrill:{
+  inc %arts.mic
+  msg # Arts's mic has acted up %arts.mic times.
+}
 
 on *:text:!like*:#:{
   var %words = $numtok($2-, 32)

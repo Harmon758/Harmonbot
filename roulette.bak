@@ -29,7 +29,7 @@ on *:text:!roulette*:#: {
     var %randnumber = $rand(1,4)
     if (%randnumber == 1) { msg # BANG!... Roulette claims another soul. R.I.P $capital($nick) }
     if (%randnumber == 2) { msg # Roulette clicks!...Empty...You live to see another day, $capital($nick) }
-    if (%randnumber == 3) { msg # BANG!... $capital($nick) was a great viewer, and now $capital($nick) is a dead viewer. R.I.P }
+    if (%randnumber == 3) { msg # BANG!... $capital($nick) Was a great viewer, and now $capital($nick) is a dead viewer. R.I.P }
     if (%randnumber == 4) { msg # $capital($nick) starts to shake, $capital($nick) tries to pull the trigger but can't. $capital($nick) drops the gun, $capital($nick) isn't up to the challenge of Roulette. }
   }
 }

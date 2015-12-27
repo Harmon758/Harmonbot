@@ -75,7 +75,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !mine) { msg # Use !mine to see Mikki's Mining levels. }
   elseif ($2 == !mining) { msg # Use !mining to see Mikki's Mining levels. }
   elseif ($2 == mikki || $2 == mikkiscape) {
-    if ($mid($chan,2-) == mikki) { msg # That's who you're watching! }
+    if ($mid($chan,2-) == mikkiscape) { msg # That's who you're watching! }
     else { msg # Mikkiscape is another streamer I frequent. }
   }
   elseif ($2 == !mikki) { msg # See !mikki }
@@ -96,6 +96,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !ozttooz) { msg # Use !ozttooz _ to convert from troy ounces (oz t) to ounces (oz). }
   elseif ($2 == !pi) { msg # Use !pi for an approximate value of pi. }
   elseif ($2 == pmfornudes) { msg # PM him for nud's }
+  elseif ($2 == !points) { msg # You get 1 point for every minute that you are watching the stream while it's online. As of right now, they're not used for anything. }
   elseif ($2 == !poke) { msg # Use !poke _ to poke someone. }
   elseif ($2 == !pouch) { msg # Use !pouch to remind Mikki to repair her pouch. }
   elseif ($2 == !puppy) { msg # See !puppy }

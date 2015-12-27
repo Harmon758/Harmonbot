@@ -1,0 +1,129 @@
+
+on *:text:!xml:#:{
+  $xml.wrapper()
+}
+
+alias xml.wrapper {
+  sockopen xml www.w3schools.com 80
+  ;timer 1 2 /echo test
+  ;return $xml(&xml,0,to)
+}
+
+on *:SOCKOPEN:xml: {
+  sockwrite -nt $sockname GET /xml/note.xml HTTP/1.1
+  sockwrite -nt $sockname Host: www.w3schools.com
+  sockwrite $sockname $crlf
+}
+on *:SOCKREAD:xml:{
+  ;loop back position
+  :loop
+
+  ;Check for sockerr
+  if ($sockerr) { 
+
+    ;if sockerror occured, check if hashtable is opened
+    if ($hget($sockname)) {
+
+      ;if hashtable is opened, close it
+      hfree $sockname
+    }
+
+    ;if sockerr, stop processing
+    return
+  }
+
+  ;read data from socket to &tmp1
+  sockread &tmp1
+
+  ;if no data was read, stop processing
+  if (!$sockbr) { return }
+
+  ;retrive data, if present, from the hashtable and set it to &tmp2
+  var %a = $hget($sockname,1,&tmp2)
+
+  ;append the data that was read from the socket to the end of the stored data
+  bcopy -c &tmp2 $bvar(&tmp2,0) &tmp1 1 -1
+
+  ;store &tmp2(old data + fresh data from socket)
+  hadd -mb $sockname 1 &tmp2
+
+  ;loop back
+  goto loop
+}
+on *:SOCKWRITE:xml:{
+  ;check for socket errors
+  if ($sockerr) {
+
+    ;if a sockerror occured, check to see if the hashtable is opened
+    if ($hget($sockname)) { 
+
+      ;free the hashtable if it's opened
+      hfree $sockname
+    }
+
+    ;if a sockerr occured, stop processing
+  } 
+}
+on *:sockclose:xml:{
+  ;check for socket errors
+  if ($sockerr) {
+
+    ;if a sockerror occured, check to see if the hashtable is opened
+    if ($hget($sockname)) { 
+
+      ;free the hashtable if it's opened
+      hfree $sockname
+    }
+
+    ;if a sockerr occured, stop processing
+  } 
+
+  ;check to see if any data was stored.
+  if ($hashtable($sockname)) {
+
+    ;retrive data from the hashtable, and clear the hashtable
+    bset -tc &xml 0 $hget($sockname,1,&tmp)
+    hfree $sockname
+
+    msg #harmon758 $xml(&xml,0,to)
+
+  }
+  msg #harmon758 test1
+}
+
+alias xml {
+  bset -tc &binary 1 $1
+  ;bcopy &binary 1 $1 1 -1
+  var %offset = $2, %element = $3, %variable = $4
+  if ($bfind(&binary,%offset,$+(<,%element))) {
+    var %< = $v1, %> = $bvar(&binary,0), %offset = $v1 + 1
+    if ($bfind(&binary,%offset,>)) {
+      var %> = $v1, %offset = $v1 + 1
+      bcopy -c &element 1 &binary $calc(%< + 1) $calc(%> - (%< + 1))
+    }
+    if ($bfind(&binary,%offset,$+(</,%element))) {
+      var %< = $v1, %offset = $v1 + 1
+      if (%variable) {
+        bcopy -c %variable 1 &binary $calc(%> + 1) $calc(%< - (%> + 1))
+        return %variable
+      }
+      else {
+        bcopy -c &content 1 &binary $calc(%> + 1) $calc(%< - (%> + 1))
+      }
+    }
+  }
+  if ($bvar(&content,0)) {
+    bset &content $calc($v1 + 1) 0
+    while ($bfind(&content,0,<)) {
+      var %< = $v1
+      if ($bfind(&content,%<,>)) {
+        var %> = $v1
+        bcopy -c &content %< &content $calc(%> + 1) -1
+      }
+      else {
+        bcopy -c &content %< &content $calc(%< + 1) -1
+      }
+    }
+    return $bvar(&content,1,4096).text
+  }
+}

@@ -6,7 +6,23 @@
 ;***REMOVED***
 ;***REMOVED***
 
+on *:text:youtube*:#: {
+  if ($nick isop # || $nick == harmon758) && ($2) {
+    if ($2 == on) {
+      set %youtube.status. $+ $chan on
+      msg # Youtube link detection is on.
+      return
+    }
+    if ($2 == off) {
+      set %youtube.status. $+ $chan off
+      msg # Youtube link detection is off.
+      return
+    }
+  }
+}
+
 on *:text:*youtube.com/watch?v=*:#: {
+  if (%youtube.status. [ $+ [ $chan ] ] == off) { return }
   noop $regex($strip($1-),.*youtube.*\/watch\?v=(.{11})&?.*)
   var %videoid = $regml(1)
   var %url = https://www.googleapis.com/youtube/v3/videos?id= $+ %videoid $+ &key=***REMOVED***&part=snippet,contentDetails,statistics
@@ -47,11 +63,25 @@ on *:text:!translate*:#: {
 }
 
 on *:text:!news*:#: {
-  if (!$2) { msg # $capital($nick) $+ , please enter a search parameter. } | return
-  var %url = https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q= $+ $2-
+  if ($nick isop # || $nick == harmon758) && ($2) {
+    if ($2 == on) {
+      set %!news.status. $+ $chan on
+      msg # !news is on.
+      return
+    }
+    if ($2 == off) {
+      set %!news.status. $+ $chan off
+      msg # !news is off.
+      return
+    }
+  }
+  if (%!news.status. [ $+ [ $chan ] ] == off) { return }
+  if (!$2) { msg # $capital($nick) $+ , please enter a search parameter. | return }
+  var %url = https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q= $2-
   var %results = $json(%url, responseData, results, 0)
   if (%results) {
-    var %content = $json(%url, responseData, results, 0, content)
+    var %content
+    noop $regsub($json(%url, responseData, results, 0, content),/(<[^>]+>)/g, $null, %content)
     var %unescapedurl = $json(%url, responseData, results, 0, unescapedUrl)
     var %title = $json(%url, responseData, results, 0, titleNoFormatting)
     var %publisher = $json(%url, responseData, results, 0, publisher)
@@ -62,11 +92,35 @@ on *:text:!news*:#: {
   else { msg # ( $+ $capital($nick) $+ ) No news results found. }
 }
 
+on *:text:links*:#: {
+  if ($nick isop # || $nick == harmon758) && ($2) {
+    if ($2 == on) {
+      set %links.status. $+ $chan on
+      msg # Link detection is on.
+      return
+    }
+    if ($2 == off) {
+      set %links.status. $+ $chan off
+      msg # Link detection is off.
+      return
+    }
+  }
+}
+
 on *:text:*http*:#: {
-  noop $regex($strip($1-),.*https?:\/\/(.*) )
-  var %url = http://decenturl.com/api-title?u= $+ $regml(1)
-  var %title = $json(%url, 1)
-  msg # ( $+ $capital($nick) $+ ) Title: %title )
+  if (%links.status. [ $+ [ $chan ] ] == off) { return }
+  if ($nick == nightbot) { return }
+  var %text = $1-
+  var %words = $numtok(%text, 32)
+  var %counter = 1
+  while (%counter <= %words) {
+    if ($regex($gettok(%text, %counter, 32),.*https?:\/\/(.*))) {
+      var %url = http://decenturl.com/api-title?u= $+ $regml(1)
+      var %title = $json(%url, 1)
+      if (%title) { msg # ( $+ $capital($nick) $+ ) Title: %title }
+    }
+    inc %counter
+  }
 }
 
 ;---

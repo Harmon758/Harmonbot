@@ -10,17 +10,24 @@
 ; add user custom, minigames, adjust mikki skill commands
 ;
 
-on *:text:!hiscore*:#:{ $hiscores($1, $2, $3, $4, $5) }
-on *:text:!highscore*:#:{ $hiscores($1, $2, $3, $4, $5) }
+on *:text:!hiscore*:#:{
+  $hiscores($1, $2, $3, $4, $5)
+  set %channel #
+  timer 1 2 hiscores_print
+}
+on *:text:!highscore*:#:{
+  $hiscores($1, $2, $3, $4, $5)
+  set %channel #
+  timer 1 2 hiscores_print
+}
+
+alias hiscores_print { msg %channel %hiscores_return }
 
 alias hiscores {
   if ($sock(hiscores)) { sockclose hiscores }
-  set %message msg $chan
+  ;set %message msg $chan
   set %hiscores_username $2
-  if ($3 == total) {
-    set %hiscores_skill_number 11
-    set %hiscores_skill Total
-  }
+  if ($3 == total) { set %hiscores_skill_number 11 }
   else if ($3 == attack || $3 == att || $3 == atk) {
     set %hiscores_skill_number 12
     set %hiscores_skill Attack
@@ -126,7 +133,7 @@ alias hiscores {
     set %hiscores_skill Divination
   }
   else {
-    %message That is not a valid username/skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> 
+    set %hiscores_return  That is not a valid username/skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> 
     return
   }
   if ($4 == rs3) {
@@ -174,22 +181,21 @@ on *:SOCKREAD:hiscores: {
   if (!$sockerr) {
     var %sockreader
     sockread %sockreader
-    ; tokenize 32 %sockreader
     inc %hiscores_counter
     if ($gettok(%sockreader, 2, 32) == 404) {
-      %message Username not found.
+      set %hiscores_return Username not found.
       sockclose hiscores
     }
     if (%hiscores_counter == %hiscores_skill_number) {
       set %hiscores_display $bytes($gettok(%sockreader, %hiscores_option, 44),bd)
-      if (%hiscores_skill == Total) {
-        if (%hiscores_option == 2) { %message $capital(%hiscores_username) $+ 's total level is %hiscores_display $+ . }
-        else if (%hiscores_option == 1) { %message $capital(%hiscores_username) is rank %hiscores_display overall $+ . }
-        else if (%hiscores_option == 3) { %message $capital(%hiscores_username) has %hiscores_display total XP. }
+      if (%hiscores_skill_number == 11) {
+        if (%hiscores_option == 2) { set %hiscores_return $capital(%hiscores_username) $+ 's total level is %hiscores_display $+ . }
+        else if (%hiscores_option == 1) { set %hiscores_return  $capital(%hiscores_username) is rank %hiscores_display overall $+ . }
+        else if (%hiscores_option == 3) { set %hiscores_return  $capital(%hiscores_username) has %hiscores_display total XP. }
       }
-      else if (%hiscores_option == 2) { %message $capital(%hiscores_username) $+ 's %hiscores_skill level is %hiscores_display $+ . }
-      else if (%hiscores_option == 1) { %message $capital(%hiscores_username) is rank %hiscores_display in %hiscores_skill $+ . }
-      else if (%hiscores_option == 3) { %message $capital(%hiscores_username) has %hiscores_display XP in %hiscores_skill $+ . }
+      else if (%hiscores_option == 2) { set %hiscores_return  $capital(%hiscores_username) $+ 's %hiscores_skill level is %hiscores_display $+ . }
+      else if (%hiscores_option == 1) { set %hiscores_return  $capital(%hiscores_username) is rank %hiscores_display in %hiscores_skill $+ . }
+      else if (%hiscores_option == 3) { set %hiscores_return  $capital(%hiscores_username) has %hiscores_display XP in %hiscores_skill $+ . }
       sockclose hiscores
     }
   }

@@ -3,9 +3,10 @@
 ; https://tmi.twitch.tv/group/user/imagrill/chatters
 
 on *:text:!points*:#:{
-  if ($nick isop #) && ($2) {
+  if ($nick isop # || $nick == harmon758) && ($2) {
     if ($2 == on) {
       set %points.status. $+ $chan on 
+      if (!%points. [ $+ [ $chan ] $+ ] .lines) { set %points. $+ $chan $+ .lines 1 }
       msg # !points is on.
       .timerpoints [ $+ [ $chan ] ] 0 60 .points $chan
     }
@@ -56,7 +57,8 @@ on *:text:!points*:#:{
       var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $2, 1, 32)
       var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
       var %rank = $points.findrank($chan, %points)
-      msg # $capital($2) is rank %rank with %points points.
+      var %time = $points.minstotime($gettok( [ %points. [ $+ [ $chan ] $+ ] .minutes [ $+ [ %line ] ] ] , %name_number, 32))
+      msg # $capital($2) is rank %rank with %points points ( $+ %time $+ ).
     }
     elseif ($nick == $mid($chan,2-) || $nick == harmon758) {
       if ($2 == add) {
@@ -80,7 +82,8 @@ on *:text:!points*:#:{
     var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $nick, 1, 32)
     var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
     var %rank = $points.findrank($chan, %points)
-    msg # $capital($nick) $+ , you are rank %rank with %points points.
+    var %time = $points.minstotime($gettok( [ %points. [ $+ [ $chan ] $+ ] .minutes [ $+ [ %line ] ] ] , %name_number, 32))
+    msg # $capital($nick) $+ , you are rank %rank with %points points ( $+ %time $+ ).
   }
 }
 
@@ -125,6 +128,7 @@ alias points.processname {
     set %points. $+ $1 $+ .minutes $+ %line $puttok( [ %points. [ $+ [ $1 ] $+ ] .minutes [ $+ [ %line ] ] ] , %minutes, %name_number, 32)
   }
   else {
+    if ($len( [ %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %points. [ $+ [ $1 ] $+ ] .lines ] ] ] ) > 4110) { inc %points. [ $+ [ $1 ] $+ ] .lines }
     var %line = %points. [ $+ [ $1 ] $+ ] .lines
     set %points. $+ $1 $+ .names $+ %line %points. [ $+ [ $1 ] $+ ] .names [ $+ [ %line ] ] $2
     set %points. $+ $1 $+ .points $+ %line %points. [ $+ [ $1 ] $+ ] .points [ $+ [ %line ] ] 1
@@ -155,5 +159,32 @@ alias points.findrank {
   if ($readn) { return $readn }
   else { return -1 }
 }
+
+alias points.minstotime {
+  var %mins = $1
+  var %time
+  if (%mins >= 525600) {
+    %time = $floor($calc(%mins / 525600)) $+ y
+    %mins = %mins % 525600
+  }
+  if (%mins >= 10080) {
+    %time = %time $floor($calc(%mins / 10080)) $+ w
+    %mins = %mins % 10080
+  }
+  if (%mins >= 1440) {
+    %time = %time $floor($calc(%mins / 1440)) $+ d
+    %mins = %mins % 1440
+  }
+  if (%mins >= 60) {
+    %time = %time $floor($calc(%mins / 60)) $+ h
+    %mins = %mins % 60
+  }
+  if (%mins > 0) {
+    %time = %time %mins $+ m
+  }
+  return %time
+}
+
+;* /set: line too long (line 131, points)
 
 on *:text:!ptesting*:#:{  }
