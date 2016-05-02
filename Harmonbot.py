@@ -7,9 +7,7 @@ import asyncio
 from bs4 import BeautifulSoup
 import chess
 import cleverbot
-import conversions
 import datetime
-import gofish
 import json
 import html
 import inflect
@@ -17,10 +15,8 @@ import isodate
 import keys
 import logging
 import math
-from maze import maze
 import moviepy.editor
 import os
-import permissions
 import pydealer
 import queue
 import random
@@ -34,9 +30,15 @@ import time
 import traceback
 import urllib
 import xml.etree.ElementTree
-import war
 import wolframalpha
 import youtube_dl
+
+from modules import ciphers
+from modules import conversions
+from modules import gofish
+from modules.maze import maze
+from modules import permissions
+from modules import war
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.DEBUG)
@@ -87,7 +89,22 @@ wait_time = 10.0
 
 try:
 	with open("data/trivia_points.json", "x") as trivia_file:
-		json.dump({}, trivia_file)
+		json.dump({}, trivia_file) #fix
+except FileExistsError:
+	pass
+try:
+	with open("data/f.json", "x") as f_file:
+		json.dump({"counter" : 0}, f_file)
+except FileExistsError:
+	pass
+try:
+	with open("data/stats.json", "x") as stats_file:
+		json.dump({"uptime" : 0, "restarts" : 0}, stats_file)
+except FileExistsError:
+	pass
+try:
+	with open("data/tags.json", "x") as tags_file:
+		json.dump({}, ags_file) #fix
 except FileExistsError:
 	pass
 
@@ -190,26 +207,37 @@ commands_info = {
 
 @client.event
 async def on_ready():
-    print("Logged in as")
-    print(client.user.name)
-    print(client.user.id)
-    print("------")
+	print("Logged in as")
+	print(client.user.name)
+	print(client.user.id)
+	print("------")
+	if os.path.isfile("data/restart_channel.json"):
+		with open("data/restart_channel.json", "r") as restart_channel_file:
+			restart_channel = client.get_channel(json.load(restart_channel_file)["restart_channel"])
+		os.remove("data/restart_channel.json")
+		await client.send_message(restart_channel, "Restarted.")
+	await random_game_status()
 
 @client.event
 async def on_message(message):
 	global voice, player, trivia_answers
-	if (message.server == None or message.channel.is_private) and message.author != client.user:
+	if (message.server == None or message.channel.is_private) and not (message.author == client.user and message.channel.user.id == keys.myid):
 		for member in client.get_all_members():
 			if member.id == keys.myid:
 				my_member = member
 				break
-		await client.send_message(my_member, "From " + message.author.name + "#" + message.author.discriminator + ": " + message.content)
+		if message.author == client.user:
+			await client.send_message(my_member, "To " + message.channel.user.name + '#' + message.channel.user.discriminator + ": " + message.content)
+		else:
+			await client.send_message(my_member, "From " + message.author.name + '#' + message.author.discriminator + ": " + message.content)
 	if message.author == client.user:
-		pass
-	if not permissions.get_permission(message, "user", message.author.id, message.content.split()[0]):# and keys.myid != message.author.id:
+		return
+	elif not (message.server == None or message.channel.is_private) and not permissions.get_permission(message, "user", message.author.id, message.content.split()[0]) and keys.myid != message.author.id:
 		await send_mention_space(message, "You don't have permision to use that command here")
 	elif message.content.startswith("!test"):
 		await client.send_message(message.channel, "Hello, World!")
+	elif message.content.startswith("!echo"):
+		await client.send_message(message.channel, message.content)
 	elif message.content.startswith("!commands"):
 		await client.send_message(message.author, commands)
 		await client.send_message(message.channel, message.author.mention + " Check your DM's for my commands.")
@@ -228,6 +256,18 @@ async def on_message(message):
 			"Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predit now",
 			"Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"]
 		await send_mention_space(message, random.choice(responses))
+	elif message.content.startswith("!addrole"):
+		if message.channel.permissions_for(message.author).manage_roles or message.author.id == keys.myid:
+			if message.server:
+				for member in message.server.members:
+					if member.name == message.content.split()[1]:
+						selected_member = member
+						break
+				for role in message.server.roles:
+					if remove_symbols(role.name).startswith((' ').join(message.content.split()[2].split('_'))):
+						selected_role = role
+						break
+				await client.add_roles(selected_member, selected_role)
 	elif message.content.startswith("!add"):
 		sum = 0
 		numbers = []
@@ -364,9 +404,28 @@ async def on_message(message):
 		value = str(hsv["value"]) + '%'
 		image = data["imageUrl"]
 		await send_mention_newline(message, name + " (" + hex + ")\n" + "RGB: (" + red + ", " + green + ", " + blue + ")\nHSV: (" + hue + ", " + saturation + ", " + value + ")\n" + image)
+	elif message.content.startswith("!shutdown") or message.content.startswith("!crash") or message.content.startswith("!panic"):
+		if message.author.id == keys.myid:
+			await client.send_message(message.channel, "Shutting down.")
+			add_uptime()
+			empty_player_queue()
+			subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
+			subprocess.call(["taskkill", "/f", "/im", "python.exe"])
 	elif message.content.startswith("!date"):
 		url = "http://numbersapi.com/" + message.content.split()[1] + "/date"
 		await send_mention_space(message, requests.get(url).text)
+	elif message.content.startswith("!decode"):
+		if message.content.split()[1] == "morse":
+			await send_mention_space(message, '`' + ciphers.decode_morse(' '.join(message.content.split()[2:])) + '`')
+		elif message.content.split()[1] == "reverse":
+			await send_mention_space(message, '`' + ' '.join(message.content.split()[2:])[::-1] + '`')
+		elif message.content.split()[1] == "caesar" or message.content.split()[1] == "rot":
+			if len(message.content.split()) < 4 or not ((message.content.split()[2].isdigit() and 0 <= int(message.content.split()[2]) <= 26) or message.content.split()[2] == "brute"):
+				await send_mention_space(message, "Invalid Format. !decode caesar <key (0 - 26) or brute> <content>")
+			elif message.content.split()[2] == "brute":
+				await send_mention_space(message, '`' + ciphers.brute_force_caesar(' '.join(message.content.split()[3:])) + '`')
+			else:
+				await send_mention_space(message, '`' + ciphers.decode_caesar(' '.join(message.content.split()[3:]), message.content.split()[2]) + '`')
 	elif message.content.startswith("!define"):
 		url = "http://api.wordnik.com:80/v4/word.json/" + " ".join(message.content.split()[1:]) + "/definitions?limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key=" + keys.wordnik_apikey
 		# page = urllib.request.urlopen(url)
@@ -378,8 +437,9 @@ async def on_message(message):
 		else:
 			await client.send_message(message.channel, message.author.mention + " Definition not found.")
 	elif message.content.startswith("!delete"):
-		if not message.channel.permissions_for(message.author):
-			await send_mention_space(message, "You don't have permission to do that here.")
+		if not message.channel.permissions_for(message.author).manage_messages:
+			# await send_mention_space(message, "You don't have permission to do that here.")
+			pass
 		if message.channel.permissions_for(message.author).manage_messages or message.author.id == keys.myid:
 			name = message.content.split()[1]
 			if name.isdigit():
@@ -414,6 +474,16 @@ async def on_message(message):
 				await client.send_message(message.channel, message.author.mention + " Your discriminator: #" + message.author.discriminator)
 		else:
 			await send_mention_space(message, "Please use that command in a server.")
+	elif message.content.startswith("!encode"):
+		if message.content.split()[1] == "morse":
+			await send_mention_space(message, '`' + ciphers.encode_morse(' '.join(message.content.split()[2:])) + '`')
+		elif message.content.split()[1] == "reverse":
+			await send_mention_space(message, '`' + ' '.join(message.content.split()[2:])[::-1] + '`')
+		elif message.content.split()[1] == "caesar" or message.content.split()[1] == "rot":
+			if len(message.content.split()) < 4 or not (message.content.split()[2].isdigit() and 0 <= int(message.content.split()[2]) <= 26):
+				await send_mention_space(message, "Invalid Format. !encode caesar <key (0 - 26)> <content>")
+			else:
+				await send_mention_space(message, '`' + ciphers.encode_caesar(' '.join(message.content.split()[3:]), message.content.split()[2]) + '`')
 	elif message.content.startswith("!eval"):
 		if message.author.id == keys.myid:
 			await send_mention_code(message, str(eval(" ".join(message.content.split()[1:]))))
@@ -457,7 +527,7 @@ async def on_message(message):
 			else:
 				await send_mention_space(message, "Invalid permission type")
 			permission = message.content.split()[3]
-			permissions.set_permission(message, type, to_find, permission)
+			permissions.get_permission(message, type, to_find, permission)
 	elif message.content.startswith("!giphy"):
 		if message.content.split()[1] == "random":
 			url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
@@ -800,7 +870,7 @@ async def on_message(message):
 			elif message.content.split()[1] == "pause":
 				player.pause()
 				radio_paused = True
-			elif message.content.split()[1] == "resume":
+			elif message.content.split()[1] == "resume" or message.content.split()[1] == "play":
 				player.resume()
 				radio_paused = False
 			else:
@@ -842,6 +912,8 @@ async def on_message(message):
 					radio_currently_playing = data["items"][0]["id"]["videoId"]
 					player = await voice.create_ytdl_player(radio_currently_playing)
 					player.start()
+	elif message.content.startswith("!randomgame"):
+		await random_game_status()
 	elif message.content.startswith("!randomidea"):
 		url = "http://itsthisforthat.com/api.php?json"
 		data = requests.get(url).json()
@@ -857,6 +929,12 @@ async def on_message(message):
 		await client.send_message(message.channel, message.author.mention + " " + word.capitalize())
 	elif message.content.startswith("!redditsearch"):
 		pass
+	elif message.content.startswith("!restart"):
+		if message.author.id == keys.myid:
+			await client.send_message(message.channel, "Restarting...")
+			with open("data/restart_channel.json", "x+") as restart_channel_file:
+				json.dump({"restart_channel" : message.channel.id}, restart_channel_file)
+			raise KeyboardInterrupt
 	elif message.content.startswith("!rng"):
 		if len(message.content.split()) > 1 and string_isdigit(message.content.split()[1]):
 			await client.send_message(message.channel, message.author.mention + " " + str(random.randint(1, int(message.content.split()[1]))))
@@ -879,6 +957,10 @@ async def on_message(message):
 			new_colour = role_to_change.colour
 			new_colour.value = conversions.hextoint(message.content.split()[2])
 			await client.edit_role(message.server, role_to_change, colour = new_colour)
+	elif message.content.startswith("!roleid"):
+		for role in message.server.roles:
+			if remove_symbols(role.name).startswith((' ').join(message.content.split()[1].split('_'))):
+				await send_mention_space(message, role.id)
 	elif message.content.startswith("!servericon"):
 		if message.server:
 			await send_mention_space(message, "This server's icon: https://cdn.discordapp.com/icons/" + message.server.id + "/" + message.server.icon + ".jpg")
@@ -986,6 +1068,17 @@ async def on_message(message):
 			await client.send_message(message.channel, message.author.mention + " " + link)
 		else:
 			pass
+	elif message.content.startswith("!stats"):
+		if message.content.split()[1] == "uptime": # since 4/17/16
+			with open("data/stats.json", "r") as stats_file:
+				stats = json.load(stats_file)
+			total_uptime = stats["uptime"]
+			await send_mention_space(message, "Total Recorded Uptime: " + duration_to_letter_format(secs_to_duration(int(total_uptime))))
+		if message.content.split()[1] == "restarts": # since 4/17/16
+			with open("data/stats.json", "r") as stats_file:
+				stats = json.load(stats_file)
+			restarts = stats["restarts"]
+			await send_mention_space(message, "Total Recorded Restarts: " + str(restarts))
 	elif message.content.startswith("!steam"):
 		if message.content.split()[1] == "appid":
 			url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
@@ -1050,6 +1143,48 @@ async def on_message(message):
 		elif message.content.split()[1] == "nextround":
 			if message.server:
 				pass
+	elif message.content.startswith("!tag") or message.content.startswith("!trigger"):
+		with open("data/tags.json", "r") as tags_file:
+			tags_data = json.load(tags_file)
+		if len(message.content.split()) == 1:
+			await send_mention_space(message, "Add a tag with `!tag add <tag> <content>`. Use `!tag <tag>` to trigger the tag you added. `!tag <edit>` to edit, `!tag <remove>` to delete")
+			return
+		if not message.content.split()[1] in ["add", "make", "new", "create"]:
+			if not message.author.id in tags_data:
+				await send_mention_space(message, "You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
+				return
+			tags = tags_data[message.author.id]["tags"]
+		if message.content.split()[1] in ["edit", "remove", "delete", "destroy"] and not message.content.split()[2] in tags:
+			await send_mention_space(message, "You don't have that tag.")
+			return
+		if len(message.content.split()) >= 3:
+			if message.content.split()[1] in ["add", "make", "new", "create"]:
+				if not message.author.id in tags_data:
+					tags_data[message.author.id] = {"name" : message.author.name, "tags" : {}}
+				tags = tags_data[message.author.id]["tags"]
+				if message.content.split()[2] in tags:
+					await send_mention_space(message, "You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
+					return
+				tags[message.content.split()[2]] = ' '.join(message.content.split(' ')[3:])
+				await send_mention_space(message, "Your tag has been added.")
+			elif message.content.split()[1] == "edit":
+				tags[message.content.split()[2]] = " ".join(message.content.split(' ')[3:])
+				await send_mention_space(message, "Your tag has been edited.")
+			elif message.content.split()[1] in ["remove", "delete", "destroy"]:
+				del tags[message.content.split()[2]]
+				await client.send_message(message.channel, "Your tag was deleted.")
+			else:
+				await send_mention_space(message, "Syntax error.")
+			with open("data/tags.json", "w") as tags_file:
+				json.dump(tags_data, tags_file)
+		elif message.content.split()[1] in ["list", "all", "mine"]:
+			tag_list = ", ".join(list(tags.keys()))
+			await send_mention_space(message, "Your tags: " + tag_list)
+		else:
+			if not message.content.split()[1] in tags:
+				await send_mention_space(message, "You don't have that tag.")
+			else:
+				await client.send_message(message.channel, tags[message.content.split()[1]])
 	elif message.content.startswith("!tempchannel"):
 		temp_channel = await client.create_channel(message.server, "Temp Channel", type = discord.ChannelType.voice)
 		await client.move_member(message.author, temp_channel)
@@ -1229,6 +1364,10 @@ async def on_message(message):
 			with open("data/discord_harmonbot_icon.png", "rb") as avatar_file:
 				await client.edit_profile(avatar=avatar_file.read())
 			await send_mention_space(message, "avatar updated")
+	elif message.content.startswith("!updateplaying") or message.content.startswith("!updategame") or message.content.startswith("!changeplaying") or message.content.startswith("!changegame"):
+		if message.author.id == keys.myid:
+			await client.change_status(game = discord.Game(name = " ".join(message.content.split()[1:])))
+			await send_mention_space(message, "game updated")
 	elif message.content.startswith("!uptime"):
 		now = datetime.datetime.utcnow()
 		uptime = now - online_time
@@ -1389,22 +1528,24 @@ async def on_message(message):
 						voice_channel = channel
 						break
 				if not voice_channel:
-					await send_mention_space(message, "Voice channel not found")
+					await send_mention_space(message, "Voice channel not found.")
 					return
 				voice = await client.join_voice_channel(voice_channel)
 				voices.append(voice)
-				player = {"server" : message.server, "queue" : queue.Queue(), "stream" : None}
+				player = {"server" : message.server, "queue" : queue.Queue(), "current" : None}
 				players.append(player)
-				await send_mention_space(message, "I've joined the voice channel")
+				await send_mention_space(message, "I've joined the voice channel.")
 				while voice.is_connected():
 					if player["queue"].empty():
 						await asyncio.sleep(1)
 					else:
-						stream = player["queue"].get()
-						player["stream"] = stream
+						current = player["queue"].get()
+						player["current"] = current
+						stream = current["stream"]
 						stream.start()
 						while not stream.is_done() or song_restarted:
 							await asyncio.sleep(1)
+						#del stream
 				return
 			elif not check_voice_connected(message):
 				await send_mention_space(message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
@@ -1414,24 +1555,24 @@ async def on_message(message):
 					if voice.channel.server == message.server:
 						await voice.disconnect()
 						voices.remove(voice)
-						await send_mention_space(message, "I've left the voice channel")
+						await send_mention_space(message, "I've left the voice channel.")
 						return
 			elif message.content.split()[1] == "pause" or message.content.split()[1] == "stop":
 				for player in players:
 					if player["server"] == message.server:
-						player["stream"].pause()
+						player["current"]["stream"].pause()
 						await send_mention_space(message, "Song paused")
 						return
 			elif message.content.split()[1] == "resume" or message.content.split()[1] == "start":
 				for player in players:
 					if player["server"] == message.server:
-						player["stream"].resume()
+						player["current"]["stream"].resume()
 						await send_mention_space(message, "Song resumed")
 						return
 			elif message.content.split()[1] == "skip" or message.content.split()[1] == "next":
 				for player in players:
 					if player["server"] == message.server:
-						player["stream"].stop()
+						player["current"]["stream"].stop()
 						await send_mention_space(message, "Song skipped")
 						return
 			elif message.content.split()[1] == "restart" or message.content.split()[1] == "replay":
@@ -1439,9 +1580,9 @@ async def on_message(message):
 					if player["server"] == message.server:
 						song_restarted = True
 						response = await send_mention_space(message, "Restarting song...")
-						player["stream"].stop()
-						stream = await voice.create_ytdl_player(player["stream"].url)
-						player["stream"] = stream
+						player["current"]["stream"].stop()
+						stream = await voice.create_ytdl_player(player["current"]["stream"].url)
+						player["current"]["stream"] = stream
 						stream.start()
 						await client.edit_message(response, message.author.mention + " Restarted song")
 						while not stream.is_done():
@@ -1452,7 +1593,11 @@ async def on_message(message):
 				for player in players:
 					if player["server"] == message.server:
 						while not player["queue"].empty():
-							player["queue"].get()
+							# player["queue"].queue.clear()
+							stream = player["queue"].get()
+							stream["stream"].start()
+							stream["stream"].stop()
+							#del stream["stream"]
 						await send_mention_space(message, "Queue emptied")
 						return
 			elif message.content.split()[1] == "shuffle":
@@ -1467,6 +1612,8 @@ async def on_message(message):
 							player["queue"].put(song)
 						await client.edit_message(response, message.author.mention + " Shuffled songs")
 						return
+			elif message.content.split()[1] == "full":
+				return
 		if not check_voice_connected(message):
 			await send_mention_space(message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
 			return
@@ -1480,28 +1627,29 @@ async def on_message(message):
 					count = 1
 					for stream in list(player["queue"].queue):
 						if count <= 10:
-							number = ':' + inflect_engine.number_to_words(count) + ": "
+							queue_string += ':' + inflect_engine.number_to_words(count) + ": **" + stream["stream"].title + "** (`" + stream["stream"].url + "`) Added by: " + stream["author"].name + "\n"
+							count += 1
 						else:
-							number = str(count) + ". "
-						queue_string += number + stream.title + " (`" + stream.url + "`)\n"
-						count += 1
-					if player["stream"].is_done():
+							more_songs = player["queue"].qsize() - 10
+							queue_string += "There " + inflect_engine.plural("is", more_songs) + " " + str(more_songs) + " more " + inflect_engine.plural("song", more_songs) + " in the queue"
+							break
+					if player["current"]["stream"].is_done():
 						await client.send_message(message.channel, "There is no song currently playing.")
 					else:
-						await client.send_message(message.channel, "Currently playing: " + player["stream"].url + "\n" + "{:,}".format(player["stream"].views) + ":eye: | " + "{:,}".format(player["stream"].likes) + ":thumbsup::skin-tone-2: | " + "{:,}".format(player["stream"].dislikes) + ":thumbsdown::skin-tone-2:")
+						await client.send_message(message.channel, "Currently playing: " + player["current"]["stream"].url + "\n" + add_commas(player["current"]["stream"].views) + ":eye: | " + add_commas(player["current"]["stream"].likes) + ":thumbsup::skin-tone-2: | " + add_commas(player["current"]["stream"].dislikes) + ":thumbsdown::skin-tone-2:\nAdded by: " + player["current"]["author"].name)
 					if not queue_string:
 						await client.send_message(message.channel, "The queue is currently empty.")
 					else:
 						await client.send_message(message.channel, "\nQueue:\n" + queue_string)
 					return
-		elif message.content.startswith("!playlist"):
+		elif message.content.startswith("!playlist") or "playlist" in message.content:
 			parsed_url = urllib.parse.urlparse(message.content.split()[1])
 			path = parsed_url.path
 			query = parsed_url.query
 			if path[:9] == "/playlist" and query[:5] == "list=":
 				response = await send_mention_space(message, "Loading...")
 				playlistid = query[5:]
-				base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}".format(keys.google_apikey, playlistid)
+				base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(keys.google_apikey, playlistid)
 				url = base_url
 				player_instance = None
 				for player in players:
@@ -1520,7 +1668,7 @@ async def on_message(message):
 						except youtube_dl.utils.DownloadError:
 							await send_mention_space(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
 							continue
-						player_instance["queue"].put(stream)
+						player_instance["queue"].put({"stream" : stream, "author" : message.author})
 					if not "nextPageToken" in data:
 						break
 					else:
@@ -1530,7 +1678,7 @@ async def on_message(message):
 			else:
 				await send_mention_space(message, "Error")
 				return
-		elif message.content.startswith("!spotify"):
+		elif message.content.startswith("!spotify") or "spotify" in message.content:
 			path = urllib.parse.urlparse(message.content.split()[1]).path
 			if path[:7] == "/track/":
 				trackid = path[7:]
@@ -1548,6 +1696,12 @@ async def on_message(message):
 		else:
 			link = message.content.split()[1]
 		response = await send_mention_space(message, "Loading...")
+		if "list" in link:
+			parsed_link = urllib.parse.urlparse(link)
+			query = urllib.parse.parse_qs(parsed_link.query)
+			del query["list"]
+			parsed_link = parsed_link._replace(query = urllib.parse.urlencode(query, True))
+			link = parsed_link.geturl()
 		try:
 			stream = await voice.create_ytdl_player(link)
 		except:
@@ -1555,9 +1709,9 @@ async def on_message(message):
 			return
 		for player in players:
 			if player["server"] == message.server:
-				player["queue"].put(stream)
+				player["queue"].put({"stream" : stream, "author" : message.author})
 				break
-		await client.edit_message(response, message.author.mention + " Your song has been added to the queue")
+		await client.edit_message(response, message.author.mention + " Your song has been added to the queue.")
 
 #    if message.content.startswith("!test"):
 #        counter = 0
@@ -1927,12 +2081,6 @@ def is_hex(s):
      return all(c in hex_digits for c in s)
 '''
 
-def check_voice_connected(message):
-	for voice in voices:
-		if voice.channel.server == message.server:
-			return True
-	return False
-
 def message_isdigit(m):
 	return m.content.isdigit() and m.content != '0'
 
@@ -1989,6 +2137,17 @@ def remove_symbols(string):
 		plain_string = plain_string[1:]
 	return plain_string
 
+
+async def random_game_status():
+	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "with Goldbach's conjecture", "with quantum foam", "with quantum entanglement", "with P vs NP", "with the Reimann hypothesis", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music"]
+	await client.change_status(game = discord.Game(name = random.choice(statuses)))
+
+def check_voice_connected(message):
+	for voice in voices:
+		if voice.channel.server == message.server:
+			return True
+	return False
+
 async def send_mention_space(message, response):
 	return await client.send_message(message.channel, message.author.mention + " " + response)
 
@@ -1998,37 +2157,61 @@ async def send_mention_newline(message, response):
 async def send_mention_code(message, response):
 	return await client.send_message(message.channel, message.author.mention + "\n" + "```" + response + "```")
 
+def empty_player_queue():
+	global players
+	for player in players:
+		while not player["queue"].empty():
+			stream = player["queue"].get()
+			stream["stream"].start()
+			stream["stream"].stop()
+			#del stream["stream"]
+
+# import atexit
+# atexit.register(empty_player_queue)
+
+def add_uptime():
+	with open("data/stats.json", "r") as stats_file:
+			stats = json.load(stats_file)
+	now = datetime.datetime.utcnow()
+	uptime = now - online_time
+	stats["uptime"] += uptime.total_seconds()
+	with open("data/stats.json", "w") as stats_file:
+		json.dump(stats, stats_file)
+
+def add_restart():
+	with open("data/stats.json", "r") as stats_file:
+		stats = json.load(stats_file)
+	stats["restarts"] += 1
+	with open("data/stats.json", "w") as stats_file:
+		json.dump(stats, stats_file)
+
+def end():
+	pass
+
 #client.run(keys.username, keys.password)
-client.run(keys.token)
+#client.run(keys.token)
+
+loop = asyncio.get_event_loop()
+try:
+	loop.run_until_complete(client.start(keys.token))
+except KeyboardInterrupt:
+	print("Shutting down...")
+	add_uptime()
+	add_restart()
+	empty_player_queue()
+	loop.run_until_complete(client.logout())
+finally:
+	loop.close()
 
 '''
-try:
-    client.loop.run_until_complete(client.start(keys.username, keys.password))
-except KeyboardInterrupt:
-    client.loop.run_until_complete(client.logout())
-    # cancel all tasks lingering
 except:
 	traceback.print_exc()
-	while True:
-		pass
 '''
 '''
-while True:
-	# try:
-	try:
-		if client.is_logged_in:
-			client.loop.run_until_complete(client.logout())
-			client.loop.run_until_complete(client.close())
-		client.loop.run_until_complete(client.start(keys.username, keys.password))
-	except KeyboardInterrupt:
+try:
+	if client.is_logged_in:
 		client.loop.run_until_complete(client.logout())
-			# cancel all tasks lingering
-		# finally:
-			# client.loop.close()
-			# client.loop.stop()
-	# except RuntimeError:
-	except:
-		# client.loop.run_until_complete(client.logout())
-		traceback.print_exc()
-		time.sleep(10)
+		client.loop.run_until_complete(client.close())
+
+		# client.loop.stop()
 '''
