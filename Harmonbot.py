@@ -35,6 +35,7 @@ import youtube_dl
 
 from modules import ciphers
 from modules import conversions
+from modules import documentation
 from modules import gofish
 from modules.maze import maze
 from modules import permissions
@@ -73,7 +74,7 @@ client = TokenBot()
 '''
 
 client = discord.Client()
-discord.opus.load_opus("libopus-0.dll")
+# discord.opus.load_opus("libopus-0.dll")
 waclient = wolframalpha.Client(keys.wolframalpha_appid)
 spotify = spotipy.Spotify()
 board = chess.Board()
@@ -126,81 +127,7 @@ jeopardy_max_width = 0
 maze_started = False
 maze_maze = None
 taboo_players = []
-commands = "Commands: !8ball (!eightball) !add !audiodefine !avatar !calc !cat !chess !choose !coin !color (!colour) !commands !date\
- !define !fancify !google (!search) !guess !haveibeenpwned !imdb !imfeelinglucky !insult !joke !lmbtfy !lmgtfy !longurl !map !math !maze !mycolor (!mycolour) !number !randomidea\
- !randomlocation !randomword !rng !rolecolor (!rolecolour) !shorturl !spotifyinfo !spotifytoyoutube (!sptoyt) !steam !streetview !trivia !urbandictionary !wiki !xkcd !year\
- !youtubeinfo !youtubesearch\n\
-Conversions: temperature unit conversions (![c, f, k, r, de]to[c, f, k, r, de, n, re, ro]), weight unit conversions (![amu, me, bagc, bagpc, barge, kt, ct, \
-clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, \
-quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]to[amu, me, bagc, bagpc, barge, kt, ct, clove, crith, \
-da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, \
-quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g])\n\
-In Progress: !adventure !everyone !gifvtogif !giphy !gofish !help (!whatis) !radio !tempchannel !timer !youtube (!audio !soundcloud !yt) !war !webmtogif\n\
-Misc/Admin Only: !channel !delete !discriminator !eval !idtoname !libraryversion !load !nametoid !owner !servericon !serverowner !test !tts !updateavatar\n\
-@Harmon758 (!cleverbot) (!talk) (!ask), f (F)\n\
-Use !help or !whatis *command* for more information on a command"
 #wolframalpha (wa)
-commands_info = {
-	"!8ball" : "Ask !8ball a yes or no question", "!eightball" : "Ask !eightball a yes or no question",
-	"!add" : "Use !add to add numbers",
-	"!adventure" : "!adventure",
-	"!audiodefine" : "Use !audiodefine to find out how to pronounce a word",
-	"!avatar" : "Use !avatar to see someone's avatar",
-	"!calc" : "!calc",
-	"!cat" : "Use !cat for a random image of a cat. !cat categories for different categories you can choose from. !cat <category> for a random image of a cat from that category",
-	"!channel" : "!channel",
-	"!chess" : "!chess",
-	"!choose" : "Use !choose and I will choose between multiple options (e.g. !choose <option1> <option2> <...>)",
-	"!cleverbot" : "!cleverbot", "!talk" : "!talk", "!ask" : "!ask",
-	"!coin" : "Use !coin to flip a coin",
-	"!color" : "!color", "!colour" : "!colour",
-	"!commands" : "!commands",
-	"!date" : "!date",
-	"!define" : "!define",
-	"!delete" : "!delete",
-	"!everyone" : "Use !everyone to see if you can mention everyone in that channel",
-	"!gofish" : "!gofish",
-	"!google" : "!google", "!search" : "!search",
-	"!guess" : "!guess",
-	"!haveibeenpwned" : "!haveibeenpwned",
-	"!help" : "!help", "!whatis" : "!whatis",
-	"!idtoname" : "!idtoname",
-	"!imdb" : "!imdb",
-	"!imfeelinglucky" : "!imfeelinglucky",
-	"!insult" : "!insult",
-	"!joke" : "!joke",
-	"!lmgtfy" : "!lmgtfy",
-	"!longurl" : "!longurl",
-	"!map" : "!map",
-	"!math" : "!math",
-	"!mycolor" : "!mycolor", "!mycolour" : "!mycolour",
-	"!nametoid" : "!nametoid",
-	"!number" : "!number",
-	"!owner" : "Use !owner to find out the owner of the server",
-	"!randomidea" : "!randomidea",
-	"!randomlocation" : "!randomlocation",
-	"!randomword" : "!randomword",
-	"!rng" : "!rng",
-	"!rolecolor" : "!rolecolor", "!rolecolour" : "!rolecolour",
-	"!servericon" : "!servericon",
-	"!shorturl" : "!shorturl",
-	"!spotifyinfo" : "!spotifyinfo",
-	"!spotifytoyoutube" : "!spotifytoyoutube", "!sptoyt" : "!sptoyt",
-	"!steam" : "!steam",
-	"!streetview" : "!streetview",
-	"!tempchannel" : "!tempchannel",
-	"!test" : "!test",
-	"!timer" : "!timer",
-	"!trivia" : "!trivia",
-	"!tts" : "!tts",
-	"!war" : "!war",
-	"!wiki" : "Use !wiki to look something up on Wikipedia",
-	"!xkcd" : "!xkcd",
-	"!year" : "!year",
-	"!youtube" : "!youtube",
-	"!youtubeinfo" : "!youtubeinfo",
-	"!youtubesearch" : "!youtubesearch",
-}
 
 # description = '''Harmonbot'''
 # bot = commands.Bot(command_prefix='!', description=description)
@@ -217,10 +144,12 @@ async def on_ready():
 		os.remove("data/restart_channel.json")
 		await client.send_message(restart_channel, "Restarted.")
 	await random_game_status()
+	await set_streaming_status()
 
 @client.event
 async def on_message(message):
-	global voice, player, trivia_answers
+	# global voice
+	global player, trivia_answers
 	if (message.server == None or message.channel.is_private) and not (message.author == client.user and message.channel.user.id == keys.myid):
 		for member in client.get_all_members():
 			if member.id == keys.myid:
@@ -239,7 +168,7 @@ async def on_message(message):
 	elif message.content.startswith("!echo"):
 		await client.send_message(message.channel, message.content)
 	elif message.content.startswith("!commands"):
-		await client.send_message(message.author, commands)
+		await client.send_message(message.author, documentation.commands)
 		await client.send_message(message.channel, message.author.mention + " Check your DM's for my commands.")
 	elif message.content.startswith("!help") or message.content.startswith("!whatis"):
 		if message.content.startswith("!help") and len(message.content.split()) == 1:
@@ -247,10 +176,12 @@ async def on_message(message):
 		elif message.content.startswith("!whatis") and len(message.content.split()) == 1:
 			await send_mention_space(message, "What is what?")
 		elif message.content.split()[1] == "commands":
-			await client.send_message(message.author, commands)
+			await client.send_message(message.author, documentation.commands)
 			await send_mention_space(message, "Check your DM's for my commands.")
-		elif commands_info.get(message.content.split()[1], 0):
-			await send_mention_space(message, commands_info[message.content.split()[1]])
+		elif documentation.commands_info.get(message.content.split()[1], 0):
+			await send_mention_space(message, documentation.commands_info[message.content.split()[1]])
+		else:
+			await send_mention_space(message, "I don't know what that is.")
 	elif message.content.startswith("!8ball") or message.content.startswith("!eightball"):
 		responses = ["It is certain", "It is decidedly so", "Without a doubt", "Yes, definitely", "You may rely on it", "As I see it, yes", "Most likely",
 			"Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predit now",
@@ -333,6 +264,8 @@ async def on_message(message):
 			url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1"
 			root = xml.etree.ElementTree.fromstring(requests.get(url).text)
 			await send_mention_space(message, root.find(".//url").text)
+	elif message.content.startswith("!changenickname"):
+		await client.change_nickname(message.server.me, ' '.join(message.content.split()[1:]))
 	elif message.content.startswith("!channel"):
 		if message.channel.permissions_for(message.author).manage_channels and len(message.content.split()) >= 2:
 			if message.content.split()[1] == "voice":
@@ -370,6 +303,24 @@ async def on_message(message):
 			await client.send_message(message.channel, message.author.mention + " Choose between what?")
 		choices = message.content.split()[1:]
 		await client.send_message(message.channel, message.author.mention + " " + random.choice(choices))
+	elif message.content.startswith("!cleargame") or message.content.startswith("!clearplaying"):
+		updated_game = message.server.me.game
+		if updated_game and updated_game.name:
+			updated_game.name = None
+			await client.change_status(game = updated_game)
+			await send_mention_space(message, "Game status cleared.")
+		else:
+			await send_mention_space(message, "There is no game status to clear.")
+	elif message.content.startswith("!clearstreaming"):
+		updated_game = message.server.me.game
+		if updated_game and (updated_game.url or updated_game.type):
+			updated_game.url = None
+			if len(message.content.split()) == 1 or message.content.split()[1] != "url":
+				updated_game.type = 0
+			await client.change_status(game = updated_game)
+			await send_mention_space(message, "Streaming status and/or url cleared.")
+		else:
+			await send_mention_space(message, "There is no streaming status or url to clear.")
 	elif message.content.startswith("!cleverbot") or message.content.startswith("!talk") or message.content.startswith("!ask"):
 		await send_mention_space(message, cleverbot_instance.ask(" ".join(message.content.split()[1:])))
 	elif message.server != None and message.server.me in message.mentions:
@@ -492,6 +443,10 @@ async def on_message(message):
 			await send_mention_space(message, "You are able to mention everyone in this channel.")
 		else:
 			await send_mention_space(message, "You are not able to mention everyone in this channel.")
+	elif message.content.startswith("!exec"):
+		if message.author.id == keys.myid:
+			exec(" ".join(message.content.split()[1:]))
+			await send_mention_space(message, "successfully executed")
 	elif message.content.startswith("!fancify"):
 		output = ""
 		for letter in " ".join(message.content.split()[1:]):
@@ -914,6 +869,7 @@ async def on_message(message):
 					player.start()
 	elif message.content.startswith("!randomgame"):
 		await random_game_status()
+		# await send_mention_space(message, "I changed to a random game status.")
 	elif message.content.startswith("!randomidea"):
 		url = "http://itsthisforthat.com/api.php?json"
 		data = requests.get(url).json()
@@ -971,6 +927,8 @@ async def on_message(message):
 			await send_mention_space(message, "This server is owned by " + message.server.owner.name + "#" + str(message.server.owner.discriminator))
 		else:
 			await send_mention_space(message, "Please use that command in a server.")
+	elif message.content.startswith("!servers"):
+		return
 	elif message.content.startswith("!setpermission"):
 		if message.author.id == keys.myid or message.author == message.server.owner:
 			if len(message.content.split()) < 5:
@@ -1034,6 +992,23 @@ async def on_message(message):
 					return
 				permissions.set_permission(message, type, to_set, permission, setting)
 				await send_mention_space(message, "Permission updated")
+	elif message.content.startswith("!setstreaming"):
+		if message.author.id == keys.myid:
+			if message.content.split()[1] == "on" or message.content.split()[1] == "true":
+				if len(message.content.split()) == 2:
+					await set_streaming_status()
+					return
+				elif len(message.content.split()) > 2:
+					updated_game = message.server.me.game
+					if not updated_game:
+						updated_game = discord.Game(url = message.content.split()[2], type = 1)
+					else:
+						updated_game.url = message.content.split()[2]
+						updated_game.type = 1
+			else:
+				updated_game = message.server.me.game
+				updated_game.type = 0
+			await client.change_status(game = updated_game)
 	elif message.content.startswith("!shorturl"):
 		await send_mention_space(message, requests.post('https://www.googleapis.com/urlshortener/v1/url?key=' + keys.google_apikey, headers={'Content-Type': 'application/json'}, data= '{"longUrl": "' + message.content.split()[1] +'"}').json()["id"])
 	elif message.content.startswith("!spotifyinfo"):
@@ -1364,9 +1339,14 @@ async def on_message(message):
 			with open("data/discord_harmonbot_icon.png", "rb") as avatar_file:
 				await client.edit_profile(avatar=avatar_file.read())
 			await send_mention_space(message, "avatar updated")
-	elif message.content.startswith("!updateplaying") or message.content.startswith("!updategame") or message.content.startswith("!changeplaying") or message.content.startswith("!changegame"):
+	elif message.content.startswith("!updateplaying") or message.content.startswith("!updategame") or message.content.startswith("!changeplaying") or message.content.startswith("!changegame") or message.content.startswith("!setplaying") or message.content.startswith("!setgame"):
 		if message.author.id == keys.myid:
-			await client.change_status(game = discord.Game(name = " ".join(message.content.split()[1:])))
+			updated_game = message.server.me.game
+			if not updated_game:
+				updated_game = discord.Game(name = " ".join(message.content.split()[1:]))
+			else:
+				updated_game.name = " ".join(message.content.split()[1:])
+			await client.change_status(game = updated_game)
 			await send_mention_space(message, "game updated")
 	elif message.content.startswith("!uptime"):
 		now = datetime.datetime.utcnow()
@@ -1469,7 +1449,7 @@ async def on_message(message):
 	elif message.content.startswith("!year"):
 		url = "http://numbersapi.com/" + message.content.split()[1] + "/year"
 		await send_mention_space(message, requests.get(url).text)
-	elif message.content.startswith("!youtubeinfo"):
+	elif message.content.startswith("!youtubeinfo") or message.content.startswith("!ytinfo"):
 		# toggles = {}
 		# with open(message.server.name + "_toggles.json", "r") as toggles_file:
 			# toggles = json.load(toggles_file)
@@ -1502,7 +1482,7 @@ async def on_message(message):
 			published = data["snippet"]["publishedAt"][:10]
 			# await client.send_message(message.channel, message.author.mention + "\n**" + title + "**\n**Length**: " + str(length) + "\n**Likes**: " + likes + ", **Dislikes**: " + dislikes + " (" + str(likepercentage) + "%)\n**Views**: " + views + "\n" + channel + " on " + published)
 			await client.send_message(message.channel, message.author.mention + "```\n" + title + "\nLength: " + str(length) + "\nLikes: " + likes + ", Dislikes: " + dislikes + " (" + str(likepercentage) + "%)\nViews: " + views + "\n" + channel + " on " + published + "```")
-	elif message.content.startswith("!youtubesearch"):
+	elif message.content.startswith("!youtubesearch") or message.content.startswith("!ytsearch"):
 		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + "+".join(message.content.split()[1:]) + "&key=" + keys.google_apikey
 		data = requests.get(url).json()["items"][0]
 		if "videoId" not in data["id"]:
@@ -1513,6 +1493,7 @@ async def on_message(message):
 		global voices, players, song_restarted
 		if message.author.id == keys.myid or message.author.id == "108131092430589952":
 			if message.content.split()[1] == "join":
+				'''
 				if len(voices) != 0:
 					for voice in voices:
 						if voice.channel.server == message.server:
@@ -1520,6 +1501,9 @@ async def on_message(message):
 							voices.remove(voice)
 							break
 				voice_channel = None
+				'''
+				if client.is_voice_connected(message.server):
+					await client.voice_client_in(message.server).disconnect()
 				for channel in message.server.channels:
 					if channel.type == discord.ChannelType.text:
 						continue
@@ -1531,7 +1515,7 @@ async def on_message(message):
 					await send_mention_space(message, "Voice channel not found.")
 					return
 				voice = await client.join_voice_channel(voice_channel)
-				voices.append(voice)
+				#voices.append(voice)
 				player = {"server" : message.server, "queue" : queue.Queue(), "current" : None}
 				players.append(player)
 				await send_mention_space(message, "I've joined the voice channel.")
@@ -1547,16 +1531,23 @@ async def on_message(message):
 							await asyncio.sleep(1)
 						#del stream
 				return
-			elif not check_voice_connected(message):
+			#elif not check_voice_connected(message):
+			elif not client.is_voice_connected(message.server):
 				await send_mention_space(message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
 				return
 			if message.content.split()[1] == "leave":
+				if client.is_voice_connected(message.server):
+					await client.voice_client_in(message.server).disconnect()
+					await send_mention_space(message, "I've left the voice channel.")
+				return
+				'''
 				for voice in voices:
 					if voice.channel.server == message.server:
 						await voice.disconnect()
 						voices.remove(voice)
 						await send_mention_space(message, "I've left the voice channel.")
 						return
+				'''
 			elif message.content.split()[1] == "pause" or message.content.split()[1] == "stop":
 				for player in players:
 					if player["server"] == message.server:
@@ -1581,7 +1572,7 @@ async def on_message(message):
 						song_restarted = True
 						response = await send_mention_space(message, "Restarting song...")
 						player["current"]["stream"].stop()
-						stream = await voice.create_ytdl_player(player["current"]["stream"].url)
+						stream = await client.voice_client_in(message.server).create_ytdl_player(player["current"]["stream"].url)
 						player["current"]["stream"] = stream
 						stream.start()
 						await client.edit_message(response, message.author.mention + " Restarted song")
@@ -1614,7 +1605,8 @@ async def on_message(message):
 						return
 			elif message.content.split()[1] == "full":
 				return
-		if not check_voice_connected(message):
+		#if not check_voice_connected(message):
+		if not client.is_voice_connected(message.server):
 			await send_mention_space(message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
 			return
 		elif message.content.split()[1] in ["leave", "pause", "stop", "resume", "start", "skip", "next", "restart", "replay", "empty", "clear", "shuffle"]:
@@ -1664,7 +1656,7 @@ async def on_message(message):
 						link = "https://www.youtube.com/watch?v=" + item["snippet"]["resourceId"]["videoId"]
 						await client.edit_message(response, message.author.mention + " Loading " + str(position) + '/' + str(total))
 						try:
-							stream = await voice.create_ytdl_player(link)
+							stream = await client.voice_client_in(message.server).create_ytdl_player(link)
 						except youtube_dl.utils.DownloadError:
 							await send_mention_space(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
 							continue
@@ -1703,7 +1695,7 @@ async def on_message(message):
 			parsed_link = parsed_link._replace(query = urllib.parse.urlencode(query, True))
 			link = parsed_link.geturl()
 		try:
-			stream = await voice.create_ytdl_player(link)
+			stream = await client.voice_client_in(message.server).create_ytdl_player(link)
 		except:
 			await send_mention_space(message, "Error")
 			return
@@ -2139,8 +2131,22 @@ def remove_symbols(string):
 
 
 async def random_game_status():
-	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "with Goldbach's conjecture", "with quantum foam", "with quantum entanglement", "with P vs NP", "with the Reimann hypothesis", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music"]
-	await client.change_status(game = discord.Game(name = random.choice(statuses)))
+	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "Goldbach's conjecture", "Goldbach's conjecture solution", "with quantum foam", "with quantum entanglement", "with P vs NP", "the Reimann hypothesis", "the Reimann proof", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music", "Google Ultron", "not enough space here to", "the meaning of life is"]
+	updated_game = discord.utils.get(client.servers).me.game
+	if not updated_game:
+		updated_game = discord.Game(name = random.choice(statuses))
+	else:
+		updated_game.name = random.choice(statuses)
+	await client.change_status(game = updated_game)
+
+async def set_streaming_status():
+	updated_game = discord.utils.get(client.servers).me.game
+	if not updated_game:
+		updated_game = discord.Game(url = "https://discord.gg/0oyodN94Y3CgCT6I", type = 1)
+	else:
+		updated_game.url = "https://discord.gg/0oyodN94Y3CgCT6I"
+		updated_game.type = 1
+	await client.change_status(game = updated_game)
 
 def check_voice_connected(message):
 	for voice in voices:
