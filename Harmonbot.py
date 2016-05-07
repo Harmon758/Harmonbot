@@ -39,7 +39,10 @@ from modules import documentation
 from modules import gofish
 from modules.maze import maze
 from modules import permissions
+from modules.utilities import *
 from modules import war
+
+from client import client
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.DEBUG)
@@ -73,8 +76,7 @@ class TokenBot(discord.Client):
 client = TokenBot()
 '''
 
-client = discord.Client()
-# discord.opus.load_opus("libopus-0.dll")
+#client = discord.Client()
 waclient = wolframalpha.Client(keys.wolframalpha_appid)
 spotify = spotipy.Spotify()
 board = chess.Board()
@@ -203,7 +205,7 @@ async def on_message(message):
 		sum = 0
 		numbers = []
 		for part in message.content.split():
-			if isnumber(part):
+			if is_number(part):
 				sum += float(part)
 				numbers.append(part)
 		if sum.is_integer():
@@ -338,7 +340,7 @@ async def on_message(message):
 	elif message.content.startswith("!color") or message.content.startswith("!colour"):
 		if len(message.content.split()) == 1 or message.content.split()[1] == "random":
 			url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
-		elif ishex(message.content.split()[1]) and len(message.content.split()[1]) == 6:
+		elif is_hex(message.content.split()[1]) and len(message.content.split()[1]) == 6:
 			url = "http://www.colourlovers.com/api/color/" + message.content.split()[1] + "?format=json"
 		else:
 			url = "http://www.colourlovers.com/api/colors?numResults=1&format=json&keywords=" + '+'.join(message.content.split()[1:])
@@ -358,8 +360,7 @@ async def on_message(message):
 	elif message.content.startswith("!shutdown") or message.content.startswith("!crash") or message.content.startswith("!panic"):
 		if message.author.id == keys.myid:
 			await client.send_message(message.channel, "Shutting down.")
-			add_uptime()
-			empty_player_queue()
+			shutdown_tasks()
 			subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
 			subprocess.call(["taskkill", "/f", "/im", "python.exe"])
 	elif message.content.startswith("!date"):
@@ -530,13 +531,13 @@ async def on_message(message):
 		await send_mention_space(message, "https://www.google.com/search?q=" + ('+').join(message.content.split()[1:]))
 	elif message.content.startswith("!guess"):
 		tries = False
-		if len(message.content.split()) >= 3 and string_isdigit(message.content.split()[2]):
+		if len(message.content.split()) >= 3 and is_digit_gtz(message.content.split()[2]):
 			tries = int(message.content.split()[2])
-		if len(message.content.split()) >= 2 and string_isdigit(message.content.split()[1]):
+		if len(message.content.split()) >= 2 and is_digit_gtz(message.content.split()[1]):
 			max_value = int(message.content.split()[1])
 		else:
 			await client.send_message(message.channel, message.author.mention + " What range of numbers would you like to guess to? 1 to _")
-			max_value = await client.wait_for_message(timeout=wait_time, author=message.author, check=message_isdigit)
+			max_value = await client.wait_for_message(timeout=wait_time, author=message.author, check=message_is_digit_gtz)
 			if max_value is None:
 				max_value = 10
 			else:
@@ -544,14 +545,14 @@ async def on_message(message):
 		answer = random.randint(1, max_value)
 		if not tries:
 			await client.send_message(message.channel, message.author.mention + " How many tries would you like?")
-			tries = await client.wait_for_message(timeout=wait_time, author=message.author, check=message_isdigit)
+			tries = await client.wait_for_message(timeout=wait_time, author=message.author, check=message_is_digit_gtz)
 			if tries is None:
 				tries = 1
 			else:
 				tries = int(tries.content)
 		await client.send_message(message.channel, message.author.mention + " Guess a number between 1 to " + str(max_value))
 		while tries != 0:
-			guess = await client.wait_for_message(timeout=wait_time, author=message.author, check=message_isdigit)
+			guess = await client.wait_for_message(timeout=wait_time, author=message.author, check=message_is_digit_gtz)
 			if guess is None:
 				await client.send_message(message.channel, message.author.mention + " Sorry, you took too long. It was " + str(answer))
 				return
@@ -892,7 +893,7 @@ async def on_message(message):
 				json.dump({"restart_channel" : message.channel.id}, restart_channel_file)
 			raise KeyboardInterrupt
 	elif message.content.startswith("!rng"):
-		if len(message.content.split()) > 1 and string_isdigit(message.content.split()[1]):
+		if len(message.content.split()) > 1 and is_digit_gtz(message.content.split()[1]):
 			await client.send_message(message.channel, message.author.mention + " " + str(random.randint(1, int(message.content.split()[1]))))
 		else:
 			await client.send_message(message.channel, message.author.mention + " " + str(random.randint(1, 10)))
@@ -1433,7 +1434,7 @@ async def on_message(message):
 	elif message.content.startswith("!xkcd"):
 		if len(message.content.split()) == 1:
 			url = "http://xkcd.com/info.0.json" # http://dynamic.xkcd.com/api-0/jsonp/comic/
-		elif string_isdigit(message.content.split()[1]):
+		elif is_digit_gtz(message.content.split()[1]):
 			url = "http://xkcd.com/" + message.content.split()[1] + "/info.0.json" # http://dynamic.xkcd.com/api-0/jsonp/comic/#
 		elif message.content.split()[1] == "random":
 			total = json.loads(requests.get("http://xkcd.com/info.0.json").text)["num"]
@@ -1531,7 +1532,6 @@ async def on_message(message):
 							await asyncio.sleep(1)
 						#del stream
 				return
-			#elif not check_voice_connected(message):
 			elif not client.is_voice_connected(message.server):
 				await send_mention_space(message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
 				return
@@ -1605,7 +1605,6 @@ async def on_message(message):
 						return
 			elif message.content.split()[1] == "full":
 				return
-		#if not check_voice_connected(message):
 		if not client.is_voice_connected(message.server):
 			await send_mention_space(message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
 			return
@@ -1625,7 +1624,7 @@ async def on_message(message):
 							more_songs = player["queue"].qsize() - 10
 							queue_string += "There " + inflect_engine.plural("is", more_songs) + " " + str(more_songs) + " more " + inflect_engine.plural("song", more_songs) + " in the queue"
 							break
-					if player["current"]["stream"].is_done():
+					if not player["current"] or player["current"]["stream"].is_done():
 						await client.send_message(message.channel, "There is no song currently playing.")
 					else:
 						await client.send_message(message.channel, "Currently playing: " + player["current"]["stream"].url + "\n" + add_commas(player["current"]["stream"].views) + ":eye: | " + add_commas(player["current"]["stream"].likes) + ":thumbsup::skin-tone-2: | " + add_commas(player["current"]["stream"].dislikes) + ":thumbsdown::skin-tone-2:\nAdded by: " + player["current"]["author"].name)
@@ -1727,7 +1726,7 @@ async def on_message(message):
 	elif message.content.startswith("!ctof"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			celsius = message.content.split()[1]
@@ -1736,7 +1735,7 @@ async def on_message(message):
 	elif message.content.startswith("!ctok"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			celsius = message.content.split()[1]
@@ -1745,7 +1744,7 @@ async def on_message(message):
 	elif message.content.startswith("!ctor"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			celsius = message.content.split()[1]
@@ -1754,7 +1753,7 @@ async def on_message(message):
 	elif message.content.startswith("!ctode"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			celsius = message.content.split()[1]
@@ -1763,7 +1762,7 @@ async def on_message(message):
 	elif message.content.startswith("!cton"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			celsius = message.content.split()[1]
@@ -1772,7 +1771,7 @@ async def on_message(message):
 	elif message.content.startswith("!ctore"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			celsius = message.content.split()[1]
@@ -1781,7 +1780,7 @@ async def on_message(message):
 	elif message.content.startswith("!ctoro"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			celsius = message.content.split()[1]
@@ -1790,7 +1789,7 @@ async def on_message(message):
 	elif message.content.startswith("!ftoc"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			fahrenheit = message.content.split()[1]
@@ -1799,7 +1798,7 @@ async def on_message(message):
 	elif message.content.startswith("!ftok"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			fahrenheit = message.content.split()[1]
@@ -1808,7 +1807,7 @@ async def on_message(message):
 	elif message.content.startswith("!ftorc"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			fahrenheit = message.content.split()[1]
@@ -1817,7 +1816,7 @@ async def on_message(message):
 	elif message.content.startswith("!ftode"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			fahrenheit = message.content.split()[1]
@@ -1826,7 +1825,7 @@ async def on_message(message):
 	elif message.content.startswith("!fton"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			fahrenheit = message.content.split()[1]
@@ -1835,7 +1834,7 @@ async def on_message(message):
 	elif message.content.startswith("!ftore"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			fahrenheit = message.content.split()[1]
@@ -1844,7 +1843,7 @@ async def on_message(message):
 	elif message.content.startswith("!ftoro"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			fahrenheit = message.content.split()[1]
@@ -1853,7 +1852,7 @@ async def on_message(message):
 	elif message.content.startswith("!ktoc"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			kelvin = message.content.split()[1]
@@ -1862,7 +1861,7 @@ async def on_message(message):
 	elif message.content.startswith("!ktof"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			kelvin = message.content.split()[1]
@@ -1871,7 +1870,7 @@ async def on_message(message):
 	elif message.content.startswith("!ktor"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			kelvin = message.content.split()[1]
@@ -1880,7 +1879,7 @@ async def on_message(message):
 	elif message.content.startswith("!ktode"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			kelvin = message.content.split()[1]
@@ -1889,7 +1888,7 @@ async def on_message(message):
 	elif message.content.startswith("!kton"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			kelvin = message.content.split()[1]
@@ -1898,7 +1897,7 @@ async def on_message(message):
 	elif message.content.startswith("!ktore"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			kelvin = message.content.split()[1]
@@ -1907,7 +1906,7 @@ async def on_message(message):
 	elif message.content.startswith("!ktoro"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			kelvin = message.content.split()[1]
@@ -1916,7 +1915,7 @@ async def on_message(message):
 	elif message.content.startswith("!rtoc"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			rankine = message.content.split()[1]
@@ -1925,7 +1924,7 @@ async def on_message(message):
 	elif message.content.startswith("!rtof"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			rankine = message.content.split()[1]
@@ -1934,7 +1933,7 @@ async def on_message(message):
 	elif message.content.startswith("!rtok"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			rankine = message.content.split()[1]
@@ -1943,7 +1942,7 @@ async def on_message(message):
 	elif message.content.startswith("!rtode"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			rankine = message.content.split()[1]
@@ -1952,7 +1951,7 @@ async def on_message(message):
 	elif message.content.startswith("!rton"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			rankine = message.content.split()[1]
@@ -1961,7 +1960,7 @@ async def on_message(message):
 	elif message.content.startswith("!rtore"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			rankine = message.content.split()[1]
@@ -1970,7 +1969,7 @@ async def on_message(message):
 	elif message.content.startswith("!rtoro"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			rankine = message.content.split()[1]
@@ -1979,7 +1978,7 @@ async def on_message(message):
 	elif message.content.startswith("!detoc"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			delisle = message.content.split()[1]
@@ -1988,7 +1987,7 @@ async def on_message(message):
 	elif message.content.startswith("!detof"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			delisle = message.content.split()[1]
@@ -1997,7 +1996,7 @@ async def on_message(message):
 	elif message.content.startswith("!detok"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			delisle = message.content.split()[1]
@@ -2006,7 +2005,7 @@ async def on_message(message):
 	elif message.content.startswith("!detor"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			delisle = message.content.split()[1]
@@ -2015,7 +2014,7 @@ async def on_message(message):
 	elif message.content.startswith("!deton"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			delisle = message.content.split()[1]
@@ -2024,7 +2023,7 @@ async def on_message(message):
 	elif message.content.startswith("!detore"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			delisle = message.content.split()[1]
@@ -2033,7 +2032,7 @@ async def on_message(message):
 	elif message.content.startswith("!detoro"):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			delisle = message.content.split()[1]
@@ -2042,7 +2041,7 @@ async def on_message(message):
 	elif re.match(r"^!(\w+)to(\w+)", message.content.split()[0], re.I):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
-		elif not isnumber(message.content.split()[1]):
+		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
 			value = int(message.content.split()[1])
@@ -2050,149 +2049,6 @@ async def on_message(message):
 			unit1 = units.group(1)
 			unit2 = units.group(2)
 			await send_mention_space(message, str(value) + " " + unit1 + " = " + str(conversions.massconversion(value, unit1, unit2)) + " " + unit2)
-
-def isnumber(characters):
-	try:
-		float(characters)
-		return True
-	except ValueError:
-		return False
-
-def ishex(characters):
-    try:
-        int(characters, 16)
-        return True
-    except ValueError:
-        return False
-
-'''
-import string
-def is_hex(s):
-     hex_digits = set(string.hexdigits)
-     # if s is long, then it is faster to check against a set
-     return all(c in hex_digits for c in s)
-'''
-
-def message_isdigit(m):
-	return m.content.isdigit() and m.content != '0'
-
-def string_isdigit(s):
-	return s.isdigit() and s != '0'
-
-def secs_to_duration(secs):
-	duration = []
-	time_in_secs = [31536000, 604800, 86400, 3600, 60]
-	# years, months, days, hours, minutes
-	for length_of_time in time_in_secs:
-		if secs > length_of_time:
-			duration.append(int(math.floor(secs / length_of_time)))
-			secs -= math.floor(secs / length_of_time) * length_of_time
-		else:
-			duration.append(0)
-	duration.append(int(secs))
-	return duration
-
-def duration_to_letter_format(duration):
-	output = ""
-	letters = ["y", "m", "d", "h", "m", "s"]
-	for i in range(6):
-		if duration[i]:
-			output += str(duration[i]) + letters[i] + " "
-	return output[:-1]
-
-def duration_to_colon_format(duration):
-	output = ""
-	started = False
-	for i in range(6):
-		if duration[i]:
-			started = True
-			output += str(duration[i]) + ":"
-		elif started:
-			output += "00:"
-	return output[:-1]
-
-def secs_to_letter_format(secs):
-	return duration_to_letter_format(secs_to_duration(secs))
-
-def secs_to_colon_format(secs):
-	return duration_to_colon_format(secs_to_duration(secs))
-
-def add_commas(number):
-	return "{:,}".format(number)
-
-def remove_symbols(string):
-	plain_string = ""
-	for character in string:
-		if 0 <= ord(character) <= 127:
-			plain_string += character
-	if plain_string.startswith(' '):
-		plain_string = plain_string[1:]
-	return plain_string
-
-
-async def random_game_status():
-	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "Goldbach's conjecture", "Goldbach's conjecture solution", "with quantum foam", "with quantum entanglement", "with P vs NP", "the Reimann hypothesis", "the Reimann proof", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music", "Google Ultron", "not enough space here to", "the meaning of life is"]
-	updated_game = discord.utils.get(client.servers).me.game
-	if not updated_game:
-		updated_game = discord.Game(name = random.choice(statuses))
-	else:
-		updated_game.name = random.choice(statuses)
-	await client.change_status(game = updated_game)
-
-async def set_streaming_status():
-	updated_game = discord.utils.get(client.servers).me.game
-	if not updated_game:
-		updated_game = discord.Game(url = "https://discord.gg/0oyodN94Y3CgCT6I", type = 1)
-	else:
-		updated_game.url = "https://discord.gg/0oyodN94Y3CgCT6I"
-		updated_game.type = 1
-	await client.change_status(game = updated_game)
-
-def check_voice_connected(message):
-	for voice in voices:
-		if voice.channel.server == message.server:
-			return True
-	return False
-
-async def send_mention_space(message, response):
-	return await client.send_message(message.channel, message.author.mention + " " + response)
-
-async def send_mention_newline(message, response):
-	return await client.send_message(message.channel, message.author.mention + "\n" + response)
-
-async def send_mention_code(message, response):
-	return await client.send_message(message.channel, message.author.mention + "\n" + "```" + response + "```")
-
-def empty_player_queue():
-	global players
-	for player in players:
-		while not player["queue"].empty():
-			stream = player["queue"].get()
-			stream["stream"].start()
-			stream["stream"].stop()
-			#del stream["stream"]
-
-# import atexit
-# atexit.register(empty_player_queue)
-
-def add_uptime():
-	with open("data/stats.json", "r") as stats_file:
-			stats = json.load(stats_file)
-	now = datetime.datetime.utcnow()
-	uptime = now - online_time
-	stats["uptime"] += uptime.total_seconds()
-	with open("data/stats.json", "w") as stats_file:
-		json.dump(stats, stats_file)
-
-def add_restart():
-	with open("data/stats.json", "r") as stats_file:
-		stats = json.load(stats_file)
-	stats["restarts"] += 1
-	with open("data/stats.json", "w") as stats_file:
-		json.dump(stats, stats_file)
-
-def end():
-	pass
 
 #client.run(keys.username, keys.password)
 #client.run(keys.token)
@@ -2202,9 +2058,7 @@ try:
 	loop.run_until_complete(client.start(keys.token))
 except KeyboardInterrupt:
 	print("Shutting down...")
-	add_uptime()
-	add_restart()
-	empty_player_queue()
+	restart_tasks()
 	loop.run_until_complete(client.logout())
 finally:
 	loop.close()
