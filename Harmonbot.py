@@ -12,7 +12,6 @@ import json
 import html
 import inflect
 import isodate
-import keys
 import logging
 import math
 import moviepy.editor
@@ -40,8 +39,10 @@ from modules import gofish
 from modules.maze import maze
 from modules import permissions
 from modules.utilities import *
+from modules import voice
 from modules import war
 
+import keys
 from client import client
 
 logger = logging.getLogger("discord")
@@ -202,8 +203,10 @@ async def on_message(message):
 						break
 				await client.add_roles(selected_member, selected_role)
 	elif message.content.startswith("!add"):
-		sum = 0
+		sum = 0.0
 		numbers = []
+		if not any(is_number(part) for part in message.content.split()):
+			return
 		for part in message.content.split():
 			if is_number(part):
 				sum += float(part)
@@ -360,7 +363,7 @@ async def on_message(message):
 	elif message.content.startswith("!shutdown") or message.content.startswith("!crash") or message.content.startswith("!panic"):
 		if message.author.id == keys.myid:
 			await client.send_message(message.channel, "Shutting down.")
-			shutdown_tasks()
+			await shutdown_tasks()
 			subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
 			subprocess.call(["taskkill", "/f", "/im", "python.exe"])
 	elif message.content.startswith("!date"):
@@ -396,19 +399,23 @@ async def on_message(message):
 			name = message.content.split()[1]
 			if name.isdigit():
 				number = int(name)
-			elif message.content.split()[2].isdigit():
+			elif len(message.content.split()) > 2 and message.content.split()[2].isdigit():
 				number = int(message.content.split()[2])
 			else:
-				number = 0
+				await send_mention_space(message, "Syntax error.")
+				return
 			count = 0
 			try:
 				await client.delete_message(message)
+				await asyncio.sleep(0.2)
 				async for client_message in client.logs_from(message.channel):
 					if not name.isdigit() and client_message.author.name == name and count != number:
 						await client.delete_message(client_message)
+						await asyncio.sleep(0.2)
 						count += 1
 					elif name.isdigit() and count != number:
 						await client.delete_message(client_message)
+						await asyncio.sleep(0.2)
 						count += 1
 			except discord.errors.Forbidden:
 				await send_mention_space(message, "I don't have permission to do that here. I need the \"Manage Messages\" permission to delete messages.")
@@ -929,7 +936,16 @@ async def on_message(message):
 		else:
 			await send_mention_space(message, "Please use that command in a server.")
 	elif message.content.startswith("!servers"):
-		return
+		if message.author.id == keys.myid:
+			for server in client.servers:
+				server_info = "```Name: " + server.name + "\n"
+				server_info += "ID: " + server.id + "\n"
+				server_info += "Owner: " + server.owner.name + "\n"
+				server_info += "Server Region: " + str(server.region) + "\n"
+				server_info += "Members: " + str(server.member_count) + "\n"
+				server_info += "Created at: " + str(server.created_at) + "\n```"
+				server_info += "Icon: " + server.icon_url
+				await client.send_message(message.author, server_info)
 	elif message.content.startswith("!setpermission"):
 		if message.author.id == keys.myid or message.author == message.server.owner:
 			if len(message.content.split()) < 5:
@@ -1584,11 +1600,9 @@ async def on_message(message):
 				for player in players:
 					if player["server"] == message.server:
 						while not player["queue"].empty():
-							# player["queue"].queue.clear()
 							stream = player["queue"].get()
 							stream["stream"].start()
 							stream["stream"].stop()
-							#del stream["stream"]
 						await send_mention_space(message, "Queue emptied")
 						return
 			elif message.content.split()[1] == "shuffle":
@@ -1723,332 +1737,27 @@ async def on_message(message):
 			json.dump(counter_info, counter_file)
 		await client.send_message(message.channel, message.author.name + " has paid their respects.\nRespects paid so far: " + str(counter_info["counter"]))
 	# conversions
-	elif message.content.startswith("!ctof"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			celsius = message.content.split()[1]
-			fahrenheit = str(conversions.ctof(float(celsius)))
-			await send_mention_space(message, celsius + " °C = " + fahrenheit + " °F")
-	elif message.content.startswith("!ctok"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			celsius = message.content.split()[1]
-			kelvin = str(conversions.ctok(float(celsius)))
-			await send_mention_space(message, celsius + " °C = " + kelvin + " K")
-	elif message.content.startswith("!ctor"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			celsius = message.content.split()[1]
-			rankine = str(conversions.ctor(float(celsius)))
-			await send_mention_space(message, celsius + " °C = " + rankine + " °R")
-	elif message.content.startswith("!ctode"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			celsius = message.content.split()[1]
-			delisle = str(conversions.ctode(float(celsius)))
-			await send_mention_space(message, celsius + " °C = " + delisle + " °De")
-	elif message.content.startswith("!cton"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			celsius = message.content.split()[1]
-			newton = str(conversions.cton(float(celsius)))
-			await send_mention_space(message, celsius + " °C = " + newton + " °N")
-	elif message.content.startswith("!ctore"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			celsius = message.content.split()[1]
-			reaumur = str(conversions.ctor(float(celsius)))
-			await send_mention_space(message, celsius + " °C = " + reaumur + " °Re")
-	elif message.content.startswith("!ctoro"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			celsius = message.content.split()[1]
-			romer = str(conversions.ctoro(float(celsius)))
-			await send_mention_space(message, celsius + " °C = " + romer + " °Rø")
-	elif message.content.startswith("!ftoc"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			fahrenheit = message.content.split()[1]
-			celcius = str(conversions.ftoc(float(fahrenheit)))
-			await send_mention_space(message, celsius + " °F = " + celsius + " °C")
-	elif message.content.startswith("!ftok"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			fahrenheit = message.content.split()[1]
-			kelvin = str(conversions.ftok(float(fahrenheit)))
-			await send_mention_space(message, celsius + " °F = " + celsius + " K")
-	elif message.content.startswith("!ftorc"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			fahrenheit = message.content.split()[1]
-			rankine = str(conversions.ftorc(float(fahrenheit)))
-			await send_mention_space(message, celsius + " °F = " + rankine + " °R")
-	elif message.content.startswith("!ftode"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			fahrenheit = message.content.split()[1]
-			delisle = str(conversions.ftode(float(fahrenheit)))
-			await send_mention_space(message, celsius + " °F = " + delisle + " °De")
-	elif message.content.startswith("!fton"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			fahrenheit = message.content.split()[1]
-			newton = str(conversions.fton(float(fahrenheit)))
-			await send_mention_space(message, celsius + " °F = " + newton + " °N")
-	elif message.content.startswith("!ftore"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			fahrenheit = message.content.split()[1]
-			reaumur = str(conversions.ftore(float(fahrenheit)))
-			await send_mention_space(message, celsius + " °F = " + reaumur + " °Ré")
-	elif message.content.startswith("!ftoro"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			fahrenheit = message.content.split()[1]
-			romer = str(conversions.ftoro(float(fahrenheit)))
-			await send_mention_space(message, celsius + " °F = " + romer + " °Rø")
-	elif message.content.startswith("!ktoc"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			kelvin = message.content.split()[1]
-			celsius = str(conversions.ktoc(float(kelvin)))
-			await send_mention_space(message, kelvin + " K = " + celsius + " °C")
-	elif message.content.startswith("!ktof"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			kelvin = message.content.split()[1]
-			fahrenheit = str(conversions.ktof(float(kelvin)))
-			await send_mention_space(message, kelvin + " K = " + fahrenheit + " °F")
-	elif message.content.startswith("!ktor"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			kelvin = message.content.split()[1]
-			rankine = str(conversions.ktor(float(kelvin)))
-			await send_mention_space(message, kelvin + " K = " + rankine + " °R")
-	elif message.content.startswith("!ktode"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			kelvin = message.content.split()[1]
-			delisle = str(conversions.ktode(float(kelvin)))
-			await send_mention_space(message, kelvin + " K = " + delisle + " °De")
-	elif message.content.startswith("!kton"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			kelvin = message.content.split()[1]
-			newton = str(conversions.kton(float(kelvin)))
-			await send_mention_space(message, kelvin + " K = " + newton + " °N")
-	elif message.content.startswith("!ktore"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			kelvin = message.content.split()[1]
-			reaumur = str(conversions.ktore(float(kelvin)))
-			await send_mention_space(message, kelvin + " K = " + reaumur + " °Ré")
-	elif message.content.startswith("!ktoro"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			kelvin = message.content.split()[1]
-			romer = str(conversions.ktoro(float(kelvin)))
-			await send_mention_space(message, kelvin + " K = " + romer + " °Rø")
-	elif message.content.startswith("!rtoc"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			rankine = message.content.split()[1]
-			celsius = str(conversions.rtoc(float(rankine)))
-			await send_mention_space(message, rankine + " °R = " + celsius + " °C")
-	elif message.content.startswith("!rtof"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			rankine = message.content.split()[1]
-			fahrenheit = str(conversions.rtof(float(rankine)))
-			await send_mention_space(message, rankine + " °R = " + fahrenheit + " °F")
-	elif message.content.startswith("!rtok"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			rankine = message.content.split()[1]
-			kelvin = str(conversions.rtok(float(rankine)))
-			await send_mention_space(message, rankine + " °R = " + kelvin + " K")
-	elif message.content.startswith("!rtode"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			rankine = message.content.split()[1]
-			delisle = str(conversions.rtode(float(rankine)))
-			await send_mention_space(message, rankine + " °R = " + delisle + " °De")
-	elif message.content.startswith("!rton"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			rankine = message.content.split()[1]
-			newton = str(conversions.rton(float(rankine)))
-			await send_mention_space(message, rankine + " °R = " + newton + " °N")
-	elif message.content.startswith("!rtore"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			rankine = message.content.split()[1]
-			reaumur = str(conversions.rtore(float(rankine)))
-			await send_mention_space(message, rankine + " °R = " + reaumur + " °Ré")
-	elif message.content.startswith("!rtoro"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			rankine = message.content.split()[1]
-			romer = str(conversions.rtoro(float(rankine)))
-			await send_mention_space(message, rankine + " °R = " + romer + " °Rø")
-	elif message.content.startswith("!detoc"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			delisle = message.content.split()[1]
-			celsius = str(conversions.detoc(float(delisle)))
-			await send_mention_space(message, delisle + " °De = " + celsius + " °C")
-	elif message.content.startswith("!detof"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			delisle = message.content.split()[1]
-			fahrenheit = str(conversions.detof(float(delisle)))
-			await send_mention_space(message, delisle + " °De = " + fahrenheit + " °F")
-	elif message.content.startswith("!detok"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			delisle = message.content.split()[1]
-			kelvin = str(conversions.detok(float(delisle)))
-			await send_mention_space(message, delisle + " °De = " + kelvin + " K")
-	elif message.content.startswith("!detor"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			delisle = message.content.split()[1]
-			rankine = str(conversions.detor(float(delisle)))
-			await send_mention_space(message, delisle + " °De = " + rankin + " °R")
-	elif message.content.startswith("!deton"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			delisle = message.content.split()[1]
-			newton = str(conversions.deton(float(delisle)))
-			await send_mention_space(message, delisle + " °De = " + newton + " °N")
-	elif message.content.startswith("!detore"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			delisle = message.content.split()[1]
-			reaumur = str(conversions.detore(float(delisle)))
-			await send_mention_space(message, delisle + " °De = " + reaumur + " °Ré")
-	elif message.content.startswith("!detoro"):
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter input.")
-		elif not is_number(message.content.split()[1]):
-			await send_mention_space(message, "Syntax error.")
-		else:
-			delisle = message.content.split()[1]
-			romer = str(conversions.detoro(float(delisle)))
-			await send_mention_space(message, delisle + " °De = " + romer + " °Rø")
 	elif re.match(r"^!(\w+)to(\w+)", message.content.split()[0], re.I):
 		if len(message.content.split()) == 1:
 			await send_mention_space(message, "Please enter input.")
 		elif not is_number(message.content.split()[1]):
 			await send_mention_space(message, "Syntax error.")
 		else:
-			value = int(message.content.split()[1])
+			value = float(message.content.split()[1])
 			units = re.match(r"^!(\w+)to(\w+)", message.content.split()[0], re.I)
 			unit1 = units.group(1)
 			unit2 = units.group(2)
-			await send_mention_space(message, str(value) + " " + unit1 + " = " + str(conversions.massconversion(value, unit1, unit2)) + " " + unit2)
+			converted_temperature_value, temperature_unit1, temperature_unit2 = conversions.temperatureconversion(value, unit1, unit2)
+			converted_mass_value = conversions.massconversion(value, unit1, unit2)
+			if converted_temperature_value:
+				converted_value = converted_temperature_value
+				unit1 = temperature_unit1
+				unit2 = temperature_unit2
+			elif converted_mass_value:
+				converted_value = converted_mass_value
+			else:
+				return
+			await send_mention_space(message, str(value) + " " + unit1 + " = " + str(converted_value) + " " + unit2)
 
 #client.run(keys.username, keys.password)
 #client.run(keys.token)

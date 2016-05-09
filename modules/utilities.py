@@ -8,6 +8,8 @@ import random
 
 from client import client
 
+# Utility
+
 def is_number(characters):
 	try:
 		float(characters)
@@ -86,6 +88,8 @@ def remove_symbols(string):
 		plain_string = plain_string[1:]
 	return plain_string
 
+# Discord
+
 async def random_game_status():
 	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "Goldbach's conjecture", "Goldbach's conjecture solution", "with quantum foam", "with quantum entanglement", "with P vs NP", "the Reimann hypothesis", "the Reimann proof", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music", "Google Ultron", "not enough space here to", "the meaning of life is", "with the NSA"]
 	updated_game = discord.utils.get(client.servers).me.game
@@ -113,6 +117,8 @@ async def send_mention_newline(message, response):
 async def send_mention_code(message, response):
 	return await client.send_message(message.channel, message.author.mention + "\n" + "```" + response + "```")
 
+# Garbage Collection
+
 def empty_player_queue():
 	from Harmonbot import players
 	for player in players:
@@ -120,6 +126,10 @@ def empty_player_queue():
 			stream = player["queue"].get()
 			stream["stream"].start()
 			stream["stream"].stop()
+		if not player["current"]["stream"].is_done():
+			player["current"]["stream"].stop()
+
+# Restart/Shutdown Tasks
 
 def add_uptime():
 	from Harmonbot import online_time
@@ -138,11 +148,16 @@ def add_restart():
 	with open("data/stats.json", "w") as stats_file:
 		json.dump(stats, stats_file)
 
-def shutdown_tasks():
-	add_uptime()
-	empty_player_queue()
+async def leave_all_voice():
+	for voice_client in client.voice_clients:
+		await voice_client.disconnect()
 
-def restart_tasks():
-	shutdown_tasks()
+async def shutdown_tasks():
+	empty_player_queue()
+	await leave_all_voice()
+	add_uptime()
+
+async def restart_tasks():
+	await shutdown_tasks()
 	add_restart()
 
