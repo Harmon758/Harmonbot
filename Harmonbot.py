@@ -39,7 +39,7 @@ from modules import gofish
 from modules.maze import maze
 from modules import permissions
 from modules.utilities import *
-from modules import voice
+from modules.voice import *
 from modules import war
 
 import keys
@@ -77,19 +77,12 @@ class TokenBot(discord.Client):
 client = TokenBot()
 '''
 
-#client = discord.Client()
 waclient = wolframalpha.Client(keys.wolframalpha_appid)
 spotify = spotipy.Spotify()
 board = chess.Board()
 cleverbot_instance = cleverbot.Cleverbot()
 inflect_engine = inflect.engine()
-voice = None
-player = None
-voices = []
-players = []
-song_restarted = False
 online_time = datetime.datetime.utcnow()
-wait_time = 10.0
 
 try:
 	with open("data/trivia_points.json", "x") as trivia_file:
@@ -112,13 +105,12 @@ try:
 except FileExistsError:
 	pass
 
+wait_time = 10.0
+
 trivia_active = False
 trivia_bet = False
 trivia_answers = {}
 trivia_bets = {}
-radio_playing = False
-radio_currently_playing = ""
-radio_paused = False
 jeopardy_active = False
 jeopardy_question_active = False
 jeopardy_board = []
@@ -151,8 +143,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-	# global voice
-	global player, trivia_answers
+	global trivia_answers
 	if (message.server == None or message.channel.is_private) and not (message.author == client.user and message.channel.user.id == keys.myid):
 		for member in client.get_all_members():
 			if member.id == keys.myid:
@@ -173,7 +164,7 @@ async def on_message(message):
 	elif message.content.startswith("!commands"):
 		await client.send_message(message.author, documentation.commands)
 		await client.send_message(message.channel, message.author.mention + " Check your DM's for my commands.")
-	elif message.content.startswith("!help") or message.content.startswith("!whatis"):
+	elif message.content.startswith(("!help", "!whatis")):
 		if message.content.startswith("!help") and len(message.content.split()) == 1:
 			await send_mention_space(message, "What do you need help with?")
 		elif message.content.startswith("!whatis") and len(message.content.split()) == 1:
@@ -185,7 +176,7 @@ async def on_message(message):
 			await send_mention_space(message, documentation.commands_info[message.content.split()[1]])
 		else:
 			await send_mention_space(message, "I don't know what that is.")
-	elif message.content.startswith("!8ball") or message.content.startswith("!eightball"):
+	elif message.content.startswith(("!8ball", "!eightball")):
 		responses = ["It is certain", "It is decidedly so", "Without a doubt", "Yes, definitely", "You may rely on it", "As I see it, yes", "Most likely",
 			"Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predit now",
 			"Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"]
@@ -308,7 +299,7 @@ async def on_message(message):
 			await client.send_message(message.channel, message.author.mention + " Choose between what?")
 		choices = message.content.split()[1:]
 		await client.send_message(message.channel, message.author.mention + " " + random.choice(choices))
-	elif message.content.startswith("!cleargame") or message.content.startswith("!clearplaying"):
+	elif message.content.startswith(("!cleargame", "!clearplaying")):
 		updated_game = message.server.me.game
 		if updated_game and updated_game.name:
 			updated_game.name = None
@@ -326,7 +317,7 @@ async def on_message(message):
 			await send_mention_space(message, "Streaming status and/or url cleared.")
 		else:
 			await send_mention_space(message, "There is no streaming status or url to clear.")
-	elif message.content.startswith("!cleverbot") or message.content.startswith("!talk") or message.content.startswith("!ask"):
+	elif message.content.startswith(("!cleverbot", "!talk", "!ask")):
 		await send_mention_space(message, cleverbot_instance.ask(" ".join(message.content.split()[1:])))
 	elif message.server != None and message.server.me in message.mentions:
 		mentionless_message = ""
@@ -340,7 +331,7 @@ async def on_message(message):
 			await send_mention_space(message, "Heads!")
 		else:
 			await send_mention_space(message, "Tails!")
-	elif message.content.startswith("!color") or message.content.startswith("!colour"):
+	elif message.content.startswith(("!color", "!colour")):
 		if len(message.content.split()) == 1 or message.content.split()[1] == "random":
 			url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
 		elif is_hex(message.content.split()[1]) and len(message.content.split()[1]) == 6:
@@ -360,7 +351,7 @@ async def on_message(message):
 		value = str(hsv["value"]) + '%'
 		image = data["imageUrl"]
 		await send_mention_newline(message, name + " (" + hex + ")\n" + "RGB: (" + red + ", " + green + ", " + blue + ")\nHSV: (" + hue + ", " + saturation + ", " + value + ")\n" + image)
-	elif message.content.startswith("!shutdown") or message.content.startswith("!crash") or message.content.startswith("!panic"):
+	elif message.content.startswith(("!shutdown", "!crash", "!panic")):
 		if message.author.id == keys.myid:
 			await client.send_message(message.channel, "Shutting down.")
 			await shutdown_tasks()
@@ -528,13 +519,13 @@ async def on_message(message):
 			await client.send_message(message.author, "Your hand: " + gofish.hand(gofish_players.index(message.author) + 1))
 		elif message.content.split()[1] == "ask" and message.author in gofish_players:
 			pass
-	elif message.content.startswith("!googleimage") or message.content.startswith("!imagesearch"):
+	elif message.content.startswith(("!googleimage", "!imagesearch")):
 		url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&searchType=image&q={2}".format(keys.google_apikey, keys.google_cse_cx, '+'.join(message.content.split()[1:]))
 		data = requests.get(url).json()
 		image_link = data["items"][0]["link"]
 		await send_mention_space(message, image_link)
 		# handle 403 daily limit exceeded error
-	elif message.content.startswith("!google") or message.content.startswith("!search"):
+	elif message.content.startswith(("!google", "!search")):
 		await send_mention_space(message, "https://www.google.com/search?q=" + ('+').join(message.content.split()[1:]))
 	elif message.content.startswith("!guess"):
 		tries = False
@@ -820,61 +811,6 @@ async def on_message(message):
 		await send_mention_space(message, requests.get(url).text)
 	elif message.content.startswith("!owner"):
 		await send_mention_space(message, "The owner of this server is " + message.server.owner.mention)
-	elif message.content.startswith("!radio"):
-		if message.author.id == keys.myid or message.author.id == "108131092430589952":
-			global radio_playing, radio_currently_playing, radio_paused
-			if message.content.split()[1] == "stop" and radio_playing:
-				if client.is_voice_connected():
-					player.stop()
-					await voice.disconnect()
-				radio_playing = False
-			elif message.content.split()[1] == "current":
-				await send_mention_space(message, "https://www.youtube.com/watch?v=" + radio_currently_playing)
-			elif message.content.split()[1] == "pause":
-				player.pause()
-				radio_paused = True
-			elif message.content.split()[1] == "resume" or message.content.split()[1] == "play":
-				player.resume()
-				radio_paused = False
-			else:
-				if message.content.split()[1] == "next": #or client.is_voice_connected() or (player and player.is_playing()):
-					player.stop()
-					if not message.content.split()[1] == "next":
-						await voice.disconnect()
-					radio_playing = False
-					await asyncio.sleep(2)
-				radio_playing = True
-				if message.content.split()[1] == "next":
-					url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + radio_currently_playing + "&type=video&key=" + keys.google_apikey
-					data = requests.get(url).json()
-					radio_currently_playing = data["items"][0]["id"]["videoId"]
-				else:
-					for channel in message.server.channels:
-						plain_channel_name = remove_symbols(channel.name)
-						if plain_channel_name == (' ').join(message.content.split()[1].split('_')) or plain_channel_name.startswith((' ').join(message.content.split()[1].split('_'))):
-							voice_channel = channel
-							break
-					voice = await client.join_voice_channel(voice_channel)
-					url_data = urllib.parse.urlparse(message.content.split()[2])
-					query = urllib.parse.parse_qs(url_data.query)
-					videoid = query["v"][0]
-					radio_currently_playing = videoid
-				player = await voice.create_ytdl_player(radio_currently_playing)
-				player.start()
-				while radio_playing:
-					# if player.duration:
-						# await asyncio.sleep(player.duration)
-					# else:
-					while not player.is_done() or radio_paused:
-						await asyncio.sleep(1)
-					if not radio_playing:
-						break
-					player.stop()
-					url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + radio_currently_playing + "&type=video&key=" + keys.google_apikey
-					data = requests.get(url).json()
-					radio_currently_playing = data["items"][0]["id"]["videoId"]
-					player = await voice.create_ytdl_player(radio_currently_playing)
-					player.start()
 	elif message.content.startswith("!randomgame"):
 		await random_game_status()
 		# await send_mention_space(message, "I changed to a random game status.")
@@ -904,7 +840,7 @@ async def on_message(message):
 			await client.send_message(message.channel, message.author.mention + " " + str(random.randint(1, int(message.content.split()[1]))))
 		else:
 			await client.send_message(message.channel, message.author.mention + " " + str(random.randint(1, 10)))
-	elif message.content.startswith("!rolecolor") or message.content.startswith("!rolecolour"):
+	elif message.content.startswith(("!rolecolor", "!rolecolour")):
 		if len(message.content.split()) == 2:
 			for role in message.server.roles:
 				if role.name == (' ').join(message.content.split()[1].split('_')) or role.name.startswith((' ').join(message.content.split()[1].split('_'))):
@@ -1046,20 +982,12 @@ async def on_message(message):
 			await client.send_message(message.channel, message.author.mention + "```\n" + songname + " by " + artistname + "\n" + albumname + "\n" + duration + "```Preview: " + preview + "\nArtist: " + artistlink + "\nAlbum: " + albumlink)
 		else:
 			pass
-	elif message.content.startswith("!spotifytoyoutube") or message.content.startswith("!sptoyt"):
-		path = urllib.parse.urlparse(message.content.split()[1]).path
-		if path[:7] == "/track/":
-			trackid = path[7:]
-			url = "https://api.spotify.com/v1/tracks/" + trackid
-			data = requests.get(url).json()
-			songname = "+".join(data["name"].split())
-			artistname = "+".join(data["artists"][0]["name"].split())
-			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + songname + "+by+" + artistname + "&key=" + keys.google_apikey
-			data = requests.get(url).json()["items"][0]
-			link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
-			await client.send_message(message.channel, message.author.mention + " " + link)
+	elif message.content.startswith(("!spotifytoyoutube", "!sptoyt")):
+		link = spotify_to_youtube(message.content.split()[1])
+		if link:
+			await send_mention_space(message, link)
 		else:
-			pass
+			await send_mention_space(message, "Error")
 	elif message.content.startswith("!stats"):
 		if message.content.split()[1] == "uptime": # since 4/17/16
 			with open("data/stats.json", "r") as stats_file:
@@ -1135,7 +1063,7 @@ async def on_message(message):
 		elif message.content.split()[1] == "nextround":
 			if message.server:
 				pass
-	elif message.content.startswith("!tag") or message.content.startswith("!trigger"):
+	elif message.content.startswith(("!tag", "!trigger")):
 		with open("data/tags.json", "r") as tags_file:
 			tags_data = json.load(tags_file)
 		if len(message.content.split()) == 1:
@@ -1333,30 +1261,12 @@ async def on_message(message):
 			pass
 	elif trivia_active and not (message.content.startswith('!') or message.server.me in message.mentions):
 		trivia_answers[message.author] = message.content
-	elif message.content.startswith("!tts"):
-		if message.author.id == keys.myid:
-			subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", " ".join(message.content.split()[2:])], shell=True)
-			for channel in message.server.channels:
-				plain_channel_name = remove_symbols(channel.name)
-				if plain_channel_name == (' ').join(message.content.split()[1].split('_')) or plain_channel_name.startswith((' ').join(message.content.split()[1].split('_'))):
-					voice_channel = channel
-					break
-			if client.is_voice_connected():
-				player.stop()
-				await voice.disconnect()
-			voice = await client.join_voice_channel(voice_channel)
-			player = voice.create_ffmpeg_player("data/tts.wav")
-			player.start()
-			while player.is_playing():
-				pass
-			await voice.disconnect()
-			os.remove("data/tts.wav")
 	elif message.content.startswith("!updateavatar"):
 		if message.author.id == keys.myid:
 			with open("data/discord_harmonbot_icon.png", "rb") as avatar_file:
 				await client.edit_profile(avatar=avatar_file.read())
 			await send_mention_space(message, "avatar updated")
-	elif message.content.startswith("!updateplaying") or message.content.startswith("!updategame") or message.content.startswith("!changeplaying") or message.content.startswith("!changegame") or message.content.startswith("!setplaying") or message.content.startswith("!setgame"):
+	elif message.content.startswith(("!updateplaying", "!updategame", "!changeplaying", "!changegame", "!setplaying", "!setgame")):
 		if message.author.id == keys.myid:
 			updated_game = message.server.me.game
 			if not updated_game:
@@ -1440,7 +1350,7 @@ async def on_message(message):
 		#await client.send_file(message.channel, "data/webtogif.gif")
 	elif message.content.startswith("!wiki"):
 		await client.send_message(message.channel, message.author.mention + " https://en.wikipedia.org/wiki/" + "_".join(message.content.split()[1:]))
-	elif message.content.startswith("!wolframalpha") or message.content.startswith("!wa"):
+	elif message.content.startswith(("!wolframalpha", "!wa")):
 		if message.author.id == keys.myid:
 			result = waclient.query(" ".join(message.content.split()[1:]))
 			for pod in result.pods:
@@ -1466,7 +1376,7 @@ async def on_message(message):
 	elif message.content.startswith("!year"):
 		url = "http://numbersapi.com/" + message.content.split()[1] + "/year"
 		await send_mention_space(message, requests.get(url).text)
-	elif message.content.startswith("!youtubeinfo") or message.content.startswith("!ytinfo"):
+	elif message.content.startswith(("!youtubeinfo", "!ytinfo")):
 		# toggles = {}
 		# with open(message.server.name + "_toggles.json", "r") as toggles_file:
 			# toggles = json.load(toggles_file)
@@ -1499,224 +1409,104 @@ async def on_message(message):
 			published = data["snippet"]["publishedAt"][:10]
 			# await client.send_message(message.channel, message.author.mention + "\n**" + title + "**\n**Length**: " + str(length) + "\n**Likes**: " + likes + ", **Dislikes**: " + dislikes + " (" + str(likepercentage) + "%)\n**Views**: " + views + "\n" + channel + " on " + published)
 			await client.send_message(message.channel, message.author.mention + "```\n" + title + "\nLength: " + str(length) + "\nLikes: " + likes + ", Dislikes: " + dislikes + " (" + str(likepercentage) + "%)\nViews: " + views + "\n" + channel + " on " + published + "```")
-	elif message.content.startswith("!youtubesearch") or message.content.startswith("!ytsearch"):
+	elif message.content.startswith(("!youtubesearch", "!ytsearch")):
 		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + "+".join(message.content.split()[1:]) + "&key=" + keys.google_apikey
 		data = requests.get(url).json()["items"][0]
 		if "videoId" not in data["id"]:
 			data = requests.get(url).json()["items"][1]
 		link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
 		await client.send_message(message.channel, message.author.mention + " " + link)
-	elif message.content.startswith("!youtube") or message.content.startswith("!soundcloud") or message.content.startswith("!audio") or message.content.startswith("!yt") or message.content.startswith("!voice") or message.content.startswith("!stream") or message.content.startswith("!spotify") or message.content.startswith("!playlist"):
-		global voices, players, song_restarted
+	elif message.content.startswith(("!youtube", "!soundcloud", "!audio", "!yt", "!voice", "!stream", 
+		"!playlist", "!spotify", "!radio", "!tts")):
 		if message.author.id == keys.myid or message.author.id == "108131092430589952":
 			if message.content.split()[1] == "join":
-				'''
-				if len(voices) != 0:
-					for voice in voices:
-						if voice.channel.server == message.server:
-							await voice.disconnect()
-							voices.remove(voice)
-							break
-				voice_channel = None
-				'''
-				if client.is_voice_connected(message.server):
-					await client.voice_client_in(message.server).disconnect()
-				for channel in message.server.channels:
-					if channel.type == discord.ChannelType.text:
-						continue
-					plain_channel_name = remove_symbols(channel.name)
-					if plain_channel_name == (' ').join(message.content.split()[2].split('_')) or plain_channel_name.startswith((' ').join(message.content.split()[2].split('_'))):
-						voice_channel = channel
-						break
-				if not voice_channel:
-					await send_mention_space(message, "Voice channel not found.")
-					return
-				voice = await client.join_voice_channel(voice_channel)
-				#voices.append(voice)
-				player = {"server" : message.server, "queue" : queue.Queue(), "current" : None}
-				players.append(player)
-				await send_mention_space(message, "I've joined the voice channel.")
-				while voice.is_connected():
-					if player["queue"].empty():
-						await asyncio.sleep(1)
-					else:
-						current = player["queue"].get()
-						player["current"] = current
-						stream = current["stream"]
-						stream.start()
-						while not stream.is_done() or song_restarted:
-							await asyncio.sleep(1)
-						#del stream
+				await join_voice_channel(message)
 				return
 			elif not client.is_voice_connected(message.server):
 				await send_mention_space(message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
 				return
-			if message.content.split()[1] == "leave":
-				if client.is_voice_connected(message.server):
-					await client.voice_client_in(message.server).disconnect()
-					await send_mention_space(message, "I've left the voice channel.")
+			elif message.content.split()[1] == "leave":
+				await leave_voice_channel(message)
+				await send_mention_space(message, "I've left the voice channel.")
 				return
-				'''
-				for voice in voices:
-					if voice.channel.server == message.server:
-						await voice.disconnect()
-						voices.remove(voice)
-						await send_mention_space(message, "I've left the voice channel.")
-						return
-				'''
 			elif message.content.split()[1] == "pause" or message.content.split()[1] == "stop":
-				for player in players:
-					if player["server"] == message.server:
-						player["current"]["stream"].pause()
-						await send_mention_space(message, "Song paused")
-						return
+				await player_pause(message)
+				await send_mention_space(message, "Song paused")
+				return
 			elif message.content.split()[1] == "resume" or message.content.split()[1] == "start":
-				for player in players:
-					if player["server"] == message.server:
-						player["current"]["stream"].resume()
-						await send_mention_space(message, "Song resumed")
-						return
+				await player_resume(message)
+				await send_mention_space(message, "Song resumed")
+				return
 			elif message.content.split()[1] == "skip" or message.content.split()[1] == "next":
-				for player in players:
-					if player["server"] == message.server:
-						player["current"]["stream"].stop()
-						await send_mention_space(message, "Song skipped")
-						return
+				await player_skip(message)
+				await send_mention_space(message, "Song skipped")
+				return
 			elif message.content.split()[1] == "restart" or message.content.split()[1] == "replay":
-				for player in players:
-					if player["server"] == message.server:
-						song_restarted = True
-						response = await send_mention_space(message, "Restarting song...")
-						player["current"]["stream"].stop()
-						stream = await client.voice_client_in(message.server).create_ytdl_player(player["current"]["stream"].url)
-						player["current"]["stream"] = stream
-						stream.start()
-						await client.edit_message(response, message.author.mention + " Restarted song")
-						while not stream.is_done():
-							await asyncio.sleep(1)
-						song_restarted = False
-						return
+				await player_restart(message)
+				return
 			elif message.content.split()[1] == "empty" or message.content.split()[1] == "clear":
-				for player in players:
-					if player["server"] == message.server:
-						while not player["queue"].empty():
-							stream = player["queue"].get()
-							stream["stream"].start()
-							stream["stream"].stop()
-						await send_mention_space(message, "Queue emptied")
-						return
+				await player_empty_queue(message)
+				await send_mention_space(message, "Queue emptied")
+				return
 			elif message.content.split()[1] == "shuffle":
-				for player in players:
-					if player["server"] == message.server:
-						song_list = []
-						response = await send_mention_space(message, "Shuffling...")
-						while not player["queue"].empty():
-							song_list.append(player["queue"].get())
-						random.shuffle(song_list)
-						for song in song_list:
-							player["queue"].put(song)
-						await client.edit_message(response, message.author.mention + " Shuffled songs")
-						return
+				response = await send_mention_space(message, "Shuffling...")
+				await player_shuffle_queue(message)
+				await client.edit_message(response, message.author.mention + " Shuffled songs")
+				return
+			elif message.content.split()[0] == "!radio" or message.content.split()[1] == "radio":
+				if message.content.split()[1] in ["on", "start"] or (len(message.content.split()) > 2 and message.content.split()[2] in ["on", "start"]):
+					await player_start_radio(message)
+				elif message.content.split()[1] in ["off", "stop"] or (len(message.content.split()) > 2 and message.content.split()[2] in ["off", "stop"]):
+					await player_stop_radio(message)
+				return
+			elif message.content.split()[0] == "!tts" or message.content.split()[1] == "tts":
+				await tts(message)
+				return
 			elif message.content.split()[1] == "full":
 				return
 		if not client.is_voice_connected(message.server):
 			await send_mention_space(message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
-			return
-		elif message.content.split()[1] in ["leave", "pause", "stop", "resume", "start", "skip", "next", "restart", "replay", "empty", "clear", "shuffle"]:
+		elif message.content.split()[0] in ["!radio"] or message.content.split()[1] in ["join", "leave", "pause", "stop", "resume", "start", "skip", "next", "restart", "replay", "empty", "clear", "shuffle", "radio"]:
 			await send_mention_space(message, "You don't have permission to do that.")
-			return
 		elif message.content.split()[1] == "current" or message.content.split()[1] == "queue":
-			for player in players:
-				if player["server"] == message.server:
+			current = player_current(message)
+			if not current:
+				await client.send_message(message.channel, "There is no song currently playing.")
+			else:
+				await client.send_message(message.channel, "Currently playing: " + current["stream"].url + "\n" + add_commas(current["stream"].views) + ":eye: | " + add_commas(current["stream"].likes) + ":thumbsup::skin-tone-2: | " + add_commas(current["stream"].dislikes) + ":thumbsdown::skin-tone-2:\nAdded by: " + current["author"].name)
+			if radio_on(message):
+				await client.send_message(message.channel, ":radio: Radio is currently on")
+			else:
+				queue = player_queue(message)
+				if not queue:
+					await client.send_message(message.channel, "The queue is currently empty.")
+				else:
 					queue_string = ""
 					count = 1
-					for stream in list(player["queue"].queue):
+					for stream in list(queue.queue):
 						if count <= 10:
 							queue_string += ':' + inflect_engine.number_to_words(count) + ": **" + stream["stream"].title + "** (`" + stream["stream"].url + "`) Added by: " + stream["author"].name + "\n"
 							count += 1
 						else:
-							more_songs = player["queue"].qsize() - 10
+							more_songs = queue.qsize() - 10
 							queue_string += "There " + inflect_engine.plural("is", more_songs) + " " + str(more_songs) + " more " + inflect_engine.plural("song", more_songs) + " in the queue"
 							break
-					if not player["current"] or player["current"]["stream"].is_done():
-						await client.send_message(message.channel, "There is no song currently playing.")
-					else:
-						await client.send_message(message.channel, "Currently playing: " + player["current"]["stream"].url + "\n" + add_commas(player["current"]["stream"].views) + ":eye: | " + add_commas(player["current"]["stream"].likes) + ":thumbsup::skin-tone-2: | " + add_commas(player["current"]["stream"].dislikes) + ":thumbsdown::skin-tone-2:\nAdded by: " + player["current"]["author"].name)
-					if not queue_string:
-						await client.send_message(message.channel, "The queue is currently empty.")
-					else:
-						await client.send_message(message.channel, "\nQueue:\n" + queue_string)
-					return
-		elif message.content.startswith("!playlist") or "playlist" in message.content:
-			parsed_url = urllib.parse.urlparse(message.content.split()[1])
-			path = parsed_url.path
-			query = parsed_url.query
-			if path[:9] == "/playlist" and query[:5] == "list=":
-				response = await send_mention_space(message, "Loading...")
-				playlistid = query[5:]
-				base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(keys.google_apikey, playlistid)
-				url = base_url
-				player_instance = None
-				for player in players:
-					if player["server"] == message.server:
-						player_instance = player 
-						break
-				while True:
-					data = requests.get(url).json()
-					total = data["pageInfo"]["totalResults"]
-					for item in data["items"]:
-						position = item["snippet"]["position"] + 1
-						link = "https://www.youtube.com/watch?v=" + item["snippet"]["resourceId"]["videoId"]
-						await client.edit_message(response, message.author.mention + " Loading " + str(position) + '/' + str(total))
-						try:
-							stream = await client.voice_client_in(message.server).create_ytdl_player(link)
-						except youtube_dl.utils.DownloadError:
-							await send_mention_space(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
-							continue
-						player_instance["queue"].put({"stream" : stream, "author" : message.author})
-					if not "nextPageToken" in data:
-						break
-					else:
-						url = base_url + "&pageToken=" + data["nextPageToken"]
-				await client.edit_message(response, message.author.mention + " Your songs have been added to the queue.")
-				return
-			else:
-				await send_mention_space(message, "Error")
-				return
-		elif message.content.startswith("!spotify") or "spotify" in message.content:
-			path = urllib.parse.urlparse(message.content.split()[1]).path
-			if path[:7] == "/track/":
-				trackid = path[7:]
-				url = "https://api.spotify.com/v1/tracks/" + trackid
-				data = requests.get(url).json()
-				songname = "+".join(data["name"].split())
-				artistname = "+".join(data["artists"][0]["name"].split())
-				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + songname + "+by+" + artistname + "&key=" + keys.google_apikey
-				data = requests.get(url).json()["items"][0]
-				link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
+					await client.send_message(message.channel, "\nQueue:\n" + queue_string)
+		elif "playlist" in message.content:
+			await player_add_playlist(message)
+		elif "spotify" in message.content:
+			link = await player_add_spotify_song(message)
+			if link:
 				await send_mention_space(message, "Playing: " + link)
 			else:
 				await send_mention_space(message, "Error")
-				return
 		else:
-			link = message.content.split()[1]
-		response = await send_mention_space(message, "Loading...")
-		if "list" in link:
-			parsed_link = urllib.parse.urlparse(link)
-			query = urllib.parse.parse_qs(parsed_link.query)
-			del query["list"]
-			parsed_link = parsed_link._replace(query = urllib.parse.urlencode(query, True))
-			link = parsed_link.geturl()
-		try:
-			stream = await client.voice_client_in(message.server).create_ytdl_player(link)
-		except:
-			await send_mention_space(message, "Error")
-			return
-		for player in players:
-			if player["server"] == message.server:
-				player["queue"].put({"stream" : stream, "author" : message.author})
-				break
-		await client.edit_message(response, message.author.mention + " Your song has been added to the queue.")
+			response = await send_mention_space(message, "Loading...")
+			added = await player_add_song(message)
+			if not added:
+				await send_mention_space(message, "Error")
+			else:
+				await client.edit_message(response, message.author.mention + " Your song has been added to the queue.")
 
 #    if message.content.startswith("!test"):
 #        counter = 0
@@ -1729,7 +1519,7 @@ async def on_message(message):
 #    elif message.content.startswith("!sleep"):
 #        await asyncio.sleep(5)
 #        await client.send_message(message.channel, "Done sleeping")
-	elif message.content == 'f' or message.content == 'F':
+	elif message.content.lower() == 'f':
 		with open("data/f.json", "r") as counter_file:
 			counter_info = json.load(counter_file)
 		counter_info["counter"] += 1
