@@ -7,6 +7,7 @@ import math
 import random
 
 from client import client
+from modules import voice
 
 # Utility
 
@@ -117,18 +118,6 @@ async def send_mention_newline(message, response):
 async def send_mention_code(message, response):
 	return await client.send_message(message.channel, message.author.mention + "\n" + "```" + response + "```")
 
-# Garbage Collection
-
-def empty_player_queue():
-	from Harmonbot import players
-	for player in players:
-		while not player["queue"].empty():
-			stream = player["queue"].get()
-			stream["stream"].start()
-			stream["stream"].stop()
-		if not player["current"]["stream"].is_done():
-			player["current"]["stream"].stop()
-
 # Restart/Shutdown Tasks
 
 def add_uptime():
@@ -153,7 +142,7 @@ async def leave_all_voice():
 		await voice_client.disconnect()
 
 async def shutdown_tasks():
-	empty_player_queue()
+	voice.stop_all_streams()
 	await leave_all_voice()
 	add_uptime()
 
