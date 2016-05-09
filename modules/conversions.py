@@ -233,6 +233,15 @@ def roton(romer):
 def rotore(romer):
 	return (romer - 7.5) * 32.0 / 21.0
 
+temperatures = ['f', 'c', 'k', 'r', "de", 'n', "re", "ro"]
+temperatures_formatted = {'f' : "°F", 'c': "°C", 'k' : 'K', 'r' : "°R" , "de" : "°De", 'n' : "°N", "re" : "°Ré", "ro" : "°Rø"}
+
+def temperatureconversion(value, unit1, unit2):
+	if unit1 in temperatures and unit2 in temperatures:
+		return eval(unit1 + "to" + unit2 + '(' + str(value) + ')'), temperatures_formatted[unit1], temperatures_formatted[unit2]
+	else:
+		return None, unit1, unit2
+
 masses = {
 	"amu" : 1.66053904 * 10 ** -27, "me" : 9.10938291 * 10 ** -31, "bagc" : 60, "bagpc" : 42.63768278, "barge" : 20411.65665,
 	"kt" : 0.0002051965483, "ct" : 0.0002, "clove" : 3.62873896, "crith" : 8.99349 * 10 ** -5, "da" : 1.66053904 * 10 ** -27, "drt" : 0.0038879346,
@@ -244,7 +253,10 @@ masses = {
 	"ton" : 1016.0469088, "shtn" : 907.18474, "t" : 1000, "wey" : 114.30527724, "g" : 0.001
 }
 def massconversion(value, unit1, unit2):
-	return value * masses[unit1] / masses[unit2]
+	if unit1 in masses and unit2 in masses:
+		return value * masses[unit1] / masses[unit2]
+	else:
+		return None
 
 def fttom(feet):
 	return feet * 0.3048
