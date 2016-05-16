@@ -10,7 +10,7 @@ da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mite
 quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g])\n\
 In Progress: !adventure !everyone !gifvtogif !giphy !gofish !help (!whatis) !radio !tempchannel !timer !youtube (!audio !soundcloud !yt) !war !webmtogif\n\
 Misc/Admin Only: !channel !delete !discriminator !eval !idtoname !libraryversion !load !nametoid !owner !servericon !serverowner !test !tts !updateavatar\n\
-@Harmon758 (!cleverbot) (!talk) (!ask), f (F)\n\
+@Harmonbot (!cleverbot) (!talk) (!ask), f (F)\n\
 Use !help or !whatis *command* for more information on a command"
 
 commands_info = {
