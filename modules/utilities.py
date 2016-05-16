@@ -2,11 +2,15 @@
 import discord
 
 import datetime
+import dateutil.parser
+import feedparser
 import json
 import math
 import random
 
 from client import client
+from client import rss_client
+from client import online_time
 from modules import voice
 
 # Utility
@@ -42,7 +46,7 @@ def is_digit_gtz(s):
 def secs_to_duration(secs):
 	duration = []
 	time_in_secs = [31536000, 604800, 86400, 3600, 60]
-	# years, months, days, hours, minutes
+	# years, weeks, days, hours, minutes
 	for length_of_time in time_in_secs:
 		if secs > length_of_time:
 			duration.append(int(math.floor(secs / length_of_time)))
@@ -54,7 +58,7 @@ def secs_to_duration(secs):
 
 def duration_to_letter_format(duration):
 	output = ""
-	letters = ["y", "m", "d", "h", "m", "s"]
+	letters = ["y", "w", "d", "h", "m", "s"]
 	for i in range(6):
 		if duration[i]:
 			output += str(duration[i]) + letters[i] + " "
@@ -78,7 +82,10 @@ def secs_to_colon_format(secs):
 	return duration_to_colon_format(secs_to_duration(secs))
 
 def add_commas(number):
-	return "{:,}".format(number)
+	if number:
+		return "{:,}".format(number)
+	else:
+		return number
 
 def remove_symbols(string):
 	plain_string = ""
@@ -89,10 +96,28 @@ def remove_symbols(string):
 		plain_string = plain_string[1:]
 	return plain_string
 
+async def check_rss_feeds():
+	with open("data/rss_feeds.json", "r") as feeds_file:
+		feeds_info = json.load(feeds_file)
+	for channel in feeds_info["channels"]:
+		for feed in channel["feeds"]:
+			feed_info = feedparser.parse(feed)
+			for item in feed_info.entries:
+				try:
+					if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.published)).total_seconds() <= 60:
+						await rss_client.send_message(discord.utils.get(rss_client.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n" + item.link)
+				except:
+					pass
+
 # Discord
 
 async def random_game_status():
-	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "Goldbach's conjecture", "Goldbach's conjecture solution", "with quantum foam", "with quantum entanglement", "with P vs NP", "the Reimann hypothesis", "the Reimann proof", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music", "Google Ultron", "not enough space here to", "the meaning of life is", "with the NSA"]
+	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", 
+	"with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", 
+	"with Skynet", "Goldbach's conjecture", "Goldbach's conjecture solution", "with quantum foam", "with quantum entanglement", "with P vs NP", 
+	"the Reimann hypothesis", "the Reimann proof", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", 
+	"with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music", "Google Ultron", "not enough space here to", 
+	"the meaning of life is", "with the NSA", "with RSS Bot"]
 	updated_game = discord.utils.get(client.servers).me.game
 	if not updated_game:
 		updated_game = discord.Game(name = random.choice(statuses))
@@ -100,12 +125,12 @@ async def random_game_status():
 		updated_game.name = random.choice(statuses)
 	await client.change_status(game = updated_game)
 
-async def set_streaming_status():
+async def set_streaming_status(client):
 	updated_game = discord.utils.get(client.servers).me.game
 	if not updated_game:
-		updated_game = discord.Game(url = "https://discord.gg/0oyodN94Y3CgCT6I", type = 1)
+		updated_game = discord.Game(url = "https://www.twitch.tv/discordapp", type = 1) # https://discord.gg/0oyodN94Y3CgCT6I
 	else:
-		updated_game.url = "https://discord.gg/0oyodN94Y3CgCT6I"
+		updated_game.url = "https://www.twitch.tv/discordapp"
 		updated_game.type = 1
 	await client.change_status(game = updated_game)
 
@@ -121,7 +146,6 @@ async def send_mention_code(message, response):
 # Restart/Shutdown Tasks
 
 def add_uptime():
-	from Harmonbot import online_time
 	with open("data/stats.json", "r") as stats_file:
 			stats = json.load(stats_file)
 	now = datetime.datetime.utcnow()
@@ -142,8 +166,8 @@ async def leave_all_voice():
 		await voice_client.disconnect()
 
 async def shutdown_tasks():
-	voice.stop_all_streams()
-	await leave_all_voice()
+	await voice.stop_all_streams()
+	# await leave_all_voice()
 	add_uptime()
 
 async def restart_tasks():

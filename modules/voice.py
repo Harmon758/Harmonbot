@@ -2,7 +2,7 @@
 import asyncio
 import discord
 import os
-import queue
+# import queue
 import random
 import requests
 import subprocess
@@ -16,14 +16,18 @@ from modules import utilities
 players = []
 
 async def join_voice_channel(message):
-	if client.is_voice_connected(message.server):
-		await client.voice_client_in(message.server).disconnect()
-	voice_channel = discord.utils.find( \
-		lambda channel: channel.type == discord.ChannelType.voice and utilities.remove_symbols(channel.name).startswith((' ').join(message.content.split()[2].split('_'))), 
-		message.server.channels)
+	if message.author.voice_channel:
+		voice_channel = message.author.voice_channel
+	else:
+		voice_channel = discord.utils.find( \
+			lambda channel: channel.type == discord.ChannelType.voice and utilities.remove_symbols(channel.name).startswith((' ').join(message.content.split()[2].split('_'))), 
+			message.server.channels)
 	if not voice_channel:
 		await utilities.send_mention_space(message, "Voice channel not found.")
 		return False
+	if client.is_voice_connected(message.server):
+		await client.voice_client_in(message.server).move_to(voice_channel)
+		return True
 	await client.join_voice_channel(voice_channel)
 	await utilities.send_mention_space(message, "I've joined the voice channel.")
 	await player_start(message)
@@ -35,24 +39,22 @@ async def leave_voice_channel(message):
 		return True
 
 async def player_start(message):
-	player = {"server" : message.server, "queue" : queue.Queue(), "current" : None, "radio_on" : False}
+	player = {"server" : message.server, "queue" : asyncio.Queue(), "current" : None, "radio_on" : False}
 	players.append(player)
 	while client.is_voice_connected(message.server):
-		if player["queue"].empty():
+		current = await player["queue"].get()
+		player["current"] = current
+		stream = current["stream"]
+		stream.start()
+		await client.send_message(message.channel, ":arrow_forward: Now Playing: " + stream.title)
+		while not stream.is_done():
 			await asyncio.sleep(1)
-		else:
-			current = player["queue"].get()
-			player["current"] = current
-			stream = current["stream"]
-			stream.start()
-			while not stream.is_done():
-				await asyncio.sleep(1)
 
 # Player Add Functions
 
-async def player_add_song(message, **options):
-	if "link" in options:
-		link = options["link"]
+async def player_add_song(message, **kwargs):
+	if "link" in kwargs:
+		link = kwargs["link"]
 	else:
 		link = message.content.split()[1]
 	if "list" in link:
@@ -66,15 +68,15 @@ async def player_add_song(message, **options):
 	except:
 		return False
 	player = get_player(message)
-	player["queue"].put({"stream" : stream, "author" : message.author})
-	return True
+	await player["queue"].put({"stream" : stream, "author" : message.author})
+	return stream
 	
 async def player_add_spotify_song(message):
 	youtube_link = spotify_to_youtube(message.content.split()[1])
 	if youtube_link:
 		added = await player_add_song(message, link = youtube_link)
 		if added:
-			return youtube_link
+			return added
 	return False
 
 async def player_add_playlist(message):
@@ -99,7 +101,7 @@ async def player_add_playlist(message):
 				except youtube_dl.utils.DownloadError:
 					await utilities.send_mention_space(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
 					continue
-				player_instance["queue"].put({"stream" : stream, "author" : message.author})
+				await player_instance["queue"].put({"stream" : stream, "author" : message.author})
 			if not "nextPageToken" in data:
 				break
 			else:
@@ -111,6 +113,11 @@ async def player_add_playlist(message):
 		return
 
 # Player Current Song Functions
+
+async def player_volume(message, setting):
+	player = get_player(message)
+	player["current"]["stream"].volume = setting
+	return True
 
 async def player_pause(message):
 	player = get_player(message)
@@ -146,7 +153,7 @@ async def player_restart(message):
 async def player_empty_queue(message):
 	player = get_player(message)
 	while not player["queue"].empty():
-		stream = player["queue"].get()
+		stream = await player["queue"].get()
 		stream["stream"].start()
 		stream["stream"].stop()
 	return True
@@ -155,10 +162,10 @@ async def player_shuffle_queue(message):
 	player = get_player(message)
 	song_list = []
 	while not player["queue"].empty():
-		song_list.append(player["queue"].get())
+		song_list.append(await player["queue"].get())
 	random.shuffle(song_list)
 	for song in song_list:
-		player["queue"].put(song)
+		await player["queue"].put(song)
 	return True
 
 # Player Radio Functions
@@ -179,6 +186,7 @@ async def player_start_radio(message):
 	stream.start()
 	player["radio_on"] = True
 	await client.edit_message(response, message.author.mention + " Radio is now on")
+	await client.send_message(message.channel, ":arrow_forward: Now Playing: " + stream.title)
 	while player["radio_on"]:
 		while not stream.is_done():
 			await asyncio.sleep(1)
@@ -186,10 +194,11 @@ async def player_start_radio(message):
 			break
 		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + radio_currently_playing + "&type=video&key=" + keys.google_apikey
 		data = requests.get(url).json()
-		radio_currently_playing = data["items"][0]["id"]["videoId"]
+		radio_currently_playing = random.choice(data["items"])["id"]["videoId"]
 		stream = await client.voice_client_in(message.server).create_ytdl_player("https://www.youtube.com/watch?v=" + radio_currently_playing)
 		player["current"]["stream"] = stream
 		stream.start()
+		await client.send_message(message.channel, ":arrow_forward: Now Playing: " + stream.title)
 	player["current"]["stream"] = old_stream
 	old_stream.resume()
 
@@ -263,6 +272,8 @@ def spotify_to_youtube(link):
 		artistname = "+".join(data["artists"][0]["name"].split())
 		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + songname + "+by+" + artistname + "&key=" + keys.google_apikey
 		data = requests.get(url).json()["items"][0]
+		if "videoId" not in data["id"]:
+			data = requests.get(url).json()["items"][1]
 		link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
 		return link
 	else:
@@ -270,14 +281,15 @@ def spotify_to_youtube(link):
 
 # Garbage Collection
 
-def stop_all_streams():
+async def stop_all_streams():
 	for player in players:
 		while not player["queue"].empty():
-			stream = player["queue"].get()
+			stream = await player["queue"].get()
 			stream["stream"].start()
 			stream["stream"].stop()
 		if player["radio_on"]:
 			player["radio_on"] = False
 			player["current"]["stream"].stop()
-		if not player["current"]["stream"].is_done():
+		if player["current"] and not player["current"]["stream"].is_done():
 			player["current"]["stream"].stop()
+
