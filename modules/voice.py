@@ -1,6 +1,9 @@
 
+from discord.ext import commands
+
 import asyncio
 import discord
+import inflect
 import os
 # import queue
 import random
@@ -8,12 +11,199 @@ import requests
 import subprocess
 # import time
 import urllib
+import youtube_dl
 
 import keys
-from client import client
 from modules import utilities
+from utilities import checks
+from client import client
+
+inflect_engine = inflect.engine()
 
 players = []
+
+def setup(bot):
+	bot.add_cog(Voice())
+
+# For testing
+@client.group(hidden = True)
+async def testing3():
+	print("testing3")
+
+# For testing
+@client.command(hidden = True)
+async def testing4():
+	print("testing4")
+
+testing3.add_command(testing4)
+
+class Voice:
+
+	def __init__(self):
+		self.voice.add_command(self.join)
+		self.voice.add_command(self.leave)
+	
+	@commands.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "audio", "stream", "playlist", "spotify"], 
+		invoke_without_command = True)
+	async def voice(self, ctx, *options : str):
+		if ctx.message.author.id == keys.myid or ctx.message.author == ctx.message.server.owner:
+			if ctx.invoked_with in self.voice.commands:
+				await eval("self.{0}.invoke(ctx)".format(ctx.invoked_with))
+				return
+			elif not client.is_voice_connected(ctx.message.server):
+				await client.reply("I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
+				return
+			elif ctx.invoked_with == "radio":
+				await self.radio.invoke(ctx)
+				return
+			#elif options[0] == "full":
+				#return
+		if not client.is_voice_connected(ctx.message.server):
+			await client.reply("I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
+		elif ctx.invoked_with in ["radio", "tts"] or options[0] in ["radio"]:
+			await client.reply("You don't have permission to do that.")
+		elif "playlist" in ctx.message.content:
+			await player_add_playlist(ctx.message)
+		elif "spotify" in ctx.message.content:
+			stream = await player_add_spotify_song(ctx.message)
+			if stream:
+				await client.reply("Your song, " + stream.title + ", has been added to the queue.")
+			else:
+				await client.reply("Error")
+		else:
+			response = await client.reply("Loading...")
+			added = await player_add_song(ctx.message)
+			if not added:
+				await client.reply("Error")
+			else:
+				await client.edit_message(response, ctx.message.author.mention + " Your song has been added to the queue.")
+	
+	@commands.command(pass_context = True)
+	@checks.is_server_owner()
+	async def join(self, ctx):
+		await join_voice_channel(ctx.message)
+	
+	@commands.command(pass_context = True)
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def leave(self, ctx):
+		await leave_voice_channel(ctx.message)
+		await client.reply("I've left the voice channel.")
+	
+	@voice.command(pass_context = True, aliases = ["stop"])
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def pause(self, ctx):
+		await player_pause(ctx.message)
+		await client.reply("Song paused")
+	
+	@voice.command(pass_context = True, aliases = ["start"])
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def resume(self, ctx):
+		await player_resume(ctx.message)
+		await client.reply("Song resumed")
+	
+	@voice.command(pass_context = True, aliases = ["next"])
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def skip(self, ctx):
+		await player_skip(ctx.message)
+		await client.reply("Song skipped")
+	
+	@voice.command(pass_context = True, aliases = ["replay", "repeat"])
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def restart(self, ctx):
+		await player_restart(ctx.message)
+	
+	@voice.command(pass_context = True, aliases = ["clear"])
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def empty(self, ctx):
+		await player_empty_queue(ctx.message)
+		await client.reply("Queue emptied")
+	
+	@voice.command(pass_context = True)
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def shuffle(self, ctx):
+		response = await client.reply("Shuffling...")
+		await player_shuffle_queue(ctx.message)
+		await client.edit_ctx.message(response, ctx.message.author.mention + " Shuffled songs")
+	
+	@voice.group(pass_context = True)
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def radio(self, ctx):
+		pass
+	
+	@radio.command(pass_context = True, aliases = ["start"])
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def on(self, ctx):
+		await player_start_radio(ctx.message)
+	
+	@radio.command(pass_context = True, aliases = ["stop"])
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def off(self, ctx):
+		await player_stop_radio(ctx.message)
+	
+	@voice.command(pass_context = True)
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def tts(self, ctx):
+		await tts(ctx.message)
+	
+	@voice.command(pass_context = True)
+	@checks.is_server_owner()
+	@checks.is_voice_connected()
+	async def volume(self, ctx, volume_setting : float):
+		await player_volume(ctx.message, float(volume_setting) / 100)
+	
+	@voice.command(pass_context = True, aliases = ["queue"])
+	@checks.is_voice_connected()
+	async def current(self, ctx):
+		current = player_current(ctx.message)
+		if not current:
+			await client.say("There is no song currently playing.")
+		else:
+			if current["stream"].views:
+				views = utilities.add_commas(current["stream"].views)
+			else:
+				views = ""
+			if current["stream"].likes:
+				likes = utilities.add_commas(current["stream"].likes)
+			else:
+				likes = ""
+			if current["stream"].dislikes:
+				dislikes = utilities.add_commas(current["stream"].dislikes)
+			else:
+				dislikes = ""
+			await client.say("Currently playing: " + current["stream"].url + "\n" + views + ":eye: | " + likes + ":thumbsup::skin-tone-2: | " + dislikes + ":thumbsdown::skin-tone-2:\nAdded by: " + current["author"].name)
+		if radio_on(ctx.message):
+			await client.say(":radio: Radio is currently on")
+		else:
+			queue = player_queue(ctx.message)
+			if not queue:
+				await client.say("The queue is currently empty.")
+			else:
+				queue_string = ""
+				count = 1
+				for stream in list(queue._queue):
+					if count <= 10:
+						queue_string += ':' + inflect_engine.number_to_words(count) + ": **" + stream["stream"].title + "** (<" + stream["stream"].url + ">) Added by: " + stream["author"].name + "\n"
+						count += 1
+					else:
+						more_songs = queue.qsize() - 10
+						queue_string += "There " + inflect_engine.plural("is", more_songs) + " " + str(more_songs) + " more " + inflect_engine.plural("song", more_songs) + " in the queue"
+						break
+				await client.say("\nQueue:\n" + queue_string)
+	
+	# voice.aliases += list(voice.commands.keys())
+	# for alias in list(voice.commands.keys()):
+		# commands.command(name = alias, pass_context = True, invoke_without_command = True)(voice)
 
 async def join_voice_channel(message):
 	if message.author.voice_channel:
@@ -49,6 +239,7 @@ async def player_start(message):
 		await client.send_message(message.channel, ":arrow_forward: Now Playing: " + stream.title)
 		while not stream.is_done():
 			await asyncio.sleep(1)
+	players.remove(player)
 
 # Player Add Functions
 
@@ -66,7 +257,11 @@ async def player_add_song(message, **kwargs):
 	try:
 		stream = await client.voice_client_in(message.server).create_ytdl_player(link)
 	except:
-		return False
+		try:
+			link = utilities.youtubesearch(message.content.split()[1:])
+			stream = await client.voice_client_in(message.server).create_ytdl_player(link)
+		except:
+			return False
 	player = get_player(message)
 	await player["queue"].put({"stream" : stream, "author" : message.author})
 	return stream

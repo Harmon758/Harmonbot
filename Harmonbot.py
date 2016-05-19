@@ -8,36 +8,27 @@ import asyncio
 from bs4 import BeautifulSoup
 import json
 import html
-import inflect
-import isodate
 import logging
-import math
 import moviepy.editor
 import os
-import pydealer
-import random
+# import pydealer
 import re
 import requests
-import spotipy
+# import spotipy
 import string
 #import subprocess
 import sys
 import time
 import traceback
 import urllib
-#import xml.etree.ElementTree
 import wolframalpha
-import youtube_dl
 
-from modules import ciphers
 from modules import conversions
 from modules import documentation
-#from modules import gofish
 from modules.maze import maze
 from modules import permissions
 from modules.utilities import *
 from modules.voice import *
-from modules import war
 from modules import weather
 
 from commands.games import Games
@@ -46,7 +37,7 @@ from utilities import checks
 
 import keys
 from client import client
-from client import rss_client
+#from client import rss_client
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.DEBUG)
@@ -54,35 +45,8 @@ handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode='a'
 handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
 logger.addHandler(handler)
 
-'''
-class TokenBot(discord.Client):
-
-    def run(self, token):
-        self.token = token
-        self.headers['authorization'] = token
-        self._is_logged_in.set()
-        try:
-            self.loop.run_until_complete(self.connect())
-        except KeyboardInterrupt:
-            self.loop.run_until_complete(self.logout())
-            pending = asyncio.Task.all_tasks()
-            gathered = asyncio.gather(*pending)
-            try:
-                gathered.cancel()
-                self.loop.run_forever()
-                gathered.exception()
-            except:
-                pass
-        finally:
-            self.loop.close()
-
-			
-client = TokenBot()
-'''
-
 waclient = wolframalpha.Client(keys.wolframalpha_appid)
-spotify = spotipy.Spotify()
-inflect_engine = inflect.engine()
+# spotify = spotipy.Spotify()
 
 try:
 	with open("data/trivia_points.json", "x") as trivia_file:
@@ -124,7 +88,6 @@ jeopardy_board_output = ""
 jeopardy_max_width = 0
 maze_started = False
 maze_maze = None
-taboo_players = []
 #wolframalpha (wa)
 
 @client.event
@@ -158,9 +121,9 @@ async def on_message(message):
 			await client.send_message(my_member, "To " + message.channel.user.name + '#' + message.channel.user.discriminator + ": " + message.content)
 		else:
 			await client.send_message(my_member, "From " + message.author.name + '#' + message.author.discriminator + ": " + message.content)
-	if message.author == client.user:
+	if message.author == client.user or not message.content:
 		return
-	elif not message.channel.is_private and not permissions.get_permission(message, "user", message.author.id, message.content.split()[0]) and keys.myid != message.author.id:
+	elif not message.channel.is_private and not permissions.get_permission(message, "user", message.author.id, message.content.split()[0]) and keys.myid != message.author.id: #rework
 		await send_mention_space(message, "You don't have permision to use that command here")
 	elif message.content.startswith("!test_on_message"):
 		await client.send_message(message.channel, "Hello, World!")
@@ -177,81 +140,20 @@ async def on_message(message):
 			await send_mention_space(message, "Check your DM's for my commands.")
 		elif documentation.commands_info.get(message.content.split()[1], 0):
 			await send_mention_space(message, documentation.commands_info[message.content.split()[1]])
-		else:
-			await send_mention_space(message, "I don't know what that is.")
-	elif message.server.me in message.mentions:
+		#else:
+			#await send_mention_space(message, "I don't know what that is.")
+	elif message.server and message.server.me in message.mentions:
 		mentionless_message = ""
 		for word in message.clean_content.split():
 			if not word.startswith("@"):
 				mentionless_message += word
 		await send_mention_space(message, Games.cleverbot_instance.ask(mentionless_message))
-	elif message.content.startswith("!decode"):
-		if message.content.split()[1] == "morse":
-			await send_mention_space(message, '`' + ciphers.decode_morse(' '.join(message.content.split()[2:])) + '`')
-		elif message.content.split()[1] == "reverse":
-			await send_mention_space(message, '`' + ' '.join(message.content.split()[2:])[::-1] + '`')
-		elif message.content.split()[1] == "caesar" or message.content.split()[1] == "rot":
-			if len(message.content.split()) < 4 or not ((message.content.split()[2].isdigit() and 0 <= int(message.content.split()[2]) <= 26) or message.content.split()[2] == "brute"):
-				await send_mention_space(message, "Invalid Format. !decode caesar <key (0 - 26) or brute> <content>")
-			elif message.content.split()[2] == "brute":
-				await send_mention_space(message, '`' + ciphers.brute_force_caesar(' '.join(message.content.split()[3:])) + '`')
-			else:
-				await send_mention_space(message, '`' + ciphers.decode_caesar(' '.join(message.content.split()[3:]), message.content.split()[2]) + '`')
-	elif message.content.startswith(("!delete", "!purge")):
-		# if not message.channel.permissions_for(message.author).manage_messages:
-			# await send_mention_space(message, "You don't have permission to do that here.")
-		if message.channel.is_private:
-			if message.content.split()[1].isdigit():
-				number = int(message.content.split()[1])
-				count = 0
-				async for client_message in client.logs_from(message.channel, limit = 10000):
-					if client_message.author == client.user:
-						await client.delete_message(client_message)
-						await asyncio.sleep(0.2)
-						count += 1
-						if count == number:
-							break
-			else:
-				await client.send_message(message.channel, "Syntax error.")
-		elif not message.server.me.permissions_in(message.channel).manage_messages:
-			await send_mention_space(message, "I don't have permission to do that here. I need the \"Manage Messages\" permission to delete messages.")
-		elif message.channel.permissions_for(message.author).manage_messages or message.author.id == keys.myid:
-			name = message.content.split()[1]
-			if name.isdigit():
-				number = int(name)
-				await client.delete_message(message)
-				await client.purge_from(message.channel, limit = number)
-			elif len(message.content.split()) > 2 and message.content.split()[2].isdigit():
-				number = int(message.content.split()[2])
-				to_delete = []
-				count = 0
-				await client.delete_message(message)
-				async for client_message in client.logs_from(message.channel, limit = 10000):
-					if client_message.author.name == name:
-						to_delete.append(client_message)
-						count += 1
-						if count == number:
-							break
-						elif len(to_delete) == 100:
-							await client.delete_messages(to_delete)
-							to_delete = []
-							await asyncio.sleep(1)
-				if len(to_delete) == 1:
-					await client.delete_message(to_delete[0])
-				elif len(to_delete) > 1:
-					await client.delete_messages(to_delete)
-			else:
-				await send_mention_space(message, "Syntax error.")
-	elif message.content.startswith("!encode"):
-		if message.content.split()[1] == "morse":
-			await send_mention_space(message, '`' + ciphers.encode_morse(' '.join(message.content.split()[2:])) + '`')
-		elif message.content.split()[1] == "reverse":
-			await send_mention_space(message, '`' + ' '.join(message.content.split()[2:])[::-1] + '`')
-		elif message.content.split()[1] == "caesar" or message.content.split()[1] == "rot":
-			if len(message.content.split()) < 4 or not (message.content.split()[2].isdigit() and 0 <= int(message.content.split()[2]) <= 26):
-				await send_mention_space(message, "Invalid Format. !encode caesar <key (0 - 26)> <content>")
-			else:
-				await send_mention_space(message, '`' + ciphers.encode_caesar(' '.join(message.content.split()[3:]), message.content.split()[2]) + '`')
+	elif message.content.startswith("!aeval"):
+		if message.author.id == keys.myid:
+			try:
+				await send_mention_code(message, str(await eval(" ".join(message.content.split()[1:]))))
+			except:
+				await send_mention_code(message, traceback.format_exc())
 	elif message.content.startswith("!eval"):
 		if message.author.id == keys.myid:
 			try:
@@ -260,9 +162,12 @@ async def on_message(message):
 				await send_mention_code(message, traceback.format_exc())
 	elif message.content.startswith("!exec"):
 		if message.author.id == keys.myid:
-			exec(" ".join(message.content.split()[1:]))
-			await send_mention_space(message, "successfully executed")
-	elif message.content.startswith("!getpermission"):
+			try:
+				exec(" ".join(message.content.split()[1:]))
+				await send_mention_space(message, "successfully executed")
+			except:
+				await send_mention_code(message, traceback.format_exc())
+	elif message.content.startswith("!getpermission"): #rework
 		if len(message.content.split()) < 4:
 			await send_mention_space(message, "Invalid input")
 		else:
@@ -288,30 +193,6 @@ async def on_message(message):
 				await send_mention_space(message, "Invalid permission type")
 			permission = message.content.split()[3]
 			permissions.get_permission(message, type, to_find, permission)
-	elif message.content.startswith("!gofish"): #WIP
-		if message.content.split()[1] == "start" and message.author.id == keys.myid:
-			global gofish_channel, gofish_players
-			gofish_players = []
-			number_of_players = int(message.content.split()[2])
-			if message.server:
-				for i in range(number_of_players):
-					for member in message.server.members:
-						if member.name == message.content.split()[i + 3]:
-							gofish_players.append(member)
-							break
-			else:
-				await send_mention_space(message, "Please use that command in a server.")
-				pass
-			gofish.start(number_of_players)
-			gofish_channel = message.channel
-			gofish_players_string = ""
-			for player in gofish_players:
-				gofish_players_string += player.name + " and "
-			await client.send_message(message.channel, message.author.name + " has started a game of Go Fish between " + gofish_players_string[:-5] + "!")
-		elif message.content.split()[1] == "hand" and message.author in gofish_players:
-			await client.send_message(message.author, "Your hand: " + gofish.hand(gofish_players.index(message.author) + 1))
-		elif message.content.split()[1] == "ask" and message.author in gofish_players:
-			pass
 	elif message.content.startswith("!jeopardy"):
 		global jeopardy_active, jeopardy_question_active, jeopardy_board, jeopardy_answer, jeopardy_answered, jeopardy_scores, jeopardy_board_output, jeopardy_max_width
 		if len(message.content.split()) > 1 and message.content.split()[1] == "start" and not jeopardy_active:
@@ -447,49 +328,7 @@ async def on_message(message):
 		if maze_maze.reached_end():
 			await send_mention_space(message, "Congratulations! You reached the end of the maze.")
 			maze_started = False
-	elif message.content.startswith(("!mycolor", "!mycolour")): #rework
-		if len(message.content.split()) == 1:
-			color = message.author.color
-			color_value = color.value
-			await send_mention_space(message, str(conversions.inttohex(color_value)))
-		else:
-			if len(message.author.roles) == 1:
-				new_role = await client.create_role(message.server, name = message.author.name, hoist = False)
-				'''
-				for role in message.server.roles:
-					if role.name == message.author.name:
-						new_role = role
-						break
-				'''
-				await client.add_roles(message.author, new_role)
-				new_colour = new_role.colour
-				new_colour.value = int(message.content.split()[1], 16)
-				await client.edit_role(message.server, new_role, name = message.author.name, colour = new_colour)
-			elif message.author.roles[1].name == message.author.name:
-				role_to_change = message.author.roles[1]
-				new_colour = role_to_change.colour
-				new_colour.value = int(message.content.split()[1], 16)
-			await client.edit_role(message.server, role_to_change, colour = new_colour)
-	elif message.content.startswith("!redditsearch"): #WIP
-		pass
-	elif message.content.startswith(("!rolecolor", "!rolecolour")):
-		if len(message.content.split()) == 2:
-			for role in message.server.roles:
-				if role.name == (' ').join(message.content.split()[1].split('_')) or role.name.startswith((' ').join(message.content.split()[1].split('_'))):
-					selected_role = role
-					break
-			color = selected_role.colour
-			color_value = color.value
-			await send_mention_space(message, str(conversions.inttohex(color_value)))
-		elif message.channel.permissions_for(message.author).manage_roles or message.author.id == keys.myid:
-			for role in message.server.roles:
-				if role.name == (' ').join(message.content.split()[1].split('_')) or role.name.startswith((' ').join(message.content.split()[1].split('_'))):
-					role_to_change = role
-					break
-			new_colour = role_to_change.colour
-			new_colour.value = conversions.hextoint(message.content.split()[2])
-			await client.edit_role(message.server, role_to_change, colour = new_colour)
-	elif message.content.startswith("!setpermission"):
+	elif message.content.startswith("!setpermission"): #rework
 		if message.author.id == keys.myid or message.author == message.server.owner:
 			if len(message.content.split()) < 5:
 				await send_mention_space(message, "Invalid input")
@@ -552,24 +391,7 @@ async def on_message(message):
 					return
 				permissions.set_permission(message, type, to_set, permission, setting)
 				await send_mention_space(message, "Permission updated")
-	elif message.content.startswith("!taboo"): #WIP
-		if message.content.split()[1] == "start":
-			if message.server:
-				taboo_players.append(message.author)
-				for member in message.server.members:
-					if member.name == message.content.split()[2]:
-						taboo_players.append(member)
-						break
-				await send_mention_space(message, " has started a game of Taboo with " + taboo_players[1].mention)
-				await client.send_message(message.author, "You have started a game of Taboo with " + taboo_players[1].name)
-				await client.send_message(taboo_players[1], message.author.name + " has started a game of Taboo with you.")
-			else:
-				await send_mention_space(message, "Please use that command in a server.")
-				pass
-		elif message.content.split()[1] == "nextround":
-			if message.server:
-				pass
-	elif message.content.startswith(("!tag", "!trigger")):
+	elif message.content.startswith(("!tag", "!trigger", "!note")):
 		with open("data/tags.json", "r") as tags_file:
 			tags_data = json.load(tags_file)
 		if len(message.content.split()) == 1:
@@ -798,64 +620,6 @@ async def on_message(message):
 			pass
 	elif trivia_active and not (message.content.startswith('!') or message.server.me in message.mentions):
 		trivia_answers[message.author] = message.content
-	elif message.content.startswith("!war"):
-		if message.content.split()[1] == "start" and message.author.id == keys.myid:
-			global war_channel, war_players
-			war_players = []
-			number_of_players = int(message.content.split()[2])
-			if message.server:
-				for i in range(number_of_players):
-					for member in message.server.members:
-						if member.name == message.content.split()[i + 3]:
-							war_players.append(member)
-							break
-			else:
-				await send_mention_space(message, "Please use that command in a server.")
-				pass
-			war.start(number_of_players)
-			war_channel = message.channel
-			war_players_string = ""
-			for player in war_players:
-				war_players_string += player.name + " and "
-			await client.send_message(message.channel, message.author.name + " has started a game of War between " + war_players_string[:-5] + "!")
-		elif message.content.split()[1] == "hand" and message.author in war_players:
-			await client.send_message(message.author, "Your hand: " + war.hand(war_players.index(message.author) + 1))
-		elif message.content.split()[1] == "left" and message.author in war_players:
-			await send_mention_space(message, "You have " + str(war.card_count(war_players.index(message.author) + 1)) + " cards left.")
-		elif message.content.split()[1] == "play" and message.author in war_players:
-			player_number = war_players.index(message.author) + 1
-			winner, cardsplayed, tiedplayers = war.play(player_number, " ".join(message.content.split()[2:]))
-			if winner == -1:
-				await send_mention_space(message, "You have already chosen your card for this battle.")
-			elif winner == -3:
-				await send_mention_space(message, "You are not in this battle.")
-			elif winner == -4:
-				await send_mention_space(message, "Card not found in your hand.")
-			else:
-				await send_mention_space(message, "You chose the " + cardsplayed[player_number - 1].value + " of " + cardsplayed[player_number - 1].suit)
-				await client.send_message(message.author, "Your hand: " + war.hand(player_number))
-			if winner > 0:
-				winner_name = war_players[winner - 1].name
-				cards_played_print = ""
-				for i in range(len(war_players)):
-					cards_played_print += war_players[i].name + " played " + cardsplayed[i].value + " of " + cardsplayed[i].suit + " and "
-				cards_played_print = cards_played_print[:-5] + "."
-				await client.send_message(war_channel, winner_name + " wins the battle.\n" + cards_played_print)
-				for war_player in war_players:
-					await client.send_message(war_player, winner_name + " wins the battle.\n" + cards_played_print)
-			if winner == -2:
-				cards_played_print = ""
-				for i in range(len(war_players)):
-					cards_played_print += war_players[i].name + " played " + cardsplayed[i].value + " of " + cardsplayed[i].suit + " and "
-				cards_played_print = cards_played_print[:-5] + "."
-				tiedplayers_print = ""
-				for tiedplayer in tiedplayers:
-					tiedplayers_print += war_players[tiedplayer - 1].name + " and "
-				tiedplayers_print = tiedplayers_print[:-5] + " tied.\n"
-				await client.send_message(war_channel, tiedplayers_print + cards_played_print)
-				for war_player in war_players:
-					await client.send_message(war_player, tiedplayers_print + cards_played_print)
-				pass
 	elif message.content.startswith("!webmtogif"):
 		webmfile = urllib.request.urlretrieve(message.content.split()[1], "data/webtogif.webm")
 		# subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
@@ -865,121 +629,15 @@ async def on_message(message):
 		await client.send_file(message.channel, "data/webtogif.gif")
 		#subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
 		#await client.send_file(message.channel, "data/webtogif.gif")
-	elif message.content.startswith("!weather"):
+	elif message.content.startswith("!weather"): #WIP
 		await send_mention_space(message, str(weather.temp(' '.join(message.content.split()[1:]))))
-	elif message.content.startswith(("!wolframalpha", "!wa")):
+	elif message.content.startswith(("!wolframalpha", "!wa")): #WIP
 		if message.author.id == keys.myid:
 			result = waclient.query(" ".join(message.content.split()[1:]))
 			for pod in result.pods:
 				await client.send_message(message.channel, message.author.mention + " " + pod.img)
 				await client.send_message(message.channel, message.author.mention + " " + pod.text)
 			#await client.send_message(message.channel, message.author.mention + " " + next(result.results).text)
-	elif message.content.startswith(("!youtube", "!soundcloud", "!audio", "!yt", "!voice", "!stream", 
-		"!playlist", "!spotify", "!radio", "!tts")):
-		if message.author.id == keys.myid or message.author.id == "108131092430589952":
-			if message.content.split()[1] == "join":
-				await join_voice_channel(message)
-				return
-			elif not client.is_voice_connected(message.server):
-				await send_mention_space(message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
-				return
-			elif message.content.split()[1] == "leave":
-				await leave_voice_channel(message)
-				await send_mention_space(message, "I've left the voice channel.")
-				return
-			elif message.content.split()[1] == "pause" or message.content.split()[1] == "stop":
-				await player_pause(message)
-				await send_mention_space(message, "Song paused")
-				return
-			elif message.content.split()[1] == "resume" or message.content.split()[1] == "start":
-				await player_resume(message)
-				await send_mention_space(message, "Song resumed")
-				return
-			elif message.content.split()[1] == "skip" or message.content.split()[1] == "next":
-				await player_skip(message)
-				await send_mention_space(message, "Song skipped")
-				return
-			elif message.content.split()[1] in ["restart", "replay", "repeat"]:
-				await player_restart(message)
-				return
-			elif message.content.split()[1] == "empty" or message.content.split()[1] == "clear":
-				await player_empty_queue(message)
-				await send_mention_space(message, "Queue emptied")
-				return
-			elif message.content.split()[1] == "shuffle":
-				response = await send_mention_space(message, "Shuffling...")
-				await player_shuffle_queue(message)
-				await client.edit_message(response, message.author.mention + " Shuffled songs")
-				return
-			elif message.content.split()[0] == "!radio" or message.content.split()[1] == "radio":
-				if message.content.split()[1] in ["on", "start"] or (len(message.content.split()) > 2 and message.content.split()[2] in ["on", "start"]):
-					await player_start_radio(message)
-				elif message.content.split()[1] in ["off", "stop"] or (len(message.content.split()) > 2 and message.content.split()[2] in ["off", "stop"]):
-					await player_stop_radio(message)
-				return
-			elif message.content.split()[0] == "!tts" or message.content.split()[1] == "tts":
-				await tts(message)
-				return
-			elif message.content.split()[1] == "volume" and is_number(message.content.split()[2]):
-				await player_volume(message, float(message.content.split()[2]) / 100)
-				return
-			elif message.content.split()[1] == "full":
-				return
-		if not client.is_voice_connected(message.server):
-			await send_mention_space(message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
-		elif message.content.split()[0] in ["!radio"] or message.content.split()[1] in ["join", "leave", "pause", "stop", "resume", "start", "skip", "next", "restart", "replay", "empty", "clear", "shuffle", "radio", "volume"]:
-			await send_mention_space(message, "You don't have permission to do that.")
-		elif message.content.split()[1] == "current" or message.content.split()[1] == "queue":
-			current = player_current(message)
-			if not current:
-				await client.send_message(message.channel, "There is no song currently playing.")
-			else:
-				if add_commas(current["stream"].views):
-					views = add_commas(current["stream"].views)
-				else:
-					views = ""
-				if add_commas(current["stream"].likes):
-					likes = add_commas(current["stream"].likes)
-				else:
-					likes = ""
-				if add_commas(current["stream"].dislikes):
-					dislikes = add_commas(current["stream"].dislikes)
-				else:
-					dislikes = ""
-				await client.send_message(message.channel, "Currently playing: " + current["stream"].url + "\n" + views + ":eye: | " + likes + ":thumbsup::skin-tone-2: | " + dislikes + ":thumbsdown::skin-tone-2:\nAdded by: " + current["author"].name)
-			if radio_on(message):
-				await client.send_message(message.channel, ":radio: Radio is currently on")
-			else:
-				queue = player_queue(message)
-				if not queue:
-					await client.send_message(message.channel, "The queue is currently empty.")
-				else:
-					queue_string = ""
-					count = 1
-					for stream in list(queue._queue):
-						if count <= 10:
-							queue_string += ':' + inflect_engine.number_to_words(count) + ": **" + stream["stream"].title + "** (`" + stream["stream"].url + "`) Added by: " + stream["author"].name + "\n"
-							count += 1
-						else:
-							more_songs = queue.qsize() - 10
-							queue_string += "There " + inflect_engine.plural("is", more_songs) + " " + str(more_songs) + " more " + inflect_engine.plural("song", more_songs) + " in the queue"
-							break
-					await client.send_message(message.channel, "\nQueue:\n" + queue_string)
-		elif "playlist" in message.content:
-			await player_add_playlist(message)
-		elif "spotify" in message.content:
-			stream = await player_add_spotify_song(message)
-			if stream:
-				await send_mention_space(message, "Your song, " + stream.title + ", has been added to the queue.")
-			else:
-				await send_mention_space(message, "Error")
-		else:
-			response = await send_mention_space(message, "Loading...")
-			added = await player_add_song(message)
-			if not added:
-				await send_mention_space(message, "Error")
-			else:
-				await client.edit_message(response, message.author.mention + " Your song has been added to the queue.")
 	elif message.content.lower() == 'f':
 		with open("data/f.json", "r") as counter_file:
 			counter_info = json.load(counter_file)
@@ -1008,6 +666,15 @@ async def on_message(message):
 			else:
 				return
 			await send_mention_space(message, str(value) + " " + unit1 + " = " + str(converted_value) + " " + unit2)
+
+@client.event
+async def on_command_error(error, ctx):
+	if isinstance(error, checks.NotServerOwner):
+		await send_mention_space(ctx.message, "You don't have permission to do that.")
+	elif isinstance(error, checks.SO_VoiceNotConnected):
+		await send_mention_space(ctx.message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
+	elif isinstance(error, checks.NSO_VoiceNotConnected):
+		await send_mention_space(ctx.message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
 
 #client.run(keys.username, keys.password)
 #client.run(keys.token)

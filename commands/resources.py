@@ -1,11 +1,15 @@
 
 from discord.ext import commands
 
+import isodate
 import json
 import random
 import requests
+import urllib
+import xml.etree.ElementTree
 
 import keys
+from modules import ciphers
 from modules import utilities
 from modules import voice
 from client import client
@@ -14,7 +18,7 @@ def setup(bot):
 	bot.add_cog(Resources())
 
 class Resources:
-
+	
 	@commands.command()
 	async def add(self, *numbers : float):
 		'''Adds numbers together.'''
@@ -28,7 +32,7 @@ class Resources:
 			else:
 				addends.append(str(number))
 		await client.reply(" + ".join(addends) + " = " + str(result))
-
+	
 	@commands.command()
 	async def audiodefine(self, word : str):
 		'''Generate link for pronounciation of a word'''
@@ -40,35 +44,40 @@ class Resources:
 			await client.reply(word.capitalize() + ": " + audio)
 		else:
 			await client.reply("Word or audio not found.")
-
+	
 	@commands.command()
 	async def bing(self, *search : str):
 		'''Look something up on Bing'''
 		await client.reply("http://www.bing.com/search?q={0}".format('+'.join(search)))
-
+	
 	@commands.command(aliases = ["calc", "calculator"])
 	async def calculate(self, *equation : str):
-		'''Simple calculator
+		'''
+		Simple calculator
 		
 		calculate <number> <operation> <number>
 		'''
 		if len(equation) >= 3 and equation[0].isnumeric and equation[2].isnumeric and equation[1] in ['+', '-', '*', '/']:
 			await client.reply(' '.join(equation[:3]) + " = " + str(eval(''.join(equation[:3]))))
 		else:
-			await send_mention_space(message, "That's not a valid input.")
-
+			await client.reply("That's not a valid input.")
+	
 	@commands.command()
-	async def cat(self, *options : str):
-		'''Cats'''
-		if options:
-			if options[0] == "categories" or options[0] == "cats":
+	async def cat(self, *category : str):
+		'''
+		Cats
+		
+		cat categories (cats)
+		'''
+		if category:
+			if category == "categories" or category == "cats":
 				root = xml.etree.ElementTree.fromstring(requests.get("http://thecatapi.com/api/categories/list").text)
 				categories = ""
 				for category in root.findall(".//name"):
 					categories += category.text + " "
 				await client.reply(categories[:-1])
 			else:
-				url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={0}".format(options[0])
+				url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={0}".format(category)
 				root = xml.etree.ElementTree.fromstring(requests.get(url).text)
 				if root.find(".//url") is not None:
 					await client.reply(root.find(".//url").text)
@@ -78,19 +87,19 @@ class Resources:
 		else:
 			root = xml.etree.ElementTree.fromstring(requests.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1").text)
 			await client.reply(root.find(".//url").text)
-
+	
 	@commands.command()
 	async def choose(self, *choices : str):
 		'''Randomly choose'''
 		if not choices:
 			await client.reply("Choose between what?")
 		await client.reply(random.choice(choices))
-
+	
 	@commands.command(aliases = ["flip"])
 	async def coin(self):
 		'''Flip a coin'''
 		await client.reply(random.choice(["Heads!", "Tails!"]))
-
+	
 	@commands.command(aliases = ["colour"])
 	async def color(self, *options : str):
 		'''Information on colors'''
@@ -106,13 +115,44 @@ class Resources:
 		await client.reply("\n{name} ({hex})\nRGB: ({red}, {green}, {blue})\nHSV: ({hue}°, {saturation}%, {value}%)\n{image}".format( \
 			name = data["title"].capitalize(), hex = '#' + data["hex"], red = str(rgb["red"]), green = str(rgb["green"]), blue = str(rgb["blue"]),
 			hue = str(hsv["hue"]), saturation = str(hsv["saturation"]), value = str(hsv["value"]), image = data["imageUrl"]))
-
+	
 	@commands.command()
 	async def date(self, date : str):
 		'''Facts about dates'''
 		url = "http://numbersapi.com/{0}/date".format(date)
 		await client.reply(requests.get(url).text)
-
+	
+	@commands.group()
+	async def decode(self):
+		'''Decodes coded messages
+		
+		options: morse, reverse, caesar (rot)
+		'''
+		return
+	
+	@decode.command()
+	async def morse(self, *message : str):
+		'''Decodes morse code'''
+		await client.reply('`' + ciphers.decode_morse(' '.join(message)) + '`')
+	
+	@decode.command()
+	async def reverse(self, *message : str):
+		'''Reverses text'''
+		await client.reply('`' + ' '.join(message)[::-1] + '`')
+	
+	@decode.command(aliases = ["rot"])
+	async def caesar(self, option : str, *message : str):
+		'''Decodes caesar codes
+		
+		options: key (0 - 26), brute
+		'''
+		if len(message) == 0 or not ((option.isdigit() and 0 <= int(option) <= 26) or option == "brute"):
+			await client.reply("Invalid Format. !decode caesar <key (0 - 26) or brute> <content>")
+		elif option == "brute":
+			await client.reply('`' + ciphers.brute_force_caesar(' '.join(message)) + '`')
+		else:
+			await client.reply('`' + ciphers.decode_caesar(' '.join(message), option) + '`')
+	
 	@commands.command()
 	async def define(self, word : str):
 		'''Define a word'''
@@ -125,7 +165,40 @@ class Resources:
 			await client.reply(word.capitalize() + ": " + definition)
 		else:
 			await client.reply("Definition not found.")
-
+	
+	@commands.group()
+	async def encode(self):
+		'''Encode messages
+		
+		otpions: morse, reverse, caesar (rot)
+		'''
+		return
+	
+	@encode.command()
+	async def morse(self, *message : str):
+		await client.reply('`' + ciphers.encode_morse(' '.join(message)) + '`')
+	
+	@encode.command()
+	async def reverse(self, *message : str):
+		await client.reply('`' + ' '.join(message)[::-1] + '`')
+	
+	@encode.command(aliases = ["rot"])
+	async def caesar(self, key : int, *message : str):
+		if len(message) == 0 or not 0 <= key <= 26:
+			await client.reply("Invalid Format. !encode caesar <key (0 - 26)> <content>")
+		else:
+			await client.reply('`' + ciphers.encode_caesar(' '.join(message), key) + '`')
+	
+	# For testing
+	@decode.command(hidden = True)
+	async def testing3(self, *testing : str):
+		await client.reply("decode testing: " + ' '.join(testing))
+	
+	# For testing
+	@encode.command(hidden = True)
+	async def testing3(self, *testing : str):
+		await client.reply("encode testing: " + ' '.join(testing))
+	
 	@commands.command()
 	async def fancify(self, *text : str):
 		'''Fancify text'''
@@ -138,10 +211,11 @@ class Resources:
 			elif letter == ' ':
 				output += ' '
 		await client.reply(output)
-
+	
 	@commands.command()
 	async def giphy(self, *options : str):
-		'''Find something on giphy
+		'''
+		Find something on giphy
 		
 		giphy <random/trending/(search)>
 		'''
@@ -157,12 +231,12 @@ class Resources:
 			url = "http://api.giphy.com/v1/gifs/search?q={0}&limit=1&api_key=dc6zaTOxFJmzC".format("+".join(options))
 			data = requests.get(url).json()["data"]
 			await send_mention_space(message, data[0]["url"])
-
+	
 	@commands.command(aliases = ["search"])
 	async def google(self, *search : str):
 		'''Google something'''
 		await client.reply("https://www.google.com/search?q={0}".format(('+').join(search)))
-
+	
 	@commands.command(aliases = ["imagesearch"])
 	async def googleimage(self, *search : str):
 		'''Google image search something'''
@@ -171,7 +245,7 @@ class Resources:
 		image_link = data["items"][0]["link"]
 		await client.reply(image_link)
 		# handle 403 daily limit exceeded error
-
+	
 	@commands.command()
 	async def haveibeenpwned(self, name : str):
 		'''Check if your account has been breached'''
@@ -196,28 +270,28 @@ class Resources:
 				pastedaccounts += pastedaccount["Source"] + " (" + pastedaccount["Id"] + "), "
 			pastedaccounts = pastedaccounts[:-2]
 		await client.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
-
+	
 	@commands.command(aliases = ["movie"])
 	async def imdb(self, *search : str):
 		'''IMDb Information'''
 		url = "http://www.omdbapi.com/?t={0}&y=&plot=short&r=json".format(" ".join(search))
 		data = requests.get(url).json()
-		await client.reply("```\n{title} ({year})\nType: {type}\nIMDb Rating: {rating}\nRuntime: {runtime}\nGenre(s): {genre}\nPlot: {plot}Poster: {poster}".format( \
+		await client.reply("```\n{title} ({year})\nType: {type}\nIMDb Rating: {rating}\nRuntime: {runtime}\nGenre(s): {genre}\nPlot: {plot}```\nPoster: {poster}".format( \
 			title = data["Title"], year = data["Year"], type = data["Type"], rating = data["imdbRating"], runtime = data["Runtime"], genre = data["Genre"], 
 			plot = data["Plot"], poster = data["Poster"]))
-
+	
 	@commands.command()
 	async def imfeelinglucky(self, *search : str):
 		'''First Google result of a search'''
 		await client.reply("https://www.google.com/search?btnI&q={0}".format(('+').join(search)))
-
+	
 	@commands.command()
 	async def insult(self):
 		'''Generate insult'''
 		url = "http://quandyfactory.com/insult/json"
 		data = requests.get(url).json()
 		await client.say(data["insult"])
-
+	
 	@commands.command()
 	async def joke(self):
 		'''Generate joke'''
@@ -225,24 +299,24 @@ class Resources:
 		data = requests.get(url).json()
 		joke = data["joke"]
 		await client.reply(joke)
-
+	
 	@commands.command()
 	async def lmbtfy(self, *search : str):
 		'''Let Me Bing That For You'''
 		await client.reply("http://lmbtfy.com/?q={0}".format(('+').join(search)))
-
+	
 	@commands.command()
 	async def lmgtfy(self, *search : str):
 		'''Let Me Google That For You'''
 		await client.reply("http://www.lmgtfy.com/?q={0}".format(('+').join(search)))
-
+	
 	@commands.command()
 	async def longurl(self, url : str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={0}&key={1}".format(url, keys.google_apikey)
 		data = requests.get(url).json()
 		await client.reply(data["longUrl"])
-
+	
 	@commands.command()
 	async def map(self, *options : str):
 		'''Get map of location'''
@@ -252,28 +326,28 @@ class Resources:
 			await client.reply("https://maps.googleapis.com/maps/api/staticmap?center={0},{1}&zoom=13&size=600x300".format(str(latitude), str(longitude)))
 		else:
 			await client.reply("https://maps.googleapis.com/maps/api/staticmap?center={0}&zoom=13&size=600x300".format("+".join(options)))
-
+	
 	@commands.command()
-	async def math(self, number : str):
+	async def math(self, number : int):
 		'''Math facts about numbers'''
 		await client.reply(requests.get("http://numbersapi.com/{0}/math".format(number)).text)
-
+	
 	@commands.command()
-	async def number(self, number : str):
+	async def number(self, number : int):
 		'''Facts about numbers'''
 		await client.reply(requests.get("http://numbersapi.com/{0}".format(number)).text)
-
+	
 	@commands.command()
 	async def randomidea(self):
 		'''Generate random idea'''
 		data = requests.get("http://itsthisforthat.com/api.php?json").json()
 		await client.reply("{0} for {1}".format(data["this"], data["that"]))
-
+	
 	@commands.command()
 	async def randomlocation(self):
 		'''Generate random location'''
 		await client.reply("{0}, {1}".format(str(random.uniform(-90, 90)), str(random.uniform(-180, 180))))
-
+	
 	@commands.command()
 	async def randomword(self):
 		'''Generate random word'''
@@ -281,7 +355,11 @@ class Resources:
 		data = requests.get(url).json()
 		word = data["word"]
 		await client.reply(word.capitalize())
-
+	
+	@commands.command(hidden = True)
+	async def redditsearch(self): #WIP
+		return
+	
 	@commands.command(aliases = ["randomnumber"])
 	async def rng(self, *number : int):
 		'''Generate random number'''
@@ -289,12 +367,12 @@ class Resources:
 			await client.reply(str(random.randint(1, number[0])))
 		else:
 			await client.reply(str(random.randint(1, 10)))
-
+	
 	@commands.command()
 	async def shorturl(self, url : str):
 		'''Generate a short goo.gl url for your link'''
 		await client.reply(requests.post('https://www.googleapis.com/urlshortener/v1/url?key={0}'.format(keys.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}').json()["id"])
-
+	
 	@commands.command()
 	async def spotifyinfo(self, url : str):
 		'''Information about a Spotify track'''
@@ -311,7 +389,7 @@ class Resources:
 				artistlink = data["artists"][0]["external_urls"]["spotify"], albumlink = data["album"]["external_urls"]["spotify"]))
 		else:
 			await client.reply("Syntax error.")
-
+	
 	@commands.command(aliases = ["sptoyt"])
 	async def spotifytoyoutube(self, url : str):
 		'''Find a Spotify track on Youtube'''
@@ -320,7 +398,7 @@ class Resources:
 			await client.reply(link)
 		else:
 			await client.reply("Error")
-
+	
 	@commands.command()
 	async def steam(self, *options : str):
 		'''Steam Information'''
@@ -359,7 +437,13 @@ class Resources:
 			description = data["about_the_game"]
 			await client.reply("{name}\n{appid}\nFree?: {0}\n{website}\n{header_image}".format( \
 				isfree, name = data["name"], appid = str(data["steam_appid"]), website = data["website"], header_image = data["header_image"]))
-
+	
+	@commands.command()
+	async def strawpoll(self, question : str, *options : str):
+		'''Generates a strawpoll link'''
+		poll = requests.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})).json()
+		await client.reply("http://strawpoll.me/" + str(poll["id"]))
+	
 	@commands.command()
 	async def streetview(self, *options : str):
 		'''Generate street view of a location'''
@@ -367,15 +451,15 @@ class Resources:
 			if options[0] == "random":
 				latitude = random.uniform(-90, 90)
 				longitude = random.uniform(-180, 180)
-				await send_mention_space(message, "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(str(latitude), str(longitude)))
+				await client.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(str(latitude), str(longitude)))
 			else:
-				await send_mention_space(message, "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
-
+				await client.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
+	
 	@commands.command()
 	async def wiki(self, *search : str):
 		'''Look something up on Wikipedia'''
 		await client.reply("https://en.wikipedia.org/wiki/{0}".format("_".join(search)))
-
+	
 	@commands.command()
 	async def xkcd(self, *options : str):
 		'''Find xkcd's'''
@@ -390,7 +474,7 @@ class Resources:
 		await client.reply("http://xkcd.com/{num} ({date})\n{image_link}\n{title}\nAlt Text: {alt_text}".format( \
 			num = str(data["num"]), date = "{month}/{day}/{year}".format(month = data["month"], day = data["day"], year = data["year"]),
 			image_link = data["img"], title = data["title"], alt_text = data["alt"]))
-
+	
 	@commands.command(aliases = ["ytinfo"])
 	async def youtubeinfo(self, url : str):
 		'''Information on Youtube videos'''
@@ -415,13 +499,13 @@ class Resources:
 			title = data["snippet"]["title"]
 			length_iso = data["contentDetails"]["duration"]
 			length_timedelta = isodate.parse_duration(length_iso)
-			length = secs_to_letter_format(length_timedelta.total_seconds())
+			length = utilities.secs_to_letter_format(length_timedelta.total_seconds())
 			likes = data["statistics"]["likeCount"]
 			dislikes = data["statistics"]["dislikeCount"]
 			likepercentage = round(float(likes) / (float(likes) + float(dislikes)) * 100, 2)
-			likes = add_commas(int(likes))
-			dislikes = add_commas(int(dislikes))
-			views = add_commas(int(data["statistics"]["viewCount"]))
+			likes = utilities.add_commas(int(likes))
+			dislikes = utilities.add_commas(int(dislikes))
+			views = utilities.add_commas(int(data["statistics"]["viewCount"]))
 			channel = data["snippet"]["channelTitle"]
 			published = data["snippet"]["publishedAt"][:10]
 			# await client.send_message(message.channel, message.author.mention + "\n**" + title + "**\n**Length**: " + str(length) + "\n**Likes**: " + likes + ", **Dislikes**: " + dislikes + " (" + str(likepercentage) + "%)\n**Views**: " + views + "\n" + channel + " on " + published)
@@ -430,13 +514,9 @@ class Resources:
 	@commands.command(aliases = ["ytsearch"])
 	async def youtubesearch(self, *search : str):
 		'''Find a Youtube video'''
-		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), keys.google_apikey)
-		data = requests.get(url).json()["items"][0]
-		if "videoId" not in data["id"]:
-			data = requests.get(url).json()["items"][1]
-		link = "https://www.youtube.com/watch?v={0}".format(data["id"]["videoId"])
+		link = utilities.youtubesearch(search)
 		await client.reply(link)
-
+	
 	@commands.command()
 	async def year(self, year : int):
 		'''Facts about years'''

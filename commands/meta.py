@@ -17,13 +17,13 @@ def setup(bot):
 	bot.add_cog(Meta())
 
 class Meta:
-
+	
 	'''
 	@client.command(hidden = True)
 	@checks.is_owner()
 	async def eval(*code : str):
 		await client.reply("\n```" + str(builtins.eval(" ".join(code))) + "```")
-
+	
 	@client.command(hidden = True)
 	@checks.is_owner()
 	async def exec(*code : str):
@@ -34,11 +34,11 @@ class Meta:
 	@commands.command(hidden = True)
 	async def libraryversion(self):
 		await client.reply(discord.__version__)
-
+	
 	@commands.command(aliases = ["oauth"], hidden = True)
 	async def invite(self):
 		await client.reply(discord.utils.oauth_url(keys.bot_clientid))
-
+	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def servers(self):
@@ -51,9 +51,9 @@ class Meta:
 			server_info += "Created at: " + str(server.created_at) + "\n```"
 			server_info += "Icon: " + server.icon_url
 			await client.whisper(server_info)
-
+	
 	# Public Stats
-
+	
 	@commands.command()
 	async def stats(self, *option : str):
 		'''Bot stats'''
@@ -74,33 +74,33 @@ class Meta:
 				stats = json.load(stats_file)
 			restarts = stats["restarts"]
 			await client.reply("Total Recorded Restarts: " + str(restarts))
-
+	
 	@commands.command()
 	async def uptime(self):
 		'''Bot uptime'''
 		now = datetime.datetime.utcnow()
 		uptime = now - online_time
 		await client.reply(utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds()))))
-
+	
 	# Update Bot Stuff
-
+	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def changenickname(self, ctx, *nickname : str):
 		await client.change_nickname(ctx.message.server.me, ' '.join(nickname))
-
+	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def updateavatar(self):
 		with open("data/discord_harmonbot_icon.png", "rb") as avatar_file:
 			await client.edit_profile(avatar = avatar_file.read())
 		await client.reply("Avatar updated.")
-
+	
 	@commands.command(hidden = True)
 	async def randomgame(self):
 		await utilities.random_game_status()
 		# await send_mention_space(message, "I changed to a random game status.")
-
+	
 	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"], hidden = True)
 	@checks.is_owner()
 	async def setgame(self, ctx, *game_name : str):
@@ -111,7 +111,7 @@ class Meta:
 			updated_game.name = " ".join(game_name)
 		await client.change_status(game = updated_game)
 		await client.reply("Game updated.")
-
+	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def setstreaming(self, ctx, option : str, *url : str):
@@ -130,7 +130,7 @@ class Meta:
 			updated_game = ctx.message.server.me.game
 			updated_game.type = 0
 		await client.change_status(game = updated_game)
-
+	
 	@commands.command(pass_context = True, aliases = ["!clearplaying"], hidden = True)
 	@checks.is_owner()
 	async def cleargame(self, ctx):
@@ -141,7 +141,7 @@ class Meta:
 			await client.reply("Game status cleared.")
 		else:
 			await client.reply("There is no game status to clear.")
-
+	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def clearstreaming(self, ctx, *option : str):
@@ -157,9 +157,9 @@ class Meta:
 			await client.reply("Streaming status and url cleared.")
 		else:
 			await client.reply("There is no streaming status or url to clear.")
-
+	
 	# Restart/Shutdown
-
+	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def restart(self, ctx):
@@ -167,27 +167,27 @@ class Meta:
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
 			json.dump({"restart_channel" : ctx.message.channel.id}, restart_channel_file)
 		raise KeyboardInterrupt
-
+	
 	@commands.command(aliases = ["crash", "panic"], hidden = True)
 	@checks.is_owner()
 	async def shutdown(self):
-		await client.reply("Shutting down.")
+		await client.say("Shutting down.")
 		await utilities.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
 		subprocess.call(["taskkill", "/f", "/im", "python.exe"])
-
+	
 	# Testing
 	
 	@commands.command(hidden = True)
 	async def test(self):
 		'''Basic test command'''
 		await client.say("Hello, World!")
-
+	
 	@commands.command(pass_context = True, hidden = True)
 	async def echo(self, ctx):
 		'''Echoes the message'''
 		await client.say(ctx.message.content)
-
+	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def deletetest(self):

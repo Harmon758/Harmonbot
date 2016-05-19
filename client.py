@@ -19,6 +19,6 @@ rss_client = Bot(command_prefix = '!', description = "RSS Bot")
 
 online_time = datetime.datetime.utcnow()
 
-initial_extensions = ["commands.discord", "commands.meta", "commands.games", "commands.resources"]
+initial_extensions = ["commands.discord", "commands.meta", "commands.games", "commands.resources", "modules.voice"]
 for extension in initial_extensions:
 	client.load_extension(extension)
