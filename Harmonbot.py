@@ -104,10 +104,6 @@ async def on_ready():
 	#asyncio.set_event_loop(loop)
 	#loop.run_until_complete(asyncio.create_subprocess_exec(*["py", "-3.5", "rss_bot.py"]))
 
-@client.command(hidden = True)
-async def test2():
-	await client.say("testing")
-
 @client.event
 async def on_message(message):
 	global trivia_answers
