@@ -99,7 +99,7 @@ class Meta:
 	@commands.command(hidden = True)
 	async def randomgame(self):
 		await utilities.random_game_status()
-		# await send_mention_space(message, "I changed to a random game status.")
+		# await client.reply("I changed to a random game status.")
 	
 	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"], hidden = True)
 	@checks.is_owner()
