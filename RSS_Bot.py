@@ -29,8 +29,8 @@ async def on_ready():
 			restart_channel = rss_client.get_channel(json.load(restart_channel_file)["restart_channel"])
 		os.remove("data/rss_restart_channel.json")
 		await rss_client.send_message(restart_channel, "Restarted.")
-		await rss_client.change_status(game = discord.Game(name = "with Harmonbot"))
-		await set_streaming_status(rss_client)
+	await rss_client.change_status(game = discord.Game(name = "with Harmonbot"))
+	await set_streaming_status(rss_client)
 	while True:
 		start = time.time()
 		await check_rss_feeds()

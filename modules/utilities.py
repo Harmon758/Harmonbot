@@ -7,7 +7,9 @@ import feedparser
 import json
 import math
 import random
+import requests
 
+import keys
 from client import client
 from client import rss_client
 from client import online_time
@@ -105,9 +107,16 @@ async def check_rss_feeds():
 			for item in feed_info.entries:
 				try:
 					if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.published)).total_seconds() <= 60:
-						await rss_client.send_message(discord.utils.get(rss_client.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n" + item.link)
+						await rss_client.send_message(discord.utils.get(rss_client.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n<" + item.link + '>')
 				except:
 					pass
+
+def youtubesearch(search):
+	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), keys.google_apikey)
+	data = requests.get(url).json()["items"][0]
+	if "videoId" not in data["id"]:
+		data = requests.get(url).json()["items"][1]
+	return "https://www.youtube.com/watch?v={0}".format(data["id"]["videoId"])
 
 # Discord
 
