@@ -391,48 +391,6 @@ async def on_message(message):
 					return
 				permissions.set_permission(message, type, to_set, permission, setting)
 				await send_mention_space(message, "Permission updated")
-	elif message.content.startswith(("!tag", "!trigger", "!note")):
-		with open("data/tags.json", "r") as tags_file:
-			tags_data = json.load(tags_file)
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Add a tag with `!tag add <tag> <content>`. Use `!tag <tag>` to trigger the tag you added. `!tag <edit>` to edit, `!tag <remove>` to delete")
-			return
-		if not message.content.split()[1] in ["add", "make", "new", "create"]:
-			if not message.author.id in tags_data:
-				await send_mention_space(message, "You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
-				return
-			tags = tags_data[message.author.id]["tags"]
-		if message.content.split()[1] in ["edit", "remove", "delete", "destroy"] and not message.content.split()[2] in tags:
-			await send_mention_space(message, "You don't have that tag.")
-			return
-		if len(message.content.split()) >= 3:
-			if message.content.split()[1] in ["add", "make", "new", "create"]:
-				if not message.author.id in tags_data:
-					tags_data[message.author.id] = {"name" : message.author.name, "tags" : {}}
-				tags = tags_data[message.author.id]["tags"]
-				if message.content.split()[2] in tags:
-					await send_mention_space(message, "You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
-					return
-				tags[message.content.split()[2]] = ' '.join(message.content.split(' ')[3:])
-				await send_mention_space(message, "Your tag has been added.")
-			elif message.content.split()[1] == "edit":
-				tags[message.content.split()[2]] = " ".join(message.content.split(' ')[3:])
-				await send_mention_space(message, "Your tag has been edited.")
-			elif message.content.split()[1] in ["remove", "delete", "destroy"]:
-				del tags[message.content.split()[2]]
-				await client.send_message(message.channel, "Your tag was deleted.")
-			else:
-				await send_mention_space(message, "Syntax error.")
-			with open("data/tags.json", "w") as tags_file:
-				json.dump(tags_data, tags_file)
-		elif message.content.split()[1] in ["list", "all", "mine"]:
-			tag_list = ", ".join(list(tags.keys()))
-			await send_mention_space(message, "Your tags: " + tag_list)
-		else:
-			if not message.content.split()[1] in tags:
-				await send_mention_space(message, "You don't have that tag.")
-			else:
-				await client.send_message(message.channel, tags[message.content.split()[1]])
 	elif message.content.startswith("!tempchannel"):
 		temp_voice_channel = discord.utils.get(message.server.channels, name = message.author.display_name + "'s Temp Channel")
 		temp_text_channel = discord.utils.get(message.server.channels, name = message.author.display_name.lower() + "s_temp_channel")

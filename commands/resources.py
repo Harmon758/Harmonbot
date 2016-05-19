@@ -222,15 +222,15 @@ class Resources:
 		if options and options[0] == "random":
 			url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
 			data = requests.get(url).json()["data"]
-			await send_mention_space(message, data["url"])
+			await client.reply(data["url"])
 		elif options and options[0] == "trending":
 			url = "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC"
 			data = requests.get(url).json()["data"]
-			await send_mention_space(message, data[0]["url"])
+			await client.reply(data[0]["url"])
 		else:
 			url = "http://api.giphy.com/v1/gifs/search?q={0}&limit=1&api_key=dc6zaTOxFJmzC".format("+".join(options))
 			data = requests.get(url).json()["data"]
-			await send_mention_space(message, data[0]["url"])
+			await client.reply(data[0]["url"])
 	
 	@commands.command(aliases = ["search"])
 	async def google(self, *search : str):
@@ -454,6 +454,89 @@ class Resources:
 				await client.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(str(latitude), str(longitude)))
 			else:
 				await client.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
+
+	@commands.group(pass_context = True, aliases = ["trigger", "note"])
+	async def tag(self, ctx):
+		with open("data/tags.json", "r") as tags_file:
+			tags_data = json.load(tags_file)
+		if len(ctx.message.content.split()) == 1:
+			await client.reply("Add a tag with `!tag add <tag> <content>`. Use `!tag <tag>` to trigger the tag you added. `!tag <edit>` to edit, `!tag <remove>` to delete")
+			return
+		if not ctx.message.content.split()[1] in ["add", "make", "new", "create"]:
+			if not ctx.message.author.id in tags_data:
+				await client.reply("You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
+				return
+			tags = tags_data[ctx.message.author.id]["tags"]
+		if ctx.message.content.split()[1] in ["edit", "remove", "delete", "destroy"] and not ctx.message.content.split()[2] in tags:
+			await client.reply("You don't have that tag.")
+			return
+		if not ctx.invoked_subcommand:
+			if len(ctx.message.content.split()) >= 3:
+				await client.reply("Syntax error.")
+			else:
+				if not ctx.message.content.split()[1] in tags:
+					await client.reply("You don't have that tag.")
+				else:
+					await client.reply(tags[ctx.message.content.split()[1]])
+	
+	@tag.command(pass_context = True, aliases = ["all", "mine"])
+	async def list(self, ctx):
+		with open("data/tags.json", "r") as tags_file:
+			tags_data = json.load(tags_file)
+		if not ctx.message.author.id in tags_data:
+			await client.reply("You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
+			return
+		tags = tags_data[ctx.message.author.id]["tags"]
+		tag_list = ", ".join(list(tags.keys()))
+		await client.reply("Your tags: " + tag_list)
+	
+	@tag.command(pass_context = True, aliases = ["make", "new", "create"])
+	async def add(self, ctx, tag : str, *content : str):
+		with open("data/tags.json", "r") as tags_file:
+			tags_data = json.load(tags_file)
+		if not ctx.message.author.id in tags_data:
+			tags_data[ctx.message.author.id] = {"name" : ctx.message.author.name, "tags" : {}}
+		tags = tags_data[ctx.message.author.id]["tags"]
+		if tag in tags:
+			await client.reply("You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
+			return
+		tags[tag] = ' '.join(content) # test new line
+		with open("data/tags.json", "w") as tags_file:
+			json.dump(tags_data, tags_file)
+		await client.reply("Your tag has been added.")
+	
+	@tag.command(pass_context = True)
+	async def edit(self, ctx, tag : str, *content : str):
+		with open("data/tags.json", "r") as tags_file:
+			tags_data = json.load(tags_file)
+		if not ctx.message.author.id in tags_data:
+			await client.reply("You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
+			return
+		tags = tags_data[ctx.message.author.id]["tags"]
+		if not tag in tags:
+			await client.reply("You don't have that tag.")
+			return
+		tags = tags_data[ctx.message.author.id]["tags"]
+		tags[tag] = ' '.join(content)
+		with open("data/tags.json", "w") as tags_file:
+			json.dump(tags_data, tags_file)
+		await client.reply("Your tag has been edited.")
+	
+	@tag.command(pass_context = True, aliases = ["remove", "destroy"])
+	async def delete(self, ctx, tag : str):
+		with open("data/tags.json", "r") as tags_file:
+			tags_data = json.load(tags_file)
+		if not ctx.message.author.id in tags_data:
+			await client.reply("You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
+			return
+		if not tag in tags:
+			await client.reply("You don't have that tag.")
+			return
+		tags = tags_data[ctx.message.author.id]["tags"]
+		del tags[tag]
+		with open("data/tags.json", "w") as tags_file:
+			json.dump(tags_data, tags_file)
+		await client.reply("Your tag has been deleted.")
 	
 	@commands.command()
 	async def wiki(self, *search : str):
