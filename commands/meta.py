@@ -2,7 +2,7 @@
 import discord
 from discord.ext import commands
 
-import builtins
+#import builtins
 import datetime
 import json
 import subprocess
@@ -36,6 +36,7 @@ class Meta:
 	@commands.command(hidden = True, pass_context = True)
 	@checks.is_owner()
 	async def allcommands(self, ctx):
+		'''All the commands'''
 		formatter = commands.HelpFormatter(show_check_failure = True, show_hidden = True)
 		formatter.format_help_for(ctx, client)
 		_commands = formatter.filter_command_list()
@@ -52,15 +53,18 @@ class Meta:
 	
 	@commands.command(hidden = True)
 	async def libraryversion(self):
+		'''The discord.py library version I'm currently using'''
 		await client.reply(discord.__version__)
 	
 	@commands.command(aliases = ["oauth"], hidden = True)
 	async def invite(self):
+		'''Link to invite me to a server'''
 		await client.reply(discord.utils.oauth_url(keys.bot_clientid))
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def servers(self):
+		'''Every server I'm in'''
 		for server in client.servers:
 			server_info = "```Name: " + server.name + "\n"
 			server_info += "ID: " + server.id + "\n"
@@ -106,23 +110,27 @@ class Meta:
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def changenickname(self, ctx, *nickname : str):
+		'''Update my nickname'''
 		await client.change_nickname(ctx.message.server.me, ' '.join(nickname))
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def updateavatar(self):
+		'''Update my avatar'''
 		with open("data/discord_harmonbot_icon.png", "rb") as avatar_file:
 			await client.edit_profile(avatar = avatar_file.read())
 		await client.reply("Avatar updated.")
 	
 	@commands.command(hidden = True)
 	async def randomgame(self):
+		'''Update to a random playing/game status message'''
 		await utilities.random_game_status()
 		# await client.reply("I changed to a random game status.")
 	
 	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"], hidden = True)
 	@checks.is_owner()
 	async def setgame(self, ctx, *game_name : str):
+		'''Set my playing/game status message'''
 		updated_game = ctx.message.server.me.game
 		if not updated_game:
 			updated_game = discord.Game(name = " ".join(game_name))
@@ -134,6 +142,7 @@ class Meta:
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def setstreaming(self, ctx, option : str, *url : str):
+		'''Set my streaming status'''
 		if option == "on" or option == "true":
 			if not url:
 				await utilities.set_streaming_status()
@@ -153,6 +162,7 @@ class Meta:
 	@commands.command(pass_context = True, aliases = ["!clearplaying"], hidden = True)
 	@checks.is_owner()
 	async def cleargame(self, ctx):
+		'''Clear my playing/game status message'''
 		updated_game = ctx.message.server.me.game
 		if updated_game and updated_game.name:
 			updated_game.name = None
@@ -164,6 +174,7 @@ class Meta:
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def clearstreaming(self, ctx, *option : str):
+		'''Clear my streaming status'''
 		updated_game = ctx.message.server.me.game
 		if updated_game and (updated_game.url or updated_game.type):
 			updated_game.url = None
@@ -182,6 +193,7 @@ class Meta:
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def restart(self, ctx):
+		'''Restart me'''
 		await client.say("Restarting...")
 		voice_channels = [[voice_client.channel.id, voice.get_player(voice_client.server)["text"]] for voice_client in client.voice_clients]
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
@@ -191,6 +203,7 @@ class Meta:
 	@commands.command(aliases = ["crash", "panic"], hidden = True)
 	@checks.is_owner()
 	async def shutdown(self):
+		'''Shut me down'''
 		await client.say("Shutting down.")
 		await utilities.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
@@ -217,6 +230,10 @@ class Meta:
 	
 	@commands.command(hidden = True)
 	async def load(self):
+		'''
+		Just for fun loading bar
+		Currently does nothing.. or does it?
+		'''
 		counter = 0
 		bar = chr(9633) * 10
 		loading_message = await client.say("Loading: [" + bar + "]")

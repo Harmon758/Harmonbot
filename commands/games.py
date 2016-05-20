@@ -26,25 +26,14 @@ class Games:
 	taboo_players = []
 	maze_started, maze_maze = False, None
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	async def chess(self, *option : str):
-		'''Play chess'''
+		'''
+		Play chess
+		standard algebraic notation
+		'''
 		if not option:
 			await client.reply("Options: reset, board, undo, standard algebraic notation move")
-		elif option[0] == "reset":
-			self.chess_board.reset()
-			await client.reply("The board has been reset.")
-		elif option[0] == "board":
-			await client.reply("\n```" + str(self.chess_board) + "```")
-		elif option[0] == "undo":
-			try:
-				self.chess_board.pop()
-				await send_client.reply("\n```" + str(board) + "```")
-			except IndexError:
-				await client.reply("There's no more moves to undo.")
-		elif option[0] == "(╯°□°）╯︵":
-			self.chess_board.reset()
-			await client.say("\n" + message.author.name + " flipped the table over in anger!\nThe board has been reset.")
 		else:
 			try:
 				self.chess_board.push_san(option[0])
@@ -52,6 +41,32 @@ class Games:
 			except ValueError:
 				await client.reply("Invalid move.")
 		#await client.send_message(message.channel, message.author.mention + "\n" + "```" + board.__unicode__() + "```")
+	
+	@chess.command(name = "reset")
+	async def chess_reset(self):
+		'''Reset the board'''
+		self.chess_board.reset()
+		await client.reply("The board has been reset.")
+	
+	@chess.command(name = "board")
+	async def chess_board(self):
+		'''Display the current board'''
+		await client.reply("\n```" + str(self.chess_board) + "```")
+	
+	@chess.command(name = "undo")
+	async def chess_undo(self):
+		'''Undo the last move'''
+		try:
+			self.chess_board.pop()
+			await send_client.reply("\n```" + str(board) + "```")
+		except IndexError:
+			await client.reply("There's no more moves to undo.")
+	
+	@chess.command(name = "(╯°□°）╯︵")
+	async def chess_flip(self):
+		'''Flip the table over'''
+		self.chess_board.reset()
+		await client.say("\n" + message.author.name + " flipped the table over in anger!\nThe board has been reset.")
 	
 	@commands.command(aliases = ["talk", "ask"])
 	async def cleverbot(self, *message : str):
@@ -106,7 +121,6 @@ class Games:
 	async def guess(self, ctx, *options : str):
 		'''
 		Guessing game
-		
 		Guess <max> <tries>
 		'''
 		
@@ -153,7 +167,6 @@ class Games:
 	async def maze(self, ctx, *options : str):
 		'''
 		Maze game
-		
 		options: start <width> <height>, current, [w, a, s, d] to move
 		'''
 		if not options:
@@ -288,3 +301,4 @@ class Games:
 				for war_player in self.war_players:
 					await client.send_message(war_player, tiedplayers_print + cards_played_print)
 				pass
+
