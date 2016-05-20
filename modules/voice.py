@@ -65,17 +65,7 @@ async def join(ctx, *channel : str):
 	else:
 		await client.join_voice_channel(voice_channel)
 		await client.reply("I've joined the voice channel.")
-		player = {"server" : ctx.message.server, "queue" : asyncio.Queue(), "current" : None, "radio_on" : False}
-		players.append(player)
-		while client.is_voice_connected(ctx.message.server):
-			current = await player["queue"].get()
-			player["current"] = current
-			stream = current["stream"]
-			stream.start()
-			await client.say(":arrow_forward: Now Playing: " + stream.title)
-			while not stream.is_done():
-				await asyncio.sleep(1)
-		players.remove(player)
+		await start_player(ctx.message.channel)
 
 @client.command(pass_context = True)
 @checks.is_server_owner()
@@ -89,7 +79,7 @@ async def leave(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def pause(ctx):
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	player["current"]["stream"].pause()
 	await client.reply("Song paused")
 
@@ -97,7 +87,7 @@ async def pause(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def resume(ctx):
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	player["current"]["stream"].resume()
 	await client.reply("Song resumed")
 
@@ -105,7 +95,7 @@ async def resume(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def skip(ctx):
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	player["current"]["stream"].stop()
 	await client.reply("Song skipped")
 
@@ -114,7 +104,7 @@ async def skip(ctx):
 @checks.is_voice_connected()
 async def replay(ctx):
 	response = await client.reply("Restarting song...")
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	player["current"]["stream"].pause()
 	stream = await client.voice_client_in(ctx.message.server).create_ytdl_player(player["current"]["stream"].url)
 	old_stream = player["current"]["stream"]
@@ -129,7 +119,7 @@ async def replay(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def empty(ctx):
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	while not player["queue"].empty():
 		stream = await player["queue"].get()
 		stream["stream"].start()
@@ -141,7 +131,7 @@ async def empty(ctx):
 @checks.is_voice_connected()
 async def shuffle(ctx):
 	response = await client.reply("Shuffling...")
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	song_list = []
 	while not player["queue"].empty():
 		song_list.append(await player["queue"].get())
@@ -161,7 +151,7 @@ async def radio(ctx):
 @checks.is_voice_connected()
 async def radio_on(ctx):
 	response = await client.reply("Starting Radio...")
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	player["current"]["stream"].pause()
 	url_data = urllib.parse.urlparse(player["current"]["stream"].url)
 	query = urllib.parse.parse_qs(url_data.query)
@@ -195,9 +185,9 @@ async def radio_on(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def radio_off(ctx):
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	if player["radio_on"]:
-		player = get_player(ctx.message)
+		player = get_player(ctx.message.server)
 		player["radio_on"] = False
 		player["current"]["stream"].stop()
 		await client.reply("Radio is now off")
@@ -206,7 +196,7 @@ async def radio_off(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def tts(ctx, *message : str):
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", " ".join(message)], shell = True)
 	stream = client.voice_client_in(ctx.message.server).create_ffmpeg_player("data/tts.wav")
 	paused = False
@@ -224,13 +214,13 @@ async def tts(ctx, *message : str):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def volume(ctx, volume_setting : float):
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	player["current"]["stream"].volume = volume_setting / 100
 
 @client.command(pass_context = True, aliases = ["queue"])
 @checks.is_voice_connected()
 async def current(ctx):
-	player = get_player(ctx.message)
+	player = get_player(ctx.message.server)
 	if not player["current"] or player["current"]["stream"].is_done():
 		await client.say("There is no song currently playing.")
 	else:
@@ -270,6 +260,19 @@ async def current(ctx):
 for command in [join, leave, pause, resume, skip, replay, empty, shuffle, radio, tts, volume, current]:
 	voice.add_command(command)
 
+async def start_player(channel):
+	player = {"server" : channel.server, "queue" : asyncio.Queue(), "current" : None, "radio_on" : False, "text" : channel.id}
+	players.append(player)
+	while client.is_voice_connected(channel.server):
+		current = await player["queue"].get()
+		player["current"] = current
+		stream = current["stream"]
+		stream.start()
+		await client.send_message(channel, ":arrow_forward: Now Playing: " + stream.title)
+		while not stream.is_done():
+			await asyncio.sleep(1)
+	players.remove(player)
+
 # Player Add Functions
 
 async def player_add_song(message, **kwargs):
@@ -291,7 +294,7 @@ async def player_add_song(message, **kwargs):
 			stream = await client.voice_client_in(message.server).create_ytdl_player(link)
 		except:
 			return False
-	player = get_player(message)
+	player = get_player(message.server)
 	await player["queue"].put({"stream" : stream, "author" : message.author})
 	return stream
 	
@@ -304,7 +307,7 @@ async def player_add_playlist(message):
 		playlistid = query[5:]
 		base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(keys.google_apikey, playlistid)
 		url = base_url
-		player_instance = get_player(message)
+		player_instance = get_player(message.server)
 		while True:
 			data = requests.get(url).json()
 			total = data["pageInfo"]["totalResults"]
@@ -330,9 +333,9 @@ async def player_add_playlist(message):
 
 # Utility
 
-def get_player(message):
+def get_player(server):
 	for player in players:
-		if player["server"] == message.server:
+		if player["server"] == server:
 			return player
 	return None
 

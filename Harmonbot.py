@@ -26,7 +26,7 @@ from modules import conversions
 from modules import documentation
 from modules import permissions
 from modules.utilities import *
-from modules.voice import *
+from modules import voice
 
 from commands.games import Games
 
@@ -93,7 +93,8 @@ async def on_ready():
 		restart_channel = client.get_channel(restart_data["restart_channel"])
 		await client.send_message(restart_channel, "Restarted.")
 		for voice_channel in restart_data["voice_channels"]:
-			await client.join_voice_channel(client.get_channel(voice_channel))
+			await client.join_voice_channel(client.get_channel(voice_channel[0]))
+			asyncio.ensure_future(voice.start_player(client.get_channel(voice_channel[1])))
 	await random_game_status()
 	await set_streaming_status(client)
 	#loop = asyncio.ProactorEventLoop()
