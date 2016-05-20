@@ -164,8 +164,9 @@ class Meta:
 	@checks.is_owner()
 	async def restart(self, ctx):
 		await client.say("Restarting...")
+		voice_channels = [voice_client.channel.id for voice_client in client.voice_clients]
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
-			json.dump({"restart_channel" : ctx.message.channel.id}, restart_channel_file)
+			json.dump({"restart_channel" : ctx.message.channel.id, "voice_channels" : voice_channels}, restart_channel_file)
 		raise KeyboardInterrupt
 	
 	@commands.command(aliases = ["crash", "panic"], hidden = True)

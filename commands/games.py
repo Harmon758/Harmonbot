@@ -69,9 +69,9 @@ class Games:
 		'''WIP'''
 		return
 	
-	@gofish.command(hidden = True, pass_context = True)
+	@gofish.command(hidden = True, name = "start", pass_context = True)
 	@checks.is_owner()
-	async def start(self, ctx, *players : str): #WIP
+	async def gofish_start(self, ctx, *players : str): #WIP
 		'''WIP'''
 		self.gofish_channel = ctx.message.channel
 		if ctx.message.server:
@@ -88,14 +88,14 @@ class Games:
 			gofish_players_string += player.name + " and "
 		await client.reply(message.author.name + " has started a game of Go Fish between " + gofish_players_string[:-5] + "!")
 	
-	@gofish.command(hidden = True, pass_context = True)
-	async def hand(self, ctx): #WIP
+	@gofish.command(hidden = True, name = "hand", pass_context = True)
+	async def gofish_hand(self, ctx): #WIP
 		'''WIP'''
 		if ctx.message.author in gofish_players:
 			await client.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.message.author) + 1))
 	
-	@gofish.command(hidden = True, pass_context = True)
-	async def ask(self, ctx): #WIP
+	@gofish.command(hidden = True, name = "ask", pass_context = True)
+	async def gofish_ask(self, ctx): #WIP
 		'''WIP'''
 		if ctx.message.author in gofish_players:
 			pass
@@ -152,8 +152,8 @@ class Games:
 		'''WIP'''
 		return
 	
-	@taboo.command(hidden = True, pass_context = True) # no_pm = True
-	async def start(self, ctx, player : str): #WIP
+	@taboo.command(hidden = True, name = "start", pass_context = True) # no_pm = True
+	async def taboo_start(self, ctx, player : str): #WIP
 		'''WIP'''
 		if ctx.message.server:
 			self.taboo_players.append(ctx.message.author)
@@ -168,8 +168,8 @@ class Games:
 			await client.reply("Please use that command in a server.")
 			pass
 	
-	@taboo.command(hidden = True) # no_pm = True ?
-	async def nextround(self): #WIP
+	@taboo.command(hidden = True, name = "nextround") # no_pm = True ?
+	async def taboo_nextround(self): #WIP
 		'''WIP'''
 		if message.server:
 			pass
@@ -179,9 +179,9 @@ class Games:
 		'''Based on the War card game'''
 		return
 	
-	@war.command(pass_context = True) # no_pm = True
+	@war.command(name = "start", pass_context = True) # no_pm = True
 	@checks.is_owner()
-	async def start(self, ctx, *players : str):
+	async def war_start(self, ctx, *players : str):
 		'''Start a game of War'''
 		self.war_players = []
 		if ctx.message.server:
@@ -199,20 +199,20 @@ class Games:
 			war_players_string += player.name + " and "
 		await client.reply(message.author.name + " has started a game of War between " + war_players_string[:-5] + "!")
 	
-	@war.command(pass_context = True)
-	async def hand(self, ctx):
+	@war.command(name = "hand", pass_context = True)
+	async def war_hand(self, ctx):
 		'''See your current hand'''
 		if ctx.message.author in self.war_players:
 			await client.whisper("Your hand: " + war.hand(self.war_players.index(ctx.message.author) + 1))
 	
-	@war.command(pass_context = True)
-	async def left(self, ctx):
+	@war.command(name = "left", pass_context = True)
+	async def war_left(self, ctx):
 		'''See how many cards you have left'''
 		if ctx.message.author in self.war_players:
 			await client.reply("You have " + str(war.card_count(self.war_players.index(ctx.message.author) + 1)) + " cards left.")
 	
-	@war.command(pass_context = True)
-	async def play(self, ctx, *card : str):
+	@war.command(name = "play", pass_context = True)
+	async def war_play(self, ctx, *card : str):
 		'''Play a card'''
 		if ctx.message.author in self.war_players:
 			player_number = self.war_players.index(message.author) + 1

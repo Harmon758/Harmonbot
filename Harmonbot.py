@@ -33,7 +33,7 @@ from modules import weather
 
 from commands.games import Games
 
-from utilities import checks
+from utilities import errors
 
 import keys
 from client import client
@@ -95,9 +95,12 @@ async def on_ready():
 	print("Started up {0} ({1})".format(str(client.user), client.user.id))
 	if os.path.isfile("data/restart_channel.json"):
 		with open("data/restart_channel.json", "r") as restart_channel_file:
-			restart_channel = client.get_channel(json.load(restart_channel_file)["restart_channel"])
+			restart_data = json.load(restart_channel_file)
 		os.remove("data/restart_channel.json")
+		restart_channel = client.get_channel(restart_data["restart_channel"])
 		await client.send_message(restart_channel, "Restarted.")
+		for voice_channel in restart_data["voice_channels"]:
+			await client.join_voice_channel(client.get_channel(voice_channel))
 	await random_game_status()
 	await set_streaming_status(client)
 	#loop = asyncio.ProactorEventLoop()
@@ -623,13 +626,13 @@ async def on_message(message):
 
 @client.event
 async def on_command_error(error, ctx):
-	if isinstance(error, checks.NotServerOwner):
+	if isinstance(error, errors.NotServerOwner):
 		await send_mention_space(ctx.message, "You don't have permission to do that.")
-	elif isinstance(error, checks.SO_VoiceNotConnected):
+	elif isinstance(error, errors.SO_VoiceNotConnected):
 		await send_mention_space(ctx.message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
-	elif isinstance(error, checks.NSO_VoiceNotConnected):
+	elif isinstance(error, errors.NSO_VoiceNotConnected):
 		await send_mention_space(ctx.message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
-
+		
 #client.run(keys.username, keys.password)
 #client.run(keys.token)
 

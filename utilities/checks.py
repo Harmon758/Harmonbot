@@ -1,21 +1,10 @@
 
 from discord.ext import commands
-from discord.ext.commands.errors import CommandError
+
+from utilities import errors
 
 import keys
 from client import client
-
-class NotServerOwner(CommandError):
-	pass
-
-class VoiceNotConnected(CommandError):
-	pass
-
-class SO_VoiceNotConnected(VoiceNotConnected):
-	pass
-
-class NSO_VoiceNotConnected(VoiceNotConnected):
-	pass
 
 def is_owner_check(message):
     return message.author.id == keys.myid
@@ -30,7 +19,7 @@ def is_server_owner():
 	
 	def predicate(ctx):
 		if not is_server_owner_check(ctx.message):
-			raise NotServerOwner
+			raise errors.NotServerOwner
 		else:
 			return True
 	
@@ -44,9 +33,9 @@ def is_voice_connected():
 	def predicate(ctx):
 		if not is_voice_connected_check(ctx.message):
 			if is_server_owner_check(ctx.message):
-				raise SO_VoiceNotConnected
+				raise errors.SO_VoiceNotConnected
 			else:
-				raise NSO_VoiceNotConnected
+				raise errors.NSO_VoiceNotConnected
 		return True
 	
 	return commands.check(predicate)
