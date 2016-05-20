@@ -12,12 +12,15 @@ import keys
 from modules import ciphers
 from modules import utilities
 from modules import voice
+from utilities import errors
 from client import client
 
 def setup(bot):
 	bot.add_cog(Resources())
 
 class Resources:
+
+	tags_data, tags = None, None
 	
 	@commands.command()
 	async def add(self, *numbers : float):
@@ -130,18 +133,18 @@ class Resources:
 		'''
 		return
 	
-	@decode.command()
-	async def morse(self, *message : str):
+	@decode.command(name = "morse")
+	async def decode_morse(self, *message : str):
 		'''Decodes morse code'''
 		await client.reply('`' + ciphers.decode_morse(' '.join(message)) + '`')
 	
-	@decode.command()
-	async def reverse(self, *message : str):
+	@decode.command(name = "reverse")
+	async def decode_reverse(self, *message : str):
 		'''Reverses text'''
 		await client.reply('`' + ' '.join(message)[::-1] + '`')
 	
-	@decode.command(aliases = ["rot"])
-	async def caesar(self, option : str, *message : str):
+	@decode.command(name = "caesar", aliases = ["rot"])
+	async def decode_caesar(self, option : str, *message : str):
 		'''Decodes caesar codes
 		
 		options: key (0 - 26), brute
@@ -174,30 +177,20 @@ class Resources:
 		'''
 		return
 	
-	@encode.command()
-	async def morse(self, *message : str):
+	@encode.command(name = "morse")
+	async def encode_morse(self, *message : str):
 		await client.reply('`' + ciphers.encode_morse(' '.join(message)) + '`')
 	
-	@encode.command()
-	async def reverse(self, *message : str):
+	@encode.command(name = "reverse")
+	async def encode_reverse(self, *message : str):
 		await client.reply('`' + ' '.join(message)[::-1] + '`')
 	
-	@encode.command(aliases = ["rot"])
-	async def caesar(self, key : int, *message : str):
+	@encode.command(name = "caesar", aliases = ["rot"])
+	async def encode_caesar(self, key : int, *message : str):
 		if len(message) == 0 or not 0 <= key <= 26:
 			await client.reply("Invalid Format. !encode caesar <key (0 - 26)> <content>")
 		else:
 			await client.reply('`' + ciphers.encode_caesar(' '.join(message), key) + '`')
-	
-	# For testing
-	@decode.command(hidden = True)
-	async def testing3(self, *testing : str):
-		await client.reply("decode testing: " + ' '.join(testing))
-	
-	# For testing
-	@encode.command(hidden = True)
-	async def testing3(self, *testing : str):
-		await client.reply("encode testing: " + ' '.join(testing))
 	
 	@commands.command()
 	async def fancify(self, *text : str):
@@ -458,84 +451,58 @@ class Resources:
 	@commands.group(pass_context = True, aliases = ["trigger", "note"])
 	async def tag(self, ctx):
 		with open("data/tags.json", "r") as tags_file:
-			tags_data = json.load(tags_file)
+			self.tags_data = json.load(tags_file)
 		if len(ctx.message.content.split()) == 1:
-			await client.reply("Add a tag with `!tag add <tag> <content>`. Use `!tag <tag>` to trigger the tag you added. `!tag <edit>` to edit, `!tag <remove>` to delete")
+			await client.reply("Add a tag with `!tag add <tag> <content>`. " \
+				"Use `!tag <tag>` to trigger the tag you added. `!tag <edit>` to edit, `!tag <remove>` to delete")
 			return
-		if not ctx.message.content.split()[1] in ["add", "make", "new", "create"]:
-			if not ctx.message.author.id in tags_data:
-				await client.reply("You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
-				return
-			tags = tags_data[ctx.message.author.id]["tags"]
-		if ctx.message.content.split()[1] in ["edit", "remove", "delete", "destroy"] and not ctx.message.content.split()[2] in tags:
-			await client.reply("You don't have that tag.")
-			return
+		if not ctx.invoked_subcommand is self.tag_add:
+			if not ctx.message.author.id in self.tags_data:
+				raise errors.NoTags
+			self.tags = self.tags_data[ctx.message.author.id]["tags"]
+		if ctx.invoked_subcommand in (self.tag_edit, self.tag_delete) and not ctx.message.content.split()[2] in self.tags:
+			raise errors.NoTag
 		if not ctx.invoked_subcommand:
 			if len(ctx.message.content.split()) >= 3:
 				await client.reply("Syntax error.")
 			else:
-				if not ctx.message.content.split()[1] in tags:
-					await client.reply("You don't have that tag.")
+				if not ctx.message.content.split()[1] in self.tags:
+					raise errors.NoTag
 				else:
-					await client.reply(tags[ctx.message.content.split()[1]])
+					await client.reply(self.tags[ctx.message.content.split()[1]])
 	
-	@tag.command(pass_context = True, aliases = ["all", "mine"])
-	async def list(self, ctx):
-		with open("data/tags.json", "r") as tags_file:
-			tags_data = json.load(tags_file)
-		if not ctx.message.author.id in tags_data:
-			await client.reply("You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
-			return
-		tags = tags_data[ctx.message.author.id]["tags"]
-		tag_list = ", ".join(list(tags.keys()))
-		await client.reply("Your tags: " + tag_list)
+	@tag.command(name = "list", pass_context = True, aliases = ["all", "mine"])
+	async def tag_list(self, ctx):
+		_tag_list = ", ".join(list(self.tags.keys()))
+		await client.reply("Your tags: " + _tag_list)
 	
-	@tag.command(pass_context = True, aliases = ["make", "new", "create"])
-	async def add(self, ctx, tag : str, *content : str):
-		with open("data/tags.json", "r") as tags_file:
-			tags_data = json.load(tags_file)
-		if not ctx.message.author.id in tags_data:
-			tags_data[ctx.message.author.id] = {"name" : ctx.message.author.name, "tags" : {}}
-		tags = tags_data[ctx.message.author.id]["tags"]
-		if tag in tags:
+	@tag.command(name = "add", pass_context = True, aliases = ["make", "new", "create"])
+	async def tag_add(self, ctx, tag : str, *content : str):
+		if not ctx.message.author.id in self.tags_data:
+			self.tags_data[ctx.message.author.id] = {"name" : ctx.message.author.name, "tags" : {}}
+		self.tags = self.tags_data[ctx.message.author.id]["tags"]
+		if tag in self.tags:
 			await client.reply("You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
 			return
-		tags[tag] = ' '.join(content) # test new line
+		# self.tags[tag] = ' '.join(content)
+		self.tags[tag] = ' '.join(ctx.message.content.split(' ')[3:])
 		with open("data/tags.json", "w") as tags_file:
-			json.dump(tags_data, tags_file)
+			json.dump(self.tags_data, tags_file)
 		await client.reply("Your tag has been added.")
 	
-	@tag.command(pass_context = True)
-	async def edit(self, ctx, tag : str, *content : str):
-		with open("data/tags.json", "r") as tags_file:
-			tags_data = json.load(tags_file)
-		if not ctx.message.author.id in tags_data:
-			await client.reply("You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
-			return
-		tags = tags_data[ctx.message.author.id]["tags"]
-		if not tag in tags:
-			await client.reply("You don't have that tag.")
-			return
-		tags = tags_data[ctx.message.author.id]["tags"]
-		tags[tag] = ' '.join(content)
+	@tag.command(name = "edit", pass_context = True)
+	async def tag_edit(self, ctx, tag : str, *content : str):
+		# self.tags[tag] = ' '.join(content)
+		self.tags[tag] = ' '.join(ctx.message.content.split(' ')[3:])
 		with open("data/tags.json", "w") as tags_file:
-			json.dump(tags_data, tags_file)
+			json.dump(self.tags_data, tags_file)
 		await client.reply("Your tag has been edited.")
 	
-	@tag.command(pass_context = True, aliases = ["remove", "destroy"])
-	async def delete(self, ctx, tag : str):
-		with open("data/tags.json", "r") as tags_file:
-			tags_data = json.load(tags_file)
-		if not ctx.message.author.id in tags_data:
-			await client.reply("You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
-			return
-		if not tag in tags:
-			await client.reply("You don't have that tag.")
-			return
-		tags = tags_data[ctx.message.author.id]["tags"]
-		del tags[tag]
+	@tag.command(name = "delete", pass_context = True, aliases = ["remove", "destroy"])
+	async def tag_delete(self, ctx, tag : str):
+		del self.tags[tag]
 		with open("data/tags.json", "w") as tags_file:
-			json.dump(tags_data, tags_file)
+			json.dump(self.tags_data, tags_file)
 		await client.reply("Your tag has been deleted.")
 	
 	@commands.command()
