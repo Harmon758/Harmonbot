@@ -13,7 +13,7 @@ def is_owner():
     return commands.check(lambda ctx: is_owner_check(ctx.message))
 
 def is_server_owner_check(message):
-	return message.author == message.server.owner or is_owner_check(message)
+	return (message.server and message.author == message.server.owner) or is_owner_check(message)
 
 def is_server_owner():
 	
@@ -26,7 +26,7 @@ def is_server_owner():
 	return commands.check(predicate)
 
 def is_voice_connected_check(message):
-	return client.is_voice_connected(message.server)
+	return message.server and client.is_voice_connected(message.server)
 
 def is_voice_connected():
 	

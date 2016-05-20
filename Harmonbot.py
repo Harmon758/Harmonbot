@@ -124,8 +124,8 @@ async def on_message(message):
 			await send_mention_space(message, "I've DM'ed you my commands. Also see !commands. What else do you need help with?")
 		elif documentation.commands_info.get(message.content.split()[1], 0):
 			await send_mention_space(message, documentation.commands_info[message.content.split()[1]])
-		else:
-			await send_mention_space(message, "Check your DMs.")
+		#else:
+			#await send_mention_space(message, "Check your DMs.")
 	elif message.server and message.server.me in message.mentions:
 		mentionless_message = ""
 		for word in message.clean_content.split():

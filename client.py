@@ -29,7 +29,7 @@ class Bot(commands.Bot):
 			traceback.print_exc()
 	
 
-client = Bot(command_prefix = '!', description = "Harmonbot", pm_help = True)
+client = Bot(command_prefix = '!', description = "Harmonbot", pm_help = None)
 
 rss_client = Bot(command_prefix = '!', description = "RSS Bot")
 
