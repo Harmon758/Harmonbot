@@ -32,6 +32,17 @@ class Meta:
 		await client.reply("Successfully executed.")
 	'''
 	
+	@commands.command(hidden = True, pass_context = True)
+	@checks.is_owner()
+	async def allcommands(self, ctx):
+		formatter = commands.HelpFormatter(show_check_failure = True, show_hidden = True)
+		formatter.format_help_for(ctx, client)
+		_commands = formatter.filter_command_list()
+		_allcommands = ""
+		for name, _command in _commands:
+			_allcommands += name + ' '
+		await client.whisper(_allcommands[:-1])
+	
 	@commands.command(name = "commands")
 	async def _commands(self):
 		'''Some additional commands and information'''
