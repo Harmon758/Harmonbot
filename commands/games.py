@@ -7,6 +7,7 @@ import random
 
 from modules import utilities
 #from modules import gofish
+from modules.maze import maze
 from modules import war
 from utilities import checks
 from client import client
@@ -23,6 +24,7 @@ class Games:
 	war_channel, war_players = None, []
 	gofish_channel, gofish_players = None, []
 	taboo_players = []
+	maze_started, maze_maze = False, None
 	
 	@commands.command()
 	async def chess(self, *option : str):
@@ -146,6 +148,52 @@ class Games:
 			else:
 				await client.reply("Sorry, it was actually " + str(answer))
 				return
+	
+	@commands.command(pass_context = True)
+	async def maze(self, ctx, *options : str):
+		'''
+		Maze game
+		
+		options: start <width> <height>, current, [w, a, s, d] to move
+		'''
+		if not options:
+			await client.reply("Please enter an option (start/current)")
+		elif options[0] == "start":
+			if self.maze_started:
+				await client.reply("There's already a maze game going on.")
+			elif len(options) >= 3 and options[1].isdigit() and options[2].isdigit():
+				self.maze_started = True
+				self.maze_maze = maze(int(options[1]), int(options[2]))
+				await utilities.send_mention_code(ctx.message, self.maze_maze.print_visible())
+				'''
+				maze_print = ""
+				for r in maze_maze.test_print():
+					row_print = ""
+					for cell in r:
+						row_print += cell + " "
+					maze_print += row_print + "\n"
+				await send_mention_code(message, maze_print)
+				'''
+				# await send_mention_code(message, repr(maze_maze))
+				convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
+				while not self.maze_maze.reached_end():
+					moved = False
+					move = await client.wait_for_message(check = lambda message: message.content.lower() in ['w', 'a', 's', 'd']) # author = ctx.message.author
+					moved = self.maze_maze.move(convert_move[move.content.lower()])
+					await utilities.send_mention_code(ctx.message, self.maze_maze.print_visible())
+					if not moved:
+						await client.reply("You can't go that way.")
+				await client.reply("Congratulations! You reached the end of the maze.")
+				self.maze_started = False
+			else:
+				await client.reply("Please enter a valid maze size. (e.g. !maze start 2 2)")
+		elif options[0] == "current":
+			if self.maze_started:
+				await utilities.send_mention_code(ctx.message, self.maze_maze.print_visible())
+			else:
+				await client.reply("There's no maze game currently going on.")
+		else:
+			await client.reply("Please enter a valid option (start/current).")
 	
 	@commands.group(hidden = True)
 	async def taboo(self): #WIP
