@@ -23,8 +23,8 @@ inflect_engine = inflect.engine()
 players = []
 
 @client.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "audio", "stream", "play", "playlist", "spotify"], 
-	invoke_without_command = True)
-async def voice(ctx, *options : str): # no_pm = True #elif options[0] == "full":
+	invoke_without_command = True, no_pm = True)
+async def voice(ctx, *options : str): #elif options[0] == "full":
 	if not client.is_voice_connected(ctx.message.server):
 		if (ctx.message.author.id == keys.myid or ctx.message.author == ctx.message.server.owner):
 			await client.reply("I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
@@ -48,7 +48,7 @@ async def voice(ctx, *options : str): # no_pm = True #elif options[0] == "full":
 		else:
 			await client.edit_message(response, ctx.message.author.mention + " Your song has been added to the queue.")
 
-@client.command(pass_context = True)
+@client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()
 async def join(ctx, *channel : str):
 	if ctx.message.author.voice_channel:
@@ -67,7 +67,7 @@ async def join(ctx, *channel : str):
 		await client.reply("I've joined the voice channel.")
 		await start_player(ctx.message.channel)
 
-@client.command(pass_context = True)
+@client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def leave(ctx):
@@ -75,7 +75,7 @@ async def leave(ctx):
 		await client.voice_client_in(ctx.message.server).disconnect()
 		await client.reply("I've left the voice channel.")
 
-@client.command(pass_context = True, aliases = ["stop"])
+@client.command(pass_context = True, aliases = ["stop"], no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def pause(ctx):
@@ -83,7 +83,7 @@ async def pause(ctx):
 	player["current"]["stream"].pause()
 	await client.reply("Song paused")
 
-@client.command(pass_context = True, aliases = ["start"])
+@client.command(pass_context = True, aliases = ["start"], no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def resume(ctx):
@@ -91,7 +91,7 @@ async def resume(ctx):
 	player["current"]["stream"].resume()
 	await client.reply("Song resumed")
 
-@client.command(pass_context = True, aliases = ["next"])
+@client.command(pass_context = True, aliases = ["next"], no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def skip(ctx):
@@ -99,7 +99,7 @@ async def skip(ctx):
 	player["current"]["stream"].stop()
 	await client.reply("Song skipped")
 
-@client.command(pass_context = True, aliases = ["repeat"]) # "restart"
+@client.command(pass_context = True, aliases = ["repeat"], no_pm = True) # "restart"
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def replay(ctx):
@@ -115,7 +115,7 @@ async def replay(ctx):
 		await asyncio.sleep(1)
 	old_stream.stop()
 
-@client.command(pass_context = True, aliases = ["clear"])
+@client.command(pass_context = True, aliases = ["clear"], no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def empty(ctx):
@@ -126,7 +126,7 @@ async def empty(ctx):
 		stream["stream"].stop()	
 	await client.reply("Queue emptied")
 
-@client.command(pass_context = True)
+@client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def shuffle(ctx):
@@ -140,13 +140,13 @@ async def shuffle(ctx):
 		await player["queue"].put(song)
 	await client.edit_message(response, ctx.message.author.mention + " Shuffled songs")
 
-@client.group(pass_context = True)
+@client.group(pass_context = True, no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def radio(ctx):
 	pass
 
-@radio.command(name = "on", pass_context = True, aliases = ["start"])
+@radio.command(name = "on", pass_context = True, aliases = ["start"], no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def radio_on(ctx):
@@ -181,7 +181,7 @@ async def radio_on(ctx):
 	player["current"]["stream"] = old_stream
 	old_stream.resume()
 
-@radio.command(name = "off", pass_context = True, aliases = ["stop"])
+@radio.command(name = "off", pass_context = True, aliases = ["stop"], no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def radio_off(ctx):
@@ -192,7 +192,7 @@ async def radio_off(ctx):
 		player["current"]["stream"].stop()
 		await client.reply("Radio is now off")
 
-@client.command(pass_context = True)
+@client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def tts(ctx, *message : str):
@@ -210,14 +210,14 @@ async def tts(ctx, *message : str):
 		player["current"]["stream"].resume()
 	os.remove("data/tts.wav")
 
-@client.command(pass_context = True)
+@client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def volume(ctx, volume_setting : float):
 	player = get_player(ctx.message.server)
 	player["current"]["stream"].volume = volume_setting / 100
 
-@client.command(pass_context = True, aliases = ["queue"])
+@client.command(pass_context = True, aliases = ["queue"], no_pm = True)
 @checks.is_voice_connected()
 async def current(ctx):
 	player = get_player(ctx.message.server)

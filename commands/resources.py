@@ -373,6 +373,7 @@ class Resources:
 	
 	@commands.command(hidden = True)
 	async def redditsearch(self): #WIP
+		'''WIP'''
 		return
 	
 	@commands.command(aliases = ["randomnumber"])

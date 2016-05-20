@@ -521,7 +521,9 @@ async def on_command_error(error, ctx):
 		await send_mention_space(ctx.message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
 	elif isinstance(error, errors.NSO_VoiceNotConnected):
 		await send_mention_space(ctx.message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
-		
+	elif isinstance(error, commands.errors.NoPrivateMessage):
+		await send_mention_space(ctx. message, "Please use that command in a server.")
+	
 #client.run(keys.username, keys.password)
 #client.run(keys.token)
 
