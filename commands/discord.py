@@ -16,7 +16,7 @@ class Discord:
 
 	# Do Stuff
 	
-	@commands.command(pass_context = True)
+	@commands.command(pass_context = True, no_pm = True)
 	async def addrole(self, ctx, name : str, role_to_add : str):
 		'''
 		Gives a user a role
@@ -36,7 +36,7 @@ class Discord:
 			await client.add_roles(selected_member, selected_role)
 			await client.reply("I gave the role, {0}, to {1}".format(selected_role, selected_member))
 	
-	@commands.command(pass_context = True)
+	@commands.command(pass_context = True, no_pm = True)
 	async def channel(self, ctx, *options : str):
 		'''
 		Create a channel
@@ -102,7 +102,7 @@ class Discord:
 			else:
 				await client.reply("Syntax error.")
 	
-	@commands.command(pass_context = True, aliases = ["mycolour"])
+	@commands.command(pass_context = True, aliases = ["mycolour"], no_pm = True)
 	async def mycolor(self, ctx, *color : str): #rework
 		'''
 		Return or change your color
@@ -126,7 +126,7 @@ class Discord:
 				new_colour.value = int(color[0], 16)
 				await client.edit_role(ctx.message.server, role_to_change, colour = new_colour)
 	
-	@commands.command(pass_context = True, aliases = ["rolecolour"])
+	@commands.command(pass_context = True, aliases = ["rolecolour"], no_pm = True)
 	async def rolecolor(self, ctx, role : str, *color : str):
 		'''
 		Returns or changes role colors
@@ -151,7 +151,7 @@ class Discord:
 			new_colour.value = conversions.hextoint(color[0])
 			await client.edit_role(ctx.message.server, role_to_change, colour = new_colour)
 	
-	@commands.command(pass_context = True)
+	@commands.command(pass_context = True, no_pm = True)
 	async def tempchannel(self, ctx, *options : str):
 		temp_voice_channel = discord.utils.get(ctx.message.server.channels, name = ctx.message.author.display_name + "'s Temp Channel")
 		temp_text_channel = discord.utils.get(ctx.message.server.channels, name = ctx.message.author.display_name.lower() + "s_temp_channel")
@@ -239,19 +239,16 @@ class Discord:
 		else:
 			await client.reply("Your discriminator: #" + ctx.message.author.discriminator)
 	
-	@commands.command(pass_context = True) # no_pm = True
+	@commands.command(pass_context = True, no_pm = True)
 	async def servericon(self, ctx):
 		'''Returns the server icon'''
-		if ctx.message.server:
-			# await client.reply("This server's icon: https://cdn.discordapp.com/icons/" + ctx.message.server.id + "/" + ctx.message.server.icon + ".jpg")
-			if ctx.message.server.icon:
-				await client.reply("This server's icon: " + ctx.message.server.icon_url)
-			else:
-				await client.reply("This server doesn't have an icon.")
+		# await client.reply("This server's icon: https://cdn.discordapp.com/icons/" + ctx.message.server.id + "/" + ctx.message.server.icon + ".jpg")
+		if ctx.message.server.icon:
+			await client.reply("This server's icon: " + ctx.message.server.icon_url)
 		else:
-			await client.reply("Please use that command in a server.")
+			await client.reply("This server doesn't have an icon.")
 	
-	@commands.command(pass_context = True) # no_pm = True
+	@commands.command(pass_context = True, no_pm = True)
 	async def serverinfo(self, ctx):
 		'''Information about a server'''
 		server = ctx.message.server
@@ -264,15 +261,12 @@ class Discord:
 		server_info += "Icon: " + server.icon_url
 		await client.reply(server_info)
 	
-	@commands.command(pass_context = True) # no_pm = True
+	@commands.command(pass_context = True, no_pm = True)
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
-		if ctx.message.server:
-			await client.reply("The owner of this server is " + ctx.message.server.owner.name + "#" + str(ctx.message.server.owner.discriminator))
-		else:
-			await client.reply("Please use that command in a server.")
+		await client.reply("The owner of this server is " + ctx.message.server.owner.name + "#" + str(ctx.message.server.owner.discriminator))
 	
-	@commands.command(pass_context = True) # no_pm = True
+	@commands.command(pass_context = True, no_pm = True)
 	async def roleid(self, ctx, *rolename : str):
 		'''Returns role id's'''
 		for role in ctx.message.server.roles:

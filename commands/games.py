@@ -71,7 +71,7 @@ class Games:
 		'''WIP'''
 		return
 	
-	@gofish.command(hidden = True, name = "start", pass_context = True)
+	@gofish.command(hidden = True, name = "start", pass_context = True, no_pm = True)
 	@checks.is_owner()
 	async def gofish_start(self, ctx, *players : str): #WIP
 		'''WIP'''
@@ -200,21 +200,17 @@ class Games:
 		'''WIP'''
 		return
 	
-	@taboo.command(hidden = True, name = "start", pass_context = True) # no_pm = True
+	@taboo.command(hidden = True, name = "start", pass_context = True, no_pm = True)
 	async def taboo_start(self, ctx, player : str): #WIP
 		'''WIP'''
-		if ctx.message.server:
-			self.taboo_players.append(ctx.message.author)
-			for member in self.message.server.members:
-				if member.name == player:
-					self.taboo_players.append(member)
-					break
-			await client.reply(" has started a game of Taboo with " + taboo_players[1].mention)
-			await client.whisper("You have started a game of Taboo with " + taboo_players[1].name)
-			await client.send_message(taboo_players[1], ctx.message.author.name + " has started a game of Taboo with you.")
-		else:
-			await client.reply("Please use that command in a server.")
-			pass
+		self.taboo_players.append(ctx.message.author)
+		for member in self.message.server.members:
+			if member.name == player:
+				self.taboo_players.append(member)
+				break
+		await client.reply(" has started a game of Taboo with " + taboo_players[1].mention)
+		await client.whisper("You have started a game of Taboo with " + taboo_players[1].name)
+		await client.send_message(taboo_players[1], ctx.message.author.name + " has started a game of Taboo with you.")
 	
 	@taboo.command(hidden = True, name = "nextround") # no_pm = True ?
 	async def taboo_nextround(self): #WIP
@@ -227,19 +223,15 @@ class Games:
 		'''Based on the War card game'''
 		return
 	
-	@war.command(name = "start", pass_context = True) # no_pm = True
+	@war.command(name = "start", pass_context = True, no_pm = True)
 	@checks.is_owner()
 	async def war_start(self, ctx, *players : str):
 		'''Start a game of War'''
 		self.war_players = []
-		if ctx.message.server:
-			for member in ctx.message.server.members:
-				if member.name in players:
-					self.war_players.append(member)
-					break
-		else:
-			await client.reply("Please use that command in a server.")
-			return
+		for member in ctx.message.server.members:
+			if member.name in players:
+				self.war_players.append(member)
+				break
 		war.start(len(players))
 		self.war_channel = ctx.message.channel
 		war_players_string = ""
