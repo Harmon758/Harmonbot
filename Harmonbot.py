@@ -25,7 +25,6 @@ import wolframalpha
 
 from modules import conversions
 from modules import documentation
-from modules.maze import maze
 from modules import permissions
 from modules.utilities import *
 from modules.voice import *
@@ -86,8 +85,6 @@ jeopardy_answered = False
 jeopardy_scores = {}
 jeopardy_board_output = ""
 jeopardy_max_width = 0
-maze_started = False
-maze_maze = None
 #wolframalpha (wa)
 
 @client.event
@@ -281,52 +278,6 @@ async def on_message(message):
 		else:
 			pass
 		'''
-	elif message.content.startswith("!maze"):
-		global maze_started, maze_maze
-		if len(message.content.split()) == 1:
-			await send_mention_space(message, "Please enter an option (start/current)")
-		elif message.content.split()[1] == "start":
-			if maze_started:
-				await send_mention_space(message, "There's already a maze game going on.")
-			elif len(message.content.split()) >= 4 and message.content.split()[2].isdigit() and message.content.split()[3].isdigit():
-				maze_started = True
-				maze_maze = maze(int(message.content.split()[2]), int(message.content.split()[3]))
-				await send_mention_code(message, maze_maze.print_visible())
-				'''
-				maze_print = ""
-				for r in maze_maze.test_print():
-					row_print = ""
-					for cell in r:
-						row_print += cell + " "
-					maze_print += row_print + "\n"
-				await send_mention_code(message, maze_print)
-				'''
-				# await send_mention_code(message, repr(maze_maze))
-			else:
-				await send_mention_space(message, "Please enter a valid maze size. (e.g. !maze start 2 2)")
-		elif message.content.split()[1] == "current":
-			if maze_started:
-				await send_mention_code(message, maze_maze.print_visible())
-			else:
-				await send_mention_space(message, "There's no maze game currently going on.")
-		else:
-			await send_mention_space(message, "Please enter a valid option (start/current).")
-	elif maze_started and message.content.lower() in ['w', 'a', 's', 'd']:
-		moved = False
-		if message.content.lower() == 'w':
-			moved = maze_maze.move('n')
-		elif message.content.lower() == 'a':
-			moved = maze_maze.move('w')
-		elif message.content.lower() == 's':
-			moved = maze_maze.move('s')
-		elif message.content.lower() == 'd':
-			moved = maze_maze.move('e')
-		await send_mention_code(message, maze_maze.print_visible())
-		if not moved:
-			await send_mention_space(message, "You can't go that way.")
-		if maze_maze.reached_end():
-			await send_mention_space(message, "Congratulations! You reached the end of the maze.")
-			maze_started = False
 	elif message.content.startswith("!setpermission"): #rework
 		if message.author.id == keys.myid or message.author == message.server.owner:
 			if len(message.content.split()) < 5:
