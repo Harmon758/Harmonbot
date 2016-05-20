@@ -8,6 +8,7 @@ import json
 import subprocess
 
 import keys
+from modules import documentation
 from modules import utilities
 from utilities import checks
 from client import client
@@ -30,6 +31,12 @@ class Meta:
 		builtins.exec(" ".join(code))
 		await client.reply("Successfully executed.")
 	'''
+	
+	@commands.command(name = "commands")
+	async def _commands(self):
+		'''Some additional commands and information'''
+		await client.whisper(documentation.commands)
+		await client.reply("Check your DMs for some of my additional commands.")
 	
 	@commands.command(hidden = True)
 	async def libraryversion(self):
@@ -197,7 +204,6 @@ class Meta:
 			await client.say(str(i))
 	
 	@commands.command(hidden = True)
-	@checks.is_owner()
 	async def load(self):
 		counter = 0
 		bar = chr(9633) * 10

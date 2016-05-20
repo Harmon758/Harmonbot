@@ -199,7 +199,7 @@ class Discord:
 	
 	@commands.command(pass_context = True)
 	async def avatar(self, ctx, *name : str):
-		'''Returns avatars'''
+		'''See a bigger version of your own or someone else's avatar'''
 		if name:
 			name = " ".join(name)
 			flag = True
@@ -266,7 +266,7 @@ class Discord:
 	
 	@commands.command(pass_context = True) # no_pm = True
 	async def serverowner(self, ctx):
-		'''Returns the server owner'''
+		'''The owner of the server'''
 		if ctx.message.server:
 			await client.reply("The owner of this server is " + ctx.message.server.owner.name + "#" + str(ctx.message.server.owner.discriminator))
 		else:
@@ -308,7 +308,7 @@ class Discord:
 	
 	@commands.command(pass_context = True)
 	async def everyone(self, ctx):
-		'''Check if you can mention everyone'''
+		'''Check if you can mention everyone in the channel'''
 		if ctx.message.author.permissions_in(ctx.message.channel).mention_everyone:
 			await client.reply("You are able to mention everyone in this channel.")
 		else:

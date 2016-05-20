@@ -123,21 +123,13 @@ async def on_message(message):
 		await send_mention_space(message, "You don't have permision to use that command here")
 	elif message.content.startswith("!test_on_message"):
 		await client.send_message(message.channel, "Hello, World!")
-	elif message.content.startswith("!commands"):
-		await client.send_message(message.author, documentation.commands)
-		await client.send_message(message.channel, message.author.mention + " Check your DM's for my commands.")
-	elif message.content.startswith(("!help", "!whatis")):
-		if message.content.startswith("!help") and len(message.content.split()) == 1:
+	elif message.content.startswith("!help"):
+		if len(message.content.split()) == 1:
 			await send_mention_space(message, "I've DM'ed you my commands. Also see !commands. What else do you need help with?")
-		elif message.content.startswith("!whatis") and len(message.content.split()) == 1:
-			await send_mention_space(message, "What is what?")
-		elif message.content.split()[1] == "commands":
-			await client.send_message(message.author, documentation.commands)
-			await send_mention_space(message, "Check your DM's for my commands.")
 		elif documentation.commands_info.get(message.content.split()[1], 0):
 			await send_mention_space(message, documentation.commands_info[message.content.split()[1]])
-		#else:
-			#await send_mention_space(message, "I don't know what that is.")
+		else:
+			await send_mention_space(message, "Check your DMs.")
 	elif message.server and message.server.me in message.mentions:
 		mentionless_message = ""
 		for word in message.clean_content.split():
