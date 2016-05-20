@@ -7,11 +7,14 @@ import random
 import requests
 import urllib
 import xml.etree.ElementTree
+import wolframalpha
 
 import keys
 from modules import ciphers
 from modules import utilities
 from modules import voice
+from modules import weather
+from utilities import checks
 from utilities import errors
 from client import client
 
@@ -21,6 +24,8 @@ def setup(bot):
 class Resources:
 
 	tags_data, tags = None, None
+	waclient = wolframalpha.Client(keys.wolframalpha_appid)
+	#wolframalpha (wa)
 	
 	@commands.command()
 	async def add(self, *numbers : float):
@@ -523,6 +528,11 @@ class Resources:
 		await client.reply("Your tag has been deleted.")
 	
 	@commands.command(hidden = True)
+	async def weather(self, *options : str): #WIP
+		'''WIP'''
+		await client.reply(str(weather.temp(' '.join(options))))
+	
+	@commands.command(hidden = True)
 	async def whatis(self, *search : str): #WIP
 		'''WIP'''
 		if not search:
@@ -534,6 +544,16 @@ class Resources:
 	async def wiki(self, *search : str):
 		'''Look something up on Wikipedia'''
 		await client.reply("https://en.wikipedia.org/wiki/{0}".format("_".join(search)))
+	
+	@commands.command(hidden = True, aliases = ["wa"])
+	@checks.is_owner()
+	async def wolframalpha(self, *search : str): #WIP
+		'''WIP'''
+		result = waclient.query(' '.join(search))
+		for pod in result.pods:
+			await client.reply(pod.img)
+			await client.sreply(pod.text)
+		#await client.reply(next(result.results).text)
 	
 	@commands.command()
 	async def xkcd(self, *options : str):

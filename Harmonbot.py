@@ -21,14 +21,12 @@ import sys
 import time
 import traceback
 import urllib
-import wolframalpha
 
 from modules import conversions
 from modules import documentation
 from modules import permissions
 from modules.utilities import *
 from modules.voice import *
-from modules import weather
 
 from commands.games import Games
 
@@ -44,7 +42,6 @@ handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode='a'
 handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
 logger.addHandler(handler)
 
-waclient = wolframalpha.Client(keys.wolframalpha_appid)
 # spotify = spotipy.Spotify()
 
 try:
@@ -85,7 +82,6 @@ jeopardy_answered = False
 jeopardy_scores = {}
 jeopardy_board_output = ""
 jeopardy_max_width = 0
-#wolframalpha (wa)
 
 @client.event
 async def on_ready():
@@ -487,15 +483,6 @@ async def on_message(message):
 		await client.send_file(message.channel, "data/webtogif.gif")
 		#subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
 		#await client.send_file(message.channel, "data/webtogif.gif")
-	elif message.content.startswith("!weather"): #WIP
-		await send_mention_space(message, str(weather.temp(' '.join(message.content.split()[1:]))))
-	elif message.content.startswith(("!wolframalpha", "!wa")): #WIP
-		if message.author.id == keys.myid:
-			result = waclient.query(" ".join(message.content.split()[1:]))
-			for pod in result.pods:
-				await client.send_message(message.channel, message.author.mention + " " + pod.img)
-				await client.send_message(message.channel, message.author.mention + " " + pod.text)
-			#await client.send_message(message.channel, message.author.mention + " " + next(result.results).text)
 	elif message.content.lower() == 'f':
 		with open("data/f.json", "r") as counter_file:
 			counter_info = json.load(counter_file)
