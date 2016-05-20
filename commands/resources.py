@@ -68,9 +68,10 @@ class Resources:
 	@commands.command()
 	async def cat(self, *category : str):
 		'''
-		Cats
+		Random image of a cat
 		
-		cat categories (cats)
+		cat categories (cats) for different categories you can choose from
+		cat <category> for a random image of a cat from that category
 		'''
 		if category:
 			if category == "categories" or category == "cats":
@@ -93,7 +94,11 @@ class Resources:
 	
 	@commands.command()
 	async def choose(self, *choices : str):
-		'''Randomly choose'''
+		'''
+		Randomly chooses between multiple options
+		
+		choose <option1> <option2> <...>
+		'''
 		if not choices:
 			await client.reply("Choose between what?")
 		await client.reply(random.choice(choices))
@@ -118,6 +123,18 @@ class Resources:
 		await client.reply("\n{name} ({hex})\nRGB: ({red}, {green}, {blue})\nHSV: ({hue}°, {saturation}%, {value}%)\n{image}".format( \
 			name = data["title"].capitalize(), hex = '#' + data["hex"], red = str(rgb["red"]), green = str(rgb["green"]), blue = str(rgb["blue"]),
 			hue = str(hsv["hue"]), saturation = str(hsv["saturation"]), value = str(hsv["value"]), image = data["imageUrl"]))
+	
+	@commands.command()
+	async def conversions(self):
+		'''All conversion commands'''
+		await client.reply("Check your DMs for my conversion commands.")
+		await client.whisper("Conversions: \n" \
+		"Temperature Unit Conversions: ![c, f, k, r, de]to[c, f, k, r, de, n, re, ro] \n" \
+		"Weight Unit Conversions: ![amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, " \
+		"kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, " \
+		"slug, st, atl, ats, longtn, ton, shtn, t, wey, g]to[amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, " \
+		"gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, " \
+		"quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]")
 	
 	@commands.command()
 	async def date(self, date : str):
@@ -447,7 +464,7 @@ class Resources:
 				await client.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(str(latitude), str(longitude)))
 			else:
 				await client.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
-
+	
 	@commands.group(pass_context = True, aliases = ["trigger", "note"])
 	async def tag(self, ctx):
 		with open("data/tags.json", "r") as tags_file:
@@ -504,6 +521,14 @@ class Resources:
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
 		await client.reply("Your tag has been deleted.")
+	
+	@commands.command(hidden = True)
+	async def whatis(self, *search : str): #WIP
+		'''WIP'''
+		if not search:
+			await client.reply("What is what?")
+		else:
+			await client.reply("I don't know what that is.")
 	
 	@commands.command()
 	async def wiki(self, *search : str):

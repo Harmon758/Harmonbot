@@ -11,11 +11,13 @@ from modules import utilities
 wait_time = 10.0
 
 class Bot(commands.Bot):
+	
 	def reply(self, content, *args, **kwargs):
 		author = commands.bot._get_variable('_internal_author')
 		destination = commands.bot._get_variable('_internal_channel')
 		fmt = '{0.mention}: {1}'.format(author, str(content))
 		return self.send_message(destination, fmt, *args, **kwargs)
+	
 	async def on_error(self, event_method, message, *args, **kwargs):
 		type, value, traceback = sys.exc_info()
 		if type is errors.NoTags:
