@@ -22,10 +22,10 @@ inflect_engine = inflect.engine()
 
 players = []
 
-@client.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "audio", "stream", "playlist", "spotify"], 
+@client.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "audio", "stream", "play", "playlist", "spotify"], 
 	invoke_without_command = True)
 async def voice(ctx, *options : str): # no_pm = True #elif options[0] == "full":
-	if not not client.is_voice_connected(ctx.message.server):
+	if not client.is_voice_connected(ctx.message.server):
 		if (ctx.message.author.id == keys.myid or ctx.message.author == ctx.message.server.owner):
 			await client.reply("I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
 		else:
