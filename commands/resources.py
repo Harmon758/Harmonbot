@@ -62,7 +62,6 @@ class Resources:
 	async def calculate(self, *equation : str):
 		'''
 		Simple calculator
-		
 		calculate <number> <operation> <number>
 		'''
 		if len(equation) >= 3 and equation[0].isnumeric and equation[2].isnumeric and equation[1] in ['+', '-', '*', '/']:
@@ -74,7 +73,6 @@ class Resources:
 	async def cat(self, *category : str):
 		'''
 		Random image of a cat
-		
 		cat categories (cats) for different categories you can choose from
 		cat <category> for a random image of a cat from that category
 		'''
@@ -101,7 +99,6 @@ class Resources:
 	async def choose(self, *choices : str):
 		'''
 		Randomly chooses between multiple options
-		
 		choose <option1> <option2> <...>
 		'''
 		if not choices:
@@ -115,7 +112,10 @@ class Resources:
 	
 	@commands.command(aliases = ["colour"])
 	async def color(self, *options : str):
-		'''Information on colors'''
+		'''
+		Information on colors
+		options: random, (hex color code), (search for a color)
+		'''
 		if not options or options[0] == "random":
 			url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
 		elif utilities.is_hex(options[0]) and len(options[0]) == 6:
@@ -149,9 +149,9 @@ class Resources:
 	
 	@commands.group()
 	async def decode(self):
-		'''Decodes coded messages
-		
-		options: morse, reverse, caesar (rot)
+		'''
+		Decodes coded messages
+		options: morse <message>, reverse <message>, caesar (rot) <key (0 - 26) or brute> <message>
 		'''
 		return
 	
@@ -167,8 +167,8 @@ class Resources:
 	
 	@decode.command(name = "caesar", aliases = ["rot"])
 	async def decode_caesar(self, option : str, *message : str):
-		'''Decodes caesar codes
-		
+		'''
+		Decodes caesar codes
 		options: key (0 - 26), brute
 		'''
 		if len(message) == 0 or not ((option.isdigit() and 0 <= int(option) <= 26) or option == "brute"):
@@ -193,22 +193,28 @@ class Resources:
 	
 	@commands.group()
 	async def encode(self):
-		'''Encode messages
-		
-		otpions: morse, reverse, caesar (rot)
+		'''
+		Encode messages
+		otpions: morse <message>, reverse <message>, caesar (rot) <key (0 - 26)> <message>
 		'''
 		return
 	
 	@encode.command(name = "morse")
 	async def encode_morse(self, *message : str):
+		'''Encode a message in morse code'''
 		await client.reply('`' + ciphers.encode_morse(' '.join(message)) + '`')
 	
 	@encode.command(name = "reverse")
 	async def encode_reverse(self, *message : str):
+		'''Reverses text'''
 		await client.reply('`' + ' '.join(message)[::-1] + '`')
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
 	async def encode_caesar(self, key : int, *message : str):
+		'''
+		Encode a message using caesar code
+		key : 0 - 26
+		'''
 		if len(message) == 0 or not 0 <= key <= 26:
 			await client.reply("Invalid Format. !encode caesar <key (0 - 26)> <content>")
 		else:
@@ -227,25 +233,29 @@ class Resources:
 				output += ' '
 		await client.reply(output)
 	
-	@commands.command()
-	async def giphy(self, *options : str):
+	@commands.group(invoke_without_command = True)
+	async def giphy(self, *search : str):
 		'''
 		Find something on giphy
-		
-		giphy <random/trending/(search)>
+		options: random, trending, (search)
 		'''
-		if options and options[0] == "random":
-			url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
-			data = requests.get(url).json()["data"]
-			await client.reply(data["url"])
-		elif options and options[0] == "trending":
-			url = "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC"
-			data = requests.get(url).json()["data"]
-			await client.reply(data[0]["url"])
-		else:
-			url = "http://api.giphy.com/v1/gifs/search?q={0}&limit=1&api_key=dc6zaTOxFJmzC".format("+".join(options))
-			data = requests.get(url).json()["data"]
-			await client.reply(data[0]["url"])
+		url = "http://api.giphy.com/v1/gifs/search?q={0}&limit=1&api_key=dc6zaTOxFJmzC".format("+".join(search))
+		data = requests.get(url).json()["data"]
+		await client.reply(data[0]["url"])
+	
+	@giphy.command(name = "random")
+	async def giphy_random(self):
+		'''Random gif'''
+		url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
+		data = requests.get(url).json()["data"]
+		await client.reply(data["url"])
+	
+	@giphy.command(name = "trending")
+	async def giphy_trending(self):
+		'''Trending gif'''
+		url = "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC"
+		data = requests.get(url).json()["data"]
+		await client.reply(data[0]["url"])
 	
 	@commands.command(aliases = ["search"])
 	async def google(self, *search : str):
@@ -415,44 +425,54 @@ class Resources:
 		else:
 			await client.reply("Error")
 	
-	@commands.command()
+	@commands.group()
 	async def steam(self, *options : str):
 		'''Steam Information'''
-		if options and options[0] == "appid":
-			apps = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/").json()["applist"]["apps"]
-			appid = 0
-			for app in apps:
-				if app["name"].lower() == " ".join(options[1:]).lower():
-					appid = app["appid"]
-					break
-			await client.reply(str(appid))
-		elif options and options[0] == "gamecount":
-			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(keys.steam_apikey, options[1])
-			id = requests.get(url).json()["response"]["steamid"]
-			url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={0}&steamid={1}".format(keys.steam_apikey, id)
-			gamecount = requests.get(url).json()["response"]["game_count"]
-			await client.reply("{0} has {1} games.".format(options[1], str(gamecount)))
-		elif options and options[0] == "gameinfo":
-			apps = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/").json()["applist"]["apps"]
-			appid = 0
-			for app in apps:
-				if app["name"].lower() == " ".join(options[1:]).lower():
-					appid = app["appid"]
-					break
-			url = "http://store.steampowered.com/api/appdetails/?appids={0}".format(str(appid))
-			data = requests.get(url).json()[str(appid)]["data"]
-			type = data["type"]
-			appid = data["steam_appid"]
-			#required_age = data["required_age"]
-			isfree = data["is_free"]
-			if isfree:
-				isfree = "Yes"
-			else:
-				isfree = "No"
-			detaileddescription = data["detailed_description"]
-			description = data["about_the_game"]
-			await client.reply("{name}\n{appid}\nFree?: {0}\n{website}\n{header_image}".format( \
-				isfree, name = data["name"], appid = str(data["steam_appid"]), website = data["website"], header_image = data["header_image"]))
+		return
+	
+	@steam.command(name = "appid")
+	async def steam_appid(self, *app : str):
+		'''Get the appid'''
+		apps = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/").json()["applist"]["apps"]
+		appid = 0
+		for app in apps:
+			if app["name"].lower() == " ".join(app).lower():
+				appid = app["appid"]
+				break
+		await client.reply(str(appid))
+	
+	@steam.command(name = "gamecount")
+	async def steam_gamecount(self, vanity_name : str):
+		'''Find how many games someone has'''
+		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(keys.steam_apikey, vanity_name)
+		id = requests.get(url).json()["response"]["steamid"]
+		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={0}&steamid={1}".format(keys.steam_apikey, id)
+		gamecount = requests.get(url).json()["response"]["game_count"]
+		await client.reply("{0} has {1} games.".format(vanity_name, str(gamecount)))
+	
+	@steam.command(name = "gameinfo")
+	async def steam_gameinfo(self, *game : str):
+		'''Information about a game'''
+		apps = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/").json()["applist"]["apps"]
+		appid = 0
+		for app in apps:
+			if app["name"].lower() == " ".join(game).lower():
+				appid = app["appid"]
+				break
+		url = "http://store.steampowered.com/api/appdetails/?appids={0}".format(str(appid))
+		data = requests.get(url).json()[str(appid)]["data"]
+		type = data["type"]
+		appid = data["steam_appid"]
+		#required_age = data["required_age"]
+		isfree = data["is_free"]
+		if isfree:
+			isfree = "Yes"
+		else:
+			isfree = "No"
+		detaileddescription = data["detailed_description"]
+		description = data["about_the_game"]
+		await client.reply("{name}\n{appid}\nFree?: {0}\n{website}\n{header_image}".format( \
+			isfree, name = data["name"], appid = str(data["steam_appid"]), website = data["website"], header_image = data["header_image"]))
 	
 	@commands.command()
 	async def strawpoll(self, question : str, *options : str):
@@ -473,6 +493,10 @@ class Resources:
 	
 	@commands.group(pass_context = True, aliases = ["trigger", "note"])
 	async def tag(self, ctx):
+		'''
+		Create "tags" or notes that you can trigger later
+		options: list, add <tag> [content...], edit <tag> [content...], delete <tag>
+		'''
 		with open("data/tags.json", "r") as tags_file:
 			self.tags_data = json.load(tags_file)
 		if len(ctx.message.content.split()) == 1:
@@ -496,11 +520,13 @@ class Resources:
 	
 	@tag.command(name = "list", pass_context = True, aliases = ["all", "mine"])
 	async def tag_list(self, ctx):
+		'''List your tags'''
 		_tag_list = ", ".join(list(self.tags.keys()))
 		await client.reply("Your tags: " + _tag_list)
 	
 	@tag.command(name = "add", pass_context = True, aliases = ["make", "new", "create"])
 	async def tag_add(self, ctx, tag : str, *content : str):
+		'''Add a tag'''
 		if not ctx.message.author.id in self.tags_data:
 			self.tags_data[ctx.message.author.id] = {"name" : ctx.message.author.name, "tags" : {}}
 		self.tags = self.tags_data[ctx.message.author.id]["tags"]
@@ -515,6 +541,7 @@ class Resources:
 	
 	@tag.command(name = "edit", pass_context = True)
 	async def tag_edit(self, ctx, tag : str, *content : str):
+		'''Edit one of your tags'''
 		# self.tags[tag] = ' '.join(content)
 		self.tags[tag] = ' '.join(ctx.message.content.split(' ')[3:])
 		with open("data/tags.json", "w") as tags_file:
@@ -523,6 +550,7 @@ class Resources:
 	
 	@tag.command(name = "delete", pass_context = True, aliases = ["remove", "destroy"])
 	async def tag_delete(self, ctx, tag : str):
+		'''Delete one of your tags'''
 		del self.tags[tag]
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)

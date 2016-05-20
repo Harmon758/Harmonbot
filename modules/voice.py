@@ -25,6 +25,7 @@ players = []
 @client.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "audio", "stream", "play", "playlist", "spotify"], 
 	invoke_without_command = True, no_pm = True)
 async def voice(ctx, *options : str): #elif options[0] == "full":
+	'''Audio System'''
 	if not client.is_voice_connected(ctx.message.server):
 		if (ctx.message.author.id == keys.myid or ctx.message.author == ctx.message.server.owner):
 			await client.reply("I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
@@ -51,6 +52,7 @@ async def voice(ctx, *options : str): #elif options[0] == "full":
 @client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()
 async def join(ctx, *channel : str):
+	'''Get me to join a voice channel'''
 	if ctx.message.author.voice_channel:
 		voice_channel = ctx.message.author.voice_channel
 	else:
@@ -71,6 +73,7 @@ async def join(ctx, *channel : str):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def leave(ctx):
+	'''Tell me to leave the voice channel'''
 	if client.is_voice_connected(ctx.message.server):
 		await client.voice_client_in(ctx.message.server).disconnect()
 		await client.reply("I've left the voice channel.")
@@ -79,6 +82,7 @@ async def leave(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def pause(ctx):
+	'''Pause the current song'''
 	player = get_player(ctx.message.server)
 	player["current"]["stream"].pause()
 	await client.reply("Song paused")
@@ -87,6 +91,7 @@ async def pause(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def resume(ctx):
+	'''Resume the current song'''
 	player = get_player(ctx.message.server)
 	player["current"]["stream"].resume()
 	await client.reply("Song resumed")
@@ -95,6 +100,7 @@ async def resume(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def skip(ctx):
+	'''Skip the current song'''
 	player = get_player(ctx.message.server)
 	player["current"]["stream"].stop()
 	await client.reply("Song skipped")
@@ -103,6 +109,7 @@ async def skip(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def replay(ctx):
+	'''Repeat the current song'''
 	response = await client.reply("Restarting song...")
 	player = get_player(ctx.message.server)
 	player["current"]["stream"].pause()
@@ -119,6 +126,7 @@ async def replay(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def empty(ctx):
+	'''Empty the queue'''
 	player = get_player(ctx.message.server)
 	while not player["queue"].empty():
 		stream = await player["queue"].get()
@@ -130,6 +138,7 @@ async def empty(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def shuffle(ctx):
+	'''Shuffle the queue'''
 	response = await client.reply("Shuffling...")
 	player = get_player(ctx.message.server)
 	song_list = []
@@ -144,12 +153,14 @@ async def shuffle(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def radio(ctx):
+	'''Radio station based on the current song'''
 	pass
 
 @radio.command(name = "on", pass_context = True, aliases = ["start"], no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def radio_on(ctx):
+	'''Turn radio on'''
 	response = await client.reply("Starting Radio...")
 	player = get_player(ctx.message.server)
 	player["current"]["stream"].pause()
@@ -185,6 +196,7 @@ async def radio_on(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def radio_off(ctx):
+	'''Turn radio off'''
 	player = get_player(ctx.message.server)
 	if player["radio_on"]:
 		player = get_player(ctx.message.server)
@@ -196,6 +208,7 @@ async def radio_off(ctx):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def tts(ctx, *message : str):
+	'''Text to speech'''
 	player = get_player(ctx.message.server)
 	subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", " ".join(message)], shell = True)
 	stream = client.voice_client_in(ctx.message.server).create_ffmpeg_player("data/tts.wav")
@@ -214,12 +227,17 @@ async def tts(ctx, *message : str):
 @checks.is_server_owner()
 @checks.is_voice_connected()
 async def volume(ctx, volume_setting : float):
+	'''
+	Change the volume of the current song
+	volume_setting : 0 - 200
+	'''
 	player = get_player(ctx.message.server)
 	player["current"]["stream"].volume = volume_setting / 100
 
 @client.command(pass_context = True, aliases = ["queue"], no_pm = True)
 @checks.is_voice_connected()
 async def current(ctx):
+	'''See the current song and queue'''
 	player = get_player(ctx.message.server)
 	if not player["current"] or player["current"]["stream"].is_done():
 		await client.say("There is no song currently playing.")

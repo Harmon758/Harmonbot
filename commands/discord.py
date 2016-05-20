@@ -17,21 +17,19 @@ class Discord:
 	# Do Stuff
 	
 	@commands.command(pass_context = True, no_pm = True)
-	async def addrole(self, ctx, name : str, role_to_add : str):
+	async def addrole(self, ctx, name : str, role : str):
 		'''
 		Gives a user a role
-		
-		addrole <name> <role>
-		Underscores for spaces
+		Replace spaces in role names with underscores or put the role name in qoutes
 		'''
 		if ctx.message.server and (ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == keys.myid):
 			for member in ctx.message.server.members:
 				if member.name == ' '.join(name.split('_')):
 					selected_member = member
 					break
-			for role in ctx.message.server.roles:
-				if utilities.remove_symbols(role.name).startswith(' '.join(role_to_add.split('_'))):
-					selected_role = role
+			for _role in ctx.message.server.roles:
+				if utilities.remove_symbols(_role.name).startswith(' '.join(role.split('_'))):
+					selected_role = _role
 					break
 			await client.add_roles(selected_member, selected_role)
 			await client.reply("I gave the role, {0}, to {1}".format(selected_role, selected_member))
@@ -40,9 +38,8 @@ class Discord:
 	async def channel(self, ctx, *options : str):
 		'''
 		Create a channel
-		
 		channel <type/name> <name>
-		type: text or voice
+		type: text or voice, default: text
 		'''
 		if ctx.message.channel.permissions_for(ctx.message.author).manage_channels and options:
 			if options[0] == "voice":
@@ -56,7 +53,6 @@ class Discord:
 	async def delete(self, ctx, *options : str):
 		'''
 		Delete messages
-		
 		delete <number> or delete <user> <number>
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
@@ -106,7 +102,6 @@ class Discord:
 	async def mycolor(self, ctx, *color : str): #rework
 		'''
 		Return or change your color
-		
 		Currently only accepts hex color input
 		'''
 		if not color:
@@ -130,7 +125,6 @@ class Discord:
 	async def rolecolor(self, ctx, role : str, *color : str):
 		'''
 		Returns or changes role colors
-		
 		Replace spaces in role names with underscores or put the role name in qoutes
 		Currently only accepts hex color input
 		'''
@@ -153,6 +147,10 @@ class Discord:
 	
 	@commands.command(pass_context = True, no_pm = True)
 	async def tempchannel(self, ctx, *options : str):
+		'''
+		Create temporary voice and text channels
+		options: allow <friend>
+		'''
 		temp_voice_channel = discord.utils.get(ctx.message.server.channels, name = ctx.message.author.display_name + "'s Temp Channel")
 		temp_text_channel = discord.utils.get(ctx.message.server.channels, name = ctx.message.author.display_name.lower() + "s_temp_channel")
 		if temp_voice_channel and options and options[0] == "allow":
@@ -223,7 +221,7 @@ class Discord:
 	
 	@commands.command(pass_context = True)
 	async def discriminator(self, ctx, *name : str):
-		'''Returns discriminators'''
+		'''Get your own or someone else's discriminator'''
 		if name:
 			name = " ".join(name)
 			flag = True
@@ -241,7 +239,7 @@ class Discord:
 	
 	@commands.command(pass_context = True, no_pm = True)
 	async def servericon(self, ctx):
-		'''Returns the server icon'''
+		'''See a bigger version of the server icon'''
 		# await client.reply("This server's icon: https://cdn.discordapp.com/icons/" + ctx.message.server.id + "/" + ctx.message.server.icon + ".jpg")
 		if ctx.message.server.icon:
 			await client.reply("This server's icon: " + ctx.message.server.icon_url)
@@ -268,7 +266,7 @@ class Discord:
 	
 	@commands.command(pass_context = True, no_pm = True)
 	async def roleid(self, ctx, *rolename : str):
-		'''Returns role id's'''
+		'''Get the ID of a role'''
 		for role in ctx.message.server.roles:
 			if utilities.remove_symbols(role.name).startswith(' '.join(rolename)):
 				await client.reply(role.id)
