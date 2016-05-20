@@ -10,6 +10,7 @@ import subprocess
 import keys
 from modules import documentation
 from modules import utilities
+from modules import voice
 from utilities import checks
 from client import client
 from client import online_time
@@ -182,7 +183,7 @@ class Meta:
 	@checks.is_owner()
 	async def restart(self, ctx):
 		await client.say("Restarting...")
-		voice_channels = [voice_client.channel.id for voice_client in client.voice_clients]
+		voice_channels = [[voice_client.channel.id, voice.get_player(voice_client.server)["text"]] for voice_client in client.voice_clients]
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
 			json.dump({"restart_channel" : ctx.message.channel.id, "voice_channels" : voice_channels}, restart_channel_file)
 		raise KeyboardInterrupt
