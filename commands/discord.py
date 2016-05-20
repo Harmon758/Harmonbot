@@ -151,6 +151,50 @@ class Discord:
 			new_colour.value = conversions.hextoint(color[0])
 			await client.edit_role(ctx.message.server, role_to_change, colour = new_colour)
 	
+	@commands.command(pass_context = True)
+	async def tempchannel(self, ctx, *options : str):
+		temp_voice_channel = discord.utils.get(ctx.message.server.channels, name = ctx.message.author.display_name + "'s Temp Channel")
+		temp_text_channel = discord.utils.get(ctx.message.server.channels, name = ctx.message.author.display_name.lower() + "s_temp_channel")
+		if temp_voice_channel and options and options[0] == "allow":
+			to_allow = discord.utils.get(ctx.message.server.members, name = options[1])
+			if not to_allow:
+				await client.reply("User not found.")
+			voice_channel_permissions = discord.Permissions.none()
+			voice_channel_permissions.connect = True
+			voice_channel_permissions.speak = True
+			voice_channel_permissions.use_voice_activation = True
+			await client.edit_channel_permissions(temp_voice_channel, to_allow, allow = voice_channel_permissions)
+			text_channel_permissions = discord.Permissions.text()
+			text_channel_permissions.manage_messages = False
+			await client.edit_channel_permissions(temp_text_channel, to_allow, allow = text_channel_permissions)
+			await client.reply("You have allowed " + to_allow.display_name + " to join your temporary voice and text channel.")
+			return
+		if temp_voice_channel:
+			await client.reply("You already have a temporary voice and text channel.")
+			return
+		temp_voice_channel = await client.create_channel(ctx.message.server, ctx.message.author.display_name + "'s Temp Channel", type = discord.ChannelType.voice)
+		temp_text_channel = await client.create_channel(ctx.message.server, ctx.message.author.display_name + "s_Temp_Channel", type = discord.ChannelType.text)
+		await client.edit_channel_permissions(temp_voice_channel, ctx.message.server.me, allow = discord.Permissions.all())
+		await client.edit_channel_permissions(temp_text_channel, ctx.message.server.me, allow = discord.Permissions.all())
+		await client.edit_channel_permissions(temp_voice_channel, ctx.message.author.roles[0], deny = discord.Permissions.all())
+		await client.edit_channel_permissions(temp_text_channel, ctx.message.author.roles[0], deny = discord.Permissions.all())
+		await client.edit_channel_permissions(temp_voice_channel, ctx.message.author, allow = discord.Permissions.all())
+		await client.edit_channel_permissions(temp_text_channel, ctx.message.author, allow = discord.Permissions.all())
+		try:
+			await client.move_member(ctx.message.author, temp_voice_channel)
+		except discord.errors.Forbidden:
+			await client.reply("I can not move you to the new temporary voice channel.")
+		await client.reply("Temporary voice and text channel created")
+		while True:
+			await asyncio.sleep(15)
+			temp_voice_channel = discord.utils.get(ctx.message.server.channels, id = temp_voice_channel.id)
+			if len(temp_voice_channel.voice_members) == 0:
+				await client.edit_channel_permissions(temp_voice_channel, ctx.message.server.me, allow = discord.Permissions.all())
+				await client.edit_channel_permissions(temp_text_channel, ctx.message.server.me, allow = discord.Permissions.all())
+				await client.delete_channel(temp_voice_channel)
+				await client.delete_channel(temp_text_channel)
+				return
+	
 	# Get Attributes
 	
 	@commands.command(pass_context = True)

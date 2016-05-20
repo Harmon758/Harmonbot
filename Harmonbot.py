@@ -390,48 +390,6 @@ async def on_message(message):
 					return
 				permissions.set_permission(message, type, to_set, permission, setting)
 				await send_mention_space(message, "Permission updated")
-	elif message.content.startswith("!tempchannel"):
-		temp_voice_channel = discord.utils.get(message.server.channels, name = message.author.display_name + "'s Temp Channel")
-		temp_text_channel = discord.utils.get(message.server.channels, name = message.author.display_name.lower() + "s_temp_channel")
-		if temp_voice_channel and len(message.content.split()) > 2 and message.content.split()[1] == "allow":
-			to_allow = discord.utils.get(message.server.members, name = message.content.split()[2])
-			if not to_allow:
-				await send_mention_space(message, "User not found.")
-			voice_channel_permissions = discord.Permissions.none()
-			voice_channel_permissions.connect = True
-			voice_channel_permissions.speak = True
-			voice_channel_permissions.use_voice_activation = True
-			await client.edit_channel_permissions(temp_voice_channel, to_allow, allow = voice_channel_permissions)
-			text_channel_permissions = discord.Permissions.text()
-			text_channel_permissions.manage_messages = False
-			await client.edit_channel_permissions(temp_text_channel, to_allow, allow = text_channel_permissions)
-			await send_mention_space(message, "You have allowed " + to_allow.display_name + " to join your temporary voice and text channel.")
-			return
-		if temp_voice_channel:
-			await send_mention_space(message, "You already have a temporary voice and text channel.")
-			return
-		temp_voice_channel = await client.create_channel(message.server, message.author.display_name + "'s Temp Channel", type = discord.ChannelType.voice)
-		temp_text_channel = await client.create_channel(message.server, message.author.display_name + "s_Temp_Channel", type = discord.ChannelType.text)
-		await client.edit_channel_permissions(temp_voice_channel, message.server.me, allow = discord.Permissions.all())
-		await client.edit_channel_permissions(temp_text_channel, message.server.me, allow = discord.Permissions.all())
-		await client.edit_channel_permissions(temp_voice_channel, message.author.roles[0], deny = discord.Permissions.all())
-		await client.edit_channel_permissions(temp_text_channel, message.author.roles[0], deny = discord.Permissions.all())
-		await client.edit_channel_permissions(temp_voice_channel, message.author, allow = discord.Permissions.all())
-		await client.edit_channel_permissions(temp_text_channel, message.author, allow = discord.Permissions.all())
-		try:
-			await client.move_member(message.author, temp_voice_channel)
-		except discord.errors.Forbidden:
-			await send_mention_space(message, "I can not move you to the new temporary voice channel.")
-		await send_mention_space(message, "Temporary voice and text channel created")
-		while True:
-			await asyncio.sleep(15)
-			temp_voice_channel = discord.utils.get(message.server.channels, id = temp_voice_channel.id)
-			if len(temp_voice_channel.voice_members) == 0:
-				await client.edit_channel_permissions(temp_voice_channel, message.server.me, allow = discord.Permissions.all())
-				await client.edit_channel_permissions(temp_text_channel, message.server.me, allow = discord.Permissions.all())
-				await client.delete_channel(temp_voice_channel)
-				await client.delete_channel(temp_text_channel)
-				return
 	elif message.content.startswith("!trivia"):
 		global trivia_active, trivia_bet, trivia_bets
 		if len(message.content.split()) > 1 and (message.content.split()[1] == "score" or message.content.split()[1] == "points"):
