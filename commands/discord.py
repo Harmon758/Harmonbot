@@ -3,10 +3,12 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import datetime
 
 import keys
 from modules import conversions
 from modules import utilities
+from utilities import checks
 from client import client
 
 def setup(bot):
@@ -49,7 +51,7 @@ class Discord:
 			else:
 				await client.create_channel(message.server, options[0], type = "text")
 	
-	@commands.command(pass_context = True, aliases = ["purge", "clean"])
+	@commands.group(pass_context = True, aliases = ["purge", "clean"], invoke_without_command = True)
 	async def delete(self, ctx, *options : str):
 		'''
 		Delete messages
@@ -98,6 +100,13 @@ class Discord:
 			else:
 				await client.reply("Syntax error.")
 	
+	@delete.command(hidden = True, pass_context = True)
+	@checks.is_owner()
+	async def time(self, ctx, minutes : int):
+		'''WIP'''
+		await client.delete_message(ctx.message)
+		await client.purge_from(ctx.message.channel, limit = 10000, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
+	
 	@commands.command(pass_context = True, aliases = ["mycolour"], no_pm = True)
 	async def mycolor(self, ctx, *color : str): #rework
 		'''
@@ -144,6 +153,16 @@ class Discord:
 			new_colour = role_to_change.colour
 			new_colour.value = conversions.hextoint(color[0])
 			await client.edit_role(ctx.message.server, role_to_change, colour = new_colour)
+	
+	@commands.command(pass_context = True)
+	@checks.is_owner()
+	async def roleposition(self, ctx, role : str, position : int):
+		'''WIP'''
+		for _role in ctx.message.server.roles:
+			if _role.name.startswith((' ').join(role.split('_'))):
+				selected_role = _role
+				break
+		await client.move_role(ctx.message.server, selected_role, position)
 	
 	@commands.command(pass_context = True, no_pm = True)
 	async def tempchannel(self, ctx, *options : str):
@@ -193,6 +212,14 @@ class Discord:
 				await client.delete_channel(temp_text_channel)
 				return
 	
+	@commands.command(hidden = True, pass_context = True, no_pm = True)
+	@checks.is_owner()
+	async def userlimit(self, ctx, limit : int):
+		'''WIP'''
+		if ctx.message.author.voice_channel:
+			voice_channel = ctx.message.author.voice_channel
+		await client.edit_channel(voice_channel, user_limit = limit)
+	
 	# Get Attributes
 	
 	@commands.command(pass_context = True)
@@ -238,6 +265,19 @@ class Discord:
 			await client.reply("Your discriminator: #" + ctx.message.author.discriminator)
 	
 	@commands.command(pass_context = True, no_pm = True)
+	async def roleid(self, ctx, *rolename : str):
+		'''Get the ID of a role'''
+		for role in ctx.message.server.roles:
+			if utilities.remove_symbols(role.name).startswith(' '.join(rolename)):
+				await client.reply(role.id)
+	
+	@commands.command(pass_context = True)
+	@checks.is_owner()
+	async def rolepositions(self, ctx):
+		'''WIP'''
+		await client.reply(', '.join([role.name + ": " + str(role.position) for role in ctx.message.server.roles[1:]]))
+	
+	@commands.command(pass_context = True, no_pm = True)
 	async def servericon(self, ctx):
 		'''See a bigger version of the server icon'''
 		# await client.reply("This server's icon: https://cdn.discordapp.com/icons/" + ctx.message.server.id + "/" + ctx.message.server.icon + ".jpg")
@@ -263,13 +303,6 @@ class Discord:
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
 		await client.reply("The owner of this server is " + ctx.message.server.owner.name + "#" + str(ctx.message.server.owner.discriminator))
-	
-	@commands.command(pass_context = True, no_pm = True)
-	async def roleid(self, ctx, *rolename : str):
-		'''Get the ID of a role'''
-		for role in ctx.message.server.roles:
-			if utilities.remove_symbols(role.name).startswith(' '.join(rolename)):
-				await client.reply(role.id)
 	
 	@commands.command(pass_context = True)
 	async def userinfo(self, ctx):

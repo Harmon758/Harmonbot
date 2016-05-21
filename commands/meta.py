@@ -52,7 +52,7 @@ class Meta:
 		await client.reply("Check your DMs for some of my additional commands.")
 	
 	@commands.command(hidden = True)
-	async def libraryversion(self):
+	async def discordlibraryversion(self):
 		'''The discord.py library version I'm currently using'''
 		await client.reply(discord.__version__)
 	
