@@ -109,7 +109,11 @@ async def check_rss_feeds():
 					if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.published)).total_seconds() <= 60:
 						await rss_client.send_message(discord.utils.get(rss_client.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n<" + item.link + '>')
 				except:
-					pass
+					try:
+						if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.updated)).total_seconds() <= 60:
+							await rss_client.send_message(discord.utils.get(rss_client.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n<" + item.link + '>')
+					except:
+						pass
 
 def youtubesearch(search):
 	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), keys.google_apikey)
