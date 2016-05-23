@@ -136,19 +136,19 @@ async def on_message(message):
 	elif message.content.startswith("!aeval"):
 		if message.author.id == keys.myid:
 			try:
-				await send_mention_code(message, str(await eval(" ".join(message.content.split()[1:]))))
+				await send_mention_code(message, str(await eval(' '.join(message.content.split()[1:]))))
 			except:
 				await send_mention_code(message, traceback.format_exc())
 	elif message.content.startswith("!eval"):
 		if message.author.id == keys.myid:
 			try:
-				await send_mention_code(message, str(eval(" ".join(message.content.split()[1:]))))
+				await send_mention_code(message, str(eval(' '.join(message.content.split()[1:]))))
 			except:
 				await send_mention_code(message, traceback.format_exc())
 	elif message.content.startswith("!exec"):
 		if message.author.id == keys.myid:
 			try:
-				exec(" ".join(message.content.split()[1:]))
+				exec(' '.join(message.content.split()[1:]))
 				await send_mention_space(message, "successfully executed")
 			except:
 				await send_mention_code(message, traceback.format_exc())
@@ -511,7 +511,7 @@ async def on_message(message):
 				converted_value = converted_mass_value
 			else:
 				return
-			await send_mention_space(message, str(value) + " " + unit1 + " = " + str(converted_value) + " " + unit2)
+			await send_mention_space(message, str(value) + ' ' + unit1 + " = " + str(converted_value) + ' ' + unit2)
 
 @client.event
 async def on_command_error(error, ctx):

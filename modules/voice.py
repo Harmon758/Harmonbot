@@ -210,7 +210,7 @@ async def radio_off(ctx):
 async def tts(ctx, *message : str):
 	'''Text to speech'''
 	player = get_player(ctx.message.server)
-	subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", " ".join(message)], shell = True)
+	subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", ' '.join(message)], shell = True)
 	stream = client.voice_client_in(ctx.message.server).create_ffmpeg_player("data/tts.wav")
 	paused = False
 	if player["current"] and player["current"]["stream"].is_playing():
@@ -271,7 +271,7 @@ async def current(ctx):
 					count += 1
 				else:
 					more_songs = queue.qsize() - 10
-					queue_string += "There " + inflect_engine.plural("is", more_songs) + " " + str(more_songs) + " more " + inflect_engine.plural("song", more_songs) + " in the queue"
+					queue_string += "There " + inflect_engine.plural("is", more_songs) + ' ' + str(more_songs) + " more " + inflect_engine.plural("song", more_songs) + " in the queue"
 					break
 			await client.say("\nQueue:\n" + queue_string)
 

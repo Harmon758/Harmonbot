@@ -223,10 +223,9 @@ class Discord:
 	# Get Attributes
 	
 	@commands.command(pass_context = True)
-	async def avatar(self, ctx, *name : str):
+	async def avatar(self, ctx, *, name : str):
 		'''See a bigger version of your own or someone else's avatar'''
 		if name:
-			name = " ".join(name)
 			flag = True
 			if ctx.message.server:
 				for member in ctx.message.server.members:
@@ -247,10 +246,9 @@ class Discord:
 				await client.reply("Your avatar: " + ctx.message.author.default_avatar_url)
 	
 	@commands.command(pass_context = True)
-	async def discriminator(self, ctx, *name : str):
+	async def discriminator(self, ctx, *, name : str):
 		'''Get your own or someone else's discriminator'''
 		if name:
-			name = " ".join(name)
 			flag = True
 			if ctx.message.server:
 				for member in ctx.message.server.members:
@@ -265,10 +263,10 @@ class Discord:
 			await client.reply("Your discriminator: #" + ctx.message.author.discriminator)
 	
 	@commands.command(pass_context = True, no_pm = True)
-	async def roleid(self, ctx, *rolename : str):
+	async def roleid(self, ctx, *, name : str):
 		'''Get the ID of a role'''
 		for role in ctx.message.server.roles:
-			if utilities.remove_symbols(role.name).startswith(' '.join(rolename)):
+			if utilities.remove_symbols(role.name).startswith(name):
 				await client.reply(role.id)
 	
 	@commands.command(pass_context = True)
@@ -323,9 +321,8 @@ class Discord:
 			await client.reply("<@" + id + ">")
 	
 	@commands.command(pass_context = True)
-	async def nametoid(self, ctx, *name : str):
+	async def nametoid(self, ctx, *, name : str):
 		'''Convert user name to id'''
-		name = ' '.join(name)
 		member = discord.utils.get(ctx.message.server.members, name = name)
 		await client.reply(member.id)
 	

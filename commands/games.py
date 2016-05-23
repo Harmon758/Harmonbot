@@ -19,7 +19,7 @@ def setup(bot):
 class Games:
 	
 	#init
-	chess_board = chess.Board()
+	_chess_board = chess.Board()
 	cleverbot_instance = cleverbot.Cleverbot()
 	war_channel, war_players = None, []
 	gofish_channel, gofish_players = None, []
@@ -36,8 +36,8 @@ class Games:
 			await client.reply("Options: reset, board, undo, standard algebraic notation move")
 		else:
 			try:
-				self.chess_board.push_san(option[0])
-				await client.reply("\n```" + str(self.chess_board) + "```")
+				self._chess_board.push_san(option[0])
+				await client.reply("\n```" + str(self._chess_board) + "```")
 			except ValueError:
 				await client.reply("Invalid move.")
 		#await client.send_message(message.channel, message.author.mention + "\n" + "```" + board.__unicode__() + "```")
@@ -45,33 +45,33 @@ class Games:
 	@chess.command(name = "reset")
 	async def chess_reset(self):
 		'''Reset the board'''
-		self.chess_board.reset()
+		self._chess_board.reset()
 		await client.reply("The board has been reset.")
 	
 	@chess.command(name = "board")
 	async def chess_board(self):
 		'''Display the current board'''
-		await client.reply("\n```" + str(self.chess_board) + "```")
+		await client.reply("\n```" + str(self._chess_board) + "```")
 	
 	@chess.command(name = "undo")
 	async def chess_undo(self):
 		'''Undo the last move'''
 		try:
-			self.chess_board.pop()
+			self._chess_board.pop()
 			await send_client.reply("\n```" + str(board) + "```")
 		except IndexError:
 			await client.reply("There's no more moves to undo.")
 	
-	@chess.command(name = "(╯°□°）╯︵")
-	async def chess_flip(self):
+	@chess.command(name = "(╯°□°）╯︵", pass_context = True)
+	async def chess_flip(self, ctx):
 		'''Flip the table over'''
-		self.chess_board.reset()
-		await client.say("\n" + message.author.name + " flipped the table over in anger!\nThe board has been reset.")
+		self._chess_board.reset()
+		await client.say(ctx.message.author.name + " flipped the table over in anger!\nThe board has been reset.")
 	
 	@commands.command(aliases = ["talk", "ask"])
-	async def cleverbot(self, *message : str):
+	async def cleverbot(self, *, message : str):
 		'''Talk to Cleverbot'''
-		await client.reply(self.cleverbot_instance.ask(' '.join(message)))
+		await client.reply(self.cleverbot_instance.ask(message))
 	
 	@commands.command(aliases = ["8ball"])
 	async def eightball(self):
@@ -183,7 +183,7 @@ class Games:
 				for r in maze_maze.test_print():
 					row_print = ""
 					for cell in r:
-						row_print += cell + " "
+						row_print += cell + ' '
 					maze_print += row_print + "\n"
 				await send_mention_code(message, maze_print)
 				'''
@@ -269,7 +269,7 @@ class Games:
 		'''Play a card'''
 		if ctx.message.author in self.war_players:
 			player_number = self.war_players.index(message.author) + 1
-			winner, cardsplayed, tiedplayers = war.play(player_number, " ".join(card))
+			winner, cardsplayed, tiedplayers = war.play(player_number, ' '.join(card))
 			if winner == -1:
 				await client.reply("You have already chosen your card for this battle.")
 			elif winner == -3:

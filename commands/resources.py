@@ -3,8 +3,10 @@ from discord.ext import commands
 
 import isodate
 import json
+import pandas
 import random
 import requests
+import seaborn
 import urllib
 import xml.etree.ElementTree
 import wolframalpha
@@ -81,7 +83,7 @@ class Resources:
 				root = xml.etree.ElementTree.fromstring(requests.get("http://thecatapi.com/api/categories/list").text)
 				categories = ""
 				for category in root.findall(".//name"):
-					categories += category.text + " "
+					categories += category.text + ' '
 				await client.reply(categories[:-1])
 			else:
 				url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={0}".format(category)
@@ -156,17 +158,17 @@ class Resources:
 		return
 	
 	@decode.command(name = "morse")
-	async def decode_morse(self, *message : str):
+	async def decode_morse(self, *, message : str):
 		'''Decodes morse code'''
-		await client.reply('`' + ciphers.decode_morse(' '.join(message)) + '`')
+		await client.reply('`' + ciphers.decode_morse(message) + '`')
 	
 	@decode.command(name = "reverse")
-	async def decode_reverse(self, *message : str):
+	async def decode_reverse(self, *, message : str):
 		'''Reverses text'''
-		await client.reply('`' + ' '.join(message)[::-1] + '`')
+		await client.reply('`' + message[::-1] + '`')
 	
 	@decode.command(name = "caesar", aliases = ["rot"])
-	async def decode_caesar(self, option : str, *message : str):
+	async def decode_caesar(self, option : str, *, message : str):
 		'''
 		Decodes caesar codes
 		options: key (0 - 26), brute
@@ -174,9 +176,9 @@ class Resources:
 		if len(message) == 0 or not ((option.isdigit() and 0 <= int(option) <= 26) or option == "brute"):
 			await client.reply("Invalid Format. !decode caesar <key (0 - 26) or brute> <content>")
 		elif option == "brute":
-			await client.reply('`' + ciphers.brute_force_caesar(' '.join(message)) + '`')
+			await client.reply('`' + ciphers.brute_force_caesar(message) + '`')
 		else:
-			await client.reply('`' + ciphers.decode_caesar(' '.join(message), option) + '`')
+			await client.reply('`' + ciphers.decode_caesar(message, option) + '`')
 	
 	@commands.command()
 	async def define(self, word : str):
@@ -200,17 +202,17 @@ class Resources:
 		return
 	
 	@encode.command(name = "morse")
-	async def encode_morse(self, *message : str):
+	async def encode_morse(self, *, message : str):
 		'''Encode a message in morse code'''
-		await client.reply('`' + ciphers.encode_morse(' '.join(message)) + '`')
+		await client.reply('`' + ciphers.encode_morse(message) + '`')
 	
 	@encode.command(name = "reverse")
-	async def encode_reverse(self, *message : str):
+	async def encode_reverse(self, *, message : str):
 		'''Reverses text'''
-		await client.reply('`' + ' '.join(message)[::-1] + '`')
+		await client.reply('`' + message[::-1] + '`')
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
-	async def encode_caesar(self, key : int, *message : str):
+	async def encode_caesar(self, key : int, *, message : str):
 		'''
 		Encode a message using caesar code
 		key : 0 - 26
@@ -218,13 +220,13 @@ class Resources:
 		if len(message) == 0 or not 0 <= key <= 26:
 			await client.reply("Invalid Format. !encode caesar <key (0 - 26)> <content>")
 		else:
-			await client.reply('`' + ciphers.encode_caesar(' '.join(message), key) + '`')
+			await client.reply('`' + ciphers.encode_caesar(message, key) + '`')
 	
 	@commands.command()
-	async def fancify(self, *text : str):
+	async def fancify(self, *, text : str):
 		'''Fancify text'''
 		output = ""
-		for letter in " ".join(text):
+		for letter in text:
 			if 65 <= ord(letter) <= 90:
 				output += chr(ord(letter) + 119951)
 			elif 97 <= ord(letter) <= 122:
@@ -271,6 +273,13 @@ class Resources:
 		await client.reply(image_link)
 		# handle 403 daily limit exceeded error
 	
+	@commands.command(pass_context = True)
+	async def graph(self, ctx, *, data : str):
+		'''WIP'''
+		name = "data/graph_testing.png"
+		seaborn.jointplot(**eval(data)).savefig(name)
+		await client.send_file(destination = ctx.message.channel, fp = name, content = "Testing Graph")
+	
 	@commands.command()
 	async def haveibeenpwned(self, name : str):
 		'''Check if your account has been breached'''
@@ -297,9 +306,9 @@ class Resources:
 		await client.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
 	
 	@commands.command(aliases = ["movie"])
-	async def imdb(self, *search : str):
+	async def imdb(self, *, search : str):
 		'''IMDb Information'''
-		url = "http://www.omdbapi.com/?t={0}&y=&plot=short&r=json".format(" ".join(search))
+		url = "http://www.omdbapi.com/?t={0}&y=&plot=short&r=json".format(search)
 		data = requests.get(url).json()
 		await client.reply("```\n{title} ({year})\nType: {type}\nIMDb Rating: {rating}\nRuntime: {runtime}\nGenre(s): {genre}\nPlot: {plot}```\nPoster: {poster}".format( \
 			title = data["Title"], year = data["Year"], type = data["Type"], rating = data["imdbRating"], runtime = data["Runtime"], genre = data["Genre"], 
@@ -388,7 +397,10 @@ class Resources:
 	
 	@commands.command(aliases = ["randomnumber"])
 	async def rng(self, *number : int):
-		'''Generate random number'''
+		'''
+		Generate random number
+		Default range is 1 to 10
+		'''
 		if len(number) and number[0] > 0:
 			await client.reply(str(random.randint(1, number[0])))
 		else:
@@ -431,13 +443,13 @@ class Resources:
 		return
 	
 	@steam.command(name = "appid")
-	async def steam_appid(self, *app : str):
+	async def steam_appid(self, *, app : str):
 		'''Get the appid'''
 		apps = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/").json()["applist"]["apps"]
 		appid = 0
-		for app in apps:
-			if app["name"].lower() == " ".join(app).lower():
-				appid = app["appid"]
+		for _app in apps:
+			if _app["name"].lower() == app.lower():
+				appid = _app["appid"]
 				break
 		await client.reply(str(appid))
 	
@@ -451,12 +463,12 @@ class Resources:
 		await client.reply("{0} has {1} games.".format(vanity_name, str(gamecount)))
 	
 	@steam.command(name = "gameinfo")
-	async def steam_gameinfo(self, *game : str):
+	async def steam_gameinfo(self, *, game : str):
 		'''Information about a game'''
 		apps = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/").json()["applist"]["apps"]
 		appid = 0
 		for app in apps:
-			if app["name"].lower() == " ".join(game).lower():
+			if app["name"].lower() == game.lower():
 				appid = app["appid"]
 				break
 		url = "http://store.steampowered.com/api/appdetails/?appids={0}".format(str(appid))
@@ -525,7 +537,7 @@ class Resources:
 		await client.reply("Your tags: " + _tag_list)
 	
 	@tag.command(name = "add", pass_context = True, aliases = ["make", "new", "create"])
-	async def tag_add(self, ctx, tag : str, *content : str):
+	async def tag_add(self, ctx, tag : str, *, content : str):
 		'''Add a tag'''
 		if not ctx.message.author.id in self.tags_data:
 			self.tags_data[ctx.message.author.id] = {"name" : ctx.message.author.name, "tags" : {}}
@@ -533,17 +545,15 @@ class Resources:
 		if tag in self.tags:
 			await client.reply("You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
 			return
-		# self.tags[tag] = ' '.join(content)
-		self.tags[tag] = ' '.join(ctx.message.content.split(' ')[3:])
+		self.tags[tag] = content
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
 		await client.reply("Your tag has been added.")
 	
 	@tag.command(name = "edit", pass_context = True)
-	async def tag_edit(self, ctx, tag : str, *content : str):
+	async def tag_edit(self, ctx, tag : str, *, content : str):
 		'''Edit one of your tags'''
-		# self.tags[tag] = ' '.join(content)
-		self.tags[tag] = ' '.join(ctx.message.content.split(' ')[3:])
+		self.tags[tag] = content
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
 		await client.reply("Your tag has been edited.")
@@ -576,9 +586,9 @@ class Resources:
 	
 	@commands.command(hidden = True, aliases = ["wa"])
 	@checks.is_owner()
-	async def wolframalpha(self, *search : str): #WIP
+	async def wolframalpha(self, *, search : str): #WIP
 		'''WIP'''
-		result = waclient.query(' '.join(search))
+		result = waclient.query(search)
 		for pod in result.pods:
 			await client.reply(pod.img)
 			await client.sreply(pod.text)
