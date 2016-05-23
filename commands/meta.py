@@ -24,12 +24,12 @@ class Meta:
 	@client.command(hidden = True)
 	@checks.is_owner()
 	async def eval(*code : str):
-		await client.reply("\n```" + str(builtins.eval(" ".join(code))) + "```")
+		await client.reply("\n```" + str(builtins.eval(' '.join(code))) + "```")
 	
 	@client.command(hidden = True)
 	@checks.is_owner()
 	async def exec(*code : str):
-		builtins.exec(" ".join(code))
+		builtins.exec('' '.join(code))
 		await client.reply("Successfully executed.")
 	'''
 	
@@ -109,9 +109,9 @@ class Meta:
 	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
-	async def changenickname(self, ctx, *nickname : str):
+	async def changenickname(self, ctx, *, nickname : str):
 		'''Update my nickname'''
-		await client.change_nickname(ctx.message.server.me, ' '.join(nickname))
+		await client.change_nickname(ctx.message.server.me, nickname)
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
@@ -129,13 +129,13 @@ class Meta:
 	
 	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"], hidden = True)
 	@checks.is_owner()
-	async def setgame(self, ctx, *game_name : str):
+	async def setgame(self, ctx, *, name : str):
 		'''Set my playing/game status message'''
 		updated_game = ctx.message.server.me.game
 		if not updated_game:
-			updated_game = discord.Game(name = " ".join(game_name))
+			updated_game = discord.Game(name = name)
 		else:
-			updated_game.name = " ".join(game_name)
+			updated_game.name = name
 		await client.change_status(game = updated_game)
 		await client.reply("Game updated.")
 	

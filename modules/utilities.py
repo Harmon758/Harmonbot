@@ -63,7 +63,7 @@ def duration_to_letter_format(duration):
 	letters = ["y", "w", "d", "h", "m", "s"]
 	for i in range(6):
 		if duration[i]:
-			output += str(duration[i]) + letters[i] + " "
+			output += str(duration[i]) + letters[i] + ' '
 	return output[:-1]
 
 def duration_to_colon_format(duration):
@@ -148,13 +148,13 @@ async def set_streaming_status(client):
 	await client.change_status(game = updated_game)
 
 async def send_mention_space(message, response):
-	return await client.send_message(message.channel, message.author.mention + " " + response)
+	return await client.send_message(message.channel, message.author.mention + ' ' + response)
 
 async def send_mention_newline(message, response):
 	return await client.send_message(message.channel, message.author.mention + "\n" + response)
 
 async def send_mention_code(message, response):
-	return await client.send_message(message.channel, message.author.mention + "\n" + "```" + response + "```")
+	return await client.send_message(message.channel, message.author.mention + "\n```" + response + "```")
 
 # Restart/Shutdown Tasks
 
