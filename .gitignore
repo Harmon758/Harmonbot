@@ -1,6 +1,10 @@
 # Instance Specific Data
 /keys.py
+/src/keys/
+
+/bin/
 /data/
+/pkg/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

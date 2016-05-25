@@ -2,12 +2,14 @@
 from discord.ext import commands
 
 import asyncio
+import cleverbot
 import discord
 import inflect
 import os
 # import queue
 import random
 import requests
+import speech_recognition
 import subprocess
 # import time
 import urllib
@@ -21,6 +23,60 @@ from client import client
 inflect_engine = inflect.engine()
 
 players = []
+
+recognizer = speech_recognition.Recognizer()
+
+cleverbot_instance = cleverbot.Cleverbot()
+
+@client.command(hidden = True, pass_context = True)
+async def listen(ctx):
+	await detectvoice(ctx)
+
+async def detectvoice(ctx):
+	while True:
+		while not os.path.isfile("data/testing.pcm") or os.stat("data/testing.pcm").st_size == 0:
+			await asyncio.sleep(1)
+		subprocess.call(["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", "data/testing.pcm", "data/testing.wav"], shell=True)
+		with speech_recognition.AudioFile("data/testing.wav") as source:
+			audio = recognizer.record(source)
+		try:
+			text = recognizer.recognize_google(audio)
+			await client.send_message(ctx.message.channel, "I think you said: " + text)
+		except speech_recognition.UnknownValueError:
+			await client.send_message(ctx.message.channel, "Google Speech Recognition could not understand audio")
+		except speech_recognition.RequestError as e:
+			await client.send_message(ctx.message.channel, "Could not request results from Google Speech Recognition service; {0}".format(e))
+		else:
+			response = cleverbot_instance.ask(text)
+			await client.send_message(ctx.message.channel, "Responding with: " + response)
+			_tts(ctx, response)
+		open("data/testing.pcm", 'w').close()
+		
+@client.command(hidden = True, pass_context = True)
+async def srtest(ctx):
+	subprocess.call(["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", "data/testing.pcm", "data/testing.wav"], shell=True)
+	with speech_recognition.AudioFile("data/testing.wav") as source:
+		audio = recognizer.record(source)
+	'''
+	try:
+		await client.reply("Sphinx thinks you said: " + recognizer.recognize_sphinx(audio))
+	except speech_recognition.UnknownValueError:
+		await client.reply("Sphinx could not understand audio")
+	except speech_recognition.RequestError as e:
+		await client.reply("Sphinx error; {0}".format(e))
+	'''
+	try:
+		text = recognizer.recognize_google(audio)
+		await client.say("I think you said: " + text)
+	except speech_recognition.UnknownValueError:
+		await client.reply("Google Speech Recognition could not understand audio")
+		return
+	except speech_recognition.RequestError as e:
+		await client.reply("Could not request results from Google Speech Recognition service; {0}".format(e))
+		return
+	response = cleverbot_instance.ask(text)
+	await client.say("Responding with: " + response)
+	_tts(ctx, response)
 
 @client.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "audio", "stream", "play", "playlist", "spotify"], 
 	invoke_without_command = True, no_pm = True)
@@ -207,10 +263,13 @@ async def radio_off(ctx):
 @client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()
 @checks.is_voice_connected()
-async def tts(ctx, *message : str):
+async def tts(ctx, *, message : str):
 	'''Text to speech'''
+	_tts(ctx, message)
+	
+def _tts(ctx, message):
 	player = get_player(ctx.message.server)
-	subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", ' '.join(message)], shell = True)
+	subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", message], shell = True)
 	stream = client.voice_client_in(ctx.message.server).create_ffmpeg_player("data/tts.wav")
 	paused = False
 	if player["current"] and player["current"]["stream"].is_playing():

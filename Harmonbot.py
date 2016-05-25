@@ -1,5 +1,5 @@
 
-print("Starting up...")
+print("Starting up Harmonbot...")
 
 import discord
 from discord.ext import commands
@@ -100,6 +100,7 @@ async def on_ready():
 	#loop = asyncio.ProactorEventLoop()
 	#asyncio.set_event_loop(loop)
 	#loop.run_until_complete(asyncio.create_subprocess_exec(*["py", "-3.5", "rss_bot.py"]))
+	# await voice.detectvoice()
 
 @client.event
 async def on_message(message):
@@ -531,7 +532,7 @@ loop = asyncio.get_event_loop()
 try:
 	loop.run_until_complete(client.start(keys.token))
 except KeyboardInterrupt:
-	print("Shutting down...")
+	print("Shutting down Harmonbot...")
 	loop.run_until_complete(restart_tasks())
 	loop.run_until_complete(client.logout())
 	# loop.run_until_complete(rss_client.logout())
