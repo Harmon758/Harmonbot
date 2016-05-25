@@ -85,7 +85,7 @@ async def feeds(ctx):
 @rss_client.command(pass_context = True, hidden = True)
 @checks.is_owner()
 async def restartrss(ctx):
-	await rss_client.say("Restarting...")
+	await rss_client.say("Restarting RSS Bot...")
 	with open("data/rss_restart_channel.json", "x+") as restart_channel_file:
 		json.dump({"restart_channel" : ctx.message.channel.id}, restart_channel_file)
 	raise KeyboardInterrupt
