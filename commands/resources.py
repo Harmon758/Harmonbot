@@ -488,7 +488,10 @@ class Resources:
 	
 	@commands.command()
 	async def strawpoll(self, question : str, *options : str):
-		'''Generates a strawpoll link'''
+		'''
+		Generates a strawpoll link
+		Use qoutes for spaces in the question or options
+		'''
 		poll = requests.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})).json()
 		await client.reply("http://strawpoll.me/" + str(poll["id"]))
 	
@@ -588,10 +591,10 @@ class Resources:
 	@checks.is_owner()
 	async def wolframalpha(self, *, search : str): #WIP
 		'''WIP'''
-		result = waclient.query(search)
+		result = self.waclient.query(search)
 		for pod in result.pods:
 			await client.reply(pod.img)
-			await client.sreply(pod.text)
+			await client.reply(pod.text)
 		#await client.reply(next(result.results).text)
 	
 	@commands.command()

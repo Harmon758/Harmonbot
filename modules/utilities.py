@@ -3,7 +3,6 @@ import discord
 
 import datetime
 import dateutil.parser
-import feedparser
 import json
 import math
 import random
@@ -97,23 +96,6 @@ def remove_symbols(string):
 	if plain_string.startswith(' '):
 		plain_string = plain_string[1:]
 	return plain_string
-
-async def check_rss_feeds():
-	with open("data/rss_feeds.json", "r") as feeds_file:
-		feeds_info = json.load(feeds_file)
-	for channel in feeds_info["channels"]:
-		for feed in channel["feeds"]:
-			feed_info = feedparser.parse(feed)
-			for item in feed_info.entries:
-				try:
-					if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.published)).total_seconds() <= 60:
-						await rss_client.send_message(discord.utils.get(rss_client.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n<" + item.link + '>')
-				except:
-					try:
-						if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.updated)).total_seconds() <= 60:
-							await rss_client.send_message(discord.utils.get(rss_client.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n<" + item.link + '>')
-					except:
-						pass
 
 def youtubesearch(search):
 	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), keys.google_apikey)
