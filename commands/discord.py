@@ -51,6 +51,11 @@ class Discord:
 			else:
 				await client.create_channel(message.server, options[0], type = "text")
 	
+	@commands.command(pass_context = True, no_pm = True)
+	async def createrole(self, ctx, *, name : str):
+		'''Creates a role'''
+		await client.create_role(ctx.message.server, name = name)
+	
 	@commands.group(pass_context = True, aliases = ["purge", "clean"], invoke_without_command = True)
 	async def delete(self, ctx, *options : str):
 		'''
@@ -91,7 +96,7 @@ class Discord:
 							break
 						elif len(to_delete) == 100:
 							await client.delete_messages(to_delete)
-							to_delete = []
+							to_delete.clear()
 							await asyncio.sleep(1)
 				if len(to_delete) == 1:
 					await client.delete_message(to_delete[0])

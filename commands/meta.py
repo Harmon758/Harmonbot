@@ -195,7 +195,7 @@ class Meta:
 	async def restart(self, ctx):
 		'''Restart me'''
 		await client.say("Restarting...")
-		print("Restarting Harmonbot...")
+		print("Shutting down Harmonbot...")
 		voice_channels = [[voice_client.channel.id, voice.get_player(voice_client.server)["text"]] for voice_client in client.voice_clients]
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
 			json.dump({"restart_channel" : ctx.message.channel.id, "voice_channels" : voice_channels}, restart_channel_file)
@@ -208,7 +208,7 @@ class Meta:
 	async def shutdown(self):
 		'''Shut me down'''
 		await client.say("Shutting down.")
-		print("Forcing Shut down...")
+		print("Forcing Shutdown...")
 		await utilities.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
 		subprocess.call(["taskkill", "/f", "/im", "python.exe"])

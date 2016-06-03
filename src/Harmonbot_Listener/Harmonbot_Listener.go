@@ -1,164 +1,161 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-
 	"github.com/bwmarrin/dgvoice"
 	"github.com/bwmarrin/discordgo"
 	
 	"bufio"
 	"bytes"
-	// "io"
-	"os"
+	"encoding/base64"
 	"encoding/binary"
+	"io/ioutil"
+	"fmt"
+	"os"
+	"strings"
+	"time"
 	
 	"keys"
 )
 
-var echo bool
-var _dgv *discordgo.VoiceConnection
-var _recv chan *discordgo.Packet
-var _send chan []int16
-var _continue bool
+var (
+	_continue	bool
+	_listen 	bool
+	dgv 		*discordgo.VoiceConnection
+	recv 		chan *discordgo.Packet
+	send 		chan []int16
+	me			*discordgo.User
+)
+
+func check(e error) {
+    if e != nil {
+        panic(e)
+    }
+}
 
 func main() {
-
-	// NOTE: All of the below fields are required for this example to work correctly.
-	var (
-		// Email     = flag.String("e", "", "Discord account email.")
-		// Password  = flag.String("p", "", "Discord account password.")
-		Token     = flag.String("t", keys.Listener_token, "Discord account token.")
-		GuildID   = flag.String("g", "147208000132743168", "Guild ID")
-		ChannelID = flag.String("c", "181000982006595584", "Channel ID")
-		err       error
-	)
-	flag.Parse()
-	
 	fmt.Println("Starting up Harmonbot Listener...")
 
 	// Connect to Discord
-	discord, err := discordgo.New(*Token)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	dg, err := discordgo.New(keys.Listener_token)
+	check(err)
 	
-	discord.AddHandler(messageCreate)
+	// Register ready as a callback for the ready events.
+	dg.AddHandler(ready)
+	// Register messageCreate as a callback for the messageCreate events.
+	dg.AddHandler(messageCreate)
 
 	// Open Websocket
-	err = discord.Open()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	err = dg.Open()
+	check(err)
 	
-	me, err := discord.User("@me")
+	me, err = dg.User("@me")
+	check(err)
 	
 	fmt.Printf("Started up %s#%s (%s)\n", me.Username, me.Discriminator, me.ID)
 
-	// Connect to voice channel.
-	// NOTE: Setting mute to false, deaf to true.
-	dgv, err := discord.ChannelVoiceJoin(*GuildID, *ChannelID, false, false)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	// Starts echo
-	// Echo(dgv)
-	
-	recv := make(chan *discordgo.Packet, 2)
-	go dgvoice.ReceivePCM(dgv, recv)
-	
-	send := make(chan []int16, 2)
-	go dgvoice.SendPCM(dgv, send)
-	
-	_dgv = dgv
-	_recv = recv
-	_send = send
-	
-	// Simple way to keep program running until any key press.
-	// var input string
-	// fmt.Scanln(&input)
-	
 	_continue = true
+	for _continue {
+		time.Sleep(1)
+	}
 	
-	for _continue {}
-	
-	fmt.Println("Restarting Harmonbot Listener...")
-
-	// ---logout
-	discord.Logout()
+	fmt.Println("Shutting down Harmonbot Listener...")
 	
 	// Close connections
-	dgv.Close()
-	discord.Close()
+	if dgv != nil {
+		dgv.Close()
+	}
+	dg.Logout()
+	dg.Close()
 
 	return
 }
 
-// Takes inbound audio and sends it right back out.
-func Echo(v *discordgo.VoiceConnection) {
+func ready(s *discordgo.Session, event *discordgo.Ready) {
+	s.UpdateStreamingStatus(0, "with Harmonbot", "https://www.twitch.tv/discordapp")
+}
 
-	fmt.Println("Echoing")
-	
-	fo, err := os.Create("data/testing.pcm")
-	if err != nil {
-		fmt.Println(err)
-		return
+func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+	switch m.Content {
+		case "!testlistener":
+			s.ChannelMessageSend(m.ChannelID, "Hello, World!")
+		case ">listen":
+			_listen = true
+			s.ChannelMessageSend(m.ChannelID, "I'm listening..")
+			Listen(dgv)
+		case ">stopl":
+			_listen = false
+			s.ChannelMessageSend(m.ChannelID, "I stopped listening.")
+		case "!restartlistener":
+			if m.Author.ID == keys.Myid {
+				s.ChannelMessageSend(m.ChannelID, "Restarting...")
+				_continue = false
+			}
+		case "!listener_updateavatar":
+			if m.Author.ID == keys.Myid {
+				changeAvatar(s)
+				s.ChannelMessageSend(m.ChannelID, "Avatar Updated.")
+			}
 	}
+	if strings.HasPrefix(m.Content, ">join") {
+		channel, err := s.Channel(m.ChannelID)
+		check(err)
+		_dgv, err := s.ChannelVoiceJoin(channel.GuildID, strings.Split(m.Content, " ")[1], false, false)
+		check(err)
+		
+		_recv := make(chan *discordgo.Packet, 2)
+		go dgvoice.ReceivePCM(_dgv, _recv)
+		_send := make(chan []int16, 2)
+		go dgvoice.SendPCM(_dgv, _send)
+		
+		dgv = _dgv
+		recv = _recv
+		send = _send
+	}
+}
+
+func Listen(v *discordgo.VoiceConnection) {
+	// fmt.Println("Echoing")
+	
+	fo, err := os.Create("../data/testing.pcm")
+	check(err)
 
 	v.Speaking(true)
 	defer v.Speaking(false)
 	
 	w := bufio.NewWriter(fo)
-	
 	buf := new(bytes.Buffer)
 
-	for echo {
-
-		p, ok := <-_recv
+	for _listen {
+		p, ok := <-recv
 		if !ok {
 			return
 		}
 
-		_send <- p.PCM
+		send <- p.PCM
 		err := binary.Write(buf, binary.LittleEndian, p.PCM)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		
+		check(err)
 	}
 	
 	_, err = w.Write(buf.Bytes())
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+	check(err)
 	
 	err = w.Flush()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+	check(err)
+	
 	fo.Sync()
 	
-	fmt.Println("Stopping")
-	
+	// fmt.Println("Stopping")
 }
 
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+// Helper function to change the avatar
+func changeAvatar(s *discordgo.Session) {
+	img, err := ioutil.ReadFile("../data/discord_harmonbot_listener_icon.png")
+	check(err)
 
-	if m.Content == ">listen" {
-		echo = true
-		Echo(_dgv)
-	} else if m.Content == ">stopl" {
-		echo = false
-	} else if m.Content == "!restartlistener" {
-		_continue = false
-	}
-	// Print message to stdout.
-	// fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
+	base64 := base64.StdEncoding.EncodeToString(img)
+
+	avatar := fmt.Sprintf("data:image/png;base64,%s", string(base64))
+
+	_, err = s.UserUpdate("", "", me.Username, avatar, "")
+	check(err)
 }

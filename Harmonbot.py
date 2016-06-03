@@ -97,10 +97,11 @@ async def on_ready():
 			asyncio.ensure_future(voice.start_player(client.get_channel(voice_channel[1])))
 	await random_game_status()
 	await set_streaming_status(client)
-	#loop = asyncio.ProactorEventLoop()
-	#asyncio.set_event_loop(loop)
-	#loop.run_until_complete(asyncio.create_subprocess_exec(*["py", "-3.5", "rss_bot.py"]))
 	# await voice.detectvoice()
+
+@client.event
+async def on_resumed():
+	await client.send_message(client.get_channel("147264078258110464"), client.get_server("147208000132743168").get_member("115691005197549570").mention + ": resumed.")
 
 @client.event
 async def on_message(message):
@@ -118,7 +119,7 @@ async def on_message(message):
 	if message.author == client.user or not message.content:
 		return
 	elif not message.channel.is_private and not permissions.get_permission(message, "user", message.author.id, message.content.split()[0]) and keys.myid != message.author.id: #rework
-		await send_mention_space(message, "You don't have permision to use that command here")
+		await send_mention_space(message, "You don't have permission to use that command here")
 	elif message.content.startswith("!test_on_message"):
 		await client.send_message(message.channel, "Hello, World!")
 	elif message.content.startswith("!help"):
@@ -535,6 +536,5 @@ except KeyboardInterrupt:
 	print("Shutting down Harmonbot...")
 	loop.run_until_complete(restart_tasks())
 	loop.run_until_complete(client.logout())
-	# loop.run_until_complete(rss_client.logout())
 finally:
 	loop.close()
