@@ -8,13 +8,13 @@
 	</script>-->
 	<title>Harmonbot</title>
 	</head>
-	<body>
+	<body> <!-- https? -->
 		<iframe
-			src="https://discordapp.com/widget?id=147208000132743168&theme=dark"
+			src="http://discordapp.com/widget?id=147208000132743168&theme=dark"
 			height="500"
 			width="400"
-			allowtransparency="true"
-			frameborder="0">
+			frameborder="0"
+			allowtransparency="true">
 		</iframe>
 		<!--<object type="application/x-shockwave-flash" height="378" width="620" id="live_embed_player_flash" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel=harmonbot" bgcolor="#000000"><param name="allowFullScreen" value="true" />
 			<param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" />
@@ -22,7 +22,7 @@
 			<param name="flashvars" value="hostname=www.twitch.tv&channel=harmonbot&auto_play=true&start_volume=25" />
 		</object><!--<a href="http://www.twitch.tv/harmonbot" class="trk" style="padding:2px 0px 4px; display:block; width:345px; font-weight:normal; font-size:10px; text-decoration:underline; text-align:center;">Watch live video from harmonbot on www.twitch.tv</a>-->
 		<iframe
-			src="http://player.twitch.tv/?channel=harmonbot"
+			src="http://player.twitch.tv/?channel=Harmonbot"
 			height="225"
 			width="400"
 			frameborder="0"
@@ -30,12 +30,21 @@
 			allowfullscreen="true"
 			align="top">
 		</iframe>
-		<iframe
-			frameborder="0"
-			scrolling="no"
-			src="http://twitch.tv/Harmonbot/chat?popout="
+		<!--<iframe
+			src="http://www.twitch.tv/Harmonbot/chat"
+			id="chat_embed"
 			height="500"
-			width="400">
-		</iframe>
+			width="400"
+			frameborder="0"
+			scrolling="no">
+		</iframe>-->
+		<iframe
+			src="http://twitch.tv/chat/embed?channel=Harmonbot"
+			id="chat_embed"
+			height="500"
+			width="400"
+			frameborder="0">
+			<!-- scrolling="no" -->
+		</iframe> <!-- src + &amp;popout_chat=true ? -->
 	</body>
 </html>
