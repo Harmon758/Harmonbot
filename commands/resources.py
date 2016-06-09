@@ -1,11 +1,13 @@
 
 from discord.ext import commands
 
+import aiohttp
 import isodate
 import json
+import math
 import pandas
 import random
-import requests
+import re
 import seaborn
 import urllib
 import xml.etree.ElementTree
@@ -19,6 +21,8 @@ from modules import weather
 from utilities import checks
 from utilities import errors
 from client import client
+#from client import aiohttp_session
+aiohttp_session = aiohttp.ClientSession()
 
 def setup(bot):
 	bot.add_cog(Resources())
@@ -47,8 +51,10 @@ class Resources:
 	async def audiodefine(self, word : str):
 		'''Generate link for pronounciation of a word'''
 		url = "http://api.wordnik.com:80/v4/word.json/{0}/audio?useCanonical=false&limit=1&api_key={1}".format(word, keys.wordnik_apikey)
-		if requests.get(url).json():
-			data = requests.get(url).json()[0]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		if data:
+			data = data[0]
 			audio = data["fileUrl"]
 			word = data["word"]
 			await client.reply(word.capitalize() + ": " + audio)
@@ -61,15 +67,30 @@ class Resources:
 		await client.reply("http://www.bing.com/search?q={0}".format('+'.join(search)))
 	
 	@commands.command(aliases = ["calc", "calculator"])
-	async def calculate(self, *equation : str):
+	async def calculate(self, *, equation : str):
+		'''Calculator'''
 		'''
 		Simple calculator
 		calculate <number> <operation> <number>
+		'''
+		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
+		_replace = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
+		_allowed = set("0123456789.+-*/^%()")
+		_equation = equation
+		for key, value in _replace.items():
+			_equation = _equation.replace(key, value)
+		_equation = ''.join(character for character in _equation if character in _allowed)
+		print(_equation)
+		try:
+			await client.reply(_equation + '=' + str(eval(_equation)))
+		except:
+			pass
 		'''
 		if len(equation) >= 3 and equation[0].isnumeric and equation[2].isnumeric and equation[1] in ['+', '-', '*', '/']:
 			await client.reply(' '.join(equation[:3]) + " = " + str(eval(''.join(equation[:3]))))
 		else:
 			await client.reply("That's not a valid input.")
+		'''
 	
 	@commands.command()
 	async def cat(self, *category : str):
@@ -80,21 +101,29 @@ class Resources:
 		'''
 		if category:
 			if category == "categories" or category == "cats":
-				root = xml.etree.ElementTree.fromstring(requests.get("http://thecatapi.com/api/categories/list").text)
+				async with aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
+					data = await resp.text()
+				root = xml.etree.ElementTree.fromstring(data)
 				categories = ""
 				for category in root.findall(".//name"):
 					categories += category.text + ' '
 				await client.reply(categories[:-1])
 			else:
 				url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={0}".format(category)
-				root = xml.etree.ElementTree.fromstring(requests.get(url).text)
+				async with aiohttp_session.get(url) as resp:
+					data = await resp.text()
+				root = xml.etree.ElementTree.fromstring(data)
 				if root.find(".//url") is not None:
 					await client.reply(root.find(".//url").text)
 				else:
-					root = xml.etree.ElementTree.fromstring(requests.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1").text)
+					async with aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
+						data = await resp.text()
+					root = xml.etree.ElementTree.fromstring(data)
 					await client.reply(root.find(".//url").text)
 		else:
-			root = xml.etree.ElementTree.fromstring(requests.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1").text)
+			async with aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
+				data = await resp.text()
+			root = xml.etree.ElementTree.fromstring(data)
 			await client.reply(root.find(".//url").text)
 	
 	@commands.command()
@@ -124,7 +153,9 @@ class Resources:
 			url = "http://www.colourlovers.com/api/color/{0}?format=json".format(options[0])
 		else:
 			url = "http://www.colourlovers.com/api/colors?numResults=1&format=json&keywords={0}".format('+'.join(options))
-		data = requests.get(url).json()[0]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data[0]
 		rgb = data["rgb"]
 		hsv = data["hsv"]
 		await client.reply("\n{name} ({hex})\nRGB: ({red}, {green}, {blue})\nHSV: ({hue}°, {saturation}%, {value}%)\n{image}".format( \
@@ -147,7 +178,9 @@ class Resources:
 	async def date(self, date : str):
 		'''Facts about dates'''
 		url = "http://numbersapi.com/{0}/date".format(date)
-		await client.reply(requests.get(url).text)
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.text()
+		await client.reply(data)
 	
 	@commands.group()
 	async def decode(self):
@@ -185,8 +218,10 @@ class Resources:
 		'''Define a word'''
 		url = "http://api.wordnik.com:80/v4/word.json/{0}/definitions?limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key={1}".format(word, keys.wordnik_apikey)
 		# page = urllib.request.urlopen(url)
-		if requests.get(url).json():
-			data = requests.get(url).json()[0]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		if data:
+			data = data[0]
 			definition = data["text"]
 			word = data["word"]
 			await client.reply(word.capitalize() + ": " + definition)
@@ -242,21 +277,27 @@ class Resources:
 		options: random, trending, (search)
 		'''
 		url = "http://api.giphy.com/v1/gifs/search?q={0}&limit=1&api_key=dc6zaTOxFJmzC".format("+".join(search))
-		data = requests.get(url).json()["data"]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data["data"]
 		await client.reply(data[0]["url"])
 	
 	@giphy.command(name = "random")
 	async def giphy_random(self):
 		'''Random gif'''
 		url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
-		data = requests.get(url).json()["data"]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data["data"]
 		await client.reply(data["url"])
 	
 	@giphy.command(name = "trending")
 	async def giphy_trending(self):
 		'''Trending gif'''
 		url = "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC"
-		data = requests.get(url).json()["data"]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data["data"]
 		await client.reply(data[0]["url"])
 	
 	@commands.command(aliases = ["search"])
@@ -268,7 +309,8 @@ class Resources:
 	async def googleimage(self, *search : str):
 		'''Google image search something'''
 		url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&searchType=image&q={2}".format(keys.google_apikey, keys.google_cse_cx, '+'.join(search))
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		image_link = data["items"][0]["link"]
 		await client.reply(image_link)
 		# handle 403 daily limit exceeded error
@@ -284,8 +326,9 @@ class Resources:
 	async def haveibeenpwned(self, name : str):
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/{0}?truncateResponse=true".format(name)
-		data = requests.get(url)
-		if data.status_code == 404 or data.status_code == 400:
+		async with aiohttp_session.get(url) as resp:
+			data = await resp
+		if data.status in [404, 400]:
 			breachedaccounts = "None"
 		else:
 			data = data.json()
@@ -294,8 +337,9 @@ class Resources:
 				breachedaccounts += breachedaccount["Name"] + ", "
 			breachedaccounts = breachedaccounts[:-2]
 		url = "https://haveibeenpwned.com/api/v2/pasteaccount/{0}".format(name)
-		data = requests.get(url)
-		if data.status_code == 404 or data.status_code == 400:
+		async with aiohttp_session.get(url) as resp:
+			data = await resp
+		if data.status in [404, 400]:
 			pastedaccounts = "None"
 		else:
 			data = data.json()
@@ -309,7 +353,8 @@ class Resources:
 	async def imdb(self, *, search : str):
 		'''IMDb Information'''
 		url = "http://www.omdbapi.com/?t={0}&y=&plot=short&r=json".format(search)
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		await client.reply("```\n{title} ({year})\nType: {type}\nIMDb Rating: {rating}\nRuntime: {runtime}\nGenre(s): {genre}\nPlot: {plot}```\nPoster: {poster}".format( \
 			title = data["Title"], year = data["Year"], type = data["Type"], rating = data["imdbRating"], runtime = data["Runtime"], genre = data["Genre"], 
 			plot = data["Plot"], poster = data["Poster"]))
@@ -323,14 +368,16 @@ class Resources:
 	async def insult(self):
 		'''Generate insult'''
 		url = "http://quandyfactory.com/insult/json"
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		await client.say(data["insult"])
 	
 	@commands.command()
 	async def joke(self):
 		'''Generate joke'''
 		url = "http://tambal.azurewebsites.net/joke/random"
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		joke = data["joke"]
 		await client.reply(joke)
 	
@@ -348,7 +395,8 @@ class Resources:
 	async def longurl(self, url : str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={0}&key={1}".format(url, keys.google_apikey)
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		await client.reply(data["longUrl"])
 	
 	@commands.command()
@@ -364,17 +412,22 @@ class Resources:
 	@commands.command()
 	async def math(self, number : int):
 		'''Math facts about numbers'''
-		await client.reply(requests.get("http://numbersapi.com/{0}/math".format(number)).text)
+		async with aiohttp_session.get("http://numbersapi.com/{0}/math".format(number)) as resp:
+			data = await resp.text()
+		await client.reply(data)
 	
 	@commands.command()
 	async def number(self, number : int):
 		'''Facts about numbers'''
-		await client.reply(requests.get("http://numbersapi.com/{0}".format(number)).text)
+		async with aiohttp_session.get("http://numbersapi.com/{0}".format(number)) as resp:
+			data = await resp.text()
+		await client.reply(data)
 	
 	@commands.command()
 	async def randomidea(self):
 		'''Generate random idea'''
-		data = requests.get("http://itsthisforthat.com/api.php?json").json()
+		async with aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
+			data = await resp.json()
 		await client.reply("{0} for {1}".format(data["this"], data["that"]))
 	
 	@commands.command()
@@ -386,7 +439,8 @@ class Resources:
 	async def randomword(self):
 		'''Generate random word'''
 		url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(keys.wordnik_apikey)
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		word = data["word"]
 		await client.reply(word.capitalize())
 	
@@ -409,7 +463,10 @@ class Resources:
 	@commands.command()
 	async def shorturl(self, url : str):
 		'''Generate a short goo.gl url for your link'''
-		await client.reply(requests.post('https://www.googleapis.com/urlshortener/v1/url?key={0}'.format(keys.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}').json()["id"])
+		async with aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={0}".format(keys.google_apikey), \
+		headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
+			data = await resp.json()
+		await client.reply(data["id"])
 	
 	@commands.command()
 	async def spotifyinfo(self, url : str):
@@ -418,7 +475,8 @@ class Resources:
 		if path[:7] == "/track/":
 			trackid = path[7:]
 			url = "https://api.spotify.com/v1/tracks/" + trackid
-			data = requests.get(url).json()
+			async with aiohttp_session.get(url) as resp:
+				data = await resp.json()
 			# tracknumber = str(data["track_number"])
 			# albumlink = data["album"]["href"]
 			await client.reply("```\n{songname} by {artistname}\n{albumname}\n{duration}```Preview: {preview}\nArtist: {artistlink}\nAlbum: {albumlink}".format( \
@@ -431,7 +489,7 @@ class Resources:
 	@commands.command(aliases = ["sptoyt"])
 	async def spotifytoyoutube(self, url : str):
 		'''Find a Spotify track on Youtube'''
-		link = voice.spotify_to_youtube(url)
+		link = await voice.spotify_to_youtube(url)
 		if link:
 			await client.reply(link)
 		else:
@@ -445,7 +503,9 @@ class Resources:
 	@steam.command(name = "appid")
 	async def steam_appid(self, *, app : str):
 		'''Get the appid'''
-		apps = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/").json()["applist"]["apps"]
+		async with aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
+			data = await resp.json()
+		apps = data["applist"]["apps"]
 		appid = 0
 		for _app in apps:
 			if _app["name"].lower() == app.lower():
@@ -457,22 +517,30 @@ class Resources:
 	async def steam_gamecount(self, vanity_name : str):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(keys.steam_apikey, vanity_name)
-		id = requests.get(url).json()["response"]["steamid"]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		id = data["response"]["steamid"]
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={0}&steamid={1}".format(keys.steam_apikey, id)
-		gamecount = requests.get(url).json()["response"]["game_count"]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		gamecount = data["response"]["game_count"]
 		await client.reply("{0} has {1} games.".format(vanity_name, str(gamecount)))
 	
 	@steam.command(name = "gameinfo")
 	async def steam_gameinfo(self, *, game : str):
 		'''Information about a game'''
-		apps = requests.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/").json()["applist"]["apps"]
+		async with aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
+			data = await resp.json()
+		apps = data["applist"]["apps"]
 		appid = 0
 		for app in apps:
 			if app["name"].lower() == game.lower():
 				appid = app["appid"]
 				break
 		url = "http://store.steampowered.com/api/appdetails/?appids={0}".format(str(appid))
-		data = requests.get(url).json()[str(appid)]["data"]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data[str(appid)]["data"]
 		type = data["type"]
 		appid = data["steam_appid"]
 		#required_age = data["required_age"]
@@ -492,7 +560,8 @@ class Resources:
 		Generates a strawpoll link
 		Use qoutes for spaces in the question or options
 		'''
-		poll = requests.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})).json()
+		async with aiohttp_session.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})) as resp:
+			poll = await resp.json()
 		await client.reply("http://strawpoll.me/" + str(poll["id"]))
 	
 	@commands.command()
@@ -605,9 +674,12 @@ class Resources:
 		elif utilities.is_digit_gtz(options[0]):
 			url = "http://xkcd.com/{0}/info.0.json".format(options[0]) # http://dynamic.xkcd.com/api-0/jsonp/comic/#
 		elif options[0] == "random":
-			total = json.loads(requests.get("http://xkcd.com/info.0.json").text)["num"]
+			async with aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
+				data = await resp.text()
+			total = json.loads(data)["num"]
 			url = "http://xkcd.com/{0}/info.0.json".format(str(random.randint(1, total)))
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		await client.reply("http://xkcd.com/{num} ({date})\n{image_link}\n{title}\nAlt Text: {alt_text}".format( \
 			num = str(data["num"]), date = "{month}/{day}/{year}".format(month = data["month"], day = data["day"], year = data["year"]),
 			image_link = data["img"], title = data["title"], alt_text = data["alt"]))
@@ -631,8 +703,10 @@ class Resources:
 		query = urllib.parse.parse_qs(url_data.query)
 		videoid = query["v"][0]
 		api_url = "https://www.googleapis.com/youtube/v3/videos?id={0}&key={1}&part=snippet,contentDetails,statistics".format(videoid, keys.google_apikey)
-		if requests.get(api_url).json():
-			data = requests.get(api_url).json()["items"][0]
+		async with aiohttp_session.get(api_url) as resp:
+			data = await resp.json()
+		if data:
+			data = data["items"][0]
 			title = data["snippet"]["title"]
 			length_iso = data["contentDetails"]["duration"]
 			length_timedelta = isodate.parse_duration(length_iso)
@@ -651,11 +725,12 @@ class Resources:
 	@commands.command(aliases = ["ytsearch"])
 	async def youtubesearch(self, *search : str):
 		'''Find a Youtube video'''
-		link = utilities.youtubesearch(search)
+		link = await utilities.youtubesearch(search)
 		await client.reply(link)
 	
 	@commands.command()
 	async def year(self, year : int):
 		'''Facts about years'''
-		url = "http://numbersapi.com/{0}/year".format(year)
-		await client.reply(requests.get(url).text)
+		async with aiohttp_session.get("http://numbersapi.com/{0}/year".format(year)) as resp:
+			data = await resp.text()
+		await client.reply(data)

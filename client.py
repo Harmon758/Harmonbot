@@ -5,6 +5,8 @@ from discord.ext import commands
 import datetime
 import sys
 
+import aiohttp
+
 from utilities import errors
 from modules import utilities
 
@@ -38,3 +40,5 @@ online_time = datetime.datetime.utcnow()
 initial_extensions = ["commands.discord", "commands.meta", "commands.games", "commands.resources"]
 for extension in initial_extensions:
 	client.load_extension(extension)
+
+aiohttp_session = aiohttp.ClientSession()

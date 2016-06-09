@@ -1,6 +1,7 @@
 
 from discord.ext import commands
 
+import aiohttp
 import asyncio
 import cleverbot
 import discord
@@ -8,7 +9,6 @@ import inflect
 import os
 # import queue
 import random
-import requests
 import speech_recognition
 import subprocess
 # import time
@@ -19,6 +19,8 @@ import keys
 from modules import utilities
 from utilities import checks
 from client import client
+# from client import aiohttp_session
+aiohttp_session = aiohttp.ClientSession()
 
 inflect_engine = inflect.engine()
 
@@ -90,7 +92,7 @@ async def voice(ctx, *options : str): #elif options[0] == "full":
 	elif "playlist" in ctx.message.content:
 		await player_add_playlist(ctx.message)
 	elif "spotify" in ctx.message.content:
-		youtube_link = spotify_to_youtube(options[0])
+		youtube_link = await spotify_to_youtube(options[0])
 		if youtube_link:
 			stream = await player_add_song(ctx.message, link = youtube_link)
 			if stream:
@@ -224,7 +226,8 @@ async def radio_on(ctx):
 	query = urllib.parse.parse_qs(url_data.query)
 	videoid = query["v"][0]
 	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + videoid + "&type=video&key=" + keys.google_apikey
-	data = requests.get(url).json()
+	async with aiohttp_session.get(url) as resp:
+		data = await resp.json()
 	radio_currently_playing = data["items"][0]["id"]["videoId"]
 	stream = await client.voice_client_in(ctx.message.server).create_ytdl_player("https://www.youtube.com/watch?v=" + radio_currently_playing)
 	old_stream = player["current"]["stream"]
@@ -239,7 +242,8 @@ async def radio_on(ctx):
 		if not player["radio_on"]:
 			break
 		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + radio_currently_playing + "&type=video&key=" + keys.google_apikey
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		radio_currently_playing = random.choice(data["items"])["id"]["videoId"]
 		stream = await client.voice_client_in(ctx.message.server).create_ytdl_player("https://www.youtube.com/watch?v=" + radio_currently_playing)
 		player["current"]["stream"] = stream
@@ -259,6 +263,15 @@ async def radio_off(ctx):
 		player["radio_on"] = False
 		player["current"]["stream"].stop()
 		await client.reply("Radio is now off")
+
+@client.command(pass_context = True, no_pm = True, hidden = True)
+@checks.is_server_owner()
+@checks.is_voice_connected()
+async def settext(ctx):
+	'''Set text channel for audio'''
+	player = get_player(ctx.message.server)
+	player["text"] = ctx.message.channel.id
+	await client.reply("Text channel changed.")
 
 @client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()
@@ -345,7 +358,7 @@ async def start_player(channel):
 		player["current"] = current
 		stream = current["stream"]
 		stream.start()
-		await client.send_message(channel, ":arrow_forward: Now Playing: " + stream.title)
+		await client.send_message(channel.server.get_channel(player["text"]), ":arrow_forward: Now Playing: " + stream.title)
 		while not stream.is_done():
 			await asyncio.sleep(1)
 	players.remove(player)
@@ -367,7 +380,7 @@ async def player_add_song(message, **kwargs):
 		stream = await client.voice_client_in(message.server).create_ytdl_player(link)
 	except:
 		try:
-			link = utilities.youtubesearch(message.content.split()[1:])
+			link = await utilities.youtubesearch(message.content.split()[1:])
 			stream = await client.voice_client_in(message.server).create_ytdl_player(link)
 		except:
 			return False
@@ -386,7 +399,8 @@ async def player_add_playlist(message):
 		url = base_url
 		player_instance = get_player(message.server)
 		while True:
-			data = requests.get(url).json()
+			async with aiohttp_session.get(url) as resp:
+				data = await resp.json()
 			total = data["pageInfo"]["totalResults"]
 			for item in data["items"]:
 				position = item["snippet"]["position"] + 1
@@ -416,18 +430,23 @@ def get_player(server):
 			return player
 	return None
 
-def spotify_to_youtube(link):
+async def spotify_to_youtube(link):
 	path = urllib.parse.urlparse(link).path
 	if path[:7] == "/track/":
 		trackid = path[7:]
 		url = "https://api.spotify.com/v1/tracks/" + trackid
-		data = requests.get(url).json()
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
 		songname = "+".join(data["name"].split())
 		artistname = "+".join(data["artists"][0]["name"].split())
 		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + songname + "+by+" + artistname + "&key=" + keys.google_apikey
-		data = requests.get(url).json()["items"][0]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data["items"][0]
 		if "videoId" not in data["id"]:
-			data = requests.get(url).json()["items"][1]
+			async with aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			data = data["items"][1]
 		link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
 		return link
 	else:

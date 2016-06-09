@@ -1,18 +1,19 @@
 
 import discord
 
+import aiohttp
 import datetime
 import dateutil.parser
 import json
 import math
 import random
-import requests
 
 import keys
 from client import client
 from client import rss_client
 from client import online_time
 from modules import voice
+from client import aiohttp_session
 
 # Utility
 
@@ -97,11 +98,15 @@ def remove_symbols(string):
 		plain_string = plain_string[1:]
 	return plain_string
 
-def youtubesearch(search):
+async def youtubesearch(search):
 	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), keys.google_apikey)
-	data = requests.get(url).json()["items"][0]
+	async with aiohttp_session.get(url) as resp:
+		data = await resp.json()
+	data = data["items"][0]
 	if "videoId" not in data["id"]:
-		data = requests.get(url).json()["items"][1]
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data["items"][1]
 	return "https://www.youtube.com/watch?v={0}".format(data["id"]["videoId"])
 
 # Discord

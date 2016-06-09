@@ -4,6 +4,7 @@ print("Starting up Harmonbot...")
 import discord
 from discord.ext import commands
 
+import aiohttp
 import asyncio
 from bs4 import BeautifulSoup
 import json
@@ -13,7 +14,6 @@ import moviepy.editor
 import os
 # import pydealer
 import re
-import requests
 # import spotipy
 import string
 #import subprocess
@@ -35,6 +35,7 @@ from utilities import errors
 import keys
 from client import client
 #from client import rss_client
+from client import aiohttp_session
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.DEBUG)
@@ -106,6 +107,7 @@ async def on_resumed():
 @client.event
 async def on_message(message):
 	global trivia_answers
+	
 	await client.process_commands(message)
 	if message.channel.is_private and not (message.author == client.user and message.channel.user.id == keys.myid):
 		for member in client.get_all_members():
@@ -189,10 +191,13 @@ async def on_message(message):
 			jeopardy_board_output = ""
 			url = "http://jservice.io/api/random"
 			for i in range(6):
-				categories.append(requests.get(url).json()[0]["category_id"])
+				async with aiohttp_session.get(url) as resp:
+					data = await resp.json()
+				categories.append(data[0]["category_id"])
 			for category in categories:
 				url = "http://jservice.io/api/category?id=" + str(category)
-				data = requests.get(url).json()
+				async with aiohttp_session.get(url) as resp:
+					data = await resp.json()
 				category_titles.append(string.capwords(data["title"]))
 				jeopardy_board.append([category, False, False, False, False, False])
 			jeopardy_max_width = max(len(category_title) for category_title in category_titles)
@@ -208,7 +213,8 @@ async def on_message(message):
 					jeopardy_question_active = True
 					jeopardy_answered = False
 					url = "http://jservice.io/api/category?id=" + str(jeopardy_board[category - 1][0])
-					data = requests.get(url).json()
+					async with aiohttp_session.get(url) as resp:
+						data = await resp.json()
 					jeopardy_answer = data["clues"][value_index]["answer"]
 					await client.send_message(message.channel, "Category: " + string.capwords(data["title"]) + "\n" + data["clues"][value_index]["question"])
 					counter = 15
@@ -349,7 +355,9 @@ async def on_message(message):
 		elif len(message.content.split()) > 1 and message.content.split()[1] == "bet" and not trivia_bet:
 			trivia_bet = True
 			url = "http://jservice.io/api/random"
-			data = requests.get(url).json()[0]
+			async with aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			data = data[0]
 			await client.send_message(message.channel, "Category: " + string.capwords(data["category"]["title"]))
 			while trivia_bet:
 				await asyncio.sleep(1)
@@ -422,7 +430,9 @@ async def on_message(message):
 			trivia_active = True
 			# url = "http://api.futuretraxex.com/v1/getRandomQuestion
 			url = "http://jservice.io/api/random"
-			data = requests.get(url).json()[0]
+			async with aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			data = data[0]
 			# await client.send_message(message.channel, BeautifulSoup(html.unescape(data["q_text"]), "html.parser").get_text() + "\n1. " + data["q_options_1"] + "\n2. " + data["q_options_2"] + "\n3. " + data["q_options_3"] + "\n4. " + data["q_options_4"])
 			await client.send_message(message.channel, "Category: " + string.capwords(data["category"]["title"]) + "\n" + data["question"])
 			counter = 15
