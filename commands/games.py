@@ -1,8 +1,10 @@
 
 from discord.ext import commands
 
+import asyncio
 import chess
 import cleverbot
+import pydealer
 import random
 
 from modules import utilities
@@ -25,6 +27,56 @@ class Games:
 	gofish_channel, gofish_players = None, []
 	taboo_players = []
 	maze_started, maze_maze = False, None
+	
+	@commands.command(pass_context = True)
+	async def blackjack(self, ctx):
+		'''Play a game of blackjack'''
+		deck = pydealer.Deck()
+		deck.shuffle()
+		dealer = deck.deal(2)
+		hand = deck.deal(2)
+		dealer_string = ""
+		hand_string = ""
+		for card in dealer.cards:
+			dealer_string += card.value + " :" + card.suit.lower() + ": "
+		for card in hand.cards:
+			hand_string += card.value + " :" + card.suit.lower() + ": "
+		dealer_total = sum([pydealer.const.DEFAULT_RANKS["values"][card.value] + 1 for card in dealer.cards])
+		hand_total = sum([pydealer.const.DEFAULT_RANKS["values"][card.value] + 1 for card in hand.cards])
+		await client.say("Dealer: " + dealer_string + '(' + str(dealer_total) + ')\n' + ctx.message.author.mention + ": " + hand_string + '(' + str(hand_total) + ')\n' )
+		while True:
+			action = await client.wait_for_message(author = ctx.message.author, check = lambda msg: msg.content in ["hit", "stay"])
+			if action.content == "hit":
+				hand_string = ""
+				hand.add(deck.deal())
+				for card in hand.cards:
+					hand_string += card.value + " :" + card.suit.lower() + ": "
+				hand_total = sum([pydealer.const.DEFAULT_RANKS["values"][card.value] + 1 for card in hand.cards])
+				await client.say("Dealer: " + dealer_string + '(' + str(dealer_total) + ')\n' + ctx.message.author.mention + ": " + hand_string + '(' + str(hand_total) + ')\n' )
+				if hand_total > 21:
+					await client.reply("You have busted. You lost :(")
+					return
+			else:
+				if dealer_total > 21:
+					await client.reply("The dealer busted. You win!")
+					return
+				elif dealer_total > hand_total:
+					await client.reply("The dealer beat you. You lost :(")
+					return
+				while True:
+					dealer_string = ""
+					dealer.add(deck.deal())
+					for card in dealer.cards:
+						dealer_string += card.value + " :" + card.suit.lower() + ": "
+					dealer_total = sum([pydealer.const.DEFAULT_RANKS["values"][card.value] + 1 for card in dealer.cards])
+					await client.say("Dealer: " + dealer_string + '(' + str(dealer_total) + ')\n' + ctx.message.author.mention + ": " + hand_string + '(' + str(hand_total) + ')\n' )
+					if dealer_total > 21:
+						await client.reply("The dealer busted. You win!")
+						return
+					elif dealer_total > hand_total:
+						await client.reply("The dealer beat you. You lost :(")
+						return
+					await asyncio.sleep(5)
 	
 	@commands.group(invoke_without_command = True)
 	async def chess(self, *option : str):
@@ -123,7 +175,6 @@ class Games:
 		Guessing game
 		Guess <max> <tries>
 		'''
-		
 		tries = False
 		if len(options) >= 2 and utilities.is_digit_gtz(options[1]):
 			tries = int(options[1])

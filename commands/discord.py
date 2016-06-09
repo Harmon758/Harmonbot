@@ -60,7 +60,7 @@ class Discord:
 	async def delete(self, ctx, *options : str):
 		'''
 		Delete messages
-		delete <number> or delete <user> <number>
+		delete <number> or delete <user> <number> or delete images <number>
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
 		if ctx.message.channel.is_private:
@@ -83,6 +83,25 @@ class Discord:
 				number = int(options[0])
 				await client.delete_message(ctx.message)
 				await client.purge_from(ctx.message.channel, limit = number)
+			elif options[0] in ["images", "attachments"] and options[1].isdigit():
+				number = int(options[1])
+				to_delete = []
+				count = 0
+				await client.delete_message(ctx.message)
+				async for client_message in client.logs_from(ctx.message.channel, limit = 10000):
+					if client_message.attachments:
+						to_delete.append(client_message)
+						count += 1
+						if count == number:
+							break
+						elif len(to_delete) == 100:
+							await client.delete_messages(to_delete)
+							to_delete.clear()
+							await asyncio.sleep(1)
+				if len(to_delete) == 1:
+					await client.delete_message(to_delete[0])
+				elif len(to_delete) > 1:
+					await client.delete_messages(to_delete)
 			elif len(options) > 1 and options[1].isdigit():
 				number = int(options[1])
 				to_delete = []

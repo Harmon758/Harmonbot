@@ -62,6 +62,11 @@ class Meta:
 		await client.reply(discord.utils.oauth_url(keys.bot_clientid))
 	
 	@commands.command(hidden = True)
+	async def ping(self):
+		'''Basic ping - pong command'''
+		await client.say("pong")
+	
+	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def servers(self):
 		'''Every server I'm in'''
