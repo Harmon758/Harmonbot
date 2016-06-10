@@ -180,8 +180,12 @@ class Resources:
 		'''Facts about dates'''
 		url = "http://numbersapi.com/{0}/date".format(date)
 		async with aiohttp_session.get(url) as resp:
+			status = resp.status
 			data = await resp.text()
-		await client.reply(data)
+		if status == 404:
+			await client.reply("Error.")
+		else:
+			await client.reply(data)
 	
 	@commands.group()
 	async def decode(self):
