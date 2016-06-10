@@ -125,7 +125,7 @@ class Games:
 		'''Talk to Cleverbot'''
 		await client.reply(cleverbot_instance.ask(message))
 	
-	@commands.command(aliases = ["8ball"])
+	@commands.command(name = "8ball", aliases = ["eightball"])
 	async def eightball(self):
 		'''Ask 8ball a yes or no question'''
 		responses = ["It is certain", "It is decidedly so", "Without a doubt", "Yes, definitely", "You may rely on it", "As I see it, yes", "Most likely",
