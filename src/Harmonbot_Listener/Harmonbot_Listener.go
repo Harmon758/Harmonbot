@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 	
-	"keys"
+	"credentials"
 )
 
 var (
@@ -36,7 +36,7 @@ func main() {
 	fmt.Println("Starting up Harmonbot Listener...")
 
 	// Connect to Discord
-	dg, err := discordgo.New(keys.Listener_token)
+	dg, err := discordgo.New(credentials.Listener_token)
 	check(err)
 	
 	// Register ready as a callback for the ready events.
@@ -86,12 +86,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			_listen = false
 			s.ChannelMessageSend(m.ChannelID, "I stopped listening.")
 		case "!restartlistener":
-			if m.Author.ID == keys.Myid {
+			if m.Author.ID == credentials.Myid {
 				s.ChannelMessageSend(m.ChannelID, "Restarting...")
 				_continue = false
 			}
 		case "!listener_updateavatar":
-			if m.Author.ID == keys.Myid {
+			if m.Author.ID == credentials.Myid {
 				changeAvatar(s)
 				s.ChannelMessageSend(m.ChannelID, "Avatar Updated.")
 			}
