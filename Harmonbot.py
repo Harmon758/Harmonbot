@@ -122,7 +122,7 @@ async def load(cog : str):
 	try:
 		client.load_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":gun: Failed to load cog.\n"
+		await client.say(":thumbsdown::skin-tone-2: Failed to load cog.\n"
 		"{}: {}".format(type(e).__name__, e))
 	else:
 		await client.say(":thumbsup::skin-tone-2: Loaded cog.")
@@ -134,7 +134,7 @@ async def unload(cog : str):
 	try:
 		client.unload_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":gun: Failed to unload cog.\n"
+		await client.say(":thumbsdown::skin-tone-2: Failed to unload cog.\n"
 		"{}: {}".format(type(e).__name__, e))
 	else:
 		await client.say(':ok_hand::skin-tone-2: Unloaded cog.')
@@ -147,7 +147,7 @@ async def reload(cog : str):
 		client.unload_extension("cogs." + cog)
 		client.load_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":gun: Failed to reload cog.\n"
+		await client.say(":thumbsdown::skin-tone-2: Failed to reload cog.\n"
 		"{}: {}".format(type(e).__name__, e))
 	else:
 		with open("data/stats.json", "r") as stats_file:

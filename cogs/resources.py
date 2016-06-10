@@ -401,8 +401,12 @@ class Resources:
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={0}&key={1}".format(url, credentials.google_apikey)
 		async with aiohttp_session.get(url) as resp:
+			status = resp.status
 			data = await resp.json()
-		await client.reply(data["longUrl"])
+		if status == 400:
+			await client.reply("Error.")
+		else:
+			await client.reply(data["longUrl"])
 	
 	@commands.command()
 	async def map(self, *options : str):
