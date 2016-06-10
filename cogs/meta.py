@@ -7,7 +7,7 @@ import datetime
 import json
 import subprocess
 
-import keys
+import credentials
 from modules import documentation
 from modules import utilities
 from modules import voice
@@ -64,7 +64,7 @@ class Meta:
 	@commands.command(aliases = ["oauth"], hidden = True)
 	async def invite(self):
 		'''Link to invite me to a server'''
-		await client.reply(discord.utils.oauth_url(keys.bot_clientid))
+		await client.reply(discord.utils.oauth_url(credentials.bot_clientid))
 	
 	@commands.command(hidden = True)
 	async def ping(self):

@@ -3,11 +3,11 @@ from discord.ext import commands
 
 from utilities import errors
 
-import keys
+import credentials
 from client import client
 
 def is_owner_check(message):
-    return message.author.id == keys.myid
+    return message.author.id == credentials.myid
 
 def is_owner():
     return commands.check(lambda ctx: is_owner_check(ctx.message))

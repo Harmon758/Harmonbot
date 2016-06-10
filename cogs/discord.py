@@ -5,7 +5,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 
-import keys
+import credentials
 from modules import conversions
 from modules import utilities
 from utilities import checks
@@ -24,7 +24,7 @@ class Discord:
 		Gives a user a role
 		Replace spaces in role names with underscores or put the role name in qoutes
 		'''
-		if ctx.message.server and (ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == keys.myid):
+		if ctx.message.server and (ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == credentials.myid):
 			for member in ctx.message.server.members:
 				if member.name == ' '.join(name.split('_')):
 					selected_member = member
@@ -78,7 +78,7 @@ class Discord:
 				await client.reply("Syntax error.")
 		elif not ctx.message.server.me.permissions_in(ctx.message.channel).manage_messages:
 			await client.reply("I don't have permission to do that here. I need the \"Manage Messages\" permission to delete messages.")
-		elif ctx.message.channel.permissions_for(ctx.message.author).manage_messages or ctx.message.author.id == keys.myid:
+		elif ctx.message.channel.permissions_for(ctx.message.author).manage_messages or ctx.message.author.id == credentials.myid:
 			if options[0].isdigit():
 				number = int(options[0])
 				await client.delete_message(ctx.message)
@@ -169,7 +169,7 @@ class Discord:
 			color = selected_role.colour
 			color_value = color.value
 			await client.reply(str(conversions.inttohex(color_value)))
-		elif ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == keys.myid:
+		elif ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == credentials.myid:
 			for _role in ctx.message.server.roles:
 				if _role.name.startswith((' ').join(role.split('_'))):
 					role_to_change = _role

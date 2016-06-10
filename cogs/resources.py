@@ -5,6 +5,7 @@ import aiohttp
 import isodate
 import json
 import math
+import moviepy.editor
 import pandas
 import random
 import re
@@ -13,7 +14,7 @@ import urllib
 import xml.etree.ElementTree
 import wolframalpha
 
-import keys
+import credentials
 from modules import ciphers
 from modules import utilities
 from modules import voice
@@ -30,7 +31,7 @@ def setup(bot):
 class Resources:
 
 	tags_data, tags = None, None
-	waclient = wolframalpha.Client(keys.wolframalpha_appid)
+	waclient = wolframalpha.Client(credentials.wolframalpha_appid)
 	#wolframalpha (wa)
 	
 	@commands.command()
@@ -50,7 +51,7 @@ class Resources:
 	@commands.command()
 	async def audiodefine(self, word : str):
 		'''Generate link for pronounciation of a word'''
-		url = "http://api.wordnik.com:80/v4/word.json/{0}/audio?useCanonical=false&limit=1&api_key={1}".format(word, keys.wordnik_apikey)
+		url = "http://api.wordnik.com:80/v4/word.json/{0}/audio?useCanonical=false&limit=1&api_key={1}".format(word, credentials.wordnik_apikey)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data:
@@ -216,7 +217,7 @@ class Resources:
 	@commands.command()
 	async def define(self, word : str):
 		'''Define a word'''
-		url = "http://api.wordnik.com:80/v4/word.json/{0}/definitions?limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key={1}".format(word, keys.wordnik_apikey)
+		url = "http://api.wordnik.com:80/v4/word.json/{0}/definitions?limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key={1}".format(word, credentials.wordnik_apikey)
 		# page = urllib.request.urlopen(url)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
@@ -308,7 +309,7 @@ class Resources:
 	@commands.command(aliases = ["imagesearch"])
 	async def googleimage(self, *search : str):
 		'''Google image search something'''
-		url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&searchType=image&q={2}".format(keys.google_apikey, keys.google_cse_cx, '+'.join(search))
+		url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&searchType=image&q={2}".format(credentials.google_apikey, credentials.google_cse_cx, '+'.join(search))
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		image_link = data["items"][0]["link"]
@@ -394,7 +395,7 @@ class Resources:
 	@commands.command()
 	async def longurl(self, url : str):
 		'''Expand a short goo.gl url'''
-		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={0}&key={1}".format(url, keys.google_apikey)
+		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={0}&key={1}".format(url, credentials.google_apikey)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		await client.reply(data["longUrl"])
@@ -438,7 +439,7 @@ class Resources:
 	@commands.command()
 	async def randomword(self):
 		'''Generate random word'''
-		url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(keys.wordnik_apikey)
+		url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(credentials.wordnik_apikey)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		word = data["word"]
@@ -463,7 +464,7 @@ class Resources:
 	@commands.command()
 	async def shorturl(self, url : str):
 		'''Generate a short goo.gl url for your link'''
-		async with aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={0}".format(keys.google_apikey), \
+		async with aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={0}".format(credentials.google_apikey), \
 		headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
 			data = await resp.json()
 		await client.reply(data["id"])
@@ -516,11 +517,11 @@ class Resources:
 	@steam.command(name = "gamecount")
 	async def steam_gamecount(self, vanity_name : str):
 		'''Find how many games someone has'''
-		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(keys.steam_apikey, vanity_name)
+		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(credentials.steam_apikey, vanity_name)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		id = data["response"]["steamid"]
-		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={0}&steamid={1}".format(keys.steam_apikey, id)
+		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={0}&steamid={1}".format(credentials.steam_apikey, id)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
@@ -637,11 +638,32 @@ class Resources:
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
 		await client.reply("Your tag has been deleted.")
-	
+	'''
+	@tag.error
+	async def tag_error(self, error, ctx):
+		if isinstance(error, errors.NoTags):
+			await send_mention_space(message, "You don't have any tags :slight_frown: "
+			"Add one with `!tag add <tag> <content>`")
+		elif isinstance(error, errors.NoTag):
+			await send_mention_space(message, "You don't have that tag.")
+		print(type(error))
+	'''
 	@commands.command(hidden = True)
 	async def weather(self, *options : str): #WIP
 		'''WIP'''
 		await client.reply(str(weather.temp(' '.join(options))))
+	
+	@commands.command(hidden = True, pass_context = True)
+	async def webmtogif(self, ctx, url : str): #WIP
+		'''WIP'''
+		webmfile = urllib.request.urlretrieve(url, "data/webtogif.webm")
+		# subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
+		clip = moviepy.editor.VideoFileClip("data/webtogif.webm")
+		clip.write_gif("data/webtogif.gif", fps = 1, program = "ffmpeg")
+		# clip.write_gif("data/webtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
+		await client.send_file(ctx.message.channel, "data/webtogif.gif")
+		#subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
+		#await client.send_file(message.channel, "data/webtogif.gif")
 	
 	@commands.command(hidden = True)
 	async def whatis(self, *search : str): #WIP
@@ -702,7 +724,7 @@ class Resources:
 		url_data = urllib.parse.urlparse(url)
 		query = urllib.parse.parse_qs(url_data.query)
 		videoid = query["v"][0]
-		api_url = "https://www.googleapis.com/youtube/v3/videos?id={0}&key={1}&part=snippet,contentDetails,statistics".format(videoid, keys.google_apikey)
+		api_url = "https://www.googleapis.com/youtube/v3/videos?id={0}&key={1}&part=snippet,contentDetails,statistics".format(videoid, credentials.google_apikey)
 		async with aiohttp_session.get(api_url) as resp:
 			data = await resp.json()
 		if data:

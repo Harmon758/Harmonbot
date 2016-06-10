@@ -7,10 +7,8 @@ import json
 import time
 
 from modules.utilities import *
-
 from utilities import checks
 
-import keys
 from client import client
 
 def setup(bot):

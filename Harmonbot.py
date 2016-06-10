@@ -10,9 +10,7 @@ from bs4 import BeautifulSoup
 import json
 import html
 import logging
-import moviepy.editor
 import os
-# import pydealer
 import re
 # import spotipy
 import string
@@ -27,17 +25,14 @@ from modules import documentation
 from modules import permissions
 from modules.utilities import *
 from modules import voice
-
-from cogs.games import Games
 from cogs.rss import check_rss_feeds
-
 from utilities import checks
 from utilities import errors
 
-import keys
+import credentials
 from client import client
-#from client import rss_client
 from client import aiohttp_session
+from client import cleverbot_instance
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.DEBUG)
@@ -127,8 +122,8 @@ async def load(cog : str):
 	try:
 		client.load_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":gun: Failed to load cog.")
-		await client.say('{}: {}'.format(type(e).__name__, e))
+		await client.say(":gun: Failed to load cog.\n"
+		"{}: {}".format(type(e).__name__, e))
 	else:
 		await client.say(":thumbsup::skin-tone-2: Loaded cog.")
 
@@ -139,8 +134,8 @@ async def unload(cog : str):
 	try:
 		client.unload_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":gun: Failed to unload cog.")
-		await client.say('{}: {}'.format(type(e).__name__, e))
+		await client.say(":gun: Failed to unload cog.\n"
+		"{}: {}".format(type(e).__name__, e))
 	else:
 		await client.say(':ok_hand::skin-tone-2: Unloaded cog.')
 
@@ -152,8 +147,8 @@ async def reload(cog : str):
 		client.unload_extension("cogs." + cog)
 		client.load_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":gun: Failed to reload cog.")
-		await client.say('{}: {}'.format(type(e).__name__, e))
+		await client.say(":gun: Failed to reload cog.\n"
+		"{}: {}".format(type(e).__name__, e))
 	else:
 		with open("data/stats.json", "r") as stats_file:
 			stats = json.load(stats_file)
@@ -171,9 +166,9 @@ async def on_message(message):
 		destination = "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
 	harmonbot_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content}".format(message, destination))
 	await client.process_commands(message)
-	if message.channel.is_private and not (message.author == client.user and message.channel.user.id == keys.myid):
+	if message.channel.is_private and not (message.author == client.user and message.channel.user.id == credentials.myid):
 		for member in client.get_all_members():
-			if member.id == keys.myid:
+			if member.id == credentials.myid:
 				my_member = member
 				break
 		if message.author == client.user:
@@ -182,7 +177,7 @@ async def on_message(message):
 			await client.send_message(my_member, "From " + message.author.name + '#' + message.author.discriminator + ": " + message.content)
 	if message.author == client.user or not message.content:
 		return
-	elif not message.channel.is_private and not permissions.get_permission(message, "user", message.author.id, message.content.split()[0]) and keys.myid != message.author.id: #rework
+	elif not message.channel.is_private and not permissions.get_permission(message, "user", message.author.id, message.content.split()[0]) and credentials.myid != message.author.id: #rework
 		await send_mention_space(message, "You don't have permission to use that command here")
 	elif message.content.startswith("!test_on_message"):
 		await client.send_message(message.channel, "Hello, World!")
@@ -198,21 +193,21 @@ async def on_message(message):
 		for word in message.clean_content.split():
 			if not word.startswith("@"):
 				mentionless_message += word
-		await send_mention_space(message, Games.cleverbot_instance.ask(mentionless_message))
+		await send_mention_space(message, cleverbot_instance.ask(mentionless_message))
 	elif message.content.startswith("!aeval"):
-		if message.author.id == keys.myid:
+		if message.author.id == credentials.myid:
 			try:
 				await send_mention_code(message, str(await eval(' '.join(message.content.split()[1:]))))
 			except:
 				await send_mention_code(message, traceback.format_exc())
 	elif message.content.startswith("!eval"):
-		if message.author.id == keys.myid:
+		if message.author.id == credentials.myid:
 			try:
 				await send_mention_code(message, str(eval(' '.join(message.content.split()[1:]))))
 			except:
 				await send_mention_code(message, traceback.format_exc())
 	elif message.content.startswith("!exec"):
-		if message.author.id == keys.myid:
+		if message.author.id == credentials.myid:
 			try:
 				exec(' '.join(message.content.split()[1:]))
 				await send_mention_space(message, "successfully executed")
@@ -338,7 +333,7 @@ async def on_message(message):
 			pass
 		'''
 	elif message.content.startswith("!setpermission"): #rework
-		if message.author.id == keys.myid or message.author == message.server.owner:
+		if message.author.id == credentials.myid or message.author == message.server.owner:
 			if len(message.content.split()) < 5:
 				await send_mention_space(message, "Invalid input")
 			else:
@@ -402,14 +397,14 @@ async def on_message(message):
 				await send_mention_space(message, "Permission updated")
 	elif message.content.startswith("!trivia"):
 		global trivia_active, trivia_bet, trivia_bets
-		if len(message.content.split()) > 1 and (message.content.split()[1] == "score" or message.content.split()[1] == "points"):
+		if len(message.content.split()) > 1 and (message.content.split()[1] in ["score", "points"]):
 			with open("data/trivia_points.json", "r") as trivia_file:
 				score = json.load(trivia_file)
 			correct = score[message.author.id][0]
 			incorrect = score[message.author.id][1]
 			correct_percentage = round(float(correct) / (float(correct) + float(incorrect)) * 100, 2)
 			await send_mention_space(message, "You have answered " + str(correct) + "/" + str(correct + incorrect) + " (" + str(correct_percentage) + "%) correctly.")
-		elif len(message.content.split()) > 1 and (message.content.split()[1] == "cash" or message.content.split()[1] == "money"):
+		elif len(message.content.split()) > 1 and (message.content.split()[1] in ["cash", "money"]):
 			with open("data/trivia_points.json", "r") as trivia_file:
 				score = json.load(trivia_file)
 			cash = score[message.author.id][2]
@@ -549,15 +544,6 @@ async def on_message(message):
 			pass
 	elif trivia_active and not (message.content.startswith('!') or message.server.me in message.mentions):
 		trivia_answers[message.author] = message.content
-	elif message.content.startswith("!webmtogif"):
-		webmfile = urllib.request.urlretrieve(message.content.split()[1], "data/webtogif.webm")
-		# subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
-		clip = moviepy.editor.VideoFileClip("data/webtogif.webm")
-		clip.write_gif("data/webtogif.gif", fps=1, program="ffmpeg")
-		# clip.write_gif("data/webtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
-		await client.send_file(message.channel, "data/webtogif.gif")
-		#subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
-		#await client.send_file(message.channel, "data/webtogif.gif")
 	elif message.content.lower() == 'f':
 		with open("data/f.json", "r") as counter_file:
 			counter_info = json.load(counter_file)
@@ -592,22 +578,30 @@ async def on_command_error(error, ctx):
 	if isinstance(error, errors.NotServerOwner):
 		await send_mention_space(ctx.message, "You don't have permission to do that.")
 	elif isinstance(error, errors.SO_VoiceNotConnected):
-		await send_mention_space(ctx.message, "I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
+		await send_mention_space(ctx.message, "I'm not in a voice channel. "
+		"Please use `!voice (or !yt) join <channel>` first.")
 	elif isinstance(error, errors.NSO_VoiceNotConnected):
-		await send_mention_space(ctx.message, "I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
+		await send_mention_space(ctx.message, "I'm not in a voice channel. "
+		"Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
 	elif isinstance(error, commands.errors.NoPrivateMessage):
 		await send_mention_space(ctx. message, "Please use that command in a server.")
-	
-#client.run(keys.username, keys.password)
-#client.run(keys.token)
+	'''
+	elif isinstance(error, errors.NoTags):
+		await send_mention_space(message, "You don't have any tags :slight_frown: "
+		"Add one with `!tag add <tag> <content>`")
+	elif isinstance(error, errors.NoTag):
+		await send_mention_space(message, "You don't have that tag.")
+	print(type(error))
+	'''
 
 loop = asyncio.get_event_loop()
 try:
 	loop.create_task(check_rss_feeds())
-	loop.run_until_complete(client.start(keys.token))
+	loop.run_until_complete(client.start(credentials.token))
 except KeyboardInterrupt:
 	print("Shutting down Harmonbot...")
 	loop.run_until_complete(restart_tasks())
 	loop.run_until_complete(client.logout())
 finally:
 	loop.close()
+
