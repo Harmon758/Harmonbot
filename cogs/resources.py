@@ -643,7 +643,7 @@ class Resources:
 		self.tags[tag] = content
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
-		await self.bot.reply("Your tag has been added.")
+		await self.bot.reply(":thumbsup::skin-tone-2: Your tag has been added.")
 	
 	@tag.command(name = "edit", pass_context = True)
 	async def tag_edit(self, ctx, tag : str, *, content : str):
@@ -651,7 +651,7 @@ class Resources:
 		self.tags[tag] = content
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
-		await self.bot.reply("Your tag has been edited.")
+		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been edited.")
 	
 	@tag.command(name = "delete", pass_context = True, aliases = ["remove", "destroy"])
 	async def tag_delete(self, ctx, tag : str):
@@ -659,7 +659,7 @@ class Resources:
 		del self.tags[tag]
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
-		await self.bot.reply("Your tag has been deleted.")
+		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been deleted.")
 	'''
 	@tag.error
 	async def tag_error(self, error, ctx):
