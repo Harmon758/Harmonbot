@@ -29,6 +29,7 @@ from modules.utilities import *
 from modules import voice
 
 from commands.games import Games
+from commands.rss import check_rss_feeds
 
 from utilities import errors
 
@@ -39,9 +40,15 @@ from client import aiohttp_session
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode='a')
+handler = logging.FileHandler(filename = "data/discord.log", encoding = "utf-8", mode = 'a')
 handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
 logger.addHandler(handler)
+
+harmonbot_logger = logging.getLogger("harmonbot")
+harmonbot_logger.setLevel(logging.DEBUG)
+harmonbot_logger_handler = logging.FileHandler(filename = "data/harmonbot.log", encoding = "utf-8", mode = 'a')
+harmonbot_logger_handler.setFormatter(logging.Formatter("%(message)s"))
+harmonbot_logger.addHandler(harmonbot_logger_handler)
 
 # spotify = spotipy.Spotify()
 
@@ -107,7 +114,11 @@ async def on_resumed():
 @client.event
 async def on_message(message):
 	global trivia_answers
-	
+	if message.channel.is_private:
+		destination = "Direct Message"
+	else:
+		destination = "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
+	harmonbot_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content}".format(message, destination))
 	await client.process_commands(message)
 	if message.channel.is_private and not (message.author == client.user and message.channel.user.id == keys.myid):
 		for member in client.get_all_members():
@@ -541,6 +552,7 @@ async def on_command_error(error, ctx):
 
 loop = asyncio.get_event_loop()
 try:
+	loop.create_task(check_rss_feeds())
 	loop.run_until_complete(client.start(keys.token))
 except KeyboardInterrupt:
 	print("Shutting down Harmonbot...")

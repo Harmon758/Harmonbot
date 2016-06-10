@@ -10,7 +10,6 @@ import random
 
 import keys
 from client import client
-from client import rss_client
 from client import online_time
 from modules import voice
 from client import aiohttp_session
