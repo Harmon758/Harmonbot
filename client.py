@@ -5,6 +5,7 @@ from discord.ext import commands
 import aiohttp
 import datetime
 import sys
+import traceback
 
 from os import listdir
 
@@ -22,7 +23,7 @@ class Bot(commands.Bot):
 		return self.send_message(destination, fmt, *args, **kwargs)
 	
 	async def on_error(self, event_method, message, *args, **kwargs):
-		type, value, traceback = sys.exc_info()
+		type, value, _traceback = sys.exc_info()
 		if type is errors.NoTags:
 			await utilities.send_mention_space(message, "You don't have any tags :slight_frown: "
 			"Add one with `!tag add <tag> <content>`")
