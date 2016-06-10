@@ -12,7 +12,7 @@ from utilities import checks
 from client import client
 
 def setup(bot):
-	bot.add_cog(RSS())
+	bot.add_cog(RSS(bot))
 
 async def check_rss_feeds():
 	await client.wait_until_ready()
@@ -40,7 +40,10 @@ async def check_rss_feeds():
 		await asyncio.sleep(60 - elapsed)
 
 class RSS:
-
+	
+	def __init__(self, bot):
+		self.bot = bot
+	
 	@commands.command(pass_context = True, aliases = ["addrss", "feedadd", "rssadd"])
 	@checks.is_server_owner()
 	async def addfeed(self, ctx, url : str):
@@ -52,12 +55,12 @@ class RSS:
 				channel["feeds"].append(url)
 				with open("data/rss_feeds.json", "w") as feeds_file:
 					json.dump(feeds_info, feeds_file)
-				await client.reply("The feed, " + url + ", has been added to this channel.")
+				await self.bot.reply("The feed, " + url + ", has been added to this channel.")
 				return
 		feeds_info["channels"].append({"name" : ctx.message.channel.name, "id" : ctx.message.channel.id, "feeds" : [url]})
 		with open("data/rss_feeds.json", "w") as feeds_file:
 			json.dump(feeds_info, feeds_file)
-		await client.reply("The feed, " + url + ", has been added to this channel.")
+		await self.bot.reply("The feed, " + url + ", has been added to this channel.")
 
 	@commands.command(pass_context = True, aliases = ["removerss", "feedremove", "rssremove, deletefeed, deleterss, rssdelete, feeddelete"])
 	@checks.is_server_owner()
@@ -72,7 +75,7 @@ class RSS:
 						channel["feeds"].remove(feed)
 						with open("data/rss_feeds.json", "w") as feeds_file:
 							json.dump(feeds_info, feeds_file)
-						await client.reply("The feed, " + url + ", has been removed from this channel.")
+						await self.bot.reply("The feed, " + url + ", has been removed from this channel.")
 						return
 
 	@commands.command(pass_context = True, aliases = ["rss"])
@@ -85,5 +88,5 @@ class RSS:
 				feeds = ""
 				for feed in channel["feeds"]:
 					feeds += "\n" + feed
-				await client.reply(feeds)
+				await self.bot.reply(feeds)
 

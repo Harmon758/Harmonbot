@@ -21,18 +21,19 @@ from modules import voice
 from modules import weather
 from utilities import checks
 from utilities import errors
-from client import client
 #from client import aiohttp_session
 aiohttp_session = aiohttp.ClientSession()
 
 def setup(bot):
-	bot.add_cog(Resources())
+	bot.add_cog(Resources(bot))
 
 class Resources:
-
-	tags_data, tags = None, None
-	waclient = wolframalpha.Client(credentials.wolframalpha_appid)
-	#wolframalpha (wa)
+	
+	def __init__(self, bot):
+		self.bot = bot
+		self.tags_data, self.tags = None, None
+		self.waclient = wolframalpha.Client(credentials.wolframalpha_appid)
+		#wolframalpha (wa)
 	
 	@commands.command()
 	async def add(self, *numbers : float):
@@ -46,7 +47,7 @@ class Resources:
 				addends.append(str(int(number)))
 			else:
 				addends.append(str(number))
-		await client.reply(" + ".join(addends) + " = " + str(result))
+		await self.bot.reply(" + ".join(addends) + " = " + str(result))
 	
 	@commands.command()
 	async def audiodefine(self, word : str):
@@ -58,14 +59,14 @@ class Resources:
 			data = data[0]
 			audio = data["fileUrl"]
 			word = data["word"]
-			await client.reply(word.capitalize() + ": " + audio)
+			await self.bot.reply(word.capitalize() + ": " + audio)
 		else:
-			await client.reply("Word or audio not found.")
+			await self.bot.reply("Word or audio not found.")
 	
 	@commands.command()
 	async def bing(self, *search : str):
 		'''Look something up on Bing'''
-		await client.reply("http://www.bing.com/search?q={0}".format('+'.join(search)))
+		await self.bot.reply("http://www.bing.com/search?q={0}".format('+'.join(search)))
 	
 	@commands.command(aliases = ["calc", "calculator"])
 	async def calculate(self, *, equation : str):
@@ -83,14 +84,14 @@ class Resources:
 		_equation = ''.join(character for character in _equation if character in _allowed)
 		print(_equation)
 		try:
-			await client.reply(_equation + '=' + str(eval(_equation)))
+			await self.bot.reply(_equation + '=' + str(eval(_equation)))
 		except:
 			pass
 		'''
 		if len(equation) >= 3 and equation[0].isnumeric and equation[2].isnumeric and equation[1] in ['+', '-', '*', '/']:
-			await client.reply(' '.join(equation[:3]) + " = " + str(eval(''.join(equation[:3]))))
+			await self.bot.reply(' '.join(equation[:3]) + " = " + str(eval(''.join(equation[:3]))))
 		else:
-			await client.reply("That's not a valid input.")
+			await self.bot.reply("That's not a valid input.")
 		'''
 	
 	@commands.command()
@@ -108,24 +109,24 @@ class Resources:
 				categories = ""
 				for category in root.findall(".//name"):
 					categories += category.text + ' '
-				await client.reply(categories[:-1])
+				await self.bot.reply(categories[:-1])
 			else:
 				url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={0}".format(category)
 				async with aiohttp_session.get(url) as resp:
 					data = await resp.text()
 				root = xml.etree.ElementTree.fromstring(data)
 				if root.find(".//url") is not None:
-					await client.reply(root.find(".//url").text)
+					await self.bot.reply(root.find(".//url").text)
 				else:
 					async with aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
 						data = await resp.text()
 					root = xml.etree.ElementTree.fromstring(data)
-					await client.reply(root.find(".//url").text)
+					await self.bot.reply(root.find(".//url").text)
 		else:
 			async with aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
 				data = await resp.text()
 			root = xml.etree.ElementTree.fromstring(data)
-			await client.reply(root.find(".//url").text)
+			await self.bot.reply(root.find(".//url").text)
 	
 	@commands.command()
 	async def choose(self, *choices : str):
@@ -134,13 +135,13 @@ class Resources:
 		choose <option1> <option2> <...>
 		'''
 		if not choices:
-			await client.reply("Choose between what?")
-		await client.reply(random.choice(choices))
+			await self.bot.reply("Choose between what?")
+		await self.bot.reply(random.choice(choices))
 	
 	@commands.command(aliases = ["flip"])
 	async def coin(self):
 		'''Flip a coin'''
-		await client.reply(random.choice(["Heads!", "Tails!"]))
+		await self.bot.reply(random.choice(["Heads!", "Tails!"]))
 	
 	@commands.command(aliases = ["colour"])
 	async def color(self, *options : str):
@@ -157,12 +158,12 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if not data:
-			await client.reply("Error.")
+			await self.bot.reply("Error.")
 		else:
 			data = data[0]
 			rgb = data["rgb"]
 			hsv = data["hsv"]
-			await client.reply("\n"
+			await self.bot.reply("\n"
 			"{name} ({hex})\n"
 			"RGB: ({red}, {green}, {blue})\n"
 			"HSV: ({hue}°, {saturation}%, {value}%)\n"
@@ -171,8 +172,8 @@ class Resources:
 	@commands.command()
 	async def conversions(self):
 		'''All conversion commands'''
-		await client.reply("Check your DMs for my conversion commands.")
-		await client.whisper("Conversions: \n" \
+		await self.bot.reply("Check your DMs for my conversion commands.")
+		await self.bot.whisper("Conversions: \n" \
 		"Temperature Unit Conversions: ![c, f, k, r, de]to[c, f, k, r, de, n, re, ro] \n" \
 		"Weight Unit Conversions: ![amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, " \
 		"kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, " \
@@ -188,9 +189,9 @@ class Resources:
 			status = resp.status
 			data = await resp.text()
 		if status == 404:
-			await client.reply("Error.")
+			await self.bot.reply("Error.")
 		else:
-			await client.reply(data)
+			await self.bot.reply(data)
 	
 	@commands.group()
 	async def decode(self):
@@ -203,12 +204,12 @@ class Resources:
 	@decode.command(name = "morse")
 	async def decode_morse(self, *, message : str):
 		'''Decodes morse code'''
-		await client.reply('`' + ciphers.decode_morse(message) + '`')
+		await self.bot.reply('`' + ciphers.decode_morse(message) + '`')
 	
 	@decode.command(name = "reverse")
 	async def decode_reverse(self, *, message : str):
 		'''Reverses text'''
-		await client.reply('`' + message[::-1] + '`')
+		await self.bot.reply('`' + message[::-1] + '`')
 	
 	@decode.command(name = "caesar", aliases = ["rot"])
 	async def decode_caesar(self, option : str, *, message : str):
@@ -217,11 +218,11 @@ class Resources:
 		options: key (0 - 26), brute
 		'''
 		if len(message) == 0 or not ((option.isdigit() and 0 <= int(option) <= 26) or option == "brute"):
-			await client.reply("Invalid Format. !decode caesar <key (0 - 26) or brute> <content>")
+			await self.bot.reply("Invalid Format. !decode caesar <key (0 - 26) or brute> <content>")
 		elif option == "brute":
-			await client.reply('`' + ciphers.brute_force_caesar(message) + '`')
+			await self.bot.reply('`' + ciphers.brute_force_caesar(message) + '`')
 		else:
-			await client.reply('`' + ciphers.decode_caesar(message, option) + '`')
+			await self.bot.reply('`' + ciphers.decode_caesar(message, option) + '`')
 	
 	@commands.command()
 	async def define(self, word : str):
@@ -234,9 +235,9 @@ class Resources:
 			data = data[0]
 			definition = data["text"]
 			word = data["word"]
-			await client.reply(word.capitalize() + ": " + definition)
+			await self.bot.reply(word.capitalize() + ": " + definition)
 		else:
-			await client.reply("Definition not found.")
+			await self.bot.reply("Definition not found.")
 	
 	@commands.group()
 	async def encode(self):
@@ -249,12 +250,12 @@ class Resources:
 	@encode.command(name = "morse")
 	async def encode_morse(self, *, message : str):
 		'''Encode a message in morse code'''
-		await client.reply('`' + ciphers.encode_morse(message) + '`')
+		await self.bot.reply('`' + ciphers.encode_morse(message) + '`')
 	
 	@encode.command(name = "reverse")
 	async def encode_reverse(self, *, message : str):
 		'''Reverses text'''
-		await client.reply('`' + message[::-1] + '`')
+		await self.bot.reply('`' + message[::-1] + '`')
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
 	async def encode_caesar(self, key : int, *, message : str):
@@ -263,9 +264,9 @@ class Resources:
 		key : 0 - 26
 		'''
 		if len(message) == 0 or not 0 <= key <= 26:
-			await client.reply("Invalid Format. !encode caesar <key (0 - 26)> <content>")
+			await self.bot.reply("Invalid Format. !encode caesar <key (0 - 26)> <content>")
 		else:
-			await client.reply('`' + ciphers.encode_caesar(message, key) + '`')
+			await self.bot.reply('`' + ciphers.encode_caesar(message, key) + '`')
 	
 	@commands.command()
 	async def fancify(self, *, text : str):
@@ -278,7 +279,7 @@ class Resources:
 				output += chr(ord(letter) + 119919)
 			elif letter == ' ':
 				output += ' '
-		await client.reply(output)
+		await self.bot.reply(output)
 	
 	@commands.group(invoke_without_command = True)
 	async def giphy(self, *search : str):
@@ -290,7 +291,7 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		await client.reply(data[0]["url"])
+		await self.bot.reply(data[0]["url"])
 	
 	@giphy.command(name = "random")
 	async def giphy_random(self):
@@ -299,7 +300,7 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		await client.reply(data["url"])
+		await self.bot.reply(data["url"])
 	
 	@giphy.command(name = "trending")
 	async def giphy_trending(self):
@@ -308,12 +309,12 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		await client.reply(data[0]["url"])
+		await self.bot.reply(data[0]["url"])
 	
 	@commands.command(aliases = ["search"])
 	async def google(self, *search : str):
 		'''Google something'''
-		await client.reply("https://www.google.com/search?q={0}".format(('+').join(search)))
+		await self.bot.reply("https://www.google.com/search?q={0}".format(('+').join(search)))
 	
 	@commands.command(aliases = ["imagesearch"])
 	async def googleimage(self, *search : str):
@@ -322,7 +323,7 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		image_link = data["items"][0]["link"]
-		await client.reply(image_link)
+		await self.bot.reply(image_link)
 		# handle 403 daily limit exceeded error
 	
 	@commands.command(pass_context = True)
@@ -330,7 +331,7 @@ class Resources:
 		'''WIP'''
 		name = "data/graph_testing.png"
 		seaborn.jointplot(**eval(data)).savefig(name)
-		await client.send_file(destination = ctx.message.channel, fp = name, content = "Testing Graph")
+		await self.bot.send_file(destination = ctx.message.channel, fp = name, content = "Testing Graph")
 	
 	@commands.command()
 	async def haveibeenpwned(self, name : str):
@@ -357,7 +358,7 @@ class Resources:
 			for pastedaccount in data:
 				pastedaccounts += pastedaccount["Source"] + " (" + pastedaccount["Id"] + "), "
 			pastedaccounts = pastedaccounts[:-2]
-		await client.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
+		await self.bot.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
 	
 	@commands.command(aliases = ["movie"])
 	async def imdb(self, *search : str):
@@ -366,9 +367,9 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
-			await client.reply(data["Error"])
+			await self.bot.reply(data["Error"])
 		else:
-			await client.reply("```"
+			await self.bot.reply("```"
 			"{title} ({year})\n"
 			"Type: {type}\n"
 			"IMDb Rating: {rating}\n"
@@ -380,7 +381,7 @@ class Resources:
 	@commands.command()
 	async def imfeelinglucky(self, *search : str):
 		'''First Google result of a search'''
-		await client.reply("https://www.google.com/search?btnI&q={0}".format('+'.join(search)))
+		await self.bot.reply("https://www.google.com/search?btnI&q={0}".format('+'.join(search)))
 	
 	@commands.command()
 	async def insult(self):
@@ -388,7 +389,7 @@ class Resources:
 		url = "http://quandyfactory.com/insult/json"
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		await client.say(data["insult"])
+		await self.bot.say(data["insult"])
 	
 	@commands.command()
 	async def joke(self):
@@ -397,17 +398,17 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		joke = data["joke"]
-		await client.reply(joke)
+		await self.bot.reply(joke)
 	
 	@commands.command()
 	async def lmbtfy(self, *search : str):
 		'''Let Me Bing That For You'''
-		await client.reply("http://lmbtfy.com/?q={0}".format(('+').join(search)))
+		await self.bot.reply("http://lmbtfy.com/?q={0}".format(('+').join(search)))
 	
 	@commands.command()
 	async def lmgtfy(self, *search : str):
 		'''Let Me Google That For You'''
-		await client.reply("http://www.lmgtfy.com/?q={0}".format(('+').join(search)))
+		await self.bot.reply("http://www.lmgtfy.com/?q={0}".format(('+').join(search)))
 	
 	@commands.command()
 	async def longurl(self, url : str):
@@ -417,9 +418,9 @@ class Resources:
 			status = resp.status
 			data = await resp.json()
 		if status == 400:
-			await client.reply("Error.")
+			await self.bot.reply("Error.")
 		else:
-			await client.reply(data["longUrl"])
+			await self.bot.reply(data["longUrl"])
 	
 	@commands.command()
 	async def map(self, *options : str):
@@ -427,35 +428,35 @@ class Resources:
 		if options and options[0] == "random":
 			latitude = random.uniform(-90, 90)
 			longitude = random.uniform(-180, 180)
-			await client.reply("https://maps.googleapis.com/maps/api/staticmap?center={0},{1}&zoom=13&size=600x300".format(str(latitude), str(longitude)))
+			await self.bot.reply("https://maps.googleapis.com/maps/api/staticmap?center={0},{1}&zoom=13&size=600x300".format(str(latitude), str(longitude)))
 		else:
-			await client.reply("https://maps.googleapis.com/maps/api/staticmap?center={0}&zoom=13&size=600x300".format("+".join(options)))
+			await self.bot.reply("https://maps.googleapis.com/maps/api/staticmap?center={0}&zoom=13&size=600x300".format("+".join(options)))
 	
 	@commands.command()
 	async def math(self, number : int):
 		'''Math facts about numbers'''
 		async with aiohttp_session.get("http://numbersapi.com/{0}/math".format(number)) as resp:
 			data = await resp.text()
-		await client.reply(data)
+		await self.bot.reply(data)
 	
 	@commands.command()
 	async def number(self, number : int):
 		'''Facts about numbers'''
 		async with aiohttp_session.get("http://numbersapi.com/{0}".format(number)) as resp:
 			data = await resp.text()
-		await client.reply(data)
+		await self.bot.reply(data)
 	
 	@commands.command()
 	async def randomidea(self):
 		'''Generate random idea'''
 		async with aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
 			data = await resp.json()
-		await client.reply("{0} for {1}".format(data["this"], data["that"]))
+		await self.bot.reply("{0} for {1}".format(data["this"], data["that"]))
 	
 	@commands.command()
 	async def randomlocation(self):
 		'''Generate random location'''
-		await client.reply("{0}, {1}".format(str(random.uniform(-90, 90)), str(random.uniform(-180, 180))))
+		await self.bot.reply("{0}, {1}".format(str(random.uniform(-90, 90)), str(random.uniform(-180, 180))))
 	
 	@commands.command()
 	async def randomword(self):
@@ -464,7 +465,7 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		word = data["word"]
-		await client.reply(word.capitalize())
+		await self.bot.reply(word.capitalize())
 	
 	@commands.command(hidden = True)
 	async def redditsearch(self): #WIP
@@ -478,9 +479,9 @@ class Resources:
 		Default range is 1 to 10
 		'''
 		if len(number) and number[0] > 0:
-			await client.reply(str(random.randint(1, number[0])))
+			await self.bot.reply(str(random.randint(1, number[0])))
 		else:
-			await client.reply(str(random.randint(1, 10)))
+			await self.bot.reply(str(random.randint(1, 10)))
 	
 	@commands.command()
 	async def shorturl(self, url : str):
@@ -488,7 +489,7 @@ class Resources:
 		async with aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={0}".format(credentials.google_apikey), \
 		headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
 			data = await resp.json()
-		await client.reply(data["id"])
+		await self.bot.reply(data["id"])
 	
 	@commands.command()
 	async def spotifyinfo(self, url : str):
@@ -501,21 +502,21 @@ class Resources:
 				data = await resp.json()
 			# tracknumber = str(data["track_number"])
 			# albumlink = data["album"]["href"]
-			await client.reply("```\n{songname} by {artistname}\n{albumname}\n{duration}```Preview: {preview}\nArtist: {artistlink}\nAlbum: {albumlink}".format( \
+			await self.bot.reply("```\n{songname} by {artistname}\n{albumname}\n{duration}```Preview: {preview}\nArtist: {artistlink}\nAlbum: {albumlink}".format( \
 				songname =  data["name"], artistname = data["artists"][0]["name"], albumname = data["album"]["name"], 
 				duration = utilities.secs_to_colon_format(data["duration_ms"] / 1000), preview = data["preview_url"], 
 				artistlink = data["artists"][0]["external_urls"]["spotify"], albumlink = data["album"]["external_urls"]["spotify"]))
 		else:
-			await client.reply("Syntax error.")
+			await self.bot.reply("Syntax error.")
 	
 	@commands.command(aliases = ["sptoyt"])
 	async def spotifytoyoutube(self, url : str):
 		'''Find a Spotify track on Youtube'''
 		link = await voice.spotify_to_youtube(url)
 		if link:
-			await client.reply(link)
+			await self.bot.reply(link)
 		else:
-			await client.reply("Error")
+			await self.bot.reply("Error")
 	
 	@commands.group()
 	async def steam(self, *options : str):
@@ -533,7 +534,7 @@ class Resources:
 			if _app["name"].lower() == app.lower():
 				appid = _app["appid"]
 				break
-		await client.reply(str(appid))
+		await self.bot.reply(str(appid))
 	
 	@steam.command(name = "gamecount")
 	async def steam_gamecount(self, vanity_name : str):
@@ -546,7 +547,7 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
-		await client.reply("{0} has {1} games.".format(vanity_name, str(gamecount)))
+		await self.bot.reply("{0} has {1} games.".format(vanity_name, str(gamecount)))
 	
 	@steam.command(name = "gameinfo")
 	async def steam_gameinfo(self, *, game : str):
@@ -573,7 +574,7 @@ class Resources:
 			isfree = "No"
 		detaileddescription = data["detailed_description"]
 		description = data["about_the_game"]
-		await client.reply("{name}\n{appid}\nFree?: {0}\n{website}\n{header_image}".format( \
+		await self.bot.reply("{name}\n{appid}\nFree?: {0}\n{website}\n{header_image}".format( \
 			isfree, name = data["name"], appid = str(data["steam_appid"]), website = data["website"], header_image = data["header_image"]))
 	
 	@commands.command()
@@ -584,7 +585,7 @@ class Resources:
 		'''
 		async with aiohttp_session.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})) as resp:
 			poll = await resp.json()
-		await client.reply("http://strawpoll.me/" + str(poll["id"]))
+		await self.bot.reply("http://strawpoll.me/" + str(poll["id"]))
 	
 	@commands.command()
 	async def streetview(self, *options : str):
@@ -593,9 +594,9 @@ class Resources:
 			if options[0] == "random":
 				latitude = random.uniform(-90, 90)
 				longitude = random.uniform(-180, 180)
-				await client.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(str(latitude), str(longitude)))
+				await self.bot.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(str(latitude), str(longitude)))
 			else:
-				await client.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
+				await self.bot.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
 	
 	@commands.group(pass_context = True, aliases = ["trigger", "note"])
 	async def tag(self, ctx):
@@ -606,7 +607,7 @@ class Resources:
 		with open("data/tags.json", "r") as tags_file:
 			self.tags_data = json.load(tags_file)
 		if len(ctx.message.content.split()) == 1:
-			await client.reply("Add a tag with `!tag add <tag> <content>`. " \
+			await self.bot.reply("Add a tag with `!tag add <tag> <content>`. " \
 				"Use `!tag <tag>` to trigger the tag you added. `!tag <edit>` to edit, `!tag <remove>` to delete")
 			return
 		if not ctx.invoked_subcommand is self.tag_add:
@@ -617,18 +618,18 @@ class Resources:
 			raise errors.NoTag
 		if not ctx.invoked_subcommand:
 			if len(ctx.message.content.split()) >= 3:
-				await client.reply("Syntax error.")
+				await self.bot.reply("Syntax error.")
 			else:
 				if not ctx.message.content.split()[1] in self.tags:
 					raise errors.NoTag
 				else:
-					await client.reply(self.tags[ctx.message.content.split()[1]])
+					await self.bot.reply(self.tags[ctx.message.content.split()[1]])
 	
 	@tag.command(name = "list", pass_context = True, aliases = ["all", "mine"])
 	async def tag_list(self, ctx):
 		'''List your tags'''
 		_tag_list = ", ".join(list(self.tags.keys()))
-		await client.reply("Your tags: " + _tag_list)
+		await self.bot.reply("Your tags: " + _tag_list)
 	
 	@tag.command(name = "add", pass_context = True, aliases = ["make", "new", "create"])
 	async def tag_add(self, ctx, tag : str, *, content : str):
@@ -637,12 +638,12 @@ class Resources:
 			self.tags_data[ctx.message.author.id] = {"name" : ctx.message.author.name, "tags" : {}}
 		self.tags = self.tags_data[ctx.message.author.id]["tags"]
 		if tag in self.tags:
-			await client.reply("You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
+			await self.bot.reply("You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
 			return
 		self.tags[tag] = content
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
-		await client.reply("Your tag has been added.")
+		await self.bot.reply("Your tag has been added.")
 	
 	@tag.command(name = "edit", pass_context = True)
 	async def tag_edit(self, ctx, tag : str, *, content : str):
@@ -650,7 +651,7 @@ class Resources:
 		self.tags[tag] = content
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
-		await client.reply("Your tag has been edited.")
+		await self.bot.reply("Your tag has been edited.")
 	
 	@tag.command(name = "delete", pass_context = True, aliases = ["remove", "destroy"])
 	async def tag_delete(self, ctx, tag : str):
@@ -658,7 +659,7 @@ class Resources:
 		del self.tags[tag]
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
-		await client.reply("Your tag has been deleted.")
+		await self.bot.reply("Your tag has been deleted.")
 	'''
 	@tag.error
 	async def tag_error(self, error, ctx):
@@ -672,7 +673,7 @@ class Resources:
 	@commands.command(hidden = True)
 	async def weather(self, *options : str): #WIP
 		'''WIP'''
-		await client.reply(str(weather.temp(' '.join(options))))
+		await self.bot.reply(str(weather.temp(' '.join(options))))
 	
 	@commands.command(hidden = True, pass_context = True)
 	async def webmtogif(self, ctx, url : str): #WIP
@@ -682,22 +683,22 @@ class Resources:
 		clip = moviepy.editor.VideoFileClip("data/webtogif.webm")
 		clip.write_gif("data/webtogif.gif", fps = 1, program = "ffmpeg")
 		# clip.write_gif("data/webtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
-		await client.send_file(ctx.message.channel, "data/webtogif.gif")
+		await self.bot.send_file(ctx.message.channel, "data/webtogif.gif")
 		#subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
-		#await client.send_file(message.channel, "data/webtogif.gif")
+		#await self.bot.send_file(message.channel, "data/webtogif.gif")
 	
 	@commands.command(hidden = True)
 	async def whatis(self, *search : str): #WIP
 		'''WIP'''
 		if not search:
-			await client.reply("What is what?")
+			await self.bot.reply("What is what?")
 		else:
-			await client.reply("I don't know what that is.")
+			await self.bot.reply("I don't know what that is.")
 	
 	@commands.command()
 	async def wiki(self, *search : str):
 		'''Look something up on Wikipedia'''
-		await client.reply("https://en.wikipedia.org/wiki/{0}".format("_".join(search)))
+		await self.bot.reply("https://en.wikipedia.org/wiki/{0}".format("_".join(search)))
 	
 	@commands.command(hidden = True, aliases = ["wa"])
 	@checks.is_owner()
@@ -705,9 +706,9 @@ class Resources:
 		'''WIP'''
 		result = self.waclient.query(search)
 		for pod in result.pods:
-			await client.reply(pod.img)
-			await client.reply(pod.text)
-		#await client.reply(next(result.results).text)
+			await self.bot.reply(pod.img)
+			await self.bot.reply(pod.text)
+		#await self.bot.reply(next(result.results).text)
 	
 	@commands.command()
 	async def xkcd(self, *options : str):
@@ -722,13 +723,13 @@ class Resources:
 			total = json.loads(data)["num"]
 			url = "http://xkcd.com/{0}/info.0.json".format(str(random.randint(1, total)))
 		else:
-			await client.reply("Syntax error.")
+			await self.bot.reply("Syntax error.")
 		async with aiohttp_session.get(url) as resp:
 			if resp.status == 404:
-				await client.reply("Error.")
+				await self.bot.reply("Error.")
 				return
 			data = await resp.json()
-		await client.reply("\n"
+		await self.bot.reply("\n"
 		"http://xkcd.com/{num} ({date})\n"
 		"{image_link}\n"
 		"{title}\n"
@@ -769,18 +770,18 @@ class Resources:
 			views = utilities.add_commas(int(data["statistics"]["viewCount"]))
 			channel = data["snippet"]["channelTitle"]
 			published = data["snippet"]["publishedAt"][:10]
-			# await client.send_message(message.channel, message.author.mention + "\n**" + title + "**\n**Length**: " + str(length) + "\n**Likes**: " + likes + ", **Dislikes**: " + dislikes + " (" + str(likepercentage) + "%)\n**Views**: " + views + "\n" + channel + " on " + published)
-			await client.reply("\n```" + title + "\nLength: " + str(length) + "\nLikes: " + likes + ", Dislikes: " + dislikes + " (" + str(likepercentage) + "%)\nViews: " + views + "\n" + channel + " on " + published + "```")
+			# await self.bot.send_message(message.channel, message.author.mention + "\n**" + title + "**\n**Length**: " + str(length) + "\n**Likes**: " + likes + ", **Dislikes**: " + dislikes + " (" + str(likepercentage) + "%)\n**Views**: " + views + "\n" + channel + " on " + published)
+			await self.bot.reply("\n```" + title + "\nLength: " + str(length) + "\nLikes: " + likes + ", Dislikes: " + dislikes + " (" + str(likepercentage) + "%)\nViews: " + views + "\n" + channel + " on " + published + "```")
 	
 	@commands.command(aliases = ["ytsearch"])
 	async def youtubesearch(self, *search : str):
 		'''Find a Youtube video'''
 		link = await utilities.youtubesearch(search)
-		await client.reply(link)
+		await self.bot.reply(link)
 	
 	@commands.command()
 	async def year(self, year : int):
 		'''Facts about years'''
 		async with aiohttp_session.get("http://numbersapi.com/{0}/year".format(year)) as resp:
 			data = await resp.text()
-		await client.reply(data)
+		await self.bot.reply(data)
