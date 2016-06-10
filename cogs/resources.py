@@ -156,12 +156,17 @@ class Resources:
 			url = "http://www.colourlovers.com/api/colors?numResults=1&format=json&keywords={0}".format('+'.join(options))
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		data = data[0]
-		rgb = data["rgb"]
-		hsv = data["hsv"]
-		await client.reply("\n{name} ({hex})\nRGB: ({red}, {green}, {blue})\nHSV: ({hue}°, {saturation}%, {value}%)\n{image}".format( \
-			name = data["title"].capitalize(), hex = '#' + data["hex"], red = str(rgb["red"]), green = str(rgb["green"]), blue = str(rgb["blue"]),
-			hue = str(hsv["hue"]), saturation = str(hsv["saturation"]), value = str(hsv["value"]), image = data["imageUrl"]))
+		if not data:
+			await client.reply("Error.")
+		else:
+			data = data[0]
+			rgb = data["rgb"]
+			hsv = data["hsv"]
+			await client.reply("\n"
+			"{name} ({hex})\n"
+			"RGB: ({red}, {green}, {blue})\n"
+			"HSV: ({hue}°, {saturation}%, {value}%)\n"
+			"{image}".format(name = data["title"].capitalize(), hex = "#{}".format(data["hex"]), red = str(rgb["red"]), green = str(rgb["green"]), blue = str(rgb["blue"]),	hue = str(hsv["hue"]), saturation = str(hsv["saturation"]), value = str(hsv["value"]), image = data["imageUrl"]))
 	
 	@commands.command()
 	async def conversions(self):
@@ -363,13 +368,13 @@ class Resources:
 		if data["Response"] == "False":
 			await client.reply(data["Error"])
 		else:
-			await client.reply("```\n"
+			await client.reply("```"
 			"{title} ({year})\n"
 			"Type: {type}\n"
 			"IMDb Rating: {rating}\n"
 			"Runtime: {runtime}\n"
 			"Genre(s): {genre}\n"
-			"Plot: {plot}```\n"
+			"Plot: {plot}```"
 			"Poster: {poster}".format(title = data["Title"], year = data["Year"], type = data["Type"], rating = data["imdbRating"], runtime = data["Runtime"], genre = data["Genre"], plot = data["Plot"], poster = data["Poster"]))
 	
 	@commands.command()
