@@ -104,6 +104,25 @@ class Discord:
 					await self.bot.delete_message(to_delete[0])
 				elif len(to_delete) > 1:
 					await self.bot.delete_messages(to_delete)
+			elif options[0] == "embeds" and options[1].isdigit():
+				number = int(options[1])
+				to_delete = []
+				count = 0
+				await self.bot.delete_message(ctx.message)
+				async for client_message in self.bot.logs_from(ctx.message.channel, limit = 10000):
+					if client_message.embeds:
+						to_delete.append(client_message)
+						count += 1
+						if count == number:
+							break
+						elif len(to_delete) == 100:
+							await self.bot.delete_messages(to_delete)
+							to_delete.clear()
+							await asyncio.sleep(1)
+				if len(to_delete) == 1:
+					await self.bot.delete_message(to_delete[0])
+				elif len(to_delete) > 1:
+					await self.bot.delete_messages(to_delete)
 			elif len(options) > 1 and options[1].isdigit():
 				number = int(options[1])
 				to_delete = []
