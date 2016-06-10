@@ -2,10 +2,11 @@
 # import discord
 from discord.ext import commands
 # client = discord.Client()
+import aiohttp
 import datetime
 import sys
 
-import aiohttp
+from os import listdir
 
 from utilities import errors
 from modules import utilities
@@ -32,13 +33,12 @@ class Bot(commands.Bot):
 	
 
 client = Bot(command_prefix = '!', description = "Harmonbot", pm_help = None)
-
 # rss_client = Bot(command_prefix = '!', description = "RSS Bot")
 
 online_time = datetime.datetime.utcnow()
 
-initial_extensions = ["commands.discord", "commands.meta", "commands.games", "commands.resources", "commands.rss"]
-for extension in initial_extensions:
-	client.load_extension(extension)
+for file in listdir("cogs"):
+	if file.endswith(".py"):
+		client.load_extension("cogs." + file[:-3])
 
 aiohttp_session = aiohttp.ClientSession()

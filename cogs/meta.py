@@ -45,6 +45,11 @@ class Meta:
 			_allcommands += name + ' '
 		await client.whisper(_allcommands[:-1])
 	
+	@commands.command()
+	async def changelog(self):
+		'''Link to changelog'''
+		await client.reply("https://discord.gg/0oyodN94Y3CgCT6I")
+	
 	@commands.command(name = "commands")
 	async def _commands(self):
 		'''Some additional commands and information'''
@@ -199,7 +204,7 @@ class Meta:
 	@checks.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
-		await client.say("Restarting...")
+		await client.say(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Harmonbot...")
 		voice_channels = [[voice_client.channel.id, voice.get_player(voice_client.server)["text"]] for voice_client in client.voice_clients]
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
@@ -212,7 +217,7 @@ class Meta:
 	@checks.is_owner()
 	async def shutdown(self):
 		'''Shut me down'''
-		await client.say("Shutting down.")
+		await client.say(":scream: Shutting down.")
 		print("Forcing Shutdown...")
 		await utilities.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
