@@ -15,7 +15,7 @@ import subprocess
 import urllib
 import youtube_dl
 
-import keys
+import credentials
 from modules import utilities
 from utilities import checks
 from client import client
@@ -85,7 +85,7 @@ async def srtest(ctx):
 async def voice(ctx, *options : str): #elif options[0] == "full":
 	'''Audio System'''
 	if not client.is_voice_connected(ctx.message.server):
-		if (ctx.message.author.id == keys.myid or ctx.message.author == ctx.message.server.owner):
+		if (ctx.message.author.id == credentials.myid or ctx.message.author == ctx.message.server.owner):
 			await client.reply("I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
 		else:
 			await client.reply("I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
@@ -225,7 +225,7 @@ async def radio_on(ctx):
 	url_data = urllib.parse.urlparse(player["current"]["stream"].url)
 	query = urllib.parse.parse_qs(url_data.query)
 	videoid = query["v"][0]
-	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + videoid + "&type=video&key=" + keys.google_apikey
+	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + videoid + "&type=video&key=" + credentials.google_apikey
 	async with aiohttp_session.get(url) as resp:
 		data = await resp.json()
 	radio_currently_playing = data["items"][0]["id"]["videoId"]
@@ -241,7 +241,7 @@ async def radio_on(ctx):
 			await asyncio.sleep(1)
 		if not player["radio_on"]:
 			break
-		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + radio_currently_playing + "&type=video&key=" + keys.google_apikey
+		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + radio_currently_playing + "&type=video&key=" + credentials.google_apikey
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		radio_currently_playing = random.choice(data["items"])["id"]["videoId"]
@@ -395,7 +395,7 @@ async def player_add_playlist(message):
 	if path[:9] == "/playlist" and query[:5] == "list=":
 		response = await utilities.send_mention_space(message, "Loading...")
 		playlistid = query[5:]
-		base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(keys.google_apikey, playlistid)
+		base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(credentials.google_apikey, playlistid)
 		url = base_url
 		player_instance = get_player(message.server)
 		while True:
@@ -439,7 +439,7 @@ async def spotify_to_youtube(link):
 			data = await resp.json()
 		songname = "+".join(data["name"].split())
 		artistname = "+".join(data["artists"][0]["name"].split())
-		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + songname + "+by+" + artistname + "&key=" + keys.google_apikey
+		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + songname + "+by+" + artistname + "&key=" + credentials.google_apikey
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["items"][0]

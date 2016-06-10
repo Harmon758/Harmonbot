@@ -14,6 +14,7 @@ from modules import war
 from utilities import checks
 from client import client
 from client import wait_time
+from client import cleverbot_instance
 
 def setup(bot):
 	bot.add_cog(Games())
@@ -22,7 +23,6 @@ class Games:
 	
 	#init
 	_chess_board = chess.Board()
-	cleverbot_instance = cleverbot.Cleverbot()
 	war_channel, war_players = None, []
 	gofish_channel, gofish_players = None, []
 	taboo_players = []
@@ -123,7 +123,7 @@ class Games:
 	@commands.command(aliases = ["talk", "ask"])
 	async def cleverbot(self, *, message : str):
 		'''Talk to Cleverbot'''
-		await client.reply(self.cleverbot_instance.ask(message))
+		await client.reply(cleverbot_instance.ask(message))
 	
 	@commands.command(aliases = ["8ball"])
 	async def eightball(self):

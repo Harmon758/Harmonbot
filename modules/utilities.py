@@ -8,7 +8,7 @@ import json
 import math
 import random
 
-import keys
+import credentials
 from client import client
 from client import online_time
 from modules import voice
@@ -98,7 +98,7 @@ def remove_symbols(string):
 	return plain_string
 
 async def youtubesearch(search):
-	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), keys.google_apikey)
+	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), credentials.google_apikey)
 	async with aiohttp_session.get(url) as resp:
 		data = await resp.json()
 	data = data["items"][0]

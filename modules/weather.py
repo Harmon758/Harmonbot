@@ -1,9 +1,9 @@
 
 import pyowm
 
-import keys
+import credentials
 
-owm = pyowm.OWM(keys.owm_api_key)
+owm = pyowm.OWM(credentials.owm_api_key)
 
 def wunderground():
 	pass
