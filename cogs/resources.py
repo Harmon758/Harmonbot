@@ -355,19 +355,27 @@ class Resources:
 		await client.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
 	
 	@commands.command(aliases = ["movie"])
-	async def imdb(self, *, search : str):
+	async def imdb(self, *search : str):
 		'''IMDb Information'''
-		url = "http://www.omdbapi.com/?t={0}&y=&plot=short&r=json".format(search)
+		url = "http://www.omdbapi.com/?t={0}&y=&plot=short&r=json".format('+'.join(search))
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		await client.reply("```\n{title} ({year})\nType: {type}\nIMDb Rating: {rating}\nRuntime: {runtime}\nGenre(s): {genre}\nPlot: {plot}```\nPoster: {poster}".format( \
-			title = data["Title"], year = data["Year"], type = data["Type"], rating = data["imdbRating"], runtime = data["Runtime"], genre = data["Genre"], 
-			plot = data["Plot"], poster = data["Poster"]))
+		if data["Response"] == "False":
+			await client.reply(data["Error"])
+		else:
+			await client.reply("```\n"
+			"{title} ({year})\n"
+			"Type: {type}\n"
+			"IMDb Rating: {rating}\n"
+			"Runtime: {runtime}\n"
+			"Genre(s): {genre}\n"
+			"Plot: {plot}```\n"
+			"Poster: {poster}".format(title = data["Title"], year = data["Year"], type = data["Type"], rating = data["imdbRating"], runtime = data["Runtime"], genre = data["Genre"], plot = data["Plot"], poster = data["Poster"]))
 	
 	@commands.command()
 	async def imfeelinglucky(self, *search : str):
 		'''First Google result of a search'''
-		await client.reply("https://www.google.com/search?btnI&q={0}".format(('+').join(search)))
+		await client.reply("https://www.google.com/search?btnI&q={0}".format('+'.join(search)))
 	
 	@commands.command()
 	async def insult(self):
