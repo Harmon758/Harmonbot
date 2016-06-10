@@ -239,10 +239,11 @@ class Meta:
 		'''Basic test command'''
 		await self.bot.say("Hello, World!")
 	
-	@commands.command(pass_context = True, hidden = True)
-	async def echo(self, ctx):
+	@commands.command(hidden = True)
+	@checks.is_owner()
+	async def echo(self, *, message):
 		'''Echoes the message'''
-		await self.bot.say(ctx.message.content)
+		await self.bot.say(message)
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
