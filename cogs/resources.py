@@ -721,11 +721,18 @@ class Resources:
 				data = await resp.text()
 			total = json.loads(data)["num"]
 			url = "http://xkcd.com/{0}/info.0.json".format(str(random.randint(1, total)))
+		else:
+			await client.reply("Syntax error.")
 		async with aiohttp_session.get(url) as resp:
+			if resp.status == 404:
+				await client.reply("Error.")
+				return
 			data = await resp.json()
-		await client.reply("http://xkcd.com/{num} ({date})\n{image_link}\n{title}\nAlt Text: {alt_text}".format( \
-			num = str(data["num"]), date = "{month}/{day}/{year}".format(month = data["month"], day = data["day"], year = data["year"]),
-			image_link = data["img"], title = data["title"], alt_text = data["alt"]))
+		await client.reply("\n"
+		"http://xkcd.com/{num} ({date})\n"
+		"{image_link}\n"
+		"{title}\n"
+		"Alt Text: {alt_text}".format(num = str(data["num"]), date = "{month}/{day}/{year}".format(month = data["month"], day = data["day"], year = data["year"]), image_link = data["img"], title = data["title"], alt_text = data["alt"]))
 	
 	@commands.command(aliases = ["ytinfo"])
 	async def youtubeinfo(self, url : str):
