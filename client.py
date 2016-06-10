@@ -33,11 +33,11 @@ class Bot(commands.Bot):
 
 client = Bot(command_prefix = '!', description = "Harmonbot", pm_help = None)
 
-rss_client = Bot(command_prefix = '!', description = "RSS Bot")
+# rss_client = Bot(command_prefix = '!', description = "RSS Bot")
 
 online_time = datetime.datetime.utcnow()
 
-initial_extensions = ["commands.discord", "commands.meta", "commands.games", "commands.resources"]
+initial_extensions = ["commands.discord", "commands.meta", "commands.games", "commands.resources", "commands.rss"]
 for extension in initial_extensions:
 	client.load_extension(extension)
 
