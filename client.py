@@ -24,7 +24,8 @@ class Bot(commands.Bot):
 	async def on_error(self, event_method, message, *args, **kwargs):
 		type, value, traceback = sys.exc_info()
 		if type is errors.NoTags:
-			await utilities.send_mention_space(message, "You don't have any tags :slight_frown: Add one with `!tag add <tag> <content>`")
+			await utilities.send_mention_space(message, "You don't have any tags :slight_frown: "
+			"Add one with `!tag add <tag> <content>`")
 		elif type is errors.NoTag:
 			await utilities.send_mention_space(message, "You don't have that tag.")
 		else:

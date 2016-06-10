@@ -90,23 +90,30 @@ class Meta:
 	@commands.command()
 	async def stats(self, *option : str):
 		'''Bot stats'''
+		with open("data/stats.json", "r") as stats_file:
+			stats = json.load(stats_file)
 		if not option:
-			with open("data/stats.json", "r") as stats_file:
-				stats = json.load(stats_file)
-			total_uptime = stats["uptime"]
-			restarts = stats["restarts"]
-			await client.reply("\nTotal Recorded Uptime: " + utilities.duration_to_letter_format(utilities.secs_to_duration(int(total_uptime))) + \
-				"\nTotal Recorded Restarts: " + str(restarts))
+			uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
+			restarts = str(stats["restarts"])
+			cogs_reloaded = str(stats["cogs_reloaded"])
+			commands_executed = str(stats["commands_executed"])
+			await client.reply("\n"
+			"Total Recorded Uptime: {}\n"
+			"Total Recorded Restarts: {}\n"
+			"Total Cogs Reloaded: {}\n"
+			"Total Recorded Commands Executed: {}".format(uptime, restarts, cogs_reloaded, commands_executed))
 		elif option[0] == "uptime": # since 4/17/16, fixed 5/10/16
-			with open("data/stats.json", "r") as stats_file:
-				stats = json.load(stats_file)
-			total_uptime = stats["uptime"]
-			await client.reply("Total Recorded Uptime: " + utilities.duration_to_letter_format(utilities.secs_to_duration(int(total_uptime))))
+			uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
+			await client.reply("Total Recorded Uptime: {}".format(uptime))
 		elif option[0] == "restarts": # since 4/17/16, fixed 5/10/16
-			with open("data/stats.json", "r") as stats_file:
-				stats = json.load(stats_file)
-			restarts = stats["restarts"]
-			await client.reply("Total Recorded Restarts: " + str(restarts))
+			restarts = str(stats["restarts"])
+			await client.reply("Total Recorded Restarts: {}".format(restarts))
+		elif ' '.join(option[:2]) == "cogs reloaded": # since 6/10/16 - implemented cog reloading
+			cogs_reloaded = str(stats["cogs_reloaded"])
+			await client.reply("Total Cogs Reloaded: {}".format(cogs_reloaded))
+		elif ' '.join(option[:2]) == "commands executed": # since 6/10/16 (cog commands)
+			commands_executed = str(stats["commands_executed"])
+			await client.reply("Total Record Commands Executed".format(commands_executed))
 	
 	@commands.command()
 	async def uptime(self):
@@ -243,7 +250,7 @@ class Meta:
 			await client.say(str(i))
 	
 	@commands.command(hidden = True)
-	async def load(self):
+	async def loading_bar(self):
 		'''
 		Just for fun loading bar
 		Currently does nothing.. or does it?

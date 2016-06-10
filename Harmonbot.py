@@ -31,6 +31,7 @@ from modules import voice
 from cogs.games import Games
 from cogs.rss import check_rss_feeds
 
+from utilities import checks
 from utilities import errors
 
 import keys
@@ -64,7 +65,7 @@ except FileExistsError:
 	pass
 try:
 	with open("data/stats.json", "x") as stats_file:
-		json.dump({"uptime" : 0, "restarts" : 0}, stats_file)
+		json.dump({"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0}, stats_file)
 except FileExistsError:
 	pass
 try:
@@ -110,6 +111,56 @@ async def on_ready():
 @client.event
 async def on_resumed():
 	await client.send_message(client.get_channel("147264078258110464"), client.get_server("147208000132743168").get_member("115691005197549570").mention + ": resumed.")
+
+@client.event
+async def on_command(command, ctx):
+	with open("data/stats.json", "r") as stats_file:
+		stats = json.load(stats_file)
+	stats["commands_executed"] += 1
+	with open("data/stats.json", "w") as stats_file:
+		json.dump(stats, stats_file)
+
+@client.command(hidden = True)
+@checks.is_owner()
+async def load(cog : str):
+	'''Loads a cog'''
+	try:
+		client.load_extension("cogs." + cog)
+	except Exception as e:
+		await client.say(":gun: Failed to load cog.")
+		await client.say('{}: {}'.format(type(e).__name__, e))
+	else:
+		await client.say(":thumbsup::skin-tone-2: Loaded cog.")
+
+@client.command(hidden = True)
+@checks.is_owner()
+async def unload(cog : str):
+	'''Unloads a cog'''
+	try:
+		client.unload_extension("cogs." + cog)
+	except Exception as e:
+		await client.say(":gun: Failed to unload cog.")
+		await client.say('{}: {}'.format(type(e).__name__, e))
+	else:
+		await client.say(':ok_hand::skin-tone-2: Unloaded cog.')
+
+@client.command(hidden = True)
+@checks.is_owner()
+async def reload(cog : str):
+	'''Reloads a cog'''
+	try:
+		client.unload_extension("cogs." + cog)
+		client.load_extension("cogs." + cog)
+	except Exception as e:
+		await client.say(":gun: Failed to reload cog.")
+		await client.say('{}: {}'.format(type(e).__name__, e))
+	else:
+		with open("data/stats.json", "r") as stats_file:
+			stats = json.load(stats_file)
+		stats["cogs_reloaded"] += 1
+		with open("data/stats.json", "w") as stats_file:
+			json.dump(stats, stats_file)
+		await client.say(":thumbsup::skin-tone-2: Reloaded cog.")
 
 @client.event
 async def on_message(message):
