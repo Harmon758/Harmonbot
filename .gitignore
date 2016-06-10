@@ -1,6 +1,6 @@
 # Instance Specific Data
 /credentials.py
-/src/keys/
+/src/credentials/
 
 /bin/
 /data/
