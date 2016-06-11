@@ -279,7 +279,7 @@ async def settext(ctx):
 async def tts(ctx, *, message : str):
 	'''Text to speech'''
 	_tts(ctx, message)
-	
+
 def _tts(ctx, message):
 	player = get_player(ctx.message.server)
 	subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", message], shell = True)
@@ -294,6 +294,23 @@ def _tts(ctx, message):
 	if paused:
 		player["current"]["stream"].resume()
 	os.remove("data/tts.wav")
+
+@client.command(pass_context = True, no_pm = True)
+@checks.is_owner()
+@checks.is_voice_connected()
+async def play_file(ctx, filename : str):
+	'''Plays an audio file'''
+	player = get_player(ctx.message.server)
+	stream = client.voice_client_in(ctx.message.server).create_ffmpeg_player("data/audio_files/" + filename)
+	paused = False
+	if player["current"] and player["current"]["stream"].is_playing():
+		player["current"]["stream"].pause()
+		paused = True
+	stream.start()
+	while stream.is_playing():
+		pass
+	if paused:
+		player["current"]["stream"].resume()
 
 @client.command(pass_context = True, no_pm = True)
 @checks.is_server_owner()

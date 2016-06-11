@@ -585,6 +585,9 @@ async def on_command_error(error, ctx):
 		"Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
 	elif isinstance(error, commands.errors.NoPrivateMessage):
 		await send_mention_space(ctx. message, "Please use that command in a server.")
+	else:
+		print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
+		traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 
 loop = asyncio.get_event_loop()
 try:
