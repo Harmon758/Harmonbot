@@ -585,14 +585,6 @@ async def on_command_error(error, ctx):
 		"Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
 	elif isinstance(error, commands.errors.NoPrivateMessage):
 		await send_mention_space(ctx. message, "Please use that command in a server.")
-	'''
-	elif isinstance(error, errors.NoTags):
-		await send_mention_space(message, "You don't have any tags :slight_frown: "
-		"Add one with `!tag add <tag> <content>`")
-	elif isinstance(error, errors.NoTag):
-		await send_mention_space(message, "You don't have that tag.")
-	print(type(error))
-	'''
 
 loop = asyncio.get_event_loop()
 try:

@@ -660,16 +660,15 @@ class Resources:
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file)
 		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been deleted.")
-	'''
+	
 	@tag.error
 	async def tag_error(self, error, ctx):
-		if isinstance(error, errors.NoTags):
-			await send_mention_space(message, "You don't have any tags :slight_frown: "
+		if isinstance(error.__cause__, errors.NoTags):
+			await self.bot.reply("You don't have any tags :slight_frown: "
 			"Add one with `!tag add <tag> <content>`")
-		elif isinstance(error, errors.NoTag):
-			await send_mention_space(message, "You don't have that tag.")
-		print(type(error))
-	'''
+		elif isinstance(error.__cause__, errors.NoTag):
+			await self.bot.reply("You don't have that tag.")
+	
 	@commands.command(hidden = True)
 	async def weather(self, *options : str): #WIP
 		'''WIP'''
