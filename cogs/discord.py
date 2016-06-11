@@ -62,7 +62,7 @@ class Discord:
 	async def delete(self, ctx, *options : str):
 		'''
 		Delete messages
-		delete <number> or delete <user> <number> or delete images <number>
+		delete <number> or delete <user> <number> or delete [images|attachments]|[embeds] <number>
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
 		if ctx.message.channel.is_private:
