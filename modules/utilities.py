@@ -140,13 +140,13 @@ async def set_streaming_status(client):
 	await client.change_status(game = updated_game)
 
 async def send_mention_space(message, response):
-	return await client.send_message(message.channel, message.author.mention + ' ' + response)
+	return await client.send_message(message.channel, message.author.mention + ': ' + response)
 
 async def send_mention_newline(message, response):
-	return await client.send_message(message.channel, message.author.mention + "\n" + response)
+	return await client.send_message(message.channel, message.author.mention + ":\n" + response)
 
 async def send_mention_code(message, response):
-	return await client.send_message(message.channel, message.author.mention + "\n```" + response + "```")
+	return await client.send_message(message.channel, message.author.mention + ":\n```" + response + "```")
 
 # Restart/Shutdown Tasks
 
@@ -173,6 +173,7 @@ async def leave_all_voice():
 async def shutdown_tasks():
 	await voice.stop_all_streams()
 	# await leave_all_voice()
+	aiohttp_session.close()
 	add_uptime()
 
 async def restart_tasks():

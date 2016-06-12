@@ -3,7 +3,6 @@ from discord.ext import commands
 
 import aiohttp
 import asyncio
-import cleverbot
 import discord
 import inflect
 import os
@@ -19,16 +18,12 @@ import credentials
 from modules import utilities
 from utilities import checks
 from client import client
-# from client import aiohttp_session
-aiohttp_session = aiohttp.ClientSession()
+from client import aiohttp_session
+from client import cleverbot_instance
 
 inflect_engine = inflect.engine()
-
 players = []
-
 recognizer = speech_recognition.Recognizer()
-
-cleverbot_instance = cleverbot.Cleverbot()
 
 @client.command(hidden = True, pass_context = True)
 async def listen(ctx):
@@ -82,14 +77,10 @@ async def srtest(ctx):
 
 @client.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "audio", "stream", "play", "playlist", "spotify"], 
 	invoke_without_command = True, no_pm = True)
+@checks.is_voice_connected()
 async def voice(ctx, *options : str): #elif options[0] == "full":
 	'''Audio System'''
-	if not client.is_voice_connected(ctx.message.server):
-		if (ctx.message.author.id == credentials.myid or ctx.message.author == ctx.message.server.owner):
-			await client.reply("I'm not in a voice channel. Please use `!voice (or !yt) join <channel>` first.")
-		else:
-			await client.reply("I'm not in a voice channel. Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
-	elif "playlist" in ctx.message.content:
+	if "playlist" in ctx.message.content:
 		await player_add_playlist(ctx.message)
 	elif "spotify" in ctx.message.content:
 		youtube_link = await spotify_to_youtube(options[0])

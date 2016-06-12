@@ -63,10 +63,11 @@ class Meta:
 		'''The discord.py library version I'm currently using'''
 		await self.bot.reply(discord.__version__)
 	
-	@commands.command(aliases = ["oauth"], hidden = True)
-	async def invite(self):
+	@commands.command(aliases = ["oauth"], pass_context = True, hidden = True)
+	async def invite(self, ctx):
 		'''Link to invite me to a server'''
-		await self.bot.reply(discord.utils.oauth_url(credentials.bot_clientid))
+		application_info = await ctx.bot.application_info()
+		await self.bot.reply(discord.utils.oauth_url(application_info.id))
 	
 	@commands.command(hidden = True)
 	async def ping(self):
