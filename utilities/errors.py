@@ -21,3 +21,11 @@ class NoTags(TagError):
 
 class NoTag(TagError):
 	pass
+
+class MissingPermissions(CommandError):
+	pass
+
+class MissingCapability(CommandError):
+	def __init__(self, permissions):
+		self.permissions = permissions
+

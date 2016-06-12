@@ -575,28 +575,34 @@ async def on_message(message):
 
 @client.event
 async def on_command_error(error, ctx):
-	if isinstance(error, errors.NotServerOwner):
-		await send_mention_space(ctx.message, "You don't have permission to do that.")
+	if isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)):
+		await ctx.bot.send_message(ctx.message.channel, "You don't have permission to do that.")
+	elif isinstance(error, errors.MissingCapability):
+		await ctx.bot.send_message(ctx.message.channel, "I don't have permission to do that here. I need the permission(s): " + \
+		', '.join(error.permissions))
 	elif isinstance(error, errors.SO_VoiceNotConnected):
-		await send_mention_space(ctx.message, "I'm not in a voice channel. "
+		await ctx.bot.send_message(ctx.message.channel, "I'm not in a voice channel. "
 		"Please use `!voice (or !yt) join <channel>` first.")
 	elif isinstance(error, errors.NSO_VoiceNotConnected):
-		await send_mention_space(ctx.message, "I'm not in a voice channel. "
+		await ctx.bot.send_message(ctx.message.channel, "I'm not in a voice channel. "
 		"Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
 	elif isinstance(error, commands.errors.NoPrivateMessage):
-		await send_mention_space(ctx. message, "Please use that command in a server.")
+		await ctx.bot.send_message(ctx.message.channel, "Please use that command in a server.")
+	elif isinstance(error, commands.errors.MissingRequiredArgument):
+		await ctx.bot.send_message(ctx.message.channel, error)
+	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (errors.NoTag, errors.NoTags)):
+		pass
 	else:
 		print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
 		traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 
-loop = asyncio.get_event_loop()
 try:
-	loop.create_task(check_rss_feeds())
-	loop.run_until_complete(client.start(credentials.token))
+	client.loop.create_task(check_rss_feeds())
+	client.loop.run_until_complete(client.start(credentials.token))
 except KeyboardInterrupt:
 	print("Shutting down Harmonbot...")
-	loop.run_until_complete(restart_tasks())
-	loop.run_until_complete(client.logout())
+	client.loop.run_until_complete(restart_tasks())
+	client.loop.run_until_complete(client.logout())
 finally:
-	loop.close()
+	client.loop.close()
 

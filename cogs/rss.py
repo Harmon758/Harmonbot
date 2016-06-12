@@ -24,7 +24,6 @@ async def check_rss_feeds():
 		for channel in feeds_info["channels"]:
 			for feed in channel["feeds"]:
 				feed_info = await client.loop.run_in_executor(None, feedparser.parse, feed)
-				#feed_info = feedparser.parse(feed)
 				for item in feed_info.entries:
 					try:
 						if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.published)).total_seconds() <= 60:

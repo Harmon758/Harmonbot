@@ -21,48 +21,51 @@ class Discord:
 	# Do Stuff
 	
 	@commands.command(pass_context = True, no_pm = True)
+	@checks.has_permissions_and_capability(manage_roles = True)
 	async def addrole(self, ctx, name : str, role : str):
 		'''
 		Gives a user a role
 		Replace spaces in role names with underscores or put the role name in qoutes
 		'''
-		if ctx.message.server and (ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == credentials.myid):
-			for member in ctx.message.server.members:
-				if member.name == ' '.join(name.split('_')):
-					selected_member = member
-					break
-			for _role in ctx.message.server.roles:
-				if utilities.remove_symbols(_role.name).startswith(' '.join(role.split('_'))):
-					selected_role = _role
-					break
-			await self.bot.add_roles(selected_member, selected_role)
-			await self.bot.reply("I gave the role, {0}, to {1}".format(selected_role, selected_member))
+		for member in ctx.message.server.members:
+			if member.name == ' '.join(name.split('_')):
+				selected_member = member
+				break
+		for _role in ctx.message.server.roles:
+			if utilities.remove_symbols(_role.name).startswith(' '.join(role.split('_'))):
+				selected_role = _role
+				break
+		await self.bot.add_roles(selected_member, selected_role)
+		await self.bot.reply("I gave the role, {0}, to {1}".format(selected_role, selected_member))
 	
 	@commands.command(pass_context = True, no_pm = True)
+	@checks.has_permissions_and_capability(manage_channels = True)
 	async def channel(self, ctx, *options : str):
 		'''
 		Create a channel
 		channel <type/name> <name>
 		type: text or voice, default: text
 		'''
-		if ctx.message.channel.permissions_for(ctx.message.author).manage_channels and options:
+		if options:
 			if options[0] == "voice":
-				await self.bot.create_channel(message.server, options[1], type = "voice")
-			elif options[1] == "text":
-				await self.bot.create_channel(message.server, options[1], type = "text")
+				await self.bot.create_channel(ctx.message.server, options[1], type = "voice")
+			elif options[0] == "text":
+				await self.bot.create_channel(ctx.message.server, options[1], type = "text")
 			else:
-				await self.bot.create_channel(message.server, options[0], type = "text")
+				await self.bot.create_channel(ctx.message.server, options[0], type = "text")
 	
 	@commands.command(pass_context = True, no_pm = True)
-	async def createrole(self, ctx, *, name : str):
+	@checks.has_permissions_and_capability(manage_roles = True)
+	async def createrole(self, ctx, *, name : str = ""):
 		'''Creates a role'''
 		await self.bot.create_role(ctx.message.server, name = name)
 	
 	@commands.group(pass_context = True, aliases = ["purge", "clean"], invoke_without_command = True)
+	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
 	async def delete(self, ctx, *options : str):
 		'''
 		Delete messages
-		delete <number> or delete <user> <number> or delete [images|attachments]|[embeds] <number>
+		delete <number> or delete <user> <number>
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
 		if ctx.message.channel.is_private:
@@ -78,79 +81,70 @@ class Discord:
 							break
 			else:
 				await self.bot.reply("Syntax error.")
-		elif not ctx.message.server.me.permissions_in(ctx.message.channel).manage_messages:
-			await self.bot.reply("I don't have permission to do that here. I need the \"Manage Messages\" permission to delete messages.")
-		elif ctx.message.channel.permissions_for(ctx.message.author).manage_messages or ctx.message.author.id == credentials.myid:
-			if options[0].isdigit():
-				number = int(options[0])
-				await self.bot.delete_message(ctx.message)
-				await self.bot.purge_from(ctx.message.channel, limit = number)
-			elif options[0] in ["images", "attachments"] and options[1].isdigit():
-				number = int(options[1])
-				to_delete = []
-				count = 0
-				await self.bot.delete_message(ctx.message)
-				async for client_message in self.bot.logs_from(ctx.message.channel, limit = 10000):
-					if client_message.attachments:
-						to_delete.append(client_message)
-						count += 1
-						if count == number:
-							break
-						elif len(to_delete) == 100:
-							await self.bot.delete_messages(to_delete)
-							to_delete.clear()
-							await asyncio.sleep(1)
-				if len(to_delete) == 1:
-					await self.bot.delete_message(to_delete[0])
-				elif len(to_delete) > 1:
-					await self.bot.delete_messages(to_delete)
-			elif options[0] == "embeds" and options[1].isdigit():
-				number = int(options[1])
-				to_delete = []
-				count = 0
-				await self.bot.delete_message(ctx.message)
-				async for client_message in self.bot.logs_from(ctx.message.channel, limit = 10000):
-					if client_message.embeds:
-						to_delete.append(client_message)
-						count += 1
-						if count == number:
-							break
-						elif len(to_delete) == 100:
-							await self.bot.delete_messages(to_delete)
-							to_delete.clear()
-							await asyncio.sleep(1)
-				if len(to_delete) == 1:
-					await self.bot.delete_message(to_delete[0])
-				elif len(to_delete) > 1:
-					await self.bot.delete_messages(to_delete)
-			elif len(options) > 1 and options[1].isdigit():
-				number = int(options[1])
-				to_delete = []
-				count = 0
-				await self.bot.delete_message(ctx.message)
-				async for client_message in self.bot.logs_from(ctx.message.channel, limit = 10000):
-					if client_message.author.name == options[0]:
-						to_delete.append(client_message)
-						count += 1
-						if count == number:
-							break
-						elif len(to_delete) == 100:
-							await self.bot.delete_messages(to_delete)
-							to_delete.clear()
-							await asyncio.sleep(1)
-				if len(to_delete) == 1:
-					await self.bot.delete_message(to_delete[0])
-				elif len(to_delete) > 1:
-					await self.bot.delete_messages(to_delete)
-			else:
-				await self.bot.reply("Syntax error.")
+		elif options[0].isdigit():
+			number = int(options[0])
+			await self.bot.delete_message(ctx.message)
+			await self.bot.purge_from(ctx.message.channel, limit = number)
+		elif len(options) > 1 and options[1].isdigit():
+			def check(message):
+				message.author.name == options[0]
+			await self.delete_number(ctx, int(options[1]), check)
+		else:
+			await self.bot.reply("Syntax error.")
 	
-	@delete.command(hidden = True, pass_context = True)
+	@delete.command(name = "attachments", aliases = ["images"], pass_context = True)
+	@checks.has_permissions_and_capability(manage_messages = True)
+	async def delete_attachments(self, ctx, number : int):
+		'''Deletes the <number> most recent messages with attachments'''
+		def check(message):
+			return message.attachments
+		await self.delete_number(ctx, number, check)
+	
+	@delete.command(name = "contains", pass_context = True)
+	@checks.has_permissions_and_capability(manage_messages = True)
+	async def delete_contains(self, ctx, string : str, number : int):
+		'''Deletes the <number> most recent messages with <string> in them'''
+		def check(message):
+			return string in message.content
+		await self.delete_number(ctx, number, check)
+	
+	@delete.command(name = "embeds", pass_context = True)
+	@checks.has_permissions_and_capability(manage_messages = True)
+	async def delete_embeds(self, ctx, number: int):
+		'''Deletes the <number> most recent messages with embeds'''
+		def check(message):
+			return message.embeds
+		await self.delete_number(ctx, number, check)
+	
+	@delete.command(name = "time", hidden = True, pass_context = True)
 	@checks.is_owner()
-	async def time(self, ctx, minutes : int):
+	@checks.has_permissions_and_capability(manage_messages = True)
+	async def delete_time(self, ctx, minutes : int):
 		'''WIP'''
 		await self.bot.delete_message(ctx.message)
 		await self.bot.purge_from(ctx.message.channel, limit = 10000, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
+	
+	async def delete_number(self, ctx, number, check):
+		if number <= 0:
+			await self.bot.reply("Syntax Error.")
+			return
+		to_delete = []
+		count = 0
+		await self.bot.delete_message(ctx.message)
+		async for client_message in self.bot.logs_from(ctx.message.channel, limit = 10000):
+			if check(client_message):
+				to_delete.append(client_message)
+				count += 1
+				if count == number:
+					break
+				elif len(to_delete) == 100:
+					await self.bot.delete_messages(to_delete)
+					to_delete.clear()
+					await asyncio.sleep(1)
+		if len(to_delete) == 1:
+			await self.bot.delete_message(to_delete[0])
+		elif len(to_delete) > 1:
+			await self.bot.delete_messages(to_delete)
 	
 	@commands.command(pass_context = True, aliases = ["mycolour"], no_pm = True)
 	async def mycolor(self, ctx, *color : str): #rework
@@ -268,7 +262,7 @@ class Discord:
 	# Get Attributes
 	
 	@commands.command(pass_context = True)
-	async def avatar(self, ctx, *, name : str):
+	async def avatar(self, ctx, *, name : str = ""):
 		'''See a bigger version of your own or someone else's avatar'''
 		if name:
 			flag = True
@@ -291,7 +285,7 @@ class Discord:
 				await self.bot.reply("Your avatar: " + ctx.message.author.default_avatar_url)
 	
 	@commands.command(pass_context = True)
-	async def discriminator(self, ctx, *, name : str):
+	async def discriminator(self, ctx, *, name : str = ""):
 		'''Get your own or someone else's discriminator'''
 		if name:
 			flag = True

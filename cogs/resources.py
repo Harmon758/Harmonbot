@@ -21,8 +21,7 @@ from modules import voice
 from modules import weather
 from utilities import checks
 from utilities import errors
-#from client import aiohttp_session
-aiohttp_session = aiohttp.ClientSession()
+from client import aiohttp_session
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -663,10 +662,10 @@ class Resources:
 	
 	@tag.error
 	async def tag_error(self, error, ctx):
-		if isinstance(error.__cause__, errors.NoTags):
+		if isinstance(error.original, errors.NoTags):
 			await self.bot.reply("You don't have any tags :slight_frown: "
 			"Add one with `!tag add <tag> <content>`")
-		elif isinstance(error.__cause__, errors.NoTag):
+		elif isinstance(error.original, errors.NoTag):
 			await self.bot.reply("You don't have that tag.")
 	
 	@commands.command(hidden = True)
