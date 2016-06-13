@@ -38,7 +38,7 @@ def set_permission(message, type, to_set, permission, setting):
 
 def get_permission(message, type, to_find, permission):
 	try:
-		with open("data/permissions/" + message.server.id", "x+") as permissions_file:
+		with open("data/permissions/" + message.server.id, "x+") as permissions_file:
 			json.dump({"name" : message.server.name}, permissions_file)
 	except FileExistsError:
 		pass
