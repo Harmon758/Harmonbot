@@ -166,15 +166,12 @@ async def on_message(message):
 		destination = "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
 	harmonbot_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content}".format(message, destination))
 	await client.process_commands(message)
-	if message.channel.is_private and not (message.author == client.user and message.channel.user.id == credentials.myid):
-		for member in client.get_all_members():
-			if member.id == credentials.myid:
-				my_member = member
-				break
+	if message.channel.is_private and message.channel.user.id != credentials.myid:
+		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
 		if message.author == client.user:
-			await client.send_message(my_member, "To " + message.channel.user.name + '#' + message.channel.user.discriminator + ": " + message.content)
+			await client.send_message(me, "To " + message.channel.user.name + '#' + message.channel.user.discriminator + ": " + message.content)
 		else:
-			await client.send_message(my_member, "From " + message.author.name + '#' + message.author.discriminator + ": " + message.content)
+			await client.send_message(me, "From " + message.author.name + '#' + message.author.discriminator + ": " + message.content)
 	if message.author == client.user or not message.content:
 		return
 	elif not message.channel.is_private and not permissions.get_permission(message, "user", message.author.id, message.content.split()[0]) and credentials.myid != message.author.id: #rework
@@ -188,7 +185,7 @@ async def on_message(message):
 			await send_mention_space(message, documentation.commands_info[message.content.split()[1]])
 		#else:
 			#await send_mention_space(message, "Check your DMs.")
-	elif message.server and message.server.me in message.mentions:
+	elif client.user.mentioned_in(message):
 		mentionless_message = ""
 		for word in message.clean_content.split():
 			if not word.startswith("@"):
