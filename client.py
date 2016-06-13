@@ -19,6 +19,7 @@ class Bot(commands.Bot):
 		return self.send_message(destination, fmt, *args, **kwargs)
 	
 client = Bot(command_prefix = '!', description = "Harmonbot", pm_help = None)
+# help_attrs = {hidden = True} ?
 
 for file in listdir("cogs"):
 	if file.endswith(".py"):
