@@ -210,32 +210,6 @@ async def on_message(message):
 				await send_mention_space(message, "successfully executed")
 			except:
 				await send_mention_code(message, traceback.format_exc())
-	elif message.content.startswith("!getpermission"): #rework
-		if len(message.content.split()) < 4:
-			await send_mention_space(message, "Invalid input")
-		else:
-			type = message.content.split()[1]
-			if type == "everyone":
-				to_find = message.content.split()[2]
-			elif type == "role":
-				role_names = []
-				for role in message.server.roles:
-					role_names.append(remove_symbols(role.name))
-				if role_names.count(message.content.split()[2]) > 1:
-					await send_mention_space(message, "Error: multiple roles with this name")
-				elif role_names.count(message.content.split()[2]) == 0:
-					await send_mention_space(message, "Error: role with this name not found")
-				else:
-					for role in message.server.roles:
-						if remove_symbols(role.name) == message.content.split()[2]:
-							to_find = role.id
-							break
-			elif type == "user":
-				pass
-			else:
-				await send_mention_space(message, "Invalid permission type")
-			permission = message.content.split()[3]
-			permissions.get_permission(message, type, to_find, permission)
 	elif message.content.startswith("!jeopardy"):
 		global jeopardy_active, jeopardy_question_active, jeopardy_board, jeopardy_answer, jeopardy_answered, jeopardy_scores, jeopardy_board_output, jeopardy_max_width
 		if len(message.content.split()) > 1 and message.content.split()[1] == "start" and not jeopardy_active:
@@ -329,69 +303,6 @@ async def on_message(message):
 		else:
 			pass
 		'''
-	elif message.content.startswith("!setpermission"): #rework
-		if message.author.id == credentials.myid or message.author == message.server.owner:
-			if len(message.content.split()) < 5:
-				await send_mention_space(message, "Invalid input")
-			else:
-				type = message.content.split()[1]
-				if type == "everyone":
-					to_set = message.content.split()[2]
-				elif type == "role":
-					role_names = []
-					for role in message.server.roles:
-						role_names.append(remove_symbols(role.name))
-					if role_names.count(' '.join(message.content.split()[2].split('_'))) > 1:
-						await send_mention_space(message, "Error: multiple roles with this name")
-						return
-					elif role_names.count(' '.join(message.content.split()[2].split('_'))) == 0:
-						await send_mention_space(message, "Error: role with this name not found")
-						return
-					else:
-						for role in message.server.roles:
-							if remove_symbols(role.name) == ' '.join(message.content.split()[2].split('_')):
-								to_set = role.id
-								break
-				elif type == "user":
-					if re.match(r"^(\w+)#(\d{4})", message.content.split()[2]):
-						user_info = re.match(r"^(\w+)#(\d{4})", message.content.split()[2])
-						user_name = ' '.join(user_info.group(1).split('_'))
-						user_discriminator = user_info.group(2)
-						to_set = False
-						for member in message.server.members:
-							if member.name == user_name and str(member.discriminator) == user_discriminator:
-								to_set = member.id
-								break
-						if not to_set:
-							await send_mention_space(message, "Error: user not found")
-							return
-					else:
-						user_names = []
-						for member in message.server.members:
-							user_names.append(member.name)
-						if user_names.count(' '.join(message.content.split()[2].split('_'))) > 1:
-							await send_mention_space(message, "Error: multiple users with this name; please include discriminator")
-							return
-						elif user_names.count(' '.join(message.content.split()[2].split('_'))) == 0:
-							await send_mention_space(message, "Error: user with this name not found")
-						else:
-							for member in message.server.members:
-								if member.name == ' '.join(message.content.split()[2].split('_')):
-									to_set = member.id
-									break
-				else:
-					await send_mention_space(message, "Invalid permission type")
-					return
-				permission = message.content.split()[3]
-				if message.content.split()[4].lower() in ["yes", "true", "on"]:
-					setting = True
-				elif message.content.split()[4].lower() in ["no", "false", "off"]:
-					setting = False
-				else:
-					await send_mention_space(message, "Invalid permission setting")
-					return
-				permissions.set_permission(message, type, to_set, permission, setting)
-				await send_mention_space(message, "Permission updated")
 	elif message.content.startswith("!trivia"):
 		global trivia_active, trivia_bet, trivia_bets
 		if len(message.content.split()) > 1 and (message.content.split()[1] in ["score", "points"]):
