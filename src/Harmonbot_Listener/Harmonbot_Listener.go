@@ -71,7 +71,7 @@ func main() {
 }
 
 func ready(s *discordgo.Session, event *discordgo.Ready) {
-	s.UpdateStreamingStatus(0, " !!**with**!! Harmonbot", "https://www.twitch.tv/discordapp")
+	s.UpdateStreamingStatus(0, "with Harmonbot", "https://www.twitch.tv/discordapp")
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
