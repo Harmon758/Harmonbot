@@ -4,11 +4,11 @@ import json
 
 def set_permission(message, type, to_set, permission, setting):
 	try:
-		with open("data/" + message.server.id + "_permissions.json", "x+") as permissions_file:
+		with open("data/permissions/" + message.server.id, "x+") as permissions_file:
 			json.dump({"name" : message.server.name}, permissions_file)
 	except FileExistsError:
 		pass
-	with open("data/" + message.server.id + "_permissions.json", "r") as permissions_file:
+	with open("data/permissions/" + message.server.id, "r") as permissions_file:
 		permissions_data = json.load(permissions_file)
 	if type == "everyone":
 		if not "everyone" in permissions_data:
@@ -33,16 +33,16 @@ def set_permission(message, type, to_set, permission, setting):
 			permissions_data["users"][to_set] = {"name" : user.name, permission : setting}
 		else:
 			permissions_data["users"][to_set][permission] = setting
-	with open("data/" + message.server.id + "_permissions.json", "w") as permissions_file:
+	with open("data/permissions/" + message.server.id, "w") as permissions_file:
 		json.dump(permissions_data, permissions_file)
 
 def get_permission(message, type, to_find, permission):
 	try:
-		with open("data/" + message.server.id + "_permissions.json", "x+") as permissions_file:
+		with open("data/permissions/" + message.server.id", "x+") as permissions_file:
 			json.dump({"name" : message.server.name}, permissions_file)
 	except FileExistsError:
 		pass
-	with open("data/" + message.server.id + "_permissions.json", "r") as permissions_file:
+	with open("data/permissions/" + message.server.id, "r") as permissions_file:
 		permissions_data = json.load(permissions_file)
 	if type == "everyone":
 		return check_everyone(permissions_data, permission)
@@ -67,7 +67,7 @@ def get_permission(message, type, to_find, permission):
 
 def check_everyone(permissions_data, permission):
 	if not "everyone" in permissions_data or not permission in permissions_data["everyone"]:
-			return -1
+		return -1
 	else:
 		return permissions_data["everyone"][permission]
 

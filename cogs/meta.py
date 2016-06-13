@@ -9,6 +9,7 @@ import subprocess
 
 import credentials
 from modules import documentation
+from modules import permissions
 from modules import utilities
 from modules import voice
 from utilities import checks
@@ -34,6 +35,89 @@ class Meta:
 		builtins.exec('' '.join(code))
 		await self.bot.reply("Successfully executed.")
 	'''
+	
+	@commands.group(invoke_without_command = True)
+	@checks.is_server_owner()
+	async def setpermission(self):
+		await self.bot.reply("Invalid input.")
+	
+	@setpermission.command(name = "everyone", pass_context = True)
+	@checks.is_server_owner()
+	async def setpermission_everyone(self, ctx, permission : str, setting : bool):
+		permission.set_permission(ctx.message, "everyone", None, permission, setting)
+		await self.bot.reply("Permission updated")
+	
+	@setpermission.command(name = "role", pass_context = True)
+	@checks.is_server_owner()
+	async def setpermission_role(self, ctx, role : str, permission : str, setting : bool):
+		role_names = []
+		for role in ctx.message.server.roles:
+			role_names.append(remove_symbols(role.name))
+		if role_names.count(role) > 1:
+			await self.bot.reply("Error: multiple roles with this name")
+			return
+		elif role_names.count(role) == 0:
+			await self.bot.reply("Error: role with this name not found")
+			return
+		else:
+			to_set = discord.utils.find(lambda r: remove_symbols(r.name) == role, ctx.message.server.roles).id
+		permissions.set_permission(ctx.message, "role", to_set, permission, setting)
+		await self.bot.reply("Permission updated")
+	
+	@setpermission.command(name = "user", pass_context = True)
+	@checks.is_server_owner()
+	async def setpermission_user(self, ctx, user : str, permission : str, setting : bool):
+		if re.match(r"^(\w+)#(\d{4})", user):
+			user_info = re.match(r"^(\w+)#(\d{4})", user)
+			user_name = user_info.group(1)
+			user_discriminator = user_info.group(2)
+			to_set = discord.utils.find(lambda m: m.name == user_name and str(m.discriminator) == user_discriminator, ctx.message.server.members).id
+			if not to_set:
+				await self.bot.reply("Error: user not found")
+				return
+		else:
+			user_names = []
+			for member in ctx.message.server.members:
+				user_names.append(member.name)
+			if user_names.count(user) > 1:
+				await self.bot.reply("Error: multiple users with this name; please include discriminator")
+				return
+			elif user_names.count(user) == 0:
+				await self.bot.reply("Error: user with this name not found")
+				return
+			else:
+				to_set = discord.utils.get(ctx.message.server.members, name = user).id
+		permissions.set_permission(ctx.message, "user", to_set, permission, setting)
+		await self.bot.reply("Permission updated")
+	
+	@commands.group(invoke_without_command = True)
+	@checks.is_server_owner()
+	async def getpermission(self):
+		await self.bot.reply("Invalid input.")
+	
+	@getpermission.command(name = "everyone", pass_context = True)
+	@checks.is_server_owner()
+	async def getpermission_everyone(self, ctx, permission : str):
+		permissions.get_permission(ctx.message, "everyone", None, permission)
+	
+	@getpermission.command(name = "role", pass_context = True)
+	@checks.is_server_owner()
+	async def getpermission_role(self, ctx, role : str, permission : str):
+		role_names = []
+		for role in ctx.message.server.roles:
+			role_names.append(remove_symbols(role.name))
+		if role_names.count(role) > 1:
+			await self.bot.reply("Error: multiple roles with this name")
+		elif role_names.count(role) == 0:
+			await self.bot.reply("Error: role with this name not found")
+		else:
+			to_find = discord.utils.get(ctx.message.server.roles, name = role).id
+		permissions.get_permission(ctx.message, "role", to_find, permission)
+	
+	@getpermission.command(name = "user", pass_context = True)
+	@checks.is_server_owner()
+	async def getpermission_user(self, ctx, user : str, permission : str):
+		return
 	
 	@commands.command(hidden = True, pass_context = True)
 	@checks.is_owner()
