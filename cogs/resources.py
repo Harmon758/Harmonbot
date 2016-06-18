@@ -10,6 +10,7 @@ import pandas
 import random
 import re
 import seaborn
+# import spotipy
 import urllib
 import xml.etree.ElementTree
 import wolframalpha
@@ -21,7 +22,7 @@ from modules import voice
 from modules import weather
 from utilities import checks
 from utilities import errors
-from client import aiohttp_session
+from clients import aiohttp_session
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -33,6 +34,12 @@ class Resources:
 		self.tags_data, self.tags = None, None
 		self.waclient = wolframalpha.Client(credentials.wolframalpha_appid)
 		#wolframalpha (wa)
+		# spotify = spotipy.Spotify()
+		try:
+			with open("data/tags.json", "x") as tags_file:
+				json.dump({}, tags_file)
+		except FileExistsError:
+			pass
 	
 	@commands.command()
 	async def add(self, *numbers : float):
@@ -169,18 +176,6 @@ class Resources:
 			"{image}".format(name = data["title"].capitalize(), hex = "#{}".format(data["hex"]), red = str(rgb["red"]), green = str(rgb["green"]), blue = str(rgb["blue"]),	hue = str(hsv["hue"]), saturation = str(hsv["saturation"]), value = str(hsv["value"]), image = data["imageUrl"]))
 	
 	@commands.command()
-	async def conversions(self):
-		'''All conversion commands'''
-		await self.bot.reply("Check your DMs for my conversion commands.")
-		await self.bot.whisper("Conversions: \n" \
-		"Temperature Unit Conversions: ![c, f, k, r, de]to[c, f, k, r, de, n, re, ro] \n" \
-		"Weight Unit Conversions: ![amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, " \
-		"kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, " \
-		"slug, st, atl, ats, longtn, ton, shtn, t, wey, g]to[amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, " \
-		"gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, " \
-		"quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]")
-	
-	@commands.command()
 	async def date(self, date : str):
 		'''Facts about dates'''
 		url = "http://numbersapi.com/{0}/date".format(date)
@@ -280,6 +275,11 @@ class Resources:
 				output += ' '
 		await self.bot.reply(output)
 	
+	@commands.command()
+	async def fingers(self, *, text : str):
+		'''Add fingers'''
+		await self.bot.reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
+	
 	@commands.group(invoke_without_command = True)
 	async def giphy(self, *search : str):
 		'''
@@ -337,22 +337,22 @@ class Resources:
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/{0}?truncateResponse=true".format(name)
 		async with aiohttp_session.get(url) as resp:
-			data = await resp
-		if data.status in [404, 400]:
+			status = resp.status
+			data = await resp.json()
+		if status in [404, 400]:
 			breachedaccounts = "None"
 		else:
-			data = data.json()
 			breachedaccounts = ""
 			for breachedaccount in data:
 				breachedaccounts += breachedaccount["Name"] + ", "
 			breachedaccounts = breachedaccounts[:-2]
 		url = "https://haveibeenpwned.com/api/v2/pasteaccount/{0}".format(name)
 		async with aiohttp_session.get(url) as resp:
-			data = await resp
-		if data.status in [404, 400]:
+			status = resp.status
+			data = await resp.json()
+		if status in [404, 400]:
 			pastedaccounts = "None"
 		else:
-			data = data.json()
 			pastedaccounts = ""
 			for pastedaccount in data:
 				pastedaccounts += pastedaccount["Source"] + " (" + pastedaccount["Id"] + "), "
@@ -489,6 +489,21 @@ class Resources:
 		headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
 			data = await resp.json()
 		await self.bot.reply(data["id"])
+	
+	@commands.command()
+	async def spellcheck(self, *words : str):
+		'''Spell check words'''
+		async with aiohttp_session.post("https://bingapis.azure-api.net/api/v5/spellcheck?Text=" + '+'.join(words), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
+			data = await resp.json()
+		corrections = data["flaggedTokens"]
+		corrected = ' '.join(words)
+		offset = 0
+		for correction in corrections:
+			offset += correction["offset"]
+			suggestion = correction["suggestions"][0]["suggestion"]
+			corrected = corrected[:offset] + suggestion + corrected[offset + len(correction["token"]):]
+			offset += (len(suggestion) - len(correction["token"])) - correction["offset"]
+		await self.bot.reply(corrected)
 	
 	@commands.command()
 	async def spotifyinfo(self, url : str):
@@ -641,7 +656,7 @@ class Resources:
 			return
 		self.tags[tag] = content
 		with open("data/tags.json", "w") as tags_file:
-			json.dump(self.tags_data, tags_file)
+			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":thumbsup::skin-tone-2: Your tag has been added.")
 	
 	@tag.command(name = "edit", pass_context = True)
@@ -649,7 +664,7 @@ class Resources:
 		'''Edit one of your tags'''
 		self.tags[tag] = content
 		with open("data/tags.json", "w") as tags_file:
-			json.dump(self.tags_data, tags_file)
+			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been edited.")
 	
 	@tag.command(name = "delete", pass_context = True, aliases = ["remove", "destroy"])
@@ -657,7 +672,7 @@ class Resources:
 		'''Delete one of your tags'''
 		del self.tags[tag]
 		with open("data/tags.json", "w") as tags_file:
-			json.dump(self.tags_data, tags_file)
+			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been deleted.")
 	
 	@tag.error
@@ -742,11 +757,11 @@ class Resources:
 		# if message.content.split()[1] == "on":
 			# toggles["youtubeinfo"] = True
 			# with open(message.server.name + "_toggles.json", "w") as toggles_file:
-				# json.dump(toggles, toggles_file)
+				# json.dump(toggles, toggles_file, indent = 4)
 		# elif message.content.split()[1] == "off":
 			# toggles["youtubeinfo"] = False
 			# with open(message.server.name + "_toggles.json", "w") as toggles_file:
-				# json.dump(toggles, toggles_file)
+				# json.dump(toggles, toggles_file, indent = 4)
 		# else:
 		url_data = urllib.parse.urlparse(url)
 		query = urllib.parse.parse_qs(url_data.query)

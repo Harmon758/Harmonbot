@@ -4,16 +4,17 @@ from discord.ext import commands
 
 #import builtins
 import datetime
+import inspect
 import json
+import re
 import subprocess
 
 import credentials
-from modules import documentation
-from modules import permissions
 from modules import utilities
 from modules import voice
 from utilities import checks
-from client import online_time
+from clients import online_time
+from clients import py_code_block
 
 def setup(bot):
 	bot.add_cog(Meta(bot))
@@ -22,103 +23,12 @@ class Meta:
 	
 	def __init__(self, bot):
 		self.bot = bot
-	
-	'''
-	@self.bot.command(hidden = True)
-	@checks.is_owner()
-	async def eval(*code : str):
-		await self.bot.reply("\n```" + str(builtins.eval(' '.join(code))) + "```")
-	
-	@self.bot.command(hidden = True)
-	@checks.is_owner()
-	async def exec(*code : str):
-		builtins.exec('' '.join(code))
-		await self.bot.reply("Successfully executed.")
-	'''
-	
-	@commands.group(invoke_without_command = True)
-	@checks.is_server_owner()
-	async def setpermission(self):
-		await self.bot.reply("Invalid input.")
-	
-	@setpermission.command(name = "everyone", pass_context = True)
-	@checks.is_server_owner()
-	async def setpermission_everyone(self, ctx, permission : str, setting : bool):
-		permission.set_permission(ctx.message, "everyone", None, permission, setting)
-		await self.bot.reply("Permission updated")
-	
-	@setpermission.command(name = "role", pass_context = True)
-	@checks.is_server_owner()
-	async def setpermission_role(self, ctx, role : str, permission : str, setting : bool):
-		role_names = []
-		for role in ctx.message.server.roles:
-			role_names.append(remove_symbols(role.name))
-		if role_names.count(role) > 1:
-			await self.bot.reply("Error: multiple roles with this name")
-			return
-		elif role_names.count(role) == 0:
-			await self.bot.reply("Error: role with this name not found")
-			return
-		else:
-			to_set = discord.utils.find(lambda r: remove_symbols(r.name) == role, ctx.message.server.roles).id
-		permissions.set_permission(ctx.message, "role", to_set, permission, setting)
-		await self.bot.reply("Permission updated")
-	
-	@setpermission.command(name = "user", pass_context = True)
-	@checks.is_server_owner()
-	async def setpermission_user(self, ctx, user : str, permission : str, setting : bool):
-		if re.match(r"^(\w+)#(\d{4})", user):
-			user_info = re.match(r"^(\w+)#(\d{4})", user)
-			user_name = user_info.group(1)
-			user_discriminator = user_info.group(2)
-			to_set = discord.utils.find(lambda m: m.name == user_name and str(m.discriminator) == user_discriminator, ctx.message.server.members).id
-			if not to_set:
-				await self.bot.reply("Error: user not found")
-				return
-		else:
-			user_names = []
-			for member in ctx.message.server.members:
-				user_names.append(member.name)
-			if user_names.count(user) > 1:
-				await self.bot.reply("Error: multiple users with this name; please include discriminator")
-				return
-			elif user_names.count(user) == 0:
-				await self.bot.reply("Error: user with this name not found")
-				return
-			else:
-				to_set = discord.utils.get(ctx.message.server.members, name = user).id
-		permissions.set_permission(ctx.message, "user", to_set, permission, setting)
-		await self.bot.reply("Permission updated")
-	
-	@commands.group(invoke_without_command = True)
-	@checks.is_server_owner()
-	async def getpermission(self):
-		await self.bot.reply("Invalid input.")
-	
-	@getpermission.command(name = "everyone", pass_context = True)
-	@checks.is_server_owner()
-	async def getpermission_everyone(self, ctx, permission : str):
-		permissions.get_permission(ctx.message, "everyone", None, permission)
-	
-	@getpermission.command(name = "role", pass_context = True)
-	@checks.is_server_owner()
-	async def getpermission_role(self, ctx, role : str, permission : str):
-		role_names = []
-		for role in ctx.message.server.roles:
-			role_names.append(remove_symbols(role.name))
-		if role_names.count(role) > 1:
-			await self.bot.reply("Error: multiple roles with this name")
-		elif role_names.count(role) == 0:
-			await self.bot.reply("Error: role with this name not found")
-		else:
-			to_find = discord.utils.get(ctx.message.server.roles, name = role).id
-		permissions.get_permission(ctx.message, "role", to_find, permission)
-	
-	@getpermission.command(name = "user", pass_context = True)
-	@checks.is_server_owner()
-	async def getpermission_user(self, ctx, user : str, permission : str):
-		return
-	
+		try:
+			with open("data/stats.json", "x") as stats_file:
+				json.dump({"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0}, stats_file)
+		except FileExistsError:
+			pass
+
 	@commands.command(hidden = True, pass_context = True)
 	@checks.is_owner()
 	async def allcommands(self, ctx):
@@ -130,33 +40,6 @@ class Meta:
 		for name, _command in _commands:
 			_allcommands += name + ' '
 		await self.bot.whisper(_allcommands[:-1])
-	
-	@commands.command()
-	async def changelog(self):
-		'''Link to changelog'''
-		await self.bot.reply("https://discord.gg/0oyodN94Y3CgCT6I")
-	
-	@commands.command(name = "commands")
-	async def _commands(self):
-		'''Some additional commands and information'''
-		await self.bot.whisper(documentation.commands)
-		await self.bot.reply("Check your DMs for some of my additional commands.")
-	
-	@commands.command(hidden = True)
-	async def discordlibraryversion(self):
-		'''The discord.py library version I'm currently using'''
-		await self.bot.reply(discord.__version__)
-	
-	@commands.command(aliases = ["oauth"], hidden = True)
-	async def invite(self):
-		'''Link to invite me to a server'''
-		application_info = await self.bot.application_info()
-		await self.bot.reply(discord.utils.oauth_url(application_info.id))
-	
-	@commands.command(hidden = True)
-	async def ping(self):
-		'''Basic ping - pong command'''
-		await self.bot.say("pong")
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
@@ -172,7 +55,82 @@ class Meta:
 			server_info += "Icon: " + server.icon_url
 			await self.bot.whisper(server_info)
 	
-	# Public Stats
+	@commands.command(aliases = ["setprefixes"], pass_context = True)
+	@checks.dm_or_is_server_owner()
+	async def setprefix(self, ctx, *prefixes : str):
+		'''
+		Set the bot prefixes for the server or for DMs
+		Seperate prefixes with spaces
+		Use qoutation marks for prefixes with spaces
+		'''
+		if not prefixes:
+			prefixes = ['!']
+		with open("data/prefixes.json", "r") as prefixes_file:
+			all_prefixes = json.load(prefixes_file)
+		if ctx.message.channel.is_private:
+			all_prefixes[ctx.message.channel.id] = prefixes
+		else:
+			all_prefixes[ctx.message.server.id] = prefixes
+		with open("data/prefixes.json", "w") as prefixes_file:
+			json.dump(all_prefixes, prefixes_file, indent = 4)
+		await self.bot.reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
+	
+	# Public Info
+	
+	@commands.command(hidden = True)
+	async def about(self):
+		'''WIP'''
+		return
+	
+	@commands.command()
+	async def changelog(self):
+		'''Link to changelog'''
+		await self.bot.reply("https://discord.gg/0oyodN94Y3CgCT6I")
+	
+	@commands.command(name = "commands", pass_context = True)
+	async def _commands(self, ctx):
+		'''Some additional commands and information'''
+		await self.bot.whisper("**Commands not in help**: test_on_message [conversion commands (see conversion command)]\n"
+			"**In Progress**: adventure getpermission gifvtogif gofish help redditsearch roleposition rolepositions setpermission taboo timer urbandictionary userlimit weather wolframalpha webmtogif whatis\n"
+			"**Misc**: discordlibraryversion echo load randomgame test\n"
+			"**Owner Only**: allcommands changenickname deletetest cleargame clearstreaming eval exec invite restart servers setgame setstreaming shutdown updateavatar\n"
+			"**No prefix**: @Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)")
+		if not ctx.message.channel.is_private:
+			await self.bot.reply("Check your DMs for some of my additional commands. Use help for the main commands.")
+	
+	@commands.command(pass_context = True)
+	async def conversions(self, ctx):
+		'''All conversion commands'''
+		await self.bot.whisper("__Conversion Commands__\n"
+		"**Temperature Unit Conversions**: [c, f, k, r, de]**to**[c, f, k, r, de, n, re, ro] \n"
+		"**Weight Unit Conversions**: <unit>to<unit> units: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]")
+		if not ctx.message.channel.is_private:
+			await self.bot.reply("Check your DMs for my conversion commands.")
+	
+	@commands.command()
+	@checks.is_owner()
+	async def disable(self, command : str):
+		'''Disable a command'''
+		self.bot.commands[command].enabled = False
+		await self.bot.say("{} has been disabled.".format(command))
+	
+	@commands.command()
+	@checks.is_owner()
+	async def enable(self, command : str):
+		'''Enable a command'''
+		self.bot.commands["tts"].enabled = True
+		await self.bot.say("{} has been enabled.".format(command))
+	
+	@commands.command(hidden = True)
+	async def discordlibraryversion(self):
+		'''The discord.py library version I'm currently using'''
+		await self.bot.reply(discord.__version__)
+	
+	@commands.command(aliases = ["oauth"], hidden = True)
+	async def invite(self):
+		'''Link to invite me to a server'''
+		application_info = await self.bot.application_info()
+		await self.bot.reply(discord.utils.oauth_url(application_info.id))
 	
 	@commands.command()
 	async def stats(self, *option : str):
@@ -320,6 +278,7 @@ class Meta:
 	# Testing
 	
 	@commands.command(hidden = True)
+	@checks.is_permitted()
 	async def test(self):
 		'''Basic test command'''
 		await self.bot.say("Hello, World!")
@@ -329,6 +288,29 @@ class Meta:
 	async def echo(self, *, message):
 		'''Echoes the message'''
 		await self.bot.say(message)
+	
+	@commands.command(pass_context = True, hidden = True)
+	@checks.is_owner()
+	async def eval(self, ctx, *, code : str):
+		code = code.strip('`')
+		try:
+			result = eval(code)
+			if inspect.isawaitable(result):
+				result = await result
+			await self.bot.reply(py_code_block.format(result))
+		except Exception as e:
+			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+	
+	@commands.command(pass_context = True, hidden = True)
+	@checks.is_owner()
+	async def exec(self, ctx, *, code : str):
+		code = code.strip('`')
+		try:
+			exec(code)
+		except Exception as e:
+			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			return
+		await self.bot.reply("Successfully executed.")
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
@@ -351,4 +333,9 @@ class Meta:
 			bar = chr(9632) + bar[:-1] #9608
 			await asyncio.sleep(1)
 			await self.bot.edit_message(loading_message, "Loading: [" + bar + "]")
+
+	@commands.command(hidden = True)
+	async def ping(self):
+		'''Basic ping - pong command'''
+		await self.bot.say("pong")
 

@@ -4,7 +4,6 @@ from discord.ext import commands
 import aiohttp
 import asyncio
 import discord
-import inflect
 import os
 # import queue
 import random
@@ -17,11 +16,11 @@ import youtube_dl
 import credentials
 from modules import utilities
 from utilities import checks
-from client import client
-from client import aiohttp_session
-from client import cleverbot_instance
+from clients import client
+from clients import aiohttp_session
+from clients import cleverbot_instance
+from clients import inflect_engine
 
-inflect_engine = inflect.engine()
 players = []
 recognizer = speech_recognition.Recognizer()
 
@@ -401,7 +400,7 @@ async def player_add_playlist(message):
 	path = parsed_url.path
 	query = parsed_url.query
 	if path[:9] == "/playlist" and query[:5] == "list=":
-		response = await utilities.send_mention_space(message, "Loading...")
+		response = await utilities.reply(message, "Loading...")
 		playlistid = query[5:]
 		base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(credentials.google_apikey, playlistid)
 		url = base_url
@@ -417,7 +416,7 @@ async def player_add_playlist(message):
 				try:
 					stream = await client.voice_client_in(message.server).create_ytdl_player(link)
 				except youtube_dl.utils.DownloadError:
-					await utilities.send_mention_space(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
+					await utilities.reply(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
 					continue
 				await player_instance["queue"].put({"stream" : stream, "author" : message.author})
 			if not "nextPageToken" in data:
@@ -427,7 +426,7 @@ async def player_add_playlist(message):
 		await client.edit_message(response, message.author.mention + " Your songs have been added to the queue.")
 		return
 	else:
-		await utilities.send_mention_space(message, "Error")
+		await utilities.reply(message, "Error")
 		return
 
 # Utility
