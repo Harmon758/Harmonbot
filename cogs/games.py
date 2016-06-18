@@ -44,6 +44,7 @@ class Games:
 			pass
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def blackjack(self, ctx):
 		'''Play a game of blackjack'''
 		deck = pydealer.Deck()
@@ -94,6 +95,7 @@ class Games:
 					await asyncio.sleep(5)
 	
 	@commands.group(invoke_without_command = True)
+	@checks.not_forbidden()
 	async def chess(self, *option : str):
 		'''
 		Play chess
@@ -136,11 +138,13 @@ class Games:
 		await self.bot.say(ctx.message.author.name + " flipped the table over in anger!\nThe board has been reset.")
 	
 	@commands.command(aliases = ["talk", "ask"])
+	@checks.not_forbidden()
 	async def cleverbot(self, *, message : str):
 		'''Talk to Cleverbot'''
 		await self.bot.reply(cleverbot_instance.ask(message))
 	
 	@commands.command(name = "8ball", aliases = ["eightball", "\U0001f3b1"])
+	@checks.not_forbidden()
 	async def eightball(self):
 		'''
 		Ask 8ball a yes or no question
@@ -153,6 +157,7 @@ class Games:
 		return(random.choice(responses))
 	
 	@commands.group(hidden = True, pass_context = True)
+	@checks.not_forbidden()
 	async def gofish(self, ctx): #WIP
 		'''WIP'''
 		return
@@ -189,6 +194,7 @@ class Games:
 			pass
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def guess(self, ctx, *options : str):
 		'''
 		Guessing game
@@ -234,6 +240,7 @@ class Games:
 				return
 	
 	@commands.group(invoke_without_command = True, pass_context = True)
+	@checks.not_forbidden()
 	async def jeopardy(self, ctx, *options : str):
 		if len(options) >= 2 and self.jeopardy_active and not self.jeopardy_question_active:
 			category = int(options[0])
@@ -315,6 +322,7 @@ class Games:
 			await self.bot.say("```" + self.jeopardy_board_output + "```")
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def maze(self, ctx, *options : str):
 		'''
 		Maze game
@@ -360,6 +368,7 @@ class Games:
 			await self.bot.reply("Please enter a valid option (start/current).")
 	
 	@commands.group(hidden = True)
+	@checks.not_forbidden()
 	async def taboo(self): #WIP
 		'''WIP'''
 		return
@@ -383,6 +392,7 @@ class Games:
 			pass
 	
 	@commands.group(invoke_without_command = True, pass_context = True)
+	@checks.not_forbidden()
 	async def trivia(self, ctx, *options : str):
 		'''Trivia game'''
 		if not self.trivia_active:
@@ -491,6 +501,7 @@ class Games:
 		await self.bot.reply("You have $" + utilities.add_commas(cash))
 	
 	@commands.group(pass_context = True)
+	@checks.not_forbidden()
 	async def war(self, ctx):
 		'''Based on the War card game'''
 		return

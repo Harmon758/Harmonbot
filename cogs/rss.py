@@ -57,6 +57,7 @@ class RSS:
 						return
 
 	@commands.command(pass_context = True, aliases = ["rss"])
+	@checks.not_forbidden()
 	async def feeds(self, ctx):
 		'''Show feeds being followed in this channel'''
 		with open("data/rss_feeds.json", "r") as feeds_file:

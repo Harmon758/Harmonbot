@@ -28,6 +28,7 @@ class Twitter:
 		self.bot = bot
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def status(self, handle : str):
 		'''Get twitter status'''
 		tweet = twitter_api.user_timeline(handle, count = 1)[0]

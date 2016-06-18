@@ -147,6 +147,7 @@ class Discord:
 			await self.bot.delete_messages(to_delete)
 	
 	@commands.command(pass_context = True, aliases = ["mycolour"], no_pm = True)
+	@checks.not_forbidden()
 	async def mycolor(self, ctx, *color : str): #rework
 		'''
 		Return or change your color
@@ -186,6 +187,7 @@ class Discord:
 		await self.bot.reply("Message unpinned.")
 	
 	@commands.command(pass_context = True, aliases = ["rolecolour"], no_pm = True)
+	@checks.not_forbidden()
 	async def rolecolor(self, ctx, role : str, *color : str):
 		'''
 		Returns or changes role colors
@@ -220,6 +222,7 @@ class Discord:
 		await self.bot.move_role(ctx.message.server, selected_role, position)
 	
 	@commands.command(pass_context = True, no_pm = True)
+	@checks.not_forbidden()
 	async def tempchannel(self, ctx, *options : str):
 		'''
 		Create temporary voice and text channels
@@ -278,6 +281,7 @@ class Discord:
 	# Get Attributes
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def avatar(self, ctx, *, name : str = ""):
 		'''See a bigger version of your own or someone else's avatar'''
 		if name:
@@ -301,6 +305,7 @@ class Discord:
 				await self.bot.reply("Your avatar: " + ctx.message.author.default_avatar_url)
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def discriminator(self, ctx, *, name : str = ""):
 		'''Get your own or someone else's discriminator'''
 		if name:
@@ -318,6 +323,7 @@ class Discord:
 			await self.bot.reply("Your discriminator: #" + ctx.message.author.discriminator)
 	
 	@commands.command(pass_context = True, no_pm = True)
+	@checks.not_forbidden()
 	async def roleid(self, ctx, *, name : str):
 		'''Get the ID of a role'''
 		for role in ctx.message.server.roles:
@@ -331,6 +337,7 @@ class Discord:
 		await self.bot.reply(', '.join([role.name + ": " + str(role.position) for role in ctx.message.server.roles[1:]]))
 	
 	@commands.command(pass_context = True, no_pm = True)
+	@checks.not_forbidden()
 	async def servericon(self, ctx):
 		'''See a bigger version of the server icon'''
 		# await self.bot.reply("This server's icon: https://cdn.discordapp.com/icons/" + ctx.message.server.id + "/" + ctx.message.server.icon + ".jpg")
@@ -340,6 +347,7 @@ class Discord:
 			await self.bot.reply("This server doesn't have an icon.")
 	
 	@commands.command(pass_context = True, no_pm = True)
+	@checks.not_forbidden()
 	async def serverinfo(self, ctx):
 		'''Information about a server'''
 		server = ctx.message.server
@@ -353,11 +361,13 @@ class Discord:
 		await self.bot.reply(server_info)
 	
 	@commands.command(pass_context = True, no_pm = True)
+	@checks.not_forbidden()
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
 		await self.bot.reply("The owner of this server is " + ctx.message.server.owner.name + "#" + str(ctx.message.server.owner.discriminator))
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def userinfo(self, ctx):
 		'''Information about a user'''
 		user = ctx.message.author
@@ -370,12 +380,14 @@ class Discord:
 	# Convert Attributes
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def idtoname(self, id : str):
 		'''Convert user id to name'''
 		if id.isdigit():
 			await self.bot.reply("<@" + id + ">")
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def nametoid(self, ctx, *, name : str):
 		'''Convert user name to id'''
 		member = discord.utils.get(ctx.message.server.members, name = name)
@@ -384,6 +396,7 @@ class Discord:
 	# Checks
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def everyone(self, ctx):
 		'''Check if you can mention everyone in the channel'''
 		if ctx.message.author.permissions_in(ctx.message.channel).mention_everyone:

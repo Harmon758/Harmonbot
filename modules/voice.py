@@ -25,6 +25,7 @@ players = []
 recognizer = speech_recognition.Recognizer()
 
 @client.command(hidden = True, pass_context = True)
+@checks.not_forbidden()
 async def listen(ctx):
 	await detectvoice(ctx)
 
@@ -49,6 +50,7 @@ async def detectvoice(ctx):
 		open("data/testing.pcm", 'w').close()
 		
 @client.command(hidden = True, pass_context = True)
+@checks.not_forbidden()
 async def srtest(ctx):
 	subprocess.call(["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", "data/testing.pcm", "data/testing.wav"], shell=True)
 	with speech_recognition.AudioFile("data/testing.wav") as source:
@@ -77,6 +79,7 @@ async def srtest(ctx):
 @client.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "audio", "stream", "play", "playlist", "spotify"], 
 	invoke_without_command = True, no_pm = True)
 @checks.is_voice_connected()
+@checks.not_forbidden()
 async def voice(ctx, *options : str): #elif options[0] == "full":
 	'''Audio System'''
 	if "playlist" in ctx.message.content:
@@ -286,7 +289,7 @@ def _tts(ctx, message):
 	os.remove("data/tts.wav")
 
 @client.command(pass_context = True, no_pm = True)
-@checks.is_owner()
+@checks.is_server_owner()
 @checks.is_voice_connected()
 async def play_file(ctx, filename : str):
 	'''Plays an audio file'''
