@@ -42,6 +42,7 @@ class Resources:
 			pass
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def add(self, *numbers : float):
 		'''Adds numbers together.'''
 		result = sum(numbers)
@@ -56,6 +57,7 @@ class Resources:
 		await self.bot.reply(" + ".join(addends) + " = " + str(result))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def audiodefine(self, word : str):
 		'''Generate link for pronounciation of a word'''
 		url = "http://api.wordnik.com:80/v4/word.json/{0}/audio?useCanonical=false&limit=1&api_key={1}".format(word, credentials.wordnik_apikey)
@@ -70,11 +72,13 @@ class Resources:
 			await self.bot.reply("Word or audio not found.")
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def bing(self, *search : str):
 		'''Look something up on Bing'''
 		await self.bot.reply("http://www.bing.com/search?q={0}".format('+'.join(search)))
 	
 	@commands.command(aliases = ["calc", "calculator"])
+	@checks.not_forbidden()
 	async def calculate(self, *, equation : str):
 		'''Calculator'''
 		'''
@@ -101,6 +105,7 @@ class Resources:
 		'''
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def cat(self, *category : str):
 		'''
 		Random image of a cat
@@ -135,6 +140,7 @@ class Resources:
 			await self.bot.reply(root.find(".//url").text)
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def choose(self, *choices : str):
 		'''
 		Randomly chooses between multiple options
@@ -145,11 +151,13 @@ class Resources:
 		await self.bot.reply(random.choice(choices))
 	
 	@commands.command(aliases = ["flip"])
+	@checks.not_forbidden()
 	async def coin(self):
 		'''Flip a coin'''
 		await self.bot.reply(random.choice(["Heads!", "Tails!"]))
 	
 	@commands.command(aliases = ["colour"])
+	@checks.not_forbidden()
 	async def color(self, *options : str):
 		'''
 		Information on colors
@@ -176,6 +184,7 @@ class Resources:
 			"{image}".format(name = data["title"].capitalize(), hex = "#{}".format(data["hex"]), red = str(rgb["red"]), green = str(rgb["green"]), blue = str(rgb["blue"]),	hue = str(hsv["hue"]), saturation = str(hsv["saturation"]), value = str(hsv["value"]), image = data["imageUrl"]))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def date(self, date : str):
 		'''Facts about dates'''
 		url = "http://numbersapi.com/{0}/date".format(date)
@@ -188,6 +197,7 @@ class Resources:
 			await self.bot.reply(data)
 	
 	@commands.group()
+	@checks.not_forbidden()
 	async def decode(self):
 		'''
 		Decodes coded messages
@@ -219,6 +229,7 @@ class Resources:
 			await self.bot.reply('`' + ciphers.decode_caesar(message, option) + '`')
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def define(self, word : str):
 		'''Define a word'''
 		url = "http://api.wordnik.com:80/v4/word.json/{0}/definitions?limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key={1}".format(word, credentials.wordnik_apikey)
@@ -234,6 +245,7 @@ class Resources:
 			await self.bot.reply("Definition not found.")
 	
 	@commands.group()
+	@checks.not_forbidden()
 	async def encode(self):
 		'''
 		Encode messages
@@ -263,6 +275,7 @@ class Resources:
 			await self.bot.reply('`' + ciphers.encode_caesar(message, key) + '`')
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def fancify(self, *, text : str):
 		'''Fancify text'''
 		output = ""
@@ -276,11 +289,13 @@ class Resources:
 		await self.bot.reply(output)
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def fingers(self, *, text : str):
 		'''Add fingers'''
 		await self.bot.reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
 	
 	@commands.group(invoke_without_command = True)
+	@checks.not_forbidden()
 	async def giphy(self, *search : str):
 		'''
 		Find something on giphy
@@ -311,11 +326,13 @@ class Resources:
 		await self.bot.reply(data[0]["url"])
 	
 	@commands.command(aliases = ["search"])
+	@checks.not_forbidden()
 	async def google(self, *search : str):
 		'''Google something'''
 		await self.bot.reply("https://www.google.com/search?q={0}".format(('+').join(search)))
 	
 	@commands.command(aliases = ["imagesearch"])
+	@checks.not_forbidden()
 	async def googleimage(self, *search : str):
 		'''Google image search something'''
 		url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&searchType=image&q={2}".format(credentials.google_apikey, credentials.google_cse_cx, '+'.join(search))
@@ -326,6 +343,7 @@ class Resources:
 		# handle 403 daily limit exceeded error
 	
 	@commands.command(pass_context = True)
+	@checks.not_forbidden()
 	async def graph(self, ctx, *, data : str):
 		'''WIP'''
 		name = "data/graph_testing.png"
@@ -333,6 +351,7 @@ class Resources:
 		await self.bot.send_file(destination = ctx.message.channel, fp = name, content = "Testing Graph")
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def haveibeenpwned(self, name : str):
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/{0}?truncateResponse=true".format(name)
@@ -360,6 +379,7 @@ class Resources:
 		await self.bot.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
 	
 	@commands.command(aliases = ["movie"])
+	@checks.not_forbidden()
 	async def imdb(self, *search : str):
 		'''IMDb Information'''
 		url = "http://www.omdbapi.com/?t={0}&y=&plot=short&r=json".format('+'.join(search))
@@ -378,11 +398,13 @@ class Resources:
 			"Poster: {poster}".format(title = data["Title"], year = data["Year"], type = data["Type"], rating = data["imdbRating"], runtime = data["Runtime"], genre = data["Genre"], plot = data["Plot"], poster = data["Poster"]))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def imfeelinglucky(self, *search : str):
 		'''First Google result of a search'''
 		await self.bot.reply("https://www.google.com/search?btnI&q={0}".format('+'.join(search)))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def insult(self):
 		'''Generate insult'''
 		url = "http://quandyfactory.com/insult/json"
@@ -391,6 +413,7 @@ class Resources:
 		await self.bot.say(data["insult"])
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def joke(self):
 		'''Generate joke'''
 		url = "http://tambal.azurewebsites.net/joke/random"
@@ -400,16 +423,19 @@ class Resources:
 		await self.bot.reply(joke)
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def lmbtfy(self, *search : str):
 		'''Let Me Bing That For You'''
 		await self.bot.reply("http://lmbtfy.com/?q={0}".format(('+').join(search)))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def lmgtfy(self, *search : str):
 		'''Let Me Google That For You'''
 		await self.bot.reply("http://www.lmgtfy.com/?q={0}".format(('+').join(search)))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def longurl(self, url : str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={0}&key={1}".format(url, credentials.google_apikey)
@@ -422,6 +448,7 @@ class Resources:
 			await self.bot.reply(data["longUrl"])
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def map(self, *options : str):
 		'''Get map of location'''
 		if options and options[0] == "random":
@@ -432,6 +459,7 @@ class Resources:
 			await self.bot.reply("https://maps.googleapis.com/maps/api/staticmap?center={0}&zoom=13&size=600x300".format("+".join(options)))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def math(self, number : int):
 		'''Math facts about numbers'''
 		async with aiohttp_session.get("http://numbersapi.com/{0}/math".format(number)) as resp:
@@ -439,6 +467,7 @@ class Resources:
 		await self.bot.reply(data)
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def number(self, number : int):
 		'''Facts about numbers'''
 		async with aiohttp_session.get("http://numbersapi.com/{0}".format(number)) as resp:
@@ -446,6 +475,7 @@ class Resources:
 		await self.bot.reply(data)
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def randomidea(self):
 		'''Generate random idea'''
 		async with aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
@@ -453,11 +483,13 @@ class Resources:
 		await self.bot.reply("{0} for {1}".format(data["this"], data["that"]))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def randomlocation(self):
 		'''Generate random location'''
 		await self.bot.reply("{0}, {1}".format(str(random.uniform(-90, 90)), str(random.uniform(-180, 180))))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def randomword(self):
 		'''Generate random word'''
 		url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(credentials.wordnik_apikey)
@@ -467,11 +499,13 @@ class Resources:
 		await self.bot.reply(word.capitalize())
 	
 	@commands.command(hidden = True)
+	@checks.not_forbidden()
 	async def redditsearch(self): #WIP
 		'''WIP'''
 		return
 	
 	@commands.command(aliases = ["randomnumber"])
+	@checks.not_forbidden()
 	async def rng(self, *number : int):
 		'''
 		Generate random number
@@ -483,6 +517,7 @@ class Resources:
 			await self.bot.reply(str(random.randint(1, 10)))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def shorturl(self, url : str):
 		'''Generate a short goo.gl url for your link'''
 		async with aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={0}".format(credentials.google_apikey), \
@@ -491,6 +526,7 @@ class Resources:
 		await self.bot.reply(data["id"])
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def spellcheck(self, *words : str):
 		'''Spell check words'''
 		async with aiohttp_session.post("https://bingapis.azure-api.net/api/v5/spellcheck?Text=" + '+'.join(words), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
@@ -506,6 +542,7 @@ class Resources:
 		await self.bot.reply(corrected)
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def spotifyinfo(self, url : str):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
@@ -524,6 +561,7 @@ class Resources:
 			await self.bot.reply("Syntax error.")
 	
 	@commands.command(aliases = ["sptoyt"])
+	@checks.not_forbidden()
 	async def spotifytoyoutube(self, url : str):
 		'''Find a Spotify track on Youtube'''
 		link = await voice.spotify_to_youtube(url)
@@ -533,6 +571,7 @@ class Resources:
 			await self.bot.reply("Error")
 	
 	@commands.group()
+	@checks.not_forbidden()
 	async def steam(self, *options : str):
 		'''Steam Information'''
 		return
@@ -592,6 +631,7 @@ class Resources:
 			isfree, name = data["name"], appid = str(data["steam_appid"]), website = data["website"], header_image = data["header_image"]))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def strawpoll(self, question : str, *options : str):
 		'''
 		Generates a strawpoll link
@@ -602,6 +642,7 @@ class Resources:
 		await self.bot.reply("http://strawpoll.me/" + str(poll["id"]))
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def streetview(self, *options : str):
 		'''Generate street view of a location'''
 		if options:
@@ -613,6 +654,7 @@ class Resources:
 				await self.bot.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
 	
 	@commands.group(pass_context = True, aliases = ["trigger", "note"])
+	@checks.not_forbidden()
 	async def tag(self, ctx):
 		'''
 		Create "tags" or notes that you can trigger later
@@ -684,11 +726,13 @@ class Resources:
 			await self.bot.reply("You don't have that tag.")
 	
 	@commands.command(hidden = True)
+	@checks.not_forbidden()
 	async def weather(self, *options : str): #WIP
 		'''WIP'''
 		await self.bot.reply(str(weather.temp(' '.join(options))))
 	
 	@commands.command(hidden = True, pass_context = True)
+	@checks.not_forbidden()
 	async def webmtogif(self, ctx, url : str): #WIP
 		'''WIP'''
 		webmfile = urllib.request.urlretrieve(url, "data/webtogif.webm")
@@ -701,6 +745,7 @@ class Resources:
 		#await self.bot.send_file(message.channel, "data/webtogif.gif")
 	
 	@commands.command(hidden = True)
+	@checks.not_forbidden()
 	async def whatis(self, *search : str): #WIP
 		'''WIP'''
 		if not search:
@@ -709,6 +754,7 @@ class Resources:
 			await self.bot.reply("I don't know what that is.")
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def wiki(self, *search : str):
 		'''Look something up on Wikipedia'''
 		await self.bot.reply("https://en.wikipedia.org/wiki/{0}".format("_".join(search)))
@@ -724,6 +770,7 @@ class Resources:
 		#await self.bot.reply(next(result.results).text)
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def xkcd(self, *options : str):
 		'''Find xkcd's'''
 		if not options:
@@ -749,6 +796,7 @@ class Resources:
 		"Alt Text: {alt_text}".format(num = str(data["num"]), date = "{month}/{day}/{year}".format(month = data["month"], day = data["day"], year = data["year"]), image_link = data["img"], title = data["title"], alt_text = data["alt"]))
 	
 	@commands.command(aliases = ["ytinfo"])
+	@checks.not_forbidden()
 	async def youtubeinfo(self, url : str):
 		'''Information on Youtube videos'''
 		# toggles = {}
@@ -787,12 +835,14 @@ class Resources:
 			await self.bot.reply("\n```" + title + "\nLength: " + str(length) + "\nLikes: " + likes + ", Dislikes: " + dislikes + " (" + str(likepercentage) + "%)\nViews: " + views + "\n" + channel + " on " + published + "```")
 	
 	@commands.command(aliases = ["ytsearch"])
+	@checks.not_forbidden()
 	async def youtubesearch(self, *search : str):
 		'''Find a Youtube video'''
 		link = await utilities.youtubesearch(search)
 		await self.bot.reply(link)
 	
 	@commands.command()
+	@checks.not_forbidden()
 	async def year(self, year : int):
 		'''Facts about years'''
 		async with aiohttp_session.get("http://numbersapi.com/{0}/year".format(year)) as resp:

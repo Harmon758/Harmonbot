@@ -41,6 +41,20 @@ class Meta:
 			_allcommands += name + ' '
 		await self.bot.whisper(_allcommands[:-1])
 	
+	@commands.command()
+	@checks.is_owner()
+	async def disable(self, command : str):
+		'''Disable a command'''
+		self.bot.commands[command].enabled = False
+		await self.bot.say("{} has been disabled.".format(command))
+	
+	@commands.command()
+	@checks.is_owner()
+	async def enable(self, command : str):
+		'''Enable a command'''
+		self.bot.commands["tts"].enabled = True
+		await self.bot.say("{} has been enabled.".format(command))
+	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def servers(self):
@@ -56,7 +70,7 @@ class Meta:
 			await self.bot.whisper(server_info)
 	
 	@commands.command(aliases = ["setprefixes"], pass_context = True)
-	@checks.dm_or_is_server_owner()
+	@checks.is_permitted()
 	async def setprefix(self, ctx, *prefixes : str):
 		'''
 		Set the bot prefixes for the server or for DMs
@@ -106,20 +120,6 @@ class Meta:
 		"**Weight Unit Conversions**: <unit>to<unit> units: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]")
 		if not ctx.message.channel.is_private:
 			await self.bot.reply("Check your DMs for my conversion commands.")
-	
-	@commands.command()
-	@checks.is_owner()
-	async def disable(self, command : str):
-		'''Disable a command'''
-		self.bot.commands[command].enabled = False
-		await self.bot.say("{} has been disabled.".format(command))
-	
-	@commands.command()
-	@checks.is_owner()
-	async def enable(self, command : str):
-		'''Enable a command'''
-		self.bot.commands["tts"].enabled = True
-		await self.bot.say("{} has been enabled.".format(command))
 	
 	@commands.command(hidden = True)
 	async def discordlibraryversion(self):
@@ -184,6 +184,7 @@ class Meta:
 		await self.bot.reply("Avatar updated.")
 	
 	@commands.command(hidden = True)
+	@checks.not_forbidden()
 	async def randomgame(self):
 		'''Update to a random playing/game status message'''
 		await utilities.random_game_status()
@@ -278,7 +279,7 @@ class Meta:
 	# Testing
 	
 	@commands.command(hidden = True)
-	@checks.is_permitted()
+	@checks.not_forbidden()
 	async def test(self):
 		'''Basic test command'''
 		await self.bot.say("Hello, World!")
@@ -320,6 +321,7 @@ class Meta:
 			await self.bot.say(str(i))
 	
 	@commands.command(hidden = True)
+	@checks.not_forbidden()
 	async def loading_bar(self):
 		'''
 		Just for fun loading bar

@@ -16,7 +16,7 @@ class Permissions:
 		self.bot = bot
 	
 	@commands.group(invoke_without_command = True)
-	@checks.is_server_owner() #or permitted
+	@checks.is_permitted()
 	async def setpermission(self):
 		'''Set a permission'''
 		await self.bot.reply("Invalid input. setpermission everyone|role|user")
@@ -69,7 +69,7 @@ class Permissions:
 		await self.bot.reply("Permission updated. {} set to {} for {}".format(permission, setting, _user))
 	
 	@commands.group(invoke_without_command = True, pass_context = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def getpermission(self, ctx, *options : str):
 		'''Get a permission'''
 		if len(options) == 2:
@@ -113,7 +113,7 @@ class Permissions:
 		await self.bot.reply("{} is set to {} for {}".format(permission, setting, _user))
 	
 	@commands.group(invoke_without_command = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def getpermissions(self):
 		return
 	

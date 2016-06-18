@@ -21,22 +21,12 @@ def is_owner():
 	return commands.check(predicate)
 
 def is_server_owner_check(ctx):
-	return (ctx.message.server and ctx.message.author == ctx.message.server.owner) or is_owner_check(ctx)
+	return ctx.message.channel.is_private or ctx.message.author == ctx.message.server.owner or is_owner_check(ctx)
 
 def is_server_owner():
 	
 	def predicate(ctx):
 		if is_server_owner_check(ctx):
-			return True
-		else:
-			raise errors.NotServerOwner
-	
-	return commands.check(predicate)
-
-def dm_or_is_server_owner():
-	
-	def predicate(ctx):
-		if ctx.message.channel.is_private or is_server_owner_check(ctx):
 			return True
 		else:
 			raise errors.NotServerOwner
