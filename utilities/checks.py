@@ -134,24 +134,28 @@ def dm_or_has_permissions_and_capability(**permissions):
 	
 	return commands.check(predicate)
 
-def is_permitted_check(ctx):
+def not_forbidden_check(ctx):
 	permitted = utilities.get_permission(ctx, ctx.invoked_with, id = ctx.message.author.id)
-	return permitted or permitted is None or is_owner_check(ctx)
+	return ctx.message.channel.is_private or permitted or permitted is None or is_server_owner_check(ctx)
 
-def is_permitted():
+def not_forbidden():
 	
 	def predicate(ctx):
-		if ctx.message.channel.is_private or is_permitted_check(ctx):
+		if not_forbidden_check(ctx):
 			return True
 		else:
 			raise errors.NotPermitted
 	
 	return commands.check(predicate)
 
-def is_server_owner_or_permitted():
+def is_permitted_check(ctx):
+	permitted = utilities.get_permission(ctx, ctx.invoked_with, id = ctx.message.author.id)
+	return ctx.message.channel.is_private or permitted or is_server_owner_check(ctx)
+
+def is_permitted():
 	
 	def predicate(ctx):
-		if is_server_owner_check(ctx) or ctx.message.channel.is_private or is_permitted_check(ctx):
+		if is_permitted_check(ctx):
 			return True
 		else:
 			raise errors.NotPermitted
