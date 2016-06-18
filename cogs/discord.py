@@ -169,6 +169,22 @@ class Discord:
 				new_colour.value = int(color[0], 16)
 				await self.bot.edit_role(ctx.message.server, role_to_change, colour = new_colour)
 	
+	@commands.command(pass_context = True)
+	@checks.has_permissions_and_capability(manage_messages = True)
+	async def pin(self, ctx, message_id : int):
+		'''Pin message by message ID'''
+		message = await self.bot.get_message(ctx.message.channel, str(message_id))
+		await self.bot.pin_message(message)
+		await self.bot.reply("Message pinned.")
+	
+	@commands.command(pass_context = True)
+	@checks.has_permissions_and_capability(manage_messages = True)
+	async def unpin(self, ctx, message_id : int):
+		'''Unpin message by message ID'''
+		message = await self.bot.get_message(ctx.message.channel, str(message_id))
+		await self.bot.unpin_message(message)
+		await self.bot.reply("Message unpinned.")
+	
 	@commands.command(pass_context = True, aliases = ["rolecolour"], no_pm = True)
 	async def rolecolor(self, ctx, role : str, *color : str):
 		'''
