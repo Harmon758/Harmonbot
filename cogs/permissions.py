@@ -162,7 +162,6 @@ class Permissions:
 	@checks.is_server_owner()
 	async def getpermissions_command(self, ctx, command : str):
 		if command not in self.bot.commands: return (await self.bot.reply("Error: {} is not a command.".format(command)))
-		command = self.bot.commands[command].name
 		with open("data/permissions/{}.json".format(ctx.message.server.id), "r") as permissions_file:
 			permissions_data = json.load(permissions_file)
 		output = "__Permissions for {}__\n".format(command)
