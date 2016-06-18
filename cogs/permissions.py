@@ -73,7 +73,7 @@ class Permissions:
 	async def getpermission(self, ctx, *options : str):
 		'''Get a permission'''
 		if len(options) == 2:
-			if options[1] not in self.bot.commands: return (await self.bot.reply("Error: {} is not a command.".format(permission)))
+			if options[1] not in self.bot.commands: return (await self.bot.reply("Error: {} is not a command.".format(options[1])))
 			command = self.bot.commands[options[1]].name
 			user = await utilities.get_user(ctx, options[0])
 			if not user: return (await self.bot.reply("Error: user not found."))
@@ -95,7 +95,7 @@ class Permissions:
 	async def getpermission_role(self, ctx, role : str, permission : str):
 		if permission not in self.bot.commands: return (await self.bot.reply("Error: {} is not a command.".format(permission)))
 		command = self.bot.commands[permission].name
-		matches = [_role for _role in ctx.message.server.roles if _role.name == name]
+		matches = [_role for _role in ctx.message.server.roles if _role.name == role]
 		if len(matches) > 1: return (await self.bot.reply("Error: multiple roles with the name, {}.".format(role)))
 		elif len(matches) == 0: return (await self.bot.reply('Error: role with name, "{}", not found'.format(role)))
 		else: _role = matches[0]
@@ -112,7 +112,67 @@ class Permissions:
 		setting = utilities.get_permission(ctx, command, id = _user.id)
 		await self.bot.reply("{} is set to {} for {}".format(permission, setting, _user))
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
+	@checks.is_server_owner()
 	async def getpermissions(self):
 		return
+	
+	@getpermissions.command(name = "everyone", pass_context = True)
+	@checks.is_server_owner()
+	async def getpermissions_everyone(self, ctx):
+		with open("data/permissions/{}.json".format(ctx.message.server.id), "r") as permissions_file:
+			permissions_data = json.load(permissions_file)
+		everyone_settings = permissions_data.get("everyone", {})
+		output = "__Permissions for everyone__\n"
+		for permission, setting in everyone_settings.items():
+			output += "{}: {}\n".format(permission, str(setting))
+		await self.bot.say(output)
+	
+	@getpermissions.command(name = "role", pass_context = True)
+	@checks.is_server_owner()
+	async def getpermissions_role(self, ctx, role : str):
+		matches = [_role for _role in ctx.message.server.roles if _role.name == role]
+		if len(matches) > 1: return (await self.bot.reply("Error: multiple roles with the name, {}.".format(role)))
+		elif len(matches) == 0: return (await self.bot.reply('Error: role with name, "{}", not found'.format(role)))
+		else: _role = matches[0]
+		with open("data/permissions/{}.json".format(ctx.message.server.id), "r") as permissions_file:
+			permissions_data = json.load(permissions_file)
+		role_settings = permissions_data.get("roles", {}).get(_role.id, {})
+		output = "__Permissions for {}__\n".format(_role.name)
+		role_settings.pop("name", None)
+		for permission, setting in role_settings.items():
+			output += "{}: {}\n".format(permission, str(setting))
+		await self.bot.say(output)
+	
+	@getpermissions.command(name = "user", pass_context = True)
+	@checks.is_server_owner()
+	async def getpermissions_user(self, ctx, user : str):
+		_user = await utilities.get_user(ctx, user)
+		if not _user: return (await self.bot.reply("Error: user not found."))
+		with open("data/permissions/{}.json".format(ctx.message.server.id), "r") as permissions_file:
+			permissions_data = json.load(permissions_file)
+		user_settings = permissions_data.get("users", {}).get(_user.id, {})
+		output = "__Permissions for {}__\n".format(_user.name)
+		user_settings.pop("name", None)
+		for permission, setting in user_settings.items():
+			output += "{}: {}\n".format(permission, str(setting))
+		await self.bot.say(output)
+	
+	@getpermissions.command(name = "command", pass_context = True)
+	@checks.is_server_owner()
+	async def getpermissions_command(self, ctx, command : str):
+		if command not in self.bot.commands: return (await self.bot.reply("Error: {} is not a command.".format(command)))
+		command = self.bot.commands[command].name
+		with open("data/permissions/{}.json".format(ctx.message.server.id), "r") as permissions_file:
+			permissions_data = json.load(permissions_file)
+		output = "__Permissions for {}__\n".format(command)
+		permissions_data.pop("name", None)
+		if command in permissions_data.get("everyone", {}):
+			output += "**Everyone**: {}\n".format(permissions_data.pop("everyone")[command])
+		for type, objects in permissions_data.items():
+			output += "**{}**\n".format(type.capitalize())
+			for id, settings in objects.items():
+				if command in settings:
+					output += "{}: {}\n".format(settings["name"], str(settings[command]))
+		await self.bot.say(output)
 
