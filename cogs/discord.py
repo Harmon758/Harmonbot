@@ -87,7 +87,7 @@ class Discord:
 			await self.bot.purge_from(ctx.message.channel, limit = number)
 		elif len(options) > 1 and options[1].isdigit():
 			def check(message):
-				message.author.name == options[0]
+				return message.author.name == options[0]
 			await self.delete_number(ctx, int(options[1]), check)
 		else:
 			await self.bot.reply("Syntax error.")

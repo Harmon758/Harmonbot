@@ -2,17 +2,19 @@
 import discord
 
 import aiohttp
+from collections import OrderedDict
 import datetime
 import dateutil.parser
 import json
 import math
 import random
+import re
 
 import credentials
-from client import client
-from client import online_time
+from clients import client
+from clients import online_time
+from clients import aiohttp_session
 from modules import voice
-from client import aiohttp_session
 
 # Utility
 
@@ -86,7 +88,7 @@ def add_commas(number):
 	if number:
 		return "{:,}".format(number)
 	else:
-		return number
+		return str(number)
 
 def remove_symbols(string):
 	plain_string = ""
@@ -109,6 +111,79 @@ async def youtubesearch(search):
 	return "https://www.youtube.com/watch?v={0}".format(data["id"]["videoId"])
 
 # Discord
+
+def get_permission(ctx, permission, *, type = "user", id = None):
+	try:
+		with open("data/permissions/{}.json".format(ctx.message.server.id), "x+") as permissions_file:
+			json.dump({"name" : ctx.message.server.name}, permissions_file, indent = 4)
+	except FileExistsError:
+		pass
+	else:
+		return None
+	with open("data/permissions/{}.json".format(ctx.message.server.id), "r") as permissions_file:
+		permissions_data = json.load(permissions_file)
+	if type == "everyone":
+		return permissions_data.get("everyone", {}).get(permission)
+	elif type == "role":
+		role_setting = permissions_data.get("roles", {}).get(id, {}).get(permission)
+		return role_setting if role_setting is not None else permissions_data.get("everyone", {}).get(permission)
+	elif type == "user":
+		user_setting = permissions_data.get("users", {}).get(id, {}).get(permission)
+		if user_setting is not None: return user_setting
+		user = discord.utils.get(ctx.message.server.members, id = id)
+		role_positions = {}
+		for role in user.roles:
+			role_positions[role.position] = role
+		sorted_role_positions = OrderedDict(sorted(role_positions.items(), reverse = True))
+		for role_position, role in sorted_role_positions.items():
+			role_setting = permissions_data.get("roles", {}).get(role.id, {}).get(permission)
+			if role_setting is not None: return role_setting
+		return permissions_data.get("everyone", {}).get(permission)
+
+async def get_user(ctx, name):
+	# check if mention
+	mention = re.match(r"<@\!?([0-9]+)>", name)
+	if mention:
+		user_id = mention.group(1)
+		user = ctx.message.server.get_member(user_id)
+		if user: return user
+	# check if exact match
+	matches = [member for member in ctx.message.server.members if member.name == name or member.nick == name]
+	if len(matches) == 1:
+		return matches[0]
+	elif len(matches) > 1:
+		members = ""
+		for index, member in enumerate(matches, 1):
+			members += "{}: {}".format(str(index), str(member))
+			if member.nick: members += " ({})".format(member.nick)
+			members += '\n'
+		await ctx.bot.say("Multiple users with the name, {}. Which one did you mean?\n"
+		"**Enter the number it is in the list.**".format(name))
+		await ctx.bot.say(members)
+		message = await ctx.bot.wait_for_message(author = ctx.message.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(matches))
+		return matches[int(message.content) - 1]
+	# check if beginning match
+	start_matches = [member for member in ctx.message.server.members if member.name.startswith(name) or member.nick and member.nick.startswith(name)]
+	if len(start_matches) == 1:
+		return start_matches[0]
+	elif len(start_matches) > 1:
+		members = ""
+		for index, member in enumerate(start_matches, 1):
+			members += "{}: {}".format(str(index), str(member))
+			if member.nick: members += " ({})".format(member.nick)
+			members += '\n'
+		await ctx.bot.reply("Multiple users with names starting with {}. Which one did you mean? **Enter the number.**".format(name))
+		await ctx.bot.say(members)
+		message = await ctx.bot.wait_for_message(author = ctx.message.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(start_matches))
+		return start_matches[int(message.content) - 1]
+	# check if with discriminator
+	user_info = re.match(r"^(\w+)#(\d{4})", name)
+	if user_info:
+		user_name = user_info.group(1)
+		user_discriminator = user_info.group(2)
+		user = discord.utils.find(lambda m: m.name == user_name and str(m.discriminator) == user_discriminator, ctx.message.server.members)
+		if user: return user
+	return None
 
 async def random_game_status():
 	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot",
@@ -139,14 +214,14 @@ async def set_streaming_status(client):
 		updated_game.type = 1
 	await client.change_status(game = updated_game)
 
-async def send_mention_space(message, response):
-	return await client.send_message(message.channel, message.author.mention + ': ' + response)
+async def reply(message, response):
+	return await client.send_message(message.channel, "{}: {}".format(message.author.mention, response))
 
-async def send_mention_newline(message, response):
-	return await client.send_message(message.channel, message.author.mention + ":\n" + response)
+async def reply_newline(message, response):
+	return await client.send_message(message.channel, "{}:\n{}".format(message.author.mention, response))
 
-async def send_mention_code(message, response):
-	return await client.send_message(message.channel, message.author.mention + ":\n```" + response + "```")
+async def reply_code(message, response):
+	return await client.send_message(message.channel, "{}:\n```{}```".format(message.author.mention, response))
 
 # Restart/Shutdown Tasks
 
@@ -157,14 +232,14 @@ def add_uptime():
 	uptime = now - online_time
 	stats["uptime"] += uptime.total_seconds()
 	with open("data/stats.json", "w") as stats_file:
-		json.dump(stats, stats_file)
+		json.dump(stats, stats_file, indent = 4)
 
 def add_restart():
 	with open("data/stats.json", "r") as stats_file:
 		stats = json.load(stats_file)
 	stats["restarts"] += 1
 	with open("data/stats.json", "w") as stats_file:
-		json.dump(stats, stats_file)
+		json.dump(stats, stats_file, indent = 4)
 
 async def leave_all_voice():
 	for voice_client in client.voice_clients:

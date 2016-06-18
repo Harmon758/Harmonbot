@@ -1,6 +1,9 @@
 
 from discord.ext.commands.errors import CommandError
 
+class NotOwner(CommandError):
+	pass
+
 class NotServerOwner(CommandError):
 	pass
 
@@ -28,4 +31,7 @@ class MissingPermissions(CommandError):
 class MissingCapability(CommandError):
 	def __init__(self, permissions):
 		self.permissions = permissions
+
+class NotPermitted(CommandError):
+	pass
 
