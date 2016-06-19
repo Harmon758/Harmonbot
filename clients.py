@@ -6,6 +6,7 @@ import datetime
 import inflect
 import json
 import os
+from utilities.help_formatter import CustomHelpFormatter
 
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -37,8 +38,10 @@ def get_prefix(bot, message):
 	else:
 		prefixes = all_prefixes.get(message.server.id, None)
 	return prefixes if prefixes else '!'
-	
-client = Bot(command_prefix = get_prefix, description = "Harmonbot", pm_help = None)
+
+_CustomHelpFormatter = CustomHelpFormatter()
+
+client = Bot(command_prefix = get_prefix, description = "Harmonbot", formatter = _CustomHelpFormatter, pm_help = None)
 # help_attrs = {hidden = True} ?
 
 for file in os.listdir("cogs"):

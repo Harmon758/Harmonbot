@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-#import builtins
 import datetime
 import inspect
 import json
