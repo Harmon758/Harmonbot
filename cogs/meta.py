@@ -41,6 +41,8 @@ class Meta:
 		
 		# help by itself just lists our own commands.
 		if len(commands) == 0:
+			pages = bot.formatter.format_help_for(ctx, "categories")
+		elif commands[0] == "all":
 			pages = bot.formatter.format_help_for(ctx, bot)
 		elif len(commands) == 1:
 			# try to see if it is a cog name

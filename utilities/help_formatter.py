@@ -21,7 +21,15 @@ class CustomHelpFormatter(HelpFormatter):
 		
 		# we need a padding of ~80 or so
 		
-		description = self.command.description if not self.is_cog() else inspect.getdoc(self.command)
+		# description = self.command.description if not self.is_cog() else inspect.getdoc(self.command)
+		if self.command == "categories":
+			description = "Categories:"
+		elif self.is_bot():
+			description = "My Commands:"
+		elif self.is_cog():
+			description = inspect.getdoc(self.command)
+		else:
+			description = self.command.description
 		
 		if description:
 			# <description> portion
@@ -52,24 +60,25 @@ class CustomHelpFormatter(HelpFormatter):
 		
 		max_width = self.max_name_size
 		
-		# def category(tup):
-			# cog = tup[1].cog_name
+		def category(tup):
+			cog = tup[1].cog_name
 			# we insert the zero width space there to give it approximate
 			# last place sorting position.
-			# return cog + ':' if cog is not None else '\u200bNo Category:'
+			return cog + ':' if cog is not None else '\u200bNo Category:'
 		
 		if self.is_bot():
-			# data = sorted(self.filter_command_list(), key=category)
-			# for category, commands in itertools.groupby(data, key=category):
+			data = sorted(self.filter_command_list(), key=category)
+			for category, commands in itertools.groupby(data, key=category):
 				# there simply is no prettier way of doing this.
 				# commands = list(commands)
-				# if len(commands) > 0:
-					# self._current_page.append(category)
-					# self._count += len(category)
-					# self._check_new_page()
-				#
-				# self._add_subcommands_to_page(max_width, commands)
-			self._current_page.append("Categories:\n")
+				commands = sorted(commands, key = lambda c: c[0])
+				if len(commands) > 0:
+					self._current_page.append(category)
+					self._count += len(category)
+					self._check_new_page()
+				
+				self._add_subcommands_to_page(max_width, commands)
+		elif self.command == "categories":
 			categories = sorted(self.context.bot.cogs, key = str.lower)
 			for category in categories:
 				self._current_page.append(category)
