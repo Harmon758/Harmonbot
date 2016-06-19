@@ -211,7 +211,7 @@ class Discord:
 			new_colour.value = conversions.hextoint(color[0])
 			await self.bot.edit_role(ctx.message.server, role_to_change, colour = new_colour)
 	
-	@commands.command(pass_context = True)
+	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def roleposition(self, ctx, role : str, position : int):
 		'''WIP'''
@@ -333,7 +333,7 @@ class Discord:
 			if utilities.remove_symbols(role.name).startswith(name):
 				await self.bot.reply(role.id)
 	
-	@commands.command(pass_context = True)
+	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def rolepositions(self, ctx):
 		'''WIP'''
