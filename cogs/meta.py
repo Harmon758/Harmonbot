@@ -30,7 +30,7 @@ class Meta:
 		except FileExistsError:
 			pass
 	
-	@commands.command(hidden = True, pass_context = True)
+	@commands.command(aliases = ["commands"], hidden = True, pass_context = True)
 	async def help(self, ctx, *commands : str):
 		'''Shows this message.'''
 		bot = ctx.bot
@@ -161,24 +161,12 @@ class Meta:
 		'''Link to changelog'''
 		await self.bot.reply("https://discord.gg/0oyodN94Y3CgCT6I")
 	
-	@commands.command(name = "commands", pass_context = True)
-	async def _commands(self, ctx):
-		'''Some additional commands and information'''
-		await self.bot.whisper("**Commands not in help**: test_on_message [conversion commands (see conversion command)]\n"
-			"**In Progress**: adventure getpermission gifvtogif gofish help redditsearch roleposition rolepositions setpermission taboo timer urbandictionary userlimit weather wolframalpha webmtogif whatis\n"
-			"**Misc**: discordlibraryversion echo load randomgame test\n"
-			"**Owner Only**: allcommands changenickname deletetest cleargame clearstreaming eval exec invite restart servers setgame setstreaming shutdown updateavatar\n"
-			"**No prefix**: @Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)\n"
-			"See help for the main commands.")
-		if not ctx.message.channel.is_private:
-			await self.bot.reply("Check your DMs for some of my additional commands.")
-	
 	@commands.command(pass_context = True)
 	async def conversions(self, ctx):
 		'''All conversion commands'''
 		await self.bot.whisper("__Conversion Commands__\n"
-		"**Temperature Unit Conversions**: [c, f, k, r, de]**to**[c, f, k, r, de, n, re, ro] \n"
-		"**Weight Unit Conversions**: <unit>to<unit> units: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]")
+		"**Temperature Unit Conversions**: {0}[c, f, k, r, de]**to**[c, f, k, r, de, n, re, ro] \n"
+		"**Weight Unit Conversions**: {0}<unit>to<unit> units: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]".format(ctx.prefix))
 		if not ctx.message.channel.is_private:
 			await self.bot.reply("Check your DMs for my conversion commands.")
 	
@@ -192,6 +180,20 @@ class Meta:
 		'''Link to invite me to a server'''
 		application_info = await self.bot.application_info()
 		await self.bot.reply(discord.utils.oauth_url(application_info.id))
+	
+	@commands.command(pass_context = True)
+	async def othercommands(self, ctx):
+		'''Some additional commands and information'''
+		await self.bot.whisper("__Commands not in `{0}help`__\n"
+			"**Conversion Commands**: see `{0}conversions`\n"
+			"**In Progress**: about gofish redditsearch roleposition rolepositions taboo userlimit weather wolframalpha webmtogif whatis\n"
+			"**Misc**: discordlibraryversion invite loading_bar ping randomgame test test_on_message\n"
+			"**Owner Only**: allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar\n"
+			"**No prefix**: @Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)\n"
+			"Note: If you are not currently able to use a command in the channel where you executed `{0}help`, it will not be displayed in the corresponding `{0}help` message.\n"
+			"See `{0}help` for the main commands.".format(ctx.prefix))
+		if not ctx.message.channel.is_private:
+			await self.bot.reply("Check your DMs for some of my additional commands.")
 	
 	@commands.command()
 	async def stats(self, *option : str):
@@ -283,7 +285,7 @@ class Meta:
 			updated_game.type = 0
 		await self.bot.change_status(game = updated_game)
 	
-	@commands.command(pass_context = True, aliases = ["!clearplaying"], hidden = True)
+	@commands.command(pass_context = True, aliases = ["clearplaying"], hidden = True)
 	@checks.is_owner()
 	async def cleargame(self, ctx):
 		'''Clear my playing/game status message'''

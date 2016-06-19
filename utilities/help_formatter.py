@@ -90,7 +90,7 @@ class CustomHelpFormatter(HelpFormatter):
 		self._current_page.append('')
 		# ending_note = self.get_ending_note()
 		ending_note = ("{0}{1} command or {0}{1} category for more info\n"
-		"Also see {0}commands").format(self.clean_prefix, self.context.invoked_with)
+		"Also see {0}othercommands").format(self.clean_prefix, self.context.invoked_with)
 		self._count += len(ending_note)
 		self._check_new_page()
 		self._current_page.append(ending_note)
