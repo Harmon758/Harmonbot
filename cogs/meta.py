@@ -51,7 +51,6 @@ class Meta:
 			else:
 				command = bot.commands.get(name)
 				if command is None:
-					# yield from bot.send_message(destination, bot.command_not_found.format(name))
 					await bot.send_message(destination, bot.command_not_found.format(name))
 					return
 			
@@ -60,7 +59,6 @@ class Meta:
 			name = _mention_pattern.sub(repl, commands[0])
 			command = bot.commands.get(name)
 			if command is None:
-				# yield from bot.send_message(destination, bot.command_not_found.format(name))
 				await bot.send_message(destination, bot.command_not_found.format(name))
 				return
 			
@@ -69,11 +67,9 @@ class Meta:
 					key = _mention_pattern.sub(repl, key)
 					command = command.commands.get(key)
 					if command is None:
-						# yield from bot.send_message(destination, bot.command_not_found.format(key))
 						await bot.send_message(destination, bot.command_not_found.format(key))
 						return
 				except AttributeError:
-					# yield from bot.send_message(destination, bot.command_has_no_subcommands.format(command, key))
 					await bot.send_message(destination, bot.command_has_no_subcommands.format(command, key))
 					return
 			
@@ -444,7 +440,7 @@ class Meta:
 				if function is eval:
 					try:
 						await self.bot.reply(py_code_block.format(result))
-					except:
+					except Exception as e:
 						await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
 				variables["last"] = result
 
