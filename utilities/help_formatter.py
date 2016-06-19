@@ -84,6 +84,13 @@ class CustomHelpFormatter(HelpFormatter):
 				self._current_page.append(category)
 				self._count += len(category)
 				self._check_new_page()
+			self._current_page.append('')
+			ending_note = ("{0}{1} command or {0}{1} category for more info\n"
+			"{0}{1} all for all commands\n"
+			"Also see {0}othercommands").format(self.clean_prefix, self.context.invoked_with)
+			self._count += len(ending_note)
+			self._check_new_page()
+			self._current_page.append(ending_note)
 		else:
 			# self._current_page.append('Commands:')
 			if isinstance(self.command, Command):
@@ -96,13 +103,11 @@ class CustomHelpFormatter(HelpFormatter):
 			self._add_subcommands_to_page(max_width, subcommands)
 		
 		# add the ending note
-		self._current_page.append('')
+		# self._current_page.append('')
 		# ending_note = self.get_ending_note()
-		ending_note = ("{0}{1} command or {0}{1} category for more info\n"
-		"Also see {0}othercommands").format(self.clean_prefix, self.context.invoked_with)
-		self._count += len(ending_note)
-		self._check_new_page()
-		self._current_page.append(ending_note)
+		# self._count += len(ending_note)
+		# self._check_new_page()
+		# self._current_page.append(ending_note)
 		
 		if len(self._current_page) > 1:
 			self._current_page.append('```')
