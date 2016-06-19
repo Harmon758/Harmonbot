@@ -83,7 +83,7 @@ class Meta:
 			if characters > 1000:
 				destination = ctx.message.author
 		
-		if destination == ctx.message.author and ctx.message.channel != ctx.message.author:
+		if destination == ctx.message.author and not ctx.message.channel.is_private:
 			await bot.reply("Check your DMs.")
 		
 		for page in pages:
