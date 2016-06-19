@@ -41,8 +41,8 @@ def get_prefix(bot, message):
 
 _CustomHelpFormatter = CustomHelpFormatter()
 
-client = Bot(command_prefix = get_prefix, description = "Harmonbot", formatter = _CustomHelpFormatter, pm_help = None)
-# help_attrs = {hidden = True} ?
+client = Bot(command_prefix = get_prefix, formatter = _CustomHelpFormatter, pm_help = None)
+client.remove_command("help")
 
 for file in os.listdir("cogs"):
 	if file.endswith(".py"):
