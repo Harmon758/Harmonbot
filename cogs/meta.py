@@ -8,6 +8,7 @@ import inspect
 import json
 import re
 import subprocess
+import traceback
 
 import credentials
 from modules import utilities
@@ -340,4 +341,46 @@ class Meta:
 	async def ping(self):
 		'''Basic ping - pong command'''
 		await self.bot.say("pong")
+	
+	@commands.command(pass_context = True, hidden = True)
+	@checks.is_owner()
+	async def repl(self, ctx):
+		variables = {"self" : self, "ctx" : ctx, "last" : None}
+		await self.bot.say("Enter code to execute or evaluate. `exit` or `quit` to exit.")
+		while True:
+			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda m: m.content.startswith('`'))
+			if message.content.startswith("```py") and message.content.endswith("```"):
+				code = message.content[5:-3].strip(" \n")
+			else:
+				code = message.content.strip("` \n")
+			if code in ("quit", "exit", "quit()", "exit()"):
+				await self.bot.say('Exiting repl.')
+				return
+			function = exec
+			if '\n' not in code:
+				try:
+					code = compile(code, "<repl>", "eval")
+				except SyntaxError:
+					pass
+				else:
+					function = eval
+			if function is exec:
+				try:
+					code = compile(code, "<repl>", "exec")
+				except SyntaxError as e:
+					await self.bot.reply(py_code_block.format("{0.text}{1:>{0.offset}}\n{2}: {0}".format(e, '^', type(e).__name__)))
+					continue
+			try:
+				result = function(code, variables)
+				if inspect.isawaitable(result):
+					result = await result
+			except:
+				await self.bot.reply(py_code_block.format("\n".join(traceback.format_exc().splitlines()[-2:]).strip()))
+			else:
+				if function is eval:
+					try:
+						await self.bot.reply(py_code_block.format(result))
+					except:
+						await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+				variables["last"] = result
 
