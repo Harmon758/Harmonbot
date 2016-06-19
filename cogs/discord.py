@@ -283,7 +283,10 @@ class Discord:
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def avatar(self, ctx, *, name : str = ""):
-		'''See a bigger version of your own or someone else's avatar'''
+		'''
+		See a bigger version of an avatar
+		Your own or someone else's avatar
+		'''
 		if name:
 			flag = True
 			if ctx.message.server:

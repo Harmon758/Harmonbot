@@ -134,16 +134,6 @@ async def on_message(message):
 		command = message.content[len(prefix):]
 		if command.startswith("test_on_message"):
 			await client.send_message(message.channel, "Hello, World!")
-		elif command.startswith("help"):
-			if len(message.content.split()) == 1:
-				if message.channel.is_private:
-					await reply(message, "Also see the commands command. What else do you need help with?")
-				else:
-					await reply(message, "I've DM'ed you my commands. Also see the commands command. What else do you need help with?")
-			#elif documentation.commands_info.get(message.content.split()[1], False):
-				#await reply(message, documentation.commands_info[message.content.split()[1]])
-			#else:
-				#await reply(message, "Check your DMs.")
 		elif re.match(r"^(\w+)to(\w+)", command, re.I): # conversions
 			if command.split()[0] in client.commands:
 				return

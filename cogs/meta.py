@@ -1,6 +1,7 @@
 
 import discord
 from discord.ext import commands
+from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
 
 import datetime
 import inspect
@@ -28,7 +29,69 @@ class Meta:
 				json.dump({"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0}, stats_file)
 		except FileExistsError:
 			pass
-
+	
+	@commands.command(hidden = True, pass_context = True)
+	async def help(self, ctx, *commands : str):
+		'''Shows this message.'''
+		bot = ctx.bot
+		destination = ctx.message.author if bot.pm_help else ctx.message.channel
+		
+		def repl(obj):
+			return _mentions_transforms.get(obj.group(0), '')
+		
+		# help by itself just lists our own commands.
+		if len(commands) == 0:
+			pages = bot.formatter.format_help_for(ctx, bot)
+		elif len(commands) == 1:
+			# try to see if it is a cog name
+			name = _mention_pattern.sub(repl, commands[0])
+			command = None
+			if name in bot.cogs:
+				command = bot.cogs[name]
+			else:
+				command = bot.commands.get(name)
+				if command is None:
+					# yield from bot.send_message(destination, bot.command_not_found.format(name))
+					await bot.send_message(destination, bot.command_not_found.format(name))
+					return
+			
+			pages = bot.formatter.format_help_for(ctx, command)
+		else:
+			name = _mention_pattern.sub(repl, commands[0])
+			command = bot.commands.get(name)
+			if command is None:
+				# yield from bot.send_message(destination, bot.command_not_found.format(name))
+				await bot.send_message(destination, bot.command_not_found.format(name))
+				return
+			
+			for key in commands[1:]:
+				try:
+					key = _mention_pattern.sub(repl, key)
+					command = command.commands.get(key)
+					if command is None:
+						# yield from bot.send_message(destination, bot.command_not_found.format(key))
+						await bot.send_message(destination, bot.command_not_found.format(key))
+						return
+				except AttributeError:
+					# yield from bot.send_message(destination, bot.command_has_no_subcommands.format(command, key))
+					await bot.send_message(destination, bot.command_has_no_subcommands.format(command, key))
+					return
+			
+			pages = bot.formatter.format_help_for(ctx, command)
+		
+		if bot.pm_help is None:
+			characters = sum(map(lambda l: len(l), pages))
+			# modify destination based on length of pages.
+			if characters > 1000:
+				destination = ctx.message.author
+		
+		if destination == ctx.message.author and ctx.message.channel != ctx.message.author:
+			await bot.reply("Check your DMs.")
+		
+		for page in pages:
+			# yield from bot.send_message(destination, page)
+			await bot.send_message(destination, page)
+	
 	@commands.command(hidden = True, pass_context = True)
 	@checks.is_owner()
 	async def allcommands(self, ctx):
@@ -73,7 +136,8 @@ class Meta:
 	@checks.is_permitted()
 	async def setprefix(self, ctx, *prefixes : str):
 		'''
-		Set the bot prefixes for the server or for DMs
+		Set the bot prefix(es)
+		For the server or for DMs
 		Seperate prefixes with spaces
 		Use qoutation marks for prefixes with spaces
 		'''
@@ -108,9 +172,10 @@ class Meta:
 			"**In Progress**: adventure getpermission gifvtogif gofish help redditsearch roleposition rolepositions setpermission taboo timer urbandictionary userlimit weather wolframalpha webmtogif whatis\n"
 			"**Misc**: discordlibraryversion echo load randomgame test\n"
 			"**Owner Only**: allcommands changenickname deletetest cleargame clearstreaming eval exec invite restart servers setgame setstreaming shutdown updateavatar\n"
-			"**No prefix**: @Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)")
+			"**No prefix**: @Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)\n"
+			"See help for the main commands.")
 		if not ctx.message.channel.is_private:
-			await self.bot.reply("Check your DMs for some of my additional commands. Use help for the main commands.")
+			await self.bot.reply("Check your DMs for some of my additional commands.")
 	
 	@commands.command(pass_context = True)
 	async def conversions(self, ctx):
