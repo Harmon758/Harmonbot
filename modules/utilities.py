@@ -14,7 +14,6 @@ import credentials
 from clients import client
 from clients import online_time
 from clients import aiohttp_session
-from modules import voice
 
 # Utility
 
@@ -246,7 +245,7 @@ async def leave_all_voice():
 		await voice_client.disconnect()
 
 async def shutdown_tasks():
-	await voice.stop_all_streams()
+	await client.cogs["Audio"].stop_all_streams()
 	# await leave_all_voice()
 	aiohttp_session.close()
 	add_uptime()

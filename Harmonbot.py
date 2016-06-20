@@ -14,7 +14,6 @@ import traceback
 
 from modules import conversions
 from modules.utilities import *
-from modules import voice
 from utilities import checks
 from utilities import errors
 
@@ -51,7 +50,7 @@ async def on_ready():
 		await client.send_message(restart_channel, ":thumbsup::skin-tone-2: Restarted.")
 		for voice_channel in restart_data["voice_channels"]:
 			await client.join_voice_channel(client.get_channel(voice_channel[0]))
-			asyncio.ensure_future(voice.start_player(client.get_channel(voice_channel[1])))
+			asyncio.ensure_future(client.cogs["audio"].start_player(client.get_channel(voice_channel[1])))
 	await random_game_status()
 	await set_streaming_status(client)
 	# await voice.detectvoice()

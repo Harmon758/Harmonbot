@@ -310,7 +310,10 @@ class Discord:
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def discriminator(self, ctx, *, name : str = ""):
-		'''Get your own or someone else's discriminator'''
+		'''
+		Get a discriminator
+		Your own or someone else's discriminator
+		'''
 		if name:
 			flag = True
 			if ctx.message.server:
@@ -401,7 +404,10 @@ class Discord:
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def everyone(self, ctx):
-		'''Check if you can mention everyone in the channel'''
+		'''
+		Check if you can mention everyone
+		For the channel you execute the command in
+		'''
 		if ctx.message.author.permissions_in(ctx.message.channel).mention_everyone:
 			await self.bot.reply("You are able to mention everyone in this channel.")
 		else:
