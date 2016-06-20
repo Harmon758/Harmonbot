@@ -18,7 +18,6 @@ import wolframalpha
 import credentials
 from modules import ciphers
 from modules import utilities
-from modules import voice
 from modules import weather
 from utilities import checks
 from utilities import errors
@@ -564,7 +563,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def spotifytoyoutube(self, url : str):
 		'''Find a Spotify track on Youtube'''
-		link = await voice.spotify_to_youtube(url)
+		link = await self.bot.cogs["Audio"].spotify_to_youtube(url)
 		if link:
 			await self.bot.reply(link)
 		else:
@@ -729,7 +728,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def weather(self, *options : str): #WIP
 		'''WIP'''
-		await self.bot.reply(str(weather.temp(' '.join(options))))
+		await self.bot.reply(str(weather.tempc(' '.join(options))))
 	
 	@commands.command(hidden = True, pass_context = True)
 	@checks.not_forbidden()

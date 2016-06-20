@@ -12,7 +12,6 @@ import traceback
 
 import credentials
 from modules import utilities
-from modules import voice
 from utilities import checks
 from clients import online_time
 from clients import py_code_block
@@ -324,7 +323,7 @@ class Meta:
 		'''Restart me'''
 		await self.bot.say(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Harmonbot...")
-		voice_channels = [[voice_client.channel.id, voice.get_player(voice_client.server)["text"]] for voice_client in self.bot.voice_clients]
+		voice_channels = [[voice_client.channel.id, self.bot.cogs["Audio"].get_player(voice_client.server)["text"]] for voice_client in self.bot.voice_clients]
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
 			json.dump({"restart_channel" : ctx.message.channel.id, "voice_channels" : voice_channels}, restart_channel_file)
 		#raise KeyboardInterrupt
