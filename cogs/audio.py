@@ -1,16 +1,14 @@
 
+import discord
 from discord.ext import commands
 
 import aiohttp
 import asyncio
-import discord
 import inspect
 import os
-# import queue
 import random
 import speech_recognition
 import subprocess
-# import time
 import urllib
 import youtube_dl
 
@@ -28,7 +26,7 @@ class Audio:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.players = []
+		self.players = {}
 		self.recognizer = speech_recognition.Recognizer()
 		for name, command in inspect.getmembers(self):
 			if isinstance(command, commands.Command) and command.parent is None and name != "audio":
@@ -93,7 +91,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def pause(self, ctx):
 		'''Pause the current song'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		player["current"]["stream"].pause()
 		await self.bot.reply("Song paused")
 	
@@ -102,7 +100,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def resume(self, ctx):
 		'''Resume the current song'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		player["current"]["stream"].resume()
 		await self.bot.reply("Song resumed")
 	
@@ -111,7 +109,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def skip(self, ctx):
 		'''Skip the current song'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		player["current"]["stream"].stop()
 		await self.bot.reply("Song skipped")
 	
@@ -121,7 +119,7 @@ class Audio:
 	async def replay(self, ctx):
 		'''Repeat the current song'''
 		response = await self.bot.reply("Restarting song...")
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		player["current"]["stream"].pause()
 		stream = await self.bot.voice_client_in(ctx.message.server).create_ytdl_player(player["current"]["stream"].url)
 		old_stream = player["current"]["stream"]
@@ -137,7 +135,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def empty(self, ctx):
 		'''Empty the queue'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		while not player["queue"].empty():
 			stream = await player["queue"].get()
 			stream["stream"].start()
@@ -150,7 +148,7 @@ class Audio:
 	async def shuffle(self, ctx):
 		'''Shuffle the queue'''
 		response = await self.bot.reply("Shuffling...")
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		song_list = []
 		while not player["queue"].empty():
 			song_list.append(await player["queue"].get())
@@ -172,7 +170,7 @@ class Audio:
 	async def radio_on(self, ctx):
 		'''Turn radio on'''
 		response = await self.bot.reply("Starting Radio...")
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		player["current"]["stream"].pause()
 		url_data = urllib.parse.urlparse(player["current"]["stream"].url)
 		query = urllib.parse.parse_qs(url_data.query)
@@ -209,9 +207,8 @@ class Audio:
 	@checks.is_voice_connected()
 	async def radio_off(self, ctx):
 		'''Turn radio off'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		if player["radio_on"]:
-			player = get_player(ctx.message.server)
 			player["radio_on"] = False
 			player["current"]["stream"].stop()
 			await self.bot.reply("Radio is now off")
@@ -221,7 +218,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def settext(self, ctx):
 		'''Set text channel for audio'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		player["text"] = ctx.message.channel.id
 		await self.bot.reply("Text channel changed.")
 	
@@ -233,7 +230,7 @@ class Audio:
 		_tts(ctx, message)
 	
 	def _tts(self, ctx, message):
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", message], shell = True)
 		stream = self.bot.voice_client_in(ctx.message.server).create_ffmpeg_player("data/tts.wav")
 		paused = False
@@ -252,7 +249,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def play_file(self, ctx, filename : str):
 		'''Plays an audio file'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		stream = self.bot.voice_client_in(ctx.message.server).create_ffmpeg_player("data/audio_files/" + filename)
 		paused = False
 		if player["current"] and player["current"]["stream"].is_playing():
@@ -272,14 +269,14 @@ class Audio:
 		Change the volume of the current song
 		volume_setting : 0 - 200
 		'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		player["current"]["stream"].volume = volume_setting / 100
 	
 	@commands.command(pass_context = True, aliases = ["queue"], no_pm = True)
 	@checks.is_voice_connected()
 	async def current(self, ctx):
 		'''See the current song and queue'''
-		player = self.get_player(ctx.message.server)
+		player = self.players[ctx.message.server.id]
 		if not player["current"] or player["current"]["stream"].is_done():
 			await self.bot.say("There is no song currently playing.")
 		else:
@@ -317,8 +314,8 @@ class Audio:
 				await self.bot.say("\nQueue:\n" + queue_string)
 
 	async def start_player(self, channel):
-		player = {"server" : channel.server, "queue" : asyncio.Queue(), "current" : None, "radio_on" : False, "text" : channel.id}
-		self.players.append(player)
+		player = {"queue" : asyncio.Queue(), "current" : None, "radio_on" : False, "text" : channel.id}
+		self.players[channel.server.id] = player
 		while self.bot.is_voice_connected(channel.server):
 			current = await player["queue"].get()
 			player["current"] = current
@@ -327,7 +324,7 @@ class Audio:
 			await self.bot.send_message(channel.server.get_channel(player["text"]), ":arrow_forward: Now Playing: " + stream.title)
 			while not stream.is_done():
 				await asyncio.sleep(1)
-		self.players.remove(player)
+		del self.players[channel.server.id]
 	
 	# Voice Input
 	
@@ -404,7 +401,7 @@ class Audio:
 				stream = await self.bot.voice_client_in(message.server).create_ytdl_player(link)
 			except:
 				return False
-		player = self.get_player(message.server)
+		player = self.players[message.server.id]
 		await player["queue"].put({"stream" : stream, "author" : message.author})
 		return stream
 	
@@ -417,7 +414,7 @@ class Audio:
 			playlistid = query[5:]
 			base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(credentials.google_apikey, playlistid)
 			url = base_url
-			player_instance = self.get_player(message.server)
+			player_instance = self.players[message.server.id]
 			while True:
 				async with aiohttp_session.get(url) as resp:
 					data = await resp.json()
@@ -443,13 +440,7 @@ class Audio:
 			return
 	
 	# Utility
-	
-	def get_player(self, server):
-		for player in self.players:
-			if player["server"] == server:
-				return player
-		return None
-	
+
 	async def spotify_to_youtube(self, link):
 		path = urllib.parse.urlparse(link).path
 		if path[:7] == "/track/":
@@ -475,7 +466,7 @@ class Audio:
 	# Garbage Collection
 	
 	async def stop_all_streams(self):
-		for player in self.players:
+		for player in self.players.values():
 			while not player["queue"].empty():
 				stream = await player["queue"].get()
 				stream["stream"].start()
