@@ -160,7 +160,7 @@ class Meta:
 	@commands.command()
 	async def changelog(self):
 		'''Link to changelog'''
-		await self.bot.reply("https://discord.gg/0oyodN94Y3CgCT6I")
+		await self.bot.reply("https://discord.gg/a2rbZPu")
 	
 	@commands.command(pass_context = True)
 	async def conversions(self, ctx):
