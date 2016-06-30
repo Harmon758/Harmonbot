@@ -179,7 +179,7 @@ class Meta:
 	@commands.command(aliases = ["oauth"], hidden = True)
 	async def invite(self):
 		'''Link to invite me to a server'''
-		application_info = await self.bot.application_info()
+		from clients import application_info
 		await self.bot.reply(discord.utils.oauth_url(application_info.id))
 	
 	@commands.command(pass_context = True)

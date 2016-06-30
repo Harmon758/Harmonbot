@@ -15,6 +15,7 @@ online_time = datetime.datetime.utcnow()
 aiohttp_session = aiohttp.ClientSession()
 cleverbot_instance = cleverbot.Cleverbot()
 inflect_engine = inflect.engine()
+application_info = None
 
 class Bot(commands.Bot):
 	
@@ -43,6 +44,11 @@ _CustomHelpFormatter = CustomHelpFormatter()
 
 client = Bot(command_prefix = get_prefix, formatter = _CustomHelpFormatter, pm_help = None)
 client.remove_command("help")
+
+@client.listen()
+async def on_ready():
+	global application_info
+	application_info = await client.application_info()
 
 for file in os.listdir("cogs"):
 	if file.endswith(".py"):
