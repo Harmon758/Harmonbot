@@ -127,7 +127,7 @@ def dm_or_has_permissions_and_capability(**permissions):
 def not_forbidden_check(ctx):
 	if ctx.message.channel.is_private:
 		return True
-	permitted = utilities.get_permission(ctx, ctx.invoked_with, id = ctx.message.author.id)
+	permitted = utilities.get_permission(ctx, ctx.command.name, id = ctx.message.author.id)
 	return permitted or permitted is None or is_server_owner_check(ctx)
 
 def not_forbidden():
@@ -143,7 +143,7 @@ def not_forbidden():
 def is_permitted_check(ctx):
 	if ctx.message.channel.is_private:
 		return True
-	permitted = utilities.get_permission(ctx, ctx.invoked_with, id = ctx.message.author.id)
+	permitted = utilities.get_permission(ctx, ctx.command.name, id = ctx.message.author.id)
 	return permitted or is_server_owner_check(ctx)
 
 def is_permitted():
