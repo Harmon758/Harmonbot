@@ -115,7 +115,7 @@ class Permissions:
 	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
 	async def getpermissions(self):
-		return
+		await self.bot.reply("Invalid input. getpermissions everyone|role|user|command")
 	
 	@getpermissions.command(name = "everyone", pass_context = True)
 	@checks.is_server_owner()
