@@ -195,10 +195,14 @@ class Discord:
 		Currently only accepts hex color input
 		'''
 		if not color:
+			selected_role = None
 			for _role in ctx.message.server.roles:
 				if _role.name.startswith((' ').join(role.split('_'))):
 					selected_role = _role
 					break
+			if not selected_role:
+				await self.bot.reply("Role not found.")
+				return
 			color = selected_role.colour
 			color_value = color.value
 			await self.bot.reply(str(conversions.inttohex(color_value)))
