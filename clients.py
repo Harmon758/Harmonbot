@@ -8,6 +8,7 @@ import json
 import os
 from utilities.help_formatter import CustomHelpFormatter
 
+version = "0.30.8"
 wait_time = 15.0
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
