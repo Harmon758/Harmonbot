@@ -14,6 +14,7 @@ import credentials
 from modules import utilities
 from utilities import checks
 from clients import version
+from clients import changelog
 from clients import online_time
 from clients import py_code_block
 
@@ -153,15 +154,21 @@ class Meta:
 	
 	# Public Info
 	
-	@commands.command(hidden = True)
+	@commands.command()
 	async def about(self):
-		'''WIP'''
-		return
+		'''About me'''
+		output = ["", "__**About Me**__"]
+		output.append("**Harmonbot** (Discord ID: `160677293252018177`)")
+		output.append("**Author/Owner:** Harmon758 (Discord ID: `115691005197549570`)")
+		output.append("**Version:** `{}`".format(version))
+		output.append("**Library:** discord.py (Python) `v{}`".format(discord.__version__))
+		output.append("**Changelog (Harmonbot Server):** {}".format(changelog))
+		await self.bot.reply('\n'.join(output))
 	
 	@commands.command()
 	async def changelog(self):
 		'''Link to changelog'''
-		await self.bot.reply("https://discord.gg/a2rbZPu")
+		await self.bot.reply(changelog)
 	
 	@commands.command(pass_context = True)
 	async def conversions(self, ctx):
@@ -198,32 +205,33 @@ class Meta:
 			await self.bot.reply("Check your DMs for some of my additional commands.")
 	
 	@commands.command()
-	async def stats(self, *option : str):
+	async def stats(self):
 		'''Bot stats'''
 		with open("data/stats.json", "r") as stats_file:
 			stats = json.load(stats_file)
-		if not option:
-			uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
-			restarts = str(stats["restarts"])
-			cogs_reloaded = str(stats["cogs_reloaded"])
-			commands_executed = str(stats["commands_executed"])
-			await self.bot.reply("\n"
-			"Total Recorded Uptime: {}\n"
-			"Total Recorded Restarts: {}\n"
-			"Total Cogs Reloaded: {}\n"
-			"Total Recorded Commands Executed: {}".format(uptime, restarts, cogs_reloaded, commands_executed))
-		elif option[0] == "uptime": # since 4/17/16, fixed 5/10/16
-			uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
-			await self.bot.reply("Total Recorded Uptime: {}".format(uptime))
-		elif option[0] == "restarts": # since 4/17/16, fixed 5/10/16
-			restarts = str(stats["restarts"])
-			await self.bot.reply("Total Recorded Restarts: {}".format(restarts))
-		elif ' '.join(option[:2]) == "cogs reloaded": # since 6/10/16 - implemented cog reloading
-			cogs_reloaded = str(stats["cogs_reloaded"])
-			await self.bot.reply("Total Cogs Reloaded: {}".format(cogs_reloaded))
-		elif ' '.join(option[:2]) == "commands executed": # since 6/10/16 (cog commands)
-			commands_executed = str(stats["commands_executed"])
-			await self.bot.reply("Total Record Commands Executed".format(commands_executed))
+		now = datetime.datetime.utcnow()
+		uptime = now - online_time
+		uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds())))
+		total_members = sum(len(s.members) for s in self.bot.servers)
+		total_members_online  = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
+		unique_members = set(self.bot.get_all_members())
+		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
+		channel_types = [c.type for c in self.bot.get_all_channels()]
+		text_count = channel_types.count(discord.ChannelType.text)
+		voice_count = channel_types.count(discord.ChannelType.voice)
+		total_uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
+		output = ["", "__**Stats**__ :chart_with_upwards_trend:"]
+		output.append("**Uptime:** `{}`".format(uptime))
+		output.append("**Servers:** `{}`".format(len(self.bot.servers)))
+		output.append("**Total Members:** `{}` (`{}` online)".format(total_members, total_members_online))
+		output.append("**Unique Members:** `{}` (`{}` online)".format(len(unique_members), unique_members_online))
+		output.append("**Text Channels:** `{}`, **Voice Channels:** `{}`".format(text_count, voice_count))
+		output.append("**Main Commands:** `{}`".format(len(set((c.name for c in self.bot.commands.values())))))
+		output.append("**Total Recorded Uptime:** `{}`".format(total_uptime)) # since 4/17/16, fixed 5/10/16
+		output.append("**Recorded Restarts:** `{}`".format(stats["restarts"])) # since 4/17/16, fixed 5/10/16
+		output.append("**Cogs Reloaded:** `{}`".format(stats["cogs_reloaded"])) # since 6/10/16 - implemented cog reloading
+		output.append("**Total Recorded Commands Executed:** `{}`".format(stats["commands_executed"])) # since 6/10/16 (cog commands)
+		await self.bot.reply('\n'.join(output))
 	
 	@commands.command()
 	async def uptime(self):
