@@ -226,7 +226,7 @@ class Meta:
 		output.append("**Total Members:** `{}` (`{}` online)".format(total_members, total_members_online))
 		output.append("**Unique Members:** `{}` (`{}` online)".format(len(unique_members), unique_members_online))
 		output.append("**Text Channels:** `{}`, **Voice Channels:** `{}`".format(text_count, voice_count))
-		output.append("**Main Commands:** `{}`".format(len(set((c.name for c in self.bot.commands.values())))))
+		output.append("**Main Commands:** `{}`".format(len(set((c for c in self.bot.commands.values())))))
 		output.append("**Total Recorded Uptime:** `{}`".format(total_uptime)) # since 4/17/16, fixed 5/10/16
 		output.append("**Recorded Restarts:** `{}`".format(stats["restarts"])) # since 4/17/16, fixed 5/10/16
 		output.append("**Cogs Reloaded:** `{}`".format(stats["cogs_reloaded"])) # since 6/10/16 - implemented cog reloading
