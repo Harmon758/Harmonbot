@@ -216,13 +216,13 @@ class Tools:
 				else:
 					await self.bot.reply(self.tags[ctx.message.content.split()[1]])
 	
-	@tag.command(name = "list", pass_context = True, aliases = ["all", "mine"])
-	async def tag_list(self, ctx):
+	@tag.command(name = "list", aliases = ["all", "mine"])
+	async def tag_list(self):
 		'''List your tags'''
 		_tag_list = ", ".join(list(self.tags.keys()))
 		await self.bot.reply("Your tags: " + _tag_list)
 	
-	@tag.command(name = "add", pass_context = True, aliases = ["make", "new", "create"])
+	@tag.command(name = "add", aliases = ["make", "new", "create"], pass_context = True)
 	async def tag_add(self, ctx, tag : str, *, content : str):
 		'''Add a tag'''
 		if not ctx.message.author.id in self.tags_data:
@@ -244,13 +244,19 @@ class Tools:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been edited.")
 	
-	@tag.command(name = "delete", pass_context = True, aliases = ["remove", "destroy"])
-	async def tag_delete(self, ctx, tag : str):
+	@tag.command(name = "delete", aliases = ["remove", "destroy"])
+	async def tag_delete(self, tag : str):
 		'''Delete one of your tags'''
 		del self.tags[tag]
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been deleted.")
+	
+	@tag.command(name = "search", aliases = ["contains", "find"])
+	async def tag_search(self, *, search : str):
+		'''Search your tags'''
+		results = [t for t in self.tags.keys() if search in t]
+		await self.bot.reply("{} tags found: {}".format(len(results), ", ".join(results)))
 	
 	@tag.error
 	async def tag_error(self, error, ctx):
