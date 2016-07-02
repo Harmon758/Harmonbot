@@ -199,12 +199,15 @@ async def on_command_error(error, ctx):
 		traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 
 try:
-	client.loop.create_task(client.cogs["RSS"].check_rss_feeds())
+	rss_task = client.loop.create_task(client.cogs["RSS"].check_rss_feeds())
 	client.loop.run_until_complete(client.start(credentials.token))
 except KeyboardInterrupt:
 	print("Shutting down Harmonbot...")
 	client.loop.run_until_complete(restart_tasks())
 	client.loop.run_until_complete(client.logout())
 finally:
+	client.loop._default_executor.shutdown(wait = True)
+	rss_task.cancel()
+	client.loop.run_until_complete(asyncio.sleep(0.1)) # Allow rss task to cancel
 	client.loop.close()
 
