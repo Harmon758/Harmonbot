@@ -13,6 +13,7 @@ import traceback
 import credentials
 from modules import utilities
 from utilities import checks
+from clients import version
 from clients import online_time
 from clients import py_code_block
 
@@ -230,6 +231,11 @@ class Meta:
 		now = datetime.datetime.utcnow()
 		uptime = now - online_time
 		await self.bot.reply(utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds()))))
+	
+	@commands.command()
+	async def version(self):
+		'''Bot version'''
+		await self.bot.reply("I am Harmonbot `v{}`".format(version))
 	
 	# Update Bot Stuff
 	
