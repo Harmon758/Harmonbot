@@ -70,26 +70,29 @@ class RSS:
 				await self.bot.reply(feeds)
 	
 	async def check_rss_feeds(self):
-		await self.bot.wait_until_ready()
-		while not self.bot.is_closed:
-			with open("data/rss_feeds.json", "r") as feeds_file:
-				#feeds_info = await self.bot.loop.run_in_executor(None, json.load, feeds_file)
-				feeds_info = json.load(feeds_file)
-			start = time.time()
-			for channel in feeds_info["channels"]:
-				for feed in channel["feeds"]:
-					feed_info = await self.bot.loop.run_in_executor(None, feedparser.parse, feed)
-					for item in feed_info.entries:
-						try:
-							if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.published)).total_seconds() <= 60:
-								await self.bot.send_message(discord.utils.get(self.bot.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n<" + item.link + '>')
-						except:
+		try:
+			await self.bot.wait_until_ready()
+			while not self.bot.is_closed:
+				with open("data/rss_feeds.json", "r") as feeds_file:
+					#feeds_info = await self.bot.loop.run_in_executor(None, json.load, feeds_file)
+					feeds_info = json.load(feeds_file)
+				start = time.time()
+				for channel in feeds_info["channels"]:
+					for feed in channel["feeds"]:
+						feed_info = await self.bot.loop.run_in_executor(None, feedparser.parse, feed)
+						for item in feed_info.entries:
 							try:
-								if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.updated)).total_seconds() <= 60:
+								if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.published)).total_seconds() <= 60:
 									await self.bot.send_message(discord.utils.get(self.bot.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n<" + item.link + '>')
 							except:
-								pass
-			elapsed = time.time() - start
-			# print("Checked feeds in: {0} sec.".format(str(elapsed)))
-			await asyncio.sleep(60 - elapsed)
+								try:
+									if 0 <= (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(item.updated)).total_seconds() <= 60:
+										await self.bot.send_message(discord.utils.get(self.bot.get_all_channels(), id = channel["id"]), feed_info.feed.title + ": " + item.title + "\n<" + item.link + '>')
+								except:
+									pass
+				elapsed = time.time() - start
+				# print("Checked feeds in: {0} sec.".format(str(elapsed)))
+				await asyncio.sleep(60 - elapsed)
+		except asyncio.CancelledError:
+			return
 
