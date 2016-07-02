@@ -231,7 +231,7 @@ class Tools:
 		if tag in self.tags:
 			await self.bot.reply("You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
 			return
-		self.tags[tag] = content
+		self.tags[tag] = self.clean_tag_content(content)
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":thumbsup::skin-tone-2: Your tag has been added.")
@@ -239,7 +239,7 @@ class Tools:
 	@tag.command(name = "edit", pass_context = True)
 	async def tag_edit(self, ctx, tag : str, *, content : str):
 		'''Edit one of your tags'''
-		self.tags[tag] = content
+		self.tags[tag] = self.clean_tag_content(content)
 		with open("data/tags.json", "w") as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been edited.")
@@ -259,6 +259,9 @@ class Tools:
 			"Add one with `!tag add <tag> <content>`")
 		elif isinstance(error.original, errors.NoTag):
 			await self.bot.reply("You don't have that tag.")
+	
+	def clean_tag_content(self, content):
+		return content.replace("@everyone", "@\u200beveryone").replace("@here", "@\u200bhere")
 	
 	@commands.command(hidden = True, pass_context = True)
 	@checks.not_forbidden()
