@@ -58,7 +58,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def cat(self, *category : str):
+	async def cat(self, *, category : str):
 		'''
 		Random image of a cat
 		cat categories (cats) for different categories you can choose from
