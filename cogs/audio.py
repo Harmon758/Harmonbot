@@ -227,7 +227,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
-		_tts(ctx, message)
+		self._tts(ctx, message)
 	
 	def _tts(self, ctx, message):
 		player = self.players[ctx.message.server.id]
