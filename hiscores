@@ -132,37 +132,53 @@ alias hiscores {
     set %hiscores_skill_number 37
     set %hiscores_skill Divination
   }
+  else if (($3 == invention || $3 == inventor) && (!$4 || $4 == rs3 || $4 == rs3ironman || $4 == rs3hcironman)) {
+    set %hiscores_skill_number 38
+    set %hiscores_skill Invention
+  }
   else {
-    set %hiscores_return  That is not a valid username/skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> 
+    set %hiscores_return  That is not a valid username/skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman / 07deadman> <level / rank / xp> 
     return
   }
   if ($4 == rs3) {
     set %hiscores_host hiscore.runescape.com 
     set %hiscores_url /index_lite.ws?player= $+ %hiscores_username
+    set %hiscores_which RS3
   }
   else if ($4 == rs3ironman) {
     set %hiscores_host services.runescape.com
     set %hiscores_url /m=hiscore_ironman/index_lite.ws?player= $+ %hiscores_username
+    set %hiscores_which RS3 (Ironman)
   }
   else if ($4 == rs3hcironman) {
     set %hiscores_host services.runescape.com
     set %hiscores_url /m=hiscore_hardcore_ironman/index_lite.ws?player= $+ %hiscores_username
+    set %hiscores_which RS3 (Hardcore Ironman)
   }
-  else if ($4 == 07) {
+  else if ($4 == 07 || $4 == osrs) {
     set %hiscores_host services.runescape.com 
     set %hiscores_url /m=hiscore_oldschool/index_lite.ws?player= $+ %hiscores_username
+    set %hiscores_which OSRS
   }
-  else if ($4 == 07ironman) {
+  else if ($4 == 07ironman || $4 == osrsironman ) {
     set %hiscores_host services.runescape.com
     set %hiscores_url /m=hiscore_oldschool_ironman/index_lite.ws?player= $+ %hiscores_username
+    set %hiscores_which OSRS (Ironman)
   }
-  else if ($4 == 07hcironman) {
+  else if ($4 == 07hcironman || $4 == osrshcironman || $4 == 07ultimateironman || $4 == osrsultimateironman ) {
     set %hiscores_host services.runescape.com
     set %hiscores_url /m=hiscore_oldschool_ultimate/index_lite.ws?player= $+ %hiscores_username
+    set %hiscores_which OSRS (Ultimate Ironman)
+  }
+  else if ($4 == 07deadman || $4 == osrsdeadman) {
+    set %hiscores_host services.runescape.com
+    set %hiscores_url /m=hiscore_oldschool_deadman/index_lite.ws?player= $+ %hiscores_username
+    set %hiscores_which OSRS (Deadman)
   }
   else {
     set %hiscores_host hiscore.runescape.com 
     set %hiscores_url /index_lite.ws?player= $+ %hiscores_username
+    set %hiscores_which RS3
   }
   if ($5 == rank) { set %hiscores_option 1 }
   else if ($5 == xp || $5 == exp) { set %hiscores_option 3 }
@@ -189,13 +205,13 @@ on *:SOCKREAD:hiscores: {
     if (%hiscores_counter == %hiscores_skill_number) {
       set %hiscores_display $bytes($gettok(%sockreader, %hiscores_option, 44),bd)
       if (%hiscores_skill_number == 11) {
-        if (%hiscores_option == 2) { set %hiscores_return $capital(%hiscores_username) $+ 's total level is %hiscores_display $+ . }
-        else if (%hiscores_option == 1) { set %hiscores_return  $capital(%hiscores_username) is rank %hiscores_display overall $+ . }
-        else if (%hiscores_option == 3) { set %hiscores_return  $capital(%hiscores_username) has %hiscores_display total XP. }
+        if (%hiscores_option == 2) { set %hiscores_return $capital(%hiscores_username) $+ 's total level is %hiscores_display on %hiscores_which $+ . }
+        else if (%hiscores_option == 1) { set %hiscores_return  $capital(%hiscores_username) is rank %hiscores_display overall on %hiscores_which $+ . }
+        else if (%hiscores_option == 3) { set %hiscores_return  $capital(%hiscores_username) has %hiscores_display total xp on %hiscores_which $+ . }
       }
-      else if (%hiscores_option == 2) { set %hiscores_return  $capital(%hiscores_username) $+ 's %hiscores_skill level is %hiscores_display $+ . }
-      else if (%hiscores_option == 1) { set %hiscores_return  $capital(%hiscores_username) is rank %hiscores_display in %hiscores_skill $+ . }
-      else if (%hiscores_option == 3) { set %hiscores_return  $capital(%hiscores_username) has %hiscores_display XP in %hiscores_skill $+ . }
+      else if (%hiscores_option == 2) { set %hiscores_return  $capital(%hiscores_username) $+ 's %hiscores_skill level is %hiscores_display on %hiscores_which $+ . }
+      else if (%hiscores_option == 1) { set %hiscores_return  $capital(%hiscores_username) is rank %hiscores_display in %hiscores_skill on %hiscores_which $+ . }
+      else if (%hiscores_option == 3) { set %hiscores_return  $capital(%hiscores_username) has %hiscores_display XP in %hiscores_skill on %hiscores_which $+ . }
       sockclose hiscores
     }
   }

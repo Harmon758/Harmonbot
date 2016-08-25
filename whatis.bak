@@ -35,7 +35,6 @@ on *:text:!whatis*:#:{
   elseif ($2 == edate) { msg # http://www.urbandictionary.com/define.php?term=eDate }
   elseif ($2 == ehp) { msg # EHP is Efficient Hours Played. }
   elseif ($2 == !emotes) { msg # Use !emotes to see Mikki's subscriber emotes. }
-  elseif ($2 == !fish) { msg # Use !fish or to see Mikki's Fishing levels. }
   elseif ($2 == !fitom) { msg # Use !fitom _ _ to convert from feet (ft) and inches (in) to meters (m). }
   elseif ($2 == !ftoc) { msg # Use !ftoc _ to convert from Fahrenheit (°F) to Celcius (°C). }
   elseif ($2 == !fttom) { msg # Use !fttom _ to convert from feet (ft) to meters (m). }
@@ -125,7 +124,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !totalxp) { msg # Use !totalxp to see Mikki's total xp. }
   elseif ($2 == trev_rs) { msg # He talks to his nipples. }
   elseif ($2 == !unitconversions) { msg # Use !unitconversions to see all unit conversion commands. }
-  elseif ($2 == !uptime) { msg # Use !uptime to find out how long Mikki has been streaming. }
+  elseif ($2 == !uptime) { msg # Use !uptime to find out how long the stream has been live. }
   elseif ($2 == !weather) { msg # See !weather help }
   elseif ($2 == !whatis) { msg # That's the command you just used! Use it and I will tell you what certain things or commands are. }
   elseif ($2 == !wiki) { msg # Use !wiki _ to look something up on Wikipedia. }
@@ -137,5 +136,5 @@ on *:text:!whatis*:#:{
     msg # $2- = $calc($2-)
   }
   elseif ($define($2)) { msg # $capital(%define_word) $+ : $define($2) }
-  else { msg # I don't know what that is. Try $rswiki($2-) or $rswiki07($2-) or $wiki($2-) }
+  else { msg # I don't know what that is. Try !google !wiki !rswiki !rswiki07 }
 }

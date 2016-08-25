@@ -49,6 +49,33 @@ on *:text:*youtube.com/watch?v=*:#: {
   else { msg # ( $+ $capital($nick) $+ ) Video not found. }
 }
 
+on *:text:!youtubeinfo*:#: {
+  noop $regex($strip($2),.*youtube.*\/watch\?v=(.{11})&?.*)
+  var %videoid = $regml(1)
+  var %url = https://www.googleapis.com/youtube/v3/videos?id= $+ %videoid $+ &key=***REMOVED***&part=snippet,contentDetails,statistics
+  if ($json(%url,pageInfo,totalResults)) {
+    var %title = $json(%url,items,0,snippet,title)
+    noop $regex($json(%url,items,0,contentDetails,duration),P([0-9]*Y)?([0-9]*M)?([0-9]*W)?([0-9]*D)?T([0-9]*H)?([0-9]*M)?([0-9]*S))
+    var %counter = $regml(0)
+    var %length
+    while (%counter != 0) {
+      %length = $lower($regml(%counter)) %length
+      dec %counter
+    }
+    var %likes = $json(%url,items,0,statistics,likeCount)
+    var %dislikes = $json(%url,items,0,statistics,dislikeCount)
+    var %likepercentage = $round($calc(%likes / (%likes + %dislikes) * 100), 2)
+    %likes = $bytes(%likes,bd)
+    %dislikes = $bytes(%dislikes,bd)
+    var %views = $bytes($json(%url,items,0,statistics,viewCount),bd)
+    var %channel = $json(%url,items,0,snippet,channelTitle)
+    noop $regex($strip($json(%url,items,0,snippet,publishedAt)),(.*)T.*)
+    var %published = $regml(1)
+    msg # ( $+ $capital($nick) $+ ) %title $chr(124) Length: %length $chr(124) Likes: %likes $+ , Dislikes: %dislikes ( $+ %likepercentage $+ $chr(37) $+ ) $chr(124) Views: %views $chr(124) %channel on %published
+  }
+  else { msg # ( $+ $capital($nick) $+ ) Video not found. }
+}
+
 on *:text:!longurl*:#: {
   if ($nick isop #) && ($2) {
     var %url = http://api.longurl.org/v2/expand?url= $+ $2 $+ &title=1&format=json
@@ -92,8 +119,25 @@ on *:text:!news*:#: {
   else { msg # ( $+ $capital($nick) $+ ) No news results found. }
 }
 
+on *:text:links*:#: {
+  if ($nick isop # || $nick == harmon758) && ($2) {
+    if ($2 == on) {
+      set %links.status. $+ $chan on
+      msg # Link detection is on.
+      return
+    }
+    if ($2 == off) {
+      set %links.status. $+ $chan off
+      msg # Link detection is off.
+      return
+    }
+  }
+}
+
 on *:text:*http*:#: {
+  if (%links.status. [ $+ [ $chan ] ] == off) { return }
   if ($nick == nightbot) { return }
+  if (gyazo isin $1-) { return }
   var %text = $1-
   var %words = $numtok(%text, 32)
   var %counter = 1

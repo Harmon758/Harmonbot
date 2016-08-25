@@ -4,7 +4,8 @@ on *:text:!120*:#:{ msg # 104,273,167 xp }
 on *:text:!122*:#:{ msg # 127,110,260 xp }
 on *:text:!asylum*:#:{ msg # http://services.runescape.com/m=hiscore_oldschool/a=869/hiscorepersonal.ws?user1=Asylum }
 on *:text:!cheese*:#:{ msg # $cheese }
-on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2015 18:00:00))) until Christmas! }
+on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2016 18:00:00))) until Christmas! }
+on *:text:!easter*:#:{ msg # $my_duration($timeleft($ctime(March 27 2016 18:00:00))) until Easter! }
 on *:text:!gj*:#:{ msg # Omega Good Job! }
 on *:text:!guthixiancache*:#:{ msg # $guthixiancache }
 on *:text:!harmonbot*:#:{ msg # That's me! }
@@ -35,6 +36,6 @@ alias life return http://en.wikipedia.org/wiki/Life
 alias love return http://en.wikipedia.org/wiki/Love https://www.youtube.com/watch?v=HEXWRTEbj1I
 alias zezima return http://rsplayers.wikia.com/wiki/Zezima
 
---old--
+; --old--
 ; on *:text:!countdown*:#:{ msg # $my_duration($timeleft($ctime(December 18 2014 03:00:00))) }
 ; on *:text:!justdoit*:#:{ msg # https://www.youtube.com/watch?v=nuHfVn_cfHU }

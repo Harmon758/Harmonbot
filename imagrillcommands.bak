@@ -11,6 +11,11 @@ on *:text:!aus*:#imagrill:{ msg # He's a 90-year-old fanatic humage time travele
 on *:text:!banana*:#imagrill:{ msg # https://youtu.be/jc86EFjLFV4?t=1m49s }
 on *:text:!bluehair*:#imagrill:{ msg # Someone hair dyed my blue -Arts }
 on *:text:!catonhead*:#imagrill:{ msg # http://imgur.com/JwsV4w0 http://imgur.com/H0CiNbw }
+
+on *:text:!catonhead*:#runescapeomid:{ msg # http://imgur.com/JwsV4w0 http://imgur.com/H0CiNbw }
+on *:text:!ed8*:#:{ if ($on/off($1, $2, !edate, Omid has %omid.edate ed8's., !ed8) == msg) { inc %omid.edate } }
+on *:text:!edate*:#runescapeomid:{ if ($on/off($1, $2, !edate, Omid has %omid.edate edates.) == msg) { inc %omid.edate } }
+
 on *:text:!cats*:#imagrill:{ msg # Motorboat, Bandit, Squeak }
 on *:text:!caught*:#imagrill:{
   if ($2 == random) { msg # Arts has caught a wild $randomviewer $+ ! }
@@ -26,8 +31,8 @@ on *:text:!death*:#imagrill:{
 }
 on *:text:!dream*:#imagrill:{ msg # It's all the cat's dream! }
 on *:text:!dwarf*:#imagrill:{ msg # Sarah = 5 letters, Dwarf - 5 letters, Sarah = Dwarf -LeonardoDiCaprino }
-on *:text:!ed8*:#imagrill:{ if ($on/off($1, $2, !edate, Arts has %edate ed8's., !ed8) == msg) { inc %edate } }
-on *:text:!edate*:#imagrill:{ if ($on/off($1, $2, !edate, Arts has %edate edates.) == msg) { inc %edate } }
+on *:text:!ed8*:#imagrill:{ if ($on/off($1, $2, !edate, Arts has %arts.edate ed8's., !ed8) == msg) { inc %arts.edate } }
+on *:text:!edate*:#imagrill:{ if ($on/off($1, $2, !edate, Arts has %arts.edate edates.) == msg) { inc %arts.edate } }
 on *:text:!fail*:#imagrill:{
   inc %fail
   msg # Fail $chr(35) $+ %fail $+ . http://imgur.com/FWv07A9
@@ -84,7 +89,7 @@ on *:text:!addcom !h harmo pls:#imagrill:{ msg # !delcom !h }
 on $*:text:/.*\72p/Si:#imagrill:{ noop $on/off($1, $2, :P, http://imgur.com/p3GH9uE http://imgur.com/xpCiJKh) }
 on *:text:*banana*:#imagrill:{ noop $on/off($1, $2, banana, BANANA http://imgur.com/TtRH7vU http://imgur.com/kTX3qa1) }
 on *:text:*failfish*:#imagrill:{ noop $on/off($1, $2, failfish, http://imgur.com/CtscIDh) }
-on *:text:*lick it*:#imagrill:{ msg # http://imgur.com/aCqNXmV }
+on *:text:*lick it*:#imagrill:{ noop $on/off($1, $3, lick it, http://imgur.com/aCqNXmV) }
 on *:text:*yawn*:#imagrill:{ noop $on/off($1, $2, yawn, Yawwwwwn) }
 
 
@@ -127,7 +132,7 @@ on *:text:!dsdeaths*:#imagrill:{
 }
 on *:text:!mic*:#imagrill:{
   inc %arts.mic
-  msg # Arts's mic has acted up %arts.mic times
+  msg # Arts's mic has acted up %arts.mic times.
 }
 
 on *:text:!like*:#:{

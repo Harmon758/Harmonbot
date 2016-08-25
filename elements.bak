@@ -1,0 +1,27 @@
+;
+;
+
+on *:text:!element*:#:{
+  if ($2 == ac) { msg # Ac = Actinium }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Al = Aluminum }
+  elseif ($2 == ag) { msg # Am = Americium }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+  elseif ($2 == ag) { msg # Ag = Silver }
+}

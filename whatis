@@ -35,7 +35,6 @@ on *:text:!whatis*:#:{
   elseif ($2 == edate) { msg # http://www.urbandictionary.com/define.php?term=eDate }
   elseif ($2 == ehp) { msg # EHP is Efficient Hours Played. }
   elseif ($2 == !emotes) { msg # Use !emotes to see Mikki's subscriber emotes. }
-  elseif ($2 == !fish) { msg # Use !fish or to see Mikki's Fishing levels. }
   elseif ($2 == !fitom) { msg # Use !fitom _ _ to convert from feet (ft) and inches (in) to meters (m). }
   elseif ($2 == !ftoc) { msg # Use !ftoc _ to convert from Fahrenheit (°F) to Celcius (°C). }
   elseif ($2 == !fttom) { msg # Use !fttom _ to convert from feet (ft) to meters (m). }
@@ -54,7 +53,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !harmonbot) { msg # Use !harmonbot to find out who Harmonbot is. }
   elseif ($2 == !help) { msg # See !help }
   elseif ($2 == !highfive) { msg # Use !highfive _ to high five someone. }
-  elseif ($2 == !hiscores) { msg # Use !hiscores to look someone up on the RS Hiscores. Default is rs3 and level. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman> <level / rank / xp> }
+  elseif ($2 == !hiscores) { msg # Use !hiscores to look someone up on the RS Hiscores. Default is rs3 and level. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman / 07deadman> <level / rank / xp> }
   elseif ($2 == house) { msg # https://en.wikipedia.org/wiki/House }
   elseif ($2 == !indecentcodehs) { msg # Use !indecentcode _ to look someone up on IndecentCode highscores. }
   elseif ($2 == illuminati) { msg # $illuminati }
@@ -125,7 +124,7 @@ on *:text:!whatis*:#:{
   elseif ($2 == !totalxp) { msg # Use !totalxp to see Mikki's total xp. }
   elseif ($2 == trev_rs) { msg # He talks to his nipples. }
   elseif ($2 == !unitconversions) { msg # Use !unitconversions to see all unit conversion commands. }
-  elseif ($2 == !uptime) { msg # Use !uptime to find out how long Mikki has been streaming. }
+  elseif ($2 == !uptime) { msg # Use !uptime to find out how long the stream has been live. }
   elseif ($2 == !weather) { msg # See !weather help }
   elseif ($2 == !whatis) { msg # That's the command you just used! Use it and I will tell you what certain things or commands are. }
   elseif ($2 == !wiki) { msg # Use !wiki _ to look something up on Wikipedia. }
