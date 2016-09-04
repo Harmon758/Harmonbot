@@ -162,6 +162,12 @@ class Tools:
 		'''Add fingers'''
 		await self.bot.reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def fish(self):
+		'''Fish'''
+		await self.bot.reply(":fish:")
+	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def graph(self, ctx, *, data : str):

@@ -1,5 +1,5 @@
 
-print("Starting up Harmonbot...")
+print("Starting up Discord Harmonbot...")
 
 import discord
 from discord.ext import commands

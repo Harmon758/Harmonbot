@@ -12,7 +12,7 @@ import json
 import os
 from utilities.help_formatter import CustomHelpFormatter
 
-version = "0.30.12"
+version = "0.30.13"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
