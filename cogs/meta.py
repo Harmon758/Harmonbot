@@ -114,7 +114,7 @@ class Meta:
 	@checks.is_owner()
 	async def enable(self, command : str):
 		'''Enable a command'''
-		self.bot.commands["tts"].enabled = True
+		self.bot.commands[command].enabled = True
 		await self.bot.say("{} has been enabled.".format(command))
 	
 	@commands.command(hidden = True)
