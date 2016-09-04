@@ -1,5 +1,5 @@
 
-from discord.ext.commands.formatter import HelpFormatter
+from discord.ext.commands.formatter import HelpFormatter, Paginator
 from discord.ext.commands import Command
 import inspect
 import itertools
@@ -15,9 +15,7 @@ class CustomHelpFormatter(HelpFormatter):
 			A paginated output of the help command.
 		'''
 		
-		self._pages = []
-		self._count = 4 # ``` + '\n'
-		self._current_page = ['```']
+		self._paginator = Paginator()
 		
 		# we need a padding of ~80 or so
 		
@@ -33,30 +31,21 @@ class CustomHelpFormatter(HelpFormatter):
 		
 		if description:
 			# <description> portion
-			self._current_page.append(description)
-			self._current_page.append('')
-			self._count += len(description)
+			self._paginator.add_line(description, empty=True)
 		
 		if isinstance(self.command, Command):
 			# <signature portion>
 			signature = self.get_command_signature()
-			self._count += 2 + len(signature) # '\n' sig '\n'
-			self._current_page.append(signature)
-			self._current_page.append('')
+			self._paginator.add_line(signature, empty=True)
 		
 			# <long doc> section
 			if self.command.help:
-				self._count += 2 + len(self.command.help)
-				self._current_page.append(self.command.help)
-				self._current_page.append('')
-				self._check_new_page()
+				self._paginator.add_line(self.command.help, empty=True)
 		
 			# end it here if it's just a regular command
 			if not self.has_subcommands():
-				self._current_page.append('```')
-				self._pages.append('\n'.join(self._current_page))
-				return self._pages
-		
+				self._paginator.close_page()
+				return self._paginator.pages
 		
 		max_width = self.max_name_size
 		
@@ -73,45 +62,31 @@ class CustomHelpFormatter(HelpFormatter):
 				# commands = list(commands)
 				commands = sorted(commands, key = lambda c: c[0])
 				if len(commands) > 0:
-					self._current_page.append(category)
-					self._count += len(category)
-					self._check_new_page()
+					self._paginator.add_line(category)
 				
 				self._add_subcommands_to_page(max_width, commands)
 		elif self.command == "categories":
 			categories = sorted(self.context.bot.cogs, key = str.lower)
 			for category in categories:
-				self._current_page.append(category)
-				self._count += len(category)
-				self._check_new_page()
-			self._current_page.append('')
-			ending_note = ("{0}{1} command or {0}{1} category for more info\n"
+				self._paginator.add_line(category)
+			self._paginator.add_line()
+			ending_note = ("{0}{1} [command] or {0}{1} [category] for more info\n"
 			"{0}{1} all for all commands\n"
 			"Also see {0}othercommands").format(self.clean_prefix, self.context.invoked_with)
-			self._count += len(ending_note)
-			self._check_new_page()
-			self._current_page.append(ending_note)
+			self._paginator.add_line(ending_note)
 		else:
-			# self._current_page.append('Commands:')
+			# self._paginator.add_line('Commands:')
 			if isinstance(self.command, Command):
-				self._current_page.append("{} Commands:".format(str(self.command)))
+				self._paginator.add_line("{} Commands:".format(self.command))
 			else:
-				self._current_page.append("{} Commands:".format(type(self.command).__name__))
-			self._count += 1 + len(self._current_page[-1])
+				self._paginator.add_line("{} Commands:".format(type(self.command).__name__))
 			# self._add_subcommands_to_page(max_width, self.filter_command_list())
 			subcommands = sorted(self.filter_command_list(), key = lambda c: c[0])
 			self._add_subcommands_to_page(max_width, subcommands)
 		
 		# add the ending note
-		# self._current_page.append('')
+		# self._paginator.add_line()
 		# ending_note = self.get_ending_note()
-		# self._count += len(ending_note)
-		# self._check_new_page()
-		# self._current_page.append(ending_note)
-		
-		if len(self._current_page) > 1:
-			self._current_page.append('```')
-			self._pages.append('\n'.join(self._current_page))
-		
-		return self._pages
+		# self._paginator.add_line(ending_note)
+		return self._paginator.pages
 
