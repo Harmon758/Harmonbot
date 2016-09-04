@@ -520,7 +520,7 @@ class Games:
 		war_players_string = ""
 		for player in self.war_players:
 			war_players_string += player.name + " and "
-		await self.bot.reply(message.author.name + " has started a game of War between " + war_players_string[:-5] + "!")
+		await self.bot.reply(ctx.message.author.name + " has started a game of War between " + war_players_string[:-5] + "!")
 	
 	@war.command(name = "hand", pass_context = True)
 	async def war_hand(self, ctx):
