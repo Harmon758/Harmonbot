@@ -22,7 +22,7 @@ from clients import client
 from clients import cleverbot_instance
 
 logger = logging.getLogger("discord")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename = "data/discord.log", encoding = "utf-8", mode = 'a')
 handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
 logger.addHandler(handler)
@@ -41,7 +41,7 @@ except FileExistsError:
 
 @client.event
 async def on_ready():
-	print("Started up {0} ({1})".format(str(client.user), client.user.id))
+	print("Started up Discord {0} ({1})".format(str(client.user), client.user.id))
 	if os.path.isfile("data/restart_channel.json"):
 		with open("data/restart_channel.json", "r") as restart_channel_file:
 			restart_data = json.load(restart_channel_file)
@@ -202,8 +202,8 @@ try:
 	rss_task = client.loop.create_task(client.cogs["RSS"].check_rss_feeds())
 	client.loop.run_until_complete(client.start(credentials.token))
 except KeyboardInterrupt:
-	print("Shutting down Harmonbot...")
 	client.loop.run_until_complete(restart_tasks())
+	print("Shutting down Discord Harmonbot...")
 	client.loop.run_until_complete(client.logout())
 finally:
 	client.loop._default_executor.shutdown(wait = True)

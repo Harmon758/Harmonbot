@@ -201,11 +201,11 @@ class Tools:
 		Create "tags" or notes that you can trigger later
 		options: list, add <tag> [content...], edit <tag> [content...], delete <tag>
 		'''
-		with open("data/tags.json", "r") as tags_file:
+		with open("data/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
 		if len(ctx.message.content.split()) == 1:
 			await self.bot.reply("Add a tag with `!tag add <tag> <content>`. " \
-				"Use `!tag <tag>` to trigger the tag you added. `!tag <edit>` to edit, `!tag <remove>` to delete")
+				"Use `!tag <tag>` to trigger the tag you added. `!tag edit` to edit, `!tag remove` to delete")
 			return
 		if not ctx.invoked_subcommand is self.tag_add:
 			if not ctx.message.author.id in self.tags_data:
@@ -238,7 +238,7 @@ class Tools:
 			await self.bot.reply("You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
 			return
 		self.tags[tag] = self.clean_tag_content(content)
-		with open("data/tags.json", "w") as tags_file:
+		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":thumbsup::skin-tone-2: Your tag has been added.")
 	
@@ -246,7 +246,7 @@ class Tools:
 	async def tag_edit(self, ctx, tag : str, *, content : str):
 		'''Edit one of your tags'''
 		self.tags[tag] = self.clean_tag_content(content)
-		with open("data/tags.json", "w") as tags_file:
+		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been edited.")
 	
@@ -254,7 +254,7 @@ class Tools:
 	async def tag_delete(self, tag : str):
 		'''Delete one of your tags'''
 		del self.tags[tag]
-		with open("data/tags.json", "w") as tags_file:
+		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been deleted.")
 	
