@@ -58,7 +58,7 @@ class Audio:
 				await self.bot.edit_message(response, ctx.message.author.mention + " Your song has been added to the queue.")
 	
 	@commands.command(pass_context = True, no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def join(self, ctx, *channel : str):
 		'''Get me to join a voice channel'''
 		if ctx.message.author.voice_channel:
@@ -78,7 +78,7 @@ class Audio:
 			await self.start_player(ctx.message.channel)
 	
 	@commands.command(pass_context = True, no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def leave(self, ctx):
 		'''Tell me to leave the voice channel'''
@@ -87,7 +87,7 @@ class Audio:
 			await self.bot.reply("I've left the voice channel.")
 	
 	@commands.command(pass_context = True, aliases = ["stop"], no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def pause(self, ctx):
 		'''Pause the current song'''
@@ -96,7 +96,7 @@ class Audio:
 		await self.bot.reply("Song paused")
 	
 	@commands.command(pass_context = True, aliases = ["start"], no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def resume(self, ctx):
 		'''Resume the current song'''
@@ -105,7 +105,7 @@ class Audio:
 		await self.bot.reply("Song resumed")
 	
 	@commands.command(pass_context = True, aliases = ["next"], no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def skip(self, ctx):
 		'''Skip the current song'''
@@ -114,7 +114,7 @@ class Audio:
 		await self.bot.reply("Song skipped")
 	
 	@commands.command(pass_context = True, aliases = ["repeat"], no_pm = True) # "restart"
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def replay(self, ctx):
 		'''Repeat the current song'''
@@ -131,7 +131,7 @@ class Audio:
 		old_stream.stop()
 	
 	@commands.command(pass_context = True, aliases = ["clear"], no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def empty(self, ctx):
 		'''Empty the queue'''
@@ -143,7 +143,7 @@ class Audio:
 		await self.bot.reply("Queue emptied")
 	
 	@commands.command(pass_context = True, no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def shuffle(self, ctx):
 		'''Shuffle the queue'''
@@ -158,14 +158,14 @@ class Audio:
 		await self.bot.edit_message(response, ctx.message.author.mention + " Shuffled songs")
 	
 	@commands.group(pass_context = True, no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio(self, ctx):
 		'''Radio station based on the current song'''
 		pass
 	
 	@radio.command(name = "on", pass_context = True, aliases = ["start"], no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio_on(self, ctx):
 		'''Turn radio on'''
@@ -203,7 +203,7 @@ class Audio:
 		old_stream.resume()
 	
 	@radio.command(name = "off", pass_context = True, aliases = ["stop"], no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio_off(self, ctx):
 		'''Turn radio off'''
@@ -214,7 +214,7 @@ class Audio:
 			await self.bot.reply("Radio is now off")
 	
 	@commands.command(pass_context = True, no_pm = True, hidden = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def settext(self, ctx):
 		'''Set text channel for audio'''
@@ -223,7 +223,7 @@ class Audio:
 		await self.bot.reply("Text channel changed.")
 	
 	@commands.command(pass_context = True, no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
@@ -245,7 +245,7 @@ class Audio:
 		os.remove("data/tts.wav")
 	
 	@commands.command(pass_context = True, no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def play_file(self, ctx, filename : str):
 		'''Plays an audio file'''
@@ -262,7 +262,7 @@ class Audio:
 			player["current"]["stream"].resume()
 	
 	@commands.command(pass_context = True, no_pm = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def volume(self, ctx, volume_setting : float):
 		'''
