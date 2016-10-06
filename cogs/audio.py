@@ -399,7 +399,7 @@ class Audio:
 			stream = await self.bot.voice_client_in(message.server).create_ytdl_player(link)
 		except:
 			try:
-				link = await utilities.youtubesearch(message.content.split()[1:])
+				link = await self.youtubesearch(message.content.split()[1:])
 				stream = await self.bot.voice_client_in(message.server).create_ytdl_player(link)
 			except:
 				return False
@@ -464,6 +464,17 @@ class Audio:
 			return link
 		else:
 			return False
+	
+	async def youtubesearch(self, search): 
+		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), credentials.google_apikey)
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data["items"][0]
+		if "videoId" not in data["id"]:
+			async with aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			data = data["items"][1]
+		return "https://www.youtube.com/watch?v={0}".format(data["id"]["videoId"])
 	
 	# Garbage Collection
 	

@@ -98,16 +98,6 @@ def remove_symbols(string):
 		plain_string = plain_string[1:]
 	return plain_string
 
-async def youtubesearch(search):
-	url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), credentials.google_apikey)
-	async with aiohttp_session.get(url) as resp:
-		data = await resp.json()
-	data = data["items"][0]
-	if "videoId" not in data["id"]:
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		data = data["items"][1]
-	return "https://www.youtube.com/watch?v={0}".format(data["id"]["videoId"])
 
 # Discord
 
