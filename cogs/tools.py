@@ -119,7 +119,7 @@ class Tools:
 	async def encode(self):
 		'''
 		Encode messages
-		otpions: morse <message>, reverse <message>, caesar (rot) <key (0 - 26)> <message>
+		options: morse <message>, reverse <message>, caesar (rot) <key (0 - 26)> <message>
 		'''
 		return
 	

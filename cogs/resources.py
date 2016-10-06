@@ -295,7 +295,10 @@ class Resources:
 	@commands.command()
 	@checks.not_forbidden()
 	async def map(self, *options : str):
-		'''Get map of location'''
+		'''
+		Get map of location
+		map [location] or map random
+		'''
 		if options and options[0] == "random":
 			latitude = random.uniform(-90, 90)
 			longitude = random.uniform(-180, 180)
@@ -318,6 +321,49 @@ class Resources:
 		async with aiohttp_session.get("http://numbersapi.com/{0}".format(number)) as resp:
 			data = await resp.text()
 		await self.bot.reply(data)
+	
+	@commands.group()
+	@checks.not_forbidden()
+	async def overwatch(self):
+		'''WIP'''
+		pass
+	
+	@overwatch.command(name = "stats")
+	async def overwatch_stats(self, battletag : str, number : str):
+		'''
+		Overwatch user statistics
+		Note: battletags are case sensitive
+		'''
+		url = "https://owapi.net/api/v2/u/{}-{}/stats/general".format(battletag, number)
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		output = ["", "__**{}**__".format(data["battletag"].replace('-', '#'))]
+		output.append("**Level**: {0[level]}".format(data["overall_stats"]))
+		output.append("**Wins/Total**: {0[wins]}/{0[games]} ({1:g}%)".format(data["overall_stats"], 100 * data["overall_stats"]["wins"] / data["overall_stats"]["wins"] + data["overall_stats"]["losses"]))
+		output.append(":medal: {0[medals]:,g} | :first_place_medal: {0[medals_gold]:,g} :second_place_medal: {0[medals_silver]:,g} :third_place_medal: {0[medals_bronze]:,g}".format(data["game_stats"]))
+		output.append("**Cards**: {0[cards]:g}, **Damage Done**: {0[damage_done]:,}, **Deaths**: {0[deaths]:,g}, **Eliminations**: {0[eliminations]:,g}, **Healing Done**: {0[healing_done]:,}, **Eliminations/Deaths**: {0[kpd]}, **Time Played**: {0[time_played]}h **Time Spent On Fire**: {0[time_spent_on_fire]:.2f}".format(data["game_stats"]))
+		output.append("__Most In One Game__ | **Damage Done**: {0[damage_done_most_in_game]:,g}, **Eliminations**: {0[eliminations_most_in_game]:,g}, **Healing Done**: {0[healing_done_most_in_game]:,g}, **Time Spent On Fire**: {0[time_spent_on_fire_most_in_game]:.2f}".format(data["game_stats"]))
+		output.append("**Region**: {}".format(data["region"].upper()))
+		await self.bot.reply('\n'.join(output))
+	
+	@overwatch.command(name = "heroes")
+	async def overwatch_heroes(self, battletag : str, number : str):
+		'''
+		Overwatch user hero statistics
+		Note: battletags are case sensitive
+		'''
+		url = "https://owapi.net/api/v2/u/{}-{}/heroes/general".format(battletag, number)
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		output = ["", "__{}__".format(data["battletag"].replace('-', '#'))]
+		sorted_data = sorted(data["heroes"].items(), key = lambda beanisgod: beanisgod[1], reverse = True) # sanity pls
+		for hero, time in sorted_data:
+			if time >= 1:
+				output.append("**{}**: {:g} hours".format(hero.capitalize(), time))
+			else:
+				output.append("**{}**: {:g} minutes".format(hero.capitalize(), time * 60))
+			#plural
+		await self.bot.reply('\n'.join(output))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -342,6 +388,61 @@ class Resources:
 	async def redditsearch(self): #WIP
 		'''WIP'''
 		return
+	
+	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True)
+	@checks.not_forbidden()
+	async def rotmg(self, player : str):
+		'''Realm of the Mad God player information'''
+		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
+		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		if "error" in data:
+			await self.bot.reply("Error: " + data["error"])
+		else:
+			output = ["", "__{}__".format(data["player"])]
+			output.append("**Donator**: {}".format(data["donator"]))
+			output.append("**Characters**: {}".format(data["chars"]))
+			output.append("**Total Fame**: {:,}".format(data["fame"]))
+			output.append("**Fame Rank**: {:,}".format(data["fame_rank"]))
+			output.append("**Total Exp**: {:,}".format(data["exp"]))
+			output.append("**Exp Rank**: {:,}".format(data["exp_rank"]))
+			output.append("**Class Quests Completed**: {}".format(data["rank"]))
+			output.append("**Account Fame**: {:,}".format(data["account_fame"]))
+			output.append("**Account Fame Rank**: {:,}".format(data["account_fame_rank"]))
+			if "guild" in data:
+				output.append("**Guild**: {}".format(data["guild"]))
+				output.append("**Guild Position**: {}".format(data["guild_rank"]))
+			output.append("**Created**: {}".format(data["created"]))
+			output.append("**Last Seen**: {}".format(data["last_seen"]))
+			output.append("**Description**: ```{}```".format("\n".join((data["desc1"], data["desc2"], data["desc3"]))))
+			output.append("https://www.realmeye.com/player/{}".format(player))
+			await self.bot.reply('\n'.join(output))
+	
+	@rotmg.command(name = "characters")
+	@checks.not_forbidden()
+	async def rotmg_characters(self, player : str):
+		'''Realm of the Mad God player characters information'''
+		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
+		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		if "error" in data:
+			await self.bot.reply("Error: " + data["error"])
+		else:
+			output = ["", "__**{}'s Characters**__".format(data["player"])]
+			for character in data["characters"]:
+				output.append("**Level {0[level]} {0[class]}**".format(character))
+				output.append("__Fame__: {0[fame]:,}, __Exp__: {0[exp]:,}, __Rank__: {0[place]:,} __Class Quests Completed__: {0[cqc]}, __Stats Maxed__: {0[stats_maxed]}".format(character))
+				output.append("__HP__: {0[hp]}, __MP__: {0[mp]}, __Attack__: {0[attack]}, __Defense__: {0[defense]}, __Speed__: {0[speed]}, __Vitality__: {0[vitality]}, __Wisdom__: {0[wisdom]}, __Dexterity__: {0[dexterity]}".format(character["stats"]))
+				equips = []
+				for type, equip in character["equips"].items():
+					equips.append("__{}__: {}".format(type.capitalize(), equip))
+				output.append(", ".join(equips))
+				output.append("__Pet__: {0[pet]}, __Clothing Dye__: {0[character_dyes][clothing_dye]}, __Accessory Dye__: {0[character_dyes][accessory_dye]}, __Backpack__: {0[backpack]}".format(character))
+				output.append("__Last Seen__: {0[last_seen]}, __Last Server__: {0[last_server]}".format(character))
+			await self.bot.reply('\n'.join(output[:len(output) // 2]))
+			await self.bot.say('\n'.join(output[len(output) // 2:]))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -506,14 +607,20 @@ class Resources:
 				await self.bot.edit_message(response, "Error: {}".format(data["msg"]))
 				return
 	
-	@commands.command(hidden = True)
+	@commands.command(aliases = ["whatare"])
 	@checks.not_forbidden()
 	async def whatis(self, *search : str): #WIP
 		'''WIP'''
 		if not search:
 			await self.bot.reply("What is what?")
 		else:
-			await self.bot.reply("I don't know what that is.")
+			url = "https://kgsearch.googleapis.com/v1/entities:search?limit=1&query={}&key={}".format('+'.join(search), credentials.google_apikey)
+			async with aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
+				await self.bot.reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
+			else:
+				await self.bot.reply("I don't know what that is.")
 	
 	@commands.command()
 	@checks.not_forbidden()
