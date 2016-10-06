@@ -69,7 +69,7 @@ class Discord:
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
 		if ctx.message.channel.is_private:
-			if options[0].isdigit():
+			if options and options[0].isdigit():
 				number = int(options[0])
 				count = 0
 				async for client_message in self.bot.logs_from(ctx.message.channel, limit = 10000):
@@ -81,7 +81,7 @@ class Discord:
 							break
 			else:
 				await self.bot.reply("Syntax error.")
-		elif options[0].isdigit():
+		elif options and options[0].isdigit():
 			number = int(options[0])
 			await self.bot.delete_message(ctx.message)
 			await self.bot.purge_from(ctx.message.channel, limit = number)
