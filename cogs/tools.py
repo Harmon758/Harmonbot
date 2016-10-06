@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import json
@@ -12,6 +13,7 @@ import urllib
 from utilities import checks
 from utilities import errors
 from modules import ciphers
+from clients import inflect_engine
 
 def setup(bot):
 	bot.add_cog(Tools(bot))
@@ -175,6 +177,31 @@ class Tools:
 		name = "data/graph_testing.png"
 		seaborn.jointplot(**eval(data)).savefig(name)
 		await self.bot.send_file(destination = ctx.message.channel, fp = name, content = "Testing Graph")
+	
+	@commands.command(pass_context = True)
+	@checks.not_forbidden()
+	async def poke(self, ctx, user):
+		'''
+		Poke someone
+		User must be in format username#discriminator
+		'''
+		# implement mentions
+		to_poke = discord.utils.get(self.bot.get_all_members(), name = user[:-5], discriminator = user[-4:])
+		if not to_poke:
+			await self.bot.reply("User not found.")
+		else:
+			utilities.create_folder("data/user_data/{}".format(ctx.message.author.id))
+			utilities.create_file("user_data/{}/pokes".format(ctx.message.author.id))
+			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'r') as pokes_file:
+				pokes_data = json.load(pokes_file)
+			if to_poke.id not in pokes_data:
+				pokes_data[to_poke.id] = 1
+			else:
+				pokes_data[to_poke.id] += 1
+			await self.bot.send_message(to_poke, "{} has poked you for the {} time!".format(ctx.message.author, inflect_engine.ordinal(pokes_data[to_poke.id])))
+			await self.bot.reply("You have poked {} for the {} time!".format(user, inflect_engine.ordinal(pokes_data[to_poke.id])))
+			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'w') as pokes_file:
+				json.dump(pokes_data, pokes_file, indent = 4)
 	
 	@commands.command()
 	@checks.not_forbidden()
