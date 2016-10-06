@@ -600,7 +600,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def youtubesearch(self, *search : str):
 		'''Find a Youtube video'''
-		link = await utilities.youtubesearch(search)
+		link = await self.bot.cogs["Audio"].youtubesearch(search)
 		await self.bot.reply(link)
 	
 	@commands.command()
