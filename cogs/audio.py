@@ -39,7 +39,9 @@ class Audio:
 	@checks.not_forbidden()
 	async def audio(self, ctx, *options : str): #elif options[0] == "full":
 		'''Audio System'''
-		if "playlist" in ctx.message.content:
+		if not options:
+			await self.bot.reply("What would you like to play?")
+		elif "playlist" in ctx.message.content:
 			await self.player_add_playlist(ctx.message)
 		elif "spotify" in ctx.message.content:
 			youtube_link = await self.spotify_to_youtube(options[0])
