@@ -149,7 +149,7 @@ class Meta:
 	
 	# Public Info
 	
-	@commands.command()
+	@commands.command(aliases = ["info"])
 	async def about(self):
 		'''About me'''
 		output = ["", "__**About Me**__"]
