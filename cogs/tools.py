@@ -10,6 +10,7 @@ import random
 # import re
 import urllib
 
+from modules import utilities
 from utilities import checks
 from utilities import errors
 from modules import ciphers
@@ -22,6 +23,8 @@ class Tools:
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.tags_data, self.tags = None, None
+		utilities.create_file("tags")
 	
 	@commands.command()
 	@checks.not_forbidden()

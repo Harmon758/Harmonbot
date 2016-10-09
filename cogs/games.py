@@ -36,12 +36,8 @@ class Games:
 		self.maze_started, self.maze_maze = False, None
 		self.jeopardy_active, self.jeopardy_question_active, self.jeopardy_board, self.jeopardy_answer, self.jeopardy_answered, self.jeopardy_scores, self.jeopardy_board_output, self.jeopardy_max_width = False, False, [], None, None, {}, None, None
 		self.trivia_active, self.trivia_countdown, self.bet_countdown = False, None, None
-		#check default values		
-		try:
-			with open("data/trivia_points.json", "x") as trivia_file:
-				json.dump({}, trivia_file)
-		except FileExistsError:
-			pass
+		#check default values
+		utilities.create_file("trivia_points")
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()

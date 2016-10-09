@@ -73,7 +73,7 @@ class RSS:
 		try:
 			await self.bot.wait_until_ready()
 			while not self.bot.is_closed:
-				with open("data/rss_feeds.json", "r") as feeds_file:
+				with open("data/rss_feeds.json", 'r') as feeds_file:
 					#feeds_info = await self.bot.loop.run_in_executor(None, json.load, feeds_file)
 					feeds_info = json.load(feeds_file)
 				start = time.time()
