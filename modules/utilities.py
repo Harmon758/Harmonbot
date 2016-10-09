@@ -1,19 +1,12 @@
 
 import discord
 
-import aiohttp
+# import aiohttp
 from collections import OrderedDict
-import datetime
-import dateutil.parser
 import json
 import math
-import random
+import os
 import re
-
-import credentials
-from clients import client
-from clients import online_time
-from clients import aiohttp_session
 
 # Utility
 
@@ -183,74 +176,4 @@ async def get_user(ctx, name):
 		user = discord.utils.find(lambda m: m.name == user_name and str(m.discriminator) == user_discriminator, ctx.message.server.members)
 		if user: return user
 	return None
-
-async def random_game_status():
-	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot",
-	"tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test",
-	"with my memory", "with R2-D2", "with C-3PO", "with BB-8",
-	"with machine learning", "gigs", "with Siri", "with TARS", "with KIPP",
-	"with humans", "with Skynet", "Goldbach's conjecture",
-	"Goldbach's conjecture solution", "with quantum foam",
-	"with quantum entanglement", "with P vs NP", "the Reimann hypothesis",
-	"the Reimann proof", "with the infinity gauntlet", "for the other team",
-	"hard to get", "to win", "world domination", "with Opportunity",
-	"with Spirit in the sand pit", "with Curiousity", "with Voyager 1",
-	"music", "Google Ultron", "not enough space here to",
-	"the meaning of life is", "with the NSA", "with RSS Bot", " "]
-	updated_game = discord.utils.get(client.servers).me.game
-	if not updated_game:
-		updated_game = discord.Game(name = random.choice(statuses))
-	else:
-		updated_game.name = random.choice(statuses)
-	await client.change_status(game = updated_game)
-
-async def set_streaming_status(client):
-	updated_game = discord.utils.get(client.servers).me.game
-	if not updated_game:
-		updated_game = discord.Game(url = "https://www.twitch.tv/discordapp", type = 1) # https://discord.gg/0oyodN94Y3CgCT6I
-	else:
-		updated_game.url = "https://www.twitch.tv/discordapp"
-		updated_game.type = 1
-	await client.change_status(game = updated_game)
-
-async def reply(message, response):
-	return await client.send_message(message.channel, "{}: {}".format(message.author.mention, response))
-
-async def reply_newline(message, response):
-	return await client.send_message(message.channel, "{}:\n{}".format(message.author.mention, response))
-
-async def reply_code(message, response):
-	return await client.send_message(message.channel, "{}:\n```{}```".format(message.author.mention, response))
-
-# Restart/Shutdown Tasks
-
-def add_uptime():
-	with open("data/stats.json", "r") as stats_file:
-			stats = json.load(stats_file)
-	now = datetime.datetime.utcnow()
-	uptime = now - online_time
-	stats["uptime"] += uptime.total_seconds()
-	with open("data/stats.json", "w") as stats_file:
-		json.dump(stats, stats_file, indent = 4)
-
-def add_restart():
-	with open("data/stats.json", "r") as stats_file:
-		stats = json.load(stats_file)
-	stats["restarts"] += 1
-	with open("data/stats.json", "w") as stats_file:
-		json.dump(stats, stats_file, indent = 4)
-
-async def leave_all_voice():
-	for voice_client in client.voice_clients:
-		await voice_client.disconnect()
-
-async def shutdown_tasks():
-	await client.cogs["Audio"].stop_all_streams()
-	# await leave_all_voice()
-	aiohttp_session.close()
-	add_uptime()
-
-async def restart_tasks():
-	await shutdown_tasks()
-	add_restart()
 

@@ -25,15 +25,9 @@ class Resources:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.tags_data, self.tags = None, None
 		self.waclient = wolframalpha.Client(credentials.wolframalpha_appid)
 		#wolframalpha (wa)
 		# spotify = spotipy.Spotify()
-		try:
-			with open("data/tags.json", "x") as tags_file:
-				json.dump({}, tags_file)
-		except FileExistsError:
-			pass
 	
 	@commands.command()
 	@checks.not_forbidden()

@@ -15,6 +15,8 @@ import youtube_dl
 import credentials
 from modules import utilities
 from utilities import checks
+
+import clients
 from clients import aiohttp_session
 from clients import cleverbot_instance
 from clients import inflect_engine
@@ -412,7 +414,7 @@ class Audio:
 		path = parsed_url.path
 		query = parsed_url.query
 		if path[:9] == "/playlist" and query[:5] == "list=":
-			response = await utilities.reply(message, "Loading...")
+			response = await clients.reply(message, "Loading...")
 			playlistid = query[5:]
 			base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(credentials.google_apikey, playlistid)
 			url = base_url
@@ -428,7 +430,7 @@ class Audio:
 					try:
 						stream = await self.bot.voice_client_in(message.server).create_ytdl_player(link)
 					except youtube_dl.utils.DownloadError:
-						await utilities.reply(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
+						await clients.reply(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
 						continue
 					await player_instance["queue"].put({"stream" : stream, "author" : message.author})
 				if not "nextPageToken" in data:
@@ -438,7 +440,7 @@ class Audio:
 			await self.bot.edit_message(response, message.author.mention + " Your songs have been added to the queue.")
 			return
 		else:
-			await utilities.reply(message, "Error")
+			await clients.reply(message, "Error")
 			return
 	
 	# Utility

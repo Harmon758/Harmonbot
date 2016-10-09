@@ -13,9 +13,8 @@ import traceback
 import credentials
 from modules import utilities
 from utilities import checks
-from clients import version
-from clients import changelog
-from clients import online_time
+
+import clients
 from clients import py_code_block
 
 def setup(bot):
@@ -25,11 +24,7 @@ class Meta:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		try:
-			with open("data/stats.json", "x") as stats_file:
-				json.dump({"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0}, stats_file)
-		except FileExistsError:
-			pass
+		utilities.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0})
 	
 	@commands.command(aliases = ["commands"], hidden = True, pass_context = True)
 	async def help(self, ctx, *commands : str):
@@ -124,7 +119,7 @@ class Meta:
 		for server in self.bot.servers:
 			server_info = "```Name: " + server.name + "\n"
 			server_info += "ID: " + server.id + "\n"
-			server_info += "Owner: " + server.owner.name + "\n"
+			server_info += "Owner: " + str(server.owner) + "\n"
 			server_info += "Server Region: " + str(server.region) + "\n"
 			server_info += "Members: " + str(server.member_count) + "\n"
 			server_info += "Created at: " + str(server.created_at) + "\n```"
@@ -160,15 +155,15 @@ class Meta:
 		output = ["", "__**About Me**__"]
 		output.append("**Harmonbot** (Discord ID: `160677293252018177`)")
 		output.append("**Author/Owner:** Harmon758 (Discord ID: `115691005197549570`)")
-		output.append("**Version:** `{}`".format(version))
+		output.append("**Version:** `{}`".format(clients.version))
 		output.append("**Library:** discord.py (Python) `v{}`".format(discord.__version__))
-		output.append("**Changelog (Harmonbot Server):** {}".format(changelog))
+		output.append("**Changelog (Harmonbot Server):** {}".format(clients.changelog))
 		await self.bot.reply('\n'.join(output))
 	
 	@commands.command()
 	async def changelog(self):
 		'''Link to changelog'''
-		await self.bot.reply(changelog)
+		await self.bot.reply(clients.changelog)
 	
 	@commands.command(pass_context = True)
 	async def conversions(self, ctx):
@@ -210,7 +205,7 @@ class Meta:
 		with open("data/stats.json", "r") as stats_file:
 			stats = json.load(stats_file)
 		now = datetime.datetime.utcnow()
-		uptime = now - online_time
+		uptime = now - clients.online_time
 		uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds())))
 		total_members = sum(len(s.members) for s in self.bot.servers)
 		total_members_online  = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
@@ -237,7 +232,7 @@ class Meta:
 	async def uptime(self):
 		'''Bot uptime'''
 		now = datetime.datetime.utcnow()
-		uptime = now - online_time
+		uptime = now - clients.online_time
 		await self.bot.reply(utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds()))))
 	
 	@commands.command()
@@ -265,7 +260,7 @@ class Meta:
 	@checks.not_forbidden()
 	async def randomgame(self):
 		'''Update to a random playing/game status message'''
-		await utilities.random_game_status()
+		await clients.random_game_status()
 		# await self.bot.reply("I changed to a random game status.")
 	
 	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"], hidden = True)
@@ -286,7 +281,7 @@ class Meta:
 		'''Set my streaming status'''
 		if option == "on" or option == "true":
 			if not url:
-				await utilities.set_streaming_status()
+				await clients.set_streaming_status()
 				return
 			else:
 				updated_game = ctx.message.server.me.game
@@ -340,8 +335,8 @@ class Meta:
 		voice_channels = [[voice_client.channel.id, self.bot.cogs["Audio"].players[voice_client.server.id]["text"]] for voice_client in self.bot.voice_clients]
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
 			json.dump({"restart_channel" : ctx.message.channel.id, "voice_channels" : voice_channels}, restart_channel_file)
-		#raise KeyboardInterrupt
-		await utilities.restart_tasks()
+		# raise KeyboardInterrupt
+		await clients.restart_tasks()
 		await self.bot.logout()
 	
 	@commands.command(aliases = ["crash", "panic"], hidden = True)
@@ -350,7 +345,7 @@ class Meta:
 		'''Shut me down'''
 		await self.bot.say(":scream: Shutting down.")
 		print("Forcing Shutdown...")
-		await utilities.shutdown_tasks()
+		await clients.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
 		subprocess.call(["taskkill", "/f", "/im", "python.exe"])
 	

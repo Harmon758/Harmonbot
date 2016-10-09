@@ -12,14 +12,14 @@ import re
 import sys
 import traceback
 
+import credentials
+import clients
+from clients import client
+
 from modules import conversions
-from modules.utilities import *
+from modules import utilities
 from utilities import checks
 from utilities import errors
-
-import credentials
-from clients import client
-from clients import cleverbot_instance
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.INFO)
@@ -33,11 +33,7 @@ harmonbot_logger_handler = logging.FileHandler(filename = "data/harmonbot.log", 
 harmonbot_logger_handler.setFormatter(logging.Formatter("%(message)s"))
 harmonbot_logger.addHandler(harmonbot_logger_handler)
 
-try:
-	with open("data/f.json", "x") as f_file:
-		json.dump({"counter" : 0}, f_file)
-except FileExistsError:
-	pass
+utilities.create_file("f", content = {"counter" : 0})
 
 @client.event
 async def on_ready():
@@ -137,9 +133,9 @@ async def on_message(message):
 			if command.split()[0] in client.commands:
 				return
 			elif len(message.content.split()) == 1:
-				await reply(message, "Please enter input.")
-			elif not is_number(message.content.split()[1]):
-				await reply(message, "Syntax error.")
+				await clients.reply(message, "Please enter input.")
+			elif not utilities.is_number(message.content.split()[1]):
+				await clients.reply(message, "Syntax error.")
 			else:
 				value = float(message.content.split()[1])
 				units = re.match(r"^(\w+)to(\w+)", command, re.I)
@@ -154,9 +150,9 @@ async def on_message(message):
 				elif converted_mass_value:
 					converted_value = converted_mass_value
 				else:
-					await reply(message, "Units, {} and/or {}, not found. See the conversions command.".format(unit1, unit2))
+					await clients.reply(message, "Units, {} and/or {}, not found. See the conversions command.".format(unit1, unit2))
 					return
-				await reply(message, str(value) + ' ' + unit1 + " = " + str(converted_value) + ' ' + unit2)
+				await clients.reply(message, str(value) + ' ' + unit1 + " = " + str(converted_value) + ' ' + unit2)
 	elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs: # :8ball:
 		await reply(message, ":8ball: {}".format(client.cogs["Games"]._eightball()))
 	elif message.content.lower() == 'f': # f
@@ -171,7 +167,7 @@ async def on_message(message):
 		for word in message.clean_content.split():
 			if not word.startswith("@"):
 				mentionless_message += word
-		await reply(message, cleverbot_instance.ask(mentionless_message))
+		await clients.reply(message, clients.cleverbot_instance.ask(mentionless_message))
 
 @client.event
 async def on_command_error(error, ctx):
@@ -202,8 +198,8 @@ try:
 	rss_task = client.loop.create_task(client.cogs["RSS"].check_rss_feeds())
 	client.loop.run_until_complete(client.start(credentials.token))
 except KeyboardInterrupt:
-	client.loop.run_until_complete(restart_tasks())
 	print("Shutting down Discord Harmonbot...")
+	client.loop.run_until_complete(clients.restart_tasks())
 	client.loop.run_until_complete(client.logout())
 finally:
 	client.loop._default_executor.shutdown(wait = True)
