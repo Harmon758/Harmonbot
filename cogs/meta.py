@@ -215,7 +215,7 @@ class Meta:
 		text_count = channel_types.count(discord.ChannelType.text)
 		voice_count = channel_types.count(discord.ChannelType.voice)
 		total_uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
-		output = ["", "__**Stats**__ :chart_with_upwards_trend:"]
+		output = ["", "__**Stats**__ :bar_chart:"]
 		output.append("**Uptime:** `{}`".format(uptime))
 		output.append("**Servers:** `{}`".format(len(self.bot.servers)))
 		output.append("**Total Members:** `{}` (`{}` online)".format(total_members, total_members_online))
@@ -331,7 +331,7 @@ class Meta:
 	async def restart(self, ctx):
 		'''Restart me'''
 		await self.bot.say(":ok_hand::skin-tone-2: Restarting...")
-		print("Shutting down Harmonbot...")
+		print("Shutting down Discord Harmonbot...")
 		voice_channels = [[voice_client.channel.id, self.bot.cogs["Audio"].players[voice_client.server.id]["text"]] for voice_client in self.bot.voice_clients]
 		with open("data/restart_channel.json", "x+") as restart_channel_file:
 			json.dump({"restart_channel" : ctx.message.channel.id, "voice_channels" : voice_channels}, restart_channel_file)
@@ -344,7 +344,7 @@ class Meta:
 	async def shutdown(self):
 		'''Shut me down'''
 		await self.bot.say(":scream: Shutting down.")
-		print("Forcing Shutdown...")
+		print("Forcing Shutdown of Discord Harmonbot...")
 		await clients.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
 		subprocess.call(["taskkill", "/f", "/im", "python.exe"])
