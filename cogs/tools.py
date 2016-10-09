@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+import asyncio
 import json
 import math
 import moviepy.editor
@@ -304,6 +305,14 @@ class Tools:
 	
 	def clean_tag_content(self, content):
 		return content.replace("@everyone", "@\u200beveryone").replace("@here", "@\u200bhere")
+	
+	@commands.command(pass_context = True)
+	@checks.not_forbidden()
+	async def timer(self, ctx, seconds : int):
+		'''WIP'''
+		await self.bot.reply("I'll remind you in {} seconds.".format(seconds))
+		await asyncio.sleep(seconds)
+		await self.bot.say("{}: {} seconds have passed.".format(ctx.message.author.mention, seconds))
 	
 	@commands.command(hidden = True, pass_context = True)
 	@checks.not_forbidden()
