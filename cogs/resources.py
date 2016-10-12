@@ -185,8 +185,11 @@ class Resources:
 		url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&searchType=image&q={2}".format(credentials.google_apikey, credentials.google_cse_cx, '+'.join(search))
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		image_link = data["items"][0]["link"]
-		await self.bot.reply(image_link)
+		if "items" in data:
+			image_link = data["items"][0]["link"]
+			await self.bot.reply(image_link)
+		else:
+			await self.bot.reply("No images with that search found")
 		# handle 403 daily limit exceeded error
 	
 	@commands.command()
