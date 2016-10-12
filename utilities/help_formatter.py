@@ -77,7 +77,7 @@ class CustomHelpFormatter(HelpFormatter):
 		else:
 			# self._paginator.add_line('Commands:')
 			if isinstance(self.command, Command):
-				self._paginator.add_line("{} Commands:".format(self.command))
+				self._paginator.add_line("Subcommands for {}:".format(self.command))
 			else:
 				self._paginator.add_line("{} Commands:".format(type(self.command).__name__))
 			# self._add_subcommands_to_page(max_width, self.filter_command_list())
