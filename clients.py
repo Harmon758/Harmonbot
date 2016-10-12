@@ -13,8 +13,9 @@ import random
 import os
 from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
+import credentials
 
-version = "0.32.0"
+version = "0.32.2"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -24,6 +25,7 @@ aiohttp_session = aiohttp.ClientSession()
 cleverbot_instance = cleverbot.Cleverbot()
 inflect_engine = inflect.engine()
 application_info = None
+harmonbot_listener = None
 
 class Bot(commands.Bot):
 	
@@ -42,7 +44,7 @@ class Bot(commands.Bot):
 		view = StringView(message.content)
 		if self._skip_check(message.author, self.user):
 			return
-		prefix = self._get_prefix(message)
+		prefix = await self._get_prefix(message)
 		invoked_prefix = prefix
 		if not isinstance(prefix, (tuple, list)):
 			if not view.skip_string(prefix):
@@ -68,6 +70,8 @@ class Bot(commands.Bot):
 			exc = CommandNotFound('Command "{}" is not found'.format(invoker))
 			self.dispatch('command_error', exc, ctx)
 
+# Custom prefixes
+
 utilities.create_file("prefixes")
 
 def get_prefix(bot, message):
@@ -79,16 +83,22 @@ def get_prefix(bot, message):
 		prefixes = all_prefixes.get(message.server.id, None)
 	return prefixes if prefixes else '!'
 
+# Customize help command
+
 _CustomHelpFormatter = CustomHelpFormatter()
 
 client = Bot(command_prefix = get_prefix, formatter = _CustomHelpFormatter, pm_help = None)
 client.remove_command("help")
 
+# Initialize info
+
 @client.listen()
 async def on_ready():
-	global application_info
+	global application_info, harmonbot_listener
 	application_info = await client.application_info()
+	harmonbot_listener = await client.get_user_info(credentials.listenerid)
 
+# Load cogs
 for file in os.listdir("cogs"):
 	if file.endswith(".py"):
 		client.load_extension("cogs." + file[:-3])
