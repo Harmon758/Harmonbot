@@ -3,6 +3,7 @@ from discord.ext import commands
 
 # import aiohttp
 import asyncio
+import datetime
 import isodate
 import json
 import random
@@ -16,6 +17,7 @@ import credentials
 from modules import utilities
 from modules import weather
 from utilities import checks
+from utilities import errors
 from clients import aiohttp_session
 
 def setup(bot):
@@ -26,6 +28,7 @@ class Resources:
 	def __init__(self, bot):
 		self.bot = bot
 		self.waclient = wolframalpha.Client(credentials.wolframalpha_appid)
+		self.lichess_user_data, self.lichess_tournaments_data = None, None
 		#wolframalpha (wa)
 		# spotify = spotipy.Spotify()
 	
@@ -263,6 +266,95 @@ class Resources:
 			data = await resp.json()
 		joke = data["joke"]
 		await self.bot.reply(joke)
+	
+	@commands.group()
+	@checks.not_forbidden()
+	async def lichess(self):
+		'''WIP'''
+		return
+	
+	@lichess.group(name = "user", pass_context = True)
+	async def lichess_user(self, ctx):
+		'''WIP'''
+		if len(ctx.message.content.split()) == 2:
+			pass
+		elif len(ctx.message.content.split()) >= 4:
+			url = "https://en.lichess.org/api/user/{}".format(ctx.message.content.split()[3])
+			async with aiohttp_session.get(url) as resp:
+				self.lichess_user_data = await resp.json()
+			if not self.lichess_user_data:
+				raise errors.LichessUserNotFound
+	
+	@lichess_user.command(name = "bullet")
+	async def lichess_user_bullet(self, username : str):
+		'''WIP'''
+		data = self.lichess_user_data
+		await self.bot.reply("\n__{username}__\n:zap: Bullet | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["bullet"], prov = "?" if data["perfs"]["bullet"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["bullet"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["bullet"]["prog"], username = data["username"]))
+	
+	@lichess_user.command(name = "blitz")
+	async def lichess_user_blitz(self, username : str):
+		'''WIP'''
+		data = self.lichess_user_data
+		await self.bot.reply("\n__{username}__\n:fire: Blitz | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["blitz"], prov = "?" if data["perfs"]["blitz"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["blitz"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["blitz"]["prog"], username = data["username"]))
+	
+	@lichess_user.error
+	async def lichess_user_error(self, error, ctx):
+		if isinstance(error.original, errors.LichessUserNotFound):
+			await self.bot.reply("User not found.")
+	
+	@lichess_user.command(name = "all")
+	async def lichess_user_all(self, username : str):
+		'''WIP'''
+		data = self.lichess_user_data
+		output = ["", "__{}__".format(data["username"])]
+		output.append("Online: {}".format(data["online"]))
+		output.append(":zap: `Bullet           |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["bullet"], prov = "?" if data["perfs"]["bullet"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["bullet"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["bullet"]["prog"]))
+		output.append(":fire: `Blitz            |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["blitz"], prov = "?" if data["perfs"]["blitz"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["blitz"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["blitz"]["prog"]))
+		output.append(":hourglass: `Classical        |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["classical"], prov = "?" if data["perfs"]["classical"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["classical"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["classical"]["prog"]))
+		output.append(":envelope: `Correspondence   |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["correspondence"], prov = "?" if data["perfs"]["correspondence"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["correspondence"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["correspondence"]["prog"]))
+		output.append(":pisces: `Crazyhouse       |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["crazyhouse"], prov = "?" if data["perfs"]["crazyhouse"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["crazyhouse"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["crazyhouse"]["prog"]))
+		output.append(":game_die: `Chess960         |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["chess960"], prov = "?" if data["perfs"]["chess960"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["chess960"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["chess960"]["prog"]))
+		output.append(":triangular_flag_on_post: `King Of The Hill |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["kingOfTheHill"], prov = "?" if data["perfs"]["kingOfTheHill"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["kingOfTheHill"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["kingOfTheHill"]["prog"]))
+		output.append(":three: `Three-Check      |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["threeCheck"], prov = "?" if data["perfs"]["threeCheck"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["threeCheck"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["threeCheck"]["prog"]))
+		output.append(":arrows_clockwise: `Antichess        |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["antichess"], prov = "?" if data["perfs"]["antichess"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["antichess"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["antichess"]["prog"]))
+		output.append(":atom: `Atomic           |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["atomic"], prov = "?" if data["perfs"]["atomic"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["atomic"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["atomic"]["prog"]))
+		output.append(":question: `Horde            |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["horde"], prov = "?" if data["perfs"]["horde"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["horde"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["horde"]["prog"]))
+		output.append(":checkered_flag: `Racing Kings     |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["racingKings"], prov = "?" if data["perfs"]["racingKings"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["racingKings"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["racingKings"]["prog"]))
+		output.append(":bow_and_arrow: `Puzzle/Training  |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["puzzle"], prov = "?" if data["perfs"]["puzzle"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["puzzle"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["puzzle"]["prog"]))
+		output.append(":notebook_with_decorative_cover: `Opening          |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["opening"], prov = "?" if data["perfs"]["opening"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["opening"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["opening"]["prog"]))
+		output.append("Member since {}".format(datetime.datetime.fromtimestamp(data["createdAt"] / 1000.0).strftime("%Y-%m-%d %H:%M:%S.%f")))
+		output.append("Last seen {}".format(datetime.datetime.fromtimestamp(data["seenAt"] / 1000.0).strftime("%Y-%m-%d %H:%M:%S.%f")))
+		output.append("Time spent playing: {}".format(utilities.secs_to_letter_format(data["playTime"]["total"])))
+		output.append("Time on TV: {}".format(utilities.secs_to_letter_format(data["playTime"]["tv"])))
+		output.append("Following: {0[nbFollowing]}, Followers: {0[nbFollowers]}".format(data))
+		output.append("Games Played: {0[all]}, Rated: {0[rated]}, AI: {0[ai]}, Wins: {0[win]}, Losses: {0[loss]}, Draws: {0[draw]}, Bookmarks: {0[bookmark]}".format(data["count"]))
+		output.append(data["url"])
+		await self.bot.reply('\n'.join(output))
+	
+	@lichess.group(name = "tournaments")
+	async def lichess_tournaments(self):
+		'''WIP'''
+		url = "https://en.lichess.org/api/tournament"
+		async with aiohttp_session.get(url) as resp:
+			self.lichess_tournaments_data = await resp.json()
+	
+	@lichess_tournaments.command(name = "current", aliases = ["started"])
+	async def lichess_tournaments_current(self):
+		'''WIP'''
+		data = self.lichess_tournaments_data["started"]
+		output = ["", "__Current Tournaments__"]
+		for tournament in data:
+			output.append("**{0[fullName]}**".format(tournament))
+			# output.append("{:g}+{} {variant}{rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], variant = tournament["variant"]["name"] + " " if tournament["variant"]["name"] != "Standard" else "", rated = "Rated" if tournament["rated"] else "Casual"))
+			output.append("{:g}+{} {} {rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], tournament["perf"]["name"], rated = "Rated" if tournament["rated"] else "Casual"))
+			output[-1] += ", Ends in: {:g}m".format((datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0) - datetime.datetime.utcnow()).total_seconds() // 60)
+			output.append("<https://en.lichess.org/tournament/{}>".format(tournament["id"]))
+		await self.bot.reply('\n'.join(output))
+	
+	@lichess.command(name = "tournament")
+	async def lichess_tournament(self):
+		'''WIP'''
+		pass
 	
 	@commands.command()
 	@checks.not_forbidden()
