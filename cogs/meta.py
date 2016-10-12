@@ -238,7 +238,7 @@ class Meta:
 	@commands.command()
 	async def version(self):
 		'''Bot version'''
-		await self.bot.reply("I am Harmonbot `v{}`".format(version))
+		await self.bot.reply("I am Harmonbot `v{}`".format(clients.version))
 	
 	# Update Bot Stuff
 	
