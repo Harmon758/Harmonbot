@@ -78,7 +78,8 @@ class Tools:
 		'''
 		if not choices:
 			await self.bot.reply("Choose between what?")
-		await self.bot.reply(random.choice(choices))
+		else:
+			await self.bot.reply(random.choice(choices))
 	
 	@commands.command(aliases = ["flip"])
 	@checks.not_forbidden()
