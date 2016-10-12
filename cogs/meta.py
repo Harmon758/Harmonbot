@@ -324,6 +324,13 @@ class Meta:
 		else:
 			await self.bot.reply("There is no streaming status or url to clear.")
 	
+	@commands.command(hidden = True)
+	@checks.is_owner()
+	async def update_discord_bots_stats(self):
+		'''Update stats on https://bots.discord.pw'''
+		response = await clients._update_discord_bots_stats()
+		await self.bot.reply(response)
+	
 	# Restart/Shutdown
 	
 	@commands.command(pass_context = True, hidden = True)

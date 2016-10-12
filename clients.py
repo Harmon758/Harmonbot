@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.32.12"
+version = "0.32.13"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -90,13 +90,29 @@ _CustomHelpFormatter = CustomHelpFormatter()
 client = Bot(command_prefix = get_prefix, formatter = _CustomHelpFormatter, pm_help = None)
 client.remove_command("help")
 
-# Initialize info
+# Initialize/update info
+
+async def _update_discord_bots_stats():
+	async with aiohttp_session.post("https://bots.discord.pw/api/bots/{}/stats".format(client.user.id), 
+	headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}, 
+	data = json.dumps({"server_count": len(client.servers)})) as resp:
+		response = await resp.json()
+	return response
 
 @client.listen()
 async def on_ready():
 	global application_info, harmonbot_listener
 	application_info = await client.application_info()
 	harmonbot_listener = await client.get_user_info(credentials.listenerid)
+	await _update_discord_bots_stats()
+
+@client.listen()
+async def on_server_join(server):
+	await _update_discord_bots_stats()
+
+@client.listen()
+async def on_server_remove(server):
+	await _update_discord_bots_stats()
 
 # Load cogs
 for file in os.listdir("cogs"):
