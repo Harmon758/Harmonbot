@@ -328,7 +328,7 @@ class Resources:
 		output.append("Time on TV: {}".format(utilities.secs_to_letter_format(data["playTime"]["tv"])))
 		output.append("Following: {0[nbFollowing]}, Followers: {0[nbFollowers]}".format(data))
 		output.append("Games Played: {0[all]}, Rated: {0[rated]}, AI: {0[ai]}, Wins: {0[win]}, Losses: {0[loss]}, Draws: {0[draw]}, Bookmarks: {0[bookmark]}".format(data["count"]))
-		output.append(data["url"])
+		output.append("<{}>".format(data["url"]))
 		await self.bot.reply('\n'.join(output))
 	
 	@lichess.group(name = "tournaments")
