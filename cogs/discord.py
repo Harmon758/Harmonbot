@@ -154,20 +154,24 @@ class Discord:
 		Currently only accepts hex color input
 		'''
 		if not color:
-			_color = ctx.message.author.color
-			color_value = _color.value
-			await self.bot.reply(str(conversions.inttohex(color_value)))
+			color_value = ctx.message.author.color.value
+			await self.bot.reply("#{}".format(conversions.inttohex(color_value)))
 		else: # check color
+			try:
+				color_value = int(color[0], 16)
+			except ValueError:
+				await self.bot.reply(":no_entry: Please enter a valid hex color")
+				return
 			if not discord.utils.get(ctx.message.server.roles, name = ctx.message.author.name):
 				new_role = await self.bot.create_role(ctx.message.server, name = ctx.message.author.name, hoist = False)
 				await self.bot.add_roles(ctx.message.author, new_role)
 				new_colour = new_role.colour
-				new_colour.value = int(color[0], 16)
+				new_colour.value = color_value
 				await self.bot.edit_role(ctx.message.server, new_role, name = ctx.message.author.name, colour = new_colour)
 			else:
 				role_to_change = discord.utils.get(ctx.message.server.roles, name = ctx.message.author.name)
 				new_colour = role_to_change.colour
-				new_colour.value = int(color[0], 16)
+				new_colour.value = color_value
 				await self.bot.edit_role(ctx.message.server, role_to_change, colour = new_colour)
 	
 	@commands.command(pass_context = True)
