@@ -77,10 +77,10 @@ def secs_to_colon_format(secs):
 	return duration_to_colon_format(secs_to_duration(secs))
 
 def add_commas(number):
-	if number:
+	try:
 		return "{:,}".format(number)
-	else:
-		return str(number)
+	except:
+		return number
 
 def remove_symbols(string):
 	plain_string = ""
