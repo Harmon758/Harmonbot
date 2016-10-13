@@ -35,3 +35,5 @@ class MissingCapability(CommandError):
 class NotPermitted(CommandError):
 	pass
 
+class LichessUserNotFound(CommandError):
+	pass
