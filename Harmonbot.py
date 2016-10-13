@@ -171,8 +171,12 @@ async def on_message(message):
 
 @client.event
 async def on_command_error(error, ctx):
-	if isinstance(error, (errors.NotOwner, errors.NotServerOwner, errors.MissingPermissions)):
-		await ctx.bot.send_message(ctx.message.channel, "You don't have permission to do that.")
+	if isinstance(error, errors.NotOwner):
+		pass
+	elif isinstance(error, commands.errors.CommandNotFound):
+		pass
+	elif isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)): # errors.NotOwner
+		await ctx.bot.send_message(ctx.message.channel, ":no_entry: You don't have permission to do that.")
 	elif isinstance(error, errors.MissingCapability):
 		await ctx.bot.send_message(ctx.message.channel, "I don't have permission to do that here. I need the permission(s): " + \
 		', '.join(error.permissions))
