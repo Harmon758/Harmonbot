@@ -52,6 +52,33 @@ async def on_ready():
 	# await voice.detectvoice()
 
 @client.event
+async def on_server_join(server):
+	utilities.create_folder("data/server_data/{}".format(server.id))
+	utilities.create_file("server_data/{}/{}".format(server.id, server.name.replace('/', '-')))
+	utilities.create_file("server_data/{}/settings".format(server.id), content = {"respond_to_bots": False})
+	me = discord.utils.get(client.get_all_members(), id = credentials.myid)
+	server_info = "```Name: " + server.name + "\n"
+	server_info += "ID: " + server.id + "\n"
+	server_info += "Owner: " + str(server.owner) + "\n"
+	server_info += "Server Region: " + str(server.region) + "\n"
+	server_info += "Members: " + str(server.member_count) + "\n"
+	server_info += "Created at: " + str(server.created_at) + "\n```"
+	server_info += "Icon: " + server.icon_url
+	await client.send_message(me, "Joined Server: \n" + server_info)
+
+@client.event
+async def on_server_remove(server):
+	me = discord.utils.get(client.get_all_members(), id = credentials.myid)
+	server_info = "```Name: " + server.name + "\n"
+	server_info += "ID: " + server.id + "\n"
+	server_info += "Owner: " + str(server.owner) + "\n"
+	server_info += "Server Region: " + str(server.region) + "\n"
+	server_info += "Members: " + str(server.member_count) + "\n"
+	server_info += "Created at: " + str(server.created_at) + "\n```"
+	server_info += "Icon: " + server.icon_url
+	await client.send_message(me, "Left Server: \n" + server_info)
+
+@client.event
 async def on_resumed():
 	await client.send_message(client.get_channel("147264078258110464"), client.get_server("147208000132743168").get_member("115691005197549570").mention + ": resumed.")
 
