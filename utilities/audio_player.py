@@ -175,6 +175,8 @@ class AudioPlayer:
 		if not self.current["stream"].is_done():
 			self.skip()
 		self.queue._queue.appendleft(duplicate)
+		await self.queue.put(None) # trigger get
+		self.queue._queue.pop()
 	
 	def get_volume(self):
 		if not self.current: return None
