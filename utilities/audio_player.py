@@ -88,6 +88,8 @@ class AudioPlayer:
 	async def insert_song(self, song, requester, position):
 		info = await self._get_song_info(song)
 		self.queue._queue.insert(position - 1, {"info": info, "requester": requester})
+		await self.queue.put(None) # trigger get
+		self.queue._queue.pop()
 		return info["title"]
 	
 	async def _get_song_info(self, song):
