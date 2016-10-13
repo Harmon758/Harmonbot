@@ -92,7 +92,7 @@ class Budio:
 		elif resumed is None:
 			await self.bot.reply(":no_entry: The song is already playing")
 	
-	@budio.command(pass_context = True, aliases = ["next", "remove"], no_pm = True)
+	@budio.group(pass_context = True, aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
 	@checks.is_voice_connected()
 	# @checks.is_permitted()
 	async def skip(self, ctx, *number : int):
@@ -128,6 +128,21 @@ class Budio:
 				await self.bot.reply(":white_check_mark: You voted to skip the current song. Skips: {}/{}".format(vote, player.skip_votes_required))
 		else:
 			await self.bot.reply(":no_entry: You're not even listening!")
+	
+	@skip.command(name = "to", pass_context = True, no_pm = True)
+	@checks.is_voice_connected()
+	# @checks.is_permitted()
+	async def skip_to(self, ctx, number : int):
+		'''
+		Skip to a song in the queue
+		Skips every song before number
+		'''
+		songs = await self.players[ctx.message.server.id].skip_to_song(number)
+		if songs:
+			await self.bot.say(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
+			del songs
+		else:
+			await self.bot.reply(":no_entry: There's not that many songs in the queue")
 	
 	@budio.command(pass_context = True, aliases = ["repeat"], no_pm = True) # "restart"
 	@checks.is_voice_connected()

@@ -169,6 +169,16 @@ class AudioPlayer:
 		else:
 			return False
 	
+	async def skip_to_song(self, number):
+		if 1 <= number <= self.queue.qsize():
+			songs = []
+			for i in range(number - 1):
+				songs.append(await self.queue.get())
+			self.skip()
+			return songs
+		else:
+			return False
+	
 	async def replay(self):
 		stream = self.server.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song)
 		stream.volume = self.default_volume / 100
