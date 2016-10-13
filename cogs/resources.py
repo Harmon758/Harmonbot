@@ -4,6 +4,7 @@ from discord.ext import commands
 # import aiohttp
 import asyncio
 import datetime
+import functools
 import isodate
 import json
 import random
@@ -12,6 +13,7 @@ import seaborn
 import urllib
 import xml.etree.ElementTree
 import wolframalpha
+import youtube_dl
 
 import credentials
 from modules import utilities
@@ -794,10 +796,19 @@ class Resources:
 	
 	@commands.command(aliases = ["ytsearch"])
 	@checks.not_forbidden()
-	async def youtubesearch(self, *search : str):
+	async def youtubesearch(self, *, search : str):
 		'''Find a Youtube video'''
-		link = await self.bot.cogs["Audio"].youtubesearch(search)
-		await self.bot.reply(link)
+		ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
+		func = functools.partial(ydl.extract_info, search, download = False)
+		info = await self.bot.loop.run_in_executor(None, func)
+		if "entries" in info:
+			info = info["entries"][0]
+		await self.bot.reply(info.get("webpage_url"))
+	
+	@youtubesearch.error
+	async def youtubesearch_error(self, error, ctx):
+		if "No video results" in str(error):
+			await self.bot.reply("Song not found")
 	
 	@commands.command()
 	@checks.not_forbidden()
