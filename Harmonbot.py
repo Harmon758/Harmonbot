@@ -187,8 +187,10 @@ async def on_command_error(error, ctx):
 	elif isinstance(error, commands.errors.MissingRequiredArgument):
 		await ctx.bot.send_message(ctx.message.channel, error)
 	elif isinstance(error, errors.NotPermitted):
-		await ctx.bot.send_message(ctx.message.channel, "You don't have permission to use that command here.")
-	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (errors.NoTag, errors.NoTags)):
+		await ctx.bot.send_message(ctx.message.channel, ":no_entry: You don't have permission to use that command here.")
+	elif isinstance(error, commands.errors.BadArgument):
+		await ctx.bot.send_message(ctx.message.channel, ":warning: Error: invalid input")
+	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (errors.NoTag, errors.NoTags, errors.LichessUserNotFound)) or "No video results" in str(error):
 		pass # handled with local error handler
 	else:
 		print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
