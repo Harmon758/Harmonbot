@@ -194,6 +194,8 @@ class Tools:
 		to_poke = discord.utils.get(self.bot.get_all_members(), name = user[:-5], discriminator = user[-4:])
 		if not to_poke:
 			await self.bot.reply("User not found.")
+		elif to_poke == self.bot.user:
+			await self.bot.say("!poke {}".format(ctx.message.author))
 		else:
 			utilities.create_folder("data/user_data/{}".format(ctx.message.author.id))
 			utilities.create_file("user_data/{}/pokes".format(ctx.message.author.id))
