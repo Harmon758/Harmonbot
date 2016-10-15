@@ -296,16 +296,13 @@ class Discord:
 		Your own or someone else's avatar
 		'''
 		if name:
-			flag = True
 			if ctx.message.server:
-				for member in ctx.message.server.members:
-					if member.name == name:
-						if member.avatar_url:
-							await self.bot.reply(name + "'s avatar: " + member.avatar_url)
-						else:
-							await self.bot.reply(name + "'s avatar: " + member.default_avatar_url)
-						flag = False
-				if flag and name:
+				user = await utilities.get_user(ctx, name)
+				if user and user.avatar_url:
+					await self.bot.reply(name + "'s avatar: " + user.avatar_url)
+				elif user:
+					await self.bot.reply(name + "'s avatar: " + user.default_avatar_url)
+				else:
 					await self.bot.reply(name + " was not found on this server.")
 			else:
 				await self.bot.reply("Please use that command in a server.")
