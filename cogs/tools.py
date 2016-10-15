@@ -239,7 +239,7 @@ class Tools:
 	@checks.not_forbidden()
 	async def tag(self, ctx):
 		'''
-		Create "tags" or notes that you can trigger later
+		Tags/notes that you can trigger later
 		options: list, add <tag> [content...], edit <tag> [content...], delete <tag>
 		'''
 		with open("data/tags.json", 'r') as tags_file:

@@ -157,7 +157,7 @@ class Budio:
 	@checks.is_voice_connected()
 	# @checks.is_permitted()
 	async def insert(self, ctx, position_number : int, *, song : str):
-		'''Insert the song into the queue'''
+		'''Insert a song into the queue'''
 		if "spotify" in song:
 			song = await self.spotify_to_youtube(song)
 			if not song:
