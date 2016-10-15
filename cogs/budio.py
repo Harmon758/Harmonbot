@@ -55,7 +55,8 @@ class Budio:
 	# @checks.is_permitted()
 	async def join(self, ctx, *channel : str):
 		'''Get me to join a voice channel'''
-		self.players[ctx.message.server.id] = audio_player.AudioPlayer(self.bot, ctx.message.channel)
+		if ctx.message.server.id not in self.players:
+			self.players[ctx.message.server.id] = audio_player.AudioPlayer(self.bot, ctx.message.channel)
 		await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
 	
 	@budio.command(pass_context = True, no_pm = True)
