@@ -120,6 +120,12 @@ class Tools:
 		else:
 			await self.bot.reply('`' + ciphers.decode_caesar(message, option) + '`')
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def dog(self):
+		'''Dog'''
+		await self.bot.reply(":dog2:")
+	
 	@commands.group()
 	@checks.not_forbidden()
 	async def encode(self):
@@ -317,6 +323,12 @@ class Tools:
 		await self.bot.reply("I'll remind you in {} seconds.".format(seconds))
 		await asyncio.sleep(seconds)
 		await self.bot.say("{}: {} seconds have passed.".format(ctx.message.author.mention, seconds))
+	
+	@commands.command()
+	@checks.not_forbidden()
+	async def turtle(self):
+		'''Turtle'''
+		await self.bot.reply(":turtle:")
 	
 	@commands.command(hidden = True, pass_context = True)
 	@checks.not_forbidden()
