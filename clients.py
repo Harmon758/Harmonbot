@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.33.4"
+version = "0.33.5"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -192,6 +192,6 @@ async def restart_tasks(channel_id):
 	await shutdown_tasks()
 	add_restart()
 	voice_channels = client.cogs["Audio"].save_voice_channels()
-	with open("data/restart_channel.json", "x+") as restart_channel_file:
+	with open("data/temp/restart_channel.json", 'w') as restart_channel_file:
 		json.dump({"restart_channel" : channel_id, "voice_channels" : voice_channels}, restart_channel_file)
 

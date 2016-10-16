@@ -39,10 +39,10 @@ utilities.create_file("f", content = {"counter" : 0})
 @client.event
 async def on_ready():
 	print("Started up Discord {0} ({1})".format(str(client.user), client.user.id))
-	if os.path.isfile("data/restart_channel.json"):
-		with open("data/restart_channel.json", "r") as restart_channel_file:
+	if os.path.isfile("data/temp/restart_channel.json"):
+		with open("data/temp/restart_channel.json", 'r') as restart_channel_file:
 			restart_data = json.load(restart_channel_file)
-		os.remove("data/restart_channel.json")
+		os.remove("data/temp/restart_channel.json")
 		restart_channel = client.get_channel(restart_data["restart_channel"])
 		await client.send_message(restart_channel, ":thumbsup::skin-tone-2: Restarted.")
 		for voice_channel in restart_data["voice_channels"]:
