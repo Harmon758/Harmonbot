@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.32.26"
+version = "0.33.0"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -183,7 +183,7 @@ async def leave_all_voice():
 		await voice_client.disconnect()
 
 async def shutdown_tasks():
-	await client.cogs["Audio"].stop_all_streams() # budio - remove
+	# await client.cogs["Audio"].stop_all_streams()
 	# await leave_all_voice()
 	aiohttp_session.close()
 	add_uptime()
