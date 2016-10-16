@@ -47,8 +47,8 @@ async def on_ready():
 		for voice_channel in restart_data["voice_channels"]:
 			await client.join_voice_channel(client.get_channel(voice_channel[0]))
 			asyncio.ensure_future(client.cogs["audio"].start_player(client.get_channel(voice_channel[1])))
-	await random_game_status()
-	await set_streaming_status(client)
+	await clients.random_game_status()
+	await clients.set_streaming_status(client)
 	# await voice.detectvoice()
 
 @client.event
