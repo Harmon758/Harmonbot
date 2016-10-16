@@ -167,8 +167,10 @@ class Audio:
 	async def replay(self, ctx):
 		'''Repeat the current song'''
 		response = await self.bot.reply(":repeat_one: Restarting song...")
-		await self.players[ctx.message.server.id].replay()
-		await self.bot.edit_message(response, ctx.message.author.mention + ": :repeat_one: Restarted song")
+		if (await self.players[ctx.message.server.id].replay()):
+			await self.bot.edit_message(response, ctx.message.author.mention + ": :repeat_one: Restarted song")
+		else:
+			await self.bot.edit_message(response, ctx.message.author.mention + ": :no_entry: There is nothing to replay")
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
