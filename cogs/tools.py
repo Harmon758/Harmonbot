@@ -58,7 +58,7 @@ class Tools:
 		for key, value in _replace.items():
 			_equation = _equation.replace(key, value)
 		_equation = ''.join(character for character in _equation if character in _allowed)
-		print(_equation)
+		print("Calculated " + _equation)
 		try:
 			await self.bot.reply(_equation + '=' + str(eval(_equation)))
 		except:
@@ -192,13 +192,11 @@ class Tools:
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
-	async def poke(self, ctx, user):
+	async def poke(self, ctx, *, user : str):
 		'''
 		Poke someone
-		User must be in format username#discriminator
 		'''
-		# implement mentions
-		to_poke = discord.utils.get(self.bot.get_all_members(), name = user[:-5], discriminator = user[-4:])
+		to_poke = await utilities.get_user(ctx, user)
 		if not to_poke:
 			await self.bot.reply("User not found.")
 		elif to_poke == self.bot.user:

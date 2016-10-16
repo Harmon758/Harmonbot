@@ -139,41 +139,42 @@ async def get_user(ctx, name):
 		user_id = mention.group(1)
 		user = ctx.message.server.get_member(user_id)
 		if user: return user
-	# check if exact match
-	matches = [member for member in ctx.message.server.members if member.name == name or member.nick == name]
-	if len(matches) == 1:
-		return matches[0]
-	elif len(matches) > 1:
-		members = ""
-		for index, member in enumerate(matches, 1):
-			members += "{}: {}".format(str(index), str(member))
-			if member.nick: members += " ({})".format(member.nick)
-			members += '\n'
-		await ctx.bot.say("Multiple users with the name, {}. Which one did you mean?\n"
-		"**Enter the number it is in the list.**".format(name))
-		await ctx.bot.say(members)
-		message = await ctx.bot.wait_for_message(author = ctx.message.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(matches))
-		return matches[int(message.content) - 1]
-	# check if beginning match
-	start_matches = [member for member in ctx.message.server.members if member.name.startswith(name) or member.nick and member.nick.startswith(name)]
-	if len(start_matches) == 1:
-		return start_matches[0]
-	elif len(start_matches) > 1:
-		members = ""
-		for index, member in enumerate(start_matches, 1):
-			members += "{}: {}".format(str(index), str(member))
-			if member.nick: members += " ({})".format(member.nick)
-			members += '\n'
-		await ctx.bot.reply("Multiple users with names starting with {}. Which one did you mean? **Enter the number.**".format(name))
-		await ctx.bot.say(members)
-		message = await ctx.bot.wait_for_message(author = ctx.message.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(start_matches))
-		return start_matches[int(message.content) - 1]
+	if ctx.message.server:
+		# check if exact match
+		matches = [member for member in ctx.message.server.members if member.name == name or member.nick == name]
+		if len(matches) == 1:
+			return matches[0]
+		elif len(matches) > 1:
+			members = ""
+			for index, member in enumerate(matches, 1):
+				members += "{}: {}".format(str(index), str(member))
+				if member.nick: members += " ({})".format(member.nick)
+				members += '\n'
+			await ctx.bot.say("Multiple users with the name, {}. Which one did you mean?\n"
+			"**Enter the number it is in the list.**".format(name))
+			await ctx.bot.say(members)
+			message = await ctx.bot.wait_for_message(author = ctx.message.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(matches))
+			return matches[int(message.content) - 1]
+		# check if beginning match
+		start_matches = [member for member in ctx.message.server.members if member.name.startswith(name) or member.nick and member.nick.startswith(name)]
+		if len(start_matches) == 1:
+			return start_matches[0]
+		elif len(start_matches) > 1:
+			members = ""
+			for index, member in enumerate(start_matches, 1):
+				members += "{}: {}".format(str(index), str(member))
+				if member.nick: members += " ({})".format(member.nick)
+				members += '\n'
+			await ctx.bot.reply("Multiple users with names starting with {}. Which one did you mean? **Enter the number.**".format(name))
+			await ctx.bot.say(members)
+			message = await ctx.bot.wait_for_message(author = ctx.message.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(start_matches))
+			return start_matches[int(message.content) - 1]
 	# check if with discriminator
-	user_info = re.match(r"^(\w+)#(\d{4})", name)
+	user_info = re.match(r"^(.+)#(\d{4})", name)
 	if user_info:
 		user_name = user_info.group(1)
 		user_discriminator = user_info.group(2)
-		user = discord.utils.find(lambda m: m.name == user_name and str(m.discriminator) == user_discriminator, ctx.message.server.members)
+		user = discord.utils.find(lambda m: m.name == user_name and str(m.discriminator) == user_discriminator, ctx.bot.get_all_members())
 		if user: return user
 	return None
 
