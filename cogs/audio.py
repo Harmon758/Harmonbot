@@ -65,7 +65,7 @@ class Audio:
 			else:
 				await self.bot.edit_message(response, "{}: :ballot_box_with_check: `{}` has been added to the queue.".format(ctx.message.author.mention, title))
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(aliases = ["summon"], pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	async def join(self, ctx, *channel : str):
 		'''Get me to join a voice channel'''
