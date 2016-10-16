@@ -5,6 +5,7 @@ from discord.ext import commands
 import aiohttp
 import asyncio
 import inspect
+import json
 import os
 import random
 import speech_recognition
@@ -466,4 +467,14 @@ class Audio:
 			return link
 		else:
 			return False
+	
+	# Termination
+	
+	def cancel_all_tasks(self):
+		for player in self.players.values():
+			player.player.cancel()
+	
+	def save_voice_channels(self):
+		voice_channels = [[voice_client.channel.id, self.players[voice_client.server.id].text_channel.id] for voice_client in self.bot.voice_clients]
+		return voice_channels
 
