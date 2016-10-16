@@ -110,7 +110,7 @@ class Audio:
 			await self.bot.reply(":no_entry: The song is already playing")
 	
 	@commands.group(pass_context = True, aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
-	@checks.is_permitted()
+	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def skip(self, ctx, *number : int):
 		'''
@@ -268,7 +268,7 @@ class Audio:
 			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@commands.command(pass_context = True, no_pm = True)
-	@checks.is_permitted()
+	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def files(self, ctx):
 		'''List existing audio files'''
@@ -315,7 +315,7 @@ class Audio:
 			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@library.command(name = "files", pass_context = True, no_pm = True) # enable for DMs?
-	@checks.is_permitted()
+	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def library_files(self, ctx):
 		'''List song files in the library'''
@@ -330,7 +330,7 @@ class Audio:
 				output += filename + ", "
 	
 	@library.command(name = "search", pass_context = True, no_pm = True)
-	@checks.is_permitted()
+	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def library_search(self, ctx, *, search : str):
 		'''Search songs in the library'''
@@ -394,7 +394,7 @@ class Audio:
 	
 	@commands.group(pass_context = True, invoke_without_command = True, hidden = True)
 	@checks.is_voice_connected()
-	@checks.not_forbidden()
+	@checks.is_permitted()
 	async def listen(self, ctx):
 		if self.players[ctx.message.server.id].listener:
 			await self.players[ctx.message.server.id].stop_listening()
@@ -403,7 +403,7 @@ class Audio:
 	
 	@listen.command(name = "start", aliases = ["on"], pass_context = True)
 	@checks.is_voice_connected()
-	@checks.not_forbidden()
+	@checks.is_permitted()
 	async def listen_start(self, ctx):
 		if self.players[ctx.message.server.id].listener:
 			await self.bot.reply(":no_entry: I'm already listening")
@@ -412,7 +412,7 @@ class Audio:
 	
 	@listen.command(name = "stop", aliases = ["off"], pass_context = True)
 	@checks.is_voice_connected()
-	@checks.not_forbidden()
+	@checks.is_permitted()
 	async def listen_stop(self, ctx):
 		if self.players[ctx.message.server.id].listener:
 			await self.players[ctx.message.server.id].stop_listening()
@@ -421,7 +421,7 @@ class Audio:
 	
 	@listen.command(name = "once", pass_context = True)
 	@checks.is_voice_connected()
-	@checks.not_forbidden()
+	@checks.is_permitted()
 	async def listen_once(self, ctx):
 		if self.players[ctx.message.server.id].listener:
 			await self.bot.reply(":no_entry: I'm already listening")
@@ -430,7 +430,7 @@ class Audio:
 	
 	@listen.command(name = "finish", pass_context = True)
 	@checks.is_voice_connected()
-	@checks.not_forbidden()
+	@checks.is_permitted()
 	async def listen_finish(self, ctx):
 		if self.players[ctx.message.server.id].listener:
 			await self.players[ctx.message.server.id].finish_listening()
@@ -439,7 +439,7 @@ class Audio:
 	
 	@listen.command(name = "process", pass_context = True)
 	@checks.is_voice_connected()
-	@checks.not_forbidden()
+	@checks.is_permitted()
 	async def listen_process(self, ctx):
 		await self.players[ctx.message.server.id].process_listen()
 	
