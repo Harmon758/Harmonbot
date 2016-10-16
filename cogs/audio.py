@@ -15,6 +15,7 @@ import youtube_dl
 import credentials
 from modules import utilities
 from utilities import checks
+from utilities import audio_player
 
 import clients
 from clients import aiohttp_session
@@ -29,432 +30,431 @@ class Audio:
 	def __init__(self, bot):
 		self.bot = bot
 		self.players = {}
-		self.recognizer = speech_recognition.Recognizer()
 		for name, command in inspect.getmembers(self):
 			if isinstance(command, commands.Command) and command.parent is None and name != "audio":
 				self.bot.add_command(command)
 				self.audio.add_command(command)
 	
-	@commands.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", "playlist", "spotify"], 
+	@commands.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", "playlist", "spotify", "budio"], 
 		invoke_without_command = True, no_pm = True)
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
-	async def audio(self, ctx, *options : str): #elif options[0] == "full":
-		'''Audio System'''
-		if not options:
-			await self.bot.reply("What would you like to play?")
-		elif "playlist" in ctx.message.content:
-			await self.player_add_playlist(ctx.message)
-		elif "spotify" in ctx.message.content:
-			youtube_link = await self.spotify_to_youtube(options[0])
-			if youtube_link:
-				stream = await self.player_add_song(ctx.message, link = youtube_link)
-				if stream:
-					await self.bot.reply("Your song, " + stream.title + ", has been added to the queue.")
-					return
-			await self.bot.reply("Error")
+	async def audio(self, ctx, *, song : str = ""): #elif options[0] == "full":
+		'''
+		Audio System
+		Supported sites: https://rg3.github.io/youtube-dl/supportedsites.html and Spotify
+		'''
+		if not song:
+			await self.bot.reply(":grey_question: What would you like to play?")
+		elif "playlist" in song:
+			await self.players[ctx.message.server.id].add_playlist(song, ctx.message.author)
 		else:
-			response = await self.bot.reply("Loading...")
-			added = await self.player_add_song(ctx.message)
-			if not added:
-				await self.bot.reply("Error")
+			if "spotify" in song:
+				song = await self.spotify_to_youtube(song)
+				if not song:
+					await self.bot.reply(":warning: Error")
+					return
+			response = await self.bot.reply(":cd: Loading..")
+			try:
+				title = await self.players[ctx.message.server.id].add_song(song, ctx.message.author)
+			except Exception as e:
+				try:
+					await self.bot.edit_message(response, "{}: :warning: Error\n{}: {}".format(ctx.message.author.mention, type(e).__name__, e))
+				except discord.errors.HTTPException:
+					await self.bot.edit_message(response, "{}: :warning: Error".format(ctx.message.author.mention))
 			else:
-				await self.bot.edit_message(response, ctx.message.author.mention + " Your song has been added to the queue.")
+				await self.bot.edit_message(response, "{}: :ballot_box_with_check: `{}` has been added to the queue.".format(ctx.message.author.mention, title))
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	async def join(self, ctx, *channel : str):
 		'''Get me to join a voice channel'''
-		if ctx.message.author.voice_channel:
-			voice_channel = ctx.message.author.voice_channel
-		else:
-			voice_channel = discord.utils.find( lambda _channel: _channel.type == discord.ChannelType.voice and \
-				utilities.remove_symbols(_channel.name).startswith(' '.join(channel)), 
-				ctx.message.server.channels)
-		if not voice_channel:
-			await self.bot.reply("Voice channel not found.")
-		elif self.bot.is_voice_connected(ctx.message.server):
-			await self.bot.voice_client_in(ctx.message.server).move_to(voice_channel)
-			await self.bot.reply("I've moved to the voice channel.")
-		else:
-			await self.bot.join_voice_channel(voice_channel)
-			await self.bot.reply("I've joined the voice channel.")
-			await self.start_player(ctx.message.channel)
+		if ctx.message.server.id not in self.players:
+			self.players[ctx.message.server.id] = audio_player.AudioPlayer(self.bot, ctx.message.channel)
+		await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def leave(self, ctx):
 		'''Tell me to leave the voice channel'''
-		if self.bot.is_voice_connected(ctx.message.server):
-			await self.bot.voice_client_in(ctx.message.server).disconnect()
-			await self.bot.reply("I've left the voice channel.")
+		await self.players[ctx.message.server.id].leave_channel()
+		del self.players[ctx.message.server.id]
 	
 	@commands.command(pass_context = True, aliases = ["stop"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def pause(self, ctx):
 		'''Pause the current song'''
-		player = self.players[ctx.message.server.id]
-		player["current"]["stream"].pause()
-		await self.bot.reply("Song paused")
+		paused = self.players[ctx.message.server.id].pause()
+		if paused:
+			await self.bot.say(":pause_button: Song paused")
+		elif paused is False:
+			await self.bot.reply(":no_entry: There is no song to pause")
+		elif paused is None:
+			await self.bot.reply(":no_entry: The song is already paused")
 	
 	@commands.command(pass_context = True, aliases = ["start"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def resume(self, ctx):
 		'''Resume the current song'''
-		player = self.players[ctx.message.server.id]
-		player["current"]["stream"].resume()
-		await self.bot.reply("Song resumed")
+		resumed = self.players[ctx.message.server.id].resume()
+		if resumed:
+			await self.bot.say(":play_pause: Song resumed")
+		elif resumed is False:
+			await self.bot.reply(":no_entry: There is no song to resume")
+		elif resumed is None:
+			await self.bot.reply(":no_entry: The song is already playing")
 	
-	@commands.command(pass_context = True, aliases = ["next"], no_pm = True)
+	@commands.group(pass_context = True, aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
-	async def skip(self, ctx):
-		'''Skip the current song'''
-		player = self.players[ctx.message.server.id]
-		player["current"]["stream"].stop()
-		await self.bot.reply("Song skipped")
+	async def skip(self, ctx, *number : int):
+		'''
+		Skip a song
+		Skip or vote to skip the current song or skip a song number in the queue
+		The server owner and the person who requested the song can immediately skip the song and skip songs in the queue
+		Otherwise, a majority vote of the people in the voice channel is required
+		'''
+		# implement override permission
+		if ctx.message.author.id in (ctx.message.server.owner.id, credentials.myid):
+			if number:
+				song = await self.players[ctx.message.server.id].skip_specific(number[0])
+				if song:
+					await self.bot.say(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number[0], song["info"]["title"]))
+					del song
+				else:
+					await self.bot.reply(":no_entry: There's not that many songs in the queue")
+			elif self.players[ctx.message.server.id].skip():
+				await self.bot.say(":next_track: Song skipped")
+			else:
+				await self.bot.reply(":no_entry: There is no song to skip")
+		elif ctx.message.author in self.bot.voice_client_in(ctx.message.server).channel.voice_members:
+			player = self.players[ctx.message.server.id]
+			vote = player.vote_skip(ctx.message.author)
+			if vote is False:
+				await self.bot.reply(":no_entry: There is no song to skip")
+			elif vote is None:
+				await self.bot.reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
+			elif vote is True:
+				await self.bot.say(":next_track: Song skipped")
+			else:
+				await self.bot.reply(":white_check_mark: You voted to skip the current song. Skips: {}/{}".format(vote, player.skip_votes_required))
+		else:
+			await self.bot.reply(":no_entry: You're not even listening!")
+	
+	@skip.command(name = "to", pass_context = True, no_pm = True)
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def skip_to(self, ctx, number : int):
+		'''
+		Skip to a song in the queue
+		Skips every song before number
+		'''
+		songs = await self.players[ctx.message.server.id].skip_to_song(number)
+		if songs:
+			await self.bot.say(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
+			del songs
+		else:
+			await self.bot.reply(":no_entry: There's not that many songs in the queue")
 	
 	@commands.command(pass_context = True, aliases = ["repeat"], no_pm = True) # "restart"
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def replay(self, ctx):
 		'''Repeat the current song'''
-		response = await self.bot.reply("Restarting song...")
-		player = self.players[ctx.message.server.id]
-		player["current"]["stream"].pause()
-		stream = await self.bot.voice_client_in(ctx.message.server).create_ytdl_player(player["current"]["stream"].url)
-		old_stream = player["current"]["stream"]
-		player["current"]["stream"] = stream
-		stream.start()
-		await self.bot.edit_message(response, ctx.message.author.mention + " Restarted song")
-		while not stream.is_done():
-			await asyncio.sleep(1)
-		old_stream.stop()
+		response = await self.bot.reply(":repeat_one: Restarting song...")
+		await self.players[ctx.message.server.id].replay()
+		await self.bot.edit_message(response, ctx.message.author.mention + ": :repeat_one: Restarted song")
+	
+	@commands.command(pass_context = True, no_pm = True)
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def insert(self, ctx, position_number : int, *, song : str):
+		'''Insert a song into the queue'''
+		if "spotify" in song:
+			song = await self.spotify_to_youtube(song)
+			if not song:
+				await self.bot.reply(":warning: Error")
+				return
+		response = await self.bot.reply(":cd: Loading..")
+		try:
+			title = await self.players[ctx.message.server.id].insert_song(song, ctx.message.author, position_number)
+		except Exception as e:
+			try:
+				await self.bot.edit_message(response, "{}: :warning: Error\n{}: {}".format(ctx.message.author.mention, type(e).__name__, e))
+			except discord.errors.HTTPException:
+				await self.bot.edit_message(response, "{}: :warning: Error".format(ctx.message.author.mention))
+		else:
+			await self.bot.edit_message(response, "{}: :ballot_box_with_check: `{}` has been inserted into position #{} in the queue.".format(ctx.message.author.mention, title, position_number))
 	
 	@commands.command(pass_context = True, aliases = ["clear"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def empty(self, ctx):
 		'''Empty the queue'''
-		player = self.players[ctx.message.server.id]
-		while not player["queue"].empty():
-			stream = await player["queue"].get()
-			stream["stream"].start()
-			stream["stream"].stop()	
-		await self.bot.reply("Queue emptied")
+		await self.players[ctx.message.server.id].empty_queue()
+		await self.bot.say(":wastebasket: Queue emptied")
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def shuffle(self, ctx):
 		'''Shuffle the queue'''
-		response = await self.bot.reply("Shuffling...")
-		player = self.players[ctx.message.server.id]
-		song_list = []
-		while not player["queue"].empty():
-			song_list.append(await player["queue"].get())
-		random.shuffle(song_list)
-		for song in song_list:
-			await player["queue"].put(song)
-		await self.bot.edit_message(response, ctx.message.author.mention + " Shuffled songs")
+		response = await self.bot.reply(":twisted_rightwards_arrows: Shuffling...")
+		await self.players[ctx.message.server.id].shuffle_queue()
+		await self.bot.edit_message(response, ":twisted_rightwards_arrows: Songs shuffled")
 	
-	@commands.group(pass_context = True, no_pm = True)
+	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio(self, ctx):
-		'''Radio station based on the current song'''
-		pass
+		'''
+		Radio station based on the current song
+		No input to turn on/off
+		'''
+		if self.players[ctx.message.server.id].radio_flag:
+			self.players[ctx.message.server.id].radio_off()
+			await self.bot.say(":stop_sign: Turned radio off")
+		elif (await self.players[ctx.message.server.id].radio_on(ctx.message.author)) is False:
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@radio.command(name = "on", pass_context = True, aliases = ["start"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio_on(self, ctx):
 		'''Turn radio on'''
-		response = await self.bot.reply("Starting Radio...")
-		player = self.players[ctx.message.server.id]
-		player["current"]["stream"].pause()
-		url_data = urllib.parse.urlparse(player["current"]["stream"].url)
-		query = urllib.parse.parse_qs(url_data.query)
-		videoid = query["v"][0]
-		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + videoid + "&type=video&key=" + credentials.google_apikey
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		radio_currently_playing = data["items"][0]["id"]["videoId"]
-		stream = await self.bot.voice_client_in(ctx.message.server).create_ytdl_player("https://www.youtube.com/watch?v=" + radio_currently_playing)
-		old_stream = player["current"]["stream"]
-		player["current"]["stream"] = stream
-		stream.start()
-		player["radio_on"] = True
-		await self.bot.edit_message(response, ctx.message.author.mention + " Radio is now on")
-		await self.bot.say(":arrow_forward: Now Playing: " + stream.title)
-		while player["radio_on"]:
-			while not stream.is_done():
-				await asyncio.sleep(1)
-			if not player["radio_on"]:
-				break
-			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + radio_currently_playing + "&type=video&key=" + credentials.google_apikey
-			async with aiohttp_session.get(url) as resp:
-				data = await resp.json()
-			radio_currently_playing = random.choice(data["items"])["id"]["videoId"]
-			stream = await self.bot.voice_client_in(ctx.message.server).create_ytdl_player("https://www.youtube.com/watch?v=" + radio_currently_playing)
-			player["current"]["stream"] = stream
-			stream.start()
-			await self.bot.say(":arrow_forward: Now Playing: " + stream.title)
-		player["current"]["stream"] = old_stream
-		old_stream.resume()
+		if self.players[ctx.message.server.id].radio_flag:
+			await self.bot.reply(":no_entry: Radio is already on")
+		elif (await self.players[ctx.message.server.id].radio_on(ctx.message.author)) is False:
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@radio.command(name = "off", pass_context = True, aliases = ["stop"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio_off(self, ctx):
 		'''Turn radio off'''
-		player = self.players[ctx.message.server.id]
-		if player["radio_on"]:
-			player["radio_on"] = False
-			player["current"]["stream"].stop()
-			await self.bot.reply("Radio is now off")
+		if self.players[ctx.message.server.id].radio_flag:
+			self.players[ctx.message.server.id].radio_off()
+			await self.bot.say(":stop_sign: Turned radio off")
+		else:
+			await self.bot.reply(":no_entry: Radio is already off")
 	
-	@commands.command(pass_context = True, no_pm = True, hidden = True)
+	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def settext(self, ctx):
-		'''Set text channel for audio'''
-		player = self.players[ctx.message.server.id]
-		player["text"] = ctx.message.channel.id
-		await self.bot.reply("Text channel changed.")
+		'''Set text channel for messages'''
+		self.players[ctx.message.server.id].text_channel = ctx.message.channel
+		await self.bot.say(":writing_hand::skin-tone-2: Text channel changed.")
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
-		self._tts(ctx, message)
-	
-	def _tts(self, ctx, message):
-		player = self.players[ctx.message.server.id]
-		subprocess.call(["espeak", "-s 150", "-ven-us+f1", "-w data/tts.wav", message], shell = True)
-		stream = self.bot.voice_client_in(ctx.message.server).create_ffmpeg_player("data/tts.wav")
-		paused = False
-		if player["current"] and player["current"]["stream"].is_playing():
-			player["current"]["stream"].pause()
-			paused = True
-		stream.start()
-		while stream.is_playing():
-			pass
-		if paused:
-			player["current"]["stream"].resume()
-		os.remove("data/tts.wav")
+		if not (await self.players[ctx.message.server.id].play_tts(message, ctx.message.author)):
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
-	async def play_file(self, ctx, filename : str):
-		'''Plays an audio file'''
-		player = self.players[ctx.message.server.id]
-		stream = self.bot.voice_client_in(ctx.message.server).create_ffmpeg_player("data/audio_files/" + filename)
-		paused = False
-		if player["current"] and player["current"]["stream"].is_playing():
-			player["current"]["stream"].pause()
-			paused = True
-		stream.start()
-		while stream.is_playing():
-			pass
-		if paused:
-			player["current"]["stream"].resume()
+	async def file(self, ctx, *, filename : str = ""):
+		'''Play an audio file'''
+		if not (await self.players[ctx.message.server.id].play_file(filename, ctx.message.author)):
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
-	async def volume(self, ctx, volume_setting : float):
+	async def files(self, ctx):
+		'''List existing audio files'''
+		await self.bot.reply(self.players[ctx.message.server.id].list_files())
+	
+	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def library(self, ctx):
+		'''Start/stop playing songs from my library'''
+		if self.players[ctx.message.server.id].library_flag:
+			self.players[ctx.message.server.id].stop_library()
+			await self.bot.say(":stop_sign: Stopped playing songs from my library")
+		elif not (await self.players[ctx.message.server.id].play_library(ctx.message.author)):
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+	
+	@library.command(name = "play", aliases = ["start"], pass_context = True, no_pm = True)
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def library_play(self, ctx):
+		'''Start playing songs from my library'''
+		if self.players[ctx.message.server.id].library_flag:
+			await self.bot.reply(":no_entry: I'm already playing songs from my library")
+		elif not (await self.players[ctx.message.server.id].play_library(ctx.message.author)):
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+	
+	@library.command(name = "stop", pass_context = True, no_pm = True)
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def library_stop(self, ctx):
+		'''Stop playing songs from my library'''
+		if self.players[ctx.message.server.id].library_flag:
+			self.players[ctx.message.server.id].stop_library()
+			await self.bot.say(":stop_sign: Stopped playing songs from my library")
+		else:
+			await self.bot.reply(":no_entry: Not currently playing songs from my library")
+	
+	@library.command(name = "song", pass_context = True, no_pm = True)
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def library_song(self, ctx, *, filename : str = ""):
+		'''Play a song from my library'''
+		if not (await self.players[ctx.message.server.id].play_from_library(filename, ctx.message.author)):
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+	
+	@library.command(name = "files", pass_context = True, no_pm = True) # enable for DMs?
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def library_files(self, ctx):
+		'''List song files in the library'''
+		if not ctx.message.channel.is_private:
+			await self.bot.reply("Check your DMs.")
+		output = "```"
+		for filename in self.players[ctx.message.server.id].library_files:
+			if len(output) + len(filename) > 1997: # 2000 - 3
+				await self.bot.whisper(output[:-2] + "```")
+				output = "```" + filename + ", "
+			else:
+				output += filename + ", "
+	
+	@library.command(name = "search", pass_context = True, no_pm = True)
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def library_search(self, ctx, *, search : str):
+		'''Search songs in the library'''
+		results = [filename for filename in self.players[ctx.message.server.id].library_files if search.lower() in filename.lower()]
+		if not results:
+			await self.bot.reply(":no_entry: No songs matching that search found")
+			return
+		try:
+			await self.bot.reply("```\n{}\n```".format(", ".join(results)))
+		except discord.errors.HTTPException:
+			await self.bot.reply(":no_entry: Too many results. Try a more specific search.")
+	
+	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
+	@checks.is_permitted()
+	@checks.is_voice_connected()
+	async def volume(self, ctx, *, volume_setting : float = None):
 		'''
 		Change the volume of the current song
-		volume_setting : 0 - 200
+		volume_setting: 0 - 200
 		'''
-		player = self.players[ctx.message.server.id]
-		player["current"]["stream"].volume = volume_setting / 100
+		if volume_setting is None:
+			await self.bot.say(":sound: Current volume: {}".format(self.players[ctx.message.server.id].get_volume()))
+		elif self.players[ctx.message.server.id].set_volume(volume_setting):
+			if volume_setting > 200: volume_setting = 200.0
+			elif volume_setting < 0: volume_setting = 0.0
+			await self.bot.say(":sound: Volume set to {}".format(volume_setting))
+		else:
+			await self.bot.reply(":no_entry: There's nothing playing right now.")
 	
-	@commands.command(pass_context = True, aliases = ["queue"], no_pm = True)
+	@volume.command(name = "default", pass_context = True, no_pm = True)
+	@checks.is_permitted()
 	@checks.is_voice_connected()
-	async def current(self, ctx):
-		'''See the current song and queue'''
-		player = self.players[ctx.message.server.id]
-		if not player["current"] or player["current"]["stream"].is_done():
-			await self.bot.say("There is no song currently playing.")
+	async def volume_default(self, ctx, *, volume_setting : float = None):
+		'''
+		Change the default volume for the current player
+		volume_setting: 0 - 200
+		'''
+		if volume_setting is None:
+			await self.bot.say(":sound: Current default volume: {}".format(self.players[ctx.message.server.id].default_volume))
 		else:
-			current = player["current"]
-			if current["stream"].views:
-				views = utilities.add_commas(current["stream"].views)
-			else:
-				views = ""
-			if current["stream"].likes:
-				likes = utilities.add_commas(current["stream"].likes)
-			else:
-				likes = ""
-			if current["stream"].dislikes:
-				dislikes = utilities.add_commas(current["stream"].dislikes)
-			else:
-				dislikes = ""
-			await self.bot.say("Currently playing: " + current["stream"].url + "\n" + views + ":eye: | " + likes + ":thumbsup::skin-tone-2: | " + dislikes + ":thumbsdown::skin-tone-2:\nAdded by: " + current["author"].name)
-		if player["radio_on"]:
-			await self.bot.say(":radio: Radio is currently on")
-		else:
-			if player["queue"].qsize() == 0:
-				await self.bot.say("The queue is currently empty.")
-			else:
-				queue = player["queue"]
-				queue_string = ""
-				count = 1
-				for stream in list(queue._queue):
-					if count <= 10:
-						queue_string += ':' + inflect_engine.number_to_words(count) + ": **" + stream["stream"].title + "** (<" + stream["stream"].url + ">) Added by: " + stream["author"].name + "\n"
-						count += 1
-					else:
-						more_songs = queue.qsize() - 10
-						queue_string += "There " + inflect_engine.plural("is", more_songs) + ' ' + str(more_songs) + " more " + inflect_engine.plural("song", more_songs) + " in the queue"
-						break
-				await self.bot.say("\nQueue:\n" + queue_string)
-
-	async def start_player(self, channel):
-		player = {"queue" : asyncio.Queue(), "current" : None, "radio_on" : False, "text" : channel.id}
-		self.players[channel.server.id] = player
-		while self.bot.is_voice_connected(channel.server):
-			current = await player["queue"].get()
-			player["current"] = current
-			stream = current["stream"]
-			stream.start()
-			await self.bot.send_message(channel.server.get_channel(player["text"]), ":arrow_forward: Now Playing: " + stream.title)
-			while not stream.is_done():
-				await asyncio.sleep(1)
-		del self.players[channel.server.id]
+			if volume_setting > 200: volume_setting = 200.0
+			elif volume_setting < 0: volume_setting = 0.0
+			self.players[ctx.message.server.id].default_volume = volume_setting
+			await self.bot.say(":sound: Default volume set to {}".format(volume_setting))
+	
+	@commands.command(pass_context = True, aliases = ["current"], no_pm = True)
+	@checks.is_voice_connected()
+	@checks.not_forbidden()
+	async def playing(self, ctx):
+		'''See the currently playing song'''
+		await self.bot.say(self.players[ctx.message.server.id].current_output())
+	
+	@commands.command(pass_context = True, no_pm = True)
+	@checks.is_voice_connected()
+	@checks.not_forbidden()
+	async def queue(self, ctx):
+		'''See the current queue'''
+		await self.bot.say(self.players[ctx.message.server.id].queue_output())
 	
 	# Voice Input
 	
-	@commands.command(hidden = True, pass_context = True)
+	@commands.group(pass_context = True, invoke_without_command = True, hidden = True)
+	@checks.is_voice_connected()
 	@checks.not_forbidden()
 	async def listen(self, ctx):
-		await self.detectvoice(ctx)
+		if self.players[ctx.message.server.id].listener:
+			await self.players[ctx.message.server.id].stop_listening()
+		elif not (await self.players[ctx.message.server.id].start_listening()):
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
-	async def detectvoice(self, ctx):
-		while True:
-			while not os.path.isfile("data/testing.pcm") or os.stat("data/testing.pcm").st_size == 0:
-				await asyncio.sleep(1)
-			subprocess.call(["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", "data/testing.pcm", "data/testing.wav"], shell=True)
-			with speech_recognition.AudioFile("data/testing.wav") as source:
-				audio = self.recognizer.record(source)
-			try:
-				text = self.recognizer.recognize_google(audio)
-				await self.bot.send_message(ctx.message.channel, "I think you said: " + text)
-			except speech_recognition.UnknownValueError:
-				await self.bot.send_message(ctx.message.channel, "Google Speech Recognition could not understand audio")
-			except speech_recognition.RequestError as e:
-				await self.bot.send_message(ctx.message.channel, "Could not request results from Google Speech Recognition service; {0}".format(e))
-			else:
-				response = cleverbot_instance.ask(text)
-				await self.bot.send_message(ctx.message.channel, "Responding with: " + response)
-				self._tts(ctx, response)
-			open("data/testing.pcm", 'w').close()
-			
-	@commands.command(hidden = True, pass_context = True)
+	@listen.command(name = "start", aliases = ["on"], pass_context = True)
+	@checks.is_voice_connected()
 	@checks.not_forbidden()
-	async def srtest(self, ctx):
-		subprocess.call(["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", "data/testing.pcm", "data/testing.wav"], shell=True)
-		with speech_recognition.AudioFile("data/testing.wav") as source:
-			audio = self.recognizer.record(source)
-		'''
-		try:
-			await self.bot.reply("Sphinx thinks you said: " + recognizer.recognize_sphinx(audio))
-		except speech_recognition.UnknownValueError:
-			await self.bot.reply("Sphinx could not understand audio")
-		except speech_recognition.RequestError as e:
-			await self.bot.reply("Sphinx error; {0}".format(e))
-		'''
-		try:
-			text = self.recognizer.recognize_google(audio)
-			await self.bot.say("I think you said: " + text)
-		except speech_recognition.UnknownValueError:
-			await self.bot.reply("Google Speech Recognition could not understand audio")
-			return
-		except speech_recognition.RequestError as e:
-			await self.bot.reply("Could not request results from Google Speech Recognition service; {0}".format(e))
-			return
-		response = cleverbot_instance.ask(text)
-		await self.bot.say("Responding with: " + response)
-		self._tts(ctx, response)
+	async def listen_start(self, ctx):
+		if self.players[ctx.message.server.id].listener:
+			await self.bot.reply(":no_entry: I'm already listening")
+		elif not (await self.players[ctx.message.server.id].start_listening()):
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
-	# Player Add Functions
-	
-	async def player_add_song(self, message, **kwargs):
-		if "link" in kwargs:
-			link = kwargs["link"]
+	@listen.command(name = "stop", aliases = ["off"], pass_context = True)
+	@checks.is_voice_connected()
+	@checks.not_forbidden()
+	async def listen_stop(self, ctx):
+		if self.players[ctx.message.server.id].listener:
+			await self.players[ctx.message.server.id].stop_listening()
 		else:
-			link = message.content.split()[1]
-		if "list" in link:
-			parsed_link = urllib.parse.urlparse(link)
-			query = urllib.parse.parse_qs(parsed_link.query)
-			del query["list"]
-			parsed_link = parsed_link._replace(query = urllib.parse.urlencode(query, True))
-			link = parsed_link.geturl()
-		try:
-			stream = await self.bot.voice_client_in(message.server).create_ytdl_player(link)
-		except:
-			try:
-				link = await self.youtubesearch(message.content.split()[1:])
-				stream = await self.bot.voice_client_in(message.server).create_ytdl_player(link)
-			except:
-				return False
-		player = self.players[message.server.id]
-		await player["queue"].put({"stream" : stream, "author" : message.author})
-		return stream
+			await self.bot.reply(":no_entry: I'm not listening")
 	
-	async def player_add_playlist(self, message):
-		parsed_url = urllib.parse.urlparse(message.content.split()[1])
-		path = parsed_url.path
-		query = parsed_url.query
-		if path[:9] == "/playlist" and query[:5] == "list=":
-			response = await clients.reply(message, "Loading...")
-			playlistid = query[5:]
-			base_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={0}&playlistId={1}&maxResults=50".format(credentials.google_apikey, playlistid)
-			url = base_url
-			player_instance = self.players[message.server.id]
-			while True:
-				async with aiohttp_session.get(url) as resp:
-					data = await resp.json()
-				total = data["pageInfo"]["totalResults"]
-				for item in data["items"]:
-					position = item["snippet"]["position"] + 1
-					link = "https://www.youtube.com/watch?v=" + item["snippet"]["resourceId"]["videoId"]
-					await self.bot.edit_message(response, message.author.mention + " Loading " + str(position) + '/' + str(total))
-					try:
-						stream = await self.bot.voice_client_in(message.server).create_ytdl_player(link)
-					except youtube_dl.utils.DownloadError:
-						await clients.reply(message, "Error loading video " + str(position) + " (`" + link + "`) from `" + message.content.split()[1] + '`')
-						continue
-					await player_instance["queue"].put({"stream" : stream, "author" : message.author})
-				if not "nextPageToken" in data:
-					break
-				else:
-					url = base_url + "&pageToken=" + data["nextPageToken"]
-			await self.bot.edit_message(response, message.author.mention + " Your songs have been added to the queue.")
-			return
+	@listen.command(name = "once", pass_context = True)
+	@checks.is_voice_connected()
+	@checks.not_forbidden()
+	async def listen_once(self, ctx):
+		if self.players[ctx.message.server.id].listener:
+			await self.bot.reply(":no_entry: I'm already listening")
+		elif (await self.players[ctx.message.server.id].listen_once()) is False:
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+	
+	@listen.command(name = "finish", pass_context = True)
+	@checks.is_voice_connected()
+	@checks.not_forbidden()
+	async def listen_finish(self, ctx):
+		if self.players[ctx.message.server.id].listener:
+			await self.players[ctx.message.server.id].finish_listening()
 		else:
-			await clients.reply(message, "Error")
-			return
+			await self.bot.reply(":no_entry: I'm not listening")
+	
+	@listen.command(name = "process", pass_context = True)
+	@checks.is_voice_connected()
+	@checks.not_forbidden()
+	async def listen_process(self, ctx):
+		await self.players[ctx.message.server.id].process_listen()
 	
 	# Utility
 
 	async def spotify_to_youtube(self, link):
 		path = urllib.parse.urlparse(link).path
 		if path[:7] == "/track/":
-			trackid = path[7:]
-			url = "https://api.spotify.com/v1/tracks/" + trackid
+			url = "https://api.spotify.com/v1/tracks/{}".format(path[7:])
 			async with aiohttp_session.get(url) as resp:
 				data = await resp.json()
-			songname = "+".join(data["name"].split())
+			if "name" in data:
+				songname = "+".join(data["name"].split())
+			else:
+				return False
 			artistname = "+".join(data["artists"][0]["name"].split())
-			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + songname + "+by+" + artistname + "&key=" + credentials.google_apikey
+			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+by+{}&key={}".format(songname, artistname, credentials.google_apikey)
 			async with aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			data = data["items"][0]
@@ -466,29 +466,4 @@ class Audio:
 			return link
 		else:
 			return False
-	
-	async def youtubesearch(self, search): 
-		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={0}&key={1}".format("+".join(search), credentials.google_apikey)
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		data = data["items"][0]
-		if "videoId" not in data["id"]:
-			async with aiohttp_session.get(url) as resp:
-				data = await resp.json()
-			data = data["items"][1]
-		return "https://www.youtube.com/watch?v={0}".format(data["id"]["videoId"])
-	
-	# Garbage Collection
-	
-	async def stop_all_streams(self):
-		for player in self.players.values():
-			while not player["queue"].empty():
-				stream = await player["queue"].get()
-				stream["stream"].start()
-				stream["stream"].stop()
-			if player["radio_on"]:
-				player["radio_on"] = False
-				player["current"]["stream"].stop()
-			if player["current"] and not player["current"]["stream"].is_done():
-				player["current"]["stream"].stop()
 

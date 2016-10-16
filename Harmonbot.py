@@ -20,6 +20,7 @@ from modules import conversions
 from modules import utilities
 from utilities import checks
 from utilities import errors
+from utilities import audio_player
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.INFO)
@@ -46,7 +47,9 @@ async def on_ready():
 		await client.send_message(restart_channel, ":thumbsup::skin-tone-2: Restarted.")
 		for voice_channel in restart_data["voice_channels"]:
 			await client.join_voice_channel(client.get_channel(voice_channel[0]))
-			asyncio.ensure_future(client.cogs["audio"].start_player(client.get_channel(voice_channel[1])))
+			# asyncio.ensure_future(client.cogs["Audio"].start_player(client.get_channel(voice_channel[1])))
+			text_channel = client.get_channel(voice_channel[1])
+			client.cogs["Audio"].players[text_channel.server.id] = audio_player.AudioPlayer(client, text_channel)
 	await clients.random_game_status()
 	await clients.set_streaming_status(client)
 	# await voice.detectvoice()
