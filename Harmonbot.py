@@ -230,9 +230,16 @@ async def on_command_error(error, ctx):
 		print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
 		traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 
+beta = any("beta" in arg.lower() for arg in sys.argv)
+if beta:
+	client.command_prefix = '*'
+	token = credentials.beta_token
+else:
+	token = credentials.token
+
 try:
 	rss_task = client.loop.create_task(client.cogs["RSS"].check_rss_feeds())
-	client.loop.run_until_complete(client.start(credentials.token))
+	client.loop.run_until_complete(client.start(token))
 except KeyboardInterrupt:
 	print("Shutting down Discord Harmonbot...")
 	client.loop.run_until_complete(clients.restart_tasks())
