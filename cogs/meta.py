@@ -154,7 +154,7 @@ class Meta:
 		'''About me'''
 		output = ["", "__**About Me**__"]
 		output.append("**Harmonbot** (Discord ID: `160677293252018177`)")
-		output.append("**Author/Owner:** Harmon758 (Discord ID: `115691005197549570`)")
+		output.append("**Developer/Owner:** Harmon758 (Discord ID: `115691005197549570`)")
 		output.append("**Version:** `{}`".format(clients.version))
 		output.append("**Library:** discord.py (Python) `v{}`".format(discord.__version__))
 		output.append("**Changelog (Harmonbot Server):** {}".format(clients.changelog))
