@@ -109,9 +109,9 @@ class AudioPlayer:
 			self.play_next_song.clear()
 			_current = await self.queue.get()
 			await self.not_interrupted.wait()
-			self.current = _current
-			stream = self.server.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song)
+			stream = self.server.voice_client.create_ffmpeg_player(_current["info"]["url"], after = self._play_next_song)
 			stream.volume = self.default_volume / 100
+			self.current = _current
 			self.current["stream"] = stream
 			self.current["stream"].start()
 			await self.bot.send_message(self.text_channel, ":arrow_forward: Now Playing: " + self.current["info"].get("title", "N/A"))
