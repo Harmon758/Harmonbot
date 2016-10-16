@@ -180,6 +180,8 @@ class AudioPlayer:
 			return False
 	
 	async def replay(self):
+		if not self.current or not self.current.get("info").get("url"):
+			return False
 		stream = self.server.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song)
 		stream.volume = self.default_volume / 100
 		duplicate = self.current.copy()
@@ -189,6 +191,7 @@ class AudioPlayer:
 		self.queue._queue.appendleft(duplicate)
 		await self.queue.put(None) # trigger get
 		self.queue._queue.pop()
+		return True
 	
 	def get_volume(self):
 		if not self.current: return None
