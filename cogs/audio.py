@@ -2,26 +2,13 @@
 import discord
 from discord.ext import commands
 
-import aiohttp
-import asyncio
 import inspect
-import json
-import os
-import random
-import speech_recognition
-import subprocess
 import urllib
-import youtube_dl
 
 import credentials
-from modules import utilities
 from utilities import checks
 from utilities import audio_player
-
-import clients
 from clients import aiohttp_session
-from clients import cleverbot_instance
-from clients import inflect_engine
 
 def setup(bot):
 	bot.add_cog(Audio(bot))
