@@ -339,11 +339,8 @@ class Meta:
 		'''Restart me'''
 		await self.bot.say(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Discord Harmonbot...")
-		voice_channels = [[voice_client.channel.id, self.bot.cogs["Audio"].players[voice_client.server.id].text_channel.id] for voice_client in self.bot.voice_clients]
-		with open("data/restart_channel.json", "x+") as restart_channel_file:
-			json.dump({"restart_channel" : ctx.message.channel.id, "voice_channels" : voice_channels}, restart_channel_file)
 		# raise KeyboardInterrupt
-		await clients.restart_tasks()
+		await clients.restart_tasks(ctx.message.channel.id)
 		await self.bot.logout()
 	
 	@commands.command(aliases = ["crash", "panic"], hidden = True)
