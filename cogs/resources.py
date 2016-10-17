@@ -182,7 +182,7 @@ class Resources:
 		'''Google something'''
 		await self.bot.reply("https://www.google.com/search?q={0}".format(('+').join(search)))
 	
-	@commands.command(aliases = ["imagesearch"])
+	@commands.command(aliases = ["imagesearch", "googleimages"])
 	@checks.not_forbidden()
 	async def googleimage(self, *search : str):
 		'''Google image search something'''
