@@ -3,9 +3,12 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
 
+import asyncio
 import datetime
 import inspect
 import json
+# import os
+import psutil
 import re
 import subprocess
 import traceback
@@ -97,6 +100,20 @@ class Meta:
 		for name, _command in _commands:
 			_allcommands += name + ' '
 		await self.bot.whisper(_allcommands[:-1])
+	
+	@commands.command(hidden = True, pass_context = True)
+	@checks.is_owner()
+	async def benchmark(self, ctx):
+		'''Benchmark'''
+		process = psutil.Process()
+		# process = psutil.Process(os.getpid())
+		memory = process.memory_info().rss / 2 ** 20
+		process.cpu_percent()
+		output = "\nMemory: {:.2f} MiB\nCPU: {}".format(memory, "Calculating..")
+		message = await self.bot.reply(output)
+		await asyncio.sleep(1)
+		cpu = process.cpu_percent() / psutil.cpu_count()
+		await self.bot.edit_message(message, ctx.message.author.display_name + output.replace("Calculating..", str(cpu) + '%'))
 	
 	@commands.command()
 	@checks.is_owner()
