@@ -412,6 +412,41 @@ class Resources:
 			data = await resp.text()
 		await self.bot.reply(data)
 	
+	@commands.group(invoke_without_command = True)
+	@checks.not_forbidden()
+	async def oeis(self, *, search : str):
+		'''
+		The On-Line Encyclopedia of Integer Sequences
+		Does not accept spaces for search by sequence
+		'''
+		url = "http://oeis.org/search?fmt=json&q=" + search
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		if data["results"]:
+			await self.bot.reply("{0[name]}\n{0[data]}".format(data["results"][0]))
+		elif data["count"]:
+			await self.bot.reply("Too many sequences found")
+		else:
+			await self.bot.reply("Sequence not found")
+	
+	@oeis.command(name = "graph")
+	@checks.not_forbidden()
+	async def oeis_graph(self, *, search : str):
+		'''
+		The On-Line Encyclopedia of Integer Sequences
+		Does not accept spaces for search by sequence
+		Returns sequence graph if found
+		'''
+		url = "http://oeis.org/search?fmt=json&q=" + search
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		if data["results"]:
+			await self.bot.reply("https://oeis.org/A{:06d}/graph?png=1".format(data["results"][0]["number"]))
+		elif data["count"]:
+			await self.bot.reply("Too many sequences found")
+		else:
+			await self.bot.reply("Sequence not found")
+	
 	@commands.group()
 	@checks.not_forbidden()
 	async def overwatch(self):
