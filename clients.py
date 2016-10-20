@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.33.13"
+version = "0.33.14"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
