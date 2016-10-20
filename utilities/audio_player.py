@@ -256,6 +256,8 @@ class AudioPlayer:
 			await self.queue.put(song)
 	
 	async def play_tts(self, message, requester):
+		if not self.not_interrupted.is_set():
+			return False
 		func = functools.partial(subprocess.call, ["espeak", "-s 150", "-ven-us+f1", "-w data/temp/tts.wav", message], shell = True)
 		await self.bot.loop.run_in_executor(None, func)
 		interrupt_message = await self._interrupt("data/temp/tts.wav", "TTS message", requester)
