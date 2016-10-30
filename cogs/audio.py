@@ -30,6 +30,7 @@ class Audio:
 	async def audio(self, ctx, *, song : str = ""): #elif options[0] == "full":
 		'''
 		Audio System
+		All audio subcommands are also commands
 		Supported sites: https://rg3.github.io/youtube-dl/supportedsites.html and Spotify
 		'''
 		if not song:
@@ -107,7 +108,7 @@ class Audio:
 		Otherwise, a majority vote of the people in the voice channel is required
 		'''
 		# implement override permission
-		if ctx.message.author.id in (ctx.message.server.owner.id, credentials.myid):
+		if ctx.message.author.id in (ctx.message.server.owner.id, credentials.myid) or checks.is_permitted_check(ctx):
 			if number:
 				song = await self.players[ctx.message.server.id].skip_specific(number[0])
 				if song:
