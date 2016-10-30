@@ -33,6 +33,12 @@ class Misc:
 		'''Fish'''
 		await self.bot.reply(":fish:")
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def frog(self):
+		'''Frog'''
+		await self.bot.reply(":frog:")
+	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def poke(self, ctx, *, user : str):
