@@ -94,7 +94,7 @@ def remove_symbols(string):
 def create_file(filename, *, content = {}):
 	try:
 		with open("data/{}.json".format(filename), "x") as file:
-			json.dump(content, file)
+			json.dump(content, file, indent = 4)
 	except FileExistsError:
 		pass
 
