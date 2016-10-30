@@ -778,6 +778,7 @@ class Resources:
 			url = "http://xkcd.com/{0}/info.0.json".format(str(random.randint(1, total)))
 		else:
 			await self.bot.reply("Syntax error.")
+			return
 		async with aiohttp_session.get(url) as resp:
 			if resp.status == 404:
 				await self.bot.reply("Error.")
