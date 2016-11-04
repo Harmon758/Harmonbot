@@ -582,7 +582,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def spellcheck(self, *words : str):
 		'''Spell check words'''
-		async with aiohttp_session.post("https://bingapis.azure-api.net/api/v5/spellcheck?Text=" + '+'.join(words), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
+		async with aiohttp_session.post("https://api.cognitive.microsoft.com/bing/v5.0/spellcheck?Text=" + '+'.join(words), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
 			data = await resp.json()
 		corrections = data["flaggedTokens"]
 		corrected = ' '.join(words)
