@@ -270,7 +270,7 @@ class Meta:
 	@checks.is_owner()
 	async def updateavatar(self):
 		'''Update my avatar'''
-		with open("data/discord_harmonbot_icon.png", "rb") as avatar_file:
+		with open("data/avatars/discord_harmonbot_icon.png", "rb") as avatar_file:
 			await self.bot.edit_profile(avatar = avatar_file.read())
 		await self.bot.reply("Avatar updated.")
 	

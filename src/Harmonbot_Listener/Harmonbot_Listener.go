@@ -179,7 +179,7 @@ func Listen(v *discordgo.VoiceConnection) {
 
 // Helper function to change the avatar
 func changeAvatar(s *discordgo.Session) {
-	img, err := ioutil.ReadFile("../data/discord_harmonbot_listener_icon.png")
+	img, err := ioutil.ReadFile("../data/avatars/discord_harmonbot_listener_icon.png")
 	check(err)
 
 	base64 := base64.StdEncoding.EncodeToString(img)
