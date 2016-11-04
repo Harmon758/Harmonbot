@@ -31,6 +31,9 @@ class Tools:
 	@checks.not_forbidden()
 	async def add(self, *numbers : float):
 		'''Adds numbers together.'''
+		if not numbers:
+			await self.bot.reply("Add what?")
+			return
 		result = sum(numbers)
 		if result.is_integer():
 			result = int(result)
