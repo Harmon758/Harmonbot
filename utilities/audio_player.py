@@ -114,7 +114,7 @@ class AudioPlayer:
 			self.current = _current
 			self.current["stream"] = stream
 			self.current["stream"].start()
-			await self.bot.send_message(self.text_channel, ":arrow_forward: Now Playing: " + self.current["info"].get("title", "N/A"))
+			await self.bot.send_message(self.text_channel, ":arrow_forward: Now Playing: `{}`".format(self.current["info"].get("title", "N/A")))
 			number_of_listeners = len(self.server.voice_client.channel.voice_members) - 1
 			self.skip_votes_required = number_of_listeners // 2 + number_of_listeners % 2
 			self.skip_votes.clear()
