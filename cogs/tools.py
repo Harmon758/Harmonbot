@@ -134,7 +134,7 @@ class Tools:
 		'''Flip a coin'''
 		await self.bot.reply(random.choice(["Heads!", "Tails!"]))
 	
-	@commands.group()
+	@commands.group(aliases = ["decrpyt"])
 	@checks.not_forbidden()
 	async def decode(self):
 		'''
@@ -157,7 +157,7 @@ class Tools:
 	async def decode_caesar(self, option : str, *, message : str):
 		'''
 		Decodes caesar codes
-		options: key (0 - 26), brute
+		Options: key (0 - 26), brute
 		'''
 		if len(message) == 0 or not ((option.isdigit() and 0 <= int(option) <= 26) or option == "brute"):
 			await self.bot.reply("Invalid Format. !decode caesar <key (0 - 26) or brute> <content>")
@@ -166,7 +166,7 @@ class Tools:
 		else:
 			await self.bot.reply('`' + ciphers.decode_caesar(message, option) + '`')
 	
-	@commands.group()
+	@commands.group(aliases = ["encrypt"])
 	@checks.not_forbidden()
 	async def encode(self):
 		'''
