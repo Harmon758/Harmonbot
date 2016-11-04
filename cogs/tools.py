@@ -345,7 +345,7 @@ class Tools:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.reply(":thumbsup::skin-tone-2: Your tag has been added.")
 	
-	@tag.command(name = "edit", pass_context = True)
+	@tag.command(name = "edit", aliases = ["update"], pass_context = True)
 	async def tag_edit(self, ctx, tag : str, *, content : str):
 		'''Edit one of your tags'''
 		self.tags[tag] = self.clean_tag_content(content)
