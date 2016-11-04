@@ -706,6 +706,15 @@ class Resources:
 			else:
 				await self.bot.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def translate(self, *, text : str):
+		'''Translate'''
+		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang=en&text={}".format(credentials.yandex_translate_api_key, text)
+		async with aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		await self.bot.reply(data["text"][0])
+	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
 	async def weather(self, *options : str): #WIP
