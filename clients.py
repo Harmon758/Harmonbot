@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.33.29"
+version = "0.33.30"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -134,7 +134,7 @@ async def random_game_status():
 	"with Spirit in the sand pit", "with Curiousity", "with Voyager 1",
 	"music", "Google Ultron", "not enough space here to",
 	"the meaning of life is", "with the NSA", "with RSS Bot", " "]
-	updated_game = discord.utils.get(client.servers).me.game
+	updated_game = discord.utils.find(lambda s: s != None, client.servers).me.game
 	if not updated_game:
 		updated_game = discord.Game(name = random.choice(statuses))
 	else:
