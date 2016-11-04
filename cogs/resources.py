@@ -766,15 +766,55 @@ class Resources:
 		'''Look something up on Wikipedia'''
 		await self.bot.reply("https://en.wikipedia.org/wiki/{0}".format("_".join(search)))
 	
-	@commands.command(hidden = True, aliases = ["wa"])
-	@checks.is_owner()
-	async def wolframalpha(self, *, search : str): #WIP
-		'''WIP'''
-		result = self.waclient.query(search)
-		for pod in result.pods:
-			await self.bot.reply(pod.img)
-			await self.bot.reply(pod.text)
-		#await self.bot.reply(next(result.results).text)
+	@commands.group(aliases = ["wa"], pass_context = True, invoke_without_command = True)
+	@checks.not_forbidden()
+	async def wolframalpha(self, ctx, *, search : str):
+		'''
+		Wolfram|Alpha
+		http://www.wolframalpha.com/examples/
+		'''
+		await self._wolframalpha(ctx, search)
+	
+	@wolframalpha.command(name = "location", pass_context = True)
+	@checks.not_forbidden()
+	async def wolframalpha_location(self, ctx, location: str, *, search : str):
+		'''Input location'''
+		await self._wolframalpha(ctx, search, location = location)
+	
+	async def _wolframalpha(self, ctx, search, location = "Fort Yukon, Alaska"):
+		ip = "nice try"
+		search = search.strip('`')
+		result = self.waclient.query(search, ip = ip, location = location) # options
+		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
+			if result.didyoumeans["@count"] == '1':
+				didyoumean =result.didyoumeans["didyoumean"]["#text"]
+			else:
+				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
+			await self.bot.reply("Using closest Wolfram|Alpha interpretation: `{}`".format(didyoumean))
+			result = self.waclient.query(didyoumean, ip = ip, location = location)
+		if hasattr(result, "pods"):
+			for pod in result.pods:
+				output = ("**{}**".format(pod.title))
+				link_output, text_output = [], []
+				for subpod in pod.subpods:
+					image = next(subpod.img)
+					short_url = await self._shorturl(image.src)
+					link_output.append("{}".format(short_url))
+					if subpod.plaintext and subpod.plaintext.replace('\n', ' ') not in (image.title, image.alt, image.title.strip(' '), image.alt.strip(' ')) or not ctx.message.server.me.permissions_in(ctx.message.channel).embed_links:
+						print(image.title)
+						print(image.alt)
+						print(subpod.plaintext.replace('\n', ' '))
+						text_output.append("\n{}".format(subpod.plaintext))
+				output += " ({})".format(', '.join(link_output))
+				output += "".join(text_output)
+				await self.bot.reply(output)
+			if result.timedout:
+				await self.bot.reply("Some results timed out: {}".format(result.timedout.replace(',', ", ")))
+		elif result.timedout:
+			await self.bot.reply("Standard computation time exceeded")
+		else:
+			await self.bot.reply("No results found")
+		# await self.bot.reply(next(result.results).text)
 	
 	@commands.command()
 	@checks.not_forbidden()
