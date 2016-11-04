@@ -178,9 +178,9 @@ class Resources:
 	
 	@commands.command(aliases = ["search"])
 	@checks.not_forbidden()
-	async def google(self, *search : str):
+	async def google(self, *, search : str):
 		'''Google something'''
-		await self.bot.reply("https://www.google.com/search?q={0}".format(('+').join(search)))
+		await self.bot.reply("https://www.google.com/search?q={0}".format(search.replace(' ', '+')))
 	
 	@commands.command(aliases = ["imagesearch", "googleimages"])
 	@checks.not_forbidden()
