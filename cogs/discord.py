@@ -394,15 +394,24 @@ class Discord:
 	@checks.not_forbidden()
 	async def idtoname(self, id : str):
 		'''Convert user id to name'''
-		if id.isdigit():
-			await self.bot.reply("<@" + id + ">")
+		user = await self.bot.get_user_info(id)
+		if user:
+			await self.bot.reply(user)
+		else:
+			await self.bot.reply("User with that id not found")
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def nametoid(self, ctx, *, name : str):
 		'''Convert user name to id'''
-		member = discord.utils.get(ctx.message.server.members, name = name)
-		await self.bot.reply(member.id)
+		if ctx.message.server:
+			user = await utilities.get_user(ctx, name)
+			if user:
+				await self.bot.reply(user.id)
+			else:
+				await self.bot.reply(name + " was not found on this server.")
+		else:
+			await self.bot.reply("Please use that command in a server.")
 	
 	# Checks
 	
