@@ -241,12 +241,35 @@ class Audio:
 		self.players[ctx.message.server.id].text_channel = ctx.message.channel
 		await self.bot.say(":writing_hand::skin-tone-2: Text channel changed.")
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
 		if not (await self.players[ctx.message.server.id].play_tts(message, ctx.message.author)):
+			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+	
+	@tts.command(name = "options", pass_context = True, no_pm = True)
+	@checks.not_forbidden()
+	@checks.is_voice_connected()
+	async def tts_options(self, ctx, amplitude: int, pitch: int, speed: int, word_gap: int, voice: str, *, message : str):
+		'''
+		Text to speech with options
+		amplitude, pitch, speed, word_gap, voice
+		defaults: 100, 50, 150, 0, en-us+f1 (input -1 for defaults)
+		limits: 0-1000, 0-99, 80-9000, 0-1000, valid voice
+		word_gap: length of pause between words, in units of 10 ms
+		voice: see http://espeak.sourceforge.net/languages.html
+		'''
+		if amplitude == -1: amplitude = 100
+		if pitch == -1: pitch = 50
+		if speed == -1: speed = 150
+		if word_gap == -1: word_gap = 0
+		if voice == "-1": voice = "en-us+f1"
+		if amplitude > 1000: amplitude = 1000
+		if speed > 9000: speed = 9000
+		if word_gap > 1000: word_gap = 1000
+		if not (await self.players[ctx.message.server.id].play_tts(message, ctx.message.author, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
 			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@commands.command(pass_context = True, no_pm = True)
