@@ -17,27 +17,9 @@ class Misc:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def dog(self):
-		'''Dog'''
-		await self.bot.reply(":dog2:")
-	
-	@commands.command()
-	@checks.not_forbidden()
 	async def fingers(self, *, text : str):
 		'''Add fingers'''
 		await self.bot.reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def fish(self):
-		'''Fish'''
-		await self.bot.reply(":fish:")
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def frog(self):
-		'''Frog'''
-		await self.bot.reply(":frog:")
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
@@ -63,10 +45,16 @@ class Misc:
 			await self.bot.reply("You have poked {} for the {} time!".format(user, inflect_engine.ordinal(pokes_data[to_poke.id])))
 			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
-	
-	@commands.command()
+
+def emote_wrapper(name, emote = None):
+	if emote is None: emote = name
+	@commands.command(name = name, help = name.capitalize() + " emote")
 	@checks.not_forbidden()
-	async def turtle(self):
-		'''Turtle'''
-		await self.bot.reply(":turtle:")
+	async def emote_command(self):
+		await self.bot.reply(":{}:".format(emote))
+	return emote_command
+
+for emote in ("fish", "frog", "turtle"):
+	setattr(Misc, emote, emote_wrapper(emote))
+setattr(Misc, "dog", emote_wrapper("dog", emote = "dog2"))
 
