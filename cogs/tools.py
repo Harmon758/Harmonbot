@@ -3,8 +3,10 @@
 from discord.ext import commands
 
 import asyncio
+import hashlib
 import json
 import math
+# import mhashlib
 import moviepy.editor
 import pandas
 import random
@@ -12,6 +14,7 @@ import seaborn
 # import re
 import sympy
 import urllib
+import zlib
 
 from modules import utilities
 from utilities import checks
@@ -192,6 +195,67 @@ class Tools:
 			await self.bot.reply("Invalid Format. !encode caesar <key (0 - 26)> <content>")
 		else:
 			await self.bot.reply('`' + ciphers.encode_caesar(message, key) + '`')
+	
+	@encode.command(name = "sha1", aliases = ["sha-1"])
+	async def encode_sha1(self, *, message : str):
+		'''Generate SHA-1 hash'''
+		await self.bot.reply(hashlib.sha1(message.encode("utf-8")).hexdigest())
+	
+	@encode.command(name = "sha224", aliases = ["sha-224"])
+	async def encode_sha224(self, *, message : str):
+		'''Generate SHA-224 hash'''
+		await self.bot.reply(hashlib.sha224(message.encode("utf-8")).hexdigest())
+	
+	@encode.command(name = "sha256", aliases = ["sha-256"])
+	async def encode_sha256(self, *, message : str):
+		'''Generate SHA-256 hash'''
+		await self.bot.reply(hashlib.sha256(message.encode("utf-8")).hexdigest())
+	
+	@encode.command(name = "sha384", aliases = ["sha-384"])
+	async def encode_sha384(self, *, message : str):
+		'''Generate SHA-384 hash'''
+		await self.bot.reply(hashlib.sha384(message.encode("utf-8")).hexdigest())
+	
+	@encode.command(name = "sha512", aliases = ["sha-512"])
+	async def encode_sha512(self, *, message : str):
+		'''Generate SHA-512 hash'''
+		await self.bot.reply(hashlib.sha512(message.encode("utf-8")).hexdigest())
+	
+	@encode.command(name = "md4")
+	async def encode_md4(self, *, message : str):
+		'''Generate MD4 hash'''
+		h = hashlib.new("md4")
+		h.update(message.encode("utf-8"))
+		await self.bot.reply(h.hexdigest())
+	
+	@encode.command(name = "md5")
+	async def encode_md5(self, *, message : str):
+		'''Generate MD5 hash'''
+		await self.bot.reply(hashlib.md5(message.encode("utf-8")).hexdigest())
+	
+	@encode.command(name = "ripemd160", aliases = ["ripemd-160"])
+	async def encode_ripemd160(self, *, message : str):
+		'''Generate RIPEMD-160 hash'''
+		h = hashlib.new("ripemd160")
+		h.update(message.encode("utf-8"))
+		await self.bot.reply(h.hexdigest())
+	
+	@encode.command(name = "whirlpool")
+	async def encode_whirlpool(self, *, message : str):
+		'''Generate Whirlpool hash'''
+		h = hashlib.new("whirlpool")
+		h.update(message.encode("utf-8"))
+		await self.bot.reply(h.hexdigest())
+	
+	@encode.command(name = "adler32", aliases = ["adler-32"])
+	async def encode_adler32(self, *, message : str):
+		'''Computer Adler-32 checksum'''
+		await self.bot.reply(zlib.adler32(message.encode("utf-8")))
+	
+	@encode.command(name = "crc32", aliases = ["crc-32"])
+	async def encode_crc32(self, *, message : str):
+		'''Computer CRC32 checksum'''
+		await self.bot.reply(zlib.crc32(message.encode("utf-8")))
 	
 	@commands.command()
 	@checks.not_forbidden()
