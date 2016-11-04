@@ -573,10 +573,14 @@ class Resources:
 	@checks.not_forbidden()
 	async def shorturl(self, url : str):
 		'''Generate a short goo.gl url for your link'''
+		short_url = await self._shorturl(url)
+		await self.bot.reply(short_url)
+	
+	async def _shorturl(self, url):
 		async with aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={0}".format(credentials.google_apikey), \
 		headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
 			data = await resp.json()
-		await self.bot.reply(data["id"])
+		return data["id"]
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -725,20 +729,20 @@ class Resources:
 	@checks.not_forbidden()
 	async def websitescreenshot(self, url : str):
 		'''WIP'''
-		response = await self.bot.reply("Loading...")
-		url = "http://api.page2images.com/restfullink?p2i_url={}&p2i_screen=1280x1024&p2i_size=1280x0&p2i_fullpage=1&p2i_key={}".format(url, credentials.page2images_api_key)
 		while True:
-			async with aiohttp_session.get(url) as resp:
+			async with aiohttp_session.get("http://api.page2images.com/restfullink?"
+			"p2i_url={}&p2i_screen=1280x1024&p2i_size=1280x0&p2i_fullpage=1&p2i_key={}".format(url, credentials.page2images_api_key)) as resp:
 				data = await resp.json()
 			if data["status"] == "processing":
 				wait_time = int(data["estimated_need_time"])
-				await self.bot.edit_message(response, "Processing. Estimated wait time: {} sec.".format(wait_time))
+				await self.bot.reply("Processing <{}>. Estimated wait time: {} sec.".format(url, wait_time))
 				await asyncio.sleep(wait_time)
 			elif data["status"] == "finished":
-				await self.bot.edit_message(response, data["image_url"])
+				short_url = await self._shorturl(data["image_url"])
+				await self.bot.reply("Your screenshot of <{}>: {}".format(url, short_url))
 				return
 			elif data["status"] == "error":
-				await self.bot.edit_message(response, "Error: {}".format(data["msg"]))
+				await self.bot.reply(":no_entry: Error: {}".format(data["msg"]))
 				return
 	
 	@commands.command(aliases = ["whatare"])
