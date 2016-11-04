@@ -203,7 +203,7 @@ async def on_message(message):
 async def on_command_error(error, ctx):
 	if isinstance(error, errors.NotOwner):
 		pass
-	elif isinstance(error, commands.errors.CommandNotFound):
+	elif isinstance(error, (commands.errors.CommandNotFound, commands.errors.DisabledCommand)):
 		pass
 	elif isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)): # errors.NotOwner
 		await ctx.bot.send_message(ctx.message.channel, ":no_entry: You don't have permission to do that.")
