@@ -220,7 +220,7 @@ class Tools:
 	@tag.command(name = "list", aliases = ["all", "mine"])
 	async def tag_list(self):
 		'''List your tags'''
-		_tag_list = ", ".join(list(self.tags.keys()))
+		_tag_list = ", ".join(sorted(self.tags.keys()))
 		await self.bot.reply("Your tags: " + _tag_list)
 	
 	@tag.command(name = "add", aliases = ["make", "new", "create"], pass_context = True)
