@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.33.28"
+version = "0.33.29"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -139,7 +139,7 @@ async def random_game_status():
 		updated_game = discord.Game(name = random.choice(statuses))
 	else:
 		updated_game.name = random.choice(statuses)
-	await client.change_status(game = updated_game)
+	await client.change_presence(game = updated_game)
 
 async def set_streaming_status(client):
 	updated_game = discord.utils.get(client.servers).me.game
@@ -148,16 +148,10 @@ async def set_streaming_status(client):
 	else:
 		updated_game.url = "https://www.twitch.tv/harmonbot"
 		updated_game.type = 1
-	await client.change_status(game = updated_game)
+	await client.change_presence(game = updated_game)
 
 async def reply(message, response):
 	return await client.send_message(message.channel, "{}: {}".format(message.author.mention, response))
-
-async def reply_newline(message, response):
-	return await client.send_message(message.channel, "{}:\n{}".format(message.author.mention, response))
-
-async def reply_code(message, response):
-	return await client.send_message(message.channel, "{}:\n```{}```".format(message.author.mention, response))
 
 # Restart/Shutdown Tasks
 
