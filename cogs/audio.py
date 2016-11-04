@@ -61,6 +61,15 @@ class Audio:
 		if ctx.message.server.id not in self.players:
 			self.players[ctx.message.server.id] = audio_player.AudioPlayer(self.bot, ctx.message.channel)
 		await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
+		'''
+		if ctx.message.server.id not in self.players or not ctx.message.server.voice_client:
+			self.players[ctx.message.server.id] = audio_player.AudioPlayer(self.bot, ctx.message.channel)
+			await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
+		elif checks.is_permitted_check(ctx):
+			await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
+		else:
+			await self.bot.reply(":no_entry: You don't have permission to move me")
+		'''
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
