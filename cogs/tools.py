@@ -10,12 +10,14 @@ import pandas
 import random
 import seaborn
 # import re
+import sympy
 import urllib
 
 from modules import utilities
 from utilities import checks
 from utilities import errors
 from modules import ciphers
+from clients import py_code_block
 
 def setup(bot):
 	bot.add_cog(Tools(bot))
@@ -71,6 +73,45 @@ class Tools:
 		else:
 			await self.bot.reply("That's not a valid input.")
 		'''
+	
+	@commands.command(aliases = ["differ", "derivative", "differentiation"])
+	@checks.not_forbidden()
+	async def differentiate(self, *, equation : str):
+		'''
+		Differentiate an equation
+		with respect to x (dx)
+		'''
+		x = sympy.symbols('x')
+		try:
+			await self.bot.reply("`{}`".format(sympy.diff(equation.strip('`'), x)))
+		except Exception as e:
+			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+	
+	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
+	@checks.not_forbidden()
+	async def integrate(self, *, equation : str):
+		'''
+		Integrate an equation
+		with respect to x (dx)
+		'''
+		x = sympy.symbols('x')
+		try:
+			await self.bot.reply("`{}`".format(sympy.integrate(equation.strip('`'), x)))
+		except Exception as e:
+			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+	
+	@integrate.command(name = "definite")
+	@checks.not_forbidden()
+	async def integrate_definite(self, lower_limit : str, upper_limit : str, *, equation : str):
+		'''
+		Definite integral of an equation
+		with respect to x (dx)
+		'''
+		x = sympy.symbols('x')
+		try:
+			await self.bot.reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))))
+		except Exception as e:
+			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
 	
 	@commands.command()
 	@checks.not_forbidden()
