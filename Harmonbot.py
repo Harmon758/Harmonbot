@@ -195,7 +195,7 @@ async def on_message(message):
 		with open("data/f.json", "w") as counter_file:
 			json.dump(counter_info, counter_file, indent = 4)
 		await client.send_message(message.channel, message.author.name + " has paid their respects.\nRespects paid so far: " + str(counter_info["counter"]))
-	elif client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'): # cleverbot
+	elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'): # cleverbot
 		mentionless_message = ""
 		for word in message.clean_content.split():
 			if not word.startswith("@"):
