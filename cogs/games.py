@@ -36,8 +36,8 @@ class Games:
 	def __init__(self, bot):
 		self.bot = bot
 		self._chess_board = chess.Board()
-		self.chess_engine = chess.uci.popen_engine("bin\stockfish 7 x64")
-		#self.chess_engine = chess.uci.popen_engine("bin\stockfish 7 x64 popcnt")
+		self.chess_engine = chess.uci.popen_engine("bin/stockfish 7 x64")
+		#self.chess_engine = chess.uci.popen_engine("bin/stockfish 7 x64 popcnt")
 		self.chess_engine.uci()
 		self.chess_engine_context, self.chess_engine_message = None, None
 		self.war_channel, self.war_players = None, []
@@ -415,20 +415,20 @@ class Games:
 	async def _display_chess_board(self, ctx, *, message = None, flipped = False):
 		# svg = self._chess_board._repr_svg_()
 		svg = chess.svg.board(self._chess_board, flipped = flipped)
-		with open("data\chess_board.svg", 'w') as image:
+		with open("data/temp/chess_board.svg", 'w') as image:
 			# print(svg[:40] + 'xmlns:xlink="http://www.w3.org/1999/xlink" ' + svg[40:], file = image)
 			print(svg.replace('class="square light', 'fill="#ffce9e" class="square light').replace('class="square dark', 'fill="#d18b47" class="square dark'), file = image)
 		'''
-		with open("data\chess_board.png", 'wb') as image:
+		with open("data/temp/chess_board.png", 'wb') as image:
 			cairosvg.svg2png(svg[:40] + 'xmlns:xlink="http://www.w3.org/1999/xlink" ' + svg[40:])
-		with open("data\chess_board.png", 'r') as image:
+		with open("data/temp/chess_board.png", 'r') as image:
 			await self.bot.send_file(ctx.message.channel, image)
 		'''
-		with Image(filename = "data\chess_board.svg") as img:
+		with Image(filename = "data/temp/chess_board.svg") as img:
 			img.format = "png"
-			img.save(filename = "data\chess_board.png")
+			img.save(filename = "data/temp/chess_board.png")
 		asyncio.sleep(0.1)
-		with open("data\chess_board.png", 'rb') as image:
+		with open("data/temp/chess_board.png", 'rb') as image:
 			await self.bot.send_file(ctx.message.channel, image, content = message)
 	
 	@chess_board.command(name = "text")
