@@ -36,8 +36,8 @@ class Games:
 	def __init__(self, bot):
 		self.bot = bot
 		self._chess_board = chess.Board()
-		self.chess_engine = chess.uci.popen_engine("data\stockfish 7 x64")
-		#self.chess_engine = chess.uci.popen_engine("data\stockfish 7 x64 popcnt")
+		self.chess_engine = chess.uci.popen_engine("bin\stockfish 7 x64")
+		#self.chess_engine = chess.uci.popen_engine("bin\stockfish 7 x64 popcnt")
 		self.chess_engine.uci()
 		self.chess_engine_context, self.chess_engine_message = None, None
 		self.war_channel, self.war_players = None, []
