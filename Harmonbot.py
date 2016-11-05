@@ -203,6 +203,17 @@ async def on_message(message):
 		await clients.reply(message, clients.cleverbot_instance.ask(mentionless_message))
 
 @client.event
+async def on_error(event_method, *args, **kwargs):
+	type, value, _traceback = sys.exc_info()
+	if type is discord.errors.Forbidden:
+		for arg in args:
+			if isinstance(arg, commands.context.Context):
+				print("Missing Permissions for #{0.channel.name} in {0.server.name}".format(arg.message))
+				return
+	print('Ignoring exception in {}'.format(event_method), file = sys.stderr)
+	traceback.print_exc()
+
+@client.event
 async def on_command_error(error, ctx):
 	if isinstance(error, errors.NotOwner):
 		pass
@@ -229,6 +240,8 @@ async def on_command_error(error, ctx):
 		await ctx.bot.send_message(ctx.message.channel, ":warning: Error: invalid input")
 	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (errors.NoTag, errors.NoTags, errors.LichessUserNotFound)) or "No video results" in str(error):
 		pass # handled with local error handler
+	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (discord.errors.Forbidden)):
+		print("Missing Permissions for #{0.channel.name} in {0.server.name}".format(ctx.message))
 	else:
 		print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
 		traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
