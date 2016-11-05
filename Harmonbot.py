@@ -202,6 +202,10 @@ async def on_message(message):
 	elif "getprefix" in message.content:
 		await client.send_message(message.channel, "Prefixes: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
+	# help DM
+	elif message.content.lower() == "help" and message.channel.is_private:
+		await clients.reply(message, "Please see {}help".format(prefixes[0]))
+	
 	# :8ball:
 	elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs:
 		await client.send_message(message.channel, "{}: {}".format(message.author.display_name, ":8ball: {}".format(client.cogs["Games"]._eightball())))
