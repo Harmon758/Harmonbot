@@ -109,7 +109,8 @@ class AudioPlayer:
 			self.play_next_song.clear()
 			_current = await self.queue.get()
 			await self.not_interrupted.wait()
-			stream = self.server.voice_client.create_ffmpeg_player(_current["info"]["url"], after = self._play_next_song)
+			with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
+				stream = self.server.voice_client.create_ffmpeg_player(_current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
 			stream.volume = self.default_volume / 100
 			self.current = _current
 			self.current["stream"] = stream
@@ -182,7 +183,8 @@ class AudioPlayer:
 	async def replay(self):
 		if not self.current or not self.current.get("info").get("url"):
 			return False
-		stream = self.server.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song)
+		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
+			stream = self.server.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
 		stream.volume = self.default_volume / 100
 		duplicate = self.current.copy()
 		duplicate["stream"] = stream
@@ -308,7 +310,8 @@ class AudioPlayer:
 	async def _interrupt(self, source, title, requester, *, clear_flag = True):
 		if not self.not_interrupted.is_set() and clear_flag:
 			return False
-		stream = self.server.voice_client.create_ffmpeg_player(source, after = self._resume_from_interruption)
+		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
+			stream = self.server.voice_client.create_ffmpeg_player(source, after = self._resume_from_interruption, stderr = ffmpeg_log)
 		stream.volume = self.default_volume / 100
 		paused = self.pause()
 		stream.start()
