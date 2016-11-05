@@ -146,7 +146,10 @@ async def on_message(message):
 	if message.channel.is_private and message.channel.user.id != credentials.myid: # forward DMs
 		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
 		if message.author == client.user:
-			await client.send_message(me, "To " + message.channel.user.name + '#' + message.channel.user.discriminator + ": " + message.content)
+			try:
+				await client.send_message(me, "To " + message.channel.user.name + '#' + message.channel.user.discriminator + ": " + message.content)
+			except discord.errors.HTTPException:
+				print("Discord Harmonbot Error: DM too long to forward.")
 		else:
 			await client.send_message(me, "From " + message.author.name + '#' + message.author.discriminator + ": " + message.content)
 	if message.author == client.user or not message.content: # ignore own and blank messages
