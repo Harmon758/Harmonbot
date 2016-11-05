@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.14"
+version = "0.34.15"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -70,6 +70,7 @@ class Bot(commands.Bot):
 			exc = CommandNotFound('Command "{}" is not found'.format(invoker))
 			self.dispatch('command_error', exc, ctx)
 
+
 # Custom prefixes
 
 utilities.create_file("prefixes")
@@ -83,12 +84,14 @@ def get_prefix(bot, message):
 		prefixes = all_prefixes.get(message.server.id, None)
 	return prefixes if prefixes else '!'
 
+
 # Customize help command
 
 _CustomHelpFormatter = CustomHelpFormatter()
 
 client = Bot(command_prefix = get_prefix, formatter = _CustomHelpFormatter, pm_help = None)
 client.remove_command("help")
+
 
 # Initialize/update info
 
@@ -114,10 +117,12 @@ async def on_server_join(server):
 async def on_server_remove(server):
 	await _update_discord_bots_stats()
 
+
 # Load cogs
 for file in os.listdir("cogs"):
 	if file.endswith(".py"):
 		client.load_extension("cogs." + file[:-3])
+
 
 # Utilities
 
@@ -152,6 +157,7 @@ async def set_streaming_status(client):
 
 async def reply(message, response):
 	return await client.send_message(message.channel, "{}: {}".format(message.author.mention, response))
+
 
 # Restart/Shutdown Tasks
 

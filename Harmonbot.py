@@ -132,18 +132,24 @@ async def reload(cog : str):
 			stats = json.load(stats_file)
 		stats["cogs_reloaded"] += 1
 		with open("data/stats.json", "w") as stats_file:
-			json.dump(stats, stats_file)
+			json.dump(stats, stats_file, indent = 4)
 		await client.say(":thumbsup::skin-tone-2: Reloaded cog.")
 
 @client.event
 async def on_message(message):
+	
+	# Log message
 	if message.channel.is_private:
 		destination = "Direct Message"
 	else:
 		destination = "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
 	harmonbot_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content}".format(message, destination))
+	
+	# Commands
 	await client.process_commands(message)
-	if message.channel.is_private and message.channel.user.id != credentials.myid: # forward DMs
+	
+	# Forward DMs
+	if message.channel.is_private and message.channel.user.id != credentials.myid:
 		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
 		if message.author == client.user:
 			try:
@@ -152,13 +158,18 @@ async def on_message(message):
 				print("Discord Harmonbot Error: DM too long to forward.")
 		else:
 			await client.send_message(me, "From " + message.author.name + '#' + message.author.discriminator + ": " + message.content)
-	if message.author == client.user or not message.content: # ignore own and blank messages
+	
+	# Ignore own and blank messages
+	if message.author == client.user or not message.content:
 		return
-	prefixes = client.command_prefix(client, message)
+	
+	# Other commands
+	try:
+		prefixes = client.command_prefix(client, message)
+	except TypeError:
+		prefixes = client.command_prefix
 	prefix = discord.utils.find(message.content.startswith, prefixes)
-	if "getprefix" in message.content: # getprefix
-		await client.send_message(message.channel, "Prefixes: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
-	elif prefix: # other commands
+	if prefix:
 		command = message.content[len(prefix):]
 		if command.startswith("test_on_message"):
 			await client.send_message(message.channel, "Hello, World!")
@@ -186,16 +197,26 @@ async def on_message(message):
 					await clients.reply(message, "Units, {} and/or {}, not found. See the conversions command.".format(unit1, unit2))
 					return
 				await clients.reply(message, str(value) + ' ' + unit1 + " = " + str(converted_value) + ' ' + unit2)
-	elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs: # :8ball:
+	
+	# getprefix
+	elif "getprefix" in message.content:
+		await client.send_message(message.channel, "Prefixes: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
+	
+	# :8ball:
+	elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs:
 		await client.send_message(message.channel, "{}: {}".format(message.author.display_name, ":8ball: {}".format(client.cogs["Games"]._eightball())))
-	elif message.content.lower() == 'f': # f
+	
+	# f
+	elif message.content.lower() == 'f':
 		with open("data/f.json", "r") as counter_file:
 			counter_info = json.load(counter_file)
 		counter_info["counter"] += 1
 		with open("data/f.json", "w") as counter_file:
 			json.dump(counter_info, counter_file, indent = 4)
-		await client.send_message(message.channel, message.author.name + " has paid their respects.\nRespects paid so far: " + str(counter_info["counter"]))
-	elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'): # cleverbot
+		await client.send_message(message.channel, message.author.display_name + " has paid their respects.\nRespects paid so far: " + str(counter_info["counter"]))
+	
+	# Chatbot
+	elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'):
 		mentionless_message = ""
 		for word in message.clean_content.split():
 			if not word.startswith("@"):
