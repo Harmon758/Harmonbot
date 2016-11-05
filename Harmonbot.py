@@ -187,7 +187,7 @@ async def on_message(message):
 					return
 				await clients.reply(message, str(value) + ' ' + unit1 + " = " + str(converted_value) + ' ' + unit2)
 	elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs: # :8ball:
-		await reply(message, ":8ball: {}".format(client.cogs["Games"]._eightball()))
+		await client.send_message(message.channel, "{}: {}".format(message.author.display_name, ":8ball: {}".format(client.cogs["Games"]._eightball())))
 	elif message.content.lower() == 'f': # f
 		with open("data/f.json", "r") as counter_file:
 			counter_info = json.load(counter_file)
