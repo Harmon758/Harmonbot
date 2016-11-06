@@ -26,4 +26,10 @@ class CustomPaginator(Paginator):
 		self._pages.append(self.prefix + "\n" + self.seperator.join(self._current_page) + "\n" + self.suffix)
 		self._current_page = []
 		self._count = len(self.prefix) + len(self.seperator)
+	
+	@property
+	def pages(self):
+		if len(self._current_page) > 0:
+			self.close_page()
+		return self._pages
 
