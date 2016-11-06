@@ -325,11 +325,14 @@ class Tools:
 				else:
 					await self.bot.reply(self.tags[ctx.message.content.split()[1]])
 	
-	@tag.command(name = "list", aliases = ["all", "mine"])
-	async def tag_list(self):
+	@tag.command(name = "list", aliases = ["all", "mine"], pass_context = True)
+	async def tag_list(self, ctx):
 		'''List your tags'''
-		_tag_list = ", ".join(sorted(self.tags.keys()))
-		await self.bot.reply("Your tags: " + _tag_list)
+		tags_paginator = paginator.CustomPaginator(seperator = ", ", prefix = ctx.message.author.display_name + ", your tags:\n```")
+		for tag in sorted(self.tags.keys()):
+			tags_paginator.add_section(tag)
+		for page in tags_paginator.pages:
+			await self.bot.say(page)
 	
 	@tag.command(name = "add", aliases = ["make", "new", "create"], pass_context = True)
 	async def tag_add(self, ctx, tag : str, *, content : str):
