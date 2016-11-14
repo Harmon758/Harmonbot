@@ -627,7 +627,7 @@ class Resources:
 		else:
 			await self.bot.reply("Error")
 	
-	@commands.group()
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def steam(self, *options : str):
 		'''Steam Information'''
