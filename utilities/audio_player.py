@@ -211,7 +211,8 @@ class AudioPlayer:
 			views = utilities.add_commas(self.current["info"].get("view_count"))
 			likes = utilities.add_commas(self.current["info"].get("like_count"))
 			dislikes = utilities.add_commas(self.current["info"].get("dislike_count"))
-			duration = utilities.secs_to_colon_format(self.current["info"].get("duration"))
+			duration = self.current["info"].get("duration")
+			if duration: duration = utilities.secs_to_colon_format(duration)
 			if self.radio_flag:
 				output = ":radio: Radio is currently playing: "
 			elif self.library_flag:

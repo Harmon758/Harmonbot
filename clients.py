@@ -9,13 +9,13 @@ import cleverbot
 import datetime
 import inflect
 import json
-import random
 import os
+import random
 from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.22"
+version = "0.34.23"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
