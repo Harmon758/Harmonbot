@@ -211,6 +211,7 @@ class AudioPlayer:
 			views = utilities.add_commas(self.current["info"].get("view_count"))
 			likes = utilities.add_commas(self.current["info"].get("like_count"))
 			dislikes = utilities.add_commas(self.current["info"].get("dislike_count"))
+			duration = utilities.secs_to_colon_format(self.current["info"].get("duration"))
 			if self.radio_flag:
 				output = ":radio: Radio is currently playing: "
 			elif self.library_flag:
@@ -218,12 +219,14 @@ class AudioPlayer:
 			else:
 				output = ":musical_note: Currently playing: "
 			output += self.current["info"].get("webpage_url")
-			output += '\n' if views or likes or dislikes else ""
-			output += views + ":eye:" if views else ""
-			output += " | " if views and (likes or dislikes) else ""
-			output += likes + ":thumbsup::skin-tone-2:" if likes else ""
-			output += " | " if likes and dislikes else ""
-			output += dislikes + ":thumbsdown::skin-tone-2:" if dislikes else ""
+			output += '\n' if views or likes or dislikes or duration else ""
+			output += views + " :eye:" if views else ""
+			output += " | " if views and (likes or dislikes or duration) else ""
+			output += likes + " :thumbsup::skin-tone-2:" if likes else ""
+			output += " | " if likes and (dislikes or duration) else ""
+			output += dislikes + " :thumbsdown::skin-tone-2:" if dislikes else ""
+			output += " | " if dislikes and duration else ""
+			output += duration + " :clock:" if duration else ""
 			output += "\nAdded by: " + self.current["requester"].display_name if not self.radio_flag and not self.library_flag else ""
 			return output
 	
