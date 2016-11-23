@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23"
+version = "0.34.23.1"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -36,7 +36,57 @@ class Bot(commands.Bot):
 		extensions = ('delete_after',)
 		params = {k: kwargs.pop(k, None) for k in extensions}
 		coro = self.send_message(destination, fmt, *args, **kwargs)
-		return self._augmented_msg(coro, **params)
+		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
+	
+	def embed_reply(self, content, *args, **kwargs):
+		author = commands.bot._get_variable('_internal_author')
+		destination = commands.bot._get_variable('_internal_channel')
+		embed = discord.Embed(description = content, color = bot_color)
+		avatar = author.default_avatar_url if not author.avatar else author.avatar_url
+		embed.set_author(name = author.display_name, icon_url = avatar) # url?
+		extensions = ('delete_after',)
+		params = {k: kwargs.pop(k, None) for k in extensions}
+		coro = self.send_message(destination, embed = embed, *args, **kwargs)
+		return self._augmented_msg(coro, embed = embed, **params)
+	
+	def say(self, *args, **kwargs):
+		destination = commands.bot._get_variable('_internal_channel')
+		extensions = ('delete_after',)
+		params = {k: kwargs.pop(k, None) for k in extensions}
+		coro = self.send_message(destination, *args, **kwargs)
+		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
+	
+	def embed_say(self, *args, **kwargs):
+		destination = commands.bot._get_variable('_internal_channel')
+		embed = discord.Embed(description = args[0], color = bot_color)
+		extensions = ('delete_after',)
+		params = {k: kwargs.pop(k, None) for k in extensions}
+		coro = self.send_message(destination, embed = embed, *args[1:], **kwargs)
+		return self._augmented_msg(coro, embed = embed, **params)
+	
+	def whisper(self, *args, **kwargs):
+		destination = commands.bot._get_variable('_internal_author')
+		extensions = ('delete_after',)
+		params = {k: kwargs.pop(k, None) for k in extensions}
+		coro = self.send_message(destination, *args, **kwargs)
+		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
+	
+	def send_embed(self, destination, content):
+		embed = discord.Embed(description = content, color = bot_color)
+		return self.send_message(destination, embed = embed)
+	
+	async def _augmented_msg(self, coro, **kwargs):
+		msg = await coro
+		delete_after = kwargs.get('delete_after')
+		if delete_after is not None:
+			async def delete():
+				await asyncio.sleep(delete_after)
+				await self.delete_message(msg)
+
+			discord.compat.create_task(delete(), loop=self.loop)
+		# return embed
+		embed = kwargs.get("embed")
+		return msg, embed
 	
 	async def process_commands(self, message):
 		_internal_channel = message.channel
