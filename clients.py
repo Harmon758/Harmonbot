@@ -17,7 +17,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23.23"
+version = "0.34.23.24"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -77,6 +77,14 @@ class Bot(commands.Bot):
 		params = {k: kwargs.pop(k, None) for k in extensions}
 		coro = self.send_message(destination, *args, **kwargs)
 		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
+	
+	def embed_whisper(self, *args, **kwargs):
+		destination = commands.bot._get_variable('_internal_author')
+		embed = discord.Embed(description = args[0], color = bot_color)
+		extensions = ('delete_after',)
+		params = {k: kwargs.pop(k, None) for k in extensions}
+		coro = self.send_message(destination, embed = embed, *args[1:], **kwargs)
+		return self._augmented_msg(coro, embed = embed, **params)
 	
 	def send_embed(self, destination, content):
 		embed = discord.Embed(description = content, color = bot_color)
