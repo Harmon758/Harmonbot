@@ -6,14 +6,14 @@ class maze:
 	def __init__(self, columns, rows):
 		if columns < 2:
 			self.number_of_columns = 2
-		elif columns > 10:
-			self.number_of_columns = 10
+		elif columns > 15:
+			self.number_of_columns = 15
 		else:
 			self.number_of_columns = columns
 		if rows < 2:
 			self.number_of_rows = 2
-		elif rows > 10:
-			self.number_of_rows = 10
+		elif rows > 15:
+			self.number_of_rows = 15
 		else:
 			self.number_of_rows = rows
 		self.directions = [[[False, False, False, False] for r in range(self.number_of_rows)] for c in range(self.number_of_columns)]
