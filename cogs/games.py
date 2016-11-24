@@ -22,6 +22,7 @@ from modules import adventure
 from modules.maze import maze
 from modules import war
 from utilities import checks
+import clients
 from clients import wait_time
 from clients import code_block
 from clients import aiohttp_session
@@ -761,41 +762,61 @@ class Games:
 	@commands.group(invoke_without_command = True, pass_context = True)
 	@checks.not_forbidden()
 	async def trivia(self, ctx, *options : str):
-		'''Trivia game'''
+		'''
+		Trivia game
+		Answers prepended with ! or > are ignored
+		'''
 		if not self.trivia_active:
 			bet, bets = options and options[0] == "bet", {}
 			self.trivia_active, responses = True, {}
-			async with aiohttp_session.get("http://jservice.io/api/random") as resp:
-				data = (await resp.json())[0]
+			data = {}
+			while not data.get("question"):
+				async with aiohttp_session.get("http://jservice.io/api/random") as resp:
+					data = (await resp.json())[0]
 			if bet:
-				await self.bot.say("Category: " + string.capwords(data["category"]["title"]))
 				self.bet_countdown = int(wait_time)
-				bet_message = await self.bot.say("You have {} seconds left to bet.".format(str(self.bet_countdown)))
-				self.bot.loop.create_task(self._bet_countdown(bet_message))
+				embed = discord.Embed(title = string.capwords(data["category"]["title"]), color = clients.bot_color)
+				embed.set_footer(text = "You have {} seconds left to bet".format(self.bet_countdown))
+				bet_message, embed = await self.bot.say(embed = embed)
+				bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
 				while self.bet_countdown:
 					message = await self.bot.wait_for_message(timeout = self.bet_countdown, channel = ctx.message.channel, check = lambda m: m.content.isdigit())
 					if message:
-						with open("data/trivia_points.json", "r") as trivia_file:
+						with open("data/trivia_points.json", 'r') as trivia_file:
 							score = json.load(trivia_file)
 						if int(message.content) <= score[message.author.id][2]:
 							bets[message.author] = int(message.content)
-							await self.bot.say(message.author.display_name + " has bet $" + message.content)
+							await self.bot.embed_say("{} has bet ${}".format(message.author.display_name, int(message.content)))
+							await self.bot.delete_message(message)
 						else:
-							await self.bot.reply("You don't have that much money to bet!")
-				await self.bot.edit_message(bet_message, "Betting is over.")
-			await self.bot.say("Category: " + string.capwords(data["category"]["title"]) + "\n" + data["question"])
+							await self.bot.embed_reply("You don't have that much money to bet!")
+				while not bet_countdown_task.done():
+					await asyncio.sleep(0.1)
+				embed.set_footer(text = "Betting is over")
+				await self.bot.edit_message(bet_message, embed = embed)
 			self.trivia_countdown = int(wait_time)
-			answer_message = await self.bot.say("You have {} seconds left to answer.".format(str(self.trivia_countdown)))
-			self.bot.loop.create_task(self._trivia_countdown(answer_message))
+			embed = discord.Embed(color = clients.bot_color, title = string.capwords(data["category"]["title"]), description = data["question"])
+			embed.set_footer(text = "You have {} seconds left to answer".format(self.trivia_countdown))
+			answer_message, embed = await self.bot.say(embed = embed)
+			countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
 			while self.trivia_countdown:
 				message = await self.bot.wait_for_message(timeout = self.trivia_countdown, channel = ctx.message.channel)
-				if message and not message.content.startswith('>'):
+				if message and not message.content.startswith(('!', '>')):
 					responses[message.author] = message.content
-			await self.bot.edit_message(answer_message, "Time's up!")
+			while not countdown_task.done():
+				await asyncio.sleep(0.1)
+			embed.set_footer(text = "Time's up!")
+			await self.bot.edit_message(answer_message, embed = embed)
 			correct_players = []
 			incorrect_players = []
+			matches = re.search("\((.+)\) (.+)", data["answer"].lower())
 			for player, response in responses.items():
-				if data["answer"].lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]] or response.lower() == BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().lower():
+				if data["answer"].lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]] \
+				or response.lower() == BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().lower() \
+				or response.lower().replace('-', ' ') == data["answer"].lower().replace('-', ' ') \
+				or response.lower().replace('(', "").replace(')', "") == data["answer"].lower().replace('(', "").replace(')', "") \
+				or (matches and (response.lower() == matches.group(0) or response.lower() == matches.group(1))) \
+				or response.lower().strip('"') == data["answer"].lower().strip('"'):
 					correct_players.append(player)
 				else:
 					incorrect_players.append(player)
@@ -819,32 +840,36 @@ class Games:
 				trivia_bets_output = ""
 				for trivia_player in bets:
 					if trivia_player in correct_players:
-						score[correct_player.id][2] += bets[correct_player]
+						score[trivia_player.id][2] += bets[trivia_player]
 						trivia_bets_output += trivia_player.name + " won $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(score[trivia_player.id][2]) + ". "
 					else:
 						score[trivia_player.id][2] -= bets[trivia_player]
 						trivia_bets_output += trivia_player.name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(score[trivia_player.id][2]) + ". "
 				trivia_bets_output = trivia_bets_output[:-1]
-			with open("data/trivia_points.json", "w") as trivia_file:
+			with open("data/trivia_points.json", 'w') as trivia_file:
 				json.dump(score, trivia_file, indent = 4)
-			await self.bot.say("The answer was " + BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text() + "\n" + correct_players_output)
+			embed = discord.Embed(description = "The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text()), color = clients.bot_color)
+			embed.set_footer(text = correct_players_output)
+			await self.bot.say(embed = embed)
 			if bet and trivia_bets_output:
-				await self.bot.say(trivia_bets_output)
+				await self.bot.embed_say(trivia_bets_output)
 			self.trivia_active = False
 		else:
-			await self.bot.reply("There is already an ongoing game of trivia. Other options: score money")
+			await self.bot.embed_reply("There is already an ongoing game of trivia. Other options: score money")
 	
-	async def _bet_countdown(self, bet_message):
+	async def _bet_countdown(self, bet_message, embed):
 		while self.bet_countdown:
 			await asyncio.sleep(1)
 			self.bet_countdown -= 1
-			await self.bot.edit_message(bet_message, "You have {} seconds left to bet.".format(str(self.bet_countdown)))
+			embed.set_footer(text = "You have {} seconds left to bet".format(self.bet_countdown))
+			await self.bot.edit_message(bet_message, embed = embed)
 	
-	async def _trivia_countdown(self, answer_message):
+	async def _trivia_countdown(self, answer_message, embed):
 		while self.trivia_countdown:
 			await asyncio.sleep(1)
 			self.trivia_countdown -= 1
-			await self.bot.edit_message(answer_message, "You have {} seconds left to answer.".format(str(self.trivia_countdown)))
+			embed.set_footer(text = "You have {} seconds left to answer".format(self.trivia_countdown))
+			await self.bot.edit_message(answer_message, embed = embed)
 	
 	# url = "http://api.futuretraxex.com/v1/getRandomQuestion
 	# await self.bot.say(BeautifulSoup(html.unescape(data["q_text"]), "html.parser").get_text() + "\n1. " + data["q_options_1"] + "\n2. " + data["q_options_2"] + "\n3. " + data["q_options_3"] + "\n4. " + data["q_options_4"])
@@ -853,19 +878,19 @@ class Games:
 	
 	@trivia.command(name = "score", aliases = ["points"], pass_context = True)
 	async def trivia_score(self, ctx):
-		with open("data/trivia_points.json", "r") as trivia_file:
+		with open("data/trivia_points.json", 'r') as trivia_file:
 			score = json.load(trivia_file)
 		correct = score[ctx.message.author.id][0]
 		incorrect = score[ctx.message.author.id][1]
 		correct_percentage = round(float(correct) / (float(correct) + float(incorrect)) * 100, 2)
-		await self.bot.reply("You have answered {}/{} ({}%) correctly.".format(str(correct), str(correct + incorrect), str(correct_percentage)))
+		await self.bot.embed_reply("You have answered {}/{} ({}%) correctly.".format(str(correct), str(correct + incorrect), str(correct_percentage)))
 	
 	@trivia.command(name = "money", aliases = ["cash"], pass_context = True)
 	async def trivia_money(self, ctx):
-		with open("data/trivia_points.json", "r") as trivia_file:
+		with open("data/trivia_points.json", 'r') as trivia_file:
 			score = json.load(trivia_file)
 		cash = score[ctx.message.author.id][2]
-		await self.bot.reply("You have $" + utilities.add_commas(cash))
+		await self.bot.embed_reply("You have $" + utilities.add_commas(cash))
 	
 	@commands.group(pass_context = True)
 	@checks.not_forbidden()
