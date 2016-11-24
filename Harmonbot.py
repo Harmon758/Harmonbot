@@ -289,5 +289,6 @@ finally:
 	client.loop._default_executor.shutdown(wait = True)
 	rss_task.cancel()
 	client.loop.run_until_complete(asyncio.sleep(0.1)) # Allow rss task to cancel
+	client.cogs["Twitter"].stream_listener.stream.disconnect()
 	client.loop.close()
 

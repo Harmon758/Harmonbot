@@ -12,11 +12,12 @@ import json
 import os
 import pyowm
 import random
+import tweepy
 from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23.18"
+version = "0.34.23.19"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -29,6 +30,9 @@ application_info = None
 harmonbot_listener = None
 bot_color = 0x738bd7
 owm_client = pyowm.OWM(credentials.owm_api_key)
+twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)
+twitter_auth.set_access_token(credentials.twitter_access_token, credentials.twitter_access_token_secret)
+twitter_api = tweepy.API(twitter_auth)
 
 class Bot(commands.Bot):
 	
