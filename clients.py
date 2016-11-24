@@ -17,8 +17,9 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23.26"
+version = "0.34.23.27"
 changelog = "https://discord.gg/a2rbZPu"
+stream_url = "https://www.twitch.tv/harmonbot"
 wait_time = 15.0
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
@@ -222,10 +223,10 @@ async def set_streaming_status(client):
 	if not me:
 		return
 	elif not me.game:
-		updated_game = discord.Game(url = "https://www.twitch.tv/harmonbot", type = 1)
+		updated_game = discord.Game(url = stream_url, type = 1)
 	else:
 		updated_game = me.game
-		updated_game.url = "https://www.twitch.tv/harmonbot"
+		updated_game.url = stream_url
 		updated_game.type = 1
 	await client.change_presence(game = updated_game)
 
@@ -236,19 +237,19 @@ async def reply(message, response):
 # Restart/Shutdown Tasks
 
 def add_uptime():
-	with open("data/stats.json", "r") as stats_file:
+	with open("data/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 	now = datetime.datetime.utcnow()
 	uptime = now - online_time
 	stats["uptime"] += uptime.total_seconds()
-	with open("data/stats.json", "w") as stats_file:
+	with open("data/stats.json", 'w') as stats_file:
 		json.dump(stats, stats_file, indent = 4)
 
 def add_restart():
-	with open("data/stats.json", "r") as stats_file:
+	with open("data/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
 	stats["restarts"] += 1
-	with open("data/stats.json", "w") as stats_file:
+	with open("data/stats.json", 'w') as stats_file:
 		json.dump(stats, stats_file, indent = 4)
 
 async def leave_all_voice():
