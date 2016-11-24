@@ -24,6 +24,10 @@ class RSS:
 		utilities.create_file("rss_feeds", content = {"channels" : []})
 		with open("data/rss_feeds.json", 'r') as feeds_file:
 			self.feeds_info = json.load(feeds_file)
+		self.task = self.bot.loop.create_task(self.check_rss_feeds())
+	
+	def __del__(self):
+		self.task.cancel()
 	
 	@commands.group(invoke_without_command = True)
 	@checks.is_server_owner()

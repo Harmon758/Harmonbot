@@ -279,7 +279,6 @@ else:
 	token = credentials.token
 
 try:
-	rss_task = client.loop.create_task(client.cogs["RSS"].check_rss_feeds())
 	client.loop.run_until_complete(client.start(token))
 except KeyboardInterrupt:
 	print("Shutting down Discord Harmonbot...")
@@ -287,7 +286,6 @@ except KeyboardInterrupt:
 	client.loop.run_until_complete(client.logout())
 finally:
 	client.loop._default_executor.shutdown(wait = True)
-	rss_task.cancel()
 	client.loop.run_until_complete(asyncio.sleep(0.1)) # Allow rss task to cancel
 	client.cogs["Twitter"].stream_listener.stream.disconnect()
 	client.loop.close()
