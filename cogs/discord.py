@@ -22,21 +22,21 @@ class Discord:
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.has_permissions_and_capability(manage_roles = True)
-	async def addrole(self, ctx, name : str, role : str):
+	async def addrole(self, ctx, member : str, *, role : str): # member : discord.Member
 		'''
 		Gives a user a role
-		Replace spaces in role names with underscores or put the role name in qoutes
+		Replace spaces in usernames with underscores or put the username in qoutes
 		'''
-		for member in ctx.message.server.members:
-			if member.name == ' '.join(name.split('_')):
-				selected_member = member
-				break
-		for _role in ctx.message.server.roles:
-			if utilities.remove_symbols(_role.name).startswith(' '.join(role.split('_'))):
-				selected_role = _role
-				break
-		await self.bot.add_roles(selected_member, selected_role)
-		await self.bot.reply("I gave the role, {0}, to {1}".format(selected_role, selected_member))
+		member = await utilities.get_user(ctx, member)
+		if not member:
+			await self.bot.embed_reply(":no_entry: Member not found")
+			return
+		role = discord.utils.find(lambda r: utilities.remove_symbols(r.name).startswith(role), ctx.message.server.roles)
+		if not role:
+			await self.bot.embed_reply(":no_entry: Role not found")
+			return
+		await self.bot.add_roles(member, role)
+		await self.bot.embed_reply("I gave the role, {0}, to {1}".format(role, member))
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.has_permissions_and_capability(manage_channels = True)
