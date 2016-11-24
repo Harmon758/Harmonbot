@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23.7"
+version = "0.34.23.8"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -169,9 +169,11 @@ async def on_server_remove(server):
 
 
 # Load cogs
+
 for file in os.listdir("cogs"):
-	if file.endswith(".py"):
+	if file.endswith(".py") and not file.startswith("reactions"):
 		client.load_extension("cogs." + file[:-3])
+client.load_extension("cogs.reactions")
 
 
 # Utilities
