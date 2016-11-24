@@ -285,8 +285,6 @@ except KeyboardInterrupt:
 	client.loop.run_until_complete(clients.restart_tasks())
 	client.loop.run_until_complete(client.logout())
 finally:
-	client.loop._default_executor.shutdown(wait = True)
-	client.loop.run_until_complete(asyncio.sleep(0.1)) # Allow rss task to cancel
-	client.cogs["Twitter"].stream_listener.stream.disconnect()
 	client.loop.close()
+	os._exit(0)
 
