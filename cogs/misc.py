@@ -21,6 +21,28 @@ class Misc:
 		'''Add fingers'''
 		await self.bot.reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def loading_bar(self):
+		'''
+		Just for fun loading bar
+		Currently does nothing.. or does it?
+		'''
+		counter = 0
+		bar = chr(9633) * 10
+		loading_message, embed = await self.bot.embed_reply("Loading: [" + bar + "]")
+		while counter <= 10:
+			counter += 1
+			bar = chr(9632) + bar[:-1] #9608
+			await asyncio.sleep(1)
+			embed.description = "Loading: [" + bar + "]"
+			await self.bot.edit_message(loading_message, embed = embed)
+	
+	@commands.command()
+	async def ping(self):
+		'''Basic ping - pong command'''
+		await self.bot.embed_reply("pong")
+	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def poke(self, ctx, *, user : str):
