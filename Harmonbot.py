@@ -83,7 +83,7 @@ async def on_server_remove(server):
 
 @client.event
 async def on_resumed():
-	await client.send_message(client.get_channel("147264078258110464"), client.get_server("147208000132743168").get_member("115691005197549570").mention + ": resumed.")
+	print("Discord Harmonbot: resumed")
 
 @client.event
 async def on_command(command, ctx):
