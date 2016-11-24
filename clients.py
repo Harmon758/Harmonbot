@@ -15,7 +15,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23.9"
+version = "0.34.23.10"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -26,6 +26,7 @@ cleverbot_instance = cleverbot.Cleverbot()
 inflect_engine = inflect.engine()
 application_info = None
 harmonbot_listener = None
+bot_color = 0x738bd7
 
 class Bot(commands.Bot):
 	
