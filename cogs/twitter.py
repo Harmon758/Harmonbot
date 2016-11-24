@@ -58,6 +58,8 @@ class Twitter:
 		self.bot = bot
 		self.stream_listener = TwitterStreamListener(bot)
 		utilities.create_file("twitter_feeds", content = {"channels" : {}})
+		with open("data/twitter_feeds.json", 'r') as feeds_file:
+			self.feeds_info = json.load(feeds_file)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
 	def __del__(self):
@@ -84,9 +86,7 @@ class Twitter:
 	@checks.is_server_owner()
 	async def twitter_add(self, ctx, handle : str):
 		'''Add a handle to a channel'''
-		with open("data/twitter_feeds.json", 'r') as feeds_file:
-			feeds_info = json.load(feeds_file)
-		if handle in feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []):
+		if handle in self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []):
 			await self.bot.embed_reply(":no_entry: This channel is already following that handle")
 			return
 		try:
@@ -94,27 +94,25 @@ class Twitter:
 		except tweepy.error.TweepError as e:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 			return
-		if ctx.message.channel.id in feeds_info["channels"]:
-			feeds_info["channels"][ctx.message.channel.id]["handles"].append(handle)
+		if ctx.message.channel.id in self.feeds_info["channels"]:
+			self.feeds_info["channels"][ctx.message.channel.id]["handles"].append(handle)
 		else:
-			feeds_info["channels"][ctx.message.channel.id] = {"name" : ctx.message.channel.name, "handles" : [handle]}
+			self.feeds_info["channels"][ctx.message.channel.id] = {"name" : ctx.message.channel.name, "handles" : [handle]}
 		with open("data/twitter_feeds.json", 'w') as feeds_file:
-			json.dump(feeds_info, feeds_file, indent = 4)
+			json.dump(self.feeds_info, feeds_file, indent = 4)
 		await self.bot.embed_reply("The handle, `{}`, has been added to this channel".format(handle))
 	
 	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"], pass_context = True)
 	@checks.is_server_owner()
 	async def twitter_remove(self, ctx, handle : str):
 		'''Remove a handle from a channel'''
-		with open("data/twitter_feeds.json", 'r') as feeds_file:
-			feeds_info = json.load(feeds_file)
 		try:
-			feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []).remove(handle)
+			self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []).remove(handle)
 		except ValueError:
 			await self.bot.embed_reply(":no_entry: This channel isn't following that handle")
 		else:
 			with open("data/twitter_feeds.json", 'w') as feeds_file:
-				json.dump(feeds_info, feeds_file, indent = 4)
+				json.dump(self.feeds_info, feeds_file, indent = 4)
 			self.stream_listener.remove_feed(ctx.message.channel, handle)
 			await self.bot.embed_reply("The handle, `{}`, has been removed from this channel.".format(handle))
 
@@ -122,16 +120,12 @@ class Twitter:
 	@checks.not_forbidden()
 	async def handles(self, ctx):
 		'''Show handles being followed in this channel'''
-		with open("data/twitter_feeds.json", 'r') as feeds_file:
-			feeds_info = json.load(feeds_file)
-		await self.bot.embed_reply('\n'.join(feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", [])))
+		await self.bot.embed_reply('\n'.join(self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", [])))
 	
 	async def start_twitter_feeds(self):
 		await self.bot.wait_until_ready()
-		with open("data/twitter_feeds.json", 'r') as feeds_file:
-			feeds_info = json.load(feeds_file)
 		feeds = {}
-		for channel_id, channel_info in feeds_info["channels"].items():
+		for channel_id, channel_info in self.feeds_info["channels"].items():
 			for handle in channel_info["handles"]:
 				feeds[channel_id] = feeds.get(channel_id, []) + [clients.twitter_api.get_user(handle).id_str]
 		self.stream_listener.start_feeds(feeds)
