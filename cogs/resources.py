@@ -16,10 +16,11 @@ import youtube_dl
 
 import credentials
 from modules import utilities
-from modules import weather
 from utilities import checks
 from utilities import errors
+import clients
 from clients import aiohttp_session
+from clients import owm_client
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -721,11 +722,52 @@ class Resources:
 			data = await resp.json()
 		await self.bot.reply(data["text"][0])
 	
-	@commands.command(hidden = True)
+	@commands.command(pass_context = True)
 	@checks.not_forbidden()
-	async def weather(self, *options : str): #WIP
-		'''WIP'''
-		await self.bot.reply(str(weather.tempc(' '.join(options))))
+	async def weather(self, ctx, *, location : str):
+		'''Weather'''
+		# wunderground?
+		observation = owm_client.weather_at_place(location)
+		location = observation.get_location()
+		weather = observation.get_weather()
+		condition = weather.get_status()
+		if condition == "Clear": emote = " :sunny:"
+		elif condition == "Clouds": emote = " :cloud:"
+		elif condition == "Rain": emote = " :cloud_rain:"
+		else: emote = ""
+		wind = weather.get_wind()
+		pressure = weather.get_pressure()["press"]
+		visibility = weather.get_visibility_distance()
+		embed = discord.Embed(description = "**__{}__**".format(location.get_name()), color = clients.bot_color, timestamp = weather.get_reference_time(timeformat = "date"))
+		avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		embed.add_field(name = "Conditions", value = "{}{}".format(condition, emote))
+		embed.add_field(name = "Temperature", value = "{}°C\n{}°F".format(weather.get_temperature(unit = "celsius")["temp"], weather.get_temperature(unit = "fahrenheit")["temp"]))
+		embed.add_field(name = "Wind", value = "{0} {1:.2f} km/h\n{0} {2:.2f} mi/h".format(self.wind_degrees_to_direction(wind["deg"]), wind["speed"] * 3.6, wind["speed"] * 2.236936))
+		embed.add_field(name = "Humidity", value = "{}%".format(weather.get_humidity()))
+		embed.add_field(name = "Pressure", value = "{} mb (hPa)\n{:.2f} inHg".format(pressure, pressure * 0.0295299830714))
+		if visibility: embed.add_field(name = "Visibility", value = "{:.2f} km\n{:.2f} mi".format(visibility / 1000, visibility * 0.000621371192237))
+		await self.bot.say(embed = embed)
+	
+	def wind_degrees_to_direction(self, degrees):
+		# http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
+		if 0 <= degrees <= 11.25 or 348.75 <= degrees <= 360: return 'N'
+		elif 11.25 <= degrees <= 33.75: return "NNE"
+		elif 33.75 <= degrees <= 56.25: return "NE"
+		elif 56.25 <= degrees <= 78.75: return "ENE"
+		elif 78.75 <= degrees <= 101.25: return 'E'
+		elif 101.25 <= degrees <= 123.75: return "ESE"
+		elif 123.75 <= degrees <= 146.25: return "SE"
+		elif 146.25 <= degrees <= 168.75: return "SSE"
+		elif 168.75 <= degrees <= 191.25: return 'S'
+		elif 191.25 <= degrees <= 213.75: return "SSW"
+		elif 213.75 <= degrees <= 236.25: return "SW"
+		elif 236.25 <= degrees <= 258.75: return "WSW"
+		elif 258.75 <= degrees <= 281.25: return "W"
+		elif 281.25 <= degrees <= 303.75: return "WNW"
+		elif 303.75 <= degrees <= 326.25: return "NW"
+		elif 326.25 <= degrees <= 348.75: return "NNW"
+		else: return None
 	
 	@commands.command()
 	@checks.not_forbidden()

@@ -10,12 +10,13 @@ import datetime
 import inflect
 import json
 import os
+import pyowm
 import random
 from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23.10"
+version = "0.34.23.11"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -27,6 +28,7 @@ inflect_engine = inflect.engine()
 application_info = None
 harmonbot_listener = None
 bot_color = 0x738bd7
+owm_client = pyowm.OWM(credentials.owm_api_key)
 
 class Bot(commands.Bot):
 	
