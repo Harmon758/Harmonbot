@@ -48,8 +48,8 @@ class Meta:
 			# try to see if it is a cog name
 			name = _mention_pattern.sub(repl, commands[0])
 			command = None
-			if name in bot.cogs:
-				command = bot.cogs[name]
+			if name in bot.cogs or (name not in bot.commands and name.capitalize() in bot.cogs):
+				command = bot.cogs[name.capitalize()]
 			else:
 				command = bot.commands.get(name)
 				if command is None:
