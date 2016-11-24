@@ -17,7 +17,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23.25"
+version = "0.34.23.26"
 changelog = "https://discord.gg/a2rbZPu"
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -141,7 +141,7 @@ class Bot(commands.Bot):
 utilities.create_file("prefixes")
 
 def get_prefix(bot, message):
-	with open("data/prefixes.json", "r") as prefixes_file:
+	with open("data/prefixes.json", 'r') as prefixes_file:
 		all_prefixes = json.load(prefixes_file)
 	if message.channel.is_private:
 		prefixes = all_prefixes.get(message.channel.id, None)
@@ -205,19 +205,26 @@ async def random_game_status():
 	"hard to get", "to win", "world domination", "with Opportunity",
 	"with Spirit in the sand pit", "with Curiousity", "with Voyager 1",
 	"music", "Google Ultron", "not enough space here to",
-	"the meaning of life is", "with the NSA", "with RSS Bot", " "]
-	updated_game = discord.utils.find(lambda s: s != None, client.servers).me.game
-	if not updated_game:
+	"the meaning of life is", "with the NSA", "with RSS Bot", "with Data",
+	"with Harmon", " "]
+	me = discord.utils.find(lambda s: s != None, client.servers).me
+	if not me:
+		return
+	elif not me.game:
 		updated_game = discord.Game(name = random.choice(statuses))
 	else:
+		updated_game = me.game
 		updated_game.name = random.choice(statuses)
 	await client.change_presence(game = updated_game)
 
 async def set_streaming_status(client):
-	updated_game = discord.utils.get(client.servers).me.game
-	if not updated_game:
+	me = discord.utils.get(client.servers).me
+	if not me:
+		return
+	elif not me.game:
 		updated_game = discord.Game(url = "https://www.twitch.tv/harmonbot", type = 1)
 	else:
+		updated_game = me.game
 		updated_game.url = "https://www.twitch.tv/harmonbot"
 		updated_game.type = 1
 	await client.change_presence(game = updated_game)
