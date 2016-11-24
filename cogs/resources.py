@@ -224,24 +224,26 @@ class Resources:
 			pastedaccounts = pastedaccounts[:-2]
 		await self.bot.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
 	
-	@commands.command(aliases = ["movie"])
+	@commands.command(aliases = ["movie"], pass_context = True)
 	@checks.not_forbidden()
-	async def imdb(self, *search : str):
+	async def imdb(self, ctx, *search : str):
 		'''IMDb Information'''
-		url = "http://www.omdbapi.com/?t={0}&y=&plot=short&r=json".format('+'.join(search))
+		url = "http://www.omdbapi.com/?t={0}&plot=short".format('+'.join(search))
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
-			await self.bot.reply(data["Error"])
+			await self.bot.embed_reply(data["Error"])
 		else:
-			await self.bot.reply("```"
-			"{title} ({year})\n"
-			"Type: {type}\n"
-			"IMDb Rating: {rating}\n"
-			"Runtime: {runtime}\n"
-			"Genre(s): {genre}\n"
-			"Plot: {plot}```"
-			"Poster: {poster}".format(title = data["Title"], year = data["Year"], type = data["Type"], rating = data["imdbRating"], runtime = data["Runtime"], genre = data["Genre"], plot = data["Plot"], poster = data["Poster"]))
+			embed = discord.Embed(title = data["Title"], url = "http://www.imdb.com/title/{}".format(data["imdbID"]), color = clients.bot_color)
+			avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+			embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+			embed.description = ("```{0[Year]} {0[Type]}\n"
+			"IMDb Rating: {0[imdbRating]}\n"
+			"Runtime: {0[Runtime]}\n"
+			"Genre(s): {0[Genre]}\n"
+			"Plot: {0[Plot]}```".format(data))
+			if data["Poster"] and data["Poster"] != "N/A": embed.set_thumbnail(url = data["Poster"])
+			await self.bot.say(embed = embed)
 	
 	@commands.command()
 	@checks.not_forbidden()
