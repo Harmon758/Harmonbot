@@ -357,19 +357,32 @@ class Discord:
 		else:
 			await self.bot.reply("This server doesn't have an icon.")
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(aliases = ["serverinformation"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
 	async def serverinfo(self, ctx):
 		'''Information about a server'''
 		server = ctx.message.server
-		server_info = "```Name: " + server.name + "\n"
-		server_info += "ID: " + server.id + "\n"
-		server_info += "Owner: " + server.owner.name + "\n"
-		server_info += "Server Region: " + str(server.region) + "\n"
-		server_info += "Members: " + str(server.member_count) + "\n"
-		server_info += "Created at: " + str(server.created_at) + "\n```"
-		server_info += "Icon: " + server.icon_url
-		await self.bot.reply(server_info)
+		embed = discord.Embed(title = server.name, url = server.icon_url, timestamp = server.created_at, color = clients.bot_color)
+		avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		embed.set_thumbnail(url = server.icon_url)
+		embed.add_field(name = "Owner", value = server.owner.mention)
+		embed.add_field(name = "ID", value = server.id)
+		embed.add_field(name = "Region", value = str(server.region))
+		channel_types = [c.type for c in server.channels]
+		text_count = channel_types.count(discord.ChannelType.text)
+		voice_count = channel_types.count(discord.ChannelType.voice)
+		embed.add_field(name = "Channels", value = "{} text\n{} voice".format(text_count, voice_count))
+		embed.add_field(name = "Members", value = server.member_count)
+		embed.add_field(name = "Roles", value = len(server.roles))
+		embed.add_field(name = "Default Channel", value = server.default_channel.mention)
+		embed.add_field(name = "AFK Timeout", value = "{:g} min.".format(server.afk_timeout / 60))
+		embed.add_field(name = "AFK Channel", value = str(server.afk_channel))
+		embed.add_field(name = "Verification Level", value = str(server.verification_level).capitalize())
+		embed.add_field(name = "2FA Requirement", value = bool(server.mfa_level))
+		if server.emojis: embed.add_field(name = "Emojis", value = ' '.join([str(emoji) for emoji in server.emojis]), inline = False)
+		embed.set_footer(text = "Created")
+		await self.bot.say(embed = embed)
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.not_forbidden()
