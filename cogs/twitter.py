@@ -58,10 +58,11 @@ class Twitter:
 		self.bot = bot
 		self.stream_listener = TwitterStreamListener(bot)
 		utilities.create_file("twitter_feeds", content = {"channels" : {}})
-		self.bot.loop.create_task(self.start_twitter_feeds())
+		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
 	def __del__(self):
 		self.stream_listener.stream.disconnect()
+		self.task.cancel()
 	
 	@commands.group(invoke_without_command = True)
 	@checks.is_server_owner()
