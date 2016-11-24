@@ -233,18 +233,31 @@ class Meta:
 		text_count = channel_types.count(discord.ChannelType.text)
 		voice_count = channel_types.count(discord.ChannelType.voice)
 		total_uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
-		output = ["", "__**Stats**__ :bar_chart:"]
-		output.append("**Uptime:** `{}`".format(uptime))
-		output.append("**Servers:** `{}`".format(len(self.bot.servers)))
-		output.append("**Total Members:** `{}` (`{}` online)".format(total_members, total_members_online))
-		output.append("**Unique Members:** `{}` (`{}` online)".format(len(unique_members), unique_members_online))
-		output.append("**Text Channels:** `{}`, **Voice Channels:** `{}`".format(text_count, voice_count))
-		output.append("**Main Commands:** `{}`".format(len(set((c for c in self.bot.commands.values())))))
-		output.append("**Total Recorded Uptime:** `{}`".format(total_uptime)) # since 4/17/16, fixed 5/10/16
-		output.append("**Recorded Restarts:** `{}`".format(stats["restarts"])) # since 4/17/16, fixed 5/10/16
-		output.append("**Cogs Reloaded:** `{}`".format(stats["cogs_reloaded"])) # since 6/10/16 - implemented cog reloading
-		output.append("**Total Recorded Commands Executed:** `{}`".format(stats["commands_executed"])) # since 6/10/16 (cog commands)
-		await self.bot.reply('\n'.join(output))
+		top_5_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)[:5]
+		session_top_5 = sorted(session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
+		in_voice_count = len(self.bot.cogs["Audio"].players)
+		
+		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = bot_color)
+		avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar) # url?
+		embed.add_field(name = "Uptime", value = uptime)
+		embed.add_field(name = "Total Recorded Uptime", value = total_uptime) # since 4/17/16, fixed 5/10/16
+		embed.add_field(name = "Recorded Restarts", value = stats["restarts"]) # since 4/17/16, fixed 5/10/16
+		embed.add_field(name = "Main Commands", value = len(set((c for c in self.bot.commands.values()))))
+		embed.add_field(name = "Commands Executed", 
+			value = "{} this session\n{} total recorded".format(session_commands_executed, stats["commands_executed"])) 
+			# since 6/10/16 (cog commands)
+		embed.add_field(name = "Cogs Reloaded", value = stats["cogs_reloaded"]) # since 6/10/16 - implemented cog reloading
+		# this session
+		embed.add_field(name = "Servers", value = len(self.bot.servers))
+		embed.add_field(name = "Channels", value = "{} text\n{} voice (in {})".format(text_count, voice_count, in_voice_count))
+		embed.add_field(name = "Members", 
+			value = "{} total\n{} online\n{} unique\n{} unique online".format(total_members, total_members_online, len(unique_members), unique_members_online))
+		if session_top_5: embed.add_field(name = "Top 5 Commands Executed (This Session)", 
+			value = "\n".join(["{} {}".format(uses, command) for command, uses in session_top_5]))
+		embed.add_field(name = "Top 5 Commands Executed (Total Recorded)", 
+			value = "\n".join(["{} {}".format(uses, command) for command, uses in top_5_commands])) # since 11/14/16
+		await self.bot.send_message(ctx.message.channel, embed = embed)
 	
 	@commands.command()
 	async def uptime(self):
