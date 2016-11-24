@@ -22,7 +22,7 @@ class Misc:
 	@checks.not_forbidden()
 	async def fingers(self, *, text : str):
 		'''Add fingers'''
-		await self.bot.reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
+		await self.bot.embed_reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -77,7 +77,7 @@ def emote_wrapper(name, emote = None):
 	@commands.command(name = name, help = name.capitalize() + " emote")
 	@checks.not_forbidden()
 	async def emote_command(self):
-		await self.bot.reply(":{}:".format(emote))
+		await self.bot.embed_reply(":{}:".format(emote))
 	return emote_command
 
 for emote in ("fish", "frog", "turtle"):
