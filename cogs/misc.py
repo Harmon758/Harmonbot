@@ -1,10 +1,13 @@
 
+import discord
 from discord.ext import commands
 
+import asyncio
 import json
 
 from modules import utilities
 from utilities import checks
+import clients
 from clients import inflect_engine
 
 def setup(bot):
@@ -51,7 +54,7 @@ class Misc:
 		'''
 		to_poke = await utilities.get_user(ctx, user)
 		if not to_poke:
-			await self.bot.reply("User not found.")
+			await self.bot.embed_reply(":no_entry: User not found")
 		elif to_poke == self.bot.user:
 			await self.bot.say("!poke {}".format(ctx.message.author))
 		else:
@@ -59,12 +62,13 @@ class Misc:
 			utilities.create_file("user_data/{}/pokes".format(ctx.message.author.id))
 			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'r') as pokes_file:
 				pokes_data = json.load(pokes_file)
-			if to_poke.id not in pokes_data:
-				pokes_data[to_poke.id] = 1
-			else:
-				pokes_data[to_poke.id] += 1
-			await self.bot.send_message(to_poke, "{} has poked you for the {} time!".format(ctx.message.author, inflect_engine.ordinal(pokes_data[to_poke.id])))
-			await self.bot.reply("You have poked {} for the {} time!".format(user, inflect_engine.ordinal(pokes_data[to_poke.id])))
+			pokes_data[to_poke.id] = pokes_data.get(to_poke.id, 0) + 1
+			embed = discord.Embed(color = clients.bot_color)
+			avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+			embed.set_author(name = ctx.message.author, icon_url = avatar)
+			embed.description = "Poked you for the {} time!".format(inflect_engine.ordinal(pokes_data[to_poke.id]))
+			await self.bot.send_message(to_poke, embed = embed)
+			await self.bot.embed_reply("You have poked {} for the {} time!".format(user, inflect_engine.ordinal(pokes_data[to_poke.id])))
 			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
 
