@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import asyncio
@@ -9,6 +10,7 @@ import chess.pgn
 import chess.svg
 import chess.uci
 import cleverbot
+import copy
 import html
 import json
 import pydealer
@@ -47,6 +49,10 @@ class Games:
 		self.maze_started, self.maze_maze = False, None
 		self.jeopardy_active, self.jeopardy_question_active, self.jeopardy_board, self.jeopardy_answer, self.jeopardy_answered, self.jeopardy_scores, self.jeopardy_board_output, self.jeopardy_max_width = False, False, [], None, None, {}, None, None
 		self.trivia_active, self.trivia_countdown, self.bet_countdown = False, None, None
+		self.blackjack_ranks = copy.deepcopy(pydealer.const.DEFAULT_RANKS)
+		self.blackjack_ranks["values"].update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
+		for value in self.blackjack_ranks["values"]:
+			self.blackjack_ranks["values"][value] += 1
 		#check default values
 		
 		self.adventure_players = {}
@@ -295,46 +301,41 @@ class Games:
 		deck.shuffle()
 		dealer = deck.deal(2)
 		hand = deck.deal(2)
-		dealer_string = ""
-		hand_string = ""
-		for card in dealer.cards:
-			dealer_string += card.value + " :" + card.suit.lower() + ": "
-		for card in hand.cards:
-			hand_string += card.value + " :" + card.suit.lower() + ": "
-		dealer_total = sum([pydealer.const.DEFAULT_RANKS["values"][card.value] + 1 for card in dealer.cards])
-		hand_total = sum([pydealer.const.DEFAULT_RANKS["values"][card.value] + 1 for card in hand.cards])
-		await self.bot.say("Dealer: " + dealer_string + '(' + str(dealer_total) + ')\n' + ctx.message.author.mention + ": " + hand_string + '(' + str(hand_total) + ')\n' )
+		dealer_string = self.cards_to_string(dealer.cards)
+		hand_string = self.cards_to_string(hand.cards)
+		dealer_total = sum([self.blackjack_ranks["values"][card.value] for card in dealer.cards])
+		hand_total = sum([self.blackjack_ranks["values"][card.value] for card in hand.cards])
+		await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
+		await self.bot.embed_reply("Hit or Stay?")
 		while True:
-			action = await self.bot.wait_for_message(author = ctx.message.author, check = lambda msg: msg.content in ["hit", "stay"])
-			if action.content == "hit":
-				hand_string = ""
+			action = await self.bot.wait_for_message(author = ctx.message.author, check = lambda msg: msg.content.lower() in ["hit", "stay"])
+			if action.content.lower() == "hit":
 				hand.add(deck.deal())
-				for card in hand.cards:
-					hand_string += card.value + " :" + card.suit.lower() + ": "
-				hand_total = sum([pydealer.const.DEFAULT_RANKS["values"][card.value] + 1 for card in hand.cards])
-				await self.bot.say("Dealer: " + dealer_string + '(' + str(dealer_total) + ')\n' + ctx.message.author.mention + ": " + hand_string + '(' + str(hand_total) + ')\n' )
+				hand_string = self.cards_to_string(hand.cards)
+				hand_total = sum([self.blackjack_ranks["values"][card.value] for card in hand.cards])
+				await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
 				if hand_total > 21:
-					await self.bot.reply("You have busted. You lost :(")
+					await self.bot.embed_reply(":boom: You have busted. You lost :(")
 					return
+				else:
+					await self.bot.embed_reply("Hit or Stay?")
 			else:
 				if dealer_total > 21:
-					await self.bot.reply("The dealer busted. You win!")
+					await self.bot.embed_reply("The dealer busted. You win!")
 					return
 				elif dealer_total > hand_total:
-					await self.bot.reply("The dealer beat you. You lost :(")
+					await self.bot.embed_reply("The dealer beat you. You lost :(")
 					return
 				while True:
-					dealer_string = ""
 					dealer.add(deck.deal())
-					for card in dealer.cards:
-						dealer_string += card.value + " :" + card.suit.lower() + ": "
-					dealer_total = sum([pydealer.const.DEFAULT_RANKS["values"][card.value] + 1 for card in dealer.cards])
-					await self.bot.say("Dealer: " + dealer_string + '(' + str(dealer_total) + ')\n' + ctx.message.author.mention + ": " + hand_string + '(' + str(hand_total) + ')\n' )
+					dealer_string = self.cards_to_string(dealer.cards)
+					dealer_total = sum([self.blackjack_ranks["values"][card.value] for card in dealer.cards])
+					await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
 					if dealer_total > 21:
-						await self.bot.reply("The dealer busted. You win!")
+						await self.bot.embed_reply("The dealer busted. You win!")
 						return
 					elif dealer_total > hand_total:
-						await self.bot.reply("The dealer beat you. You lost :(")
+						await self.bot.embed_reply("The dealer beat you. You lost :(")
 						return
 					await asyncio.sleep(5)
 	
@@ -963,4 +964,9 @@ class Games:
 				for war_player in self.war_players:
 					await self.bot.send_message(war_player, tiedplayers_print + cards_played_print)
 				pass
+	
+	# Utility Functions
+	
+	def cards_to_string(self, cards):
+		return "".join([":{}: {} ".format(card.suit.lower(), card.value) for card in cards])
 
