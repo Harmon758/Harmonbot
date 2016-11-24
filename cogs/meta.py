@@ -171,12 +171,18 @@ class Meta:
 	async def about(self):
 		'''About me'''
 		output = ["", "__**About Me**__"]
-		output.append("**Harmonbot** (Discord ID: `160677293252018177`)")
-		output.append("**Developer/Owner:** Harmon758 (Discord ID: `115691005197549570`)")
-		output.append("**Version:** `{}`".format(clients.version))
-		output.append("**Library:** discord.py (Python) `v{}`".format(discord.__version__))
 		output.append("**Changelog (Harmonbot Server):** {}".format(clients.changelog))
-		await self.bot.reply('\n'.join(output))
+		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Discord_Harmonbot/commit/%H) %s (%cr)"').read().strip()
+		embed = discord.Embed(title = "Changelog (Harmonbot Server)", url = clients.changelog, description = "Latest Changes:\n{}".format(changes), color = bot_color)
+		bot = self.bot.user
+		avatar = bot.default_avatar_url if not bot.avatar else bot.avatar_url
+		embed.set_author(name = "Harmonbot (Discord ID: {})".format(bot.id), icon_url = avatar)
+		embed.add_field(name = "Version", value = clients.version)
+		embed.add_field(name = "Library", value = "discord.py (Python) v{}".format(discord.__version__))
+		me = discord.utils.get(self.bot.get_all_members(), id = credentials.myid)
+		avatar = me.default_avatar_url if not me.avatar else me.avatar_url
+		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(me), icon_url = avatar)
+		await self.bot.reply('\n'.join(output), embed = embed)
 	
 	@commands.command()
 	async def changelog(self):
