@@ -435,27 +435,6 @@ class Meta:
 			await self.bot.say(str(i))
 	
 	@commands.command(hidden = True)
-	@checks.not_forbidden()
-	async def loading_bar(self):
-		'''
-		Just for fun loading bar
-		Currently does nothing.. or does it?
-		'''
-		counter = 0
-		bar = chr(9633) * 10
-		loading_message = await self.bot.say("Loading: [" + bar + "]")
-		while counter <= 10:
-			counter += 1
-			bar = chr(9632) + bar[:-1] #9608
-			await asyncio.sleep(1)
-			await self.bot.edit_message(loading_message, "Loading: [" + bar + "]")
-
-	@commands.command(hidden = True)
-	async def ping(self):
-		'''Basic ping - pong command'''
-		await self.bot.say("pong")
-	
-	@commands.command(hidden = True)
 	async def randomcommand(self):
 		'''Random command'''
 		await self.bot.reply(random.choice(list(self.bot.commands.keys())))
