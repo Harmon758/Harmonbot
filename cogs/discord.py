@@ -380,7 +380,13 @@ class Discord:
 		embed.add_field(name = "AFK Channel", value = str(server.afk_channel))
 		embed.add_field(name = "Verification Level", value = str(server.verification_level).capitalize())
 		embed.add_field(name = "2FA Requirement", value = bool(server.mfa_level))
-		if server.emojis: embed.add_field(name = "Emojis", value = ' '.join([str(emoji) for emoji in server.emojis]), inline = False)
+		if server.emojis:
+			emojis = [str(emoji) for emoji in server.emojis]
+			if len(' '.join(emojis)) <= 1024:
+				embed.add_field(name = "Emojis", value = ' '.join(emojis), inline = False)
+			else:
+				embed.add_field(name = "Emojis", value = ' '.join(emojis[:len(emojis) // 2]), inline = False)
+				embed.add_field(name = "Emojis", value = ' '.join(emojis[len(emojis) // 2:]), inline = False)
 		embed.set_footer(text = "Created")
 		await self.bot.say(embed = embed)
 	
