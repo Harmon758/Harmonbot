@@ -167,22 +167,27 @@ class Meta:
 	
 	# Public Info
 	
-	@commands.command(aliases = ["info"])
-	async def about(self):
+	@commands.command(aliases = ["info"], pass_context = True)
+	async def about(self, ctx):
 		'''About me'''
-		output = ["", "__**About Me**__"]
-		output.append("**Changelog (Harmonbot Server):** {}".format(clients.changelog))
+		from clients import application_info
 		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Discord_Harmonbot/commit/%H) %s (%cr)"').read().strip()
-		embed = discord.Embed(title = "Changelog (Harmonbot Server)", url = clients.changelog, description = "Latest Changes:\n{}".format(changes), color = bot_color)
-		bot = self.bot.user
-		avatar = bot.default_avatar_url if not bot.avatar else bot.avatar_url
-		embed.set_author(name = "Harmonbot (Discord ID: {})".format(bot.id), icon_url = avatar)
+		embed = discord.Embed(title = "About Me", color = clients.bot_color)
+		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(clients.changelog, discord.utils.oauth_url(application_info.id))
+		# avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		# embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = self.bot.user.avatar_url or self.bot.user.default_avatar_url
+		# embed.set_thumbnail(url = avatar)
+		embed.set_author(name = "Harmonbot (Discord ID: {})".format(self.bot.user.id), icon_url = avatar)
+		if changes: embed.add_field(name = "Latest Changes:", value = changes, inline = False)
+		embed.add_field(name = "Created on:", value = "February 10th, 2016")
 		embed.add_field(name = "Version", value = clients.version)
-		embed.add_field(name = "Library", value = "discord.py (Python) v{}".format(discord.__version__))
+		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) ([Python](https://www.python.org/)) v{}".format(discord.__version__))
 		me = discord.utils.get(self.bot.get_all_members(), id = credentials.myid)
 		avatar = me.default_avatar_url if not me.avatar else me.avatar_url
 		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(me), icon_url = avatar)
-		await self.bot.reply('\n'.join(output), embed = embed)
+		await self.bot.reply("", embed = embed)
+		await self.bot.say("Changelog (Harmonbot Server): {}".format(clients.changelog))
 	
 	@commands.command()
 	async def changelog(self):
