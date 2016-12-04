@@ -290,13 +290,16 @@ class Meta:
 		'''Update my nickname'''
 		await self.bot.change_nickname(ctx.message.server.me, nickname)
 	
-	@commands.command(hidden = True)
+	@commands.command(aliases = ["setavatar"])
 	@checks.is_owner()
-	async def updateavatar(self):
+	async def updateavatar(self, filename : str):
 		'''Update my avatar'''
-		with open("data/avatars/discord_harmonbot_icon.png", "rb") as avatar_file:
+		if not os.path.isfile("data/avatars/{}".format(filename)):
+			await self.bot.embed_reply(":no_entry: Avatar not found")
+			return
+		with open("data/avatars/{}".format(filename), "rb") as avatar_file:
 			await self.bot.edit_profile(avatar = avatar_file.read())
-		await self.bot.reply("Avatar updated.")
+		await self.bot.embed_reply("Updated avatar")
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
