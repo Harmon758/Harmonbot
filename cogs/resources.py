@@ -306,34 +306,27 @@ class Resources:
 		if isinstance(error.original, errors.LichessUserNotFound):
 			await self.bot.reply("User not found.")
 	
-	@lichess_user.command(name = "all")
-	async def lichess_user_all(self, username : str):
+	@lichess_user.command(name = "all", pass_context = True)
+	async def lichess_user_all(self, ctx, username : str):
 		'''WIP'''
 		data = self.lichess_user_data
-		output = ["", "__{}__".format(data["username"])]
-		output.append("Online: {}".format(data["online"]))
-		output.append(":zap: `Bullet           |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["bullet"], prov = "?" if data["perfs"]["bullet"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["bullet"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["bullet"]["prog"]))
-		output.append(":fire: `Blitz            |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["blitz"], prov = "?" if data["perfs"]["blitz"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["blitz"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["blitz"]["prog"]))
-		output.append(":hourglass: `Classical        |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["classical"], prov = "?" if data["perfs"]["classical"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["classical"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["classical"]["prog"]))
-		output.append(":envelope: `Correspondence   |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["correspondence"], prov = "?" if data["perfs"]["correspondence"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["correspondence"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["correspondence"]["prog"]))
-		output.append(":pisces: `Crazyhouse       |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["crazyhouse"], prov = "?" if data["perfs"]["crazyhouse"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["crazyhouse"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["crazyhouse"]["prog"]))
-		output.append(":game_die: `Chess960         |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["chess960"], prov = "?" if data["perfs"]["chess960"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["chess960"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["chess960"]["prog"]))
-		output.append(":triangular_flag_on_post: `King Of The Hill |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["kingOfTheHill"], prov = "?" if data["perfs"]["kingOfTheHill"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["kingOfTheHill"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["kingOfTheHill"]["prog"]))
-		output.append(":three: `Three-Check      |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["threeCheck"], prov = "?" if data["perfs"]["threeCheck"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["threeCheck"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["threeCheck"]["prog"]))
-		output.append(":arrows_clockwise: `Antichess        |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["antichess"], prov = "?" if data["perfs"]["antichess"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["antichess"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["antichess"]["prog"]))
-		output.append(":atom: `Atomic           |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["atomic"], prov = "?" if data["perfs"]["atomic"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["atomic"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["atomic"]["prog"]))
-		output.append(":question: `Horde            |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["horde"], prov = "?" if data["perfs"]["horde"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["horde"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["horde"]["prog"]))
-		output.append(":checkered_flag: `Racing Kings     |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["racingKings"], prov = "?" if data["perfs"]["racingKings"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["racingKings"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["racingKings"]["prog"]))
-		output.append(":bow_and_arrow: `Puzzle/Training  |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["puzzle"], prov = "?" if data["perfs"]["puzzle"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["puzzle"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["puzzle"]["prog"]))
-		output.append(":notebook_with_decorative_cover: `Opening          |` **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["opening"], prov = "?" if data["perfs"]["opening"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["opening"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["opening"]["prog"]))
-		output.append("Member since {}".format(datetime.datetime.fromtimestamp(data["createdAt"] / 1000.0).strftime("%Y-%m-%d %H:%M:%S.%f")))
-		output.append("Last seen {}".format(datetime.datetime.fromtimestamp(data["seenAt"] / 1000.0).strftime("%Y-%m-%d %H:%M:%S.%f")))
-		output.append("Time spent playing: {}".format(utilities.secs_to_letter_format(data["playTime"]["total"])))
-		output.append("Time on TV: {}".format(utilities.secs_to_letter_format(data["playTime"]["tv"])))
-		output.append("Following: {0[nbFollowing]}, Followers: {0[nbFollowers]}".format(data))
-		output.append("Games Played: {0[all]}, Rated: {0[rated]}, AI: {0[ai]}, Wins: {0[win]}, Losses: {0[loss]}, Draws: {0[draw]}, Bookmarks: {0[bookmark]}".format(data["count"]))
-		output.append("<{}>".format(data["url"]))
-		await self.bot.reply('\n'.join(output))
+		embed = discord.Embed(title = data["username"], url = data["url"], color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		embed.description = "Online: {}\n".format(data["online"])
+		embed.description += "Member since {}\n".format(datetime.datetime.utcfromtimestamp(data["createdAt"] / 1000.0).strftime("%b %#d, %Y")) #
+		embed.add_field(name = "Games", value = "Played: {0[all]}\nRated: {0[rated]}\nWins: {0[win]}\nLosses: {0[loss]}\nDraws: {0[draw]}\nBookmarks: {0[bookmark]}\nAI: {0[ai]}".format(data["count"]))
+		embed.add_field(name = "Time", value = "Spent playing: {}\nOn TV: {}".format(utilities.secs_to_letter_format(data["playTime"]["total"]), utilities.secs_to_letter_format(data["playTime"]["tv"])))
+		embed.add_field(name = "Follows", value = "Followers: {0[nbFollowers]}\nFollowing: {0[nbFollowing]}".format(data))
+		for mode, field_name in (("bullet", ":zap: Bullet"), ("blitz", ":fire: Blitz"), ("classical", ":hourglass: Classical"), ("correspondence", ":envelope: Correspondence"), ("crazyhouse", ":pisces: Crazyhouse"), ("chess960", ":game_die: Chess960"), ("kingOfTheHill", ":triangular_flag_on_post: King Of The Hill"), ("threeCheck", ":three: Three-Check"), ("antichess", ":arrows_clockwise: Antichess"), ("atomic", ":atom: Atomic"), ("horde", ":question: Horde"), ("racingKings", ":checkered_flag: Racing Kings"), ("puzzle", ":bow_and_arrow: Training")):
+			if data["perfs"][mode]["games"] == 0: continue
+			prov = '?' if data["perfs"][mode]["prov"] else ""
+			chart = ":chart_with_upwards_trend:" if data["perfs"][mode]["prog"] >= 0 else ":chart_with_downwards_trend:"
+			value = "Games: {0[games]}\nRating: {0[rating]}{1} ± {0[rd]}\n{2} {0[prog]}".format(data["perfs"][mode], prov, chart)
+			embed.add_field(name = field_name, value = value)
+		embed.set_footer(text = "Last seen")
+		embed.timestamp = datetime.datetime.utcfromtimestamp(data["seenAt"] / 1000.0)
+		await self.bot.say(embed = embed)
 	
 	@lichess.group(name = "tournaments")
 	async def lichess_tournaments(self):
