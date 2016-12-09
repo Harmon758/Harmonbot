@@ -853,32 +853,39 @@ class Resources:
 			await self.bot.reply("No results found")
 		# await self.bot.reply(next(result.results).text)
 	
-	@commands.command()
+	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def xkcd(self, *options : str):
+	async def xkcd(self, ctx, number : int = 0):
 		'''Find xkcd's'''
-		if not options:
+		if not number:
 			url = "http://xkcd.com/info.0.json" # http://dynamic.xkcd.com/api-0/jsonp/comic/
-		elif utilities.is_digit_gtz(options[0]):
-			url = "http://xkcd.com/{0}/info.0.json".format(options[0]) # http://dynamic.xkcd.com/api-0/jsonp/comic/#
-		elif options[0] == "random":
-			async with aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
-				data = await resp.text()
-			total = json.loads(data)["num"]
-			url = "http://xkcd.com/{0}/info.0.json".format(str(random.randint(1, total)))
 		else:
-			await self.bot.reply("Syntax error.")
-			return
+			url = "http://xkcd.com/{0}/info.0.json".format(number) # http://dynamic.xkcd.com/api-0/jsonp/comic/#
+		await self.process_xkcd(ctx, url)
+	
+	@xkcd.command(name = "random", pass_context = True)
+	@checks.not_forbidden()
+	async def xkcd_random(self, ctx):
+		'''Random xkcd'''
+		async with aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
+			data = await resp.text()
+		total = json.loads(data)["num"]
+		url = "http://xkcd.com/{0}/info.0.json".format(random.randint(1, total))
+		await self.process_xkcd(ctx, url)
+	
+	async def process_xkcd(self, ctx, url):
 		async with aiohttp_session.get(url) as resp:
 			if resp.status == 404:
-				await self.bot.reply("Error.")
+				await self.bot.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
-		await self.bot.reply("\n"
-		"http://xkcd.com/{num} ({date})\n"
-		"{image_link}\n"
-		"{title}\n"
-		"Alt Text: {alt_text}".format(num = str(data["num"]), date = "{month}/{day}/{year}".format(month = data["month"], day = data["day"], year = data["year"]), image_link = data["img"], title = data["title"], alt_text = data["alt"]))
+		embed = discord.Embed(title = data["title"], url = "http://xkcd.com/{}".format(data["num"]), color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		embed.set_image(url = data["img"])
+		embed.set_footer(text = data["alt"])
+		embed.timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"]))
+		await self.bot.say(embed = embed)
 	
 	@commands.command(aliases = ["ytinfo"])
 	@checks.not_forbidden()
