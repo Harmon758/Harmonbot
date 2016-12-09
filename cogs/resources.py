@@ -698,17 +698,21 @@ class Resources:
 			poll = await resp.json()
 		await self.bot.reply("http://strawpoll.me/" + str(poll["id"]))
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def streetview(self, *options : str):
+	async def streetview(self, *, location : str):
 		'''Generate street view of a location'''
-		if options:
-			if options[0] == "random":
-				latitude = random.uniform(-90, 90)
-				longitude = random.uniform(-180, 180)
-				await self.bot.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(str(latitude), str(longitude)))
-			else:
-				await self.bot.reply("https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format('+'.join(options)))
+		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format(location.replace(' ', '+'))
+		await self.bot.embed_reply_image(image_url)
+	
+	@streetview.command(name = "random")
+	@checks.not_forbidden()
+	async def streetview_random(self):
+		'''Generate street view of a random location'''
+		latitude = random.uniform(-90, 90)
+		longitude = random.uniform(-180, 180)
+		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(latitude, longitude)
+		await self.bot.embed_reply_image(image_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
