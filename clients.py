@@ -17,7 +17,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23-0.39"
+version = "0.34.23-0.40"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 wait_time = 15.0
@@ -52,18 +52,8 @@ class Bot(commands.Bot):
 		embed = discord.Embed(description = content, color = bot_color)
 		avatar = author.avatar_url or author.default_avatar_url
 		embed.set_author(name = author.display_name, icon_url = avatar) # url?
-		extensions = ('delete_after',)
-		params = {k: kwargs.pop(k, None) for k in extensions}
-		coro = self.send_message(destination, embed = embed, *args, **kwargs)
-		return self._augmented_msg(coro, embed = embed, **params)
-	
-	def embed_reply_image(self, image_url, *args, **kwargs):
-		author = commands.bot._get_variable('_internal_author')
-		destination = commands.bot._get_variable('_internal_channel')
-		embed = discord.Embed(color = bot_color)
-		avatar = author.avatar_url or author.default_avatar_url
-		embed.set_author(name = author.display_name, icon_url = avatar)
-		embed.set_image(url = image_url)
+		image_url = kwargs.pop("image_url", None)
+		if image_url: embed.set_image(url = image_url)
 		extensions = ('delete_after',)
 		params = {k: kwargs.pop(k, None) for k in extensions}
 		coro = self.send_message(destination, embed = embed, *args, **kwargs)
