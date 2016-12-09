@@ -383,19 +383,32 @@ class Resources:
 		else:
 			await self.bot.reply(data["longUrl"])
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def map(self, *options : str):
+	async def map(self, *, location : str):
+		'''See map of location'''
+		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location.replace(' ', '+'))
+		await self.bot.embed_reply(None, image_url = image_url)
+	
+	@map.command(name = "random")
+	@checks.not_forbidden()
+	async def map_random(self):
+		'''See map of random location'''
+		latitude = random.uniform(-90, 90)
+		longitude = random.uniform(-180, 180)
+		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=13&size=640x640".format(latitude, longitude)
+		await self.bot.embed_reply(None, image_url = image_url)
+	
+	@map.command(name = "options")
+	@checks.not_forbidden()
+	async def map_options(self, zoom : int, maptype : str, *, location : str):
 		'''
-		Get map of location
-		map [location] or map random
+		More customized map of a location
+		Zoom: 0 - 21+ (Default: 13)
+		Map Types: roadmap, satellite, hybrid, terrain (Default: roadmap)
 		'''
-		if options and options[0] == "random":
-			latitude = random.uniform(-90, 90)
-			longitude = random.uniform(-180, 180)
-			await self.bot.reply("https://maps.googleapis.com/maps/api/staticmap?center={0},{1}&zoom=13&size=600x300".format(str(latitude), str(longitude)))
-		else:
-			await self.bot.reply("https://maps.googleapis.com/maps/api/staticmap?center={0}&zoom=13&size=600x300".format("+".join(options)))
+		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&maptype={}&size=640x640".format(location.replace(' ', '+'), zoom, maptype)
+		await self.bot.embed_reply(None, image_url = image_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
