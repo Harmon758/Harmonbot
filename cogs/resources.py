@@ -87,32 +87,43 @@ class Resources:
 			root = xml.etree.ElementTree.fromstring(data)
 			await self.bot.embed_reply(None, image_url = root.find(".//url").text)
 	
-	@commands.command(aliases = ["colour"])
+	@commands.group(aliases = ["colour"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def color(self, *options : str):
+	async def color(self, ctx, *, color : str):
 		'''
 		Information on colors
-		options: random, (hex color code), (search for a color)
+		Accepts hex color codes (without #) and search by keyword
 		'''
-		if not options or options[0] == "random":
-			url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
-		elif utilities.is_hex(options[0]) and len(options[0]) == 6:
-			url = "http://www.colourlovers.com/api/color/{0}?format=json".format(options[0])
+		if utilities.is_hex(color) and len(color) == 6:
+			url = "http://www.colourlovers.com/api/color/{}?format=json".format(color)
 		else:
-			url = "http://www.colourlovers.com/api/colors?numResults=1&format=json&keywords={0}".format('+'.join(options))
+			url = "http://www.colourlovers.com/api/colors?numResults=1&format=json&keywords={}".format(color)
+		await self.process_color(ctx, url)
+	
+	@color.command(name = "random", pass_context = True)
+	@checks.not_forbidden()
+	async def color_random(self, ctx):
+		'''
+		Information on a random color
+		Accepts hex color codes (without #) and search by keyword
+		'''
+		url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
+		await self.process_color(ctx, url)
+	
+	async def process_color(self, ctx, url):
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if not data:
-			await self.bot.reply("Error.")
-		else:
-			data = data[0]
-			rgb = data["rgb"]
-			hsv = data["hsv"]
-			await self.bot.reply("\n"
-			"{name} ({hex})\n"
-			"RGB: ({red}, {green}, {blue})\n"
-			"HSV: ({hue}°, {saturation}%, {value}%)\n"
-			"{image}".format(name = data["title"].capitalize(), hex = "#{}".format(data["hex"]), red = str(rgb["red"]), green = str(rgb["green"]), blue = str(rgb["blue"]),	hue = str(hsv["hue"]), saturation = str(hsv["saturation"]), value = str(hsv["value"]), image = data["imageUrl"]))
+			await self.bot.embed_reply(":no_entry: Error")
+			return
+		data = data[0]
+		embed = discord.Embed(title = data["title"].capitalize(), description = "#{}".format(data["hex"]), color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		embed.add_field(name = "RGB", value = "{0[red]}, {0[green]}, {0[blue]}".format(data["rgb"]))
+		embed.add_field(name = "HSV", value = "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"]))
+		embed.set_image(url = data["imageUrl"])
+		await self.bot.say(embed = embed)
 	
 	@commands.command()
 	@checks.not_forbidden()
