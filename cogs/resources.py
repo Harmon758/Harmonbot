@@ -156,34 +156,31 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def giphy(self, *search : str):
-		'''
-		Find something on giphy
-		options: random, trending, (search)
-		'''
-		url = "http://api.giphy.com/v1/gifs/search?q={0}&limit=1&api_key=dc6zaTOxFJmzC".format("+".join(search))
+	async def giphy(self, *, search : str):
+		'''Find an image on giphy'''
+		url = "http://api.giphy.com/v1/gifs/search?api_key={}&q={}&limit=1".format(credentials.giphy_public_beta_api_key, search)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		await self.bot.reply(data[0]["url"])
+		await self.bot.embed_reply(None, image_url = data[0]["images"]["original"]["url"])
 	
 	@giphy.command(name = "random")
 	async def giphy_random(self):
 		'''Random gif'''
-		url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
+		url = "http://api.giphy.com/v1/gifs/random?api_key={}".format(credentials.giphy_public_beta_api_key)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		await self.bot.reply(data["url"])
+		await self.bot.embed_reply(None, image_url = data["image_url"])
 	
 	@giphy.command(name = "trending")
 	async def giphy_trending(self):
 		'''Trending gif'''
-		url = "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC"
+		url = "http://api.giphy.com/v1/gifs/trending?api_key={}".format(credentials.giphy_public_beta_api_key)
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		await self.bot.reply(data[0]["url"])
+		await self.bot.embed_reply(None, image_url = data[0]["images"]["original"]["url"])
 	
 	@commands.command(aliases = ["search"])
 	@checks.not_forbidden()
