@@ -72,27 +72,20 @@ class Resources:
 				for category in root.findall(".//name"):
 					categories += category.text + ' '
 				await self.bot.embed_reply(categories[:-1])
-				return
 			else:
 				url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={0}".format(category)
 				async with aiohttp_session.get(url) as resp:
 					data = await resp.text()
 				root = xml.etree.ElementTree.fromstring(data)
 				if root.find(".//url") is not None:
-					image_url = root.find(".//url").text
+					await self.bot.embed_reply_image(root.find(".//url").text)
 				else:
 					await self.bot.embed_reply(":no_entry: Error: Category not found")
-					return
 		else:
 			async with aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
 				data = await resp.text()
 			root = xml.etree.ElementTree.fromstring(data)
-			image_url = root.find(".//url").text
-		embed = discord.Embed(color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
-		embed.set_image(url = image_url)
-		await self.bot.say(embed = embed)
+			await self.bot.embed_reply_image(root.find(".//url").text)
 	
 	@commands.command(aliases = ["colour"])
 	@checks.not_forbidden()
