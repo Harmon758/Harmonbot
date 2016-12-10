@@ -11,7 +11,6 @@ import random
 # import spotipy
 import urllib
 import xml.etree.ElementTree
-import wolframalpha
 import youtube_dl
 
 import credentials
@@ -29,9 +28,7 @@ class Resources:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.waclient = wolframalpha.Client(credentials.wolframalpha_appid)
 		self.lichess_user_data, self.lichess_tournaments_data = None, None
-		#wolframalpha (wa)
 		# spotify = spotipy.Spotify()
 	
 	@commands.command()
@@ -901,14 +898,14 @@ class Resources:
 	async def _wolframalpha(self, ctx, search, location = "Fort Yukon, Alaska"):
 		ip = "nice try"
 		search = search.strip('`')
-		result = self.waclient.query(search, ip = ip, location = location) # options
+		result = clients.wolfram_alpha_client.query(search, ip = ip, location = location) # options
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
 				didyoumean =result.didyoumeans["didyoumean"]["#text"]
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
 			await self.bot.reply("Using closest Wolfram|Alpha interpretation: `{}`".format(didyoumean))
-			result = self.waclient.query(didyoumean, ip = ip, location = location)
+			result = clients.wolfram_alpha_client.query(didyoumean, ip = ip, location = location)
 		if hasattr(result, "pods"):
 			for pod in result.pods:
 				output = ("**{}**".format(pod.title))
