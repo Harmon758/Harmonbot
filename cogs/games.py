@@ -4,11 +4,8 @@ from discord.ext import commands
 
 import asyncio
 from bs4 import BeautifulSoup
-# import cairosvg
-import chess
+# import chess
 import chess.pgn
-import chess.svg
-import chess.uci
 import cleverbot
 import copy
 import html
@@ -16,7 +13,6 @@ import json
 import pydealer
 import random
 import string
-from wand.image import Image
 
 from modules import utilities
 from modules import adventure
@@ -24,6 +20,7 @@ from modules import adventure
 from modules.maze import maze
 from modules import war
 from utilities import checks
+from utilities.chess import chess_match
 import clients
 from clients import wait_time
 from clients import code_block
@@ -38,11 +35,7 @@ class Games:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self._chess_board = chess.Board()
-		self.chess_engine = chess.uci.popen_engine("bin/stockfish 7 x64")
-		#self.chess_engine = chess.uci.popen_engine("bin/stockfish 7 x64 popcnt")
-		self.chess_engine.uci()
-		self.chess_engine_context, self.chess_engine_message = None, None
+		self.chess_matches = []
 		self.war_channel, self.war_players = None, []
 		self.gofish_channel, self.gofish_players = None, []
 		self.taboo_players = []
@@ -341,170 +334,179 @@ class Games:
 	
 	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def chess(self, ctx, *move : str):
+	async def chess(self, ctx):
 		'''
 		Play chess
 		Supports standard algebraic and UCI notation
+		Example:
+		 !chess play you
+		 white
+		 e2e4
 		'''
-		if not move:
-			await self.bot.reply("See {}help chess".format(ctx.prefix))
+		await self.bot.embed_reply("See {}help chess".format(ctx.prefix))
+		
+		'''
 		else:
 			try:
-				self._chess_board.push_san(move[0])
+				self._chess_board.push_san(move)
 			except ValueError:
 				try:
-					self._chess_board.push_uci(move[0])
+					self._chess_board.push_uci(move)
 				except ValueError:
-					await self.bot.reply("Invalid move.")
+					await self.bot.embed_reply(":no_entry: Invalid move")
 					return
-			await self._display_chess_board(ctx)
+			await self._update_chess_board_embed()
+		'''
+	
+	@chess.command(name = "play", aliases = ["start"], pass_context = True)
+	@checks.not_forbidden()
+	async def chess_play(self, ctx, *, opponent : str = ""):
+		'''
+		Challenge someone to a match
+		You can play me as well
+		'''
+		# check if already playing a match in this channel
+		if self.get_chess_match(ctx.message.channel, ctx.message.author):
+			await self.bot.embed_reply(":no_entry: You're already playing a chess match here")
+			return
+		# prompt for opponent
+		if not opponent:
+			await self.bot.embed_reply("Who would you like to play?")
+			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel)
+			opponent = message.content
+		color = None
+		if opponent.lower() in ("harmonbot", "you"):
+			opponent = self.bot.user
+		elif opponent.lower() in ("myself", "me"):
+			opponent = ctx.message.author
+			color = 'w'
+		else:
+			opponent = await utilities.get_user(ctx, opponent)
+			if not opponent:
+				await self.bot.embed_reply(":no_entry: Opponent not found")
+				return
+		# check if opponent already playing a match in this channel
+		if opponent != self.bot.user and self.get_chess_match(ctx.message.channel, opponent):
+			await self.bot.embed_reply(":no_entry: Your chosen opponent is playing a chess match here")
+			return
+		# prompt for color
+		if opponent == ctx.message.author:
+			color = 'w'
+		if not color:
+			await self.bot.embed_reply("Would you like to play white, black, or random?")
+			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda msg: msg.content.lower() in ("white", "black", "random", 'w', 'b', 'r'))
+			color = message.content.lower()
+		if color in ("random", 'r'):
+			color = random.choice(('w', 'b'))
+		if color in ("white", 'w'):
+			white_player = ctx.message.author
+			black_player = opponent
+		elif color in ("black", 'b'):
+			white_player = opponent
+			black_player = ctx.message.author
+		# prompt opponent
+		if opponent != self.bot.user and opponent != ctx.message.author:
+			await self.bot.say("{}: {} has challenged you to a chess match\nWould you like to accept? yes/no".format(opponent.mention, ctx.message.author))
+			message = await self.bot.wait_for_message(author = opponent, channel = ctx.message.channel, check = lambda msg: msg.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
+			if not message or message.content.lower() in ("no", 'n'):
+				await self.bot.say("{}: {} has declined your challenge".format(ctx.message.author.mention, opponent))
+				return
+		match = chess_match()
+		match.initialize(self.bot, ctx.message.channel, white_player, black_player)
+		self.chess_matches.append(match)
+	
+	def get_chess_match(self, text_channel, player):
+		return discord.utils.find(lambda cb: cb.text_channel == text_channel and (cb.white_player == player or cb.black_player == player), self.chess_matches)
 	
 	#dm
 	#check mate, etc.
 	
-	@chess.command(name = "play_harmonbot", pass_context = True)
-	async def chess_play_harmonbot(self, ctx, *color):
-		'''Play chess with Harmonbot'''
-		self._chess_board.reset()
-		if not color or color[0] not in ("white", "black"):
-			await self.bot.reply("Would you like to play white or black?")
-			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda msg: msg.content.lower() in ("white", "black"))
-			color = [message.content]
-		if color[0].lower() == "black":
-			self.chess_engine.position(self._chess_board)
-			self.chess_engine.go(movetime = 2000, async_callback = self.process_chess_engine_command)
-			self.chess_engine_message = await self.bot.reply("I'm thinking..")
-			self.chess_engine_context = ctx
-			flipped = True
-		else:
-			await self._display_chess_board(ctx)
-			flipped = False
-		while True:
-			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda msg: self.valid_move(msg.content))
-			try:
-				self._chess_board.push_san(message.content)
-			except ValueError:
-				try:
-					self._chess_board.push_uci(message.content)
-				except ValueError:
-					await self.bot.reply("Error: Invalid move.")
-					return
-			await self._display_chess_board(ctx, flipped = flipped)
-			self.chess_engine.position(self._chess_board)
-			self.chess_engine.go(movetime = 2000, async_callback = self.process_chess_engine_command)
-			self.chess_engine_message = await self.bot.reply("I'm thinking..")
-			self.chess_engine_context = ctx
+	@chess.group(name = "board", aliases = ["match"], pass_context = True, invoke_without_command = True)
+	async def chess_board(self, ctx):
+		'''Current match/board'''
+		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		if not match:
+			await self.bot.embed_reply(":no_entry: Chess match not found")
+			return
+		await match.new_match_embed()
 	
-	def valid_move(self, move):
-		try:
-			self._chess_board.parse_san(move)
-		except ValueError:
-			try:
-				self._chess_board.parse_uci(move)
-			except ValueError:
-				return False
-		return True
-	
-	@chess.group(name = "board", pass_context = True, invoke_without_command = True)
-	async def chess_board(self, ctx, *options : str):
-		'''
-		Current board
-		Options: flipped
-		'''
-		flipped = options and options[0].lower() == "flipped"
-		await self._display_chess_board(ctx, flipped = flipped)
-	
-	async def _display_chess_board(self, ctx, *, message = None, flipped = False):
-		# svg = self._chess_board._repr_svg_()
-		svg = chess.svg.board(self._chess_board, flipped = flipped)
-		with open("data/temp/chess_board.svg", 'w') as image:
-			# print(svg[:40] + 'xmlns:xlink="http://www.w3.org/1999/xlink" ' + svg[40:], file = image)
-			print(svg.replace('class="square light', 'fill="#ffce9e" class="square light').replace('class="square dark', 'fill="#d18b47" class="square dark'), file = image)
-		'''
-		with open("data/temp/chess_board.png", 'wb') as image:
-			cairosvg.svg2png(svg[:40] + 'xmlns:xlink="http://www.w3.org/1999/xlink" ' + svg[40:])
-		with open("data/temp/chess_board.png", 'r') as image:
-			await self.bot.send_file(ctx.message.channel, image)
-		'''
-		with Image(filename = "data/temp/chess_board.svg") as img:
-			img.format = "png"
-			img.save(filename = "data/temp/chess_board.png")
-		asyncio.sleep(0.1)
-		with open("data/temp/chess_board.png", 'rb') as image:
-			await self.bot.send_file(ctx.message.channel, image, content = message)
-	
-	@chess_board.command(name = "text")
-	async def chess_board_text(self):
+	@chess_board.command(name = "text", pass_context = True)
+	async def chess_board_text(self, ctx):
 		'''Text version of the current board'''
-		await self.bot.reply("\n```" + str(self._chess_board) + "```")
+		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		if not match:
+			await self.bot.embed_reply(":no_entry: Chess match not found")
+			return
+		await self.bot.reply(clients.code_block.format(match))
 	
-	@chess.command(name = "fen")
-	async def chess_fen(self):
+	@chess.command(name = "fen", pass_context = True)
+	async def chess_fen(self, ctx):
 		'''FEN of the current board'''
-		await self.bot.reply(self._chess_board.fen())
+		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		if not match:
+			await self.bot.embed_reply(":no_entry: Chess match not found")
+			return
+		await self.bot.embed_reply(match.fen())
 	
-	@chess.command(name = "pgn")
-	async def chess_pgn(self):
+	@chess.command(name = "pgn", pass_context = True, hidden = True)
+	async def chess_pgn(self, ctx):
 		'''PGN of the current game'''
-		await self.bot.reply(chess.pgn.Game.from_board(self._chess_board))
+		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		if not match:
+			await self.bot.embed_reply(":no_entry: Chess match not found")
+			return
+		await self.bot.embed_reply(str(chess.pgn.Game.from_board(match)))
 	
-	@chess.command(name = "turn")
-	async def chess_turn(self):
+	@chess.command(name = "turn", pass_context = True, hidden = True)
+	async def chess_turn(self, ctx):
 		'''Who's turn it is to move'''
-		if self._chess_board.turn:
-			await self.bot.reply("It's white's turn to move.")
+		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		if not match:
+			await self.bot.embed_reply(":no_entry: Chess match not found")
+			return
+		if match.turn:
+			await self.bot.embed_reply("It's white's turn to move")
 		else:
-			await self.bot.reply("It's black's turn to move.")
+			await self.bot.embed_reply("It's black's turn to move")
 	
-	@chess.command(name = "harmonbot", aliases = ["computer", "engine"], pass_context = True)
-	async def chess_harmonbot(self, ctx):
-		'''Ask Harmonbot to make a move'''
-		self.chess_engine.position(self._chess_board)
-		self.chess_engine.go(movetime = 2000, async_callback = self.process_chess_engine_command)
-		self.chess_engine_message = await self.bot.reply("I'm thinking..")
-		self.chess_engine_context = ctx
-	
-	def process_chess_engine_command(self, command):
-		bestmove, ponder = command.result()
-		coro = self.bot.edit_message(self.chess_engine_message, "I moved " + str(bestmove))
-		fut = asyncio.run_coroutine_threadsafe(coro, self.bot.loop)
-		fut.result()
-		self._chess_board.push(bestmove)
-		if self._chess_board.turn:
-			coro = self._display_chess_board(self.chess_engine_context, flipped = False)
-		else:
-			coro = self._display_chess_board(self.chess_engine_context, flipped = True)
-		fut = asyncio.run_coroutine_threadsafe(coro, self.bot.loop)
-		fut.result()
-	
+	"""
 	@chess.command(name = "reset", pass_context = True)
 	async def chess_reset(self, ctx):
 		'''Reset the board'''
 		self._chess_board.reset()
-		await self.bot.reply("The board has been reset.")
+		await self.bot.embed_reply("The board has been reset")
+	"""
 	
+	"""
 	@chess.command(name = "undo", pass_context = True)
 	async def chess_undo(self, ctx):
 		'''Undo the previous move'''
 		try:
 			self._chess_board.pop()
-			await self._display_chess_board(ctx, message = "The previous move was undone.")
+			await self._display_chess_board(ctx, message = "The previous move was undone")
 		except IndexError:
-			await self.bot.reply("There's no more moves to undo.")
+			await self.bot.embed_reply(":no_entry: There are no more moves to undo")
+	"""
 	
-	@chess.command(name = "previous", aliases = ["last"])
-	async def chess_last(self):
+	@chess.command(name = "previous", aliases = ["last"], pass_context = True, hidden = True)
+	async def chess_previous(self, ctx):
 		'''Previous move'''
+		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		if not match:
+			await self.bot.embed_reply(":no_entry: Chess match not found")
+			return
 		try:
-			await self.bot.reply(self._chess_board.peek())
+			await self.bot.embed_reply(str(match.peek()))
 		except IndexError:
-			await self.bot.reply("There was no previous move.")
+			await self.bot.embed_reply(":no_entry: There was no previous move")
 	
+	"""
 	@chess.command(name = "(╯°□°）╯︵", pass_context = True, hidden = True)
 	async def chess_flip(self, ctx):
 		'''Flip the table over'''
 		self._chess_board.clear()
 		await self.bot.say(ctx.message.author.name + " flipped the table over in anger!")
+	"""
 	
 	@commands.command(aliases = ["talk", "ask"])
 	@checks.not_forbidden()
