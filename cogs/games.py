@@ -562,7 +562,7 @@ class Games:
 		if ctx.message.author in gofish_players:
 			pass
 	
-	@commands.command(pass_context = True)
+	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def guess(self, ctx, *options : str):
 		'''
@@ -690,7 +690,7 @@ class Games:
 				self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
 			await self.bot.say("```" + self.jeopardy_board_output + "```")
 	
-	@commands.command(pass_context = True)
+	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def maze(self, ctx, *options : str):
 		'''

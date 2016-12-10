@@ -398,7 +398,7 @@ class Audio:
 			self.players[ctx.message.server.id].default_volume = volume_setting
 			await self.bot.say(":sound: Default volume set to {}".format(volume_setting))
 	
-	@commands.command(pass_context = True, aliases = ["current"], no_pm = True)
+	@commands.group(pass_context = True, aliases = ["current"], no_pm = True, invoke_without_command = True)
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
 	async def playing(self, ctx):
