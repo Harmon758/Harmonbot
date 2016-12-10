@@ -17,9 +17,10 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23-0.49"
+version = "0.34.23-0.50"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
+listener_id = "180994984038760448"
 wait_time = 15.0
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
@@ -179,7 +180,7 @@ async def _update_discord_bots_stats():
 async def on_ready():
 	global application_info, harmonbot_listener
 	application_info = await client.application_info()
-	harmonbot_listener = await client.get_user_info(credentials.listenerid)
+	harmonbot_listener = await client.get_user_info(listener_id)
 	await _update_discord_bots_stats()
 
 @client.listen()
