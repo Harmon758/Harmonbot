@@ -7,6 +7,7 @@ import chess.pgn
 import chess.svg
 import chess.uci
 import datetime
+import re
 # import requests
 from wand.image import Image
 
@@ -76,9 +77,16 @@ class chess_match(chess.Board):
 	async def update_match_embed(self, *, flipped = None, footer_text = discord.Embed.Empty):
 		if flipped is None: flipped = not self.turn
 		# svg = self._repr_svg_()
-		svg = chess.svg.board(self, flipped = flipped)
+		svg = chess.svg.board(self, lastmove = self.peek() if self.move_stack else None, check = chess.bit_scan(self.kings & self.occupied_co[self.turn]) if self.is_check() else None, flipped = flipped)
+		svg = svg.replace("y=\"390\"", "y=\"395\"")
+		svg = svg.replace("class=\"square light", "fill=\"#ffce9e\" class=\"square light")
+		svg = svg.replace("class=\"square dark", "fill=\"#d18b47\" class=\"square dark")
+		svg = svg.replace("class=\"check", "fill=\"url(#check_gradient)\" class=\"check")
+		svg = svg.replace("<stop offset=\"100%\" stop-color=\"rgba(158, 0, 0, 0)\" />", "<stop offset=\"100%\" stop-color=\"rgba(158, 0, 0, 0)\" stop-opacity=\"0\" />")
+		svg = re.subn(r"fill=\"#ffce9e\" class=\"square light [a-h][1-8] lastmove\"", lambda m: m.group(0).replace("ffce9e", "cdd16a"), svg)[0]
+		svg = re.subn(r"fill=\"#d18b47\" class=\"square dark [a-h][1-8] lastmove\"", lambda m: m.group(0).replace("d18b47", "aaa23b"), svg)[0]
 		with open("data/temp/chess_board.svg", 'w') as image:
-			print(svg.replace('class="square light', 'fill="#ffce9e" class="square light').replace('class="square dark', 'fill="#d18b47" class="square dark'), file = image)
+			print(svg, file = image)
 		with Image(filename = "data/temp/chess_board.svg") as img:
 			img.format = "png"
 			img.save(filename = "data/temp/chess_board.png")
