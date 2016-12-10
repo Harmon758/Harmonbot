@@ -2,23 +2,23 @@ git+git://github.com/Rapptz/discord.py.git
 
 imageio==1.5
 
-beautifulsoup4
-cleverbot
-feedparser
-inflect
-isodate
-moviepy
-pandas
-psutil
-pydealer
-pyowm
-python-chess
-python-dateutil
-seaborn
-speechrecognition
-sympy
-tweepy
-wand
-wolframalpha
-youtube_dl
+beautifulsoup4==4.4.1
+cleverbot==1.1.1
+feedparser==5.2.1
+inflect==0.2.5
+isodate==0.5.4
+moviepy==0.2.2.11
+pandas==0.18.1
+psutil==4.3.1
+pydealer==1.4.0
+pyowm==2.3.1
+python-chess==0.15.0
+python-dateutil==2.5.3
+seaborn==0.7.1
+speechrecognition==3.4.6
+sympy==1.0
+tweepy==3.5.0
+wand==0.4.3
+wolframalpha==3.0
+youtube_dl==2016.10.7
 
