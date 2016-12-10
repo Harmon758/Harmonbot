@@ -17,7 +17,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23-0.46"
+version = "0.34.23-0.47"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 wait_time = 15.0
@@ -138,6 +138,11 @@ class Bot(commands.Bot):
 			exc = CommandNotFound('Command "{}" is not found'.format(invoker))
 			self.dispatch('command_error', exc, ctx)
 
+# Create Folders
+
+utilities.create_folder("data")
+utilities.create_folder("data/temp")
+utilities.create_folder("data/permissions")
 
 # Custom prefixes
 
