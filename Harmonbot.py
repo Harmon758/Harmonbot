@@ -279,7 +279,11 @@ else:
 	token = credentials.token
 
 try:
-	client.loop.run_until_complete(client.start(token))
+	if os.getenv("TRAVIS") and os.getenv("CI"):
+		client.loop.create_task(client.start(token))
+		client.loop.run_until_complete(asyncio.sleep(10))
+	else:
+		client.loop.run_until_complete(client.start(token))
 except KeyboardInterrupt:
 	print("Shutting down Discord Harmonbot...")
 	client.loop.run_until_complete(clients.restart_tasks())
