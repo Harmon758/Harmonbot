@@ -1,8 +1,8 @@
 # Instance Specific Data
-/credentials.py
+/_credentials.py
 /src/credentials/
+/bin/harmonbot_listener.exe
 
-/bin/
 /data/
 /pkg/
 
