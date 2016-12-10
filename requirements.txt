@@ -12,7 +12,7 @@ pandas==0.18.1
 psutil==4.3.1
 pydealer==1.4.0
 pyowm==2.3.1
-python-chess==0.15.0
+python-chess==0.15.4
 python-dateutil==2.5.3
 seaborn==0.7.1
 speechrecognition==3.4.6
