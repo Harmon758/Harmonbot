@@ -1,31 +1,33 @@
 package main
 
-import (
-	"github.com/bwmarrin/dgvoice"
-	"github.com/bwmarrin/discordgo"
+import "github.com/bwmarrin/dgvoice"
+import "github.com/bwmarrin/discordgo"
 	
-	"bufio"
-	"bytes"
-	"encoding/base64"
-	"encoding/binary"
-	"io/ioutil"
-	"fmt"
-	"os"
-	"strings"
-	"time"
-	
-	"credentials"
-)
+import "bufio"
+import "bytes"
+import "encoding/base64"
+import "encoding/binary"
+import "encoding/json"
+import "io/ioutil"
+import "fmt"
+import "os"
+import "strings"
+import "time"
 
-var (
-	_continue	bool
-	_listen 	bool
-	dgv 		*discordgo.VoiceConnection
-	recv 		chan *discordgo.Packet
-	send 		chan []int16
-	me			*discordgo.User
-	// response	*discordgo.Message
-)
+var _continue		bool
+var _listen			bool
+var dgv				*discordgo.VoiceConnection
+var recv			chan *discordgo.Packet
+var send			chan []int16
+var me				*discordgo.User
+var token			string
+var owner_id		string
+// var response		*discordgo.Message
+
+type _credentials struct {
+	Token		string
+	Owner_id	string
+}
 
 func check(e error) {
     if e != nil {
@@ -35,9 +37,20 @@ func check(e error) {
 
 func main() {
 	fmt.Println("Starting up Harmonbot Listener...")
+	
+	// Load Credentials
+	if raw, err := ioutil.ReadFile("../Harmonbot_Listener_credentials.json"); err == nil {
+		var credentials _credentials
+		json.Unmarshal(raw, &credentials)
+		token = credentials.Token
+		owner_id = credentials.Owner_id
+	} else {
+		token = os.Getenv("harmonbot_listener_token")
+		owner_id = os.Getenv("harmonbot_listener_owner_id")
+	}
 
 	// Connect to Discord
-	dg, err := discordgo.New(credentials.Listener_token)
+	dg, err := discordgo.New(token)
 	check(err)
 	
 	// Register ready as a callback for the ready events.
@@ -104,12 +117,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			dgv = nil
 			s.ChannelMessageSend(m.ChannelID, ":door: I've left the voice channel.")
 		case ">restart":
-			// if m.Author.ID == credentials.Myid {
+			// if m.Author.ID == owner_id {
 			s.ChannelMessageSend(m.ChannelID, ":ok_hand::skin-tone-2: Restarting...")
 			_continue = false
 			// }
 		case ">updateavatar":
-			if m.Author.ID == credentials.Myid {
+			if m.Author.ID == owner_id {
 				changeAvatar(s)
 				s.ChannelMessageSend(m.ChannelID, "Avatar Updated.")
 			}

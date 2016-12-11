@@ -1,10 +1,9 @@
 # Instance Specific Data
 /_credentials.py
-/src/credentials/
 /bin/harmonbot_listener.exe
+Harmonbot_Listener_credentials.json
 
 /data/
-/pkg/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
