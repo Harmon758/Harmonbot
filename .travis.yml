@@ -1,14 +1,18 @@
 language: python
 python:
   - "3.5"
-cache: pip
+cache:
+  pip: true
+  directories:
+  - $HOME/.gimme
+  - $HOME/.imageio
 before_install:
   - gimme 1.6
-  - export GOROOT="/home/travis/.gimme/versions/go1.6.linux.amd64"
-  - export GOPATH="/home/travis/.gimme/versions/go1.6.linux.amd64/bin:$TRAVIS_BUILD_DIR"
-  - /home/travis/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/discordgo
-  - /home/travis/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/dgvoice
+  - export GOROOT="$HOME/.gimme/versions/go1.6.linux.amd64"
+  - export GOPATH="$HOME/.gimme/versions/go1.6.linux.amd64/bin:$TRAVIS_BUILD_DIR"
+  - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/discordgo
+  - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/dgvoice
 script:
   - python Harmonbot.py
-  - /home/travis/.gimme/versions/go1.6.linux.amd64/bin/go run Harmonbot_Listener.go
+  - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go run Harmonbot_Listener.go
 
