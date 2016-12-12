@@ -39,7 +39,7 @@ func main() {
 	fmt.Println("Starting up Harmonbot Listener...")
 	
 	// Load Credentials
-	if raw, err := ioutil.ReadFile("../Harmonbot_Listener_credentials.json"); err == nil {
+	if raw, err := ioutil.ReadFile("Harmonbot_Listener_credentials.json"); err == nil {
 		var credentials _credentials
 		json.Unmarshal(raw, &credentials)
 		token = credentials.Token
@@ -194,6 +194,7 @@ func Listen(v *discordgo.VoiceConnection) {
 func changeAvatar(s *discordgo.Session) {
 	img, err := ioutil.ReadFile("../data/avatars/discord_harmonbot_listener_icon.png")
 	check(err)
+	// add file name input
 
 	base64 := base64.StdEncoding.EncodeToString(img)
 
