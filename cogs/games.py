@@ -17,10 +17,10 @@ import string
 from modules import utilities
 from modules import adventure
 #from modules import gofish
+from modules.chess import chess_match
 from modules.maze import maze
 from modules import war
 from utilities import checks
-from utilities.chess import chess_match
 import clients
 from clients import wait_time
 from clients import code_block
