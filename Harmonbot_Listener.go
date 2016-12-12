@@ -66,10 +66,12 @@ func main() {
 	check(err)
 	
 	fmt.Printf("Started up %s#%s (%s)\n", me.Username, me.Discriminator, me.ID)
-
-	_continue = true
-	for _continue {
-		time.Sleep(1)
+	
+	if os.Getenv("TRAVIS") == "" || os.Getenv("CI") == "" {
+		_continue = true
+		for _continue {
+			time.Sleep(1)
+		}
 	}
 	
 	fmt.Println("Shutting down Harmonbot Listener...")
