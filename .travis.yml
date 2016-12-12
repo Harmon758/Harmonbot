@@ -10,5 +10,5 @@ before_install:
   - /home/travis/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/dgvoice
 script:
   - python Harmonbot.py
-  - /home/travis/.gimme/versions/go1.6.linux.amd64/bin/go install Harmonbot_Listener
+  - /home/travis/.gimme/versions/go1.6.linux.amd64/bin/go run Harmonbot_Listener.go
 
