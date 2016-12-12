@@ -264,7 +264,7 @@ class AudioPlayer:
 	async def play_tts(self, message, requester, *, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
 		if not self.not_interrupted.is_set():
 			return False
-		func = functools.partial(subprocess.call, ["espeak", "-a {}".format(amplitude), "-p {}".format(pitch), "-s {}".format(speed), "-g {}".format(word_gap), "-v{}".format(voice), "-w data/temp/tts.wav", message], shell = True)
+		func = functools.partial(subprocess.call, ["bin\espeak", "-a {}".format(amplitude), "-p {}".format(pitch), "-s {}".format(speed), "-g {}".format(word_gap), "-v{}".format(voice), "-w data/temp/tts.wav", message], shell = True)
 		await self.bot.loop.run_in_executor(None, func)
 		interrupt_message = await self._interrupt("data/temp/tts.wav", "TTS message", requester)
 		if interrupt_message: await self.bot.delete_message(interrupt_message)
