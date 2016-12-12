@@ -18,7 +18,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23-1.0"
+version = "0.34.23-1.1"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -141,11 +141,13 @@ class Bot(commands.Bot):
 			exc = CommandNotFound('Command "{}" is not found'.format(invoker))
 			self.dispatch('command_error', exc, ctx)
 
+
 # Create Folders
 
 utilities.create_folder("data")
 utilities.create_folder("data/temp")
 utilities.create_folder("data/permissions")
+
 
 # Custom prefixes
 
@@ -192,6 +194,12 @@ async def on_server_join(server):
 @client.listen()
 async def on_server_remove(server):
 	await _update_discord_bots_stats()
+
+
+# Download FFMPEG
+
+import imageio
+imageio.plugins.ffmpeg.download()
 
 
 # Load cogs
