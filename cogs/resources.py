@@ -19,7 +19,6 @@ from utilities import checks
 from utilities import errors
 import clients
 from clients import aiohttp_session
-from clients import owm_client
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -797,7 +796,7 @@ class Resources:
 	async def weather(self, ctx, *, location : str):
 		'''Weather'''
 		# wunderground?
-		observation = owm_client.weather_at_place(location)
+		observation = clients.owm_client.weather_at_place(location)
 		location = observation.get_location()
 		weather = observation.get_weather()
 		condition = weather.get_status()
@@ -808,8 +807,8 @@ class Resources:
 		wind = weather.get_wind()
 		pressure = weather.get_pressure()["press"]
 		visibility = weather.get_visibility_distance()
-		embed = discord.Embed(description = "**__{}__**".format(location.get_name()), color = clients.bot_color, timestamp = weather.get_reference_time(timeformat = "date"))
-		avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+		embed = discord.Embed(description = "**__{}__**".format(location.get_name()), color = clients.bot_color, timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None))
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
 		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
 		embed.add_field(name = "Conditions", value = "{}{}".format(condition, emote))
 		embed.add_field(name = "Temperature", value = "{}°C\n{}°F".format(weather.get_temperature(unit = "celsius")["temp"], weather.get_temperature(unit = "fahrenheit")["temp"]))
