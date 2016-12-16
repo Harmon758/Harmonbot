@@ -817,6 +817,7 @@ class Games:
 				if data["answer"].lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]] \
 				or response.lower() == BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().lower() \
 				or response.lower().replace('-', ' ') == data["answer"].lower().replace('-', ' ') \
+				or response.lower() == data["answer"].lower().replace('!', "") \
 				or response.lower().replace('(', "").replace(')', "") == data["answer"].lower().replace('(', "").replace(')', "") \
 				or (matches and (response.lower() == matches.group(0) or response.lower() == matches.group(1))) \
 				or response.lower().strip('"') == data["answer"].lower().strip('"'):
