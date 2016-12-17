@@ -295,22 +295,19 @@ class Discord:
 		See a bigger version of an avatar
 		Your own or someone else's avatar
 		'''
-		if name:
-			if ctx.message.server:
-				user = await utilities.get_user(ctx, name)
-				if user and user.avatar_url:
-					await self.bot.reply(name + "'s avatar: " + user.avatar_url)
-				elif user:
-					await self.bot.reply(name + "'s avatar: " + user.default_avatar_url)
-				else:
-					await self.bot.reply(name + " was not found on this server.")
-			else:
-				await self.bot.reply("Please use that command in a server.")
-		else:
-			if ctx.message.author.avatar_url:
-				await self.bot.reply("Your avatar: " + ctx.message.author.avatar_url)
-			else:
-				await self.bot.reply("Your avatar: " + ctx.message.author.default_avatar_url)
+		if not name:
+			avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+			await self.bot.embed_reply(None, title = "Your avatar", image_url = avatar)
+			return
+		if not ctx.message.server:
+			await self.bot.embed_reply(":no_entry: Please use that command in a server")
+			return
+		user = await utilities.get_user(ctx, name)
+		if not user:
+			await self.bot.embed_reply(":no_entry: {} was not found on this server".format(name))
+			return
+		avatar = user.avatar_url or user.default_avatar_url
+		await self.bot.embed_reply(None, title = "{}'s avatar".format(user), image_url = avatar)
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
