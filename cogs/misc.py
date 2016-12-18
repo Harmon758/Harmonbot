@@ -8,7 +8,6 @@ import json
 from modules import utilities
 from utilities import checks
 import clients
-from clients import inflect_engine
 
 def setup(bot):
 	bot.add_cog(Misc(bot))
@@ -17,6 +16,23 @@ class Misc:
 	
 	def __init__(self, bot):
 		self.bot = bot
+	
+	@commands.command(aliases = ["emotify"])
+	@checks.not_forbidden()
+	async def emojify(self, *, text : str):
+		'''Emojify'''
+		output = ""
+		for character in text:
+			if 'a' <= character.lower() <= 'z':
+				output += ":regional_indicator_{}:".format(character.lower())
+			elif '0' <= character <= '9':
+				output += ":{}:".format(clients.inflect_engine.number_to_words(int(character)))
+			else:
+				output += character
+		try:
+			await self.bot.embed_reply(output)
+		except discord.errors.HTTPException:
+			await self.bot.embed_reply(":no_entry: Error")
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -66,9 +82,9 @@ class Misc:
 			embed = discord.Embed(color = clients.bot_color)
 			avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
 			embed.set_author(name = ctx.message.author, icon_url = avatar)
-			embed.description = "Poked you for the {} time!".format(inflect_engine.ordinal(pokes_data[to_poke.id]))
+			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[to_poke.id]))
 			await self.bot.send_message(to_poke, embed = embed)
-			await self.bot.embed_reply("You have poked {} for the {} time!".format(user, inflect_engine.ordinal(pokes_data[to_poke.id])))
+			await self.bot.embed_reply("You have poked {} for the {} time!".format(user, clients.inflect_engine.ordinal(pokes_data[to_poke.id])))
 			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
 
@@ -80,7 +96,7 @@ def emote_wrapper(name, emote = None):
 		await self.bot.embed_reply(":{}:".format(emote))
 	return emote_command
 
-for emote in ("fish", "frog", "turtle", "gun"):
+for emote in ("fish", "frog", "turtle", "gun", "tomato"):
 	setattr(Misc, emote, emote_wrapper(emote))
 setattr(Misc, "dog", emote_wrapper("dog", emote = "dog2"))
 
