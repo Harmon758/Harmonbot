@@ -36,6 +36,22 @@ class Misc:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def fancify(self, *, text : str):
+		'''Fancify text'''
+		output = ""
+		for character in text:
+			if 'A' <= character <= 'Z':
+				output += chr(ord(character) + 119951)
+			elif 'a' <= character <= 'z':
+				output += chr(ord(character) + 119919)
+			elif '0' <= character <= '9':
+				output += chr(ord(character) + 120744)
+			else:
+				output += character
+		await self.bot.embed_reply(output)
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def fingers(self, *, text : str):
 		'''Add fingers'''
 		await self.bot.embed_reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
