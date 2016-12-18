@@ -257,20 +257,6 @@ class Tools:
 		'''Computer CRC32 checksum'''
 		await self.bot.reply(zlib.crc32(message.encode("utf-8")))
 	
-	@commands.command()
-	@checks.not_forbidden()
-	async def fancify(self, *, text : str):
-		'''Fancify text'''
-		output = ""
-		for letter in text:
-			if 65 <= ord(letter) <= 90:
-				output += chr(ord(letter) + 119951)
-			elif 97 <= ord(letter) <= 122:
-				output += chr(ord(letter) + 119919)
-			elif letter == ' ':
-				output += ' '
-		await self.bot.reply(output)
-	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def graph(self, ctx, *, data : str):
