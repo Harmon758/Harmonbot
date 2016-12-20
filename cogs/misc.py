@@ -20,7 +20,7 @@ class Misc:
 	@commands.command(aliases = ["emotify"])
 	@checks.not_forbidden()
 	async def emojify(self, *, text : str):
-		'''Emojify'''
+		'''Emojify text'''
 		output = ""
 		for character in text:
 			if 'a' <= character.lower() <= 'z':
@@ -60,7 +60,7 @@ class Misc:
 	@checks.not_forbidden()
 	async def loading_bar(self):
 		'''
-		Just for fun loading bar
+		A loading bar
 		Currently does nothing.. or does it?
 		'''
 		counter = 0
@@ -81,9 +81,7 @@ class Misc:
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def poke(self, ctx, *, user : str):
-		'''
-		Poke someone
-		'''
+		'''Poke someone'''
 		to_poke = await utilities.get_user(ctx, user)
 		if not to_poke:
 			await self.bot.embed_reply(":no_entry: User not found")
@@ -100,7 +98,7 @@ class Misc:
 			embed.set_author(name = ctx.message.author, icon_url = avatar)
 			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[to_poke.id]))
 			await self.bot.send_message(to_poke, embed = embed)
-			await self.bot.embed_reply("You have poked {} for the {} time!".format(user, clients.inflect_engine.ordinal(pokes_data[to_poke.id])))
+			await self.bot.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[to_poke.id])))
 			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
 
@@ -112,7 +110,7 @@ def emote_wrapper(name, emote = None):
 		await self.bot.embed_reply(":{}:".format(emote))
 	return emote_command
 
-for emote in ("fish", "frog", "turtle", "gun", "tomato"):
+for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant"):
 	setattr(Misc, emote, emote_wrapper(emote))
 setattr(Misc, "dog", emote_wrapper("dog", emote = "dog2"))
 
