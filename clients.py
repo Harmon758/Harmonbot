@@ -18,7 +18,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23-1.10"
+version = "0.34.23-1.11"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"

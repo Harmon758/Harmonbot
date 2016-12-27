@@ -110,7 +110,7 @@ def emote_wrapper(name, emote = None):
 		await self.bot.embed_reply(":{}:".format(emote))
 	return emote_command
 
-for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant"):
+for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard"):
 	setattr(Misc, emote, emote_wrapper(emote))
 setattr(Misc, "dog", emote_wrapper("dog", emote = "dog2"))
 
