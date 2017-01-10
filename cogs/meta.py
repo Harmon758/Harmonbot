@@ -117,19 +117,21 @@ class Meta:
 		cpu = process.cpu_percent() / psutil.cpu_count()
 		await self.bot.edit_message(message, ctx.message.author.display_name + output.replace("Calculating..", str(cpu) + '%'))
 	
-	@commands.command()
+	@commands.command(pass_context = True)
 	@checks.is_owner()
-	async def disable(self, command : str):
+	async def disable(self, ctx, command : str):
 		'''Disable a command'''
 		self.bot.commands[command].enabled = False
-		await self.bot.say("{} has been disabled.".format(command))
+		await self.bot.embed_reply("`{}{}` has been disabled".format(ctx.prefix, command))
+		await self.bot.delete_message(ctx.message)
 	
-	@commands.command()
+	@commands.command(pass_context = True)
 	@checks.is_owner()
-	async def enable(self, command : str):
+	async def enable(self, ctx, command : str):
 		'''Enable a command'''
 		self.bot.commands[command].enabled = True
-		await self.bot.say("{} has been enabled.".format(command))
+		await self.bot.embed_reply("`{}{}` has been enabled".format(ctx.prefix, command))
+		await self.bot.delete_message(ctx.message)
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
