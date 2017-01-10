@@ -12,6 +12,7 @@ import psutil
 import random
 import re
 import subprocess
+import sys
 import traceback
 
 import credentials
@@ -182,7 +183,7 @@ class Meta:
 		if changes: embed.add_field(name = "Latest Changes:", value = changes, inline = False)
 		embed.add_field(name = "Created on:", value = "February 10th, 2016")
 		embed.add_field(name = "Version", value = clients.version)
-		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) ([Python](https://www.python.org/)) v{}".format(discord.__version__))
+		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) v{0}\n([Python](https://www.python.org/) v{1.major}.{1.minor}.{1.micro})".format(discord.__version__, sys.version_info))
 		me = discord.utils.get(self.bot.get_all_members(), id = credentials.myid)
 		avatar = me.default_avatar_url if not me.avatar else me.avatar_url
 		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(me), icon_url = avatar)
@@ -202,11 +203,6 @@ class Meta:
 		"**Weight Unit Conversions**: {0}<unit>to<unit> units: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]".format(ctx.prefix))
 		if not ctx.message.channel.is_private:
 			await self.bot.reply("Check your DMs for my conversion commands.")
-	
-	@commands.command(hidden = True)
-	async def discordlibraryversion(self):
-		'''The discord.py library version I'm currently using'''
-		await self.bot.reply(discord.__version__)
 	
 	@commands.command(aliases = ["oauth"], hidden = True)
 	async def invite(self):
