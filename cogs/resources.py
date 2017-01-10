@@ -178,11 +178,11 @@ class Resources:
 		data = data["data"]
 		await self.bot.embed_reply(None, image_url = data[0]["images"]["original"]["url"])
 	
-	@commands.command(aliases = ["search"])
+	@commands.command(aliases = ["search", "googlesearch"])
 	@checks.not_forbidden()
 	async def google(self, *, search : str):
 		'''Google something'''
-		await self.bot.reply("https://www.google.com/search?q={0}".format(search.replace(' ', '+')))
+		await self.bot.embed_reply("https://www.google.com/search?q={}".format(search.replace(' ', '+')))
 	
 	@commands.command(aliases = ["imagesearch", "googleimages"])
 	@checks.not_forbidden()
