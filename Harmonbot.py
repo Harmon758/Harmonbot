@@ -93,47 +93,50 @@ async def on_command(command, ctx):
 	with open("data/stats.json", "w") as stats_file:
 		json.dump(stats, stats_file, indent = 4)
 
-@client.command(hidden = True)
+@client.command(pass_context = True)
 @checks.is_owner()
-async def load(cog : str):
+async def load(ctx, cog : str):
 	'''Loads a cog'''
 	try:
 		client.load_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":thumbsdown::skin-tone-2: Failed to load cog.\n"
-		"{}: {}".format(type(e).__name__, e))
+		await client.embed_reply(":thumbsdown::skin-tone-2: Failed to load `{}` cog\n"
+		"{}: {}".format(cog, type(e).__name__, e))
 	else:
-		await client.say(":thumbsup::skin-tone-2: Loaded cog.")
+		await client.embed_reply(":thumbsup::skin-tone-2: Loaded `{}` cog :gear:".format(cog))
+		await client.delete_message(ctx.message)
 
-@client.command(hidden = True)
+@client.command(pass_context = True)
 @checks.is_owner()
-async def unload(cog : str):
+async def unload(ctx, cog : str):
 	'''Unloads a cog'''
 	try:
 		client.unload_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":thumbsdown::skin-tone-2: Failed to unload cog.\n"
-		"{}: {}".format(type(e).__name__, e))
+		await client.embed_reply(":thumbsdown::skin-tone-2: Failed to unload `{}` cog\n"
+		"{}: {}".format(cog, type(e).__name__, e))
 	else:
-		await client.say(':ok_hand::skin-tone-2: Unloaded cog.')
+		await client.embed_reply(":ok_hand::skin-tone-2: Unloaded `{}` cog :gear:".format(cog))
+		await client.delete_message(ctx.message)
 
-@client.command(hidden = True)
+@client.command(pass_context = True)
 @checks.is_owner()
-async def reload(cog : str):
+async def reload(ctx, cog : str):
 	'''Reloads a cog'''
 	try:
 		client.unload_extension("cogs." + cog)
 		client.load_extension("cogs." + cog)
 	except Exception as e:
-		await client.say(":thumbsdown::skin-tone-2: Failed to reload cog.\n"
-		"{}: {}".format(type(e).__name__, e))
+		await client.embed_reply(":thumbsdown::skin-tone-2: Failed to reload `{}` cog\n"
+		"{}: {}".format(cog, type(e).__name__, e))
 	else:
-		with open("data/stats.json", "r") as stats_file:
+		with open("data/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		stats["cogs_reloaded"] += 1
-		with open("data/stats.json", "w") as stats_file:
+		with open("data/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
-		await client.say(":thumbsup::skin-tone-2: Reloaded cog.")
+		await client.embed_reply(":thumbsup::skin-tone-2: Reloaded `{}` cog :gear:".format(cog))
+		await client.delete_message(ctx.message)
 
 @client.event
 async def on_message(message):
