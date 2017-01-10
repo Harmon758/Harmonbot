@@ -43,10 +43,11 @@ class TwitterStreamListener(tweepy.StreamListener):
 		if status.user.id_str in set([id for feeds in self.feeds.values() for id in feeds]):
 			for channel_id, channel_feeds in self.feeds.items():
 				if status.user.id_str in channel_feeds:
-					channel = self.bot.get_channel(channel_id)
 					embed = discord.Embed(title = '@' + status.user.screen_name, url = "https://twitter.com/{}/status/{}".format(status.user.screen_name, status.id), description = status.text, timestamp = status.created_at, color = 0x00ACED)
 					embed.set_footer(text = status.user.name, icon_url = status.user.profile_image_url)
-					self.bot.loop.create_task(self.bot.send_message(channel, embed = embed))
+					channel = self.bot.get_channel(channel_id)
+					if channel:
+						self.bot.loop.create_task(self.bot.send_message(channel, embed = embed))
 	
 	def on_error(self, status_code):
 		print("Twitter Error: {}".format(status_code))
@@ -69,6 +70,7 @@ class Twitter:
 	@commands.group(invoke_without_command = True)
 	@checks.is_server_owner()
 	async def twitter(self):
+		'''Twitter'''
 		pass
 	
 	@twitter.command(name = "status", pass_context = True)
