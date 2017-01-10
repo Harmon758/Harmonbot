@@ -32,6 +32,7 @@ class RSS:
 	@commands.group(invoke_without_command = True)
 	@checks.is_server_owner()
 	async def rss(self):
+		'''RSS'''
 		pass
 	
 	@rss.command(name = "add", aliases = ["addfeed", "feedadd"], pass_context = True)
@@ -99,7 +100,9 @@ class RSS:
 									if len(title) > 256: title = title[:253] + "..."
 									embed = discord.Embed(title = title, url = item.link, description = description, timestamp = datetime.datetime.utcnow(), color = bot_color) # timestamp = published_time ?
 									embed.set_footer(text = feed_info.feed.title, icon_url = feed_info.feed.get("icon", discord.Embed.Empty))
-									await self.bot.send_message(self.bot.get_channel(channel["id"]), embed = embed)
+									text_channel = self.bot.get_channel(channel["id"])
+									if text_channel:
+										await self.bot.send_message(text_channel, embed = embed)
 								elif time_difference.total_seconds() < 0:
 									# print(feed)
 									pass
