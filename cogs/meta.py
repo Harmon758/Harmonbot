@@ -273,7 +273,7 @@ class Meta:
 		'''Bot uptime'''
 		now = datetime.datetime.utcnow()
 		uptime = now - clients.online_time
-		await self.bot.reply(utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds()))))
+		await self.bot.embed_reply(utilities.secs_to_letter_format(uptime.total_seconds()))
 	
 	@commands.command()
 	async def version(self):
