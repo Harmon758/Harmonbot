@@ -444,8 +444,6 @@ class Discord:
 		Check if you can mention everyone
 		For the channel you execute the command in
 		'''
-		if ctx.message.author.permissions_in(ctx.message.channel).mention_everyone:
-			await self.bot.reply("You are able to mention everyone in this channel.")
-		else:
-			await self.bot.reply("You are not able to mention everyone in this channel.")
+		able = "" if ctx.message.author.permissions_in(ctx.message.channel).mention_everyone else "not "
+		await self.bot.embed_reply("You are {}able to mention everyone in this channel".format(able))
 
