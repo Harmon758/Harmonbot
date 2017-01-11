@@ -19,7 +19,7 @@ sympy==1.0
 tweepy==3.5.0
 wand==0.4.4
 wolframalpha==3.0
-youtube_dl==2016.12.12
+youtube_dl==2017.1.10
 
 async-timeout==1.1.0
 cffi==1.9.1
