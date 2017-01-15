@@ -51,38 +51,6 @@ class Resources:
 		'''Look something up on Bing'''
 		await self.bot.reply("http://www.bing.com/search?q={0}".format('+'.join(search)))
 	
-	@commands.command(pass_context = True)
-	@checks.not_forbidden()
-	async def cat(self, ctx, *, category : str = ""):
-		'''
-		Random image of a cat
-		cat categories (cats) for different categories you can choose from
-		cat <category> for a random image of a cat from that category
-		'''
-		if category:
-			if category == "categories" or category == "cats":
-				async with aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
-					data = await resp.text()
-				root = xml.etree.ElementTree.fromstring(data)
-				categories = ""
-				for category in root.findall(".//name"):
-					categories += category.text + ' '
-				await self.bot.embed_reply(categories[:-1])
-			else:
-				url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={0}".format(category)
-				async with aiohttp_session.get(url) as resp:
-					data = await resp.text()
-				root = xml.etree.ElementTree.fromstring(data)
-				if root.find(".//url") is not None:
-					await self.bot.embed_reply(None, image_url = root.find(".//url").text)
-				else:
-					await self.bot.embed_reply(":no_entry: Error: Category not found")
-		else:
-			async with aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
-				data = await resp.text()
-			root = xml.etree.ElementTree.fromstring(data)
-			await self.bot.embed_reply(None, image_url = root.find(".//url").text)
-	
 	@commands.group(aliases = ["colour"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def color(self, ctx, *, color : str):
@@ -120,19 +88,6 @@ class Resources:
 		embed.add_field(name = "HSV", value = "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"]))
 		embed.set_image(url = data["imageUrl"])
 		await self.bot.say(embed = embed)
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def date(self, date : str):
-		'''Facts about dates'''
-		url = "http://numbersapi.com/{0}/date".format(date)
-		async with aiohttp_session.get(url) as resp:
-			status = resp.status
-			data = await resp.text()
-		if status == 404:
-			await self.bot.reply("Error.")
-		else:
-			await self.bot.reply(data)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -252,25 +207,6 @@ class Resources:
 	async def imfeelinglucky(self, *search : str):
 		'''First Google result of a search'''
 		await self.bot.reply("https://www.google.com/search?btnI&q={0}".format('+'.join(search)))
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def insult(self):
-		'''Generate insult'''
-		url = "http://quandyfactory.com/insult/json"
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		await self.bot.say(data["insult"])
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def joke(self):
-		'''Generate joke'''
-		url = "http://tambal.azurewebsites.net/joke/random"
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		joke = data["joke"]
-		await self.bot.reply(joke)
 	
 	@commands.group()
 	@checks.not_forbidden()
@@ -406,14 +342,6 @@ class Resources:
 		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&maptype={}&size=640x640".format(location.replace(' ', '+'), zoom, maptype)
 		await self.bot.embed_reply(None, image_url = image_url)
 	
-	@commands.command()
-	@checks.not_forbidden()
-	async def math(self, number : int):
-		'''Math facts about numbers'''
-		async with aiohttp_session.get("http://numbersapi.com/{0}/math".format(number)) as resp:
-			data = await resp.text()
-		await self.bot.reply(data)
-	
 	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def news(self, ctx, source : str):
@@ -471,14 +399,6 @@ class Resources:
 			return
 		# for source in data["sources"]:
 		await self.bot.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def number(self, number : int):
-		'''Facts about numbers'''
-		async with aiohttp_session.get("http://numbersapi.com/{0}".format(number)) as resp:
-			data = await resp.text()
-		await self.bot.reply(data)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -680,24 +600,6 @@ class Resources:
 		if tests_info: embed.add_field(name = "Tests", value = '\n'.join(tests_info), inline = False)
 		# send
 		await self.bot.say(embed = embed)
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def randomidea(self):
-		'''Generate random idea'''
-		async with aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
-			data = await resp.json()
-		await self.bot.reply("{0} for {1}".format(data["this"], data["that"]))
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def randomword(self):
-		'''Generate random word'''
-		url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(credentials.wordnik_apikey)
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		word = data["word"]
-		await self.bot.reply(word.capitalize())
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
@@ -1140,11 +1042,3 @@ class Resources:
 	async def youtubesearch_error(self, error, ctx):
 		if "No video results" in str(error):
 			await self.bot.reply("Song not found")
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def year(self, year : int):
-		'''Facts about years'''
-		async with aiohttp_session.get("http://numbersapi.com/{0}/year".format(year)) as resp:
-			data = await resp.text()
-		await self.bot.reply(data)

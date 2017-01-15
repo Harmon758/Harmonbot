@@ -440,11 +440,6 @@ class Meta:
 		for i in range(1, 101):
 			await self.bot.say(str(i))
 	
-	@commands.command(hidden = True)
-	async def randomcommand(self):
-		'''Random command'''
-		await self.bot.reply(random.choice(list(self.bot.commands.keys())))
-	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def repl(self, ctx):
