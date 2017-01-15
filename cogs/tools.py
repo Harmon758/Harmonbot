@@ -265,24 +265,6 @@ class Tools:
 		seaborn.jointplot(**eval(data)).savefig(name)
 		await self.bot.send_file(destination = ctx.message.channel, fp = name, content = "Testing Graph")
 	
-	@commands.command()
-	@checks.not_forbidden()
-	async def randomlocation(self):
-		'''Generate random location'''
-		await self.bot.reply("{0}, {1}".format(str(random.uniform(-90, 90)), str(random.uniform(-180, 180))))
-	
-	@commands.command(aliases = ["randomnumber"])
-	@checks.not_forbidden()
-	async def rng(self, *number : int):
-		'''
-		Generate random number
-		Default range is 1 to 10
-		'''
-		if len(number) and number[0] > 0:
-			await self.bot.reply(str(random.randint(1, number[0])))
-		else:
-			await self.bot.reply(str(random.randint(1, 10)))
-	
 	@commands.group(pass_context = True, aliases = ["trigger", "note"])
 	@checks.not_forbidden()
 	async def tag(self, ctx):
