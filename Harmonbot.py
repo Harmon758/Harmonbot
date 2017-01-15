@@ -15,24 +15,12 @@ import traceback
 import credentials
 import clients
 from clients import client
-
 from modules import conversions
+from modules import logging
 from modules import utilities
 from utilities import checks
 from utilities import errors
 from utilities import audio_player
-
-logger = logging.getLogger("discord")
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler(filename = "data/discord.log", encoding = "utf-8", mode = 'a')
-handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
-logger.addHandler(handler)
-
-harmonbot_logger = logging.getLogger("harmonbot")
-harmonbot_logger.setLevel(logging.DEBUG)
-harmonbot_logger_handler = logging.FileHandler(filename = "data/harmonbot.log", encoding = "utf-8", mode = 'a')
-harmonbot_logger_handler.setFormatter(logging.Formatter("%(message)s"))
-harmonbot_logger.addHandler(harmonbot_logger_handler)
 
 utilities.create_file("f", content = {"counter" : 0})
 
@@ -146,7 +134,7 @@ async def on_message(message):
 		destination = "Direct Message"
 	else:
 		destination = "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
-	harmonbot_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content}".format(message, destination))
+	logging.chat_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, destination))
 	
 	# Commands
 	await client.process_commands(message)
@@ -240,6 +228,7 @@ async def on_error(event_method, *args, **kwargs):
 				return
 	print('Ignoring exception in {}'.format(event_method), file = sys.stderr)
 	traceback.print_exc()
+	logging.errors_logger.error("Uncaught exception\n", exc_info = (type, value, _traceback))
 
 @client.event
 async def on_command_error(error, ctx):
@@ -273,6 +262,7 @@ async def on_command_error(error, ctx):
 	else:
 		print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
 		traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
+		logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
 
 beta = any("beta" in arg.lower() for arg in sys.argv)
 if beta:
