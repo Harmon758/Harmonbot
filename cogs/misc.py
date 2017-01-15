@@ -50,6 +50,18 @@ class Misc:
 				output += character
 		await self.bot.embed_reply(output)
 	
+	@commands.command(aliases = ["full-width", "full_width"])
+	@checks.not_forbidden()
+	async def fullwidth(self, *, text : str):
+		'''Make text fullwidth'''
+		output = ""
+		for character in text:
+			if '!' <= character <= '~':
+				output += chr(ord(character) + 65248)
+			else:
+				output += character
+		await self.bot.embed_reply(output)
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def fingers(self, *, text : str):
