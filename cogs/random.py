@@ -26,12 +26,12 @@ class Random:
 			if isinstance(command, commands.Command) and command.parent is None and name != "random":
 				self.bot.add_command(command)
 				self.random.add_command(command)
-		self.fact_commands = ((self.fact_cat, self.cat),) # date
+		self.fact_commands = ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number))
 		for command, parent in self.fact_commands:
 			subcommand = copy.copy(command)
 			subcommand.name = "fact"
 			subcommand.aliases = []
-			async def wrapper(*args, **kwargs):
+			async def wrapper(*args, command = command, **kwargs):
 				await command.callback(self, *args, **kwargs)
 			subcommand.callback = wrapper
 			subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
@@ -191,7 +191,7 @@ class Random:
 		'''Random location'''
 		await self.bot.embed_reply("{}, {}".format(random.uniform(-90, 90), random.uniform(-180, 180)))
 	
-	@commands.command(aliases = ["rng"])
+	@commands.group(aliases = ["rng"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def number(self, number : int = 10):
 		'''
