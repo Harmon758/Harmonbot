@@ -3,7 +3,10 @@ import logging
 import logging.handlers
 import sys
 
-# create logs folder?
+from modules import utilities
+
+utilities.create_folder("data/logs/chat")
+utilities.create_folder("data/logs/discord")
 
 console_logger = logging.getLogger("console")
 console_logger.setLevel(logging.DEBUG)
