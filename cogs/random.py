@@ -223,6 +223,12 @@ class Random:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def time(self):
+		'''Random time'''
+		await self.bot.embed_reply("{:02d}:{:02d}".format(random.randint(0, 23), random.randint(0, 59)))
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def word(self):
 		'''Random word'''
 		url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(credentials.wordnik_apikey)
