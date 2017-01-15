@@ -198,7 +198,7 @@ class Random:
 		Random number
 		Default range is 1 to 10
 		'''
-		await self.bot.embed_reply(str(random.randint(1, number)))
+		await self.bot.embed_reply(random.randint(1, number))
 	
 	@commands.command(aliases = ["why"])
 	@checks.not_forbidden()

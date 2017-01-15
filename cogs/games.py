@@ -461,7 +461,7 @@ class Games:
 		if not match:
 			await self.bot.embed_reply(":no_entry: Chess match not found")
 			return
-		await self.bot.embed_reply(str(chess.pgn.Game.from_board(match)))
+		await self.bot.embed_reply(chess.pgn.Game.from_board(match))
 	
 	@chess.command(name = "turn", pass_context = True, hidden = True)
 	async def chess_turn(self, ctx):
@@ -502,7 +502,7 @@ class Games:
 			await self.bot.embed_reply(":no_entry: Chess match not found")
 			return
 		try:
-			await self.bot.embed_reply(str(match.peek()))
+			await self.bot.embed_reply(match.peek())
 		except IndexError:
 			await self.bot.embed_reply(":no_entry: There was no previous move")
 	
