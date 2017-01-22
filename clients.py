@@ -18,7 +18,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23-2.1"
+version = "0.34.23-2.2"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -27,7 +27,7 @@ code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
 aiohttp_session = aiohttp.ClientSession()
-cleverbot_instance = cleverbot.Cleverbot()
+cleverbot_instance = cleverbot.Cleverbot("Harmonbot")
 inflect_engine = inflect.engine()
 application_info = None
 harmonbot_listener = None
