@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import collections
@@ -146,19 +147,19 @@ class Reactions:
 	
 async def process_reactions(reaction, user):
 	await clients.client.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
-	with open("data/stats.json", "r") as stats_file:
+	with open("data/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
 	stats["reaction_responses"] += 1
-	with open("data/stats.json", "w") as stats_file:
+	with open("data/stats.json", 'w') as stats_file:
 		json.dump(stats, stats_file, indent = 4)
 	
 @clients.client.event
 async def on_reaction_add(reaction, user):
-	if reaction.message.id in clients.client.cogs["Reactions"].reaction_messages:
+	if "Reactions" in clients.client.cogs and reaction.message.id in clients.client.cogs["Reactions"].reaction_messages:
 		await process_reactions(reaction, user)
 
 @clients.client.event
 async def on_reaction_remove(reaction, user):
-	if reaction.message.id in clients.client.cogs["Reactions"].reaction_messages:
+	if "Reactions" in clients.client.cogs and reaction.message.id in clients.client.cogs["Reactions"].reaction_messages:
 		await process_reactions(reaction, user)
 
