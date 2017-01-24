@@ -12,13 +12,14 @@ import json
 import os
 import pyowm
 import random
+import sys
 import tweepy
 import wolframalpha
 from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23-2.2"
+version = "0.34.23-2.3"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -37,6 +38,8 @@ twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials
 twitter_auth.set_access_token(credentials.twitter_access_token, credentials.twitter_access_token_secret)
 twitter_api = tweepy.API(twitter_auth)
 wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
+
+sys.setrecursionlimit(5000)
 
 class Bot(commands.Bot):
 	
