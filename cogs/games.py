@@ -39,7 +39,7 @@ class Games:
 		self.war_channel, self.war_players = None, []
 		self.gofish_channel, self.gofish_players = None, []
 		self.taboo_players = []
-		self.maze_started, self.maze_maze = False, None
+		self.mazes = {}
 		self.jeopardy_active, self.jeopardy_question_active, self.jeopardy_board, self.jeopardy_answer, self.jeopardy_answered, self.jeopardy_scores, self.jeopardy_board_output, self.jeopardy_max_width = False, False, [], None, None, {}, None, None
 		self.trivia_active, self.trivia_countdown, self.bet_countdown = False, None, None
 		self.blackjack_ranks = copy.deepcopy(pydealer.const.DEFAULT_RANKS)
@@ -700,49 +700,64 @@ class Games:
 	
 	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def maze(self, ctx, *options : str):
+	async def maze(self, ctx):
 		'''
 		Maze game
-		options: start <width> <height>, current, [w, a, s, d] to move
+		[w, a, s, d] to move
+		Also see mazer
 		'''
-		if not options:
-			await self.bot.reply("Please enter an option (start/current)")
-		elif options[0] == "start":
-			if self.maze_started:
-				await self.bot.reply("There's already a maze game going on.")
-			elif len(options) >= 3 and options[1].isdigit() and options[2].isdigit():
-				self.maze_started = True
-				self.maze_maze = maze(int(options[1]), int(options[2]))
-				await self.bot.reply(code_block.format(self.maze_maze.print_visible()))
-				'''
-				maze_print = ""
-				for r in maze_maze.test_print():
-					row_print = ""
-					for cell in r:
-						row_print += cell + ' '
-					maze_print += row_print + "\n"
-				await self.bot.reply(code_block.format(maze_print))
-				'''
-				# await self.bot.reply(code_block.format(repr(maze_maze)))
-				convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
-				while not self.maze_maze.reached_end():
-					moved = False
-					move = await self.bot.wait_for_message(check = lambda message: message.content.lower() in ['w', 'a', 's', 'd']) # author = ctx.message.author
-					moved = self.maze_maze.move(convert_move[move.content.lower()])
-					await self.bot.reply(code_block.format(self.maze_maze.print_visible()))
-					if not moved:
-						await self.bot.reply("You can't go that way.")
-				await self.bot.reply("Congratulations! You reached the end of the maze.")
-				self.maze_started = False
-			else:
-				await self.bot.reply("Please enter a valid maze size. (e.g. !maze start 2 2)")
-		elif options[0] == "current":
-			if self.maze_started:
-				await self.bot.reply(code_block.format(self.maze_maze.print_visible()))
-			else:
-				await self.bot.reply("There's no maze game currently going on.")
+		await self.bot.embed_reply("See {}help maze".format(ctx.prefix))
+	
+	@maze.command(name = "start", aliases = ["begin"], pass_context = True)
+	@checks.not_forbidden()
+	async def maze_start(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
+		'''
+		Start a maze game
+		width: 2 - 100
+		height: 2 - 100
+		'''
+		if ctx.message.channel.id in self.mazes:
+			await self.bot.embed_reply(":no_entry: There's already a maze game going on")
+			return
+		self.mazes[ctx.message.channel.id] = maze(width, height, random_start = random_start, random_end = random_end)
+		maze_instance = self.mazes[ctx.message.channel.id]
+		maze_message, embed = await self.bot.embed_reply(code_block.format(maze_instance.print_visible()))
+		'''
+		maze_print = ""
+		for r in maze_instance.test_print():
+			row_print = ""
+			for cell in r:
+				row_print += cell + ' '
+			maze_print += row_print + "\n"
+		await self.bot.reply(code_block.format(maze_print))
+		'''
+		# await self.bot.reply(code_block.format(repr(maze_instance)))
+		convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
+		while not maze_instance.reached_end():
+			move = await self.bot.wait_for_message(check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.message.channel) # author = ctx.message.author
+			moved = maze_instance.move(convert_move[move.content.lower()])
+			response = code_block.format(maze_instance.print_visible())
+			if not moved:
+				response += "\n:no_entry: You can't go that way"
+			new_maze_message, embed = await self.bot.embed_reply(response)
+			try:
+				await self.bot.delete_message(move)
+				await self.bot.delete_message(maze_message)
+			except discord.errors.Forbidden:
+				pass
+			maze_message = new_maze_message
+		await self.bot.embed_reply("Congratulations! You reached the end of the maze in {} moves".format(maze_instance.move_counter))
+		del self.mazes[ctx.message.channel.id]
+	
+	@maze.command(name = "current", pass_context = True)
+	@checks.not_forbidden()
+	async def maze_current(self, ctx):
+		'''Current maze game'''
+		if ctx.message.channel.id in self.mazes:
+			await self.bot.embed_reply(code_block.format(self.mazes[ctx.message.channel.id].print_visible()))
 		else:
-			await self.bot.reply("Please enter a valid option (start/current).")
+			await self.bot.embed_reply(":no_entry: There's no maze game currently going on")
+	
 	
 	@commands.group(hidden = True)
 	@checks.not_forbidden()

@@ -105,32 +105,44 @@ class Reactions:
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
-	async def mazer(self, ctx, width : int, height : int):
+	async def mazer(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
 		'''
 		Maze game
 		With reactions
-		width: 2 - 15
-		height: 2 - 15
+		width: 2 - 100
+		height: 2 - 100
 		React with an arrow key to move
 		'''
-		maze_instance = maze(width, height)
-		maze_message, embed = await self.bot.reply(clients.code_block.format(maze_instance.print_visible()))
+		maze_instance = maze(width, height, random_start = random_start, random_end = random_end)
+		maze_message, embed = await self.bot.embed_reply(clients.code_block.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
 		self.mazes[maze_message.id] = maze_instance
-		for arrow_emote in self.arrows.keys():
-			await self.bot.add_reaction(maze_message, arrow_emote)
+		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
+			await self.bot.add_reaction(maze_message, emote)
 		self.reaction_messages[maze_message.id] = lambda reaction, user: self.mazer_processr(ctx.message.author, reaction, user)
 	
 	async def mazer_processr(self, player, reaction, user):
-		if user == player and reaction.emoji in self.arrows:
+		if user == player and reaction.emoji in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
 			maze_instance = self.mazes[reaction.message.id]
-			if maze_instance.move(self.arrows[reaction.emoji].lower()):
+			if reaction.emoji == "\N{PRINTER}":
+				with open("data/temp/maze.txt", 'w') as maze_file:
+					maze_file.write('\n'.join(maze_instance.visible))
+				await self.bot.send_file(reaction.message.channel, "data/temp/maze.txt", content = "{}:\nYour maze is attached".format(player.display_name))
+				return
+			embed = discord.Embed(color = clients.bot_color)
+			avatar = player.avatar_url or player.default_avatar_url
+			embed.set_author(name = player.display_name, icon_url = avatar)
+			moved = maze_instance.move(self.arrows[reaction.emoji].lower())
+			embed.set_footer(text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
+			if moved:
 				if maze_instance.reached_end():
-					await self.bot.edit_message(reaction.message, "{}:\n{}\nCongratulations! You reached the end of the maze".format(player.display_name, clients.code_block.format(maze_instance.print_visible())))
+					embed.description = "{}\nCongratulations! You reached the end of the maze in {} moves".format(clients.code_block.format(maze_instance.print_visible()), maze_instance.move_counter)
 					del self.reaction_messages[reaction.message.id]
 				else:
-					await self.bot.edit_message(reaction.message, "{}:\n{}".format(player.display_name, clients.code_block.format(maze_instance.print_visible())))
+					embed.description = "{}".format(clients.code_block.format(maze_instance.print_visible()))
 			else:
-				await self.bot.edit_message(reaction.message, "{}:\n{}\n:no_entry: You can't go that way".format(player.display_name, clients.code_block.format(maze_instance.print_visible())))
+				embed.description = "{}\n:no_entry: You can't go that way".format(clients.code_block.format(maze_instance.print_visible()))
+			await self.bot.edit_message(reaction.message, embed = embed)
+	
 	
 async def process_reactions(reaction, user):
 	await clients.client.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
