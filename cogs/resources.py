@@ -93,17 +93,11 @@ class Resources:
 	@checks.not_forbidden()
 	async def define(self, word : str):
 		'''Define a word'''
-		url = "http://api.wordnik.com:80/v4/word.json/{0}/definitions?limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key={1}".format(word, credentials.wordnik_apikey)
-		# page = urllib.request.urlopen(url)
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		if data:
-			data = data[0]
-			definition = data["text"]
-			word = data["word"]
-			await self.bot.reply(word.capitalize() + ": " + definition)
-		else:
-			await self.bot.reply("Definition not found.")
+		definition = clients.wordnik_word_api.getDefinitions(word, limit = 1) # useCanonical = True ?
+		if not definition:
+			await self.bot.embed_reply(":no_entry: Definition not found")
+			return
+		await self.bot.embed_reply(definition[0].text, title = definition[0].word.capitalize(), footer_text = definition[0].attributionText)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()

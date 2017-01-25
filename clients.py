@@ -15,12 +15,12 @@ import random
 import sys
 import tweepy
 import wolframalpha
-from wordnik import swagger, WordsApi
+from wordnik import swagger, WordApi, WordsApi
 from modules import utilities
 from utilities.help_formatter import CustomHelpFormatter
 import credentials
 
-version = "0.34.23-3.4"
+version = "0.34.23-3.5"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -37,11 +37,11 @@ twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials
 twitter_auth.set_access_token(credentials.twitter_access_token, credentials.twitter_access_token_secret)
 twitter_api = tweepy.API(twitter_auth)
 wordnik_client = swagger.ApiClient(credentials.wordnik_apikey, "http://api.wordnik.com/v4")
+wordnik_word_api = WordApi.WordApi(wordnik_client)
 wordnik_words_api = WordsApi.WordsApi(wordnik_client)
 wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
 application_info = None
 harmonbot_listener = None
-
 sys.setrecursionlimit(5000)
 
 class Bot(commands.Bot):
