@@ -231,8 +231,5 @@ class Random:
 	@checks.not_forbidden()
 	async def word(self):
 		'''Random word'''
-		url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(credentials.wordnik_apikey)
-		async with clients.aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		word = data["word"]
-		await self.bot.embed_reply(word.capitalize())
+		await self.bot.embed_reply(clients.wordnik_words_api.getRandomWord().word.capitalize())
+
