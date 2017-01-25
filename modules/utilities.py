@@ -52,23 +52,10 @@ def secs_to_duration(secs):
 	return duration
 
 def duration_to_letter_format(duration):
-	output = ""
-	letters = ["y", "w", "d", "h", "m", "s"]
-	for i in range(6):
-		if duration[i]:
-			output += str(duration[i]) + letters[i] + ' '
-	return output[:-1]
+	return ' '.join(filter(None, ["{}{}".format(duration[i], letter) if duration[i] else "" for i, letter in enumerate(["y", "w", "d", "h", "m", "s"])])) or "0s"
 
 def duration_to_colon_format(duration):
-	output = ""
-	started = False
-	for i in range(6):
-		if duration[i]:
-			started = True
-			output += str(duration[i]) + ":"
-		elif started:
-			output += "00:"
-	return output[:-1]
+	return ':'.join([str(unit).rjust(2, '0') if unit else "00" for unit in duration]).lstrip("0:").rjust(2, '0').rjust(3, ':').rjust(4, '0')
 
 def secs_to_letter_format(secs):
 	return duration_to_letter_format(secs_to_duration(secs))
