@@ -30,6 +30,16 @@ class Resources:
 		self.lichess_user_data, self.lichess_tournaments_data = None, None
 		# spotify = spotipy.Spotify()
 	
+	@commands.command(aliases = ["antonyms"])
+	@checks.not_forbidden()
+	async def antonym(self, word : str):
+		'''Antonyms of a word'''
+		antonyms = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", useCanonical = "true", limitPerRelationshipType = 100)
+		if not antonyms:
+			await self.bot.embed_reply(":no_entry: Word or antonyms not found")
+			return
+		await self.bot.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def bing(self, *search : str):
