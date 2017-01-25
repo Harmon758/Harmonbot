@@ -820,6 +820,16 @@ class Resources:
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(latitude, longitude)
 		await self.bot.embed_reply(None, image_url = image_url)
 	
+	@commands.command(aliases = ["synonyms"])
+	@checks.not_forbidden()
+	async def synonym(self, word : str):
+		'''Synonyms of a word'''
+		synonyms = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", useCanonical = "true", limitPerRelationshipType = 100)
+		if not synonyms:
+			await self.bot.embed_reply(":no_entry: Word or synonyms not found")
+			return
+		await self.bot.embed_reply(', '.join(synonyms[0].words), title = "Synonyms of {}".format(word.capitalize()))
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def translate(self, *, text : str):
