@@ -610,6 +610,16 @@ class Resources:
 		'''WIP'''
 		return
 	
+	@commands.command(aliases = ["rhymes"])
+	@checks.not_forbidden()
+	async def rhyme(self, word : str):
+		'''Rhymes of a word'''
+		rhymes = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", limitPerRelationshipType = 100)
+		if not rhymes:
+			await self.bot.embed_reply(":no_entry: Word or rhymes not found")
+			return
+		await self.bot.embed_reply(', '.join(rhymes[0].words), title = "Words that rhyme with {}".format(word.capitalize()))
+	
 	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def rotmg(self, player : str):
