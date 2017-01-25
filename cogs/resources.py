@@ -32,21 +32,6 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def audiodefine(self, word : str):
-		'''Generate link for pronounciation of a word'''
-		url = "http://api.wordnik.com:80/v4/word.json/{0}/audio?useCanonical=false&limit=1&api_key={1}".format(word, credentials.wordnik_apikey)
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		if data:
-			data = data[0]
-			audio = data["fileUrl"]
-			word = data["word"]
-			await self.bot.reply(word.capitalize() + ": " + audio)
-		else:
-			await self.bot.reply("Word or audio not found.")
-	
-	@commands.command()
-	@checks.not_forbidden()
 	async def bing(self, *search : str):
 		'''Look something up on Bing'''
 		await self.bot.reply("http://www.bing.com/search?q={0}".format('+'.join(search)))
@@ -595,9 +580,23 @@ class Resources:
 		# send
 		await self.bot.say(embed = embed)
 	
+	@commands.command(aliases = ["audiodefine", "pronounce"])
+	@checks.not_forbidden()
+	async def pronunciation(self, word : str):
+		'''Pronunciation of a word'''
+		pronunciation = clients.wordnik_word_api.getTextPronunciations(word, limit = 1)
+		description = pronunciation[0].raw.strip("()") if pronunciation else "Audio File Link"
+		audio_file = clients.wordnik_word_api.getAudio(word, limit = 1)
+		if audio_file:
+			description = "[{}]({})".format(description, audio_file[0].fileUrl)
+		elif not pronunciation:
+			await self.bot.embed_reply(":no_entry: Word or pronunciation not found")
+			return
+		await self.bot.embed_reply(description, title = "Pronunciation of {}".format(word.capitalize()))
+	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
-	async def redditsearch(self): #WIP
+	async def redditsearch(self):
 		'''WIP'''
 		return
 	
@@ -778,7 +777,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def strawpoll(self, question : str, *options : str):
 		'''
-		Generates a strawpoll link
+		Generate a strawpoll link
 		Use qoutes for spaces in the question or options
 		'''
 		async with aiohttp_session.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})) as resp:
