@@ -19,7 +19,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from modules import utilities
 import credentials
 
-version = "0.34.23-3.0"
+version = "0.34.23-3.1"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -55,7 +55,7 @@ class Bot(commands.Bot):
 	def embed_reply(self, content, *args, **kwargs):
 		author = commands.bot._get_variable('_internal_author')
 		destination = commands.bot._get_variable('_internal_channel')
-		embed = discord.Embed(description = str(content), color = bot_color)
+		embed = discord.Embed(description = str(content) if content else None, color = bot_color)
 		avatar = author.avatar_url or author.default_avatar_url
 		embed.set_author(name = author.display_name, icon_url = avatar) # url?
 		image_url = kwargs.pop("image_url", None)
