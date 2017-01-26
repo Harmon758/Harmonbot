@@ -51,8 +51,9 @@ class Resources:
 	async def color(self, ctx, *, color : str):
 		'''
 		Information on colors
-		Accepts hex color codes (without #) and search by keyword
+		Accepts hex color codes and search by keyword
 		'''
+		color = color.strip('#')
 		if utilities.is_hex(color) and len(color) == 6:
 			url = "http://www.colourlovers.com/api/color/{}?format=json".format(color)
 		else:
