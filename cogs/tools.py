@@ -12,14 +12,16 @@ import pandas
 import random
 import seaborn
 # import re
+# import subprocess
 import sympy
 import urllib
 import zlib
 
+from modules import ciphers
 from modules import utilities
 from utilities import checks
 from utilities import errors
-from modules import ciphers
+import clients
 from clients import py_code_block
 
 def setup(bot):
@@ -137,34 +139,29 @@ class Tools:
 	@commands.group(aliases = ["decrpyt"])
 	@checks.not_forbidden()
 	async def decode(self):
-		'''
-		Decodes coded messages
-		options: morse <message>, reverse <message>, caesar (rot) <key (0 - 26) or brute> <message>
-		'''
+		'''Decodes coded messages'''
 		return
+	
+	@decode.group(name = "caesar", aliases = ["rot"], invoke_without_command = True)
+	async def decode_caesar(self, key : int, *, message : str):
+		'''
+		Decodes caesar codes
+		key: 0 - 26
+		'''
+		if not 0 <= key <= 26:
+			await self.bot.embed_reply(":no_entry: Key must be in range 0 - 26")
+			return
+		await self.bot.embed_reply(ciphers.decode_caesar(message, key))
+	
+	@decode_caesar.command(name = "brute")
+	async def decode_caesar_brute(self, message : str):
+		'''Brute force decode caesar code'''
+		await self.bot.embed_reply(ciphers.brute_force_caesar(message))
 	
 	@decode.command(name = "morse")
 	async def decode_morse(self, *, message : str):
 		'''Decodes morse code'''
-		await self.bot.reply('`' + ciphers.decode_morse(message) + '`')
-	
-	@decode.command(name = "reverse")
-	async def decode_reverse(self, *, message : str):
-		'''Reverses text'''
-		await self.bot.reply('`' + message[::-1] + '`')
-	
-	@decode.command(name = "caesar", aliases = ["rot"])
-	async def decode_caesar(self, option : str, *, message : str):
-		'''
-		Decodes caesar codes
-		Options: key (0 - 26), brute
-		'''
-		if len(message) == 0 or not ((option.isdigit() and 0 <= int(option) <= 26) or option == "brute"):
-			await self.bot.reply("Invalid Format. !decode caesar <key (0 - 26) or brute> <content>")
-		elif option == "brute":
-			await self.bot.reply('`' + ciphers.brute_force_caesar(message) + '`')
-		else:
-			await self.bot.reply('`' + ciphers.decode_caesar(message, option) + '`')
+		await self.bot.embed_reply(ciphers.decode_morse(message))
 	
 	@decode.command(name = "qr", pass_context = True)
 	async def decode_qr(self, ctx, file_url : str = ""):
@@ -175,30 +172,7 @@ class Tools:
 		if file_url:
 			await self._decode_qr(file_url)
 		if ctx.message.attachments and "filename" in ctx.message.attachments[0]:
-		# and ctx.message.attachments[0]["filename"][-4:].lower() == ".png":
 			await self._decode_qr(ctx.message.attachments[0]["url"])
-			'''
-			await self.bot.embed_reply("processing")
-			#urllib.request.urlretrieve(ctx.message.attachments[0]["url"], "data/temp/qr_code.png")
-			request = urllib.request.Request(ctx.message.attachments[0]["url"], headers = {"User-Agent": "Magic Browser"})
-			data = urllib.request.urlopen(request)
-			with open("data/temp/qr_code.png", "wb") as qr_code_file:
-				qr_code_file.write(data.read())
-			# import qrtools
-			# qr = qrtools.QR()
-			# qr.decode("data/temp/qr_code.png")
-			# await self.bot.reply(qr.data)
-			"""
-			with open("data/temp/qr_code.png", "rb") as qr_code_file:
-				image = Image.open(qr_code_file)
-				image.load()
-			codes = zbarlight.scan_codes("qrcode", image)
-			await self.bot.reply(codes)
-			"""
-			# os.system(r'"C:\Program Files (x86)\ZBar\bin\zbarimg.exe" -D data\temp\qr_code.png')
-			output = subprocess.check_output('"C:\\Program Files (x86)\\ZBar\\bin\\zbarimg.exe" -D data\\temp\\qr_code.png', shell = True)
-			await self.bot.embed_reply(output)
-			'''
 		if not file_url and not (ctx.message.attachments and "filename" in ctx.message.attachments[0]):
 			await self.bot.embed_reply(":no_entry: Please input a file url or attach an image")
 	
@@ -217,6 +191,11 @@ class Tools:
 			await self.bot.embed_reply(decoded[:1021] + "...", footer_text = "Decoded message exceeded character limit")
 			return
 		await self.bot.embed_reply(decoded)
+	
+	@decode.command(name = "reverse")
+	async def decode_reverse(self, *, message : str):
+		'''Reverses text'''
+		await self.bot.embed_reply(message[::-1])
 	
 	@commands.group(aliases = ["encrypt"])
 	@checks.not_forbidden()
