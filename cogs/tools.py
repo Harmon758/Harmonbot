@@ -166,6 +166,58 @@ class Tools:
 		else:
 			await self.bot.reply('`' + ciphers.decode_caesar(message, option) + '`')
 	
+	@decode.command(name = "qr", pass_context = True)
+	async def decode_qr(self, ctx, file_url : str = ""):
+		'''
+		Decodes QR codes
+		Input a file url or attach an image
+		'''
+		if file_url:
+			await self._decode_qr(file_url)
+		if ctx.message.attachments and "filename" in ctx.message.attachments[0]:
+		# and ctx.message.attachments[0]["filename"][-4:].lower() == ".png":
+			await self._decode_qr(ctx.message.attachments[0]["url"])
+			'''
+			await self.bot.embed_reply("processing")
+			#urllib.request.urlretrieve(ctx.message.attachments[0]["url"], "data/temp/qr_code.png")
+			request = urllib.request.Request(ctx.message.attachments[0]["url"], headers = {"User-Agent": "Magic Browser"})
+			data = urllib.request.urlopen(request)
+			with open("data/temp/qr_code.png", "wb") as qr_code_file:
+				qr_code_file.write(data.read())
+			# import qrtools
+			# qr = qrtools.QR()
+			# qr.decode("data/temp/qr_code.png")
+			# await self.bot.reply(qr.data)
+			"""
+			with open("data/temp/qr_code.png", "rb") as qr_code_file:
+				image = Image.open(qr_code_file)
+				image.load()
+			codes = zbarlight.scan_codes("qrcode", image)
+			await self.bot.reply(codes)
+			"""
+			# os.system(r'"C:\Program Files (x86)\ZBar\bin\zbarimg.exe" -D data\temp\qr_code.png')
+			output = subprocess.check_output('"C:\\Program Files (x86)\\ZBar\\bin\\zbarimg.exe" -D data\\temp\\qr_code.png', shell = True)
+			await self.bot.embed_reply(output)
+			'''
+		if not file_url and not (ctx.message.attachments and "filename" in ctx.message.attachments[0]):
+			await self.bot.embed_reply(":no_entry: Please input a file url or attach an image")
+	
+	async def _decode_qr(self, file_url):
+		url = "https://api.qrserver.com/v1/read-qr-code/?fileurl={}".format(file_url)
+		async with clients.aiohttp_session.get(url) as resp:
+			if resp.status == 400:
+				await self.bot.embed_reply(":no_entry: Error")
+				return
+			data = await resp.json()
+		if data[0]["symbol"][0]["error"]:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(data[0]["symbol"][0]["error"]))
+			return
+		decoded = data[0]["symbol"][0]["data"].replace("QR-Code:", "")
+		if len(decoded) > 1024:
+			await self.bot.embed_reply(decoded[:1021] + "...", footer_text = "Decoded message exceeded character limit")
+			return
+		await self.bot.embed_reply(decoded)
+	
 	@commands.group(aliases = ["encrypt"])
 	@checks.not_forbidden()
 	async def encode(self):
@@ -209,6 +261,12 @@ class Tools:
 	async def encode_morse(self, *, message : str):
 		'''Encode a message in morse code'''
 		await self.bot.embed_reply(ciphers.encode_morse(message))
+	
+	@encode.command(name = "qr")
+	async def encode_qr(self, *, message : str):
+		'''Encode a message in a QR code'''
+		url = "https://api.qrserver.com/v1/create-qr-code/?data={}".format(message).replace(' ', '+')
+		await self.bot.embed_reply(None, image_url = url)
 	
 	@encode.command(name = "reverse")
 	async def encode_reverse(self, *, message : str):
