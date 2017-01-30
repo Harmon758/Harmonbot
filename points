@@ -91,7 +91,7 @@ alias points {
   if (%points.status. [ $+ [ $1 ] ] == off) { .timerpoints [ $+ [ $1 ] ] off }
   var %url = https://api.twitch.tv/kraken/streams/ $+ $mid($1,2-)
   if ($json(%url,stream) == $null && $1 != #harmon758) { return }
-  %url = https://tmi.twitch.tv/group/user/  $+ $mid($1,2-) $+ /chatters
+  %url = https://tmi.twitch.tv/group/user/  $+ $mid($1,2-) $+ /chatters $+ ?client_id=***REMOVED***
   var %counter = 0
   while ($json(%url,chatters,moderators,%counter)) {
     var %name = $json(%url,chatters,moderators,%counter)

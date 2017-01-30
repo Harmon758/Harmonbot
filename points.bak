@@ -53,7 +53,7 @@ on *:text:!points*:#:{
       msg # %top_list
     }
     elseif ($points.findname($chan, $2)) {
-      ;var %      = $points.findname($chan, $2)
+      var %line = $points.findname($chan, $2)
       var %name_number = $findtok( [ %points. [ $+ [ $chan ] $+ ] .names [ $+ [ %line ] ] ] , $2, 1, 32)
       var %points = $gettok( [ %points. [ $+ [ $chan ] $+ ] .points [ $+ [ %line ] ] ] , %name_number, 32)
       var %rank = $points.findrank($chan, %points)

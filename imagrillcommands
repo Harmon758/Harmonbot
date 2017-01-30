@@ -2,12 +2,12 @@
 ;
 on *:text:!altstats*:#imagrill:{ msg # http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=arts+go+rawr }
 ; http://services.runescape.com/m=hiscore/a=869/compare?category_type=-1&user1=nomondwagons
-on *:text:!artsdictionary2*:#imagrill: { msg # Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. Skelington. Tunce. Milay. Edimoo. Right Meow. Pershon. }
+on *:text:!artsdictionary2*:#imagrill: { msg # Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. Skelington. Tunce. Milay. Edimoo. Right Meow. Pershon. Jduge. Aweshum. }
 on *:text:!artsdictionary*:#imagrill: { msg # Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. Quantent. Horsebirdunicorndonkey. Chaotic Bandos Helm. Wooden Bronze Bar. Dagonfoot. }
 ;on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 8 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 8 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 8 + $daylight),ddd) $+ .) in Southern California (UTC- $+ $calc(8 - $daylight / 3600) $+ ). }
 on *:text:!artstime*:#imagrill:{ msg # It is currently $asctime($calc($gmt - 3600 * 5 + $daylight),h:nn tt) on $asctime($calc($gmt - 3600 * 5 + $daylight),mmmm d) ( $+ $asctime($calc($gmt - 3600 * 5 + $daylight),ddd) $+ .) in the Eastern Time Zone (UTC- $+ $calc(5 - $daylight / 3600) $+ ). }
 on *:text:!arts*:#imagrill:{ msg # Arts is awesome~ }
-on *:text:!aus*:#imagrill:{ msg # He's a 90-year-old fanatic humage time traveler with a 10 foot beard. He wo's. }
+on *:text:!aus*:#imagrill:{ msg # He's a 90-year-old fanatic humage time traveler with a 10 foot beard. He wo's. But he unfollpwed BibleThump }
 on *:text:!banana*:#imagrill:{ msg # https://youtu.be/jc86EFjLFV4?t=1m49s }
 on *:text:!bluehair*:#imagrill:{ msg # Someone hair dyed my blue -Arts }
 on *:text:!catonhead*:#imagrill:{ msg # http://imgur.com/JwsV4w0 http://imgur.com/H0CiNbw }
@@ -41,6 +41,7 @@ on *:text:!fortune*:#imagrill:{ msg # ☺ The time is right to make new friends.
 on *:text:!googer*:#imagrill: { msg # google.com/search?q= $+ $replace($2-,$chr(32),$chr(43)) "RAISE YOUR GOOGERS" -Arts }
 on *:text:!hair*:#:{ msg # Arts is cosplaying as a R̶u̶n̶e̶ ̶D̶r̶a̶g̶o̶n̶ A̶d̶a̶m̶a̶n̶t̶ ̶D̶r̶a̶g̶o̶n̶ Red/Black Dragon }
 on *:text:!humage*:#imagrill:{ msg # We are only humage. -Arts }
+on *:text:!judge*:#imagrill:{ msg # dont jduge me -Arts }
 on *:text:!modabuse*:#imagrill:{ msg # "I literally stomped on Kae" "I wrecked his face so hard" -Arts }
 on *:text:!moo*:#imagrill:{ msg # "The cat moo'ed. It's not even dead." http://gyazo.com/52073e6b1de0066bf63d779768abe5c1 }
 on *:text:!muted*:#imagrill:{ msg # MIC MUTED! }
