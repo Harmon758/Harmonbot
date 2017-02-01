@@ -9,6 +9,7 @@ import credentials
 from modules import conversions
 from modules import utilities
 from utilities import checks
+import clients
 
 def setup(bot):
 	bot.add_cog(Discord(bot))
@@ -348,11 +349,9 @@ class Discord:
 	@checks.not_forbidden()
 	async def servericon(self, ctx):
 		'''See a bigger version of the server icon'''
-		# await self.bot.reply("This server's icon: https://cdn.discordapp.com/icons/" + ctx.message.server.id + "/" + ctx.message.server.icon + ".jpg")
-		if ctx.message.server.icon:
-			await self.bot.reply("This server's icon: " + ctx.message.server.icon_url)
-		else:
-			await self.bot.reply("This server doesn't have an icon.")
+		if not ctx.message.server.icon:
+			await self.bot.embed_reply(":no_entry: This server doesn't have an icon")
+		await self.bot.embed_reply("This server's icon:", image_url = ctx.message.server.icon_url)
 	
 	@commands.command(aliases = ["serverinformation"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
