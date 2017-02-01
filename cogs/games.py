@@ -527,7 +527,7 @@ class Games:
 		Ask 8ball a yes or no question
 		Also triggers on :8ball: without prefix
 		'''
-		await self.bot.reply(":8ball: {}".format(self._eightball()))
+		await self.bot.embed_reply(":8ball: {}".format(self._eightball()))
 	
 	def _eightball(self):
 		responses = ["It is certain", "It is decidedly so", "Without a doubt", "Yes, definitely", "You may rely on it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predit now", "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"]
@@ -535,13 +535,13 @@ class Games:
 	
 	@commands.group(hidden = True, pass_context = True)
 	@checks.not_forbidden()
-	async def gofish(self, ctx): #WIP
+	async def gofish(self, ctx):
 		'''WIP'''
 		return
 	
 	@gofish.command(hidden = True, name = "start", pass_context = True, no_pm = True)
 	@checks.is_owner()
-	async def gofish_start(self, ctx, *players : str): #WIP
+	async def gofish_start(self, ctx, *players : str):
 		'''WIP'''
 		self.gofish_channel = ctx.message.channel
 		if ctx.message.server:
@@ -559,13 +559,13 @@ class Games:
 		await self.bot.reply(message.author.name + " has started a game of Go Fish between " + gofish_players_string[:-5] + "!")
 	
 	@gofish.command(hidden = True, name = "hand", pass_context = True)
-	async def gofish_hand(self, ctx): #WIP
+	async def gofish_hand(self, ctx):
 		'''WIP'''
 		if ctx.message.author in gofish_players:
 			await self.bot.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.message.author) + 1))
 	
 	@gofish.command(hidden = True, name = "ask", pass_context = True)
-	async def gofish_ask(self, ctx): #WIP
+	async def gofish_ask(self, ctx):
 		'''WIP'''
 		if ctx.message.author in gofish_players:
 			pass
