@@ -6,7 +6,6 @@ import asyncio
 import hashlib
 import json
 import math
-# import mhashlib
 import moviepy.editor
 import pandas
 import random
@@ -134,7 +133,7 @@ class Tools:
 	@checks.not_forbidden()
 	async def coin(self):
 		'''Flip a coin'''
-		await self.bot.reply(random.choice(["Heads!", "Tails!"]))
+		await self.bot.embed_reply(random.choice(["Heads!", "Tails!"]))
 	
 	@commands.group(aliases = ["decrpyt"])
 	@checks.not_forbidden()
