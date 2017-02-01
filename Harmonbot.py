@@ -6,7 +6,6 @@ from discord.ext import commands
 
 import asyncio
 import json
-import logging
 import os
 import re
 import sys
@@ -26,13 +25,15 @@ utilities.create_file("f", content = {"counter" : 0})
 
 @client.event
 async def on_ready():
+	# data = await client.http.get(client.http.GATEWAY + "/bot")
+	# print(data)
 	print("Started up Discord {0} ({1})".format(str(client.user), client.user.id))
 	if os.path.isfile("data/temp/restart_channel.json"):
 		with open("data/temp/restart_channel.json", 'r') as restart_channel_file:
 			restart_data = json.load(restart_channel_file)
 		os.remove("data/temp/restart_channel.json")
 		restart_channel = client.get_channel(restart_data["restart_channel"])
-		await client.send_message(restart_channel, ":thumbsup::skin-tone-2: Restarted.")
+		await client.send_embed(restart_channel, ":thumbsup::skin-tone-2: Restarted")
 		for voice_channel in restart_data["voice_channels"]:
 			await client.join_voice_channel(client.get_channel(voice_channel[0]))
 			# asyncio.ensure_future(client.cogs["Audio"].start_player(client.get_channel(voice_channel[1])))
