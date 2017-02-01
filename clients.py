@@ -7,6 +7,7 @@ from discord.ext.commands.errors import CommandNotFound, CommandError
 import aiohttp
 import cleverbot
 import datetime
+import imgurpython
 import inflect
 import json
 import os
@@ -18,9 +19,10 @@ import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 from modules import utilities
 from utilities.help_formatter import CustomHelpFormatter
+from utilities import errors
 import credentials
 
-version = "0.34.23-3.22"
+version = "0.34.23-3.23"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -32,6 +34,7 @@ py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
 aiohttp_session = aiohttp.ClientSession()
 cleverbot_instance = cleverbot.Cleverbot("Harmonbot")
+imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
 inflect_engine = inflect.engine()
 owm_client = pyowm.OWM(credentials.owm_api_key)
 twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)

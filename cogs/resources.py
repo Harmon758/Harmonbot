@@ -198,6 +198,44 @@ class Resources:
 		'''First Google result of a search'''
 		await self.bot.reply("https://www.google.com/search?btnI&q={0}".format('+'.join(search)))
 	
+	@commands.group(pass_context = True, invoke_without_command = True)
+	@checks.not_forbidden()
+	async def imgur(self, ctx):
+		'''Imgur'''
+		await self.bot.embed_reply("See {}help imgur".format(ctx.prefix))
+	
+	@imgur.command(name = "upload", pass_context = True)
+	@checks.not_forbidden()
+	async def imgur_upload(self, ctx, url : str = ""):
+		'''Upload images to imgur'''
+		if url:
+			await self._imgur_upload(url)
+		if ctx.message.attachments:
+			await self._imgur_upload(ctx.message.attachments[0]["url"])
+		if not (url or ctx.message.attachments):
+			await self.bot.embed_reply(":no_entry: Please input an image and/or url")
+	
+	async def _imgur_upload(self, url):
+		try:
+			await self.bot.embed_reply(clients.imgur_client.upload_from_url(url)["link"])
+		except imgurpython.helpers.error.ImgurClientError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@imgur.command(name = "search")
+	@checks.not_forbidden()
+	async def imgur_search(self, *, search : str):
+		'''Search images on imgur'''
+		result = clients.imgur_client.gallery_search(search, sort = "top")
+		if not result:
+			await self.bot.embed_reply(":no_entry: No results found")
+			return
+		result = result[0]
+		if result.is_album:
+			result = clients.imgur_client.get_album(result.id).images[0]
+			await self.bot.embed_reply(None, image_url = result["link"])
+		else:
+			await self.bot.embed_reply(None, image_url = result.link)
+	
 	@commands.group()
 	@checks.not_forbidden()
 	async def lichess(self):
