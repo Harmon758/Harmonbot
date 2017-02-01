@@ -412,7 +412,7 @@ class Games:
 			black_player = ctx.message.author
 		# prompt opponent
 		if opponent != self.bot.user and opponent != ctx.message.author:
-			await self.bot.say("{}: {} has challenged you to a chess match\nWould you like to accept? yes/no".format(opponent.mention, ctx.message.author))
+			await self.bot.say("{}: {} has challenged you to a chess match\nWould you like to accept? Yes/No".format(opponent.mention, ctx.message.author))
 			message = await self.bot.wait_for_message(author = opponent, channel = ctx.message.channel, check = lambda msg: msg.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
 			if not message or message.content.lower() in ("no", 'n'):
 				await self.bot.say("{}: {} has declined your challenge".format(ctx.message.author.mention, opponent))
@@ -518,7 +518,7 @@ class Games:
 	@checks.not_forbidden()
 	async def cleverbot(self, *, message : str):
 		'''Talk to Cleverbot'''
-		await self.bot.reply(cleverbot_instance.ask(message))
+		await self.bot.embed_reply(cleverbot_instance.ask(message))
 	
 	@commands.command(name = "8ball", aliases = ["eightball", "\U0001f3b1"])
 	@checks.not_forbidden()
