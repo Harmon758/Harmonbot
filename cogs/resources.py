@@ -5,6 +5,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import functools
+import imgurpython
 import isodate
 import json
 import random
@@ -334,14 +335,13 @@ class Resources:
 	@checks.not_forbidden()
 	async def longurl(self, url : str):
 		'''Expand a short goo.gl url'''
-		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={0}&key={1}".format(url, credentials.google_apikey)
+		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={}&key={}".format(url, credentials.google_apikey)
 		async with aiohttp_session.get(url) as resp:
-			status = resp.status
+			if resp.status == 400:
+				await self.bot.embed_reply(":no_entry: Error")
+				return
 			data = await resp.json()
-		if status == 400:
-			await self.bot.reply("Error.")
-		else:
-			await self.bot.reply(data["longUrl"])
+		await self.bot.embed_reply(data["longUrl"])
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
