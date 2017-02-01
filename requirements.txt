@@ -4,6 +4,7 @@ aiohttp==1.1.6
 beautifulsoup4==4.5.1
 cleverbot==2.0.0
 feedparser==5.2.1
+imgurpython==1.1.7
 inflect==0.2.5
 isodate==0.5.4
 moviepy==0.2.2.11
