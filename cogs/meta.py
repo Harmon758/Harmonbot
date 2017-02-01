@@ -278,11 +278,11 @@ class Meta:
 	@commands.command()
 	async def version(self):
 		'''Bot version'''
-		await self.bot.reply("I am Harmonbot `v{}`".format(clients.version))
+		await self.bot.embed_reply("I am Harmonbot `v{}`".format(clients.version))
 	
 	# Update Bot Stuff
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def changenickname(self, ctx, *, nickname : str):
 		'''Update my nickname'''
@@ -306,7 +306,7 @@ class Meta:
 		await clients.random_game_status()
 		# await self.bot.reply("I changed to a random game status.")
 	
-	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"], hidden = True)
+	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"])
 	@checks.is_owner()
 	async def setgame(self, ctx, *, name : str):
 		'''Set my playing/game status message'''
@@ -318,7 +318,7 @@ class Meta:
 		await self.bot.change_status(game = updated_game)
 		await self.bot.reply("Game updated.")
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def setstreaming(self, ctx, option : str, *url : str):
 		'''Set my streaming status'''
@@ -338,7 +338,7 @@ class Meta:
 			updated_game.type = 0
 		await self.bot.change_status(game = updated_game)
 	
-	@commands.command(pass_context = True, aliases = ["clearplaying"], hidden = True)
+	@commands.command(pass_context = True, aliases = ["clearplaying"])
 	@checks.is_owner()
 	async def cleargame(self, ctx):
 		'''Clear my playing/game status message'''
@@ -350,7 +350,7 @@ class Meta:
 		else:
 			await self.bot.reply("There is no game status to clear.")
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def clearstreaming(self, ctx, *option : str):
 		'''Clear my streaming status'''
@@ -376,7 +376,7 @@ class Meta:
 	
 	# Restart/Shutdown
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
@@ -386,7 +386,7 @@ class Meta:
 		await clients.restart_tasks(ctx.message.channel.id)
 		await self.bot.logout()
 	
-	@commands.command(aliases = ["crash", "panic"], hidden = True)
+	@commands.command(aliases = ["crash", "panic"])
 	@checks.is_owner()
 	async def shutdown(self):
 		'''Shut me down'''
@@ -404,13 +404,13 @@ class Meta:
 		'''Basic test command'''
 		await self.bot.say("Hello, World!")
 	
-	@commands.command(hidden = True)
+	@commands.command()
 	@checks.is_owner()
 	async def echo(self, *, message):
 		'''Echoes the message'''
 		await self.bot.say(message)
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def eval(self, ctx, *, code : str):
 		code = code.strip('`')
@@ -433,14 +433,14 @@ class Meta:
 			return
 		await self.bot.reply("Successfully executed.")
 	
-	@commands.command(hidden = True)
+	@commands.command()
 	@checks.is_owner()
 	async def deletetest(self):
 		'''Sends 100 messages'''
 		for i in range(1, 101):
 			await self.bot.say(str(i))
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def repl(self, ctx):
 		variables = {"self" : self, "ctx" : ctx, "last" : None}
