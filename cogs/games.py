@@ -761,24 +761,24 @@ class Games:
 	
 	@commands.group(hidden = True)
 	@checks.not_forbidden()
-	async def taboo(self): #WIP
+	async def taboo(self):
 		'''WIP'''
 		return
 	
 	@taboo.command(hidden = True, name = "start", pass_context = True, no_pm = True)
-	async def taboo_start(self, ctx, player : str): #WIP
+	async def taboo_start(self, ctx, player : str):
 		'''WIP'''
 		self.taboo_players.append(ctx.message.author)
 		for member in self.message.server.members:
 			if member.name == player:
 				self.taboo_players.append(member)
 				break
-		await self.bot.reply(" has started a game of Taboo with " + taboo_players[1].mention)
+		await self.bot.embed_reply(" has started a game of Taboo with " + taboo_players[1].mention)
 		await self.bot.whisper("You have started a game of Taboo with " + taboo_players[1].name)
 		await self.bot.send_message(taboo_players[1], ctx.message.author.name + " has started a game of Taboo with you.")
 	
 	@taboo.command(hidden = True, name = "nextround") # no_pm = True ?
-	async def taboo_nextround(self): #WIP
+	async def taboo_nextround(self):
 		'''WIP'''
 		if message.server:
 			pass
