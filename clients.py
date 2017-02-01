@@ -20,7 +20,7 @@ from modules import utilities
 from utilities.help_formatter import CustomHelpFormatter
 import credentials
 
-version = "0.34.23-3.20"
+version = "0.34.23-3.21"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -61,8 +61,18 @@ class Bot(commands.Bot):
 		embed = discord.Embed(description = str(content) if content else None, color = bot_color)
 		avatar = author.avatar_url or author.default_avatar_url
 		embed.set_author(name = author.display_name, icon_url = avatar) # url?
+		title = kwargs.pop("title", None)
+		if title: embed.title = title
+		title_url = kwargs.pop("title_url", None)
+		if title_url: embed.url = title_url
 		image_url = kwargs.pop("image_url", None)
 		if image_url: embed.set_image(url = image_url)
+		thumbnail_url = kwargs.pop("thumbnail_url", None)
+		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
+		footer_text = kwargs.pop("footer_text", None)
+		if footer_text: embed.set_footer(text = footer_text)
+		timestamp = kwargs.pop("timestamp", None)
+		if timestamp: embed.timestamp = timestamp
 		extensions = ('delete_after',)
 		params = {k: kwargs.pop(k, None) for k in extensions}
 		coro = self.send_message(destination, embed = embed, *args, **kwargs)
@@ -151,8 +161,8 @@ class Bot(commands.Bot):
 # Create Folders
 
 utilities.create_folder("data")
-utilities.create_folder("data/temp")
 utilities.create_folder("data/permissions")
+utilities.create_folder("data/temp")
 
 
 # Custom prefixes
