@@ -72,7 +72,7 @@ class Games:
 	async def adventure_stats(self, ctx):
 		'''Stats'''
 		player = self.get_adventure_player(ctx.message.author.id)
-		await self.bot.reply("\n:fishing_pole_and_fish: Fishing xp: {} (Level {})"
+		await self.bot.embed_reply("\n:fishing_pole_and_fish: Fishing xp: {} (Level {})"
 		"\n:herb: Foraging xp: {} (Level {})"
 		"\n:pick: Mining xp: {} (Level {})"
 		"\n:evergreen_tree: Woodcutting xp: {} (Level {})".format(player.fishing_xp, player.fishing_lvl, player.foraging_xp, player.foraging_lvl, player.mining_xp, player.mining_lvl, player.woodcutting_xp, player.woodcutting_lvl))
@@ -84,7 +84,7 @@ class Games:
 		'''Woodcutting stats'''
 		player = self.get_adventure_player(ctx.message.author.id)
 		woodcutting_xp = player.woodcutting_xp
-		await self.bot.reply("\n:evergreen_tree: Woodcutting xp: {}\n{}\n{} xp to next level".format(woodcutting_xp, self.level_bar(woodcutting_xp), adventure.xp_left_to_next_lvl(woodcutting_xp)))
+		await self.bot.embed_reply("\n:evergreen_tree: Woodcutting xp: {}\n{}\n{} xp to next level".format(woodcutting_xp, self.level_bar(woodcutting_xp), adventure.xp_left_to_next_lvl(woodcutting_xp)))
 	
 	@adventure_stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"], pass_context = True)
 	@checks.not_forbidden()
@@ -92,7 +92,7 @@ class Games:
 		'''Foraging stats'''
 		player = self.get_adventure_player(ctx.message.author.id)
 		foraging_xp = player.foraging_xp
-		await self.bot.reply("\n:herb: Foraging xp: {}\n{}\n{} xp to next level".format(foraging_xp, self.level_bar(foraging_xp), adventure.xp_left_to_next_lvl(foraging_xp)))
+		await self.bot.embed_reply("\n:herb: Foraging xp: {}\n{}\n{} xp to next level".format(foraging_xp, self.level_bar(foraging_xp), adventure.xp_left_to_next_lvl(foraging_xp)))
 	
 	def level_bar(self, xp):
 		lvl = adventure.xp_to_lvl(xp)
@@ -110,9 +110,9 @@ class Games:
 		player = self.get_adventure_player(ctx.message.author.id)
 		inventory = player.inventory
 		if item in inventory:
-			await self.bot.reply("{}: {}".format(item, inventory[item]))
+			await self.bot.embed_reply("{}: {}".format(item, inventory[item]))
 		else:
-			await self.bot.reply(", ".join(["{}: {}".format(item, amount) for item, amount in sorted(inventory.items())]))
+			await self.bot.embed_reply(", ".join(["{}: {}".format(item, amount) for item, amount in sorted(inventory.items())]))
 	
 	@adventure.command(name = "examine", pass_context = True)
 	@checks.not_forbidden()
@@ -122,11 +122,11 @@ class Games:
 		inventory = player.inventory
 		if item in inventory:
 			if item in adventure.examine_messages:
-				await self.bot.reply("{}".format(adventure.examine_messages[item]))
+				await self.bot.embed_reply("{}".format(adventure.examine_messages[item]))
 			else:
-				await self.bot.reply("{}".format(item))
+				await self.bot.embed_reply("{}".format(item))
 		else:
-			await self.bot.reply(":no_entry: You don't have that item")
+			await self.bot.embed_reply(":no_entry: You don't have that item")
 	
 	@adventure.group(name = "forage", aliases = ["gather"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
@@ -139,18 +139,18 @@ class Games:
 			output = "\n:herb: You were foraging {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and xp. While you were foraging, you also found {0[3]} {1}".format(stopped, adventure.forageables[stopped[0]][0])
 			if stopped[4]:
 				output += " and {0[4]} {1}!".format(stopped, adventure.forageables[stopped[0]][1])
-			await self.bot.reply(output)
+			await self.bot.embed_reply(output)
 			if item:
 				started = player.start_foraging(item)
 			else:
 				return
 		if started is True:
-			await self.bot.reply("\n:herb: You have started foraging for {}".format(item))
+			await self.bot.embed_reply("\n:herb: You have started foraging for {}".format(item))
 			# active?
 		elif started is False:
-			await self.bot.reply(":no_entry: That item type doesn't exist")
+			await self.bot.embed_reply(":no_entry: That item type doesn't exist")
 		else:
-			await self.bot.reply(":no_entry: You're currently {}! You can't start/stop foraging right now".format(started))
+			await self.bot.embed_reply(":no_entry: You're currently {}! You can't start/stop foraging right now".format(started))
 	
 	@adventure_forage.command(name = "start", aliases = ["on"], pass_context = True)
 	@checks.not_forbidden()
@@ -159,12 +159,12 @@ class Games:
 		player = self.get_adventure_player(ctx.message.author.id)
 		started = player.start_foraging(item)
 		if started is True:
-			await self.bot.reply("\n:herb: You have started foraging for {}".format(item))
+			await self.bot.embed_reply("\n:herb: You have started foraging for {}".format(item))
 			# active?
 		elif started is False:
-			await self.bot.reply(":no_entry: That item type doesn't exist")
+			await self.bot.embed_reply(":no_entry: That item type doesn't exist")
 		else:
-			await self.bot.reply(":no_entry: You're currently {}! You can't start foraging right now".format(started))
+			await self.bot.embed_reply(":no_entry: You're currently {}! You can't start foraging right now".format(started))
 	
 	@adventure_forage.command(name = "stop", aliases = ["off"], pass_context = True)
 	@checks.not_forbidden()
@@ -176,17 +176,17 @@ class Games:
 			output = "\n:herb: You were foraging {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and xp. While you were foraging, you also found {0[3]} {1}".format(stopped, adventure.forageables[stopped[0]][0])
 			if stopped[4]:
 				output += " and {0[4]} {1}!".format(stopped, adventure.forageables[stopped[0]][1])
-			await self.bot.reply(output)
+			await self.bot.embed_reply(output)
 		elif stopped[1]:
-			await self.bot.reply(":no_entry: You're currently {}! You aren't foraging right now")
+			await self.bot.embed_reply(":no_entry: You're currently {}! You aren't foraging right now")
 		else:
-			await self.bot.reply(":no_entry: You aren't foraging")
+			await self.bot.embed_reply(":no_entry: You aren't foraging")
 	
-	@adventure_forage.command(name = "items")
+	@adventure_forage.command(name = "items", aliases = ["item", "type", "types"])
 	@checks.not_forbidden()
 	async def forage_items(self):
 		'''Forageable items'''
-		await self.bot.reply(", ".join(adventure.forageables.keys()))
+		await self.bot.embed_reply(", ".join(adventure.forageables.keys()))
 	
 	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
@@ -196,18 +196,18 @@ class Games:
 		started = player.start_woodcutting(wood_type)
 		if started == "woodcutting":
 			stopped = player.stop_woodcutting()
-			await self.bot.reply("\n:evergreen_tree: You were chopping {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and {0[3]} xp".format(stopped))
+			await self.bot.embed_reply("\n:evergreen_tree: You were chopping {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and {0[3]} xp".format(stopped))
 			if wood_type:
 				started = player.start_woodcutting(wood_type)
 			else:
 				return
 		if started is True:
-			await self.bot.reply("\n:evergreen_tree: You have started chopping {} trees".format(wood_type))
+			await self.bot.embed_reply("\n:evergreen_tree: You have started chopping {} trees".format(wood_type))
 			await self.woodcutting_active(ctx, wood_type)
 		elif started is False:
-			await self.bot.reply(":no_entry: That wood type doesn't exist")
+			await self.bot.embed_reply(":no_entry: That wood type doesn't exist")
 		else:
-			await self.bot.reply(":no_entry: You're currently {}! You can't start/stop woodcutting right now".format(started))
+			await self.bot.embed_reply(":no_entry: You're currently {}! You can't start/stop woodcutting right now".format(started))
 	
 	@adventure_woodcutting.command(name = "start", aliases = ["on"], pass_context = True)
 	@checks.not_forbidden()
@@ -216,16 +216,16 @@ class Games:
 		player = self.get_adventure_player(ctx.message.author.id)
 		started = player.start_woodcutting(wood_type)
 		if started is True:
-			await self.bot.reply("\n:evergreen_tree: You have started chopping {} trees".format(wood_type))
+			await self.bot.embed_reply("\n:evergreen_tree: You have started chopping {} trees".format(wood_type))
 			await self.woodcutting_active(ctx, wood_type)
 		elif started is False:
-			await self.bot.reply(":no_entry: That wood type doesn't exist")
+			await self.bot.embed_reply(":no_entry: That wood type doesn't exist")
 		else:
-			await self.bot.reply(":no_entry: You're currently {}! You can't start woodcutting right now".format(started))
+			await self.bot.embed_reply(":no_entry: You're currently {}! You can't start woodcutting right now".format(started))
 	
 	async def woodcutting_active(self, ctx, wood_type):
 		player = self.get_adventure_player(ctx.message.author.id)
-		ask_message = await self.bot.reply("\n:grey_question: Would you like to chop {} trees actively? Yes/No".format(wood_type))
+		ask_message, embed = await self.bot.embed_reply("\n:grey_question: Would you like to chop {} trees actively? Yes/No".format(wood_type))
 		message = await self.bot.wait_for_message(timeout = 60, author = ctx.message.author, check = lambda m: m.content.lower() in ('y', "yes", 'n', "no"))
 		await self.bot.delete_message(ask_message)
 		if not message or message.content.lower() in ('n', "no"):
@@ -234,25 +234,25 @@ class Games:
 			return
 		rate = player.wood_rate(wood_type) * player.woodcutting_rate
 		if rate == 0:
-			await self.bot.reply(":no_entry: You can't chop this wood yet")
+			await self.bot.embed_reply(":no_entry: You can't chop this wood yet")
 			return
 		time = int(60 / rate)
 		chopped_message = None
 		while message:
-			chopping = await self.bot.reply("\n:evergreen_tree: Chopping.. (this could take up to {} sec.)".format(time))
+			chopping, embed = await self.bot.embed_reply("\n:evergreen_tree: Chopping.. (this could take up to {} sec.)".format(time))
 			await asyncio.sleep(random.randint(1, time))
 			await self.bot.delete_message(message)
 			await self.bot.delete_message(chopping)
 			prompt = random.choice(["chop", "whack", "swing", "cut"])
-			prompt_message = await self.bot.reply('Reply with "{}" in the next 10 sec. to continue'.format(prompt))
+			prompt_message, embed = await self.bot.embed_reply('Reply with "{}" in the next 10 sec. to continue'.format(prompt))
 			message = await self.bot.wait_for_message(timeout = 10, author = ctx.message.author, content = prompt)
 			if message:
 				chopped = player.chop_once(wood_type)
 				if chopped_message:
 					await self.bot.delete_message(chopped_message)
-				chopped_message = await self.bot.reply("\n:evergreen_tree: You chopped a {0} tree. You now have {1[0]} {0} and {1[1]} woodcutting xp".format(wood_type, chopped))
+				chopped_message, embed = await self.bot.embed_reply("\n:evergreen_tree: You chopped a {0} tree. You now have {1[0]} {0} and {1[1]} woodcutting xp".format(wood_type, chopped))
 			else:
-				await self.bot.reply("\n:stop_sign: You have stopped actively chopping {}".format(wood_type))
+				await self.bot.embed_reply("\n:stop_sign: You have stopped actively chopping {}".format(wood_type))
 			await self.bot.delete_message(prompt_message)
 	
 	@adventure_woodcutting.command(name = "stop", aliases = ["off"], pass_context = True)
@@ -262,17 +262,17 @@ class Games:
 		player = self.get_adventure_player(ctx.message.author.id)
 		stopped = player.stop_woodcutting()
 		if stopped[0]:
-			await self.bot.reply("\n:evergreen_tree: You were chopping {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and {0[3]} xp".format(stopped))
+			await self.bot.embed_reply("\n:evergreen_tree: You were chopping {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and {0[3]} xp".format(stopped))
 		elif stopped[1]:
-			await self.bot.reply(":no_entry: You're currently {}! You aren't woodcutting right now")
+			await self.bot.embed_reply(":no_entry: You're currently {}! You aren't woodcutting right now")
 		else:
-			await self.bot.reply(":no_entry: You aren't woodcutting")
+			await self.bot.embed_reply(":no_entry: You aren't woodcutting")
 	
-	@adventure_woodcutting.command(name = "types", aliases = ["type"])
+	@adventure_woodcutting.command(name = "types", aliases = ["type", "item", "items"])
 	@checks.not_forbidden()
 	async def woodcutting_types(self):
 		'''Types of wood'''
-		await self.bot.reply(", ".join(adventure.wood_types))
+		await self.bot.embed_reply(", ".join(adventure.wood_types))
 	
 	@adventure_woodcutting.command(name = "rate", aliases = ["rates"], pass_context = True)
 	@checks.not_forbidden()
@@ -280,9 +280,9 @@ class Games:
 		'''Rate of chopping certain wood'''
 		player = self.get_adventure_player(ctx.message.author.id)
 		if wood_type in adventure.wood_types:
-			await self.bot.reply("You will get {:.2f} {}/min. at your current level".format(player.wood_rate(wood_type) * player.woodcutting_rate, wood_type))
+			await self.bot.embed_reply("You will get {:.2f} {}/min. at your current level".format(player.wood_rate(wood_type) * player.woodcutting_rate, wood_type))
 		else:
-			await self.bot.reply(":no_entry: That wood type doesn't exist")
+			await self.bot.embed_reply(":no_entry: That wood type doesn't exist")
 	
 	# Not Adventure
 	
