@@ -20,10 +20,11 @@ from modules import utilities
 from utilities.help_formatter import CustomHelpFormatter
 import credentials
 
-version = "0.34.23-3.21"
+version = "0.34.23-3.22"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
+cache_channel_id = "254051856219635713"
 bot_color = 0x738bd7
 wait_time = 15.0
 code_block = "```\n{}\n```"
@@ -76,7 +77,15 @@ class Bot(commands.Bot):
 		extensions = ('delete_after',)
 		params = {k: kwargs.pop(k, None) for k in extensions}
 		coro = self.send_message(destination, embed = embed, *args, **kwargs)
-		return self._augmented_msg(coro, embed = embed, **params)
+		if destination.is_private or getattr(destination.permissions_for(destination.server.me), "embed_links", None):
+			return self._augmented_msg(coro, embed = embed, **params)
+		elif not (title or title_url or image_url or thumbnail_url or footer_text or timestamp):
+			fmt = '{0.display_name}: {1}'.format(author, str(content))
+			coro = self.send_message(destination, fmt, *args, **kwargs)
+			return self._augmented_msg(coro, **params)
+		else:
+			permissions = ["embed_links"]
+			raise errors.MissingCapability(permissions)
 	
 	def say(self, *args, **kwargs):
 		destination = commands.bot._get_variable('_internal_channel')
@@ -240,8 +249,8 @@ async def random_game_status():
 	"hard to get", "to win", "world domination", "with Opportunity",
 	"with Spirit in the sand pit", "with Curiousity", "with Voyager 1",
 	"music", "Google Ultron", "not enough space here to",
-	"the meaning of life is", "with the NSA", "with RSS Bot", "with Data",
-	"with Harmon", " "]
+	"the meaning of life is", "with the NSA", "with neural networks", 
+	"with RSS Bot", "with Data", "with Harmon", " "]
 	me = discord.utils.find(lambda s: s != None, client.servers).me
 	if not me:
 		return
