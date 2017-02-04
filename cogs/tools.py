@@ -381,16 +381,18 @@ class Tools:
 		await asyncio.sleep(seconds)
 		await self.bot.say("{}: {} seconds have passed.".format(ctx.message.author.mention, seconds))
 	
-	@commands.command(hidden = True, pass_context = True)
+	@commands.command(pass_context = True, hidden = True)
 	@checks.not_forbidden()
-	async def webmtogif(self, ctx, url : str): #WIP
-		'''WIP'''
-		webmfile = urllib.request.urlretrieve(url, "data/webtogif.webm")
-		# subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
-		clip = moviepy.editor.VideoFileClip("data/webtogif.webm")
-		clip.write_gif("data/webtogif.gif", fps = 1, program = "ffmpeg")
-		# clip.write_gif("data/webtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
-		await self.bot.send_file(ctx.message.channel, "data/webtogif.gif")
-		#subprocess.call(["ffmpeg", "-i", "data/webtogif.webm", "-pix_fmt", "rgb8", "data/webtogif.gif"], shell=True)
-		#await self.bot.send_file(message.channel, "data/webtogif.gif")
+	async def webmtogif(self, ctx, url : str):
+		'''
+		Convert webm to gif files
+		Only converts at 1 fps
+		See http://imgur.com/vidgif instead
+		'''
+		webmfile = urllib.request.urlretrieve(url, "data/temp/webmtogif.webm")
+		# subprocess.call(["ffmpeg", "-i", "data/temp/webmtogif.webm", "-pix_fmt", "rgb8", "data/temp/webmtogif.gif"], shell=True)
+		clip = moviepy.editor.VideoFileClip("data/temp/webmtogif.webm")
+		clip.write_gif("data/temp/webmtogif.gif", fps = 1, program = "ffmpeg")
+		# clip.write_gif("data/temp/webmtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
+		await self.bot.send_file(ctx.message.channel, "data/temp/webmtogif.gif")
 
