@@ -36,20 +36,11 @@ class Tools:
 	@commands.command()
 	@checks.not_forbidden()
 	async def add(self, *numbers : float):
-		'''Adds numbers together.'''
+		'''Add numbers together'''
 		if not numbers:
-			await self.bot.reply("Add what?")
+			await self.bot.embed_reply("Add what?")
 			return
-		result = sum(numbers)
-		if result.is_integer():
-			result = int(result)
-		addends = []
-		for number in numbers:
-			if number.is_integer():
-				addends.append(str(int(number)))
-			else:
-				addends.append(str(number))
-		await self.bot.reply(" + ".join(addends) + " = " + str(result))
+		await self.bot.embed_reply("{} = {:g}".format(" + ".join("{:g}".format(number) for number in numbers), sum(numbers)))
 	
 	@commands.command(aliases = ["calc", "calculator"])
 	@checks.not_forbidden()
