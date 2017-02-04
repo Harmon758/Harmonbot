@@ -108,7 +108,7 @@ class Tools:
 		except Exception as e:
 			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
 	
-	@commands.command()
+	@commands.command(aliases = ["choice"])
 	@checks.not_forbidden()
 	async def choose(self, *choices : str):
 		'''
@@ -116,9 +116,9 @@ class Tools:
 		choose <option1> <option2> <...>
 		'''
 		if not choices:
-			await self.bot.reply("Choose between what?")
-		else:
-			await self.bot.reply(random.choice(choices))
+			await self.bot.embed_reply("Choose between what?")
+			return
+		await self.bot.embed_reply(random.choice(choices))
 	
 	@commands.command(aliases = ["flip"])
 	@checks.not_forbidden()
