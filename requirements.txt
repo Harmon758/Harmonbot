@@ -17,7 +17,8 @@ python-dateutil==2.5.3
 seaborn==0.7.1
 speechrecognition==3.5.0
 sympy==1.0
-tweepy==3.5.0
+# tweepy==3.6.0
+git+git://github.com/tweepy/tweepy.git@80015db
 wand==0.4.4
 wolframalpha==3.0
 wordnik-py3==2.1.2
@@ -42,8 +43,9 @@ pillow==3.4.2
 pycparser==2.17
 pynacl==1.0.1
 pyparsing==2.1.10
+pysocks==1.6.6
 pytz==2016.10
-requests==2.12.5
+requests==2.13.0
 requests-oauthlib==0.7.0
 scipy==0.18.1
 six==1.10.0
