@@ -372,6 +372,12 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def lmaoltfy(self, *search : str):
+		'''Let Me AOL That For You'''
+		await self.bot.embed_reply("[LMAOLTFY: \"{}\"](http://lmgtfy.com/?s=a&q={})".format(' '.join(search), '+'.join(search)))
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def lmbtfy(self, *search : str):
 		'''Let Me Bing That For You'''
 		output = "[LMBTFY: \"{}\"](http://lmbtfy.com/?s=b&q={})\n".format(' '.join(search), '+'.join(search))
