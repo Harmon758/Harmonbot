@@ -41,6 +41,30 @@ class Resources:
 			return
 		await self.bot.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
 	
+	@commands.group(aliases = ["blizzard"], invoke_without_command = True)
+	@checks.not_forbidden()
+	async def battlenet(self):
+		'''Battle.net'''
+		...
+	
+	@battlenet.command(name = "run", aliases = ["launch"])
+	async def battlenet_run(self, *, game : str):
+		'''
+		Generate a Battle.net link to launch a game
+		You must have the Battle.net launcher open for the link to work
+		'''
+		lower_game = game.lower()
+		if lower_game in ("world of warcraft", "wow"): abbrev = "WoW"
+		elif lower_game in ("diablo 3"): abbrev = "D3"
+		elif lower_game in ("starcraft 2"): abbrev = "S2"
+		elif lower_game in ("hearthstone"): abbrev = "WTCG"
+		elif lower_game in ("heroes of the storm", "hots"): abbrev = "Hero"
+		elif lower_game in ("overwatch"): abbrev = "Pro"
+		else:
+			await self.bot.embed_reply(":no_entry: Game not found")
+			return
+		await self.bot.embed_reply("[Launch {}](battlenet://{})".format(game, abbrev))
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def bing(self, *search : str):
