@@ -11,6 +11,7 @@ moviepy==0.2.2.11
 pandas==0.19.1
 psutil==5.0.0
 pydealer==1.4.0
+pygost==3.1
 pyowm==2.5.0
 python-chess==0.16.0
 python-dateutil==2.5.3

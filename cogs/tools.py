@@ -8,6 +8,11 @@ import json
 import math
 import moviepy.editor
 import pandas
+import pygost.gost28147
+import pygost.gost28147_mac
+import pygost.gost34112012
+import pygost.gost341194
+import pygost.gost3412
 import random
 import seaborn
 # import re
@@ -148,6 +153,73 @@ class Tools:
 		'''Brute force decode caesar code'''
 		await self.bot.embed_reply(ciphers.brute_force_caesar(message))
 	
+	@decode.group(name = "gost", aliases = ["ГОСТ"])
+	async def decode_gost(self):
+		'''
+		Russian Federation/Soviet Union GOST
+		Межгосударственный стандарт
+		From GOsudarstvennyy STandart
+		(ГОсударственный СТандарт)
+		'''
+		...
+	
+	@decode_gost.group(name = "28147-89", aliases = ["магма", "magma"])
+	async def decode_gost_28147_89(self):
+		'''
+		GOST 28147-89 block cipher
+		Also known as Магма or Magma
+		'''
+		# TODO: Add decode magma alias
+		...
+	
+	@decode_gost_28147_89.command(name = "cbc")
+	async def ddecode_gost_28147_89_cbc(self, key : str, *, data : str):
+		'''Magma with CBC mode of operation'''
+		try:
+			await self.bot.embed_reply(pygost.gost28147.cbc_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@decode_gost_28147_89.command(name = "cfb")
+	async def decode_gost_28147_89_cfb(self, key : str, *, data : str):
+		'''Magma with CFB mode of operation'''
+		try:
+			await self.bot.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@decode_gost_28147_89.command(name = "cnt")
+	async def decode_gost_28147_89_cnt(self, key : str, *, data : str):
+		'''Magma with CNT mode of operation'''
+		try:
+			await self.bot.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@decode_gost_28147_89.command(name = "ecb")
+	async def decode_gost_28147_89_ecb(self, key : str, *, data : str):
+		'''Magma with ECB mode of operation'''
+		try:
+			await self.bot.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@decode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
+	async def decode_gost_34_12_2015(self, key : str, *, data : str):
+		'''
+		GOST 34.12-2015 128-bit block cipher
+		Also known as Кузнечик or Kuznyechik
+		key length >= 32, data length >= 16
+		'''
+		# TODO: Add decode kuznyechik alias
+		if len(key) < 32:
+			await self.bot.embed_reply(":no_entry: Error: key length must be at least 32")
+			return
+		if len(data) < 16:
+			await self.bot.embed_reply(":no_entry: Error: data length must be at least 16")
+			return
+		await self.bot.embed_reply(pygost.gost3412.GOST3412Kuz(key.encode("utf-8")).decrypt(bytearray.fromhex(data)).decode("utf-8"))
+	
 	@decode.command(name = "morse")
 	async def decode_morse(self, *, message : str):
 		'''Decodes morse code'''
@@ -213,6 +285,113 @@ class Tools:
 	async def encode_crc32(self, *, message : str):
 		'''Computer CRC32 checksum'''
 		await self.bot.embed_reply(zlib.crc32(message.encode("utf-8")))
+	
+	@encode.group(name = "gost", aliases = ["ГОСТ"])
+	async def encode_gost(self):
+		'''
+		Russian Federation/Soviet Union GOST
+		Межгосударственный стандарт
+		From GOsudarstvennyy STandart
+		(ГОсударственный СТандарт)
+		'''
+		...
+	
+	@encode_gost.group(name = "28147-89", aliases = ["магма", "magma"])
+	async def encode_gost_28147_89(self):
+		'''
+		GOST 28147-89 block cipher
+		Also known as Магма or Magma
+		'''
+		# TODO: Add encode magma alias
+		...
+	
+	@encode_gost_28147_89.command(name = "cbc")
+	async def encode_gost_28147_89_cbc(self, key : str, *, data : str):
+		'''Magma with CBC mode of operation'''
+		try:
+			await self.bot.embed_reply(pygost.gost28147.cbc_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@encode_gost_28147_89.command(name = "cfb")
+	async def encode_gost_28147_89_cfb(self, key : str, *, data : str):
+		'''Magma with CFB mode of operation'''
+		try:
+			await self.bot.embed_reply(pygost.gost28147.cfb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@encode_gost_28147_89.command(name = "cnt")
+	async def encode_gost_28147_89_cnt(self, key : str, *, data : str):
+		'''Magma with CNT mode of operation'''
+		try:
+			await self.bot.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), data.encode("utf-8")).hex())
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@encode_gost_28147_89.command(name = "ecb")
+	async def encode_gost_28147_89_ecb(self, key : str, *, data : str):
+		'''Magma with ECB mode of operation'''
+		try:
+			await self.bot.embed_reply(pygost.gost28147.ecb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@encode_gost_28147_89.command(name = "mac")
+	async def encode_gost_28147_89_mac(self, key : str, *, data : str):
+		'''Magma with MAC mode of operation'''
+		try:
+			mac = pygost.gost28147_mac.MAC(key = key.encode("utf-8"))
+			mac.update(data.encode("utf-8"))
+			await self.bot.embed_reply(mac.hexdigest())
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@encode_gost.group(name = "34.11-2012", aliases = ["стрибог", "streebog"])
+	async def encode_gost_34_11_2012(self):
+		'''
+		GOST 34.11-2012 hash function
+		Also known as Стрибог or Streebog
+		'''
+		# TODO: Add encode streebog-256 and encode streebog-512 aliases
+		...
+	
+	@encode_gost_34_11_2012.command(name = "256")
+	async def encode_gost_34_11_2012_256(self, *, data : str):
+		'''
+		GOST 34.11-2012 256-bit hash function
+		Also known as Streebog-256
+		'''
+		await self.bot.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 32).hexdigest())
+	
+	@encode_gost_34_11_2012.command(name = "512")
+	async def encode_gost_34_11_2012_512(self, *, data : str):
+		'''
+		GOST 34.11-2012 512-bit hash function
+		Also known as Streebog-512
+		'''
+		await self.bot.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 64).hexdigest())
+	
+	@encode_gost.command(name = "34.11-94")
+	async def encode_gost_34_11_94(self, *, data : str):
+		'''GOST 34.11-94 hash function'''
+		await self.bot.embed_reply(pygost.gost341194.GOST341194(data.encode("utf-8")).hexdigest())
+	
+	@encode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
+	async def encode_gost_34_12_2015(self, key : str, *, data : str):
+		'''
+		GOST 34.12-2015 128-bit block cipher
+		Also known as Кузнечик or Kuznyechik
+		key length >= 32, data length >= 16
+		'''
+		# TODO: Add encode kuznyechik alias
+		if len(key) < 32:
+			await self.bot.embed_reply(":no_entry: Error: key length must be at least 32")
+			return
+		if len(data) < 16:
+			await self.bot.embed_reply(":no_entry: Error: data length must be at least 16")
+			return
+		await self.bot.embed_reply(pygost.gost3412.GOST3412Kuz(key.encode("utf-8")).encrypt(data.encode("utf-8")).hex())
 	
 	@encode.command(name = "md4")
 	async def encode_md4(self, *, message : str):
