@@ -362,6 +362,12 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def lmdtfy(self, *search : str):
+		'''Let Me DuckDuckGo That For You'''
+		await self.bot.embed_reply("[LMDTFY: \"{}\"](http://lmgtfy.com/?s=d&q={})".format(' '.join(search), '+'.join(search)))
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def lmgtfy(self, *search : str):
 		'''Let Me Google That For You'''
 		await self.bot.embed_reply("[LMGTFY: \"{}\"](http://lmgtfy.com/?q={})".format(' '.join(search), '+'.join(search)))
