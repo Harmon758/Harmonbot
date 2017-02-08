@@ -129,6 +129,12 @@ class Resources:
 			url = "https://www.dotabuff.com/players/{}".format(int(data["response"]["steamid"]) - 76561197960265728)
 		await self.bot.embed_reply(None, title = "{}'s Dotabuff profile".format(account), title_url = url)
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def duckduckgo(self, *search : str):
+		'''Search with DuckDuckGo'''
+		await self.bot.embed_reply("[DuckDuckGo search for \"{}\"](https://www.duckduckgo.com/?q={})".format(' '.join(search), '+'.join(search)))
+	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def giphy(self, *, search : str):
