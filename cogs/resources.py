@@ -356,7 +356,9 @@ class Resources:
 	@checks.not_forbidden()
 	async def lmbtfy(self, *search : str):
 		'''Let Me Bing That For You'''
-		await self.bot.reply("http://lmbtfy.com/?q={0}".format(('+').join(search)))
+		output = "[LMBTFY: \"{}\"](http://lmbtfy.com/?s=b&q={})\n".format(' '.join(search), '+'.join(search))
+		output += "[LMBTFY: \"{}\"](http://letmebingthatforyou.com/q={})".format(' '.join(search), '+'.join(search))
+		await self.bot.embed_reply(output)
 	
 	@commands.command()
 	@checks.not_forbidden()
