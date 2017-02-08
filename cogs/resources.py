@@ -230,7 +230,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def imfeelinglucky(self, *search : str):
 		'''First Google result of a search'''
-		await self.bot.reply("https://www.google.com/search?btnI&q={0}".format('+'.join(search)))
+		await self.bot.embed_reply("[First Google result of \"{}\"](https://www.google.com/search?btnI&q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
