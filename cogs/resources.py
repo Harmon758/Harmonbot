@@ -362,7 +362,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def lmgtfy(self, *search : str):
 		'''Let Me Google That For You'''
-		await self.bot.reply("http://www.lmgtfy.com/?q={0}".format(('+').join(search)))
+		await self.bot.embed_reply("[LMGTFY: \"{}\"](http://lmgtfy.com/?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
