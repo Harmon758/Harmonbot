@@ -126,17 +126,16 @@ class Search:
 		'''Input location'''
 		await self._wolframalpha(ctx, search, location = location)
 	
-	async def _wolframalpha(self, ctx, search, location = "Fort Yukon, Alaska"):
-		ip = "nice try"
+	async def _wolframalpha(self, ctx, search, location = clients.fake_location):
 		search = search.strip('`')
-		result = clients.wolfram_alpha_client.query(search, ip = ip, location = location) # options
+		result = clients.wolfram_alpha_client.query(search, ip = clients.fake_ip, location = location) # options
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
 			await self.bot.embed_reply("Using closest Wolfram|Alpha interpretation: `{}`".format(didyoumean))
-			result = clients.wolfram_alpha_client.query(didyoumean, ip = ip, location = location)
+			result = clients.wolfram_alpha_client.query(didyoumean, ip = clients.fake_ip, location = location)
 		if hasattr(result, "pods"):
 			for pod in result.pods:
 				images, text_output = [], []
