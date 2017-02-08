@@ -384,6 +384,12 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def lmatfy(self, *search : str):
+		'''Let Me Amazon That For You'''
+		await self.bot.embed_reply("[LMATFY: \"{}\"](http://lmatfy.co/?q={})".format(' '.join(search), '+'.join(search)))
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def lmbtfy(self, *search : str):
 		'''Let Me Bing That For You'''
 		output = "[LMBTFY: \"{}\"](http://lmbtfy.com/?s=b&q={})\n".format(' '.join(search), '+'.join(search))
