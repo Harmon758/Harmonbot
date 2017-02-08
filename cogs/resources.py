@@ -40,6 +40,12 @@ class Resources:
 			return
 		await self.bot.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def aol(self, *search : str):
+		'''Search with AOL'''
+		await self.bot.embed_reply("[AOL search for \"{}\"](https://search.aol.com/aol/search?q={})".format(' '.join(search), '+'.join(search)))
+	
 	@commands.group(aliases = ["blizzard"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def battlenet(self):
