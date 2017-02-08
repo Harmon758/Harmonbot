@@ -1,7 +1,7 @@
 
+import discord
 from discord.ext import commands
 
-# import aiohttp
 import asyncio
 import datetime
 import functools
@@ -11,7 +11,6 @@ import json
 import random
 # import spotipy
 import urllib
-import xml.etree.ElementTree
 import youtube_dl
 
 import credentials
@@ -168,7 +167,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def googleimage(self, *search : str):
 		'''Google image search something'''
-		url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&searchType=image&q={2}".format(credentials.google_apikey, credentials.google_cse_cx, '+'.join(search))
+		url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&searchType=image&q={}".format(credentials.google_apikey, credentials.google_cse_cx, '+'.join(search))
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "items" in data:
@@ -210,7 +209,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def imdb(self, ctx, *search : str):
 		'''IMDb Information'''
-		url = "http://www.omdbapi.com/?t={0}&plot=short".format('+'.join(search))
+		url = "http://www.omdbapi.com/?t={}&plot=short".format('+'.join(search))
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
@@ -473,11 +472,11 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["results"]:
-			await self.bot.reply("{0[name]}\n{0[data]}".format(data["results"][0]))
+			await self.bot.embed_reply(data["results"][0]["data"], title = data["results"][0]["name"])
 		elif data["count"]:
-			await self.bot.reply("Too many sequences found")
+			await self.bot.embed_reply(":no_entry: Too many sequences found")
 		else:
-			await self.bot.reply("Sequence not found")
+			await self.bot.embed_reply(":no_entry: Sequence not found")
 	
 	@oeis.command(name = "graph")
 	@checks.not_forbidden()
@@ -491,11 +490,11 @@ class Resources:
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["results"]:
-			await self.bot.reply("https://oeis.org/A{:06d}/graph?png=1".format(data["results"][0]["number"]))
+			await self.bot.embed_reply(None, image_url = "https://oeis.org/A{:06d}/graph?png=1".format(data["results"][0]["number"]))
 		elif data["count"]:
-			await self.bot.reply("Too many sequences found")
+			await self.bot.embed_reply(":no_entry: Too many sequences found")
 		else:
-			await self.bot.reply("Sequence not found")
+			await self.bot.embed_reply(":no_entry: Sequence not found")
 	
 	@commands.group()
 	@checks.not_forbidden()
@@ -808,7 +807,7 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def steam(self, *options : str):
+	async def steam(self):
 		'''Steam Information'''
 		return
 	
@@ -1021,7 +1020,7 @@ class Resources:
 		result = clients.wolfram_alpha_client.query(search, ip = ip, location = location) # options
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
-				didyoumean =result.didyoumeans["didyoumean"]["#text"]
+				didyoumean = result.didyoumeans["didyoumean"]["#text"]
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
 			await self.bot.reply("Using closest Wolfram|Alpha interpretation: `{}`".format(didyoumean))
