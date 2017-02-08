@@ -88,10 +88,7 @@ class Resources:
 	@color.command(name = "random", pass_context = True)
 	@checks.not_forbidden()
 	async def color_random(self, ctx):
-		'''
-		Information on a random color
-		Accepts hex color codes (without #) and search by keyword
-		'''
+		'''Information on a random color'''
 		url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
 		await self.process_color(ctx, url)
 	
@@ -119,6 +116,19 @@ class Resources:
 			await self.bot.embed_reply(":no_entry: Definition not found")
 			return
 		await self.bot.embed_reply(definition[0].text, title = definition[0].word.capitalize(), footer_text = definition[0].attributionText)
+	
+	@commands.command()
+	@checks.not_forbidden()
+	async def dotabuff(self, account : str):
+		'''Get Dotabuff link'''
+		try:
+			url = "https://www.dotabuff.com/players/{}".format(int(account) - 76561197960265728)
+		except ValueError:
+			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={}&vanityurl={}".format(credentials.steam_apikey, account)
+			async with aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			url = "https://www.dotabuff.com/players/{}".format(int(data["response"]["steamid"]) - 76561197960265728)
+		await self.bot.embed_reply(None, title = "{}'s Dotabuff profile".format(account), title_url = url)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
