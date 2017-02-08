@@ -46,6 +46,12 @@ class Resources:
 		'''Search with AOL'''
 		await self.bot.embed_reply("[AOL search for \"{}\"](https://search.aol.com/aol/search?q={})".format(' '.join(search), '+'.join(search)))
 	
+	@commands.command(name = "ask.com")
+	@checks.not_forbidden()
+	async def ask_com(self, *search : str):
+		'''Search with Ask.com'''
+		await self.bot.embed_reply("[Ask.com search for \"{}\"](http://www.ask.com/web?q={})".format(' '.join(search), '+'.join(search)))
+	
 	@commands.group(aliases = ["blizzard"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def battlenet(self):
