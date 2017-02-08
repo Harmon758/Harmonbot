@@ -68,7 +68,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def bing(self, *search : str):
 		'''Look something up on Bing'''
-		await self.bot.reply("http://www.bing.com/search?q={0}".format('+'.join(search)))
+		await self.bot.embed_reply("[Bing search for \"{}\"](http://www.bing.com/search?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.group(aliases = ["colour"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
