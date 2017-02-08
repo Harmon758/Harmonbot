@@ -58,6 +58,12 @@ class Resources:
 		'''Search with Ask.com'''
 		await self.bot.embed_reply("[Ask.com search for \"{}\"](http://www.ask.com/web?q={})".format(' '.join(search), '+'.join(search)))
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def baidu(self, *search : str):
+		'''Search with Baidu'''
+		await self.bot.embed_reply("[Baidu search for \"{}\"](http://www.baidu.com/s?wd={})".format(' '.join(search), '+'.join(search)))
+	
 	@commands.group(aliases = ["blizzard"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def battlenet(self):
