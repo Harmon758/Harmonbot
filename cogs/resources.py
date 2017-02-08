@@ -370,6 +370,12 @@ class Resources:
 		'''WIP'''
 		pass
 	
+	@commands.command(name = "lma.ctfy")
+	@checks.not_forbidden()
+	async def lma_ctfy(self, *search : str):
+		'''Let Me Ask.Com That For You'''
+		await self.bot.embed_reply("[LMA.CTFY: \"{}\"](http://lmgtfy.com/?s=k&q={})".format(' '.join(search), '+'.join(search)))
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def lmaoltfy(self, *search : str):
