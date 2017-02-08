@@ -161,7 +161,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def google(self, *, search : str):
 		'''Google something'''
-		await self.bot.embed_reply("https://www.google.com/search?q={}".format(search.replace(' ', '+')))
+		await self.bot.embed_reply("[Google search for \"{}\"](https://www.google.com/search?q={})".format(search, search.replace(' ', '+')))
 	
 	@commands.command(aliases = ["imagesearch", "googleimages"])
 	@checks.not_forbidden()
