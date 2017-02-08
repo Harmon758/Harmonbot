@@ -67,7 +67,7 @@ class Resources:
 	@commands.command()
 	@checks.not_forbidden()
 	async def bing(self, *search : str):
-		'''Look something up on Bing'''
+		'''Search with Bing'''
 		await self.bot.embed_reply("[Bing search for \"{}\"](http://www.bing.com/search?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.group(aliases = ["colour"], pass_context = True, invoke_without_command = True)
@@ -160,7 +160,7 @@ class Resources:
 	@commands.command(aliases = ["search", "googlesearch"])
 	@checks.not_forbidden()
 	async def google(self, *, search : str):
-		'''Google something'''
+		'''Google search'''
 		await self.bot.embed_reply("[Google search for \"{}\"](https://www.google.com/search?q={})".format(search, search.replace(' ', '+')))
 	
 	@commands.command(aliases = ["imagesearch", "googleimages"])
@@ -1090,6 +1090,12 @@ class Resources:
 		embed.set_footer(text = data["alt"])
 		embed.timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"]))
 		await self.bot.say(embed = embed)
+	
+	@commands.command()
+	@checks.not_forbidden()
+	async def yahoo(self, *search : str):
+		'''Search with Yahoo'''
+		await self.bot.embed_reply("[Yahoo search for \"{}\"](https://search.yahoo.com/search?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command(aliases = ["ytinfo"])
 	@checks.not_forbidden()
