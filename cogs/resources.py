@@ -30,6 +30,12 @@ class Resources:
 		self.lichess_user_data, self.lichess_tournaments_data = None, None
 		# spotify = spotipy.Spotify()
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def amazon(self, *search : str):
+		'''Search with Amazon'''
+		await self.bot.embed_reply("[Amazon search for \"{}\"](https://www.amazon.com/s/?field-keywords={})".format(' '.join(search), '+'.join(search)))
+	
 	@commands.command(aliases = ["antonyms"])
 	@checks.not_forbidden()
 	async def antonym(self, word : str):
