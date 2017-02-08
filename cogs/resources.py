@@ -368,6 +368,12 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def lmytfy(self, *search : str):
+		'''Let Me Yahoo That For You'''
+		await self.bot.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def longurl(self, url : str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={}&key={}".format(url, credentials.google_apikey)
