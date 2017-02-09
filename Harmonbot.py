@@ -260,6 +260,8 @@ async def on_command_error(error, ctx):
 		embed.description = ":no_entry: You don't have permission to use that command here"
 	elif isinstance(error, commands.errors.BadArgument):
 		embed.description = ":no_entry: Error: invalid input"
+	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, discord.errors.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.":
+		embed.description = ":no_entry: Error: You can only bulk delete messages that are under 14 days old"
 	if embed.description:
 		await ctx.bot.send_message(ctx.message.channel, embed = embed) # check embed links permission
 	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (discord.errors.Forbidden)):
