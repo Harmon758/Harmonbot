@@ -16,15 +16,6 @@ class SO_VoiceNotConnected(VoiceNotConnected):
 class NSO_VoiceNotConnected(VoiceNotConnected):
 	pass
 
-class TagError(CommandError):
-	pass
-
-class NoTags(TagError):
-	pass
-
-class NoTag(TagError):
-	pass
-
 class MissingPermissions(CommandError):
 	pass
 
