@@ -10,6 +10,7 @@ import os
 import re
 import sys
 import traceback
+import youtube_dl
 
 import credentials
 import clients
@@ -133,11 +134,8 @@ async def reload(ctx, cog : str):
 async def on_message(message):
 	
 	# Log message
-	if message.channel.is_private:
-		destination = "Direct Message"
-	else:
-		destination = "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
-	logging.chat_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, destination))
+	source = "Direct Message" if message.channel.is_private else "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
+	logging.chat_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, source))
 	
 	# Commands
 	await client.process_commands(message)
@@ -147,11 +145,11 @@ async def on_message(message):
 		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
 		if message.author == client.user:
 			try:
-				await client.send_message(me, "To " + message.channel.user.name + '#' + message.channel.user.discriminator + ": " + message.content)
+				await client.send_message(me, "To {0.channel.user}: {0.content} `{0.embeds}`".format(message))
 			except discord.errors.HTTPException:
 				print("Discord Harmonbot Error: DM too long to forward.")
 		else:
-			await client.send_message(me, "From " + message.author.name + '#' + message.author.discriminator + ": " + message.content)
+			await client.send_message(me, "From {0.author}: {0.content} `{0.embeds}`".format(message))
 	
 	# Ignore own and blank messages
 	if message.author == client.user or not message.content:
