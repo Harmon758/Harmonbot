@@ -284,8 +284,8 @@ class Resources:
 	
 	@lichess_user.error
 	async def lichess_user_error(self, error, ctx):
-		if isinstance(error.original, errors.LichessUserNotFound):
-			await self.bot.reply("User not found.")
+		if isinstance(error, errors.LichessUserNotFound):
+			await self.bot.embed_reply(":no_entry: User not found")
 	
 	@lichess_user.command(name = "all", pass_context = True)
 	async def lichess_user_all(self, ctx, username : str):
@@ -1055,5 +1055,6 @@ class Resources:
 	
 	@youtubesearch.error
 	async def youtubesearch_error(self, error, ctx):
-		if "No video results" in str(error):
-			await self.bot.reply("Song not found")
+		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
+			await self.bot.embed_reply(":no_entry: Error: {}".format(error.original))
+

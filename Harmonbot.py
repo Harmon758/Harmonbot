@@ -235,6 +235,9 @@ async def on_error(event_method, *args, **kwargs):
 async def on_command_error(error, ctx):
 	if isinstance(error, errors.NotOwner): return # not owner
 	if isinstance(error, (commands.errors.CommandNotFound, commands.errors.DisabledCommand)): return # disabled or not found
+	if isinstance(error, (errors.LichessUserNotFound)): return # handled with local error handler
+	if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError): return
+	# handled with local error handler
 	embed = discord.Embed(color = clients.bot_color)
 	avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
 	embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
@@ -257,8 +260,6 @@ async def on_command_error(error, ctx):
 		embed.description = ":no_entry: You don't have permission to use that command here"
 	elif isinstance(error, commands.errors.BadArgument):
 		embed.description = ":no_entry: Error: invalid input"
-	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (errors.NoTag, errors.NoTags, errors.LichessUserNotFound)) or "No video results" in str(error):
-		pass # handled with local error handler
 	if embed.description:
 		await ctx.bot.send_message(ctx.message.channel, embed = embed) # check embed links permission
 	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (discord.errors.Forbidden)):
