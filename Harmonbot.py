@@ -76,7 +76,7 @@ async def on_resumed():
 
 @client.event
 async def on_command(command, ctx):
-	with open("data/stats.json", "r") as stats_file:
+	with open("data/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
 	stats["commands_executed"] += 1
 	with open("data/stats.json", "w") as stats_file:
@@ -126,6 +126,8 @@ async def reload(ctx, cog : str):
 			json.dump(stats, stats_file, indent = 4)
 		await client.embed_reply(":thumbsup::skin-tone-2: Reloaded `{}` cog :gear:".format(cog))
 		await client.delete_message(ctx.message)
+
+# TODO: log message edits
 
 @client.event
 async def on_message(message):
@@ -196,7 +198,7 @@ async def on_message(message):
 	
 	# help DM
 	elif message.content.lower() == "help" and message.channel.is_private:
-		await clients.reply(message, "Please see {}help".format(prefixes[0]))
+		await clients.embed_reply(message, "Please see {}help".format(prefixes[0]))
 	
 	# :8ball:
 	elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs:
