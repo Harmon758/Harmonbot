@@ -3,6 +3,7 @@
 from discord.ext import commands
 
 import asyncio
+import difflib
 import hashlib
 import json
 import math
@@ -25,6 +26,7 @@ from modules import ciphers
 from modules import utilities
 from utilities import checks
 from utilities import errors
+from utilities import paginator
 import clients
 from clients import py_code_block
 
@@ -35,8 +37,9 @@ class Tools:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.tags_data, self.tags = None, None
-		utilities.create_file("tags")
+		utilities.create_file("tags", content = {"global": {}})
+		with open("data/tags.json", 'r') as tags_file:
+			self.tags_data = json.load(tags_file)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -478,86 +481,158 @@ class Tools:
 		seaborn.jointplot(**eval(data)).savefig(name)
 		await self.bot.send_file(destination = ctx.message.channel, fp = name, content = "Testing Graph")
 	
-	@commands.group(pass_context = True, aliases = ["trigger", "note"])
+	@commands.group(pass_context = True, aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
 	@checks.not_forbidden()
-	async def tag(self, ctx):
-		'''
-		Tags/notes that you can trigger later
-		options: list, add <tag> [content...], edit <tag> [content...], delete <tag>
-		'''
-		with open("data/tags.json", 'r') as tags_file:
-			self.tags_data = json.load(tags_file)
-		if len(ctx.message.content.split()) == 1:
-			await self.bot.reply("Add a tag with `!tag add <tag> <content>`. " \
-				"Use `!tag <tag>` to trigger the tag you added. `!tag edit` to edit, `!tag remove` to delete")
+	async def tag(self, ctx, tag : str = ""):
+		'''Tags/notes that you can trigger later'''
+		if not tag:
+			await self.bot.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
 			return
-		if not ctx.invoked_subcommand is self.tag_add:
-			if not ctx.message.author.id in self.tags_data:
-				raise errors.NoTags
-			self.tags = self.tags_data[ctx.message.author.id]["tags"]
-		if ctx.invoked_subcommand in (self.tag_edit, self.tag_delete) and not ctx.message.content.split()[2] in self.tags:
-			raise errors.NoTag
-		if not ctx.invoked_subcommand:
-			if len(ctx.message.content.split()) >= 3:
-				await self.bot.reply("Syntax error.")
-			else:
-				if not ctx.message.content.split()[1] in self.tags:
-					raise errors.NoTag
-				else:
-					await self.bot.reply(self.tags[ctx.message.content.split()[1]])
+		if tag in self.tags_data.get(ctx.message.author.id, {}).get("tags", []):
+			await self.bot.reply(self.tags_data[ctx.message.author.id]["tags"][tag])
+		elif tag in self.tags_data["global"]:
+			await self.bot.reply(self.tags_data["global"][tag]["response"])
+			self.tags_data["global"][tag]["usage_counter"] += 1
+			with open("data/tags.json", 'w') as tags_file:
+				json.dump(self.tags_data, tags_file, indent = 4)
+		else:
+			close_matches = difflib.get_close_matches(tag, list(self.tags_data[ctx.message.author.id]["tags"].keys()) + list(self.tags_data["global"].keys()))
+			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
+			await self.bot.embed_reply("Tag not found{}".format(close_matches))
 	
 	@tag.command(name = "list", aliases = ["all", "mine"], pass_context = True)
 	async def tag_list(self, ctx):
 		'''List your tags'''
-		tags_paginator = paginator.CustomPaginator(seperator = ", ", prefix = ctx.message.author.display_name + ", your tags:\n```")
-		for tag in sorted(self.tags.keys()):
+		if (await self.check_no_tags(ctx)): return
+		tags_paginator = paginator.CustomPaginator(seperator = ", ")
+		for tag in sorted(self.tags_data[ctx.message.author.id]["tags"].keys()):
 			tags_paginator.add_section(tag)
+		# DM
 		for page in tags_paginator.pages:
-			await self.bot.say(page)
+			await self.bot.embed_reply(page, title = "Your tags:")
 	
 	@tag.command(name = "add", aliases = ["make", "new", "create"], pass_context = True)
 	async def tag_add(self, ctx, tag : str, *, content : str):
 		'''Add a tag'''
 		if not ctx.message.author.id in self.tags_data:
 			self.tags_data[ctx.message.author.id] = {"name" : ctx.message.author.name, "tags" : {}}
-		self.tags = self.tags_data[ctx.message.author.id]["tags"]
-		if tag in self.tags:
-			await self.bot.reply("You already have that tag. Use `!tag edit <tag> <content>` to edit it.")
+		tags = self.tags_data[ctx.message.author.id]["tags"]
+		if tag in tags:
+			await self.bot.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		self.tags[tag] = self.clean_tag_content(content)
+		tags[tag] = self.clean_tag_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.reply(":thumbsup::skin-tone-2: Your tag has been added.")
+		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
 	
 	@tag.command(name = "edit", aliases = ["update"], pass_context = True)
 	async def tag_edit(self, ctx, tag : str, *, content : str):
 		'''Edit one of your tags'''
-		self.tags[tag] = self.clean_tag_content(content)
+		if (await self.check_no_tags(ctx)): return
+		if (await self.check_no_tag(ctx, tag)): return
+		self.tags_data[ctx.message.author.id]["tags"][tag] = self.clean_tag_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been edited.")
+		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
-	@tag.command(name = "delete", aliases = ["remove", "destroy"])
-	async def tag_delete(self, tag : str):
+	@tag.command(name = "delete", aliases = ["remove", "destroy"], pass_context = True)
+	async def tag_delete(self, ctx, tag : str):
 		'''Delete one of your tags'''
-		del self.tags[tag]
+		if (await self.check_no_tags(ctx)): return
+		if (await self.check_no_tag(ctx, tag)): return
+		del self.tags_data[ctx.message.author.id]["tags"][tag]
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.reply(":ok_hand::skin-tone-2: Your tag has been deleted.")
+		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
 	
-	@tag.command(name = "search", aliases = ["contains", "find"])
-	async def tag_search(self, *, search : str):
+	@tag.command(name = "search", aliases = ["contains", "find"], pass_context = True)
+	async def tag_search(self, ctx, *, search : str):
 		'''Search your tags'''
-		results = [t for t in self.tags.keys() if search in t]
-		await self.bot.reply("{} tags found: {}".format(len(results), ", ".join(results)))
+		if (await self.check_no_tags(ctx)): return
+		tags = self.tags_data[ctx.message.author.id]["tags"]
+		results = [t for t in tags.keys() if search in t]
+		if results:
+			await self.bot.embed_reply("{} tags found: {}".format(len(results), ", ".join(results)))
+			return
+		close_matches = difflib.get_close_matches(search, tags.keys())
+		close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
+		await self.bot.embed_reply("No tags found{}".format(close_matches))
 	
-	@tag.error
-	async def tag_error(self, error, ctx):
-		if isinstance(error.original, errors.NoTags):
-			await self.bot.reply("You don't have any tags :slight_frown: "
-			"Add one with `!tag add <tag> <content>`")
-		elif isinstance(error.original, errors.NoTag):
-			await self.bot.reply("You don't have that tag.")
+	@tag.command(name = "globalize", aliases = ["globalise"], pass_context = True)
+	async def tag_globalize(self, ctx, tag : str):
+		'''Globalize a tag'''
+		if (await self.check_no_tags(ctx)): return
+		if (await self.check_no_tag(ctx, tag)): return
+		if tag in self.tags_data["global"]:
+			await self.bot.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
+			return
+		self.tags_data["global"][tag] = {"response": self.tags_data[ctx.message.author.id]["tags"][tag], "owner": ctx.message.author.id, "created_at": time.time(), "usage_counter": 0}
+		del self.tags_data[ctx.message.author.id]["tags"][tag]
+		with open("data/tags.json", 'w') as tags_file:
+			json.dump(self.tags_data, tags_file, indent = 4)
+		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been {}d".format(ctx.invoked_with))
+	
+	# TODO: rename, aliases
+	
+	@tag.group(name = "global", invoke_without_command = True)
+	async def tag_global(self):
+		'''Global tags'''
+		...
+	
+	@tag_global.command(name = "add", aliases = ["make", "new", "create"], pass_context = True)
+	async def tag_global_add(self, ctx, tag : str, *, content : str):
+		'''Add a global tag'''
+		tags = self.tags_data["global"]
+		if tag in tags:
+			await self.bot.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
+			return
+		tags[tag] = {"response": self.clean_tag_content(content), "owner": ctx.message.author.id, "created_at": time.time(), "usage_counter": 0}
+		with open("data/tags.json", 'w') as tags_file:
+			json.dump(self.tags_data, tags_file, indent = 4)
+		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
+	
+	@tag_global.command(name = "edit", aliases = ["update"], pass_context = True)
+	async def tag_global_edit(self, ctx, tag : str, *, content : str):
+		'''Edit one of your global tags'''
+		if tag not in self.tags_data["global"]:
+			await self.bot.embed_reply(":no_entry: That global tag doesn't exist")
+			return
+		elif self.tags_data["global"][tag]["owner"] != ctx.message.author.id:
+			await self.bot.embed_reply(":no_entry: You don't own that global tag")
+			return
+		self.tags_data["global"][tag]["response"] = self.clean_tag_content(content)
+		with open("data/tags.json", 'w') as tags_file:
+			json.dump(self.tags_data, tags_file, indent = 4)
+		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
+	
+	@tag_global.command(name = "delete", aliases = ["remove", "destroy"], pass_context = True)
+	async def tag_global_delete(self, ctx, tag : str):
+		'''Delete one of your global tags'''
+		if tag not in self.tags_data["global"]:
+			await self.bot.embed_reply(":no_entry: That global tag doesn't exist")
+			return
+		elif self.tags_data["global"][tag]["owner"] != ctx.message.author.id:
+			await self.bot.embed_reply(":no_entry: You don't own that global tag")
+			return
+		del self.tags_data["global"][tag]
+		with open("data/tags.json", 'w') as tags_file:
+			json.dump(self.tags_data, tags_file, indent = 4)
+		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
+	
+	# TODO: global search, list?
+	
+	async def check_no_tags(self, ctx):
+		if not ctx.message.author.id in self.tags_data:
+			await self.bot.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
+		return not ctx.message.author.id in self.tags_data
+	
+	async def check_no_tag(self, ctx, tag):
+		tags = self.tags_data[ctx.message.author.id]["tags"]
+		if not tag in tags:
+			close_matches = difflib.get_close_matches(tag, tags.keys())
+			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
+			await self.bot.embed_reply("You don't have that tag{}".format(close_matches))
+		return not tag in tags
 	
 	def clean_tag_content(self, content):
 		return content.replace("@everyone", "@\u200beveryone").replace("@here", "@\u200bhere")
