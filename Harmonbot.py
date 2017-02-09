@@ -80,7 +80,7 @@ async def on_command(command, ctx):
 	with open("data/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
 	stats["commands_executed"] += 1
-	with open("data/stats.json", "w") as stats_file:
+	with open("data/stats.json", 'w') as stats_file:
 		json.dump(stats, stats_file, indent = 4)
 
 @client.command(pass_context = True)
@@ -147,7 +147,7 @@ async def on_message(message):
 			try:
 				await client.send_message(me, "To {0.channel.user}: {0.content} `{0.embeds}`".format(message))
 			except discord.errors.HTTPException:
-				print("Discord Harmonbot Error: DM too long to forward.")
+				await client.send_message(me, "To {0.channel.user}: `DM too long to forward`".format(message))
 		else:
 			await client.send_message(me, "From {0.author}: {0.content} `{0.embeds}`".format(message))
 	
