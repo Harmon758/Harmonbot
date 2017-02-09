@@ -86,9 +86,9 @@ class Tools:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await self.bot.reply("`{}`".format(sympy.diff(equation.strip('`'), x)))
+			await self.bot.embed_reply("`{}`".format(sympy.diff(equation.strip('`'), x)), title = "Derivative of {}".format(equation))
 		except Exception as e:
-			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await self.bot.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
 	
 	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -99,9 +99,9 @@ class Tools:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await self.bot.reply("`{}`".format(sympy.integrate(equation.strip('`'), x)))
+			await self.bot.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), x)), title = "Integral of {}".format(equation))
 		except Exception as e:
-			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await self.bot.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
 	
 	@integrate.command(name = "definite")
 	@checks.not_forbidden()
@@ -112,9 +112,9 @@ class Tools:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await self.bot.reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))))
+			await self.bot.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))), title = "Definite Integral of {} from {} to {}".format(equation, lower_limit, upper_limit))
 		except Exception as e:
-			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await self.bot.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
 	
 	@commands.command(aliases = ["choice"])
 	@checks.not_forbidden()
