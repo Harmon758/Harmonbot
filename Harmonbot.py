@@ -233,31 +233,34 @@ async def on_error(event_method, *args, **kwargs):
 
 @client.event
 async def on_command_error(error, ctx):
-	if isinstance(error, errors.NotOwner):
-		pass
-	elif isinstance(error, (commands.errors.CommandNotFound, commands.errors.DisabledCommand)):
-		pass
-	elif isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)): # errors.NotOwner
-		await ctx.bot.send_message(ctx.message.channel, ":no_entry: You don't have permission to do that.")
+	if isinstance(error, errors.NotOwner): return # not owner
+	if isinstance(error, (commands.errors.CommandNotFound, commands.errors.DisabledCommand)): return # disabled or not found
+	embed = discord.Embed(color = clients.bot_color)
+	avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+	embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+	if isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)): # errors.NotOwner?
+		embed.description = ":no_entry: You don't have permission to do that"
 	elif isinstance(error, errors.MissingCapability):
-		await ctx.bot.send_message(ctx.message.channel, "I don't have permission to do that here. I need the permission(s): " + \
-		', '.join(error.permissions))
+		if "embed_links" in error.permissions:
+			await ctx.bot.send_message(ctx.message.channel, "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions))
+			return
+		embed.description = "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions)
 	elif isinstance(error, errors.SO_VoiceNotConnected):
-		await ctx.bot.send_message(ctx.message.channel, "I'm not in a voice channel. "
-		"Please use `!voice (or !yt) join <channel>` first.")
+		embed.description = "I'm not in a voice channel\nPlease use `{}join` first".format(ctx.prefix)
 	elif isinstance(error, errors.NSO_VoiceNotConnected):
-		await ctx.bot.send_message(ctx.message.channel, "I'm not in a voice channel. "
-		"Please ask someone with permission to use `!voice (or !yt) join <channel>` first.")
+		embed.description = "I'm not in a voice channel\nPlease ask someone with permission to use `{}join` first".format(ctx.prefix)
 	elif isinstance(error, commands.errors.NoPrivateMessage):
-		await ctx.bot.send_message(ctx.message.channel, "Please use that command in a server.")
+		embed.description = "Please use that command in a server"
 	elif isinstance(error, commands.errors.MissingRequiredArgument):
-		await ctx.bot.send_message(ctx.message.channel, error)
+		embed.description = str(error).rstrip('.')
 	elif isinstance(error, errors.NotPermitted):
-		await ctx.bot.send_message(ctx.message.channel, ":no_entry: You don't have permission to use that command here.")
+		embed.description = ":no_entry: You don't have permission to use that command here"
 	elif isinstance(error, commands.errors.BadArgument):
-		await ctx.bot.send_message(ctx.message.channel, ":warning: Error: invalid input")
+		embed.description = ":no_entry: Error: invalid input"
 	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (errors.NoTag, errors.NoTags, errors.LichessUserNotFound)) or "No video results" in str(error):
 		pass # handled with local error handler
+	if embed.description:
+		await ctx.bot.send_message(ctx.message.channel, embed = embed) # check embed links permission
 	elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (discord.errors.Forbidden)):
 		print("Missing Permissions for #{0.channel.name} in {0.server.name}".format(ctx.message))
 	else:
