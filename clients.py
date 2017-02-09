@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-4.3"
+version = "0.35.0-4.4"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -154,7 +154,7 @@ class Bot(commands.Bot):
 			invoked_prefix = discord.utils.find(view.skip_string, prefix)
 			if invoked_prefix is None:
 				return
-		invoker = view.get_word().lower() # case insensitive commands
+		invoker = view.get_word().lower() # case-insensitive commands
 		tmp = {'bot': self, 'invoked_with': invoker, 'message': message, 'view': view, 'prefix': invoked_prefix}
 		ctx = Context(**tmp)
 		del tmp
@@ -170,6 +170,43 @@ class Bot(commands.Bot):
 		elif invoker:
 			exc = CommandNotFound('Command "{}" is not found'.format(invoker))
 			self.dispatch('command_error', exc, ctx)
+
+# Make Subcommands Case-Insensitive
+
+class Group(commands.GroupMixin, commands.Command):
+
+	def __init__(self, **attrs):
+		self.invoke_without_command = attrs.pop('invoke_without_command', False)
+		super().__init__(**attrs)
+
+	async def invoke(self, ctx):
+		early_invoke = not self.invoke_without_command
+		if early_invoke:
+			await self.prepare(ctx)
+		view = ctx.view
+		previous = view.index
+		view.skip_ws()
+		trigger = view.get_word().lower() # case-insensitive subcommands
+		if trigger:
+			ctx.subcommand_passed = trigger
+			ctx.invoked_subcommand = self.commands.get(trigger, None)
+		if early_invoke:
+			injected = commands.core.inject_context(ctx, self.callback)
+			await injected(*ctx.args, **ctx.kwargs)
+		if trigger and ctx.invoked_subcommand:
+			ctx.invoked_with = trigger
+			await ctx.invoked_subcommand.invoke(ctx)
+		elif not early_invoke:
+			# undo the trigger parsing
+			view.index = previous
+			view.previous = previous
+			await super().invoke(ctx)
+
+def group(name=None, **attrs):
+    return commands.command(name=name, cls=Group, **attrs)
+
+commands.Group = Group
+commands.group = group
 
 
 # Create Folders
