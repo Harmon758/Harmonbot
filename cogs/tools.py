@@ -168,6 +168,7 @@ class Tools:
 		'''
 		GOST 28147-89 block cipher
 		Also known as Магма or Magma
+		key length must be 32 (256-bit)
 		'''
 		# TODO: Add decode magma alias
 		...
@@ -198,7 +199,11 @@ class Tools:
 	
 	@decode_gost_28147_89.command(name = "ecb")
 	async def decode_gost_28147_89_ecb(self, key : str, *, data : str):
-		'''Magma with ECB mode of operation'''
+		'''
+		Magma with ECB mode of operation
+		data block size must be 8 (64-bit)
+		This means the data length must be a multiple of 8
+		'''
 		try:
 			await self.bot.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
 		except ValueError as e:
@@ -301,6 +306,7 @@ class Tools:
 		'''
 		GOST 28147-89 block cipher
 		Also known as Магма or Magma
+		key length must be 32 (256-bit)
 		'''
 		# TODO: Add encode magma alias
 		...
@@ -331,7 +337,11 @@ class Tools:
 	
 	@encode_gost_28147_89.command(name = "ecb")
 	async def encode_gost_28147_89_ecb(self, key : str, *, data : str):
-		'''Magma with ECB mode of operation'''
+		'''
+		Magma with ECB mode of operation
+		data block size must be 8 (64-bit)
+		This means the data length must be a multiple of 8
+		'''
 		try:
 			await self.bot.embed_reply(pygost.gost28147.ecb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
 		except ValueError as e:
