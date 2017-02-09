@@ -153,7 +153,7 @@ class Tools:
 		'''Brute force decode caesar code'''
 		await self.bot.embed_reply(ciphers.brute_force_caesar(message))
 	
-	@decode.group(name = "gost", aliases = ["ГОСТ"])
+	@decode.group(name = "gost", aliases = ["гост"])
 	async def decode_gost(self):
 		'''
 		Russian Federation/Soviet Union GOST
@@ -286,7 +286,7 @@ class Tools:
 		'''Computer CRC32 checksum'''
 		await self.bot.embed_reply(zlib.crc32(message.encode("utf-8")))
 	
-	@encode.group(name = "gost", aliases = ["ГОСТ"])
+	@encode.group(name = "gost", aliases = ["гост"])
 	async def encode_gost(self):
 		'''
 		Russian Federation/Soviet Union GOST
