@@ -153,16 +153,18 @@ class Resources:
 	
 	@commands.command(aliases = ["imagesearch", "googleimages"])
 	@checks.not_forbidden()
-	async def googleimage(self, *search : str):
+	async def googleimage(self, *, search : str):
 		'''Google image search something'''
-		url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&searchType=image&q={}".format(credentials.google_apikey, credentials.google_cse_cx, '+'.join(search))
-		async with aiohttp_session.get(url) as resp:
+		url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&searchType=image&q={}".format(credentials.google_apikey, credentials.google_cse_cx, search.replace(' ', '+'))
+		async with clients.aiohttp_session.get(url) as resp:
+			if resp.status == 403:
+				await self.bot.embed_reply(":no_entry: Daily limit exceeded")
+				return
 			data = await resp.json()
-		if "items" in data:
-			image_link = data["items"][0]["link"]
-			await self.bot.reply(image_link)
-		else:
-			await self.bot.reply("No images with that search found")
+		if "items" not in data:
+			await self.bot.embed_reply(":no_entry: No images with that search found")
+			return
+		await self.bot.embed_reply(None, image_url = data["items"][0]["link"], title = "Image of {}".format(search), title_url = data["items"][0]["link"])
 		# handle 403 daily limit exceeded error
 	
 	@commands.command()
