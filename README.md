@@ -1,2 +1,2 @@
 # Harmonbot
-Discord Bot using the discord.py library
+Multi-Platform Factotum Bot
