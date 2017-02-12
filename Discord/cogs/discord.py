@@ -97,33 +97,26 @@ class Discord:
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_attachments(self, ctx, number : int):
 		'''Deletes the <number> most recent messages with attachments'''
-		def check(message):
-			return message.attachments
-		await self.delete_number(ctx, number, check)
+		await self.delete_number(ctx, number, check = lambda m: m.attachments)
 	
 	@delete.command(name = "contains", pass_context = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_contains(self, ctx, string : str, number : int):
 		'''Deletes the <number> most recent messages with <string> in them'''
-		def check(message):
-			return string in message.content
-		await self.delete_number(ctx, number, check)
+		await self.delete_number(ctx, number, check = lambda m: string in m.content)
 	
 	@delete.command(name = "embeds", pass_context = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_embeds(self, ctx, number: int):
 		'''Deletes the <number> most recent messages with embeds'''
-		def check(message):
-			return message.embeds
-		await self.delete_number(ctx, number, check)
+		await self.delete_number(ctx, number, check = lambda m: m.embeds)
 	
-	@delete.command(name = "time", hidden = True, pass_context = True)
-	@checks.is_owner()
+	@delete.command(name = "time", pass_context = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_time(self, ctx, minutes : int):
-		'''WIP'''
+		'''Deletes messages in the past <minutes> minutes'''
 		await self.bot.delete_message(ctx.message)
-		await self.bot.purge_from(ctx.message.channel, limit = 10000, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
+		await self.bot.purge_from(ctx.message.channel, limit = clients.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
 	
 	async def delete_number(self, ctx, number, check):
 		if number <= 0:
@@ -132,9 +125,9 @@ class Discord:
 		to_delete = []
 		count = 0
 		await self.bot.delete_message(ctx.message)
-		async for client_message in self.bot.logs_from(ctx.message.channel, limit = 10000):
-			if check(client_message):
-				to_delete.append(client_message)
+		async for message in self.bot.logs_from(ctx.message.channel, limit = clients.delete_limit):
+			if check(message):
+				to_delete.append(message)
 				count += 1
 				if count == number:
 					break

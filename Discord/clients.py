@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-5.21"
+version = "0.35.0-5.22"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -31,6 +31,7 @@ fake_ip = "nice try"
 fake_location = "Fort Yukon, Alaska"
 bot_color = 0x738bd7
 wait_time = 15.0
+delete_limit = 10000
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
