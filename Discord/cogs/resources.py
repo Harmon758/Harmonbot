@@ -8,7 +8,6 @@ import functools
 import imgurpython
 import isodate
 import json
-import random
 # import spotipy
 import urllib
 import youtube_dl
@@ -79,7 +78,7 @@ class Resources:
 		await self.process_color(ctx, url)
 	
 	async def process_color(self, ctx, url):
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if not data:
 			await self.bot.embed_reply(":no_entry: Error")
@@ -111,7 +110,7 @@ class Resources:
 			url = "https://www.dotabuff.com/players/{}".format(int(account) - 76561197960265728)
 		except ValueError:
 			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={}&vanityurl={}".format(credentials.steam_apikey, account)
-			async with aiohttp_session.get(url) as resp:
+			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			url = "https://www.dotabuff.com/players/{}".format(int(data["response"]["steamid"]) - 76561197960265728)
 		await self.bot.embed_reply(None, title = "{}'s Dotabuff profile".format(account), title_url = url)
@@ -121,7 +120,7 @@ class Resources:
 	async def giphy(self, *, search : str):
 		'''Find an image on giphy'''
 		url = "http://api.giphy.com/v1/gifs/search?api_key={}&q={}&limit=1".format(credentials.giphy_public_beta_api_key, search)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
 		await self.bot.embed_reply(None, image_url = data[0]["images"]["original"]["url"])
@@ -130,7 +129,7 @@ class Resources:
 	async def giphy_trending(self):
 		'''Trending gif'''
 		url = "http://api.giphy.com/v1/gifs/trending?api_key={}".format(credentials.giphy_public_beta_api_key)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
 		await self.bot.embed_reply(None, image_url = data[0]["images"]["original"]["url"])
@@ -156,7 +155,7 @@ class Resources:
 	async def haveibeenpwned(self, name : str):
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/{0}?truncateResponse=true".format(name)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			status = resp.status
 			data = await resp.json()
 		if status in [404, 400]:
@@ -167,7 +166,7 @@ class Resources:
 				breachedaccounts += breachedaccount["Name"] + ", "
 			breachedaccounts = breachedaccounts[:-2]
 		url = "https://haveibeenpwned.com/api/v2/pasteaccount/{0}".format(name)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			status = resp.status
 			data = await resp.json()
 		if status in [404, 400]:
@@ -184,7 +183,7 @@ class Resources:
 	async def imdb(self, ctx, *search : str):
 		'''IMDb Information'''
 		url = "http://www.omdbapi.com/?t={}&plot=short".format('+'.join(search))
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
 			await self.bot.embed_reply(data["Error"])
@@ -251,7 +250,7 @@ class Resources:
 			pass
 		elif len(ctx.message.content.split()) >= 4:
 			url = "https://en.lichess.org/api/user/{}".format(ctx.message.content.split()[3])
-			async with aiohttp_session.get(url) as resp:
+			async with clients.aiohttp_session.get(url) as resp:
 				self.lichess_user_data = await resp.json()
 			if not self.lichess_user_data:
 				raise errors.LichessUserNotFound
@@ -299,7 +298,7 @@ class Resources:
 	async def lichess_tournaments(self):
 		'''WIP'''
 		url = "https://en.lichess.org/api/tournament"
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			self.lichess_tournaments_data = await resp.json()
 	
 	@lichess_tournaments.command(name = "current", aliases = ["started"])
@@ -325,7 +324,7 @@ class Resources:
 	async def longurl(self, url : str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={}&key={}".format(url, credentials.google_apikey)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
 				await self.bot.embed_reply(":no_entry: Error")
 				return
@@ -357,7 +356,7 @@ class Resources:
 		News
 		Powered by NewsAPI.org
 		'''
-		async with aiohttp_session.get("https://newsapi.org/v1/articles?source={}&apiKey={}".format(source, credentials.news_api_key)) as resp:
+		async with clients.aiohttp_session.get("https://newsapi.org/v1/articles?source={}&apiKey={}".format(source, credentials.news_api_key)) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
 			await self.bot.embed_reply(":no_entry: Error: {}".format(data["message"]))
@@ -400,7 +399,7 @@ class Resources:
 		News sources
 		https://newsapi.org/sources
 		'''
-		async with aiohttp_session.get("https://newsapi.org/v1/sources") as resp:
+		async with clients.aiohttp_session.get("https://newsapi.org/v1/sources") as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
 			await self.bot.embed_reply(":no_entry: Error")
@@ -416,7 +415,7 @@ class Resources:
 		Does not accept spaces for search by sequence
 		'''
 		url = "http://oeis.org/search?fmt=json&q=" + search
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["results"]:
 			await self.bot.embed_reply(data["results"][0]["data"], title = data["results"][0]["name"])
@@ -434,7 +433,7 @@ class Resources:
 		Returns sequence graph if found
 		'''
 		url = "http://oeis.org/search?fmt=json&q=" + search
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["results"]:
 			await self.bot.embed_reply(None, image_url = "https://oeis.org/A{:06d}/graph?png=1".format(data["results"][0]["number"]))
@@ -474,7 +473,7 @@ class Resources:
 		Note: battletags are case sensitive
 		'''
 		url = "https://owapi.net/api/v2/u/{}-{}/heroes/general".format(battletag, number)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		output = ["", "__{}__".format(data["battletag"].replace('-', '#'))]
 		sorted_data = sorted(data["heroes"].items(), key = lambda beanisgod: beanisgod[1], reverse = True) # sanity pls
@@ -490,7 +489,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def phone(self, ctx, *, phone : str): # add reactions version
 		'''Get phone specifications'''
-		async with aiohttp_session.get("https://fonoapi.freshpixl.com/v1/getdevice?device={}&position=0&token={}".format(phone, credentials.fonoapi_token)) as resp:
+		async with clients.aiohttp_session.get("https://fonoapi.freshpixl.com/v1/getdevice?device={}&position=0&token={}".format(phone.replace(' ', '+'), credentials.fonoapi_token)) as resp:
 			data = await resp.json()
 		if "status" in data and data["status"] == "error":
 			await self.bot.embed_reply(":no_entry: Error: {}".format(data["message"]))
@@ -645,7 +644,7 @@ class Resources:
 		'''Realm of the Mad God player information'''
 		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await self.bot.reply("Error: " + data["error"])
@@ -675,7 +674,7 @@ class Resources:
 		'''Realm of the Mad God player characters information'''
 		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await self.bot.reply("Error: " + data["error"])
@@ -702,16 +701,15 @@ class Resources:
 		await self.bot.reply(short_url)
 	
 	async def _shorturl(self, url):
-		async with aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={0}".format(credentials.google_apikey), \
-		headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
+		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
 			data = await resp.json()
 		return data["id"]
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def spellcheck(self, *words : str):
+	async def spellcheck(self, *, words : str):
 		'''Spell check words'''
-		async with aiohttp_session.post("https://api.cognitive.microsoft.com/bing/v5.0/spellcheck?Text=" + '+'.join(words), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
+		async with clients.aiohttp_session.post("https://api.cognitive.microsoft.com/bing/v5.0/spellcheck?Text=" + words.replace(' ', '+'), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
 			data = await resp.json()
 		corrections = data["flaggedTokens"]
 		corrected = ' '.join(words)
@@ -761,7 +759,7 @@ class Resources:
 	@steam.command(name = "appid")
 	async def steam_appid(self, *, app : str):
 		'''Get the appid'''
-		async with aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
+		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
 			data = await resp.json()
 		apps = data["applist"]["apps"]
 		appid = 0
@@ -775,11 +773,11 @@ class Resources:
 	async def steam_gamecount(self, vanity_name : str):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(credentials.steam_apikey, vanity_name)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		id = data["response"]["steamid"]
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={0}&steamid={1}".format(credentials.steam_apikey, id)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
 		await self.bot.reply("{0} has {1} games.".format(vanity_name, str(gamecount)))
@@ -787,7 +785,7 @@ class Resources:
 	@steam.command(name = "gameinfo")
 	async def steam_gameinfo(self, *, game : str):
 		'''Information about a game'''
-		async with aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
+		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
 			data = await resp.json()
 		apps = data["applist"]["apps"]
 		appid = 0
@@ -819,7 +817,7 @@ class Resources:
 		Generate a strawpoll link
 		Use qoutes for spaces in the question or options
 		'''
-		async with aiohttp_session.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})) as resp:
+		async with clients.aiohttp_session.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})) as resp:
 			poll = await resp.json()
 		await self.bot.reply("http://strawpoll.me/" + str(poll["id"]))
 	
@@ -827,7 +825,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def streetview(self, *, location : str):
 		'''Generate street view of a location'''
-		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format(location.replace(' ', '+'))
+		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={}".format(location.replace(' ', '+'))
 		await self.bot.embed_reply(None, image_url = image_url)
 	
 	@commands.command(aliases = ["synonyms"])
@@ -845,7 +843,7 @@ class Resources:
 	async def translate(self, *, text : str):
 		'''Translate'''
 		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang=en&text={}".format(credentials.yandex_translate_api_key, text)
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		await self.bot.reply(data["text"][0])
 	
@@ -924,7 +922,7 @@ class Resources:
 			await self.bot.reply("What is what?")
 		else:
 			url = "https://kgsearch.googleapis.com/v1/entities:search?limit=1&query={}&key={}".format('+'.join(search), credentials.google_apikey)
-			async with aiohttp_session.get(url) as resp:
+			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
 				await self.bot.reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
@@ -948,7 +946,7 @@ class Resources:
 		await self.process_xkcd(ctx, url)
 	
 	async def process_xkcd(self, ctx, url):
-		async with aiohttp_session.get(url) as resp:
+		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
 				await self.bot.embed_reply(":no_entry: Error")
 				return

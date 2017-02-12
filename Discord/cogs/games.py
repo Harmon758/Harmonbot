@@ -721,7 +721,7 @@ class Games:
 			return
 		self.mazes[ctx.message.channel.id] = maze(width, height, random_start = random_start, random_end = random_end)
 		maze_instance = self.mazes[ctx.message.channel.id]
-		maze_message, embed = await self.bot.embed_reply(code_block.format(maze_instance.print_visible()))
+		maze_message, embed = await self.bot.embed_reply(clients.code_block.format(maze_instance.print_visible()))
 		'''
 		maze_print = ""
 		for r in maze_instance.test_print():
@@ -729,14 +729,14 @@ class Games:
 			for cell in r:
 				row_print += cell + ' '
 			maze_print += row_print + "\n"
-		await self.bot.reply(code_block.format(maze_print))
+		await self.bot.reply(clients.code_block.format(maze_print))
 		'''
-		# await self.bot.reply(code_block.format(repr(maze_instance)))
+		# await self.bot.reply(clients.code_block.format(repr(maze_instance)))
 		convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
 		while not maze_instance.reached_end():
 			move = await self.bot.wait_for_message(check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.message.channel) # author = ctx.message.author
 			moved = maze_instance.move(convert_move[move.content.lower()])
-			response = code_block.format(maze_instance.print_visible())
+			response = clients.code_block.format(maze_instance.print_visible())
 			if not moved:
 				response += "\n:no_entry: You can't go that way"
 			new_maze_message, embed = await self.bot.embed_reply(response)
@@ -754,7 +754,7 @@ class Games:
 	async def maze_current(self, ctx):
 		'''Current maze game'''
 		if ctx.message.channel.id in self.mazes:
-			await self.bot.embed_reply(code_block.format(self.mazes[ctx.message.channel.id].print_visible()))
+			await self.bot.embed_reply(clients.code_block.format(self.mazes[ctx.message.channel.id].print_visible()))
 		else:
 			await self.bot.embed_reply(":no_entry: There's no maze game currently going on")
 	
@@ -788,6 +788,7 @@ class Games:
 	async def trivia(self, ctx, *options : str):
 		'''
 		Trivia game
+		Only your last answer is accepted
 		Answers prepended with ! or > are ignored
 		'''
 		if not self.trivia_active:
@@ -795,10 +796,10 @@ class Games:
 			self.trivia_active, responses = True, {}
 			data = {}
 			while not data.get("question"):
-				async with aiohttp_session.get("http://jservice.io/api/random") as resp:
+				async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
 					data = (await resp.json())[0]
 			if bet:
-				self.bet_countdown = int(wait_time)
+				self.bet_countdown = int(clients.wait_time)
 				embed = discord.Embed(title = string.capwords(data["category"]["title"]), color = clients.bot_color)
 				embed.set_footer(text = "You have {} seconds left to bet".format(self.bet_countdown))
 				bet_message, embed = await self.bot.say(embed = embed)
@@ -818,7 +819,7 @@ class Games:
 					await asyncio.sleep(0.1)
 				embed.set_footer(text = "Betting is over")
 				await self.bot.edit_message(bet_message, embed = embed)
-			self.trivia_countdown = int(wait_time)
+			self.trivia_countdown = int(clients.wait_time)
 			embed = discord.Embed(color = clients.bot_color, title = string.capwords(data["category"]["title"]), description = data["question"])
 			embed.set_footer(text = "You have {} seconds left to answer".format(self.trivia_countdown))
 			answer_message, embed = await self.bot.say(embed = embed)
@@ -880,7 +881,7 @@ class Games:
 				await self.bot.embed_say(trivia_bets_output)
 			self.trivia_active = False
 		else:
-			await self.bot.embed_reply("There is already an ongoing game of trivia. Other options: score money")
+			await self.bot.embed_reply("There is already an ongoing game of trivia\nOther options: score money")
 	
 	async def _bet_countdown(self, bet_message, embed):
 		while self.bet_countdown:
@@ -920,7 +921,10 @@ class Games:
 	@commands.group(pass_context = True)
 	@checks.not_forbidden()
 	async def war(self, ctx):
-		'''Based on the War card game'''
+		'''
+		WIP
+		Based on the War card game
+		'''
 		return
 	
 	@war.command(name = "start", pass_context = True, no_pm = True)
@@ -992,5 +996,5 @@ class Games:
 	# Utility Functions
 	
 	def cards_to_string(self, cards):
-		return "".join([":{}: {} ".format(card.suit.lower(), card.value) for card in cards])
+		return "".join(":{}: {} ".format(card.suit.lower(), card.value) for card in cards)
 
