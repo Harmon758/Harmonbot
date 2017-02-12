@@ -12,7 +12,7 @@ import time
 
 from modules import utilities
 from utilities import checks
-from clients import bot_color
+import clients
 
 def setup(bot):
 	bot.add_cog(RSS(bot))
@@ -26,7 +26,7 @@ class RSS:
 			self.feeds_info = json.load(feeds_file)
 		self.task = self.bot.loop.create_task(self.check_rss_feeds())
 	
-	def __del__(self):
+	def __unload(self):
 		self.task.cancel()
 	
 	@commands.group(invoke_without_command = True)
@@ -98,7 +98,7 @@ class RSS:
 										if len(description) > 2048: description = description[:2045] + "..."
 									title = item.get("title")
 									if len(title) > 256: title = title[:253] + "..."
-									embed = discord.Embed(title = title, url = item.link, description = description, timestamp = datetime.datetime.utcnow(), color = bot_color) # timestamp = published_time ?
+									embed = discord.Embed(title = title, url = item.link, description = description, timestamp = datetime.datetime.utcnow(), color = clients.bot_color) # timestamp = published_time ?
 									embed.set_footer(text = feed_info.feed.title, icon_url = feed_info.feed.get("icon", discord.Embed.Empty))
 									text_channel = self.bot.get_channel(channel["id"])
 									if text_channel:

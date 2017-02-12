@@ -40,7 +40,7 @@ class Reactions:
 			subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
 			parent.add_command(subcommand)
 	
-	def __del__(self):
+	def __unload(self):
 		for command, parent in self.reaction_commands:
 			parent.remove_command("reactions")
 	
