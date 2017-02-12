@@ -5,6 +5,7 @@ from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
 
 import asyncio
 import datetime
+import copy
 import inspect
 import json
 # import os
@@ -256,7 +257,7 @@ class Meta:
 			value = "{} this session\n{} total recorded".format(session_commands_executed, stats["commands_executed"])) 
 			# since 6/10/16 (cog commands)
 		embed.add_field(name = "Cogs Reloaded", value = stats["cogs_reloaded"]) # since 6/10/16 - implemented cog reloading
-		# this session
+		# TODO: cogs reloaded this session
 		embed.add_field(name = "Servers", value = len(self.bot.servers))
 		embed.add_field(name = "Channels", value = "{} text\n{} voice (in {})".format(text_count, voice_count, in_voice_count))
 		embed.add_field(name = "Members", 
@@ -402,6 +403,15 @@ class Meta:
 	async def test(self):
 		'''Basic test command'''
 		await self.bot.say("Hello, World!")
+	
+	@commands.command(pass_context = True)
+	@checks.is_owner()
+	async def do(self, ctx, times : int, *, command):
+		'''Repeats a command a specified number of times'''
+		msg = copy.copy(ctx.message)
+		msg.content = command
+		for _ in range(times):
+			await self.bot.process_commands(msg)
 	
 	@commands.command()
 	@checks.is_owner()
