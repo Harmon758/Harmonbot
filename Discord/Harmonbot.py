@@ -24,7 +24,9 @@ if __name__ == "__main__":
 	from utilities import errors
 	from utilities import audio_player
 	
-	utilities.create_file("f", content = {"counter" : 0})
+	utilities.create_file('f', content = {"total" : 0})
+	with open("data/f.json", 'r') as f_file:
+		f_counter_info = json.load(f_file)
 	
 	@client.event
 	async def on_ready():
@@ -206,12 +208,20 @@ if __name__ == "__main__":
 		
 		# f
 		elif message.content.lower() == 'f':
-			with open("data/f.json", "r") as counter_file:
-				counter_info = json.load(counter_file)
-			counter_info["counter"] += 1
-			with open("data/f.json", "w") as counter_file:
-				json.dump(counter_info, counter_file, indent = 4)
-			await client.send_message(message.channel, message.author.display_name + " has paid their respects.\nRespects paid so far: " + str(counter_info["counter"]))
+			f_counter_info["total"] += 1
+			f_counter_info[message.author.id] = f_counter_info.get(message.author.id, 0) + 1
+			with open("data/f.json", 'w') as f_file:
+				json.dump(f_counter_info, f_file, indent = 4)
+			embed = discord.Embed(color = clients.bot_color)
+			embed.description = "{} has paid their respects".format(message.author.display_name)
+			embed.description += "\nTotal respects paid so far: {}".format(f_counter_info["total"])
+			embed.description += "\nRecorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[message.author.id]) # since 12/20/16
+			try:
+				await client.send_message(message.channel, embed = embed)
+			except discord.errors.Forbidden: # necessary?
+				raise
+			except discord.errors.HTTPException:
+				await client.send_message(message.channel, embed.description)
 		
 		# Chatbot
 		elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'):
