@@ -6,7 +6,6 @@ import asyncio
 from bs4 import BeautifulSoup
 import calendar
 import concurrent.futures
-import copy
 import datetime
 import dice
 import inspect
@@ -20,6 +19,7 @@ import xml.etree.ElementTree
 from utilities import checks
 import clients
 import credentials
+from modules import utilities
 
 def setup(bot):
 	bot.add_cog(Random(bot))
@@ -35,14 +35,7 @@ class Random:
 				self.random.add_command(command)
 		# Add fact subcommands as subcommands of corresponding commands
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
-			subcommand = copy.copy(command)
-			subcommand.name = "fact"
-			subcommand.aliases = []
-			async def wrapper(*args, command = command, **kwargs):
-				await command.callback(self, *args, **kwargs)
-			subcommand.callback = wrapper
-			subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
-			parent.add_command(subcommand)
+			utilities.add_as_subcommand(self, command, parent, "fact")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()

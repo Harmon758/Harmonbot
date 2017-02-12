@@ -1,8 +1,10 @@
 
 import discord
+from discord.ext import commands
 
-# import aiohttp
 from collections import OrderedDict
+import copy
+import inspect
 import json
 import math
 import os
@@ -164,4 +166,28 @@ async def get_user(ctx, name):
 		user = discord.utils.find(lambda m: m.name == user_name and str(m.discriminator) == user_discriminator, ctx.bot.get_all_members())
 		if user: return user
 	return None
+
+# Commands
+
+def add_as_subcommand(cog, command, parent_name, subcommand_name, *, aliases = []):
+	if isinstance(parent_name, commands.Command):
+		parent = parent_name
+	else:
+		parent_cog_name, parent_command_name = parent_name.split('.')
+		parent = getattr(cog.bot.get_cog(parent_cog_name), parent_command_name, None)
+		if not parent: return
+	subcommand = copy.copy(command)
+	subcommand.name = subcommand_name
+	subcommand.aliases = aliases
+	async def wrapper(*args, **kwargs):
+	# async def wrapper(*args, command = command, **kwargs):
+		await command.callback(cog, *args, **kwargs)
+	subcommand.callback = wrapper
+	subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
+	parent.add_command(subcommand)
+
+def remove_as_subcommand(cog, parent_name, subcommand_name):
+	parent_cog_name, parent_command_name = parent_name.split('.')
+	parent = getattr(cog.bot.get_cog(parent_cog_name), parent_command_name, None)
+	if parent: parent.remove_command(subcommand_name)
 

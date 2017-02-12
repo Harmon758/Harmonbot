@@ -11,6 +11,7 @@ import random
 import clients
 import credentials
 from utilities import checks
+from modules import utilities
 from modules.maze import maze
 
 def setup(bot):
@@ -29,20 +30,13 @@ class Reactions:
 		
 		self.arrows = collections.OrderedDict([('\N{LEFTWARDS BLACK ARROW}', 'W'), ('\N{UPWARDS BLACK ARROW}', 'N'), ('\N{DOWNWARDS BLACK ARROW}', 'S'), ('\N{BLACK RIGHTWARDS ARROW}', 'E')]) # tuple?
 		
-		self.reaction_commands = ((self.guessr, self.bot.cogs["Games"].guess), (self.newsr, self.bot.cogs["Resources"].news), (self.mazer, self.bot.cogs["Games"].maze))
-		for command, parent in self.reaction_commands:
-			subcommand = copy.copy(command)
-			subcommand.name = "reactions"
-			subcommand.aliases = ["reaction", 'r']
-			async def wrapper(ctx, *args, **kwargs):
-				await command.callback(self, ctx, *args, **kwargs)
-			subcommand.callback = wrapper
-			subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
-			parent.add_command(subcommand)
+		self.reaction_commands = ((self.guessr, "Games.guess"), (self.newsr, "Resources.news"), (self.mazer, "Games.maze"))
+		for command, parent_name in self.reaction_commands:
+			utilities.add_as_subcommand(self, command, parent_name, "reactions", aliases = ["reaction", 'r'])
 	
 	def __unload(self):
-		for command, parent in self.reaction_commands:
-			parent.remove_command("reactions")
+		for command, parent_name in self.reaction_commands:
+			utilities.remove_as_subcommand(self, parent_name, "reactions")
 	
 	@commands.command(aliases = ["guessreactions", "guessreaction"], pass_context = True)
 	@checks.not_forbidden()
