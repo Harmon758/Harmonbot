@@ -37,7 +37,7 @@ class Random:
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			utilities.add_as_subcommand(self, command, parent, "fact")
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.streetview, "Resources.streetview"), (self.giphy, "Resources.giphy"))
+		self.random_subcommands = ((self.streetview, "Resources.streetview"), (self.giphy, "Resources.giphy"), (self.color, "Resources.color"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
 	
@@ -53,6 +53,14 @@ class Random:
 		All random subcommands are also commands
 		'''
 		await self.bot.embed_reply(":grey_question: Random what?")
+	
+	@random.command(pass_context = True)
+	@checks.not_forbidden()
+	async def color(self, ctx):
+		'''Information on a random color'''
+		url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
+		cog = self.bot.get_cog("Resources")
+		if cog: await cog.process_color(ctx, url)
 	
 	@random.command()
 	@checks.not_forbidden()

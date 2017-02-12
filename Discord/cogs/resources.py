@@ -78,13 +78,6 @@ class Resources:
 			url = "http://www.colourlovers.com/api/colors?numResults=1&format=json&keywords={}".format(color)
 		await self.process_color(ctx, url)
 	
-	@color.command(name = "random", pass_context = True)
-	@checks.not_forbidden()
-	async def color_random(self, ctx):
-		'''Information on a random color'''
-		url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
-		await self.process_color(ctx, url)
-	
 	async def process_color(self, ctx, url):
 		async with aiohttp_session.get(url) as resp:
 			data = await resp.json()
