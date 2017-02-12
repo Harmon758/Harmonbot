@@ -1,5 +1,5 @@
 
-# import discord
+import discord
 from discord.ext import commands
 
 import asyncio
@@ -21,6 +21,7 @@ import seaborn
 # import re
 # import subprocess
 import sympy
+import time
 import urllib
 import zlib
 
@@ -56,10 +57,6 @@ class Tools:
 	@checks.not_forbidden()
 	async def calculate(self, *, equation : str):
 		'''Calculator'''
-		'''
-		Simple calculator
-		calculate <number> <operation> <number>
-		'''
 		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
 		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
 		allowed = set("0123456789.+-*/^%()")
@@ -68,10 +65,8 @@ class Tools:
 		equation = "".join(character for character in equation if character in allowed)
 		print("Calculated " + equation)
 		with multiprocessing.Pool(1) as pool:
-		# with concurrent.futures.ProcessPoolExecutor(max_workers = 1) as executor:
 			async_result = pool.apply_async(eval, (equation,))
 			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
-			# future = self.bot.loop.run_in_executor(executor, eval, equation)
 			try:
 				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
 				await self.bot.embed_reply("{} = {}".format(equation, result))
@@ -81,20 +76,6 @@ class Tools:
 				await self.bot.embed_reply(":no_entry: Syntax error")
 			except concurrent.futures.TimeoutError:
 				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
-		'''
-			except asyncio.TimeoutError:
-				future.cancel()
-				for process in executor._processes.values():
-					process.terminate()
-				executor.shutdown(wait = False)
-				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
-		'''
-		'''
-		if len(equation) >= 3 and equation[0].isnumeric and equation[2].isnumeric and equation[1] in ['+', '-', '*', '/']:
-			await self.bot.embed_reply(' '.join(equation[:3]) + " = " + str(eval(''.join(equation[:3]))))
-		else:
-			await self.bot.embed_reply("That's not a valid input.")
-		'''
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
 	@checks.not_forbidden()
@@ -659,10 +640,11 @@ class Tools:
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def timer(self, ctx, seconds : int):
-		'''WIP'''
-		await self.bot.reply("I'll remind you in {} seconds.".format(seconds))
+		'''Timer'''
+		# TODO: other units, persistence through restarts
+		await self.bot.embed_reply("I'll remind you in {} seconds".format(seconds))
 		await asyncio.sleep(seconds)
-		await self.bot.say("{}: {} seconds have passed.".format(ctx.message.author.mention, seconds))
+		await self.bot.say("{}: {} seconds have passed".format(ctx.message.author.mention, seconds))
 	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.not_forbidden()
