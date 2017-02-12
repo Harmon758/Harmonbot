@@ -36,6 +36,14 @@ class Random:
 		# Add fact subcommands as subcommands of corresponding commands
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			utilities.add_as_subcommand(self, command, parent, "fact")
+		# Add random subcommands as subcommands of corresponding commands
+		self.random_subcommands = ((self.streetview, "Resources.streetview"), (self.giphy, "Resources.giphy"))
+		for command, parent_name in self.random_subcommands:
+			utilities.add_as_subcommand(self, command, parent_name, "random")
+	
+	def __unload(self):
+		for command, parent_name in self.random_subcommands:
+			utilities.remove_as_subcommand(self, parent_name, "random")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -45,6 +53,24 @@ class Random:
 		All random subcommands are also commands
 		'''
 		await self.bot.embed_reply(":grey_question: Random what?")
+	
+	@random.command()
+	@checks.not_forbidden()
+	async def giphy(self):
+		'''Random gif from giphy'''
+		url = "http://api.giphy.com/v1/gifs/random?api_key={}".format(credentials.giphy_public_beta_api_key)
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		await self.bot.embed_reply(None, image_url = data["data"]["image_url"])
+	
+	@random.command()
+	@checks.not_forbidden()
+	async def streetview(self):
+		'''Generate street view of a random location'''
+		latitude = random.uniform(-90, 90)
+		longitude = random.uniform(-180, 180)
+		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={},{}".format(latitude, longitude)
+		await self.bot.embed_reply(None, image_url = image_url)
 	
 	@commands.command()
 	@checks.not_forbidden()

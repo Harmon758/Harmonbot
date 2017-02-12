@@ -133,15 +133,6 @@ class Resources:
 		data = data["data"]
 		await self.bot.embed_reply(None, image_url = data[0]["images"]["original"]["url"])
 	
-	@giphy.command(name = "random")
-	async def giphy_random(self):
-		'''Random gif'''
-		url = "http://api.giphy.com/v1/gifs/random?api_key={}".format(credentials.giphy_public_beta_api_key)
-		async with aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		data = data["data"]
-		await self.bot.embed_reply(None, image_url = data["image_url"])
-	
 	@giphy.command(name = "trending")
 	async def giphy_trending(self):
 		'''Trending gif'''
@@ -853,15 +844,6 @@ class Resources:
 	async def streetview(self, *, location : str):
 		'''Generate street view of a location'''
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0}".format(location.replace(' ', '+'))
-		await self.bot.embed_reply(None, image_url = image_url)
-	
-	@streetview.command(name = "random")
-	@checks.not_forbidden()
-	async def streetview_random(self):
-		'''Generate street view of a random location'''
-		latitude = random.uniform(-90, 90)
-		longitude = random.uniform(-180, 180)
-		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={0},{1}".format(latitude, longitude)
 		await self.bot.embed_reply(None, image_url = image_url)
 	
 	@commands.command(aliases = ["synonyms"])
