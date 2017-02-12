@@ -3,11 +3,13 @@
 from discord.ext import commands
 
 import asyncio
+import concurrent.futures
 import difflib
 import hashlib
 import json
 import math
 import moviepy.editor
+import multiprocessing
 import pandas
 import pygost.gost28147
 import pygost.gost28147_mac
@@ -59,22 +61,39 @@ class Tools:
 		calculate <number> <operation> <number>
 		'''
 		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
-		_replace = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
-		_allowed = set("0123456789.+-*/^%()")
-		_equation = equation
-		for key, value in _replace.items():
-			_equation = _equation.replace(key, value)
-		_equation = ''.join(character for character in _equation if character in _allowed)
-		print("Calculated " + _equation)
-		try:
-			await self.bot.reply(_equation + '=' + str(eval(_equation)))
-		except:
-			pass
+		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
+		allowed = set("0123456789.+-*/^%()")
+		for key, value in replacements.items():
+			equation = equation.replace(key, value)
+		equation = "".join(character for character in equation if character in allowed)
+		print("Calculated " + equation)
+		with multiprocessing.Pool(1) as pool:
+		# with concurrent.futures.ProcessPoolExecutor(max_workers = 1) as executor:
+			async_result = pool.apply_async(eval, (equation,))
+			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
+			# future = self.bot.loop.run_in_executor(executor, eval, equation)
+			try:
+				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
+				await self.bot.embed_reply("{} = {}".format(equation, result))
+			except discord.errors.HTTPException:
+				await self.bot.embed_reply(":no_entry: Output too long")
+			except SyntaxError:
+				await self.bot.embed_reply(":no_entry: Syntax error")
+			except concurrent.futures.TimeoutError:
+				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
+		'''
+			except asyncio.TimeoutError:
+				future.cancel()
+				for process in executor._processes.values():
+					process.terminate()
+				executor.shutdown(wait = False)
+				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
+		'''
 		'''
 		if len(equation) >= 3 and equation[0].isnumeric and equation[2].isnumeric and equation[1] in ['+', '-', '*', '/']:
-			await self.bot.reply(' '.join(equation[:3]) + " = " + str(eval(''.join(equation[:3]))))
+			await self.bot.embed_reply(' '.join(equation[:3]) + " = " + str(eval(''.join(equation[:3]))))
 		else:
-			await self.bot.reply("That's not a valid input.")
+			await self.bot.embed_reply("That's not a valid input.")
 		'''
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
