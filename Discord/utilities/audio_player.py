@@ -15,8 +15,6 @@ import credentials
 from modules import utilities
 
 import clients
-from clients import aiohttp_session
-from clients import cleverbot_instance
 from clients import inflect_engine
 
 playlist_logger = logging.getLogger("playlist")
@@ -237,14 +235,14 @@ class AudioPlayer:
 		elif self.library_flag:
 			return ":notes: Playing songs from my library"
 		elif self.queue.qsize() == 0:
-			return ":hole: The queue is currently empty."
+			return ":hole: The queue is currently empty"
 		else:
 			queue_string = ""
 			for number, stream in enumerate(list(self.queue._queue)[:10], start = 1):
 				queue_string += ":{}: **{}** (<{}>) Added by: {}\n".format("keycap_ten" if number == 10 else inflect_engine.number_to_words(number), stream["info"].get("title", "N/A"), stream["info"].get("webpage_url", "N/A"), stream["requester"].display_name)
 			if self.queue.qsize() > 10:
 				more_songs = self.queue.qsize() - 10
-				queue_string += ":arrow_right: There {} {} more {} in the queue".format(inflect_engine.plural("is", more_songs), more_songs, inflect_engine.plural("song", more_songs))
+				queue_string += ":arrow_right: There {} {} more {} in the queue".format(clients.inflect_engine.plural("is", more_songs), more_songs, clients.inflect_engine.plural("song", more_songs))
 			return ":musical_score: Queue:\n" + queue_string
 	
 	async def empty_queue(self):
@@ -366,7 +364,7 @@ class AudioPlayer:
 			paused = self.pause()
 			while self.bot.is_voice_connected(self.server) and self.radio_flag:
 				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, credentials.google_apikey)
-				async with aiohttp_session.get(url) as resp:
+				async with clients.aiohttp_session.get(url) as resp:
 					data = await resp.json()
 				videoid = random.choice(data["items"])["id"]["videoId"]
 				await self.add_song_interrupt(videoid, requester)
@@ -448,7 +446,7 @@ class AudioPlayer:
 		except speech_recognition.RequestError as e:
 			await self.bot.send_message(self.text_channel, ":warning: Could not request results from Google Speech Recognition service; {0}".format(e))
 		else:
-			response = cleverbot_instance.ask(text)
+			response = clients.cleverbot_instance.ask(text)
 			await self.bot.send_message(self.text_channel, "Responding with: " + response)
 			await self.play_tts(response, self.bot.user)
 		# open("data/heard.pcm", 'w').close() # necessary?
