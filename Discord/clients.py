@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-5.23"
+version = "0.35.0-5.24"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -319,6 +319,12 @@ async def set_streaming_status(client):
 
 async def reply(message, response):
 	return await client.send_message(message.channel, "{}: {}".format(message.author.mention, response))
+
+async def embed_reply(message, response):
+	embed = discord.Embed(description = response, color = bot_color)
+	avatar = message.author.avatar_url or message.author.default_avatar_url
+	embed.set_author(name = message.author.display_name, icon_url = avatar)
+	return await client.send_message(message.channel, embed = embed)
 
 
 # Restart/Shutdown Tasks
