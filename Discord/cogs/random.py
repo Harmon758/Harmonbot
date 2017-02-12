@@ -37,7 +37,7 @@ class Random:
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			utilities.add_as_subcommand(self, command, parent, "fact")
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.streetview, "Resources.streetview"), (self.giphy, "Resources.giphy"), (self.color, "Resources.color"))
+		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
 	
@@ -70,6 +70,15 @@ class Random:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		await self.bot.embed_reply(None, image_url = data["data"]["image_url"])
+	
+	@random.command()
+	@checks.not_forbidden()
+	async def map(self):
+		'''See map of random location'''
+		latitude = random.uniform(-90, 90)
+		longitude = random.uniform(-180, 180)
+		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=13&size=640x640".format(latitude, longitude)
+		await self.bot.embed_reply(None, image_url = image_url)
 	
 	@random.command()
 	@checks.not_forbidden()

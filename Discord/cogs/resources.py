@@ -339,15 +339,6 @@ class Resources:
 		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location.replace(' ', '+'))
 		await self.bot.embed_reply(None, image_url = image_url)
 	
-	@map.command(name = "random")
-	@checks.not_forbidden()
-	async def map_random(self):
-		'''See map of random location'''
-		latitude = random.uniform(-90, 90)
-		longitude = random.uniform(-180, 180)
-		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=13&size=640x640".format(latitude, longitude)
-		await self.bot.embed_reply(None, image_url = image_url)
-	
 	@map.command(name = "options")
 	@checks.not_forbidden()
 	async def map_options(self, zoom : int, maptype : str, *, location : str):
