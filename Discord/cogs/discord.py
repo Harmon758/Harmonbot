@@ -63,35 +63,18 @@ class Discord:
 	
 	@commands.group(pass_context = True, aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
-	async def delete(self, ctx, *options : str):
+	async def delete(self, ctx, number : int, *, user : str = ""):
 		'''
 		Delete messages
-		delete <number> or delete <user> <number>
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
 		if ctx.message.channel.is_private:
-			if options and options[0].isdigit():
-				number = int(options[0])
-				count = 0
-				async for client_message in self.bot.logs_from(ctx.message.channel, limit = 10000):
-					if client_message.author == self.bot.user:
-						await self.bot.delete_message(client_message)
-						await asyncio.sleep(0.2)
-						count += 1
-						if count == number:
-							break
-			else:
-				await self.bot.reply("Syntax error.")
-		elif options and options[0].isdigit():
-			number = int(options[0])
+			await self.bot.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
+		elif not user:
 			await self.bot.delete_message(ctx.message)
 			await self.bot.purge_from(ctx.message.channel, limit = number)
-		elif len(options) > 1 and options[1].isdigit():
-			def check(message):
-				return message.author.name == options[0]
-			await self.delete_number(ctx, int(options[1]), check)
-		else:
-			await self.bot.reply("Syntax error.")
+		elif user:
+			await self.delete_number(ctx, number, check = lambda m: m.author.name == user)
 	
 	@delete.command(name = "attachments", aliases = ["images"], pass_context = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
@@ -118,13 +101,13 @@ class Discord:
 		await self.bot.delete_message(ctx.message)
 		await self.bot.purge_from(ctx.message.channel, limit = clients.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
 	
-	async def delete_number(self, ctx, number, check):
+	async def delete_number(self, ctx, number, check, delete_command = True):
 		if number <= 0:
-			await self.bot.reply("Syntax Error.")
+			await self.bot.embed_reply(":no_entry: Syntax error")
 			return
 		to_delete = []
 		count = 0
-		await self.bot.delete_message(ctx.message)
+		if delete_command: await self.bot.delete_message(ctx.message)
 		async for message in self.bot.logs_from(ctx.message.channel, limit = clients.delete_limit):
 			if check(message):
 				to_delete.append(message)
