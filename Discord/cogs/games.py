@@ -23,9 +23,7 @@ from modules import war
 from utilities import checks
 import clients
 from clients import wait_time
-from clients import code_block
 from clients import aiohttp_session
-from clients import cleverbot_instance
 from clients import inflect_engine
 
 def setup(bot):
@@ -518,7 +516,7 @@ class Games:
 	@checks.not_forbidden()
 	async def cleverbot(self, *, message : str):
 		'''Talk to Cleverbot'''
-		await self.bot.embed_reply(cleverbot_instance.ask(message))
+		await self.bot.embed_reply(clients.cleverbot_instance.ask(message))
 	
 	@commands.command(name = "8ball", aliases = ["eightball", "\U0001f3b1"])
 	@checks.not_forbidden()
