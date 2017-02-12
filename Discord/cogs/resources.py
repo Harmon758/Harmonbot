@@ -122,8 +122,7 @@ class Resources:
 		url = "http://api.giphy.com/v1/gifs/search?api_key={}&q={}&limit=1".format(credentials.giphy_public_beta_api_key, search)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		data = data["data"]
-		await self.bot.embed_reply(None, image_url = data[0]["images"]["original"]["url"])
+		await self.bot.embed_reply(None, image_url = data["data"][0]["images"]["original"]["url"])
 	
 	@giphy.command(name = "trending")
 	async def giphy_trending(self):
@@ -131,8 +130,7 @@ class Resources:
 		url = "http://api.giphy.com/v1/gifs/trending?api_key={}".format(credentials.giphy_public_beta_api_key)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		data = data["data"]
-		await self.bot.embed_reply(None, image_url = data[0]["images"]["original"]["url"])
+		await self.bot.embed_reply(None, image_url = data["data"][0]["images"]["original"]["url"])
 	
 	@commands.command(aliases = ["imagesearch", "googleimages"])
 	@checks.not_forbidden()
@@ -897,21 +895,25 @@ class Resources:
 	@commands.command()
 	@checks.not_forbidden()
 	async def websitescreenshot(self, url : str):
-		'''WIP'''
+		'''Take a screenshot of a website'''
+		response, embed = None, None
 		while True:
-			async with aiohttp_session.get("http://api.page2images.com/restfullink?"
+			async with clients.aiohttp_session.get("http://api.page2images.com/restfullink?"
 			"p2i_url={}&p2i_screen=1280x1024&p2i_size=1280x0&p2i_fullpage=1&p2i_key={}".format(url, credentials.page2images_api_key)) as resp:
 				data = await resp.json()
 			if data["status"] == "processing":
 				wait_time = int(data["estimated_need_time"])
-				await self.bot.reply("Processing <{}>. Estimated wait time: {} sec.".format(url, wait_time))
+				if response and embed:
+					embed.description = "Processing {}\nEstimated wait time: {} sec".format(url, wait_time)
+					await self.bot.edit_message(response, embed = embed)
+				else:
+					response, embed = await self.bot.embed_reply("Processing {}\nEstimated wait time: {} sec".format(url, wait_time))
 				await asyncio.sleep(wait_time)
 			elif data["status"] == "finished":
-				short_url = await self._shorturl(data["image_url"])
-				await self.bot.reply("Your screenshot of <{}>: {}".format(url, short_url))
+				await self.bot.embed_reply("Your screenshot of {}:".format(url), image_url = data["image_url"])
 				return
 			elif data["status"] == "error":
-				await self.bot.reply(":no_entry: Error: {}".format(data["msg"]))
+				await self.bot.embed_reply(":no_entry: Error: {}".format(data["msg"]))
 				return
 	
 	@commands.command(aliases = ["whatare"])
