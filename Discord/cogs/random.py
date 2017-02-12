@@ -1,12 +1,18 @@
 
+import discord
 from discord.ext import commands
 
+import asyncio
 from bs4 import BeautifulSoup
 import calendar
+import concurrent.futures
 import copy
 import datetime
+import dice
 import inspect
+import multiprocessing
 import pydealer
+import pyparsing
 import random
 import string
 import xml.etree.ElementTree
@@ -22,12 +28,13 @@ class Random:
 	
 	def __init__(self, bot):
 		self.bot = bot
+		# Add commands as random subcommands
 		for name, command in inspect.getmembers(self):
 			if isinstance(command, commands.Command) and command.parent is None and name != "random":
 				self.bot.add_command(command)
 				self.random.add_command(command)
-		self.fact_commands = ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number))
-		for command, parent in self.fact_commands:
+		# Add fact subcommands as subcommands of corresponding commands
+		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			subcommand = copy.copy(command)
 			subcommand.name = "fact"
 			subcommand.aliases = []
@@ -78,6 +85,34 @@ class Random:
 				data = await resp.text()
 			url = xml.etree.ElementTree.fromstring(data).find(".//url").text
 			await self.bot.embed_reply("[:cat:]({})".format(url), image_url = url)
+	
+	@commands.command(aliases = ["die", "roll"])
+	@checks.not_forbidden()
+	async def dice(self, *, input : str = '6'):
+		'''
+		Roll dice
+		Inputs:                                      Examples:
+		S     |  S - number of sides (default is 6)  [6      | 12]
+		AdS   |  A - amount (default is 1)           [5d6    | 2d10]
+		AdSt  |  t - return total                    [2d6t   | 20d5t]
+		AdSs  |  s - return sorted                   [4d6s   | 5d8s]
+		AdS^H | ^H - return highest H rolls          [10d6^4 | 2d7^1]
+		AdSvL | vL - return lowest L rolls           [15d7v2 | 8d9v2]
+		'''
+		if 'd' not in input:
+			input = 'd' + input
+		with multiprocessing.Pool(1) as pool:
+			async_result = pool.apply_async(dice.roll, (input,))
+			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
+			try:
+				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
+				await self.bot.embed_reply(", ".join(str(roll) for roll in result))
+			except discord.errors.HTTPException:
+				await self.bot.embed_reply(":no_entry: Output too long")
+			except pyparsing.ParseException:
+				await self.bot.embed_reply(":no_entry: Invalid input")
+			except concurrent.futures.TimeoutError:
+				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
