@@ -223,11 +223,13 @@ class Meta:
 		if not ctx.message.channel.is_private:
 			await self.bot.reply("Check your DMs for some of my additional commands.")
 	
-	@commands.command()
-	async def stats(self):
+	@commands.command(pass_context = True)
+	async def stats(self, ctx):
 		'''Bot stats'''
-		with open("data/stats.json", "r") as stats_file:
+		from clients import session_commands_executed, session_commands_usage
+		with open("data/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
+		
 		now = datetime.datetime.utcnow()
 		uptime = now - clients.online_time
 		uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds())))
@@ -243,13 +245,13 @@ class Meta:
 		session_top_5 = sorted(session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		in_voice_count = len(self.bot.cogs["Audio"].players)
 		
-		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = bot_color)
-		avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
 		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar) # url?
 		embed.add_field(name = "Uptime", value = uptime)
 		embed.add_field(name = "Total Recorded Uptime", value = total_uptime) # since 4/17/16, fixed 5/10/16
 		embed.add_field(name = "Recorded Restarts", value = stats["restarts"]) # since 4/17/16, fixed 5/10/16
-		embed.add_field(name = "Main Commands", value = len(set((c for c in self.bot.commands.values()))))
+		embed.add_field(name = "Main Commands", value = len(set(self.bot.commands.values())))
 		embed.add_field(name = "Commands Executed", 
 			value = "{} this session\n{} total recorded".format(session_commands_executed, stats["commands_executed"])) 
 			# since 6/10/16 (cog commands)
@@ -259,10 +261,10 @@ class Meta:
 		embed.add_field(name = "Channels", value = "{} text\n{} voice (in {})".format(text_count, voice_count, in_voice_count))
 		embed.add_field(name = "Members", 
 			value = "{} total\n{} online\n{} unique\n{} unique online".format(total_members, total_members_online, len(unique_members), unique_members_online))
-		if session_top_5: embed.add_field(name = "Top 5 Commands Executed (This Session)", 
-			value = "\n".join(["{} {}".format(uses, command) for command, uses in session_top_5]))
 		embed.add_field(name = "Top 5 Commands Executed (Total Recorded)", 
 			value = "\n".join(["{} {}".format(uses, command) for command, uses in top_5_commands])) # since 11/14/16
+		if session_top_5: embed.add_field(name = "(This Session)", 
+			value = "\n".join(["{} {}".format(uses, command) for command, uses in session_top_5]))
 		await self.bot.send_message(ctx.message.channel, embed = embed)
 	
 	@commands.command()

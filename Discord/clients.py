@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-5.26"
+version = "0.35.0-5.27"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -35,6 +35,8 @@ delete_limit = 10000
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
+session_commands_executed = 0
+session_commands_usage = {}
 aiohttp_session = aiohttp.ClientSession()
 cleverbot_instance = cleverbot.Cleverbot("Harmonbot")
 imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
@@ -262,6 +264,12 @@ async def on_server_join(server):
 @client.listen()
 async def on_server_remove(server):
 	await _update_discord_bots_stats()
+
+@client.listen()
+async def on_command(command, ctx):
+	global session_commands_executed, session_commands_usage
+	session_commands_executed += 1
+	session_commands_usage[command.name] = session_commands_usage.get(command.name, 0) + 1
 
 
 # Download FFMPEG
