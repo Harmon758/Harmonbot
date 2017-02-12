@@ -9,6 +9,7 @@ import concurrent.futures
 import datetime
 import dice
 import inspect
+import json
 import multiprocessing
 import pydealer
 import pyparsing
@@ -37,7 +38,7 @@ class Random:
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			utilities.add_as_subcommand(self, command, parent, "fact")
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"))
+		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
 	
@@ -88,6 +89,17 @@ class Random:
 		longitude = random.uniform(-180, 180)
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={},{}".format(latitude, longitude)
 		await self.bot.embed_reply(None, image_url = image_url)
+	
+	@random.command(pass_context = True)
+	@checks.not_forbidden()
+	async def xkcd(self, ctx):
+		'''Random xkcd'''
+		async with clients.aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
+			data = await resp.text()
+		total = json.loads(data)["num"]
+		url = "http://xkcd.com/{}/info.0.json".format(random.randint(1, total))
+		cog = self.bot.get_cog("Resources")
+		if cog: await cog.process_xkcd(ctx, url)
 	
 	@commands.command()
 	@checks.not_forbidden()

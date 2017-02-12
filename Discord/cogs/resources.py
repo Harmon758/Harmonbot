@@ -947,16 +947,6 @@ class Resources:
 			url = "http://xkcd.com/{0}/info.0.json".format(number) # http://dynamic.xkcd.com/api-0/jsonp/comic/#
 		await self.process_xkcd(ctx, url)
 	
-	@xkcd.command(name = "random", pass_context = True)
-	@checks.not_forbidden()
-	async def xkcd_random(self, ctx):
-		'''Random xkcd'''
-		async with aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
-			data = await resp.text()
-		total = json.loads(data)["num"]
-		url = "http://xkcd.com/{0}/info.0.json".format(random.randint(1, total))
-		await self.process_xkcd(ctx, url)
-	
 	async def process_xkcd(self, ctx, url):
 		async with aiohttp_session.get(url) as resp:
 			if resp.status == 404:
