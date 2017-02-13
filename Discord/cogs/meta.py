@@ -29,7 +29,7 @@ class Meta:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		utilities.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0})
+		utilities.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
 	
 	@commands.command(aliases = ["commands"], hidden = True, pass_context = True)
 	async def help(self, ctx, *commands : str):
@@ -431,7 +431,7 @@ class Meta:
 		except Exception as e:
 			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def exec(self, ctx, *, code : str):
 		code = code.strip('`')
@@ -442,12 +442,19 @@ class Meta:
 			return
 		await self.bot.reply("Successfully executed.")
 	
-	@commands.command()
+	@commands.command(aliases = ["deletetest"])
 	@checks.is_owner()
-	async def deletetest(self):
+	async def delete_test(self):
 		'''Sends 100 messages'''
 		for i in range(1, 101):
 			await self.bot.say(str(i))
+	
+	@commands.command(aliases = ["repeattext"])
+	@checks.is_owner()
+	async def repeat_text(self, number : int, *, text):
+		'''Repeat text'''
+		for _ in range(number):
+			await self.bot.say(text)
 	
 	@commands.command(pass_context = True)
 	@checks.is_owner()
