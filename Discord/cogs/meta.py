@@ -404,6 +404,18 @@ class Meta:
 		'''Basic test command'''
 		await self.bot.say("Hello, World!")
 	
+	@commands.group(aliases = ["code_block"], invoke_without_command = True)
+	@checks.not_forbidden()
+	async def codeblock(self, *, input : str):
+		'''Wrap your message in a code block'''
+		await self.bot.embed_reply(clients.code_block.format(input))
+	
+	@codeblock.command(name = "python", aliases = ["py"])
+	@checks.not_forbidden()
+	async def codeblock_python(self, *, input : str):
+		'''Wrap your message in a Python code block'''
+		await self.bot.embed_reply(clients.py_code_block.format(input))
+	
 	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def do(self, ctx, times : int, *, command):
