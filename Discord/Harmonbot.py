@@ -6,6 +6,7 @@ if __name__ == "__main__":
 	import discord
 	from discord.ext import commands
 	
+	import aiohttp
 	import asyncio
 	import json
 	import os
@@ -290,12 +291,16 @@ if __name__ == "__main__":
 	else:
 		token = credentials.token
 	
-	if os.getenv("TRAVIS") and os.getenv("CI"):
-		client.loop.create_task(client.start(token))
-		client.loop.run_until_complete(asyncio.sleep(10))
-	else:
-		client.loop.run_until_complete(client.start(token))
-	client.loop.run_until_complete(clients.shutdown_tasks())
-	client.loop.close()
-	os._exit(0)
+	try:
+		if os.getenv("TRAVIS") and os.getenv("CI"):
+			client.loop.create_task(client.start(token))
+			client.loop.run_until_complete(asyncio.sleep(10))
+		else:
+			client.loop.run_until_complete(client.start(token))
+	except aiohttp.errors.ClientOSError:
+		pass
+	finally:
+		client.loop.run_until_complete(clients.shutdown_tasks())
+		client.loop.close()
+		os._exit(0)
 
