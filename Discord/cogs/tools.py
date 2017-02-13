@@ -22,6 +22,7 @@ import seaborn
 # import subprocess
 import sympy
 import time
+import unicodedata
 import urllib
 import zlib
 
@@ -76,6 +77,20 @@ class Tools:
 				await self.bot.embed_reply(":no_entry: Syntax error")
 			except concurrent.futures.TimeoutError:
 				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
+	
+	@commands.command(aliases = ["charinfo", "char_info", "character_info"])
+	@checks.not_forbidden()
+	async def characterinfo(self, character : str):
+		'''Information about a unicode character'''
+		character = character[0]
+		# TODO: return info on each character in the input string; use paste tool api?
+		try:
+			name = unicodedata.name(character)
+		except ValueError:
+			name = "UNKNOWN"
+		hex_char = hex(ord(character))
+		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char)
+		await self.bot.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
 	@checks.not_forbidden()
