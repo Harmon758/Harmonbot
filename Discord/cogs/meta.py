@@ -8,9 +8,8 @@ import datetime
 import copy
 import inspect
 import json
-# import os
+import os
 import psutil
-import random
 import re
 import subprocess
 import sys
@@ -92,7 +91,7 @@ class Meta:
 			# yield from bot.send_message(destination, page)
 			await bot.send_message(destination, page)
 	
-	@commands.command(hidden = True, pass_context = True)
+	@commands.command(pass_context = True)
 	@checks.is_owner()
 	async def allcommands(self, ctx):
 		'''All the commands'''
@@ -104,19 +103,21 @@ class Meta:
 			_allcommands += name + ' '
 		await self.bot.whisper(_allcommands[:-1])
 	
-	@commands.command(hidden = True, pass_context = True)
+	@commands.command()
 	@checks.is_owner()
-	async def benchmark(self, ctx):
+	async def benchmark(self):
 		'''Benchmark'''
 		process = psutil.Process()
-		# process = psutil.Process(os.getpid())
 		memory = process.memory_info().rss / 2 ** 20
 		process.cpu_percent()
-		output = "\nMemory: {:.2f} MiB\nCPU: {}".format(memory, "Calculating..")
-		message = await self.bot.reply(output)
+		embed = discord.Embed(color = clients.bot_color)
+		embed.add_field(name = "RAM", value = "{:.2f} MiB".format(memory))
+		embed.add_field(name = "CPU", value = "Calculating CPU usage..")
+		message, embed = await self.bot.say(embed = embed)
 		await asyncio.sleep(1)
 		cpu = process.cpu_percent() / psutil.cpu_count()
-		await self.bot.edit_message(message, ctx.message.author.display_name + output.replace("Calculating..", str(cpu) + '%'))
+		embed.set_field_at(1, name = "CPU", value = "{}%".format(cpu))
+		await self.bot.edit_message(message, embed = embed)
 	
 	@commands.command(pass_context = True)
 	@checks.is_owner()
@@ -175,7 +176,7 @@ class Meta:
 	async def about(self, ctx):
 		'''About me'''
 		from clients import application_info
-		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Discord_Harmonbot/commit/%H) %s (%cr)"').read().strip()
+		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
 		embed = discord.Embed(title = "About Me", color = clients.bot_color)
 		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(clients.changelog, discord.utils.oauth_url(application_info.id))
 		# avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
