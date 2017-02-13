@@ -89,7 +89,7 @@ class Tools:
 		except ValueError:
 			name = "UNKNOWN"
 		hex_char = hex(ord(character))
-		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char)
+		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char[2:])
 		await self.bot.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
