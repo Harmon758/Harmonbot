@@ -21,7 +21,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 		self.stream = tweepy.Stream(auth = clients.twitter_api.auth, listener = self)
 		self.feeds = {}
 	
-	def __unload(self):
+	def __del__(self):
 		self.stream.disconnect()
 	
 	def start_feeds(self, feeds):
@@ -63,7 +63,7 @@ class Twitter:
 			self.feeds_info = json.load(feeds_file)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
-	def __del__(self):
+	def __unload(self):
 		self.stream_listener.stream.disconnect()
 		self.task.cancel()
 	
