@@ -397,18 +397,17 @@ class Discord:
 		else:
 			await self.bot.reply("User with that id not found")
 	
-	@commands.command(pass_context = True)
+	@commands.command(aliases = ["usertoid", "usernametoid"], no_pm = True, pass_context = True)
 	@checks.not_forbidden()
 	async def nametoid(self, ctx, *, name : str):
-		'''Convert user name to id'''
-		if ctx.message.server:
-			user = await utilities.get_user(ctx, name)
-			if user:
-				await self.bot.reply(user.id)
-			else:
-				await self.bot.reply(name + " was not found on this server.")
-		else:
-			await self.bot.reply("Please use that command in a server.")
+		'''Convert username to id'''
+		user = await utilities.get_user(ctx, name)
+		if not user:
+			await self.bot.embed_reply(":no_entry: {} was not found on this server".format(name))
+			return
+		embed = discord.Embed(description = user.id, color = clients.bot_color)
+		embed.set_author(name = str(user), icon_url = user.avatar_url or user.default_avatar_url)
+		await self.bot.reply("", embed = embed)
 	
 	# Checks
 	
