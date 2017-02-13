@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-5.28"
+version = "0.35.0-5.29"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -335,39 +335,33 @@ async def embed_reply(message, response):
 	return await client.send_message(message.channel, embed = embed)
 
 
-# Restart/Shutdown Tasks
+# Restart + Shutdown Tasks
 
-def add_uptime():
-	with open("data/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
-	now = datetime.datetime.utcnow()
-	uptime = now - online_time
-	stats["uptime"] += uptime.total_seconds()
-	with open("data/stats.json", 'w') as stats_file:
-		json.dump(stats, stats_file, indent = 4)
-
-def add_restart():
+async def restart_tasks(channel_id):
+	# Increment restarts counter
 	with open("data/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
 	stats["restarts"] += 1
 	with open("data/stats.json", 'w') as stats_file:
 		json.dump(stats, stats_file, indent = 4)
-
-async def leave_all_voice():
-	# necessary?
-	for voice_client in client.voice_clients:
-		await voice_client.disconnect()
-
-async def shutdown_tasks():
-	client.cogs["Audio"].cancel_all_tasks()
-	# await leave_all_voice()
-	aiohttp_session.close()
-	add_uptime()
-
-async def restart_tasks(channel_id):
-	await shutdown_tasks()
-	add_restart()
-	voice_channels = client.cogs["Audio"].save_voice_channels()
+	# Save restart text channel + voice channels
+	audio_cog = client.get_cog("Audio")
+	voice_channels = audio_cog.save_voice_channels() if audio_cog else []
 	with open("data/temp/restart_channel.json", 'w') as restart_channel_file:
 		json.dump({"restart_channel" : channel_id, "voice_channels" : voice_channels}, restart_channel_file)
+
+async def shutdown_tasks():
+	# Cancel audio tasks
+	audio_cog = client.get_cog("Audio")
+	if audio_cog: audio_cog.cancel_all_tasks()
+	# Close aiohttp session
+	aiohttp_session.close()
+	# Save uptime
+	with open("data/stats.json", 'r') as stats_file:
+		stats = json.load(stats_file)
+	now = datetime.datetime.utcnow()
+	uptime = now - online_time
+	stats["uptime"] += uptime.total_seconds()
+	with open("data/stats.json", 'w') as stats_file:
+		json.dump(stats, stats_file, indent = 4)
 

@@ -290,17 +290,12 @@ if __name__ == "__main__":
 	else:
 		token = credentials.token
 	
-	try:
-		if os.getenv("TRAVIS") and os.getenv("CI"):
-			client.loop.create_task(client.start(token))
-			client.loop.run_until_complete(asyncio.sleep(10))
-		else:
-			client.loop.run_until_complete(client.start(token))
-	except KeyboardInterrupt:
-		print("Shutting down Discord Harmonbot...")
-		client.loop.run_until_complete(clients.restart_tasks())
-		client.loop.run_until_complete(client.logout())
-	finally:
-		client.loop.close()
-		os._exit(0)
+	if os.getenv("TRAVIS") and os.getenv("CI"):
+		client.loop.create_task(client.start(token))
+		client.loop.run_until_complete(asyncio.sleep(10))
+	else:
+		client.loop.run_until_complete(client.start(token))
+	client.loop.run_until_complete(clients.shutdown_tasks())
+	client.loop.close()
+	os._exit(0)
 

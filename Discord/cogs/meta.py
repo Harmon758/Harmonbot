@@ -380,9 +380,8 @@ class Meta:
 	@checks.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
-		await self.bot.say(":ok_hand::skin-tone-2: Restarting...")
+		await self.bot.embed_say(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Discord Harmonbot...")
-		# raise KeyboardInterrupt
 		await clients.restart_tasks(ctx.message.channel.id)
 		await self.bot.logout()
 	
@@ -390,8 +389,8 @@ class Meta:
 	@checks.is_owner()
 	async def shutdown(self):
 		'''Shut me down'''
-		await self.bot.say(":scream: Shutting down.")
-		print("Forcing Shutdown of Discord Harmonbot...")
+		await self.bot.embed_say(":scream: Shutting down.")
+		print("Forcing Shutdown...")
 		await clients.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
 		subprocess.call(["taskkill", "/f", "/im", "python.exe"])
