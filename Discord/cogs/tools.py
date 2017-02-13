@@ -535,7 +535,7 @@ class Tools:
 		if tag in tags:
 			await self.bot.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		tags[tag] = self.clean_tag_content(content)
+		tags[tag] = utilities.clean_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
@@ -545,7 +545,7 @@ class Tools:
 		'''Edit one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
-		self.tags_data[ctx.message.author.id]["tags"][tag] = self.clean_tag_content(content)
+		self.tags_data[ctx.message.author.id]["tags"][tag] = utilities.clean_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
@@ -601,7 +601,7 @@ class Tools:
 		if tag in tags:
 			await self.bot.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		tags[tag] = {"response": self.clean_tag_content(content), "owner": ctx.message.author.id, "created_at": time.time(), "usage_counter": 0}
+		tags[tag] = {"response": utilities.clean_content(content), "owner": ctx.message.author.id, "created_at": time.time(), "usage_counter": 0}
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
@@ -615,7 +615,7 @@ class Tools:
 		elif self.tags_data["global"][tag]["owner"] != ctx.message.author.id:
 			await self.bot.embed_reply(":no_entry: You don't own that global tag")
 			return
-		self.tags_data["global"][tag]["response"] = self.clean_tag_content(content)
+		self.tags_data["global"][tag]["response"] = utilities.clean_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
@@ -648,9 +648,6 @@ class Tools:
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 			await self.bot.embed_reply("You don't have that tag{}".format(close_matches))
 		return not tag in tags
-	
-	def clean_tag_content(self, content):
-		return content.replace("@everyone", "@\u200beveryone").replace("@here", "@\u200bhere")
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
