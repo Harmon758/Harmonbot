@@ -13,6 +13,7 @@ before_install:
   - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/discordgo
   - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/dgvoice
 script:
-  - python Discord/Harmonbot.py
-  - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go run Discord/Harmonbot_Listener.go
+  - cd Discord
+  - python Harmonbot.py
+  - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go run Harmonbot_Listener.go
 
