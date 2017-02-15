@@ -710,7 +710,7 @@ class Resources:
 		async with clients.aiohttp_session.post("https://api.cognitive.microsoft.com/bing/v5.0/spellcheck?Text=" + words.replace(' ', '+'), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
 			data = await resp.json()
 		corrections = data["flaggedTokens"]
-		corrected = ' '.join(words)
+		corrected = words
 		offset = 0
 		for correction in corrections:
 			offset += correction["offset"]
