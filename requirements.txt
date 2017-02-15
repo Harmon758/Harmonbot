@@ -1,4 +1,4 @@
-git+git://github.com/Rapptz/discord.py.git@v0.16.5#egg=discord.py[voice]
+git+git://github.com/Rapptz/discord.py.git@v0.16.6#egg=discord.py[voice]
 
 aiohttp==1.1.6
 beautifulsoup4==4.5.1
