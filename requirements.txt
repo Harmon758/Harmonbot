@@ -3,6 +3,7 @@ git+git://github.com/Rapptz/discord.py.git@v0.16.6#egg=discord.py[voice]
 aiohttp==1.1.6
 beautifulsoup4==4.5.1
 cleverbot==2.0.0
+dice==1.1.0
 feedparser==5.2.1
 imgurpython==1.1.7
 inflect==0.2.5
