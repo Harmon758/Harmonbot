@@ -2,6 +2,8 @@
 import discord
 from discord.ext import commands
 
+import inspect
+
 from utilities import checks
 import clients
 
@@ -12,6 +14,20 @@ class Search:
 	
 	def __init__(self, bot):
 		self.bot = bot
+		# Add commands as search subcommands
+		for name, command in inspect.getmembers(self):
+			if isinstance(command, commands.Command) and command.parent is None and name != "search":
+				self.bot.add_command(command)
+				self.search.add_command(command)
+	
+	@commands.group(invoke_without_command = True)
+	@checks.not_forbidden()
+	async def search(self):
+		'''
+		Search things
+		All search subcommands are also commands
+		'''
+		await self.bot.embed_reply(":grey_question: Search what?")
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -49,7 +65,7 @@ class Search:
 		'''Search with DuckDuckGo'''
 		await self.bot.embed_reply("[DuckDuckGo search for \"{}\"](https://www.duckduckgo.com/?q={})".format(' '.join(search), '+'.join(search)))
 	
-	@commands.command(aliases = ["search", "googlesearch"])
+	@commands.command()
 	@checks.not_forbidden()
 	async def google(self, *, search : str):
 		'''Google search'''
