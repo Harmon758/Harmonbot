@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-5.45"
+version = "0.35.0-5.46"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -104,7 +104,7 @@ class Bot(commands.Bot):
 	
 	def embed_say(self, *args, **kwargs):
 		destination = commands.bot._get_variable('_internal_channel')
-		embed = discord.Embed(description = args[0], color = bot_color)
+		embed = discord.Embed(description = str(args[0]) if args[0] else None, color = bot_color)
 		title = kwargs.pop("title", None)
 		if title: embed.title = title
 		title_url = kwargs.pop("title_url", None)
