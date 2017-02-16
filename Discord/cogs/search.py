@@ -209,9 +209,7 @@ class Search:
 				if not text_output:
 					await self.bot.embed_reply(None, title = pod.title, image_url = images[0])
 					for image in images[1:]:
-						embed = discord.Embed(color = clients.bot_color)
-						embed.set_image(url = image)
-						await self.bot.say(embed = embed)
+						await self.bot.embed_say(None, image_url = image)
 				else:
 					for i, link in enumerate(images):
 						images[i] = await self._shorturl(link)
