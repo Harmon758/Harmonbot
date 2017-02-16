@@ -4,13 +4,11 @@ from discord.ext import commands
 
 import asyncio
 import datetime
-import functools
 import imgurpython
 import isodate
 import json
 # import spotipy
 import urllib
-import youtube_dl
 
 import credentials
 from modules import utilities
@@ -984,20 +982,4 @@ class Resources:
 			published = data["snippet"]["publishedAt"][:10]
 			# await self.bot.send_message(message.channel, message.author.mention + "\n**" + title + "**\n**Length**: " + str(length) + "\n**Likes**: " + likes + ", **Dislikes**: " + dislikes + " (" + str(likepercentage) + "%)\n**Views**: " + views + "\n" + channel + " on " + published)
 			await self.bot.reply("\n```" + title + "\nLength: " + str(length) + "\nLikes: " + likes + ", Dislikes: " + dislikes + " (" + str(likepercentage) + "%)\nViews: " + views + "\n" + channel + " on " + published + "```")
-	
-	@commands.command(aliases = ["ytsearch"])
-	@checks.not_forbidden()
-	async def youtubesearch(self, *, search : str):
-		'''Find a Youtube video'''
-		ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
-		func = functools.partial(ydl.extract_info, search, download = False)
-		info = await self.bot.loop.run_in_executor(None, func)
-		if "entries" in info:
-			info = info["entries"][0]
-		await self.bot.reply(info.get("webpage_url"))
-	
-	@youtubesearch.error
-	async def youtubesearch_error(self, error, ctx):
-		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
-			await self.bot.embed_reply(":no_entry: Error: {}".format(error.original))
 

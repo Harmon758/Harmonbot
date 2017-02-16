@@ -2,7 +2,9 @@
 import discord
 from discord.ext import commands
 
+import functools
 import inspect
+import youtube_dl
 
 from utilities import checks
 import clients
@@ -21,7 +23,7 @@ class Search:
 				self.bot.add_command(command)
 				self.search.add_command(command)
 		# Add search subcommands as subcommands of corresponding commands
-		self.search_subcommands = ((self.imgur, "Resources.imgur"),)
+		self.search_subcommands = ((self.imgur, "Resources.imgur"), (self.youtube, "Audio.audio"))
 		for command, parent_name in self.search_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "search")
 	
@@ -52,6 +54,22 @@ class Search:
 			await self.bot.embed_reply(None, image_url = result["link"])
 		else:
 			await self.bot.embed_reply(None, image_url = result.link)
+	
+	@search.command(aliases = ["yt"])
+	@checks.not_forbidden()
+	async def youtube(self, *, search : str):
+		'''Find a Youtube video'''
+		ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
+		func = functools.partial(ydl.extract_info, search, download = False)
+		info = await self.bot.loop.run_in_executor(None, func)
+		if "entries" in info:
+			info = info["entries"][0]
+		await self.bot.reply(info.get("webpage_url"))
+	
+	@youtube.error
+	async def youtube_error(self, error, ctx):
+		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
+			await self.bot.embed_reply(":no_entry: Error: {}".format(error.original))
 	
 	@commands.command()
 	@checks.not_forbidden()
