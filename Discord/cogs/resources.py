@@ -936,13 +936,7 @@ class Resources:
 				await self.bot.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
-		embed = discord.Embed(title = data["title"], url = "http://xkcd.com/{}".format(data["num"]), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
-		embed.set_image(url = data["img"])
-		embed.set_footer(text = data["alt"])
-		embed.timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"]))
-		await self.bot.say(embed = embed)
+		await self.bot.embed_reply(None, title = data["title"], title_url = "http://xkcd.com/{}".format(data["num"]), image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
 	
 	@commands.command(aliases = ["ytinfo"])
 	@checks.not_forbidden()
