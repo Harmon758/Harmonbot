@@ -900,7 +900,7 @@ class Games:
 	# if answer == data["q_correct_option"]:
 	# await self.bot.say("The answer was " + str(data["q_correct_option"]) + ". " + data["q_options_" + str(data["q_correct_option"])] + "\n" + correct_players_output)
 	
-	@trivia.command(name = "score", aliases = ["points"], pass_context = True)
+	@trivia.command(name = "score", aliases = ["points", "rank", "level"], pass_context = True)
 	async def trivia_score(self, ctx):
 		with open("data/trivia_points.json", 'r') as trivia_file:
 			score = json.load(trivia_file)

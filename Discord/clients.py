@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-5.46"
+version = "0.35.0-5.47"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
