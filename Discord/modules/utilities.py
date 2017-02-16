@@ -4,7 +4,7 @@ from discord.ext import commands
 
 from collections import OrderedDict
 import copy
-import inspect
+# import inspect
 import json
 import math
 import os
@@ -175,18 +175,23 @@ def clean_content(content):
 def add_as_subcommand(cog, command, parent_name, subcommand_name, *, aliases = []):
 	if isinstance(parent_name, commands.Command):
 		parent = parent_name
+		# parent_cog = cog.bot.get_cog(parent.cog_name)
+		parent_cog = parent.instance
+		parent_command_name = parent.name
 	else:
 		parent_cog_name, parent_command_name = parent_name.split('.')
-		parent = getattr(cog.bot.get_cog(parent_cog_name), parent_command_name, None)
+		parent_cog = cog.bot.get_cog(parent_cog_name)
+		parent = getattr(parent_cog, parent_command_name, None)
 		if not parent: return
 	subcommand = copy.copy(command)
 	subcommand.name = subcommand_name
 	subcommand.aliases = aliases
-	async def wrapper(*args, **kwargs):
+	# async def wrapper(*args, **kwargs):
 	# async def wrapper(*args, command = command, **kwargs):
-		await command.callback(cog, *args, **kwargs)
-	subcommand.callback = wrapper
-	subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
+		# await command.callback(cog, *args, **kwargs)
+	# subcommand.callback = wrapper
+	# subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
+	setattr(parent_cog, "{}_{}".format(parent_command_name, subcommand_name), subcommand)
 	parent.add_command(subcommand)
 
 def remove_as_subcommand(cog, parent_name, subcommand_name):
