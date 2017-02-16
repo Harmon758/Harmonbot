@@ -799,9 +799,7 @@ class Games:
 					data = (await resp.json())[0]
 			if bet:
 				self.bet_countdown = int(clients.wait_time)
-				embed = discord.Embed(title = string.capwords(data["category"]["title"]), color = clients.bot_color)
-				embed.set_footer(text = "You have {} seconds left to bet".format(self.bet_countdown))
-				bet_message, embed = await self.bot.say(embed = embed)
+				bet_message, embed = await self.bot.embed_say(None, title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to bet".format(self.bet_countdown))
 				bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
 				while self.bet_countdown:
 					message = await self.bot.wait_for_message(timeout = self.bet_countdown, channel = ctx.message.channel, check = lambda m: m.content.isdigit())
@@ -819,9 +817,7 @@ class Games:
 				embed.set_footer(text = "Betting is over")
 				await self.bot.edit_message(bet_message, embed = embed)
 			self.trivia_countdown = int(clients.wait_time)
-			embed = discord.Embed(color = clients.bot_color, title = string.capwords(data["category"]["title"]), description = data["question"])
-			embed.set_footer(text = "You have {} seconds left to answer".format(self.trivia_countdown))
-			answer_message, embed = await self.bot.say(embed = embed)
+			answer_message, embed = await self.bot.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to answer".format(self.trivia_countdown))
 			countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
 			while self.trivia_countdown:
 				message = await self.bot.wait_for_message(timeout = self.trivia_countdown, channel = ctx.message.channel)
@@ -880,9 +876,7 @@ class Games:
 				trivia_bets_output = trivia_bets_output[:-1]
 			with open("data/trivia_points.json", 'w') as trivia_file:
 				json.dump(score, trivia_file, indent = 4)
-			embed = discord.Embed(description = "The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text()), color = clients.bot_color)
-			embed.set_footer(text = correct_players_output)
-			await self.bot.say(embed = embed)
+			await self.bot.embed_say("The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")), footer_text = correct_players_output)
 			if bet and trivia_bets_output:
 				await self.bot.embed_say(trivia_bets_output)
 			self.trivia_active = False
