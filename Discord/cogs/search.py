@@ -6,6 +6,7 @@ import inspect
 
 from utilities import checks
 import clients
+from modules import utilities
 
 def setup(bot):
 	bot.add_cog(Search(bot))
@@ -19,6 +20,14 @@ class Search:
 			if isinstance(command, commands.Command) and command.parent is None and name != "search":
 				self.bot.add_command(command)
 				self.search.add_command(command)
+		# Add search subcommands as subcommands of corresponding commands
+		self.search_subcommands = ((self.imgur, "Resources.imgur"),)
+		for command, parent_name in self.search_subcommands:
+			utilities.add_as_subcommand(self, command, parent_name, "search")
+	
+	def __unload(self):
+		for command, parent_name in self.search_subcommands:
+			utilities.remove_as_subcommand(self, parent_name, "search")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -28,6 +37,21 @@ class Search:
 		All search subcommands are also commands
 		'''
 		await self.bot.embed_reply(":grey_question: Search what?")
+	
+	@search.command()
+	@checks.not_forbidden()
+	async def imgur(self, *, search : str):
+		'''Search images on imgur'''
+		result = clients.imgur_client.gallery_search(search, sort = "top")
+		if not result:
+			await self.bot.embed_reply(":no_entry: No results found")
+			return
+		result = result[0]
+		if result.is_album:
+			result = clients.imgur_client.get_album(result.id).images[0]
+			await self.bot.embed_reply(None, image_url = result["link"])
+		else:
+			await self.bot.embed_reply(None, image_url = result.link)
 	
 	@commands.command()
 	@checks.not_forbidden()

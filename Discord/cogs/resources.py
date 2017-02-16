@@ -220,21 +220,6 @@ class Resources:
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
-	@imgur.command(name = "search")
-	@checks.not_forbidden()
-	async def imgur_search(self, *, search : str):
-		'''Search images on imgur'''
-		result = clients.imgur_client.gallery_search(search, sort = "top")
-		if not result:
-			await self.bot.embed_reply(":no_entry: No results found")
-			return
-		result = result[0]
-		if result.is_album:
-			result = clients.imgur_client.get_album(result.id).images[0]
-			await self.bot.embed_reply(None, image_url = result["link"])
-		else:
-			await self.bot.embed_reply(None, image_url = result.link)
-	
 	@commands.group()
 	@checks.not_forbidden()
 	async def lichess(self):
