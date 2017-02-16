@@ -12,6 +12,7 @@ import html
 import json
 import pydealer
 import random
+import re
 import string
 
 from modules import utilities
@@ -809,10 +810,10 @@ class Games:
 							score = json.load(trivia_file)
 						if int(message.content) <= score[message.author.id][2]:
 							bets[message.author] = int(message.content)
-							await self.bot.embed_say("{} has bet ${}".format(message.author.display_name, int(message.content)))
+							await clients.embed_reply(message, "Has bet ${}".format(message.content))
 							await self.bot.delete_message(message)
 						else:
-							await self.bot.embed_reply("You don't have that much money to bet!")
+							await clients.embed_reply(message, "You don't have that much money to bet!")
 				while not bet_countdown_task.done():
 					await asyncio.sleep(0.1)
 				embed.set_footer(text = "Betting is over")
