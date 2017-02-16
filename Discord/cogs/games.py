@@ -832,14 +832,21 @@ class Games:
 			await self.bot.edit_message(answer_message, embed = embed)
 			correct_players = []
 			incorrect_players = []
-			matches = re.search("\((.+)\) (.+)", data["answer"].lower())
+			matches_1 = re.search("\((.+)\) (.+)", data["answer"].lower())
+			matches_2 = re.search("(.+) \((.+)\)", data["answer"].lower())
+			matches_3 = re.search("(.+)\/(.+)", data["answer"].lower())
 			for player, response in responses.items():
 				if data["answer"].lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]] \
 				or response.lower() == BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().lower() \
 				or response.lower().replace('-', ' ') == data["answer"].lower().replace('-', ' ') \
+				or response.lower() == data["answer"].lower().replace("\\'", "'") \
+				or response.lower() == data["answer"].lower().replace('&', "and") \
+				or response.lower() == data["answer"].lower().replace('.', "") \
 				or response.lower() == data["answer"].lower().replace('!', "") \
 				or response.lower().replace('(', "").replace(')', "") == data["answer"].lower().replace('(', "").replace(')', "") \
-				or (matches and (response.lower() == matches.group(0) or response.lower() == matches.group(1))) \
+				or (matches_1 and (response.lower() in (matches_1.group(1), matches_1.group(2)))) \
+				or (matches_2 and (response.lower() in (matches_2.group(1), matches_2.group(2)))) \
+				or (matches_3 and (response.lower() in (matches_3.group(1), matches_3.group(2)))) \
 				or response.lower().strip('"') == data["answer"].lower().strip('"'):
 					correct_players.append(player)
 				else:
