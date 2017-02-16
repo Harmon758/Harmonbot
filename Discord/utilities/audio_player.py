@@ -105,12 +105,12 @@ class AudioPlayer:
 	async def player_task(self):
 		while True:
 			self.play_next_song.clear()
-			_current = await self.queue.get()
+			current = await self.queue.get()
 			await self.not_interrupted.wait()
 			with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-				stream = self.server.voice_client.create_ffmpeg_player(_current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
-			stream.volume = self.default_volume / 100
-			self.current = _current
+				stream = self.server.voice_client.create_ffmpeg_player(current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
+			stream.volume = self.default_volume / 1000
+			self.current = current
 			self.current["stream"] = stream
 			self.current["stream"].start()
 			await self.bot.send_message(self.text_channel, ":arrow_forward: Now Playing: `{}`".format(self.current["info"].get("title", "N/A")))
@@ -183,7 +183,7 @@ class AudioPlayer:
 			return False
 		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
 			stream = self.server.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
-		stream.volume = self.default_volume / 100
+		stream.volume = self.default_volume / 1000
 		duplicate = self.current.copy()
 		duplicate["stream"] = stream
 		if not self.current["stream"].is_done():
@@ -195,11 +195,11 @@ class AudioPlayer:
 	
 	def get_volume(self):
 		if not self.current: return None
-		return self.current["stream"].volume * 100
+		return self.current["stream"].volume * 1000
 	
 	def set_volume(self, volume_setting):
 		if not self.current: return False
-		self.current["stream"].volume = volume_setting / 100
+		self.current["stream"].volume = volume_setting / 1000
 		return True
 	
 	def current_output(self):
@@ -314,7 +314,7 @@ class AudioPlayer:
 			return False
 		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
 			stream = self.server.voice_client.create_ffmpeg_player(source, after = self._resume_from_interruption, stderr = ffmpeg_log)
-		stream.volume = self.default_volume / 100
+		stream.volume = self.default_volume / 1000
 		paused = self.pause()
 		stream.start()
 		temp_current = self.current

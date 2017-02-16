@@ -371,13 +371,13 @@ class Audio:
 	async def volume(self, ctx, *, volume_setting : float = None):
 		'''
 		Change the volume of the current song
-		volume_setting: 0 - 200
+		volume_setting: 0 - 2000
 		'''
 		if volume_setting is None:
 			await self.bot.say(":sound: Current volume: {}".format(self.players[ctx.message.server.id].get_volume()))
 		elif self.players[ctx.message.server.id].set_volume(volume_setting):
-			if volume_setting > 200: volume_setting = 200.0
-			elif volume_setting < 0: volume_setting = 0.0
+			if volume_setting > 2000: volume_setting = 2000
+			elif volume_setting < 0: volume_setting = 0
 			await self.bot.say(":sound: Volume set to {}".format(volume_setting))
 		else:
 			await self.bot.reply(":no_entry: There's nothing playing right now.")
@@ -388,13 +388,13 @@ class Audio:
 	async def volume_default(self, ctx, *, volume_setting : float = None):
 		'''
 		Change the default volume for the current player
-		volume_setting: 0 - 200
+		volume_setting: 0 - 2000
 		'''
 		if volume_setting is None:
 			await self.bot.say(":sound: Current default volume: {}".format(self.players[ctx.message.server.id].default_volume))
 		else:
-			if volume_setting > 200: volume_setting = 200.0
-			elif volume_setting < 0: volume_setting = 0.0
+			if volume_setting > 2000: volume_setting = 2000
+			elif volume_setting < 0: volume_setting = 0
 			self.players[ctx.message.server.id].default_volume = volume_setting
 			await self.bot.say(":sound: Default volume set to {}".format(volume_setting))
 	
@@ -498,6 +498,5 @@ class Audio:
 			player.player.cancel()
 	
 	def save_voice_channels(self):
-		voice_channels = [[voice_client.channel.id, self.players[voice_client.server.id].text_channel.id] for voice_client in self.bot.voice_clients]
-		return voice_channels
+		return [[voice_client.channel.id, self.players[voice_client.server.id].text_channel.id] for voice_client in self.bot.voice_clients]
 
