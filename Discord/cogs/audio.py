@@ -209,9 +209,11 @@ class Audio:
 	@checks.is_voice_connected()
 	async def shuffle(self, ctx):
 		'''Shuffle the queue'''
-		response = await self.bot.reply(":twisted_rightwards_arrows: Shuffling...")
+		response, embed = await self.bot.embed_reply(":twisted_rightwards_arrows: Shuffling..")
 		await self.players[ctx.message.server.id].shuffle_queue()
-		await self.bot.edit_message(response, ":twisted_rightwards_arrows: Songs shuffled")
+		embed.description = ":twisted_rightwards_arrows: Shuffled songs"
+		await self.bot.edit_message(response, embed = embed)
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
