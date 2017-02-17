@@ -101,11 +101,12 @@ class Audio:
 		'''Resume the current song'''
 		resumed = self.players[ctx.message.server.id].resume()
 		if resumed:
-			await self.bot.say(":play_pause: Song resumed")
+			await self.bot.embed_reply(":play_pause: Resumed song")
 		elif resumed is False:
-			await self.bot.reply(":no_entry: There is no song to resume")
+			await self.bot.embed_reply(":no_entry: There is no song to resume")
 		elif resumed is None:
-			await self.bot.reply(":no_entry: The song is already playing")
+			await self.bot.embed_reply(":no_entry: The song is already playing")
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(pass_context = True, aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
 	@checks.not_forbidden()
