@@ -256,7 +256,8 @@ class Audio:
 	async def settext(self, ctx):
 		'''Set text channel for messages'''
 		self.players[ctx.message.server.id].text_channel = ctx.message.channel
-		await self.bot.say(":writing_hand::skin-tone-2: Text channel changed.")
+		await self.bot.embed_reply(":writing_hand::skin-tone-2: Changed text channel")
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
