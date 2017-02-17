@@ -161,16 +161,17 @@ class Audio:
 			await self.bot.embed_reply(":no_entry: There aren't that many ({}) songs in the queue".format(number))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(pass_context = True, aliases = ["repeat"], no_pm = True) # "restart"
+	@commands.command(pass_context = True, aliases = ["repeat"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def replay(self, ctx):
 		'''Repeat the current song'''
-		response = await self.bot.reply(":repeat_one: Restarting song...")
-		if (await self.players[ctx.message.server.id].replay()):
-			await self.bot.edit_message(response, ctx.message.author.mention + ": :repeat_one: Restarted song")
-		else:
-			await self.bot.edit_message(response, ctx.message.author.mention + ": :no_entry: There is nothing to replay")
+		# TODO: Add restart alias?
+		response, embed = await self.bot.embed_reply(":repeat_one: Restarting song..")
+		replayed = await self.players[ctx.message.server.id].replay()
+		embed.description = ":repeat_one: Restarted song" if replayed else ":no_entry: There is nothing to replay"
+		await self.bot.edit_message(response, embed = embed)
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
