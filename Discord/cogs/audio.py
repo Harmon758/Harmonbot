@@ -201,7 +201,8 @@ class Audio:
 	async def empty(self, ctx):
 		'''Empty the queue'''
 		await self.players[ctx.message.server.id].empty_queue()
-		await self.bot.say(":wastebasket: Queue emptied")
+		await self.bot.embed_reply(":wastebasket: Emptied queue")
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
