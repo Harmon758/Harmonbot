@@ -155,10 +155,11 @@ class Audio:
 		'''
 		songs = await self.players[ctx.message.server.id].skip_to_song(number)
 		if songs:
-			await self.bot.say(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
+			await self.bot.embed_reply(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
 			del songs
 		else:
-			await self.bot.reply(":no_entry: There's not that many songs in the queue")
+			await self.bot.embed_reply(":no_entry: There aren't that many ({}) songs in the queue".format(number))
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(pass_context = True, aliases = ["repeat"], no_pm = True) # "restart"
 	@checks.is_permitted()
