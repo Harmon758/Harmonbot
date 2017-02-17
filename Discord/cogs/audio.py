@@ -181,18 +181,19 @@ class Audio:
 		if "spotify" in song:
 			song = await self.spotify_to_youtube(song)
 			if not song:
-				await self.bot.reply(":warning: Error")
+				await self.bot.embed_reply(":warning: Error")
 				return
-		response = await self.bot.reply(":cd: Loading..")
+		response, embed = await self.bot.embed_reply(":cd: Loading..")
 		try:
 			title = await self.players[ctx.message.server.id].insert_song(song, ctx.message.author, position_number)
 		except Exception as e:
-			try:
-				await self.bot.edit_message(response, "{}: :warning: Error\n{}: {}".format(ctx.message.author.mention, type(e).__name__, e))
-			except discord.errors.HTTPException:
-				await self.bot.edit_message(response, "{}: :warning: Error".format(ctx.message.author.mention))
+			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
+			if len(embed.description) > 2048: embed.description = embed.description[:2044] + "...`"
 		else:
-			await self.bot.edit_message(response, "{}: :ballot_box_with_check: `{}` has been inserted into position #{} in the queue.".format(ctx.message.author.mention, title, position_number))
+			embed.description = ":ballot_box_with_check: `{}` has been inserted into position #{} in the queue".format(title, position_number)
+		finally:
+			await self.bot.edit_message(response, embed = embed)
+			await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(pass_context = True, aliases = ["clear"], no_pm = True)
 	@checks.is_permitted()
