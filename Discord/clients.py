@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-6.0"
+version = "0.35.0-6.1"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -154,6 +154,14 @@ class Bot(commands.Bot):
 		# return embed
 		embed = kwargs.get("embed")
 		return msg, embed
+	
+	async def attempt_delete_message(self, message):
+		try:
+			await self.delete_message(message)
+		except discord.errors.Forbidden:
+			pass
+		except discord.errors.NotFound:
+			pass
 	
 	async def process_commands(self, message):
 		_internal_channel = message.channel
