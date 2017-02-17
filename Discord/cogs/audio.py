@@ -383,13 +383,14 @@ class Audio:
 		volume_setting: 0 - 2000
 		'''
 		if volume_setting is None:
-			await self.bot.say(":sound: Current volume: {}".format(self.players[ctx.message.server.id].get_volume()))
+			await self.bot.embed_reply(":sound: Current volume: {:g}".format(self.players[ctx.message.server.id].get_volume()))
 		elif self.players[ctx.message.server.id].set_volume(volume_setting):
 			if volume_setting > 2000: volume_setting = 2000
 			elif volume_setting < 0: volume_setting = 0
-			await self.bot.say(":sound: Volume set to {}".format(volume_setting))
+			await self.bot.embed_reply(":sound: Set volume to {:g}".format(volume_setting))
 		else:
-			await self.bot.reply(":no_entry: There's nothing playing right now.")
+			await self.bot.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@volume.command(name = "default", pass_context = True, no_pm = True)
 	@checks.is_permitted()
