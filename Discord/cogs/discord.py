@@ -151,13 +151,21 @@ class Discord:
 				new_colour.value = color_value
 				await self.bot.edit_role(ctx.message.server, role_to_change, colour = new_colour)
 	
-	@commands.command(pass_context = True)
+	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin(self, ctx, message_id : int):
 		'''Pin message by message ID'''
 		message = await self.bot.get_message(ctx.message.channel, str(message_id))
 		await self.bot.pin_message(message)
 		await self.bot.reply("Message pinned.")
+	
+	@pin.command(name = "first", pass_context = True)
+	@checks.has_permissions_and_capability(manage_messages = True)
+	async def pin_first(self, ctx):
+		'''Pin first message'''
+		message = await self.bot.logs_from(ctx.message.channel, after = ctx.message.channel, limit = 1).iterate()
+		await self.bot.pin_message(message)
+		await self.bot.embed_reply(":pushpin: Pinned first message in this channel")
 	
 	@commands.command(pass_context = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
