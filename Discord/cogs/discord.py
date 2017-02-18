@@ -157,7 +157,7 @@ class Discord:
 		'''Pin message by message ID'''
 		message = await self.bot.get_message(ctx.message.channel, str(message_id))
 		await self.bot.pin_message(message)
-		await self.bot.reply("Message pinned.")
+		await self.bot.embed_reply(":pushpin: Pinned message")
 	
 	@pin.command(name = "first", pass_context = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
@@ -173,7 +173,7 @@ class Discord:
 		'''Unpin message by message ID'''
 		message = await self.bot.get_message(ctx.message.channel, str(message_id))
 		await self.bot.unpin_message(message)
-		await self.bot.reply("Message unpinned.")
+		await self.bot.embed_reply(":wastebasket: Unpinned message")
 	
 	@commands.command(pass_context = True, aliases = ["rolecolour"], no_pm = True)
 	@checks.not_forbidden()
