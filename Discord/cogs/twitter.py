@@ -118,7 +118,7 @@ class Twitter:
 			self.stream_listener.remove_feed(ctx.message.channel, handle)
 			await self.bot.embed_reply("The handle, `{}`, has been removed from this channel.".format(handle))
 
-	@twitter.command(aliases = ["handle", "feeds", "feed"], pass_context = True)
+	@twitter.command(aliases = ["handle", "feeds", "feed", "list"], pass_context = True)
 	@checks.not_forbidden()
 	async def handles(self, ctx):
 		'''Show handles being followed in this channel'''
