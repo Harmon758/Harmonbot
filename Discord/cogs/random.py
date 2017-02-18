@@ -147,6 +147,7 @@ class Random:
 		AdS^H | ^H - return highest H rolls          [10d6^4 | 2d7^1]
 		AdSvL | vL - return lowest L rolls           [15d7v2 | 8d9v2]
 		'''
+		# TODO: Add documentation on arithmetic/basic integer operations
 		if 'd' not in input:
 			input = 'd' + input
 		with multiprocessing.Pool(1) as pool:
@@ -154,7 +155,10 @@ class Random:
 			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
 			try:
 				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
-				await self.bot.embed_reply(", ".join(str(roll) for roll in result))
+				if type(result) is int:
+					await self.bot.embed_reply(result)
+				else:
+					await self.bot.embed_reply(", ".join(str(roll) for roll in result))
 			except discord.errors.HTTPException:
 				await self.bot.embed_reply(":no_entry: Output too long")
 			except pyparsing.ParseException:
