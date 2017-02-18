@@ -68,7 +68,7 @@ class Twitter:
 		self.task.cancel()
 	
 	@commands.group(invoke_without_command = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def twitter(self):
 		'''Twitter'''
 		pass
@@ -85,7 +85,7 @@ class Twitter:
 		await self.bot.say(embed = embed)
 	
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"], pass_context = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def twitter_add(self, ctx, handle : str):
 		'''Add a handle to a channel'''
 		if handle in self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []):
@@ -105,7 +105,7 @@ class Twitter:
 		await self.bot.embed_reply("The handle, `{}`, has been added to this channel".format(handle))
 	
 	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"], pass_context = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def twitter_remove(self, ctx, handle : str):
 		'''Remove a handle from a channel'''
 		try:
