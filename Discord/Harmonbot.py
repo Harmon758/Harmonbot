@@ -261,9 +261,9 @@ if __name__ == "__main__":
 				await ctx.bot.send_message(ctx.message.channel, "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions))
 				return
 			embed.description = "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions)
-		elif isinstance(error, errors.SO_VoiceNotConnected):
+		elif isinstance(error, errors.PermittedVoiceNotConnected):
 			embed.description = "I'm not in a voice channel\nPlease use `{}join` first".format(ctx.prefix)
-		elif isinstance(error, errors.NSO_VoiceNotConnected):
+		elif isinstance(error, errors.NotPermittedVoiceNotConnected):
 			embed.description = "I'm not in a voice channel\nPlease ask someone with permission to use `{}join` first".format(ctx.prefix)
 		elif isinstance(error, commands.errors.NoPrivateMessage):
 			embed.description = "Please use that command in a server"

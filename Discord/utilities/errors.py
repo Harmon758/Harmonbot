@@ -10,10 +10,10 @@ class NotServerOwner(CommandError):
 class VoiceNotConnected(CommandError):
 	pass
 
-class SO_VoiceNotConnected(VoiceNotConnected):
+class PermittedVoiceNotConnected(VoiceNotConnected):
 	pass
 
-class NSO_VoiceNotConnected(VoiceNotConnected):
+class NotPermittedVoiceNotConnected(VoiceNotConnected):
 	pass
 
 class MissingPermissions(CommandError):
@@ -28,3 +28,4 @@ class NotPermitted(CommandError):
 
 class LichessUserNotFound(CommandError):
 	pass
+
