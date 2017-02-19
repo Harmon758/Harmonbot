@@ -19,7 +19,7 @@ from modules import utilities
 from modules import adventure
 #from modules import gofish
 from modules.chess import chess_match
-from modules.maze import maze
+from modules import maze
 from modules import war
 from utilities import checks
 import clients
@@ -718,7 +718,7 @@ class Games:
 		if ctx.message.channel.id in self.mazes:
 			await self.bot.embed_reply(":no_entry: There's already a maze game going on")
 			return
-		self.mazes[ctx.message.channel.id] = maze(width, height, random_start = random_start, random_end = random_end)
+		self.mazes[ctx.message.channel.id] = maze.Maze(width, height, random_start = random_start, random_end = random_end)
 		maze_instance = self.mazes[ctx.message.channel.id]
 		maze_message, embed = await self.bot.embed_reply(clients.code_block.format(maze_instance.print_visible()))
 		'''

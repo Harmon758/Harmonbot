@@ -11,8 +11,8 @@ import random
 import clients
 import credentials
 from utilities import checks
+from modules import maze
 from modules import utilities
-from modules.maze import maze
 
 def setup(bot):
 	bot.add_cog(Reactions(bot))
@@ -108,7 +108,7 @@ class Reactions:
 		height: 2 - 100
 		React with an arrow key to move
 		'''
-		maze_instance = maze(width, height, random_start = random_start, random_end = random_end)
+		maze_instance = maze.Maze(width, height, random_start = random_start, random_end = random_end)
 		maze_message, embed = await self.bot.embed_reply(clients.code_block.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
 		self.mazes[maze_message.id] = maze_instance
 		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):

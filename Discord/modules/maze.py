@@ -1,7 +1,7 @@
 
 from random import shuffle, randint
 
-class maze:
+class Maze:
 
 	def __init__(self, columns, rows, random_start = False, random_end = False):
 		self.columns = 2 if columns < 2 else 100 if columns > 100 else columns
