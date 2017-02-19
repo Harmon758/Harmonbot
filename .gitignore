@@ -3,6 +3,9 @@ _credentials.py
 Harmonbot_Listener_credentials.json
 data/
 
+# mIRC/mSL (and other) backup files
+*.bak
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
