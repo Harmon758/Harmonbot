@@ -1,5 +1,6 @@
 
 import math
+import sys
 
 def hextoint(hex):
 	if hex.startswith('#'):
@@ -238,7 +239,8 @@ temperatures_formatted = {'f' : "°F", 'c': "°C", 'k' : 'K', 'r' : "°R" , "de"
 
 def temperatureconversion(value, unit1, unit2):
 	if unit1 in temperatures and unit2 in temperatures:
-		return eval(unit1 + "to" + unit2 + '(' + str(value) + ')'), temperatures_formatted[unit1], temperatures_formatted[unit2]
+		conversion = getattr(sys.modules[__name__], "{}to{}".format(unit1, unit2))
+		return conversion(value), temperatures_formatted[unit1], temperatures_formatted[unit2]
 	else:
 		return None, unit1, unit2
 
