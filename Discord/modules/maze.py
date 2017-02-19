@@ -99,11 +99,11 @@ class maze:
 	def print_visible(self):
 		if self.rows <= 10 and self.columns <= 10:
 			return '\n'.join(self.visible)
-		start_row = 10 * (self.row // 10)
-		start_column = 10 * (self.column // 10)
+		start_row = self.row - self.row % 10
+		start_column = self.column - self.column % 10
 		visible = self.visible[2 * start_row:2 * start_row + 21]
-		for row in range(len(visible)):
-			visible[row] = visible[row][4 * start_column:4 * start_column + 41]
+		for row_number, row in enumerate(visible):
+			visible[row_number] = row[4 * start_column:4 * start_column + 41]
 		return '\n'.join(visible)
 	
 	def reached_end(self):
