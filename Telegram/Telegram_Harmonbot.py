@@ -4,7 +4,7 @@ import telegram.ext
 
 import credentials
 
-version = "0.1.0"
+version = "0.1.1"
 
 bot = telegram.Bot(token = credentials.telegram_harmonbot_token)
 updater = telegram.ext.Updater(token = credentials.telegram_harmonbot_token)
