@@ -1,0 +1,13 @@
+[aliases]
+n0=/op /mode # +ooo $$1 $2 $3
+n1=/dop /mode # -ooo $$1 $2 $3
+n2=/j /join #$$1 $2-
+n3=/p /part #
+n4=/n /names #$$1
+n5=/w /whois $$1
+n6=/k /kick # $$1 $2-
+n7=/q /query $$1
+n8=/send /dcc send $1 $2
+n9=/chat /dcc chat $1
+n10=/ping /ctcp $$1 ping
+n11=/s /server $$1-
