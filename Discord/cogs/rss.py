@@ -30,26 +30,26 @@ class RSS:
 		self.task.cancel()
 	
 	@commands.group(invoke_without_command = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def rss(self):
 		'''RSS'''
 		pass
 	
 	@rss.command(name = "add", aliases = ["addfeed", "feedadd"], pass_context = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
 		channel = discord.utils.find(lambda c: c["id"] == ctx.message.channel.id, self.feeds_info["channels"])
 		if channel:
 			channel["feeds"].append(url)
 		else:
-			self.feeds_info["channels"].append({"name" : ctx.message.channel.name, "id" : ctx.message.channel.id, "feeds" : [url]})
+			self.feeds_info["channels"].append({"name": ctx.message.channel.name, "id": ctx.message.channel.id, "feeds": [url]})
 		with open("data/rss_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		await self.bot.embed_reply("The feed, {}, has been added to this channel".format(url))
 
 	@rss.command(name = "remove", aliases = ["delete", "removefeed", "feedremove", "deletefeed", "feeddelete"], pass_context = True)
-	@checks.is_server_owner()
+	@checks.is_permitted()
 	async def rss_remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
 		for channel in self.feeds_info["channels"]:
