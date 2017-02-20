@@ -113,7 +113,7 @@ class Search:
 		'''Google search'''
 		await self.bot.embed_reply("[Google search for \"{}\"](https://www.google.com/search?q={})".format(search, search.replace(' ', '+')))
 	
-	@commands.command()
+	@commands.command(aliases = ["im_feeling_lucky"])
 	@checks.not_forbidden()
 	async def imfeelinglucky(self, *search : str):
 		'''First Google result of a search'''
@@ -169,7 +169,13 @@ class Search:
 		'''Let Me Yahoo That For You'''
 		await self.bot.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
 	
-	@commands.group(aliases = ["wa"], pass_context = True, invoke_without_command = True)
+	@commands.command(aliases = ["wiki"])
+	@checks.not_forbidden()
+	async def wikipedia(self, *search : str):
+		'''Look something up on Wikipedia'''
+		await self.bot.reply("https://en.wikipedia.org/wiki/{}".format("_".join(search)))
+	
+	@commands.group(aliases = ["wa", "wolfram_alpha"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def wolframalpha(self, ctx, *, search : str):
 		'''

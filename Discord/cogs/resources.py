@@ -914,12 +914,6 @@ class Resources:
 			else:
 				await self.bot.reply("I don't know what that is.")
 	
-	@commands.command()
-	@checks.not_forbidden()
-	async def wiki(self, *search : str):
-		'''Look something up on Wikipedia'''
-		await self.bot.reply("https://en.wikipedia.org/wiki/{0}".format("_".join(search)))
-	
 	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def xkcd(self, ctx, number : int = 0):
