@@ -87,9 +87,9 @@ class Twitter:
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"], pass_context = True)
 	@checks.is_permitted()
 	async def twitter_add(self, ctx, handle : str):
-		'''Add a handle to a channel'''
+		'''Add a Twitter handle to a text channel'''
 		if handle in self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []):
-			await self.bot.embed_reply(":no_entry: This channel is already following that handle")
+			await self.bot.embed_reply(":no_entry: This text channel is already following that Twitter handle")
 			return
 		try:
 			self.stream_listener.add_feed(ctx.message.channel, handle)
@@ -102,26 +102,26 @@ class Twitter:
 			self.feeds_info["channels"][ctx.message.channel.id] = {"name" : ctx.message.channel.name, "handles" : [handle]}
 		with open("data/twitter_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
-		await self.bot.embed_reply("The handle, `{}`, has been added to this channel".format(handle))
+		await self.bot.embed_reply("Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle))
 	
 	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"], pass_context = True)
 	@checks.is_permitted()
 	async def twitter_remove(self, ctx, handle : str):
-		'''Remove a handle from a channel'''
+		'''Remove a Twitter handle from a text channel'''
 		try:
 			self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []).remove(handle)
 		except ValueError:
-			await self.bot.embed_reply(":no_entry: This channel isn't following that handle")
+			await self.bot.embed_reply(":no_entry: This text channel isn't following that Twitter handle")
 		else:
 			with open("data/twitter_feeds.json", 'w') as feeds_file:
 				json.dump(self.feeds_info, feeds_file, indent = 4)
 			self.stream_listener.remove_feed(ctx.message.channel, handle)
-			await self.bot.embed_reply("The handle, `{}`, has been removed from this channel.".format(handle))
+			await self.bot.embed_reply("Removed the Twitter handle, [`{0}`](https://twitter.com/{0}), from this text channel.".format(handle))
 
 	@twitter.command(aliases = ["handle", "feeds", "feed", "list"], pass_context = True)
 	@checks.not_forbidden()
 	async def handles(self, ctx):
-		'''Show handles being followed in this channel'''
+		'''Show Twitter handles being followed in a text channel'''
 		await self.bot.embed_reply('\n'.join(self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", [])))
 	
 	async def start_twitter_feeds(self):
