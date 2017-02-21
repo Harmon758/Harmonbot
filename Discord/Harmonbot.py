@@ -55,26 +55,12 @@ if __name__ == "__main__":
 		utilities.create_file("server_data/{}/{}".format(server.id, server.name.replace('/', '-')))
 		utilities.create_file("server_data/{}/settings".format(server.id), content = {"respond_to_bots": False})
 		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
-		server_info = "```Name: " + server.name + "\n"
-		server_info += "ID: " + server.id + "\n"
-		server_info += "Owner: " + str(server.owner) + "\n"
-		server_info += "Server Region: " + str(server.region) + "\n"
-		server_info += "Members: " + str(server.member_count) + "\n"
-		server_info += "Created at: " + str(server.created_at) + "\n```"
-		server_info += "Icon: " + server.icon_url
-		await client.send_message(me, "Joined Server: \n" + server_info)
+		await client.send_embed(me, None, title = "Joined Server", timestamp = server.created_at, thumbnail_url = server.icon_url, fields = (("Name", server.name), ("ID", server.id), ("Owner", str(server.owner)), ("Members", str(server.member_count)), ("Server Region", str(server.region))))
 	
 	@client.event
 	async def on_server_remove(server):
 		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
-		server_info = "```Name: " + server.name + "\n"
-		server_info += "ID: " + server.id + "\n"
-		server_info += "Owner: " + str(server.owner) + "\n"
-		server_info += "Server Region: " + str(server.region) + "\n"
-		server_info += "Members: " + str(server.member_count) + "\n"
-		server_info += "Created at: " + str(server.created_at) + "\n```"
-		server_info += "Icon: " + server.icon_url
-		await client.send_message(me, "Left Server: \n" + server_info)
+		await client.send_embed(me, None, title = "Left Server", timestamp = server.created_at, thumbnail_url = server.icon_url, fields = (("Name", server.name), ("ID", server.id), ("Owner", str(server.owner)), ("Members", str(server.member_count)), ("Server Region", str(server.region))))
 	
 	@client.event
 	async def on_resumed():
