@@ -23,7 +23,6 @@ class Twitch:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		## self.streams_online = []
 		self.recently_announced = {}
 		utilities.create_file("twitch_streams", content = {"channels" : {}})
 		with open("data/twitch_streams.json", 'r') as streams_file:
@@ -50,6 +49,7 @@ class Twitch:
 	async def twitch_add_game(self, ctx, *, game : str):
 		'''Add a Twitch game to follow'''
 		channel = self.streams_info["channels"].get(ctx.message.channel.id)
+		# TODO: Add documentation on 100 limit
 		# TODO: Check if already following
 		if channel:
 			channel["games"].append(game)
@@ -65,6 +65,7 @@ class Twitch:
 	async def twitch_add_keyword(self, ctx, *, keyword : str):
 		'''Add a Twitch keyword(s) search to follow'''
 		channel = self.streams_info["channels"].get(ctx.message.channel.id)
+		# TODO: Add documentation on 100 limit
 		# TODO: Check if already following
 		if channel:
 			channel["keywords"].append(keyword)
@@ -157,31 +158,26 @@ class Twitch:
 		await self.bot.wait_until_ready()
 		while not self.bot.is_closed:
 			try:
-				## new_streams_online = []
 				# Games
 				games = set(itertools.chain(*[channel["games"] for channel in self.streams_info["channels"].values()]))
 				for game in games:
-					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?game={}&client_id={}".format(game.replace(' ', '+'), credentials.twitch_client_id)) as resp: # 100 limit?
+					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?game={}&client_id={}&limit=100".format(game.replace(' ', '+'), credentials.twitch_client_id)) as resp:
 						games_data = await resp.json()
 					await self.process_twitch_streams(games_data["streams"], "games", match = game)
-					## new_streams_online += [stream["channel"]["name"] for stream in games_data["streams"]]
 					await asyncio.sleep(1)
 				# Keywords
 				keywords = set(itertools.chain(*[channel["keywords"] for channel in self.streams_info["channels"].values()]))
 				for keyword in keywords:
-					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/search/streams?q={}&client_id={}".format(keyword.replace(' ', '+'), credentials.twitch_client_id)) as resp: # 100 limit?
+					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/search/streams?q={}&client_id={}&limit=100".format(keyword.replace(' ', '+'), credentials.twitch_client_id)) as resp:
 						keywords_data = await resp.json()
 					await self.process_twitch_streams(keywords_data["streams"], "keywords", match = keyword)
-					## new_streams_online += [stream["channel"]["name"] for stream in keywords_data["streams"]]
 					await asyncio.sleep(1)
 				# Streams
 				streams = set(itertools.chain(*[channel["streams"] for channel in self.streams_info["channels"].values()]))
-				async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?channel={}&client_id={}".format(','.join(streams), credentials.twitch_client_id)) as resp: # 100 limit?
+				async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?channel={}&client_id={}&limit=100".format(','.join(streams), credentials.twitch_client_id)) as resp:
+					# TODO: Handle >100 streams
 					streams_data = await resp.json()
 				await self.process_twitch_streams(streams_data.get("streams", []), "streams")
-				## Save streams online
-				## new_streams_online += [stream["channel"]["name"] for stream in streams_data["streams"]]
-				## self.streams_online = new_streams_online
 				# Wait + Update recently announced
 				await asyncio.sleep(20)
 				for stream, start_time in self.recently_announced.copy().items():
@@ -196,7 +192,6 @@ class Twitch:
 	
 	async def process_twitch_streams(self, streams, type, match = None):
 		for stream in streams:
-			## if stream["channel"]["name"] not in self.streams_online and 
 			if (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(stream["created_at"])).total_seconds() <= 300 and stream["channel"]["name"] not in self.recently_announced:
 				self.recently_announced[stream["channel"]["name"]] = dateutil.parser.parse(stream["created_at"])
 				for channel_id, channel_info in self.streams_info["channels"].items():
