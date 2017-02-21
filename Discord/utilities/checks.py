@@ -40,7 +40,7 @@ def is_voice_connected():
 	
 	def predicate(ctx):
 		if not is_voice_connected_check(ctx):
-			if utilities.get_permission(ctx, "join", id = ctx.message.author.id) or is_server_owner_check(ctx):
+			if is_server_owner_check(ctx) or utilities.get_permission(ctx, "join", id = ctx.message.author.id):
 				raise errors.PermittedVoiceNotConnected
 			else:
 				raise errors.NotPermittedVoiceNotConnected
