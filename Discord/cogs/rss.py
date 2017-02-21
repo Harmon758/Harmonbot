@@ -8,11 +8,14 @@ import datetime
 import dateutil.parser
 import feedparser
 import json
+import sys
 import time
+import traceback
 
-from modules import utilities
-from utilities import checks
 import clients
+from utilities import checks
+from modules import logging
+from modules import utilities
 
 def setup(bot):
 	bot.add_cog(RSS(bot))
@@ -71,9 +74,9 @@ class RSS:
 				await self.bot.embed_reply("\n".join(channel["feeds"]))
 	
 	async def check_rss_feeds(self):
-		try:
-			await self.bot.wait_until_ready()
-			while not self.bot.is_closed:
+		await self.bot.wait_until_ready()
+		while not self.bot.is_closed:
+			try:
 				start = time.time()
 				for channel in self.feeds_info["channels"]:
 					for feed in channel["feeds"]:
@@ -107,10 +110,12 @@ class RSS:
 									# print(feed)
 									pass
 							except Exception as e:
-								print("RSS Exception: " + str(e))
+								print("Exception in RSS Task", file = sys.stderr)
+								traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
+								logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				elapsed = time.time() - start
 				# print("Checked feeds in: {0} sec.".format(str(elapsed)))
 				await asyncio.sleep(60 - elapsed)
-		except asyncio.CancelledError:
-			return
+			except asyncio.CancelledError:
+				return
 
