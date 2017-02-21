@@ -38,7 +38,7 @@ class Random:
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			utilities.add_as_subcommand(self, command, parent, "fact")
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
+		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"), (self.uesp, "Search.uesp"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
 	
@@ -89,6 +89,15 @@ class Random:
 		longitude = random.uniform(-180, 180)
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={},{}".format(latitude, longitude)
 		await self.bot.embed_reply(None, image_url = image_url)
+	
+	@random.command()
+	@checks.not_forbidden()
+	async def uesp(self):
+		'''
+		Random UESP page
+		[UESP](http://uesp.net/wiki/Main_Page)
+		'''
+		await self.bot.embed_reply(None, title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random")
 	
 	@random.command(aliases = ["wiki"])
 	@checks.not_forbidden()

@@ -169,7 +169,7 @@ class Search:
 		'''Let Me Yahoo That For You'''
 		await self.bot.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def uesp(self, *search : str):
 		'''
