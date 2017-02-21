@@ -98,7 +98,7 @@ class RSS:
 										if len(description) > 2048: description = description[:2045] + "..."
 									title = item.get("title")
 									if len(title) > 256: title = title[:253] + "..."
-									embed = discord.Embed(title = title, url = item.link, description = description, timestamp = datetime.datetime.utcnow(), color = clients.bot_color) # timestamp = published_time ?
+									embed = discord.Embed(title = title, url = item.link, description = description, timestamp = datetime.datetime.utcnow(), color = clients.rss_color) # timestamp = published_time ?
 									embed.set_footer(text = feed_info.feed.title, icon_url = feed_info.feed.get("icon", discord.Embed.Empty))
 									text_channel = self.bot.get_channel(channel["id"])
 									if text_channel:
