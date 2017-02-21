@@ -55,15 +55,14 @@ class RSS:
 	@checks.is_permitted()
 	async def rss_remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
-		for channel in self.feeds_info["channels"]:
-			if ctx.message.channel.id == channel["id"]:
-				for feed in channel["feeds"]:
-					if feed == url:
-						channel["feeds"].remove(feed)
-						with open("data/rss_feeds.json", 'w') as feeds_file:
-							json.dump(self.feeds_info, feeds_file, indent = 4)
-						await self.bot.embed_reply("The feed, {}, has been removed from this channel".format(url))
-						return
+		channel = discord.utils.find(lambda c: c["id"] == ctx.message.channel.id, self.feeds_info["channels"])
+		if not channel or url not in channel["feeds"]:
+			await self.bot.embed_reply(":no_entry: This channel isn't following that feed")
+			return
+		channel["feeds"].remove(url)
+		with open("data/rss_feeds.json", 'w') as feeds_file:
+			json.dump(self.feeds_info, feeds_file, indent = 4)
+		await self.bot.embed_reply("The feed, {}, has been removed from this channel".format(url))
 
 	@rss.command(aliases = ["feed"], pass_context = True)
 	@checks.not_forbidden()
