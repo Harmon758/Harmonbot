@@ -169,6 +169,16 @@ class Search:
 		'''Let Me Yahoo That For You'''
 		await self.bot.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def uesp(self, *search : str):
+		'''
+		Look something up on the Unofficial Elder Scrolls Pages
+		[UESP](http://uesp.net/wiki/Main_Page)
+		'''
+		# TODO: Improve parsing?
+		await self.bot.embed_reply(None, title = "UESP {}".format(' '.join(search)), title_url = "http://uesp.net/wiki/{}".format('_'.join(search)))
+	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def wikipedia(self, *search : str):
