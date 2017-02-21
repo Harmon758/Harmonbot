@@ -170,7 +170,7 @@ class Twitch:
 				for keyword in keywords:
 					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/search/streams?q={}&client_id={}&limit=100".format(keyword.replace(' ', '+'), credentials.twitch_client_id)) as resp:
 						keywords_data = await resp.json()
-					await self.process_twitch_streams(keywords_data["streams"], "keywords", match = keyword)
+					await self.process_twitch_streams(keywords_data.get("streams", []), "keywords", match = keyword)
 					await asyncio.sleep(1)
 				# Streams
 				streams = set(itertools.chain(*[channel["streams"] for channel in self.streams_info["channels"].values()]))
