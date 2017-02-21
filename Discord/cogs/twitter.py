@@ -5,10 +5,10 @@ from discord.ext import commands
 import json
 import tweepy
 
-import credentials
-from modules import utilities
-from utilities import checks
 import clients
+import credentials
+from utilities import checks
+from modules import utilities
 
 def setup(bot):
 	bot.add_cog(Twitter(bot))
@@ -43,7 +43,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 		if status.user.id_str in set([id for feeds in self.feeds.values() for id in feeds]):
 			for channel_id, channel_feeds in self.feeds.items():
 				if status.user.id_str in channel_feeds:
-					embed = discord.Embed(title = '@' + status.user.screen_name, url = "https://twitter.com/{}/status/{}".format(status.user.screen_name, status.id), description = status.text, timestamp = status.created_at, color = 0x00ACED)
+					embed = discord.Embed(title = '@' + status.user.screen_name, url = "https://twitter.com/{}/status/{}".format(status.user.screen_name, status.id), description = status.text, timestamp = status.created_at, color = clients.twitter_color)
 					embed.set_footer(text = status.user.name, icon_url = status.user.profile_image_url)
 					channel = self.bot.get_channel(channel_id)
 					if channel:

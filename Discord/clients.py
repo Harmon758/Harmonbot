@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-6.30"
+version = "0.35.0-6.31"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -31,6 +31,7 @@ fake_ip = "nice try"
 fake_location = "Fort Yukon, Alaska"
 bot_color = 0x738bd7
 rss_color = 0xfa9b39 # f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
+twitter_color = 0x00ACED
 wait_time = 15.0
 delete_limit = 10000
 code_block = "```\n{}\n```"
