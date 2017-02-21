@@ -169,11 +169,11 @@ class Search:
 		'''Let Me Yahoo That For You'''
 		await self.bot.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
 	
-	@commands.command(aliases = ["wiki"])
+	@commands.group(aliases = ["wiki"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def wikipedia(self, *search : str):
 		'''Look something up on Wikipedia'''
-		await self.bot.reply("https://en.wikipedia.org/wiki/{}".format("_".join(search)))
+		await self.bot.reply("https://en.wikipedia.org/wiki/{}".format('_'.join(search)))
 	
 	@commands.group(aliases = ["wa", "wolfram_alpha"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()

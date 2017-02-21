@@ -38,7 +38,7 @@ class Random:
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			utilities.add_as_subcommand(self, command, parent, "fact")
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"), (self.xkcd, "Resources.xkcd"))
+		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
 	
@@ -89,6 +89,12 @@ class Random:
 		longitude = random.uniform(-180, 180)
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={},{}".format(latitude, longitude)
 		await self.bot.embed_reply(None, image_url = image_url)
+	
+	@random.command(aliases = ["wiki"])
+	@checks.not_forbidden()
+	async def wikipedia(self):
+		'''Random Wikipedia article'''
+		await self.bot.embed_reply(None, title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")
 	
 	@random.command(pass_context = True)
 	@checks.not_forbidden()
