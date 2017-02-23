@@ -152,7 +152,7 @@ class Twitch:
 	@checks.not_forbidden()
 	async def twitch_channels(self, ctx):
 		'''Show Twitch channels being followed in this text channel'''
-		await self.bot.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.message.channel.id, {}).get("streams", [])))
+		await self.bot.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(ctx.message.channel.id, {}).get("streams", []))))
 	
 	async def check_twitch_streams(self):
 		await self.bot.wait_until_ready()
