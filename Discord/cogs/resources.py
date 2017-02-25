@@ -7,6 +7,7 @@ import datetime
 import imgurpython
 import isodate
 import json
+import pyowm.exceptions
 # import spotipy
 import urllib
 
@@ -833,7 +834,15 @@ class Resources:
 	async def weather(self, ctx, *, location : str):
 		'''Weather'''
 		# wunderground?
-		observation = clients.owm_client.weather_at_place(location)
+		try:
+			observation = clients.owm_client.weather_at_place(location)
+		except pyowm.exceptions.not_found_error.NotFoundError:
+			await self.bot.embed_reply(":no_entry: Location not found")
+			return
+		except pyowm.exceptions.api_call_error.BadGatewayError:
+			await self.bot.embed_reply(":no_entry: Error")
+			# Add exception message to response when pyowm issue (https://github.com/csparpa/pyowm/issues/176) fixed
+			return
 		location = observation.get_location()
 		weather = observation.get_weather()
 		condition = weather.get_status()
