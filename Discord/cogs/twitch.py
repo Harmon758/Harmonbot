@@ -189,6 +189,7 @@ class Twitch:
 				print("Exception in Twitch Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 				logging.errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
+				await asyncio.sleep(60)
 	
 	async def process_twitch_streams(self, streams, type, match = None):
 		for stream in streams:
