@@ -129,7 +129,7 @@ class Twitch:
 		'''Remove a Twitch channel being followed'''
 		channel = self.streams_info["channels"].get(ctx.message.channel.id)
 		if not channel or username not in channel["streams"]:
-			await self.bot.embed_reply(":no_entry: This text channel isn't following that stream")
+			await self.bot.embed_reply(":no_entry: This text channel isn't following that Twitch channel")
 			return
 		channel["streams"].remove(username)
 		with open("data/twitch_streams.json", 'w') as streams_file:
@@ -199,7 +199,7 @@ class Twitch:
 					if match in channel_info[type] or \
 					not match and stream["channel"]["name"] in [s.lower() for s in channel_info[type]]:
 						embed = discord.Embed(title = stream["channel"]["status"], description = "{0[channel][display_name]} is playing {0[game]}".format(stream) if stream["channel"]["game"] else discord.Embed.Empty, url = stream["channel"]["url"], timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), color = clients.twitch_color)
-						embed.set_author(name = "{} just went live on Twitch".format(stream["channel"]["display_name"]), icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png")
+						embed.set_author(name = "{} just went live on Twitch".format(stream["channel"]["display_name"]), icon_url = clients.twitch_icon_url)
 						if stream["channel"]["logo"]: embed.set_thumbnail(url = stream["channel"]["logo"])
 						embed.add_field(name = "Followers", value = stream["channel"]["followers"])
 						embed.add_field(name = "Views", value = stream["channel"]["views"])
