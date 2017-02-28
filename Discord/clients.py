@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-7.13"
+version = "0.35.0-7.14"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -44,7 +44,6 @@ session_commands_executed = 0
 session_commands_usage = {}
 aiohttp_session = aiohttp.ClientSession()
 cleverbot_instance = cleverbot.Cleverbot("Harmonbot")
-imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
 inflect_engine = inflect.engine()
 owm_client = pyowm.OWM(credentials.owm_api_key)
 twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)
@@ -57,6 +56,11 @@ wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
 application_info = None
 harmonbot_listener = None
 sys.setrecursionlimit(5000)
+
+try:
+	imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
+except imgurpython.helpers.error.ImgurClientError as e:
+	print("Discord Harmonbot: Failed to load Imgur Client: {}".format(e))
 
 class Bot(commands.Bot):
 	
