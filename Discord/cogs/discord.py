@@ -101,6 +101,8 @@ class Discord:
 		await self.bot.delete_message(ctx.message)
 		await self.bot.purge_from(ctx.message.channel, limit = clients.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
 	
+	# TODO: delete mentions, invites?
+	
 	async def delete_number(self, ctx, number, check, delete_command = True):
 		if number <= 0:
 			await self.bot.embed_reply(":no_entry: Syntax error")
@@ -343,23 +345,23 @@ class Discord:
 		'''Information about a server'''
 		server = ctx.message.server
 		embed = discord.Embed(title = server.name, url = server.icon_url, timestamp = server.created_at, color = clients.bot_color)
-		avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
 		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
 		embed.set_thumbnail(url = server.icon_url)
 		embed.add_field(name = "Owner", value = server.owner.mention)
 		embed.add_field(name = "ID", value = server.id)
 		embed.add_field(name = "Region", value = str(server.region))
+		embed.add_field(name = "Roles", value = len(server.roles))
 		channel_types = [c.type for c in server.channels]
 		text_count = channel_types.count(discord.ChannelType.text)
 		voice_count = channel_types.count(discord.ChannelType.voice)
 		embed.add_field(name = "Channels", value = "{} text\n{} voice".format(text_count, voice_count))
-		embed.add_field(name = "Members", value = server.member_count)
-		embed.add_field(name = "Roles", value = len(server.roles))
-		embed.add_field(name = "Default Channel", value = server.default_channel.mention)
+		embed.add_field(name = "Members", value = "{}\n({} bots)".format(server.member_count, sum(m.bot for m in server.members)))
 		embed.add_field(name = "AFK Timeout", value = "{:g} min.".format(server.afk_timeout / 60))
 		embed.add_field(name = "AFK Channel", value = str(server.afk_channel))
 		embed.add_field(name = "Verification Level", value = str(server.verification_level).capitalize())
 		embed.add_field(name = "2FA Requirement", value = bool(server.mfa_level))
+		embed.add_field(name = "Default Channel", value = server.default_channel.mention)
 		if server.emojis:
 			emojis = [str(emoji) for emoji in server.emojis]
 			if len(' '.join(emojis)) <= 1024:
