@@ -131,7 +131,7 @@ class Tools:
 		except Exception as e:
 			await self.bot.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
 	
-	@commands.command(aliases = ["choice"])
+	@commands.command(aliases = ["choice", "pick"])
 	@checks.not_forbidden()
 	async def choose(self, *choices : str):
 		'''
@@ -290,7 +290,7 @@ class Tools:
 	
 	@encode.command(name = "adler32", aliases = ["adler-32"])
 	async def encode_adler32(self, *, message : str):
-		'''Computer Adler-32 checksum'''
+		'''Compute Adler-32 checksum'''
 		await self.bot.embed_reply(zlib.adler32(message.encode("utf-8")))
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
@@ -306,7 +306,7 @@ class Tools:
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
 	async def encode_crc32(self, *, message : str):
-		'''Computer CRC32 checksum'''
+		'''Compute CRC32 checksum'''
 		await self.bot.embed_reply(zlib.crc32(message.encode("utf-8")))
 	
 	@encode.group(name = "gost", aliases = ["гост"])
