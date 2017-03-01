@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-7.18"
+version = "0.35.0-7.19"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -128,11 +128,11 @@ class Bot(commands.Bot):
 		coro = self.send_message(destination, embed = embed, *args[1:], **kwargs)
 		return self._augmented_msg(coro, embed = embed, **params)
 	
-	def send_embed(self, destination, content, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, timestamp = discord.Embed.Empty, fields = []):
+	def send_embed(self, destination, content, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, fields = []):
 		embed = discord.Embed(description = str(content) if content else None, title = title, url = title_url, timestamp = timestamp, color = bot_color)
 		if image_url: embed.set_image(url = image_url)
 		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
-		embed.set_footer(text = footer_text)
+		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
 		for field_name, field_value in fields:
 			embed.add_field(name = field_name, value = field_value)
 		return self.send_message(destination, embed = embed)
