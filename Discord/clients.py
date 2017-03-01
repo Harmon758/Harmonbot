@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-7.17"
+version = "0.35.0-7.18"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -101,22 +101,13 @@ class Bot(commands.Bot):
 		coro = self.send_message(destination, *args, **kwargs)
 		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
 	
-	def embed_say(self, *args, **kwargs):
+	def embed_say(self, *args, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, **kwargs):
 		destination = commands.bot._get_variable('_internal_channel')
-		embed = discord.Embed(description = str(args[0]) if args[0] else None, color = bot_color)
+		embed = discord.Embed(description = str(args[0]) if args[0] else None, title = title, url = title_url, timestamp = timestamp, color = bot_color)
 		# TODO: add author_name and author_icon_url
-		title = kwargs.pop("title", None)
-		if title: embed.title = title
-		title_url = kwargs.pop("title_url", None)
-		if title_url: embed.url = title_url
-		image_url = kwargs.pop("image_url", None)
 		if image_url: embed.set_image(url = image_url)
-		thumbnail_url = kwargs.pop("thumbnail_url", None)
 		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
-		footer_text = kwargs.pop("footer_text", None)
-		if footer_text: embed.set_footer(text = footer_text)
-		timestamp = kwargs.pop("timestamp", None)
-		if timestamp: embed.timestamp = timestamp
+		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
 		extensions = ('delete_after',)
 		params = {k: kwargs.pop(k, None) for k in extensions}
 		coro = self.send_message(destination, embed = embed, *args[1:], **kwargs)
