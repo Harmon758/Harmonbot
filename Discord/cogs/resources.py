@@ -175,6 +175,49 @@ class Resources:
 			pastedaccounts = pastedaccounts[:-2]
 		await self.bot.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
 	
+	@commands.group(invoke_without_command = True)
+	@checks.not_forbidden()
+	async def horoscope(self, sign : str):
+		'''Horoscope'''
+		await self.process_horoscope(sign, "today")
+	
+	@horoscope.command(name = "signs", aliases = ["sun_signs", "sunsigns"])
+	@checks.not_forbidden()
+	async def horoscope_signs(self):
+		'''Sun signs'''
+		async with clients.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/sunsigns") as resp:
+			data = await resp.json()
+		await self.bot.embed_reply(", ".join(data))
+	
+	@horoscope.command(name = "today")
+	@checks.not_forbidden()
+	async def horoscope_today(self, sign):
+		'''Today's horoscope'''
+		await self.process_horoscope(sign, "today")
+	
+	@horoscope.command(name = "tomorrow")
+	@checks.not_forbidden()
+	async def horoscope_tomorrow(self, sign):
+		'''Tomorrow's horoscope'''
+		await self.process_horoscope(sign, "tomorrow")
+	
+	@horoscope.command(name = "yesterday")
+	@checks.not_forbidden()
+	async def horoscope_yesterday(self, sign):
+		'''Yesterday's horoscope'''
+		await self.process_horoscope(sign, "yesterday")
+	
+	async def process_horoscope(self, sign, day):
+		if len(sign) == 1:
+			sign = unicodedata.name(sign).lower()
+		async with clients.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/horoscope/{}/{}/".format(sign, day)) as resp:
+			if resp.status == 404:
+				await self.bot.embed_reply(":no_entry: Error")
+				return
+			data = await resp.json()
+		date = [int(d) for d in data["date"].split('-')]
+		await self.bot.embed_reply(data["horoscope"].replace(data["credit"], ""), title = data["sunsign"], fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()), footer_text = data["credit"], timestamp = datetime.datetime(date[0], date[1], date[2]))
+	
 	@commands.command(aliases = ["movie"], pass_context = True)
 	@checks.not_forbidden()
 	async def imdb(self, ctx, *search : str):
