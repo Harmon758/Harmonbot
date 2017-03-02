@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-7.20"
+version = "0.35.0-7.21"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -73,7 +73,7 @@ class Bot(commands.Bot):
 		coro = self.send_message(destination, fmt, *args, **kwargs)
 		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
 	
-	def embed_reply(self, content, *args, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, **kwargs):
+	def embed_reply(self, content, *args, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, fields = [], **kwargs):
 		author = commands.bot._get_variable('_internal_author')
 		destination = commands.bot._get_variable('_internal_channel')
 		embed = discord.Embed(description = str(content) if content else None, title = title, url = title_url, timestamp = timestamp, color = bot_color)
@@ -81,6 +81,8 @@ class Bot(commands.Bot):
 		if image_url: embed.set_image(url = image_url)
 		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
 		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
+		for field_name, field_value in fields:
+			embed.add_field(name = field_name, value = field_value)
 		extensions = ('delete_after',)
 		params = {k: kwargs.pop(k, None) for k in extensions}
 		coro = self.send_message(destination, embed = embed, *args, **kwargs)
@@ -101,13 +103,15 @@ class Bot(commands.Bot):
 		coro = self.send_message(destination, *args, **kwargs)
 		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
 	
-	def embed_say(self, *args, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, **kwargs):
+	def embed_say(self, *args, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, fields = [], **kwargs):
 		destination = commands.bot._get_variable('_internal_channel')
 		embed = discord.Embed(description = str(args[0]) if args[0] else None, title = title, url = title_url, timestamp = timestamp, color = bot_color)
 		# TODO: add author_name and author_icon_url
 		if image_url: embed.set_image(url = image_url)
 		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
 		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
+		for field_name, field_value in fields:
+			embed.add_field(name = field_name, value = field_value)
 		extensions = ('delete_after',)
 		params = {k: kwargs.pop(k, None) for k in extensions}
 		coro = self.send_message(destination, embed = embed, *args[1:], **kwargs)
