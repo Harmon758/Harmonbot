@@ -98,7 +98,7 @@ class Misc:
 		if not to_poke:
 			await self.bot.embed_reply(":no_entry: User not found")
 		elif to_poke == self.bot.user:
-			await self.bot.say("!poke {}".format(ctx.message.author))
+			await self.bot.embed_reply("!poke {}".format(ctx.message.author.mention))
 		else:
 			utilities.create_folder("data/user_data/{}".format(ctx.message.author.id))
 			utilities.create_file("user_data/{}/pokes".format(ctx.message.author.id))
