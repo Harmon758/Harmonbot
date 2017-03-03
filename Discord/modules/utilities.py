@@ -126,7 +126,7 @@ async def get_user(ctx, name):
 	mention = re.match(r"<@\!?([0-9]+)>", name)
 	if mention:
 		user_id = mention.group(1)
-		user = ctx.message.server.get_member(user_id)
+		user = await ctx.bot.get_user_info(user_id)
 		if user: return user
 	if ctx.message.server:
 		# check if exact match
