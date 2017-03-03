@@ -421,13 +421,13 @@ class Discord:
 	
 	# Checks
 	
-	@commands.command(pass_context = True)
+	@commands.command(aliases = ["here"], pass_context = True)
 	@checks.not_forbidden()
 	async def everyone(self, ctx):
 		'''
-		Check if you can mention everyone
+		Check if you can mention everyone/here
 		For the channel you execute the command in
 		'''
 		able = "" if ctx.message.author.permissions_in(ctx.message.channel).mention_everyone else "not "
-		await self.bot.embed_reply("You are {}able to mention everyone in this channel".format(able))
+		await self.bot.embed_reply("You are {}able to mention everyone/here in this channel".format(able))
 
