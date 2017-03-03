@@ -44,6 +44,21 @@ class Twitch:
 		'''Add Twitch games, keywords, or channels to follow'''
 		pass
 	
+	@twitch_add.command(name = "filter", pass_context = True)
+	@checks.is_permitted()
+	async def twitch_add_filter(self, ctx, *, string : str):
+		'''Add string to filter Twitch stream titles by'''
+		channel = self.streams_info["channels"].get(ctx.message.channel.id)
+		# TODO: Check if already filtered
+		if channel:
+			channel["filters"].append(string)
+		else:
+			self.streams_info["channels"][ctx.message.channel.id] = {"name": ctx.message.channel.name, "filters": [string], "games": [], "keywords": [], "streams": []}
+		with open("data/twitch_streams.json", 'w') as streams_file:
+			json.dump(self.streams_info, streams_file, indent = 4)
+		await self.bot.embed_reply("Added the filter, `{}`, to this text channel\n"
+		"I will now filter all streams for this string in the title".format(string))
+	
 	@twitch_add.command(name = "game", pass_context = True)
 	@checks.is_permitted()
 	async def twitch_add_game(self, ctx, *, game : str):
@@ -54,7 +69,7 @@ class Twitch:
 		if channel:
 			channel["games"].append(game)
 		else:
-			self.streams_info["channels"][ctx.message.channel.id] = {"name": ctx.message.channel.name, "games": [game], "keywords": [], "streams": []}
+			self.streams_info["channels"][ctx.message.channel.id] = {"name": ctx.message.channel.name, "filters": [], "games": [game], "keywords": [], "streams": []}
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await self.bot.embed_reply("Added the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), to this text channel\n"
@@ -70,7 +85,7 @@ class Twitch:
 		if channel:
 			channel["keywords"].append(keyword)
 		else:
-			self.streams_info["channels"][ctx.message.channel.id] = {"name": ctx.message.channel.name, "games": [], "keywords": [keyword], "streams": []}
+			self.streams_info["channels"][ctx.message.channel.id] = {"name": ctx.message.channel.name, "filters": [], "games": [], "keywords": [keyword], "streams": []}
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await self.bot.embed_reply("Added the keyword search, `{}`, to this text channel\n"
@@ -85,7 +100,7 @@ class Twitch:
 		if channel:
 			channel["streams"].append(username)
 		else:
-			self.streams_info["channels"][ctx.message.channel.id] = {"name": ctx.message.channel.name, "games": [], "keywords": [], "streams": [username]}
+			self.streams_info["channels"][ctx.message.channel.id] = {"name": ctx.message.channel.name, "filters": [], "games": [], "keywords": [], "streams": [username]}
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await self.bot.embed_reply("Added the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), to this text channel\n"
@@ -96,6 +111,19 @@ class Twitch:
 	async def twitch_remove(self):
 		'''Remove Twitch games, keywords, or channels being followed'''
 		pass
+	
+	@twitch_remove.command(name = "filter", pass_context = True)
+	@checks.is_permitted()
+	async def twitch_remove_filter(self, ctx, *, string : str):
+		'''Remove a string Twitch stream titles are being filtered by'''
+		channel = self.streams_info["channels"].get(ctx.message.channel.id)
+		if not channel or filter not in channel["filters"]:
+			await self.bot.embed_reply(":no_entry: This text channel doesn't have that filter")
+			return
+		channel["filters"].remove(filter)
+		with open("data/twitch_streams.json", 'w') as streams_file:
+			json.dump(self.streams_info, streams_file, indent = 4)
+		await self.bot.embed_reply("Removed the filter, `{}`, from this text channel".format(string))
 	
 	@twitch_remove.command(name = "game", pass_context = True)
 	@checks.is_permitted()
@@ -135,6 +163,12 @@ class Twitch:
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await self.bot.embed_reply("Removed the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), from this text channel".format(username))
+	
+	@twitch.command(name = "filters", pass_context = True)
+	@checks.not_forbidden()
+	async def twitch_filters(self, ctx):
+		'''Show strings Twitch stream titles are being filtered by in this text channel'''
+		await self.bot.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.message.channel.id, {}).get("filters", [])))
 	
 	@twitch.command(name = "games", pass_context = True)
 	@checks.not_forbidden()
@@ -196,8 +230,9 @@ class Twitch:
 			if (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(stream["created_at"])).total_seconds() <= 300 and stream["channel"]["name"] not in self.recently_announced:
 				self.recently_announced[stream["channel"]["name"]] = dateutil.parser.parse(stream["created_at"])
 				for channel_id, channel_info in self.streams_info["channels"].items():
-					if match in channel_info[type] or \
-					not match and stream["channel"]["name"] in [s.lower() for s in channel_info[type]]:
+					if (match in channel_info[type] or \
+					not match and stream["channel"]["name"] in [s.lower() for s in channel_info[type]]) and \
+					all(filter in stream["channel"]["status"] for filter in channel_info["filters"]):
 						embed = discord.Embed(title = stream["channel"]["status"], description = "{0[channel][display_name]} is playing {0[game]}".format(stream) if stream["channel"]["game"] else discord.Embed.Empty, url = stream["channel"]["url"], timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), color = clients.twitch_color)
 						embed.set_author(name = "{} just went live on Twitch".format(stream["channel"]["display_name"]), icon_url = clients.twitch_icon_url)
 						if stream["channel"]["logo"]: embed.set_thumbnail(url = stream["channel"]["logo"])
