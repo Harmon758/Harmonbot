@@ -78,8 +78,8 @@ class Random:
 		'''See map of random location'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
-		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=13&size=640x640".format(latitude, longitude)
-		await self.bot.embed_reply(None, image_url = image_url)
+		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=13&size=640x640".format(latitude, longitude)
+		await self.bot.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@random.command()
 	@checks.not_forbidden()

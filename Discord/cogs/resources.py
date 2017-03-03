@@ -360,8 +360,8 @@ class Resources:
 	@checks.not_forbidden()
 	async def map(self, *, location : str):
 		'''See map of location'''
-		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location.replace(' ', '+'))
-		await self.bot.embed_reply(None, image_url = image_url)
+		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location.replace(' ', '+'))
+		await self.bot.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@map.command(name = "options")
 	@checks.not_forbidden()
@@ -371,8 +371,8 @@ class Resources:
 		Zoom: 0 - 21+ (Default: 13)
 		Map Types: roadmap, satellite, hybrid, terrain (Default: roadmap)
 		'''
-		image_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&maptype={}&size=640x640".format(location.replace(' ', '+'), zoom, maptype)
-		await self.bot.embed_reply(None, image_url = image_url)
+		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&maptype={}&size=640x640".format(location.replace(' ', '+'), zoom, maptype)
+		await self.bot.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
