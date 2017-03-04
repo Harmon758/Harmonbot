@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+import asyncio
 import json
 import tweepy
 
@@ -18,25 +19,36 @@ class TwitterStreamListener(tweepy.StreamListener):
 	def __init__(self, bot):
 		super().__init__()
 		self.bot = bot
-		self.stream = tweepy.Stream(auth = clients.twitter_api.auth, listener = self)
+		self.stream = None
 		self.feeds = {}
+		self.reconnect_ready = asyncio.Event()
+		self.reconnect_ready.set()
+		self.reconnecting = False
 	
 	def __del__(self):
 		self.stream.disconnect()
 	
-	def start_feeds(self, feeds):
-		self.feeds = feeds
+	async def start_feeds(self, *, feeds = None):
+		if self.reconnecting:
+			await self.reconnect_ready.wait()
+			return
+		self.reconnecting = True
+		await self.reconnect_ready.wait()
+		self.reconnect_ready.clear()
+		if feeds: self.feeds = feeds
+		if self.stream: self.stream.disconnect()
+		self.stream = tweepy.Stream(auth = clients.twitter_api.auth, listener = self)
 		self.stream.filter(follow = set([id for feeds in self.feeds.values() for id in feeds]), **{"async" : "True"})
+		self.bot.loop.call_later(120, self.reconnect_ready.set)
+		self.reconnecting = False
 	
-	def add_feed(self, channel, handle):
+	async def add_feed(self, channel, handle):
 		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [clients.twitter_api.get_user(handle).id_str]
-		self.stream.disconnect()
-		self.stream.filter(follow = set([id for feeds in self.feeds.values() for id in feeds]), **{"async" : "True"})
+		await self.start_feeds()
 	
-	def remove_feed(self, channel, handle):
+	async def remove_feed(self, channel, handle):
 		self.feeds[channel.id].remove(clients.twitter_api.get_user(handle).id_str)
-		self.stream.disconnect()
-		self.stream.filter(follow = set([id for feeds in self.feeds.values() for id in feeds]), **{"async" : "True"})
+		await self.start_feeds()
 	
 	def on_status(self, status):
 		# print(status.text)
@@ -88,14 +100,19 @@ class Twitter:
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"], pass_context = True)
 	@checks.is_permitted()
 	async def twitter_add(self, ctx, handle : str):
-		'''Add a Twitter handle to a text channel'''
+		'''
+		Add a Twitter handle to a text channel
+		A delay of up to 2 min. is possible due to Twitter rate limits
+		'''
 		if handle in self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []):
 			await self.bot.embed_reply(":no_entry: This text channel is already following that Twitter handle")
 			return
+		message, embed = await self.bot.embed_reply(":hourglass: Please wait")
 		try:
-			self.stream_listener.add_feed(ctx.message.channel, handle)
+			await self.stream_listener.add_feed(ctx.message.channel, handle)
 		except tweepy.error.TweepError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			embed.description = ":no_entry: Error: {}".format(e)
+			await self.bot.edit_message(message, embed = embed)
 			return
 		if ctx.message.channel.id in self.feeds_info["channels"]:
 			self.feeds_info["channels"][ctx.message.channel.id]["handles"].append(handle)
@@ -103,12 +120,16 @@ class Twitter:
 			self.feeds_info["channels"][ctx.message.channel.id] = {"name" : ctx.message.channel.name, "handles" : [handle]}
 		with open("data/twitter_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
-		await self.bot.embed_reply("Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle))
+		embed.description = "Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle)
+		await self.bot.edit_message(message, embed = embed)
 	
 	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"], pass_context = True)
 	@checks.is_permitted()
 	async def twitter_remove(self, ctx, handle : str):
-		'''Remove a Twitter handle from a text channel'''
+		'''
+		Remove a Twitter handle from a text channel
+		A delay of up to 2 min. is possible due to Twitter rate limits
+		'''
 		try:
 			self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []).remove(handle)
 		except ValueError:
@@ -116,8 +137,10 @@ class Twitter:
 		else:
 			with open("data/twitter_feeds.json", 'w') as feeds_file:
 				json.dump(self.feeds_info, feeds_file, indent = 4)
-			self.stream_listener.remove_feed(ctx.message.channel, handle)
-			await self.bot.embed_reply("Removed the Twitter handle, [`{0}`](https://twitter.com/{0}), from this text channel.".format(handle))
+			message, embed = await self.bot.embed_reply(":hourglass: Please wait")
+			await self.stream_listener.remove_feed(ctx.message.channel, handle)
+			embed.description = "Removed the Twitter handle, [`{0}`](https://twitter.com/{0}), from this text channel.".format(handle)
+			await self.bot.edit_message(message, embed = embed)
 
 	@twitter.command(aliases = ["handle", "feeds", "feed", "list"], pass_context = True)
 	@checks.not_forbidden()
@@ -131,5 +154,5 @@ class Twitter:
 		for channel_id, channel_info in self.feeds_info["channels"].items():
 			for handle in channel_info["handles"]:
 				feeds[channel_id] = feeds.get(channel_id, []) + [clients.twitter_api.get_user(handle).id_str]
-		self.stream_listener.start_feeds(feeds)
+		await self.stream_listener.start_feeds(feeds = feeds)
 
