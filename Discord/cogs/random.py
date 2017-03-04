@@ -146,8 +146,12 @@ class Random:
 		else:
 			async with clients.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
 				data = await resp.text()
-			url = xml.etree.ElementTree.fromstring(data).find(".//url").text
-			await self.bot.embed_reply("[:cat:]({})".format(url), image_url = url)
+			try:
+				url = xml.etree.ElementTree.fromstring(data).find(".//url").text
+			except xml.etree.ElementTree.ParseError:
+				await self.bot.embed_reply(":no_entry: Error")
+			else:
+				await self.bot.embed_reply("[:cat:]({})".format(url), image_url = url)
 	
 	@commands.command(aliases = ["die", "roll"])
 	@checks.not_forbidden()
