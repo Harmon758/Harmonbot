@@ -6,7 +6,8 @@
 
 Multi-Platform Factotum Bot
 
-[Discord](https://discord.gg/a2rbZPu) [Invite](https://discordapp.com/oauth2/authorize?client_id=160674537418129409&scope=bot)
+<a href="https://discord.gg/MNAVKMd"><img src="https://discordapp.com/api/guilds/147208000132743168/embed.png?style=banner2" alt="Discord Server" align="middle" /></a>
+[Invite](https://discordapp.com/oauth2/authorize?client_id=160674537418129409&scope=bot)
 
 [Twitch](https://www.twitch.tv/harmonbot)
 
