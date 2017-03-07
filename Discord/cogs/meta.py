@@ -170,6 +170,12 @@ class Meta:
 			json.dump(all_prefixes, prefixes_file, indent = 4)
 		await self.bot.reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
+	@commands.command(pass_context = True, hidden = True)
+	@checks.not_forbidden()
+	async def type(self, ctx):
+		'''Sends typing status'''
+		await self.bot.send_typing(ctx.message.channel)
+	
 	# Public Info
 	
 	@commands.command(aliases = ["info"], pass_context = True)
