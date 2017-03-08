@@ -376,7 +376,8 @@ class Discord:
 	@checks.not_forbidden()
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
-		await self.bot.reply("The owner of this server is " + ctx.message.server.owner.name + "#" + str(ctx.message.server.owner.discriminator))
+		owner = ctx.message.server.owner
+		await self.bot.embed_reply("The owner of this server is {}".format(owner.mention), footer_text = str(owner), footer_icon_url = owner.avatar_url or owner.default_avatar_url)
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
