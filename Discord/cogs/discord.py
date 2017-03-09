@@ -384,16 +384,8 @@ class Discord:
 	async def userinfo(self, ctx):
 		'''Information about a user'''
 		user = ctx.message.author
-		avatar_url = user.default_avatar_url if not user.avatar else user.avatar_url
-		embed = discord.Embed(title = str(user), url = avatar_url, timestamp = user.created_at, color = clients.bot_color)
-		avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
-		embed.set_thumbnail(url = avatar_url)
-		embed.add_field(name = "User", value = user.mention)
-		embed.add_field(name = "ID", value = user.id)
-		embed.add_field(name = "Bot", value = user.bot)
-		embed.set_footer(text = "Created")
-		await self.bot.say(embed = embed)
+		avatar = user.avatar_url or user.default_avatar_url
+		await self.bot.embed_reply(None, title = str(user), title_url = avatar, thumbnail_url = avatar, footer_text = "Created", timestamp = user.created_at, fields = [("User", user.mention), ("ID", user.id), ("Bot", user.bot)])
 		# member info, status, game, roles, color, etc.
 	
 	# Convert Attributes
