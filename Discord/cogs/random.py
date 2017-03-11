@@ -133,12 +133,20 @@ class Random:
 		if category and category in ("categories", "cats"):
 			async with clients.aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
 				data = await resp.text()
-			categories = xml.etree.ElementTree.fromstring(data).findall(".//name")
-			await self.bot.embed_reply('\n'.join(sorted(category.text for category in categories)))
+			try:
+				categories = xml.etree.ElementTree.fromstring(data).findall(".//name")
+			except xml.etree.ElementTree.ParseError:
+				await self.bot.embed_reply(":no_entry: Error")
+			else:
+				await self.bot.embed_reply('\n'.join(sorted(category.text for category in categories)))
 		elif category:
 			async with clients.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={}".format(category)) as resp:
 				data = await resp.text()
-			url = xml.etree.ElementTree.fromstring(data).find(".//url")
+			try:
+				url = xml.etree.ElementTree.fromstring(data).find(".//url")
+			except xml.etree.ElementTree.ParseError:
+				await self.bot.embed_reply(":no_entry: Error")
+				return
 			if url is not None:
 				await self.bot.embed_reply("[:cat:]({})".format(url.text), image_url = url.text)
 			else:
