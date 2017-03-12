@@ -7,6 +7,7 @@ import datetime
 import dateutil.parser
 import itertools
 import json
+import os
 import sys
 import traceback
 
@@ -23,7 +24,8 @@ class Twitch:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.recently_announced = {}
+		self.streams_announced = {}
+		self.old_streams_announced = {}
 		utilities.create_file("twitch_streams", content = {"channels" : {}})
 		with open("data/twitch_streams.json", 'r') as streams_file:
 			self.streams_info = json.load(streams_file)
@@ -190,34 +192,78 @@ class Twitch:
 	
 	async def check_twitch_streams(self):
 		await self.bot.wait_until_ready()
+		try:
+			if os.path.isfile("data/temp/twitch_streams_announced.json"):
+				with open("data/temp/twitch_streams_announced.json", 'r') as streams_file:
+					self.streams_announced = json.load(streams_file)
+				for announced_stream_id, announcements in self.streams_announced.items():
+					for announcement in announcements:
+						text_channel = self.bot.get_channel(announcement[2])
+						# TODO: Handle text channel not existing anymore
+						announcement[0] = await self.bot.get_message(text_channel, announcement[0])
+						# TODO: Handle message deleted
+						embed_data = announcement[1]
+						announcement[1] = discord.Embed(title = embed_data.get("title"), description = embed_data["description"], url = embed_data["url"], timestamp = dateutil.parser.parse(embed_data["timestamp"]), color = embed_data["color"]).set_author(name = embed_data["author"]["name"], icon_url = embed_data["author"]["icon_url"])
+						if embed_data.get("thumbnail", {}).get("url"):
+							announcement[1].set_thumbnail(url = embed_data["thumbnail"]["url"])
+						for field in embed_data["fields"]:
+							announcement[1].add_field(name = field["name"], value = field["value"], inline = field["inline"])
+						del announcement[2]
+			## os.remove("data/temp/twitch_streams_announced.json")
+		except Exception as e:
+			print("Exception in Twitch Task", file = sys.stderr)
+			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
+			logging.errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
+			return
 		while not self.bot.is_closed:
 			try:
+				stream_ids = []
 				# Games
 				games = set(itertools.chain(*[channel["games"] for channel in self.streams_info["channels"].values()]))
 				for game in games:
 					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?game={}&client_id={}&limit=100".format(game.replace(' ', '+'), credentials.twitch_client_id)) as resp:
 						games_data = await resp.json()
-					await self.process_twitch_streams(games_data.get("streams", []), "games", match = game)
+					streams = games_data.get("streams", [])
+					stream_ids += [stream["_id"] for stream in streams]
+					await self.process_twitch_streams(streams, "games", match = game)
 					await asyncio.sleep(1)
 				# Keywords
 				keywords = set(itertools.chain(*[channel["keywords"] for channel in self.streams_info["channels"].values()]))
 				for keyword in keywords:
 					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/search/streams?q={}&client_id={}&limit=100".format(keyword.replace(' ', '+'), credentials.twitch_client_id)) as resp:
 						keywords_data = await resp.json()
-					await self.process_twitch_streams(keywords_data.get("streams", []), "keywords", match = keyword)
+					streams = keywords_data.get("streams", [])
+					stream_ids += [stream["_id"] for stream in streams]
+					await self.process_twitch_streams(streams, "keywords", match = keyword)
 					await asyncio.sleep(1)
 				# Streams
 				streams = set(itertools.chain(*[channel["streams"] for channel in self.streams_info["channels"].values()]))
 				async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?channel={}&client_id={}&limit=100".format(','.join(streams), credentials.twitch_client_id)) as resp:
 					# TODO: Handle >100 streams
 					streams_data = await resp.json()
-				await self.process_twitch_streams(streams_data.get("streams", []), "streams")
-				# Wait + Update recently announced
+				streams = streams_data.get("streams", [])
+				stream_ids += [stream["_id"] for stream in streams]
+				await self.process_twitch_streams(streams, "streams")
+				# Update streams announced
+				for announced_stream_id, announcements in self.streams_announced.copy().items():
+					if announced_stream_id not in stream_ids:
+						for announcement in announcements:
+							embed = announcement[1]
+							embed.set_author(name = embed.author.name.replace("just went", "was"), url = embed.author.url, icon_url = embed.author.icon_url)
+							await self.bot.edit_message(announcement[0], embed = embed)
+							# TODO: Handle message deleted
+							self.old_streams_announced[announced_stream_id] = self.streams_announced[announced_stream_id]
+							del self.streams_announced[announced_stream_id]
+					# TODO: Handle no longer being followed?
 				await asyncio.sleep(20)
-				for stream, start_time in self.recently_announced.copy().items():
-					if (datetime.datetime.now(datetime.timezone.utc) - start_time).total_seconds() > 300:
-						del self.recently_announced[stream]
 			except asyncio.CancelledError:
+				for announced_stream_id, announcements in self.streams_announced.items():
+					for announcement in announcements:
+						announcement.append(announcement[0].channel.id)
+						announcement[0] = announcement[0].id
+						announcement[1] = announcement[1].to_dict()
+				with open("data/temp/twitch_streams_announced.json", 'w') as streams_file:
+					json.dump(self.streams_announced, streams_file, indent = 4)
 				return
 			except Exception as e:
 				print("Exception in Twitch Task", file = sys.stderr)
@@ -227,8 +273,14 @@ class Twitch:
 	
 	async def process_twitch_streams(self, streams, type, match = None):
 		for stream in streams:
-			if (datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(stream["created_at"])).total_seconds() <= 300 and stream["channel"]["name"] not in self.recently_announced:
-				self.recently_announced[stream["channel"]["name"]] = dateutil.parser.parse(stream["created_at"])
+			if stream["_id"] in self.old_streams_announced:
+				for announcement in self.old_streams_announced[stream["_id"]]:
+					embed = announcement[1]
+					embed.set_author(name = embed.author.name.replace("was", "just went"), url = embed.author.url, icon_url = embed.author.icon_url)
+					await self.bot.edit_message(announcement[0], embed = embed)
+				self.streams_announced[stream["_id"]] = self.old_streams_announced[stream["_id"]]
+				del self.old_streams_announced[stream["_id"]]
+			elif stream["_id"] not in self.streams_announced:
 				for channel_id, channel_info in self.streams_info["channels"].items():
 					if (match in channel_info[type] or \
 					not match and stream["channel"]["name"] in [s.lower() for s in channel_info[type]]) and \
@@ -239,6 +291,9 @@ class Twitch:
 						embed.add_field(name = "Followers", value = stream["channel"]["followers"])
 						embed.add_field(name = "Views", value = stream["channel"]["views"])
 						text_channel = self.bot.get_channel(channel_id)
-						if text_channel:
-							await self.bot.send_message(text_channel, embed = embed)
+						if not text_channel:
+							# TODO: Remove text channel data if now non-existent
+							continue
+						message = await self.bot.send_message(text_channel, embed = embed)
+						self.streams_announced[stream["_id"]] = self.streams_announced.get(stream["_id"], []) + [[message, embed]]
 
