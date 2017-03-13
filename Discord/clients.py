@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-8.3"
+version = "0.35.0-8.4"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -267,6 +267,8 @@ async def _update_discord_bots_stats():
 	async with aiohttp_session.post("https://bots.discord.pw/api/bots/{}/stats".format(client.user.id), 
 	headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}, 
 	data = json.dumps({"server_count": len(client.servers)})) as resp:
+		if resp.status == 504:
+			return "Error: 504"
 		response = await resp.json()
 	return response
 
