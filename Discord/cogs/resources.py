@@ -723,7 +723,7 @@ class Resources:
 	async def shorturl(self, url : str):
 		'''Generate a short goo.gl url for your link'''
 		short_url = await self._shorturl(url)
-		await self.bot.reply(short_url)
+		await self.bot.embed_reply(short_url)
 	
 	async def _shorturl(self, url):
 		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
