@@ -160,9 +160,9 @@ if __name__ == "__main__":
 				if command.split()[0] in client.commands:
 					return
 				elif len(message.content.split()) == 1:
-					await clients.reply(message, "Please enter input.")
+					await clients.embed_reply(message, "Please enter input")
 				elif not utilities.is_number(message.content.split()[1]):
-					await clients.reply(message, "Syntax error.")
+					await clients.embed_reply(message, "Syntax error")
 				else:
 					value = float(message.content.split()[1])
 					units = re.match(r"^(\w+)to(\w+)", command, re.I)
@@ -177,9 +177,9 @@ if __name__ == "__main__":
 					elif converted_mass_value:
 						converted_value = converted_mass_value
 					else:
-						await clients.reply(message, "Units, {} and/or {}, not found. See the conversions command.".format(unit1, unit2))
+						await clients.embed_reply(message, "Units, {} and/or {}, not found\nSee the conversions command".format(unit1, unit2))
 						return
-					await clients.reply(message, str(value) + ' ' + unit1 + " = " + str(converted_value) + ' ' + unit2)
+					await clients.embed_reply(message, "{} {} = {} {}".format(value, unit1, converted_value, unit2))
 		
 		# getprefix
 		elif "getprefix" in message.content:
