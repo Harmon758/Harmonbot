@@ -41,10 +41,11 @@ if __name__ == "__main__":
 			restart_channel = client.get_channel(restart_data["restart_channel"])
 			await client.send_embed(restart_channel, ":thumbsup::skin-tone-2: Restarted")
 			for voice_channel in restart_data["voice_channels"]:
-				await client.join_voice_channel(client.get_channel(voice_channel[0]))
 				# asyncio.ensure_future(client.cogs["Audio"].start_player(client.get_channel(voice_channel[1])))
 				text_channel = client.get_channel(voice_channel[1])
-				client.cogs["Audio"].players[text_channel.server.id] = audio_player.AudioPlayer(client, text_channel)
+				if text_channel:
+					client.cogs["Audio"].players[text_channel.server.id] = audio_player.AudioPlayer(client, text_channel)
+					await client.join_voice_channel(client.get_channel(voice_channel[0]))
 		await clients.random_game_status()
 		await clients.set_streaming_status(client)
 		# await voice.detectvoice()
