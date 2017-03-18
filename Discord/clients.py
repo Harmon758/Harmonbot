@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-8.9"
+version = "0.35.0-8.10"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -33,8 +33,10 @@ bot_color = 0x738bd7
 rss_color = 0xfa9b39 # f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 twitch_color = 0x6441a4
 twitter_color = 0x00ACED
+youtube_color = 0xcd201f # https://www.youtube.com/yt/brand/color.html
 twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
 twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
+youtube_icon_url = "https://www.youtube.com/yt/brand/media/image/YouTube-icon-full_color.png"
 wait_time = 15.0
 delete_limit = 10000
 code_block = "```\n{}\n```"
