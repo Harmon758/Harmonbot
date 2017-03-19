@@ -317,7 +317,7 @@ class Discord:
 		else:
 			await self.bot.reply("Your discriminator: #" + ctx.message.author.discriminator)
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(aliases = ["role_id"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
 	async def roleid(self, ctx, *, name : str):
 		'''Get the ID of a role'''
