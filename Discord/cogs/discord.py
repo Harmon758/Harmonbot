@@ -323,7 +323,7 @@ class Discord:
 		'''Get the ID of a role'''
 		for role in ctx.message.server.roles:
 			if utilities.remove_symbols(role.name).startswith(name):
-				await self.bot.reply(role.id)
+				await self.bot.embed_reply(role.id)
 	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.is_owner()
