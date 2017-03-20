@@ -390,15 +390,18 @@ class Discord:
 	
 	# Convert Attributes
 	
-	@commands.command()
+	@commands.command(aliases = ["id_to_name"])
 	@checks.not_forbidden()
 	async def idtoname(self, id : str):
 		'''Convert user id to name'''
 		user = await self.bot.get_user_info(id)
-		if user:
-			await self.bot.reply(user)
-		else:
-			await self.bot.reply("User with that id not found")
+		if not user:
+			await self.bot.embed_reply(":no_entry: User with that id not found")
+			return
+		embed = discord.Embed(color = clients.bot_color)
+		embed.set_author(name = str(user), icon_url = user.avatar_url or user.default_avatar_url)
+		# Include mention?
+		await self.bot.reply("", embed = embed)
 	
 	@commands.command(aliases = ["usertoid", "usernametoid"], no_pm = True, pass_context = True)
 	@checks.not_forbidden()
@@ -410,6 +413,7 @@ class Discord:
 			return
 		embed = discord.Embed(description = user.id, color = clients.bot_color)
 		embed.set_author(name = str(user), icon_url = user.avatar_url or user.default_avatar_url)
+		# Include mention?
 		await self.bot.reply("", embed = embed)
 	
 	# Checks
