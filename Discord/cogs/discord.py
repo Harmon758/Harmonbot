@@ -403,7 +403,7 @@ class Discord:
 		# Include mention?
 		await self.bot.reply("", embed = embed)
 	
-	@commands.command(aliases = ["usertoid", "usernametoid"], no_pm = True, pass_context = True)
+	@commands.command(aliases = ["usertoid", "usernametoid", "name_to_id", "user_to_id", "username_to_id"], no_pm = True, pass_context = True)
 	@checks.not_forbidden()
 	async def nametoid(self, ctx, *, name : str):
 		'''Convert username to id'''
