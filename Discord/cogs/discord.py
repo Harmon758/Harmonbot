@@ -329,7 +329,7 @@ class Discord:
 	@checks.is_owner()
 	async def rolepositions(self, ctx):
 		'''WIP'''
-		await self.bot.reply(', '.join([role.name + ": " + str(role.position) for role in ctx.message.server.roles[1:]]))
+		await self.bot.embed_reply(', '.join([role.name + ": " + str(role.position) for role in ctx.message.server.roles[1:]]))
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.not_forbidden()
