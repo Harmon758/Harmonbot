@@ -325,7 +325,7 @@ class Discord:
 			if utilities.remove_symbols(role.name).startswith(name):
 				await self.bot.embed_reply(role.id)
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(aliases = ["role_positions"], pass_context = True, hidden = True)
 	@checks.is_owner()
 	async def rolepositions(self, ctx):
 		'''WIP'''
