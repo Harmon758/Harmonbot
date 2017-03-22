@@ -86,6 +86,8 @@ def create_file(filename, *, content = {}):
 			json.dump(content, file, indent = 4)
 	except FileExistsError:
 		pass
+	except OSError:
+		pass
 
 def create_folder(folder):
 	if not os.path.exists(folder):
