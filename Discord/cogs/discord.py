@@ -331,7 +331,7 @@ class Discord:
 		'''WIP'''
 		await self.bot.embed_reply(', '.join([role.name + ": " + str(role.position) for role in ctx.message.server.roles[1:]]))
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(aliases = ["server_icon"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
 	async def servericon(self, ctx):
 		'''See a bigger version of the server icon'''
