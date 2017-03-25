@@ -339,7 +339,7 @@ class Discord:
 			await self.bot.embed_reply(":no_entry: This server doesn't have an icon")
 		await self.bot.embed_reply("This server's icon:", image_url = ctx.message.server.icon_url)
 	
-	@commands.command(aliases = ["serverinformation"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["serverinformation", "server_info", "server_information"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
 	async def serverinfo(self, ctx):
 		'''Information about a server'''
