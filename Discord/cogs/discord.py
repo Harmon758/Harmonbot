@@ -372,7 +372,7 @@ class Discord:
 		embed.set_footer(text = "Created")
 		await self.bot.say(embed = embed)
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(aliases = ["server_owner"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
