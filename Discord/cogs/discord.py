@@ -379,7 +379,7 @@ class Discord:
 		owner = ctx.message.server.owner
 		await self.bot.embed_reply("The owner of this server is {}".format(owner.mention), footer_text = str(owner), footer_icon_url = owner.avatar_url or owner.default_avatar_url)
 	
-	@commands.command(pass_context = True)
+	@commands.command(aliases = ["user_info"], pass_context = True)
 	@checks.not_forbidden()
 	async def userinfo(self, ctx):
 		'''Information about a user'''
