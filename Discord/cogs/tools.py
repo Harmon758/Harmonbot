@@ -80,20 +80,6 @@ class Tools:
 			except concurrent.futures.TimeoutError:
 				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
 	
-	@commands.command(aliases = ["charinfo", "char_info", "character_info"])
-	@checks.not_forbidden()
-	async def characterinfo(self, character : str):
-		'''Information about a unicode character'''
-		character = character[0]
-		# TODO: return info on each character in the input string; use paste tool api?
-		try:
-			name = unicodedata.name(character)
-		except ValueError:
-			name = "UNKNOWN"
-		hex_char = hex(ord(character))
-		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char[2:])
-		await self.bot.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
-	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
 	@checks.not_forbidden()
 	async def differentiate(self, *, equation : str):
@@ -132,6 +118,20 @@ class Tools:
 			await self.bot.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))), title = "Definite Integral of {} from {} to {}".format(equation, lower_limit, upper_limit))
 		except Exception as e:
 			await self.bot.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+	
+	@commands.command(aliases = ["charinfo", "char_info", "character_info"])
+	@checks.not_forbidden()
+	async def characterinfo(self, character : str):
+		'''Information about a unicode character'''
+		character = character[0]
+		# TODO: return info on each character in the input string; use paste tool api?
+		try:
+			name = unicodedata.name(character)
+		except ValueError:
+			name = "UNKNOWN"
+		hex_char = hex(ord(character))
+		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char[2:])
+		await self.bot.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
 	
 	@commands.command(aliases = ["choice", "pick"])
 	@checks.not_forbidden()
@@ -513,7 +513,7 @@ class Tools:
 			with open("data/tags.json", 'w') as tags_file:
 				json.dump(self.tags_data, tags_file, indent = 4)
 		else:
-			close_matches = difflib.get_close_matches(tag, list(self.tags_data[ctx.message.author.id]["tags"].keys()) + list(self.tags_data["global"].keys()))
+			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(ctx.message.author.id, {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 			await self.bot.embed_reply("Tag not found{}".format(close_matches))
 	
