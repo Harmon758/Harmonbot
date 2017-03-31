@@ -746,24 +746,24 @@ class Resources:
 			offset += (len(suggestion) - len(correction["token"])) - correction["offset"]
 		await self.bot.reply(corrected)
 	
-	@commands.command()
+	@commands.command(aliases = ["spotify_info"], pass_context = True)
 	@checks.not_forbidden()
-	async def spotifyinfo(self, url : str):
+	async def spotifyinfo(self, ctx, url : str):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
-		if path[:7] == "/track/":
-			trackid = path[7:]
-			url = "https://api.spotify.com/v1/tracks/" + trackid
-			async with aiohttp_session.get(url) as resp:
-				data = await resp.json()
-			# tracknumber = str(data["track_number"])
-			# albumlink = data["album"]["href"]
-			await self.bot.reply("```\n{songname} by {artistname}\n{albumname}\n{duration}```Preview: {preview}\nArtist: {artistlink}\nAlbum: {albumlink}".format( \
-				songname =  data["name"], artistname = data["artists"][0]["name"], albumname = data["album"]["name"], 
-				duration = utilities.secs_to_colon_format(data["duration_ms"] / 1000), preview = data["preview_url"], 
-				artistlink = data["artists"][0]["external_urls"]["spotify"], albumlink = data["album"]["external_urls"]["spotify"]))
-		else:
-			await self.bot.reply("Syntax error.")
+		if path[:7] != "/track/":
+			await self.bot.embed_reply(":no_entry: Syntax error")
+			return
+		trackid = path[7:]
+		api_url = "https://api.spotify.com/v1/tracks/" + trackid
+		async with clients.aiohttp_session.get(api_url) as resp:
+			data = await resp.json()
+		# tracknumber = str(data["track_number"])
+		description = "Artist: [{}]({})\n".format(data["artists"][0]["name"], data["artists"][0]["external_urls"]["spotify"])
+		description += "Album: [{}]({})\n".format(data["album"]["name"], data["album"]["external_urls"]["spotify"])
+		description += "Duration: {}\n".format(utilities.secs_to_colon_format(data["duration_ms"] / 1000))
+		description += "[Preview]({})".format(data["preview_url"])
+		await self.bot.embed_reply(description, title = data["name"], title_url = url, thumbnail_url = data["album"]["images"][0]["url"])
 	
 	@commands.command(aliases = ["sptoyt"])
 	@checks.not_forbidden()
