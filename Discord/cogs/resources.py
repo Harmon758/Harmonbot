@@ -744,7 +744,7 @@ class Resources:
 			suggestion = correction["suggestions"][0]["suggestion"]
 			corrected = corrected[:offset] + suggestion + corrected[offset + len(correction["token"]):]
 			offset += (len(suggestion) - len(correction["token"])) - correction["offset"]
-		await self.bot.reply(corrected)
+		await self.bot.embed_reply(corrected)
 	
 	@commands.command(aliases = ["spotify_info"], pass_context = True)
 	@checks.not_forbidden()
