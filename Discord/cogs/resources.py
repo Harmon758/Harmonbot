@@ -773,7 +773,7 @@ class Resources:
 		if link:
 			await self.bot.reply(link)
 		else:
-			await self.bot.reply("Error")
+			await self.bot.embed_reply(":no_entry: Error")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
