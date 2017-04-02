@@ -765,7 +765,7 @@ class Resources:
 		description += "[Preview]({})".format(data["preview_url"])
 		await self.bot.embed_reply(description, title = data["name"], title_url = url, thumbnail_url = data["album"]["images"][0]["url"])
 	
-	@commands.command(aliases = ["sptoyt"])
+	@commands.command(aliases = ["sptoyt", "spotify_to_youtube", "sp_to_yt"])
 	@checks.not_forbidden()
 	async def spotifytoyoutube(self, url : str):
 		'''Find a Spotify track on Youtube'''
