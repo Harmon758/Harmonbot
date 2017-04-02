@@ -783,7 +783,7 @@ class Resources:
 	
 	@steam.command(name = "appid")
 	async def steam_appid(self, *, app : str):
-		'''Get the appid'''
+		'''Get the AppID'''
 		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
 			data = await resp.json()
 		apps = data["applist"]["apps"]
@@ -792,7 +792,7 @@ class Resources:
 			if _app["name"].lower() == app.lower():
 				appid = _app["appid"]
 				break
-		await self.bot.reply(str(appid))
+		await self.bot.embed_reply(appid)
 	
 	@steam.command(name = "gamecount")
 	async def steam_gamecount(self, vanity_name : str):
