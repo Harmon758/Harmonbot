@@ -794,7 +794,7 @@ class Resources:
 				break
 		await self.bot.embed_reply(appid)
 	
-	@steam.command(name = "gamecount")
+	@steam.command(name = "gamecount", aliases = ["game_count"])
 	async def steam_gamecount(self, vanity_name : str):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(credentials.steam_apikey, vanity_name)
