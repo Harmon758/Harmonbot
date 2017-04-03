@@ -805,7 +805,7 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
-		await self.bot.reply("{0} has {1} games.".format(vanity_name, str(gamecount)))
+		await self.bot.embed_reply("{} has {} games".format(vanity_name, gamecount))
 	
 	@steam.command(name = "gameinfo")
 	async def steam_gameinfo(self, *, game : str):
