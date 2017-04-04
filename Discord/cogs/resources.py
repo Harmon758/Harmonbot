@@ -807,33 +807,21 @@ class Resources:
 		gamecount = data["response"]["game_count"]
 		await self.bot.embed_reply("{} has {} games".format(vanity_name, gamecount))
 	
-	@steam.command(name = "gameinfo")
+	@steam.command(name = "gameinfo", aliases = ["game_info"])
 	async def steam_gameinfo(self, *, game : str):
 		'''Information about a game'''
 		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
 			data = await resp.json()
-		apps = data["applist"]["apps"]
-		appid = 0
-		for app in apps:
-			if app["name"].lower() == game.lower():
-				appid = app["appid"]
-				break
-		url = "http://store.steampowered.com/api/appdetails/?appids={0}".format(str(appid))
-		async with aiohttp_session.get(url) as resp:
+		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
+		if not app:
+			await self.bot.embed_reply(":no_entry: Game not found")
+			return
+		appid = str(app["appid"])
+		url = "http://store.steampowered.com/api/appdetails/?appids={}".format(appid)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		data = data[str(appid)]["data"]
-		type = data["type"]
-		appid = data["steam_appid"]
-		#required_age = data["required_age"]
-		isfree = data["is_free"]
-		if isfree:
-			isfree = "Yes"
-		else:
-			isfree = "No"
-		detaileddescription = data["detailed_description"]
-		description = data["about_the_game"]
-		await self.bot.reply("{name}\n{appid}\nFree?: {0}\n{website}\n{header_image}".format( \
-			isfree, name = data["name"], appid = str(data["steam_appid"]), website = data["website"], header_image = data["header_image"]))
+		data = data[appid]["data"]
+		await self.bot.embed_reply(data["short_description"], title = data["name"], title_url = data["website"], fields = (("Release Date", data["release_date"]["date"]), ("Free", "Yes" if data["is_free"] else "No"), ("App ID", data["steam_appid"])), image_url = data["header_image"])
 	
 	@commands.command()
 	@checks.not_forbidden()
