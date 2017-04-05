@@ -289,7 +289,7 @@ class Meta:
 	
 	# Update Bot Stuff
 	
-	@commands.command(pass_context = True)
+	@commands.command(aliases = ["change_nickname"], pass_context = True)
 	@checks.is_owner()
 	async def changenickname(self, ctx, *, nickname : str):
 		'''Update my nickname'''
