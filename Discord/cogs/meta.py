@@ -295,7 +295,7 @@ class Meta:
 		'''Update my nickname'''
 		await self.bot.change_nickname(ctx.message.server.me, nickname)
 	
-	@commands.command(aliases = ["setavatar"])
+	@commands.command(aliases = ["setavatar", "update_avatar", "set_avatar"])
 	@checks.is_owner()
 	async def updateavatar(self, filename : str):
 		'''Update my avatar'''
