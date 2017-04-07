@@ -306,12 +306,12 @@ class Meta:
 			await self.bot.edit_profile(avatar = avatar_file.read())
 		await self.bot.embed_reply("Updated avatar")
 	
-	@commands.command(hidden = True)
+	@commands.command(aliases = ["random_game"], hidden = True)
 	@checks.not_forbidden()
 	async def randomgame(self):
 		'''Update to a random playing/game status message'''
 		await clients.random_game_status()
-		# await self.bot.reply("I changed to a random game status.")
+		# await self.bot.embed_reply("I changed to a random game status")
 	
 	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"])
 	@checks.is_owner()
