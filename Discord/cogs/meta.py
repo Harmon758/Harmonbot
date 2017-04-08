@@ -313,7 +313,7 @@ class Meta:
 		await clients.random_game_status()
 		# await self.bot.embed_reply("I changed to a random game status")
 	
-	@commands.command(pass_context = True, aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying"])
+	@commands.command(aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying", "set_game", "update_playing", "update_game", "change_playing", "change_game", "set_playing"], pass_context = True)
 	@checks.is_owner()
 	async def setgame(self, ctx, *, name : str):
 		'''Set my playing/game status message'''
