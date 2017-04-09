@@ -250,9 +250,10 @@ class Audio:
 		'''Turn radio off'''
 		if self.players[ctx.message.server.id].radio_flag:
 			self.players[ctx.message.server.id].radio_off()
-			await self.bot.say(":stop_sign: Turned radio off")
+			await self.bot.embed_reply(":stop_sign: Turned radio off")
+			await self.bot.attempt_delete_message(ctx.message)
 		else:
-			await self.bot.reply(":no_entry: Radio is already off")
+			await self.bot.embed_reply(":no_entry: Radio is already off")
 	
 	@commands.command(aliases = ["set_text"], pass_context = True, no_pm = True)
 	@checks.is_permitted()
