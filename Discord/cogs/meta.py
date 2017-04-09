@@ -251,6 +251,7 @@ class Meta:
 		top_5_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)[:5]
 		session_top_5 = sorted(session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		in_voice_count = len(self.bot.cogs["Audio"].players)
+		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
 		
 		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = clients.bot_color)
 		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
@@ -265,7 +266,7 @@ class Meta:
 		embed.add_field(name = "Cogs Reloaded", value = stats["cogs_reloaded"]) # since 6/10/16 - implemented cog reloading
 		# TODO: cogs reloaded this session
 		embed.add_field(name = "Servers", value = len(self.bot.servers))
-		embed.add_field(name = "Channels", value = "{} text\n{} voice (in {})".format(text_count, voice_count, in_voice_count))
+		embed.add_field(name = "Channels", value = "{} text\n{} voice (playing in {}/{})".format(text_count, voice_count, playing_in_voice_count, in_voice_count))
 		embed.add_field(name = "Members", 
 			value = "{} total\n{} online\n{} unique\n{} unique online".format(total_members, total_members_online, len(unique_members), unique_members_online))
 		embed.add_field(name = "Top 5 Commands Executed (Total Recorded)", 
