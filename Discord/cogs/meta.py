@@ -214,7 +214,7 @@ class Meta:
 	async def invite(self):
 		'''Link to invite me to a server'''
 		from clients import application_info
-		await self.bot.reply(discord.utils.oauth_url(application_info.id))
+		await self.bot.embed_reply(discord.utils.oauth_url(application_info.id))
 	
 	@commands.command(pass_context = True)
 	async def othercommands(self, ctx):
