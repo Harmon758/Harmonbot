@@ -366,13 +366,13 @@ class Meta:
 			updated_game.url = None
 			if option and option[0] == "url":
 				await self.bot.change_status(game = updated_game)
-				await self.bot.reply("Streaming url cleared.")
+				await self.bot.embed_reply("Streaming url cleared")
 				return
 			updated_game.type = 0
 			await self.bot.change_status(game = updated_game)
-			await self.bot.reply("Streaming status and url cleared.")
+			await self.bot.embed_reply("Streaming status and url cleared")
 		else:
-			await self.bot.reply("There is no streaming status or url to clear.")
+			await self.bot.embed_reply(":no_entry: There is no streaming status or url to clear")
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
