@@ -20,7 +20,6 @@ from modules import utilities
 from utilities import checks
 
 import clients
-from clients import py_code_block
 
 def setup(bot):
 	bot.add_cog(Meta(bot))
@@ -487,7 +486,7 @@ class Meta:
 	@checks.is_owner()
 	async def repl(self, ctx):
 		variables = {"self" : self, "ctx" : ctx, "last" : None}
-		await self.bot.say("Enter code to execute or evaluate. `exit` or `quit` to exit.")
+		await self.bot.embed_reply("Enter code to execute or evaluate\n`exit` or `quit` to exit")
 		while True:
 			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda m: m.content.startswith('`'))
 			if message.content.startswith("```py") and message.content.endswith("```"):
@@ -495,7 +494,7 @@ class Meta:
 			else:
 				code = message.content.strip("` \n")
 			if code in ("quit", "exit", "quit()", "exit()"):
-				await self.bot.say('Exiting repl.')
+				await self.bot.embed_reply('Exiting repl')
 				return
 			function = exec
 			if '\n' not in code:
@@ -509,19 +508,19 @@ class Meta:
 				try:
 					code = compile(code, "<repl>", "exec")
 				except SyntaxError as e:
-					await self.bot.reply(py_code_block.format("{0.text}{1:>{0.offset}}\n{2}: {0}".format(e, '^', type(e).__name__)))
+					await self.bot.reply(clients.py_code_block.format("{0.text}{1:>{0.offset}}\n{2}: {0}".format(e, '^', type(e).__name__)))
 					continue
 			try:
 				result = function(code, variables)
 				if inspect.isawaitable(result):
 					result = await result
 			except:
-				await self.bot.reply(py_code_block.format("\n".join(traceback.format_exc().splitlines()[-2:]).strip()))
+				await self.bot.reply(clients.py_code_block.format("\n".join(traceback.format_exc().splitlines()[-2:]).strip()))
 			else:
 				if function is eval:
 					try:
-						await self.bot.reply(py_code_block.format(result))
+						await self.bot.reply(clients.py_code_block.format(result))
 					except Exception as e:
-						await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+						await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 				variables["last"] = result
 
