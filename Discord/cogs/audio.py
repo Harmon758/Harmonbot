@@ -254,7 +254,7 @@ class Audio:
 		else:
 			await self.bot.reply(":no_entry: Radio is already off")
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(aliases = ["set_text"], pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def settext(self, ctx):
