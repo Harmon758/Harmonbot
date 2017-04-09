@@ -357,7 +357,7 @@ class Meta:
 		else:
 			await self.bot.embed_reply(":no_entry: There is no game status to clear")
 	
-	@commands.command(pass_context = True)
+	@commands.command(aliases = ["clear_streaming"], pass_context = True)
 	@checks.is_owner()
 	async def clearstreaming(self, ctx, *option : str):
 		'''Clear my streaming status'''
