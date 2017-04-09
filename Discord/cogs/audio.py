@@ -355,7 +355,7 @@ class Audio:
 	async def library_files(self, ctx):
 		'''List song files in the library'''
 		if not ctx.message.channel.is_private:
-			await self.bot.reply("Check your DMs.")
+			await self.bot.embed_reply("Check your DMs")
 		output = "```"
 		for filename in self.players[ctx.message.server.id].library_files:
 			if len(output) + len(filename) > 1997: # 2000 - 3
