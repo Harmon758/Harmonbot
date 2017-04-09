@@ -168,7 +168,7 @@ class Meta:
 			all_prefixes[ctx.message.server.id] = prefixes
 		with open("data/prefixes.json", "w") as prefixes_file:
 			json.dump(all_prefixes, prefixes_file, indent = 4)
-		await self.bot.reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
+		await self.bot.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
 	@commands.command(pass_context = True, hidden = True)
 	@checks.not_forbidden()
