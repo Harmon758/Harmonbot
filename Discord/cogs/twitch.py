@@ -202,8 +202,11 @@ class Twitch:
 					for announcement in announcements:
 						text_channel = self.bot.get_channel(announcement[2])
 						# TODO: Handle text channel not existing anymore
-						announcement[0] = await self.bot.get_message(text_channel, announcement[0])
-						# TODO: Handle message deleted
+						try:
+							announcement[0] = await self.bot.get_message(text_channel, announcement[0])
+						except discord.errors.NotFound:
+							# Announcement was deleted
+							continue
 						embed_data = announcement[1]
 						announcement[1] = discord.Embed(title = embed_data.get("title"), description = embed_data["description"], url = embed_data["url"], timestamp = dateutil.parser.parse(embed_data["timestamp"]), color = embed_data["color"]).set_author(name = embed_data["author"]["name"], icon_url = embed_data["author"]["icon_url"])
 						if embed_data.get("thumbnail", {}).get("url"):
@@ -211,6 +214,8 @@ class Twitch:
 						for field in embed_data["fields"]:
 							announcement[1].add_field(name = field["name"], value = field["value"], inline = field["inline"])
 						del announcement[2]
+					# Remove deleted announcements
+					self.streams_announced[announced_stream_id] = [announcement for announcement in announcements if len(announcement) == 2]
 			## os.remove("data/temp/twitch_streams_announced.json")
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
@@ -253,8 +258,11 @@ class Twitch:
 						for announcement in announcements:
 							embed = announcement[1]
 							embed.set_author(name = embed.author.name.replace("just went", "was"), url = embed.author.url, icon_url = embed.author.icon_url)
-							await self.bot.edit_message(announcement[0], embed = embed)
-							# TODO: Handle message deleted
+							try:
+								await self.bot.edit_message(announcement[0], embed = embed)
+							except discord.errors.Forbidden:
+								# Announcement was deleted
+								pass
 							self.old_streams_announced[announced_stream_id] = self.streams_announced[announced_stream_id]
 							del self.streams_announced[announced_stream_id]
 					# TODO: Handle no longer being followed?
