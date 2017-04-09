@@ -323,7 +323,7 @@ class Meta:
 		else:
 			updated_game.name = name
 		await self.bot.change_status(game = updated_game)
-		await self.bot.reply("Game updated.")
+		await self.bot.embed_reply("Game updated")
 	
 	@commands.command(pass_context = True)
 	@checks.is_owner()
