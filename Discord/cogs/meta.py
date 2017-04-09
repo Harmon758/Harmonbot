@@ -353,9 +353,9 @@ class Meta:
 		if updated_game and updated_game.name:
 			updated_game.name = None
 			await self.bot.change_status(game = updated_game)
-			await self.bot.reply("Game status cleared.")
+			await self.bot.embed_reply("Game status cleared")
 		else:
-			await self.bot.reply("There is no game status to clear.")
+			await self.bot.embed_reply(":no_entry: There is no game status to clear")
 	
 	@commands.command(pass_context = True)
 	@checks.is_owner()
