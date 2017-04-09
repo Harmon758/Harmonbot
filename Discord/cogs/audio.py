@@ -338,9 +338,10 @@ class Audio:
 		'''Stop playing songs from my library'''
 		if self.players[ctx.message.server.id].library_flag:
 			self.players[ctx.message.server.id].stop_library()
-			await self.bot.say(":stop_sign: Stopped playing songs from my library")
+			await self.bot.embed_reply(":stop_sign: Stopped playing songs from my library")
+			await self.bot.attempt_delete_message(ctx.message)
 		else:
-			await self.bot.reply(":no_entry: Not currently playing songs from my library")
+			await self.bot.embed_reply(":no_entry: Not currently playing songs from my library")
 	
 	@library.command(name = "song", pass_context = True, no_pm = True)
 	@checks.is_permitted()
