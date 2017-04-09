@@ -345,7 +345,7 @@ class Meta:
 			updated_game.type = 0
 		await self.bot.change_status(game = updated_game)
 	
-	@commands.command(pass_context = True, aliases = ["clearplaying"])
+	@commands.command(aliases = ["clearplaying", "clear_game", "clear_playing"], pass_context = True)
 	@checks.is_owner()
 	async def cleargame(self, ctx):
 		'''Clear my playing/game status message'''
