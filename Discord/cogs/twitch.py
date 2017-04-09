@@ -196,6 +196,8 @@ class Twitch:
 			if os.path.isfile("data/temp/twitch_streams_announced.json"):
 				with open("data/temp/twitch_streams_announced.json", 'r') as streams_file:
 					self.streams_announced = json.load(streams_file)
+				# Convert json string keys back to int
+				self.streams_announced = {int(k): v for k, v in self.streams_announced.items()}
 				for announced_stream_id, announcements in self.streams_announced.items():
 					for announcement in announcements:
 						text_channel = self.bot.get_channel(announcement[2])
