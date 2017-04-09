@@ -438,16 +438,16 @@ class Audio:
 		if self.players[ctx.message.server.id].listener:
 			await self.players[ctx.message.server.id].stop_listening()
 		elif not (await self.players[ctx.message.server.id].start_listening()):
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@listen.command(name = "start", aliases = ["on"], pass_context = True)
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_start(self, ctx):
 		if self.players[ctx.message.server.id].listener:
-			await self.bot.reply(":no_entry: I'm already listening")
+			await self.bot.embed_reply(":no_entry: I'm already listening")
 		elif not (await self.players[ctx.message.server.id].start_listening()):
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@listen.command(name = "stop", aliases = ["off"], pass_context = True)
 	@checks.is_voice_connected()
@@ -456,16 +456,16 @@ class Audio:
 		if self.players[ctx.message.server.id].listener:
 			await self.players[ctx.message.server.id].stop_listening()
 		else:
-			await self.bot.reply(":no_entry: I'm not listening")
+			await self.bot.embed_reply(":no_entry: I'm not listening")
 	
 	@listen.command(name = "once", pass_context = True)
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_once(self, ctx):
 		if self.players[ctx.message.server.id].listener:
-			await self.bot.reply(":no_entry: I'm already listening")
+			await self.bot.embed_reply(":no_entry: I'm already listening")
 		elif (await self.players[ctx.message.server.id].listen_once()) is False:
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@listen.command(name = "finish", pass_context = True)
 	@checks.is_voice_connected()
@@ -474,7 +474,7 @@ class Audio:
 		if self.players[ctx.message.server.id].listener:
 			await self.players[ctx.message.server.id].finish_listening()
 		else:
-			await self.bot.reply(":no_entry: I'm not listening")
+			await self.bot.embed_reply(":no_entry: I'm not listening")
 	
 	@listen.command(name = "process", pass_context = True)
 	@checks.is_voice_connected()
