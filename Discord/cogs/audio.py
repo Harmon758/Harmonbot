@@ -123,27 +123,31 @@ class Audio:
 			if number:
 				song = await self.players[ctx.message.server.id].skip_specific(number[0])
 				if song:
-					await self.bot.say(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number[0], song["info"]["title"]))
+					await self.bot.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number[0], song["info"]["title"]))
 					del song
+					await self.bot.attempt_delete_message(ctx.message)
 				else:
-					await self.bot.reply(":no_entry: There's not that many songs in the queue")
+					await self.bot.embed_reply(":no_entry: There's not that many songs in the queue")
 			elif self.players[ctx.message.server.id].skip():
-				await self.bot.say(":next_track: Song skipped")
+				await self.bot.embed_reply(":next_track: Song skipped") # title
+				await self.bot.attempt_delete_message(ctx.message)
 			else:
-				await self.bot.reply(":no_entry: There is no song to skip")
+				await self.bot.embed_reply(":no_entry: There is no song to skip")
 		elif ctx.message.author in self.bot.voice_client_in(ctx.message.server).channel.voice_members:
 			player = self.players[ctx.message.server.id]
 			vote = player.vote_skip(ctx.message.author)
 			if vote is False:
-				await self.bot.reply(":no_entry: There is no song to skip")
+				await self.bot.embed_reply(":no_entry: There is no song to skip")
 			elif vote is None:
-				await self.bot.reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
+				await self.bot.embed_reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
+				await self.bot.attempt_delete_message(ctx.message)
 			elif vote is True:
-				await self.bot.say(":next_track: Song skipped")
+				await self.bot.embed_say(":next_track: Song skipped")
 			else:
-				await self.bot.reply(":white_check_mark: You voted to skip the current song. Skips: {}/{}".format(vote, player.skip_votes_required))
+				await self.bot.embed_reply(":white_check_mark: You voted to skip the current song. Skips: {}/{}".format(vote, player.skip_votes_required))
+				await self.bot.attempt_delete_message(ctx.message)
 		else:
-			await self.bot.reply(":no_entry: You're not even listening!")
+			await self.bot.embed_reply(":no_entry: You're not even listening!")
 	
 	@skip.command(name = "to", pass_context = True, no_pm = True)
 	@checks.is_permitted()
