@@ -445,9 +445,9 @@ class Meta:
 			result = eval(code)
 			if inspect.isawaitable(result):
 				result = await result
-			await self.bot.reply(py_code_block.format(result))
+			await self.bot.reply(clients.py_code_block.format(result))
 		except Exception as e:
-			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 	
 	@commands.command(pass_context = True)
 	@checks.is_owner()
@@ -456,9 +456,9 @@ class Meta:
 		try:
 			exec(code)
 		except Exception as e:
-			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 			return
-		await self.bot.reply("Successfully executed.")
+		await self.bot.embed_reply("Successfully executed")
 	
 	@commands.command(aliases = ["deletetest"])
 	@checks.is_owner()
