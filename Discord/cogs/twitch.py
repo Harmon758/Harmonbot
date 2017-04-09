@@ -240,7 +240,8 @@ class Twitch:
 				streams = set(itertools.chain(*[channel["streams"] for channel in self.streams_info["channels"].values()]))
 				async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?channel={}&client_id={}&limit=100".format(','.join(streams), credentials.twitch_client_id)) as resp:
 					# TODO: Handle >100 streams
-					streams_data = await resp.json()
+					if resp.status != 504:
+						streams_data = await resp.json()
 				streams = streams_data.get("streams", [])
 				stream_ids += [stream["_id"] for stream in streams]
 				await self.process_twitch_streams(streams, "streams")
