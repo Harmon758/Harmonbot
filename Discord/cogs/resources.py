@@ -173,7 +173,7 @@ class Resources:
 			for pastedaccount in data:
 				pastedaccounts += pastedaccount["Source"] + " (" + pastedaccount["Id"] + "), "
 			pastedaccounts = pastedaccounts[:-2]
-		await self.bot.reply("Breached accounts: " + breachedaccounts + "\nPastes: " + pastedaccounts)
+		await self.bot.embed_reply("Breached accounts: {}\nPastes: {}".format(breachedaccounts, pastedaccounts))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
