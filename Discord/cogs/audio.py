@@ -307,7 +307,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def files(self, ctx):
 		'''List existing audio files'''
-		await self.bot.reply(self.players[ctx.message.server.id].list_files())
+		await self.bot.embed_reply(self.players[ctx.message.server.id].list_files())
 	
 	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
