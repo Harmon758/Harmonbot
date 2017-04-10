@@ -373,12 +373,12 @@ class Audio:
 		'''Search songs in the library'''
 		results = [filename for filename in self.players[ctx.message.server.id].library_files if search.lower() in filename.lower()]
 		if not results:
-			await self.bot.reply(":no_entry: No songs matching that search found")
+			await self.bot.embed_reply(":no_entry: No songs matching that search found")
 			return
 		try:
-			await self.bot.reply("```\n{}\n```".format(", ".join(results)))
+			await self.bot.embed_reply("```\n{}\n```".format(", ".join(results)))
 		except discord.errors.HTTPException:
-			await self.bot.reply(":no_entry: Too many results. Try a more specific search.")
+			await self.bot.embed_reply(":no_entry: Too many results\nTry a more specific search")
 	
 	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
