@@ -22,7 +22,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-8.59"
+version = "0.35.0-8.60"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -304,7 +304,7 @@ imageio.plugins.ffmpeg.download()
 
 # Load cogs
 
-for file in os.listdir("cogs"):
+for file in sorted(os.listdir("cogs")):
 	if file.endswith(".py") and not file.startswith(("random", "reactions")):
 		client.load_extension("cogs." + file[:-3])
 client.load_extension("cogs.random")
