@@ -32,6 +32,8 @@ class AudioPlayer:
 		self.play_next_song = asyncio.Event()
 		self.ytdl_options = {"default_search": "auto", "noplaylist": True, "quiet": True, 
 			"format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
+		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, 
+			"format": "bestaudio/best", "extractaudio": True, "outtmpl": "data/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True} # "audioformat": "mp3" ?
 		self.ytdl_playlist_options = {"default_search": "auto", "extract_flat": True, "forcejson": True, "quiet": True, 
 			"logger": playlist_logger}
 		self.default_volume = 100.0
@@ -48,6 +50,7 @@ class AudioPlayer:
 		self.recognizer = speech_recognition.Recognizer()
 		self.listener = None
 		self.listen_paused = False
+		self.previous_played_time = 0
 
 	async def join_channel(self, user, channel):
 		# join logic
@@ -71,18 +74,18 @@ class AudioPlayer:
 			await self.server.voice_client.disconnect()
 			await self.bot.embed_say(":door: I've left the voice channel")
 	
-	async def add_song(self, song, requester):
+	async def add_song(self, song, requester, timestamp, *, stream = False):
 		info = await self._get_song_info(song)
-		await self.queue.put({"info": info, "requester": requester})
-		return info["title"]
+		await self.queue.put({"info": info, "requester": requester, "timestamp": timestamp, "stream": stream})
+		return info["title"], info["webpage_url"]
 	
-	async def add_song_interrupt(self, videoid, requester):
+	async def add_song_interrupt(self, videoid, requester, timestamp):
 		info = await self._get_song_info(videoid)
-		return (await self._interrupt(info["url"], info["title"], requester))
+		return (await self._interrupt(info["url"], info["title"], requester, timestamp))
 	
-	async def insert_song(self, song, requester, position):
+	async def insert_song(self, song, requester, timestamp, position):
 		info = await self._get_song_info(song)
-		self.queue._queue.insert(position - 1, {"info": info, "requester": requester})
+		self.queue._queue.insert(position - 1, {"info": info, "requester": requester, "timestamp": timestamp})
 		await self.queue.put(None) # trigger get
 		self.queue._queue.pop()
 		return info["title"]
@@ -96,21 +99,53 @@ class AudioPlayer:
 		logging.getLogger("discord").info("playing URL {}".format(song))
 		return info
 	
+	async def _download_song(self, song):
+		ydl = youtube_dl.YoutubeDL(self.ytdl_download_options)
+		func = functools.partial(ydl.extract_info, song, download = True)
+		info = await self.bot.loop.run_in_executor(None, func)
+		return ydl.prepare_filename(info)
+	
 	def _play_next_song(self):
 		self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
 
 	async def player_task(self):
+		filename = None
 		while True:
 			self.play_next_song.clear()
+			if filename:
+				try:
+					os.remove(filename)
+				except PermissionError as e:
+					print(str(e))
 			current = await self.queue.get()
 			await self.not_interrupted.wait()
-			with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-				stream = self.server.voice_client.create_ffmpeg_player(current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
-			stream.volume = self.default_volume / 1000
-			self.current = current
-			self.current["stream"] = stream
-			self.current["stream"].start()
-			await self.bot.send_message(self.text_channel, ":arrow_forward: Now Playing: `{}`".format(self.current["info"].get("title", "N/A")))
+			if current["info"].get("is_live") or current.get("stream"):
+				with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
+					stream = self.server.voice_client.create_ffmpeg_player(current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
+				stream.volume = self.default_volume / 1000
+				self.current = current
+				self.current["stream"] = stream
+				self.current["stream"].start()
+				await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing", title = current["info"].get("title", "N/A"), title_url = current["info"].get("webpage_url"), timestamp = current["timestamp"], footer_text = current["requester"].display_name, footer_icon_url = current["requester"].avatar_url or current["requester"].default_avatar_url, thumbnail_url = current["info"].get("thumbnail"))
+			else:
+				embed = discord.Embed(title = current["info"].get("title", "N/A"), url = current["info"].get("webpage_url"), description = ":arrow_down: Downloading..", timestamp = current["timestamp"], color = clients.bot_color)
+				embed.set_footer(text = current["requester"].display_name, icon_url = current["requester"].avatar_url or current["requester"].default_avatar_url)
+				thumbnail = current["info"].get("thumbnail")
+				if thumbnail: embed.set_thumbnail(url = thumbnail)
+				now_playing_message = await self.bot.send_message(self.text_channel, embed = embed)
+				filename = await self._download_song(current["info"]["webpage_url"]) #
+				before_options = None
+				if current["info"].get("start_time"): before_options = "-ss {}".format(current["info"]["start_time"])
+				self.previous_played_time = current["info"].get("start_time") if current["info"].get("start_time") else 0
+				with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
+					stream = self.server.voice_client.create_ffmpeg_player(filename, before_options = before_options, after = self._play_next_song, stderr = ffmpeg_log)
+				stream.volume = self.default_volume / 1000
+				self.current = current
+				self.current["stream"] = stream
+				self.current["stream"].start()
+				embed.description = ":arrow_forward: Now playing"
+				await self.bot.edit_message(now_playing_message, embed = embed)
+			## stream.buff.read(stream.frame_size * 100 / stream.delay)
 			number_of_listeners = len(self.server.voice_client.channel.voice_members) - 1
 			self.skip_votes_required = number_of_listeners // 2 + number_of_listeners % 2
 			self.skip_votes.clear()
@@ -128,6 +163,7 @@ class AudioPlayer:
 			raise errors.AudioNotPlaying
 		if self.current["stream"].is_playing():
 			raise errors.AudioAlreadyDone
+		self.previous_played_time += self.current["stream"].delay * self.current["stream"].loops
 		self.current["stream"].resume()
 	
 	def skip(self):
@@ -254,46 +290,51 @@ class AudioPlayer:
 		for song in song_list:
 			await self.queue.put(song)
 	
-	async def play_tts(self, message, requester, *, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
+	async def play_tts(self, message, requester, *, timestamp = None, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
 		if not self.not_interrupted.is_set():
 			return False
 		func = functools.partial(subprocess.call, ["bin\espeak", "-a {}".format(amplitude), "-p {}".format(pitch), "-s {}".format(speed), "-g {}".format(word_gap), "-v{}".format(voice), "-w data/temp/tts.wav", message], shell = True)
 		await self.bot.loop.run_in_executor(None, func)
-		interrupt_message = await self._interrupt("data/temp/tts.wav", "TTS message", requester)
+		interrupt_message = await self._interrupt("data/temp/tts.wav", "TTS message", requester, timestamp)
 		if interrupt_message: await self.bot.delete_message(interrupt_message)
 		if os.path.exists("data/temp/tts.wav"): os.remove("data/temp/tts.wav")
 		return interrupt_message
 	
-	async def play_file(self, filename, requester):
+	async def play_file(self, filename, requester, timestamp):
 		if not filename:
 			filename = random.choice(self.audio_files)
 		elif filename not in self.audio_files:
-			await self.bot.reply(":no_entry: File not found")
+			await self.bot.embed_reply(":no_entry: File not found")
 			return True
-		return (await self._interrupt("data/audio_files/" + filename, filename, requester))
+		return (await self._interrupt("data/audio_files/" + filename, filename, requester, timestamp))
 	
 	def list_files(self):
 		return ", ".join(self.audio_files)
 	
-	async def play_from_library(self, filename, requester, *, clear_flag = True):
+	async def play_from_library(self, filename, requester, timestamp, *, clear_flag = True):
 		if not filename:
 			filename = random.choice(self.library_files)
 		elif filename not in self.library_files:
-			await self.bot.reply(":no_entry: Song file not found")
+			await self.bot.embed_reply(":no_entry: Song file not found")
 			return True
-		return (await self._interrupt("D:/Data (D)/Music/" + filename, filename, requester, clear_flag = clear_flag))
+		return (await self._interrupt("D:/Data (D)/Music/" + filename, filename, requester, timestamp, clear_flag = clear_flag))
 		# print([f for f in os.listdir("D:/Data (D)/Music/") if not f.endswith((".mp3", ".m4a", ".jpg"))])
 	
-	async def play_library(self, requester):
+	async def play_library(self, requester, timestamp):
 		if not self.not_interrupted.is_set():
 			return False
 		if not self.library_flag:
-			await self.bot.say(":notes: Playing songs from my library")
+			await self.bot.embed_say(":notes: Playing songs from my library")
 			self.library_flag = True
-			paused = self.pause()
+			try:
+				self.pause()
+			except errors.AudioError:
+				paused = False
+			else:
+				paused = True
 			self.not_interrupted.clear()
 			while self.bot.is_voice_connected(self.server) and self.library_flag:
-				await self.play_from_library("", requester, clear_flag = False)
+				await self.play_from_library("", requester, timestamp, clear_flag = False)
 				await asyncio.sleep(0.1) # wait to check
 			self.not_interrupted.set()
 			if paused: self.resume()
@@ -304,18 +345,23 @@ class AudioPlayer:
 			self.library_flag = False
 			self.skip()
 	
-	async def _interrupt(self, source, title, requester, *, clear_flag = True):
+	async def _interrupt(self, source, title, requester, timestamp, *, clear_flag = True):
 		if not self.not_interrupted.is_set() and clear_flag:
 			return False
 		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
 			stream = self.server.voice_client.create_ffmpeg_player(source, after = self._resume_from_interruption, stderr = ffmpeg_log)
 		stream.volume = self.default_volume / 1000
-		paused = self.pause()
+		try:
+			self.pause()
+		except errors.AudioError:
+			paused = False
+		else:
+			paused = True
 		stream.start()
 		temp_current = self.current
-		self.current = {"stream": stream, "info": {"webpage_url": title}, "requester": requester}
+		self.current = {"stream": stream, "info": {"title": title, "webpage_url": None}, "requester": requester, "timestamp": timestamp}
 		if clear_flag: self.not_interrupted.clear()
-		interrupt_message = await self.bot.send_message(self.text_channel, ":arrow_forward: Now Playing: " + title)
+		interrupt_message = await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing: " + title)
 		await self.resume_flag.wait()
 		self.current = temp_current
 		if paused: self.resume()
@@ -326,8 +372,8 @@ class AudioPlayer:
 	def _resume_from_interruption(self):
 		self.bot.loop.call_soon_threadsafe(self.resume_flag.set)
 	
-	async def add_playlist(self, playlist, requester):
-		response = await self.bot.reply(":cd: Loading..")
+	async def add_playlist(self, playlist, requester, timestamp):
+		response, embed = await self.bot.embed_reply(":cd: Loading..")
 		ydl = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
 		func = functools.partial(ydl.extract_info, playlist, download = False)
 		await self.bot.loop.run_in_executor(None, func)
@@ -336,17 +382,19 @@ class AudioPlayer:
 			playlist_info_file.seek(0)
 			playlist_info_file.truncate()
 		for position, video in enumerate(videos, start = 1):
-			await self.bot.edit_message(response, requester.mention + " :cd: Loading {}/{}".format(position, len(videos)))
+			embed.description = ":cd: Loading {}/{}".format(position, len(videos))
+			await self.bot.edit_message(response, embed = embed)
 			try:
-				await self.add_song(video["url"], requester)
+				await self.add_song(video["url"], requester, timestamp)
 			except Exception as e:
 				try:
-					await self.bot.send_message(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>\n{}: {}".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist, type(e).__name__, e))
+					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>\n{}: {}".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist, type(e).__name__, e))
 				except discord.errors.HTTPException:
-					await self.bot.send_message(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist))
-		await self.bot.edit_message(response, requester.mention + " :ballot_box_with_check: Your songs have been added to the queue.")
+					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist))
+		embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
+		await self.bot.edit_message(response, embed = embed)
 	
-	async def radio_on(self, requester):
+	async def radio_on(self, requester, timestamp):
 		if not self.not_interrupted.is_set():
 			return False
 		if not self.radio_flag:
@@ -357,13 +405,18 @@ class AudioPlayer:
 			await self.bot.send_embed(self.text_channel, ":radio: Radio based on `{}` is now on".format(self.current["info"]["title"]))
 			self.radio_flag = True
 			videoid = self.current["info"]["id"]
-			paused = self.pause()
+			try:
+				self.pause()
+			except errors.AudioError:
+				paused = False
+			else:
+				paused = True
 			while self.bot.is_voice_connected(self.server) and self.radio_flag:
 				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, credentials.google_apikey)
 				async with clients.aiohttp_session.get(url) as resp:
 					data = await resp.json()
 				videoid = random.choice(data["items"])["id"]["videoId"]
-				await self.add_song_interrupt(videoid, requester)
+				await self.add_song_interrupt(videoid, requester, timestamp)
 				await asyncio.sleep(0.1) # wait to check
 			if paused: self.resume()
 			return True
@@ -397,7 +450,12 @@ class AudioPlayer:
 		if clients.harmonbot_listener not in self.server.voice_client.channel.voice_members:
 			await self.bot.send_message(self.text_channel, ":no_entry: {} needs to be in the voice channel".format(clients.harmonbot_listener.mention))
 			return None
-		self.listen_paused = self.pause()
+		try:
+			self.pause()
+		except errors.AudioError:
+			self.listen_paused = False
+		else:
+			self.listen_paused = True
 		self.not_interrupted.clear()
 		if not self.listener:
 			self.listener = True

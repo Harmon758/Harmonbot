@@ -31,30 +31,36 @@ class Audio:
 	@checks.not_forbidden()
 	async def audio(self, ctx, *, song : str = ""): #elif options[0] == "full":
 		'''
-		Audio System
+		Audio System - play a song
 		All audio subcommands are also commands
 		Supported sites: https://rg3.github.io/youtube-dl/supportedsites.html and Spotify
+		For cleanup of audio commands, the Manage Messages permission is required
 		'''
 		if not song:
-			await self.bot.reply(":grey_question: What would you like to play?")
-		elif "playlist" in song:
-			await self.players[ctx.message.server.id].add_playlist(song, ctx.message.author)
+			await self.bot.embed_reply(":grey_question: What would you like to play?")
+			return
+		if "playlist" in song:
+			await self.players[ctx.message.server.id].add_playlist(song, ctx.message.author, ctx.message.timestamp)
+			return
+		if "spotify" in song:
+			song = await self.spotify_to_youtube(song)
+			if not song:
+				await self.bot.embed_reply(":warning: Error")
+				return
+		response, embed = await self.bot.embed_reply(":cd: Loading..")
+		stream = ctx.invoked_with == "stream"
+		try:
+			title, url = await self.players[ctx.message.server.id].add_song(song, ctx.message.author, ctx.message.timestamp, stream = stream)
+		except Exception as e:
+			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
+			if len(embed.description) > 2048: embed.description = embed.description[:2044] + "...`"
 		else:
-			if "spotify" in song:
-				song = await self.spotify_to_youtube(song)
-				if not song:
-					await self.bot.reply(":warning: Error")
-					return
-			response = await self.bot.reply(":cd: Loading..")
-			try:
-				title = await self.players[ctx.message.server.id].add_song(song, ctx.message.author)
-			except Exception as e:
-				try:
-					await self.bot.edit_message(response, "{}: :warning: Error\n{}: {}".format(ctx.message.author.mention, type(e).__name__, e))
-				except discord.errors.HTTPException:
-					await self.bot.edit_message(response, "{}: :warning: Error".format(ctx.message.author.mention))
-			else:
-				await self.bot.edit_message(response, "{}: :ballot_box_with_check: `{}` has been added to the queue.".format(ctx.message.author.mention, title))
+			embed.title = title
+			embed.url = url
+			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
+		finally:
+			await self.bot.edit_message(response, embed = embed)
+			await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(aliases = ["summon", "move"], pass_context = True, no_pm = True)
 	@checks.is_permitted()
@@ -195,7 +201,7 @@ class Audio:
 				return
 		response, embed = await self.bot.embed_reply(":cd: Loading..")
 		try:
-			title = await self.players[ctx.message.server.id].insert_song(song, ctx.message.author, position_number)
+			title = await self.players[ctx.message.server.id].insert_song(song, ctx.message.author, ctx.message.timestamp, position_number)
 		except Exception as e:
 			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
 			if len(embed.description) > 2048: embed.description = embed.description[:2044] + "...`"
@@ -235,9 +241,10 @@ class Audio:
 		'''
 		if self.players[ctx.message.server.id].radio_flag:
 			self.players[ctx.message.server.id].radio_off()
-			await self.bot.say(":stop_sign: Turned radio off")
-		elif (await self.players[ctx.message.server.id].radio_on(ctx.message.author)) is False:
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+			await self.bot.embed_reply(":stop_sign: Turned radio off")
+		elif (await self.players[ctx.message.server.id].radio_on(ctx.message.author, ctx.message.timestamp)) is False:
+			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@radio.command(name = "on", pass_context = True, aliases = ["start"], no_pm = True)
 	@checks.is_permitted()
@@ -245,9 +252,10 @@ class Audio:
 	async def radio_on(self, ctx):
 		'''Turn radio on'''
 		if self.players[ctx.message.server.id].radio_flag:
-			await self.bot.reply(":no_entry: Radio is already on")
-		elif (await self.players[ctx.message.server.id].radio_on(ctx.message.author)) is False:
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+			await self.bot.embed_reply(":no_entry: Radio is already on")
+		elif (await self.players[ctx.message.server.id].radio_on(ctx.message.author, ctx.message.timestamp)) is False:
+			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@radio.command(name = "off", pass_context = True, aliases = ["stop"], no_pm = True)
 	@checks.is_permitted()
@@ -275,8 +283,8 @@ class Audio:
 	@checks.is_voice_connected()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
-		if not (await self.players[ctx.message.server.id].play_tts(message, ctx.message.author)):
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+		if not (await self.players[ctx.message.server.id].play_tts(message, ctx.message.author, timestamp = ctx.message.timestamp)):
+			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@tts.command(name = "options", pass_context = True, no_pm = True)
 	@checks.not_forbidden()
@@ -298,16 +306,16 @@ class Audio:
 		if amplitude > 1000: amplitude = 1000
 		if speed > 9000: speed = 9000
 		if word_gap > 1000: word_gap = 1000
-		if not (await self.players[ctx.message.server.id].play_tts(message, ctx.message.author, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+		if not (await self.players[ctx.message.server.id].play_tts(message, ctx.message.author, timestamp = ctx.message.timestamp, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
+			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def file(self, ctx, *, filename : str = ""):
 		'''Play an audio file'''
-		if not (await self.players[ctx.message.server.id].play_file(filename, ctx.message.author)):
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+		if not (await self.players[ctx.message.server.id].play_file(filename, ctx.message.author, ctx.message.timestamp)):
+			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.not_forbidden()
@@ -323,9 +331,10 @@ class Audio:
 		'''Start/stop playing songs from my library'''
 		if self.players[ctx.message.server.id].library_flag:
 			self.players[ctx.message.server.id].stop_library()
-			await self.bot.say(":stop_sign: Stopped playing songs from my library")
-		elif not (await self.players[ctx.message.server.id].play_library(ctx.message.author)):
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+			await self.bot.embed_reply(":stop_sign: Stopped playing songs from my library")
+		elif not (await self.players[ctx.message.server.id].play_library(ctx.message.author, ctx.message.timestamp)):
+			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@library.command(name = "play", aliases = ["start"], pass_context = True, no_pm = True)
 	@checks.is_permitted()
@@ -333,9 +342,9 @@ class Audio:
 	async def library_play(self, ctx):
 		'''Start playing songs from my library'''
 		if self.players[ctx.message.server.id].library_flag:
-			await self.bot.reply(":no_entry: I'm already playing songs from my library")
-		elif not (await self.players[ctx.message.server.id].play_library(ctx.message.author)):
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+			await self.bot.embed_reply(":no_entry: I'm already playing songs from my library")
+		elif not (await self.players[ctx.message.server.id].play_library(ctx.message.author, ctx.message.timestamp)):
+			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "stop", pass_context = True, no_pm = True)
 	@checks.is_permitted()
@@ -345,17 +354,17 @@ class Audio:
 		if self.players[ctx.message.server.id].library_flag:
 			self.players[ctx.message.server.id].stop_library()
 			await self.bot.embed_reply(":stop_sign: Stopped playing songs from my library")
-			await self.bot.attempt_delete_message(ctx.message)
 		else:
-			await self.bot.embed_reply(":no_entry: Not currently playing songs from my library")
+			await self.bot.embed_reply(":no_entry: Not currently playing songs from my library", footer_text = "In response to: {}".format(ctx.message.content))
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@library.command(name = "song", pass_context = True, no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def library_song(self, ctx, *, filename : str = ""):
 		'''Play a song from my library'''
-		if not (await self.players[ctx.message.server.id].play_from_library(filename, ctx.message.author)):
-			await self.bot.reply(":warning: Something else is already playing. Please stop it first.")
+		if not (await self.players[ctx.message.server.id].play_from_library(filename, ctx.message.author, ctx.message.timestamp)):
+			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "files", pass_context = True, no_pm = True) # enable for DMs?
 	@checks.not_forbidden()
