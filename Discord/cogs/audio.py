@@ -102,13 +102,14 @@ class Audio:
 	@checks.is_voice_connected()
 	async def resume(self, ctx):
 		'''Resume the current song'''
-		resumed = self.players[ctx.message.server.id].resume()
-		if resumed:
-			await self.bot.embed_reply(":play_pause: Resumed song")
-		elif resumed is False:
+		try:
+			self.players[ctx.message.server.id].resume()
+		except errors.AudioNotPlaying:
 			await self.bot.embed_reply(":no_entry: There is no song to resume")
-		elif resumed is None:
+		except errors.AudioAlreadyDone:
 			await self.bot.embed_reply(":no_entry: The song is already playing")
+		else:
+			await self.bot.embed_reply(":play_pause: Resumed song")
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(pass_context = True, aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
