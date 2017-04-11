@@ -133,44 +133,37 @@ class AudioPlayer:
 	
 	def skip(self):
 		if not self.current or self.current["stream"].is_done():
-			return False
-		else:
-			self.current["stream"].stop()
-			self.skip_votes.clear()
-			return True
+			raise errors.AudioNotPlaying
+		self.current["stream"].stop()
+		self.skip_votes.clear()
 	
 	def vote_skip(self, voter):
 		if not self.current or self.current["stream"].is_done():
-			return False
-		elif voter.id in self.skip_votes:
-			return None
-		else:
-			self.skip_votes.add(voter.id)
-			vote_count = len(self.skip_votes)
-			if vote_count >= self.skip_votes_required or voter.id == self.current["requester"].id:
-				self.skip()
-				return True
-			else:
-				return len(self.skip_votes)
+			raise errors.AudioNotPlaying
+		if voter.id in self.skip_votes:
+			raise errors.AudioAlreadyDone
+		self.skip_votes.add(voter.id)
+		vote_count = len(self.skip_votes)
+		if vote_count < self.skip_votes_required and voter.id != self.current["requester"].id:
+			return len(self.skip_votes)
+		self.skip()
 	
 	async def skip_specific(self, number):
-		if 1 <= number <= self.queue.qsize():
-			self.queue._queue.rotate(-(number - 1))
-			song = await self.queue.get()
-			self.queue._queue.rotate(number - 1)
-			return song
-		else:
-			return False
+		if not 1 <= number <= self.queue.qsize():
+			raise errors.AudioNotPlaying
+		self.queue._queue.rotate(-(number - 1))
+		song = await self.queue.get()
+		self.queue._queue.rotate(number - 1)
+		return song
 	
 	async def skip_to_song(self, number):
-		if 1 <= number <= self.queue.qsize():
-			songs = []
-			for i in range(number - 1):
-				songs.append(await self.queue.get())
-			self.skip()
-			return songs
-		else:
-			return False
+		if not 1 <= number <= self.queue.qsize():
+			raise errors.AudioNotPlaying
+		songs = []
+		for i in range(number - 1):
+			songs.append(await self.queue.get())
+		self.skip()
+		return songs
 	
 	async def replay(self):
 		if not self.current or not self.current.get("info").get("url"):

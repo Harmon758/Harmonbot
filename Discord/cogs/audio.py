@@ -115,43 +115,44 @@ class Audio:
 	@commands.group(pass_context = True, aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
-	async def skip(self, ctx, *number : int):
+	async def skip(self, ctx, *, number : int = 0):
 		'''
 		Skip a song
 		Skip or vote to skip the current song or skip a song number in the queue
-		The server owner and the person who requested the song can immediately skip the song and skip songs in the queue
+		Those permitted and the person who requested the song can immediately skip the song and skip songs in the queue
 		Otherwise, a majority vote of the people in the voice channel is required
 		'''
-		# implement override permission
+		# TODO: Implement override permission
+		player = self.players[ctx.message.server.id]
 		if ctx.message.author.id in (ctx.message.server.owner.id, credentials.myid) or checks.is_permitted_check(ctx):
 			if number:
-				song = await self.players[ctx.message.server.id].skip_specific(number[0])
-				if song:
-					await self.bot.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number[0], song["info"]["title"]))
-					del song
-					await self.bot.attempt_delete_message(ctx.message)
+				try:
+					song = await player.skip_specific(number)
+				except errors.AudioNotPlaying:
+					await self.bot.embed_reply(":no_entry: There's not that many songs in the queue", footer_text = "In response to: {}".format(ctx.message.content))
 				else:
-					await self.bot.embed_reply(":no_entry: There's not that many songs in the queue")
-			elif self.players[ctx.message.server.id].skip():
-				await self.bot.embed_reply(":next_track: Song skipped") # title
-				await self.bot.attempt_delete_message(ctx.message)
+					await self.bot.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number, song["info"]["title"]))
+					del song
 			else:
-				await self.bot.embed_reply(":no_entry: There is no song to skip")
+				try:
+					player.skip()
+				except errors.AudioNotPlaying:
+					await self.bot.embed_reply(":no_entry: There is no song to skip")
+				else:
+					await self.bot.embed_reply(":next_track: Song skipped")
+					# TODO: Include title of skipped song
 		elif ctx.message.author in self.bot.voice_client_in(ctx.message.server).channel.voice_members:
-			player = self.players[ctx.message.server.id]
-			vote = player.vote_skip(ctx.message.author)
-			if vote is False:
+			try:
+				vote = player.vote_skip(ctx.message.author)
+			except errors.AudioNotPlaying:
 				await self.bot.embed_reply(":no_entry: There is no song to skip")
-			elif vote is None:
+			except errors.AudioAlreadyDone:
 				await self.bot.embed_reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
-				await self.bot.attempt_delete_message(ctx.message)
-			elif vote is True:
-				await self.bot.embed_say(":next_track: Song skipped")
 			else:
-				await self.bot.embed_reply(":white_check_mark: You voted to skip the current song. Skips: {}/{}".format(vote, player.skip_votes_required))
-				await self.bot.attempt_delete_message(ctx.message)
+				await self.bot.embed_reply(":white_check_mark: You voted to skip the current song\n{}".format("Skips: {}/{}".format(vote, player.skip_votes_required) if vote else ":next_track: Song skipped"))
 		else:
-			await self.bot.embed_reply(":no_entry: You're not even listening!")
+			await self.bot.embed_reply(":no_entry: You're not even listening!", footer_text = "In response to: {}".format(ctx.message.content))
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@skip.command(name = "to", pass_context = True, no_pm = True)
 	@checks.is_permitted()
@@ -161,12 +162,13 @@ class Audio:
 		Skip to a song in the queue
 		Skips every song before number
 		'''
-		songs = await self.players[ctx.message.server.id].skip_to_song(number)
-		if songs:
+		try:
+			songs = await self.players[ctx.message.server.id].skip_to_song(number)
+		except errors.AudioNotPlaying:
+			await self.bot.embed_reply(":no_entry: There aren't that many songs in the queue", footer_text = "In response to: {}".format(ctx.message.content))
+		else:
 			await self.bot.embed_reply(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
 			del songs
-		else:
-			await self.bot.embed_reply(":no_entry: There aren't that many ({}) songs in the queue".format(number))
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(pass_context = True, aliases = ["repeat"], no_pm = True)
