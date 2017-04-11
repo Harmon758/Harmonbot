@@ -11,11 +11,11 @@ import speech_recognition
 import subprocess
 import youtube_dl
 
+import clients
 import credentials
 from modules import utilities
-
-import clients
 from clients import inflect_engine
+from utilities import errors
 
 playlist_logger = logging.getLogger("playlist")
 playlist_logger.setLevel(logging.DEBUG)
@@ -58,13 +58,11 @@ class AudioPlayer:
 			voice_channel = discord.utils.find(lambda _channel: _channel.type == discord.ChannelType.voice and \
 				utilities.remove_symbols(_channel.name).startswith(' '.join(channel)), self.server.channels)
 		if not voice_channel:
-			await self.bot.reply(":no_entry: Voice channel not found.")
-		elif self.bot.is_voice_connected(self.server):
+			raise errors.AudioNotPlaying
+		if self.bot.is_voice_connected(self.server):
 			await self.server.voice_client.move_to(voice_channel)
-			await self.bot.say(":arrow_right_hook: I've moved to the voice channel.")
-		else:
-			await self.bot.join_voice_channel(voice_channel)
-			await self.bot.say(":headphones: I've joined the voice channel.")
+			return True
+		await self.bot.join_voice_channel(voice_channel)
 	
 	async def leave_channel(self):
 		if self.bot.is_voice_connected(self.server):

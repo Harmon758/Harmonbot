@@ -29,3 +29,9 @@ class NotPermitted(CommandError):
 class LichessUserNotFound(CommandError):
 	pass
 
+class AudioError(CommandError):
+	pass
+
+class AudioNotPlaying(AudioError):
+	pass
+

@@ -2,11 +2,13 @@
 import discord
 from discord.ext import commands
 
+import concurrent.futures
 import inspect
 import urllib
 
 import credentials
 from utilities import checks
+from utilities import errors
 from utilities import audio_player
 from clients import aiohttp_session
 
@@ -58,18 +60,18 @@ class Audio:
 	@checks.is_permitted()
 	async def join(self, ctx, *channel : str):
 		'''Get me to join a voice channel'''
+		# TODO: Permit all when not in voice channel?
 		if ctx.message.server.id not in self.players:
 			self.players[ctx.message.server.id] = audio_player.AudioPlayer(self.bot, ctx.message.channel)
-		await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
-		'''
-		if ctx.message.server.id not in self.players or not ctx.message.server.voice_client:
-			self.players[ctx.message.server.id] = audio_player.AudioPlayer(self.bot, ctx.message.channel)
-			await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
-		elif checks.is_permitted_check(ctx):
-			await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
+		try:
+			moved = await self.players[ctx.message.server.id].join_channel(ctx.message.author, channel)
+		except errors.AudioNotPlaying:
+			await self.bot.embed_reply(":no_entry: Voice channel not found", footer_text = "In response to: {}".format(ctx.message.content))
+		except concurrent.futures._base.TimeoutError:
+			await self.bot.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join", footer_text = "In response to: {}".format(ctx.message.content))
 		else:
-			await self.bot.reply(":no_entry: You don't have permission to move me")
-		'''
+			await self.bot.embed_reply(":arrow_right_hook: I've moved to the voice channel" if moved else ":headphones: I've joined the voice channel")
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_permitted()
