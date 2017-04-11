@@ -189,32 +189,41 @@ class AudioPlayer:
 		self.current["stream"].volume = volume_setting / 1000
 		return True
 	
-	def current_output(self):
+	def current_embed(self):
 		if not self.current or self.current["stream"].is_done():
-			return ":speaker: There is no song currently playing."
+			raise errors.AudioNotPlaying
+		embed = discord.Embed(title = self.current.get("info", {}).get("title"), url = self.current.get("info", {}).get("webpage_url"), color = clients.bot_color)
+		requester = self.current.get("requester")
+		if requester: embed.set_footer(text = "Added by " + requester.display_name, icon_url = requester.avatar_url or requester.default_avatar_url)
+		timestamp = self.current.get("timestamp")
+		if timestamp: embed.timestamp = timestamp
+		# Description
+		if self.radio_flag:
+			description = ":radio: Radio is currently playing"
+		elif self.library_flag:
+			description = ":notes: Playing song from my library"
 		else:
-			views = utilities.add_commas(self.current["info"].get("view_count"))
-			likes = utilities.add_commas(self.current["info"].get("like_count"))
-			dislikes = utilities.add_commas(self.current["info"].get("dislike_count"))
-			duration = self.current["info"].get("duration")
-			if duration: duration = utilities.secs_to_colon_format(duration)
-			if self.radio_flag:
-				output = ":radio: Radio is currently playing: "
-			elif self.library_flag:
-				output = ":notes: Playing song from my library: "
-			else:
-				output = ":musical_note: Currently playing: "
-			output += self.current["info"].get("webpage_url")
-			output += '\n' if views or likes or dislikes or duration else ""
-			output += views + " :eye:" if views else ""
-			output += " | " if views and (likes or dislikes or duration) else ""
-			output += likes + " :thumbsup::skin-tone-2:" if likes else ""
-			output += " | " if likes and (dislikes or duration) else ""
-			output += dislikes + " :thumbsdown::skin-tone-2:" if dislikes else ""
-			output += " | " if dislikes and duration else ""
-			output += duration + " :clock:" if duration else ""
-			output += "\nAdded by: " + self.current["requester"].display_name if not self.radio_flag and not self.library_flag else ""
-			return output
+			description = ":musical_note: Currently playing"
+		played_duration = self.previous_played_time + self.current["stream"].delay * self.current["stream"].loops
+		total_duration = self.current.get("info", {}).get("duration")
+		if total_duration:
+			playing_bar = "▬" * 10
+			button_spot = int(played_duration / (total_duration / 10))
+			playing_bar = playing_bar[:button_spot] + ":radio_button: " + playing_bar[button_spot + 1:]
+			played_duration = utilities.secs_to_colon_format(played_duration)
+			total_duration = utilities.secs_to_colon_format(total_duration)
+			description = ":arrow_forward: {}`[{}/{}]`".format(playing_bar, played_duration, total_duration) # Add :sound:?
+		views = utilities.add_commas(self.current.get("info", {}).get("view_count"))
+		likes = utilities.add_commas(self.current.get("info", {}).get("like_count"))
+		dislikes = utilities.add_commas(self.current.get("info", {}).get("dislike_count"))
+		description += '\n' if views or likes or dislikes else ""
+		description += views + " :eye:" if views else ""
+		description += " | " if views and (likes or dislikes) else ""
+		description += likes + " :thumbsup::skin-tone-2:" if likes else ""
+		description += " | " if likes and dislikes else ""
+		description += dislikes + " :thumbsdown::skin-tone-2:" if dislikes else ""
+		embed.description = description
+		return embed
 	
 	def queue_output(self):
 		if self.radio_flag:

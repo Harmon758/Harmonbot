@@ -421,12 +421,19 @@ class Audio:
 			await self.bot.embed_reply(":sound: Set default volume to {:g}".format(volume_setting))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.group(pass_context = True, aliases = ["current"], no_pm = True, invoke_without_command = True)
+	@commands.group(aliases = ["current"], pass_context = True, no_pm = True, invoke_without_command = True)
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
 	async def playing(self, ctx):
 		'''See the currently playing song'''
-		await self.bot.say(self.players[ctx.message.server.id].current_output())
+		try:
+			embed = self.players[ctx.message.server.id].current_embed()
+		except errors.AudioNotPlaying:
+			await self.bot.embed_reply(":speaker: There is no song currently playing")
+		else:
+			embed.set_author(name = ctx.message.author.display_name, icon_url = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url)
+			await self.bot.say(embed = embed)
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(pass_context = True, no_pm = True)
 	@checks.is_voice_connected()
