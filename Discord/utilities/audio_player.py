@@ -356,9 +356,10 @@ class AudioPlayer:
 			return False
 		if not self.radio_flag:
 			if not self.current:
-				await self.bot.reply(":no_entry: Please play a song to base the radio station off of first")
+				await self.bot.embed_reply(":no_entry: Please play a song to base the radio station off of first")
+				# TODO: Non song based station?
 				return None
-			await self.bot.say(":radio: Radio based on `{}` is now on".format(self.current["info"]["title"]))
+			await self.bot.send_embed(self.text_channel, ":radio: Radio based on `{}` is now on".format(self.current["info"]["title"]))
 			self.radio_flag = True
 			videoid = self.current["info"]["id"]
 			paused = self.pause()
