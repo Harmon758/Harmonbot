@@ -216,13 +216,14 @@ class AudioPlayer:
 		return True
 	
 	def get_volume(self):
-		if not self.current: return None
+		if not self.current:
+			raise errors.AudioNotPlaying
 		return self.current["stream"].volume * 1000
 	
 	def set_volume(self, volume_setting):
-		if not self.current: return False
+		if not self.current:
+			raise errors.AudioNotPlaying
 		self.current["stream"].volume = volume_setting / 1000
-		return True
 	
 	def current_embed(self):
 		if not self.current or self.current["stream"].is_done():
