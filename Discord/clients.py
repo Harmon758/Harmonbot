@@ -22,13 +22,14 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-9.0"
+version = "0.35.0-9.1"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
 cache_channel_id = "254051856219635713"
 fake_ip = "nice try"
 fake_location = "Fort Yukon, Alaska"
+library_files = "D:/Data (D)/Music/"
 bot_color = 0x738bd7
 rss_color = 0xfa9b39 # f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 twitch_color = 0x6441a4

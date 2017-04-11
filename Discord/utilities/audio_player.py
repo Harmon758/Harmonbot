@@ -44,7 +44,7 @@ class AudioPlayer:
 		self.not_interrupted = asyncio.Event()
 		self.not_interrupted.set()
 		self.audio_files = os.listdir("data/audio_files/")
-		self.library_files = [f for f in os.listdir("D:/Data (D)/Music/") if f.endswith((".mp3", ".m4a"))]
+		self.library_files = [f for f in os.listdir(clients.library_files) if f.endswith((".mp3", ".m4a"))]
 		self.library_flag = False
 		self.radio_flag = False
 		self.recognizer = speech_recognition.Recognizer()
@@ -317,8 +317,8 @@ class AudioPlayer:
 		elif filename not in self.library_files:
 			await self.bot.embed_reply(":no_entry: Song file not found")
 			return True
-		return (await self._interrupt("D:/Data (D)/Music/" + filename, filename, requester, timestamp, clear_flag = clear_flag))
-		# print([f for f in os.listdir("D:/Data (D)/Music/") if not f.endswith((".mp3", ".m4a", ".jpg"))])
+		return (await self._interrupt(clients.library_files + filename, filename, requester, timestamp, clear_flag = clear_flag))
+		## print([f for f in os.listdir(clients.library_files) if not f.endswith((".mp3", ".m4a", ".jpg"))])
 	
 	async def play_library(self, requester, timestamp):
 		if not self.not_interrupted.is_set():
