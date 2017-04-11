@@ -14,7 +14,6 @@ import youtube_dl
 import clients
 import credentials
 from modules import utilities
-from clients import inflect_engine
 from utilities import errors
 
 playlist_logger = logging.getLogger("playlist")
@@ -225,21 +224,21 @@ class AudioPlayer:
 		embed.description = description
 		return embed
 	
-	def queue_output(self):
+	def queue_embed(self):
 		if self.radio_flag:
-			return ":radio: Radio is currently on"
+			return discord.Embed(title = ":radio: Radio is currently on", color = clients.bot_color)
 		elif self.library_flag:
-			return ":notes: Playing songs from my library"
+			return discord.Embed(title = ":notes: Playing songs from my library", color = clients.bot_color)
 		elif self.queue.qsize() == 0:
-			return ":hole: The queue is currently empty"
+			return discord.Embed(title = ":hole: The queue is currently empty", color = clients.bot_color)
 		else:
 			queue_string = ""
 			for number, stream in enumerate(list(self.queue._queue)[:10], start = 1):
-				queue_string += ":{}: **{}** (<{}>) Added by: {}\n".format("keycap_ten" if number == 10 else inflect_engine.number_to_words(number), stream["info"].get("title", "N/A"), stream["info"].get("webpage_url", "N/A"), stream["requester"].display_name)
+				queue_string += ":{}: **[{}]({})** (Added by: {})\n".format("keycap_ten" if number == 10 else clients.inflect_engine.number_to_words(number), stream["info"].get("title", "N/A"), stream["info"].get("webpage_url", "N/A"), stream["requester"].display_name)
 			if self.queue.qsize() > 10:
 				more_songs = self.queue.qsize() - 10
 				queue_string += ":arrow_right: There {} {} more {} in the queue".format(clients.inflect_engine.plural("is", more_songs), more_songs, clients.inflect_engine.plural("song", more_songs))
-			return ":musical_score: Queue:\n" + queue_string
+			return discord.Embed(title = ":musical_score: Queue:", description = queue_string, color = clients.bot_color)
 	
 	async def empty_queue(self):
 		while not self.queue.empty():

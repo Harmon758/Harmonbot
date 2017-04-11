@@ -440,7 +440,10 @@ class Audio:
 	@checks.not_forbidden()
 	async def queue(self, ctx):
 		'''See the current queue'''
-		await self.bot.say(self.players[ctx.message.server.id].queue_output())
+		embed = self.players[ctx.message.server.id].queue_embed()
+		embed.set_author(name = ctx.message.author.display_name, icon_url = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url)
+		await self.bot.say(embed = embed)
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	# Voice Input
 	
