@@ -87,13 +87,14 @@ class Audio:
 	@checks.is_voice_connected()
 	async def pause(self, ctx):
 		'''Pause the current song'''
-		paused = self.players[ctx.message.server.id].pause()
-		if paused:
-			await self.bot.embed_reply(":pause_button: Paused song")
-		elif paused is False:
+		try:
+			self.players[ctx.message.server.id].pause()
+		except errors.AudioNotPlaying:
 			await self.bot.embed_reply(":no_entry: There is no song to pause")
-		elif paused is None:
+		except errors.AudioAlreadyDone:
 			await self.bot.embed_reply(":no_entry: The song is already paused")
+		else:
+			await self.bot.embed_reply(":pause_button: Paused song")
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(pass_context = True, aliases = ["start"], no_pm = True)

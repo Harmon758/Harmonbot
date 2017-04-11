@@ -119,12 +119,10 @@ class AudioPlayer:
 	
 	def pause(self):
 		if not self.current or self.current["stream"].is_done():
-			return False
-		elif not self.current["stream"].is_playing():
-			return None
-		else:
-			self.current["stream"].pause()
-			return True
+			raise errors.AudioNotPlaying
+		if not self.current["stream"].is_playing():
+			raise errors.AudioAlreadyDone
+		self.current["stream"].pause()
 	
 	def resume(self):
 		if not self.current or self.current["stream"].is_done():

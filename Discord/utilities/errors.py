@@ -35,3 +35,6 @@ class AudioError(CommandError):
 class AudioNotPlaying(AudioError):
 	pass
 
+class AudioAlreadyDone(AudioError):
+	pass
+
