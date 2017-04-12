@@ -77,7 +77,7 @@ class Tools:
 				await self.bot.embed_reply(":no_entry: Syntax error")
 			except ZeroDivisionError:
 				await self.bot.embed_reply(":no_entry: Error: Division by zero")
-			except concurrent.futures.TimeoutError:
+			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
 				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
