@@ -223,7 +223,7 @@ if __name__ == "__main__":
 			mentionless_message = ""
 			for word in message.clean_content.split():
 				if not word.startswith("@"):
-					mentionless_message += word
+					mentionless_message += word + ' '
 			await clients.reply(message, clients.cleverbot_instance.ask(mentionless_message))
 	
 	@client.event
