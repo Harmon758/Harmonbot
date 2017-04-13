@@ -226,6 +226,7 @@ if __name__ == "__main__":
 					mentionless_message += word + ' '
 			mentionless_message = mentionless_message[:-1]
 			aiml_response = clients.aiml_kernel.respond(mentionless_message)
+			# Handle brain not loaded?
 			if aiml_response:
 				await clients.embed_reply(message, aiml_response)
 			else:
@@ -239,6 +240,9 @@ if __name__ == "__main__":
 				if isinstance(arg, commands.context.Context):
 					print("Missing Permissions for #{0.channel.name} in {0.server.name}".format(arg.message))
 					return
+				elif isinstance(arg, discord.Message):
+					print("Missing Permissions for #{0.channel.name} in {0.server.name}".format(arg))
+					return
 		print('Ignoring exception in {}'.format(event_method), file = sys.stderr)
 		traceback.print_exc()
 		logging.errors_logger.error("Uncaught exception\n", exc_info = (type, value, _traceback))
@@ -248,8 +252,7 @@ if __name__ == "__main__":
 		if isinstance(error, errors.NotOwner): return # not owner
 		if isinstance(error, (commands.errors.CommandNotFound, commands.errors.DisabledCommand)): return # disabled or not found
 		if isinstance(error, (errors.LichessUserNotFound)): return # handled with local error handler
-		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError): return
-		# handled with local error handler
+		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError): return # handled with local error handler
 		embed = discord.Embed(color = clients.bot_color)
 		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
 		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
