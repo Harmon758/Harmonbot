@@ -317,8 +317,8 @@ class Resources:
 		embed.description = "Online: {}\n".format(data["online"])
 		embed.description += "Member since {}\n".format(datetime.datetime.utcfromtimestamp(data["createdAt"] / 1000.0).strftime("%b %#d, %Y")) #
 		embed.add_field(name = "Games", value = "Played: {0[all]}\nRated: {0[rated]}\nWins: {0[win]}\nLosses: {0[loss]}\nDraws: {0[draw]}\nBookmarks: {0[bookmark]}\nAI: {0[ai]}".format(data["count"]))
-		embed.add_field(name = "Time", value = "Spent playing: {}\nOn TV: {}".format(utilities.secs_to_letter_format(data["playTime"]["total"]), utilities.secs_to_letter_format(data["playTime"]["tv"])))
 		embed.add_field(name = "Follows", value = "Followers: {0[nbFollowers]}\nFollowing: {0[nbFollowing]}".format(data))
+		embed.add_field(name = "Time", value = "Spent playing: {}\nOn TV: {}".format(utilities.secs_to_letter_format(data["playTime"]["total"]), utilities.secs_to_letter_format(data["playTime"]["tv"])))
 		for mode, field_name in (("bullet", ":zap: Bullet"), ("blitz", ":fire: Blitz"), ("classical", ":hourglass: Classical"), ("correspondence", ":envelope: Correspondence"), ("crazyhouse", ":pisces: Crazyhouse"), ("chess960", ":game_die: Chess960"), ("kingOfTheHill", ":triangular_flag_on_post: King Of The Hill"), ("threeCheck", ":three: Three-Check"), ("antichess", ":arrows_clockwise: Antichess"), ("atomic", ":atom: Atomic"), ("horde", ":question: Horde"), ("racingKings", ":checkered_flag: Racing Kings"), ("puzzle", ":bow_and_arrow: Training")):
 			if data["perfs"].get(mode, {}).get("games", 0) == 0: continue
 			prov = '?' if data["perfs"][mode]["prov"] else ""
