@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import asyncio
 import datetime
+import dateutil.parser
 import imgurpython
 import isodate
 import json
@@ -16,7 +17,6 @@ from modules import utilities
 from utilities import checks
 from utilities import errors
 import clients
-from clients import aiohttp_session
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -1005,6 +1005,35 @@ class Resources:
 			return
 		await self.bot.embed_reply(data["text"][0], footer_text = "{}Powered by Yandex.Translate".format("Detected Language Code: {} | ".format(data["detected"]["lang"]) if not from_language_code else ""))
 	
+	@commands.command(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"], pass_context = True)
+	@checks.not_forbidden()
+	async def urbandictionary(self, ctx, *, term : str):
+		'''Urban Dictionary'''
+		# TODO: Integrate into reactions system; Return first definition instead for non-reaction version?
+		async with clients.aiohttp_session.get("http://api.urbandictionary.com/v0/define?term={}".format(term.replace('+', ' '))) as resp:
+			data = await resp.json()
+		if not data or "list" not in data or not data["list"]:
+			await self.bot.embed_reply(":no_entry: No results found")
+			return
+		num_results = len(data["list"]) # if one definition
+		if num_results > 10: num_reults = 10
+		response, embed = await self.bot.embed_reply("React with a number from 1 to {} to view each definition".format(num_results))
+		numbers = {"1⃣": 1, "2⃣": 2, "3⃣": 3, "4⃣": 4, "5⃣": 5, "6⃣": 6, "7⃣": 7, "8⃣": 8, "9⃣": 9, "🔟" : 10}
+		for number_emote in sorted(numbers.keys())[:num_results]:
+			await self.bot.add_reaction(response, number_emote)
+		while True:
+			emoji_response = await self.bot.wait_for_reaction(user = ctx.message.author, message = response, emoji = sorted(numbers.keys())[:num_results])
+			reaction = emoji_response.reaction
+			number = numbers[reaction.emoji]
+			definition = data["list"][number - 1]
+			embed.clear_fields()
+			embed.title = definition["word"]
+			embed.url = definition["permalink"]
+			embed.description = definition["definition"]
+			# TODO: Check description/definition length?
+			embed.add_field(name = "Example", value = "{0[example]}\n\n:thumbsup::skin-tone-2: {0[thumbs_up]} :thumbsdown::skin-tone-2: {0[thumbs_down]}".format(definition))
+			embed.set_footer(text = "Select a different number for another definition")
+			await self.bot.edit_message(response, embed = embed)
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
