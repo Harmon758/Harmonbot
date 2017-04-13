@@ -582,37 +582,37 @@ class Games:
 		if len(options) >= 1 and utilities.is_digit_gtz(options[0]):
 			max_value = int(options[0])
 		else:
-			await self.bot.reply("What range of numbers would you like to guess to? 1 to _")
-			max_value = await self.bot.wait_for_message(timeout = wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
+			await self.bot.embed_reply("What range of numbers would you like to guess to? 1 to _")
+			max_value = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
 			if max_value is None:
 				max_value = 10
 			else:
 				max_value = int(max_value.content)
 		answer = random.randint(1, max_value)
 		if not tries:
-			await self.bot.reply("How many tries would you like?")
-			tries = await self.bot.wait_for_message(timeout = wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
+			await self.bot.embed_reply("How many tries would you like?")
+			tries = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
 			if tries is None:
 				tries = 1
 			else:
 				tries = int(tries.content)
-		await self.bot.reply("Guess a number between 1 to " + str(max_value))
+		await self.bot.embed_reply("Guess a number between 1 to {}".format(max_value))
 		while tries != 0:
-			guess = await self.bot.wait_for_message(timeout = wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
+			guess = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
 			if guess is None:
-				await self.bot.reply("Sorry, you took too long. It was " + str(answer))
+				await self.bot.embed_reply("Sorry, you took too long\nIt was {}".format(answer))
 				return
 			if int(guess.content) == answer:
-				await self.bot.reply("You are right!")
+				await self.bot.embed_reply("You are right!")
 				return
 			elif tries != 1 and int(guess.content) > answer:
-				await self.bot.reply("It's less than " + guess.content)
+				await self.bot.embed_reply("It's less than " + guess.content)
 				tries -= 1
 			elif tries != 1 and int(guess.content) < answer:
-				await self.bot.reply("It's greater than " + guess.content)
+				await self.bot.embed_reply("It's greater than " + guess.content)
 				tries -= 1
 			else:
-				await self.bot.reply("Sorry, it was actually " + str(answer))
+				await self.bot.embed_reply("Sorry, it was actually {}".format(answer))
 				return
 	
 	@commands.group(invoke_without_command = True, pass_context = True)
