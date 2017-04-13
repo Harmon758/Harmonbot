@@ -72,7 +72,7 @@ class AudioPlayer:
 				self.current["stream"].stop()
 			self.player.cancel()
 			await self.server.voice_client.disconnect()
-			await self.bot.embed_say(":door: I've left the voice channel")
+			return True
 	
 	async def add_song(self, song, requester, timestamp, *, stream = False):
 		info = await self._get_song_info(song)

@@ -83,9 +83,11 @@ class Audio:
 	@checks.is_voice_connected()
 	async def leave(self, ctx):
 		'''Tell me to leave the voice channel'''
-		# await self.players[ctx.message.server.id].leave_channel()
-		# del self.players[ctx.message.server.id]
-		await self.bot.reply("The leave command is currently disabled right now, due to an issue/bug with Discord.")
+		if (await self.players[ctx.message.server.id].leave_channel()):
+			await self.bot.embed_reply(":door: I've left the voice channel")
+		del self.players[ctx.message.server.id]
+		await self.bot.attempt_delete_message(ctx.message)
+		## await self.bot.embed_reply("The leave command is currently disabled right now, due to an issue/bug with Discord.")
 	
 	@commands.command(pass_context = True, aliases = ["stop"], no_pm = True)
 	@checks.is_permitted()
