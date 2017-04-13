@@ -1001,15 +1001,15 @@ class Resources:
 	async def whatis(self, *search : str): #WIP
 		'''WIP'''
 		if not search:
-			await self.bot.reply("What is what?")
+			await self.bot.embed_reply("What is what?")
 		else:
 			url = "https://kgsearch.googleapis.com/v1/entities:search?limit=1&query={}&key={}".format('+'.join(search), credentials.google_apikey)
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
-				await self.bot.reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
+				await self.bot.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
 			else:
-				await self.bot.reply("I don't know what that is.")
+				await self.bot.embed_reply("I don't know what that is")
 	
 	@commands.group(aliases = ["worldofwarcraft"])
 	@checks.not_forbidden()
