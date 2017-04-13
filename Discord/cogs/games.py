@@ -796,6 +796,152 @@ class Games:
 		elapsed = timeit.default_timer() - start_time
 		await self.bot.edit_message(response, "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
 	
+	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
+	@checks.not_forbidden()
+	async def rps(self, object : str):
+		'''Rock paper scissors'''
+		if object.lower() not in ('r', 'p', 's', "rock", "paper", "scissors"):
+			await self.bot.embed_reply(":no_entry: That's not a valid object")
+			return
+		value = random.choice(("rock", "paper", "scissors"))
+		short_shape = object[0].lower()
+		resolution = {'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}}
+		emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:"}
+		if value[0] == short_shape:
+			await self.bot.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
+		elif short_shape in resolution[value[0]]:
+			await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou lose :slight_frown:".format(value, emotes[value[0]], resolution[value[0]][short_shape], emotes[short_shape]))
+		else:
+			await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou win! :tada:".format(value, emotes[short_shape], resolution[short_shape][value[0]], emotes[value[0]]))
+	
+	@commands.command(aliases = ["rockpaperscissorslizardspock", "rock-paper-scissors-lizard-spock"])
+	@checks.not_forbidden()
+	async def rpsls(self, object : str):
+		'''
+		RPS lizard Spock
+		https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
+		'''
+		if object.lower() not in ('r', 'p', 's', 'l', "rock", "paper", "scissors", "lizard", "spock"):
+			await self.bot.embed_reply(":no_entry: That's not a valid object")
+		else:
+			value = random.choice(("rock", "paper", "scissors", "lizard", "Spock"))
+			short_shape = 'S' if object[0] == 'S' and object.lower() != "scissors" or object.lower() == "spock" else object[0].lower()
+			resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 'S': {'r': "vaporizes", 's': "smashes"}}
+			emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:", 'l': ":lizard:", 'S': ":vulcan::skin-tone-2:"}
+			if value[0] == short_shape:
+				await self.bot.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
+			elif short_shape in resolution[value[0]]:
+				await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou lose :slight_frown:".format(value, emotes[value[0]], resolution[value[0]][short_shape], emotes[short_shape]))
+			else:
+				await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou win! :tada:".format(value, emotes[short_shape], resolution[short_shape][value[0]], emotes[value[0]]))
+	
+	@commands.command(aliases = ["rockpaperscissorslizardspockspidermanbatmanwizardglock", "rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"])
+	@checks.not_forbidden()
+	async def rpslssbwg(self, object : str):
+		'''
+		RPSLS Spider-Man Batman wizard Glock
+		http://i.imgur.com/m9C2UTP.jpg
+		'''
+		object = object.lower().replace('-', "")
+		if object not in ("rock", "paper", "scissors", "lizard", "spock", "spiderman", "batman", "wizard", "glock"):
+			await self.bot.embed_reply(":no_entry: That's not a valid object")
+		else:
+			value = random.choice(("rock", "paper", "scissors", "lizard", "Spock", "Spider-Man", "Batman", "wizard", "Glock"))
+			resolution = {"rock": {"scissors": "crushes", "lizard": "crushes", "spiderman": "knocks out", "wizard": "interrupts"}, 
+			"paper": {"rock": "covers", "spock": "disproves", "batman": "delays", "glock": "jams"}, 
+			"scissors": {"paper": "cuts", "lizard": "decapitates", "spiderman": "cuts", "wizard": "cuts"}, 
+			"lizard": {"paper": "eats", "spock": "poisons", "batman": "confuses", "glock": "is too small for"}, 
+			"spock": {"rock": "vaporizes", "scissors": "smashes", "spiderman": "befuddles", "wizard": "zaps"}, 
+			"spiderman": {"paper": "rips", "lizard": "defeats", "wizard": "annoys", "glock": "disarms"}, 
+			"batman": {"rock": "explodes", "scissors": "dismantles", "spiderman": "scares", "spock": "hangs"}, 
+			"wizard": {"paper": "burns", "lizard": "transforms", "batman": "stuns", "glock": "melts"}, 
+			"glock": {"rock": "breaks", "scissors": "dents", "batman": "kills parents of", "spock": "shoots"}}
+			emotes = {"rock": ":fist::skin-tone-2:", "paper": ":raised_hand::skin-tone-2:", "scissors": ":v::skin-tone-2:", "lizard": ":lizard:", "spock": ":vulcan::skin-tone-2:", "spiderman": ":spider:", "batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
+			standard_value = value.lower().replace('-', "")
+			if standard_value == object:
+				await self.bot.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
+			elif object in resolution[standard_value]:
+				await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou lose :slight_frown:".format(value, emotes[standard_value], resolution[standard_value][object], emotes[object]))
+			else:
+				await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou win! :tada:".format(value, emotes[object], resolution[object][standard_value], emotes[standard_value]))
+	
+	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"])
+	@checks.not_forbidden()
+	async def cfn(self, object : str):
+		'''
+		Cockroach foot nuke
+		https://www.youtube.com/watch?v=wRi2j8k0vjo
+		'''
+		if object.lower() not in ('c', 'f', 'n', "cockroach", "foot", "nuke"):
+			await self.bot.embed_reply(":no_entry: That's not a valid object")
+		else:
+			value = random.choice(("cockroach", "foot", "nuke"))
+			short_shape = object[0].lower()
+			resolution = {'c': {'n': "survives"}, 'f': {'c': "squashes"}, 'n': {'f': "blows up"}}
+			emotes = {'c': ":bug:", 'f': ":footprints:", 'n': ":bomb:"}
+			if value[0] == short_shape:
+				await self.bot.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
+			elif short_shape in resolution[value[0]]:
+				await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou lose :slight_frown:".format(value, emotes[value[0]], resolution[value[0]][short_shape], emotes[short_shape]))
+			else:
+				await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou win! :tada:".format(value, emotes[short_shape], resolution[short_shape][value[0]], emotes[value[0]]))
+	
+	@commands.command(aliases = ["extremerps", "rps-101", "rps101"])
+	@checks.not_forbidden()
+	async def erps(self, object : str):
+		'''
+		Extreme rock paper scissors
+		http://www.umop.com/rps101.htm
+		http://www.umop.com/rps101/alloutcomes.htm
+		http://www.umop.com/rps101/rps101chart.html
+		'''
+		# Harmonbot option
+		object = object.lower().replace('.', "").replace("video game", "game")
+		# dynamite: outwits gun
+		# tornado: sweeps away -> blows away, fills pit, ruins camera
+		emotes = {"dynamite": ":boom:", "tornado": ":cloud_tornado:", "quicksand": "quicksand", "pit": ":black_circle:", "chain": ":chains:", "gun": ":gun:", "law": ":scales:", "whip": "whip", "sword": ":crossed_swords:", "rock": ":fist::skin-tone-2:", "death": ":skull:", "wall": "wall", "sun": ":sunny:", "camera": ":camera:", "fire": ":fire:", "chainsaw": "chainsaw", "school": ":school:", "scissors": ":scissors:", "poison": "poison", "cage": "cage", "axe": "axe", "peace": ":peace:", "computer": ":computer:", "castle": ":european_castle:", "snake": ":snake:", "blood": "blood", "porcupine": "porcupine", "vulture": "vulture", "monkey": ":monkey:", "king": "king", "queen": "queen", "prince": "prince", "princess": "princess", "police": ":police_car:", "woman": ":woman::skin-tone-2:", "baby": ":baby::skin-tone-2:", "man": ":man::skin-tone-2:", "home": ":homes:", "train": ":train:", "car": ":red_car:", "noise": "noise", "bicycle": ":bicyclist::skin-tone-2:", "tree": ":evergreen_tree:", "turnip": "turnip", "duck": ":duck:", "wolf": ":wolf:", "cat": ":cat:", "bird": ":bird:", "fish": ":fish:", "spider": ":spider:", "cockroach": "cockroach", "brain": "brain", "community": "community", "cross": ":cross:", "money": ":moneybag:", "vampire": "vampire", "sponge": "sponge", "church": ":church:", "butter": "butter", "book": ":book:", "paper": ":raised_hand::skin-tone-2:", "cloud": ":cloud:", "airplane": ":airplane:", "moon": ":full_moon:", "grass": "grass", "film": ":film_frames:", "toilet": ":toilet:", "air": "air", "planet": "planet", "guitar": ":guitar:", "bowl": "bowl", "cup": "cup", "beer": ":beer:", "rain": ":cloud_rain:", "water": ":potable_water:", "tv": ":tv:", "rainbow": ":rainbow:", "ufo": "ufo", "alien": ":alien:", "prayer": ":pray::skin-tone-2:", "mountain": ":mountain:", "satan": "satan", "dragon": ":dragon:", "diamond": "diamond", "platinum": "platinum", "gold": "gold", "devil": "devil", "fence": "fence", "game": ":video_game:", "math": "math", "robot": ":robot:", "heart": ":heart:", "electricity": ":zap:", "lightning": ":cloud_lightning:", "medusa": "medusa", "power": ":electric_plug:", "laser": "laser", "nuke": ":bomb:", "sky": "sky", "tank": "tank", "helicopter": ":helicopter:"}
+		'''
+		for _object in emotes:
+			if _object == emotes[_object]:
+				print(_object)
+		'''
+		if not os.path.isfile("data/erps_dict.json"):
+			await self.generate_erps_dict()
+		with open("data/erps_dict.json", 'r') as erps_file:
+			resolution = json.load(erps_file)
+		value = random.choice(list(emotes.keys()))
+		if object not in emotes:
+			await self.bot.embed_reply(":no_entry: That's not a valid object")
+		else:
+			standard_value = value.lower().replace('.', "").replace("video game", "game")
+			if standard_value == object:
+				await self.bot.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
+			elif object in resolution[standard_value]:
+				await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou lose :slight_frown:".format(value, emotes[standard_value], resolution[standard_value][object], emotes[object]))
+			elif standard_value in resolution[object]:
+				await self.bot.embed_reply("\nI chose `{}`\n{} {} {}\nYou win! :tada:".format(value, emotes[object], resolution[object][standard_value], emotes[standard_value]))
+	
+	async def generate_erps_dict(self):
+		async with clients.aiohttp_session.get("http://www.umop.com/rps101/alloutcomes.htm") as resp:
+			data = await resp.text()
+		raw_text = BeautifulSoup(data).text
+		raw_text = re.sub("\n+", '\n', raw_text).strip()
+		raw_text = raw_text.lower().replace("video game", "game")
+		raw_text = raw_text.split('\n')[:-1]
+		objects = {}
+		object = raw_text[0].split()[-1]
+		object_info = {}
+		for line in raw_text[1:]:
+			if line[0].isdigit():
+				objects[object] = object_info
+				object = line.split()[-1]
+				object_info = {}
+			else:
+				object_info[line.split()[-1]] = ' '.join(line.split()[:-1])
+		objects[object] = object_info
+		with open("data/erps_dict.json", 'w') as erps_file:
+			json.dump(objects, erps_file, indent = 4)
+	
 	@commands.group(hidden = True)
 	@checks.not_forbidden()
 	async def taboo(self):
