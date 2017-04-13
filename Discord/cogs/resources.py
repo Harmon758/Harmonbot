@@ -808,6 +808,160 @@ class Resources:
 			embed.add_field(name = "Level {0[level]} {0[class]}".format(character), value = value, inline = False)
 		await self.bot.say(embed = embed)
 	
+	@commands.group(aliases = ["rs"], invoke_without_command = True)
+	@checks.not_forbidden()
+	async def runescape(self):
+		'''Runescape'''
+		...
+	
+	@runescape.command(name = "ge", aliases = ["grandexchange"])
+	@checks.not_forbidden()
+	async def runescape_ge(self, *, item):
+		'''Runescape GE'''
+	# http://services.runescape.com/m=rswiki/en/Grand_Exchange_APIs
+	# http://forums.zybez.net/runescape-2007-prices/api/?info
+	# http://itemdb.biz/
+		...
+	
+	'''
+	set %message msg $chan
+	set %ge_item $replace($2-,$chr(32),$chr(43))
+	set %ge_item2 $capital($lower($2-))
+	set %ge_url /index.php?search= $+ %ge_item
+	set %item_id 0
+	sockopen ge www.itemdb.biz 80
+	timer 1 2 ge
+
+	alias ge {
+	  if (%item_id) {
+		var %url = http://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item= $+ %item_id
+		var %price = $json(%url,item,current,price)
+		var %name = $json(%url,item,name)
+		if (%name) { %message Price of %name $+ : %price gp }
+		else { %message Item %ge_item2 not found. Blame itemdb.biz. }
+	  }
+	  else { %message Item %ge_item2 not found. Blame itemdb.biz. }
+	  /*
+	  else {
+		var %category = 0
+		while (%category != 37 && !%price) {
+		  inc %category
+		  var %url = http://services.runescape.com/m=itemdb_rs/api/catalogue/items.json?category= $+ %category $+ &alpha= $+ $replace($2-,$chr(32),$chr(43)) $+ &page=1
+		  var %price = $json(%url,items,0,current,price)
+		}
+		if (%price) {
+		  var %name = $json(%url,items,0,name)
+		  %message Price of %name $+ : %price gp
+		}
+		else { %message Item %ge_item2 not found. }
+	  }
+	  */
+	  return
+	}
+
+	on *:SOCKOPEN:ge: {
+	  sockwrite -nt $sockname GET %ge_url HTTP/1.1
+	  sockwrite -nt $sockname Host: www.itemdb.biz
+	  sockwrite $sockname $crlf
+	}
+
+	on *:SOCKREAD:ge: {
+	  if (!$sockerr) {
+		var %sockreader
+		sockread %sockreader
+		if (*Your search for* iswm %sockreader) {
+		  if ($regex(%sockreader,<center><b>([0-9]{0,9})</b></center></td><td style='padding-left:10px;text-align:left;'> $+ %ge_item2 $+ <)) {
+			set %item_id $regml(1)
+			sockclose ge
+		  }
+		  elseif ($regex(%sockreader,<center><b>([0-9]{0,9})</b></center></td><td style='padding-left:10px;text-align:left;'> $+ %ge_item2)) {
+			set %item_id $regml(1)
+			sockclose ge
+		  }
+		  else {
+			var %regex_return = $regex(%sockreader,<center><b>(.*?)</b></center>)
+			set %item_id $regml(1)
+			sockclose ge
+		  }
+		}
+		elseif (*Your search returned no results.* iswm %sockreader) {
+		  set %item_id 0
+		  sockclose ge
+		}
+	  }
+	}
+	'''
+	
+	'''
+	on *:text:!zybez*:#:{
+	  if (!$2) {
+		msg # Please specify an item.
+		return
+	  }
+	  var %url = http://forums.zybez.net/runescape-2007-prices/api/item/ $+ $replace($2-,$chr(32),$chr(43))
+	  var %price = $json(%url,average)
+	  var %name = $json(%url,name)
+	  if (%name) { msg # Average price of %name $+ : %price gp }
+	  else { msg # Item $2- not found. }
+	}
+	'''
+	
+	@runescape.command(name = "monster", aliases = ["bestiary"], pass_context = True)
+	@checks.not_forbidden()
+	async def runescape_monster(self, ctx, *, monster : str):
+		'''Runescape bestiary'''
+		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term={}".format(monster.replace(' ', '+'))
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		if data[0] == "none":
+			await self.bot.embed_reply(":no_entry: Monster not found")
+			return
+		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid={}".format(data[0]["value"])
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		embed = discord.Embed(title = data["name"], description = data["description"], color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		embed.add_field(name = "Level", value = data["level"])
+		embed.add_field(name = "Weakness", value = data["weakness"])
+		embed.add_field(name = "XP/Kill", value = data["xp"])
+		embed.add_field(name = "Lifepoints", value = data["lifepoints"])
+		embed.add_field(name = "Members", value = "Yes" if data["members"] else "No")
+		embed.add_field(name = "Aggressive", value = "Yes" if data["aggressive"] else "No")
+		await self.bot.say(embed = embed)
+		# add other? - http://runescape.wikia.com/wiki/RuneScape_Bestiary#beastData
+	
+	@runescape.command(name = "stats", aliases = ["levels"], pass_context = True)
+	@checks.not_forbidden()
+	async def runescape_stats(self, ctx, *, username : str):
+		'''Runescape stats'''
+		async with clients.aiohttp_session.get("http://services.runescape.com/m=hiscore/index_lite.ws?player={}".format(username.replace(' ', '+'))) as resp:
+			if resp.status == 404:
+				await self.bot.embed_reply(":no_entry: Player not found")
+				return
+			data = await resp.text()
+		data = csv.DictReader(data.splitlines(), fieldnames = ("rank", "level", "xp"))
+		stats = collections.OrderedDict()
+		stats_names = ("Overall", "Attack", "Defence", "Strength", "Constitution", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving", "Slayer", "Farming", "Runecrafting", "Hunter", "Construction", "Summoning", "Dungeoneering", "Divination", "Invention")
+		for stat in stats_names:
+			stats[stat] = next(data)
+		embed = discord.Embed(title = username, url = "http://services.runescape.com/m=hiscore/compare?user1={}".format(username.replace(' ', '+')), color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+
+		output = ["`{}`".format(name) for name in stats_names]
+		embed.add_field(name = "Skill", value = '\n'.join(output))
+		
+		max_length = max([len("{:,d}".format(int(values["rank"]))) for values in stats.values()])
+		output = ["`| {}`".format("{:,d}".format(int(values["rank"])).rjust(max_length)) for values in stats.values()]
+		embed.add_field(name = "| Rank", value = '\n'.join(output))
+		
+		max_length = max([len("{:,d}".format(int(values["xp"]))) for values in stats.values()])
+		output = ["`| {}| {}`".format(values["level"].rjust(4).ljust(5), "{:,d}".format(int(values["xp"])).rjust(max_length)) for values in stats.values()]
+		embed.add_field(name = "| Level | Experience", value = '\n'.join(output))
+		
+		await self.bot.say(embed = embed)
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def shorturl(self, url : str):
