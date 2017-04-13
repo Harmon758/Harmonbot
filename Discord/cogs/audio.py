@@ -6,11 +6,11 @@ import concurrent.futures
 import inspect
 import urllib
 
+import clients
 import credentials
 from utilities import checks
 from utilities import errors
 from utilities import audio_player
-from clients import aiohttp_session
 
 def setup(bot):
 	bot.add_cog(Audio(bot))
@@ -517,27 +517,25 @@ class Audio:
 
 	async def spotify_to_youtube(self, link):
 		path = urllib.parse.urlparse(link).path
-		if path[:7] == "/track/":
-			url = "https://api.spotify.com/v1/tracks/{}".format(path[7:])
-			async with aiohttp_session.get(url) as resp:
-				data = await resp.json()
-			if "name" in data:
-				songname = "+".join(data["name"].split())
-			else:
-				return False
-			artistname = "+".join(data["artists"][0]["name"].split())
-			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+by+{}&key={}".format(songname, artistname, credentials.google_apikey)
-			async with aiohttp_session.get(url) as resp:
-				data = await resp.json()
-			data = data["items"][0]
-			if "videoId" not in data["id"]:
-				async with aiohttp_session.get(url) as resp:
-					data = await resp.json()
-				data = data["items"][1]
-			link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
-			return link
-		else:
+		if path[:7] != "/track/":
 			return False
+		url = "https://api.spotify.com/v1/tracks/{}".format(path[7:])
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		if "name" not in data:
+			return False
+		songname = '+'.join(data["name"].split())
+		artistname = '+'.join(data["artists"][0]["name"].split())
+		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+by+{}&key={}".format(songname, artistname, credentials.google_apikey)
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		data = data["items"][0]
+		if "videoId" not in data["id"]:
+			async with clients.aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			data = data["items"][1]
+		link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
+		return link
 	
 	# Termination
 	
