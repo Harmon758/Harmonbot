@@ -1273,7 +1273,7 @@ class Games:
 		war_players_string = ""
 		for player in self.war_players:
 			war_players_string += player.name + " and "
-		await self.bot.reply(ctx.message.author.name + " has started a game of War between " + war_players_string[:-5] + "!")
+		await self.bot.embed_reply("{} has started a game of War between {}!".format(ctx.message.author.display_name, war_players_string[:-5]))
 	
 	@war.command(name = "hand", pass_context = True)
 	async def war_hand(self, ctx):
@@ -1285,7 +1285,7 @@ class Games:
 	async def war_left(self, ctx):
 		'''See how many cards you have left'''
 		if ctx.message.author in self.war_players:
-			await self.bot.reply("You have " + str(war.card_count(self.war_players.index(ctx.message.author) + 1)) + " cards left.")
+			await self.bot.embed_reply("You have {} cards left".format(war.card_count(self.war_players.index(ctx.message.author) + 1)))
 	
 	@war.command(name = "play", pass_context = True)
 	async def war_play(self, ctx, *card : str):
@@ -1294,13 +1294,13 @@ class Games:
 			player_number = self.war_players.index(message.author) + 1
 			winner, cardsplayed, tiedplayers = war.play(player_number, ' '.join(card))
 			if winner == -1:
-				await self.bot.reply("You have already chosen your card for this battle.")
+				await self.bot.embed_reply(":no_entry: You have already chosen your card for this battle")
 			elif winner == -3:
-				await self.bot.reply("You are not in this battle.")
+				await self.bot.embed_reply(":no_entry: You are not in this battle")
 			elif winner == -4:
-				await self.bot.reply("Card not found in your hand.")
+				await self.bot.embed_reply(":no_entry: Card not found in your hand")
 			else:
-				await self.bot.reply("You chose the " + cardsplayed[player_number - 1].value + " of " + cardsplayed[player_number - 1].suit)
+				await self.bot.embed_reply("You chose the {} of {}".format(cardsplayed[player_number - 1].value, cardsplayed[player_number - 1].suit))
 				await self.bot.whisper("Your hand: " + war.hand(player_number))
 			if winner > 0:
 				winner_name = self.war_players[winner - 1].name
