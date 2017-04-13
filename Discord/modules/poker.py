@@ -1,7 +1,7 @@
 
 import pydealer
 
-class poker_round:
+class PokerRound:
 	
 	def __init__(self):
 		self.status = None
