@@ -306,19 +306,22 @@ class Discord:
 		Get a discriminator
 		Your own or someone else's discriminator
 		'''
-		if name:
-			flag = True
-			if ctx.message.server:
-				for member in ctx.message.server.members:
-					if member.name == name:
-						await self.bot.reply(name + "'s discriminator: #" + member.discriminator)
-						flag = False
-				if flag and name:
-					await self.bot.reply(name + " was not found on this server.")
-			else:
-				await self.bot.reply("Please use that command in a server.")
-		else:
-			await self.bot.reply("Your discriminator: #" + ctx.message.author.discriminator)
+		if not name:
+			await self.bot.embed_reply("Your discriminator: #" + ctx.message.author.discriminator)
+			return
+		if not ctx.message.server:
+			await self.bot.embed_reply(":no_entry: Please use that command in a server")
+			return
+		flag = True
+		for member in ctx.message.server.members:
+			if member.name == name:
+				embed = discord.Embed(description = name + "'s discriminator: #" + member.discriminator, color = clients.bot_color)
+				avatar = member.default_avatar_url if not member.avatar else member.avatar_url
+				embed.set_author(name = str(member), icon_url = avatar)
+				await self.bot.reply("", embed = embed)
+				flag = False
+		if flag and name:
+			await self.bot.embed_reply(name + " was not found on this server")
 	
 	@commands.command(aliases = ["role_id"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
