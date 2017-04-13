@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.ext.commands.view import StringView
 from discord.ext.commands.context import Context
 from discord.ext.commands.errors import CommandNotFound, CommandError
+import aiml
 import aiohttp
 import clarifai.rest
 import cleverbot
@@ -23,7 +24,7 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-10.2"
+version = "0.35.0-10.3"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
@@ -47,6 +48,7 @@ py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
 session_commands_executed = 0
 session_commands_usage = {}
+aiml_kernel = aiml.Kernel()
 aiohttp_session = aiohttp.ClientSession()
 clarifai_app = clarifai.rest.ClarifaiApp(app_id = credentials.clarifai_api_id, app_secret = credentials.clarifai_api_secret)
 clarifai_general_model = clarifai_app.models.get("general-v1.3")
@@ -69,6 +71,15 @@ try:
 	imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
 except imgurpython.helpers.error.ImgurClientError as e:
 	print("Discord Harmonbot: Failed to load Imgur Client: {}".format(e))
+
+aiml_predicates = {"name": "Harmonbot", "botmaster": "owner", "master": "Harmon", "domain": "tool", "kingdom": "machine", "phylum": "software", "class": "program", "order": "artificial intelligence", "family": "bot", "genus": "python bot", "species": "Discord bot"}
+for predicate, value in aiml_predicates.items():
+	aiml_kernel.setBotPredicate(predicate, value)
+if os.path.isfile("data/aiml/aiml_brain.brn"):
+	aiml_kernel.bootstrap(brainFile = "data/aiml/aiml_brain.brn")
+elif os.path.isfile("data/aiml/std-startup.xml"):
+	aiml_kernel.bootstrap(learnFiles = "data/aiml/std-startup.xml", commands = "load aiml b")
+	aiml_kernel.saveBrain("data/aiml/aiml_brain.brn")
 
 class Bot(commands.Bot):
 	

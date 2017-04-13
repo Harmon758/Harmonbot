@@ -224,7 +224,12 @@ if __name__ == "__main__":
 			for word in message.clean_content.split():
 				if not word.startswith("@"):
 					mentionless_message += word + ' '
-			await clients.reply(message, clients.cleverbot_instance.ask(mentionless_message))
+			mentionless_message = mentionless_message[:-1]
+			aiml_response = clients.aiml_kernel.respond(mentionless_message)
+			if aiml_response:
+				await clients.embed_reply(message, aiml_response)
+			else:
+				await clients.embed_reply(message, clients.cleverbot_instance.ask(mentionless_message))
 	
 	@client.event
 	async def on_error(event_method, *args, **kwargs):
