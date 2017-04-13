@@ -468,31 +468,117 @@ class Resources:
 		else:
 			await self.bot.embed_reply(":no_entry: Sequence not found")
 	
-	@commands.group()
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def overwatch(self):
-		'''WIP'''
+		'''
+		WIP
+		Note: battletags are case sensitive
+		
+		stats
+		 quickplay
+		 competitive
+		achievements
+		heroes
+		'''
 		pass
 	
-	@overwatch.command(name = "stats")
-	async def overwatch_stats(self, battletag : str, number : str):
+	@overwatch.group(name = "stats", pass_context = True, invoke_without_command = True)
+	async def overwatch_stats(self, ctx, battletag : str):
 		'''
 		Overwatch user statistics
 		Note: battletags are case sensitive
 		'''
-		url = "https://owapi.net/api/v2/u/{}-{}/stats/general".format(battletag, number)
-		async with aiohttp_session.get(url) as resp:
+		url = "https://owapi.net/api/v3/u/{}/stats".format(battletag.replace('#', '-'))
+		async with clients.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
 			data = await resp.json()
-		output = ["", "__**{}**__".format(data["battletag"].replace('-', '#'))]
-		output.append("**Level**: {0[level]}".format(data["overall_stats"]))
-		output.append("**Wins/Total**: {0[wins]}/{0[games]} ({1:g}%)".format(data["overall_stats"], 100 * data["overall_stats"]["wins"] / data["overall_stats"]["wins"] + data["overall_stats"]["losses"]))
-		output.append(":medal: {0[medals]:,g} | :first_place_medal: {0[medals_gold]:,g} :second_place_medal: {0[medals_silver]:,g} :third_place_medal: {0[medals_bronze]:,g}".format(data["game_stats"]))
-		output.append("**Cards**: {0[cards]:g}, **Damage Done**: {0[damage_done]:,}, **Deaths**: {0[deaths]:,g}, **Eliminations**: {0[eliminations]:,g}, **Healing Done**: {0[healing_done]:,}, **Eliminations/Deaths**: {0[kpd]}, **Time Played**: {0[time_played]}h **Time Spent On Fire**: {0[time_spent_on_fire]:.2f}".format(data["game_stats"]))
-		output.append("__Most In One Game__ | **Damage Done**: {0[damage_done_most_in_game]:,g}, **Eliminations**: {0[eliminations_most_in_game]:,g}, **Healing Done**: {0[healing_done_most_in_game]:,g}, **Time Spent On Fire**: {0[time_spent_on_fire_most_in_game]:.2f}".format(data["game_stats"]))
-		output.append("**Region**: {}".format(data["region"].upper()))
-		await self.bot.reply('\n'.join(output))
+		if "error" in data:
+			await self.bot.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
+			return
+		for region in ["eu", "kr", "us"]:
+			if data[region]:
+				stats = data[region]["stats"]["quickplay"]
+				embed = discord.Embed(title = battletag, color = clients.bot_color)
+				avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
+				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
+				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
+				embed.add_field(name = "Rank", value = stats["overall_stats"]["comprank"])
+				'''
+				output.append("**Wins/Total**: {0[wins]}/{0[games]} ({1:g}%)".format(data["overall_stats"], 100 * data["overall_stats"]["wins"] / data["overall_stats"]["wins"] + data["overall_stats"]["losses"]))
+				output.append("**Eliminations/Deaths**: {0[kpd]}, **Time Spent On Fire**: {0[time_spent_on_fire]:.2f}".format(data["game_stats"]))
+				output.append("__Most In One Game__ | **Time Spent On Fire**: {0[time_spent_on_fire_most_in_game]:.2f}".format(data["game_stats"]))
+				'''
+				await self.bot.say(embed = embed)
 	
-	@overwatch.command(name = "heroes")
+	@overwatch_stats.command(name = "quickplay", aliases = ["qp"], pass_context = True)
+	async def overwatch_stats_quickplay(self, ctx, battletag : str):
+		'''
+		Overwatch user quickplay statistics
+		Note: battletags are case sensitive
+		'''
+		url = "https://owapi.net/api/v3/u/{}/stats".format(battletag.replace('#', '-'))
+		async with clients.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
+			data = await resp.json()
+		if "error" in data:
+			await self.bot.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
+			return
+		for region in ["eu", "kr", "us"]:
+			if data[region]:
+				stats = data[region]["stats"]["quickplay"]
+				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = clients.bot_color)
+				avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
+				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
+				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
+				embed.add_field(name = "Wins", value = "{:,g}".format(stats["overall_stats"]["wins"]))
+				embed.add_field(name = "Time Played", value = "{:,g}h".format(stats["game_stats"]["time_played"]))
+				embed.add_field(name = "Cards", value = "{:,g}".format(stats["game_stats"]["cards"]))
+				embed.add_field(name = "Medals", value = ":medal: {0[medals]:,g} total\n:first_place_medal: {0[medals_gold]:,g} gold\n:second_place_medal: {0[medals_silver]:,g} silzer\n:third_place_medal: {0[medals_bronze]:,g} bronze".format(stats["game_stats"]))
+				embed.add_field(name = "Eliminations", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["eliminations_most_in_game"], stats["average_stats"]["eliminations_avg"]))
+				embed.add_field(name  = "Objective Kills", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["objective_kills_most_in_game"], stats["average_stats"]["objective_kills_avg"]))
+				embed.add_field(name  = "Objective Time", value = "{:.2f}m highest in one game\n{:.2f}m average".format(stats["game_stats"]["objective_time_most_in_game"] * 60, stats["average_stats"]["objective_time_avg"] * 60))
+				embed.add_field(name = "Damage Done", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["damage_done_most_in_game"], stats["average_stats"]["damage_done_avg"]))
+				embed.add_field(name = "Healing Done", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["healing_done_most_in_game"], stats["average_stats"]["healing_done_avg"]))
+				embed.add_field(name = "Deaths", value = "{:,g} total\n{:,g} average".format(stats["game_stats"]["deaths"], stats["average_stats"]["deaths_avg"]))
+				await self.bot.say(embed = embed)
+	
+	@overwatch_stats.command(name = "competitive", aliases = ["comp"], pass_context = True)
+	async def overwatch_stats_competitive(self, ctx, battletag : str):
+		'''
+		Overwatch user quickplay statistics
+		Note: battletags are case sensitive
+		'''
+		url = "https://owapi.net/api/v3/u/{}/stats".format(battletag.replace('#', '-'))
+		async with clients.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
+			data = await resp.json()
+		if "error" in data:
+			await self.bot.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
+			return
+		for region in ["eu", "kr", "us"]:
+			if data[region]:
+				stats = data[region]["stats"]["competitive"]
+				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = clients.bot_color)
+				avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
+				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
+				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
+				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
+				embed.add_field(name = "Wins", value = "{:,g}".format(stats["overall_stats"]["wins"]))
+				embed.add_field(name = "Time Played", value = "{:,g}h".format(stats["game_stats"]["time_played"]))
+				embed.add_field(name = "Cards", value = "{:,g}".format(stats["game_stats"]["cards"]))
+				embed.add_field(name = "Medals", value = ":medal: {0[medals]:,g} total\n:first_place_medal: {0[medals_gold]:,g} gold\n:second_place_medal: {0[medals_silver]:,g} silzer\n:third_place_medal: {0[medals_bronze]:,g} bronze".format(stats["game_stats"]))
+				embed.add_field(name = "Eliminations", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["eliminations_most_in_game"], stats["average_stats"]["eliminations_avg"]))
+				embed.add_field(name  = "Objective Kills", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["objective_kills_most_in_game"], stats["average_stats"]["objective_kills_avg"]))
+				embed.add_field(name  = "Objective Time", value = "{:.2f}m highest in one game\n{:.2f}m average".format(stats["game_stats"]["objective_time_most_in_game"] * 60, stats["average_stats"]["objective_time_avg"] * 60))
+				embed.add_field(name = "Damage Done", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["damage_done_most_in_game"], stats["average_stats"]["damage_done_avg"]))
+				embed.add_field(name = "Healing Done", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["healing_done_most_in_game"], stats["average_stats"]["healing_done_avg"]))
+				embed.add_field(name = "Deaths", value = "{:,g} total\n{:,g} average".format(stats["game_stats"]["deaths"], stats["average_stats"]["deaths_avg"]))
+				await self.bot.say(embed = embed)
+	
+	@overwatch.command(name = "heroes", hidden = True)
 	async def overwatch_heroes(self, battletag : str, number : str):
 		'''
 		Overwatch user hero statistics
@@ -509,7 +595,7 @@ class Resources:
 			else:
 				output.append("**{}**: {:g} minutes".format(hero.capitalize(), time * 60))
 			#plural
-		await self.bot.reply('\n'.join(output))
+		await self.bot.embed_reply('\n'.join(output))
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
