@@ -196,12 +196,15 @@ class Discord:
 				return
 			color = selected_role.colour
 			color_value = color.value
-			await self.bot.embed_reply(str(conversions.inttohex(color_value)))
+			await self.bot.embed_reply(conversions.inttohex(color_value))
 		elif ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == credentials.myid:
 			for _role in ctx.message.server.roles:
 				if _role.name.startswith((' ').join(role.split('_'))):
 					role_to_change = _role
 					break
+			if not role_to_change:
+				await self.bot.embed_reply(":no_entry: Role not found")
+				return
 			new_colour = role_to_change.colour
 			new_colour.value = conversions.hextoint(color[0])
 			await self.bot.edit_role(ctx.message.server, role_to_change, colour = new_colour)
