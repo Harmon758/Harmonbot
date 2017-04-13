@@ -231,7 +231,7 @@ class Discord:
 		if temp_voice_channel and options and options[0] == "allow":
 			to_allow = discord.utils.get(ctx.message.server.members, name = options[1])
 			if not to_allow:
-				await self.bot.reply("User not found.")
+				await self.bot.embed_reply(":no_entry: User not found")
 			voice_channel_permissions = discord.Permissions.none()
 			voice_channel_permissions.connect = True
 			voice_channel_permissions.speak = True
@@ -240,10 +240,10 @@ class Discord:
 			text_channel_permissions = discord.Permissions.text()
 			text_channel_permissions.manage_messages = False
 			await self.bot.edit_channel_permissions(temp_text_channel, to_allow, allow = text_channel_permissions)
-			await self.bot.reply("You have allowed " + to_allow.display_name + " to join your temporary voice and text channel.")
+			await self.bot.embed_reply("You have allowed " + to_allow.display_name + " to join your temporary voice and text channel")
 			return
 		if temp_voice_channel:
-			await self.bot.reply("You already have a temporary voice and text channel.")
+			await self.bot.embed_reply(":no_entry: You already have a temporary voice and text channel")
 			return
 		temp_voice_channel = await self.bot.create_channel(ctx.message.server, ctx.message.author.display_name + "'s Temp Channel", type = discord.ChannelType.voice)
 		temp_text_channel = await self.bot.create_channel(ctx.message.server, ctx.message.author.display_name + "s_Temp_Channel", type = discord.ChannelType.text)
@@ -256,8 +256,8 @@ class Discord:
 		try:
 			await self.bot.move_member(ctx.message.author, temp_voice_channel)
 		except discord.errors.Forbidden:
-			await self.bot.reply("I can not move you to the new temporary voice channel.")
-		await self.bot.reply("Temporary voice and text channel created")
+			await self.bot.embed_reply(":no_entry: I can't move you to the new temporary voice channel")
+		await self.bot.embed_reply("Temporary voice and text channel created")
 		while True:
 			await asyncio.sleep(15)
 			temp_voice_channel = discord.utils.get(ctx.message.server.channels, id = temp_voice_channel.id)
