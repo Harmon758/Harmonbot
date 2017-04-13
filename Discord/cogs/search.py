@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import functools
 import inspect
+import re
 import youtube_dl
 
 from utilities import checks
@@ -181,9 +182,44 @@ class Search:
 	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True)
 	@checks.not_forbidden()
-	async def wikipedia(self, *search : str):
+	async def wikipedia(self, *, search : str):
 		'''Look something up on Wikipedia'''
-		await self.bot.reply("https://en.wikipedia.org/wiki/{}".format('_'.join(search)))
+		await self.process_wikipedia(search)
+	
+	async def process_wikipedia(self, search, random = False, redirect = True):
+		# TODO: Add User-Agent
+		if random:
+			async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": 0, "format": "json"}) as resp:
+				data = await resp.json()
+			search = data["query"]["random"][0]["title"]
+		else:
+			async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}) as resp:
+				data = await resp.json()
+			try:
+				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
+			except IndexError:
+				await self.bot.embed_reply(":no_entry: Page not found")
+				return
+		async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, "inprop": "url", "exintro": "", "explaintext": "", "pithumbsize": 9000, "pilicense": "any", "format": "json"}) as resp: # exchars?
+			data = await resp.json()
+		if "pages" not in data["query"]:
+			await self.bot.embed_reply(":no_entry: Error")
+			return
+		page_id = list(data["query"]["pages"].keys())[0]
+		page = data["query"]["pages"][page_id]
+		if "missing" in page:
+			await self.bot.embed_reply(":no_entry: Page not found")
+		elif "invalid" in page:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
+		elif redirect and "redirects" in data["query"]:
+			await self.process_wikipedia(data["query"]["redirects"][-1]["to"], redirect = False)
+			# TODO: Handle section links/tofragments
+		else:
+			description = page["extract"] if len(page["extract"]) <= 512 else page["extract"][:512] + "..."
+			description = re.sub("\s+ \s+", ' ', description)
+			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
+			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
+			await self.bot.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wa", "wolfram_alpha"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()

@@ -103,7 +103,9 @@ class Random:
 	@checks.not_forbidden()
 	async def wikipedia(self):
 		'''Random Wikipedia article'''
-		await self.bot.embed_reply(None, title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")
+		cog = self.bot.get_cog("Search")
+		if cog: await cog.process_wikipedia(None, random = True)
+		else: await self.bot.embed_reply(None, title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random") # necessary?
 	
 	@random.command(pass_context = True)
 	@checks.not_forbidden()
