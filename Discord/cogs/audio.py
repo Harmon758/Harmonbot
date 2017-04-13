@@ -26,15 +26,13 @@ class Audio:
 				self.bot.add_command(command)
 				self.audio.add_command(command)
 	
-	@commands.group(pass_context = True, aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", "playlist", "spotify", "budio"], 
-		invoke_without_command = True, no_pm = True)
+	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", "playlist", "spotify", "budio", "music", "download"], description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify", pass_context = True, invoke_without_command = True, no_pm = True)
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
 	async def audio(self, ctx, *, song : str = ""): #elif options[0] == "full":
 		'''
 		Audio System - play a song
 		All audio subcommands are also commands
-		Supported sites: https://rg3.github.io/youtube-dl/supportedsites.html and Spotify
 		For cleanup of audio commands, the Manage Messages permission is required
 		'''
 		if not song:
