@@ -1246,6 +1246,20 @@ class Games:
 		cash = self.trivia_stats[ctx.message.author.id][2]
 		await self.bot.embed_reply("You have $" + utilities.add_commas(cash))
 	
+	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"], pass_context = True)
+	async def trivia_scores(self, ctx, number : int = 10):
+		'''Trivia scores'''
+		if number > 15: number = 15
+		top_scores = sorted(self.trivia_stats.items(), key = lambda p: p[1][0], reverse = True)[:number]
+		response, embed = await self.bot.embed_reply(None, title = "Trivia Top {}".format(number))
+		for user in top_scores:
+			user_info = await self.bot.get_user_info(user[0])
+			correct = user[1][0]
+			incorrect = user[1][1]
+			correct_percentage = correct / (correct + incorrect) * 100
+			embed.add_field(name = user_info, value = "{}/{} correct ({:.2f}%)\n".format(correct, correct + incorrect, correct_percentage))
+			await self.bot.edit_message(response, embed = embed)
+	
 	@commands.group(pass_context = True)
 	@checks.not_forbidden()
 	async def war(self, ctx):
