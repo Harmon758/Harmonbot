@@ -3,6 +3,8 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import collections
+import csv
 import datetime
 import dateutil.parser
 import imgurpython
@@ -10,6 +12,7 @@ import isodate
 import json
 import pyowm.exceptions
 # import spotipy
+import unicodedata
 import urllib
 
 import credentials
@@ -226,18 +229,25 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
-			await self.bot.embed_reply(data["Error"])
-		else:
-			embed = discord.Embed(title = data["Title"], url = "http://www.imdb.com/title/{}".format(data["imdbID"]), color = clients.bot_color)
-			avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
-			embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
-			embed.description = ("```{0[Year]} {0[Type]}\n"
-			"IMDb Rating: {0[imdbRating]}\n"
-			"Runtime: {0[Runtime]}\n"
-			"Genre(s): {0[Genre]}\n"
-			"Plot: {0[Plot]}```".format(data))
-			if data["Poster"] and data["Poster"] != "N/A": embed.set_thumbnail(url = data["Poster"])
-			await self.bot.say(embed = embed)
+			await self.bot.embed_reply(":no_entry: Error: {}".format(data["Error"]))
+			return
+		embed = discord.Embed(title = data["Title"], url = "http://www.imdb.com/title/{}".format(data["imdbID"]), color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		embed.description = "{0[Year]} {0[Type]}".format(data)
+		embed.add_field(name = "IMDb Rating", value = data["imdbRating"])
+		embed.add_field(name = "Runtime", value = data["Runtime"])
+		embed.add_field(name = "Genre(s)", value = data["Genre"])
+		embed.add_field(name = "Director", value = data["Director"])
+		embed.add_field(name = "Writer", value = data["Writer"])
+		embed.add_field(name = "Cast", value = data["Actors"])
+		embed.add_field(name = "Language", value = data["Language"])
+		embed.add_field(name = "Country", value = data["Country"])
+		embed.add_field(name = "Awards", value = data["Awards"])
+		if "totalSeasons" in data: embed.add_field(name = "Total Seasons", value = data["totalSeasons"])
+		embed.add_field(name = "Plot", value = data["Plot"], inline = False)
+		if data["Poster"] != "N/A": embed.set_thumbnail(url = data["Poster"])
+		await self.bot.say(embed = embed)
 	
 	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
