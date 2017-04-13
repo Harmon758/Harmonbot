@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import chess.pgn
 import cleverbot
 import copy
+import deuces
 import html
 import json
 import os
@@ -25,7 +26,6 @@ from modules import maze
 from modules import war
 from utilities import checks
 import clients
-from clients import inflect_engine
 
 def setup(bot):
 	bot.add_cog(Games(bot))
@@ -45,6 +45,7 @@ class Games:
 		self.blackjack_ranks["values"].update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
 		for value in self.blackjack_ranks["values"]:
 			self.blackjack_ranks["values"][value] += 1
+		self.poker_status, self.poker_players, self.poker_deck, self.poker_hands, self.poker_turn, self.poker_bets, self.poker_current_bet, self.poker_pot, self.poker_community_cards, self.poker_folded = None, [], None, {}, None, {}, None, None, None, []
 		#check default values
 		
 		self.adventure_players = {}
@@ -616,6 +617,17 @@ class Games:
 			else:
 				await self.bot.embed_reply("Sorry, it was actually {}".format(answer))
 				return
+	
+	@commands.group(aliases = ["hrmp"], hidden = True)
+	@checks.not_forbidden()
+	async def harmonopoly(self):
+		'''
+		WIP
+		Harmonopoly is a game based on The Centipede Game where every player chooses a number.
+		The player with the lowest number that is not surpassed within +2 of another number that is chosen, wins. The winner gets points equal to the number that they chose.
+		Examples: {1,2 Winner(W): 2} {1,3 W: 3} {1,4 W: 1} {1,3,5 W: 5} {1,3,5,7,10 W: 7}
+		'''
+		pass
 	
 	@commands.group(invoke_without_command = True, pass_context = True)
 	@checks.not_forbidden()
