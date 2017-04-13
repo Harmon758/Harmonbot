@@ -617,58 +617,67 @@ class Games:
 	
 	@commands.group(invoke_without_command = True, pass_context = True)
 	@checks.not_forbidden()
-	async def jeopardy(self, ctx, *options : str):
-		if len(options) >= 2 and self.jeopardy_active and not self.jeopardy_question_active:
-			category = int(options[0])
-			value = options[1]
-			if 1 <= category <= 6 and value in ["200", "400", "600", "800", "1000"]:
-				value_index = ["200", "400", "600", "800", "1000"].index(value)
-				if not self.jeopardy_board[category - 1][value_index + 1]:
-					self.jeopardy_question_active = True
-					self.jeopardy_answered = None
-					url = "http://jservice.io/api/category?id=" + str(self.jeopardy_board[category - 1][0])
-					async with aiohttp_session.get(url) as resp:
-						data = await resp.json()
-					self.jeopardy_answer = data["clues"][value_index]["answer"]
-					await self.bot.say("Category: " + string.capwords(data["title"]) + "\n" + data["clues"][value_index]["question"])
-					counter = int(wait_time)
-					answer_message = await self.bot.say("You have {} seconds left to answer.".format(str(counter)))
-					self.bot.loop.create_task(self.jeopardy_wait_for_answer())
-					while counter:
-						await asyncio.sleep(1)
-						counter -= 1
-						await self.bot.edit_message(answer_message, "You have {} seconds left to answer.". format(str(counter)))
-						if self.jeopardy_answered:
-							break
-					await self.bot.edit_message(answer_message, "Time's up!")
-					if self.jeopardy_answered:
-						if self.jeopardy_answered in self.jeopardy_scores:
-							self.jeopardy_scores[self.jeopardy_answered] += int(value)
-						else:
-							self.jeopardy_scores[self.jeopardy_answered] = int(value)
-						answered_message = "{} was right! They now have ${}.".format(self.jeopardy_answered.name, str(self.jeopardy_scores[self.jeopardy_answered]))
-					else:
-						answered_message = "Nobody got it right."
-					score_output = ""
-					for player, score in self.jeopardy_scores.items():
-						score_output += "{}: ${}, ".format(player.name, str(score))
-					score_output = score_output[:-2]
-					self.jeopardy_board[category - 1][value_index + 1] = True
-					clue_delete_cursor = (self.jeopardy_max_width + 2) * category + 1 * (category - 1) + 20 * (category - 1) + 4 * value_index
-					if value_index == 4:
-						self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "    " + self.jeopardy_board_output[clue_delete_cursor + 4:]
-					else:
-						self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
-					await self.bot.say("The answer was " + BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text() + "\n" + answered_message + "\n" + score_output + "\n```" + self.jeopardy_board_output + "```")
-					self.jeopardy_question_active = False
+	async def jeopardy(self, ctx, row_number : int, value : int):
+		'''
+		Trivia with categories
+		jeopardy [row number] [value] to pick the question
+		Based on Jeopardy
+		'''
+		if not self.jeopardy_active:
+			await self.bot.embed_reply(":no_entry: There's not a jeopardy game currently in progress")
+			return
+		if self.jeopardy_question_active:
+			await self.bot.embed_reply(":no_entry: There's already a jeopardy question in play")
+			return
+		if row_number < 1 or row_number > 6:
+			await self.bot.embed_reply(":no_entry: That's not a valid row number")
+			return
+		if value not in [200, 400, 600, 800, 1000]:
+			await self.bot.embed_reply(":no_entry: That's not a valid value")
+			return
+		value_index = ["200", "400", "600", "800", "1000"].index(str(value))
+		if not self.jeopardy_board[row_number - 1][value_index + 1]:
+			self.jeopardy_question_active = True
+			self.jeopardy_answered = None
+			url = "http://jservice.io/api/category?id=" + str(self.jeopardy_board[row_number - 1][0])
+			async with clients.aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			self.jeopardy_answer = data["clues"][value_index]["answer"]
+			await self.bot.embed_say("Category: " + string.capwords(data["title"]) + "\n" + data["clues"][value_index]["question"])
+			counter = int(clients.wait_time)
+			answer_message, embed = await self.bot.say("You have {} seconds left to answer".format(str(counter)))
+			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
+			while counter:
+				await asyncio.sleep(1)
+				counter -= 1
+				await self.bot.edit_message(answer_message, "You have {} seconds left to answer". format(str(counter)))
+				if self.jeopardy_answered:
+					break
+			await self.bot.edit_message(answer_message, "Time's up!")
+			if self.jeopardy_answered:
+				if self.jeopardy_answered in self.jeopardy_scores:
+					self.jeopardy_scores[self.jeopardy_answered] += int(value)
+				else:
+					self.jeopardy_scores[self.jeopardy_answered] = int(value)
+				answered_message = "{} was right! They now have ${}.".format(self.jeopardy_answered.name, str(self.jeopardy_scores[self.jeopardy_answered]))
 			else:
-				await self.bot.reply("Syntax error.")
-		else:
-			await self.bot.reply("Error.")
+				answered_message = "Nobody got it right"
+			score_output = ""
+			for player, score in self.jeopardy_scores.items():
+				score_output += "{}: ${}, ".format(player.name, str(score))
+			score_output = score_output[:-2]
+			self.jeopardy_board[row_number - 1][value_index + 1] = True
+			clue_delete_cursor = (self.jeopardy_max_width + 2) * row_number + 1 * (row_number - 1) + 20 * (row_number - 1) + 4 * value_index
+			if value_index == 4:
+				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "    " + self.jeopardy_board_output[clue_delete_cursor + 4:]
+			else:
+				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
+			await self.bot.embed_say("The answer was " + BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text() + "\n" + answered_message + "\n" + score_output + "\n```" + self.jeopardy_board_output + "```")
+			self.jeopardy_question_active = False
 	
 	async def jeopardy_wait_for_answer(self):
 		if self.jeopardy_question_active:
-			message = await self.bot.wait_for_message(timeout = wait_time, check = lambda m: self.jeopardy_answer.lower() in [s + m.content.lower() for s in ["", "a ", "an ", "the "]] or m.content.lower() == BeautifulSoup(html.unescape(self.jeopardy_answer.lower()), "html.parser").get_text().lower())
+			message = await self.bot.wait_for_message(timeout = clients.wait_time, check = lambda m: self.jeopardy_answer.lower() in [s + m.content.lower() for s in ["", "a ", "an ", "the "]] or m.content.lower() == BeautifulSoup(html.unescape(self.jeopardy_answer.lower()), "html.parser").get_text().lower())
 			if message and not message.content.startswith('>'):
 				self.jeopardy_answered = message.author
 	
@@ -676,26 +685,28 @@ class Games:
 	
 	@jeopardy.command(name = "start", pass_context = True)
 	async def jeopardy_start(self, ctx):
-		if not self.jeopardy_active:
-			self.jeopardy_active = True
-			categories = []
-			category_titles = []
-			self.jeopardy_board_output = ""
-			url = "http://jservice.io/api/random"
-			for i in range(6):
-				async with aiohttp_session.get(url) as resp:
-					data = await resp.json()
-				categories.append(data[0]["category_id"])
-			for category in categories:
-				url = "http://jservice.io/api/category?id=" + str(category)
-				async with aiohttp_session.get(url) as resp:
-					data = await resp.json()
-				category_titles.append(string.capwords(data["title"]))
-				self.jeopardy_board.append([category, False, False, False, False, False])
-			self.jeopardy_max_width = max(len(category_title) for category_title in category_titles)
-			for category_title in category_titles:
-				self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
-			await self.bot.say("```" + self.jeopardy_board_output + "```")
+		if self.jeopardy_active:
+			await self.bot.embed_reply(":no_entry: There's already a jeopardy game in progress")
+			return
+		self.jeopardy_active = True
+		categories = []
+		category_titles = []
+		self.jeopardy_board_output = ""
+		url = "http://jservice.io/api/random"
+		for i in range(6):
+			async with clients.aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			categories.append(data[0]["category_id"])
+		for category in categories:
+			url = "http://jservice.io/api/category?id=" + str(category)
+			async with clients.aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			category_titles.append(string.capwords(data["title"]))
+			self.jeopardy_board.append([category, False, False, False, False, False])
+		self.jeopardy_max_width = max(len(category_title) for category_title in category_titles)
+		for category_title in category_titles:
+			self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
+		await self.bot.embed_say(clients.code_block.format(self.jeopardy_board_output))
 	
 	@commands.group(pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
@@ -757,6 +768,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: There's no maze game currently going on")
 	
+	# add maze print, position?
 	
 	@commands.group(hidden = True)
 	@checks.not_forbidden()
