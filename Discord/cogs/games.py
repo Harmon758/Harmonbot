@@ -549,13 +549,13 @@ class Games:
 					self.gofish_players.append(member)
 					break
 		else:
-			await self.bot.reply("Please use that command in a server.")
+			await self.bot.embed_reply(":no_entry: Please use that command in a server")
 			pass
 		gofish.start(len(players))
 		gofish_players_string = ""
 		for player in self.gofish_players:
 			gofish_players_string += player.name + " and "
-		await self.bot.reply(message.author.name + " has started a game of Go Fish between " + gofish_players_string[:-5] + "!")
+		await self.bot.embed_reply("{} has started a game of Go Fish between {}!".format(message.author.display_name, gofish_players_string[:-5]))
 	
 	@gofish.command(hidden = True, name = "hand", pass_context = True)
 	async def gofish_hand(self, ctx):
