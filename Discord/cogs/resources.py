@@ -1029,42 +1029,44 @@ class Resources:
 			data = await resp.json()
 		await self.bot.embed_reply(None, title = data["title"], title_url = "http://xkcd.com/{}".format(data["num"]), image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
 	
-	@commands.command(aliases = ["ytinfo"])
+	@commands.command(aliases = ["ytinfo", "youtube_info", "yt_info"], pass_context = True)
 	@checks.not_forbidden()
-	async def youtubeinfo(self, url : str):
+	async def youtubeinfo(self, ctx, url : str):
 		'''Information on Youtube videos'''
-		# toggles = {}
-		# with open(message.server.name + "_toggles.json", "r") as toggles_file:
-			# toggles = json.load(toggles_file)
-		# if message.content.split()[1] == "on":
-			# toggles["youtubeinfo"] = True
-			# with open(message.server.name + "_toggles.json", "w") as toggles_file:
-				# json.dump(toggles, toggles_file, indent = 4)
-		# elif message.content.split()[1] == "off":
-			# toggles["youtubeinfo"] = False
-			# with open(message.server.name + "_toggles.json", "w") as toggles_file:
-				# json.dump(toggles, toggles_file, indent = 4)
-		# else:
+		# TODO: Add to audio cog?
+		'''
+		toggles = {}
+		with open(message.server.name + "_toggles.json", "r") as toggles_file:
+			toggles = json.load(toggles_file)
+		if message.content.split()[1] == "on":
+			toggles["youtubeinfo"] = True
+			with open(message.server.name + "_toggles.json", "w") as toggles_file:
+				json.dump(toggles, toggles_file, indent = 4)
+		elif message.content.split()[1] == "off":
+			toggles["youtubeinfo"] = False
+			with open(message.server.name + "_toggles.json", "w") as toggles_file:
+				json.dump(toggles, toggles_file, indent = 4)
+		else:
+		'''
 		url_data = urllib.parse.urlparse(url)
 		query = urllib.parse.parse_qs(url_data.query)
-		videoid = query["v"][0]
+		if 'v' not in query:
+			await self.bot.embed_reply(":no_entry: Invalid input")
+			return
+		videoid = query['v'][0]
 		api_url = "https://www.googleapis.com/youtube/v3/videos?id={0}&key={1}&part=snippet,contentDetails,statistics".format(videoid, credentials.google_apikey)
-		async with aiohttp_session.get(api_url) as resp:
+		async with clients.aiohttp_session.get(api_url) as resp:
 			data = await resp.json()
-		if data:
-			data = data["items"][0]
-			title = data["snippet"]["title"]
-			length_iso = data["contentDetails"]["duration"]
-			length_timedelta = isodate.parse_duration(length_iso)
-			length = utilities.secs_to_letter_format(length_timedelta.total_seconds())
-			likes = data["statistics"]["likeCount"]
-			dislikes = data["statistics"]["dislikeCount"]
-			likepercentage = round(float(likes) / (float(likes) + float(dislikes)) * 100, 2)
-			likes = utilities.add_commas(int(likes))
-			dislikes = utilities.add_commas(int(dislikes))
-			views = utilities.add_commas(int(data["statistics"]["viewCount"]))
-			channel = data["snippet"]["channelTitle"]
-			published = data["snippet"]["publishedAt"][:10]
-			# await self.bot.send_message(message.channel, message.author.mention + "\n**" + title + "**\n**Length**: " + str(length) + "\n**Likes**: " + likes + ", **Dislikes**: " + dislikes + " (" + str(likepercentage) + "%)\n**Views**: " + views + "\n" + channel + " on " + published)
-			await self.bot.reply("\n```" + title + "\nLength: " + str(length) + "\nLikes: " + likes + ", Dislikes: " + dislikes + " (" + str(likepercentage) + "%)\nViews: " + views + "\n" + channel + " on " + published + "```")
+		if not data:
+			await self.bot.embed_reply(":no_entry: Error")
+			return
+		data = data["items"][0]
+		info = "Length: {}".format(utilities.secs_to_letter_format(isodate.parse_duration(data["contentDetails"]["duration"]).total_seconds()))
+		likes, dislikes = int(data["statistics"]["likeCount"]), int(data["statistics"]["dislikeCount"])
+		info += "\nLikes: {:,}, Dislikes: {:,} ({:.2f}%)".format(likes, dislikes, likes / (likes + dislikes) * 100)
+		info += "\nViews: {:,}, Comments: {:,}".format(int(data["statistics"]["viewCount"]), int(data["statistics"]["commentCount"]))
+		info += "\nChannel: [{0[channelTitle]}](https://www.youtube.com/channel/{0[channelId]})".format(data["snippet"])
+		# data["snippet"]["description"]
+		await self.bot.embed_reply(info, title = data["snippet"]["title"], title_url = url, thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], footer_text = "Published on", timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"]).replace(tzinfo = None))
+		await self.bot.attempt_delete_message(ctx.message)
 
