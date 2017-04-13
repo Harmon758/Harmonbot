@@ -5,6 +5,7 @@ from discord.ext.commands.view import StringView
 from discord.ext.commands.context import Context
 from discord.ext.commands.errors import CommandNotFound, CommandError
 import aiohttp
+import clarifai.rest
 import cleverbot
 import datetime
 import imgurpython
@@ -46,6 +47,9 @@ online_time = datetime.datetime.utcnow()
 session_commands_executed = 0
 session_commands_usage = {}
 aiohttp_session = aiohttp.ClientSession()
+clarifai_app = clarifai.rest.ClarifaiApp(app_id = credentials.clarifai_api_id, app_secret = credentials.clarifai_api_secret)
+clarifai_general_model = clarifai_app.models.get("general-v1.3")
+clarifai_nsfw_model = clarifai_app.models.get("nsfw-v1.0")
 cleverbot_instance = cleverbot.Cleverbot("Harmonbot")
 inflect_engine = inflect.engine()
 owm_client = pyowm.OWM(credentials.owm_api_key)

@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import clarifai.rest
 import collections
 import csv
 import datetime
@@ -220,6 +221,44 @@ class Resources:
 			data = await resp.json()
 		date = [int(d) for d in data["date"].split('-')]
 		await self.bot.embed_reply(data["horoscope"].replace(data["credit"], ""), title = data["sunsign"], fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()), footer_text = data["credit"], timestamp = datetime.datetime(date[0], date[1], date[2]))
+	
+	@commands.command(aliases = ["imagerecog", "imager", "image_recognition"])
+	@checks.not_forbidden()
+	async def imagerecognition(self, image_url : str):
+		'''Image recognition'''
+		try:
+			response = clients.clarifai_general_model.predict_by_url(image_url)
+		except clarifai.rest.ApiError as e:
+			await self.bot.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
+			return
+		if response["status"]["description"] != "Ok":
+			await self.bot.embed_reply(":no_entry: Error")
+			return
+		names = {}
+		for concept in response["outputs"][0]["data"]["concepts"]:
+			names[concept["name"]] = concept["value"] * 100
+		output = ""
+		for name, value in sorted(names.items(), key = lambda i: i[1], reverse = True):
+			output += "**{}**: {:.2f}%, ".format(name, value)
+		output = output[:-2]
+		await self.bot.embed_reply(output)
+	
+	@commands.command()
+	@checks.not_forbidden()
+	async def nsfw(self, image_url : str):
+		'''NSFW recognition'''
+		try:
+			response = clients.clarifai_nsfw_model.predict_by_url(image_url)
+		except clarifai.rest.ApiError as e:
+			await self.bot.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
+			return
+		if response["status"]["description"] != "Ok":
+			await self.bot.embed_reply(":no_entry: Error")
+			return
+		percentages = {}
+		for concept in response["outputs"][0]["data"]["concepts"]:
+			percentages[concept["name"]] = concept["value"] * 100
+		await self.bot.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]))
 	
 	@commands.command(aliases = ["movie"], pass_context = True)
 	@checks.not_forbidden()
