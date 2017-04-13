@@ -10,9 +10,10 @@ from modules import utilities
 initial_data = {"xp": {"woodcutting": 0, "mining": 0, "fishing": 0, "foraging": 0}, "inventory": {}, "last_action": None, "last_action_time": None, "time_started": None}
 skills = ["woodcutting", "mining", "fishing", "foraging"]
 forageables = {"rock": ("stone", "boulder"), "stick": ("branch", "trunk"), "plant": ("shrub", "bush")}
+craftables = {("rock", "stick"): "rock attached to stick"}
 wood_types = ["cuipo", "balsa", "eastern white pine", "basswood", "western white pine", "hemlock", "chestnut", "larch", "red alder", "western juniper", "douglas fir", "southern yellow pine", "silver maple", "radiata pine", "shedua", "box elder", "sycamore", "parana", "honduran mahogany", "african mahogany", "lacewood", "eastern red cedar", "paper birch", "boire", "red maple", "imbusia", "cherry", "black walnut", "boreal", "peruvian walnut", "siberian larch", "makore", "english oak", "rose gum", "teak", "larch", "carapa guianensis", "heart pine", "movingui", "yellow birch", "caribbean heart pine", "red oak", "american beech", "ash", "ribbon gum", "tasmanian oak", "white oak", "australian cypress", "bamboo", "kentucky coffeetree", "caribbean walnut", "hard maple", "sweet birch", "curupixa", "sapele", "peroba", "true pine", "zebrawood", "tualang", "wenge", "highland beech", "black locust", "kempas", "merbau", "blackwood", "african padauk", "rosewood", "bangkirai", "afzelia", "hickory", "tigerwood", "purpleheart", "jarrah", "amendoim", "merbau", "tallowwood", "cameron", "bubinga", "sydney blue gum", "karri", "osage orange", "brushbox", "brazilian koa", "pradoo", "bocote", "balfourodendron riedelianum", "golden teak", "mesquite", "jatoba", "spotted gum", "southern chestnut", "live oak", "turpentine", "bloodwood", "cocobolo", "yvyraro", "massaranduba", "ebony", "ironwood", "sucupira", "cumaru", "lapacho", "bolivian cherry", "grey ironbark", "moabi", "lapacho", "brazilian ebony", "brazilian olivewood", "snakewood", "piptadenia macrocarpa", "lignum vitae", "schinopsis balansae", "schinopsis brasiliensis", "australian buloke"]
 # https://en.wikipedia.org/wiki/Janka_hardness_test
-examine_messages = {"rock": "it's a rock..", "stone": "it's a bigger rock..", "boulder": "wow, that's a big rock", "stick": "pointy"}
+examine_messages = {"rock": "it's a rock..", "stone": "it's a bigger rock..", "boulder": "wow, that's a big rock", "stick": "pointy", "rock attached to stick": "it must have taken you a long time to make this"}
 
 def xp_to_lvl(xp):
 	return math.ceil((xp / 12.5 + 1.08) ** 0.5 / 2 - 0.5)
@@ -86,6 +87,21 @@ class AdventurePlayer:
 			return item, time_spent, item_amount, secondary_amount, tertiary_amount
 		else:
 			return False, self.last_action
+	
+	def create_item(self, items):
+		for item in items:
+			if item not in self.inventory:
+				return None
+		sorted_items = tuple(sorted(items))
+		if sorted_items not in craftables:
+			return False
+		crafted_item = craftables[sorted_items]
+		for item in items:
+			self.inventory[item] -= 1
+			if self.inventory[item] == 0:
+				del self.inventory[item]
+		self.inventory[crafted_item] = self.inventory.get(crafted_item, 0) + 1
+		return crafted_item
 	
 	def start_woodcutting(self, wood_type):
 		if self.last_action is not None:

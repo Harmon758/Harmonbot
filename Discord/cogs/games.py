@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import chess.pgn
 import cleverbot
 import copy
-import deuces
+# import deuces
 import html
 import json
 import os
@@ -20,7 +20,7 @@ import timeit
 
 from modules import utilities
 from modules import adventure
-#from modules import gofish
+# from modules import gofish
 from modules.chess import chess_match
 from modules import maze
 from modules import war
@@ -189,6 +189,23 @@ class Games:
 	async def forage_items(self):
 		'''Forageable items'''
 		await self.bot.embed_reply(", ".join(adventure.forageables.keys()))
+	
+	@adventure.command(name = "create", aliases = ["make", "craft"], pass_context = True)
+	@checks.not_forbidden()
+	async def adventure_create(self, ctx, *items : str):
+		'''
+		Create item
+		items: items to use to attempt to create something else
+		Use quotes for spaces in item names
+		'''
+		player = self.get_adventure_player(ctx.message.author.id)
+		created = player.create_item(items)
+		if created is None:
+			await self.bot.embed_reply("You don't have those items")
+		elif created is False:
+			await self.bot.embed_reply("You were unable to create anything with those items")
+		else:
+			await self.bot.embed_reply("You have created {}".format(created))
 	
 	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
