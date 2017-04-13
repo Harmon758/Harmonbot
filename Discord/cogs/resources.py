@@ -326,18 +326,19 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			self.lichess_tournaments_data = await resp.json()
 	
-	@lichess_tournaments.command(name = "current", aliases = ["started"])
-	async def lichess_tournaments_current(self):
+	@lichess_tournaments.command(name = "current", aliases = ["started"], pass_context = True)
+	async def lichess_tournaments_current(self, ctx):
 		'''WIP'''
 		data = self.lichess_tournaments_data["started"]
-		output = ["", "__Current Tournaments__"]
+		embed = discord.Embed(title = "Current Lichess Tournaments", color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
 		for tournament in data:
-			output.append("**{0[fullName]}**".format(tournament))
-			# output.append("{:g}+{} {variant}{rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], variant = tournament["variant"]["name"] + " " if tournament["variant"]["name"] != "Standard" else "", rated = "Rated" if tournament["rated"] else "Casual"))
-			output.append("{:g}+{} {} {rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], tournament["perf"]["name"], rated = "Rated" if tournament["rated"] else "Casual"))
-			output[-1] += ", Ends in: {:g}m".format((datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0) - datetime.datetime.utcnow()).total_seconds() // 60)
-			output.append("<https://en.lichess.org/tournament/{}>".format(tournament["id"]))
-		await self.bot.reply('\n'.join(output))
+			value = "{:g}+{} {} {rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], tournament["perf"]["name"], rated = "Rated" if tournament["rated"] else "Casual")
+			value += "\nEnds in: {:g}m".format((datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0) - datetime.datetime.utcnow()).total_seconds() // 60)
+			value += "\n[Link](https://en.lichess.org/tournament/{})".format(tournament["id"])
+			embed.add_field(name = tournament["fullName"], value = value)
+		await self.bot.say(embed = embed)
 	
 	@lichess.command(name = "tournament")
 	async def lichess_tournament(self):
