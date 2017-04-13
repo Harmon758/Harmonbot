@@ -177,7 +177,7 @@ class Discord:
 		await self.bot.unpin_message(message)
 		await self.bot.embed_reply(":wastebasket: Unpinned message")
 	
-	@commands.command(pass_context = True, aliases = ["rolecolour"], no_pm = True)
+	@commands.command(aliases = ["rolecolour", "role_color", "role_colour"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
 	async def rolecolor(self, ctx, role : str, *color : str):
 		'''
