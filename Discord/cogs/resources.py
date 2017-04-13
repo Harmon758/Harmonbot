@@ -284,13 +284,13 @@ class Resources:
 	async def lichess_user_bullet(self, username : str):
 		'''WIP'''
 		data = self.lichess_user_data
-		await self.bot.reply("\n__{username}__\n:zap: Bullet | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["bullet"], prov = "?" if data["perfs"]["bullet"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["bullet"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["bullet"]["prog"], username = data["username"]))
+		await self.bot.embed_reply(":zap: Bullet | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {0[prog]}".format(data["perfs"]["bullet"], prov = "?" if data["perfs"]["bullet"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["bullet"]["prog"] >= 0 else ":chart_with_downwards_trend:"), title = data["username"])
 	
 	@lichess_user.command(name = "blitz")
 	async def lichess_user_blitz(self, username : str):
 		'''WIP'''
 		data = self.lichess_user_data
-		await self.bot.reply("\n__{username}__\n:fire: Blitz | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {prog}".format(data["perfs"]["blitz"], prov = "?" if data["perfs"]["blitz"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["blitz"]["prog"] >= 0 else ":chart_with_downwards_trend:", prog = data["perfs"]["blitz"]["prog"], username = data["username"]))
+		await self.bot.embed_reply(":fire: Blitz | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {0[prog]}".format(data["perfs"]["blitz"], prov = "?" if data["perfs"]["blitz"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["blitz"]["prog"] >= 0 else ":chart_with_downwards_trend:"), title = data["username"])
 	
 	@lichess_user.error
 	async def lichess_user_error(self, error, ctx):
