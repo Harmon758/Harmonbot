@@ -11,6 +11,7 @@ import random
 import clients
 import credentials
 from utilities import checks
+from utilities import errors
 from modules import maze
 from modules import utilities
 
@@ -23,14 +24,12 @@ class Reactions:
 		self.bot = bot
 		self.reaction_messages = {}
 		self.mazes = {}
-		
 		self.numbers = {'\N{KEYCAP TEN}': 10}
 		for number in range(9):
 			self.numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1 # '\u0031' - 1
-		
 		self.arrows = collections.OrderedDict([('\N{LEFTWARDS BLACK ARROW}', 'W'), ('\N{UPWARDS BLACK ARROW}', 'N'), ('\N{DOWNWARDS BLACK ARROW}', 'S'), ('\N{BLACK RIGHTWARDS ARROW}', 'E')]) # tuple?
-		
-		self.reaction_commands = ((self.guessr, "Games.guess"), (self.newsr, "Resources.news"), (self.mazer, "Games.maze"))
+		self.controls = collections.OrderedDict([('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', "pause_resume"), ('\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}', "skip"), ('\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}', "replay"), ('\N{TWISTED RIGHTWARDS ARROWS}', "shuffle"), ('\N{RADIO}', "radio"), ('\N{SPEAKER WITH ONE SOUND WAVE}', "volume_down"), ('\N{SPEAKER WITH THREE SOUND WAVES}', "volume_up")])
+		self.reaction_commands = ((self.guessr, "Games.guess"), (self.newsr, "Resources.news"), (self.mazer, "Games.maze"), (self.playingr, "Audio.playing"))
 		for command, parent_name in self.reaction_commands:
 			utilities.add_as_subcommand(self, command, parent_name, "reactions", aliases = ["reaction", 'r'])
 	
@@ -95,8 +94,8 @@ class Reactions:
 			output += "\nSelect a different number for another article"
 			await self.bot.edit_message(response, "{}: {}".format(ctx.message.author.display_name, output))
 	
-	# urband
-	# rtg
+	# TODO: urband
+	# TODO: rtg
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
@@ -138,6 +137,59 @@ class Reactions:
 				embed.description = "{}\n:no_entry: You can't go that way".format(clients.code_block.format(maze_instance.print_visible()))
 			await self.bot.edit_message(reaction.message, embed = embed)
 	
+	@commands.command(aliases = ["player"], no_pm = True, pass_context = True)
+	@checks.not_forbidden()
+	async def playingr(self, ctx):
+		'''Audio player'''
+		try:
+			embed = self.bot.cogs["Audio"].players[ctx.message.server.id].current_embed()
+		except errors.AudioNotPlaying:
+			player_message, embed = await self.bot.embed_reply(":speaker: There is no song currently playing")
+		else:
+			embed.set_author(name = ctx.message.author.display_name, icon_url = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url)
+			player_message, embed = await self.bot.say(embed = embed)
+		await self.bot.attempt_delete_message(ctx.message)
+		for control_emote in self.controls.keys():
+			await self.bot.add_reaction(player_message, control_emote)
+		self.reaction_messages[player_message.id] = lambda reaction, user: self.playingr_processr(ctx, reaction, user)
+	
+	# TODO: Queue?, Empty?, Settext?, Other?
+	# TODO: Resend player?
+	
+	async def playingr_processr(self, ctx, reaction, user):
+		if reaction.emoji in self.controls:
+			if self.controls[reaction.emoji] == "pause_resume":
+				if utilities.get_permission(ctx, "pause", id = user.id) or user == ctx.message.server.owner or user.id == credentials.myid:
+					embed = discord.Embed(color = clients.bot_color).set_author(name = user.display_name, icon_url = user.avatar_url or user.default_avatar_url)
+					try:
+						self.bot.cogs["Audio"].players[ctx.message.server.id].pause()
+					except errors.AudioNotPlaying:
+						embed.description = ":no_entry: There is no song to pause"
+					except errors.AudioAlreadyDone:
+						self.bot.cogs["Audio"].players[ctx.message.server.id].resume()
+						embed.description = ":play_pause: Resumed song"
+					else:
+						embed.description = ":pause_button: Paused song"
+					await self.bot.send_message(ctx.message.channel, embed = embed)
+					await self.bot.attempt_delete_message(ctx.message)
+			elif self.controls[reaction.emoji] in ("skip", "replay", "shuffle", "radio"):
+				if utilities.get_permission(ctx, self.controls[reaction.emoji], id = user.id) or user.id in (ctx.message.server.owner.id, credentials.myid):
+					message = copy.copy(ctx.message)
+					message.content = "{}{}".format(ctx.prefix, self.controls[reaction.emoji])
+					await self.bot.process_commands(message)
+					# Timestamp for radio
+			elif self.controls[reaction.emoji] in ("volume_down", "volume_up"):
+				if utilities.get_permission(ctx, "volume", id = user.id) or user.id in (ctx.message.server.owner, credentials.myid):
+					try:
+						current_volume = self.bot.cogs["Audio"].players[ctx.message.server.id].get_volume()
+					except errors.AudioNotPlaying:
+						await self.bot.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
+					if self.controls[reaction.emoji] == "volume_down": set_volume = current_volume - 10
+					elif self.controls[reaction.emoji] == "volume_up": set_volume = current_volume + 10
+					message = copy.copy(ctx.message)
+					message.content = "{}volume {}".format(ctx.prefix, set_volume)
+					await self.bot.process_commands(message)
+			
 	
 async def process_reactions(reaction, user):
 	await clients.client.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
