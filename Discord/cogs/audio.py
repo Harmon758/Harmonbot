@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import concurrent.futures
 import inspect
+import random
 import urllib
 
 import clients
@@ -230,6 +231,30 @@ class Audio:
 		embed.description = ":twisted_rightwards_arrows: Shuffled songs"
 		await self.bot.edit_message(response, embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
+	
+	@audio.command(name = "random", aliases = ["top"], pass_context = True, no_pm = True)
+	@checks.not_forbidden()
+	@checks.is_voice_connected()
+	async def audio_random(self, ctx):
+		'''Play a random song from Youtube's top 50'''
+		url = "https://www.googleapis.com/youtube/v3/videos?part=id&chart=mostPopular&maxResults=50&videoCategoryId=10&key={}".format(credentials.google_apikey)
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		song = random.choice([video["id"] for video in data["items"]])
+		response, embed = await self.bot.embed_reply(":cd: Loading..")
+		try:
+			title, url = await self.players[ctx.message.server.id].add_song(song, ctx.message.author, ctx.message.timestamp)
+		except Exception as e:
+			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
+		else:
+			embed.title = title
+			embed.url = url
+			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
+		try:
+			await self.bot.edit_message(response, embed = embed)
+		except discord.errors.HTTPException:
+			embed.description = ":warning: Error loading `{}`".format(song)
+			await self.bot.edit_message(response, embed = embed)
 	
 	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
