@@ -50,6 +50,8 @@ class Games:
 		self.adventure_players = {}
 		
 		utilities.create_file("trivia_points")
+		with open("data/trivia_points.json", 'r') as trivia_file:
+			self.trivia_stats = json.load(trivia_file)
 	
 	# Adventure
 	
@@ -1136,9 +1138,7 @@ class Games:
 				while self.bet_countdown:
 					message = await self.bot.wait_for_message(timeout = self.bet_countdown, channel = ctx.message.channel, check = lambda m: m.content.isdigit())
 					if message:
-						with open("data/trivia_points.json", 'r') as trivia_file:
-							score = json.load(trivia_file)
-						if int(message.content) <= score[message.author.id][2]:
+						if int(message.content) <= self.trivia_stats[message.author.id][2]: # check if new player
 							bets[message.author] = int(message.content)
 							await clients.embed_reply(message, "Has bet ${}".format(message.content))
 							await self.bot.delete_message(message)
@@ -1183,31 +1183,29 @@ class Games:
 			if len(correct_players) == 0:
 				correct_players_output = "Nobody got it right!"
 			else:
-				correct_players_output = inflect_engine.join([correct_player.name for correct_player in correct_players]) + ' ' + inflect_engine.plural("was", len(correct_players)) + " right!"
-			with open("data/trivia_points.json", "r") as trivia_file:
-				score = json.load(trivia_file)
+				correct_players_output = clients.inflect_engine.join([correct_player.display_name for correct_player in correct_players]) + ' ' + clients.inflect_engine.plural("was", len(correct_players)) + " right!"
 			for correct_player in correct_players:
-				if correct_player.id in score:
-					score[correct_player.id][0] += 1
+				if correct_player.id in self.trivia_stats:
+					self.trivia_stats[correct_player.id][0] += 1
 				else:
-					score[correct_player.id] = [1, 0, 100000]
+					self.trivia_stats[correct_player.id] = [1, 0, 100000]
 			for incorrect_player in incorrect_players:
-				if incorrect_player.id in score:
-					score[incorrect_player.id][1] += 1
+				if incorrect_player.id in self.trivia_stats:
+					self.trivia_stats[incorrect_player.id][1] += 1
 				else:
-					score[incorrect_player.id] = [0, 1, 100000]
+					self.trivia_stats[incorrect_player.id] = [0, 1, 100000]
 			if bet:
 				trivia_bets_output = ""
 				for trivia_player in bets:
 					if trivia_player in correct_players:
-						score[trivia_player.id][2] += bets[trivia_player]
-						trivia_bets_output += trivia_player.name + " won $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(score[trivia_player.id][2]) + ". "
+						self.trivia_stats[trivia_player.id][2] += bets[trivia_player]
+						trivia_bets_output += trivia_player.display_name + " won $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[trivia_player.id][2]) + ". "
 					else:
-						score[trivia_player.id][2] -= bets[trivia_player]
-						trivia_bets_output += trivia_player.name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(score[trivia_player.id][2]) + ". "
+						self.trivia_stats[trivia_player.id][2] -= bets[trivia_player]
+						trivia_bets_output += trivia_player.display_name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[trivia_player.id][2]) + ". "
 				trivia_bets_output = trivia_bets_output[:-1]
 			with open("data/trivia_points.json", 'w') as trivia_file:
-				json.dump(score, trivia_file, indent = 4)
+				json.dump(self.trivia_stats, trivia_file, indent = 4)
 			await self.bot.embed_say("The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")), footer_text = correct_players_output)
 			if bet and trivia_bets_output:
 				await self.bot.embed_say(trivia_bets_output)
@@ -1236,18 +1234,16 @@ class Games:
 	
 	@trivia.command(name = "score", aliases = ["points", "rank", "level"], pass_context = True)
 	async def trivia_score(self, ctx):
-		with open("data/trivia_points.json", 'r') as trivia_file:
-			score = json.load(trivia_file)
-		correct = score[ctx.message.author.id][0]
-		incorrect = score[ctx.message.author.id][1]
-		correct_percentage = round(float(correct) / (float(correct) + float(incorrect)) * 100, 2)
-		await self.bot.embed_reply("You have answered {}/{} ({}%) correctly.".format(str(correct), str(correct + incorrect), str(correct_percentage)))
+		'''Trivia score'''
+		correct = self.trivia_stats[ctx.message.author.id][0]
+		incorrect = self.trivia_stats[ctx.message.author.id][1]
+		correct_percentage = correct / (correct + incorrect) * 100
+		await self.bot.embed_reply("You have answered {}/{} ({:.2f}%) correctly.".format(correct, correct + incorrect, correct_percentage))
 	
 	@trivia.command(name = "money", aliases = ["cash"], pass_context = True)
 	async def trivia_money(self, ctx):
-		with open("data/trivia_points.json", 'r') as trivia_file:
-			score = json.load(trivia_file)
-		cash = score[ctx.message.author.id][2]
+		'''Trivia money'''
+		cash = self.trivia_stats[ctx.message.author.id][2]
 		await self.bot.embed_reply("You have $" + utilities.add_commas(cash))
 	
 	@commands.group(pass_context = True)

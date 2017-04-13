@@ -23,11 +23,12 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-9.36"
+version = "0.35.0-9.37"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 listener_id = "180994984038760448"
 cache_channel_id = "254051856219635713"
+user_agent = "Discord Bot"
 fake_ip = "nice try"
 fake_location = "Fort Yukon, Alaska"
 library_files = "D:/Data (D)/Music/"
