@@ -44,15 +44,17 @@ class TwitterStreamListener(tweepy.StreamListener):
 	
 	async def add_feed(self, channel, handle):
 		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [clients.twitter_api.get_user(handle).id_str]
+		# TODO: Check if stream already following
 		await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
 		self.feeds[channel.id].remove(clients.twitter_api.get_user(handle).id_str)
-		await self.start_feeds()
+		await self.start_feeds() # necessary?
 	
 	def on_status(self, status):
-		# print(status.text)
-		if status.user.id_str in set([id for feeds in self.feeds.values() for id in feeds]):
+		## print(status.text)
+		if not status.in_reply_to_status_id and status.user.id_str in set([id for feeds in self.feeds.values() for id in feeds]):
+			# TODO: Settings for including replies, retweets, etc.
 			for channel_id, channel_feeds in self.feeds.items():
 				if status.user.id_str in channel_feeds:
 					embed = discord.Embed(title = '@' + status.user.screen_name, url = "https://twitter.com/{}/status/{}".format(status.user.screen_name, status.id), description = status.text, timestamp = status.created_at, color = clients.twitter_color)
@@ -147,6 +149,7 @@ class Twitter:
 	async def handles(self, ctx):
 		'''Show Twitter handles being followed in a text channel'''
 		await self.bot.embed_reply('\n'.join(self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", [])))
+		# TODO: Add message if none
 	
 	async def start_twitter_feeds(self):
 		await self.bot.wait_until_ready()

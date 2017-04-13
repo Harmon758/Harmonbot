@@ -34,12 +34,12 @@ class Youtube:
 	
 	def __unload(self):
 		self.youtube_streams.recursively_remove_all_commands()
-		youtube.remove_command("streams")
+		youtube.remove_command("streams") # Handle when audio cog not loaded first
 		self.task.cancel()
 	
 	# TODO: Follow channels/new video uploads
 	
-	@youtube.group(name = "streams", aliases = ["stream"], pass_context = True, invoke_without_command = True)
+	@youtube.group(name = "streams", aliases = ["stream"], pass_context = True, invoke_without_command = True) # Handle stream alias when audio cog not loaded first
 	@checks.is_permitted()
 	async def youtube_streams(self, ctx):
 		'''Youtube Streams'''
