@@ -824,6 +824,18 @@ class Resources:
 		data = data[appid]["data"]
 		await self.bot.embed_reply(data["short_description"], title = data["name"], title_url = data["website"], fields = (("Release Date", data["release_date"]["date"]), ("Free", "Yes" if data["is_free"] else "No"), ("App ID", data["steam_appid"])), image_url = data["header_image"])
 	
+	@steam.command(name = "run", aliases = ["launch"])
+	async def steam_run(self, *, game : str):
+		'''Generate a steam link to launch a game'''
+		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
+			data = await resp.json()
+		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
+		if not app:
+			await self.bot.embed_reply(":no_entry: Game not found")
+			return
+		appid = app["appid"]
+		await self.bot.embed_reply("[Launch {}](steam://run/{})".format(game, appid))
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def strawpoll(self, question : str, *options : str):
