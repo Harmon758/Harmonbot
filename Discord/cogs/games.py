@@ -10,10 +10,12 @@ import cleverbot
 import copy
 import html
 import json
+import os
 import pydealer
 import random
 import re
 import string
+import timeit
 
 from modules import utilities
 from modules import adventure
@@ -23,8 +25,6 @@ from modules import maze
 from modules import war
 from utilities import checks
 import clients
-from clients import wait_time
-from clients import aiohttp_session
 from clients import inflect_engine
 
 def setup(bot):
@@ -769,6 +769,154 @@ class Games:
 			await self.bot.embed_reply(":no_entry: There's no maze game currently going on")
 	
 	# add maze print, position?
+	
+	@commands.group()
+	@checks.not_forbidden()
+	async def poker(self):
+		'''WIP'''
+		...
+	
+	@poker.command(name = "start", pass_context = True)
+	async def poker_start(self, ctx):
+		if self.poker_status not in (None, "started"):
+			await self.bot.embed_reply("There's already a round of poker in progress")
+		elif self.poker_status is None:
+			self.poker_status = "started"
+			self.poker_players = []
+			self.poker_hands = {}
+			# reset other
+			self.poker_deck = pydealer.Deck()
+			self.poker_deck.shuffle()
+			self.poker_pot = 0
+			await self.bot.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.message.author.display_name, ctx.prefix))
+		else:
+			self.poker_status = "pre-flop"
+			await self.bot.embed_say("The poker round has started\nPlayers: {}".format(" ".join([player.mention for player in self.poker_players])))
+			for player in self.poker_players:
+				cards_string = self.cards_to_string(self.poker_hands[player.id].cards)
+				await self.bot.send_embed(player, "Your poker hand: {}".format(cards_string))
+			await self.poker_betting()
+			while self.poker_status:
+				await asyncio.sleep(1)
+			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			self.poker_community_cards = self.poker_deck.deal(3)
+			await self.bot.embed_say("The flop: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await self.poker_betting()
+			while self.poker_status:
+				await asyncio.sleep(1)
+			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			self.poker_community_cards.add(self.poker_deck.deal(1))
+			await self.bot.embed_say("The turn: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await self.poker_betting()
+			while self.poker_status:
+				await asyncio.sleep(1)
+			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			self.poker_community_cards.add(self.poker_deck.deal(1))
+			await self.bot.embed_say("The river: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await self.poker_betting()
+			while self.poker_status:
+				await asyncio.sleep(1)
+			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			
+			evaluator = deuces.Evaluator()
+			board = []
+			for card in self.poker_community_cards.cards:
+				abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
+				board.append(deuces.Card.new(abbreviation))
+			best_hand_value = 7462
+			best_player = None
+			for player, hand in self.poker_hands.items():
+				hand_stack = []
+				for card in hand:
+					abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
+					hand_stack.append(deuces.Card.new(abbreviation))
+				value = evaluator.evaluate(board, hand_stack)
+				if value < best_hand_value:
+					best_hand_value = value
+					best_player = player
+			player = await self.bot.get_user_info(player)
+			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
+			await self.bot.embed_say("{} is the winner with a {}".format(player.mention, type))
+	
+	@poker.command(name = "join", pass_context = True)
+	async def poker_join(self, ctx):
+		if self.poker_status == "started":
+			self.poker_players.append(ctx.message.author)
+			self.poker_hands[ctx.message.author.id] = self.poker_deck.deal(2)
+			await self.bot.embed_say("{} has joined the poker match".format(ctx.message.author.display_name))
+		elif self.poker_status is None:
+			await self.bot.embed_reply("There's not currently a round of poker going on\nUse `{}poker start` to start one".format(ctx.prefix))
+		else:
+			await self.bot.embed_reply(":no_entry: The current round of poker already started")
+	
+	@poker.command(name = "raise", pass_context = True)
+	async def poker_raise(self, ctx, points : int):
+		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
+			if points > self.poker_current_bet:
+				self.poker_bets[self.poker_turn.id] = points
+				self.poker_current_bet = points
+				await self.bot.embed_reply("{} has raised to {}".format(ctx.message.author.display_name, points))
+				self.poker_turn = None
+			elif points == self.poker_current_bet:
+				self.poker_bets[self.poker_turn.id] = points
+				await self.bot.embed_say("{} has called".format(ctx.message.author.display_name))
+				self.poker_turn = None
+			else:
+				await self.bot.embed_reply("The current bet is more than that")
+		else:
+			await self.bot.embed_reply(":no_entry: You can't do that right now")
+	
+	@poker.command(name = "call", pass_context = True)
+	async def poker_call(self, ctx):
+		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
+			if self.poker_current_bet == 0 or (self.poker_turn.id in self.poker_bets and self.poker_bets[self.poker_turn.id] == self.poker_current_bet):
+				await self.bot.embed_reply("You can't call\nYou have checked instead")
+				await self.bot.embed_say("{} has checked".format(ctx.message.author.display_name))
+			else:
+				self.poker_bets[self.poker_turn.id] = self.poker_current_bet
+				await self.bot.embed_say("{} has called".format(ctx.message.author.display_name))
+			self.poker_turn = None
+		else:
+			await self.bot.embed_reply(":no_entry: You can't do that right now")
+	
+	@poker.command(name = "check", pass_context = True)
+	async def poker_check(self, ctx):
+		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
+			if self.poker_current_bet != 0 and (self.poker_turn.id not in self.poker_bets or self.poker_bets[self.poker_turn.id] < self.poker_current_bet):
+				await self.bot.embed_reply(":no_entry: You can't check")
+			else:
+				self.poker_bets[self.poker_turn.id] = self.poker_current_bet
+				await self.bot.embed_say("{} has checked".format(ctx.message.author.display_name))
+				self.poker_turn = None
+		else:
+			await self.bot.embed_reply(":no_entry: You can't do that right now.")
+	
+	@poker.command(name = "fold", pass_context = True)
+	async def poker_fold(self, ctx):
+		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
+			self.poker_bets[self.poker_turn.id] = -1
+			self.poker_folded.append(self.poker_turn)
+			self.poker_turn = None
+		else:
+			await self.bot.embed_reply(":no_entry: You can't do that right now")
+	
+	async def poker_betting(self):
+		self.poker_status = "betting"
+		self.poker_current_bet = 0
+		while True:
+			for player in self.poker_players:
+				self.poker_turn = player
+				if player in self.poker_folded:
+					continue
+				await self.bot.embed_say("{}'s turn".format(player.mention))
+				while self.poker_turn:
+					await asyncio.sleep(1)
+			if all([bet == -1 or bet == self.poker_current_bet for bet in self.poker_bets.values()]):
+				break
+		for bet in self.poker_bets.values():
+			if bet != -1:
+				self.poker_pot += bet
+		self.poker_status = None
 	
 	@commands.command(aliases = ["rtg", "reactiontime", "reactiontimegame", "reaction_time_game"], pass_context = True)
 	@checks.not_forbidden()
