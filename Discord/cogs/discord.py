@@ -125,7 +125,7 @@ class Discord:
 		elif len(to_delete) > 1:
 			await self.bot.delete_messages(to_delete)
 	
-	@commands.command(pass_context = True, aliases = ["mycolour"], no_pm = True)
+	@commands.command(aliases = ["mycolour", "my_color", "my_colour"], pass_context = True, no_pm = True)
 	@checks.not_forbidden()
 	async def mycolor(self, ctx, color : str = ""):
 		'''
