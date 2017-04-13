@@ -213,6 +213,13 @@ if __name__ == "__main__":
 		
 		# Chatbot
 		elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'):
+			if message.channel.is_private:
+				my_name = message.channel.me.display_name
+			else:
+				my_name = message.server.me.display_name
+			if ' '.join(message.clean_content.split()[:2]).lower() == '@' + my_name.lower() + " help":
+				await clients.embed_reply(message, "Please see {}help".format(prefixes[0]))
+				return
 			mentionless_message = ""
 			for word in message.clean_content.split():
 				if not word.startswith("@"):
