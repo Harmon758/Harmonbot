@@ -664,60 +664,63 @@ class Resources:
 			return
 		await self.bot.embed_reply(', '.join(rhymes[0].words), title = "Words that rhyme with {}".format(word.capitalize()))
 	
-	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True)
+	@commands.group(aliases = ["realmofthemadgod"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def rotmg(self, player : str):
+	async def rotmg(self, ctx, player : str):
 		'''Realm of the Mad God player information'''
 		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await self.bot.reply("Error: " + data["error"])
-		else:
-			output = ["", "__{}__".format(data["player"])]
-			output.append("**Donator**: {}".format(data["donator"]))
-			output.append("**Characters**: {}".format(data["chars"]))
-			output.append("**Total Fame**: {:,}".format(data["fame"]))
-			output.append("**Fame Rank**: {:,}".format(data["fame_rank"]))
-			output.append("**Total Exp**: {:,}".format(data["exp"]))
-			output.append("**Exp Rank**: {:,}".format(data["exp_rank"]))
-			output.append("**Class Quests Completed**: {}".format(data["rank"]))
-			output.append("**Account Fame**: {:,}".format(data["account_fame"]))
-			output.append("**Account Fame Rank**: {:,}".format(data["account_fame_rank"]))
-			if "guild" in data:
-				output.append("**Guild**: {}".format(data["guild"]))
-				output.append("**Guild Position**: {}".format(data["guild_rank"]))
-			output.append("**Created**: {}".format(data["created"]))
-			output.append("**Last Seen**: {}".format(data["last_seen"]))
-			output.append("**Description**: ```{}```".format("\n".join((data["desc1"], data["desc2"], data["desc3"]))))
-			output.append("https://www.realmeye.com/player/{}".format(player))
-			await self.bot.reply('\n'.join(output))
+			await self.bot.embed_reply("Error: " + data["error"])
+			return
+		embed = discord.Embed(title = data["player"], url = "https://www.realmeye.com/player/{}".format(player), color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		if data["donator"] == "true": embed.description = "Donator"
+		embed.add_field(name = "Characters", value = data["chars"])
+		embed.add_field(name = "Total Fame", value = "{:,}".format(data["fame"]))
+		embed.add_field(name = "Fame Rank", value = "{:,}".format(data["fame_rank"]))
+		embed.add_field(name = "Class Quests Completed", value = data["rank"])
+		embed.add_field(name = "Account Fame", value = "{:,}".format(data["account_fame"]))
+		embed.add_field(name = "Account Fame Rank", value = "{:,}".format(data["account_fame_rank"]))
+		embed.add_field(name = "Created", value = data["created"])
+		embed.add_field(name = "Total Exp", value = "{:,}".format(data["exp"]))
+		embed.add_field(name = "Exp Rank", value = "{:,}".format(data["exp_rank"]))
+		embed.add_field(name = "Last Seen", value = data["last_seen"])
+		if "guild" in data:
+			embed.add_field(name = "Guild", value = data["guild"])
+			embed.add_field(name = "Guild Position", value = data["guild_rank"])
+		if data["desc1"] or data["desc2"] or data["desc3"]:
+			embed.add_field(name = "Description", value = "{}\n{}\n{}".format(data["desc1"], data["desc2"], data["desc3"]))
+		await self.bot.say(embed = embed)
 	
-	@rotmg.command(name = "characters")
+	@rotmg.command(name = "characters", pass_context = True)
 	@checks.not_forbidden()
-	async def rotmg_characters(self, player : str):
+	async def rotmg_characters(self, ctx, player : str):
 		'''Realm of the Mad God player characters information'''
 		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await self.bot.reply("Error: " + data["error"])
-		else:
-			output = ["", "__**{}'s Characters**__".format(data["player"])]
-			for character in data["characters"]:
-				output.append("**Level {0[level]} {0[class]}**".format(character))
-				output.append("__Fame__: {0[fame]:,}, __Exp__: {0[exp]:,}, __Rank__: {0[place]:,} __Class Quests Completed__: {0[cqc]}, __Stats Maxed__: {0[stats_maxed]}".format(character))
-				output.append("__HP__: {0[hp]}, __MP__: {0[mp]}, __Attack__: {0[attack]}, __Defense__: {0[defense]}, __Speed__: {0[speed]}, __Vitality__: {0[vitality]}, __Wisdom__: {0[wisdom]}, __Dexterity__: {0[dexterity]}".format(character["stats"]))
-				equips = []
-				for type, equip in character["equips"].items():
-					equips.append("__{}__: {}".format(type.capitalize(), equip))
-				output.append(", ".join(equips))
-				output.append("__Pet__: {0[pet]}, __Clothing Dye__: {0[character_dyes][clothing_dye]}, __Accessory Dye__: {0[character_dyes][accessory_dye]}, __Backpack__: {0[backpack]}".format(character))
-				output.append("__Last Seen__: {0[last_seen]}, __Last Server__: {0[last_server]}".format(character))
-			await self.bot.reply('\n'.join(output[:len(output) // 2]))
-			await self.bot.say('\n'.join(output[len(output) // 2:]))
+			await self.bot.embed_reply("Error: " + data["error"])
+			return
+		embed = discord.Embed(title = "{}'s Characters".format(data["player"]), color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		for character in data["characters"]:
+			value = "Fame: {0[fame]:,}, Exp: {0[exp]:,}, Rank: {0[place]:,}, Class Quests Completed: {0[cqc]}, Stats Maxed: {0[stats_maxed]}".format(character)
+			value += "\nHP: {0[hp]}, MP: {0[mp]}, Attack: {0[attack]}, Defense: {0[defense]}, Speed: {0[speed]}, Vitality: {0[vitality]}, Wisdom: {0[wisdom]}, Dexterity: {0[dexterity]}".format(character["stats"])
+			equips = []
+			for type, equip in character["equips"].items():
+				equips.append("{}: {}".format(type.capitalize(), equip))
+			value += '\n' + ", ".join(equips)
+			value += "\nPet: {0[pet]}, Clothing Dye: {0[character_dyes][clothing_dye]}, Accessory Dye: {0[character_dyes][accessory_dye]}, Backpack: {0[backpack]}".format(character)
+			value += "\nLast Seen: {0[last_seen]}, Last Server: {0[last_server]}".format(character)
+			embed.add_field(name = "Level {0[level]} {0[class]}".format(character), value = value, inline = False)
+		await self.bot.say(embed = embed)
 	
 	@commands.command()
 	@checks.not_forbidden()
