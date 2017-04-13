@@ -864,14 +864,58 @@ class Resources:
 			return
 		await self.bot.embed_reply(', '.join(synonyms[0].words), title = "Synonyms of {}".format(word.capitalize()))
 	
-	@commands.command()
+	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
+	"Powered by [Yandex.Translate](http://translate.yandex.com/)", invoke_without_command = True)
 	@checks.not_forbidden()
 	async def translate(self, *, text : str):
-		'''Translate'''
-		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang=en&text={}".format(credentials.yandex_translate_api_key, text)
-		async with clients.aiohttp_session.get(url) as resp:
+		'''Translate to English'''
+		# TODO: From and to language code options?
+		await self.process_translate(text, "en")
+	
+	@translate.command(name = "from")
+	@checks.not_forbidden()
+	async def translate_from(self, from_language_code : str, to_language_code : str, *, text : str):
+		'''
+		Translate from a specific language to another
+		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
+		Powered by [Yandex.Translate](http://translate.yandex.com/)
+		'''
+		# TODO: Default to_language_code?
+		await self.process_translate(text, to_language_code, from_language_code)
+	
+	@translate.command(name = "languages", aliases = ["codes", "language_codes"])
+	@checks.not_forbidden()
+	async def translate_languages(self, language_code : str = "en"):
+		'''Language Codes'''
+		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs?ui={}&key={}".format(language_code, credentials.yandex_translate_api_key)) as resp:
 			data = await resp.json()
-		await self.bot.reply(data["text"][0])
+		if "langs" not in data:
+			await self.bot.embed_reply(":no_entry: Error: Invalid Language Code")
+			return
+		await self.bot.embed_reply(", ".join(sorted("{} ({})".format(language, code) for code, language in data["langs"].items())))
+	
+	@translate.command(name = "to")
+	@checks.not_forbidden()
+	async def translate_to(self, language_code : str, *, text : str):
+		'''
+		Translate to a specific language
+		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
+		Powered by [Yandex.Translate](http://translate.yandex.com/)
+		'''
+		await self.process_translate(text, language_code)
+	
+	async def process_translate(self, text, to_language_code, from_language_code = None):
+		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang={}&text={}&options=1".format(credentials.yandex_translate_api_key, to_language_code if not from_language_code else "{}-{}".format(from_language_code, to_language_code), text)
+		async with clients.aiohttp_session.get(url) as resp:
+			if resp.status == 400:
+				await self.bot.embed_reply(":no_entry: Error")
+				return
+			data = await resp.json()
+		if data["code"] != 200:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			return
+		await self.bot.embed_reply(data["text"][0], footer_text = "{}Powered by Yandex.Translate".format("Detected Language Code: {} | ".format(data["detected"]["lang"]) if not from_language_code else ""))
+	
 	
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
