@@ -30,7 +30,7 @@ class Meta:
 		self.bot = bot
 		utilities.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
 	
-	@commands.command(aliases = ["commands"], hidden = True, pass_context = True)
+	@commands.group(aliases = ["commands"], hidden = True, pass_context = True, invoke_without_command = True)
 	async def help(self, ctx, *commands : str):
 		'''Shows this message.'''
 		bot = ctx.bot
@@ -89,6 +89,22 @@ class Meta:
 		for page in pages:
 			# yield from bot.send_message(destination, page)
 			await bot.send_message(destination, page)
+	
+	@help.command(name = "other", pass_context = True)
+	async def help_other(self, ctx):
+		'''Additional commands and information'''
+		# TODO: Update
+		# TODO: Add last updated date?
+		embed = discord.Embed(title = "Commands not in {}help".format(ctx.prefix), color = clients.bot_color)
+		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		embed.description = "See `{}help` for the main commands".format(ctx.prefix)
+		embed.add_field(name = "Conversion Commands", value = "see `{}conversions`".format(ctx.prefix), inline = False)
+		embed.add_field(name = "In Progress", value = "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", inline = False)
+		embed.add_field(name = "Misc", value = "invite randomgame test test_on_message", inline = False)
+		embed.add_field(name = "Owner Only", value = "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", inline = False)
+		embed.add_field(name = "No Prefix", value = "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", inline = False)
+		await self.bot.say(embed = embed)
 	
 	@commands.command(pass_context = True)
 	@checks.is_owner()
@@ -215,20 +231,6 @@ class Meta:
 		'''Link to invite me to a server'''
 		from clients import application_info
 		await self.bot.embed_reply(discord.utils.oauth_url(application_info.id))
-	
-	@commands.command(pass_context = True)
-	async def othercommands(self, ctx):
-		'''Some additional commands and information'''
-		await self.bot.whisper("__Commands not in `{0}help`__\n"
-			"**Conversion Commands**: see `{0}conversions`\n"
-			"**In Progress**: about gofish redditsearch roleposition rolepositions taboo userlimit weather wolframalpha webmtogif whatis\n"
-			"**Misc**: discordlibraryversion invite loading_bar ping randomgame test test_on_message\n"
-			"**Owner Only**: allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar\n"
-			"**No prefix**: @Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)\n"
-			"Note: If you are not currently able to use a command in the channel where you executed `{0}help`, it will not be displayed in the corresponding `{0}help` message.\n"
-			"See `{0}help` for the main commands.".format(ctx.prefix))
-		if not ctx.message.channel.is_private:
-			await self.bot.reply("Check your DMs for some of my additional commands.")
 	
 	@commands.command(pass_context = True)
 	async def stats(self, ctx):
