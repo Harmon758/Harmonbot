@@ -29,6 +29,8 @@ if __name__ == "__main__":
 	with open("data/f.json", 'r') as f_file:
 		f_counter_info = json.load(f_file)
 	
+	mention_spammers = []
+	
 	@client.event
 	async def on_ready():
 		# data = await client.http.get(client.http.GATEWAY + "/bot")
@@ -46,6 +48,14 @@ if __name__ == "__main__":
 				if text_channel:
 					client.cogs["Audio"].players[text_channel.server.id] = audio_player.AudioPlayer(client, text_channel)
 					await client.join_voice_channel(client.get_channel(voice_channel[0]))
+		'''
+		for folder in os.listdir("data/server_data"):
+			with open("data/server_data/{}/settings.json".format(folder), 'r') as settings_file:
+				data = json.load(settings_file)
+			data["anti-spam"] = False
+			with open("data/server_data/{}/settings.json".format(folder), 'w') as settings_file:
+				json.dump(data, settings_file, indent = 4)
+		'''
 		await clients.random_game_status()
 		await clients.set_streaming_status(client)
 		# await voice.detectvoice()
@@ -53,7 +63,7 @@ if __name__ == "__main__":
 	@client.event
 	async def on_server_join(server):
 		utilities.create_folder("data/server_data/{}".format(server.id))
-		utilities.create_file("server_data/{}/settings".format(server.id), content = {"respond_to_bots": False})
+		utilities.create_file("server_data/{}/settings".format(server.id), content = {"anti-spam": False, "respond_to_bots": False})
 		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
 		await client.send_embed(me, None, title = "Joined Server", timestamp = server.created_at, thumbnail_url = server.icon_url, fields = (("Name", server.name), ("ID", server.id), ("Owner", str(server.owner)), ("Members", str(server.member_count)), ("Server Region", str(server.region))))
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", server.name) # | / \ : ? * " < >
@@ -129,6 +139,30 @@ if __name__ == "__main__":
 		# Log message
 		source = "Direct Message" if message.channel.is_private else "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
 		logging.chat_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, source))
+		
+		# Server specific settings
+		if message.server is not None:
+			try:
+				with open("data/server_data/{}/settings.json".format(message.server.id), 'r') as settings_file:
+					data = json.load(settings_file)
+			except FileNotFoundError: # Fix?
+				data = {} # Default?
+			if data.get("anti-spam") and len(message.mentions) > 10:
+				global mention_spammers
+				if message.author.id in mention_spammers: # not across servers
+					if message.server.me.permissions_in(message.channel).kick_members: # check hierarchy
+						await client.send_message(message.author, "You were kicked from {} for spamming mentions".format(message.server))
+						await client.kick(message.author)
+						await client.send_message(message.channel, "{} has been kicked for spamming mentions".format(message.author))
+					else:
+						await client.send_message(message.channel, "I need permission to kick members from the server to enforce anti-spam")
+				else:
+					await clients.embed_reply(message, ":warning: You will be kicked if you continue spamming mentions")
+					mention_spammers.append(message.author.id)
+					await asyncio.sleep(3600)
+					mention_spammers.remove(message.author.id)
+			if not data.get("respond_to_bots") and message.author.bot:
+				return
 		
 		# Commands
 		await client.process_commands(message)
