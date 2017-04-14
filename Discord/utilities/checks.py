@@ -128,6 +128,7 @@ def not_forbidden_check(ctx):
 	if ctx.message.channel.is_private:
 		return True
 	permitted = utilities.get_permission(ctx, ctx.command.name, id = ctx.message.author.id)
+	# TODO: Include subcommands?
 	return permitted or permitted is None or is_server_owner_check(ctx)
 
 def not_forbidden():
@@ -143,7 +144,13 @@ def not_forbidden():
 def is_permitted_check(ctx):
 	if ctx.message.channel.is_private:
 		return True
-	permitted = utilities.get_permission(ctx, ctx.command.name, id = ctx.message.author.id)
+	command = ctx.command
+	permitted = utilities.get_permission(ctx, command.name, id = ctx.message.author.id)
+	while command.parent is not None and not permitted:
+		# permitted is None instead?
+		command = command.parent
+		permitted = utilities.get_permission(ctx, command.name, id = ctx.message.author.id)
+		# include non-final parent commands?
 	return permitted or is_server_owner_check(ctx)
 
 def is_permitted():
