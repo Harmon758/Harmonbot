@@ -524,4 +524,41 @@ class Meta:
 					except Exception as e:
 						await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 				variables["last"] = result
+	
+	@commands.command(aliases = ["github"])
+	@checks.not_forbidden()
+	async def source(self, command : str = None):
+		'''
+		Displays my full source code or for a specific command
+		To display the source code of a subcommand you have to separate it by
+		periods, e.g. tag.create for the create subcommand of the tag command
+		Based on [R. Danny](https://github.com/Rapptz/RoboDanny)'s source command
+		'''
+		source_url = "https://github.com/Harmon758/Harmonbot"
+		if command is None:
+			await self.bot.embed_reply(source_url)
+			return
+		code_path = command.split('.')
+		obj = self.bot
+		for cmd in code_path:
+			try:
+				obj = obj.get_command(cmd)
+				if obj is None:
+					await self.bot.embed_reply("Could not find the command " + cmd)
+					return
+			except AttributeError:
+				await self.bot.embed_reply("{0.name} command has no subcommands".format(obj))
+				return
+		# since we found the command we're looking for, presumably anyway, let's
+		# try to access the code itself
+		src = obj.callback.__code__
+		lines, firstlineno = inspect.getsourcelines(src)
+		## if not obj.callback.__module__.startswith("discord"):
+		# not a built-in command
+		location = os.path.relpath(src.co_filename).replace('\\', '/')
+		## else:
+		##	location = obj.callback.__module__.replace('.', '/') + ".py"
+		##	source_url = "https://github.com/Rapptz/discord.py"
+		final_url = '<{}/blob/master/Discord/{}#L{}-L{}>'.format(source_url, location, firstlineno, firstlineno + len(lines) - 1)
+		await self.bot.embed_reply(final_url)
 
