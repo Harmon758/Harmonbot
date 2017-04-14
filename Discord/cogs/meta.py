@@ -150,6 +150,13 @@ class Meta:
 		await self.bot.embed_reply("`{}{}` has been enabled".format(ctx.prefix, command))
 		await self.bot.delete_message(ctx.message)
 	
+	@commands.command(pass_context = True)
+	async def points(self, ctx):
+		'''WIP'''
+		with open("data/user_data/{}/stats.json".format(ctx.message.author.id), "r") as stats_file:
+			stats = json.load(stats_file)
+		await self.bot.embed_reply("You have {} points".format(stats["points"]))
+	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def servers(self):
