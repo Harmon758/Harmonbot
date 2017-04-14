@@ -172,19 +172,20 @@ class Meta:
 			json.dump(data, settings_file, indent = 4)
 		await self.bot.embed_reply("{} set to {}".format(setting, on_off))
 	
-	@commands.command(hidden = True)
+	@commands.command()
 	@checks.is_owner()
 	async def servers(self):
 		'''Every server I'm in'''
 		for server in self.bot.servers:
-			server_info = "```Name: " + server.name + "\n"
-			server_info += "ID: " + server.id + "\n"
-			server_info += "Owner: " + str(server.owner) + "\n"
-			server_info += "Server Region: " + str(server.region) + "\n"
-			server_info += "Members: " + str(server.member_count) + "\n"
-			server_info += "Created at: " + str(server.created_at) + "\n```"
-			server_info += "Icon: " + server.icon_url
-			await self.bot.whisper(server_info)
+			embed = discord.Embed(color = clients.bot_color)
+			embed.description = "```Name: " + server.name + "\n"
+			embed.description += "ID: " + server.id + "\n"
+			embed.description += "Owner: {0} ({0.id})".format(server.owner) + "\n"
+			embed.description += "Server Region: {}".format(server.region) + "\n"
+			embed.description += "Members: {}".format(server.member_count) + "\n"
+			embed.description += "Created at: {}".format(server.created_at) + "\n```"
+			embed.set_thumbnail(url = server.icon_url)
+			await self.bot.whisper(embed = embed)
 	
 	@commands.command(aliases = ["setprefixes"], pass_context = True)
 	@checks.is_permitted()
