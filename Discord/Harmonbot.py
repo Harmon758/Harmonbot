@@ -90,6 +90,7 @@ if __name__ == "__main__":
 		with open("data/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		stats["commands_executed"] += 1
+		stats["commands_usage"][command.name] = stats["commands_usage"].get(command.name, 0) + 1
 		with open("data/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 	
