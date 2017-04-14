@@ -56,6 +56,13 @@ if __name__ == "__main__":
 			with open("data/server_data/{}/settings.json".format(folder), 'w') as settings_file:
 				json.dump(data, settings_file, indent = 4)
 		'''
+		for server in client.servers:
+			utilities.create_folder("data/server_data/{}".format(server.id))
+			utilities.create_file("server_data/{}/settings".format(server.id), content = {"anti-spam": False, "respond_to_bots": False})
+			if server.name:
+				clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", server.name) # | / \ : ? * " < >
+				utilities.create_file("server_data/{}/{}".format(server.id, clean_name))
+			# TODO: DM if new server
 		await clients.random_game_status()
 		await clients.set_streaming_status(client)
 		# await voice.detectvoice()
@@ -145,12 +152,15 @@ if __name__ == "__main__":
 			try:
 				with open("data/server_data/{}/settings.json".format(message.server.id), 'r') as settings_file:
 					data = json.load(settings_file)
-			except FileNotFoundError: # Fix?
-				data = {} # Default?
+			except FileNotFoundError:
+				# TODO: Handle/Fix, create new file with default settings
+				data = {}
 			if data.get("anti-spam") and len(message.mentions) > 10:
 				global mention_spammers
-				if message.author.id in mention_spammers: # not across servers
-					if message.server.me.permissions_in(message.channel).kick_members: # check hierarchy
+				if message.author.id in mention_spammers:
+					# TODO: Handle across different servers
+					if message.server.me.permissions_in(message.channel).kick_members:
+						# TODO: Check hierarchy, if able to kick
 						await client.send_message(message.author, "You were kicked from {} for spamming mentions".format(message.server))
 						await client.kick(message.author)
 						await client.send_message(message.channel, "{} has been kicked for spamming mentions".format(message.author))
