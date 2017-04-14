@@ -93,6 +93,17 @@ if __name__ == "__main__":
 		stats["commands_usage"][command.name] = stats["commands_usage"].get(command.name, 0) + 1
 		with open("data/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
+		utilities.create_folder("data/user_data/{}".format(ctx.message.author.id))
+		utilities.create_file("user_data/{}/stats".format(ctx.message.author.id), content = {"commands_executed": 0, "points": 0, "respects_paid": 0})
+		# TODO: Transfer respects paid data?
+		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.message.author.name) # | / \ : ? * " < >
+		utilities.create_file("user_data/{}/{}".format(ctx.message.author.id, clean_name))
+		with open("data/user_data/{}/stats.json".format(ctx.message.author.id), "r") as stats_file:
+			stats = json.load(stats_file)
+		stats["commands_executed"] += 1
+		stats["points"] += 1
+		with open("data/user_data/{}/stats.json".format(ctx.message.author.id), 'w') as stats_file:
+			json.dump(stats, stats_file, indent = 4)
 	
 	@client.command(pass_context = True)
 	@checks.is_owner()
