@@ -4,11 +4,12 @@ from discord.ext import commands
 from utilities import errors
 from modules import utilities
 
+import clients
 import credentials
 from clients import client
 
 def is_owner_check(ctx):
-	return ctx.message.author.id == credentials.myid
+	return ctx.message.author.id == clients.owner_id
 
 def is_owner():
 	

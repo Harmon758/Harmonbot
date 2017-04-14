@@ -24,9 +24,10 @@ from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 import credentials
 
-version = "0.35.0-10.15"
+version = "0.35.0-10.16"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
+owner_id = "115691005197549570"
 listener_id = "180994984038760448"
 cache_channel_id = "254051856219635713"
 user_agent = "Discord Bot"

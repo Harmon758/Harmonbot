@@ -131,7 +131,7 @@ class Audio:
 		'''
 		# TODO: Implement override permission
 		player = self.players[ctx.message.server.id]
-		if ctx.message.author.id in (ctx.message.server.owner.id, credentials.myid) or checks.is_permitted_check(ctx):
+		if ctx.message.author.id in (ctx.message.server.owner.id, clients.owner_id) or checks.is_permitted_check(ctx):
 			if number:
 				try:
 					song = await player.skip_specific(number)

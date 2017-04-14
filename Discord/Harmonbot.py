@@ -15,8 +15,8 @@ if __name__ == "__main__":
 	import traceback
 	import youtube_dl
 	
-	import credentials
 	import clients
+	import credentials
 	from clients import client
 	from modules import conversions
 	from modules import logging
@@ -71,14 +71,14 @@ if __name__ == "__main__":
 	async def on_server_join(server):
 		utilities.create_folder("data/server_data/{}".format(server.id))
 		utilities.create_file("server_data/{}/settings".format(server.id), content = {"anti-spam": False, "respond_to_bots": False})
-		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
+		me = discord.utils.get(client.get_all_members(), id = clients.owner_id)
 		await client.send_embed(me, None, title = "Joined Server", timestamp = server.created_at, thumbnail_url = server.icon_url, fields = (("Name", server.name), ("ID", server.id), ("Owner", str(server.owner)), ("Members", str(server.member_count)), ("Server Region", str(server.region))))
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", server.name) # | / \ : ? * " < >
 		utilities.create_file("server_data/{}/{}".format(server.id, clean_name))
 	
 	@client.event
 	async def on_server_remove(server):
-		me = discord.utils.get(client.get_all_members(), id = credentials.myid)
+		me = discord.utils.get(client.get_all_members(), id = clients.owner_id)
 		await client.send_embed(me, None, title = "Left Server", timestamp = server.created_at, thumbnail_url = server.icon_url, fields = (("Name", server.name), ("ID", server.id), ("Owner", str(server.owner)), ("Members", str(server.member_count)), ("Server Region", str(server.region))))
 	
 	@client.event
@@ -190,8 +190,8 @@ if __name__ == "__main__":
 		await client.process_commands(message)
 		
 		# Forward DMs
-		if message.channel.is_private and message.channel.user.id != credentials.myid:
-			me = discord.utils.get(client.get_all_members(), id = credentials.myid)
+		if message.channel.is_private and message.channel.user.id != clients.owner_id:
+			me = discord.utils.get(client.get_all_members(), id = clients.owner_id)
 			if message.author == client.user:
 				try:
 					await client.send_message(me, "To {0.channel.user}: {0.content} `{0.embeds}`".format(message))

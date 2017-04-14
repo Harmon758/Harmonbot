@@ -5,11 +5,11 @@ from discord.ext import commands
 import asyncio
 import datetime
 
+import clients
 import credentials
 from modules import conversions
 from modules import utilities
 from utilities import checks
-import clients
 
 def setup(bot):
 	bot.add_cog(Discord(bot))
@@ -201,7 +201,7 @@ class Discord:
 			color = selected_role.colour
 			color_value = color.value
 			await self.bot.embed_reply(conversions.inttohex(color_value))
-		elif ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == credentials.myid:
+		elif ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == clients.owner_id:
 			for _role in ctx.message.server.roles:
 				if _role.name.startswith((' ').join(role.split('_'))):
 					role_to_change = _role
