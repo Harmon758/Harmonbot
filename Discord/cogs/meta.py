@@ -157,6 +157,21 @@ class Meta:
 			stats = json.load(stats_file)
 		await self.bot.embed_reply("You have {} points".format(stats["points"]))
 	
+	@commands.command(aliases = ["server_setting"], pass_context = True)
+	@checks.is_server_owner()
+	async def server_settings(self, ctx, setting : str, on_off : bool):
+		'''WIP'''
+		with open("data/server_data/{}/settings.json".format(ctx.message.server.id), 'r') as settings_file:
+			data = json.load(settings_file)
+		if setting in data:
+			data[setting] = on_off
+		else:
+			await self.bot.embed_reply("Setting not found")
+			return
+		with open("data/server_data/{}/settings.json".format(ctx.message.server.id), 'w') as settings_file:
+			json.dump(data, settings_file, indent = 4)
+		await self.bot.embed_reply("{} set to {}".format(setting, on_off))
+	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def servers(self):
