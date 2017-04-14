@@ -272,7 +272,7 @@ class Meta:
 		text_count = channel_types.count(discord.ChannelType.text)
 		voice_count = channel_types.count(discord.ChannelType.voice)
 		total_uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
-		top_5_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)[:5]
+		top_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)
 		session_top_5 = sorted(session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		in_voice_count = len(self.bot.cogs["Audio"].players)
 		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
@@ -293,8 +293,10 @@ class Meta:
 		embed.add_field(name = "Channels", value = "{} text\n{} voice (playing in {}/{})".format(text_count, voice_count, playing_in_voice_count, in_voice_count))
 		embed.add_field(name = "Members", 
 			value = "{} total\n{} online\n{} unique\n{} unique online".format(total_members, total_members_online, len(unique_members), unique_members_online))
-		embed.add_field(name = "Top 5 Commands Executed (Total Recorded)", 
-			value = "\n".join(["{} {}".format(uses, command) for command, uses in top_5_commands])) # since 11/14/16
+		embed.add_field(name = "Top Commands Executed", 
+			value = "\n".join(["{} {}".format(uses, command) for command, uses in top_commands[:5]])) # since 11/14/16
+		embed.add_field(name = "(Total Recorded)", 
+			value = "\n".join(["{} {}".format(uses, command) for command, uses in top_commands[5:10]])) # since 11/14/16
 		if session_top_5: embed.add_field(name = "(This Session)", 
 			value = "\n".join(["{} {}".format(uses, command) for command, uses in session_top_5]))
 		await self.bot.send_message(ctx.message.channel, embed = embed)
