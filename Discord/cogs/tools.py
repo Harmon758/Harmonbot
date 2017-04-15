@@ -8,8 +8,11 @@ import difflib
 import hashlib
 import json
 import math
+import matplotlib
 import moviepy.editor
 import multiprocessing
+import numexpr
+import numpy
 import pandas
 import pygost.gost28147
 import pygost.gost28147_mac
@@ -17,8 +20,8 @@ import pygost.gost34112012
 import pygost.gost341194
 import pygost.gost3412
 import random
+import re
 import seaborn
-# import re
 # import subprocess
 import sympy
 import time
@@ -490,13 +493,49 @@ class Tools:
 		h.update(message.encode("utf-8"))
 		await self.bot.embed_reply(h.hexdigest())
 	
-	@commands.command(pass_context = True)
+	@commands.group(aliases = ["plot"], pass_context = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def graph(self, ctx, *, data : str):
+	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):
 		'''WIP'''
-		name = "data/graph_testing.png"
+		filename = "data/temp/graph.png"
+		try:
+			equation = self.string_to_equation(equation)
+		except SyntaxError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			return
+		x = numpy.linspace(lower_limit, upper_limit, 250)
+		try:
+			y = numexpr.evaluate(equation)
+		except Exception as e:
+			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			return
+		try:
+			matplotlib.pyplot.plot(x, y)
+		except ValueError as e:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			return
+		matplotlib.pyplot.savefig(filename)
+		matplotlib.pyplot.clf()
+		await self.bot.send_file(destination = ctx.message.channel, fp = filename, content = ctx.message.author.display_name + ':')
+		# TODO: Send as embed?
+	
+	def string_to_equation(self, string):
+		replacements = {'^': "**"}
+		allowed_words = ('x', "sin", "cos", "tan", "arcsin", "arccos", "arctan", "arctan2", "sinh", "cosh", "tanh", "arcsinh", "arccosh", "arctanh", "log", "log10", "log1p", "exp", "expm1", "sqrt", "abs", "conj", "complex")
+		for word in re.findall("[a-zA-Z_]+", string):
+			if word not in allowed_words:
+				raise SyntaxError("`{}` is not supported".format(word))
+		for old, new in replacements.items():
+			string = string.replace(old, new)
+		return string
+	
+	@graph.command(name = "alternative", aliases = ["alt", "complex"], pass_context = True)
+	@checks.is_owner()
+	async def graph_alternative(self, ctx, *, data : str):
+		'''WIP'''
+		filename = "data/temp/graph_alternative.png"
 		seaborn.jointplot(**eval(data)).savefig(name)
-		await self.bot.send_file(destination = ctx.message.channel, fp = name, content = "Testing Graph")
+		await self.bot.send_file(destination = ctx.message.channel, fp = filename, content = ctx.message.author.display_name + ':')
 	
 	@commands.group(pass_context = True, aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
 	@checks.not_forbidden()
