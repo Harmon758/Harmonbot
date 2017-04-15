@@ -7,7 +7,6 @@ from discord.ext.commands.errors import CommandNotFound, CommandError
 import aiml
 import aiohttp
 import clarifai.rest
-import cleverbot
 import datetime
 import imgurpython
 import inflect
@@ -19,12 +18,12 @@ import sys
 import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
+import credentials
 from modules import utilities
 from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
-import credentials
 
-version = "0.35.0-10.17"
+version = "0.35.0-10.18"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 owner_id = "115691005197549570"
@@ -54,7 +53,6 @@ aiohttp_session = aiohttp.ClientSession()
 clarifai_app = clarifai.rest.ClarifaiApp(app_id = credentials.clarifai_api_id, app_secret = credentials.clarifai_api_secret)
 clarifai_general_model = clarifai_app.models.get("general-v1.3")
 clarifai_nsfw_model = clarifai_app.models.get("nsfw-v1.0")
-cleverbot_instance = cleverbot.Cleverbot("Harmonbot")
 inflect_engine = inflect.engine()
 owm_client = pyowm.OWM(credentials.owm_api_key)
 twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)

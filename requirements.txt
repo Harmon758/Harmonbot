@@ -4,7 +4,6 @@ aiohttp==1.0.5
 # 1.3.3 - ^ discord.py requirement
 beautifulsoup4==4.5.3
 clarifai==2.0.10
-cleverbot==2.0.0
 # deuces==0.1
 dice==1.1.0
 feedparser==5.2.1

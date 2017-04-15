@@ -6,7 +6,6 @@ import asyncio
 from bs4 import BeautifulSoup
 # import chess
 import chess.pgn
-import cleverbot
 import copy
 # import deuces
 import html
@@ -18,14 +17,15 @@ import re
 import string
 import timeit
 
-from modules import utilities
+import clients
+import credentials
 from modules import adventure
-# from modules import gofish
 from modules.chess import chess_match
+# from modules import gofish
 from modules import maze
+from modules import utilities
 from modules import war
 from utilities import checks
-import clients
 
 def setup(bot):
 	bot.add_cog(Games(bot))
@@ -536,8 +536,20 @@ class Games:
 	@commands.command(aliases = ["talk", "ask"])
 	@checks.not_forbidden()
 	async def cleverbot(self, *, message : str):
-		'''Talk to Cleverbot'''
-		await self.bot.embed_reply(clients.cleverbot_instance.ask(message))
+		'''
+		Talk to Cleverbot
+		Uses [Cleverbot](http://www.cleverbot.com/)'s [API](https://www.cleverbot.com/api/)
+		'''
+		response = await self.cleverbot_get_reply(message)
+		await self.bot.embed_reply(response)
+	
+	async def cleverbot_get_reply(self, message):
+		# TODO: Include user-specific conversation state
+		# TODO: Move to utilities?
+		url = "https://www.cleverbot.com/getreply?key={}&input={}".format(credentials.cleverbot_api_key, message)
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		return data["output"]
 	
 	@commands.command(name = "8ball", aliases = ["eightball", "\U0001f3b1"])
 	@checks.not_forbidden()

@@ -270,24 +270,21 @@ if __name__ == "__main__":
 		
 		# Chatbot
 		elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'):
-			if message.channel.is_private:
-				my_name = message.channel.me.display_name
-			else:
-				my_name = message.server.me.display_name
-			if ' '.join(message.clean_content.split()[:2]).lower() == '@' + my_name.lower() + " help":
+			# Handle @Harmonbot help
+			bot_name = message.channel.me.display_name if message.channel.is_private else message.server.me.display_name
+			if ' '.join(message.clean_content.split()[:2]).lower() == '@' + bot_name.lower() + " help":
 				await clients.embed_reply(message, "Please see {}help".format(prefixes[0]))
 				return
-			mentionless_message = ""
-			for word in message.clean_content.split():
-				if not word.startswith("@"):
-					mentionless_message += word + ' '
-			mentionless_message = mentionless_message[:-1]
+			mentionless_message = ' '.join(word for word in message.clean_content.split() if not word.startswith('@'))
 			aiml_response = clients.aiml_kernel.respond(mentionless_message)
-			# Handle brain not loaded?
+			# TODO: Handle brain not loaded?
 			if aiml_response:
 				await clients.embed_reply(message, aiml_response)
 			else:
-				await clients.embed_reply(message, clients.cleverbot_instance.ask(mentionless_message))
+				games_cog = client.get_cog("Games")
+				if games_cog:
+					cleverbot_response = await games_cog.cleverbot_get_reply(mentionless_message)
+					await clients.embed_reply(message, cleverbot_response)
 	
 	@client.event
 	async def on_error(event_method, *args, **kwargs):

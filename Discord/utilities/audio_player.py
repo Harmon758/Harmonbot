@@ -449,7 +449,7 @@ class AudioPlayer:
 		if not self.not_interrupted.is_set():
 			return False
 		if clients.harmonbot_listener not in self.server.voice_client.channel.voice_members:
-			await self.bot.send_message(self.text_channel, ":no_entry: {} needs to be in the voice channel".format(clients.harmonbot_listener.mention))
+			await self.bot.send_embed(self.text_channel, ":no_entry: {} needs to be in the voice channel".format(clients.harmonbot_listener.mention))
 			return None
 		try:
 			self.pause()
@@ -478,7 +478,7 @@ class AudioPlayer:
 	
 	async def process_listen(self):
 		if not os.path.isfile("data/temp/heard.pcm") or os.stat("data/temp/heard.pcm").st_size == 0:
-			await self.bot.send_message(self.text_channel, ":warning: No input found")
+			await self.bot.send_embed(self.text_channel, ":warning: No input found")
 			return
 		func = functools.partial(subprocess.call, ["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", "data/temp/heard.pcm", "data/temp/heard.wav"], shell = True)
 		await self.bot.loop.run_in_executor(None, func)
@@ -494,15 +494,20 @@ class AudioPlayer:
 		'''
 		try:
 			text = self.recognizer.recognize_google(audio)
-			await self.bot.send_message(self.text_channel, "I think you said: " + text)
+			await self.bot.send_embed(self.text_channel, "I think you said: `{}`".format(text))
 		except speech_recognition.UnknownValueError:
-			# await self.bot.send_message(self.text_channel, ":no_entry: Google Speech Recognition could not understand audio")
-			await self.bot.send_message(self.text_channel, ":no_entry: I couldn't understand that")
+			# await self.bot.send_embed(self.text_channel, ":no_entry: Google Speech Recognition could not understand audio")
+			await self.bot.send_embed(self.text_channel, ":no_entry: I couldn't understand that")
 		except speech_recognition.RequestError as e:
-			await self.bot.send_message(self.text_channel, ":warning: Could not request results from Google Speech Recognition service; {0}".format(e))
+			await self.bot.send_embed(self.text_channel, ":warning: Could not request results from Google Speech Recognition service; {}".format(e))
 		else:
-			response = clients.cleverbot_instance.ask(text)
-			await self.bot.send_message(self.text_channel, "Responding with: " + response)
+			response = clients.aiml_kernel.respond(text)
+			# TODO: Handle brain not loaded?
+			if not response:
+				games_cog = client.get_cog("Games")
+				if not games_cog: return
+				response = await games_cog.cleverbot_get_reply(text)
+			await self.bot.send_embed(self.text_channel, "Responding with: `{}`".format(response))
 			await self.play_tts(response, self.bot.user)
 		# open("data/heard.pcm", 'w').close() # necessary?
 		# os.remove ?
