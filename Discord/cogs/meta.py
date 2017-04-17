@@ -457,11 +457,17 @@ class Meta:
 		for _ in range(times):
 			await self.bot.process_commands(msg)
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	@checks.is_owner()
 	async def echo(self, *, message):
 		'''Echoes the message'''
 		await self.bot.say(message)
+	
+	@echo.command(name = "embed")
+	@checks.is_owner()
+	async def echo_embed(self, *, message):
+		'''Echoes the message in an embed'''
+		await self.bot.embed_say(message)
 	
 	@commands.command(pass_context = True)
 	@checks.is_owner()
