@@ -4,12 +4,15 @@ from discord.ext import commands
 
 import asyncio
 import json
+import sys
+import traceback
 import tweepy
 
 import clients
 import credentials
-from utilities import checks
+from modules import logging
 from modules import utilities
+from utilities import checks
 
 def setup(bot):
 	bot.add_cog(Twitter(bot))
@@ -156,6 +159,16 @@ class Twitter:
 		feeds = {}
 		for channel_id, channel_info in self.feeds_info["channels"].items():
 			for handle in channel_info["handles"]:
-				feeds[channel_id] = feeds.get(channel_id, []) + [clients.twitter_api.get_user(handle).id_str]
+				try:
+					feeds[channel_id] = feeds.get(channel_id, []) + [clients.twitter_api.get_user(handle).id_str]
+				except tweepy.error.TweepError as e:
+					if e.api_code == 50:
+					# User not found
+						continue
+					else:
+						print("Exception in Twitter Task", file = sys.stderr)
+						traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
+						logging.errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
+						return
 		await self.stream_listener.start_feeds(feeds = feeds)
 
