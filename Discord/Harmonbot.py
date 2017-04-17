@@ -62,7 +62,8 @@ if __name__ == "__main__":
 			if server.name:
 				clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", server.name) # | / \ : ? * " < >
 				utilities.create_file("server_data/{}/{}".format(server.id, clean_name))
-			# TODO: DM if new server
+			# TODO: DM if joined new server
+			# TODO: DM if left server
 		await clients.random_game_status()
 		await clients.set_streaming_status(client)
 		# await voice.detectvoice()
