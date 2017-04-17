@@ -941,20 +941,6 @@ class Resources:
 	}
 	'''
 	
-	'''
-	on *:text:!zybez*:#:{
-	  if (!$2) {
-		msg # Please specify an item.
-		return
-	  }
-	  var %url = http://forums.zybez.net/runescape-2007-prices/api/item/ $+ $replace($2-,$chr(32),$chr(43))
-	  var %price = $json(%url,average)
-	  var %name = $json(%url,name)
-	  if (%name) { msg # Average price of %name $+ : %price gp }
-	  else { msg # Item $2- not found. }
-	}
-	'''
-	
 	@runescape.command(name = "monster", aliases = ["bestiary"], pass_context = True)
 	@checks.not_forbidden()
 	async def runescape_monster(self, ctx, *, monster : str):
@@ -1010,6 +996,19 @@ class Resources:
 		embed.add_field(name = "| Level | Experience", value = '\n'.join(output))
 		
 		await self.bot.say(embed = embed)
+	
+	@runescape.command(name = "zybez")
+	@checks.not_forbidden()
+	async def runescape_zybez(self, *, item):
+		'''Runescape Zybez average price'''
+		url = "http://forums.zybez.net/runescape-2007-prices/api/item/{}".format(item.replace(' ', '+'))
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		error = data.get("error")
+		if error:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(error))
+			return
+		await self.bot.embed_reply("Average price of {}: {} gp".format(data.get("name"), data.get("average")))
 	
 	@commands.command()
 	@checks.not_forbidden()
