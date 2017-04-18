@@ -71,7 +71,7 @@ class Discord:
 		if ctx.message.channel.is_private:
 			await self.bot.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		elif not user:
-			await self.bot.delete_message(ctx.message)
+			await self.bot.attempt_delete_message(ctx.message)
 			await self.bot.purge_from(ctx.message.channel, limit = number)
 		elif user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.name == user)
@@ -98,7 +98,7 @@ class Discord:
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_time(self, ctx, minutes : int):
 		'''Deletes messages in the past <minutes> minutes'''
-		await self.bot.delete_message(ctx.message)
+		await self.bot.attempt_delete_message(ctx.message)
 		await self.bot.purge_from(ctx.message.channel, limit = clients.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
 	
 	# TODO: delete mentions, invites?
@@ -109,7 +109,7 @@ class Discord:
 			return
 		to_delete = []
 		count = 0
-		if delete_command: await self.bot.delete_message(ctx.message)
+		if delete_command: await self.bot.attempt_delete_message(ctx.message)
 		async for message in self.bot.logs_from(ctx.message.channel, limit = clients.delete_limit):
 			if check(message):
 				to_delete.append(message)
@@ -121,7 +121,7 @@ class Discord:
 					to_delete.clear()
 					await asyncio.sleep(1)
 		if len(to_delete) == 1:
-			await self.bot.delete_message(to_delete[0])
+			await self.bot.attempt_delete_message(to_delete[0])
 		elif len(to_delete) > 1:
 			await self.bot.delete_messages(to_delete)
 	
