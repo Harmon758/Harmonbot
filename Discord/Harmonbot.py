@@ -261,7 +261,7 @@ if __name__ == "__main__":
 			embed = discord.Embed(color = clients.bot_color)
 			embed.description = "{} has paid their respects".format(message.author.display_name)
 			embed.description += "\nTotal respects paid so far: {}".format(f_counter_info["total"])
-			embed.description += "\nRecorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[message.author.id]) # since 12/20/16
+			embed.description += "\nRecorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[message.author.id]) # since 2016-12-20
 			try:
 				await client.send_message(message.channel, embed = embed)
 			except discord.errors.Forbidden: # necessary?
