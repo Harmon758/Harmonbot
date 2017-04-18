@@ -170,15 +170,62 @@ class Search:
 		'''Let Me Yahoo That For You'''
 		await self.bot.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(description = "[UESP](http://uesp.net/wiki/Main_Page)", invoke_without_command = True)
 	@checks.not_forbidden()
-	async def uesp(self, *search : str):
-		'''
-		Look something up on the Unofficial Elder Scrolls Pages
-		[UESP](http://uesp.net/wiki/Main_Page)
-		'''
-		# TODO: Improve parsing?
-		await self.bot.embed_reply(None, title = "UESP {}".format(' '.join(search)), title_url = "http://uesp.net/wiki/{}".format('_'.join(search)))
+	async def uesp(self, *, search : str):
+		'''Look something up on the Unofficial Elder Scrolls Pages'''
+		await self.process_uesp(search)
+	
+	async def process_uesp(self, search, random = False, redirect = True):
+		# TODO: Add User-Agent
+		if random:
+			async with clients.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": "0|" + '|'.join(str(i) for i in range(100, 152)) + "|200|201", "format": "json"}) as resp:
+				data = await resp.json()
+			search = data["query"]["random"][0]["title"]
+		else:
+			async with clients.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}) as resp:
+				data = await resp.json()
+			try:
+				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
+			except IndexError:
+				await self.bot.embed_reply(":no_entry: Page not found")
+				return
+		async with clients.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|revisions|images", "titles": search, "inprop": "url", "rvprop": "content", "format": "json"}) as resp:
+			data = await resp.json()
+		if "pages" not in data["query"]:
+			await self.bot.embed_reply(":no_entry: Error")
+			return
+		page_id = list(data["query"]["pages"].keys())[0]
+		page = data["query"]["pages"][page_id]
+		if "missing" in page:
+			await self.bot.embed_reply(":no_entry: Page not found")
+		elif "invalid" in page:
+			await self.bot.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
+		elif redirect and "redirects" in data["query"]:
+			await self.process_wikipedia(data["query"]["redirects"][-1]["to"], redirect = False)
+			# TODO: Handle section links/tofragments
+		else:
+			description = page["revisions"][0]['*']
+			description = re.sub("\s+ \s+", ' ', description)
+			while re.findall("{{[^{]+?}}", description):
+				description = re.sub("{{[^{]+?}}", "", description)
+			while re.findall("{[^{]*?}", description):
+				description = re.sub("{[^{]*?}", "", description)
+			description = re.sub("<.+?>", "", description, flags = re.DOTALL)
+			description = re.sub("__.+?__", "", description)
+			description = description.strip()
+			description = '\n'.join(line.lstrip(':') for line in description.split('\n'))
+			while len(description) > 1024:
+				description = '\n'.join(description.split('\n')[:-1])
+			description = description.split("==")[0]
+			## description = description if len(description) <= 1024 else description[:1024] + "..."
+			description = re.sub("\[\[Category:.+?\]\]", "", description)
+			description = re.sub("\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", lambda match: "[{}](http://en.uesp.net/wiki/{})".format(match.group(2), match.group(1).replace(' ', '_')) if match.group(1) else "[{}]({})".format(match.group(4), match.group(3)), description)
+			description = description.replace("'''", "**").replace("''", "*")
+			description = re.sub("\n+", '\n', description)
+			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
+			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
+			await self.bot.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True)
 	@checks.not_forbidden()
