@@ -157,7 +157,7 @@ if __name__ == "__main__":
 	async def on_message(message):
 		
 		# Log message
-		source = "Direct Message" if message.channel.is_private else "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
+		source = "Direct Message" if isinstance(message.channel, discord.DMChannel) else "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
 		logging.chat_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, source))
 		
 		# Server specific settings
@@ -191,7 +191,7 @@ if __name__ == "__main__":
 		await client.process_commands(message)
 		
 		# Forward DMs
-		if message.channel.is_private and message.channel.user.id != clients.owner_id:
+		if isinstance(message.channel, discord.DMChannel) and message.channel.user.id != clients.owner_id:
 			me = discord.utils.get(client.get_all_members(), id = clients.owner_id)
 			if message.author == client.user:
 				try:
@@ -245,7 +245,7 @@ if __name__ == "__main__":
 			await client.send_message(message.channel, "Prefixes: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 		
 		# help DM
-		elif message.content.lower() == "help" and message.channel.is_private:
+		elif message.content.lower() == "help" and isinstance(message.channel, discord.DMChannel):
 			await clients.embed_reply(message, "Please see {}help".format(prefixes[0]))
 		
 		# :8ball:
@@ -272,7 +272,7 @@ if __name__ == "__main__":
 		# Chatbot
 		elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'):
 			# Handle @Harmonbot help
-			bot_name = message.channel.me.display_name if message.channel.is_private else message.guild.me.display_name
+			bot_name = message.channel.me.display_name if isinstance(message.channel, discord.DMChannel) else message.guild.me.display_name
 			if ' '.join(message.clean_content.split()[:2]).lower() == '@' + bot_name.lower() + " help":
 				await clients.embed_reply(message, "Please see {}help".format(prefixes[0]))
 				return

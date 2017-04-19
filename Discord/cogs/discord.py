@@ -68,7 +68,7 @@ class Discord:
 		Delete messages
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
-		if ctx.message.channel.is_private:
+		if isinstance(ctx.message.channel, discord.DMChannel):
 			await self.bot.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		elif not user:
 			await self.bot.attempt_delete_message(ctx.message)

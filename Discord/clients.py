@@ -265,7 +265,7 @@ utilities.create_file("prefixes")
 def get_prefix(bot, message):
 	with open("data/prefixes.json", 'r') as prefixes_file:
 		all_prefixes = json.load(prefixes_file)
-	if message.channel.is_private:
+	if isinstance(message.channel, discord.DMChannel):
 		prefixes = all_prefixes.get(message.channel.id, None)
 	else:
 		prefixes = all_prefixes.get(message.guild.id, None)

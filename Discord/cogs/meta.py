@@ -89,7 +89,7 @@ class Meta:
 		
 		if len(embeds) > 1:
 			destination = ctx.message.author
-			if not ctx.message.channel.is_private:
+			if not isinstance(ctx.message.channel, discord.DMChannel):
 				await self.bot.embed_reply("Check your DMs")
 		else:
 			destination = ctx.message.channel
@@ -105,7 +105,7 @@ class Meta:
 		embeds = self.bot.formatter.format_help_for(ctx, self.bot)
 		for embed in embeds:
 			await self.bot.whisper(embed = embed)
-		if not ctx.message.channel.is_private:
+		if not isinstance(ctx.message.channel, discord.DMChannel):
 			await self.bot.embed_reply("Check your DMs")
 	
 	@help.command(name = "other", pass_context = True)
@@ -219,7 +219,7 @@ class Meta:
 			prefixes = ['!']
 		with open("data/prefixes.json", "r") as prefixes_file:
 			all_prefixes = json.load(prefixes_file)
-		if ctx.message.channel.is_private:
+		if isinstance(ctx.channel, discord.DMChannel):
 			all_prefixes[ctx.message.channel.id] = prefixes
 		else:
 			all_prefixes[ctx.message.guild.id] = prefixes
