@@ -575,8 +575,8 @@ class Games:
 	async def gofish_start(self, ctx, *players : str):
 		'''WIP'''
 		self.gofish_channel = ctx.message.channel
-		if ctx.message.server:
-			for member in ctx.message.server.members:
+		if ctx.message.guild:
+			for member in ctx.message.guild.members:
 				if member.name in players:
 					self.gofish_players.append(member)
 					break
@@ -1143,7 +1143,7 @@ class Games:
 	async def taboo_start(self, ctx, player : str):
 		'''WIP'''
 		self.taboo_players.append(ctx.message.author)
-		for member in self.message.server.members:
+		for member in self.message.guild.members:
 			if member.name == player:
 				self.taboo_players.append(member)
 				break
@@ -1154,7 +1154,7 @@ class Games:
 	@taboo.command(hidden = True, name = "nextround") # no_pm = True ?
 	async def taboo_nextround(self):
 		'''WIP'''
-		if message.server:
+		if message.guild:
 			pass
 	
 	@commands.group(invoke_without_command = True, pass_context = True)
@@ -1315,7 +1315,7 @@ class Games:
 	async def war_start(self, ctx, *players : str):
 		'''Start a game of War'''
 		self.war_players = []
-		for member in ctx.message.server.members:
+		for member in ctx.message.guild.members:
 			if member.name in players:
 				self.war_players.append(member)
 				break

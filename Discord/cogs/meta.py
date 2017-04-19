@@ -180,14 +180,14 @@ class Meta:
 	@checks.is_server_owner()
 	async def server_settings(self, ctx, setting : str, on_off : bool):
 		'''WIP'''
-		with open("data/server_data/{}/settings.json".format(ctx.message.server.id), 'r') as settings_file:
+		with open("data/server_data/{}/settings.json".format(ctx.message.guild.id), 'r') as settings_file:
 			data = json.load(settings_file)
 		if setting in data:
 			data[setting] = on_off
 		else:
 			await self.bot.embed_reply("Setting not found")
 			return
-		with open("data/server_data/{}/settings.json".format(ctx.message.server.id), 'w') as settings_file:
+		with open("data/server_data/{}/settings.json".format(ctx.message.guild.id), 'w') as settings_file:
 			json.dump(data, settings_file, indent = 4)
 		await self.bot.embed_reply("{} set to {}".format(setting, on_off))
 	
@@ -195,16 +195,16 @@ class Meta:
 	@checks.is_owner()
 	async def servers(self):
 		'''Every server I'm in'''
-		for server in self.bot.servers:
+		for guild in self.bot.guilds:
 			embed = discord.Embed(color = clients.bot_color)
-			embed.description = "```Name: " + server.name + "\n"
-			embed.description += "ID: " + server.id + "\n"
-			embed.description += "Owner: {0} ({0.id})".format(server.owner) + "\n"
-			embed.description += "Server Region: {}".format(server.region) + "\n"
-			embed.description += "Members: {}".format(server.member_count) + "\n"
-			embed.description += "Created at: {}".format(server.created_at) + "\n```"
-			embed.set_thumbnail(url = server.icon_url)
-			await self.bot.whisper(embed = embed)
+			embed.description = "```Name: " + guild.name + "\n"
+			embed.description += "ID: " + guild.id + "\n"
+			embed.description += "Owner: {0} ({0.id})".format(guild.owner) + "\n"
+			embed.description += "Server Region: {}".format(guild.region) + "\n"
+			embed.description += "Members: {}".format(guild.member_count) + "\n"
+			embed.description += "Created at: {}".format(guild.created_at) + "\n```"
+			embed.set_thumbnail(url = guild.icon_url)
+			await ctx.whisper(embed = embed)
 	
 	@commands.command(aliases = ["setprefixes"], pass_context = True)
 	@checks.is_permitted()
@@ -222,7 +222,7 @@ class Meta:
 		if ctx.message.channel.is_private:
 			all_prefixes[ctx.message.channel.id] = prefixes
 		else:
-			all_prefixes[ctx.message.server.id] = prefixes
+			all_prefixes[ctx.message.guild.id] = prefixes
 		with open("data/prefixes.json", "w") as prefixes_file:
 			json.dump(all_prefixes, prefixes_file, indent = 4)
 		await self.bot.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
@@ -284,7 +284,7 @@ class Meta:
 		now = datetime.datetime.utcnow()
 		uptime = now - clients.online_time
 		uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds())))
-		total_members = sum(len(s.members) for s in self.bot.servers)
+		total_members = sum(len(g.members) for g in self.bot.guilds)
 		total_members_online  = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(self.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
@@ -309,7 +309,7 @@ class Meta:
 			# since 2016-06-10 (cog commands)
 		embed.add_field(name = "Cogs Reloaded", value = stats["cogs_reloaded"]) # since 2016-06-10 - implemented cog reloading
 		# TODO: cogs reloaded this session
-		embed.add_field(name = "Servers", value = len(self.bot.servers))
+		embed.add_field(name = "Servers", value = len(self.bot.guilds))
 		embed.add_field(name = "Channels", value = "{} text\n{} voice (playing in {}/{})".format(text_count, voice_count, playing_in_voice_count, in_voice_count))
 		embed.add_field(name = "Members", 
 			value = "{} total\n{} online\n{} unique\n{} unique online".format(total_members, total_members_online, len(unique_members), unique_members_online))

@@ -46,7 +46,7 @@ if __name__ == "__main__":
 				# asyncio.ensure_future(client.cogs["Audio"].start_player(client.get_channel(voice_channel[1])))
 				text_channel = client.get_channel(voice_channel[1])
 				if text_channel:
-					client.cogs["Audio"].players[text_channel.server.id] = audio_player.AudioPlayer(client, text_channel)
+					client.cogs["Audio"].players[text_channel.guild.id] = audio_player.AudioPlayer(client, text_channel)
 					await client.join_voice_channel(client.get_channel(voice_channel[0]))
 		'''
 		for folder in os.listdir("data/server_data"):
@@ -56,12 +56,12 @@ if __name__ == "__main__":
 			with open("data/server_data/{}/settings.json".format(folder), 'w') as settings_file:
 				json.dump(data, settings_file, indent = 4)
 		'''
-		for server in client.servers:
-			utilities.create_folder("data/server_data/{}".format(server.id))
-			utilities.create_file("server_data/{}/settings".format(server.id), content = {"anti-spam": False, "respond_to_bots": False})
-			if server.name:
-				clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", server.name) # | / \ : ? * " < >
-				utilities.create_file("server_data/{}/{}".format(server.id, clean_name))
+		for guild in client.guilds:
+			utilities.create_folder("data/server_data/{}".format(guild.id))
+			utilities.create_file("server_data/{}/settings".format(guild.id), content = {"anti-spam": False, "respond_to_bots": False})
+			if guild.name:
+				clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", guild.name) # | / \ : ? * " < >
+				utilities.create_file("server_data/{}/{}".format(guild.id, clean_name))
 			# TODO: DM if joined new server
 			# TODO: DM if left server
 		await clients.random_game_status()
@@ -157,13 +157,13 @@ if __name__ == "__main__":
 	async def on_message(message):
 		
 		# Log message
-		source = "Direct Message" if message.channel.is_private else "#{0.channel.name} ({0.channel.id}) [{0.server.name} ({0.server.id})]".format(message)
+		source = "Direct Message" if message.channel.is_private else "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
 		logging.chat_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, source))
 		
 		# Server specific settings
-		if message.server is not None:
+		if message.guild is not None:
 			try:
-				with open("data/server_data/{}/settings.json".format(message.server.id), 'r') as settings_file:
+				with open("data/server_data/{}/settings.json".format(message.guild.id), 'r') as settings_file:
 					data = json.load(settings_file)
 			except FileNotFoundError:
 				# TODO: Handle/Fix, create new file with default settings
@@ -172,9 +172,9 @@ if __name__ == "__main__":
 				global mention_spammers
 				if message.author.id in mention_spammers:
 					# TODO: Handle across different servers
-					if message.server.me.permissions_in(message.channel).kick_members:
+					if message.guild.me.permissions_in(message.channel).kick_members:
 						# TODO: Check hierarchy, if able to kick
-						await client.send_message(message.author, "You were kicked from {} for spamming mentions".format(message.server))
+						await client.send_message(message.author, "You were kicked from {} for spamming mentions".format(message.guild))
 						await client.kick(message.author)
 						await client.send_message(message.channel, "{} has been kicked for spamming mentions".format(message.author))
 					else:
@@ -272,7 +272,7 @@ if __name__ == "__main__":
 		# Chatbot
 		elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'):
 			# Handle @Harmonbot help
-			bot_name = message.channel.me.display_name if message.channel.is_private else message.server.me.display_name
+			bot_name = message.channel.me.display_name if message.channel.is_private else message.guild.me.display_name
 			if ' '.join(message.clean_content.split()[:2]).lower() == '@' + bot_name.lower() + " help":
 				await clients.embed_reply(message, "Please see {}help".format(prefixes[0]))
 				return
@@ -293,10 +293,10 @@ if __name__ == "__main__":
 		if type is discord.errors.Forbidden:
 			for arg in args:
 				if isinstance(arg, commands.context.Context):
-					print("Missing Permissions for #{0.channel.name} in {0.server.name}".format(arg.message))
+					print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(arg.message))
 					return
 				elif isinstance(arg, discord.Message):
-					print("Missing Permissions for #{0.channel.name} in {0.server.name}".format(arg))
+					print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(arg))
 					return
 		print('Ignoring exception in {}'.format(event_method), file = sys.stderr)
 		traceback.print_exc()
@@ -335,7 +335,7 @@ if __name__ == "__main__":
 		if embed.description:
 			await ctx.bot.send_message(ctx.message.channel, embed = embed) # check embed links permission
 		elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (discord.errors.Forbidden)):
-			print("Missing Permissions for #{0.channel.name} in {0.server.name}".format(ctx.message))
+			print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(ctx.message))
 		else:
 			print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)

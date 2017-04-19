@@ -142,7 +142,7 @@ class Reactions:
 	async def playingr(self, ctx):
 		'''Audio player'''
 		try:
-			embed = self.bot.cogs["Audio"].players[ctx.message.server.id].current_embed()
+			embed = self.bot.cogs["Audio"].players[ctx.message.guild.id].current_embed()
 		except errors.AudioNotPlaying:
 			player_message, embed = await self.bot.embed_reply(":speaker: There is no song currently playing")
 		else:
@@ -159,29 +159,29 @@ class Reactions:
 	async def playingr_processr(self, ctx, reaction, user):
 		if reaction.emoji in self.controls:
 			if self.controls[reaction.emoji] == "pause_resume":
-				if utilities.get_permission(ctx, "pause", id = user.id) or user == ctx.message.server.owner or user.id == clients.owner_id:
+				if utilities.get_permission(ctx, "pause", id = user.id) or user == ctx.message.guild.owner or user.id == clients.owner_id:
 					embed = discord.Embed(color = clients.bot_color).set_author(name = user.display_name, icon_url = user.avatar_url or user.default_avatar_url)
 					try:
-						self.bot.cogs["Audio"].players[ctx.message.server.id].pause()
+						self.bot.cogs["Audio"].players[ctx.message.guild.id].pause()
 					except errors.AudioNotPlaying:
 						embed.description = ":no_entry: There is no song to pause"
 					except errors.AudioAlreadyDone:
-						self.bot.cogs["Audio"].players[ctx.message.server.id].resume()
+						self.bot.cogs["Audio"].players[ctx.message.guild.id].resume()
 						embed.description = ":play_pause: Resumed song"
 					else:
 						embed.description = ":pause_button: Paused song"
 					await self.bot.send_message(ctx.message.channel, embed = embed)
 					await self.bot.attempt_delete_message(ctx.message)
 			elif self.controls[reaction.emoji] in ("skip", "replay", "shuffle", "radio"):
-				if utilities.get_permission(ctx, self.controls[reaction.emoji], id = user.id) or user.id in (ctx.message.server.owner.id, clients.owner_id):
+				if utilities.get_permission(ctx, self.controls[reaction.emoji], id = user.id) or user.id in (ctx.message.guild.owner.id, clients.owner_id):
 					message = copy.copy(ctx.message)
 					message.content = "{}{}".format(ctx.prefix, self.controls[reaction.emoji])
 					await self.bot.process_commands(message)
 					# Timestamp for radio
 			elif self.controls[reaction.emoji] in ("volume_down", "volume_up"):
-				if utilities.get_permission(ctx, "volume", id = user.id) or user.id in (ctx.message.server.owner, clients.owner_id):
+				if utilities.get_permission(ctx, "volume", id = user.id) or user.id in (ctx.message.guild.owner, clients.owner_id):
 					try:
-						current_volume = self.bot.cogs["Audio"].players[ctx.message.server.id].get_volume()
+						current_volume = self.bot.cogs["Audio"].players[ctx.message.guild.id].get_volume()
 					except errors.AudioNotPlaying:
 						await self.bot.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
 					if self.controls[reaction.emoji] == "volume_down": set_volume = current_volume - 10

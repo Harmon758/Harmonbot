@@ -268,7 +268,7 @@ def get_prefix(bot, message):
 	if message.channel.is_private:
 		prefixes = all_prefixes.get(message.channel.id, None)
 	else:
-		prefixes = all_prefixes.get(message.server.id, None)
+		prefixes = all_prefixes.get(message.guild.id, None)
 	return prefixes if prefixes else '!'
 
 
@@ -284,7 +284,7 @@ client.remove_command("help")
 async def _update_discord_bots_stats():
 	async with aiohttp_session.post("https://bots.discord.pw/api/bots/{}/stats".format(client.user.id), 
 	headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}, 
-	data = json.dumps({"server_count": len(client.servers)})) as resp:
+	data = json.dumps({"server_count": len(client.guilds)})) as resp:
 		if resp.status in (502, 504):
 			return "Error: {}".format(resp.status)
 		response = await resp.json()
@@ -343,7 +343,7 @@ async def random_game_status():
 	"music", "Google Ultron", "not enough space here to",
 	"the meaning of life is", "with the NSA", "with neural networks", 
 	"with RSS Bot", "with Data", "with Harmon", " "]
-	me = discord.utils.find(lambda s: s != None, client.servers).me
+	me = discord.utils.find(lambda s: s != None, client.guilds).me
 	if not me:
 		return
 	elif not me.game:
@@ -354,7 +354,7 @@ async def random_game_status():
 	await client.change_presence(game = updated_game)
 
 async def set_streaming_status(client):
-	me = discord.utils.get(client.servers).me
+	me = discord.utils.get(client.guilds).me
 	if not me:
 		return
 	elif not me.game:

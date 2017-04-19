@@ -22,7 +22,7 @@ def is_owner():
 	return commands.check(predicate)
 
 def is_server_owner_check(ctx):
-	return ctx.message.channel.is_private or ctx.message.author == ctx.message.server.owner or is_owner_check(ctx)
+	return ctx.message.channel.is_private or ctx.message.author == ctx.message.guild.owner or is_owner_check(ctx)
 
 def is_server_owner():
 	
@@ -35,7 +35,7 @@ def is_server_owner():
 	return commands.check(predicate)
 
 def is_voice_connected_check(ctx):
-	return ctx.message.server and client.is_voice_connected(ctx.message.server)
+	return ctx.message.guild and client.is_voice_connected(ctx.message.guild)
 
 def is_voice_connected():
 	
@@ -74,7 +74,7 @@ def dm_or_has_permissions(**permissions):
 	return commands.check(predicate)
 
 def has_capability_check(ctx, permissions):
-	_permissions = ctx.message.channel.permissions_for(ctx.message.server.me)
+	_permissions = ctx.message.channel.permissions_for(ctx.message.guild.me)
 	return all(getattr(_permissions, permission, None) == True for permission in permissions)
 
 def has_capability(*permissions):

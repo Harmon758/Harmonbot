@@ -299,7 +299,7 @@ class Search:
 				for subpod in pod.subpods:
 					image = next(subpod.img)
 					images.append(image.src)
-					if subpod.plaintext and subpod.plaintext.replace('\n', ' ') not in (image.title, image.alt, image.title.strip(' '), image.alt.strip(' ')) or not ctx.message.server.me.permissions_in(ctx.message.channel).embed_links:
+					if subpod.plaintext and subpod.plaintext.replace('\n', ' ') not in (image.title, image.alt, image.title.strip(' '), image.alt.strip(' ')) or not ctx.message.guild.me.permissions_in(ctx.message.channel).embed_links:
 						print("Wolfram Alpha:\n")
 						print(image.title)
 						print(image.alt)

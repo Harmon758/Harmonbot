@@ -1410,15 +1410,15 @@ class Resources:
 		# TODO: Add to audio cog?
 		'''
 		toggles = {}
-		with open(message.server.name + "_toggles.json", "r") as toggles_file:
+		with open(message.guild.name + "_toggles.json", "r") as toggles_file:
 			toggles = json.load(toggles_file)
 		if message.content.split()[1] == "on":
 			toggles["youtubeinfo"] = True
-			with open(message.server.name + "_toggles.json", "w") as toggles_file:
+			with open(message.guild.name + "_toggles.json", "w") as toggles_file:
 				json.dump(toggles, toggles_file, indent = 4)
 		elif message.content.split()[1] == "off":
 			toggles["youtubeinfo"] = False
-			with open(message.server.name + "_toggles.json", "w") as toggles_file:
+			with open(message.guild.name + "_toggles.json", "w") as toggles_file:
 				json.dump(toggles, toggles_file, indent = 4)
 		else:
 		'''

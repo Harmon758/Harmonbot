@@ -26,7 +26,7 @@ class AudioPlayer:
 	def __init__(self, client, text_channel):
 		self.bot = client
 		self.text_channel = text_channel
-		self.server = text_channel.server
+		self.server = text_channel.guild
 		self.queue = asyncio.Queue()
 		self.current = None
 		self.play_next_song = asyncio.Event()
