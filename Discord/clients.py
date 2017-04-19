@@ -181,37 +181,7 @@ class Bot(commands.Bot):
 		except discord.errors.NotFound:
 			pass
 	
-	async def process_commands(self, message):
-		_internal_channel = message.channel
-		_internal_author = message.author
-		view = StringView(message.content)
-		if self._skip_check(message.author, self.user):
-			return
-		prefix = await self._get_prefix(message)
-		invoked_prefix = prefix
-		if not isinstance(prefix, (tuple, list)):
-			if not view.skip_string(prefix):
-				return
-		else:
-			invoked_prefix = discord.utils.find(view.skip_string, prefix)
-			if invoked_prefix is None:
-				return
-		invoker = view.get_word().lower() # case-insensitive commands
-		tmp = {'bot': self, 'invoked_with': invoker, 'message': message, 'view': view, 'prefix': invoked_prefix}
-		ctx = Context(**tmp)
-		del tmp
-		if invoker in self.commands:
-			command = self.commands[invoker]
-			self.dispatch('command', command, ctx)
-			try:
-				await command.invoke(ctx)
-			except CommandError as e:
-				ctx.command.dispatch_error(e, ctx)
-			else:
-				self.dispatch('command_completion', command, ctx)
-		elif invoker:
-			exc = CommandNotFound('Command "{}" is not found'.format(invoker))
-			self.dispatch('command_error', exc, ctx)
+	# TODO: Case-Insenstivie commands
 
 # Make Subcommands Case-Insensitive
 
