@@ -39,7 +39,7 @@ class Audio:
 			await self.bot.embed_reply(":grey_question: What would you like to play?")
 			return
 		if "playlist" in song:
-			await self.players[ctx.message.guild.id].add_playlist(song, ctx.message.author, ctx.message.timestamp)
+			await self.players[ctx.message.guild.id].add_playlist(song, ctx.message.author, ctx.message.created_at)
 			return
 		if "spotify" in song:
 			song = await self.spotify_to_youtube(song)
@@ -49,7 +49,7 @@ class Audio:
 		response, embed = await self.bot.embed_reply(":cd: Loading..")
 		stream = ctx.invoked_with == "stream"
 		try:
-			title, url = await self.players[ctx.message.guild.id].add_song(song, ctx.message.author, ctx.message.timestamp, stream = stream)
+			title, url = await self.players[ctx.message.guild.id].add_song(song, ctx.message.author, ctx.message.created_at, stream = stream)
 		except Exception as e:
 			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
 			if len(embed.description) > 2048: embed.description = embed.description[:2044] + "...`"
@@ -202,7 +202,7 @@ class Audio:
 				return
 		response, embed = await self.bot.embed_reply(":cd: Loading..")
 		try:
-			title = await self.players[ctx.message.guild.id].insert_song(song, ctx.message.author, ctx.message.timestamp, position_number)
+			title = await self.players[ctx.message.guild.id].insert_song(song, ctx.message.author, ctx.message.created_at, position_number)
 		except Exception as e:
 			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
 			if len(embed.description) > 2048: embed.description = embed.description[:2044] + "...`"
@@ -243,7 +243,7 @@ class Audio:
 		song = random.choice([video["id"] for video in data["items"]])
 		response, embed = await self.bot.embed_reply(":cd: Loading..")
 		try:
-			title, url = await self.players[ctx.message.guild.id].add_song(song, ctx.message.author, ctx.message.timestamp)
+			title, url = await self.players[ctx.message.guild.id].add_song(song, ctx.message.author, ctx.message.created_at)
 		except Exception as e:
 			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
 		else:
@@ -267,7 +267,7 @@ class Audio:
 		if self.players[ctx.message.guild.id].radio_flag:
 			self.players[ctx.message.guild.id].radio_off()
 			await self.bot.embed_reply(":stop_sign: Turned radio off")
-		elif (await self.players[ctx.message.guild.id].radio_on(ctx.message.author, ctx.message.timestamp)) is False:
+		elif (await self.players[ctx.message.guild.id].radio_on(ctx.message.author, ctx.message.created_at)) is False:
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
@@ -278,7 +278,7 @@ class Audio:
 		'''Turn radio on'''
 		if self.players[ctx.message.guild.id].radio_flag:
 			await self.bot.embed_reply(":no_entry: Radio is already on")
-		elif (await self.players[ctx.message.guild.id].radio_on(ctx.message.author, ctx.message.timestamp)) is False:
+		elif (await self.players[ctx.message.guild.id].radio_on(ctx.message.author, ctx.message.created_at)) is False:
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
@@ -308,7 +308,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
-		if not (await self.players[ctx.message.guild.id].play_tts(message, ctx.message.author, timestamp = ctx.message.timestamp)):
+		if not (await self.players[ctx.message.guild.id].play_tts(message, ctx.message.author, timestamp = ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@tts.command(name = "options", pass_context = True, no_pm = True)
@@ -331,7 +331,7 @@ class Audio:
 		if amplitude > 1000: amplitude = 1000
 		if speed > 9000: speed = 9000
 		if word_gap > 1000: word_gap = 1000
-		if not (await self.players[ctx.message.guild.id].play_tts(message, ctx.message.author, timestamp = ctx.message.timestamp, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
+		if not (await self.players[ctx.message.guild.id].play_tts(message, ctx.message.author, timestamp = ctx.message.created_at, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@commands.command(pass_context = True, no_pm = True)
@@ -339,7 +339,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def file(self, ctx, *, filename : str = ""):
 		'''Play an audio file'''
-		if not (await self.players[ctx.message.guild.id].play_file(filename, ctx.message.author, ctx.message.timestamp)):
+		if not (await self.players[ctx.message.guild.id].play_file(filename, ctx.message.author, ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@commands.command(pass_context = True, no_pm = True)
@@ -357,7 +357,7 @@ class Audio:
 		if self.players[ctx.message.guild.id].library_flag:
 			self.players[ctx.message.guild.id].stop_library()
 			await self.bot.embed_reply(":stop_sign: Stopped playing songs from my library")
-		elif not (await self.players[ctx.message.guild.id].play_library(ctx.message.author, ctx.message.timestamp)):
+		elif not (await self.players[ctx.message.guild.id].play_library(ctx.message.author, ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
@@ -368,7 +368,7 @@ class Audio:
 		'''Start playing songs from my library'''
 		if self.players[ctx.message.guild.id].library_flag:
 			await self.bot.embed_reply(":no_entry: I'm already playing songs from my library")
-		elif not (await self.players[ctx.message.guild.id].play_library(ctx.message.author, ctx.message.timestamp)):
+		elif not (await self.players[ctx.message.guild.id].play_library(ctx.message.author, ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "stop", pass_context = True, no_pm = True)
@@ -388,7 +388,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def library_song(self, ctx, *, filename : str = ""):
 		'''Play a song from my library'''
-		if not (await self.players[ctx.message.guild.id].play_from_library(filename, ctx.message.author, ctx.message.timestamp)):
+		if not (await self.players[ctx.message.guild.id].play_from_library(filename, ctx.message.author, ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "files", pass_context = True, no_pm = True) # enable for DMs?

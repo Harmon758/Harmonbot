@@ -158,7 +158,7 @@ if __name__ == "__main__":
 		
 		# Log message
 		source = "Direct Message" if isinstance(message.channel, discord.DMChannel) else "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
-		logging.chat_logger.info("{0.timestamp}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, source))
+		logging.chat_logger.info("{0.created_at}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, source))
 		
 		# Server specific settings
 		if message.guild is not None:
