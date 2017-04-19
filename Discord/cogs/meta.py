@@ -231,7 +231,8 @@ class Meta:
 	@checks.not_forbidden()
 	async def type(self, ctx):
 		'''Sends typing status'''
-		await self.bot.send_typing(ctx.message.channel)
+		# TODO: Add seconds option
+		await ctx.trigger_typing()
 	
 	# Public Info
 	
