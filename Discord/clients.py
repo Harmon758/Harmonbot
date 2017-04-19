@@ -276,10 +276,10 @@ async def on_server_remove(server):
 	await _update_discord_bots_stats()
 
 @client.listen()
-async def on_command(command, ctx):
+async def on_command(ctx):
 	global session_commands_executed, session_commands_usage
 	session_commands_executed += 1
-	session_commands_usage[command.name] = session_commands_usage.get(command.name, 0) + 1
+	session_commands_usage[ctx.command.name] = session_commands_usage.get(ctx.command.name, 0) + 1
 
 
 # Download FFMPEG

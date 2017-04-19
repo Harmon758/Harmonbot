@@ -87,11 +87,11 @@ if __name__ == "__main__":
 		print("Discord Harmonbot: resumed")
 	
 	@client.event
-	async def on_command(command, ctx):
+	async def on_command(ctx):
 		with open("data/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		stats["commands_executed"] += 1
-		stats["commands_usage"][command.name] = stats["commands_usage"].get(command.name, 0) + 1
+		stats["commands_usage"][ctx.command.name] = stats["commands_usage"].get(ctx.command.name, 0) + 1
 		with open("data/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 		utilities.create_folder("data/user_data/{}".format(ctx.message.author.id))
