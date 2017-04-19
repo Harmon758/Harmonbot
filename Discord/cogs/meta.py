@@ -520,14 +520,14 @@ class Meta:
 		for i in range(1, 101):
 			await self.bot.say(str(i))
 	
-	@commands.command(aliases = ["logsfromtest"])
+	@commands.command(aliases = ["globalratelimittest"])
 	@checks.is_owner()
-	async def logs_from_test(self, ctx):
-		'''Used to test global rate limits'''
+	async def global_ratelimit_test(self, ctx):
+		'''Used to test global ratelimits'''
 		for i in range(1, 101):
 			async for message in self.bot.logs_from(ctx.message.channel):
 				pass
-			print("logs_from_test {}".format(i))
+			print("global ratelimit test {}".format(i))
 	
 	@commands.command(aliases = ["repeattext"])
 	@checks.is_owner()
