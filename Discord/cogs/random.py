@@ -48,7 +48,7 @@ class Random:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def random(self):
+	async def random(self, ctx):
 		'''
 		Random things
 		All random subcommands are also commands
@@ -65,7 +65,7 @@ class Random:
 	
 	@random.command()
 	@checks.not_forbidden()
-	async def giphy(self):
+	async def giphy(self, ctx):
 		'''Random gif from giphy'''
 		url = "http://api.giphy.com/v1/gifs/random?api_key={}".format(credentials.giphy_public_beta_api_key)
 		async with clients.aiohttp_session.get(url) as resp:
@@ -74,7 +74,7 @@ class Random:
 	
 	@random.command()
 	@checks.not_forbidden()
-	async def map(self):
+	async def map(self, ctx):
 		'''See map of random location'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
@@ -83,7 +83,7 @@ class Random:
 	
 	@random.command()
 	@checks.not_forbidden()
-	async def streetview(self):
+	async def streetview(self, ctx):
 		'''Generate street view of a random location'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
@@ -92,7 +92,7 @@ class Random:
 	
 	@random.command()
 	@checks.not_forbidden()
-	async def uesp(self):
+	async def uesp(self, ctx):
 		'''
 		Random UESP page
 		[UESP](http://uesp.net/wiki/Main_Page)
@@ -103,7 +103,7 @@ class Random:
 	
 	@random.command(aliases = ["wiki"])
 	@checks.not_forbidden()
-	async def wikipedia(self):
+	async def wikipedia(self, ctx):
 		'''Random Wikipedia article'''
 		cog = self.bot.get_cog("Search")
 		if cog: await cog.process_wikipedia(None, random = True)
@@ -122,7 +122,7 @@ class Random:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def card(self):
+	async def card(self, ctx):
 		'''Random playing card'''
 		await self.bot.embed_reply(":{}: {}".format(random.choice(pydealer.const.SUITS).lower(), random.choice(pydealer.const.VALUES)))
 	
@@ -167,7 +167,7 @@ class Random:
 	
 	@commands.command(aliases = ["die", "roll"])
 	@checks.not_forbidden()
-	async def dice(self, *, input : str = '6'):
+	async def dice(self, ctx, *, input : str = '6'):
 		'''
 		Roll dice
 		Inputs:                                      Examples:
@@ -205,19 +205,19 @@ class Random:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def date(self):
+	async def date(self, ctx):
 		'''Random date'''
 		await self.bot.embed_reply(datetime.date.fromordinal(random.randint(1, 365)).strftime("%B %d"))
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def day(self):
+	async def day(self, ctx):
 		'''Random day of week'''
 		await self.bot.embed_reply(random.choice(calendar.day_name))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def fact(self):
+	async def fact(self, ctx):
 		'''Random fact'''
 		async with clients.aiohttp_session.get("http://mentalfloss.com/api/1.0/views/amazing_facts.json?limit=1&bypass=1") as resp:
 			data = await resp.json()
@@ -236,7 +236,7 @@ class Random:
 	
 	@fact.command(name = "date")
 	@checks.not_forbidden()
-	async def fact_date(self, date : str):
+	async def fact_date(self, ctx, date : str):
 		'''
 		Random fact about a date
 		Format: month/date
@@ -251,7 +251,7 @@ class Random:
 	
 	@fact.command(name = "math")
 	@checks.not_forbidden()
-	async def fact_math(self, number : int):
+	async def fact_math(self, ctx, number : int):
 		'''Random math fact about a number'''
 		async with clients.aiohttp_session.get("http://numbersapi.com/{}/math".format(number)) as resp:
 			data = await resp.text()
@@ -259,7 +259,7 @@ class Random:
 	
 	@fact.command(name = "number")
 	@checks.not_forbidden()
-	async def fact_number(self, number : int):
+	async def fact_number(self, ctx, number : int):
 		'''Random fact about a number'''
 		async with clients.aiohttp_session.get("http://numbersapi.com/{}".format(number)) as resp:
 			data = await resp.text()
@@ -267,7 +267,7 @@ class Random:
 	
 	@fact.command(name = "year")
 	@checks.not_forbidden()
-	async def fact_year(self, year : int):
+	async def fact_year(self, ctx, year : int):
 		'''Random fact about a year'''
 		async with clients.aiohttp_session.get("http://numbersapi.com/{}/year".format(year)) as resp:
 			data = await resp.text()
@@ -275,7 +275,7 @@ class Random:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def idea(self):
+	async def idea(self, ctx):
 		'''Random idea'''
 		async with clients.aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
 			data = await resp.json()
@@ -283,7 +283,7 @@ class Random:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def insult(self):
+	async def insult(self, ctx):
 		'''Random insult'''
 		async with clients.aiohttp_session.get("http://quandyfactory.com/insult/json") as resp:
 			data = await resp.json()
@@ -291,7 +291,7 @@ class Random:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def joke(self):
+	async def joke(self, ctx):
 		'''Random joke'''
 		async with clients.aiohttp_session.get("http://tambal.azurewebsites.net/joke/random") as resp:
 			data = await resp.json()
@@ -299,19 +299,19 @@ class Random:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def letter(self):
+	async def letter(self, ctx):
 		'''Random letter'''
 		await self.bot.embed_reply(random.choice(string.ascii_uppercase))
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def location(self):
+	async def location(self, ctx):
 		'''Random location'''
 		await self.bot.embed_reply("{}, {}".format(random.uniform(-90, 90), random.uniform(-180, 180)))
 	
 	@commands.group(aliases = ["rng"], invoke_without_command = True)
 	@checks.not_forbidden()
-	async def number(self, number : int = 10):
+	async def number(self, ctx, number : int = 10):
 		'''
 		Random number
 		Default range is 1 to 10
@@ -320,7 +320,7 @@ class Random:
 	
 	@commands.command(aliases = ["why"])
 	@checks.not_forbidden()
-	async def question(self):
+	async def question(self, ctx):
 		'''Random question'''
 		async with clients.aiohttp_session.get("http://xkcd.com/why.txt") as resp:
 			data = await resp.text()
@@ -329,7 +329,7 @@ class Random:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def quote(self):
+	async def quote(self, ctx):
 		'''Random quote'''
 		async with clients.aiohttp_session.get("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en") as resp:
 			try:
@@ -341,13 +341,13 @@ class Random:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def time(self):
+	async def time(self, ctx):
 		'''Random time'''
 		await self.bot.embed_reply("{:02d}:{:02d}".format(random.randint(0, 23), random.randint(0, 59)))
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def word(self):
+	async def word(self, ctx):
 		'''Random word'''
 		await self.bot.embed_reply(clients.wordnik_words_api.getRandomWord().word.capitalize())
 

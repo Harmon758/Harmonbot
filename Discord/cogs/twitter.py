@@ -87,7 +87,7 @@ class Twitter:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
-	async def twitter(self):
+	async def twitter(self, ctx):
 		'''Twitter'''
 		pass
 	

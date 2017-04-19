@@ -19,7 +19,7 @@ class Misc:
 	
 	@commands.command(aliases = ["emotify"])
 	@checks.not_forbidden()
-	async def emojify(self, *, text : str):
+	async def emojify(self, ctx, *, text : str):
 		'''Emojify text'''
 		output = ""
 		for character in text:
@@ -36,7 +36,7 @@ class Misc:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def fancify(self, *, text : str):
+	async def fancify(self, ctx, *, text : str):
 		'''Fancify text'''
 		output = ""
 		for character in text:
@@ -52,7 +52,7 @@ class Misc:
 	
 	@commands.command(aliases = ["full-width", "full_width"])
 	@checks.not_forbidden()
-	async def fullwidth(self, *, text : str):
+	async def fullwidth(self, ctx, *, text : str):
 		'''Make text fullwidth'''
 		output = ""
 		for character in text:
@@ -64,13 +64,13 @@ class Misc:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def fingers(self, *, text : str):
+	async def fingers(self, ctx, *, text : str):
 		'''Add fingers'''
 		await self.bot.embed_reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def loading_bar(self):
+	async def loading_bar(self, ctx):
 		'''
 		A loading bar
 		Currently does nothing.. or does it?
@@ -86,7 +86,7 @@ class Misc:
 			await self.bot.edit_message(loading_message, embed = embed)
 	
 	@commands.command()
-	async def ping(self):
+	async def ping(self, ctx):
 		'''Basic ping - pong command'''
 		await self.bot.embed_reply("pong")
 	
@@ -118,7 +118,7 @@ def emote_wrapper(name, emote = None):
 	if emote is None: emote = name
 	@commands.command(name = name, help = name.capitalize() + " emote")
 	@checks.not_forbidden()
-	async def emote_command(self):
+	async def emote_command(self, ctx):
 		await self.bot.embed_reply(":{}:".format(emote))
 	return emote_command
 

@@ -34,7 +34,7 @@ class Resources:
 	
 	@commands.command(aliases = ["antonyms"])
 	@checks.not_forbidden()
-	async def antonym(self, word : str):
+	async def antonym(self, ctx, word : str):
 		'''Antonyms of a word'''
 		antonyms = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", useCanonical = "true", limitPerRelationshipType = 100)
 		if not antonyms:
@@ -44,12 +44,12 @@ class Resources:
 	
 	@commands.group(aliases = ["blizzard"], invoke_without_command = True)
 	@checks.not_forbidden()
-	async def battlenet(self):
+	async def battlenet(self, ctx):
 		'''Battle.net'''
 		...
 	
 	@battlenet.command(name = "run", aliases = ["launch"])
-	async def battlenet_run(self, *, game : str):
+	async def battlenet_run(self, ctx, *, game : str):
 		'''
 		Generate a Battle.net link to launch a game
 		You must have the Battle.net launcher open for the link to work
@@ -97,7 +97,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def define(self, word : str):
+	async def define(self, ctx, word : str):
 		'''Define a word'''
 		definition = clients.wordnik_word_api.getDefinitions(word, limit = 1) # useCanonical = True ?
 		if not definition:
@@ -107,7 +107,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def dotabuff(self, account : str):
+	async def dotabuff(self, ctx, account : str):
 		'''Get Dotabuff link'''
 		try:
 			url = "https://www.dotabuff.com/players/{}".format(int(account) - 76561197960265728)
@@ -120,7 +120,7 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def giphy(self, *, search : str):
+	async def giphy(self, ctx, *, search : str):
 		'''Find an image on giphy'''
 		url = "http://api.giphy.com/v1/gifs/search?api_key={}&q={}&limit=1".format(credentials.giphy_public_beta_api_key, search)
 		async with clients.aiohttp_session.get(url) as resp:
@@ -128,7 +128,7 @@ class Resources:
 		await self.bot.embed_reply(None, image_url = data["data"][0]["images"]["original"]["url"])
 	
 	@giphy.command(name = "trending")
-	async def giphy_trending(self):
+	async def giphy_trending(self, ctx):
 		'''Trending gif'''
 		url = "http://api.giphy.com/v1/gifs/trending?api_key={}".format(credentials.giphy_public_beta_api_key)
 		async with clients.aiohttp_session.get(url) as resp:
@@ -137,7 +137,7 @@ class Resources:
 	
 	@commands.command(aliases = ["imagesearch", "googleimages"])
 	@checks.not_forbidden()
-	async def googleimage(self, *, search : str):
+	async def googleimage(self, ctx, *, search : str):
 		'''Google image search something'''
 		url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&searchType=image&q={}".format(credentials.google_apikey, credentials.google_cse_cx, search.replace(' ', '+'))
 		async with clients.aiohttp_session.get(url) as resp:
@@ -153,7 +153,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def haveibeenpwned(self, name : str):
+	async def haveibeenpwned(self, ctx, name : str):
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/{0}?truncateResponse=true".format(name)
 		async with clients.aiohttp_session.get(url) as resp:
@@ -181,13 +181,13 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def horoscope(self, sign : str):
+	async def horoscope(self, ctx, sign : str):
 		'''Horoscope'''
 		await self.process_horoscope(sign, "today")
 	
 	@horoscope.command(name = "signs", aliases = ["sun_signs", "sunsigns"])
 	@checks.not_forbidden()
-	async def horoscope_signs(self):
+	async def horoscope_signs(self, ctx):
 		'''Sun signs'''
 		async with clients.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/sunsigns") as resp:
 			data = await resp.json()
@@ -195,19 +195,19 @@ class Resources:
 	
 	@horoscope.command(name = "today")
 	@checks.not_forbidden()
-	async def horoscope_today(self, sign):
+	async def horoscope_today(self, ctx, sign):
 		'''Today's horoscope'''
 		await self.process_horoscope(sign, "today")
 	
 	@horoscope.command(name = "tomorrow")
 	@checks.not_forbidden()
-	async def horoscope_tomorrow(self, sign):
+	async def horoscope_tomorrow(self, ctx, sign):
 		'''Tomorrow's horoscope'''
 		await self.process_horoscope(sign, "tomorrow")
 	
 	@horoscope.command(name = "yesterday")
 	@checks.not_forbidden()
-	async def horoscope_yesterday(self, sign):
+	async def horoscope_yesterday(self, ctx, sign):
 		'''Yesterday's horoscope'''
 		await self.process_horoscope(sign, "yesterday")
 	
@@ -224,7 +224,7 @@ class Resources:
 	
 	@commands.command(aliases = ["imagerecog", "imager", "image_recognition"])
 	@checks.not_forbidden()
-	async def imagerecognition(self, image_url : str):
+	async def imagerecognition(self, ctx, image_url : str):
 		'''Image recognition'''
 		try:
 			response = clients.clarifai_general_model.predict_by_url(image_url)
@@ -245,7 +245,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def nsfw(self, image_url : str):
+	async def nsfw(self, ctx, image_url : str):
 		'''NSFW recognition'''
 		try:
 			response = clients.clarifai_nsfw_model.predict_by_url(image_url)
@@ -313,7 +313,7 @@ class Resources:
 	
 	@commands.group()
 	@checks.not_forbidden()
-	async def lichess(self):
+	async def lichess(self, ctx):
 		'''WIP'''
 		return
 	
@@ -330,13 +330,13 @@ class Resources:
 				raise errors.LichessUserNotFound
 	
 	@lichess_user.command(name = "bullet")
-	async def lichess_user_bullet(self, username : str):
+	async def lichess_user_bullet(self, ctx, username : str):
 		'''WIP'''
 		data = self.lichess_user_data
 		await self.bot.embed_reply(":zap: Bullet | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {0[prog]}".format(data["perfs"]["bullet"], prov = "?" if data["perfs"]["bullet"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["bullet"]["prog"] >= 0 else ":chart_with_downwards_trend:"), title = data["username"])
 	
 	@lichess_user.command(name = "blitz")
-	async def lichess_user_blitz(self, username : str):
+	async def lichess_user_blitz(self, ctx, username : str):
 		'''WIP'''
 		data = self.lichess_user_data
 		await self.bot.embed_reply(":fire: Blitz | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {0[prog]}".format(data["perfs"]["blitz"], prov = "?" if data["perfs"]["blitz"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["blitz"]["prog"] >= 0 else ":chart_with_downwards_trend:"), title = data["username"])
@@ -369,7 +369,7 @@ class Resources:
 		await self.bot.say(embed = embed)
 	
 	@lichess.group(name = "tournaments")
-	async def lichess_tournaments(self):
+	async def lichess_tournaments(self, ctx):
 		'''WIP'''
 		url = "https://en.lichess.org/api/tournament"
 		async with clients.aiohttp_session.get(url) as resp:
@@ -390,13 +390,13 @@ class Resources:
 		await self.bot.say(embed = embed)
 	
 	@lichess.command(name = "tournament")
-	async def lichess_tournament(self):
+	async def lichess_tournament(self, ctx):
 		'''WIP'''
 		pass
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def longurl(self, url : str):
+	async def longurl(self, ctx, url : str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={}&key={}".format(url, credentials.google_apikey)
 		async with clients.aiohttp_session.get(url) as resp:
@@ -408,14 +408,14 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def map(self, *, location : str):
+	async def map(self, ctx, *, location : str):
 		'''See map of location'''
 		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location.replace(' ', '+'))
 		await self.bot.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@map.command(name = "options")
 	@checks.not_forbidden()
-	async def map_options(self, zoom : int, maptype : str, *, location : str):
+	async def map_options(self, ctx, zoom : int, maptype : str, *, location : str):
 		'''
 		More customized map of a location
 		Zoom: 0 - 21+ (Default: 13)
@@ -469,7 +469,7 @@ class Resources:
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
-	async def news_sources(self):
+	async def news_sources(self, ctx):
 		'''
 		News sources
 		https://newsapi.org/sources
@@ -484,7 +484,7 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def oeis(self, *, search : str):
+	async def oeis(self, ctx, *, search : str):
 		'''
 		The On-Line Encyclopedia of Integer Sequences
 		Does not accept spaces for search by sequence
@@ -501,7 +501,7 @@ class Resources:
 	
 	@oeis.command(name = "graph")
 	@checks.not_forbidden()
-	async def oeis_graph(self, *, search : str):
+	async def oeis_graph(self, ctx, *, search : str):
 		'''
 		The On-Line Encyclopedia of Integer Sequences
 		Does not accept spaces for search by sequence
@@ -519,7 +519,7 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def overwatch(self):
+	async def overwatch(self, ctx):
 		'''
 		WIP
 		Note: battletags are case sensitive
@@ -628,7 +628,7 @@ class Resources:
 				await self.bot.say(embed = embed)
 	
 	@overwatch.command(name = "heroes", hidden = True)
-	async def overwatch_heroes(self, battletag : str, number : str):
+	async def overwatch_heroes(self, ctx, battletag : str, number : str):
 		'''
 		Overwatch user hero statistics
 		Note: battletags are case sensitive
@@ -771,7 +771,7 @@ class Resources:
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	@checks.not_forbidden()
-	async def pronunciation(self, word : str):
+	async def pronunciation(self, ctx, word : str):
 		'''Pronunciation of a word'''
 		pronunciation = clients.wordnik_word_api.getTextPronunciations(word, limit = 1)
 		description = pronunciation[0].raw.strip("()") if pronunciation else "Audio File Link"
@@ -785,13 +785,13 @@ class Resources:
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
-	async def redditsearch(self):
+	async def redditsearch(self, ctx):
 		'''WIP'''
 		return
 	
 	@commands.command(aliases = ["rhymes"])
 	@checks.not_forbidden()
-	async def rhyme(self, word : str):
+	async def rhyme(self, ctx, word : str):
 		'''Rhymes of a word'''
 		rhymes = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", limitPerRelationshipType = 100)
 		if not rhymes:
@@ -859,13 +859,13 @@ class Resources:
 	
 	@commands.group(aliases = ["rs"], invoke_without_command = True)
 	@checks.not_forbidden()
-	async def runescape(self):
+	async def runescape(self, ctx):
 		'''Runescape'''
 		...
 	
 	@runescape.command(name = "ge", aliases = ["grandexchange"])
 	@checks.not_forbidden()
-	async def runescape_ge(self, *, item):
+	async def runescape_ge(self, ctx, *, item):
 		'''Runescape GE'''
 	# http://services.runescape.com/m=rswiki/en/Grand_Exchange_APIs
 	# http://forums.zybez.net/runescape-2007-prices/api/?info
@@ -999,7 +999,7 @@ class Resources:
 	
 	@runescape.command(name = "zybez")
 	@checks.not_forbidden()
-	async def runescape_zybez(self, *, item):
+	async def runescape_zybez(self, ctx, *, item):
 		'''Runescape Zybez average price'''
 		url = "http://forums.zybez.net/runescape-2007-prices/api/item/{}".format(item.replace(' ', '+'))
 		async with clients.aiohttp_session.get(url) as resp:
@@ -1012,7 +1012,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def shorturl(self, url : str):
+	async def shorturl(self, ctx, url : str):
 		'''Generate a short goo.gl url for your link'''
 		short_url = await self._shorturl(url)
 		await self.bot.embed_reply(short_url)
@@ -1024,7 +1024,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def spellcheck(self, *, words : str):
+	async def spellcheck(self, ctx, *, words : str):
 		'''Spell check words'''
 		async with clients.aiohttp_session.post("https://api.cognitive.microsoft.com/bing/v5.0/spellcheck?Text=" + words.replace(' ', '+'), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
 			data = await resp.json()
@@ -1059,7 +1059,7 @@ class Resources:
 	
 	@commands.command(aliases = ["sptoyt", "spotify_to_youtube", "sp_to_yt"])
 	@checks.not_forbidden()
-	async def spotifytoyoutube(self, url : str):
+	async def spotifytoyoutube(self, ctx, url : str):
 		'''Find a Spotify track on Youtube'''
 		link = await self.bot.cogs["Audio"].spotify_to_youtube(url)
 		if link:
@@ -1069,12 +1069,12 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def steam(self):
+	async def steam(self, ctx):
 		'''Steam Information'''
 		return
 	
 	@steam.command(name = "appid")
-	async def steam_appid(self, *, app : str):
+	async def steam_appid(self, ctx, *, app : str):
 		'''Get the AppID'''
 		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
 			data = await resp.json()
@@ -1087,7 +1087,7 @@ class Resources:
 		await self.bot.embed_reply(appid)
 	
 	@steam.command(name = "gamecount", aliases = ["game_count"])
-	async def steam_gamecount(self, vanity_name : str):
+	async def steam_gamecount(self, ctx, vanity_name : str):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(credentials.steam_apikey, vanity_name)
 		async with clients.aiohttp_session.get(url) as resp:
@@ -1100,7 +1100,7 @@ class Resources:
 		await self.bot.embed_reply("{} has {} games".format(vanity_name, gamecount))
 	
 	@steam.command(name = "gameinfo", aliases = ["game_info"])
-	async def steam_gameinfo(self, *, game : str):
+	async def steam_gameinfo(self, ctx, *, game : str):
 		'''Information about a game'''
 		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
 			data = await resp.json()
@@ -1116,7 +1116,7 @@ class Resources:
 		await self.bot.embed_reply(data["short_description"], title = data["name"], title_url = data["website"], fields = (("Release Date", data["release_date"]["date"]), ("Free", "Yes" if data["is_free"] else "No"), ("App ID", data["steam_appid"])), image_url = data["header_image"])
 	
 	@steam.command(name = "run", aliases = ["launch"])
-	async def steam_run(self, *, game : str):
+	async def steam_run(self, ctx, *, game : str):
 		'''Generate a steam link to launch a game'''
 		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
 			data = await resp.json()
@@ -1129,7 +1129,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def strawpoll(self, question : str, *options : str):
+	async def strawpoll(self, ctx, question : str, *options : str):
 		'''
 		Generate a strawpoll link
 		Use qoutes for spaces in the question or options
@@ -1140,14 +1140,14 @@ class Resources:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def streetview(self, *, location : str):
+	async def streetview(self, ctx, *, location : str):
 		'''Generate street view of a location'''
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={}".format(location.replace(' ', '+'))
 		await self.bot.embed_reply(None, image_url = image_url)
 	
 	@commands.command(aliases = ["synonyms"])
 	@checks.not_forbidden()
-	async def synonym(self, word : str):
+	async def synonym(self, ctx, word : str):
 		'''Synonyms of a word'''
 		synonyms = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", useCanonical = "true", limitPerRelationshipType = 100)
 		if not synonyms:
@@ -1158,14 +1158,14 @@ class Resources:
 	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
 	"Powered by [Yandex.Translate](http://translate.yandex.com/)", invoke_without_command = True)
 	@checks.not_forbidden()
-	async def translate(self, *, text : str):
+	async def translate(self, ctx, *, text : str):
 		'''Translate to English'''
 		# TODO: From and to language code options?
 		await self.process_translate(text, "en")
 	
 	@translate.command(name = "from")
 	@checks.not_forbidden()
-	async def translate_from(self, from_language_code : str, to_language_code : str, *, text : str):
+	async def translate_from(self, ctx, from_language_code : str, to_language_code : str, *, text : str):
 		'''
 		Translate from a specific language to another
 		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
@@ -1176,7 +1176,7 @@ class Resources:
 	
 	@translate.command(name = "languages", aliases = ["codes", "language_codes"])
 	@checks.not_forbidden()
-	async def translate_languages(self, language_code : str = "en"):
+	async def translate_languages(self, ctx, language_code : str = "en"):
 		'''Language Codes'''
 		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs?ui={}&key={}".format(language_code, credentials.yandex_translate_api_key)) as resp:
 			data = await resp.json()
@@ -1187,7 +1187,7 @@ class Resources:
 	
 	@translate.command(name = "to")
 	@checks.not_forbidden()
-	async def translate_to(self, language_code : str, *, text : str):
+	async def translate_to(self, ctx, language_code : str, *, text : str):
 		'''
 		Translate to a specific language
 		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
@@ -1294,7 +1294,7 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def websitescreenshot(self, url : str):
+	async def websitescreenshot(self, ctx, url : str):
 		'''Take a screenshot of a website'''
 		response, embed = None, None
 		while True:
@@ -1318,7 +1318,7 @@ class Resources:
 	
 	@commands.command(aliases = ["whatare"])
 	@checks.not_forbidden()
-	async def whatis(self, *search : str): #WIP
+	async def whatis(self, ctx, *search : str):
 		'''WIP'''
 		if not search:
 			await self.bot.embed_reply("What is what?")
@@ -1333,7 +1333,7 @@ class Resources:
 	
 	@commands.group(aliases = ["worldofwarcraft"])
 	@checks.not_forbidden()
-	async def wow(self):
+	async def wow(self, ctx):
 		'''World of Warcraft'''
 		pass
 	

@@ -58,7 +58,7 @@ class Games:
 	
 	@commands.group(aliases = ["rpg"], invoke_without_command = True, hidden = True)
 	@checks.not_forbidden()
-	async def adventure(self):
+	async def adventure(self, ctx):
 		'''WIP'''
 		pass
 	
@@ -186,7 +186,7 @@ class Games:
 	
 	@adventure_forage.command(name = "items", aliases = ["item", "type", "types"])
 	@checks.not_forbidden()
-	async def forage_items(self):
+	async def forage_items(self, ctx):
 		'''Forageable items'''
 		await self.bot.embed_reply(", ".join(adventure.forageables.keys()))
 	
@@ -289,7 +289,7 @@ class Games:
 	
 	@adventure_woodcutting.command(name = "types", aliases = ["type", "item", "items"])
 	@checks.not_forbidden()
-	async def woodcutting_types(self):
+	async def woodcutting_types(self, ctx):
 		'''Types of wood'''
 		await self.bot.embed_reply(", ".join(adventure.wood_types))
 	
@@ -535,7 +535,7 @@ class Games:
 	
 	@commands.command(aliases = ["talk", "ask"])
 	@checks.not_forbidden()
-	async def cleverbot(self, *, message : str):
+	async def cleverbot(self, ctx, *, message : str):
 		'''
 		Talk to Cleverbot
 		Uses [Cleverbot](http://www.cleverbot.com/)'s [API](https://www.cleverbot.com/api/)
@@ -553,7 +553,7 @@ class Games:
 	
 	@commands.command(name = "8ball", aliases = ["eightball", "\U0001f3b1"])
 	@checks.not_forbidden()
-	async def eightball(self):
+	async def eightball(self, ctx):
 		'''
 		Ask 8ball a yes or no question
 		Also triggers on :8ball: without prefix
@@ -649,7 +649,7 @@ class Games:
 	
 	@commands.group(aliases = ["hrmp"], hidden = True)
 	@checks.not_forbidden()
-	async def harmonopoly(self):
+	async def harmonopoly(self, ctx):
 		'''
 		WIP
 		Harmonopoly is a game based on The Centipede Game where every player chooses a number.
@@ -815,7 +815,7 @@ class Games:
 	
 	@commands.group()
 	@checks.not_forbidden()
-	async def poker(self):
+	async def poker(self, ctx):
 		'''WIP'''
 		...
 	
@@ -989,7 +989,7 @@ class Games:
 	
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
 	@checks.not_forbidden()
-	async def rps(self, object : str):
+	async def rps(self, ctx, object : str):
 		'''Rock paper scissors'''
 		if object.lower() not in ('r', 'p', 's', "rock", "paper", "scissors"):
 			await self.bot.embed_reply(":no_entry: That's not a valid object")
@@ -1007,7 +1007,7 @@ class Games:
 	
 	@commands.command(aliases = ["rockpaperscissorslizardspock", "rock-paper-scissors-lizard-spock"])
 	@checks.not_forbidden()
-	async def rpsls(self, object : str):
+	async def rpsls(self, ctx, object : str):
 		'''
 		RPS lizard Spock
 		https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
@@ -1028,7 +1028,7 @@ class Games:
 	
 	@commands.command(aliases = ["rockpaperscissorslizardspockspidermanbatmanwizardglock", "rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"])
 	@checks.not_forbidden()
-	async def rpslssbwg(self, object : str):
+	async def rpslssbwg(self, ctx, object : str):
 		'''
 		RPSLS Spider-Man Batman wizard Glock
 		http://i.imgur.com/m9C2UTP.jpg
@@ -1058,7 +1058,7 @@ class Games:
 	
 	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"])
 	@checks.not_forbidden()
-	async def cfn(self, object : str):
+	async def cfn(self, ctx, object : str):
 		'''
 		Cockroach foot nuke
 		https://www.youtube.com/watch?v=wRi2j8k0vjo
@@ -1079,7 +1079,7 @@ class Games:
 	
 	@commands.command(aliases = ["extremerps", "rps-101", "rps101"])
 	@checks.not_forbidden()
-	async def erps(self, object : str):
+	async def erps(self, ctx, object : str):
 		'''
 		Extreme rock paper scissors
 		http://www.umop.com/rps101.htm
@@ -1135,7 +1135,7 @@ class Games:
 	
 	@commands.group(hidden = True)
 	@checks.not_forbidden()
-	async def taboo(self):
+	async def taboo(self, ctx):
 		'''WIP'''
 		return
 	
@@ -1152,7 +1152,7 @@ class Games:
 		await self.bot.send_message(taboo_players[1], ctx.message.author.name + " has started a game of Taboo with you.")
 	
 	@taboo.command(hidden = True, name = "nextround") # no_pm = True ?
-	async def taboo_nextround(self):
+	async def taboo_nextround(self, ctx):
 		'''WIP'''
 		if message.guild:
 			pass

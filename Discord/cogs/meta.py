@@ -139,7 +139,7 @@ class Meta:
 	
 	@commands.command()
 	@checks.is_owner()
-	async def benchmark(self):
+	async def benchmark(self, ctx):
 		'''Benchmark'''
 		process = psutil.Process()
 		memory = process.memory_info().rss / 2 ** 20
@@ -193,7 +193,7 @@ class Meta:
 	
 	@commands.command()
 	@checks.is_owner()
-	async def servers(self):
+	async def servers(self, ctx):
 		'''Every server I'm in'''
 		for guild in self.bot.guilds:
 			embed = discord.Embed(color = clients.bot_color)
@@ -258,7 +258,7 @@ class Meta:
 		await self.bot.say("Changelog (Harmonbot Server): {}".format(clients.changelog))
 	
 	@commands.command()
-	async def changelog(self):
+	async def changelog(self, ctx):
 		'''Link to changelog'''
 		await self.bot.reply(clients.changelog)
 	
@@ -269,7 +269,7 @@ class Meta:
 		"**Weight Unit Conversions**: {0}<unit>__to__<unit>\nunits: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]".format(ctx.prefix), title = "Conversion Commands")
 	
 	@commands.command(aliases = ["oauth"], hidden = True)
-	async def invite(self):
+	async def invite(self, ctx):
 		'''Link to invite me to a server'''
 		from clients import application_info
 		await self.bot.embed_reply(discord.utils.oauth_url(application_info.id))
@@ -322,14 +322,14 @@ class Meta:
 		await self.bot.send_message(ctx.message.channel, embed = embed)
 	
 	@commands.command()
-	async def uptime(self):
+	async def uptime(self, ctx):
 		'''Bot uptime'''
 		now = datetime.datetime.utcnow()
 		uptime = now - clients.online_time
 		await self.bot.embed_reply(utilities.secs_to_letter_format(uptime.total_seconds()))
 	
 	@commands.command()
-	async def version(self):
+	async def version(self, ctx):
 		'''Bot version'''
 		await self.bot.embed_reply("I am Harmonbot `v{}`".format(clients.version))
 	
@@ -343,7 +343,7 @@ class Meta:
 	
 	@commands.command(aliases = ["setavatar", "update_avatar", "set_avatar"])
 	@checks.is_owner()
-	async def updateavatar(self, filename : str):
+	async def updateavatar(self, ctx, filename : str):
 		'''Update my avatar'''
 		if not os.path.isfile("data/avatars/{}".format(filename)):
 			await self.bot.embed_reply(":no_entry: Avatar not found")
@@ -354,7 +354,7 @@ class Meta:
 	
 	@commands.command(aliases = ["random_game"], hidden = True)
 	@checks.not_forbidden()
-	async def randomgame(self):
+	async def randomgame(self, ctx):
 		'''Update to a random playing/game status message'''
 		await clients.random_game_status()
 		# await self.bot.embed_reply("I changed to a random game status")
@@ -422,7 +422,7 @@ class Meta:
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
-	async def update_discord_bots_stats(self):
+	async def update_discord_bots_stats(self, ctx):
 		'''Update stats on https://bots.discord.pw'''
 		response = await clients._update_discord_bots_stats()
 		await self.bot.reply(response)
@@ -440,7 +440,7 @@ class Meta:
 	
 	@commands.command(aliases = ["crash", "panic"])
 	@checks.is_owner()
-	async def shutdown(self):
+	async def shutdown(self, ctx):
 		'''Shut me down'''
 		await self.bot.embed_say(":scream: Shutting down.")
 		print("Forcing Shutdown...")
@@ -452,19 +452,19 @@ class Meta:
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
-	async def test(self):
+	async def test(self, ctx):
 		'''Basic test command'''
 		await self.bot.say("Hello, World!")
 	
 	@commands.group(aliases = ["code_block"], invoke_without_command = True)
 	@checks.not_forbidden()
-	async def codeblock(self, *, input : str):
+	async def codeblock(self, ctx, *, input : str):
 		'''Wrap your message in a code block'''
 		await self.bot.embed_reply(clients.code_block.format(input))
 	
 	@codeblock.command(name = "python", aliases = ["py"])
 	@checks.not_forbidden()
-	async def codeblock_python(self, *, input : str):
+	async def codeblock_python(self, ctx, *, input : str):
 		'''Wrap your message in a Python code block'''
 		await self.bot.embed_reply(clients.py_code_block.format(input))
 	
@@ -479,13 +479,13 @@ class Meta:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.is_owner()
-	async def echo(self, *, message):
+	async def echo(self, ctx, *, message):
 		'''Echoes the message'''
 		await self.bot.say(message)
 	
 	@echo.command(name = "embed")
 	@checks.is_owner()
-	async def echo_embed(self, *, message):
+	async def echo_embed(self, ctx, *, message):
 		'''Echoes the message in an embed'''
 		await self.bot.embed_say(message)
 	
@@ -514,7 +514,7 @@ class Meta:
 	
 	@commands.command(aliases = ["deletetest"])
 	@checks.is_owner()
-	async def delete_test(self):
+	async def delete_test(self, ctx):
 		'''Sends 100 messages'''
 		for i in range(1, 101):
 			await self.bot.say(str(i))
@@ -530,7 +530,7 @@ class Meta:
 	
 	@commands.command(aliases = ["repeattext"])
 	@checks.is_owner()
-	async def repeat_text(self, number : int, *, text):
+	async def repeat_text(self, ctx, number : int, *, text):
 		'''Repeat text'''
 		for _ in range(number):
 			await self.bot.say(text)
@@ -579,7 +579,7 @@ class Meta:
 	
 	@commands.command(aliases = ["github"])
 	@checks.not_forbidden()
-	async def source(self, command : str = None):
+	async def source(self, ctx, command : str = None):
 		'''
 		Displays my full source code or for a specific command
 		To display the source code of a subcommand you have to separate it by

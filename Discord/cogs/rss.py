@@ -34,7 +34,7 @@ class RSS:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
-	async def rss(self):
+	async def rss(self, ctx):
 		'''RSS'''
 		pass
 	

@@ -36,13 +36,13 @@ class Twitch:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
-	async def twitch(self):
+	async def twitch(self, ctx):
 		'''Twitch'''
 		pass
 	
 	@twitch.group(name = "add", invoke_without_command = True)
 	@checks.is_permitted()
-	async def twitch_add(self):
+	async def twitch_add(self, ctx):
 		'''Add Twitch games, keywords, or channels to follow'''
 		pass
 	
@@ -110,7 +110,7 @@ class Twitch:
 	
 	@twitch.group(name = "remove", aliases = ["delete"], invoke_without_command = True)
 	@checks.is_permitted()
-	async def twitch_remove(self):
+	async def twitch_remove(self, ctx):
 		'''Remove Twitch games, keywords, or channels being followed'''
 		pass
 	

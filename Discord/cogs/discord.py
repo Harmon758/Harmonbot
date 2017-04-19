@@ -402,7 +402,7 @@ class Discord:
 	
 	@commands.command(aliases = ["id_to_name"])
 	@checks.not_forbidden()
-	async def idtoname(self, id : str):
+	async def idtoname(self, ctx, id : str):
 		'''Convert user id to name'''
 		user = await self.bot.get_user_info(id)
 		if not user:

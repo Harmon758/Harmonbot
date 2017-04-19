@@ -50,7 +50,7 @@ class Tools:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def add(self, *numbers : float):
+	async def add(self, ctx, *numbers : float):
 		'''Add numbers together'''
 		if not numbers:
 			await self.bot.embed_reply("Add what?")
@@ -59,7 +59,7 @@ class Tools:
 	
 	@commands.command(aliases = ["calc", "calculator"])
 	@checks.not_forbidden()
-	async def calculate(self, *, equation : str):
+	async def calculate(self, ctx, *, equation : str):
 		'''Calculator'''
 		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
 		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
@@ -85,7 +85,7 @@ class Tools:
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
 	@checks.not_forbidden()
-	async def differentiate(self, *, equation : str):
+	async def differentiate(self, ctx, *, equation : str):
 		'''
 		Differentiate an equation
 		with respect to x (dx)
@@ -98,7 +98,7 @@ class Tools:
 	
 	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
 	@checks.not_forbidden()
-	async def integrate(self, *, equation : str):
+	async def integrate(self, ctx, *, equation : str):
 		'''
 		Integrate an equation
 		with respect to x (dx)
@@ -111,7 +111,7 @@ class Tools:
 	
 	@integrate.command(name = "definite")
 	@checks.not_forbidden()
-	async def integrate_definite(self, lower_limit : str, upper_limit : str, *, equation : str):
+	async def integrate_definite(self, ctx, lower_limit : str, upper_limit : str, *, equation : str):
 		'''
 		Definite integral of an equation
 		with respect to x (dx)
@@ -124,7 +124,7 @@ class Tools:
 	
 	@commands.command(aliases = ["charinfo", "char_info", "character_info"])
 	@checks.not_forbidden()
-	async def characterinfo(self, character : str):
+	async def characterinfo(self, ctx, character : str):
 		'''Information about a unicode character'''
 		character = character[0]
 		# TODO: return info on each character in the input string; use paste tool api?
@@ -138,7 +138,7 @@ class Tools:
 	
 	@commands.command(aliases = ["choice", "pick"])
 	@checks.not_forbidden()
-	async def choose(self, *choices : str):
+	async def choose(self, ctx, *choices : str):
 		'''
 		Randomly chooses between multiple options
 		choose <option1> <option2> <...>
@@ -150,18 +150,18 @@ class Tools:
 	
 	@commands.command(aliases = ["flip"])
 	@checks.not_forbidden()
-	async def coin(self):
+	async def coin(self, ctx):
 		'''Flip a coin'''
 		await self.bot.embed_reply(random.choice(["Heads!", "Tails!"]))
 	
 	@commands.group(aliases = ["decrpyt"])
 	@checks.not_forbidden()
-	async def decode(self):
+	async def decode(self, ctx):
 		'''Decodes coded messages'''
 		return
 	
 	@decode.group(name = "caesar", aliases = ["rot"], invoke_without_command = True)
-	async def decode_caesar(self, key : int, *, message : str):
+	async def decode_caesar(self, ctx, key : int, *, message : str):
 		'''
 		Decodes caesar codes
 		key: 0 - 26
@@ -172,12 +172,12 @@ class Tools:
 		await self.bot.embed_reply(ciphers.decode_caesar(message, key))
 	
 	@decode_caesar.command(name = "brute")
-	async def decode_caesar_brute(self, message : str):
+	async def decode_caesar_brute(self, ctx, message : str):
 		'''Brute force decode caesar code'''
 		await self.bot.embed_reply(ciphers.brute_force_caesar(message))
 	
 	@decode.group(name = "gost", aliases = ["гост"])
-	async def decode_gost(self):
+	async def decode_gost(self, ctx):
 		'''
 		Russian Federation/Soviet Union GOST
 		Межгосударственный стандарт
@@ -187,7 +187,7 @@ class Tools:
 		...
 	
 	@decode_gost.group(name = "28147-89", aliases = ["магма", "magma"])
-	async def decode_gost_28147_89(self):
+	async def decode_gost_28147_89(self, ctx):
 		'''
 		GOST 28147-89 block cipher
 		Also known as Магма or Magma
@@ -197,7 +197,7 @@ class Tools:
 		...
 	
 	@decode_gost_28147_89.command(name = "cbc")
-	async def ddecode_gost_28147_89_cbc(self, key : str, *, data : str):
+	async def ddecode_gost_28147_89_cbc(self, ctx, key : str, *, data : str):
 		'''Magma with CBC mode of operation'''
 		try:
 			await self.bot.embed_reply(pygost.gost28147.cbc_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
@@ -205,7 +205,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@decode_gost_28147_89.command(name = "cfb")
-	async def decode_gost_28147_89_cfb(self, key : str, *, data : str):
+	async def decode_gost_28147_89_cfb(self, ctx, key : str, *, data : str):
 		'''Magma with CFB mode of operation'''
 		try:
 			await self.bot.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
@@ -213,7 +213,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@decode_gost_28147_89.command(name = "cnt")
-	async def decode_gost_28147_89_cnt(self, key : str, *, data : str):
+	async def decode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
 		'''Magma with CNT mode of operation'''
 		try:
 			await self.bot.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
@@ -221,7 +221,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@decode_gost_28147_89.command(name = "ecb")
-	async def decode_gost_28147_89_ecb(self, key : str, *, data : str):
+	async def decode_gost_28147_89_ecb(self, ctx, key : str, *, data : str):
 		'''
 		Magma with ECB mode of operation
 		data block size must be 8 (64-bit)
@@ -233,7 +233,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@decode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
-	async def decode_gost_34_12_2015(self, key : str, *, data : str):
+	async def decode_gost_34_12_2015(self, ctx, key : str, *, data : str):
 		'''
 		GOST 34.12-2015 128-bit block cipher
 		Also known as Кузнечик or Kuznyechik
@@ -249,7 +249,7 @@ class Tools:
 		await self.bot.embed_reply(pygost.gost3412.GOST3412Kuz(key.encode("utf-8")).decrypt(bytearray.fromhex(data)).decode("utf-8"))
 	
 	@decode.command(name = "morse")
-	async def decode_morse(self, *, message : str):
+	async def decode_morse(self, ctx, *, message : str):
 		'''Decodes morse code'''
 		await self.bot.embed_reply(ciphers.decode_morse(message))
 	
@@ -283,23 +283,23 @@ class Tools:
 		await self.bot.embed_reply(decoded)
 	
 	@decode.command(name = "reverse")
-	async def decode_reverse(self, *, message : str):
+	async def decode_reverse(self, ctx, *, message : str):
 		'''Reverses text'''
 		await self.bot.embed_reply(message[::-1])
 	
 	@commands.group(aliases = ["encrypt"])
 	@checks.not_forbidden()
-	async def encode(self):
+	async def encode(self, ctx):
 		'''Encode messages'''
 		return
 	
 	@encode.command(name = "adler32", aliases = ["adler-32"])
-	async def encode_adler32(self, *, message : str):
+	async def encode_adler32(self, ctx, *, message : str):
 		'''Compute Adler-32 checksum'''
 		await self.bot.embed_reply(zlib.adler32(message.encode("utf-8")))
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
-	async def encode_caesar(self, key : int, *, message : str):
+	async def encode_caesar(self, ctx, key : int, *, message : str):
 		'''
 		Encode a message using caesar code
 		key: 0 - 26
@@ -310,12 +310,12 @@ class Tools:
 		await self.bot.embed_reply(ciphers.encode_caesar(message, key))
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
-	async def encode_crc32(self, *, message : str):
+	async def encode_crc32(self, ctx, *, message : str):
 		'''Compute CRC32 checksum'''
 		await self.bot.embed_reply(zlib.crc32(message.encode("utf-8")))
 	
 	@encode.group(name = "gost", aliases = ["гост"])
-	async def encode_gost(self):
+	async def encode_gost(self, ctx):
 		'''
 		Russian Federation/Soviet Union GOST
 		Межгосударственный стандарт
@@ -325,7 +325,7 @@ class Tools:
 		...
 	
 	@encode_gost.group(name = "28147-89", aliases = ["магма", "magma"])
-	async def encode_gost_28147_89(self):
+	async def encode_gost_28147_89(self, ctx):
 		'''
 		GOST 28147-89 block cipher
 		Also known as Магма or Magma
@@ -335,7 +335,7 @@ class Tools:
 		...
 	
 	@encode_gost_28147_89.command(name = "cbc")
-	async def encode_gost_28147_89_cbc(self, key : str, *, data : str):
+	async def encode_gost_28147_89_cbc(self, ctx, key : str, *, data : str):
 		'''Magma with CBC mode of operation'''
 		try:
 			await self.bot.embed_reply(pygost.gost28147.cbc_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
@@ -343,7 +343,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost_28147_89.command(name = "cfb")
-	async def encode_gost_28147_89_cfb(self, key : str, *, data : str):
+	async def encode_gost_28147_89_cfb(self, ctx, key : str, *, data : str):
 		'''Magma with CFB mode of operation'''
 		try:
 			await self.bot.embed_reply(pygost.gost28147.cfb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
@@ -351,7 +351,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost_28147_89.command(name = "cnt")
-	async def encode_gost_28147_89_cnt(self, key : str, *, data : str):
+	async def encode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
 		'''Magma with CNT mode of operation'''
 		try:
 			await self.bot.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), data.encode("utf-8")).hex())
@@ -359,7 +359,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost_28147_89.command(name = "ecb")
-	async def encode_gost_28147_89_ecb(self, key : str, *, data : str):
+	async def encode_gost_28147_89_ecb(self, ctx, key : str, *, data : str):
 		'''
 		Magma with ECB mode of operation
 		data block size must be 8 (64-bit)
@@ -371,7 +371,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost_28147_89.command(name = "mac")
-	async def encode_gost_28147_89_mac(self, key : str, *, data : str):
+	async def encode_gost_28147_89_mac(self, ctx, key : str, *, data : str):
 		'''Magma with MAC mode of operation'''
 		try:
 			mac = pygost.gost28147_mac.MAC(key = key.encode("utf-8"))
@@ -381,7 +381,7 @@ class Tools:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost.group(name = "34.11-2012", aliases = ["стрибог", "streebog"])
-	async def encode_gost_34_11_2012(self):
+	async def encode_gost_34_11_2012(self, ctx):
 		'''
 		GOST 34.11-2012 hash function
 		Also known as Стрибог or Streebog
@@ -390,7 +390,7 @@ class Tools:
 		...
 	
 	@encode_gost_34_11_2012.command(name = "256")
-	async def encode_gost_34_11_2012_256(self, *, data : str):
+	async def encode_gost_34_11_2012_256(self, ctx, *, data : str):
 		'''
 		GOST 34.11-2012 256-bit hash function
 		Also known as Streebog-256
@@ -398,7 +398,7 @@ class Tools:
 		await self.bot.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 32).hexdigest())
 	
 	@encode_gost_34_11_2012.command(name = "512")
-	async def encode_gost_34_11_2012_512(self, *, data : str):
+	async def encode_gost_34_11_2012_512(self, ctx, *, data : str):
 		'''
 		GOST 34.11-2012 512-bit hash function
 		Also known as Streebog-512
@@ -406,12 +406,12 @@ class Tools:
 		await self.bot.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 64).hexdigest())
 	
 	@encode_gost.command(name = "34.11-94")
-	async def encode_gost_34_11_94(self, *, data : str):
+	async def encode_gost_34_11_94(self, ctx, *, data : str):
 		'''GOST 34.11-94 hash function'''
 		await self.bot.embed_reply(pygost.gost341194.GOST341194(data.encode("utf-8")).hexdigest())
 	
 	@encode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
-	async def encode_gost_34_12_2015(self, key : str, *, data : str):
+	async def encode_gost_34_12_2015(self, ctx, key : str, *, data : str):
 		'''
 		GOST 34.12-2015 128-bit block cipher
 		Also known as Кузнечик or Kuznyechik
@@ -427,67 +427,67 @@ class Tools:
 		await self.bot.embed_reply(pygost.gost3412.GOST3412Kuz(key.encode("utf-8")).encrypt(data.encode("utf-8")).hex())
 	
 	@encode.command(name = "md4")
-	async def encode_md4(self, *, message : str):
+	async def encode_md4(self, ctx, *, message : str):
 		'''Generate MD4 hash'''
 		h = hashlib.new("md4")
 		h.update(message.encode("utf-8"))
 		await self.bot.embed_reply(h.hexdigest())
 	
 	@encode.command(name = "md5")
-	async def encode_md5(self, *, message : str):
+	async def encode_md5(self, ctx, *, message : str):
 		'''Generate MD5 hash'''
 		await self.bot.embed_reply(hashlib.md5(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "morse")
-	async def encode_morse(self, *, message : str):
+	async def encode_morse(self, ctx, *, message : str):
 		'''Encode a message in morse code'''
 		await self.bot.embed_reply(ciphers.encode_morse(message))
 	
 	@encode.command(name = "qr")
-	async def encode_qr(self, *, message : str):
+	async def encode_qr(self, ctx, *, message : str):
 		'''Encode a message in a QR code'''
 		url = "https://api.qrserver.com/v1/create-qr-code/?data={}".format(message).replace(' ', '+')
 		await self.bot.embed_reply(None, image_url = url)
 	
 	@encode.command(name = "reverse")
-	async def encode_reverse(self, *, message : str):
+	async def encode_reverse(self, ctx, *, message : str):
 		'''Reverses text'''
 		await self.bot.embed_reply(message[::-1])
 	
 	@encode.command(name = "ripemd160", aliases = ["ripemd-160"])
-	async def encode_ripemd160(self, *, message : str):
+	async def encode_ripemd160(self, ctx, *, message : str):
 		'''Generate RIPEMD-160 hash'''
 		h = hashlib.new("ripemd160")
 		h.update(message.encode("utf-8"))
 		await self.bot.embed_reply(h.hexdigest())
 	
 	@encode.command(name = "sha1", aliases = ["sha-1"])
-	async def encode_sha1(self, *, message : str):
+	async def encode_sha1(self, ctx, *, message : str):
 		'''Generate SHA-1 hash'''
 		await self.bot.embed_reply(hashlib.sha1(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "sha224", aliases = ["sha-224"])
-	async def encode_sha224(self, *, message : str):
+	async def encode_sha224(self, ctx, *, message : str):
 		'''Generate SHA-224 hash'''
 		await self.bot.embed_reply(hashlib.sha224(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "sha256", aliases = ["sha-256"])
-	async def encode_sha256(self, *, message : str):
+	async def encode_sha256(self, ctx, *, message : str):
 		'''Generate SHA-256 hash'''
 		await self.bot.embed_reply(hashlib.sha256(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "sha384", aliases = ["sha-384"])
-	async def encode_sha384(self, *, message : str):
+	async def encode_sha384(self, ctx, *, message : str):
 		'''Generate SHA-384 hash'''
 		await self.bot.embed_reply(hashlib.sha384(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "sha512", aliases = ["sha-512"])
-	async def encode_sha512(self, *, message : str):
+	async def encode_sha512(self, ctx, *, message : str):
 		'''Generate SHA-512 hash'''
 		await self.bot.embed_reply(hashlib.sha512(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "whirlpool")
-	async def encode_whirlpool(self, *, message : str):
+	async def encode_whirlpool(self, ctx, *, message : str):
 		'''Generate Whirlpool hash'''
 		h = hashlib.new("whirlpool")
 		h.update(message.encode("utf-8"))
@@ -631,7 +631,7 @@ class Tools:
 	# TODO: rename, aliases
 	
 	@tag.group(name = "global", invoke_without_command = True)
-	async def tag_global(self):
+	async def tag_global(self, ctx):
 		'''Global tags'''
 		...
 	
