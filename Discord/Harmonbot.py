@@ -188,7 +188,8 @@ if __name__ == "__main__":
 				return
 		
 		# Commands
-		await client.process_commands(message)
+		ctx = await client.get_context(message, cls = clients.Context)
+		await client.invoke(ctx)
 		
 		# Forward DMs
 		if isinstance(message.channel, discord.DMChannel) and message.channel.user.id != clients.owner_id:

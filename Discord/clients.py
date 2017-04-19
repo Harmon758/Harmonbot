@@ -83,76 +83,13 @@ elif os.path.isfile("data/aiml/std-startup.xml"):
 
 class Bot(commands.Bot):
 	
-	def reply(self, content, *args, **kwargs):
-		author = commands.bot._get_variable('_internal_author')
-		destination = commands.bot._get_variable('_internal_channel')
-		fmt = '{0.display_name}: {1}'.format(author, str(content)) # , -> :
-		extensions = ('delete_after',)
-		params = {k: kwargs.pop(k, None) for k in extensions}
-		coro = self.send_message(destination, fmt, *args, **kwargs)
-		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
-	
-	def embed_reply(self, content, *args, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, fields = [], **kwargs):
-		author = commands.bot._get_variable('_internal_author')
-		destination = commands.bot._get_variable('_internal_channel')
-		embed = discord.Embed(description = str(content) if content else None, title = title, url = title_url, timestamp = timestamp, color = bot_color)
-		embed.set_author(name = author.display_name, icon_url = author.avatar_url or author.default_avatar_url)
-		if image_url: embed.set_image(url = image_url)
-		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
-		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
-		for field_name, field_value in fields:
-			embed.add_field(name = field_name, value = field_value)
-		extensions = ('delete_after',)
-		params = {k: kwargs.pop(k, None) for k in extensions}
-		coro = self.send_message(destination, embed = embed, *args, **kwargs)
-		if destination.is_private or getattr(destination.permissions_for(destination.server.me), "embed_links", None):
-			return self._augmented_msg(coro, embed = embed, **params)
-		elif not (title or title_url or image_url or thumbnail_url or footer_text or timestamp):
-			fmt = '{0.display_name}: {1}'.format(author, str(content))
-			coro = self.send_message(destination, fmt, *args, **kwargs)
-			return self._augmented_msg(coro, **params)
-		else:
-			permissions = ["embed_links"]
-			raise errors.MissingCapability(permissions)
-	
-	def say(self, *args, **kwargs):
-		destination = commands.bot._get_variable('_internal_channel')
-		extensions = ('delete_after',)
-		params = {k: kwargs.pop(k, None) for k in extensions}
-		coro = self.send_message(destination, *args, **kwargs)
-		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
-	
-	def embed_say(self, *args, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, fields = [], **kwargs):
-		destination = commands.bot._get_variable('_internal_channel')
-		embed = discord.Embed(description = str(args[0]) if args[0] else None, title = title, url = title_url, timestamp = timestamp, color = bot_color)
-		# TODO: add author_name and author_icon_url
-		if image_url: embed.set_image(url = image_url)
-		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
-		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
-		for field_name, field_value in fields:
-			embed.add_field(name = field_name, value = field_value)
-		extensions = ('delete_after',)
-		params = {k: kwargs.pop(k, None) for k in extensions}
-		coro = self.send_message(destination, embed = embed, *args[1:], **kwargs)
-		return self._augmented_msg(coro, embed = embed, **params)
-	
-	def whisper(self, *args, **kwargs):
-		destination = commands.bot._get_variable('_internal_author')
-		extensions = ('delete_after',)
-		params = {k: kwargs.pop(k, None) for k in extensions}
-		coro = self.send_message(destination, *args, **kwargs)
-		return self._augmented_msg(coro, embed = kwargs.get("embed"), **params) # embed
-	
-	def embed_whisper(self, *args, **kwargs):
-		destination = commands.bot._get_variable('_internal_author')
-		embed = discord.Embed(description = args[0], color = bot_color)
-		extensions = ('delete_after',)
-		params = {k: kwargs.pop(k, None) for k in extensions}
-		coro = self.send_message(destination, embed = embed, *args[1:], **kwargs)
-		return self._augmented_msg(coro, embed = embed, **params)
-	
-	def send_embed(self, destination, content, title = discord.Embed.Empty, title_url = discord.Embed.Empty, image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, timestamp = discord.Embed.Empty, fields = []):
-		embed = discord.Embed(description = str(content) if content else None, title = title, url = title_url, timestamp = timestamp, color = bot_color)
+	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
+	author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
+	image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
+	timestamp = discord.Embed.Empty, fields = []):
+		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = bot_color)
+		embed.description = str(description) if description else discord.Embed.Empty
+		if author_name: embed.set_author(name = author_name, url = author_url, icon_url = author_icon_url)
 		if image_url: embed.set_image(url = image_url)
 		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
 		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
@@ -160,28 +97,44 @@ class Bot(commands.Bot):
 			embed.add_field(name = field_name, value = field_value)
 		return self.send_message(destination, embed = embed)
 	
-	async def _augmented_msg(self, coro, **kwargs):
-		msg = await coro
-		delete_after = kwargs.get('delete_after')
-		if delete_after is not None:
-			async def delete():
-				await asyncio.sleep(delete_after)
-				await self.delete_message(msg)
-
-			discord.compat.create_task(delete(), loop=self.loop)
-		# return embed
-		embed = kwargs.get("embed")
-		return msg, embed
-	
 	async def attempt_delete_message(self, message):
 		try:
 			await self.delete_message(message)
-		except discord.errors.Forbidden:
-			pass
-		except discord.errors.NotFound:
+		except (discord.errors.Forbidden, discord.errors.NotFound):
 			pass
 	
 	# TODO: Case-Insenstivie commands + subcommands
+
+class Context(commands.Context):
+	
+	def embed_reply(self, *args, **kwargs):
+		return self.embed_say(*args, author_name = self.author.display_name, author_icon_url = self.author.avatar_url or self.author.default_avatar_url, **kwargs)
+	
+	def embed_say(self, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
+	author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
+	image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
+	timestamp = discord.Embed.Empty, fields = [], **kwargs):
+		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = bot_color)
+		embed.description = str(description) if description else discord.Embed.Empty
+		if author_name: embed.set_author(name = author_name, url = author_url, icon_url = author_icon_url)
+		if image_url: embed.set_image(url = image_url)
+		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
+		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
+		for field_name, field_value in fields:
+			embed.add_field(name = field_name, value = field_value)
+		if isinstance(self.channel, discord.DMChannel) or getattr(self.channel.permissions_for(self.channel.guild.me), "embed_links", None):
+			return self.send(embed = embed, **kwargs)
+		elif not (title or title_url or image_url or thumbnail_url or footer_text or footer_icon_url or timestamp or fields):
+			return self.reply(description)
+			# TODO: Check for everyone/here mentions
+		else:
+			raise errors.MissingCapability(["embed_links"])
+	
+	def reply(self, content, *args, **kwargs):
+		return self.send("{0.display_name}: {1}".format(self.author, str(content)), **kwargs)
+	
+	def whisper(self, *args, **kwargs):
+		return self.author.send(*args, **kwargs)
 
 
 # Create Folders
