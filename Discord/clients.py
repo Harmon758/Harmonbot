@@ -23,7 +23,7 @@ from modules import utilities
 from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
 
-version = "0.35.0-10.27"
+version = "0.35.0"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
 owner_id = "115691005197549570"
@@ -272,11 +272,10 @@ def get_prefix(bot, message):
 	return prefixes if prefixes else '!'
 
 
-# Customize help command
+# Initialize client + Customize help command
 
-_CustomHelpFormatter = CustomHelpFormatter()
-
-client = Bot(command_prefix = get_prefix, formatter = _CustomHelpFormatter, pm_help = None)
+custom_help_formatter = CustomHelpFormatter()
+client = Bot(command_prefix = get_prefix, formatter = custom_help_formatter)
 client.remove_command("help")
 
 

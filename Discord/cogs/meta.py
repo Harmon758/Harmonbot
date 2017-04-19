@@ -2,10 +2,12 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
+from discord.ext.commands.formatter import Paginator
 
 import asyncio
 import datetime
 import copy
+import difflib
 import inspect
 import json
 import os
@@ -28,66 +30,83 @@ class Meta:
 	def __init__(self, bot):
 		self.bot = bot
 		utilities.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
+		self.command_not_found = "No command called `{}` found"
 	
 	@commands.group(aliases = ["commands"], hidden = True, pass_context = True, invoke_without_command = True)
+	@checks.dm_or_has_capability("embed_links")
 	async def help(self, ctx, *commands : str):
-		'''Shows this message.'''
-		bot = ctx.bot
-		destination = ctx.message.author if bot.pm_help else ctx.message.channel
+		'''
+		Shows this message
+		Note: If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
+		'''
+		if len(commands) == 0:
+			embed = discord.Embed(title = "Categories", color = clients.bot_color)
+			avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+			embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+			embed.description = "  ".join("__{}__".format(category) for category in sorted(self.bot.cogs, key = str.lower))
+			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
+			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with)) # stats?
+			embed.add_field(name = "For all commands:", value = "`{}{} all`".format(ctx.prefix, ctx.invoked_with), inline = False)
+			await self.bot.say(embed = embed)
+			return
 		
 		def repl(obj):
 			return _mentions_transforms.get(obj.group(0), '')
 		
-		# help by itself just lists our own commands.
-		if len(commands) == 0:
-			pages = bot.formatter.format_help_for(ctx, "categories")
-		elif commands[0] == "all":
-			pages = bot.formatter.format_help_for(ctx, bot)
-		elif len(commands) == 1:
-			# try to see if it is a cog name
+		if len(commands) == 1:
 			name = _mention_pattern.sub(repl, commands[0])
-			command = None
-			if name in bot.cogs or (name not in bot.commands and name.capitalize() in bot.cogs):
-				command = bot.cogs[name.capitalize()]
+			if name in self.bot.cogs:
+				command = self.bot.cogs[name]
+			elif name.lower() in self.bot.commands:
+				command = self.bot.commands[name.lower()]
+			elif name.lower() in [cog.lower() for cog in self.bot.cogs.keys()]: # more efficient way?
+				command = discord.utils.find(lambda c: c[0].lower() == name.lower(), self.bot.cogs.items())[1]
 			else:
-				command = bot.commands.get(name)
-				if command is None:
-					await bot.send_message(destination, bot.command_not_found.format(name))
-					return
-			
-			pages = bot.formatter.format_help_for(ctx, command)
+				output = self.command_not_found.format(name)
+				close_matches = difflib.get_close_matches(name, self.bot.commands.keys(), n = 1)
+				if close_matches:
+					output += "\nDid you mean `{}`?".format(close_matches[0])
+				await self.bot.embed_reply(output)
+				return
+			embeds = self.bot.formatter.format_help_for(ctx, command)
 		else:
 			name = _mention_pattern.sub(repl, commands[0])
-			command = bot.commands.get(name)
+			command = self.bot.commands.get(name)
 			if command is None:
-				await bot.send_message(destination, bot.command_not_found.format(name))
+				await self.bot.embed_reply(self.command_not_found.format(name))
 				return
-			
 			for key in commands[1:]:
 				try:
 					key = _mention_pattern.sub(repl, key)
 					command = command.commands.get(key)
 					if command is None:
-						await bot.send_message(destination, bot.command_not_found.format(key))
+						await self.bot.embed_reply(self.command_not_found.format(key))
 						return
 				except AttributeError:
-					await bot.send_message(destination, bot.command_has_no_subcommands.format(command, key))
+					await self.bot.embed_reply("`{}` command has no subcommands".format(command.name))
 					return
-			
-			pages = bot.formatter.format_help_for(ctx, command)
+			embeds = self.bot.formatter.format_help_for(ctx, command)
 		
-		if bot.pm_help is None:
-			characters = sum(map(lambda l: len(l), pages))
-			# modify destination based on length of pages.
-			if characters > 1000:
-				destination = ctx.message.author
-		
-		if destination == ctx.message.author and not ctx.message.channel.is_private:
-			await bot.reply("Check your DMs.")
-		
-		for page in pages:
-			# yield from bot.send_message(destination, page)
-			await bot.send_message(destination, page)
+		if len(embeds) > 1:
+			destination = ctx.message.author
+			if not ctx.message.channel.is_private:
+				await self.bot.embed_reply("Check your DMs")
+		else:
+			destination = ctx.message.channel
+		for embed in embeds:
+			if destination == ctx.message.channel:
+				avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+			await self.bot.send_message(destination, embed = embed)
+	
+	@help.command(name = "all", pass_context = True)
+	async def help_all(self, ctx):
+		'''All commands'''
+		embeds = self.bot.formatter.format_help_for(ctx, self.bot)
+		for embed in embeds:
+			await self.bot.whisper(embed = embed)
+		if not ctx.message.channel.is_private:
+			await self.bot.embed_reply("Check your DMs")
 	
 	@help.command(name = "other", pass_context = True)
 	async def help_other(self, ctx):
@@ -109,6 +128,7 @@ class Meta:
 	@checks.is_owner()
 	async def allcommands(self, ctx):
 		'''All the commands'''
+		# TODO: Fix/Deprecate?, all_commands alias
 		formatter = commands.HelpFormatter(show_check_failure = True, show_hidden = True)
 		formatter.format_help_for(ctx, self.bot)
 		_commands = formatter.filter_command_list()
