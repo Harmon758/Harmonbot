@@ -61,13 +61,13 @@ class AudioPlayer:
 				utilities.remove_symbols(_channel.name).startswith(' '.join(channel)), self.server.channels)
 		if not voice_channel:
 			raise errors.AudioNotPlaying
-		if self.bot.is_voice_connected(self.server):
+		if self.server.voice_client:
 			await self.server.voice_client.move_to(voice_channel)
 			return True
 		await self.bot.join_voice_channel(voice_channel)
 	
 	async def leave_channel(self):
-		if self.bot.is_voice_connected(self.server):
+		if self.server.voice_client:
 			if self.current and self.current["stream"].is_playing():
 				self.current["stream"].stop()
 			self.player.cancel()
@@ -334,7 +334,7 @@ class AudioPlayer:
 			else:
 				paused = True
 			self.not_interrupted.clear()
-			while self.bot.is_voice_connected(self.server) and self.library_flag:
+			while self.server.voice_client and self.library_flag:
 				await self.play_from_library("", requester, timestamp, clear_flag = False)
 				await asyncio.sleep(0.1) # wait to check
 			self.not_interrupted.set()
@@ -412,7 +412,7 @@ class AudioPlayer:
 				paused = False
 			else:
 				paused = True
-			while self.bot.is_voice_connected(self.server) and self.radio_flag:
+			while self.server.voice_client and self.radio_flag:
 				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, credentials.google_apikey)
 				async with clients.aiohttp_session.get(url) as resp:
 					data = await resp.json()

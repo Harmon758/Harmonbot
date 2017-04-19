@@ -36,7 +36,7 @@ def is_server_owner():
 	return commands.check(predicate)
 
 def is_voice_connected_check(ctx):
-	return ctx.guild and client.is_voice_connected(ctx.guild)
+	return ctx.guild and ctx.guild.voice_client
 
 def is_voice_connected():
 	
