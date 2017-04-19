@@ -69,7 +69,7 @@ class Games:
 			self.adventure_players[user_id] = player
 		return player
 	
-	@adventure.group(name = "stats", aliases = ["stat", "levels", "level", "lvls", "lvl"], pass_context = True, invoke_without_command = True)
+	@adventure.group(name = "stats", aliases = ["stat", "levels", "level", "lvls", "lvl"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def adventure_stats(self, ctx):
 		'''Stats'''
@@ -80,7 +80,7 @@ class Games:
 		"\n:evergreen_tree: Woodcutting xp: {} (Level {})".format(player.fishing_xp, player.fishing_lvl, player.foraging_xp, player.foraging_lvl, player.mining_xp, player.mining_lvl, player.woodcutting_xp, player.woodcutting_lvl))
 		# time started/played
 	
-	@adventure_stats.command(name = "woodcutting", aliases = ["wc"], pass_context = True)
+	@adventure_stats.command(name = "woodcutting", aliases = ["wc"])
 	@checks.not_forbidden()
 	async def stats_woodcutting(self, ctx):
 		'''Woodcutting stats'''
@@ -88,7 +88,7 @@ class Games:
 		woodcutting_xp = player.woodcutting_xp
 		await self.bot.embed_reply("\n:evergreen_tree: Woodcutting xp: {}\n{}\n{} xp to next level".format(woodcutting_xp, self.level_bar(woodcutting_xp), adventure.xp_left_to_next_lvl(woodcutting_xp)))
 	
-	@adventure_stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"], pass_context = True)
+	@adventure_stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"])
 	@checks.not_forbidden()
 	async def stats_foraging(self, ctx):
 		'''Foraging stats'''
@@ -105,7 +105,7 @@ class Games:
 		bar = chr(9632) * shaded + chr(9633) * (10 - shaded)
 		return "Level {0} ({3} xp) [{2}] Level {1} ({4} xp)".format(lvl, lvl + 1, bar, previous_xp, next_xp)
 	
-	@adventure.command(name = "inventory", pass_context = True)
+	@adventure.command(name = "inventory")
 	@checks.not_forbidden()
 	async def adventure_inventory(self, ctx, *, item : str = ""):
 		'''Inventory'''
@@ -116,7 +116,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(", ".join(["{}: {}".format(item, amount) for item, amount in sorted(inventory.items())]))
 	
-	@adventure.command(name = "examine", pass_context = True)
+	@adventure.command(name = "examine")
 	@checks.not_forbidden()
 	async def adventure_examine(self, ctx, *, item : str):
 		'''Examine items'''
@@ -130,7 +130,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: You don't have that item")
 	
-	@adventure.group(name = "forage", aliases = ["gather"], pass_context = True, invoke_without_command = True)
+	@adventure.group(name = "forage", aliases = ["gather"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def adventure_forage(self, ctx, *, item : str = ""):
 		'''Foraging'''
@@ -154,7 +154,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: You're currently {}! You can't start/stop foraging right now".format(started))
 	
-	@adventure_forage.command(name = "start", aliases = ["on"], pass_context = True)
+	@adventure_forage.command(name = "start", aliases = ["on"])
 	@checks.not_forbidden()
 	async def forage_start(self, ctx, *, item : str):
 		'''Start foraging'''
@@ -168,7 +168,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: You're currently {}! You can't start foraging right now".format(started))
 	
-	@adventure_forage.command(name = "stop", aliases = ["off"], pass_context = True)
+	@adventure_forage.command(name = "stop", aliases = ["off"])
 	@checks.not_forbidden()
 	async def forage_stop(self, ctx):
 		'''Stop foraging'''
@@ -190,7 +190,7 @@ class Games:
 		'''Forageable items'''
 		await self.bot.embed_reply(", ".join(adventure.forageables.keys()))
 	
-	@adventure.command(name = "create", aliases = ["make", "craft"], pass_context = True)
+	@adventure.command(name = "create", aliases = ["make", "craft"])
 	@checks.not_forbidden()
 	async def adventure_create(self, ctx, *items : str):
 		'''
@@ -207,7 +207,7 @@ class Games:
 		else:
 			await self.bot.embed_reply("You have created {}".format(created))
 	
-	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], pass_context = True, invoke_without_command = True)
+	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def adventure_woodcutting(self, ctx, *, wood_type : str = ""):
 		'''Woodcutting'''
@@ -228,7 +228,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: You're currently {}! You can't start/stop woodcutting right now".format(started))
 	
-	@adventure_woodcutting.command(name = "start", aliases = ["on"], pass_context = True)
+	@adventure_woodcutting.command(name = "start", aliases = ["on"])
 	@checks.not_forbidden()
 	async def woodcutting_start(self, ctx, *, wood_type : str):
 		'''Start chopping wood'''
@@ -274,7 +274,7 @@ class Games:
 				await self.bot.embed_reply("\n:stop_sign: You have stopped actively chopping {}".format(wood_type))
 			await self.bot.delete_message(prompt_message)
 	
-	@adventure_woodcutting.command(name = "stop", aliases = ["off"], pass_context = True)
+	@adventure_woodcutting.command(name = "stop", aliases = ["off"])
 	@checks.not_forbidden()
 	async def woodcutting_stop(self, ctx):
 		'''Stop chopping wood'''
@@ -293,7 +293,7 @@ class Games:
 		'''Types of wood'''
 		await self.bot.embed_reply(", ".join(adventure.wood_types))
 	
-	@adventure_woodcutting.command(name = "rate", aliases = ["rates"], pass_context = True)
+	@adventure_woodcutting.command(name = "rate", aliases = ["rates"])
 	@checks.not_forbidden()
 	async def woodcutting_rate(self, ctx, *, wood_type : str):
 		'''Rate of chopping certain wood'''
@@ -305,7 +305,7 @@ class Games:
 	
 	# Not Adventure
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def blackjack(self, ctx):
 		'''Play a game of blackjack'''
@@ -357,7 +357,7 @@ class Games:
 			total += 10
 		return total
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def chess(self, ctx):
 		'''
@@ -383,7 +383,7 @@ class Games:
 			await self._update_chess_board_embed()
 		'''
 	
-	@chess.command(name = "play", aliases = ["start"], pass_context = True)
+	@chess.command(name = "play", aliases = ["start"])
 	@checks.not_forbidden()
 	async def chess_play(self, ctx, *, opponent : str = ""):
 		'''
@@ -446,7 +446,7 @@ class Games:
 	#dm
 	#check mate, etc.
 	
-	@chess.group(name = "board", aliases = ["match"], pass_context = True, invoke_without_command = True)
+	@chess.group(name = "board", aliases = ["match"], invoke_without_command = True)
 	async def chess_board(self, ctx):
 		'''Current match/board'''
 		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
@@ -455,7 +455,7 @@ class Games:
 			return
 		await match.new_match_embed()
 	
-	@chess_board.command(name = "text", pass_context = True)
+	@chess_board.command(name = "text")
 	async def chess_board_text(self, ctx):
 		'''Text version of the current board'''
 		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
@@ -464,7 +464,7 @@ class Games:
 			return
 		await self.bot.reply(clients.code_block.format(match))
 	
-	@chess.command(name = "fen", pass_context = True)
+	@chess.command(name = "fen")
 	async def chess_fen(self, ctx):
 		'''FEN of the current board'''
 		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
@@ -473,7 +473,7 @@ class Games:
 			return
 		await self.bot.embed_reply(match.fen())
 	
-	@chess.command(name = "pgn", pass_context = True, hidden = True)
+	@chess.command(name = "pgn", hidden = True)
 	async def chess_pgn(self, ctx):
 		'''PGN of the current game'''
 		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
@@ -482,7 +482,7 @@ class Games:
 			return
 		await self.bot.embed_reply(chess.pgn.Game.from_board(match))
 	
-	@chess.command(name = "turn", pass_context = True, hidden = True)
+	@chess.command(name = "turn", hidden = True)
 	async def chess_turn(self, ctx):
 		'''Who's turn it is to move'''
 		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
@@ -495,7 +495,7 @@ class Games:
 			await self.bot.embed_reply("It's black's turn to move")
 	
 	"""
-	@chess.command(name = "reset", pass_context = True)
+	@chess.command(name = "reset")
 	async def chess_reset(self, ctx):
 		'''Reset the board'''
 		self._chess_board.reset()
@@ -503,7 +503,7 @@ class Games:
 	"""
 	
 	"""
-	@chess.command(name = "undo", pass_context = True)
+	@chess.command(name = "undo")
 	async def chess_undo(self, ctx):
 		'''Undo the previous move'''
 		try:
@@ -513,7 +513,7 @@ class Games:
 			await self.bot.embed_reply(":no_entry: There are no more moves to undo")
 	"""
 	
-	@chess.command(name = "previous", aliases = ["last"], pass_context = True, hidden = True)
+	@chess.command(name = "previous", aliases = ["last"], hidden = True)
 	async def chess_previous(self, ctx):
 		'''Previous move'''
 		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
@@ -526,7 +526,7 @@ class Games:
 			await self.bot.embed_reply(":no_entry: There was no previous move")
 	
 	"""
-	@chess.command(name = "(╯°□°）╯︵", pass_context = True, hidden = True)
+	@chess.command(name = "(╯°□°）╯︵", hidden = True)
 	async def chess_flip(self, ctx):
 		'''Flip the table over'''
 		self._chess_board.clear()
@@ -564,13 +564,13 @@ class Games:
 		responses = ["It is certain", "It is decidedly so", "Without a doubt", "Yes, definitely", "You may rely on it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"]
 		return(random.choice(responses))
 	
-	@commands.group(hidden = True, pass_context = True)
+	@commands.group(hidden = True)
 	@checks.not_forbidden()
 	async def gofish(self, ctx):
 		'''WIP'''
 		return
 	
-	@gofish.command(hidden = True, name = "start", pass_context = True, no_pm = True)
+	@gofish.command(hidden = True, name = "start", no_pm = True)
 	@checks.is_owner()
 	async def gofish_start(self, ctx, *players : str):
 		'''WIP'''
@@ -589,19 +589,19 @@ class Games:
 			gofish_players_string += player.name + " and "
 		await self.bot.embed_reply("{} has started a game of Go Fish between {}!".format(message.author.display_name, gofish_players_string[:-5]))
 	
-	@gofish.command(hidden = True, name = "hand", pass_context = True)
+	@gofish.command(hidden = True, name = "hand")
 	async def gofish_hand(self, ctx):
 		'''WIP'''
 		if ctx.message.author in gofish_players:
 			await self.bot.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.message.author) + 1))
 	
-	@gofish.command(hidden = True, name = "ask", pass_context = True)
+	@gofish.command(hidden = True, name = "ask")
 	async def gofish_ask(self, ctx):
 		'''WIP'''
 		if ctx.message.author in gofish_players:
 			pass
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def guess(self, ctx, *options : str):
 		'''
@@ -658,7 +658,7 @@ class Games:
 		'''
 		pass
 	
-	@commands.group(invoke_without_command = True, pass_context = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def jeopardy(self, ctx, row_number : int, value : int):
 		'''
@@ -726,7 +726,7 @@ class Games:
 	
 	#jeopardy stats
 	
-	@jeopardy.command(name = "start", pass_context = True)
+	@jeopardy.command(name = "start")
 	async def jeopardy_start(self, ctx):
 		if self.jeopardy_active:
 			await self.bot.embed_reply(":no_entry: There's already a jeopardy game in progress")
@@ -751,7 +751,7 @@ class Games:
 			self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
 		await self.bot.embed_say(clients.code_block.format(self.jeopardy_board_output))
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def maze(self, ctx):
 		'''
@@ -761,7 +761,7 @@ class Games:
 		'''
 		await self.bot.embed_reply("See {}help maze".format(ctx.prefix))
 	
-	@maze.command(name = "start", aliases = ["begin"], pass_context = True)
+	@maze.command(name = "start", aliases = ["begin"])
 	@checks.not_forbidden()
 	async def maze_start(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
 		'''
@@ -802,7 +802,7 @@ class Games:
 		await self.bot.embed_reply("Congratulations! You reached the end of the maze in {} moves".format(maze_instance.move_counter))
 		del self.mazes[ctx.message.channel.id]
 	
-	@maze.command(name = "current", pass_context = True)
+	@maze.command(name = "current")
 	@checks.not_forbidden()
 	async def maze_current(self, ctx):
 		'''Current maze game'''
@@ -819,7 +819,7 @@ class Games:
 		'''WIP'''
 		...
 	
-	@poker.command(name = "start", pass_context = True)
+	@poker.command(name = "start")
 	async def poker_start(self, ctx):
 		if self.poker_status not in (None, "started"):
 			await self.bot.embed_reply("There's already a round of poker in progress")
@@ -881,7 +881,7 @@ class Games:
 			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 			await self.bot.embed_say("{} is the winner with a {}".format(player.mention, type))
 	
-	@poker.command(name = "join", pass_context = True)
+	@poker.command(name = "join")
 	async def poker_join(self, ctx):
 		if self.poker_status == "started":
 			self.poker_players.append(ctx.message.author)
@@ -892,7 +892,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: The current round of poker already started")
 	
-	@poker.command(name = "raise", pass_context = True)
+	@poker.command(name = "raise")
 	async def poker_raise(self, ctx, points : int):
 		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
 			if points > self.poker_current_bet:
@@ -909,7 +909,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: You can't do that right now")
 	
-	@poker.command(name = "call", pass_context = True)
+	@poker.command(name = "call")
 	async def poker_call(self, ctx):
 		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
 			if self.poker_current_bet == 0 or (self.poker_turn.id in self.poker_bets and self.poker_bets[self.poker_turn.id] == self.poker_current_bet):
@@ -922,7 +922,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: You can't do that right now")
 	
-	@poker.command(name = "check", pass_context = True)
+	@poker.command(name = "check")
 	async def poker_check(self, ctx):
 		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
 			if self.poker_current_bet != 0 and (self.poker_turn.id not in self.poker_bets or self.poker_bets[self.poker_turn.id] < self.poker_current_bet):
@@ -934,7 +934,7 @@ class Games:
 		else:
 			await self.bot.embed_reply(":no_entry: You can't do that right now.")
 	
-	@poker.command(name = "fold", pass_context = True)
+	@poker.command(name = "fold")
 	async def poker_fold(self, ctx):
 		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
 			self.poker_bets[self.poker_turn.id] = -1
@@ -961,7 +961,7 @@ class Games:
 				self.poker_pot += bet
 		self.poker_status = None
 	
-	@commands.command(aliases = ["rtg", "reactiontime", "reactiontimegame", "reaction_time_game"], pass_context = True)
+	@commands.command(aliases = ["rtg", "reactiontime", "reactiontimegame", "reaction_time_game"])
 	@checks.not_forbidden()
 	async def reaction_time(self, ctx):
 		'''Reaction time game'''
@@ -1139,7 +1139,7 @@ class Games:
 		'''WIP'''
 		return
 	
-	@taboo.command(hidden = True, name = "start", pass_context = True, no_pm = True)
+	@taboo.command(hidden = True, name = "start", no_pm = True)
 	async def taboo_start(self, ctx, player : str):
 		'''WIP'''
 		self.taboo_players.append(ctx.message.author)
@@ -1157,7 +1157,7 @@ class Games:
 		if message.guild:
 			pass
 	
-	@commands.group(invoke_without_command = True, pass_context = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def trivia(self, ctx, *options : str):
 		'''
@@ -1273,7 +1273,7 @@ class Games:
 	# if answer == data["q_correct_option"]:
 	# await self.bot.say("The answer was " + str(data["q_correct_option"]) + ". " + data["q_options_" + str(data["q_correct_option"])] + "\n" + correct_players_output)
 	
-	@trivia.command(name = "score", aliases = ["points", "rank", "level"], pass_context = True)
+	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
 	async def trivia_score(self, ctx):
 		'''Trivia score'''
 		correct = self.trivia_stats[ctx.message.author.id][0]
@@ -1281,13 +1281,13 @@ class Games:
 		correct_percentage = correct / (correct + incorrect) * 100
 		await self.bot.embed_reply("You have answered {}/{} ({:.2f}%) correctly.".format(correct, correct + incorrect, correct_percentage))
 	
-	@trivia.command(name = "money", aliases = ["cash"], pass_context = True)
+	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
 		cash = self.trivia_stats[ctx.message.author.id][2]
 		await self.bot.embed_reply("You have $" + utilities.add_commas(cash))
 	
-	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"], pass_context = True)
+	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
 	async def trivia_scores(self, ctx, number : int = 10):
 		'''Trivia scores'''
 		if number > 15: number = 15
@@ -1301,7 +1301,7 @@ class Games:
 			embed.add_field(name = user_info, value = "{}/{} correct ({:.2f}%)\n".format(correct, correct + incorrect, correct_percentage))
 			await self.bot.edit_message(response, embed = embed)
 	
-	@commands.group(pass_context = True)
+	@commands.group()
 	@checks.not_forbidden()
 	async def war(self, ctx):
 		'''
@@ -1310,7 +1310,7 @@ class Games:
 		'''
 		return
 	
-	@war.command(name = "start", pass_context = True, no_pm = True)
+	@war.command(name = "start", no_pm = True)
 	@checks.is_owner()
 	async def war_start(self, ctx, *players : str):
 		'''Start a game of War'''
@@ -1326,19 +1326,19 @@ class Games:
 			war_players_string += player.name + " and "
 		await self.bot.embed_reply("{} has started a game of War between {}!".format(ctx.message.author.display_name, war_players_string[:-5]))
 	
-	@war.command(name = "hand", pass_context = True)
+	@war.command(name = "hand")
 	async def war_hand(self, ctx):
 		'''See your current hand'''
 		if ctx.message.author in self.war_players:
 			await self.bot.whisper("Your hand: " + war.hand(self.war_players.index(ctx.message.author) + 1))
 	
-	@war.command(name = "left", pass_context = True)
+	@war.command(name = "left")
 	async def war_left(self, ctx):
 		'''See how many cards you have left'''
 		if ctx.message.author in self.war_players:
 			await self.bot.embed_reply("You have {} cards left".format(war.card_count(self.war_players.index(ctx.message.author) + 1)))
 	
-	@war.command(name = "play", pass_context = True)
+	@war.command(name = "play")
 	async def war_play(self, ctx, *card : str):
 		'''Play a card'''
 		if ctx.message.author in self.war_players:

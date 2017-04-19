@@ -253,7 +253,7 @@ class Tools:
 		'''Decodes morse code'''
 		await self.bot.embed_reply(ciphers.decode_morse(message))
 	
-	@decode.command(name = "qr", pass_context = True)
+	@decode.command(name = "qr")
 	async def decode_qr(self, ctx, file_url : str = ""):
 		'''
 		Decodes QR codes
@@ -493,7 +493,7 @@ class Tools:
 		h.update(message.encode("utf-8"))
 		await self.bot.embed_reply(h.hexdigest())
 	
-	@commands.group(aliases = ["plot"], pass_context = True, invoke_without_command = True)
+	@commands.group(aliases = ["plot"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):
 		'''WIP'''
@@ -529,7 +529,7 @@ class Tools:
 			string = string.replace(old, new)
 		return string
 	
-	@graph.command(name = "alternative", aliases = ["alt", "complex"], pass_context = True)
+	@graph.command(name = "alternative", aliases = ["alt", "complex"])
 	@checks.is_owner()
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
@@ -537,7 +537,7 @@ class Tools:
 		seaborn.jointplot(**eval(data)).savefig(name)
 		await self.bot.send_file(destination = ctx.message.channel, fp = filename, content = ctx.message.author.display_name + ':')
 	
-	@commands.group(pass_context = True, aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
+	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def tag(self, ctx, tag : str = ""):
 		'''Tags/notes that you can trigger later'''
@@ -556,7 +556,7 @@ class Tools:
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 			await self.bot.embed_reply("Tag not found{}".format(close_matches))
 	
-	@tag.command(name = "list", aliases = ["all", "mine"], pass_context = True)
+	@tag.command(name = "list", aliases = ["all", "mine"])
 	async def tag_list(self, ctx):
 		'''List your tags'''
 		if (await self.check_no_tags(ctx)): return
@@ -567,7 +567,7 @@ class Tools:
 		for page in tags_paginator.pages:
 			await self.bot.embed_reply(page, title = "Your tags:")
 	
-	@tag.command(name = "add", aliases = ["make", "new", "create"], pass_context = True)
+	@tag.command(name = "add", aliases = ["make", "new", "create"])
 	async def tag_add(self, ctx, tag : str, *, content : str):
 		'''Add a tag'''
 		if not ctx.message.author.id in self.tags_data:
@@ -581,7 +581,7 @@ class Tools:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
 	
-	@tag.command(name = "edit", aliases = ["update"], pass_context = True)
+	@tag.command(name = "edit", aliases = ["update"])
 	async def tag_edit(self, ctx, tag : str, *, content : str):
 		'''Edit one of your tags'''
 		if (await self.check_no_tags(ctx)): return
@@ -591,7 +591,7 @@ class Tools:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
-	@tag.command(name = "delete", aliases = ["remove", "destroy"], pass_context = True)
+	@tag.command(name = "delete", aliases = ["remove", "destroy"])
 	async def tag_delete(self, ctx, tag : str):
 		'''Delete one of your tags'''
 		if (await self.check_no_tags(ctx)): return
@@ -601,7 +601,7 @@ class Tools:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
 	
-	@tag.command(name = "search", aliases = ["contains", "find"], pass_context = True)
+	@tag.command(name = "search", aliases = ["contains", "find"])
 	async def tag_search(self, ctx, *, search : str):
 		'''Search your tags'''
 		if (await self.check_no_tags(ctx)): return
@@ -614,7 +614,7 @@ class Tools:
 		close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 		await self.bot.embed_reply("No tags found{}".format(close_matches))
 	
-	@tag.command(name = "globalize", aliases = ["globalise"], pass_context = True)
+	@tag.command(name = "globalize", aliases = ["globalise"])
 	async def tag_globalize(self, ctx, tag : str):
 		'''Globalize a tag'''
 		if (await self.check_no_tags(ctx)): return
@@ -635,7 +635,7 @@ class Tools:
 		'''Global tags'''
 		...
 	
-	@tag_global.command(name = "add", aliases = ["make", "new", "create"], pass_context = True)
+	@tag_global.command(name = "add", aliases = ["make", "new", "create"])
 	async def tag_global_add(self, ctx, tag : str, *, content : str):
 		'''Add a global tag'''
 		tags = self.tags_data["global"]
@@ -647,7 +647,7 @@ class Tools:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
 	
-	@tag_global.command(name = "edit", aliases = ["update"], pass_context = True)
+	@tag_global.command(name = "edit", aliases = ["update"])
 	async def tag_global_edit(self, ctx, tag : str, *, content : str):
 		'''Edit one of your global tags'''
 		if tag not in self.tags_data["global"]:
@@ -661,7 +661,7 @@ class Tools:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
-	@tag_global.command(name = "delete", aliases = ["remove", "destroy"], pass_context = True)
+	@tag_global.command(name = "delete", aliases = ["remove", "destroy"])
 	async def tag_global_delete(self, ctx, tag : str):
 		'''Delete one of your global tags'''
 		if tag not in self.tags_data["global"]:
@@ -690,7 +690,7 @@ class Tools:
 			await self.bot.embed_reply("You don't have that tag{}".format(close_matches))
 		return not tag in tags
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def timer(self, ctx, seconds : int):
 		'''Timer'''
@@ -699,7 +699,7 @@ class Tools:
 		await asyncio.sleep(seconds)
 		await self.bot.say("{}: {} seconds have passed".format(ctx.message.author.mention, seconds))
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(hidden = True)
 	@checks.not_forbidden()
 	async def webmtogif(self, ctx, url : str):
 		'''

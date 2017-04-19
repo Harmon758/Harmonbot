@@ -66,7 +66,7 @@ class Resources:
 			return
 		await self.bot.embed_reply("[Launch {}](battlenet://{})".format(game, abbrev))
 	
-	@commands.group(aliases = ["colour"], pass_context = True, invoke_without_command = True)
+	@commands.group(aliases = ["colour"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def color(self, ctx, *, color : str):
 		'''
@@ -260,7 +260,7 @@ class Resources:
 			percentages[concept["name"]] = concept["value"] * 100
 		await self.bot.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]))
 	
-	@commands.command(aliases = ["movie"], pass_context = True)
+	@commands.command(aliases = ["movie"])
 	@checks.not_forbidden()
 	async def imdb(self, ctx, *search : str):
 		'''IMDb Information'''
@@ -288,13 +288,13 @@ class Resources:
 		if data["Poster"] != "N/A": embed.set_thumbnail(url = data["Poster"])
 		await self.bot.say(embed = embed)
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def imgur(self, ctx):
 		'''Imgur'''
 		await self.bot.embed_reply("See {}help imgur".format(ctx.prefix))
 	
-	@imgur.command(name = "upload", pass_context = True)
+	@imgur.command(name = "upload")
 	@checks.not_forbidden()
 	async def imgur_upload(self, ctx, url : str = ""):
 		'''Upload images to imgur'''
@@ -317,7 +317,7 @@ class Resources:
 		'''WIP'''
 		return
 	
-	@lichess.group(name = "user", pass_context = True)
+	@lichess.group(name = "user")
 	async def lichess_user(self, ctx):
 		'''WIP'''
 		if len(ctx.message.content.split()) == 2:
@@ -346,7 +346,7 @@ class Resources:
 		if isinstance(error, errors.LichessUserNotFound):
 			await self.bot.embed_reply(":no_entry: User not found")
 	
-	@lichess_user.command(name = "all", pass_context = True)
+	@lichess_user.command(name = "all")
 	async def lichess_user_all(self, ctx, username : str):
 		'''WIP'''
 		data = self.lichess_user_data
@@ -375,7 +375,7 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			self.lichess_tournaments_data = await resp.json()
 	
-	@lichess_tournaments.command(name = "current", aliases = ["started"], pass_context = True)
+	@lichess_tournaments.command(name = "current", aliases = ["started"])
 	async def lichess_tournaments_current(self, ctx):
 		'''WIP'''
 		data = self.lichess_tournaments_data["started"]
@@ -424,7 +424,7 @@ class Resources:
 		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&maptype={}&size=640x640".format(location.replace(' ', '+'), zoom, maptype)
 		await self.bot.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def news(self, ctx, source : str):
 		'''
@@ -532,7 +532,7 @@ class Resources:
 		'''
 		pass
 	
-	@overwatch.group(name = "stats", pass_context = True, invoke_without_command = True)
+	@overwatch.group(name = "stats", invoke_without_command = True)
 	async def overwatch_stats(self, ctx, battletag : str):
 		'''
 		Overwatch user statistics
@@ -561,7 +561,7 @@ class Resources:
 				'''
 				await self.bot.say(embed = embed)
 	
-	@overwatch_stats.command(name = "quickplay", aliases = ["qp"], pass_context = True)
+	@overwatch_stats.command(name = "quickplay", aliases = ["qp"])
 	async def overwatch_stats_quickplay(self, ctx, battletag : str):
 		'''
 		Overwatch user quickplay statistics
@@ -594,7 +594,7 @@ class Resources:
 				embed.add_field(name = "Deaths", value = "{:,g} total\n{:,g} average".format(stats["game_stats"]["deaths"], stats["average_stats"]["deaths_avg"]))
 				await self.bot.say(embed = embed)
 	
-	@overwatch_stats.command(name = "competitive", aliases = ["comp"], pass_context = True)
+	@overwatch_stats.command(name = "competitive", aliases = ["comp"])
 	async def overwatch_stats_competitive(self, ctx, battletag : str):
 		'''
 		Overwatch user quickplay statistics
@@ -646,7 +646,7 @@ class Resources:
 			#plural
 		await self.bot.embed_reply('\n'.join(output))
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def phone(self, ctx, *, phone : str): # add reactions version
 		'''Get phone specifications'''
@@ -799,7 +799,7 @@ class Resources:
 			return
 		await self.bot.embed_reply(', '.join(rhymes[0].words), title = "Words that rhyme with {}".format(word.capitalize()))
 	
-	@commands.group(aliases = ["realmofthemadgod"], pass_context = True, invoke_without_command = True)
+	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def rotmg(self, ctx, player : str):
 		'''Realm of the Mad God player information'''
@@ -831,7 +831,7 @@ class Resources:
 			embed.add_field(name = "Description", value = "{}\n{}\n{}".format(data["desc1"], data["desc2"], data["desc3"]))
 		await self.bot.say(embed = embed)
 	
-	@rotmg.command(name = "characters", pass_context = True)
+	@rotmg.command(name = "characters")
 	@checks.not_forbidden()
 	async def rotmg_characters(self, ctx, player : str):
 		'''Realm of the Mad God player characters information'''
@@ -941,7 +941,7 @@ class Resources:
 	}
 	'''
 	
-	@runescape.command(name = "monster", aliases = ["bestiary"], pass_context = True)
+	@runescape.command(name = "monster", aliases = ["bestiary"])
 	@checks.not_forbidden()
 	async def runescape_monster(self, ctx, *, monster : str):
 		'''Runescape bestiary'''
@@ -966,7 +966,7 @@ class Resources:
 		await self.bot.say(embed = embed)
 		# add other? - http://runescape.wikia.com/wiki/RuneScape_Bestiary#beastData
 	
-	@runescape.command(name = "stats", aliases = ["levels"], pass_context = True)
+	@runescape.command(name = "stats", aliases = ["levels"])
 	@checks.not_forbidden()
 	async def runescape_stats(self, ctx, *, username : str):
 		'''Runescape stats'''
@@ -1038,7 +1038,7 @@ class Resources:
 			offset += (len(suggestion) - len(correction["token"])) - correction["offset"]
 		await self.bot.embed_reply(corrected)
 	
-	@commands.command(aliases = ["spotify_info"], pass_context = True)
+	@commands.command(aliases = ["spotify_info"])
 	@checks.not_forbidden()
 	async def spotifyinfo(self, ctx, url : str):
 		'''Information about a Spotify track'''
@@ -1207,7 +1207,7 @@ class Resources:
 			return
 		await self.bot.embed_reply(data["text"][0], footer_text = "{}Powered by Yandex.Translate".format("Detected Language Code: {} | ".format(data["detected"]["lang"]) if not from_language_code else ""))
 	
-	@commands.command(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"], pass_context = True)
+	@commands.command(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"])
 	@checks.not_forbidden()
 	async def urbandictionary(self, ctx, *, term : str):
 		'''Urban Dictionary'''
@@ -1237,7 +1237,7 @@ class Resources:
 			embed.set_footer(text = "Select a different number for another definition")
 			await self.bot.edit_message(response, embed = embed)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def weather(self, ctx, *, location : str):
 		'''Weather'''
@@ -1337,7 +1337,7 @@ class Resources:
 		'''World of Warcraft'''
 		pass
 	
-	@wow.command(name = "character", pass_context = True)
+	@wow.command(name = "character")
 	@checks.not_forbidden()
 	async def wow_character(self, ctx, character : str, *, realm : str):
 		'''WIP'''
@@ -1374,7 +1374,7 @@ class Resources:
 		await self.bot.say(embed = embed)
 		# faction and total honorable kills?
 	
-	@wow.command(name = "statistics", pass_context = True)
+	@wow.command(name = "statistics")
 	@checks.not_forbidden()
 	async def wow_statistics(self, ctx, character : str, *, realm : str):
 		'''WIP'''
@@ -1385,7 +1385,7 @@ class Resources:
 		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
 		statistics = data["statistics"]
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def xkcd(self, ctx, number : int = 0):
 		'''Find xkcd's'''
@@ -1403,7 +1403,7 @@ class Resources:
 			data = await resp.json()
 		await self.bot.embed_reply(None, title = data["title"], title_url = "http://xkcd.com/{}".format(data["num"]), image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
 	
-	@commands.command(aliases = ["ytinfo", "youtube_info", "yt_info"], pass_context = True)
+	@commands.command(aliases = ["ytinfo", "youtube_info", "yt_info"])
 	@checks.not_forbidden()
 	async def youtubeinfo(self, ctx, url : str):
 		'''Information on Youtube videos'''

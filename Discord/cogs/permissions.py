@@ -15,13 +15,13 @@ class Permissions:
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
 	async def setpermission(self, ctx):
 		'''Set a permission'''
 		await self.bot.embed_reply(":no_entry: Invalid input\nSee {}help setpermission".format(ctx.prefix))
 	
-	@setpermission.command(name = "everyone", pass_context = True)
+	@setpermission.command(name = "everyone")
 	@checks.is_permitted()
 	async def setpermission_everyone(self, ctx, permission : str, setting : bool = None):
 		if permission not in self.bot.commands: return (await self.bot.embed_reply("Error: {} is not a command".format(permission)))
@@ -34,7 +34,7 @@ class Permissions:
 			json.dump(permissions_data, permissions_file, indent = 4)		
 		await self.bot.embed_reply("Permission updated\n{} set to {} for everyone".format(permission, setting))
 	
-	@setpermission.command(name = "role", pass_context = True)
+	@setpermission.command(name = "role")
 	@checks.is_permitted()
 	async def setpermission_role(self, ctx, role : str, permission : str, setting : bool = None):
 		if permission not in self.bot.commands: return (await self.bot.embed_reply("Error: {} is not a command".format(permission)))
@@ -52,7 +52,7 @@ class Permissions:
 			json.dump(permissions_data, permissions_file, indent = 4)		
 		await self.bot.embed_reply("Permission updated\n{} set to {} for the {} role".format(permission, setting, _role.name))
 	
-	@setpermission.command(name = "user", pass_context = True)
+	@setpermission.command(name = "user")
 	@checks.is_permitted()
 	async def setpermission_user(self, ctx, user : str, permission : str, setting : bool = None):
 		if permission not in self.bot.commands: return (await self.bot.embed_reply("Error: {} is not a command".format(permission)))
@@ -68,7 +68,7 @@ class Permissions:
 			json.dump(permissions_data, permissions_file, indent = 4)
 		await self.bot.embed_reply("Permission updated\n{} set to {} for {}".format(permission, setting, _user))
 	
-	@commands.group(invoke_without_command = True, pass_context = True)
+	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
 	async def getpermission(self, ctx, *options : str):
 		'''Get a permission'''
@@ -82,7 +82,7 @@ class Permissions:
 		else:
 			await self.bot.embed_reply(":no_entry: Invalid input\ngetpermission everyone|role|user or <user> <permission>") #options
 	
-	@getpermission.command(name = "everyone", pass_context = True)
+	@getpermission.command(name = "everyone")
 	@checks.is_permitted()
 	async def getpermission_everyone(self, ctx, permission : str):
 		if permission not in self.bot.commands: return (await self.bot.embed_reply("Error: {} is not a command".format(permission)))
@@ -90,7 +90,7 @@ class Permissions:
 		setting = utilities.get_permission(ctx, command, type = "everyone")
 		await self.bot.embed_reply("{} is set to {} for everyone".format(permission, setting))
 	
-	@getpermission.command(name = "role", pass_context = True)
+	@getpermission.command(name = "role")
 	@checks.is_permitted()
 	async def getpermission_role(self, ctx, role : str, permission : str):
 		if permission not in self.bot.commands: return (await self.bot.embed_reply("Error: {} is not a command".format(permission)))
@@ -102,7 +102,7 @@ class Permissions:
 		setting = utilities.get_permission(ctx, command, type = "role", id = _role.id)
 		await self.bot.embed_reply("{} is set to {} for the {} role".format(permission, setting, _role.name))
 	
-	@getpermission.command(name = "user", pass_context = True)
+	@getpermission.command(name = "user")
 	@checks.is_permitted()
 	async def getpermission_user(self, ctx, user : str, permission : str):
 		if permission not in self.bot.commands: return (await self.bot.embed_reply("Error: {} is not a command".format(permission)))
@@ -112,12 +112,12 @@ class Permissions:
 		setting = utilities.get_permission(ctx, command, id = _user.id)
 		await self.bot.embed_reply("{} is set to {} for {}".format(permission, setting, _user))
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
 	async def getpermissions(self, ctx):
 		await self.bot.embed_reply(":no_entry: Invalid input\nSee {}help getpermissions".format(ctx.prefix))
 	
-	@getpermissions.command(name = "everyone", pass_context = True)
+	@getpermissions.command(name = "everyone")
 	@checks.is_permitted()
 	async def getpermissions_everyone(self, ctx):
 		with open("data/permissions/{}.json".format(ctx.message.guild.id), "r") as permissions_file:
@@ -128,7 +128,7 @@ class Permissions:
 			output += "{}: {}\n".format(permission, str(setting))
 		await self.bot.say(output)
 	
-	@getpermissions.command(name = "role", pass_context = True)
+	@getpermissions.command(name = "role")
 	@checks.is_permitted()
 	async def getpermissions_role(self, ctx, role : str):
 		matches = [_role for _role in ctx.message.guild.roles if _role.name == role]
@@ -144,7 +144,7 @@ class Permissions:
 			output += "{}: {}\n".format(permission, str(setting))
 		await self.bot.say(output)
 	
-	@getpermissions.command(name = "user", pass_context = True)
+	@getpermissions.command(name = "user")
 	@checks.is_permitted()
 	async def getpermissions_user(self, ctx, user : str):
 		_user = await utilities.get_user(ctx, user)
@@ -158,7 +158,7 @@ class Permissions:
 			output += "{}: {}\n".format(permission, str(setting))
 		await self.bot.say(output)
 	
-	@getpermissions.command(name = "command", pass_context = True)
+	@getpermissions.command(name = "command")
 	@checks.is_permitted()
 	async def getpermissions_command(self, ctx, command : str):
 		if command not in self.bot.commands: return (await self.bot.embed_reply("Error: {} is not a command".format(command)))

@@ -106,7 +106,7 @@ if __name__ == "__main__":
 		with open("data/user_data/{}/stats.json".format(ctx.message.author.id), 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 	
-	@client.command(pass_context = True)
+	@client.command()
 	@checks.is_owner()
 	async def load(ctx, cog : str):
 		'''Loads a cog'''
@@ -119,7 +119,7 @@ if __name__ == "__main__":
 			await client.embed_reply(":thumbsup::skin-tone-2: Loaded `{}` cog :gear:".format(cog))
 			await client.delete_message(ctx.message)
 	
-	@client.command(pass_context = True)
+	@client.command()
 	@checks.is_owner()
 	async def unload(ctx, cog : str):
 		'''Unloads a cog'''
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 			await client.embed_reply(":ok_hand::skin-tone-2: Unloaded `{}` cog :gear:".format(cog))
 			await client.delete_message(ctx.message)
 	
-	@client.command(pass_context = True)
+	@client.command()
 	@checks.is_owner()
 	async def reload(ctx, cog : str):
 		'''Reloads a cog'''

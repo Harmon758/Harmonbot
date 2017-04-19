@@ -90,7 +90,7 @@ class Misc:
 		'''Basic ping - pong command'''
 		await self.bot.embed_reply("pong")
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def poke(self, ctx, *, user : str):
 		'''Poke someone'''

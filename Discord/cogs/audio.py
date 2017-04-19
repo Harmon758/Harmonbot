@@ -26,7 +26,7 @@ class Audio:
 				self.bot.add_command(command)
 				self.audio.add_command(command)
 	
-	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", "playlist", "spotify", "budio", "music", "download"], description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify", pass_context = True, invoke_without_command = True, no_pm = True)
+	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", "playlist", "spotify", "budio", "music", "download"], description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify", invoke_without_command = True, no_pm = True)
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
 	async def audio(self, ctx, *, song : str = ""): #elif options[0] == "full":
@@ -61,7 +61,7 @@ class Audio:
 			await self.bot.edit_message(response, embed = embed)
 			await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(aliases = ["summon", "move"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["summon", "move"], no_pm = True)
 	@checks.is_permitted()
 	async def join(self, ctx, *channel : str):
 		'''Get me to join a voice channel'''
@@ -78,7 +78,7 @@ class Audio:
 			await self.bot.embed_reply(":arrow_right_hook: I've moved to the voice channel" if moved else ":headphones: I've joined the voice channel")
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def leave(self, ctx):
@@ -89,7 +89,7 @@ class Audio:
 		await self.bot.attempt_delete_message(ctx.message)
 		## await self.bot.embed_reply("The leave command is currently disabled right now, due to an issue/bug with Discord.")
 	
-	@commands.command(pass_context = True, aliases = ["stop"], no_pm = True)
+	@commands.command(aliases = ["stop"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def pause(self, ctx):
@@ -104,7 +104,7 @@ class Audio:
 			await self.bot.embed_reply(":pause_button: Paused song")
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(pass_context = True, aliases = ["start"], no_pm = True)
+	@commands.command(aliases = ["start"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def resume(self, ctx):
@@ -119,7 +119,7 @@ class Audio:
 			await self.bot.embed_reply(":play_pause: Resumed song")
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.group(pass_context = True, aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
+	@commands.group(aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def skip(self, ctx, *, number : int = 0):
@@ -161,7 +161,7 @@ class Audio:
 			await self.bot.embed_reply(":no_entry: You're not even listening!", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@skip.command(name = "to", pass_context = True, no_pm = True)
+	@skip.command(name = "to", no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def skip_to(self, ctx, number : int):
@@ -178,7 +178,7 @@ class Audio:
 			del songs
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(pass_context = True, aliases = ["repeat"], no_pm = True)
+	@commands.command(aliases = ["repeat"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def replay(self, ctx):
@@ -190,7 +190,7 @@ class Audio:
 		await self.bot.edit_message(response, embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def insert(self, ctx, position_number : int, *, song : str):
@@ -212,7 +212,7 @@ class Audio:
 			await self.bot.edit_message(response, embed = embed)
 			await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(pass_context = True, aliases = ["clear"], no_pm = True)
+	@commands.command(aliases = ["clear"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def empty(self, ctx):
@@ -221,7 +221,7 @@ class Audio:
 		await self.bot.embed_reply(":wastebasket: Emptied queue")
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def shuffle(self, ctx):
@@ -232,7 +232,7 @@ class Audio:
 		await self.bot.edit_message(response, embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@audio.command(name = "random", aliases = ["top"], pass_context = True, no_pm = True)
+	@audio.command(name = "random", aliases = ["top"], no_pm = True)
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def audio_random(self, ctx):
@@ -256,7 +256,7 @@ class Audio:
 			embed.description = ":warning: Error loading `{}`".format(song)
 			await self.bot.edit_message(response, embed = embed)
 	
-	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
+	@commands.group(no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio(self, ctx):
@@ -271,7 +271,7 @@ class Audio:
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@radio.command(name = "on", pass_context = True, aliases = ["start"], no_pm = True)
+	@radio.command(name = "on", aliases = ["start"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio_on(self, ctx):
@@ -282,7 +282,7 @@ class Audio:
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@radio.command(name = "off", pass_context = True, aliases = ["stop"], no_pm = True)
+	@radio.command(name = "off", aliases = ["stop"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def radio_off(self, ctx):
@@ -294,7 +294,7 @@ class Audio:
 		else:
 			await self.bot.embed_reply(":no_entry: Radio is already off")
 	
-	@commands.command(aliases = ["set_text"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["set_text"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def settext(self, ctx):
@@ -303,7 +303,7 @@ class Audio:
 		await self.bot.embed_reply(":writing_hand::skin-tone-2: Changed text channel")
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
+	@commands.group(no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def tts(self, ctx, *, message : str):
@@ -311,7 +311,7 @@ class Audio:
 		if not (await self.players[ctx.message.guild.id].play_tts(message, ctx.message.author, timestamp = ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
-	@tts.command(name = "options", pass_context = True, no_pm = True)
+	@tts.command(name = "options", no_pm = True)
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def tts_options(self, ctx, amplitude: int, pitch: int, speed: int, word_gap: int, voice: str, *, message : str):
@@ -334,7 +334,7 @@ class Audio:
 		if not (await self.players[ctx.message.guild.id].play_tts(message, ctx.message.author, timestamp = ctx.message.created_at, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def file(self, ctx, *, filename : str = ""):
@@ -342,14 +342,14 @@ class Audio:
 		if not (await self.players[ctx.message.guild.id].play_file(filename, ctx.message.author, ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def files(self, ctx):
 		'''List existing audio files'''
 		await self.bot.embed_reply(self.players[ctx.message.guild.id].list_files())
 	
-	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
+	@commands.group(no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def library(self, ctx):
@@ -361,7 +361,7 @@ class Audio:
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@library.command(name = "play", aliases = ["start"], pass_context = True, no_pm = True)
+	@library.command(name = "play", aliases = ["start"], no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def library_play(self, ctx):
@@ -371,7 +371,7 @@ class Audio:
 		elif not (await self.players[ctx.message.guild.id].play_library(ctx.message.author, ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
-	@library.command(name = "stop", pass_context = True, no_pm = True)
+	@library.command(name = "stop", no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def library_stop(self, ctx):
@@ -383,7 +383,7 @@ class Audio:
 			await self.bot.embed_reply(":no_entry: Not currently playing songs from my library", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@library.command(name = "song", pass_context = True, no_pm = True)
+	@library.command(name = "song", no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def library_song(self, ctx, *, filename : str = ""):
@@ -391,7 +391,7 @@ class Audio:
 		if not (await self.players[ctx.message.guild.id].play_from_library(filename, ctx.message.author, ctx.message.created_at)):
 			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
-	@library.command(name = "files", pass_context = True, no_pm = True) # enable for DMs?
+	@library.command(name = "files", no_pm = True) # enable for DMs?
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def library_files(self, ctx):
@@ -406,7 +406,7 @@ class Audio:
 			else:
 				output += filename + ", "
 	
-	@library.command(name = "search", pass_context = True, no_pm = True)
+	@library.command(name = "search", no_pm = True)
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def library_search(self, ctx, *, search : str):
@@ -420,7 +420,7 @@ class Audio:
 		except discord.errors.HTTPException:
 			await self.bot.embed_reply(":no_entry: Too many results\nTry a more specific search")
 	
-	@commands.group(pass_context = True, no_pm = True, invoke_without_command = True)
+	@commands.group(no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def volume(self, ctx, *, volume_setting : float = None):
@@ -444,7 +444,7 @@ class Audio:
 				await self.bot.embed_reply(":sound: Set volume to {:g}".format(volume_setting))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@volume.command(name = "default", pass_context = True, no_pm = True)
+	@volume.command(name = "default", no_pm = True)
 	@checks.is_permitted()
 	@checks.is_voice_connected()
 	async def volume_default(self, ctx, *, volume_setting : float = None):
@@ -461,7 +461,7 @@ class Audio:
 			await self.bot.embed_reply(":sound: Set default volume to {:g}".format(volume_setting))
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.group(aliases = ["current"], pass_context = True, no_pm = True, invoke_without_command = True)
+	@commands.group(aliases = ["current"], no_pm = True, invoke_without_command = True)
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
 	async def playing(self, ctx):
@@ -475,7 +475,7 @@ class Audio:
 			await self.bot.say(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
 	async def queue(self, ctx):
@@ -487,7 +487,7 @@ class Audio:
 	
 	# Voice Input
 	
-	@commands.group(pass_context = True, invoke_without_command = True, hidden = True)
+	@commands.group(invoke_without_command = True, hidden = True)
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen(self, ctx):
@@ -496,7 +496,7 @@ class Audio:
 		elif not (await self.players[ctx.message.guild.id].start_listening()):
 			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
-	@listen.command(name = "start", aliases = ["on"], pass_context = True)
+	@listen.command(name = "start", aliases = ["on"])
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_start(self, ctx):
@@ -505,7 +505,7 @@ class Audio:
 		elif not (await self.players[ctx.message.guild.id].start_listening()):
 			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
-	@listen.command(name = "stop", aliases = ["off"], pass_context = True)
+	@listen.command(name = "stop", aliases = ["off"])
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_stop(self, ctx):
@@ -514,7 +514,7 @@ class Audio:
 		else:
 			await self.bot.embed_reply(":no_entry: I'm not listening")
 	
-	@listen.command(name = "once", pass_context = True)
+	@listen.command(name = "once")
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_once(self, ctx):
@@ -523,7 +523,7 @@ class Audio:
 		elif (await self.players[ctx.message.guild.id].listen_once()) is False:
 			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
-	@listen.command(name = "finish", pass_context = True)
+	@listen.command(name = "finish")
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_finish(self, ctx):
@@ -532,7 +532,7 @@ class Audio:
 		else:
 			await self.bot.embed_reply(":no_entry: I'm not listening")
 	
-	@listen.command(name = "process", pass_context = True)
+	@listen.command(name = "process")
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_process(self, ctx):

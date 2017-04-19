@@ -32,7 +32,7 @@ class Meta:
 		utilities.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
 		self.command_not_found = "No command called `{}` found"
 	
-	@commands.group(aliases = ["commands"], hidden = True, pass_context = True, invoke_without_command = True)
+	@commands.group(aliases = ["commands"], hidden = True, invoke_without_command = True)
 	@checks.dm_or_has_capability("embed_links")
 	async def help(self, ctx, *commands : str):
 		'''
@@ -99,7 +99,7 @@ class Meta:
 				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
 			await self.bot.send_message(destination, embed = embed)
 	
-	@help.command(name = "all", pass_context = True)
+	@help.command(name = "all")
 	async def help_all(self, ctx):
 		'''All commands'''
 		embeds = self.bot.formatter.format_help_for(ctx, self.bot)
@@ -108,7 +108,7 @@ class Meta:
 		if not isinstance(ctx.message.channel, discord.DMChannel):
 			await self.bot.embed_reply("Check your DMs")
 	
-	@help.command(name = "other", pass_context = True)
+	@help.command(name = "other")
 	async def help_other(self, ctx):
 		'''Additional commands and information'''
 		# TODO: Update
@@ -124,7 +124,7 @@ class Meta:
 		embed.add_field(name = "No Prefix", value = "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", inline = False)
 		await self.bot.say(embed = embed)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.is_owner()
 	async def allcommands(self, ctx):
 		'''All the commands'''
@@ -153,7 +153,7 @@ class Meta:
 		embed.set_field_at(1, name = "CPU", value = "{}%".format(cpu))
 		await self.bot.edit_message(message, embed = embed)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.is_owner()
 	async def disable(self, ctx, command : str):
 		'''Disable a command'''
@@ -161,7 +161,7 @@ class Meta:
 		await self.bot.embed_reply("`{}{}` has been disabled".format(ctx.prefix, command))
 		await self.bot.delete_message(ctx.message)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.is_owner()
 	async def enable(self, ctx, command : str):
 		'''Enable a command'''
@@ -169,25 +169,25 @@ class Meta:
 		await self.bot.embed_reply("`{}{}` has been enabled".format(ctx.prefix, command))
 		await self.bot.delete_message(ctx.message)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	async def points(self, ctx):
 		'''WIP'''
-		with open("data/user_data/{}/stats.json".format(ctx.message.author.id), "r") as stats_file:
+		with open("data/user_data/{}/stats.json".format(ctx.author.id), "r") as stats_file:
 			stats = json.load(stats_file)
 		await self.bot.embed_reply("You have {} points".format(stats["points"]))
 	
-	@commands.command(aliases = ["server_setting"], pass_context = True)
+	@commands.command(aliases = ["server_setting"])
 	@checks.is_server_owner()
 	async def server_settings(self, ctx, setting : str, on_off : bool):
 		'''WIP'''
-		with open("data/server_data/{}/settings.json".format(ctx.message.guild.id), 'r') as settings_file:
+		with open("data/server_data/{}/settings.json".format(ctx.guild.id), 'r') as settings_file:
 			data = json.load(settings_file)
 		if setting in data:
 			data[setting] = on_off
 		else:
 			await self.bot.embed_reply("Setting not found")
 			return
-		with open("data/server_data/{}/settings.json".format(ctx.message.guild.id), 'w') as settings_file:
+		with open("data/server_data/{}/settings.json".format(ctx.guild.id), 'w') as settings_file:
 			json.dump(data, settings_file, indent = 4)
 		await self.bot.embed_reply("{} set to {}".format(setting, on_off))
 	
@@ -206,7 +206,7 @@ class Meta:
 			embed.set_thumbnail(url = guild.icon_url)
 			await ctx.whisper(embed = embed)
 	
-	@commands.command(aliases = ["setprefixes"], pass_context = True)
+	@commands.command(aliases = ["setprefixes"])
 	@checks.is_permitted()
 	async def setprefix(self, ctx, *prefixes : str):
 		'''
@@ -220,14 +220,14 @@ class Meta:
 		with open("data/prefixes.json", "r") as prefixes_file:
 			all_prefixes = json.load(prefixes_file)
 		if isinstance(ctx.channel, discord.DMChannel):
-			all_prefixes[ctx.message.channel.id] = prefixes
+			all_prefixes[ctx.channel.id] = prefixes
 		else:
-			all_prefixes[ctx.message.guild.id] = prefixes
+			all_prefixes[ctx.guild.id] = prefixes
 		with open("data/prefixes.json", "w") as prefixes_file:
 			json.dump(all_prefixes, prefixes_file, indent = 4)
 		await self.bot.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(hidden = True)
 	@checks.not_forbidden()
 	async def type(self, ctx):
 		'''Sends typing status'''
@@ -235,15 +235,15 @@ class Meta:
 	
 	# Public Info
 	
-	@commands.command(aliases = ["info"], pass_context = True)
+	@commands.command(aliases = ["info"])
 	async def about(self, ctx):
 		'''About me'''
 		from clients import application_info
 		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
 		embed = discord.Embed(title = "About Me", color = clients.bot_color)
 		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(clients.changelog, discord.utils.oauth_url(application_info.id))
-		# avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		# embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		# avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		avatar = self.bot.user.avatar_url or self.bot.user.default_avatar_url
 		# embed.set_thumbnail(url = avatar)
 		embed.set_author(name = "Harmonbot (Discord ID: {})".format(self.bot.user.id), icon_url = avatar)
@@ -262,7 +262,7 @@ class Meta:
 		'''Link to changelog'''
 		await self.bot.reply(clients.changelog)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	async def conversions(self, ctx):
 		'''All conversion commands'''
 		await self.bot.embed_reply("**Temperature Unit Conversions**: {0}[c, f, k, r, de]__to__[c, f, k, r, de, n, re, ro]\n"
@@ -274,7 +274,7 @@ class Meta:
 		from clients import application_info
 		await self.bot.embed_reply(discord.utils.oauth_url(application_info.id))
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	async def stats(self, ctx):
 		'''Bot stats'''
 		from clients import session_commands_executed, session_commands_usage
@@ -298,8 +298,8 @@ class Meta:
 		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
 		
 		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar) # url?
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar) # url?
 		embed.add_field(name = "Uptime", value = uptime)
 		embed.add_field(name = "Total Recorded Uptime", value = total_uptime) # since 2016-04-17, fixed 2016-05-10
 		embed.add_field(name = "Recorded Restarts", value = stats["restarts"]) # since 2016-04-17, fixed 2016-05-10
@@ -335,11 +335,11 @@ class Meta:
 	
 	# Update Bot Stuff
 	
-	@commands.command(aliases = ["change_nickname"], pass_context = True)
+	@commands.command(aliases = ["change_nickname"])
 	@checks.is_owner()
 	async def changenickname(self, ctx, *, nickname : str):
 		'''Update my nickname'''
-		await self.bot.change_nickname(ctx.message.server.me, nickname)
+		await self.bot.change_nickname(ctx.me, nickname)
 	
 	@commands.command(aliases = ["setavatar", "update_avatar", "set_avatar"])
 	@checks.is_owner()
@@ -359,11 +359,11 @@ class Meta:
 		await clients.random_game_status()
 		# await self.bot.embed_reply("I changed to a random game status")
 	
-	@commands.command(aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying", "set_game", "update_playing", "update_game", "change_playing", "change_game", "set_playing"], pass_context = True)
+	@commands.command(aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying", "set_game", "update_playing", "update_game", "change_playing", "change_game", "set_playing"])
 	@checks.is_owner()
 	async def setgame(self, ctx, *, name : str):
 		'''Set my playing/game status message'''
-		updated_game = ctx.message.server.me.game
+		updated_game = ctx.me.game
 		if not updated_game:
 			updated_game = discord.Game(name = name)
 		else:
@@ -371,7 +371,7 @@ class Meta:
 		await self.bot.change_status(game = updated_game)
 		await self.bot.embed_reply("Game updated")
 	
-	@commands.command(aliases = ["set_streaming"], pass_context = True)
+	@commands.command(aliases = ["set_streaming"])
 	@checks.is_owner()
 	async def setstreaming(self, ctx, option : str, *url : str):
 		'''Set my streaming status'''
@@ -380,22 +380,22 @@ class Meta:
 				await clients.set_streaming_status()
 				return
 			else:
-				updated_game = ctx.message.server.me.game
+				updated_game = ctx.me.game
 				if not updated_game:
 					updated_game = discord.Game(url = url[0], type = 1)
 				else:
 					updated_game.url = url[0]
 					updated_game.type = 1
 		else:
-			updated_game = ctx.message.server.me.game
+			updated_game = ctx.me.game
 			updated_game.type = 0
 		await self.bot.change_status(game = updated_game)
 	
-	@commands.command(aliases = ["clearplaying", "clear_game", "clear_playing"], pass_context = True)
+	@commands.command(aliases = ["clearplaying", "clear_game", "clear_playing"])
 	@checks.is_owner()
 	async def cleargame(self, ctx):
 		'''Clear my playing/game status message'''
-		updated_game = ctx.message.server.me.game
+		updated_game = ctx.me.game
 		if updated_game and updated_game.name:
 			updated_game.name = None
 			await self.bot.change_status(game = updated_game)
@@ -403,11 +403,11 @@ class Meta:
 		else:
 			await self.bot.embed_reply(":no_entry: There is no game status to clear")
 	
-	@commands.command(aliases = ["clear_streaming"], pass_context = True)
+	@commands.command(aliases = ["clear_streaming"])
 	@checks.is_owner()
 	async def clearstreaming(self, ctx, *option : str):
 		'''Clear my streaming status'''
-		updated_game = ctx.message.server.me.game
+		updated_game = ctx.me.game
 		if updated_game and (updated_game.url or updated_game.type):
 			updated_game.url = None
 			if option and option[0] == "url":
@@ -429,13 +429,13 @@ class Meta:
 	
 	# Restart/Shutdown
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
 		await self.bot.embed_say(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Discord Harmonbot...")
-		await clients.restart_tasks(ctx.message.channel.id)
+		await clients.restart_tasks(ctx.channel.id)
 		await self.bot.logout()
 	
 	@commands.command(aliases = ["crash", "panic"])
@@ -468,7 +468,7 @@ class Meta:
 		'''Wrap your message in a Python code block'''
 		await self.bot.embed_reply(clients.py_code_block.format(input))
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.is_owner()
 	async def do(self, ctx, times : int, *, command):
 		'''Repeats a command a specified number of times'''
@@ -489,7 +489,7 @@ class Meta:
 		'''Echoes the message in an embed'''
 		await self.bot.embed_say(message)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.is_owner()
 	async def eval(self, ctx, *, code : str):
 		code = code.strip('`')
@@ -501,7 +501,7 @@ class Meta:
 		except Exception as e:
 			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.is_owner()
 	async def exec(self, ctx, *, code : str):
 		code = code.strip('`')
@@ -519,7 +519,7 @@ class Meta:
 		for i in range(1, 101):
 			await self.bot.say(str(i))
 	
-	@commands.command(aliases = ["logsfromtest"], pass_context = True)
+	@commands.command(aliases = ["logsfromtest"])
 	@checks.is_owner()
 	async def logs_from_test(self, ctx):
 		'''Used to test global rate limits'''
@@ -535,7 +535,7 @@ class Meta:
 		for _ in range(number):
 			await self.bot.say(text)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.is_owner()
 	async def repl(self, ctx):
 		variables = {"self" : self, "ctx" : ctx, "last" : None}

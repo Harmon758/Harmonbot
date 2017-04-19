@@ -55,7 +55,7 @@ class Random:
 		'''
 		await self.bot.embed_reply(":grey_question: Random what?")
 	
-	@random.command(pass_context = True)
+	@random.command()
 	@checks.not_forbidden()
 	async def color(self, ctx):
 		'''Information on a random color'''
@@ -109,7 +109,7 @@ class Random:
 		if cog: await cog.process_wikipedia(None, random = True)
 		else: await self.bot.embed_reply(None, title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random") # necessary?
 	
-	@random.command(pass_context = True)
+	@random.command()
 	@checks.not_forbidden()
 	async def xkcd(self, ctx):
 		'''Random xkcd'''
@@ -126,7 +126,7 @@ class Random:
 		'''Random playing card'''
 		await self.bot.embed_reply(":{}: {}".format(random.choice(pydealer.const.SUITS).lower(), random.choice(pydealer.const.VALUES)))
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def cat(self, ctx, *, category : str = ""):
 		'''
@@ -197,7 +197,7 @@ class Random:
 			except concurrent.futures.TimeoutError:
 				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def command(self, ctx):
 		'''Random command'''
@@ -223,7 +223,7 @@ class Random:
 			data = await resp.json()
 		await self.bot.embed_reply(BeautifulSoup(data[0]["nid"]).text)
 	
-	@fact.command(name = "cat", aliases = ["cats"], pass_context = True)
+	@fact.command(name = "cat", aliases = ["cats"])
 	@checks.not_forbidden()
 	async def fact_cat(self, ctx):
 		'''Random fact about cats'''

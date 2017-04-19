@@ -91,7 +91,7 @@ class Twitter:
 		'''Twitter'''
 		pass
 	
-	@twitter.command(name = "status", pass_context = True)
+	@twitter.command(name = "status")
 	@checks.not_forbidden()
 	async def twitter_status(self, ctx, handle : str):
 		'''Get twitter status'''
@@ -102,7 +102,7 @@ class Twitter:
 		embed.set_footer(text = tweet.user.name, icon_url = tweet.user.profile_image_url)
 		await self.bot.say(embed = embed)
 	
-	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"], pass_context = True)
+	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
 	@checks.is_permitted()
 	async def twitter_add(self, ctx, handle : str):
 		'''
@@ -128,7 +128,7 @@ class Twitter:
 		embed.description = "Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle)
 		await self.bot.edit_message(message, embed = embed)
 	
-	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"], pass_context = True)
+	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"])
 	@checks.is_permitted()
 	async def twitter_remove(self, ctx, handle : str):
 		'''
@@ -147,7 +147,7 @@ class Twitter:
 			embed.description = "Removed the Twitter handle, [`{0}`](https://twitter.com/{0}), from this text channel.".format(handle)
 			await self.bot.edit_message(message, embed = embed)
 
-	@twitter.command(aliases = ["handle", "feeds", "feed", "list"], pass_context = True)
+	@twitter.command(aliases = ["handle", "feeds", "feed", "list"])
 	@checks.not_forbidden()
 	async def handles(self, ctx):
 		'''Show Twitter handles being followed in a text channel'''

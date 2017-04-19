@@ -38,7 +38,7 @@ class RSS:
 		'''RSS'''
 		pass
 	
-	@rss.command(name = "add", aliases = ["addfeed", "feedadd"], pass_context = True)
+	@rss.command(name = "add", aliases = ["addfeed", "feedadd"])
 	@checks.is_permitted()
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
@@ -51,7 +51,7 @@ class RSS:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		await self.bot.embed_reply("The feed, {}, has been added to this channel".format(url))
 
-	@rss.command(name = "remove", aliases = ["delete", "removefeed", "feedremove", "deletefeed", "feeddelete"], pass_context = True)
+	@rss.command(name = "remove", aliases = ["delete", "removefeed", "feedremove", "deletefeed", "feeddelete"])
 	@checks.is_permitted()
 	async def rss_remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
@@ -64,7 +64,7 @@ class RSS:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		await self.bot.embed_reply("The feed, {}, has been removed from this channel".format(url))
 
-	@rss.command(aliases = ["feed"], pass_context = True)
+	@rss.command(aliases = ["feed"])
 	@checks.not_forbidden()
 	async def feeds(self, ctx):
 		'''Show feeds being followed in this channel'''

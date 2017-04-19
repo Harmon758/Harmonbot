@@ -37,7 +37,7 @@ class Reactions:
 		for command, parent_name in self.reaction_commands:
 			utilities.remove_as_subcommand(self, parent_name, "reactions")
 	
-	@commands.command(aliases = ["guessreactions", "guessreaction"], pass_context = True)
+	@commands.command(aliases = ["guessreactions", "guessreaction"])
 	@checks.not_forbidden()
 	async def guessr(self, ctx):
 		'''
@@ -60,7 +60,7 @@ class Reactions:
 				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(player.display_name, self.numbers[reaction.emoji])
 				await self.bot.edit_message(reaction.message, embed = embed)
 	
-	@commands.command(pass_context = True, invoke_without_command = True)
+	@commands.command(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def newsr(self, ctx, source : str):
 		'''
@@ -97,7 +97,7 @@ class Reactions:
 	# TODO: urband
 	# TODO: rtg
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def mazer(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
 		'''
@@ -137,7 +137,7 @@ class Reactions:
 				embed.description = "{}\n:no_entry: You can't go that way".format(clients.code_block.format(maze_instance.print_visible()))
 			await self.bot.edit_message(reaction.message, embed = embed)
 	
-	@commands.command(aliases = ["player"], no_pm = True, pass_context = True)
+	@commands.command(aliases = ["player"], no_pm = True)
 	@checks.not_forbidden()
 	async def playingr(self, ctx):
 		'''Audio player'''

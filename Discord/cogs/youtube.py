@@ -39,13 +39,13 @@ class Youtube:
 	
 	# TODO: Follow channels/new video uploads
 	
-	@youtube.group(name = "streams", aliases = ["stream"], pass_context = True, invoke_without_command = True) # Handle stream alias when audio cog not loaded first
+	@youtube.group(name = "streams", aliases = ["stream"], invoke_without_command = True) # Handle stream alias when audio cog not loaded first
 	@checks.is_permitted()
 	async def youtube_streams(self, ctx):
 		'''Youtube Streams'''
 		await self.bot.embed_reply("See {}help youtube streams".format(ctx.prefix))
 	
-	@youtube_streams.command(name = "add", pass_context = True, invoke_without_command = True)
+	@youtube_streams.command(name = "add", invoke_without_command = True)
 	@checks.is_permitted()
 	async def youtube_streams_add(self, ctx, channel_id : str):
 		'''Add Youtube channel to follow'''
@@ -64,7 +64,7 @@ class Youtube:
 		await self.bot.embed_reply("Added the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
 		"I will now announce here when this Youtube channel goes live".format(channel_id))
 	
-	@youtube_streams.command(name = "remove", aliases = ["delete"], pass_context = True, invoke_without_command = True)
+	@youtube_streams.command(name = "remove", aliases = ["delete"], invoke_without_command = True)
 	@checks.is_permitted()
 	async def youtube_streams_remove(self, ctx, channel_id : str):
 		'''Remove Youtube channel being followed'''
@@ -77,7 +77,7 @@ class Youtube:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await self.bot.embed_reply("Removed the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), from this text channel".format(channel_id))
 	
-	@youtube_streams.command(name = "channels", aliases = ["streams"], pass_context = True)
+	@youtube_streams.command(name = "channels", aliases = ["streams"])
 	@checks.not_forbidden()
 	async def youtube_streams_channels(self, ctx):
 		'''Show Youtube channels being followed in this text channel'''

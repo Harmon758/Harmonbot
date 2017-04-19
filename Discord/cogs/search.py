@@ -268,7 +268,7 @@ class Search:
 			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
 			await self.bot.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
-	@commands.group(aliases = ["wa", "wolfram_alpha"], pass_context = True, invoke_without_command = True)
+	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def wolframalpha(self, ctx, *, search : str):
 		'''
@@ -277,7 +277,7 @@ class Search:
 		'''
 		await self._wolframalpha(ctx, search)
 	
-	@wolframalpha.command(name = "location", pass_context = True)
+	@wolframalpha.command(name = "location")
 	@checks.not_forbidden()
 	async def wolframalpha_location(self, ctx, location: str, *, search : str):
 		'''Input location'''

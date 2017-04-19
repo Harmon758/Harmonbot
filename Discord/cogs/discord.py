@@ -21,7 +21,7 @@ class Discord:
 	
 	# Do Stuff
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.has_permissions_and_capability(manage_roles = True)
 	async def addrole(self, ctx, member : str, *, role : str): # member : discord.Member
 		'''
@@ -39,7 +39,7 @@ class Discord:
 		await self.bot.add_roles(member, role)
 		await self.bot.embed_reply("I gave the role, {0}, to {1}".format(role, member))
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.has_permissions_and_capability(manage_channels = True)
 	async def channel(self, ctx, *options : str):
 		'''
@@ -55,13 +55,13 @@ class Discord:
 			else:
 				await self.bot.create_channel(ctx.message.guild, options[0], type = "text")
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.has_permissions_and_capability(manage_roles = True)
 	async def createrole(self, ctx, *, name : str = ""):
 		'''Creates a role'''
 		await self.bot.create_role(ctx.message.guild, name = name)
 	
-	@commands.group(pass_context = True, aliases = ["purge", "clean"], invoke_without_command = True)
+	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
 	async def delete(self, ctx, number : int, *, user : str = ""):
 		'''
@@ -76,25 +76,25 @@ class Discord:
 		elif user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.name == user)
 	
-	@delete.command(name = "attachments", aliases = ["images"], pass_context = True)
+	@delete.command(name = "attachments", aliases = ["images"])
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_attachments(self, ctx, number : int):
 		'''Deletes the <number> most recent messages with attachments'''
 		await self.delete_number(ctx, number, check = lambda m: m.attachments)
 	
-	@delete.command(name = "contains", pass_context = True)
+	@delete.command(name = "contains")
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_contains(self, ctx, string : str, number : int):
 		'''Deletes the <number> most recent messages with <string> in them'''
 		await self.delete_number(ctx, number, check = lambda m: string in m.content)
 	
-	@delete.command(name = "embeds", pass_context = True)
+	@delete.command(name = "embeds")
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_embeds(self, ctx, number: int):
 		'''Deletes the <number> most recent messages with embeds'''
 		await self.delete_number(ctx, number, check = lambda m: m.embeds)
 	
-	@delete.command(name = "time", pass_context = True)
+	@delete.command(name = "time")
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def delete_time(self, ctx, minutes : int):
 		'''Deletes messages in the past <minutes> minutes'''
@@ -125,7 +125,7 @@ class Discord:
 		elif len(to_delete) > 1:
 			await self.bot.delete_messages(to_delete)
 	
-	@commands.command(aliases = ["mycolour", "my_color", "my_colour"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["mycolour", "my_color", "my_colour"], no_pm = True)
 	@checks.not_forbidden()
 	async def mycolor(self, ctx, color : str = ""):
 		'''
@@ -157,7 +157,7 @@ class Discord:
 			await self.bot.edit_role(ctx.message.guild, role_to_change, colour = new_colour)
 			await self.bot.embed_reply("Changed your role color to {}".format(color))
 	
-	@commands.group(pass_context = True, invoke_without_command = True)
+	@commands.group(invoke_without_command = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin(self, ctx, message_id : int):
 		'''Pin message by message ID'''
@@ -165,7 +165,7 @@ class Discord:
 		await self.bot.pin_message(message)
 		await self.bot.embed_reply(":pushpin: Pinned message")
 	
-	@pin.command(name = "first", pass_context = True)
+	@pin.command(name = "first")
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin_first(self, ctx):
 		'''Pin first message'''
@@ -173,7 +173,7 @@ class Discord:
 		await self.bot.pin_message(message)
 		await self.bot.embed_reply(":pushpin: Pinned first message in this channel")
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def unpin(self, ctx, message_id : int):
 		'''Unpin message by message ID'''
@@ -181,7 +181,7 @@ class Discord:
 		await self.bot.unpin_message(message)
 		await self.bot.embed_reply(":wastebasket: Unpinned message")
 	
-	@commands.command(aliases = ["rolecolour", "role_color", "role_colour"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["rolecolour", "role_color", "role_colour"], no_pm = True)
 	@checks.not_forbidden()
 	async def rolecolor(self, ctx, role : str, *color : str):
 		'''
@@ -213,7 +213,7 @@ class Discord:
 			new_colour.value = conversions.hextoint(color[0])
 			await self.bot.edit_role(ctx.message.guild, role_to_change, colour = new_colour)
 	
-	@commands.command(pass_context = True, hidden = True)
+	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def roleposition(self, ctx, role : str, position : int):
 		'''WIP'''
@@ -223,7 +223,7 @@ class Discord:
 				break
 		await self.bot.move_role(ctx.message.guild, selected_role, position)
 	
-	@commands.command(pass_context = True, no_pm = True)
+	@commands.command(no_pm = True)
 	@checks.not_forbidden()
 	async def tempchannel(self, ctx, *options : str):
 		'''
@@ -272,7 +272,7 @@ class Discord:
 				await self.bot.delete_channel(temp_text_channel)
 				return
 	
-	@commands.command(hidden = True, pass_context = True, no_pm = True)
+	@commands.command(hidden = True, no_pm = True)
 	@checks.is_owner()
 	async def userlimit(self, ctx, limit : int):
 		'''WIP'''
@@ -282,7 +282,7 @@ class Discord:
 	
 	# Get Attributes
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def avatar(self, ctx, *, name : str = ""):
 		'''
@@ -303,7 +303,7 @@ class Discord:
 		avatar = user.avatar_url or user.default_avatar_url
 		await self.bot.embed_reply(None, title = "{}'s avatar".format(user), image_url = avatar)
 	
-	@commands.command(pass_context = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def discriminator(self, ctx, *, name : str = ""):
 		'''
@@ -327,7 +327,7 @@ class Discord:
 		if flag and name:
 			await self.bot.embed_reply(name + " was not found on this server")
 	
-	@commands.command(aliases = ["role_id"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["role_id"], no_pm = True)
 	@checks.not_forbidden()
 	async def roleid(self, ctx, *, name : str):
 		'''Get the ID of a role'''
@@ -335,13 +335,13 @@ class Discord:
 			if utilities.remove_symbols(role.name).startswith(name):
 				await self.bot.embed_reply(role.id)
 	
-	@commands.command(aliases = ["role_positions"], pass_context = True, hidden = True)
+	@commands.command(aliases = ["role_positions"], hidden = True)
 	@checks.is_owner()
 	async def rolepositions(self, ctx):
 		'''WIP'''
 		await self.bot.embed_reply(', '.join([role.name + ": " + str(role.position) for role in ctx.message.guild.roles[1:]]))
 	
-	@commands.command(aliases = ["server_icon"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["server_icon"], no_pm = True)
 	@checks.not_forbidden()
 	async def servericon(self, ctx):
 		'''See a bigger version of the server icon'''
@@ -349,7 +349,7 @@ class Discord:
 			await self.bot.embed_reply(":no_entry: This server doesn't have an icon")
 		await self.bot.embed_reply("This server's icon:", image_url = ctx.message.guild.icon_url)
 	
-	@commands.command(aliases = ["serverinformation", "server_info", "server_information"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["serverinformation", "server_info", "server_information"], no_pm = True)
 	@checks.not_forbidden()
 	async def serverinfo(self, ctx):
 		'''Information about a server'''
@@ -382,14 +382,14 @@ class Discord:
 		embed.set_footer(text = "Created")
 		await self.bot.say(embed = embed)
 	
-	@commands.command(aliases = ["server_owner"], pass_context = True, no_pm = True)
+	@commands.command(aliases = ["server_owner"], no_pm = True)
 	@checks.not_forbidden()
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
 		owner = ctx.message.guild.owner
 		await self.bot.embed_reply("The owner of this server is {}".format(owner.mention), footer_text = str(owner), footer_icon_url = owner.avatar_url or owner.default_avatar_url)
 	
-	@commands.command(aliases = ["user_info"], pass_context = True)
+	@commands.command(aliases = ["user_info"])
 	@checks.not_forbidden()
 	async def userinfo(self, ctx):
 		'''Information about a user'''
@@ -413,7 +413,7 @@ class Discord:
 		# Include mention?
 		await self.bot.reply("", embed = embed)
 	
-	@commands.command(aliases = ["usertoid", "usernametoid", "name_to_id", "user_to_id", "username_to_id"], no_pm = True, pass_context = True)
+	@commands.command(aliases = ["usertoid", "usernametoid", "name_to_id", "user_to_id", "username_to_id"], no_pm = True)
 	@checks.not_forbidden()
 	async def nametoid(self, ctx, *, name : str):
 		'''Convert username to id'''
@@ -428,7 +428,7 @@ class Discord:
 	
 	# Checks
 	
-	@commands.command(aliases = ["here"], pass_context = True)
+	@commands.command(aliases = ["here"])
 	@checks.not_forbidden()
 	async def everyone(self, ctx):
 		'''
