@@ -88,8 +88,8 @@ class Resources:
 			return
 		data = data[0]
 		embed = discord.Embed(title = data["title"].capitalize(), description = "#{}".format(data["hex"]), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.add_field(name = "RGB", value = "{0[red]}, {0[green]}, {0[blue]}".format(data["rgb"]))
 		embed.add_field(name = "HSV", value = "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"]))
 		embed.set_image(url = data["imageUrl"])
@@ -271,8 +271,8 @@ class Resources:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(data["Error"]))
 			return
 		embed = discord.Embed(title = data["Title"], url = "http://www.imdb.com/title/{}".format(data["imdbID"]), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.description = "{0[Year]} {0[Type]}".format(data)
 		embed.add_field(name = "IMDb Rating", value = data["imdbRating"])
 		embed.add_field(name = "Runtime", value = data["Runtime"])
@@ -351,8 +351,8 @@ class Resources:
 		'''WIP'''
 		data = self.lichess_user_data
 		embed = discord.Embed(title = data["username"], url = data["url"], color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.description = "Online: {}\n".format(data["online"])
 		embed.description += "Member since {}\n".format(datetime.datetime.utcfromtimestamp(data["createdAt"] / 1000.0).strftime("%b %#d, %Y")) #
 		embed.add_field(name = "Games", value = "Played: {0[all]}\nRated: {0[rated]}\nWins: {0[win]}\nLosses: {0[loss]}\nDraws: {0[draw]}\nBookmarks: {0[bookmark]}\nAI: {0[ai]}".format(data["count"]))
@@ -380,8 +380,8 @@ class Resources:
 		'''WIP'''
 		data = self.lichess_tournaments_data["started"]
 		embed = discord.Embed(title = "Current Lichess Tournaments", color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		for tournament in data:
 			value = "{:g}+{} {} {rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], tournament["perf"]["name"], rated = "Rated" if tournament["rated"] else "Casual")
 			value += "\nEnds in: {:g}m".format((datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0) - datetime.datetime.utcnow()).total_seconds() // 60)
@@ -437,7 +437,7 @@ class Resources:
 			await self.bot.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
 		'''
-		paginator = commands.formatter.Paginator(prefix = "{}:".format(ctx.message.author.display_name), suffix = "")
+		paginator = commands.formatter.Paginator(prefix = "{}:".format(ctx.author.display_name), suffix = "")
 		for article in data["articles"]:
 			paginator.add_line("**{}** ({})".format(article["title"], article["publishedAt"].replace('T', " ").replace('Z', "")))
 			paginator.add_line("{}".format(article["description"]))
@@ -453,7 +453,7 @@ class Resources:
 		for number_emote in sorted(numbers.keys()):
 			await self.bot.add_reaction(response, number_emote)
 		while True:
-			emoji_response = await self.bot.wait_for_reaction(user = ctx.message.author, message = response, emoji = numbers.keys())
+			emoji_response = await self.bot.wait_for_reaction(user = ctx.author, message = response, emoji = numbers.keys())
 			reaction = emoji_response.reaction
 			number = numbers[reaction.emoji]
 			article = data["articles"][number - 1]
@@ -465,7 +465,7 @@ class Resources:
 			# output += "\n<{}>".format(article["url"])
 			output += "\n{}".format(article["url"])
 			output += "\nSelect a different number for another article"
-			await self.bot.edit_message(response, "{}: {}".format(ctx.message.author.display_name, output))
+			await self.bot.edit_message(response, "{}: {}".format(ctx.author.display_name, output))
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
@@ -548,8 +548,8 @@ class Resources:
 			if data[region]:
 				stats = data[region]["stats"]["quickplay"]
 				embed = discord.Embed(title = battletag, color = clients.bot_color)
-				avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
-				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+				avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+				embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
 				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
@@ -577,8 +577,8 @@ class Resources:
 			if data[region]:
 				stats = data[region]["stats"]["quickplay"]
 				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = clients.bot_color)
-				avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
-				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+				avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+				embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
 				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
@@ -610,8 +610,8 @@ class Resources:
 			if data[region]:
 				stats = data[region]["stats"]["competitive"]
 				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = clients.bot_color)
-				avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
-				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+				avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+				embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
 				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
@@ -657,8 +657,8 @@ class Resources:
 			return
 		data = data[0]
 		embed = discord.Embed(title = data["DeviceName"], color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		# Brand
 		if "Brand" in data: embed.add_field(name = "Brand", value = data["Brand"])
 		# Network (network_c?)
@@ -811,8 +811,8 @@ class Resources:
 			await self.bot.embed_reply("Error: " + data["error"])
 			return
 		embed = discord.Embed(title = data["player"], url = "https://www.realmeye.com/player/{}".format(player), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		if data["donator"] == "true": embed.description = "Donator"
 		embed.add_field(name = "Characters", value = data["chars"])
 		embed.add_field(name = "Total Fame", value = "{:,}".format(data["fame"]))
@@ -843,8 +843,8 @@ class Resources:
 			await self.bot.embed_reply("Error: " + data["error"])
 			return
 		embed = discord.Embed(title = "{}'s Characters".format(data["player"]), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		for character in data["characters"]:
 			value = "Fame: {0[fame]:,}, Exp: {0[exp]:,}, Rank: {0[place]:,}, Class Quests Completed: {0[cqc]}, Stats Maxed: {0[stats_maxed]}".format(character)
 			value += "\nHP: {0[hp]}, MP: {0[mp]}, Attack: {0[attack]}, Defense: {0[defense]}, Speed: {0[speed]}, Vitality: {0[vitality]}, Wisdom: {0[wisdom]}, Dexterity: {0[dexterity]}".format(character["stats"])
@@ -955,8 +955,8 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		embed = discord.Embed(title = data["name"], description = data["description"], color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.add_field(name = "Level", value = data["level"])
 		embed.add_field(name = "Weakness", value = data["weakness"])
 		embed.add_field(name = "XP/Kill", value = data["xp"])
@@ -981,8 +981,8 @@ class Resources:
 		for stat in stats_names:
 			stats[stat] = next(data)
 		embed = discord.Embed(title = username, url = "http://services.runescape.com/m=hiscore/compare?user1={}".format(username.replace(' ', '+')), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 
 		output = ["`{}`".format(name) for name in stats_names]
 		embed.add_field(name = "Skill", value = '\n'.join(output))
@@ -1224,7 +1224,7 @@ class Resources:
 		for number_emote in sorted(numbers.keys())[:num_results]:
 			await self.bot.add_reaction(response, number_emote)
 		while True:
-			emoji_response = await self.bot.wait_for_reaction(user = ctx.message.author, message = response, emoji = sorted(numbers.keys())[:num_results])
+			emoji_response = await self.bot.wait_for_reaction(user = ctx.author, message = response, emoji = sorted(numbers.keys())[:num_results])
 			reaction = emoji_response.reaction
 			number = numbers[reaction.emoji]
 			definition = data["list"][number - 1]
@@ -1262,8 +1262,8 @@ class Resources:
 		pressure = weather.get_pressure()["press"]
 		visibility = weather.get_visibility_distance()
 		embed = discord.Embed(description = "**__{}__**".format(location.get_name()), color = clients.bot_color, timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None))
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.add_field(name = "Conditions", value = "{}{}".format(condition, emote))
 		embed.add_field(name = "Temperature", value = "{}°C\n{}°F".format(weather.get_temperature(unit = "celsius")["temp"], weather.get_temperature(unit = "fahrenheit")["temp"]))
 		embed.add_field(name = "Wind", value = "{0} {1:.2f} km/h\n{0} {2:.2f} mi/h".format(self.wind_degrees_to_direction(wind["deg"]), wind["speed"] * 3.6, wind["speed"] * 2.236936))
@@ -1361,8 +1361,8 @@ class Resources:
 				await self.bot.embed_reply(":no_entry: Error: {}".format(data["reason"]))
 				return
 		embed = discord.Embed(title = data["name"], url = "http://us.battle.net/wow/en/character/{}/{}/".format(data["realm"].replace(' ', '-'), data["name"]), description = "{} ({})".format(data["realm"], data["battlegroup"]), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.add_field(name = "Level", value = data["level"])
 		embed.add_field(name = "Achievement Points", value = data["achievementPoints"])
 		embed.add_field(name = "Class", value = "{}\n[Talent Calculator](http://us.battle.net/wow/en/tool/talent-calculator#{})".format(classes.get(data["class"], "Unknown"), data["calcClass"]))
@@ -1381,8 +1381,8 @@ class Resources:
 		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?fields=statistics&apikey={}".format(realm, character, credentials.battle_net_api_key)) as resp:
 			data = await resp.json()
 		embed = discord.Embed(title = data["name"], url = "http://us.battle.net/wow/en/character/{}/{}/".format(data["realm"].replace(' ', '-'), data["name"]), description = "{} ({})".format(data["realm"], data["battlegroup"]), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		statistics = data["statistics"]
 	
 	@commands.group(invoke_without_command = True)

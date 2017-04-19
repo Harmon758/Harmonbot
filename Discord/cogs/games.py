@@ -73,7 +73,7 @@ class Games:
 	@checks.not_forbidden()
 	async def adventure_stats(self, ctx):
 		'''Stats'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		await self.bot.embed_reply("\n:fishing_pole_and_fish: Fishing xp: {} (Level {})"
 		"\n:herb: Foraging xp: {} (Level {})"
 		"\n:pick: Mining xp: {} (Level {})"
@@ -84,7 +84,7 @@ class Games:
 	@checks.not_forbidden()
 	async def stats_woodcutting(self, ctx):
 		'''Woodcutting stats'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		woodcutting_xp = player.woodcutting_xp
 		await self.bot.embed_reply("\n:evergreen_tree: Woodcutting xp: {}\n{}\n{} xp to next level".format(woodcutting_xp, self.level_bar(woodcutting_xp), adventure.xp_left_to_next_lvl(woodcutting_xp)))
 	
@@ -92,7 +92,7 @@ class Games:
 	@checks.not_forbidden()
 	async def stats_foraging(self, ctx):
 		'''Foraging stats'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		foraging_xp = player.foraging_xp
 		await self.bot.embed_reply("\n:herb: Foraging xp: {}\n{}\n{} xp to next level".format(foraging_xp, self.level_bar(foraging_xp), adventure.xp_left_to_next_lvl(foraging_xp)))
 	
@@ -109,7 +109,7 @@ class Games:
 	@checks.not_forbidden()
 	async def adventure_inventory(self, ctx, *, item : str = ""):
 		'''Inventory'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		inventory = player.inventory
 		if item in inventory:
 			await self.bot.embed_reply("{}: {}".format(item, inventory[item]))
@@ -120,7 +120,7 @@ class Games:
 	@checks.not_forbidden()
 	async def adventure_examine(self, ctx, *, item : str):
 		'''Examine items'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		inventory = player.inventory
 		if item in inventory:
 			if item in adventure.examine_messages:
@@ -134,7 +134,7 @@ class Games:
 	@checks.not_forbidden()
 	async def adventure_forage(self, ctx, *, item : str = ""):
 		'''Foraging'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		started = player.start_foraging(item)
 		if started == "foraging":
 			stopped = player.stop_foraging()
@@ -158,7 +158,7 @@ class Games:
 	@checks.not_forbidden()
 	async def forage_start(self, ctx, *, item : str):
 		'''Start foraging'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		started = player.start_foraging(item)
 		if started is True:
 			await self.bot.embed_reply("\n:herb: You have started foraging for {}".format(item))
@@ -172,7 +172,7 @@ class Games:
 	@checks.not_forbidden()
 	async def forage_stop(self, ctx):
 		'''Stop foraging'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		stopped = player.stop_foraging()
 		if stopped[0]:
 			output = "\n:herb: You were foraging {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and xp. While you were foraging, you also found {0[3]} {1}".format(stopped, adventure.forageables[stopped[0]][0])
@@ -198,7 +198,7 @@ class Games:
 		items: items to use to attempt to create something else
 		Use quotes for spaces in item names
 		'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		created = player.create_item(items)
 		if created is None:
 			await self.bot.embed_reply("You don't have those items")
@@ -211,7 +211,7 @@ class Games:
 	@checks.not_forbidden()
 	async def adventure_woodcutting(self, ctx, *, wood_type : str = ""):
 		'''Woodcutting'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		started = player.start_woodcutting(wood_type)
 		if started == "woodcutting":
 			stopped = player.stop_woodcutting()
@@ -232,7 +232,7 @@ class Games:
 	@checks.not_forbidden()
 	async def woodcutting_start(self, ctx, *, wood_type : str):
 		'''Start chopping wood'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		started = player.start_woodcutting(wood_type)
 		if started is True:
 			await self.bot.embed_reply("\n:evergreen_tree: You have started chopping {} trees".format(wood_type))
@@ -243,9 +243,9 @@ class Games:
 			await self.bot.embed_reply(":no_entry: You're currently {}! You can't start woodcutting right now".format(started))
 	
 	async def woodcutting_active(self, ctx, wood_type):
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		ask_message, embed = await self.bot.embed_reply("\n:grey_question: Would you like to chop {} trees actively? Yes/No".format(wood_type))
-		message = await self.bot.wait_for_message(timeout = 60, author = ctx.message.author, check = lambda m: m.content.lower() in ('y', "yes", 'n', "no"))
+		message = await self.bot.wait_for_message(timeout = 60, author = ctx.author, check = lambda m: m.content.lower() in ('y', "yes", 'n', "no"))
 		await self.bot.delete_message(ask_message)
 		if not message or message.content.lower() in ('n', "no"):
 			if message:
@@ -264,7 +264,7 @@ class Games:
 			await self.bot.delete_message(chopping)
 			prompt = random.choice(["chop", "whack", "swing", "cut"])
 			prompt_message, embed = await self.bot.embed_reply('Reply with "{}" in the next 10 sec. to continue'.format(prompt))
-			message = await self.bot.wait_for_message(timeout = 10, author = ctx.message.author, content = prompt)
+			message = await self.bot.wait_for_message(timeout = 10, author = ctx.author, content = prompt)
 			if message:
 				chopped = player.chop_once(wood_type)
 				if chopped_message:
@@ -278,7 +278,7 @@ class Games:
 	@checks.not_forbidden()
 	async def woodcutting_stop(self, ctx):
 		'''Stop chopping wood'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		stopped = player.stop_woodcutting()
 		if stopped[0]:
 			await self.bot.embed_reply("\n:evergreen_tree: You were chopping {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and {0[3]} xp".format(stopped))
@@ -297,7 +297,7 @@ class Games:
 	@checks.not_forbidden()
 	async def woodcutting_rate(self, ctx, *, wood_type : str):
 		'''Rate of chopping certain wood'''
-		player = self.get_adventure_player(ctx.message.author.id)
+		player = self.get_adventure_player(ctx.author.id)
 		if wood_type in adventure.wood_types:
 			await self.bot.embed_reply("You will get {:.2f} {}/min. at your current level".format(player.wood_rate(wood_type) * player.woodcutting_rate, wood_type))
 		else:
@@ -317,15 +317,15 @@ class Games:
 		hand_string = self.cards_to_string(hand.cards)
 		dealer_total = self.blackjack_total(dealer.cards)
 		hand_total = self.blackjack_total(hand.cards)
-		await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
+		await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})".format(dealer_string, dealer_total, ctx.author.display_name, hand_string, hand_total))
 		await self.bot.embed_reply("Hit or Stay?")
 		while True:
-			action = await self.bot.wait_for_message(author = ctx.message.author, check = lambda msg: msg.content.lower() in ["hit", "stay"])
+			action = await self.bot.wait_for_message(author = ctx.author, check = lambda msg: msg.content.lower() in ["hit", "stay"])
 			if action.content.lower() == "hit":
 				hand.add(deck.deal())
 				hand_string = self.cards_to_string(hand.cards)
 				hand_total = self.blackjack_total(hand.cards)
-				await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
+				await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.author.display_name, hand_string, hand_total))
 				if hand_total > 21:
 					await self.bot.embed_reply(":boom: You have busted\nYou lost :(")
 					return
@@ -342,7 +342,7 @@ class Games:
 					dealer.add(deck.deal())
 					dealer_string = self.cards_to_string(dealer.cards)
 					dealer_total = self.blackjack_total(dealer.cards)
-					await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
+					await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.author.display_name, hand_string, hand_total))
 					if dealer_total > 21:
 						await self.bot.embed_reply("The dealer busted\nYou win!")
 						return
@@ -391,19 +391,19 @@ class Games:
 		You can play me as well
 		'''
 		# check if already playing a match in this channel
-		if self.get_chess_match(ctx.message.channel, ctx.message.author):
+		if self.get_chess_match(ctx.channel, ctx.author):
 			await self.bot.embed_reply(":no_entry: You're already playing a chess match here")
 			return
 		# prompt for opponent
 		if not opponent:
 			await self.bot.embed_reply("Who would you like to play?")
-			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel)
+			message = await self.bot.wait_for_message(author = ctx.author, channel = ctx.channel)
 			opponent = message.content
 		color = None
 		if opponent.lower() in ("harmonbot", "you"):
 			opponent = self.bot.user
 		elif opponent.lower() in ("myself", "me"):
-			opponent = ctx.message.author
+			opponent = ctx.author
 			color = 'w'
 		else:
 			opponent = await utilities.get_user(ctx, opponent)
@@ -411,33 +411,33 @@ class Games:
 				await self.bot.embed_reply(":no_entry: Opponent not found")
 				return
 		# check if opponent already playing a match in this channel
-		if opponent != self.bot.user and self.get_chess_match(ctx.message.channel, opponent):
+		if opponent != self.bot.user and self.get_chess_match(ctx.channel, opponent):
 			await self.bot.embed_reply(":no_entry: Your chosen opponent is playing a chess match here")
 			return
 		# prompt for color
-		if opponent == ctx.message.author:
+		if opponent == ctx.author:
 			color = 'w'
 		if not color:
 			await self.bot.embed_reply("Would you like to play white, black, or random?")
-			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda msg: msg.content.lower() in ("white", "black", "random", 'w', 'b', 'r'))
+			message = await self.bot.wait_for_message(author = ctx.author, channel = ctx.channel, check = lambda msg: msg.content.lower() in ("white", "black", "random", 'w', 'b', 'r'))
 			color = message.content.lower()
 		if color in ("random", 'r'):
 			color = random.choice(('w', 'b'))
 		if color in ("white", 'w'):
-			white_player = ctx.message.author
+			white_player = ctx.author
 			black_player = opponent
 		elif color in ("black", 'b'):
 			white_player = opponent
-			black_player = ctx.message.author
+			black_player = ctx.author
 		# prompt opponent
-		if opponent != self.bot.user and opponent != ctx.message.author:
-			await self.bot.say("{}: {} has challenged you to a chess match\nWould you like to accept? Yes/No".format(opponent.mention, ctx.message.author))
-			message = await self.bot.wait_for_message(author = opponent, channel = ctx.message.channel, check = lambda msg: msg.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
+		if opponent != self.bot.user and opponent != ctx.author:
+			await self.bot.say("{}: {} has challenged you to a chess match\nWould you like to accept? Yes/No".format(opponent.mention, ctx.author))
+			message = await self.bot.wait_for_message(author = opponent, channel = ctx.channel, check = lambda msg: msg.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
 			if not message or message.content.lower() in ("no", 'n'):
-				await self.bot.say("{}: {} has declined your challenge".format(ctx.message.author.mention, opponent))
+				await self.bot.say("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
 				return
 		match = chess_match()
-		match.initialize(self.bot, ctx.message.channel, white_player, black_player)
+		match.initialize(self.bot, ctx.channel, white_player, black_player)
 		self.chess_matches.append(match)
 	
 	def get_chess_match(self, text_channel, player):
@@ -449,7 +449,7 @@ class Games:
 	@chess.group(name = "board", aliases = ["match"], invoke_without_command = True)
 	async def chess_board(self, ctx):
 		'''Current match/board'''
-		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		match = self.get_chess_match(ctx.channel, ctx.author)
 		if not match:
 			await self.bot.embed_reply(":no_entry: Chess match not found")
 			return
@@ -458,7 +458,7 @@ class Games:
 	@chess_board.command(name = "text")
 	async def chess_board_text(self, ctx):
 		'''Text version of the current board'''
-		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		match = self.get_chess_match(ctx.channel, ctx.author)
 		if not match:
 			await self.bot.embed_reply(":no_entry: Chess match not found")
 			return
@@ -467,7 +467,7 @@ class Games:
 	@chess.command(name = "fen")
 	async def chess_fen(self, ctx):
 		'''FEN of the current board'''
-		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		match = self.get_chess_match(ctx.channel, ctx.author)
 		if not match:
 			await self.bot.embed_reply(":no_entry: Chess match not found")
 			return
@@ -476,7 +476,7 @@ class Games:
 	@chess.command(name = "pgn", hidden = True)
 	async def chess_pgn(self, ctx):
 		'''PGN of the current game'''
-		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		match = self.get_chess_match(ctx.channel, ctx.author)
 		if not match:
 			await self.bot.embed_reply(":no_entry: Chess match not found")
 			return
@@ -485,7 +485,7 @@ class Games:
 	@chess.command(name = "turn", hidden = True)
 	async def chess_turn(self, ctx):
 		'''Who's turn it is to move'''
-		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		match = self.get_chess_match(ctx.channel, ctx.author)
 		if not match:
 			await self.bot.embed_reply(":no_entry: Chess match not found")
 			return
@@ -516,7 +516,7 @@ class Games:
 	@chess.command(name = "previous", aliases = ["last"], hidden = True)
 	async def chess_previous(self, ctx):
 		'''Previous move'''
-		match = self.get_chess_match(ctx.message.channel, ctx.message.author)
+		match = self.get_chess_match(ctx.channel, ctx.author)
 		if not match:
 			await self.bot.embed_reply(":no_entry: Chess match not found")
 			return
@@ -530,7 +530,7 @@ class Games:
 	async def chess_flip(self, ctx):
 		'''Flip the table over'''
 		self._chess_board.clear()
-		await self.bot.say(ctx.message.author.name + " flipped the table over in anger!")
+		await self.bot.say(ctx.author.name + " flipped the table over in anger!")
 	"""
 	
 	@commands.command(aliases = ["talk", "ask"])
@@ -574,9 +574,9 @@ class Games:
 	@checks.is_owner()
 	async def gofish_start(self, ctx, *players : str):
 		'''WIP'''
-		self.gofish_channel = ctx.message.channel
-		if ctx.message.guild:
-			for member in ctx.message.guild.members:
+		self.gofish_channel = ctx.channel
+		if ctx.guild:
+			for member in ctx.guild.members:
 				if member.name in players:
 					self.gofish_players.append(member)
 					break
@@ -592,13 +592,13 @@ class Games:
 	@gofish.command(hidden = True, name = "hand")
 	async def gofish_hand(self, ctx):
 		'''WIP'''
-		if ctx.message.author in gofish_players:
-			await self.bot.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.message.author) + 1))
+		if ctx.author in gofish_players:
+			await self.bot.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
 	
 	@gofish.command(hidden = True, name = "ask")
 	async def gofish_ask(self, ctx):
 		'''WIP'''
-		if ctx.message.author in gofish_players:
+		if ctx.author in gofish_players:
 			pass
 	
 	@commands.group(invoke_without_command = True)
@@ -615,7 +615,7 @@ class Games:
 			max_value = int(options[0])
 		else:
 			await self.bot.embed_reply("What range of numbers would you like to guess to? 1 to _")
-			max_value = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
+			max_value = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.author, check = utilities.message_is_digit_gtz)
 			if max_value is None:
 				max_value = 10
 			else:
@@ -623,14 +623,14 @@ class Games:
 		answer = random.randint(1, max_value)
 		if not tries:
 			await self.bot.embed_reply("How many tries would you like?")
-			tries = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
+			tries = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.author, check = utilities.message_is_digit_gtz)
 			if tries is None:
 				tries = 1
 			else:
 				tries = int(tries.content)
 		await self.bot.embed_reply("Guess a number between 1 to {}".format(max_value))
 		while tries != 0:
-			guess = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.message.author, check = utilities.message_is_digit_gtz)
+			guess = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.author, check = utilities.message_is_digit_gtz)
 			if guess is None:
 				await self.bot.embed_reply("Sorry, you took too long\nIt was {}".format(answer))
 				return
@@ -769,11 +769,11 @@ class Games:
 		width: 2 - 100
 		height: 2 - 100
 		'''
-		if ctx.message.channel.id in self.mazes:
+		if ctx.channel.id in self.mazes:
 			await self.bot.embed_reply(":no_entry: There's already a maze game going on")
 			return
-		self.mazes[ctx.message.channel.id] = maze.Maze(width, height, random_start = random_start, random_end = random_end)
-		maze_instance = self.mazes[ctx.message.channel.id]
+		self.mazes[ctx.channel.id] = maze.Maze(width, height, random_start = random_start, random_end = random_end)
+		maze_instance = self.mazes[ctx.channel.id]
 		maze_message, embed = await self.bot.embed_reply(clients.code_block.format(maze_instance.print_visible()))
 		'''
 		maze_print = ""
@@ -787,7 +787,7 @@ class Games:
 		# await self.bot.reply(clients.code_block.format(repr(maze_instance)))
 		convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
 		while not maze_instance.reached_end():
-			move = await self.bot.wait_for_message(check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.message.channel) # author = ctx.message.author
+			move = await self.bot.wait_for_message(check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel) # author = ctx.author
 			moved = maze_instance.move(convert_move[move.content.lower()])
 			response = clients.code_block.format(maze_instance.print_visible())
 			if not moved:
@@ -800,14 +800,14 @@ class Games:
 				pass
 			maze_message = new_maze_message
 		await self.bot.embed_reply("Congratulations! You reached the end of the maze in {} moves".format(maze_instance.move_counter))
-		del self.mazes[ctx.message.channel.id]
+		del self.mazes[ctx.channel.id]
 	
 	@maze.command(name = "current")
 	@checks.not_forbidden()
 	async def maze_current(self, ctx):
 		'''Current maze game'''
-		if ctx.message.channel.id in self.mazes:
-			await self.bot.embed_reply(clients.code_block.format(self.mazes[ctx.message.channel.id].print_visible()))
+		if ctx.channel.id in self.mazes:
+			await self.bot.embed_reply(clients.code_block.format(self.mazes[ctx.channel.id].print_visible()))
 		else:
 			await self.bot.embed_reply(":no_entry: There's no maze game currently going on")
 	
@@ -831,7 +831,7 @@ class Games:
 			self.poker_deck = pydealer.Deck()
 			self.poker_deck.shuffle()
 			self.poker_pot = 0
-			await self.bot.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.message.author.display_name, ctx.prefix))
+			await self.bot.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.author.display_name, ctx.prefix))
 		else:
 			self.poker_status = "pre-flop"
 			await self.bot.embed_say("The poker round has started\nPlayers: {}".format(" ".join([player.mention for player in self.poker_players])))
@@ -884,9 +884,9 @@ class Games:
 	@poker.command(name = "join")
 	async def poker_join(self, ctx):
 		if self.poker_status == "started":
-			self.poker_players.append(ctx.message.author)
-			self.poker_hands[ctx.message.author.id] = self.poker_deck.deal(2)
-			await self.bot.embed_say("{} has joined the poker match".format(ctx.message.author.display_name))
+			self.poker_players.append(ctx.author)
+			self.poker_hands[ctx.author.id] = self.poker_deck.deal(2)
+			await self.bot.embed_say("{} has joined the poker match".format(ctx.author.display_name))
 		elif self.poker_status is None:
 			await self.bot.embed_reply("There's not currently a round of poker going on\nUse `{}poker start` to start one".format(ctx.prefix))
 		else:
@@ -894,15 +894,15 @@ class Games:
 	
 	@poker.command(name = "raise")
 	async def poker_raise(self, ctx, points : int):
-		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
+		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			if points > self.poker_current_bet:
 				self.poker_bets[self.poker_turn.id] = points
 				self.poker_current_bet = points
-				await self.bot.embed_reply("{} has raised to {}".format(ctx.message.author.display_name, points))
+				await self.bot.embed_reply("{} has raised to {}".format(ctx.author.display_name, points))
 				self.poker_turn = None
 			elif points == self.poker_current_bet:
 				self.poker_bets[self.poker_turn.id] = points
-				await self.bot.embed_say("{} has called".format(ctx.message.author.display_name))
+				await self.bot.embed_say("{} has called".format(ctx.author.display_name))
 				self.poker_turn = None
 			else:
 				await self.bot.embed_reply("The current bet is more than that")
@@ -911,32 +911,32 @@ class Games:
 	
 	@poker.command(name = "call")
 	async def poker_call(self, ctx):
-		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
+		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			if self.poker_current_bet == 0 or (self.poker_turn.id in self.poker_bets and self.poker_bets[self.poker_turn.id] == self.poker_current_bet):
 				await self.bot.embed_reply("You can't call\nYou have checked instead")
-				await self.bot.embed_say("{} has checked".format(ctx.message.author.display_name))
+				await self.bot.embed_say("{} has checked".format(ctx.author.display_name))
 			else:
 				self.poker_bets[self.poker_turn.id] = self.poker_current_bet
-				await self.bot.embed_say("{} has called".format(ctx.message.author.display_name))
+				await self.bot.embed_say("{} has called".format(ctx.author.display_name))
 			self.poker_turn = None
 		else:
 			await self.bot.embed_reply(":no_entry: You can't do that right now")
 	
 	@poker.command(name = "check")
 	async def poker_check(self, ctx):
-		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
+		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			if self.poker_current_bet != 0 and (self.poker_turn.id not in self.poker_bets or self.poker_bets[self.poker_turn.id] < self.poker_current_bet):
 				await self.bot.embed_reply(":no_entry: You can't check")
 			else:
 				self.poker_bets[self.poker_turn.id] = self.poker_current_bet
-				await self.bot.embed_say("{} has checked".format(ctx.message.author.display_name))
+				await self.bot.embed_say("{} has checked".format(ctx.author.display_name))
 				self.poker_turn = None
 		else:
 			await self.bot.embed_reply(":no_entry: You can't do that right now.")
 	
 	@poker.command(name = "fold")
 	async def poker_fold(self, ctx):
-		if self.poker_turn and self.poker_turn.id == ctx.message.author.id:
+		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			self.poker_bets[self.poker_turn.id] = -1
 			self.poker_folded.append(self.poker_turn)
 			self.poker_turn = None
@@ -968,7 +968,7 @@ class Games:
 		response, embed = await self.bot.say("Please choose 10 reactions")
 		while len(response.reactions) < 10:
 			await self.bot.wait_for_reaction(message = response)
-			response = await self.bot.get_message(ctx.message.channel, response.id)
+			response = await self.bot.get_message(ctx.channel, response.id)
 		reactions = response.reactions
 		reaction = random.choice(reactions)
 		await self.bot.edit_message(response, "Please wait..")
@@ -1142,14 +1142,14 @@ class Games:
 	@taboo.command(hidden = True, name = "start", no_pm = True)
 	async def taboo_start(self, ctx, player : str):
 		'''WIP'''
-		self.taboo_players.append(ctx.message.author)
+		self.taboo_players.append(ctx.author)
 		for member in self.message.guild.members:
 			if member.name == player:
 				self.taboo_players.append(member)
 				break
 		await self.bot.embed_reply(" has started a game of Taboo with " + taboo_players[1].mention)
 		await self.bot.whisper("You have started a game of Taboo with " + taboo_players[1].name)
-		await self.bot.send_message(taboo_players[1], ctx.message.author.name + " has started a game of Taboo with you.")
+		await self.bot.send_message(taboo_players[1], ctx.author.name + " has started a game of Taboo with you.")
 	
 	@taboo.command(hidden = True, name = "nextround") # no_pm = True ?
 	async def taboo_nextround(self, ctx):
@@ -1177,7 +1177,7 @@ class Games:
 				bet_message, embed = await self.bot.embed_say(None, title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to bet".format(self.bet_countdown))
 				bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
 				while self.bet_countdown:
-					message = await self.bot.wait_for_message(timeout = self.bet_countdown, channel = ctx.message.channel, check = lambda m: m.content.isdigit())
+					message = await self.bot.wait_for_message(timeout = self.bet_countdown, channel = ctx.channel, check = lambda m: m.content.isdigit())
 					if message:
 						if int(message.content) <= self.trivia_stats[message.author.id][2]: # check if new player
 							bets[message.author] = int(message.content)
@@ -1193,7 +1193,7 @@ class Games:
 			answer_message, embed = await self.bot.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to answer".format(self.trivia_countdown))
 			countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
 			while self.trivia_countdown:
-				message = await self.bot.wait_for_message(timeout = self.trivia_countdown, channel = ctx.message.channel)
+				message = await self.bot.wait_for_message(timeout = self.trivia_countdown, channel = ctx.channel)
 				if message and not message.content.startswith(('!', '>')):
 					responses[message.author] = message.content
 			while not countdown_task.done():
@@ -1276,15 +1276,15 @@ class Games:
 	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
 	async def trivia_score(self, ctx):
 		'''Trivia score'''
-		correct = self.trivia_stats[ctx.message.author.id][0]
-		incorrect = self.trivia_stats[ctx.message.author.id][1]
+		correct = self.trivia_stats[ctx.author.id][0]
+		incorrect = self.trivia_stats[ctx.author.id][1]
 		correct_percentage = correct / (correct + incorrect) * 100
 		await self.bot.embed_reply("You have answered {}/{} ({:.2f}%) correctly.".format(correct, correct + incorrect, correct_percentage))
 	
 	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
-		cash = self.trivia_stats[ctx.message.author.id][2]
+		cash = self.trivia_stats[ctx.author.id][2]
 		await self.bot.embed_reply("You have $" + utilities.add_commas(cash))
 	
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
@@ -1315,33 +1315,33 @@ class Games:
 	async def war_start(self, ctx, *players : str):
 		'''Start a game of War'''
 		self.war_players = []
-		for member in ctx.message.guild.members:
+		for member in ctx.guild.members:
 			if member.name in players:
 				self.war_players.append(member)
 				break
 		war.start(len(players))
-		self.war_channel = ctx.message.channel
+		self.war_channel = ctx.channel
 		war_players_string = ""
 		for player in self.war_players:
 			war_players_string += player.name + " and "
-		await self.bot.embed_reply("{} has started a game of War between {}!".format(ctx.message.author.display_name, war_players_string[:-5]))
+		await self.bot.embed_reply("{} has started a game of War between {}!".format(ctx.author.display_name, war_players_string[:-5]))
 	
 	@war.command(name = "hand")
 	async def war_hand(self, ctx):
 		'''See your current hand'''
-		if ctx.message.author in self.war_players:
-			await self.bot.whisper("Your hand: " + war.hand(self.war_players.index(ctx.message.author) + 1))
+		if ctx.author in self.war_players:
+			await self.bot.whisper("Your hand: " + war.hand(self.war_players.index(ctx.author) + 1))
 	
 	@war.command(name = "left")
 	async def war_left(self, ctx):
 		'''See how many cards you have left'''
-		if ctx.message.author in self.war_players:
-			await self.bot.embed_reply("You have {} cards left".format(war.card_count(self.war_players.index(ctx.message.author) + 1)))
+		if ctx.author in self.war_players:
+			await self.bot.embed_reply("You have {} cards left".format(war.card_count(self.war_players.index(ctx.author) + 1)))
 	
 	@war.command(name = "play")
 	async def war_play(self, ctx, *card : str):
 		'''Play a card'''
-		if ctx.message.author in self.war_players:
+		if ctx.author in self.war_players:
 			player_number = self.war_players.index(message.author) + 1
 			winner, cardsplayed, tiedplayers = war.play(player_number, ' '.join(card))
 			if winner == -1:

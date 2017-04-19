@@ -48,7 +48,7 @@ class Reactions:
 		answer = random.randint(1, 10)
 		for number_emote in sorted(self.numbers.keys()):
 			await self.bot.add_reaction(guess_message, number_emote)
-		self.reaction_messages[guess_message.id] = lambda reaction, user: self.guessr_processr(ctx.message.author, answer, embed, reaction, user)
+		self.reaction_messages[guess_message.id] = lambda reaction, user: self.guessr_processr(ctx.author, answer, embed, reaction, user)
 	
 	async def guessr_processr(self, player, answer, embed, reaction, user):
 		if user == player and reaction.emoji in self.numbers:
@@ -80,7 +80,7 @@ class Reactions:
 		for number_emote in sorted(numbers.keys()):
 			await self.bot.add_reaction(response, number_emote)
 		while True:
-			emoji_response = await self.bot.wait_for_reaction(user = ctx.message.author, message = response, emoji = numbers.keys())
+			emoji_response = await self.bot.wait_for_reaction(user = ctx.author, message = response, emoji = numbers.keys())
 			reaction = emoji_response.reaction
 			number = numbers[reaction.emoji]
 			article = data["articles"][number - 1]
@@ -92,7 +92,7 @@ class Reactions:
 			# output += "\n<{}>".format(article["url"])
 			output += "\n{}".format(article["url"])
 			output += "\nSelect a different number for another article"
-			await self.bot.edit_message(response, "{}: {}".format(ctx.message.author.display_name, output))
+			await self.bot.edit_message(response, "{}: {}".format(ctx.author.display_name, output))
 	
 	# TODO: urband
 	# TODO: rtg
@@ -112,7 +112,7 @@ class Reactions:
 		self.mazes[maze_message.id] = maze_instance
 		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
 			await self.bot.add_reaction(maze_message, emote)
-		self.reaction_messages[maze_message.id] = lambda reaction, user: self.mazer_processr(ctx.message.author, reaction, user)
+		self.reaction_messages[maze_message.id] = lambda reaction, user: self.mazer_processr(ctx.author, reaction, user)
 	
 	async def mazer_processr(self, player, reaction, user):
 		if user == player and reaction.emoji in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
@@ -142,11 +142,11 @@ class Reactions:
 	async def playingr(self, ctx):
 		'''Audio player'''
 		try:
-			embed = self.bot.cogs["Audio"].players[ctx.message.guild.id].current_embed()
+			embed = self.bot.cogs["Audio"].players[ctx.guild.id].current_embed()
 		except errors.AudioNotPlaying:
 			player_message, embed = await self.bot.embed_reply(":speaker: There is no song currently playing")
 		else:
-			embed.set_author(name = ctx.message.author.display_name, icon_url = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url)
+			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url or ctx.author.default_avatar_url)
 			player_message, embed = await self.bot.say(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 		for control_emote in self.controls.keys():
@@ -159,29 +159,29 @@ class Reactions:
 	async def playingr_processr(self, ctx, reaction, user):
 		if reaction.emoji in self.controls:
 			if self.controls[reaction.emoji] == "pause_resume":
-				if utilities.get_permission(ctx, "pause", id = user.id) or user == ctx.message.guild.owner or user.id == clients.owner_id:
+				if utilities.get_permission(ctx, "pause", id = user.id) or user == ctx.guild.owner or user.id == clients.owner_id:
 					embed = discord.Embed(color = clients.bot_color).set_author(name = user.display_name, icon_url = user.avatar_url or user.default_avatar_url)
 					try:
-						self.bot.cogs["Audio"].players[ctx.message.guild.id].pause()
+						self.bot.cogs["Audio"].players[ctx.guild.id].pause()
 					except errors.AudioNotPlaying:
 						embed.description = ":no_entry: There is no song to pause"
 					except errors.AudioAlreadyDone:
-						self.bot.cogs["Audio"].players[ctx.message.guild.id].resume()
+						self.bot.cogs["Audio"].players[ctx.guild.id].resume()
 						embed.description = ":play_pause: Resumed song"
 					else:
 						embed.description = ":pause_button: Paused song"
-					await self.bot.send_message(ctx.message.channel, embed = embed)
+					await self.bot.send_message(ctx.channel, embed = embed)
 					await self.bot.attempt_delete_message(ctx.message)
 			elif self.controls[reaction.emoji] in ("skip", "replay", "shuffle", "radio"):
-				if utilities.get_permission(ctx, self.controls[reaction.emoji], id = user.id) or user.id in (ctx.message.guild.owner.id, clients.owner_id):
+				if utilities.get_permission(ctx, self.controls[reaction.emoji], id = user.id) or user.id in (ctx.guild.owner.id, clients.owner_id):
 					message = copy.copy(ctx.message)
 					message.content = "{}{}".format(ctx.prefix, self.controls[reaction.emoji])
 					await self.bot.process_commands(message)
 					# Timestamp for radio
 			elif self.controls[reaction.emoji] in ("volume_down", "volume_up"):
-				if utilities.get_permission(ctx, "volume", id = user.id) or user.id in (ctx.message.guild.owner, clients.owner_id):
+				if utilities.get_permission(ctx, "volume", id = user.id) or user.id in (ctx.guild.owner, clients.owner_id):
 					try:
-						current_volume = self.bot.cogs["Audio"].players[ctx.message.guild.id].get_volume()
+						current_volume = self.bot.cogs["Audio"].players[ctx.guild.id].get_volume()
 					except errors.AudioNotPlaying:
 						await self.bot.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
 					if self.controls[reaction.emoji] == "volume_down": set_volume = current_volume - 10

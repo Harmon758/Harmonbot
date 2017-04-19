@@ -41,8 +41,8 @@ class Meta:
 		'''
 		if len(commands) == 0:
 			embed = discord.Embed(title = "Categories", color = clients.bot_color)
-			avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-			embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+			avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+			embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 			embed.description = "  ".join("__{}__".format(category) for category in sorted(self.bot.cogs, key = str.lower))
 			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
 			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with)) # stats?
@@ -88,15 +88,15 @@ class Meta:
 			embeds = self.bot.formatter.format_help_for(ctx, command)
 		
 		if len(embeds) > 1:
-			destination = ctx.message.author
-			if not isinstance(ctx.message.channel, discord.DMChannel):
+			destination = ctx.author
+			if not isinstance(ctx.channel, discord.DMChannel):
 				await self.bot.embed_reply("Check your DMs")
 		else:
-			destination = ctx.message.channel
+			destination = ctx.channel
 		for embed in embeds:
-			if destination == ctx.message.channel:
-				avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-				embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+			if destination == ctx.channel:
+				avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+				embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 			await self.bot.send_message(destination, embed = embed)
 	
 	@help.command(name = "all")
@@ -105,7 +105,7 @@ class Meta:
 		embeds = self.bot.formatter.format_help_for(ctx, self.bot)
 		for embed in embeds:
 			await self.bot.whisper(embed = embed)
-		if not isinstance(ctx.message.channel, discord.DMChannel):
+		if not isinstance(ctx.channel, discord.DMChannel):
 			await self.bot.embed_reply("Check your DMs")
 	
 	@help.command(name = "other")
@@ -114,8 +114,8 @@ class Meta:
 		# TODO: Update
 		# TODO: Add last updated date?
 		embed = discord.Embed(title = "Commands not in {}help".format(ctx.prefix), color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.description = "See `{}help` for the main commands".format(ctx.prefix)
 		embed.add_field(name = "Conversion Commands", value = "see `{}conversions`".format(ctx.prefix), inline = False)
 		embed.add_field(name = "In Progress", value = "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", inline = False)

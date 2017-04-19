@@ -32,7 +32,7 @@ class Discord:
 		if not member:
 			await self.bot.embed_reply(":no_entry: Member not found")
 			return
-		role = discord.utils.find(lambda r: utilities.remove_symbols(r.name).startswith(role), ctx.message.guild.roles)
+		role = discord.utils.find(lambda r: utilities.remove_symbols(r.name).startswith(role), ctx.guild.roles)
 		if not role:
 			await self.bot.embed_reply(":no_entry: Role not found")
 			return
@@ -49,17 +49,17 @@ class Discord:
 		'''
 		if options:
 			if options[0] == "voice":
-				await self.bot.create_channel(ctx.message.guild, options[1], type = "voice")
+				await self.bot.create_channel(ctx.guild, options[1], type = "voice")
 			elif options[0] == "text":
-				await self.bot.create_channel(ctx.message.guild, options[1], type = "text")
+				await self.bot.create_channel(ctx.guild, options[1], type = "text")
 			else:
-				await self.bot.create_channel(ctx.message.guild, options[0], type = "text")
+				await self.bot.create_channel(ctx.guild, options[0], type = "text")
 	
 	@commands.command(no_pm = True)
 	@checks.has_permissions_and_capability(manage_roles = True)
 	async def createrole(self, ctx, *, name : str = ""):
 		'''Creates a role'''
-		await self.bot.create_role(ctx.message.guild, name = name)
+		await self.bot.create_role(ctx.guild, name = name)
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
@@ -68,11 +68,11 @@ class Discord:
 		Delete messages
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
-		if isinstance(ctx.message.channel, discord.DMChannel):
+		if isinstance(ctx.channel, discord.DMChannel):
 			await self.bot.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		elif not user:
 			await self.bot.attempt_delete_message(ctx.message)
-			await self.bot.purge_from(ctx.message.channel, limit = number)
+			await self.bot.purge_from(ctx.channel, limit = number)
 		elif user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.name == user)
 	
@@ -99,7 +99,7 @@ class Discord:
 	async def delete_time(self, ctx, minutes : int):
 		'''Deletes messages in the past <minutes> minutes'''
 		await self.bot.attempt_delete_message(ctx.message)
-		await self.bot.purge_from(ctx.message.channel, limit = clients.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
+		await self.bot.purge_from(ctx.channel, limit = clients.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
 	
 	# TODO: delete mentions, invites?
 	
@@ -110,7 +110,7 @@ class Discord:
 		to_delete = []
 		count = 0
 		if delete_command: await self.bot.attempt_delete_message(ctx.message)
-		async for message in self.bot.logs_from(ctx.message.channel, limit = clients.delete_limit):
+		async for message in self.bot.logs_from(ctx.channel, limit = clients.delete_limit):
 			if check(message):
 				to_delete.append(message)
 				count += 1
@@ -134,7 +134,7 @@ class Discord:
 		'''
 		# TODO: Rework
 		if not color:
-			color_value = ctx.message.author.color.value
+			color_value = ctx.author.color.value
 			await self.bot.embed_reply("#{}".format(conversions.inttohex(color_value)))
 			return
 		# check color
@@ -143,25 +143,25 @@ class Discord:
 		except ValueError:
 			await self.bot.embed_reply(":no_entry: Please enter a valid hex color")
 			return
-		role_to_change = discord.utils.get(ctx.message.guild.roles, name = ctx.message.author.name)
+		role_to_change = discord.utils.get(ctx.guild.roles, name = ctx.author.name)
 		if not role_to_change:
-			new_role = await self.bot.create_role(ctx.message.guild, name = ctx.message.author.name, hoist = False)
-			await self.bot.add_roles(ctx.message.author, new_role)
+			new_role = await self.bot.create_role(ctx.guild, name = ctx.author.name, hoist = False)
+			await self.bot.add_roles(ctx.author, new_role)
 			new_colour = new_role.colour
 			new_colour.value = color_value
-			await self.bot.edit_role(ctx.message.guild, new_role, name = ctx.message.author.name, colour = new_colour)
+			await self.bot.edit_role(ctx.guild, new_role, name = ctx.author.name, colour = new_colour)
 			await self.bot.embed_reply("Created your role with the color, {}".format(color))
 		else:
 			new_colour = role_to_change.colour
 			new_colour.value = color_value
-			await self.bot.edit_role(ctx.message.guild, role_to_change, colour = new_colour)
+			await self.bot.edit_role(ctx.guild, role_to_change, colour = new_colour)
 			await self.bot.embed_reply("Changed your role color to {}".format(color))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin(self, ctx, message_id : int):
 		'''Pin message by message ID'''
-		message = await self.bot.get_message(ctx.message.channel, str(message_id))
+		message = await self.bot.get_message(ctx.channel, str(message_id))
 		await self.bot.pin_message(message)
 		await self.bot.embed_reply(":pushpin: Pinned message")
 	
@@ -169,7 +169,7 @@ class Discord:
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin_first(self, ctx):
 		'''Pin first message'''
-		message = await self.bot.logs_from(ctx.message.channel, after = ctx.message.channel, limit = 1).iterate()
+		message = await self.bot.logs_from(ctx.channel, after = ctx.channel, limit = 1).iterate()
 		await self.bot.pin_message(message)
 		await self.bot.embed_reply(":pushpin: Pinned first message in this channel")
 	
@@ -177,7 +177,7 @@ class Discord:
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def unpin(self, ctx, message_id : int):
 		'''Unpin message by message ID'''
-		message = await self.bot.get_message(ctx.message.channel, str(message_id))
+		message = await self.bot.get_message(ctx.channel, str(message_id))
 		await self.bot.unpin_message(message)
 		await self.bot.embed_reply(":wastebasket: Unpinned message")
 	
@@ -191,7 +191,7 @@ class Discord:
 		'''
 		if not color:
 			selected_role = None
-			for _role in ctx.message.guild.roles:
+			for _role in ctx.guild.roles:
 				if _role.name.startswith((' ').join(role.split('_'))):
 					selected_role = _role
 					break
@@ -201,8 +201,8 @@ class Discord:
 			color = selected_role.colour
 			color_value = color.value
 			await self.bot.embed_reply(conversions.inttohex(color_value))
-		elif ctx.message.channel.permissions_for(ctx.message.author).manage_roles or ctx.message.author.id == clients.owner_id:
-			for _role in ctx.message.guild.roles:
+		elif ctx.channel.permissions_for(ctx.author).manage_roles or ctx.author.id == clients.owner_id:
+			for _role in ctx.guild.roles:
 				if _role.name.startswith((' ').join(role.split('_'))):
 					role_to_change = _role
 					break
@@ -211,17 +211,17 @@ class Discord:
 				return
 			new_colour = role_to_change.colour
 			new_colour.value = conversions.hextoint(color[0])
-			await self.bot.edit_role(ctx.message.guild, role_to_change, colour = new_colour)
+			await self.bot.edit_role(ctx.guild, role_to_change, colour = new_colour)
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
 	async def roleposition(self, ctx, role : str, position : int):
 		'''WIP'''
-		for _role in ctx.message.guild.roles:
+		for _role in ctx.guild.roles:
 			if _role.name.startswith((' ').join(role.split('_'))):
 				selected_role = _role
 				break
-		await self.bot.move_role(ctx.message.guild, selected_role, position)
+		await self.bot.move_role(ctx.guild, selected_role, position)
 	
 	@commands.command(no_pm = True)
 	@checks.not_forbidden()
@@ -230,10 +230,10 @@ class Discord:
 		Create temporary voice and text channels
 		options: allow <friend>
 		'''
-		temp_voice_channel = discord.utils.get(ctx.message.guild.channels, name = ctx.message.author.display_name + "'s Temp Channel")
-		temp_text_channel = discord.utils.get(ctx.message.guild.channels, name = ctx.message.author.display_name.lower() + "s_temp_channel")
+		temp_voice_channel = discord.utils.get(ctx.guild.channels, name = ctx.author.display_name + "'s Temp Channel")
+		temp_text_channel = discord.utils.get(ctx.guild.channels, name = ctx.author.display_name.lower() + "s_temp_channel")
 		if temp_voice_channel and options and options[0] == "allow":
-			to_allow = discord.utils.get(ctx.message.guild.members, name = options[1])
+			to_allow = discord.utils.get(ctx.guild.members, name = options[1])
 			if not to_allow:
 				await self.bot.embed_reply(":no_entry: User not found")
 			voice_channel_permissions = discord.Permissions.none()
@@ -249,25 +249,25 @@ class Discord:
 		if temp_voice_channel:
 			await self.bot.embed_reply(":no_entry: You already have a temporary voice and text channel")
 			return
-		temp_voice_channel = await self.bot.create_channel(ctx.message.guild, ctx.message.author.display_name + "'s Temp Channel", type = discord.ChannelType.voice)
-		temp_text_channel = await self.bot.create_channel(ctx.message.guild, ctx.message.author.display_name + "s_Temp_Channel", type = discord.ChannelType.text)
-		await self.bot.edit_channel_permissions(temp_voice_channel, ctx.message.guild.me, allow = discord.Permissions.all())
-		await self.bot.edit_channel_permissions(temp_text_channel, ctx.message.guild.me, allow = discord.Permissions.all())
-		await self.bot.edit_channel_permissions(temp_voice_channel, ctx.message.author.roles[0], deny = discord.Permissions.all())
-		await self.bot.edit_channel_permissions(temp_text_channel, ctx.message.author.roles[0], deny = discord.Permissions.all())
-		await self.bot.edit_channel_permissions(temp_voice_channel, ctx.message.author, allow = discord.Permissions.all())
-		await self.bot.edit_channel_permissions(temp_text_channel, ctx.message.author, allow = discord.Permissions.all())
+		temp_voice_channel = await self.bot.create_channel(ctx.guild, ctx.author.display_name + "'s Temp Channel", type = discord.ChannelType.voice)
+		temp_text_channel = await self.bot.create_channel(ctx.guild, ctx.author.display_name + "s_Temp_Channel", type = discord.ChannelType.text)
+		await self.bot.edit_channel_permissions(temp_voice_channel, ctx.me, allow = discord.Permissions.all())
+		await self.bot.edit_channel_permissions(temp_text_channel, ctx.me, allow = discord.Permissions.all())
+		await self.bot.edit_channel_permissions(temp_voice_channel, ctx.author.roles[0], deny = discord.Permissions.all())
+		await self.bot.edit_channel_permissions(temp_text_channel, ctx.author.roles[0], deny = discord.Permissions.all())
+		await self.bot.edit_channel_permissions(temp_voice_channel, ctx.author, allow = discord.Permissions.all())
+		await self.bot.edit_channel_permissions(temp_text_channel, ctx.author, allow = discord.Permissions.all())
 		try:
-			await self.bot.move_member(ctx.message.author, temp_voice_channel)
+			await self.bot.move_member(ctx.author, temp_voice_channel)
 		except discord.errors.Forbidden:
 			await self.bot.embed_reply(":no_entry: I can't move you to the new temporary voice channel")
 		await self.bot.embed_reply("Temporary voice and text channel created")
 		while True:
 			await asyncio.sleep(15)
-			temp_voice_channel = discord.utils.get(ctx.message.guild.channels, id = temp_voice_channel.id)
+			temp_voice_channel = discord.utils.get(ctx.guild.channels, id = temp_voice_channel.id)
 			if len(temp_voice_channel.voice_members) == 0:
-				await self.bot.edit_channel_permissions(temp_voice_channel, ctx.message.guild.me, allow = discord.Permissions.all())
-				await self.bot.edit_channel_permissions(temp_text_channel, ctx.message.guild.me, allow = discord.Permissions.all())
+				await self.bot.edit_channel_permissions(temp_voice_channel, ctx.me, allow = discord.Permissions.all())
+				await self.bot.edit_channel_permissions(temp_text_channel, ctx.me, allow = discord.Permissions.all())
 				await self.bot.delete_channel(temp_voice_channel)
 				await self.bot.delete_channel(temp_text_channel)
 				return
@@ -276,8 +276,8 @@ class Discord:
 	@checks.is_owner()
 	async def userlimit(self, ctx, limit : int):
 		'''WIP'''
-		if ctx.message.author.voice_channel:
-			voice_channel = ctx.message.author.voice_channel
+		if ctx.author.voice_channel:
+			voice_channel = ctx.author.voice_channel
 		await self.bot.edit_channel(voice_channel, user_limit = limit)
 	
 	# Get Attributes
@@ -290,10 +290,10 @@ class Discord:
 		Your own or someone else's avatar
 		'''
 		if not name:
-			avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
+			avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
 			await self.bot.embed_reply(None, title = "Your avatar", image_url = avatar)
 			return
-		if not ctx.message.guild:
+		if not ctx.guild:
 			await self.bot.embed_reply(":no_entry: Please use that command in a server")
 			return
 		user = await utilities.get_user(ctx, name)
@@ -311,13 +311,13 @@ class Discord:
 		Your own or someone else's discriminator
 		'''
 		if not name:
-			await self.bot.embed_reply("Your discriminator: #" + ctx.message.author.discriminator)
+			await self.bot.embed_reply("Your discriminator: #" + ctx.author.discriminator)
 			return
-		if not ctx.message.guild:
+		if not ctx.guild:
 			await self.bot.embed_reply(":no_entry: Please use that command in a server")
 			return
 		flag = True
-		for member in ctx.message.guild.members:
+		for member in ctx.guild.members:
 			if member.name == name:
 				embed = discord.Embed(description = name + "'s discriminator: #" + member.discriminator, color = clients.bot_color)
 				avatar = member.default_avatar_url if not member.avatar else member.avatar_url
@@ -331,7 +331,7 @@ class Discord:
 	@checks.not_forbidden()
 	async def roleid(self, ctx, *, name : str):
 		'''Get the ID of a role'''
-		for role in ctx.message.guild.roles:
+		for role in ctx.guild.roles:
 			if utilities.remove_symbols(role.name).startswith(name):
 				await self.bot.embed_reply(role.id)
 	
@@ -339,24 +339,24 @@ class Discord:
 	@checks.is_owner()
 	async def rolepositions(self, ctx):
 		'''WIP'''
-		await self.bot.embed_reply(', '.join([role.name + ": " + str(role.position) for role in ctx.message.guild.roles[1:]]))
+		await self.bot.embed_reply(', '.join([role.name + ": " + str(role.position) for role in ctx.guild.roles[1:]]))
 	
 	@commands.command(aliases = ["server_icon"], no_pm = True)
 	@checks.not_forbidden()
 	async def servericon(self, ctx):
 		'''See a bigger version of the server icon'''
-		if not ctx.message.guild.icon:
+		if not ctx.guild.icon:
 			await self.bot.embed_reply(":no_entry: This server doesn't have an icon")
-		await self.bot.embed_reply("This server's icon:", image_url = ctx.message.guild.icon_url)
+		await self.bot.embed_reply("This server's icon:", image_url = ctx.guild.icon_url)
 	
 	@commands.command(aliases = ["serverinformation", "server_info", "server_information"], no_pm = True)
 	@checks.not_forbidden()
 	async def serverinfo(self, ctx):
 		'''Information about a server'''
-		server = ctx.message.guild
+		server = ctx.guild
 		embed = discord.Embed(title = server.name, url = server.icon_url, timestamp = server.created_at, color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.set_thumbnail(url = server.icon_url)
 		embed.add_field(name = "Owner", value = server.owner.mention)
 		embed.add_field(name = "ID", value = server.id)
@@ -386,14 +386,14 @@ class Discord:
 	@checks.not_forbidden()
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
-		owner = ctx.message.guild.owner
+		owner = ctx.guild.owner
 		await self.bot.embed_reply("The owner of this server is {}".format(owner.mention), footer_text = str(owner), footer_icon_url = owner.avatar_url or owner.default_avatar_url)
 	
 	@commands.command(aliases = ["user_info"])
 	@checks.not_forbidden()
 	async def userinfo(self, ctx):
 		'''Information about a user'''
-		user = ctx.message.author
+		user = ctx.author
 		avatar = user.avatar_url or user.default_avatar_url
 		await self.bot.embed_reply(None, title = str(user), title_url = avatar, thumbnail_url = avatar, footer_text = "Created", timestamp = user.created_at, fields = [("User", user.mention), ("ID", user.id), ("Bot", user.bot)])
 		# member info, status, game, roles, color, etc.
@@ -435,6 +435,6 @@ class Discord:
 		Check if you can mention everyone/here
 		For the channel you execute the command in
 		'''
-		able = "" if ctx.message.author.permissions_in(ctx.message.channel).mention_everyone else "not "
+		able = "" if ctx.author.permissions_in(ctx.channel).mention_everyone else "not "
 		await self.bot.embed_reply("You are {}able to mention everyone/here in this channel".format(able))
 

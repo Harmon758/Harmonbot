@@ -97,8 +97,8 @@ class Twitter:
 		'''Get twitter status'''
 		tweet = clients.twitter_api.user_timeline(handle, count = 1)[0]
 		embed = discord.Embed(title = '@' + tweet.user.screen_name, url = "https://twitter.com/{}/status/{}".format(tweet.user.screen_name, tweet.id), description = tweet.text, timestamp = tweet.created_at, color = 0x00ACED)
-		avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		embed.set_footer(text = tweet.user.name, icon_url = tweet.user.profile_image_url)
 		await self.bot.say(embed = embed)
 	
@@ -109,20 +109,20 @@ class Twitter:
 		Add a Twitter handle to a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
-		if handle in self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []):
+		if handle in self.feeds_info["channels"].get(ctx.channel.id, {}).get("handles", []):
 			await self.bot.embed_reply(":no_entry: This text channel is already following that Twitter handle")
 			return
 		message, embed = await self.bot.embed_reply(":hourglass: Please wait")
 		try:
-			await self.stream_listener.add_feed(ctx.message.channel, handle)
+			await self.stream_listener.add_feed(ctx.channel, handle)
 		except tweepy.error.TweepError as e:
 			embed.description = ":no_entry: Error: {}".format(e)
 			await self.bot.edit_message(message, embed = embed)
 			return
-		if ctx.message.channel.id in self.feeds_info["channels"]:
-			self.feeds_info["channels"][ctx.message.channel.id]["handles"].append(handle)
+		if ctx.channel.id in self.feeds_info["channels"]:
+			self.feeds_info["channels"][ctx.channel.id]["handles"].append(handle)
 		else:
-			self.feeds_info["channels"][ctx.message.channel.id] = {"name" : ctx.message.channel.name, "handles" : [handle]}
+			self.feeds_info["channels"][ctx.channel.id] = {"name" : ctx.channel.name, "handles" : [handle]}
 		with open("data/twitter_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		embed.description = "Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle)
@@ -136,14 +136,14 @@ class Twitter:
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
 		try:
-			self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", []).remove(handle)
+			self.feeds_info["channels"].get(ctx.channel.id, {}).get("handles", []).remove(handle)
 		except ValueError:
 			await self.bot.embed_reply(":no_entry: This text channel isn't following that Twitter handle")
 		else:
 			with open("data/twitter_feeds.json", 'w') as feeds_file:
 				json.dump(self.feeds_info, feeds_file, indent = 4)
 			message, embed = await self.bot.embed_reply(":hourglass: Please wait")
-			await self.stream_listener.remove_feed(ctx.message.channel, handle)
+			await self.stream_listener.remove_feed(ctx.channel, handle)
 			embed.description = "Removed the Twitter handle, [`{0}`](https://twitter.com/{0}), from this text channel.".format(handle)
 			await self.bot.edit_message(message, embed = embed)
 
@@ -151,7 +151,7 @@ class Twitter:
 	@checks.not_forbidden()
 	async def handles(self, ctx):
 		'''Show Twitter handles being followed in a text channel'''
-		await self.bot.embed_reply('\n'.join(self.feeds_info["channels"].get(ctx.message.channel.id, {}).get("handles", [])))
+		await self.bot.embed_reply('\n'.join(self.feeds_info["channels"].get(ctx.channel.id, {}).get("handles", [])))
 		# TODO: Add message if none
 	
 	async def start_twitter_feeds(self):

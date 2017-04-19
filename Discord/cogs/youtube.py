@@ -51,14 +51,14 @@ class Youtube:
 		'''Add Youtube channel to follow'''
 		# TODO: Check channel ID validity
 		# TODO: Add by username option
-		channel = self.streams_info["channels"].get(ctx.message.channel.id)
+		channel = self.streams_info["channels"].get(ctx.channel.id)
 		if channel:
 			if channel_id in channel["channel_ids"]:
 				await self.bot.embed_reply(":no_entry: This text channel is already following that Youtube channel")
 				return
 			channel["channel_ids"].append(channel_id)
 		else:
-			self.streams_info["channels"][ctx.message.channel.id] = {"name": ctx.message.channel.name, "channel_ids": [channel_id]}
+			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
 		with open("data/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await self.bot.embed_reply("Added the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
@@ -68,7 +68,7 @@ class Youtube:
 	@checks.is_permitted()
 	async def youtube_streams_remove(self, ctx, channel_id : str):
 		'''Remove Youtube channel being followed'''
-		channel = self.streams_info["channels"].get(ctx.message.channel.id)
+		channel = self.streams_info["channels"].get(ctx.channel.id)
 		if not channel or channel_id not in channel["channel_ids"]:
 			await self.bot.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
 			return
@@ -81,7 +81,7 @@ class Youtube:
 	@checks.not_forbidden()
 	async def youtube_streams_channels(self, ctx):
 		'''Show Youtube channels being followed in this text channel'''
-		await self.bot.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(ctx.message.channel.id, {}).get("channel_ids", []))))
+		await self.bot.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("channel_ids", []))))
 	
 	async def check_youtube_streams(self):
 		await self.bot.wait_until_ready()

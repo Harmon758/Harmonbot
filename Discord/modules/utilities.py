@@ -107,13 +107,13 @@ def embed_total_characters(embed):
 
 def get_permission(ctx, permission, *, type = "user", id = None):
 	try:
-		with open("data/permissions/{}.json".format(ctx.message.guild.id), "x+") as permissions_file:
-			json.dump({"name" : ctx.message.guild.name}, permissions_file, indent = 4)
+		with open("data/permissions/{}.json".format(ctx.guild.id), "x+") as permissions_file:
+			json.dump({"name" : ctx.guild.name}, permissions_file, indent = 4)
 	except FileExistsError:
 		pass
 	else:
 		return None
-	with open("data/permissions/{}.json".format(ctx.message.guild.id), "r") as permissions_file:
+	with open("data/permissions/{}.json".format(ctx.guild.id), "r") as permissions_file:
 		permissions_data = json.load(permissions_file)
 	if type == "everyone":
 		return permissions_data.get("everyone", {}).get(permission)
@@ -123,7 +123,7 @@ def get_permission(ctx, permission, *, type = "user", id = None):
 	elif type == "user":
 		user_setting = permissions_data.get("users", {}).get(id, {}).get(permission)
 		if user_setting is not None: return user_setting
-		user = discord.utils.get(ctx.message.guild.members, id = id)
+		user = discord.utils.get(ctx.guild.members, id = id)
 		role_positions = {}
 		for role in user.roles:
 			role_positions[role.position] = role
@@ -140,9 +140,9 @@ async def get_user(ctx, name):
 		user_id = mention.group(1)
 		user = await ctx.bot.get_user_info(user_id)
 		if user: return user
-	if ctx.message.guild:
+	if ctx.guild:
 		# check if exact match
-		matches = [member for member in ctx.message.guild.members if member.name == name or member.nick == name]
+		matches = [member for member in ctx.guild.members if member.name == name or member.nick == name]
 		if len(matches) == 1:
 			return matches[0]
 		elif len(matches) > 1:
@@ -154,10 +154,10 @@ async def get_user(ctx, name):
 			await ctx.bot.say("Multiple users with the name, {}. Which one did you mean?\n"
 			"**Enter the number it is in the list.**".format(name))
 			await ctx.bot.say(members)
-			message = await ctx.bot.wait_for_message(author = ctx.message.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(matches))
+			message = await ctx.bot.wait_for_message(author = ctx.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(matches))
 			return matches[int(message.content) - 1]
 		# check if beginning match
-		start_matches = [member for member in ctx.message.guild.members if member.name.startswith(name) or member.nick and member.nick.startswith(name)]
+		start_matches = [member for member in ctx.guild.members if member.name.startswith(name) or member.nick and member.nick.startswith(name)]
 		if len(start_matches) == 1:
 			return start_matches[0]
 		elif len(start_matches) > 1:
@@ -168,7 +168,7 @@ async def get_user(ctx, name):
 				members += '\n'
 			await ctx.bot.reply("Multiple users with names starting with {}. Which one did you mean? **Enter the number.**".format(name))
 			await ctx.bot.say(members)
-			message = await ctx.bot.wait_for_message(author = ctx.message.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(start_matches))
+			message = await ctx.bot.wait_for_message(author = ctx.author, check = lambda m: m.content.isdigit() and 1 <= int(m.content) <= len(start_matches))
 			return start_matches[int(message.content) - 1]
 	# check if with discriminator
 	user_info = re.match(r"^(.+)#(\d{4})", name)

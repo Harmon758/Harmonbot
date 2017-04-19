@@ -94,16 +94,16 @@ if __name__ == "__main__":
 		stats["commands_usage"][ctx.command.name] = stats["commands_usage"].get(ctx.command.name, 0) + 1
 		with open("data/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
-		utilities.create_folder("data/user_data/{}".format(ctx.message.author.id))
-		utilities.create_file("user_data/{}/stats".format(ctx.message.author.id), content = {"commands_executed": 0, "points": 0, "respects_paid": 0})
+		utilities.create_folder("data/user_data/{}".format(ctx.author.id))
+		utilities.create_file("user_data/{}/stats".format(ctx.author.id), content = {"commands_executed": 0, "points": 0, "respects_paid": 0})
 		# TODO: Transfer respects paid data?
-		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.message.author.name) # | / \ : ? * " < >
-		utilities.create_file("user_data/{}/{}".format(ctx.message.author.id, clean_name))
-		with open("data/user_data/{}/stats.json".format(ctx.message.author.id), "r") as stats_file:
+		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.author.name) # | / \ : ? * " < >
+		utilities.create_file("user_data/{}/{}".format(ctx.author.id, clean_name))
+		with open("data/user_data/{}/stats.json".format(ctx.author.id), "r") as stats_file:
 			stats = json.load(stats_file)
 		stats["commands_executed"] += 1
 		stats["points"] += 1
-		with open("data/user_data/{}/stats.json".format(ctx.message.author.id), 'w') as stats_file:
+		with open("data/user_data/{}/stats.json".format(ctx.author.id), 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 	
 	@client.command()
@@ -310,13 +310,13 @@ if __name__ == "__main__":
 		if isinstance(error, (errors.LichessUserNotFound)): return # handled with local error handler
 		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError): return # handled with local error handler
 		embed = discord.Embed(color = clients.bot_color)
-		avatar = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url
-		embed.set_author(name = ctx.message.author.display_name, icon_url = avatar)
+		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		if isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)): # errors.NotOwner?
 			embed.description = ":no_entry: You don't have permission to do that"
 		elif isinstance(error, errors.MissingCapability):
 			if "embed_links" in error.permissions:
-				await ctx.bot.send_message(ctx.message.channel, "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions))
+				await ctx.bot.send_message(ctx.channel, "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions))
 				return
 			embed.description = "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions)
 		elif isinstance(error, errors.PermittedVoiceNotConnected):

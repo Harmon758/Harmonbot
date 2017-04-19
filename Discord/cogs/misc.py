@@ -98,20 +98,20 @@ class Misc:
 		if not to_poke:
 			await self.bot.embed_reply(":no_entry: User not found")
 		elif to_poke == self.bot.user:
-			await self.bot.embed_reply("!poke {}".format(ctx.message.author.mention))
+			await self.bot.embed_reply("!poke {}".format(ctx.author.mention))
 		else:
-			utilities.create_folder("data/user_data/{}".format(ctx.message.author.id))
-			utilities.create_file("user_data/{}/pokes".format(ctx.message.author.id))
-			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'r') as pokes_file:
+			utilities.create_folder("data/user_data/{}".format(ctx.author.id))
+			utilities.create_file("user_data/{}/pokes".format(ctx.author.id))
+			with open("data/user_data/{}/pokes.json".format(ctx.author.id), 'r') as pokes_file:
 				pokes_data = json.load(pokes_file)
 			pokes_data[to_poke.id] = pokes_data.get(to_poke.id, 0) + 1
 			embed = discord.Embed(color = clients.bot_color)
-			avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
-			embed.set_author(name = ctx.message.author, icon_url = avatar)
+			avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+			embed.set_author(name = ctx.author, icon_url = avatar)
 			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[to_poke.id]))
 			await self.bot.send_message(to_poke, embed = embed)
 			await self.bot.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[to_poke.id])))
-			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'w') as pokes_file:
+			with open("data/user_data/{}/pokes.json".format(ctx.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
 
 def emote_wrapper(name, emote = None):

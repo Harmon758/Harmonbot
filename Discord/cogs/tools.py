@@ -516,7 +516,7 @@ class Tools:
 			return
 		matplotlib.pyplot.savefig(filename)
 		matplotlib.pyplot.clf()
-		await self.bot.send_file(destination = ctx.message.channel, fp = filename, content = ctx.message.author.display_name + ':')
+		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
 		# TODO: Send as embed?
 	
 	def string_to_equation(self, string):
@@ -535,7 +535,7 @@ class Tools:
 		'''WIP'''
 		filename = "data/temp/graph_alternative.png"
 		seaborn.jointplot(**eval(data)).savefig(name)
-		await self.bot.send_file(destination = ctx.message.channel, fp = filename, content = ctx.message.author.display_name + ':')
+		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
 	
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -544,15 +544,15 @@ class Tools:
 		if not tag:
 			await self.bot.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
 			return
-		if tag in self.tags_data.get(ctx.message.author.id, {}).get("tags", []):
-			await self.bot.reply(self.tags_data[ctx.message.author.id]["tags"][tag])
+		if tag in self.tags_data.get(ctx.author.id, {}).get("tags", []):
+			await self.bot.reply(self.tags_data[ctx.author.id]["tags"][tag])
 		elif tag in self.tags_data["global"]:
 			await self.bot.reply(self.tags_data["global"][tag]["response"])
 			self.tags_data["global"][tag]["usage_counter"] += 1
 			with open("data/tags.json", 'w') as tags_file:
 				json.dump(self.tags_data, tags_file, indent = 4)
 		else:
-			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(ctx.message.author.id, {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
+			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(ctx.author.id, {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 			await self.bot.embed_reply("Tag not found{}".format(close_matches))
 	
@@ -561,7 +561,7 @@ class Tools:
 		'''List your tags'''
 		if (await self.check_no_tags(ctx)): return
 		tags_paginator = paginator.CustomPaginator(seperator = ", ")
-		for tag in sorted(self.tags_data[ctx.message.author.id]["tags"].keys()):
+		for tag in sorted(self.tags_data[ctx.author.id]["tags"].keys()):
 			tags_paginator.add_section(tag)
 		# DM
 		for page in tags_paginator.pages:
@@ -570,9 +570,9 @@ class Tools:
 	@tag.command(name = "add", aliases = ["make", "new", "create"])
 	async def tag_add(self, ctx, tag : str, *, content : str):
 		'''Add a tag'''
-		if not ctx.message.author.id in self.tags_data:
-			self.tags_data[ctx.message.author.id] = {"name" : ctx.message.author.name, "tags" : {}}
-		tags = self.tags_data[ctx.message.author.id]["tags"]
+		if not ctx.author.id in self.tags_data:
+			self.tags_data[ctx.author.id] = {"name" : ctx.author.name, "tags" : {}}
+		tags = self.tags_data[ctx.author.id]["tags"]
 		if tag in tags:
 			await self.bot.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
@@ -586,7 +586,7 @@ class Tools:
 		'''Edit one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
-		self.tags_data[ctx.message.author.id]["tags"][tag] = utilities.clean_content(content)
+		self.tags_data[ctx.author.id]["tags"][tag] = utilities.clean_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
@@ -596,7 +596,7 @@ class Tools:
 		'''Delete one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
-		del self.tags_data[ctx.message.author.id]["tags"][tag]
+		del self.tags_data[ctx.author.id]["tags"][tag]
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
@@ -605,7 +605,7 @@ class Tools:
 	async def tag_search(self, ctx, *, search : str):
 		'''Search your tags'''
 		if (await self.check_no_tags(ctx)): return
-		tags = self.tags_data[ctx.message.author.id]["tags"]
+		tags = self.tags_data[ctx.author.id]["tags"]
 		results = [t for t in tags.keys() if search in t]
 		if results:
 			await self.bot.embed_reply("{} tags found: {}".format(len(results), ", ".join(results)))
@@ -622,8 +622,8 @@ class Tools:
 		if tag in self.tags_data["global"]:
 			await self.bot.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		self.tags_data["global"][tag] = {"response": self.tags_data[ctx.message.author.id]["tags"][tag], "owner": ctx.message.author.id, "created_at": time.time(), "usage_counter": 0}
-		del self.tags_data[ctx.message.author.id]["tags"][tag]
+		self.tags_data["global"][tag] = {"response": self.tags_data[ctx.author.id]["tags"][tag], "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
+		del self.tags_data[ctx.author.id]["tags"][tag]
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been {}d".format(ctx.invoked_with))
@@ -642,7 +642,7 @@ class Tools:
 		if tag in tags:
 			await self.bot.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		tags[tag] = {"response": utilities.clean_content(content), "owner": ctx.message.author.id, "created_at": time.time(), "usage_counter": 0}
+		tags[tag] = {"response": utilities.clean_content(content), "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
@@ -653,7 +653,7 @@ class Tools:
 		if tag not in self.tags_data["global"]:
 			await self.bot.embed_reply(":no_entry: That global tag doesn't exist")
 			return
-		elif self.tags_data["global"][tag]["owner"] != ctx.message.author.id:
+		elif self.tags_data["global"][tag]["owner"] != ctx.author.id:
 			await self.bot.embed_reply(":no_entry: You don't own that global tag")
 			return
 		self.tags_data["global"][tag]["response"] = utilities.clean_content(content)
@@ -667,7 +667,7 @@ class Tools:
 		if tag not in self.tags_data["global"]:
 			await self.bot.embed_reply(":no_entry: That global tag doesn't exist")
 			return
-		elif self.tags_data["global"][tag]["owner"] != ctx.message.author.id:
+		elif self.tags_data["global"][tag]["owner"] != ctx.author.id:
 			await self.bot.embed_reply(":no_entry: You don't own that global tag")
 			return
 		del self.tags_data["global"][tag]
@@ -678,12 +678,12 @@ class Tools:
 	# TODO: global search, list?
 	
 	async def check_no_tags(self, ctx):
-		if not ctx.message.author.id in self.tags_data:
+		if not ctx.author.id in self.tags_data:
 			await self.bot.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
-		return not ctx.message.author.id in self.tags_data
+		return not ctx.author.id in self.tags_data
 	
 	async def check_no_tag(self, ctx, tag):
-		tags = self.tags_data[ctx.message.author.id]["tags"]
+		tags = self.tags_data[ctx.author.id]["tags"]
 		if not tag in tags:
 			close_matches = difflib.get_close_matches(tag, tags.keys())
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
@@ -697,7 +697,7 @@ class Tools:
 		# TODO: other units, persistence through restarts
 		await self.bot.embed_reply("I'll remind you in {} seconds".format(seconds))
 		await asyncio.sleep(seconds)
-		await self.bot.say("{}: {} seconds have passed".format(ctx.message.author.mention, seconds))
+		await self.bot.say("{}: {} seconds have passed".format(ctx.author.mention, seconds))
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
@@ -712,5 +712,5 @@ class Tools:
 		clip = moviepy.editor.VideoFileClip("data/temp/webmtogif.webm")
 		clip.write_gif("data/temp/webmtogif.gif", fps = 1, program = "ffmpeg")
 		# clip.write_gif("data/temp/webmtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
-		await self.bot.send_file(ctx.message.channel, "data/temp/webmtogif.gif")
+		await self.bot.send_file(ctx.channel, "data/temp/webmtogif.gif")
 
