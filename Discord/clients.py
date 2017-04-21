@@ -26,9 +26,9 @@ from utilities import errors
 version = "0.35.16"
 changelog = "https://discord.gg/a2rbZPu"
 stream_url = "https://www.twitch.tv/harmonbot"
-owner_id = "115691005197549570"
-listener_id = "180994984038760448"
-cache_channel_id = "254051856219635713"
+owner_id = 115691005197549570
+listener_id = 180994984038760448
+cache_channel_id = 254051856219635713
 user_agent = "Discord Bot"
 fake_ip = "nice try"
 fake_location = "Fort Yukon, Alaska"
