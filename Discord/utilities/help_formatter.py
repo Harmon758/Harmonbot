@@ -11,6 +11,8 @@ import clients
 
 class CustomHelpFormatter(HelpFormatter):
 	
+	'''Custom Help Formatter'''
+	
 	def format(self):
 		description_paginator = Paginator(max_size = 2048)
 		max_width = self.max_name_size

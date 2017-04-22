@@ -2,7 +2,9 @@
 from random import shuffle, randint
 
 class Maze:
-
+	
+	'''Maze'''
+	
 	def __init__(self, columns, rows, random_start = False, random_end = False):
 		self.columns = 2 if columns < 2 else 100 if columns > 100 else columns
 		self.rows = 2 if rows < 2 else 100 if rows > 100 else rows
