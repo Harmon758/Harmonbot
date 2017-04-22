@@ -16,6 +16,8 @@ console_logger.addHandler(console_logger_handler)
 
 class Logger(object):
 	
+	'''Logger'''
+	
 	def __init__(self, log, prefix = ""):
 		self.console = sys.__stdout__
 		self.log = log

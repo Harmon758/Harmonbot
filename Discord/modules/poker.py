@@ -3,6 +3,8 @@ import pydealer
 
 class PokerRound:
 	
+	'''Round of poker'''
+	
 	def __init__(self):
 		self.status = None
 		self.players = []

@@ -37,7 +37,9 @@ def wood_lvl(wood_type):
 	return wood_types.index(wood_type) + 1
 
 class AdventurePlayer:
-
+	
+	'''Adventure Player'''
+	
 	def __init__(self, user_id):
 		self.user_id = user_id
 		_initial_data = initial_data.copy()
