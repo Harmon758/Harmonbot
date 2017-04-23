@@ -144,6 +144,7 @@ def not_forbidden():
 	return commands.check(predicate)
 
 def is_permitted_check(ctx):
+	'''Check if permitted'''
 	if isinstance(ctx.channel, discord.DMChannel):
 		return True
 	command = ctx.command

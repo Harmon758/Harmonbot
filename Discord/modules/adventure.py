@@ -93,6 +93,7 @@ class AdventurePlayer:
 			return False, self.last_action
 	
 	def create_item(self, items):
+		'''Create/Craft an item'''
 		for item in items:
 			if item not in self.inventory:
 				return None
@@ -137,6 +138,7 @@ class AdventurePlayer:
 			return False, self.last_action
 	
 	def chop_once(self, wood_type):
+		'''Chop a tree once'''
 		wood = self.inventory[wood_type] = self.inventory.get(wood_type, 0) + 1
 		xp = self.woodcutting_xp = self.woodcutting_xp + wood_lvl(wood_type)
 		self.write_data()

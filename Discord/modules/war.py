@@ -4,6 +4,7 @@ import pydealer
 started = False
 
 def start(number):
+	'''Start a round of War'''
 	global started, number_of_players, played, hands, cards, cardsplayed, tiedcards
 	started = True
 	number_of_players = number
@@ -47,6 +48,7 @@ def card_count(player_number):
 		return
 
 def play(player_number, card):
+	'''Play a card'''
 	global played, cardsplayed, hands, cards, tiedcards, tiedplayers, tiedplayed
 	if tiedcards.size:
 		if player_number not in tiedplayers:
