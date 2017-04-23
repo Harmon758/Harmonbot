@@ -4,6 +4,7 @@ import pydealer
 started = False
 
 def start(number):
+	'''Start a round of Go Fish'''
 	global started, number_of_players, played, hands, deck
 	started = True
 	number_of_players = number

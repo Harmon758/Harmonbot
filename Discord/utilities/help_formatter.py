@@ -14,6 +14,7 @@ class CustomHelpFormatter(HelpFormatter):
 	'''Custom Help Formatter'''
 	
 	def format(self):
+		'''Format'''
 		description_paginator = Paginator(max_size = 2048)
 		max_width = self.max_name_size
 		if self.is_bot():

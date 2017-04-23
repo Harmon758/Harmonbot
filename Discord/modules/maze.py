@@ -65,6 +65,7 @@ class Maze:
 		return self.maze_string
 
 	def move(self, direction):
+		'''Move inside the maze'''
 		if direction.lower() == 'n':
 			if not self.directions[self.column][self.row][0]:
 				return False
@@ -99,6 +100,7 @@ class Maze:
 		return True
 
 	def print_visible(self):
+		'''The visible output of the maze'''
 		if self.rows <= 10 and self.columns <= 10:
 			return '\n'.join(self.visible)
 		start_row = self.row - self.row % 10
@@ -132,6 +134,7 @@ class Maze:
 	# def __str__(self):
 
 	def generate_connection(self, c, r):
+		'''Generate connections for the maze'''
 		self.generate_visited[c][r] = True
 		directions = [[0, -1], [1, 0], [0, 1], [-1, 0]]
 		shuffle(directions)
