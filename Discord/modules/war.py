@@ -3,6 +3,8 @@ import pydealer
 
 class WarRound:
 	
+	'''Round of War'''
+	
 	def __init__(self):
 		self.started = False
 		self.number_of_players = 0
