@@ -39,7 +39,7 @@ class Search:
 		Search things
 		All search subcommands are also commands
 		'''
-		await self.bot.embed_reply(":grey_question: Search what?")
+		await ctx.embed_reply(":grey_question: Search what?")
 	
 	@search.command()
 	@checks.not_forbidden()
@@ -47,14 +47,14 @@ class Search:
 		'''Search images on imgur'''
 		result = clients.imgur_client.gallery_search(search, sort = "top")
 		if not result:
-			await self.bot.embed_reply(":no_entry: No results found")
+			await ctx.embed_reply(":no_entry: No results found")
 			return
 		result = result[0]
 		if result.is_album:
 			result = clients.imgur_client.get_album(result.id).images[0]
-			await self.bot.embed_reply(None, image_url = result["link"])
+			await ctx.embed_reply(image_url = result["link"])
 		else:
-			await self.bot.embed_reply(None, image_url = result.link)
+			await ctx.embed_reply(image_url = result.link)
 	
 	@search.command(aliases = ["yt"])
 	@checks.not_forbidden()
@@ -70,79 +70,79 @@ class Search:
 	@youtube.error
 	async def youtube_error(self, error, ctx):
 		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
-			await self.bot.embed_reply(":no_entry: Error: {}".format(error.original))
+			await ctx.embed_reply(":no_entry: Error: {}".format(error.original))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def amazon(self, ctx, *search : str):
 		'''Search with Amazon'''
-		await self.bot.embed_reply("[Amazon search for \"{}\"](https://smile.amazon.com/s/?field-keywords={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[Amazon search for \"{}\"](https://smile.amazon.com/s/?field-keywords={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def aol(self, ctx, *search : str):
 		'''Search with AOL'''
-		await self.bot.embed_reply("[AOL search for \"{}\"](https://search.aol.com/aol/search?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[AOL search for \"{}\"](https://search.aol.com/aol/search?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command(name = "ask.com")
 	@checks.not_forbidden()
 	async def ask_com(self, ctx, *search : str):
 		'''Search with Ask.com'''
-		await self.bot.embed_reply("[Ask.com search for \"{}\"](http://www.ask.com/web?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[Ask.com search for \"{}\"](http://www.ask.com/web?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def baidu(self, ctx, *search : str):
 		'''Search with Baidu'''
-		await self.bot.embed_reply("[Baidu search for \"{}\"](http://www.baidu.com/s?wd={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[Baidu search for \"{}\"](http://www.baidu.com/s?wd={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def bing(self, ctx, *search : str):
 		'''Search with Bing'''
-		await self.bot.embed_reply("[Bing search for \"{}\"](http://www.bing.com/search?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[Bing search for \"{}\"](http://www.bing.com/search?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def duckduckgo(self, ctx, *search : str):
 		'''Search with DuckDuckGo'''
-		await self.bot.embed_reply("[DuckDuckGo search for \"{}\"](https://www.duckduckgo.com/?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[DuckDuckGo search for \"{}\"](https://www.duckduckgo.com/?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def google(self, ctx, *, search : str):
 		'''Google search'''
-		await self.bot.embed_reply("[Google search for \"{}\"](https://www.google.com/search?q={})".format(search, search.replace(' ', '+')))
+		await ctx.embed_reply("[Google search for \"{}\"](https://www.google.com/search?q={})".format(search, search.replace(' ', '+')))
 	
 	@commands.command(aliases = ["im_feeling_lucky"])
 	@checks.not_forbidden()
 	async def imfeelinglucky(self, ctx, *search : str):
 		'''First Google result of a search'''
-		await self.bot.embed_reply("[First Google result of \"{}\"](https://www.google.com/search?btnI&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[First Google result of \"{}\"](https://www.google.com/search?btnI&q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command(name = "lma.ctfy")
 	@checks.not_forbidden()
 	async def lma_ctfy(self, ctx, *search : str):
 		'''Let Me Ask.Com That For You'''
-		await self.bot.embed_reply("[LMA.CTFY: \"{}\"](http://lmgtfy.com/?s=k&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[LMA.CTFY: \"{}\"](http://lmgtfy.com/?s=k&q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def lmaoltfy(self, ctx, *search : str):
 		'''Let Me AOL That For You'''
-		await self.bot.embed_reply("[LMAOLTFY: \"{}\"](http://lmgtfy.com/?s=a&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[LMAOLTFY: \"{}\"](http://lmgtfy.com/?s=a&q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def lmatfy(self, ctx, *search : str):
 		'''Let Me Amazon That For You'''
-		await self.bot.embed_reply("[LMATFY: \"{}\"](http://lmatfy.co/?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[LMATFY: \"{}\"](http://lmatfy.co/?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def lmbdtfy(self, ctx, *search : str):
 		'''Let Me Baidu That For You'''
-		await self.bot.embed_reply("[LMBDTFY: \"{}\"](https://lmbtfy.cn/?{})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[LMBDTFY: \"{}\"](https://lmbtfy.cn/?{})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -150,33 +150,33 @@ class Search:
 		'''Let Me Bing That For You'''
 		output = "[LMBTFY: \"{}\"](http://lmbtfy.com/?s=b&q={})\n".format(' '.join(search), '+'.join(search))
 		output += "[LMBTFY: \"{}\"](http://letmebingthatforyou.com/q={})".format(' '.join(search), '+'.join(search))
-		await self.bot.embed_reply(output)
+		await ctx.embed_reply(output)
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def lmdtfy(self, ctx, *search : str):
 		'''Let Me DuckDuckGo That For You'''
-		await self.bot.embed_reply("[LMDTFY: \"{}\"](http://lmgtfy.com/?s=d&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[LMDTFY: \"{}\"](http://lmgtfy.com/?s=d&q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def lmgtfy(self, ctx, *search : str):
 		'''Let Me Google That For You'''
-		await self.bot.embed_reply("[LMGTFY: \"{}\"](http://lmgtfy.com/?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[LMGTFY: \"{}\"](http://lmgtfy.com/?q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def lmytfy(self, ctx, *search : str):
 		'''Let Me Yahoo That For You'''
-		await self.bot.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.group(description = "[UESP](http://uesp.net/wiki/Main_Page)", invoke_without_command = True)
 	@checks.not_forbidden()
 	async def uesp(self, ctx, *, search : str):
 		'''Look something up on the Unofficial Elder Scrolls Pages'''
-		await self.process_uesp(search)
+		await self.process_uesp(ctx, search)
 	
-	async def process_uesp(self, search, random = False, redirect = True):
+	async def process_uesp(self, ctx, search, random = False, redirect = True):
 		# TODO: Add User-Agent
 		if random:
 			async with clients.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": "0|" + '|'.join(str(i) for i in range(100, 152)) + "|200|201", "format": "json"}) as resp:
@@ -188,19 +188,19 @@ class Search:
 			try:
 				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
 			except IndexError:
-				await self.bot.embed_reply(":no_entry: Page not found")
+				await ctx.embed_reply(":no_entry: Page not found")
 				return
 		async with clients.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|revisions|images", "titles": search, "inprop": "url", "rvprop": "content", "format": "json"}) as resp:
 			data = await resp.json()
 		if "pages" not in data["query"]:
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 			return
 		page_id = list(data["query"]["pages"].keys())[0]
 		page = data["query"]["pages"][page_id]
 		if "missing" in page:
-			await self.bot.embed_reply(":no_entry: Page not found")
+			await ctx.embed_reply(":no_entry: Page not found")
 		elif "invalid" in page:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
+			await ctx.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
 		elif redirect and "redirects" in data["query"]:
 			await self.process_wikipedia(data["query"]["redirects"][-1]["to"], redirect = False)
 			# TODO: Handle section links/tofragments
@@ -225,15 +225,15 @@ class Search:
 			description = re.sub("\n+", '\n', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
 			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
-			await self.bot.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
+			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def wikipedia(self, ctx, *, search : str):
 		'''Look something up on Wikipedia'''
-		await self.process_wikipedia(search)
+		await self.process_wikipedia(ctx, search)
 	
-	async def process_wikipedia(self, search, random = False, redirect = True):
+	async def process_wikipedia(self, ctx, search, random = False, redirect = True):
 		# TODO: Add User-Agent
 		if random:
 			async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": 0, "format": "json"}) as resp:
@@ -245,28 +245,28 @@ class Search:
 			try:
 				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
 			except IndexError:
-				await self.bot.embed_reply(":no_entry: Page not found")
+				await ctx.embed_reply(":no_entry: Page not found")
 				return
 		async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, "inprop": "url", "exintro": "", "explaintext": "", "pithumbsize": 9000, "pilicense": "any", "format": "json"}) as resp: # exchars?
 			data = await resp.json()
 		if "pages" not in data["query"]:
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 			return
 		page_id = list(data["query"]["pages"].keys())[0]
 		page = data["query"]["pages"][page_id]
 		if "missing" in page:
-			await self.bot.embed_reply(":no_entry: Page not found")
+			await ctx.embed_reply(":no_entry: Page not found")
 		elif "invalid" in page:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
+			await ctx.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
 		elif redirect and "redirects" in data["query"]:
-			await self.process_wikipedia(data["query"]["redirects"][-1]["to"], redirect = False)
+			await self.process_wikipedia(ctx, data["query"]["redirects"][-1]["to"], redirect = False)
 			# TODO: Handle section links/tofragments
 		else:
 			description = page["extract"] if len(page["extract"]) <= 512 else page["extract"][:512] + "..."
 			description = re.sub("\s+ \s+", ' ', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
 			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
-			await self.bot.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
+			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -291,7 +291,7 @@ class Search:
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
-			await self.bot.embed_reply("Using closest Wolfram|Alpha interpretation: `{}`".format(didyoumean))
+			await ctx.embed_reply("Using closest Wolfram|Alpha interpretation: `{}`".format(didyoumean))
 			result = clients.wolfram_alpha_client.query(didyoumean, ip = clients.fake_ip, location = location)
 		if hasattr(result, "pods"):
 			for pod in result.pods:
@@ -306,7 +306,7 @@ class Search:
 						print(subpod.plaintext.replace('\n', ' '))
 						text_output.append("\n{}".format(subpod.plaintext))
 				if not text_output:
-					await self.bot.embed_reply(None, title = pod.title, image_url = images[0])
+					await ctx.embed_reply(title = pod.title, image_url = images[0])
 					for image in images[1:]:
 						await self.bot.embed_say(None, image_url = image)
 				else:
@@ -316,16 +316,16 @@ class Search:
 					output += "".join(text_output)
 					await self.bot.reply(output)
 			if result.timedout:
-				await self.bot.embed_reply("Some results timed out: {}".format(result.timedout.replace(',', ", ")))
+				await ctx.embed_reply("Some results timed out: {}".format(result.timedout.replace(',', ", ")))
 		elif result.timedout:
-			await self.bot.embed_reply("Standard computation time exceeded")
+			await ctx.embed_reply("Standard computation time exceeded")
 		else:
-			await self.bot.embed_reply(":no_entry: No results found")
+			await ctx.embed_reply(":no_entry: No results found")
 		# await self.bot.reply(next(result.results).text)
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def yahoo(self, ctx, *search : str):
 		'''Search with Yahoo'''
-		await self.bot.embed_reply("[Yahoo search for \"{}\"](https://search.yahoo.com/search?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[Yahoo search for \"{}\"](https://search.yahoo.com/search?q={})".format(' '.join(search), '+'.join(search)))
 

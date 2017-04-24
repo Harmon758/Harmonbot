@@ -36,7 +36,7 @@ class Audio:
 		For cleanup of audio commands, the Manage Messages permission is required
 		'''
 		if not song:
-			await self.bot.embed_reply(":grey_question: What would you like to play?")
+			await ctx.embed_reply(":grey_question: What would you like to play?")
 			return
 		if "playlist" in song:
 			await self.players[ctx.guild.id].add_playlist(song, ctx.author, ctx.message.created_at)
@@ -44,9 +44,10 @@ class Audio:
 		if "spotify" in song:
 			song = await self.spotify_to_youtube(song)
 			if not song:
-				await self.bot.embed_reply(":warning: Error")
+				await ctx.embed_reply(":warning: Error")
 				return
-		response, embed = await self.bot.embed_reply(":cd: Loading..")
+		response = await ctx.embed_reply(":cd: Loading..")
+		embed = response.embeds[0]
 		stream = ctx.invoked_with == "stream"
 		try:
 			title, url = await self.players[ctx.guild.id].add_song(song, ctx.author, ctx.message.created_at, stream = stream)
@@ -71,11 +72,11 @@ class Audio:
 		try:
 			moved = await self.players[ctx.guild.id].join_channel(ctx.author, channel)
 		except errors.AudioNotPlaying:
-			await self.bot.embed_reply(":no_entry: Voice channel not found", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":no_entry: Voice channel not found", footer_text = "In response to: {}".format(ctx.message.content))
 		except concurrent.futures._base.TimeoutError:
-			await self.bot.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join", footer_text = "In response to: {}".format(ctx.message.content))
 		else:
-			await self.bot.embed_reply(":arrow_right_hook: I've moved to the voice channel" if moved else ":headphones: I've joined the voice channel")
+			await ctx.embed_reply(":arrow_right_hook: I've moved to the voice channel" if moved else ":headphones: I've joined the voice channel")
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(no_pm = True)
@@ -84,10 +85,10 @@ class Audio:
 	async def leave(self, ctx):
 		'''Tell me to leave the voice channel'''
 		if (await self.players[ctx.guild.id].leave_channel()):
-			await self.bot.embed_reply(":door: I've left the voice channel")
+			await ctx.embed_reply(":door: I've left the voice channel")
 		del self.players[ctx.guild.id]
 		await self.bot.attempt_delete_message(ctx.message)
-		## await self.bot.embed_reply("The leave command is currently disabled right now, due to an issue/bug with Discord.")
+		## await ctx.embed_reply("The leave command is currently disabled right now, due to an issue/bug with Discord.")
 	
 	@commands.command(aliases = ["stop"], no_pm = True)
 	@checks.is_permitted()
@@ -97,11 +98,11 @@ class Audio:
 		try:
 			self.players[ctx.guild.id].pause()
 		except errors.AudioNotPlaying:
-			await self.bot.embed_reply(":no_entry: There is no song to pause")
+			await ctx.embed_reply(":no_entry: There is no song to pause")
 		except errors.AudioAlreadyDone:
-			await self.bot.embed_reply(":no_entry: The song is already paused")
+			await ctx.embed_reply(":no_entry: The song is already paused")
 		else:
-			await self.bot.embed_reply(":pause_button: Paused song")
+			await ctx.embed_reply(":pause_button: Paused song")
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(aliases = ["start"], no_pm = True)
@@ -112,11 +113,11 @@ class Audio:
 		try:
 			self.players[ctx.guild.id].resume()
 		except errors.AudioNotPlaying:
-			await self.bot.embed_reply(":no_entry: There is no song to resume")
+			await ctx.embed_reply(":no_entry: There is no song to resume")
 		except errors.AudioAlreadyDone:
-			await self.bot.embed_reply(":no_entry: The song is already playing")
+			await ctx.embed_reply(":no_entry: The song is already playing")
 		else:
-			await self.bot.embed_reply(":play_pause: Resumed song")
+			await ctx.embed_reply(":play_pause: Resumed song")
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(aliases = ["next", "remove"], no_pm = True, invoke_without_command = True)
@@ -136,29 +137,29 @@ class Audio:
 				try:
 					song = await player.skip_specific(number)
 				except errors.AudioNotPlaying:
-					await self.bot.embed_reply(":no_entry: There's not that many songs in the queue", footer_text = "In response to: {}".format(ctx.message.content))
+					await ctx.embed_reply(":no_entry: There's not that many songs in the queue", footer_text = "In response to: {}".format(ctx.message.content))
 				else:
-					await self.bot.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number, song["info"]["title"]))
+					await ctx.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number, song["info"]["title"]))
 					del song
 			else:
 				try:
 					player.skip()
 				except errors.AudioNotPlaying:
-					await self.bot.embed_reply(":no_entry: There is no song to skip")
+					await ctx.embed_reply(":no_entry: There is no song to skip")
 				else:
-					await self.bot.embed_reply(":next_track: Song skipped")
+					await ctx.embed_reply(":next_track: Song skipped")
 					# TODO: Include title of skipped song
 		elif ctx.author in self.bot.voice_client_in(ctx.guild).channel.voice_members:
 			try:
 				vote = player.vote_skip(ctx.author)
 			except errors.AudioNotPlaying:
-				await self.bot.embed_reply(":no_entry: There is no song to skip")
+				await ctx.embed_reply(":no_entry: There is no song to skip")
 			except errors.AudioAlreadyDone:
-				await self.bot.embed_reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
+				await ctx.embed_reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
 			else:
-				await self.bot.embed_reply(":white_check_mark: You voted to skip the current song\n{}".format("Skips: {}/{}".format(vote, player.skip_votes_required) if vote else ":next_track: Song skipped"))
+				await ctx.embed_reply(":white_check_mark: You voted to skip the current song\n{}".format("Skips: {}/{}".format(vote, player.skip_votes_required) if vote else ":next_track: Song skipped"))
 		else:
-			await self.bot.embed_reply(":no_entry: You're not even listening!", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":no_entry: You're not even listening!", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@skip.command(name = "to", no_pm = True)
@@ -172,9 +173,9 @@ class Audio:
 		try:
 			songs = await self.players[ctx.guild.id].skip_to_song(number)
 		except errors.AudioNotPlaying:
-			await self.bot.embed_reply(":no_entry: There aren't that many songs in the queue", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":no_entry: There aren't that many songs in the queue", footer_text = "In response to: {}".format(ctx.message.content))
 		else:
-			await self.bot.embed_reply(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
+			await ctx.embed_reply(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
 			del songs
 		await self.bot.attempt_delete_message(ctx.message)
 	
@@ -184,7 +185,8 @@ class Audio:
 	async def replay(self, ctx):
 		'''Repeat the current song'''
 		# TODO: Add restart alias?
-		response, embed = await self.bot.embed_reply(":repeat_one: Restarting song..")
+		response = await ctx.embed_reply(":repeat_one: Restarting song..")
+		embed = response.embeds[0]
 		replayed = await self.players[ctx.guild.id].replay()
 		embed.description = ":repeat_one: Restarted song" if replayed else ":no_entry: There is nothing to replay"
 		await self.bot.edit_message(response, embed = embed)
@@ -198,9 +200,10 @@ class Audio:
 		if "spotify" in song:
 			song = await self.spotify_to_youtube(song)
 			if not song:
-				await self.bot.embed_reply(":warning: Error")
+				await ctx.embed_reply(":warning: Error")
 				return
-		response, embed = await self.bot.embed_reply(":cd: Loading..")
+		response = await ctx.embed_reply(":cd: Loading..")
+		embed = response.embeds[0]
 		try:
 			title = await self.players[ctx.guild.id].insert_song(song, ctx.author, ctx.message.created_at, position_number)
 		except Exception as e:
@@ -218,7 +221,7 @@ class Audio:
 	async def empty(self, ctx):
 		'''Empty the queue'''
 		await self.players[ctx.guild.id].empty_queue()
-		await self.bot.embed_reply(":wastebasket: Emptied queue")
+		await ctx.embed_reply(":wastebasket: Emptied queue")
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(no_pm = True)
@@ -226,7 +229,8 @@ class Audio:
 	@checks.is_voice_connected()
 	async def shuffle(self, ctx):
 		'''Shuffle the queue'''
-		response, embed = await self.bot.embed_reply(":twisted_rightwards_arrows: Shuffling..")
+		response = await ctx.embed_reply(":twisted_rightwards_arrows: Shuffling..")
+		embed = response.embeds[0]
 		await self.players[ctx.guild.id].shuffle_queue()
 		embed.description = ":twisted_rightwards_arrows: Shuffled songs"
 		await self.bot.edit_message(response, embed = embed)
@@ -241,7 +245,8 @@ class Audio:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		song = random.choice([video["id"] for video in data["items"]])
-		response, embed = await self.bot.embed_reply(":cd: Loading..")
+		response = await ctx.embed_reply(":cd: Loading..")
+		embed = response.embeds[0]
 		try:
 			title, url = await self.players[ctx.guild.id].add_song(song, ctx.author, ctx.message.created_at)
 		except Exception as e:
@@ -266,9 +271,9 @@ class Audio:
 		'''
 		if self.players[ctx.guild.id].radio_flag:
 			self.players[ctx.guild.id].radio_off()
-			await self.bot.embed_reply(":stop_sign: Turned radio off")
+			await ctx.embed_reply(":stop_sign: Turned radio off")
 		elif (await self.players[ctx.guild.id].radio_on(ctx.author, ctx.message.created_at)) is False:
-			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@radio.command(name = "on", aliases = ["start"], no_pm = True)
@@ -277,9 +282,9 @@ class Audio:
 	async def radio_on(self, ctx):
 		'''Turn radio on'''
 		if self.players[ctx.guild.id].radio_flag:
-			await self.bot.embed_reply(":no_entry: Radio is already on")
+			await ctx.embed_reply(":no_entry: Radio is already on")
 		elif (await self.players[ctx.guild.id].radio_on(ctx.author, ctx.message.created_at)) is False:
-			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@radio.command(name = "off", aliases = ["stop"], no_pm = True)
@@ -289,10 +294,10 @@ class Audio:
 		'''Turn radio off'''
 		if self.players[ctx.guild.id].radio_flag:
 			self.players[ctx.guild.id].radio_off()
-			await self.bot.embed_reply(":stop_sign: Turned radio off")
+			await ctx.embed_reply(":stop_sign: Turned radio off")
 			await self.bot.attempt_delete_message(ctx.message)
 		else:
-			await self.bot.embed_reply(":no_entry: Radio is already off")
+			await ctx.embed_reply(":no_entry: Radio is already off")
 	
 	@commands.command(aliases = ["set_text"], no_pm = True)
 	@checks.is_permitted()
@@ -300,7 +305,7 @@ class Audio:
 	async def settext(self, ctx):
 		'''Set text channel for messages'''
 		self.players[ctx.guild.id].text_channel = ctx.channel
-		await self.bot.embed_reply(":writing_hand::skin-tone-2: Changed text channel")
+		await ctx.embed_reply(":writing_hand::skin-tone-2: Changed text channel")
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(no_pm = True, invoke_without_command = True)
@@ -309,7 +314,7 @@ class Audio:
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
 		if not (await self.players[ctx.guild.id].play_tts(message, ctx.author, timestamp = ctx.message.created_at)):
-			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@tts.command(name = "options", no_pm = True)
 	@checks.not_forbidden()
@@ -332,7 +337,7 @@ class Audio:
 		if speed > 9000: speed = 9000
 		if word_gap > 1000: word_gap = 1000
 		if not (await self.players[ctx.guild.id].play_tts(message, ctx.author, timestamp = ctx.message.created_at, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
-			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@commands.command(no_pm = True)
 	@checks.is_permitted()
@@ -340,14 +345,14 @@ class Audio:
 	async def file(self, ctx, *, filename : str = ""):
 		'''Play an audio file'''
 		if not (await self.players[ctx.guild.id].play_file(filename, ctx.author, ctx.message.created_at)):
-			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@commands.command(no_pm = True)
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def files(self, ctx):
 		'''List existing audio files'''
-		await self.bot.embed_reply(self.players[ctx.guild.id].list_files())
+		await ctx.embed_reply(self.players[ctx.guild.id].list_files())
 	
 	@commands.group(no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
@@ -356,9 +361,9 @@ class Audio:
 		'''Start/stop playing songs from my library'''
 		if self.players[ctx.guild.id].library_flag:
 			self.players[ctx.guild.id].stop_library()
-			await self.bot.embed_reply(":stop_sign: Stopped playing songs from my library")
+			await ctx.embed_reply(":stop_sign: Stopped playing songs from my library")
 		elif not (await self.players[ctx.guild.id].play_library(ctx.author, ctx.message.created_at)):
-			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@library.command(name = "play", aliases = ["start"], no_pm = True)
@@ -367,9 +372,9 @@ class Audio:
 	async def library_play(self, ctx):
 		'''Start playing songs from my library'''
 		if self.players[ctx.guild.id].library_flag:
-			await self.bot.embed_reply(":no_entry: I'm already playing songs from my library")
+			await ctx.embed_reply(":no_entry: I'm already playing songs from my library")
 		elif not (await self.players[ctx.guild.id].play_library(ctx.author, ctx.message.created_at)):
-			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "stop", no_pm = True)
 	@checks.is_permitted()
@@ -378,9 +383,9 @@ class Audio:
 		'''Stop playing songs from my library'''
 		if self.players[ctx.guild.id].library_flag:
 			self.players[ctx.guild.id].stop_library()
-			await self.bot.embed_reply(":stop_sign: Stopped playing songs from my library")
+			await ctx.embed_reply(":stop_sign: Stopped playing songs from my library")
 		else:
-			await self.bot.embed_reply(":no_entry: Not currently playing songs from my library", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":no_entry: Not currently playing songs from my library", footer_text = "In response to: {}".format(ctx.message.content))
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@library.command(name = "song", no_pm = True)
@@ -389,7 +394,7 @@ class Audio:
 	async def library_song(self, ctx, *, filename : str = ""):
 		'''Play a song from my library'''
 		if not (await self.players[ctx.guild.id].play_from_library(filename, ctx.author, ctx.message.created_at)):
-			await self.bot.embed_reply(":warning: Something else is already playing\nPlease stop it first")
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "files", no_pm = True) # enable for DMs?
 	@checks.not_forbidden()
@@ -397,7 +402,7 @@ class Audio:
 	async def library_files(self, ctx):
 		'''List song files in the library'''
 		if not isinstance(ctx.channel, discord.DMChannel):
-			await self.bot.embed_reply("Check your DMs")
+			await ctx.embed_reply("Check your DMs")
 		output = "```"
 		for filename in self.players[ctx.guild.id].library_files:
 			if len(output) + len(filename) > 1997: # 2000 - 3
@@ -413,12 +418,12 @@ class Audio:
 		'''Search songs in the library'''
 		results = [filename for filename in self.players[ctx.guild.id].library_files if search.lower() in filename.lower()]
 		if not results:
-			await self.bot.embed_reply(":no_entry: No songs matching that search found")
+			await ctx.embed_reply(":no_entry: No songs matching that search found")
 			return
 		try:
-			await self.bot.embed_reply("```\n{}\n```".format(", ".join(results)))
+			await ctx.embed_reply("```\n{}\n```".format(", ".join(results)))
 		except discord.errors.HTTPException:
-			await self.bot.embed_reply(":no_entry: Too many results\nTry a more specific search")
+			await ctx.embed_reply(":no_entry: Too many results\nTry a more specific search")
 	
 	@commands.group(no_pm = True, invoke_without_command = True)
 	@checks.is_permitted()
@@ -430,18 +435,18 @@ class Audio:
 		'''
 		if volume_setting is None:
 			try:
-				await self.bot.embed_reply(":sound: Current volume: {:g}".format(self.players[ctx.guild.id].get_volume()))
+				await ctx.embed_reply(":sound: Current volume: {:g}".format(self.players[ctx.guild.id].get_volume()))
 			except errors.AudioNotPlaying:
-				await self.bot.embed_reply(":no_entry: There's nothing playing right now", footer_text = "In response to: {}".format(ctx.message.content))
+				await ctx.embed_reply(":no_entry: There's nothing playing right now", footer_text = "In response to: {}".format(ctx.message.content))
 		else:
 			try:
 				self.players[ctx.guild.id].set_volume(volume_setting)
 			except errors.AudioNotPlaying:
-				await self.bot.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now", footer_text = "In response to: {}".format(ctx.message.content))
+				await ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now", footer_text = "In response to: {}".format(ctx.message.content))
 			else:
 				if volume_setting > 2000: volume_setting = 2000
 				elif volume_setting < 0: volume_setting = 0
-				await self.bot.embed_reply(":sound: Set volume to {:g}".format(volume_setting))
+				await ctx.embed_reply(":sound: Set volume to {:g}".format(volume_setting))
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@volume.command(name = "default", no_pm = True)
@@ -453,12 +458,12 @@ class Audio:
 		volume_setting: 0 - 2000
 		'''
 		if volume_setting is None:
-			await self.bot.embed_reply(":sound: Current default volume: {:g}".format(self.players[ctx.guild.id].default_volume))
+			await ctx.embed_reply(":sound: Current default volume: {:g}".format(self.players[ctx.guild.id].default_volume))
 		else:
 			if volume_setting > 2000: volume_setting = 2000
 			elif volume_setting < 0: volume_setting = 0
 			self.players[ctx.guild.id].default_volume = volume_setting
-			await self.bot.embed_reply(":sound: Set default volume to {:g}".format(volume_setting))
+			await ctx.embed_reply(":sound: Set default volume to {:g}".format(volume_setting))
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(aliases = ["current"], no_pm = True, invoke_without_command = True)
@@ -469,7 +474,7 @@ class Audio:
 		try:
 			embed = self.players[ctx.guild.id].current_embed()
 		except errors.AudioNotPlaying:
-			await self.bot.embed_reply(":speaker: There is no song currently playing")
+			await ctx.embed_reply(":speaker: There is no song currently playing")
 		else:
 			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url or ctx.author.default_avatar_url)
 			await self.bot.say(embed = embed)
@@ -494,16 +499,16 @@ class Audio:
 		if self.players[ctx.guild.id].listener:
 			await self.players[ctx.guild.id].stop_listening()
 		elif not (await self.players[ctx.guild.id].start_listening()):
-			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
+			await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@listen.command(name = "start", aliases = ["on"])
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_start(self, ctx):
 		if self.players[ctx.guild.id].listener:
-			await self.bot.embed_reply(":no_entry: I'm already listening")
+			await ctx.embed_reply(":no_entry: I'm already listening")
 		elif not (await self.players[ctx.guild.id].start_listening()):
-			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
+			await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@listen.command(name = "stop", aliases = ["off"])
 	@checks.is_voice_connected()
@@ -512,16 +517,16 @@ class Audio:
 		if self.players[ctx.guild.id].listener:
 			await self.players[ctx.guild.id].stop_listening()
 		else:
-			await self.bot.embed_reply(":no_entry: I'm not listening")
+			await ctx.embed_reply(":no_entry: I'm not listening")
 	
 	@listen.command(name = "once")
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen_once(self, ctx):
 		if self.players[ctx.guild.id].listener:
-			await self.bot.embed_reply(":no_entry: I'm already listening")
+			await ctx.embed_reply(":no_entry: I'm already listening")
 		elif (await self.players[ctx.guild.id].listen_once()) is False:
-			await self.bot.embed_reply(":warning: Something else is already playing. Please stop it first.")
+			await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
 	
 	@listen.command(name = "finish")
 	@checks.is_voice_connected()
@@ -530,7 +535,7 @@ class Audio:
 		if self.players[ctx.guild.id].listener:
 			await self.players[ctx.guild.id].finish_listening()
 		else:
-			await self.bot.embed_reply(":no_entry: I'm not listening")
+			await ctx.embed_reply(":no_entry: I'm not listening")
 	
 	@listen.command(name = "process")
 	@checks.is_voice_connected()

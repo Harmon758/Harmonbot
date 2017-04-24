@@ -49,7 +49,7 @@ class RSS:
 			self.feeds_info["channels"].append({"name": ctx.channel.name, "id": ctx.channel.id, "feeds": [url]})
 		with open("data/rss_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
-		await self.bot.embed_reply("The feed, {}, has been added to this channel".format(url))
+		await ctx.embed_reply("The feed, {}, has been added to this channel".format(url))
 
 	@rss.command(name = "remove", aliases = ["delete", "removefeed", "feedremove", "deletefeed", "feeddelete"])
 	@checks.is_permitted()
@@ -57,12 +57,12 @@ class RSS:
 		'''Remove a feed from a channel'''
 		channel = discord.utils.find(lambda c: c["id"] == ctx.channel.id, self.feeds_info["channels"])
 		if not channel or url not in channel["feeds"]:
-			await self.bot.embed_reply(":no_entry: This channel isn't following that feed")
+			await ctx.embed_reply(":no_entry: This channel isn't following that feed")
 			return
 		channel["feeds"].remove(url)
 		with open("data/rss_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
-		await self.bot.embed_reply("The feed, {}, has been removed from this channel".format(url))
+		await ctx.embed_reply("The feed, {}, has been removed from this channel".format(url))
 
 	@rss.command(aliases = ["feed"])
 	@checks.not_forbidden()
@@ -70,7 +70,7 @@ class RSS:
 		'''Show feeds being followed in this channel'''
 		for channel in self.feeds_info["channels"]:
 			if ctx.channel.id == channel["id"]:
-				await self.bot.embed_reply("\n".join(channel["feeds"]))
+				await ctx.embed_reply("\n".join(channel["feeds"]))
 	
 	async def check_rss_feeds(self):
 		await self.bot.wait_until_ready()

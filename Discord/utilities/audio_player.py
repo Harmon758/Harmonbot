@@ -305,7 +305,7 @@ class AudioPlayer:
 		if not filename:
 			filename = random.choice(self.audio_files)
 		elif filename not in self.audio_files:
-			await self.bot.embed_reply(":no_entry: File not found")
+			await ctx.embed_reply(":no_entry: File not found")
 			return True
 		return (await self._interrupt("data/audio_files/" + filename, filename, requester, timestamp))
 	
@@ -316,7 +316,7 @@ class AudioPlayer:
 		if not filename:
 			filename = random.choice(self.library_files)
 		elif filename not in self.library_files:
-			await self.bot.embed_reply(":no_entry: Song file not found")
+			await ctx.embed_reply(":no_entry: Song file not found")
 			return True
 		return (await self._interrupt(clients.library_files + filename, filename, requester, timestamp, clear_flag = clear_flag))
 		## print([f for f in os.listdir(clients.library_files) if not f.endswith((".mp3", ".m4a", ".jpg"))])
@@ -374,7 +374,7 @@ class AudioPlayer:
 		self.bot.loop.call_soon_threadsafe(self.resume_flag.set)
 	
 	async def add_playlist(self, playlist, requester, timestamp):
-		response, embed = await self.bot.embed_reply(":cd: Loading..")
+		response = await ctx.embed_reply(":cd: Loading..")
 		ydl = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
 		func = functools.partial(ydl.extract_info, playlist, download = False)
 		await self.bot.loop.run_in_executor(None, func)
@@ -382,6 +382,7 @@ class AudioPlayer:
 			videos = [json.loads(line) for line in playlist_info_file if line.startswith('{')]
 			playlist_info_file.seek(0)
 			playlist_info_file.truncate()
+		embed = response.embeds[0]
 		for position, video in enumerate(videos, start = 1):
 			embed.description = ":cd: Loading {}/{}".format(position, len(videos))
 			await self.bot.edit_message(response, embed = embed)
@@ -400,7 +401,7 @@ class AudioPlayer:
 			return False
 		if not self.radio_flag:
 			if not self.current:
-				await self.bot.embed_reply(":no_entry: Please play a song to base the radio station off of first")
+				await ctx.embed_reply(":no_entry: Please play a song to base the radio station off of first")
 				# TODO: Non song based station?
 				return None
 			await self.bot.send_embed(self.text_channel, ":radio: Radio based on `{}` is now on".format(self.current["info"]["title"]))

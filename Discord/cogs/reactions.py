@@ -44,7 +44,8 @@ class Reactions:
 		Guessing game
 		With reactions
 		'''
-		guess_message, embed = await self.bot.embed_reply("Guess a number between 1 to 10")
+		guess_message = await ctx.embed_reply("Guess a number between 1 to 10")
+		embed = guess_message.embeds[0]
 		answer = random.randint(1, 10)
 		for number_emote in sorted(self.numbers.keys()):
 			await self.bot.add_reaction(guess_message, number_emote)
@@ -71,7 +72,7 @@ class Reactions:
 		async with clients.aiohttp_session.get("https://newsapi.org/v1/articles?source={}&apiKey={}".format(source, credentials.news_api_key)) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			await self.bot.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
 		response, embed = await self.bot.reply("React with a number from 1 to 10 to view each news article")
 		numbers = {'\N{KEYCAP TEN}': 10}
@@ -108,7 +109,7 @@ class Reactions:
 		React with an arrow key to move
 		'''
 		maze_instance = maze.Maze(width, height, random_start = random_start, random_end = random_end)
-		maze_message, embed = await self.bot.embed_reply(clients.code_block.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
+		maze_message = await ctx.embed_reply(clients.code_block.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
 		self.mazes[maze_message.id] = maze_instance
 		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
 			await self.bot.add_reaction(maze_message, emote)
@@ -144,7 +145,7 @@ class Reactions:
 		try:
 			embed = self.bot.cogs["Audio"].players[ctx.guild.id].current_embed()
 		except errors.AudioNotPlaying:
-			player_message, embed = await self.bot.embed_reply(":speaker: There is no song currently playing")
+			player_message = await ctx.embed_reply(":speaker: There is no song currently playing")
 		else:
 			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url or ctx.author.default_avatar_url)
 			player_message, embed = await self.bot.say(embed = embed)
@@ -183,7 +184,7 @@ class Reactions:
 					try:
 						current_volume = self.bot.cogs["Audio"].players[ctx.guild.id].get_volume()
 					except errors.AudioNotPlaying:
-						await self.bot.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
+						await ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
 					if self.controls[reaction.emoji] == "volume_down": set_volume = current_volume - 10
 					elif self.controls[reaction.emoji] == "volume_up": set_volume = current_volume + 10
 					message = copy.copy(ctx.message)

@@ -105,7 +105,7 @@ class Discord:
 	
 	async def delete_number(self, ctx, number, check, delete_command = True):
 		if number <= 0:
-			await self.bot.embed_reply(":no_entry: Syntax error")
+			await ctx.embed_reply(":no_entry: Syntax error")
 			return
 		to_delete = []
 		count = 0
@@ -135,13 +135,13 @@ class Discord:
 		# TODO: Rework
 		if not color:
 			color_value = ctx.author.color.value
-			await self.bot.embed_reply("#{}".format(conversions.inttohex(color_value)))
+			await ctx.embed_reply("#{}".format(conversions.inttohex(color_value)))
 			return
 		# check color
 		try:
 			color_value = int(color.strip('#'), 16)
 		except ValueError:
-			await self.bot.embed_reply(":no_entry: Please enter a valid hex color")
+			await ctx.embed_reply(":no_entry: Please enter a valid hex color")
 			return
 		role_to_change = discord.utils.get(ctx.guild.roles, name = ctx.author.name)
 		if not role_to_change:
@@ -150,7 +150,7 @@ class Discord:
 			new_colour = new_role.colour
 			new_colour.value = color_value
 			await self.bot.edit_role(ctx.guild, new_role, name = ctx.author.name, colour = new_colour)
-			await self.bot.embed_reply("Created your role with the color, {}".format(color))
+			await ctx.embed_reply("Created your role with the color, {}".format(color))
 		else:
 			new_colour = role_to_change.colour
 			new_colour.value = color_value
@@ -235,7 +235,7 @@ class Discord:
 		if temp_voice_channel and options and options[0] == "allow":
 			to_allow = discord.utils.get(ctx.guild.members, name = options[1])
 			if not to_allow:
-				await self.bot.embed_reply(":no_entry: User not found")
+				await ctx.embed_reply(":no_entry: User not found")
 			voice_channel_permissions = discord.Permissions.none()
 			voice_channel_permissions.connect = True
 			voice_channel_permissions.speak = True
@@ -244,10 +244,10 @@ class Discord:
 			text_channel_permissions = discord.Permissions.text()
 			text_channel_permissions.manage_messages = False
 			await self.bot.edit_channel_permissions(temp_text_channel, to_allow, allow = text_channel_permissions)
-			await self.bot.embed_reply("You have allowed " + to_allow.display_name + " to join your temporary voice and text channel")
+			await ctx.embed_reply("You have allowed " + to_allow.display_name + " to join your temporary voice and text channel")
 			return
 		if temp_voice_channel:
-			await self.bot.embed_reply(":no_entry: You already have a temporary voice and text channel")
+			await ctx.embed_reply(":no_entry: You already have a temporary voice and text channel")
 			return
 		temp_voice_channel = await self.bot.create_channel(ctx.guild, ctx.author.display_name + "'s Temp Channel", type = discord.ChannelType.voice)
 		temp_text_channel = await self.bot.create_channel(ctx.guild, ctx.author.display_name + "s_Temp_Channel", type = discord.ChannelType.text)
@@ -260,8 +260,8 @@ class Discord:
 		try:
 			await self.bot.move_member(ctx.author, temp_voice_channel)
 		except discord.errors.Forbidden:
-			await self.bot.embed_reply(":no_entry: I can't move you to the new temporary voice channel")
-		await self.bot.embed_reply("Temporary voice and text channel created")
+			await ctx.embed_reply(":no_entry: I can't move you to the new temporary voice channel")
+		await ctx.embed_reply("Temporary voice and text channel created")
 		while True:
 			await asyncio.sleep(15)
 			temp_voice_channel = discord.utils.get(ctx.guild.channels, id = temp_voice_channel.id)
@@ -437,5 +437,5 @@ class Discord:
 		For the channel you execute the command in
 		'''
 		able = "" if ctx.author.permissions_in(ctx.channel).mention_everyone else "not "
-		await self.bot.embed_reply("You are {}able to mention everyone/here in this channel".format(able))
+		await ctx.embed_reply("You are {}able to mention everyone/here in this channel".format(able))
 

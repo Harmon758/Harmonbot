@@ -63,7 +63,7 @@ class Random:
 		Random things
 		All random subcommands are also commands
 		'''
-		await self.bot.embed_reply(":grey_question: Random what?")
+		await ctx.embed_reply(":grey_question: Random what?")
 	
 	@random.command()
 	@checks.not_forbidden()
@@ -80,7 +80,7 @@ class Random:
 		url = "http://api.giphy.com/v1/gifs/random?api_key={}".format(credentials.giphy_public_beta_api_key)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		await self.bot.embed_reply(None, image_url = data["data"]["image_url"])
+		await ctx.embed_reply(image_url = data["data"]["image_url"])
 	
 	@random.command()
 	@checks.not_forbidden()
@@ -89,7 +89,7 @@ class Random:
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
 		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=13&size=640x640".format(latitude, longitude)
-		await self.bot.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
+		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@random.command()
 	@checks.not_forbidden()
@@ -98,7 +98,7 @@ class Random:
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={},{}".format(latitude, longitude)
-		await self.bot.embed_reply(None, image_url = image_url)
+		await ctx.embed_reply(image_url = image_url)
 	
 	@random.command()
 	@checks.not_forbidden()
@@ -109,7 +109,7 @@ class Random:
 		'''
 		cog = self.bot.get_cog("Search")
 		if cog: await cog.process_uesp(None, random = True)
-		else: await self.bot.embed_reply(None, title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random") # necessary?
+		else: await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random") # necessary?
 	
 	@random.command(aliases = ["wiki"])
 	@checks.not_forbidden()
@@ -117,7 +117,7 @@ class Random:
 		'''Random Wikipedia article'''
 		cog = self.bot.get_cog("Search")
 		if cog: await cog.process_wikipedia(None, random = True)
-		else: await self.bot.embed_reply(None, title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random") # necessary?
+		else: await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random") # necessary?
 	
 	@random.command()
 	@checks.not_forbidden()
@@ -134,7 +134,7 @@ class Random:
 	@checks.not_forbidden()
 	async def card(self, ctx):
 		'''Random playing card'''
-		await self.bot.embed_reply(":{}: {}".format(random.choice(pydealer.const.SUITS).lower(), random.choice(pydealer.const.VALUES)))
+		await ctx.embed_reply(":{}: {}".format(random.choice(pydealer.const.SUITS).lower(), random.choice(pydealer.const.VALUES)))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -150,30 +150,30 @@ class Random:
 			try:
 				categories = xml.etree.ElementTree.fromstring(data).findall(".//name")
 			except xml.etree.ElementTree.ParseError:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 			else:
-				await self.bot.embed_reply('\n'.join(sorted(category.text for category in categories)))
+				await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 		elif category:
 			async with clients.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={}".format(category)) as resp:
 				data = await resp.text()
 			try:
 				url = xml.etree.ElementTree.fromstring(data).find(".//url")
 			except xml.etree.ElementTree.ParseError:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 				return
 			if url is not None:
-				await self.bot.embed_reply("[:cat:]({})".format(url.text), image_url = url.text)
+				await ctx.embed_reply("[:cat:]({})".format(url.text), image_url = url.text)
 			else:
-				await self.bot.embed_reply(":no_entry: Error: Category not found")
+				await ctx.embed_reply(":no_entry: Error: Category not found")
 		else:
 			async with clients.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
 				data = await resp.text()
 			try:
 				url = xml.etree.ElementTree.fromstring(data).find(".//url").text
 			except xml.etree.ElementTree.ParseError:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 			else:
-				await self.bot.embed_reply("[:cat:]({})".format(url), image_url = url)
+				await ctx.embed_reply("[:cat:]({})".format(url), image_url = url)
 	
 	@commands.command(aliases = ["die", "roll"])
 	@checks.not_forbidden()
@@ -197,33 +197,33 @@ class Random:
 			try:
 				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
 				if type(result) is int:
-					await self.bot.embed_reply(result)
+					await ctx.embed_reply(result)
 				else:
-					await self.bot.embed_reply(", ".join(str(roll) for roll in result))
+					await ctx.embed_reply(", ".join(str(roll) for roll in result))
 			except discord.errors.HTTPException:
-				await self.bot.embed_reply(":no_entry: Output too long")
+				await ctx.embed_reply(":no_entry: Output too long")
 			except pyparsing.ParseException:
-				await self.bot.embed_reply(":no_entry: Invalid input")
+				await ctx.embed_reply(":no_entry: Invalid input")
 			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
-				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
+				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def command(self, ctx):
 		'''Random command'''
-		await self.bot.embed_reply("{}{}".format(ctx.prefix, random.choice(tuple(set(command.name for command in self.bot.commands.values())))))
+		await ctx.embed_reply("{}{}".format(ctx.prefix, random.choice(tuple(set(command.name for command in self.bot.commands.values())))))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def date(self, ctx):
 		'''Random date'''
-		await self.bot.embed_reply(datetime.date.fromordinal(random.randint(1, 365)).strftime("%B %d"))
+		await ctx.embed_reply(datetime.date.fromordinal(random.randint(1, 365)).strftime("%B %d"))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def day(self, ctx):
 		'''Random day of week'''
-		await self.bot.embed_reply(random.choice(calendar.day_name))
+		await ctx.embed_reply(random.choice(calendar.day_name))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -232,7 +232,7 @@ class Random:
 		url = "http://mentalfloss.com/api/1.0/views/amazing_facts.json?limit=1&bypass={}".format(random.random())
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		await self.bot.embed_reply(BeautifulSoup(data[0]["nid"]).text)
+		await ctx.embed_reply(BeautifulSoup(data[0]["nid"]).text)
 	
 	@fact.command(name = "cat", aliases = ["cats"])
 	@checks.not_forbidden()
@@ -241,9 +241,9 @@ class Random:
 		async with clients.aiohttp_session.get("http://catfacts-api.appspot.com/api/facts") as resp:
 			data = await resp.json()
 		if data["success"]:
-			await self.bot.embed_reply(data["facts"][0])
+			await ctx.embed_reply(data["facts"][0])
 		else:
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 	
 	@fact.command(name = "date")
 	@checks.not_forbidden()
@@ -255,10 +255,10 @@ class Random:
 		'''
 		async with clients.aiohttp_session.get("http://numbersapi.com/{}/date".format(date)) as resp:
 			if resp.status == 404:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.text()
-		await self.bot.embed_reply(data)
+		await ctx.embed_reply(data)
 	
 	@fact.command(name = "math")
 	@checks.not_forbidden()
@@ -266,7 +266,7 @@ class Random:
 		'''Random math fact about a number'''
 		async with clients.aiohttp_session.get("http://numbersapi.com/{}/math".format(number)) as resp:
 			data = await resp.text()
-		await self.bot.embed_reply(data)
+		await ctx.embed_reply(data)
 	
 	@fact.command(name = "number")
 	@checks.not_forbidden()
@@ -274,7 +274,7 @@ class Random:
 		'''Random fact about a number'''
 		async with clients.aiohttp_session.get("http://numbersapi.com/{}".format(number)) as resp:
 			data = await resp.text()
-		await self.bot.embed_reply(data)
+		await ctx.embed_reply(data)
 	
 	@fact.command(name = "year")
 	@checks.not_forbidden()
@@ -282,7 +282,7 @@ class Random:
 		'''Random fact about a year'''
 		async with clients.aiohttp_session.get("http://numbersapi.com/{}/year".format(year)) as resp:
 			data = await resp.text()
-		await self.bot.embed_reply(data)
+		await ctx.embed_reply(data)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -290,7 +290,7 @@ class Random:
 		'''Random idea'''
 		async with clients.aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
 			data = await resp.json()
-		await self.bot.embed_reply("{0[this]} for {0[that]}".format(data))
+		await ctx.embed_reply("{0[this]} for {0[that]}".format(data))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -298,7 +298,7 @@ class Random:
 		'''Random insult'''
 		async with clients.aiohttp_session.get("http://quandyfactory.com/insult/json") as resp:
 			data = await resp.json()
-		await self.bot.embed_say(data["insult"])
+		await ctx.embed_say(data["insult"])
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -307,19 +307,19 @@ class Random:
 		# Sources:
 		# https://github.com/KiaFathi/tambalAPI
 		# https://www.kaggle.com/abhinavmoudgil95/short-jokes (https://github.com/amoudgl/short-jokes-dataset)
-		await self.bot.embed_reply(random.choice(self.jokes))
+		await ctx.embed_reply(random.choice(self.jokes))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def letter(self, ctx):
 		'''Random letter'''
-		await self.bot.embed_reply(random.choice(string.ascii_uppercase))
+		await ctx.embed_reply(random.choice(string.ascii_uppercase))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def location(self, ctx):
 		'''Random location'''
-		await self.bot.embed_reply("{}, {}".format(random.uniform(-90, 90), random.uniform(-180, 180)))
+		await ctx.embed_reply("{}, {}".format(random.uniform(-90, 90), random.uniform(-180, 180)))
 	
 	@commands.group(aliases = ["rng"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -328,7 +328,7 @@ class Random:
 		Random number
 		Default range is 1 to 10
 		'''
-		await self.bot.embed_reply(random.randint(1, number))
+		await ctx.embed_reply(random.randint(1, number))
 	
 	@commands.command(aliases = ["why"])
 	@checks.not_forbidden()
@@ -337,7 +337,7 @@ class Random:
 		async with clients.aiohttp_session.get("http://xkcd.com/why.txt") as resp:
 			data = await resp.text()
 		questions = data.split('\n')
-		await self.bot.embed_reply("{}?".format(random.choice(questions).capitalize()))
+		await ctx.embed_reply("{}?".format(random.choice(questions).capitalize()))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -347,19 +347,19 @@ class Random:
 			try:
 				data = await resp.json()
 			except:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 				return
-		await self.bot.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"]) # quoteLink?
+		await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"]) # quoteLink?
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def time(self, ctx):
 		'''Random time'''
-		await self.bot.embed_reply("{:02d}:{:02d}".format(random.randint(0, 23), random.randint(0, 59)))
+		await ctx.embed_reply("{:02d}:{:02d}".format(random.randint(0, 23), random.randint(0, 59)))
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def word(self, ctx):
 		'''Random word'''
-		await self.bot.embed_reply(clients.wordnik_words_api.getRandomWord().word.capitalize())
+		await ctx.embed_reply(self.bot.wordnik_words_api.getRandomWord().word.capitalize())
 
