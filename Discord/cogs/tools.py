@@ -53,9 +53,9 @@ class Tools:
 	async def add(self, ctx, *numbers : float):
 		'''Add numbers together'''
 		if not numbers:
-			await self.bot.embed_reply("Add what?")
+			await ctx.embed_reply("Add what?")
 			return
-		await self.bot.embed_reply("{} = {:g}".format(" + ".join("{:g}".format(number) for number in numbers), sum(numbers)))
+		await ctx.embed_reply("{} = {:g}".format(" + ".join("{:g}".format(number) for number in numbers), sum(numbers)))
 	
 	@commands.command(aliases = ["calc", "calculator"])
 	@checks.not_forbidden()
@@ -73,15 +73,15 @@ class Tools:
 			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
 			try:
 				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
-				await self.bot.embed_reply("{} = {}".format(equation, result))
+				await ctx.embed_reply("{} = {}".format(equation, result))
 			except discord.errors.HTTPException:
-				await self.bot.embed_reply(":no_entry: Output too long")
+				await ctx.embed_reply(":no_entry: Output too long")
 			except SyntaxError:
-				await self.bot.embed_reply(":no_entry: Syntax error")
+				await ctx.embed_reply(":no_entry: Syntax error")
 			except ZeroDivisionError:
-				await self.bot.embed_reply(":no_entry: Error: Division by zero")
+				await ctx.embed_reply(":no_entry: Error: Division by zero")
 			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
-				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
+				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
 	@checks.not_forbidden()
@@ -92,9 +92,9 @@ class Tools:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await self.bot.embed_reply("`{}`".format(sympy.diff(equation.strip('`'), x)), title = "Derivative of {}".format(equation))
+			await ctx.embed_reply("`{}`".format(sympy.diff(equation.strip('`'), x)), title = "Derivative of {}".format(equation))
 		except Exception as e:
-			await self.bot.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
 	
 	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -105,9 +105,9 @@ class Tools:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await self.bot.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), x)), title = "Integral of {}".format(equation))
+			await ctx.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), x)), title = "Integral of {}".format(equation))
 		except Exception as e:
-			await self.bot.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
 	
 	@integrate.command(name = "definite")
 	@checks.not_forbidden()
@@ -118,9 +118,9 @@ class Tools:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await self.bot.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))), title = "Definite Integral of {} from {} to {}".format(equation, lower_limit, upper_limit))
+			await ctx.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))), title = "Definite Integral of {} from {} to {}".format(equation, lower_limit, upper_limit))
 		except Exception as e:
-			await self.bot.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
 	
 	@commands.command(aliases = ["charinfo", "char_info", "character_info"])
 	@checks.not_forbidden()
@@ -134,7 +134,7 @@ class Tools:
 			name = "UNKNOWN"
 		hex_char = hex(ord(character))
 		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char[2:])
-		await self.bot.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
+		await ctx.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
 	
 	@commands.command(aliases = ["choice", "pick"])
 	@checks.not_forbidden()
@@ -144,15 +144,15 @@ class Tools:
 		choose <option1> <option2> <...>
 		'''
 		if not choices:
-			await self.bot.embed_reply("Choose between what?")
+			await ctx.embed_reply("Choose between what?")
 			return
-		await self.bot.embed_reply(random.choice(choices))
+		await ctx.embed_reply(random.choice(choices))
 	
 	@commands.command(aliases = ["flip"])
 	@checks.not_forbidden()
 	async def coin(self, ctx):
 		'''Flip a coin'''
-		await self.bot.embed_reply(random.choice(["Heads!", "Tails!"]))
+		await ctx.embed_reply(random.choice(["Heads!", "Tails!"]))
 	
 	@commands.group(aliases = ["decrpyt"])
 	@checks.not_forbidden()
@@ -167,14 +167,14 @@ class Tools:
 		key: 0 - 26
 		'''
 		if not 0 <= key <= 26:
-			await self.bot.embed_reply(":no_entry: Key must be in range 0 - 26")
+			await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
 			return
-		await self.bot.embed_reply(ciphers.decode_caesar(message, key))
+		await ctx.embed_reply(ciphers.decode_caesar(message, key))
 	
 	@decode_caesar.command(name = "brute")
 	async def decode_caesar_brute(self, ctx, message : str):
 		'''Brute force decode caesar code'''
-		await self.bot.embed_reply(ciphers.brute_force_caesar(message))
+		await ctx.embed_reply(ciphers.brute_force_caesar(message))
 	
 	@decode.group(name = "gost", aliases = ["гост"])
 	async def decode_gost(self, ctx):
@@ -200,25 +200,25 @@ class Tools:
 	async def ddecode_gost_28147_89_cbc(self, ctx, key : str, *, data : str):
 		'''Magma with CBC mode of operation'''
 		try:
-			await self.bot.embed_reply(pygost.gost28147.cbc_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
+			await ctx.embed_reply(pygost.gost28147.cbc_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@decode_gost_28147_89.command(name = "cfb")
 	async def decode_gost_28147_89_cfb(self, ctx, key : str, *, data : str):
 		'''Magma with CFB mode of operation'''
 		try:
-			await self.bot.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
+			await ctx.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@decode_gost_28147_89.command(name = "cnt")
 	async def decode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
 		'''Magma with CNT mode of operation'''
 		try:
-			await self.bot.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
+			await ctx.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@decode_gost_28147_89.command(name = "ecb")
 	async def decode_gost_28147_89_ecb(self, ctx, key : str, *, data : str):
@@ -228,9 +228,9 @@ class Tools:
 		This means the data length must be a multiple of 8
 		'''
 		try:
-			await self.bot.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
+			await ctx.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("utf-8"), bytearray.fromhex(data)).decode("utf-8"))
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@decode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
 	async def decode_gost_34_12_2015(self, ctx, key : str, *, data : str):
@@ -241,17 +241,17 @@ class Tools:
 		'''
 		# TODO: Add decode kuznyechik alias
 		if len(key) < 32:
-			await self.bot.embed_reply(":no_entry: Error: key length must be at least 32")
+			await ctx.embed_reply(":no_entry: Error: key length must be at least 32")
 			return
 		if len(data) < 16:
-			await self.bot.embed_reply(":no_entry: Error: data length must be at least 16")
+			await ctx.embed_reply(":no_entry: Error: data length must be at least 16")
 			return
-		await self.bot.embed_reply(pygost.gost3412.GOST3412Kuz(key.encode("utf-8")).decrypt(bytearray.fromhex(data)).decode("utf-8"))
+		await ctx.embed_reply(pygost.gost3412.GOST3412Kuz(key.encode("utf-8")).decrypt(bytearray.fromhex(data)).decode("utf-8"))
 	
 	@decode.command(name = "morse")
 	async def decode_morse(self, ctx, *, message : str):
 		'''Decodes morse code'''
-		await self.bot.embed_reply(ciphers.decode_morse(message))
+		await ctx.embed_reply(ciphers.decode_morse(message))
 	
 	@decode.command(name = "qr")
 	async def decode_qr(self, ctx, file_url : str = ""):
@@ -264,28 +264,28 @@ class Tools:
 		if ctx.message.attachments and "filename" in ctx.message.attachments[0]:
 			await self._decode_qr(ctx.message.attachments[0]["url"])
 		if not file_url and not (ctx.message.attachments and "filename" in ctx.message.attachments[0]):
-			await self.bot.embed_reply(":no_entry: Please input a file url or attach an image")
+			await ctx.embed_reply(":no_entry: Please input a file url or attach an image")
 	
 	async def _decode_qr(self, file_url):
 		url = "https://api.qrserver.com/v1/read-qr-code/?fileurl={}".format(file_url)
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
 		if data[0]["symbol"][0]["error"]:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(data[0]["symbol"][0]["error"]))
+			await ctx.embed_reply(":no_entry: Error: {}".format(data[0]["symbol"][0]["error"]))
 			return
 		decoded = data[0]["symbol"][0]["data"].replace("QR-Code:", "")
 		if len(decoded) > 1024:
-			await self.bot.embed_reply(decoded[:1021] + "...", footer_text = "Decoded message exceeded character limit")
+			await ctx.embed_reply(decoded[:1021] + "...", footer_text = "Decoded message exceeded character limit")
 			return
-		await self.bot.embed_reply(decoded)
+		await ctx.embed_reply(decoded)
 	
 	@decode.command(name = "reverse")
 	async def decode_reverse(self, ctx, *, message : str):
 		'''Reverses text'''
-		await self.bot.embed_reply(message[::-1])
+		await ctx.embed_reply(message[::-1])
 	
 	@commands.group(aliases = ["encrypt"])
 	@checks.not_forbidden()
@@ -296,7 +296,7 @@ class Tools:
 	@encode.command(name = "adler32", aliases = ["adler-32"])
 	async def encode_adler32(self, ctx, *, message : str):
 		'''Compute Adler-32 checksum'''
-		await self.bot.embed_reply(zlib.adler32(message.encode("utf-8")))
+		await ctx.embed_reply(zlib.adler32(message.encode("utf-8")))
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
 	async def encode_caesar(self, ctx, key : int, *, message : str):
@@ -305,14 +305,14 @@ class Tools:
 		key: 0 - 26
 		'''
 		if not 0 <= key <= 26:
-			await self.bot.embed_reply(":no_entry: Key must be in range 0 - 26")
+			await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
 			return
-		await self.bot.embed_reply(ciphers.encode_caesar(message, key))
+		await ctx.embed_reply(ciphers.encode_caesar(message, key))
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
 	async def encode_crc32(self, ctx, *, message : str):
 		'''Compute CRC32 checksum'''
-		await self.bot.embed_reply(zlib.crc32(message.encode("utf-8")))
+		await ctx.embed_reply(zlib.crc32(message.encode("utf-8")))
 	
 	@encode.group(name = "gost", aliases = ["гост"])
 	async def encode_gost(self, ctx):
@@ -338,25 +338,25 @@ class Tools:
 	async def encode_gost_28147_89_cbc(self, ctx, key : str, *, data : str):
 		'''Magma with CBC mode of operation'''
 		try:
-			await self.bot.embed_reply(pygost.gost28147.cbc_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.cbc_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost_28147_89.command(name = "cfb")
 	async def encode_gost_28147_89_cfb(self, ctx, key : str, *, data : str):
 		'''Magma with CFB mode of operation'''
 		try:
-			await self.bot.embed_reply(pygost.gost28147.cfb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.cfb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost_28147_89.command(name = "cnt")
 	async def encode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
 		'''Magma with CNT mode of operation'''
 		try:
-			await self.bot.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), data.encode("utf-8")).hex())
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost_28147_89.command(name = "ecb")
 	async def encode_gost_28147_89_ecb(self, ctx, key : str, *, data : str):
@@ -366,9 +366,9 @@ class Tools:
 		This means the data length must be a multiple of 8
 		'''
 		try:
-			await self.bot.embed_reply(pygost.gost28147.ecb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.ecb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost_28147_89.command(name = "mac")
 	async def encode_gost_28147_89_mac(self, ctx, key : str, *, data : str):
@@ -376,9 +376,9 @@ class Tools:
 		try:
 			mac = pygost.gost28147_mac.MAC(key = key.encode("utf-8"))
 			mac.update(data.encode("utf-8"))
-			await self.bot.embed_reply(mac.hexdigest())
+			await ctx.embed_reply(mac.hexdigest())
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@encode_gost.group(name = "34.11-2012", aliases = ["стрибог", "streebog"])
 	async def encode_gost_34_11_2012(self, ctx):
@@ -395,7 +395,7 @@ class Tools:
 		GOST 34.11-2012 256-bit hash function
 		Also known as Streebog-256
 		'''
-		await self.bot.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 32).hexdigest())
+		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 32).hexdigest())
 	
 	@encode_gost_34_11_2012.command(name = "512")
 	async def encode_gost_34_11_2012_512(self, ctx, *, data : str):
@@ -403,12 +403,12 @@ class Tools:
 		GOST 34.11-2012 512-bit hash function
 		Also known as Streebog-512
 		'''
-		await self.bot.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 64).hexdigest())
+		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 64).hexdigest())
 	
 	@encode_gost.command(name = "34.11-94")
 	async def encode_gost_34_11_94(self, ctx, *, data : str):
 		'''GOST 34.11-94 hash function'''
-		await self.bot.embed_reply(pygost.gost341194.GOST341194(data.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(pygost.gost341194.GOST341194(data.encode("utf-8")).hexdigest())
 	
 	@encode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
 	async def encode_gost_34_12_2015(self, ctx, key : str, *, data : str):
@@ -419,79 +419,79 @@ class Tools:
 		'''
 		# TODO: Add encode kuznyechik alias
 		if len(key) < 32:
-			await self.bot.embed_reply(":no_entry: Error: key length must be at least 32")
+			await ctx.embed_reply(":no_entry: Error: key length must be at least 32")
 			return
 		if len(data) < 16:
-			await self.bot.embed_reply(":no_entry: Error: data length must be at least 16")
+			await ctx.embed_reply(":no_entry: Error: data length must be at least 16")
 			return
-		await self.bot.embed_reply(pygost.gost3412.GOST3412Kuz(key.encode("utf-8")).encrypt(data.encode("utf-8")).hex())
+		await ctx.embed_reply(pygost.gost3412.GOST3412Kuz(key.encode("utf-8")).encrypt(data.encode("utf-8")).hex())
 	
 	@encode.command(name = "md4")
 	async def encode_md4(self, ctx, *, message : str):
 		'''Generate MD4 hash'''
 		h = hashlib.new("md4")
 		h.update(message.encode("utf-8"))
-		await self.bot.embed_reply(h.hexdigest())
+		await ctx.embed_reply(h.hexdigest())
 	
 	@encode.command(name = "md5")
 	async def encode_md5(self, ctx, *, message : str):
 		'''Generate MD5 hash'''
-		await self.bot.embed_reply(hashlib.md5(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.md5(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "morse")
 	async def encode_morse(self, ctx, *, message : str):
 		'''Encode a message in morse code'''
-		await self.bot.embed_reply(ciphers.encode_morse(message))
+		await ctx.embed_reply(ciphers.encode_morse(message))
 	
 	@encode.command(name = "qr")
 	async def encode_qr(self, ctx, *, message : str):
 		'''Encode a message in a QR code'''
 		url = "https://api.qrserver.com/v1/create-qr-code/?data={}".format(message).replace(' ', '+')
-		await self.bot.embed_reply(None, image_url = url)
+		await ctx.embed_reply(image_url = url)
 	
 	@encode.command(name = "reverse")
 	async def encode_reverse(self, ctx, *, message : str):
 		'''Reverses text'''
-		await self.bot.embed_reply(message[::-1])
+		await ctx.embed_reply(message[::-1])
 	
 	@encode.command(name = "ripemd160", aliases = ["ripemd-160"])
 	async def encode_ripemd160(self, ctx, *, message : str):
 		'''Generate RIPEMD-160 hash'''
 		h = hashlib.new("ripemd160")
 		h.update(message.encode("utf-8"))
-		await self.bot.embed_reply(h.hexdigest())
+		await ctx.embed_reply(h.hexdigest())
 	
 	@encode.command(name = "sha1", aliases = ["sha-1"])
 	async def encode_sha1(self, ctx, *, message : str):
 		'''Generate SHA-1 hash'''
-		await self.bot.embed_reply(hashlib.sha1(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.sha1(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "sha224", aliases = ["sha-224"])
 	async def encode_sha224(self, ctx, *, message : str):
 		'''Generate SHA-224 hash'''
-		await self.bot.embed_reply(hashlib.sha224(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.sha224(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "sha256", aliases = ["sha-256"])
 	async def encode_sha256(self, ctx, *, message : str):
 		'''Generate SHA-256 hash'''
-		await self.bot.embed_reply(hashlib.sha256(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.sha256(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "sha384", aliases = ["sha-384"])
 	async def encode_sha384(self, ctx, *, message : str):
 		'''Generate SHA-384 hash'''
-		await self.bot.embed_reply(hashlib.sha384(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.sha384(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "sha512", aliases = ["sha-512"])
 	async def encode_sha512(self, ctx, *, message : str):
 		'''Generate SHA-512 hash'''
-		await self.bot.embed_reply(hashlib.sha512(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.sha512(message.encode("utf-8")).hexdigest())
 	
 	@encode.command(name = "whirlpool")
 	async def encode_whirlpool(self, ctx, *, message : str):
 		'''Generate Whirlpool hash'''
 		h = hashlib.new("whirlpool")
 		h.update(message.encode("utf-8"))
-		await self.bot.embed_reply(h.hexdigest())
+		await ctx.embed_reply(h.hexdigest())
 	
 	@commands.group(aliases = ["plot"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -501,7 +501,7 @@ class Tools:
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 			return
 		x = numpy.linspace(lower_limit, upper_limit, 250)
 		try:
@@ -512,7 +512,7 @@ class Tools:
 		try:
 			matplotlib.pyplot.plot(x, y)
 		except ValueError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 			return
 		matplotlib.pyplot.savefig(filename)
 		matplotlib.pyplot.clf()
@@ -542,7 +542,7 @@ class Tools:
 	async def tag(self, ctx, tag : str = ""):
 		'''Tags/notes that you can trigger later'''
 		if not tag:
-			await self.bot.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
+			await ctx.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
 			return
 		if tag in self.tags_data.get(ctx.author.id, {}).get("tags", []):
 			await self.bot.reply(self.tags_data[ctx.author.id]["tags"][tag])
@@ -554,7 +554,7 @@ class Tools:
 		else:
 			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(ctx.author.id, {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
-			await self.bot.embed_reply("Tag not found{}".format(close_matches))
+			await ctx.embed_reply("Tag not found{}".format(close_matches))
 	
 	@tag.command(name = "list", aliases = ["all", "mine"])
 	async def tag_list(self, ctx):
@@ -565,7 +565,7 @@ class Tools:
 			tags_paginator.add_section(tag)
 		# DM
 		for page in tags_paginator.pages:
-			await self.bot.embed_reply(page, title = "Your tags:")
+			await ctx.embed_reply(page, title = "Your tags:")
 	
 	@tag.command(name = "add", aliases = ["make", "new", "create"])
 	async def tag_add(self, ctx, tag : str, *, content : str):
@@ -574,12 +574,12 @@ class Tools:
 			self.tags_data[ctx.author.id] = {"name" : ctx.author.name, "tags" : {}}
 		tags = self.tags_data[ctx.author.id]["tags"]
 		if tag in tags:
-			await self.bot.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
+			await ctx.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
 		tags[tag] = utilities.clean_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
+		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
 	
 	@tag.command(name = "edit", aliases = ["update"])
 	async def tag_edit(self, ctx, tag : str, *, content : str):
@@ -589,7 +589,7 @@ class Tools:
 		self.tags_data[ctx.author.id]["tags"][tag] = utilities.clean_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
+		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
 	@tag.command(name = "delete", aliases = ["remove", "destroy"])
 	async def tag_delete(self, ctx, tag : str):
@@ -599,7 +599,7 @@ class Tools:
 		del self.tags_data[ctx.author.id]["tags"][tag]
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
+		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
 	
 	@tag.command(name = "search", aliases = ["contains", "find"])
 	async def tag_search(self, ctx, *, search : str):
@@ -608,11 +608,11 @@ class Tools:
 		tags = self.tags_data[ctx.author.id]["tags"]
 		results = [t for t in tags.keys() if search in t]
 		if results:
-			await self.bot.embed_reply("{} tags found: {}".format(len(results), ", ".join(results)))
+			await ctx.embed_reply("{} tags found: {}".format(len(results), ", ".join(results)))
 			return
 		close_matches = difflib.get_close_matches(search, tags.keys())
 		close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
-		await self.bot.embed_reply("No tags found{}".format(close_matches))
+		await ctx.embed_reply("No tags found{}".format(close_matches))
 	
 	@tag.command(name = "globalize", aliases = ["globalise"])
 	async def tag_globalize(self, ctx, tag : str):
@@ -620,13 +620,13 @@ class Tools:
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
 		if tag in self.tags_data["global"]:
-			await self.bot.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
+			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
 		self.tags_data["global"][tag] = {"response": self.tags_data[ctx.author.id]["tags"][tag], "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
 		del self.tags_data[ctx.author.id]["tags"][tag]
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been {}d".format(ctx.invoked_with))
+		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been {}d".format(ctx.invoked_with))
 	
 	# TODO: rename, aliases
 	
@@ -640,46 +640,46 @@ class Tools:
 		'''Add a global tag'''
 		tags = self.tags_data["global"]
 		if tag in tags:
-			await self.bot.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
+			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
 		tags[tag] = {"response": utilities.clean_content(content), "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
+		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
 	
 	@tag_global.command(name = "edit", aliases = ["update"])
 	async def tag_global_edit(self, ctx, tag : str, *, content : str):
 		'''Edit one of your global tags'''
 		if tag not in self.tags_data["global"]:
-			await self.bot.embed_reply(":no_entry: That global tag doesn't exist")
+			await ctx.embed_reply(":no_entry: That global tag doesn't exist")
 			return
 		elif self.tags_data["global"][tag]["owner"] != ctx.author.id:
-			await self.bot.embed_reply(":no_entry: You don't own that global tag")
+			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		self.tags_data["global"][tag]["response"] = utilities.clean_content(content)
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
+		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
 	@tag_global.command(name = "delete", aliases = ["remove", "destroy"])
 	async def tag_global_delete(self, ctx, tag : str):
 		'''Delete one of your global tags'''
 		if tag not in self.tags_data["global"]:
-			await self.bot.embed_reply(":no_entry: That global tag doesn't exist")
+			await ctx.embed_reply(":no_entry: That global tag doesn't exist")
 			return
 		elif self.tags_data["global"][tag]["owner"] != ctx.author.id:
-			await self.bot.embed_reply(":no_entry: You don't own that global tag")
+			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		del self.tags_data["global"][tag]
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
-		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
+		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
 	
 	# TODO: global search, list?
 	
 	async def check_no_tags(self, ctx):
 		if not ctx.author.id in self.tags_data:
-			await self.bot.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
+			await ctx.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
 		return not ctx.author.id in self.tags_data
 	
 	async def check_no_tag(self, ctx, tag):
@@ -687,7 +687,7 @@ class Tools:
 		if not tag in tags:
 			close_matches = difflib.get_close_matches(tag, tags.keys())
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
-			await self.bot.embed_reply("You don't have that tag{}".format(close_matches))
+			await ctx.embed_reply("You don't have that tag{}".format(close_matches))
 		return not tag in tags
 	
 	@commands.command()
@@ -695,7 +695,7 @@ class Tools:
 	async def timer(self, ctx, seconds : int):
 		'''Timer'''
 		# TODO: other units, persistence through restarts
-		await self.bot.embed_reply("I'll remind you in {} seconds".format(seconds))
+		await ctx.embed_reply("I'll remind you in {} seconds".format(seconds))
 		await asyncio.sleep(seconds)
 		await self.bot.say("{}: {} seconds have passed".format(ctx.author.mention, seconds))
 	

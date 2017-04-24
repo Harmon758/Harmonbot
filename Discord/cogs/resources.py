@@ -38,9 +38,9 @@ class Resources:
 		'''Antonyms of a word'''
 		antonyms = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", useCanonical = "true", limitPerRelationshipType = 100)
 		if not antonyms:
-			await self.bot.embed_reply(":no_entry: Word or antonyms not found")
+			await ctx.embed_reply(":no_entry: Word or antonyms not found")
 			return
-		await self.bot.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
+		await ctx.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
 	
 	@commands.group(aliases = ["blizzard"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -62,9 +62,9 @@ class Resources:
 		elif lower_game in ("heroes of the storm", "hots"): abbrev = "Hero"
 		elif lower_game in ("overwatch"): abbrev = "Pro"
 		else:
-			await self.bot.embed_reply(":no_entry: Game not found")
+			await ctx.embed_reply(":no_entry: Game not found")
 			return
-		await self.bot.embed_reply("[Launch {}](battlenet://{})".format(game, abbrev))
+		await ctx.embed_reply("[Launch {}](battlenet://{})".format(game, abbrev))
 	
 	@commands.group(aliases = ["colour"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -84,7 +84,7 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if not data:
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 			return
 		data = data[0]
 		embed = discord.Embed(title = data["title"].capitalize(), description = "#{}".format(data["hex"]), color = clients.bot_color)
@@ -101,9 +101,9 @@ class Resources:
 		'''Define a word'''
 		definition = clients.wordnik_word_api.getDefinitions(word, limit = 1) # useCanonical = True ?
 		if not definition:
-			await self.bot.embed_reply(":no_entry: Definition not found")
+			await ctx.embed_reply(":no_entry: Definition not found")
 			return
-		await self.bot.embed_reply(definition[0].text, title = definition[0].word.capitalize(), footer_text = definition[0].attributionText)
+		await ctx.embed_reply(definition[0].text, title = definition[0].word.capitalize(), footer_text = definition[0].attributionText)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -116,7 +116,7 @@ class Resources:
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			url = "https://www.dotabuff.com/players/{}".format(int(data["response"]["steamid"]) - 76561197960265728)
-		await self.bot.embed_reply(None, title = "{}'s Dotabuff profile".format(account), title_url = url)
+		await ctx.embed_reply(title = "{}'s Dotabuff profile".format(account), title_url = url)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -125,7 +125,7 @@ class Resources:
 		url = "http://api.giphy.com/v1/gifs/search?api_key={}&q={}&limit=1".format(credentials.giphy_public_beta_api_key, search)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		await self.bot.embed_reply(None, image_url = data["data"][0]["images"]["original"]["url"])
+		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
 	@giphy.command(name = "trending")
 	async def giphy_trending(self, ctx):
@@ -133,7 +133,7 @@ class Resources:
 		url = "http://api.giphy.com/v1/gifs/trending?api_key={}".format(credentials.giphy_public_beta_api_key)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		await self.bot.embed_reply(None, image_url = data["data"][0]["images"]["original"]["url"])
+		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
 	@commands.command(aliases = ["imagesearch", "googleimages"])
 	@checks.not_forbidden()
@@ -142,13 +142,13 @@ class Resources:
 		url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&searchType=image&q={}".format(credentials.google_apikey, credentials.google_cse_cx, search.replace(' ', '+'))
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 403:
-				await self.bot.embed_reply(":no_entry: Daily limit exceeded")
+				await ctx.embed_reply(":no_entry: Daily limit exceeded")
 				return
 			data = await resp.json()
 		if "items" not in data:
-			await self.bot.embed_reply(":no_entry: No images with that search found")
+			await ctx.embed_reply(":no_entry: No images with that search found")
 			return
-		await self.bot.embed_reply(None, image_url = data["items"][0]["link"], title = "Image of {}".format(search), title_url = data["items"][0]["link"])
+		await ctx.embed_reply(image_url = data["items"][0]["link"], title = "Image of {}".format(search), title_url = data["items"][0]["link"])
 		# handle 403 daily limit exceeded error
 	
 	@commands.command()
@@ -177,13 +177,13 @@ class Resources:
 			for pastedaccount in data:
 				pastedaccounts += pastedaccount["Source"] + " (" + pastedaccount["Id"] + "), "
 			pastedaccounts = pastedaccounts[:-2]
-		await self.bot.embed_reply("Breached accounts: {}\nPastes: {}".format(breachedaccounts, pastedaccounts))
+		await ctx.embed_reply("Breached accounts: {}\nPastes: {}".format(breachedaccounts, pastedaccounts))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def horoscope(self, ctx, sign : str):
 		'''Horoscope'''
-		await self.process_horoscope(sign, "today")
+		await self.process_horoscope(ctx, sign, "today")
 	
 	@horoscope.command(name = "signs", aliases = ["sun_signs", "sunsigns"])
 	@checks.not_forbidden()
@@ -191,36 +191,36 @@ class Resources:
 		'''Sun signs'''
 		async with clients.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/sunsigns") as resp:
 			data = await resp.json()
-		await self.bot.embed_reply(", ".join(data))
+		await ctx.embed_reply(", ".join(data))
 	
 	@horoscope.command(name = "today")
 	@checks.not_forbidden()
 	async def horoscope_today(self, ctx, sign):
 		'''Today's horoscope'''
-		await self.process_horoscope(sign, "today")
+		await self.process_horoscope(ctx, sign, "today")
 	
 	@horoscope.command(name = "tomorrow")
 	@checks.not_forbidden()
 	async def horoscope_tomorrow(self, ctx, sign):
 		'''Tomorrow's horoscope'''
-		await self.process_horoscope(sign, "tomorrow")
+		await self.process_horoscope(ctx, sign, "tomorrow")
 	
 	@horoscope.command(name = "yesterday")
 	@checks.not_forbidden()
 	async def horoscope_yesterday(self, ctx, sign):
 		'''Yesterday's horoscope'''
-		await self.process_horoscope(sign, "yesterday")
+		await self.process_horoscope(ctx, sign, "yesterday")
 	
-	async def process_horoscope(self, sign, day):
+	async def process_horoscope(self, ctx, sign, day):
 		if len(sign) == 1:
 			sign = unicodedata.name(sign).lower()
 		async with clients.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/horoscope/{}/{}/".format(sign, day)) as resp:
 			if resp.status == 404:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
 		date = [int(d) for d in data["date"].split('-')]
-		await self.bot.embed_reply(data["horoscope"].replace(data["credit"], ""), title = data["sunsign"], fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()), footer_text = data["credit"], timestamp = datetime.datetime(date[0], date[1], date[2]))
+		await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""), title = data["sunsign"], fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()), footer_text = data["credit"], timestamp = datetime.datetime(date[0], date[1], date[2]))
 	
 	@commands.command(aliases = ["imagerecog", "imager", "image_recognition"])
 	@checks.not_forbidden()
@@ -229,10 +229,10 @@ class Resources:
 		try:
 			response = clients.clarifai_general_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			await self.bot.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
+			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
 			return
 		if response["status"]["description"] != "Ok":
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 			return
 		names = {}
 		for concept in response["outputs"][0]["data"]["concepts"]:
@@ -241,7 +241,7 @@ class Resources:
 		for name, value in sorted(names.items(), key = lambda i: i[1], reverse = True):
 			output += "**{}**: {:.2f}%, ".format(name, value)
 		output = output[:-2]
-		await self.bot.embed_reply(output)
+		await ctx.embed_reply(output)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -250,15 +250,15 @@ class Resources:
 		try:
 			response = clients.clarifai_nsfw_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			await self.bot.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
+			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
 			return
 		if response["status"]["description"] != "Ok":
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 			return
 		percentages = {}
 		for concept in response["outputs"][0]["data"]["concepts"]:
 			percentages[concept["name"]] = concept["value"] * 100
-		await self.bot.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]))
+		await ctx.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]))
 	
 	@commands.command(aliases = ["movie"])
 	@checks.not_forbidden()
@@ -268,7 +268,7 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
-			await self.bot.embed_reply(":no_entry: Error: {}".format(data["Error"]))
+			await ctx.embed_reply(":no_entry: Error: {}".format(data["Error"]))
 			return
 		embed = discord.Embed(title = data["Title"], url = "http://www.imdb.com/title/{}".format(data["imdbID"]), color = clients.bot_color)
 		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
@@ -292,7 +292,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def imgur(self, ctx):
 		'''Imgur'''
-		await self.bot.embed_reply("See {}help imgur".format(ctx.prefix))
+		await ctx.embed_reply("See {}help imgur".format(ctx.prefix))
 	
 	@imgur.command(name = "upload")
 	@checks.not_forbidden()
@@ -303,13 +303,13 @@ class Resources:
 		if ctx.message.attachments:
 			await self._imgur_upload(ctx.message.attachments[0]["url"])
 		if not (url or ctx.message.attachments):
-			await self.bot.embed_reply(":no_entry: Please input an image and/or url")
+			await ctx.embed_reply(":no_entry: Please input an image and/or url")
 	
 	async def _imgur_upload(self, url):
 		try:
-			await self.bot.embed_reply(clients.imgur_client.upload_from_url(url)["link"])
+			await ctx.embed_reply(clients.imgur_client.upload_from_url(url)["link"])
 		except imgurpython.helpers.error.ImgurClientError as e:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@commands.group()
 	@checks.not_forbidden()
@@ -401,17 +401,17 @@ class Resources:
 		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={}&key={}".format(url, credentials.google_apikey)
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
-		await self.bot.embed_reply(data["longUrl"])
+		await ctx.embed_reply(data["longUrl"])
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def map(self, ctx, *, location : str):
 		'''See map of location'''
 		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location.replace(' ', '+'))
-		await self.bot.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
+		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@map.command(name = "options")
 	@checks.not_forbidden()
@@ -422,7 +422,7 @@ class Resources:
 		Map Types: roadmap, satellite, hybrid, terrain (Default: roadmap)
 		'''
 		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&maptype={}&size=640x640".format(location.replace(' ', '+'), zoom, maptype)
-		await self.bot.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
+		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -434,7 +434,7 @@ class Resources:
 		async with clients.aiohttp_session.get("https://newsapi.org/v1/articles?source={}&apiKey={}".format(source, credentials.news_api_key)) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			await self.bot.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
 		'''
 		paginator = commands.formatter.Paginator(prefix = "{}:".format(ctx.author.display_name), suffix = "")
@@ -477,7 +477,7 @@ class Resources:
 		async with clients.aiohttp_session.get("https://newsapi.org/v1/sources") as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 			return
 		# for source in data["sources"]:
 		await self.bot.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
@@ -493,11 +493,11 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["results"]:
-			await self.bot.embed_reply(data["results"][0]["data"], title = data["results"][0]["name"])
+			await ctx.embed_reply(data["results"][0]["data"], title = data["results"][0]["name"])
 		elif data["count"]:
-			await self.bot.embed_reply(":no_entry: Too many sequences found")
+			await ctx.embed_reply(":no_entry: Too many sequences found")
 		else:
-			await self.bot.embed_reply(":no_entry: Sequence not found")
+			await ctx.embed_reply(":no_entry: Sequence not found")
 	
 	@oeis.command(name = "graph")
 	@checks.not_forbidden()
@@ -511,11 +511,11 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if data["results"]:
-			await self.bot.embed_reply(None, image_url = "https://oeis.org/A{:06d}/graph?png=1".format(data["results"][0]["number"]))
+			await ctx.embed_reply(image_url = "https://oeis.org/A{:06d}/graph?png=1".format(data["results"][0]["number"]))
 		elif data["count"]:
-			await self.bot.embed_reply(":no_entry: Too many sequences found")
+			await ctx.embed_reply(":no_entry: Too many sequences found")
 		else:
-			await self.bot.embed_reply(":no_entry: Sequence not found")
+			await ctx.embed_reply(":no_entry: Sequence not found")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -653,7 +653,7 @@ class Resources:
 		async with clients.aiohttp_session.get("https://fonoapi.freshpixl.com/v1/getdevice?device={}&position=0&token={}".format(phone.replace(' ', '+'), credentials.fonoapi_token)) as resp:
 			data = await resp.json()
 		if "status" in data and data["status"] == "error":
-			await self.bot.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
 		data = data[0]
 		embed = discord.Embed(title = data["DeviceName"], color = clients.bot_color)
@@ -779,9 +779,9 @@ class Resources:
 		if audio_file:
 			description = "[{}]({})".format(description, audio_file[0].fileUrl)
 		elif not pronunciation:
-			await self.bot.embed_reply(":no_entry: Word or pronunciation not found")
+			await ctx.embed_reply(":no_entry: Word or pronunciation not found")
 			return
-		await self.bot.embed_reply(description, title = "Pronunciation of {}".format(word.capitalize()))
+		await ctx.embed_reply(description, title = "Pronunciation of {}".format(word.capitalize()))
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
@@ -795,9 +795,9 @@ class Resources:
 		'''Rhymes of a word'''
 		rhymes = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", limitPerRelationshipType = 100)
 		if not rhymes:
-			await self.bot.embed_reply(":no_entry: Word or rhymes not found")
+			await ctx.embed_reply(":no_entry: Word or rhymes not found")
 			return
-		await self.bot.embed_reply(', '.join(rhymes[0].words), title = "Words that rhyme with {}".format(word.capitalize()))
+		await ctx.embed_reply(', '.join(rhymes[0].words), title = "Words that rhyme with {}".format(word.capitalize()))
 	
 	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -808,7 +808,7 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await self.bot.embed_reply("Error: " + data["error"])
+			await ctx.embed_reply("Error: " + data["error"])
 			return
 		embed = discord.Embed(title = data["player"], url = "https://www.realmeye.com/player/{}".format(player), color = clients.bot_color)
 		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
@@ -840,7 +840,7 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await self.bot.embed_reply("Error: " + data["error"])
+			await ctx.embed_reply("Error: " + data["error"])
 			return
 		embed = discord.Embed(title = "{}'s Characters".format(data["player"]), color = clients.bot_color)
 		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
@@ -1015,7 +1015,7 @@ class Resources:
 	async def shorturl(self, ctx, url : str):
 		'''Generate a short goo.gl url for your link'''
 		short_url = await self._shorturl(url)
-		await self.bot.embed_reply(short_url)
+		await ctx.embed_reply(short_url)
 	
 	async def _shorturl(self, url):
 		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
@@ -1036,7 +1036,7 @@ class Resources:
 			suggestion = correction["suggestions"][0]["suggestion"]
 			corrected = corrected[:offset] + suggestion + corrected[offset + len(correction["token"]):]
 			offset += (len(suggestion) - len(correction["token"])) - correction["offset"]
-		await self.bot.embed_reply(corrected)
+		await ctx.embed_reply(corrected)
 	
 	@commands.command(aliases = ["spotify_info"])
 	@checks.not_forbidden()
@@ -1065,7 +1065,7 @@ class Resources:
 		if link:
 			await self.bot.reply(link)
 		else:
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -1084,7 +1084,7 @@ class Resources:
 			if _app["name"].lower() == app.lower():
 				appid = _app["appid"]
 				break
-		await self.bot.embed_reply(appid)
+		await ctx.embed_reply(appid)
 	
 	@steam.command(name = "gamecount", aliases = ["game_count"])
 	async def steam_gamecount(self, ctx, vanity_name : str):
@@ -1097,7 +1097,7 @@ class Resources:
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
-		await self.bot.embed_reply("{} has {} games".format(vanity_name, gamecount))
+		await ctx.embed_reply("{} has {} games".format(vanity_name, gamecount))
 	
 	@steam.command(name = "gameinfo", aliases = ["game_info"])
 	async def steam_gameinfo(self, ctx, *, game : str):
@@ -1106,14 +1106,14 @@ class Resources:
 			data = await resp.json()
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
 		if not app:
-			await self.bot.embed_reply(":no_entry: Game not found")
+			await ctx.embed_reply(":no_entry: Game not found")
 			return
 		appid = str(app["appid"])
 		url = "http://store.steampowered.com/api/appdetails/?appids={}".format(appid)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data[appid]["data"]
-		await self.bot.embed_reply(data["short_description"], title = data["name"], title_url = data["website"], fields = (("Release Date", data["release_date"]["date"]), ("Free", "Yes" if data["is_free"] else "No"), ("App ID", data["steam_appid"])), image_url = data["header_image"])
+		await ctx.embed_reply(data["short_description"], title = data["name"], title_url = data["website"], fields = (("Release Date", data["release_date"]["date"]), ("Free", "Yes" if data["is_free"] else "No"), ("App ID", data["steam_appid"])), image_url = data["header_image"])
 	
 	@steam.command(name = "run", aliases = ["launch"])
 	async def steam_run(self, ctx, *, game : str):
@@ -1122,10 +1122,10 @@ class Resources:
 			data = await resp.json()
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
 		if not app:
-			await self.bot.embed_reply(":no_entry: Game not found")
+			await ctx.embed_reply(":no_entry: Game not found")
 			return
 		appid = app["appid"]
-		await self.bot.embed_reply("[Launch {}](steam://run/{})".format(game, appid))
+		await ctx.embed_reply("[Launch {}](steam://run/{})".format(game, appid))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -1143,7 +1143,7 @@ class Resources:
 	async def streetview(self, ctx, *, location : str):
 		'''Generate street view of a location'''
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={}".format(location.replace(' ', '+'))
-		await self.bot.embed_reply(None, image_url = image_url)
+		await ctx.embed_reply(image_url = image_url)
 	
 	@commands.command(aliases = ["synonyms"])
 	@checks.not_forbidden()
@@ -1151,9 +1151,9 @@ class Resources:
 		'''Synonyms of a word'''
 		synonyms = clients.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", useCanonical = "true", limitPerRelationshipType = 100)
 		if not synonyms:
-			await self.bot.embed_reply(":no_entry: Word or synonyms not found")
+			await ctx.embed_reply(":no_entry: Word or synonyms not found")
 			return
-		await self.bot.embed_reply(', '.join(synonyms[0].words), title = "Synonyms of {}".format(word.capitalize()))
+		await ctx.embed_reply(', '.join(synonyms[0].words), title = "Synonyms of {}".format(word.capitalize()))
 	
 	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
 	"Powered by [Yandex.Translate](http://translate.yandex.com/)", invoke_without_command = True)
@@ -1161,7 +1161,7 @@ class Resources:
 	async def translate(self, ctx, *, text : str):
 		'''Translate to English'''
 		# TODO: From and to language code options?
-		await self.process_translate(text, "en")
+		await self.process_translate(ctx, text, "en")
 	
 	@translate.command(name = "from")
 	@checks.not_forbidden()
@@ -1172,7 +1172,7 @@ class Resources:
 		Powered by [Yandex.Translate](http://translate.yandex.com/)
 		'''
 		# TODO: Default to_language_code?
-		await self.process_translate(text, to_language_code, from_language_code)
+		await self.process_translate(ctx, text, to_language_code, from_language_code)
 	
 	@translate.command(name = "languages", aliases = ["codes", "language_codes"])
 	@checks.not_forbidden()
@@ -1181,9 +1181,9 @@ class Resources:
 		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs?ui={}&key={}".format(language_code, credentials.yandex_translate_api_key)) as resp:
 			data = await resp.json()
 		if "langs" not in data:
-			await self.bot.embed_reply(":no_entry: Error: Invalid Language Code")
+			await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
 			return
-		await self.bot.embed_reply(", ".join(sorted("{} ({})".format(language, code) for code, language in data["langs"].items())))
+		await ctx.embed_reply(", ".join(sorted("{} ({})".format(language, code) for code, language in data["langs"].items())))
 	
 	@translate.command(name = "to")
 	@checks.not_forbidden()
@@ -1193,7 +1193,7 @@ class Resources:
 		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
 		Powered by [Yandex.Translate](http://translate.yandex.com/)
 		'''
-		await self.process_translate(text, language_code)
+		await self.process_translate(ctx, text, language_code)
 	
 	async def process_translate(self, text, to_language_code, from_language_code = None):
 		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang={}&text={}&options=1".format(credentials.yandex_translate_api_key, to_language_code if not from_language_code else "{}-{}".format(from_language_code, to_language_code), text)
@@ -1203,9 +1203,9 @@ class Resources:
 				return
 			data = await resp.json()
 		if data["code"] != 200:
-			await self.bot.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
-		await self.bot.embed_reply(data["text"][0], footer_text = "{}Powered by Yandex.Translate".format("Detected Language Code: {} | ".format(data["detected"]["lang"]) if not from_language_code else ""))
+		await ctx.embed_reply(data["text"][0], footer_text = "{}Powered by Yandex.Translate".format("Detected Language Code: {} | ".format(data["detected"]["lang"]) if not from_language_code else ""))
 	
 	@commands.command(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"])
 	@checks.not_forbidden()
@@ -1215,11 +1215,12 @@ class Resources:
 		async with clients.aiohttp_session.get("http://api.urbandictionary.com/v0/define?term={}".format(term.replace('+', ' '))) as resp:
 			data = await resp.json()
 		if not data or "list" not in data or not data["list"]:
-			await self.bot.embed_reply(":no_entry: No results found")
+			await ctx.embed_reply(":no_entry: No results found")
 			return
 		num_results = len(data["list"]) # if one definition
 		if num_results > 10: num_reults = 10
-		response, embed = await self.bot.embed_reply("React with a number from 1 to {} to view each definition".format(num_results))
+		response = await ctx.embed_reply("React with a number from 1 to {} to view each definition".format(num_results))
+		embed = response.embeds[0]
 		numbers = {"1⃣": 1, "2⃣": 2, "3⃣": 3, "4⃣": 4, "5⃣": 5, "6⃣": 6, "7⃣": 7, "8⃣": 8, "9⃣": 9, "🔟" : 10}
 		for number_emote in sorted(numbers.keys())[:num_results]:
 			await self.bot.add_reaction(response, number_emote)
@@ -1245,10 +1246,10 @@ class Resources:
 		try:
 			observation = clients.owm_client.weather_at_place(location)
 		except pyowm.exceptions.not_found_error.NotFoundError:
-			await self.bot.embed_reply(":no_entry: Location not found")
+			await ctx.embed_reply(":no_entry: Location not found")
 			return
 		except pyowm.exceptions.api_call_error.BadGatewayError:
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 			# Add exception message to response when pyowm issue (https://github.com/csparpa/pyowm/issues/176) fixed
 			return
 		location = observation.get_location()
@@ -1307,13 +1308,13 @@ class Resources:
 					embed.description = "Processing {}\nEstimated wait time: {} sec".format(url, wait_time)
 					await self.bot.edit_message(response, embed = embed)
 				else:
-					response, embed = await self.bot.embed_reply("Processing {}\nEstimated wait time: {} sec".format(url, wait_time))
+					response = await ctx.embed_reply("Processing {}\nEstimated wait time: {} sec".format(url, wait_time))
 				await asyncio.sleep(wait_time)
 			elif data["status"] == "finished":
-				await self.bot.embed_reply("Your screenshot of {}:".format(url), image_url = data["image_url"])
+				await ctx.embed_reply("Your screenshot of {}:".format(url), image_url = data["image_url"])
 				return
 			elif data["status"] == "error":
-				await self.bot.embed_reply(":no_entry: Error: {}".format(data["msg"]))
+				await ctx.embed_reply(":no_entry: Error: {}".format(data["msg"]))
 				return
 	
 	@commands.command(aliases = ["whatare"])
@@ -1321,15 +1322,15 @@ class Resources:
 	async def whatis(self, ctx, *search : str):
 		'''WIP'''
 		if not search:
-			await self.bot.embed_reply("What is what?")
+			await ctx.embed_reply("What is what?")
 		else:
 			url = "https://kgsearch.googleapis.com/v1/entities:search?limit=1&query={}&key={}".format('+'.join(search), credentials.google_apikey)
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
-				await self.bot.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
+				await ctx.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
 			else:
-				await self.bot.embed_reply("I don't know what that is")
+				await ctx.embed_reply("I don't know what that is")
 	
 	@commands.group(aliases = ["worldofwarcraft"])
 	@checks.not_forbidden()
@@ -1358,7 +1359,7 @@ class Resources:
 		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?apikey={}".format(realm, character, credentials.battle_net_api_key)) as resp:
 			data = await resp.json()
 			if resp.status != 200:
-				await self.bot.embed_reply(":no_entry: Error: {}".format(data["reason"]))
+				await ctx.embed_reply(":no_entry: Error: {}".format(data["reason"]))
 				return
 		embed = discord.Embed(title = data["name"], url = "http://us.battle.net/wow/en/character/{}/{}/".format(data["realm"].replace(' ', '-'), data["name"]), description = "{} ({})".format(data["realm"], data["battlegroup"]), color = clients.bot_color)
 		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
@@ -1398,10 +1399,10 @@ class Resources:
 	async def process_xkcd(self, ctx, url):
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
-				await self.bot.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
-		await self.bot.embed_reply(None, title = data["title"], title_url = "http://xkcd.com/{}".format(data["num"]), image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
+		await ctx.embed_reply(title = data["title"], title_url = "http://xkcd.com/{}".format(data["num"]), image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
 	
 	@commands.command(aliases = ["ytinfo", "youtube_info", "yt_info"])
 	@checks.not_forbidden()

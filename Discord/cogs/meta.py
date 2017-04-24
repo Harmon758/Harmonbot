@@ -66,31 +66,31 @@ class Meta:
 				close_matches = difflib.get_close_matches(name, self.bot.commands.keys(), n = 1)
 				if close_matches:
 					output += "\nDid you mean `{}`?".format(close_matches[0])
-				await self.bot.embed_reply(output)
+				await ctx.embed_reply(output)
 				return
 			embeds = self.bot.formatter.format_help_for(ctx, command)
 		else:
 			name = _mention_pattern.sub(repl, commands[0])
 			command = self.bot.commands.get(name)
 			if command is None:
-				await self.bot.embed_reply(self.command_not_found.format(name))
+				await ctx.embed_reply(self.command_not_found.format(name))
 				return
 			for key in commands[1:]:
 				try:
 					key = _mention_pattern.sub(repl, key)
 					command = command.commands.get(key)
 					if command is None:
-						await self.bot.embed_reply(self.command_not_found.format(key))
+						await ctx.embed_reply(self.command_not_found.format(key))
 						return
 				except AttributeError:
-					await self.bot.embed_reply("`{}` command has no subcommands".format(command.name))
+					await ctx.embed_reply("`{}` command has no subcommands".format(command.name))
 					return
 			embeds = self.bot.formatter.format_help_for(ctx, command)
 		
 		if len(embeds) > 1:
 			destination = ctx.author
 			if not isinstance(ctx.channel, discord.DMChannel):
-				await self.bot.embed_reply("Check your DMs")
+				await ctx.embed_reply("Check your DMs")
 		else:
 			destination = ctx.channel
 		for embed in embeds:
@@ -106,7 +106,7 @@ class Meta:
 		for embed in embeds:
 			await self.bot.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
-			await self.bot.embed_reply("Check your DMs")
+			await ctx.embed_reply("Check your DMs")
 	
 	@help.command(name = "other")
 	async def help_other(self, ctx):
@@ -158,7 +158,7 @@ class Meta:
 	async def disable(self, ctx, command : str):
 		'''Disable a command'''
 		self.bot.commands[command].enabled = False
-		await self.bot.embed_reply("`{}{}` has been disabled".format(ctx.prefix, command))
+		await ctx.embed_reply("`{}{}` has been disabled".format(ctx.prefix, command))
 		await self.bot.delete_message(ctx.message)
 	
 	@commands.command()
@@ -166,7 +166,7 @@ class Meta:
 	async def enable(self, ctx, command : str):
 		'''Enable a command'''
 		self.bot.commands[command].enabled = True
-		await self.bot.embed_reply("`{}{}` has been enabled".format(ctx.prefix, command))
+		await ctx.embed_reply("`{}{}` has been enabled".format(ctx.prefix, command))
 		await self.bot.delete_message(ctx.message)
 	
 	@commands.command()
@@ -174,7 +174,7 @@ class Meta:
 		'''WIP'''
 		with open("data/user_data/{}/stats.json".format(ctx.author.id), "r") as stats_file:
 			stats = json.load(stats_file)
-		await self.bot.embed_reply("You have {} points".format(stats["points"]))
+		await ctx.embed_reply("You have {} points".format(stats["points"]))
 	
 	@commands.command(aliases = ["server_setting"])
 	@checks.is_server_owner()
@@ -185,11 +185,11 @@ class Meta:
 		if setting in data:
 			data[setting] = on_off
 		else:
-			await self.bot.embed_reply("Setting not found")
+			await ctx.embed_reply("Setting not found")
 			return
 		with open("data/server_data/{}/settings.json".format(ctx.guild.id), 'w') as settings_file:
 			json.dump(data, settings_file, indent = 4)
-		await self.bot.embed_reply("{} set to {}".format(setting, on_off))
+		await ctx.embed_reply("{} set to {}".format(setting, on_off))
 	
 	@commands.command()
 	@checks.is_owner()
@@ -225,7 +225,7 @@ class Meta:
 			all_prefixes[ctx.guild.id] = prefixes
 		with open("data/prefixes.json", "w") as prefixes_file:
 			json.dump(all_prefixes, prefixes_file, indent = 4)
-		await self.bot.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
+		await ctx.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
@@ -266,14 +266,14 @@ class Meta:
 	@commands.command()
 	async def conversions(self, ctx):
 		'''All conversion commands'''
-		await self.bot.embed_reply("**Temperature Unit Conversions**: {0}[c, f, k, r, de]__to__[c, f, k, r, de, n, re, ro]\n"
+		await ctx.embed_reply("**Temperature Unit Conversions**: {0}[c, f, k, r, de]__to__[c, f, k, r, de, n, re, ro]\n"
 		"**Weight Unit Conversions**: {0}<unit>__to__<unit>\nunits: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]".format(ctx.prefix), title = "Conversion Commands")
 	
 	@commands.command(aliases = ["oauth"], hidden = True)
 	async def invite(self, ctx):
 		'''Link to invite me to a server'''
 		from clients import application_info
-		await self.bot.embed_reply(discord.utils.oauth_url(application_info.id))
+		await ctx.embed_reply(discord.utils.oauth_url(application_info.id))
 	
 	@commands.command()
 	async def stats(self, ctx):
@@ -327,12 +327,12 @@ class Meta:
 		'''Bot uptime'''
 		now = datetime.datetime.utcnow()
 		uptime = now - clients.online_time
-		await self.bot.embed_reply(utilities.secs_to_letter_format(uptime.total_seconds()))
+		await ctx.embed_reply(utilities.secs_to_letter_format(uptime.total_seconds()))
 	
 	@commands.command()
 	async def version(self, ctx):
 		'''Bot version'''
-		await self.bot.embed_reply("I am Harmonbot `v{}`".format(clients.version))
+		await ctx.embed_reply("I am Harmonbot `v{}`".format(clients.version))
 	
 	# Update Bot Stuff
 	
@@ -347,18 +347,18 @@ class Meta:
 	async def updateavatar(self, ctx, filename : str):
 		'''Update my avatar'''
 		if not os.path.isfile("data/avatars/{}".format(filename)):
-			await self.bot.embed_reply(":no_entry: Avatar not found")
+			await ctx.embed_reply(":no_entry: Avatar not found")
 			return
 		with open("data/avatars/{}".format(filename), "rb") as avatar_file:
 			await self.bot.edit_profile(avatar = avatar_file.read())
-		await self.bot.embed_reply("Updated avatar")
+		await ctx.embed_reply("Updated avatar")
 	
 	@commands.command(aliases = ["random_game"], hidden = True)
 	@checks.not_forbidden()
 	async def randomgame(self, ctx):
 		'''Update to a random playing/game status message'''
 		await clients.random_game_status()
-		# await self.bot.embed_reply("I changed to a random game status")
+		# await ctx.embed_reply("I changed to a random game status")
 	
 	@commands.command(aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying", "set_game", "update_playing", "update_game", "change_playing", "change_game", "set_playing"])
 	@checks.is_owner()
@@ -370,7 +370,7 @@ class Meta:
 		else:
 			updated_game.name = name
 		await self.bot.change_status(game = updated_game)
-		await self.bot.embed_reply("Game updated")
+		await ctx.embed_reply("Game updated")
 	
 	@commands.command(aliases = ["set_streaming"])
 	@checks.is_owner()
@@ -400,9 +400,9 @@ class Meta:
 		if updated_game and updated_game.name:
 			updated_game.name = None
 			await self.bot.change_status(game = updated_game)
-			await self.bot.embed_reply("Game status cleared")
+			await ctx.embed_reply("Game status cleared")
 		else:
-			await self.bot.embed_reply(":no_entry: There is no game status to clear")
+			await ctx.embed_reply(":no_entry: There is no game status to clear")
 	
 	@commands.command(aliases = ["clear_streaming"])
 	@checks.is_owner()
@@ -413,13 +413,13 @@ class Meta:
 			updated_game.url = None
 			if option and option[0] == "url":
 				await self.bot.change_status(game = updated_game)
-				await self.bot.embed_reply("Streaming url cleared")
+				await ctx.embed_reply("Streaming url cleared")
 				return
 			updated_game.type = 0
 			await self.bot.change_status(game = updated_game)
-			await self.bot.embed_reply("Streaming status and url cleared")
+			await ctx.embed_reply("Streaming status and url cleared")
 		else:
-			await self.bot.embed_reply(":no_entry: There is no streaming status or url to clear")
+			await ctx.embed_reply(":no_entry: There is no streaming status or url to clear")
 	
 	@commands.command(hidden = True)
 	@checks.is_owner()
@@ -461,13 +461,13 @@ class Meta:
 	@checks.not_forbidden()
 	async def codeblock(self, ctx, *, input : str):
 		'''Wrap your message in a code block'''
-		await self.bot.embed_reply(clients.code_block.format(input))
+		await ctx.embed_reply(clients.code_block.format(input))
 	
 	@codeblock.command(name = "python", aliases = ["py"])
 	@checks.not_forbidden()
 	async def codeblock_python(self, ctx, *, input : str):
 		'''Wrap your message in a Python code block'''
-		await self.bot.embed_reply(clients.py_code_block.format(input))
+		await ctx.embed_reply(clients.py_code_block.format(input))
 	
 	@commands.command()
 	@checks.is_owner()
@@ -511,7 +511,7 @@ class Meta:
 		except Exception as e:
 			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 			return
-		await self.bot.embed_reply("Successfully executed")
+		await ctx.embed_reply("Successfully executed")
 	
 	@commands.command(aliases = ["deletetest"])
 	@checks.is_owner()
@@ -540,7 +540,7 @@ class Meta:
 	@checks.is_owner()
 	async def repl(self, ctx):
 		variables = {"self" : self, "ctx" : ctx, "last" : None}
-		await self.bot.embed_reply("Enter code to execute or evaluate\n`exit` or `quit` to exit")
+		await ctx.embed_reply("Enter code to execute or evaluate\n`exit` or `quit` to exit")
 		while True:
 			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda m: m.content.startswith('`'))
 			if message.content.startswith("```py") and message.content.endswith("```"):
@@ -548,7 +548,7 @@ class Meta:
 			else:
 				code = message.content.strip("` \n")
 			if code in ("quit", "exit", "quit()", "exit()"):
-				await self.bot.embed_reply('Exiting repl')
+				await ctx.embed_reply('Exiting repl')
 				return
 			function = exec
 			if '\n' not in code:
@@ -589,7 +589,7 @@ class Meta:
 		'''
 		source_url = "https://github.com/Harmon758/Harmonbot"
 		if command is None:
-			await self.bot.embed_reply(source_url)
+			await ctx.embed_reply(source_url)
 			return
 		code_path = command.split('.')
 		obj = self.bot
@@ -597,10 +597,10 @@ class Meta:
 			try:
 				obj = obj.get_command(cmd)
 				if obj is None:
-					await self.bot.embed_reply("Could not find the command " + cmd)
+					await ctx.embed_reply("Could not find the command " + cmd)
 					return
 			except AttributeError:
-				await self.bot.embed_reply("{0.name} command has no subcommands".format(obj))
+				await ctx.embed_reply("{0.name} command has no subcommands".format(obj))
 				return
 		# since we found the command we're looking for, presumably anyway, let's
 		# try to access the code itself
@@ -613,5 +613,5 @@ class Meta:
 		##	location = obj.callback.__module__.replace('.', '/') + ".py"
 		##	source_url = "https://github.com/Rapptz/discord.py"
 		final_url = '<{}/blob/master/Discord/{}#L{}-L{}>'.format(source_url, location, firstlineno, firstlineno + len(lines) - 1)
-		await self.bot.embed_reply(final_url)
+		await ctx.embed_reply(final_url)
 

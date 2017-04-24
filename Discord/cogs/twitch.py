@@ -58,7 +58,7 @@ class Twitch:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [string], "games": [], "keywords": [], "streams": []}
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await self.bot.embed_reply("Added the filter, `{}`, to this text channel\n"
+		await ctx.embed_reply("Added the filter, `{}`, to this text channel\n"
 		"I will now filter all streams for this string in the title".format(string))
 	
 	@twitch_add.command(name = "game")
@@ -74,7 +74,7 @@ class Twitch:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [game], "keywords": [], "streams": []}
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await self.bot.embed_reply("Added the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), to this text channel\n"
+		await ctx.embed_reply("Added the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), to this text channel\n"
 		"I will now announce here when Twitch streams playing this game go live".format(game))
 	
 	@twitch_add.command(name = "keyword", aliases = ["query", "search"])
@@ -90,7 +90,7 @@ class Twitch:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [], "keywords": [keyword], "streams": []}
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await self.bot.embed_reply("Added the keyword search, `{}`, to this text channel\n"
+		await ctx.embed_reply("Added the keyword search, `{}`, to this text channel\n"
 		"I will now announce here when Twitch streams with this keyword go live".format(keyword))
 	
 	@twitch_add.command(name = "channel", aliases = ["stream"])
@@ -105,7 +105,7 @@ class Twitch:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [], "keywords": [], "streams": [username]}
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await self.bot.embed_reply("Added the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), to this text channel\n"
+		await ctx.embed_reply("Added the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), to this text channel\n"
 		"I will now announce here when this Twitch channel goes live".format(username))
 	
 	@twitch.group(name = "remove", aliases = ["delete"], invoke_without_command = True)
@@ -120,12 +120,12 @@ class Twitch:
 		'''Remove a string Twitch stream titles are being filtered by'''
 		channel = self.streams_info["channels"].get(ctx.channel.id)
 		if not channel or filter not in channel["filters"]:
-			await self.bot.embed_reply(":no_entry: This text channel doesn't have that filter")
+			await ctx.embed_reply(":no_entry: This text channel doesn't have that filter")
 			return
 		channel["filters"].remove(filter)
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await self.bot.embed_reply("Removed the filter, `{}`, from this text channel".format(string))
+		await ctx.embed_reply("Removed the filter, `{}`, from this text channel".format(string))
 	
 	@twitch_remove.command(name = "game")
 	@checks.is_permitted()
@@ -133,12 +133,12 @@ class Twitch:
 		'''Remove a Twitch game being followed'''
 		channel = self.streams_info["channels"].get(ctx.channel.id)
 		if not channel or game not in channel["games"]:
-			await self.bot.embed_reply(":no_entry: This text channel isn't following that game")
+			await ctx.embed_reply(":no_entry: This text channel isn't following that game")
 			return
 		channel["games"].remove(game)
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await self.bot.embed_reply("Removed the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), from this text channel".format(game))
+		await ctx.embed_reply("Removed the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), from this text channel".format(game))
 	
 	@twitch_remove.command(name = "keyword", aliases = ["query", "search"])
 	@checks.is_permitted()
@@ -146,12 +146,12 @@ class Twitch:
 		'''Remove a Twitch keyword(s) search being followed'''
 		channel = self.streams_info["channels"].get(ctx.channel.id)
 		if not channel or keyword not in channel["keywords"]:
-			await self.bot.embed_reply(":no_entry: This text channel isn't following that keyword")
+			await ctx.embed_reply(":no_entry: This text channel isn't following that keyword")
 			return
 		channel["keywords"].remove(keyword)
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await self.bot.embed_reply("Removed the Twitch keyword search, `{}`, from this text channel".format(keyword))
+		await ctx.embed_reply("Removed the Twitch keyword search, `{}`, from this text channel".format(keyword))
 	
 	@twitch_remove.command(name = "channel", aliases = ["stream"])
 	@checks.is_permitted()
@@ -159,36 +159,36 @@ class Twitch:
 		'''Remove a Twitch channel being followed'''
 		channel = self.streams_info["channels"].get(ctx.channel.id)
 		if not channel or username not in channel["streams"]:
-			await self.bot.embed_reply(":no_entry: This text channel isn't following that Twitch channel")
+			await ctx.embed_reply(":no_entry: This text channel isn't following that Twitch channel")
 			return
 		channel["streams"].remove(username)
 		with open("data/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await self.bot.embed_reply("Removed the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), from this text channel".format(username))
+		await ctx.embed_reply("Removed the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), from this text channel".format(username))
 	
 	@twitch.command(name = "filters")
 	@checks.not_forbidden()
 	async def twitch_filters(self, ctx):
 		'''Show strings Twitch stream titles are being filtered by in this text channel'''
-		await self.bot.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("filters", [])))
+		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("filters", [])))
 	
 	@twitch.command(name = "games")
 	@checks.not_forbidden()
 	async def twitch_games(self, ctx):
 		'''Show Twitch games being followed in this text channel'''
-		await self.bot.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("games", [])))
+		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("games", [])))
 	
 	@twitch.command(name = "keywords", aliases = ["queries", "searches"])
 	@checks.not_forbidden()
 	async def twitch_keywords(self, ctx):
 		'''Show Twitch keywords being followed in this text channel'''
-		await self.bot.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("keywords", [])))
+		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("keywords", [])))
 	
 	@twitch.command(name = "channels", aliases = ["streams"])
 	@checks.not_forbidden()
 	async def twitch_channels(self, ctx):
 		'''Show Twitch channels being followed in this text channel'''
-		await self.bot.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("streams", []))))
+		await ctx.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("streams", []))))
 	
 	async def check_twitch_streams(self):
 		await self.bot.wait_until_ready()

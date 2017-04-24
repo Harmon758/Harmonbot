@@ -30,9 +30,9 @@ class Misc:
 			else:
 				output += character
 		try:
-			await self.bot.embed_reply(output)
+			await ctx.embed_reply(output)
 		except discord.errors.HTTPException:
-			await self.bot.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -48,7 +48,7 @@ class Misc:
 				output += chr(ord(character) + 120744)
 			else:
 				output += character
-		await self.bot.embed_reply(output)
+		await ctx.embed_reply(output)
 	
 	@commands.command(aliases = ["full-width", "full_width"])
 	@checks.not_forbidden()
@@ -60,13 +60,13 @@ class Misc:
 				output += chr(ord(character) + 65248)
 			else:
 				output += character
-		await self.bot.embed_reply(output)
+		await ctx.embed_reply(output)
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def fingers(self, ctx, *, text : str):
 		'''Add fingers'''
-		await self.bot.embed_reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
+		await ctx.embed_reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -77,7 +77,8 @@ class Misc:
 		'''
 		counter = 0
 		bar = chr(9633) * 10
-		loading_message, embed = await self.bot.embed_reply("Loading: [" + bar + "]")
+		loading_message = await ctx.embed_reply("Loading: [" + bar + "]")
+		embed = loading_message.embeds[0]
 		while counter <= 10:
 			counter += 1
 			bar = chr(9632) + bar[:-1] #9608
@@ -88,7 +89,7 @@ class Misc:
 	@commands.command()
 	async def ping(self, ctx):
 		'''Basic ping - pong command'''
-		await self.bot.embed_reply("pong")
+		await ctx.embed_reply("pong")
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -96,9 +97,9 @@ class Misc:
 		'''Poke someone'''
 		to_poke = await utilities.get_user(ctx, user)
 		if not to_poke:
-			await self.bot.embed_reply(":no_entry: User not found")
+			await ctx.embed_reply(":no_entry: User not found")
 		elif to_poke == self.bot.user:
-			await self.bot.embed_reply("!poke {}".format(ctx.author.mention))
+			await ctx.embed_reply("!poke {}".format(ctx.author.mention))
 		else:
 			utilities.create_folder("data/user_data/{}".format(ctx.author.id))
 			utilities.create_file("user_data/{}/pokes".format(ctx.author.id))
@@ -119,7 +120,7 @@ def emote_wrapper(name, emote = None):
 	@commands.command(name = name, help = name.capitalize() + " emote")
 	@checks.not_forbidden()
 	async def emote_command(self, ctx):
-		await self.bot.embed_reply(":{}:".format(emote))
+		await ctx.embed_reply(":{}:".format(emote))
 	return emote_command
 
 for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc"):
