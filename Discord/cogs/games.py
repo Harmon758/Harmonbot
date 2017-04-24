@@ -24,7 +24,7 @@ from modules.chess import chess_match
 # from modules import gofish
 from modules import maze
 from modules import utilities
-from modules import war
+# from modules import war
 from utilities import checks
 
 def setup(bot):
@@ -608,12 +608,14 @@ class Games:
 		await self.bot.embed_reply("{} has started a game of Go Fish between {}!".format(message.author.display_name, gofish_players_string[:-5]))
 	
 	@gofish.command(hidden = True, name = "hand")
+	@commands.is_owner()
 	async def gofish_hand(self, ctx):
 		'''WIP'''
 		if ctx.author in gofish_players:
 			await self.bot.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
 	
 	@gofish.command(hidden = True, name = "ask")
+	@commands.is_owner()
 	async def gofish_ask(self, ctx):
 		'''WIP'''
 		if ctx.author in gofish_players:
@@ -1345,18 +1347,21 @@ class Games:
 		await self.bot.embed_reply("{} has started a game of War between {}!".format(ctx.author.display_name, war_players_string[:-5]))
 	
 	@war.command(name = "hand")
+	@commands.is_owner()
 	async def war_hand(self, ctx):
 		'''See your current hand'''
 		if ctx.author in self.war_players:
 			await self.bot.whisper("Your hand: " + war.hand(self.war_players.index(ctx.author) + 1))
 	
 	@war.command(name = "left")
+	@commands.is_owner()
 	async def war_left(self, ctx):
 		'''See how many cards you have left'''
 		if ctx.author in self.war_players:
 			await self.bot.embed_reply("You have {} cards left".format(war.card_count(self.war_players.index(ctx.author) + 1)))
 	
 	@war.command(name = "play")
+	@commands.is_owner()
 	async def war_play(self, ctx, *card : str):
 		'''Play a card'''
 		if ctx.author in self.war_players:
