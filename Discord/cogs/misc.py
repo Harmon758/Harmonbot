@@ -77,14 +77,14 @@ class Misc:
 		'''
 		counter = 0
 		bar = chr(9633) * 10
-		loading_message = await ctx.embed_reply("Loading: [" + bar + "]")
+		loading_message = await ctx.embed_reply("Loading: [{}]".format(bar))
 		embed = loading_message.embeds[0]
 		while counter <= 10:
 			counter += 1
 			bar = chr(9632) + bar[:-1] #9608
 			await asyncio.sleep(1)
-			embed.description = "Loading: [" + bar + "]"
-			await self.bot.edit_message(loading_message, embed = embed)
+			embed.description = "Loading: [{}]".format(bar)
+			await loading_message.edit(embed = embed)
 	
 	@commands.command()
 	async def ping(self, ctx):
