@@ -35,7 +35,7 @@ youtube_dl==2017.4.26
 
 async-timeout==1.2.0
 cffi==1.9.1
-chardet==2.3.0
+chardet==3.0.2
 configparser==3.5.0
 cycler==0.10.0
 decorator==4.0.11
