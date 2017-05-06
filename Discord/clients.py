@@ -83,6 +83,8 @@ elif os.path.isfile("data/aiml/std-startup.xml"):
 
 class Bot(commands.Bot):
 	
+	
+	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
 	author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
 	image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
@@ -95,7 +97,7 @@ class Bot(commands.Bot):
 		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
 		for field_name, field_value in fields:
 			embed.add_field(name = field_name, value = field_value)
-		return self.send_message(destination, embed = embed)
+		return destination.send(embed = embed)
 	
 	async def attempt_delete_message(self, message):
 		try:
