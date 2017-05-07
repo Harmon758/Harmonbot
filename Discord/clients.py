@@ -101,7 +101,7 @@ class Bot(commands.Bot):
 	
 	async def attempt_delete_message(self, message):
 		try:
-			await self.delete_message(message)
+			await message.delete()
 		except (discord.errors.Forbidden, discord.errors.NotFound):
 			pass
 	
