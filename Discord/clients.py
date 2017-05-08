@@ -186,11 +186,11 @@ async def on_ready():
 	await _update_discord_bots_stats()
 
 @client.listen()
-async def on_server_join(server):
+async def on_guild_join(guild):
 	await _update_discord_bots_stats()
 
 @client.listen()
-async def on_server_remove(server):
+async def on_guild_remove(guild):
 	await _update_discord_bots_stats()
 
 @client.listen()
