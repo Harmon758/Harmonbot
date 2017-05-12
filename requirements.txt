@@ -60,7 +60,7 @@ requests-oauthlib==0.8.0
 scipy==0.18.1
 six==1.10.0
 tqdm==4.11.2
-websockets==3.2
+websockets==3.3
 xmltodict==0.10.2
 yarl==0.10.2
 
