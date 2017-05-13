@@ -57,13 +57,13 @@ class Meta:
 			name = _mention_pattern.sub(repl, commands[0])
 			if name in self.bot.cogs:
 				command = self.bot.cogs[name]
-			elif name.lower() in self.bot.commands:
-				command = self.bot.commands[name.lower()]
+			elif name.lower() in self.bot.all_commands:
+				command = self.bot.all_commands[name.lower()]
 			elif name.lower() in [cog.lower() for cog in self.bot.cogs.keys()]: # more efficient way?
 				command = discord.utils.find(lambda c: c[0].lower() == name.lower(), self.bot.cogs.items())[1]
 			else:
 				output = self.command_not_found.format(name)
-				close_matches = difflib.get_close_matches(name, self.bot.commands.keys(), n = 1)
+				close_matches = difflib.get_close_matches(name, self.bot.all_commands.keys(), n = 1)
 				if close_matches:
 					output += "\nDid you mean `{}`?".format(close_matches[0])
 				await ctx.embed_reply(output)
@@ -71,14 +71,14 @@ class Meta:
 			embeds = self.bot.formatter.format_help_for(ctx, command)
 		else:
 			name = _mention_pattern.sub(repl, commands[0])
-			command = self.bot.commands.get(name)
+			command = self.bot.all_commands.get(name)
 			if command is None:
 				await ctx.embed_reply(self.command_not_found.format(name))
 				return
 			for key in commands[1:]:
 				try:
 					key = _mention_pattern.sub(repl, key)
-					command = command.commands.get(key)
+					command = command.all_commands.get(key)
 					if command is None:
 						await ctx.embed_reply(self.command_not_found.format(key))
 						return
@@ -157,7 +157,7 @@ class Meta:
 	@checks.is_owner()
 	async def disable(self, ctx, command : str):
 		'''Disable a command'''
-		self.bot.commands[command].enabled = False
+		self.bot.all_commands[command].enabled = False
 		await ctx.embed_reply("`{}{}` has been disabled".format(ctx.prefix, command))
 		await self.bot.delete_message(ctx.message)
 	
@@ -165,7 +165,7 @@ class Meta:
 	@checks.is_owner()
 	async def enable(self, ctx, command : str):
 		'''Enable a command'''
-		self.bot.commands[command].enabled = True
+		self.bot.all_commands[command].enabled = True
 		await ctx.embed_reply("`{}{}` has been enabled".format(ctx.prefix, command))
 		await self.bot.delete_message(ctx.message)
 	
