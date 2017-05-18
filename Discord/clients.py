@@ -25,6 +25,8 @@ from utilities import errors
 
 version = "0.35.0"
 changelog = "https://discord.gg/a2rbZPu"
+beta = any("beta" in arg.lower() for arg in sys.argv)
+data_path = "data/beta" if beta else "data"
 stream_url = "https://www.twitch.tv/harmonbot"
 owner_id = 115691005197549570
 listener_id = 180994984038760448
