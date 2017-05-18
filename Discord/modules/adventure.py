@@ -45,11 +45,11 @@ class AdventurePlayer:
 		_initial_data = initial_data.copy()
 		_initial_data["time_started"] = time.time()
 		utilities.create_file("adventure_players/" + user_id, content = _initial_data)
-		with open("data/adventure_players/{}.json".format(user_id), 'r') as player_file:
+		with open(clients.data_path + "/adventure_players/{}.json".format(user_id), 'r') as player_file:
 			self.data = json.load(player_file)
 			
 	def write_data(self):
-		with open("data/adventure_players/{}.json".format(self.user_id), 'w') as player_file:
+		with open(clients.data_path + "/adventure_players/{}.json".format(self.user_id), 'w') as player_file:
 			json.dump(self.data, player_file, indent = 4)
 	
 	def wood_rate(self, wood_type):

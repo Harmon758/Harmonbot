@@ -77,7 +77,7 @@ class Twitter:
 		self.bot = bot
 		self.stream_listener = TwitterStreamListener(bot)
 		utilities.create_file("twitter_feeds", content = {"channels" : {}})
-		with open("data/twitter_feeds.json", 'r') as feeds_file:
+		with open(clients.data_path + "/twitter_feeds.json", 'r') as feeds_file:
 			self.feeds_info = json.load(feeds_file)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
@@ -124,7 +124,7 @@ class Twitter:
 			self.feeds_info["channels"][ctx.channel.id]["handles"].append(handle)
 		else:
 			self.feeds_info["channels"][ctx.channel.id] = {"name" : ctx.channel.name, "handles" : [handle]}
-		with open("data/twitter_feeds.json", 'w') as feeds_file:
+		with open(clients.data_path + "/twitter_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		embed.description = "Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle)
 		await self.bot.edit_message(message, embed = embed)
@@ -141,7 +141,7 @@ class Twitter:
 		except ValueError:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that Twitter handle")
 		else:
-			with open("data/twitter_feeds.json", 'w') as feeds_file:
+			with open(clients.data_path + "/twitter_feeds.json", 'w') as feeds_file:
 				json.dump(self.feeds_info, feeds_file, indent = 4)
 			message = await ctx.embed_reply(":hourglass: Please wait")
 			await self.stream_listener.remove_feed(ctx.channel, handle)

@@ -85,16 +85,16 @@ class chess_match(chess.Board):
 		svg = svg.replace("<stop offset=\"100%\" stop-color=\"rgba(158, 0, 0, 0)\" />", "<stop offset=\"100%\" stop-color=\"rgba(158, 0, 0, 0)\" stop-opacity=\"0\" />")
 		svg = re.subn(r"fill=\"#ffce9e\" class=\"square light [a-h][1-8] lastmove\"", lambda m: m.group(0).replace("ffce9e", "cdd16a"), svg)[0]
 		svg = re.subn(r"fill=\"#d18b47\" class=\"square dark [a-h][1-8] lastmove\"", lambda m: m.group(0).replace("d18b47", "aaa23b"), svg)[0]
-		with open("data/temp/chess_board.svg", 'w') as image:
+		with open(clients.data_path + "/temp/chess_board.svg", 'w') as image:
 			print(svg, file = image)
-		with Image(filename = "data/temp/chess_board.svg") as img:
+		with Image(filename = clients.data_path + "/temp/chess_board.svg") as img:
 			img.format = "png"
-			img.save(filename = "data/temp/chess_board.png")
+			img.save(filename = clients.data_path + "/temp/chess_board.png")
 		# asyncio.sleep(0.2) # necessary?, wasn't even awaited
 		if not self.match_embed:
 			self.match_embed = discord.Embed(color = clients.bot_color)
 		'''
-		with open("data/temp/chess_board.png", "rb") as image:
+		with open(clients.data_path + "/temp/chess_board.png", "rb") as image:
 			request = requests.post("http://uploads.im/api", files = {"upload": image})
 			# import aiohttp
 			# data = aiohttp.helpers.FormData()
@@ -109,11 +109,11 @@ class chess_match(chess.Board):
 		if data["status_code"] == 403:
 			await self.bot.send_embed(self.text_channel, ":no_entry: Error: {}".format(data["status_txt"]))
 			return
-		# self.match_embed.set_image(url = clients.imgur_client.upload_from_path("data/temp/chess_board.png")["link"])
+		# self.match_embed.set_image(url = clients.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
 		self.match_embed.set_image(url = data["data"]["img_url"])
 		'''
 		cache_channel = self.bot.get_channel(clients.cache_channel_id)
-		with open("data/temp/chess_board.png", "rb") as image:
+		with open(clients.data_path + "/temp/chess_board.png", "rb") as image:
 			image_message = await self.bot.send_file(cache_channel, image)
 		self.match_embed.set_image(url = image_message.attachments[0]["url"])
 		self.match_embed.set_footer(text = footer_text)

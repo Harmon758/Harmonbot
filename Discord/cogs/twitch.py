@@ -27,7 +27,7 @@ class Twitch:
 		self.streams_announced = {}
 		self.old_streams_announced = {}
 		utilities.create_file("twitch_streams", content = {"channels" : {}})
-		with open("data/twitch_streams.json", 'r') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'r') as streams_file:
 			self.streams_info = json.load(streams_file)
 		self.task = self.bot.loop.create_task(self.check_twitch_streams())
 	
@@ -56,7 +56,7 @@ class Twitch:
 			channel["filters"].append(string)
 		else:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [string], "games": [], "keywords": [], "streams": []}
-		with open("data/twitch_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the filter, `{}`, to this text channel\n"
 		"I will now filter all streams for this string in the title".format(string))
@@ -72,7 +72,7 @@ class Twitch:
 			channel["games"].append(game)
 		else:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [game], "keywords": [], "streams": []}
-		with open("data/twitch_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), to this text channel\n"
 		"I will now announce here when Twitch streams playing this game go live".format(game))
@@ -88,7 +88,7 @@ class Twitch:
 			channel["keywords"].append(keyword)
 		else:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [], "keywords": [keyword], "streams": []}
-		with open("data/twitch_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the keyword search, `{}`, to this text channel\n"
 		"I will now announce here when Twitch streams with this keyword go live".format(keyword))
@@ -103,7 +103,7 @@ class Twitch:
 			channel["streams"].append(username)
 		else:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [], "keywords": [], "streams": [username]}
-		with open("data/twitch_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), to this text channel\n"
 		"I will now announce here when this Twitch channel goes live".format(username))
@@ -123,7 +123,7 @@ class Twitch:
 			await ctx.embed_reply(":no_entry: This text channel doesn't have that filter")
 			return
 		channel["filters"].remove(filter)
-		with open("data/twitch_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Removed the filter, `{}`, from this text channel".format(string))
 	
@@ -136,7 +136,7 @@ class Twitch:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that game")
 			return
 		channel["games"].remove(game)
-		with open("data/twitch_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Removed the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), from this text channel".format(game))
 	
@@ -149,7 +149,7 @@ class Twitch:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that keyword")
 			return
 		channel["keywords"].remove(keyword)
-		with open("data/twitch_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Removed the Twitch keyword search, `{}`, from this text channel".format(keyword))
 	
@@ -162,7 +162,7 @@ class Twitch:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that Twitch channel")
 			return
 		channel["streams"].remove(username)
-		with open("data/twitch_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Removed the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), from this text channel".format(username))
 	
@@ -193,8 +193,8 @@ class Twitch:
 	async def check_twitch_streams(self):
 		await self.bot.wait_until_ready()
 		try:
-			if os.path.isfile("data/temp/twitch_streams_announced.json"):
-				with open("data/temp/twitch_streams_announced.json", 'r') as streams_file:
+			if os.path.isfile(clients.data_path + "/temp/twitch_streams_announced.json"):
+				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'r') as streams_file:
 					self.streams_announced = json.load(streams_file)
 				# Convert json string keys back to int
 				self.streams_announced = {int(k): v for k, v in self.streams_announced.items()}
@@ -216,7 +216,7 @@ class Twitch:
 						del announcement[2]
 					# Remove deleted announcements
 					self.streams_announced[announced_stream_id] = [announcement for announcement in announcements if len(announcement) == 2]
-			## os.remove("data/temp/twitch_streams_announced.json")
+			## os.remove(clients.data_path + "/temp/twitch_streams_announced.json")
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
@@ -273,7 +273,7 @@ class Twitch:
 						announcement.append(announcement[0].channel.id)
 						announcement[0] = announcement[0].id
 						announcement[1] = announcement[1].to_dict()
-				with open("data/temp/twitch_streams_announced.json", 'w') as streams_file:
+				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'w') as streams_file:
 					json.dump(self.streams_announced, streams_file, indent = 4)
 				return
 			except Exception as e:

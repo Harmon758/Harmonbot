@@ -28,7 +28,7 @@ class Youtube:
 		self.streams_announced = {}
 		self.old_streams_announced = {}
 		utilities.create_file("youtube_streams", content = {"channels" : {}})
-		with open("data/youtube_streams.json", 'r') as streams_file:
+		with open(clients.data_path + "/youtube_streams.json", 'r') as streams_file:
 			self.streams_info = json.load(streams_file)
 		self.task = self.bot.loop.create_task(self.check_youtube_streams())
 	
@@ -59,7 +59,7 @@ class Youtube:
 			channel["channel_ids"].append(channel_id)
 		else:
 			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
-		with open("data/youtube_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
 		"I will now announce here when this Youtube channel goes live".format(channel_id))
@@ -73,7 +73,7 @@ class Youtube:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
 			return
 		channel["channel_ids"].remove(channel_id)
-		with open("data/youtube_streams.json", 'w') as streams_file:
+		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Removed the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), from this text channel".format(channel_id))
 	
@@ -85,8 +85,8 @@ class Youtube:
 	
 	async def check_youtube_streams(self):
 		await self.bot.wait_until_ready()
-		if os.path.isfile("data/temp/youtube_streams_announced.json"):
-			with open("data/temp/youtube_streams_announced.json", 'r') as streams_file:
+		if os.path.isfile(clients.data_path + "/temp/youtube_streams_announced.json"):
+			with open(clients.data_path + "/temp/youtube_streams_announced.json", 'r') as streams_file:
 				self.streams_announced = json.load(streams_file)
 			for announced_video_id, announcements in self.streams_announced.items():
 				for announcement in announcements:
@@ -96,7 +96,7 @@ class Youtube:
 					# TODO: Handle message deleted
 					announcement[1] = discord.Embed(title = announcement[1]["title"], description = announcement[1].get("description"), url = announcement[1]["url"], timestamp = dateutil.parser.parse(announcement[1]["timestamp"]), color = announcement[1]["color"]).set_thumbnail(url = announcement[1]["thumbnail"]["url"]).set_author(name = announcement[1]["author"]["name"], url = announcement[1]["author"]["url"], icon_url = announcement[1]["author"]["icon_url"])
 					del announcement[2]
-		## os.remove("data/temp/youtube_streams_announced.json")
+		## os.remove(clients.data_path + "/temp/youtube_streams_announced.json")
 		while not self.bot.is_closed:
 			try:
 				channel_ids = set(itertools.chain(*[channel["channel_ids"] for channel in self.streams_info["channels"].values()]))
@@ -148,7 +148,7 @@ class Youtube:
 						announcement.append(announcement[0].channel.id)
 						announcement[0] = announcement[0].id
 						announcement[1] = announcement[1].to_dict()
-				with open("data/temp/youtube_streams_announced.json", 'w') as streams_file:
+				with open(clients.data_path + "/temp/youtube_streams_announced.json", 'w') as streams_file:
 					json.dump(self.streams_announced, streams_file, indent = 4)
 				return
 			except Exception as e:

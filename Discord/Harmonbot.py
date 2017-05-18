@@ -26,7 +26,7 @@ if __name__ == "__main__":
 	from utilities import audio_player
 	
 	utilities.create_file('f', content = {"total" : 0})
-	with open("data/f.json", 'r') as f_file:
+	with open(clients.data_path + "/f.json", 'r') as f_file:
 		f_counter_info = json.load(f_file)
 	
 	mention_spammers = []
@@ -36,10 +36,10 @@ if __name__ == "__main__":
 		# data = await client.http.get(client.http.GATEWAY + "/bot")
 		# print(data)
 		print("Started up Discord {0} ({1})".format(str(client.user), client.user.id))
-		if os.path.isfile("data/temp/restart_channel.json"):
-			with open("data/temp/restart_channel.json", 'r') as restart_channel_file:
+		if os.path.isfile(clients.data_path + "/temp/restart_channel.json"):
+			with open(clients.data_path + "/temp/restart_channel.json", 'r') as restart_channel_file:
 				restart_data = json.load(restart_channel_file)
-			os.remove("data/temp/restart_channel.json")
+			os.remove(clients.data_path + "/temp/restart_channel.json")
 			restart_channel = client.get_channel(restart_data["restart_channel"])
 			await client.send_embed(restart_channel, ":thumbsup::skin-tone-2: Restarted")
 			for voice_channel in restart_data["voice_channels"]:
@@ -49,11 +49,11 @@ if __name__ == "__main__":
 					client.cogs["Audio"].players[text_channel.guild.id] = audio_player.AudioPlayer(client, text_channel)
 					await client.join_voice_channel(client.get_channel(voice_channel[0]))
 		'''
-		for folder in os.listdir("data/server_data"):
-			with open("data/server_data/{}/settings.json".format(folder), 'r') as settings_file:
+		for folder in os.listdir(clients.data_path + "/server_data"):
+			with open(clients.data_path + "/server_data/{}/settings.json".format(folder), 'r') as settings_file:
 				data = json.load(settings_file)
 			data["anti-spam"] = False
-			with open("data/server_data/{}/settings.json".format(folder), 'w') as settings_file:
+			with open(clients.data_path + "/server_data/{}/settings.json".format(folder), 'w') as settings_file:
 				json.dump(data, settings_file, indent = 4)
 		'''
 		for guild in client.guilds:
@@ -88,22 +88,22 @@ if __name__ == "__main__":
 	
 	@client.event
 	async def on_command(ctx):
-		with open("data/stats.json", 'r') as stats_file:
+		with open(clients.data_path + "/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		stats["commands_executed"] += 1
 		stats["commands_usage"][ctx.command.name] = stats["commands_usage"].get(ctx.command.name, 0) + 1
-		with open("data/stats.json", 'w') as stats_file:
+		with open(clients.data_path + "/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 		utilities.create_folder("data/user_data/{}".format(ctx.author.id))
 		utilities.create_file("user_data/{}/stats".format(ctx.author.id), content = {"commands_executed": 0, "points": 0, "respects_paid": 0})
 		# TODO: Transfer respects paid data?
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.author.name) # | / \ : ? * " < >
 		utilities.create_file("user_data/{}/{}".format(ctx.author.id, clean_name))
-		with open("data/user_data/{}/stats.json".format(ctx.author.id), "r") as stats_file:
+		with open(clients.data_path + "/user_data/{}/stats.json".format(ctx.author.id), "r") as stats_file:
 			stats = json.load(stats_file)
 		stats["commands_executed"] += 1
 		stats["points"] += 1
-		with open("data/user_data/{}/stats.json".format(ctx.author.id), 'w') as stats_file:
+		with open(clients.data_path + "/user_data/{}/stats.json".format(ctx.author.id), 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 	
 	@client.command()
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 		# Server specific settings
 		if message.guild is not None:
 			try:
-				with open("data/server_data/{}/settings.json".format(message.guild.id), 'r') as settings_file:
+				with open(clients.data_path + "/server_data/{}/settings.json".format(message.guild.id), 'r') as settings_file:
 					data = json.load(settings_file)
 			except FileNotFoundError:
 				# TODO: Handle/Fix, create new file with default settings
@@ -257,7 +257,7 @@ if __name__ == "__main__":
 		elif message.content.lower() == 'f':
 			f_counter_info["total"] += 1
 			f_counter_info[message.author.id] = f_counter_info.get(message.author.id, 0) + 1
-			with open("data/f.json", 'w') as f_file:
+			with open(clients.data_path + "/f.json", 'w') as f_file:
 				json.dump(f_counter_info, f_file, indent = 4)
 			embed = discord.Embed(color = clients.bot_color)
 			embed.description = "{} has paid their respects".format(message.author.display_name)

@@ -172,7 +172,7 @@ class Meta:
 	@commands.command()
 	async def points(self, ctx):
 		'''WIP'''
-		with open("data/user_data/{}/stats.json".format(ctx.author.id), "r") as stats_file:
+		with open(clients.data_path + "/user_data/{}/stats.json".format(ctx.author.id), 'r') as stats_file:
 			stats = json.load(stats_file)
 		await ctx.embed_reply("You have {} points".format(stats["points"]))
 	
@@ -180,14 +180,14 @@ class Meta:
 	@checks.is_server_owner()
 	async def server_settings(self, ctx, setting : str, on_off : bool):
 		'''WIP'''
-		with open("data/server_data/{}/settings.json".format(ctx.guild.id), 'r') as settings_file:
+		with open(clients.data_path + "/server_data/{}/settings.json".format(ctx.guild.id), 'r') as settings_file:
 			data = json.load(settings_file)
 		if setting in data:
 			data[setting] = on_off
 		else:
 			await ctx.embed_reply("Setting not found")
 			return
-		with open("data/server_data/{}/settings.json".format(ctx.guild.id), 'w') as settings_file:
+		with open(clients.data_path + "/server_data/{}/settings.json".format(ctx.guild.id), 'w') as settings_file:
 			json.dump(data, settings_file, indent = 4)
 		await ctx.embed_reply("{} set to {}".format(setting, on_off))
 	
@@ -217,13 +217,13 @@ class Meta:
 		'''
 		if not prefixes:
 			prefixes = ['!']
-		with open("data/prefixes.json", "r") as prefixes_file:
+		with open(clients.data_path + "/prefixes.json", 'r') as prefixes_file:
 			all_prefixes = json.load(prefixes_file)
 		if isinstance(ctx.channel, discord.DMChannel):
 			all_prefixes[ctx.channel.id] = prefixes
 		else:
 			all_prefixes[ctx.guild.id] = prefixes
-		with open("data/prefixes.json", "w") as prefixes_file:
+		with open(clients.data_path + "/prefixes.json", 'w') as prefixes_file:
 			json.dump(all_prefixes, prefixes_file, indent = 4)
 		await ctx.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
@@ -279,7 +279,7 @@ class Meta:
 	async def stats(self, ctx):
 		'''Bot stats'''
 		from clients import session_commands_executed, session_commands_usage
-		with open("data/stats.json", 'r') as stats_file:
+		with open(clients.data_path + "/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		
 		now = datetime.datetime.utcnow()
@@ -346,10 +346,10 @@ class Meta:
 	@checks.is_owner()
 	async def updateavatar(self, ctx, filename : str):
 		'''Update my avatar'''
-		if not os.path.isfile("data/avatars/{}".format(filename)):
+		if not os.path.isfile(clients.data_path + "/avatars/{}".format(filename)):
 			await ctx.embed_reply(":no_entry: Avatar not found")
 			return
-		with open("data/avatars/{}".format(filename), "rb") as avatar_file:
+		with open(clients.data_path + "/avatars/{}".format(filename), "rb") as avatar_file:
 			await self.bot.edit_profile(avatar = avatar_file.read())
 		await ctx.embed_reply("Updated avatar")
 	

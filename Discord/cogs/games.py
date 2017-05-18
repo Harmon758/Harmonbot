@@ -51,7 +51,7 @@ class Games:
 		self.adventure_players = {}
 		
 		utilities.create_file("trivia_points")
-		with open("data/trivia_points.json", 'r') as trivia_file:
+		with open(clients.data_path + "/trivia_points.json", 'r') as trivia_file:
 			self.trivia_stats = json.load(trivia_file)
 	
 	# Adventure
@@ -1098,9 +1098,9 @@ class Games:
 			if _object == emotes[_object]:
 				print(_object)
 		'''
-		if not os.path.isfile("data/erps_dict.json"):
+		if not os.path.isfile(clients.data_path + "/erps_dict.json"):
 			await self.generate_erps_dict()
-		with open("data/erps_dict.json", 'r') as erps_file:
+		with open(clients.data_path + "/erps_dict.json", 'r') as erps_file:
 			resolution = json.load(erps_file)
 		value = random.choice(list(emotes.keys()))
 		if object not in emotes:
@@ -1132,7 +1132,7 @@ class Games:
 			else:
 				object_info[line.split()[-1]] = ' '.join(line.split()[:-1])
 		objects[object] = object_info
-		with open("data/erps_dict.json", 'w') as erps_file:
+		with open(clients.data_path + "/erps_dict.json", 'w') as erps_file:
 			json.dump(objects, erps_file, indent = 4)
 	
 	@commands.group(hidden = True)
@@ -1247,7 +1247,7 @@ class Games:
 						self.trivia_stats[trivia_player.id][2] -= bets[trivia_player]
 						trivia_bets_output += trivia_player.display_name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[trivia_player.id][2]) + ". "
 				trivia_bets_output = trivia_bets_output[:-1]
-			with open("data/trivia_points.json", 'w') as trivia_file:
+			with open(clients.data_path + "/trivia_points.json", 'w') as trivia_file:
 				json.dump(self.trivia_stats, trivia_file, indent = 4)
 			await self.bot.embed_say("The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")), footer_text = correct_players_output)
 			if bet and trivia_bets_output:

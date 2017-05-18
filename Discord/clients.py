@@ -153,7 +153,7 @@ utilities.create_folder("data/temp")
 utilities.create_file("prefixes")
 
 def get_prefix(bot, message):
-	with open("data/prefixes.json", 'r') as prefixes_file:
+	with open(data_path + "/prefixes.json", 'r') as prefixes_file:
 		all_prefixes = json.load(prefixes_file)
 	if isinstance(message.channel, discord.DMChannel):
 		prefixes = all_prefixes.get(message.channel.id, None)
@@ -269,15 +269,15 @@ async def embed_reply(message, response):
 
 async def restart_tasks(channel_id):
 	# Increment restarts counter
-	with open("data/stats.json", 'r') as stats_file:
+	with open(data_path + "/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
 	stats["restarts"] += 1
-	with open("data/stats.json", 'w') as stats_file:
+	with open(data_path + "/stats.json", 'w') as stats_file:
 		json.dump(stats, stats_file, indent = 4)
 	# Save restart text channel + voice channels
 	audio_cog = client.get_cog("Audio")
 	voice_channels = audio_cog.save_voice_channels() if audio_cog else []
-	with open("data/temp/restart_channel.json", 'w') as restart_channel_file:
+	with open(data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
 		json.dump({"restart_channel" : channel_id, "voice_channels" : voice_channels}, restart_channel_file)
 
 async def shutdown_tasks():
@@ -287,11 +287,11 @@ async def shutdown_tasks():
 	# Close aiohttp session
 	aiohttp_session.close()
 	# Save uptime
-	with open("data/stats.json", 'r') as stats_file:
+	with open(data_path + "/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
 	now = datetime.datetime.utcnow()
 	uptime = now - online_time
 	stats["uptime"] += uptime.total_seconds()
-	with open("data/stats.json", 'w') as stats_file:
+	with open(data_path + "/stats.json", 'w') as stats_file:
 		json.dump(stats, stats_file, indent = 4)
 

@@ -43,7 +43,7 @@ class AudioPlayer:
 		self.resume_flag = asyncio.Event()
 		self.not_interrupted = asyncio.Event()
 		self.not_interrupted.set()
-		self.audio_files = os.listdir("data/audio_files/")
+		self.audio_files = os.listdir(clients.data_path + "/audio_files/")
 		self.library_files = [f for f in os.listdir(clients.library_files) if f.endswith((".mp3", ".m4a"))]
 		self.library_flag = False
 		self.radio_flag = False
@@ -478,12 +478,12 @@ class AudioPlayer:
 		await self.bot.delete_message(stop_message)
 	
 	async def process_listen(self):
-		if not os.path.isfile("data/temp/heard.pcm") or os.stat("data/temp/heard.pcm").st_size == 0:
+		if not os.path.isfile(clients.data_path + "/temp/heard.pcm") or os.stat(clients.data_path + "/temp/heard.pcm").st_size == 0:
 			await self.bot.send_embed(self.text_channel, ":warning: No input found")
 			return
-		func = functools.partial(subprocess.call, ["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", "data/temp/heard.pcm", "data/temp/heard.wav"], shell = True)
+		func = functools.partial(subprocess.call, ["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", clients.data_path + "/temp/heard.pcm", clients.data_path + "/temp/heard.wav"], shell = True)
 		await self.bot.loop.run_in_executor(None, func)
-		with speech_recognition.AudioFile("data/temp/heard.wav") as source:
+		with speech_recognition.AudioFile(clients.data_path + "/temp/heard.wav") as source:
 			audio = self.recognizer.record(source)
 		'''
 		try:
@@ -510,6 +510,6 @@ class AudioPlayer:
 				response = await games_cog.cleverbot_get_reply(text)
 			await self.bot.send_embed(self.text_channel, "Responding with: `{}`".format(response))
 			await self.play_tts(response, self.bot.user)
-		# open("data/heard.pcm", 'w').close() # necessary?
+		# open(clients.data_path + "/heard.pcm", 'w').close() # necessary?
 		# os.remove ?
 

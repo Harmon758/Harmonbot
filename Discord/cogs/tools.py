@@ -45,7 +45,7 @@ class Tools:
 	def __init__(self, bot):
 		self.bot = bot
 		utilities.create_file("tags", content = {"global": {}})
-		with open("data/tags.json", 'r') as tags_file:
+		with open(clients.data_path + "/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
 	
 	@commands.command()
@@ -497,7 +497,7 @@ class Tools:
 	@checks.not_forbidden()
 	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):
 		'''WIP'''
-		filename = "data/temp/graph.png"
+		filename = clients.data_path + "/temp/graph.png"
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
@@ -533,7 +533,7 @@ class Tools:
 	@checks.is_owner()
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
-		filename = "data/temp/graph_alternative.png"
+		filename = clients.data_path + "/temp/graph_alternative.png"
 		seaborn.jointplot(**eval(data)).savefig(name)
 		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
 	
@@ -549,7 +549,7 @@ class Tools:
 		elif tag in self.tags_data["global"]:
 			await self.bot.reply(self.tags_data["global"][tag]["response"])
 			self.tags_data["global"][tag]["usage_counter"] += 1
-			with open("data/tags.json", 'w') as tags_file:
+			with open(clients.data_path + "/tags.json", 'w') as tags_file:
 				json.dump(self.tags_data, tags_file, indent = 4)
 		else:
 			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(ctx.author.id, {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
@@ -577,7 +577,7 @@ class Tools:
 			await ctx.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
 		tags[tag] = utilities.clean_content(content)
-		with open("data/tags.json", 'w') as tags_file:
+		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
 	
@@ -587,7 +587,7 @@ class Tools:
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
 		self.tags_data[ctx.author.id]["tags"][tag] = utilities.clean_content(content)
-		with open("data/tags.json", 'w') as tags_file:
+		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
@@ -624,7 +624,7 @@ class Tools:
 			return
 		self.tags_data["global"][tag] = {"response": self.tags_data[ctx.author.id]["tags"][tag], "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
 		del self.tags_data[ctx.author.id]["tags"][tag]
-		with open("data/tags.json", 'w') as tags_file:
+		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been {}d".format(ctx.invoked_with))
 	
@@ -643,7 +643,7 @@ class Tools:
 			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
 		tags[tag] = {"response": utilities.clean_content(content), "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
-		with open("data/tags.json", 'w') as tags_file:
+		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
 	
@@ -657,7 +657,7 @@ class Tools:
 			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		self.tags_data["global"][tag]["response"] = utilities.clean_content(content)
-		with open("data/tags.json", 'w') as tags_file:
+		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
@@ -671,7 +671,7 @@ class Tools:
 			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		del self.tags_data["global"][tag]
-		with open("data/tags.json", 'w') as tags_file:
+		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
 	
@@ -707,10 +707,10 @@ class Tools:
 		Only converts at 1 fps
 		See http://imgur.com/vidgif instead
 		'''
-		webmfile = urllib.request.urlretrieve(url, "data/temp/webmtogif.webm")
-		# subprocess.call(["ffmpeg", "-i", "data/temp/webmtogif.webm", "-pix_fmt", "rgb8", "data/temp/webmtogif.gif"], shell=True)
-		clip = moviepy.editor.VideoFileClip("data/temp/webmtogif.webm")
-		clip.write_gif("data/temp/webmtogif.gif", fps = 1, program = "ffmpeg")
-		# clip.write_gif("data/temp/webmtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
-		await self.bot.send_file(ctx.channel, "data/temp/webmtogif.gif")
+		webmfile = urllib.request.urlretrieve(url, clients.data_path + "/temp/webmtogif.webm")
+		# subprocess.call(["ffmpeg", "-i", clients.data_path + "/temp/webmtogif.webm", "-pix_fmt", "rgb8", clients.data_path + "/temp/webmtogif.gif"], shell=True)
+		clip = moviepy.editor.VideoFileClip(clients.data_path + "/temp/webmtogif.webm")
+		clip.write_gif(clients.data_path + "/temp/webmtogif.gif", fps = 1, program = "ffmpeg")
+		# clip.write_gif(clients.data_path + "/temp/webmtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
+		await self.bot.send_file(ctx.channel, clients.data_path + "/temp/webmtogif.gif")
 

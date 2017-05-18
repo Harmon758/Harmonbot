@@ -25,7 +25,7 @@ class RSS:
 	def __init__(self, bot):
 		self.bot = bot
 		utilities.create_file("rss_feeds", content = {"channels" : []})
-		with open("data/rss_feeds.json", 'r') as feeds_file:
+		with open(clients.data_path + "/rss_feeds.json", 'r') as feeds_file:
 			self.feeds_info = json.load(feeds_file)
 		self.task = self.bot.loop.create_task(self.check_rss_feeds())
 	
@@ -47,7 +47,7 @@ class RSS:
 			channel["feeds"].append(url)
 		else:
 			self.feeds_info["channels"].append({"name": ctx.channel.name, "id": ctx.channel.id, "feeds": [url]})
-		with open("data/rss_feeds.json", 'w') as feeds_file:
+		with open(clients.data_path + "/rss_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		await ctx.embed_reply("The feed, {}, has been added to this channel".format(url))
 
@@ -60,7 +60,7 @@ class RSS:
 			await ctx.embed_reply(":no_entry: This channel isn't following that feed")
 			return
 		channel["feeds"].remove(url)
-		with open("data/rss_feeds.json", 'w') as feeds_file:
+		with open(clients.data_path + "/rss_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		await ctx.embed_reply("The feed, {}, has been removed from this channel".format(url))
 

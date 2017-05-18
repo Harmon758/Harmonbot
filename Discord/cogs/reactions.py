@@ -119,9 +119,9 @@ class Reactions:
 		if user == player and reaction.emoji in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
 			maze_instance = self.mazes[reaction.message.id]
 			if reaction.emoji == "\N{PRINTER}":
-				with open("data/temp/maze.txt", 'w') as maze_file:
+				with open(clients.data_path + "/temp/maze.txt", 'w') as maze_file:
 					maze_file.write('\n'.join(maze_instance.visible))
-				await self.bot.send_file(reaction.message.channel, "data/temp/maze.txt", content = "{}:\nYour maze is attached".format(player.display_name))
+				await self.bot.send_file(reaction.message.channel, clients.data_path + "/temp/maze.txt", content = "{}:\nYour maze is attached".format(player.display_name))
 				return
 			embed = discord.Embed(color = clients.bot_color)
 			avatar = player.avatar_url or player.default_avatar_url
