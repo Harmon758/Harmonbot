@@ -140,17 +140,29 @@ class Context(commands.Context):
 	def whisper(self, *args, **kwargs):
 		return self.author.send(*args, **kwargs)
 
+# Create folders
 
-# Create Folders
+def create_folder(folder):
+	if not os.path.exists(folder):
+		os.makedirs(folder)
 
-utilities.create_folder("data")
-utilities.create_folder("data/permissions")
-utilities.create_folder("data/temp")
+create_folder(data_path)
+create_folder(data_path + "/permissions")
+create_folder(data_path + "/temp")
 
 
-# Custom prefixes
+# Custom prefixes (Create files)
 
-utilities.create_file("prefixes")
+def create_file(filename, *, content = {}):
+	try:
+		with open(data_path + "/{}.json".format(filename), "x") as file:
+			json.dump(content, file, indent = 4)
+	except FileExistsError:
+		pass
+	except OSError:
+		pass
+
+create_file("prefixes")
 
 def get_prefix(bot, message):
 	with open(data_path + "/prefixes.json", 'r') as prefixes_file:

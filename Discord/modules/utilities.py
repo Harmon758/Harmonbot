@@ -80,18 +80,7 @@ def remove_symbols(string):
 		plain_string = plain_string[1:]
 	return plain_string
 
-def create_file(filename, *, content = {}):
-	try:
-		with open("data/{}.json".format(filename), "x") as file:
-			json.dump(content, file, indent = 4)
-	except FileExistsError:
-		pass
-	except OSError:
-		pass
 
-def create_folder(folder):
-	if not os.path.exists(folder):
-		os.makedirs(folder)
 
 # Discord
 
