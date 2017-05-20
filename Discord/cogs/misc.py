@@ -101,8 +101,8 @@ class Misc:
 		elif to_poke == self.bot.user:
 			await ctx.embed_reply("!poke {}".format(ctx.author.mention))
 		else:
-			utilities.create_folder("data/user_data/{}".format(ctx.author.id))
-			utilities.create_file("user_data/{}/pokes".format(ctx.author.id))
+			clients.create_folder(clients.data_path + "/user_data/{}".format(ctx.author.id))
+			clients.create_file("user_data/{}/pokes".format(ctx.author.id))
 			with open(clients.data_path + "/user_data/{}/pokes.json".format(ctx.author.id), 'r') as pokes_file:
 				pokes_data = json.load(pokes_file)
 			pokes_data[to_poke.id] = pokes_data.get(to_poke.id, 0) + 1

@@ -5,7 +5,7 @@ import random
 import time
 import types
 
-from modules import utilities
+import clients
 
 initial_data = {"xp": {"woodcutting": 0, "mining": 0, "fishing": 0, "foraging": 0}, "inventory": {}, "last_action": None, "last_action_time": None, "time_started": None}
 skills = ["woodcutting", "mining", "fishing", "foraging"]
@@ -44,7 +44,8 @@ class AdventurePlayer:
 		self.user_id = user_id
 		_initial_data = initial_data.copy()
 		_initial_data["time_started"] = time.time()
-		utilities.create_file("adventure_players/" + user_id, content = _initial_data)
+		clients.create_folder(clients.data_path + "/adventure_players")
+		clients.create_file("adventure_players/{}".format(user_id), content = _initial_data)
 		with open(clients.data_path + "/adventure_players/{}.json".format(user_id), 'r') as player_file:
 			self.data = json.load(player_file)
 			

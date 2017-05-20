@@ -15,7 +15,6 @@ import clients
 import credentials
 from utilities import checks
 from modules import logging
-from modules import utilities
 
 def setup(bot):
 	bot.add_cog(Twitch(bot))
@@ -26,7 +25,7 @@ class Twitch:
 		self.bot = bot
 		self.streams_announced = {}
 		self.old_streams_announced = {}
-		utilities.create_file("twitch_streams", content = {"channels" : {}})
+		clients.create_file("twitch_streams", content = {"channels" : {}})
 		with open(clients.data_path + "/twitch_streams.json", 'r') as streams_file:
 			self.streams_info = json.load(streams_file)
 		self.task = self.bot.loop.create_task(self.check_twitch_streams())

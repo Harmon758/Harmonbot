@@ -29,7 +29,7 @@ class Meta:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		utilities.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
+		clients.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
 		self.command_not_found = "No command called `{}` found"
 	
 	@commands.group(aliases = ["commands"], hidden = True, invoke_without_command = True)

@@ -25,7 +25,7 @@ if __name__ == "__main__":
 	from utilities import errors
 	from utilities import audio_player
 	
-	utilities.create_file('f', content = {"total" : 0})
+	clients.create_file('f', content = {"total" : 0})
 	with open(clients.data_path + "/f.json", 'r') as f_file:
 		f_counter_info = json.load(f_file)
 	
@@ -57,11 +57,11 @@ if __name__ == "__main__":
 				json.dump(data, settings_file, indent = 4)
 		'''
 		for guild in client.guilds:
-			utilities.create_folder("data/server_data/{}".format(guild.id))
-			utilities.create_file("server_data/{}/settings".format(guild.id), content = {"anti-spam": False, "respond_to_bots": False})
+			clients.create_folder(clients.data_path + "/server_data/{}".format(guild.id))
+			clients.create_file("server_data/{}/settings".format(guild.id), content = {"anti-spam": False, "respond_to_bots": False})
 			if guild.name:
 				clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", guild.name) # | / \ : ? * " < >
-				utilities.create_file("server_data/{}/{}".format(guild.id, clean_name))
+				clients.create_file("server_data/{}/{}".format(guild.id, clean_name))
 			# TODO: DM if joined new server
 			# TODO: DM if left server
 		await clients.random_game_status()
@@ -94,11 +94,11 @@ if __name__ == "__main__":
 		stats["commands_usage"][ctx.command.name] = stats["commands_usage"].get(ctx.command.name, 0) + 1
 		with open(clients.data_path + "/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
-		utilities.create_folder("data/user_data/{}".format(ctx.author.id))
-		utilities.create_file("user_data/{}/stats".format(ctx.author.id), content = {"commands_executed": 0, "points": 0, "respects_paid": 0})
+		clients.create_folder(clients.data_path + "/user_data/{}".format(ctx.author.id))
+		clients.create_file("user_data/{}/stats".format(ctx.author.id), content = {"commands_executed": 0, "points": 0, "respects_paid": 0})
 		# TODO: Transfer respects paid data?
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.author.name) # | / \ : ? * " < >
-		utilities.create_file("user_data/{}/{}".format(ctx.author.id, clean_name))
+		clients.create_file("user_data/{}/{}".format(ctx.author.id, clean_name))
 		with open(clients.data_path + "/user_data/{}/stats.json".format(ctx.author.id), "r") as stats_file:
 			stats = json.load(stats_file)
 		stats["commands_executed"] += 1

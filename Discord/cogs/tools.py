@@ -44,7 +44,7 @@ class Tools:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		utilities.create_file("tags", content = {"global": {}})
+		clients.create_file("tags", content = {"global": {}})
 		with open(clients.data_path + "/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
 	

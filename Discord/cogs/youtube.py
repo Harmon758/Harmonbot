@@ -12,9 +12,9 @@ import traceback
 
 import clients
 import credentials
-from utilities import checks
 from modules import logging
 from modules import utilities
+from utilities import checks
 
 def setup(bot):
 	bot.add_cog(Youtube(bot))
@@ -27,7 +27,8 @@ class Youtube:
 		self.bot = bot
 		self.streams_announced = {}
 		self.old_streams_announced = {}
-		utilities.create_file("youtube_streams", content = {"channels" : {}})
+		
+		clients.create_file("youtube_streams", content = {"channels" : {}})
 		with open(clients.data_path + "/youtube_streams.json", 'r') as streams_file:
 			self.streams_info = json.load(streams_file)
 		self.task = self.bot.loop.create_task(self.check_youtube_streams())

@@ -11,7 +11,6 @@ import tweepy
 import clients
 import credentials
 from modules import logging
-from modules import utilities
 from utilities import checks
 
 def setup(bot):
@@ -76,7 +75,7 @@ class Twitter:
 	def __init__(self, bot):
 		self.bot = bot
 		self.stream_listener = TwitterStreamListener(bot)
-		utilities.create_file("twitter_feeds", content = {"channels" : {}})
+		clients.create_file("twitter_feeds", content = {"channels" : {}})
 		with open(clients.data_path + "/twitter_feeds.json", 'r') as feeds_file:
 			self.feeds_info = json.load(feeds_file)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())

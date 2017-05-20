@@ -15,7 +15,6 @@ import traceback
 import clients
 from utilities import checks
 from modules import logging
-from modules import utilities
 
 def setup(bot):
 	bot.add_cog(RSS(bot))
@@ -24,7 +23,7 @@ class RSS:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		utilities.create_file("rss_feeds", content = {"channels" : []})
+		clients.create_file("rss_feeds", content = {"channels" : []})
 		with open(clients.data_path + "/rss_feeds.json", 'r') as feeds_file:
 			self.feeds_info = json.load(feeds_file)
 		self.task = self.bot.loop.create_task(self.check_rss_feeds())

@@ -19,9 +19,8 @@ import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 import credentials
-from modules import utilities
-from utilities.help_formatter import CustomHelpFormatter
 from utilities import errors
+from utilities.help_formatter import CustomHelpFormatter
 
 version = "0.35.0"
 changelog = "https://discord.gg/a2rbZPu"

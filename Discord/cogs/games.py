@@ -50,7 +50,7 @@ class Games:
 		
 		self.adventure_players = {}
 		
-		utilities.create_file("trivia_points")
+		clients.create_file("trivia_points")
 		with open(clients.data_path + "/trivia_points.json", 'r') as trivia_file:
 			self.trivia_stats = json.load(trivia_file)
 	
