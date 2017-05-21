@@ -56,7 +56,7 @@ class chess_match(chess.Board):
 		while True:
 			player = [self.black_player, self.white_player][int(self.turn)]
 			if player == self.bot.user:
-				await self.bot.edit_message(self.match_message, embed = self.match_embed.set_footer(text = "I'm thinking.."))
+				await self.match_message.edit(embed = self.match_embed.set_footer(text = "I'm thinking.."))
 				self.chess_engine.position(self)
 				self.chess_engine.go(movetime = 2000, async_callback = self.process_chess_engine_command)
 				await self.generated_move.wait()
@@ -64,13 +64,13 @@ class chess_match(chess.Board):
 				self.push(self.best_move)
 				await self.update_match_embed(footer_text = "I moved {}".format(self.best_move))
 			else:
-				message = await self.bot.wait_for_message(author = player, channel = self.text_channel, check = lambda msg: self.valid_move(msg.content))
-				await self.bot.edit_message(self.match_message, embed = self.match_embed.set_footer(text = "Processing move.."))
+				message = await self.bot.wait_for("message", check = lambda msg: msg.author == player and msg.channel == self.text_channel and self.valid_move(msg.content))
+				await self.match_message.edit(embed = self.match_embed.set_footer(text = "Processing move.."))
 				self.make_move(message.content)
 				footer_text = discord.Embed.Empty if self.is_game_over() else "It is {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
 				await self.update_match_embed(footer_text = footer_text)
 				try:
-					await self.bot.delete_message(message)
+					await message.delete()
 				except discord.errors.Forbidden:
 					pass
 	
@@ -114,8 +114,8 @@ class chess_match(chess.Board):
 		'''
 		cache_channel = self.bot.get_channel(clients.cache_channel_id)
 		with open(clients.data_path + "/temp/chess_board.png", "rb") as image:
-			image_message = await self.bot.send_file(cache_channel, image)
-		self.match_embed.set_image(url = image_message.attachments[0]["url"])
+			image_message = await cache_channel.send(file = discord.File(image))
+		self.match_embed.set_image(url = image_message.attachments[0].url)
 		self.match_embed.set_footer(text = footer_text)
 		chess_pgn = chess.pgn.Game.from_board(self)
 		chess_pgn.headers["Site"] = "Discord"
@@ -124,14 +124,14 @@ class chess_match(chess.Board):
 		chess_pgn.headers["Black"] = self.black_player.mention
 		self.match_embed.description = str(chess_pgn)
 		if not self.match_message:
-			self.match_message = await self.bot.send_message(self.text_channel, embed = self.match_embed)
+			self.match_message = await self.text_channel.send(embed = self.match_embed)
 		else:
-			await self.bot.edit_message(self.match_message, embed = self.match_embed)
+			await self.match_message.edit(embed = self.match_embed)
 	
 	async def new_match_embed(self, *, flipped = None, footer_text = None):
 		if flipped is None: flipped = not self.turn
 		if footer_text is None: footer_text = discord.Embed.Empty if self.is_game_over() else "It's {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
-		if self.match_message: await self.bot.delete_message(self.match_message)
+		if self.match_message: await self.match_message.delete()
 		self.match_message = None
 		await self.update_match_embed(flipped = flipped, footer_text = footer_text)
 	
