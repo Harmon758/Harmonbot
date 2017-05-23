@@ -125,7 +125,8 @@ class Discord:
 		elif len(to_delete) > 1:
 			await self.bot.delete_messages(to_delete)
 	
-	@commands.command(aliases = ["mycolour", "my_color", "my_colour"], no_pm = True)
+	@commands.command(aliases = ["mycolour", "my_color", "my_colour"])
+	@commands.guild_only()
 	@checks.not_forbidden()
 	async def mycolor(self, ctx, color : str = ""):
 		'''
@@ -223,7 +224,8 @@ class Discord:
 				break
 		await self.bot.move_role(ctx.guild, selected_role, position)
 	
-	@commands.command(no_pm = True)
+	@commands.command()
+	@commands.guild_only()
 	@checks.not_forbidden()
 	async def tempchannel(self, ctx, *options : str):
 		'''
@@ -413,7 +415,8 @@ class Discord:
 		# Include mention?
 		await self.bot.reply("", embed = embed)
 	
-	@commands.command(aliases = ["usertoid", "usernametoid", "name_to_id", "user_to_id", "username_to_id"], no_pm = True)
+	@commands.command(aliases = ["usertoid", "usernametoid", "name_to_id", "user_to_id", "username_to_id"])
+	@commands.guild_only()
 	@checks.not_forbidden()
 	async def nametoid(self, ctx, *, name : str):
 		'''Convert username to id'''

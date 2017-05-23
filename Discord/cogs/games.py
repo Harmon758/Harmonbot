@@ -570,7 +570,8 @@ class Games:
 		'''WIP'''
 		return
 	
-	@gofish.command(hidden = True, name = "start", no_pm = True)
+	@gofish.command(hidden = True, name = "start")
+	@commands.guild_only()
 	@checks.is_owner()
 	async def gofish_start(self, ctx, *players : str):
 		'''WIP'''
@@ -1141,7 +1142,8 @@ class Games:
 		'''WIP'''
 		return
 	
-	@taboo.command(hidden = True, name = "start", no_pm = True)
+	@taboo.command(hidden = True, name = "start")
+	@commands.guild_only()
 	async def taboo_start(self, ctx, player : str):
 		'''WIP'''
 		self.taboo_players.append(ctx.author)
@@ -1153,7 +1155,8 @@ class Games:
 		await self.bot.whisper("You have started a game of Taboo with " + taboo_players[1].name)
 		await self.bot.send_message(taboo_players[1], ctx.author.name + " has started a game of Taboo with you.")
 	
-	@taboo.command(hidden = True, name = "nextround") # no_pm = True ?
+	@taboo.command(hidden = True, name = "nextround")
+	# @commands.guild_only() ?
 	async def taboo_nextround(self, ctx):
 		'''WIP'''
 		if message.guild:
@@ -1313,7 +1316,8 @@ class Games:
 		'''
 		return
 	
-	@war.command(name = "start", no_pm = True)
+	@war.command(name = "start")
+	@commands.guild_only()
 	@checks.is_owner()
 	async def war_start(self, ctx, *players : str):
 		'''Start a game of War'''

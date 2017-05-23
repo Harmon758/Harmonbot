@@ -138,7 +138,8 @@ class Reactions:
 				embed.description = "{}\n:no_entry: You can't go that way".format(clients.code_block.format(maze_instance.print_visible()))
 			await self.bot.edit_message(reaction.message, embed = embed)
 	
-	@commands.command(aliases = ["player"], no_pm = True)
+	@commands.command(aliases = ["player"])
+	@commands.guild_only()
 	@checks.not_forbidden()
 	async def playingr(self, ctx):
 		'''Audio player'''
