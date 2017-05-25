@@ -278,7 +278,7 @@ class Random:
 	async def idea(self, ctx):
 		'''Random idea'''
 		async with clients.aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
-			data = await resp.json()
+			data = await resp.json(content_type = "text/javascript")
 		await ctx.embed_reply("{0[this]} for {0[that]}".format(data))
 	
 	@commands.command()
