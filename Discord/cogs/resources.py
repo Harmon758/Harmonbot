@@ -1074,6 +1074,7 @@ class Resources:
 		return
 	
 	@steam.command(name = "appid")
+	@checks.not_forbidden()
 	async def steam_appid(self, ctx, *, app : str):
 		'''Get the AppID'''
 		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
@@ -1087,6 +1088,7 @@ class Resources:
 		await ctx.embed_reply(appid)
 	
 	@steam.command(name = "gamecount", aliases = ["game_count"])
+	@checks.not_forbidden()
 	async def steam_gamecount(self, ctx, vanity_name : str):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(credentials.steam_apikey, vanity_name)
@@ -1100,6 +1102,7 @@ class Resources:
 		await ctx.embed_reply("{} has {} games".format(vanity_name, gamecount))
 	
 	@steam.command(name = "gameinfo", aliases = ["game_info"])
+	@checks.not_forbidden()
 	async def steam_gameinfo(self, ctx, *, game : str):
 		'''Information about a game'''
 		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
@@ -1116,6 +1119,7 @@ class Resources:
 		await ctx.embed_reply(data["short_description"], title = data["name"], title_url = data["website"], fields = (("Release Date", data["release_date"]["date"]), ("Free", "Yes" if data["is_free"] else "No"), ("App ID", data["steam_appid"])), image_url = data["header_image"])
 	
 	@steam.command(name = "run", aliases = ["launch"])
+	@checks.not_forbidden()
 	async def steam_run(self, ctx, *, game : str):
 		'''Generate a steam link to launch a game'''
 		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
