@@ -6,8 +6,9 @@ class Maze:
 	'''Maze'''
 	
 	def __init__(self, columns, rows, random_start = False, random_end = False):
-		self.columns = 2 if columns < 2 else 100 if columns > 100 else columns
-		self.rows = 2 if rows < 2 else 100 if rows > 100 else rows
+		self.columns = 2 if columns < 2 else 80 if columns > 80 else columns
+		self.rows = 2 if rows < 2 else 80 if rows > 80 else rows
+		# TODO: optimize generation algorithm?, previous upper limit of 100x100
 		self.random_start = random_start
 		self.random_end = random_end
 		self.move_counter = 0
