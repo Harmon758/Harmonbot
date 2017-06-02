@@ -596,7 +596,11 @@ class Tools:
 		'''Delete one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
-		del self.tags_data[ctx.message.author.id]["tags"][tag]
+		try:
+			del self.tags_data[ctx.message.author.id]["tags"][tag]
+		except KeyError:
+			await self.bot.embed_reply(":no_entry: Tag not found")
+			return
 		with open("data/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await self.bot.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
