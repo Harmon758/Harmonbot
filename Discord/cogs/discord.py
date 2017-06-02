@@ -347,6 +347,7 @@ class Discord:
 		'''See a bigger version of the server icon'''
 		if not ctx.message.server.icon:
 			await self.bot.embed_reply(":no_entry: This server doesn't have an icon")
+			return
 		await self.bot.embed_reply("This server's icon:", image_url = ctx.message.server.icon_url)
 	
 	@commands.command(aliases = ["serverinformation", "server_info", "server_information"], pass_context = True, no_pm = True)
