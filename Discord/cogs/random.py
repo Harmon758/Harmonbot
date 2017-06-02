@@ -6,6 +6,7 @@ import asyncio
 from bs4 import BeautifulSoup
 import calendar
 import concurrent.futures
+import csv
 import datetime
 import dice
 import inspect
@@ -41,6 +42,15 @@ class Random:
 		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"), (self.uesp, "Search.uesp"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
+		# Import jokes
+		self.jokes = []
+		try:
+			with open("data/jokes.csv", newline = "") as jokes_file:
+				jokes_reader = csv.reader(jokes_file)
+				for row in jokes_reader:
+					self.jokes.append(row[0])
+		except FileNotFoundError:
+			pass
 	
 	def __unload(self):
 		for command, parent_name in self.random_subcommands:
@@ -294,9 +304,10 @@ class Random:
 	@checks.not_forbidden()
 	async def joke(self):
 		'''Random joke'''
-		async with clients.aiohttp_session.get("http://tambal.azurewebsites.net/joke/random") as resp:
-			data = await resp.json()
-		await self.bot.embed_reply(data["joke"])
+		# Sources:
+		# https://github.com/KiaFathi/tambalAPI
+		# https://www.kaggle.com/abhinavmoudgil95/short-jokes (https://github.com/amoudgl/short-jokes-dataset)
+		await self.bot.embed_reply(random.choice(self.jokes))
 	
 	@commands.command()
 	@checks.not_forbidden()
