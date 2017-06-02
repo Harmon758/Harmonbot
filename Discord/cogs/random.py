@@ -219,7 +219,8 @@ class Random:
 	@checks.not_forbidden()
 	async def fact(self):
 		'''Random fact'''
-		async with clients.aiohttp_session.get("http://mentalfloss.com/api/1.0/views/amazing_facts.json?limit=1&bypass=1") as resp:
+		url = "http://mentalfloss.com/api/1.0/views/amazing_facts.json?limit=1&bypass={}".format(random.random())
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		await self.bot.embed_reply(BeautifulSoup(data[0]["nid"]).text)
 	
