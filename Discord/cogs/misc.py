@@ -105,14 +105,14 @@ class Misc:
 			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'r') as pokes_file:
 				pokes_data = json.load(pokes_file)
 			pokes_data[to_poke.id] = pokes_data.get(to_poke.id, 0) + 1
-			embed = discord.Embed(color = clients.bot_color)
-			avatar = ctx.message.author.default_avatar_url if not ctx.message.author.avatar else ctx.message.author.avatar_url
-			embed.set_author(name = ctx.message.author, icon_url = avatar)
-			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[to_poke.id]))
-			await self.bot.send_message(to_poke, embed = embed)
-			await self.bot.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[to_poke.id])))
 			with open("data/user_data/{}/pokes.json".format(ctx.message.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
+			embed = discord.Embed(color = clients.bot_color)
+			embed.set_author(name = ctx.message.author, icon_url = ctx.message.author.avatar_url or ctx.message.author.default_avatar_url)
+			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[to_poke.id]))
+			await self.bot.send_message(to_poke, embed = embed)
+			await self.bot.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[to_poke.id])), footer_text = "In response to: {}".format(ctx.message.clean_content))
+			await self.bot.attempt_delete_message(ctx.message)
 
 def emote_wrapper(name, emote = None):
 	if emote is None: emote = name
