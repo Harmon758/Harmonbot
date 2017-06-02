@@ -477,7 +477,7 @@ class Meta:
 		for _ in range(times):
 			await self.bot.process_commands(msg)
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(aliases = ["say"], invoke_without_command = True)
 	@checks.is_owner()
 	async def echo(self, *, message):
 		'''Echoes the message'''
