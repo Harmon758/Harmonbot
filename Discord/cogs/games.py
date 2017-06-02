@@ -308,53 +308,71 @@ class Games:
 	@commands.command(pass_context = True)
 	@checks.not_forbidden()
 	async def blackjack(self, ctx):
-		'''Play a game of blackjack'''
+		'''
+		Play a game of blackjack
+		Manage Messages permission required for message cleanup
+		'''
+		# TODO: S17
 		deck = pydealer.Deck()
 		deck.shuffle()
 		dealer = deck.deal(2)
-		hand = deck.deal(2)
-		dealer_string = self.cards_to_string(dealer.cards)
-		hand_string = self.cards_to_string(hand.cards)
+		player = deck.deal(2)
+		dealer_string = ":grey_question: :{}: {}".format(dealer.cards[1].suit.lower(), dealer.cards[1].value)
+		player_string = self.cards_to_string(player.cards)
 		dealer_total = self.blackjack_total(dealer.cards)
-		hand_total = self.blackjack_total(hand.cards)
-		await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
-		await self.bot.embed_reply("Hit or Stay?")
+		player_total = self.blackjack_total(player.cards)
+		response, embed = await self.bot.embed_reply("Dealer: {} (?)\n{}: {} ({})\n".format(dealer_string, ctx.message.author.display_name, player_string, player_total), title = "Blackjack", footer_text = "Hit or Stay?")
+		await self.bot.attempt_delete_message(ctx.message)
 		while True:
-			action = await self.bot.wait_for_message(author = ctx.message.author, check = lambda msg: msg.content.lower() in ["hit", "stay"])
-			if action.content.lower() == "hit":
-				hand.add(deck.deal())
-				hand_string = self.cards_to_string(hand.cards)
-				hand_total = self.blackjack_total(hand.cards)
-				await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
-				if hand_total > 21:
-					await self.bot.embed_reply(":boom: You have busted\nYou lost :(")
-					return
-				else:
-					await self.bot.embed_reply("Hit or Stay?")
+			action = await self.bot.wait_for_message(author = ctx.message.author, check = lambda msg: msg.content.lower().strip('!') in ("hit", "stay"))
+			await self.bot.attempt_delete_message(action)
+			if action.content.lower().strip('!') == "hit":
+				player.add(deck.deal())
+				player_string = self.cards_to_string(player.cards)
+				player_total = self.blackjack_total(player.cards)
+				embed.description = "Dealer: {} (?)\n{}: {} ({})\n".format(dealer_string, ctx.message.author.display_name, player_string, player_total)
+				await self.bot.edit_message(response, embed = embed)
+				if player_total > 21:
+					embed.description += ":boom: You have busted"
+					embed.set_footer(text = "You lost :(")
+					break
 			else:
+				dealer_string = self.cards_to_string(dealer.cards)
+				embed.description = "Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.message.author.display_name, player_string, player_total)
 				if dealer_total > 21:
-					await self.bot.embed_reply("The dealer busted\nYou win!")
-					return
-				elif dealer_total > hand_total:
-					await self.bot.embed_reply("The dealer beat you\nYou lost :(")
-					return
+					embed.description += ":boom: The dealer busted"
+					embed.set_footer(text = "You win!")
+					break
+				elif dealer_total > player_total:
+					embed.description += "The dealer beat you"
+					embed.set_footer(text = "You lost :(")
+					break
+				embed.set_footer(text = "Dealer's turn..")
+				await self.bot.edit_message(response, embed = embed)
 				while True:
+					await asyncio.sleep(5)
 					dealer.add(deck.deal())
 					dealer_string = self.cards_to_string(dealer.cards)
 					dealer_total = self.blackjack_total(dealer.cards)
-					await self.bot.embed_say("Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.message.author.display_name, hand_string, hand_total))
+					embed.description = "Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.message.author.display_name, player_string, player_total)
+					await self.bot.edit_message(response, embed = embed)
 					if dealer_total > 21:
-						await self.bot.embed_reply("The dealer busted\nYou win!")
-						return
-					elif dealer_total > hand_total:
-						await self.bot.embed_reply("The dealer beat you\nYou lost :(")
-						return
-					await asyncio.sleep(5)
+						embed.description += ":boom: The dealer busted"
+						embed.set_footer(text = "You win!")
+						break
+					elif dealer_total > player_total:
+						embed.description += "The dealer beat you"
+						embed.set_footer(text = "You lost :(")
+						break
+					elif dealer_total == player_total == 21:
+						embed.set_footer(text = "It's a push (tie)")
+						break
+				break
+		await self.bot.edit_message(response, embed = embed)
 	
 	def blackjack_total(self, cards):
-		total = sum([self.blackjack_ranks["values"][card.value] for card in cards])
-		if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11:
-			total += 10
+		total = sum(self.blackjack_ranks["values"][card.value] for card in cards)
+		if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11: total += 10
 		return total
 	
 	@commands.group(pass_context = True, invoke_without_command = True)
