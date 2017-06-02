@@ -76,7 +76,7 @@ class Search:
 	@checks.not_forbidden()
 	async def amazon(self, ctx, *search : str):
 		'''Search with Amazon'''
-		await self.bot.embed_reply("[Amazon search for \"{}\"](https://www.amazon.com/s/?field-keywords={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply("[Amazon search for \"{}\"](https://smile.amazon.com/s/?field-keywords={})".format(' '.join(search), '+'.join(search)))
 	
 	@commands.command()
 	@checks.not_forbidden()

@@ -22,7 +22,7 @@ import credentials
 from utilities import errors
 from utilities.help_formatter import CustomHelpFormatter
 
-version = "0.35.0"
+version = "0.35.16"
 changelog = "https://discord.gg/a2rbZPu"
 beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"
@@ -186,7 +186,8 @@ async def _update_discord_bots_stats():
 	async with aiohttp_session.post("https://bots.discord.pw/api/bots/{}/stats".format(client.user.id), 
 	headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}, 
 	data = json.dumps({"server_count": len(client.guilds)})) as resp:
-		if resp.status in (502, 504):
+		# Change to check for 200?
+		if resp.status in (500, 502, 504, 522):
 			return "Error: {}".format(resp.status)
 		response = await resp.json()
 	return response

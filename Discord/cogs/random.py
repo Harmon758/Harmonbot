@@ -6,6 +6,7 @@ import asyncio
 from bs4 import BeautifulSoup
 import calendar
 import concurrent.futures
+import csv
 import datetime
 import dice
 import inspect
@@ -41,6 +42,15 @@ class Random:
 		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"), (self.uesp, "Search.uesp"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
+		# Import jokes
+		self.jokes = []
+		try:
+			with open(clients.data_path + "/jokes.csv", newline = "") as jokes_file:
+				jokes_reader = csv.reader(jokes_file)
+				for row in jokes_reader:
+					self.jokes.append(row[0])
+		except FileNotFoundError:
+			pass
 	
 	def __unload(self):
 		for command, parent_name in self.random_subcommands:
@@ -193,9 +203,9 @@ class Random:
 			except discord.errors.HTTPException:
 				await ctx.embed_reply(":no_entry: Output too long")
 			except pyparsing.ParseException:
-				await self.bot.embed_reply(":no_entry: Invalid input")
-			except concurrent.futures.TimeoutError:
-				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
+				await ctx.embed_reply(":no_entry: Invalid input")
+			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
+				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -219,7 +229,8 @@ class Random:
 	@checks.not_forbidden()
 	async def fact(self, ctx):
 		'''Random fact'''
-		async with clients.aiohttp_session.get("http://mentalfloss.com/api/1.0/views/amazing_facts.json?limit=1&bypass=1") as resp:
+		url = "http://mentalfloss.com/api/1.0/views/amazing_facts.json?limit=1&bypass={}".format(random.random())
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(BeautifulSoup(data[0]["nid"]).text)
 	
@@ -293,9 +304,10 @@ class Random:
 	@checks.not_forbidden()
 	async def joke(self, ctx):
 		'''Random joke'''
-		async with clients.aiohttp_session.get("http://tambal.azurewebsites.net/joke/random") as resp:
-			data = await resp.json()
-		await self.bot.embed_reply(data["joke"])
+		# Sources:
+		# https://github.com/KiaFathi/tambalAPI
+		# https://www.kaggle.com/abhinavmoudgil95/short-jokes (https://github.com/amoudgl/short-jokes-dataset)
+		await ctx.embed_reply(random.choice(self.jokes))
 	
 	@commands.command()
 	@checks.not_forbidden()

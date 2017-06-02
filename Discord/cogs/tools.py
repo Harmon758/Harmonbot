@@ -596,10 +596,27 @@ class Tools:
 		'''Delete one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
-		del self.tags_data[ctx.author.id]["tags"][tag]
-		with open("data/tags.json", 'w') as tags_file:
+		try:
+			del self.tags_data[ctx.author.id]["tags"][tag]
+		except KeyError:
+			await ctx.embed_reply(":no_entry: Tag not found")
+			return
+		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
+	
+	@tag.command(name = "expunge", pass_context = True)
+	@checks.is_owner()
+	async def tag_expunge(self, ctx, owner : discord.Member, tag : str):
+		'''Delete someone else's tags'''
+		try:
+			del self.tags_data[owner.id]["tags"][tag]
+		except KeyError:
+			await ctx.embed_reply(":no_entry: Tag not found")
+			return
+		with open(clients.data_path + "/tags.json", 'w') as tags_file:
+			json.dump(self.tags_data, tags_file, indent = 4)
+		await ctx.embed_reply(":ok_hand::skin-tone-2: {}'s tag has been deleted".format(owner.mention))
 	
 	@tag.command(name = "search", aliases = ["contains", "find"])
 	async def tag_search(self, ctx, *, search : str):

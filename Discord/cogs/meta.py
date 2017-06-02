@@ -269,7 +269,7 @@ class Meta:
 		await ctx.embed_reply("**Temperature Unit Conversions**: {0}[c, f, k, r, de]__to__[c, f, k, r, de, n, re, ro]\n"
 		"**Weight Unit Conversions**: {0}<unit>__to__<unit>\nunits: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]".format(ctx.prefix), title = "Conversion Commands")
 	
-	@commands.command(aliases = ["oauth"], hidden = True)
+	@commands.command(aliases = ["oauth"])
 	async def invite(self, ctx):
 		'''Link to invite me to a server'''
 		from clients import application_info
@@ -302,24 +302,24 @@ class Meta:
 		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
 		embed.set_author(name = ctx.author.display_name, icon_url = avatar) # url?
 		embed.add_field(name = "Uptime", value = uptime)
-		embed.add_field(name = "Total Recorded Uptime", value = total_uptime) # since 2016-04-17, fixed 2016-05-10
-		embed.add_field(name = "Recorded Restarts", value = stats["restarts"]) # since 2016-04-17, fixed 2016-05-10
+		embed.add_field(name = "Total Recorded Uptime", value = total_uptime) ## since 2016-04-17, fixed 2016-05-10
+		embed.add_field(name = "Recorded Restarts", value = "{:,}".format(stats["restarts"])) ## since 2016-04-17, fixed 2016-05-10
 		embed.add_field(name = "Main Commands", value = len(set(self.bot.commands.values())))
 		embed.add_field(name = "Commands Executed", 
-			value = "{} this session\n{} total recorded".format(session_commands_executed, stats["commands_executed"])) 
+			value = "{} this session\n{:,} total recorded".format(session_commands_executed, stats["commands_executed"])) 
 			# since 2016-06-10 (cog commands)
-		embed.add_field(name = "Cogs Reloaded", value = stats["cogs_reloaded"]) # since 2016-06-10 - implemented cog reloading
+		embed.add_field(name = "Cogs Reloaded", value = "{:,}".format(stats["cogs_reloaded"])) ## since 2016-06-10 - implemented cog reloading
 		# TODO: cogs reloaded this session
 		embed.add_field(name = "Servers", value = len(self.bot.guilds))
 		embed.add_field(name = "Channels", value = "{} text\n{} voice (playing in {}/{})".format(text_count, voice_count, playing_in_voice_count, in_voice_count))
 		embed.add_field(name = "Members", 
-			value = "{} total\n{} online\n{} unique\n{} unique online".format(total_members, total_members_online, len(unique_members), unique_members_online))
+			value = "{:,} total\n({:,} online)\n{:,} unique\n({:,} online)".format(total_members, total_members_online, len(unique_members), unique_members_online))
 		embed.add_field(name = "Top Commands Executed", 
-			value = "\n".join(["{} {}".format(uses, command) for command, uses in top_commands[:5]])) # since 2016-11-14
+			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[:5])) ## since 2016-11-14
 		embed.add_field(name = "(Total Recorded)", 
-			value = "\n".join(["{} {}".format(uses, command) for command, uses in top_commands[5:10]])) # since 2016-11-14
+			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[5:10])) ## since 2016-11-14
 		if session_top_5: embed.add_field(name = "(This Session)", 
-			value = "\n".join(["{} {}".format(uses, command) for command, uses in session_top_5]))
+			value = "\n".join("{:,} {}".format(uses, command) for command, uses in session_top_5))
 		await self.bot.send_message(ctx.message.channel, embed = embed)
 	
 	@commands.command()
@@ -478,7 +478,7 @@ class Meta:
 		for _ in range(times):
 			await self.bot.process_commands(msg)
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(aliases = ["say"], invoke_without_command = True)
 	@checks.is_owner()
 	async def echo(self, ctx, *, message):
 		'''Echoes the message'''
