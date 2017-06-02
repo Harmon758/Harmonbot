@@ -194,7 +194,7 @@ class Random:
 				await self.bot.embed_reply(":no_entry: Output too long")
 			except pyparsing.ParseException:
 				await self.bot.embed_reply(":no_entry: Invalid input")
-			except concurrent.futures.TimeoutError:
+			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
 				await self.bot.embed_reply(":no_entry: Execution exceeded time limit")
 	
 	@commands.command(pass_context = True)
