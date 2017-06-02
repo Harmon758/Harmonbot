@@ -1196,9 +1196,9 @@ class Resources:
 		await self.process_translate(text, language_code)
 	
 	async def process_translate(self, text, to_language_code, from_language_code = None):
-		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang={}&text={}&options=1".format(credentials.yandex_translate_api_key, to_language_code if not from_language_code else "{}-{}".format(from_language_code, to_language_code), text)
+		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang={}&text={}&options=1".format(credentials.yandex_translate_api_key, to_language_code if not from_language_code else "{}-{}".format(from_language_code, to_language_code), text.replace(' ', '+'))
 		async with clients.aiohttp_session.get(url) as resp:
-			if resp.status == 400:
+			if resp.status == 400: # Bad Request
 				await self.bot.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
