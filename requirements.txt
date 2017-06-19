@@ -14,7 +14,7 @@ matplotlib==1.5.3
 # 2.0.0 - http://bugs.python.org/issue25778
 moviepy==0.2.2.13
 numexpr==2.6.2
-numpy==1.12.0
+numpy==1.13.0
 # +mkl
 pandas==0.19.2
 psutil==5.1.3
