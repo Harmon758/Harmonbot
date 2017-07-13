@@ -52,7 +52,7 @@ oauthlib==2.0.1
 olefile==0.44
 pillow==4.2.1
 pycparser==2.17
-pynacl==1.0.1
+pynacl==1.1.2
 pyparsing==2.2.0
 pysocks==1.6.6
 pytz==2017.2
