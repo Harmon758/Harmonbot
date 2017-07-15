@@ -47,7 +47,7 @@ jaraco.itertools==2.0.1
 jsonschema==2.6.0
 more-itertools==2.5.0
 mpmath==0.19
-multidict==3.1.1
+multidict==3.1.3
 oauthlib==2.0.1
 olefile==0.44
 pillow==4.2.1
