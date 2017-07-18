@@ -26,7 +26,7 @@ python-chess==0.16.2
 python-dateutil==2.6.1
 seaborn==0.8.0
 speechrecognition==3.7.1
-sympy==1.0
+sympy==1.1
 # tweepy==3.6.0
 git+git://github.com/tweepy/tweepy.git@80015db
 wand==0.4.4
