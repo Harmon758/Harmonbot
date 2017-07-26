@@ -56,7 +56,7 @@ pynacl==1.1.2
 pyparsing==2.2.0
 pysocks==1.6.6
 pytz==2017.2
-requests==2.18.1
+requests==2.18.2
 requests-oauthlib==0.8.0
 scipy==0.18.1
 six==1.10.0
