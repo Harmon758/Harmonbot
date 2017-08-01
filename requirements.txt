@@ -32,7 +32,7 @@ git+git://github.com/tweepy/tweepy.git@80015db
 wand==0.4.4
 wolframalpha==3.0
 wordnik-py3==2.1.2
-youtube_dl==2017.7.23
+youtube_dl==2017.7.30.1
 
 async-timeout==1.2.1
 cffi==1.10.0
