@@ -63,6 +63,6 @@ scipy==0.19.1
 six==1.10.0
 tqdm==4.15.0
 websockets==3.3
-xmltodict==0.10.2
+xmltodict==0.11.0
 yarl==0.12.0
 
