@@ -21,7 +21,7 @@ psutil==5.2.2
 git+git://github.com/Harmon758/Py3kAiml.git
 pydealer==1.4.0
 pygost==3.1
-pyowm==2.6.1
+pyowm==2.7.1
 python-chess==0.16.2
 python-dateutil==2.6.1
 seaborn==0.8.0
