@@ -107,7 +107,13 @@ class Bot(commands.Bot):
 		except (discord.errors.Forbidden, discord.errors.NotFound):
 			pass
 	
-	# TODO: Case-Insenstivie commands + subcommands
+	# Case-Insensitive commands
+	async def get_context(self, message, *, cls = Context):
+		ctx = await super().get_context(message, cls = cls)
+		if ctx.invoked_with: ctx.command = self.all_commands.get(ctx.invoked_with.lower())
+		return ctx
+	
+	# TODO: Case-Insensitive subcommands (override Group)
 
 
 # Create folders
