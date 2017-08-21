@@ -64,8 +64,6 @@ if __name__ == "__main__":
 				clients.create_file("server_data/{}/{}".format(guild.id, clean_name))
 			# TODO: DM if joined new server
 			# TODO: DM if left server
-		await clients.random_game_status()
-		await clients.set_streaming_status(client)
 		# await voice.detectvoice()
 	
 	@client.event

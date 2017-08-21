@@ -83,8 +83,15 @@ elif os.path.isfile("data/aiml/std-startup.xml"):
 	aiml_kernel.bootstrap(learnFiles = "data/aiml/std-startup.xml", commands = "load aiml b")
 	aiml_kernel.saveBrain("data/aiml/aiml_brain.brn")
 
+game_statuses = ("with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "Goldbach's conjecture", "Goldbach's conjecture solution", "with quantum foam", "with quantum entanglement", "with P vs NP", "the Reimann hypothesis", "the Reimann proof", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music", "Google Ultron", "not enough space here to", "the meaning of life is", "with the NSA", "with neural networks", "with RSS Bot", "with Data", "with Harmon", " ")
+
 class Bot(commands.Bot):
 	
+	def __init__(self, command_prefix):
+		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), game = discord.Game(name = random.choice(game_statuses), url = stream_url, type = 1))
+		
+		# Remove default help command (to override)
+		self.remove_command("help")
 	
 	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
@@ -150,11 +157,9 @@ def get_prefix(bot, message):
 	return prefixes if prefixes else '!'
 
 
-# Initialize client + Customize help command
+# Initialize client
 
-custom_help_formatter = CustomHelpFormatter()
-client = Bot(command_prefix = get_prefix, formatter = custom_help_formatter)
-client.remove_command("help")
+client = Bot(command_prefix = get_prefix)
 
 
 # Initialize/update info
@@ -209,27 +214,14 @@ client.load_extension("cogs.reactions")
 # Utilities
 
 async def random_game_status():
-	statuses = ["with i7-2670QM", "with mainframes", "with Cleverbot",
-	"tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test",
-	"with my memory", "with R2-D2", "with C-3PO", "with BB-8",
-	"with machine learning", "gigs", "with Siri", "with TARS", "with KIPP",
-	"with humans", "with Skynet", "Goldbach's conjecture",
-	"Goldbach's conjecture solution", "with quantum foam",
-	"with quantum entanglement", "with P vs NP", "the Reimann hypothesis",
-	"the Reimann proof", "with the infinity gauntlet", "for the other team",
-	"hard to get", "to win", "world domination", "with Opportunity",
-	"with Spirit in the sand pit", "with Curiousity", "with Voyager 1",
-	"music", "Google Ultron", "not enough space here to",
-	"the meaning of life is", "with the NSA", "with neural networks", 
-	"with RSS Bot", "with Data", "with Harmon", " "]
 	me = discord.utils.find(lambda s: s != None, client.guilds).me
 	if not me:
 		return
 	elif not me.game:
-		updated_game = discord.Game(name = random.choice(statuses))
+		updated_game = discord.Game(name = random.choice(game_statuses))
 	else:
 		updated_game = me.game
-		updated_game.name = random.choice(statuses)
+		updated_game.name = random.choice(game_statuses)
 	await client.change_presence(game = updated_game)
 
 async def set_streaming_status(client):
