@@ -250,7 +250,7 @@ class Meta:
 		embed.set_author(name = "Harmonbot (Discord ID: {})".format(self.bot.user.id), icon_url = avatar)
 		if changes: embed.add_field(name = "Latest Changes:", value = changes, inline = False)
 		embed.add_field(name = "Created on:", value = "February 10th, 2016")
-		embed.add_field(name = "Version", value = clients.version)
+		embed.add_field(name = "Version", value = self.bot.version)
 		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) v{0}\n([Python](https://www.python.org/) v{1.major}.{1.minor}.{1.micro})".format(discord.__version__, sys.version_info))
 		me = discord.utils.get(self.bot.get_all_members(), id = clients.owner_id)
 		avatar = me.default_avatar_url if not me.avatar else me.avatar_url
@@ -332,7 +332,7 @@ class Meta:
 	@commands.command()
 	async def version(self, ctx):
 		'''Bot version'''
-		await ctx.embed_reply("I am Harmonbot `v{}`".format(clients.version))
+		await ctx.embed_reply("I am Harmonbot `v{}`".format(self.bot.version))
 	
 	# Update Bot Stuff
 	
