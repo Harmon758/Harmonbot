@@ -23,7 +23,6 @@ from utilities.context import Context
 from utilities import errors
 from utilities.help_formatter import CustomHelpFormatter
 
-version = "0.35.16"
 changelog = "https://discord.gg/a2rbZPu"
 beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"
@@ -89,6 +88,9 @@ class Bot(commands.Bot):
 	
 	def __init__(self, command_prefix):
 		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), game = discord.Game(name = random.choice(game_statuses), url = stream_url, type = 1))
+		
+		# Constants
+		self.version = "1.0.0"
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
