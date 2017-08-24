@@ -242,7 +242,7 @@ class Meta:
 		from clients import application_info
 		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
 		embed = discord.Embed(title = "About Me", color = clients.bot_color)
-		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(clients.changelog, discord.utils.oauth_url(application_info.id))
+		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(application_info.id))
 		# avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
 		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		avatar = self.bot.user.avatar_url or self.bot.user.default_avatar_url
@@ -256,12 +256,12 @@ class Meta:
 		avatar = me.default_avatar_url if not me.avatar else me.avatar_url
 		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(me), icon_url = avatar)
 		await self.bot.reply("", embed = embed)
-		await self.bot.say("Changelog (Harmonbot Server): {}".format(clients.changelog))
+		await ctx.send("Changelog (Harmonbot Server): {}".format(self.bot.changelog))
 	
 	@commands.command()
 	async def changelog(self, ctx):
 		'''Link to changelog'''
-		await self.bot.reply(clients.changelog)
+		await ctx.reply(self.bot.changelog)
 	
 	@commands.command()
 	async def conversions(self, ctx):
