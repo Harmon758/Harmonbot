@@ -23,7 +23,6 @@ from utilities.context import Context
 from utilities import errors
 from utilities.help_formatter import CustomHelpFormatter
 
-changelog = "https://discord.gg/a2rbZPu"
 beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"
 stream_url = "https://www.twitch.tv/harmonbot"
@@ -91,6 +90,7 @@ class Bot(commands.Bot):
 		
 		# Constants
 		self.version = "1.0.0"
+		self.changelog = "https://discord.gg/a2rbZPu"
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
