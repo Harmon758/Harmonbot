@@ -59,7 +59,6 @@ twitter_api = tweepy.API(twitter_auth)
 wordnik_client = swagger.ApiClient(credentials.wordnik_apikey, "http://api.wordnik.com/v4")
 wordnik_word_api = WordApi.WordApi(wordnik_client)
 wordnik_words_api = WordsApi.WordsApi(wordnik_client)
-wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
 application_info = None
 harmonbot_listener = None
 # TODO: Include owner variable for user object?
@@ -91,6 +90,10 @@ class Bot(commands.Bot):
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
+		
+		# External Clients
+		## Wolfram Alpha
+		self.wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
