@@ -30,8 +30,6 @@ owner_id = 115691005197549570
 listener_id = 180994984038760448
 cache_channel_id = 254051856219635713
 user_agent = "Discord Bot"
-fake_ip = "nice try"
-fake_location = "Fort Yukon, Alaska"
 library_files = "D:/Data (D)/Music/"
 bot_color = 0x738bd7
 rss_color = 0xfa9b39 # f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
@@ -91,6 +89,8 @@ class Bot(commands.Bot):
 		# Constants
 		self.version = "1.0.0"
 		self.changelog = "https://discord.gg/a2rbZPu"
+		self.fake_ip = "nice try"
+		self.fake_location = "Fort Yukon, Alaska"
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
