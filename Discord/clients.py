@@ -72,11 +72,11 @@ except imgurpython.helpers.error.ImgurClientError as e:
 aiml_predicates = {"name": "Harmonbot", "botmaster": "owner", "master": "Harmon", "domain": "tool", "kingdom": "machine", "phylum": "software", "class": "program", "order": "artificial intelligence", "family": "bot", "genus": "python bot", "species": "Discord bot"}
 for predicate, value in aiml_predicates.items():
 	aiml_kernel.setBotPredicate(predicate, value)
-if os.path.isfile("data/aiml/aiml_brain.brn"):
-	aiml_kernel.bootstrap(brainFile = "data/aiml/aiml_brain.brn")
-elif os.path.isfile("data/aiml/std-startup.xml"):
-	aiml_kernel.bootstrap(learnFiles = "data/aiml/std-startup.xml", commands = "load aiml b")
-	aiml_kernel.saveBrain("data/aiml/aiml_brain.brn")
+if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
+	aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
+elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
+	aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+	aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 
 game_statuses = ("with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "Goldbach's conjecture", "Goldbach's conjecture solution", "with quantum foam", "with quantum entanglement", "with P vs NP", "the Reimann hypothesis", "the Reimann proof", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music", "Google Ultron", "not enough space here to", "the meaning of life is", "with the NSA", "with neural networks", "with RSS Bot", "with Data", "with Harmon", " ")
 
