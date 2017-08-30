@@ -26,7 +26,6 @@ from utilities.help_formatter import CustomHelpFormatter
 beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"
 stream_url = "https://www.twitch.tv/harmonbot"
-owner_id = 115691005197549570
 listener_id = 180994984038760448
 cache_channel_id = 254051856219635713
 user_agent = "Discord Bot"
@@ -87,6 +86,7 @@ class Bot(commands.Bot):
 		
 		# Constants
 		self.version = "1.0.0"
+		self.owner_id = 115691005197549570
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
