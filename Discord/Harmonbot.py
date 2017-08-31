@@ -190,15 +190,15 @@ if __name__ == "__main__":
 		await client.invoke(ctx)
 		
 		# Forward DMs
-		if isinstance(message.channel, discord.DMChannel) and message.channel.user.id != clients.owner_id:
-			me = discord.utils.get(client.get_all_members(), id = clients.owner_id)
+		if isinstance(message.channel, discord.DMChannel) and message.channel.recipient.id != ctx.bot.owner_id:
+			me = discord.utils.get(client.get_all_members(), id = ctx.bot.owner_id)
 			if message.author == client.user:
 				try:
-					await client.send_message(me, "To {0.channel.user}: {0.content} `{0.embeds}`".format(message))
+					await me.send("To {0.channel.recipient}: {0.content}".format(message), embed = message.embeds[0])
 				except discord.errors.HTTPException:
-					await client.send_message(me, "To {0.channel.user}: `DM too long to forward`".format(message))
+					await me.send("To {0.channel.recipient}: `DM too long to forward`".format(message))
 			else:
-				await client.send_message(me, "From {0.author}: {0.content} `{0.embeds}`".format(message))
+				await me.send("From {0.author}: {0.content}".format(message), embed = message.embeds[0] if message.embeds else None)
 		
 		# Ignore own and blank messages
 		if message.author == client.user or not message.content:
