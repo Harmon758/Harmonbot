@@ -158,6 +158,9 @@ if __name__ == "__main__":
 		source = "Direct Message" if isinstance(message.channel, discord.DMChannel) else "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
 		logging.chat_logger.info("{0.created_at}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in {1}: {0.content} {0.embeds}".format(message, source))
 		
+		# Get Context
+		ctx = await client.get_context(message)
+		
 		# Server specific settings
 		if message.guild is not None:
 			try:
@@ -172,21 +175,20 @@ if __name__ == "__main__":
 					# TODO: Handle across different servers
 					if message.guild.me.permissions_in(message.channel).kick_members:
 						# TODO: Check hierarchy, if able to kick
-						await client.send_message(message.author, "You were kicked from {} for spamming mentions".format(message.guild))
+						await ctx.author.send("You were kicked from {} for spamming mentions".format(message.guild))
 						await client.kick(message.author)
-						await client.send_message(message.channel, "{} has been kicked for spamming mentions".format(message.author))
+						await ctx.send("{} has been kicked for spamming mentions".format(message.author))
 					else:
-						await client.send_message(message.channel, "I need permission to kick members from the server to enforce anti-spam")
+						await ctx.send("I need permission to kick members from the server to enforce anti-spam")
 				else:
-					await clients.embed_reply(message, ":warning: You will be kicked if you continue spamming mentions")
+					await ctx.embed_reply(":warning: You will be kicked if you continue spamming mentions")
 					mention_spammers.append(message.author.id)
 					await asyncio.sleep(3600)
 					mention_spammers.remove(message.author.id)
 			if not data.get("respond_to_bots") and message.author.bot:
 				return
 		
-		# Commands
-		ctx = await client.get_context(message, cls = clients.Context)
+		# Invoke Commands
 		await client.invoke(ctx)
 		
 		# Forward DMs
