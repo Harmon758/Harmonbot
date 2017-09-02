@@ -67,18 +67,18 @@ if __name__ == "__main__":
 		# await voice.detectvoice()
 	
 	@client.event
-	async def on_server_join(server):
-		utilities.create_folder("data/server_data/{}".format(server.id))
-		utilities.create_file("server_data/{}/settings".format(server.id), content = {"anti-spam": False, "respond_to_bots": False})
-		me = discord.utils.get(client.get_all_members(), id = clients.owner_id)
-		await client.send_embed(me, None, title = "Joined Server", timestamp = server.created_at, thumbnail_url = server.icon_url, fields = (("Name", server.name), ("ID", server.id), ("Owner", str(server.owner)), ("Members", str(server.member_count)), ("Server Region", str(server.region))))
-		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", server.name) # | / \ : ? * " < >
-		utilities.create_file("server_data/{}/{}".format(server.id, clean_name))
+	async def on_guild_join(guild):
+		clients.create_folder(clients.data_path + "/server_data/{}".format(guild.id))
+		clients.create_file("server_data/{}/settings".format(guild.id), content = {"anti-spam": False, "respond_to_bots": False})
+		me = discord.utils.get(client.get_all_members(), id = clients.client.owner_id)
+		await client.send_embed(me, None, title = "Joined Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
+		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", guild.name) # | / \ : ? * " < >
+		clients.create_file("server_data/{}/{}".format(guild.id, clean_name))
 	
 	@client.event
-	async def on_server_remove(server):
-		me = discord.utils.get(client.get_all_members(), id = clients.owner_id)
-		await client.send_embed(me, None, title = "Left Server", timestamp = server.created_at, thumbnail_url = server.icon_url, fields = (("Name", server.name), ("ID", server.id), ("Owner", str(server.owner)), ("Members", str(server.member_count)), ("Server Region", str(server.region))))
+	async def on_guild_remove(guild):
+		me = discord.utils.get(client.get_all_members(), id = clients.client.owner_id)
+		await client.send_embed(me, None, title = "Left Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
 	
 	@client.event
 	async def on_resumed():
