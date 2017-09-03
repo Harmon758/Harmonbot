@@ -88,6 +88,7 @@ class Bot(commands.Bot):
 		self.version = "1.0.0"
 		self.owner_id = 115691005197549570
 		self.changelog = "https://discord.gg/a2rbZPu"
+		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
 		
@@ -97,6 +98,9 @@ class Bot(commands.Bot):
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
+	
+	async def on_resumed(self):
+		print("{}resumed @ {}".format(self.console_message_prefix, datetime.datetime.now().time().isoformat()))
 	
 	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
