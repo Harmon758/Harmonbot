@@ -247,7 +247,7 @@ if __name__ == "__main__":
 		
 		# :8ball:
 		elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs:
-			await client.send_message(message.channel, "{}: {}".format(message.author.display_name, ":8ball: {}".format(client.cogs["Games"]._eightball())))
+			await ctx.embed_reply(":8ball: {}".format(client.cogs["Games"]._eightball()))
 		
 		# f
 		elif message.content.lower() == 'f':
