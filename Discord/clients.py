@@ -1,9 +1,7 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands.view import StringView
-from discord.ext.commands.context import Context
-from discord.ext.commands.errors import CommandNotFound, CommandError
+
 import aiml
 import aiohttp
 import clarifai.rest
