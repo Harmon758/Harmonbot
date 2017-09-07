@@ -236,14 +236,21 @@ if __name__ == "__main__":
 						await clients.embed_reply(message, "Units, {} and/or {}, not found\nSee the conversions command".format(unit1, unit2))
 						return
 					await clients.embed_reply(message, "{} {} = {} {}".format(value, unit1, converted_value, unit2))
+				
+		# help or prefix/es DM or mention
+		elif (message.content.lower() in ("help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ("help", "prefix", "prefixes"):
+			try:
+				prefixes = ctx.bot.command_prefix(ctx.bot, message)
+			except TypeError: # if Beta (*)
+				prefixes = ctx.bot.command_prefix
+			if "help" in message.content.lower():
+				ctx.prefix = prefixes[0]
+				ctx.invoked_with = "help"
+				await ctx.invoke(ctx.bot.get_command("help"))
+			else:
+				await ctx.embed_reply("Prefixes: " + ' '.join("`{}`".format(prefix) for prefix in prefixes))
 		
-		# getprefix
-		elif "getprefix" in message.content:
-			await client.send_message(message.channel, "Prefixes: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 		
-		# help DM
-		elif message.content.lower() == "help" and isinstance(message.channel, discord.DMChannel):
-			await clients.embed_reply(message, "Please see {}help".format(prefixes[0]))
 		
 		# :8ball:
 		elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs:
