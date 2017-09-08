@@ -250,6 +250,18 @@ if __name__ == "__main__":
 			else:
 				await ctx.embed_reply("Prefixes: " + ' '.join("`{}`".format(prefix) for prefix in prefixes))
 		
+		# Chatbot
+		elif message.content.startswith(ctx.me.mention):
+			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
+			aiml_response = clients.aiml_kernel.respond(content)
+			# TODO: Handle brain not loaded?
+			if aiml_response:
+				await ctx.embed_reply(aiml_response, attempt_delete = False)
+			else:
+				games_cog = client.get_cog("Games")
+				if games_cog:
+					cleverbot_response = await games_cog.cleverbot_get_reply(content)
+					await ctx.embed_reply(cleverbot_response, attempt_delete = False)
 		
 		
 		# :8ball:
@@ -272,24 +284,6 @@ if __name__ == "__main__":
 				raise
 			except discord.errors.HTTPException:
 				await client.send_message(message.channel, embed.description)
-		
-		# Chatbot
-		elif message.raw_mentions and client.user.id == message.raw_mentions[0] and message.clean_content.startswith('@'):
-			# Handle @Harmonbot help
-			bot_name = message.channel.me.display_name if isinstance(message.channel, discord.DMChannel) else message.guild.me.display_name
-			if ' '.join(message.clean_content.split()[:2]).lower() == '@' + bot_name.lower() + " help":
-				await clients.embed_reply(message, "Please see {}help".format(prefixes[0]))
-				return
-			mentionless_message = ' '.join(word for word in message.clean_content.split() if not word.startswith('@'))
-			aiml_response = clients.aiml_kernel.respond(mentionless_message)
-			# TODO: Handle brain not loaded?
-			if aiml_response:
-				await clients.embed_reply(message, aiml_response)
-			else:
-				games_cog = client.get_cog("Games")
-				if games_cog:
-					cleverbot_response = await games_cog.cleverbot_get_reply(mentionless_message)
-					await clients.embed_reply(message, cleverbot_response)
 	
 	@client.event
 	async def on_error(event_method, *args, **kwargs):
