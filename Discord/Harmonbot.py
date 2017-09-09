@@ -202,40 +202,34 @@ if __name__ == "__main__":
 		if message.author == client.user or not message.content:
 			return
 		
-		# Other commands
-		try:
-			prefixes = client.command_prefix(client, message)
-		except TypeError:
-			prefixes = client.command_prefix
-		prefix = discord.utils.find(message.content.startswith, prefixes)
-		if prefix:
-			command = message.content[len(prefix):]
-			if command.startswith("test_on_message"):
-				await client.send_message(message.channel, "Hello, World!")
-			elif re.match(r"^(\w+)to(\w+)", command, re.I): # conversions
-				if command.split()[0] in client.commands:
-					return
-				elif len(message.content.split()) == 1:
-					await clients.embed_reply(message, "Please enter input")
-				elif not utilities.is_number(message.content.split()[1]):
-					await clients.embed_reply(message, "Syntax error")
+		# Test on_message command
+		if ctx.prefix and message.content.startswith(ctx.prefix + "test on_message"):
+			await ctx.send("Hello, World!")
+		
+		# Conversion commands (regex)
+		elif ctx.prefix and not ctx.command:
+			units = re.match(r"^(\w+)to(\w+)", message.content[len(ctx.prefix):], re.I)
+			if not units: return
+			elif len(message.content.split()) == 1:
+				await ctx.embed_reply(":no_entry: Please enter input")
+			elif not utilities.is_number(message.content.split()[1]):
+				await ctx.embed_reply(":no_entry: Syntax error")
+			else:
+				value = float(message.content.split()[1])
+				unit1 = units.group(1)
+				unit2 = units.group(2)
+				converted_temperature_value, temperature_unit1, temperature_unit2 = conversions.temperatureconversion(value, unit1, unit2)
+				converted_mass_value = conversions.massconversion(value, unit1, unit2)
+				if converted_temperature_value:
+					converted_value = converted_temperature_value
+					unit1 = temperature_unit1
+					unit2 = temperature_unit2
+				elif converted_mass_value:
+					converted_value = converted_mass_value
 				else:
-					value = float(message.content.split()[1])
-					units = re.match(r"^(\w+)to(\w+)", command, re.I)
-					unit1 = units.group(1)
-					unit2 = units.group(2)
-					converted_temperature_value, temperature_unit1, temperature_unit2 = conversions.temperatureconversion(value, unit1, unit2)
-					converted_mass_value = conversions.massconversion(value, unit1, unit2)
-					if converted_temperature_value:
-						converted_value = converted_temperature_value
-						unit1 = temperature_unit1
-						unit2 = temperature_unit2
-					elif converted_mass_value:
-						converted_value = converted_mass_value
-					else:
-						await clients.embed_reply(message, "Units, {} and/or {}, not found\nSee the conversions command".format(unit1, unit2))
-						return
-					await clients.embed_reply(message, "{} {} = {} {}".format(value, unit1, converted_value, unit2))
+					await ctx.embed_reply("Units, {} and/or {}, not found\nSee the conversions command".format(unit1, unit2))
+					return
+				await ctx.embed_reply("{} {} = {} {}".format(value, unit1, converted_value, unit2))
 				
 		# help or prefix/es DM or mention
 		elif (message.content.lower() in ("help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ("help", "prefix", "prefixes"):
