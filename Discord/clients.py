@@ -243,15 +243,6 @@ async def set_streaming_status(client):
 		updated_game.type = 1
 	await client.change_presence(game = updated_game)
 
-async def reply(message, response):
-	return await client.send_message(message.channel, "{}: {}".format(message.author.mention, response))
-
-async def embed_reply(message, response):
-	embed = discord.Embed(description = response, color = bot_color)
-	avatar = message.author.avatar_url or message.author.default_avatar_url
-	embed.set_author(name = message.author.display_name, icon_url = avatar)
-	return await client.send_message(message.channel, embed = embed)
-
 
 # Restart + Shutdown Tasks
 
