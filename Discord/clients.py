@@ -61,10 +61,6 @@ harmonbot_listener = None
 # TODO: Include owner variable for user object?
 sys.setrecursionlimit(5000)
 
-try:
-	imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
-except imgurpython.helpers.error.ImgurClientError as e:
-	print("Discord Harmonbot: Failed to load Imgur Client: {}".format(e))
 
 aiml_predicates = {"name": "Harmonbot", "botmaster": "owner", "master": "Harmon", "domain": "tool", "kingdom": "machine", "phylum": "software", "class": "program", "order": "artificial intelligence", "family": "bot", "genus": "python bot", "species": "Discord bot"}
 for predicate, value in aiml_predicates.items():
@@ -91,6 +87,11 @@ class Bot(commands.Bot):
 		self.fake_location = "Fort Yukon, Alaska"
 		
 		# External Clients
+		## Imgur
+		try:
+			self.imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
+		except imgurpython.helpers.error.ImgurClientError as e:
+			print("{}Failed to load Imgur Client: {}".format(self.console_message_prefix, e))
 		## Wolfram Alpha
 		self.wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
 		
