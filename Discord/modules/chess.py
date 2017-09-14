@@ -109,7 +109,7 @@ class chess_match(chess.Board):
 		if data["status_code"] == 403:
 			await self.bot.send_embed(self.text_channel, ":no_entry: Error: {}".format(data["status_txt"]))
 			return
-		# self.match_embed.set_image(url = clients.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
+		# self.match_embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
 		self.match_embed.set_image(url = data["data"]["img_url"])
 		'''
 		cache_channel = self.bot.get_channel(clients.cache_channel_id)

@@ -45,13 +45,13 @@ class Search:
 	@checks.not_forbidden()
 	async def imgur(self, ctx, *, search : str):
 		'''Search images on imgur'''
-		result = clients.imgur_client.gallery_search(search, sort = "top")
+		result = self.bot.imgur_client.gallery_search(search, sort = "top")
 		if not result:
 			await ctx.embed_reply(":no_entry: No results found")
 			return
 		result = result[0]
 		if result.is_album:
-			result = clients.imgur_client.get_album(result.id).images[0]
+			result = self.bot.imgur_client.get_album(result.id).images[0]
 			await ctx.embed_reply(image_url = result["link"])
 		else:
 			await ctx.embed_reply(image_url = result.link)

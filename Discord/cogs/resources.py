@@ -307,7 +307,7 @@ class Resources:
 	
 	async def _imgur_upload(self, url):
 		try:
-			await ctx.embed_reply(clients.imgur_client.upload_from_url(url)["link"])
+			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(url)["link"])
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
