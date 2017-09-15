@@ -297,15 +297,15 @@ class Resources:
 	@imgur.command(name = "upload")
 	@checks.not_forbidden()
 	async def imgur_upload(self, ctx, url : str = ""):
-		'''Upload images to imgur'''
+		'''Upload images to Imgur'''
 		if url:
-			await self._imgur_upload(url)
+			await self._imgur_upload(ctx, url)
 		if ctx.message.attachments:
-			await self._imgur_upload(ctx.message.attachments[0]["url"])
+			await self._imgur_upload(ctx, ctx.message.attachments[0]["url"])
 		if not (url or ctx.message.attachments):
 			await ctx.embed_reply(":no_entry: Please input an image and/or url")
 	
-	async def _imgur_upload(self, url):
+	async def _imgur_upload(self, ctx, url):
 		try:
 			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(url)["link"])
 		except imgurpython.helpers.error.ImgurClientError as e:
