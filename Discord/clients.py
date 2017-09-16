@@ -29,7 +29,6 @@ cache_channel_id = 254051856219635713
 user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
 bot_color = 0x738bd7
-rss_color = 0xfa9b39 # f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 twitch_color = 0x6441a4
 twitter_color = 0x00ACED
 youtube_color = 0xcd201f # https://www.youtube.com/yt/brand/color.html
@@ -85,6 +84,7 @@ class Bot(commands.Bot):
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
+		self.rss_color = 0xfa9b39 # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 		
 		# External Clients
 		## Imgur
