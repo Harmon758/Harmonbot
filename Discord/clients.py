@@ -29,7 +29,6 @@ cache_channel_id = 254051856219635713
 user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
 bot_color = 0x738bd7
-twitter_color = 0x00ACED
 youtube_color = 0xcd201f # https://www.youtube.com/yt/brand/color.html
 twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
 twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
@@ -85,6 +84,7 @@ class Bot(commands.Bot):
 		self.fake_location = "Fort Yukon, Alaska"
 		self.rss_color = 0xfa9b39 # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 		self.twitch_color = 0x6441a4
+		self.twitter_color = 0x00ACED
 		
 		# External Clients
 		## Imgur
