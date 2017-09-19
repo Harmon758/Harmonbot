@@ -124,7 +124,7 @@ class Youtube:
 									if not text_channel:
 										# TODO: Remove text channel data if now non-existent
 										continue
-									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = clients.youtube_color)
+									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = self.bot.youtube_color)
 									embed.set_author(name = "{} is live now on Youtube".format(item_data["channelTitle"]), url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = clients.youtube_icon_url)
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
