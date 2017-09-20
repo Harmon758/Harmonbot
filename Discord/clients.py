@@ -29,7 +29,6 @@ cache_channel_id = 254051856219635713
 user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
 bot_color = 0x738bd7
-twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
 twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 youtube_icon_url = "https://www.youtube.com/yt/brand/media/image/YouTube-icon-full_color.png"
 wait_time = 15.0
@@ -85,6 +84,7 @@ class Bot(commands.Bot):
 		self.twitch_color = 0x6441a4
 		self.twitter_color = 0x00ACED
 		self.youtube_color = 0xcd201f # change to ff0000?; previously on https://www.youtube.com/yt/brand/color.html
+		self.twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
 		
 		# External Clients
 		## Imgur
