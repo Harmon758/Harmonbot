@@ -61,7 +61,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 				if status.user.id_str in channel_feeds:
 					embed = discord.Embed(title = '@' + status.user.screen_name, url = "https://twitter.com/{}/status/{}".format(status.user.screen_name, status.id), description = status.text, timestamp = status.created_at, color = self.bot.twitter_color)
 					embed.set_author(name = status.user.name, icon_url = status.user.profile_image_url)
-					embed.set_footer(text = "Twitter", icon_url = clients.twitter_icon_url)
+					embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
 					channel = self.bot.get_channel(channel_id)
 					if channel:
 						self.bot.loop.create_task(self.bot.send_message(channel, embed = embed))
