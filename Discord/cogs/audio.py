@@ -516,8 +516,8 @@ class Audio:
 	async def queue(self, ctx):
 		'''See the current queue'''
 		embed = self.players[ctx.guild.id].queue_embed()
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url or ctx.author.default_avatar_url)
-		await self.bot.say(embed = embed)
+		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
+		await ctx.send(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	# Voice Input
