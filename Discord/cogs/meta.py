@@ -41,8 +41,7 @@ class Meta:
 		'''
 		if len(commands) == 0:
 			embed = discord.Embed(title = "Categories", color = clients.bot_color)
-			avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-			embed.set_author(name = ctx.author.display_name, icon_url = avatar)
+			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 			embed.description = "  ".join("__{}__".format(category) for category in sorted(self.bot.cogs, key = str.lower))
 			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
 			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with)) # stats?
@@ -95,8 +94,7 @@ class Meta:
 			destination = ctx.channel
 		for embed in embeds:
 			if destination == ctx.channel:
-				avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-				embed.set_author(name = ctx.author.display_name, icon_url = avatar)
+				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 			await self.bot.send_message(destination, embed = embed)
 	
 	@help.command(name = "all")
@@ -114,8 +112,7 @@ class Meta:
 		# TODO: Update
 		# TODO: Add last updated date?
 		embed = discord.Embed(title = "Commands not in {}help".format(ctx.prefix), color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
+		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		embed.description = "See `{}help` for the main commands".format(ctx.prefix)
 		embed.add_field(name = "Conversion Commands", value = "see `{}conversions`".format(ctx.prefix), inline = False)
 		embed.add_field(name = "In Progress", value = "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", inline = False)
@@ -243,18 +240,17 @@ class Meta:
 		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
 		embed = discord.Embed(title = "About Me", color = clients.bot_color)
 		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(application_info.id))
-		# avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
+		# avatar = ctx.author.avatar_url
 		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		avatar = self.bot.user.avatar_url or self.bot.user.default_avatar_url
+		avatar = self.bot.user.avatar_url
 		# embed.set_thumbnail(url = avatar)
 		embed.set_author(name = "Harmonbot (Discord ID: {})".format(self.bot.user.id), icon_url = avatar)
 		if changes: embed.add_field(name = "Latest Changes:", value = changes, inline = False)
 		embed.add_field(name = "Created on:", value = "February 10th, 2016")
 		embed.add_field(name = "Version", value = self.bot.version)
 		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) v{0}\n([Python](https://www.python.org/) v{1.major}.{1.minor}.{1.micro})".format(discord.__version__, sys.version_info))
-		me = discord.utils.get(self.bot.get_all_members(), id = self.bot.owner_id)
-		avatar = me.default_avatar_url if not me.avatar else me.avatar_url
-		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(me), icon_url = avatar)
+		owner = discord.utils.get(self.bot.get_all_members(), id = self.bot.owner_id)
+		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(owner), icon_url = owner.avatar_url)
 		await self.bot.reply("", embed = embed)
 		await ctx.send("Changelog (Harmonbot Server): {}".format(self.bot.changelog))
 	
@@ -299,8 +295,7 @@ class Meta:
 		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
 		
 		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar) # url?
+		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url) # url?
 		embed.add_field(name = "Uptime", value = uptime)
 		embed.add_field(name = "Total Recorded Uptime", value = total_uptime) ## since 2016-04-17, fixed 2016-05-10
 		embed.add_field(name = "Recorded Restarts", value = "{:,}".format(stats["restarts"])) ## since 2016-04-17, fixed 2016-05-10

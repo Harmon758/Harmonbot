@@ -96,8 +96,7 @@ class Twitter:
 		'''Get twitter status'''
 		tweet = clients.twitter_api.user_timeline(handle, count = 1)[0]
 		embed = discord.Embed(title = '@' + tweet.user.screen_name, url = "https://twitter.com/{}/status/{}".format(tweet.user.screen_name, tweet.id), description = tweet.text, timestamp = tweet.created_at, color = 0x00ACED)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
+		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		embed.set_footer(text = tweet.user.name, icon_url = tweet.user.profile_image_url)
 		await self.bot.say(embed = embed)
 	

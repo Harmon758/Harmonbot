@@ -109,7 +109,7 @@ class Misc:
 			with open(clients.data_path + "/user_data/{}/pokes.json".format(ctx.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
 			embed = discord.Embed(color = clients.bot_color)
-			embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url or ctx.author.default_avatar_url)
+			embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
 			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[to_poke.id]))
 			await self.bot.send_message(to_poke, embed = embed)
 			await ctx.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[to_poke.id])), footer_text = "In response to: {}".format(ctx.message.clean_content))

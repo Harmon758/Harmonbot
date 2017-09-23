@@ -124,8 +124,7 @@ class Reactions:
 				await self.bot.send_file(reaction.message.channel, clients.data_path + "/temp/maze.txt", content = "{}:\nYour maze is attached".format(player.display_name))
 				return
 			embed = discord.Embed(color = clients.bot_color)
-			avatar = player.avatar_url or player.default_avatar_url
-			embed.set_author(name = player.display_name, icon_url = avatar)
+			embed.set_author(name = player.display_name, icon_url = player.avatar_url)
 			moved = maze_instance.move(self.arrows[reaction.emoji].lower())
 			embed.set_footer(text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
 			if moved:
@@ -148,7 +147,7 @@ class Reactions:
 		except errors.AudioNotPlaying:
 			player_message = await ctx.embed_reply(":speaker: There is no song currently playing")
 		else:
-			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url or ctx.author.default_avatar_url)
+			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 			player_message, embed = await self.bot.say(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 		for control_emote in self.controls.keys():
@@ -162,7 +161,7 @@ class Reactions:
 		if reaction.emoji in self.controls:
 			if self.controls[reaction.emoji] == "pause_resume":
 				if utilities.get_permission(ctx, "pause", id = user.id) or user == ctx.guild.owner or user.id == self.bot.owner_id:
-					embed = discord.Embed(color = clients.bot_color).set_author(name = user.display_name, icon_url = user.avatar_url or user.default_avatar_url)
+					embed = discord.Embed(color = clients.bot_color).set_author(name = user.display_name, icon_url = user.avatar_url)
 					try:
 						self.bot.cogs["Audio"].players[ctx.guild.id].pause()
 					except errors.AudioNotPlaying:
