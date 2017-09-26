@@ -228,7 +228,7 @@ class Resources:
 	async def imagerecognition(self, ctx, image_url : str):
 		'''Image recognition'''
 		try:
-			response = clients.clarifai_general_model.predict_by_url(image_url)
+			response = self.bot.clarifai_general_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
 			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
 			return
@@ -249,7 +249,7 @@ class Resources:
 	async def nsfw(self, ctx, image_url : str):
 		'''NSFW recognition'''
 		try:
-			response = clients.clarifai_nsfw_model.predict_by_url(image_url)
+			response = self.bot.clarifai_nsfw_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
 			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
 			return
