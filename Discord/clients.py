@@ -39,9 +39,6 @@ session_commands_executed = 0
 session_commands_usage = {}
 aiml_kernel = aiml.Kernel()
 aiohttp_session = aiohttp.ClientSession()
-clarifai_app = clarifai.rest.ClarifaiApp(app_id = credentials.clarifai_api_id, app_secret = credentials.clarifai_api_secret)
-clarifai_general_model = clarifai_app.models.get("general-v1.3")
-clarifai_nsfw_model = clarifai_app.models.get("nsfw-v1.0")
 inflect_engine = inflect.engine()
 owm_client = pyowm.OWM(credentials.owm_api_key)
 twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)
@@ -87,6 +84,10 @@ class Bot(commands.Bot):
 		self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 		
 		# External Clients
+		## Clarifai
+		self.clarifai_app = clarifai.rest.ClarifaiApp(app_id = credentials.clarifai_api_id, app_secret = credentials.clarifai_api_secret)
+		self.clarifai_general_model = self.clarifai_app.models.get("general-v1.3")
+		self.clarifai_nsfw_model = self.clarifai_app.models.get("nsfw-v1.0")
 		## Imgur
 		try:
 			self.imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
