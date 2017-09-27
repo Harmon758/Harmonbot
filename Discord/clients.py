@@ -41,9 +41,6 @@ aiml_kernel = aiml.Kernel()
 aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
 owm_client = pyowm.OWM(credentials.owm_api_key)
-twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)
-twitter_auth.set_access_token(credentials.twitter_access_token, credentials.twitter_access_token_secret)
-twitter_api = tweepy.API(twitter_auth)
 wordnik_client = swagger.ApiClient(credentials.wordnik_apikey, "http://api.wordnik.com/v4")
 wordnik_word_api = WordApi.WordApi(wordnik_client)
 wordnik_words_api = WordsApi.WordsApi(wordnik_client)
@@ -93,6 +90,10 @@ class Bot(commands.Bot):
 			self.imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
 		except imgurpython.helpers.error.ImgurClientError as e:
 			print("{}Failed to load Imgur Client: {}".format(self.console_message_prefix, e))
+		## Twitter
+		self.twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)
+		self.twitter_auth.set_access_token(credentials.twitter_access_token, credentials.twitter_access_token_secret)
+		self.twitter_api = tweepy.API(self.twitter_auth)
 		## Wolfram Alpha
 		self.wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
 		
