@@ -39,18 +39,18 @@ class TwitterStreamListener(tweepy.StreamListener):
 		self.reconnect_ready.clear()
 		if feeds: self.feeds = feeds
 		if self.stream: self.stream.disconnect()
-		self.stream = tweepy.Stream(auth = clients.twitter_api.auth, listener = self)
+		self.stream = tweepy.Stream(auth = self.bot.twitter_api.auth, listener = self)
 		self.stream.filter(follow = set([id for feeds in self.feeds.values() for id in feeds]), **{"async" : "True"})
 		self.bot.loop.call_later(120, self.reconnect_ready.set)
 		self.reconnecting = False
 	
 	async def add_feed(self, channel, handle):
-		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [clients.twitter_api.get_user(handle).id_str]
+		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [self.bot.twitter_api.get_user(handle).id_str]
 		# TODO: Check if stream already following
 		await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
-		self.feeds[channel.id].remove(clients.twitter_api.get_user(handle).id_str)
+		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(handle).id_str)
 		await self.start_feeds() # necessary?
 	
 	def on_status(self, status):
@@ -94,7 +94,7 @@ class Twitter:
 	@checks.not_forbidden()
 	async def twitter_status(self, ctx, handle : str):
 		'''Get twitter status'''
-		tweet = clients.twitter_api.user_timeline(handle, count = 1)[0]
+		tweet = self.bot.twitter_api.user_timeline(handle, count = 1)[0]
 		embed = discord.Embed(title = '@' + tweet.user.screen_name, url = "https://twitter.com/{}/status/{}".format(tweet.user.screen_name, tweet.id), description = tweet.text, timestamp = tweet.created_at, color = 0x00ACED)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		embed.set_footer(text = tweet.user.name, icon_url = tweet.user.profile_image_url)
@@ -160,7 +160,7 @@ class Twitter:
 		for channel_id, channel_info in self.feeds_info["channels"].items():
 			for handle in channel_info["handles"]:
 				try:
-					feeds[channel_id] = feeds.get(channel_id, []) + [clients.twitter_api.get_user(handle).id_str]
+					feeds[channel_id] = feeds.get(channel_id, []) + [self.bot.twitter_api.get_user(handle).id_str]
 				except tweepy.error.TweepError as e:
 					if e.api_code == 50:
 					# User not found
