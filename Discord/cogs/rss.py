@@ -35,7 +35,7 @@ class RSS:
 	@checks.is_permitted()
 	async def rss(self, ctx):
 		'''RSS'''
-		pass
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@rss.command(name = "add", aliases = ["addfeed", "feedadd"])
 	@checks.is_permitted()

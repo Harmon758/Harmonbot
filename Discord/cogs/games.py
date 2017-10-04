@@ -387,8 +387,7 @@ class Games:
 		 white
 		 e2e4
 		'''
-		await ctx.embed_reply("See {}help chess".format(ctx.prefix))
-		
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 		'''
 		else:
 			try:
@@ -781,7 +780,7 @@ class Games:
 		[w, a, s, d] to move
 		Also see mazer
 		'''
-		await ctx.embed_reply("See {}help maze".format(ctx.prefix))
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@maze.command(name = "start", aliases = ["begin"])
 	@checks.not_forbidden()

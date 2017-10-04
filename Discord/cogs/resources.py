@@ -46,7 +46,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def battlenet(self, ctx):
 		'''Battle.net'''
-		...
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@battlenet.command(name = "run", aliases = ["launch"])
 	@checks.not_forbidden()
@@ -293,7 +293,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def imgur(self, ctx):
 		'''Imgur'''
-		await ctx.embed_reply("See {}help imgur".format(ctx.prefix))
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@imgur.command(name = "upload")
 	@checks.not_forbidden()

@@ -650,7 +650,7 @@ class Tools:
 	@tag.group(name = "global", invoke_without_command = True)
 	async def tag_global(self, ctx):
 		'''Global tags'''
-		...
+		await ctx.invoke(self.bot.get_command("help"), "tag", ctx.invoked_with)
 	
 	@tag_global.command(name = "add", aliases = ["make", "new", "create"])
 	async def tag_global_add(self, ctx, tag : str, *, content : str):

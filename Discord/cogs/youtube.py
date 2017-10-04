@@ -44,7 +44,7 @@ class Youtube:
 	@checks.is_permitted()
 	async def youtube_streams(self, ctx):
 		'''Youtube Streams'''
-		await ctx.embed_reply("See {}help youtube streams".format(ctx.prefix))
+		await ctx.invoke(self.bot.get_command("help"), "youtube", ctx.invoked_with)
 	
 	@youtube_streams.command(name = "add", invoke_without_command = True)
 	@checks.is_permitted()

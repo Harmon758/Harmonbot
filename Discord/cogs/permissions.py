@@ -19,7 +19,7 @@ class Permissions:
 	@checks.is_permitted()
 	async def setpermission(self, ctx):
 		'''Set a permission'''
-		await ctx.embed_reply(":no_entry: Invalid input\nSee {}help setpermission".format(ctx.prefix))
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@setpermission.command(name = "everyone")
 	@checks.is_permitted()

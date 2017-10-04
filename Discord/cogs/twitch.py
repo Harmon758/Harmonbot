@@ -37,13 +37,13 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch(self, ctx):
 		'''Twitch'''
-		pass
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@twitch.group(name = "add", invoke_without_command = True)
 	@checks.is_permitted()
 	async def twitch_add(self, ctx):
 		'''Add Twitch games, keywords, or channels to follow'''
-		pass
+		await ctx.invoke(self.bot.get_command("help"), "twitch", ctx.invoked_with)
 	
 	@twitch_add.command(name = "filter")
 	@checks.is_permitted()
@@ -111,7 +111,7 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_remove(self, ctx):
 		'''Remove Twitch games, keywords, or channels being followed'''
-		pass
+		await ctx.invoke(self.bot.get_command("help"), "twitch", ctx.invoked_with)
 	
 	@twitch_remove.command(name = "filter")
 	@checks.is_permitted()

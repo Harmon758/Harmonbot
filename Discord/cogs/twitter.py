@@ -88,7 +88,7 @@ class Twitter:
 	@checks.is_permitted()
 	async def twitter(self, ctx):
 		'''Twitter'''
-		pass
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@twitter.command(name = "status")
 	@checks.not_forbidden()
