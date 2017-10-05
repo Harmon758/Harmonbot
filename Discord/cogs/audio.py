@@ -79,7 +79,6 @@ class Audio:
 			await ctx.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join", footer_text = "In response to: {}".format(ctx.message.content))
 		else:
 			await ctx.embed_reply(":arrow_right_hook: I've moved to the voice channel" if moved else ":headphones: I've joined the voice channel")
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command()
 	@commands.guild_only()
@@ -184,7 +183,6 @@ class Audio:
 		else:
 			await ctx.embed_reply(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
 			del songs
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(aliases = ["repeat"])
 	@commands.guild_only()
@@ -232,7 +230,6 @@ class Audio:
 		'''Empty the queue'''
 		await self.players[ctx.guild.id].empty_queue()
 		await ctx.embed_reply(":wastebasket: Emptied queue")
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command()
 	@commands.guild_only()
@@ -310,7 +307,6 @@ class Audio:
 		if self.players[ctx.guild.id].radio_flag:
 			self.players[ctx.guild.id].radio_off()
 			await ctx.embed_reply(":stop_sign: Turned radio off")
-			await self.bot.attempt_delete_message(ctx.message)
 		else:
 			await ctx.embed_reply(":no_entry: Radio is already off")
 	
@@ -322,7 +318,6 @@ class Audio:
 		'''Set text channel for messages'''
 		self.players[ctx.guild.id].text_channel = ctx.channel
 		await ctx.embed_reply(":writing_hand::skin-tone-2: Changed text channel")
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(invoke_without_command = True)
 	@commands.guild_only()
@@ -385,7 +380,6 @@ class Audio:
 			await ctx.embed_reply(":stop_sign: Stopped playing songs from my library")
 		elif not (await self.players[ctx.guild.id].play_library(ctx.author, ctx.message.created_at)):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@library.command(name = "play", aliases = ["start"])
 	@commands.guild_only()
@@ -409,7 +403,6 @@ class Audio:
 			await ctx.embed_reply(":stop_sign: Stopped playing songs from my library")
 		else:
 			await ctx.embed_reply(":no_entry: Not currently playing songs from my library", footer_text = "In response to: {}".format(ctx.message.content))
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@library.command(name = "song")
 	@commands.guild_only()
@@ -474,7 +467,6 @@ class Audio:
 				if volume_setting > 2000: volume_setting = 2000
 				elif volume_setting < 0: volume_setting = 0
 				await ctx.embed_reply(":sound: Set volume to {:g}".format(volume_setting))
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@volume.command(name = "default")
 	@commands.guild_only()
@@ -492,7 +484,6 @@ class Audio:
 			elif volume_setting < 0: volume_setting = 0
 			self.players[ctx.guild.id].default_volume = volume_setting
 			await ctx.embed_reply(":sound: Set default volume to {:g}".format(volume_setting))
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(aliases = ["current"], invoke_without_command = True)
 	@commands.guild_only()

@@ -156,7 +156,6 @@ class Meta:
 		'''Disable a command'''
 		self.bot.all_commands[command].enabled = False
 		await ctx.embed_reply("`{}{}` has been disabled".format(ctx.prefix, command))
-		await self.bot.delete_message(ctx.message)
 	
 	@commands.command()
 	@checks.is_owner()
@@ -164,7 +163,6 @@ class Meta:
 		'''Enable a command'''
 		self.bot.all_commands[command].enabled = True
 		await ctx.embed_reply("`{}{}` has been enabled".format(ctx.prefix, command))
-		await self.bot.delete_message(ctx.message)
 	
 	@commands.command()
 	async def points(self, ctx):
