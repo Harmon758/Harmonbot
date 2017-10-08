@@ -1,0 +1,9 @@
+# http://EditorConfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Set indentation tab size to 4
+[*.{go,py}]
+indent_style = tab
+indent_size = 4
