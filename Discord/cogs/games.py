@@ -1018,7 +1018,7 @@ class Games:
 		value = random.choice(("rock", "paper", "scissors"))
 		short_shape = object[0].lower()
 		resolution = {'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}}
-		emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:"}
+		emotes = {'r': ":fist:", 'p': ":raised_hand:", 's': ":v:"}
 		if value[0] == short_shape:
 			await ctx.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
 		elif short_shape in resolution[value[0]]:
@@ -1039,7 +1039,7 @@ class Games:
 			value = random.choice(("rock", "paper", "scissors", "lizard", "Spock"))
 			short_shape = 'S' if object[0] == 'S' and object.lower() != "scissors" or object.lower() == "spock" else object[0].lower()
 			resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 'S': {'r': "vaporizes", 's': "smashes"}}
-			emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:", 'l': ":lizard:", 'S': ":vulcan::skin-tone-2:"}
+			emotes = {'r': ":fist:", 'p': ":raised_hand:", 's': ":v:", 'l': ":lizard:", 'S': ":vulcan:"}
 			if value[0] == short_shape:
 				await ctx.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
 			elif short_shape in resolution[value[0]]:
@@ -1068,7 +1068,7 @@ class Games:
 			"batman": {"rock": "explodes", "scissors": "dismantles", "spiderman": "scares", "spock": "hangs"}, 
 			"wizard": {"paper": "burns", "lizard": "transforms", "batman": "stuns", "glock": "melts"}, 
 			"glock": {"rock": "breaks", "scissors": "dents", "batman": "kills parents of", "spock": "shoots"}}
-			emotes = {"rock": ":fist::skin-tone-2:", "paper": ":raised_hand::skin-tone-2:", "scissors": ":v::skin-tone-2:", "lizard": ":lizard:", "spock": ":vulcan::skin-tone-2:", "spiderman": ":spider:", "batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
+			emotes = {"rock": ":fist:", "paper": ":raised_hand:", "scissors": ":v:", "lizard": ":lizard:", "spock": ":vulcan:", "spiderman": ":spider:", "batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
 			standard_value = value.lower().replace('-', "")
 			if standard_value == object:
 				await ctx.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
@@ -1111,7 +1111,7 @@ class Games:
 		object = object.lower().replace('.', "").replace("video game", "game")
 		# dynamite: outwits gun
 		# tornado: sweeps away -> blows away, fills pit, ruins camera
-		emotes = {"dynamite": ":boom:", "tornado": ":cloud_tornado:", "quicksand": "quicksand", "pit": ":black_circle:", "chain": ":chains:", "gun": ":gun:", "law": ":scales:", "whip": "whip", "sword": ":crossed_swords:", "rock": ":fist::skin-tone-2:", "death": ":skull:", "wall": "wall", "sun": ":sunny:", "camera": ":camera:", "fire": ":fire:", "chainsaw": "chainsaw", "school": ":school:", "scissors": ":scissors:", "poison": "poison", "cage": "cage", "axe": "axe", "peace": ":peace:", "computer": ":computer:", "castle": ":european_castle:", "snake": ":snake:", "blood": "blood", "porcupine": "porcupine", "vulture": "vulture", "monkey": ":monkey:", "king": "king", "queen": "queen", "prince": "prince", "princess": "princess", "police": ":police_car:", "woman": ":woman::skin-tone-2:", "baby": ":baby::skin-tone-2:", "man": ":man::skin-tone-2:", "home": ":homes:", "train": ":train:", "car": ":red_car:", "noise": "noise", "bicycle": ":bicyclist::skin-tone-2:", "tree": ":evergreen_tree:", "turnip": "turnip", "duck": ":duck:", "wolf": ":wolf:", "cat": ":cat:", "bird": ":bird:", "fish": ":fish:", "spider": ":spider:", "cockroach": "cockroach", "brain": "brain", "community": "community", "cross": ":cross:", "money": ":moneybag:", "vampire": "vampire", "sponge": "sponge", "church": ":church:", "butter": "butter", "book": ":book:", "paper": ":raised_hand::skin-tone-2:", "cloud": ":cloud:", "airplane": ":airplane:", "moon": ":full_moon:", "grass": "grass", "film": ":film_frames:", "toilet": ":toilet:", "air": "air", "planet": "planet", "guitar": ":guitar:", "bowl": "bowl", "cup": "cup", "beer": ":beer:", "rain": ":cloud_rain:", "water": ":potable_water:", "tv": ":tv:", "rainbow": ":rainbow:", "ufo": "ufo", "alien": ":alien:", "prayer": ":pray::skin-tone-2:", "mountain": ":mountain:", "satan": "satan", "dragon": ":dragon:", "diamond": "diamond", "platinum": "platinum", "gold": "gold", "devil": "devil", "fence": "fence", "game": ":video_game:", "math": "math", "robot": ":robot:", "heart": ":heart:", "electricity": ":zap:", "lightning": ":cloud_lightning:", "medusa": "medusa", "power": ":electric_plug:", "laser": "laser", "nuke": ":bomb:", "sky": "sky", "tank": "tank", "helicopter": ":helicopter:"}
+		emotes = {"dynamite": ":boom:", "tornado": ":cloud_tornado:", "quicksand": "quicksand", "pit": ":black_circle:", "chain": ":chains:", "gun": ":gun:", "law": ":scales:", "whip": "whip", "sword": ":crossed_swords:", "rock": ":fist:", "death": ":skull:", "wall": "wall", "sun": ":sunny:", "camera": ":camera:", "fire": ":fire:", "chainsaw": "chainsaw", "school": ":school:", "scissors": ":scissors:", "poison": "poison", "cage": "cage", "axe": "axe", "peace": ":peace:", "computer": ":computer:", "castle": ":european_castle:", "snake": ":snake:", "blood": "blood", "porcupine": "porcupine", "vulture": "vulture", "monkey": ":monkey:", "king": "king", "queen": "queen", "prince": "prince", "princess": "princess", "police": ":police_car:", "woman": ":woman:", "baby": ":baby:", "man": ":man:", "home": ":homes:", "train": ":train:", "car": ":red_car:", "noise": "noise", "bicycle": ":bicyclist:", "tree": ":evergreen_tree:", "turnip": "turnip", "duck": ":duck:", "wolf": ":wolf:", "cat": ":cat:", "bird": ":bird:", "fish": ":fish:", "spider": ":spider:", "cockroach": "cockroach", "brain": "brain", "community": "community", "cross": ":cross:", "money": ":moneybag:", "vampire": "vampire", "sponge": "sponge", "church": ":church:", "butter": "butter", "book": ":book:", "paper": ":raised_hand:", "cloud": ":cloud:", "airplane": ":airplane:", "moon": ":full_moon:", "grass": "grass", "film": ":film_frames:", "toilet": ":toilet:", "air": "air", "planet": "planet", "guitar": ":guitar:", "bowl": "bowl", "cup": "cup", "beer": ":beer:", "rain": ":cloud_rain:", "water": ":potable_water:", "tv": ":tv:", "rainbow": ":rainbow:", "ufo": "ufo", "alien": ":alien:", "prayer": ":pray:", "mountain": ":mountain:", "satan": "satan", "dragon": ":dragon:", "diamond": "diamond", "platinum": "platinum", "gold": "gold", "devil": "devil", "fence": "fence", "game": ":video_game:", "math": "math", "robot": ":robot:", "heart": ":heart:", "electricity": ":zap:", "lightning": ":cloud_lightning:", "medusa": "medusa", "power": ":electric_plug:", "laser": "laser", "nuke": ":bomb:", "sky": "sky", "tank": "tank", "helicopter": ":helicopter:"}
 		'''
 		for _object in emotes:
 			if _object == emotes[_object]:
