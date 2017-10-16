@@ -63,9 +63,8 @@ class Search:
 		ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
 		func = functools.partial(ydl.extract_info, search, download = False)
 		info = await self.bot.loop.run_in_executor(None, func)
-		if "entries" in info:
-			info = info["entries"][0]
-		await self.bot.reply(info.get("webpage_url"))
+		if "entries" in info: info = info["entries"][0]
+		await ctx.reply(info.get("webpage_url"))
 	
 	@youtube.error
 	async def youtube_error(self, error, ctx):
