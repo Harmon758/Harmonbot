@@ -207,7 +207,7 @@ class Search:
 		elif "invalid" in page:
 			await ctx.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
 		elif redirect and "redirects" in data["query"]:
-			await self.process_wikipedia(data["query"]["redirects"][-1]["to"], redirect = False)
+			await self.process_uesp(ctx, data["query"]["redirects"][-1]["to"], redirect = False)
 			# TODO: Handle section links/tofragments
 		else:
 			description = page["revisions"][0]['*']
