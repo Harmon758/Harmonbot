@@ -240,6 +240,7 @@ class Search:
 	
 	async def process_wikipedia(self, ctx, search, random = False, redirect = True):
 		# TODO: Add User-Agent
+		# TODO: use textwrap
 		if random:
 			async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": 0, "format": "json"}) as resp:
 				data = await resp.json()
@@ -314,20 +315,20 @@ class Search:
 				if not text_output:
 					await ctx.embed_reply(title = pod.title, image_url = images[0])
 					for image in images[1:]:
-						await self.bot.embed_say(None, image_url = image)
+						await ctx.embed_say(None, image_url = image)
 				else:
 					for i, link in enumerate(images):
 						images[i] = await self._shorturl(link)
 					output = ("**{}** ({})".format(pod.title, ', '.join(images)))
 					output += "".join(text_output)
-					await self.bot.reply(output)
+					await ctx.reply(output)
 			if result.timedout:
 				await ctx.embed_reply("Some results timed out: {}".format(result.timedout.replace(',', ", ")))
 		elif result.timedout:
 			await ctx.embed_reply("Standard computation time exceeded")
 		else:
 			await ctx.embed_reply(":no_entry: No results found")
-		# await self.bot.reply(next(result.results).text)
+		# await ctx.reply(next(result.results).text)
 	
 	@commands.command()
 	@checks.not_forbidden()
