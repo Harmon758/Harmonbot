@@ -18,10 +18,10 @@ import random
 import string
 import xml.etree.ElementTree
 
-from utilities import checks
 import clients
 import credentials
 from modules import utilities
+from utilities import checks
 
 def setup(bot):
 	bot.add_cog(Random(bot))
@@ -224,6 +224,36 @@ class Random:
 	async def day(self, ctx):
 		'''Random day of week'''
 		await ctx.embed_reply(random.choice(calendar.day_name))
+	
+	@commands.group(invoke_without_command = True)
+	@checks.not_forbidden()
+	async def dog(self, ctx, *, breed : str = ""):
+		'''
+		Random image of a dog
+		[breed] [sub-breed] to specify a specific sub-breed
+		'''
+		if breed:
+			async with clients.aiohttp_session.get("https://dog.ceo/api/breed/{}/images/random".format(breed.lower().replace(' ', '/'))) as resp:
+				data = await resp.json()
+			if data["status"] == "error":
+				await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			else:
+				await ctx.embed_reply("[:dog2:]({})".format(data["message"]), image_url = data["message"])
+		else:
+			async with clients.aiohttp_session.get("https://dog.ceo/api/breeds/image/random") as resp:
+				data = await resp.json()
+			await ctx.embed_reply("[:dog2:]({})".format(data["message"]), image_url = data["message"])
+	
+	@dog.command(name = "breeds", aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"])
+	@checks.not_forbidden()
+	async def dog_breeds(self, ctx):
+		'''Breeds and sub-breeds of dogs for which images are categorized under'''
+		async with clients.aiohttp_session.get("https://dog.ceo/api/breeds/list/all") as resp:
+			data = await resp.json()
+		breeds = data["message"]
+		for breed in breeds:
+			breeds[breed] = " ({})".format(", ".join(sub.capitalize() for sub in breeds[breed])) if breeds[breed] else ""
+		await ctx.embed_reply(", ".join("**{}**{}".format(breed.capitalize(), breeds[breed]) for breed in breeds), footer_text = "Sub-breeds are in parentheses after the corresponding breed")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
