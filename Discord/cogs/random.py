@@ -175,6 +175,12 @@ class Random:
 			else:
 				await ctx.embed_reply("[:cat:]({})".format(url), image_url = url)
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def command(self, ctx):
+		'''Random command'''
+		await ctx.embed_reply("{}{}".format(ctx.prefix, random.choice(tuple(set(command.name for command in self.bot.commands)))))
+	
 	@commands.command(aliases = ["die", "roll"])
 	@checks.not_forbidden()
 	async def dice(self, ctx, *, input : str = '6'):
@@ -206,12 +212,6 @@ class Random:
 				await ctx.embed_reply(":no_entry: Invalid input")
 			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
 				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def command(self, ctx):
-		'''Random command'''
-		await ctx.embed_reply("{}{}".format(ctx.prefix, random.choice(tuple(set(command.name for command in self.bot.commands.values())))))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
