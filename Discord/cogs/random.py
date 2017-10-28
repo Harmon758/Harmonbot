@@ -9,6 +9,7 @@ import concurrent.futures
 import csv
 import datetime
 import dice
+import emoji
 import inspect
 import json
 import multiprocessing
@@ -254,6 +255,13 @@ class Random:
 		for breed in breeds:
 			breeds[breed] = " ({})".format(", ".join(sub.capitalize() for sub in breeds[breed])) if breeds[breed] else ""
 		await ctx.embed_reply(", ".join("**{}**{}".format(breed.capitalize(), breeds[breed]) for breed in breeds), footer_text = "Sub-breeds are in parentheses after the corresponding breed")
+	
+	@commands.command(aliases = ["emoji"])
+	@checks.not_forbidden()
+	async def emote(self, ctx):
+		'''Random emote/emoji'''
+		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI)).replace(' ', ""))
+		# wait for pypi update for https://github.com/carpedm20/emoji/commit/b93de0dfb165c1de4051f6cd6b9ead174ab6c0e2
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
