@@ -345,7 +345,7 @@ class Random:
 		# Sources:
 		# https://github.com/KiaFathi/tambalAPI
 		# https://www.kaggle.com/abhinavmoudgil95/short-jokes (https://github.com/amoudgl/short-jokes-dataset)
-		await ctx.embed_reply(random.choice(self.jokes))
+		if self.jokes: await ctx.embed_reply(random.choice(self.jokes))
 	
 	@joke.group(name = "dad", invoke_without_command = True)
 	@checks.not_forbidden()
