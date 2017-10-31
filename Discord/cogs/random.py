@@ -373,6 +373,12 @@ class Random:
 			joke_id = data["id"]
 		await ctx.embed_reply(image_url = "https://icanhazdadjoke.com/j/{}.png".format(joke_id))
 	
+	@commands.command(aliases = ["lat"])
+	@checks.not_forbidden()
+	async def latitude(self, ctx):
+		'''Random latitude'''
+		await ctx.embed_reply(str(random.uniform(-90, 90)))
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def letter(self, ctx):
@@ -384,6 +390,12 @@ class Random:
 	async def location(self, ctx):
 		'''Random location'''
 		await ctx.embed_reply("{}, {}".format(random.uniform(-90, 90), random.uniform(-180, 180)))
+	
+	@commands.command(aliases = ["long"])
+	@checks.not_forbidden()
+	async def longitude(self, ctx):
+		'''Random longitude'''
+		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
 	@commands.group(aliases = ["rng"], invoke_without_command = True)
 	@checks.not_forbidden()
