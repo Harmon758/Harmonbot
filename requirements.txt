@@ -34,7 +34,7 @@ git+git://github.com/tweepy/tweepy.git@80015db
 wand==0.4.4
 wolframalpha==3.0
 wordnik-py3==2.1.2
-youtube_dl==2017.10.20
+youtube_dl==2017.10.29
 
 async-timeout==2.0.0
 certifi==2017.7.27.1
