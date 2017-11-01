@@ -3,13 +3,10 @@ import discord
 from discord.ext import commands
 
 import asyncio
-import concurrent.futures
 import difflib
 import json
-import math
 import matplotlib
 import moviepy.editor
-import multiprocessing
 import numexpr
 import numpy
 import pandas
@@ -17,7 +14,6 @@ import random
 import re
 import seaborn
 # import subprocess
-import sympy
 import time
 import unicodedata
 import urllib
@@ -39,80 +35,6 @@ class Tools:
 		clients.create_file("tags", content = {"global": {}})
 		with open(clients.data_path + "/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def add(self, ctx, *numbers : float):
-		'''Add numbers together'''
-		if not numbers:
-			await ctx.embed_reply("Add what?")
-			return
-		await ctx.embed_reply("{} = {:g}".format(" + ".join("{:g}".format(number) for number in numbers), sum(numbers)))
-	
-	@commands.command(aliases = ["calc", "calculator"])
-	@checks.not_forbidden()
-	async def calculate(self, ctx, *, equation : str):
-		'''Calculator'''
-		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
-		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
-		allowed = set("0123456789.+-*/^%()")
-		for key, value in replacements.items():
-			equation = equation.replace(key, value)
-		equation = "".join(character for character in equation if character in allowed)
-		print("Calculated " + equation)
-		with multiprocessing.Pool(1) as pool:
-			async_result = pool.apply_async(eval, (equation,))
-			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
-			try:
-				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
-				await ctx.embed_reply("{} = {}".format(equation, result))
-			except discord.errors.HTTPException:
-				await ctx.embed_reply(":no_entry: Output too long")
-			except SyntaxError:
-				await ctx.embed_reply(":no_entry: Syntax error")
-			except ZeroDivisionError:
-				await ctx.embed_reply(":no_entry: Error: Division by zero")
-			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
-				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
-	
-	@commands.command(aliases = ["differ", "derivative", "differentiation"])
-	@checks.not_forbidden()
-	async def differentiate(self, ctx, *, equation : str):
-		'''
-		Differentiate an equation
-		with respect to x (dx)
-		'''
-		x = sympy.symbols('x')
-		try:
-			await ctx.embed_reply("`{}`".format(sympy.diff(equation.strip('`'), x)), title = "Derivative of {}".format(equation))
-		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
-	
-	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
-	@checks.not_forbidden()
-	async def integrate(self, ctx, *, equation : str):
-		'''
-		Integrate an equation
-		with respect to x (dx)
-		'''
-		x = sympy.symbols('x')
-		try:
-			await ctx.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), x)), title = "Integral of {}".format(equation))
-		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
-	
-	@integrate.command(name = "definite")
-	@checks.not_forbidden()
-	async def integrate_definite(self, ctx, lower_limit : str, upper_limit : str, *, equation : str):
-		'''
-		Definite integral of an equation
-		with respect to x (dx)
-		'''
-		x = sympy.symbols('x')
-		try:
-			await ctx.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))), title = "Definite Integral of {} from {} to {}".format(equation, lower_limit, upper_limit))
-		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
 	
 	@commands.command(aliases = ["charinfo", "char_info", "character_info"])
 	@checks.not_forbidden()
