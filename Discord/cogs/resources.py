@@ -15,11 +15,11 @@ import pyowm.exceptions
 import unicodedata
 import urllib
 
+import clients
 import credentials
 from modules import utilities
 from utilities import checks
 from utilities import errors
-import clients
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -117,6 +117,19 @@ class Resources:
 				data = await resp.json()
 			url = "https://www.dotabuff.com/players/{}".format(int(data["response"]["steamid"]) - 76561197960265728)
 		await ctx.embed_reply(title = "{}'s Dotabuff profile".format(account), title_url = url)
+	
+	@commands.command()
+	@checks.not_forbidden()
+	async def gender(self, ctx, name : str):
+		'''Gender of a name'''
+		# TODO: add localization options?
+		async with clients.aiohttp_session.get("https://api.genderize.io/", params = {"name": name}) as resp:
+			# TODO: check status code
+			data = await resp.json()
+		if not data["gender"]:
+			await ctx.embed_reply("Gender: Unknown", title = data["name"].capitalize())
+		else:
+			await ctx.embed_reply("Gender: {}".format(data["gender"]), title = data["name"].capitalize(), footer_text = "Probability: {}% ({} data entries examined)".format(int(data["probability"] * 100), data["count"]))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
