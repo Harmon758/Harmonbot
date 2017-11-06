@@ -166,6 +166,14 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def hastebin(self, ctx, *, contents : str):
+		'''Hastebin'''
+		async with clients.aiohttp_session.post("https://hastebin.com/documents", data = contents) as resp:
+			data = await resp.json()
+		await ctx.embed_reply("https://hastebin.com/" + data["key"])
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def haveibeenpwned(self, ctx, name : str):
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/{0}?truncateResponse=true".format(name)
