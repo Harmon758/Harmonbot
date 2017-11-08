@@ -180,7 +180,7 @@ class Tools:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
 	
-	@tag.command(name = "expunge", pass_context = True)
+	@tag.command(name = "expunge")
 	@checks.is_owner()
 	async def tag_expunge(self, ctx, owner : discord.Member, tag : str):
 		'''Delete someone else's tags'''
