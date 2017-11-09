@@ -272,7 +272,6 @@ class Meta:
 	@commands.command()
 	async def stats(self, ctx):
 		'''Bot stats'''
-		from clients import session_commands_executed, session_commands_usage
 		with open(clients.data_path + "/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		
@@ -288,7 +287,7 @@ class Meta:
 		voice_count = channel_types.count(discord.ChannelType.voice)
 		total_uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
 		top_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)
-		session_top_5 = sorted(session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
+		session_top_5 = sorted(self.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		in_voice_count = len(self.bot.cogs["Audio"].players)
 		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
 		
@@ -299,7 +298,7 @@ class Meta:
 		embed.add_field(name = "Recorded Restarts", value = "{:,}".format(stats["restarts"])) ## since 2016-04-17, fixed 2016-05-10
 		embed.add_field(name = "Main Commands", value = len(set(self.bot.commands.values())))
 		embed.add_field(name = "Commands Executed", 
-			value = "{} this session\n{:,} total recorded".format(session_commands_executed, stats["commands_executed"])) 
+			value = "{} this session\n{:,} total recorded".format(self.bot.session_commands_executed, stats["commands_executed"])) 
 			# since 2016-06-10 (cog commands)
 		embed.add_field(name = "Cogs Reloaded", value = "{:,}".format(stats["cogs_reloaded"])) ## since 2016-06-10 - implemented cog reloading
 		# TODO: cogs reloaded this session

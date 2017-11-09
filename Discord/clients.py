@@ -35,8 +35,6 @@ delete_limit = 10000
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
-session_commands_executed = 0
-session_commands_usage = {}
 aiml_kernel = aiml.Kernel()
 aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
@@ -80,6 +78,10 @@ class Bot(commands.Bot):
 		self.twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
 		self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 		
+		# Variables
+		self.session_commands_executed = 0
+		self.session_commands_usage = {}
+		
 		# External Clients
 		## Clarifai
 		self.clarifai_app = clarifai.rest.ClarifaiApp(app_id = credentials.clarifai_api_id, app_secret = credentials.clarifai_api_secret)
@@ -102,6 +104,12 @@ class Bot(commands.Bot):
 	
 	async def on_resumed(self):
 		print("{}resumed @ {}".format(self.console_message_prefix, datetime.datetime.now().time().isoformat()))
+	
+	# TODO: on_command_completion
+	# TODO: optimize
+	async def on_command(self, ctx):
+		self.session_commands_executed += 1
+		self.session_commands_usage[ctx.command.name] = self.session_commands_usage.get(ctx.command.name, 0) + 1
 	
 	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
@@ -198,12 +206,6 @@ async def on_guild_join(guild):
 @client.listen()
 async def on_guild_remove(guild):
 	await _update_discord_bots_stats()
-
-@client.listen()
-async def on_command(ctx):
-	global session_commands_executed, session_commands_usage
-	session_commands_executed += 1
-	session_commands_usage[ctx.command.name] = session_commands_usage.get(ctx.command.name, 0) + 1
 
 
 # Download FFMPEG
