@@ -72,8 +72,10 @@ class RSS:
 				await ctx.embed_reply("\n".join(channel["feeds"]))
 	
 	async def check_rss_feeds(self):
+		# TODO: use textwrap
+		# TODO: new embed limits?
 		await self.bot.wait_until_ready()
-		while not self.bot.is_closed:
+		while not self.bot.is_closed():
 			try:
 				start = time.time()
 				for channel in self.feeds_info["channels"]:

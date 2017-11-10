@@ -221,7 +221,7 @@ class Twitch:
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			return
-		while not self.bot.is_closed:
+		while not self.bot.is_closed():
 			try:
 				stream_ids = []
 				# Games

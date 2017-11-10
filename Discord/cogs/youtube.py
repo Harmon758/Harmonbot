@@ -98,7 +98,7 @@ class Youtube:
 					announcement[1] = discord.Embed(title = announcement[1]["title"], description = announcement[1].get("description"), url = announcement[1]["url"], timestamp = dateutil.parser.parse(announcement[1]["timestamp"]), color = announcement[1]["color"]).set_thumbnail(url = announcement[1]["thumbnail"]["url"]).set_author(name = announcement[1]["author"]["name"], url = announcement[1]["author"]["url"], icon_url = announcement[1]["author"]["icon_url"])
 					del announcement[2]
 		## os.remove(clients.data_path + "/temp/youtube_streams_announced.json")
-		while not self.bot.is_closed:
+		while not self.bot.is_closed():
 			try:
 				channel_ids = set(itertools.chain(*[channel["channel_ids"] for channel in self.streams_info["channels"].values()]))
 				video_ids = []
