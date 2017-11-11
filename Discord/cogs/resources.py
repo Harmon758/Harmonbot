@@ -41,7 +41,7 @@ class Resources:
 			return
 		await ctx.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
 	
-	@commands.group(aliases = ["blizzard"], invoke_without_command = True)
+	@commands.group(aliases = ["blizzard", "battle.net"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def battlenet(self, ctx):
 		'''Battle.net'''
