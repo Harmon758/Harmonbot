@@ -87,6 +87,15 @@ class Misc:
 			await loading_message.edit(embed = embed)
 	
 	@commands.command()
+	@checks.not_forbidden()
+	async def lorem(self, ctx):
+		'''Lorem Ipsum generator'''
+		# TODO: add options?
+		async with clients.aiohttp_session.get("http://loripsum.net/api/plaintext") as resp:
+			data = await resp.text()
+		await ctx.embed_reply(data)
+	
+	@commands.command()
 	async def ping(self, ctx):
 		'''Basic ping - pong command'''
 		await ctx.embed_reply("pong")
