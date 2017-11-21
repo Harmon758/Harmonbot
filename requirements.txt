@@ -17,7 +17,7 @@ moviepy==0.2.2.13
 numexpr==2.6.4
 numpy==1.13.3
 # +mkl
-pandas==0.20.3
+pandas==0.21.0
 psutil==5.2.2
 git+git://github.com/Harmon758/Py3kAiml.git
 pydealer==1.4.0
