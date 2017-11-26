@@ -51,7 +51,7 @@ imageio==2.2.0
 jaraco.itertools==2.0.1
 jsonschema==2.6.0
 more-itertools==3.1.0
-mpmath==0.19
+mpmath==1.0.0
 multidict==3.3.2
 oauthlib==2.0.1
 olefile==0.44
