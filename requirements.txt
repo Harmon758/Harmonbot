@@ -53,7 +53,7 @@ jsonschema==2.6.0
 more-itertools==3.1.0
 mpmath==1.0.0
 multidict==3.3.2
-oauthlib==2.0.1
+oauthlib==2.0.6
 olefile==0.44
 pillow==4.2.1
 pycparser==2.18
