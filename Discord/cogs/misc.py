@@ -10,6 +10,20 @@ from utilities import checks
 import clients
 
 def setup(bot):
+	
+	def emote_wrapper(name, emote = None):
+		if emote is None: emote = name
+		@commands.command(name = name, help = name.capitalize() + " emote")
+		@checks.not_forbidden()
+		async def emote_command(self, ctx):
+			await ctx.embed_reply(":{}:".format(emote))
+		return emote_command
+	
+	for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc", "horse"):
+		setattr(Misc, emote, emote_wrapper(emote))
+	setattr(Misc, "bunny", emote_wrapper("bunny", emote = "rabbit2"))
+	setattr(Misc, "cow", emote_wrapper("cow", emote = "cow2"))
+	
 	bot.add_cog(Misc(bot))
 
 class Misc:
@@ -122,17 +136,4 @@ class Misc:
 			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[to_poke.id]))
 			await self.bot.send_message(to_poke, embed = embed)
 			await ctx.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[to_poke.id])), footer_text = "In response to: {}".format(ctx.message.clean_content))
-
-def emote_wrapper(name, emote = None):
-	if emote is None: emote = name
-	@commands.command(name = name, help = name.capitalize() + " emote")
-	@checks.not_forbidden()
-	async def emote_command(self, ctx):
-		await ctx.embed_reply(":{}:".format(emote))
-	return emote_command
-
-for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc", "horse"):
-	setattr(Misc, emote, emote_wrapper(emote))
-setattr(Misc, "bunny", emote_wrapper("bunny", emote = "rabbit2"))
-setattr(Misc, "cow", emote_wrapper("cow", emote = "cow2"))
 
