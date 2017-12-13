@@ -323,16 +323,15 @@ class Games:
 		player_total = self.blackjack_total(player.cards)
 		response = await ctx.embed_reply("Dealer: {} (?)\n{}: {} ({})\n".format(dealer_string, ctx.author.display_name, player_string, player_total), title = "Blackjack", footer_text = "Hit or Stay?")
 		embed = response.embeds[0]
-		await self.bot.attempt_delete_message(ctx.message)
 		while True:
-			action = await self.bot.wait_for_message(author = ctx.author, check = lambda msg: msg.content.lower().strip('!') in ("hit", "stay"))
+			action = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.content.lower().strip('!') in ("hit", "stay"))
 			await self.bot.attempt_delete_message(action)
 			if action.content.lower().strip('!') == "hit":
 				player.add(deck.deal())
 				player_string = self.cards_to_string(player.cards)
 				player_total = self.blackjack_total(player.cards)
 				embed.description = "Dealer: {} (?)\n{}: {} ({})\n".format(dealer_string, ctx.author.display_name, player_string, player_total)
-				await self.bot.edit_message(response, embed = embed)
+				await response.edit(embed = embed)
 				if player_total > 21:
 					embed.description += ":boom: You have busted"
 					embed.set_footer(text = "You lost :(")
@@ -349,14 +348,14 @@ class Games:
 					embed.set_footer(text = "You lost :(")
 					break
 				embed.set_footer(text = "Dealer's turn..")
-				await self.bot.edit_message(response, embed = embed)
+				await response.edit(embed = embed)
 				while True:
 					await asyncio.sleep(5)
 					dealer.add(deck.deal())
 					dealer_string = self.cards_to_string(dealer.cards)
 					dealer_total = self.blackjack_total(dealer.cards)
 					embed.description = "Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.author.display_name, player_string, player_total)
-					await self.bot.edit_message(response, embed = embed)
+					await response.edit(embed = embed)
 					if dealer_total > 21:
 						embed.description += ":boom: The dealer busted"
 						embed.set_footer(text = "You win!")
@@ -369,7 +368,7 @@ class Games:
 						embed.set_footer(text = "It's a push (tie)")
 						break
 				break
-		await self.bot.edit_message(response, embed = embed)
+		await response.edit(embed = embed)
 	
 	def blackjack_total(self, cards):
 		total = sum(self.blackjack_ranks["values"][card.value] for card in cards)
