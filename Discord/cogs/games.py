@@ -414,7 +414,7 @@ class Games:
 		# prompt for opponent
 		if not opponent:
 			await ctx.embed_reply("Who would you like to play?")
-			message = await self.bot.wait_for_message(author = ctx.author, channel = ctx.channel)
+			message = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel)
 			opponent = message.content
 		color = None
 		if opponent.lower() in ("harmonbot", "you"):
@@ -436,7 +436,7 @@ class Games:
 			color = 'w'
 		if not color:
 			await ctx.embed_reply("Would you like to play white, black, or random?")
-			message = await self.bot.wait_for_message(author = ctx.author, channel = ctx.channel, check = lambda msg: msg.content.lower() in ("white", "black", "random", 'w', 'b', 'r'))
+			message = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ("white", "black", "random", 'w', 'b', 'r'))
 			color = message.content.lower()
 		if color in ("random", 'r'):
 			color = random.choice(('w', 'b'))
@@ -448,10 +448,14 @@ class Games:
 			black_player = ctx.author
 		# prompt opponent
 		if opponent != self.bot.user and opponent != ctx.author:
-			await self.bot.say("{}: {} has challenged you to a chess match\nWould you like to accept? Yes/No".format(opponent.mention, ctx.author))
-			message = await self.bot.wait_for_message(author = opponent, channel = ctx.channel, check = lambda msg: msg.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
-			if not message or message.content.lower() in ("no", 'n'):
-				await self.bot.say("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
+			await ctx.send("{}: {} has challenged you to a chess match\nWould you like to accept? Yes/No".format(opponent.mention, ctx.author))
+			try:
+				message = await self.bot.wait_for("message", check = lambda m: m.author == opponent and m.channel == ctx.channel and m.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
+			except asyncio.TimeoutError:
+				await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
+				return
+			if message.content.lower() in ("no", 'n'):
+				await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
 				return
 		match = chess_match()
 		match.initialize(self.bot, ctx.channel, white_player, black_player)
@@ -479,7 +483,7 @@ class Games:
 		if not match:
 			await ctx.embed_reply(":no_entry: Chess match not found")
 			return
-		await self.bot.reply(clients.code_block.format(match))
+		await ctx.reply(clients.code_block.format(match))
 	
 	@chess.command(name = "fen")
 	async def chess_fen(self, ctx):
@@ -547,7 +551,7 @@ class Games:
 	async def chess_flip(self, ctx):
 		'''Flip the table over'''
 		self._chess_board.clear()
-		await self.bot.say(ctx.author.name + " flipped the table over in anger!")
+		await ctx.say(ctx.author.name + " flipped the table over in anger!")
 	"""
 	
 	@commands.command(aliases = ["talk", "ask"])
