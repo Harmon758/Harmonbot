@@ -639,23 +639,26 @@ class Games:
 			max_value = int(options[0])
 		else:
 			await ctx.embed_reply("What range of numbers would you like to guess to? 1 to _")
-			max_value = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.author, check = utilities.message_is_digit_gtz)
-			if max_value is None:
+			try:
+				max_value = await self.bot.wait_for("message", timeout = clients.wait_time, check = lambda m: m.author == ctx.author and utilities.message_is_digit_gtz(m))
+			except asyncio.TimeoutError:
 				max_value = 10
 			else:
 				max_value = int(max_value.content)
 		answer = random.randint(1, max_value)
 		if not tries:
 			await ctx.embed_reply("How many tries would you like?")
-			tries = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.author, check = utilities.message_is_digit_gtz)
-			if tries is None:
+			try:
+				tries = await self.bot.wait_for("message", timeout = clients.wait_time, check = lambda m: m.author == ctx.author and utilities.message_is_digit_gtz(m))
+			except asyncio.TimeoutError:
 				tries = 1
 			else:
 				tries = int(tries.content)
 		await ctx.embed_reply("Guess a number between 1 to {}".format(max_value))
 		while tries != 0:
-			guess = await self.bot.wait_for_message(timeout = clients.wait_time, author = ctx.author, check = utilities.message_is_digit_gtz)
-			if guess is None:
+			try:
+				guess = await self.bot.wait_for("message", timeout = clients.wait_time, check = lambda m: m.author == ctx.author and utilities.message_is_digit_gtz(m))
+			except asyncio.TimeoutError:
 				await ctx.embed_reply("Sorry, you took too long\nIt was {}".format(answer))
 				return
 			if int(guess.content) == answer:
