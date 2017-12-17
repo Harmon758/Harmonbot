@@ -713,17 +713,17 @@ class Games:
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
-			await self.bot.embed_say("Category: " + string.capwords(data["title"]) + "\n" + data["clues"][value_index]["question"])
+			await ctx.embed_say("Category: " + string.capwords(data["title"]) + "\n" + data["clues"][value_index]["question"])
 			counter = int(clients.wait_time)
-			answer_message, embed = await self.bot.say("You have {} seconds left to answer".format(str(counter)))
+			answer_message, embed = await ctx.say("You have {} seconds left to answer".format(str(counter)))
 			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
 			while counter:
 				await asyncio.sleep(1)
 				counter -= 1
-				await self.bot.edit_message(answer_message, "You have {} seconds left to answer". format(str(counter)))
+				await answer_message.edit("You have {} seconds left to answer".format(counter))
 				if self.jeopardy_answered:
 					break
-			await self.bot.edit_message(answer_message, "Time's up!")
+			await answer_message.edit("Time's up!")
 			if self.jeopardy_answered:
 				if self.jeopardy_answered in self.jeopardy_scores:
 					self.jeopardy_scores[self.jeopardy_answered] += int(value)
@@ -742,13 +742,16 @@ class Games:
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "    " + self.jeopardy_board_output[clue_delete_cursor + 4:]
 			else:
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
-			await self.bot.embed_say("The answer was " + BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text() + "\n" + answered_message + "\n" + score_output + "\n```" + self.jeopardy_board_output + "```")
+			await ctx.embed_say("The answer was " + BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text() + "\n" + answered_message + "\n" + score_output + "\n```" + self.jeopardy_board_output + "```")
 			self.jeopardy_question_active = False
 	
 	async def jeopardy_wait_for_answer(self):
 		if self.jeopardy_question_active:
-			message = await self.bot.wait_for_message(timeout = clients.wait_time, check = lambda m: self.jeopardy_answer.lower() in [s + m.content.lower() for s in ["", "a ", "an ", "the "]] or m.content.lower() == BeautifulSoup(html.unescape(self.jeopardy_answer.lower()), "html.parser").get_text().lower())
-			if message and not message.content.startswith('>'):
+			try:
+				message = await self.bot.wait_for("message", timeout = clients.wait_time, check = lambda m: self.jeopardy_answer.lower() in [s + m.content.lower() for s in ["", "a ", "an ", "the "]] or m.content.lower() == BeautifulSoup(html.unescape(self.jeopardy_answer.lower()), "html.parser").get_text().lower())
+			except asyncio.TimeoutError:
+				return
+			if not message.content.startswith('>'):
 				self.jeopardy_answered = message.author
 	
 	#jeopardy stats
@@ -776,7 +779,7 @@ class Games:
 		self.jeopardy_max_width = max(len(category_title) for category_title in category_titles)
 		for category_title in category_titles:
 			self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
-		await self.bot.embed_say(clients.code_block.format(self.jeopardy_board_output))
+		await ctx.embed_say(clients.code_block.format(self.jeopardy_board_output))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
