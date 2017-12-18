@@ -812,22 +812,19 @@ class Games:
 			for cell in r:
 				row_print += cell + ' '
 			maze_print += row_print + "\n"
-		await self.bot.reply(clients.code_block.format(maze_print))
+		await ctx.reply(clients.code_block.format(maze_print))
 		'''
-		# await self.bot.reply(clients.code_block.format(repr(maze_instance)))
+		# await ctx.reply(clients.code_block.format(repr(maze_instance)))
 		convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
 		while not maze_instance.reached_end():
-			move = await self.bot.wait_for_message(check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel) # author = ctx.author
+			move = await self.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel) # author = ctx.author
 			moved = maze_instance.move(convert_move[move.content.lower()])
 			response = clients.code_block.format(maze_instance.print_visible())
 			if not moved:
 				response += "\n:no_entry: You can't go that way"
 			new_maze_message = await ctx.embed_reply(response)
-			try:
-				await self.bot.delete_message(move)
-				await self.bot.delete_message(maze_message)
-			except discord.errors.Forbidden:
-				pass
+			await self.bot.attempt_delete_message(move)
+			await self.bot.attempt_delete_message(maze_message)
 			maze_message = new_maze_message
 		await ctx.embed_reply("Congratulations! You reached the end of the maze in {} moves".format(maze_instance.move_counter))
 		del self.mazes[ctx.channel.id]
