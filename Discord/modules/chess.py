@@ -69,10 +69,7 @@ class chess_match(chess.Board):
 				self.make_move(message.content)
 				footer_text = discord.Embed.Empty if self.is_game_over() else "It is {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
 				await self.update_match_embed(footer_text = footer_text)
-				try:
-					await message.delete()
-				except discord.errors.Forbidden:
-					pass
+				await self.bot.attempt_delete_message(message)
 	
 	async def update_match_embed(self, *, flipped = None, footer_text = discord.Embed.Empty):
 		if flipped is None: flipped = not self.turn
