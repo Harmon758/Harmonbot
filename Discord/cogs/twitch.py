@@ -259,7 +259,7 @@ class Twitch:
 							embed.set_author(name = embed.author.name.replace("just went", "was"), url = embed.author.url, icon_url = embed.author.icon_url)
 							try:
 								await self.bot.edit_message(announcement[0], embed = embed)
-							except discord.errors.Forbidden:
+							except discord.Forbidden:
 								# Announcement was deleted
 								pass
 							self.old_streams_announced[announced_stream_id] = self.streams_announced[announced_stream_id]

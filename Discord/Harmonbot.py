@@ -274,7 +274,7 @@ if __name__ == "__main__":
 			embed.description += "\nRecorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[message.author.id]) # since 2016-12-20
 			try:
 				await client.send_message(message.channel, embed = embed)
-			except discord.errors.Forbidden: # necessary?
+			except discord.Forbidden: # necessary?
 				raise
 			except discord.errors.HTTPException:
 				await client.send_message(message.channel, embed.description)
@@ -282,7 +282,7 @@ if __name__ == "__main__":
 	@client.event
 	async def on_error(event_method, *args, **kwargs):
 		type, value, _traceback = sys.exc_info()
-		if type is discord.errors.Forbidden:
+		if type is discord.Forbidden:
 			for arg in args:
 				if isinstance(arg, commands.context.Context):
 					print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(arg.message))
@@ -326,7 +326,7 @@ if __name__ == "__main__":
 			embed.description = ":no_entry: Error: You can only bulk delete messages that are under 14 days old"
 		if embed.description:
 			await ctx.bot.send_message(ctx.message.channel, embed = embed) # check embed links permission
-		elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (discord.errors.Forbidden)):
+		elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
 			print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(ctx.message))
 		else:
 			print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)

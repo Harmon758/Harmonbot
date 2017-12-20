@@ -261,7 +261,7 @@ class Discord:
 		await self.bot.edit_channel_permissions(temp_text_channel, ctx.author, allow = discord.Permissions.all())
 		try:
 			await self.bot.move_member(ctx.author, temp_voice_channel)
-		except discord.errors.Forbidden:
+		except discord.Forbidden:
 			await ctx.embed_reply(":no_entry: I can't move you to the new temporary voice channel")
 		await ctx.embed_reply("Temporary voice and text channel created")
 		while True:
