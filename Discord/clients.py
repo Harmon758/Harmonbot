@@ -129,7 +129,7 @@ class Bot(commands.Bot):
 	async def attempt_delete_message(self, message):
 		try:
 			await message.delete()
-		except (discord.Forbidden, discord.errors.NotFound):
+		except (discord.Forbidden, discord.NotFound):
 			pass
 	
 	# Case-Insensitive commands

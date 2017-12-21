@@ -203,7 +203,7 @@ class Twitch:
 						# TODO: Handle text channel not existing anymore
 						try:
 							announcement[0] = await self.bot.get_message(text_channel, announcement[0])
-						except discord.errors.NotFound:
+						except discord.NotFound:
 							# Announcement was deleted
 							continue
 						embed_data = announcement[1]
