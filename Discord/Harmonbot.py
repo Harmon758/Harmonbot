@@ -193,7 +193,8 @@ if __name__ == "__main__":
 			if message.author == client.user:
 				try:
 					await me.send("To {0.channel.recipient}: {0.content}".format(message), embed = message.embeds[0])
-				except discord.errors.HTTPException:
+				except discord.HTTPException:
+					# TODO: use textwrap/paginate
 					await me.send("To {0.channel.recipient}: `DM too long to forward`".format(message))
 			else:
 				await me.send("From {0.author}: {0.content}".format(message), embed = message.embeds[0] if message.embeds else None)
@@ -276,7 +277,7 @@ if __name__ == "__main__":
 				await client.send_message(message.channel, embed = embed)
 			except discord.Forbidden: # necessary?
 				raise
-			except discord.errors.HTTPException:
+			except discord.HTTPException:
 				await client.send_message(message.channel, embed.description)
 	
 	@client.event
@@ -322,7 +323,7 @@ if __name__ == "__main__":
 			embed.description = ":no_entry: You don't have permission to use that command here"
 		elif isinstance(error, commands.errors.BadArgument):
 			embed.description = ":no_entry: Error: Invalid Input: {}".format(error)
-		elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, discord.errors.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.":
+		elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.":
 			embed.description = ":no_entry: Error: You can only bulk delete messages that are under 14 days old"
 		if embed.description:
 			await ctx.bot.send_message(ctx.message.channel, embed = embed) # check embed links permission

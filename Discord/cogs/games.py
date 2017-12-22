@@ -1002,7 +1002,7 @@ class Games:
 		for _reaction in reactions:
 			try:
 				await self.bot.add_reaction(response, _reaction.emoji)
-			except discord.errors.HTTPException:
+			except discord.HTTPException:
 				await self.bot.edit_message(response, ":no_entry: Error: Please don't deselect your reactions before I've selected them")
 				return
 		for countdown in range(10, 0, -1):

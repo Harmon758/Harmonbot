@@ -266,7 +266,7 @@ class Audio:
 			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
 		try:
 			await self.bot.edit_message(response, embed = embed)
-		except discord.errors.HTTPException:
+		except discord.HTTPException:
 			embed.description = ":warning: Error loading `{}`".format(song)
 			await self.bot.edit_message(response, embed = embed)
 	
@@ -441,7 +441,8 @@ class Audio:
 			return
 		try:
 			await ctx.embed_reply("```\n{}\n```".format(", ".join(results)))
-		except discord.errors.HTTPException:
+		except discord.HTTPException:
+			# TODO: use textwrap/paginate
 			await ctx.embed_reply(":no_entry: Too many results\nTry a more specific search")
 	
 	@commands.group(invoke_without_command = True)

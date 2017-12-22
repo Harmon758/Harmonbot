@@ -207,7 +207,8 @@ class Random:
 					await ctx.embed_reply(result)
 				else:
 					await ctx.embed_reply(", ".join(str(roll) for roll in result))
-			except discord.errors.HTTPException:
+			except discord.HTTPException:
+				# TODO: use textwrap/paginate
 				await ctx.embed_reply(":no_entry: Output too long")
 			except pyparsing.ParseException:
 				await ctx.embed_reply(":no_entry: Invalid input")

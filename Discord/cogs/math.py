@@ -50,7 +50,8 @@ class Math:
 			try:
 				result = await asyncio.wait_for(future, 10.0, loop = ctx.bot.loop)
 				await ctx.embed_reply("{} = {}".format(equation, result))
-			except discord.errors.HTTPException:
+			except discord.HTTPException:
+				# TODO: use textwrap/paginate
 				await ctx.embed_reply(":no_entry: Output too long")
 			except SyntaxError:
 				await ctx.embed_reply(":no_entry: Syntax error")

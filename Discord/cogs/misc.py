@@ -45,7 +45,8 @@ class Misc:
 				output += character
 		try:
 			await ctx.embed_reply(output)
-		except discord.errors.HTTPException:
+		except discord.HTTPException:
+			# TODO: use textwrap/paginate
 			await ctx.embed_reply(":no_entry: Error")
 	
 	@commands.command()
