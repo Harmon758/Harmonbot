@@ -298,9 +298,9 @@ if __name__ == "__main__":
 	@client.event
 	async def on_command_error(error, ctx):
 		if isinstance(error, errors.NotOwner): return # not owner
-		if isinstance(error, (commands.errors.CommandNotFound, commands.errors.DisabledCommand)): return # disabled or not found
+		if isinstance(error, (commands.CommandNotFound, commands.DisabledCommand)): return # disabled or not found
 		if isinstance(error, (errors.LichessUserNotFound)): return # handled with local error handler
-		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError): return # handled with local error handler
+		if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError): return # handled with local error handler
 		embed = discord.Embed(color = clients.bot_color)
 		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
 		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
@@ -315,19 +315,19 @@ if __name__ == "__main__":
 			embed.description = "I'm not in a voice channel\nPlease use `{}join` first".format(ctx.prefix)
 		elif isinstance(error, errors.NotPermittedVoiceNotConnected):
 			embed.description = "I'm not in a voice channel\nPlease ask someone with permission to use `{}join` first".format(ctx.prefix)
-		elif isinstance(error, commands.errors.NoPrivateMessage):
+		elif isinstance(error, commands.NoPrivateMessage):
 			embed.description = "Please use that command in a server"
-		elif isinstance(error, commands.errors.MissingRequiredArgument):
+		elif isinstance(error, commands.MissingRequiredArgument):
 			embed.description = str(error).rstrip('.')
 		elif isinstance(error, errors.NotPermitted):
 			embed.description = ":no_entry: You don't have permission to use that command here"
-		elif isinstance(error, commands.errors.BadArgument):
+		elif isinstance(error, commands.BadArgument):
 			embed.description = ":no_entry: Error: Invalid Input: {}".format(error)
-		elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.":
+		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.":
 			embed.description = ":no_entry: Error: You can only bulk delete messages that are under 14 days old"
 		if embed.description:
 			await ctx.bot.send_message(ctx.message.channel, embed = embed) # check embed links permission
-		elif isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
+		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
 			print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(ctx.message))
 		else:
 			print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
