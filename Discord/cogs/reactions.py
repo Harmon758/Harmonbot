@@ -10,13 +10,31 @@ import random
 
 import clients
 import credentials
-from utilities import checks
-from utilities import errors
 from modules import maze
 from modules import utilities
+from utilities import checks
+from utilities import errors
 
 def setup(bot):
 	bot.add_cog(Reactions(bot))
+	
+	async def process_reactions(reaction, user):
+		await bot.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
+		with open(clients.data_path + "/stats.json", 'r') as stats_file:
+			stats = json.load(stats_file)
+		stats["reaction_responses"] += 1
+		with open(clients.data_path + "/stats.json", 'w') as stats_file:
+			json.dump(stats, stats_file, indent = 4)
+	
+	@bot.event
+	async def on_reaction_add(reaction, user):
+		if "Reactions" in bot.cogs and reaction.message.id in bot.cogs["Reactions"].reaction_messages:
+			await process_reactions(reaction, user)
+
+	@bot.event
+	async def on_reaction_remove(reaction, user):
+		if "Reactions" in bot.cogs and reaction.message.id in bot.cogs["Reactions"].reaction_messages:
+			await process_reactions(reaction, user)
 
 class Reactions:
 	
@@ -190,23 +208,4 @@ class Reactions:
 					message = copy.copy(ctx.message)
 					message.content = "{}volume {}".format(ctx.prefix, set_volume)
 					await self.bot.process_commands(message)
-			
-	
-async def process_reactions(reaction, user):
-	await clients.client.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
-	with open("data/stats.json", 'r') as stats_file:
-		stats = json.load(stats_file)
-	stats["reaction_responses"] += 1
-	with open("data/stats.json", 'w') as stats_file:
-		json.dump(stats, stats_file, indent = 4)
-	
-@clients.client.event
-async def on_reaction_add(reaction, user):
-	if "Reactions" in clients.client.cogs and reaction.message.id in clients.client.cogs["Reactions"].reaction_messages:
-		await process_reactions(reaction, user)
-
-@clients.client.event
-async def on_reaction_remove(reaction, user):
-	if "Reactions" in clients.client.cogs and reaction.message.id in clients.client.cogs["Reactions"].reaction_messages:
-		await process_reactions(reaction, user)
 
