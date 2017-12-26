@@ -801,7 +801,7 @@ class Resources:
 		'''Find a Spotify track on Youtube'''
 		link = await self.bot.cogs["Audio"].spotify_to_youtube(url)
 		if link:
-			await self.bot.reply(link)
+			await ctx.reply(link)
 		else:
 			await ctx.embed_reply(":no_entry: Error")
 	
