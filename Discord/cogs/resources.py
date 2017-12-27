@@ -878,7 +878,7 @@ class Resources:
 		'''
 		async with clients.aiohttp_session.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})) as resp:
 			poll = await resp.json()
-		await self.bot.reply("http://strawpoll.me/" + str(poll["id"]))
+		await ctx.reply("http://strawpoll.me/" + str(poll["id"]))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
