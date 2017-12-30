@@ -296,7 +296,7 @@ if __name__ == "__main__":
 		logging.errors_logger.error("Uncaught exception\n", exc_info = (type, value, _traceback))
 	
 	@client.event
-	async def on_command_error(error, ctx):
+	async def on_command_error(ctx, error):
 		if isinstance(error, errors.NotOwner): return # not owner
 		if isinstance(error, (commands.CommandNotFound, commands.DisabledCommand)): return # disabled or not found
 		if isinstance(error, (errors.LichessUserNotFound)): return # handled with local error handler
