@@ -65,7 +65,7 @@ class Bot(commands.Bot):
 		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), game = discord.Game(name = random.choice(game_statuses), url = stream_url, type = 1))
 		
 		# Constants
-		self.version = "1.0.0"
+		self.version = "1.0.0-rc.1"
 		self.owner_id = 115691005197549570
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.console_message_prefix = "Discord Harmonbot: "
