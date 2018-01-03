@@ -593,7 +593,7 @@ class Games:
 	
 	@gofish.command(hidden = True, name = "start")
 	@commands.guild_only()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def gofish_start(self, ctx, *players : str):
 		'''WIP'''
 		self.gofish_channel = ctx.channel
@@ -1342,7 +1342,7 @@ class Games:
 	
 	@war.command(name = "start")
 	@commands.guild_only()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def war_start(self, ctx, *players : str):
 		'''Start a game of War'''
 		self.war_players = []

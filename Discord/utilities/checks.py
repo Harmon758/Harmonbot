@@ -2,25 +2,15 @@
 import discord
 from discord.ext import commands
 
-from utilities import errors
 from modules import utilities
 
 import clients
 import credentials
-from clients import client
+from utilities import errors
+
 
 def is_owner_check(ctx):
-	return ctx.author.id == clients.owner_id
-
-def is_owner():
-	
-	def predicate(ctx):
-		if is_owner_check(ctx):
-			return True
-		else:
-			raise errors.NotOwner
-	
-	return commands.check(predicate)
+	return ctx.author.id == ctx.bot.owner_id
 
 def is_server_owner_check(ctx):
 	return isinstance(ctx.channel, discord.DMChannel) or ctx.author == ctx.guild.owner or is_owner_check(ctx)

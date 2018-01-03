@@ -122,7 +122,7 @@ class Meta:
 		await self.bot.say(embed = embed)
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def allcommands(self, ctx):
 		'''All the commands'''
 		# TODO: Fix/Deprecate?, all_commands alias
@@ -135,7 +135,7 @@ class Meta:
 		await self.bot.whisper(_allcommands[:-1])
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def benchmark(self, ctx):
 		'''Benchmark'''
 		process = psutil.Process()
@@ -151,14 +151,14 @@ class Meta:
 		await self.bot.edit_message(message, embed = embed)
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def disable(self, ctx, command : str):
 		'''Disable a command'''
 		self.bot.all_commands[command].enabled = False
 		await ctx.embed_reply("`{}{}` has been disabled".format(ctx.prefix, command))
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def enable(self, ctx, command : str):
 		'''Enable a command'''
 		self.bot.all_commands[command].enabled = True
@@ -187,7 +187,7 @@ class Meta:
 		await ctx.embed_reply("{} set to {}".format(setting, on_off))
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def servers(self, ctx):
 		'''Every server I'm in'''
 		for guild in self.bot.guilds:
@@ -329,13 +329,13 @@ class Meta:
 	# Update Bot Stuff
 	
 	@commands.command(aliases = ["change_nickname"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def changenickname(self, ctx, *, nickname : str):
 		'''Update my nickname'''
 		await self.bot.change_nickname(ctx.me, nickname)
 	
 	@commands.command(aliases = ["setavatar", "update_avatar", "set_avatar"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def updateavatar(self, ctx, filename : str):
 		'''Update my avatar'''
 		if not os.path.isfile(clients.data_path + "/avatars/{}".format(filename)):
@@ -353,7 +353,7 @@ class Meta:
 		# await ctx.embed_reply("I changed to a random game status")
 	
 	@commands.command(aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying", "set_game", "update_playing", "update_game", "change_playing", "change_game", "set_playing"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def setgame(self, ctx, *, name : str):
 		'''Set my playing/game status message'''
 		updated_game = ctx.me.game
@@ -365,7 +365,7 @@ class Meta:
 		await ctx.embed_reply("Game updated")
 	
 	@commands.command(aliases = ["set_streaming"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def setstreaming(self, ctx, option : str, *url : str):
 		'''Set my streaming status'''
 		if option == "on" or option == "true":
@@ -385,7 +385,7 @@ class Meta:
 		await self.bot.change_status(game = updated_game)
 	
 	@commands.command(aliases = ["clearplaying", "clear_game", "clear_playing"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def cleargame(self, ctx):
 		'''Clear my playing/game status message'''
 		updated_game = ctx.me.game
@@ -397,7 +397,7 @@ class Meta:
 			await ctx.embed_reply(":no_entry: There is no game status to clear")
 	
 	@commands.command(aliases = ["clear_streaming"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def clearstreaming(self, ctx, *option : str):
 		'''Clear my streaming status'''
 		updated_game = ctx.me.game
@@ -414,7 +414,7 @@ class Meta:
 			await ctx.embed_reply(":no_entry: There is no streaming status or url to clear")
 	
 	@commands.command(hidden = True)
-	@checks.is_owner()
+	@commands.is_owner()
 	async def update_discord_bots_stats(self, ctx):
 		'''Update stats on https://bots.discord.pw'''
 		response = await clients._update_discord_bots_stats()
@@ -423,7 +423,7 @@ class Meta:
 	# Restart/Shutdown
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
 		await self.bot.embed_say(":ok_hand::skin-tone-2: Restarting...")
@@ -432,7 +432,7 @@ class Meta:
 		await self.bot.logout()
 	
 	@commands.command(aliases = ["crash", "panic"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def shutdown(self, ctx):
 		'''Shut me down'''
 		await self.bot.embed_say(":scream: Shutting down.")
@@ -462,7 +462,7 @@ class Meta:
 		await ctx.embed_reply(clients.py_code_block.format(input))
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def do(self, ctx, times : int, *, command):
 		'''Repeats a command a specified number of times'''
 		msg = copy.copy(ctx.message)
@@ -471,19 +471,19 @@ class Meta:
 			await self.bot.process_commands(msg)
 	
 	@commands.group(aliases = ["say"], invoke_without_command = True)
-	@checks.is_owner()
+	@commands.is_owner()
 	async def echo(self, ctx, *, message):
 		'''Echoes the message'''
 		await self.bot.say(message)
 	
 	@echo.command(name = "embed")
-	@checks.is_owner()
+	@commands.is_owner()
 	async def echo_embed(self, ctx, *, message):
 		'''Echoes the message in an embed'''
 		await self.bot.embed_say(message)
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def eval(self, ctx, *, code : str):
 		code = code.strip('`')
 		try:
@@ -495,7 +495,7 @@ class Meta:
 			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def exec(self, ctx, *, code : str):
 		code = code.strip('`')
 		try:
@@ -506,14 +506,14 @@ class Meta:
 		await ctx.embed_reply("Successfully executed")
 	
 	@commands.command(aliases = ["deletetest"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def delete_test(self, ctx):
 		'''Sends 100 messages'''
 		for i in range(1, 101):
 			await self.bot.say(str(i))
 	
 	@commands.command(aliases = ["globalratelimittest"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def global_ratelimit_test(self, ctx):
 		'''Used to test global ratelimits'''
 		for i in range(1, 101):
@@ -522,14 +522,14 @@ class Meta:
 			print("global ratelimit test {}".format(i))
 	
 	@commands.command(aliases = ["repeattext"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def repeat_text(self, ctx, number : int, *, text):
 		'''Repeat text'''
 		for _ in range(number):
 			await self.bot.say(text)
 	
 	@commands.command()
-	@checks.is_owner()
+	@commands.is_owner()
 	async def repl(self, ctx):
 		variables = {"self" : self, "ctx" : ctx, "last" : None}
 		await ctx.embed_reply("Enter code to execute or evaluate\n`exit` or `quit` to exit")

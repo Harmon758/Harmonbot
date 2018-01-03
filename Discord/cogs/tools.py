@@ -105,7 +105,7 @@ class Tools:
 		return string
 	
 	@graph.command(name = "alternative", aliases = ["alt", "complex"])
-	@checks.is_owner()
+	@commands.is_owner()
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
 		filename = clients.data_path + "/temp/graph_alternative.png"
@@ -181,7 +181,7 @@ class Tools:
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
 	
 	@tag.command(name = "expunge")
-	@checks.is_owner()
+	@commands.is_owner()
 	async def tag_expunge(self, ctx, owner : discord.Member, tag : str):
 		'''Delete someone else's tags'''
 		try:
