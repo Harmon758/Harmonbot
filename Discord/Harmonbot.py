@@ -100,51 +100,6 @@ if __name__ == "__main__":
 		with open(clients.data_path + "/user_data/{}/stats.json".format(ctx.author.id), 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 	
-	@client.command()
-	@checks.is_owner()
-	async def load(ctx, cog : str):
-		'''Loads a cog'''
-		try:
-			client.load_extension("cogs." + cog)
-		except Exception as e:
-			await client.embed_reply(":thumbsdown::skin-tone-2: Failed to load `{}` cog\n"
-			"{}: {}".format(cog, type(e).__name__, e))
-		else:
-			await client.embed_reply(":thumbsup::skin-tone-2: Loaded `{}` cog :gear:".format(cog))
-			await client.delete_message(ctx.message)
-	
-	@client.command()
-	@checks.is_owner()
-	async def unload(ctx, cog : str):
-		'''Unloads a cog'''
-		try:
-			client.unload_extension("cogs." + cog)
-		except Exception as e:
-			await client.embed_reply(":thumbsdown::skin-tone-2: Failed to unload `{}` cog\n"
-			"{}: {}".format(cog, type(e).__name__, e))
-		else:
-			await client.embed_reply(":ok_hand::skin-tone-2: Unloaded `{}` cog :gear:".format(cog))
-			await client.delete_message(ctx.message)
-	
-	@client.command()
-	@checks.is_owner()
-	async def reload(ctx, cog : str):
-		'''Reloads a cog'''
-		try:
-			client.unload_extension("cogs." + cog)
-			client.load_extension("cogs." + cog)
-		except Exception as e:
-			await client.embed_reply(":thumbsdown::skin-tone-2: Failed to reload `{}` cog\n"
-			"{}: {}".format(cog, type(e).__name__, e))
-		else:
-			with open("data/stats.json", 'r') as stats_file:
-				stats = json.load(stats_file)
-			stats["cogs_reloaded"] += 1
-			with open("data/stats.json", 'w') as stats_file:
-				json.dump(stats, stats_file, indent = 4)
-			await client.embed_reply(":thumbsup::skin-tone-2: Reloaded `{}` cog :gear:".format(cog))
-			await client.delete_message(ctx.message)
-	
 	# TODO: log message edits
 	
 	@client.event

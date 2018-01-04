@@ -16,6 +16,7 @@ import sys
 import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
+
 import credentials
 from utilities.context import Context
 from utilities import errors
@@ -99,6 +100,11 @@ class Bot(commands.Bot):
 		## Wolfram Alpha
 		self.wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
 		
+		# Add load, unload, and reload cog commands
+		self.add_command(self.load)
+		self.add_command(self.unload)
+		self.add_command(self.reload)
+		
 		# Remove default help command (to override)
 		self.remove_command("help")
 	
@@ -139,6 +145,46 @@ class Bot(commands.Bot):
 		return ctx
 	
 	# TODO: Case-Insensitive subcommands (override Group)
+	
+	@commands.command()
+	@commands.is_owner()
+	async def load(self, ctx, cog : str):
+		'''Load cog'''
+		try:
+			self.load_extension("cogs." + cog)
+		except Exception as e:
+			await ctx.embed_reply(":thumbsdown::skin-tone-2: Failed to load `{}` cog\n{}: {}".format(cog, type(e).__name__, e))
+		else:
+			await ctx.embed_reply(":thumbsup::skin-tone-2: Loaded `{}` cog :gear:".format(cog))
+	
+	@commands.command()
+	@commands.is_owner()
+	async def unload(self, ctx, cog : str):
+		'''Unload cog'''
+		try:
+			self.unload_extension("cogs." + cog)
+		except Exception as e:
+			await ctx.embed_reply(":thumbsdown::skin-tone-2: Failed to unload `{}` cog\n{}: {}".format(cog, type(e).__name__, e))
+		else:
+			await ctx.embed_reply(":ok_hand::skin-tone-2: Unloaded `{}` cog :gear:".format(cog))
+	
+	@commands.command()
+	@commands.is_owner()
+	async def reload(self, ctx, cog : str):
+		'''Reload cog'''
+		try:
+			self.unload_extension("cogs." + cog)
+			self.load_extension("cogs." + cog)
+		except Exception as e:
+			await ctx.embed_reply(":thumbsdown::skin-tone-2: Failed to reload `{}` cog\n{}: {}".format(cog, type(e).__name__, e))
+		else:
+			# TODO: self.stats
+			with open(data_path + "/stats.json", 'r') as stats_file:
+				stats = json.load(stats_file)
+			stats["cogs_reloaded"] += 1
+			with open(data_path + "/stats.json", 'w') as stats_file:
+				json.dump(stats, stats_file, indent = 4)
+			await ctx.embed_reply(":thumbsup::skin-tone-2: Reloaded `{}` cog :gear:".format(cog))
 
 
 # Create folders
