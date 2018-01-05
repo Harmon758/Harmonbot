@@ -1,10 +1,6 @@
 
 from discord.ext.commands.errors import CommandError
 
-class NotOwner(CommandError):
-	'''Not Owner'''
-	pass
-
 class NotServerOwner(CommandError):
 	'''Not Server Owner'''
 	pass

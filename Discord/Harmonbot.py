@@ -252,7 +252,7 @@ if __name__ == "__main__":
 	
 	@client.event
 	async def on_command_error(ctx, error):
-		if isinstance(error, errors.NotOwner): return # not owner
+		if isinstance(error, commands.NotOwner): return # not owner
 		if isinstance(error, (commands.CommandNotFound, commands.DisabledCommand)): return # disabled or not found
 		if isinstance(error, (errors.LichessUserNotFound)): return # handled with local error handler
 		if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError): return # handled with local error handler
