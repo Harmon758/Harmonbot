@@ -256,32 +256,28 @@ if __name__ == "__main__":
 		if isinstance(error, (commands.CommandNotFound, commands.DisabledCommand)): return # disabled or not found
 		if isinstance(error, (errors.LichessUserNotFound)): return # handled with local error handler
 		if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError): return # handled with local error handler
-		embed = discord.Embed(color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		if isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)): # errors.NotOwner?
-			embed.description = ":no_entry: You don't have permission to do that"
+		if isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)): # commands.NotOwner?
+			await ctx.embed_reply(":no_entry: You don't have permission to do that")
 		elif isinstance(error, errors.MissingCapability):
 			if "embed_links" in error.permissions:
-				await ctx.bot.send_message(ctx.channel, "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions))
-				return
-			embed.description = "I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions)
+				await ctx.send("I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions))
+			else:
+				await ctx.embed_reply("I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions))
 		elif isinstance(error, errors.PermittedVoiceNotConnected):
-			embed.description = "I'm not in a voice channel\nPlease use `{}join` first".format(ctx.prefix)
+			await ctx.embed_reply("I'm not in a voice channel\nPlease use `{}join` first".format(ctx.prefix))
 		elif isinstance(error, errors.NotPermittedVoiceNotConnected):
-			embed.description = "I'm not in a voice channel\nPlease ask someone with permission to use `{}join` first".format(ctx.prefix)
+			await ctx.embed_reply("I'm not in a voice channel\nPlease ask someone with permission to use `{}join` first".format(ctx.prefix))
 		elif isinstance(error, commands.NoPrivateMessage):
-			embed.description = "Please use that command in a server"
+			await ctx.embed_reply("Please use that command in a server")
 		elif isinstance(error, commands.MissingRequiredArgument):
-			embed.description = str(error).rstrip('.')
+			await ctx.embed_reply(str(error).rstrip('.').replace("argument", "input"))
 		elif isinstance(error, errors.NotPermitted):
-			embed.description = ":no_entry: You don't have permission to use that command here"
+			await ctx.embed_reply(":no_entry: You don't have permission to use that command here")
 		elif isinstance(error, commands.BadArgument):
-			embed.description = ":no_entry: Error: Invalid Input: {}".format(error)
-		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.":
-			embed.description = ":no_entry: Error: You can only bulk delete messages that are under 14 days old"
-		if embed.description:
-			await ctx.bot.send_message(ctx.message.channel, embed = embed) # check embed links permission
+			await ctx.embed_reply(":no_entry: Error: Invalid Input: {}".format(error))
+		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.": # better way?
+			await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
+		# TODO: check embed links permission
 		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
 			print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(ctx.message))
 		else:
