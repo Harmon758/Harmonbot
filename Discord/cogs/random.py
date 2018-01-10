@@ -40,7 +40,7 @@ class Random:
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			utilities.add_as_subcommand(self, command, parent, "fact")
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Resources.map"), (self.streetview, "Resources.streetview"), (self.uesp, "Search.uesp"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
+		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Location.map"), (self.streetview, "Location.streetview"), (self.uesp, "Search.uesp"), (self.time, "Location.time"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
 		# Import jokes
@@ -100,6 +100,12 @@ class Random:
 		longitude = random.uniform(-180, 180)
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={},{}".format(latitude, longitude)
 		await ctx.embed_reply(image_url = image_url)
+	
+	@random.command()
+	@checks.not_forbidden()
+	async def time(self, ctx):
+		'''Random time'''
+		await ctx.embed_reply("{:02d}:{:02d}".format(random.randint(0, 23), random.randint(0, 59)))
 	
 	@random.command()
 	@checks.not_forbidden()
@@ -428,11 +434,6 @@ class Random:
 				return
 		await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"]) # quoteLink?
 	
-	@commands.command()
-	@checks.not_forbidden()
-	async def time(self, ctx):
-		'''Random time'''
-		await ctx.embed_reply("{:02d}:{:02d}".format(random.randint(0, 23), random.randint(0, 59)))
 	
 	@commands.command()
 	@checks.not_forbidden()

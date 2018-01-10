@@ -10,7 +10,6 @@ import dateutil.parser
 import imgurpython
 import isodate
 import json
-import pyowm.exceptions
 # import spotipy
 import unicodedata
 import urllib
@@ -426,24 +425,6 @@ class Resources:
 				return
 			data = await resp.json()
 		await ctx.embed_reply(data["longUrl"])
-	
-	@commands.group(invoke_without_command = True)
-	@checks.not_forbidden()
-	async def map(self, ctx, *, location : str):
-		'''See map of location'''
-		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location.replace(' ', '+'))
-		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
-	
-	@map.command(name = "options")
-	@checks.not_forbidden()
-	async def map_options(self, ctx, zoom : int, maptype : str, *, location : str):
-		'''
-		More customized map of a location
-		Zoom: 0 - 21+ (Default: 13)
-		Map Types: roadmap, satellite, hybrid, terrain (Default: roadmap)
-		'''
-		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&maptype={}&size=640x640".format(location.replace(' ', '+'), zoom, maptype)
-		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -880,13 +861,6 @@ class Resources:
 			poll = await resp.json()
 		await ctx.reply("http://strawpoll.me/" + str(poll["id"]))
 	
-	@commands.group(invoke_without_command = True)
-	@checks.not_forbidden()
-	async def streetview(self, ctx, *, location : str):
-		'''Generate street view of a location'''
-		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={}".format(location.replace(' ', '+'))
-		await ctx.embed_reply(image_url = image_url)
-	
 	@commands.command(aliases = ["synonyms"])
 	@checks.not_forbidden()
 	async def synonym(self, ctx, word : str):
@@ -979,61 +953,6 @@ class Resources:
 			embed.add_field(name = "Example", value = "{0[example]}\n\n:thumbsup::skin-tone-2: {0[thumbs_up]} :thumbsdown::skin-tone-2: {0[thumbs_down]}".format(definition))
 			embed.set_footer(text = "Select a different number for another definition")
 			await self.bot.edit_message(response, embed = embed)
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def weather(self, ctx, *, location : str):
-		'''Weather'''
-		# wunderground?
-		try:
-			observation = clients.owm_client.weather_at_place(location)
-		except pyowm.exceptions.not_found_error.NotFoundError:
-			await ctx.embed_reply(":no_entry: Location not found")
-			return
-		except pyowm.exceptions.api_call_error.BadGatewayError:
-			await ctx.embed_reply(":no_entry: Error")
-			# Add exception message to response when pyowm issue (https://github.com/csparpa/pyowm/issues/176) fixed
-			return
-		location = observation.get_location()
-		weather = observation.get_weather()
-		condition = weather.get_status()
-		if condition == "Clear": emote = " :sunny:"
-		elif condition == "Clouds": emote = " :cloud:"
-		elif condition == "Rain": emote = " :cloud_rain:"
-		else: emote = ""
-		wind = weather.get_wind()
-		pressure = weather.get_pressure()["press"]
-		visibility = weather.get_visibility_distance()
-		embed = discord.Embed(description = "**__{}__**".format(location.get_name()), color = clients.bot_color, timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None))
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		embed.add_field(name = "Conditions", value = "{}{}".format(condition, emote))
-		embed.add_field(name = "Temperature", value = "{}°C\n{}°F".format(weather.get_temperature(unit = "celsius")["temp"], weather.get_temperature(unit = "fahrenheit")["temp"]))
-		embed.add_field(name = "Wind", value = "{0} {1:.2f} km/h\n{0} {2:.2f} mi/h".format(self.wind_degrees_to_direction(wind["deg"]), wind["speed"] * 3.6, wind["speed"] * 2.236936))
-		embed.add_field(name = "Humidity", value = "{}%".format(weather.get_humidity()))
-		embed.add_field(name = "Pressure", value = "{} mb (hPa)\n{:.2f} inHg".format(pressure, pressure * 0.0295299830714))
-		if visibility: embed.add_field(name = "Visibility", value = "{:.2f} km\n{:.2f} mi".format(visibility / 1000, visibility * 0.000621371192237))
-		await self.bot.say(embed = embed)
-	
-	def wind_degrees_to_direction(self, degrees):
-		# http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
-		if 0 <= degrees <= 11.25 or 348.75 <= degrees <= 360: return 'N'
-		elif 11.25 <= degrees <= 33.75: return "NNE"
-		elif 33.75 <= degrees <= 56.25: return "NE"
-		elif 56.25 <= degrees <= 78.75: return "ENE"
-		elif 78.75 <= degrees <= 101.25: return 'E'
-		elif 101.25 <= degrees <= 123.75: return "ESE"
-		elif 123.75 <= degrees <= 146.25: return "SE"
-		elif 146.25 <= degrees <= 168.75: return "SSE"
-		elif 168.75 <= degrees <= 191.25: return 'S'
-		elif 191.25 <= degrees <= 213.75: return "SSW"
-		elif 213.75 <= degrees <= 236.25: return "SW"
-		elif 236.25 <= degrees <= 258.75: return "WSW"
-		elif 258.75 <= degrees <= 281.25: return "W"
-		elif 281.25 <= degrees <= 303.75: return "WNW"
-		elif 303.75 <= degrees <= 326.25: return "NW"
-		elif 326.25 <= degrees <= 348.75: return "NNW"
-		else: return None
 	
 	@commands.command()
 	@checks.not_forbidden()
