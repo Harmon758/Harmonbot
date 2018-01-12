@@ -39,9 +39,6 @@ online_time = datetime.datetime.utcnow()
 aiml_kernel = aiml.Kernel()
 aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
-wordnik_client = swagger.ApiClient(credentials.wordnik_apikey, "http://api.wordnik.com/v4")
-wordnik_word_api = WordApi.WordApi(wordnik_client)
-wordnik_words_api = WordsApi.WordsApi(wordnik_client)
 application_info = None
 harmonbot_listener = None
 # TODO: Include owner variable for user object?
@@ -100,6 +97,10 @@ class Bot(commands.Bot):
 		self.twitter_api = tweepy.API(self.twitter_auth)
 		## Wolfram Alpha
 		self.wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
+		## Wordnik
+		self.wordnik_client = swagger.ApiClient(credentials.wordnik_apikey, "http://api.wordnik.com/v4")
+		self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
+		self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
 		
 		# Add load, unload, and reload cog commands
 		self.add_command(self.load)
