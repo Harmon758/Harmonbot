@@ -202,7 +202,7 @@ class Twitch:
 						text_channel = self.bot.get_channel(announcement[2])
 						# TODO: Handle text channel not existing anymore
 						try:
-							announcement[0] = await self.bot.get_message(text_channel, announcement[0])
+							announcement[0] = await text_channel.get_message(announcement[0])
 						except discord.NotFound:
 							# Announcement was deleted
 							continue
@@ -258,7 +258,7 @@ class Twitch:
 							embed = announcement[1]
 							embed.set_author(name = embed.author.name.replace("just went", "was"), url = embed.author.url, icon_url = embed.author.icon_url)
 							try:
-								await self.bot.edit_message(announcement[0], embed = embed)
+								await announcement[0].edit(embed = embed)
 							except discord.Forbidden:
 								# Announcement was deleted
 								pass
@@ -282,12 +282,13 @@ class Twitch:
 				await asyncio.sleep(60)
 	
 	async def process_twitch_streams(self, streams, type, match = None):
+		# TODO: use textwrap
 		for stream in streams:
 			if stream["_id"] in self.old_streams_announced:
 				for announcement in self.old_streams_announced[stream["_id"]]:
 					embed = announcement[1]
 					embed.set_author(name = embed.author.name.replace("was", "just went"), url = embed.author.url, icon_url = embed.author.icon_url)
-					await self.bot.edit_message(announcement[0], embed = embed)
+					await announcement[0].edit(embed = embed)
 				self.streams_announced[stream["_id"]] = self.old_streams_announced[stream["_id"]]
 				del self.old_streams_announced[stream["_id"]]
 			elif stream["_id"] not in self.streams_announced:
@@ -304,6 +305,6 @@ class Twitch:
 						if not text_channel:
 							# TODO: Remove text channel data if now non-existent
 							continue
-						message = await self.bot.send_message(text_channel, embed = embed)
+						message = await text_channel.send(embed = embed)
 						self.streams_announced[stream["_id"]] = self.streams_announced.get(stream["_id"], []) + [[message, embed]]
 
