@@ -207,7 +207,7 @@ class Twitch:
 							# Announcement was deleted
 							continue
 						embed_data = announcement[1]
-						announcement[1] = discord.Embed(title = embed_data.get("title"), description = embed_data["description"], url = embed_data["url"], timestamp = dateutil.parser.parse(embed_data["timestamp"]), color = embed_data["color"]).set_author(name = embed_data["author"]["name"], icon_url = embed_data["author"]["icon_url"])
+						announcement[1] = discord.Embed(title = embed_data.get("title"), description = embed_data.get("description", discord.Embed.Empty), url = embed_data["url"], timestamp = dateutil.parser.parse(embed_data["timestamp"]), color = embed_data["color"]).set_author(name = embed_data["author"]["name"], icon_url = embed_data["author"]["icon_url"])
 						if embed_data.get("thumbnail", {}).get("url"):
 							announcement[1].set_thumbnail(url = embed_data["thumbnail"]["url"])
 						for field in embed_data["fields"]:
