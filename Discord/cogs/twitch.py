@@ -199,7 +199,7 @@ class Twitch:
 				self.streams_announced = {int(k): v for k, v in self.streams_announced.items()}
 				for announced_stream_id, announcements in self.streams_announced.items():
 					for announcement in announcements:
-						text_channel = self.bot.get_channel(announcement[2])
+						text_channel = self.bot.get_channel(int(announcement[2]))
 						# TODO: Handle text channel not existing anymore
 						try:
 							announcement[0] = await text_channel.get_message(announcement[0])
@@ -301,7 +301,7 @@ class Twitch:
 						if stream["channel"]["logo"]: embed.set_thumbnail(url = stream["channel"]["logo"])
 						embed.add_field(name = "Followers", value = stream["channel"]["followers"])
 						embed.add_field(name = "Views", value = stream["channel"]["views"])
-						text_channel = self.bot.get_channel(channel_id)
+						text_channel = self.bot.get_channel(int(channel_id))
 						if not text_channel:
 							# TODO: Remove text channel data if now non-existent
 							continue
