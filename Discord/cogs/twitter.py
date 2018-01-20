@@ -64,7 +64,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 					embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
 					channel = self.bot.get_channel(channel_id)
 					if channel:
-						self.bot.loop.create_task(self.bot.send_message(channel, embed = embed))
+						self.bot.loop.create_task(channel.send(embed = embed))
 	
 	def on_error(self, status_code):
 		print("Twitter Error: {}".format(status_code))
@@ -98,7 +98,7 @@ class Twitter:
 		embed = discord.Embed(title = '@' + tweet.user.screen_name, url = "https://twitter.com/{}/status/{}".format(tweet.user.screen_name, tweet.id), description = tweet.text, timestamp = tweet.created_at, color = 0x00ACED)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		embed.set_footer(text = tweet.user.name, icon_url = tweet.user.profile_image_url)
-		await self.bot.say(embed = embed)
+		await ctx.send(embed = embed)
 	
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
 	@checks.is_permitted()
@@ -116,7 +116,7 @@ class Twitter:
 			await self.stream_listener.add_feed(ctx.channel, handle)
 		except tweepy.error.TweepError as e:
 			embed.description = ":no_entry: Error: {}".format(e)
-			await self.bot.edit_message(message, embed = embed)
+			await message.edit(embed = embed)
 			return
 		if ctx.channel.id in self.feeds_info["channels"]:
 			self.feeds_info["channels"][ctx.channel.id]["handles"].append(handle)
@@ -125,7 +125,7 @@ class Twitter:
 		with open(clients.data_path + "/twitter_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		embed.description = "Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle)
-		await self.bot.edit_message(message, embed = embed)
+		await message.edit(embed = embed)
 	
 	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"])
 	@checks.is_permitted()
@@ -145,7 +145,7 @@ class Twitter:
 			await self.stream_listener.remove_feed(ctx.channel, handle)
 			embed = message.embeds[0]
 			embed.description = "Removed the Twitter handle, [`{0}`](https://twitter.com/{0}), from this text channel.".format(handle)
-			await self.bot.edit_message(message, embed = embed)
+			await message.edit(embed = embed)
 
 	@twitter.command(aliases = ["handle", "feeds", "feed", "list"])
 	@checks.not_forbidden()
