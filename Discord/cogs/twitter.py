@@ -45,12 +45,12 @@ class TwitterStreamListener(tweepy.StreamListener):
 		self.reconnecting = False
 	
 	async def add_feed(self, channel, handle):
-		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [self.bot.twitter_api.get_user(handle).id_str]
+		self.feeds[str(channel.id)] = self.feeds.get(str(channel.id), []) + [self.bot.twitter_api.get_user(handle).id_str]
 		# TODO: Check if stream already following
 		await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
-		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(handle).id_str)
+		self.feeds[str(channel.id)].remove(self.bot.twitter_api.get_user(handle).id_str)
 		await self.start_feeds() # necessary?
 	
 	def on_status(self, status):
@@ -62,7 +62,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 					embed = discord.Embed(title = '@' + status.user.screen_name, url = "https://twitter.com/{}/status/{}".format(status.user.screen_name, status.id), description = status.text, timestamp = status.created_at, color = self.bot.twitter_color)
 					embed.set_author(name = status.user.name, icon_url = status.user.profile_image_url)
 					embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
-					channel = self.bot.get_channel(channel_id)
+					channel = self.bot.get_channel(int(channel_id))
 					if channel:
 						self.bot.loop.create_task(channel.send(embed = embed))
 	
@@ -107,7 +107,7 @@ class Twitter:
 		Add a Twitter handle to a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
-		if handle in self.feeds_info["channels"].get(ctx.channel.id, {}).get("handles", []):
+		if handle in self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", []):
 			await ctx.embed_reply(":no_entry: This text channel is already following that Twitter handle")
 			return
 		message = await ctx.embed_reply(":hourglass: Please wait")
@@ -118,10 +118,10 @@ class Twitter:
 			embed.description = ":no_entry: Error: {}".format(e)
 			await message.edit(embed = embed)
 			return
-		if ctx.channel.id in self.feeds_info["channels"]:
-			self.feeds_info["channels"][ctx.channel.id]["handles"].append(handle)
+		if str(ctx.channel.id) in self.feeds_info["channels"]:
+			self.feeds_info["channels"][str(ctx.channel.id)]["handles"].append(handle)
 		else:
-			self.feeds_info["channels"][ctx.channel.id] = {"name" : ctx.channel.name, "handles" : [handle]}
+			self.feeds_info["channels"][str(ctx.channel.id)] = {"name" : ctx.channel.name, "handles" : [handle]}
 		with open(clients.data_path + "/twitter_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		embed.description = "Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle)
@@ -135,7 +135,7 @@ class Twitter:
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
 		try:
-			self.feeds_info["channels"].get(ctx.channel.id, {}).get("handles", []).remove(handle)
+			self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", []).remove(handle)
 		except ValueError:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that Twitter handle")
 		else:
@@ -151,7 +151,7 @@ class Twitter:
 	@checks.not_forbidden()
 	async def handles(self, ctx):
 		'''Show Twitter handles being followed in a text channel'''
-		await ctx.embed_reply('\n'.join(self.feeds_info["channels"].get(ctx.channel.id, {}).get("handles", [])))
+		await ctx.embed_reply('\n'.join(self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", [])))
 		# TODO: Add message if none
 	
 	async def start_twitter_feeds(self):
