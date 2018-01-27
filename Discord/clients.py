@@ -217,9 +217,9 @@ def get_prefix(bot, message):
 	with open(data_path + "/prefixes.json", 'r') as prefixes_file:
 		all_prefixes = json.load(prefixes_file)
 	if isinstance(message.channel, discord.DMChannel):
-		prefixes = all_prefixes.get(message.channel.id, None)
+		prefixes = all_prefixes.get(str(message.channel.id), None)
 	else:
-		prefixes = all_prefixes.get(message.guild.id, None)
+		prefixes = all_prefixes.get(str(message.guild.id), None)
 	return prefixes if prefixes else '!'
 
 
