@@ -74,6 +74,8 @@ class Bot(commands.Bot):
 		self.youtube_color = 0xcd201f # change to ff0000?; previously on https://www.youtube.com/yt/brand/color.html
 		self.twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
 		self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
+		self.dark_theme_background_color = 0x36393e
+		self.white_color = 0xffffff
 		
 		# Variables
 		self.session_commands_executed = 0

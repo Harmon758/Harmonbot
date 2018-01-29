@@ -4,16 +4,19 @@ from discord.ext import commands
 
 import asyncio
 import difflib
+import imageio
 import json
 import matplotlib
 import moviepy.editor
 import numexpr
 import numpy
 import pandas
+from PIL import Image, ImageDraw, ImageFont
 import random
 import re
 import seaborn
 # import subprocess
+import textwrap
 import time
 import unicodedata
 import urllib
@@ -111,6 +114,58 @@ class Tools:
 		filename = clients.data_path + "/temp/graph_alternative.png"
 		seaborn.jointplot(**eval(data)).savefig(name)
 		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
+	
+	@commands.command(aliases = ["spoil"])
+	@checks.not_forbidden()
+	async def spoiler(self, ctx, name : str, *, text : str):
+		'''Spoiler'''
+		# TODO: add border?, adjust fonts?
+		# Constants
+		content_font = "pala.ttf"
+		guide_font = "GOTHIC.TTF"
+		margin_size = 10
+		avatar_size = 40
+		content_font_size = 20
+		guide_font_size = 10
+		text_vertical_margin = 20
+		text_opacity = 180 # 0-255, 180 = ~70%
+		character_wrap = 55
+		# Initialize values
+		spoiler_text = textwrap.fill(text, character_wrap)
+		spoiler_title = textwrap.fill("{}'s {} spoiler".format(ctx.author.display_name, name), character_wrap)
+		async with clients.aiohttp_session.get(ctx.author.avatar_url_as(format = "png")) as resp:
+			avatar_data = await resp.read()
+		with open(clients.data_path + "/temp/spoiler_avatar.png", "wb") as avatar_file:
+			avatar_file.write(avatar_data)
+		avatar = Image.open(clients.data_path + "/temp/spoiler_avatar.png")
+		avatar.thumbnail((avatar_size, avatar_size))
+		content_font = ImageFont.truetype(content_font, content_font_size)
+		guide_font = ImageFont.truetype(guide_font, guide_font_size)
+		# Determine font width + height
+		draw = ImageDraw.Draw(Image.new("1", (1, 1), 1))
+		text_width, text_height = map(max, zip(*[draw.textsize(t, font = content_font) for t in (spoiler_text, spoiler_title)]))
+		## use functools.partial?
+		## text_width, text_height = map(max, zip(*map(functools.partial(draw.textsize, font = content_font), (spoiler_text, spoiler_title))))
+		## more optimal, but doesn't handle multiline
+		## text_width, text_height = map(max, zip(*map(content_font.getsize, (spoiler_text, spoiler_title))))
+		# Create frames
+		for frame_number, frame_text in zip(range(1, 3), (spoiler_title, spoiler_text)):
+			frame = Image.new("RGBA", (text_width + (avatar_size + 2 * margin_size) * 2, text_height + text_vertical_margin * 2), discord.Color(self.bot.dark_theme_background_color).to_rgb())
+			try:
+				frame.paste(avatar, (margin_size, margin_size), avatar)
+			except ValueError: # if bad transparency mask
+				frame.paste(avatar, (margin_size, margin_size))
+			transparent_text = Image.new("RGBA", frame.size, discord.Color(self.bot.white_color).to_rgb() + (0,))
+			draw = ImageDraw.Draw(transparent_text)
+			draw.text((avatar_size + 2 * margin_size, text_vertical_margin), frame_text, fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,), font = content_font)
+			if frame_number == 1: draw.text((avatar_size + 2 * margin_size, text_height + 2 * margin_size), "(Hover to reveal spoiler)", fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,), font = guide_font)
+			frame = Image.alpha_composite(frame, transparent_text)
+			frame.save(clients.data_path + "/temp/spoiler_frame_{}.png".format(frame_number))
+		# Create + send .gif
+		images = [imageio.imread(f) for f in [clients.data_path + "/temp/spoiler_frame_{}.png".format(i) for i in range(1, 3)]]
+		imageio.mimsave(clients.data_path + "/temp/spoiler.gif", images, loop = 1, duration = 0.5)
+		await ctx.channel.send(file = discord.File(clients.data_path + "/temp/spoiler.gif"))
+		await ctx.message.delete()
 	
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
 	@checks.not_forbidden()
