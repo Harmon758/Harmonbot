@@ -85,7 +85,7 @@ class Tools:
 		try:
 			y = numexpr.evaluate(equation)
 		except Exception as e:
-			await self.bot.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await ctx.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
 			return
 		try:
 			matplotlib.pyplot.plot(x, y)
