@@ -175,9 +175,9 @@ class Tools:
 			await ctx.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
 			return
 		if tag in self.tags_data.get(ctx.author.id, {}).get("tags", []):
-			await self.bot.reply(self.tags_data[ctx.author.id]["tags"][tag])
+			await ctx.reply(self.tags_data[ctx.author.id]["tags"][tag])
 		elif tag in self.tags_data["global"]:
-			await self.bot.reply(self.tags_data["global"][tag]["response"])
+			await ctx.reply(self.tags_data["global"][tag]["response"])
 			self.tags_data["global"][tag]["usage_counter"] += 1
 			with open(clients.data_path + "/tags.json", 'w') as tags_file:
 				json.dump(self.tags_data, tags_file, indent = 4)
