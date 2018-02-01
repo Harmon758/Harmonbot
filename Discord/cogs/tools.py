@@ -344,7 +344,7 @@ class Tools:
 		# TODO: other units, persistence through restarts
 		await ctx.embed_reply("I'll remind you in {} seconds".format(seconds))
 		await asyncio.sleep(seconds)
-		await self.bot.say("{}: {} seconds have passed".format(ctx.author.mention, seconds))
+		await ctx.say("{}: {} seconds have passed".format(ctx.author.mention, seconds))
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
