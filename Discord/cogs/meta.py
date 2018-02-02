@@ -332,7 +332,7 @@ class Meta:
 	@commands.is_owner()
 	async def changenickname(self, ctx, *, nickname : str):
 		'''Update my nickname'''
-		await self.bot.change_nickname(ctx.me, nickname)
+		await ctx.me.edit(nick = nickname)
 	
 	@commands.command(aliases = ["setavatar", "update_avatar", "set_avatar"])
 	@commands.is_owner()
