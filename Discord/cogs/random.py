@@ -145,22 +145,9 @@ class Random:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def cat(self, ctx, *, category : str = ""):
-		'''
-		Random image of a cat
-		cat categories (cats) for different categories you can choose from
-		cat <category> for a random image of a cat from that category
-		'''
-		if category and category in ("categories", "cats"):
-			async with clients.aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
-				data = await resp.text()
-			try:
-				categories = xml.etree.ElementTree.fromstring(data).findall(".//name")
-			except xml.etree.ElementTree.ParseError:
-				await ctx.embed_reply(":no_entry: Error")
-			else:
-				await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
-		elif category:
+	async def cat(self, ctx, category : str = ""):
+		'''Random image of a cat'''
+		if category:
 			async with clients.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={}".format(category)) as resp:
 				data = await resp.text()
 			try:
@@ -181,6 +168,19 @@ class Random:
 				await ctx.embed_reply(":no_entry: Error")
 			else:
 				await ctx.embed_reply("[:cat:]({})".format(url), image_url = url)
+	
+	@cat.command(name = "categories", aliases = ["cats"])
+	@checks.not_forbidden()
+	async def cat_categories(self, ctx):
+		'''Categories of cat images'''
+		async with clients.aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
+			data = await resp.text()
+		try:
+			categories = xml.etree.ElementTree.fromstring(data).findall(".//name")
+		except xml.etree.ElementTree.ParseError:
+			await ctx.embed_reply(":no_entry: Error")
+		else:
+			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 	
 	@commands.command()
 	@checks.not_forbidden()
