@@ -282,9 +282,9 @@ class Meta:
 		total_members_online  = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(self.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
-		channel_types = [c.type for c in self.bot.get_all_channels()]
-		text_count = channel_types.count(discord.ChannelType.text)
-		voice_count = channel_types.count(discord.ChannelType.voice)
+		channel_types = [type(c) for c in self.bot.get_all_channels()]
+		text_count = channel_types.count(discord.TextChannel)
+		voice_count = channel_types.count(discord.VoiceChannel)
 		total_uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(stats["uptime"])))
 		top_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)
 		session_top_5 = sorted(self.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
