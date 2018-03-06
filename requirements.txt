@@ -1,7 +1,7 @@
 git+git://github.com/Rapptz/discord.py.git@rewrite#egg=discord.py[voice]
 # Lock version?
 
-aiohttp==3.0.5
+aiohttp==3.0.6
 beautifulsoup4==4.6.0
 clarifai==2.0.33
 # deuces==0.1
