@@ -29,8 +29,7 @@ scipy==1.0.0
 seaborn==0.8.1
 speechrecognition==3.8.1
 sympy==1.1.1
-# tweepy==3.6.0
-git+git://github.com/tweepy/tweepy.git@80015db
+tweepy==3.6.0
 wand==0.4.4
 wolframalpha==3.0
 wordnik-py3==2.1.2
