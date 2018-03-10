@@ -48,7 +48,7 @@ future==0.16.0
 idna==2.6
 idna-ssl==1.0.0
 imageio==2.2.0
-jaraco.itertools==2.1
+jaraco.itertools==2.1.1
 jsonschema==2.6.0
 more-itertools==4.1.0
 mpmath==1.0.0
