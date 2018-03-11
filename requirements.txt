@@ -60,7 +60,7 @@ pycparser==2.18
 pynacl==1.1.2
 pyparsing==2.2.0
 pysocks==1.6.8
-pytz==2017.2
+pytz==2018.3
 requests==2.18.4
 requests-oauthlib==0.8.0
 six==1.11.0
