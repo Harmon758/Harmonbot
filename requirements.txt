@@ -33,7 +33,7 @@ tweepy==3.6.0
 wand==0.4.4
 wolframalpha==3.0
 wordnik-py3==2.1.2
-youtube-dl==2017.3.10
+youtube-dl==2017.3.14
 
 async-timeout==2.0.0
 certifi==2018.1.18
