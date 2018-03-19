@@ -36,6 +36,7 @@ wordnik-py3==2.1.2
 youtube-dl==2017.3.14
 
 async-timeout==2.0.1
+attrs==17.4.0
 certifi==2018.1.18
 cffi==1.11.5
 chardet==3.0.4
