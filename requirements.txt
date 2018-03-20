@@ -5,7 +5,7 @@ aiohttp==3.0.9
 beautifulsoup4==4.6.0
 clarifai==2.0.33
 # deuces==0.1
-dice==1.1.1
+dice==2.2.0
 emoji==0.4.5
 feedparser==5.2.1
 imgurpython==1.1.7
