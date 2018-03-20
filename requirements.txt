@@ -31,7 +31,7 @@ speechrecognition==3.8.1
 sympy==1.1.1
 tweepy==3.6.0
 wand==0.4.4
-wolframalpha==3.0
+wolframalpha==3.0.1
 wordnik-py3==2.1.2
 youtube-dl==2018.3.20
 
