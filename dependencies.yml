@@ -1,0 +1,8 @@
+collectors:
+
+- type: python-pip
+  path: requirements.txt
+  actors:
+  # pull requests for all major, minor, and patch updates
+  - type: python-pip
+    versions: "Y.Y.Y"
