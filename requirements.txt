@@ -11,7 +11,7 @@ feedparser==5.2.1
 imgurpython==1.1.7
 inflect==0.2.5
 isodate==0.5.4
-matplotlib==1.5.3
+matplotlib==2.2.2
 # 2.0.0 - http://bugs.python.org/issue25778
 moviepy==0.2.2.13
 numexpr==2.6.4
