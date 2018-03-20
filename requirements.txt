@@ -55,7 +55,7 @@ more-itertools==4.1.0
 mpmath==1.0.0
 multidict==4.1.0
 oauthlib==2.0.6
-olefile==0.44
+olefile==0.45.1
 pillow==5.0.0
 pycparser==2.18
 pynacl==1.1.2
