@@ -6,3 +6,7 @@ collectors:
   # pull requests for all major, minor, and patch updates
   - type: python-pip
     versions: "Y.Y.Y"
+    settings:
+      related_pr_behavior: close
+      github_labels:
+      - dependency update
