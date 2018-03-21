@@ -13,7 +13,7 @@ inflect==0.2.5
 isodate==0.6.0
 matplotlib==1.5.3
 # 2.0.0 - http://bugs.python.org/issue25778
-moviepy==0.2.2.13
+moviepy==0.2.3.2
 numexpr==2.6.4
 numpy==1.14.1
 # +mkl
