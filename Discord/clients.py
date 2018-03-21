@@ -236,11 +236,7 @@ async def _update_discord_bots_stats():
 	async with aiohttp_session.post("https://bots.discord.pw/api/bots/{}/stats".format(client.user.id), 
 	headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}, 
 	data = json.dumps({"server_count": len(client.guilds)})) as resp:
-		# Change to check for 200?
-		if resp.status in (500, 502, 504, 522):
-			return "Error: {}".format(resp.status)
-		response = await resp.json()
-	return response
+		return resp.status
 
 @client.listen()
 async def on_ready():
