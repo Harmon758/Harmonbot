@@ -1,6 +1,7 @@
 # Harmonbot
 
 [![Build Status](https://travis-ci.org/Harmon758/Harmonbot.svg?branch=master)](https://travis-ci.org/Harmon758/Harmonbot)
+[![Updates](https://pyup.io/repos/github/Harmon758/Harmonbot/shield.svg)](https://pyup.io/repos/github/Harmon758/Harmonbot/)
 [![Join the chat at https://gitter.im/Harmonbot/Lobby](https://badges.gitter.im/Harmonbot/Lobby.svg)](https://gitter.im/Harmonbot/Lobby)
 
 Multi-Platform Factotum Bot
