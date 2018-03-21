@@ -13,7 +13,6 @@ imgurpython==1.1.7
 inflect==0.2.5
 isodate==0.6.0
 matplotlib==2.2.2
-# 2.0.0 - http://bugs.python.org/issue25778
 numexpr==2.6.4
 numpy==1.14.2
 pandas==0.22.0
@@ -48,6 +47,7 @@ idna==2.6
 idna-ssl==1.0.1
 jaraco.itertools==2.1.1
 jsonschema==2.6.0
+kiwisolver==1.0.1
 lxml==3.8.0
 more-itertools==4.1.0
 mpmath==1.0.0
@@ -62,6 +62,7 @@ pysocks==1.6.8
 pytz==2018.3
 requests==2.18.4
 requests-oauthlib==0.8.0
+setuptools==39.0.1
 six==1.11.0
 urllib3==1.22
 websockets==4.0.1
