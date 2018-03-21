@@ -105,7 +105,7 @@ class RSS:
 									embed.set_footer(text = feed_info.feed.title, icon_url = feed_info.feed.get("icon", discord.Embed.Empty))
 									text_channel = self.bot.get_channel(int(channel["id"]))
 									if text_channel:
-										await self.bot.send_message(text_channel, embed = embed)
+										await text_channel.send(embed = embed)
 								elif time_difference.total_seconds() < 0:
 									# print(feed)
 									pass
