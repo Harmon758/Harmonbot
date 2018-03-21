@@ -4,9 +4,14 @@ collectors:
   path: requirements.txt
   actors:
   # pull requests for all major, minor, and patch updates
-  - type: python-pip
+  # - type: python-pip
+    # versions: "Y.Y.Y"
+    # settings:
+      # related_pr_behavior: close
+      # github_labels:
+      # - dependency update
+  - type: repo-issue
     versions: "Y.Y.Y"
     settings:
-      related_pr_behavior: close
       github_labels:
       - dependency update
