@@ -150,6 +150,15 @@ class Meta:
 		embed.set_field_at(1, name = "CPU", value = "{}%".format(cpu))
 		await self.bot.edit_message(message, embed = embed)
 	
+	@commands.command(aliases = ["category"])
+	@checks.not_forbidden()
+	async def cog(self, ctx, command):
+		'''Find what cog/category a command is in'''
+		if command not in self.bot.all_commands:
+			await ctx.embed_reply(":no_entry: Error: command not found")
+			return
+		await ctx.embed_reply(self.bot.all_commands[command].cog_name)
+	
 	@commands.command()
 	@commands.is_owner()
 	async def disable(self, ctx, command : str):
