@@ -47,7 +47,7 @@ if __name__ == "__main__":
 				text_channel = client.get_channel(voice_channel[1])
 				if text_channel:
 					client.cogs["Audio"].players[text_channel.guild.id] = audio_player.AudioPlayer(client, text_channel)
-					await client.join_voice_channel(client.get_channel(voice_channel[0]))
+					await client.get_channel(voice_channel[0]).connect()
 		'''
 		for folder in os.listdir(clients.data_path + "/server_data"):
 			with open(clients.data_path + "/server_data/{}/settings.json".format(folder), 'r') as settings_file:
