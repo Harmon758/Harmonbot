@@ -8,6 +8,7 @@ clarifai==2.0.33
 dice==1.1.1
 emoji==0.4.5
 feedparser==5.2.1
+imageio==2.3.0
 imgurpython==1.1.7
 inflect==0.2.5
 isodate==0.6.0
@@ -46,7 +47,6 @@ enum34==1.1.6
 future==0.16.0
 idna==2.6
 idna-ssl==1.0.1
-imageio==2.3.0
 jaraco.itertools==2.1.1
 jsonschema==2.6.0
 lxml==3.8.0
