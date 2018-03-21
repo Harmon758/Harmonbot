@@ -59,7 +59,7 @@ game_statuses = ("with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac
 class Bot(commands.Bot):
 	
 	def __init__(self, command_prefix):
-		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), activity = discord.Streaming(name = random.choice(game_statuses), url = stream_url))
+		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), activity = discord.Streaming(name = random.choice(game_statuses), url = stream_url), case_insensitive = True)
 		
 		# Constants
 		self.version = "1.0.0-rc.1"
@@ -142,10 +142,9 @@ class Bot(commands.Bot):
 		except (discord.Forbidden, discord.NotFound):
 			pass
 	
-	# Case-Insensitive commands
+	# Override Context class
 	async def get_context(self, message, *, cls = Context):
 		ctx = await super().get_context(message, cls = cls)
-		if ctx.invoked_with: ctx.command = self.all_commands.get(ctx.invoked_with.lower())
 		return ctx
 	
 	# TODO: Case-Insensitive subcommands (override Group)
