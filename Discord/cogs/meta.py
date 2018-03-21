@@ -12,6 +12,7 @@ import inspect
 import json
 import os
 import psutil
+import random
 import re
 import subprocess
 import sys
@@ -337,90 +338,130 @@ class Meta:
 	
 	# Update Bot Stuff
 	
-	@commands.command(aliases = ["change_nickname"])
-	@commands.is_owner()
-	async def changenickname(self, ctx, *, nickname : str):
-		'''Update my nickname'''
-		await ctx.me.edit(nick = nickname)
-	
-	@commands.command(aliases = ["setavatar", "update_avatar", "set_avatar"])
-	@commands.is_owner()
-	async def updateavatar(self, ctx, filename : str):
-		'''Update my avatar'''
-		if not os.path.isfile(clients.data_path + "/avatars/{}".format(filename)):
-			await ctx.embed_reply(":no_entry: Avatar not found")
-			return
-		with open(clients.data_path + "/avatars/{}".format(filename), "rb") as avatar_file:
-			await self.bot.edit_profile(avatar = avatar_file.read())
-		await ctx.embed_reply("Updated avatar")
-	
-	@commands.command(aliases = ["random_game"], hidden = True)
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def randomgame(self, ctx):
-		'''Update to a random playing/game status message'''
-		await clients.random_game_status()
-		# await ctx.embed_reply("I changed to a random game status")
+	async def harmonbot(self, ctx):
+		'''Me'''
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
-	@commands.command(aliases = ["updateplaying", "updategame", "changeplaying", "changegame", "setplaying", "set_game", "update_playing", "update_game", "change_playing", "change_game", "set_playing"])
-	@commands.is_owner()
-	async def setgame(self, ctx, *, name : str):
-		'''Set my playing/game status message'''
-		updated_game = ctx.me.game
-		if not updated_game:
-			updated_game = discord.Game(name = name)
-		else:
-			updated_game.name = name
-		await self.bot.change_status(game = updated_game)
-		await ctx.embed_reply("Game updated")
-	
-	@commands.command(aliases = ["set_streaming"])
-	@commands.is_owner()
-	async def setstreaming(self, ctx, option : str, *url : str):
-		'''Set my streaming status'''
-		if option == "on" or option == "true":
-			if not url:
-				await clients.set_streaming_status()
-				return
+	@harmonbot.group(name = "activity", aliases = ["game", "playing", "status"], invoke_without_command = True)
+	@commands.guild_only()
+	@checks.not_forbidden()
+	async def harmonbot_activity(self, ctx, *, name : str = ""):
+		'''My activity'''
+		# TODO: Handle in DMs
+		activity = ctx.me.activity
+		if not name:
+			await ctx.embed_reply(activity.name)
+		elif checks.is_owner_check(ctx):
+			if not activity:
+				activity = discord.Activity(name = name, type = discord.ActivityType.playing)
 			else:
-				updated_game = ctx.me.game
-				if not updated_game:
-					updated_game = discord.Game(url = url[0], type = 1)
+				activity.name = name
+			await self.bot.change_presence(activity = activity)
+			await ctx.embed_reply("Activity updated")
+		else:
+			raise commands.NotOwner
+	
+	@harmonbot_activity.command(name = "clear")
+	@commands.is_owner()
+	@commands.guild_only()
+	async def harmonbot_activity_clear(self, ctx):
+		'''Clear my activity'''
+		if ctx.me.activity:
+			await self.bot.change_presence() # status
+			await ctx.embed_reply("Activity cleared")
+		else:
+			await ctx.embed_reply(":no_entry: There is no activity to clear")
+	
+	@harmonbot_activity.command(name = "random", hidden = True)
+	@commands.guild_only()
+	@checks.not_forbidden()
+	async def harmonbot_activity_random(self, ctx):
+		'''Change my activity to a random one'''
+		activity = ctx.me.activity
+		if not activity:
+			activity = discord.Activity(name = random.choice(self.bot.game_statuses), type = discord.ActivityType.playing)
+		else:
+			activity.name = random.choice(self.bot.game_statuses)
+		await self.bot.change_presence(activity = activity)
+		await ctx.embed_reply("I changed my activity to a random one")
+	
+	@harmonbot_activity.command(name = "type")
+	@commands.guild_only()
+	@checks.not_forbidden()
+	async def harmonbot_activity_type(self, ctx, type : str = ""):
+		'''
+		My activity type
+		Valid types: playing, streaming, listening, watching
+		'''
+		activity = ctx.me.activity
+		if not type:
+			await ctx.embed_reply(str(activity.type).replace("ActivityType.", ""))
+		elif checks.is_owner_check(ctx):
+			# TODO: lowercase converter
+			if type.lower() in ("play", "stream", "listen", "watch"):
+				type = type.lower() + "ing"
+			if type.lower() in ("playing", "streaming", "listening", "watching"):
+				activity_type = getattr(discord.ActivityType, type.lower())
+				if not activity:
+					activity = discord.Activity(name = random.choice(self.bot.game_statuses), type = activity_type)
 				else:
-					updated_game.url = url[0]
-					updated_game.type = 1
+					activity = discord.Activity(name = activity.name, url = activity.url, type = activity_type)
+				if type.lower() == "streaming" and not activity.url:
+					activity.url = self.bot.stream_url
+				await self.bot.change_presence(activity = activity)
+				await ctx.embed_reply("Updated activity type")
+			else:
+				await ctx.embed_reply(":no_entry: That's not a valid activity type")
 		else:
-			updated_game = ctx.me.game
-			updated_game.type = 0
-		await self.bot.change_status(game = updated_game)
+			raise commands.NotOwner
 	
-	@commands.command(aliases = ["clearplaying", "clear_game", "clear_playing"])
-	@commands.is_owner()
-	async def cleargame(self, ctx):
-		'''Clear my playing/game status message'''
-		updated_game = ctx.me.game
-		if updated_game and updated_game.name:
-			updated_game.name = None
-			await self.bot.change_status(game = updated_game)
-			await ctx.embed_reply("Game status cleared")
+	@harmonbot_activity.command(name = "url")
+	@commands.guild_only()
+	@checks.not_forbidden()
+	async def harmonbot_activty_url(self, ctx, url : str = ""):
+		'''My activity url'''
+		activity = ctx.me.activity
+		if not url:
+			await ctx.embed_reply(activity.url)
+		elif checks.is_owner_check(ctx):
+			if not activity:
+				activity = discord.Stream(name = random.choice(self.bot.game_statuses), url = url)
+			else:
+				activity.url = url
+			await self.bot.change_presence(activity = activity)
+			await ctx.embed_reply("Updated activity url")
 		else:
-			await ctx.embed_reply(":no_entry: There is no game status to clear")
+			raise commands.NotOwner
 	
-	@commands.command(aliases = ["clear_streaming"])
-	@commands.is_owner()
-	async def clearstreaming(self, ctx, *option : str):
-		'''Clear my streaming status'''
-		updated_game = ctx.me.game
-		if updated_game and (updated_game.url or updated_game.type):
-			updated_game.url = None
-			if option and option[0] == "url":
-				await self.bot.change_status(game = updated_game)
-				await ctx.embed_reply("Streaming url cleared")
+	@harmonbot.command(name = "avatar")
+	@checks.not_forbidden()
+	async def harmonbot_avatar(self, ctx, filename : str = ""):
+		'''My avatar'''
+		if not filename:
+			await ctx.embed_reply(title = "My avatar", image_url = ctx.me.avatar_url)
+		elif checks.is_owner_check(ctx):
+			if not os.path.isfile(clients.data_path + "/avatars/{}".format(filename)):
+				await ctx.embed_reply(":no_entry: Avatar not found")
 				return
-			updated_game.type = 0
-			await self.bot.change_status(game = updated_game)
-			await ctx.embed_reply("Streaming status and url cleared")
+			with open(clients.data_path + "/avatars/{}".format(filename), "rb") as avatar_file:
+				await self.bot.user.edit(avatar = avatar_file.read())
+			await ctx.embed_reply("Updated avatar")
 		else:
-			await ctx.embed_reply(":no_entry: There is no streaming status or url to clear")
+			raise commands.NotOwner
+	
+	@harmonbot.command(name = "nickname")
+	@commands.guild_only()
+	@checks.not_forbidden()
+	async def harmonbot_nickname(self, ctx, *, nickname : str = ""):
+		'''My nickname'''
+		if not nickname:
+			await ctx.embed_reply(ctx.me.nick)
+		elif checks.is_owner_check(ctx):
+			await ctx.me.edit(nick = nickname)
+		else:
+			raise commands.NotOwner
 	
 	@commands.command(hidden = True)
 	@commands.is_owner()
