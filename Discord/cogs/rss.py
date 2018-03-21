@@ -97,7 +97,7 @@ class RSS:
 								if 0 <= time_difference.total_seconds() <= 60:
 									description = item.get("summary")
 									if description:
-										description = BeautifulSoup(description).text
+										description = BeautifulSoup(description, "lxml").text
 										if len(description) > 2048: description = description[:2045] + "..."
 									title = item.get("title")
 									if len(title) > 256: title = title[:253] + "..."
