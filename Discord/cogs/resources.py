@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import asyncio
 import clarifai.rest
-import collections
 import datetime
 import dateutil.parser
 import imgurpython

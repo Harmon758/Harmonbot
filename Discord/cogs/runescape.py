@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+import collections
 import csv
 # import re
 
