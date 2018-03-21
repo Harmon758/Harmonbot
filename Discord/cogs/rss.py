@@ -41,11 +41,11 @@ class RSS:
 	@checks.is_permitted()
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
-		channel = discord.utils.find(lambda c: c["id"] == ctx.channel.id, self.feeds_info["channels"])
+		channel = discord.utils.find(lambda c: c["id"] == str(ctx.channel.id), self.feeds_info["channels"])
 		if channel:
 			channel["feeds"].append(url)
 		else:
-			self.feeds_info["channels"].append({"name": ctx.channel.name, "id": ctx.channel.id, "feeds": [url]})
+			self.feeds_info["channels"].append({"name": ctx.channel.name, "id": str(ctx.channel.id), "feeds": [url]})
 		with open(clients.data_path + "/rss_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		await ctx.embed_reply("The feed, {}, has been added to this channel".format(url))
@@ -54,7 +54,7 @@ class RSS:
 	@checks.is_permitted()
 	async def rss_remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
-		channel = discord.utils.find(lambda c: c["id"] == ctx.channel.id, self.feeds_info["channels"])
+		channel = discord.utils.find(lambda c: c["id"] == str(ctx.channel.id), self.feeds_info["channels"])
 		if not channel or url not in channel["feeds"]:
 			await ctx.embed_reply(":no_entry: This channel isn't following that feed")
 			return
@@ -68,7 +68,7 @@ class RSS:
 	async def feeds(self, ctx):
 		'''Show feeds being followed in this channel'''
 		for channel in self.feeds_info["channels"]:
-			if ctx.channel.id == channel["id"]:
+			if str(ctx.channel.id) == channel["id"]:
 				await ctx.embed_reply("\n".join(channel["feeds"]))
 	
 	async def check_rss_feeds(self):
@@ -103,7 +103,7 @@ class RSS:
 									if len(title) > 256: title = title[:253] + "..."
 									embed = discord.Embed(title = title, url = item.link, description = description, timestamp = datetime.datetime.utcnow(), color = self.bot.rss_color) # timestamp = published_time ?
 									embed.set_footer(text = feed_info.feed.title, icon_url = feed_info.feed.get("icon", discord.Embed.Empty))
-									text_channel = self.bot.get_channel(channel["id"])
+									text_channel = self.bot.get_channel(int(channel["id"]))
 									if text_channel:
 										await self.bot.send_message(text_channel, embed = embed)
 								elif time_difference.total_seconds() < 0:
