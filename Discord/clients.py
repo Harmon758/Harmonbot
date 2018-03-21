@@ -59,7 +59,7 @@ game_statuses = ("with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac
 class Bot(commands.Bot):
 	
 	def __init__(self, command_prefix):
-		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), game = discord.Game(name = random.choice(game_statuses), url = stream_url, type = 1))
+		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), activity = discord.Streaming(name = random.choice(game_statuses), url = stream_url))
 		
 		# Constants
 		self.version = "1.0.0-rc.1"
@@ -275,24 +275,24 @@ async def random_game_status():
 	me = discord.utils.find(lambda s: s != None, client.guilds).me
 	if not me:
 		return
-	elif not me.game:
-		updated_game = discord.Game(name = random.choice(game_statuses))
+	elif not me.activity:
+		activity = discord.Activity(name = random.choice(game_statuses))
 	else:
-		updated_game = me.game
-		updated_game.name = random.choice(game_statuses)
-	await client.change_presence(game = updated_game)
+		activity = me.activity
+		activity.name = random.choice(game_statuses)
+	await client.change_presence(activity = activity)
 
 async def set_streaming_status(client):
 	me = discord.utils.get(client.guilds).me
 	if not me:
 		return
-	elif not me.game:
-		updated_game = discord.Game(url = stream_url, type = 1)
+	elif not me.activity:
+		activity = discord.Streaming(url = stream_url, type = discord.ActivityType.streaming)
 	else:
-		updated_game = me.game
-		updated_game.url = stream_url
-		updated_game.type = 1
-	await client.change_presence(game = updated_game)
+		activity = me.activity
+		activity.url = stream_url
+		activity.type = discord.ActivityType.streaming
+	await client.change_presence(activity = activity)
 
 
 # Restart + Shutdown Tasks
