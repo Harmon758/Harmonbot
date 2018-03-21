@@ -275,7 +275,7 @@ if __name__ == "__main__":
 			await ctx.embed_reply(":no_entry: You don't have permission to use that command here")
 		elif isinstance(error, commands.BadArgument):
 			await ctx.embed_reply(":no_entry: Error: Invalid Input: {}".format(error))
-		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.": # better way?
+		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and error.original.code == 50034:
 			await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
 		# TODO: check embed links permission
 		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
