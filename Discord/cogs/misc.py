@@ -129,14 +129,14 @@ class Misc:
 			clients.create_file("user_data/{}/pokes".format(ctx.author.id))
 			with open(clients.data_path + "/user_data/{}/pokes.json".format(ctx.author.id), 'r') as pokes_file:
 				pokes_data = json.load(pokes_file)
-			pokes_data[to_poke.id] = pokes_data.get(to_poke.id, 0) + 1
+			pokes_data[str(to_poke.id)] = pokes_data.get(str(to_poke.id), 0) + 1
 			with open(clients.data_path + "/user_data/{}/pokes.json".format(ctx.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
 			embed = discord.Embed(color = clients.bot_color)
 			embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[to_poke.id]))
-			await self.bot.send_message(to_poke, embed = embed)
-			await ctx.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[to_poke.id])), footer_text = "In response to: {}".format(ctx.message.clean_content))
+			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)]))
+			await to_poke.send(embed = embed)
+			await ctx.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])), footer_text = "In response to: {}".format(ctx.message.clean_content))
 	
 	@commands.command()
 	@checks.not_forbidden()
