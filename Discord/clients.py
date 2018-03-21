@@ -319,7 +319,7 @@ async def shutdown_tasks():
 	audio_cog = client.get_cog("Audio")
 	if audio_cog: audio_cog.cancel_all_tasks()
 	# Close aiohttp session
-	aiohttp_session.close()
+	await aiohttp_session.close()
 	# Save uptime
 	with open(data_path + "/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
