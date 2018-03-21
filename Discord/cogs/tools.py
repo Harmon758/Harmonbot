@@ -7,7 +7,6 @@ import difflib
 import imageio
 import json
 import matplotlib
-import moviepy.editor
 import numexpr
 import numpy
 import pandas
@@ -15,11 +14,9 @@ from PIL import Image, ImageDraw, ImageFont
 import random
 import re
 import seaborn
-# import subprocess
 import textwrap
 import time
 import unicodedata
-import urllib
 
 import clients
 from clients import py_code_block
@@ -348,16 +345,10 @@ class Tools:
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
-	async def webmtogif(self, ctx, url : str):
+	async def webmtogif(self, ctx):
 		'''
-		Convert webm to gif files
-		Only converts at 1 fps
-		See http://imgur.com/vidgif instead
+		This command has been deprecated
+		See https://imgur.com/vidgif instead
 		'''
-		webmfile = urllib.request.urlretrieve(url, clients.data_path + "/temp/webmtogif.webm")
-		# subprocess.call(["ffmpeg", "-i", clients.data_path + "/temp/webmtogif.webm", "-pix_fmt", "rgb8", clients.data_path + "/temp/webmtogif.gif"], shell=True)
-		clip = moviepy.editor.VideoFileClip(clients.data_path + "/temp/webmtogif.webm")
-		clip.write_gif(clients.data_path + "/temp/webmtogif.gif", fps = 1, program = "ffmpeg")
-		# clip.write_gif(clients.data_path + "/temp/webmtogif.gif", fps=15, program="ImageMagick", opt="optimizeplus")
-		await self.bot.send_file(ctx.channel, clients.data_path + "/temp/webmtogif.gif")
+		await ctx.embed_reply("See https://imgur.com/vidgif")
 
