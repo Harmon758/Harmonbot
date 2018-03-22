@@ -502,7 +502,7 @@ class AudioPlayer:
 		except speech_recognition.RequestError as e:
 			await self.bot.send_embed(self.text_channel, ":warning: Could not request results from Google Speech Recognition service; {}".format(e))
 		else:
-			response = clients.aiml_kernel.respond(text)
+			response = self.bot.aiml_kernel.respond(text)
 			# TODO: Handle brain not loaded?
 			if not response:
 				games_cog = client.get_cog("Games")
