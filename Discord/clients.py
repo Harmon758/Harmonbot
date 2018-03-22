@@ -34,7 +34,6 @@ delete_limit = 10000
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
-aiml_kernel = aiml.Kernel()
 aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
 application_info = None
@@ -42,15 +41,6 @@ harmonbot_listener = None
 # TODO: Include owner variable for user object?
 sys.setrecursionlimit(5000)
 
-
-aiml_predicates = {"name": "Harmonbot", "botmaster": "owner", "master": "Harmon", "domain": "tool", "kingdom": "machine", "phylum": "software", "class": "program", "order": "artificial intelligence", "family": "bot", "genus": "python bot", "species": "Discord bot"}
-for predicate, value in aiml_predicates.items():
-	aiml_kernel.setBotPredicate(predicate, value)
-if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
-	aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
-elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
-	aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
-	aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 
 class Bot(commands.Bot):
 	
@@ -106,6 +96,17 @@ class Bot(commands.Bot):
 		self.wordnik_client = swagger.ApiClient(credentials.wordnik_apikey, "http://api.wordnik.com/v4")
 		self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
 		self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
+		
+		# AIML Kernel
+		self.aiml_kernel = aiml.Kernel()
+		self.aiml_predicates = {"name": "Harmonbot", "botmaster": "owner", "master": "Harmon", "domain": "tool", "kingdom": "machine", "phylum": "software", "class": "program", "order": "artificial intelligence", "family": "bot", "genus": "python bot", "species": "Discord bot"}
+		for predicate, value in self.aiml_predicates.items():
+			self.aiml_kernel.setBotPredicate(predicate, value)
+		if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
+			self.aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
+		elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
+			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 		
 		# Add load, unload, and reload cog commands
 		self.add_command(self.load)
