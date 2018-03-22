@@ -1,6 +1,8 @@
 
 from discord.ext import commands
 
+from cryptography.hazmat.backends.openssl import backend as openssl_backend
+from cryptography.hazmat.primitives import hashes as crypto_hashes
 import hashlib
 import pygost.gost28147
 import pygost.gost28147_mac
@@ -180,6 +182,22 @@ class Cryptography:
 	async def encode_adler32(self, ctx, *, message : str):
 		'''Compute Adler-32 checksum'''
 		await ctx.embed_reply(zlib.adler32(message.encode("utf-8")))
+	
+	@encode.command(name = "blake2b")
+	@checks.not_forbidden()
+	async def encode_blake2b(self, ctx, *, message : str):
+		'''64-byte digest BLAKE2b'''
+		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2b(64), backend = openssl_backend)
+		digest.update(message.encode("utf-8"))
+		await ctx.embed_reply(digest.finalize())
+	
+	@encode.command(name = "blake2s")
+	@checks.not_forbidden()
+	async def encode_blake2s(self, ctx, *, message : str):
+		'''32-byte digest BLAKE2s'''
+		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2s(32), backend = openssl_backend)
+		digest.update(message.encode("utf-8"))
+		await ctx.embed_reply(digest.finalize())
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
 	@checks.not_forbidden()
