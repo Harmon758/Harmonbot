@@ -4,7 +4,7 @@ from discord.ext import commands
 
 import dateutil
 import isodate
-import unicodedata
+import unicodedata2 as unicodedata
 import urllib
 
 import clients
