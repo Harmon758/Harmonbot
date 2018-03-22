@@ -4,6 +4,7 @@ git+git://github.com/Rapptz/discord.py.git@rewrite#egg=discord.py[voice]
 aiohttp==3.0.9
 beautifulsoup4==4.6.0
 clarifai==2.0.33
+cryptography==2.2.1
 # deuces==0.1
 dice==1.1.1
 emoji==0.4.5
@@ -34,6 +35,7 @@ wolframalpha==3.0.1
 wordnik-py3==2.1.2
 youtube-dl==2018.3.20
 
+asn1crypto==0.24.0
 async-timeout==2.0.1
 attrs==17.4.0
 certifi==2018.1.18
