@@ -19,10 +19,11 @@ def setup(bot):
 			await ctx.embed_reply(":{}:".format(emote))
 		return emote_command
 	
-	for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc", "horse"):
+	for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc", "horse", "penguin", "dragon", "eagle", "bird"):
 		setattr(Misc, emote, emote_wrapper(emote))
 	setattr(Misc, "bunny", emote_wrapper("bunny", emote = "rabbit2"))
 	setattr(Misc, "cow", emote_wrapper("cow", emote = "cow2"))
+	setattr(Misc, "panda", emote_wrapper("panda", emote = "panda_face"))
 	
 	bot.add_cog(Misc(bot))
 
