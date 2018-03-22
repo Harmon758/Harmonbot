@@ -156,15 +156,15 @@ class Tools:
 		if not tag:
 			await ctx.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
 			return
-		if tag in self.tags_data.get(ctx.author.id, {}).get("tags", []):
-			await ctx.reply(self.tags_data[ctx.author.id]["tags"][tag])
+		if tag in self.tags_data.get(str(ctx.author.id), {}).get("tags", []):
+			await ctx.reply(self.tags_data[str(ctx.author.id)]["tags"][tag])
 		elif tag in self.tags_data["global"]:
 			await ctx.reply(self.tags_data["global"][tag]["response"])
 			self.tags_data["global"][tag]["usage_counter"] += 1
 			with open(clients.data_path + "/tags.json", 'w') as tags_file:
 				json.dump(self.tags_data, tags_file, indent = 4)
 		else:
-			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(ctx.author.id, {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
+			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(str(ctx.author.id), {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 			await ctx.embed_reply("Tag not found{}".format(close_matches))
 	
@@ -173,7 +173,7 @@ class Tools:
 		'''List your tags'''
 		if (await self.check_no_tags(ctx)): return
 		tags_paginator = paginator.CustomPaginator(seperator = ", ")
-		for tag in sorted(self.tags_data[ctx.author.id]["tags"].keys()):
+		for tag in sorted(self.tags_data[str(ctx.author.id)]["tags"].keys()):
 			tags_paginator.add_section(tag)
 		# DM
 		for page in tags_paginator.pages:
@@ -182,9 +182,9 @@ class Tools:
 	@tag.command(name = "add", aliases = ["make", "new", "create"])
 	async def tag_add(self, ctx, tag : str, *, content : str):
 		'''Add a tag'''
-		if not ctx.author.id in self.tags_data:
-			self.tags_data[ctx.author.id] = {"name" : ctx.author.name, "tags" : {}}
-		tags = self.tags_data[ctx.author.id]["tags"]
+		if not str(ctx.author.id) in self.tags_data:
+			self.tags_data[str(ctx.author.id)] = {"name" : ctx.author.name, "tags" : {}}
+		tags = self.tags_data[str(ctx.author.id)]["tags"]
 		if tag in tags:
 			await ctx.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
@@ -198,7 +198,7 @@ class Tools:
 		'''Edit one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
-		self.tags_data[ctx.author.id]["tags"][tag] = utilities.clean_content(content)
+		self.tags_data[str(ctx.author.id)]["tags"][tag] = utilities.clean_content(content)
 		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
@@ -209,7 +209,7 @@ class Tools:
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
 		try:
-			del self.tags_data[ctx.author.id]["tags"][tag]
+			del self.tags_data[str(ctx.author.id)]["tags"][tag]
 		except KeyError:
 			await ctx.embed_reply(":no_entry: Tag not found")
 			return
@@ -222,7 +222,7 @@ class Tools:
 	async def tag_expunge(self, ctx, owner : discord.Member, tag : str):
 		'''Delete someone else's tags'''
 		try:
-			del self.tags_data[owner.id]["tags"][tag]
+			del self.tags_data[str(owner.id)]["tags"][tag]
 		except KeyError:
 			await ctx.embed_reply(":no_entry: Tag not found")
 			return
@@ -234,7 +234,7 @@ class Tools:
 	async def tag_search(self, ctx, *, search : str):
 		'''Search your tags'''
 		if (await self.check_no_tags(ctx)): return
-		tags = self.tags_data[ctx.author.id]["tags"]
+		tags = self.tags_data[str(ctx.author.id)]["tags"]
 		results = [t for t in tags.keys() if search in t]
 		if results:
 			await ctx.embed_reply("{} tags found: {}".format(len(results), ", ".join(results)))
@@ -251,8 +251,8 @@ class Tools:
 		if tag in self.tags_data["global"]:
 			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		self.tags_data["global"][tag] = {"response": self.tags_data[ctx.author.id]["tags"][tag], "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
-		del self.tags_data[ctx.author.id]["tags"][tag]
+		self.tags_data["global"][tag] = {"response": self.tags_data[str(ctx.author.id)]["tags"][tag], "owner": str(ctx.author.id), "created_at": time.time(), "usage_counter": 0}
+		del self.tags_data[str(ctx.author.id)]["tags"][tag]
 		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been {}d".format(ctx.invoked_with))
@@ -271,7 +271,7 @@ class Tools:
 		if tag in tags:
 			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		tags[tag] = {"response": utilities.clean_content(content), "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
+		tags[tag] = {"response": utilities.clean_content(content), "owner": str(ctx.author.id), "created_at": time.time(), "usage_counter": 0}
 		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
@@ -282,7 +282,7 @@ class Tools:
 		if tag not in self.tags_data["global"]:
 			await ctx.embed_reply(":no_entry: That global tag doesn't exist")
 			return
-		elif self.tags_data["global"][tag]["owner"] != ctx.author.id:
+		elif self.tags_data["global"][tag]["owner"] != str(ctx.author.id):
 			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		self.tags_data["global"][tag]["response"] = utilities.clean_content(content)
@@ -296,7 +296,7 @@ class Tools:
 		if tag not in self.tags_data["global"]:
 			await ctx.embed_reply(":no_entry: That global tag doesn't exist")
 			return
-		elif self.tags_data["global"][tag]["owner"] != ctx.author.id:
+		elif self.tags_data["global"][tag]["owner"] != str(ctx.author.id):
 			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		del self.tags_data["global"][tag]
@@ -307,12 +307,12 @@ class Tools:
 	# TODO: global search, list?
 	
 	async def check_no_tags(self, ctx):
-		if not ctx.author.id in self.tags_data:
+		if not str(ctx.author.id) in self.tags_data:
 			await ctx.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
-		return not ctx.author.id in self.tags_data
+		return not str(ctx.author.id) in self.tags_data
 	
 	async def check_no_tag(self, ctx, tag):
-		tags = self.tags_data[ctx.author.id]["tags"]
+		tags = self.tags_data[str(ctx.author.id)]["tags"]
 		if not tag in tags:
 			close_matches = difflib.get_close_matches(tag, tags.keys())
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
