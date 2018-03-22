@@ -352,54 +352,12 @@ class Discord:
 			return
 		await self.bot.embed_reply("This server's icon:", image_url = ctx.guild.icon_url)
 	
-	@commands.command(aliases = ["serverinformation", "server_info", "server_information"], no_pm = True)
-	@checks.not_forbidden()
-	async def serverinfo(self, ctx):
-		'''Information about a server'''
-		server = ctx.guild
-		embed = discord.Embed(title = server.name, url = server.icon_url, timestamp = server.created_at, color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		embed.set_thumbnail(url = server.icon_url)
-		embed.add_field(name = "Owner", value = server.owner.mention)
-		embed.add_field(name = "ID", value = server.id)
-		embed.add_field(name = "Region", value = str(server.region))
-		embed.add_field(name = "Roles", value = len(server.roles))
-		channel_types = [c.type for c in server.channels]
-		text_count = channel_types.count(discord.ChannelType.text)
-		voice_count = channel_types.count(discord.ChannelType.voice)
-		embed.add_field(name = "Channels", value = "{} text\n{} voice".format(text_count, voice_count))
-		embed.add_field(name = "Members", value = "{}\n({} bots)".format(server.member_count, sum(m.bot for m in server.members)))
-		embed.add_field(name = "AFK Timeout", value = "{:g} min.".format(server.afk_timeout / 60))
-		embed.add_field(name = "AFK Channel", value = str(server.afk_channel))
-		embed.add_field(name = "Verification Level", value = str(server.verification_level).capitalize())
-		embed.add_field(name = "2FA Requirement", value = bool(server.mfa_level))
-		embed.add_field(name = "Default Channel", value = server.default_channel.mention)
-		if server.emojis:
-			emojis = [str(emoji) for emoji in server.emojis]
-			if len(' '.join(emojis)) <= 1024:
-				embed.add_field(name = "Emojis", value = ' '.join(emojis), inline = False)
-			else:
-				embed.add_field(name = "Emojis", value = ' '.join(emojis[:len(emojis) // 2]), inline = False)
-				embed.add_field(name = "Emojis", value = ' '.join(emojis[len(emojis) // 2:]), inline = False)
-		embed.set_footer(text = "Created")
-		await self.bot.say(embed = embed)
-	
 	@commands.command(aliases = ["server_owner"], no_pm = True)
 	@checks.not_forbidden()
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
 		owner = ctx.guild.owner
 		await self.bot.embed_reply("The owner of this server is {}".format(owner.mention), footer_text = str(owner), footer_icon_url = owner.avatar_url or owner.default_avatar_url)
-	
-	@commands.command(aliases = ["user_info"])
-	@checks.not_forbidden()
-	async def userinfo(self, ctx):
-		'''Information about a user'''
-		user = ctx.author
-		avatar = user.avatar_url or user.default_avatar_url
-		await self.bot.embed_reply(None, title = str(user), title_url = avatar, thumbnail_url = avatar, footer_text = "Created", timestamp = user.created_at, fields = [("User", user.mention), ("ID", user.id), ("Bot", user.bot)])
-		# member info, status, game, roles, color, etc.
 	
 	# Convert Attributes
 	

@@ -5,13 +5,10 @@ from discord.ext import commands
 import asyncio
 import clarifai.rest
 import datetime
-import dateutil.parser
 import imgurpython
-import isodate
 import json
 # import spotipy
 import unicodedata
-import urllib
 
 import clients
 import credentials
@@ -638,25 +635,6 @@ class Resources:
 			data = await resp.json()
 		return data["id"]
 	
-	@commands.command(aliases = ["spotify_info"])
-	@checks.not_forbidden()
-	async def spotifyinfo(self, ctx, url : str):
-		'''Information about a Spotify track'''
-		path = urllib.parse.urlparse(url).path
-		if path[:7] != "/track/":
-			await self.bot.embed_reply(":no_entry: Syntax error")
-			return
-		trackid = path[7:]
-		api_url = "https://api.spotify.com/v1/tracks/" + trackid
-		async with clients.aiohttp_session.get(api_url) as resp:
-			data = await resp.json()
-		# tracknumber = str(data["track_number"])
-		description = "Artist: [{}]({})\n".format(data["artists"][0]["name"], data["artists"][0]["external_urls"]["spotify"])
-		description += "Album: [{}]({})\n".format(data["album"]["name"], data["album"]["external_urls"]["spotify"])
-		description += "Duration: {}\n".format(utilities.secs_to_colon_format(data["duration_ms"] / 1000))
-		description += "[Preview]({})".format(data["preview_url"])
-		await self.bot.embed_reply(description, title = data["name"], title_url = url, thumbnail_url = data["album"]["images"][0]["url"])
-	
 	@commands.command(aliases = ["sptoyt", "spotify_to_youtube", "sp_to_yt"])
 	@checks.not_forbidden()
 	async def spotifytoyoutube(self, ctx, url : str):
@@ -829,45 +807,4 @@ class Resources:
 				return
 			data = await resp.json()
 		await ctx.embed_reply(title = data["title"], title_url = "http://xkcd.com/{}".format(data["num"]), image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
-	
-	@commands.command(aliases = ["ytinfo", "youtube_info", "yt_info"])
-	@checks.not_forbidden()
-	async def youtubeinfo(self, ctx, url : str):
-		'''Information on Youtube videos'''
-		# TODO: Add to audio cog?
-		'''
-		toggles = {}
-		with open(message.guild.name + "_toggles.json", "r") as toggles_file:
-			toggles = json.load(toggles_file)
-		if message.content.split()[1] == "on":
-			toggles["youtubeinfo"] = True
-			with open(message.guild.name + "_toggles.json", "w") as toggles_file:
-				json.dump(toggles, toggles_file, indent = 4)
-		elif message.content.split()[1] == "off":
-			toggles["youtubeinfo"] = False
-			with open(message.guild.name + "_toggles.json", "w") as toggles_file:
-				json.dump(toggles, toggles_file, indent = 4)
-		else:
-		'''
-		url_data = urllib.parse.urlparse(url)
-		query = urllib.parse.parse_qs(url_data.query)
-		if 'v' not in query:
-			await self.bot.embed_reply(":no_entry: Invalid input")
-			return
-		videoid = query['v'][0]
-		api_url = "https://www.googleapis.com/youtube/v3/videos?id={0}&key={1}&part=snippet,contentDetails,statistics".format(videoid, credentials.google_apikey)
-		async with clients.aiohttp_session.get(api_url) as resp:
-			data = await resp.json()
-		if not data:
-			await self.bot.embed_reply(":no_entry: Error")
-			return
-		data = data["items"][0]
-		info = "Length: {}".format(utilities.secs_to_letter_format(isodate.parse_duration(data["contentDetails"]["duration"]).total_seconds()))
-		likes, dislikes = int(data["statistics"]["likeCount"]), int(data["statistics"]["dislikeCount"])
-		info += "\nLikes: {:,}, Dislikes: {:,} ({:.2f}%)".format(likes, dislikes, likes / (likes + dislikes) * 100)
-		info += "\nViews: {:,}, Comments: {:,}".format(int(data["statistics"]["viewCount"]), int(data["statistics"]["commentCount"]))
-		info += "\nChannel: [{0[channelTitle]}](https://www.youtube.com/channel/{0[channelId]})".format(data["snippet"])
-		# data["snippet"]["description"]
-		await self.bot.embed_reply(info, title = data["snippet"]["title"], title_url = url, thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], footer_text = "Published on", timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"]).replace(tzinfo = None))
-		await self.bot.attempt_delete_message(ctx.message)
 

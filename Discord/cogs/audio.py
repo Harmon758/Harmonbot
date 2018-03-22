@@ -589,6 +589,11 @@ class Audio:
 		link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
 		return link
 	
+	async def get_spotify_access_token(self):
+		async with clients.aiohttp_session.post("https://accounts.spotify.com/api/token", params = {"grant_type": "client_credentials"}, headers = {"Authorization": "Basic {}".format(base64.b64encode((credentials.spotify_client_id + ':' + credentials.spotify_client_secret).encode()).decode()), "Content-Type": "application/x-www-form-urlencoded"}) as resp:
+			data = await resp.json()
+		return data["access_token"]
+	
 	# Termination
 	
 	def cancel_all_tasks(self):

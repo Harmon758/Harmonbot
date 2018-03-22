@@ -16,7 +16,6 @@ import re
 import seaborn
 import textwrap
 import time
-import unicodedata
 
 import clients
 from clients import py_code_block
@@ -35,20 +34,6 @@ class Tools:
 		clients.create_file("tags", content = {"global": {}})
 		with open(clients.data_path + "/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
-	
-	@commands.command(aliases = ["charinfo", "char_info", "character_info"])
-	@checks.not_forbidden()
-	async def characterinfo(self, ctx, character : str):
-		'''Information about a unicode character'''
-		character = character[0]
-		# TODO: return info on each character in the input string; use paste tool api?
-		try:
-			name = unicodedata.name(character)
-		except ValueError:
-			name = "UNKNOWN"
-		hex_char = hex(ord(character))
-		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char[2:])
-		await ctx.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
 	
 	@commands.command(aliases = ["choice", "pick"])
 	@checks.not_forbidden()
