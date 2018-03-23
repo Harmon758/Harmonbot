@@ -13,7 +13,7 @@ class GoFishRound:
 		self.deck = pydealer.Deck()
 		self.deck.shuffle()
 	
-	def start(number):
+	def start(self, number):
 		'''Start a round of Go Fish'''
 		self.started = True
 		self.number_of_players = number
@@ -25,7 +25,7 @@ class GoFishRound:
 				self.hands[i] = self.deck.deal(5)
 			self.hands[i].sort()
 	
-	def hand(player_number):
+	def hand(self, player_number):
 		hand_string = ""
 		if player_number <= self.number_of_players:
 			for card in hands[player_number].cards:
@@ -34,7 +34,7 @@ class GoFishRound:
 			return
 		return hand_string[:-2]
 
-	def ask(player_number, asked_player, card):
+	def ask(self, player_number, asked_player, card):
 		if self.played[player_number - 1]:
 			return -1
 		if player_number <= self.number_of_players and asked_player <= self.number_of_players:
