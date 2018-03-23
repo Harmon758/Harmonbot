@@ -83,7 +83,7 @@ class Location:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def geocode(self, ctx, *, address : str):	
+	async def geocode(self, ctx, *, address : str):
 		'''Convert addresses to geographic coordinates'''
 		async with clients.aiohttp_session.get("https://maps.googleapis.com/maps/api/geocode/json", params = {"address": address, "key": credentials.google_apikey}) as resp:
 			data = await resp.json()
