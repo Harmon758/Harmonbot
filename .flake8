@@ -16,6 +16,8 @@ exclude =
     */migrations/*
 
 ignore =
+	# E203: whitespace before ‘:’
+	E203,
 	# E251: unexpected spaces around keyword / parameter equals
 	E251,
 	# W191: indentation contains tabs
