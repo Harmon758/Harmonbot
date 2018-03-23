@@ -17,4 +17,6 @@ exclude =
 
 ignore =
 	# W191: indentation contains tabs
-	W191
+	W191,
+	# W293: blank line contains whitespace
+	W293
