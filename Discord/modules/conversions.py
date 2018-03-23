@@ -163,7 +163,7 @@ def ntok(newton):
 	return newton * 100.0 / 33.0 + 273.15
 
 # degrees Newton (°N) to degrees Rankine (°R) [exact]
-def ntore(newton):
+def ntor(newton):
 	return newton * 60.0 / 11.0 + 491.67
 
 # degrees Newton (°N) to degrees Delisle (°De) [exact]
