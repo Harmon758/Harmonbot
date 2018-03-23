@@ -23,6 +23,7 @@ class Permissions:
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@setpermission.command(name = "everyone")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def setpermission_everyone(self, ctx, permission : str, setting : bool = None):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
@@ -36,6 +37,7 @@ class Permissions:
 		await ctx.embed_reply("Permission updated\n{} set to {} for everyone".format(permission, setting))
 	
 	@setpermission.command(name = "role")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def setpermission_role(self, ctx, role : str, permission : str, setting : bool = None):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
@@ -54,6 +56,7 @@ class Permissions:
 		await ctx.embed_reply("Permission updated\n{} set to {} for the {} role".format(permission, setting, _role.name))
 	
 	@setpermission.command(name = "user")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def setpermission_user(self, ctx, user : str, permission : str, setting : bool = None):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
@@ -70,6 +73,7 @@ class Permissions:
 		await ctx.embed_reply("Permission updated\n{} set to {} for {}".format(permission, setting, _user))
 	
 	@commands.group(invoke_without_command = True)
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermission(self, ctx, *options : str):
 		'''Get a permission'''
@@ -84,6 +88,7 @@ class Permissions:
 			await ctx.embed_reply(":no_entry: Invalid input\ngetpermission everyone|role|user or <user> <permission>") #options
 	
 	@getpermission.command(name = "everyone")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermission_everyone(self, ctx, permission : str):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
@@ -92,6 +97,7 @@ class Permissions:
 		await ctx.embed_reply("{} is set to {} for everyone".format(permission, setting))
 	
 	@getpermission.command(name = "role")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermission_role(self, ctx, role : str, permission : str):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
@@ -104,6 +110,7 @@ class Permissions:
 		await ctx.embed_reply("{} is set to {} for the {} role".format(permission, setting, _role.name))
 	
 	@getpermission.command(name = "user")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermission_user(self, ctx, user : str, permission : str):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
@@ -119,6 +126,7 @@ class Permissions:
 		await ctx.embed_reply(":no_entry: Invalid input\nSee {}help getpermissions".format(ctx.prefix))
 	
 	@getpermissions.command(name = "everyone")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermissions_everyone(self, ctx):
 		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
@@ -130,6 +138,7 @@ class Permissions:
 		await self.bot.say(output)
 	
 	@getpermissions.command(name = "role")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermissions_role(self, ctx, role : str):
 		matches = [_role for _role in ctx.guild.roles if _role.name == role]
@@ -146,6 +155,7 @@ class Permissions:
 		await self.bot.say(output)
 	
 	@getpermissions.command(name = "user")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermissions_user(self, ctx, user : str):
 		_user = await utilities.get_user(ctx, user)
@@ -160,6 +170,7 @@ class Permissions:
 		await self.bot.say(output)
 	
 	@getpermissions.command(name = "command")
+	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermissions_command(self, ctx, command : str):
 		if command not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(command)))
