@@ -7,6 +7,7 @@ if __name__ == "__main__":
 	from discord.ext import commands
 	
 	import aiohttp
+	from aiohttp import web
 	import asyncio
 	import json
 	import os
@@ -285,6 +286,10 @@ if __name__ == "__main__":
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
 	
+	# Start web server
+	client.loop.run_until_complete(client.aiohttp_app_runner.setup())
+	client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
+	client.loop.run_until_complete(client.aiohttp_site.start())
 	
 	if clients.beta: client.command_prefix = '*'
 	token = credentials.beta_token if clients.beta else credentials.token

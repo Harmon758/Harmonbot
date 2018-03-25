@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import aiml
 import aiohttp
+from aiohttp import web
 import clarifai.rest
 import datetime
 import imgurpython
@@ -12,8 +13,10 @@ import json
 import os
 import pyowm
 import random
+import requests
 import sys
 import tweepy
+from urllib import parse
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 
@@ -108,6 +111,13 @@ class Bot(commands.Bot):
 			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
 			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 		
+		# Web Server
+		self.aiohttp_web_app = web.Application()
+		self.aiohttp_web_app.router.add_get('/', self.web_server_process_get)
+		self.aiohttp_web_app.router.add_post('/', self.web_server_process_post)
+		self.aiohttp_app_runner = web.AppRunner(self.aiohttp_web_app)
+		self.aiohttp_site = None # Initialized when starting web server
+		
 		# Add load, unload, and reload cog commands
 		self.add_command(self.load)
 		self.add_command(self.unload)
@@ -116,6 +126,58 @@ class Bot(commands.Bot):
 		# Remove default help command (to override)
 		self.remove_command("help")
 	
+	async def web_server_process_get(self, request):
+		'''
+		async for line in request.content:
+			print(line)
+		'''
+		if request.query.get("hub.mode") == "denied":
+			# TODO: Handle denied request
+			return web.Response(stats = 501) # Return 501 Not Implemented
+		elif request.query.get("hub.mode") == "subscribe":
+			if "Youtube" not in self.cogs:
+				return web.Response(status = 503) # Return 503 Service Unavailable
+			channel_id = parse.parse_qs(parse.urlparse(request.query.get("hub.topic")).query)["channel_id"][0]
+			if channel_id in self.get_cog("Youtube").youtube_uploads_following:
+				return web.Response(body = request.query.get("hub.challenge"))
+			else:
+				return web.Response(status = 404) # Return 404 Not Found
+		elif request.query.get("hub.mode") == "unsubscribe":
+			if "Youtube" not in self.cogs:
+				return web.Response(status = 503) # Return 503 Service Unavailable
+			channel_id = parse.parse_qs(parse.urlparse(request.query.get("hub.topic")).query)["channel_id"][0]
+			if channel_id in self.get_cog("Youtube").youtube_uploads_following:
+				return web.Response(status = 404) # Return 404 Not Found
+			else:
+				return web.Response(body = request.query.get("hub.challenge"))
+		else:
+			return web.Response(status = 400) # Return 400 Bad Request
+	
+	async def web_server_process_post(self, request):
+		'''
+		async for line in request.content:
+			print(line)
+		'''
+		if request.headers.get("User-Agent") == "FeedFetcher-Google; (+http://www.google.com/feedfetcher.html)" and request.headers.get("From") == "googlebot(at)googlebot.com" and request.content_type == "application/atom+xml":
+			if "Youtube" not in self.cogs:
+				return web.Response(status = 503) # Return 503 Service Unavailable
+			for link in requests.utils.parse_header_links(request.headers.get("Link")):
+				if link["rel"] == "hub":
+					if link["url"] != "http://pubsubhubbub.appspot.com/":
+						return web.Response(status = 400) # Return 400 Bad Request
+				elif link["rel"] == "self":
+					channel_id = parse.parse_qs(parse.urlparse(link["url"]).query)["channel_id"][0]
+					if channel_id not in self.get_cog("Youtube").youtube_uploads_following:
+						return web.Response(status = 404) # Return 404 Not Found
+						# TODO: Handle unsubscribe?
+				else:
+					return web.Response(status = 400) # Return 400 Bad Request
+			request_content = await request.content.read()
+			await self.get_cog("Youtube").process_youtube_upload(channel_id, request_content)
+			return web.Response()
+		else:
+			return web.Response(status = 400) # Return 400 Bad Request
+
 	async def on_resumed(self):
 		print("{}resumed @ {}".format(self.console_message_prefix, datetime.datetime.now().time().isoformat()))
 	
@@ -297,6 +359,8 @@ async def shutdown_tasks():
 	if audio_cog: audio_cog.cancel_all_tasks()
 	# Close aiohttp session
 	await aiohttp_session.close()
+	# Stop web server
+	await client.aiohttp_app_runner.cleanup()
 	# Save uptime
 	with open(data_path + "/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)
