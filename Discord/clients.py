@@ -131,25 +131,19 @@ class Bot(commands.Bot):
 		async for line in request.content:
 			print(line)
 		'''
-		if request.query.get("hub.mode") == "denied":
+		hub_mode = request.query.get("hub.mode")
+		if hub_mode == "denied":
 			# TODO: Handle denied request
 			return web.Response(stats = 501)  # Return 501 Not Implemented
-		elif request.query.get("hub.mode") == "subscribe":
+		elif hub_mode in ("subscribe", "unsubscribe"):
 			if "Youtube" not in self.cogs:
 				return web.Response(status = 503)  # Return 503 Service Unavailable
 			channel_id = parse.parse_qs(parse.urlparse(request.query.get("hub.topic")).query)["channel_id"][0]
-			if channel_id in self.get_cog("Youtube").youtube_uploads_following:
+			if (channel_id in self.get_cog("Youtube").youtube_uploads_following and hub_mode == "subscribe") or \
+			(channel_id not in self.get_cog("Youtube").youtube_uploads_following and hub_mode == "unsubscribe"):
 				return web.Response(body = request.query.get("hub.challenge"))
 			else:
 				return web.Response(status = 404)  # Return 404 Not Found
-		elif request.query.get("hub.mode") == "unsubscribe":
-			if "Youtube" not in self.cogs:
-				return web.Response(status = 503)  # Return 503 Service Unavailable
-			channel_id = parse.parse_qs(parse.urlparse(request.query.get("hub.topic")).query)["channel_id"][0]
-			if channel_id in self.get_cog("Youtube").youtube_uploads_following:
-				return web.Response(status = 404)  # Return 404 Not Found
-			else:
-				return web.Response(body = request.query.get("hub.challenge"))
 		else:
 			return web.Response(status = 400)  # Return 400 Bad Request
 	
