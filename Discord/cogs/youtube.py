@@ -3,7 +3,10 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import datetime
 import dateutil.parser
+import feedparser
+import isodate
 import itertools
 import json
 import os
@@ -157,4 +160,111 @@ class Youtube:
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 				logging.errors_logger.error("Uncaught Youtube Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				await asyncio.sleep(60)
+	
+	# TODO: Follow channels/new video uploads
+	
+	@commands.group(name = "uploads", aliases = ["videos"], invoke_without_command = True)
+	@checks.is_permitted()
+	async def youtube_uploads(self, ctx):
+		'''Youtube Uploads/Videos'''
+		await ctx.invoke(self.bot.get_command("help"), "youtube", ctx.invoked_with)
+	
+	@youtube_uploads.command(name = "add", aliases = ["subscribe"], invoke_without_command = True)
+	@checks.is_permitted()
+	async def youtube_uploads_add(self, ctx, channel : str):
+		'''Add Youtube channel to follow'''
+		channel_id = await self.get_youtube_channel_id(channel)
+		if not channel_id:
+			await ctx.embed_reply(":no_entry: Error: Youtube channel not found")
+			return
+		text_channel = self.uploads_info["channels"].get(str(ctx.channel.id))
+		if text_channel:
+			if channel_id in text_channel["yt_channel_ids"]:
+				await ctx.embed_reply(":no_entry: This text channel is already following that Youtube channel")
+				return
+			text_channel["yt_channel_ids"].append(channel_id)
+		else:
+			self.uploads_info["channels"][str(ctx.channel.id)] = {"yt_channel_ids": [channel_id]}
+		self.youtube_uploads_following.add(channel_id)
+		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": credentials.callback_url, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
+		# TODO: unique callback url for each subscription?
+		# TODO: renew subscription on startup
+			if resp.status not in (202, 204):
+				error_description = await resp.text()
+				await ctx.embed_reply(":no_entry: Error {}: {}".format(resp.status, error_description))
+				self.uploads_info["channels"][str(ctx.channel.id)]["yt_channel_ids"].remove(channel_id)
+				self.youtube_uploads_following.discard(channel_id)
+				return
+		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
+			json.dump(self.uploads_info, uploads_file, indent = 4)
+		await ctx.embed_reply("Added the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
+		"I will now announce here when this Youtube channel uploads videos".format(channel_id))
+	
+	@youtube_uploads.command(name = "remove", aliases = ["delete", "unsubscribe"], invoke_without_command = True)
+	@checks.is_permitted()
+	async def youtube_uploads_remove(self, ctx, channel_id : str):
+		'''Remove Youtube channel being followed'''
+		channel = self.uploads_info["channels"].get(str(ctx.channel.id))
+		if not channel or channel_id not in channel["yt_channel_ids"]:
+			await ctx.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
+			return
+		channel["yt_channel_ids"].remove(channel_id)
+		self.youtube_uploads_following.discard(channel_id)
+		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": credentials.callback_url, "hub.mode": "unsubscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
+			if resp.status not in (202, 204):
+				error_description = await resp.text()
+				await ctx.embed_reply(":no_entry: Error {}: {}".format(resp.status, error_description))
+				self.uploads_info["channels"][str(ctx.channel.id)]["yt_channel_ids"].append(channel_id)
+				self.youtube_uploads_following.add(channel_id)
+				return
+		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
+			json.dump(self.uploads_info, uploads_file, indent = 4)
+		await ctx.embed_reply("Removed the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), from this text channel".format(channel_id))
+	
+	@youtube_uploads.command(name = "channels", aliases = ["uploads", "videos"])
+	@checks.not_forbidden()
+	async def youtube_uploads_channels(self, ctx):
+		'''Show Youtube channels being followed in this text channel'''
+		await ctx.embed_reply(clients.code_block.format('\n'.join(self.uploads_info["channels"].get(str(ctx.channel.id), {}).get("yt_channel_ids", []))))
+	
+	async def process_youtube_upload(self, channel_id, request_content):
+		request_info = await self.bot.loop.run_in_executor(None, feedparser.parse, request_content) # Necessary to run in executor?
+		if request_info.entries and not request_info.entries[0].yt_videoid in self.uploads_processed:
+			video_data = request_info.entries[0]
+			self.uploads_processed.append(video_data.yt_videoid)
+			time_published = dateutil.parser.parse(video_data.published)
+			# Don't process videos published more than an hour ago
+			if time_published < datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours = 1): return
+			embed = discord.Embed(title = video_data.title, url = video_data.link, timestamp = time_published, color = self.bot.youtube_color)
+			embed.set_author(name = "{} just uploaded a video on Youtube".format(video_data.author), url = video_data.author_detail.href, icon_url = self.bot.youtube_icon_url)
+			# TODO: Add channel icon as author icon?
+			# Add description + thumbnail + length
+			async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/videos", params = {"id": video_data.yt_videoid, "key": credentials.google_apikey, "part": "snippet,contentDetails"}) as resp:
+				data = await resp.json()
+			data = next(iter(data.get("items", [])), {})
+			if data.get("snippet", {}).get("liveBroadcastContent") in ("live", "upcoming"): return
+			description = data.get("snippet", {}).get("description", "")
+			if len(description) > 200: description = description[:200].rsplit(' ', 1)[0] + "..."
+			embed.description = description or ""
+			thumbnail_url = data.get("snippet", {}).get("thumbnails", {}).get("high", {}).get("url", None)
+			if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
+			duration = data.get("contentDetails", {}).get("duration")
+			if duration: embed.description += "\nLength: {}".format(utilities.secs_to_letter_format(isodate.parse_duration(duration).total_seconds()))
+			for text_channel_id, channel_info in self.uploads_info["channels"].items():
+				if channel_id in channel_info["yt_channel_ids"]:
+					text_channel = self.bot.get_channel(int(text_channel_id))
+					if not text_channel:
+						# TODO: Remove text channel data if now non-existent
+						continue
+					message = await text_channel.send(embed = embed)
+	
+	# TODO: get to remove as well
+	async def get_youtube_channel_id(self, id_or_username):
+		async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/channels", params = {"part": "id", "id": id_or_username, "key": credentials.google_apikey}) as resp:
+			data = await resp.json()
+		if data["pageInfo"]["totalResults"]: return data["items"][0]["id"]
+		async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/channels", params = {"part": "id", "forUsername": id_or_username, "key": credentials.google_apikey}) as resp:
+			data = await resp.json()
+		if data["pageInfo"]["totalResults"]: return data["items"][0]["id"]
+		return ""
 

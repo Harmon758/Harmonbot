@@ -6,6 +6,7 @@ import sys
 import clients
 
 path = clients.data_path + "/logs/"
+clients.create_folder(path + "aiohttp")
 clients.create_folder(path + "chat")
 clients.create_folder(path + "discord")
 
@@ -61,8 +62,29 @@ chat_logger.setLevel(logging.DEBUG)
 chat_logger_handler = logging.handlers.TimedRotatingFileHandler(filename = path + "chat/chat.log", when = "midnight", backupCount = 3650000, encoding = "utf-8")
 chat_logger.addHandler(chat_logger_handler)
 
+console_handler = logging.StreamHandler(sys.stdout)
+
+aiohttp_access_logger = logging.getLogger("aiohttp.access")
+aiohttp_access_logger.setLevel(logging.DEBUG)
+aiohttp_access_logger_handler = logging.FileHandler(filename = path + "aiohttp/access.log", encoding = "utf-8", mode = 'a')
+aiohttp_access_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+aiohttp_access_logger.addHandler(aiohttp_access_logger_handler)
+
 aiohttp_client_logger = logging.getLogger("aiohttp.client")
 aiohttp_client_logger_handler = logging.FileHandler(filename = path + "aiohttp/client.log", encoding = "utf-8", mode = 'a')
 aiohttp_client_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
 aiohttp_client_logger.addHandler(aiohttp_client_logger_handler)
+
+aiohttp_server_logger = logging.getLogger("aiohttp.server")
+aiohttp_server_logger.setLevel(logging.DEBUG)
+aiohttp_server_logger_handler = logging.FileHandler(filename = path + "aiohttp/server.log", encoding = "utf-8", mode = 'a')
+aiohttp_server_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+aiohttp_server_logger.addHandler(aiohttp_server_logger_handler)
+# aiohttp_server_logger.addHandler(console_handler)
+
+aiohttp_web_logger = logging.getLogger("aiohttp.web")
+aiohttp_web_logger.setLevel(logging.DEBUG) # Necessary?
+aiohttp_web_logger_handler = logging.FileHandler(filename = path + "aiohttp/web.log", encoding = "utf-8", mode = 'a')
+aiohttp_web_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+aiohttp_web_logger.addHandler(aiohttp_web_logger_handler)
 
