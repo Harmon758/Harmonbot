@@ -11,6 +11,7 @@ import difflib
 import inspect
 import json
 import os
+import pkg_resources
 import psutil
 import random
 import re
@@ -331,10 +332,19 @@ class Meta:
 		uptime = now - clients.online_time
 		await ctx.embed_reply(utilities.secs_to_letter_format(uptime.total_seconds()))
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	async def version(self, ctx):
 		'''Bot version'''
 		await ctx.embed_reply("I am Harmonbot `v{}`".format(self.bot.version))
+	
+	@version.command(name = "library", aliases = ["requirement"])
+	@commands.is_owner()
+	async def version_library(self, ctx, library : str):
+		try:
+			await ctx.embed_reply(pkg_resources.get_distribution(library).version)
+		except pkg_resources.DistributionNotFound as e:
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+	
 	
 	# Update Bot Stuff
 	
