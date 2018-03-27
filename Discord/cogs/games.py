@@ -858,35 +858,35 @@ class Games:
 			self.poker_deck = pydealer.Deck()
 			self.poker_deck.shuffle()
 			self.poker_pot = 0
-			await self.bot.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.author.display_name, ctx.prefix))
+			await ctx.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.author.display_name, ctx.prefix))
 		else:
 			self.poker_status = "pre-flop"
-			await self.bot.embed_say("The poker round has started\nPlayers: {}".format(" ".join([player.mention for player in self.poker_players])))
+			await ctx.embed_say("The poker round has started\nPlayers: {}".format(" ".join([player.mention for player in self.poker_players])))
 			for player in self.poker_players:
 				cards_string = self.cards_to_string(self.poker_hands[player.id].cards)
 				await self.bot.send_embed(player, "Your poker hand: {}".format(cards_string))
 			await self.poker_betting()
 			while self.poker_status:
 				await asyncio.sleep(1)
-			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards = self.poker_deck.deal(3)
-			await self.bot.embed_say("The flop: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await ctx.embed_say("The flop: {}".format(self.cards_to_string(self.poker_community_cards)))
 			await self.poker_betting()
 			while self.poker_status:
 				await asyncio.sleep(1)
-			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards.add(self.poker_deck.deal(1))
-			await self.bot.embed_say("The turn: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await ctx.embed_say("The turn: {}".format(self.cards_to_string(self.poker_community_cards)))
 			await self.poker_betting()
 			while self.poker_status:
 				await asyncio.sleep(1)
-			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards.add(self.poker_deck.deal(1))
-			await self.bot.embed_say("The river: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await ctx.embed_say("The river: {}".format(self.cards_to_string(self.poker_community_cards)))
 			await self.poker_betting()
 			while self.poker_status:
 				await asyncio.sleep(1)
-			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			
 			evaluator = deuces.Evaluator()
 			board = []
@@ -906,14 +906,14 @@ class Games:
 					best_player = player
 			player = await self.bot.get_user_info(player)
 			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-			await self.bot.embed_say("{} is the winner with a {}".format(player.mention, type))
+			await ctx.embed_say("{} is the winner with a {}".format(player.mention, type))
 	
 	@poker.command(name = "join")
 	async def poker_join(self, ctx):
 		if self.poker_status == "started":
 			self.poker_players.append(ctx.author)
 			self.poker_hands[ctx.author.id] = self.poker_deck.deal(2)
-			await self.bot.embed_say("{} has joined the poker match".format(ctx.author.display_name))
+			await ctx.embed_say("{} has joined the poker match".format(ctx.author.display_name))
 		elif self.poker_status is None:
 			await ctx.embed_reply("There's not currently a round of poker going on\nUse `{}poker start` to start one".format(ctx.prefix))
 		else:
@@ -929,7 +929,7 @@ class Games:
 				self.poker_turn = None
 			elif points == self.poker_current_bet:
 				self.poker_bets[self.poker_turn.id] = points
-				await self.bot.embed_say("{} has called".format(ctx.author.display_name))
+				await ctx.embed_say("{} has called".format(ctx.author.display_name))
 				self.poker_turn = None
 			else:
 				await ctx.embed_reply("The current bet is more than that")
@@ -941,10 +941,10 @@ class Games:
 		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			if self.poker_current_bet == 0 or (self.poker_turn.id in self.poker_bets and self.poker_bets[self.poker_turn.id] == self.poker_current_bet):
 				await ctx.embed_reply("You can't call\nYou have checked instead")
-				await self.bot.embed_say("{} has checked".format(ctx.author.display_name))
+				await ctx.embed_say("{} has checked".format(ctx.author.display_name))
 			else:
 				self.poker_bets[self.poker_turn.id] = self.poker_current_bet
-				await self.bot.embed_say("{} has called".format(ctx.author.display_name))
+				await ctx.embed_say("{} has called".format(ctx.author.display_name))
 			self.poker_turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
@@ -956,7 +956,7 @@ class Games:
 				await ctx.embed_reply(":no_entry: You can't check")
 			else:
 				self.poker_bets[self.poker_turn.id] = self.poker_current_bet
-				await self.bot.embed_say("{} has checked".format(ctx.author.display_name))
+				await ctx.embed_say("{} has checked".format(ctx.author.display_name))
 				self.poker_turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now.")
@@ -978,7 +978,7 @@ class Games:
 				self.poker_turn = player
 				if player in self.poker_folded:
 					continue
-				await self.bot.embed_say("{}'s turn".format(player.mention))
+				await ctx.embed_say("{}'s turn".format(player.mention))
 				while self.poker_turn:
 					await asyncio.sleep(1)
 			if all([bet == -1 or bet == self.poker_current_bet for bet in self.poker_bets.values()]):
