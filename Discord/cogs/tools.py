@@ -76,7 +76,7 @@ class Tools:
 			return
 		matplotlib.pyplot.savefig(filename)
 		matplotlib.pyplot.clf()
-		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
+		await ctx.channel.send(ctx.author.display_name + ':', file = discord.File(filename))
 		# TODO: Send as embed?
 	
 	def string_to_equation(self, string):
