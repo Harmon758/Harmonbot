@@ -7,7 +7,7 @@ clarifai==2.0.33
 cryptography==2.2.1
 # deuces==0.1
 dice==1.1.1
-emoji==0.4.5
+emoji==0.5.0
 feedparser==5.2.1
 imageio==2.3.0
 imgurpython==1.1.7
