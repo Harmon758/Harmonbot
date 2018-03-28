@@ -146,11 +146,11 @@ class Meta:
 		embed = discord.Embed(color = clients.bot_color)
 		embed.add_field(name = "RAM", value = "{:.2f} MiB".format(memory))
 		embed.add_field(name = "CPU", value = "Calculating CPU usage..")
-		message, embed = await self.bot.say(embed = embed)
+		message = await ctx.send(embed = embed)
 		await asyncio.sleep(1)
 		cpu = process.cpu_percent() / psutil.cpu_count()
 		embed.set_field_at(1, name = "CPU", value = "{}%".format(cpu))
-		await self.bot.edit_message(message, embed = embed)
+		await message.edit(embed = embed)
 	
 	@commands.command(aliases = ["category"])
 	@checks.not_forbidden()
