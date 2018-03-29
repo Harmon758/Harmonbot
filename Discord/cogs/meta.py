@@ -218,8 +218,8 @@ class Meta:
 		'''
 		Set the bot prefix(es)
 		For the server or for DMs
-		Seperate prefixes with spaces
-		Use qoutation marks for prefixes with spaces
+		Separate prefixes with spaces
+		Use quotation marks for prefixes with spaces
 		'''
 		if not prefixes:
 			prefixes = ['!']
