@@ -124,6 +124,14 @@ class Bot(commands.Bot):
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
+		
+		# Load cogs
+		for file in sorted(os.listdir("cogs")):
+			if file.endswith(".py") and not file.startswith(("random", "reactions")):
+				self.load_extension("cogs." + file[:-3])
+		self.load_extension("cogs.random")
+		self.load_extension("cogs.reactions")
+		# TODO: Catch exceptions on fail to load?
 	
 	async def web_server_get_handler(self, request):
 		'''
@@ -316,15 +324,6 @@ async def on_guild_remove(guild):
 
 import imageio
 imageio.plugins.ffmpeg.download()
-
-
-# Load cogs
-
-for file in sorted(os.listdir("cogs")):
-	if file.endswith(".py") and not file.startswith(("random", "reactions")):
-		client.load_extension("cogs." + file[:-3])
-client.load_extension("cogs.random")
-client.load_extension("cogs.reactions")
 
 
 # Utilities
