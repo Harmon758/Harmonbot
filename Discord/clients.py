@@ -127,11 +127,12 @@ class Bot(commands.Bot):
 		
 		# Load cogs
 		for file in sorted(os.listdir("cogs")):
-			if file.endswith(".py") and not file.startswith(("random", "reactions")):
+			if file.endswith(".py") and not file.startswith(("lichess", "random", "reactions")):
 				self.load_extension("cogs." + file[:-3])
 		self.load_extension("cogs.random")
 		self.load_extension("cogs.reactions")
 		# TODO: Catch exceptions on fail to load?
+		# TODO: Move all to on_ready?
 	
 	async def web_server_get_handler(self, request):
 		'''
@@ -179,6 +180,10 @@ class Bot(commands.Bot):
 		else:
 			return web.Response(status = 400)  # Return 400 Bad Request
 
+	async def on_ready(self):
+		# Necessary for custom emoji
+		self.load_extension("cogs.lichess")
+	
 	async def on_resumed(self):
 		print("{}resumed @ {}".format(self.console_message_prefix, datetime.datetime.now().time().isoformat()))
 	

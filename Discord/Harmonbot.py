@@ -32,7 +32,7 @@ if __name__ == "__main__":
 	
 	mention_spammers = []
 	
-	@client.event
+	@client.listen()
 	async def on_ready():
 		# data = await client.http.get(client.http.GATEWAY + "/bot")
 		# print(data)
