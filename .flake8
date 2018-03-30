@@ -20,6 +20,8 @@ ignore =
 	E203,
 	# E251: unexpected spaces around keyword / parameter equals
 	E251,
+	# E302: expected 2 blank lines
+	E302,
 	# W191: indentation contains tabs
 	W191,
 	# W293: blank line contains whitespace
