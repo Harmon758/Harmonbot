@@ -21,8 +21,11 @@ from utilities import checks
 
 def setup(bot):
 	bot.add_cog(Youtube(bot))
+	if "Audio" in bot.cogs:
+		bot.remove_command("streams")
 
-youtube = getattr(clients.client.get_cog("Audio"), "audio") if clients.client.get_cog("Audio") else commands
+# TODO: Handle audio cog not loaded
+## youtube = getattr(clients.client.get_cog("Audio"), "audio", commands)
 
 class Youtube:
 	
@@ -31,19 +34,24 @@ class Youtube:
 		self.streams_announced = {}
 		self.old_streams_announced = {}
 		
+		utilities.add_as_subcommand(self, self.youtube_streams, "Audio.audio", "streams", aliases = ["stream"])
+		
 		clients.create_file("youtube_streams", content = {"channels" : {}})
 		with open(clients.data_path + "/youtube_streams.json", 'r') as streams_file:
 			self.streams_info = json.load(streams_file)
 		self.task = self.bot.loop.create_task(self.check_youtube_streams())
 	
 	def __unload(self):
-		self.youtube_streams.recursively_remove_all_commands()
-		youtube.remove_command("streams") # Handle when audio cog not loaded first
+		utilities.remove_as_subcommand(self, "Audio.audio", "streams")
+		
+		self.youtube_streams.recursively_remove_all_commands() # Necessary?
+		# youtube.remove_command("streams") # Handle when audio cog not loaded first
 		self.task.cancel()
 	
 	# TODO: Follow channels/new video uploads
 	
-	@youtube.group(name = "streams", aliases = ["stream"], invoke_without_command = True) # Handle stream alias when audio cog not loaded first
+	@commands.group(name = "streams", invoke_without_command = True)
+	# Handle stream alias when audio cog not loaded first | aliases = ["stream"]
 	@checks.is_permitted()
 	async def youtube_streams(self, ctx):
 		'''Youtube Streams'''
