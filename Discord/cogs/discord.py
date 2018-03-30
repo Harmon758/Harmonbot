@@ -55,12 +55,6 @@ class Discord:
 			else:
 				await self.bot.create_channel(ctx.guild, options[0], type = "text")
 	
-	@commands.command(no_pm = True)
-	@checks.has_permissions_and_capability(manage_roles = True)
-	async def createrole(self, ctx, *, name : str = ""):
-		'''Creates a role'''
-		await self.bot.create_role(ctx.guild, name = name)
-	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
 	async def delete(self, ctx, number : int, *, user : str = ""):
@@ -182,48 +176,6 @@ class Discord:
 		await self.bot.unpin_message(message)
 		await self.bot.embed_reply(":wastebasket: Unpinned message")
 	
-	@commands.command(aliases = ["rolecolour", "role_color", "role_colour"], no_pm = True)
-	@checks.not_forbidden()
-	async def rolecolor(self, ctx, role : str, *color : str):
-		'''
-		Returns or changes role colors
-		Replace spaces in role names with underscores or put the role name in qoutes
-		Currently only accepts hex color input
-		'''
-		if not color:
-			selected_role = None
-			for _role in ctx.guild.roles:
-				if _role.name.startswith((' ').join(role.split('_'))):
-					selected_role = _role
-					break
-			if not selected_role:
-				await self.bot.embed_reply(":no_entry: Role not found")
-				return
-			color = selected_role.colour
-			color_value = color.value
-			await self.bot.embed_reply(conversions.inttohex(color_value))
-		elif ctx.channel.permissions_for(ctx.author).manage_roles or ctx.author.id == clients.owner_id:
-			for _role in ctx.guild.roles:
-				if _role.name.startswith((' ').join(role.split('_'))):
-					role_to_change = _role
-					break
-			if not role_to_change:
-				await self.bot.embed_reply(":no_entry: Role not found")
-				return
-			new_colour = role_to_change.colour
-			new_colour.value = conversions.hextoint(color[0])
-			await self.bot.edit_role(ctx.guild, role_to_change, colour = new_colour)
-	
-	@commands.command(hidden = True)
-	@checks.is_owner()
-	async def roleposition(self, ctx, role : str, position : int):
-		'''WIP'''
-		for _role in ctx.guild.roles:
-			if _role.name.startswith((' ').join(role.split('_'))):
-				selected_role = _role
-				break
-		await self.bot.move_role(ctx.guild, selected_role, position)
-	
 	@commands.command()
 	@commands.guild_only()
 	@checks.not_forbidden()
@@ -328,20 +280,6 @@ class Discord:
 				flag = False
 		if flag and name:
 			await self.bot.embed_reply(name + " was not found on this server")
-	
-	@commands.command(aliases = ["role_id"], no_pm = True)
-	@checks.not_forbidden()
-	async def roleid(self, ctx, *, name : str):
-		'''Get the ID of a role'''
-		for role in ctx.guild.roles:
-			if utilities.remove_symbols(role.name).startswith(name):
-				await self.bot.embed_reply(role.id)
-	
-	@commands.command(aliases = ["role_positions"], hidden = True)
-	@checks.is_owner()
-	async def rolepositions(self, ctx):
-		'''WIP'''
-		await self.bot.embed_reply(', '.join([role.name + ": " + str(role.position) for role in ctx.guild.roles[1:]]))
 	
 	@commands.command(aliases = ["server_icon"], no_pm = True)
 	@checks.not_forbidden()
