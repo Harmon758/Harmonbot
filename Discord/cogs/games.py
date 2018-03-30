@@ -15,6 +15,7 @@ import pydealer
 import random
 import re
 import string
+import sys
 import timeit
 
 import clients
@@ -49,6 +50,9 @@ class Games:
 		#check default values
 		
 		self.adventure_players = {}
+		
+		# Necessary for maze generation
+		sys.setrecursionlimit(5000)
 		
 		clients.create_file("trivia_points")
 		with open(clients.data_path + "/trivia_points.json", 'r') as trivia_file:

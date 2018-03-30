@@ -42,7 +42,6 @@ inflect_engine = inflect.engine()
 application_info = None
 harmonbot_listener = None
 # TODO: Include owner variable for user object?
-sys.setrecursionlimit(5000)
 
 
 class Bot(commands.Bot):
