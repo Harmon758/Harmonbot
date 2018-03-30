@@ -39,22 +39,6 @@ class Discord:
 		await self.bot.add_roles(member, role)
 		await self.bot.embed_reply("I gave the role, {0}, to {1}".format(role, member))
 	
-	@commands.command(no_pm = True)
-	@checks.has_permissions_and_capability(manage_channels = True)
-	async def channel(self, ctx, *options : str):
-		'''
-		Create a channel
-		channel <type/name> <name>
-		type: text or voice, default: text
-		'''
-		if options:
-			if options[0] == "voice":
-				await self.bot.create_channel(ctx.guild, options[1], type = "voice")
-			elif options[0] == "text":
-				await self.bot.create_channel(ctx.guild, options[1], type = "text")
-			else:
-				await self.bot.create_channel(ctx.guild, options[0], type = "text")
-	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
 	async def delete(self, ctx, number : int, *, user : str = ""):
@@ -226,13 +210,6 @@ class Discord:
 				await self.bot.delete_channel(temp_text_channel)
 				return
 	
-	@commands.command(hidden = True, no_pm = True)
-	@checks.is_owner()
-	async def userlimit(self, ctx, limit : int):
-		'''WIP'''
-		if ctx.author.voice_channel:
-			voice_channel = ctx.author.voice_channel
-		await self.bot.edit_channel(voice_channel, user_limit = limit)
 	
 	# Get Attributes
 	
