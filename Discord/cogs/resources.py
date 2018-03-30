@@ -14,7 +14,6 @@ import clients
 import credentials
 from modules import utilities
 from utilities import checks
-from utilities import errors
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -23,7 +22,6 @@ class Resources:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.lichess_user_data, self.lichess_tournaments_data = None, None
 		# spotify = spotipy.Spotify()
 	
 	@commands.group(aliases = ["blizzard", "battle.net"], invoke_without_command = True)
@@ -306,89 +304,6 @@ class Resources:
 			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(url)["link"])
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await ctx.embed_reply(":no_entry: Error: {}".format(e))
-	
-	@commands.group()
-	@checks.not_forbidden()
-	async def lichess(self, ctx):
-		'''WIP'''
-		return
-	
-	@lichess.group(name = "user")
-	async def lichess_user(self, ctx):
-		'''WIP'''
-		if len(ctx.message.content.split()) == 2:
-			pass
-		elif len(ctx.message.content.split()) >= 4:
-			url = "https://en.lichess.org/api/user/{}".format(ctx.message.content.split()[3])
-			async with clients.aiohttp_session.get(url) as resp:
-				self.lichess_user_data = await resp.json()
-			if not self.lichess_user_data:
-				raise errors.LichessUserNotFound
-	
-	@lichess_user.command(name = "bullet")
-	async def lichess_user_bullet(self, ctx, username : str):
-		'''WIP'''
-		data = self.lichess_user_data
-		await self.bot.embed_reply(":zap: Bullet | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {0[prog]}".format(data["perfs"]["bullet"], prov = "?" if data["perfs"]["bullet"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["bullet"]["prog"] >= 0 else ":chart_with_downwards_trend:"), title = data["username"])
-	
-	@lichess_user.command(name = "blitz")
-	async def lichess_user_blitz(self, ctx, username : str):
-		'''WIP'''
-		data = self.lichess_user_data
-		await self.bot.embed_reply(":fire: Blitz | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {0[prog]}".format(data["perfs"]["blitz"], prov = "?" if data["perfs"]["blitz"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["blitz"]["prog"] >= 0 else ":chart_with_downwards_trend:"), title = data["username"])
-	
-	@lichess_user.error
-	async def lichess_user_error(self, error, ctx):
-		if isinstance(error, errors.LichessUserNotFound):
-			await self.bot.embed_reply(":no_entry: User not found")
-	
-	@lichess_user.command(name = "all")
-	async def lichess_user_all(self, ctx, username : str):
-		'''WIP'''
-		data = self.lichess_user_data
-		embed = discord.Embed(title = data["username"], url = data["url"], color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		embed.description = "Online: {}\n".format(data["online"])
-		embed.description += "Member since {}\n".format(datetime.datetime.utcfromtimestamp(data["createdAt"] / 1000.0).strftime("%b %#d, %Y")) #
-		embed.add_field(name = "Games", value = "Played: {0[all]}\nRated: {0[rated]}\nWins: {0[win]}\nLosses: {0[loss]}\nDraws: {0[draw]}\nBookmarks: {0[bookmark]}\nAI: {0[ai]}".format(data["count"]))
-		embed.add_field(name = "Follows", value = "Followers: {0[nbFollowers]}\nFollowing: {0[nbFollowing]}".format(data))
-		embed.add_field(name = "Time", value = "Spent playing: {}\nOn TV: {}".format(utilities.secs_to_letter_format(data["playTime"]["total"]), utilities.secs_to_letter_format(data["playTime"]["tv"])))
-		for mode, field_name in (("bullet", ":zap: Bullet"), ("blitz", ":fire: Blitz"), ("classical", ":hourglass: Classical"), ("correspondence", ":envelope: Correspondence"), ("crazyhouse", ":pisces: Crazyhouse"), ("chess960", ":game_die: Chess960"), ("kingOfTheHill", ":triangular_flag_on_post: King Of The Hill"), ("threeCheck", ":three: Three-Check"), ("antichess", ":arrows_clockwise: Antichess"), ("atomic", ":atom: Atomic"), ("horde", ":question: Horde"), ("racingKings", ":checkered_flag: Racing Kings"), ("puzzle", ":bow_and_arrow: Training")):
-			if data["perfs"].get(mode, {}).get("games", 0) == 0: continue
-			prov = '?' if data["perfs"][mode]["prov"] else ""
-			chart = ":chart_with_upwards_trend:" if data["perfs"][mode]["prog"] >= 0 else ":chart_with_downwards_trend:"
-			value = "Games: {0[games]}\nRating: {0[rating]}{1} ± {0[rd]}\n{2} {0[prog]}".format(data["perfs"][mode], prov, chart)
-			embed.add_field(name = field_name, value = value)
-		embed.set_footer(text = "Last seen")
-		embed.timestamp = datetime.datetime.utcfromtimestamp(data["seenAt"] / 1000.0)
-		await self.bot.say(embed = embed)
-	
-	@lichess.group(name = "tournaments")
-	async def lichess_tournaments(self, ctx):
-		'''WIP'''
-		url = "https://en.lichess.org/api/tournament"
-		async with clients.aiohttp_session.get(url) as resp:
-			self.lichess_tournaments_data = await resp.json()
-	
-	@lichess_tournaments.command(name = "current", aliases = ["started"])
-	async def lichess_tournaments_current(self, ctx):
-		'''WIP'''
-		data = self.lichess_tournaments_data["started"]
-		embed = discord.Embed(title = "Current Lichess Tournaments", color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		for tournament in data:
-			value = "{:g}+{} {} {rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], tournament["perf"]["name"], rated = "Rated" if tournament["rated"] else "Casual")
-			value += "\nEnds in: {:g}m".format((datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0) - datetime.datetime.utcnow()).total_seconds() // 60)
-			value += "\n[Link](https://en.lichess.org/tournament/{})".format(tournament["id"])
-			embed.add_field(name = tournament["fullName"], value = value)
-		await self.bot.say(embed = embed)
-	
-	@lichess.command(name = "tournament")
-	async def lichess_tournament(self, ctx):
-		'''WIP'''
-		pass
 	
 	@commands.command()
 	@checks.not_forbidden()
