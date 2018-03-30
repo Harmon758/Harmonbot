@@ -242,7 +242,9 @@ class Meta:
 	
 	# Public Info
 	
-	@commands.command(aliases = ["info"])
+	# TODO: Move to info cog
+	# aliases = ["info"]
+	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
 		from clients import application_info
