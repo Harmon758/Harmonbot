@@ -49,8 +49,8 @@ class Permissions:
 		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
 			permissions_data = json.load(permissions_file)
 		permissions_data.setdefault("roles", {})
-		permissions_data["roles"].setdefault(_role.id, {"name" : _role.name})
-		permissions_data["roles"][_role.id][command] = setting
+		permissions_data["roles"].setdefault(str(_role.id), {"name" : _role.name})
+		permissions_data["roles"][str(_role.id)][command] = setting
 		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'w') as permissions_file:
 			json.dump(permissions_data, permissions_file, indent = 4)		
 		await ctx.embed_reply("Permission updated\n{} set to {} for the {} role".format(permission, setting, _role.name))
@@ -66,8 +66,8 @@ class Permissions:
 		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
 			permissions_data = json.load(permissions_file)
 		permissions_data.setdefault("users", {})
-		permissions_data["users"].setdefault(_user.id, {"name" : _user.name})
-		permissions_data["users"][_user.id][command] = setting
+		permissions_data["users"].setdefault(str(_user.id), {"name" : _user.name})
+		permissions_data["users"][str(_user.id)][command] = setting
 		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'w') as permissions_file:
 			json.dump(permissions_data, permissions_file, indent = 4)
 		await ctx.embed_reply("Permission updated\n{} set to {} for {}".format(permission, setting, _user))
@@ -147,7 +147,7 @@ class Permissions:
 		else: _role = matches[0]
 		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
 			permissions_data = json.load(permissions_file)
-		role_settings = permissions_data.get("roles", {}).get(_role.id, {})
+		role_settings = permissions_data.get("roles", {}).get(str(_role.id), {})
 		output = "__Permissions for {}__\n".format(_role.name)
 		role_settings.pop("name", None)
 		for permission, setting in role_settings.items():
@@ -162,7 +162,7 @@ class Permissions:
 		if not _user: return (await ctx.embed_reply("Error: user not found"))
 		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
 			permissions_data = json.load(permissions_file)
-		user_settings = permissions_data.get("users", {}).get(_user.id, {})
+		user_settings = permissions_data.get("users", {}).get(str(_user.id), {})
 		output = "__Permissions for {}__\n".format(_user.name)
 		user_settings.pop("name", None)
 		for permission, setting in user_settings.items():
