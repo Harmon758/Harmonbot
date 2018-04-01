@@ -135,7 +135,7 @@ class Permissions:
 		output = "__Permissions for everyone__\n"
 		for permission, setting in everyone_settings.items():
 			output += "{}: {}\n".format(permission, str(setting))
-		await self.bot.say(output)
+		await ctx.send(output)
 	
 	@getpermissions.command(name = "role")
 	@commands.guild_only()
@@ -152,7 +152,7 @@ class Permissions:
 		role_settings.pop("name", None)
 		for permission, setting in role_settings.items():
 			output += "{}: {}\n".format(permission, str(setting))
-		await self.bot.say(output)
+		await ctx.send(output)
 	
 	@getpermissions.command(name = "user")
 	@commands.guild_only()
@@ -167,7 +167,7 @@ class Permissions:
 		user_settings.pop("name", None)
 		for permission, setting in user_settings.items():
 			output += "{}: {}\n".format(permission, str(setting))
-		await self.bot.say(output)
+		await ctx.send(output)
 	
 	@getpermissions.command(name = "command")
 	@commands.guild_only()
@@ -185,5 +185,5 @@ class Permissions:
 			for id, settings in objects.items():
 				if command in settings:
 					output += "{}: {}\n".format(settings["name"], str(settings[command]))
-		await self.bot.say(output)
+		await ctx.send(output)
 
