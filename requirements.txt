@@ -58,7 +58,7 @@ mpmath==1.0.0
 multidict==4.1.0
 oauthlib==2.0.7
 olefile==0.45.1
-pillow==5.0.0
+pillow==5.1.0
 pycparser==2.18
 pynacl==1.1.2
 pyparsing==2.2.0
