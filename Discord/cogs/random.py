@@ -40,7 +40,7 @@ class Random:
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
 			utilities.add_as_subcommand(self, command, parent, "fact")
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Location.map"), (self.streetview, "Location.streetview"), (self.uesp, "Search.uesp"), (self.time, "Location.time"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
+		self.random_subcommands = ((self.blob, "Blobs.blobs"), (self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Location.map"), (self.streetview, "Location.streetview"), (self.uesp, "Search.uesp"), (self.time, "Location.time"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
 		# Import jokes
@@ -65,6 +65,21 @@ class Random:
 		All random subcommands are also commands
 		'''
 		await ctx.embed_reply(":grey_question: Random what?")
+	
+	@random.command()
+	@checks.not_forbidden()
+	async def blob(self, ctx):
+		'''Random blob emoji'''
+		'''
+		blobs_command = self.bot.get_command("blobs")
+		if not blobs_command: return
+		all_blobs = blobs_command.all_commands.copy()
+		for subcommand in ("random", "stats", "top"): del all_blobs[subcommand]
+		await ctx.invoke(random.choice(list(all_blobs.values())))
+		'''
+		blobs_cog = self.bot.get_cog("Blobs")
+		if not blobs_cog: return
+		await ctx.invoke(self.bot.get_command("blobs"), blob = random.choice(list(blobs_cog.data.keys())))
 	
 	@random.command()
 	@checks.not_forbidden()
