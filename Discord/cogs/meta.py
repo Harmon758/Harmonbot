@@ -497,7 +497,7 @@ class Meta:
 	@commands.is_owner()
 	async def shutdown(self, ctx):
 		'''Shut me down'''
-		await self.bot.embed_say(":scream: Shutting down.")
+		await ctx.embed_say(":scream: Shutting down.")
 		print("Forcing Shutdown...")
 		await clients.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
