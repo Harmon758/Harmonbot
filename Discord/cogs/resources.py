@@ -530,7 +530,7 @@ class Resources:
 		if "battery_life" in data: tests_info.append("Battery_life: " + data["battery_life"])
 		if tests_info: embed.add_field(name = "Tests", value = '\n'.join(tests_info), inline = False)
 		# send
-		await self.bot.say(embed = embed)
+		await ctx.send(embed = embed)
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
