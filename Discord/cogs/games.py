@@ -1259,24 +1259,24 @@ class Games:
 			else:
 				correct_players_output = clients.inflect_engine.join([correct_player.display_name for correct_player in correct_players]) + ' ' + clients.inflect_engine.plural("was", len(correct_players)) + " right!"
 			for correct_player in correct_players:
-				if correct_player.id in self.trivia_stats:
-					self.trivia_stats[correct_player.id][0] += 1
+				if str(correct_player.id) in self.trivia_stats:
+					self.trivia_stats[str(correct_player.id)][0] += 1
 				else:
-					self.trivia_stats[correct_player.id] = [1, 0, 100000]
+					self.trivia_stats[str(correct_player.id)] = [1, 0, 100000]
 			for incorrect_player in incorrect_players:
-				if incorrect_player.id in self.trivia_stats:
-					self.trivia_stats[incorrect_player.id][1] += 1
+				if str(incorrect_player.id) in self.trivia_stats:
+					self.trivia_stats[str(incorrect_player.id)][1] += 1
 				else:
-					self.trivia_stats[incorrect_player.id] = [0, 1, 100000]
+					self.trivia_stats[str(incorrect_player.id)] = [0, 1, 100000]
 			if bet:
 				trivia_bets_output = ""
 				for trivia_player in bets:
 					if trivia_player in correct_players:
-						self.trivia_stats[trivia_player.id][2] += bets[trivia_player]
-						trivia_bets_output += trivia_player.display_name + " won $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[trivia_player.id][2]) + ". "
+						self.trivia_stats[str(trivia_player.id)][2] += bets[trivia_player]
+						trivia_bets_output += trivia_player.display_name + " won $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[str(trivia_player.id)][2]) + ". "
 					else:
-						self.trivia_stats[trivia_player.id][2] -= bets[trivia_player]
-						trivia_bets_output += trivia_player.display_name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[trivia_player.id][2]) + ". "
+						self.trivia_stats[str(trivia_player.id)][2] -= bets[trivia_player]
+						trivia_bets_output += trivia_player.display_name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[str(trivia_player.id)][2]) + ". "
 				trivia_bets_output = trivia_bets_output[:-1]
 			with open(clients.data_path + "/trivia_points.json", 'w') as trivia_file:
 				json.dump(self.trivia_stats, trivia_file, indent = 4)
@@ -1309,15 +1309,15 @@ class Games:
 	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
 	async def trivia_score(self, ctx):
 		'''Trivia score'''
-		correct = self.trivia_stats[ctx.author.id][0]
-		incorrect = self.trivia_stats[ctx.author.id][1]
+		correct = self.trivia_stats[str(ctx.author.id)][0]
+		incorrect = self.trivia_stats[str(ctx.author.id)][1]
 		correct_percentage = correct / (correct + incorrect) * 100
 		await ctx.embed_reply("You have answered {}/{} ({:.2f}%) correctly.".format(correct, correct + incorrect, correct_percentage))
 	
 	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
-		cash = self.trivia_stats[ctx.author.id][2]
+		cash = self.trivia_stats[str(ctx.author.id)][2]
 		await ctx.embed_reply("You have $" + utilities.add_commas(cash))
 	
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
