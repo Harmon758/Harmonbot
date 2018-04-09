@@ -23,6 +23,7 @@ def setup(bot):
 	bot.add_cog(YouTube(bot))
 	if "Audio" in bot.cogs:
 		bot.remove_command("streams")
+		bot.remove_command("uploads")
 
 # TODO: Handle audio cog not loaded
 ## youtube = getattr(clients.client.get_cog("Audio"), "audio", commands)
@@ -33,16 +34,24 @@ class YouTube:
 		self.bot = bot
 		self.streams_announced = {}
 		self.old_streams_announced = {}
+		self.uploads_processed = []
 		
 		utilities.add_as_subcommand(self, self.youtube_streams, "Audio.audio", "streams", aliases = ["stream"])
+		utilities.add_as_subcommand(self, self.youtube_uploads, "Audio.audio", "uploads", aliases = ["videos"])
 		
 		clients.create_file("youtube_streams", content = {"channels" : {}})
 		with open(clients.data_path + "/youtube_streams.json", 'r') as streams_file:
 			self.streams_info = json.load(streams_file)
 		self.task = self.bot.loop.create_task(self.check_youtube_streams())
+		
+		clients.create_file("youtube_uploads", content = {"channels" : {}})
+		with open(clients.data_path + "/youtube_uploads.json", 'r') as uploads_file:
+			self.uploads_info = json.load(uploads_file)
+		self.youtube_uploads_following = set([channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"]])
 	
 	def __unload(self):
 		utilities.remove_as_subcommand(self, "Audio.audio", "streams")
+		utilities.remove_as_subcommand(self, "Audio.audio", "uploads")
 		
 		self.youtube_streams.recursively_remove_all_commands() # Necessary?
 		# youtube.remove_command("streams") # Handle when audio cog not loaded first
