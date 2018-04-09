@@ -42,12 +42,13 @@ class YouTube:
 		clients.create_file("youtube_streams", content = {"channels" : {}})
 		with open(clients.data_path + "/youtube_streams.json", 'r') as streams_file:
 			self.streams_info = json.load(streams_file)
-		self.task = self.bot.loop.create_task(self.check_youtube_streams())
+		self.streams_task = self.bot.loop.create_task(self.check_youtube_streams())
 		
 		clients.create_file("youtube_uploads", content = {"channels" : {}})
 		with open(clients.data_path + "/youtube_uploads.json", 'r') as uploads_file:
 			self.uploads_info = json.load(uploads_file)
 		self.youtube_uploads_following = set([channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"]])
+		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
 	
 	def __unload(self):
 		utilities.remove_as_subcommand(self, "Audio.audio", "streams")
@@ -55,9 +56,18 @@ class YouTube:
 		
 		self.youtube_streams.recursively_remove_all_commands() # Necessary?
 		# youtube.remove_command("streams") # Handle when audio cog not loaded first
-		self.task.cancel()
+		self.streams_task.cancel()
+		self.renew_uploads_task.cancel()
 	
-	# TODO: Follow channels/new video uploads
+	# TODO: use on_ready instead?
+	# TODO: renew after hub.lease_seconds?
+	async def renew_upload_supscriptions(self):
+		for channel_id in self.youtube_uploads_following:
+			async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": credentials.callback_url, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
+				if resp.status not in (202, 204):
+					error_description = await resp.text()
+					print("{}Google PubSubHubbub Error {} re-subscribing to {}: {}".format(clients.console_message_prefix, resp.status, channel_id, error_description))
+			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
 	
 	@commands.group(name = "streams", invoke_without_command = True)
 	# Handle stream alias when audio cog not loaded first | aliases = ["stream"]
@@ -205,7 +215,6 @@ class YouTube:
 		self.youtube_uploads_following.add(channel_id)
 		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": credentials.callback_url, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
 		# TODO: unique callback url for each subscription?
-		# TODO: renew subscription on startup
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
 				await ctx.embed_reply(":no_entry: Error {}: {}".format(resp.status, error_description))
