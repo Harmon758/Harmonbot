@@ -117,10 +117,12 @@ class Bot(commands.Bot):
 		self.aiohttp_app_runner = web.AppRunner(self.aiohttp_web_app)
 		self.aiohttp_site = None  # Initialized when starting web server
 		
-		# Add load, unload, and reload cog commands
+		# Add load, unload, and reload commands
 		self.add_command(self.load)
 		self.add_command(self.unload)
 		self.add_command(self.reload)
+		self.load.add_command(self.load_aiml)
+		self.unload.add_command(self.unload_aiml)
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
@@ -221,7 +223,7 @@ class Bot(commands.Bot):
 	
 	# TODO: Case-Insensitive subcommands (override Group)
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
 	async def load(self, ctx, cog : str):
 		'''Load cog'''
@@ -232,7 +234,20 @@ class Bot(commands.Bot):
 		else:
 			await ctx.embed_reply(":thumbsup::skin-tone-2: Loaded `{}` cog :gear:".format(cog))
 	
-	@commands.command()
+	@commands.command(name = "aiml", aliases = ["brain"])
+	@commands.is_owner()
+	async def load_aiml(self, ctx):
+		'''Load AIML'''
+		for predicate, value in self.aiml_predicates.items():
+			self.aiml_kernel.setBotPredicate(predicate, value)
+		if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
+			self.aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
+		elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
+			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
+		await ctx.embed_reply(":ok_hand::skin-tone-2: Loaded AIML")
+	
+	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
 	async def unload(self, ctx, cog : str):
 		'''Unload cog'''
@@ -242,6 +257,13 @@ class Bot(commands.Bot):
 			await ctx.embed_reply(":thumbsdown::skin-tone-2: Failed to unload `{}` cog\n{}: {}".format(cog, type(e).__name__, e))
 		else:
 			await ctx.embed_reply(":ok_hand::skin-tone-2: Unloaded `{}` cog :gear:".format(cog))
+	
+	@commands.command(name = "aiml", aliases = ["brain"])
+	@commands.is_owner()
+	async def unload_aiml(self, ctx):
+		'''Unload AIML'''
+		self.aiml_kernel.resetBrain()
+		await ctx.embed_reply(":ok_hand::skin-tone-2: Unloaded AIML")
 	
 	@commands.command()
 	@commands.is_owner()
