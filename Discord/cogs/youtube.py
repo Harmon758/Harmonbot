@@ -29,6 +29,13 @@ def setup(bot):
 ## youtube = getattr(clients.client.get_cog("Audio"), "audio", commands)
 
 class YouTube:
+	'''
+	YouTube streams and uploads notification system
+	Uploads system relevant documentation:
+	https://developers.google.com/youtube/v3/guides/push_notifications
+	https://pubsubhubbub.appspot.com/
+	https://pubsubhubbub.github.io/PubSubHubbub/pubsubhubbub-core-0.4.html
+	'''
 	
 	def __init__(self, bot):
 		self.bot = bot
