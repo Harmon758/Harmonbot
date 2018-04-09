@@ -20,14 +20,14 @@ from modules import utilities
 from utilities import checks
 
 def setup(bot):
-	bot.add_cog(Youtube(bot))
+	bot.add_cog(YouTube(bot))
 	if "Audio" in bot.cogs:
 		bot.remove_command("streams")
 
 # TODO: Handle audio cog not loaded
 ## youtube = getattr(clients.client.get_cog("Audio"), "audio", commands)
 
-class Youtube:
+class YouTube:
 	
 	def __init__(self, bot):
 		self.bot = bot

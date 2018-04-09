@@ -553,7 +553,7 @@ class Resources:
 	@commands.command(aliases = ["sptoyt", "spotify_to_youtube", "sp_to_yt"])
 	@checks.not_forbidden()
 	async def spotifytoyoutube(self, ctx, url : str):
-		'''Find a Spotify track on Youtube'''
+		'''Find a Spotify track on YouTube'''
 		link = await self.bot.cogs["Audio"].spotify_to_youtube(url)
 		if link:
 			await ctx.reply(link)

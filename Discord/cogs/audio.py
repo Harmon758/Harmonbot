@@ -249,7 +249,7 @@ class Audio:
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
 	async def audio_random(self, ctx):
-		'''Play a random song from Youtube's top 50'''
+		'''Play a random song from YouTube's top 50'''
 		url = "https://www.googleapis.com/youtube/v3/videos?part=id&chart=mostPopular&maxResults=50&videoCategoryId=10&key={}".format(credentials.google_apikey)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
