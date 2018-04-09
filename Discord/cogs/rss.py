@@ -83,7 +83,7 @@ class RSS:
 						feed_info = await self.bot.loop.run_in_executor(None, feedparser.parse, feed)
 						for item in feed_info.entries:
 							try:
-								if "published" in item:
+								if "published" in item and item.published:
 									published_time = dateutil.parser.parse(item.published)
 								elif "updated" in item:
 									published_time = dateutil.parser.parse(item.updated)
