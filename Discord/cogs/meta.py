@@ -536,13 +536,13 @@ class Meta:
 	@commands.is_owner()
 	async def echo(self, ctx, *, message):
 		'''Echoes the message'''
-		await self.bot.say(message)
+		await ctx.send(message)
 	
 	@echo.command(name = "embed")
 	@commands.is_owner()
 	async def echo_embed(self, ctx, *, message):
 		'''Echoes the message in an embed'''
-		await self.bot.embed_say(message)
+		await ctx.embed_say(message)
 	
 	@commands.command()
 	@commands.is_owner()
