@@ -40,8 +40,10 @@ class Images:
 	@image.command(name = "google", aliases = ["search"])
 	async def image_google(self, ctx, *, search : str):
 		'''Google image search something'''
-		url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&searchType=image&q={}".format(credentials.google_apikey, credentials.google_cse_cx, search.replace(' ', '+'))
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "https://www.googleapis.com/customsearch/v1"
+		params = {"key": credentials.google_apikey, "cx": credentials.google_cse_cx, 
+					"searchType": "image", 'q': search.replace(' ', '+')}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 403:
 				await ctx.embed_reply(":no_entry: Daily limit exceeded")
 				return
@@ -49,7 +51,9 @@ class Images:
 		if "items" not in data:
 			await ctx.embed_reply(":no_entry: No images with that search found")
 			return
-		await ctx.embed_reply(image_url = data["items"][0]["link"], title = "Image of {}".format(search), title_url = data["items"][0]["link"])
+		await ctx.embed_reply(image_url = data["items"][0]["link"], 
+								title = "Image of {}".format(search), 
+								title_url = data["items"][0]["link"])
 		# handle 403 daily limit exceeded error
 	
 	@image.command(name = "recognition")
@@ -76,16 +80,18 @@ class Images:
 	@commands.group(invoke_without_command = True)
 	async def giphy(self, ctx, *, search : str):
 		'''Find an image on giphy'''
-		url = "http://api.giphy.com/v1/gifs/search?api_key={}&q={}&limit=1".format(credentials.giphy_public_beta_api_key, search)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://api.giphy.com/v1/gifs/search"
+		params = {"api_key": credentials.giphy_public_beta_api_key, 'q': search, "limit": 1}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
 	@giphy.command(name = "trending")
 	async def giphy_trending(self, ctx):
 		'''Trending gif'''
-		url = "http://api.giphy.com/v1/gifs/trending?api_key={}".format(credentials.giphy_public_beta_api_key)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://api.giphy.com/v1/gifs/trending"
+		params = {"api_key": credentials.giphy_public_beta_api_key}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
