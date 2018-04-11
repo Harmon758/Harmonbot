@@ -79,8 +79,6 @@ class Bot(commands.Bot):
 		# External Clients
 		## Clarifai
 		self.clarifai_app = clarifai.rest.ClarifaiApp(app_id = credentials.clarifai_api_id, app_secret = credentials.clarifai_api_secret)
-		self.clarifai_general_model = self.clarifai_app.models.get("general-v1.3")
-		self.clarifai_nsfw_model = self.clarifai_app.models.get("nsfw-v1.0")
 		## Imgur
 		try:
 			self.imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
