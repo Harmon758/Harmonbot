@@ -127,10 +127,12 @@ class Bot(commands.Bot):
 		
 		# Load cogs
 		for file in sorted(os.listdir("cogs")):
-			if file.endswith(".py") and not file.startswith(("lichess", "random", "reactions")):
+			if file.endswith(".py") and not file.startswith(("imgur", "lichess", "random", "reactions")):
 				self.load_extension("cogs." + file[:-3])
+		self.load_extension("cogs.imgur")
 		self.load_extension("cogs.random")
 		self.load_extension("cogs.reactions")
+		# TODO: Document inter-cog dependencies
 		# TODO: Catch exceptions on fail to load?
 		# TODO: Move all to on_ready?
 	

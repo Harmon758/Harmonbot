@@ -22,9 +22,12 @@ class Images:
 				self.image.add_command(command)
 		# Add image google subcommand as google images subcommand
 		utilities.add_as_subcommand(self, self.image_google, "Search.google", "images", aliases = ["image"])
+		# Add imgur search subcommand as search imgur subcommand
+		utilities.add_as_subcommand(self, self.imgur_search, "Search.search", "imgur")
 	
 	def __unload(self):
 		utilities.remove_as_subcommand(self, "Search.google", "images")
+		utilities.remove_as_subcommand(self, "Search.search", "imgur")
 	
 	def __local_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
@@ -54,7 +57,7 @@ class Images:
 		await ctx.embed_reply(image_url = data["items"][0]["link"], 
 								title = "Image of {}".format(search), 
 								title_url = data["items"][0]["link"])
-		# handle 403 daily limit exceeded error
+		# TODO: handle 403 daily limit exceeded error
 	
 	@image.command(name = "recognition")
 	async def image_recognition(self, ctx, image_url : str):
@@ -110,6 +113,20 @@ class Images:
 			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(image)["link"])
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@imgur.command(name = "search")
+	async def imgur_search(self, ctx, *, search : str):
+		'''Search images on Imgur'''
+		result = self.bot.imgur_client.gallery_search(search, sort = "top")
+		if not result:
+			await ctx.embed_reply(":no_entry: No results found")
+			return
+		result = result[0]
+		if result.is_album:
+			result = self.bot.imgur_client.get_album(result.id).images[0]
+			await ctx.embed_reply(image_url = result["link"])
+		else:
+			await ctx.embed_reply(image_url = result.link)
 	
 	@commands.command()
 	async def nsfw(self, ctx, image_url : str):

@@ -24,7 +24,7 @@ class Search:
 				self.bot.add_command(command)
 				self.search.add_command(command)
 		# Add search subcommands as subcommands of corresponding commands
-		self.search_subcommands = ((self.imgur, "Images.imgur"), (self.youtube, "Audio.audio"))
+		self.search_subcommands = ((self.youtube, "Audio.audio"),)
 		for command, parent_name in self.search_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "search")
 	
@@ -40,21 +40,6 @@ class Search:
 		All search subcommands are also commands
 		'''
 		await ctx.embed_reply(":grey_question: Search what?")
-	
-	@search.command()
-	@checks.not_forbidden()
-	async def imgur(self, ctx, *, search : str):
-		'''Search images on Imgur'''
-		result = self.bot.imgur_client.gallery_search(search, sort = "top")
-		if not result:
-			await ctx.embed_reply(":no_entry: No results found")
-			return
-		result = result[0]
-		if result.is_album:
-			result = self.bot.imgur_client.get_album(result.id).images[0]
-			await ctx.embed_reply(image_url = result["link"])
-		else:
-			await ctx.embed_reply(image_url = result.link)
 	
 	@search.command(aliases = ["yt"])
 	@checks.not_forbidden()
