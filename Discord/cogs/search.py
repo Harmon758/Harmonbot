@@ -24,7 +24,7 @@ class Search:
 				self.bot.add_command(command)
 				self.search.add_command(command)
 		# Add search subcommands as subcommands of corresponding commands
-		self.search_subcommands = ((self.imgur, "Resources.imgur"), (self.youtube, "Audio.audio"))
+		self.search_subcommands = ((self.imgur, "Images.imgur"), (self.youtube, "Audio.audio"))
 		for command, parent_name in self.search_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "search")
 	
@@ -107,7 +107,7 @@ class Search:
 		'''Search with DuckDuckGo'''
 		await ctx.embed_reply("[DuckDuckGo search for \"{}\"](https://www.duckduckgo.com/?q={})".format(' '.join(search), '+'.join(search)))
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def google(self, ctx, *, search : str):
 		'''Google search'''

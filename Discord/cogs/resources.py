@@ -104,39 +104,6 @@ class Resources:
 		else:
 			await ctx.embed_reply("Gender: {}".format(data["gender"]), title = data["name"].capitalize(), footer_text = "Probability: {}% ({} data entries examined)".format(int(data["probability"] * 100), data["count"]))
 	
-	@commands.group(invoke_without_command = True)
-	@checks.not_forbidden()
-	async def giphy(self, ctx, *, search : str):
-		'''Find an image on giphy'''
-		url = "http://api.giphy.com/v1/gifs/search?api_key={}&q={}&limit=1".format(credentials.giphy_public_beta_api_key, search)
-		async with clients.aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
-	
-	@giphy.command(name = "trending")
-	async def giphy_trending(self, ctx):
-		'''Trending gif'''
-		url = "http://api.giphy.com/v1/gifs/trending?api_key={}".format(credentials.giphy_public_beta_api_key)
-		async with clients.aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
-	
-	@commands.command(aliases = ["imagesearch", "googleimages"])
-	@checks.not_forbidden()
-	async def googleimage(self, ctx, *, search : str):
-		'''Google image search something'''
-		url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&searchType=image&q={}".format(credentials.google_apikey, credentials.google_cse_cx, search.replace(' ', '+'))
-		async with clients.aiohttp_session.get(url) as resp:
-			if resp.status == 403:
-				await ctx.embed_reply(":no_entry: Daily limit exceeded")
-				return
-			data = await resp.json()
-		if "items" not in data:
-			await ctx.embed_reply(":no_entry: No images with that search found")
-			return
-		await ctx.embed_reply(image_url = data["items"][0]["link"], title = "Image of {}".format(search), title_url = data["items"][0]["link"])
-		# handle 403 daily limit exceeded error
-	
 	@commands.command()
 	@checks.not_forbidden()
 	async def hastebin(self, ctx, *, contents : str):
@@ -216,44 +183,6 @@ class Resources:
 		date = [int(d) for d in data["date"].split('-')]
 		await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""), title = data["sunsign"], fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()), footer_text = data["credit"], timestamp = datetime.datetime(date[0], date[1], date[2]))
 	
-	@commands.command(aliases = ["imagerecog", "imager", "image_recognition"])
-	@checks.not_forbidden()
-	async def imagerecognition(self, ctx, image_url : str):
-		'''Image recognition'''
-		try:
-			response = self.bot.clarifai_app.public_models.general_model.predict_by_url(image_url)
-		except clarifai.rest.ApiError as e:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
-			return
-		if response["status"]["description"] != "Ok":
-			await ctx.embed_reply(":no_entry: Error")
-			return
-		names = {}
-		for concept in response["outputs"][0]["data"]["concepts"]:
-			names[concept["name"]] = concept["value"] * 100
-		output = ""
-		for name, value in sorted(names.items(), key = lambda i: i[1], reverse = True):
-			output += "**{}**: {:.2f}%, ".format(name, value)
-		output = output[:-2]
-		await ctx.embed_reply(output)
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def nsfw(self, ctx, image_url : str):
-		'''NSFW recognition'''
-		try:
-			response = self.bot.clarifai_app.public_models.nsfw_model.predict_by_url(image_url)
-		except clarifai.rest.ApiError as e:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
-			return
-		if response["status"]["description"] != "Ok":
-			await ctx.embed_reply(":no_entry: Error")
-			return
-		percentages = {}
-		for concept in response["outputs"][0]["data"]["concepts"]:
-			percentages[concept["name"]] = concept["value"] * 100
-		await ctx.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]))
-	
 	@commands.command(aliases = ["movie"])
 	@checks.not_forbidden()
 	async def imdb(self, ctx, *search : str):
@@ -281,29 +210,6 @@ class Resources:
 		embed.add_field(name = "Plot", value = data["Plot"], inline = False)
 		if data["Poster"] != "N/A": embed.set_thumbnail(url = data["Poster"])
 		await self.bot.say(embed = embed)
-	
-	@commands.group(invoke_without_command = True)
-	@checks.not_forbidden()
-	async def imgur(self, ctx):
-		'''Imgur'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
-	
-	@imgur.command(name = "upload")
-	@checks.not_forbidden()
-	async def imgur_upload(self, ctx, url : str = ""):
-		'''Upload images to Imgur'''
-		if url:
-			await self._imgur_upload(ctx, url)
-		if ctx.message.attachments:
-			await self._imgur_upload(ctx, ctx.message.attachments[0]["url"])
-		if not (url or ctx.message.attachments):
-			await ctx.embed_reply(":no_entry: Please input an image and/or url")
-	
-	async def _imgur_upload(self, ctx, url):
-		try:
-			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(url)["link"])
-		except imgurpython.helpers.error.ImgurClientError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 	
 	@commands.command()
 	@checks.not_forbidden()
