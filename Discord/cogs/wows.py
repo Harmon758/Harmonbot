@@ -14,7 +14,10 @@ class WoWS:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.api_urls = {"asia": "https://api.worldofwarships.asia/wows/", "eu": "https://api.worldofwarships.eu/wows/", "na": "https://api.worldofwarships.com/wows/", "ru": "https://api.worldofwarships.ru/wows/"}
+		self.api_urls = {"asia": "https://api.worldofwarships.asia/wows/", 
+						"eu": "https://api.worldofwarships.eu/wows/", 
+						"na": "https://api.worldofwarships.com/wows/", 
+						"ru": "https://api.worldofwarships.ru/wows/"}
 	
 	@commands.group(aliases = ["worldofwarships", "world_of_warships"], invoke_without_command = True)
 	@checks.not_forbidden()
