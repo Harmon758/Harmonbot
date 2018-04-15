@@ -5,6 +5,7 @@ from discord.ext import commands
 import asyncio
 import clarifai.rest
 import datetime
+import dateutil
 import imgurpython
 import json
 # import spotipy
@@ -77,6 +78,21 @@ class Resources:
 		embed.add_field(name = "HSV", value = "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"]))
 		embed.set_image(url = data["imageUrl"])
 		await self.bot.say(embed = embed)
+	
+	@commands.command()
+	@checks.not_forbidden()
+	async def cve(self, ctx, id : str):
+		id = id.lower()
+		if id.startswith("-"):
+			id = "cve" + id
+		elif not id.startswith("cve"):
+			id = "cve-" + id
+		async with clients.aiohttp_session.get("http://cve.circl.lu/api/cve/{}".format(id)) as resp:
+			data = await resp.json()
+		if not data:
+			await ctx.embed_reply(":no_entry: Error: Not found")
+			return
+		await ctx.embed_reply(data["summary"], title = data["id"], fields = (("CVSS", data["cvss"]),), footer_text = "Published", timestamp = dateutil.parser.parse(data["Published"]))
 	
 	@commands.command()
 	@checks.not_forbidden()
