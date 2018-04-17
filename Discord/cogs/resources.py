@@ -280,7 +280,7 @@ class Resources:
 			# output += "\n<{}>".format(article["url"])
 			output += "\n{}".format(article["url"])
 			output += "\nSelect a different number for another article"
-			await self.bot.edit_message(response, "{}: {}".format(ctx.author.display_name, output))
+			await response.edit("{}: {}".format(ctx.author.display_name, output))
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
