@@ -295,7 +295,7 @@ class Resources:
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		# for source in data["sources"]:
-		await self.bot.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
+		await ctx.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
