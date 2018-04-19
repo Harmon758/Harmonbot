@@ -468,7 +468,7 @@ class Resources:
 		await ctx.embed_reply(short_url)
 	
 	async def _shorturl(self, url):
-		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
+		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url + '"}') as resp:
 			data = await resp.json()
 		return data["id"]
 	
