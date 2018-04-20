@@ -586,7 +586,7 @@ class Resources:
 			# TODO: Check description/definition length?
 			embed.add_field(name = "Example", value = "{0[example]}\n\n:thumbsup::skin-tone-2: {0[thumbs_up]} :thumbsdown::skin-tone-2: {0[thumbs_down]}".format(definition))
 			embed.set_footer(text = "Select a different number for another definition")
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 	
 	@commands.command()
 	@checks.not_forbidden()
