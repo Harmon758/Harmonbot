@@ -601,7 +601,7 @@ class Resources:
 				wait_time = int(data["estimated_need_time"])
 				if response and embed:
 					embed.description = "Processing {}\nEstimated wait time: {} sec".format(url, wait_time)
-					await self.bot.edit_message(response, embed = embed)
+					await response.edit(embed = embed)
 				else:
 					response = await ctx.embed_reply("Processing {}\nEstimated wait time: {} sec".format(url, wait_time))
 				await asyncio.sleep(wait_time)
