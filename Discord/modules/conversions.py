@@ -259,6 +259,7 @@ masses = {
 	"slug" : 14.593903, "st" : 6.35029318, "atl" : 32.6, "ats" : 29.16, "longtn" : 1016.0469088, 
 	"ton" : 1016.0469088, "shtn" : 907.18474, "t" : 1000, "wey" : 114.30527724, "g" : 0.001
 }
+
 def massconversion(value, unit1, unit2):
 	if unit1 in masses and unit2 in masses:
 		return value * masses[unit1] / masses[unit2]
@@ -282,3 +283,4 @@ def mitokm(miles):
 
 def kmtomi(kilometers):
 	return kilometers * 0.621371
+
