@@ -225,16 +225,15 @@ if __name__ == "__main__":
 			f_counter_info[message.author.id] = f_counter_info.get(message.author.id, 0) + 1
 			with open(clients.data_path + "/f.json", 'w') as f_file:
 				json.dump(f_counter_info, f_file, indent = 4)
-			embed = discord.Embed(color = clients.bot_color)
-			embed.description = "{} has paid their respects".format(message.author.display_name)
-			embed.description += "\nTotal respects paid so far: {}".format(f_counter_info["total"])
-			embed.description += "\nRecorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[message.author.id]) # since 2016-12-20
+			description = "{} has paid their respects\n".format(message.author.display_name)
+			description += "Total respects paid so far: {}\n".format(f_counter_info["total"])
+			description += "Recorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[message.author.id]) # since 2016-12-20
 			try:
-				await client.send_message(message.channel, embed = embed)
+				await ctx.embed_reply(description)
 			except discord.Forbidden: # necessary?
 				raise
-			except discord.HTTPException:
-				await client.send_message(message.channel, embed.description)
+			except discord.HTTPException: # necessary?
+				await ctx.send(description)
 	
 	@client.event
 	async def on_error(event_method, *args, **kwargs):
