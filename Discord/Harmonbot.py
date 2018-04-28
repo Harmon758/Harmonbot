@@ -222,12 +222,12 @@ if __name__ == "__main__":
 		# f
 		elif message.content.lower() == 'f':
 			f_counter_info["total"] += 1
-			f_counter_info[message.author.id] = f_counter_info.get(message.author.id, 0) + 1
+			f_counter_info[str(message.author.id)] = f_counter_info.get(str(message.author.id), 0) + 1
 			with open(clients.data_path + "/f.json", 'w') as f_file:
 				json.dump(f_counter_info, f_file, indent = 4)
 			description = "{} has paid their respects\n".format(message.author.display_name)
 			description += "Total respects paid so far: {}\n".format(f_counter_info["total"])
-			description += "Recorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[message.author.id]) # since 2016-12-20
+			description += "Recorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[str(message.author.id)]) # since 2016-12-20
 			try:
 				await ctx.embed_reply(description)
 			except discord.Forbidden: # necessary?
