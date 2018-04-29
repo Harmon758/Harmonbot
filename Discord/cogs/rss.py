@@ -31,7 +31,7 @@ class RSS:
 	def __unload(self):
 		self.task.cancel()
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(aliases = ["feed"], invoke_without_command = True)
 	@checks.is_permitted()
 	async def rss(self, ctx):
 		'''RSS'''
