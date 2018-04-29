@@ -22,7 +22,7 @@ git+git://github.com/Harmon758/Py3kAiml.git@master#egg=Py3kAiml
 pydealer==1.4.0
 pygost==3.1
 pyowm==2.8.0
-python-chess==0.16.2
+python-chess==0.23.4
 python-dateutil==2.7.2
 scipy==1.0.1
 seaborn==0.8.1
