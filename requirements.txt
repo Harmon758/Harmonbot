@@ -14,7 +14,7 @@ imgurpython==1.1.7
 inflect==0.2.5
 isodate==0.6.0
 matplotlib==2.2.2
-numexpr==2.6.4
+numexpr==2.6.5
 numpy==1.14.2
 pandas==0.22.0
 psutil==5.4.3
