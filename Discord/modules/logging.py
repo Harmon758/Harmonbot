@@ -48,9 +48,11 @@ errors_logger_handler_2 = logging.FileHandler(filename = path + "unresolved_erro
 errors_logger_handler_2.setFormatter(logging.Formatter("\n\n%(asctime)s\n%(message)s"))
 errors_logger.addHandler(errors_logger_handler_1)
 errors_logger.addHandler(errors_logger_handler_2)
+
 def log_exception(exc_type, exc_value, exc_traceback):
 	sys.__excepthook__(exc_type, exc_value, exc_traceback)
 	errors_logger.error("Uncaught exception\n", exc_info = (exc_type, exc_value, exc_traceback))
+
 sys.excepthook = log_exception
 
 # discord.py log
@@ -92,7 +94,7 @@ aiohttp_server_logger.addHandler(aiohttp_server_logger_handler)
 
 # aiohttp web log
 aiohttp_web_logger = logging.getLogger("aiohttp.web")
-aiohttp_web_logger.setLevel(logging.DEBUG) # Necessary?
+aiohttp_web_logger.setLevel(logging.DEBUG)  # Necessary?
 aiohttp_web_logger_handler = logging.FileHandler(filename = path + "aiohttp/web.log", encoding = "utf-8", mode = 'a')
 aiohttp_web_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
 aiohttp_web_logger.addHandler(aiohttp_web_logger_handler)
