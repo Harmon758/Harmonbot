@@ -38,7 +38,7 @@ youtube-dl==2018.4.9
 
 asn1crypto==0.24.0
 async-timeout==2.0.1
-attrs==17.4.0
+attrs==18.1.0
 certifi==2018.1.18
 cffi==1.11.5
 chardet==3.0.4
