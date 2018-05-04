@@ -39,7 +39,9 @@ class Meta:
 	async def help(self, ctx, *commands : str):
 		'''
 		Shows this message
-		Note: If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
+		Inputs in angle brackets, <>, are required
+		Inputs in square brackets, [], are optional
+		If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
 		'''
 		if len(commands) == 0:
 			embed = discord.Embed(title = "Categories", color = clients.bot_color)
