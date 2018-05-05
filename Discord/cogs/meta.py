@@ -264,7 +264,7 @@ class Meta:
 		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) v{0}\n([Python](https://www.python.org/) v{1.major}.{1.minor}.{1.micro})".format(discord.__version__, sys.version_info))
 		owner = discord.utils.get(self.bot.get_all_members(), id = self.bot.owner_id)
 		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(owner), icon_url = owner.avatar_url)
-		await self.bot.reply("", embed = embed)
+		await ctx.reply("", embed = embed)
 		await ctx.send("Changelog (Harmonbot Server): {}".format(self.bot.changelog))
 	
 	@commands.command()
