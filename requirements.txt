@@ -23,7 +23,7 @@ pygost==3.1
 pyowm==2.8.0
 python-chess==0.16.2
 python-dateutil==2.7.2
-scipy==1.0.1
+scipy==1.1.0
 seaborn==0.8.1
 setuptools==39.0.1
 speechrecognition==3.8.1
