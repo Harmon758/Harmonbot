@@ -123,7 +123,7 @@ class Meta:
 		embed.add_field(name = "Misc", value = "invite randomgame test test_on_message", inline = False)
 		embed.add_field(name = "Owner Only", value = "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", inline = False)
 		embed.add_field(name = "No Prefix", value = "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", inline = False)
-		await self.bot.say(embed = embed)
+		await ctx.send(embed = embed)
 	
 	@commands.command()
 	@commands.is_owner()
