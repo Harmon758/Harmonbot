@@ -50,7 +50,7 @@ class Meta:
 			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
 			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with)) # stats?
 			embed.add_field(name = "For all commands:", value = "`{}{} all`".format(ctx.prefix, ctx.invoked_with), inline = False)
-			await self.bot.say(embed = embed)
+			await ctx.send(embed = embed)
 			return
 		
 		def repl(obj):
@@ -99,7 +99,7 @@ class Meta:
 		for embed in embeds:
 			if destination == ctx.channel:
 				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			await self.bot.send_message(destination, embed = embed)
+			await destination.send(embed = embed)
 	
 	@help.command(name = "all")
 	async def help_all(self, ctx):
