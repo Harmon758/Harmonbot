@@ -106,7 +106,7 @@ class Meta:
 		'''All commands'''
 		embeds = self.bot.formatter.format_help_for(ctx, self.bot)
 		for embed in embeds:
-			await self.bot.whisper(embed = embed)
+			await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
