@@ -136,7 +136,7 @@ class Meta:
 		_allcommands = ""
 		for name, _command in _commands:
 			_allcommands += name + ' '
-		await self.bot.whisper(_allcommands[:-1])
+		await ctx.whisper(_allcommands[:-1])
 	
 	@commands.command()
 	@commands.is_owner()
