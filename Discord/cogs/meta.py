@@ -482,7 +482,7 @@ class Meta:
 	async def update_discord_bots_stats(self, ctx):
 		'''Update stats on https://bots.discord.pw'''
 		response = await clients._update_discord_bots_stats()
-		await self.bot.reply(response)
+		await ctx.reply(response)
 	
 	# Restart/Shutdown
 	
