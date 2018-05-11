@@ -554,9 +554,9 @@ class Meta:
 			result = eval(code)
 			if inspect.isawaitable(result):
 				result = await result
-			await self.bot.reply(clients.py_code_block.format(result))
+			await ctx.reply(clients.py_code_block.format(result))
 		except Exception as e:
-			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await ctx.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 	
 	@commands.command()
 	@commands.is_owner()
