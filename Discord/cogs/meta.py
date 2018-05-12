@@ -565,7 +565,7 @@ class Meta:
 		try:
 			exec(code)
 		except Exception as e:
-			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await ctx.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 			return
 		await ctx.embed_reply("Successfully executed")
 	
