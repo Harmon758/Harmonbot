@@ -574,7 +574,7 @@ class Meta:
 	async def delete_test(self, ctx):
 		'''Sends 100 messages'''
 		for i in range(1, 101):
-			await self.bot.say(str(i))
+			await ctx.send(i)
 	
 	@commands.command(aliases = ["globalratelimittest"])
 	@commands.is_owner()
