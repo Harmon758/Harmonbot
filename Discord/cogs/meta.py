@@ -590,7 +590,7 @@ class Meta:
 	async def repeat_text(self, ctx, number : int, *, text):
 		'''Repeat text'''
 		for _ in range(number):
-			await self.bot.say(text)
+			await ctx.send(text)
 	
 	@commands.command()
 	@commands.is_owner()
