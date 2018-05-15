@@ -618,20 +618,20 @@ class Meta:
 				try:
 					code = compile(code, "<repl>", "exec")
 				except SyntaxError as e:
-					await self.bot.reply(clients.py_code_block.format("{0.text}{1:>{0.offset}}\n{2}: {0}".format(e, '^', type(e).__name__)))
+					await ctx.reply(clients.py_code_block.format("{0.text}{1:>{0.offset}}\n{2}: {0}".format(e, '^', type(e).__name__)))
 					continue
 			try:
 				result = function(code, variables)
 				if inspect.isawaitable(result):
 					result = await result
 			except:
-				await self.bot.reply(clients.py_code_block.format("\n".join(traceback.format_exc().splitlines()[-2:]).strip()))
+				await ctx.reply(clients.py_code_block.format("\n".join(traceback.format_exc().splitlines()[-2:]).strip()))
 			else:
 				if function is eval:
 					try:
-						await self.bot.reply(clients.py_code_block.format(result))
+						await ctx.reply(clients.py_code_block.format(result))
 					except Exception as e:
-						await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
+						await ctx.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 				variables["last"] = result
 	
 	@commands.command(aliases = ["github"])
