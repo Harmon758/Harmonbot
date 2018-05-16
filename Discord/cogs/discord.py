@@ -95,13 +95,13 @@ class Discord:
 				if count == number:
 					break
 				elif len(to_delete) == 100:
-					await self.bot.delete_messages(to_delete)
+					await ctx.channel.delete_messages(to_delete)
 					to_delete.clear()
 					await asyncio.sleep(1)
 		if len(to_delete) == 1:
 			await self.bot.attempt_delete_message(to_delete[0])
 		elif len(to_delete) > 1:
-			await self.bot.delete_messages(to_delete)
+			await ctx.channel.delete_messages(to_delete)
 	
 	@commands.command(aliases = ["mycolour", "my_color", "my_colour"])
 	@commands.guild_only()
