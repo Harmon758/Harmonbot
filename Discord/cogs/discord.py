@@ -50,7 +50,7 @@ class Discord:
 			await self.bot.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		elif not user:
 			await self.bot.attempt_delete_message(ctx.message)
-			await self.bot.purge_from(ctx.channel, limit = number)
+			await ctx.channel.purge(limit = number)
 		elif user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.name == user)
 	
