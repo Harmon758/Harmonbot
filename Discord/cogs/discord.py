@@ -88,7 +88,7 @@ class Discord:
 		to_delete = []
 		count = 0
 		if delete_command: await self.bot.attempt_delete_message(ctx.message)
-		async for message in self.bot.logs_from(ctx.channel, limit = clients.delete_limit):
+		async for message in ctx.channel.history(limit = clients.delete_limit):
 			if check(message):
 				to_delete.append(message)
 				count += 1
