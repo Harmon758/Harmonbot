@@ -183,7 +183,7 @@ class Bot(commands.Bot):
 			return web.Response()
 		else:
 			return web.Response(status = 400)  # Return 400 Bad Request
-
+	
 	async def on_ready(self):
 		# Necessary for custom emoji
 		self.load_extension("cogs.lichess")
