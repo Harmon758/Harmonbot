@@ -620,7 +620,7 @@ class Games:
 	async def gofish_hand(self, ctx):
 		'''WIP'''
 		if ctx.author in gofish_players:
-			await self.bot.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
+			await ctx.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
 	
 	@gofish.command(hidden = True, name = "ask")
 	@commands.is_owner()
