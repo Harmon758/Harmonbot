@@ -1180,7 +1180,7 @@ class Games:
 				self.taboo_players.append(member)
 				break
 		await ctx.embed_reply(" has started a game of Taboo with " + taboo_players[1].mention)
-		await self.bot.whisper("You have started a game of Taboo with " + taboo_players[1].name)
+		await ctx.whisper("You have started a game of Taboo with " + taboo_players[1].name)
 		await self.bot.send_message(taboo_players[1], ctx.author.name + " has started a game of Taboo with you.")
 	
 	@taboo.command(hidden = True, name = "nextround")
