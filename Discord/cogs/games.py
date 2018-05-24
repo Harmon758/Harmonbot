@@ -1366,7 +1366,7 @@ class Games:
 	async def war_hand(self, ctx):
 		'''See your current hand'''
 		if ctx.author in self.war_players:
-			await self.bot.whisper("Your hand: " + war.hand(self.war_players.index(ctx.author) + 1))
+			await ctx.whisper("Your hand: " + war.hand(self.war_players.index(ctx.author) + 1))
 	
 	@war.command(name = "left")
 	@commands.is_owner()
