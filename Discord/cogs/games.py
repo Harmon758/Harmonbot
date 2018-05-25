@@ -1390,7 +1390,7 @@ class Games:
 				await ctx.embed_reply(":no_entry: Card not found in your hand")
 			else:
 				await ctx.embed_reply("You chose the {} of {}".format(cardsplayed[player_number - 1].value, cardsplayed[player_number - 1].suit))
-				await self.bot.whisper("Your hand: " + war.hand(player_number))
+				await ctx.whisper("Your hand: " + war.hand(player_number))
 			if winner > 0:
 				winner_name = self.war_players[winner - 1].name
 				cards_played_print = ""
