@@ -312,8 +312,9 @@ class Tools:
 	# TODO: global search, list?
 	
 	async def check_no_tags(self, ctx):
-		if not str(ctx.author.id) in self.tags_data:
+		if not str(ctx.author.id) in self.tags_data or not self.tags_data[str(ctx.author.id)]["tags"]:
 			await ctx.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
+			# TODO: Fix invoked_with for subcommands
 		return not str(ctx.author.id) in self.tags_data
 	
 	async def check_no_tag(self, ctx, tag):
