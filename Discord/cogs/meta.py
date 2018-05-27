@@ -511,7 +511,7 @@ class Meta:
 	@checks.not_forbidden()
 	async def test(self, ctx):
 		'''Basic test command'''
-		await self.bot.say("Hello, World!")
+		await ctx.send("Hello, World!")
 	
 	@commands.group(aliases = ["code_block"], invoke_without_command = True)
 	@checks.not_forbidden()
