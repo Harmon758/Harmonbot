@@ -581,7 +581,7 @@ class Meta:
 	async def global_ratelimit_test(self, ctx):
 		'''Used to test global ratelimits'''
 		for i in range(1, 101):
-			async for message in self.bot.logs_from(ctx.message.channel):
+			async for message in ctx.history():
 				pass
 			print("global ratelimit test {}".format(i))
 	
