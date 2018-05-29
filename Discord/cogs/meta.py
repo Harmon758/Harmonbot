@@ -507,11 +507,17 @@ class Meta:
 	
 	# Testing
 	
-	@commands.command(hidden = True)
+	@commands.group(hidden = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def test(self, ctx):
 		'''Basic test command'''
 		await ctx.send("Hello, World!")
+	
+	@test.command(name = "on_message")
+	async def test_on_message(self, ctx):
+		'''Test on_message event'''
+		# Implemented in on_message
+		return
 	
 	@commands.group(aliases = ["code_block"], invoke_without_command = True)
 	@checks.not_forbidden()
