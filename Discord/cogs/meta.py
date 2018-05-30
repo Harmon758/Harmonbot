@@ -513,6 +513,15 @@ class Meta:
 		'''Basic test command'''
 		await ctx.send("Hello, World!")
 	
+	@test.command(name = "global_rate_limit", aliases = ["globalratelimit"])
+	@commands.is_owner()
+	async def test_global_rate_limit(self, ctx):
+		'''Used to test global rate limits'''
+		for i in range(1, 101):
+			async for message in ctx.history():
+				pass
+			print("global ratelimit test {}".format(i))
+	
 	@test.command(name = "on_message")
 	async def test_on_message(self, ctx):
 		'''Test on_message event'''
@@ -581,15 +590,6 @@ class Meta:
 		'''Sends 100 messages'''
 		for i in range(1, 101):
 			await ctx.send(i)
-	
-	@commands.command(aliases = ["globalratelimittest"])
-	@commands.is_owner()
-	async def global_ratelimit_test(self, ctx):
-		'''Used to test global ratelimits'''
-		for i in range(1, 101):
-			async for message in ctx.history():
-				pass
-			print("global ratelimit test {}".format(i))
 	
 	@commands.command(aliases = ["repeattext"])
 	@commands.is_owner()
