@@ -520,7 +520,7 @@ class Meta:
 		for i in range(1, 101):
 			async for message in ctx.history():
 				pass
-			print("global ratelimit test {}".format(i))
+			print(f"global ratelimit test {i}")
 	
 	@test.command(name = "on_message")
 	async def test_on_message(self, ctx):
