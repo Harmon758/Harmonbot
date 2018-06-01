@@ -604,7 +604,7 @@ class Meta:
 		variables = {"self" : self, "ctx" : ctx, "last" : None}
 		await ctx.embed_reply("Enter code to execute or evaluate\n`exit` or `quit` to exit")
 		while True:
-			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda m: m.content.startswith('`'))
+			message = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.startswith('`'))
 			if message.content.startswith("```py") and message.content.endswith("```"):
 				code = message.content[5:-3].strip(" \n")
 			else:
