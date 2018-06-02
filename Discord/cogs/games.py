@@ -996,7 +996,9 @@ class Games:
 	@checks.not_forbidden()
 	async def reaction_time(self, ctx):
 		'''Reaction time game'''
-		response, embed = await self.bot.say("Please choose 10 reactions")
+		# TODO: Use embeds
+		# TODO: Randomly add reactions
+		response = await ctx.send("Please choose 10 reactions")
 		while len(response.reactions) < 10:
 			await self.bot.wait_for_reaction(message = response)
 			response = await self.bot.get_message(ctx.channel, response.id)
