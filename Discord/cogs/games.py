@@ -1004,21 +1004,21 @@ class Games:
 			response = await self.bot.get_message(ctx.channel, response.id)
 		reactions = response.reactions
 		reaction = random.choice(reactions)
-		await self.bot.edit_message(response, "Please wait..")
+		await response.edit(content = "Please wait..")
 		for _reaction in reactions:
 			try:
 				await self.bot.add_reaction(response, _reaction.emoji)
 			except discord.HTTPException:
-				await self.bot.edit_message(response, ":no_entry: Error: Please don't deselect your reactions before I've selected them")
+				await response.edit(content = ":no_entry: Error: Please don't deselect your reactions before I've selected them")
 				return
 		for countdown in range(10, 0, -1):
-			await self.bot.edit_message(response, "First to select the reaction _ wins.\nMake sure to have all the reactions deselected.\nGet ready! {}".format(countdown))
+			await response.edit(content = "First to select the reaction _ wins.\nMake sure to have all the reactions deselected.\nGet ready! {}".format(countdown))
 			await asyncio.sleep(1)
-		await self.bot.edit_message(response, "First to select the reaction {} wins. Go!".format(reaction.emoji))
+		await response.edit(content = "First to select the reaction {} wins. Go!".format(reaction.emoji))
 		start_time = timeit.default_timer()
 		winner = await self.bot.wait_for_reaction(message = response, emoji = reaction.emoji)
 		elapsed = timeit.default_timer() - start_time
-		await self.bot.edit_message(response, "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
+		await response.edit(content = "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
 	
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
 	@checks.not_forbidden()
