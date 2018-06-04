@@ -1335,7 +1335,7 @@ class Games:
 			incorrect = user[1][1]
 			correct_percentage = correct / (correct + incorrect) * 100
 			embed.add_field(name = user_info, value = "{}/{} correct ({:.2f}%)\n".format(correct, correct + incorrect, correct_percentage))
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 	
 	@commands.group()
 	@checks.not_forbidden()
