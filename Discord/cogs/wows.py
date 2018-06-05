@@ -54,6 +54,12 @@ class WoWS:
 			return
 		data = data["data"][str(account_id)]
 		# TODO: handle hidden profile?
-		await ctx.embed_reply(title = data["nickname"], fields = (("ID", account_id),("Account Level", data["leveling_tier"]), ("Account XP", "{:,}".format(data["leveling_points"])), ("Battles Fought", data["statistics"]["battles"]), ("Miles Travelled", data["statistics"]["distance"]), ("Account Created", datetime.datetime.utcfromtimestamp(data["created_at"]).strftime("%Y-%m-%d @ %I:%M:%S %p (UTC)"))))
+		fields = [("ID", account_id), ("Account Level", data["leveling_tier"])]
+		fields.append(("Account XP", "{:,}".format(data["leveling_points"])))
+		fields.append(("Battles Fought", data["statistics"]["battles"]))
+		fields.append(("Miles Travelled", data["statistics"]["distance"]))
+		fields.append(("Account Created", datetime.datetime.utcfromtimestamp(data["created_at"]).strftime("%Y-%m-%d @ %I:%M:%S %p (UTC)")))
+		# TODO: put account creation date in footer?
+		await ctx.embed_reply(title = data["nickname"], fields = fields)
 		
 
