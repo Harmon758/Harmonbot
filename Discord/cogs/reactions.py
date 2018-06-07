@@ -66,7 +66,7 @@ class Reactions:
 		embed = guess_message.embeds[0]
 		answer = random.randint(1, 10)
 		for number_emote in sorted(self.numbers.keys()):
-			await self.bot.add_reaction(guess_message, number_emote)
+			await guess_message.add_reaction(number_emote)
 		self.reaction_messages[guess_message.id] = lambda reaction, user: self.guessr_processr(ctx.author, answer, embed, reaction, user)
 	
 	async def guessr_processr(self, player, answer, embed, reaction, user):
