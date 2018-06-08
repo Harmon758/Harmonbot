@@ -73,11 +73,11 @@ class Reactions:
 		if user == player and reaction.emoji in self.numbers:
 			if self.numbers[reaction.emoji] == answer:
 				embed.description = "{}: It was {}!".format(player.display_name, self.numbers[reaction.emoji])
-				await self.bot.edit_message(reaction.message, embed = embed)
+				await reaction.message.edit(embed = embed)
 				del self.reaction_messages[reaction.message.id]
 			else:
 				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(player.display_name, self.numbers[reaction.emoji])
-				await self.bot.edit_message(reaction.message, embed = embed)
+				await reaction.message.edit(embed = embed)
 	
 	@commands.command(invoke_without_command = True)
 	@checks.not_forbidden()
