@@ -97,7 +97,7 @@ class Reactions:
 		for number in range(9):
 			numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1 # '\u0031' - 1
 		for number_emote in sorted(numbers.keys()):
-			await self.bot.add_reaction(response, number_emote)
+			await response.add_reaction(number_emote)
 		while True:
 			emoji_response = await self.bot.wait_for_reaction(user = ctx.author, message = response, emoji = numbers.keys())
 			reaction = emoji_response.reaction
