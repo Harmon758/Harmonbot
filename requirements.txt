@@ -33,7 +33,7 @@ unicodedata2==10.0.0.post2
 wand==0.4.4
 wolframalpha==3.0.1
 wordnik-py3==2.1.2
-youtube-dl==2018.4.9
+youtube-dl==2018.6.11
 
 asn1crypto==0.24.0
 async-timeout==3.0.0
