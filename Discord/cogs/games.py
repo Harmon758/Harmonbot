@@ -620,7 +620,7 @@ class Games:
 	async def gofish_hand(self, ctx):
 		'''WIP'''
 		if ctx.author in gofish_players:
-			await self.bot.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
+			await ctx.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
 	
 	@gofish.command(hidden = True, name = "ask")
 	@commands.is_owner()
@@ -996,27 +996,29 @@ class Games:
 	@checks.not_forbidden()
 	async def reaction_time(self, ctx):
 		'''Reaction time game'''
-		response, embed = await self.bot.say("Please choose 10 reactions")
+		# TODO: Use embeds
+		# TODO: Randomly add reactions
+		response = await ctx.send("Please choose 10 reactions")
 		while len(response.reactions) < 10:
 			await self.bot.wait_for_reaction(message = response)
 			response = await self.bot.get_message(ctx.channel, response.id)
 		reactions = response.reactions
 		reaction = random.choice(reactions)
-		await self.bot.edit_message(response, "Please wait..")
+		await response.edit(content = "Please wait..")
 		for _reaction in reactions:
 			try:
 				await self.bot.add_reaction(response, _reaction.emoji)
 			except discord.HTTPException:
-				await self.bot.edit_message(response, ":no_entry: Error: Please don't deselect your reactions before I've selected them")
+				await response.edit(content = ":no_entry: Error: Please don't deselect your reactions before I've selected them")
 				return
 		for countdown in range(10, 0, -1):
-			await self.bot.edit_message(response, "First to select the reaction _ wins.\nMake sure to have all the reactions deselected.\nGet ready! {}".format(countdown))
+			await response.edit(content = "First to select the reaction _ wins.\nMake sure to have all the reactions deselected.\nGet ready! {}".format(countdown))
 			await asyncio.sleep(1)
-		await self.bot.edit_message(response, "First to select the reaction {} wins. Go!".format(reaction.emoji))
+		await response.edit(content = "First to select the reaction {} wins. Go!".format(reaction.emoji))
 		start_time = timeit.default_timer()
 		winner = await self.bot.wait_for_reaction(message = response, emoji = reaction.emoji)
 		elapsed = timeit.default_timer() - start_time
-		await self.bot.edit_message(response, "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
+		await response.edit(content = "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
 	
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
 	@checks.not_forbidden()
@@ -1180,7 +1182,7 @@ class Games:
 				self.taboo_players.append(member)
 				break
 		await ctx.embed_reply(" has started a game of Taboo with " + taboo_players[1].mention)
-		await self.bot.whisper("You have started a game of Taboo with " + taboo_players[1].name)
+		await ctx.whisper("You have started a game of Taboo with " + taboo_players[1].name)
 		await self.bot.send_message(taboo_players[1], ctx.author.name + " has started a game of Taboo with you.")
 	
 	@taboo.command(hidden = True, name = "nextround")
@@ -1333,7 +1335,7 @@ class Games:
 			incorrect = user[1][1]
 			correct_percentage = correct / (correct + incorrect) * 100
 			embed.add_field(name = user_info, value = "{}/{} correct ({:.2f}%)\n".format(correct, correct + incorrect, correct_percentage))
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 	
 	@commands.group()
 	@checks.not_forbidden()
@@ -1366,7 +1368,7 @@ class Games:
 	async def war_hand(self, ctx):
 		'''See your current hand'''
 		if ctx.author in self.war_players:
-			await self.bot.whisper("Your hand: " + war.hand(self.war_players.index(ctx.author) + 1))
+			await ctx.whisper("Your hand: " + war.hand(self.war_players.index(ctx.author) + 1))
 	
 	@war.command(name = "left")
 	@commands.is_owner()
@@ -1390,7 +1392,7 @@ class Games:
 				await ctx.embed_reply(":no_entry: Card not found in your hand")
 			else:
 				await ctx.embed_reply("You chose the {} of {}".format(cardsplayed[player_number - 1].value, cardsplayed[player_number - 1].suit))
-				await self.bot.whisper("Your hand: " + war.hand(player_number))
+				await ctx.whisper("Your hand: " + war.hand(player_number))
 			if winner > 0:
 				winner_name = self.war_players[winner - 1].name
 				cards_played_print = ""

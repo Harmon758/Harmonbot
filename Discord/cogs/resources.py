@@ -5,6 +5,7 @@ from discord.ext import commands
 import asyncio
 import clarifai.rest
 import datetime
+import dateutil
 import imgurpython
 import json
 # import spotipy
@@ -77,6 +78,21 @@ class Resources:
 		embed.add_field(name = "HSV", value = "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"]))
 		embed.set_image(url = data["imageUrl"])
 		await self.bot.say(embed = embed)
+	
+	@commands.command()
+	@checks.not_forbidden()
+	async def cve(self, ctx, id : str):
+		id = id.lower()
+		if id.startswith("-"):
+			id = "cve" + id
+		elif not id.startswith("cve"):
+			id = "cve-" + id
+		async with clients.aiohttp_session.get("http://cve.circl.lu/api/cve/{}".format(id)) as resp:
+			data = await resp.json()
+		if not data:
+			await ctx.embed_reply(":no_entry: Error: Not found")
+			return
+		await ctx.embed_reply(data["summary"], title = data["id"], fields = (("CVSS", data["cvss"]),), footer_text = "Published", timestamp = dateutil.parser.parse(data["Published"]))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -243,9 +259,9 @@ class Resources:
 			paginator.add_line("<{}>".format(article["url"]))
 			# output += "\n{}".format(article["urlToImage"])
 		for page in paginator.pages:
-			await self.bot.say(page)
+			await ctx.send(page)
 		'''
-		response, embed = await self.bot.reply("React with a number from 1 to 10 to view each news article")
+		response, embed = await ctx.reply("React with a number from 1 to 10 to view each news article")
 		numbers = {'\N{KEYCAP TEN}': 10}
 		for number in range(9):
 			numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1 # '\u0031' - 1
@@ -264,7 +280,7 @@ class Resources:
 			# output += "\n<{}>".format(article["url"])
 			output += "\n{}".format(article["url"])
 			output += "\nSelect a different number for another article"
-			await self.bot.edit_message(response, "{}: {}".format(ctx.author.display_name, output))
+			await response.edit("{}: {}".format(ctx.author.display_name, output))
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
@@ -279,7 +295,7 @@ class Resources:
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		# for source in data["sources"]:
-		await self.bot.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
+		await ctx.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -452,7 +468,7 @@ class Resources:
 		await ctx.embed_reply(short_url)
 	
 	async def _shorturl(self, url):
-		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
+		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url + '"}') as resp:
 			data = await resp.json()
 		return data["id"]
 	
@@ -570,7 +586,7 @@ class Resources:
 			# TODO: Check description/definition length?
 			embed.add_field(name = "Example", value = "{0[example]}\n\n:thumbsup::skin-tone-2: {0[thumbs_up]} :thumbsdown::skin-tone-2: {0[thumbs_down]}".format(definition))
 			embed.set_footer(text = "Select a different number for another definition")
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -585,7 +601,7 @@ class Resources:
 				wait_time = int(data["estimated_need_time"])
 				if response and embed:
 					embed.description = "Processing {}\nEstimated wait time: {} sec".format(url, wait_time)
-					await self.bot.edit_message(response, embed = embed)
+					await response.edit(embed = embed)
 				else:
 					response = await ctx.embed_reply("Processing {}\nEstimated wait time: {} sec".format(url, wait_time))
 				await asyncio.sleep(wait_time)

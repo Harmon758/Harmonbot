@@ -1,9 +1,8 @@
-git+git://github.com/Rapptz/discord.py.git@rewrite#egg=discord.py[voice]
-# Lock version?
+git+git://github.com/Rapptz/discord.py.git@607771c#egg=discord.py[voice]
 
-aiohttp==3.1.2
+aiohttp==3.3.2
 beautifulsoup4==4.6.0
-clarifai==2.1.0
+clarifai==2.2.3
 cryptography==2.2.2
 # deuces==0.1
 dice==1.1.1
@@ -11,10 +10,10 @@ emoji==0.4.5
 feedparser==5.2.1
 imageio==2.3.0
 imgurpython==1.1.7
-inflect==0.2.5
+inflect==0.3.1
 isodate==0.6.0
 matplotlib==2.2.2
-numexpr==2.6.4
+numexpr==2.6.5
 numpy==1.14.2
 pandas==0.22.0
 psutil==5.4.3
@@ -24,7 +23,7 @@ pygost==3.1
 pyowm==2.8.0
 python-chess==0.16.2
 python-dateutil==2.7.3
-scipy==1.0.1
+scipy==1.1.0
 seaborn==0.8.1
 setuptools==39.0.1
 speechrecognition==3.8.1
@@ -37,9 +36,9 @@ wordnik-py3==2.1.2
 youtube-dl==2018.4.9
 
 asn1crypto==0.24.0
-async-timeout==2.0.1
-attrs==17.4.0
-certifi==2018.1.18
+async-timeout==3.0.0
+attrs==18.1.0
+certifi==2018.4.16
 cffi==1.11.5
 chardet==3.0.4
 configparser==3.5.0
@@ -55,7 +54,7 @@ kiwisolver==1.0.1
 lxml==3.8.0
 more-itertools==4.1.0
 mpmath==1.0.0
-multidict==4.1.0
+multidict==4.3.1
 oauthlib==2.0.7
 olefile==0.45.1
 pillow==5.1.0
@@ -68,7 +67,7 @@ requests==2.18.4
 requests-oauthlib==0.8.0
 six==1.11.0
 urllib3==1.22
-websockets==4.0.1
+websockets==5.0.1
 xmltodict==0.11.0
 yarl==1.1.1
 

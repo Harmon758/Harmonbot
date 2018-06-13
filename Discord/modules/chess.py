@@ -110,8 +110,7 @@ class chess_match(chess.Board):
 		self.match_embed.set_image(url = data["data"]["img_url"])
 		'''
 		cache_channel = self.bot.get_channel(clients.cache_channel_id)
-		with open(clients.data_path + "/temp/chess_board.png", "rb") as image:
-			image_message = await cache_channel.send(file = discord.File(image))
+		image_message = await cache_channel.send(file = discord.File(clients.data_path + "/temp/chess_board.png"))
 		self.match_embed.set_image(url = image_message.attachments[0].url)
 		self.match_embed.set_footer(text = footer_text)
 		chess_pgn = chess.pgn.Game.from_board(self)
