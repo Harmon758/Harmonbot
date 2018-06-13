@@ -76,12 +76,6 @@ class chess_match(chess.Board):
 		# svg = self._repr_svg_()
 		svg = chess.svg.board(self, lastmove = self.peek() if self.move_stack else None, check = chess.bit_scan(self.kings & self.occupied_co[self.turn]) if self.is_check() else None, flipped = flipped)
 		svg = svg.replace("y=\"390\"", "y=\"395\"")
-		svg = svg.replace("class=\"square light", "fill=\"#ffce9e\" class=\"square light")
-		svg = svg.replace("class=\"square dark", "fill=\"#d18b47\" class=\"square dark")
-		svg = svg.replace("class=\"check", "fill=\"url(#check_gradient)\" class=\"check")
-		svg = svg.replace("<stop offset=\"100%\" stop-color=\"rgba(158, 0, 0, 0)\" />", "<stop offset=\"100%\" stop-color=\"rgba(158, 0, 0, 0)\" stop-opacity=\"0\" />")
-		svg = re.subn(r"fill=\"#ffce9e\" class=\"square light [a-h][1-8] lastmove\"", lambda m: m.group(0).replace("ffce9e", "cdd16a"), svg)[0]
-		svg = re.subn(r"fill=\"#d18b47\" class=\"square dark [a-h][1-8] lastmove\"", lambda m: m.group(0).replace("d18b47", "aaa23b"), svg)[0]
 		with open(clients.data_path + "/temp/chess_board.svg", 'w') as image:
 			print(svg, file = image)
 		with Image(filename = clients.data_path + "/temp/chess_board.svg") as img:
