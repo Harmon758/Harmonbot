@@ -7,8 +7,6 @@ import chess.pgn
 import chess.svg
 import chess.uci
 import datetime
-import re
-# import requests
 from wand.image import Image
 
 import clients
@@ -84,23 +82,9 @@ class chess_match(chess.Board):
 		# asyncio.sleep(0.2) # necessary?, wasn't even awaited
 		if not self.match_embed:
 			self.match_embed = discord.Embed(color = clients.bot_color)
+		# TODO: Upload into embed + delete and re-send to update?
 		'''
-		with open(clients.data_path + "/temp/chess_board.png", "rb") as image:
-			request = requests.post("http://uploads.im/api", files = {"upload": image})
-			# import aiohttp
-			# data = aiohttp.helpers.FormData()
-			# data.add_field("upload", image, filename = "chess_board.png")
-			# async with clients.aiohttp_session.post("http://uploads.im/api", data = data) as resp:
-				# data = await resp.text()
-		try:
-			data = request.json()
-		except:
-			print(request.text)
-			return
-		if data["status_code"] == 403:
-			await self.bot.send_embed(self.text_channel, ":no_entry: Error: {}".format(data["status_txt"]))
-			return
-		# self.match_embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
+		self.match_embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
 		self.match_embed.set_image(url = data["data"]["img_url"])
 		'''
 		cache_channel = self.bot.get_channel(clients.cache_channel_id)
