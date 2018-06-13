@@ -66,18 +66,18 @@ class Reactions:
 		embed = guess_message.embeds[0]
 		answer = random.randint(1, 10)
 		for number_emote in sorted(self.numbers.keys()):
-			await self.bot.add_reaction(guess_message, number_emote)
+			await guess_message.add_reaction(number_emote)
 		self.reaction_messages[guess_message.id] = lambda reaction, user: self.guessr_processr(ctx.author, answer, embed, reaction, user)
 	
 	async def guessr_processr(self, player, answer, embed, reaction, user):
 		if user == player and reaction.emoji in self.numbers:
 			if self.numbers[reaction.emoji] == answer:
 				embed.description = "{}: It was {}!".format(player.display_name, self.numbers[reaction.emoji])
-				await self.bot.edit_message(reaction.message, embed = embed)
+				await reaction.message.edit(embed = embed)
 				del self.reaction_messages[reaction.message.id]
 			else:
 				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(player.display_name, self.numbers[reaction.emoji])
-				await self.bot.edit_message(reaction.message, embed = embed)
+				await reaction.message.edit(embed = embed)
 	
 	@commands.command(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -92,12 +92,12 @@ class Reactions:
 		if data["status"] != "ok":
 			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
-		response, embed = await self.bot.reply("React with a number from 1 to 10 to view each news article")
+		response = await ctx.reply("React with a number from 1 to 10 to view each news article")
 		numbers = {'\N{KEYCAP TEN}': 10}
 		for number in range(9):
 			numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1 # '\u0031' - 1
 		for number_emote in sorted(numbers.keys()):
-			await self.bot.add_reaction(response, number_emote)
+			await response.add_reaction(number_emote)
 		while True:
 			emoji_response = await self.bot.wait_for_reaction(user = ctx.author, message = response, emoji = numbers.keys())
 			reaction = emoji_response.reaction
@@ -111,7 +111,7 @@ class Reactions:
 			# output += "\n<{}>".format(article["url"])
 			output += "\n{}".format(article["url"])
 			output += "\nSelect a different number for another article"
-			await self.bot.edit_message(response, "{}: {}".format(ctx.author.display_name, output))
+			await response.edit(content = "{}: {}".format(ctx.author.display_name, output))
 	
 	# TODO: urband
 	# TODO: rtg

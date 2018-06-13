@@ -50,7 +50,7 @@ class Discord:
 			await self.bot.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		elif not user:
 			await self.bot.attempt_delete_message(ctx.message)
-			await self.bot.purge_from(ctx.channel, limit = number)
+			await ctx.channel.purge(limit = number)
 		elif user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.name == user)
 	
@@ -77,7 +77,7 @@ class Discord:
 	async def delete_time(self, ctx, minutes : int):
 		'''Deletes messages in the past <minutes> minutes'''
 		await self.bot.attempt_delete_message(ctx.message)
-		await self.bot.purge_from(ctx.channel, limit = clients.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
+		await ctx.channel.purge(limit = self.bot.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
 	
 	# TODO: delete mentions, invites?
 	
@@ -88,20 +88,20 @@ class Discord:
 		to_delete = []
 		count = 0
 		if delete_command: await self.bot.attempt_delete_message(ctx.message)
-		async for message in self.bot.logs_from(ctx.channel, limit = clients.delete_limit):
+		async for message in ctx.channel.history(limit = self.bot.delete_limit):
 			if check(message):
 				to_delete.append(message)
 				count += 1
 				if count == number:
 					break
 				elif len(to_delete) == 100:
-					await self.bot.delete_messages(to_delete)
+					await ctx.channel.delete_messages(to_delete)
 					to_delete.clear()
 					await asyncio.sleep(1)
 		if len(to_delete) == 1:
 			await self.bot.attempt_delete_message(to_delete[0])
 		elif len(to_delete) > 1:
-			await self.bot.delete_messages(to_delete)
+			await ctx.channel.delete_messages(to_delete)
 	
 	@commands.command(aliases = ["mycolour", "my_color", "my_colour"])
 	@commands.guild_only()
