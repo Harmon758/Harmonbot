@@ -287,7 +287,7 @@ if __name__ == "__main__":
 	
 	travis_ci = os.getenv("TRAVIS") and os.getenv("CI")
 	
-	if not travis_ci:
+	if not travis_ci and not clients.beta:
 		# Start web server
 		client.loop.run_until_complete(client.aiohttp_app_runner.setup())
 		client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
