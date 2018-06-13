@@ -49,12 +49,12 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_add_filter(self, ctx, *, string : str):
 		'''Add string to filter Twitch stream titles by'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		# TODO: Check if already filtered
 		if channel:
 			channel["filters"].append(string)
 		else:
-			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [string], "games": [], "keywords": [], "streams": []}
+			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "filters": [string], "games": [], "keywords": [], "streams": []}
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the filter, `{}`, to this text channel\n"
@@ -64,13 +64,13 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_add_game(self, ctx, *, game : str):
 		'''Add a Twitch game to follow'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		# TODO: Add documentation on 100 limit
 		# TODO: Check if already following
 		if channel:
 			channel["games"].append(game)
 		else:
-			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [game], "keywords": [], "streams": []}
+			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "filters": [], "games": [game], "keywords": [], "streams": []}
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), to this text channel\n"
@@ -80,13 +80,13 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_add_keyword(self, ctx, *, keyword : str):
 		'''Add a Twitch keyword(s) search to follow'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		# TODO: Add documentation on 100 limit
 		# TODO: Check if already following
 		if channel:
 			channel["keywords"].append(keyword)
 		else:
-			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [], "keywords": [keyword], "streams": []}
+			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "filters": [], "games": [], "keywords": [keyword], "streams": []}
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the keyword search, `{}`, to this text channel\n"
@@ -96,12 +96,12 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_add_channel(self, ctx, username : str):
 		'''Add a Twitch channel to follow'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		# TODO: Check if already following
 		if channel:
 			channel["streams"].append(username)
 		else:
-			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "filters": [], "games": [], "keywords": [], "streams": [username]}
+			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "filters": [], "games": [], "keywords": [], "streams": [username]}
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), to this text channel\n"
@@ -117,7 +117,7 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_remove_filter(self, ctx, *, string : str):
 		'''Remove a string Twitch stream titles are being filtered by'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or filter not in channel["filters"]:
 			await ctx.embed_reply(":no_entry: This text channel doesn't have that filter")
 			return
@@ -130,7 +130,7 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_remove_game(self, ctx, *, game : str):
 		'''Remove a Twitch game being followed'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or game not in channel["games"]:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that game")
 			return
@@ -143,7 +143,7 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_remove_keyword(self, ctx, *, keyword : str):
 		'''Remove a Twitch keyword(s) search being followed'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or keyword not in channel["keywords"]:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that keyword")
 			return
@@ -156,7 +156,7 @@ class Twitch:
 	@checks.is_permitted()
 	async def twitch_remove_channel(self, ctx, username : str):
 		'''Remove a Twitch channel being followed'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or username not in channel["streams"]:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that Twitch channel")
 			return
@@ -169,25 +169,25 @@ class Twitch:
 	@checks.not_forbidden()
 	async def twitch_filters(self, ctx):
 		'''Show strings Twitch stream titles are being filtered by in this text channel'''
-		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("filters", [])))
+		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(str(ctx.channel.id), {}).get("filters", [])))
 	
 	@twitch.command(name = "games")
 	@checks.not_forbidden()
 	async def twitch_games(self, ctx):
 		'''Show Twitch games being followed in this text channel'''
-		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("games", [])))
+		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(str(ctx.channel.id), {}).get("games", [])))
 	
 	@twitch.command(name = "keywords", aliases = ["queries", "searches"])
 	@checks.not_forbidden()
 	async def twitch_keywords(self, ctx):
 		'''Show Twitch keywords being followed in this text channel'''
-		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("keywords", [])))
+		await ctx.embed_reply('\n'.join(self.streams_info["channels"].get(str(ctx.channel.id), {}).get("keywords", [])))
 	
 	@twitch.command(name = "channels", aliases = ["streams"])
 	@checks.not_forbidden()
 	async def twitch_channels(self, ctx):
 		'''Show Twitch channels being followed in this text channel'''
-		await ctx.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("streams", []))))
+		await ctx.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(str(ctx.channel.id), {}).get("streams", []))))
 	
 	async def check_twitch_streams(self):
 		await self.bot.wait_until_ready()
