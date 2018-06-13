@@ -33,7 +33,6 @@ user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
 bot_color = 0x738bd7
 wait_time = 15.0
-delete_limit = 10000
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
@@ -56,6 +55,7 @@ class Bot(commands.Bot):
 		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url), case_insensitive = True)
 		
 		# Constants
+		## Custom
 		self.version = "1.0.0-rc.1"
 		self.owner_id = 115691005197549570
 		self.changelog = "https://discord.gg/a2rbZPu"
@@ -71,6 +71,8 @@ class Bot(commands.Bot):
 		self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
 		self.dark_theme_background_color = 0x36393e
 		self.white_color = 0xffffff
+		## Functional
+		self.delete_limit = 10000
 		
 		# Variables
 		self.session_commands_executed = 0
@@ -181,7 +183,7 @@ class Bot(commands.Bot):
 			return web.Response()
 		else:
 			return web.Response(status = 400)  # Return 400 Bad Request
-
+	
 	async def on_ready(self):
 		# Necessary for custom emoji
 		self.load_extension("cogs.lichess")

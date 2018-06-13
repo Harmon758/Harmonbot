@@ -507,11 +507,26 @@ class Meta:
 	
 	# Testing
 	
-	@commands.command(hidden = True)
+	@commands.group(hidden = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def test(self, ctx):
 		'''Basic test command'''
-		await self.bot.say("Hello, World!")
+		await ctx.send("Hello, World!")
+	
+	@test.command(name = "global_rate_limit", aliases = ["globalratelimit"])
+	@commands.is_owner()
+	async def test_global_rate_limit(self, ctx):
+		'''Used to test global rate limits'''
+		for i in range(1, 101):
+			async for message in ctx.history():
+				pass
+			print(f"global ratelimit test {i}")
+	
+	@test.command(name = "on_message")
+	async def test_on_message(self, ctx):
+		'''Test on_message event'''
+		# Implemented in on_message
+		return
 	
 	@commands.group(aliases = ["code_block"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -576,15 +591,6 @@ class Meta:
 		for i in range(1, 101):
 			await ctx.send(i)
 	
-	@commands.command(aliases = ["globalratelimittest"])
-	@commands.is_owner()
-	async def global_ratelimit_test(self, ctx):
-		'''Used to test global ratelimits'''
-		for i in range(1, 101):
-			async for message in self.bot.logs_from(ctx.message.channel):
-				pass
-			print("global ratelimit test {}".format(i))
-	
 	@commands.command(aliases = ["repeattext"])
 	@commands.is_owner()
 	async def repeat_text(self, ctx, number : int, *, text):
@@ -598,7 +604,7 @@ class Meta:
 		variables = {"self" : self, "ctx" : ctx, "last" : None}
 		await ctx.embed_reply("Enter code to execute or evaluate\n`exit` or `quit` to exit")
 		while True:
-			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda m: m.content.startswith('`'))
+			message = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.startswith('`'))
 			if message.content.startswith("```py") and message.content.endswith("```"):
 				code = message.content[5:-3].strip(" \n")
 			else:
