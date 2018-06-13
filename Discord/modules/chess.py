@@ -74,7 +74,7 @@ class chess_match(chess.Board):
 	async def update_match_embed(self, *, flipped = None, footer_text = discord.Embed.Empty):
 		if flipped is None: flipped = not self.turn
 		# svg = self._repr_svg_()
-		svg = chess.svg.board(self, lastmove = self.peek() if self.move_stack else None, check = chess.bit_scan(self.kings & self.occupied_co[self.turn]) if self.is_check() else None, flipped = flipped)
+		svg = chess.svg.board(self, lastmove = self.peek() if self.move_stack else None, check = self.king(self.turn) if self.is_check() else None, flipped = flipped)
 		svg = svg.replace("y=\"390\"", "y=\"395\"")
 		with open(clients.data_path + "/temp/chess_board.svg", 'w') as image:
 			print(svg, file = image)
