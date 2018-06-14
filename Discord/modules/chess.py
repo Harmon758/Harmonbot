@@ -7,8 +7,6 @@ import chess.pgn
 import chess.svg
 import chess.uci
 import datetime
-import re
-# import requests
 from wand.image import Image
 
 import clients
@@ -74,14 +72,8 @@ class chess_match(chess.Board):
 	async def update_match_embed(self, *, flipped = None, footer_text = discord.Embed.Empty):
 		if flipped is None: flipped = not self.turn
 		# svg = self._repr_svg_()
-		svg = chess.svg.board(self, lastmove = self.peek() if self.move_stack else None, check = chess.bit_scan(self.kings & self.occupied_co[self.turn]) if self.is_check() else None, flipped = flipped)
+		svg = chess.svg.board(self, lastmove = self.peek() if self.move_stack else None, check = self.king(self.turn) if self.is_check() else None, flipped = flipped)
 		svg = svg.replace("y=\"390\"", "y=\"395\"")
-		svg = svg.replace("class=\"square light", "fill=\"#ffce9e\" class=\"square light")
-		svg = svg.replace("class=\"square dark", "fill=\"#d18b47\" class=\"square dark")
-		svg = svg.replace("class=\"check", "fill=\"url(#check_gradient)\" class=\"check")
-		svg = svg.replace("<stop offset=\"100%\" stop-color=\"rgba(158, 0, 0, 0)\" />", "<stop offset=\"100%\" stop-color=\"rgba(158, 0, 0, 0)\" stop-opacity=\"0\" />")
-		svg = re.subn(r"fill=\"#ffce9e\" class=\"square light [a-h][1-8] lastmove\"", lambda m: m.group(0).replace("ffce9e", "cdd16a"), svg)[0]
-		svg = re.subn(r"fill=\"#d18b47\" class=\"square dark [a-h][1-8] lastmove\"", lambda m: m.group(0).replace("d18b47", "aaa23b"), svg)[0]
 		with open(clients.data_path + "/temp/chess_board.svg", 'w') as image:
 			print(svg, file = image)
 		with Image(filename = clients.data_path + "/temp/chess_board.svg") as img:
@@ -90,23 +82,9 @@ class chess_match(chess.Board):
 		# asyncio.sleep(0.2) # necessary?, wasn't even awaited
 		if not self.match_embed:
 			self.match_embed = discord.Embed(color = clients.bot_color)
+		# TODO: Upload into embed + delete and re-send to update?
 		'''
-		with open(clients.data_path + "/temp/chess_board.png", "rb") as image:
-			request = requests.post("http://uploads.im/api", files = {"upload": image})
-			# import aiohttp
-			# data = aiohttp.helpers.FormData()
-			# data.add_field("upload", image, filename = "chess_board.png")
-			# async with clients.aiohttp_session.post("http://uploads.im/api", data = data) as resp:
-				# data = await resp.text()
-		try:
-			data = request.json()
-		except:
-			print(request.text)
-			return
-		if data["status_code"] == 403:
-			await self.bot.send_embed(self.text_channel, ":no_entry: Error: {}".format(data["status_txt"]))
-			return
-		# self.match_embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
+		self.match_embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
 		self.match_embed.set_image(url = data["data"]["img_url"])
 		'''
 		cache_channel = self.bot.get_channel(clients.cache_channel_id)
