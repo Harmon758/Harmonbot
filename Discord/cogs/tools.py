@@ -94,13 +94,18 @@ class Tools:
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
 		filename = clients.data_path + "/temp/graph_alternative.png"
-		seaborn.jointplot(**eval(data)).savefig(name)
-		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
+		seaborn.jointplot(**eval(data)).savefig(filename)
+		await ctx.channel.send(file = discord.File(filename), content = ctx.author.display_name + ':')
 	
 	@commands.command(aliases = ["spoil"])
 	@checks.not_forbidden()
 	async def spoiler(self, ctx, name : str, *, text : str):
-		'''Spoiler'''
+		'''
+		Spoiler GIF
+		Make sure you have the "Automatically play GIFs when Discord is focused." setting off
+		Otherise, the spoiler will automatically be displayed
+		This setting is under User Settings -> Text & Images
+		'''
 		# TODO: add border?, adjust fonts?
 		# Constants
 		content_font = "pala.ttf"
@@ -307,9 +312,11 @@ class Tools:
 	# TODO: global search, list?
 	
 	async def check_no_tags(self, ctx):
-		if not str(ctx.author.id) in self.tags_data:
+		no_tags = str(ctx.author.id) not in self.tags_data or not self.tags_data[str(ctx.author.id)]["tags"]
+		if no_tags:
 			await ctx.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
-		return not str(ctx.author.id) in self.tags_data
+			# TODO: Fix invoked_with for subcommands
+		return no_tags
 	
 	async def check_no_tag(self, ctx, tag):
 		tags = self.tags_data[str(ctx.author.id)]["tags"]
