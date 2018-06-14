@@ -94,7 +94,7 @@ class Tools:
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
 		filename = clients.data_path + "/temp/graph_alternative.png"
-		seaborn.jointplot(**eval(data)).savefig(name)
+		seaborn.jointplot(**eval(data)).savefig(filename)
 		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
 	
 	@commands.command(aliases = ["spoil"])
