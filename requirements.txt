@@ -50,7 +50,7 @@ idna-ssl==1.0.1
 jaraco.itertools==2.3
 jsonschema==2.6.0
 kiwisolver==1.0.1
-lxml==3.8.0
+lxml==4.2.1
 more-itertools==4.2.0
 mpmath==1.0.0
 multidict==4.3.1
