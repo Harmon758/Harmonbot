@@ -100,8 +100,8 @@ class Finance:
 		if against:
 			params["base"] = against
 			if request: params["symbols"] = request.upper()
-		if date: url = "https://api.fixer.io/{}".format(date)
-		else: url = "https://api.fixer.io/latest"
+		if date: url = "https://data.fixer.io/api/{}".format(date)
+		else: url = "https://data.fixer.io/api/latest"
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status in (404, 422):
 				data = await resp.json(content_type = "text/html")
