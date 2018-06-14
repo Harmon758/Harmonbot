@@ -8,6 +8,7 @@ import clients
 import credentials
 from utilities import errors
 
+# Decorators & Predicates
 
 def is_owner_check(ctx):
 	return ctx.author.id == ctx.bot.owner_id
@@ -40,76 +41,78 @@ def is_voice_connected():
 	
 	return commands.check(predicate)
 
-def has_permissions_check(ctx, permissions):
-	_permissions = ctx.channel.permissions_for(ctx.author)
-	return all(getattr(_permissions, permission, None) == setting for permission, setting in permissions.items()) or is_owner_check(ctx)
+def has_permissions_check(ctx, permissions, *, channel = None, guild = False):
+	channel = channel or ctx.channel
+	author_permissions = ctx.author.guild_permissions if guild else channel.permissions_for(ctx.author)
+	return all(getattr(author_permissions, permission, None) == setting for permission, setting in permissions.items()) or is_owner_check(ctx)
 
-def has_permissions(**permissions):
+def has_permissions(*, guild = False, **permissions):
 	
 	def predicate(ctx):
-		if has_permissions_check(ctx, permissions):
+		if has_permissions_check(ctx, permissions, guild = guild):
 			return True
 		else:
 			raise errors.MissingPermissions
 	
 	return commands.check(predicate)
 
-def dm_or_has_permissions(**permissions):
+def dm_or_has_permissions(*, guild = False, **permissions):
 	
 	def predicate(ctx):
-		if isinstance(ctx.channel, discord.DMChannel) or has_permissions_check(ctx, permissions):
+		if isinstance(ctx.channel, discord.DMChannel) or has_permissions_check(ctx, permissions, guild = guild):
 			return True
 		else:
 			raise errors.MissingPermissions
 	
 	return commands.check(predicate)
 
-def has_capability_check(ctx, permissions):
-	_permissions = ctx.channel.permissions_for(ctx.me)
-	return all(getattr(_permissions, permission, None) == True for permission in permissions)
+def has_capability_check(ctx, permissions, *, channel = None, guild = False):
+	channel = channel or ctx.channel
+	bot_permissions = ctx.me.guild_permissions if guild else channel.permissions_for(ctx.me)
+	return all(getattr(bot_permissions, permission, None) == True for permission in permissions)
 
-def has_capability(*permissions):
+def has_capability(*permissions, guild = False):
 	
 	def predicate(ctx):
-		if has_capability_check(ctx, permissions):
+		if has_capability_check(ctx, permissions, guild = guild):
 			return True
 		else:
 			raise errors.MissingCapability(permissions)
 	
 	return commands.check(predicate)
 
-def dm_or_has_capability(*permissions):
+def dm_or_has_capability(*permissions, guild = False):
 	
 	def predicate(ctx):
-		if isinstance(ctx.channel, discord.DMChannel) or has_capability_check(ctx, permissions):
+		if isinstance(ctx.channel, discord.DMChannel) or has_capability_check(ctx, permissions, guild = guild):
 			return True
 		else:
 			raise errors.MissingCapability(permissions)
 	
 	return commands.check(predicate)
 
-def has_permissions_and_capability(**permissions):
+def has_permissions_and_capability(*, guild = False, **permissions):
 	
 	def predicate(ctx):
 		if isinstance(ctx.channel, discord.DMChannel):
 			return False
-		elif not has_permissions_check(ctx, permissions):
+		elif not has_permissions_check(ctx, permissions, guild = guild):
 			raise errors.MissingPermissions
-		elif not has_capability_check(ctx, permissions.keys()):
+		elif not has_capability_check(ctx, permissions.keys(), guild = guild):
 			raise errors.MissingCapability(permissions.keys())
 		else:
 			return True
 	
 	return commands.check(predicate)
 
-def dm_or_has_permissions_and_capability(**permissions):
+def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 	
 	def predicate(ctx):
 		if isinstance(ctx.channel, discord.DMChannel):
 			return True
-		elif not has_permissions_check(ctx, permissions):
+		elif not has_permissions_check(ctx, permissions, guild = guild):
 			raise errors.MissingPermissions
-		elif not has_capability_check(ctx, permissions.keys()):
+		elif not has_capability_check(ctx, permissions.keys(), guild = guild):
 			raise errors.MissingCapability(permissions.keys())
 		else:
 			return True
@@ -155,4 +158,13 @@ def is_permitted():
 			raise errors.NotPermitted
 	
 	return commands.check(predicate)
+
+# Functions
+
+def has_permissions_and_capability_check(ctx, channel = None, guild = False, **permissions):
+	channel = channel or ctx.channel
+	if not has_permissions_check(ctx, permissions, channel = channel, guild = guild):
+		raise errors.MissingPermissions
+	elif not has_capability_check(ctx, permissions.keys(), channel = channel, guild = guild):
+		raise errors.MissingCapability(permissions.keys())
 

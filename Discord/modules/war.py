@@ -16,7 +16,7 @@ class WarRound:
 		self.tied_players = []
 		self.tied_played = {}
 	
-	def start(number):
+	def start(self, number):
 		'''Start a round of War'''
 		self.started = True
 		self.number_of_players = number
@@ -40,7 +40,7 @@ class WarRound:
 		# hand1.sort()
 		# hand2.sort()
 
-	def hand(player_number):
+	def hand(self, player_number):
 		hand_string = ""
 		if player_number <= self.number_of_players:
 			for card in self.hands[player_number].cards:
@@ -49,13 +49,13 @@ class WarRound:
 			return
 		return hand_string[:-2]
 
-	def card_count(player_number):
+	def card_count(self, player_number):
 		if player_number <= self.number_of_players:
 			return self.cards[player_number].size + self.hands[player_number].size
 		else:
 			return
 
-	def play(player_number, card):
+	def play(self, player_number, card):
 		'''Play a card'''
 		if self.tied_cards.size:
 			if player_number not in self.tied_players:

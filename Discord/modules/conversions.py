@@ -163,7 +163,7 @@ def ntok(newton):
 	return newton * 100.0 / 33.0 + 273.15
 
 # degrees Newton (°N) to degrees Rankine (°R) [exact]
-def ntore(newton):
+def ntor(newton):
 	return newton * 60.0 / 11.0 + 491.67
 
 # degrees Newton (°N) to degrees Delisle (°De) [exact]
@@ -244,16 +244,23 @@ def temperatureconversion(value, unit1, unit2):
 	else:
 		return None, unit1, unit2
 
+# https://en.wikipedia.org/wiki/Conversion_of_units#Mass
 masses = {
-	"amu" : 1.66053904 * 10 ** -27, "me" : 9.10938291 * 10 ** -31, "bagc" : 60, "bagpc" : 42.63768278, "barge" : 20411.65665,
-	"kt" : 0.0002051965483, "ct" : 0.0002, "clove" : 3.62873896, "crith" : 8.99349 * 10 ** -5, "da" : 1.66053904 * 10 ** -27, "drt" : 0.0038879346,
-	"drav" : 0.0017718451953125, "ev" : 1.78266184 * 10 ** -36, "gamma" : 1 * 10 ** -9, "gr" : 6.479891, "gv" : 1, "longcwt" : 50.80234544,
-	"cwt" : 50.80234544, "shcwt" : 45.359237, "kg" : 1, "kip" : 453.59237, "mark" : 0.2488278144, "mite" : 3.2399455 * 10 ** -6, "mitem" : 5 * 10 ** -5,
-	"ozt" : 0.0311034768, "ozav" : 0.028349523125, "oz" : 0.028, "dwt" : 0.0015551738, "pwt" : 0.0015551738, "point" : 2 * 10 ** -6, "lb" : 0.45359237,
-	"lbav" : 0.45359237, "lbm" : 0.5, "lbt" : 0.3732417216, "quarterimp" : 12.70058636, "quarterinf" : 226.796185, "quarterlinf" : 254.0117272,
-	"q" : 100, "sap" : 0.0012959782, "sheet" : 0.0006479891, "slug" : 14.593903, "st" : 6.35029318, "atl" : 32.6, "ats" : 29.16, "longtn" : 1016.0469088,
+	"amu" : 1.66053904 * 10 ** -27, "me" : 9.10938291 * 10 ** -31, "bagc" : 60, 
+	"bagpc" : 42.63768278, "barge" : 20411.65665, "kt" : 0.0002051965483, "ct" : 0.0002, 
+	"clove" : 3.62873896, "crith" : 8.99349 * 10 ** -5, "da" : 1.66053904 * 10 ** -27, 
+	"drt" : 0.0038879346, "drav" : 0.0017718451953125, "ev" : 1.78266184 * 10 ** -36, 
+	"gamma" : 1 * 10 ** -9, "gr" : 6.479891, "gv" : 1, "longcwt" : 50.80234544,	
+	"cwt" : 50.80234544, "shcwt" : 45.359237, "kg" : 1, "kip" : 453.59237, "mark" : 0.2488278144, 
+	"mite" : 3.2399455 * 10 ** -6, "mitem" : 5 * 10 ** -5, "ozt" : 0.0311034768, 
+	"ozav" : 0.028349523125, "oz" : 0.028, "dwt" : 0.0015551738, "pwt" : 0.0015551738, 
+	"point" : 2 * 10 ** -6, "lb" : 0.45359237, "lbav" : 0.45359237, "lbm" : 0.5, 
+	"lbt" : 0.3732417216, "quarterimp" : 12.70058636, "quarterinf" : 226.796185, 
+	"quarterlinf" : 254.0117272, "q" : 100, "sap" : 0.0012959782, "sheet" : 0.0006479891, 
+	"slug" : 14.593903, "st" : 6.35029318, "atl" : 32.6, "ats" : 29.16, "longtn" : 1016.0469088, 
 	"ton" : 1016.0469088, "shtn" : 907.18474, "t" : 1000, "wey" : 114.30527724, "g" : 0.001
 }
+
 def massconversion(value, unit1, unit2):
 	if unit1 in masses and unit2 in masses:
 		return value * masses[unit1] / masses[unit2]
@@ -277,3 +284,4 @@ def mitokm(miles):
 
 def kmtomi(kilometers):
 	return kilometers * 0.621371
+

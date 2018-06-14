@@ -39,28 +39,6 @@ class Discord:
 		await self.bot.add_roles(member, role)
 		await self.bot.embed_reply("I gave the role, {0}, to {1}".format(role, member))
 	
-	@commands.command(no_pm = True)
-	@checks.has_permissions_and_capability(manage_channels = True)
-	async def channel(self, ctx, *options : str):
-		'''
-		Create a channel
-		channel <type/name> <name>
-		type: text or voice, default: text
-		'''
-		if options:
-			if options[0] == "voice":
-				await self.bot.create_channel(ctx.guild, options[1], type = "voice")
-			elif options[0] == "text":
-				await self.bot.create_channel(ctx.guild, options[1], type = "text")
-			else:
-				await self.bot.create_channel(ctx.guild, options[0], type = "text")
-	
-	@commands.command(no_pm = True)
-	@checks.has_permissions_and_capability(manage_roles = True)
-	async def createrole(self, ctx, *, name : str = ""):
-		'''Creates a role'''
-		await self.bot.create_role(ctx.guild, name = name)
-	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
 	async def delete(self, ctx, number : int, *, user : str = ""):
@@ -72,7 +50,7 @@ class Discord:
 			await self.bot.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		elif not user:
 			await self.bot.attempt_delete_message(ctx.message)
-			await self.bot.purge_from(ctx.channel, limit = number)
+			await ctx.channel.purge(limit = number)
 		elif user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.name == user)
 	
@@ -99,7 +77,7 @@ class Discord:
 	async def delete_time(self, ctx, minutes : int):
 		'''Deletes messages in the past <minutes> minutes'''
 		await self.bot.attempt_delete_message(ctx.message)
-		await self.bot.purge_from(ctx.channel, limit = clients.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
+		await ctx.channel.purge(limit = self.bot.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
 	
 	# TODO: delete mentions, invites?
 	
@@ -110,20 +88,20 @@ class Discord:
 		to_delete = []
 		count = 0
 		if delete_command: await self.bot.attempt_delete_message(ctx.message)
-		async for message in self.bot.logs_from(ctx.channel, limit = clients.delete_limit):
+		async for message in ctx.channel.history(limit = self.bot.delete_limit):
 			if check(message):
 				to_delete.append(message)
 				count += 1
 				if count == number:
 					break
 				elif len(to_delete) == 100:
-					await self.bot.delete_messages(to_delete)
+					await ctx.channel.delete_messages(to_delete)
 					to_delete.clear()
 					await asyncio.sleep(1)
 		if len(to_delete) == 1:
 			await self.bot.attempt_delete_message(to_delete[0])
 		elif len(to_delete) > 1:
-			await self.bot.delete_messages(to_delete)
+			await ctx.channel.delete_messages(to_delete)
 	
 	@commands.command(aliases = ["mycolour", "my_color", "my_colour"])
 	@commands.guild_only()
@@ -182,48 +160,6 @@ class Discord:
 		await self.bot.unpin_message(message)
 		await self.bot.embed_reply(":wastebasket: Unpinned message")
 	
-	@commands.command(aliases = ["rolecolour", "role_color", "role_colour"], no_pm = True)
-	@checks.not_forbidden()
-	async def rolecolor(self, ctx, role : str, *color : str):
-		'''
-		Returns or changes role colors
-		Replace spaces in role names with underscores or put the role name in qoutes
-		Currently only accepts hex color input
-		'''
-		if not color:
-			selected_role = None
-			for _role in ctx.guild.roles:
-				if _role.name.startswith((' ').join(role.split('_'))):
-					selected_role = _role
-					break
-			if not selected_role:
-				await self.bot.embed_reply(":no_entry: Role not found")
-				return
-			color = selected_role.colour
-			color_value = color.value
-			await self.bot.embed_reply(conversions.inttohex(color_value))
-		elif ctx.channel.permissions_for(ctx.author).manage_roles or ctx.author.id == clients.owner_id:
-			for _role in ctx.guild.roles:
-				if _role.name.startswith((' ').join(role.split('_'))):
-					role_to_change = _role
-					break
-			if not role_to_change:
-				await self.bot.embed_reply(":no_entry: Role not found")
-				return
-			new_colour = role_to_change.colour
-			new_colour.value = conversions.hextoint(color[0])
-			await self.bot.edit_role(ctx.guild, role_to_change, colour = new_colour)
-	
-	@commands.command(hidden = True)
-	@checks.is_owner()
-	async def roleposition(self, ctx, role : str, position : int):
-		'''WIP'''
-		for _role in ctx.guild.roles:
-			if _role.name.startswith((' ').join(role.split('_'))):
-				selected_role = _role
-				break
-		await self.bot.move_role(ctx.guild, selected_role, position)
-	
 	@commands.command()
 	@commands.guild_only()
 	@checks.not_forbidden()
@@ -274,13 +210,6 @@ class Discord:
 				await self.bot.delete_channel(temp_text_channel)
 				return
 	
-	@commands.command(hidden = True, no_pm = True)
-	@checks.is_owner()
-	async def userlimit(self, ctx, limit : int):
-		'''WIP'''
-		if ctx.author.voice_channel:
-			voice_channel = ctx.author.voice_channel
-		await self.bot.edit_channel(voice_channel, user_limit = limit)
 	
 	# Get Attributes
 	
@@ -329,20 +258,6 @@ class Discord:
 		if flag and name:
 			await self.bot.embed_reply(name + " was not found on this server")
 	
-	@commands.command(aliases = ["role_id"], no_pm = True)
-	@checks.not_forbidden()
-	async def roleid(self, ctx, *, name : str):
-		'''Get the ID of a role'''
-		for role in ctx.guild.roles:
-			if utilities.remove_symbols(role.name).startswith(name):
-				await self.bot.embed_reply(role.id)
-	
-	@commands.command(aliases = ["role_positions"], hidden = True)
-	@checks.is_owner()
-	async def rolepositions(self, ctx):
-		'''WIP'''
-		await self.bot.embed_reply(', '.join([role.name + ": " + str(role.position) for role in ctx.guild.roles[1:]]))
-	
 	@commands.command(aliases = ["server_icon"], no_pm = True)
 	@checks.not_forbidden()
 	async def servericon(self, ctx):
@@ -352,54 +267,12 @@ class Discord:
 			return
 		await self.bot.embed_reply("This server's icon:", image_url = ctx.guild.icon_url)
 	
-	@commands.command(aliases = ["serverinformation", "server_info", "server_information"], no_pm = True)
-	@checks.not_forbidden()
-	async def serverinfo(self, ctx):
-		'''Information about a server'''
-		server = ctx.guild
-		embed = discord.Embed(title = server.name, url = server.icon_url, timestamp = server.created_at, color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		embed.set_thumbnail(url = server.icon_url)
-		embed.add_field(name = "Owner", value = server.owner.mention)
-		embed.add_field(name = "ID", value = server.id)
-		embed.add_field(name = "Region", value = str(server.region))
-		embed.add_field(name = "Roles", value = len(server.roles))
-		channel_types = [c.type for c in server.channels]
-		text_count = channel_types.count(discord.ChannelType.text)
-		voice_count = channel_types.count(discord.ChannelType.voice)
-		embed.add_field(name = "Channels", value = "{} text\n{} voice".format(text_count, voice_count))
-		embed.add_field(name = "Members", value = "{}\n({} bots)".format(server.member_count, sum(m.bot for m in server.members)))
-		embed.add_field(name = "AFK Timeout", value = "{:g} min.".format(server.afk_timeout / 60))
-		embed.add_field(name = "AFK Channel", value = str(server.afk_channel))
-		embed.add_field(name = "Verification Level", value = str(server.verification_level).capitalize())
-		embed.add_field(name = "2FA Requirement", value = bool(server.mfa_level))
-		embed.add_field(name = "Default Channel", value = server.default_channel.mention)
-		if server.emojis:
-			emojis = [str(emoji) for emoji in server.emojis]
-			if len(' '.join(emojis)) <= 1024:
-				embed.add_field(name = "Emojis", value = ' '.join(emojis), inline = False)
-			else:
-				embed.add_field(name = "Emojis", value = ' '.join(emojis[:len(emojis) // 2]), inline = False)
-				embed.add_field(name = "Emojis", value = ' '.join(emojis[len(emojis) // 2:]), inline = False)
-		embed.set_footer(text = "Created")
-		await self.bot.say(embed = embed)
-	
 	@commands.command(aliases = ["server_owner"], no_pm = True)
 	@checks.not_forbidden()
 	async def serverowner(self, ctx):
 		'''The owner of the server'''
 		owner = ctx.guild.owner
 		await self.bot.embed_reply("The owner of this server is {}".format(owner.mention), footer_text = str(owner), footer_icon_url = owner.avatar_url or owner.default_avatar_url)
-	
-	@commands.command(aliases = ["user_info"])
-	@checks.not_forbidden()
-	async def userinfo(self, ctx):
-		'''Information about a user'''
-		user = ctx.author
-		avatar = user.avatar_url or user.default_avatar_url
-		await self.bot.embed_reply(None, title = str(user), title_url = avatar, thumbnail_url = avatar, footer_text = "Created", timestamp = user.created_at, fields = [("User", user.mention), ("ID", user.id), ("Bot", user.bot)])
-		# member info, status, game, roles, color, etc.
 	
 	# Convert Attributes
 	

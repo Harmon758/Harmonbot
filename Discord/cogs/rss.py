@@ -31,13 +31,13 @@ class RSS:
 	def __unload(self):
 		self.task.cancel()
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(aliases = ["feed"], invoke_without_command = True)
 	@checks.is_permitted()
 	async def rss(self, ctx):
 		'''RSS'''
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
-	@rss.command(name = "add", aliases = ["addfeed", "feedadd"])
+	@rss.command(name = "add")
 	@checks.is_permitted()
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
@@ -50,7 +50,7 @@ class RSS:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
 		await ctx.embed_reply("The feed, {}, has been added to this channel".format(url))
 
-	@rss.command(name = "remove", aliases = ["delete", "removefeed", "feedremove", "deletefeed", "feeddelete"])
+	@rss.command(name = "remove", aliases = ["delete"])
 	@checks.is_permitted()
 	async def rss_remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
@@ -83,7 +83,7 @@ class RSS:
 						feed_info = await self.bot.loop.run_in_executor(None, feedparser.parse, feed)
 						for item in feed_info.entries:
 							try:
-								if "published" in item:
+								if "published" in item and item.published:
 									published_time = dateutil.parser.parse(item.published)
 								elif "updated" in item:
 									published_time = dateutil.parser.parse(item.updated)

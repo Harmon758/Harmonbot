@@ -30,10 +30,6 @@ class NotPermitted(CommandError):
 	'''Not Permitted'''
 	pass
 
-class LichessUserNotFound(CommandError):
-	'''Lichess User Not Found'''
-	pass
-
 class AudioError(CommandError):
 	'''Audio Error'''
 	pass

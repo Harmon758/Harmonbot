@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import aiml
 import aiohttp
+from aiohttp import web
 import clarifai.rest
 import datetime
 import imgurpython
@@ -12,8 +13,10 @@ import json
 import os
 import pyowm
 import random
+import requests
 import sys
 import tweepy
+from urllib import parse
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 
@@ -30,27 +33,15 @@ user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
 bot_color = 0x738bd7
 wait_time = 15.0
-delete_limit = 10000
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
-aiml_kernel = aiml.Kernel()
 aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
 application_info = None
 harmonbot_listener = None
 # TODO: Include owner variable for user object?
-sys.setrecursionlimit(5000)
 
-
-aiml_predicates = {"name": "Harmonbot", "botmaster": "owner", "master": "Harmon", "domain": "tool", "kingdom": "machine", "phylum": "software", "class": "program", "order": "artificial intelligence", "family": "bot", "genus": "python bot", "species": "Discord bot"}
-for predicate, value in aiml_predicates.items():
-	aiml_kernel.setBotPredicate(predicate, value)
-if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
-	aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
-elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
-	aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
-	aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 
 class Bot(commands.Bot):
 	
@@ -64,6 +55,7 @@ class Bot(commands.Bot):
 		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url), case_insensitive = True)
 		
 		# Constants
+		## Custom
 		self.version = "1.0.0-rc.1"
 		self.owner_id = 115691005197549570
 		self.changelog = "https://discord.gg/a2rbZPu"
@@ -79,6 +71,8 @@ class Bot(commands.Bot):
 		self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
 		self.dark_theme_background_color = 0x36393e
 		self.white_color = 0xffffff
+		## Functional
+		self.delete_limit = 10000
 		
 		# Variables
 		self.session_commands_executed = 0
@@ -87,8 +81,6 @@ class Bot(commands.Bot):
 		# External Clients
 		## Clarifai
 		self.clarifai_app = clarifai.rest.ClarifaiApp(app_id = credentials.clarifai_api_id, app_secret = credentials.clarifai_api_secret)
-		self.clarifai_general_model = self.clarifai_app.models.get("general-v1.3")
-		self.clarifai_nsfw_model = self.clarifai_app.models.get("nsfw-v1.0")
 		## Imgur
 		try:
 			self.imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
@@ -107,13 +99,94 @@ class Bot(commands.Bot):
 		self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
 		self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
 		
-		# Add load, unload, and reload cog commands
+		# AIML Kernel
+		self.aiml_kernel = aiml.Kernel()
+		self.aiml_predicates = {"name": "Harmonbot", "botmaster": "owner", "master": "Harmon", "domain": "tool", "kingdom": "machine", "phylum": "software", "class": "program", "order": "artificial intelligence", "family": "bot", "genus": "python bot", "species": "Discord bot"}
+		for predicate, value in self.aiml_predicates.items():
+			self.aiml_kernel.setBotPredicate(predicate, value)
+		if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
+			self.aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
+		elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
+			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
+		
+		# Web Server
+		self.aiohttp_web_app = web.Application()
+		self.aiohttp_web_app.add_routes([web.get('/', self.web_server_get_handler), 
+										web.post('/', self.web_server_post_handler)])
+		self.aiohttp_app_runner = web.AppRunner(self.aiohttp_web_app)
+		self.aiohttp_site = None  # Initialized when starting web server
+		
+		# Add load, unload, and reload commands
 		self.add_command(self.load)
 		self.add_command(self.unload)
 		self.add_command(self.reload)
+		self.load.add_command(self.load_aiml)
+		self.unload.add_command(self.unload_aiml)
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
+		
+		# Load cogs
+		for file in sorted(os.listdir("cogs")):
+			if file.endswith(".py") and not file.startswith(("images", "lichess", "random", "reactions")):
+				self.load_extension("cogs." + file[:-3])
+		self.load_extension("cogs.images")
+		self.load_extension("cogs.random")
+		self.load_extension("cogs.reactions")
+		# TODO: Document inter-cog dependencies
+		# TODO: Catch exceptions on fail to load?
+		# TODO: Move all to on_ready?
+	
+	async def web_server_get_handler(self, request):
+		'''
+		async for line in request.content:
+			print(line)
+		'''
+		hub_mode = request.query.get("hub.mode")
+		if hub_mode == "denied":
+			# TODO: Handle denied request
+			return web.Response(stats = 501)  # Return 501 Not Implemented
+		elif hub_mode in ("subscribe", "unsubscribe"):
+			if "YouTube" not in self.cogs:
+				return web.Response(status = 503)  # Return 503 Service Unavailable
+			channel_id = parse.parse_qs(parse.urlparse(request.query.get("hub.topic")).query)["channel_id"][0]
+			if (channel_id in self.get_cog("YouTube").youtube_uploads_following and hub_mode == "subscribe") or \
+			(channel_id not in self.get_cog("YouTube").youtube_uploads_following and hub_mode == "unsubscribe"):
+				return web.Response(body = request.query.get("hub.challenge"))
+			else:
+				return web.Response(status = 404)  # Return 404 Not Found
+		else:
+			return web.Response(status = 400)  # Return 400 Bad Request
+	
+	async def web_server_post_handler(self, request):
+		'''
+		async for line in request.content:
+			print(line)
+		'''
+		if request.headers.get("User-Agent") == "FeedFetcher-Google; (+http://www.google.com/feedfetcher.html)" and request.headers.get("From") == "googlebot(at)googlebot.com" and request.content_type == "application/atom+xml":
+			if "YouTube" not in self.cogs:
+				return web.Response(status = 503)  # Return 503 Service Unavailable
+			for link in requests.utils.parse_header_links(request.headers.get("Link")):
+				if link["rel"] == "hub":
+					if link["url"] != "http://pubsubhubbub.appspot.com/":
+						return web.Response(status = 400)  # Return 400 Bad Request
+				elif link["rel"] == "self":
+					channel_id = parse.parse_qs(parse.urlparse(link["url"]).query)["channel_id"][0]
+					if channel_id not in self.get_cog("YouTube").youtube_uploads_following:
+						return web.Response(status = 404)  # Return 404 Not Found
+						# TODO: Handle unsubscribe?
+				else:
+					return web.Response(status = 400)  # Return 400 Bad Request
+			request_content = await request.content.read()
+			await self.get_cog("YouTube").process_youtube_upload(channel_id, request_content)
+			return web.Response()
+		else:
+			return web.Response(status = 400)  # Return 400 Bad Request
+	
+	async def on_ready(self):
+		# Necessary for custom emoji
+		self.load_extension("cogs.lichess")
 	
 	async def on_resumed(self):
 		print("{}resumed @ {}".format(self.console_message_prefix, datetime.datetime.now().time().isoformat()))
@@ -152,7 +225,7 @@ class Bot(commands.Bot):
 	
 	# TODO: Case-Insensitive subcommands (override Group)
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
 	async def load(self, ctx, cog : str):
 		'''Load cog'''
@@ -163,7 +236,20 @@ class Bot(commands.Bot):
 		else:
 			await ctx.embed_reply(":thumbsup::skin-tone-2: Loaded `{}` cog :gear:".format(cog))
 	
-	@commands.command()
+	@commands.command(name = "aiml", aliases = ["brain"])
+	@commands.is_owner()
+	async def load_aiml(self, ctx):
+		'''Load AIML'''
+		for predicate, value in self.aiml_predicates.items():
+			self.aiml_kernel.setBotPredicate(predicate, value)
+		if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
+			self.aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
+		elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
+			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
+		await ctx.embed_reply(":ok_hand::skin-tone-2: Loaded AIML")
+	
+	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
 	async def unload(self, ctx, cog : str):
 		'''Unload cog'''
@@ -173,6 +259,13 @@ class Bot(commands.Bot):
 			await ctx.embed_reply(":thumbsdown::skin-tone-2: Failed to unload `{}` cog\n{}: {}".format(cog, type(e).__name__, e))
 		else:
 			await ctx.embed_reply(":ok_hand::skin-tone-2: Unloaded `{}` cog :gear:".format(cog))
+	
+	@commands.command(name = "aiml", aliases = ["brain"])
+	@commands.is_owner()
+	async def unload_aiml(self, ctx):
+		'''Unload AIML'''
+		self.aiml_kernel.resetBrain()
+		await ctx.embed_reply(":ok_hand::skin-tone-2: Unloaded AIML")
 	
 	@commands.command()
 	@commands.is_owner()
@@ -262,15 +355,6 @@ import imageio
 imageio.plugins.ffmpeg.download()
 
 
-# Load cogs
-
-for file in sorted(os.listdir("cogs")):
-	if file.endswith(".py") and not file.startswith(("random", "reactions")):
-		client.load_extension("cogs." + file[:-3])
-client.load_extension("cogs.random")
-client.load_extension("cogs.reactions")
-
-
 # Utilities
 
 
@@ -296,6 +380,8 @@ async def shutdown_tasks():
 	if audio_cog: audio_cog.cancel_all_tasks()
 	# Close aiohttp session
 	await aiohttp_session.close()
+	# Stop web server
+	await client.aiohttp_app_runner.cleanup()
 	# Save uptime
 	with open(data_path + "/stats.json", 'r') as stats_file:
 		stats = json.load(stats_file)

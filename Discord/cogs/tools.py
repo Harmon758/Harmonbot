@@ -16,7 +16,6 @@ import re
 import seaborn
 import textwrap
 import time
-import unicodedata
 
 import clients
 from clients import py_code_block
@@ -35,20 +34,6 @@ class Tools:
 		clients.create_file("tags", content = {"global": {}})
 		with open(clients.data_path + "/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
-	
-	@commands.command(aliases = ["charinfo", "char_info", "character_info"])
-	@checks.not_forbidden()
-	async def characterinfo(self, ctx, character : str):
-		'''Information about a unicode character'''
-		character = character[0]
-		# TODO: return info on each character in the input string; use paste tool api?
-		try:
-			name = unicodedata.name(character)
-		except ValueError:
-			name = "UNKNOWN"
-		hex_char = hex(ord(character))
-		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char[2:])
-		await ctx.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
 	
 	@commands.command(aliases = ["choice", "pick"])
 	@checks.not_forbidden()
@@ -91,7 +76,7 @@ class Tools:
 			return
 		matplotlib.pyplot.savefig(filename)
 		matplotlib.pyplot.clf()
-		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
+		await ctx.channel.send(ctx.author.display_name + ':', file = discord.File(filename))
 		# TODO: Send as embed?
 	
 	def string_to_equation(self, string):
@@ -109,13 +94,18 @@ class Tools:
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
 		filename = clients.data_path + "/temp/graph_alternative.png"
-		seaborn.jointplot(**eval(data)).savefig(name)
-		await self.bot.send_file(destination = ctx.channel, fp = filename, content = ctx.author.display_name + ':')
+		seaborn.jointplot(**eval(data)).savefig(filename)
+		await ctx.channel.send(file = discord.File(filename), content = ctx.author.display_name + ':')
 	
 	@commands.command(aliases = ["spoil"])
 	@checks.not_forbidden()
 	async def spoiler(self, ctx, name : str, *, text : str):
-		'''Spoiler'''
+		'''
+		Spoiler GIF
+		Make sure you have the "Automatically play GIFs when Discord is focused." setting off
+		Otherise, the spoiler will automatically be displayed
+		This setting is under User Settings -> Text & Images
+		'''
 		# TODO: add border?, adjust fonts?
 		# Constants
 		content_font = "pala.ttf"
@@ -162,7 +152,7 @@ class Tools:
 		images = [imageio.imread(f) for f in [clients.data_path + "/temp/spoiler_frame_{}.png".format(i) for i in range(1, 3)]]
 		imageio.mimsave(clients.data_path + "/temp/spoiler.gif", images, loop = 1, duration = 0.5)
 		await ctx.channel.send(file = discord.File(clients.data_path + "/temp/spoiler.gif"))
-		await ctx.message.delete()
+		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -171,15 +161,15 @@ class Tools:
 		if not tag:
 			await ctx.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
 			return
-		if tag in self.tags_data.get(ctx.author.id, {}).get("tags", []):
-			await ctx.reply(self.tags_data[ctx.author.id]["tags"][tag])
+		if tag in self.tags_data.get(str(ctx.author.id), {}).get("tags", []):
+			await ctx.reply(self.tags_data[str(ctx.author.id)]["tags"][tag])
 		elif tag in self.tags_data["global"]:
 			await ctx.reply(self.tags_data["global"][tag]["response"])
 			self.tags_data["global"][tag]["usage_counter"] += 1
 			with open(clients.data_path + "/tags.json", 'w') as tags_file:
 				json.dump(self.tags_data, tags_file, indent = 4)
 		else:
-			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(ctx.author.id, {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
+			close_matches = difflib.get_close_matches(tag, list(self.tags_data.get(str(ctx.author.id), {}).get("tags", {}).keys()) + list(self.tags_data["global"].keys()))
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 			await ctx.embed_reply("Tag not found{}".format(close_matches))
 	
@@ -188,7 +178,7 @@ class Tools:
 		'''List your tags'''
 		if (await self.check_no_tags(ctx)): return
 		tags_paginator = paginator.CustomPaginator(seperator = ", ")
-		for tag in sorted(self.tags_data[ctx.author.id]["tags"].keys()):
+		for tag in sorted(self.tags_data[str(ctx.author.id)]["tags"].keys()):
 			tags_paginator.add_section(tag)
 		# DM
 		for page in tags_paginator.pages:
@@ -197,9 +187,9 @@ class Tools:
 	@tag.command(name = "add", aliases = ["make", "new", "create"])
 	async def tag_add(self, ctx, tag : str, *, content : str):
 		'''Add a tag'''
-		if not ctx.author.id in self.tags_data:
-			self.tags_data[ctx.author.id] = {"name" : ctx.author.name, "tags" : {}}
-		tags = self.tags_data[ctx.author.id]["tags"]
+		if not str(ctx.author.id) in self.tags_data:
+			self.tags_data[str(ctx.author.id)] = {"name" : ctx.author.name, "tags" : {}}
+		tags = self.tags_data[str(ctx.author.id)]["tags"]
 		if tag in tags:
 			await ctx.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
@@ -213,7 +203,7 @@ class Tools:
 		'''Edit one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
-		self.tags_data[ctx.author.id]["tags"][tag] = utilities.clean_content(content)
+		self.tags_data[str(ctx.author.id)]["tags"][tag] = utilities.clean_content(content)
 		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
@@ -224,7 +214,7 @@ class Tools:
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
 		try:
-			del self.tags_data[ctx.author.id]["tags"][tag]
+			del self.tags_data[str(ctx.author.id)]["tags"][tag]
 		except KeyError:
 			await ctx.embed_reply(":no_entry: Tag not found")
 			return
@@ -237,7 +227,7 @@ class Tools:
 	async def tag_expunge(self, ctx, owner : discord.Member, tag : str):
 		'''Delete someone else's tags'''
 		try:
-			del self.tags_data[owner.id]["tags"][tag]
+			del self.tags_data[str(owner.id)]["tags"][tag]
 		except KeyError:
 			await ctx.embed_reply(":no_entry: Tag not found")
 			return
@@ -249,7 +239,7 @@ class Tools:
 	async def tag_search(self, ctx, *, search : str):
 		'''Search your tags'''
 		if (await self.check_no_tags(ctx)): return
-		tags = self.tags_data[ctx.author.id]["tags"]
+		tags = self.tags_data[str(ctx.author.id)]["tags"]
 		results = [t for t in tags.keys() if search in t]
 		if results:
 			await ctx.embed_reply("{} tags found: {}".format(len(results), ", ".join(results)))
@@ -266,8 +256,8 @@ class Tools:
 		if tag in self.tags_data["global"]:
 			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		self.tags_data["global"][tag] = {"response": self.tags_data[ctx.author.id]["tags"][tag], "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
-		del self.tags_data[ctx.author.id]["tags"][tag]
+		self.tags_data["global"][tag] = {"response": self.tags_data[str(ctx.author.id)]["tags"][tag], "owner": str(ctx.author.id), "created_at": time.time(), "usage_counter": 0}
+		del self.tags_data[str(ctx.author.id)]["tags"][tag]
 		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been {}d".format(ctx.invoked_with))
@@ -286,7 +276,7 @@ class Tools:
 		if tag in tags:
 			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		tags[tag] = {"response": utilities.clean_content(content), "owner": ctx.author.id, "created_at": time.time(), "usage_counter": 0}
+		tags[tag] = {"response": utilities.clean_content(content), "owner": str(ctx.author.id), "created_at": time.time(), "usage_counter": 0}
 		with open(clients.data_path + "/tags.json", 'w') as tags_file:
 			json.dump(self.tags_data, tags_file, indent = 4)
 		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
@@ -297,7 +287,7 @@ class Tools:
 		if tag not in self.tags_data["global"]:
 			await ctx.embed_reply(":no_entry: That global tag doesn't exist")
 			return
-		elif self.tags_data["global"][tag]["owner"] != ctx.author.id:
+		elif self.tags_data["global"][tag]["owner"] != str(ctx.author.id):
 			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		self.tags_data["global"][tag]["response"] = utilities.clean_content(content)
@@ -311,7 +301,7 @@ class Tools:
 		if tag not in self.tags_data["global"]:
 			await ctx.embed_reply(":no_entry: That global tag doesn't exist")
 			return
-		elif self.tags_data["global"][tag]["owner"] != ctx.author.id:
+		elif self.tags_data["global"][tag]["owner"] != str(ctx.author.id):
 			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		del self.tags_data["global"][tag]
@@ -322,12 +312,14 @@ class Tools:
 	# TODO: global search, list?
 	
 	async def check_no_tags(self, ctx):
-		if not ctx.author.id in self.tags_data:
+		no_tags = str(ctx.author.id) not in self.tags_data or not self.tags_data[str(ctx.author.id)]["tags"]
+		if no_tags:
 			await ctx.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
-		return not ctx.author.id in self.tags_data
+			# TODO: Fix invoked_with for subcommands
+		return no_tags
 	
 	async def check_no_tag(self, ctx, tag):
-		tags = self.tags_data[ctx.author.id]["tags"]
+		tags = self.tags_data[str(ctx.author.id)]["tags"]
 		if not tag in tags:
 			close_matches = difflib.get_close_matches(tag, tags.keys())
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""

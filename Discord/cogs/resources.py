@@ -5,19 +5,16 @@ from discord.ext import commands
 import asyncio
 import clarifai.rest
 import datetime
-import dateutil.parser
+import dateutil
 import imgurpython
-import isodate
 import json
 # import spotipy
 import unicodedata
-import urllib
 
 import clients
 import credentials
 from modules import utilities
 from utilities import checks
-from utilities import errors
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -26,7 +23,6 @@ class Resources:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.lichess_user_data, self.lichess_tournaments_data = None, None
 		# spotify = spotipy.Spotify()
 	
 	@commands.group(aliases = ["blizzard", "battle.net"], invoke_without_command = True)
@@ -85,6 +81,21 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def cve(self, ctx, id : str):
+		id = id.lower()
+		if id.startswith("-"):
+			id = "cve" + id
+		elif not id.startswith("cve"):
+			id = "cve-" + id
+		async with clients.aiohttp_session.get("http://cve.circl.lu/api/cve/{}".format(id)) as resp:
+			data = await resp.json()
+		if not data:
+			await ctx.embed_reply(":no_entry: Error: Not found")
+			return
+		await ctx.embed_reply(data["summary"], title = data["id"], fields = (("CVSS", data["cvss"]),), footer_text = "Published", timestamp = dateutil.parser.parse(data["Published"]))
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def dotabuff(self, ctx, account : str):
 		'''Get Dotabuff link'''
 		try:
@@ -108,39 +119,6 @@ class Resources:
 			await ctx.embed_reply("Gender: Unknown", title = data["name"].capitalize())
 		else:
 			await ctx.embed_reply("Gender: {}".format(data["gender"]), title = data["name"].capitalize(), footer_text = "Probability: {}% ({} data entries examined)".format(int(data["probability"] * 100), data["count"]))
-	
-	@commands.group(invoke_without_command = True)
-	@checks.not_forbidden()
-	async def giphy(self, ctx, *, search : str):
-		'''Find an image on giphy'''
-		url = "http://api.giphy.com/v1/gifs/search?api_key={}&q={}&limit=1".format(credentials.giphy_public_beta_api_key, search)
-		async with clients.aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
-	
-	@giphy.command(name = "trending")
-	async def giphy_trending(self, ctx):
-		'''Trending gif'''
-		url = "http://api.giphy.com/v1/gifs/trending?api_key={}".format(credentials.giphy_public_beta_api_key)
-		async with clients.aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
-	
-	@commands.command(aliases = ["imagesearch", "googleimages"])
-	@checks.not_forbidden()
-	async def googleimage(self, ctx, *, search : str):
-		'''Google image search something'''
-		url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&searchType=image&q={}".format(credentials.google_apikey, credentials.google_cse_cx, search.replace(' ', '+'))
-		async with clients.aiohttp_session.get(url) as resp:
-			if resp.status == 403:
-				await ctx.embed_reply(":no_entry: Daily limit exceeded")
-				return
-			data = await resp.json()
-		if "items" not in data:
-			await ctx.embed_reply(":no_entry: No images with that search found")
-			return
-		await ctx.embed_reply(image_url = data["items"][0]["link"], title = "Image of {}".format(search), title_url = data["items"][0]["link"])
-		# handle 403 daily limit exceeded error
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -221,44 +199,6 @@ class Resources:
 		date = [int(d) for d in data["date"].split('-')]
 		await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""), title = data["sunsign"], fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()), footer_text = data["credit"], timestamp = datetime.datetime(date[0], date[1], date[2]))
 	
-	@commands.command(aliases = ["imagerecog", "imager", "image_recognition"])
-	@checks.not_forbidden()
-	async def imagerecognition(self, ctx, image_url : str):
-		'''Image recognition'''
-		try:
-			response = self.bot.clarifai_general_model.predict_by_url(image_url)
-		except clarifai.rest.ApiError as e:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
-			return
-		if response["status"]["description"] != "Ok":
-			await ctx.embed_reply(":no_entry: Error")
-			return
-		names = {}
-		for concept in response["outputs"][0]["data"]["concepts"]:
-			names[concept["name"]] = concept["value"] * 100
-		output = ""
-		for name, value in sorted(names.items(), key = lambda i: i[1], reverse = True):
-			output += "**{}**: {:.2f}%, ".format(name, value)
-		output = output[:-2]
-		await ctx.embed_reply(output)
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def nsfw(self, ctx, image_url : str):
-		'''NSFW recognition'''
-		try:
-			response = self.bot.clarifai_nsfw_model.predict_by_url(image_url)
-		except clarifai.rest.ApiError as e:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
-			return
-		if response["status"]["description"] != "Ok":
-			await ctx.embed_reply(":no_entry: Error")
-			return
-		percentages = {}
-		for concept in response["outputs"][0]["data"]["concepts"]:
-			percentages[concept["name"]] = concept["value"] * 100
-		await ctx.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]))
-	
 	@commands.command(aliases = ["movie"])
 	@checks.not_forbidden()
 	async def imdb(self, ctx, *search : str):
@@ -286,112 +226,6 @@ class Resources:
 		embed.add_field(name = "Plot", value = data["Plot"], inline = False)
 		if data["Poster"] != "N/A": embed.set_thumbnail(url = data["Poster"])
 		await self.bot.say(embed = embed)
-	
-	@commands.group(invoke_without_command = True)
-	@checks.not_forbidden()
-	async def imgur(self, ctx):
-		'''Imgur'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
-	
-	@imgur.command(name = "upload")
-	@checks.not_forbidden()
-	async def imgur_upload(self, ctx, url : str = ""):
-		'''Upload images to Imgur'''
-		if url:
-			await self._imgur_upload(ctx, url)
-		if ctx.message.attachments:
-			await self._imgur_upload(ctx, ctx.message.attachments[0]["url"])
-		if not (url or ctx.message.attachments):
-			await ctx.embed_reply(":no_entry: Please input an image and/or url")
-	
-	async def _imgur_upload(self, ctx, url):
-		try:
-			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(url)["link"])
-		except imgurpython.helpers.error.ImgurClientError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
-	
-	@commands.group()
-	@checks.not_forbidden()
-	async def lichess(self, ctx):
-		'''WIP'''
-		return
-	
-	@lichess.group(name = "user")
-	async def lichess_user(self, ctx):
-		'''WIP'''
-		if len(ctx.message.content.split()) == 2:
-			pass
-		elif len(ctx.message.content.split()) >= 4:
-			url = "https://en.lichess.org/api/user/{}".format(ctx.message.content.split()[3])
-			async with clients.aiohttp_session.get(url) as resp:
-				self.lichess_user_data = await resp.json()
-			if not self.lichess_user_data:
-				raise errors.LichessUserNotFound
-	
-	@lichess_user.command(name = "bullet")
-	async def lichess_user_bullet(self, ctx, username : str):
-		'''WIP'''
-		data = self.lichess_user_data
-		await self.bot.embed_reply(":zap: Bullet | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {0[prog]}".format(data["perfs"]["bullet"], prov = "?" if data["perfs"]["bullet"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["bullet"]["prog"] >= 0 else ":chart_with_downwards_trend:"), title = data["username"])
-	
-	@lichess_user.command(name = "blitz")
-	async def lichess_user_blitz(self, ctx, username : str):
-		'''WIP'''
-		data = self.lichess_user_data
-		await self.bot.embed_reply(":fire: Blitz | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {chart} {0[prog]}".format(data["perfs"]["blitz"], prov = "?" if data["perfs"]["blitz"]["prov"] else "", chart = ":chart_with_upwards_trend:" if data["perfs"]["blitz"]["prog"] >= 0 else ":chart_with_downwards_trend:"), title = data["username"])
-	
-	@lichess_user.error
-	async def lichess_user_error(self, error, ctx):
-		if isinstance(error, errors.LichessUserNotFound):
-			await self.bot.embed_reply(":no_entry: User not found")
-	
-	@lichess_user.command(name = "all")
-	async def lichess_user_all(self, ctx, username : str):
-		'''WIP'''
-		data = self.lichess_user_data
-		embed = discord.Embed(title = data["username"], url = data["url"], color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		embed.description = "Online: {}\n".format(data["online"])
-		embed.description += "Member since {}\n".format(datetime.datetime.utcfromtimestamp(data["createdAt"] / 1000.0).strftime("%b %#d, %Y")) #
-		embed.add_field(name = "Games", value = "Played: {0[all]}\nRated: {0[rated]}\nWins: {0[win]}\nLosses: {0[loss]}\nDraws: {0[draw]}\nBookmarks: {0[bookmark]}\nAI: {0[ai]}".format(data["count"]))
-		embed.add_field(name = "Follows", value = "Followers: {0[nbFollowers]}\nFollowing: {0[nbFollowing]}".format(data))
-		embed.add_field(name = "Time", value = "Spent playing: {}\nOn TV: {}".format(utilities.secs_to_letter_format(data["playTime"]["total"]), utilities.secs_to_letter_format(data["playTime"]["tv"])))
-		for mode, field_name in (("bullet", ":zap: Bullet"), ("blitz", ":fire: Blitz"), ("classical", ":hourglass: Classical"), ("correspondence", ":envelope: Correspondence"), ("crazyhouse", ":pisces: Crazyhouse"), ("chess960", ":game_die: Chess960"), ("kingOfTheHill", ":triangular_flag_on_post: King Of The Hill"), ("threeCheck", ":three: Three-Check"), ("antichess", ":arrows_clockwise: Antichess"), ("atomic", ":atom: Atomic"), ("horde", ":question: Horde"), ("racingKings", ":checkered_flag: Racing Kings"), ("puzzle", ":bow_and_arrow: Training")):
-			if data["perfs"].get(mode, {}).get("games", 0) == 0: continue
-			prov = '?' if data["perfs"][mode]["prov"] else ""
-			chart = ":chart_with_upwards_trend:" if data["perfs"][mode]["prog"] >= 0 else ":chart_with_downwards_trend:"
-			value = "Games: {0[games]}\nRating: {0[rating]}{1} ± {0[rd]}\n{2} {0[prog]}".format(data["perfs"][mode], prov, chart)
-			embed.add_field(name = field_name, value = value)
-		embed.set_footer(text = "Last seen")
-		embed.timestamp = datetime.datetime.utcfromtimestamp(data["seenAt"] / 1000.0)
-		await self.bot.say(embed = embed)
-	
-	@lichess.group(name = "tournaments")
-	async def lichess_tournaments(self, ctx):
-		'''WIP'''
-		url = "https://en.lichess.org/api/tournament"
-		async with clients.aiohttp_session.get(url) as resp:
-			self.lichess_tournaments_data = await resp.json()
-	
-	@lichess_tournaments.command(name = "current", aliases = ["started"])
-	async def lichess_tournaments_current(self, ctx):
-		'''WIP'''
-		data = self.lichess_tournaments_data["started"]
-		embed = discord.Embed(title = "Current Lichess Tournaments", color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		for tournament in data:
-			value = "{:g}+{} {} {rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], tournament["perf"]["name"], rated = "Rated" if tournament["rated"] else "Casual")
-			value += "\nEnds in: {:g}m".format((datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0) - datetime.datetime.utcnow()).total_seconds() // 60)
-			value += "\n[Link](https://en.lichess.org/tournament/{})".format(tournament["id"])
-			embed.add_field(name = tournament["fullName"], value = value)
-		await self.bot.say(embed = embed)
-	
-	@lichess.command(name = "tournament")
-	async def lichess_tournament(self, ctx):
-		'''WIP'''
-		pass
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -425,9 +259,9 @@ class Resources:
 			paginator.add_line("<{}>".format(article["url"]))
 			# output += "\n{}".format(article["urlToImage"])
 		for page in paginator.pages:
-			await self.bot.say(page)
+			await ctx.send(page)
 		'''
-		response, embed = await self.bot.reply("React with a number from 1 to 10 to view each news article")
+		response, embed = await ctx.reply("React with a number from 1 to 10 to view each news article")
 		numbers = {'\N{KEYCAP TEN}': 10}
 		for number in range(9):
 			numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1 # '\u0031' - 1
@@ -446,7 +280,7 @@ class Resources:
 			# output += "\n<{}>".format(article["url"])
 			output += "\n{}".format(article["url"])
 			output += "\nSelect a different number for another article"
-			await self.bot.edit_message(response, "{}: {}".format(ctx.author.display_name, output))
+			await response.edit("{}: {}".format(ctx.author.display_name, output))
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
@@ -461,7 +295,7 @@ class Resources:
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		# for source in data["sources"]:
-		await self.bot.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
+		await ctx.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -618,7 +452,7 @@ class Resources:
 		if "battery_life" in data: tests_info.append("Battery_life: " + data["battery_life"])
 		if tests_info: embed.add_field(name = "Tests", value = '\n'.join(tests_info), inline = False)
 		# send
-		await self.bot.say(embed = embed)
+		await ctx.send(embed = embed)
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
@@ -634,33 +468,14 @@ class Resources:
 		await ctx.embed_reply(short_url)
 	
 	async def _shorturl(self, url):
-		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url +'"}') as resp:
+		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url + '"}') as resp:
 			data = await resp.json()
 		return data["id"]
-	
-	@commands.command(aliases = ["spotify_info"])
-	@checks.not_forbidden()
-	async def spotifyinfo(self, ctx, url : str):
-		'''Information about a Spotify track'''
-		path = urllib.parse.urlparse(url).path
-		if path[:7] != "/track/":
-			await self.bot.embed_reply(":no_entry: Syntax error")
-			return
-		trackid = path[7:]
-		api_url = "https://api.spotify.com/v1/tracks/" + trackid
-		async with clients.aiohttp_session.get(api_url) as resp:
-			data = await resp.json()
-		# tracknumber = str(data["track_number"])
-		description = "Artist: [{}]({})\n".format(data["artists"][0]["name"], data["artists"][0]["external_urls"]["spotify"])
-		description += "Album: [{}]({})\n".format(data["album"]["name"], data["album"]["external_urls"]["spotify"])
-		description += "Duration: {}\n".format(utilities.secs_to_colon_format(data["duration_ms"] / 1000))
-		description += "[Preview]({})".format(data["preview_url"])
-		await self.bot.embed_reply(description, title = data["name"], title_url = url, thumbnail_url = data["album"]["images"][0]["url"])
 	
 	@commands.command(aliases = ["sptoyt", "spotify_to_youtube", "sp_to_yt"])
 	@checks.not_forbidden()
 	async def spotifytoyoutube(self, ctx, url : str):
-		'''Find a Spotify track on Youtube'''
+		'''Find a Spotify track on YouTube'''
 		link = await self.bot.cogs["Audio"].spotify_to_youtube(url)
 		if link:
 			await ctx.reply(link)
@@ -771,7 +586,7 @@ class Resources:
 			# TODO: Check description/definition length?
 			embed.add_field(name = "Example", value = "{0[example]}\n\n:thumbsup::skin-tone-2: {0[thumbs_up]} :thumbsdown::skin-tone-2: {0[thumbs_down]}".format(definition))
 			embed.set_footer(text = "Select a different number for another definition")
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -786,7 +601,7 @@ class Resources:
 				wait_time = int(data["estimated_need_time"])
 				if response and embed:
 					embed.description = "Processing {}\nEstimated wait time: {} sec".format(url, wait_time)
-					await self.bot.edit_message(response, embed = embed)
+					await response.edit(embed = embed)
 				else:
 					response = await ctx.embed_reply("Processing {}\nEstimated wait time: {} sec".format(url, wait_time))
 				await asyncio.sleep(wait_time)
@@ -829,45 +644,4 @@ class Resources:
 				return
 			data = await resp.json()
 		await ctx.embed_reply(title = data["title"], title_url = "http://xkcd.com/{}".format(data["num"]), image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
-	
-	@commands.command(aliases = ["ytinfo", "youtube_info", "yt_info"])
-	@checks.not_forbidden()
-	async def youtubeinfo(self, ctx, url : str):
-		'''Information on Youtube videos'''
-		# TODO: Add to audio cog?
-		'''
-		toggles = {}
-		with open(message.guild.name + "_toggles.json", "r") as toggles_file:
-			toggles = json.load(toggles_file)
-		if message.content.split()[1] == "on":
-			toggles["youtubeinfo"] = True
-			with open(message.guild.name + "_toggles.json", "w") as toggles_file:
-				json.dump(toggles, toggles_file, indent = 4)
-		elif message.content.split()[1] == "off":
-			toggles["youtubeinfo"] = False
-			with open(message.guild.name + "_toggles.json", "w") as toggles_file:
-				json.dump(toggles, toggles_file, indent = 4)
-		else:
-		'''
-		url_data = urllib.parse.urlparse(url)
-		query = urllib.parse.parse_qs(url_data.query)
-		if 'v' not in query:
-			await self.bot.embed_reply(":no_entry: Invalid input")
-			return
-		videoid = query['v'][0]
-		api_url = "https://www.googleapis.com/youtube/v3/videos?id={0}&key={1}&part=snippet,contentDetails,statistics".format(videoid, credentials.google_apikey)
-		async with clients.aiohttp_session.get(api_url) as resp:
-			data = await resp.json()
-		if not data:
-			await self.bot.embed_reply(":no_entry: Error")
-			return
-		data = data["items"][0]
-		info = "Length: {}".format(utilities.secs_to_letter_format(isodate.parse_duration(data["contentDetails"]["duration"]).total_seconds()))
-		likes, dislikes = int(data["statistics"]["likeCount"]), int(data["statistics"]["dislikeCount"])
-		info += "\nLikes: {:,}, Dislikes: {:,} ({:.2f}%)".format(likes, dislikes, likes / (likes + dislikes) * 100)
-		info += "\nViews: {:,}, Comments: {:,}".format(int(data["statistics"]["viewCount"]), int(data["statistics"]["commentCount"]))
-		info += "\nChannel: [{0[channelTitle]}](https://www.youtube.com/channel/{0[channelId]})".format(data["snippet"])
-		# data["snippet"]["description"]
-		await self.bot.embed_reply(info, title = data["snippet"]["title"], title_url = url, thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], footer_text = "Published on", timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"]).replace(tzinfo = None))
-		await self.bot.attempt_delete_message(ctx.message)
 

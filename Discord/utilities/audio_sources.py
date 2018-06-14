@@ -111,7 +111,7 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 class YTDLSource(ModifiedPCMVolumeTransformer):
 	
 	'''
-	Youtube Audio Source
+	YouTube Audio Source
 	get_info/set_info and initialize_source must be called before usage
 	'''
 	

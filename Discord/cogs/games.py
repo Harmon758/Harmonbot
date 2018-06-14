@@ -15,6 +15,7 @@ import pydealer
 import random
 import re
 import string
+import sys
 import timeit
 
 import clients
@@ -49,6 +50,9 @@ class Games:
 		#check default values
 		
 		self.adventure_players = {}
+		
+		# Necessary for maze generation
+		sys.setrecursionlimit(5000)
 		
 		clients.create_file("trivia_points")
 		with open(clients.data_path + "/trivia_points.json", 'r') as trivia_file:
@@ -616,7 +620,7 @@ class Games:
 	async def gofish_hand(self, ctx):
 		'''WIP'''
 		if ctx.author in gofish_players:
-			await self.bot.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
+			await ctx.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
 	
 	@gofish.command(hidden = True, name = "ask")
 	@commands.is_owner()
@@ -858,35 +862,35 @@ class Games:
 			self.poker_deck = pydealer.Deck()
 			self.poker_deck.shuffle()
 			self.poker_pot = 0
-			await self.bot.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.author.display_name, ctx.prefix))
+			await ctx.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.author.display_name, ctx.prefix))
 		else:
 			self.poker_status = "pre-flop"
-			await self.bot.embed_say("The poker round has started\nPlayers: {}".format(" ".join([player.mention for player in self.poker_players])))
+			await ctx.embed_say("The poker round has started\nPlayers: {}".format(" ".join([player.mention for player in self.poker_players])))
 			for player in self.poker_players:
 				cards_string = self.cards_to_string(self.poker_hands[player.id].cards)
 				await self.bot.send_embed(player, "Your poker hand: {}".format(cards_string))
 			await self.poker_betting()
 			while self.poker_status:
 				await asyncio.sleep(1)
-			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards = self.poker_deck.deal(3)
-			await self.bot.embed_say("The flop: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await ctx.embed_say("The flop: {}".format(self.cards_to_string(self.poker_community_cards)))
 			await self.poker_betting()
 			while self.poker_status:
 				await asyncio.sleep(1)
-			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards.add(self.poker_deck.deal(1))
-			await self.bot.embed_say("The turn: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await ctx.embed_say("The turn: {}".format(self.cards_to_string(self.poker_community_cards)))
 			await self.poker_betting()
 			while self.poker_status:
 				await asyncio.sleep(1)
-			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards.add(self.poker_deck.deal(1))
-			await self.bot.embed_say("The river: {}".format(self.cards_to_string(self.poker_community_cards)))
+			await ctx.embed_say("The river: {}".format(self.cards_to_string(self.poker_community_cards)))
 			await self.poker_betting()
 			while self.poker_status:
 				await asyncio.sleep(1)
-			await self.bot.embed_say("The pot: {}".format(self.poker_pot))
+			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			
 			evaluator = deuces.Evaluator()
 			board = []
@@ -906,14 +910,14 @@ class Games:
 					best_player = player
 			player = await self.bot.get_user_info(player)
 			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-			await self.bot.embed_say("{} is the winner with a {}".format(player.mention, type))
+			await ctx.embed_say("{} is the winner with a {}".format(player.mention, type))
 	
 	@poker.command(name = "join")
 	async def poker_join(self, ctx):
 		if self.poker_status == "started":
 			self.poker_players.append(ctx.author)
 			self.poker_hands[ctx.author.id] = self.poker_deck.deal(2)
-			await self.bot.embed_say("{} has joined the poker match".format(ctx.author.display_name))
+			await ctx.embed_say("{} has joined the poker match".format(ctx.author.display_name))
 		elif self.poker_status is None:
 			await ctx.embed_reply("There's not currently a round of poker going on\nUse `{}poker start` to start one".format(ctx.prefix))
 		else:
@@ -929,7 +933,7 @@ class Games:
 				self.poker_turn = None
 			elif points == self.poker_current_bet:
 				self.poker_bets[self.poker_turn.id] = points
-				await self.bot.embed_say("{} has called".format(ctx.author.display_name))
+				await ctx.embed_say("{} has called".format(ctx.author.display_name))
 				self.poker_turn = None
 			else:
 				await ctx.embed_reply("The current bet is more than that")
@@ -941,10 +945,10 @@ class Games:
 		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			if self.poker_current_bet == 0 or (self.poker_turn.id in self.poker_bets and self.poker_bets[self.poker_turn.id] == self.poker_current_bet):
 				await ctx.embed_reply("You can't call\nYou have checked instead")
-				await self.bot.embed_say("{} has checked".format(ctx.author.display_name))
+				await ctx.embed_say("{} has checked".format(ctx.author.display_name))
 			else:
 				self.poker_bets[self.poker_turn.id] = self.poker_current_bet
-				await self.bot.embed_say("{} has called".format(ctx.author.display_name))
+				await ctx.embed_say("{} has called".format(ctx.author.display_name))
 			self.poker_turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
@@ -956,7 +960,7 @@ class Games:
 				await ctx.embed_reply(":no_entry: You can't check")
 			else:
 				self.poker_bets[self.poker_turn.id] = self.poker_current_bet
-				await self.bot.embed_say("{} has checked".format(ctx.author.display_name))
+				await ctx.embed_say("{} has checked".format(ctx.author.display_name))
 				self.poker_turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now.")
@@ -978,7 +982,7 @@ class Games:
 				self.poker_turn = player
 				if player in self.poker_folded:
 					continue
-				await self.bot.embed_say("{}'s turn".format(player.mention))
+				await ctx.embed_say("{}'s turn".format(player.mention))
 				while self.poker_turn:
 					await asyncio.sleep(1)
 			if all([bet == -1 or bet == self.poker_current_bet for bet in self.poker_bets.values()]):
@@ -992,27 +996,29 @@ class Games:
 	@checks.not_forbidden()
 	async def reaction_time(self, ctx):
 		'''Reaction time game'''
-		response, embed = await self.bot.say("Please choose 10 reactions")
+		# TODO: Use embeds
+		# TODO: Randomly add reactions
+		response = await ctx.send("Please choose 10 reactions")
 		while len(response.reactions) < 10:
 			await self.bot.wait_for_reaction(message = response)
 			response = await self.bot.get_message(ctx.channel, response.id)
 		reactions = response.reactions
 		reaction = random.choice(reactions)
-		await self.bot.edit_message(response, "Please wait..")
+		await response.edit(content = "Please wait..")
 		for _reaction in reactions:
 			try:
 				await self.bot.add_reaction(response, _reaction.emoji)
 			except discord.HTTPException:
-				await self.bot.edit_message(response, ":no_entry: Error: Please don't deselect your reactions before I've selected them")
+				await response.edit(content = ":no_entry: Error: Please don't deselect your reactions before I've selected them")
 				return
 		for countdown in range(10, 0, -1):
-			await self.bot.edit_message(response, "First to select the reaction _ wins.\nMake sure to have all the reactions deselected.\nGet ready! {}".format(countdown))
+			await response.edit(content = "First to select the reaction _ wins.\nMake sure to have all the reactions deselected.\nGet ready! {}".format(countdown))
 			await asyncio.sleep(1)
-		await self.bot.edit_message(response, "First to select the reaction {} wins. Go!".format(reaction.emoji))
+		await response.edit(content = "First to select the reaction {} wins. Go!".format(reaction.emoji))
 		start_time = timeit.default_timer()
 		winner = await self.bot.wait_for_reaction(message = response, emoji = reaction.emoji)
 		elapsed = timeit.default_timer() - start_time
-		await self.bot.edit_message(response, "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
+		await response.edit(content = "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
 	
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
 	@checks.not_forbidden()
@@ -1176,7 +1182,7 @@ class Games:
 				self.taboo_players.append(member)
 				break
 		await ctx.embed_reply(" has started a game of Taboo with " + taboo_players[1].mention)
-		await self.bot.whisper("You have started a game of Taboo with " + taboo_players[1].name)
+		await ctx.whisper("You have started a game of Taboo with " + taboo_players[1].name)
 		await self.bot.send_message(taboo_players[1], ctx.author.name + " has started a game of Taboo with you.")
 	
 	@taboo.command(hidden = True, name = "nextround")
@@ -1255,24 +1261,24 @@ class Games:
 			else:
 				correct_players_output = clients.inflect_engine.join([correct_player.display_name for correct_player in correct_players]) + ' ' + clients.inflect_engine.plural("was", len(correct_players)) + " right!"
 			for correct_player in correct_players:
-				if correct_player.id in self.trivia_stats:
-					self.trivia_stats[correct_player.id][0] += 1
+				if str(correct_player.id) in self.trivia_stats:
+					self.trivia_stats[str(correct_player.id)][0] += 1
 				else:
-					self.trivia_stats[correct_player.id] = [1, 0, 100000]
+					self.trivia_stats[str(correct_player.id)] = [1, 0, 100000]
 			for incorrect_player in incorrect_players:
-				if incorrect_player.id in self.trivia_stats:
-					self.trivia_stats[incorrect_player.id][1] += 1
+				if str(incorrect_player.id) in self.trivia_stats:
+					self.trivia_stats[str(incorrect_player.id)][1] += 1
 				else:
-					self.trivia_stats[incorrect_player.id] = [0, 1, 100000]
+					self.trivia_stats[str(incorrect_player.id)] = [0, 1, 100000]
 			if bet:
 				trivia_bets_output = ""
 				for trivia_player in bets:
 					if trivia_player in correct_players:
-						self.trivia_stats[trivia_player.id][2] += bets[trivia_player]
-						trivia_bets_output += trivia_player.display_name + " won $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[trivia_player.id][2]) + ". "
+						self.trivia_stats[str(trivia_player.id)][2] += bets[trivia_player]
+						trivia_bets_output += trivia_player.display_name + " won $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[str(trivia_player.id)][2]) + ". "
 					else:
-						self.trivia_stats[trivia_player.id][2] -= bets[trivia_player]
-						trivia_bets_output += trivia_player.display_name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[trivia_player.id][2]) + ". "
+						self.trivia_stats[str(trivia_player.id)][2] -= bets[trivia_player]
+						trivia_bets_output += trivia_player.display_name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[str(trivia_player.id)][2]) + ". "
 				trivia_bets_output = trivia_bets_output[:-1]
 			with open(clients.data_path + "/trivia_points.json", 'w') as trivia_file:
 				json.dump(self.trivia_stats, trivia_file, indent = 4)
@@ -1305,15 +1311,15 @@ class Games:
 	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
 	async def trivia_score(self, ctx):
 		'''Trivia score'''
-		correct = self.trivia_stats[ctx.author.id][0]
-		incorrect = self.trivia_stats[ctx.author.id][1]
+		correct = self.trivia_stats[str(ctx.author.id)][0]
+		incorrect = self.trivia_stats[str(ctx.author.id)][1]
 		correct_percentage = correct / (correct + incorrect) * 100
 		await ctx.embed_reply("You have answered {}/{} ({:.2f}%) correctly.".format(correct, correct + incorrect, correct_percentage))
 	
 	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
-		cash = self.trivia_stats[ctx.author.id][2]
+		cash = self.trivia_stats[str(ctx.author.id)][2]
 		await ctx.embed_reply("You have $" + utilities.add_commas(cash))
 	
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
@@ -1329,7 +1335,7 @@ class Games:
 			incorrect = user[1][1]
 			correct_percentage = correct / (correct + incorrect) * 100
 			embed.add_field(name = user_info, value = "{}/{} correct ({:.2f}%)\n".format(correct, correct + incorrect, correct_percentage))
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 	
 	@commands.group()
 	@checks.not_forbidden()
@@ -1362,7 +1368,7 @@ class Games:
 	async def war_hand(self, ctx):
 		'''See your current hand'''
 		if ctx.author in self.war_players:
-			await self.bot.whisper("Your hand: " + war.hand(self.war_players.index(ctx.author) + 1))
+			await ctx.whisper("Your hand: " + war.hand(self.war_players.index(ctx.author) + 1))
 	
 	@war.command(name = "left")
 	@commands.is_owner()
@@ -1386,7 +1392,7 @@ class Games:
 				await ctx.embed_reply(":no_entry: Card not found in your hand")
 			else:
 				await ctx.embed_reply("You chose the {} of {}".format(cardsplayed[player_number - 1].value, cardsplayed[player_number - 1].suit))
-				await self.bot.whisper("Your hand: " + war.hand(player_number))
+				await ctx.whisper("Your hand: " + war.hand(player_number))
 			if winner > 0:
 				winner_name = self.war_players[winner - 1].name
 				cards_played_print = ""

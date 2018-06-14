@@ -7,6 +7,7 @@ if __name__ == "__main__":
 	from discord.ext import commands
 	
 	import aiohttp
+	from aiohttp import web
 	import asyncio
 	import json
 	import os
@@ -31,7 +32,7 @@ if __name__ == "__main__":
 	
 	mention_spammers = []
 	
-	@client.event
+	@client.listen()
 	async def on_ready():
 		# data = await client.http.get(client.http.GATEWAY + "/bot")
 		# print(data)
@@ -203,7 +204,7 @@ if __name__ == "__main__":
 		# Chatbot
 		elif message.content.startswith(ctx.me.mention):
 			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
-			aiml_response = clients.aiml_kernel.respond(content)
+			aiml_response = ctx.bot.aiml_kernel.respond(content)
 			# TODO: Handle brain not loaded?
 			if aiml_response:
 				await ctx.embed_reply(aiml_response, attempt_delete = False)
@@ -221,19 +222,18 @@ if __name__ == "__main__":
 		# f
 		elif message.content.lower() == 'f':
 			f_counter_info["total"] += 1
-			f_counter_info[message.author.id] = f_counter_info.get(message.author.id, 0) + 1
+			f_counter_info[str(message.author.id)] = f_counter_info.get(str(message.author.id), 0) + 1
 			with open(clients.data_path + "/f.json", 'w') as f_file:
 				json.dump(f_counter_info, f_file, indent = 4)
-			embed = discord.Embed(color = clients.bot_color)
-			embed.description = "{} has paid their respects".format(message.author.display_name)
-			embed.description += "\nTotal respects paid so far: {}".format(f_counter_info["total"])
-			embed.description += "\nRecorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[message.author.id]) # since 2016-12-20
+			description = "{} has paid their respects\n".format(message.author.display_name)
+			description += "Total respects paid so far: {}\n".format(f_counter_info["total"])
+			description += "Recorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[str(message.author.id)]) # since 2016-12-20
 			try:
-				await client.send_message(message.channel, embed = embed)
+				await ctx.embed_reply(description)
 			except discord.Forbidden: # necessary?
 				raise
-			except discord.HTTPException:
-				await client.send_message(message.channel, embed.description)
+			except discord.HTTPException: # necessary?
+				await ctx.send(description)
 	
 	@client.event
 	async def on_error(event_method, *args, **kwargs):
@@ -275,7 +275,7 @@ if __name__ == "__main__":
 			await ctx.embed_reply(":no_entry: You don't have permission to use that command here")
 		elif isinstance(error, commands.BadArgument):
 			await ctx.embed_reply(":no_entry: Error: Invalid Input: {}".format(error))
-		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and str(error.original) == "BAD REQUEST (status code: 400): You can only bulk delete messages that are under 14 days old.": # better way?
+		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and error.original.code == 50034:
 			await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
 		# TODO: check embed links permission
 		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
@@ -285,12 +285,21 @@ if __name__ == "__main__":
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
 	
+	travis_ci = os.getenv("TRAVIS") and os.getenv("CI")
+	
+	if not travis_ci and not clients.beta:
+		# Start web server
+		client.loop.run_until_complete(client.aiohttp_app_runner.setup())
+		client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
+		client.loop.run_until_complete(client.aiohttp_site.start())
+	# Can't bind to/open port 80 without being root on Linux
+	# Try port >1024?
 	
 	if clients.beta: client.command_prefix = '*'
 	token = credentials.beta_token if clients.beta else credentials.token
 	
 	try:
-		if os.getenv("TRAVIS") and os.getenv("CI"):
+		if travis_ci:
 			client.loop.create_task(client.start(token))
 			client.loop.run_until_complete(asyncio.sleep(10))
 		else:

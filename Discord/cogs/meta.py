@@ -11,6 +11,7 @@ import difflib
 import inspect
 import json
 import os
+import pkg_resources
 import psutil
 import random
 import re
@@ -38,7 +39,9 @@ class Meta:
 	async def help(self, ctx, *commands : str):
 		'''
 		Shows this message
-		Note: If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
+		Inputs in angle brackets, <>, are required
+		Inputs in square brackets, [], are optional
+		If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
 		'''
 		if len(commands) == 0:
 			embed = discord.Embed(title = "Categories", color = clients.bot_color)
@@ -47,7 +50,7 @@ class Meta:
 			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
 			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with)) # stats?
 			embed.add_field(name = "For all commands:", value = "`{}{} all`".format(ctx.prefix, ctx.invoked_with), inline = False)
-			await self.bot.say(embed = embed)
+			await ctx.send(embed = embed)
 			return
 		
 		def repl(obj):
@@ -96,14 +99,14 @@ class Meta:
 		for embed in embeds:
 			if destination == ctx.channel:
 				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			await self.bot.send_message(destination, embed = embed)
+			await destination.send(embed = embed)
 	
 	@help.command(name = "all")
 	async def help_all(self, ctx):
 		'''All commands'''
 		embeds = self.bot.formatter.format_help_for(ctx, self.bot)
 		for embed in embeds:
-			await self.bot.whisper(embed = embed)
+			await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
@@ -120,7 +123,7 @@ class Meta:
 		embed.add_field(name = "Misc", value = "invite randomgame test test_on_message", inline = False)
 		embed.add_field(name = "Owner Only", value = "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", inline = False)
 		embed.add_field(name = "No Prefix", value = "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", inline = False)
-		await self.bot.say(embed = embed)
+		await ctx.send(embed = embed)
 	
 	@commands.command()
 	@commands.is_owner()
@@ -133,7 +136,7 @@ class Meta:
 		_allcommands = ""
 		for name, _command in _commands:
 			_allcommands += name + ' '
-		await self.bot.whisper(_allcommands[:-1])
+		await ctx.whisper(_allcommands[:-1])
 	
 	@commands.command()
 	@commands.is_owner()
@@ -145,11 +148,11 @@ class Meta:
 		embed = discord.Embed(color = clients.bot_color)
 		embed.add_field(name = "RAM", value = "{:.2f} MiB".format(memory))
 		embed.add_field(name = "CPU", value = "Calculating CPU usage..")
-		message, embed = await self.bot.say(embed = embed)
+		message = await ctx.send(embed = embed)
 		await asyncio.sleep(1)
 		cpu = process.cpu_percent() / psutil.cpu_count()
 		embed.set_field_at(1, name = "CPU", value = "{}%".format(cpu))
-		await self.bot.edit_message(message, embed = embed)
+		await message.edit(embed = embed)
 	
 	@commands.command(aliases = ["category"])
 	@checks.not_forbidden()
@@ -217,8 +220,8 @@ class Meta:
 		'''
 		Set the bot prefix(es)
 		For the server or for DMs
-		Seperate prefixes with spaces
-		Use qoutation marks for prefixes with spaces
+		Separate prefixes with spaces
+		Use quotation marks for prefixes with spaces
 		'''
 		if not prefixes:
 			prefixes = ['!']
@@ -241,7 +244,9 @@ class Meta:
 	
 	# Public Info
 	
-	@commands.command(aliases = ["info"])
+	# TODO: Move to info cog
+	# aliases = ["info"]
+	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
 		from clients import application_info
@@ -259,7 +264,7 @@ class Meta:
 		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) v{0}\n([Python](https://www.python.org/) v{1.major}.{1.minor}.{1.micro})".format(discord.__version__, sys.version_info))
 		owner = discord.utils.get(self.bot.get_all_members(), id = self.bot.owner_id)
 		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(owner), icon_url = owner.avatar_url)
-		await self.bot.reply("", embed = embed)
+		await ctx.reply("", embed = embed)
 		await ctx.send("Changelog (Harmonbot Server): {}".format(self.bot.changelog))
 	
 	@commands.command()
@@ -331,10 +336,19 @@ class Meta:
 		uptime = now - clients.online_time
 		await ctx.embed_reply(utilities.secs_to_letter_format(uptime.total_seconds()))
 	
-	@commands.command()
+	@commands.group(invoke_without_command = True)
 	async def version(self, ctx):
 		'''Bot version'''
 		await ctx.embed_reply("I am Harmonbot `v{}`".format(self.bot.version))
+	
+	@version.command(name = "library", aliases = ["requirement"])
+	@commands.is_owner()
+	async def version_library(self, ctx, library : str):
+		try:
+			await ctx.embed_reply(pkg_resources.get_distribution(library).version)
+		except pkg_resources.DistributionNotFound as e:
+			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+	
 	
 	# Update Bot Stuff
 	
@@ -468,7 +482,7 @@ class Meta:
 	async def update_discord_bots_stats(self, ctx):
 		'''Update stats on https://bots.discord.pw'''
 		response = await clients._update_discord_bots_stats()
-		await self.bot.reply(response)
+		await ctx.reply(response)
 	
 	# Restart/Shutdown
 	
@@ -476,7 +490,7 @@ class Meta:
 	@commands.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
-		await self.bot.embed_say(":ok_hand::skin-tone-2: Restarting...")
+		await ctx.embed_say(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Discord Harmonbot...")
 		await clients.restart_tasks(ctx.channel.id)
 		await self.bot.logout()
@@ -485,7 +499,7 @@ class Meta:
 	@commands.is_owner()
 	async def shutdown(self, ctx):
 		'''Shut me down'''
-		await self.bot.embed_say(":scream: Shutting down.")
+		await ctx.embed_say(":scream: Shutting down.")
 		print("Forcing Shutdown...")
 		await clients.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
@@ -493,11 +507,26 @@ class Meta:
 	
 	# Testing
 	
-	@commands.command(hidden = True)
+	@commands.group(hidden = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def test(self, ctx):
 		'''Basic test command'''
-		await self.bot.say("Hello, World!")
+		await ctx.send("Hello, World!")
+	
+	@test.command(name = "global_rate_limit", aliases = ["globalratelimit"])
+	@commands.is_owner()
+	async def test_global_rate_limit(self, ctx):
+		'''Used to test global rate limits'''
+		for i in range(1, 101):
+			async for message in ctx.history():
+				pass
+			print(f"global ratelimit test {i}")
+	
+	@test.command(name = "on_message")
+	async def test_on_message(self, ctx):
+		'''Test on_message event'''
+		# Implemented in on_message
+		return
 	
 	@commands.group(aliases = ["code_block"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -524,13 +553,13 @@ class Meta:
 	@commands.is_owner()
 	async def echo(self, ctx, *, message):
 		'''Echoes the message'''
-		await self.bot.say(message)
+		await ctx.send(message)
 	
 	@echo.command(name = "embed")
 	@commands.is_owner()
 	async def echo_embed(self, ctx, *, message):
 		'''Echoes the message in an embed'''
-		await self.bot.embed_say(message)
+		await ctx.embed_say(message)
 	
 	@commands.command()
 	@commands.is_owner()
@@ -540,9 +569,9 @@ class Meta:
 			result = eval(code)
 			if inspect.isawaitable(result):
 				result = await result
-			await self.bot.reply(clients.py_code_block.format(result))
+			await ctx.reply(clients.py_code_block.format(result))
 		except Exception as e:
-			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await ctx.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 	
 	@commands.command()
 	@commands.is_owner()
@@ -551,7 +580,7 @@ class Meta:
 		try:
 			exec(code)
 		except Exception as e:
-			await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await ctx.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 			return
 		await ctx.embed_reply("Successfully executed")
 	
@@ -560,23 +589,14 @@ class Meta:
 	async def delete_test(self, ctx):
 		'''Sends 100 messages'''
 		for i in range(1, 101):
-			await self.bot.say(str(i))
-	
-	@commands.command(aliases = ["globalratelimittest"])
-	@commands.is_owner()
-	async def global_ratelimit_test(self, ctx):
-		'''Used to test global ratelimits'''
-		for i in range(1, 101):
-			async for message in self.bot.logs_from(ctx.message.channel):
-				pass
-			print("global ratelimit test {}".format(i))
+			await ctx.send(i)
 	
 	@commands.command(aliases = ["repeattext"])
 	@commands.is_owner()
 	async def repeat_text(self, ctx, number : int, *, text):
 		'''Repeat text'''
 		for _ in range(number):
-			await self.bot.say(text)
+			await ctx.send(text)
 	
 	@commands.command()
 	@commands.is_owner()
@@ -584,7 +604,7 @@ class Meta:
 		variables = {"self" : self, "ctx" : ctx, "last" : None}
 		await ctx.embed_reply("Enter code to execute or evaluate\n`exit` or `quit` to exit")
 		while True:
-			message = await self.bot.wait_for_message(author = ctx.message.author, channel = ctx.message.channel, check = lambda m: m.content.startswith('`'))
+			message = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.startswith('`'))
 			if message.content.startswith("```py") and message.content.endswith("```"):
 				code = message.content[5:-3].strip(" \n")
 			else:
@@ -604,20 +624,20 @@ class Meta:
 				try:
 					code = compile(code, "<repl>", "exec")
 				except SyntaxError as e:
-					await self.bot.reply(clients.py_code_block.format("{0.text}{1:>{0.offset}}\n{2}: {0}".format(e, '^', type(e).__name__)))
+					await ctx.reply(clients.py_code_block.format("{0.text}{1:>{0.offset}}\n{2}: {0}".format(e, '^', type(e).__name__)))
 					continue
 			try:
 				result = function(code, variables)
 				if inspect.isawaitable(result):
 					result = await result
 			except:
-				await self.bot.reply(clients.py_code_block.format("\n".join(traceback.format_exc().splitlines()[-2:]).strip()))
+				await ctx.reply(clients.py_code_block.format("\n".join(traceback.format_exc().splitlines()[-2:]).strip()))
 			else:
 				if function is eval:
 					try:
-						await self.bot.reply(clients.py_code_block.format(result))
+						await ctx.reply(clients.py_code_block.format(result))
 					except Exception as e:
-						await self.bot.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
+						await ctx.reply(clients.py_code_block.format("{}: {}".format(type(e).__name__, e)))
 				variables["last"] = result
 	
 	@commands.command(aliases = ["github"])
