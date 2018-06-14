@@ -224,7 +224,7 @@ class Random:
 			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
 			try:
 				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
-				if type(result) is int:
+				if isinstance(result, int):
 					await ctx.embed_reply(result)
 				else:
 					await ctx.embed_reply(", ".join(str(roll) for roll in result))
