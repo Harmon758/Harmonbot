@@ -15,7 +15,7 @@ isodate==0.6.0
 matplotlib==2.2.2
 numexpr==2.6.5
 numpy==1.14.5
-pandas==0.22.0
+pandas==0.23.1
 psutil==5.4.6
 git+git://github.com/Harmon758/Py3kAiml.git@master#egg=Py3kAiml
 pydealer==1.4.0
