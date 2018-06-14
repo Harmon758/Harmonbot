@@ -7,6 +7,7 @@ import dateutil.parser
 import html
 
 import clients
+import credentials
 from utilities import checks
 
 def setup(bot):
@@ -95,7 +96,7 @@ class Finance:
 		await self.process_currency(ctx, against, request, date)
 	
 	async def process_currency(self, ctx, against, request, date = ""):
-		params = {}
+		params = {"access_key": credentials.fixer_io_api_key}
 		if against:
 			params["base"] = against
 			if request: params["symbols"] = request.upper()
