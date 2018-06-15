@@ -13,6 +13,7 @@ imgurpython==1.1.7
 inflect==0.3.1
 isodate==0.6.0
 matplotlib==2.2.2
+more-itertools==4.2.0
 numexpr==2.6.5
 numpy==1.14.5
 pandas==0.23.1
@@ -52,7 +53,6 @@ jaraco.itertools==2.3
 jsonschema==2.6.0
 kiwisolver==1.0.1
 lxml==4.2.1
-more-itertools==4.2.0
 mpmath==1.0.0
 multidict==4.3.1
 oauthlib==2.1.0
