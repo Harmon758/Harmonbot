@@ -81,7 +81,8 @@ class Finance:
 		Exchange rate data delivered is collected from over 15 reliable data sources
 		Sources include banks and financial data providers
 		All exchange rate data delivered is midpoint data
-		Midpoint rates are determined by calculating the average median rate of Bid and Ask at a certain time
+		Midpoint rates are determined by calculating the average 
+		median rate of Bid and Ask at a certain time
 		[against]: currency to quote against (base) (default is EUR)
 		[request]: currencies to request rate for (separated by commas with no spaces)
 		To specify a currency, enter the three-character currency code (e.g. USD, GBP, EUR)
@@ -94,7 +95,8 @@ class Finance:
 	async def currency_historical(self, ctx, date : str, against : str = "", request : str = ""):
 		'''
 		Historical foreign exchange rates
-		End Of Day historical exchange rates, which become available at 00:05 am GMT for the previous day and are time stamped at one second before midnight
+		End Of Day historical exchange rates, which become available at 00:05 am GMT 
+		for the previous day and are time stamped at one second before midnight
 		Date must be in YYYY-MM-DD format
 		[against]: currency to quote against (base) (default is EUR)
 		[request]: currencies to request rate for (separated by commas with no spaces)
@@ -119,9 +121,11 @@ class Finance:
 		parts = len(tabulate.tabulate(symbols, tablefmt = "plain")) // 1024 + 1
 		# TODO: use embed field limit constant
 		symbols_parts = more_itertools.divide(parts, symbols)
-		fields = [('Currency Symbols', clients.code_block.format(tabulate.tabulate(symbols_parts[0], tablefmt = "plain")))]
+		tabulated_symbols = tabulate.tabulate(symbols_parts[0], tablefmt = "plain")
+		fields = [('Currency Symbols', clients.code_block.format(tabulated_symbols))]
 		for symbols_part in symbols_parts[1:]:
-			fields.append(('Continued', clients.code_block.format(tabulate.tabulate(symbols_part, tablefmt = "plain"))))
+			tabulated_symbols = tabulate.tabulate(symbols_part, tablefmt = "plain")
+			fields.append(('Continued', clients.code_block.format(tabulated_symbols)))
 		# TODO: paginate
 		await ctx.embed_reply(fields = fields)
 	
@@ -149,11 +153,15 @@ class Finance:
 		# TODO: use embed field limit constant
 		parts = max(parts, 3)
 		rates_parts = more_itertools.divide(parts, rates)
-		fields = [('Currency Rates', clients.code_block.format(tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')))]
+		tabulated_rates = tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')
+		fields = [('Currency Rates', clients.code_block.format(tabulated_rates))]
 		for rates_part in rates_parts[1:]:
-			fields.append(('Continued', clients.code_block.format(tabulate.tabulate(rates_part, tablefmt = "plain", floatfmt = 'f'))))
+			tabulated_rates = tabulate.tabulate(rates_part, tablefmt = "plain", floatfmt = 'f')
+			fields.append(('Continued', clients.code_block.format(tabulated_rates)))
 		# TODO: paginate
-		await ctx.embed_reply(title = f"Against {data['base']}", fields = fields, footer_text = "Rates from", timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"]))
+		timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"])
+		await ctx.embed_reply(title = f"Against {data['base']}", fields = fields, 
+								footer_text = "Rates from", timestamp = timestamp)
 	
 	# TODO: Handle ServerDisconnectedError ?
 	@commands.group(aliases = ["stocks"], description = "Data provided for free by [IEX](https://iextrading.com/developer).", invoke_without_command = True)
