@@ -152,8 +152,8 @@ class Finance:
 		fields = [('Currency Rates', clients.code_block.format(tabulate.tabulate(rates_parts[0], tablefmt = "plain")))]
 		for rates_part in rates_parts[1:]:
 			fields.append(('Continued', clients.code_block.format(tabulate.tabulate(rates_part, tablefmt = "plain"))))
-		# TODO: paginate
-		await ctx.embed_reply(title = f"Against {data['base']}", fields = fields, footer_text = f"Date: {data['date']}")
+		# TODO: paginate?
+		await ctx.embed_reply(title = f"Against {data['base']}", fields = fields, footer_text = "Rates from", timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"]))
 	
 	# TODO: Handle ServerDisconnectedError ?
 	@commands.group(aliases = ["stocks"], description = "Data provided for free by [IEX](https://iextrading.com/developer).", invoke_without_command = True)
