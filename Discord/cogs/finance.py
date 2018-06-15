@@ -134,11 +134,16 @@ class Finance:
 		url = "https://data.fixer.io/api/"
 		url += str(date) if date else "latest"
 		async with clients.aiohttp_session.get(url, params = params) as resp:
+			# TODO: use ETags
 			if resp.status in (404, 422):
+			# TODO: handle other errors
 				data = await resp.json(content_type = "text/html")
 				await ctx.embed_reply(":no_entry: Error: {}".format(data["error"]))
 				return
 			data = await resp.json()
+		if not data.get("success"):
+			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
+			return
 		rates = list(data["rates"].items())
 		if len(rates) < 24:
 			await ctx.embed_reply(None, title = "Against {}".format(data["base"]), fields = rates,  footer_text = "Date: {}".format(data["date"]))
