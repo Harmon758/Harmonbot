@@ -99,7 +99,8 @@ class Finance:
 		params = {"access_key": credentials.fixer_io_api_key}
 		if against:
 			params["base"] = against
-			if request: params["symbols"] = request.upper()
+		if request:
+			params["symbols"] = request.upper()
 		if date: url = "https://data.fixer.io/api/{}".format(date)
 		else: url = "https://data.fixer.io/api/latest"
 		async with clients.aiohttp_session.get(url, params = params) as resp:
