@@ -145,12 +145,15 @@ class Finance:
 			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
 			return
 		rates = list(data["rates"].items())
-		if len(rates) < 24:
-			await ctx.embed_reply(None, title = "Against {}".format(data["base"]), fields = rates,  footer_text = "Date: {}".format(data["date"]))
-		else:
-			await ctx.embed_reply(None, "In response to: `{}`".format(ctx.message.clean_content), title = "Against {}".format(data["base"]), fields = rates[:24], in_response_to = False)
-			await ctx.embed_say(None, fields = rates[24:], footer_text = "Date: {}".format(data["date"]), in_response_to = False)
-			# TODO: paginate
+		parts = len(tabulate.tabulate(rates, tablefmt = "plain")) // 1024 + 1
+		# TODO: use embed field limit constant
+		parts = max(parts, 3)
+		rates_parts = more_itertools.divide(parts, rates)
+		fields = [('Currency Rates', clients.code_block.format(tabulate.tabulate(rates_parts[0], tablefmt = "plain")))]
+		for rates_part in rates_parts[1:]:
+			fields.append(('Continued', clients.code_block.format(tabulate.tabulate(rates_part, tablefmt = "plain"))))
+		# TODO: paginate
+		await ctx.embed_reply(title = f"Against {data['base']}", fields = fields, footer_text = f"Date: {data['date']}")
 	
 	# TODO: Handle ServerDisconnectedError ?
 	@commands.group(aliases = ["stocks"], description = "Data provided for free by [IEX](https://iextrading.com/developer).", invoke_without_command = True)
