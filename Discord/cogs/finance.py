@@ -3,8 +3,9 @@ import discord
 from discord.ext import commands
 
 import datetime
-import dateutil.parser
 import html
+
+import dateutil.parser
 
 import clients
 import credentials
