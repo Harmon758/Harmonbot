@@ -145,14 +145,14 @@ class Finance:
 			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
 			return
 		rates = list(data["rates"].items())
-		parts = len(tabulate.tabulate(rates, tablefmt = "plain")) // 1024 + 1
+		parts = len(tabulate.tabulate(rates, tablefmt = "plain", floatfmt = 'f')) // 1024 + 1
 		# TODO: use embed field limit constant
 		parts = max(parts, 3)
 		rates_parts = more_itertools.divide(parts, rates)
-		fields = [('Currency Rates', clients.code_block.format(tabulate.tabulate(rates_parts[0], tablefmt = "plain")))]
+		fields = [('Currency Rates', clients.code_block.format(tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')))]
 		for rates_part in rates_parts[1:]:
-			fields.append(('Continued', clients.code_block.format(tabulate.tabulate(rates_part, tablefmt = "plain"))))
-		# TODO: paginate?
+			fields.append(('Continued', clients.code_block.format(tabulate.tabulate(rates_part, tablefmt = "plain", floatfmt = 'f'))))
+		# TODO: paginate
 		await ctx.embed_reply(title = f"Against {data['base']}", fields = fields, footer_text = "Rates from", timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"]))
 	
 	# TODO: Handle ServerDisconnectedError ?
