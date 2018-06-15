@@ -77,12 +77,16 @@ class Finance:
 	async def currency(self, ctx, against : str = "", request : str = ""):
 		'''
 		Current foreign exchange rates
-		Published by the European Central Bank
-		The rates are updated daily around 4PM CET
+		Hourly Updates
+		Exchange rate data delivered is collected from over 15 reliable data sources
+		Sources include banks and financial data providers
+		All exchange rate data delivered is midpoint data
+		Midpoint rates are determined by calculating the average median rate of Bid and Ask at a certain time
 		[against]: currency to quote against (base) (default is EUR)
 		[request]: currencies to request rate for (separated by commas with no spaces)
 		To specify a currency, enter the three-character currency code (e.g. USD, GBP, EUR)
 		'''
+		# TODO: acknowledge Fixer
 		await self.process_currency(ctx, against, request)
 	
 	@currency.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
@@ -90,6 +94,7 @@ class Finance:
 	async def currency_historical(self, ctx, date : str, against : str = "", request : str = ""):
 		'''
 		Historical foreign exchange rates
+		End Of Day historical exchange rates, which become available at 00:05 am GMT for the previous day and are time stamped at one second before midnight
 		Date must be in YYYY-MM-DD format
 		[against]: currency to quote against (base) (default is EUR)
 		[request]: currencies to request rate for (separated by commas with no spaces)
