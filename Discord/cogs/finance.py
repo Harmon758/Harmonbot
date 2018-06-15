@@ -6,6 +6,8 @@ import datetime
 import html
 
 import dateutil.parser
+import more_itertools
+import tabulate
 
 import clients
 import credentials
@@ -95,6 +97,28 @@ class Finance:
 		'''
 		# TODO: date converter
 		await self.process_currency(ctx, against, request, date)
+	
+	@currency.command(name = "symbols", aliases = ["acronyms", "abbreviations"])
+	@checks.not_forbidden()
+	async def currency_symbols(self, ctx):
+		'''Currency symbols'''
+		url = "https://data.fixer.io/api/symbols"
+		params = {"access_key": credentials.fixer_io_api_key}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
+			# TODO: handle errors
+			data = await resp.json()
+		if not data.get("success"):
+			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
+			return
+		symbols = list(data["symbols"].items())
+		parts = len(tabulate.tabulate(symbols, tablefmt = "plain")) // 1024 + 1
+		# TODO: use embed field limit constant
+		symbols_parts = more_itertools.divide(parts, symbols)
+		fields = [('Currency Symbols', clients.code_block.format(tabulate.tabulate(symbols_parts[0], tablefmt = "plain")))]
+		for symbols_part in symbols_parts[1:]:
+			fields.append(('Continued', clients.code_block.format(tabulate.tabulate(symbols_part, tablefmt = "plain"))))
+		# TODO: paginate
+		await ctx.embed_reply(fields = fields)
 	
 	async def process_currency(self, ctx, against, request, date = ""):
 		params = {"access_key": credentials.fixer_io_api_key}
