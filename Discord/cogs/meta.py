@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
-from discord.ext.commands.formatter import Paginator
 
 import asyncio
 import datetime
@@ -14,13 +13,11 @@ import os
 import pkg_resources
 import psutil
 import random
-import re
 import subprocess
 import sys
 import traceback
 
 import clients
-import credentials
 from modules import utilities
 from utilities import checks
 
