@@ -130,7 +130,7 @@ class Reactions:
 		maze_message = await ctx.embed_reply(clients.code_block.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
 		self.mazes[maze_message.id] = maze_instance
 		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
-			await self.bot.add_reaction(maze_message, emote)
+			await maze_message.add_reaction(emote)
 		self.reaction_messages[maze_message.id] = lambda reaction, user: self.mazer_processr(ctx.author, reaction, user)
 	
 	async def mazer_processr(self, player, reaction, user):
