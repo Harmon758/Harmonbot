@@ -177,9 +177,9 @@ class Meta:
 	@commands.command()
 	async def points(self, ctx):
 		'''WIP'''
-		with open(clients.data_path + "/user_data/{}/stats.json".format(ctx.author.id), 'r') as stats_file:
+		with open(f"{clients.data_path}/user_data/{ctx.author.id}/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
-		await ctx.embed_reply("You have {} points".format(stats["points"]))
+		await ctx.embed_reply(f"You have {stats['points']} points")
 	
 	@commands.command(aliases = ["server_setting"])
 	@checks.is_server_owner()
