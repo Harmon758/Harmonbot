@@ -115,7 +115,7 @@ class Resources:
 		if not data["gender"]:
 			await ctx.embed_reply("Gender: Unknown", title = data["name"].capitalize())
 		else:
-			await ctx.embed_reply("Gender: {}".format(data["gender"]), title = data["name"].capitalize(), footer_text = "Probability: {}% ({} data entries examined)".format(int(data["probability"] * 100), data["count"]))
+			await ctx.embed_reply(f"Gender: {data['gender']}", title = data["name"].capitalize(), footer_text = f"Probability: {int(data['probability'] * 100)}% ({data['count']} data entries examined)")
 	
 	@commands.command()
 	@checks.not_forbidden()
