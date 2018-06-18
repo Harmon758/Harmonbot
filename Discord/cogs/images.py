@@ -2,6 +2,7 @@
 import inspect
 
 from discord.ext import commands
+import clarifai.rest
 
 import clients
 import credentials

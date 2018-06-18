@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 import asyncio
-import clarifai.rest
 import datetime
 import dateutil
 import imgurpython
