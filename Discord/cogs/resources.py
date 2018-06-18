@@ -140,7 +140,7 @@ class Resources:
 				breachedaccounts = "None"
 			else:
 				data = await resp.json()
-				breachedaccounts = ", ".join(breachedaccount["Name"] for breachedaccount in data)
+				breachedaccounts = ", ".join(acc["Name"] for acc in data)
 		url = "https://haveibeenpwned.com/api/v2/pasteaccount/" + name
 		async with clients.aiohttp_session.get(url) as resp:
 			status = resp.status
@@ -148,8 +148,8 @@ class Resources:
 				pastedaccounts = "None"
 			else:
 				data = await resp.json()
-				pastedaccounts = ", ".join(pastedaccount["Source"] + " (" + pastedaccount["Id"] + ")" for pastedaccount in data)
-		await ctx.embed_reply("Breached accounts: {}\nPastes: {}".format(breachedaccounts, pastedaccounts))
+				pastedaccounts = ", ".join(f"{acc['Source']} ({acc['Id']})" for acc in data)
+		await ctx.embed_reply(f"Breached accounts: {breachedaccounts}\nPastes: {pastedaccounts}")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
