@@ -4,10 +4,11 @@ from discord.ext import commands
 
 import asyncio
 import datetime
-import dateutil
 import json
-# import spotipy
 import unicodedata
+
+import dateutil
+# import spotipy
 
 import clients
 import credentials
