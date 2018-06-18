@@ -44,7 +44,7 @@ class Resources:
 		if not abbreviation:
 			await ctx.embed_reply(":no_entry: Game not found")
 			return
-		await ctx.embed_reply("[Launch {}](battlenet://{})".format(game, abbreviation))
+		await ctx.embed_reply(f"[Launch {game}](battlenet://{abbreviation})")
 	
 	@commands.group(aliases = ["colour"], invoke_without_command = True)
 	@checks.not_forbidden()
