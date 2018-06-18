@@ -596,9 +596,11 @@ class Resources:
 	async def websitescreenshot(self, ctx, url : str):
 		'''Take a screenshot of a website'''
 		response, embed = None, None
+		api_url = "http://api.page2images.com/restfullink"
+		params = {"p2i_url": url, "p2i_screen": "1280x1024", "p2i_size": "1280x0", 
+					"p2i_fullpage": 1, "p2i_key": credentials.page2images_api_key}
 		while True:
-			async with clients.aiohttp_session.get("http://api.page2images.com/restfullink?"
-			"p2i_url={}&p2i_screen=1280x1024&p2i_size=1280x0&p2i_fullpage=1&p2i_key={}".format(url, credentials.page2images_api_key)) as resp:
+			async with clients.aiohttp_session.get(api_url, params = params) as resp:
 				data = await resp.json()
 			if data["status"] == "processing":
 				wait_time = int(data["estimated_need_time"])
