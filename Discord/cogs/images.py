@@ -1,7 +1,8 @@
 
+from discord.ext import commands
+
 import inspect
 
-from discord.ext import commands
 import clarifai.rest
 import imgurpython
 
