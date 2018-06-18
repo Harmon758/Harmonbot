@@ -133,18 +133,18 @@ class Resources:
 	@checks.not_forbidden()
 	async def haveibeenpwned(self, ctx, name : str):
 		'''Check if your account has been breached'''
-		url = "https://haveibeenpwned.com/api/v2/breachedaccount/{0}".format(name)
+		url = "https://haveibeenpwned.com/api/v2/breachedaccount/" + name
 		async with clients.aiohttp_session.get(url, params = {"truncateResponse": "true"}) as resp:
 			status = resp.status
-			if status in [404, 400]:
+			if status in (400, 404):
 				breachedaccounts = "None"
 			else:
 				data = await resp.json()
 				breachedaccounts = ", ".join(breachedaccount["Name"] for breachedaccount in data)
-		url = "https://haveibeenpwned.com/api/v2/pasteaccount/{0}".format(name)
+		url = "https://haveibeenpwned.com/api/v2/pasteaccount/" + name
 		async with clients.aiohttp_session.get(url) as resp:
 			status = resp.status
-			if status in [404, 400]:
+			if status in (400, 404):
 				pastedaccounts = "None"
 			else:
 				data = await resp.json()
