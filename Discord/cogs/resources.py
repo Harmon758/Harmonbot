@@ -95,14 +95,14 @@ class Resources:
 	async def dotabuff(self, ctx, account : str):
 		'''Get Dotabuff link'''
 		try:
-			url = "https://www.dotabuff.com/players/{}".format(int(account) - 76561197960265728)
+			url = f"https://www.dotabuff.com/players/{int(account) - 76561197960265728}"
 		except ValueError:
 			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
 			params = {"key": credentials.steam_apikey, "vanityurl": account}
 			async with clients.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
-			url = "https://www.dotabuff.com/players/{}".format(int(data["response"]["steamid"]) - 76561197960265728)
-		await ctx.embed_reply(title = "{}'s Dotabuff profile".format(account), title_url = url)
+			url = f"https://www.dotabuff.com/players/{int(data['response']['steamid']) - 76561197960265728}"
+		await ctx.embed_reply(title = f"{account}'s Dotabuff profile", title_url = url)
 	
 	@commands.command()
 	@checks.not_forbidden()
