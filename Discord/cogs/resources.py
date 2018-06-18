@@ -186,7 +186,7 @@ class Resources:
 	async def process_horoscope(self, ctx, sign, day):
 		if len(sign) == 1:
 			sign = unicodedata.name(sign).lower()
-		url = "http://sandipbgt.com/theastrologer/api/horoscope/{}/{}/".format(sign, day)
+		url = f"http://sandipbgt.com/theastrologer/api/horoscope/{sign}/{day}/"
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Error")
