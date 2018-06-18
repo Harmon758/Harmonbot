@@ -136,19 +136,19 @@ class Resources:
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/{0}".format(name)
 		async with clients.aiohttp_session.get(url, params = {"truncateResponse": "true"}) as resp:
 			status = resp.status
-			data = await resp.json()
-		if status in [404, 400]:
-			breachedaccounts = "None"
-		else:
-			breachedaccounts = ", ".join(breachedaccount["Name"] for breachedaccount in data)
+			if status in [404, 400]:
+				breachedaccounts = "None"
+			else:
+				data = await resp.json()
+				breachedaccounts = ", ".join(breachedaccount["Name"] for breachedaccount in data)
 		url = "https://haveibeenpwned.com/api/v2/pasteaccount/{0}".format(name)
 		async with clients.aiohttp_session.get(url) as resp:
 			status = resp.status
-			data = await resp.json()
-		if status in [404, 400]:
-			pastedaccounts = "None"
-		else:
-			pastedaccounts = ", ".join(pastedaccount["Source"] + " (" + pastedaccount["Id"] + ")" for pastedaccount in data)
+			if status in [404, 400]:
+				pastedaccounts = "None"
+			else:
+				data = await resp.json()
+				pastedaccounts = ", ".join(pastedaccount["Source"] + " (" + pastedaccount["Id"] + ")" for pastedaccount in data)
 		await ctx.embed_reply("Breached accounts: {}\nPastes: {}".format(breachedaccounts, pastedaccounts))
 	
 	@commands.group(invoke_without_command = True)
