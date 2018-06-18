@@ -97,8 +97,9 @@ class Resources:
 		try:
 			url = "https://www.dotabuff.com/players/{}".format(int(account) - 76561197960265728)
 		except ValueError:
-			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={}&vanityurl={}".format(credentials.steam_apikey, account)
-			async with clients.aiohttp_session.get(url) as resp:
+			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
+			params = {"key": credentials.steam_apikey, "vanityurl": account}
+			async with clients.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			url = "https://www.dotabuff.com/players/{}".format(int(data["response"]["steamid"]) - 76561197960265728)
 		await ctx.embed_reply(title = "{}'s Dotabuff profile".format(account), title_url = url)
