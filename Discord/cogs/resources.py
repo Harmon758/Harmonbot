@@ -231,8 +231,9 @@ class Resources:
 	@checks.not_forbidden()
 	async def longurl(self, ctx, url : str):
 		'''Expand a short goo.gl url'''
-		url = "https://www.googleapis.com/urlshortener/v1/url?shortUrl={}&key={}".format(url, credentials.google_apikey)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "https://www.googleapis.com/urlshortener/v1/url"
+		params = {"shortUrl": url, "key": credentials.google_apikey}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:
 				await ctx.embed_reply(":no_entry: Error")
 				return
