@@ -5,7 +5,6 @@ from discord.ext import commands
 import asyncio
 import datetime
 import dateutil
-import imgurpython
 import json
 # import spotipy
 import unicodedata

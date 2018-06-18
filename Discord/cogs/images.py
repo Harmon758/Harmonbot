@@ -3,6 +3,7 @@ import inspect
 
 from discord.ext import commands
 import clarifai.rest
+import imgurpython
 
 import clients
 import credentials
