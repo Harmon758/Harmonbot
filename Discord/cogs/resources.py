@@ -186,13 +186,18 @@ class Resources:
 	async def process_horoscope(self, ctx, sign, day):
 		if len(sign) == 1:
 			sign = unicodedata.name(sign).lower()
-		async with clients.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/horoscope/{}/{}/".format(sign, day)) as resp:
+		url = "http://sandipbgt.com/theastrologer/api/horoscope/{}/{}/".format(sign, day)
+		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json(content_type = "text/html")
+		fields = sorted((k.capitalize(), v) for k, v in data["meta"].items())
 		date = [int(d) for d in data["date"].split('-')]
-		await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""), title = data["sunsign"], fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()), footer_text = data["credit"], timestamp = datetime.datetime(date[0], date[1], date[2]))
+		timestamp = datetime.datetime(date[0], date[1], date[2])
+		await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""), 
+								title = data["sunsign"], fields = fields, 
+								footer_text = data["credit"], timestamp = timestamp)
 	
 	@commands.command(aliases = ["movie"])
 	@checks.not_forbidden()
