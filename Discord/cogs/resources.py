@@ -125,7 +125,8 @@ class Resources:
 	@checks.not_forbidden()
 	async def hastebin(self, ctx, *, contents : str):
 		'''Hastebin'''
-		async with clients.aiohttp_session.post("https://hastebin.com/documents", data = contents) as resp:
+		url = "https://hastebin.com/documents"
+		async with clients.aiohttp_session.post(url, data = contents) as resp:
 			data = await resp.json()
 		await ctx.embed_reply("https://hastebin.com/" + data["key"])
 	
