@@ -496,7 +496,8 @@ class Resources:
 	@checks.not_forbidden()
 	async def steam_appid(self, ctx, *, app : str):
 		'''Get the AppID'''
-		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
+		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		apps = data["applist"]["apps"]
 		appid = 0
