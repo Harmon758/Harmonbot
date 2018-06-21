@@ -1,0 +1,7 @@
+linters:
+  flake8:
+    fixer: true
+  golint:
+    fixer: true
+fixers:
+  enable: true
