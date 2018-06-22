@@ -543,7 +543,8 @@ class Resources:
 	@checks.not_forbidden()
 	async def steam_run(self, ctx, *, game : str):
 		'''Generate a steam link to launch a game'''
-		async with clients.aiohttp_session.get("http://api.steampowered.com/ISteamApps/GetAppList/v0002/") as resp:
+		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
 		if not app:
