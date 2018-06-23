@@ -29,7 +29,8 @@ class Location:
 	async def country(self, ctx, *, country : str):
 		'''Information about a country'''
 		# TODO: subcommands for other options to search by (e.g. capital)
-		async with clients.aiohttp_session.get("https://restcountries.eu/rest/v2/name/{}".format(country)) as resp:
+		url = "https://restcountries.eu/rest/v2/name/" + country
+		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -38,9 +39,9 @@ class Location:
 				await ctx.embed_reply(":no_entry: Error: {}".format(data.get("message")))
 				return
 		country_data = {}
-		for _country in data:
-			if _country["name"].lower() == country.lower() or country.lower() in [n.lower() for n in _country["altSpellings"]]:
-				country_data = _country
+		for c in data:
+			if c["name"].lower() == country.lower() or country.lower() in [n.lower() for n in c["altSpellings"]]:
+				country_data = c
 				break
 		if not country_data:
 			country_data = data[0]
@@ -54,19 +55,34 @@ class Location:
 		if country_data["capital"]:
 			fields.append(("Capital", country_data["capital"]))
 		# Languages
-		languages = ["{}\n{}".format(l["name"], "({})".format(l["nativeName"]) if l["nativeName"] != l["name"] else "") for l in country_data["languages"]]
+		languages = []
+		for language in country_data["languages"]:
+			language_name = language["name"]
+			if language["nativeName"] != language["name"]:
+				language_name += "\n({})".format(language["nativeName"])
+			languages.append(language_name)
 		if len(languages) == 1 and len(languages[0]) > 22:  # 22: embed field value limit without offset
 			languages = languages[0]
 		else:
 			languages = '\n'.join(l.replace('\n', ' ') for l in languages)
-		fields.append((clients.inflect_engine.plural("Language", len(country_data["languages"])), languages))
+		field_title = clients.inflect_engine.plural("Language", len(country_data["languages"]))
+		fields.append((field_title, languages))
 		# Currencies
-		currencies = ["{0[name]}\n({0[code]}{1})".format(c, ", " + c["symbol"] if c["symbol"] else "") for c in country_data["currencies"]]
+		currencies = []
+		for currency in country_data["currencies"]:
+			currency_name = currency["name"] + '\n'
+			currency_name += '(' + currency["code"]
+			if currency["symbol"]:
+				currency_name += ", " + currency["symbol"]
+			currency_name += ')'
+			currencies.append(currency_name)
 		if len(currencies) == 1 and len(currencies[0]) > 22:  # 22: embed field value limit without offset
 			currencies = currencies[0]
 		else:
 			currencies = '\n'.join(c.replace('\n', ' ') for c in currencies)
-		fields.append((clients.inflect_engine.plural("currency", len(country_data["currencies"])).capitalize(), currencies))
+		field_title = clients.inflect_engine.plural("currency", len(country_data["currencies"]))
+		field_title = field_title.capitalize()
+		fields.append((field_title, currencies))
 		# Regions/Subregions
 		if country_data["subregion"]:
 			fields.append(("Region: Subregion", "{0[region]}:\n{0[subregion]}".format(country_data)))
@@ -79,22 +95,31 @@ class Location:
 				regional_blocs = regional_blocs[0]
 			else:
 				regional_blocs = '\n'.join(rb.replace('\n', ' ') for rb in regional_blocs)
-			fields.append((clients.inflect_engine.plural("Regional Bloc", len(country_data["regionalBlocs"])), regional_blocs))
+			field_title = clients.inflect_engine.plural("Regional Bloc", len(country_data["regionalBlocs"]))
+			fields.append((field_title, regional_blocs))
 		# Borders
 		if country_data["borders"]:
-			fields.append((clients.inflect_engine.plural("Border", len(country_data["borders"])), '\n'.join(", ".join(country_data["borders"][i:i + 4]) for i in range(0, len(country_data["borders"]), 4))))
+			field_title = clients.inflect_engine.plural("Border", len(country_data["borders"]))
+			fields.append((field_title, '\n'.join(", ".join(country_data["borders"][i:i + 4]) for i in range(0, len(country_data["borders"]), 4))))
 		# Timezones
-		fields.append((clients.inflect_engine.plural("Timezone", len(country_data["timezones"])), '\n'.join(", ".join(country_data["timezones"][i:i + 2]) for i in range(0, len(country_data["timezones"]), 2))))
+		field_title = clients.inflect_engine.plural("Timezone", len(country_data["timezones"]))
+		fields.append((field_title, '\n'.join(", ".join(country_data["timezones"][i:i + 2]) for i in range(0, len(country_data["timezones"]), 2))))
 		# Demonym
 		if country_data["demonym"]:
 			fields.append(("Demonym", country_data["demonym"]))
 		# Top-Level Domains
 		if country_data["topLevelDomain"][0]:
-			fields.append((clients.inflect_engine.plural("Top-Level Domain", len(country_data["topLevelDomain"])), ", ".join(country_data["topLevelDomain"])))
+			field_title = clients.inflect_engine.plural("Top-Level Domain", len(country_data["topLevelDomain"]))
+			fields.append((field_title, ", ".join(country_data["topLevelDomain"])))
 		# Calling Codes
 		if country_data["callingCodes"] and country_data["callingCodes"][0]:
-			fields.append((clients.inflect_engine.plural("Calling Code", len(country_data["callingCodes"])), ", ".join('+' + cc for cc in country_data["callingCodes"])))
-		await ctx.embed_reply(title = "{}{}".format(country_data["name"], " ({})".format(country_data["nativeName"]) if country_data["nativeName"] not in country_data["name"] else ""), fields = fields)
+			field_title = clients.inflect_engine.plural("Calling Code", len(country_data["callingCodes"]))
+			fields.append((field_title, ", ".join('+' + cc for cc in country_data["callingCodes"])))
+		# Name
+		country_name = country_data["name"]
+		if country_data["nativeName"] not in country_data["name"]:
+			country_name += " ({})".format(country_data["nativeName"])
+		await ctx.embed_reply(title = country_name, fields = fields)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
