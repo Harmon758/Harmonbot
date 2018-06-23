@@ -275,7 +275,7 @@ class Bot(commands.Bot):
 			self.unload_extension("cogs." + cog)
 			self.load_extension("cogs." + cog)
 		except Exception as e:
-			await ctx.embed_reply(":thumbsdown::skin-tone-2: Failed to reload `{}` cog\n{}: {}".format(cog, type(e).__name__, e))
+			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to reload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
 			# TODO: self.stats
 			with open(data_path + "/stats.json", 'r') as stats_file:
@@ -283,7 +283,7 @@ class Bot(commands.Bot):
 			stats["cogs_reloaded"] += 1
 			with open(data_path + "/stats.json", 'w') as stats_file:
 				json.dump(stats, stats_file, indent = 4)
-			await ctx.embed_reply(":thumbsup::skin-tone-2: Reloaded `{}` cog :gear:".format(cog))
+			await ctx.embed_reply(f":thumbsup::skin-tone-2: Reloaded `{cog}` cog :gear:")
 
 
 # Create folders
