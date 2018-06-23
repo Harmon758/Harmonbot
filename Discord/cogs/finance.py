@@ -47,8 +47,8 @@ class Finance:
 		'''Supported currencies for BPI conversion'''
 		async with clients.aiohttp_session.get("https://api.coindesk.com/v1/bpi/supported-currencies.json") as resp:
 			data = await resp.json(content_type = "text/html")
-		await ctx.embed_reply(", ".join("{0[currency]} ({0[country]})".format(c) for c in data[:int(len(data)/2)]))
-		await ctx.embed_reply(", ".join("{0[currency]} ({0[country]})".format(c) for c in data[int(len(data)/2):]))
+		await ctx.embed_reply(", ".join("{0[currency]} ({0[country]})".format(c) for c in data[:int(len(data) / 2)]))
+		await ctx.embed_reply(", ".join("{0[currency]} ({0[country]})".format(c) for c in data[int(len(data) / 2):]))
 		# TODO: paginate
 	
 	@bitcoin.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
