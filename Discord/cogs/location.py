@@ -36,7 +36,10 @@ class Location:
 				return
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data.get("message")))
+				error_message = ":no_entry: Error"
+				if "message" in data:
+					error_message += ": " + data["message"]
+				await ctx.embed_reply(error_message)
 				return
 		country_data = {}
 		for c in data:
