@@ -291,7 +291,7 @@ class Meta:
 		uptime = now - clients.online_time
 		uptime = utilities.duration_to_letter_format(utilities.secs_to_duration(int(uptime.total_seconds())))
 		total_members = sum(len(g.members) for g in self.bot.guilds)
-		total_members_online  = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
+		total_members_online = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(self.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
 		channel_types = [type(c) for c in self.bot.get_all_channels()]
