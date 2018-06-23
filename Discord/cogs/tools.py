@@ -320,11 +320,11 @@ class Tools:
 	
 	async def check_no_tag(self, ctx, tag):
 		tags = self.tags_data[str(ctx.author.id)]["tags"]
-		if not tag in tags:
+		if tag not in tags:
 			close_matches = difflib.get_close_matches(tag, tags.keys())
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 			await ctx.embed_reply("You don't have that tag{}".format(close_matches))
-		return not tag in tags
+		return tag not in tags
 	
 	@commands.command()
 	@checks.not_forbidden()
