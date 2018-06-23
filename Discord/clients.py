@@ -256,9 +256,9 @@ class Bot(commands.Bot):
 		try:
 			self.unload_extension("cogs." + cog)
 		except Exception as e:
-			await ctx.embed_reply(":thumbsdown::skin-tone-2: Failed to unload `{}` cog\n{}: {}".format(cog, type(e).__name__, e))
+			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to unload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
-			await ctx.embed_reply(":ok_hand::skin-tone-2: Unloaded `{}` cog :gear:".format(cog))
+			await ctx.embed_reply(f":ok_hand::skin-tone-2: Unloaded `{cog}` cog :gear:")
 	
 	@commands.command(name = "aiml", aliases = ["brain"])
 	@commands.is_owner()
