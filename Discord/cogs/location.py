@@ -44,10 +44,12 @@ class Location:
 				break
 		if not country_data:
 			country_data = data[0]
-		# Flag, Population, Area
+		# Flag, Population
 		fields = [("Flag", "[:flag_{}:]({})".format(country_data["alpha2Code"].lower(), country_data["flag"])), 
-					("Population", "{:,}".format(country_data["population"])), 
-					("Area", "{:,} sq km".format(country_data["area"]))]
+					("Population", "{:,}".format(country_data["population"]))]
+		# Area
+		if country_data["area"]:
+			fields.append(("Area", "{:,} sq km".format(country_data["area"])))
 		# Capital
 		if country_data["capital"]:
 			fields.append(("Capital", country_data["capital"]))
