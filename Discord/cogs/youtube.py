@@ -221,7 +221,7 @@ class YouTube:
 			self.uploads_info["channels"][str(ctx.channel.id)] = {"yt_channel_ids": [channel_id]}
 		self.youtube_uploads_following.add(channel_id)
 		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": credentials.callback_url, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
-		# TODO: unique callback url for each subscription?
+			# TODO: unique callback url for each subscription?
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
 				await ctx.embed_reply(":no_entry: Error {}: {}".format(resp.status, error_description))

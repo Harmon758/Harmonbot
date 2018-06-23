@@ -197,7 +197,7 @@ def add_as_subcommand(cog, command, parent_name, subcommand_name, *, aliases = [
 	subcommand.aliases = aliases
 	# async def wrapper(*args, **kwargs):
 	# async def wrapper(*args, command = command, **kwargs):
-		# await command.callback(cog, *args, **kwargs)
+	# 	await command.callback(cog, *args, **kwargs)
 	# subcommand.callback = wrapper
 	# subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
 	setattr(parent_cog, "{}_{}".format(parent_command_name, subcommand_name), subcommand)

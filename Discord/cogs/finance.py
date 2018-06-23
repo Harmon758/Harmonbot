@@ -140,7 +140,7 @@ class Finance:
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			# TODO: use ETags
 			if resp.status in (404, 422):
-			# TODO: handle other errors
+				# TODO: handle other errors
 				data = await resp.json(content_type = "text/html")
 				await ctx.embed_reply(":no_entry: Error: {}".format(data["error"]))
 				return

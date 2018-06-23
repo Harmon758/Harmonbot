@@ -311,7 +311,7 @@ class Meta:
 		embed.add_field(name = "Main Commands", value = len(set(self.bot.commands.values())))
 		embed.add_field(name = "Commands Executed", 
 			value = "{} this session\n{:,} total recorded".format(self.bot.session_commands_executed, stats["commands_executed"])) 
-			# since 2016-06-10 (cog commands)
+		# since 2016-06-10 (cog commands)
 		embed.add_field(name = "Cogs Reloaded", value = "{:,}".format(stats["cogs_reloaded"])) ## since 2016-06-10 - implemented cog reloading
 		# TODO: cogs reloaded this session
 		embed.add_field(name = "Servers", value = len(self.bot.guilds))
