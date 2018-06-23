@@ -293,7 +293,7 @@ class Twitch:
 				del self.old_streams_announced[stream["_id"]]
 			elif stream["_id"] not in self.streams_announced:
 				for channel_id, channel_info in self.streams_info["channels"].items():
-					if (match in channel_info[type] or \
+					if (match in channel_info[type] or 
 					not match and stream["channel"]["name"] in [s.lower() for s in channel_info[type]]) and \
 					all(filter in stream["channel"]["status"] for filter in channel_info["filters"]):
 						embed = discord.Embed(title = stream["channel"]["status"] if len(stream["channel"]["status"]) <= 256 else stream["channel"]["status"][:253] + "...", description = "{0[channel][display_name]} is playing {0[game]}".format(stream) if stream["channel"]["game"] else discord.Embed.Empty, url = stream["channel"]["url"], timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), color = self.bot.twitch_color)
