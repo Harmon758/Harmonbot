@@ -52,7 +52,7 @@ class Location:
 		if country_data["capital"]:
 			fields.append(("Capital", country_data["capital"]))
 		# Languages
-		languages = ["{}\n{}".format(l["name"], " ({})".format(l["nativeName"]) if l["nativeName"] != l["name"] else "") for l in country_data["languages"]]
+		languages = ["{}\n{}".format(l["name"], "({})".format(l["nativeName"]) if l["nativeName"] != l["name"] else "") for l in country_data["languages"]]
 		if len(languages) == 1 and len(languages[0]) > 22:  # 22: embed field value limit without offset
 			languages = languages[0]
 		else:
