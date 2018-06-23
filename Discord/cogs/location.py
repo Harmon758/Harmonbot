@@ -49,11 +49,11 @@ class Location:
 		if not country_data:
 			country_data = data[0]
 		# Flag, Population
-		fields = [("Flag", "[:flag_{}:]({})".format(country_data["alpha2Code"].lower(), country_data["flag"])), 
-					("Population", "{:,}".format(country_data["population"]))]
+		fields = [("Flag", f"[:flag_{country_data['alpha2Code'].lower()}:]({country_data['flag']})"), 
+					("Population", f"{country_data['population']:,}")]
 		# Area
 		if country_data["area"]:
-			fields.append(("Area", "{:,} sq km".format(country_data["area"])))
+			fields.append(("Area", f"{country_data['area']:,} sq km"))
 		# Capital
 		if country_data["capital"]:
 			fields.append(("Capital", country_data["capital"]))
@@ -62,7 +62,7 @@ class Location:
 		for language in country_data["languages"]:
 			language_name = language["name"]
 			if language["nativeName"] != language["name"]:
-				language_name += "\n({})".format(language["nativeName"])
+				language_name += f"\n({language['nativeName']})"
 			languages.append(language_name)
 		if len(languages) == 1 and len(languages[0]) > 22:  # 22: embed field value limit without offset
 			languages = languages[0]
@@ -88,12 +88,12 @@ class Location:
 		fields.append((field_title, currencies))
 		# Regions/Subregions
 		if country_data["subregion"]:
-			fields.append(("Region: Subregion", "{0[region]}:\n{0[subregion]}".format(country_data)))
+			fields.append(("Region: Subregion", f"{country_data['region']}:\n{country_data['subregion']}"))
 		else:
 			fields.append(("Region", country_data["region"]))
 		# Regional Blocs
 		if country_data["regionalBlocs"]:
-			regional_blocs = ["{0[name]}\n({0[acronym]})".format(rb) for rb in country_data["regionalBlocs"]]
+			regional_blocs = [f"{rb['name']}\n({rb['acronym']})" for rb in country_data["regionalBlocs"]]
 			if len(regional_blocs) == 1:
 				regional_blocs = regional_blocs[0]
 			else:
@@ -121,7 +121,7 @@ class Location:
 		# Name
 		country_name = country_data["name"]
 		if country_data["nativeName"] not in country_data["name"]:
-			country_name += " ({})".format(country_data["nativeName"])
+			country_name += f" ({country_data['nativeName']})"
 		await ctx.embed_reply(title = country_name, fields = fields)
 	
 	@commands.group(invoke_without_command = True)
