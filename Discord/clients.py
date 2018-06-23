@@ -62,10 +62,10 @@ class Bot(commands.Bot):
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
-		self.rss_color = 0xfa9b39 # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
+		self.rss_color = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 		self.twitch_color = 0x6441a4
 		self.twitter_color = 0x00ACED
-		self.youtube_color = 0xcd201f # change to ff0000?; previously on https://www.youtube.com/yt/brand/color.html
+		self.youtube_color = 0xcd201f  # change to ff0000?; previously on https://www.youtube.com/yt/brand/color.html
 		self.twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
 		self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 		self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
