@@ -511,12 +511,14 @@ class Resources:
 	@checks.not_forbidden()
 	async def steam_gamecount(self, ctx, vanity_name : str):
 		'''Find how many games someone has'''
-		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={0}&vanityurl={1}".format(credentials.steam_apikey, vanity_name)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
+		params = {"key": credentials.steam_apikey, "vanityurl": vanity_name}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		id = data["response"]["steamid"]
-		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={0}&steamid={1}".format(credentials.steam_apikey, id)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
+		params = {"key": credentials.steam_apikey, "steamid": id}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
 		await ctx.embed_reply("{} has {} games".format(vanity_name, gamecount))
