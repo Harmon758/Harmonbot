@@ -232,9 +232,9 @@ class Bot(commands.Bot):
 		try:
 			self.load_extension("cogs." + cog)
 		except Exception as e:
-			await ctx.embed_reply(":thumbsdown::skin-tone-2: Failed to load `{}` cog\n{}: {}".format(cog, type(e).__name__, e))
+			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to load `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
-			await ctx.embed_reply(":thumbsup::skin-tone-2: Loaded `{}` cog :gear:".format(cog))
+			await ctx.embed_reply(f":thumbsup::skin-tone-2: Loaded `{cog}` cog :gear:")
 	
 	@commands.command(name = "aiml", aliases = ["brain"])
 	@commands.is_owner()
