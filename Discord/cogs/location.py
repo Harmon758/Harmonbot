@@ -42,29 +42,41 @@ class Location:
 			if _country["name"].lower() == country.lower() or country.lower() in [n.lower() for n in _country["altSpellings"]]:
 				country_data = _country
 				break
-		if not country_data: country_data = data[0]
+		if not country_data:
+			country_data = data[0]
 		# Flag, Population, Area
-		fields = [("Flag", "[:flag_{}:]({})".format(country_data["alpha2Code"].lower(), country_data["flag"])), ("Population", "{:,}".format(country_data["population"])), ("Area", "{:,} sq km".format(country_data["area"]))]
+		fields = [("Flag", "[:flag_{}:]({})".format(country_data["alpha2Code"].lower(), country_data["flag"])), 
+					("Population", "{:,}".format(country_data["population"])), 
+					("Area", "{:,} sq km".format(country_data["area"]))]
 		# Capital
-		if country_data["capital"]: fields.append(("Capital", country_data["capital"]))
+		if country_data["capital"]:
+			fields.append(("Capital", country_data["capital"]))
 		# Languages
 		languages = ["{}\n{}".format(l["name"], " ({})".format(l["nativeName"]) if l["nativeName"] != l["name"] else "") for l in country_data["languages"]]
-		if len(languages) == 1 and len(languages[0]) > 22: languages = languages[0] # 22: embed field value limit without offset
-		else: languages = '\n'.join(l.replace('\n', ' ') for l in languages)
+		if len(languages) == 1 and len(languages[0]) > 22:  # 22: embed field value limit without offset
+			languages = languages[0]
+		else:
+			languages = '\n'.join(l.replace('\n', ' ') for l in languages)
 		fields.append((clients.inflect_engine.plural("Language", len(country_data["languages"])), languages))
 		# Currencies
 		currencies = ["{0[name]}\n({0[code]}{1})".format(c, ", " + c["symbol"] if c["symbol"] else "") for c in country_data["currencies"]]
-		if len(currencies) == 1 and len(currencies[0]) > 22: currencies = currencies[0] # 22: embed field value limit without offset
-		else: currencies = '\n'.join(c.replace('\n', ' ') for c in currencies)
+		if len(currencies) == 1 and len(currencies[0]) > 22:  # 22: embed field value limit without offset
+			currencies = currencies[0]
+		else:
+			currencies = '\n'.join(c.replace('\n', ' ') for c in currencies)
 		fields.append((clients.inflect_engine.plural("currency", len(country_data["currencies"])).capitalize(), currencies))
 		# Regions/Subregions
-		if country_data["subregion"]: fields.append(("Region: Subregion", "{0[region]}:\n{0[subregion]}".format(country_data)))
-		else: fields.append(("Region", country_data["region"]))
+		if country_data["subregion"]:
+			fields.append(("Region: Subregion", "{0[region]}:\n{0[subregion]}".format(country_data)))
+		else:
+			fields.append(("Region", country_data["region"]))
 		# Regional Blocs
 		if country_data["regionalBlocs"]:
 			regional_blocs = ["{0[name]}\n({0[acronym]})".format(rb) for rb in country_data["regionalBlocs"]]
-			if len(regional_blocs) == 1: regional_blocs = regional_blocs[0]
-			else: regional_blocs = '\n'.join(rb.replace('\n', ' ') for rb in regional_blocs)
+			if len(regional_blocs) == 1:
+				regional_blocs = regional_blocs[0]
+			else:
+				regional_blocs = '\n'.join(rb.replace('\n', ' ') for rb in regional_blocs)
 			fields.append((clients.inflect_engine.plural("Regional Bloc", len(country_data["regionalBlocs"])), regional_blocs))
 		# Borders
 		if country_data["borders"]:
@@ -72,7 +84,8 @@ class Location:
 		# Timezones
 		fields.append((clients.inflect_engine.plural("Timezone", len(country_data["timezones"])), '\n'.join(", ".join(country_data["timezones"][i:i + 2]) for i in range(0, len(country_data["timezones"]), 2))))
 		# Demonym
-		if country_data["demonym"]: fields.append(("Demonym", country_data["demonym"]))
+		if country_data["demonym"]:
+			fields.append(("Demonym", country_data["demonym"]))
 		# Top-Level Domains
 		if country_data["topLevelDomain"][0]:
 			fields.append((clients.inflect_engine.plural("Top-Level Domain", len(country_data["topLevelDomain"])), ", ".join(country_data["topLevelDomain"])))
