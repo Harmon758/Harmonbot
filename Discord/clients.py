@@ -328,9 +328,10 @@ client = Bot(command_prefix = get_prefix)
 # Initialize/update info
 
 async def _update_discord_bots_stats():
-	async with aiohttp_session.post("https://bots.discord.pw/api/bots/{}/stats".format(client.user.id), 
-	headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}, 
-	data = json.dumps({"server_count": len(client.guilds)})) as resp:
+	url = "https://bots.discord.pw/api/bots/{}/stats".format(client.user.id)
+	headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}
+	data = json.dumps({"server_count": len(client.guilds)})
+	async with aiohttp_session.post(url, headers = headers, data = data) as resp:
 		return resp.status
 
 @client.listen()
