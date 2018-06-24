@@ -26,8 +26,7 @@ class Runescape:
 	@checks.not_forbidden()
 	async def ge(self, ctx, *, item):
 		'''Grand Exchange'''
-		# http://services.runescape.com/m=rswiki/en/Grand_Exchange_APIs
-		# http://forums.zybez.net/runescape-2007-prices/api/?info
+		# https://runescape.wikia.com/wiki/Application_programming_interface#Grand_Exchange_Database_API		
 		# https://www.mediawiki.org/wiki/API:Opensearch
 		# TODO: Handle redirects?
 		async with clients.aiohttp_session.get("http://runescape.wikia.com/api.php", params = {"action": "opensearch", "search": item}) as resp:
@@ -113,6 +112,7 @@ class Runescape:
 	@checks.not_forbidden()
 	async def zybez(self, ctx, *, item):
 		'''Zybez average price'''
+		# http://forums.zybez.net/runescape-2007-prices/api/?info
 		url = "http://forums.zybez.net/runescape-2007-prices/api/item/{}".format(item.replace(' ', '+'))
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
