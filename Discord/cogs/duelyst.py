@@ -31,8 +31,8 @@ class Duelyst:
 	@checks.not_forbidden()
 	async def card_random(self, ctx):
 		'''Details of a random card'''
-		async with clients.aiohttp_session.get(
-		"https://duelyststats.info/scripts/carddata/get.php?random=1") as resp:
+		url = "https://duelyststats.info/scripts/carddata/get.php?random=1"
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
 
