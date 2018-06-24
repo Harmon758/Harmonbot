@@ -20,18 +20,18 @@ def is_number(characters):
 		return False
 
 def is_hex(characters):
-    try:
-        int(characters, 16)
-        return True
-    except ValueError:
-        return False
+	try:
+		int(characters, 16)
+		return True
+	except ValueError:
+		return False
 
 '''
 import string
 def is_hex(s):
-     hex_digits = set(string.hexdigits)
-     # if s is long, then it is faster to check against a set
-     return all(c in hex_digits for c in s)
+	hex_digits = set(string.hexdigits)
+	# if s is long, then it is faster to check against a set
+	return all(c in hex_digits for c in s)
 '''
 
 def message_is_digit_gtz(m):
