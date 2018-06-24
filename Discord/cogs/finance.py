@@ -38,7 +38,7 @@ class Finance:
 				data = await resp.json(content_type = "application/javascript")
 			currency_data = data["bpi"][currency.upper()]
 			title = currency_data["description"]
-			description = "{0[code]} {0[rate]}\n".format(currency_data)
+			description = f"{currency_data['code']} {currency_data['rate']}\n"
 			fields = ()
 		else:
 			url = "https://api.coindesk.com/v1/bpi/currentprice.json"
@@ -48,7 +48,7 @@ class Finance:
 			description = ""
 			fields = []
 			for currency in data["bpi"].values():
-				field_value = "{0[code]} {1}{0[rate]}".format(currency, html.unescape(currency["symbol"]))
+				field_value = f"{currency['code']} {html.unescape(currency['symbol'])}{currency['rate']}"
 				fields.append((currency["description"], field_value))
 		description += "Powered by [CoinDesk](https://www.coindesk.com/price/)"
 		footer_text = data["disclaimer"].rstrip('.') + ". Updated"
