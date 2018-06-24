@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import collections
 import csv
-# import re
 
 import clients
 from utilities import checks
@@ -29,25 +28,6 @@ class Runescape:
 		'''Grand Exchange'''
 		# http://services.runescape.com/m=rswiki/en/Grand_Exchange_APIs
 		# http://forums.zybez.net/runescape-2007-prices/api/?info
-		'''
-		# http://itemdb.biz/
-		# TODO: Find better method of obtaining item ID than scraping itemdb.biz
-		async with clients.aiohttp_session.get("http://www.itemdb.biz/index.php", params = {"search": item}) as resp:
-			data = await resp.text()
-		if "Your search for" in data:
-			result = re.search("<center><b>([0-9]{0,9})<\/b><\/center><\/td><td style='padding-left:10px;text-align:left;'" + ">({})<".format(item.lower().capitalize()), data)
-			# without < ?
-			if not result:
-				result = re.search("<center><b>(.*?)<\/b><\/center><\/td><td style='padding-left:10px;text-align:left;'>(.*?)<", data)
-			if not result:
-				await ctx.embed_reply(":no_entry: Error")
-				return
-			id = result.group(1)
-		elif "Your search returned no results." in data:
-			await ctx.embed_reply(":no_entry: {} not found on itemdb.biz".format(item))
-		else:
-			await ctx.embed_reply(":no_entry: Error")
-		'''
 		# https://www.mediawiki.org/wiki/API:Opensearch
 		# TODO: Handle redirects?
 		async with clients.aiohttp_session.get("http://runescape.wikia.com/api.php", params = {"action": "opensearch", "search": item}) as resp:
@@ -76,34 +56,6 @@ class Runescape:
 		data = data["item"]
 		await ctx.embed_reply(data["description"], title = data["name"], title_url = "http://services.runescape.com/m=itemdb_rs/viewitem?obj={}".format(item_id), thumbnail_url = data["icon_large"], fields = (("Current", data["current"]["price"]), ("Today", data["today"]["price"]), ("30 Day", data["day30"]["change"]), ("90 Day", data["day90"]["change"]), ("180 Day", data["day180"]["change"]), ("Category", data["type"])))
 		# id?, members
-	
-	'''
-	set %ge_item2 $capital($lower($2-))
-
-	alias ge {
-	  if (%item_id) {
-		var %price = $json(%url,item,current,price)
-		var %name = $json(%url,item,name)
-		if (%name) { %message Price of %name $+ : %price gp }
-		else { %message Item %ge_item2 not found. Blame itemdb.biz. }
-	  }
-	  /*
-	  else {
-		var %category = 0
-		while (%category != 37 && !%price) {
-		  inc %category
-		  var %url = http://services.runescape.com/m=itemdb_rs/api/catalogue/items.json?category= $+ %category $+ &alpha= $+ $replace($2-,$chr(32),$chr(43)) $+ &page=1
-		  var %price = $json(%url,items,0,current,price)
-		}
-		if (%price) {
-		  var %name = $json(%url,items,0,name)
-		  %message Price of %name $+ : %price gp
-		}
-		else { %message Item %ge_item2 not found. }
-	  }
-	  */
-	}
-	'''
 	
 	@runescape.command(aliases = ["bestiary"])
 	@checks.not_forbidden()
