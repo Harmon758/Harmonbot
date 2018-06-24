@@ -18,6 +18,8 @@ exclude =
 ignore =
 	# E203: whitespace before ‘:’
 	E203,
+	# E266: too many leading '#' for block comment
+	E266,
 	# E251: unexpected spaces around keyword / parameter equals
 	E251,
 	# E302: expected 2 blank lines
