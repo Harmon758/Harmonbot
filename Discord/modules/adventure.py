@@ -146,11 +146,15 @@ class AdventurePlayer:
 		return wood, xp
 
 for info in initial_data:
-	def set_info(self, value, info = info): self.data[info] = value # write_data?
+	def set_info(self, value, info = info):
+		self.data[info] = value
+		# write_data?
 	setattr(AdventurePlayer, info, property(lambda self, info = info: self.data[info], set_info))
 
 for skill in skills:
-	def set_xp(self, value, skill = skill): self.data["xp"][skill] = value # write data?
+	def set_xp(self, value, skill = skill):
+		self.data["xp"][skill] = value
+		# write data?
 	setattr(AdventurePlayer, skill + "_xp", property(lambda self, skill = skill: self.data["xp"][skill], set_xp))
 	setattr(AdventurePlayer, skill + "_lvl", property(lambda self, skill = skill: xp_to_lvl(self.data["xp"][skill])))
 	setattr(AdventurePlayer, skill + "_rate", property(lambda self, skill = skill: xp_to_rate(self.data["xp"][skill])))
