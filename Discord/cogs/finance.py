@@ -29,17 +29,32 @@ class Finance:
 		To specify a currency, enter the three-character currency code (e.g. USD, GBP, EUR)
 		'''
 		if currency:
-			async with clients.aiohttp_session.get("https://api.coindesk.com/v1/bpi/currentprice/{}".format(currency)) as resp:
+			url = "https://api.coindesk.com/v1/bpi/currentprice/" + currency
+			async with clients.aiohttp_session.get(url) as resp:
 				if resp.status == 404:
 					error = await resp.text()
-					await ctx.embed_reply(":no_entry: Error: {}".format(error))
+					await ctx.embed_reply(":no_entry: Error: " + error)
 					return
 				data = await resp.json(content_type = "application/javascript")
-			await ctx.embed_reply("{0[code]} {0[rate]}\nPowered by [CoinDesk](https://www.coindesk.com/price/)".format(data["bpi"][currency.upper()]), title = data["bpi"][currency.upper()]["description"], footer_text = data["disclaimer"].rstrip('.') + ". Updated", timestamp = dateutil.parser.parse(data["time"]["updated"]))
+			currency_data = data["bpi"][currency.upper()]
+			title = currency_data["description"]
+			description = "{0[code]} {0[rate]}\n".format(currency_data)
+			fields = ()
 		else:
-			async with clients.aiohttp_session.get("https://api.coindesk.com/v1/bpi/currentprice.json") as resp:
+			url = "https://api.coindesk.com/v1/bpi/currentprice.json"
+			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json(content_type = "application/javascript")
-			await ctx.embed_reply("Powered by [CoinDesk](https://www.coindesk.com/price/)", title = data["chartName"], fields = [(data["bpi"][currency]["description"], "{0[code]} {1}{0[rate]}".format(data["bpi"][currency], html.unescape(data["bpi"][currency]["symbol"]))) for currency in data["bpi"]], footer_text = data["disclaimer"] + ". Updated", timestamp = dateutil.parser.parse(data["time"]["updated"]))
+			title = data["chartName"]
+			description = ""
+			fields = []
+			for currency in data["bpi"].values():
+				field_value = "{0[code]} {1}{0[rate]}".format(currency, html.unescape(currency["symbol"]))
+				fields.append((currency["description"], field_value))
+		description += "Powered by [CoinDesk](https://www.coindesk.com/price/)"
+		footer_text = data["disclaimer"].rstrip('.') + ". Updated"
+		timestamp = dateutil.parser.parse(data["time"]["updated"])
+		await ctx.embed_reply(description, title = title, fields = fields, 
+								footer_text = footer_text, timestamp = timestamp)
 	
 	@bitcoin.command(name = "currencies")
 	@checks.not_forbidden()
