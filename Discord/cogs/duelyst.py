@@ -22,8 +22,8 @@ class Duelyst:
 	@checks.not_forbidden()
 	async def card(self, ctx, *, name : str):
 		'''Details of a specific card'''
-		async with clients.aiohttp_session.get(
-		"https://duelyststats.info/scripts/carddata/get.php?cardName=" + name) as resp:
+		url = "https://duelyststats.info/scripts/carddata/get.php?cardName=" + name
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
