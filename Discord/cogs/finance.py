@@ -271,7 +271,7 @@ class Finance:
 	@checks.not_forbidden()
 	async def stock_quote(self, ctx, symbol : str):
 		'''WIP'''
-		url = "https://api.iextrading.com/1.0/stock/{}/quote".format(symbol)
+		url = f"https://api.iextrading.com/1.0/stock/{symbol}/quote"
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		description = data["companyName"] + "\nData provided for free by [IEX](https://iextrading.com/developer)."
