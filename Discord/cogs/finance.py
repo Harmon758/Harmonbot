@@ -247,7 +247,7 @@ class Finance:
 	@checks.not_forbidden()
 	async def stock_financials(self, ctx, symbol : str):
 		'''Income statement, balance sheet, and cash flow data from the most recent reported quarter'''
-		url = "https://api.iextrading.com/1.0/stock/{}/financials".format(symbol)
+		url = f"https://api.iextrading.com/1.0/stock/{symbol}/financials"
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		report = data["financials"][0]
@@ -262,9 +262,9 @@ class Finance:
 				# Replace And with & to fit Research And Development into field title nicely
 				field_title = field_title.replace("And", '&')
 				if isinstance(value, int):
-					value = "{:,}".format(value)
+					value = f"{value:,}"
 				fields.append((field_title, value))
-		footer_text = "Report Date: {}".format(report["reportDate"])
+		footer_text = "Report Date: " + report["reportDate"]
 		await ctx.embed_reply(title = data["symbol"], fields = fields, footer_text = footer_text)
 	
 	@stock.command(name = "quote")
