@@ -227,7 +227,7 @@ class Finance:
 	@checks.not_forbidden()
 	async def stock_earnings(self, ctx, symbol : str):
 		'''Earnings data from the most recent reported quarter'''
-		url = "https://api.iextrading.com/1.0/stock/{}/earnings".format(symbol)
+		url = f"https://api.iextrading.com/1.0/stock/{symbol}/earnings"
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		report = data["earnings"][0]
@@ -240,7 +240,7 @@ class Finance:
 				# Capitalize first letter
 				field_title = field_title[0].upper() + field_title[1:]
 				fields.append((field_title, value))
-		footer_text = "EPS Report Date: {}".format(report["EPSReportDate"])
+		footer_text = "EPS Report Date: " + report["EPSReportDate"]
 		await ctx.embed_reply(title = data["symbol"], fields = fields, footer_text = footer_text)
 	
 	@stock.command(name = "financials")
