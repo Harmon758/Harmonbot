@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import datetime
 import html
+import re
 
 import dateutil.parser
 import more_itertools
@@ -226,11 +227,21 @@ class Finance:
 	@checks.not_forbidden()
 	async def stock_earnings(self, ctx, symbol : str):
 		'''Earnings data from the most recent reported quarter'''
-		async with clients.aiohttp_session.get("https://api.iextrading.com/1.0/stock/{}/earnings".format(symbol)) as resp:
+		url = "https://api.iextrading.com/1.0/stock/{}/earnings".format(symbol)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		report = data["earnings"][0]
 		# TODO: paginate other reports
-		await ctx.embed_reply(title = data["symbol"], fields = [("".join(map(lambda c: c if c.islower() else ' ' + c, key)).title().replace("E P S", "EPS"), value) for key, value in report.items()if key != "EPSReportDate"], footer_text = "EPS Report Date: {}".format(report["EPSReportDate"]))
+		fields = []
+		for key, value in report.items():
+			if key != "EPSReportDate":
+				# Add spaces: l( )U and U( )Ul [l = lowercase, U = uppercase]
+				field_title = re.sub(r"([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", r'\1 ', key)
+				# Capitalize first letter
+				field_title = field_title[0].upper() + field_title[1:]
+				fields.append((field_title, value))
+		footer_text = "EPS Report Date: {}".format(report["EPSReportDate"])
+		await ctx.embed_reply(title = data["symbol"], fields = fields, footer_text = footer_text)
 	
 	@stock.command(name = "financials")
 	@checks.not_forbidden()
