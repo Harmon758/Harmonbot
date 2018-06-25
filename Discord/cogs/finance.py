@@ -208,11 +208,19 @@ class Finance:
 	@checks.not_forbidden()
 	async def stock_company(self, ctx, symbol : str):
 		'''Company Information'''
-		async with clients.aiohttp_session.get("https://api.iextrading.com/1.0/stock/{}/company".format(symbol)) as resp:
+		url = "https://api.iextrading.com/1.0/stock/{}/company".format(symbol)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		async with clients.aiohttp_session.get("https://api.iextrading.com/1.0/stock/{}/logo".format(symbol)) as resp:
+		url = "https://api.iextrading.com/1.0/stock/{}/logo".format(symbol)
+		async with clients.aiohttp_session.get(url) as resp:
 			logo_data = await resp.json()
-		await ctx.embed_reply("{0[description]}\nWebsite: {0[website]}\nData provided for free by [IEX](https://iextrading.com/developer).".format(data), title = "{0[companyName]} ({0[symbol]})".format(data), fields = (("Exchange", data["exchange"]), ("Industry", data["industry"]), ("CEO", data["CEO"])), thumbnail_url = logo_data.get("url", discord.Embed.Empty))
+		description = "{0[description]}\nWebsite: {0[website]}".format(data)
+		attribution = "\nData provided for free by [IEX](https://iextrading.com/developer)."
+		title = "{0[companyName]} ({0[symbol]})".format(data)
+		fields = (("Exchange", data["exchange"]), ("Industry", data["industry"]), ("CEO", data["CEO"]))
+		thumbnail_url = logo_data.get("url", discord.Embed.Empty)
+		await ctx.embed_reply(description + attribution, title = title, 
+								fields = fields, thumbnail_url = thumbnail_url)
 	
 	@stock.command(name = "earnings")
 	@checks.not_forbidden()
