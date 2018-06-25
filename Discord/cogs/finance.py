@@ -72,20 +72,31 @@ class Finance:
 		'''
 		Historical BPI
 		Date must be in YYYY-MM-DD format (Default is yesterday)
-		To specify a currency, enter the three-character currency code (e.g. USD, GBP, EUR) (Default is USD)
+		To specify a currency, enter the three-character currency code
+		(e.g. USD, GBP, EUR) (Default is USD)
 		'''
 		# TODO: date converter
 		if date:
 			params = {"start": date, "end": date}
-			if currency: params["currency"] = currency
-		else: params = {"for": "yesterday"}
-		async with clients.aiohttp_session.get("https://api.coindesk.com/v1/bpi/historical/close.json", params = params) as resp:
+			if currency:
+				params["currency"] = currency
+		else:
+			params = {"for": "yesterday"}
+		url = "https://api.coindesk.com/v1/bpi/historical/close.json"
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
 				error = await resp.text()
-				await ctx.embed_reply(":no_entry: Error: {}".format(error))
+				await ctx.embed_reply(":no_entry: Error: " + error)
 				return
 			data = await resp.json(content_type = "application/javascript")
-		await ctx.embed_reply("{}\nPowered by [CoinDesk](https://www.coindesk.com/price/)".format(data.get("bpi", {}).get(date, "N/A") if date else list(data["bpi"].values())[0]), footer_text = data["disclaimer"] + " Updated", timestamp = dateutil.parser.parse(data["time"]["updated"]))
+		if date:
+			description = str(data.get("bpi", {}).get(date, "N/A"))
+		else:
+			description = str(list(data["bpi"].values())[0])
+		description += "\nPowered by [CoinDesk](https://www.coindesk.com/price/)"
+		footer_text = data["disclaimer"] + " Updated"
+		timestamp = dateutil.parser.parse(data["time"]["updated"])
+		await ctx.embed_reply(description, footer_text = footer_text, timestamp = timestamp)
 	
 	@commands.group(aliases = ["exchange", "rates"], invoke_without_command = True)
 	@checks.not_forbidden()
