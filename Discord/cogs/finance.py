@@ -271,9 +271,17 @@ class Finance:
 	@checks.not_forbidden()
 	async def stock_quote(self, ctx, symbol : str):
 		'''WIP'''
-		async with clients.aiohttp_session.get("https://api.iextrading.com/1.0/stock/{}/quote".format(symbol)) as resp:
+		url = "https://api.iextrading.com/1.0/stock/{}/quote".format(symbol)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		fields = [("IEX Real-Time Price", data["iexRealtimePrice"])] if "iexRealtimePrice" in data else []
-		timestamp = datetime.datetime.utcfromtimestamp(data["iexLastUpdated"] / 1000) if data.get("iexLastUpdated") and data["iexLastUpdated"] != -1 else discord.Embed.Empty
-		await ctx.embed_reply("{}\nData provided for free by [IEX](https://iextrading.com/developer).".format(data["companyName"]), title = data["symbol"], fields = fields, footer_text = data["primaryExchange"], timestamp = timestamp)
+		description = data["companyName"] + "\nData provided for free by [IEX](https://iextrading.com/developer)."
+		fields = []
+		if "iexRealtimePrice" in data:
+			fields.append(("IEX Real-Time Price", data["iexRealtimePrice"]))
+		timestamp = discord.Embed.Empty
+		iex_last_updated = data.get("iexLastUpdated")
+		if iex_last_updated and iex_last_updated != -1:
+			timestamp = datetime.datetime.utcfromtimestamp(iex_last_updated / 1000)
+		await ctx.embed_reply(description, title = data["symbol"], fields = fields, 
+								footer_text = data["primaryExchange"], timestamp = timestamp)
 
