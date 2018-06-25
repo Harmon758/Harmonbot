@@ -247,11 +247,25 @@ class Finance:
 	@checks.not_forbidden()
 	async def stock_financials(self, ctx, symbol : str):
 		'''Income statement, balance sheet, and cash flow data from the most recent reported quarter'''
-		async with clients.aiohttp_session.get("https://api.iextrading.com/1.0/stock/{}/financials".format(symbol)) as resp:
+		url = "https://api.iextrading.com/1.0/stock/{}/financials".format(symbol)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		report = data["financials"][0]
 		# TODO: paginate other reports
-		await ctx.embed_reply(title = data["symbol"], fields = [("".join(map(lambda c: c if c.islower() else ' ' + c, key)).title().replace("And", '&'), "{:,}".format(value) if isinstance(value, int) else value) for key, value in report.items()if key != "reportDate"], footer_text = "Report Date: {}".format(report["reportDate"]))
+		fields = []
+		for key, value in report.items():
+			if key != "reportDate":
+				# Add spaces: l( )U and U( )Ul [l = lowercase, U = uppercase]
+				field_title = re.sub(r"([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", r'\1 ', key)
+				# Capitalize first letter
+				field_title = field_title[0].upper() + field_title[1:]
+				# Replace And with & to fit Research And Development into field title nicely
+				field_title = field_title.replace("And", '&')
+				if isinstance(value, int):
+					value = "{:,}".format(value)
+				fields.append((field_title, value))
+		footer_text = "Report Date: {}".format(report["reportDate"])
+		await ctx.embed_reply(title = data["symbol"], fields = fields, footer_text = footer_text)
 	
 	@stock.command(name = "quote")
 	@checks.not_forbidden()
