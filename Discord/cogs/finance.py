@@ -198,9 +198,11 @@ class Finance:
 		https://iextrading.com/api-exhibit-a
 		'''
 		# TODO: Add https://iextrading.com/api-exhibit-a to TOS
-		async with clients.aiohttp_session.get("https://api.iextrading.com/1.0/stock/{}/price".format(symbol)) as resp:
+		url = "https://api.iextrading.com/1.0/stock/{}/price".format(symbol)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.text()
-		await ctx.embed_reply("{}\nData provided for free by [IEX](https://iextrading.com/developer).".format(data))
+		attribution = "\nData provided for free by [IEX](https://iextrading.com/developer)."
+		await ctx.embed_reply(data + attribution)
 	
 	@stock.command(name = "company")
 	@checks.not_forbidden()
