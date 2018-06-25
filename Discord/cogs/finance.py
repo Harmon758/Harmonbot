@@ -208,15 +208,15 @@ class Finance:
 	@checks.not_forbidden()
 	async def stock_company(self, ctx, symbol : str):
 		'''Company Information'''
-		url = "https://api.iextrading.com/1.0/stock/{}/company".format(symbol)
+		url = f"https://api.iextrading.com/1.0/stock/{symbol}/company"
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		url = "https://api.iextrading.com/1.0/stock/{}/logo".format(symbol)
+		url = f"https://api.iextrading.com/1.0/stock/{symbol}/logo"
 		async with clients.aiohttp_session.get(url) as resp:
 			logo_data = await resp.json()
-		description = "{0[description]}\nWebsite: {0[website]}".format(data)
+		description = f"{data['description']}\nWebsite: {data['website']}"
 		attribution = "\nData provided for free by [IEX](https://iextrading.com/developer)."
-		title = "{0[companyName]} ({0[symbol]})".format(data)
+		title = f"{data['companyName']} ({data['symbol']})"
 		fields = (("Exchange", data["exchange"]), ("Industry", data["industry"]), ("CEO", data["CEO"]))
 		thumbnail_url = logo_data.get("url", discord.Embed.Empty)
 		await ctx.embed_reply(description + attribution, title = title, 
