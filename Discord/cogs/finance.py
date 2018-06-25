@@ -198,7 +198,7 @@ class Finance:
 		https://iextrading.com/api-exhibit-a
 		'''
 		# TODO: Add https://iextrading.com/api-exhibit-a to TOS
-		url = "https://api.iextrading.com/1.0/stock/{}/price".format(symbol)
+		url = f"https://api.iextrading.com/1.0/stock/{symbol}/price"
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		attribution = "\nData provided for free by [IEX](https://iextrading.com/developer)."
