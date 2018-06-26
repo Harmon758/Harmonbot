@@ -1,15 +1,16 @@
 
 from discord.ext import commands
 
+import hashlib
+import zlib
+
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
 from cryptography.hazmat.primitives import hashes as crypto_hashes
-import hashlib
 import pygost.gost28147
 import pygost.gost28147_mac
 import pygost.gost34112012
 import pygost.gost341194
 import pygost.gost3412
-import zlib
 
 import clients
 from modules import ciphers
