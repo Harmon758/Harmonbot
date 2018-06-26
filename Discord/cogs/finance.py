@@ -183,15 +183,17 @@ class Finance:
 			parts = max(parts, 3)
 		rates_parts = more_itertools.divide(parts, rates)
 		tabulated_rates = tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')
-		fields = [("Currency Rates", clients.code_block.format(tabulated_rates))]
+		field_title = "Currency " + clients.inflect_engine.plural("Rate", len(rates))
+		fields = [(field_title, clients.code_block.format(tabulated_rates))]
 		for rates_part in rates_parts[1:]:
 			tabulated_rates = tabulate.tabulate(rates_part, tablefmt = "plain", floatfmt = 'f')
 			fields.append((ctx.bot.ZERO_WIDTH_SPACE, clients.code_block.format(tabulated_rates)))
 			# Zero-width space for empty field title
 		# TODO: paginate
+		footer_text = clients.inflect_engine.plural("Rate", len(rates)) + " from"
 		timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"])
 		await ctx.embed_reply(title = f"Against {data['base']}", fields = fields, 
-								footer_text = "Rates from", timestamp = timestamp)
+								footer_text = footer_text, timestamp = timestamp)
 	
 	# TODO: Handle ServerDisconnectedError ?
 	@commands.group(aliases = ["stocks"], description = "Data provided for free by [IEX](https://iextrading.com/developer).", invoke_without_command = True)
