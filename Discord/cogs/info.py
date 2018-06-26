@@ -87,7 +87,7 @@ class Info:
 		# TODO: Add system channel
 		if server.emojis:
 			emojis = [str(emoji) for emoji in server.emojis]
-			if len(' '.join(emojis)) <= 1024:
+			if len(' '.join(emojis)) <= ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT:
 				embed.add_field(name = "Emojis", value = ' '.join(emojis), inline = False)
 			else:
 				embed.add_field(name = "Emojis", value = ' '.join(emojis[:len(emojis) // 2]), inline = False)
