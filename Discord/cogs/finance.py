@@ -149,7 +149,7 @@ class Finance:
 		# TODO: use embed field limit constant
 		symbols_parts = more_itertools.divide(parts, symbols)
 		tabulated_symbols = tabulate.tabulate(symbols_parts[0], tablefmt = "plain")
-		fields = [('Currency Symbols', clients.code_block.format(tabulated_symbols))]
+		fields = [("Currency Symbols", clients.code_block.format(tabulated_symbols))]
 		for symbols_part in symbols_parts[1:]:
 			tabulated_symbols = tabulate.tabulate(symbols_part, tablefmt = "plain")
 			fields.append((ctx.bot.ZWS, clients.code_block.format(tabulated_symbols)))
@@ -181,7 +181,7 @@ class Finance:
 		parts = max(parts, 3)
 		rates_parts = more_itertools.divide(parts, rates)
 		tabulated_rates = tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')
-		fields = [('Currency Rates', clients.code_block.format(tabulated_rates))]
+		fields = [("Currency Rates", clients.code_block.format(tabulated_rates))]
 		for rates_part in rates_parts[1:]:
 			tabulated_rates = tabulate.tabulate(rates_part, tablefmt = "plain", floatfmt = 'f')
 			fields.append((ctx.bot.ZWS, clients.code_block.format(tabulated_rates)))
