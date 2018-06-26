@@ -145,8 +145,8 @@ class Finance:
 			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
 			return
 		symbols = list(data["symbols"].items())
-		parts = len(tabulate.tabulate(symbols, tablefmt = "plain")) // 1024 + 1
-		# TODO: use embed field limit constant
+		parts = len(tabulate.tabulate(symbols, tablefmt = "plain")) // ctx.bot.EFVCL + 1
+		# EFVCL = Embed Field Value Character Limit
 		symbols_parts = more_itertools.divide(parts, symbols)
 		tabulated_symbols = tabulate.tabulate(symbols_parts[0], tablefmt = "plain")
 		fields = [("Currency Symbols", clients.code_block.format(tabulated_symbols))]
@@ -176,8 +176,8 @@ class Finance:
 			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
 			return
 		rates = list(data["rates"].items())
-		parts = len(tabulate.tabulate(rates, tablefmt = "plain", floatfmt = 'f')) // 1024 + 1
-		# TODO: use embed field limit constant
+		parts = len(tabulate.tabulate(rates, tablefmt = "plain", floatfmt = 'f')) // ctx.bot.EFVCL + 1
+		# EFVCL = Embed Field Value Character Limit
 		parts = max(parts, 3)
 		rates_parts = more_itertools.divide(parts, rates)
 		tabulated_rates = tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')
