@@ -71,6 +71,8 @@ class Bot(commands.Bot):
 		self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
 		self.dark_theme_background_color = 0x36393e
 		self.white_color = 0xffffff
+		## Constant
+		self.ZERO_WIDTH_SPACE = self.ZWSP = self.ZWS = '\N{ZERO WIDTH SPACE}'
 		## Functional
 		self.delete_limit = 10000
 		
