@@ -161,8 +161,9 @@ class Cryptography:
 			await ctx.embed_reply(":no_entry: Error: {}".format(data[0]["symbol"][0]["error"]))
 			return
 		decoded = data[0]["symbol"][0]["data"].replace("QR-Code:", "")
-		if len(decoded) > 1024:
-			await ctx.embed_reply(decoded[:1021] + "...", footer_text = "Decoded message exceeded character limit")
+		if len(decoded) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+			await ctx.embed_reply(decoded[:ctx.bot.EDCL - 3] + "...", footer_text = "Decoded message exceeded character limit")
+			# EDCL: Embed Description Character Limit
 			return
 		await ctx.embed_reply(decoded)
 	
