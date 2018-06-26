@@ -152,7 +152,7 @@ class Finance:
 		fields = [('Currency Symbols', clients.code_block.format(tabulated_symbols))]
 		for symbols_part in symbols_parts[1:]:
 			tabulated_symbols = tabulate.tabulate(symbols_part, tablefmt = "plain")
-			fields.append(('Continued', clients.code_block.format(tabulated_symbols)))
+			fields.append((ctx.bot.ZWS, clients.code_block.format(tabulated_symbols)))
 		# TODO: paginate
 		await ctx.embed_reply(fields = fields)
 	
@@ -184,7 +184,7 @@ class Finance:
 		fields = [('Currency Rates', clients.code_block.format(tabulated_rates))]
 		for rates_part in rates_parts[1:]:
 			tabulated_rates = tabulate.tabulate(rates_part, tablefmt = "plain", floatfmt = 'f')
-			fields.append(('Continued', clients.code_block.format(tabulated_rates)))
+			fields.append((ctx.bot.ZWS, clients.code_block.format(tabulated_rates)))
 		# TODO: paginate
 		timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"])
 		await ctx.embed_reply(title = f"Against {data['base']}", fields = fields, 
