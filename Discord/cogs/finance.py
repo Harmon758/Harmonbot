@@ -179,7 +179,8 @@ class Finance:
 		rates = list(data["rates"].items())
 		parts = len(tabulate.tabulate(rates, tablefmt = "plain", floatfmt = 'f')) // ctx.bot.EFVCL + 1
 		# EFVCL = Embed Field Value Character Limit
-		parts = max(parts, 3)
+		if len(rates) >= 3:
+			parts = max(parts, 3)
 		rates_parts = more_itertools.divide(parts, rates)
 		tabulated_rates = tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')
 		fields = [("Currency Rates", clients.code_block.format(tabulated_rates))]
