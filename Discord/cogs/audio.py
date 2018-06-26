@@ -54,7 +54,9 @@ class Audio:
 			title, url = await self.players[ctx.guild.id].add_song(song, ctx.author, ctx.message.created_at, stream = stream)
 		except Exception as e:
 			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
-			if len(embed.description) > 2048: embed.description = embed.description[:2044] + "...`"
+			if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+				embed.description = embed.description[:ctx.bot.EDCL - 4] + "...`"
+				# EDCL: Embed Description Character Limit
 		else:
 			embed.title = title
 			embed.url = url
