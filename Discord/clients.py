@@ -73,6 +73,8 @@ class Bot(commands.Bot):
 		self.white_color = 0xffffff
 		## Constant
 		self.ZERO_WIDTH_SPACE = self.ZWSP = self.ZWS = '\N{ZERO WIDTH SPACE}'
+		### Discord
+		self.EMBED_FIELD_VALUE_CHARACTER_LIMIT = self.EMBED_FIELD_VALUE_CHAR_LIMIT = self.EFVCL = 1024
 		## Functional
 		self.delete_limit = 10000
 		
