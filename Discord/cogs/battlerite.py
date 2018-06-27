@@ -54,7 +54,7 @@ class Battlerite:
 		with open(clients.data_path + "/battlerite/stackables.json", 'r') as stackables_file:
 			stackables = json.load(stackables_file)
 		localization = {}
-		with open(clients.data_path + "/battlerite/English.ini", 'r') as localization_file:
+		with open(clients.data_path + "/battlerite/English.ini", 'r', encoding = "UTF-8") as localization_file:
 			for line in localization_file:
 				id_name = line.strip().split('=', maxsplit = 1)
 				localization[id_name[0]] = id_name[1]
