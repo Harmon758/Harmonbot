@@ -18,30 +18,49 @@ class Battlerite:
 	def __init__(self, bot):
 		self.bot = bot
 		
-		if os.path.isfile(clients.data_path + "/battlerite/mappings.json"):
-			with open(clients.data_path + "/battlerite/mappings.json", 'r') as mappings_file:
-				self.mappings = json.load(mappings_file)
-		else:
-			# TODO: check if files exist, handle if not, get files dynamically?
-			with open(clients.data_path + "/battlerite/stackables.json", 'r') as stackables_file:
-				stackables = json.load(stackables_file)
-			localization = {}
-			with open(clients.data_path + "/battlerite/English.ini", 'r') as localization_file:
-				for line in localization_file:
-					id_name = line.strip().split('=', maxsplit = 1)
-					localization[id_name[0]] = id_name[1]
-			self.mappings = {}
-			for item in stackables["Mappings"]:
-				self.mappings[str(item["StackableId"])] = {"Name": localization[item["LocalizedName"]] if item["LocalizedName"] else item["DevName"], "Type": item["StackableRangeName"]}
-			with open(clients.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
-				json.dump(self.mappings, mappings_file, indent = 4)
-		
 		# TODO: Wait until ready
 		
 		# TODO: Check only within Emoji Server emojis?
 		for champion in ("alysia", "ashka", "bakko", "blossom", "croak", "destiny", "ezmo", "freya", "iva", "jade", "jumong", "lucie", "oldur", "pearl", "pestilus", "poloma", "raigon", "rook", "ruh_kaan", "shifu", "sirius", "taya", "thorn", "varesh", "zander"):
 			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
 		# TODO: Get champion names dynamically?
+		
+		self.bot.loop.create_task(self.load_mappings())
+	
+	async def load_mappings(self):
+		clients.create_folder(clients.data_path + "/battlerite")
+		if os.path.isfile(clients.data_path + "/battlerite/mappings.json"):
+			with open(clients.data_path + "/battlerite/mappings.json", 'r') as mappings_file:
+				self.mappings = json.load(mappings_file)
+			return
+		if not os.path.isfile(clients.data_path + "/battlerite/stackables.json"):
+			# TODO: get revision dynamically?
+			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
+					"40703/stackables.json")
+			async with clients.aiohttp_session.get(url) as resp:
+				data = await resp.content.read()
+			with open(clients.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
+				stackables_file.write(data)
+		if not os.path.isfile(clients.data_path + "/battlerite/English.ini"):
+			# TODO: get revision dynamically?
+			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
+					"40703/Localization/English.ini")
+			async with clients.aiohttp_session.get(url) as resp:
+				data = await resp.content.read()
+			with open(clients.data_path + "/battlerite/English.ini", "wb") as localization_file:
+				localization_file.write(data)
+		with open(clients.data_path + "/battlerite/stackables.json", 'r') as stackables_file:
+			stackables = json.load(stackables_file)
+		localization = {}
+		with open(clients.data_path + "/battlerite/English.ini", 'r') as localization_file:
+			for line in localization_file:
+				id_name = line.strip().split('=', maxsplit = 1)
+				localization[id_name[0]] = id_name[1]
+		self.mappings = {}
+		for item in stackables["Mappings"]:
+			self.mappings[str(item["StackableId"])] = {"Name": localization[item["LocalizedName"]] if item["LocalizedName"] else item["DevName"], "Type": item["StackableRangeName"]}
+		with open(clients.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
+			json.dump(self.mappings, mappings_file, indent = 4)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
