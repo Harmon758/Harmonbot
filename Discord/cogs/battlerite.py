@@ -53,7 +53,7 @@ class Battlerite:
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	async def get_player(self, player):
-		async with clients.aiohttp_session.get("https://api.dc01.gamelockerapp.com/shards/global/players", headers = {"Authorization": credentials.battlerite_api_key, "Accept": "application/vnd.api+json"}, params = {"filter[playerNames]": player}) as resp:
+		async with clients.aiohttp_session.get("https://api.developer.battlerite.com/shards/global/players", headers = {"Authorization": credentials.battlerite_api_key, "Accept": "application/vnd.api+json"}, params = {"filter[playerNames]": player}) as resp:
 			data = await resp.json()
 		return(next(iter(data["data"]), None))
 	# TODO: optimize modularization?
