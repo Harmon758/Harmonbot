@@ -40,16 +40,16 @@ def message_is_digit_gtz(m):
 def is_digit_gtz(s):
 	return s.isdigit() and s != '0'
 
-def secs_to_duration(secs):
+def secs_to_duration(secs, limit = 0):
 	duration = []
 	time_in_secs = [31536000, 604800, 86400, 3600, 60]
 	# years, weeks, days, hours, minutes
 	for length_of_time in time_in_secs:
-		if secs > length_of_time:
+		if (limit and length_of_time > limit) or secs < length_of_time:
+			duration.append(0)
+		else:
 			duration.append(int(math.floor(secs / length_of_time)))
 			secs -= math.floor(secs / length_of_time) * length_of_time
-		else:
-			duration.append(0)
 	duration.append(int(secs))
 	return duration
 
@@ -59,11 +59,11 @@ def duration_to_letter_format(duration):
 def duration_to_colon_format(duration):
 	return ':'.join([str(unit).rjust(2, '0') if unit else "00" for unit in duration]).lstrip("0:").rjust(2, '0').rjust(3, ':').rjust(4, '0')
 
-def secs_to_letter_format(secs):
-	return duration_to_letter_format(secs_to_duration(secs))
+def secs_to_letter_format(secs, limit = 0):
+	return duration_to_letter_format(secs_to_duration(secs, limit = limit))
 
-def secs_to_colon_format(secs):
-	return duration_to_colon_format(secs_to_duration(secs))
+def secs_to_colon_format(secs, limit = 0):
+	return duration_to_colon_format(secs_to_duration(secs, limit = limit))
 
 def add_commas(number):
 	try:
