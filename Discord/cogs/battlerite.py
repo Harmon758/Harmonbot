@@ -128,7 +128,8 @@ class Battlerite:
 		wins = stats.get("18", 0)
 		losses = stats.get("19", 0)
 		fields = [("Brawl Wins", wins), ("Brawl Losses", losses)]
-		if wins + losses != 0: fields.append(("Brawl Winrate", "{:.2f}%".format(wins / (wins + losses) * 100)))
+		if wins + losses:
+			fields.append(("Brawl Winrate", "{:.2f}%".format(wins / (wins + losses) * 100)))
 		await ctx.embed_reply("ID: {}".format(data["id"]), title = data["attributes"]["name"], fields = fields)
 	
 	@player.group(name = "casual", aliases = ["unranked"])
