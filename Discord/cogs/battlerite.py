@@ -96,23 +96,23 @@ class Battlerite:
 		'''
 		for stat, value in stats.items():
 			if stat in self.mappings:
-				print("{0[Name]} {0[Type]} ({1}): {2}".format(self.mappings[stat], stat, value))
+				print(f"{self.mappings[stat]['Name']} {self.mappings[stat]['Type']} ({stat}): {value}")
 			else:
-				print("Missing Mapping ({}): {}".format(stat, value))
+				print(f"Missing Mapping ({stat}): {value}")
 		'''
-		fields = (("Account Level", stats["26"]), ("Account XP", "{:,}".format(stats["25"])), 
+		fields = (("Account Level", stats["26"]), ("Account XP", f"{stats['25']:,}"), 
 					("Time Played", utilities.secs_to_letter_format(stats['8'], limit = 3600)), 
 					("Wins", stats['2']), ("Losses", stats['3']), 
-					("Winrate", "{:.2f}%".format(stats['2'] / (stats['2'] + stats['3']) * 100)), 
-					("Ranked 2v2 Wins - Losses (Winrate)", "{} - {} ({:.2f}%)".format(
-						stats["14"], stats["15"], stats["14"] / (stats["14"] + stats["15"]) * 100)), 
-					("Ranked 3v3 Wins - Losses (Winrate)", "{} - {} ({:.2f}%)".format(
-						stats["16"], stats["17"], stats["16"] / (stats["16"] + stats["17"]) * 100)), 
-					("Casual 2v2 Wins - Losses (Winrate)", "{} - {} ({:.2f}%)".format(
-						stats["10"], stats["11"], stats["10"] / (stats["10"] + stats["11"]) * 100)), 
-					("Casual 3v3 Wins - Losses (Winrate)", "{} - {} ({:.2f}%)".format(
-						stats["12"], stats["13"], stats["12"] / (stats["12"] + stats["13"]) * 100)))
-		await ctx.embed_reply("ID: {}".format(data["id"]), title = data["attributes"]["name"], fields = fields)
+					("Winrate", f"{stats['2'] / (stats['2'] + stats['3']) * 100:.2f}%"), 
+					("Ranked 2v2 Wins - Losses (Winrate)", 
+						f"{stats['14']} - {stats['15']} ({stats['14'] / (stats['14'] + stats['15']) * 100:.2f}%)"), 
+					("Ranked 3v3 Wins - Losses (Winrate)", 
+						f"{stats['16']} - {stats['17']} ({stats['16'] / (stats['16'] + stats['17']) * 100:.2f}%)"), 
+					("Casual 2v2 Wins - Losses (Winrate)", 
+						f"{stats['10']} - {stats['11']} ({stats['10'] / (stats['10'] + stats['11']) * 100:.2f}%)"), 
+					("Casual 3v3 Wins - Losses (Winrate)", 
+						f"{stats['12']} - {stats['13']} ({stats['12'] / (stats['12'] + stats['13']) * 100:.2f}%)"))
+		await ctx.embed_reply(f"ID: {data['id']}"), title = data["attributes"]["name"], fields = fields)
 		# TODO: get values safely + handle division by zero
 		# TODO: get values by type name
 	
