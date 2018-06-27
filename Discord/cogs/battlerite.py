@@ -147,7 +147,7 @@ class Battlerite:
 		losses_3v3 = stats.get("13", 0)
 		fields = [("Casual 2v2 Wins", wins_2v2), ("Casual 2v2 Losses", losses_2v2)]
 		if wins_2v2 + losses_2v2:
-			fields.append((f"Casual 2v2 Winrate", "{wins_2v2 / (wins_2v2 + losses_2v2) * 100:.2f}%"))
+			fields.append(("Casual 2v2 Winrate", f"{wins_2v2 / (wins_2v2 + losses_2v2) * 100:.2f}%"))
 		elif wins_3v3 + losses_3v3:
 			fields.append(("Casual 2v2 Winrate", "N/A"))
 		fields.extend((("Casual 3v3 Wins", wins_3v3), ("Casual 3v3 Losses", losses_3v3)))
