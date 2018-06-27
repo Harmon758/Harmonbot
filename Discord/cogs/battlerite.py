@@ -146,11 +146,15 @@ class Battlerite:
 		wins_3v3 = stats.get("12", 0)
 		losses_3v3 = stats.get("13", 0)
 		fields = [("Casual 2v2 Wins", wins_2v2), ("Casual 2v2 Losses", losses_2v2)]
-		if wins_2v2 + losses_2v2 != 0: fields.append(("Casual 2v2 Winrate", "{:.2f}%".format(wins_2v2 / (wins_2v2 + losses_2v2) * 100)))
-		elif wins_3v3 + losses_3v3 != 0: fields.append(("Casual 2v2 Winrate", "N/A"))
+		if wins_2v2 + losses_2v2:
+			fields.append(("Casual 2v2 Winrate", "{:.2f}%".format(wins_2v2 / (wins_2v2 + losses_2v2) * 100)))
+		elif wins_3v3 + losses_3v3:
+			fields.append(("Casual 2v2 Winrate", "N/A"))
 		fields.extend((("Casual 3v3 Wins", wins_3v3), ("Casual 3v3 Losses", losses_3v3)))
-		if wins_3v3 + losses_3v3 != 0: fields.append(("Casual 3v3 Winrate", "{:.2f}%".format(wins_3v3 / (wins_3v3 + losses_3v3) * 100)))
-		elif wins_2v2 + losses_2v2 != 0: fields.append(("Casual 3v3 Winrate", "N/A"))
+		if wins_3v3 + losses_3v3:
+			fields.append(("Casual 3v3 Winrate", "{:.2f}%".format(wins_3v3 / (wins_3v3 + losses_3v3) * 100)))
+		elif wins_2v2 + losses_2v2:
+			fields.append(("Casual 3v3 Winrate", "N/A"))
 		await ctx.embed_reply("ID: {}".format(data["id"]), title = data["attributes"]["name"], fields = fields)
 	
 	@player_casual.command(name = "2v2", aliases = ['2'])
