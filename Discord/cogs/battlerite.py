@@ -152,7 +152,7 @@ class Battlerite:
 			fields.append(("Casual 2v2 Winrate", "N/A"))
 		fields.extend((("Casual 3v3 Wins", wins_3v3), ("Casual 3v3 Losses", losses_3v3)))
 		if wins_3v3 + losses_3v3:
-			fields.append((f"Casual 3v3 Winrate", "{wins_3v3 / (wins_3v3 + losses_3v3) * 100:.2f}%"))
+			fields.append(("Casual 3v3 Winrate", f"{wins_3v3 / (wins_3v3 + losses_3v3) * 100:.2f}%"))
 		elif wins_2v2 + losses_2v2:
 			fields.append(("Casual 3v3 Winrate", "N/A"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
