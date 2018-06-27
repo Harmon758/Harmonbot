@@ -58,7 +58,11 @@ class Battlerite:
 				localization[id_name[0]] = id_name[1]
 		self.mappings = {}
 		for item in stackables["Mappings"]:
-			self.mappings[str(item["StackableId"])] = {"Name": localization[item["LocalizedName"]] if item["LocalizedName"] else item["DevName"], "Type": item["StackableRangeName"]}
+			if item["LocalizedName"]:
+				name = localization[item["LocalizedName"]]
+			else:
+				name = item["DevName"]
+			self.mappings[str(item["StackableId"])] = {"Name": name, "Type": item["StackableRangeName"]}
 		with open(clients.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
 			json.dump(self.mappings, mappings_file, indent = 4)
 	
