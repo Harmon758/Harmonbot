@@ -112,7 +112,7 @@ class Battlerite:
 						f"{stats['10']} - {stats['11']} ({stats['10'] / (stats['10'] + stats['11']) * 100:.2f}%)"), 
 					("Casual 3v3 Wins - Losses (Winrate)", 
 						f"{stats['12']} - {stats['13']} ({stats['12'] / (stats['12'] + stats['13']) * 100:.2f}%)"))
-		await ctx.embed_reply(f"ID: {data['id']}"), title = data["attributes"]["name"], fields = fields)
+		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 		# TODO: get values safely + handle division by zero
 		# TODO: get values by type name
 	
