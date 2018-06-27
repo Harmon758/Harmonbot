@@ -35,16 +35,18 @@ class Battlerite:
 			return
 		if not os.path.isfile(clients.data_path + "/battlerite/stackables.json"):
 			# TODO: get revision dynamically?
+			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"40703/stackables.json")
+					"47438/stackables.json")
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(clients.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
 				stackables_file.write(data)
 		if not os.path.isfile(clients.data_path + "/battlerite/English.ini"):
 			# TODO: get revision dynamically?
+			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"40703/Localization/English.ini")
+					"47438/Localization/English.ini")
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(clients.data_path + "/battlerite/English.ini", "wb") as localization_file:
@@ -71,7 +73,7 @@ class Battlerite:
 	async def battlerite(self, ctx):
 		'''
 		Battlerite
-		Using revision 40703 mappings
+		Using revision 47438 mappings
 		'''
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
