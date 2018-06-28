@@ -257,7 +257,9 @@ class Battlerite:
 			await ctx.embed_reply(":no_entry: Error: Player not found")
 			return
 		stats = data["attributes"]["stats"]
-		fields = [("Total Wins - Losses (Winrate)", "{} - {} ({:.2f}%)".format(stats['2'], stats['3'], stats['2'] / (stats['2'] + stats['3']) * 100), False)]
+		field_value = "{} - {} ({:.2f}%)".format(stats['2'], stats['3'], stats['2'] / (stats['2'] + stats['3']) * 100)
+		# TODO: Handle division by 0
+		fields = [("Total Wins - Losses (Winrate)", field_value, False)]
 		wins = {}
 		losses = {}
 		for stat, value in stats.items():
@@ -266,8 +268,12 @@ class Battlerite:
 			elif self.mappings.get(stat, {}).get("Type") == "CharacterLosses":
 				losses[self.mappings[stat]["Name"]] = value
 		wins = sorted(wins.items(), key = lambda x: losses.get(x[0], 0) + x[1], reverse = True)
+		# TODO: Handle character with losses and no wins
 		for name, value in wins:
-			fields.append(("{} {}".format(getattr(self, name.lower().replace(' ', '_') + "_emoji", ""), name), "{} - {} ({:.2f}%)".format(value, losses.get(name, 0), value / (value + losses.get(name, 0)) * 100)))
+			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
+			field_value = "{} - {} ({:.2f}%)".format(value, losses.get(name, 0), value / (value + losses.get(name, 0)) * 100)
+			# TODO: Handle division by 0
+			fields.append(("{} {}".format(emoji, name), field_value))
 		await ctx.embed_reply("ID: {}".format(data["id"]), title = data["attributes"]["name"], fields = fields)
 	
 	# TODO: dynamic? champion commands
