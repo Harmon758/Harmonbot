@@ -180,13 +180,14 @@ class Battlerite:
 		levels = {}
 		xp = {}
 		for stat, value in stats.items():
-			if self.mappings.get(stat, {}).get("Type") == "Level" and stat != "40040": # != Random Champion
+			if self.mappings.get(stat, {}).get("Type") == "Level" and stat != "40040":  # != Random Champion
 				levels[self.mappings[stat]["Name"]] = value
 			elif self.mappings.get(stat, {}).get("Type") == "XP":
 				xp[self.mappings[stat]["Name"]] = value
 		xp = sorted(xp.items(), key = lambda x: x[1], reverse = True)
 		for name, value in xp:
-			fields.append(("{} {}".format(getattr(self, name.lower().replace(' ', '_') + "_emoji", ""), name), "{} ({:,} XP)".format(levels[name], value)))
+			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
+			fields.append(("{} {}".format(emoji, name), "{} ({:,} XP)".format(levels[name], value)))
 		await ctx.embed_reply("ID: {}".format(data["id"]), title = data["attributes"]["name"], fields = fields)
 	
 	@player.group(name = "ranked", aliases = ["comp", "competitive", "league"])
