@@ -238,11 +238,12 @@ class Battlerite:
 		fields = [("Total Time Played", utilities.secs_to_letter_format(stats['8'], limit = 3600), False)]
 		time_played = {}
 		for stat, value in stats.items():
-			if self.mappings.get(stat, {}).get("Type") == "CharacterTimePlayed" and stat != "16040": # != Random Champion
+			if self.mappings.get(stat, {}).get("Type") == "CharacterTimePlayed" and stat != "16040":  # != Random Champion
 				time_played[self.mappings[stat]["Name"]] = value
 		time_played = sorted(time_played.items(), key = lambda x: x[1], reverse = True)
 		for name, value in time_played:
-			fields.append(("{} {}".format(getattr(self, name.lower().replace(' ', '_') + "_emoji", ""), name), utilities.secs_to_letter_format(value, limit = 3600)))
+			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
+			fields.append(("{} {}".format(emoji, name), utilities.secs_to_letter_format(value, limit = 3600)))
 		await ctx.embed_reply("ID: {}".format(data["id"]), title = data["attributes"]["name"], fields = fields)
 	
 	@player.command(name = "wins", aliases = ["losses"])
