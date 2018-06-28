@@ -176,7 +176,7 @@ class Battlerite:
 			await ctx.embed_reply(":no_entry: Error: Player not found")
 			return
 		stats = data["attributes"]["stats"]
-		fields = [("Account Level", "{} ({:,} XP)".format(stats["26"], stats["25"]), False)]
+		fields = [("Account Level", f"{stats['26']} ({stats['25']:,} XP)", False)]
 		levels = {}
 		xp = {}
 		for stat, value in stats.items():
@@ -187,8 +187,8 @@ class Battlerite:
 		xp = sorted(xp.items(), key = lambda x: x[1], reverse = True)
 		for name, value in xp:
 			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
-			fields.append(("{} {}".format(emoji, name), "{} ({:,} XP)".format(levels[name], value)))
-		await ctx.embed_reply("ID: {}".format(data["id"]), title = data["attributes"]["name"], fields = fields)
+			fields.append((f"{emoji} {name}", f"{levels[name]} ({value:,} XP)"))
+		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@player.group(name = "ranked", aliases = ["comp", "competitive", "league"])
 	@checks.not_forbidden()
