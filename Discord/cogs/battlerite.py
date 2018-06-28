@@ -243,8 +243,8 @@ class Battlerite:
 		time_played = sorted(time_played.items(), key = lambda x: x[1], reverse = True)
 		for name, value in time_played:
 			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
-			fields.append(("{} {}".format(emoji, name), utilities.secs_to_letter_format(value, limit = 3600)))
-		await ctx.embed_reply("ID: {}".format(data["id"]), title = data["attributes"]["name"], fields = fields)
+			fields.append((f"{emoji} {name}", utilities.secs_to_letter_format(value, limit = 3600)))
+		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@player.command(name = "wins", aliases = ["losses"])
 	@checks.not_forbidden()
