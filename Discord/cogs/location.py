@@ -252,15 +252,16 @@ class Location:
 		wind = weather.get_wind()
 		pressure = weather.get_pressure()["press"]
 		visibility = weather.get_visibility_distance()
-		embed = discord.Embed(description = "**__{}__**".format(location.get_name()), color = clients.bot_color, timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None))
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		embed.add_field(name = "Conditions", value = "{}{}".format(condition, emote))
-		embed.add_field(name = "Temperature", value = "{}°C\n{}°F".format(weather.get_temperature(unit = "celsius")["temp"], weather.get_temperature(unit = "fahrenheit")["temp"]))
-		embed.add_field(name = "Wind", value = "{0} {1:.2f} km/h\n{0} {2:.2f} mi/h".format(self.wind_degrees_to_direction(wind["deg"]), wind["speed"] * 3.6, wind["speed"] * 2.236936))
-		embed.add_field(name = "Humidity", value = "{}%".format(weather.get_humidity()))
-		embed.add_field(name = "Pressure", value = "{} mb (hPa)\n{:.2f} inHg".format(pressure, pressure * 0.0295299830714))
-		if visibility: embed.add_field(name = "Visibility", value = "{:.2f} km\n{:.2f} mi".format(visibility / 1000, visibility * 0.000621371192237))
-		await ctx.send(embed = embed)
+		description = "**__{}__**".format(location.get_name())
+		timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None)
+		fields = []
+		fields.append(("Conditions", "{}{}".format(condition, emote)))
+		fields.append(("Temperature", "{}°C\n{}°F".format(weather.get_temperature(unit = "celsius")["temp"], weather.get_temperature(unit = "fahrenheit")["temp"])))
+		fields.append(("Wind", "{0} {1:.2f} km/h\n{0} {2:.2f} mi/h".format(self.wind_degrees_to_direction(wind["deg"]), wind["speed"] * 3.6, wind["speed"] * 2.236936)))
+		fields.append(("Humidity", "{}%".format(weather.get_humidity())))
+		fields.append(("Pressure", "{} mb (hPa)\n{:.2f} inHg".format(pressure, pressure * 0.0295299830714)))
+		if visibility: fields.append(("Visibility", "{:.2f} km\n{:.2f} mi".format(visibility / 1000, visibility * 0.000621371192237)))
+		await ctx.embed_reply(description, fields = fields, timestamp = timestamp)
 	
 	def wind_degrees_to_direction(self, degrees):
 		# http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
