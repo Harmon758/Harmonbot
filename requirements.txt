@@ -31,7 +31,7 @@ speechrecognition==3.8.1
 sympy==1.1.1
 tabulate==0.8.2
 # tweepy==3.6.0
-git+git://github.com/tweepy/tweepy.git@e6616fe
+git+git://github.com/tweepy/tweepy.git@e6616fe#egg=tweepy
 unicodedata2==10.0.0.post2
 wand==0.4.4
 wolframalpha==3.0.1
@@ -68,7 +68,7 @@ requests-oauthlib==1.0.0
 six==1.11.0
 urllib3==1.23
 # websockets==5.0.1
-git+git://github.com/aaugustin/websockets.git@39b050f
+git+git://github.com/aaugustin/websockets.git@39b050f#egg=websockets
 xmltodict==0.11.0
 yarl==1.2.6
 
