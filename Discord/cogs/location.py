@@ -209,7 +209,8 @@ class Location:
 		geocode_data = geocode_data["results"][0]
 		current_utc_timestamp = datetime.datetime.utcnow().timestamp()
 		url = "https://maps.googleapis.com/maps/api/timezone/json"
-		params = {"location": f"{geocode_data['geometry']['location']['lat']},{geocode_data['geometry']['location']['lng']}", 
+		params = {"location": (f"{geocode_data['geometry']['location']['lat']},"
+								f"{geocode_data['geometry']['location']['lng']}"), 
 					"timestamp": str(current_utc_timestamp), "key": credentials.google_apikey}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			timezone_data = await resp.json()
@@ -223,7 +224,8 @@ class Location:
 		location_timestamp = current_utc_timestamp + timezone_data["dstOffset"] + timezone_data["rawOffset"]
 		location_time = datetime.datetime.fromtimestamp(location_timestamp)
 		title = "Time at " + geocode_data["formatted_address"]
-		description = f"{location_time.strftime('%I:%M:%S %p').lstrip('0')}\n{location_time.strftime('%Y-%m-%d %A')}"
+		description = (f"{location_time.strftime('%I:%M:%S %p').lstrip('0')}\n"
+						f"{location_time.strftime('%Y-%m-%d %A')}")
 		fields = (("Timezone", f"{timezone_data['timeZoneName']}\n{timezone_data['timeZoneId']}"),)
 		await ctx.embed_reply(description, title = title, fields = fields)
 	
