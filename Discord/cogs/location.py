@@ -149,7 +149,7 @@ class Location:
 	async def geocode_reverse(self, ctx, latitude : float, longitude : float):
 		'''Convert geographic coordinates to addresses'''
 		url = "https://maps.googleapis.com/maps/api/geocode/json"
-		params = {"latlng": "{},{}".format(latitude, longitude), "key": credentials.google_apikey}
+		params = {"latlng": f"{latitude},{longitude}", "key": credentials.google_apikey}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "ZERO_RESULTS":
@@ -159,7 +159,7 @@ class Location:
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		data = data["results"][0]
-		await ctx.embed_reply(data["formatted_address"], title = "Address for {}, {}".format(latitude, longitude))
+		await ctx.embed_reply(data["formatted_address"], title = f"Address for {latitude}, {longitude}")
 	
 	# TODO: random address command?
 	
