@@ -188,7 +188,8 @@ class Location:
 	@checks.not_forbidden()
 	async def streetview(self, ctx, *, location : str):
 		'''Generate street view of a location'''
-		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={}".format(location.replace(' ', '+'))
+		location = location.replace(' ', '+')
+		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={}".format(location)
 		await ctx.embed_reply(image_url = image_url)
 	
 	@commands.group(aliases = ["timezone"], invoke_without_command = True)
