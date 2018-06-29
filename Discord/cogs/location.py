@@ -148,7 +148,9 @@ class Location:
 	@checks.not_forbidden()
 	async def geocode_reverse(self, ctx, latitude : float, longitude : float):
 		'''Convert geographic coordinates to addresses'''
-		async with clients.aiohttp_session.get("https://maps.googleapis.com/maps/api/geocode/json", params = {"latlng": "{},{}".format(latitude, longitude), "key": credentials.google_apikey}) as resp:
+		url = "https://maps.googleapis.com/maps/api/geocode/json"
+		params = {"latlng": "{},{}".format(latitude, longitude), "key": credentials.google_apikey}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "ZERO_RESULTS":
 			await ctx.embed_reply(":no_entry: Address/Location not found")
