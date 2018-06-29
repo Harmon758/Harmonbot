@@ -128,7 +128,9 @@ class Location:
 	@checks.not_forbidden()
 	async def geocode(self, ctx, *, address : str):
 		'''Convert addresses to geographic coordinates'''
-		async with clients.aiohttp_session.get("https://maps.googleapis.com/maps/api/geocode/json", params = {"address": address, "key": credentials.google_apikey}) as resp:
+		url = "https://maps.googleapis.com/maps/api/geocode/json"
+		params = {"address": address, "key": credentials.google_apikey}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "ZERO_RESULTS":
 			await ctx.embed_reply(":no_entry: Address/Location not found")
@@ -137,7 +139,10 @@ class Location:
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		data = data["results"][0]
-		await ctx.embed_reply(title = "Geographic Coordinates for " + data["formatted_address"], fields = (("Latitude", data["geometry"]["location"]["lat"]), ("Longitude", data["geometry"]["location"]["lng"])))
+		title = "Geographic Coordinates for " + data["formatted_address"]
+		fields = (("Latitude", data["geometry"]["location"]["lat"]), 
+					("Longitude", data["geometry"]["location"]["lng"]))
+		await ctx.embed_reply(title = title, fields = fields)
 	
 	@geocode.command(name = "reverse")
 	@checks.not_forbidden()
