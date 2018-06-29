@@ -167,7 +167,8 @@ class Location:
 	@checks.not_forbidden()
 	async def map(self, ctx, *, location : str):
 		'''See map of location'''
-		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location.replace(' ', '+'))
+		location = location.replace(' ', '+')
+		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom=13&size=640x640".format(location)
 		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@map.command(name = "options")
