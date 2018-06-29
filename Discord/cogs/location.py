@@ -181,8 +181,8 @@ class Location:
 		'''
 		location = location.replace(' ', '+')
 		map_url = ("https://maps.googleapis.com/maps/api/staticmap"
-			"?center={}&zoom={}&maptype={}&size=640x640".format(location, zoom, maptype))
-		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
+			f"?center={location}&zoom={zoom}&maptype={maptype}&size=640x640")
+		await ctx.embed_reply(f"[:map:]({map_url})", image_url = map_url)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
