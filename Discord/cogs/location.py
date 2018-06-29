@@ -179,7 +179,9 @@ class Location:
 		Zoom: 0 - 21+ (Default: 13)
 		Map Types: roadmap, satellite, hybrid, terrain (Default: roadmap)
 		'''
-		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&maptype={}&size=640x640".format(location.replace(' ', '+'), zoom, maptype)
+		location = location.replace(' ', '+')
+		map_url = ("https://maps.googleapis.com/maps/api/staticmap"
+			"?center={}&zoom={}&maptype={}&size=640x640".format(location, zoom, maptype))
 		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
 	@commands.group(invoke_without_command = True)
