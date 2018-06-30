@@ -4,7 +4,7 @@ import telegram.ext
 
 import credentials
 
-version = "0.1.1"
+version = "0.1.2"
 
 bot = telegram.Bot(token = credentials.telegram_harmonbot_token)
 updater = telegram.ext.Updater(token = credentials.telegram_harmonbot_token)
@@ -24,5 +24,5 @@ updater.dispatcher.add_handler(ping_handler)
 updater.start_polling()
 
 bot_info = bot.getMe()
-print("Started up Telegram Harmonbot ({0[username]}) ({0[id]})".format(bot_info))
+print(f"Started up Telegram Harmonbot ({bot_info[username]}) ({bot_info[id]})")
 
