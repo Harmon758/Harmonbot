@@ -241,7 +241,7 @@ class Location:
 			observation = self.bot.owm_client.weather_at_place(location)
 		except (pyowm.exceptions.not_found_error.NotFoundError, 
 				pyowm.exceptions.api_call_error.BadGatewayError) as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return
 		location = observation.get_location()
 		weather = observation.get_weather()
@@ -252,19 +252,19 @@ class Location:
 		wind = weather.get_wind()
 		pressure = weather.get_pressure()["press"]
 		visibility = weather.get_visibility_distance()
-		description = "**__{}__**".format(location.get_name())
+		description = f"**__{location.get_name()}__**"
 		timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None)
 		fields = []
-		fields.append(("Conditions", "{}{}".format(condition, emote)))
+		fields.append(("Conditions", f"{condition}{emote}"))
 		temperature_c = weather.get_temperature(unit = "celsius")["temp"]
 		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
-		fields.append(("Temperature", "{}°C\n{}°F".format(temperature_c, temperature_f)))
+		fields.append(("Temperature", f"{temperature_c}°C\n{temperature_f}°F"))
 		wind_direction = self.wind_degrees_to_direction(wind["deg"])
-		fields.append(("Wind", "{0} {1:.2f} km/h\n{0} {2:.2f} mi/h".format(wind_direction, wind["speed"] * 3.6, wind["speed"] * 2.236936)))
-		fields.append(("Humidity", "{}%".format(weather.get_humidity())))
-		fields.append(("Pressure", "{} mb (hPa)\n{:.2f} inHg".format(pressure, pressure * 0.0295299830714)))
+		fields.append(("Wind", f"{wind_direction} {wind['speed'] * 3.6:.2f} km/h\n{wind_direction} {wind['speed'] * 2.236936:.2f} mi/h"))
+		fields.append(("Humidity", f"{weather.get_humidity()}%"))
+		fields.append(("Pressure", f"{pressure} mb (hPa)\n{pressure * 0.0295299830714:.2f} inHg"))
 		if visibility:
-			fields.append(("Visibility", "{:.2f} km\n{:.2f} mi".format(visibility / 1000, visibility * 0.000621371192237)))
+			fields.append(("Visibility", f"{visibility / 1000:.2f} km\n{visibility * 0.000621371192237:.2f} mi"))
 		await ctx.embed_reply(description, fields = fields, timestamp = timestamp)
 	
 	def wind_degrees_to_direction(self, degrees):
