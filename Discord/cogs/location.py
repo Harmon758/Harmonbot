@@ -239,7 +239,8 @@ class Location:
 		# wunderground?
 		try:
 			observation = self.bot.owm_client.weather_at_place(location)
-		except (pyowm.exceptions.not_found_error.NotFoundError, pyowm.exceptions.api_call_error.BadGatewayError) as e:
+		except (pyowm.exceptions.not_found_error.NotFoundError, 
+				pyowm.exceptions.api_call_error.BadGatewayError) as e:
 			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 			return
 		location = observation.get_location()
@@ -255,11 +256,15 @@ class Location:
 		timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None)
 		fields = []
 		fields.append(("Conditions", "{}{}".format(condition, emote)))
-		fields.append(("Temperature", "{}°C\n{}°F".format(weather.get_temperature(unit = "celsius")["temp"], weather.get_temperature(unit = "fahrenheit")["temp"])))
-		fields.append(("Wind", "{0} {1:.2f} km/h\n{0} {2:.2f} mi/h".format(self.wind_degrees_to_direction(wind["deg"]), wind["speed"] * 3.6, wind["speed"] * 2.236936)))
+		temperature_c = weather.get_temperature(unit = "celsius")["temp"]
+		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
+		fields.append(("Temperature", "{}°C\n{}°F".format(temperature_c, temperature_f)))
+		wind_direction = self.wind_degrees_to_direction(wind["deg"])
+		fields.append(("Wind", "{0} {1:.2f} km/h\n{0} {2:.2f} mi/h".format(wind_direction, wind["speed"] * 3.6, wind["speed"] * 2.236936)))
 		fields.append(("Humidity", "{}%".format(weather.get_humidity())))
 		fields.append(("Pressure", "{} mb (hPa)\n{:.2f} inHg".format(pressure, pressure * 0.0295299830714)))
-		if visibility: fields.append(("Visibility", "{:.2f} km\n{:.2f} mi".format(visibility / 1000, visibility * 0.000621371192237)))
+		if visibility:
+			fields.append(("Visibility", "{:.2f} km\n{:.2f} mi".format(visibility / 1000, visibility * 0.000621371192237)))
 		await ctx.embed_reply(description, fields = fields, timestamp = timestamp)
 	
 	def wind_degrees_to_direction(self, degrees):
