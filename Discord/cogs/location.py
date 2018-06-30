@@ -245,10 +245,9 @@ class Location:
 		location = observation.get_location()
 		weather = observation.get_weather()
 		condition = weather.get_status()
-		if condition == "Clear": emote = " :sunny:"
-		elif condition == "Clouds": emote = " :cloud:"
-		elif condition == "Rain": emote = " :cloud_rain:"
-		else: emote = ""
+		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Rain": ":cloud_rain:"}
+		emote = ' '
+		emote += condition_emotes.get(condition, "")
 		wind = weather.get_wind()
 		pressure = weather.get_pressure()["press"]
 		visibility = weather.get_visibility_distance()
