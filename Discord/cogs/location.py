@@ -244,27 +244,29 @@ class Location:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return
 		location = observation.get_location()
+		description = f"**__{location.get_name()}__**"
 		weather = observation.get_weather()
 		condition = weather.get_status()
 		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Rain": ":cloud_rain:"}
 		emote = ' '
 		emote += condition_emotes.get(condition, "")
-		wind = weather.get_wind()
-		pressure = weather.get_pressure()["press"]
-		visibility = weather.get_visibility_distance()
-		description = f"**__{location.get_name()}__**"
-		timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None)
-		fields = []
-		fields.append(("Conditions", f"{condition}{emote}"))
+		fields = [("Conditions", f"{condition}{emote}")]
 		temperature_c = weather.get_temperature(unit = "celsius")["temp"]
 		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
 		fields.append(("Temperature", f"{temperature_c}°C\n{temperature_f}°F"))
+		wind = weather.get_wind()
 		wind_direction = self.wind_degrees_to_direction(wind["deg"])
-		fields.append(("Wind", f"{wind_direction} {wind['speed'] * 3.6:.2f} km/h\n{wind_direction} {wind['speed'] * 2.236936:.2f} mi/h"))
+		fields.append(("Wind", f"{wind_direction} {wind['speed'] * 3.6:.2f} km/h\n"
+								f"{wind_direction} {wind['speed'] * 2.236936:.2f} mi/h"))
 		fields.append(("Humidity", f"{weather.get_humidity()}%"))
-		fields.append(("Pressure", f"{pressure} mb (hPa)\n{pressure * 0.0295299830714:.2f} inHg"))
+		pressure = weather.get_pressure()["press"]
+		fields.append(("Pressure", f"{pressure} mb (hPa)\n"
+									f"{pressure * 0.0295299830714:.2f} inHg"))
+		visibility = weather.get_visibility_distance()
 		if visibility:
-			fields.append(("Visibility", f"{visibility / 1000:.2f} km\n{visibility * 0.000621371192237:.2f} mi"))
+			fields.append(("Visibility", f"{visibility / 1000:.2f} km\n"
+											f"{visibility * 0.000621371192237:.2f} mi"))
+		timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None)
 		await ctx.embed_reply(description, fields = fields, timestamp = timestamp)
 	
 	def wind_degrees_to_direction(self, degrees):
