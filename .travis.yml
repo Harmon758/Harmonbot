@@ -16,4 +16,5 @@ script:
   - cd Discord
   - python Harmonbot.py
   - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go run Harmonbot_Listener.go
+  - python ../Telegram/Telegram_Harmonbot.py
 

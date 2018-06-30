@@ -2,6 +2,8 @@
 import telegram
 import telegram.ext
 
+import os
+
 import credentials
 
 version = "0.1.2"
@@ -25,4 +27,8 @@ updater.start_polling()
 
 bot_info = bot.getMe()
 print(f"Started up Telegram Harmonbot ({bot_info['username']}) ({bot_info['id']})")
+
+travis_ci = os.getenv("TRAVIS") and os.getenv("CI")
+if travis_ci:
+	updater.stop()
 
