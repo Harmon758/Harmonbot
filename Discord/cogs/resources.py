@@ -577,7 +577,7 @@ class Resources:
 			await ctx.embed_reply(":no_entry: No results found")
 			return
 		num_results = len(data["list"]) # if one definition
-		if num_results > 10: num_reults = 10
+		if num_results > 10: num_results = 10  # necessary?
 		response = await ctx.embed_reply("React with a number from 1 to {} to view each definition".format(num_results))
 		embed = response.embeds[0]
 		numbers = {"1⃣": 1, "2⃣": 2, "3⃣": 3, "4⃣": 4, "5⃣": 5, "6⃣": 6, "7⃣": 7, "8⃣": 8, "9⃣": 9, "🔟" : 10}
