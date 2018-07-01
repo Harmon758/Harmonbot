@@ -23,7 +23,7 @@ class Words:
 			return
 		await ctx.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
 	
-	@commands.command()
+	@commands.command(aliases = ["dictionary"])
 	@checks.not_forbidden()
 	async def define(self, ctx, word : str):
 		'''Define a word'''
