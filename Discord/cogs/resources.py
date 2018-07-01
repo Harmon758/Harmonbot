@@ -582,7 +582,7 @@ class Resources:
 		embed = response.embeds[0]
 		numbers = {"1⃣": 1, "2⃣": 2, "3⃣": 3, "4⃣": 4, "5⃣": 5, "6⃣": 6, "7⃣": 7, "8⃣": 8, "9⃣": 9, "🔟" : 10}
 		for number_emote in sorted(numbers.keys())[:num_results]:
-			await self.bot.add_reaction(response, number_emote)
+			await response.add_reaction(number_emote)
 		while True:
 			emoji_response = await self.bot.wait_for_reaction(user = ctx.author, message = response, emoji = sorted(numbers.keys())[:num_results])
 			reaction = emoji_response.reaction
