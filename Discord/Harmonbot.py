@@ -26,7 +26,7 @@ if __name__ == "__main__":
 	from utilities import errors
 	from utilities import audio_player
 	
-	clients.create_file('f', content = {"total" : 0})
+	clients.create_file('f', content = {"total": 0})
 	with open(clients.data_path + "/f.json", 'r') as f_file:
 		f_counter_info = json.load(f_file)
 	
