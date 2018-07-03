@@ -154,21 +154,25 @@ class Twitter:
 		await ctx.embed_reply('\n'.join(self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", [])))
 		# TODO: Add message if none
 	
+	# TODO: move to on_ready
 	async def start_twitter_feeds(self):
 		await self.bot.wait_until_ready()
 		feeds = {}
-		for channel_id, channel_info in self.feeds_info["channels"].items():
-			for handle in channel_info["handles"]:
-				try:
-					feeds[channel_id] = feeds.get(channel_id, []) + [self.bot.twitter_api.get_user(handle).id_str]
-				except tweepy.error.TweepError as e:
-					if e.api_code == 50:
-						# User not found
-						continue
-					else:
-						print("Exception in Twitter Task", file = sys.stderr)
-						traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-						logging.errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
-						return
-		await self.stream_listener.start_feeds(feeds = feeds)
+		try:
+			for channel_id, channel_info in self.feeds_info["channels"].items():
+				for handle in channel_info["handles"]:
+					try:
+						feeds[channel_id] = feeds.get(channel_id, []) + [self.bot.twitter_api.get_user(handle).id_str]
+					except tweepy.error.TweepError as e:
+						if e.api_code == 50:
+							# User not found
+							continue
+						else:
+							raise e
+			await self.stream_listener.start_feeds(feeds = feeds)
+		except Exception as e:
+			print("Exception in Twitter Task", file = sys.stderr)
+			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
+			logging.errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
+			return
 
