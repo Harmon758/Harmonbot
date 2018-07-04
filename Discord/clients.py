@@ -49,7 +49,18 @@ class Bot(commands.Bot):
 		
 		# Constants necessary for initialization
 		self.stream_url = "https://www.twitch.tv/harmonbot"
-		self.game_statuses = ("with i7-2670QM", "with mainframes", "with Cleverbot", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "the Turing test", "with my memory", "with R2-D2", "with C-3PO", "with BB-8", "with machine learning", "gigs", "with Siri", "with TARS", "with KIPP", "with humans", "with Skynet", "Goldbach's conjecture", "Goldbach's conjecture solution", "with quantum foam", "with quantum entanglement", "with P vs NP", "the Reimann hypothesis", "the Reimann proof", "with the infinity gauntlet", "for the other team", "hard to get", "to win", "world domination", "with Opportunity", "with Spirit in the sand pit", "with Curiousity", "with Voyager 1", "music", "Google Ultron", "not enough space here to", "the meaning of life is", "with the NSA", "with neural networks", "with RSS Bot", "with Data", "with Harmon", " ", "with Alexa")
+		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
+		"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
+		"not enough space here to", "the meaning of life is", "the Reimann hypothesis", 
+		"the Reimann proof", "the Turing test", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", 
+		"to win", "with Alexa", "with BB-8", "with Bumblebee", "with C-3PO", "with Cleverbot", 
+		"with Curiousity", "with Data", "with Extra-terrestrial Vegetation Evaluator", "with Harmon", 
+		"with humans", "with i7-2670QM", "with Just A Rather Very Intelligent System", "with KIPP", 
+		"with machine learning", "with mainframes", "with memory", "with neural networks", 
+		"with Opportunity", "with Optimus Prime", "with P vs NP", "with quantum entanglement", 
+		"with quantum foam", "with R2-D2", "with RSS Bot", "with Samantha", "with Siri", "with Skynet", 
+		"with Spirit in the sand pit", "with TARS", "with the infinity gauntlet", "with the NSA", 
+		"with Voyager 1", "with Waste Allocation Load Lifter: Earth-Class", "world domination")
 		
 		# Initialization
 		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url), case_insensitive = True)
