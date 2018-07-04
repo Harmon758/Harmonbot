@@ -23,17 +23,19 @@ class Overwatch:
 	# TODO: Finish Stats (Add Achievements, Improve)
 	# TODO: Maps, Items
 	
-	@overwatch.command(aliases = ["weapon"])
+	@overwatch.command(name = "ability", aliases = ["weapon"])
 	@checks.not_forbidden()
-	async def ability(self, ctx, *, ability : str):
+	async def overwatch_ability(self, ctx, *, ability : str):
 		'''Abilities/Weapons'''
-		async with clients.aiohttp_session.get("https://overwatch-api.net/api/v1/ability?limit={}".format(self.request_limit)) as resp:
+		url = "https://overwatch-api.net/api/v1/ability?limit={}".format(self.request_limit)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		_ability = discord.utils.find(lambda a: a["name"].lower() == ability.lower(), data)
-		if not _ability:
+		ability_data = discord.utils.find(lambda a: a["name"].lower() == ability.lower(), data)
+		if not ability_data:
 			await ctx.embed_reply(":no_entry: Ability not found")
-		await ctx.embed_reply(_ability["description"], title = _ability["name"], fields = (("Hero", _ability["hero"]["name"]), ("Ultimate", _ability["is_ultimate"])))
+		fields = (("Hero", ability_data["hero"]["name"]), ("Ultimate", ability_data["is_ultimate"]))
+		await ctx.embed_reply(ability_data["description"], title = ability_data["name"], fields = fields)
 	
 	@overwatch.command()
 	@checks.not_forbidden()
