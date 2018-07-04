@@ -34,6 +34,7 @@ class Overwatch:
 		ability_data = discord.utils.find(lambda a: a["name"].lower() == ability.lower(), data)
 		if not ability_data:
 			await ctx.embed_reply(":no_entry: Ability not found")
+			return
 		fields = (("Hero", ability_data["hero"]["name"]), ("Ultimate", ability_data["is_ultimate"]))
 		await ctx.embed_reply(ability_data["description"], title = ability_data["name"], fields = fields)
 	
