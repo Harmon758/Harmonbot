@@ -42,8 +42,8 @@ class Overwatch:
 	@checks.not_forbidden()
 	async def overwatch_achievement(self, ctx, *, achievement : str):
 		'''Achievements'''
-		url = "https://overwatch-api.net/api/v1/achievement?limit={}".format(self.request_limit)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "https://overwatch-api.net/api/v1/achievement"
+		async with clients.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
 			data = await resp.json()
 		data = data["data"]
 		achievement_data = discord.utils.find(lambda a: a["name"].lower() == achievement.lower(), data)
