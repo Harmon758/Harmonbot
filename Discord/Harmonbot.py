@@ -204,7 +204,7 @@ if __name__ == "__main__":
 		# Chatbot
 		elif message.content.startswith(ctx.me.mention):
 			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
-			aiml_response = ctx.bot.aiml_kernel.respond(content)
+			aiml_response = ctx.bot.aiml_kernel.respond(content, sessionID = message.author.id)
 			# TODO: Handle brain not loaded?
 			if aiml_response:
 				await ctx.embed_reply(aiml_response, attempt_delete = False)
