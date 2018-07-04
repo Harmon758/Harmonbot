@@ -60,7 +60,7 @@ class Lichess:
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if not data or data.get("closed"):
-				raise BadArgument
+				raise commands.BadArgument
 			# await ctx.embed_reply(":no_entry: User not found")
 			# TODO: custom error message?
 			return data
