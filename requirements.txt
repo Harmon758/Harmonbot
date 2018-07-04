@@ -19,10 +19,10 @@ numexpr==2.6.5
 numpy==1.14.5
 pandas==0.23.1
 psutil==5.4.6
-git+git://github.com/Harmon758/Py3kAiml.git@master#egg=Py3kAiml
 pydealer==1.4.0
 pygost==3.10
 pyowm==2.8.0
+python-aiml==0.9.1
 python-chess==0.23.8
 python-dateutil==2.7.3
 scipy==1.1.0
