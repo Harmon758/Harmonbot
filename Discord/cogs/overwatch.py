@@ -27,8 +27,8 @@ class Overwatch:
 	@checks.not_forbidden()
 	async def overwatch_ability(self, ctx, *, ability : str):
 		'''Abilities/Weapons'''
-		url = "https://overwatch-api.net/api/v1/ability?limit={}".format(self.request_limit)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "https://overwatch-api.net/api/v1/ability"
+		async with clients.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
 			data = await resp.json()
 		data = data["data"]
 		ability_data = discord.utils.find(lambda a: a["name"].lower() == ability.lower(), data)
