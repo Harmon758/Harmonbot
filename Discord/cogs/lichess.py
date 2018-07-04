@@ -59,7 +59,7 @@ class Lichess:
 			url = "https://en.lichess.org/api/user/{}".format(argument)
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
-			if not data:
+			if not data or data.get("closed"):
 				raise BadArgument
 			# await ctx.embed_reply(":no_entry: User not found")
 			# TODO: custom error message?
