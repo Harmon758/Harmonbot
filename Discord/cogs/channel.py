@@ -273,7 +273,7 @@ class Channel:
 	@checks.not_forbidden()
 	async def voice_user_limit(self, ctx, channel : discord.VoiceChannel, user_limit : int = None):
 		'''Limit for number of members that can be in the voice channel'''
-		if limit is not None:
+		if user_limit is not None:
 			checks.has_permissions_and_capability_check(ctx, channel, manage_channels = True)
 			await channel.edit(user_limit = user_limit)
 			await ctx.embed_reply(channel.mention + "'s user limit has been set to {}".format(user_limit))
