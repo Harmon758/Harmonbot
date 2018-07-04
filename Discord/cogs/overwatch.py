@@ -38,20 +38,24 @@ class Overwatch:
 		fields = (("Hero", ability_data["hero"]["name"]), ("Ultimate", ability_data["is_ultimate"]))
 		await ctx.embed_reply(ability_data["description"], title = ability_data["name"], fields = fields)
 	
-	@overwatch.command()
+	@overwatch.command(name = "achievement")
 	@checks.not_forbidden()
-	async def achievement(self, ctx, *, achievement : str):
+	async def overwatch_achievement(self, ctx, *, achievement : str):
 		'''Achievements'''
-		async with clients.aiohttp_session.get("https://overwatch-api.net/api/v1/achievement?limit={}".format(self.request_limit)) as resp:
+		url = "https://overwatch-api.net/api/v1/achievement?limit={}".format(self.request_limit)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		_achievement = discord.utils.find(lambda a: a["name"].lower() == achievement.lower(), data)
-		if not _achievement:
+		achievement_data = discord.utils.find(lambda a: a["name"].lower() == achievement.lower(), data)
+		if not achievement_data:
 			await ctx.embed_reply(":no_entry: Achievement not found")
 			return
-		fields = [("Reward", _achievement["reward"]["name"] + ' ' + _achievement["reward"]["type"]["name"])]
-		if _achievement["hero"]: fields.append(("Hero", _achievement["hero"]["name"]))
-		await ctx.embed_reply(_achievement["description"], title = _achievement["name"], fields = fields)
+		fields = [("Reward", (achievement_data["reward"]["name"] + " " + 
+								achievement_data["reward"]["type"]["name"]))]
+		if achievement_data["hero"]:
+			fields.append(("Hero", achievement_data["hero"]["name"]))
+		await ctx.embed_reply(achievement_data["description"], title = achievement_data["name"], 
+								fields = fields)
 	
 	@overwatch.command()
 	@checks.not_forbidden()
