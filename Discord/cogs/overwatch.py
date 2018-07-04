@@ -45,13 +45,13 @@ class Overwatch:
 		async with clients.aiohttp_session.get("https://overwatch-api.net/api/v1/achievement?limit={}".format(self.request_limit)) as resp:
 			data = await resp.json()
 		data = data["data"]
-		for _achievement in data:
-			if _achievement["name"].lower() == achievement.lower():
-				fields = [("Reward", _achievement["reward"]["name"] + ' ' + _achievement["reward"]["type"]["name"])]
-				if _achievement["hero"]: fields.append(("Hero", _achievement["hero"]["name"]))
-				await ctx.embed_reply(_achievement["description"], title = _achievement["name"], fields = fields)
-				return
-		await ctx.embed_reply(":no_entry: Achievement not found")
+		_achievement = discord.utils.find(lambda a: a["name"].lower() == achievement.lower(), data)
+		if not _achievement:
+			await ctx.embed_reply(":no_entry: Achievement not found")
+			return
+		fields = [("Reward", _achievement["reward"]["name"] + ' ' + _achievement["reward"]["type"]["name"])]
+		if _achievement["hero"]: fields.append(("Hero", _achievement["hero"]["name"]))
+		await ctx.embed_reply(_achievement["description"], title = _achievement["name"], fields = fields)
 	
 	@overwatch.command()
 	@checks.not_forbidden()
