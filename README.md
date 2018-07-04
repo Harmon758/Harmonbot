@@ -1,6 +1,7 @@
 # Harmonbot
 
 [![Build Status](https://travis-ci.org/Harmon758/Harmonbot.svg?branch=rewrite)](https://travis-ci.org/Harmon758/Harmonbot)
+[![Build Status](https://scrutinizer-ci.com/g/Harmon758/Harmonbot/badges/build.png?b=rewrite)](https://scrutinizer-ci.com/g/Harmon758/Harmonbot/build-status/rewrite)
 [![BCH compliance](https://bettercodehub.com/edge/badge/Harmon758/Harmonbot?branch=rewrite)](https://bettercodehub.com/)
 [![Updates](https://pyup.io/repos/github/Harmon758/Harmonbot/shield.svg)](https://pyup.io/repos/github/Harmon758/Harmonbot/)
 [![Join the chat at https://gitter.im/Harmonbot/Lobby](https://badges.gitter.im/Harmonbot/Lobby.svg)](https://gitter.im/Harmonbot/Lobby)
