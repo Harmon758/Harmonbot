@@ -30,11 +30,10 @@ class Overwatch:
 		async with clients.aiohttp_session.get("https://overwatch-api.net/api/v1/ability?limit={}".format(self.request_limit)) as resp:
 			data = await resp.json()
 		data = data["data"]
-		for _ability in data:
-			if _ability["name"].lower() == ability.lower():
-				await ctx.embed_reply(_ability["description"], title = _ability["name"], fields = (("Hero", _ability["hero"]["name"]), ("Ultimate", _ability["is_ultimate"])))
-				return
-		await ctx.embed_reply(":no_entry: Ability not found")
+		_ability = discord.utils.find(lambda a: a["name"].lower() == ability.lower(), data)
+		if not _ability:
+			await ctx.embed_reply(":no_entry: Ability not found")
+		await ctx.embed_reply(_ability["description"], title = _ability["name"], fields = (("Hero", _ability["hero"]["name"]), ("Ultimate", _ability["is_ultimate"])))
 	
 	@overwatch.command()
 	@checks.not_forbidden()
