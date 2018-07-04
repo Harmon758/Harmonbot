@@ -58,10 +58,12 @@ class Lichess:
 		async def convert(self, ctx, argument):
 			url = "https://en.lichess.org/api/user/{}".format(argument)
 			async with clients.aiohttp_session.get(url) as resp:
-				lichess_user_data = await resp.json()
-			if lichess_user_data: return lichess_user_data
-			else: raise BadArgument
+				data = await resp.json()
+			if not data:
+				raise BadArgument
 			# await ctx.embed_reply(":no_entry: User not found")
+			# TODO: custom error message?
+			return data
 
 	@commands.group()
 	@checks.not_forbidden()
