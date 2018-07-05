@@ -27,9 +27,13 @@ class Battlerite:
 	
 	def load_emoji(self):
 		# TODO: Check only within Emoji Server emojis?
-		for champion in ("alysia", "ashka", "bakko", "blossom", "croak", "destiny", "ezmo", "freya", "iva", "jade", "jumong", "lucie", "oldur", "pearl", "pestilus", "poloma", "raigon", "rook", "ruh_kaan", "shifu", "sirius", "taya", "thorn", "varesh", "zander"):
+		champions = filter(lambda m: m["Type"] == "Characters", self.mappings.values())
+		champions = set(c["Name"].lower().replace(' ', '_') for c in champions)
+		champions.discard("random_champion")
+		champions.discard("egg_bakko")
+		champions.discard("rabbit")  # new/future champion?
+		for champion in champions:
 			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
-		# TODO: Get champion names dynamically?
 	
 	async def load_mappings(self):
 		clients.create_folder(clients.data_path + "/battlerite")
