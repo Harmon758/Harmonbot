@@ -232,7 +232,7 @@ class Bot(commands.Bot):
 		self.application_info_data = await self.application_info()
 	
 	async def on_resumed(self):
-		print("{}resumed @ {}".format(self.console_message_prefix, datetime.datetime.now().time().isoformat()))
+		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().time().isoformat()}")
 	
 	# TODO: on_command_completion
 	# TODO: optimize
