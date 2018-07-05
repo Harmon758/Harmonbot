@@ -17,6 +17,9 @@ class Battlerite:
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.mappings = {}
+		if self.bot.is_ready():
+			self.bot.loop.create_task(self.on_ready())
 	
 	async def on_ready(self):
 		await self.load_mappings()
