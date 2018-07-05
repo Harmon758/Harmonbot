@@ -230,6 +230,7 @@ class Bot(commands.Bot):
 	
 	async def on_ready(self):
 		self.application_info_data = await self.application_info()
+		self.listener_bot = await self.get_user_info(listener_id)
 	
 	async def on_resumed(self):
 		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().time().isoformat()}")
@@ -379,7 +380,6 @@ async def _update_discord_bots_stats():
 
 @client.listen()
 async def on_ready():
-	client.listener_bot = await client.get_user_info(listener_id)
 	await _update_discord_bots_stats()
 
 @client.listen()
