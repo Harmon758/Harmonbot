@@ -35,15 +35,13 @@ class Osu:
 	@checks.not_forbidden()
 	async def taiko(self, ctx):
 		'''Taiko'''
-		# TODO: fix for subcommands
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.invoke(self.bot.get_command("help"), "osu", ctx.invoked_with)
 	
 	@osu.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def mania(self, ctx):
 		'''osu!mania'''
-		# TODO: fix for subcommands
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.invoke(self.bot.get_command("help"), "osu", ctx.invoked_with)
 	
 	@osu.command()
 	@checks.not_forbidden()
