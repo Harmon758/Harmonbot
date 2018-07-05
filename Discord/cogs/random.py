@@ -425,7 +425,10 @@ class Random:
 		Random number
 		Default range is 1 to 10
 		'''
-		await ctx.embed_reply(random.randint(1, number))
+		try:
+			await ctx.embed_reply(random.randint(1, number))
+		except ValueError:
+			await ctx.embed_reply(":no_entry: Error: Input must be >= 1")
 	
 	@commands.command(aliases = ["why"])
 	@checks.not_forbidden()
