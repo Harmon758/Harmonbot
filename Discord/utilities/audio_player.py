@@ -449,8 +449,8 @@ class AudioPlayer:
 	async def listen_once(self):
 		if not self.not_interrupted.is_set():
 			return False
-		if clients.harmonbot_listener not in self.server.voice_client.channel.voice_members:
-			await self.bot.send_embed(self.text_channel, ":no_entry: {} needs to be in the voice channel".format(clients.harmonbot_listener.mention))
+		if self.bot.listener_bot not in self.server.voice_client.channel.voice_members:
+			await self.bot.send_embed(self.text_channel, ":no_entry: {} needs to be in the voice channel".format(self.bot.listener_bot.mention))
 			return None
 		try:
 			self.pause()
@@ -462,9 +462,9 @@ class AudioPlayer:
 		if not self.listener:
 			self.listener = True
 		listen_message = await self.bot.send_message(self.text_channel, ">listen")
-		await self.bot.wait_for_message(author = clients.harmonbot_listener, content = ":ear::skin-tone-2: I'm listening..")
+		await self.bot.wait_for_message(author = self.bot.listener_bot, content = ":ear::skin-tone-2: I'm listening..")
 		await self.bot.delete_message(listen_message)
-		await self.bot.wait_for_message(author = clients.harmonbot_listener, content = ":stop_sign: I stopped listening.")
+		await self.bot.wait_for_message(author = self.bot.listener_bot, content = ":stop_sign: I stopped listening.")
 		await self.process_listen()
 		if self.listen_paused: self.resume()
 		self.not_interrupted.set()
@@ -474,7 +474,7 @@ class AudioPlayer:
 	
 	async def finish_listening(self):
 		stop_message = await self.bot.send_message(self.text_channel, ">stoplistening")
-		await self.bot.wait_for_message(author = clients.harmonbot_listener, content = ":stop_sign: I stopped listening.")
+		await self.bot.wait_for_message(author = self.bot.listener_bot, content = ":stop_sign: I stopped listening.")
 		await self.bot.delete_message(stop_message)
 	
 	async def process_listen(self):

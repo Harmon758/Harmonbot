@@ -379,8 +379,7 @@ async def _update_discord_bots_stats():
 
 @client.listen()
 async def on_ready():
-	global harmonbot_listener
-	harmonbot_listener = await client.get_user_info(listener_id)
+	client.listener_bot = await client.get_user_info(listener_id)
 	await _update_discord_bots_stats()
 
 @client.listen()
