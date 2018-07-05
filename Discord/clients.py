@@ -7,6 +7,7 @@ import aiohttp
 from aiohttp import web
 import clarifai.rest
 import datetime
+import imageio
 import imgurpython
 import inflect
 import json
@@ -114,6 +115,10 @@ class Bot(commands.Bot):
 		self.wordnik_client = swagger.ApiClient(credentials.wordnik_apikey, "http://api.wordnik.com/v4")
 		self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
 		self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
+		
+		# Download FFmpeg
+		## necessary?, for CI?
+		imageio.plugins.ffmpeg.download()
 		
 		# AIML Kernel
 		self.aiml_kernel = aiml.Kernel()
@@ -387,12 +392,6 @@ async def on_guild_join(guild):
 @client.listen()
 async def on_guild_remove(guild):
 	await _update_discord_bots_stats()
-
-
-# Download FFMPEG
-
-import imageio
-imageio.plugins.ffmpeg.download()
 
 
 # Utilities
