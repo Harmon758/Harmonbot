@@ -2,22 +2,23 @@
 import discord
 from discord.ext import commands
 
+import datetime
+import json
+import os
+import random
+import sys
+from urllib import parse
+
 import aiml
 import aiohttp
 from aiohttp import web
 import clarifai.rest
-import datetime
 import imageio
 import imgurpython
 import inflect
-import json
-import os
 import pyowm
-import random
 import requests
-import sys
 import tweepy
-from urllib import parse
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 
