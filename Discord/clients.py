@@ -40,7 +40,6 @@ py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
 aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
-application_info = None
 harmonbot_listener = None
 # TODO: Include owner variable for user object?
 
@@ -91,6 +90,7 @@ class Bot(commands.Bot):
 		self.EMBED_FIELD_VALUE_CHARACTER_LIMIT = self.EMBED_FIELD_VALUE_CHAR_LIMIT = self.EFVCL = 1024
 		## Functional
 		self.delete_limit = 10000
+		self.application_info_data = None  # Set on ready
 		
 		# Variables
 		self.session_commands_executed = 0
