@@ -17,10 +17,6 @@ class Lichess:
 		self.bot = bot
 		
 		self.load_emoji()
-		# TODO: just move to class?
-		async def on_ready():
-			self.load_emoji()
-		self.bot.add_listener(on_ready)
 		
 		self.modes = ("ultraBullet", "bullet", "blitz", "classical", "correspondence", "crazyhouse", "chess960", "kingOfTheHill", "threeCheck", "antichess", "atomic", "horde", "racingKings", "puzzle")
 		self.mode_names = ("Ultrabullet", "Bullet", "Blitz", "Classical", "Correspondence", "Crazyhouse", "Chess960", "King of the Hill", "Three-Check", "Antichess", "Atomic", "Horde", "Racing Kings", "Training")
@@ -36,6 +32,9 @@ class Lichess:
 		
 		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
 			setattr(self, "user_" + name.lower().replace(' ', "").replace('-', ""), user_mode_wrapper(mode, name, emoji))
+	
+	async def on_ready(self):
+		self.load_emoji()
 	
 	def load_emoji(self):
 		# TODO: Check only within Emoji Server emojis?
