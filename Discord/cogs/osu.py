@@ -72,7 +72,8 @@ class Osu:
 		data = data[0]
 		title_url = f"https://osu.ppy.sh/users/{data['user_id']}"
 		country_name = pycountry.countries.get(alpha_2 = data["country"]).name
-		fields = (("Ranked Score", f"{int(data['ranked_score']):,}"), ("Hit Accuracy", data["accuracy"]), 
+		fields = (("Ranked Score", f"{int(data['ranked_score']):,}"), 
+					("Hit Accuracy", f"{float(data['accuracy']):6g}%"), 
 					("Play Count", data["playcount"]), ("Total Score", f"{int(data['total_score']):,}"), 
 					("Performance", f"{float(data['pp_raw']):,}pp"), ("Rank", f"#{int(data['pp_rank']):,}"), 
 					("Level", data["level"]), ("Country Rank", f"{country_name} #{int(data['pp_country_rank']):,}"), 
