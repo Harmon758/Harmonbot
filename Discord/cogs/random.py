@@ -3,21 +3,22 @@ import discord
 from discord.ext import commands
 
 import asyncio
-from bs4 import BeautifulSoup
 import calendar
 import concurrent.futures
 import csv
 import datetime
-import dice
-import emoji
 import inspect
 import json
 import multiprocessing
-import pydealer
-import pyparsing
 import random
 import string
 import xml.etree.ElementTree
+
+from bs4 import BeautifulSoup
+import dice
+import emoji
+import pydealer
+import pyparsing
 
 import clients
 import credentials
