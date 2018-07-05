@@ -70,20 +70,16 @@ class Osu:
 			await ctx.embed_reply(":no_entry: Error: User not found")
 			return
 		data = data[0]
-		title_url = "https://osu.ppy.sh/users/{}".format(data["user_id"])
+		title_url = f"https://osu.ppy.sh/users/{data['user_id']}"
 		country_name = pycountry.countries.get(alpha_2 = data["country"]).name
-		fields = (("Ranked Score", "{:,}".format(int(data["ranked_score"]))), 
-					("Hit Accuracy", data["accuracy"]), ("Play Count", data["playcount"]), 
-					("Total Score", "{:,}".format(int(data["total_score"]))), 
-					("Performance", "{:,}pp".format(float(data["pp_raw"]))), 
-					("Rank", "#{:,}".format(int(data["pp_rank"]))), ("Level", data["level"]), 
-					("Country Rank", "{} #{:,}".format(country_name, int(data["pp_country_rank"]))), 
-					("Total Hits", "{:,}".format(int(data["count300"]) + int(data["count100"]) + int(data["count50"]))), 
-					("300 Hits", "{:,}".format(int(data["count300"]))), 
-					("100 Hits", "{:,}".format(int(data["count100"]))), 
-					("50 Hits", "{:,}".format(int(data["count50"]))), 
-					(self.ssh_emoji, data["count_rank_ssh"]), (self.ss_emoji, data["count_rank_ss"]), 
-					(self.sh_emoji, data["count_rank_sh"]), (self.s_emoji, data["count_rank_s"]), 
-					(self.a_emoji, data["count_rank_a"]))
+		fields = (("Ranked Score", f"{int(data['ranked_score']):,}"), ("Hit Accuracy", data["accuracy"]), 
+					("Play Count", data["playcount"]), ("Total Score", f"{int(data['total_score']):,}"), 
+					("Performance", f"{float(data['pp_raw']):,}pp"), ("Rank", f"#{int(data['pp_rank']):,}"), 
+					("Level", data["level"]), ("Country Rank", f"{country_name} #{int(data['pp_country_rank']):,}"), 
+					("Total Hits", f"{int(data['count300']) + int(data['count100']) + int(data['count50']):,}"), 
+					("300 Hits", f"{int(data['count300']):,}"), ("100 Hits", f"{int(data['count100']):,}"), 
+					("50 Hits", f"{int(data['count50']):,}"), (self.ssh_emoji, data["count_rank_ssh"]), 
+					(self.ss_emoji, data["count_rank_ss"]), (self.sh_emoji, data["count_rank_sh"]), 
+					(self.s_emoji, data["count_rank_s"]), (self.a_emoji, data["count_rank_a"]))
 		await ctx.embed_reply(title = data["username"], title_url = title_url, fields = fields)
 
