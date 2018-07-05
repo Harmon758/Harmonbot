@@ -246,10 +246,9 @@ class Meta:
 	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
-		from clients import application_info
 		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
 		embed = discord.Embed(title = "About Me", color = clients.bot_color)
-		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(application_info.id))
+		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(ctx.bot.application_info_data.id))
 		# avatar = ctx.author.avatar_url
 		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		avatar = self.bot.user.avatar_url
@@ -278,8 +277,7 @@ class Meta:
 	@commands.command(aliases = ["oauth"])
 	async def invite(self, ctx):
 		'''Link to invite me to a server'''
-		from clients import application_info
-		await ctx.embed_reply(discord.utils.oauth_url(application_info.id))
+		await ctx.embed_reply(discord.utils.oauth_url(ctx.bot.application_info_data.id))
 	
 	@commands.command()
 	async def stats(self, ctx):
