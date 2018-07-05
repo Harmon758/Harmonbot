@@ -15,9 +15,12 @@ class Osu:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		
-		# TODO: Wait until ready
-		
+		self.load_emoji()
+	
+	async def on_ready(self):
+		self.load_emoji()
+	
+	def load_emoji(self):
 		# TODO: Check only within Emoji Server emojis?
 		self.ssh_emoji = discord.utils.get(self.bot.emojis, name = "osu_ssh") or "SS+"
 		self.ss_emoji = discord.utils.get(self.bot.emojis, name = "osu_ss") or "SS"
