@@ -173,7 +173,7 @@ class Bot(commands.Bot):
 		
 		# Load cogs
 		for file in sorted(os.listdir("cogs")):
-			if file.endswith(".py") and not file.startswith(("battlerite", "images", "lichess", "random", "reactions")):
+			if file.endswith(".py") and not file.startswith(("battlerite", "images", "lichess", "osu", "random", "reactions")):
 				self.load_extension("cogs." + file[:-3])
 		self.load_extension("cogs.images")
 		self.load_extension("cogs.random")
@@ -232,6 +232,7 @@ class Bot(commands.Bot):
 		# Necessary for custom emoji
 		self.load_extension("cogs.battlerite")
 		self.load_extension("cogs.lichess")
+		self.load_extension("cogs.osu")
 	
 	async def on_resumed(self):
 		print("{}resumed @ {}".format(self.console_message_prefix, datetime.datetime.now().time().isoformat()))
