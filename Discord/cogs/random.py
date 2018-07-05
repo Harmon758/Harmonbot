@@ -235,6 +235,8 @@ class Random:
 				await ctx.embed_reply(":no_entry: Invalid input")
 			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
 				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
+			except dice.DiceFatalException as e:
+				await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
