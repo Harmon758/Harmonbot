@@ -31,7 +31,8 @@ class Battlerite:
 		champions = set(c["Name"].lower().replace(' ', '_') for c in champions)
 		champions.discard("random_champion")
 		champions.discard("egg_bakko")
-		champions.discard("rabbit")  # new/future champion?
+		champions.discard("rabbit")  # For Battlerite Royale?
+		# https://www.reddit.com/r/BattleRite/comments/8u7ab9/next_champion_critter/
 		for champion in champions:
 			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
 	
@@ -73,6 +74,7 @@ class Battlerite:
 		with open(clients.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
 			json.dump(self.mappings, mappings_file, indent = 4)
 	
+	# TODO: Handle 25+ fields
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def battlerite(self, ctx):
@@ -82,6 +84,7 @@ class Battlerite:
 		'''
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
+	# TODO: optimize modularization?
 	async def get_player(self, player):
 		url = "https://api.developer.battlerite.com/shards/global/players"
 		headers = {"Authorization": credentials.battlerite_api_key, "Accept": "application/vnd.api+json"}
@@ -89,7 +92,6 @@ class Battlerite:
 		async with clients.aiohttp_session.get(url, headers = headers, params = params) as resp:
 			data = await resp.json()
 		return(next(iter(data["data"]), None))
-	# TODO: optimize modularization?
 	
 	@battlerite.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -174,6 +176,7 @@ class Battlerite:
 	@checks.not_forbidden()
 	async def player_casual_3v3(self, ctx, player : str):
 		'''WIP'''
+		...
 	
 	@player.command(name = "levels", aliases = ["level", "xp", "exp", "experience"])
 	@checks.not_forbidden()
@@ -234,6 +237,7 @@ class Battlerite:
 	@checks.not_forbidden()
 	async def player_ranked_3v3(self, ctx, player : str):
 		'''WIP'''
+		...
 	
 	@player.command(name = "time", aliases = ["played"])
 	@checks.not_forbidden()
