@@ -17,15 +17,16 @@ class Battlerite:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		
-		# TODO: Wait until ready
-		
+	
+	async def on_ready(self):
+		await self.load_mappings()
+		self.load_emoji()
+	
+	def load_emoji(self):
 		# TODO: Check only within Emoji Server emojis?
 		for champion in ("alysia", "ashka", "bakko", "blossom", "croak", "destiny", "ezmo", "freya", "iva", "jade", "jumong", "lucie", "oldur", "pearl", "pestilus", "poloma", "raigon", "rook", "ruh_kaan", "shifu", "sirius", "taya", "thorn", "varesh", "zander"):
 			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
 		# TODO: Get champion names dynamically?
-		
-		self.bot.loop.create_task(self.load_mappings())
 	
 	async def load_mappings(self):
 		clients.create_folder(clients.data_path + "/battlerite")
