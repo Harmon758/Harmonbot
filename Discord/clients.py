@@ -229,7 +229,7 @@ class Bot(commands.Bot):
 			return web.Response(status = 400)  # Return 400 Bad Request
 	
 	async def on_ready(self):
-		...
+		self.application_info_data = await self.application_info()
 	
 	async def on_resumed(self):
 		print("{}resumed @ {}".format(self.console_message_prefix, datetime.datetime.now().time().isoformat()))
@@ -380,7 +380,6 @@ async def _update_discord_bots_stats():
 @client.listen()
 async def on_ready():
 	global harmonbot_listener
-	client.application_info_data = await client.application_info()
 	harmonbot_listener = await client.get_user_info(listener_id)
 	await _update_discord_bots_stats()
 
