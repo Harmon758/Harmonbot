@@ -16,25 +16,15 @@ class Lichess:
 	def __init__(self, bot):
 		self.bot = bot
 		
-		self.load_emoji()
-		
 		self.modes = ("ultraBullet", "bullet", "blitz", "classical", "correspondence", "crazyhouse", "chess960", "kingOfTheHill", "threeCheck", "antichess", "atomic", "horde", "racingKings", "puzzle")
 		self.mode_names = ("Ultrabullet", "Bullet", "Blitz", "Classical", "Correspondence", "Crazyhouse", "Chess960", "King of the Hill", "Three-Check", "Antichess", "Atomic", "Horde", "Racing Kings", "Training")
 		
-		def user_mode_wrapper(mode, name, emoji):
-			@self.user.command(name = name.lower().replace(' ', "").replace('-', ""), help = "User {} stats".format(name))
-			@checks.not_forbidden()
-			async def user_mode_command(ctx, username : self.LichessUser):
-				prov = "?" if username["perfs"][mode].get("prov") else ""
-				arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
-				await ctx.embed_reply("{emoji} {name} | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {arrow} {0[prog]}".format(username["perfs"][mode], emoji = emoji, name = name, prov = prov, arrow = arrow), title = username["username"])
-			return user_mode_command
-		
-		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
-			setattr(self, "user_" + name.lower().replace(' ', "").replace('-', ""), user_mode_wrapper(mode, name, emoji))
+		self.load_emoji()
+		self.generate_user_mode_commands()
 	
 	async def on_ready(self):
 		self.load_emoji()
+		self.generate_user_mode_commands()
 	
 	def load_emoji(self):
 		# TODO: Check only within Emoji Server emojis?
@@ -57,6 +47,21 @@ class Lichess:
 		self.downrightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_down_right_arrow") or ":arrow_lower_right:"
 		# Also possible fallback emoji: :chart_with_downwards_trend:
 		self.mode_emojis = (self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji, self.classical_emoji, self.correspondence_emoji, self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji, self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji, self.horde_emoji, self.racingkings_emoji, self.training_emoji)
+	
+	def generate_user_mode_commands(self):
+		# Creates user subcommand for a mode
+		def user_mode_wrapper(mode, name, emoji):
+			@self.user.command(name = name.lower().replace(' ', "").replace('-', ""), help = "User {} stats".format(name))
+			@checks.not_forbidden()
+			async def user_mode_command(ctx, username : self.LichessUser):
+				prov = "?" if username["perfs"][mode].get("prov") else ""
+				arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
+				await ctx.embed_reply("{emoji} {name} | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {arrow} {0[prog]}".format(username["perfs"][mode], emoji = emoji, name = name, prov = prov, arrow = arrow), title = username["username"])
+			return user_mode_command
+		# Generate user subcommands for each mode
+		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
+			self.user.remove_command(name.lower().replace(' ', "").replace('-', ""))
+			setattr(self, "user_" + name.lower().replace(' ', "").replace('-', ""), user_mode_wrapper(mode, name, emoji))
 	
 	class LichessUser(commands.Converter):
 		async def convert(self, ctx, argument):
