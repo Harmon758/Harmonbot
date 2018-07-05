@@ -39,23 +39,23 @@ class Lichess:
 	
 	def load_emoji(self):
 		# TODO: Check only within Emoji Server emojis?
-		self.ultrabullet_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Ultrabullet") or ":arrow_upper_left:"
-		self.bullet_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Bullet") or ":zap:"
-		self.blitz_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Blitz") or ":fire:"
-		self.classical_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Classical") or ":hourglass:"
-		self.correspondence_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Correspondence") or ":envelope:"
-		self.crazyhouse_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Crazyhouse") or ":pisces:"
-		self.chess960_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Chess960") or ":game_die:"
-		self.kingofthehill_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_KingOfTheHill") or ":triangular_flag_on_post:"
-		self.threecheck_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_ThreeCheck") or ":three:"
-		self.antichess_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Antichess") or ":arrows_clockwise:"
-		self.atomic_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Atomic") or ":atom:"
-		self.horde_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Horde") or "" # TODO: Fallback Emoji
-		self.racingkings_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_RacingKings") or ":checkered_flag:"
-		self.training_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_Training") or ":bow_and_arrow:"
-		self.uprightarrow_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_UpRightArrow") or ":arrow_upper_right:"
+		self.ultrabullet_emoji = discord.utils.get(self.bot.emojis, name = "lichess_ultrabullet") or ":arrow_upper_left:"
+		self.bullet_emoji = discord.utils.get(self.bot.emojis, name = "lichess_bullet") or ":zap:"
+		self.blitz_emoji = discord.utils.get(self.bot.emojis, name = "lichess_blitz") or ":fire:"
+		self.classical_emoji = discord.utils.get(self.bot.emojis, name = "lichess_classical") or ":hourglass:"
+		self.correspondence_emoji = discord.utils.get(self.bot.emojis, name = "lichess_correspondence") or ":envelope:"
+		self.crazyhouse_emoji = discord.utils.get(self.bot.emojis, name = "lichess_crazyhouse") or ":pisces:"
+		self.chess960_emoji = discord.utils.get(self.bot.emojis, name = "lichess_chess960") or ":game_die:"
+		self.kingofthehill_emoji = discord.utils.get(self.bot.emojis, name = "lichess_king_of_the_hill") or ":triangular_flag_on_post:"
+		self.threecheck_emoji = discord.utils.get(self.bot.emojis, name = "lichess_three_check") or ":three:"
+		self.antichess_emoji = discord.utils.get(self.bot.emojis, name = "lichess_antichess") or ":arrows_clockwise:"
+		self.atomic_emoji = discord.utils.get(self.bot.emojis, name = "lichess_atomic") or ":atom:"
+		self.horde_emoji = discord.utils.get(self.bot.emojis, name = "lichess_horde") or "" # TODO: Fallback Emoji
+		self.racingkings_emoji = discord.utils.get(self.bot.emojis, name = "lichess_racing_kings") or ":checkered_flag:"
+		self.training_emoji = discord.utils.get(self.bot.emojis, name = "lichess_training") or ":bow_and_arrow:"
+		self.uprightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_up_right_arrow") or ":arrow_upper_right:"
 		# Also possible fallback emoji: :chart_with_upwards_trend:
-		self.downrightarrow_emoji = discord.utils.get(self.bot.emojis, name = "Lichess_DownRightArrow") or ":arrow_lower_right:"
+		self.downrightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_down_right_arrow") or ":arrow_lower_right:"
 		# Also possible fallback emoji: :chart_with_downwards_trend:
 		self.mode_emojis = (self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji, self.classical_emoji, self.correspondence_emoji, self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji, self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji, self.horde_emoji, self.racingkings_emoji, self.training_emoji)
 	
