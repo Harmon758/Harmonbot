@@ -272,6 +272,14 @@ class Bot(commands.Bot):
 	
 	# TODO: Case-Insensitive subcommands (override Group)
 	
+	# Update stats on the Discord Bots site (https://bots.discord.pw)
+	async def update_discord_bots_stats(self):
+		url = f"https://bots.discord.pw/api/bots/{self.user.id}/stats"
+		headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}
+		data = json.dumps({"server_count": len(self.guilds)})
+		async with aiohttp_session.post(url, headers = headers, data = data) as resp:
+			return resp.status
+	
 	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
 	async def load(self, ctx, cog : str):
@@ -373,13 +381,6 @@ client = Bot(command_prefix = get_prefix)
 
 
 # Initialize/update info
-
-async def _update_discord_bots_stats():
-	url = f"https://bots.discord.pw/api/bots/{client.user.id}/stats"
-	headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}
-	data = json.dumps({"server_count": len(client.guilds)})
-	async with aiohttp_session.post(url, headers = headers, data = data) as resp:
-		return resp.status
 
 @client.listen()
 async def on_ready():
