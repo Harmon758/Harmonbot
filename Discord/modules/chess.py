@@ -87,8 +87,7 @@ class chess_match(chess.Board):
 		self.match_embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
 		self.match_embed.set_image(url = data["data"]["img_url"])
 		'''
-		cache_channel = self.bot.get_channel(clients.cache_channel_id)
-		image_message = await cache_channel.send(file = discord.File(clients.data_path + "/temp/chess_board.png"))
+		image_message = await self.bot.cache_channel.send(file = discord.File(clients.data_path + "/temp/chess_board.png"))
 		self.match_embed.set_image(url = image_message.attachments[0].url)
 		self.match_embed.set_footer(text = footer_text)
 		chess_pgn = chess.pgn.Game.from_board(self)
