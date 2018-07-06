@@ -234,9 +234,16 @@ class Bot(commands.Bot):
 		self.application_info_data = await self.application_info()
 		self.listener_bot = await self.get_user_info(self.listener_id)
 		self.cache_channel = self.get_channel(self.cache_channel_id)
+		await self.update_discord_bots_stats()
 	
 	async def on_resumed(self):
 		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().time().isoformat()}")
+	
+	async def on_guild_join(self, guild):
+		await self.update_discord_bots_stats()
+	
+	async def on_guild_remove(self, guild):
+		await self.update_discord_bots_stats()
 	
 	# TODO: on_command_completion
 	# TODO: optimize
@@ -378,22 +385,6 @@ def get_prefix(bot, message):
 # Initialize client
 
 client = Bot(command_prefix = get_prefix)
-
-
-# Update Discord Bots stats
-# TODO: Move to Bot
-
-@client.listen()
-async def on_ready():
-	await client.update_discord_bots_stats()
-
-@client.listen()
-async def on_guild_join(guild):
-	await client.update_discord_bots_stats()
-
-@client.listen()
-async def on_guild_remove(guild):
-	await client.update_discord_bots_stats()
 
 
 # Utilities

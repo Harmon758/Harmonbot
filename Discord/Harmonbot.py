@@ -67,7 +67,7 @@ if __name__ == "__main__":
 			# TODO: DM if left server
 		# await voice.detectvoice()
 	
-	@client.event
+	@client.listen()
 	async def on_guild_join(guild):
 		clients.create_folder(clients.data_path + "/server_data/{}".format(guild.id))
 		clients.create_file("server_data/{}/settings".format(guild.id), content = {"anti-spam": False, "respond_to_bots": False})
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", guild.name) # | / \ : ? * " < >
 		clients.create_file("server_data/{}/{}".format(guild.id, clean_name))
 	
-	@client.event
+	@client.listen()
 	async def on_guild_remove(guild):
 		me = discord.utils.get(client.get_all_members(), id = clients.client.owner_id)
 		await client.send_embed(me, None, title = "Left Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
