@@ -476,7 +476,7 @@ class Meta:
 	@commands.is_owner()
 	async def update_discord_bots_stats(self, ctx):
 		'''Update stats on https://bots.discord.pw'''
-		response = await clients._update_discord_bots_stats()
+		response = await ctx.bot.update_discord_bots_stats()
 		await ctx.reply(response)
 	
 	# Restart/Shutdown

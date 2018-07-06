@@ -380,19 +380,20 @@ def get_prefix(bot, message):
 client = Bot(command_prefix = get_prefix)
 
 
-# Initialize/update info
+# Update Discord Bots stats
+# TODO: Move to Bot
 
 @client.listen()
 async def on_ready():
-	await _update_discord_bots_stats()
+	await client.update_discord_bots_stats()
 
 @client.listen()
 async def on_guild_join(guild):
-	await _update_discord_bots_stats()
+	await client.update_discord_bots_stats()
 
 @client.listen()
 async def on_guild_remove(guild):
-	await _update_discord_bots_stats()
+	await client.update_discord_bots_stats()
 
 
 # Utilities
