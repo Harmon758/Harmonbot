@@ -29,7 +29,6 @@ from utilities.help_formatter import CustomHelpFormatter
 
 beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"
-cache_channel_id = 254051856219635713
 user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
 bot_color = 0x738bd7
@@ -68,6 +67,7 @@ class Bot(commands.Bot):
 		self.version = "1.0.0-rc.1"
 		self.owner_id = 115691005197549570
 		self.listener_id = 180994984038760448
+		self.cache_channel_id = 254051856219635713
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
