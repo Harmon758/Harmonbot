@@ -88,8 +88,10 @@ class Bot(commands.Bot):
 		self.EMBED_FIELD_VALUE_CHARACTER_LIMIT = self.EMBED_FIELD_VALUE_CHAR_LIMIT = self.EFVCL = 1024
 		## Functional
 		self.delete_limit = 10000
-		self.application_info_data = None  # Set on ready
-		self.listener_bot = None  # User object set on ready
+		### Set on ready
+		self.application_info_data = None
+		self.listener_bot = None  # User object
+		self.cache_channel = None
 		# TODO: Include owner variable for user object?
 		
 		# Variables
@@ -231,6 +233,7 @@ class Bot(commands.Bot):
 	async def on_ready(self):
 		self.application_info_data = await self.application_info()
 		self.listener_bot = await self.get_user_info(self.listener_id)
+		self.cache_channel = self.get_channel(self.cache_channel_id)
 	
 	async def on_resumed(self):
 		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().time().isoformat()}")
