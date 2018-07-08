@@ -57,23 +57,25 @@ class Overwatch:
 		await ctx.embed_reply(achievement_data["description"], title = achievement_data["name"], 
 								fields = fields)
 	
-	@overwatch.command()
+	@overwatch.command(name = "hero")
 	@checks.not_forbidden()
-	async def hero(self, ctx, *, hero : str):
+	async def overwatch_hero(self, ctx, *, hero : str):
 		'''Heroes'''
-		async with clients.aiohttp_session.get("https://overwatch-api.net/api/v1/hero?limit={}".format(self.request_limit)) as resp:
+		url = "https://overwatch-api.net/api/v1/hero?limit={}".format(self.request_limit)
+		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["data"]
-		_hero = discord.utils.find(lambda h: h["name"].lower() == hero.lower(), data)
-		if not _hero:
+		hero_data = discord.utils.find(lambda h: h["name"].lower() == hero.lower(), data)
+		if not hero_data:
 			await ctx.embed_reply(":no_entry: Hero not found")
 			return
-		fields = [("Health", _hero["health"]), ("Armor", _hero["armour"]), ("Shield", _hero["shield"]), ("Real Name", _hero["real_name"])]
+		fields = [("Health", hero_data["health"]), ("Armor", hero_data["armour"]), 
+					("Shield", hero_data["shield"]), ("Real Name", hero_data["real_name"])]
 		for field in ("age", "height", "affiliation", "base_of_operations"):
-			if _hero.get(field):
-				fields.append((field.replace('_', ' ').title(), _hero[field]))
-		fields.append(("Difficulty", '★' * _hero["difficulty"] + '☆' * (3 - _hero["difficulty"]), False))
-		await ctx.embed_reply(_hero["description"], title = _hero["name"], fields = fields)
+			if hero_data.get(field):
+				fields.append((field.replace('_', ' ').title(), hero_data[field]))
+		fields.append(("Difficulty", '★' * hero_data["difficulty"] + '☆' * (3 - hero_data["difficulty"]), False))
+		await ctx.embed_reply(hero_data["description"], title = hero_data["name"], fields = fields)
 	
 	@overwatch.command()
 	@checks.not_forbidden()
