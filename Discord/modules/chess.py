@@ -2,11 +2,12 @@
 import discord
 
 import asyncio
+import datetime
+
 import chess
 import chess.pgn
 import chess.svg
 import chess.uci
-import datetime
 from wand.image import Image
 
 import clients
