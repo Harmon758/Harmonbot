@@ -2,6 +2,7 @@
 from discord.ext import commands
 
 import inspect
+import re
 
 import clarifai.rest
 import imgurpython
@@ -42,6 +43,25 @@ class Images:
 		All image subcommands are also commands
 		'''
 		await ctx.invoke(ctx.bot.get_command("help"), ctx.invoked_with)
+	
+	@image.command(name = "color", aliases = ["colour"])
+	async def image_color(self, ctx, image_url : str):
+		'''
+		Image color density values
+		and the closest W3C color name for each identified color
+		'''
+		try:
+			response = self.bot.clarifai_app.public_models.color_model.predict_by_url(image_url)
+		except clarifai.rest.ApiError as e:
+			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
+			return
+		if response["status"]["description"] != "Ok":
+			await ctx.embed_reply(":no_entry: Error")
+			return
+		fields = []
+		for color in sorted(response["outputs"][0]["data"]["colors"], key = lambda c: c["value"], reverse = True):
+			fields.append((color["raw_hex"].upper(), "{:.2f}%\n{}\n({})".format(color["value"] * 100, re.sub(r"(?!^)(?=[A-Z])", ' ', color["w3c"]["name"]), color["w3c"]["hex"].upper())))
+		await ctx.embed_reply(title = "Color Density", fields = fields, thumbnail_url = image_url)
 	
 	@image.command(name = "google", aliases = ["search"])
 	async def image_google(self, ctx, *, search : str):
