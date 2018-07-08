@@ -76,11 +76,11 @@ class Lichess:
 			# TODO: custom error message?
 			return data
 
-	@commands.group()
+	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def lichess(self, ctx):
-		'''WIP'''
-		...
+		'''Lichess'''
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@lichess.group(aliases = ["tournaments"])
 	@checks.not_forbidden()
