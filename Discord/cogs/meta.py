@@ -202,12 +202,12 @@ class Meta:
 		'''Every server I'm in'''
 		for guild in self.bot.guilds:
 			embed = discord.Embed(color = clients.bot_color)
-			embed.description = "```Name: " + guild.name + "\n"
-			embed.description += "ID: " + guild.id + "\n"
-			embed.description += "Owner: {0} ({0.id})".format(guild.owner) + "\n"
-			embed.description += "Server Region: {}".format(guild.region) + "\n"
-			embed.description += "Members: {}".format(guild.member_count) + "\n"
-			embed.description += "Created at: {}".format(guild.created_at) + "\n```"
+			embed.description = "```Name: {}\n".format(guild.name)
+			embed.description += "ID: {}\n".format(guild.id)
+			embed.description += "Owner: {0} ({0.id})\n".format(guild.owner)
+			embed.description += "Server Region: {}\n".format(guild.region)
+			embed.description += "Members: {}\n".format(guild.member_count)
+			embed.description += "Created at: {}\n```".format(guild.created_at)
 			embed.set_thumbnail(url = guild.icon_url)
 			await ctx.whisper(embed = embed)
 	
