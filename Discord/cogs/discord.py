@@ -258,22 +258,6 @@ class Discord:
 		if flag and name:
 			await self.bot.embed_reply(name + " was not found on this server")
 	
-	@commands.command(aliases = ["server_icon"], no_pm = True)
-	@checks.not_forbidden()
-	async def servericon(self, ctx):
-		'''See a bigger version of the server icon'''
-		if not ctx.guild.icon:
-			await self.bot.embed_reply(":no_entry: This server doesn't have an icon")
-			return
-		await self.bot.embed_reply("This server's icon:", image_url = ctx.guild.icon_url)
-	
-	@commands.command(aliases = ["server_owner"], no_pm = True)
-	@checks.not_forbidden()
-	async def serverowner(self, ctx):
-		'''The owner of the server'''
-		owner = ctx.guild.owner
-		await self.bot.embed_reply("The owner of this server is {}".format(owner.mention), footer_text = str(owner), footer_icon_url = owner.avatar_url or owner.default_avatar_url)
-	
 	# Convert Attributes
 	
 	@commands.command(aliases = ["id_to_name"])
