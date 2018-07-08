@@ -562,7 +562,9 @@ class Resources:
 		Generate a strawpoll link
 		Use qoutes for spaces in the question or options
 		'''
-		async with clients.aiohttp_session.post("https://strawpoll.me/api/v2/polls", data = json.dumps({"title" : question, "options" : options})) as resp:
+		url = "https://strawpoll.me/api/v2/polls"
+		data = json.dumps({"title" : question, "options" : options})
+		async with clients.aiohttp_session.post(url, data = data) as resp:
 			poll = await resp.json()
 		await ctx.reply("http://strawpoll.me/" + str(poll["id"]))
 	
