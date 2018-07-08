@@ -64,17 +64,17 @@ class Overwatch:
 		async with clients.aiohttp_session.get("https://overwatch-api.net/api/v1/hero?limit={}".format(self.request_limit)) as resp:
 			data = await resp.json()
 		data = data["data"]
-		for _hero in data:
-			if _hero["name"].lower() == hero.lower():
-				fields = [("Health", _hero["health"]), ("Armor", _hero["armour"]), ("Shield", _hero["shield"]), ("Real Name", _hero["real_name"])]
-				if _hero["age"]: fields.append(("Age", _hero["age"]))
-				if _hero["height"]: fields.append(("Height", _hero["height"]))
-				if _hero["affiliation"]: fields.append(("Affiliation", _hero["affiliation"]))
-				if _hero["base_of_operations"]: fields.append(("Base Of Operations", _hero["base_of_operations"]))
-				fields.append(("Difficulty", '★' * _hero["difficulty"] + '☆' * (3 - _hero["difficulty"]), False))
-				await ctx.embed_reply(_hero["description"], title = _hero["name"], fields = fields)
-				return
-		await ctx.embed_reply(":no_entry: Hero not found")
+		_hero = discord.utils.find(lambda h: h["name"].lower() == hero.lower(), data)
+		if not _hero:
+			await ctx.embed_reply(":no_entry: Hero not found")
+			return
+		fields = [("Health", _hero["health"]), ("Armor", _hero["armour"]), ("Shield", _hero["shield"]), ("Real Name", _hero["real_name"])]
+		if _hero["age"]: fields.append(("Age", _hero["age"]))
+		if _hero["height"]: fields.append(("Height", _hero["height"]))
+		if _hero["affiliation"]: fields.append(("Affiliation", _hero["affiliation"]))
+		if _hero["base_of_operations"]: fields.append(("Base Of Operations", _hero["base_of_operations"]))
+		fields.append(("Difficulty", '★' * _hero["difficulty"] + '☆' * (3 - _hero["difficulty"]), False))
+		await ctx.embed_reply(_hero["description"], title = _hero["name"], fields = fields)
 	
 	@overwatch.command()
 	@checks.not_forbidden()
