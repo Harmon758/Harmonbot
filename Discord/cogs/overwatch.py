@@ -61,8 +61,8 @@ class Overwatch:
 	@checks.not_forbidden()
 	async def overwatch_hero(self, ctx, *, hero : str):
 		'''Heroes'''
-		url = "https://overwatch-api.net/api/v1/hero?limit={}".format(self.request_limit)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "https://overwatch-api.net/api/v1/hero"
+		async with clients.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
 			data = await resp.json()
 		data = data["data"]
 		hero_data = discord.utils.find(lambda h: h["name"].lower() == hero.lower(), data)
