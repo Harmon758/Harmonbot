@@ -67,7 +67,7 @@ class Overwatch:
 		data = data["data"]
 		hero_data = discord.utils.find(lambda h: h["name"].lower() == hero.lower(), data)
 		if not hero_data:
-			await ctx.embed_reply(":no_entry: Hero not found")
+			await ctx.embed_reply(":no_entry: Error: Hero not found")
 			return
 		fields = [("Health", hero_data["health"]), ("Armor", hero_data["armour"]), 
 					("Shield", hero_data["shield"]), ("Real Name", hero_data["real_name"])]
