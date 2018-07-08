@@ -69,10 +69,9 @@ class Overwatch:
 			await ctx.embed_reply(":no_entry: Hero not found")
 			return
 		fields = [("Health", _hero["health"]), ("Armor", _hero["armour"]), ("Shield", _hero["shield"]), ("Real Name", _hero["real_name"])]
-		if _hero["age"]: fields.append(("Age", _hero["age"]))
-		if _hero["height"]: fields.append(("Height", _hero["height"]))
-		if _hero["affiliation"]: fields.append(("Affiliation", _hero["affiliation"]))
-		if _hero["base_of_operations"]: fields.append(("Base Of Operations", _hero["base_of_operations"]))
+		for field in ("age", "height", "affiliation", "base_of_operations"):
+			if _hero.get(field):
+				fields.append((field.replace('_', ' ').title(), _hero[field]))
 		fields.append(("Difficulty", '★' * _hero["difficulty"] + '☆' * (3 - _hero["difficulty"]), False))
 		await ctx.embed_reply(_hero["description"], title = _hero["name"], fields = fields)
 	
