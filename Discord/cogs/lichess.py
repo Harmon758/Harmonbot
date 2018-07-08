@@ -16,8 +16,8 @@ class Lichess:
 	def __init__(self, bot):
 		self.bot = bot
 		
-		self.modes = ("ultraBullet", "bullet", "blitz", "classical", "correspondence", "crazyhouse", "chess960", "kingOfTheHill", "threeCheck", "antichess", "atomic", "horde", "racingKings", "puzzle")
-		self.mode_names = ("Ultrabullet", "Bullet", "Blitz", "Classical", "Correspondence", "Crazyhouse", "Chess960", "King of the Hill", "Three-Check", "Antichess", "Atomic", "Horde", "Racing Kings", "Training")
+		self.modes = ("ultraBullet", "bullet", "blitz", "rapid", "classical", "correspondence", "crazyhouse", "chess960", "kingOfTheHill", "threeCheck", "antichess", "atomic", "horde", "racingKings", "puzzle")
+		self.mode_names = ("Ultrabullet", "Bullet", "Blitz", "Rapid", "Classical", "Correspondence", "Crazyhouse", "Chess960", "King of the Hill", "Three-Check", "Antichess", "Atomic", "Horde", "Racing Kings", "Training")
 		
 		self.load_emoji()
 		self.generate_user_mode_commands()
@@ -28,10 +28,12 @@ class Lichess:
 	
 	def load_emoji(self):
 		# TODO: Check only within Emoji Server emojis?
+		# TODO: Use unicode code points
 		self.ultrabullet_emoji = discord.utils.get(self.bot.emojis, name = "lichess_ultrabullet") or ":arrow_upper_left:"
 		self.bullet_emoji = discord.utils.get(self.bot.emojis, name = "lichess_bullet") or ":zap:"
 		self.blitz_emoji = discord.utils.get(self.bot.emojis, name = "lichess_blitz") or ":fire:"
-		self.classical_emoji = discord.utils.get(self.bot.emojis, name = "lichess_classical") or ":hourglass:"
+		self.rapid_emoji = discord.utils.get(self.bot.emojis, name = "lichess_rapid") or ":rabbit2:"
+		self.classical_emoji = discord.utils.get(self.bot.emojis, name = "lichess_classical") or ":turtle:"
 		self.correspondence_emoji = discord.utils.get(self.bot.emojis, name = "lichess_correspondence") or ":envelope:"
 		self.crazyhouse_emoji = discord.utils.get(self.bot.emojis, name = "lichess_crazyhouse") or ":pisces:"
 		self.chess960_emoji = discord.utils.get(self.bot.emojis, name = "lichess_chess960") or ":game_die:"
@@ -46,7 +48,7 @@ class Lichess:
 		# Also possible fallback emoji: :chart_with_upwards_trend:
 		self.downrightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_down_right_arrow") or ":arrow_lower_right:"
 		# Also possible fallback emoji: :chart_with_downwards_trend:
-		self.mode_emojis = (self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji, self.classical_emoji, self.correspondence_emoji, self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji, self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji, self.horde_emoji, self.racingkings_emoji, self.training_emoji)
+		self.mode_emojis = (self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji, self.rapid_emoji, self.classical_emoji, self.correspondence_emoji, self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji, self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji, self.horde_emoji, self.racingkings_emoji, self.training_emoji)
 	
 	def generate_user_mode_commands(self):
 		# Creates user subcommand for a mode
