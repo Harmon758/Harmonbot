@@ -82,11 +82,11 @@ class Lichess:
 		'''Lichess'''
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
-	@lichess.group(aliases = ["tournaments"])
+	@lichess.group(aliases = ["tournaments"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def tournament(self, ctx):
-		'''WIP'''
-		...
+		'''Tournaments'''
+		await ctx.invoke(self.bot.get_command("help"), "lichess", ctx.invoked_with)
 	
 	@tournament.command(name = "current", aliases = ["started"])
 	@checks.not_forbidden()
