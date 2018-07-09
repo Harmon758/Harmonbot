@@ -70,7 +70,10 @@ class Resources:
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		data = data[0]
-		await ctx.embed_reply("#{}".format(data["hex"]), title = data["title"].capitalize(), image_url = data["imageUrl"], fields = (("RGB", "{0[red]}, {0[green]}, {0[blue]}".format(data["rgb"])), ("HSV", "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"]))))
+		fields = (("RGB", "{0[red]}, {0[green]}, {0[blue]}".format(data["rgb"])), 
+					("HSV", "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"])))
+		await ctx.embed_reply("#{}".format(data["hex"]), title = data["title"].capitalize(), 
+								image_url = data["imageUrl"], fields = fields)
 	
 	@commands.command()
 	@checks.not_forbidden()
