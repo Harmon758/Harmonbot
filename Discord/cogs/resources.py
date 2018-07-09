@@ -67,13 +67,7 @@ class Resources:
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		data = data[0]
-		embed = discord.Embed(title = data["title"].capitalize(), description = "#{}".format(data["hex"]), color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		embed.add_field(name = "RGB", value = "{0[red]}, {0[green]}, {0[blue]}".format(data["rgb"]))
-		embed.add_field(name = "HSV", value = "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"]))
-		embed.set_image(url = data["imageUrl"])
-		await self.bot.say(embed = embed)
+		await ctx.embed_reply("#{}".format(data["hex"]), title = data["title"].capitalize(), image_url = data["imageUrl"], fields = (("RGB", "{0[red]}, {0[green]}, {0[blue]}".format(data["rgb"])), ("HSV", "{0[hue]}°, {0[saturation]}%, {0[value]}%".format(data["hsv"]))))
 	
 	@commands.command()
 	@checks.not_forbidden()
