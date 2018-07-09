@@ -55,7 +55,7 @@ class Resources:
 		'''
 		color = color.strip('#')
 		if utilities.is_hex(color) and len(color) == 6:
-			url = "http://www.colourlovers.com/api/color/{}".format(color)
+			url = "http://www.colourlovers.com/api/color/" + color
 			params = {}
 		else:
 			url = "http://www.colourlovers.com/api/colors"
