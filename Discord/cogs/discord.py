@@ -19,25 +19,8 @@ class Discord:
 	def __init__(self, bot):
 		self.bot = bot
 	
-	# Do Stuff
+	# TODO: Include spaces in quotes explanation (in help)
 	
-	@commands.command(no_pm = True)
-	@checks.has_permissions_and_capability(manage_roles = True)
-	async def addrole(self, ctx, member : str, *, role : str): # member : discord.Member
-		'''
-		Gives a user a role
-		Replace spaces in usernames with underscores or put the username in qoutes
-		'''
-		member = await utilities.get_user(ctx, member)
-		if not member:
-			await self.bot.embed_reply(":no_entry: Member not found")
-			return
-		role = discord.utils.find(lambda r: utilities.remove_symbols(r.name).startswith(role), ctx.guild.roles)
-		if not role:
-			await self.bot.embed_reply(":no_entry: Role not found")
-			return
-		await self.bot.add_roles(member, role)
-		await self.bot.embed_reply("I gave the role, {0}, to {1}".format(role, member))
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
@@ -212,12 +195,21 @@ class Discord:
 	
 	# User
 	# TODO: create cog, add commands
+	# TODO: role removal
 	
 	@commands.group(aliases = ["member"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def user(self, ctx):
 		'''User'''
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+	
+	@user.command(name = "add_role", aliases = ["addrole"])
+	@commands.guild_only()
+	@checks.has_permissions_and_capability(manage_roles = True)
+	async def user_add_role(self, ctx, member : discord.Member, *, role : discord.Role):
+		'''Gives a user a role'''
+		await member.add_roles(role)
+		await ctx.embed_reply("I gave the role, {}, to {}".format(role, member))
 	
 	@commands.command()
 	@checks.not_forbidden()
