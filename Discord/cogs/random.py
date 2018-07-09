@@ -86,9 +86,10 @@ class Random:
 	@checks.not_forbidden()
 	async def color(self, ctx):
 		'''Information on a random color'''
-		url = "http://www.colourlovers.com/api/colors/random?numResults=1&format=json"
+		url = "http://www.colourlovers.com/api/colors/random"
+		params = {"numResults": 1}
 		cog = self.bot.get_cog("Resources")
-		if cog: await cog.process_color(ctx, url)
+		if cog: await cog.process_color(ctx, url, params)
 	
 	@random.command()
 	@checks.not_forbidden()

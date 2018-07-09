@@ -55,13 +55,16 @@ class Resources:
 		'''
 		color = color.strip('#')
 		if utilities.is_hex(color) and len(color) == 6:
-			url = "http://www.colourlovers.com/api/color/{}?format=json".format(color)
+			url = "http://www.colourlovers.com/api/color/{}".format(color)
+			params = {}
 		else:
-			url = "http://www.colourlovers.com/api/colors?numResults=1&format=json&keywords={}".format(color)
-		await self.process_color(ctx, url)
+			url = "http://www.colourlovers.com/api/colors"
+			params = {"numResult": 1, "keywords": color}
+		await self.process_color(ctx, url, params)
 	
-	async def process_color(self, ctx, url):
-		async with clients.aiohttp_session.get(url) as resp:
+	async def process_color(self, ctx, url, params = {}):
+		params["format"] = "json"
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Error")
