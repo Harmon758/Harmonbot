@@ -247,8 +247,7 @@ class Meta:
 	async def about(self, ctx):
 		'''About me'''
 		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
-		discord_py_version = os.popen(r'pip{0.major}.{0.minor} --disable-pip-version-check show discord.py|grep Version'.format(sys.version_info)).read().strip("Version:").strip()
-		# discord.__version__
+		discord_py_version = pkg_resources.get_distribution("discord.py").version
 		embed = discord.Embed(title = "About Me", color = clients.bot_color)
 		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(ctx.bot.application_info_data.id))
 		# avatar = ctx.author.avatar_url
