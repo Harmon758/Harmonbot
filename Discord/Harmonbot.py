@@ -241,7 +241,7 @@ if __name__ == "__main__":
 		if type is discord.Forbidden:
 			for arg in args:
 				if isinstance(arg, commands.context.Context):
-					print("Missing Permissions for {0.command.name} in #{0.channel.name} in {0.guild.name}".format(arg))
+					print("{0.bot.console_message_prefix}Missing Permissions for {0.command.name} in #{0.channel.name} in {0.guild.name}".format(arg))
 					return
 				elif isinstance(arg, discord.Message):
 					print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(arg))
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 			await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
 		# TODO: check embed links permission
 		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
-			print("Missing Permissions for {0.command.name} in #{0.channel.name} in {0.guild.name}".format(ctx))
+			print("{0.bot.console_message_prefix}Missing Permissions for {0.command.name} in #{0.channel.name} in {0.guild.name}".format(ctx))
 		else:
 			print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
