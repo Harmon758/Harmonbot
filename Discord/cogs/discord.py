@@ -117,7 +117,7 @@ class Discord:
 			new_colour = role_to_change.colour
 			new_colour.value = color_value
 			await self.bot.edit_role(ctx.guild, role_to_change, colour = new_colour)
-			await self.bot.embed_reply("Changed your role color to {}".format(color))
+			await ctx.embed_reply("Changed your role color to {}".format(color))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
