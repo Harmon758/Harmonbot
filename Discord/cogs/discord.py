@@ -210,8 +210,14 @@ class Discord:
 				await self.bot.delete_channel(temp_text_channel)
 				return
 	
+	# User
+	# TODO: create cog, add commands
 	
-	# Get Attributes
+	@commands.group(aliases = ["member"], invoke_without_command = True)
+	@checks.not_forbidden()
+	async def user(self, ctx):
+		'''User'''
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@commands.command()
 	@checks.not_forbidden()
