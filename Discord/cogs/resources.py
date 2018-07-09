@@ -210,23 +210,10 @@ class Resources:
 		if data["Response"] == "False":
 			await ctx.embed_reply(":no_entry: Error: {}".format(data["Error"]))
 			return
-		embed = discord.Embed(title = data["Title"], url = "http://www.imdb.com/title/{}".format(data["imdbID"]), color = clients.bot_color)
-		avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-		embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		embed.description = "{0[Year]} {0[Type]}".format(data)
-		embed.add_field(name = "IMDb Rating", value = data["imdbRating"])
-		embed.add_field(name = "Runtime", value = data["Runtime"])
-		embed.add_field(name = "Genre(s)", value = data["Genre"])
-		embed.add_field(name = "Director", value = data["Director"])
-		embed.add_field(name = "Writer", value = data["Writer"])
-		embed.add_field(name = "Cast", value = data["Actors"])
-		embed.add_field(name = "Language", value = data["Language"])
-		embed.add_field(name = "Country", value = data["Country"])
-		embed.add_field(name = "Awards", value = data["Awards"])
-		if "totalSeasons" in data: embed.add_field(name = "Total Seasons", value = data["totalSeasons"])
-		embed.add_field(name = "Plot", value = data["Plot"], inline = False)
-		if data["Poster"] != "N/A": embed.set_thumbnail(url = data["Poster"])
-		await self.bot.say(embed = embed)
+		fields = [("IMDb Rating", data["imdbRating"]), ("Runtime", data["Runtime"]), ("Genre(s)", data["Genre"]), ("Director", data["Director"]), ("Writer", data["Writer"]), ("Cast", data["Actors"]), ("Language", data["Language"]), ("Country", data["Country"]), ("Awards", data["Awards"])]
+		if "totalSeasons" in data: fields.append(("Total Seasons", data["totalSeasons"]))
+		fields.append(("Plot", data["Plot"], False))
+		await ctx.embed_reply("{0[Year]} {0[Type]}".format(data), title = data["Title"], title_url = "http://www.imdb.com/title/{}".format(data["imdbID"]), fields = fields, thumbnail_url = data["Poster"] if data["Poster"] != "N/A" else None)
 	
 	@commands.command()
 	@checks.not_forbidden()
