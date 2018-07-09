@@ -165,5 +165,5 @@ class Images:
 		percentages = {}
 		for concept in response["outputs"][0]["data"]["concepts"]:
 			percentages[concept["name"]] = concept["value"] * 100
-		await ctx.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]))
+		await ctx.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]), thumbnail_url = image_url)
 
