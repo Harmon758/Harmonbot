@@ -258,18 +258,12 @@ class Discord:
 	
 	# Convert Attributes
 	
-	@commands.command(aliases = ["id_to_name"])
+	@user.command(name = "name")
 	@checks.not_forbidden()
-	async def idtoname(self, ctx, id : str):
-		'''Convert user id to name'''
-		user = await self.bot.get_user_info(id)
-		if not user:
-			await self.bot.embed_reply(":no_entry: User with that id not found")
-			return
-		embed = discord.Embed(color = clients.bot_color)
-		embed.set_author(name = str(user), icon_url = user.avatar_url or user.default_avatar_url)
+	async def user_name(self, ctx, *, user : discord.Member):
+		'''The name of a user'''
 		# Include mention?
-		await self.bot.reply("", embed = embed)
+		await ctx.embed_reply(user.mention, footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	@commands.command(aliases = ["usertoid", "usernametoid", "name_to_id", "user_to_id", "username_to_id"])
 	@commands.guild_only()
