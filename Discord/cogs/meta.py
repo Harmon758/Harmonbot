@@ -247,6 +247,8 @@ class Meta:
 	async def about(self, ctx):
 		'''About me'''
 		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
+		discord_py_version = os.popen(r'pip{0.major}.{0.minor} --disable-pip-version-check show discord.py|grep Version'.format(sys.version_info)).read().strip("Version:").strip()
+		# discord.__version__
 		embed = discord.Embed(title = "About Me", color = clients.bot_color)
 		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(ctx.bot.application_info_data.id))
 		# avatar = ctx.author.avatar_url
@@ -257,7 +259,7 @@ class Meta:
 		if changes: embed.add_field(name = "Latest Changes:", value = changes, inline = False)
 		embed.add_field(name = "Created on:", value = "February 10th, 2016")
 		embed.add_field(name = "Version", value = self.bot.version)
-		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) v{0}\n([Python](https://www.python.org/) v{1.major}.{1.minor}.{1.micro})".format(discord.__version__, sys.version_info))
+		embed.add_field(name = "Library", value = "[discord.py](https://github.com/Rapptz/discord.py) v{0}\n([Python](https://www.python.org/) v{1.major}.{1.minor}.{1.micro})".format(discord_py_version, sys.version_info))
 		owner = discord.utils.get(self.bot.get_all_members(), id = self.bot.owner_id)
 		embed.set_footer(text = "Developer/Owner: {0} (Discord ID: {0.id})".format(owner), icon_url = owner.avatar_url)
 		await ctx.reply("", embed = embed)
