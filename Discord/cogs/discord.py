@@ -123,25 +123,25 @@ class Discord:
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin(self, ctx, message_id : int):
 		'''Pin message by message ID'''
-		message = await self.bot.get_message(ctx.channel, str(message_id))
-		await self.bot.pin_message(message)
-		await self.bot.embed_reply(":pushpin: Pinned message")
+		message = await ctx.channel.get_message(message_id)
+		await message.pin()
+		await ctx.embed_reply(":pushpin: Pinned message")
 	
 	@pin.command(name = "first")
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin_first(self, ctx):
 		'''Pin first message'''
-		message = await self.bot.logs_from(ctx.channel, after = ctx.channel, limit = 1).iterate()
-		await self.bot.pin_message(message)
-		await self.bot.embed_reply(":pushpin: Pinned first message in this channel")
+		message = await ctx.channel.history(after = ctx.channel, limit = 1).iterate()
+		await message.pin()
+		await ctx.embed_reply(":pushpin: Pinned first message in this channel")
 	
 	@commands.command()
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def unpin(self, ctx, message_id : int):
 		'''Unpin message by message ID'''
-		message = await self.bot.get_message(ctx.channel, str(message_id))
-		await self.bot.unpin_message(message)
-		await self.bot.embed_reply(":wastebasket: Unpinned message")
+		message = await ctx.channel.get_message(message_id)
+		await message.unpin()
+		await ctx.embed_reply(":wastebasket: Unpinned message")
 	
 	@commands.command()
 	@commands.guild_only()
