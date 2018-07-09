@@ -100,7 +100,7 @@ class Images:
 		for name, value in sorted(names.items(), key = lambda i: i[1], reverse = True):
 			output += "**{}**: {:.2f}%, ".format(name, value)
 		output = output[:-2]
-		await ctx.embed_reply(output)
+		await ctx.embed_reply(output, thumbnail_url = image_url)
 	
 	# TODO: add as search subcommand
 	@commands.group(invoke_without_command = True)
