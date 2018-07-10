@@ -48,7 +48,6 @@ class Bot(commands.Bot):
 		
 		# Constants necessary for initialization
 		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
-		self.stream_url = "https://www.twitch.tv/harmonbot"
 		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
 		"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
 		"not enough space here to", "the meaning of life is", "the Reimann hypothesis", 
@@ -61,9 +60,13 @@ class Bot(commands.Bot):
 		"with quantum foam", "with R2-D2", "with RSS Bot", "with Samantha", "with Siri", "with Skynet", 
 		"with Spirit in the sand pit", "with TARS", "with the infinity gauntlet", "with the NSA", 
 		"with Voyager 1", "with Waste Allocation Load Lifter: Earth-Class", "world domination")
+		self.stream_url = "https://www.twitch.tv/harmonbot"
 		
 		# Initialization
-		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(self.bot_color), activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url), case_insensitive = True)
+		help_formatter = CustomHelpFormatter(self.bot_color)
+		activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url)
+		super().__init__(command_prefix = command_prefix, formatter = help_formatter, 
+							activity = activity, case_insensitive = True)
 		
 		# Constants
 		## Custom
