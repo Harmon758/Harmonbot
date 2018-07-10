@@ -59,7 +59,7 @@ class Info:
 	@checks.not_forbidden()
 	async def role(self, ctx, *, role : discord.Role):
 		'''Information about a role'''
-		embed = discord.Embed(description = role.mention, title = role.name, timestamp = role.created_at, color = clients.bot_color)
+		embed = discord.Embed(description = role.mention, title = role.name, timestamp = role.created_at, color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		embed.add_field(name = "ID", value = role.id)
 		embed.add_field(name = "Members", value = len(role.members))
@@ -78,7 +78,7 @@ class Info:
 	async def server(self, ctx):
 		'''Information about the server'''
 		server = ctx.guild
-		embed = discord.Embed(title = server.name, url = server.icon_url, timestamp = server.created_at, color = clients.bot_color)
+		embed = discord.Embed(title = server.name, url = server.icon_url, timestamp = server.created_at, color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		embed.set_thumbnail(url = server.icon_url)
 		embed.add_field(name = "Owner", value = server.owner.mention)

@@ -263,11 +263,11 @@ class AudioPlayer:
 	
 	def queue_embed(self):
 		if self.radio_flag:
-			return discord.Embed(title = ":radio: Radio is currently on", color = clients.bot_color)
+			return discord.Embed(title = ":radio: Radio is currently on", color = self.bot.bot_color)
 		elif self.library_flag:
-			return discord.Embed(title = ":notes: Playing songs from my library", color = clients.bot_color)
+			return discord.Embed(title = ":notes: Playing songs from my library", color = self.bot.bot_color)
 		elif self.queue.qsize() == 0:
-			return discord.Embed(title = ":hole: The queue is currently empty", color = clients.bot_color)
+			return discord.Embed(title = ":hole: The queue is currently empty", color = self.bot.bot_color)
 		else:
 			queue_string = ""
 			for number, stream in enumerate(list(self.queue._queue)[:10], start = 1):
@@ -275,7 +275,7 @@ class AudioPlayer:
 			if self.queue.qsize() > 10:
 				more_songs = self.queue.qsize() - 10
 				queue_string += ":arrow_right: There {} {} more {} in the queue".format(clients.inflect_engine.plural("is", more_songs), more_songs, clients.inflect_engine.plural("song", more_songs))
-			return discord.Embed(title = ":musical_score: Queue:", description = queue_string, color = clients.bot_color)
+			return discord.Embed(title = ":musical_score: Queue:", description = queue_string, color = self.bot.bot_color)
 	
 	async def empty_queue(self):
 		while not self.queue.empty():

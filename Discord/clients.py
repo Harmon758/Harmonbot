@@ -260,7 +260,7 @@ class Bot(commands.Bot):
 	author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
 	image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
 	timestamp = discord.Embed.Empty, fields = []):
-		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = bot_color)
+		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = self.bot_color)
 		embed.description = str(description) if description else discord.Embed.Empty
 		if author_name: embed.set_author(name = author_name, url = author_url, icon_url = author_icon_url)
 		if image_url: embed.set_image(url = image_url)

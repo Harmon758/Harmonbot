@@ -82,7 +82,7 @@ class chess_match(chess.Board):
 			img.save(filename = clients.data_path + "/temp/chess_board.png")
 		# asyncio.sleep(0.2) # necessary?, wasn't even awaited
 		if not self.match_embed:
-			self.match_embed = discord.Embed(color = clients.bot_color)
+			self.match_embed = discord.Embed(color = self.bot.bot_color)
 		# TODO: Upload into embed + delete and re-send to update?
 		'''
 		self.match_embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])

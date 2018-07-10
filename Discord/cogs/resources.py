@@ -333,7 +333,7 @@ class Resources:
 			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
 		data = data[0]
-		embed = discord.Embed(title = data["DeviceName"], color = clients.bot_color)
+		embed = discord.Embed(title = data["DeviceName"], color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		# Brand
 		if "Brand" in data: embed.add_field(name = "Brand", value = data["Brand"])

@@ -86,7 +86,7 @@ class Runescape:
 		stats_names = ("Overall", "Attack", "Defence", "Strength", "Constitution", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving", "Slayer", "Farming", "Runecrafting", "Hunter", "Construction", "Summoning", "Dungeoneering", "Divination", "Invention")
 		for stat in stats_names:
 			stats[stat] = next(data)
-		embed = discord.Embed(title = username, url = "http://services.runescape.com/m=hiscore/compare?user1={}".format(username.replace(' ', '+')), color = clients.bot_color)
+		embed = discord.Embed(title = username, url = "http://services.runescape.com/m=hiscore/compare?user1={}".format(username.replace(' ', '+')), color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 
 		output = ["`{}`".format(name) for name in stats_names]
