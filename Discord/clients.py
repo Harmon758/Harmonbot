@@ -74,7 +74,7 @@ class Bot(commands.Bot):
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
-		self.bot_color = discord.Color.blurple()  # previously 0x738bd7
+		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.rss_color = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 		self.twitch_color = 0x6441a4
 		self.twitter_color = 0x00ACED
