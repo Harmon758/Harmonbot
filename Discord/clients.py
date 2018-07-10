@@ -27,11 +27,11 @@ from utilities.context import Context
 from utilities import errors
 from utilities.help_formatter import CustomHelpFormatter
 
+# TODO: Relocate as Bot variables
 beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"
 user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
-bot_color = discord.Color.blurple()
 wait_time = 15.0
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
@@ -39,6 +39,8 @@ online_time = datetime.datetime.utcnow()
 aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
 
+# TODO: Already moved to Bot constants, update all references to
+bot_color = discord.Color.blurple()
 
 class Bot(commands.Bot):
 	
@@ -72,6 +74,7 @@ class Bot(commands.Bot):
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
+		self.bot_color = discord.Color.blurple()  # previously 0x738bd7
 		self.rss_color = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 		self.twitch_color = 0x6441a4
 		self.twitter_color = 0x00ACED
