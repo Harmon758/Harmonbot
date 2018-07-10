@@ -270,9 +270,9 @@ class Discord:
 		user = await utilities.get_user(ctx, name)
 		if not user:
 			await ctx.embed_reply(":no_entry: {} was not found on this server".format(name))
-			return
-		# Include mention?
-		await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
+		else:
+			# Include mention?
+			await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	# Checks
 	
