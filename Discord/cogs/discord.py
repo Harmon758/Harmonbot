@@ -269,7 +269,7 @@ class Discord:
 		'''Convert username to id'''
 		user = await utilities.get_user(ctx, name)
 		if not user:
-			await ctx.embed_reply(":no_entry: {} was not found on this server".format(name))
+			await ctx.embed_reply(":no_entry: Error: {} was not found on this server".format(name))
 		else:
 			# Include mention?
 			await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
