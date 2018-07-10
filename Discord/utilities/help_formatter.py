@@ -13,6 +13,9 @@ class CustomHelpFormatter(HelpFormatter):
 	
 	'''Custom Help Formatter'''
 	
+	def __init__(self, embed_color):
+		self.embed_color = embed_color
+	
 	def format(self):
 		'''Format'''
 		description_paginator = Paginator(max_size = 2048)
@@ -24,7 +27,7 @@ class CustomHelpFormatter(HelpFormatter):
 				return cog if cog is not None else "\u200bNo Category"
 			## data = sorted(self.filter_command_list(), key = category)
 			data = sorted(self.filter_command_list(), key = lambda c: category(c).lower())
-			embeds = [discord.Embed(title = "My Commands", color = clients.bot_color)]
+			embeds = [discord.Embed(title = "My Commands", color = self.embed_color)]
 			for category, commands in itertools.groupby(data, key = category):
 				commands = sorted(commands, key = lambda c: c[0])
 				if len(commands) > 0:
@@ -35,12 +38,12 @@ class CustomHelpFormatter(HelpFormatter):
 					for page in field_paginator.pages:
 						total_paginator_characters += len(page)
 					if utilities.embed_total_characters(embeds[-1]) + total_paginator_characters > 4000:
-						embeds.append(discord.Embed(color = clients.bot_color))
+						embeds.append(discord.Embed(color = self.embed_color))
 					# 
 					if len(embeds[-1].fields) <= 25 - len(field_paginator.pages):
 						embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
 					else:
-						embeds.append(discord.Embed(color = clients.bot_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
+						embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
 					for page in field_paginator.pages[1:]:
 						embeds[-1].add_field(name = "{} (continued)".format(category), value = page, inline = False)
 			return embeds
@@ -54,17 +57,17 @@ class CustomHelpFormatter(HelpFormatter):
 			if not self.has_subcommands() or not list(self.filter_command_list()):
 				description_paginator.close_page()
 				if not self.command.help:
-					return [discord.Embed(title = title, description = self.command.description, color = clients.bot_color)]
+					return [discord.Embed(title = title, description = self.command.description, color = self.embed_color)]
 				elif len(self.command.help) <= 2048:
 					description = clients.code_block.format(self.command.help) if "  " in self.command.help else self.command.help
 					description += "\n" + self.command.description
-					return [discord.Embed(title = title, description = description, color = clients.bot_color)]
+					return [discord.Embed(title = title, description = description, color = self.embed_color)]
 				return self.embeds(title, description_paginator)
 			subcommands = sorted(self.filter_command_list(), key = lambda c: c[0])
 			subcommands_lines = self._subcommands_lines(max_width, subcommands)
 			if (not self.command.help or len(self.command.help) <= 2048) and len('\n'.join(subcommands_lines)) <= 1016:
 				# 1024 - 4 * 2
-				embed = discord.Embed(color = clients.bot_color)
+				embed = discord.Embed(color = self.embed_color)
 				value = "{}\n".format(description_paginator.pages[0]) if description_paginator.pages else ""
 				value += self.command.description
 				if not value:
@@ -85,11 +88,10 @@ class CustomHelpFormatter(HelpFormatter):
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
 		return self.embeds(title, description_paginator)
 	
-	@staticmethod
-	def embeds(title, paginator):
-		embeds = [discord.Embed(title = title, description = paginator.pages[0] if paginator.pages else None, color = clients.bot_color)]
+	def embeds(self, title, paginator):
+		embeds = [discord.Embed(title = title, description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
 		for page in paginator.pages[1:]:
-			embeds.append(discord.Embed(description = page, color = clients.bot_color))
+			embeds.append(discord.Embed(description = page, color = self.embed_color))
 		return embeds
 	
 	def _add_subcommands_to_page(self, max_width, commands, paginator):

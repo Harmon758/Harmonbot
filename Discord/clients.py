@@ -47,6 +47,7 @@ class Bot(commands.Bot):
 	def __init__(self, command_prefix):
 		
 		# Constants necessary for initialization
+		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.stream_url = "https://www.twitch.tv/harmonbot"
 		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
 		"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
@@ -62,7 +63,7 @@ class Bot(commands.Bot):
 		"with Voyager 1", "with Waste Allocation Load Lifter: Earth-Class", "world domination")
 		
 		# Initialization
-		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url), case_insensitive = True)
+		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(self.bot_color), activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url), case_insensitive = True)
 		
 		# Constants
 		## Custom
@@ -74,7 +75,6 @@ class Bot(commands.Bot):
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
-		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.rss_color = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 		self.twitch_color = 0x6441a4
 		self.twitter_color = 0x00ACED
