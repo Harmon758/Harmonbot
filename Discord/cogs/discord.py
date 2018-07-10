@@ -269,12 +269,10 @@ class Discord:
 		'''Convert username to id'''
 		user = await utilities.get_user(ctx, name)
 		if not user:
-			await self.bot.embed_reply(":no_entry: {} was not found on this server".format(name))
+			await ctx.embed_reply(":no_entry: {} was not found on this server".format(name))
 			return
-		embed = discord.Embed(description = user.id, color = clients.bot_color)
-		embed.set_author(name = str(user), icon_url = user.avatar_url or user.default_avatar_url)
 		# Include mention?
-		await self.bot.reply("", embed = embed)
+		await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	# Checks
 	
