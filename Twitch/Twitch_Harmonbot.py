@@ -13,14 +13,6 @@ import dateutil.parser
 
 import credentials
 
-# 2.0.12 - Transferred followed/followage/howlong command
-# 2.0.11 - Added osrswiki and rswikios aliases, updated justdoit video link
-# 2.0.10 - Added https to google + imfeelinglucky commands
-# 2.0.9 - Fixed feet + inches to meters conversion command
-# 2.0.8 - Added Urban Dictionary command
-# 2.0.7 - Updated Mikkiscape -> Mikki name change
-# 2.0.6
-
 channels = ["_harmon758_1434735958584", "_harmon758_1478092370962", "_harmon758_1478092378893", "harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", "vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
 # "_harmon758_1474528138348" old public channel
 
@@ -33,6 +25,7 @@ class TwitchClient(pydle.Client):
 		super().__init__(nickname)
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
+		self.version = "2.0.13"
 		self.aiohttp_session = aiohttp.ClientSession()
 	
 	async def on_connect(self):
