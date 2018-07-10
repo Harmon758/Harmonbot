@@ -221,11 +221,11 @@ class Discord:
 		if not name:
 			await ctx.embed_reply(title = "Your avatar", image_url = ctx.author.avatar_url)
 		elif not ctx.guild:
-			await ctx.embed_reply(":no_entry: Please use that command in a server")
+			await ctx.embed_reply(":no_entry: Error: Please use that command in a server")
 		else:
 			user = await utilities.get_user(ctx, name)
 			if not user:
-				await ctx.embed_reply(":no_entry: {} was not found on this server".format(name))
+				await ctx.embed_reply(":no_entry: Error: {} was not found on this server".format(name))
 			else:
 				await ctx.embed_reply(title = "{}'s avatar".format(user), image_url = user.avatar_url)
 	
