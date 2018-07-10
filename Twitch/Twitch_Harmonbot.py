@@ -27,6 +27,13 @@ class TwitchClient(pydle.Client):
 		# self.logger.setLevel(logging.ERROR)
 		self.version = "2.0.13"
 		self.aiohttp_session = aiohttp.ClientSession()
+		
+		self.meta_commands = {"test": "Hello, World!", "documentation": "My Documentation: https://docs.google.com/document/d/1tsGQ-JAZiW-Y2sLQbd1UG441dhZhNtLmzFXx936YG08/", "commands": "My current commands are !additionalcommands[1-2] !adventure !averagefps !calc ![streamer]commands !followed !followers !google !noob !randomviewer !rscommands !time !timer !uptime !weather !whatis !wiki Also see !documentation", "additionalcommands1": "Some additional miscellaneous commands (1/2): !bye !commands !current !forecast !forecast[1-10] !grats !hello !highfive !imfeelinglucky !lmgtfy !mods !nightbot !poke !rng !roulette !rps !title !tns !unitconversions !viewers", "additionalcommands2": "Some additional miscellaneous commands (2/2): !alert !alertinfo !alerts !alertsinfo !almanac !asylum !cheese !christmas !gj !gz !harmon !harmonbot !help !hi !hobgobmike !hug !illuminati !ironman !justdoit !lag !life !love !kitty !no !nudes !puppy !zezima", "unitconversions": "!ctof !ftoc !lbtokg !kgtolb !fttom !mtoft !fitom !mtofi !gtooz !oztog !mitokm !kmtomi !ozttog !gtoozt !ozttooz !oztoozt", "rscommands": "My Runescape commands: !07rswiki !120 !122 !cache !ehp !ge !guthixiancache !highscores !hiscores !indecent !indecentcodehs !level !monster !remindcache !remindwarbands !reset !rswiki !rswiki07 !warbands !xpat !xpbetween !zybez", "mikkicommands": "!99rc !bday !caught !clan !cml !emotes !glory !links !mikki !mikkitime !music !pi !pouch !repair !rotation !runetracker !skype !spotify !stats !subscribe !tick", "imagrillcommands": "!altstats !arts !artsdictionary !artsdictionary2 !artstime !aus !blue !catonhead !cats !caught !death !dream  !ed8 !edate !fail !fortune !googer !hair !humage !modabuse !moo !muted !omg !p !pets !pudding !re;birth1 !rebirth1 !save !sick !sneeze !soab !troll !tutorial !week", "tirelessgodcommands": "!jontime !neem !panic"}
+		self.misc_commands = {"120": "104,273,167 xp", "122": "127,110,260 xp", "asylum": "http://services.runescape.com/m=hiscore_oldschool/a=869/hiscorepersonal.ws?user1=Asylum", "cheese": "http://en.wikipedia.org/wiki/Cheese", "gj": "Omega Good Job!", "guthixiancache": "runescape.wikia.com/wiki/Guthixian_Cache", "harmonbot": "That's me!", "harmon": "Harmon is my creator.", "help": "Use !whatis _ and I will tell you what certain things or commands are. See !commands for commands.", "hobgobmike": "Idek", "indecent": "http://www.indecentcode.com/", "illuminati": "http://en.wikipedia.org/wiki/Illuminati", "ironman": "runescape.wikia.com/wiki/Ironman_Mode", "justdoit": "https://vimeo.com/125095515", "life": "http://en.wikipedia.org/wiki/Life", "love": "http://en.wikipedia.org/wiki/Love https://www.youtube.com/watch?v=HEXWRTEbj1I", "nightbot": "!noob Nightbot", "nudes": "You wish.", "puppy": "FrankerZ", "tns": "#TeamNoSleep", "why": "Why not? Kappa", "zezima": "http://rsplayers.wikia.com/wiki/Zezima"}
+		
+		self.mikki_commands = {":P": "http://i.imgur.com/17nAz8A.png", "99rc": "99 RC Highlight: https://www.twitch.tv/videos/3734516", "accounts": "Mikki is currently playing 12 accounts: Mikki, Aru, Fe Mikki, Alakhim, Mik is 1000k, Mikonor, Makster, Gumnut, CrystalMikki, Mikkiberg888, Mikkifordly, and Mikkibrim.", "client": "Mikki is using RuneLite. The Zulrah plugin is made by her and is not available in the official release. See !faq for more information.", "cml": "http://crystalmathlabs.com/tracker/track.php?player=aru", "discord": "https://discord.gg/vWbFxmu", "dotabuff": "https://www.dotabuff.com/players/314303803", "emotes": "http://puu.sh/b1hyR.jpg", "fang": "https://clips.twitch.tv/IntelligentBenevolentYamYee", "faq": "https://pastebin.com/raw/ha9wwVna", "goals": "85 Slayer + Crafting", "glory": "Don't kill yourself, Mikki.", "instagram": "https://www.instagram.com/crystalmikki/", "jebrim": "Jebrim was the first player to achieve max total on OSRS (2277) in October 2013. Jebrim also has achieved 200m Agility on 3 RS3 accounts, was first to 99 Agility on OSRS and has also achieved 100m Agility on RSC.", "lag": "#StreamingProblems #Australia", "ma2": "https://twitter.com/Number1Bosss/status/1012282038680879104", "mikkiweather": "!weather Perth International", "mikki": "Mikki is awesome~", "netneutrality": "https://www.battleforthenet.com/", "pc": "Mikki is doing Pest Control for 99 prayer. It's slower, but safer than Dragon Slayer 2 for Green Dragons.", "rotation": "Meilyr -> Hefin -> (Bank) Crwys (Bank) -> Cadarn -> Amlodd -> Trahaearn (Bank) --- VOS @ Iorwerth or Ithell - Do instead of Cadarn", "runetracker": "|| Main || http://runetracker.org/track-mikki || Ironman || http://runetracker.org/track-fe+mikki", "schedule": "Monday: 7pm - 10pm, Tuesday: Break, Wednesday: 7pm - 10pm, Thursday: Break, Friday: 8pm - whenever, Saturday: 7pm - whenever, Sunday: 7pm - 10pm (AWST; UTC+08:00)", "skype": "skype.xp", "stats": "http://services.runescape.com/m=hiscore_oldschool_hardcore_ironman/hiscorepersonal.ws?user1=Mikki", "steam": "http://steamcommunity.com/id/mikkipuppy", "sub": "https://www.twitch.tv/mikki/subscribe", "suicide": "http://www.suicide.org/", "tumblr": "http://mikki-rs.tumblr.com/", "twitter": "https://twitter.com/crystal_mikki", "youtube": "https://www.youtube.com/user/mikscape", "zen1": "https://clips.twitch.tv/ClumsyRepleteWrenPlanking", "zen2": "https://clips.twitch.tv/VastAntediluvianDoveTTours"}
+		self.imagrill_commands = {"app": "https://app.twitch.tv/imagrill", "are": "We aren't are -Arts", "artsdictionary": "Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. Quantent. Horsebirdunicorndonkey. Chaotic Bandos Helm. Wooden Bronze Bar. Dagonfoot.", "artsdictionary2": "Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. Skelington. Tunce. Milay. Edimoo. Right Meow. Pershon. Jduge. Aweshum. Dart Tips = Dart Tits.", "arts": "Arts is awesome~", "aus": "He's a 90-year-old fanatic humage time traveler with a 10 foot beard. He wo's. But he unfollpwed BibleThump", "banana": "https://youtu.be/jc86EFjLFV4?t=1m49s", "bluehair": "Someone hair dyed my blue -Arts", "blue": "Blue = Green", "catonhead": "http://imgur.com/JwsV4w0 http://imgur.com/H0CiNbw", "cats": "Motorboat, Bandit, Squeak", "cf1337": "http://imgur.com/m6Rrhme", "dream": "It's all the cat's dream!", "dwarf": "Sarah = 5 letters, Dwarf - 5 letters, Sarah = Dwarf -LeonardoDiCaprino", "fingerscrossed": "http://imgur.com/vmQCJ2L", "fortune": "☺ The time is right to make new friends. ☺ http://imgur.com/miulgIl", "green": "Green = Blue", "hair": "Arts is cosplaying as a R̶u̶n̶e̶ ̶D̶r̶a̶g̶o̶n̶ A̶d̶a̶m̶a̶n̶t̶ ̶D̶r̶a̶g̶o̶n̶ Red/Black Dragon", "harmonwhy": "http://imgur.com/gIYIPWP", "humage": "We are only humage. -Arts", "hype": "http://i.imgur.com/L090lvT.gif", "judge": "dont jduge me -Arts", "knees": "Those patellas.", "metap": "http://imgur.com/JWLTeIX", "modabuse": '"I literally stomped on Kae" "I wrecked his face so hard" -Arts', "moo": "\"The cat moo'ed. It's not even dead.\" http://gyazo.com/52073e6b1de0066bf63d779768abe5c1", "mrsanderstorm": "Mrs. Anderstorm", "muted": "MIC MUTED!", "nudrage": "http://gfycat.com/RightDeliriousFairyfly https://www.youtube.com/watch?v=MybuZImohq4", "omid": "OMID EXPOSED :( http://imgur.com/GGslRLF http://imgur.com/jPPPncs", "omg": '"I swear to the banana god" -Arts', "p": "PMForNud pls", "pc": "http://www.frys.com/product/8356507", "pets": "Pets (KC): Eddy (~30) + Legio Secundulus (167) + Prime Hatchling (2000)", "pudding": "The pudding is mightier than the sword. -Compa", "roadhog": "https://gyazo.com/0d2531cf656c87610d0d64349dc2b507", "rude": "https://www.youtube.com/watch?v=IYdX9geon6U", "save": "Don't forget to l̶o̶a̶d̶ save.", "sick": "Arts isn't sick. It's just allergies.", "soab": '"Son of a banana" -Arts', "tutorial": "She needed a tutorial for tutorial island Keepo -SoundShell", "week": '"Todays a busy week for me" -Arts', "yawn": "Yawwwwwn"}
+		self.tirelessgod_commands = {"neem": "Neem dupes confirmed for 120 Invention.", "panic": "Well now you don't have to! Introducing the Auto-Panic 5000!"}
 	
 	async def on_connect(self):
 		await super().on_connect()
@@ -64,26 +71,8 @@ class TwitchClient(pydle.Client):
 			return
 		
 		# Meta Commands
-		if message.startswith("!test"):
-			await self.message(target, "Hello, World!")
-		elif message.startswith("!documentation"):
-			await self.message(target, "My Documentation: https://docs.google.com/document/d/1tsGQ-JAZiW-Y2sLQbd1UG441dhZhNtLmzFXx936YG08/")
-		elif message.startswith("!commands"):
-			await self.message(target, "My current commands are !additionalcommands[1-2] !adventure !averagefps !calc ![streamer]commands !followed !followers !google !noob !randomviewer !rscommands !time !timer !uptime !weather !whatis !wiki Also see !documentation")
-		elif message.startswith("!additionalcommands1"):
-			await self.message(target, "Some additional miscellaneous commands (1/2): !bye !commands !current !forecast !forecast[1-10] !grats !hello !highfive !imfeelinglucky !lmgtfy !mods !nightbot !poke !rng !roulette !rps !title !tns !unitconversions !viewers")
-		elif message.startswith("!additionalcommands2"):
-			await self.message(target, "Some additional miscellaneous commands (2/2): !alert !alertinfo !alerts !alertsinfo !almanac !asylum !cheese !christmas !gj !gz !harmon !harmonbot !help !hi !hobgobmike !hug !illuminati !ironman !justdoit !lag !life !love !kitty !no !nudes !puppy !zezima")
-		elif message.startswith("!unitconversions"):
-			await self.message(target, "!ctof !ftoc !lbtokg !kgtolb !fttom !mtoft !fitom !mtofi !gtooz !oztog !mitokm !kmtomi !ozttog !gtoozt !ozttooz !oztoozt")
-		elif message.startswith("!rscommands"):
-			await self.message(target, "My Runescape commands: !07rswiki !120 !122 !cache !ehp !ge !guthixiancache !highscores !hiscores !indecent !indecentcodehs !level !monster !remindcache !remindwarbands !reset !rswiki !rswiki07 !warbands !xpat !xpbetween !zybez")
-		elif message.startswith("!mikkicommands"):
-			await self.message(target, "!99rc !bday !caught !clan !cml !emotes !glory !links !mikki !mikkitime !music !pi !pouch !repair !rotation !runetracker !skype !spotify !stats !subscribe !tick")
-		elif message.startswith("!imagrillcommands"):
-			await self.message(target, "!altstats !arts !artsdictionary !artsdictionary2 !artstime !aus !blue !catonhead !cats !caught !death !dream  !ed8 !edate !fail !fortune !googer !hair !humage !modabuse !moo !muted !omg !p !pets !pudding !re;birth1 !rebirth1 !save !sick !sneeze !soab !troll !tutorial !week")
-		elif message.startswith("!tirelessgodcommands"):
-			await self.message(target, "!jontime !neem !panic")
+		if message.startswith('!') and message[1:] in self.meta_commands:
+				await self.message(target, self.meta_commands[message[1:]])
 		
 		# Main Commands
 		elif message.startswith("!audiodefine"):
@@ -249,12 +238,8 @@ class TwitchClient(pydle.Client):
 		
 		# Mikki Commands
 		if target == "#mikki":
-			if message.startswith("!:P"):
-				await self.message(target, "http://i.imgur.com/17nAz8A.png")
-			if message.startswith("!99rc"):
-				await self.message(target, "99 RC Highlight: https://www.twitch.tv/videos/3734516")
-			elif message.startswith("!accounts"):
-				await self.message(target, "Mikki is currently playing 12 accounts: Mikki, Aru, Fe Mikki, Alakhim, Mik is 1000k, Mikonor, Makster, Gumnut, CrystalMikki, Mikkiberg888, Mikkifordly, and Mikkibrim.")
+			if message.startswith('!') and message[1:] in self.mikki_commands:
+				await self.message(target, self.mikki_commands[message[1:]])
 			elif message.startswith(("!bully", "!cyberbully")):
 				await self.message(target, "http://www.stopcyberbullying.org/ Please check out this site before you continue bullying other viewers.")
 			elif message.startswith("!caught"):
@@ -265,50 +250,16 @@ class TwitchClient(pydle.Client):
 				else:
 					caught = source.capitalize()
 				await self.message(target, "Mikki has caught a wild {}!".format(caught))
-			elif message.startswith("!client"):
-				await self.message(target, "Mikki is using RuneLite. The Zulrah plugin is made by her and is not available in the official release. See !faq for more information.")
-			elif message.startswith("!cml"):
-				await self.message(target, "http://crystalmathlabs.com/tracker/track.php?player=aru")
-			elif message.startswith("!discord"):
-				await self.message(target, "https://discord.gg/vWbFxmu")
-			elif message.startswith("!dotabuff"):
-				await self.message(target, "https://www.dotabuff.com/players/314303803")
-			elif message.startswith("!emotes"):
-				await self.message(target, "http://puu.sh/b1hyR.jpg")
-			elif message.startswith("!fang"):
-				await self.message(target, "https://clips.twitch.tv/IntelligentBenevolentYamYee")
-			elif message.startswith("!faq"):
-				await self.message(target, "https://pastebin.com/raw/ha9wwVna")
-			elif message.startswith("!goals"):
-				await self.message(target, "85 Slayer + Crafting")
-			elif message.startswith("!glory"):
-				await self.message(target, "Don't kill yourself, Mikki.")
-			elif message.startswith("!instagram"):
-				await self.message(target, "https://www.instagram.com/crystalmikki/")
-			elif message.startswith("!jebrim"):
-				await self.message(target, "Jebrim was the first player to achieve max total on OSRS (2277) in October 2013. Jebrim also has achieved 200m Agility on 3 RS3 accounts, was first to 99 Agility on OSRS and has also achieved 100m Agility on RSC.")
-			elif message.startswith("!lag"):
-				await self.message(target, "#StreamingProblems #Australia")
 			elif message.startswith(("!links", "!social")):
 				await self.message(target, "https://twitter.com/crystal_mikki https://www.instagram.com/crystalmikki/ https://discord.gg/vWbFxmu http://steamcommunity.com/id/mikkipuppy https://www.youtube.com/user/mikscape")
-			elif message.startswith("!ma2"):
-				await self.message(target, "https://twitter.com/Number1Bosss/status/1012282038680879104")
 			elif message.startswith("!mikkitime"):
 				mikkitime = datetime.datetime.now(datetime.timezone(datetime.timedelta(minutes = 60 * 8)))
 				await self.message(target, "It is currently {} on {} in Western Australia ({}).".format(mikkitime.strftime("%#I:%M %p"), mikkitime.strftime("%b. %#d"), mikkitime.strftime("%Z")))
 				# TODO: Include day of week
-			elif message.startswith("!mikkiweather"):
-				await self.message(target, "!weather Perth International")
-			elif message.startswith("!mikki"):
-				await self.message(target, "Mikki is awesome~")
 			elif message.startswith(("!music", "!spotify")):
 				await self.message(target, "http://open.spotify.com/user/mikkirs/playlist/5OBCdMNiGiTRGL0cqWL9CT")
-			elif message.startswith("!netneutrality"):
-				await self.message(target, "https://www.battleforthenet.com/")
 			elif message.startswith(("!o.o", "!o_o")):
 				await self.message(target, "http://i.imgur.com/K00oLxo.png")
-			elif message.startswith("!pc"):
-				await self.message(target, "Mikki is doing Pest Control for 99 prayer. It's slower, but safer than Dragon Slayer 2 for Green Dragons.")
 			elif message.startswith("!pi"):
 				if self.is_mod(target, source):
 					await self.message(target, "3.14159265358979323846264338327 9502884197169399375105820974944 5923078164062862089986280348253 4211706798214808651328230664709 3844609550582231725359408128481 1174502841027019385211055596446 2294895493038196442881097566593 3446128475648233786783165271201 9091456485669234603486104543266 4821339360726024914127372458700 6606315588174881520920962829254 0917153643678925903600113305305 4882046652138414695194151160943 3057270365759591953092186117381 9326117931051185480744623799627 4956735188575272489122793818301 1949129833673362440656643086021 3949463952247371907021798609437")
@@ -316,57 +267,11 @@ class TwitchClient(pydle.Client):
 					await self.message(target, "3.14")
 			elif message.startswith(("!pouch", "!repair")):
 				await self.message(target, "REPAIR POUCH! REPAIR POUCH! REPAIR POUCH! REPAIR POUCH!")
-			elif message.startswith("!rotation"):
-				await self.message(target, "Meilyr -> Hefin -> (Bank) Crwys (Bank) -> Cadarn -> Amlodd -> Trahaearn (Bank) --- VOS @ Iorwerth or Ithell - Do instead of Cadarn")
-			elif message.startswith("!runetracker"):
-				await self.message(target, "|| Main || http://runetracker.org/track-mikki || Ironman || http://runetracker.org/track-fe+mikki")
-			elif message.startswith("!schedule"):
-				await self.message(target, "Monday: 7pm - 10pm, Tuesday: Break, Wednesday: 7pm - 10pm, Thursday: Break, Friday: 8pm - whenever, Saturday: 7pm - whenever, Sunday: 7pm - 10pm (AWST; UTC+08:00)")
-			elif message.startswith("!skype"):
-				await self.message(target, "skype.xp")
-			elif message.startswith("!stats"):
-				await self.message(target, "http://services.runescape.com/m=hiscore_oldschool_hardcore_ironman/hiscorepersonal.ws?user1=Mikki")
-			elif message.startswith("!steam"):
-				await self.message(target, "http://steamcommunity.com/id/mikkipuppy")
-			elif message.startswith("!sub"):
-				await self.message(target, "https://www.twitch.tv/mikki/subscribe")
-			elif message.startswith("!suicide"):
-				await self.message(target, "http://www.suicide.org/")
-			elif message.startswith("!tumblr"):
-				await self.message(target, "http://mikki-rs.tumblr.com/")
-			elif message.startswith("!twitter"):
-				await self.message(target, "https://twitter.com/crystal_mikki")
-			elif message.startswith("!youtube"):
-				await self.message(target, "https://www.youtube.com/user/mikscape")
-			elif message.startswith("!zen1"):
-				await self.message(target, "https://clips.twitch.tv/ClumsyRepleteWrenPlanking")
-			elif message.startswith("!zen2"):
-				await self.message(target, "https://clips.twitch.tv/VastAntediluvianDoveTTours")
 		
 		# Imagrill Commands
 		if target == "#imagrill":
-			if message.startswith("!app"):
-				await self.message(target, "https://app.twitch.tv/imagrill")
-			elif message.startswith("!are"):
-				await self.message(target, "We aren't are -Arts")
-			elif message.startswith("!artsdictionary2"):
-				await self.message(target, "Glacors = Glaciers. Nail Cracking. Fasters. Prime = Primus. Yakpack. Blue = Green. Not Power. Bo. Shream. Pronounciating. Hyperspecialtacticulation. Skelington. Tunce. Milay. Edimoo. Right Meow. Pershon. Jduge. Aweshum. Dart Tips = Dart Tits.")
-			elif message.startswith("!artsdictionary"):
-				await self.message(target, "Humage. Googer. Fanatic = Fantastic. woewqeeqaedas. Gnomebot. Notfoot. Oogablahblah Pre-toasted toast. Lamb chomps. Tark. Quantent. Horsebirdunicorndonkey. Chaotic Bandos Helm. Wooden Bronze Bar. Dagonfoot.")
-			elif message.startswith("!arts"):
-				await self.message(target, "Arts is awesome~")
-			elif message.startswith("!aus"):
-				await self.message(target, "He's a 90-year-old fanatic humage time traveler with a 10 foot beard. He wo's. But he unfollpwed BibleThump")
-			elif message.startswith("!banana"):
-				await self.message(target, "https://youtu.be/jc86EFjLFV4?t=1m49s")
-			elif message.startswith("!bluehair"):
-				await self.message(target, "Someone hair dyed my blue -Arts")
-			elif message.startswith("!blue"):
-				await self.message(target, "Blue = Green")
-			elif message.startswith("!catonhead"):
-				await self.message(target, "http://imgur.com/JwsV4w0 http://imgur.com/H0CiNbw")
-			elif message.startswith("!cats"):
-				await self.message(target, "Motorboat, Bandit, Squeak")
+			if message.startswith('!') and message[1:] in self.imagrill_commands:
+				await self.message(target, self.imagrill_commands[message[1:]])
 			elif message.startswith("!caught"):
 				if message.split()[1].lower() == "random":
 					caught = self.random_viewer(target)
@@ -375,94 +280,28 @@ class TwitchClient(pydle.Client):
 				else:
 					caught = source.capitalize()
 				await self.message(target, "Arts has caught a wild {}!".format(caught))
-			elif message.startswith("!cf1337"):
-				await self.message(target, "http://imgur.com/m6Rrhme")
 			## elif message.startswith("!discord"):
 				## await self.message(target, "https://discord.gg/NqJApzt")
-			elif message.startswith("!dream"):
-				await self.message(target, "It's all the cat's dream!")
-			elif message.startswith("!dwarf"):
-				await self.message(target, "Sarah = 5 letters, Dwarf - 5 letters, Sarah = Dwarf -LeonardoDiCaprino")
-			elif message.startswith("!fingerscrossed"):
-				await self.message(target, "http://imgur.com/vmQCJ2L")
-			elif message.startswith("!fortune"):
-				await self.message(target, "☺ The time is right to make new friends. ☺ http://imgur.com/miulgIl")
 			elif message.startswith("!googer"):
 				await self.message(target, "https://google.com/search?q=" + '+'.join(message.split()[1:]) + ' "RAISE YOUR GOOGERS" -Arts')
-			elif message.startswith("!green"):
-				await self.message(target, "Green = Blue")
-			elif message.startswith("!hair"):
-				await self.message(target, "Arts is cosplaying as a R̶u̶n̶e̶ ̶D̶r̶a̶g̶o̶n̶ A̶d̶a̶m̶a̶n̶t̶ ̶D̶r̶a̶g̶o̶n̶ Red/Black Dragon")
-			elif message.startswith("!harmonwhy"):
-				await self.message(target, "http://imgur.com/gIYIPWP")
-			elif message.startswith("!humage"):
-				await self.message(target, "We are only humage. -Arts")
-			elif message.startswith("!hype"):
-				await self.message(target, "http://i.imgur.com/L090lvT.gif")
-			elif message.startswith("!judge"):
-				await self.message(target, "dont jduge me -Arts")
-			elif message.startswith("!knees"):
-				await self.message(target, "Those patellas.")
-			elif message.startswith("!metap"):
-				await self.message(target, "http://imgur.com/JWLTeIX")
-			elif message.startswith("!modabuse"):
-				await self.message(target, '"I literally stomped on Kae" "I wrecked his face so hard" -Arts')
-			elif message.startswith("!moo"):
-				await self.message(target, "\"The cat moo'ed. It's not even dead.\" http://gyazo.com/52073e6b1de0066bf63d779768abe5c1")
-			elif message.startswith("!mrsanderstorm"):
-				await self.message(target, "Mrs. Anderstorm")
-			elif message.startswith("!muted"):
-				await self.message(target, "MIC MUTED!")
-			elif message.startswith("!nudrage"):
-				await self.message(target, "http://gfycat.com/RightDeliriousFairyfly https://www.youtube.com/watch?v=MybuZImohq4")
-			elif message.startswith("!omid"):
-				await self.message(target, "OMID EXPOSED :( http://imgur.com/GGslRLF http://imgur.com/jPPPncs")
-			elif message.startswith("!omg"):
-				await self.message(target, '"I swear to the banana god" -Arts')
-			elif message == "!p":
-				await self.message(target, "PMForNud pls")
-			elif message.startswith("!pc"):
-				await self.message(target, "http://www.frys.com/product/8356507")
-			elif message.startswith("!pets"):
-				await self.message(target, "Pets (KC): Eddy (~30) + Legio Secundulus (167) + Prime Hatchling (2000)")
-			elif message.startswith("!pudding"):
-				await self.message(target, "The pudding is mightier than the sword. -Compa")
 			elif message.startswith(("!rebirth1", "!re;birth1")):
 				await self.message(target, "http://hyperdimensionneptunia.wikia.com/wiki/Hyperdimension_Neptunia_Re;Birth_1")
-			elif message.startswith("!roadhog"):
-				await self.message(target, "https://gyazo.com/0d2531cf656c87610d0d64349dc2b507")
-			elif message.startswith("!rude"):
-				await self.message(target, "https://www.youtube.com/watch?v=IYdX9geon6U")
-			elif message.startswith("!save"):
-				await self.message(target, "Don't forget to l̶o̶a̶d̶ save.")
 			elif message.startswith(("!scooter", "!scoots")):
 				await self.message(target, "http://imgur.com/WNj2HbM")
-			elif message.startswith("!sick"):
-				await self.message(target, "Arts isn't sick. It's just allergies.")
 			elif message.startswith("!sneeze"):
 				if len(message.split()) == 1 or not is_number(message.split()[1]) or 10 < int(message.split()[1]) or int(message.split()[1]) < 2:
 					await self.message(target, "Bless you!")
 				else:
 					await self.message(target, ' '.join(["Bless you!" for i in range(int(message.split()[1]))]))
-			elif message.startswith("!soab"):
-				await self.message(target, '"Son of a banana" -Arts')
 			elif message.startswith("!tits") or "show tits" in message:
 				await self.message(target, "https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg")
-			elif message.startswith("!tutorial"):
-				await self.message(target, "She needed a tutorial for tutorial island Keepo -SoundShell")
 			# elif message.startswith("!twitter"):
 				# await self.message(target, "https://twitter.com/ArtsGoesBananas")
-			elif message.startswith("!week"):
-				await self.message(target, '"Todays a busy week for me" -Arts')
-			elif message.startswith("!yawn"):
-				await self.message(target, "Yawwwwwn")
 		
 		# TirelessGod Commands
 		if target == "#tirelessgod":
-			if message.startswith("!neem"):
-				await self.message(target, "Neem dupes confirmed for 120 Invention.")
-			elif message.startswith("!panic"):
-				await self.message(target, "Well now you don't have to! Introducing the Auto-Panic 5000!")
+			if message.startswith('!') and message[1:] in self.tirelessgod_commands:
+				await self.message(target, self.tirelessgod_commands[message[1:]])
 		
 		# Runescape Commands
 		if message.startswith(("!07rswiki", "!rswiki07", "!osrswiki", "!rswikios")):
@@ -549,57 +388,13 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "Syntax error.")
 		
 		# Miscellaneous Commands
-		if message.startswith("!120"):
-			await self.message(target, "104,273,167 xp")
-		elif message.startswith("!122"):
-			await self.message(target, "127,110,260 xp")
-		elif message.startswith("!asylum"):
-			await self.message(target, "http://services.runescape.com/m=hiscore_oldschool/a=869/hiscorepersonal.ws?user1=Asylum")
-		elif message.startswith("!cheese"):
-			await self.message(target, "http://en.wikipedia.org/wiki/Cheese")
+		if message.startswith('!') and message[1:] in self.misc_commands:
+			await self.message(target, self.misc_commands[message[1:]])
 		# on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2016 18:00:00))) until Christmas! }
 		# on *:text:!easter*:#:{ msg # $my_duration($timeleft($ctime(March 27 2016 18:00:00))) until Easter! }
-		elif message.startswith("!gj"):
-			await self.message(target, "Omega Good Job!")
-		elif message.startswith("!guthixiancache"):
-			await self.message(target, "runescape.wikia.com/wiki/Guthixian_Cache")
-		elif message.startswith("!harmonbot"):
-			await self.message(target, "That's me!")
-		elif message.startswith("!harmon"):
-			await self.message(target, "Harmon is my creator.")
-		elif message.startswith("!help"):
-			await self.message(target, "Use !whatis _ and I will tell you what certain things or commands are. See !commands for commands.")
-		elif message.startswith("!hobgobmike"):
-			await self.message(target, "Idek")
-		elif message.startswith("!indecent"):
-			await self.message(target, "http://www.indecentcode.com/")
-		elif message.startswith("!illuminati"):
-			await self.message(target, "http://en.wikipedia.org/wiki/Illuminati")
-		elif message.startswith("!ironman"):
-			await self.message(target, "runescape.wikia.com/wiki/Ironman_Mode")
-		elif message.startswith("!justdoit"):
-			await self.message(target, "https://vimeo.com/125095515")
-		elif message.startswith("!life"):
-			await self.message(target, "http://en.wikipedia.org/wiki/Life")
-		elif message.startswith("!love"):
-			await self.message(target, "http://en.wikipedia.org/wiki/Love https://www.youtube.com/watch?v=HEXWRTEbj1I")
 		elif message.startswith("!kitty"):
 			await self.message(target, "BionicBunion")  # update?
-		elif message.startswith("!nightbot"):
-			await self.message(target, "!noob Nightbot")
-		elif message == "!no":
-			await self.message(target, "No means no.")
-		elif message.startswith("!nudes"):
-			await self.message(target, "You wish.")
-		elif message.startswith("!puppy"):
-			await self.message(target, "FrankerZ")
 		# on *:text:!puppy*:#:{ msg # RalpherZ }
-		elif message.startswith("!tns"):
-			await self.message(target, "#TeamNoSleep")
-		elif message.startswith("!why"):
-			await self.message(target, "Why not? Kappa")
-		elif message.startswith("!zezima"):
-			await self.message(target, "http://rsplayers.wikia.com/wiki/Zezima")
 		
 		# Unit Conversion Commands
 		# TODO: add support for non-integers/floats, improve formatting
