@@ -219,18 +219,16 @@ class Discord:
 		Your own or someone else's avatar
 		'''
 		if not name:
-			avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-			await self.bot.embed_reply(None, title = "Your avatar", image_url = avatar)
+			await ctx.embed_reply(None, title = "Your avatar", image_url = ctx.author.avatar_url)
 			return
 		if not ctx.guild:
-			await self.bot.embed_reply(":no_entry: Please use that command in a server")
+			await ctx.embed_reply(":no_entry: Please use that command in a server")
 			return
 		user = await utilities.get_user(ctx, name)
 		if not user:
-			await self.bot.embed_reply(":no_entry: {} was not found on this server".format(name))
+			await ctx.embed_reply(":no_entry: {} was not found on this server".format(name))
 			return
-		avatar = user.avatar_url or user.default_avatar_url
-		await self.bot.embed_reply(None, title = "{}'s avatar".format(user), image_url = avatar)
+		await ctx.embed_reply(None, title = "{}'s avatar".format(user), image_url = user.avatar_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
