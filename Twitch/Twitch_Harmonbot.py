@@ -26,7 +26,7 @@ class TwitchClient(pydle.Client):
 		super().__init__(nickname)
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
-		self.version = "2.0.13"
+		self.version = "2.1.0"
 		self.aiohttp_session = aiohttp.ClientSession()
 		
 		with open("data/commands/meta.json", 'r') as meta_commands_file:
@@ -286,8 +286,6 @@ class TwitchClient(pydle.Client):
 				else:
 					caught = source.capitalize()
 				await self.message(target, "Arts has caught a wild {}!".format(caught))
-			## elif message.startswith("!discord"):
-				## await self.message(target, "https://discord.gg/NqJApzt")
 			elif message.startswith("!googer"):
 				await self.message(target, "https://google.com/search?q=" + '+'.join(message.split()[1:]) + ' "RAISE YOUR GOOGERS" -Arts')
 			elif message.startswith(("!rebirth1", "!re;birth1")):
@@ -301,8 +299,6 @@ class TwitchClient(pydle.Client):
 					await self.message(target, ' '.join(["Bless you!" for i in range(int(message.split()[1]))]))
 			elif message.startswith("!tits") or "show tits" in message:
 				await self.message(target, "https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg")
-			# elif message.startswith("!twitter"):
-				# await self.message(target, "https://twitter.com/ArtsGoesBananas")
 		
 		# TirelessGod Commands
 		if target == "#tirelessgod":
@@ -559,12 +555,6 @@ print("Starting up Twitch Harmonbot...")
 client = TwitchClient("Harmonbot")
 loop = asyncio.get_event_loop()
 asyncio.ensure_future(client.connect("irc.chat.twitch.tv", password = credentials.oauth_token), loop = loop)
+# DEFAULT_PORT = 6667
 loop.run_forever()
-'''
-client.connect("irc.chat.twitch.tv", 6667, password = credentials.oauth_token)
-try:
-	client.handle_forever()
-except OSError: # Ignore exception on restart
-	pass
-'''
 
