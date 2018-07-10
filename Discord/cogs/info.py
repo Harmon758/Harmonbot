@@ -21,6 +21,14 @@ class Info:
 	
 	def __init__(self, bot):
 		self.bot = bot
+		# Add info subcommands as subcommands of corresponding commands
+		self.info_subcommands = ((self.role, "Role.role"), (self.server, "Server.server"), (self.user, "Discord.user"))
+		for command, parent_name in self.info_subcommands:
+			utilities.add_as_subcommand(self, command, parent_name, "info", aliases = ["information"])
+	
+	def __unload(self):
+		for command, parent_name in self.info_subcommands:
+			utilities.remove_as_subcommand(self, parent_name, "info")
 	
 	@commands.group(aliases = ["information"], invoke_without_command = True)
 	@checks.not_forbidden()
