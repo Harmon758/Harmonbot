@@ -28,7 +28,7 @@ class TwitchClient(pydle.Client):
 		super().__init__(nickname)
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
-		self.version = "2.1.0"
+		self.version = "2.1.5"
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
 		for file in os.listdir("data/commands"):
@@ -212,7 +212,7 @@ class TwitchClient(pydle.Client):
 				await self.message(target, secs_to_duration(int((datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(data["stream"]["created_at"])).total_seconds())))
 			else:
 				await self.message(target, "Uptime not found.")
-		elif message.startswith(("!urband", "!urbandictionary")):
+		elif message.startswith("!urband"):
 			url = "http://api.urbandictionary.com/v0/define?term={}".format('+'.join(message.split()[1:]))
 			async with self.aiohttp_session.get(url) as resp:
 				data = await resp.json()
