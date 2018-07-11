@@ -255,11 +255,15 @@ class TwitchClient(pydle.Client):
 		elif message.startswith("!wiki"):
 			await self.message(target, "wikipedia.org/wiki/" + '_'.join(message.split()[1:]))
 		
+		# Channel-specific commands
+		channel_commands = getattr(self, f"{target[1:]}_commands", None)
+		if channel_commands:
+			if message.startswith('!') and message[1:] in channel_commands:
+				await self.message(target, channel_commands[message[1:]])
+		
 		# Mikki Commands
 		if target == "#mikki":
-			if message.startswith('!') and message[1:] in self.mikki_commands:
-				await self.message(target, self.mikki_commands[message[1:]])
-			elif message.startswith(("!bully", "!cyberbully")):
+			if message.startswith(("!bully", "!cyberbully")):
 				await self.message(target, "http://www.stopcyberbullying.org/ Please check out this site before you continue bullying other viewers.")
 			elif message.startswith("!caught"):
 				if len(message.split()) == 1:
@@ -289,9 +293,7 @@ class TwitchClient(pydle.Client):
 		
 		# Imagrill Commands
 		if target == "#imagrill":
-			if message.startswith('!') and message[1:] in self.imagrill_commands:
-				await self.message(target, self.imagrill_commands[message[1:]])
-			elif message.startswith("!caught"):
+			if message.startswith("!caught"):
 				if len(message.split()) == 1:
 					caught = source.capitalize()
 				elif message.split()[1].lower() == "random":
@@ -312,11 +314,6 @@ class TwitchClient(pydle.Client):
 					await self.message(target, ' '.join(["Bless you!" for i in range(int(message.split()[1]))]))
 			elif message.startswith("!tits") or "show tits" in message:
 				await self.message(target, "https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg")
-		
-		# TirelessGod Commands
-		if target == "#tirelessgod":
-			if message.startswith('!') and message[1:] in self.tirelessgod_commands:
-				await self.message(target, self.tirelessgod_commands[message[1:]])
 		
 		# Runescape Commands
 		if message.startswith(("!07rswiki", "!rswiki07", "!osrswiki", "!rswikios")):
