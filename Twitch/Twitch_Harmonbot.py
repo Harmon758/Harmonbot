@@ -28,7 +28,7 @@ class TwitchClient(pydle.Client):
 		super().__init__(nickname)
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
-		self.version = "2.1.9"
+		self.version = "2.1.10"
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
 		for file in os.listdir("data/commands"):
@@ -329,9 +329,8 @@ class TwitchClient(pydle.Client):
 			if len(message.split()) == 1:
 				await self.message(target, "Please enter a level.")
 			elif is_number(message.split()[1]):
-				level = float(message.split()[1])
+				level = int(message.split()[1])
 				if 1 <= level < 127:
-					level = int(level)
 					xp = 0
 					for i in range(1, level):
 						xp += int(i + 300 * 2 ** (i / 7))
