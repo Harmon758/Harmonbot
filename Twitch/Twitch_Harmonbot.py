@@ -517,7 +517,7 @@ class TwitchClient(pydle.Client):
 		if message == "!restart" and source == "harmon758":
 			await self.message(target, "Restarting")
 			print("Restarting Twitch Harmonbot...")
-			self.aiohttp_session.close()
+			await self.aiohttp_session.close()
 			self.disconnect()
 	
 	def is_mod(self, target, source):
