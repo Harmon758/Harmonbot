@@ -1,4 +1,7 @@
+# discord.py@rewrite
 git+git://github.com/Rapptz/discord.py.git@184c430#egg=discord.py[voice]
+# pydle@asyncio
+git+git://github.com/Shizmob/pydle.git@b951707#egg=pydle
 python-telegram-bot==10.1.0
 
 aiohttp==3.3.2
