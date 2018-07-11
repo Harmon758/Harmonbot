@@ -77,7 +77,8 @@ class TwitchClient(pydle.Client):
 		
 		# Main Commands
 		elif message.startswith("!audiodefine"):
-			async with self.aiohttp_session.get("http://api.wordnik.com:80/v4/word.json/{}/audio?" "useCanonical=false&limit=1&api_key={}".format(message.split()[1], credentials.wordnik_apikey)) as resp:
+			url = "http://api.wordnik.com:80/v4/word.json/{}/audio?useCanonical=false&limit=1&api_key={}".format(message.split()[1], credentials.wordnik_apikey)
+			async with self.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data:
 				await self.message(target, data[0]["word"].capitalize() + ": " + data[0]["fileUrl"])
@@ -103,7 +104,8 @@ class TwitchClient(pydle.Client):
 			except KeyError:
 				await self.message(target, "\N{NO ENTRY} Unicode character not found")
 		elif message.startswith("!define"):
-			async with self.aiohttp_session.get("http://api.wordnik.com:80/v4/word.json/{}/definitions?" "limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key={}".format(message.split()[1], credentials.wordnik_apikey)) as resp:
+			url = "http://api.wordnik.com:80/v4/word.json/{}/definitions?limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key={}".format(message.split()[1], credentials.wordnik_apikey)
+			async with self.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data:
 				await self.message(target, data[0]["word"].capitalize() + ": " + data[0]["text"])
@@ -176,7 +178,8 @@ class TwitchClient(pydle.Client):
 			mods = self.channels[target]["modes"].get('o', [])
 			await self.message(target, "Mods Online ({}): {}".format(len(mods), ", ".join(mod.capitalize() for mod in mods)))
 		elif message.startswith("!randomword"):
-			async with self.aiohttp_session.get("http://api.wordnik.com:80/v4/words.json/randomWord?" "hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(credentials.wordnik_apikey)) as resp:
+			url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(credentials.wordnik_apikey)
+			async with self.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			await self.message(target, data["word"].capitalize())
 			'''
@@ -333,11 +336,13 @@ class TwitchClient(pydle.Client):
 			if len(message.split()) == 1:
 				await self.message(target, "Please specify a monster.")
 				return
-			async with self.aiohttp_session.get("http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term={}".format('+'.join(message.split()[1:]))) as resp:
+			url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term={}".format('+'.join(message.split()[1:]))
+			async with self.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if "value" in data[0]:
 				monster_id = data[0]["value"]
-				async with self.aiohttp_session.get("http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid={}".format(monster_id)) as resp:
+				url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid={}".format(monster_id)
+				async with self.aiohttp_session.get(url) as resp:
 					data = await resp.json()
 				await self.message(target, "{0[name]}: {0[description]}, Level: {0[level]}, Weakness: {0[weakness]}, XP/Kill: {0[xp]}, HP: {0[lifepoints]}, Members: {0[members]}, Aggressive: {0[aggressive]}".format(data))
 			else:
