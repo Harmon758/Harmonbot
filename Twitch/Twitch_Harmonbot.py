@@ -27,7 +27,7 @@ class TwitchClient(pydle.Client):
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
 		self.version = "2.1.0"
-		self.aiohttp_session = aiohttp.ClientSession()
+		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
 		with open("data/commands/meta.json", 'r') as meta_commands_file:
 			self.meta_commands = json.load(meta_commands_file)
