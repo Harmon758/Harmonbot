@@ -5,6 +5,7 @@ import asyncio
 import datetime
 import json
 import logging
+import os
 import random
 import time
 # import unicodedata
@@ -30,17 +31,10 @@ class TwitchClient(pydle.Client):
 		self.version = "2.1.0"
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
-		with open("data/commands/meta.json", 'r') as meta_commands_file:
-			self.meta_commands = json.load(meta_commands_file)
-		with open("data/commands/misc.json", 'r') as misc_commands_file:
-			self.misc_commands = json.load(misc_commands_file)
-		
-		with open("data/commands/mikki.json", 'r') as mikki_commands_file:
-			self.mikki_commands = json.load(mikki_commands_file)
-		with open("data/commands/imagrill.json", 'r') as imagrill_commands_file:
-			self.imagrill_commands = json.load(imagrill_commands_file)
-		with open("data/commands/tirelessgod.json", 'r') as tirelessgod_commands_file:
-			self.tirelessgod_commands = json.load(tirelessgod_commands_file)
+		for file in os.listdir("data/commands"):
+			category = file[:-5]  # - .json
+			with open(f"data/commands/{category}.json", 'r') as commands_file:
+				setattr(self, f"{category}_commands", json.load(commands_file))
 	
 	async def on_connect(self):
 		await super().on_connect()
