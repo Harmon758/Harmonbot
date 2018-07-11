@@ -28,7 +28,7 @@ class TwitchClient(pydle.Client):
 		super().__init__(nickname)
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
-		self.version = "2.1.10"
+		self.version = "2.1.11"
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
 		for file in os.listdir("data/commands"):
@@ -149,14 +149,14 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says hello!")
 		elif message.startswith("!highfive"):
-			if message.split()[1].lower() == "random":
+			if len(message.split()) == 1:
+				await self.message(target, f"{source.capitalize()} highfives no one. :-/")
+			elif message.split()[1].lower() == "random":
 				await self.message(target, f"{source.capitalize()} highfives {self.random_viewer(target)}!")
 			elif message.split()[1].lower() == source:
 				await self.message(target, f"{source.capitalize()} highfives themselves. o_O")
 			elif message.split()[1].lower() == "harmonbot":
 				await self.message(target, f"!highfive {source.capitalize()}")
-			elif len(message.split()) == 1:
-				await self.message(target, f"{source.capitalize()} highfives no one. :-/")
 			else:
 				await self.message(target, f"{source.capitalize()} highfives {' '.join(message.split()[1:]).title()}!")
 		elif message.startswith("!hi"):
@@ -166,14 +166,14 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says hello!")
 		elif message.startswith("!hug"):
-			if message.split()[1].lower() == "random":
+			if len(message.split()) == 1:
+				await self.message(target, f"{source.capitalize()} hugs no one. :-/")
+			elif message.split()[1].lower() == "random":
 				await self.message(target, f"{source.capitalize()} hugs {self.random_viewer(target)}!")
 			elif message.split()[1].lower() == source:
 				await self.message(target, f"{source.capitalize()} hugs themselves. o_O")
 			elif message.split()[1].lower() == "harmonbot":
 				await self.message(target, f"!hug {source.capitalize()}")
-			elif len(message.split()) == 1:
-				await self.message(target, f"{source.capitalize()} hugs no one. :-/")
 			else:
 				await self.message(target, f"{source.capitalize()} hugs {' '.join(message.split()[1:]).title()}!")
 		elif message.startswith("!imfeelinglucky"):
@@ -262,12 +262,12 @@ class TwitchClient(pydle.Client):
 			elif message.startswith(("!bully", "!cyberbully")):
 				await self.message(target, "http://www.stopcyberbullying.org/ Please check out this site before you continue bullying other viewers.")
 			elif message.startswith("!caught"):
-				if message.split()[1].lower() == "random":
-					caught = self.random_viewer(target)
-				elif message.split()[1]:
-					caught = ' '.join(message.split()[1:]).capitalize()
-				else:
+				if len(message.split()) == 1:
 					caught = source.capitalize()
+				elif message.split()[1].lower() == "random":
+					caught = self.random_viewer(target)
+				else:
+					caught = ' '.join(message.split()[1:]).capitalize()
 				await self.message(target, f"Mikki has caught a wild {caught}!")
 			elif message.startswith(("!links", "!social")):
 				await self.message(target, "https://twitter.com/crystal_mikki https://www.instagram.com/crystalmikki/ https://discord.gg/vWbFxmu http://steamcommunity.com/id/mikkipuppy https://www.youtube.com/user/mikscape")
@@ -292,12 +292,12 @@ class TwitchClient(pydle.Client):
 			if message.startswith('!') and message[1:] in self.imagrill_commands:
 				await self.message(target, self.imagrill_commands[message[1:]])
 			elif message.startswith("!caught"):
-				if message.split()[1].lower() == "random":
-					caught = self.random_viewer(target)
-				elif message.split()[1]:
-					caught = ' '.join(message.split()[1:]).capitalize()
-				else:
+				if len(message.split()) == 1:
 					caught = source.capitalize()
+				elif message.split()[1].lower() == "random":
+					caught = self.random_viewer(target)
+				else:
+					caught = ' '.join(message.split()[1:]).capitalize()
 				await self.message(target, f"Arts has caught a wild {caught}!")
 			elif message.startswith("!googer"):
 				await self.message(target, "https://google.com/search?q=" + '+'.join(message.split()[1:]) + ' "RAISE YOUR GOOGERS" -Arts')
