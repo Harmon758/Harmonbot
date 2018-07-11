@@ -77,16 +77,18 @@ class TwitchClient(pydle.Client):
 		
 		# Main Commands
 		elif message.startswith("!audiodefine"):
-			url = "http://api.wordnik.com:80/v4/word.json/{}/audio?useCanonical=false&limit=1&api_key={}".format(message.split()[1], credentials.wordnik_apikey)
-			async with self.aiohttp_session.get(url) as resp:
+			url = "http://api.wordnik.com:80/v4/word.json/{}/audio".format(message.split()[1])
+			params = {"useCanonical": "false", "limit": 1, "api_key": credentials.wordnik_apikey}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data:
 				await self.message(target, data[0]["word"].capitalize() + ": " + data[0]["fileUrl"])
 			else:
 				await self.message(target, "Word or audio not found.")
 		elif message.startswith("!averagefps"):
-			url = "https://api.twitch.tv/kraken/streams/{}?client_id={}".format(target[1:], credentials.twitch_client_id)
-			async with self.aiohttp_session.get(url) as resp:
+			url = "https://api.twitch.tv/kraken/streams/{}".format(target[1:])
+			params = {"client_id": credentials.twitch_client_id}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
 				await self.message(target, "Average FPS: {}".format(data["stream"]["average_fps"]))
@@ -104,8 +106,10 @@ class TwitchClient(pydle.Client):
 			except KeyError:
 				await self.message(target, "\N{NO ENTRY} Unicode character not found")
 		elif message.startswith("!define"):
-			url = "http://api.wordnik.com:80/v4/word.json/{}/definitions?limit=1&includeRelated=false&useCanonical=false&includeTags=false&api_key={}".format(message.split()[1], credentials.wordnik_apikey)
-			async with self.aiohttp_session.get(url) as resp:
+			url = "http://api.wordnik.com:80/v4/word.json/{}/definitions".format(message.split()[1])
+			params = {"limit": 1, "includeRelated": "false", "useCanonical": "false", "includeTags": "false", 
+						"api_key": credentials.wordnik_apikey}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data:
 				await self.message(target, data[0]["word"].capitalize() + ": " + data[0]["text"])
@@ -116,8 +120,9 @@ class TwitchClient(pydle.Client):
 			if len(message.split()) > 1 and message.split()[1] in elements:
 				await self.message(target, elements[message.split()[1]])
 		elif message.startswith(("!followed", "!followage", "!howlong")):
-			url = "https://api.twitch.tv/kraken/users/{}/follows/channels/{}?client_id={}".format(source, target[1:], credentials.twitch_client_id)
-			async with self.aiohttp_session.get(url) as resp:
+			url = "https://api.twitch.tv/kraken/users/{}/follows/channels/{}".format(source, target[1:])
+			params = {"client_id": credentials.twitch_client_id}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if "created_at" in data:
 				created_at = dateutil.parser.parse(data["created_at"])
@@ -178,8 +183,11 @@ class TwitchClient(pydle.Client):
 			mods = self.channels[target]["modes"].get('o', [])
 			await self.message(target, "Mods Online ({}): {}".format(len(mods), ", ".join(mod.capitalize() for mod in mods)))
 		elif message.startswith("!randomword"):
-			url = "http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key={0}".format(credentials.wordnik_apikey)
-			async with self.aiohttp_session.get(url) as resp:
+			url = "http://api.wordnik.com:80/v4/words.json/randomWord"
+			params = {"hasDictionaryDef": "false", "minCorpusCount": 0, "maxCorpusCount": -1, 
+						"minDictionaryCount": 1, "maxDictionaryCount": -1, "minLength": 5, "maxLength": -1, 
+						"api_key": credentials.wordnik_apikey}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			await self.message(target, data["word"].capitalize())
 			'''
@@ -192,32 +200,37 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, str(random.randint(1, 10)))
 		elif message.startswith("!title"):
-			url = "https://api.twitch.tv/kraken/streams/{}?client_id={}".format(target[1:], credentials.twitch_client_id)
-			async with self.aiohttp_session.get(url) as resp:
+			url = "https://api.twitch.tv/kraken/streams/{}".format(target[1:])
+			params = {"client_id": credentials.twitch_client_id}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
 				await self.message(target, "{}".format(data["stream"]["channel"]["status"]))
 			else:
 				await self.message(target, "Title not found.")
 		elif message.startswith("!translate"):
-			url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang=en&text={}&options=1".format(credentials.yandex_translate_api_key, ' '.join(message.split()[1:]))
-			async with self.aiohttp_session.get(url) as resp:
+			url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
+			params = {"lang": "en", "text": ' '.join(message.split()[1:]), "options": 1, 
+						"key": credentials.yandex_translate_api_key}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data["code"] != 200:
 				await self.message(target, "Error: {}".format(data["message"]))
 				return
 			await self.message(target, data["text"][0])
 		elif message.startswith("!uptime"):
-			url = "https://api.twitch.tv/kraken/streams/{}?client_id={}".format(target[1:], credentials.twitch_client_id)
-			async with self.aiohttp_session.get(url) as resp:
+			url = "https://api.twitch.tv/kraken/streams/{}".format(target[1:])
+			params = {"client_id": credentials.twitch_client_id}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
 				await self.message(target, secs_to_duration(int((datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(data["stream"]["created_at"])).total_seconds())))
 			else:
 				await self.message(target, "Uptime not found.")
 		elif message.startswith("!urband"):
-			url = "http://api.urbandictionary.com/v0/define?term={}".format('+'.join(message.split()[1:]))
-			async with self.aiohttp_session.get(url) as resp:
+			url = "http://api.urbandictionary.com/v0/define"
+			params = {"term": '+'.join(message.split()[1:])}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if not data or "list" not in data or not data["list"]:
 				await self.message(target, "No results found.")
@@ -229,8 +242,9 @@ class TwitchClient(pydle.Client):
 			message += ' ' + definition["permalink"]
 			await self.message(target, message)
 		elif message.startswith("!viewers"):
-			url = "https://api.twitch.tv/kraken/streams/{}?client_id={}".format(target[1:], credentials.twitch_client_id)
-			async with self.aiohttp_session.get(url) as resp:
+			url = "https://api.twitch.tv/kraken/streams/{}".format(target[1:])
+			params = {"client_id": credentials.twitch_client_id}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
 				await self.message(target, "{} viewers watching now.".format(data["stream"]["viewers"]))
@@ -336,13 +350,15 @@ class TwitchClient(pydle.Client):
 			if len(message.split()) == 1:
 				await self.message(target, "Please specify a monster.")
 				return
-			url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term={}".format('+'.join(message.split()[1:]))
-			async with self.aiohttp_session.get(url) as resp:
+			url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json"
+			params = {"term": '+'.join(message.split()[1:])}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if "value" in data[0]:
 				monster_id = data[0]["value"]
-				url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid={}".format(monster_id)
-				async with self.aiohttp_session.get(url) as resp:
+				url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
+				params = {"beastid": monster_id}
+				async with self.aiohttp_session.get(url, params = params) as resp:
 					data = await resp.json()
 				await self.message(target, "{0[name]}: {0[description]}, Level: {0[level]}, Weakness: {0[weakness]}, XP/Kill: {0[xp]}, HP: {0[lifepoints]}, Members: {0[members]}, Aggressive: {0[aggressive]}".format(data))
 			else:
