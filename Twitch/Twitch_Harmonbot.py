@@ -7,10 +7,11 @@ import json
 import logging
 import random
 import time
-import unicodedata
+# import unicodedata
 
 import aiohttp
 import dateutil.parser
+import unicodedata2 as unicodedata
 
 import credentials
 
