@@ -36,7 +36,6 @@ wait_time = 15.0
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
-aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
 
 # TODO: Already moved to Bot constants, update all references to
@@ -389,9 +388,11 @@ def get_prefix(bot, message):
 	return prefixes if prefixes else '!'
 
 
-# Initialize client
+# Initialize client + aiohttp client session
 
 client = Bot(command_prefix = get_prefix)
+aiohttp_session = aiohttp.ClientSession(loop = client.loop)
+# TODO: Move ^ to Bot
 
 
 # Utilities
