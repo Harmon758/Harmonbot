@@ -28,7 +28,7 @@ class TwitchClient(pydle.Client):
 		super().__init__(nickname)
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
-		self.version = "2.1.5"
+		self.version = "2.1.9"
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
 		for file in os.listdir("data/commands"):
@@ -44,7 +44,7 @@ class TwitchClient(pydle.Client):
 		await self.raw("CAP REQ :twitch.tv/commands\r\n")
 		for channel in channels:
 			await self.join('#' + channel)
-		print("Started up Twitch Harmonbot | Connected to {}".format(' | '.join(['#' + channel for channel in channels])))
+		print(f"Started up Twitch Harmonbot | Connected to {' | '.join('#' + channel for channel in channels)}")
 	
 	async def on_raw(self, message):
 		await super().on_raw(message)
@@ -59,13 +59,13 @@ class TwitchClient(pydle.Client):
 	
 	async def message(self, target, message):
 		if target[0] != '#':
-			await super().message("#harmonbot", ".w {} {}".format(target, message))
+			await super().message("#harmonbot", f".w {target} {message}")
 		else:
 			await super().message(target, message)
 	
 	async def on_message(self, target, source, message):
 		await super().on_message(target, source, message)
-		# print("Twitch Harmonbot | Message | {} | {}: {}".format(target, source, message))
+		# print(f"Twitch Harmonbot | Message | {target} | {source}: {message}")
 		if target == "harmonbot":
 			target = source
 		if source == "harmonbot":
@@ -77,7 +77,7 @@ class TwitchClient(pydle.Client):
 		
 		# Main Commands
 		elif message.startswith("!audiodefine"):
-			url = "http://api.wordnik.com:80/v4/word.json/{}/audio".format(message.split()[1])
+			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/audio"
 			params = {"useCanonical": "false", "limit": 1, "api_key": credentials.wordnik_apikey}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
@@ -86,27 +86,27 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, "Word or audio not found.")
 		elif message.startswith("!averagefps"):
-			url = "https://api.twitch.tv/kraken/streams/{}".format(target[1:])
+			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": credentials.twitch_client_id}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
-				await self.message(target, "Average FPS: {}".format(data["stream"]["average_fps"]))
+				await self.message(target, f"Average FPS: {data['stream']['average_fps']}")
 			else:
 				await self.message(target, "Average FPS not found.")
 		elif message.startswith("!bye"):
 			if len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
 				#await self.message(target, "Bye, {source}!", source=source)
-				await self.message(target, "Bye, {}!".format(source.capitalize()))
+				await self.message(target, f"Bye, {source.capitalize()}!")
 			else:
-				await self.message(target, "{}, {} says goodbye!".format(' '.join([m.capitalize() for m in message.split()[1:]]), source.capitalize()))
+				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says goodbye!")
 		elif message.startswith(("!char", "!character", "!unicode")):
 			try:
 				await self.message(target, unicodedata.lookup(' '.join(message.split()[1:])))
 			except KeyError:
 				await self.message(target, "\N{NO ENTRY} Unicode character not found")
 		elif message.startswith("!define"):
-			url = "http://api.wordnik.com:80/v4/word.json/{}/definitions".format(message.split()[1])
+			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/definitions"
 			params = {"limit": 1, "includeRelated": "false", "useCanonical": "false", "includeTags": "false", 
 						"api_key": credentials.wordnik_apikey}
 			async with self.aiohttp_session.get(url, params = params) as resp:
@@ -120,68 +120,69 @@ class TwitchClient(pydle.Client):
 			if len(message.split()) > 1 and message.split()[1] in elements:
 				await self.message(target, elements[message.split()[1]])
 		elif message.startswith(("!followed", "!followage", "!howlong")):
-			url = "https://api.twitch.tv/kraken/users/{}/follows/channels/{}".format(source, target[1:])
+			url = f"https://api.twitch.tv/kraken/users/{source}/follows/channels/{target[1:]}"
 			params = {"client_id": credentials.twitch_client_id}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if "created_at" in data:
 				created_at = dateutil.parser.parse(data["created_at"])
 				seconds = int((datetime.datetime.now(datetime.timezone.utc) - created_at).total_seconds())
-				await self.message(target, "{} followed on {}, {} ago".format(source.capitalize(), created_at.strftime("%B %#d %Y"), secs_to_duration(seconds)))
+				await self.message(target, f"{source.capitalize()} followed on {created_at.strftime('%B %#d %Y')}, {secs_to_duration(seconds)} ago")
 			else:
-				await self.message(target, "{}, you haven't followed yet!".format(source.capitalize()))
+				await self.message(target, f"{source.capitalize()}, you haven't followed yet!")
 		elif message.startswith("!followers"):
-			url = "https://api.twitch.tv/kraken/channels/{}/follows?client_id={}".format(target[1:], credentials.twitch_client_id)
-			async with self.aiohttp_session.get(url) as resp:
+			url = f"https://api.twitch.tv/kraken/channels/{target[1:]}/follows"
+			params = {"client_id": credentials.twitch_client_id}
+			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
-			await self.message(target, "There are currently {} people following {}.".format(data["_total"], target[1:].capitalize()))
+			await self.message(target, f"There are currently {data['_total']} people following {target[1:].capitalize()}.")
 		elif message.startswith("!google"):
 			await self.message(target, "https://google.com/search?q=" + '+'.join(message.split()[1:]))
 		elif message.startswith(("!congrats", "!grats", "!gz")):
 			if len(message.split()) == 1:
 				await self.message(target, "Congratulations!!!!!")
 			else:
-				await self.message(target, "Congratulations, {}!!!!!".format(' '.join([m.capitalize() for m in message.split()[1:]])))
+				await self.message(target, f"Congratulations, {' '.join(message.split()[1:]).title()}!!!!!")
 		elif message.startswith("!hello"):
 			if len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
-				await self.message(target, "Hello, {}!".format(source.capitalize()))
+				await self.message(target, f"Hello, {source.capitalize()}!")
 			else:
-				await self.message(target, "{}, {} says hello!".format(' '.join([m.capitalize() for m in message.split()[1:]]), source.capitalize()))
+				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says hello!")
 		elif message.startswith("!highfive"):
 			if message.split()[1].lower() == "random":
-				await self.message(target, "{} highfives {}!".format(source.capitalize(), self.random_viewer(target)))
+				await self.message(target, f"{source.capitalize()} highfives {self.random_viewer(target)}!")
 			elif message.split()[1].lower() == source:
-				await self.message(target, "{} highfives themselves. o_O".format(source.capitalize()))
+				await self.message(target, f"{source.capitalize()} highfives themselves. o_O")
 			elif message.split()[1].lower() == "harmonbot":
-				await self.message(target, "!highfive {}".format(source.capitalize()))
+				await self.message(target, f"!highfive {source.capitalize()}")
 			elif len(message.split()) == 1:
-				await self.message(target, "{} highfives no one. :-/".format(source.capitalize()))
+				await self.message(target, f"{source.capitalize()} highfives no one. :-/")
 			else:
-				await self.message(target, "{} highfives {}!".format(source.capitalize(), ' '.join([m.capitalize() for m in message.split()[1:]])))
+				await self.message(target, f"{source.capitalize()} highfives {' '.join(message.split()[1:]).title()}!")
 		elif message.startswith("!hi"):
 			if message.split()[0] in ["!hiscores", "!hiscore", "!highscore", "!highscores"]: return
 			elif len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
-				await self.message(target, "Hello, {}!".format(source.capitalize()))
+				await self.message(target, f"Hello, {source.capitalize()}!")
 			else:
-				await self.message(target, "{}, {} says hello!".format(' '.join([m.capitalize() for m in message.split()[1:]]), source.capitalize()))
+				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says hello!")
 		elif message.startswith("!hug"):
 			if message.split()[1].lower() == "random":
-				await self.message(target, "{} hugs {}!".format(source.capitalize(), self.random_viewer(target)))
+				await self.message(target, f"{source.capitalize()} hugs {self.random_viewer(target)}!")
 			elif message.split()[1].lower() == source:
-				await self.message(target, "{} hugs themselves. o_O".format(source.capitalize()))
+				await self.message(target, f"{source.capitalize()} hugs themselves. o_O")
 			elif message.split()[1].lower() == "harmonbot":
-				await self.message(target, "!hug {}".format(source.capitalize()))
+				await self.message(target, f"!hug {source.capitalize()}")
 			elif len(message.split()) == 1:
-				await self.message(target, "{} hugs no one. :-/".format(source.capitalize()))
+				await self.message(target, f"{source.capitalize()} hugs no one. :-/")
 			else:
-				await self.message(target, "{} hugs {}!".format(source.capitalize(), ' '.join([m.capitalize() for m in message.split()[1:]])))
+				await self.message(target, f"{source.capitalize()} hugs {' '.join(message.split()[1:]).title()}!")
 		elif message.startswith("!imfeelinglucky"):
 			await self.message(target, "https://google.com/search?btnI&q=" + '+'.join(message.split()[1:]))
 		elif message.startswith("!lmgtfy"):
 			await self.message(target, "lmgtfy.com/?q=" + '+'.join(message.split()[1:]))
 		elif message.startswith("!mods"):
 			mods = self.channels[target]["modes"].get('o', [])
-			await self.message(target, "Mods Online ({}): {}".format(len(mods), ", ".join(mod.capitalize() for mod in mods)))
+			await self.message(target, f"Mods Online ({len(mods)}): {', '.join(mod.capitalize() for mod in mods)}")
 		elif message.startswith("!randomword"):
 			url = "http://api.wordnik.com:80/v4/words.json/randomWord"
 			params = {"hasDictionaryDef": "false", "minCorpusCount": 0, "maxCorpusCount": -1, 
@@ -200,12 +201,12 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, str(random.randint(1, 10)))
 		elif message.startswith("!title"):
-			url = "https://api.twitch.tv/kraken/streams/{}".format(target[1:])
+			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": credentials.twitch_client_id}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
-				await self.message(target, "{}".format(data["stream"]["channel"]["status"]))
+				await self.message(target, data["stream"]["channel"]["status"])
 			else:
 				await self.message(target, "Title not found.")
 		elif message.startswith("!translate"):
@@ -215,11 +216,11 @@ class TwitchClient(pydle.Client):
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data["code"] != 200:
-				await self.message(target, "Error: {}".format(data["message"]))
+				await self.message(target, f"Error: {data['message']}")
 				return
 			await self.message(target, data["text"][0])
 		elif message.startswith("!uptime"):
-			url = "https://api.twitch.tv/kraken/streams/{}".format(target[1:])
+			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": credentials.twitch_client_id}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
@@ -236,18 +237,18 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "No results found.")
 				return
 			definition = data["list"][0]
-			message = "{}: {}".format(definition["word"], definition["definition"].replace('\n', ' '))
+			message = f"{definition['word']}: " + definition['definition'].replace('\n', ' ')
 			if len(message + definition["permalink"]) > 423 :
 				message = message[:423 - len(definition["permalink"]) - 4] + "..."
 			message += ' ' + definition["permalink"]
 			await self.message(target, message)
 		elif message.startswith("!viewers"):
-			url = "https://api.twitch.tv/kraken/streams/{}".format(target[1:])
+			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": credentials.twitch_client_id}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
-				await self.message(target, "{} viewers watching now.".format(data["stream"]["viewers"]))
+				await self.message(target, f"{data['stream']['viewers']} viewers watching now.")
 			else:
 				await self.message(target, "Stream is offline.")
 			# No one is watching right now :-/
@@ -267,12 +268,12 @@ class TwitchClient(pydle.Client):
 					caught = ' '.join(message.split()[1:]).capitalize()
 				else:
 					caught = source.capitalize()
-				await self.message(target, "Mikki has caught a wild {}!".format(caught))
+				await self.message(target, f"Mikki has caught a wild {caught}!")
 			elif message.startswith(("!links", "!social")):
 				await self.message(target, "https://twitter.com/crystal_mikki https://www.instagram.com/crystalmikki/ https://discord.gg/vWbFxmu http://steamcommunity.com/id/mikkipuppy https://www.youtube.com/user/mikscape")
 			elif message.startswith("!mikkitime"):
 				mikkitime = datetime.datetime.now(datetime.timezone(datetime.timedelta(minutes = 60 * 8)))
-				await self.message(target, "It is currently {} on {} in Western Australia ({}).".format(mikkitime.strftime("%#I:%M %p"), mikkitime.strftime("%b. %#d"), mikkitime.strftime("%Z")))
+				await self.message(target, f"It is currently {mikkitime.strftime('%#I:%M %p on %b. %#d in Western Australia (%Z)')}.")
 				# TODO: Include day of week
 			elif message.startswith(("!music", "!spotify")):
 				await self.message(target, "http://open.spotify.com/user/mikkirs/playlist/5OBCdMNiGiTRGL0cqWL9CT")
@@ -297,7 +298,7 @@ class TwitchClient(pydle.Client):
 					caught = ' '.join(message.split()[1:]).capitalize()
 				else:
 					caught = source.capitalize()
-				await self.message(target, "Arts has caught a wild {}!".format(caught))
+				await self.message(target, f"Arts has caught a wild {caught}!")
 			elif message.startswith("!googer"):
 				await self.message(target, "https://google.com/search?q=" + '+'.join(message.split()[1:]) + ' "RAISE YOUR GOOGERS" -Arts')
 			elif message.startswith(("!rebirth1", "!re;birth1")):
@@ -321,7 +322,7 @@ class TwitchClient(pydle.Client):
 		if message.startswith(("!07rswiki", "!rswiki07", "!osrswiki", "!rswikios")):
 			await self.message(target, "2007.runescape.wikia.com/wiki/" + '_'.join(message.split()[1:]))
 		elif message.startswith("!cache"):
-			await self.message(target, "{} until Guthixian Cache.".format(secs_to_duration(int(10800 - time.time() % 10800))))
+			await self.message(target, f"{secs_to_duration(int(10800 - time.time() % 10800))} until Guthixian Cache.")
 		elif message.startswith("!indecentcodehs"):
 			await self.message(target, "indecentcode.com/hs/index.php?id=" + '+'.join(message.split()[1:]))
 		elif message.startswith("!level"):
@@ -335,15 +336,15 @@ class TwitchClient(pydle.Client):
 					for i in range(1, level):
 						xp += int(i + 300 * 2 ** (i / 7))
 					xp = int(xp / 4)
-					await self.message(target, "Runescape Level {} = {:,} xp".format(level, xp))
+					await self.message(target, f"Runescape Level {level} = {xp:,} xp")
 				elif level > 9000:
 					await self.message(target, "It's over 9000!")
 				elif level == 9000:
 					await self.message(target, "Almost there.")
 				elif level > 126 and level < 9000:
-					await self.message(target, "I was gonna calculate xp at Level {}. Then I took an arrow to the knee.".format(level))
+					await self.message(target, f"I was gonna calculate xp at Level {level}. Then I took an arrow to the knee.")
 				else:
-					await self.message(target, "Level {} does not exist.".format(level))
+					await self.message(target, f"Level {level} does not exist.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!monster"):
@@ -364,11 +365,11 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, "Monster not found.")
 		elif message.startswith("!reset"):
-			await self.message(target, "{} until reset.".format(secs_to_duration(int(86400 - time.time() % 86400))))
+			await self.message(target, f"{secs_to_duration(int(86400 - time.time() % 86400))} until reset.")
 		elif message.startswith("!rswiki"):
 			await self.message(target, "runescape.wikia.com/wiki/" + '_'.join(message.split()[1:]))
 		elif message.startswith("!warbands"):
-			await self.message(target, "{} until Warbands.".format(secs_to_duration(int(25200 - time.time() % 25200))))
+			await self.message(target, f"{secs_to_duration(int(25200 - time.time() % 25200))} until Warbands.")
 		elif message.startswith("!xpat"):
 			if len(message.split()) == 1:
 				await self.message(target, "Please enter xp.")
@@ -386,7 +387,7 @@ class TwitchClient(pydle.Client):
 						_xp /= 4
 						_level += 1
 					_level -= 1
-					await self.message(target, "{:,} xp = level {}".format(xp, _level))
+					await self.message(target, f"{xp:,} xp = level {_level}")
 				else:
 					await self.message(target, "You can't have that much xp!")
 			else:
@@ -401,7 +402,7 @@ class TwitchClient(pydle.Client):
 						startxp = int(xp / 4)
 					xp += int(level + 300 * 2 ** (level / 7))
 				betweenxp = int(xp / 4) - startxp
-				await self.message(target, "{:,} xp between level {} and level {}".format(betweenxp, startlevel, endlevel))
+				await self.message(target, f"{betweenxp:,} xp between level {startlevel} and level {endlevel}")
 			else:
 				await self.message(target, "Syntax error.")
 		
@@ -418,112 +419,112 @@ class TwitchClient(pydle.Client):
 		# TODO: add support for non-integers/floats, improve formatting
 		if message.startswith("!ctof"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} °C = {} °F".format(message.split()[1], int(message.split()[1]) * 9 / 5 + 32))
+				await self.message(target, f"{message.split()[1]} °C = {int(message.split()[1]) * 9 / 5 + 32} °F")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!ftoc"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} °F = {} °C".format(message.split()[1], (int(message.split()[1]) - 32) * 5 / 9))
+				await self.message(target, f"{message.split()[1]} °F = {(int(message.split()[1]) - 32) * 5 / 9} °C")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!lbtokg"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} lb = {} kg".format(message.split()[1], int(message.split()[1]) * 0.45359237))
+				await self.message(target, f"{message.split()[1]} lb = {int(message.split()[1]) * 0.45359237} kg")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!kgtolb"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} kg = {} lb".format(message.split()[1], int(message.split()[1]) * 2.2046))
+				await self.message(target, f"{message.split()[1]} kg = {int(message.split()[1]) * 2.2046} lb")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!fttom"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} ft = {} m".format(message.split()[1], int(message.split()[1]) * 0.3048))
+				await self.message(target, f"{message.split()[1]} ft = {int(message.split()[1]) * 0.3048} m")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!mtoft"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} m = {} ft".format(message.split()[1], int(message.split()[1]) * 3.2808))
+				await self.message(target, f"{message.split()[1]} m = {int(message.split()[1]) * 3.2808} ft")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!fitom"):
 			if len(message.split()) > 2 and is_number(message.split()[1]) and is_number(message.split()[2]):
-				await self.message(target, "{} ft {} in = {} m".format(message.split()[1], message.split()[2], (int(message.split()[1]) + int(message.split()[2]) / 12) * 0.3048))
+				await self.message(target, f"{message.split()[1]} ft {message.split()[2]} in = {(int(message.split()[1]) + int(message.split()[2]) / 12) * 0.3048} m")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!mtofi"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} m = {} ft {} in".format(message.split()[1], int(message.split()[1]) * 39.37 // 12, int(message.split()[1]) * 39.37 - (int(message.split()[1]) * 39.37 // 12) * 12))
+				await self.message(target, f"{message.split()[1]} m = {int(message.split()[1]) * 39.37 // 12} ft {int(message.split()[1]) * 39.37 - (int(message.split()[1]) * 39.37 // 12) * 12} in")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!gtooz"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} g = {} oz".format(message.split()[1], int(message.split()[1]) * 0.035274))
+				await self.message(target, f"{message.split()[1]} g = {int(message.split()[1]) * 0.035274} oz")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!oztog"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} oz = {} g".format(message.split()[1], int(message.split()[1]) / 0.035274))
+				await self.message(target, f"{message.split()[1]} oz = {int(message.split()[1]) / 0.035274} g")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!mitokm"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} mi = {} km".format(message.split()[1], int(message.split()[1]) / 0.62137))
+				await self.message(target, f"{message.split()[1]} mi = {int(message.split()[1]) / 0.62137} km")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!kmtomi"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} km = {} mi".format(message.split()[1], int(message.split()[1]) * 0.62137))
+				await self.message(target, f"{message.split()[1]} km = {int(message.split()[1]) * 0.62137} mi")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!ozttog"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} oz t = {} g".format(message.split()[1], int(message.split()[1]) / 0.032151))
+				await self.message(target, f"{message.split()[1]} oz t = {int(message.split()[1]) / 0.032151} g")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!gtoozt"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} g = {} oz t".format(message.split()[1], int(message.split()[1]) * 0.032151))
+				await self.message(target, f"{message.split()[1]} g = {int(message.split()[1]) * 0.032151} oz t")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!ozttooz"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} oz t = {} oz".format(message.split()[1], int(message.split()[1]) * 1.09714996656))
+				await self.message(target, f"{message.split()[1]} oz t = {int(message.split()[1]) * 1.09714996656} oz")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!oztoozt"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, "{} oz = {} oz t".format(message.split()[1], int(message.split()[1]) * 0.911452427176))
+				await self.message(target, f"{message.split()[1]} oz = {int(message.split()[1]) * 0.911452427176} oz t")
 			elif len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
 			else:
@@ -559,13 +560,13 @@ def secs_to_duration(secs):
 	for dur_name, dur_in_secs in (("year", 31536000), ("week", 604800), ("day", 86400), ("hour", 3600), ("minute", 60)):
 		if secs >= dur_in_secs:
 			num_dur = int(secs / dur_in_secs)
-			output += " {} {}".format(num_dur, dur_name)
+			output += f" {num_dur} {dur_name}"
 			if (num_dur > 1): output += 's'
 			secs -= num_dur * dur_in_secs
 	if secs != 0:
-		output += " {} second".format(secs)
+		output += f" {secs} second"
 		if (secs != 1): output += 's'
-	return output[1:] if output else "{} seconds".format(secs)
+	return output[1:] if output else f"{secs} seconds"
 
 print("Starting up Twitch Harmonbot...")
 client = TwitchClient("Harmonbot")
