@@ -26,14 +26,11 @@ import credentials
 ## https://discuss.dev.twitch.tv/t/irc-checking-if-channel-exists/6147
 ## Still show up on https://chatdepot.twitch.tv/room_memberships?oauth_token=
 
-# TODO: Fix pydle failure to reconnect issue
-# TODO: Add pydle Python 3.7 support
-
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
 		super().__init__(nickname)
-		self.version = "2.1.13"
+		self.version = "2.1.14"
 		
 		self.CHANNELS = ["harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", 
 							"vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
@@ -574,10 +571,11 @@ def secs_to_duration(secs):
 		if (secs != 1): output += 's'
 	return output[1:] if output else f"{secs} seconds"
 
-print("Starting up Twitch Harmonbot...")
-client = TwitchClient("Harmonbot")
-loop = asyncio.get_event_loop()
-asyncio.ensure_future(client.connect("irc.chat.twitch.tv", password = credentials.oauth_token), loop = loop)
-# DEFAULT_PORT = 6667
-loop.run_forever()
+if __name__ == "__main__":
+	print("Starting up Twitch Harmonbot...")
+	client = TwitchClient("Harmonbot")
+	loop = asyncio.get_event_loop()
+	asyncio.ensure_future(client.connect("irc.chat.twitch.tv", password = credentials.oauth_token), loop = loop)
+	# DEFAULT_PORT = 6667
+	loop.run_forever()
 
