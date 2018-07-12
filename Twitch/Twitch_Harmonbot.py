@@ -21,7 +21,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.1.16"
+		self.version = "2.1.17"
 		
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -71,6 +71,16 @@ class TwitchClient(pydle.Client):
 			channel_logger.addHandler(channel_logger_handler)
 		
 		print(f"Started up Twitch Harmonbot | Connected to {' | '.join('#' + channel for channel in self.CHANNELS)}")
+	
+	async def on_join(self, channel, user):
+		await super().on_join(channel,user)
+		channel_logger = logging.getLogger(channel)
+		channel_logger.info(f"JOIN: {user}")
+	
+	async def on_part(self, channel, user, message = None):
+		await super().on_part(channel, user, message)
+		channel_logger = logging.getLogger(channel)
+		channel_logger.info(f"PART: {user}")
 	
 	async def on_raw_004(self, message):
 		# super().on_raw_004(message)
