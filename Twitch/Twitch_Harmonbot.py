@@ -16,8 +16,17 @@ import unicodedata2 as unicodedata
 
 import credentials
 
-channels = ["_harmon758_1434735958584", "_harmon758_1478092370962", "_harmon758_1478092378893", "harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", "vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
+channels = ["harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", "vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
+
+# Group chat channels
+# "_harmon758_1434735958584", "_harmon758_1478092370962", "_harmon758_1478092378893"
 # "_harmon758_1474528138348" old public channel
+## Replaced by Rooms? (https://blog.twitch.tv/bring-your-community-together-with-rooms-ad60cab1af0a)
+## https://discuss.dev.twitch.tv/t/chatroom-selector-gone-on-new-twitch-website/12860
+## https://discuss.dev.twitch.tv/t/do-new-chat-rooms-change-anything-about-irc/14310/
+## Gone/Inaccessible now?, can't join channel/no response
+## https://discuss.dev.twitch.tv/t/irc-checking-if-channel-exists/6147
+## Still show up on https://chatdepot.twitch.tv/room_memberships?oauth_token=
 
 # TODO: Fix pydle failure to reconnect issue
 # TODO: Add pydle Python 3.7 support
@@ -28,7 +37,7 @@ class TwitchClient(pydle.Client):
 		super().__init__(nickname)
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
-		self.version = "2.1.11"
+		self.version = "2.1.12"
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
 		for file in os.listdir("data/commands"):
