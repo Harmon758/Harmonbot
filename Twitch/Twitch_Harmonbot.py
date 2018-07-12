@@ -16,16 +16,6 @@ import unicodedata2 as unicodedata
 
 import credentials
 
-# Group chat channels
-# "_harmon758_1434735958584", "_harmon758_1478092370962", "_harmon758_1478092378893"
-# "_harmon758_1474528138348" old public channel
-## Replaced by Rooms? (https://blog.twitch.tv/bring-your-community-together-with-rooms-ad60cab1af0a)
-## https://discuss.dev.twitch.tv/t/chatroom-selector-gone-on-new-twitch-website/12860
-## https://discuss.dev.twitch.tv/t/do-new-chat-rooms-change-anything-about-irc/14310/
-## Gone/Inaccessible now?, can't join channel/no response
-## https://discuss.dev.twitch.tv/t/irc-checking-if-channel-exists/6147
-## Still show up on https://chatdepot.twitch.tv/room_memberships?oauth_token=
-
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
@@ -77,6 +67,10 @@ class TwitchClient(pydle.Client):
 			target = source
 		if source == "harmonbot":
 			return
+		
+		# Test Command
+		if message == "!test":
+			await self.message(target, "Hello, World!")
 		
 		# Meta Commands
 		if message.startswith('!') and message[1:] in self.meta_commands:
