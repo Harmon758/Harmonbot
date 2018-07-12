@@ -22,22 +22,22 @@ class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
 		self.version = "2.1.17"
-		
+		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
 		pydle_logger_handler = logging.FileHandler(filename = "data/logs/pydle.log", 
 													encoding = "UTF-8", mode = 'a')
 		pydle_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
 		pydle_logger.addHandler(pydle_logger_handler)
-		
+		# Initialize
 		super().__init__(nickname)
-		
+		# Constants
 		self.CHANNELS = ["harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", 
 							"vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
 		self.PING_TIMEOUT = 600
-		
+		# Clients
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
-		
+		# Dynamically load commands
 		for file in os.listdir("data/commands"):
 			category = file[:-5]  # - .json
 			with open(f"data/commands/{category}.json", 'r') as commands_file:
@@ -45,7 +45,7 @@ class TwitchClient(pydle.Client):
 	
 	async def on_connect(self):
 		await super().on_connect()
-		
+		# Client logger
 		self.logger.setLevel(logging.DEBUG)
 		console_handler = logging.StreamHandler(sys.stdout)
 		console_handler.setLevel(logging.ERROR)
@@ -56,11 +56,11 @@ class TwitchClient(pydle.Client):
 		file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
 		self.logger.addHandler(console_handler)
 		self.logger.addHandler(file_handler)
-		
+		# Request capabilities
 		await self.raw("CAP REQ :twitch.tv/membership\r\n")
 		await self.raw("CAP REQ :twitch.tv/tags\r\n")
 		await self.raw("CAP REQ :twitch.tv/commands\r\n")
-		
+		# Join channels + set up channel loggers
 		for channel in self.CHANNELS:
 			await self.join('#' + channel)
 			channel_logger = logging.getLogger('#' + channel)
@@ -69,7 +69,7 @@ class TwitchClient(pydle.Client):
 															encoding = "UTF-8", mode = 'a')
 			channel_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
 			channel_logger.addHandler(channel_logger_handler)
-		
+		# Console output
 		print(f"Started up Twitch Harmonbot | Connected to {' | '.join('#' + channel for channel in self.CHANNELS)}")
 	
 	async def on_join(self, channel, user):
@@ -158,7 +158,7 @@ class TwitchClient(pydle.Client):
 			elements = {"ac": "Actinium", "ag": "Silver", "al": "Aluminum", "am": "Americium", "ar": "Argon", }
 			if len(message.split()) > 1 and message.split()[1] in elements:
 				await self.message(target, elements[message.split()[1]])
-		elif message.startswith(("!followed", "!followage", "!howlong")):
+		elif message.startswith(("!followage", "!followed", "!howlong")):
 			url = f"https://api.twitch.tv/kraken/users/{source}/follows/channels/{target[1:]}"
 			params = {"client_id": credentials.twitch_client_id}
 			async with self.aiohttp_session.get(url, params = params) as resp:
@@ -277,7 +277,7 @@ class TwitchClient(pydle.Client):
 				return
 			definition = data["list"][0]
 			message = f"{definition['word']}: " + definition['definition'].replace('\n', ' ')
-			if len(message + definition["permalink"]) > 423 :
+			if len(message + definition["permalink"]) > 423:
 				message = message[:423 - len(definition["permalink"]) - 4] + "..."
 			message += ' ' + definition["permalink"]
 			await self.message(target, message)
