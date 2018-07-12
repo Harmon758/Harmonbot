@@ -5,8 +5,10 @@ import asyncio
 import datetime
 import json
 import logging
+import logging.handlers
 import os
 import random
+import sys
 import time
 # import unicodedata
 
@@ -19,13 +21,20 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
+		self.version = "2.1.15"
+		
+		pydle_logger = logging.getLogger("pydle")
+		pydle_logger.setLevel(logging.DEBUG)
+		pydle_logger_handler = logging.FileHandler(filename = "data/logs/pydle.log", encoding = "UTF-8", mode = 'a')
+		pydle_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+		pydle_logger.addHandler(pydle_logger_handler)
+		
 		super().__init__(nickname)
-		self.version = "2.1.14"
 		
 		self.CHANNELS = ["harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", 
 							"vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
 		self.PING_TIMEOUT = 600
-		# self.logger.setLevel(logging.ERROR)
+		
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
 		for file in os.listdir("data/commands"):
@@ -35,7 +44,16 @@ class TwitchClient(pydle.Client):
 	
 	async def on_connect(self):
 		await super().on_connect()
-		self.logger.setLevel(logging.ERROR)
+		
+		self.logger.setLevel(logging.DEBUG)
+		console_handler = logging.StreamHandler(sys.stdout)
+		console_handler.setLevel(logging.ERROR)
+		console_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+		file_handler = logging.handlers.TimedRotatingFileHandler(filename = "data/logs/client/client.log", when = "midnight", backupCount = 3650000, encoding = "UTF-8")
+		file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
+		self.logger.addHandler(console_handler)
+		self.logger.addHandler(file_handler)
+		
 		await self.raw("CAP REQ :twitch.tv/membership\r\n")
 		await self.raw("CAP REQ :twitch.tv/tags\r\n")
 		await self.raw("CAP REQ :twitch.tv/commands\r\n")
@@ -45,7 +63,6 @@ class TwitchClient(pydle.Client):
 	
 	async def on_raw(self, message):
 		await super().on_raw(message)
-		# print(message)
 	
 	async def on_raw_004(self, message):
 		# super().on_raw_004(message)
