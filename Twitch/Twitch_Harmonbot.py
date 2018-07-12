@@ -16,8 +16,6 @@ import unicodedata2 as unicodedata
 
 import credentials
 
-channels = ["harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", "vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
-
 # Group chat channels
 # "_harmon758_1434735958584", "_harmon758_1478092370962", "_harmon758_1478092378893"
 # "_harmon758_1474528138348" old public channel
@@ -35,9 +33,12 @@ class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
 		super().__init__(nickname)
+		self.version = "2.1.13"
+		
+		self.CHANNELS = ["harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", 
+							"vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
 		self.PING_TIMEOUT = 600
 		# self.logger.setLevel(logging.ERROR)
-		self.version = "2.1.12"
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		
 		for file in os.listdir("data/commands"):
@@ -51,9 +52,9 @@ class TwitchClient(pydle.Client):
 		await self.raw("CAP REQ :twitch.tv/membership\r\n")
 		await self.raw("CAP REQ :twitch.tv/tags\r\n")
 		await self.raw("CAP REQ :twitch.tv/commands\r\n")
-		for channel in channels:
+		for channel in self.CHANNELS:
 			await self.join('#' + channel)
-		print(f"Started up Twitch Harmonbot | Connected to {' | '.join('#' + channel for channel in channels)}")
+		print(f"Started up Twitch Harmonbot | Connected to {' | '.join('#' + channel for channel in self.CHANNELS)}")
 	
 	async def on_raw(self, message):
 		await super().on_raw(message)
