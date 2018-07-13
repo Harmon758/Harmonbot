@@ -412,7 +412,7 @@ async def restart_tasks(channel_id):
 	audio_cog = client.get_cog("Audio")
 	voice_channels = audio_cog.save_voice_channels() if audio_cog else []
 	with open(data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
-		json.dump({"restart_channel" : channel_id, "voice_channels" : voice_channels}, restart_channel_file)
+		json.dump({"restart_channel": channel_id, "voice_channels": voice_channels}, restart_channel_file)
 
 async def shutdown_tasks():
 	# Cancel audio tasks
