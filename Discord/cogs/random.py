@@ -39,7 +39,7 @@ class Random:
 				self.random.add_command(command)
 		# Add fact subcommands as subcommands of corresponding commands
 		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
-			utilities.add_as_subcommand(self, command, parent, "fact")
+			utilities.add_as_subcommand(self, command, parent, "fact", aliases = ["facts"])
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_subcommands = ((self.blob, "Blobs.blobs"), (self.color, "Resources.color"), (self.giphy, "Resources.giphy"), (self.map, "Location.map"), (self.streetview, "Location.streetview"), (self.uesp, "Search.uesp"), (self.time, "Location.time"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
