@@ -596,7 +596,7 @@ class Resources:
 					"p2i_fullpage": 1, "p2i_key": credentials.page2images_api_key}
 		while True:
 			async with clients.aiohttp_session.get(api_url, params = params) as resp:
-				data = await resp.json()
+				data = await resp.json(content_type = "text/html")
 			if data["status"] == "processing":
 				wait_time = int(data["estimated_need_time"])
 				if response:
