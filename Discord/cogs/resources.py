@@ -590,7 +590,7 @@ class Resources:
 	@checks.not_forbidden()
 	async def websitescreenshot(self, ctx, url : str):
 		'''Take a screenshot of a website'''
-		response, embed = None, None
+		response = None
 		api_url = "http://api.page2images.com/restfullink"
 		params = {"p2i_url": url, "p2i_screen": "1280x1024", "p2i_size": "1280x0", 
 					"p2i_fullpage": 1, "p2i_key": credentials.page2images_api_key}
@@ -599,7 +599,8 @@ class Resources:
 				data = await resp.json()
 			if data["status"] == "processing":
 				wait_time = int(data["estimated_need_time"])
-				if response and embed:
+				if response:
+					embed = response.embeds[0]
 					embed.description = "Processing {}\nEstimated wait time: {} sec".format(url, wait_time)
 					await response.edit(embed = embed)
 				else:
