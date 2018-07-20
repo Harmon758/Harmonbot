@@ -132,7 +132,7 @@ class Random:
 		[UESP](http://uesp.net/wiki/Main_Page)
 		'''
 		cog = self.bot.get_cog("Search")
-		if cog: await cog.process_uesp(None, random = True)
+		if cog: await cog.process_uesp(ctx, None, random = True)
 		else: await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random") # necessary?
 	
 	@random.command(aliases = ["wiki"])
