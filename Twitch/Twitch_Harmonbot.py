@@ -449,7 +449,7 @@ class TwitchClient(pydle.Client):
 		elif message.startswith(("!kitten", "!kitty")):
 			await self.message(target, random.choice(("CoolCat", "DxCat")))
 		elif message.startswith("!puppy"):
-			await self.message(target, random.choice(("FrankerZ", "RalpherZ")))
+			await self.message(target, random.choice(("BegWan", "ChefFrank", "CorgiDerp", "FrankerZ", "RalpherZ")))
 		
 		# Unit Conversion Commands
 		# TODO: add support for non-integers/floats, improve formatting
