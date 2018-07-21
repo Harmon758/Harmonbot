@@ -448,7 +448,8 @@ class TwitchClient(pydle.Client):
 		# on *:text:!easter*:#:{ msg # $my_duration($timeleft($ctime(March 27 2016 18:00:00))) until Easter! }
 		elif message.startswith("!kitty"):
 			await self.message(target, "BionicBunion")  # update?
-		# on *:text:!puppy*:#:{ msg # RalpherZ }
+		elif message.startswith("!puppy"):
+			await self.message(target, random.choice(("FrankerZ", "RalpherZ")))
 		
 		# Unit Conversion Commands
 		# TODO: add support for non-integers/floats, improve formatting
