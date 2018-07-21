@@ -21,7 +21,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.1.17"
+		self.version = "2.1.23"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -444,7 +444,11 @@ class TwitchClient(pydle.Client):
 		# Miscellaneous Commands
 		if message.startswith('!') and message[1:] in self.misc_commands:
 			await self.message(target, self.misc_commands[message[1:]])
-		# on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2016 18:00:00))) until Christmas! }
+		elif message.startswith("!christmas"):
+			now = datetime.datetime.utcnow()
+			christmas = datetime.datetime(now.year, 12, 25)
+			seconds = int((christmas - now).total_seconds())
+			await self.message(target, f"{secs_to_duration(seconds)} until Christmas!")
 		# on *:text:!easter*:#:{ msg # $my_duration($timeleft($ctime(March 27 2016 18:00:00))) until Easter! }
 		elif message.startswith(("!kitten", "!kitty")):
 			await self.message(target, random.choice(("CoolCat", "DxCat")))
