@@ -452,48 +452,25 @@ class TwitchClient(pydle.Client):
 		
 		# Unit Conversion Commands
 		# TODO: add support for non-integers/floats, improve formatting
+		if message.startswith(("!ctof", "!ftoc", "!lbtokg", "!kgtolb", "!fttom", "!mtoft", "!mtofi", "!gtooz", "!oztog", "!mitokm", "!kmtomi", "!ozttog", "!gtoozt", "!ozttooz", "!oztoozt")):
+			if len(message.split()) == 1:
+				await self.message(target, "Please enter input.")
+				return
+			elif not is_number(message.split()[1]):
+				await self.message(target, "Syntax error.")
+				return
 		if message.startswith("!ctof"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} °C = {int(message.split()[1]) * 9 / 5 + 32} °F")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} °C = {int(message.split()[1]) * 9 / 5 + 32} °F")
 		elif message.startswith("!ftoc"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} °F = {(int(message.split()[1]) - 32) * 5 / 9} °C")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} °F = {(int(message.split()[1]) - 32) * 5 / 9} °C")
 		elif message.startswith("!lbtokg"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} lb = {int(message.split()[1]) * 0.45359237} kg")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} lb = {int(message.split()[1]) * 0.45359237} kg")
 		elif message.startswith("!kgtolb"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} kg = {int(message.split()[1]) * 2.2046} lb")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} kg = {int(message.split()[1]) * 2.2046} lb")
 		elif message.startswith("!fttom"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} ft = {int(message.split()[1]) * 0.3048} m")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} ft = {int(message.split()[1]) * 0.3048} m")
 		elif message.startswith("!mtoft"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} m = {int(message.split()[1]) * 3.2808} ft")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} m = {int(message.split()[1]) * 3.2808} ft")
 		elif message.startswith("!fitom"):
 			if len(message.split()) > 2 and is_number(message.split()[1]) and is_number(message.split()[2]):
 				await self.message(target, f"{message.split()[1]} ft {message.split()[2]} in = {(int(message.split()[1]) + int(message.split()[2]) / 12) * 0.3048} m")
@@ -502,68 +479,23 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, "Syntax error.")
 		elif message.startswith("!mtofi"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} m = {int(message.split()[1]) * 39.37 // 12} ft {int(message.split()[1]) * 39.37 - (int(message.split()[1]) * 39.37 // 12) * 12} in")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} m = {int(message.split()[1]) * 39.37 // 12} ft {int(message.split()[1]) * 39.37 - (int(message.split()[1]) * 39.37 // 12) * 12} in")
 		elif message.startswith("!gtooz"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} g = {int(message.split()[1]) * 0.035274} oz")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} g = {int(message.split()[1]) * 0.035274} oz")
 		elif message.startswith("!oztog"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} oz = {int(message.split()[1]) / 0.035274} g")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} oz = {int(message.split()[1]) / 0.035274} g")
 		elif message.startswith("!mitokm"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} mi = {int(message.split()[1]) / 0.62137} km")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} mi = {int(message.split()[1]) / 0.62137} km")
 		elif message.startswith("!kmtomi"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} km = {int(message.split()[1]) * 0.62137} mi")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} km = {int(message.split()[1]) * 0.62137} mi")
 		elif message.startswith("!ozttog"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} oz t = {int(message.split()[1]) / 0.032151} g")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} oz t = {int(message.split()[1]) / 0.032151} g")
 		elif message.startswith("!gtoozt"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} g = {int(message.split()[1]) * 0.032151} oz t")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} g = {int(message.split()[1]) * 0.032151} oz t")
 		elif message.startswith("!ozttooz"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} oz t = {int(message.split()[1]) * 1.09714996656} oz")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} oz t = {int(message.split()[1]) * 1.09714996656} oz")
 		elif message.startswith("!oztoozt"):
-			if len(message.split()) > 1 and is_number(message.split()[1]):
-				await self.message(target, f"{message.split()[1]} oz = {int(message.split()[1]) * 0.911452427176} oz t")
-			elif len(message.split()) == 1:
-				await self.message(target, "Please enter input.")
-			else:
-				await self.message(target, "Syntax error.")
+			await self.message(target, f"{message.split()[1]} oz = {int(message.split()[1]) * 0.911452427176} oz t")
 		
 		if message == "!restart" and source == "harmon758":
 			await self.message(target, "Restarting")
