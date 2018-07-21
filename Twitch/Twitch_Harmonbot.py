@@ -447,6 +447,8 @@ class TwitchClient(pydle.Client):
 		elif message.startswith("!christmas"):
 			now = datetime.datetime.utcnow()
 			christmas = datetime.datetime(now.year, 12, 25)
+			if now > christmas:
+				christmas = datetime.datetime(now.year + 1, 12, 25)
 			seconds = int((christmas - now).total_seconds())
 			await self.message(target, f"{secs_to_duration(seconds)} until Christmas!")
 		# on *:text:!easter*:#:{ msg # $my_duration($timeleft($ctime(March 27 2016 18:00:00))) until Easter! }
