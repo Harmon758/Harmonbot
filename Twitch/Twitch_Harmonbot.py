@@ -22,7 +22,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.1.23"
+		self.version = "2.1.26"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -441,6 +441,63 @@ class TwitchClient(pydle.Client):
 				await self.message(target, f"{betweenxp:,} xp between level {startlevel} and level {endlevel}")
 			else:
 				await self.message(target, "Syntax error.")
+		
+		# League of Legends Commands
+		# WIP using development API key
+		# TODO: Register permanent project
+		# TODO: Handle missing input
+		# TODO: Handle regions
+		# TODO: Handle other errors besides 404
+		# TODO: Subcommands
+		# TODO: Expand
+		if message.startswith("!lollvl"):
+			username = message.split()[1]
+			url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + username
+			params = {"api_key": credentials.riot_games_api_key}
+			async with self.aiohttp_session.get(url, params = params) as resp:
+				data = await resp.json()
+				if resp.status == 404:
+					await self.message(target, "Account not found.")
+					return
+			await self.message(target, f"{data['name']} is level {data['summonerLevel']}.")
+		elif message.startswith("!loltotalgames"):
+			username = message.split()[1]
+			url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + username
+			params = {"api_key": credentials.riot_games_api_key}
+			async with self.aiohttp_session.get(url, params = params) as resp:
+				account_data = await resp.json()
+				if resp.status == 404:
+					await self.message(target, "Account not found.")
+					return
+			account_id = account_data["accountId"]
+			url = f"https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/{account_id}"
+			async with self.aiohttp_session.get(url, params = params) as resp:
+				matches_data = await resp.json()
+				if resp.status == 404:
+					await self.message(target, "Data not found.")
+					return
+			await self.message(target, f"{account_data['name']} has played {matches_data['totalGames']} total games.")
+		elif message.startswith("!lolcurrentgame"):
+			if message.split()[1] in ("time", "participants"):
+				username = message.split()[2]
+				url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + username
+				params = {"api_key": credentials.riot_games_api_key}
+				async with self.aiohttp_session.get(url, params = params) as resp:
+					account_data = await resp.json()
+					if resp.status == 404:
+						await self.message(target, "Account not found.")
+						return
+				summoner_id = account_data["id"]
+				url = f"https://na1.api.riotgames.com/lol/spectator/v3/active-games/by-summoner/{summoner_id}"
+				async with self.aiohttp_session.get(url, params = params) as resp:
+					game_data = await resp.json()
+					if resp.status == 404:
+						await self.message(target, "Data not found.")
+						return
+				if message.split()[1] == "time":
+					await self.message(target, f"{secs_to_duration(game_data['gameLength'])}")
+				else:
+					await self.message(target, ", ".join(p["summonerName"] for p in game_data["participants"]))
 		
 		# Miscellaneous Commands
 		if message.startswith('!') and message[1:] in self.misc_commands:
