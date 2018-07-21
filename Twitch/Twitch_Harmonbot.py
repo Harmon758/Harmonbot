@@ -446,7 +446,7 @@ class TwitchClient(pydle.Client):
 			await self.message(target, self.misc_commands[message[1:]])
 		# on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2016 18:00:00))) until Christmas! }
 		# on *:text:!easter*:#:{ msg # $my_duration($timeleft($ctime(March 27 2016 18:00:00))) until Easter! }
-		elif message.startswith("!kitty"):
+		elif message.startswith(("!kitten", "!kitty")):
 			await self.message(target, "BionicBunion")  # update?
 		elif message.startswith("!puppy"):
 			await self.message(target, random.choice(("FrankerZ", "RalpherZ")))
