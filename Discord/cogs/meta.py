@@ -10,7 +10,7 @@ import difflib
 import inspect
 import json
 import os
-import pkg_resources
+import pkg_resources  # from setuptools
 import psutil
 import random
 import subprocess
