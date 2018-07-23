@@ -4,7 +4,7 @@ from queue import Queue
 from subprocess import Popen, PIPE
 import sys
 from threading import Thread
-from tkinter import END, Frame, Text, Tk
+from tkinter import BOTH, END, Frame, Text, Tk, ttk
 
 import psutil
 
@@ -14,25 +14,58 @@ class HarmonbotGUI:
 		self.master = master
 		master.title("Harmonbot")
 		
-		self.discord_frame = Frame(self.master)
-		self.discord_frame.grid(row = 1, column = 1)
+		self.notebook = ttk.Notebook(master)
+		self.overview_tab = Frame(self.notebook)
+		self.notebook.add(self.overview_tab, text = "Overview")
+		self.discord_tab = Frame(self.notebook)
+		self.notebook.add(self.discord_tab, text = "Discord")
+		self.discord_listener_tab = Frame(self.notebook)
+		self.notebook.add(self.discord_listener_tab, text = "Discord Listener")
+		self.twitch_tab = Frame(self.notebook)
+		self.notebook.add(self.twitch_tab, text = "Twitch")
+		self.telegram_tab = Frame(self.notebook)
+		self.notebook.add(self.telegram_tab, text = "Telegram")
+		self.notebook.pack()
+		
+		self.overview_discord_frame = Frame(self.overview_tab)
+		self.overview_discord_frame.grid(row = 1, column = 1)
+		self.overview_discord_text = Text(self.overview_discord_frame)
+		self.overview_discord_text.pack()
+		
+		self.overview_discord_listener_frame = Frame(self.overview_tab)
+		self.overview_discord_listener_frame.grid(row = 2, column = 1)
+		self.overview_discord_listener_text = Text(self.overview_discord_listener_frame)
+		self.overview_discord_listener_text.pack()
+		
+		self.overview_twitch_frame = Frame(self.overview_tab)
+		self.overview_twitch_frame.grid(row = 1, column = 2)
+		self.overview_twitch_text = Text(self.overview_twitch_frame)
+		self.overview_twitch_text.pack()
+		
+		self.overview_telegram_frame = Frame(self.overview_tab)
+		self.overview_telegram_frame.grid(row = 2, column = 2)
+		self.overview_telegram_text = Text(self.overview_telegram_frame)
+		self.overview_telegram_text.pack()
+		
+		self.discord_frame = Frame(self.discord_tab)
+		self.discord_frame.pack(expand = True, fill = BOTH)
 		self.discord_text = Text(self.discord_frame)
-		self.discord_text.pack()
+		self.discord_text.pack(expand = True, fill = BOTH)
 		
-		self.discord_listener_frame = Frame(self.master)
-		self.discord_listener_frame.grid(row = 2, column = 1)
+		self.discord_listener_frame = Frame(self.discord_listener_tab)
+		self.discord_listener_frame.pack(expand = True, fill = BOTH)
 		self.discord_listener_text = Text(self.discord_listener_frame)
-		self.discord_listener_text.pack()
+		self.discord_listener_text.pack(expand = True, fill = BOTH)
 		
-		self.twitch_frame = Frame(self.master)
-		self.twitch_frame.grid(row = 1, column = 2)
+		self.twitch_frame = Frame(self.twitch_tab)
+		self.twitch_frame.pack(expand = True, fill = BOTH)
 		self.twitch_text = Text(self.twitch_frame)
-		self.twitch_text.pack()
+		self.twitch_text.pack(expand = True, fill = BOTH)
 		
-		self.telegram_frame = Frame(self.master)
-		self.telegram_frame.grid(row = 2, column = 2)
+		self.telegram_frame = Frame(self.telegram_tab)
+		self.telegram_frame.pack(expand = True, fill = BOTH)
 		self.telegram_text = Text(self.telegram_frame)
-		self.telegram_text.pack()
+		self.telegram_text.pack(expand = True, fill = BOTH)
 
 if __name__ == "__main__":
 	root = Tk()
@@ -70,18 +103,24 @@ if __name__ == "__main__":
 	telegram_thread.daemon = True
 	telegram_thread.start()
 	
+	# TODO: Add stderr output
+	
 	def process_outputs():
 		while not discord_queue.empty():
 			line = discord_queue.get_nowait()
+			harmonbot_gui.overview_discord_text.insert(END, line)
 			harmonbot_gui.discord_text.insert(END, line)
 		while not discord_listener_queue.empty():
 			line = discord_listener_queue.get_nowait()
+			harmonbot_gui.overview_discord_listener_text.insert(END, line)
 			harmonbot_gui.discord_listener_text.insert(END, line)
 		while not twitch_queue.empty():
 			line = twitch_queue.get_nowait()
+			harmonbot_gui.overview_twitch_text.insert(END, line)
 			harmonbot_gui.twitch_text.insert(END, line)
 		while not telegram_queue.empty():
 			line = telegram_queue.get_nowait()
+			harmonbot_gui.overview_telegram_text.insert(END, line)
 			harmonbot_gui.telegram_text.insert(END, line)
 		root.after(1, process_outputs)
 	
