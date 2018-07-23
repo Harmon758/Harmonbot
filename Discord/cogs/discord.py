@@ -19,25 +19,8 @@ class Discord:
 	def __init__(self, bot):
 		self.bot = bot
 	
-	# Do Stuff
+	# TODO: Include spaces in quotes explanation (in help)
 	
-	@commands.command(no_pm = True)
-	@checks.has_permissions_and_capability(manage_roles = True)
-	async def addrole(self, ctx, member : str, *, role : str): # member : discord.Member
-		'''
-		Gives a user a role
-		Replace spaces in usernames with underscores or put the username in qoutes
-		'''
-		member = await utilities.get_user(ctx, member)
-		if not member:
-			await self.bot.embed_reply(":no_entry: Member not found")
-			return
-		role = discord.utils.find(lambda r: utilities.remove_symbols(r.name).startswith(role), ctx.guild.roles)
-		if not role:
-			await self.bot.embed_reply(":no_entry: Role not found")
-			return
-		await self.bot.add_roles(member, role)
-		await self.bot.embed_reply("I gave the role, {0}, to {1}".format(role, member))
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
@@ -134,31 +117,31 @@ class Discord:
 			new_colour = role_to_change.colour
 			new_colour.value = color_value
 			await self.bot.edit_role(ctx.guild, role_to_change, colour = new_colour)
-			await self.bot.embed_reply("Changed your role color to {}".format(color))
+			await ctx.embed_reply("Changed your role color to {}".format(color))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin(self, ctx, message_id : int):
 		'''Pin message by message ID'''
-		message = await self.bot.get_message(ctx.channel, str(message_id))
-		await self.bot.pin_message(message)
-		await self.bot.embed_reply(":pushpin: Pinned message")
+		message = await ctx.channel.get_message(message_id)
+		await message.pin()
+		await ctx.embed_reply(":pushpin: Pinned message")
 	
 	@pin.command(name = "first")
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin_first(self, ctx):
 		'''Pin first message'''
-		message = await self.bot.logs_from(ctx.channel, after = ctx.channel, limit = 1).iterate()
-		await self.bot.pin_message(message)
-		await self.bot.embed_reply(":pushpin: Pinned first message in this channel")
+		message = await ctx.channel.history(after = ctx.channel, limit = 1).iterate()
+		await message.pin()
+		await ctx.embed_reply(":pushpin: Pinned first message in this channel")
 	
 	@commands.command()
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def unpin(self, ctx, message_id : int):
 		'''Unpin message by message ID'''
-		message = await self.bot.get_message(ctx.channel, str(message_id))
-		await self.bot.unpin_message(message)
-		await self.bot.embed_reply(":wastebasket: Unpinned message")
+		message = await ctx.channel.get_message(message_id)
+		await message.unpin()
+		await ctx.embed_reply(":wastebasket: Unpinned message")
 	
 	@commands.command()
 	@commands.guild_only()
@@ -210,8 +193,23 @@ class Discord:
 				await self.bot.delete_channel(temp_text_channel)
 				return
 	
+	# User
+	# TODO: create cog, add commands
+	# TODO: role removal
 	
-	# Get Attributes
+	@commands.group(aliases = ["member"], invoke_without_command = True)
+	@checks.not_forbidden()
+	async def user(self, ctx):
+		'''User'''
+		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+	
+	@user.command(name = "add_role", aliases = ["addrole"])
+	@commands.guild_only()
+	@checks.has_permissions_and_capability(manage_roles = True)
+	async def user_add_role(self, ctx, member : discord.Member, *, role : discord.Role):
+		'''Gives a user a role'''
+		await member.add_roles(role)
+		await ctx.embed_reply("I gave the role, {}, to {}".format(role, member))
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -221,18 +219,15 @@ class Discord:
 		Your own or someone else's avatar
 		'''
 		if not name:
-			avatar = ctx.author.avatar_url or ctx.author.default_avatar_url
-			await self.bot.embed_reply(None, title = "Your avatar", image_url = avatar)
-			return
-		if not ctx.guild:
-			await self.bot.embed_reply(":no_entry: Please use that command in a server")
-			return
-		user = await utilities.get_user(ctx, name)
-		if not user:
-			await self.bot.embed_reply(":no_entry: {} was not found on this server".format(name))
-			return
-		avatar = user.avatar_url or user.default_avatar_url
-		await self.bot.embed_reply(None, title = "{}'s avatar".format(user), image_url = avatar)
+			await ctx.embed_reply(title = "Your avatar", image_url = ctx.author.avatar_url)
+		elif not ctx.guild:
+			await ctx.embed_reply(":no_entry: Error: Please use that command in a server")
+		else:
+			user = await utilities.get_user(ctx, name)
+			if not user:
+				await ctx.embed_reply(":no_entry: Error: {} was not found on this server".format(name))
+			else:
+				await ctx.embed_reply(title = "{}'s avatar".format(user), image_url = user.avatar_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -260,18 +255,12 @@ class Discord:
 	
 	# Convert Attributes
 	
-	@commands.command(aliases = ["id_to_name"])
+	@user.command(name = "name")
 	@checks.not_forbidden()
-	async def idtoname(self, ctx, id : str):
-		'''Convert user id to name'''
-		user = await self.bot.get_user_info(id)
-		if not user:
-			await self.bot.embed_reply(":no_entry: User with that id not found")
-			return
-		embed = discord.Embed(color = clients.bot_color)
-		embed.set_author(name = str(user), icon_url = user.avatar_url or user.default_avatar_url)
+	async def user_name(self, ctx, *, user : discord.Member):
+		'''The name of a user'''
 		# Include mention?
-		await self.bot.reply("", embed = embed)
+		await ctx.embed_reply(user.mention, footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	@commands.command(aliases = ["usertoid", "usernametoid", "name_to_id", "user_to_id", "username_to_id"])
 	@commands.guild_only()
@@ -280,12 +269,10 @@ class Discord:
 		'''Convert username to id'''
 		user = await utilities.get_user(ctx, name)
 		if not user:
-			await self.bot.embed_reply(":no_entry: {} was not found on this server".format(name))
-			return
-		embed = discord.Embed(description = user.id, color = clients.bot_color)
-		embed.set_author(name = str(user), icon_url = user.avatar_url or user.default_avatar_url)
-		# Include mention?
-		await self.bot.reply("", embed = embed)
+			await ctx.embed_reply(":no_entry: Error: {} was not found on this server".format(name))
+		else:
+			# Include mention?
+			await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	# Checks
 	

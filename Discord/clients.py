@@ -27,25 +27,26 @@ from utilities.context import Context
 from utilities import errors
 from utilities.help_formatter import CustomHelpFormatter
 
+# TODO: Relocate as Bot variables
 beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"
 user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
-bot_color = 0x738bd7
 wait_time = 15.0
 code_block = "```\n{}\n```"
 py_code_block = "```py\n{}\n```"
 online_time = datetime.datetime.utcnow()
-aiohttp_session = aiohttp.ClientSession()
 inflect_engine = inflect.engine()
 
+# TODO: Already moved to Bot constants, update all references to
+bot_color = discord.Color.blurple()
 
 class Bot(commands.Bot):
 	
 	def __init__(self, command_prefix):
 		
 		# Constants necessary for initialization
-		self.stream_url = "https://www.twitch.tv/harmonbot"
+		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
 		"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
 		"not enough space here to", "the meaning of life is", "the Reimann hypothesis", 
@@ -58,9 +59,13 @@ class Bot(commands.Bot):
 		"with quantum foam", "with R2-D2", "with RSS Bot", "with Samantha", "with Siri", "with Skynet", 
 		"with Spirit in the sand pit", "with TARS", "with the infinity gauntlet", "with the NSA", 
 		"with Voyager 1", "with Waste Allocation Load Lifter: Earth-Class", "world domination")
+		self.stream_url = "https://www.twitch.tv/harmonbot"
 		
 		# Initialization
-		super().__init__(command_prefix = command_prefix, formatter = CustomHelpFormatter(), activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url), case_insensitive = True)
+		help_formatter = CustomHelpFormatter(self.bot_color)
+		activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url)
+		super().__init__(command_prefix = command_prefix, formatter = help_formatter, 
+							activity = activity, case_insensitive = True)
 		
 		# Constants
 		## Custom
@@ -175,12 +180,13 @@ class Bot(commands.Bot):
 		
 		# Load cogs
 		for file in sorted(os.listdir("cogs")):
-			if file.endswith(".py") and not file.startswith(("images", "random", "reactions")):
+			if file.endswith(".py") and not file.startswith(("images", "info", "random", "reactions")):
 				self.load_extension("cogs." + file[:-3])
 		self.load_extension("cogs.images")
+		self.load_extension("cogs.info")
 		self.load_extension("cogs.random")
 		self.load_extension("cogs.reactions")
-		# TODO: Document inter-cog dependencies
+		# TODO: Document inter-cog dependencies/subcommands
 		# TODO: Catch exceptions on fail to load?
 		# TODO: Move all to on_ready?
 	
@@ -256,7 +262,7 @@ class Bot(commands.Bot):
 	author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
 	image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
 	timestamp = discord.Embed.Empty, fields = []):
-		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = bot_color)
+		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = self.bot_color)
 		embed.description = str(description) if description else discord.Embed.Empty
 		if author_name: embed.set_author(name = author_name, url = author_url, icon_url = author_icon_url)
 		if image_url: embed.set_image(url = image_url)
@@ -382,9 +388,11 @@ def get_prefix(bot, message):
 	return prefixes if prefixes else '!'
 
 
-# Initialize client
+# Initialize client + aiohttp client session
 
 client = Bot(command_prefix = get_prefix)
+aiohttp_session = aiohttp.ClientSession(loop = client.loop)
+# TODO: Move ^ to Bot
 
 
 # Utilities
@@ -404,7 +412,7 @@ async def restart_tasks(channel_id):
 	audio_cog = client.get_cog("Audio")
 	voice_channels = audio_cog.save_voice_channels() if audio_cog else []
 	with open(data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
-		json.dump({"restart_channel" : channel_id, "voice_channels" : voice_channels}, restart_channel_file)
+		json.dump({"restart_channel": channel_id, "voice_channels": voice_channels}, restart_channel_file)
 
 async def shutdown_tasks():
 	# Cancel audio tasks

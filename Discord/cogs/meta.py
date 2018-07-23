@@ -41,7 +41,7 @@ class Meta:
 		If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
 		'''
 		if len(commands) == 0:
-			embed = discord.Embed(title = "Categories", color = clients.bot_color)
+			embed = discord.Embed(title = "Categories", color = ctx.bot.bot_color)
 			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 			embed.description = "  ".join("__{}__".format(category) for category in sorted(self.bot.cogs, key = str.lower))
 			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
@@ -112,7 +112,7 @@ class Meta:
 		'''Additional commands and information'''
 		# TODO: Update
 		# TODO: Add last updated date?
-		embed = discord.Embed(title = "Commands not in {}help".format(ctx.prefix), color = clients.bot_color)
+		embed = discord.Embed(title = "Commands not in {}help".format(ctx.prefix), color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		embed.description = "See `{}help` for the main commands".format(ctx.prefix)
 		embed.add_field(name = "Conversion Commands", value = "see `{}conversions`".format(ctx.prefix), inline = False)
@@ -142,7 +142,7 @@ class Meta:
 		process = psutil.Process()
 		memory = process.memory_info().rss / 2 ** 20
 		process.cpu_percent()
-		embed = discord.Embed(color = clients.bot_color)
+		embed = discord.Embed(color = ctx.bot.bot_color)
 		embed.add_field(name = "RAM", value = "{:.2f} MiB".format(memory))
 		embed.add_field(name = "CPU", value = "Calculating CPU usage..")
 		message = await ctx.send(embed = embed)
@@ -201,7 +201,7 @@ class Meta:
 	async def servers(self, ctx):
 		'''Every server I'm in'''
 		for guild in self.bot.guilds:
-			embed = discord.Embed(color = clients.bot_color)
+			embed = discord.Embed(color = ctx.bot.bot_color)
 			embed.description = (f"```Name: {guild.name}\n"
 									f"ID: {guild.id}\n"
 									f"Owner: {guild.owner} ({guild.owner.id})\n"
@@ -248,7 +248,7 @@ class Meta:
 		'''About me'''
 		changes = os.popen(r'git show -s HEAD~3..HEAD --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
 		discord_py_version = pkg_resources.get_distribution("discord.py").version
-		embed = discord.Embed(title = "About Me", color = clients.bot_color)
+		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
 		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(ctx.bot.application_info_data.id))
 		# avatar = ctx.author.avatar_url
 		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
@@ -302,7 +302,7 @@ class Meta:
 		in_voice_count = len(self.bot.cogs["Audio"].players)
 		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
 		
-		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = clients.bot_color)
+		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url) # url?
 		embed.add_field(name = "Uptime", value = uptime)
 		embed.add_field(name = "Total Recorded Uptime", value = total_uptime) ## since 2016-04-17, fixed 2016-05-10

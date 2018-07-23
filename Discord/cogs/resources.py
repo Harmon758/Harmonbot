@@ -333,7 +333,7 @@ class Resources:
 			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
 		data = data[0]
-		embed = discord.Embed(title = data["DeviceName"], color = clients.bot_color)
+		embed = discord.Embed(title = data["DeviceName"], color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		# Brand
 		if "Brand" in data: embed.add_field(name = "Brand", value = data["Brand"])
@@ -590,16 +590,17 @@ class Resources:
 	@checks.not_forbidden()
 	async def websitescreenshot(self, ctx, url : str):
 		'''Take a screenshot of a website'''
-		response, embed = None, None
+		response = None
 		api_url = "http://api.page2images.com/restfullink"
 		params = {"p2i_url": url, "p2i_screen": "1280x1024", "p2i_size": "1280x0", 
 					"p2i_fullpage": 1, "p2i_key": credentials.page2images_api_key}
 		while True:
 			async with clients.aiohttp_session.get(api_url, params = params) as resp:
-				data = await resp.json()
+				data = await resp.json(content_type = "text/html")
 			if data["status"] == "processing":
 				wait_time = int(data["estimated_need_time"])
-				if response and embed:
+				if response:
+					embed = response.embeds[0]
 					embed.description = "Processing {}\nEstimated wait time: {} sec".format(url, wait_time)
 					await response.edit(embed = embed)
 				else:

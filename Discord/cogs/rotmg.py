@@ -24,7 +24,7 @@ class RotMG:
 		if "error" in data:
 			await ctx.embed_reply("Error: " + data["error"])
 			return
-		embed = discord.Embed(title = data["player"], url = "https://www.realmeye.com/player/{}".format(player), color = clients.bot_color)
+		embed = discord.Embed(title = data["player"], url = "https://www.realmeye.com/player/{}".format(player), color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		if data["donator"] == "true": embed.description = "Donator"
 		embed.add_field(name = "Characters", value = data["chars"])
@@ -55,7 +55,7 @@ class RotMG:
 		if "error" in data:
 			await ctx.embed_reply("Error: " + data["error"])
 			return
-		embed = discord.Embed(title = "{}'s Characters".format(data["player"]), color = clients.bot_color)
+		embed = discord.Embed(title = "{}'s Characters".format(data["player"]), color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		for character in data["characters"]:
 			value = "Fame: {0[fame]:,}, Exp: {0[exp]:,}, Rank: {0[place]:,}, Class Quests Completed: {0[cqc]}, Stats Maxed: {0[stats_maxed]}".format(character)

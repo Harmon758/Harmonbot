@@ -112,7 +112,7 @@ class Overwatch:
 		for region in ("eu", "kr", "us"):
 			if data.get(region):
 				stats = data[region]["stats"]["quickplay"]
-				embed = discord.Embed(title = battletag, color = clients.bot_color)
+				embed = discord.Embed(title = battletag, color = ctx.bot.bot_color)
 				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
@@ -141,7 +141,7 @@ class Overwatch:
 		for region in ("eu", "kr", "us"):
 			if data.get(region):
 				stats = data[region]["stats"]["quickplay"]
-				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = clients.bot_color)
+				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = ctx.bot.bot_color)
 				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
@@ -174,7 +174,7 @@ class Overwatch:
 		for region in ("eu", "kr", "us"):
 			if data.get(region):
 				stats = data[region]["stats"]["competitive"]
-				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = clients.bot_color)
+				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = ctx.bot.bot_color)
 				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])

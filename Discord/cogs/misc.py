@@ -133,7 +133,7 @@ class Misc:
 			pokes_data[str(to_poke.id)] = pokes_data.get(str(to_poke.id), 0) + 1
 			with open(clients.data_path + "/user_data/{}/pokes.json".format(ctx.author.id), 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
-			embed = discord.Embed(color = clients.bot_color)
+			embed = discord.Embed(color = ctx.bot.bot_color)
 			embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
 			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)]))
 			await to_poke.send(embed = embed)
