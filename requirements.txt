@@ -72,8 +72,7 @@ requests==2.19.1
 requests-oauthlib==1.0.0
 six==1.11.0
 urllib3==1.23
-# websockets==5.0.1
-git+git://github.com/aaugustin/websockets.git@39b050f#egg=websockets
+websockets==6.0
 xmltodict==0.11.0
 yarl==1.2.6
 
