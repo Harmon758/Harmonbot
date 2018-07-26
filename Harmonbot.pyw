@@ -136,13 +136,11 @@ if __name__ == "__main__":
 		root.after(0, function)
 	
 	def cleanup():
-		processes["discord"].terminate()
 		go_process = psutil.Process(processes["discord_listener"].pid)
 		for process in go_process.children(recursive = True):
 			process.terminate()
-		go_process.terminate()
-		processes["twitch"].terminate()
-		processes["telegram"].terminate()
+		for process in processes.values():
+			process.terminate()
 		## root.destroy()
 	
 	atexit.register(cleanup)
