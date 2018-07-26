@@ -124,7 +124,43 @@ if __name__ == "__main__":
 			harmonbot_gui.telegram_text.insert(END, line)
 		root.after(1, process_outputs)
 	
+	def check_discord_process_ended():
+		if discord_process.poll() is None:
+			root.after(1, check_discord_process_ended)
+		else:
+			line = "Discord process ended"
+			harmonbot_gui.overview_discord_text.insert(END, line)
+			harmonbot_gui.discord_text.insert(END, line)
+	
+	def check_discord_listener_process_ended():
+		if discord_listener_process.poll() is None:
+			root.after(1, check_discord_listener_process_ended)
+		else:
+			line = "Discord listener process ended"
+			harmonbot_gui.overview_discord_listener_text.insert(END, line)
+			harmonbot_gui.discord_listener_text.insert(END, line)
+	
+	def check_twitch_process_ended():
+		if twitch_process.poll() is None:
+			root.after(1, check_twitch_process_ended)
+		else:
+			line = "Twitch process ended"
+			harmonbot_gui.overview_twitch_text.insert(END, line)
+			harmonbot_gui.twitch_text.insert(END, line)
+	
+	def check_telegram_process_ended():
+		if telegram_process.poll() is None:
+			root.after(1, check_telegram_process_ended)
+		else:
+			line = "Telegram process ended"
+			harmonbot_gui.overview_telegram_text.insert(END, line)
+			harmonbot_gui.telegram_text.insert(END, line)
+	
 	root.after(0, process_outputs)
+	root.after(0, check_discord_process_ended)
+	root.after(0, check_discord_listener_process_ended)
+	root.after(0, check_twitch_process_ended)
+	root.after(0, check_telegram_process_ended)
 	
 	def cleanup():
 		discord_process.terminate()
