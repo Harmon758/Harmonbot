@@ -75,16 +75,16 @@ if __name__ == "__main__":
 		stderr_threads[name] = stderr_thread
 		stderr_thread.daemon = True
 		stderr_thread.start()
-	
-	def process_outputs():
-		for name, output_queue in output_queues.items():
-			while not output_queue.empty():
-				line = output_queue.get_nowait()
-				for text_name in (f"overview_{name}_text", f"{name}_text"):
-					text = getattr(harmonbot_gui, text_name)
-					text.insert(END, line)
-		root.after(1, process_outputs)
 		# TODO: Check stdout and stderr order
+	
+	def process_output(name):
+		output_queue = output_queues[name]
+		while not output_queue.empty():
+			line = output_queue.get_nowait()
+			for text_name in (f"overview_{name}_text", f"{name}_text"):
+				text = getattr(harmonbot_gui, text_name)
+				text.insert(END, line)
+		root.after(1, process_output, name)
 	
 	def check_process_ended(name):
 		if processes[name].poll() is None:
@@ -95,8 +95,8 @@ if __name__ == "__main__":
 				text = getattr(harmonbot_gui, text_name)
 				text.insert(END, line)
 	
-	root.after(0, process_outputs)
 	for process in processes:
+		root.after(0, process_output, process)
 		root.after(0, check_process_ended, process)
 	
 	def cleanup():
