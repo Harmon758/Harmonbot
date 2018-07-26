@@ -72,11 +72,12 @@ if __name__ == "__main__":
 	root.wm_state("zoomed")  # Maximized window
 	harmonbot_gui = HarmonbotGUI(root)
 	
-	discord_process = Popen([sys.executable, "-u", "Harmonbot.py"], cwd = "Discord", stdout = PIPE, stderr = PIPE, bufsize = 1, universal_newlines = True)
-	discord_listener_process = Popen(["go", "run", "Harmonbot_Listener.go"], cwd = "Discord", stdout = PIPE, stderr = PIPE, bufsize = 1, universal_newlines = True, shell = True)
-	twitch_process = Popen(["pyw", "-3.6", "-u", "Twitch_Harmonbot.py"], cwd = "Twitch", stdout = PIPE, stderr = PIPE, bufsize = 1, universal_newlines = True)
+	process_kwargs = {"stdout": PIPE, "stderr": PIPE, "bufsize": 1, "universal_newlines": True}
+	discord_process = Popen([sys.executable, "-u", "Harmonbot.py"], cwd = "Discord", **process_kwargs)
+	discord_listener_process = Popen(["go", "run", "Harmonbot_Listener.go"], cwd = "Discord", shell = True, **process_kwargs)
+	twitch_process = Popen(["pyw", "-3.6", "-u", "Twitch_Harmonbot.py"], cwd = "Twitch", **process_kwargs)
 	# TODO: Update to use Python 3.7 executable
-	telegram_process = Popen([sys.executable, "-u", "Telegram_Harmonbot.py"], cwd = "Telegram", stdout = PIPE, stderr = PIPE, bufsize = 1, universal_newlines = True)
+	telegram_process = Popen([sys.executable, "-u", "Telegram_Harmonbot.py"], cwd = "Telegram", **process_kwargs)
 	
 	def enqueue_output(out, queue):
 		for line in iter(out.readline, ""):
