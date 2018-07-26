@@ -83,20 +83,18 @@ if __name__ == "__main__":
 		for name, stdout_queue in stdout_queues.items():
 			while not stdout_queue.empty():
 				line = stdout_queue.get_nowait()
-				text = getattr(harmonbot_gui, f"overview_{name}_text")
-				text.insert(END, line)
-				text = getattr(harmonbot_gui, f"{name}_text")
-				text.insert(END, line)
+				for text_name in (f"overview_{name}_text", f"{name}_text"):
+					text = getattr(harmonbot_gui, text_name)
+					text.insert(END, line)
 		root.after(1, process_outputs)
 	
 	def process_error_outputs():
 		for name, stderr_queue in stderr_queues.items():
 			while not stderr_queue.empty():
 				line = stderr_queue.get_nowait()
-				text = getattr(harmonbot_gui, f"overview_{name}_text")
-				text.insert(END, line)
-				text = getattr(harmonbot_gui, f"{name}_text")
-				text.insert(END, line)
+				for text_name in (f"overview_{name}_text", f"{name}_text"):
+					text = getattr(harmonbot_gui, text_name)
+					text.insert(END, line)
 		root.after(1, process_error_outputs)
 		# TODO: Check order with stdout
 	
