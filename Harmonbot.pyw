@@ -46,99 +46,62 @@ if __name__ == "__main__":
 	root.wm_state("zoomed")  # Maximized window
 	harmonbot_gui = HarmonbotGUI(root)
 	
+	processes = {}
 	process_kwargs = {"stdout": PIPE, "stderr": PIPE, "bufsize": 1, "universal_newlines": True}
-	discord_process = Popen([sys.executable, "-u", "Harmonbot.py"], cwd = "Discord", **process_kwargs)
-	discord_listener_process = Popen(["go", "run", "Harmonbot_Listener.go"], cwd = "Discord", shell = True, **process_kwargs)
-	twitch_process = Popen(["pyw", "-3.6", "-u", "Twitch_Harmonbot.py"], cwd = "Twitch", **process_kwargs)
+	processes["discord"] = Popen([sys.executable, "-u", "Harmonbot.py"], cwd = "Discord", **process_kwargs)
+	processes["discord_listener"] = Popen(["go", "run", "Harmonbot_Listener.go"], cwd = "Discord", shell = True, **process_kwargs)
+	processes["twitch"] = Popen(["pyw", "-3.6", "-u", "Twitch_Harmonbot.py"], cwd = "Twitch", **process_kwargs)
 	# TODO: Update to use Python 3.7 executable
-	telegram_process = Popen([sys.executable, "-u", "Telegram_Harmonbot.py"], cwd = "Telegram", **process_kwargs)
+	processes["telegram"] = Popen([sys.executable, "-u", "Telegram_Harmonbot.py"], cwd = "Telegram", **process_kwargs)
 	
 	def enqueue_output(out, queue):
 		for line in iter(out.readline, ""):
 			queue.put(line)
 		out.close()
 	
-	discord_queue = Queue()
-	discord_thread = Thread(target = enqueue_output, args = (discord_process.stdout, discord_queue))
-	discord_thread.daemon = True
-	discord_thread.start()
-	
-	discord_listener_queue = Queue()
-	discord_listener_thread = Thread(target = enqueue_output, args = (discord_listener_process.stdout, discord_listener_queue))
-	discord_listener_thread.daemon = True
-	discord_listener_thread.start()
-	
-	twitch_queue = Queue()
-	twitch_thread = Thread(target = enqueue_output, args = (twitch_process.stdout, twitch_queue))
-	twitch_thread.daemon = True
-	twitch_thread.start()
-	
-	telegram_queue = Queue()
-	telegram_thread = Thread(target = enqueue_output, args = (telegram_process.stdout, telegram_queue))
-	telegram_thread.daemon = True
-	telegram_thread.start()
-	
-	discord_err_queue = Queue()
-	discord_err_thread = Thread(target = enqueue_output, args = (discord_process.stderr, discord_err_queue))
-	discord_err_thread.daemon = True
-	discord_err_thread.start()
-	
-	discord_listener_err_queue = Queue()
-	discord_listener_err_thread = Thread(target = enqueue_output, args = (discord_listener_process.stderr, discord_listener_err_queue))
-	discord_listener_err_thread.daemon = True
-	discord_listener_err_thread.start()
-	
-	twitch_err_queue = Queue()
-	twitch_err_thread = Thread(target = enqueue_output, args = (twitch_process.stderr, twitch_err_queue))
-	twitch_err_thread.daemon = True
-	twitch_err_thread.start()
-	
-	telegram_err_queue = Queue()
-	telegram_err_thread = Thread(target = enqueue_output, args = (telegram_process.stderr, telegram_err_queue))
-	telegram_err_thread.daemon = True
-	telegram_err_thread.start()
+	stdout_queues = {}
+	stdout_threads = {}
+	stderr_queues = {}
+	stderr_threads = {}
+	for name, process in processes.items():
+		# stdout
+		stdout_queue = Queue()
+		stdout_queues[name] = stdout_queue
+		stdout_thread = Thread(target = enqueue_output, args = (process.stdout, stdout_queue))
+		stdout_threads[name] = stdout_thread
+		stdout_thread.daemon = True
+		stdout_thread.start()
+		# stderr
+		stderr_queue = Queue()
+		stderr_queues[name] = stderr_queue
+		stderr_thread = Thread(target = enqueue_output, args = (process.stderr, stderr_queue))
+		stderr_threads[name] = stderr_thread
+		stderr_thread.daemon = True
+		stderr_thread.start()
 	
 	def process_outputs():
-		while not discord_queue.empty():
-			line = discord_queue.get_nowait()
-			harmonbot_gui.overview_discord_text.insert(END, line)
-			harmonbot_gui.discord_text.insert(END, line)
-		while not discord_listener_queue.empty():
-			line = discord_listener_queue.get_nowait()
-			harmonbot_gui.overview_discord_listener_text.insert(END, line)
-			harmonbot_gui.discord_listener_text.insert(END, line)
-		while not twitch_queue.empty():
-			line = twitch_queue.get_nowait()
-			harmonbot_gui.overview_twitch_text.insert(END, line)
-			harmonbot_gui.twitch_text.insert(END, line)
-		while not telegram_queue.empty():
-			line = telegram_queue.get_nowait()
-			harmonbot_gui.overview_telegram_text.insert(END, line)
-			harmonbot_gui.telegram_text.insert(END, line)
+		for name, stdout_queue in stdout_queues.items():
+			while not stdout_queue.empty():
+				line = stdout_queue.get_nowait()
+				text = getattr(harmonbot_gui, f"overview_{name}_text")
+				text.insert(END, line)
+				text = getattr(harmonbot_gui, f"{name}_text")
+				text.insert(END, line)
 		root.after(1, process_outputs)
 	
 	def process_error_outputs():
-		while not discord_err_queue.empty():
-			line = discord_err_queue.get_nowait()
-			harmonbot_gui.overview_discord_text.insert(END, line)
-			harmonbot_gui.discord_text.insert(END, line)
-		while not discord_listener_err_queue.empty():
-			line = discord_listener_err_queue.get_nowait()
-			harmonbot_gui.overview_discord_listener_text.insert(END, line)
-			harmonbot_gui.discord_listener_text.insert(END, line)
-		while not twitch_err_queue.empty():
-			line = twitch_err_queue.get_nowait()
-			harmonbot_gui.overview_twitch_text.insert(END, line)
-			harmonbot_gui.twitch_text.insert(END, line)
-		while not telegram_err_queue.empty():
-			line = telegram_err_queue.get_nowait()
-			harmonbot_gui.overview_telegram_text.insert(END, line)
-			harmonbot_gui.telegram_text.insert(END, line)
+		for name, stderr_queue in stderr_queues.items():
+			while not stderr_queue.empty():
+				line = stderr_queue.get_nowait()
+				text = getattr(harmonbot_gui, f"overview_{name}_text")
+				text.insert(END, line)
+				text = getattr(harmonbot_gui, f"{name}_text")
+				text.insert(END, line)
 		root.after(1, process_error_outputs)
 		# TODO: Check order with stdout
 	
 	def check_discord_process_ended():
-		if discord_process.poll() is None:
+		if processes["discord"].poll() is None:
 			root.after(1, check_discord_process_ended)
 		else:
 			line = "Discord process ended"
@@ -146,7 +109,7 @@ if __name__ == "__main__":
 			harmonbot_gui.discord_text.insert(END, line)
 	
 	def check_discord_listener_process_ended():
-		if discord_listener_process.poll() is None:
+		if processes["discord_listener"].poll() is None:
 			root.after(1, check_discord_listener_process_ended)
 		else:
 			line = "Discord listener process ended"
@@ -154,7 +117,7 @@ if __name__ == "__main__":
 			harmonbot_gui.discord_listener_text.insert(END, line)
 	
 	def check_twitch_process_ended():
-		if twitch_process.poll() is None:
+		if processes["twitch"].poll() is None:
 			root.after(1, check_twitch_process_ended)
 		else:
 			line = "Twitch process ended"
@@ -162,7 +125,7 @@ if __name__ == "__main__":
 			harmonbot_gui.twitch_text.insert(END, line)
 	
 	def check_telegram_process_ended():
-		if telegram_process.poll() is None:
+		if processes["telegram"].poll() is None:
 			root.after(1, check_telegram_process_ended)
 		else:
 			line = "Telegram process ended"
@@ -175,13 +138,13 @@ if __name__ == "__main__":
 		root.after(0, function)
 	
 	def cleanup():
-		discord_process.terminate()
-		go_process = psutil.Process(discord_listener_process.pid)
+		processes["discord"].terminate()
+		go_process = psutil.Process(processes["discord_listener"].pid)
 		for process in go_process.children(recursive = True):
 			process.terminate()
 		go_process.terminate()
-		twitch_process.terminate()
-		telegram_process.terminate()
+		processes["twitch"].terminate()
+		processes["telegram"].terminate()
 		## root.destroy()
 	
 	atexit.register(cleanup)
