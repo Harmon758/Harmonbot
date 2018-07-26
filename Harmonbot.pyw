@@ -84,11 +84,11 @@ if __name__ == "__main__":
 			for text_name in (f"overview_{name}_text", f"{name}_text"):
 				text = getattr(harmonbot_gui, text_name)
 				text.insert(END, line)
-		root.after(1, process_output, name)
+		root.after(100, process_output, name)  # Every 1/10 sec.
 	
 	def check_process_ended(name):
 		if processes[name].poll() is None:
-			root.after(1, check_process_ended, name)
+			root.after(100, check_process_ended, name)  # Every 1/10 sec.
 		else:
 			line = f"{name.replace('_', ' ').title()} process ended"
 			for text_name in (f"overview_{name}_text", f"{name}_text"):
