@@ -32,25 +32,14 @@ class HarmonbotGUI:
 		self.overview_twitch_frame.grid(row = 1, column = 2)
 		self.overview_telegram_frame.grid(row = 2, column = 2)
 		
-		self.discord_frame = Frame(self.discord_tab)
-		self.discord_frame.pack(expand = True, fill = BOTH)
-		self.discord_text = Text(self.discord_frame)
-		self.discord_text.pack(expand = True, fill = BOTH)
-		
-		self.discord_listener_frame = Frame(self.discord_listener_tab)
-		self.discord_listener_frame.pack(expand = True, fill = BOTH)
-		self.discord_listener_text = Text(self.discord_listener_frame)
-		self.discord_listener_text.pack(expand = True, fill = BOTH)
-		
-		self.twitch_frame = Frame(self.twitch_tab)
-		self.twitch_frame.pack(expand = True, fill = BOTH)
-		self.twitch_text = Text(self.twitch_frame)
-		self.twitch_text.pack(expand = True, fill = BOTH)
-		
-		self.telegram_frame = Frame(self.telegram_tab)
-		self.telegram_frame.pack(expand = True, fill = BOTH)
-		self.telegram_text = Text(self.telegram_frame)
-		self.telegram_text.pack(expand = True, fill = BOTH)
+		for tab in ("discord", "discord_listener", "twitch", "telegram"):
+			notebook_tab = getattr(self, f"{tab}_tab")
+			frame = Frame(notebook_tab)
+			setattr(self, f"{tab}_frame", frame)
+			frame.pack(expand = True, fill = BOTH)
+			text = Text(frame)
+			setattr(self, f"{tab}_text", text)
+			text.pack(expand = True, fill = BOTH)
 
 if __name__ == "__main__":
 	root = Tk()
