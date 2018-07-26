@@ -55,9 +55,9 @@ if __name__ == "__main__":
 	processes["telegram"] = Popen([sys.executable, "-u", "Telegram_Harmonbot.py"], cwd = "Telegram", **process_kwargs)
 	
 	def enqueue_output(out, queue):
-		for line in iter(out.readline, ""):
-			queue.put(line)
-		out.close()
+		with out:
+			for line in iter(out.readline, ""):
+				queue.put(line)
 	
 	output_queues = {}
 	output_threads = {"stdout": {}, "stderr": {}}
