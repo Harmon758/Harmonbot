@@ -96,7 +96,7 @@ if __name__ == "__main__":
 				text.insert(END, line)
 	
 	root.after(0, process_outputs)
-	for process in ("discord", "discord_listener", "twitch", "telegram"):
+	for process in processes:
 		root.after(0, check_process_ended, process)
 	
 	def cleanup():
