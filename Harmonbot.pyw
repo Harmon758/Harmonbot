@@ -60,22 +60,18 @@ if __name__ == "__main__":
 		out.close()
 	
 	output_queues = {}
-	stdout_threads = {}
-	stderr_threads = {}
+	output_threads = {"stdout": {}, "stderr": {}}
 	for name, process in processes.items():
 		output_queue = Queue()
 		output_queues[name] = output_queue
-		# stdout
-		stdout_thread = Thread(target = enqueue_output, args = (process.stdout, output_queue))
-		stdout_threads[name] = stdout_thread
-		stdout_thread.daemon = True
-		stdout_thread.start()
-		# stderr
-		stderr_thread = Thread(target = enqueue_output, args = (process.stderr, output_queue))
-		stderr_threads[name] = stderr_thread
-		stderr_thread.daemon = True
-		stderr_thread.start()
-		# TODO: Check stdout and stderr order
+		for output_type in ("stdout", "stderr"):
+			process_output = getattr(process, output_type)
+			output_thread = Thread(target = enqueue_output, args = (process_output, output_queue))
+			output_threads[output_type][name] = output_thread
+			output_thread.daemon = True
+			output_thread.start()
+	
+	# TODO: Check stdout and stderr order
 	
 	def process_output(name):
 		output_queue = output_queues[name]
