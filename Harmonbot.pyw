@@ -194,12 +194,10 @@ if __name__ == "__main__":
 			harmonbot_gui.overview_telegram_text.insert(END, line)
 			harmonbot_gui.telegram_text.insert(END, line)
 	
-	root.after(0, process_outputs)
-	root.after(0, process_error_outputs)
-	root.after(0, check_discord_process_ended)
-	root.after(0, check_discord_listener_process_ended)
-	root.after(0, check_twitch_process_ended)
-	root.after(0, check_telegram_process_ended)
+	for function in (process_outputs, process_error_outputs, check_discord_process_ended, 
+						check_discord_listener_process_ended, check_twitch_process_ended, 
+						check_telegram_process_ended):
+		root.after(0, function)
 	
 	def cleanup():
 		discord_process.terminate()
