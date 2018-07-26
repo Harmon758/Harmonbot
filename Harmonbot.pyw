@@ -59,44 +59,32 @@ if __name__ == "__main__":
 			queue.put(line)
 		out.close()
 	
-	stdout_queues = {}
+	output_queues = {}
 	stdout_threads = {}
-	stderr_queues = {}
 	stderr_threads = {}
 	for name, process in processes.items():
+		output_queue = Queue()
+		output_queues[name] = output_queue
 		# stdout
-		stdout_queue = Queue()
-		stdout_queues[name] = stdout_queue
-		stdout_thread = Thread(target = enqueue_output, args = (process.stdout, stdout_queue))
+		stdout_thread = Thread(target = enqueue_output, args = (process.stdout, output_queue))
 		stdout_threads[name] = stdout_thread
 		stdout_thread.daemon = True
 		stdout_thread.start()
 		# stderr
-		stderr_queue = Queue()
-		stderr_queues[name] = stderr_queue
-		stderr_thread = Thread(target = enqueue_output, args = (process.stderr, stderr_queue))
+		stderr_thread = Thread(target = enqueue_output, args = (process.stderr, output_queue))
 		stderr_threads[name] = stderr_thread
 		stderr_thread.daemon = True
 		stderr_thread.start()
 	
 	def process_outputs():
-		for name, stdout_queue in stdout_queues.items():
-			while not stdout_queue.empty():
-				line = stdout_queue.get_nowait()
+		for name, output_queue in output_queues.items():
+			while not output_queue.empty():
+				line = output_queue.get_nowait()
 				for text_name in (f"overview_{name}_text", f"{name}_text"):
 					text = getattr(harmonbot_gui, text_name)
 					text.insert(END, line)
 		root.after(1, process_outputs)
-	
-	def process_error_outputs():
-		for name, stderr_queue in stderr_queues.items():
-			while not stderr_queue.empty():
-				line = stderr_queue.get_nowait()
-				for text_name in (f"overview_{name}_text", f"{name}_text"):
-					text = getattr(harmonbot_gui, text_name)
-					text.insert(END, line)
-		root.after(1, process_error_outputs)
-		# TODO: Check order with stdout
+		# TODO: Check stdout and stderr order
 	
 	def check_discord_process_ended():
 		if processes["discord"].poll() is None:
@@ -130,7 +118,7 @@ if __name__ == "__main__":
 			harmonbot_gui.overview_telegram_text.insert(END, line)
 			harmonbot_gui.telegram_text.insert(END, line)
 	
-	for function in (process_outputs, process_error_outputs, check_discord_process_ended, 
+	for function in (process_outputs, check_discord_process_ended, 
 						check_discord_listener_process_ended, check_twitch_process_ended, 
 						check_telegram_process_ended):
 		root.after(0, function)
