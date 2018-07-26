@@ -21,25 +21,16 @@ class HarmonbotGUI:
 			self.notebook.add(frame, text = tab.replace('_', ' ').title())
 		self.notebook.pack()
 		
-		self.overview_discord_frame = Frame(self.overview_tab)
+		for overview_frame in ("discord", "discord_listener", "twitch", "telegram"):
+			frame = Frame(self.overview_tab)
+			setattr(self, f"overview_{overview_frame}_frame", frame)
+			text = Text(frame)
+			setattr(self, f"overview_{overview_frame}_text", text)
+			text.pack()
 		self.overview_discord_frame.grid(row = 1, column = 1)
-		self.overview_discord_text = Text(self.overview_discord_frame)
-		self.overview_discord_text.pack()
-		
-		self.overview_discord_listener_frame = Frame(self.overview_tab)
 		self.overview_discord_listener_frame.grid(row = 2, column = 1)
-		self.overview_discord_listener_text = Text(self.overview_discord_listener_frame)
-		self.overview_discord_listener_text.pack()
-		
-		self.overview_twitch_frame = Frame(self.overview_tab)
 		self.overview_twitch_frame.grid(row = 1, column = 2)
-		self.overview_twitch_text = Text(self.overview_twitch_frame)
-		self.overview_twitch_text.pack()
-		
-		self.overview_telegram_frame = Frame(self.overview_tab)
 		self.overview_telegram_frame.grid(row = 2, column = 2)
-		self.overview_telegram_text = Text(self.overview_telegram_frame)
-		self.overview_telegram_text.pack()
 		
 		self.discord_frame = Frame(self.discord_tab)
 		self.discord_frame.pack(expand = True, fill = BOTH)
