@@ -15,16 +15,10 @@ class HarmonbotGUI:
 		master.title("Harmonbot")
 		
 		self.notebook = ttk.Notebook(master)
-		self.overview_tab = Frame(self.notebook)
-		self.notebook.add(self.overview_tab, text = "Overview")
-		self.discord_tab = Frame(self.notebook)
-		self.notebook.add(self.discord_tab, text = "Discord")
-		self.discord_listener_tab = Frame(self.notebook)
-		self.notebook.add(self.discord_listener_tab, text = "Discord Listener")
-		self.twitch_tab = Frame(self.notebook)
-		self.notebook.add(self.twitch_tab, text = "Twitch")
-		self.telegram_tab = Frame(self.notebook)
-		self.notebook.add(self.telegram_tab, text = "Telegram")
+		for tab in ("overview", "discord", "discord_listener", "twitch", "telegram"):
+			frame = Frame(self.notebook)
+			setattr(self, f"{tab}_tab", frame)
+			self.notebook.add(frame, text = tab.replace('_', ' ').title())
 		self.notebook.pack()
 		
 		self.overview_discord_frame = Frame(self.overview_tab)
