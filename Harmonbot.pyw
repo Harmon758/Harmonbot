@@ -103,7 +103,25 @@ if __name__ == "__main__":
 	telegram_thread.daemon = True
 	telegram_thread.start()
 	
-	# TODO: Add stderr output
+	discord_err_queue = Queue()
+	discord_err_thread = Thread(target = enqueue_output, args = (discord_process.stderr, discord_err_queue))
+	discord_err_thread.daemon = True
+	discord_err_thread.start()
+	
+	discord_listener_err_queue = Queue()
+	discord_listener_err_thread = Thread(target = enqueue_output, args = (discord_listener_process.stderr, discord_listener_err_queue))
+	discord_listener_err_thread.daemon = True
+	discord_listener_err_thread.start()
+	
+	twitch_err_queue = Queue()
+	twitch_err_thread = Thread(target = enqueue_output, args = (twitch_process.stderr, twitch_err_queue))
+	twitch_err_thread.daemon = True
+	twitch_err_thread.start()
+	
+	telegram_err_queue = Queue()
+	telegram_err_thread = Thread(target = enqueue_output, args = (telegram_process.stderr, telegram_err_queue))
+	telegram_err_thread.daemon = True
+	telegram_err_thread.start()
 	
 	def process_outputs():
 		while not discord_queue.empty():
@@ -123,6 +141,26 @@ if __name__ == "__main__":
 			harmonbot_gui.overview_telegram_text.insert(END, line)
 			harmonbot_gui.telegram_text.insert(END, line)
 		root.after(1, process_outputs)
+	
+	def process_error_outputs():
+		while not discord_err_queue.empty():
+			line = discord_err_queue.get_nowait()
+			harmonbot_gui.overview_discord_text.insert(END, line)
+			harmonbot_gui.discord_text.insert(END, line)
+		while not discord_listener_err_queue.empty():
+			line = discord_listener_err_queue.get_nowait()
+			harmonbot_gui.overview_discord_listener_text.insert(END, line)
+			harmonbot_gui.discord_listener_text.insert(END, line)
+		while not twitch_err_queue.empty():
+			line = twitch_err_queue.get_nowait()
+			harmonbot_gui.overview_twitch_text.insert(END, line)
+			harmonbot_gui.twitch_text.insert(END, line)
+		while not telegram_err_queue.empty():
+			line = telegram_err_queue.get_nowait()
+			harmonbot_gui.overview_telegram_text.insert(END, line)
+			harmonbot_gui.telegram_text.insert(END, line)
+		root.after(1, process_error_outputs)
+		# TODO: Check order with stdout
 	
 	def check_discord_process_ended():
 		if discord_process.poll() is None:
@@ -157,6 +195,7 @@ if __name__ == "__main__":
 			harmonbot_gui.telegram_text.insert(END, line)
 	
 	root.after(0, process_outputs)
+	root.after(0, process_error_outputs)
 	root.after(0, check_discord_process_ended)
 	root.after(0, check_discord_listener_process_ended)
 	root.after(0, check_twitch_process_ended)
