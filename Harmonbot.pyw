@@ -86,42 +86,18 @@ if __name__ == "__main__":
 		root.after(1, process_outputs)
 		# TODO: Check stdout and stderr order
 	
-	def check_discord_process_ended():
-		if processes["discord"].poll() is None:
-			root.after(1, check_discord_process_ended)
+	def check_process_ended(name):
+		if processes[name].poll() is None:
+			root.after(1, check_process_ended, name)
 		else:
-			line = "Discord process ended"
-			harmonbot_gui.overview_discord_text.insert(END, line)
-			harmonbot_gui.discord_text.insert(END, line)
+			line = f"{name.replace('_', ' ').title()} process ended"
+			for text_name in (f"overview_{name}_text", f"{name}_text"):
+				text = getattr(harmonbot_gui, text_name)
+				text.insert(END, line)
 	
-	def check_discord_listener_process_ended():
-		if processes["discord_listener"].poll() is None:
-			root.after(1, check_discord_listener_process_ended)
-		else:
-			line = "Discord listener process ended"
-			harmonbot_gui.overview_discord_listener_text.insert(END, line)
-			harmonbot_gui.discord_listener_text.insert(END, line)
-	
-	def check_twitch_process_ended():
-		if processes["twitch"].poll() is None:
-			root.after(1, check_twitch_process_ended)
-		else:
-			line = "Twitch process ended"
-			harmonbot_gui.overview_twitch_text.insert(END, line)
-			harmonbot_gui.twitch_text.insert(END, line)
-	
-	def check_telegram_process_ended():
-		if processes["telegram"].poll() is None:
-			root.after(1, check_telegram_process_ended)
-		else:
-			line = "Telegram process ended"
-			harmonbot_gui.overview_telegram_text.insert(END, line)
-			harmonbot_gui.telegram_text.insert(END, line)
-	
-	for function in (process_outputs, check_discord_process_ended, 
-						check_discord_listener_process_ended, check_twitch_process_ended, 
-						check_telegram_process_ended):
-		root.after(0, function)
+	root.after(0, process_outputs)
+	for process in ("discord", "discord_listener", "twitch", "telegram"):
+		root.after(0, check_process_ended, process)
 	
 	def cleanup():
 		go_process = psutil.Process(processes["discord_listener"].pid)
