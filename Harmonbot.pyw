@@ -31,6 +31,10 @@ class HarmonbotGUI:
 		self.overview_discord_listener_frame.grid(row = 2, column = 1)
 		self.overview_twitch_frame.grid(row = 1, column = 2)
 		self.overview_telegram_frame.grid(row = 2, column = 2)
+		self.overview_tab.grid_columnconfigure(1, weight = 1)
+		self.overview_tab.grid_columnconfigure(2, weight = 1)
+		self.overview_tab.grid_rowconfigure(1, weight = 1)
+		self.overview_tab.grid_rowconfigure(2, weight = 1)
 		
 		for tab in ("discord", "discord_listener", "twitch", "telegram"):
 			notebook_tab = getattr(self, f"{tab}_tab")
