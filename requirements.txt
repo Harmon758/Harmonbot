@@ -17,7 +17,7 @@ imgurpython==1.1.7
 inflect==1.0.0
 isodate==0.6.0
 matplotlib==2.2.2
-more-itertools==4.2.0
+more-itertools==4.3.0
 numexpr==2.6.6
 numpy==1.15.0
 # +mkl, necessary for numexpr
