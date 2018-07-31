@@ -22,7 +22,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.1.26"
+		self.version = "2.1.27"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -357,7 +357,7 @@ class TwitchClient(pydle.Client):
 		
 		# Runescape Commands
 		if message.startswith(("!07rswiki", "!rswiki07", "!osrswiki", "!rswikios")):
-			await self.message(target, "2007.runescape.wikia.com/wiki/" + '_'.join(message.split()[1:]))
+			await self.message(target, "oldschoolrunescape.wikia.com/wiki/" + '_'.join(message.split()[1:]))
 		elif message.startswith("!cache"):
 			await self.message(target, f"{secs_to_duration(int(10800 - time.time() % 10800))} until Guthixian Cache.")
 		elif message.startswith("!indecentcodehs"):
