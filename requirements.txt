@@ -9,7 +9,7 @@ beautifulsoup4==4.6.0
 clarifai==2.2.3
 cryptography==2.3
 # deuces==0.1
-dice==2.3.3
+dice==2.3.4
 emoji==0.5.0
 feedparser==5.2.1
 imageio==2.3.0
