@@ -20,6 +20,7 @@ matplotlib==2.2.2
 more-itertools==4.2.0
 numexpr==2.6.6
 numpy==1.15.0
+# +mkl, necessary for numexpr
 pandas==0.23.3
 psutil==5.4.6
 pycountry==18.5.26
