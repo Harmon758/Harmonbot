@@ -13,19 +13,20 @@ class HarmonbotGUI:
 	def __init__(self, master):
 		self.master = master
 		master.title("Harmonbot")
+		self.bots = ["discord", "discord_listener", "twitch", "telegram"]
 		
 		self.notebook = ttk.Notebook(master)
-		for tab in ("overview", "discord", "discord_listener", "twitch", "telegram"):
+		for tab in ["overview"] + self.bots:
 			frame = Frame(self.notebook)
 			setattr(self, f"{tab}_tab", frame)
 			self.notebook.add(frame, text = tab.replace('_', ' ').title())
 		self.notebook.pack()
 		
-		for overview_frame in ("discord", "discord_listener", "twitch", "telegram"):
+		for bot in self.bots:
 			frame = Frame(self.overview_tab)
-			setattr(self, f"overview_{overview_frame}_frame", frame)
+			setattr(self, f"overview_{bot}_frame", frame)
 			text = Text(frame, wrap = NONE)
-			setattr(self, f"overview_{overview_frame}_text", text)
+			setattr(self, f"overview_{bot}_text", text)
 			text.pack()
 		self.overview_discord_frame.grid(row = 1, column = 1)
 		self.overview_discord_listener_frame.grid(row = 2, column = 1)
@@ -40,7 +41,7 @@ class HarmonbotGUI:
 		self.overview_controls_frame.grid(row = 1, column = 3, rowspan = 2, ipadx = 30)
 		self.overview_tab.grid_columnconfigure(3, weight = 1)
 		
-		for bot in ("discord", "discord_listener", "twitch", "telegram"):
+		for bot in self.bots:
 			setattr(self, f"autorestart_{bot}", BooleanVar())
 			checkbutton = Checkbutton(self.overview_controls_frame, 
 										text = f"Auto-Restart {bot.replace('_', ' ').title()}", 
@@ -48,14 +49,13 @@ class HarmonbotGUI:
 			setattr(self, f"autorestart_{bot}_checkbutton", checkbutton)
 			checkbutton.pack()
 			checkbutton.select()
-		
-		for tab in ("discord", "discord_listener", "twitch", "telegram"):
-			notebook_tab = getattr(self, f"{tab}_tab")
+			
+			notebook_tab = getattr(self, f"{bot}_tab")
 			frame = Frame(notebook_tab)
-			setattr(self, f"{tab}_frame", frame)
+			setattr(self, f"{bot}_frame", frame)
 			frame.pack(expand = True, fill = BOTH)
 			text = Text(frame)
-			setattr(self, f"{tab}_text", text)
+			setattr(self, f"{bot}_text", text)
 			text.pack(expand = True, fill = BOTH)
 
 if __name__ == "__main__":
@@ -95,9 +95,9 @@ if __name__ == "__main__":
 			output_thread.daemon = True
 			output_thread.start()
 	
-	for process in ("discord", "discord_listener", "twitch", "telegram"):
-		start_process(process)
-		output_thread(process)
+	for bot in harmonbot_gui.bots:
+		start_process(bot)
+		output_thread(bot)
 	
 	# TODO: Check stdout and stderr order
 	
