@@ -4,7 +4,7 @@ from queue import Queue
 from subprocess import Popen, PIPE
 import sys
 from threading import Thread
-from tkinter import BOTH, BooleanVar, Checkbutton, END, Frame, Text, Tk, ttk
+from tkinter import BOTH, BooleanVar, Checkbutton, END, Frame, NONE, Text, Tk, ttk
 
 import psutil
 
@@ -24,7 +24,7 @@ class HarmonbotGUI:
 		for overview_frame in ("discord", "discord_listener", "twitch", "telegram"):
 			frame = Frame(self.overview_tab)
 			setattr(self, f"overview_{overview_frame}_frame", frame)
-			text = Text(frame)
+			text = Text(frame, wrap = NONE)
 			setattr(self, f"overview_{overview_frame}_text", text)
 			text.pack()
 		self.overview_discord_frame.grid(row = 1, column = 1)
