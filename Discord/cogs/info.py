@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+import textwrap
 import unicodedata
 import urllib
 
@@ -97,11 +98,10 @@ class Info:
 		# TODO: Add system channel
 		if server.emojis:
 			emojis = [str(emoji) for emoji in server.emojis]
-			if len(' '.join(emojis)) <= ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT:
-				embed.add_field(name = "Emojis", value = ' '.join(emojis), inline = False)
-			else:
-				embed.add_field(name = "Emojis", value = ' '.join(emojis[:len(emojis) // 2]), inline = False)
-				embed.add_field(name = "Emojis", value = ' '.join(emojis[len(emojis) // 2:]), inline = False)
+			emojis = textwrap.wrap(' '.join(emojis), width = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
+			embed.add_field(name = "Emojis", value = emojis[0], inline = False)
+			for emoji in emojis[1:]:
+				embed.add_field(name = "Emojis", value = emoji, inline = False)
 		embed.set_footer(text = "Created")
 		await ctx.send(embed = embed)
 	
