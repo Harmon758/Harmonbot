@@ -79,22 +79,17 @@ class Info:
 	async def server(self, ctx):
 		'''Information about the server'''
 		server = ctx.guild
-		embed = discord.Embed(title = server.name, url = server.icon_url, timestamp = server.created_at, color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		embed.set_thumbnail(url = server.icon_url)
-		embed.add_field(name = "Owner", value = server.owner.mention)
-		embed.add_field(name = "ID", value = server.id)
-		embed.add_field(name = "Region", value = str(server.region))
-		embed.add_field(name = "Roles", value = len(server.roles))
 		text_count = sum(isinstance(channel, discord.TextChannel) for channel in server.channels)
 		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in server.channels)
-		embed.add_field(name = "Channels", value = "{} text\n{} voice".format(text_count, voice_count))
-		embed.add_field(name = "Members", value = "{}\n({} bots)".format(server.member_count, sum(m.bot for m in server.members)))
-		embed.add_field(name = "AFK Timeout", value = "{:g} min.".format(server.afk_timeout / 60))
-		embed.add_field(name = "AFK Channel", value = str(server.afk_channel))
-		embed.add_field(name = "Verification Level", value = str(server.verification_level).capitalize())
-		embed.add_field(name = "2FA Requirement", value = bool(server.mfa_level))
-		embed.add_field(name = "Explicit Content Filter", value = server.explicit_content_filter)
+		fields = [("Owner", server.owner.mention), ("ID", server.id), 
+					("Region", server.region), ("Roles", len(server.roles)), 
+					("Channels", "{} text\n{} voice".format(text_count, voice_count)), 
+					("Members", "{}\n({} bots)".format(server.member_count, sum(m.bot for m in server.members))), 
+					("AFK Timeout", "{:g} min.".format(server.afk_timeout / 60)), 
+					("AFK Channel", server.afk_channel), 
+					("Verification Level", str(server.verification_level).capitalize()), 
+					("2FA Requirement", bool(server.mfa_level)), 
+					("Explicit Content Filter", server.explicit_content_filter)]
 		# TODO: Add system channel
 		emojis = {"standard": [], "animated": [], "managed": []}
 		for emoji in server.emojis:
@@ -109,12 +104,13 @@ class Info:
 			if specific_emojis:
 				specific_emojis = textwrap.wrap(' '.join(specific_emojis), width = ctx.bot.EFVCL)
 				# EFVCL = Embed Field Value Character Limit
-				embed.add_field(name = f"{emoji_type.replace('standard', '').capitalize()} Emojis", 
-								value = specific_emojis[0], inline = False)
+				fields.append((f"{emoji_type.replace('standard', '').capitalize()} Emojis", 
+								specific_emojis[0], False))
 				for emoji in specific_emojis[1:]:
-					embed.add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = emoji, inline = False)
-		embed.set_footer(text = "Created")
-		await ctx.send(embed = embed)
+					fields.append((ctx.bot.ZERO_WIDTH_SPACE, emoji, False))
+		await ctx.embed_reply(title = server.name, title_url = server.icon_url, 
+								thumbnail_url = server.icon_url, fields = fields, 
+								footer_text = "Created", timestamp = server.created_at)
 	
 	@info.command()
 	@checks.not_forbidden()
