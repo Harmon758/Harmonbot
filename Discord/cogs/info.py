@@ -78,14 +78,15 @@ class Info:
 	@checks.not_forbidden()
 	async def server(self, ctx):
 		'''Information about the server'''
-		text_count = sum(isinstance(channel, discord.TextChannel) for channel in ctx.guild.channels)
-		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in ctx.guild.channels)
 		region = str(ctx.guild.region).replace('-', ' ').title()
 		region = region.replace("Vip", "VIP").replace("Us", "US").replace("Eu", "EU")
+		text_count = sum(isinstance(channel, discord.TextChannel) for channel in ctx.guild.channels)
+		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in ctx.guild.channels)
+		bot_count = sum(m.bot for m in ctx.guild.members)
 		fields = [("Owner", ctx.guild.owner.mention), ("ID", ctx.guild.id), 
 					("Region", region), ("Roles", len(ctx.guild.roles)), 
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
-					("Members", f"{ctx.guild.member_count}\n({sum(m.bot for m in ctx.guild.members)} bots)"), 
+					("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"), 
 					("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."), 
 					("AFK Channel", ctx.guild.afk_channel), 
 					("Verification Level", str(ctx.guild.verification_level).capitalize()), 
