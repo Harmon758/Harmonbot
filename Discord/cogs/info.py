@@ -81,8 +81,10 @@ class Info:
 		server = ctx.guild
 		text_count = sum(isinstance(channel, discord.TextChannel) for channel in server.channels)
 		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in server.channels)
+		region = str(server.region).replace('-', ' ').title()
+		region = region.replace("Vip", "VIP").replace("Us", "US").replace("Eu", "EU")
 		fields = [("Owner", server.owner.mention), ("ID", server.id), 
-					("Region", server.region), ("Roles", len(server.roles)), 
+					("Region", region), ("Roles", len(server.roles)), 
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
 					("Members", f"{server.member_count}\n({sum(m.bot for m in server.members)} bots)"), 
 					("AFK Timeout", f"{server.afk_timeout / 60:g} min."), 
