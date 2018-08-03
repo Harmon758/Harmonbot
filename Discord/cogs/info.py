@@ -96,12 +96,23 @@ class Info:
 		embed.add_field(name = "2FA Requirement", value = bool(server.mfa_level))
 		embed.add_field(name = "Explicit Content Filter", value = server.explicit_content_filter)
 		# TODO: Add system channel
-		if server.emojis:
-			emojis = [str(emoji) for emoji in server.emojis]
-			emojis = textwrap.wrap(' '.join(emojis), width = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
-			embed.add_field(name = "Emojis", value = emojis[0], inline = False)
-			for emoji in emojis[1:]:
-				embed.add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = emoji, inline = False)
+		emojis = {"standard": [], "animated": [], "managed": []}
+		for emoji in server.emojis:
+			if emoji.managed:
+				emojis["managed"].append(str(emoji))
+			elif emoji.animated:
+				emojis["animated"].append(str(emoji))
+			else:
+				emojis["standard"].append(str(emoji))
+		for emoji_type in ("standard", "animated", "managed"):
+			specific_emojis = emojis[emoji_type]
+			if specific_emojis:
+				specific_emojis = textwrap.wrap(' '.join(specific_emojis), width = ctx.bot.EFVCL)
+				# EFVCL = Embed Field Value Character Limit
+				embed.add_field(name = f"{emoji_type.replace('standard', '').capitalize()} Emojis", 
+								value = specific_emojis[0], inline = False)
+				for emoji in specific_emojis[1:]:
+					embed.add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = emoji, inline = False)
 		embed.set_footer(text = "Created")
 		await ctx.send(embed = embed)
 	
