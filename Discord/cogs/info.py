@@ -83,9 +83,9 @@ class Info:
 		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in server.channels)
 		fields = [("Owner", server.owner.mention), ("ID", server.id), 
 					("Region", server.region), ("Roles", len(server.roles)), 
-					("Channels", "{} text\n{} voice".format(text_count, voice_count)), 
-					("Members", "{}\n({} bots)".format(server.member_count, sum(m.bot for m in server.members))), 
-					("AFK Timeout", "{:g} min.".format(server.afk_timeout / 60)), 
+					("Channels", f"{text_count} text\n{voice_count} voice"), 
+					("Members", f"{server.member_count}\n({sum(m.bot for m in server.members)} bots)"), 
+					("AFK Timeout", f"{server.afk_timeout / 60:g} min."), 
 					("AFK Channel", server.afk_channel), 
 					("Verification Level", str(server.verification_level).capitalize()), 
 					("2FA Requirement", bool(server.mfa_level)), 
