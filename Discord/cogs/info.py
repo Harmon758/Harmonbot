@@ -101,7 +101,7 @@ class Info:
 			emojis = textwrap.wrap(' '.join(emojis), width = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
 			embed.add_field(name = "Emojis", value = emojis[0], inline = False)
 			for emoji in emojis[1:]:
-				embed.add_field(name = "Emojis", value = emoji, inline = False)
+				embed.add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = emoji, inline = False)
 		embed.set_footer(text = "Created")
 		await ctx.send(embed = embed)
 	
