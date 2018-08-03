@@ -89,7 +89,7 @@ class Info:
 					("AFK Channel", server.afk_channel), 
 					("Verification Level", str(server.verification_level).capitalize()), 
 					("2FA Requirement", bool(server.mfa_level)), 
-					("Explicit Content Filter", server.explicit_content_filter)]
+					("Explicit Content Filter", str(server.explicit_content_filter).replace('_', ' ').title())]
 		# TODO: Add system channel
 		emojis = {"standard": [], "animated": [], "managed": []}
 		for emoji in server.emojis:
