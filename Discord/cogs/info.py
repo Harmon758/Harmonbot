@@ -78,23 +78,22 @@ class Info:
 	@checks.not_forbidden()
 	async def server(self, ctx):
 		'''Information about the server'''
-		server = ctx.guild
-		text_count = sum(isinstance(channel, discord.TextChannel) for channel in server.channels)
-		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in server.channels)
-		region = str(server.region).replace('-', ' ').title()
+		text_count = sum(isinstance(channel, discord.TextChannel) for channel in ctx.guild.channels)
+		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in ctx.guild.channels)
+		region = str(ctx.guild.region).replace('-', ' ').title()
 		region = region.replace("Vip", "VIP").replace("Us", "US").replace("Eu", "EU")
-		fields = [("Owner", server.owner.mention), ("ID", server.id), 
-					("Region", region), ("Roles", len(server.roles)), 
+		fields = [("Owner", ctx.guild.owner.mention), ("ID", ctx.guild.id), 
+					("Region", region), ("Roles", len(ctx.guild.roles)), 
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
-					("Members", f"{server.member_count}\n({sum(m.bot for m in server.members)} bots)"), 
-					("AFK Timeout", f"{server.afk_timeout / 60:g} min."), 
-					("AFK Channel", server.afk_channel), 
-					("Verification Level", str(server.verification_level).capitalize()), 
-					("2FA Requirement", bool(server.mfa_level)), 
-					("Explicit Content Filter", str(server.explicit_content_filter).replace('_', ' ').title())]
+					("Members", f"{ctx.guild.member_count}\n({sum(m.bot for m in ctx.guild.members)} bots)"), 
+					("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."), 
+					("AFK Channel", ctx.guild.afk_channel), 
+					("Verification Level", str(ctx.guild.verification_level).capitalize()), 
+					("2FA Requirement", bool(ctx.guild.mfa_level)), 
+					("Explicit Content Filter", str(ctx.guild.explicit_content_filter).replace('_', ' ').title())]
 		# TODO: Add system channel
 		emojis = {"standard": [], "animated": [], "managed": []}
-		for emoji in server.emojis:
+		for emoji in ctx.guild.emojis:
 			if emoji.managed:
 				emojis["managed"].append(str(emoji))
 			elif emoji.animated:
@@ -110,9 +109,9 @@ class Info:
 								specific_emojis[0], False))
 				for emoji in specific_emojis[1:]:
 					fields.append((ctx.bot.ZERO_WIDTH_SPACE, emoji, False))
-		await ctx.embed_reply(title = server.name, title_url = server.icon_url, 
-								thumbnail_url = server.icon_url, fields = fields, 
-								footer_text = "Created", timestamp = server.created_at)
+		await ctx.embed_reply(title = ctx.guild.name, title_url = ctx.guild.icon_url, 
+								thumbnail_url = ctx.guild.icon_url, fields = fields, 
+								footer_text = "Created", timestamp = ctx.guild.created_at)
 	
 	@info.command()
 	@checks.not_forbidden()
