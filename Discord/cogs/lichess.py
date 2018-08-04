@@ -43,7 +43,7 @@ class Lichess:
 		self.atomic_emoji = discord.utils.get(self.bot.emojis, name = "lichess_atomic") or ":atom:"
 		self.horde_emoji = discord.utils.get(self.bot.emojis, name = "lichess_horde") or "" # TODO: Fallback Emoji
 		self.racingkings_emoji = discord.utils.get(self.bot.emojis, name = "lichess_racing_kings") or ":checkered_flag:"
-		self.training_emoji = discord.utils.get(self.bot.emojis, name = "lichess_training") or ":bow_and_arrow:"
+		self.training_emoji = discord.utils.get(self.bot.emojis, name = "lichess_training") or ":dart:"
 		self.uprightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_up_right_arrow") or ":arrow_upper_right:"
 		# Also possible fallback emoji: :chart_with_upwards_trend:
 		self.downrightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_down_right_arrow") or ":arrow_lower_right:"
