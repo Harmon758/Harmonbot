@@ -135,11 +135,11 @@ class Lichess:
 	@checks.not_forbidden()
 	async def user_activity(self, ctx, username : str):
 		'''User activity'''
-		url = "https://lichess.org/api/user/{}/activity".format(username)
+		url = f"https://lichess.org/api/user/{username}/activity"
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 			if resp.status == 429 and "error" in data:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["error"]))
+				await ctx.embed_reply(f":no_entry: Error: {data['error']}")
 				return
 		if not data:
 			await ctx.embed_reply(":no_entry: User activity not found")
@@ -152,9 +152,8 @@ class Lichess:
 			activity = ""
 			if "practice" in day:
 				for practice in day["practice"]:
-					activity += "{} Practiced ".format(self.practice_emoji)
-					activity += "{} positions on ".format(practice["nbPositions"])
-					activity += "[{0[name]}](https://lichess.org{0[url]})\n".format(practice)
+					activity += (f"{self.practice_emoji} Practiced {practice['nbPositions']} positions on "
+									f"[{practice['name']}](https://lichess.org{practice['url']})\n")
 			if "puzzles" in day:
 				puzzle_wins = day["puzzles"]["score"]["win"]
 				puzzle_losses = day["puzzles"]["score"]["loss"]
@@ -163,27 +162,21 @@ class Lichess:
 				rating_after = day["puzzles"]["score"]["rp"]["after"]
 				total_puzzles = puzzle_wins + puzzle_losses + puzzle_draws
 				rating_change = rating_after - rating_before
-				activity += "{} Solved {} tactical ".format(self.training_emoji, total_puzzles)
-				activity += clients.inflect_engine.plural("puzzle", total_puzzles)
-				activity += '\t'
+				activity += (f"{self.training_emoji} Solved {total_puzzles} tactical "
+								f"{clients.inflect_engine.plural('puzzle', total_puzzles)}\t")
 				if rating_change != 0:
 					activity += str(rating_after)
 					if rating_change > 0:
 						activity += str(self.uprightarrow_emoji)
 					elif rating_change < 0:
 						activity += str(self.downrightarrow_emoji)
-					activity += "{}\t".format(abs(rating_change))
+					activity += f"{abs(rating_change)}\t"
 				if puzzle_wins:
-					activity += "{} ".format(puzzle_wins)
-					activity += clients.inflect_engine.plural("win", puzzle_wins)
-					activity += ' '
+					activity += f"{puzzle_wins} {clients.inflect_engine.plural('win', puzzle_wins)} "
 				if puzzle_draws:
-					activity += "{} ".format(puzzle_draws)
-					activity += clients.inflect_engine.plural("draw", puzzle_draws)
-					activity += ' '
+					activity += f"{puzzle_draws} {clients.inflect_engine.plural('draw', puzzle_draws)} "
 				if puzzle_losses:
-					activity += "{} ".format(puzzle_losses)
-					activity += clients.inflect_engine.plural("loss", puzzle_losses)
+					activity += f"{puzzle_losses} {clients.inflect_engine.plural('loss', puzzle_losses)}"
 				activity += '\n'
 			if "games" in day:
 				for mode, mode_data in day["games"].items():
@@ -195,47 +188,36 @@ class Lichess:
 					mode_index = self.modes.index(mode)
 					total_matches = mode_wins + mode_losses + mode_draws
 					rating_change = rating_after - rating_before
-					activity += "{} Played ".format(self.mode_emojis[mode_index])
-					activity += "{} ".format(total_matches)
-					activity += "{} ".format(self.mode_names[mode_index])
-					activity += clients.inflect_engine.plural("game", total_matches)
-					activity += '\t'
+					activity += (f"{self.mode_emojis[mode_index]} Played {total_matches} "
+									f"{self.mode_names[mode_index]} "
+									f"{clients.inflect_engine.plural('game', total_matches)}\t")
 					if rating_change != 0:
 						activity += str(rating_after)
 						if rating_change > 0:
 							activity += str(self.uprightarrow_emoji)
 						elif rating_change < 0:
 							activity += str(self.downrightarrow_emoji)
-						activity += "{}\t".format(abs(rating_change))
+						activity += f"{abs(rating_change)}\t"
 					if mode_wins:
-						activity += "{} ".format(mode_wins)
-						activity += clients.inflect_engine.plural("win", mode_wins)
-						activity += ' '
+						activity += f"{mode_wins} {clients.inflect_engine.plural('win', mode_wins)} "
 					if mode_draws:
-						activity += "{} ".format(mode_draws)
-						activity += clients.inflect_engine.plural("draw", mode_draws)
-						activity += ' '
+						activity += f"{mode_draws} {clients.inflect_engine.plural('draw', mode_draws)} "
 					if mode_losses:
-						activity += "{} ".format(mode_losses)
-						activity += clients.inflect_engine.plural("loss", mode_losses)
+						activity += f"{mode_losses} {clients.inflect_engine.plural('loss', mode_losses)}"
 					activity += '\n'
 			if "posts" in day:
 				for post in day["posts"]:
-					activity += "{} Posted ".format(self.forum_emoji)
-					activity += "{} ".format(len(post["posts"]))
-					activity += clients.inflect_engine.plural("message", len(post["posts"]))
-					activity += " in [{0[topicName]}](https://lichess.org{0[topicUrl]})\n".format(post)
+					activity += (f"{self.forum_emoji} Posted {len(post['posts'])} "
+									f"{clients.inflect_engine.plural('message', len(post['posts']))}"
+									f" in [{post['topicName']}](https://lichess.org{post['topicUrl']})\n")
 			if "correspondenceMoves" in day:
-				activity += "{} Played ".format(self.correspondence_emoji)
-				activity += "{} ".format(day["correspondenceMoves"]["nb"])
-				activity += clients.inflect_engine.plural("move", day["correspondenceMoves"]["nb"])
+				activity += (f"{self.correspondence_emoji} Played {day['correspondenceMoves']['nb']} "
+								f"{clients.inflect_engine.plural('move', day['correspondenceMoves']['nb'])}")
 				game_count = len(day["correspondenceMoves"]["games"])
-				activity += " in {}".format(game_count)
+				activity += f" in {game_count}"
 				if game_count == 15:
 					activity += '+'
-				activity += " correspondence "
-				activity += clients.inflect_engine.plural("game", game_count)
-				activity += '\n'
+				activity += f" correspondence {clients.inflect_engine.plural('game', game_count)}\n"
 				# TODO: include game details?
 			if "correspondenceEnds" in day:
 				correspondence_wins = day["correspondenceEnds"]["score"]["win"]
@@ -245,69 +227,52 @@ class Lichess:
 				rating_after = day["correspondenceEnds"]["score"]["rp"]["after"]
 				total_matches = correspondence_wins + correspondence_losses + correspondence_draws
 				rating_change = rating_after - rating_before
-				activity += "{} Completed ".format(self.correspondence_emoji)
-				activity += "{} correspondence ".format(total_matches)
-				activity += clients.inflect_engine.plural("game", total_matches)
-				activity += '\t'
+				activity += (f"{self.correspondence_emoji} Completed {total_matches} correspondence "
+								f"{clients.inflect_engine.plural('game', total_matches)}\t")
 				if rating_change != 0:
 					activity += str(rating_after)
 					if rating_change > 0:
 						activity += str(self.uprightarrow_emoji)
 					elif rating_change < 0:
 						activity += str(self.downrightarrow_emoji)
-					activity += "{}\t".format(abs(rating_change))
+					activity += f"{abs(rating_change)}\t"
 				if correspondence_wins:
-					activity += "{} ".format(correspondence_wins)
-					activity += clients.inflect_engine.plural("win", correspondence_wins)
-					activity += ' '
+					activity += f"{correspondence_wins} {clients.inflect_engine.plural('win', correspondence_wins)} "
 				if correspondence_draws:
-					activity += "{} ".format(correspondence_draws)
-					activity += clients.inflect_engine.plural("draw", correspondence_draws)
-					activity += ' '
+					activity += f"{correspondence_draws} {clients.inflect_engine.plural('draw', correspondence_draws)} "
 				if correspondence_losses:
-					activity += "{} ".format(correspondence_losses)
-					activity += clients.inflect_engine.plural("loss", correspondence_losses)
+					activity += f"{correspondence_losses} {clients.inflect_engine.plural('loss', correspondence_losses)}"
 				activity += '\n'
 				# TODO: include game details?
 			if "follows" in day:
 				if "in" in day["follows"]:
 					follows_in = day["follows"]["in"]["ids"]
-					activity += "{} Gained ".format(self.thumbsup_emoji)
-					activity += "{} new ".format(day["follows"]["in"].get("nb", len(follows_in)))
-					activity += clients.inflect_engine.plural("follower", len(follows_in))
-					activity += "\n\t"
-					activity += ", ".join(follows_in)
-					activity += '\n'
+					activity += (f"{self.thumbsup_emoji} Gained "
+									f"{day['follows']['in'].get('nb', len(follows_in))} new "
+									f"{clients.inflect_engine.plural('follower', len(follows_in))}"
+									f"\n\t{', '.join(follows_in)}\n")
 				if "out" in day["follows"]:
 					follows_out = day["follows"]["out"]["ids"]
-					activity += "{} Started following ".format(self.thumbsup_emoji)
-					activity += "{} ".format(day["follows"]["out"].get("nb", len(follows_out)))
-					activity += clients.inflect_engine.plural("player", len(follows_out))
-					activity += "\n\t"
-					activity += ", ".join(follows_out)
-					activity += '\n'
+					activity += (f"{self.thumbsup_emoji} Started following "
+									f"{day['follows']['out'].get('nb', len(follows_out))} "
+									f"{clients.inflect_engine.plural('player', len(follows_out))}"
+									f"\n\t{', '.join(follows_out)}\n")
 			if "tournaments" in day:
-				activity += "{} Competed in ".format(self.trophy_emoji)
-				activity += "{} ".format(day["tournaments"]["nb"])
-				activity += clients.inflect_engine.plural("tournament", day["tournaments"]["nb"])
-				activity += '\n'
+				activity += (f"{self.trophy_emoji} Competed in {day['tournaments']['nb']} "
+								f"{clients.inflect_engine.plural('tournament', day['tournaments']['nb'])}\n")
 				for tournament in day["tournaments"]["best"]:
-					activity += "\tRanked #{} ".format(tournament["rank"])
-					activity += "(top {}%) ".format(tournament["rankPercent"])
-					activity += "with {} ".format(tournament["nbGames"])
-					activity += clients.inflect_engine.plural("game", tournament["nbGames"])
-					activity += " in [{}]".format(tournament["tournament"]["name"])
-					activity += "(https://lichess.org/tournament/{})".format(tournament["tournament"]["id"])
-					activity += '\n'
+					activity += (f"\tRanked #{tournament['rank']} (top {tournament['rankPercent']}%) "
+									f"with {tournament['nbGames']} "
+									f"{clients.inflect_engine.plural('game', tournament['nbGames'])}"
+									f" in [{tournament['tournament']['name']}]"
+									f"(https://lichess.org/tournament/{tournament['tournament']['id']})\n")
 			if "teams" in day:
-				activity += "{} Joined {} ".format(self.team_emoji, len(day["teams"]))
-				activity += clients.inflect_engine.plural("team", len(day["teams"]))
-				activity += "\n\t"
-				teams = ["[{0[name]}](https://lichess.org{0[url]})".format(team) for team in day["teams"]]
-				activity += ", ".join(teams)
-				activity += '\n'
+				activity += (f"{self.team_emoji} Joined {len(day['teams'])} "
+								f"{clients.inflect_engine.plural('team', len(day['teams']))}\n\t")
+				teams = [f"[{team['name']}](https://lichess.org{team['url']})" for team in day["teams"]]
+				activity += f"{', '.join(teams)}\n"
 			if day.get("stream"):
-				activity += "{} Hosted a live stream\n".format(self.stream_emoji)
+				activity += f"{self.stream_emoji} Hosted a live stream\n"
 				# TODO: add link
 			# TODO: use embed limit variables
 			# TODO: better method of checking total embed size?
@@ -320,6 +285,6 @@ class Lichess:
 				split_index = activity.rfind('\n', 0, 1024)
 				# TODO: better method of finding split index, new line could be in between section
 				fields.append((date, activity[:split_index], False))
-				fields.append((date + " (continued)", activity[split_index:], False))
-		await ctx.embed_reply(title = username + "'s Activity", fields = fields)
+				fields.append((f"{date} (continued)", activity[split_index:], False))
+		await ctx.embed_reply(title = f"{username}'s Activity", fields = fields)
 
