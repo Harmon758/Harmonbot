@@ -41,7 +41,7 @@ class Lichess:
 		self.threecheck_emoji = discord.utils.get(self.bot.emojis, name = "lichess_three_check") or ":three:"
 		self.antichess_emoji = discord.utils.get(self.bot.emojis, name = "lichess_antichess") or ":arrows_clockwise:"
 		self.atomic_emoji = discord.utils.get(self.bot.emojis, name = "lichess_atomic") or ":atom:"
-		self.horde_emoji = discord.utils.get(self.bot.emojis, name = "lichess_horde") or "" # TODO: Fallback Emoji
+		self.horde_emoji = discord.utils.get(self.bot.emojis, name = "lichess_horde") or ""  # TODO: Fallback Emoji
 		self.racingkings_emoji = discord.utils.get(self.bot.emojis, name = "lichess_racing_kings") or ":checkered_flag:"
 		self.training_emoji = discord.utils.get(self.bot.emojis, name = "lichess_training") or ":dart:"
 		self.uprightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_up_right_arrow") or ":arrow_upper_right:"
@@ -135,6 +135,7 @@ class Lichess:
 	@checks.not_forbidden()
 	async def user_activity(self, ctx, username : str):
 		'''User activity'''
+		# TODO: Use converter?
 		url = f"https://lichess.org/api/user/{username}/activity"
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
@@ -218,7 +219,7 @@ class Lichess:
 				if game_count == 15:
 					activity += '+'
 				activity += f" correspondence {clients.inflect_engine.plural('game', game_count)}\n"
-				# TODO: include game details?
+				# TODO: Include game details?
 			if "correspondenceEnds" in day:
 				correspondence_wins = day["correspondenceEnds"]["score"]["win"]
 				correspondence_losses = day["correspondenceEnds"]["score"]["loss"]
@@ -243,7 +244,7 @@ class Lichess:
 				if correspondence_losses:
 					activity += f"{correspondence_losses} {clients.inflect_engine.plural('loss', correspondence_losses)}"
 				activity += '\n'
-				# TODO: include game details?
+				# TODO: Include game details?
 			if "follows" in day:
 				if "in" in day["follows"]:
 					follows_in = day["follows"]["in"]["ids"]
@@ -273,9 +274,9 @@ class Lichess:
 				activity += f"{', '.join(teams)}\n"
 			if day.get("stream"):
 				activity += f"{self.stream_emoji} Hosted a live stream\n"
-				# TODO: add link
-			# TODO: use embed limit variables
-			# TODO: better method of checking total embed size?
+				# TODO: Add link
+			# TODO: Use embed limit variables
+			# TODO: Better method of checking total embed size
 			total_length += len(date) + len(activity)
 			if total_length > 6000:
 				break
@@ -283,8 +284,10 @@ class Lichess:
 				fields.append((date, activity, False))
 			elif len(activity) > 1024:
 				split_index = activity.rfind('\n', 0, 1024)
-				# TODO: better method of finding split index, new line could be in between section
+				# TODO: Better method of finding split index, new line could be in between section
 				fields.append((date, activity[:split_index], False))
 				fields.append((f"{date} (continued)", activity[split_index:], False))
+				# TODO: Dynamically handle splits
+				# TODO: Use zws?
 		await ctx.embed_reply(title = f"{username}'s Activity", fields = fields)
 
