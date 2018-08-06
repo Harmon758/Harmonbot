@@ -22,7 +22,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.1.27"
+		self.version = "2.2.0"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -315,9 +315,7 @@ class TwitchClient(pydle.Client):
 		
 		# Mikki Commands
 		if target == "#mikki":
-			if message.startswith(("!bully", "!cyberbully")):
-				await self.message(target, "http://www.stopcyberbullying.org/ Please check out this site before you continue bullying other viewers.")
-			elif message.startswith("!caught"):
+			if message.startswith("!caught"):
 				if len(message.split()) == 1:
 					caught = source.capitalize()
 				elif message.split()[1].lower() == "random":
@@ -325,24 +323,16 @@ class TwitchClient(pydle.Client):
 				else:
 					caught = ' '.join(message.split()[1:]).capitalize()
 				await self.message(target, f"Mikki has caught a wild {caught}!")
-			elif message.startswith(("!links", "!social")):
-				await self.message(target, "https://twitter.com/crystal_mikki https://www.instagram.com/crystalmikki/ https://discord.gg/vWbFxmu http://steamcommunity.com/id/mikkipuppy https://www.youtube.com/user/mikscape")
 			elif message.startswith("!mikkitime"):
 				mikkitime = datetime.datetime.now(datetime.timezone(datetime.timedelta(minutes = 60 * 8)))
 				await self.message(target, f"It is currently {mikkitime.strftime('%#I:%M %p on %b. %#d in Western Australia (%Z)')}.")
 				# %#d for removal of leading zero on Windows with native Python executable
 				# TODO: Include day of week
-			elif message.startswith(("!music", "!spotify")):
-				await self.message(target, "http://open.spotify.com/user/mikkirs/playlist/5OBCdMNiGiTRGL0cqWL9CT")
-			elif message.startswith(("!o.o", "!o_o")):
-				await self.message(target, "http://i.imgur.com/K00oLxo.png")
 			elif message.startswith("!pi"):
 				if self.is_mod(target, source):
 					await self.message(target, "3.14159265358979323846264338327 9502884197169399375105820974944 5923078164062862089986280348253 4211706798214808651328230664709 3844609550582231725359408128481 1174502841027019385211055596446 2294895493038196442881097566593 3446128475648233786783165271201 9091456485669234603486104543266 4821339360726024914127372458700 6606315588174881520920962829254 0917153643678925903600113305305 4882046652138414695194151160943 3057270365759591953092186117381 9326117931051185480744623799627 4956735188575272489122793818301 1949129833673362440656643086021 3949463952247371907021798609437")
 				else:
 					await self.message(target, "3.14")
-			elif message.startswith(("!pouch", "!repair")):
-				await self.message(target, "REPAIR POUCH! REPAIR POUCH! REPAIR POUCH! REPAIR POUCH!")
 		
 		# Imagrill Commands
 		if target == "#imagrill":
@@ -356,10 +346,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, f"Arts has caught a wild {caught}!")
 			elif message.startswith("!googer"):
 				await self.message(target, "https://google.com/search?q=" + '+'.join(message.split()[1:]) + ' "RAISE YOUR GOOGERS" -Arts')
-			elif message.startswith(("!rebirth1", "!re;birth1")):
-				await self.message(target, "http://hyperdimensionneptunia.wikia.com/wiki/Hyperdimension_Neptunia_Re;Birth_1")
-			elif message.startswith(("!scooter", "!scoots")):
-				await self.message(target, "http://imgur.com/WNj2HbM")
 			elif message.startswith("!sneeze"):
 				if len(message.split()) == 1 or not is_number(message.split()[1]) or 10 < int(message.split()[1]) or int(message.split()[1]) < 2:
 					await self.message(target, "Bless you!")
