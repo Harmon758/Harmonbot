@@ -4,6 +4,8 @@ from discord.ext import commands
 
 import datetime
 
+import pycountry
+
 import clients
 from modules import utilities
 from utilities import checks
@@ -312,4 +314,55 @@ class Lichess:
 			footer_text = timestamp = discord.Embed.Empty
 		await ctx.embed_reply(title = title, title_url = username["url"], fields = fields, 
 								footer_text = footer_text, timestamp = timestamp)
+	
+	@user.command(name = "profile", aliases = ["bio"])
+	@checks.not_forbidden()
+	async def user_profile(self, ctx, username : LichessUser):
+		'''User profile'''
+		title = username.get("title", "") + ' ' + username["username"]
+		description = None
+		fields = []
+		profile = username.get("profile", {})
+		if "firstName" in profile or "lastName" in profile:
+			fields.append(("{} {}".format(profile.get("firstName", ""), profile.get("lastName", "")), profile.get("bio"), False))
+		else:
+			description = profile.get("bio")
+		fields.append(("Online", "Yes" if username["online"] else "No"))
+		fields.append(("Patron", "Yes" if username.get("patron") else "No"))
+		if "fideRating" in profile:
+			fields.append(("FIDE Rating", profile["fideRating"]))
+		if "uscfRating" in profile:
+			fields.append(("USCF Rating", profile["uscfRating"]))
+		# TODO: add ECF Rating
+		if "country" in profile:
+			location = profile.get("location", "")
+			country = profile["country"]
+			location += "\n:flag_{}: ".format(country[:2].lower())  # TODO: subdivision flags
+			if len(country) > 2:  # Subdivision
+				location += pycountry.subdivisions.get(code = country).name
+			else:
+				location += pycountry.countries.get(alpha_2 = country).name
+			fields.append(("Location", location))
+		elif "location" in profile:
+			fields.append(("Location", profile["location"]))
+		fields.append(("Member Since", datetime.datetime.utcfromtimestamp(username["createdAt"] / 1000.0).strftime("%b %#d, %Y")))
+		if "completionRate" in username:
+			fields.append(("Game Completion Rate", "{}%".format(username["completionRate"])))
+		fields.append(("Followers", username["nbFollowers"]))
+		fields.append(("Following", username["nbFollowing"]))
+		playtime = username.get("playTime", {})
+		if "total" in playtime:
+			fields.append(("Time Spent Playing", utilities.secs_to_letter_format(playtime["total"])))
+		if "tv" in playtime:
+			fields.append(("Time On TV", utilities.secs_to_letter_format(playtime["tv"])))
+		if "links" in profile:
+			fields.append(("Links", profile["links"], False))
+		# %#d works on Windows
+		if "seenAt" in username:
+			footer_text = "Last seen"
+			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
+		else:
+			footer_text = timestamp = discord.Embed.Empty
+		await ctx.embed_reply(description, title = title, title_url = username["url"], 
+								fields = fields, footer_text = footer_text, timestamp = timestamp)
 
