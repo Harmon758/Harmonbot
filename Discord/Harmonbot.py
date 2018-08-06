@@ -107,7 +107,7 @@ if __name__ == "__main__":
 	async def on_message(message):
 		
 		# Log message
-		log_entry = "{0.created_at}: [{0.id}] {0.author.display_name} ({0.author.name}) ({0.author.id}) in ".format(message)
+		log_entry = "{0.created_at}: [{0.id}] {0.author.display_name} ({0.author}) ({0.author.id}) in ".format(message)
 		if isinstance(message.channel, discord.DMChannel):
 			log_entry += "Direct Message"
 		else:
@@ -115,7 +115,6 @@ if __name__ == "__main__":
 		log_entry += ": {0.content} {0.embeds}".format(message)
 		logging.chat_logger.info(log_entry)
 		# TODO: log embed content
-		# TODO: add discriminator by removing .name
 		
 		# Get Context
 		ctx = await client.get_context(message)
