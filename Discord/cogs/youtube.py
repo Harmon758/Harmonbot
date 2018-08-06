@@ -54,7 +54,7 @@ class YouTube:
 		clients.create_file("youtube_uploads", content = {"channels" : {}})
 		with open(clients.data_path + "/youtube_uploads.json", 'r') as uploads_file:
 			self.uploads_info = json.load(uploads_file)
-		self.youtube_uploads_following = set([channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"]])
+		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"])
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
 	
 	def __unload(self):
@@ -286,10 +286,9 @@ class YouTube:
 			for text_channel_id, channel_info in self.uploads_info["channels"].items():
 				if channel_id in channel_info["yt_channel_ids"]:
 					text_channel = self.bot.get_channel(int(text_channel_id))
-					if not text_channel:
-						# TODO: Remove text channel data if now non-existent
-						continue
-					message = await text_channel.send(embed = embed)
+					if text_channel:
+						await text_channel.send(embed = embed)
+					# TODO: Remove text channel data if now non-existent
 	
 	# TODO: get to remove as well
 	async def get_youtube_channel_id(self, id_or_username):
