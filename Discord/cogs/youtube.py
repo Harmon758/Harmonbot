@@ -130,7 +130,7 @@ class YouTube:
 				for announcement in announcements:
 					text_channel = self.bot.get_channel(int(announcement[2]))
 					# TODO: Handle text channel not existing anymore
-					announcement[0] = await self.bot.get_message(text_channel, int(announcement[0]))
+					announcement[0] = await text_channel.get_message(int(announcement[0]))
 					# TODO: Handle message deleted
 					announcement[1] = discord.Embed(title = announcement[1]["title"], description = announcement[1].get("description"), url = announcement[1]["url"], timestamp = dateutil.parser.parse(announcement[1]["timestamp"]), color = announcement[1]["color"]).set_thumbnail(url = announcement[1]["thumbnail"]["url"]).set_author(name = announcement[1]["author"]["name"], url = announcement[1]["author"]["url"], icon_url = announcement[1]["author"]["icon_url"])
 					del announcement[2]
