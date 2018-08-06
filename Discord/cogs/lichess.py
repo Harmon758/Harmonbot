@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import datetime
 
+import emoji
 import pycountry
 
 import clients
@@ -339,13 +340,13 @@ class Lichess:
 		# TODO: Add ECF Rating
 		if "country" in profile:
 			country = profile["country"]
-			location = f"{profile.get('location', '')}\n:flag_{country[:2].lower()}: " 
-			# TODO: Subdivision flags
+			country_name = pycountry.countries.get(alpha_2 = country[:2]).name
+			country_flag = emoji.emojize(f":{country_name.replace(' ', '_')}:")
 			if len(country) > 2:  # Subdivision
-				location += pycountry.subdivisions.get(code = country).name
-			else:
-				location += pycountry.countries.get(alpha_2 = country).name
-			fields.append(("Location", location))
+				country_name = pycountry.subdivisions.get(code = country).name
+			# Wait for subdivision flag emoji support from Twemoji + Discord
+			# https://github.com/twitter/twemoji/pull/233
+			fields.append(("Location", f"{profile.get('location', '')}\n{country_flag} {country_name}"))
 		elif "location" in profile:
 			fields.append(("Location", profile["location"]))
 		created_at = datetime.datetime.utcfromtimestamp(user_data["createdAt"] / 1000.0)
