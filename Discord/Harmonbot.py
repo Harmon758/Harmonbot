@@ -112,9 +112,8 @@ if __name__ == "__main__":
 			log_entry += "Direct Message"
 		else:
 			log_entry += "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
-		log_entry += ": {0.content} {0.embeds}".format(message)
+		log_entry += f": {message.content} {[embed.to_dict() for embed in message.embeds]}"
 		logging.chat_logger.info(log_entry)
-		# TODO: log embed content
 		
 		# Get Context
 		ctx = await client.get_context(message)
