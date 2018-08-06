@@ -40,9 +40,16 @@ class TwitchClient(pydle.Client):
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		# Dynamically load commands
 		for file in os.listdir("data/commands"):
+			if file == "aliases":
+				continue
 			category = file[:-5]  # - .json
 			with open(f"data/commands/{category}.json", 'r') as commands_file:
 				setattr(self, f"{category}_commands", json.load(commands_file))
+		# Dynamically load aliases
+		for file in os.listdir("data/commands/aliases"):
+			category = file[:-5]  # - .json
+			with open(f"data/commands/aliases/{category}.json", 'r') as aliases_file:
+				setattr(self, f"{category}_aliases", json.load(aliases_file))
 	
 	async def on_connect(self):
 		await super().on_connect()
@@ -296,11 +303,15 @@ class TwitchClient(pydle.Client):
 		elif message.startswith("!wiki"):
 			await self.message(target, "wikipedia.org/wiki/" + '_'.join(message.split()[1:]))
 		
-		# Channel-specific commands
+		# Channel-specific commands and aliases
+		channel_aliases = getattr(self, f"{target[1:]}_aliases", None)
 		channel_commands = getattr(self, f"{target[1:]}_commands", None)
 		if channel_commands:
-			if message.startswith('!') and message[1:] in channel_commands:
-				await self.message(target, channel_commands[message[1:]])
+			if message.startswith('!'):
+				if message[1:] in channel_aliases:
+					message = '!' + channel_aliases[message[1:]]
+				if message[1:] in channel_commands:
+					await self.message(target, channel_commands[message[1:]])
 		
 		# Mikki Commands
 		if target == "#mikki":
