@@ -189,9 +189,9 @@ if __name__ == "__main__":
 				elif converted_mass_value:
 					converted_value = converted_mass_value
 				else:
-					await ctx.embed_reply("Units, {} and/or {}, not found\nSee the conversions command".format(unit1, unit2))
+					await ctx.embed_reply(f"Units, {unit1} and/or {unit2}, not found\nSee the conversions command")
 					return
-				await ctx.embed_reply("{} {} = {} {}".format(value, unit1, converted_value, unit2))
+				await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 				
 		# help or prefix/es DM or mention
 		elif (message.content.lower() in ("help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ("help", "prefix", "prefixes"):
