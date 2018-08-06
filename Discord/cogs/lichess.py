@@ -325,7 +325,7 @@ class Lichess:
 		fields = []
 		profile = username.get("profile", {})
 		if "firstName" in profile or "lastName" in profile:
-			fields.append(("{} {}".format(profile.get("firstName", ""), profile.get("lastName", "")), profile.get("bio"), False))
+			fields.append((f"{profile.get('firstName', '')} {profile.get('lastName', '')}", profile.get("bio"), False))
 		else:
 			description = profile.get("bio")
 		fields.append(("Online", "Yes" if username["online"] else "No"))
@@ -338,7 +338,7 @@ class Lichess:
 		if "country" in profile:
 			location = profile.get("location", "")
 			country = profile["country"]
-			location += "\n:flag_{}: ".format(country[:2].lower())  # TODO: Subdivision flags
+			location += f"\n:flag_{country[:2].lower()}: "  # TODO: Subdivision flags
 			if len(country) > 2:  # Subdivision
 				location += pycountry.subdivisions.get(code = country).name
 			else:
@@ -349,7 +349,7 @@ class Lichess:
 		fields.append(("Member Since", datetime.datetime.utcfromtimestamp(username["createdAt"] / 1000.0).strftime("%b %#d, %Y")))
 		# %#d for removal of leading zero on Windows with native Python executable
 		if "completionRate" in username:
-			fields.append(("Game Completion Rate", "{}%".format(username["completionRate"])))
+			fields.append(("Game Completion Rate", f"{username['completionRate']}%"))
 		fields.append(("Followers", username["nbFollowers"]))
 		fields.append(("Following", username["nbFollowing"]))
 		playtime = username.get("playTime", {})
