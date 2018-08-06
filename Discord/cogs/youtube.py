@@ -151,7 +151,7 @@ class YouTube:
 							for announcement in self.old_streams_announced[video_id]:
 								embed = announcement[1]
 								embed.set_author(name = embed.author.name.replace("was live", "is live now"), url = embed.author.url, icon_url = embed.author.icon_url)
-								await self.bot.edit_message(announcement[0], embed = embed)
+								await announcement[0].edit(embed = embed)
 							self.streams_announced[video_id] = self.old_streams_announced[video_id]
 							del self.old_streams_announced[video_id]
 						elif video_id not in self.streams_announced:
@@ -174,7 +174,7 @@ class YouTube:
 						for announcement in announcements:
 							embed = announcement[1]
 							embed.set_author(name = embed.author.name.replace("is live now", "was live"), url = embed.author.url, icon_url = embed.author.icon_url)
-							await self.bot.edit_message(announcement[0], embed = embed)
+							await announcement[0].edit(embed = embed)
 							# TODO: Handle message deleted
 							self.old_streams_announced[announced_video_id] = self.streams_announced[announced_video_id]
 							del self.streams_announced[announced_video_id]
