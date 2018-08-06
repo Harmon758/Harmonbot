@@ -3,14 +3,15 @@ import discord
 from discord.ext import commands
 
 import asyncio
-from bs4 import BeautifulSoup
 import datetime
-import dateutil.parser
-import feedparser
 import json
 import sys
 import time
 import traceback
+
+from bs4 import BeautifulSoup
+import dateutil.parser
+import feedparser
 
 import clients
 from utilities import checks
