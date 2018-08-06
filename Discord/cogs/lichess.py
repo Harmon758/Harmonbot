@@ -344,8 +344,9 @@ class Lichess:
 			country_flag = emoji.emojize(f":{country_name.replace(' ', '_')}:")
 			if len(country) > 2:  # Subdivision
 				country_name = pycountry.subdivisions.get(code = country).name
-			# Wait for subdivision flag emoji support from Twemoji + Discord
-			# https://github.com/twitter/twemoji/pull/233
+			# Wait for subdivision flag emoji support from Discord
+			# From Unicode 10.0/Emoji 5.0/Twemoji 2.3
+			# For England, Scotland, and Wales
 			fields.append(("Location", f"{profile.get('location', '')}\n{country_flag} {country_name}"))
 		elif "location" in profile:
 			fields.append(("Location", profile["location"]))
