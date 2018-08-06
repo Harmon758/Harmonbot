@@ -36,7 +36,7 @@ func check(e error) {
 }
 
 func main() {
-	fmt.Println("Starting up Harmonbot Listener...")
+	fmt.Println("Starting up Discord Harmonbot Listener...")
 	
 	// Load Credentials
 	if raw, err := ioutil.ReadFile("Harmonbot_Listener_credentials.json"); err == nil {
@@ -74,7 +74,7 @@ func main() {
 		}
 	}
 	
-	fmt.Println("Shutting down Harmonbot Listener...")
+	fmt.Println("Shutting down Discord Harmonbot Listener...")
 	
 	// Close connections
 	if dgv != nil {
