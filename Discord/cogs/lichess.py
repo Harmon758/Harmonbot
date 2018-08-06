@@ -333,11 +333,11 @@ class Lichess:
 			fields.append(("FIDE Rating", profile["fideRating"]))
 		if "uscfRating" in profile:
 			fields.append(("USCF Rating", profile["uscfRating"]))
-		# TODO: add ECF Rating
+		# TODO: Add ECF Rating
 		if "country" in profile:
 			location = profile.get("location", "")
 			country = profile["country"]
-			location += "\n:flag_{}: ".format(country[:2].lower())  # TODO: subdivision flags
+			location += "\n:flag_{}: ".format(country[:2].lower())  # TODO: Subdivision flags
 			if len(country) > 2:  # Subdivision
 				location += pycountry.subdivisions.get(code = country).name
 			else:
@@ -346,6 +346,7 @@ class Lichess:
 		elif "location" in profile:
 			fields.append(("Location", profile["location"]))
 		fields.append(("Member Since", datetime.datetime.utcfromtimestamp(username["createdAt"] / 1000.0).strftime("%b %#d, %Y")))
+		# %#d for removal of leading zero on Windows with native Python executable
 		if "completionRate" in username:
 			fields.append(("Game Completion Rate", "{}%".format(username["completionRate"])))
 		fields.append(("Followers", username["nbFollowers"]))
@@ -357,7 +358,6 @@ class Lichess:
 			fields.append(("Time On TV", utilities.secs_to_letter_format(playtime["tv"])))
 		if "links" in profile:
 			fields.append(("Links", profile["links"], False))
-		# %#d works on Windows
 		if "seenAt" in username:
 			footer_text = "Last seen"
 			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
