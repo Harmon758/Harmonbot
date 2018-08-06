@@ -320,17 +320,18 @@ class Lichess:
 	@checks.not_forbidden()
 	async def user_profile(self, ctx, username : LichessUser):
 		'''User profile'''
-		title = username.get("title", "") + ' ' + username["username"]
+		user_data = username
+		title = user_data.get("title", "") + ' ' + user_data["username"]
 		description = None
 		fields = []
-		profile = username.get("profile", {})
+		profile = user_data.get("profile", {})
 		if "firstName" in profile or "lastName" in profile:
 			fields.append((f"{profile.get('firstName', '')} {profile.get('lastName', '')}", 
 							profile.get("bio"), False))
 		else:
 			description = profile.get("bio")
-		fields.append(("Online", "Yes" if username["online"] else "No"))
-		fields.append(("Patron", "Yes" if username.get("patron") else "No"))
+		fields.append(("Online", "Yes" if user_data["online"] else "No"))
+		fields.append(("Patron", "Yes" if user_data.get("patron") else "No"))
 		if "fideRating" in profile:
 			fields.append(("FIDE Rating", profile["fideRating"]))
 		if "uscfRating" in profile:
@@ -347,25 +348,25 @@ class Lichess:
 			fields.append(("Location", location))
 		elif "location" in profile:
 			fields.append(("Location", profile["location"]))
-		created_at = datetime.datetime.utcfromtimestamp(username["createdAt"] / 1000.0)
+		created_at = datetime.datetime.utcfromtimestamp(user_data["createdAt"] / 1000.0)
 		fields.append(("Member Since", created_at.strftime("%b %#d, %Y")))
 		# %#d for removal of leading zero on Windows with native Python executable
-		if "completionRate" in username:
-			fields.append(("Game Completion Rate", f"{username['completionRate']}%"))
-		fields.append(("Followers", username["nbFollowers"]))
-		fields.append(("Following", username["nbFollowing"]))
-		playtime = username.get("playTime", {})
+		if "completionRate" in user_data:
+			fields.append(("Game Completion Rate", f"{user_data['completionRate']}%"))
+		fields.append(("Followers", user_data["nbFollowers"]))
+		fields.append(("Following", user_data["nbFollowing"]))
+		playtime = user_data.get("playTime", {})
 		if "total" in playtime:
 			fields.append(("Time Spent Playing", utilities.secs_to_letter_format(playtime["total"])))
 		if "tv" in playtime:
 			fields.append(("Time On TV", utilities.secs_to_letter_format(playtime["tv"])))
 		if "links" in profile:
 			fields.append(("Links", profile["links"], False))
-		if "seenAt" in username:
+		if "seenAt" in user_data:
 			footer_text = "Last seen"
-			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
+			timestamp = datetime.datetime.utcfromtimestamp(user_data["seenAt"] / 1000.0)
 		else:
 			footer_text = timestamp = discord.Embed.Empty
-		await ctx.embed_reply(description, title = title, title_url = username["url"], 
+		await ctx.embed_reply(description, title = title, title_url = user_data["url"], 
 								fields = fields, footer_text = footer_text, timestamp = timestamp)
 
