@@ -165,7 +165,7 @@ class YouTube:
 									embed.set_author(name = "{} is live now on Youtube".format(item_data["channelTitle"]), url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
-									message = await self.bot.send_message(text_channel, embed = embed)
+									message = await text_channel.send(embed = embed)
 									self.streams_announced[video_id] = self.streams_announced.get(video_id, []) + [[message, embed]]
 						video_ids.append(video_id)
 					await asyncio.sleep(1)
