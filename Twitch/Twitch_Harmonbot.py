@@ -168,6 +168,7 @@ class TwitchClient(pydle.Client):
 				created_at = dateutil.parser.parse(data["created_at"])
 				seconds = int((datetime.datetime.now(datetime.timezone.utc) - created_at).total_seconds())
 				await self.message(target, f"{source.capitalize()} followed on {created_at.strftime('%B %#d %Y')}, {secs_to_duration(seconds)} ago")
+				# %#d for removal of leading zero on Windows with native Python executable
 			else:
 				await self.message(target, f"{source.capitalize()}, you haven't followed yet!")
 		elif message.startswith("!followers"):
@@ -318,6 +319,7 @@ class TwitchClient(pydle.Client):
 			elif message.startswith("!mikkitime"):
 				mikkitime = datetime.datetime.now(datetime.timezone(datetime.timedelta(minutes = 60 * 8)))
 				await self.message(target, f"It is currently {mikkitime.strftime('%#I:%M %p on %b. %#d in Western Australia (%Z)')}.")
+				# %#d for removal of leading zero on Windows with native Python executable
 				# TODO: Include day of week
 			elif message.startswith(("!music", "!spotify")):
 				await self.message(target, "http://open.spotify.com/user/mikkirs/playlist/5OBCdMNiGiTRGL0cqWL9CT")

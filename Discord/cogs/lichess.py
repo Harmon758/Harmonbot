@@ -279,6 +279,7 @@ class Lichess:
 			# TODO: Better method of checking total embed size
 			date = datetime.datetime.utcfromtimestamp(day["interval"]["start"])
 			date = date.strftime("%b %#d, %Y")
+			# %#d for removal of leading zero on Windows with native Python executable
 			total_length += len(date) + len(activity)
 			if total_length > 6000:
 				break
