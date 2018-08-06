@@ -336,9 +336,9 @@ class Lichess:
 			fields.append(("USCF Rating", profile["uscfRating"]))
 		# TODO: Add ECF Rating
 		if "country" in profile:
-			location = profile.get("location", "")
 			country = profile["country"]
-			location += f"\n:flag_{country[:2].lower()}: "  # TODO: Subdivision flags
+			location = f"{profile.get('location', '')}\n:flag_{country[:2].lower()}: " 
+			# TODO: Subdivision flags
 			if len(country) > 2:  # Subdivision
 				location += pycountry.subdivisions.get(code = country).name
 			else:
