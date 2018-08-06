@@ -89,14 +89,14 @@ class YouTube:
 		'''Add Youtube channel to follow'''
 		# TODO: Check channel ID validity
 		# TODO: Add by username option
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if channel:
 			if channel_id in channel["channel_ids"]:
 				await ctx.embed_reply(":no_entry: This text channel is already following that Youtube channel")
 				return
 			channel["channel_ids"].append(channel_id)
 		else:
-			self.streams_info["channels"][ctx.channel.id] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
+			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
 		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Added the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
@@ -106,7 +106,7 @@ class YouTube:
 	@checks.is_permitted()
 	async def youtube_streams_remove(self, ctx, channel_id : str):
 		'''Remove Youtube channel being followed'''
-		channel = self.streams_info["channels"].get(ctx.channel.id)
+		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or channel_id not in channel["channel_ids"]:
 			await ctx.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
 			return
@@ -119,7 +119,7 @@ class YouTube:
 	@checks.not_forbidden()
 	async def youtube_streams_channels(self, ctx):
 		'''Show Youtube channels being followed in this text channel'''
-		await ctx.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(ctx.channel.id, {}).get("channel_ids", []))))
+		await ctx.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(str(ctx.channel.id), {}).get("channel_ids", []))))
 	
 	async def check_youtube_streams(self):
 		await self.bot.wait_until_ready()
@@ -128,9 +128,9 @@ class YouTube:
 				self.streams_announced = json.load(streams_file)
 			for announced_video_id, announcements in self.streams_announced.items():
 				for announcement in announcements:
-					text_channel = self.bot.get_channel(announcement[2])
+					text_channel = self.bot.get_channel(int(announcement[2]))
 					# TODO: Handle text channel not existing anymore
-					announcement[0] = await self.bot.get_message(text_channel, announcement[0])
+					announcement[0] = await self.bot.get_message(text_channel, int(announcement[0]))
 					# TODO: Handle message deleted
 					announcement[1] = discord.Embed(title = announcement[1]["title"], description = announcement[1].get("description"), url = announcement[1]["url"], timestamp = dateutil.parser.parse(announcement[1]["timestamp"]), color = announcement[1]["color"]).set_thumbnail(url = announcement[1]["thumbnail"]["url"]).set_author(name = announcement[1]["author"]["name"], url = announcement[1]["author"]["url"], icon_url = announcement[1]["author"]["icon_url"])
 					del announcement[2]
@@ -157,7 +157,7 @@ class YouTube:
 						elif video_id not in self.streams_announced:
 							for text_channel_id, channel_info in self.streams_info["channels"].items():
 								if channel_id in channel_info["channel_ids"]:
-									text_channel = self.bot.get_channel(text_channel_id)
+									text_channel = self.bot.get_channel(int(text_channel_id))
 									if not text_channel:
 										# TODO: Remove text channel data if now non-existent
 										continue
@@ -183,8 +183,8 @@ class YouTube:
 			except asyncio.CancelledError:
 				for announced_video_id, announcements in self.streams_announced.items():
 					for announcement in announcements:
-						announcement.append(announcement[0].channel.id)
-						announcement[0] = announcement[0].id
+						announcement.append(str(announcement[0].channel.id))
+						announcement[0] = str(announcement[0].id)
 						announcement[1] = announcement[1].to_dict()
 				with open(clients.data_path + "/temp/youtube_streams_announced.json", 'w') as streams_file:
 					json.dump(self.streams_announced, streams_file, indent = 4)
