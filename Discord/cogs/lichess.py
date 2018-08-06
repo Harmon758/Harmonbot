@@ -290,4 +290,26 @@ class Lichess:
 				# TODO: Dynamically handle splits
 				# TODO: Use zws?
 		await ctx.embed_reply(title = f"{username}'s Activity", fields = fields)
+	
+	@user.command(name = "games")
+	@checks.not_forbidden()
+	async def user_games(self, ctx, username : LichessUser):
+		'''User games'''
+		title = username.get("title", "") + ' ' + username["username"]
+		fields = (("Games", username["count"]["all"]), 
+					("Rated", username["count"]["rated"]), 
+					("Wins", username["count"]["win"]), 
+					("Losses", username["count"]["loss"]), 
+					("Draws", username["count"]["draw"]), 
+					("Playing", username["count"]["playing"]), 
+					("Bookmarks", username["count"]["bookmark"]), 
+					("Imported", username["count"]["import"]), 
+					("AI", username["count"]["ai"]))
+		if "seenAt" in username:
+			footer_text = "Last seen"
+			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
+		else:
+			footer_text = timestamp = discord.Embed.Empty
+		await ctx.embed_reply(title = title, title_url = username["url"], fields = fields, 
+								footer_text = footer_text, timestamp = timestamp)
 
