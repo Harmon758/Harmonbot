@@ -579,6 +579,10 @@ class TwitchClient(pydle.Client):
 	def random_viewer(self, target):
 		return random.choice(list(self.channels.get(target, {}).get("users", ["N/A"]))).capitalize()
 
+def create_folder(folder):
+	if not os.path.exists(folder):
+		os.makedirs(folder)
+
 def is_number(characters):
 	try:
 		float(characters)
@@ -607,6 +611,9 @@ def secs_to_duration(secs):
 
 if __name__ == "__main__":
 	print("Starting up Twitch Harmonbot...")
+	create_folder("data/commands")
+	create_folder("data/logs/channels")
+	create_folder("data/logs/client")
 	client = TwitchClient("Harmonbot")
 	loop = asyncio.get_event_loop()
 	asyncio.ensure_future(client.connect("irc.chat.twitch.tv", password = credentials.oauth_token), loop = loop)
