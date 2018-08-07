@@ -22,7 +22,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.0"
+		self.version = "2.3.1"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -415,7 +415,7 @@ class TwitchClient(pydle.Client):
 					self.mikki_variables["sheep"] += 1
 					with open("data/variables/mikki.json", 'w') as variables_file:
 						json.dump(self.mikki_variables, variables_file, indent = 4)
-					await self.message(target, f":sheep: {self.mikki_variables['sheep']}")
+					await self.message(target, f"\N{SHEEP} {self.mikki_variables['sheep']}")
 			elif message.startswith("!tick"):
 				self.mikki_variables["ticks"] += 1
 				with open("data/variables/mikki.json", 'w') as variables_file:
