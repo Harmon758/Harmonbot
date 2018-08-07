@@ -22,7 +22,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.2.0"
+		self.version = "2.3.0"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -320,7 +320,51 @@ class TwitchClient(pydle.Client):
 		
 		# Mikki Commands
 		if target == "#mikki":
-			if message.startswith("!caught"):
+			if any(s in message.lower() for s in ("3 accs", "3 accounts", "three accs", "three accounts")):
+				if self.is_mod(target, source) and len(message.split()) > 2:
+					if message.split()[2] == "on":
+						self.mikki_variables["3accs.status"] = True
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "3 accs is on")
+					elif message.split()[2] == "off":
+						self.mikki_variables["3accs.status"] = False
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "3 accs is off")
+					elif message.split()[2] == "mod":
+						self.mikki_variables["3accs.status"] = None
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "3 accs is mod only")
+				elif (self.mikki_variables["3accs.status"] or 
+						(self.is_mod(target, source) and self.mikki_variables["3accs.status"] is None)):
+					self.mikki_variables["3accs"] += 1
+					with open("data/variables/mikki.json", 'w') as variables_file:
+						json.dump(self.mikki_variables, variables_file, indent = 4)
+					await self.message(target, ("Yes, Mikki is playing 3 accounts. "
+												f"This question has been asked {self.mikki_variables['3accs']} times."))
+			elif "alt" in message:
+				if self.is_mod(target, source) and len(message.split()) > 1:
+					if message.split()[1] == "on":
+						self.mikki_variables["alt.status"] = True
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "alt is on")
+					elif message.split()[1] == "off":
+						self.mikki_variables["alt.status"] = False
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "alt is off")
+					elif message.split()[1] == "mod":
+						self.mikki_variables["alt.status"] = None
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "alt is mod only")
+				elif (self.mikki_variables["alt.status"] or 
+						(self.is_mod(target, source) and self.mikki_variables["alt.status"] is None)):
+					await self.message(target, f"Bad {source.capitalize()}!")
+			elif message.startswith("!caught"):
 				if len(message.split()) == 1:
 					caught = source.capitalize()
 				elif message.split()[1].lower() == "random":
@@ -333,11 +377,54 @@ class TwitchClient(pydle.Client):
 				await self.message(target, f"It is currently {mikkitime.strftime('%#I:%M %p on %b. %#d in Western Australia (%Z)')}.")
 				# %#d for removal of leading zero on Windows with native Python executable
 				# TODO: Include day of week
+			elif message.split()[0] == "mirosz88autotimeout" and source != "mirosz88" and len(message.split()) > 1:
+				if message.split()[1] == "on":
+					self.mikki_variables["mirosz88autotimeout.status"] = True
+					with open("data/variables/mikki.json", 'w') as variables_file:
+						json.dump(self.mikki_variables, variables_file, indent = 4)
+					await self.message(target, "mirosz88 auto timeout is on")
+				elif message.split()[1] == "off":
+					self.mikki_variables["mirosz88autotimeout.status"] = False
+					with open("data/variables/mikki.json", 'w') as variables_file:
+						json.dump(self.mikki_variables, variables_file, indent = 4)
+					await self.message(target, "mirosz88 auto timeout is off")
 			elif message.startswith("!pi"):
 				if self.is_mod(target, source):
 					await self.message(target, "3.14159265358979323846264338327 9502884197169399375105820974944 5923078164062862089986280348253 4211706798214808651328230664709 3844609550582231725359408128481 1174502841027019385211055596446 2294895493038196442881097566593 3446128475648233786783165271201 9091456485669234603486104543266 4821339360726024914127372458700 6606315588174881520920962829254 0917153643678925903600113305305 4882046652138414695194151160943 3057270365759591953092186117381 9326117931051185480744623799627 4956735188575272489122793818301 1949129833673362440656643086021 3949463952247371907021798609437")
 				else:
 					await self.message(target, "3.14")
+			elif "sheep" in message.lower():
+				if self.is_mod(target, source) and len(message.split()) > 1:
+					if message.split()[1] == "on":
+						self.mikki_variables["sheep.status"] = True
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "sheep is on")
+					elif message.split()[1] == "off":
+						self.mikki_variables["sheep.status"] = False
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "sheep is off")
+					elif message.split()[1] == "mod":
+						self.mikki_variables["sheep.status"] = None
+						with open("data/variables/mikki.json", 'w') as variables_file:
+							json.dump(self.mikki_variables, variables_file, indent = 4)
+						await self.message(target, "sheep is mod only")
+				elif (self.mikki_variables["sheep.status"] or 
+						(self.is_mod(target, source) and self.mikki_variables["sheep.status"] is None)):
+					self.mikki_variables["sheep"] += 1
+					with open("data/variables/mikki.json", 'w') as variables_file:
+						json.dump(self.mikki_variables, variables_file, indent = 4)
+					await self.message(target, f":sheep: {self.mikki_variables['sheep']}")
+			elif message.startswith("!tick"):
+				self.mikki_variables["ticks"] += 1
+				with open("data/variables/mikki.json", 'w') as variables_file:
+					json.dump(self.mikki_variables, variables_file, indent = 4)
+				await self.message(target, (f"Mikki has wasted {self.mikki_variables['ticks']} ticks. "
+												"http://i.imgur.com/bSCnFb1.png"))
+			
+			if source == "mirosz88" and self.mikki_variables["mirosz88autotimeout.status"]:
+				await self.message(target,  "/timeout mirosz88 1")
 		
 		# Imagrill Commands
 		if target == "#imagrill":
