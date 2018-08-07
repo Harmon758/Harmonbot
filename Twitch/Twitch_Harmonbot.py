@@ -50,6 +50,11 @@ class TwitchClient(pydle.Client):
 			category = file[:-5]  # - .json
 			with open(f"data/commands/aliases/{category}.json", 'r') as aliases_file:
 				setattr(self, f"{category}_aliases", json.load(aliases_file))
+		# Dynamically load variables
+		for file in os.listdir("data/variables"):
+			category = file[:-5]  # - .json
+			with open(f"data/variables/{category}.json", 'r') as variables_file:
+				setattr(self, f"{category}_variables", json.load(variables_file))
 	
 	async def on_connect(self):
 		await super().on_connect()
