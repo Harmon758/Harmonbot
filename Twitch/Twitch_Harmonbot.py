@@ -55,6 +55,7 @@ class TwitchClient(pydle.Client):
 			category = file[:-5]  # - .json
 			with open(f"data/variables/{category}.json", 'r') as variables_file:
 				setattr(self, f"{category}_variables", json.load(variables_file))
+		self.status_settings = {"on": True, "off": False, "mod": None}
 	
 	async def on_connect(self):
 		await super().on_connect()
@@ -322,21 +323,14 @@ class TwitchClient(pydle.Client):
 		if target == "#mikki":
 			if any(s in message.lower() for s in ("3 accs", "3 accounts", "three accs", "three accounts")):
 				if self.is_mod(target, source) and len(message.split()) > 2:
-					if message.split()[2] == "on":
-						self.mikki_variables["3accs.status"] = True
+					if message.split()[2] in self.status_settings:
+						status = message.split()[2]
+						self.mikki_variables["3accs.status"] = self.status_settings[status]
 						with open("data/variables/mikki.json", 'w') as variables_file:
 							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "3 accs is on")
-					elif message.split()[2] == "off":
-						self.mikki_variables["3accs.status"] = False
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "3 accs is off")
-					elif message.split()[2] == "mod":
-						self.mikki_variables["3accs.status"] = None
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "3 accs is mod only")
+						if status == "mod":
+							status += " only"
+						await self.message(target, f"3 accs is {status}")
 				elif (self.mikki_variables["3accs.status"] or 
 						(self.is_mod(target, source) and self.mikki_variables["3accs.status"] is None)):
 					self.mikki_variables["3accs"] += 1
@@ -346,21 +340,14 @@ class TwitchClient(pydle.Client):
 												f"This question has been asked {self.mikki_variables['3accs']} times."))
 			elif "alt" in message:
 				if self.is_mod(target, source) and len(message.split()) > 1:
-					if message.split()[1] == "on":
-						self.mikki_variables["alt.status"] = True
+					if message.split()[1] in self.status_settings:
+						status = message.split()[1]
+						self.mikki_variables["alt.status"] = self.status_settings[status]
 						with open("data/variables/mikki.json", 'w') as variables_file:
 							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "alt is on")
-					elif message.split()[1] == "off":
-						self.mikki_variables["alt.status"] = False
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "alt is off")
-					elif message.split()[1] == "mod":
-						self.mikki_variables["alt.status"] = None
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "alt is mod only")
+						if status == "mod":
+							status += " only"
+						await self.message(target, f"alt is {status}")
 				elif (self.mikki_variables["alt.status"] or 
 						(self.is_mod(target, source) and self.mikki_variables["alt.status"] is None)):
 					await self.message(target, f"Bad {source.capitalize()}!")
@@ -395,21 +382,14 @@ class TwitchClient(pydle.Client):
 					await self.message(target, "3.14")
 			elif "sheep" in message.lower():
 				if self.is_mod(target, source) and len(message.split()) > 1:
-					if message.split()[1] == "on":
-						self.mikki_variables["sheep.status"] = True
+					if message.split()[1] in self.status_settings:
+						status = message.split()[1]
+						self.mikki_variables["sheep.status"] = self.status_settings[status]
 						with open("data/variables/mikki.json", 'w') as variables_file:
 							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "sheep is on")
-					elif message.split()[1] == "off":
-						self.mikki_variables["sheep.status"] = False
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "sheep is off")
-					elif message.split()[1] == "mod":
-						self.mikki_variables["sheep.status"] = None
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						await self.message(target, "sheep is mod only")
+						if status == "mod":
+							status += " only"
+						await self.message(target, f"sheep is {status}")
 				elif (self.mikki_variables["sheep.status"] or 
 						(self.is_mod(target, source) and self.mikki_variables["sheep.status"] is None)):
 					self.mikki_variables["sheep"] += 1
