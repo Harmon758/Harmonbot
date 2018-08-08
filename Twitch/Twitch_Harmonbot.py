@@ -23,7 +23,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.10"
+		self.version = "2.3.11"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -341,8 +341,8 @@ class TwitchClient(pydle.Client):
 			await self.message(target, "wikipedia.org/wiki/" + '_'.join(message.split()[1:]))
 		
 		# Channel-specific commands and aliases
-		channel_aliases = getattr(self, f"{target[1:]}_aliases", None)
-		channel_commands = getattr(self, f"{target[1:]}_commands", None)
+		channel_aliases = getattr(self, f"{target[1:]}_aliases", {})
+		channel_commands = getattr(self, f"{target[1:]}_commands", {})
 		if channel_commands:
 			if message.startswith('!'):
 				if message[1:] in channel_aliases:
