@@ -177,6 +177,15 @@ class TwitchClient(pydle.Client):
 				await self.message(target, f"Birthday set to {date.strftime('%B %#d')}")
 				# %#d for removal of leading zero on Windows with native Python executable
 			elif "birthday_month" in channel_variables and "birthday_day" in channel_variables:
+				if "timezone_location" in channel_variables:
+					try:
+						timezone_data = await get_timezone_data(location = channel_variables["timezone_location"], 
+																aiohttp_session = self.aiohttp_session)
+					except UnitOutputError as e:
+						await self.message(target, f"Error: {e}")
+						return
+					now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
+															timezone_data["dstOffset"] + timezone_data["rawOffset"])
 				birthday = datetime.datetime(now.year, channel_variables["birthday_month"], channel_variables["birthday_day"])
 				if now > birthday:
 					birthday = birthday.replace(year = birthday.year + 1)
