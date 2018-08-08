@@ -2,12 +2,18 @@
 import discord
 from discord.ext import commands
 
+import sys
+
 import datetime
 import pyowm.exceptions
 
 import clients
 import credentials
 from utilities import checks
+
+sys.path.insert(0, "..")
+from units.location import get_geocode_data, get_timezone_data, UnitOutputError
+sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Location(bot))
@@ -128,17 +134,11 @@ class Location:
 	@checks.not_forbidden()
 	async def geocode(self, ctx, *, address : str):
 		'''Convert addresses to geographic coordinates'''
-		url = "https://maps.googleapis.com/maps/api/geocode/json"
-		params = {"address": address, "key": credentials.google_apikey}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if data["status"] == "ZERO_RESULTS":
-			await ctx.embed_reply(":no_entry: Address/Location not found")
+		try:
+			data = await get_geocode_data(address, aiohttp_session = clients.aiohttp_session)
+		except ModuleOutputError as e:
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return
-		if data["status"] != "OK":
-			await ctx.embed_reply(":no_entry: Error")
-			return
-		data = data["results"][0]
 		title = "Geographic Coordinates for " + data["formatted_address"]
 		fields = (("Latitude", data["geometry"]["location"]["lat"]), 
 					("Longitude", data["geometry"]["location"]["lng"]))
@@ -196,41 +196,22 @@ class Location:
 	@checks.not_forbidden()
 	async def time(self, ctx, *, location : str):
 		'''Current time of a location'''
-		url = "https://maps.googleapis.com/maps/api/geocode/json"
-		params = {"address": location, "key": credentials.google_apikey}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
-			geocode_data = await resp.json()
-		if geocode_data["status"] == "ZERO_RESULTS":
-			await ctx.embed_reply(":no_entry: Address/Location not found")
+		try:
+			geocode_data = await get_geocode_data(location, aiohttp_session = clients.aiohttp_session)
+			latitude = geocode_data["geometry"]["location"]["lat"]
+			longitude = geocode_data["geometry"]["location"]["lng"]
+			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
+													aiohttp_session = clients.aiohttp_session)
+		except ModuleOutputError as e:
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return
-		if geocode_data["status"] != "OK":
-			await ctx.embed_reply(":no_entry: Error")
-			return
-		geocode_data = geocode_data["results"][0]
-		current_utc_timestamp = datetime.datetime.utcnow().timestamp()
-		url = "https://maps.googleapis.com/maps/api/timezone/json"
-		params = {"location": (f"{geocode_data['geometry']['location']['lat']},"
-								f"{geocode_data['geometry']['location']['lng']}"), 
-					"timestamp": str(current_utc_timestamp), "key": credentials.google_apikey}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
-			timezone_data = await resp.json()
-		if timezone_data["status"] == "ZERO_RESULTS":
-			await ctx.embed_reply(":no_entry: Time not found")
-			return
-		if timezone_data["status"] != "OK":
-			error_message = timezone_data.get("errorMessage", timezone_data["status"])
-			await ctx.embed_reply(f":no_entry: Error: {error_message}")
-			return
-		location_timestamp = current_utc_timestamp + timezone_data["dstOffset"] + timezone_data["rawOffset"]
-		location_time = datetime.datetime.fromtimestamp(location_timestamp)
+		location_time = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
+														timezone_data["dstOffset"] + timezone_data["rawOffset"])
 		title = "Time at " + geocode_data["formatted_address"]
 		description = (f"{location_time.strftime('%I:%M:%S %p').lstrip('0')}\n"
 						f"{location_time.strftime('%Y-%m-%d %A')}")
 		fields = (("Timezone", f"{timezone_data['timeZoneName']}\n{timezone_data['timeZoneId']}"),)
 		await ctx.embed_reply(description, title = title, fields = fields)
-	
-	# TODO: error descriptions?
-	# TODO: process_geocode function?
 	
 	@commands.command()
 	@checks.not_forbidden()
