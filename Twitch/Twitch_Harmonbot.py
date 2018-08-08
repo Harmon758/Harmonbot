@@ -613,9 +613,9 @@ class TwitchClient(pydle.Client):
 			if len(message.split()) == 1:
 				await self.message(target, "Please specify a monster.")
 				return
-			url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json"
-			params = {"term": '+'.join(message.split()[1:])}
-			async with self.aiohttp_session.get(url, params = params) as resp:
+			url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term="
+			url += '+'.join(message.split()[1:])
+			async with self.aiohttp_session.get(url) as resp:
 				data = await resp.json(content_type = "text/html")
 			if "value" in data[0]:
 				monster_id = data[0]["value"]
