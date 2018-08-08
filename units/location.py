@@ -1,7 +1,7 @@
 
 import datetime
 
-from .credentials import google_apikey
+from . import credentials
 from .errors import UnitExecutionError, UnitOutputError
 
 async def get_geocode_data(location, aiohttp_session = None):
@@ -10,7 +10,7 @@ async def get_geocode_data(location, aiohttp_session = None):
 		raise UnitExecutionError("aiohttp session required")
 		# TODO: Default aiohttp session?
 	url = "https://maps.googleapis.com/maps/api/geocode/json"
-	params = {"address": location, "key": google_apikey}
+	params = {"address": location, "key": credentials.google_apikey}
 	async with aiohttp_session.get(url, params = params) as resp:
 		geocode_data = await resp.json()
 	if geocode_data["status"] == "ZERO_RESULTS":
@@ -33,7 +33,7 @@ async def get_timezone_data(location = None, latitude = None, longitude = None, 
 	current_utc_timestamp = datetime.datetime.utcnow().timestamp()
 	url = "https://maps.googleapis.com/maps/api/timezone/json"
 	params = {"location": f"{latitude}, {longitude}", 
-				"timestamp": str(current_utc_timestamp), "key": google_apikey}
+				"timestamp": str(current_utc_timestamp), "key": credentials.google_apikey}
 	async with aiohttp_session.get(url, params = params) as resp:
 		timezone_data = await resp.json()
 	if timezone_data["status"] == "ZERO_RESULTS":
