@@ -27,7 +27,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.14"
+		self.version = "2.3.15"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -588,8 +588,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "For Prayer: 1 ehp = 500,000 xp/h")
 			elif skill in ("mage", "magic"):
 				await self.message(target, "For Magic: 1 ehp = 250,000 xp/h")
-		elif message.startswith("!indecentcodehs"):
-			await self.message(target, "indecentcode.com/hs/index.php?id=" + '+'.join(message.split()[1:]))
 		elif message.startswith("!level"):
 			if len(message.split()) == 1:
 				await self.message(target, "Please enter a level.")
