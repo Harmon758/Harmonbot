@@ -27,7 +27,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.15"
+		self.version = "2.3.17"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -154,7 +154,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "Average FPS not found.")
 		elif message.startswith(("!bday", "!birthday")):
 			# TODO: Document
-			# TODO: Add ability to specify timezone
 			# TODO: Add ability to reset
 			# TODO: Handle leap day
 			now = datetime.datetime.utcnow()
@@ -417,7 +416,7 @@ class TwitchClient(pydle.Client):
 						json.dump(self.mikki_variables, variables_file, indent = 4)
 					await self.message(target, ("Yes, Mikki is playing 3 accounts. "
 												f"This question has been asked {self.mikki_variables['3accs']} times."))
-			elif "alt" in message:
+			elif "alt" in message.lower():
 				if (self.is_mod(target, source) and len(message.split()) > 1
 					and message.split()[1] in self.status_settings):
 					status = message.split()[1]
@@ -505,7 +504,7 @@ class TwitchClient(pydle.Client):
 					await self.message(target, "Bless you!")
 				else:
 					await self.message(target, ' '.join(["Bless you!" for i in range(int(message.split()[1]))]))
-			elif message.startswith("!tits") or "show tits" in message:
+			elif message.startswith("!tits") or "show tits" in message.lower():
 				await self.message(target, "https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg")
 		
 		# Runescape Commands
@@ -751,7 +750,7 @@ class TwitchClient(pydle.Client):
 			await self.message(target, random.choice(("BegWan", "ChefFrank", "CorgiDerp", "FrankerZ", "RalpherZ")))
 		
 		# Unit Conversion Commands
-		# TODO: add support for non-integers/floats, improve formatting
+		# TODO: Add support for non-integers/floats, improve formatting
 		if message.startswith(("!ctof", "!ftoc", "!lbtokg", "!kgtolb", "!fttom", "!mtoft", "!mtofi", "!gtooz", "!oztog", "!mitokm", "!kmtomi", "!ozttog", "!gtoozt", "!ozttooz", "!oztoozt")):
 			if len(message.split()) == 1:
 				await self.message(target, "Please enter input.")
