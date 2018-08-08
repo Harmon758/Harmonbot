@@ -27,7 +27,7 @@ async def get_timezone_data(location = None, latitude = None, longitude = None, 
 	if not (latitude and longitude):
 		if not location:
 			raise UnitExecutionError("location or latitude and longitude required")
-		geocode_data = get_geocode_data(location, aiohttp_session = aiohttp_session)
+		geocode_data = await get_geocode_data(location, aiohttp_session = aiohttp_session)
 		latitude = geocode_data["geometry"]["location"]["lat"]
 		longitude = geocode_data["geometry"]["location"]["lng"]
 	current_utc_timestamp = datetime.datetime.utcnow().timestamp()
