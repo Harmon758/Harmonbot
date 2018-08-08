@@ -23,7 +23,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.5"
+		self.version = "2.3.7"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -323,15 +323,15 @@ class TwitchClient(pydle.Client):
 		# Mikki Commands
 		if target == "#mikki":
 			if any(s in message.lower() for s in ("3 accs", "3 accounts", "three accs", "three accounts")):
-				if self.is_mod(target, source) and len(message.split()) > 2:
-					if message.split()[2] in self.status_settings:
-						status = message.split()[2]
-						self.mikki_variables["3accs.status"] = self.status_settings[status]
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						if status == "mod":
-							status += " only"
-						await self.message(target, f"3 accs is {status}")
+				if (self.is_mod(target, source) and len(message.split()) > 2
+					and message.split()[2] in self.status_settings):
+					status = message.split()[2]
+					self.mikki_variables["3accs.status"] = self.status_settings[status]
+					with open("data/variables/mikki.json", 'w') as variables_file:
+						json.dump(self.mikki_variables, variables_file, indent = 4)
+					if status == "mod":
+						status += " only"
+					await self.message(target, f"3 accs is {status}")
 				elif (self.mikki_variables["3accs.status"] or 
 						(self.is_mod(target, source) and self.mikki_variables["3accs.status"] is None)):
 					self.mikki_variables["3accs"] += 1
@@ -340,15 +340,15 @@ class TwitchClient(pydle.Client):
 					await self.message(target, ("Yes, Mikki is playing 3 accounts. "
 												f"This question has been asked {self.mikki_variables['3accs']} times."))
 			elif "alt" in message:
-				if self.is_mod(target, source) and len(message.split()) > 1:
-					if message.split()[1] in self.status_settings:
-						status = message.split()[1]
-						self.mikki_variables["alt.status"] = self.status_settings[status]
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						if status == "mod":
-							status += " only"
-						await self.message(target, f"alt is {status}")
+				if (self.is_mod(target, source) and len(message.split()) > 1
+					and message.split()[1] in self.status_settings):
+					status = message.split()[1]
+					self.mikki_variables["alt.status"] = self.status_settings[status]
+					with open("data/variables/mikki.json", 'w') as variables_file:
+						json.dump(self.mikki_variables, variables_file, indent = 4)
+					if status == "mod":
+						status += " only"
+					await self.message(target, f"alt is {status}")
 				elif (self.mikki_variables["alt.status"] or 
 						(self.is_mod(target, source) and self.mikki_variables["alt.status"] is None)):
 					await self.message(target, f"Bad {source.capitalize()}!")
@@ -382,15 +382,15 @@ class TwitchClient(pydle.Client):
 				else:
 					await self.message(target, "3.14")
 			elif "sheep" in message.lower():
-				if self.is_mod(target, source) and len(message.split()) > 1:
-					if message.split()[1] in self.status_settings:
-						status = message.split()[1]
-						self.mikki_variables["sheep.status"] = self.status_settings[status]
-						with open("data/variables/mikki.json", 'w') as variables_file:
-							json.dump(self.mikki_variables, variables_file, indent = 4)
-						if status == "mod":
-							status += " only"
-						await self.message(target, f"sheep is {status}")
+				if (self.is_mod(target, source) and len(message.split()) > 1
+					and message.split()[1] in self.status_settings):
+					status = message.split()[1]
+					self.mikki_variables["sheep.status"] = self.status_settings[status]
+					with open("data/variables/mikki.json", 'w') as variables_file:
+						json.dump(self.mikki_variables, variables_file, indent = 4)
+					if status == "mod":
+						status += " only"
+					await self.message(target, f"sheep is {status}")
 				elif (self.mikki_variables["sheep.status"] or 
 						(self.is_mod(target, source) and self.mikki_variables["sheep.status"] is None)):
 					self.mikki_variables["sheep"] += 1
