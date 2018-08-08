@@ -27,7 +27,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.11"
+		self.version = "2.3.14"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -625,7 +625,10 @@ class TwitchClient(pydle.Client):
 				params = {"beastid": monster_id}
 				async with self.aiohttp_session.get(url, params = params) as resp:
 					data = await resp.json(content_type = "text/html")
-				await self.message(target, "{0[name]}: {0[description]}, Level: {0[level]}, Weakness: {0[weakness]}, XP/Kill: {0[xp]}, HP: {0[lifepoints]}, Members: {0[members]}, Aggressive: {0[aggressive]}".format(data))
+				level = data.get("level", "N/A")
+				weakness = data.get("weakness", "N/A")
+				hp = data.get("lifepoints", "N/A")
+				await self.message(target, f"{data['name']}: {data['description']}, Level: {level}, Weakness: {weakness}, XP/Kill: {data['xp']}, HP: {hp}, Members: {data['members']}, Aggressive: {data['aggressive']}")
 			else:
 				await self.message(target, "Monster not found.")
 		elif message.startswith("!reset"):
