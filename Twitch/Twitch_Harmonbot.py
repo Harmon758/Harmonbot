@@ -2,6 +2,7 @@
 import pydle
 
 import asyncio
+import bisect
 import datetime
 import json
 import logging
@@ -450,273 +451,62 @@ class TwitchClient(pydle.Client):
 			xp = int(xp)
 			if xp > 200000000:
 				await self.message(target, f"You can't have that much xp, {source.capitalize()}) ! Reported.")
-			elif skill in ("att", "attack"):
-				if 0 <= xp < 37224:
-					await self.message(target, f"At {xp} Attack xp: 1 ehp = 15,000 xp/h")
-				elif 37224 <= xp < 100000:
-					await self.message(target, f"At {xp} Attack xp: 1 ehp = 38,000 xp/h")
-				elif 100000 <= xp < 1000000:
-					await self.message(target, f"At {xp} Attack xp: 1 ehp = 55,000 xp/h")
-				elif 1000000 <= xp < 1986068:
-					await self.message(target, f"At {xp} Attack xp: 1 ehp = 65,000 xp/h")
-				elif 1986068 <= xp < 3000000:
-					await self.message(target, f"At {xp} Attack xp: 1 ehp = 80,000 xp/h")
-				elif 3000000 <= xp < 5346332:
-					await self.message(target, f"At {xp} Attack xp: 1 ehp = 90,000 xp/h")
-				elif 5346332 <= xp < 13034431:
-					await self.message(target, f"At {xp} Attack xp: 1 ehp = 105,000 xp/h")
-				elif 13034431 <= xp:
-					await self.message(target, f"At {xp} Attack xp: 1 ehp = 120,000 xp/h")
-			elif skill in ("def", "defence", "defense"):
-				if 0 <= xp < 37224:
-					await self.message(target, f"At {xp} Defence xp: 1 ehp = 15,000 xp/h")
-				elif 37224 <= xp < 100000:
-					await self.message(target, f"At {xp} Defence xp: 1 ehp = 38,000 xp/h")
-				elif 100000 <= xp < 1000000:
-					await self.message(target, f"At {xp} Defence xp: 1 ehp = 55,000 xp/h")
-				elif 1000000 <= xp < 1986068:
-					await self.message(target, f"At {xp} Defence xp: 1 ehp = 65,000 xp/h")
-				elif 1986068 <= xp < 3000000:
-					await self.message(target, f"At {xp} Defence xp: 1 ehp = 80,000 xp/h")
-				elif 3000000 <= xp < 5346332:
-					await self.message(target, f"At {xp} Defence xp: 1 ehp = 90,000 xp/h")
-				elif 5346332 <= xp < 13034431:
-					await self.message(target, f"At {xp} Defence xp: 1 ehp = 105,000 xp/h")
-				elif 13034431 <= xp:
-					await self.message(target, f"At {xp} Defence xp: 1 ehp = 120,000 xp/h")
-			elif skill in ("str", "strength"):
-				if 0 <= xp < 37224:
-					await self.message(target, f"At {xp} Strength xp: 1 ehp = 15,000 xp/h")
-				elif 37224 <= xp < 100000:
-					await self.message(target, f"At {xp} Strength xp: 1 ehp = 38,000 xp/h")
-				elif 100000 <= xp < 1000000:
-					await self.message(target, f"At {xp} Strength xp: 1 ehp = 55,000 xp/h")
-				elif 1000000 <= xp < 1986068:
-					await self.message(target, f"At {xp} Strength xp: 1 ehp = 65,000 xp/h")
-				elif 1986068 <= xp < 3000000:
-					await self.message(target, f"At {xp} Strength xp: 1 ehp = 80,000 xp/h")
-				elif 3000000 <= xp < 5346332:
-					await self.message(target, f"At {xp} Strength xp: 1 ehp = 90,000 xp/h")
-				elif 5346332 <= xp < 13034431:
-					await self.message(target, f"At {xp} Strength xp: 1 ehp = 105,000 xp/h")
-				elif 13034431 <= xp:
-					await self.message(target, f"At {xp} Strength xp: 1 ehp = 120,000 xp/h")
+				return
+			ehp = {"attack": [(0, 15000), (37224, 38000), (100000, 55000), (1000000, 65000), 
+								(1986068, 80000), (3000000, 90000), (5346332, 105000), (13034431, 120000)], 
+					"defence": [(0, 15000), (37224, 38000), (100000, 55000), (1000000, 65000), 
+								(1986068, 80000), (3000000, 90000), (5346332, 105000), (13034431, 120000)], 
+					"strength": [(0, 15000), (37224, 38000), (100000, 55000), (1000000, 65000), 
+								(1986068, 80000), (3000000, 90000), (5346332, 105000), (13034431, 120000)], 
+					"ranged": [(0, 250000), (6517253, 330000), (13034431, 350000)], 
+					"cooking": [(0, 40000), (7842, 130000), (37224, 175000), (1986068, 275000), 
+								(5346332, 340000), (7944614, 360000)], 
+					"woodcutting": [(0, 7000), (2411, 16000), (13363, 35000), (41171, 49000), 
+									(302288, 58000), (500000, 68000), (1000000, 73000), 
+									(2000000, 80000), (4000000, 86000), (8000000, 92000)], 
+					"fletching": [(0, 30000), (7842, 45000), (22406, 72000), (166636, 135000), 
+									(737627, 184000), (3258594, 225000)], 
+					"fishing": [(0, 14000), (4470, 30000), (13363, 40000), (273742, 44000), 
+								(737627, 52000), (2500000, 56500), (6000000, 59000), 
+								(11000000, 61000), (13034431, 63000)], 
+					"firemaking": [(0, 45000), (13363, 130500), (61512, 195750), 
+									(273742, 293625), (1210421, 445000)], 
+					"crafting": [(0, 57000), (300000, 170000), (362000, 285000)], 
+					"smithing": [(0, 40000), (37224, 103000)], 
+					"mining": [(0, 8000), (14883, 20000), (41171, 44000), (302288, 47000), 
+								(547953, 54000), (1986068, 58000), (6000000, 63000)], 
+					"herblore": [(0, 60000), (27473, 200000), (2192818, 310000)], 
+					"agility": [(0, 6000), (13363, 15000), (41171, 44000), (449428, 50000), 
+								(2192818, 55000), (6000000, 59000), (11000000, 62000)], 
+					"thieving": [(0, 15000), (61512, 60000), (166636, 100000), (449428, 220000), 
+									(5902831, 255000), (13034431, 265000)], 
+					"slayer": [(0, 5000), (37224, 12000), (100000, 17000), (1000000, 25000), 
+								(1986068, 30000), (3000000, 32500), (7195629, 35000), (13034431, 37000)], 
+					"farming": [(0, 10000), (2411, 50000), (13363, 80000), (61512, 150000), 
+								(273742, 350000), (1210421, 700000)], 
+					"runecrafting": [(0, 8000), (2107, 20000), (1210421, 24500), 
+										(2421087, 30000), (5902831, 26250)], 
+					"hunter": [(0, 5000), (12031, 40000), (247886, 80000), (1986068, 110000), 
+								(3972294, 135000), (13034431, 155000)], 
+					"construction": [(0, 20000), (18247, 100000), (101333, 230000), (1096278, 410000)]}
+			skill_aliases = {"att": "attack", "def": "defence", "defense": "defence", "str": "strength", 
+								"range": "ranged", "cook": "cooking", "wc": "woodcutting", "fletch": "fletching", 
+								"fish": "fishing", "fm": "firemaking", "craft": "crafting", "smith": "smithing", 
+								"mine": "mining", "herb": "herblore", "thief": "thieving", "thieve": "thieving", 
+								"slay": "slayer", "farm": "farming", "rc": "runecrafting", "hunt": "hunter", 
+								"con": "construction"}
+			if skill in skill_aliases:
+				skill = skill_aliases.get(skill)
+			if skill in ehp:
+				index = bisect.bisect([boundary[0] for boundary in ehp[skill]], xp) - 1
+				await self.message(target, f"At {xp} {skill.capitalize()} xp: 1 ehp = {ehp[skill][index][1]:,} xp/h")
 			elif skill in ("hp", "hitpoints"):
-				# TODO: constitution?
+				# TODO: Add constitution as alias?
 				await self.message(target, "None.")
-			elif skill in ("range", "ranged"):
-				if 0 <= xp < 6517253:
-					await self.message(target, f"At {xp} Ranged xp: 1 ehp = 250,000 xp/h")
-				elif 6517253 <= xp < 13034431:
-					await self.message(target, f"At {xp} Ranged xp: 1 ehp = 330,000 xp/h")
-				elif 13034431 <= xp:
-					await self.message(target, f"At {xp} Ranged xp: 1 ehp = 350,000 xp/h")
 			elif skill in ("pray", "prayer"):
 				await self.message(target, "For Prayer: 1 ehp = 500,000 xp/h")
 			elif skill in ("mage", "magic"):
 				await self.message(target, "For Magic: 1 ehp = 250,000 xp/h")
-			elif skill in ("cook", "cooking"):
-				if 0 <= xp < 7842:
-					await self.message(target, f"At {xp} Cooking xp: 1 ehp = 40,000 xp/h")
-				elif 7842 <= xp < 37224:
-					await self.message(target, f"At {xp} Cooking xp: 1 ehp = 130,000 xp/h")
-				elif 37224 <= xp < 1986068:
-					await self.message(target, f"At {xp} Cooking xp: 1 ehp = 175,000 xp/h")
-				elif 1986068 <= xp < 5346332:
-					await self.message(target, f"At {xp} Cooking xp: 1 ehp = 275,000 xp/h")
-				elif 5346332 <= xp < 7944614:
-					await self.message(target, f"At {xp} Cooking xp: 1 ehp = 340,000 xp/h")
-				elif 7944614 <= xp:
-					await self.message(target, f"At {xp} Cooking xp: 1 ehp = 360,000 xp/h")
-			elif skill in ("wc", "woodcutting"):
-				if 0 <= xp < 2411:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 7,000 xp/h")
-				elif 2411 <= xp < 13363:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 16,000 xp/h")
-				elif 13363 <= xp < 41171:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 35,000 xp/h")
-				elif 41171 <= xp < 302288:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 49,000 xp/h")
-				elif 302288 <= xp < 500000:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 58,000 xp/h")
-				elif 500000 <= xp < 1000000:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 68,000 xp/h")
-				elif 1000000 <= xp < 2000000:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 73,000 xp/h")
-				elif 2000000 <= xp < 4000000:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 80,000 xp/h")
-				elif 4000000 <= xp < 8000000:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 86,000 xp/h")
-				elif 8000000 <= xp:
-					await self.message(target, f"At {xp} Woodcutting xp: 1 ehp = 92,000 xp/h")
-			elif skill in ("fletch", "fletching"):
-				if 0 <= xp < 7842:
-					await self.message(target, f"At {xp} Fletching xp: 1 ehp = 30,000 xp/h")
-				elif 7842 <= xp < 22406:
-					await self.message(target, f"At {xp} Fletching xp: 1 ehp = 45,000 xp/h")
-				elif 22406 <= xp < 166636:
-					await self.message(target, f"At {xp} Fletching xp: 1 ehp = 72,000 xp/h")
-				elif 166636 <= xp < 737627:
-					await self.message(target, f"At {xp} Fletching xp: 1 ehp = 135,000 xp/h")
-				elif 737627 <= xp < 3258594:
-					await self.message(target, f"At {xp} Fletching xp: 1 ehp = 184,000 xp/h")
-				elif 3258594 <= xp:
-					await self.message(target, f"At {xp} Fletching xp: 1 ehp = 225,000 xp/h")
-			elif skill in ("fish", "fishing"):
-				if 0 <= xp < 4470:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 14,000 xp/h")
-				elif 4470 <= xp < 13363:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 30,000 xp/h")
-				elif 13363 <= xp < 273742:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 40,000 xp/h")
-				elif 273742 <= xp < 737627:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 44,000 xp/h")
-				elif 737627 <= xp < 2500000:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 52,000 xp/h")
-				elif 2500000 <= xp < 6000000:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 56,500 xp/h")
-				elif 6000000 <= xp < 11000000:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 59,000 xp/h")
-				elif 11000000 <= xp < 13034431:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 61,000 xp/h")
-				elif 13034431 <= xp:
-					await self.message(target, f"At {xp} Fishing xp: 1 ehp = 63,000 xp/h")
-			elif skill in ("fm", "firemaking"):
-				if 0 <= xp < 13363:
-					await self.message(target, f"At {xp} Firemaking xp: 1 ehp = 45,000 xp/h")
-				elif 13363 <= xp < 61512:
-					await self.message(target, f"At {xp} Firemaking xp: 1 ehp = 130,500 xp/h")
-				elif 61512 <= xp < 273742:
-					await self.message(target, f"At {xp} Firemaking xp: 1 ehp = 195,750 xp/h")
-				elif 273742 <= xp < 1210421:
-					await self.message(target, f"At {xp} Firemaking xp: 1 ehp = 293,625 xp/h")
-				elif 1210421 <= xp:
-					await self.message(target, f"At {xp} Firemaking xp: 1 ehp = 445,000 xp/h")
-			elif skill in ("craft", "crafting"):
-				if 0 <= xp < 300000:
-					await self.message(target, f"At {xp} Crafting xp: 1 ehp = 57,000 xp/h")
-				elif 300000 <= xp < 362000:
-					await self.message(target, f"At {xp} Crafting xp: 1 ehp = 170,000 xp/h")
-				elif 362000 <= xp:
-					await self.message(target, f"At {xp} Crafting xp: 1 ehp = 285,000 xp/h")
-			elif skill in ("smith", "smithing"):
-				if 0 <= xp < 37224:
-					await self.message(target, f"At {xp} Smithing xp: 1 ehp = 40,000 xp/h")
-				elif 37224 <= xp:
-					await self.message(target, f"At {xp} Smithing xp: 1 ehp = 103,000 xp/h")
-			elif skill in ("mine", "mining"):
-				if 0 <= xp < 14883:
-					await self.message(target, f"At {xp} Mining xp: 1 ehp = 8,000 xp/h")
-				elif 14883 <= xp < 41171:
-					await self.message(target, f"At {xp} Mining xp: 1 ehp = 20,000 xp/h")
-				elif 41171 <= xp < 302288:
-					await self.message(target, f"At {xp} Mining xp: 1 ehp = 44,000 xp/h")
-				elif 302288 <= xp < 547953:
-					await self.message(target, f"At {xp} Mining xp: 1 ehp = 47,000 xp/h")
-				elif 547953 <= xp < 1986068:
-					await self.message(target, f"At {xp} Mining xp: 1 ehp = 54,000 xp/h")
-				elif 1986068 <= xp < 6000000:
-					await self.message(target, f"At {xp} Mining xp: 1 ehp = 58,000 xp/h")
-				elif 6000000 <= xp:
-					await self.message(target, f"At {xp} Mining xp: 1 ehp = 63,000 xp/h")
-			elif skill in ("herb", "herblore"):
-				if 0 <= xp < 27473:
-					await self.message(target, f"At {xp} Herblore xp: 1 ehp = 60,000 xp/h")
-				elif 27473 <= xp < 2192818:
-					await self.message(target, f"At {xp} Herblore xp: 1 ehp = 200,000 xp/h")
-				elif 2192818 <= xp:
-					await self.message(target, f"At {xp} Herblore xp: 1 ehp = 310,000 xp/h")
-			elif skill == "agility":
-				if 0 <= xp < 13363:
-					await self.message(target, f"At {xp} Agility xp: 1 ehp = 6,000 xp/h")
-				elif 13363 <= xp < 41171:
-					await self.message(target, f"At {xp} Agility xp: 1 ehp = 15,000 xp/h")
-				elif 41171 <= xp < 449428:
-					await self.message(target, f"At {xp} Agility xp: 1 ehp = 44,000 xp/h")
-				elif 449428 <= xp < 2192818:
-					await self.message(target, f"At {xp} Agility xp: 1 ehp = 50,000 xp/h")
-				elif 2192818 <= xp < 6000000:
-					await self.message(target, f"At {xp} Agility xp: 1 ehp = 55,000 xp/h")
-				elif 6000000 <= xp < 11000000:
-					await self.message(target, f"At {xp} Agility xp: 1 ehp = 59,000 xp/h")
-				elif 11000000 <= xp:
-					await self.message(target, f"At {xp} Agility xp: 1 ehp = 62,000 xp/h")
-			elif skill in ("thief", "thieve", "thieving"):
-				if 0 <= xp < 61512:
-					await self.message(target, f"At {xp} Thieving xp: 1 ehp = 15,000 xp/h")
-				elif 61512 <= xp < 166636:
-					await self.message(target, f"At {xp} Thieving xp: 1 ehp = 60,000 xp/h")
-				elif 166636 <= xp < 449428:
-					await self.message(target, f"At {xp} Thieving xp: 1 ehp = 100,000 xp/h")
-				elif 449428 <= xp < 5902831:
-					await self.message(target, f"At {xp} Thieving xp: 1 ehp = 220,000 xp/h")
-				elif 5902831 <= xp < 13034431:
-					await self.message(target, f"At {xp} Thieving xp: 1 ehp = 255,000 xp/h")
-				elif 13034431 <= xp:
-					await self.message(target, f"At {xp} Thieving xp: 1 ehp = 265,000 xp/h")
-			elif skill in ("slay", "slayer"):
-				if 0 <= xp < 37224:
-					await self.message(target, f"At {xp} Slayer xp: 1 ehp = 5,000 xp/h")
-				elif 37224 <= xp < 100000:
-					await self.message(target, f"At {xp} Slayer xp: 1 ehp = 12,000 xp/h")
-				elif 100000 <= xp < 1000000:
-					await self.message(target, f"At {xp} Slayer xp: 1 ehp = 17,000 xp/h")
-				elif 1000000 <= xp < 1986068:
-					await self.message(target, f"At {xp} Slayer xp: 1 ehp = 25,000 xp/h")
-				elif 1986068 <= xp < 3000000:
-					await self.message(target, f"At {xp} Slayer xp: 1 ehp = 30,000 xp/h")
-				elif 3000000 <= xp < 7195629:
-					await self.message(target, f"At {xp} Slayer xp: 1 ehp = 32,500 xp/h")
-				elif 7195629 <= xp < 13034431:
-					await self.message(target, f"At {xp} Slayer xp: 1 ehp = 35,000 xp/h")
-				elif 13034431 <= xp:
-					await self.message(target, f"At {xp} Slayer xp: 1 ehp = 37,000 xp/h")
-			elif skill in ("farm", "farming"):
-				if 0 <= xp < 2411:
-					await self.message(target, f"At {xp} Farming xp: 1 ehp = 10,000 xp/h")
-				elif 2411 <= xp < 13363:
-					await self.message(target, f"At {xp} Farming xp: 1 ehp = 50,000 xp/h")
-				elif 13363 <= xp < 61512:
-					await self.message(target, f"At {xp} Farming xp: 1 ehp = 80,000 xp/h")
-				elif 61512 <= xp < 273742:
-					await self.message(target, f"At {xp} Farming xp: 1 ehp = 150,000 xp/h")
-				elif 273742 <= xp < 1210421:
-					await self.message(target, f"At {xp} Farming xp: 1 ehp = 350,000 xp/h")
-				elif 1210421 <= xp:
-					await self.message(target, f"At {xp} Farming xp: 1 ehp = 700,000 xp/h")
-			elif skill in ("rc", "runecrafting"):
-				if 0 <= xp < 2107:
-					await self.message(target, f"At {xp} Runecrafting xp: 1 ehp = 8,000 xp/h")
-				elif 2107 <= xp < 1210421:
-					await self.message(target, f"At {xp} Runecrafting xp: 1 ehp = 20,000 xp/h")
-				elif 1210421 <= xp < 2421087:
-					await self.message(target, f"At {xp} Runecrafting xp: 1 ehp = 24,500 xp/h")
-				elif 2421087 <= xp < 5902831:
-					await self.message(target, f"At {xp} Runecrafting xp: 1 ehp = 30,000 xp/h")
-				elif 5902831 <= xp:
-					await self.message(target, f"At {xp} Runecrafting xp: 1 ehp = 26,250 xp/h")
-			elif skill in ("hunt", "hunter"):
-				if 0 <= xp < 12031:
-					await self.message(target, f"At {xp} Hunter xp: 1 ehp = 5,000 xp/h")
-				elif 12031 <= xp < 247886:
-					await self.message(target, f"At {xp} Hunter xp: 1 ehp = 40,000 xp/h")
-				elif 247886 <= xp < 1986068:
-					await self.message(target, f"At {xp} Hunter xp: 1 ehp = 80,000 xp/h")
-				elif 1986068 <= xp < 3972294:
-					await self.message(target, f"At {xp} Hunter xp: 1 ehp = 110,000 xp/h")
-				elif 3972294 <= xp < 13034431:
-					await self.message(target, f"At {xp} Hunter xp: 1 ehp = 135,000 xp/h")
-				elif 13034431 <= xp:
-					await self.message(target, f"At {xp} Hunter xp: 1 ehp = 155,000 xp/h")
-			elif skill in ("con", "construction"):
-				if 0 <= xp < 18247:
-					await self.message(target, f"At {xp} Construction xp: 1 ehp = 20,000 xp/h")
-				elif 18247 <= xp < 101333:
-					await self.message(target, f"At {xp} Construction xp: 1 ehp = 100,000 xp/h")
-				elif 101333 <= xp < 1096278:
-					await self.message(target, f"At {xp} Construction xp: 1 ehp = 230,000 xp/h")
-				elif 1096278 <= xp:
-					await self.message(target, f"At {xp} Construction xp: 1 ehp = 410,000 xp/h")
 		elif message.startswith("!indecentcodehs"):
 			await self.message(target, "indecentcode.com/hs/index.php?id=" + '+'.join(message.split()[1:]))
 		elif message.startswith("!level"):
