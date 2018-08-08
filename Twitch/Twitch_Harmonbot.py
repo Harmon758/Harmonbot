@@ -22,7 +22,7 @@ import credentials
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.4"
+		self.version = "2.3.5"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -467,8 +467,7 @@ class TwitchClient(pydle.Client):
 					await self.message(target, f"At {xp} Attack xp: 1 ehp = 105,000 xp/h")
 				elif 13034431 <= xp:
 					await self.message(target, f"At {xp} Attack xp: 1 ehp = 120,000 xp/h")
-			elif skill in ("def", "defence"):
-				# TODO: defense
+			elif skill in ("def", "defence", "defense"):
 				if 0 <= xp < 37224:
 					await self.message(target, f"At {xp} Defence xp: 1 ehp = 15,000 xp/h")
 				elif 37224 <= xp < 100000:
