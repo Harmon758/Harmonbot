@@ -136,7 +136,7 @@ class Location:
 		'''Convert addresses to geographic coordinates'''
 		try:
 			data = await get_geocode_data(address, aiohttp_session = clients.aiohttp_session)
-		except ModuleOutputError as e:
+		except UnitOutputError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return
 		title = "Geographic Coordinates for " + data["formatted_address"]
@@ -202,7 +202,7 @@ class Location:
 			longitude = geocode_data["geometry"]["location"]["lng"]
 			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
 													aiohttp_session = clients.aiohttp_session)
-		except ModuleOutputError as e:
+		except UnitOutputError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return
 		location_time = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
