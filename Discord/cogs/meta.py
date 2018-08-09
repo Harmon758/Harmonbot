@@ -662,6 +662,6 @@ class Meta:
 		## else:
 		## 	location = obj.callback.__module__.replace('.', '/') + ".py"
 		## 	source_url = "https://github.com/Rapptz/discord.py"
-		final_url = '<{}/blob/master/Discord/{}#L{}-L{}>'.format(source_url, location, firstlineno, firstlineno + len(lines) - 1)
+		final_url = f"{source_url}/blob/master/Discord/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}"
 		await ctx.embed_reply(final_url)
 
