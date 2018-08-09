@@ -638,16 +638,15 @@ class Meta:
 	
 	@commands.command(aliases = ["github"])
 	@checks.not_forbidden()
-	async def source(self, ctx, *, command : str = None):
+	async def source(self, ctx, *, command : str = ""):
 		'''
 		Displays my full source code or for a specific command
 		To display the source code of a subcommand, separate it by spaces or periods
 		Based on [R. Danny](https://github.com/Rapptz/RoboDanny)'s source command
 		'''
 		source_url = "https://github.com/Harmon758/Harmonbot"
-		if command is None:
-			await ctx.embed_reply(source_url)
-			return
+		if not command:
+			return await ctx.embed_reply(source_url)
 		
 		obj = ctx.bot.get_command(command.replace('.', ' '))
 		if obj is None:
