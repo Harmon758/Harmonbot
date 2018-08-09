@@ -15,6 +15,7 @@ import subprocess
 import sys
 import traceback
 
+import git
 import pkg_resources  # from setuptools
 import psutil
 
@@ -657,11 +658,12 @@ class Meta:
 		src = obj.callback.__code__
 		lines, firstlineno = inspect.getsourcelines(src)
 		## if not obj.callback.__module__.startswith("discord"):
-		## 	not a built-in command
+		## 	# not a built-in command
 		location = os.path.relpath(src.co_filename).replace('\\', '/')
 		## else:
 		## 	location = obj.callback.__module__.replace('.', '/') + ".py"
 		## 	source_url = "https://github.com/Rapptz/discord.py"
-		final_url = f"{source_url}/blob/master/Discord/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}"
+		branch = git.Repo("..").active_branch.name
+		final_url = f"{source_url}/blob/{branch}/Discord/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}"
 		await ctx.embed_reply(final_url)
 
