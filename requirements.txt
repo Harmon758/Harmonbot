@@ -12,6 +12,7 @@ cryptography==2.3
 dice==2.3.5
 emoji==0.5.0
 feedparser==5.2.1
+gitpython==2.1.11
 imageio==2.3.0
 imgurpython==1.1.7
 inflect==1.0.0
@@ -55,6 +56,7 @@ cycler==0.10.0
 docopt==0.6.2
 future==0.16.0
 geojson==2.4.0
+gitdb2==2.0.4
 idna==2.7
 idna-ssl==1.0.1
 jaraco.itertools==2.4
@@ -73,6 +75,7 @@ pytz==2018.5
 requests==2.19.1
 requests-oauthlib==1.0.0
 six==1.11.0
+smmap2==2.0.4
 urllib3==1.23
 websockets==6.0
 xmltodict==0.11.0
