@@ -641,8 +641,7 @@ class Meta:
 	async def source(self, ctx, *, command : str = None):
 		'''
 		Displays my full source code or for a specific command
-		To display the source code of a subcommand you have to separate it by
-		periods, e.g. tag.create for the create subcommand of the tag command
+		To display the source code of a subcommand, separate it by spaces or periods
 		Based on [R. Danny](https://github.com/Rapptz/RoboDanny)'s source command
 		'''
 		source_url = "https://github.com/Harmon758/Harmonbot"
@@ -654,16 +653,15 @@ class Meta:
 		if obj is None:
 			return await ctx.embed_reply("\N{NO ENTRY} Command not found")
 		
-		# since we found the command we're looking for, presumably anyway, let's
-		# try to access the code itself
+		# Access code
 		src = obj.callback.__code__
 		lines, firstlineno = inspect.getsourcelines(src)
 		## if not obj.callback.__module__.startswith("discord"):
-		# not a built-in command
+		## 	not a built-in command
 		location = os.path.relpath(src.co_filename).replace('\\', '/')
 		## else:
-		##	location = obj.callback.__module__.replace('.', '/') + ".py"
-		##	source_url = "https://github.com/Rapptz/discord.py"
+		## 	location = obj.callback.__module__.replace('.', '/') + ".py"
+		## 	source_url = "https://github.com/Rapptz/discord.py"
 		final_url = '<{}/blob/master/Discord/{}#L{}-L{}>'.format(source_url, location, firstlineno, firstlineno + len(lines) - 1)
 		await ctx.embed_reply(final_url)
 
