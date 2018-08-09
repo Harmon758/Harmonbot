@@ -10,12 +10,13 @@ import difflib
 import inspect
 import json
 import os
-import pkg_resources  # from setuptools
-import psutil
 import random
 import subprocess
 import sys
 import traceback
+
+import pkg_resources  # from setuptools
+import psutil
 
 import clients
 from modules import utilities
