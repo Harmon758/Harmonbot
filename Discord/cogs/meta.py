@@ -248,7 +248,8 @@ class Meta:
 	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
-		changes = os.popen(r'git log -3 --first-parent --format="[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"').read().strip()
+		changes = git.Repo("..").git.log("-3", "--first-parent", 
+											format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)")
 		discord_py_version = pkg_resources.get_distribution("discord.py").version
 		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
 		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(ctx.bot.application_info_data.id))
