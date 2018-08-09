@@ -638,7 +638,7 @@ class Meta:
 	
 	@commands.command(aliases = ["github"])
 	@checks.not_forbidden()
-	async def source(self, ctx, command : str = None):
+	async def source(self, ctx, *, command : str = None):
 		'''
 		Displays my full source code or for a specific command
 		To display the source code of a subcommand you have to separate it by
@@ -649,17 +649,11 @@ class Meta:
 		if command is None:
 			await ctx.embed_reply(source_url)
 			return
-		code_path = command.split('.')
-		obj = self.bot
-		for cmd in code_path:
-			try:
-				obj = obj.get_command(cmd)
-				if obj is None:
-					await ctx.embed_reply("Could not find the command " + cmd)
-					return
-			except AttributeError:
-				await ctx.embed_reply("{0.name} command has no subcommands".format(obj))
-				return
+		
+		obj = ctx.bot.get_command(command.replace('.', ' '))
+		if obj is None:
+			return await ctx.embed_reply("\N{NO ENTRY} Command not found")
+		
 		# since we found the command we're looking for, presumably anyway, let's
 		# try to access the code itself
 		src = obj.callback.__code__
