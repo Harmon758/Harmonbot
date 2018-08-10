@@ -45,7 +45,7 @@ class Meta:
 		if len(commands) == 0:
 			embed = discord.Embed(title = "Categories", color = ctx.bot.bot_color)
 			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			embed.description = "  ".join("__{}__".format(category) for category in sorted(self.bot.cogs, key = str.lower))
+			embed.description = "  ".join("`{}`".format(category) for category in sorted(self.bot.cogs, key = str.lower))
 			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
 			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with)) # stats?
 			embed.add_field(name = "For all commands:", value = "`{}{} all`".format(ctx.prefix, ctx.invoked_with), inline = False)
