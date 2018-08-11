@@ -5,6 +5,7 @@ from subprocess import Popen, PIPE
 import sys
 from threading import Thread
 from tkinter import BOTH, BooleanVar, Checkbutton, END, Frame, NONE, Text, Tk, ttk
+from tkinter.font import Font
 
 import psutil
 
@@ -14,6 +15,8 @@ class HarmonbotGUI:
 		self.master = master
 		master.title("Harmonbot")
 		self.bots = ["discord", "discord_listener", "twitch", "telegram"]
+		self.text_background_color = "Silver"
+		self.text_font = Font(family = "TkDefaultFont", size = "11")  # Other?
 		
 		self.notebook = ttk.Notebook(master)
 		for tab in ["overview"] + self.bots:
@@ -25,7 +28,7 @@ class HarmonbotGUI:
 		for bot in self.bots:
 			frame = Frame(self.overview_tab)
 			setattr(self, f"overview_{bot}_frame", frame)
-			text = Text(frame, wrap = NONE)
+			text = Text(frame, wrap = NONE, background = self.text_background_color, font = self.text_font)
 			setattr(self, f"overview_{bot}_text", text)
 			text.pack()
 		self.overview_discord_frame.grid(row = 1, column = 1)
@@ -54,7 +57,7 @@ class HarmonbotGUI:
 			frame = Frame(notebook_tab)
 			setattr(self, f"{bot}_frame", frame)
 			frame.pack(expand = True, fill = BOTH)
-			text = Text(frame)
+			text = Text(frame, background = self.text_background_color, font = self.text_font)
 			setattr(self, f"{bot}_text", text)
 			text.pack(expand = True, fill = BOTH)
 
