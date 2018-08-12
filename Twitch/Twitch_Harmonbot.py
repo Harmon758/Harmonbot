@@ -21,13 +21,14 @@ import unicodedata2 as unicodedata
 import credentials
 
 sys.path.insert(0, "..")
+from units.games import eightball
 from units.location import get_geocode_data, get_timezone_data, UnitOutputError
 sys.path.pop(0)
 
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.17"
+		self.version = "2.3.18"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -134,6 +135,8 @@ class TwitchClient(pydle.Client):
 				await self.message(target, self.meta_commands[message[1:]])
 		
 		# Main Commands
+		elif message.startswith(("!8ball", "!eightball", "!\N{BILLIARDS}", '\N{BILLIARDS}')):
+			await self.message(target, f"\N{BILLIARDS} {eightball()}")
 		elif message.startswith("!audiodefine"):
 			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/audio"
 			params = {"useCanonical": "false", "limit": 1, "api_key": credentials.wordnik_apikey}
