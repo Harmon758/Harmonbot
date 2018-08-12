@@ -580,7 +580,7 @@ class Games:
 			data = await resp.json()
 		return data["output"]
 	
-	@commands.command(name = "8ball", aliases = ["eightball", "\N{BILLIARDS}"])
+	@commands.command(name = "8ball", aliases = ["eightball", '\N{BILLIARDS}'])
 	@checks.not_forbidden()
 	async def eightball(self, ctx):
 		'''
