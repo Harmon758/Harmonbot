@@ -581,7 +581,7 @@ class Games:
 	async def eightball(self, ctx):
 		'''
 		Ask 8ball a yes or no question
-		Also triggers on :8ball: without prefix
+		Also triggers on \N{BILLIARDS} without prefix
 		'''
 		await ctx.embed_reply("\N{BILLIARDS} {}".format(self._eightball()))
 	
