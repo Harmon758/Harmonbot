@@ -221,8 +221,8 @@ if __name__ == "__main__":
 		
 		
 		# :8ball:
-		elif message.content.startswith("\U0001f3b1") and "Games" in client.cogs:
-			await ctx.embed_reply(":8ball: {}".format(client.cogs["Games"]._eightball()))
+		elif message.content.startswith("\N{BILLIARDS}") and "Games" in client.cogs:
+			await ctx.embed_reply("\N{BILLIARDS} {}".format(client.cogs["Games"]._eightball()))
 		
 		# f
 		elif message.content.lower() == 'f':
