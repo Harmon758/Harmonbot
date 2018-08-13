@@ -1,4 +1,3 @@
-; ***REMOVED***
 on *:text:!roulette*:#: {
   if ($nick isop #) && ($2) {
     if ($istok(on,$2,32)) {
@@ -13,11 +12,6 @@ on *:text:!roulette*:#: {
     }
   }
   if (%roulette.status == off) { return }
-  /*
-  if ((%floodroulette) || ($($+(%,floodroulette.,$nick),2))) { return }
-  set -u10 %floodroulette On
-  set -u30 %floodroulette. $+ $nick On
-  */
   if ($nick isop #) {
     var %randmods = $rand(1,4)
     if (%randmods == 1) { msg # Roulette clicks!...Empty...You live to see another day, $capital($nick) }
