@@ -29,7 +29,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.18"
+		self.version = "2.3.20"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -292,10 +292,22 @@ class TwitchClient(pydle.Client):
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			await self.message(target, data["word"].capitalize())
-			'''
-			elif message.startswith("!randomviewer"): # on/off
+		elif message.startswith("!randomviewer"):
+			if not hasattr(self, f"{target[1:]}_variables"):
+				setattr(self, f"{target[1:]}_variables", {})
+			channel_variables = getattr(self, f"{target[1:]}_variables")
+			if (self.is_mod(target, source) and len(message.split()) > 1
+				and message.split()[1] in self.status_settings):
+				status = message.split()[1]
+				channel_variables["!randomviewer.status"] = self.status_settings[status]
+				with open(f"data/variables/{target[1:]}.json", 'w') as variables_file:
+					json.dump(channel_variables, variables_file, indent = 4)
+				if status == "mod":
+					status += " only"
+				await self.message(target, f"!randomviewer is {status}")
+			elif (channel_variables.get("!randomviewer.status", True) or 
+					(self.is_mod(target, source) and channel_variables["!randomviewer.status"] is None)):
 				await self.message(target, self.random_viewer(target))
-			'''
 		elif message.startswith("!rng"):
 			if len(message.split()) > 1 and is_number(message.split()[1]):
 				await self.message(target, str(random.randint(1, int(message.split()[1]))))
