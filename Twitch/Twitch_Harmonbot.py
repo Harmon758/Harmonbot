@@ -29,7 +29,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.20"
+		self.version = "2.3.21"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -313,6 +313,41 @@ class TwitchClient(pydle.Client):
 				await self.message(target, str(random.randint(1, int(message.split()[1]))))
 			else:
 				await self.message(target, str(random.randint(1, 10)))
+		elif message.startswith("!rps"):
+			if len(message.split()) == 1:
+				await self.message(target, "Please specify rock, paper, or scissors.")
+				return
+			if not hasattr(self, f"{target[1:]}_variables"):
+				setattr(self, f"{target[1:]}_variables", {})
+			channel_variables = getattr(self, f"{target[1:]}_variables")
+			if (self.is_mod(target, source) and len(message.split()) > 1
+				and message.split()[1] in self.status_settings):
+				status = message.split()[1]
+				channel_variables["!rps.status"] = self.status_settings[status]
+				with open(f"data/variables/{target[1:]}.json", 'w') as variables_file:
+					json.dump(channel_variables, variables_file, indent = 4)
+				if status == "mod":
+					status += " only"
+				await self.message(target, f"!rps is {status}")
+			elif (channel_variables.get("!rps.status", True) or 
+					(self.is_mod(target, source) and channel_variables["!rps.status"] is None)):
+				if message.split()[1].lower() == "rock":
+					await self.message(target, 
+										random.choice((f"PAPER -- Paper beats Rock! You lose, {source.capitalize()} !", 
+														f"SCISSORS -- Hmm, I lose. Congrats, {source.capitalize()}", 
+														"ROCK -- Dang it, it's a draw.")))
+				elif message.split()[1].lower() == "paper":
+					await self.message(target, 
+										random.choice((f"SCISSORS -- Scissors beats Paper! You lose, {source.capitalize()} !", 
+														f"ROCK -- Hmm, I lose. Congrats, {source.capitalize()}", 
+														"PAPER -- Dang it, it's a draw.")))
+				elif message.split()[1].lower() == "scissors":
+					await self.message(target, 
+										random.choice((f"ROCK -- Rock beats Scissors! You lose, {source.capitalize()} !", 
+														f"PAPER -- Hmm, I lose. Congrats, {source.capitalize()}", 
+														"SCISSORS -- Dang it, it's a draw.")))
+				else:
+					await self.message(target, f"{source.capitalize()} is a cheater. Reported.")
 		elif message.startswith("!time"):
 			# TODO: Document
 			# TODO: Add ability to reset
