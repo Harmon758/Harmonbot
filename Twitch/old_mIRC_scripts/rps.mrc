@@ -1,4 +1,3 @@
-; ***REMOVED***
 on *:text:!rps*:#: {
   if (!$2) {
     msg # Please specify rock, paper, or scissors.
