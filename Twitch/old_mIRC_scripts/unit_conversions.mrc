@@ -1,4 +1,3 @@
-
 on *:text:!ctof*:#:{
   if ($2 isnum) { msg # $2 °C = $calc($2 * 9 / 5 + 32) °F }
   elseif (!$2) { msg # Please enter input. }
