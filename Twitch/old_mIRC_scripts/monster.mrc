@@ -1,4 +1,3 @@
-
 ; http://services.runescape.com/m=rswiki/en/Bestiary_APIs
 
 on *:text:!monster*:#:{
