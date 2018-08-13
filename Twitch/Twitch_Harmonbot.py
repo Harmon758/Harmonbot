@@ -29,7 +29,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.21"
+		self.version = "2.3.22"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -313,6 +313,37 @@ class TwitchClient(pydle.Client):
 				await self.message(target, str(random.randint(1, int(message.split()[1]))))
 			else:
 				await self.message(target, str(random.randint(1, 10)))
+		elif message.startswith("!roulette"):
+			# TODO: Configurable flood/time limit settings, per channel + per user
+			# TODO: Add configurable timeout on loss option
+			if not hasattr(self, f"{target[1:]}_variables"):
+				setattr(self, f"{target[1:]}_variables", {})
+			channel_variables = getattr(self, f"{target[1:]}_variables")
+			if (self.is_mod(target, source) and len(message.split()) > 1
+				and message.split()[1] in self.status_settings):
+				status = message.split()[1]
+				channel_variables["!roulette.status"] = self.status_settings[status]
+				with open(f"data/variables/{target[1:]}.json", 'w') as variables_file:
+					json.dump(channel_variables, variables_file, indent = 4)
+				if status == "mod":
+					status += " only"
+				await self.message(target, f"!roulette is {status}")
+			elif (channel_variables.get("!roulette.status", True) or 
+					(self.is_mod(target, source) and channel_variables["!roulette.status"] is None)):
+				choices = [f"Roulette clicks!...Empty...You live to see another day, {source.capitalize()}", 
+							f"{source.capitalize()} starts to shake, {source.capitalize()} tries to pull the trigger "
+							f"but can't. {source.capitalize()} drops the gun, {source.capitalize()} isn't up to the "
+							f"challenge of Roulette."]
+				if self.is_mod(target, source):
+					choices.append("BANG! ... You were shot, but live! "
+									f"There must be secert powers in your mod armor, {source.capitalize()}")
+					choices.append("BANG! ... The bullet missed, "
+									f"you only have your born moderation powers to thank, {source.capitalize()}")
+				else:
+					choices.append(f"BANG!... Roulette claims another soul. R.I.P {source.capitalize()}")
+					choices.append(f"BANG!... {source.capitalize()} was a great viewer, "
+									f"and now {source.capitalize()} is a dead viewer. R.I.P")
+				await self.message(target, random.choice(choices))
 		elif message.startswith("!rps"):
 			if len(message.split()) == 1:
 				await self.message(target, "Please specify rock, paper, or scissors.")
