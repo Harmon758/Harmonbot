@@ -9,6 +9,7 @@ import logging
 import logging.handlers
 import os
 import random
+import re
 import sys
 import time
 # import unicodedata
@@ -492,6 +493,26 @@ class TwitchClient(pydle.Client):
 		
 		# Imagrill Commands
 		if target == "#imagrill":
+			# TODO: Command for http://services.runescape.com/m=rswiki/en/Pronunciation_Guide ?
+			triggers = {":|": "http://imgur.com/cbgVzj7", "-.-": "http://imgur.com/cbgVzj7", 
+						":3": "http://puu.sh/iE7ik.jpg", ":p": "http://imgur.com/p3GH9uE http://imgur.com/xpCiJKh", 
+						"banana": "BANANA http://imgur.com/TtRH7vU http://imgur.com/kTX3qa1", 
+						"failfish": "http://imgur.com/CtscIDh", "lick it": "http://imgur.com/aCqNXmV", 
+						"yawn": "Yawwwwwn"}
+			for trigger in triggers:
+				if trigger in message.lower():
+					if (self.is_mod(target, source) and len(message.split()) > len(trigger.split())
+						and message.split()[len(trigger.split())] in self.status_settings):
+						status = message.split()[len(trigger.split())]
+						self.imagrill_variables[f"{trigger}.status"] = self.status_settings[status]
+						with open("data/variables/imagrill.json", 'w') as variables_file:
+							json.dump(self.imagrill_variables, variables_file, indent = 4)
+						if status == "mod":
+							status += " only"
+						await self.message(target, f"{trigger} is {status}")
+					elif (self.imagrill_variables.get(f"{trigger}.status", True) or 
+							(self.is_mod(target, source) and self.imagrill_variables[f"{trigger}.status"] is None)):
+						await self.message(target, triggers[trigger])
 			if message.startswith("!caught"):
 				if len(message.split()) == 1:
 					caught = source.capitalize()
@@ -500,15 +521,111 @@ class TwitchClient(pydle.Client):
 				else:
 					caught = ' '.join(message.split()[1:]).capitalize()
 				await self.message(target, f"Arts has caught a wild {caught}!")
+			elif message.startswith("!death"):
+				if self.is_mod(target, source) and len(message.split()) > 1 and message.split()[1] == "inc":
+					self.imagrill_variables["deaths"] += 1
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+				await self.message(target, f"Arts has died {self.imagrill_variables['deaths']} times.")
+			elif message.startswith("!dsdeaths"):
+				if self.is_mod(target, source) and len(message.split()) > 1 and message.split()[1] == "inc":
+					self.imagrill_variables["dsdeaths"] += 1
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+				await self.message(target, f"Arts has died {self.imagrill_variables['dsdeaths']} times.")
+			elif message.startswith(("!ed8", "!edate")):
+				trigger = message[1:4]
+				if trigger.endswith('a'):
+					trigger += "te"
+				if (self.is_mod(target, source) and len(message.split()) > 1
+					and message.split()[1] in self.status_settings):
+					status = message.split()[1]
+					self.imagrill_variables["!edate.status"] = self.status_settings[status]
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+					if status == "mod":
+						status += " only"
+					await self.message(target, f"!{trigger} is {status}")
+				elif (self.imagrill_variables["!edate.status"] or 
+						(self.is_mod(target, source) and self.imagrill_variables["!edate.status"] is None)):
+					self.imagrill_variables["edates"] += 1
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+					await self.message(target, f"Arts has {self.imagrill_variables['edates']} {trigger}s.")
+			elif message.startswith("!fail"):
+				self.imagrill_variables["fail"] += 1
+				with open("data/variables/imagrill.json", 'w') as variables_file:
+					json.dump(self.imagrill_variables, variables_file, indent = 4)
+				await self.message(target, f"Fail #{self.imagrill_variables['fail']} http://imgur.com/FWv07A9")
 			elif message.startswith("!googer"):
 				await self.message(target, "https://google.com/search?q=" + '+'.join(message.split()[1:]) + ' "RAISE YOUR GOOGERS" -Arts')
+			elif message.startswith("!like"):
+				if (self.is_mod(target, source) and len(message.split()) > 1
+					and message.split()[1] in self.status_settings):
+					status = message.split()[1]
+					self.imagrill_variables["!like.status"] = self.status_settings[status]
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+					if status == "mod":
+						status += " only"
+					await self.message(target, f"!like is {status}")
+				elif (self.imagrill_variables["!like.status"] or 
+						(self.is_mod(target, source) and self.imagrill_variables["!like.status"] is None)):
+					await self.message(target, "like " + " like ".join(message.split()[1:]))
+			elif message.startswith("!mic"):
+				self.imagrill_variables["mic"] += 1
+				with open("data/variables/imagrill.json", 'w') as variables_file:
+					json.dump(self.imagrill_variables, variables_file, indent = 4)
+				await self.message(target, f"Arts's mic has acted up {self.imagrill_variables['mic']} times.")
 			elif message.startswith("!sneeze"):
 				if len(message.split()) == 1 or not is_number(message.split()[1]) or 10 < int(message.split()[1]) or int(message.split()[1]) < 2:
 					await self.message(target, "Bless you!")
 				else:
 					await self.message(target, ' '.join(["Bless you!" for i in range(int(message.split()[1]))]))
+			elif message.startswith("!stats"):
+				if (self.is_mod(target, source) and len(message.split()) > 1
+					and message.split()[1] in self.status_settings):
+					status = message.split()[1]
+					self.imagrill_variables["!stats.status"] = self.status_settings[status]
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+					if status == "mod":
+						status += " only"
+					await self.message(target, f"!stats is {status}")
+				elif (self.imagrill_variables["!stats.status"] or 
+						(self.is_mod(target, source) and self.imagrill_variables["!stats.status"] is None)):
+					await self.message(target, 
+										"http://services.runescape.com/m=hiscore_oldschool/hiscorepersonal.ws?user1=Arts")
+			elif (message.startswith("what level is your") or message.endswith("stats?") or 
+				"show stats" in message or re.search(r"^what.*s your.*(level|stats|xp.*\?$)|"
+														r"(u (maxed|comped)|you got comp|"
+														r"any (99.*s|120)|you 2595|"
+														r"total (level|xp)).*\?", message)):
+				await self.message(target, "http://services.runescape.com/m=hiscore_oldschool/hiscorepersonal.ws?user1=Arts")
 			elif message.startswith("!tits") or "show tits" in message.lower():
 				await self.message(target, "https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg")
+			elif message.startswith("!troll"):
+				if self.is_mod(target, source) and len(message.split()) > 1 and message.split()[1] == "inc":
+					if len(message.split()) > 2 and is_number(message.split()[2]):
+						self.imagrill_variables["trolls"] += int(message.split()[2])
+					else:
+						self.imagrill_variables["trolls"] += 1
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+				await self.message(target, f"There have been {self.imagrill_variables['trolls']} trolls.")
+			elif message.split()[0] == "pmpls" and source != "pmfornudes" and len(message.split()) > 1:
+				if message.split()[1] == "on":
+					self.imagrill_variables["pmpls"] = True
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+					await self.message(target, f"pmpls is on.")
+				elif message.split()[1] == "off":
+					self.imagrill_variables["pmpls"] = False
+					with open("data/variables/imagrill.json", 'w') as variables_file:
+						json.dump(self.imagrill_variables, variables_file, indent = 4)
+					await self.message(target, f"pmpls is off.")
+			if self.imagrill_variables["pmpls"] and source == "pmfornudes":
+				await self.message(target, "PMFornud pls")
 		
 		# Runescape Commands
 		if message.startswith(("!07rswiki", "!rswiki07", "!osrswiki", "!rswikios")):
