@@ -23,7 +23,7 @@ numexpr==2.6.7
 numpy==1.15.0
 # +mkl, necessary for numexpr
 pandas==0.23.4
-psutil==5.4.6
+psutil==5.4.7
 pycountry==18.5.26
 pydealer==1.4.0
 pygost==3.10
