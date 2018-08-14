@@ -1,9 +1,10 @@
-# Python CircleCI 2.0 configuration file
-# Check https://circleci.com/docs/2.0/language-python/ for more details
+# Python + Golang CircleCI 2.0 configuration file
+# Check https://circleci.com/docs/2.0/language-python/
+# and https://circleci.com/docs/2.0/language-go/ for more details
 
 version: 2
 jobs:
-  build:
+  test-python:
     docker:
       - image: circleci/python:3.7.0
       
@@ -30,8 +31,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
-        
-      # Run tests!
+
       - run:
           name: Run tests
           command: |
@@ -48,3 +48,26 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: test-reports
+
+  test-golang:
+    docker:
+      - image: circleci/golang:1.9
+
+    #### TEMPLATE_NOTE: go expects specific checkout path representing url
+    #### expecting it in the form of
+    ####   /go/src/github.com/circleci/go-tool
+    ####   /go/src/bitbucket.org/circleci/go-tool
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+
+    steps:
+      - checkout
+      - run: go get github.com/bwmarrin/discordgo
+      - run: go get github.com/bwmarrin/dgvoice
+      - run: cd Discord && go run Harmonbot_Listener.go
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-python
+      - test-golang
