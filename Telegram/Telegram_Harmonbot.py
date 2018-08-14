@@ -28,7 +28,7 @@ updater.start_polling()
 bot_info = bot.getMe()
 print(f"Started up Telegram Harmonbot ({bot_info['username']}) ({bot_info['id']})")
 
-travis_ci = os.getenv("TRAVIS") and os.getenv("CI")
-if travis_ci:
+ci = (os.getenv("CIRCLECI") or os.getenv("TRAVIS")) and os.getenv("CI")
+if ci:
 	updater.stop()
 
