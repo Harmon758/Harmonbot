@@ -33,11 +33,6 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
-
-      - save_cache:
-          paths:
-            - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
         
       # run tests!
       - run:
@@ -45,6 +40,12 @@ jobs:
           command: |
             . venv/bin/activate
             cd Discord && python Harmonbot.py
+
+      - save_cache:
+          paths:
+            - ./venv
+            - /home/circleci/.imageio
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
 
       - store_artifacts:
           path: test-reports
