@@ -290,23 +290,24 @@ if __name__ == "__main__":
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
 	
-	travis_ci = os.getenv("TRAVIS") and os.getenv("CI")
+	ci = (os.getenv("CIRCLECI") or os.getenv("TRAVIS")) and os.getenv("CI")
 	
-	if not travis_ci and not clients.beta:
+	if not ci and not clients.beta:
 		# Start web server
 		client.loop.run_until_complete(client.aiohttp_app_runner.setup())
 		client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
 		client.loop.run_until_complete(client.aiohttp_site.start())
 	# Can't bind to/open port 80 without being root on Linux
-	# Try port >1024?
+	# Try port >1024?, sudo?
 	
 	if clients.beta: client.command_prefix = '*'
 	token = credentials.beta_token if clients.beta else credentials.token
 	
 	try:
-		if travis_ci:
+		if ci:
 			client.loop.create_task(client.start(token))
 			client.loop.run_until_complete(asyncio.sleep(10))
+			# TODO: stop after ready
 		else:
 			client.loop.run_until_complete(client.start(token))
 	except aiohttp.errors.ClientOSError:
