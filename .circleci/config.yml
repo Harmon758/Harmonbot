@@ -37,6 +37,7 @@ jobs:
           command: |
             . venv/bin/activate
             cd Discord && python Harmonbot.py
+            cd ../Telegram && python Telegram_Harmonbot.py
 
       - save_cache:
           paths:
