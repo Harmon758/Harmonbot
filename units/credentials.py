@@ -2,7 +2,7 @@
 import os
 import sys
 
-if not os.getenv("TRAVIS") or not os.getenv("CI"):
+if (not os.getenv("CIRCLECI") and not os.getenv("TRAVIS")) or not os.getenv("CI"):
 	from . import _credentials
 	for variable in _credentials.__dir__():
 		if not variable.startswith("__"):
