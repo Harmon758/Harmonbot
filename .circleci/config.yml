@@ -1,13 +1,10 @@
 # Python CircleCI 2.0 configuration file
-#
 # Check https://circleci.com/docs/2.0/language-python/ for more details
-#
+
 version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.7.0
       
       # Specify service dependencies here if necessary
@@ -24,19 +21,19 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
+          # Fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
       - run:
-          name: install dependencies
+          name: Install dependencies
           command: |
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
         
-      # run tests!
+      # Run tests!
       - run:
-          name: run tests
+          name: Run tests
           command: |
             . venv/bin/activate
             cd Discord && python Harmonbot.py
