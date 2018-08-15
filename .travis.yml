@@ -13,7 +13,16 @@ matrix:
       script:
         - cd Discord
         - python Harmonbot.py
-        - cd ../Telegram
+    - language: python
+      python: 3.7
+      # Workaround for Python 3.7
+      # https://github.com/travis-ci/travis-ci/issues/9815
+      dist: xenial
+      sudo: true
+      cache:
+        pip: true
+      script:
+        - cd Telegram
         - python Telegram_Harmonbot.py
     - language: go
       go: 1.6
