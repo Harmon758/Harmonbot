@@ -1,27 +1,25 @@
-language: python
-# python:
-#   - "3.7"
-# Workaround for Python 3.7
-# https://github.com/travis-ci/travis-ci/issues/9815
 matrix:
   include:
-    - python: 3.7
+    - language: python
+      python: 3.7
+      # Workaround for Python 3.7
+      # https://github.com/travis-ci/travis-ci/issues/9815
       dist: xenial
       sudo: true
-cache:
-  pip: true
-  directories:
-  - $HOME/.gimme
-  - $HOME/.imageio
-before_install:
-  - gimme 1.6
-  - export GOROOT="$HOME/.gimme/versions/go1.6.linux.amd64"
-  - export GOPATH="$HOME/.gimme/versions/go1.6.linux.amd64/bin:$TRAVIS_BUILD_DIR"
-  - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/discordgo
-  - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go get github.com/bwmarrin/dgvoice
-script:
-  - cd Discord
-  - python Harmonbot.py
-  - $HOME/.gimme/versions/go1.6.linux.amd64/bin/go run Harmonbot_Listener.go
-  - python ../Telegram/Telegram_Harmonbot.py
-
+      cache:
+        pip: true
+        directories:
+          - $HOME/.imageio
+      script:
+        - cd Discord
+        - python Harmonbot.py
+        - cd ../Telegram
+        - python Telegram_Harmonbot.py
+    - language: go
+      go: 1.6
+      install:
+        - go get github.com/bwmarrin/discordgo
+        - go get github.com/bwmarrin/dgvoice
+      script:
+        - cd Discord
+        - go run Harmonbot_Listener.go
