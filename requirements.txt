@@ -33,7 +33,7 @@ python-chess==0.23.9
 python-dateutil==2.7.3
 scipy==1.1.0
 seaborn==0.9.0
-setuptools==40.0.0
+setuptools==40.1.0
 speechrecognition==3.8.1
 sympy==1.2
 tabulate==0.8.2
