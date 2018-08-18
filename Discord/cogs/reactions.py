@@ -153,7 +153,7 @@ class Reactions:
 					embed.description = "{}".format(clients.code_block.format(maze_instance.print_visible()))
 			else:
 				embed.description = "{}\n:no_entry: You can't go that way".format(clients.code_block.format(maze_instance.print_visible()))
-			await self.bot.edit_message(reaction.message, embed = embed)
+			await reaction.message.edit(embed = embed)
 	
 	@commands.command(aliases = ["player"])
 	@commands.guild_only()
