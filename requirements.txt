@@ -19,7 +19,7 @@ inflect==1.0.0
 isodate==0.6.0
 matplotlib==2.2.3
 more-itertools==4.3.0
-numexpr==2.6.7
+numexpr==2.6.8
 numpy==1.15.0
 # +mkl, necessary for numexpr
 pandas==0.23.4
