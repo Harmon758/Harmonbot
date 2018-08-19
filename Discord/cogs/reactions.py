@@ -169,7 +169,7 @@ class Reactions:
 			player_message, embed = await self.bot.say(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 		for control_emote in self.controls.keys():
-			await self.bot.add_reaction(player_message, control_emote)
+			await player_message.add_reaction(control_emote)
 		self.reaction_messages[player_message.id] = lambda reaction, user: self.playingr_processr(ctx, reaction, user)
 	
 	# TODO: Queue?, Empty?, Settext?, Other?
