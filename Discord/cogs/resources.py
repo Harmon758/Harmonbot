@@ -271,7 +271,7 @@ class Resources:
 			# output += "\n<{}>".format(article["url"])
 			output += "\n{}".format(article["url"])
 			output += "\nSelect a different number for another article"
-			await response.edit("{}: {}".format(ctx.author.display_name, output))
+			await response.edit(content = "{}: {}".format(ctx.author.display_name, output))
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
