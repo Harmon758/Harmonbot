@@ -11,8 +11,9 @@ matrix:
         pip: true
         directories:
           - $HOME/.imageio
-      script:
+      before_script:
         - cd Discord
+      script:
         - python Harmonbot.py
     - name: Telegram
       language: python
@@ -23,8 +24,9 @@ matrix:
       sudo: true
       cache:
         pip: true
-      script:
+      before_script:
         - cd Telegram
+      script:
         - python Telegram_Harmonbot.py
     - name: Discord Listener
       language: go
@@ -32,6 +34,7 @@ matrix:
       install:
         - go get github.com/bwmarrin/discordgo
         - go get github.com/bwmarrin/dgvoice
-      script:
+      before_script:
         - cd Discord
+      script:
         - go run Harmonbot_Listener.go
