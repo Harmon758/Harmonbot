@@ -234,7 +234,7 @@ class Meta:
 			json.dump(all_prefixes, prefixes_file, indent = 4)
 		await ctx.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
-	@commands.command(hidden = True)
+	@commands.command(aliases = ["typing"], hidden = True)
 	@checks.not_forbidden()
 	async def type(self, ctx):
 		'''Sends typing status'''

@@ -101,7 +101,7 @@ class Lichess:
 	@tournament.command(name = "current", aliases = ["started"])
 	@checks.not_forbidden()
 	async def tournament_current(self, ctx):
-		'''WIP'''
+		'''Current tournaments'''
 		url = "https://en.lichess.org/api/tournament"
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()

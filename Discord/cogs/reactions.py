@@ -139,7 +139,7 @@ class Reactions:
 			if reaction.emoji == "\N{PRINTER}":
 				with open(clients.data_path + "/temp/maze.txt", 'w') as maze_file:
 					maze_file.write('\n'.join(maze_instance.visible))
-				await self.bot.send_file(reaction.message.channel, clients.data_path + "/temp/maze.txt", content = "{}:\nYour maze is attached".format(player.display_name))
+				await reaction.message.channel.send(content = "{}:\nYour maze is attached".format(player.display_name), file = discord.File(clients.data_path + "/temp/maze.txt"))
 				return
 			embed = discord.Embed(color = self.bot.bot_color)
 			embed.set_author(name = player.display_name, icon_url = player.avatar_url)
@@ -153,7 +153,7 @@ class Reactions:
 					embed.description = "{}".format(clients.code_block.format(maze_instance.print_visible()))
 			else:
 				embed.description = "{}\n:no_entry: You can't go that way".format(clients.code_block.format(maze_instance.print_visible()))
-			await self.bot.edit_message(reaction.message, embed = embed)
+			await reaction.message.edit(embed = embed)
 	
 	@commands.command(aliases = ["player"])
 	@commands.guild_only()
@@ -169,7 +169,7 @@ class Reactions:
 			player_message, embed = await self.bot.say(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 		for control_emote in self.controls.keys():
-			await self.bot.add_reaction(player_message, control_emote)
+			await player_message.add_reaction(control_emote)
 		self.reaction_messages[player_message.id] = lambda reaction, user: self.playingr_processr(ctx, reaction, user)
 	
 	# TODO: Queue?, Empty?, Settext?, Other?
