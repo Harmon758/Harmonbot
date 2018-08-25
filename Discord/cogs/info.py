@@ -165,18 +165,19 @@ class Info:
 		data = data["items"][0]
 		# TODO: Handle no items
 		duration = isodate.parse_duration(data["contentDetails"]["duration"])
-		info = "Length: {}".format(utilities.secs_to_letter_format(duration.total_seconds()))
+		info = f"Length: {utilities.secs_to_letter_format(duration.total_seconds())}"
 		if "likeCount" in data["statistics"]:
 			likes = int(data["statistics"]["likeCount"])
 			dislikes = int(data["statistics"]["dislikeCount"])
-			info += "\nLikes: {:,}, Dislikes: {:,}".format(likes, dislikes)
+			info += f"\nLikes: {likes:,}, Dislikes: {dislikes:,}"
 			if likes + dislikes != 0:
-				info += " ({:.2f}%)".format(likes / (likes + dislikes) * 100)
+				info += f" ({likes / (likes + dislikes) * 100:.2f}%)"
 		if "viewCount" in data["statistics"]:
-			info += "\nViews: {:,}".format(int(data["statistics"]["viewCount"]))
+			info += f"\nViews: {int(data['statistics']['viewCount']):,}"
 		if "commentCount" in data["statistics"]:
-			info += ", Comments: {:,}".format(int(data["statistics"]["commentCount"]))
-		info += "\nChannel: [{0[channelTitle]}](https://www.youtube.com/channel/{0[channelId]})".format(data["snippet"])
+			info += f", Comments: {int(data['statistics']['commentCount']):,}"
+		info += f"\nChannel: [{data['snippet']['channelTitle']}]"
+		info += f"(https://www.youtube.com/channel/{data['snippet']['channelId']})"
 		# data["snippet"]["description"]
 		timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"]).replace(tzinfo = None)
 		await ctx.embed_reply(info, title = data["snippet"]["title"], title_url = url, 
