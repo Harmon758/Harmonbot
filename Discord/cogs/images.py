@@ -131,7 +131,7 @@ class Images:
 		'''Upload images to Imgur'''
 		if not (url or ctx.message.attachments):
 			await ctx.embed_reply(":no_entry: Please input an image and/or url")
-		image = url or ctx.message.attachments[0]["url"]
+		image = url or ctx.message.attachments[0].url
 		try:
 			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(image)["link"])
 		except imgurpython.helpers.error.ImgurClientError as e:
