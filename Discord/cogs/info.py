@@ -167,7 +167,8 @@ class Info:
 			likes, dislikes = int(data["statistics"]["likeCount"]), int(data["statistics"]["dislikeCount"])
 			info += "\nLikes: {:,}, Dislikes: {:,}".format(likes, dislikes)
 			if likes + dislikes != 0: info += " ({:.2f}%)".format(likes / (likes + dislikes) * 100)
-		info += "\nViews: {:,}".format(int(data["statistics"]["viewCount"]))
+		if "viewCount" in data["statistics"]:
+			info += "\nViews: {:,}".format(int(data["statistics"]["viewCount"]))
 		if "commentCount" in data["statistics"]: info += ", Comments: {:,}".format(int(data["statistics"]["commentCount"]))
 		info += "\nChannel: [{0[channelTitle]}](https://www.youtube.com/channel/{0[channelId]})".format(data["snippet"])
 		# data["snippet"]["description"]
