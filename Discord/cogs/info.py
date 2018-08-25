@@ -164,16 +164,23 @@ class Info:
 			return
 		data = data["items"][0]
 		# TODO: Handle no items
-		info = "Length: {}".format(utilities.secs_to_letter_format(isodate.parse_duration(data["contentDetails"]["duration"]).total_seconds()))
+		duration = isodate.parse_duration(data["contentDetails"]["duration"])
+		info = "Length: {}".format(utilities.secs_to_letter_format(duration.total_seconds()))
 		if "likeCount" in data["statistics"]:
-			likes, dislikes = int(data["statistics"]["likeCount"]), int(data["statistics"]["dislikeCount"])
+			likes = int(data["statistics"]["likeCount"])
+			dislikes = int(data["statistics"]["dislikeCount"])
 			info += "\nLikes: {:,}, Dislikes: {:,}".format(likes, dislikes)
-			if likes + dislikes != 0: info += " ({:.2f}%)".format(likes / (likes + dislikes) * 100)
+			if likes + dislikes != 0:
+				info += " ({:.2f}%)".format(likes / (likes + dislikes) * 100)
 		if "viewCount" in data["statistics"]:
 			info += "\nViews: {:,}".format(int(data["statistics"]["viewCount"]))
-		if "commentCount" in data["statistics"]: info += ", Comments: {:,}".format(int(data["statistics"]["commentCount"]))
+		if "commentCount" in data["statistics"]:
+			info += ", Comments: {:,}".format(int(data["statistics"]["commentCount"]))
 		info += "\nChannel: [{0[channelTitle]}](https://www.youtube.com/channel/{0[channelId]})".format(data["snippet"])
 		# data["snippet"]["description"]
-		await ctx.embed_reply(info, title = data["snippet"]["title"], title_url = url, thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], footer_text = "Published on", timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"]).replace(tzinfo = None))
+		timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"]).replace(tzinfo = None)
+		await ctx.embed_reply(info, title = data["snippet"]["title"], title_url = url, 
+								thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], 
+								footer_text = "Published on", timestamp = timestamp)
 		# TODO: Handle invalid url
 
