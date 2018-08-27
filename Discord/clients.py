@@ -111,6 +111,10 @@ class Bot(commands.Bot):
 		# Credentials
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
+		self.TWITTER_CONSUMER_KEY = os.getenv("TWITTER_CONSUMER_KEY")
+		self.TWITTER_CONSUMER_SECRET = os.getenv("TWITTER_CONSUMER_SECRET")
+		self.TWITTER_ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")
+		self.TWITTER_ACCESS_TOKEN_SECRET = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 		
 		# External Clients
 		## Clarifai
@@ -123,8 +127,8 @@ class Bot(commands.Bot):
 		## Open Weather Map
 		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 		## Twitter
-		self.twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)
-		self.twitter_auth.set_access_token(credentials.twitter_access_token, credentials.twitter_access_token_secret)
+		self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
+		self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
 		self.twitter_api = tweepy.API(self.twitter_auth)
 		## Wolfram Alpha
 		self.wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
