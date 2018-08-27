@@ -110,6 +110,8 @@ class Bot(commands.Bot):
 		
 		# Credentials
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
+		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
+		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
 		self.TWITTER_CONSUMER_KEY = os.getenv("TWITTER_CONSUMER_KEY")
 		self.TWITTER_CONSUMER_SECRET = os.getenv("TWITTER_CONSUMER_SECRET")
@@ -122,7 +124,7 @@ class Bot(commands.Bot):
 		self.clarifai_app = clarifai.rest.ClarifaiApp(api_key = self.CLARIFAI_API_KEY)
 		## Imgur
 		try:
-			self.imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
+			self.imgur_client = imgurpython.ImgurClient(self.IMGUR_CLIENT_ID, self.IMGUR_CLIENT_SECRET)
 		except imgurpython.helpers.error.ImgurClientError as e:
 			print("{}Failed to load Imgur Client: {}".format(self.console_message_prefix, e))
 		## Open Weather Map
