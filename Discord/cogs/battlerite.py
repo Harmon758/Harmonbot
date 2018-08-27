@@ -87,7 +87,7 @@ class Battlerite:
 	# TODO: optimize modularization?
 	async def get_player(self, player):
 		url = "https://api.developer.battlerite.com/shards/global/players"
-		headers = {"Authorization": credentials.battlerite_api_key, "Accept": "application/vnd.api+json"}
+		headers = {"Authorization": self.bot.BATTLERITE_API_KEY, "Accept": "application/vnd.api+json"}
 		params = {"filter[playerNames]": player}
 		async with clients.aiohttp_session.get(url, headers = headers, params = params) as resp:
 			data = await resp.json()

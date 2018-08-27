@@ -111,6 +111,7 @@ class Bot(commands.Bot):
 		# Credentials
 		self.BATTLE_NET_API_KEY = os.getenv("BATTLE_NET_API_KEY") or os.getenv("BLIZZARD_API_KEY")
 		self.BLIZZARD_API_KEY = self.BATTLE_NET_API_KEY
+		self.BATTLERITE_API_KEY = os.getenv("BATTLERITE_API_KEY")
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
 		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
 		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
