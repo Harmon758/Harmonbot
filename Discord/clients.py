@@ -305,6 +305,9 @@ class Bot(commands.Bot):
 	
 	# Update stats on the Discord Bots site (https://bots.discord.pw)
 	async def update_discord_bots_stats(self):
+		if not self.DISCORD_BOTS_API_TOKEN:
+			# TODO: Error message?
+			return
 		url = f"https://bots.discord.pw/api/bots/{self.user.id}/stats"
 		headers = {"authorization": self.DISCORD_BOTS_API_TOKEN, "content-type": "application/json"}
 		data = json.dumps({"server_count": len(self.guilds)})
