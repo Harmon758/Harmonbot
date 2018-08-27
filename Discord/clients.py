@@ -110,6 +110,7 @@ class Bot(commands.Bot):
 		
 		# Credentials
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
+		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
 		
 		# External Clients
 		## Clarifai
@@ -120,7 +121,7 @@ class Bot(commands.Bot):
 		except imgurpython.helpers.error.ImgurClientError as e:
 			print("{}Failed to load Imgur Client: {}".format(self.console_message_prefix, e))
 		## Open Weather Map
-		self.owm_client = pyowm.OWM(credentials.owm_api_key)
+		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 		## Twitter
 		self.twitter_auth = tweepy.OAuthHandler(credentials.twitter_consumer_key, credentials.twitter_consumer_secret)
 		self.twitter_auth.set_access_token(credentials.twitter_access_token, credentials.twitter_access_token_secret)

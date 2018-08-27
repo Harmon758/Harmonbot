@@ -3,7 +3,7 @@ import os
 import sys
 
 if (os.getenv("CIRCLECI") or os.getenv("TRAVIS")) and os.getenv("CI"):
-	for credential in ("token", "owm_api_key", "twitter_consumer_key", "twitter_consumer_secret", "twitter_access_token", "twitter_access_token_secret", "wordnik_apikey", "imgur_client_id", "imgur_client_secret", "wolframalpha_appid", "discord_bots_api_token", "twitch_client_id"):
+	for credential in ("token", "twitter_consumer_key", "twitter_consumer_secret", "twitter_access_token", "twitter_access_token_secret", "wordnik_apikey", "imgur_client_id", "imgur_client_secret", "wolframalpha_appid", "discord_bots_api_token", "twitch_client_id"):
 		if credential in os.environ:
 			setattr(sys.modules[__name__], credential, os.environ[credential])
 else:
