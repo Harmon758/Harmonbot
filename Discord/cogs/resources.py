@@ -98,7 +98,7 @@ class Resources:
 			url = f"https://www.dotabuff.com/players/{int(account) - 76561197960265728}"
 		except ValueError:
 			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
-			params = {"key": credentials.steam_apikey, "vanityurl": account}
+			params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": account}
 			async with clients.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			url = f"https://www.dotabuff.com/players/{int(data['response']['steamid']) - 76561197960265728}"
@@ -499,12 +499,12 @@ class Resources:
 	async def steam_gamecount(self, ctx, vanity_name : str):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
-		params = {"key": credentials.steam_apikey, "vanityurl": vanity_name}
+		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": vanity_name}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		id = data["response"]["steamid"]
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
-		params = {"key": credentials.steam_apikey, "steamid": id}
+		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": id}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
