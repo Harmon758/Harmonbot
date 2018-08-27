@@ -113,6 +113,7 @@ class Bot(commands.Bot):
 		self.BLIZZARD_API_KEY = self.BATTLE_NET_API_KEY
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
 		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
+		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
