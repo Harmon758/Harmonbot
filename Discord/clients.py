@@ -108,9 +108,12 @@ class Bot(commands.Bot):
 		self.session_commands_executed = 0
 		self.session_commands_usage = {}
 		
+		# Credentials
+		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
+		
 		# External Clients
 		## Clarifai
-		self.clarifai_app = clarifai.rest.ClarifaiApp(api_key = credentials.clarifai_api_key)
+		self.clarifai_app = clarifai.rest.ClarifaiApp(api_key = self.CLARIFAI_API_KEY)
 		## Imgur
 		try:
 			self.imgur_client = imgurpython.ImgurClient(credentials.imgur_client_id, credentials.imgur_client_secret)
