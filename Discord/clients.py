@@ -110,6 +110,7 @@ class Bot(commands.Bot):
 		
 		# Credentials
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
+		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
@@ -305,7 +306,7 @@ class Bot(commands.Bot):
 	# Update stats on the Discord Bots site (https://bots.discord.pw)
 	async def update_discord_bots_stats(self):
 		url = f"https://bots.discord.pw/api/bots/{self.user.id}/stats"
-		headers = {"authorization": credentials.discord_bots_api_token, "content-type": "application/json"}
+		headers = {"authorization": self.DISCORD_BOTS_API_TOKEN, "content-type": "application/json"}
 		data = json.dumps({"server_count": len(self.guilds)})
 		async with aiohttp_session.post(url, headers = headers, data = data) as resp:
 			return resp.status
