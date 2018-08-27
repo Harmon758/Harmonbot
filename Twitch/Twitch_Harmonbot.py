@@ -30,7 +30,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.22"
+		self.version = "2.3.24"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -44,6 +44,8 @@ class TwitchClient(pydle.Client):
 		self.CHANNELS = ["harmon758", "harmonbot", "mikki", "imagrill", "tirelessgod", "gameflubdojo", 
 							"vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
 		self.PING_TIMEOUT = 600
+		# Credentials
+		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
 		# Clients
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		# Dynamically load commands
@@ -141,7 +143,7 @@ class TwitchClient(pydle.Client):
 			await self.message(target, f"\N{BILLIARDS} {eightball()}")
 		elif message.startswith("!audiodefine"):
 			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/audio"
-			params = {"useCanonical": "false", "limit": 1, "api_key": credentials.wordnik_apikey}
+			params = {"useCanonical": "false", "limit": 1, "api_key": self.WORDNIK_API_KEY}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data:
@@ -209,7 +211,7 @@ class TwitchClient(pydle.Client):
 		elif message.startswith("!define"):
 			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/definitions"
 			params = {"limit": 1, "includeRelated": "false", "useCanonical": "false", "includeTags": "false", 
-						"api_key": credentials.wordnik_apikey}
+						"api_key": self.WORDNIK_API_KEY}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data:
@@ -289,7 +291,7 @@ class TwitchClient(pydle.Client):
 			url = "http://api.wordnik.com:80/v4/words.json/randomWord"
 			params = {"hasDictionaryDef": "false", "minCorpusCount": 0, "maxCorpusCount": -1, 
 						"minDictionaryCount": 1, "maxDictionaryCount": -1, "minLength": 5, "maxLength": -1, 
-						"api_key": credentials.wordnik_apikey}
+						"api_key": self.WORDNIK_API_KEY}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			await self.message(target, data["word"].capitalize())
