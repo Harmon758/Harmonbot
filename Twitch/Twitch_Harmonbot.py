@@ -30,7 +30,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.26"
+		self.version = "2.3.27"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -45,6 +45,7 @@ class TwitchClient(pydle.Client):
 							"vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
 		self.PING_TIMEOUT = 600
 		# Credentials
+		self.RIOT_GAMES_API_KEY = os.getenv("RIOT_GAMES_API_KEY")
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
 		self.YANDEX_TRANSLATE_API_KEY = os.getenv("YANDEX_TRANSLATE_API_KEY")
@@ -884,7 +885,7 @@ class TwitchClient(pydle.Client):
 		if message.startswith("!lollvl"):
 			username = message.split()[1]
 			url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + username
-			params = {"api_key": credentials.riot_games_api_key}
+			params = {"api_key": self.RIOT_GAMES_API_KEY}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 				if resp.status == 404:
@@ -894,7 +895,7 @@ class TwitchClient(pydle.Client):
 		elif message.startswith("!loltotalgames"):
 			username = message.split()[1]
 			url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + username
-			params = {"api_key": credentials.riot_games_api_key}
+			params = {"api_key": self.RIOT_GAMES_API_KEY}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				account_data = await resp.json()
 				if resp.status == 404:
@@ -912,7 +913,7 @@ class TwitchClient(pydle.Client):
 			if message.split()[1] in ("time", "participants"):
 				username = message.split()[2]
 				url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + username
-				params = {"api_key": credentials.riot_games_api_key}
+				params = {"api_key": self.RIOT_GAMES_API_KEY}
 				async with self.aiohttp_session.get(url, params = params) as resp:
 					account_data = await resp.json()
 					if resp.status == 404:
