@@ -106,7 +106,7 @@ class Words:
 	@checks.not_forbidden()
 	async def translate_languages(self, ctx, language_code : str = "en"):
 		'''Language Codes'''
-		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs?ui={}&key={}".format(language_code, credentials.yandex_translate_api_key)) as resp:
+		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs?ui={}&key={}".format(language_code, ctx.bot.YANDEX_TRANSLATE_API_KEY)) as resp:
 			data = await resp.json()
 		if "langs" not in data:
 			await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
@@ -124,7 +124,7 @@ class Words:
 		await self.process_translate(ctx, text, language_code)
 	
 	async def process_translate(self, ctx, text, to_language_code, from_language_code = None):
-		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang={}&text={}&options=1".format(credentials.yandex_translate_api_key, to_language_code if not from_language_code else "{}-{}".format(from_language_code, to_language_code), text.replace(' ', '+'))
+		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang={}&text={}&options=1".format(ctx.bot.YANDEX_TRANSLATE_API_KEY, to_language_code if not from_language_code else "{}-{}".format(from_language_code, to_language_code), text.replace(' ', '+'))
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 400: # Bad Request
 				await ctx.embed_reply(":no_entry: Error")

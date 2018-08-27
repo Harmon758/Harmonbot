@@ -30,7 +30,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.25"
+		self.version = "2.3.26"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -47,6 +47,7 @@ class TwitchClient(pydle.Client):
 		# Credentials
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
+		self.YANDEX_TRANSLATE_API_KEY = os.getenv("YANDEX_TRANSLATE_API_KEY")
 		# Clients
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
 		# Dynamically load commands
@@ -430,7 +431,7 @@ class TwitchClient(pydle.Client):
 		elif message.startswith("!translate"):
 			url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
 			params = {"lang": "en", "text": ' '.join(message.split()[1:]), "options": 1, 
-						"key": credentials.yandex_translate_api_key}
+						"key": self.YANDEX_TRANSLATE_API_KEY}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data["code"] != 200:

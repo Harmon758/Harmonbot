@@ -121,6 +121,7 @@ class Bot(commands.Bot):
 		self.TWITTER_ACCESS_TOKEN_SECRET = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 		self.WOLFRAM_ALPHA_APP_ID = os.getenv("WOLFRAM_ALPHA_APP_ID")
 		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
+		self.YANDEX_TRANSLATE_API_KEY = os.getenv("YANDEX_TRANSLATE_API_KEY")
 		
 		# External Clients
 		## Clarifai
