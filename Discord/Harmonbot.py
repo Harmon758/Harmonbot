@@ -6,14 +6,15 @@ if __name__ == "__main__":
 	import discord
 	from discord.ext import commands
 	
-	import aiohttp
-	from aiohttp import web
 	import asyncio
 	import json
 	import os
 	import re
 	import sys
 	import traceback
+	
+	import aiohttp
+	from aiohttp import web
 	import youtube_dl
 	
 	import clients
