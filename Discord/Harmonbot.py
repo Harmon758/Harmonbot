@@ -301,8 +301,11 @@ if __name__ == "__main__":
 	# Can't bind to/open port 80 without being root on Linux
 	# Try port >1024?, sudo?
 	
-	if clients.beta: client.command_prefix = '*'
-	token = credentials.beta_token if clients.beta else credentials.token
+	if clients.beta:
+		client.command_prefix = '*'
+		token = os.getenv("DISCORD_BETA_BOT_TOKEN")
+	else:
+		token = os.getenv("DISCORD_BOT_TOKEN")
 	
 	try:
 		if ci:
