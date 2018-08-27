@@ -20,8 +20,6 @@ import dateutil.parser
 import dotenv
 import unicodedata2 as unicodedata
 
-import credentials
-
 sys.path.insert(0, "..")
 from units.games import eightball
 from units.location import get_geocode_data, get_timezone_data, UnitOutputError
@@ -30,7 +28,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.27"
+		self.version = "2.3.28"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
