@@ -33,7 +33,7 @@ class WoWS:
 	async def player(self, ctx, player : str, region : str = "NA"):
 		'''Player details'''
 		api_url = self.api_urls.get(region.lower(), "na")
-		params = {"application_id": credentials.wargaming_application_id, "search": player, "limit": 1}
+		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "search": player, "limit": 1}
 		async with clients.aiohttp_session.get(api_url + "account/list/", params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "error":
@@ -43,7 +43,7 @@ class WoWS:
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		account_id = data["data"][0]["account_id"]
-		params = {"application_id": credentials.wargaming_application_id, "account_id": account_id}
+		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "account_id": account_id}
 		async with clients.aiohttp_session.get(api_url + "account/info/", params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "error":
@@ -61,5 +61,4 @@ class WoWS:
 		fields.append(("Account Created", datetime.datetime.utcfromtimestamp(data["created_at"]).strftime("%Y-%m-%d @ %I:%M:%S %p (UTC)")))
 		# TODO: put account creation date in footer?
 		await ctx.embed_reply(title = data["nickname"], fields = fields)
-		
 
