@@ -117,6 +117,7 @@ class Bot(commands.Bot):
 		self.TWITTER_CONSUMER_SECRET = os.getenv("TWITTER_CONSUMER_SECRET")
 		self.TWITTER_ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")
 		self.TWITTER_ACCESS_TOKEN_SECRET = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
+		self.WOLFRAM_ALPHA_APP_ID = os.getenv("WOLFRAM_ALPHA_APP_ID")
 		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
 		
 		# External Clients
@@ -134,7 +135,7 @@ class Bot(commands.Bot):
 		self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
 		self.twitter_api = tweepy.API(self.twitter_auth)
 		## Wolfram Alpha
-		self.wolfram_alpha_client = wolframalpha.Client(credentials.wolframalpha_appid)
+		self.wolfram_alpha_client = wolframalpha.Client(self.WOLFRAM_ALPHA_APP_ID)
 		## Wordnik
 		self.wordnik_client = swagger.ApiClient(self.WORDNIK_API_KEY, "http://api.wordnik.com/v4")
 		self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
