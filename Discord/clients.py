@@ -116,6 +116,7 @@ class Bot(commands.Bot):
 		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")
+		self.OSU_API_KEY = os.getenv("OSU_API_KEY")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
 		self.PAGE2IMAGES_REST_API_KEY = os.getenv("PAGE2IMAGES_REST_API_KEY")
 		self.STEAM_WEB_API_KEY = os.getenv("STEAM_WEB_API_KEY")
