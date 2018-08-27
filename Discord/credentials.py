@@ -3,7 +3,7 @@ import os
 import sys
 
 if (os.getenv("CIRCLECI") or os.getenv("TRAVIS")) and os.getenv("CI"):
-	for credential in ("token", "twitch_client_id"):
+	for credential in ("token",):
 		if credential in os.environ:
 			setattr(sys.modules[__name__], credential, os.environ[credential])
 else:

@@ -114,6 +114,7 @@ class Bot(commands.Bot):
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
+		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.TWITTER_CONSUMER_KEY = os.getenv("TWITTER_CONSUMER_KEY")
 		self.TWITTER_CONSUMER_SECRET = os.getenv("TWITTER_CONSUMER_SECRET")
 		self.TWITTER_ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")

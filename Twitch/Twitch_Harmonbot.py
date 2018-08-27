@@ -30,7 +30,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.24"
+		self.version = "2.3.25"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -45,6 +45,7 @@ class TwitchClient(pydle.Client):
 							"vayces", "tbestnuclear", "cantilena", "nordryd", "babyastron"]
 		self.PING_TIMEOUT = 600
 		# Credentials
+		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
 		# Clients
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
@@ -152,7 +153,7 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "Word or audio not found.")
 		elif message.startswith("!averagefps"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
-			params = {"client_id": credentials.twitch_client_id}
+			params = {"client_id": self.TWITCH_CLIENT_ID}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
@@ -224,7 +225,7 @@ class TwitchClient(pydle.Client):
 				await self.message(target, elements[message.split()[1]])
 		elif message.startswith(("!followage", "!followed", "!howlong")):
 			url = f"https://api.twitch.tv/kraken/users/{source}/follows/channels/{target[1:]}"
-			params = {"client_id": credentials.twitch_client_id}
+			params = {"client_id": self.TWITCH_CLIENT_ID}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if "created_at" in data:
@@ -236,7 +237,7 @@ class TwitchClient(pydle.Client):
 				await self.message(target, f"{source.capitalize()}, you haven't followed yet!")
 		elif message.startswith("!followers"):
 			url = f"https://api.twitch.tv/kraken/channels/{target[1:]}/follows"
-			params = {"client_id": credentials.twitch_client_id}
+			params = {"client_id": self.TWITCH_CLIENT_ID}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			await self.message(target, f"There are currently {data['_total']} people following {target[1:].capitalize()}.")
@@ -419,7 +420,7 @@ class TwitchClient(pydle.Client):
 				# %#I and %#d for removal of leading zero on Windows with native Python executable
 		elif message.startswith("!title"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
-			params = {"client_id": credentials.twitch_client_id}
+			params = {"client_id": self.TWITCH_CLIENT_ID}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
@@ -438,7 +439,7 @@ class TwitchClient(pydle.Client):
 			await self.message(target, data["text"][0])
 		elif message.startswith("!uptime"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
-			params = {"client_id": credentials.twitch_client_id}
+			params = {"client_id": self.TWITCH_CLIENT_ID}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
@@ -461,7 +462,7 @@ class TwitchClient(pydle.Client):
 			await self.message(target, message)
 		elif message.startswith("!viewers"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
-			params = {"client_id": credentials.twitch_client_id}
+			params = {"client_id": self.TWITCH_CLIENT_ID}
 			async with self.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("stream"):
