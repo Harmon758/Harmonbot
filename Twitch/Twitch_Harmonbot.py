@@ -1051,8 +1051,9 @@ if __name__ == "__main__":
 	# Load credentials from .env
 	dotenv.load_dotenv()
 	client = TwitchClient("Harmonbot")
+	oauth_token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN")
 	loop = asyncio.get_event_loop()
-	asyncio.ensure_future(client.connect("irc.chat.twitch.tv", password = credentials.oauth_token), loop = loop)
+	asyncio.ensure_future(client.connect("irc.chat.twitch.tv", password = oauth_token), loop = loop)
 	# DEFAULT_PORT = 6667
 	loop.run_forever()
 
