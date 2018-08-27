@@ -28,19 +28,19 @@ class WoW:
 		'''WIP'''
 		# get classes
 		classes = {}
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/data/character/classes?apikey={}".format(credentials.battle_net_api_key)) as resp:
+		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/data/character/classes?apikey={}".format(ctx.bot.BATTLE_NET_API_KEY)) as resp:
 			data = await resp.json()
 		for wow_class in data["classes"]:
 			classes[wow_class["id"]] = wow_class["name"]
 		# get races
 		races = {}
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/data/character/races?apikey={}".format(credentials.battle_net_api_key)) as resp:
+		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/data/character/races?apikey={}".format(ctx.bot.BATTLE_NET_API_KEY)) as resp:
 			data = await resp.json()
 		for wow_race in data["races"]:
 			races[wow_race["id"]] = wow_race["name"]
 			# add side/faction?
 		genders = {0: "Male", 1: "Female"}
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?apikey={}".format(realm, character, credentials.battle_net_api_key)) as resp:
+		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?apikey={}".format(realm, character, ctx.bot.BATTLE_NET_API_KEY)) as resp:
 			data = await resp.json()
 			if resp.status != 200:
 				await ctx.embed_reply(":no_entry: Error: {}".format(data["reason"]))
@@ -62,7 +62,7 @@ class WoW:
 	@checks.not_forbidden()
 	async def statistics(self, ctx, character : str, *, realm : str):
 		'''WIP'''
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?fields=statistics&apikey={}".format(realm, character, credentials.battle_net_api_key)) as resp:
+		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?fields=statistics&apikey={}".format(realm, character, ctx.bot.BATTLE_NET_API_KEY)) as resp:
 			data = await resp.json()
 		embed = discord.Embed(title = data["name"], url = "http://us.battle.net/wow/en/character/{}/{}/".format(data["realm"].replace(' ', '-'), data["name"]), description = "{} ({})".format(data["realm"], data["battlegroup"]), color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)

@@ -109,6 +109,8 @@ class Bot(commands.Bot):
 		self.session_commands_usage = {}
 		
 		# Credentials
+		self.BATTLE_NET_API_KEY = os.getenv("BATTLE_NET_API_KEY") or os.getenv("BLIZZARD_API_KEY")
+		self.BLIZZARD_API_KEY = self.BATTLE_NET_API_KEY
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
 		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
