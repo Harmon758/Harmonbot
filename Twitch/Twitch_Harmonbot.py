@@ -17,6 +17,7 @@ import time
 import aiohttp
 import dateutil.easter
 import dateutil.parser
+import dotenv
 import unicodedata2 as unicodedata
 
 import credentials
@@ -1042,6 +1043,8 @@ if __name__ == "__main__":
 	create_folder("data/logs/channels")
 	create_folder("data/logs/client")
 	create_folder("data/variables")
+	# Load credentials from .env
+	dotenv.load_dotenv()
 	client = TwitchClient("Harmonbot")
 	loop = asyncio.get_event_loop()
 	asyncio.ensure_future(client.connect("irc.chat.twitch.tv", password = credentials.oauth_token), loop = loop)
