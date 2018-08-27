@@ -13,6 +13,7 @@ import aiml
 import aiohttp
 from aiohttp import web
 import clarifai.rest
+import dotenv
 import imageio
 import imgurpython
 import inflect
@@ -40,6 +41,10 @@ inflect_engine = inflect.engine()
 
 # TODO: Already moved to Bot constants, update all references to
 bot_color = discord.Color.blurple()
+
+# Load credentials from .env
+# TODO: Move to Harmonbot.py
+dotenv.load_dotenv()
 
 class Bot(commands.Bot):
 	
