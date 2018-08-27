@@ -293,19 +293,17 @@ if __name__ == "__main__":
 	
 	ci = (os.getenv("CIRCLECI") or os.getenv("TRAVIS")) and os.getenv("CI")
 	
-	if not ci and not clients.beta:
-		# Start web server
-		client.loop.run_until_complete(client.aiohttp_app_runner.setup())
-		client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
-		client.loop.run_until_complete(client.aiohttp_site.start())
-	# Can't bind to/open port 80 without being root on Linux
-	# Try port >1024?, sudo?
-	
-	if clients.beta:
+	if ci or clients.beta:
 		client.command_prefix = '*'
 		token = os.getenv("DISCORD_BETA_BOT_TOKEN")
 	else:
 		token = os.getenv("DISCORD_BOT_TOKEN")
+		# Start web server
+		client.loop.run_until_complete(client.aiohttp_app_runner.setup())
+		client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
+		client.loop.run_until_complete(client.aiohttp_site.start())
+		# Can't bind to/open port 80 without being root on Linux
+		# Try port >1024? or sudo? for CI
 	
 	try:
 		if ci:
