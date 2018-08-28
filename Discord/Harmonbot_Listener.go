@@ -2,17 +2,19 @@ package main
 
 import "github.com/bwmarrin/dgvoice"
 import "github.com/bwmarrin/discordgo"
+import "github.com/joho/godotenv"
 	
 import "bufio"
 import "bytes"
 import "encoding/base64"
 import "encoding/binary"
-import "encoding/json"
 import "io/ioutil"
 import "fmt"
 import "os"
 import "strings"
 import "time"
+
+const owner_id string = "115691005197549570"
 
 var _continue		bool
 var _listen			bool
@@ -21,13 +23,7 @@ var recv			chan *discordgo.Packet
 var send			chan []int16
 var me				*discordgo.User
 var token			string
-var owner_id		string
 // var response		*discordgo.Message
-
-type _credentials struct {
-	Token		string
-	Owner_id	string
-}
 
 func check(e error) {
     if e != nil {
@@ -39,15 +35,8 @@ func main() {
 	fmt.Println("Starting up Discord Harmonbot Listener...")
 	
 	// Load Credentials
-	if raw, err := ioutil.ReadFile("Harmonbot_Listener_credentials.json"); err == nil {
-		var credentials _credentials
-		json.Unmarshal(raw, &credentials)
-		token = credentials.Token
-		owner_id = credentials.Owner_id
-	} else {
-		token = os.Getenv("harmonbot_listener_token")
-		owner_id = os.Getenv("harmonbot_listener_owner_id")
-	}
+	godotenv.Load("../.env")
+	token = os.Getenv("DISCORD_LISTENER_BOT_TOKEN")
 
 	// Connect to Discord
 	dg, err := discordgo.New(token)

@@ -34,6 +34,7 @@ matrix:
       install:
         - go get github.com/bwmarrin/discordgo
         - go get github.com/bwmarrin/dgvoice
+        - go get github.com/joho/godotenv
       before_script:
         - cd Discord
       script:

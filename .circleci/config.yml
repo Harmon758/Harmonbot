@@ -63,6 +63,7 @@ jobs:
       - checkout
       - run: go get github.com/bwmarrin/discordgo
       - run: go get github.com/bwmarrin/dgvoice
+      - run: go get github.com/joho/godotenv
       - run: cd Discord && go run Harmonbot_Listener.go
 
 workflows:

@@ -1,6 +1,5 @@
 # Instance Specific Data
 _credentials.py
-Harmonbot_Listener_credentials.json
 data/
 
 # mIRC/mSL (and other) backup / initialization files
