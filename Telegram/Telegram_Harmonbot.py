@@ -4,12 +4,16 @@ import telegram.ext
 
 import os
 
-import credentials
+import dotenv
 
-version = "0.1.2"
+version = "0.1.3"
 
-bot = telegram.Bot(token = credentials.telegram_harmonbot_token)
-updater = telegram.ext.Updater(token = credentials.telegram_harmonbot_token)
+# Load credentials from .env
+dotenv.load_dotenv()
+token = os.getenv("TELEGRAM_BOT_API_TOKEN")
+
+bot = telegram.Bot(token = token)
+updater = telegram.ext.Updater(token = token)
 
 def test(bot, update):
 	bot.sendMessage(chat_id = update.message.chat_id, text = "Hello, World!")
