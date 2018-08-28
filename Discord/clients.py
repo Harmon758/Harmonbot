@@ -154,9 +154,12 @@ class Bot(commands.Bot):
 		## Wolfram Alpha
 		self.wolfram_alpha_client = wolframalpha.Client(self.WOLFRAM_ALPHA_APP_ID)
 		## Wordnik
-		self.wordnik_client = swagger.ApiClient(self.WORDNIK_API_KEY, "http://api.wordnik.com/v4")
-		self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
-		self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
+		try:
+			self.wordnik_client = swagger.ApiClient(self.WORDNIK_API_KEY, "http://api.wordnik.com/v4")
+			self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
+			self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
+		except Exception as e:
+			print(f"{self.console_message_prefix}Failed to initialize Wordnik Client: {e}")
 		
 		# Download FFmpeg
 		## necessary?, for CI?
