@@ -114,6 +114,7 @@ class Bot(commands.Bot):
 		self.BATTLERITE_API_KEY = os.getenv("BATTLERITE_API_KEY")
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
 		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
+		self.FIXER_API_KEY = os.getenv("FIXER_API_KEY")
 		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")

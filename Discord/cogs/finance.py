@@ -137,7 +137,7 @@ class Finance:
 	async def currency_symbols(self, ctx):
 		'''Currency symbols'''
 		url = "https://data.fixer.io/api/symbols"
-		params = {"access_key": credentials.fixer_io_api_key}
+		params = {"access_key": ctx.bot.FIXER_API_KEY}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			# TODO: handle errors
 			data = await resp.json()
@@ -158,7 +158,7 @@ class Finance:
 		await ctx.embed_reply(fields = fields)
 	
 	async def process_currency(self, ctx, against, request, date = ""):
-		params = {"access_key": credentials.fixer_io_api_key}
+		params = {"access_key": ctx.bot.FIXER_API_KEY}
 		if against:
 			params["base"] = against
 		if request:
