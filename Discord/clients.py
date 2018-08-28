@@ -12,6 +12,7 @@ from urllib import parse
 import aiml
 import aiohttp
 from aiohttp import web
+import clarifai
 import clarifai.rest
 import dotenv
 import imageio
@@ -134,7 +135,11 @@ class Bot(commands.Bot):
 		
 		# External Clients
 		## Clarifai
-		self.clarifai_app = clarifai.rest.ClarifaiApp(api_key = self.CLARIFAI_API_KEY)
+		try:
+			self.clarifai_app = clarifai.rest.ClarifaiApp(api_key = self.CLARIFAI_API_KEY)
+		except clarifai.errors.ApiError as e:
+			print(f"{self.console_message_prefix}Failed to initialize Clarifai App: "
+					f"{e.response.status_code} {e.response.reason}: {e.error_desc} ({e.error_details})")
 		## Imgur
 		try:
 			self.imgur_client = imgurpython.ImgurClient(self.IMGUR_CLIENT_ID, self.IMGUR_CLIENT_SECRET)
