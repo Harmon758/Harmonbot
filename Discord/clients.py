@@ -139,7 +139,7 @@ class Bot(commands.Bot):
 		try:
 			self.imgur_client = imgurpython.ImgurClient(self.IMGUR_CLIENT_ID, self.IMGUR_CLIENT_SECRET)
 		except imgurpython.helpers.error.ImgurClientError as e:
-			print("{}Failed to load Imgur Client: {}".format(self.console_message_prefix, e))
+			print(f"{self.console_message_prefix}Failed to initialize Imgur Client: {e}")
 		## Open Weather Map
 		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 		## Twitter
