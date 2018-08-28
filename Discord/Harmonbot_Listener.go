@@ -3,7 +3,7 @@ package main
 import "github.com/bwmarrin/dgvoice"
 import "github.com/bwmarrin/discordgo"
 import "github.com/joho/godotenv"
-	
+
 import "bufio"
 import "bytes"
 import "encoding/base64"
@@ -26,9 +26,9 @@ var token			string
 // var response		*discordgo.Message
 
 func check(e error) {
-    if e != nil {
-        panic(e)
-    }
+	if e != nil {
+		panic(e)
+	}
 }
 
 func main() {
@@ -37,7 +37,7 @@ func main() {
 	// Load Credentials
 	godotenv.Load("../.env")
 	token = os.Getenv("DISCORD_LISTENER_BOT_TOKEN")
-
+	
 	// Connect to Discord
 	dg, err := discordgo.New(token)
 	check(err)
@@ -46,7 +46,7 @@ func main() {
 	dg.AddHandler(ready)
 	// Register messageCreate as a callback for the messageCreate events.
 	dg.AddHandler(messageCreate)
-
+	
 	// Open Websocket
 	err = dg.Open()
 	check(err)
@@ -71,7 +71,7 @@ func main() {
 	}
 	dg.Logout()
 	dg.Close()
-
+	
 	return
 }
 
@@ -151,19 +151,19 @@ func Listen(v *discordgo.VoiceConnection) {
 	
 	fo, err := os.Create("data/temp/heard.pcm")
 	check(err)
-
+	
 	// v.Speaking(true)
 	// defer v.Speaking(false)
 	
 	w := bufio.NewWriter(fo)
 	buf := new(bytes.Buffer)
-
+	
 	for _listen {
 		p, ok := <-recv
 		if !ok {
 			return
 		}
-
+		
 		// echo for debugging
 		// send <- p.PCM
 		err := binary.Write(buf, binary.LittleEndian, p.PCM)
