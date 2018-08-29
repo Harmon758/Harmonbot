@@ -291,7 +291,7 @@ if __name__ == "__main__":
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
 	
-	ci = (os.getenv("CIRCLECI") or os.getenv("TRAVIS")) and os.getenv("CI")
+	ci = os.getenv("CI")
 	
 	if ci or clients.beta:
 		client.command_prefix = '*'
