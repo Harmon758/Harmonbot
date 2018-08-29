@@ -6,7 +6,7 @@ import os
 
 import dotenv
 
-version = "0.1.3"
+version = "0.1.4"
 
 # Load credentials from .env
 dotenv.load_dotenv()
@@ -32,7 +32,6 @@ updater.start_polling()
 bot_info = bot.getMe()
 print(f"Started up Telegram Harmonbot ({bot_info['username']}) ({bot_info['id']})")
 
-ci = (os.getenv("CIRCLECI") or os.getenv("TRAVIS")) and os.getenv("CI")
-if ci:
+if os.getenv("CI"):
 	updater.stop()
 
