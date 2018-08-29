@@ -50,3 +50,24 @@ Telegram:
     - pip install -r requirements.txt
     - cd Telegram
     - python Telegram_Harmonbot.py
+
+Discord Listener:
+  variables:
+    REPO_NAME: github.com/harmon758/harmonbot
+  image: golang:1.10
+  # The problem is that to be able to use go get, one needs to put
+  # the repository in the $GOPATH. So for example, if your gitlab domain
+  # is gitlab.com, and your repository is namespace/project, and with
+  # the default GOPATH being /go, then you'd need to have your
+  # repository in /go/src/gitlab.com/namespace/project
+  # Thus, making a symbolic link corrects this.
+  before_script:
+    - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
+    - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
+    - cd $GOPATH/src/$REPO_NAME
+    - go get github.com/bwmarrin/discordgo
+    - go get github.com/bwmarrin/dgvoice
+    - go get github.com/joho/godotenv
+    - cd Discord
+  script:
+    - go run Harmonbot_Listener.go
