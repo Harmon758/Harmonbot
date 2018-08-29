@@ -26,7 +26,7 @@ Discord:
   script:
     - pip install -r requirements.txt
     - cd Discord
-    - python Harmonbot.py
+    - python -u Harmonbot.py
 
 Telegram:
   # Official language image. Look for the different tagged releases at:
