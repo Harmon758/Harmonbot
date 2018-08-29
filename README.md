@@ -1,6 +1,7 @@
 # Harmonbot
 
 [![CircleCI](https://circleci.com/gh/Harmon758/Harmonbot.svg?style=svg)](https://circleci.com/gh/Harmon758/Harmonbot)
+[![pipeline status](https://gitlab.com/Harmon758/Harmonbot/badges/rewrite/pipeline.svg)](https://gitlab.com/Harmon758/Harmonbot/commits/rewrite)
 [![Build Status](https://travis-ci.org/Harmon758/Harmonbot.svg?branch=rewrite)](https://travis-ci.org/Harmon758/Harmonbot)
 [![Build Status](https://scrutinizer-ci.com/g/Harmon758/Harmonbot/badges/build.png?b=rewrite)](https://scrutinizer-ci.com/g/Harmon758/Harmonbot/build-status/rewrite)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Harmon758/Harmonbot/badges/quality-score.png?b=rewrite)](https://scrutinizer-ci.com/g/Harmon758/Harmonbot/?branch=rewrite)
