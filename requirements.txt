@@ -4,7 +4,7 @@ git+git://github.com/Rapptz/discord.py.git@184c430#egg=discord.py[voice]
 git+git://github.com/Shizmob/pydle.git@b951707#egg=pydle
 python-telegram-bot==10.1.0
 
-aiohttp==3.3.2
+aiohttp==3.4.0
 beautifulsoup4==4.6.3
 clarifai==2.3.0
 cryptography==2.3.1
