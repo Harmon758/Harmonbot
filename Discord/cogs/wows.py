@@ -58,7 +58,7 @@ class WoWS:
 		fields.append(("Account XP", "{:,}".format(data["leveling_points"])))
 		fields.append(("Battles Fought", data["statistics"]["battles"]))
 		fields.append(("Miles Travelled", data["statistics"]["distance"]))
-		fields.append(("Account Created", datetime.datetime.utcfromtimestamp(data["created_at"]).strftime("%Y-%m-%d @ %I:%M:%S %p (UTC)")))
-		# TODO: put account creation date in footer?
-		await ctx.embed_reply(title = data["nickname"], fields = fields)
+		created_at = datetime.datetime.utcfromtimestamp(data["created_at"])
+		await ctx.embed_reply(title = data["nickname"], fields = fields, 
+								footer_text = "Account Created", timestamp = created_at)
 
