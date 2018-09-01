@@ -400,7 +400,6 @@ def create_folder(folder):
 	if not os.path.exists(folder):
 		os.makedirs(folder)
 
-create_folder(data_path)
 create_folder(data_path + "/permissions")
 create_folder(data_path + "/temp")
 
