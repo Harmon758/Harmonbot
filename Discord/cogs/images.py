@@ -67,7 +67,7 @@ class Images:
 	async def image_google(self, ctx, *, search : str):
 		'''Google image search something'''
 		url = "https://www.googleapis.com/customsearch/v1"
-		params = {"key": credentials.google_apikey, "cx": credentials.google_cse_cx, 
+		params = {"key": credentials.google_apikey, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
 					"searchType": "image", 'q': search.replace(' ', '+')}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 403:
