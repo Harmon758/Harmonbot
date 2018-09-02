@@ -117,22 +117,16 @@ class Lichess:
 	@lichess.group(aliases = ["stats", "statistics", "stat", "statistic"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def user(self, ctx, username : LichessUser):
-		'''
-		WIP
-		User stats
-		'''
-		description = "Online: {}\n".format(username["online"])
-		description += "Member since {}\n".format(datetime.datetime.utcfromtimestamp(username["createdAt"] / 1000.0).strftime("%b %#d, %Y")) # Why is this comment here?
-		fields = [("Games", "Played: {0[all]}\nRated: {0[rated]}\nWins: {0[win]}\nLosses: {0[loss]}\nDraws: {0[draw]}\nBookmarks: {0[bookmark]}\nAI: {0[ai]}".format(username["count"]))]
-		fields.append(("Follows", "Followers: {0[nbFollowers]}\nFollowing: {0[nbFollowing]}".format(username)))
-		fields.append(("Time", "Spent playing: {}\nOn TV: {}".format(utilities.secs_to_letter_format(username["playTime"]["total"]), utilities.secs_to_letter_format(username["playTime"]["tv"]))))
+		'''User stats'''
+		# TODO: Separate stats subcommand?
+		fields = []
 		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
 			if username["perfs"].get(mode, {}).get("games", 0) == 0: continue
 			prov = '?' if username["perfs"][mode].get("prov") else ""
 			arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
 			value = "Games: {0[games]}\nRating: {0[rating]}{1} ± {0[rd]}\n{2} {0[prog]}".format(username["perfs"][mode], prov, arrow)
 			fields.append((str(emoji) + ' ' + name, value))
-		await ctx.embed_reply(description, title = username["username"], title_url = username["url"], fields = fields, footer_text = "Last seen", timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0))
+		await ctx.embed_reply(title = username["username"], title_url = username["url"], fields = fields, footer_text = "Last seen", timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0))
 	
 	@user.command(name = "activity")
 	@checks.not_forbidden()
