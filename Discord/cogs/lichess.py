@@ -127,7 +127,13 @@ class Lichess:
 			arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
 			value = "Games: {0[games]}\nRating:\n{0[rating]}{1} ± {0[rd]} {2} {0[prog]}".format(username["perfs"][mode], prov, arrow)
 			fields.append((str(emoji) + ' ' + name, value))
-		await ctx.embed_reply(title = title, title_url = username["url"], fields = fields, footer_text = "Last seen", timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0))
+		if "seenAt" in username:
+			footer_text = "Last seen"
+			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
+		else:
+			footer_text = timestamp = discord.Embed.Empty
+		await ctx.embed_reply(title = title, title_url = username["url"], fields = fields, 
+								footer_text = footer_text, timestamp = timestamp)
 	
 	@user.command(name = "activity")
 	@checks.not_forbidden()
