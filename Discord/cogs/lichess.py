@@ -119,6 +119,7 @@ class Lichess:
 	async def user(self, ctx, username : LichessUser):
 		'''User stats'''
 		# TODO: Separate stats subcommand?
+		title = username.get("title", "") + ' ' + username["username"]
 		fields = []
 		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
 			if username["perfs"].get(mode, {}).get("games", 0) == 0: continue
@@ -126,7 +127,7 @@ class Lichess:
 			arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
 			value = "Games: {0[games]}\nRating:\n{0[rating]}{1} ± {0[rd]} {2} {0[prog]}".format(username["perfs"][mode], prov, arrow)
 			fields.append((str(emoji) + ' ' + name, value))
-		await ctx.embed_reply(title = username["username"], title_url = username["url"], fields = fields, footer_text = "Last seen", timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0))
+		await ctx.embed_reply(title = title, title_url = username["url"], fields = fields, footer_text = "Last seen", timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0))
 	
 	@user.command(name = "activity")
 	@checks.not_forbidden()
