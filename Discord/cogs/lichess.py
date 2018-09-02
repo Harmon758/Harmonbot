@@ -89,7 +89,7 @@ class Lichess:
 	
 	class LichessUser(commands.Converter):
 		async def convert(self, ctx, argument):
-			url = "https://en.lichess.org/api/user/{}".format(argument)
+			url = f"https://en.lichess.org/api/user/{argument}"
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if not data or data.get("closed"):
