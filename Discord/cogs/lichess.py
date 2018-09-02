@@ -84,7 +84,7 @@ class Lichess:
 				else:
 					arrow = self.downrightarrow_emoji
 				await ctx.embed_reply(f"{emoji} {name} | **Games**: {mode_data['games']}, "
-										f"**Rating**: {mode_data['rating']}{prov}±{mode_data['rd']}, "
+										f"**Rating**: {mode_data['rating']}{prov}±{mode_data['rd']} "
 										f"{arrow} {mode_data['prog']}", 
 										title = username["username"])
 			return user_mode_command
