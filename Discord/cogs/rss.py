@@ -98,7 +98,6 @@ class RSS:
 		await ctx.embed_reply('\n'.join(self.feeds_following[str(ctx.channel.id)]))
 	
 	async def check_rss_feeds(self):
-		# TODO: embed limit constants/Bot variables
 		await self.bot.wait_until_ready()
 		offset_aware_task_start_time = datetime.datetime.now(datetime.timezone.utc)
 		## offset_naive_task_start_time = datetime.datetime.utcnow()
@@ -152,10 +151,12 @@ class RSS:
 						if description:
 							description = BeautifulSoup(description, "lxml").get_text(separator = '\n')
 							description = re.sub("\n\s*\n", '\n', description)
-							if len(description) > 2048:
-								space_index = description.rfind(' ', 0, 2045)
+							if len(description) > self.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+								space_index = description.rfind(' ', 0, self.bot.EDCL - 3)
+								# EDCL: Embed Description Character Limit
 								description = description[:space_index] + "..."
-						title = textwrap.shorten(entry.get("title"), width = 256, placeholder = "...")
+						title = textwrap.shorten(entry.get("title"), width = self.bot.ETCL, placeholder = "...")
+						# ETCL: Embed Title Character Limit
 						embed = discord.Embed(title = html.unescape(title), 
 												url = entry.link, 
 												description = description, 
