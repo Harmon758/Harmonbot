@@ -71,12 +71,16 @@ class Lichess:
 	def generate_user_mode_commands(self):
 		# Creates user subcommand for a mode
 		def user_mode_wrapper(mode, name, emoji):
-			@self.user.command(name = name.lower().replace(' ', "").replace('-', ""), help = "User {} stats".format(name))
+			@self.user.command(name = name.lower().replace(' ', "").replace('-', ""), help = f"User {name} stats")
 			@checks.not_forbidden()
 			async def user_mode_command(ctx, username : self.LichessUser):
 				prov = '?' if username["perfs"][mode].get("prov") else ""
 				arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
-				await ctx.embed_reply("{emoji} {name} | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {arrow} {0[prog]}".format(username["perfs"][mode], emoji = emoji, name = name, prov = prov, arrow = arrow), title = username["username"])
+				mode_data = username["perfs"][mode]
+				await ctx.embed_reply(f"{emoji} {name} | **Games**: {mode_data['games']}, "
+										f"**Rating**: {mode_data['rating']}{prov}±{mode_data['rd']}, "
+										f"{arrow} {mode_data['prog']}", 
+										title = username["username"])
 			return user_mode_command
 		# Generate user subcommands for each mode
 		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
