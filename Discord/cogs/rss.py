@@ -95,7 +95,7 @@ class RSS:
 	@checks.not_forbidden()
 	async def feeds(self, ctx):
 		'''Show feeds being followed in this channel'''
-		await ctx.embed_reply("\n".join(self.feeds_following[str(ctx.channel.id)]))
+		await ctx.embed_reply('\n'.join(self.feeds_following[str(ctx.channel.id)]))
 	
 	async def check_rss_feeds(self):
 		# TODO: embed limit constants/Bot variables
