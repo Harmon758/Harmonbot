@@ -120,9 +120,12 @@ class Lichess:
 		data = data["started"]
 		fields = []
 		for tournament in data:
-			value = "{:g}+{} {} {rated}".format(tournament["clock"]["limit"] / 60, tournament["clock"]["increment"], tournament["perf"]["name"], rated = "Rated" if tournament["rated"] else "Casual")
-			value += "\nEnds in: {:g}m".format((datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0) - datetime.datetime.utcnow()).total_seconds() // 60)
-			value += "\n[Link](https://en.lichess.org/tournament/{})".format(tournament["id"])
+			finishes_at = datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0)
+			value = (f"{tournament['clock']['limit'] / 60:g}+{tournament['clock']['increment']} "
+						f"{tournament['perf']['name']} {'Rated' if tournament['rated'] else 'Casual'}"
+						f"\nEnds in: {(finishes_at - datetime.datetime.utcnow()).total_seconds() // 60:g}m"
+						# TODO: Use 'h' for hours?
+						f"\n[Link](https://en.lichess.org/tournament/{tournament['id']})")
 			fields.append((tournament["fullName"], value))
 		await ctx.embed_reply(title = "Current Lichess Tournaments", fields = fields)
 	
