@@ -124,7 +124,7 @@ class Lichess:
 			if username["perfs"].get(mode, {}).get("games", 0) == 0: continue
 			prov = '?' if username["perfs"][mode].get("prov") else ""
 			arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
-			value = "Games: {0[games]}\nRating: {0[rating]}{1} ± {0[rd]}\n{2} {0[prog]}".format(username["perfs"][mode], prov, arrow)
+			value = "Games: {0[games]}\nRating:\n{0[rating]}{1} ± {0[rd]} {2} {0[prog]}".format(username["perfs"][mode], prov, arrow)
 			fields.append((str(emoji) + ' ' + name, value))
 		await ctx.embed_reply(title = username["username"], title_url = username["url"], fields = fields, footer_text = "Last seen", timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0))
 	
