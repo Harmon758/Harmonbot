@@ -34,7 +34,7 @@ class RSS:
 	def __init__(self, bot):
 		self.bot = bot
 		self.feeds_ids = {}
-		clients.create_file("rss_feeds", content = {"channels" : []})
+		clients.create_file("rss_feeds", content = {})
 		with open(clients.data_path + "/rss_feeds.json", 'r') as feeds_file:
 			self.feeds_following = json.load(feeds_file)
 		self.unique_feeds_following = set(feed for feeds in self.feeds_following.values() for feed in feeds)
