@@ -115,7 +115,9 @@ class RSS:
 				print("Exception in RSS Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 				logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
+				print(" (feed: {})".format(feed))
 				return
+				# TODO: Handle error better
 		while not self.bot.is_closed():
 			if not self.unique_feeds_following:
 				await asyncio.sleep(60)
@@ -228,11 +230,13 @@ class RSS:
 						error_message += '\n'
 					print(error_message + " (feed: {})".format(feed))
 					await asyncio.sleep(10)
+					# TODO: Add variable for sleep time
 					'''
 					except asyncio.CancelledError:
 						print("{}RSS Task Cancelled @ {}".format(self.bot.console_message_prefix, datetime.datetime.now().time().isoformat()))
 						return
 					'''
+					# TODO: Handle canceled error/task cleanup
 				except Exception as e:
 					print("Exception in RSS Task", file = sys.stderr)
 					traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
