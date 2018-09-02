@@ -137,10 +137,16 @@ class Lichess:
 		title = username.get("title", "") + ' ' + username["username"]
 		fields = []
 		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
-			if username["perfs"].get(mode, {}).get("games", 0) == 0: continue
-			prov = '?' if username["perfs"][mode].get("prov") else ""
-			arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
+			if not username["perfs"].get(mode, {}).get("games", 0):
+				continue
 			mode_data = username["perfs"][mode]
+			prov = ""
+			if username["perfs"][mode].get("prov"):
+				prov = '?'
+			if username["perfs"][mode]["prog"] >= 0:
+				arrow = self.uprightarrow_emoji
+			else:
+				arrow = self.downrightarrow_emoji
 			value = (f"Games: {mode_data['games']}\nRating:\n"
 						f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}")
 			fields.append((str(emoji) + ' ' + name, value))
