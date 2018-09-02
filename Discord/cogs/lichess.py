@@ -74,7 +74,7 @@ class Lichess:
 			@self.user.command(name = name.lower().replace(' ', "").replace('-', ""), help = "User {} stats".format(name))
 			@checks.not_forbidden()
 			async def user_mode_command(ctx, username : self.LichessUser):
-				prov = "?" if username["perfs"][mode].get("prov") else ""
+				prov = '?' if username["perfs"][mode].get("prov") else ""
 				arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
 				await ctx.embed_reply("{emoji} {name} | **Games**: {0[games]}, **Rating**: {0[rating]}{prov}±{0[rd]}, {arrow} {0[prog]}".format(username["perfs"][mode], emoji = emoji, name = name, prov = prov, arrow = arrow), title = username["username"])
 			return user_mode_command
