@@ -19,8 +19,12 @@ class Lichess:
 	def __init__(self, bot):
 		self.bot = bot
 		
-		self.modes = ("ultraBullet", "bullet", "blitz", "rapid", "classical", "correspondence", "crazyhouse", "chess960", "kingOfTheHill", "threeCheck", "antichess", "atomic", "horde", "racingKings", "puzzle")
-		self.mode_names = ("Ultrabullet", "Bullet", "Blitz", "Rapid", "Classical", "Correspondence", "Crazyhouse", "Chess960", "King of the Hill", "Three-Check", "Antichess", "Atomic", "Horde", "Racing Kings", "Training")
+		self.modes = ("ultraBullet", "bullet", "blitz", "rapid", "classical", "correspondence", 
+						"crazyhouse", "chess960", "kingOfTheHill", "threeCheck", "antichess", 
+						"atomic", "horde", "racingKings", "puzzle")
+		self.mode_names = ("Ultrabullet", "Bullet", "Blitz", "Rapid", "Classical", "Correspondence", 
+							"Crazyhouse", "Chess960", "King of the Hill", "Three-Check", "Antichess", 
+							"Atomic", "Horde", "Racing Kings", "Training")
 		
 		self.load_emoji()
 		self.generate_user_mode_commands()
@@ -58,7 +62,11 @@ class Lichess:
 		self.team_emoji = discord.utils.get(self.bot.emojis, name = "lichess_team") or ""  # TODO: Fallback Emoji
 		self.thumbsup_emoji = discord.utils.get(self.bot.emojis, name = "lichess_thumbsup") or ":thumbsup:"  # TODO: add skin-tone
 		self.trophy_emoji = discord.utils.get(self.bot.emojis, name = "lichess_trophy") or ":trophy:"
-		self.mode_emojis = (self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji, self.rapid_emoji, self.classical_emoji, self.correspondence_emoji, self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji, self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji, self.horde_emoji, self.racingkings_emoji, self.training_emoji)
+		self.mode_emojis = (self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji, 
+							self.rapid_emoji, self.classical_emoji, self.correspondence_emoji, 
+							self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji, 
+							self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji, 
+							self.horde_emoji, self.racingkings_emoji, self.training_emoji)
 	
 	def generate_user_mode_commands(self):
 		# Creates user subcommand for a mode
