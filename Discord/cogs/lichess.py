@@ -112,7 +112,7 @@ class Lichess:
 			value += "\nEnds in: {:g}m".format((datetime.datetime.utcfromtimestamp(tournament["finishesAt"] / 1000.0) - datetime.datetime.utcnow()).total_seconds() // 60)
 			value += "\n[Link](https://en.lichess.org/tournament/{})".format(tournament["id"])
 			fields.append((tournament["fullName"], value))
-		await ctx.embed_reply(None, title = "Current Lichess Tournaments", fields = fields)
+		await ctx.embed_reply(title = "Current Lichess Tournaments", fields = fields)
 	
 	@lichess.group(aliases = ["stats", "statistics", "stat", "statistic"], invoke_without_command = True)
 	@checks.not_forbidden()
