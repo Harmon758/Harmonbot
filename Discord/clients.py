@@ -80,6 +80,7 @@ class Bot(commands.Bot):
 		self.listener_id = 180994984038760448
 		self.cache_channel_id = 254051856219635713
 		self.changelog = "https://discord.gg/a2rbZPu"
+		self.console_line_limit = 167
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
