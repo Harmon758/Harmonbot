@@ -90,8 +90,11 @@ class Lichess:
 			return user_mode_command
 		# Generate user subcommands for each mode
 		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
-			self.user.remove_command(name.lower().replace(' ', "").replace('-', ""))
-			setattr(self, "user_" + name.lower().replace(' ', "").replace('-', ""), user_mode_wrapper(mode, name, emoji))
+			internal_name = name.lower().replace(' ', "").replace('-', "")
+			# Remove existing command in cases where already generated
+			# Such as on ready after cog initialized
+			self.user.remove_command(internal_name)
+			setattr(self, "user_" + internal_name, user_mode_wrapper(mode, name, emoji))
 	
 	class LichessUser(commands.Converter):
 		async def convert(self, ctx, argument):
