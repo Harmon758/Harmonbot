@@ -140,7 +140,9 @@ class Lichess:
 			if username["perfs"].get(mode, {}).get("games", 0) == 0: continue
 			prov = '?' if username["perfs"][mode].get("prov") else ""
 			arrow = self.uprightarrow_emoji if username["perfs"][mode]["prog"] >= 0 else self.downrightarrow_emoji
-			value = "Games: {0[games]}\nRating:\n{0[rating]}{1} ± {0[rd]} {2} {0[prog]}".format(username["perfs"][mode], prov, arrow)
+			mode_data = username["perfs"][mode]
+			value = (f"Games: {mode_data['games']}\nRating:\n"
+						f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}")
 			fields.append((str(emoji) + ' ' + name, value))
 		if "seenAt" in username:
 			footer_text = "Last seen"
