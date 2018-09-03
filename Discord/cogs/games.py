@@ -1204,7 +1204,7 @@ class Games:
 			bet, bets = options and options[0] == "bet", {}
 			self.trivia_active, responses = True, {}
 			data = {}
-			while not data.get("question"):
+			while not data.get("question") or not data.get("category"):
 				async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
 					data = (await resp.json())[0]
 			if bet:
