@@ -128,6 +128,8 @@ class Bot(commands.Bot):
 		self.OSU_API_KEY = os.getenv("OSU_API_KEY")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
 		self.PAGE2IMAGES_REST_API_KEY = os.getenv("PAGE2IMAGES_REST_API_KEY")
+		self.POSTGRES_HOST = os.getenv("POSTGRES_HOST") or "localhost"
+		self.DATABASE_HOST = self.POSTGRES_HOST
 		self.STEAM_WEB_API_KEY = os.getenv("STEAM_WEB_API_KEY")
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.TWITTER_CONSUMER_KEY = os.getenv("TWITTER_CONSUMER_KEY")
@@ -246,7 +248,7 @@ class Bot(commands.Bot):
 			self.connected_to_database.clear()
 			self.database_connection = await asyncpg.connect(user = "harmonbot", 
 																password = self.DATABASE_PASSWORD, 
-																database = "harmonbot", host = "localhost")
+																database = "harmonbot", host = self.DATABASE_HOST)
 			self.db = self.database = self.db_c = self.database_connection
 			self.connected_to_database.set()
 		else:
