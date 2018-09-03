@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+import asyncio
 import datetime
 import json
 import os
@@ -12,6 +13,7 @@ from urllib import parse
 import aiml
 import aiohttp
 from aiohttp import web
+import asyncpg
 import clarifai
 import clarifai.rest
 import dotenv
@@ -201,6 +203,12 @@ class Bot(commands.Bot):
 			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
 			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 		
+		# PostgreSQL database connection
+		self.db = self.database = self.db_c = self.database_connection = None
+		self.connected_to_database = asyncio.Event()
+		self.connected_to_database.set()
+		self.loop.create_task(self.connect_to_database())
+		
 		# Web Server
 		self.aiohttp_web_app = web.Application()
 		self.aiohttp_web_app.add_routes([web.get('/', self.web_server_get_handler), 
@@ -229,6 +237,19 @@ class Bot(commands.Bot):
 		# TODO: Document inter-cog dependencies/subcommands
 		# TODO: Catch exceptions on fail to load?
 		# TODO: Move all to on_ready?
+	
+	async def connect_to_database(self):
+		if self.database_connection:
+			return
+		if self.connected_to_database.is_set():
+			self.connected_to_database.clear()
+			self.database_connection = await asyncpg.connect(user = "Harmonbot", 
+																password = credentials.database_password, 
+																database = "Harmonbot", host = "localhost")
+			self.db = self.database = self.db_c = self.database_connection
+			self.connected_to_database.set()
+		else:
+			await self.connected_to_database.wait()
 	
 	async def web_server_get_handler(self, request):
 		'''
@@ -462,6 +483,8 @@ async def shutdown_tasks():
 	if audio_cog: audio_cog.cancel_all_tasks()
 	# Close aiohttp session
 	await aiohttp_session.close()
+	# Close database connection
+	await client.database_connection.close()
 	# Stop web server
 	await client.aiohttp_app_runner.cleanup()
 	# Save uptime
