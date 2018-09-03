@@ -118,6 +118,7 @@ class Bot(commands.Bot):
 		self.BLIZZARD_API_KEY = self.BATTLE_NET_API_KEY
 		self.BATTLERITE_API_KEY = os.getenv("BATTLERITE_API_KEY")
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
+		self.DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
 		self.FIXER_API_KEY = os.getenv("FIXER_API_KEY")
 		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
@@ -244,7 +245,7 @@ class Bot(commands.Bot):
 		if self.connected_to_database.is_set():
 			self.connected_to_database.clear()
 			self.database_connection = await asyncpg.connect(user = "Harmonbot", 
-																password = credentials.database_password, 
+																password = self.DATABASE_PASSWORD, 
 																database = "Harmonbot", host = "localhost")
 			self.db = self.database = self.db_c = self.database_connection
 			self.connected_to_database.set()
