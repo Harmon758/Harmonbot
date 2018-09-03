@@ -244,9 +244,9 @@ class Bot(commands.Bot):
 			return
 		if self.connected_to_database.is_set():
 			self.connected_to_database.clear()
-			self.database_connection = await asyncpg.connect(user = "Harmonbot", 
+			self.database_connection = await asyncpg.connect(user = "harmonbot", 
 																password = self.DATABASE_PASSWORD, 
-																database = "Harmonbot", host = "localhost")
+																database = "harmonbot", host = "localhost")
 			self.db = self.database = self.db_c = self.database_connection
 			self.connected_to_database.set()
 		else:

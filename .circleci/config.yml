@@ -9,8 +9,8 @@ jobs:
       - image: circleci/python:3.7.0
       - image: postgres:10.4
         environment:
-          POSTGRES_USER: Harmonbot
-          POSTGRES_DB: Harmonbot
+          POSTGRES_USER: harmonbot
+          POSTGRES_DB: harmonbot
 
     working_directory: ~/repo
 
