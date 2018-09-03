@@ -7,11 +7,10 @@ jobs:
   test-python:
     docker:
       - image: circleci/python:3.7.0
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+      - image: postgres:10.4
+        environment:
+          POSTGRES_USER: harmonbot
+          POSTGRES_DB: harmonbot
 
     working_directory: ~/repo
 

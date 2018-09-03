@@ -118,6 +118,7 @@ class Bot(commands.Bot):
 		self.BLIZZARD_API_KEY = self.BATTLE_NET_API_KEY
 		self.BATTLERITE_API_KEY = os.getenv("BATTLERITE_API_KEY")
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
+		self.DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
 		self.FIXER_API_KEY = os.getenv("FIXER_API_KEY")
 		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
@@ -127,6 +128,8 @@ class Bot(commands.Bot):
 		self.OSU_API_KEY = os.getenv("OSU_API_KEY")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
 		self.PAGE2IMAGES_REST_API_KEY = os.getenv("PAGE2IMAGES_REST_API_KEY")
+		self.POSTGRES_HOST = os.getenv("POSTGRES_HOST") or "localhost"
+		self.DATABASE_HOST = self.POSTGRES_HOST
 		self.STEAM_WEB_API_KEY = os.getenv("STEAM_WEB_API_KEY")
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.TWITTER_CONSUMER_KEY = os.getenv("TWITTER_CONSUMER_KEY")
@@ -243,9 +246,9 @@ class Bot(commands.Bot):
 			return
 		if self.connected_to_database.is_set():
 			self.connected_to_database.clear()
-			self.database_connection = await asyncpg.connect(user = "Harmonbot", 
-																password = credentials.database_password, 
-																database = "Harmonbot", host = "localhost")
+			self.database_connection = await asyncpg.connect(user = "harmonbot", 
+																password = self.DATABASE_PASSWORD, 
+																database = "harmonbot", host = self.DATABASE_HOST)
 			self.db = self.database = self.db_c = self.database_connection
 			self.connected_to_database.set()
 		else:
