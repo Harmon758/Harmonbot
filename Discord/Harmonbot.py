@@ -130,7 +130,7 @@ if __name__ == "__main__":
 					if message.guild.me.permissions_in(message.channel).kick_members:
 						# TODO: Check hierarchy, if able to kick
 						await ctx.author.send("You were kicked from {} for spamming mentions".format(message.guild))
-						await client.kick(message.author)
+						await ctx.bot.kick(message.author)
 						await ctx.send("{} has been kicked for spamming mentions".format(message.author))
 					else:
 						await ctx.send("I need permission to kick members from the server to enforce anti-spam")
@@ -143,12 +143,12 @@ if __name__ == "__main__":
 				return
 		
 		# Invoke Commands
-		await client.invoke(ctx)
+		await ctx.bot.invoke(ctx)
 		
 		# Forward DMs
 		if isinstance(message.channel, discord.DMChannel) and message.channel.recipient.id != ctx.bot.owner_id:
-			me = discord.utils.get(client.get_all_members(), id = ctx.bot.owner_id)
-			if message.author == client.user:
+			me = discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)
+			if message.author == ctx.bot.user:
 				try:
 					await me.send("To {0.channel.recipient}: {0.content}".format(message), embed = message.embeds[0] if message.embeds else None)
 				except discord.HTTPException:
@@ -158,7 +158,7 @@ if __name__ == "__main__":
 				await me.send("From {0.author}: {0.content}".format(message), embed = message.embeds[0] if message.embeds else None)
 		
 		# Ignore own and blank messages
-		if message.author == client.user or not message.content:
+		if message.author == ctx.bot.user or not message.content:
 			return
 		
 		# Test on_message command
@@ -211,7 +211,7 @@ if __name__ == "__main__":
 			if aiml_response:
 				await ctx.embed_reply(aiml_response, attempt_delete = False)
 			else:
-				games_cog = client.get_cog("Games")
+				games_cog = ctx.bot.get_cog("Games")
 				if games_cog:
 					cleverbot_response = await games_cog.cleverbot_get_reply(content)
 					await ctx.embed_reply(cleverbot_response, attempt_delete = False)
@@ -224,11 +224,11 @@ if __name__ == "__main__":
 		
 		# Respects (f) system
 		elif message.content.lower() == 'f':
-			total_respects = await client.db.fetchval("""UPDATE respect.stats
+			total_respects = await ctx.bot.db.fetchval("""UPDATE respect.stats
 															SET value = value + 1
 															WHERE stat = 'total'
 															RETURNING value""")
-			user_respects = await client.db.fetchval("""INSERT INTO respect.users (user_id, respects)
+			user_respects = await ctx.bot.db.fetchval("""INSERT INTO respect.users (user_id, respects)
 														VALUES ($1, 1)
 														ON CONFLICT (user_id) DO
 														UPDATE SET respects = users.respects + 1
