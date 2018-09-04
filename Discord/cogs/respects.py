@@ -1,5 +1,11 @@
 
+import discord
 from discord.ext import commands
+
+## import astropy.modeling
+import matplotlib
+import numpy
+## import scipy
 
 from utilities import checks
 
@@ -90,4 +96,43 @@ class Respects:
 		suffix = ctx.bot.inflect_engine.ordinal(user_respects)[len(str(user_respects)):]
 		await ctx.embed_reply(f"{ctx.author.mention} has paid their respects for the {user_respects:,}{suffix} time\n"
 								f"Total respects paid so far: {total_respects:,}")
-
+	
+	@respects.command(aliases = ["statistics"])
+	async def stats(self, ctx):
+		'''Statistics'''
+		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respect.stats WHERE stat = 'total'")
+		respects_paid = []
+		async with ctx.bot.database_connection_pool.acquire() as connection:
+			async with connection.transaction():
+				# Postgres requires non-scrollable cursors to be created
+				# and used in a transaction.
+				async for record in connection.cursor("SELECT * FROM respect.users"):
+					respects_paid.append(record["respects"])
+		# TODO: Optimize
+		filename = ctx.bot.data_path + "/temp/respects.png"
+		# TODO: Fit curve
+		## n, bins, _ = matplotlib.pyplot.hist(respects_paid, log = True, 
+		matplotlib.pyplot.hist(respects_paid, log = True, 
+								bins = numpy.logspace(numpy.log10(1), numpy.log10(max(respects_paid)), 50))
+		## bin_centers = bins[:-1] + numpy.diff(bins) / 2
+		## def func(x, a, b, c):
+		##	return a * numpy.exp(-b * x) + c
+		## popt, _ = scipy.optimize.curve_fit(func, bin_centers[1:], n[1:], p0 = (1000, 1, 1), maxfev = 100000)
+		## t_init = astropy.modeling.models.Gaussian1D()
+		## fit_t = astropy.modeling.fitting.LevMarLSQFitter()
+		## t = fit_t(t_init, bin_centers, n)
+		## x_interval_for_fit = numpy.linspace(bins[0], bins[-1], 10000)
+		## matplotlib.pyplot.plot(x_interval_for_fit, func(x_interval_for_fit, *popt), color = "red")
+		axes = matplotlib.pyplot.gca()
+		axes.set_xscale("log")
+		## axes.set_ylim(0.8)
+		axes.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+		axes.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+		axes.set_xlabel("Respects Paid")
+		axes.set_ylabel("People")
+		matplotlib.pyplot.savefig(filename)
+		matplotlib.pyplot.clf()
+		await ctx.embed_reply(fields = (("Total respects paid", f"{total_respects:,}"), 
+										("People who paid respects", f"{len(respects_paid):,}")),
+								image_url = "attachment://respects.png", file = discord.File(filename))
+	
