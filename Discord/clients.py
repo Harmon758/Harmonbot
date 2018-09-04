@@ -210,7 +210,7 @@ class Bot(commands.Bot):
 		self.inflect_engine = inflect.engine()
 		
 		# PostgreSQL database connection
-		self.db = self.database = self.db_c = self.database_connection = None
+		self.db = self.database = self.database_connection_pool = None
 		self.connected_to_database = asyncio.Event()
 		self.connected_to_database.set()
 		self.loop.create_task(self.connect_to_database())
@@ -245,14 +245,14 @@ class Bot(commands.Bot):
 		# TODO: Move all to on_ready?
 	
 	async def connect_to_database(self):
-		if self.database_connection:
+		if self.database_connection_pool:
 			return
 		if self.connected_to_database.is_set():
 			self.connected_to_database.clear()
-			self.database_connection = await asyncpg.connect(user = "harmonbot", 
-																password = self.DATABASE_PASSWORD, 
-																database = "harmonbot", host = self.DATABASE_HOST)
-			self.db = self.database = self.db_c = self.database_connection
+			self.database_connection_pool = await asyncpg.create_pool(user = "harmonbot", 
+																		password = self.DATABASE_PASSWORD, 
+																		database = "harmonbot", host = self.DATABASE_HOST)
+			self.db = self.database = self.database_connection_pool
 			self.connected_to_database.set()
 		else:
 			await self.connected_to_database.wait()
@@ -490,7 +490,7 @@ async def shutdown_tasks():
 	# Close aiohttp session
 	await aiohttp_session.close()
 	# Close database connection
-	await client.database_connection.close()
+	await client.database_connection_pool.close()
 	# Stop web server
 	await client.aiohttp_app_runner.cleanup()
 	# Save uptime
