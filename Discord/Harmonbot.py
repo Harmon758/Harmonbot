@@ -246,12 +246,7 @@ if __name__ == "__main__":
 							f"Total respects paid so far: {total_respects}\n"
 							f"Recorded respects paid by {message.author.display_name}: {user_respects}")
 			# User respects count since 2016-12-20
-			try:
-				await ctx.embed_reply(description)
-			except discord.Forbidden:  # necessary?
-				raise
-			except discord.HTTPException:  # necessary?
-				await ctx.send(description)
+			await ctx.embed_reply(description)
 	
 	@client.event
 	async def on_error(event_method, *args, **kwargs):
