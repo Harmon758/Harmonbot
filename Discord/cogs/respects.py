@@ -4,9 +4,41 @@ from discord.ext import commands
 from utilities import checks
 
 def setup(bot):
-	bot.add_cog(Respects())
+	bot.add_cog(Respects(bot))
 
 class Respects:
+	
+	def __init__(self, bot):
+		self.bot = bot
+		self.bot.loop.create_task(self.initialize_database())
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS respect")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS respect.stats (
+				stat	TEXT PRIMARY KEY, 
+				value	BIGINT
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS respect.users (
+				user_id		BIGINT PRIMARY KEY, 
+				respects	BIGINT
+			)
+			"""
+		)
+		# TODO: guilds table
+		await self.bot.db.execute(
+			"""
+			INSERT INTO respect.stats (stat, value)
+			VALUES ('total', 0)
+			ON CONFLICT (stat) DO NOTHING
+			"""
+		)
 	
 	def __local_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
