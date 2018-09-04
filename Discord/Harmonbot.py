@@ -234,9 +234,10 @@ if __name__ == "__main__":
 														UPDATE SET respects = users.respects + 1
 														RETURNING respects""", 
 														message.author.id)
-			description = "{} has paid their respects\n".format(message.author.display_name)
-			description += "Total respects paid so far: {}\n".format(total_respects)
-			description += "Recorded respects paid by {}: {}".format(message.author.display_name, user_respects) # since 2016-12-20
+			description = (f"{message.author.display_name} has paid their respects\n"
+							f"Total respects paid so far: {total_respects}\n"
+							f"Recorded respects paid by {message.author.display_name}: {user_respects}")
+			# User respects count since 2016-12-20
 			try:
 				await ctx.embed_reply(description)
 			except discord.Forbidden: # necessary?
