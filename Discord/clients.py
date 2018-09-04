@@ -206,6 +206,9 @@ class Bot(commands.Bot):
 			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
 			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 		
+		# Inflect engine
+		self.inflect_engine = inflect.engine()
+		
 		# PostgreSQL database connection
 		self.db = self.database = self.db_c = self.database_connection = None
 		self.connected_to_database = asyncio.Event()
