@@ -52,11 +52,22 @@ class Respects:
 		await ctx.invoke(ctx.bot.get_command("help"), ctx.invoked_with)
 	
 	@respects.command()
+	async def paid(self, ctx):
+		'''
+		Respects paid
+		Record of respects paid by each user began on 2016-12-20
+		'''
+		user_respects = await ctx.bot.db.fetchval("SELECT respects FROM respect.users WHERE user_id = $1", 
+													ctx.author.id)
+		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respect.stats WHERE stat = 'total'")
+		await ctx.embed_reply(f"You have paid {user_respects:,} respects\n"
+								f"A total of {total_respects:,} respects have been paid")
+	
+	@respects.command()
 	async def pay(self, ctx):
 		'''
 		Pay Respects
 		Can also be triggered with 'f' or 'F'
-		Record of respects paid by each user began on 2016-12-20
 		'''
 		total_respects = await ctx.bot.db.fetchval(
 								"""
