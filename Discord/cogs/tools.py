@@ -76,8 +76,7 @@ class Tools:
 			return
 		matplotlib.pyplot.savefig(filename)
 		matplotlib.pyplot.clf()
-		await ctx.channel.send(ctx.author.display_name + ':', file = discord.File(filename))
-		# TODO: Send as embed?
+		await ctx.embed_reply(image_url = "attachment://graph.png", file = discord.File(filename))
 	
 	def string_to_equation(self, string):
 		replacements = {'^': "**"}
