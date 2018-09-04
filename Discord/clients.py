@@ -258,18 +258,30 @@ class Bot(commands.Bot):
 	async def initialize_database(self):
 		# Initialize respects (f) system schema + tables
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS respect")
-		await self.db.execute("""CREATE TABLE IF NOT EXISTS respect.stats (
-									stat	TEXT PRIMARY KEY, 
-									value	BIGINT
-									)""")
-		await self.db.execute("""CREATE TABLE IF NOT EXISTS respect.users (
-									user_id		BIGINT PRIMARY KEY, 
-									respects	BIGINT
-									)""")
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS respect.stats (
+				stat	TEXT PRIMARY KEY, 
+				value	BIGINT
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS respect.users (
+				user_id		BIGINT PRIMARY KEY, 
+				respects	BIGINT
+			)
+			"""
+		)
 		# TODO: guilds table
-		await self.db.execute("""INSERT INTO respect.stats (stat, value)
-									VALUES ('total', 0)
-									ON CONFLICT (stat) DO NOTHING""")
+		await self.db.execute(
+			"""
+			INSERT INTO respect.stats (stat, value)
+			VALUES ('total', 0)
+			ON CONFLICT (stat) DO NOTHING
+			"""
+		)
 	
 	async def web_server_get_handler(self, request):
 		'''
