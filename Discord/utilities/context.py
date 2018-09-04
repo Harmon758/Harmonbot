@@ -39,7 +39,7 @@ class Context(commands.Context):
 		return message
 	
 	def reply(self, content, *args, **kwargs):
-		return self.send("{0.display_name}: {1}".format(self.author, content), **kwargs)
+		return self.send("{0.display_name}:\n{1}".format(self.author, content), **kwargs)
 	
 	def whisper(self, *args, **kwargs):
 		return self.author.send(*args, **kwargs)
