@@ -224,29 +224,9 @@ if __name__ == "__main__":
 		
 		# Respects (f) system
 		elif message.content.lower() == 'f':
-			total_respects = await ctx.bot.db.fetchval(
-									"""
-									UPDATE respect.stats
-									SET value = value + 1
-									WHERE stat = 'total'
-									RETURNING value
-									"""
-								)
-			user_respects = await ctx.bot.db.fetchval(
-								"""
-								INSERT INTO respect.users (user_id, respects)
-								VALUES ($1, 1)
-								ON CONFLICT (user_id) DO
-								UPDATE SET respects = users.respects + 1
-								RETURNING respects
-								""", 
-								message.author.id
-							)
-			description = (f"{message.author.mention} has paid their respects\n"
-							f"Total respects paid so far: {total_respects}\n"
-							f"Recorded respects paid by {message.author.mention}: {user_respects}")
-			# User respects count since 2016-12-20
-			await ctx.embed_reply(description)
+			respects_command = ctx.bot.get_command("respects")
+			if respects_command:
+				await ctx.invoke(respects_command.get_command("pay"))
 	
 	@client.event
 	async def on_error(event_method, *args, **kwargs):
