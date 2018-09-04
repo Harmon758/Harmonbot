@@ -242,9 +242,9 @@ if __name__ == "__main__":
 								""", 
 								message.author.id
 							)
-			description = (f"{message.author.display_name} has paid their respects\n"
+			description = (f"{message.author.mention} has paid their respects\n"
 							f"Total respects paid so far: {total_respects}\n"
-							f"Recorded respects paid by {message.author.display_name}: {user_respects}")
+							f"Recorded respects paid by {message.author.mention}: {user_respects}")
 			# User respects count since 2016-12-20
 			await ctx.embed_reply(description)
 	
