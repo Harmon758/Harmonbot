@@ -44,8 +44,7 @@ class Respects:
 							""", 
 							ctx.author.id
 						)
-		description = (f"{ctx.author.mention} has paid their respects\n"
-						f"Total respects paid so far: {total_respects}\n"
-						f"Recorded respects paid by {ctx.author.mention}: {user_respects}")
-		await ctx.embed_reply(description)
+		suffix = ctx.bot.inflect_engine.ordinal(user_respects)[len(str(user_respects)):]
+		await ctx.embed_reply(f"{ctx.author.mention} has paid their respects for the {user_respects:,}{suffix} time\n"
+								f"Total respects paid so far: {total_respects:,}")
 
