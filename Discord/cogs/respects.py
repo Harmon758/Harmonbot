@@ -136,3 +136,16 @@ class Respects:
 										("People who paid respects", f"{len(respects_paid):,}")),
 								image_url = "attachment://respects.png", file = discord.File(filename))
 	
+	@respects.command(aliases = ["most"])
+	async def top(self, ctx):
+		'''Top respects paid'''
+		fields = []
+		async with ctx.bot.database_connection_pool.acquire() as connection:
+			async with connection.transaction():
+				# Postgres requires non-scrollable cursors to be created
+				# and used in a transaction.
+				async for record in connection.cursor("SELECT * FROM respect.users ORDER BY respects DESC LIMIT 10"):
+					user = await ctx.bot.get_user_info(record["user_id"])
+					fields.append((str(user), f"{record['respects']:,}"))
+		await ctx.embed_reply(title = "Top Respects Paid", fields = fields)
+
