@@ -64,7 +64,7 @@ class Respects:
 		Record of respects paid by each user began on 2016-12-20
 		'''
 		user_respects = await ctx.bot.db.fetchval("SELECT respects FROM respect.users WHERE user_id = $1", 
-													ctx.author.id)
+													ctx.author.id) or 0
 		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respect.stats WHERE stat = 'total'")
 		await ctx.embed_reply(f"You have paid {user_respects:,} respects\n"
 								f"A total of {total_respects:,} respects have been paid")
