@@ -55,6 +55,8 @@ class Math:
 				await ctx.embed_reply(":no_entry: Output too long")
 			except SyntaxError:
 				await ctx.embed_reply(":no_entry: Syntax error")
+			except TypeError as e:
+				await ctx.embed_reply(f":no_entry: Error: {e}")
 			except ZeroDivisionError:
 				await ctx.embed_reply(":no_entry: Error: Division by zero")
 			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
