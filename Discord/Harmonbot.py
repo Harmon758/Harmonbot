@@ -222,7 +222,7 @@ if __name__ == "__main__":
 			if '\N{BILLIARDS}' in ctx.bot.all_commands:
 				await ctx.invoke(ctx.bot.all_commands['\N{BILLIARDS}'])
 		
-		# f
+		# Respects (f) system
 		elif message.content.lower() == 'f':
 			total_respects = await client.db.fetchval("""UPDATE respect.stats
 															SET value = value + 1
@@ -240,9 +240,9 @@ if __name__ == "__main__":
 			# User respects count since 2016-12-20
 			try:
 				await ctx.embed_reply(description)
-			except discord.Forbidden: # necessary?
+			except discord.Forbidden:  # necessary?
 				raise
-			except discord.HTTPException: # necessary?
+			except discord.HTTPException:  # necessary?
 				await ctx.send(description)
 	
 	@client.event

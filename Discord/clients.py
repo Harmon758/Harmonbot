@@ -270,20 +270,6 @@ class Bot(commands.Bot):
 		await self.db.execute("""INSERT INTO respect.stats (stat, value)
 									VALUES ('total', 0)
 									ON CONFLICT (stat) DO NOTHING""")
-		# Migrate existing data
-		'''
-		with open(data_path + "/f.json", 'r') as f_file:
-			f_counter_info = json.load(f_file)
-		for key, value in f_counter_info.items():
-			if key == "total":
-				await self.db.execute("UPDATE respect.stats SET value = $1 WHERE stat = 'total'", 
-										value)
-			else:
-				await self.db.execute("""INSERT INTO respect.users (user_id, respects)
-										VALUES ($1, $2)
-										ON CONFLICT (user_id) DO UPDATE SET respects = $2""", 
-										int(key), value)
-		'''
 	
 	async def web_server_get_handler(self, request):
 		'''
