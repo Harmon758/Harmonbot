@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+from modules import utilities
 from utilities import errors
 
 class Context(commands.Context):
@@ -30,8 +31,8 @@ class Context(commands.Context):
 		if isinstance(self.channel, discord.DMChannel) or getattr(self.channel.permissions_for(self.channel.guild.me), "embed_links", None):
 			message = await self.send(*args, embed = embed, **kwargs)
 		elif not (title or title_url or image_url or thumbnail_url or footer_text or footer_icon_url or timestamp or fields):
-			message = await self.reply(description)
-			# TODO: Check for everyone/here mentions
+			message = await self.reply(utilities.clean_content(description))
+			# TODO: Clean role + user mentions, etc.?
 		else:
 			raise errors.MissingCapability(["embed_links"])
 		if attempt_delete: await self.bot.attempt_delete_message(self.message)
