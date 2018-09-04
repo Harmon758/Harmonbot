@@ -27,10 +27,6 @@ if __name__ == "__main__":
 	from utilities import errors
 	from utilities import audio_player
 	
-	clients.create_file('f', content = {"total": 0})
-	with open(clients.data_path + "/f.json", 'r') as f_file:
-		f_counter_info = json.load(f_file)
-	
 	mention_spammers = []
 	
 	@client.listen()
@@ -228,13 +224,19 @@ if __name__ == "__main__":
 		
 		# f
 		elif message.content.lower() == 'f':
-			f_counter_info["total"] += 1
-			f_counter_info[str(message.author.id)] = f_counter_info.get(str(message.author.id), 0) + 1
-			with open(clients.data_path + "/f.json", 'w') as f_file:
-				json.dump(f_counter_info, f_file, indent = 4)
+			total_respects = await client.db.fetchval("""UPDATE respect.stats
+															SET value = value + 1
+															WHERE stat = 'total'
+															RETURNING value""")
+			user_respects = await client.db.fetchval("""INSERT INTO respect.users (user_id, respects)
+														VALUES ($1, 1)
+														ON CONFLICT (user_id) DO
+														UPDATE SET respects = users.respects + 1
+														RETURNING respects""", 
+														message.author.id)
 			description = "{} has paid their respects\n".format(message.author.display_name)
-			description += "Total respects paid so far: {}\n".format(f_counter_info["total"])
-			description += "Recorded respects paid by {}: {}".format(message.author.display_name, f_counter_info[str(message.author.id)]) # since 2016-12-20
+			description += "Total respects paid so far: {}\n".format(total_respects)
+			description += "Recorded respects paid by {}: {}".format(message.author.display_name, user_respects) # since 2016-12-20
 			try:
 				await ctx.embed_reply(description)
 			except discord.Forbidden: # necessary?
