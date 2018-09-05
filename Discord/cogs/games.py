@@ -1219,7 +1219,7 @@ class Games:
 						if int(message.content) <= self.trivia_stats[message.author.id][2]: # check if new player
 							bets[message.author] = int(message.content)
 							await bet_ctx.embed_reply("Has bet ${}".format(message.content))
-							await self.bot.delete_message(message)
+							await self.bot.attempt_delete_message(message)
 						else:
 							await bet_ctx.embed_reply("You don't have that much money to bet!")
 				while not bet_countdown_task.done():
