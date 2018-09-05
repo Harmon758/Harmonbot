@@ -202,10 +202,11 @@ class Resources:
 	
 	@commands.command(aliases = ["movie"])
 	@checks.not_forbidden()
-	async def imdb(self, ctx, *search : str):
+	async def imdb(self, ctx, *, search : str):
 		'''IMDb Information'''
-		url = "http://www.omdbapi.com/?t={}&plot=short&apikey={}".format('+'.join(search), ctx.bot.OMDB_API_KEY)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://www.omdbapi.com/"
+		params = {'t': search, "plot": "short", "apikey": ctx.bot.OMDB_API_KEY}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
 			await ctx.embed_reply(":no_entry: Error: {}".format(data["Error"]))
