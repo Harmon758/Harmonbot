@@ -1225,7 +1225,7 @@ class Games:
 				while not bet_countdown_task.done():
 					await asyncio.sleep(0.1)
 				embed.set_footer(text = "Betting is over")
-				await self.bot.edit_message(bet_message, embed = embed)
+				await bet_message.edit(embed = embed)
 			self.trivia_countdown = int(clients.wait_time)
 			answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to answer".format(self.trivia_countdown))
 			embed = answer_message.embeds[0]
@@ -1237,7 +1237,7 @@ class Games:
 			while not countdown_task.done():
 				await asyncio.sleep(0.1)
 			embed.set_footer(text = "Time's up!")
-			await self.bot.edit_message(answer_message, embed = embed)
+			await answer_message.edit(embed = embed)
 			correct_players = []
 			incorrect_players = []
 			matches_1 = re.search("\((.+)\) (.+)", data["answer"].lower())
@@ -1297,14 +1297,14 @@ class Games:
 			await asyncio.sleep(1)
 			self.bet_countdown -= 1
 			embed.set_footer(text = "You have {} seconds left to bet".format(self.bet_countdown))
-			await self.bot.edit_message(bet_message, embed = embed)
+			await bet_message.edit(embed = embed)
 	
 	async def _trivia_countdown(self, answer_message, embed):
 		while self.trivia_countdown:
 			await asyncio.sleep(1)
 			self.trivia_countdown -= 1
 			embed.set_footer(text = "You have {} seconds left to answer".format(self.trivia_countdown))
-			await self.bot.edit_message(answer_message, embed = embed)
+			await answer_message.edit(embed = embed)
 	
 	# url = "http://api.futuretraxex.com/v1/getRandomQuestion
 	# await ctx.say(BeautifulSoup(html.unescape(data["q_text"]), "html.parser").get_text() + "\n1. " + data["q_options_1"] + "\n2. " + data["q_options_2"] + "\n3. " + data["q_options_3"] + "\n4. " + data["q_options_4"])
