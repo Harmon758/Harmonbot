@@ -126,6 +126,7 @@ class Bot(commands.Bot):
 		self.GOOGLE_CUSTOM_SEARCH_ENGINE_ID = os.getenv("GOOGLE_CUSTOM_SEARCH_ENGINE_ID")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")
+		self.OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 		self.OSU_API_KEY = os.getenv("OSU_API_KEY")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")
 		self.PAGE2IMAGES_REST_API_KEY = os.getenv("PAGE2IMAGES_REST_API_KEY")
