@@ -1213,8 +1213,11 @@ class Games:
 				embed = bet_message.embeds[0]
 				bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
 				while self.bet_countdown:
-					message = await self.bot.wait_for_message(timeout = self.bet_countdown, channel = ctx.channel, check = lambda m: m.content.isdigit())
-					if message:
+					try:
+						message = await self.bot.wait_for("message", timeout = self.bet_countdown, check = lambda m: m.channel == ctx.channel and m.content.isdigit())
+					except asyncio.TimeoutError:
+						pass
+					else:
 						bet_ctx = await ctx.bot.get_context(message, cls = clients.Context)
 						if int(message.content) <= self.trivia_stats[str(message.author.id)][2]: # check if new player
 							bets[message.author] = int(message.content)
@@ -1231,9 +1234,13 @@ class Games:
 			embed = answer_message.embeds[0]
 			countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
 			while self.trivia_countdown:
-				message = await self.bot.wait_for_message(timeout = self.trivia_countdown, channel = ctx.channel)
-				if message and not message.content.startswith(('!', '>')):
-					responses[message.author] = message.content
+				try:
+					message = await self.bot.wait_for("message", timeout = self.trivia_countdown, check = lambda m: m.channel == ctx.channel)
+				except asyncio.TimeoutError:
+					pass
+				else:
+					if not message.content.startswith(('!', '>')):
+						responses[message.author] = message.content
 			while not countdown_task.done():
 				await asyncio.sleep(0.1)
 			embed.set_footer(text = "Time's up!")
