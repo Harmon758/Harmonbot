@@ -211,10 +211,20 @@ class Resources:
 		if data["Response"] == "False":
 			await ctx.embed_reply(f":no_entry: Error: {data['Error']}")
 			return
-		fields = [("IMDb Rating", data["imdbRating"]), ("Runtime", data["Runtime"]), ("Genre(s)", data["Genre"]), ("Director", data["Director"]), ("Writer", data["Writer"]), ("Cast", data["Actors"]), ("Language", data["Language"]), ("Country", data["Country"]), ("Awards", data["Awards"])]
-		if "totalSeasons" in data: fields.append(("Total Seasons", data["totalSeasons"]))
+		fields = [("IMDb Rating", data["imdbRating"]), ("Runtime", data["Runtime"]), 
+					("Genre(s)", data["Genre"]), ("Director", data["Director"]), 
+					("Writer", data["Writer"]), ("Cast", data["Actors"]), 
+					("Language", data["Language"]), ("Country", data["Country"]), 
+					("Awards", data["Awards"])]
+		if "totalSeasons" in data:
+			fields.append(("Total Seasons", data["totalSeasons"]))
 		fields.append(("Plot", data["Plot"], False))
-		await ctx.embed_reply(f"{data['Year']} {data['Type']}", title = data["Title"], title_url = f"http://www.imdb.com/title/{data['imdbID']}", fields = fields, thumbnail_url = data["Poster"] if data["Poster"] != "N/A" else None)
+		thumbnail_url = None
+		if data["Poster"] != "N/A":
+			thumbnail_url = data["Poster"]
+		await ctx.embed_reply(f"{data['Year']} {data['Type']}", title = data["Title"], 
+								title_url = f"http://www.imdb.com/title/{data['imdbID']}", 
+								fields = fields, thumbnail_url = thumbnail_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
