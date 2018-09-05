@@ -37,7 +37,14 @@ class Respects:
 			)
 			"""
 		)
-		# TODO: guilds table
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS respect.guilds (
+				guild_id	BIGINT PRIMARY KEY, 
+				respects	BIGINT
+			)
+			"""
+		)
 		await self.bot.db.execute(
 			"""
 			INSERT INTO respect.stats (stat, value)
@@ -62,11 +69,15 @@ class Respects:
 		'''
 		Respects paid
 		Record of respects paid by each user began on 2016-12-20
+		Record of respects paid by each server began on 2018-09-04
 		'''
 		user_respects = await ctx.bot.db.fetchval("SELECT respects FROM respect.users WHERE user_id = $1", 
 													ctx.author.id) or 0
+		guild_respects = await ctx.bot.db.fetchval("SELECT respects FROM respect.guilds WHERE guild_id = $1", 
+													ctx.guild.id) or 0
 		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respect.stats WHERE stat = 'total'")
 		await ctx.embed_reply(f"You have paid {user_respects:,} respects\n"
+								f"This server has paid {guild_respects:,} respects\n"
 								f"A total of {total_respects:,} respects have been paid")
 	
 	@respects.command()
@@ -83,6 +94,16 @@ class Respects:
 								RETURNING value
 								"""
 							)
+		guild_respects = await ctx.bot.db.fetchval(
+								"""
+								INSERT INTO respect.guilds (guild_id, respects)
+								VALUES ($1, 1)
+								ON CONFLICT (guild_id) DO
+								UPDATE SET respects = guilds.respects + 1
+								RETURNING respects
+								""", 
+								ctx.guild.id
+							)
 		user_respects = await ctx.bot.db.fetchval(
 							"""
 							INSERT INTO respect.users (user_id, respects)
@@ -95,6 +116,7 @@ class Respects:
 						)
 		suffix = ctx.bot.inflect_engine.ordinal(user_respects)[len(str(user_respects)):]
 		await ctx.embed_reply(f"{ctx.author.mention} has paid their respects for the {user_respects:,}{suffix} time\n"
+								f"Total respects paid in this server: {guild_respects:,}\n"
 								f"Total respects paid so far: {total_respects:,}")
 	
 	@respects.command(aliases = ["statistics"])
