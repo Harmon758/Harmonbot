@@ -17,7 +17,7 @@ matrix:
           - $HOME/.imageio
       before_script:
         - psql -c "CREATE DATABASE harmonbot"
-        - psql -c "CREATE USER harmonbot"
+        - psql -c "CREATE USER harmonbot SUPERUSER"
         - cd Discord
       script:
         - python Harmonbot.py
