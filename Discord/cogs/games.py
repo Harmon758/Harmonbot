@@ -1215,7 +1215,7 @@ class Games:
 				while self.bet_countdown:
 					message = await self.bot.wait_for_message(timeout = self.bet_countdown, channel = ctx.channel, check = lambda m: m.content.isdigit())
 					if message:
-						bet_ctx = await client.get_context(message, cls = clients.Context)
+						bet_ctx = await ctx.bot.get_context(message, cls = clients.Context)
 						if int(message.content) <= self.trivia_stats[message.author.id][2]: # check if new player
 							bets[message.author] = int(message.content)
 							await bet_ctx.embed_reply("Has bet ${}".format(message.content))
