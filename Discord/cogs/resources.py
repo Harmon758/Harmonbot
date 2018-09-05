@@ -209,8 +209,7 @@ class Resources:
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
-			await ctx.embed_reply(f":no_entry: Error: {data['Error']}")
-			return
+			return await ctx.embed_reply(f":no_entry: Error: {data['Error']}")
 		fields = [("IMDb Rating", data["imdbRating"]), ("Runtime", data["Runtime"]), 
 					("Genre(s)", data["Genre"]), ("Director", data["Director"]), 
 					("Writer", data["Writer"]), ("Cast", data["Actors"]), 
