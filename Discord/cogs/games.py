@@ -1209,23 +1209,26 @@ class Games:
 					data = (await resp.json())[0]
 			if bet:
 				self.bet_countdown = int(clients.wait_time)
-				bet_message, embed = await self.bot.embed_say(None, title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to bet".format(self.bet_countdown))
+				bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to bet".format(self.bet_countdown))
+				embed = bet_message.embeds[0]
 				bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
 				while self.bet_countdown:
 					message = await self.bot.wait_for_message(timeout = self.bet_countdown, channel = ctx.channel, check = lambda m: m.content.isdigit())
 					if message:
+						bet_ctx = await client.get_context(message, cls = clients.Context)
 						if int(message.content) <= self.trivia_stats[message.author.id][2]: # check if new player
 							bets[message.author] = int(message.content)
-							await clients.embed_reply(message, "Has bet ${}".format(message.content))
+							await bet_ctx.embed_reply("Has bet ${}".format(message.content))
 							await self.bot.delete_message(message)
 						else:
-							await clients.embed_reply(message, "You don't have that much money to bet!")
+							await bet_ctx.embed_reply("You don't have that much money to bet!")
 				while not bet_countdown_task.done():
 					await asyncio.sleep(0.1)
 				embed.set_footer(text = "Betting is over")
 				await self.bot.edit_message(bet_message, embed = embed)
 			self.trivia_countdown = int(clients.wait_time)
-			answer_message, embed = await self.bot.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to answer".format(self.trivia_countdown))
+			answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to answer".format(self.trivia_countdown))
+			embed = answer_message.embeds[0]
 			countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
 			while self.trivia_countdown:
 				message = await self.bot.wait_for_message(timeout = self.trivia_countdown, channel = ctx.channel)
@@ -1282,9 +1285,9 @@ class Games:
 				trivia_bets_output = trivia_bets_output[:-1]
 			with open(clients.data_path + "/trivia_points.json", 'w') as trivia_file:
 				json.dump(self.trivia_stats, trivia_file, indent = 4)
-			await self.bot.embed_say("The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")), footer_text = correct_players_output)
+			await ctx.embed_say("The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")), footer_text = correct_players_output)
 			if bet and trivia_bets_output:
-				await self.bot.embed_say(trivia_bets_output)
+				await ctx.embed_say(trivia_bets_output)
 			self.trivia_active = False
 		else:
 			await ctx.embed_reply("There is already an ongoing game of trivia\nOther options: score money")
@@ -1304,9 +1307,9 @@ class Games:
 			await self.bot.edit_message(answer_message, embed = embed)
 	
 	# url = "http://api.futuretraxex.com/v1/getRandomQuestion
-	# await self.bot.say(BeautifulSoup(html.unescape(data["q_text"]), "html.parser").get_text() + "\n1. " + data["q_options_1"] + "\n2. " + data["q_options_2"] + "\n3. " + data["q_options_3"] + "\n4. " + data["q_options_4"])
+	# await ctx.say(BeautifulSoup(html.unescape(data["q_text"]), "html.parser").get_text() + "\n1. " + data["q_options_1"] + "\n2. " + data["q_options_2"] + "\n3. " + data["q_options_3"] + "\n4. " + data["q_options_4"])
 	# if answer == data["q_correct_option"]:
-	# await self.bot.say("The answer was " + str(data["q_correct_option"]) + ". " + data["q_options_" + str(data["q_correct_option"])] + "\n" + correct_players_output)
+	# await ctx.say("The answer was " + str(data["q_correct_option"]) + ". " + data["q_options_" + str(data["q_correct_option"])] + "\n" + correct_players_output)
 	
 	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
 	async def trivia_score(self, ctx):
