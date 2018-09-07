@@ -573,10 +573,12 @@ class Games:
 		await ctx.embed_reply(response)
 	
 	async def cleverbot_get_reply(self, message):
+		# TODO: Rename to get_cleverbot_reply
 		# TODO: Include user-specific conversation state
 		# TODO: Move to utilities?
-		url = "https://www.cleverbot.com/getreply?key={}&input={}".format(self.bot.CLEVERBOT_API_KEY, message)
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "https://www.cleverbot.com/getreply"
+		params = {"key": self.bot.CLEVERBOT_API_KEY, "input": message}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		return data["output"]
 	
