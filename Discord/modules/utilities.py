@@ -4,9 +4,7 @@ from discord.ext import commands
 
 import copy
 # import inspect
-import json
 import math
-import os
 import re
 
 # Utility
