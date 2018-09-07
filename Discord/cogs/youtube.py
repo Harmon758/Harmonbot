@@ -228,14 +228,14 @@ class YouTube:
 			# TODO: unique callback url for each subscription?
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
-				await ctx.embed_reply(":no_entry: Error {}: {}".format(resp.status, error_description))
+				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
 				self.uploads_info["channels"][str(ctx.channel.id)]["yt_channel_ids"].remove(channel_id)
 				return
 		self.youtube_uploads_following.add(channel_id)
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
-		await ctx.embed_reply("Added the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
-		"I will now announce here when this Youtube channel uploads videos".format(channel_id))
+		await ctx.embed_reply(f"Added the Youtube channel, [`{channel_id}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
+		"I will now announce here when this Youtube channel uploads videos")
 	
 	@youtube_uploads.command(name = "remove", aliases = ["delete", "unsubscribe"], invoke_without_command = True)
 	@checks.is_permitted()
