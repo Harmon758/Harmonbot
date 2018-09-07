@@ -575,7 +575,7 @@ class Games:
 	async def cleverbot_get_reply(self, message):
 		# TODO: Include user-specific conversation state
 		# TODO: Move to utilities?
-		url = "https://www.cleverbot.com/getreply?key={}&input={}".format(credentials.cleverbot_api_key, message)
+		url = "https://www.cleverbot.com/getreply?key={}&input={}".format(self.bot.CLEVERBOT_API_KEY, message)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		return data["output"]
