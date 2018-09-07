@@ -66,7 +66,8 @@ class Bot(commands.Bot):
 		"with Opportunity", "with Optimus Prime", "with P vs NP", "with quantum entanglement", 
 		"with quantum foam", "with R2-D2", "with RSS Bot", "with Samantha", "with Siri", "with Skynet", 
 		"with Spirit in the sand pit", "with TARS", "with the infinity gauntlet", "with the NSA", 
-		"with Voyager 1", "with Waste Allocation Load Lifter: Earth-Class", "world domination")
+		"with Voyager 1", "with Waste Allocation Load Lifter: Earth-Class", "world domination", 
+		"with Clyde")
 		self.stream_url = "https://www.twitch.tv/harmonbot"
 		
 		# Initialization
