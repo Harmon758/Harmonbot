@@ -61,7 +61,7 @@ class Words:
 	@checks.not_forbidden()
 	async def spellcheck(self, ctx, *, words : str):
 		'''Spell check words'''
-		async with clients.aiohttp_session.post("https://api.cognitive.microsoft.com/bing/v5.0/spellcheck?Text=" + words.replace(' ', '+'), headers = {"Ocp-Apim-Subscription-Key" : credentials.bing_spell_check_key}) as resp:
+		async with clients.aiohttp_session.post("https://api.cognitive.microsoft.com/bing/v5.0/spellcheck?Text=" + words.replace(' ', '+'), headers = {"Ocp-Apim-Subscription-Key" : ctx.bot.BING_SPELL_CHECK_API_KEY}) as resp:
 			data = await resp.json()
 		corrections = data["flaggedTokens"]
 		corrected = words
