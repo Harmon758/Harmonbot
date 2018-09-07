@@ -2,8 +2,6 @@
 import discord
 from discord.ext import commands
 
-from modules import utilities
-
 import clients
 import credentials
 from utilities import errors
