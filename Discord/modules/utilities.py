@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-from collections import OrderedDict
 import copy
 # import inspect
 import json
@@ -101,34 +100,6 @@ def embed_total_characters(embed):
 	for field in embed.fields:
 		total_characters += len(field.name) + len(field.value)
 	return total_characters
-
-def get_permission(ctx, permission, *, type = "user", id = None):
-	try:
-		with open("data/permissions/{}.json".format(ctx.guild.id), "x+") as permissions_file:
-			json.dump({"name" : ctx.guild.name}, permissions_file, indent = 4)
-	except FileExistsError:
-		pass
-	else:
-		return None
-	with open("data/permissions/{}.json".format(ctx.guild.id), "r") as permissions_file:
-		permissions_data = json.load(permissions_file)
-	if type == "everyone":
-		return permissions_data.get("everyone", {}).get(permission)
-	elif type == "role":
-		role_setting = permissions_data.get("roles", {}).get(id, {}).get(permission)
-		return role_setting if role_setting is not None else permissions_data.get("everyone", {}).get(permission)
-	elif type == "user":
-		user_setting = permissions_data.get("users", {}).get(id, {}).get(permission)
-		if user_setting is not None: return user_setting
-		user = discord.utils.get(ctx.guild.members, id = id)
-		role_positions = {}
-		for role in user.roles:
-			role_positions[role.position] = role
-		sorted_role_positions = OrderedDict(sorted(role_positions.items(), reverse = True))
-		for role_position, role in sorted_role_positions.items():
-			role_setting = permissions_data.get("roles", {}).get(role.id, {}).get(permission)
-			if role_setting is not None: return role_setting
-		return permissions_data.get("everyone", {}).get(permission)
 
 async def get_user(ctx, name):
 	# check if mention
