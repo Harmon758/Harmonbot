@@ -50,13 +50,13 @@ class Context(commands.Context):
 	# TODO: Improve + Optimize
 	def get_permission(self, permission, *, type = "user", id = None):
 		try:
-			with open(self.bot.data_path + "/permissions/{}.json".format(self.guild.id), "x+") as permissions_file:
+			with open(f"{self.bot.data_path}/permissions/{self.guild.id}.json", "x+") as permissions_file:
 				json.dump({"name" : self.guild.name}, permissions_file, indent = 4)
 		except FileExistsError:
 			pass
 		else:
 			return None
-		with open(self.bot.data_path + "/permissions/{}.json".format(self.guild.id), "r") as permissions_file:
+		with open(f"{self.bot.data_path}/permissions/{self.guild.id}.json", "r") as permissions_file:
 			permissions_data = json.load(permissions_file)
 		if type == "everyone":
 			return permissions_data.get("everyone", {}).get(permission)
