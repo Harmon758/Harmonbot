@@ -250,15 +250,15 @@ class Resources:
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 			return
 		'''
 		paginator = commands.formatter.Paginator(prefix = "{}:".format(ctx.author.display_name), suffix = "")
 		for article in data["articles"]:
-			paginator.add_line("**{}** ({})".format(article["title"], article["publishedAt"].replace('T', " ").replace('Z', "")))
+			paginator.add_line(f"**{article['title']}** ({article['publishedAt'].replace('T', ' ').replace('Z', '')})")
 			paginator.add_line("{}".format(article["description"]))
-			paginator.add_line("<{}>".format(article["url"]))
-			# output += "\n{}".format(article["urlToImage"])
+			paginator.add_line(f"<{article['url']}>")
+			# output += f"\n{article['urlToImage']}"
 		for page in paginator.pages:
 			await ctx.send(page)
 		'''
@@ -273,15 +273,15 @@ class Resources:
 			reaction = emoji_response.reaction
 			number = numbers[reaction.emoji]
 			article = data["articles"][number - 1]
-			output = "Article {}:".format(number)
-			output += "\n**{}**".format(article["title"])
+			output = f"Article {number}:"
+			output += f"\n**{article['title']}**"
 			if article.get("publishedAt"):
-				output += " ({})".format(article.get("publishedAt").replace('T', " ").replace('Z', ""))
-			# output += "\n{}".format(article["description"])
-			# output += "\n<{}>".format(article["url"])
-			output += "\n{}".format(article["url"])
+				output += f" ({article.get('publishedAt').replace('T', ' ').replace('Z', '')})"
+			# output += f"\n{article['description']}"
+			# output += f"\n<{article['url']}>"
+			output += f"\n{article['url']}"
 			output += "\nSelect a different number for another article"
-			await response.edit(content = "{}: {}".format(ctx.author.display_name, output))
+			await response.edit(content = f"{ctx.author.display_name}: {output}")
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
