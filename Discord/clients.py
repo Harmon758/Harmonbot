@@ -124,6 +124,7 @@ class Bot(commands.Bot):
 		self.FIXER_API_KEY = os.getenv("FIXER_API_KEY")
 		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
 		self.GOOGLE_CUSTOM_SEARCH_ENGINE_ID = os.getenv("GOOGLE_CUSTOM_SEARCH_ENGINE_ID")
+		self.HTTP_SERVER_CALLBACK_URL = os.getenv("HTTP_SERVER_CALLBACK_URL")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")
 		self.OMDB_API_KEY = os.getenv("OMDB_API_KEY")
@@ -217,7 +218,7 @@ class Bot(commands.Bot):
 		self.connected_to_database.set()
 		self.loop.create_task(self.connect_to_database())
 		
-		# Web Server
+		# HTTP Web Server
 		self.aiohttp_web_app = web.Application()
 		self.aiohttp_web_app.add_routes([web.get('/', self.web_server_get_handler), 
 										web.post('/', self.web_server_post_handler)])

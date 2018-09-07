@@ -70,7 +70,7 @@ class YouTube:
 	# TODO: renew after hub.lease_seconds?
 	async def renew_upload_supscriptions(self):
 		for channel_id in self.youtube_uploads_following:
-			async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": credentials.callback_url, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
+			async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": self.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
 				if resp.status not in (202, 204):
 					error_description = await resp.text()
 					print("{}Google PubSubHubbub Error {} re-subscribing to {}: {}".format(clients.console_message_prefix, resp.status, channel_id, error_description))
@@ -219,7 +219,7 @@ class YouTube:
 			text_channel["yt_channel_ids"].append(channel_id)
 		else:
 			self.uploads_info["channels"][str(ctx.channel.id)] = {"yt_channel_ids": [channel_id]}
-		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": credentials.callback_url, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
+		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
 			# TODO: unique callback url for each subscription?
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
@@ -242,7 +242,7 @@ class YouTube:
 			return
 		channel["yt_channel_ids"].remove(channel_id)
 		self.youtube_uploads_following.discard(channel_id)
-		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": credentials.callback_url, "hub.mode": "unsubscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
+		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "unsubscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
 				await ctx.embed_reply(":no_entry: Error {}: {}".format(resp.status, error_description))
