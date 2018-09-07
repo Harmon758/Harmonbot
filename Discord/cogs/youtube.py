@@ -70,10 +70,15 @@ class YouTube:
 	# TODO: renew after hub.lease_seconds?
 	async def renew_upload_supscriptions(self):
 		for channel_id in self.youtube_uploads_following:
-			async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": self.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
+			url = "https://pubsubhubbub.appspot.com/"
+			headers = {"content-type": "application/x-www-form-urlencoded"}
+			data = {"hub.callback": self.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", 
+					"hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}
+			async with clients.aiohttp_session.post(url, headers = headers, data = data) as resp:
 				if resp.status not in (202, 204):
 					error_description = await resp.text()
-					print(f"{self.bot.console_message_prefix}Google PubSubHubbub Error {resp.status} re-subscribing to {channel_id}: {error_description}")
+					print(f"{self.bot.console_message_prefix}Google PubSubHubbub Error {resp.status} "
+							"re-subscribing to {channel_id}: {error_description}")
 			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
 	
 	@commands.group(name = "streams", invoke_without_command = True)
