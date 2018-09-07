@@ -595,7 +595,13 @@ class Audio:
 		return link
 	
 	async def get_spotify_access_token(self):
-		async with clients.aiohttp_session.post("https://accounts.spotify.com/api/token", params = {"grant_type": "client_credentials"}, headers = {"Authorization": "Basic {}".format(base64.b64encode((self.bot.SPOTIFY_CLIENT_ID + ':' + self.bot.SPOTIFY_CLIENT_SECRET_KEY).encode()).decode()), "Content-Type": "application/x-www-form-urlencoded"}) as resp:
+		url = "https://accounts.spotify.com/api/token"
+		params = {"grant_type": "client_credentials"}
+		authorization = self.bot.SPOTIFY_CLIENT_ID + ':' + self.bot.SPOTIFY_CLIENT_SECRET_KEY
+		authorization = base64.b64encode(authorization.encode()).decode()
+		headers = {"Authorization": "Basic {}".format(authorization), 
+					"Content-Type": "application/x-www-form-urlencoded"}
+		async with clients.aiohttp_session.post(url, params = params, headers = headers) as resp:
 			data = await resp.json()
 		return data["access_token"]
 	
