@@ -127,6 +127,7 @@ class Bot(commands.Bot):
 		self.HTTP_SERVER_CALLBACK_URL = os.getenv("HTTP_SERVER_CALLBACK_URL")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
 		self.IMGUR_CLIENT_SECRET = os.getenv("IMGUR_CLIENT_SECRET")
+		self.NEWSAPI_ORG_API_KEY = os.getenv("NEWSAPI.ORG_API_KEY")
 		self.OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 		self.OSU_API_KEY = os.getenv("OSU_API_KEY")
 		self.OWM_API_KEY = os.getenv("OWM_API_KEY")

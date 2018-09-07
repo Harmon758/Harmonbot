@@ -246,7 +246,7 @@ class Resources:
 		Powered by NewsAPI.org
 		'''
 		url = "https://newsapi.org/v1/articles"
-		params = {"source": source, "apiKey": credentials.news_api_key}
+		params = {"source": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
