@@ -56,7 +56,7 @@ class Context(commands.Context):
 			pass
 		else:
 			return None
-		with open(f"{self.bot.data_path}/permissions/{self.guild.id}.json", "r") as permissions_file:
+		with open(f"{self.bot.data_path}/permissions/{self.guild.id}.json", 'r') as permissions_file:
 			permissions_data = json.load(permissions_file)
 		if type == "everyone":
 			return permissions_data.get("everyone", {}).get(permission)
