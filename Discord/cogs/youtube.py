@@ -251,7 +251,11 @@ class YouTube:
 			return
 		channel["yt_channel_ids"].remove(channel_id)
 		self.youtube_uploads_following.discard(channel_id)
-		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "unsubscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
+		url = "https://pubsubhubbub.appspot.com/"
+		headers = {"content-type": "application/x-www-form-urlencoded"}
+		data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "unsubscribe", 
+				"hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}
+		async with clients.aiohttp_session.post(url, headers = headers, data = data) as resp:
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
 				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
@@ -260,7 +264,9 @@ class YouTube:
 				return
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
-		await ctx.embed_reply(f"Removed the Youtube channel, [`{channel_id}`](https://www.youtube.com/channel/{channel_id}), from this text channel")
+		await ctx.embed_reply("Removed the Youtube channel, "
+								f"[`{channel_id}`](https://www.youtube.com/channel/{channel_id}), "
+								"from this text channel")
 	
 	@youtube_uploads.command(name = "channels", aliases = ["uploads", "videos"])
 	@checks.not_forbidden()
