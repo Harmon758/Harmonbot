@@ -62,10 +62,13 @@ class Context(commands.Context):
 			return permissions_data.get("everyone", {}).get(permission)
 		elif type == "role":
 			role_setting = permissions_data.get("roles", {}).get(str(id), {}).get(permission)
-			return role_setting if role_setting is not None else permissions_data.get("everyone", {}).get(permission)
+			if role_setting is not None:
+				return role_setting
+			return permissions_data.get("everyone", {}).get(permission)
 		elif type == "user":
 			user_setting = permissions_data.get("users", {}).get(str(id), {}).get(permission)
-			if user_setting is not None: return user_setting
+			if user_setting is not None:
+				return user_setting
 			user = discord.utils.get(self.guild.members, id = id)
 			role_positions = {}
 			for role in user.roles:
@@ -73,6 +76,7 @@ class Context(commands.Context):
 			sorted_role_positions = collections.OrderedDict(sorted(role_positions.items(), reverse = True))
 			for role_position, role in sorted_role_positions.items():
 				role_setting = permissions_data.get("roles", {}).get(str(role.id), {}).get(permission)
-				if role_setting is not None: return role_setting
+				if role_setting is not None:
+					return role_setting
 			return permissions_data.get("everyone", {}).get(permission)
 
