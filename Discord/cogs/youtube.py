@@ -247,8 +247,7 @@ class YouTube:
 		'''Remove Youtube channel being followed'''
 		channel = self.uploads_info["channels"].get(str(ctx.channel.id))
 		if not channel or channel_id not in channel["yt_channel_ids"]:
-			await ctx.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
-			return
+			return await ctx.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
 		channel["yt_channel_ids"].remove(channel_id)
 		self.youtube_uploads_following.discard(channel_id)
 		url = "https://pubsubhubbub.appspot.com/"
