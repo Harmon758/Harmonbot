@@ -137,6 +137,8 @@ class Bot(commands.Bot):
 		self.PAGE2IMAGES_REST_API_KEY = os.getenv("PAGE2IMAGES_REST_API_KEY")
 		self.POSTGRES_HOST = os.getenv("POSTGRES_HOST") or "localhost"
 		self.DATABASE_HOST = self.POSTGRES_HOST
+		self.SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+		self.SPOTIFY_CLIENT_SECRET_KEY = os.getenv("SPOTIFY_CLIENT_SECRET_KEY")
 		self.STEAM_WEB_API_KEY = os.getenv("STEAM_WEB_API_KEY")
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.TWITTER_CONSUMER_KEY = os.getenv("TWITTER_CONSUMER_KEY")
