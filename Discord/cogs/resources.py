@@ -264,8 +264,8 @@ class Resources:
 		'''
 		response = await ctx.reply("React with a number from 1 to 10 to view each news article")
 		numbers = {'\N{KEYCAP TEN}': 10}
-		for number in range(9):
-			numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1 # '\u0031' - 1
+		for number in range(1, 10):
+			numbers[f"{number}\N{COMBINING ENCLOSING KEYCAP}"] = number
 		for number_emote in sorted(numbers.keys()):
 			await response.add_reaction(number_emote)
 		while True:
