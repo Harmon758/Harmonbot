@@ -2,6 +2,9 @@
 import discord
 from discord.ext import commands
 
+import collections
+import json
+
 from modules import utilities
 from utilities import errors
 
@@ -43,4 +46,33 @@ class Context(commands.Context):
 	
 	def whisper(self, *args, **kwargs):
 		return self.author.send(*args, **kwargs)
+	
+	# TODO: Improve + Optimize
+	def get_permission(self, permission, *, type = "user", id = None):
+		try:
+			with open(self.bot.data_path + "/permissions/{}.json".format(self.guild.id), "x+") as permissions_file:
+				json.dump({"name" : self.guild.name}, permissions_file, indent = 4)
+		except FileExistsError:
+			pass
+		else:
+			return None
+		with open(self.bot.data_path + "/permissions/{}.json".format(self.guild.id), "r") as permissions_file:
+			permissions_data = json.load(permissions_file)
+		if type == "everyone":
+			return permissions_data.get("everyone", {}).get(permission)
+		elif type == "role":
+			role_setting = permissions_data.get("roles", {}).get(str(id), {}).get(permission)
+			return role_setting if role_setting is not None else permissions_data.get("everyone", {}).get(permission)
+		elif type == "user":
+			user_setting = permissions_data.get("users", {}).get(str(id), {}).get(permission)
+			if user_setting is not None: return user_setting
+			user = discord.utils.get(self.guild.members, id = id)
+			role_positions = {}
+			for role in user.roles:
+				role_positions[role.position] = role
+			sorted_role_positions = collections.OrderedDict(sorted(role_positions.items(), reverse = True))
+			for role_position, role in sorted_role_positions.items():
+				role_setting = permissions_data.get("roles", {}).get(str(role.id), {}).get(permission)
+				if role_setting is not None: return role_setting
+			return permissions_data.get("everyone", {}).get(permission)
 

@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-import clients
 import credentials
 from utilities import errors
 
@@ -31,7 +30,7 @@ def is_voice_connected():
 	
 	def predicate(ctx):
 		if not is_voice_connected_check(ctx):
-			if is_server_owner_check(ctx) or clients.get_permission(ctx, "join", id = ctx.author.id):
+			if is_server_owner_check(ctx) or ctx.get_permission("join", id = ctx.author.id):
 				raise errors.PermittedVoiceNotConnected
 			else:
 				raise errors.NotPermittedVoiceNotConnected
@@ -120,7 +119,7 @@ def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 def not_forbidden_check(ctx):
 	if isinstance(ctx.channel, discord.DMChannel):
 		return True
-	permitted = clients.get_permission(ctx, ctx.command.name, id = ctx.author.id)
+	permitted = ctx.get_permission(ctx.command.name, id = ctx.author.id)
 	# TODO: Include subcommands?
 	return permitted or permitted is None or is_server_owner_check(ctx)
 
@@ -139,11 +138,11 @@ def is_permitted_check(ctx):
 	if isinstance(ctx.channel, discord.DMChannel):
 		return True
 	command = ctx.command
-	permitted = clients.get_permission(ctx, command.name, id = ctx.author.id)
+	permitted = ctx.get_permission(command.name, id = ctx.author.id)
 	while command.parent is not None and not permitted:
 		# permitted is None instead?
 		command = command.parent
-		permitted = clients.get_permission(ctx, command.name, id = ctx.author.id)
+		permitted = ctx.get_permission(command.name, id = ctx.author.id)
 		# include non-final parent commands?
 	return permitted or is_server_owner_check(ctx)
 

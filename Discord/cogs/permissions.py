@@ -82,7 +82,7 @@ class Permissions:
 			command = self.bot.all_commands[options[1]].name
 			user = await utilities.get_user(ctx, options[0])
 			if not user: return (await ctx.embed_reply("Error: user not found"))
-			setting = clients.get_permission(ctx, command, id = user.id)
+			setting = ctx.get_permission(command, id = user.id)
 			await ctx.embed_reply("{} is set to {} for {}".format(options[1], setting, user))
 		else:
 			await ctx.embed_reply(":no_entry: Invalid input\ngetpermission everyone|role|user or <user> <permission>") #options
@@ -93,7 +93,7 @@ class Permissions:
 	async def getpermission_everyone(self, ctx, permission : str):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
 		command = self.bot.all_commands[permission].name
-		setting = clients.get_permission(ctx, command, type = "everyone")
+		setting = ctx.get_permission(command, type = "everyone")
 		await ctx.embed_reply("{} is set to {} for everyone".format(permission, setting))
 	
 	@getpermission.command(name = "role")
@@ -106,7 +106,7 @@ class Permissions:
 		if len(matches) > 1: return (await ctx.embed_reply("Error: multiple roles with the name, {}".format(role)))
 		elif len(matches) == 0: return (await ctx.embed_reply('Error: role with name, "{}", not found'.format(role)))
 		else: _role = matches[0]
-		setting = clients.get_permission(ctx, command, type = "role", id = _role.id)
+		setting = ctx.get_permission(command, type = "role", id = _role.id)
 		await ctx.embed_reply("{} is set to {} for the {} role".format(permission, setting, _role.name))
 	
 	@getpermission.command(name = "user")
@@ -117,7 +117,7 @@ class Permissions:
 		command = self.bot.all_commands[permission].name
 		_user = await utilities.get_user(ctx, user)
 		if not _user: return (await ctx.embed_reply("Error: user not found"))
-		setting = clients.get_permission(ctx, command, id = _user.id)
+		setting = ctx.get_permission(command, id = _user.id)
 		await ctx.embed_reply("{} is set to {} for {}".format(permission, setting, _user))
 	
 	@commands.group(invoke_without_command = True)
