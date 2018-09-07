@@ -250,13 +250,12 @@ class Resources:
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
-			return
+			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 		'''
-		paginator = commands.formatter.Paginator(prefix = "{}:".format(ctx.author.display_name), suffix = "")
+		paginator = commands.formatter.Paginator(prefix = ctx.author.display_name + ':', suffix = "")
 		for article in data["articles"]:
 			paginator.add_line(f"**{article['title']}** ({article['publishedAt'].replace('T', ' ').replace('Z', '')})")
-			paginator.add_line("{}".format(article["description"]))
+			paginator.add_line(article["description"])
 			paginator.add_line(f"<{article['url']}>")
 			# output += f"\n{article['urlToImage']}"
 		for page in paginator.pages:
