@@ -254,13 +254,13 @@ class YouTube:
 		async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "unsubscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
-				await ctx.embed_reply(":no_entry: Error {}: {}".format(resp.status, error_description))
+				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
 				self.uploads_info["channels"][str(ctx.channel.id)]["yt_channel_ids"].append(channel_id)
 				self.youtube_uploads_following.add(channel_id)
 				return
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
-		await ctx.embed_reply("Removed the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), from this text channel".format(channel_id))
+		await ctx.embed_reply(f"Removed the Youtube channel, [`{channel_id}`](https://www.youtube.com/channel/{channel_id}), from this text channel")
 	
 	@youtube_uploads.command(name = "channels", aliases = ["uploads", "videos"])
 	@checks.not_forbidden()
