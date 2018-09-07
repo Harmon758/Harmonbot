@@ -73,7 +73,7 @@ class YouTube:
 			async with clients.aiohttp_session.post("https://pubsubhubbub.appspot.com/", headers = {"content-type": "application/x-www-form-urlencoded"}, data = {"hub.callback": self.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", "hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}) as resp:
 				if resp.status not in (202, 204):
 					error_description = await resp.text()
-					print("{}Google PubSubHubbub Error {} re-subscribing to {}: {}".format(self.bot.console_message_prefix, resp.status, channel_id, error_description))
+					print(f"{self.bot.console_message_prefix}Google PubSubHubbub Error {resp.status} re-subscribing to {channel_id}: {error_description}")
 			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
 	
 	@commands.group(name = "streams", invoke_without_command = True)
