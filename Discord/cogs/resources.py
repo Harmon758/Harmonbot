@@ -304,8 +304,9 @@ class Resources:
 		The On-Line Encyclopedia of Integer Sequences
 		Does not accept spaces for search by sequence
 		'''
-		url = "http://oeis.org/search?fmt=json&q=" + search
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://oeis.org/search"
+		params = {"fmt": "json", 'q': search}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["results"]:
 			await ctx.embed_reply(data["results"][0]["data"], title = data["results"][0]["name"])
