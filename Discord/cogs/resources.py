@@ -323,8 +323,9 @@ class Resources:
 		Does not accept spaces for search by sequence
 		Returns sequence graph if found
 		'''
-		url = "http://oeis.org/search?fmt=json&q=" + search
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://oeis.org/search"
+		params = {"fmt": "json", 'q': search}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["results"]:
 			await ctx.embed_reply(image_url = "https://oeis.org/A{:06d}/graph?png=1".format(data["results"][0]["number"]))
