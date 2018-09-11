@@ -300,12 +300,9 @@ class Resources:
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def oeis(self, ctx, *, search : str):
-		'''
-		The On-Line Encyclopedia of Integer Sequences
-		Does not accept spaces for search by sequence
-		'''
+		'''The On-Line Encyclopedia of Integer Sequences'''
 		url = "http://oeis.org/search"
-		params = {"fmt": "json", 'q': search}
+		params = {"fmt": "json", 'q': search.replace(' ', "")}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["results"]:
