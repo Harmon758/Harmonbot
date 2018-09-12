@@ -315,13 +315,9 @@ class Resources:
 	@oeis.command(name = "graph")
 	@checks.not_forbidden()
 	async def oeis_graph(self, ctx, *, search : str):
-		'''
-		The On-Line Encyclopedia of Integer Sequences
-		Does not accept spaces for search by sequence
-		Returns sequence graph if found
-		'''
+		'''Graphs from The On-Line Encyclopedia of Integer Sequences'''
 		url = "http://oeis.org/search"
-		params = {"fmt": "json", 'q': search}
+		params = {"fmt": "json", 'q': search.replace(' ', "")}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["results"]:
