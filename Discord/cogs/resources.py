@@ -321,7 +321,8 @@ class Resources:
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["results"]:
-			await ctx.embed_reply(image_url = "https://oeis.org/A{:06d}/graph?png=1".format(data["results"][0]["number"]))
+			# TODO: Handle no graph
+			await ctx.embed_reply(image_url = f"https://oeis.org/A{data['results'][0]['number']:06d}/graph?png=1")
 		elif data["count"]:
 			await ctx.embed_reply(":no_entry: Too many sequences found")
 		else:
