@@ -20,10 +20,10 @@ class Respects:
 	
 	async def initialize_database(self):
 		await self.bot.connect_to_database()
-		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS respect")
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS respects")
 		await self.bot.db.execute(
 			"""
-			CREATE TABLE IF NOT EXISTS respect.stats (
+			CREATE TABLE IF NOT EXISTS respects.stats (
 				stat	TEXT PRIMARY KEY, 
 				value	BIGINT
 			)
@@ -31,7 +31,7 @@ class Respects:
 		)
 		await self.bot.db.execute(
 			"""
-			CREATE TABLE IF NOT EXISTS respect.users (
+			CREATE TABLE IF NOT EXISTS respects.users (
 				user_id		BIGINT PRIMARY KEY, 
 				respects	BIGINT
 			)
@@ -39,7 +39,7 @@ class Respects:
 		)
 		await self.bot.db.execute(
 			"""
-			CREATE TABLE IF NOT EXISTS respect.guilds (
+			CREATE TABLE IF NOT EXISTS respects.guilds (
 				guild_id	BIGINT PRIMARY KEY, 
 				respects	BIGINT
 			)
@@ -47,7 +47,7 @@ class Respects:
 		)
 		await self.bot.db.execute(
 			"""
-			INSERT INTO respect.stats (stat, value)
+			INSERT INTO respects.stats (stat, value)
 			VALUES ('total', 0)
 			ON CONFLICT (stat) DO NOTHING
 			"""
@@ -71,11 +71,11 @@ class Respects:
 		Record of respects paid by each user began on 2016-12-20
 		Record of respects paid by each server began on 2018-09-04
 		'''
-		user_respects = await ctx.bot.db.fetchval("SELECT respects FROM respect.users WHERE user_id = $1", 
+		user_respects = await ctx.bot.db.fetchval("SELECT respects FROM respects.users WHERE user_id = $1", 
 													ctx.author.id) or 0
-		guild_respects = await ctx.bot.db.fetchval("SELECT respects FROM respect.guilds WHERE guild_id = $1", 
+		guild_respects = await ctx.bot.db.fetchval("SELECT respects FROM respects.guilds WHERE guild_id = $1", 
 													ctx.guild.id) or 0
-		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respect.stats WHERE stat = 'total'")
+		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respects.stats WHERE stat = 'total'")
 		await ctx.embed_reply(f"You have paid {user_respects:,} respects\n"
 								f"This server has paid {guild_respects:,} respects\n"
 								f"A total of {total_respects:,} respects have been paid")
@@ -88,7 +88,7 @@ class Respects:
 		'''
 		total_respects = await ctx.bot.db.fetchval(
 								"""
-								UPDATE respect.stats
+								UPDATE respects.stats
 								SET value = value + 1
 								WHERE stat = 'total'
 								RETURNING value
@@ -96,7 +96,7 @@ class Respects:
 							)
 		guild_respects = await ctx.bot.db.fetchval(
 								"""
-								INSERT INTO respect.guilds (guild_id, respects)
+								INSERT INTO respects.guilds (guild_id, respects)
 								VALUES ($1, 1)
 								ON CONFLICT (guild_id) DO
 								UPDATE SET respects = guilds.respects + 1
@@ -106,7 +106,7 @@ class Respects:
 							)
 		user_respects = await ctx.bot.db.fetchval(
 							"""
-							INSERT INTO respect.users (user_id, respects)
+							INSERT INTO respects.users (user_id, respects)
 							VALUES ($1, 1)
 							ON CONFLICT (user_id) DO
 							UPDATE SET respects = users.respects + 1
@@ -122,13 +122,13 @@ class Respects:
 	@respects.command(aliases = ["statistics"])
 	async def stats(self, ctx):
 		'''Statistics'''
-		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respect.stats WHERE stat = 'total'")
+		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respects.stats WHERE stat = 'total'")
 		respects_paid = []
 		async with ctx.bot.database_connection_pool.acquire() as connection:
 			async with connection.transaction():
 				# Postgres requires non-scrollable cursors to be created
 				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM respect.users"):
+				async for record in connection.cursor("SELECT * FROM respects.users"):
 					respects_paid.append(record["respects"])
 		# TODO: Optimize
 		filename = ctx.bot.data_path + "/temp/respects.png"
@@ -166,7 +166,7 @@ class Respects:
 			async with connection.transaction():
 				# Postgres requires non-scrollable cursors to be created
 				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM respect.users ORDER BY respects DESC LIMIT 10"):
+				async for record in connection.cursor("SELECT * FROM respects.users ORDER BY respects DESC LIMIT 10"):
 					user = ctx.bot.get_user(record["user_id"])
 					if not user:
 						user = await ctx.bot.get_user_info(record["user_id"])
