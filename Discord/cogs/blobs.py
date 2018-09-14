@@ -114,7 +114,7 @@ class Blobs:
 			return
 		personal = self.stats[blob].get(str(ctx.author.id), 0)
 		total = sum(self.stats[blob].values())
-		await ctx.embed_reply("Personal: {}\nTotal: {}".format(personal, total))
+		await ctx.embed_reply(f"Personal: {personal}\nTotal: {total}")
 	
 	@blobs.command()
 	@checks.not_forbidden()
