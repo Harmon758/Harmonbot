@@ -381,7 +381,7 @@ class Audio:
 			self.players[ctx.guild.id].stop_library()
 			await ctx.embed_reply(":stop_sign: Stopped playing songs from my library")
 		elif not (await self.players[ctx.guild.id].play_library(ctx.author, ctx.message.created_at)):
-			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "play", aliases = ["start"])
 	@commands.guild_only()
