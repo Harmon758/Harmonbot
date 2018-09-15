@@ -166,7 +166,6 @@ class Audio:
 				await ctx.embed_reply(":white_check_mark: You voted to skip the current song\n{}".format("Skips: {}/{}".format(vote, player.skip_votes_required) if vote else ":next_track: Song skipped"))
 		else:
 			await ctx.embed_reply(":no_entry: You're not even listening!", footer_text = "In response to: {}".format(ctx.message.content))
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@skip.command(name = "to")
 	@commands.guild_only()
