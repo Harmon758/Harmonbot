@@ -146,7 +146,7 @@ class YouTube:
 				video_ids = []
 				for channel_id in channel_ids:
 					url = "https://www.googleapis.com/youtube/v3/search?part=snippet&eventType=live&type=video&channelId={}&key={}"
-					async with clients.aiohttp_session.get(url.format(channel_id, credentials.google_apikey)) as resp:
+					async with clients.aiohttp_session.get(url.format(channel_id, self.bot.GOOGLE_API_KEY)) as resp:
 						stream_data = await resp.json()
 					# Multiple streams from one channel possible
 					for item in stream_data.get("items", []):
@@ -285,7 +285,7 @@ class YouTube:
 			embed.set_author(name = "{} just uploaded a video on Youtube".format(video_data.author), url = video_data.author_detail.href, icon_url = self.bot.youtube_icon_url)
 			# TODO: Add channel icon as author icon?
 			# Add description + thumbnail + length
-			async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/videos", params = {"id": video_data.yt_videoid, "key": credentials.google_apikey, "part": "snippet,contentDetails"}) as resp:
+			async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/videos", params = {"id": video_data.yt_videoid, "key": self.bot.GOOGLE_API_KEY, "part": "snippet,contentDetails"}) as resp:
 				data = await resp.json()
 			data = next(iter(data.get("items", [])), {})
 			if data.get("snippet", {}).get("liveBroadcastContent") in ("live", "upcoming"): return
@@ -305,10 +305,10 @@ class YouTube:
 	
 	# TODO: get to remove as well
 	async def get_youtube_channel_id(self, id_or_username):
-		async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/channels", params = {"part": "id", "id": id_or_username, "key": credentials.google_apikey}) as resp:
+		async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/channels", params = {"part": "id", "id": id_or_username, "key": self.bot.GOOGLE_API_KEY}) as resp:
 			data = await resp.json()
 		if data["pageInfo"]["totalResults"]: return data["items"][0]["id"]
-		async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/channels", params = {"part": "id", "forUsername": id_or_username, "key": credentials.google_apikey}) as resp:
+		async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/channels", params = {"part": "id", "forUsername": id_or_username, "key": self.bot.GOOGLE_API_KEY}) as resp:
 			data = await resp.json()
 		if data["pageInfo"]["totalResults"]: return data["items"][0]["id"]
 		return ""

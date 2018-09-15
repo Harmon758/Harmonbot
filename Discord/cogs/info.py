@@ -155,7 +155,7 @@ class Info:
 			await ctx.embed_reply(":no_entry: Invalid input")
 			return
 		api_url = "https://www.googleapis.com/youtube/v3/videos"
-		params = {"id": query['v'][0], "key": credentials.google_apikey,
+		params = {"id": query['v'][0], "key": ctx.bot.GOOGLE_API_KEY,
 					"part": "snippet,contentDetails,statistics"}
 		async with clients.aiohttp_session.get(api_url, params = params) as resp:
 			data = await resp.json()

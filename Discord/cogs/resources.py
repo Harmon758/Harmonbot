@@ -230,7 +230,7 @@ class Resources:
 	async def longurl(self, ctx, url : str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url"
-		params = {"shortUrl": url, "key": credentials.google_apikey}
+		params = {"shortUrl": url, "key": ctx.bot.GOOGLE_API_KEY}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:
 				await ctx.embed_reply(":no_entry: Error")
@@ -464,7 +464,7 @@ class Resources:
 		await ctx.embed_reply(short_url)
 	
 	async def _shorturl(self, url):
-		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(credentials.google_apikey), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url + '"}') as resp:
+		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(self.bot.GOOGLE_API_KEY), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url + '"}') as resp:
 			data = await resp.json()
 		return data["id"]
 	
@@ -625,7 +625,7 @@ class Resources:
 		if not search:
 			await ctx.embed_reply("What is what?")
 		else:
-			url = "https://kgsearch.googleapis.com/v1/entities:search?limit=1&query={}&key={}".format('+'.join(search), credentials.google_apikey)
+			url = "https://kgsearch.googleapis.com/v1/entities:search?limit=1&query={}&key={}".format('+'.join(search), ctx.bot.GOOGLE_API_KEY)
 			async with clients.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):

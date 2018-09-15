@@ -255,7 +255,7 @@ class Audio:
 	@checks.is_voice_connected()
 	async def audio_random(self, ctx):
 		'''Play a random song from YouTube's top 50'''
-		url = "https://www.googleapis.com/youtube/v3/videos?part=id&chart=mostPopular&maxResults=50&videoCategoryId=10&key={}".format(credentials.google_apikey)
+		url = "https://www.googleapis.com/youtube/v3/videos?part=id&chart=mostPopular&maxResults=50&videoCategoryId=10&key={}".format(ctx.bot.GOOGLE_API_KEY)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		song = random.choice([video["id"] for video in data["items"]])
@@ -583,7 +583,7 @@ class Audio:
 			return False
 		songname = '+'.join(data["name"].split())
 		artistname = '+'.join(data["artists"][0]["name"].split())
-		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+by+{}&key={}".format(songname, artistname, credentials.google_apikey)
+		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+by+{}&key={}".format(songname, artistname, self.bot.GOOGLE_API_KEY)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["items"][0]

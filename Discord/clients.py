@@ -127,6 +127,7 @@ class Bot(commands.Bot):
 		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
 		self.FIXER_API_KEY = os.getenv("FIXER_API_KEY")
 		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
+		self.GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 		self.GOOGLE_CUSTOM_SEARCH_ENGINE_ID = os.getenv("GOOGLE_CUSTOM_SEARCH_ENGINE_ID")
 		self.HTTP_SERVER_CALLBACK_URL = os.getenv("HTTP_SERVER_CALLBACK_URL")
 		self.IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")

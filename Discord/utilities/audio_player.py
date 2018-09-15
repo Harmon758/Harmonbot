@@ -414,7 +414,7 @@ class AudioPlayer:
 			else:
 				paused = True
 			while self.server.voice_client and self.radio_flag:
-				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, credentials.google_apikey)
+				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, ctx.bot.GOOGLE_API_KEY)
 				async with clients.aiohttp_session.get(url) as resp:
 					data = await resp.json()
 				videoid = random.choice(data["items"])["id"]["videoId"]
