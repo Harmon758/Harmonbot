@@ -612,5 +612,5 @@ class Audio:
 			player.player.cancel()
 	
 	def save_voice_channels(self):
-		return [[voice_client.channel.id, self.players[voice_client.server.id].text_channel.id] for voice_client in self.bot.voice_clients]
+		return [[voice_client.channel.id, self.players[voice_client.guild.id].text_channel.id] for voice_client in self.bot.voice_clients]
 
