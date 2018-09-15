@@ -404,7 +404,7 @@ class Audio:
 			self.players[ctx.guild.id].stop_library()
 			await ctx.embed_reply(":stop_sign: Stopped playing songs from my library")
 		else:
-			await ctx.embed_reply(":no_entry: Not currently playing songs from my library", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":no_entry: Not currently playing songs from my library")
 	
 	@library.command(name = "song")
 	@commands.guild_only()
