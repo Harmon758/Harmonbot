@@ -109,7 +109,6 @@ class Audio:
 			await ctx.embed_reply(":no_entry: The song is already paused")
 		else:
 			await ctx.embed_reply(":pause_button: Paused song")
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(aliases = ["start"])
 	@commands.guild_only()
