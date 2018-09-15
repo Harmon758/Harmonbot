@@ -297,7 +297,7 @@ class Audio:
 		if self.players[ctx.guild.id].radio_flag:
 			await ctx.embed_reply(":no_entry: Radio is already on")
 		elif (await self.players[ctx.guild.id].radio_on(ctx.author, ctx.message.created_at)) is False:
-			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@radio.command(name = "off", aliases = ["stop"])
