@@ -125,7 +125,6 @@ class Audio:
 			await ctx.embed_reply(":no_entry: The song is already playing")
 		else:
 			await ctx.embed_reply(":play_pause: Resumed song")
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.group(aliases = ["next", "remove"], invoke_without_command = True)
 	@commands.guild_only()
