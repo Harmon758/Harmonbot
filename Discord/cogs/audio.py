@@ -79,7 +79,7 @@ class Audio:
 		except errors.AudioNotPlaying:
 			await ctx.embed_reply(":no_entry: Voice channel not found", footer_text = "In response to: {}".format(ctx.message.content))
 		except concurrent.futures._base.TimeoutError:
-			await ctx.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join", footer_text = "In response to: {}".format(ctx.message.content))
+			await ctx.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join")
 		else:
 			await ctx.embed_reply(":arrow_right_hook: I've moved to the voice channel" if moved else ":headphones: I've joined the voice channel")
 	
