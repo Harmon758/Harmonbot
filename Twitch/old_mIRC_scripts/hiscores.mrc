@@ -1,15 +1,3 @@
-; 2/19/15
-; added all hiscores
-; disabled !ironman
-; added to whatis
-; Format: !hiscores <username> <skill/total> <rs3/07/rs3ironman/rs3hcironman/07ironman/07hcironman> <level/rank/xp>
-; added !hi, fixed, merge with !hello
-; added total, added !hiscore !highscore !highscores aliases, fixed !hi
-; 3/3/15
-; added commas to numbers
-; add user custom, minigames, adjust mikki skill commands
-;
-
 on *:text:!hiscore*:#:{
   $hiscores($1, $2, $3, $4, $5)
   set %channel #
@@ -25,7 +13,6 @@ alias hiscores_print { msg %channel %hiscores_return }
 
 alias hiscores {
   if ($sock(hiscores)) { sockclose hiscores }
-  ;set %message msg $chan
   set %hiscores_username $2
   if ($3 == total) { set %hiscores_skill_number 11 }
   else if ($3 == attack || $3 == att || $3 == atk) {
@@ -137,7 +124,7 @@ alias hiscores {
     set %hiscores_skill Invention
   }
   else {
-    set %hiscores_return  That is not a valid username/skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman / 07deadman> <level / rank / xp> 
+    set %hiscores_return That is not a valid username/skill. Use _'s for spaces in usernames. Format: !hiscores <username> <skill / total> <rs3 / 07 / rs3ironman / rs3hcironman / 07ironman / 07hcironman / 07deadman> <level / rank / xp> 
     return
   }
   if ($4 == rs3) {
