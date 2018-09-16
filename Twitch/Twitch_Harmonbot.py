@@ -28,7 +28,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.29"
+		self.version = "2.3.30"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -873,13 +873,15 @@ class TwitchClient(pydle.Client):
 				if skill == "total":
 					stat_text = f" is rank {stat:,} overall"
 				else:
-					stat_text = f" is rank {stat:,} in {skill}"
+					stat_text = f" is rank {stat:,} in {skill.capitalize()}"
 			elif stat_type == "xp":
 				if skill == "total":
 					stat_text = f" has {stat:,} total XP"
 				else:
-					stat_text = f" has {stat:,} XP in {skill}"
+					stat_text = f" has {stat:,} XP in {skill.capitalize()}"
 			else:
+				if skill != "total":
+					skill = skill.capitalize()
 				stat_text = f"'s {skill} level is {stat:,}"
 			await self.message(target, f"{username.capitalize()}{stat_text} on {hiscores_name}.")
 		elif message.startswith("!level"):
