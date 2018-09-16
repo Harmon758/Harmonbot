@@ -28,7 +28,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.28"
+		self.version = "2.3.29"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -265,7 +265,8 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, f"{source.capitalize()} highfives {' '.join(message.split()[1:]).title()}!")
 		elif message.startswith("!hi"):
-			if message.split()[0] in ["!hiscores", "!hiscore", "!highscore", "!highscores"]: return
+			if message.startswith(("!hiscore", "!highscore")):
+				pass
 			elif len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
 				await self.message(target, f"Hello, {source.capitalize()}!")
 			else:
@@ -789,6 +790,98 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "For Prayer: 1 ehp = 500,000 xp/h")
 			elif skill in ("mage", "magic"):
 				await self.message(target, "For Magic: 1 ehp = 250,000 xp/h")
+		elif message.startswith(("!hiscore", "!highscore")):
+			# TODO: Other RS3 hiscores?
+			if len(message.split()) == 1:
+				return await self.message(target, "Please enter a username. "
+													"Format: !hiscores [username] [skill/total] [hiscores type] [rank/xp/level]")
+			username = message.split()[1].replace('_', ' ')
+			skill_order = ("total", "attack", "defence", "strength", "constitution", "ranged", "prayer", 
+							"magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking", 
+							"crafting", "smithing", "mining", "herblore", "agility", "thieving", "slayer", 
+							"farming", "runecrafting", "hunter", "construction", "summoning", "dungeoneering", 
+							"divination", "invention")
+			skill_aliases = {"att": "attack", "atk": "attack", "defense": "defence", "def": "defence", 
+								"str": "strength", "hp": "constitution", "range": "ranged", "pray": "prayer", 
+								"mage": "magic", "cook": "cooking", "wc": "woodcutting", "fletch": "fletching", 
+								"fish": "fishing", "fm": "firemaking", "craft": "crafting", "smith": "smithing", 
+								"mine": "mining", "herb": "herblore", "thief": "thieving", "slay": "slayer", 
+								"farm": "farming", "rc": "runecrafting", "hunt": "hunter", "con": "construction", 
+								"dung": "dungeoneering", "dg": "dungeonering", "div": "divination", 
+								"inventor": "invention", "invent": "invention"}
+			if len(message.split()) == 2:
+				skill = "total"
+			else:
+				skill = message.split()[2].lower()
+			if skill in skill_aliases:
+				skill = skill_aliases[skill]
+			if skill not in skill_order:
+				return await self.message(target, "Invalid skill. Use _'s for spaces in usernames.")
+			if len(message.split()) <= 3:
+				hiscores_type = ""
+			else:
+				hiscores_type = message.split()[3].lower()
+			hiscores_types = ("", "ironman", "hardcore_ironman", "oldschool", "oldschool_ironman", 
+								"oldschool_ultimate", "oldschool_hardcore_ironman", "oldschool_deadman", 
+								"oldschool_seasonal", "oldschool_tournament")
+			hiscores_type_aliases = {"rs3": "", "runescape_3": "", "runescape3": "", 
+										"07": "oldschool", "osrs": "oldschool", "os": "oldschool", 
+										"hcim": "hardcore_ironman", "hc": "hardcore", "uim": "ultimate", 
+										"tourny": "tournament"}
+			hiscores_names = {"": "RS3", "ironman": "RS3 (Ironman)", "hardcore_ironman": "RS3 (Hardcore Ironman)", 
+								"oldschool": "OSRS", "oldschool_ironman": "OSRS (Ironman)", 
+								"oldschool_ultimate": "OSRS (Ultimate Ironman)", 
+								"oldschool_hardcore_ironman": "OSRS (Hardcore Ironman)", 
+								"oldschool_deadman": "OSRS (Deadman Mode)", "oldschool_seasonal": "OSRS (Seasonal)", 
+								"oldschool_tournament": "OSRS (Tournament)"}
+			for alias, name in hiscores_type_aliases.items():
+				hiscores_type = hiscores_type.replace(alias, name)
+			hiscores_type = hiscores_type.lstrip('_')
+			if skill in ("dungeoneering", "divination", "invention") and hiscores_type.startswith("oldschool"):
+				return await self.message(target, "Invalid skill for OSRS.")
+			if hiscores_type not in hiscores_types:
+				valid_types = []
+				for type in hiscores_types:
+					if not type.startswith("oldschool"):
+						type = "runescape_3_" + type
+						type = type.rstrip('_')
+					valid_types.append(type)
+				return await self.message(target, f"Invalid hiscores type. Valid types: {', '.join(valid_types)}")
+			hiscores_name = hiscores_names[hiscores_type]
+			if hiscores_type:
+				hiscores_type = '_' + hiscores_type
+			stat_types = ("rank", "level", "xp")
+			stat_type_aliases = {"exp": "xp", "experience": "xp", "lvl": "level"}
+			if len(message.split()) <= 4:
+				stat_type = "level"
+			else:
+				stat_type = message.split()[4].lower()
+			if stat_type in stat_type_aliases:
+				stat_type = stat_type_aliases[stat_type]
+			if stat_type not in stat_types:
+				stat_type = "level"
+			hiscores_url = f"https://secure.runescape.com/m=hiscore{hiscores_type}/index_lite.ws"
+			params = {"player": username}
+			async with self.aiohttp_session.get(hiscores_url, params = params) as resp:
+				if resp.status == 404:
+					return await self.message(target, "Username not found.")
+				data = await resp.text()
+			data = data.split()
+			skill_data = data[skill_order.index(skill)].split(',')
+			stat = int(skill_data[stat_types.index(stat_type)])
+			if stat_type == "rank":
+				if skill == "total":
+					stat_text = f" is rank {stat:,} overall"
+				else:
+					stat_text = f" is rank {stat:,} in {skill}"
+			elif stat_type == "xp":
+				if skill == "total":
+					stat_text = f" has {stat:,} total XP"
+				else:
+					stat_text = f" has {stat:,} XP in {skill}"
+			else:
+				stat_text = f"'s {skill} level is {stat:,}"
+			await self.message(target, f"{username.capitalize()}{stat_text} on {hiscores_name}.")
 		elif message.startswith("!level"):
 			if len(message.split()) == 1:
 				await self.message(target, "Please enter a level.")
