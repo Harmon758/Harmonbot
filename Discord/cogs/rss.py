@@ -109,7 +109,8 @@ class RSS:
 				feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 				# Still necessary to run in executor?
 				for entry in feed_info.entries:
-					self.feeds_ids[feed].add(entry.id)
+					if "id" in entry:
+						self.feeds_ids[feed].add(entry.id)
 			except Exception as e:
 				print("Exception in RSS Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
@@ -127,7 +128,7 @@ class RSS:
 					feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 					# Still necessary to run in executor?
 					for entry in feed_info.entries:
-						if entry.id in self.feeds_ids[feed]:
+						if "id" not in entry or entry.id in self.feeds_ids[feed]:
 							continue
 						self.feeds_ids[feed].add(entry.id)
 						# Get timestamp
