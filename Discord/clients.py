@@ -140,6 +140,7 @@ class Bot(commands.Bot):
 		self.PAGE2IMAGES_REST_API_KEY = os.getenv("PAGE2IMAGES_REST_API_KEY")
 		self.POSTGRES_HOST = os.getenv("POSTGRES_HOST") or "localhost"
 		self.DATABASE_HOST = self.POSTGRES_HOST
+		self.SENTRY_DSN = os.getenv("SENTRY_DSN")
 		self.SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 		self.SPOTIFY_CLIENT_SECRET_KEY = os.getenv("SPOTIFY_CLIENT_SECRET_KEY")
 		self.STEAM_WEB_API_KEY = os.getenv("STEAM_WEB_API_KEY")
@@ -168,7 +169,7 @@ class Bot(commands.Bot):
 		## Open Weather Map
 		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 		## Sentry (Raven)
-		self.sentry_client = self.raven_client = raven.Client(credentials.sentry_dsn)
+		self.sentry_client = self.raven_client = raven.Client(self.SENTRY_DSN)
 		## Twitter
 		self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
 		self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
