@@ -273,7 +273,7 @@ if __name__ == "__main__":
 		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
 			print("{0.bot.console_message_prefix}Missing Permissions for {0.command.name} in #{0.channel.name} in {0.guild.name}".format(ctx))
 		else:
-			client.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
+			ctx.bot.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
 			print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
