@@ -220,7 +220,7 @@ class Location:
 		# wunderground?
 		try:
 			observation = self.bot.owm_client.weather_at_place(location)
-		except (pyowm.exceptions.not_found_error.NotFoundError, 
+		except (pyowm.exceptions.api_response_error.NotFoundError, 
 				pyowm.exceptions.api_call_error.BadGatewayError) as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return
