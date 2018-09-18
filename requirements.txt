@@ -74,7 +74,7 @@ pillow==5.2.0
 protobuf==3.6.1
 pycparser==2.18
 pynacl==1.2.1
-pyparsing==2.2.0
+pyparsing==2.2.1
 pysocks==1.6.8
 requests==2.19.1
 requests-oauthlib==1.0.0
