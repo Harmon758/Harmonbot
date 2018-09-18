@@ -73,12 +73,15 @@ class Respects:
 		'''
 		user_respects = await ctx.bot.db.fetchval("SELECT respects FROM respects.users WHERE user_id = $1", 
 													ctx.author.id) or 0
-		guild_respects = await ctx.bot.db.fetchval("SELECT respects FROM respects.guilds WHERE guild_id = $1", 
-													ctx.guild.id) or 0
+		if ctx.guild:
+			guild_respects = await ctx.bot.db.fetchval("SELECT respects FROM respects.guilds WHERE guild_id = $1", 
+														ctx.guild.id) or 0
 		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respects.stats WHERE stat = 'total'")
-		await ctx.embed_reply(f"You have paid {user_respects:,} respects\n"
-								f"This server has paid {guild_respects:,} respects\n"
-								f"A total of {total_respects:,} respects have been paid")
+		response = f"You have paid {user_respects:,} respects\n"
+		if ctx.guild:
+			response += f"This server has paid {guild_respects:,} respects\n"
+		response += f"A total of {total_respects:,} respects have been paid"
+		await ctx.embed_reply(response)
 	
 	@respects.command()
 	async def pay(self, ctx):
