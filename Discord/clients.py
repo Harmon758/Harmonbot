@@ -21,6 +21,7 @@ import imageio
 import imgurpython
 import inflect
 import pyowm
+import raven
 import requests
 import tweepy
 import wolframalpha
@@ -166,6 +167,8 @@ class Bot(commands.Bot):
 			print(f"{self.console_message_prefix}Failed to initialize Imgur Client: {e}")
 		## Open Weather Map
 		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
+		## Sentry (Raven)
+		self.sentry_client = self.raven_client = raven.Client(credentials.sentry_dsn)
 		## Twitter
 		self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
 		self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
