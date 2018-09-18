@@ -94,16 +94,17 @@ class Respects:
 								RETURNING value
 								"""
 							)
-		guild_respects = await ctx.bot.db.fetchval(
-								"""
-								INSERT INTO respects.guilds (guild_id, respects)
-								VALUES ($1, 1)
-								ON CONFLICT (guild_id) DO
-								UPDATE SET respects = guilds.respects + 1
-								RETURNING respects
-								""", 
-								ctx.guild.id
-							)
+		if ctx.guild:
+			guild_respects = await ctx.bot.db.fetchval(
+									"""
+									INSERT INTO respects.guilds (guild_id, respects)
+									VALUES ($1, 1)
+									ON CONFLICT (guild_id) DO
+									UPDATE SET respects = guilds.respects + 1
+									RETURNING respects
+									""", 
+									ctx.guild.id
+								)
 		user_respects = await ctx.bot.db.fetchval(
 							"""
 							INSERT INTO respects.users (user_id, respects)
@@ -115,9 +116,11 @@ class Respects:
 							ctx.author.id
 						)
 		suffix = ctx.bot.inflect_engine.ordinal(user_respects)[len(str(user_respects)):]
-		await ctx.embed_reply(f"{ctx.author.mention} has paid their respects for the {user_respects:,}{suffix} time\n"
-								f"Total respects paid in this server: {guild_respects:,}\n"
-								f"Total respects paid so far: {total_respects:,}")
+		response = f"{ctx.author.mention} has paid their respects for the {user_respects:,}{suffix} time\n"
+		if ctx.guild:
+			response += f"Total respects paid in this server: {guild_respects:,}\n"
+		response += f"Total respects paid so far: {total_respects:,}"
+		await ctx.embed_reply(response)
 	
 	@respects.command(aliases = ["statistics"])
 	async def stats(self, ctx):
