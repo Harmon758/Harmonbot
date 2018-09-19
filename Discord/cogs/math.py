@@ -31,7 +31,7 @@ class Math:
 		if not numbers:
 			await ctx.embed_reply("Add what?")
 			return
-		await ctx.embed_reply("{} = {:g}".format(" + ".join("{:g}".format(number) for number in numbers), sum(numbers)))
+		await ctx.embed_reply(f"{' + '.join(f'{number:g}' for number in numbers)} = {sum(numbers):g}")
 	
 	@commands.command(aliases = ["calc", "calculator"])
 	async def calculate(self, ctx, *, equation : str):
