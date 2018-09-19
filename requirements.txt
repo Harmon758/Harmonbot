@@ -73,7 +73,7 @@ multidict==4.4.1
 oauthlib==2.1.0
 pillow==5.2.0
 protobuf==3.6.1
-pycparser==2.18
+pycparser==2.19
 pynacl==1.2.1
 pyparsing==2.2.0
 pysocks==1.6.8
