@@ -49,7 +49,7 @@ class Math:
 			future = ctx.bot.loop.run_in_executor(None, async_result.get, 10.0)
 			try:
 				result = await asyncio.wait_for(future, 10.0, loop = ctx.bot.loop)
-				await ctx.embed_reply("{} = {}".format(equation, result))
+				await ctx.embed_reply(f"{equation} = {result}")
 			except discord.HTTPException:
 				# TODO: use textwrap/paginate
 				await ctx.embed_reply(":no_entry: Output too long")
