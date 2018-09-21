@@ -71,7 +71,7 @@ class Math:
 		try:
 			await ctx.embed_reply(math.exp(value))
 		except OverflowError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@commands.command()
 	async def factorial(self, ctx, value : int):
