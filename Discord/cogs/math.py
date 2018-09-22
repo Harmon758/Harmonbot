@@ -79,7 +79,7 @@ class Math:
 		try:
 			await ctx.embed_reply(math.factorial(value))
 		except OverflowError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@commands.command(aliases = ["greatest_common_divisor"])
 	async def gcd(self, ctx, value_a : int, value_b : int):
