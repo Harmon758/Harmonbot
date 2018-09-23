@@ -101,9 +101,9 @@ class Math:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await ctx.embed_reply("`{}`".format(sympy.diff(equation.strip('`'), x)), title = "Derivative of {}".format(equation))
+			await ctx.embed_reply(f"`{sympy.diff(equation.strip('`'), x)}`", title = "Derivative of {equation}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"), title = "Error")
 	
 	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
 	async def integrate(self, ctx, *, equation : str):
