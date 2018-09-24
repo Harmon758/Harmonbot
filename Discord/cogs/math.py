@@ -113,9 +113,9 @@ class Math:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await ctx.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), x)), title = "Integral of {}".format(equation))
+			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), x)}`", title = "Integral of {equation}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"), title = "Error")
 	
 	@integrate.command(name = "definite")
 	async def integrate_definite(self, ctx, lower_limit : str, upper_limit : str, *, equation : str):
