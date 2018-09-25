@@ -125,9 +125,9 @@ class Math:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await ctx.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))), title = "Definite Integral of {} from {} to {}".format(equation, lower_limit, upper_limit))
+			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))}`", title = f"Definite Integral of {equation} from {lower_limit} to {upper_limit}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"), title = "Error")
 	
 	# Trigonometry
 	# TODO: a(sin/cos/tan)h aliases
