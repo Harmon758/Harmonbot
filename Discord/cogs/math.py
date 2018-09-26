@@ -37,7 +37,8 @@ class Math:
 	async def calculate(self, ctx, *, equation : str):
 		'''Calculator'''
 		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
-		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
+		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", 
+                        "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
 		allowed = set("0123456789.+-*/^%()")
 		for key, value in replacements.items():
 			equation = equation.replace(key, value)
