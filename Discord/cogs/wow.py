@@ -45,17 +45,17 @@ class WoW:
 			if resp.status != 200:
 				await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
 				return
-		embed = discord.Embed(title = data["name"], url = f"http://us.battle.net/wow/en/character/{data['realm'].replace(' ', '-')}/{data['name']}/", description = f"{data['realm']} ({data['battlegroup']})", color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		embed.add_field(name = "Level", value = data["level"])
-		embed.add_field(name = "Achievement Points", value = data["achievementPoints"])
-		embed.add_field(name = "Class", value = f"{classes.get(data['class'], 'Unknown')}\n[Talent Calculator](http://us.battle.net/wow/en/tool/talent-calculator#{data['calcClass']})")
-		embed.add_field(name = "Race", value = races.get(data["race"], "Unknown"))
-		embed.add_field(name = "Gender", value = genders.get(data["gender"], "Unknown"))
-		embed.set_thumbnail(url = f"http://render-us.worldofwarcraft.com/character/{data['thumbnail']}")
-		embed.set_footer(text = "Last seen")
-		embed.timestamp = datetime.datetime.utcfromtimestamp(data["lastModified"] / 1000.0)
-		await ctx.send(embed = embed)
+		title_url = f"http://us.battle.net/wow/en/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
+		thumbnail_url = f"http://render-us.worldofwarcraft.com/character/{data['thumbnail']}"
+		fields = [("Level", data["level"]), ("Achievement Points", data["achievementPoints"]), 
+					("Class", f"{classes.get(data['class'], 'Unknown')}\n"
+					"[Talent Calculator](http://us.battle.net/wow/en/tool/talent-calculator#{data['calcClass']})"), 
+					("Race", races.get(data["race"], "Unknown")), 
+					("Gender", genders.get(data["gender"], "Unknown"))]
+		timestamp = datetime.datetime.utcfromtimestamp(data["lastModified"] / 1000.0)
+		await ctx.embed_reply(f"{data['realm']} ({data['battlegroup']})", title = data["name"], 
+								title_url = title_url, thumbnail_url = thumbnail_url, fields = fields, 
+								footer_text = "Last seen", timestamp = timestamp)
 		# faction and total honorable kills?
 	
 	@wow.command()
