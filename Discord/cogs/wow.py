@@ -28,19 +28,23 @@ class WoW:
 		'''WIP'''
 		# get classes
 		classes = {}
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/data/character/classes", params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}) as resp:
+		url = "https://us.api.battle.net/wow/data/character/classes"
+		params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		for wow_class in data["classes"]:
 			classes[wow_class["id"]] = wow_class["name"]
 		# get races
 		races = {}
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/data/character/races", params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}) as resp:
+		url = "https://us.api.battle.net/wow/data/character/races"
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		for wow_race in data["races"]:
 			races[wow_race["id"]] = wow_race["name"]
 			# add side/faction?
 		genders = {0: "Male", 1: "Female"}
-		async with clients.aiohttp_session.get(f"https://us.api.battle.net/wow/character/{realm}/{character}", params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}) as resp:
+		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 			if resp.status != 200:
 				await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
