@@ -66,7 +66,7 @@ class WoW:
 	@checks.not_forbidden()
 	async def statistics(self, ctx, character : str, *, realm : str):
 		'''WIP'''
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?fields=statistics&apikey={}".format(realm, character, ctx.bot.BATTLE_NET_API_KEY)) as resp:
+		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}".format(realm, character), params = {"fields": "statistics", "apikey": ctx.bot.BATTLE_NET_API_KEY}) as resp:
 			data = await resp.json()
 		embed = discord.Embed(title = data["name"], url = "http://us.battle.net/wow/en/character/{}/{}/".format(data["realm"].replace(' ', '-'), data["name"]), description = "{} ({})".format(data["realm"], data["battlegroup"]), color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
