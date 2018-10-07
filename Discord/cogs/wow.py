@@ -68,7 +68,8 @@ class WoW:
 		'''WIP'''
 		async with clients.aiohttp_session.get(f"https://us.api.battle.net/wow/character/{realm}/{character}", params = {"fields": "statistics", "apikey": ctx.bot.BATTLE_NET_API_KEY}) as resp:
 			data = await resp.json()
-		embed = discord.Embed(title = data["name"], url = f"http://us.battle.net/wow/en/character/{data['realm'].replace(' ', '-')}/{data['name']}/", description = f"{data['realm']} ({data['battlegroup']})", color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		statistics = data["statistics"]
+		title_url = f"http://us.battle.net/wow/en/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
+		# await ctx.embed_reply(f"{data['realm']} ({data['battlegroup']})", 
+		# 						title = data["name"], title_url = title_url)
 
