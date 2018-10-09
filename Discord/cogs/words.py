@@ -21,7 +21,7 @@ class Words:
 		if not antonyms:
 			await ctx.embed_reply(":no_entry: Word or antonyms not found")
 			return
-		await ctx.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
+		await ctx.embed_reply(', '.join(antonyms[0].words), title = f"Antonyms of {word.capitalize()}")
 	
 	@commands.command(aliases = ["dictionary"])
 	@checks.not_forbidden()
