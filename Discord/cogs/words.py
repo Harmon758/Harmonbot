@@ -27,7 +27,7 @@ class Words:
 	@checks.not_forbidden()
 	async def define(self, ctx, word : str):
 		'''Define a word'''
-		definition = self.bot.wordnik_word_api.getDefinitions(word, limit = 1) # useCanonical = True ?
+		definition = self.bot.wordnik_word_api.getDefinitions(word, limit = 1)  # useCanonical = True ?
 		if not definition:
 			await ctx.embed_reply(":no_entry: Definition not found")
 			return
