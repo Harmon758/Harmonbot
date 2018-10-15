@@ -30,7 +30,8 @@ class Words:
 		definition = self.bot.wordnik_word_api.getDefinitions(word, limit = 1)  # useCanonical = True ?
 		if not definition:
 			return await ctx.embed_reply(":no_entry: Definition not found")
-		await ctx.embed_reply(definition[0].text, title = definition[0].word.capitalize(), footer_text = definition[0].attributionText)
+		await ctx.embed_reply(definition[0].text, title = definition[0].word.capitalize(), 
+								footer_text = definition[0].attributionText)
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	@checks.not_forbidden()
