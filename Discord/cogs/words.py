@@ -41,11 +41,11 @@ class Words:
 		description = pronunciation[0].raw.strip("()") if pronunciation else "Audio File Link"
 		audio_file = self.bot.wordnik_word_api.getAudio(word, limit = 1)
 		if audio_file:
-			description = "[{}]({})".format(description, audio_file[0].fileUrl)
+			description = f"[{description}]({audio_file[0].fileUrl})"
 		elif not pronunciation:
 			await ctx.embed_reply(":no_entry: Word or pronunciation not found")
 			return
-		await ctx.embed_reply(description, title = "Pronunciation of {}".format(word.capitalize()))
+		await ctx.embed_reply(description, title = f"Pronunciation of {word.capitalize()}")
 	
 	@commands.command(aliases = ["rhymes"])
 	@checks.not_forbidden()
