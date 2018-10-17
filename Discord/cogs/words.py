@@ -43,8 +43,7 @@ class Words:
 		if audio_file:
 			description = f"[{description}]({audio_file[0].fileUrl})"
 		elif not pronunciation:
-			await ctx.embed_reply(":no_entry: Word or pronunciation not found")
-			return
+			return await ctx.embed_reply(":no_entry: Word or pronunciation not found")
 		await ctx.embed_reply(description, title = f"Pronunciation of {word.capitalize()}")
 	
 	@commands.command(aliases = ["rhymes"])
