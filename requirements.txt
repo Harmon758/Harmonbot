@@ -59,7 +59,7 @@ configparser==3.5.0
 cycler==0.10.0
 docopt==0.6.2
 future==0.16.0
-geojson==2.4.0
+geojson==2.4.1
 gitdb2==2.0.4
 grpcio==1.15.0
 idna==2.7
