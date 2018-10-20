@@ -54,7 +54,7 @@ class Words:
 		if not rhymes:
 			await ctx.embed_reply(":no_entry: Word or rhymes not found")
 			return
-		await ctx.embed_reply(', '.join(rhymes[0].words), title = f"Words that rhyme with {word.capitalize()}")
+		await ctx.embed_reply(", ".join(rhymes[0].words), title = f"Words that rhyme with {word.capitalize()}")
 	
 	@commands.command()
 	@checks.not_forbidden()
