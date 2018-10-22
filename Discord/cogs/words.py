@@ -50,10 +50,12 @@ class Words:
 	@checks.not_forbidden()
 	async def rhyme(self, ctx, word : str):
 		'''Rhymes of a word'''
-		rhymes = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", limitPerRelationshipType = 100)
+		rhymes = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", 
+															limitPerRelationshipType = 100)
 		if not rhymes:
 			return await ctx.embed_reply(":no_entry: Word or rhymes not found")
-		await ctx.embed_reply(", ".join(rhymes[0].words), title = f"Words that rhyme with {word.capitalize()}")
+		await ctx.embed_reply(", ".join(rhymes[0].words), 
+								title = f"Words that rhyme with {word.capitalize()}")
 	
 	@commands.command()
 	@checks.not_forbidden()
