@@ -84,7 +84,7 @@ class Words:
 		if not synonyms:
 			await ctx.embed_reply(":no_entry: Word or synonyms not found")
 			return
-		await ctx.embed_reply(', '.join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
+		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
 	
 	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
 	"Powered by [Yandex.Translate](http://translate.yandex.com/)", invoke_without_command = True)
