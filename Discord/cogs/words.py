@@ -82,8 +82,7 @@ class Words:
 		'''Synonyms of a word'''
 		synonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", useCanonical = "true", limitPerRelationshipType = 100)
 		if not synonyms:
-			await ctx.embed_reply(":no_entry: Word or synonyms not found")
-			return
+			return await ctx.embed_reply(":no_entry: Word or synonyms not found")
 		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
 	
 	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
