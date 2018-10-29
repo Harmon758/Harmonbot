@@ -80,7 +80,8 @@ class Words:
 	@checks.not_forbidden()
 	async def synonym(self, ctx, word : str):
 		'''Synonyms of a word'''
-		synonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", useCanonical = "true", limitPerRelationshipType = 100)
+		synonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", 
+																useCanonical = "true", limitPerRelationshipType = 100)
 		if not synonyms:
 			return await ctx.embed_reply(":no_entry: Word or synonyms not found")
 		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
