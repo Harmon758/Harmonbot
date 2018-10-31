@@ -109,7 +109,7 @@ class Words:
 	@checks.not_forbidden()
 	async def translate_languages(self, ctx, language_code : str = "en"):
 		'''Language Codes'''
-		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs?ui={}&key={}".format(language_code, ctx.bot.YANDEX_TRANSLATE_API_KEY)) as resp:
+		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs", params = {"ui": language_code, "key": ctx.bot.YANDEX_TRANSLATE_API_KEY}) as resp:
 			data = await resp.json()
 		if "langs" not in data:
 			await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
