@@ -114,7 +114,7 @@ class Words:
 		if "langs" not in data:
 			await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
 			return
-		await ctx.embed_reply(", ".join(sorted("{} ({})".format(language, code) for code, language in data["langs"].items())))
+		await ctx.embed_reply(", ".join(sorted(f"{language} ({code})" for code, language in data["langs"].items())))
 	
 	@translate.command(name = "to")
 	@checks.not_forbidden()
