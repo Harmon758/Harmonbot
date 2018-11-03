@@ -112,8 +112,7 @@ class Words:
 		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs", params = {"ui": language_code, "key": ctx.bot.YANDEX_TRANSLATE_API_KEY}) as resp:
 			data = await resp.json()
 		if "langs" not in data:
-			await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
 		await ctx.embed_reply(", ".join(sorted(f"{language} ({code})" for code, language in data["langs"].items())))
 	
 	@translate.command(name = "to")
