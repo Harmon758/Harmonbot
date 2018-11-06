@@ -129,14 +129,14 @@ class Words:
 	
 	async def process_translate(self, ctx, text, to_language_code, from_language_code = None):
 		url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
-		params = {"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, "lang": to_language_code if not from_language_code else "{}-{}".format(from_language_code, to_language_code), "text": text.replace(' ', '+'), "options": 1}
+		params = {"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, "lang": to_language_code if not from_language_code else f"{from_language_code}-{to_language_code}", "text": text.replace(' ', '+'), "options": 1}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400: # Bad Request
 				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
 		if data["code"] != 200:
-			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 			return
-		await ctx.embed_reply(data["text"][0], footer_text = "{}Powered by Yandex.Translate".format("Detected Language Code: {} | ".format(data["detected"]["lang"]) if not from_language_code else ""))
+		await ctx.embed_reply(data["text"][0], footer_text = f"""{f"Detected Language Code: {data['detected']['lang']} | " if not from_language_code else ""}Powered by Yandex.Translate""")
 
