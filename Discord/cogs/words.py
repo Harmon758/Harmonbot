@@ -132,11 +132,9 @@ class Words:
 		params = {"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, "lang": to_language_code if not from_language_code else f"{from_language_code}-{to_language_code}", "text": text.replace(' ', '+'), "options": 1}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:  # Bad Request
-				await ctx.embed_reply(":no_entry: Error")
-				return
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
 		if data["code"] != 200:
-			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
-			return
+			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 		await ctx.embed_reply(data["text"][0], footer_text = f"""{f"Detected Language Code: {data['detected']['lang']} | " if not from_language_code else ""}Powered by Yandex.Translate""")
 
