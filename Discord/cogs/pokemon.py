@@ -16,7 +16,8 @@ class Pokemon:
 	@checks.not_forbidden()
 	async def pokemon(self, ctx, id_or_name : str):
 		'''WIP'''
-		# TODO: colors?, egg groups?, forms?, genders?, habitats?, pokeathlon stats?, shapes?, stats?, version groups?
+		# TODO: colors?, egg groups?, forms?, genders?, habitats?, 
+		#		pokeathlon stats?, shapes?, stats?, version groups?
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@pokemon.command()
