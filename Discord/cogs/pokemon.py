@@ -32,9 +32,9 @@ class Pokemon:
 		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["detail"]))
+				await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
 				return
-		await ctx.embed_reply(title = "{} ({})".format(data["name"].capitalize(), data["id"]), fields = (("Generation", data["generation"]["name"]),))
+		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", fields = (("Generation", data["generation"]["name"]),))
 	
 	@pokemon.command()
 	@checks.not_forbidden()
