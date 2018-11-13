@@ -44,7 +44,7 @@ tabulate==0.8.2
 # tweepy==3.6.0
 git+git://github.com/tweepy/tweepy.git@2efe385#egg=tweepy
 unicodedata2==11.0.0
-wand==0.4.4
+wand==0.4.5
 wolframalpha==3.0.1
 wordnik-py3==2.1.2
 youtube-dl==2018.9.18
