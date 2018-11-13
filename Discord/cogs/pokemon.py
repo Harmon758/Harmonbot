@@ -33,7 +33,8 @@ class Pokemon:
 			data = await resp.json()
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
-		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", fields = (("Generation", data["generation"]["name"]),))
+		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
+								fields = (("Generation", data["generation"]["name"]),))
 	
 	@pokemon.command()
 	@checks.not_forbidden()
