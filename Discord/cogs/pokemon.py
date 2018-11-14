@@ -47,9 +47,9 @@ class Pokemon:
 		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/berry/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["detail"]))
+				await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
 				return
-		await ctx.embed_reply(title = "{} ({})".format(data["name"].capitalize(), data["id"]), fields = (("Item Name", data["item"]["name"].capitalize()), ("Growth Time", "{}h*4".format(data["growth_time"])), ("Max Harvest", data["max_harvest"]), ("Size", "{} mm".format(data["size"])), ("Smoothness", data["smoothness"]), ("Soil Dryness", data["soil_dryness"]), ("Firmness", data["firmness"]["name"]), ("Natural Gift Power", data["natural_gift_power"]), ("Natural Gift Type", data["natural_gift_type"]["name"]), ("Flavors (Potency)", ", ".join("{0[flavor][name]} ({0[potency]})".format(f) for f in data["flavors"]))))
+		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", fields = (("Item Name", data["item"]["name"].capitalize()), ("Growth Time", f"{data['growth_time']}h*4"), ("Max Harvest", data["max_harvest"]), ("Size", f"{data['size']} mm"), ("Smoothness", data["smoothness"]), ("Soil Dryness", data["soil_dryness"]), ("Firmness", data["firmness"]["name"]), ("Natural Gift Power", data["natural_gift_power"]), ("Natural Gift Type", data["natural_gift_type"]["name"]), ("Flavors (Potency)", ", ".join(f"{f['flavor']['name']} ({f['potency']})" for f in data["flavors"]))))
 	
 	@pokemon.command()
 	@checks.not_forbidden()
