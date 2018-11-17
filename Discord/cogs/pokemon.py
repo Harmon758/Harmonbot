@@ -81,13 +81,13 @@ class Pokemon:
 		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["detail"]))
+				await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
 				return
 		for name in data["names"]:
 			if name["language"]["name"] == "en":
 				color = name["color"]
 				break
-		await ctx.embed_reply(title = "{} ({})".format(data["name"].capitalize(), data["id"]), fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
+		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
 	
 	@pokemon.group(invoke_without_command = True)
 	@checks.not_forbidden()
