@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import clients
@@ -83,10 +84,8 @@ class Pokemon:
 			if resp.status == 404:
 				await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
 				return
-		for name in data["names"]:
-			if name["language"]["name"] == "en":
-				color = name["color"]
-				break
+		name = discord.utils.find(lambda n: n["language"]["name"] == "en", data["names"])
+		color = name["color"]
 		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
 	
 	@pokemon.group(invoke_without_command = True)
