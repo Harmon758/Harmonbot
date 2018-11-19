@@ -82,8 +82,7 @@ class Pokemon:
 		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
-				return
+				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
 		name = discord.utils.find(lambda n: n["language"]["name"] == "en", data["names"])
 		color = name["color"]
 		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
