@@ -85,7 +85,8 @@ class Pokemon:
 				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
 		name = discord.utils.find(lambda n: n["language"]["name"] == "en", data["names"])
 		color = name["color"]
-		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
+		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
+								fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
 	
 	@pokemon.group(invoke_without_command = True)
 	@checks.not_forbidden()
