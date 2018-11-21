@@ -30,7 +30,7 @@ class Pokemon:
 		Pokémon have multiple possible abilities but can have only one ability at a time
 		Check out [Bulbapedia](http://bulbapedia.bulbagarden.net/wiki/Ability) for greater detail
 		'''
-		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
+		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
