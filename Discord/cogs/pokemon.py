@@ -45,7 +45,7 @@ class Pokemon:
 		Small fruits that can provide HP and status condition restoration, stat enhancement, and even damage negation when eaten by Pokémon
 		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Berry) for greater detail
 		'''
-		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/berry/" + id_or_name) as resp:
+		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/berry/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
