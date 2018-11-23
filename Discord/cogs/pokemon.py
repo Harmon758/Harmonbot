@@ -79,7 +79,7 @@ class Pokemon:
 		Categories judges use to weigh a Pokémon's condition in Pokémon contests
 		Check out [Bulbapedia](http://bulbapedia.bulbagarden.net/wiki/Contest_condition) for greater detail
 		'''
-		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
+		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
