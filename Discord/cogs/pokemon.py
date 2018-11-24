@@ -28,7 +28,7 @@ class Pokemon:
 		WIP
 		Abilities provide passive effects for Pokémon in battle or in the overworld
 		Pokémon have multiple possible abilities but can have only one ability at a time
-		Check out [Bulbapedia](http://bulbapedia.bulbagarden.net/wiki/Ability) for greater detail
+		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Ability) for greater detail
 		'''
 		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
 			data = await resp.json()
