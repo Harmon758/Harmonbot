@@ -77,7 +77,7 @@ class Pokemon:
 		'''
 		Contest conditions
 		Categories judges use to weigh a Pokémon's condition in Pokémon contests
-		Check out [Bulbapedia](http://bulbapedia.bulbagarden.net/wiki/Contest_condition) for greater detail
+		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Contest_condition) for greater detail
 		'''
 		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
 			data = await resp.json()
