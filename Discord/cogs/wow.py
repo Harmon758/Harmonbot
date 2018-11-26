@@ -51,8 +51,7 @@ class WoW:
 		title_url = f"http://us.battle.net/wow/en/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
 		thumbnail_url = f"http://render-us.worldofwarcraft.com/character/{data['thumbnail']}"
 		fields = [("Level", data["level"]), ("Achievement Points", data["achievementPoints"]), 
-					("Class", f"{classes.get(data['class'], 'Unknown')}\n"
-					"[Talent Calculator](http://us.battle.net/wow/en/tool/talent-calculator#{data['calcClass']})"), 
+					("Class", f"{classes.get(data['class'], 'Unknown')}"), 
 					("Race", races.get(data["race"], "Unknown")), 
 					("Gender", genders.get(data["gender"], "Unknown"))]
 		timestamp = datetime.datetime.utcfromtimestamp(data["lastModified"] / 1000.0)
