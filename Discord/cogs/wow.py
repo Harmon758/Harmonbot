@@ -48,8 +48,8 @@ class WoW:
 			data = await resp.json()
 			if resp.status != 200:
 				return await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
-		title_url = f"http://us.battle.net/wow/en/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
-		thumbnail_url = f"http://render-us.worldofwarcraft.com/character/{data['thumbnail']}"
+		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}"
+		thumbnail_url = f"https://render-us.worldofwarcraft.com/character/{data['thumbnail']}"
 		fields = [("Level", data["level"]), ("Achievement Points", data["achievementPoints"]), 
 					("Class", f"{classes.get(data['class'], 'Unknown')}"), 
 					("Race", races.get(data["race"], "Unknown")), 
