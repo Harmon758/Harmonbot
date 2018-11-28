@@ -69,7 +69,7 @@ class WoW:
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		statistics = data["statistics"]
-		title_url = f"http://us.battle.net/wow/en/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
+		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
 		# await ctx.embed_reply(f"{data['realm']} ({data['battlegroup']})", 
 		# 						title = data["name"], title_url = title_url)
 
