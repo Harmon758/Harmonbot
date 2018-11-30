@@ -6,6 +6,7 @@ import asyncio
 import concurrent.futures
 import math
 import multiprocessing
+
 import sympy
 
 from clients import py_code_block
@@ -31,13 +32,14 @@ class Math:
 		if not numbers:
 			await ctx.embed_reply("Add what?")
 			return
-		await ctx.embed_reply("{} = {:g}".format(" + ".join("{:g}".format(number) for number in numbers), sum(numbers)))
+		await ctx.embed_reply(f"{' + '.join(f'{number:g}' for number in numbers)} = {sum(numbers):g}")
 	
 	@commands.command(aliases = ["calc", "calculator"])
 	async def calculate(self, ctx, *, equation : str):
 		'''Calculator'''
 		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
-		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
+		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", 
+                        "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
 		allowed = set("0123456789.+-*/^%()")
 		for key, value in replacements.items():
 			equation = equation.replace(key, value)
@@ -49,7 +51,7 @@ class Math:
 			future = ctx.bot.loop.run_in_executor(None, async_result.get, 10.0)
 			try:
 				result = await asyncio.wait_for(future, 10.0, loop = ctx.bot.loop)
-				await ctx.embed_reply("{} = {}".format(equation, result))
+				await ctx.embed_reply(f"{equation} = {result}")
 			except discord.HTTPException:
 				# TODO: use textwrap/paginate
 				await ctx.embed_reply(":no_entry: Output too long")
@@ -71,7 +73,7 @@ class Math:
 		try:
 			await ctx.embed_reply(math.exp(value))
 		except OverflowError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@commands.command()
 	async def factorial(self, ctx, value : int):
@@ -79,7 +81,7 @@ class Math:
 		try:
 			await ctx.embed_reply(math.factorial(value))
 		except OverflowError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@commands.command(aliases = ["greatest_common_divisor"])
 	async def gcd(self, ctx, value_a : int, value_b : int):
@@ -101,9 +103,11 @@ class Math:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await ctx.embed_reply("`{}`".format(sympy.diff(equation.strip('`'), x)), title = "Derivative of {}".format(equation))
+			await ctx.embed_reply(f"`{sympy.diff(equation.strip('`'), x)}`",
+                                    title = "Derivative of {equation}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"),
+                                    title = "Error")
 	
 	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
 	async def integrate(self, ctx, *, equation : str):
@@ -113,9 +117,11 @@ class Math:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await ctx.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), x)), title = "Integral of {}".format(equation))
+			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), x)}`",
+                                    title = "Integral of {equation}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"),
+                                    title = "Error")
 	
 	@integrate.command(name = "definite")
 	async def integrate_definite(self, ctx, lower_limit : str, upper_limit : str, *, equation : str):
@@ -125,9 +131,11 @@ class Math:
 		'''
 		x = sympy.symbols('x')
 		try:
-			await ctx.embed_reply("`{}`".format(sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))), title = "Definite Integral of {} from {} to {}".format(equation, lower_limit, upper_limit))
+			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))}`",
+                                    title = f"Definite Integral of {equation} from {lower_limit} to {upper_limit}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format("{}: {}".format(type(e).__name__, e)), title = "Error")
+			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"),
+                                    title = "Error")
 	
 	# Trigonometry
 	# TODO: a(sin/cos/tan)h aliases
