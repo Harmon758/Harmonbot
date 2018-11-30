@@ -42,7 +42,7 @@ class RSS:
 		
 		# Generate tzinfos
 		self.tzinfos = {}
-		for timezone_abbreviation in ("EDT",):
+		for timezone_abbreviation in ("EDT", "EST"):
 			matching_timezones = list(filter(lambda t: datetime.datetime.now(pytz.timezone(t)).strftime("%Z") == timezone_abbreviation, pytz.common_timezones))
 			matching_utc_offsets = set(datetime.datetime.now(pytz.timezone(t)).strftime("%z") for t in matching_timezones)
 			if len(matching_utc_offsets) == 1:
