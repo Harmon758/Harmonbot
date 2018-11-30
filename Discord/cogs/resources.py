@@ -545,7 +545,7 @@ class Resources:
 			await ctx.embed_reply(":no_entry: Game not found")
 			return
 		appid = app["appid"]
-		await ctx.embed_reply("[Launch {}](steam://run/{})".format(game, appid))
+		await ctx.embed_reply("steam://run/{}".format(appid), title = "Launch {}".format(game))
 	
 	@commands.command()
 	@checks.not_forbidden()
