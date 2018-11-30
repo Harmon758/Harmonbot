@@ -6,6 +6,7 @@ from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
 import asyncio
 import datetime
 import copy
+import ctypes
 import difflib
 import inspect
 import json
@@ -353,6 +354,11 @@ class Meta:
 			await ctx.embed_reply(pkg_resources.get_distribution(library).version)
 		except pkg_resources.DistributionNotFound as e:
 			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+	
+	@version.command(name = "opus", aliases = ["libopus"])
+	async def version_opus(self, ctx):
+		discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p
+		await ctx.embed_reply(discord.opus._lib.opus_get_version_string().decode("UTF-8"))
 	
 	
 	# Update Bot Stuff
