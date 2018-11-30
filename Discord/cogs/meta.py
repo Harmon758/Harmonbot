@@ -340,6 +340,12 @@ class Meta:
 		'''Bot version'''
 		await ctx.embed_reply("I am Harmonbot `v{}`".format(self.bot.version))
 	
+	@version.command(name = "ffmpeg")
+	async def version_ffmpeg(self, ctx):
+		'''FFmpeg version'''
+		output = subprocess.run("ffmpeg -version", capture_output = True, shell = True).stdout
+		await ctx.embed_reply(clients.code_block.format(output.decode("UTF-8")))
+	
 	@version.command(name = "library", aliases = ["requirement"])
 	@commands.is_owner()
 	async def version_library(self, ctx, library : str):
