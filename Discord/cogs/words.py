@@ -17,21 +17,21 @@ class Words:
 	@checks.not_forbidden()
 	async def antonym(self, ctx, word : str):
 		'''Antonyms of a word'''
-		antonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", useCanonical = "true", limitPerRelationshipType = 100)
+		antonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", 
+																useCanonical = "true", limitPerRelationshipType = 100)
 		if not antonyms:
-			await ctx.embed_reply(":no_entry: Word or antonyms not found")
-			return
-		await ctx.embed_reply(', '.join(antonyms[0].words), title = "Antonyms of {}".format(word.capitalize()))
+			return await ctx.embed_reply(":no_entry: Word or antonyms not found")
+		await ctx.embed_reply(", ".join(antonyms[0].words), title = f"Antonyms of {word.capitalize()}")
 	
 	@commands.command(aliases = ["dictionary"])
 	@checks.not_forbidden()
 	async def define(self, ctx, word : str):
 		'''Define a word'''
-		definition = self.bot.wordnik_word_api.getDefinitions(word, limit = 1) # useCanonical = True ?
+		definition = self.bot.wordnik_word_api.getDefinitions(word, limit = 1)  # useCanonical = True ?
 		if not definition:
-			await ctx.embed_reply(":no_entry: Definition not found")
-			return
-		await ctx.embed_reply(definition[0].text, title = definition[0].word.capitalize(), footer_text = definition[0].attributionText)
+			return await ctx.embed_reply(":no_entry: Definition not found")
+		await ctx.embed_reply(definition[0].text, title = definition[0].word.capitalize(), 
+								footer_text = definition[0].attributionText)
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	@checks.not_forbidden()
@@ -41,27 +41,30 @@ class Words:
 		description = pronunciation[0].raw.strip("()") if pronunciation else "Audio File Link"
 		audio_file = self.bot.wordnik_word_api.getAudio(word, limit = 1)
 		if audio_file:
-			description = "[{}]({})".format(description, audio_file[0].fileUrl)
+			description = f"[{description}]({audio_file[0].fileUrl})"
 		elif not pronunciation:
-			await ctx.embed_reply(":no_entry: Word or pronunciation not found")
-			return
-		await ctx.embed_reply(description, title = "Pronunciation of {}".format(word.capitalize()))
+			return await ctx.embed_reply(":no_entry: Word or pronunciation not found")
+		await ctx.embed_reply(description, title = f"Pronunciation of {word.capitalize()}")
 	
 	@commands.command(aliases = ["rhymes"])
 	@checks.not_forbidden()
 	async def rhyme(self, ctx, word : str):
 		'''Rhymes of a word'''
-		rhymes = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", limitPerRelationshipType = 100)
+		rhymes = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", 
+															limitPerRelationshipType = 100)
 		if not rhymes:
-			await ctx.embed_reply(":no_entry: Word or rhymes not found")
-			return
-		await ctx.embed_reply(', '.join(rhymes[0].words), title = "Words that rhyme with {}".format(word.capitalize()))
+			return await ctx.embed_reply(":no_entry: Word or rhymes not found")
+		await ctx.embed_reply(", ".join(rhymes[0].words), 
+								title = f"Words that rhyme with {word.capitalize()}")
 	
 	@commands.command()
 	@checks.not_forbidden()
 	async def spellcheck(self, ctx, *, words : str):
 		'''Spell check words'''
-		async with clients.aiohttp_session.post("https://api.cognitive.microsoft.com/bing/v5.0/spellcheck?Text=" + words.replace(' ', '+'), headers = {"Ocp-Apim-Subscription-Key" : ctx.bot.BING_SPELL_CHECK_API_KEY}) as resp:
+		url = "https://api.cognitive.microsoft.com/bing/v5.0/spellcheck"
+		headers = {"Ocp-Apim-Subscription-Key" : ctx.bot.BING_SPELL_CHECK_API_KEY}
+		params = {"Text": words.replace(' ', '+')}  # replace necessary?
+		async with clients.aiohttp_session.post(url, headers = headers, params = params) as resp:
 			data = await resp.json()
 		corrections = data["flaggedTokens"]
 		corrected = words
@@ -77,11 +80,11 @@ class Words:
 	@checks.not_forbidden()
 	async def synonym(self, ctx, word : str):
 		'''Synonyms of a word'''
-		synonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", useCanonical = "true", limitPerRelationshipType = 100)
+		synonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", 
+																useCanonical = "true", limitPerRelationshipType = 100)
 		if not synonyms:
-			await ctx.embed_reply(":no_entry: Word or synonyms not found")
-			return
-		await ctx.embed_reply(', '.join(synonyms[0].words), title = "Synonyms of {}".format(word.capitalize()))
+			return await ctx.embed_reply(":no_entry: Word or synonyms not found")
+		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
 	
 	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
 	"Powered by [Yandex.Translate](http://translate.yandex.com/)", invoke_without_command = True)
@@ -106,12 +109,13 @@ class Words:
 	@checks.not_forbidden()
 	async def translate_languages(self, ctx, language_code : str = "en"):
 		'''Language Codes'''
-		async with clients.aiohttp_session.get("https://translate.yandex.net/api/v1.5/tr.json/getLangs?ui={}&key={}".format(language_code, ctx.bot.YANDEX_TRANSLATE_API_KEY)) as resp:
+		url = "https://translate.yandex.net/api/v1.5/tr.json/getLangs"
+		params = {"ui": language_code, "key": ctx.bot.YANDEX_TRANSLATE_API_KEY}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if "langs" not in data:
-			await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
-			return
-		await ctx.embed_reply(", ".join(sorted("{} ({})".format(language, code) for code, language in data["langs"].items())))
+			return await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
+		await ctx.embed_reply(", ".join(sorted(f"{language} ({code})" for code, language in data["langs"].items())))
 	
 	@translate.command(name = "to")
 	@checks.not_forbidden()
@@ -124,14 +128,18 @@ class Words:
 		await self.process_translate(ctx, text, language_code)
 	
 	async def process_translate(self, ctx, text, to_language_code, from_language_code = None):
-		url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&lang={}&text={}&options=1".format(ctx.bot.YANDEX_TRANSLATE_API_KEY, to_language_code if not from_language_code else "{}-{}".format(from_language_code, to_language_code), text.replace(' ', '+'))
-		async with clients.aiohttp_session.get(url) as resp:
-			if resp.status == 400: # Bad Request
-				await ctx.embed_reply(":no_entry: Error")
-				return
+		url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
+		params = {"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, 
+					"lang": to_language_code if not from_language_code else f"{from_language_code}-{to_language_code}", 
+					"text": text.replace(' ', '+'), "options": 1}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
+			if resp.status == 400:  # Bad Request
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
 		if data["code"] != 200:
-			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
-			return
-		await ctx.embed_reply(data["text"][0], footer_text = "{}Powered by Yandex.Translate".format("Detected Language Code: {} | ".format(data["detected"]["lang"]) if not from_language_code else ""))
+			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+		footer_text = "Powered by Yandex.Translate"
+		if not from_language_code:
+			footer_text = f"Detected Language Code: {data['detected']['lang']} | " + footer_text
+		await ctx.embed_reply(data["text"][0], footer_text = footer_text)
 
