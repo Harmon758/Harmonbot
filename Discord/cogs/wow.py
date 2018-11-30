@@ -28,43 +28,48 @@ class WoW:
 		'''WIP'''
 		# get classes
 		classes = {}
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/data/character/classes?apikey={}".format(ctx.bot.BATTLE_NET_API_KEY)) as resp:
+		url = "https://us.api.battle.net/wow/data/character/classes"
+		params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		for wow_class in data["classes"]:
 			classes[wow_class["id"]] = wow_class["name"]
 		# get races
 		races = {}
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/data/character/races?apikey={}".format(ctx.bot.BATTLE_NET_API_KEY)) as resp:
+		url = "https://us.api.battle.net/wow/data/character/races"
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		for wow_race in data["races"]:
 			races[wow_race["id"]] = wow_race["name"]
 			# add side/faction?
 		genders = {0: "Male", 1: "Female"}
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?apikey={}".format(realm, character, ctx.bot.BATTLE_NET_API_KEY)) as resp:
+		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 			if resp.status != 200:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["reason"]))
-				return
-		embed = discord.Embed(title = data["name"], url = "http://us.battle.net/wow/en/character/{}/{}/".format(data["realm"].replace(' ', '-'), data["name"]), description = "{} ({})".format(data["realm"], data["battlegroup"]), color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		embed.add_field(name = "Level", value = data["level"])
-		embed.add_field(name = "Achievement Points", value = data["achievementPoints"])
-		embed.add_field(name = "Class", value = "{}\n[Talent Calculator](http://us.battle.net/wow/en/tool/talent-calculator#{})".format(classes.get(data["class"], "Unknown"), data["calcClass"]))
-		embed.add_field(name = "Race", value = races.get(data["race"], "Unknown"))
-		embed.add_field(name = "Gender", value = genders.get(data["gender"], "Unknown"))
-		embed.set_thumbnail(url = "http://render-us.worldofwarcraft.com/character/{}".format(data["thumbnail"]))
-		embed.set_footer(text = "Last seen")
-		embed.timestamp = datetime.datetime.utcfromtimestamp(data["lastModified"] / 1000.0)
-		await ctx.send(embed = embed)
+				return await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
+		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}"
+		thumbnail_url = f"https://render-us.worldofwarcraft.com/character/{data['thumbnail']}"
+		fields = [("Level", data["level"]), ("Achievement Points", data["achievementPoints"]), 
+					("Class", f"{classes.get(data['class'], 'Unknown')}"), 
+					("Race", races.get(data["race"], "Unknown")), 
+					("Gender", genders.get(data["gender"], "Unknown"))]
+		timestamp = datetime.datetime.utcfromtimestamp(data["lastModified"] / 1000.0)
+		await ctx.embed_reply(f"{data['realm']} ({data['battlegroup']})", title = data["name"], 
+								title_url = title_url, thumbnail_url = thumbnail_url, fields = fields, 
+								footer_text = "Last seen", timestamp = timestamp)
 		# faction and total honorable kills?
 	
 	@wow.command()
 	@checks.not_forbidden()
 	async def statistics(self, ctx, character : str, *, realm : str):
 		'''WIP'''
-		async with clients.aiohttp_session.get("https://us.api.battle.net/wow/character/{}/{}?fields=statistics&apikey={}".format(realm, character, ctx.bot.BATTLE_NET_API_KEY)) as resp:
+		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
+		params = {"fields": "statistics", "apikey": ctx.bot.BATTLE_NET_API_KEY}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		embed = discord.Embed(title = data["name"], url = "http://us.battle.net/wow/en/character/{}/{}/".format(data["realm"].replace(' ', '-'), data["name"]), description = "{} ({})".format(data["realm"], data["battlegroup"]), color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		statistics = data["statistics"]
+		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
+		# await ctx.embed_reply(f"{data['realm']} ({data['battlegroup']})", 
+		# 						title = data["name"], title_url = title_url)
 
