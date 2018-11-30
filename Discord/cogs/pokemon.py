@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import clients
@@ -16,7 +17,8 @@ class Pokemon:
 	@checks.not_forbidden()
 	async def pokemon(self, ctx, id_or_name : str):
 		'''WIP'''
-		# TODO: colors?, egg groups?, forms?, genders?, habitats?, pokeathlon stats?, shapes?, stats?, version groups?
+		# TODO: colors?, egg groups?, forms?, genders?, habitats?, 
+		#		pokeathlon stats?, shapes?, stats?, version groups?
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@pokemon.command()
@@ -26,14 +28,14 @@ class Pokemon:
 		WIP
 		Abilities provide passive effects for Pokémon in battle or in the overworld
 		Pokémon have multiple possible abilities but can have only one ability at a time
-		Check out [Bulbapedia](http://bulbapedia.bulbagarden.net/wiki/Ability) for greater detail
+		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Ability) for greater detail
 		'''
-		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
+		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["detail"]))
-				return
-		await ctx.embed_reply(title = "{} ({})".format(data["name"].capitalize(), data["id"]), fields = (("Generation", data["generation"]["name"]),))
+				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
+		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
+								fields = (("Generation", data["generation"]["name"]),))
 	
 	@pokemon.command()
 	@checks.not_forbidden()
@@ -43,12 +45,18 @@ class Pokemon:
 		Small fruits that can provide HP and status condition restoration, stat enhancement, and even damage negation when eaten by Pokémon
 		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Berry) for greater detail
 		'''
-		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/berry/" + id_or_name) as resp:
+		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/berry/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["detail"]))
-				return
-		await ctx.embed_reply(title = "{} ({})".format(data["name"].capitalize(), data["id"]), fields = (("Item Name", data["item"]["name"].capitalize()), ("Growth Time", "{}h*4".format(data["growth_time"])), ("Max Harvest", data["max_harvest"]), ("Size", "{} mm".format(data["size"])), ("Smoothness", data["smoothness"]), ("Soil Dryness", data["soil_dryness"]), ("Firmness", data["firmness"]["name"]), ("Natural Gift Power", data["natural_gift_power"]), ("Natural Gift Type", data["natural_gift_type"]["name"]), ("Flavors (Potency)", ", ".join("{0[flavor][name]} ({0[potency]})".format(f) for f in data["flavors"]))))
+				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
+		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
+								fields = (("Item Name", data["item"]["name"].capitalize()), 
+											("Growth Time", f"{data['growth_time']}h*4"), ("Max Harvest", data["max_harvest"]), 
+											("Size", f"{data['size']} mm"), ("Smoothness", data["smoothness"]), 
+											("Soil Dryness", data["soil_dryness"]), ("Firmness", data["firmness"]["name"]), 
+											("Natural Gift Power", data["natural_gift_power"]), 
+											("Natural Gift Type", data["natural_gift_type"]["name"]), 
+											("Flavors (Potency)", ", ".join(f"{f['flavor']['name']} ({f['potency']})" for f in data["flavors"]))))
 	
 	@pokemon.command()
 	@checks.not_forbidden()
@@ -69,18 +77,16 @@ class Pokemon:
 		'''
 		Contest conditions
 		Categories judges use to weigh a Pokémon's condition in Pokémon contests
-		Check out [Bulbapedia](http://bulbapedia.bulbagarden.net/wiki/Contest_condition) for greater detail
+		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Contest_condition) for greater detail
 		'''
-		async with clients.aiohttp_session.get("http://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
+		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["detail"]))
-				return
-		for name in data["names"]:
-			if name["language"]["name"] == "en":
-				color = name["color"]
-				break
-		await ctx.embed_reply(title = "{} ({})".format(data["name"].capitalize(), data["id"]), fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
+				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
+		name = discord.utils.find(lambda n: n["language"]["name"] == "en", data["names"])
+		color = name["color"]
+		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
+								fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
 	
 	@pokemon.group(invoke_without_command = True)
 	@checks.not_forbidden()
