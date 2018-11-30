@@ -542,10 +542,8 @@ class Resources:
 			data = await resp.json()
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
 		if not app:
-			await ctx.embed_reply(":no_entry: Game not found")
-			return
-		appid = app["appid"]
-		await ctx.embed_reply(f"steam://run/{appid}", title = f"Launch {game}")
+			return await ctx.embed_reply(":no_entry: Game not found")
+		await ctx.embed_reply(f"steam://run/{app['appid']}", title = f"Launch {game}")
 	
 	@commands.command()
 	@checks.not_forbidden()
