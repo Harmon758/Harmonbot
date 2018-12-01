@@ -154,6 +154,16 @@ class Random:
 		cog = self.bot.get_cog("Resources")
 		if cog: await cog.process_xkcd(ctx, url)
 	
+	@commands.command(aliases = ["rabbit"])
+	@checks.not_forbidden()
+	async def bunny(self, ctx):
+		'''Random bunny'''
+		url = "https://api.bunnies.io/v2/loop/random/?media=gif"
+		async with clients.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		gif = data["media"]["gif"]
+		await ctx.embed_reply(f"[:rabbit2:]({gif})", image_url = gif)
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def card(self, ctx):
