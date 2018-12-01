@@ -68,7 +68,7 @@ class Images:
 		'''Google image search something'''
 		url = "https://www.googleapis.com/customsearch/v1"
 		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
-					"searchType": "image", 'q': search.replace(' ', '+')}
+					"searchType": "image", 'q': search.replace(' ', '+'), "num": 1}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 403:
 				await ctx.embed_reply(":no_entry: Daily limit exceeded")
