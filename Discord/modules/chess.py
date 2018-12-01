@@ -19,8 +19,8 @@ class chess_match(chess.Board):
 		self.text_channel = text_channel
 		self.white_player = white_player
 		self.black_player = black_player
-		self.chess_engine = chess.uci.popen_engine("bin/stockfish_9_x64.exe")
-		#self.chess_engine = chess.uci.popen_engine("bin/stockfish_9_x64_popcnt.exe")
+		self.chess_engine = chess.uci.popen_engine("bin/stockfish_10_x64.exe")
+		#self.chess_engine = chess.uci.popen_engine("bin/stockfish_10_x64_popcnt.exe")
 		self.chess_engine.uci()
 		self.match_message = None
 		self.match_embed = None
