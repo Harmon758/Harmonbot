@@ -78,7 +78,7 @@ class YouTube:
 				if resp.status not in (202, 204):
 					error_description = await resp.text()
 					print(f"{self.bot.console_message_prefix}Google PubSubHubbub Error {resp.status} "
-							"re-subscribing to {channel_id}: {error_description}")
+							f"re-subscribing to {channel_id}: {error_description}")
 			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
 	
 	@commands.group(name = "streams", invoke_without_command = True)
