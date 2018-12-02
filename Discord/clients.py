@@ -17,7 +17,6 @@ import asyncpg
 import clarifai
 import clarifai.rest
 import dotenv
-import imageio
 import imgurpython
 import inflect
 import pyowm
