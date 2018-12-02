@@ -344,7 +344,7 @@ class Meta:
 	@version.command(name = "ffmpeg")
 	async def version_ffmpeg(self, ctx):
 		'''FFmpeg version'''
-		output = subprocess.run("ffmpeg -version", capture_output = True, shell = True).stdout
+		output = subprocess.run("bin\\ffmpeg -version", capture_output = True, shell = True).stdout
 		await ctx.embed_reply(clients.code_block.format(output.decode("UTF-8")))
 	
 	@version.command(name = "library", aliases = ["requirement"])

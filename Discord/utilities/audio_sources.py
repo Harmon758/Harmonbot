@@ -19,7 +19,8 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	def __init__(self, source, before_options = None):
 		self.source = source
 		with open(clients.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			super().__init__(source, before_options = before_options, stderr = ffmpeg_log)
+			super().__init__(source, before_options = before_options, stderr = ffmpeg_log, 
+								executable = "bin/ffmpeg")
 
 
 class ModifiedPCMVolumeTransformer(discord.PCMVolumeTransformer):
