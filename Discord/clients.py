@@ -184,10 +184,6 @@ class Bot(commands.Bot):
 		except Exception as e:
 			print(f"{self.console_message_prefix}Failed to initialize Wordnik Client: {e}")
 		
-		# Download FFmpeg
-		## necessary?, for CI?
-		imageio.plugins.ffmpeg.download()
-		
 		# AIML Kernel
 		self.aiml_kernel = aiml.Kernel()
 		## https://code.google.com/archive/p/aiml-en-us-foundation-alice/wikis/BotProperties.wiki
