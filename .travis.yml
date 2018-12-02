@@ -13,8 +13,6 @@ matrix:
         postgresql: "10"
       cache:
         pip: true
-        directories:
-          - $HOME/.imageio
       before_script:
         - psql -c "CREATE DATABASE harmonbot"
         - psql -c "CREATE USER harmonbot SUPERUSER"

@@ -1,8 +1,7 @@
-# Change pip's cache directory and imageio's user directoriy to be inside
+# Change pip's cache directory to be inside
 # the project directory since we can only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
-  IMAGEIO_USERDIR: "$CI_PROJECT_DIR"
   POSTGRES_HOST: postgres
   POSTGRES_DB: harmonbot
   POSTGRES_USER: harmonbot
@@ -23,7 +22,6 @@ Discord:
     paths:
       - .cache/pip
       - venv/
-      - .imageio
   before_script:
     - python -V  # Print out python version for debugging
     - pip install virtualenv
