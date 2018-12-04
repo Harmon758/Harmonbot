@@ -98,10 +98,11 @@ class Pinboard:
 		pinned_message = await pinned_message_channel.get_message(payload.message_id)
 		if pinboard_message_id:
 			pinboard_message = await pinboard_channel.get_message(pinboard_message_id)
-			content = f"**{pin_count}** :pushpin: {pinned_message.jump_url}"
-			await pinboard_message.edit(content = content)
+			embed = pinboard_message.embeds[0]
+			embed.clear_fields()
+			embed.add_field(name = f"**{pin_count}** :pushpin:", value = f"[**Message Link**]({pinned_message.jump_url})")
+			await pinboard_message.edit(embed = embed)
 		else:
-			content = f"**{pin_count}** :pushpin: {pinned_message.jump_url}"
 			# TODO: custom emote
 			embed = discord.Embed(description = clients.code_block.format(pinned_message.embeds[0].to_dict()) if pinned_message.embeds else pinned_message.content, timestamp = pinned_message.created_at, color = 0xdd2e44)
 			# TODO: color dependent on custom emote
@@ -110,8 +111,9 @@ class Pinboard:
 			embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar_url)
 			if pinned_message.attachments:
 				embed.set_image(url = pinned_message.attachments[0].url)
+			embed.add_field(name = f"**{pin_count}** :pushpin:", value = f"[**Message Link**]({pinned_message.jump_url})")
 			embed.set_footer(text = f"In #{pinned_message.channel}")
-			pinboard_message = await pinboard_channel.send(content, embed = embed)
+			pinboard_message = await pinboard_channel.send(embed = embed)
 			await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
 										pinboard_message.id, payload.message_id)
 
