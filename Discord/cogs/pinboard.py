@@ -77,24 +77,31 @@ class Pinboard:
 		if not pinboard_channel_id:
 			return
 		if payload.channel_id == pinboard_channel_id:
-			...
-			return
-		pinboard_message_id = await self.bot.db.fetchval("""INSERT INTO pinboard.pins (message_id, guild_id, channel_id)
-															VALUES ($1, $2, $3)
-															ON CONFLICT (message_id) DO UPDATE SET guild_id = $2
-															RETURNING pinboard_message_id""", 
-															payload.message_id, payload.guild_id, payload.channel_id)
+			pinboard_message_id = payload.message_id
+			record = await self.bot.db.fetchrow("""SELECT message_id, channel_id
+													FROM pinboard.pins where pinboard_message_id = $1""", 
+													pinboard_message_id)
+			message_id = record["message_id"]
+			channel_id = record["channel_id"]
+		else:
+			message_id = payload.message_id
+			channel_id = payload.channel_id
+			pinboard_message_id = await self.bot.db.fetchval("""INSERT INTO pinboard.pins (message_id, guild_id, channel_id)
+																VALUES ($1, $2, $3)
+																ON CONFLICT (message_id) DO UPDATE SET guild_id = $2
+																RETURNING pinboard_message_id""", 
+																message_id, payload.guild_id, payload.channel_id)
 		try:
 			await self.bot.db.execute("""INSERT INTO pinboard.pinners (message_id, pinner_id)
 											VALUES ($1, $2)""", 
-											payload.message_id, payload.user_id)
+											message_id, payload.user_id)
 		except asyncpg.UniqueViolationError:
 			return
 		pin_count = await self.bot.db.fetchval("SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
-												payload.message_id)
+												message_id)
 		pinboard_channel = self.bot.get_channel(pinboard_channel_id)
-		pinned_message_channel = self.bot.get_channel(payload.channel_id)
-		pinned_message = await pinned_message_channel.get_message(payload.message_id)
+		pinned_message_channel = self.bot.get_channel(channel_id)
+		pinned_message = await pinned_message_channel.get_message(message_id)
 		if pinboard_message_id:
 			pinboard_message = await pinboard_channel.get_message(pinboard_message_id)
 			embed = pinboard_message.embeds[0]
@@ -117,5 +124,5 @@ class Pinboard:
 			embed.set_footer(text = f"In #{pinned_message.channel}")
 			pinboard_message = await pinboard_channel.send(embed = embed)
 			await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
-										pinboard_message.id, payload.message_id)
+										pinboard_message.id, message_id)
 
