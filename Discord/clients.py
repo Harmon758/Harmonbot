@@ -33,14 +33,14 @@ from utilities.help_formatter import CustomHelpFormatter
 
 # TODO: Relocate as Bot variables
 beta = any("beta" in arg.lower() for arg in sys.argv)
-data_path = "data/beta" if beta else "data"
+data_path = "data/beta" if beta else "data"  # Moved, update all references to
 user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
 wait_time = 15.0
-code_block = "```\n{}\n```"
-py_code_block = "```py\n{}\n```"
+code_block = "```\n{}\n```"  # Moved, update all references to
+py_code_block = "```py\n{}\n```"  # Moved, update all references to
 online_time = datetime.datetime.utcnow()
-inflect_engine = inflect.engine()
+inflect_engine = inflect.engine()  # Moved, update all references to
 
 # TODO: Already moved to Bot constants, update all references to
 bot_color = discord.Color.blurple()
@@ -98,6 +98,8 @@ class Bot(commands.Bot):
 		self.dark_theme_background_color = 0x36393e
 		self.white_color = 0xffffff
 		## Constant
+		self.CODE_BLOCK = "```\n{}\n```"
+		self.PY_CODE_BLOCK = "```py\n{}\n```"
 		self.ZERO_WIDTH_SPACE = self.ZWSP = self.ZWS = '\N{ZERO WIDTH SPACE}'
 		### Discord
 		self.EMBED_DESCRIPTION_CHARACTER_LIMIT = self.EMBED_DESCRIPTION_CHAR_LIMIT = self.EDCL = 2048
