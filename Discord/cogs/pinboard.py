@@ -51,16 +51,16 @@ class Pinboard:
 	@checks.is_permitted()
 	async def channel(self, ctx, channel : discord.TextChannel = None):
 		'''Set/get channel'''
-		record = await ctx.bot.db.fetchrow("SELECT * FROM pinboard.pinboards where guild_id = $1", 
-											ctx.guild.id)
-		if not record:
+		channel_id = await ctx.bot.db.fetchval("SELECT channel_id FROM pinboard.pinboards where guild_id = $1", 
+												ctx.guild.id)
+		if not channel_id:
 			if not channel:
 				channel = ctx.channel
 			await ctx.bot.db.execute("INSERT INTO pinboard.pinboards (guild_id, channel_id) VALUES ($1, $2)",
 										ctx.guild.id, channel.id)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Pinboard channel set to {channel.mention}")
 		elif not channel:
-			pinboard_channel = ctx.guild.get_channel(record["channel_id"])
+			pinboard_channel = ctx.guild.get_channel(channel_id)
 			await ctx.embed_reply(f"Current pinboard channel: {pinboard_channel.mention}")
 		else:
 			await ctx.bot.db.execute("UPDATE pinboard.pinboards SET channel_id = $1 WHERE guild_id = $2",
