@@ -13,6 +13,7 @@ class Pinboard:
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.default_threshold = 3
 		self.pin_emotes = ("\N{PUSHPIN}", "\N{ROUND PUSHPIN}", 
 							"\N{WHITE MEDIUM STAR}", "\N{GLOWING STAR}", "\N{SHOOTING STAR}")
 		self.bot.loop.create_task(self.initialize_database())
@@ -22,7 +23,8 @@ class Pinboard:
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS pinboard")
 		await self.bot.db.execute("""CREATE TABLE IF NOT EXISTS pinboard.pinboards (
 										guild_id	BIGINT PRIMARY KEY, 
-										channel_id	BIGINT
+										channel_id	BIGINT, 
+										threshold	INT
 										)""")
 		await self.bot.db.execute("""CREATE TABLE IF NOT EXISTS pinboard.pins (
 										message_id			BIGINT PRIMARY KEY, 
@@ -53,8 +55,10 @@ class Pinboard:
 		Backfill pins into current pinboard channel
 		This can take a while depending on how many missing pinned messages there are
 		'''
-		pinboard_channel_id = await ctx.bot.db.fetchval("SELECT channel_id FROM pinboard.pinboards where guild_id = $1", 
-															ctx.guild.id)
+		record = await ctx.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards where guild_id = $1", 
+											ctx.guild.id)
+		pinboard_channel_id = record["channel_id"]
+		threshold = record["threshold"] or self.default_threshold
 		if not pinboard_channel_id:
 			return await ctx.embed_reply(":no_entry: Error: Pinboard channel not set")
 		response = await ctx.embed_reply("Backfilling...")
@@ -69,6 +73,8 @@ class Pinboard:
 					except (discord.NotFound, discord.HTTPException):
 						pin_count = await self.bot.db.fetchval("SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
 																record["message_id"])
+						if pin_count < threshold:
+							continue
 						pinned_message_channel = self.bot.get_channel(record["channel_id"])
 						pinned_message = await pinned_message_channel.get_message(record["message_id"])
 						pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
@@ -102,6 +108,25 @@ class Pinboard:
 										channel.id, ctx.guild.id)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard channel to {channel.mention}")
 	
+	@pinboard.command()
+	@checks.is_permitted()
+	async def threshold(self, ctx, threshold_number : int = None):
+		'''
+		Set/get the number of reactions needed to pin message
+		Default: 3
+		'''
+		if threshold_number:
+			await ctx.bot.db.execute("UPDATE pinboard.pinboards SET threshold = $1 WHERE guild_id = $2",
+										threshold_number, ctx.guild.id)
+			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard threshold to {threshold_number}")
+		else:
+			threshold_number = await ctx.bot.db.fetchval("SELECT threshold FROM pinboard.pinboards where guild_id = $1", 
+															ctx.guild.id)
+			if threshold_number:
+				await ctx.embed_reply(f"Current pinboard threshold: {threshold_number}")
+			else:
+				await ctx.embed_reply(f"The current pinboard threshold is the default of 3")
+	
 	async def on_raw_reaction_add(self, payload):
 		if str(payload.emoji) not in self.pin_emotes:
 			# Reaction is not for pinboard
@@ -109,8 +134,10 @@ class Pinboard:
 		if not payload.guild_id:
 			# Reaction is not in a guild
 			return
-		pinboard_channel_id = await self.bot.db.fetchval("SELECT channel_id FROM pinboard.pinboards where guild_id = $1", 
-															payload.guild_id)
+		record = await self.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards where guild_id = $1", 
+												payload.guild_id)
+		pinboard_channel_id = record["channel_id"]
+		threshold = record["threshold"] or self.default_threshold
 		if not pinboard_channel_id:
 			# Guild doesn't have a pinboard
 			return
@@ -140,6 +167,9 @@ class Pinboard:
 			return
 		pin_count = await self.bot.db.fetchval("SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
 												message_id)
+		if pin_count < threshold:
+			# Pin count has not reached threshold yet
+			return
 		pinboard_channel = self.bot.get_channel(pinboard_channel_id)
 		pinned_message_channel = self.bot.get_channel(channel_id)
 		pinned_message = await pinned_message_channel.get_message(message_id)
