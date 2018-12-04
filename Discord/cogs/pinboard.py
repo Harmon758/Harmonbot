@@ -46,6 +46,41 @@ class Pinboard:
 		'''
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
+	@pinboard.command()
+	@checks.is_permitted()
+	async def backfill(self, ctx):
+		'''
+		Backfill pins into current pinboard channel
+		This can take a while depending on how many missing pinned messages there are
+		'''
+		pinboard_channel_id = await ctx.bot.db.fetchval("SELECT channel_id FROM pinboard.pinboards where guild_id = $1", 
+															ctx.guild.id)
+		if not pinboard_channel_id:
+			return await ctx.embed_reply(":no_entry: Error: Pinboard channel not set")
+		response = await ctx.embed_reply("Backfilling...")
+		pinboard_channel = self.bot.get_channel(pinboard_channel_id)
+		async with ctx.bot.database_connection_pool.acquire() as connection:
+			async with connection.transaction():
+				# Postgres requires non-scrollable cursors to be created
+				# and used in a transaction.
+				async for record in connection.cursor("SELECT * FROM pinboard.pins where guild_id = $1", ctx.guild.id):
+					try:
+						await pinboard_channel.get_message(record["pinboard_message_id"])
+					except (discord.NotFound, discord.HTTPException):
+						pin_count = await self.bot.db.fetchval("SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
+																record["message_id"])
+						pinned_message_channel = self.bot.get_channel(record["channel_id"])
+						pinned_message = await pinned_message_channel.get_message(record["message_id"])
+						pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
+						await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
+													pinboard_message.id, record["message_id"])
+		if ctx.channel.id == pinboard_channel_id:
+			await ctx.bot.attempt_delete_message(response)
+		else:
+			embed = response.embeds[0]
+			embed.description = "Backfill complete"
+			await response.edit(embed = embed)
+	
 	# TODO: pinboard off option
 	@pinboard.command()
 	@checks.is_permitted()
@@ -116,20 +151,23 @@ class Pinboard:
 			embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[**Message Link**]({pinned_message.jump_url})")
 			await pinboard_message.edit(embed = embed)
 		else:
-			# TODO: custom emote
-			content = pinned_message.content
-			if pinned_message.embeds:
-				content += '\n' + self.bot.CODE_BLOCK.format(pinned_message.embeds[0].to_dict())
-			embed = discord.Embed(description = content, timestamp = pinned_message.created_at, color = 0xdd2e44)
-			# TODO: color dependent on custom emote
-			# alternate color: 0xbe1931
-			# star: 0xffac33
-			embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar_url)
-			if pinned_message.attachments:
-				embed.set_image(url = pinned_message.attachments[0].url)
-			embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[**Message Link**]({pinned_message.jump_url})")
-			embed.set_footer(text = f"In #{pinned_message.channel}")
-			pinboard_message = await pinboard_channel.send(embed = embed)
+			pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
 			await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
 										pinboard_message.id, message_id)
+	
+	async def send_pinboard_message(self, pinboard_channel, pinned_message, pin_count):
+		# TODO: custom emote
+		content = pinned_message.content
+		if pinned_message.embeds:
+			content += '\n' + self.bot.CODE_BLOCK.format(pinned_message.embeds[0].to_dict())
+		embed = discord.Embed(description = content, timestamp = pinned_message.created_at, color = 0xdd2e44)
+		# TODO: color dependent on custom emote
+		# alternate color: 0xbe1931
+		# star: 0xffac33
+		embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar_url)
+		if pinned_message.attachments:
+			embed.set_image(url = pinned_message.attachments[0].url)
+		embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[Message Link]({pinned_message.jump_url})")
+		embed.set_footer(text = f"In #{pinned_message.channel}")
+		return await pinboard_channel.send(embed = embed)
 
