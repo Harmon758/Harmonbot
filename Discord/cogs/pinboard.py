@@ -104,7 +104,10 @@ class Pinboard:
 			await pinboard_message.edit(embed = embed)
 		else:
 			# TODO: custom emote
-			embed = discord.Embed(description = clients.code_block.format(pinned_message.embeds[0].to_dict()) if pinned_message.embeds else pinned_message.content, timestamp = pinned_message.created_at, color = 0xdd2e44)
+			content = pinned_message.content
+			if pinned_message.embeds:
+				content += '\n' + clients.code_block.format(pinned_message.embeds[0].to_dict())
+			embed = discord.Embed(description = content, timestamp = pinned_message.created_at, color = 0xdd2e44)
 			# TODO: color dependent on custom emote
 			# alternate color: 0xbe1931
 			# star: 0xffac33
