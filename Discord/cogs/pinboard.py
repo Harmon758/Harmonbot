@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import asyncpg
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -106,7 +105,7 @@ class Pinboard:
 			# TODO: custom emote
 			content = pinned_message.content
 			if pinned_message.embeds:
-				content += '\n' + clients.code_block.format(pinned_message.embeds[0].to_dict())
+				content += '\n' + self.bot.CODE_BLOCK.format(pinned_message.embeds[0].to_dict())
 			embed = discord.Embed(description = content, timestamp = pinned_message.created_at, color = 0xdd2e44)
 			# TODO: color dependent on custom emote
 			# alternate color: 0xbe1931
