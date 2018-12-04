@@ -100,7 +100,7 @@ class Pinboard:
 			pinboard_message = await pinboard_channel.get_message(pinboard_message_id)
 			embed = pinboard_message.embeds[0]
 			embed.clear_fields()
-			embed.add_field(name = f"**{pin_count}** :pushpin:", value = f"[**Message Link**]({pinned_message.jump_url})")
+			embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[**Message Link**]({pinned_message.jump_url})")
 			await pinboard_message.edit(embed = embed)
 		else:
 			# TODO: custom emote
@@ -114,7 +114,7 @@ class Pinboard:
 			embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar_url)
 			if pinned_message.attachments:
 				embed.set_image(url = pinned_message.attachments[0].url)
-			embed.add_field(name = f"**{pin_count}** :pushpin:", value = f"[**Message Link**]({pinned_message.jump_url})")
+			embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[**Message Link**]({pinned_message.jump_url})")
 			embed.set_footer(text = f"In #{pinned_message.channel}")
 			pinboard_message = await pinboard_channel.send(embed = embed)
 			await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
