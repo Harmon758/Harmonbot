@@ -110,7 +110,7 @@ class Pinboard:
 			embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar_url)
 			if pinned_message.attachments:
 				embed.set_image(url = pinned_message.attachments[0].url)
-			embed.set_footer(text = "In #{}".format(pinned_message.channel))
+			embed.set_footer(text = f"In #{pinned_message.channel}")
 			pinboard_message = await pinboard_channel.send(content, embed = embed)
 			await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
 										pinboard_message.id, payload.message_id)
