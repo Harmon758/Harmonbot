@@ -98,10 +98,10 @@ class Pinboard:
 		pinned_message = await pinned_message_channel.get_message(payload.message_id)
 		if pinboard_message_id:
 			pinboard_message = await pinboard_channel.get_message(pinboard_message_id)
-			content = f"**{pin_count}** :pushpin: {pinned_message.jump_to_url.replace('?jump=', '/')}"
+			content = f"**{pin_count}** :pushpin: {pinned_message.jump_url}"
 			await pinboard_message.edit(content = content)
 		else:
-			content = f"**{pin_count}** :pushpin: {pinned_message.jump_to_url.replace('?jump=', '/')}"
+			content = f"**{pin_count}** :pushpin: {pinned_message.jump_url}"
 			# TODO: custom emote
 			embed = discord.Embed(description = clients.code_block.format(pinned_message.embeds[0].to_dict()) if pinned_message.embeds else pinned_message.content, timestamp = pinned_message.created_at, color = 0xdd2e44)
 			# TODO: color dependent on custom emote
