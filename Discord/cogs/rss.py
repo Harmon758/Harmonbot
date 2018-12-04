@@ -223,7 +223,7 @@ class RSS:
 									except discord.Forbidden:
 										pass
 								# TODO: Remove text channel data if now non-existent
-				except (aiohttp.ClientConnectionError, asyncio.TimeoutError) as e:
+				except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError) as e:
 					error_message = "{}RSS Task Connection Error @ ".format(self.bot.console_message_prefix)
 					error_message += "{}: ".format(datetime.datetime.now().time().isoformat())
 					error_message += "{}: {}".format(type(e).__name__, e)
