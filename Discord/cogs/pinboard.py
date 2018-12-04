@@ -69,14 +69,18 @@ class Pinboard:
 	
 	async def on_raw_reaction_add(self, payload):
 		if str(payload.emoji) not in self.pin_emotes:
+			# Reaction is not for pinboard
 			return
 		if not payload.guild_id:
+			# Reaction is not in a guild
 			return
 		pinboard_channel_id = await self.bot.db.fetchval("SELECT channel_id FROM pinboard.pinboards where guild_id = $1", 
 															payload.guild_id)
 		if not pinboard_channel_id:
+			# Guild doesn't have a pinboard
 			return
 		if payload.channel_id == pinboard_channel_id:
+			# Message being reacted to is on the pinboard
 			pinboard_message_id = payload.message_id
 			record = await self.bot.db.fetchrow("""SELECT message_id, channel_id
 													FROM pinboard.pins where pinboard_message_id = $1""", 
@@ -92,10 +96,12 @@ class Pinboard:
 																RETURNING pinboard_message_id""", 
 																message_id, payload.guild_id, payload.channel_id)
 		try:
+			# Add user as pinner
 			await self.bot.db.execute("""INSERT INTO pinboard.pinners (message_id, pinner_id)
 											VALUES ($1, $2)""", 
 											message_id, payload.user_id)
 		except asyncpg.UniqueViolationError:
+			# User has already pinned this message
 			return
 		pin_count = await self.bot.db.fetchval("SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
 												message_id)
@@ -103,6 +109,7 @@ class Pinboard:
 		pinned_message_channel = self.bot.get_channel(channel_id)
 		pinned_message = await pinned_message_channel.get_message(message_id)
 		if pinboard_message_id:
+			# Pinboard message already exists
 			pinboard_message = await pinboard_channel.get_message(pinboard_message_id)
 			embed = pinboard_message.embeds[0]
 			embed.clear_fields()
