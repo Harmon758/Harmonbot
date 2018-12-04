@@ -138,7 +138,7 @@ class RSS:
 						if "published" in entry and entry.published:
 							timestamp = dateutil.parser.parse(entry.published, tzinfos = self.tzinfos)
 						elif "updated" in entry:  # and entry.updated necessary?; check updated first?
-							timestamp = dateutil.parser.parse(entry.updated)
+							timestamp = dateutil.parser.parse(entry.updated, tzinfos = self.tzinfos)
 						else:
 							timestamp = discord.Embed.Empty
 						# TODO: Better method?
