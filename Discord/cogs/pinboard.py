@@ -187,16 +187,22 @@ class Pinboard:
 	
 	async def send_pinboard_message(self, pinboard_channel, pinned_message, pin_count):
 		# TODO: custom emote
-		content = pinned_message.content
-		if pinned_message.embeds:
-			content += '\n' + self.bot.CODE_BLOCK.format(pinned_message.embeds[0].to_dict())
-		embed = discord.Embed(description = content, timestamp = pinned_message.created_at, color = 0xdd2e44)
+		embed = discord.Embed(timestamp = pinned_message.created_at, color = 0xdd2e44)
 		# TODO: color dependent on custom emote
 		# alternate color: 0xbe1931
 		# star: 0xffac33
 		embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar_url)
+		content = pinned_message.content
+		if pinned_message.embeds:
+			if pinned_message.embeds[0].type == "image":
+				embed.set_image(url = pinned_message.embeds[0].thumbnail.url)
+			else:
+				content += '\n' + self.bot.CODE_BLOCK.format(pinned_message.embeds[0].to_dict())
+		embed.description = content
 		if pinned_message.attachments:
 			embed.set_image(url = pinned_message.attachments[0].url)
+		# TODO: Handle non-image attachments
+		# TODO: Handle both attachments and image embed?
 		embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[Message Link]({pinned_message.jump_url})")
 		embed.set_footer(text = f"In #{pinned_message.channel}")
 		return await pinboard_channel.send(embed = embed)
