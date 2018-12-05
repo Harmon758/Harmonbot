@@ -136,11 +136,11 @@ class Pinboard:
 			return
 		record = await self.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards where guild_id = $1", 
 												payload.guild_id)
-		pinboard_channel_id = record["channel_id"]
-		threshold = record["threshold"] or self.default_threshold
-		if not pinboard_channel_id:
+		if not record:
 			# Guild doesn't have a pinboard
 			return
+		pinboard_channel_id = record["channel_id"]
+		threshold = record["threshold"] or self.default_threshold
 		if payload.channel_id == pinboard_channel_id:
 			# Message being reacted to is on the pinboard
 			pinboard_message_id = payload.message_id
