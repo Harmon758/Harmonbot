@@ -67,7 +67,8 @@ class Pinboard:
 			async with connection.transaction():
 				# Postgres requires non-scrollable cursors to be created
 				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM pinboard.pins where guild_id = $1", ctx.guild.id):
+				async for record in connection.cursor("SELECT * FROM pinboard.pins where guild_id = $1 ORDER BY message_id", 
+														ctx.guild.id):
 					try:
 						await pinboard_channel.get_message(record["pinboard_message_id"])
 					except (discord.NotFound, discord.HTTPException):
