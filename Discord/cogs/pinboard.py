@@ -178,7 +178,7 @@ class Pinboard:
 			pinboard_message = await pinboard_channel.get_message(pinboard_message_id)
 			embed = pinboard_message.embeds[0]
 			embed.clear_fields()
-			embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[**Message Link**]({pinned_message.jump_url})")
+			embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[Message Link]({pinned_message.jump_url})")
 			await pinboard_message.edit(embed = embed)
 		else:
 			pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
