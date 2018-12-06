@@ -109,6 +109,30 @@ class Pinboard:
 										channel.id, ctx.guild.id)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard channel to {channel.mention}")
 	
+	@pinboard.command(aliases = ["starrers", "who"])
+	@checks.not_forbidden()
+	async def pinners(self, ctx, message_id : int):
+		'''
+		Show who pinned a message
+		message_id can be the message ID for the pinned message or the message in the pinboard channel
+		'''
+		records = await ctx.bot.db.fetch("""SELECT pinboard.pinners.pinner_id
+											FROM pinboard.pinners
+											INNER JOIN pinboard.pins
+											ON pinboard.pinners.message_id = pinboard.pins.message_id
+											WHERE pinboard.pins.message_id = $1 OR pinboard.pins.pinboard_message_id = $1""", 
+											message_id)
+		if not records:
+			return await ctx.embed_reply("No one has pinned this message or this is not a valid message ID")
+		pinners = []
+		for record in records:
+			pinner = ctx.bot.get_user(record[0])
+			if not pinner:
+				pinner = await ctx.bot.get_user_info(record[0])
+			pinners.append(pinner)
+		await ctx.embed_reply(' '.join(pinner.mention for pinner in pinners), 
+								title = f"{len(records)} pinners of {message_id}")
+	
 	@pinboard.command()
 	@checks.is_permitted()
 	async def threshold(self, ctx, threshold_number : int = None):
