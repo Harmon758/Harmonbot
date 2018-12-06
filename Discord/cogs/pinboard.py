@@ -33,7 +33,7 @@ class Pinboard:
 										pinboard_message_id BIGINT
 										)""")
 		await self.bot.db.execute("""CREATE TABLE IF NOT EXISTS pinboard.pinners (
-										message_id	BIGINT REFERENCES pins (message_id) ON DELETE CASCADE, 
+										message_id	BIGINT REFERENCES pinboard.pins (message_id) ON DELETE CASCADE, 
 										pinner_id	BIGINT, 
 										PRIMARY KEY (message_id, pinner_id)
 										)""")
