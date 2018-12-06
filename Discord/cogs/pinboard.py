@@ -67,7 +67,8 @@ class Pinboard:
 			async with connection.transaction():
 				# Postgres requires non-scrollable cursors to be created
 				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM pinboard.pins where guild_id = $1", ctx.guild.id):
+				async for record in connection.cursor("SELECT * FROM pinboard.pins where guild_id = $1 ORDER BY message_id", 
+														ctx.guild.id):
 					try:
 						await pinboard_channel.get_message(record["pinboard_message_id"])
 					except (discord.NotFound, discord.HTTPException):
@@ -107,6 +108,30 @@ class Pinboard:
 			await ctx.bot.db.execute("UPDATE pinboard.pinboards SET channel_id = $1 WHERE guild_id = $2",
 										channel.id, ctx.guild.id)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard channel to {channel.mention}")
+	
+	@pinboard.command(aliases = ["starrers", "who"])
+	@checks.not_forbidden()
+	async def pinners(self, ctx, message_id : int):
+		'''
+		Show who pinned a message
+		message_id can be the message ID for the pinned message or the message in the pinboard channel
+		'''
+		records = await ctx.bot.db.fetch("""SELECT pinboard.pinners.pinner_id
+											FROM pinboard.pinners
+											INNER JOIN pinboard.pins
+											ON pinboard.pinners.message_id = pinboard.pins.message_id
+											WHERE pinboard.pins.message_id = $1 OR pinboard.pins.pinboard_message_id = $1""", 
+											message_id)
+		if not records:
+			return await ctx.embed_reply("No one has pinned this message or this is not a valid message ID")
+		pinners = []
+		for record in records:
+			pinner = ctx.bot.get_user(record[0])
+			if not pinner:
+				pinner = await ctx.bot.get_user_info(record[0])
+			pinners.append(pinner)
+		await ctx.embed_reply(' '.join(pinner.mention for pinner in pinners), 
+								title = f"{len(records)} pinners of {message_id}")
 	
 	@pinboard.command()
 	@checks.is_permitted()
@@ -187,16 +212,22 @@ class Pinboard:
 	
 	async def send_pinboard_message(self, pinboard_channel, pinned_message, pin_count):
 		# TODO: custom emote
-		content = pinned_message.content
-		if pinned_message.embeds:
-			content += '\n' + self.bot.CODE_BLOCK.format(pinned_message.embeds[0].to_dict())
-		embed = discord.Embed(description = content, timestamp = pinned_message.created_at, color = 0xdd2e44)
+		embed = discord.Embed(timestamp = pinned_message.created_at, color = 0xdd2e44)
 		# TODO: color dependent on custom emote
 		# alternate color: 0xbe1931
 		# star: 0xffac33
 		embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar_url)
+		content = pinned_message.content
+		if pinned_message.embeds:
+			if pinned_message.embeds[0].type == "image":
+				embed.set_image(url = pinned_message.embeds[0].thumbnail.url)
+			else:
+				content += '\n' + self.bot.CODE_BLOCK.format(pinned_message.embeds[0].to_dict())
+		embed.description = content
 		if pinned_message.attachments:
 			embed.set_image(url = pinned_message.attachments[0].url)
+		# TODO: Handle non-image attachments
+		# TODO: Handle both attachments and image embed?
 		embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[Message Link]({pinned_message.jump_url})")
 		embed.set_footer(text = f"In #{pinned_message.channel}")
 		return await pinboard_channel.send(embed = embed)
