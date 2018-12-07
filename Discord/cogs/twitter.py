@@ -110,7 +110,11 @@ class Twitter:
 								f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})")
 		for url in tweet.entities["urls"]:
 			text = text.replace(url["url"], url["expanded_url"])
-		await ctx.embed_reply(html.unescape(text), title = '@' + tweet.user.screen_name, 
+		image_url = None
+		if hasattr(tweet, "extended_entities") and tweet.extended_entities["media"][0]["type"] == "photo":
+			image_url = tweet.extended_entities["media"][0]["media_url_https"]
+			text = text.replace(tweet.extended_entities["media"][0]["url"], "")
+		await ctx.embed_reply(html.unescape(text), title = '@' + tweet.user.screen_name, image_url = image_url, 
 								title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}", 
 								footer_text = tweet.user.name, footer_icon_url = tweet.user.profile_image_url, 
 								timestamp = tweet.created_at, color = self.bot.twitter_color)
