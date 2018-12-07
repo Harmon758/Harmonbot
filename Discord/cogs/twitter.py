@@ -95,10 +95,10 @@ class Twitter:
 	async def twitter_status(self, ctx, handle : str):
 		'''Get twitter status'''
 		tweet = self.bot.twitter_api.user_timeline(handle, count = 1, tweet_mode = "extended")[0]
-		embed = discord.Embed(title = '@' + tweet.user.screen_name, url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}", description = tweet.full_text, timestamp = tweet.created_at, color = 0x00ACED)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		embed.set_footer(text = tweet.user.name, icon_url = tweet.user.profile_image_url)
-		await ctx.send(embed = embed)
+		await ctx.embed_reply(tweet.full_text, title = '@' + tweet.user.screen_name, 
+								title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}", 
+								footer_text = tweet.user.name, footer_icon_url = tweet.user.profile_image_url, 
+								timestamp = tweet.created_at, color = 0x00ACED)
 	
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
 	@checks.is_permitted()
