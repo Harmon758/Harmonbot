@@ -98,7 +98,7 @@ class Twitter:
 		await ctx.embed_reply(tweet.full_text, title = '@' + tweet.user.screen_name, 
 								title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}", 
 								footer_text = tweet.user.name, footer_icon_url = tweet.user.profile_image_url, 
-								timestamp = tweet.created_at, color = 0x00ACED)
+								timestamp = tweet.created_at, color = self.bot.twitter_color)
 	
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
 	@checks.is_permitted()
