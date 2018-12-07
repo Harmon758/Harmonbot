@@ -33,8 +33,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 	
 	async def start_feeds(self, *, feeds = None):
 		if self.reconnecting:
-			await self.reconnect_ready.wait()
-			return
+			return await self.reconnect_ready.wait()
 		self.reconnecting = True
 		await self.reconnect_ready.wait()
 		self.reconnect_ready.clear()
