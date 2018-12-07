@@ -60,7 +60,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 			# TODO: Settings for including replies, retweets, etc.
 			for channel_id, channel_feeds in self.feeds.items():
 				if status.user.id_str in channel_feeds:
-					embed = discord.Embed(title = '@' + status.user.screen_name, url = "https://twitter.com/{}/status/{}".format(status.user.screen_name, status.id), description = status.text, timestamp = status.created_at, color = self.bot.twitter_color)
+					embed = discord.Embed(title = '@' + status.user.screen_name, url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}", description = status.text, timestamp = status.created_at, color = self.bot.twitter_color)
 					embed.set_author(name = status.user.name, icon_url = status.user.profile_image_url)
 					embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
 					channel = self.bot.get_channel(int(channel_id))
