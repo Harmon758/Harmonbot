@@ -112,6 +112,10 @@ class RSS:
 				for entry in feed_info.entries:
 					if "id" in entry:
 						self.feeds_ids[feed].add(entry.id)
+			except aiohttp.ClientConnectionError as e:
+				print(f"Failed to initialize feed in RSS Task: {feed}\n"
+						f" Connection Error: {type(e).__name__}: {e}", file = sys.stderr)
+				feeds_failed_to_initialize.append(feed)
 			except Exception as e:
 				print(f"Failed to initialize feed in RSS Task: {feed}\nException:", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
