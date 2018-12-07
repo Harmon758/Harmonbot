@@ -105,6 +105,9 @@ class Twitter:
 		for hashtag in tweet.entities["hashtags"]:
 			text = text.replace('#' + hashtag["text"], 
 								f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})")
+		for symbol in tweet.entities["symbols"]:
+			text = text.replace('$' + symbol["text"],
+								f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})")
 		for url in tweet.entities["urls"]:
 			text = text.replace(url["url"], url["expanded_url"])
 		await ctx.embed_reply(html.unescape(text), title = '@' + tweet.user.screen_name, 
