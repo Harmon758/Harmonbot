@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import html
 import json
 import sys
 import traceback
@@ -98,7 +99,7 @@ class Twitter:
 		text = tweet.full_text
 		for url in tweet.entities["urls"]:
 			text = text.replace(url["url"], url["expanded_url"])
-		await ctx.embed_reply(text, title = '@' + tweet.user.screen_name, 
+		await ctx.embed_reply(html.unescape(text), title = '@' + tweet.user.screen_name, 
 								title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}", 
 								footer_text = tweet.user.name, footer_icon_url = tweet.user.profile_image_url, 
 								timestamp = tweet.created_at, color = self.bot.twitter_color)
