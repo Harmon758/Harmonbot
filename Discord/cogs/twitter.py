@@ -80,7 +80,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 						self.bot.loop.create_task(channel.send(embed = embed))
 	
 	def on_error(self, status_code):
-		print("Twitter Error: {}".format(status_code))
+		print(f"Twitter Error: {status_code}")
 		return False
 
 class Twitter:
