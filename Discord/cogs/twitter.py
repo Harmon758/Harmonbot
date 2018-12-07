@@ -55,7 +55,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 	
 	async def remove_feed(self, channel, handle):
 		self.feeds[str(channel.id)].remove(self.bot.twitter_api.get_user(handle).id_str)
-		await self.start_feeds() # necessary?
+		await self.start_feeds()  # Necessary?
 	
 	def on_status(self, status):
 		if status.in_reply_to_status_id:
