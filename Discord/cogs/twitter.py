@@ -94,8 +94,8 @@ class Twitter:
 	@checks.not_forbidden()
 	async def twitter_status(self, ctx, handle : str):
 		'''Get twitter status'''
-		tweet = self.bot.twitter_api.user_timeline(handle, count = 1)[0]
-		embed = discord.Embed(title = '@' + tweet.user.screen_name, url = "https://twitter.com/{}/status/{}".format(tweet.user.screen_name, tweet.id), description = tweet.text, timestamp = tweet.created_at, color = 0x00ACED)
+		tweet = self.bot.twitter_api.user_timeline(handle, count = 1, tweet_mode = "extended")[0]
+		embed = discord.Embed(title = '@' + tweet.user.screen_name, url = "https://twitter.com/{}/status/{}".format(tweet.user.screen_name, tweet.id), description = tweet.full_text, timestamp = tweet.created_at, color = 0x00ACED)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 		embed.set_footer(text = tweet.user.name, icon_url = tweet.user.profile_image_url)
 		await ctx.send(embed = embed)
