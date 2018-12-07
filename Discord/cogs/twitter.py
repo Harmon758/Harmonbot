@@ -97,6 +97,9 @@ class Twitter:
 		'''Get twitter status'''
 		tweet = self.bot.twitter_api.user_timeline(handle, count = 1, tweet_mode = "extended")[0]
 		text = tweet.full_text
+		for hashtag in tweet.entities["hashtags"]:
+			text = text.replace('#' + hashtag["text"], 
+								f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})")
 		for url in tweet.entities["urls"]:
 			text = text.replace(url["url"], url["expanded_url"])
 		await ctx.embed_reply(html.unescape(text), title = '@' + tweet.user.screen_name, 
