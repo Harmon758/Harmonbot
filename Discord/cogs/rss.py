@@ -101,6 +101,7 @@ class RSS:
 		await self.bot.wait_until_ready()
 		offset_aware_task_start_time = datetime.datetime.now(datetime.timezone.utc)
 		## offset_naive_task_start_time = datetime.datetime.utcnow()
+		feeds_failed_to_initialize = []
 		for feed in self.unique_feeds_following:
 			try:
 				self.feeds_ids[feed] = set()
@@ -112,16 +113,16 @@ class RSS:
 					if "id" in entry:
 						self.feeds_ids[feed].add(entry.id)
 			except Exception as e:
-				print("Exception in RSS Task", file = sys.stderr)
+				print(f"Failed to initialize feed in RSS Task: {feed}\nException:", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 				logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
-				print(" (feed: {})".format(feed))
-				return
-				# TODO: Handle error better
+				feeds_failed_to_initialize.append(feed)
 		while not self.bot.is_closed():
 			if not self.unique_feeds_following:
 				await asyncio.sleep(60)
 			for feed in self.unique_feeds_following:
+				if feed in feeds_failed_to_initialize:
+					continue
 				try:
 					async with clients.aiohttp_session.get(feed) as resp:
 						feed_text = await resp.text()
