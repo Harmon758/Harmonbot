@@ -95,7 +95,13 @@ class Twitter:
 	@checks.not_forbidden()
 	async def twitter_status(self, ctx, handle : str):
 		'''Get twitter status'''
-		tweet = self.bot.twitter_api.user_timeline(handle, count = 1, tweet_mode = "extended")[0]
+		try:
+			tweet = self.bot.twitter_api.user_timeline(handle, count = 1, tweet_mode = "extended")[0]
+		except tweepy.error.TweepError as e:
+			if e.api_code == 34:
+				return await ctx.embed_reply(f":no_entry: Error: @{handle} not found")
+			else:
+				return await ctx.embed_reply(f":no_entry: Error: {e}")
 		text = tweet.full_text
 		mentions = {}
 		for mention in tweet.entities["user_mentions"]:
