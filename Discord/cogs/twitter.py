@@ -24,6 +24,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 		self.bot = bot
 		self.stream = None
 		self.feeds = {}
+		self.unique_feeds = set()
 		self.reconnect_ready = asyncio.Event()
 		self.reconnect_ready.set()
 		self.reconnecting = False
@@ -39,29 +40,32 @@ class TwitterStreamListener(tweepy.StreamListener):
 		self.reconnect_ready.clear()
 		if feeds:
 			self.feeds = feeds
+			self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
 		if self.stream:
 			self.stream.disconnect()
 		self.stream = tweepy.Stream(auth = self.bot.twitter_api.auth, listener = self)
 		if self.feeds:
-			self.stream.filter(follow = set(id for feeds in self.feeds.values() for id in feeds), 
-								**{"is_async" : "True"})
+			self.stream.filter(follow = self.unique_feeds, **{"is_async" : "True"})
 		self.bot.loop.call_later(120, self.reconnect_ready.set)
 		self.reconnecting = False
 	
 	async def add_feed(self, channel, handle):
-		self.feeds[str(channel.id)] = self.feeds.get(str(channel.id), []) + [self.bot.twitter_api.get_user(handle).id_str]
+		id = self.bot.twitter_api.get_user(handle).id_str
+		self.feeds[str(channel.id)] = self.feeds.get(str(channel.id), []) + [id]
 		# TODO: Check if stream already following
+		self.unique_feeds.add(id)
 		await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
 		self.feeds[str(channel.id)].remove(self.bot.twitter_api.get_user(handle).id_str)
+		self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
 		await self.start_feeds()  # Necessary?
 	
 	def on_status(self, status):
 		if status.in_reply_to_status_id:
 			# Ignore replies
 			return
-		if status.user.id_str in set(id for feeds in self.feeds.values() for id in feeds):
+		if status.user.id_str in self.unique_feeds:
 			# TODO: Settings for including replies, retweets, etc.
 			for channel_id, channel_feeds in self.feeds.items():
 				if status.user.id_str in channel_feeds:
