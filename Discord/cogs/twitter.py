@@ -45,7 +45,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 			self.stream.disconnect()
 		self.stream = tweepy.Stream(auth = self.bot.twitter_api.auth, listener = self)
 		if self.feeds:
-			self.stream.filter(follow = self.unique_feeds, **{"is_async" : "True"})
+			self.stream.filter(follow = self.unique_feeds, is_async = True)
 		self.bot.loop.call_later(120, self.reconnect_ready.set)
 		self.reconnecting = False
 	
