@@ -97,6 +97,11 @@ class Twitter:
 		'''Get twitter status'''
 		tweet = self.bot.twitter_api.user_timeline(handle, count = 1, tweet_mode = "extended")[0]
 		text = tweet.full_text
+		mentions = {}
+		for mention in tweet.entities["user_mentions"]:
+			mentions[text[mention["indices"][0]:mention["indices"][1]]] = mention["screen_name"]
+		for mention, screen_name in mentions.items():
+			text = text.replace(mention, f"[{mention}](https://twitter.com/{screen_name})")
 		for hashtag in tweet.entities["hashtags"]:
 			text = text.replace('#' + hashtag["text"], 
 								f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})")
