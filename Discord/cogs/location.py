@@ -228,7 +228,7 @@ class Location:
 		description = f"**__{location.get_name()}__**"
 		weather = observation.get_weather()
 		condition = weather.get_status()
-		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Rain": ":cloud_rain:"}
+		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Rain": ":cloud_rain:", "Snow": ":cloud_snow:"}
 		emote = ' '
 		emote += condition_emotes.get(condition, "")
 		fields = [("Conditions", f"{condition}{emote}")]
