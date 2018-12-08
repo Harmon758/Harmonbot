@@ -491,9 +491,9 @@ class Meta:
 	@commands.command(hidden = True)
 	@commands.is_owner()
 	async def update_discord_bots_stats(self, ctx):
-		'''Update stats on https://bots.discord.pw'''
+		'''Update stats on https://discord.bots.gg/'''
 		response = await ctx.bot.update_discord_bots_stats()
-		await ctx.reply(response)
+		await ctx.embed_reply(response)
 	
 	# Restart/Shutdown
 	

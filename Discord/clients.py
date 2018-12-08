@@ -364,16 +364,16 @@ class Bot(commands.Bot):
 	
 	# TODO: Case-Insensitive subcommands (override Group)
 	
-	# Update stats on the Discord Bots site (https://bots.discord.pw)
+	# Update stats on the Discord Bots site (https://discord.bots.gg/)
 	async def update_discord_bots_stats(self):
 		if not self.DISCORD_BOTS_API_TOKEN:
 			# TODO: Error message?
 			return
-		url = f"https://bots.discord.pw/api/bots/{self.user.id}/stats"
+		url = f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats"
 		headers = {"authorization": self.DISCORD_BOTS_API_TOKEN, "content-type": "application/json"}
-		data = json.dumps({"server_count": len(self.guilds)})
+		data = json.dumps({"guildCount": len(self.guilds)})
 		async with aiohttp_session.post(url, headers = headers, data = data) as resp:
-			return resp.status
+			return await resp.text()
 	
 	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
