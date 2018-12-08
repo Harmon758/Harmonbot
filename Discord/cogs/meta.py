@@ -490,10 +490,23 @@ class Meta:
 	
 	@commands.command(hidden = True)
 	@commands.is_owner()
-	async def update_discord_bots_stats(self, ctx):
-		'''Update stats on https://discord.bots.gg/'''
-		response = await ctx.bot.update_discord_bots_stats()
-		await ctx.embed_reply(response)
+	async def update_listing_stats(self, ctx, site = None):
+		'''
+		Update stats on sites listing Discord bots
+		Discord Bots (https://discord.bots.gg/)
+		Discord Bot List (https://discordbots.org/)
+		'''
+		if not site:
+			output = {}
+			for site_name, site in (("Discord Bots", "discord.bots.gg"), 
+									("Discord Bot List", "discordbots.org")):
+				response = await ctx.bot.update_listing_stats(site)
+				output[f"{site_name} (https://{site}/)"] = response
+			output = '\n'.join(f"{site}: `{response}`" for site, response in output.items())
+			await ctx.embed_reply(output)
+		else:
+			response = await ctx.bot.update_listing_stats(site)
+			await ctx.embed_reply(response)
 	
 	# Restart/Shutdown
 	

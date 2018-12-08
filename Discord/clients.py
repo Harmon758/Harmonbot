@@ -126,7 +126,8 @@ class Bot(commands.Bot):
 		self.CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
 		self.CLEVERBOT_API_KEY = os.getenv("CLEVERBOT_API_KEY")
 		self.DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
-		self.DISCORD_BOTS_API_TOKEN = os.getenv("DISCORD_BOTS_API_TOKEN")
+		self.DISCORD_BOTS_GG_API_TOKEN = os.getenv("DISCORD_BOTS_GG_API_TOKEN")
+		self.DISCORDBOTS_ORG_API_KEY = os.getenv("DISCORDBOTS_ORG_API_KEY")
 		self.FIXER_API_KEY = os.getenv("FIXER_API_KEY")
 		self.FONO_API_TOKEN = os.getenv("FONO_API_TOKEN")
 		self.GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -319,16 +320,16 @@ class Bot(commands.Bot):
 		self.application_info_data = await self.application_info()
 		self.listener_bot = await self.get_user_info(self.listener_id)
 		self.cache_channel = self.get_channel(self.cache_channel_id)
-		await self.update_discord_bots_stats()
+		await self.update_all_listing_stats()
 	
 	async def on_resumed(self):
 		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().time().isoformat()}")
 	
 	async def on_guild_join(self, guild):
-		await self.update_discord_bots_stats()
+		await self.update_all_listing_stats()
 	
 	async def on_guild_remove(self, guild):
-		await self.update_discord_bots_stats()
+		await self.update_all_listing_stats()
 	
 	# TODO: on_command_completion
 	# TODO: optimize
@@ -364,16 +365,34 @@ class Bot(commands.Bot):
 	
 	# TODO: Case-Insensitive subcommands (override Group)
 	
-	# Update stats on the Discord Bots site (https://discord.bots.gg/)
-	async def update_discord_bots_stats(self):
-		if not self.DISCORD_BOTS_API_TOKEN:
-			# TODO: Error message?
-			return
-		url = f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats"
-		headers = {"authorization": self.DISCORD_BOTS_API_TOKEN, "content-type": "application/json"}
-		data = json.dumps({"guildCount": len(self.guilds)})
+	# Update stats on sites listing Discord bots
+	async def update_listing_stats(self, site):
+		# Discord Bots (https://discord.bots.gg/)
+		# Discord Bot List (https://discordbots.org/)
+		sites = {"discord.bots.gg": {"token": self.DISCORD_BOTS_GG_API_TOKEN, 
+										"url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", 
+										"data": {"guildCount": len(self.guilds)}}, 
+					"discordbots.org": {"token": self.DISCORDBOTS_ORG_API_KEY, 
+										"url": f"https://discordbots.org/api/bots/{self.user.id}/stats", 
+										"data": {"server_count": len(self.guilds)}}}
+		site = sites.get(site)
+		if not site:
+			# TODO: Print/log error
+			return "Site not found"
+		token = site["token"]
+		if not token:
+			# TODO: Print/log error
+			return "Site token not found"
+		url = site["url"]
+		headers = {"authorization": token, "content-type": "application/json"}
+		data = json.dumps(site["data"])
 		async with aiohttp_session.post(url, headers = headers, data = data) as resp:
 			return await resp.text()
+	
+	# Update stats on all sites listing Discord bots
+	async def update_all_listing_stats(self):
+		for site in ("discord.bots.gg", "discordbots.org"):
+			await self.update_listing_stats(site)
 	
 	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
