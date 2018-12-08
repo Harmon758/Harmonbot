@@ -25,7 +25,7 @@ numpy==1.15.4
 # +mkl, necessary for numexpr
 pandas==0.23.4
 psutil==5.4.8
-pycountry==18.5.26
+pycountry==18.12.8
 pydealer==1.4.0
 pygost==3.14
 pyowm==2.9.0
