@@ -496,17 +496,21 @@ class Meta:
 		Discord Bots (https://discord.bots.gg/)
 		Discord Bot List (https://discordbots.org/)
 		'''
-		if not site:
-			output = {}
-			for site_name, site in (("Discord Bots", "discord.bots.gg"), 
-									("Discord Bot List", "discordbots.org")):
-				response = await ctx.bot.update_listing_stats(site)
-				output[f"{site_name} (https://{site}/)"] = response
-			output = '\n'.join(f"{site}: `{response}`" for site, response in output.items())
-			await ctx.embed_reply(output)
-		else:
+		sites = {"discord.bots.gg": "Discord Bots", 
+					"discordbots.org": "Discord Bot List"}
+		if site:
 			response = await ctx.bot.update_listing_stats(site)
-			await ctx.embed_reply(response)
+			title = title_url = discord.Embed.Empty
+			if site in sites:
+				title = sites[site]
+				title_url = f"https://{site}/"
+			await ctx.embed_reply(f"`{response}`", title = title, title_url = title_url)
+		else:
+			output = []
+			for site, site_name in sites.items():
+				response = await ctx.bot.update_listing_stats(site)
+				output.append(f"{site_name} (https://{site}/): `{response}`")
+			await ctx.embed_reply('\n'.join(output))
 	
 	# Restart/Shutdown
 	
