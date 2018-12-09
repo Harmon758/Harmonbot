@@ -495,9 +495,11 @@ class Meta:
 		Update stats on sites listing Discord bots
 		Discord Bots (https://discord.bots.gg/)
 		Discord Bot List (https://discordbots.org/)
+		Discord Bot List (https://discordbotlist.com/)
 		'''
 		sites = {"discord.bots.gg": "Discord Bots", 
-					"discordbots.org": "Discord Bot List"}
+					"discordbots.org": "Discord Bot List", 
+					"discordbotlist.com": "Discord Bot List"}
 		if site:
 			response = await ctx.bot.update_listing_stats(site)
 			title = title_url = discord.Embed.Empty

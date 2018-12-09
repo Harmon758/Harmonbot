@@ -120,10 +120,11 @@ class Bot(commands.Bot):
 		# Credentials
 		for credential in ("BATTLE_NET_API_KEY", "BATTLERITE_API_KEY", 
 							"BING_SPELL_CHECK_API_SUBSCRIPTION_KEY", "CLARIFAI_API_KEY", "CLEVERBOT_API_KEY", 
-							"DATABASE_PASSWORD", "DISCORD.BOTS.GG_API_TOKEN", "DISCORDBOTS.ORG_API_KEY", "FIXER_API_KEY", 
-							"FONO_API_TOKEN", "GOOGLE_API_KEY", "GOOGLE_CUSTOM_SEARCH_ENGINE_ID", "HTTP_SERVER_CALLBACK_URL", 
-							"IMGUR_CLIENT_ID", "IMGUR_CLIENT_SECRET", "NEWSAPI.ORG_API_KEY", "OMDB_API_KEY", "OSU_API_KEY", 
-							"OWM_API_KEY", "PAGE2IMAGES_REST_API_KEY", "POSTGRES_HOST", "SENTRY_DSN", "SPOTIFY_CLIENT_ID", 
+							"DATABASE_PASSWORD", "DISCORDBOTLIST.COM_API_TOKEN", "DISCORD.BOTS.GG_API_TOKEN", 
+							"DISCORDBOTS.ORG_API_KEY", "FIXER_API_KEY", "FONO_API_TOKEN", "GOOGLE_API_KEY", 
+							"GOOGLE_CUSTOM_SEARCH_ENGINE_ID", "HTTP_SERVER_CALLBACK_URL", "IMGUR_CLIENT_ID", 
+							"IMGUR_CLIENT_SECRET", "NEWSAPI.ORG_API_KEY", "OMDB_API_KEY", "OSU_API_KEY", "OWM_API_KEY", 
+							"PAGE2IMAGES_REST_API_KEY", "POSTGRES_HOST", "SENTRY_DSN", "SPOTIFY_CLIENT_ID", 
 							"SPOTIFY_CLIENT_SECRET_KEY", "STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITTER_CONSUMER_KEY", 
 							"TWITTER_CONSUMER_SECRET", "TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET", 
 							"WARGAMING_APPLICATION_ID", "WOLFRAM_ALPHA_APP_ID", "WORDNIK_API_KEY", "YANDEX_TRANSLATE_API_KEY"):
@@ -349,12 +350,17 @@ class Bot(commands.Bot):
 	async def update_listing_stats(self, site):
 		# Discord Bots (https://discord.bots.gg/)
 		# Discord Bot List (https://discordbots.org/)
+		# Discord Bot List (https://discordbotlist.com/)
 		sites = {"discord.bots.gg": {"token": self.DISCORD_BOTS_GG_API_TOKEN, 
 										"url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", 
 										"data": {"guildCount": len(self.guilds)}}, 
 					"discordbots.org": {"token": self.DISCORDBOTS_ORG_API_KEY, 
 										"url": f"https://discordbots.org/api/bots/{self.user.id}/stats", 
-										"data": {"server_count": len(self.guilds)}}}
+										"data": {"server_count": len(self.guilds)}}, 
+					"discordbotlist.com": {"token": "Bot " + self.DISCORDBOTLIST_COM_API_TOKEN, 
+											"url": f"https://discordbotlist.com/api/bots/{self.user.id}/stats", 
+											"data": {"guilds": len(self.guilds)}}}
+		# TODO: Add users and voice_connections for discordbotlist.com
 		site = sites.get(site)
 		if not site:
 			# TODO: Print/log error
@@ -367,11 +373,13 @@ class Bot(commands.Bot):
 		headers = {"authorization": token, "content-type": "application/json"}
 		data = json.dumps(site["data"])
 		async with aiohttp_session.post(url, headers = headers, data = data) as resp:
+			if resp.status == 204:
+				return "204 No Content"
 			return await resp.text()
 	
 	# Update stats on all sites listing Discord bots
 	async def update_all_listing_stats(self):
-		for site in ("discord.bots.gg", "discordbots.org"):
+		for site in ("discord.bots.gg", "discordbots.org", "discordbotlist.com"):
 			await self.update_listing_stats(site)
 	
 	@commands.group(invoke_without_command = True)
