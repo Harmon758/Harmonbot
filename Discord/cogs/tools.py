@@ -102,7 +102,7 @@ class Tools:
 		'''
 		Spoiler GIF
 		Make sure you have the "Automatically play GIFs when Discord is focused." setting off
-		Otherise, the spoiler will automatically be displayed
+		Otherwise, the spoiler will automatically be displayed
 		This setting is under User Settings -> Text & Images
 		'''
 		# TODO: add border?, adjust fonts?
