@@ -109,8 +109,9 @@ class Bot(commands.Bot):
 		self.delete_limit = 10000
 		### Set on ready
 		self.application_info_data = None
-		self.listener_bot = None  # User object
 		self.cache_channel = None
+		self.listener_bot = None  # User object
+		self.listing_sites = {}
 		# TODO: Include owner variable for user object?
 		
 		# Variables
@@ -299,8 +300,22 @@ class Bot(commands.Bot):
 	
 	async def on_ready(self):
 		self.application_info_data = await self.application_info()
-		self.listener_bot = await self.get_user_info(self.listener_id)
 		self.cache_channel = self.get_channel(self.cache_channel_id)
+		self.listener_bot = await self.get_user_info(self.listener_id)
+		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
+													"url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", 
+													"data": {"guildCount": len(self.guilds)}, 
+													"guild_count_name": "guildCount"}, 
+								"discordbots.org": {"name": "Discord Bot List", "token": self.DISCORDBOTS_ORG_API_KEY, 
+													"url": f"https://discordbots.org/api/bots/{self.user.id}/stats", 
+													"data": {"server_count": len(self.guilds)}, 
+													"guild_count_name": "server_count"}, 
+								"discordbotlist.com": {"name": "Discord Bot List", 
+														"token": "Bot " + self.DISCORDBOTLIST_COM_API_TOKEN, 
+														"url": f"https://discordbotlist.com/api/bots/{self.user.id}/stats", 
+														"data": {"guilds": len(self.guilds)}, 
+														"guild_count_name": "guilds"}}
+		# TODO: Add users and voice_connections for discordbotlist.com
 		await self.update_all_listing_stats()
 	
 	async def on_resumed(self):
@@ -348,20 +363,7 @@ class Bot(commands.Bot):
 	
 	# Update stats on sites listing Discord bots
 	async def update_listing_stats(self, site):
-		# Discord Bots (https://discord.bots.gg/)
-		# Discord Bot List (https://discordbots.org/)
-		# Discord Bot List (https://discordbotlist.com/)
-		sites = {"discord.bots.gg": {"token": self.DISCORD_BOTS_GG_API_TOKEN, 
-										"url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", 
-										"data": {"guildCount": len(self.guilds)}}, 
-					"discordbots.org": {"token": self.DISCORDBOTS_ORG_API_KEY, 
-										"url": f"https://discordbots.org/api/bots/{self.user.id}/stats", 
-										"data": {"server_count": len(self.guilds)}}, 
-					"discordbotlist.com": {"token": "Bot " + self.DISCORDBOTLIST_COM_API_TOKEN, 
-											"url": f"https://discordbotlist.com/api/bots/{self.user.id}/stats", 
-											"data": {"guilds": len(self.guilds)}}}
-		# TODO: Add users and voice_connections for discordbotlist.com
-		site = sites.get(site)
+		site = self.listing_sites.get(site)
 		if not site:
 			# TODO: Print/log error
 			return "Site not found"
@@ -371,6 +373,8 @@ class Bot(commands.Bot):
 			return "Site token not found"
 		url = site["url"]
 		headers = {"authorization": token, "content-type": "application/json"}
+		site["data"][site["guild_count_name"]] = len(self.guilds)
+		# TODO: Add users and voice_connections for discordbotlist.com
 		data = json.dumps(site["data"])
 		async with aiohttp_session.post(url, headers = headers, data = data) as resp:
 			if resp.status == 204:
@@ -379,7 +383,7 @@ class Bot(commands.Bot):
 	
 	# Update stats on all sites listing Discord bots
 	async def update_all_listing_stats(self):
-		for site in ("discord.bots.gg", "discordbots.org", "discordbotlist.com"):
+		for site in self.listing_sites:
 			await self.update_listing_stats(site)
 	
 	@commands.group(invoke_without_command = True)
