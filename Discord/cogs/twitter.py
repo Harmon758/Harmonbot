@@ -52,9 +52,9 @@ class TwitterStreamListener(tweepy.StreamListener):
 	async def add_feed(self, channel, handle):
 		id = self.bot.twitter_api.get_user(handle).id_str
 		self.feeds[str(channel.id)] = self.feeds.get(str(channel.id), []) + [id]
-		# TODO: Check if stream already following
-		self.unique_feeds.add(id)
-		await self.start_feeds()
+		if id not in self.unique_feeds:
+			self.unique_feeds.add(id)
+			await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
 		self.feeds[str(channel.id)].remove(self.bot.twitter_api.get_user(handle).id_str)
