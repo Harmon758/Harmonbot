@@ -133,6 +133,8 @@ class Twitter:
 		if hasattr(tweet, "extended_entities") and tweet.extended_entities["media"][0]["type"] == "photo":
 			image_url = tweet.extended_entities["media"][0]["media_url_https"]
 			text = text.replace(tweet.extended_entities["media"][0]["url"], "")
+		# Remove Variation Selector-16 characters
+		text = text.replace('\uFE0F', "")
 		await ctx.embed_reply(html.unescape(text), title = '@' + tweet.user.screen_name, image_url = image_url, 
 								title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}", 
 								footer_text = tweet.user.name, footer_icon_url = tweet.user.profile_image_url, 
