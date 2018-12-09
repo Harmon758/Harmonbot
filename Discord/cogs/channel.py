@@ -163,6 +163,31 @@ class Channel:
 		else:
 			await ctx.embed_reply(channel.mention + "'s position is {}".format(channel.position))
 	
+	@text.command(name = "slowmode")
+	@commands.guild_only()
+	@checks.not_forbidden()
+	async def text_slowmode(self, ctx, channel : discord.TextChannel, slowmode_delay : int = None):
+		'''
+		Slowmode setting
+		Slowmode delay must be between 0 and 120 inclusive
+		Set slowmode delay to 0 to disable slowmode
+		'''
+		if slowmode_delay is not None:
+			checks.has_permissions_and_capability_check(ctx, channel, manage_channels = True)
+			if slowmode_delay < 0:
+				return await ctx.embed_reply("Slowmode delay must be greater than 0")
+			elif slowmode_delay > 120:
+				return await ctx.embed_reply("Slowmode dealy must be less than 120")
+			await channel.edit(slowmode_delay = slowmode_delay)
+			if slowmode_delay == 0:
+				await ctx.embed_reply(f"Slowmode has been turned off for {channel.mention}")
+			else:
+				await ctx.embed_reply(f"Slowmode has been set to {slowmode_delay}s for {channel.mention}")
+		elif channel.slowmode_delay:
+			await ctx.embed_reply(f"Slowmode is set to {channel.slowmode_delay}s for {channel.mention}")
+		else:
+			await ctx.embed_reply(f"Slowmode is off for {channel.mention}")
+	
 	@text.command(name = "topic")
 	@commands.guild_only()
 	@checks.not_forbidden()
