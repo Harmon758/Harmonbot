@@ -106,13 +106,14 @@ class Twitter:
 	
 	@twitter.command(name = "status")
 	@checks.not_forbidden()
-	async def twitter_status(self, ctx, handle : str, replies : bool = False):
+	async def twitter_status(self, ctx, handle : str, replies : bool = False, retweets : bool = False):
 		'''
 		Get twitter status
-		Excludes replies by default
+		Excludes replies and retweets by default
 		'''
 		try:
-			tweet = self.bot.twitter_api.user_timeline(handle, exclude_replies = not replies, tweet_mode = "extended")[0]
+			tweet = self.bot.twitter_api.user_timeline(handle, tweet_mode = "extended", 
+														exclude_replies = not replies, include_rts = retweets)[0]
 		except tweepy.error.TweepError as e:
 			if e.api_code == 34:
 				return await ctx.embed_reply(f":no_entry: Error: @{handle} not found")
