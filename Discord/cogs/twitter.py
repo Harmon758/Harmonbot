@@ -110,9 +110,10 @@ class Twitter:
 		'''
 		Get twitter status
 		Excludes replies and retweets by default
+		Limited to 200 most recent Tweets
 		'''
 		try:
-			tweet = self.bot.twitter_api.user_timeline(handle, tweet_mode = "extended", 
+			tweet = self.bot.twitter_api.user_timeline(handle, tweet_mode = "extended", count = 200, 
 														exclude_replies = not replies, include_rts = retweets)[0]
 		except tweepy.error.TweepError as e:
 			if e.api_code == 34:
