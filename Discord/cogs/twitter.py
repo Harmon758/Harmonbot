@@ -113,13 +113,16 @@ class Twitter:
 		Limited to 200 most recent Tweets
 		'''
 		try:
-			tweet = self.bot.twitter_api.user_timeline(handle, tweet_mode = "extended", count = 200, 
-														exclude_replies = not replies, include_rts = retweets)[0]
+			tweets = self.bot.twitter_api.user_timeline(handle, tweet_mode = "extended", count = 200, 
+														exclude_replies = not replies, include_rts = retweets)
 		except tweepy.error.TweepError as e:
 			if e.api_code == 34:
 				return await ctx.embed_reply(f":no_entry: Error: @{handle} not found")
 			else:
 				return await ctx.embed_reply(f":no_entry: Error: {e}")
+		if not tweets:
+			return await ctx.embed_reply(":no_entry: Error: Status not found")
+		tweet = tweets[0]
 		text = tweet.full_text
 		mentions = {}
 		for mention in tweet.entities["user_mentions"]:
