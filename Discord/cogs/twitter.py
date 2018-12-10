@@ -71,12 +71,22 @@ class TwitterStreamListener(tweepy.StreamListener):
 				if status.user.id_str in channel_feeds:
 					channel = self.bot.get_channel(int(channel_id))
 					if channel:
-						content = getattr(status, "extended_tweet", {}).get("full_text") or status.text
+						if hasattr(status, "extended_tweet"):
+							text = status.extended_tweet["full_text"]
+							entities = status.extended_tweet["entities"]
+							extended_entities = status.extended_tweet.get("extended_entities")
+						else:
+							text = status.text
+							entities = status.entities
+							extended_entities = getattr(status, "extended_entities", None)
 						embed = discord.Embed(title = '@' + status.user.screen_name, 
 												url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}", 
-												description = content, timestamp = status.created_at, 
-												color = self.bot.twitter_color)
+												description = self.bot.cogs["Twitter"].process_tweet_text(text, entities), 
+												timestamp = status.created_at, color = self.bot.twitter_color)
 						embed.set_author(name = status.user.name, icon_url = status.user.profile_image_url)
+						if extended_entities and extended_entities["media"][0]["type"] == "photo":
+							embed.set_image(url = extended_entities["media"][0]["media_url_https"])
+							embed.description = embed.description.replace(extended_entities["media"][0]["url"], "")
 						embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
 						self.bot.loop.create_task(channel.send(embed = embed))
 	
@@ -126,27 +136,12 @@ class Twitter:
 				return await ctx.embed_reply(f":no_entry: Error: {e}")
 		if not tweet:
 			return await ctx.embed_reply(":no_entry: Error: Status not found")
-		text = tweet.full_text
-		mentions = {}
-		for mention in tweet.entities["user_mentions"]:
-			mentions[text[mention["indices"][0]:mention["indices"][1]]] = mention["screen_name"]
-		for mention, screen_name in mentions.items():
-			text = text.replace(mention, f"[{mention}](https://twitter.com/{screen_name})")
-		for hashtag in tweet.entities["hashtags"]:
-			text = text.replace('#' + hashtag["text"], 
-								f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})")
-		for symbol in tweet.entities["symbols"]:
-			text = text.replace('$' + symbol["text"],
-								f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})")
-		for url in tweet.entities["urls"]:
-			text = text.replace(url["url"], url["expanded_url"])
+		text = self.process_tweet_text(tweet.full_text, tweet.entities)
 		image_url = None
 		if hasattr(tweet, "extended_entities") and tweet.extended_entities["media"][0]["type"] == "photo":
 			image_url = tweet.extended_entities["media"][0]["media_url_https"]
 			text = text.replace(tweet.extended_entities["media"][0]["url"], "")
-		# Remove Variation Selector-16 characters
-		text = text.replace('\uFE0F', "")
-		await ctx.embed_reply(html.unescape(text), title = '@' + tweet.user.screen_name, image_url = image_url, 
+		await ctx.embed_reply(text, title = '@' + tweet.user.screen_name, image_url = image_url, 
 								title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}", 
 								footer_text = tweet.user.name, footer_icon_url = tweet.user.profile_image_url, 
 								timestamp = tweet.created_at, color = self.bot.twitter_color)
@@ -204,6 +199,24 @@ class Twitter:
 		'''Show Twitter handles being followed in a text channel'''
 		await ctx.embed_reply('\n'.join(self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", [])))
 		# TODO: Add message if none
+	
+	def process_tweet_text(self, text, entities):
+		mentions = {}
+		for mention in entities["user_mentions"]:
+			mentions[text[mention["indices"][0]:mention["indices"][1]]] = mention["screen_name"]
+		for mention, screen_name in mentions.items():
+			text = text.replace(mention, f"[{mention}](https://twitter.com/{screen_name})")
+		for hashtag in entities["hashtags"]:
+			text = text.replace('#' + hashtag["text"], 
+								f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})")
+		for symbol in entities["symbols"]:
+			text = text.replace('$' + symbol["text"],
+								f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})")
+		for url in entities["urls"]:
+			text = text.replace(url["url"], url["expanded_url"])
+		# Remove Variation Selector-16 characters
+		# Unescape HTML entities (&gt;, &lt;, &amp;, etc.)
+		return html.unescape(text.replace('\uFE0F', ""))
 	
 	# TODO: move to on_ready
 	async def start_twitter_feeds(self):
