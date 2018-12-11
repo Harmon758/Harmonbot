@@ -311,7 +311,7 @@ class Bot(commands.Bot):
 													"data": {"server_count": len(self.guilds)}, 
 													"guild_count_name": "server_count"}, 
 								"discordbotlist.com": {"name": "Discord Bot List", 
-														"token": "Bot " + self.DISCORDBOTLIST_COM_API_TOKEN, 
+														"token": f"Bot {self.DISCORDBOTLIST_COM_API_TOKEN}", 
 														"url": f"https://discordbotlist.com/api/bots/{self.user.id}/stats", 
 														"data": {"guilds": len(self.guilds)}, 
 														"guild_count_name": "guilds"}}
