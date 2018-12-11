@@ -117,7 +117,7 @@ class Twitter:
 					if friend.protected:
 						self.blacklisted_handles.append(friend.screen_name.lower())
 		except tweepy.error.TweepError as e:
-			print(f"{self.bot.console_message_prefix}Twitter cog blacklist initialization error : {e}")
+			print(f"{self.bot.console_message_prefix}Failed to initialize Twitter cog blacklist: {e}")
 		self.stream_listener = TwitterStreamListener(bot, self.blacklisted_handles)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
