@@ -105,16 +105,19 @@ class Twitter:
 		with open(clients.data_path + "/twitter_feeds.json", 'r') as feeds_file:
 			self.feeds_info = json.load(feeds_file)
 		self.blacklisted_handles = []
-		twitter_account = self.bot.twitter_api.verify_credentials()
-		if twitter_account.protected:
-			self.blacklisted_handles.append(twitter_account.screen_name.lower())
-		# TODO: Handle more than 5000 friends/following
-		twitter_friends = self.bot.twitter_api.friends_ids(screen_name = twitter_account.screen_name)
-		for interval in range(0, len(twitter_friends), 100):
-			some_friends = self.bot.twitter_api.lookup_users(twitter_friends[interval:interval + 100])
-			for friend in some_friends:
-				if friend.protected:
-					self.blacklisted_handles.append(friend.screen_name.lower())
+		try:
+			twitter_account = self.bot.twitter_api.verify_credentials()
+			if twitter_account.protected:
+				self.blacklisted_handles.append(twitter_account.screen_name.lower())
+			# TODO: Handle more than 5000 friends/following
+			twitter_friends = self.bot.twitter_api.friends_ids(screen_name = twitter_account.screen_name)
+			for interval in range(0, len(twitter_friends), 100):
+				some_friends = self.bot.twitter_api.lookup_users(twitter_friends[interval:interval + 100])
+				for friend in some_friends:
+					if friend.protected:
+						self.blacklisted_handles.append(friend.screen_name.lower())
+		except tweepy.error.TweepError as e:
+			print(f"{self.bot.console_message_prefix}Twitter cog blacklist initialization error : {e}")
 		self.stream_listener = TwitterStreamListener(bot, self.blacklisted_handles)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
