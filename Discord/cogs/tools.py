@@ -105,6 +105,7 @@ class Tools:
 		Otherwise, the spoiler will automatically be displayed
 		This setting is under User Settings -> Text & Images
 		'''
+		response = await ctx.embed_reply("Generating spoiler", in_response_to = False)
 		# TODO: add border?, adjust fonts?
 		# Constants
 		content_font = "pala.ttf"
@@ -151,7 +152,7 @@ class Tools:
 		images = [imageio.imread(f) for f in [clients.data_path + "/temp/spoiler_frame_{}.png".format(i) for i in range(1, 3)]]
 		imageio.mimsave(clients.data_path + "/temp/spoiler.gif", images, loop = 1, duration = 0.5)
 		await ctx.channel.send(file = discord.File(clients.data_path + "/temp/spoiler.gif"))
-		await self.bot.attempt_delete_message(ctx.message)
+		await self.bot.attempt_delete_message(response)
 	
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
 	@checks.not_forbidden()
