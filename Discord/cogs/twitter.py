@@ -19,9 +19,10 @@ def setup(bot):
 
 class TwitterStreamListener(tweepy.StreamListener):
 	
-	def __init__(self, bot):
+	def __init__(self, bot, blacklisted_handles = []):
 		super().__init__()
 		self.bot = bot
+		self.blacklisted_handles = blacklisted_handles
 		self.stream = None
 		self.feeds = {}
 		self.unique_feeds = set()
@@ -65,6 +66,8 @@ class TwitterStreamListener(tweepy.StreamListener):
 		if status.in_reply_to_status_id:
 			# Ignore replies
 			return
+		if status.user.screen_name.lower() in self.blacklisted_handles:
+			return
 		if status.user.id_str in self.unique_feeds:
 			# TODO: Settings for including replies, retweets, etc.
 			for channel_id, channel_feeds in self.feeds.items():
@@ -98,10 +101,21 @@ class Twitter:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.stream_listener = TwitterStreamListener(bot)
 		clients.create_file("twitter_feeds", content = {"channels" : {}})
 		with open(clients.data_path + "/twitter_feeds.json", 'r') as feeds_file:
 			self.feeds_info = json.load(feeds_file)
+		self.blacklisted_handles = []
+		twitter_account = self.bot.twitter_api.verify_credentials()
+		if twitter_account.protected:
+			self.blacklisted_handles.append(twitter_account.screen_name.lower())
+		# TODO: Handle more than 5000 friends/following
+		twitter_friends = self.bot.twitter_api.friends_ids(screen_name = twitter_account.screen_name)
+		for interval in range(0, len(twitter_friends), 100):
+			some_friends = self.bot.twitter_api.lookup_users(twitter_friends[interval:interval + 100])
+			for friend in some_friends:
+				if friend.protected:
+					self.blacklisted_handles.append(friend.screen_name.lower())
+		self.stream_listener = TwitterStreamListener(bot, self.blacklisted_handles)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
 	def __unload(self):
@@ -123,6 +137,8 @@ class Twitter:
 		Limited to 3200 most recent Tweets
 		'''
 		tweet = None
+		if handle.lower().strip('@') in self.blacklisted_handles:
+			return await ctx.embed_reply(":no_entry: Error: Unauthorized")
 		try:
 			for status in tweepy.Cursor(self.bot.twitter_api.user_timeline, screen_name = handle, 
 										exclude_replies = not replies, include_rts = retweets, 
