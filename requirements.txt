@@ -67,7 +67,7 @@ jaraco.itertools==3.0.0
 jsonschema==2.6.0
 kiwisolver==1.0.1
 lxml==4.2.5
-mpmath==1.0.0
+mpmath==1.1.0
 multidict==4.5.2
 oauthlib==2.1.0
 pillow==5.3.0
