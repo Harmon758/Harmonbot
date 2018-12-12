@@ -1,5 +1,5 @@
 # discord.py@rewrite
-git+git://github.com/Rapptz/discord.py.git@1da6962#egg=discord.py[voice]
+git+git://github.com/Rapptz/discord.py.git@860d6a9#egg=discord.py[voice]
 # pydle@asyncio
 git+git://github.com/Shizmob/pydle.git@b951707#egg=pydle
 python-telegram-bot==11.1.0
