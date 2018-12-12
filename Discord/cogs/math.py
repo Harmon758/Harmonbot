@@ -118,7 +118,7 @@ class Math:
 		x = sympy.symbols('x')
 		try:
 			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), x)}`",
-                                    title = "Integral of {equation}")
+                                    title = f"Integral of {equation}")
 		except Exception as e:
 			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"),
                                     title = "Error")
