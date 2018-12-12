@@ -104,7 +104,7 @@ class Math:
 		x = sympy.symbols('x')
 		try:
 			await ctx.embed_reply(f"`{sympy.diff(equation.strip('`'), x)}`",
-                                    title = "Derivative of {equation}")
+                                    title = f"Derivative of {equation}")
 		except Exception as e:
 			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"),
                                     title = "Error")
