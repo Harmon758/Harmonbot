@@ -12,11 +12,10 @@ import "io/ioutil"
 import "fmt"
 import "os"
 import "strings"
-import "time"
 
 const owner_id string = "115691005197549570"
 
-var _continue		bool
+var _continue		chan bool
 var _listen			bool
 var dgv				*discordgo.VoiceConnection
 var recv			chan *discordgo.Packet
@@ -33,6 +32,7 @@ func check(e error) {
 
 func main() {
 	fmt.Println("Starting up Discord Harmonbot Listener...")
+	_continue = make(chan bool)
 	
 	// Load Credentials
 	godotenv.Load("../.env")
@@ -57,10 +57,7 @@ func main() {
 	fmt.Printf("Started up %s#%s (%s)\n", me.Username, me.Discriminator, me.ID)
 	
 	if os.Getenv("CI") == "" {
-		_continue = true
-		for _continue {
-			time.Sleep(1)
-		}
+		<- _continue
 	}
 	
 	fmt.Println("Shutting down Discord Harmonbot Listener...")
@@ -110,7 +107,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		case ">restart":
 			// if m.Author.ID == owner_id {
 			s.ChannelMessageSend(m.ChannelID, ":ok_hand::skin-tone-2: Restarting...")
-			_continue = false
+			close(_continue)
 			// }
 		case ">updateavatar":
 			if m.Author.ID == owner_id {
