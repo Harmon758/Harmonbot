@@ -100,6 +100,8 @@ class Lichess:
 		async def convert(self, ctx, argument):
 			url = f"https://en.lichess.org/api/user/{argument}"
 			async with clients.aiohttp_session.get(url) as resp:
+				if resp.status == 404:
+					raise commands.BadArgument
 				data = await resp.json()
 			if not data or data.get("closed"):
 				raise commands.BadArgument
