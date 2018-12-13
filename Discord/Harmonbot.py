@@ -196,7 +196,7 @@ if __name__ == "__main__":
 		elif (message.content.lower() in ("help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ("help", "prefix", "prefixes"):
 			try:
 				prefixes = ctx.bot.command_prefix(ctx.bot, message)
-			except TypeError: # if Beta (*)
+			except TypeError:  # if Beta (*)
 				prefixes = ctx.bot.command_prefix
 			if "help" in message.content.lower():
 				ctx.prefix = prefixes[0]
