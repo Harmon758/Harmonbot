@@ -7,6 +7,7 @@ if __name__ == "__main__":
 	from discord.ext import commands
 	
 	import asyncio
+	import ctypes
 	import json
 	import os
 	import re
@@ -15,6 +16,7 @@ if __name__ == "__main__":
 	
 	import aiohttp
 	from aiohttp import web
+	import pkg_resources  # from setuptools
 	import youtube_dl
 	
 	import clients
@@ -285,6 +287,27 @@ if __name__ == "__main__":
 		token = os.getenv("DISCORD_BETA_BOT_TOKEN")
 	else:
 		token = os.getenv("DISCORD_BOT_TOKEN")
+		# Load Opus
+		## Get Opus version in bin folder
+		opus = discord.opus.libopus_loader("bin/opus")
+		opus.opus_get_version_string.restype = ctypes.c_char_p
+		harmonbot_opus_version = opus.opus_get_version_string().decode("UTF-8")
+		if harmonbot_opus_version.startswith("libopus "):
+			harmonbot_opus_version = harmonbot_opus_version[8:]
+		### Discard additional information from git describe
+		harmonbot_opus_version = harmonbot_opus_version.split('-')[0]
+		harmonbot_opus_version = pkg_resources.parse_version(harmonbot_opus_version)
+		## Get Opus version provided by discord.py
+		discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p
+		library_opus_version = discord.opus._lib.opus_get_version_string().decode("UTF-8")
+		if library_opus_version.startswith("libopus "):
+			library_opus_version = library_opus_version[8:]
+		### Discard additional information from git describe
+		library_opus_version = library_opus_version.split('-')[0]
+		library_opus_version = pkg_resources.parse_version(library_opus_version)
+		## Compare Opus versions and use bin folder one if newer
+		if harmonbot_opus_version > library_opus_version:
+			discord.opus._lib = opus
 		# Start web server
 		client.loop.run_until_complete(client.aiohttp_app_runner.setup())
 		client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
