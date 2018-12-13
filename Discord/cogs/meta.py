@@ -357,7 +357,7 @@ class Meta:
 	
 	@version.command(name = "opus", aliases = ["libopus"])
 	async def version_opus(self, ctx):
-		discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p
+		discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p  # Necessary?
 		await ctx.embed_reply(discord.opus._lib.opus_get_version_string().decode("UTF-8"))
 	
 	
