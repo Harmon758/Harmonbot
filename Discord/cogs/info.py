@@ -91,7 +91,9 @@ class Info:
 					("AFK Channel", ctx.guild.afk_channel), 
 					("Verification Level", str(ctx.guild.verification_level).capitalize()), 
 					("2FA Requirement", bool(ctx.guild.mfa_level)), 
-					("Explicit Content Filter", str(ctx.guild.explicit_content_filter).replace('_', ' ').title())]
+					("Explicit Content Filter", str(ctx.guild.explicit_content_filter).replace('_', ' ').title()), 
+					# ZWS = Zero Width Space
+					("Default Notification Settings", ctx.guild.default_notifications.name.replace('_', ' ').title().replace("Mentions", f"@{ctx.bot.ZWS}mentions"))]
 		# TODO: Add system channel
 		emojis = {"standard": [], "animated": [], "managed": []}
 		for emoji in ctx.guild.emojis:
