@@ -229,6 +229,7 @@ class Location:
 		weather = observation.get_weather()
 		condition = weather.get_status()
 		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Rain": ":cloud_rain:", "Snow": ":cloud_snow:"}
+		# Mist?
 		emote = ' '
 		emote += condition_emotes.get(condition, "")
 		fields = [("Conditions", f"{condition}{emote}")]
@@ -236,7 +237,7 @@ class Location:
 		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
 		fields.append(("Temperature", f"{temperature_c}°C\n{temperature_f}°F"))
 		wind = weather.get_wind()
-		wind_direction = self.wind_degrees_to_direction(wind["deg"])
+		wind_direction = self.wind_degrees_to_direction(wind.get("deg", -1))
 		fields.append(("Wind", f"{wind_direction} {wind['speed'] * 3.6:.2f} km/h\n"
 								f"{wind_direction} {wind['speed'] * 2.236936:.2f} mi/h"))
 		fields.append(("Humidity", f"{weather.get_humidity()}%"))
