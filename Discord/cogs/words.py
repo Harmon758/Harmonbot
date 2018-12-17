@@ -131,7 +131,7 @@ class Words:
 		url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
 		params = {"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, 
 					"lang": to_language_code if not from_language_code else f"{from_language_code}-{to_language_code}", 
-					"text": text.replace(' ', '+'), "options": 1}
+					"text": text, "options": 1}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:  # Bad Request
 				return await ctx.embed_reply(":no_entry: Error")
