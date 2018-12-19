@@ -60,7 +60,9 @@ class Images:
 			return
 		fields = []
 		for color in sorted(response["outputs"][0]["data"]["colors"], key = lambda c: c["value"], reverse = True):
-			fields.append((color["raw_hex"].upper(), f"{color['value'] * 100:.2f}%\n{re.sub(r'(?!^)(?=[A-Z])', ' ', color['w3c']['name'])}\n({color['w3c']['hex'].upper()})"))
+			fields.append((color["raw_hex"].upper(), f"{color['value'] * 100:.2f}%\n"
+														f"{re.sub(r'(?!^)(?=[A-Z])', ' ', color['w3c']['name'])}\n"
+														f"({color['w3c']['hex'].upper()})"))
 		await ctx.embed_reply(title = "Color Density", fields = fields, thumbnail_url = image_url)
 	
 	@image.command(name = "google", aliases = ["search"])
