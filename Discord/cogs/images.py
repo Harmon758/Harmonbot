@@ -53,14 +53,14 @@ class Images:
 		try:
 			response = self.bot.clarifai_app.public_models.color_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
+			await ctx.embed_reply(f":no_entry: Error: `{e.response.json()['outputs'][0]['status']['details']}`")
 			return
 		if response["status"]["description"] != "Ok":
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		fields = []
 		for color in sorted(response["outputs"][0]["data"]["colors"], key = lambda c: c["value"], reverse = True):
-			fields.append((color["raw_hex"].upper(), "{:.2f}%\n{}\n({})".format(color["value"] * 100, re.sub(r"(?!^)(?=[A-Z])", ' ', color["w3c"]["name"]), color["w3c"]["hex"].upper())))
+			fields.append((color["raw_hex"].upper(), f"{color['value'] * 100:.2f}%\n{re.sub(r'(?!^)(?=[A-Z])', ' ', color['w3c']['name'])}\n({color['w3c']['hex'].upper()})"))
 		await ctx.embed_reply(title = "Color Density", fields = fields, thumbnail_url = image_url)
 	
 	@image.command(name = "google", aliases = ["search"])
