@@ -79,7 +79,7 @@ class Images:
 			await ctx.embed_reply(":no_entry: No images with that search found")
 			return
 		await ctx.embed_reply(image_url = data["items"][0]["link"], 
-								title = "Image of {}".format(search), 
+								title = f"Image of {search}", 
 								title_url = data["items"][0]["link"])
 		# TODO: handle 403 daily limit exceeded error
 	
