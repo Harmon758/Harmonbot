@@ -72,12 +72,10 @@ class Images:
 		# TODO: Option to disable SafeSearch
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 403:
-				await ctx.embed_reply(":no_entry: Daily limit exceeded")
-				return
+				return await ctx.embed_reply(":no_entry: Daily limit exceeded")
 			data = await resp.json()
 		if "items" not in data:
-			await ctx.embed_reply(":no_entry: No images with that search found")
-			return
+			return await ctx.embed_reply(":no_entry: No images with that search found")
 		await ctx.embed_reply(image_url = data["items"][0]["link"], 
 								title = f"Image of {search}", 
 								title_url = data["items"][0]["link"])
