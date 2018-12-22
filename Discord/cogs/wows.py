@@ -4,7 +4,6 @@ from discord.ext import commands
 import datetime
 
 import clients
-import credentials
 from utilities import checks
 
 def setup(bot):
