@@ -10,7 +10,6 @@ import traceback
 import tweepy
 
 import clients
-import credentials
 from modules import logging
 from utilities import checks
 
