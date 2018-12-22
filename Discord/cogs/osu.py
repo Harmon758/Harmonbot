@@ -5,7 +5,6 @@ from discord.ext import commands
 import pycountry
 
 import clients
-import credentials
 from utilities import checks
 
 def setup(bot):
