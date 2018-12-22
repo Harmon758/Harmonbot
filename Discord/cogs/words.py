@@ -2,7 +2,6 @@
 from discord.ext import commands
 
 import clients
-import credentials
 from utilities import checks
 
 def setup(bot):
