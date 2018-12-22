@@ -6,7 +6,6 @@ import asyncio
 import datetime
 
 import clients
-import credentials
 from modules import conversions
 from modules import utilities
 from utilities import checks
