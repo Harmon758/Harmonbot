@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-import credentials
 from utilities import errors
 
 # Decorators & Predicates
