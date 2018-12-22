@@ -11,7 +11,6 @@ import more_itertools
 import tabulate
 
 import clients
-import credentials
 from utilities import checks
 
 def setup(bot):
