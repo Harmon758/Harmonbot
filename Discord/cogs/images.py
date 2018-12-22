@@ -8,7 +8,6 @@ import clarifai.rest
 import imgurpython
 
 import clients
-import credentials
 from modules import utilities
 from utilities import checks
 
