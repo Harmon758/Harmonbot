@@ -26,7 +26,6 @@ import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 
-import credentials
 from utilities.context import Context
 from utilities import errors
 from utilities.help_formatter import CustomHelpFormatter
