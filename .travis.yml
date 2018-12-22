@@ -6,7 +6,6 @@ matrix:
       # Workaround for Python 3.7
       # https://github.com/travis-ci/travis-ci/issues/9815
       dist: xenial
-      sudo: true
       services:
         - postgresql
       addons:
@@ -25,7 +24,6 @@ matrix:
       # Workaround for Python 3.7
       # https://github.com/travis-ci/travis-ci/issues/9815
       dist: xenial
-      sudo: true
       cache:
         pip: true
       before_script:
