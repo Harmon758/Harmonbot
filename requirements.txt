@@ -35,7 +35,7 @@ python-dateutil==2.7.5
 python-dotenv==0.10.1
 pytz==2018.7
 raven==6.10.0
-scipy==1.1.0
+scipy==1.2.0
 seaborn==0.9.0
 setuptools==40.6.3
 speechrecognition==3.8.1

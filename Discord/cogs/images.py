@@ -68,18 +68,16 @@ class Images:
 		'''Google image search something'''
 		url = "https://www.googleapis.com/customsearch/v1"
 		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
-					"searchType": "image", 'q': search.replace(' ', '+'), "num": 1, "safe": "active"}
+					"searchType": "image", 'q': search, "num": 1, "safe": "active"}
 		# TODO: Option to disable SafeSearch
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 403:
-				await ctx.embed_reply(":no_entry: Daily limit exceeded")
-				return
+				return await ctx.embed_reply(":no_entry: Daily limit exceeded")
 			data = await resp.json()
 		if "items" not in data:
-			await ctx.embed_reply(":no_entry: No images with that search found")
-			return
+			return await ctx.embed_reply(":no_entry: No images with that search found")
 		await ctx.embed_reply(image_url = data["items"][0]["link"], 
-								title = "Image of {}".format(search), 
+								title = f"Image of {search}", 
 								title_url = data["items"][0]["link"])
 		# TODO: handle 403 daily limit exceeded error
 	
@@ -89,17 +87,15 @@ class Images:
 		try:
 			response = self.bot.clarifai_app.public_models.general_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
-			return
+			return await ctx.embed_reply(f":no_entry: Error: `{e.response.json()['outputs'][0]['status']['details']}`")
 		if response["status"]["description"] != "Ok":
-			await ctx.embed_reply(":no_entry: Error")
-			return
+			return await ctx.embed_reply(":no_entry: Error")
 		names = {}
 		for concept in response["outputs"][0]["data"]["concepts"]:
 			names[concept["name"]] = concept["value"] * 100
 		output = ""
 		for name, value in sorted(names.items(), key = lambda i: i[1], reverse = True):
-			output += "**{}**: {:.2f}%, ".format(name, value)
+			output += f"**{name}**: {value:.2f}%, "
 		output = output[:-2]
 		await ctx.embed_reply(output, thumbnail_url = image_url)
 	
