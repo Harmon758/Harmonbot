@@ -87,11 +87,9 @@ class Images:
 		try:
 			response = self.bot.clarifai_app.public_models.general_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			await ctx.embed_reply(f":no_entry: Error: `{e.response.json()['outputs'][0]['status']['details']}`")
-			return
+			return await ctx.embed_reply(f":no_entry: Error: `{e.response.json()['outputs'][0]['status']['details']}`")
 		if response["status"]["description"] != "Ok":
-			await ctx.embed_reply(":no_entry: Error")
-			return
+			return await ctx.embed_reply(":no_entry: Error")
 		names = {}
 		for concept in response["outputs"][0]["data"]["concepts"]:
 			names[concept["name"]] = concept["value"] * 100
