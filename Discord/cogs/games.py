@@ -19,7 +19,6 @@ import sys
 import timeit
 
 import clients
-import credentials
 from modules import adventure
 from modules.chess import chess_match
 # from modules import gofish
