@@ -9,7 +9,6 @@ import json
 import random
 
 import clients
-import credentials
 from modules import maze
 from modules import utilities
 from utilities import checks
