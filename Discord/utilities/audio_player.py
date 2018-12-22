@@ -12,7 +12,6 @@ import subprocess
 import youtube_dl
 
 import clients
-import credentials
 from modules import utilities
 from utilities import errors
 
