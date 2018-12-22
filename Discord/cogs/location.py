@@ -8,7 +8,6 @@ import datetime
 import pyowm.exceptions
 
 import clients
-import credentials
 from utilities import checks
 
 sys.path.insert(0, "..")
