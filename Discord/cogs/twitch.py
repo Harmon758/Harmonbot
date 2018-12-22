@@ -12,7 +12,6 @@ import sys
 import traceback
 
 import clients
-import credentials
 from utilities import checks
 from modules import logging
 
