@@ -95,7 +95,7 @@ class Random:
 	@checks.not_forbidden()
 	async def giphy(self, ctx):
 		'''Random gif from giphy'''
-		url = "http://api.giphy.com/v1/gifs/random?api_key={}".format(credentials.giphy_public_beta_api_key)
+		url = "http://api.giphy.com/v1/gifs/random?api_key={}".format(ctx.bot.GIPHY_API_KEY)
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"]["image_url"])
