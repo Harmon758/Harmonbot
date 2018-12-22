@@ -20,7 +20,6 @@ if __name__ == "__main__":
 	import youtube_dl
 	
 	import clients
-	import credentials
 	from clients import client
 	from modules import conversions
 	from modules import logging
