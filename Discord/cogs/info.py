@@ -11,7 +11,6 @@ import isodate
 # import unicodedata2 as unicodedata
 
 import clients
-import credentials
 from modules import utilities
 from utilities import checks
 
