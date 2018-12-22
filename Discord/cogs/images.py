@@ -104,7 +104,7 @@ class Images:
 	async def giphy(self, ctx, *, search : str):
 		'''Find an image on giphy'''
 		url = "http://api.giphy.com/v1/gifs/search"
-		params = {"api_key": credentials.giphy_public_beta_api_key, 'q': search, "limit": 1}
+		params = {"api_key": ctx.bot.GIPHY_API_KEY, 'q': search, "limit": 1}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
@@ -113,7 +113,7 @@ class Images:
 	async def giphy_trending(self, ctx):
 		'''Trending gif'''
 		url = "http://api.giphy.com/v1/gifs/trending"
-		params = {"api_key": credentials.giphy_public_beta_api_key}
+		params = {"api_key": ctx.bot.GIPHY_API_KEY}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
