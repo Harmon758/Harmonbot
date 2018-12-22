@@ -11,7 +11,6 @@ import dateutil
 # import spotipy
 
 import clients
-import credentials
 from modules import utilities
 from utilities import checks
 
