@@ -9,7 +9,6 @@ import random
 import urllib
 
 import clients
-import credentials
 from utilities import audio_player
 from utilities import checks
 from utilities import errors
