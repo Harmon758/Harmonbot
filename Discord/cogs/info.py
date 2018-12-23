@@ -140,8 +140,11 @@ class Info:
 	@checks.not_forbidden()
 	async def user(self, ctx, *, user : discord.Member = None):
 		'''Information about a user'''
-		if not user: user = ctx.author
-		await ctx.embed_reply(title = str(user), title_url = user.avatar_url, thumbnail_url = user.avatar_url, footer_text = "Created", timestamp = user.created_at, fields = [("User", user.mention), ("ID", user.id), ("Bot", user.bot)])
+		if not user:
+			user = ctx.author
+		await ctx.embed_reply(title = str(user), title_url = user.avatar_url, 
+								thumbnail_url = user.avatar_url, footer_text = "Created", timestamp = user.created_at, 
+								fields = [("User", user.mention), ("ID", user.id), ("Bot", user.bot)])
 		# member info, status, game, roles, color, etc.
 	
 	@info.command(aliases = ["yt"])
