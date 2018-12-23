@@ -144,7 +144,9 @@ class Info:
 			user = ctx.author
 		await ctx.embed_reply(title = str(user), title_url = user.avatar_url, 
 								thumbnail_url = user.avatar_url, footer_text = "Created", timestamp = user.created_at, 
-								fields = [("User", user.mention), ("ID", user.id), ("Bot", user.bot)])
+								fields = [("User", user.mention), ("ID", user.id), 
+											("Status", f"{str(user.status).capitalize().replace('Dnd', 'Do Not Disturb')}"), 
+											("Bot", user.bot)])
 		# member info, status, game, roles, color, etc.
 	
 	@info.command(aliases = ["yt"])
