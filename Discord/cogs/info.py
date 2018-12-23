@@ -142,12 +142,18 @@ class Info:
 		'''Information about a user'''
 		if not user:
 			user = ctx.author
+		fields = [("User", user.mention), ("ID", user.id), 
+					("Status", str(user.status).capitalize().replace('Dnd', 'Do Not Disturb')), 
+					("Bot", user.bot)]
+		for status_type in ("desktop_status", "web_status", "mobile_status"):
+			status = getattr(user, status_type)
+			if status is not discord.Status.offline:
+				fields.append((status_type.replace('_', ' ').title(), 
+								str(status).capitalize().replace('Dnd', 'Do Not Disturb')))
 		await ctx.embed_reply(title = str(user), title_url = user.avatar_url, 
-								thumbnail_url = user.avatar_url, footer_text = "Created", timestamp = user.created_at, 
-								fields = [("User", user.mention), ("ID", user.id), 
-											("Status", f"{str(user.status).capitalize().replace('Dnd', 'Do Not Disturb')}"), 
-											("Bot", user.bot)])
-		# member info, status, game, roles, color, etc.
+								thumbnail_url = user.avatar_url, fields = fields, 
+								footer_text = "Created", timestamp = user.created_at)
+		# member info, activities, roles, color, joined at, etc.
 	
 	@info.command(aliases = ["yt"])
 	@checks.not_forbidden()
