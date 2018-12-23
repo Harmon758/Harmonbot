@@ -143,17 +143,23 @@ class Info:
 		if not user:
 			user = ctx.author
 		fields = [("User", user.mention), ("ID", user.id), 
-					("Status", str(user.status).capitalize().replace('Dnd', 'Do Not Disturb')), 
-					("Bot", user.bot)]
+					("Status", user.status.name.capitalize().replace('Dnd', 'Do Not Disturb'))]
 		for status_type in ("desktop_status", "web_status", "mobile_status"):
 			status = getattr(user, status_type)
 			if status is not discord.Status.offline:
 				fields.append((status_type.replace('_', ' ').title(), 
-								str(status).capitalize().replace('Dnd', 'Do Not Disturb')))
+								status.name.capitalize().replace('Dnd', 'Do Not Disturb')))
+		activities = '\n'.join(f"{activity.type.name.capitalize()} {activity.name}" for activity in user.activities)
+		if activities:
+			fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), 
+							activities.replace("Listening", "Listening to")))
+			# inflect_engine.plural("Activity") returns "Activitys"
+		fields.append(("Bot", user.bot))
 		await ctx.embed_reply(title = str(user), title_url = user.avatar_url, 
 								thumbnail_url = user.avatar_url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
-		# member info, activities, roles, color, joined at, etc.
+		# member info, roles, color, joined at, etc.
+		# TODO: more detailed activities
 	
 	@info.command(aliases = ["yt"])
 	@checks.not_forbidden()
