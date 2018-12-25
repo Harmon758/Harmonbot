@@ -48,7 +48,7 @@ class TwitchClient(pydle.Client):
 		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
 		self.YANDEX_TRANSLATE_API_KEY = os.getenv("YANDEX_TRANSLATE_API_KEY")
 		# Clients
-		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop.loop)
+		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop)
 		# Dynamically load commands
 		for file in os.listdir("data/commands"):
 			if file == "aliases":
