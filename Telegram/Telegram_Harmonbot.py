@@ -11,6 +11,7 @@ version = "0.1.4"
 # Load credentials from .env
 dotenv.load_dotenv()
 token = os.getenv("TELEGRAM_BOT_API_TOKEN")
+assert token, "Environment variable TELEGRAM_BOT_API_TOKEN is not set."
 
 bot = telegram.Bot(token = token)
 updater = telegram.ext.Updater(token = token)
