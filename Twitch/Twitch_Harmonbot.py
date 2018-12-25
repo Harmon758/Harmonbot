@@ -12,13 +12,13 @@ import random
 import re
 import sys
 import time
-# import unicodedata
+import unicodedata
 
 import aiohttp
 import dateutil.easter
 import dateutil.parser
 import dotenv
-import unicodedata2 as unicodedata
+# import unicodedata2 as unicodedata
 
 sys.path.insert(0, "..")
 from units.games import eightball
