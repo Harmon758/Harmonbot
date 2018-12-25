@@ -70,8 +70,7 @@ if __name__ == "__main__":
 	process_args = {}
 	process_args["discord"] = [sys.executable, "-u", "Harmonbot.py"]
 	process_args["discord_listener"] = ["go", "run", "Harmonbot_Listener.go"]
-	process_args["twitch"] = ["pyw", "-3.6", "-u", "Twitch_Harmonbot.py"]
-	# TODO: Update to use Python 3.7 executable
+	process_args["twitch"] = [sys.executable, "-u", "Twitch_Harmonbot.py"]
 	process_args["telegram"] = [sys.executable, "-u", "Telegram_Harmonbot.py"]
 	
 	def start_process(process):
