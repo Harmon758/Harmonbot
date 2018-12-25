@@ -28,7 +28,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.3.30"
+		self.version = "2.4.0"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -47,8 +47,8 @@ class TwitchClient(pydle.Client):
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
 		self.YANDEX_TRANSLATE_API_KEY = os.getenv("YANDEX_TRANSLATE_API_KEY")
-		# Clients
-		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop)
+		# aiohttp Client Session - initialized on connect
+		self.aiohttp_session = None
 		# Dynamically load commands
 		for file in os.listdir("data/commands"):
 			if file == "aliases":
@@ -70,6 +70,8 @@ class TwitchClient(pydle.Client):
 	
 	async def on_connect(self):
 		await super().on_connect()
+		# Initialize aiohttp Client Session
+		self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop)
 		# Client logger
 		self.logger.setLevel(logging.DEBUG)
 		console_handler = logging.StreamHandler(sys.stdout)
