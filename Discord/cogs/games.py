@@ -3,20 +3,21 @@ import discord
 from discord.ext import commands
 
 import asyncio
-from bs4 import BeautifulSoup
-# import chess
-import chess.pgn
 import copy
-# import deuces
 import html
 import json
 import os
-import pydealer
 import random
 import re
 import string
 import sys
 import timeit
+
+from bs4 import BeautifulSoup
+# import chess
+import chess.pgn
+# import deuces
+import pydealer
 
 import clients
 from modules import adventure
