@@ -1210,7 +1210,7 @@ class Games:
 					data = (await resp.json())[0]
 			if bet:
 				self.bet_countdown = int(clients.wait_time)
-				bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to bet".format(self.bet_countdown))
+				bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), footer_text = f"You have {self.bet_countdown} seconds left to bet")
 				embed = bet_message.embeds[0]
 				bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
 				while self.bet_countdown:
@@ -1222,7 +1222,7 @@ class Games:
 						bet_ctx = await ctx.bot.get_context(message, cls = clients.Context)
 						if int(message.content) <= self.trivia_stats[str(message.author.id)][2]: # check if new player
 							bets[message.author] = int(message.content)
-							await bet_ctx.embed_reply("Has bet ${}".format(message.content))
+							await bet_ctx.embed_reply(f"Has bet ${message.content}")
 							await self.bot.attempt_delete_message(message)
 						else:
 							await bet_ctx.embed_reply("You don't have that much money to bet!")
@@ -1231,7 +1231,7 @@ class Games:
 				embed.set_footer(text = "Betting is over")
 				await bet_message.edit(embed = embed)
 			self.trivia_countdown = int(clients.wait_time)
-			answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = "You have {} seconds left to answer".format(self.trivia_countdown))
+			answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = "You have {self.trivia_countdown} seconds left to answer")
 			embed = answer_message.embeds[0]
 			countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
 			while self.trivia_countdown:
