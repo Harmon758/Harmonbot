@@ -1370,14 +1370,14 @@ class Games:
 		'''Trivia scores'''
 		if number > 15: number = 15
 		top_scores = sorted(self.trivia_stats.items(), key = lambda p: p[1][0], reverse = True)[:number]
-		response = await ctx.embed_reply(title = "Trivia Top {}".format(number))
+		response = await ctx.embed_reply(title = f"Trivia Top {number}")
 		embed = response.embeds[0]
 		for user in top_scores:
 			user_info = await self.bot.get_user_info(user[0])
 			correct = user[1][0]
 			incorrect = user[1][1]
 			correct_percentage = correct / (correct + incorrect) * 100
-			embed.add_field(name = user_info, value = "{}/{} correct ({:.2f}%)\n".format(correct, correct + incorrect, correct_percentage))
+			embed.add_field(name = user_info, value = f"{correct}/{correct + incorrect} correct ({correct_percentage:.2f}%)\n")
 			await response.edit(embed = embed)
 	
 	@commands.group()
