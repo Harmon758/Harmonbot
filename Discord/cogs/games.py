@@ -1215,134 +1215,139 @@ class Games:
 		Only your last answer is accepted
 		Answers prepended with ! or > are ignored
 		'''
-		if not self.trivia_active:
-			bet, bets = options and options[0] == "bet", {}
-			self.trivia_active, responses = True, {}
-			data = {}
-			while not data.get("question") or not data.get("category"):
+		if self.trivia_active:
+			return await ctx.embed_reply("There is already an ongoing game of trivia\nOther options: score money")
+		bet, bets = options and options[0] == "bet", {}
+		self.trivia_active, responses = True, {}
+		data = {}
+		while not data.get("question") or not data.get("category"):
+			try:
+				async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
+					data = (await resp.json())[0]
+			except aiohttp.ClientConnectionError as e:
+				self.trivia_active = False
+				return await ctx.embed_reply(":no_entry: Error")
+		if bet:
+			self.bet_countdown = int(clients.wait_time)
+			bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), 
+												footer_text = f"You have {self.bet_countdown} seconds left to bet")
+			embed = bet_message.embeds[0]
+			bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
+			while self.bet_countdown:
 				try:
-					async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
-						data = (await resp.json())[0]
-				except aiohttp.ClientConnectionError as e:
-					self.trivia_active = False
-					return await ctx.embed_reply(":no_entry: Error")
-			if bet:
-				self.bet_countdown = int(clients.wait_time)
-				bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), footer_text = f"You have {self.bet_countdown} seconds left to bet")
-				embed = bet_message.embeds[0]
-				bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
-				while self.bet_countdown:
-					try:
-						message = await self.bot.wait_for("message", timeout = self.bet_countdown, check = lambda m: m.channel == ctx.channel and m.content.isdigit())
-					except asyncio.TimeoutError:
-						pass
-					else:
-						bet_ctx = await ctx.bot.get_context(message, cls = clients.Context)
-						money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
-						# TODO: Check if new player
-						if int(message.content) <= money:
-							bets[message.author] = int(message.content)
-							await bet_ctx.embed_reply(f"Has bet ${message.content}")
-							await self.bot.attempt_delete_message(message)
-						else:
-							await bet_ctx.embed_reply("You don't have that much money to bet!")
-				while not bet_countdown_task.done():
-					await asyncio.sleep(0.1)
-				embed.set_footer(text = "Betting is over")
-				await bet_message.edit(embed = embed)
-			self.trivia_countdown = int(clients.wait_time)
-			answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = f"You have {self.trivia_countdown} seconds left to answer")
-			embed = answer_message.embeds[0]
-			countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
-			while self.trivia_countdown:
-				try:
-					message = await self.bot.wait_for("message", timeout = self.trivia_countdown, check = lambda m: m.channel == ctx.channel)
+					message = await self.bot.wait_for("message", timeout = self.bet_countdown, 
+														check = lambda m: m.channel == ctx.channel and m.content.isdigit())
 				except asyncio.TimeoutError:
 					pass
 				else:
-					if not message.content.startswith(('!', '>')):
-						responses[message.author] = message.content
-			while not countdown_task.done():
-				await asyncio.sleep(0.1)
-			embed.set_footer(text = "Time's up!")
-			await answer_message.edit(embed = embed)
-			correct_players = []
-			incorrect_players = []
-			matches_1 = re.search("\((.+)\) (.+)", data["answer"].lower())
-			matches_2 = re.search("(.+) \((.+)\)", data["answer"].lower())
-			matches_3 = re.search("(.+)\/(.+)", data["answer"].lower())
-			for player, response in responses.items():
-				if data["answer"].lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]] \
-				or response.lower() == BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().lower() \
-				or response.lower().replace('-', ' ') == data["answer"].lower().replace('-', ' ') \
-				or response.lower() == data["answer"].lower().replace("\\'", "'") \
-				or response.lower() == data["answer"].lower().replace('&', "and") \
-				or response.lower() == data["answer"].lower().replace('.', "") \
-				or response.lower() == data["answer"].lower().replace('!', "") \
-				or response.lower().replace('(', "").replace(')', "") == data["answer"].lower().replace('(', "").replace(')', "") \
-				or (matches_1 and (response.lower() in (matches_1.group(1), matches_1.group(2)))) \
-				or (matches_2 and (response.lower() in (matches_2.group(1), matches_2.group(2)))) \
-				or (matches_3 and (response.lower() in (matches_3.group(1), matches_3.group(2)))) \
-				or response.lower().strip('"') == data["answer"].lower().strip('"'):
-					correct_players.append(player)
-				else:
-					incorrect_players.append(player)
-			if len(correct_players) == 0:
-				correct_players_output = "Nobody got it right!"
-			else:
-				correct_players_output = clients.inflect_engine.join([correct_player.display_name for correct_player in correct_players]) + ' ' + clients.inflect_engine.plural("was", len(correct_players)) + " right!"
-			for correct_player in correct_players:
-				await ctx.bot.db.execute(
-					"""
-					INSERT INTO trivia.users (user_id, correct, incorrect, money)
-					VALUES ($1, 1, 0, 100000)
-					ON CONFLICT (user_id) DO
-					UPDATE SET correct = users.correct + 1
-					""", 
-					correct_player.id
-				)
-			for incorrect_player in incorrect_players:
-				await ctx.bot.db.execute(
-					"""
-					INSERT INTO trivia.users (user_id, correct, incorrect, money)
-					VALUES ($1, 0, 1, 100000)
-					ON CONFLICT (user_id) DO
-					UPDATE SET incorrect = users.incorrect + 1
-					""", 
-					incorrect_player.id
-				)
-			if bet:
-				trivia_bets_output = ""
-				for trivia_player in bets:
-					if trivia_player in correct_players:
-						money = await ctx.bot.db.fetchval(
-							"""
-							UPDATE trivia.users
-							SET money = money + $2
-							WHERE user_id = $1
-							RETURNING money
-							""", 
-							trivia_player.id, bets[trivia_player]
-						)
-						trivia_bets_output += f"{trivia_player.display_name} won ${bets[trivia_player]:,} and now has ${money:,}. "
+					bet_ctx = await ctx.bot.get_context(message, cls = clients.Context)
+					money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
+					# TODO: Check if new player
+					if int(message.content) <= money:
+						bets[message.author] = int(message.content)
+						await bet_ctx.embed_reply(f"Has bet ${message.content}")
+						await self.bot.attempt_delete_message(message)
 					else:
-						money = await ctx.bot.db.fetchval(
-							"""
-							UPDATE trivia.users
-							SET money = money - $2
-							WHERE user_id = $1
-							RETURNING money
-							""", 
-							trivia_player.id, bets[trivia_player]
-						)
-						trivia_bets_output += f"{trivia_player.display_name} lost ${bets[trivia_player]:,} and now has ${money:,}. "
-				trivia_bets_output = trivia_bets_output[:-1]
-			await ctx.embed_say("The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")), footer_text = correct_players_output)
-			if bet and trivia_bets_output:
-				await ctx.embed_say(trivia_bets_output)
-			self.trivia_active = False
+						await bet_ctx.embed_reply("You don't have that much money to bet!")
+			while not bet_countdown_task.done():
+				await asyncio.sleep(0.1)
+			embed.set_footer(text = "Betting is over")
+			await bet_message.edit(embed = embed)
+		self.trivia_countdown = int(clients.wait_time)
+		answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
+												footer_text = f"You have {self.trivia_countdown} seconds left to answer")
+		embed = answer_message.embeds[0]
+		countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
+		while self.trivia_countdown:
+			try:
+				message = await self.bot.wait_for("message", timeout = self.trivia_countdown, 
+													check = lambda m: m.channel == ctx.channel)
+			except asyncio.TimeoutError:
+				pass
+			else:
+				if not message.content.startswith(('!', '>')):
+					responses[message.author] = message.content
+		while not countdown_task.done():
+			await asyncio.sleep(0.1)
+		embed.set_footer(text = "Time's up!")
+		await answer_message.edit(embed = embed)
+		correct_players = []
+		incorrect_players = []
+		matches_1 = re.search("\((.+)\) (.+)", data["answer"].lower())
+		matches_2 = re.search("(.+) \((.+)\)", data["answer"].lower())
+		matches_3 = re.search("(.+)\/(.+)", data["answer"].lower())
+		for player, response in responses.items():
+			if data["answer"].lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]] \
+			or response.lower() == BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().lower() \
+			or response.lower().replace('-', ' ') == data["answer"].lower().replace('-', ' ') \
+			or response.lower() == data["answer"].lower().replace("\\'", "'") \
+			or response.lower() == data["answer"].lower().replace('&', "and") \
+			or response.lower() == data["answer"].lower().replace('.', "") \
+			or response.lower() == data["answer"].lower().replace('!', "") \
+			or response.lower().replace('(', "").replace(')', "") == data["answer"].lower().replace('(', "").replace(')', "") \
+			or (matches_1 and (response.lower() in (matches_1.group(1), matches_1.group(2)))) \
+			or (matches_2 and (response.lower() in (matches_2.group(1), matches_2.group(2)))) \
+			or (matches_3 and (response.lower() in (matches_3.group(1), matches_3.group(2)))) \
+			or response.lower().strip('"') == data["answer"].lower().strip('"'):
+				correct_players.append(player)
+			else:
+				incorrect_players.append(player)
+		if len(correct_players) == 0:
+			correct_players_output = "Nobody got it right!"
 		else:
-			await ctx.embed_reply("There is already an ongoing game of trivia\nOther options: score money")
+			correct_players_output = clients.inflect_engine.join(player.display_name for player in correct_players)
+			correct_players_output += f" {clients.inflect_engine.plural('was', len(correct_players))} right!"
+		for correct_player in correct_players:
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO trivia.users (user_id, correct, incorrect, money)
+				VALUES ($1, 1, 0, 100000)
+				ON CONFLICT (user_id) DO
+				UPDATE SET correct = users.correct + 1
+				""", 
+				correct_player.id
+			)
+		for incorrect_player in incorrect_players:
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO trivia.users (user_id, correct, incorrect, money)
+				VALUES ($1, 0, 1, 100000)
+				ON CONFLICT (user_id) DO
+				UPDATE SET incorrect = users.incorrect + 1
+				""", 
+				incorrect_player.id
+			)
+		if bet:
+			trivia_bets_output = ""
+			for trivia_player in bets:
+				if trivia_player in correct_players:
+					money = await ctx.bot.db.fetchval(
+						"""
+						UPDATE trivia.users
+						SET money = money + $2
+						WHERE user_id = $1
+						RETURNING money
+						""", 
+						trivia_player.id, bets[trivia_player]
+					)
+					trivia_bets_output += f"{trivia_player.display_name} won ${bets[trivia_player]:,} and now has ${money:,}. "
+				else:
+					money = await ctx.bot.db.fetchval(
+						"""
+						UPDATE trivia.users
+						SET money = money - $2
+						WHERE user_id = $1
+						RETURNING money
+						""", 
+						trivia_player.id, bets[trivia_player]
+					)
+					trivia_bets_output += f"{trivia_player.display_name} lost ${bets[trivia_player]:,} and now has ${money:,}. "
+			trivia_bets_output = trivia_bets_output[:-1]
+		answer = BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")
+		await ctx.embed_say(f"The answer was `{answer}`", footer_text = correct_players_output)
+		if bet and trivia_bets_output:
+			await ctx.embed_say(trivia_bets_output)
+		self.trivia_active = False
 	
 	async def _bet_countdown(self, bet_message, embed):
 		while self.bet_countdown:
