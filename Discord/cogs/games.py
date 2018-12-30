@@ -1261,7 +1261,6 @@ class Games:
 					if int(message.content) <= money:
 						bets[message.author] = int(message.content)
 						await bet_ctx.embed_reply(f"Has bet ${message.content}")
-						await self.bot.attempt_delete_message(message)
 					else:
 						await bet_ctx.embed_reply("You don't have that much money to bet!")
 			while not bet_countdown_task.done():
@@ -1377,11 +1376,6 @@ class Games:
 			self.trivia_countdown -= 1
 			embed.set_footer(text = f"You have {self.trivia_countdown} seconds left to answer")
 			await answer_message.edit(embed = embed)
-	
-	# url = "http://api.futuretraxex.com/v1/getRandomQuestion
-	# await ctx.say(BeautifulSoup(html.unescape(data["q_text"]), "html.parser").get_text() + "\n1. " + data["q_options_1"] + "\n2. " + data["q_options_2"] + "\n3. " + data["q_options_3"] + "\n4. " + data["q_options_4"])
-	# if answer == data["q_correct_option"]:
-	# await ctx.say("The answer was " + str(data["q_correct_option"]) + ". " + data["q_options_" + str(data["q_correct_option"])] + "\n" + correct_players_output)
 	
 	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
 	async def trivia_score(self, ctx):
