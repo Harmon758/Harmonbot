@@ -55,7 +55,7 @@ class Pinboard:
 		Backfill pins into current pinboard channel
 		This can take a while depending on how many missing pinned messages there are
 		'''
-		record = await ctx.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards where guild_id = $1", 
+		record = await ctx.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards WHERE guild_id = $1", 
 											ctx.guild.id)
 		pinboard_channel_id = record["channel_id"]
 		threshold = record["threshold"] or self.default_threshold
@@ -67,7 +67,7 @@ class Pinboard:
 			async with connection.transaction():
 				# Postgres requires non-scrollable cursors to be created
 				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM pinboard.pins where guild_id = $1 ORDER BY message_id", 
+				async for record in connection.cursor("SELECT * FROM pinboard.pins WHERE guild_id = $1 ORDER BY message_id", 
 														ctx.guild.id):
 					try:
 						await pinboard_channel.get_message(record["pinboard_message_id"])
@@ -93,7 +93,7 @@ class Pinboard:
 	@checks.is_permitted()
 	async def channel(self, ctx, channel : discord.TextChannel = None):
 		'''Set/get channel'''
-		channel_id = await ctx.bot.db.fetchval("SELECT channel_id FROM pinboard.pinboards where guild_id = $1", 
+		channel_id = await ctx.bot.db.fetchval("SELECT channel_id FROM pinboard.pinboards WHERE guild_id = $1", 
 												ctx.guild.id)
 		if not channel_id:
 			if not channel:
@@ -145,7 +145,7 @@ class Pinboard:
 										threshold_number, ctx.guild.id)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard threshold to {threshold_number}")
 		else:
-			threshold_number = await ctx.bot.db.fetchval("SELECT threshold FROM pinboard.pinboards where guild_id = $1", 
+			threshold_number = await ctx.bot.db.fetchval("SELECT threshold FROM pinboard.pinboards WHERE guild_id = $1", 
 															ctx.guild.id)
 			if threshold_number:
 				await ctx.embed_reply(f"Current pinboard threshold: {threshold_number}")
@@ -159,7 +159,7 @@ class Pinboard:
 		if not payload.guild_id:
 			# Reaction is not in a guild
 			return
-		record = await self.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards where guild_id = $1", 
+		record = await self.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards WHERE guild_id = $1", 
 												payload.guild_id)
 		if not record:
 			# Guild doesn't have a pinboard
@@ -170,7 +170,7 @@ class Pinboard:
 			# Message being reacted to is on the pinboard
 			pinboard_message_id = payload.message_id
 			record = await self.bot.db.fetchrow("""SELECT message_id, channel_id
-													FROM pinboard.pins where pinboard_message_id = $1""", 
+													FROM pinboard.pins WHERE pinboard_message_id = $1""", 
 													pinboard_message_id)
 			message_id = record["message_id"]
 			channel_id = record["channel_id"]
