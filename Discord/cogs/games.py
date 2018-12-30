@@ -1360,7 +1360,7 @@ class Games:
 		while self.trivia_countdown:
 			await asyncio.sleep(1)
 			self.trivia_countdown -= 1
-			embed.set_footer(text = "You have {} seconds left to answer".format(self.trivia_countdown))
+			embed.set_footer(text = f"You have {self.trivia_countdown} seconds left to answer")
 			await answer_message.edit(embed = embed)
 	
 	# url = "http://api.futuretraxex.com/v1/getRandomQuestion
