@@ -1353,7 +1353,7 @@ class Games:
 		while self.bet_countdown:
 			await asyncio.sleep(1)
 			self.bet_countdown -= 1
-			embed.set_footer(text = "You have {} seconds left to bet".format(self.bet_countdown))
+			embed.set_footer(text = f"You have {self.bet_countdown} seconds left to bet")
 			await bet_message.edit(embed = embed)
 	
 	async def _trivia_countdown(self, answer_message, embed):
