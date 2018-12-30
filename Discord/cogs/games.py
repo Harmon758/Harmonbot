@@ -1232,9 +1232,6 @@ class Games:
 		self.trivia_active = False
 	
 	async def _trivia(self, ctx, bet = False):
-		bets = {}
-		responses = {}
-		data = {}
 		try:
 			async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
 				data = (await resp.json())[0]
@@ -1245,6 +1242,7 @@ class Games:
 		if not data.get("category"):
 			return await ctx.embed_reply(":no_entry: Error: API response missing category")
 		if bet:
+			bets = {}
 			self.bet_countdown = int(clients.wait_time)
 			bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.bet_countdown} seconds left to bet")
@@ -1270,6 +1268,7 @@ class Games:
 				await asyncio.sleep(0.1)
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
+		responses = {}
 		self.trivia_countdown = int(clients.wait_time)
 		answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.trivia_countdown} seconds left to answer")
