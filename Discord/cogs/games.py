@@ -1300,7 +1300,7 @@ class Games:
 		if len(correct_players) == 0:
 			correct_players_output = "Nobody got it right!"
 		else:
-			correct_players_output = clients.inflect_engine.join(player.display_name for player in correct_players)
+			correct_players_output = clients.inflect_engine.join([player.display_name for player in correct_players])
 			correct_players_output += f" {clients.inflect_engine.plural('was', len(correct_players))} right!"
 		for correct_player in correct_players:
 			await ctx.bot.db.execute(
