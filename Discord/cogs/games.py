@@ -1368,7 +1368,8 @@ class Games:
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
 	async def trivia_scores(self, ctx, number : int = 10):
 		'''Trivia scores'''
-		if number > 15: number = 15
+		if number > 15:
+			number = 15
 		top_scores = sorted(self.trivia_stats.items(), key = lambda p: p[1][0], reverse = True)[:number]
 		response = await ctx.embed_reply(title = f"Trivia Top {number}")
 		embed = response.embeds[0]
@@ -1378,7 +1379,8 @@ class Games:
 			incorrect = user[1][1]
 			total = correct + incorrect
 			correct_percentage = correct / (total) * 100
-			embed.add_field(name = user_info, value = f"{correct}/{total} correct ({correct_percentage:.2f}%)\n")
+			embed.add_field(name = user_info,
+							value = f"{correct}/{total} correct ({correct_percentage:.2f}%)")
 			await response.edit(embed = embed)
 	
 	@commands.group()
