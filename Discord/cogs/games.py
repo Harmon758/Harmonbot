@@ -1391,6 +1391,8 @@ class Games:
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
 		money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", ctx.author.id)
+		if not money:
+			return await ctx.embed_reply("You have not played any trivia yet")
 		await ctx.embed_reply(f"You have ${money:,}")
 	
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
