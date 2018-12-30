@@ -59,10 +59,6 @@ class Games:
 		# Necessary for maze generation
 		sys.setrecursionlimit(5000)
 		
-		clients.create_file("trivia_points")
-		with open(clients.data_path + "/trivia_points.json", 'r') as trivia_file:
-			self.trivia_stats = json.load(trivia_file)
-		
 		self.bot.loop.create_task(self.initialize_database())
 	
 	async def initialize_database(self):
@@ -78,15 +74,6 @@ class Games:
 			)
 			"""
 		)
-		for user_id, data in self.trivia_stats.items():
-			await self.bot.db.execute(
-				"""
-				INSERT INTO trivia.users (user_id, correct, incorrect, money)
-				VALUES ($1, $2, $3, $4)
-				ON CONFLICT (user_id) DO NOTHING
-				""", 
-				int(user_id), data[0], data[1], data[2]
-			)
 	
 	# Adventure
 	
@@ -1251,7 +1238,9 @@ class Games:
 						pass
 					else:
 						bet_ctx = await ctx.bot.get_context(message, cls = clients.Context)
-						if int(message.content) <= self.trivia_stats[str(message.author.id)][2]: # check if new player
+						money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
+						# TODO: Check if new player
+						if int(message.content) <= money:
 							bets[message.author] = int(message.content)
 							await bet_ctx.embed_reply(f"Has bet ${message.content}")
 							await self.bot.attempt_delete_message(message)
@@ -1303,27 +1292,51 @@ class Games:
 			else:
 				correct_players_output = clients.inflect_engine.join([correct_player.display_name for correct_player in correct_players]) + ' ' + clients.inflect_engine.plural("was", len(correct_players)) + " right!"
 			for correct_player in correct_players:
-				if str(correct_player.id) in self.trivia_stats:
-					self.trivia_stats[str(correct_player.id)][0] += 1
-				else:
-					self.trivia_stats[str(correct_player.id)] = [1, 0, 100000]
+				await ctx.bot.db.execute(
+					"""
+					INSERT INTO trivia.users (user_id, correct, incorrect, money)
+					VALUES ($1, 1, 0, 100000)
+					ON CONFLICT (user_id) DO
+					UPDATE SET correct = users.correct + 1
+					""", 
+					correct_player.id
+				)
 			for incorrect_player in incorrect_players:
-				if str(incorrect_player.id) in self.trivia_stats:
-					self.trivia_stats[str(incorrect_player.id)][1] += 1
-				else:
-					self.trivia_stats[str(incorrect_player.id)] = [0, 1, 100000]
+				await ctx.bot.db.execute(
+					"""
+					INSERT INTO trivia.users (user_id, correct, incorrect, money)
+					VALUES ($1, 0, 1, 100000)
+					ON CONFLICT (user_id) DO
+					UPDATE SET incorrect = users.incorrect + 1
+					""", 
+					incorrect_player.id
+				)
 			if bet:
 				trivia_bets_output = ""
 				for trivia_player in bets:
 					if trivia_player in correct_players:
-						self.trivia_stats[str(trivia_player.id)][2] += bets[trivia_player]
-						trivia_bets_output += f"{trivia_player.display_name} won ${bets[trivia_player]:,} and now has ${self.trivia_stats[str(trivia_player.id)][2]:,}. "
+						money = await ctx.bot.db.fetchval(
+							"""
+							UPDATE trivia.users
+							SET money = money + $2
+							WHERE user_id = $1
+							RETURNING money
+							""", 
+							trivia_player.id, bets[trivia_player]
+						)
+						trivia_bets_output += f"{trivia_player.display_name} won ${bets[trivia_player]:,} and now has ${money:,}. "
 					else:
-						self.trivia_stats[str(trivia_player.id)][2] -= bets[trivia_player]
-						trivia_bets_output += f"{trivia_player.display_name} lost ${bets[trivia_player]:,} and now has ${self.trivia_stats[str(trivia_player.id)][2]:,}. "
+						money = await ctx.bot.db.fetchval(
+							"""
+							UPDATE trivia.users
+							SET money = money - $2
+							WHERE user_id = $1
+							RETURNING money
+							""", 
+							trivia_player.id, bets[trivia_player]
+						)
+						trivia_bets_output += f"{trivia_player.display_name} lost ${bets[trivia_player]:,} and now has ${money:,}. "
 				trivia_bets_output = trivia_bets_output[:-1]
-			with open(clients.data_path + "/trivia_points.json", 'w') as trivia_file:
-				json.dump(self.trivia_stats, trivia_file, indent = 4)
 			await ctx.embed_say("The answer was `{}`".format(BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")), footer_text = correct_players_output)
 			if bet and trivia_bets_output:
 				await ctx.embed_say(trivia_bets_output)
@@ -1353,37 +1366,36 @@ class Games:
 	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
 	async def trivia_score(self, ctx):
 		'''Trivia score'''
-		correct = self.trivia_stats[str(ctx.author.id)][0]
-		incorrect = self.trivia_stats[str(ctx.author.id)][1]
-		total = correct + incorrect
-		correct_percentage = correct / total * 100
-		await ctx.embed_reply(f"You have answered {correct}/{total} ({correct_percentage:.2f}%) correctly.")
+		record = await ctx.bot.db.fetchrow("SELECT correct, incorrect FROM trivia.users WHERE user_id = $1", ctx.author.id)
+		total = record["correct"] + record["incorrect"]
+		correct_percentage = record["correct"] / total * 100
+		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
 	
 	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
-		cash = self.trivia_stats[str(ctx.author.id)][2]
-		await ctx.embed_reply(f"You have ${cash:,}")
+		money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", ctx.author.id)
+		await ctx.embed_reply(f"You have ${money:,}")
 	
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
 	async def trivia_scores(self, ctx, number : int = 10):
 		'''Trivia scores'''
 		if number > 15:
 			number = 15
-		top_scores = sorted(self.trivia_stats.items(), key = lambda p: p[1][0], reverse = True)[:number]
-		response = await ctx.embed_reply(title = f"Trivia Top {number}")
-		embed = response.embeds[0]
-		for user in top_scores:
-			user_info = ctx.bot.get_user(user[0])
-			if not user_info:
-				user_info = await ctx.bot.get_user_info(user[0])
-			correct = user[1][0]
-			incorrect = user[1][1]
-			total = correct + incorrect
-			correct_percentage = correct / (total) * 100
-			embed.add_field(name = user_info,
-							value = f"{correct}/{total} correct ({correct_percentage:.2f}%)")
-			await response.edit(embed = embed)
+		fields = []
+		async with ctx.bot.database_connection_pool.acquire() as connection:
+			async with connection.transaction():
+				# Postgres requires non-scrollable cursors to be created
+				# and used in a transaction.
+				async for record in connection.cursor("SELECT * FROM trivia.users ORDER BY correct DESC LIMIT $1", number):
+					# SELECT user_id, correct, incorrect?
+					user = ctx.bot.get_user(record["user_id"])
+					if not user:
+						user = await ctx.bot.get_user_info(record["user_id"])
+					total = record["correct"] + record["incorrect"]
+					correct_percentage = record["correct"] / total * 100
+					fields.append((str(user), f"{record['correct']}/{total} correct ({correct_percentage:.2f}%)"))
+		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 	
 	@commands.group()
 	@checks.not_forbidden()
