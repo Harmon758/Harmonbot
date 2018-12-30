@@ -1220,13 +1220,18 @@ class Games:
 		bet, bets = options and options[0] == "bet", {}
 		self.trivia_active, responses = True, {}
 		data = {}
-		while not data.get("question") or not data.get("category"):
-			try:
-				async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
-					data = (await resp.json())[0]
-			except aiohttp.ClientConnectionError as e:
-				self.trivia_active = False
-				return await ctx.embed_reply(":no_entry: Error")
+		try:
+			async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
+				data = (await resp.json())[0]
+		except aiohttp.ClientConnectionError as e:
+			self.trivia_active = False
+			return await ctx.embed_reply(":no_entry: Error: Error connecting to API")
+		if not data.get("question"):
+			self.trivia_active = False
+			return await ctx.embed_reply(":no_entry: Error: API response missing question")
+		if not data.get("category"):
+			self.trivia_active = False
+			return await ctx.embed_reply(":no_entry: Error: API response missing category")
 		if bet:
 			self.bet_countdown = int(clients.wait_time)
 			bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), 
