@@ -1292,10 +1292,10 @@ class Games:
 				for trivia_player in bets:
 					if trivia_player in correct_players:
 						self.trivia_stats[str(trivia_player.id)][2] += bets[trivia_player]
-						trivia_bets_output += trivia_player.display_name + " won $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[str(trivia_player.id)][2]) + ". "
+						trivia_bets_output += f"{trivia_player.display_name} won ${bets[trivia_player]:,} and now has ${self.trivia_stats[str(trivia_player.id)][2]:,}. "
 					else:
 						self.trivia_stats[str(trivia_player.id)][2] -= bets[trivia_player]
-						trivia_bets_output += trivia_player.display_name + " lost $" + utilities.add_commas(bets[trivia_player]) + " and now has $" + utilities.add_commas(self.trivia_stats[str(trivia_player.id)][2]) + ". "
+						trivia_bets_output += f"{trivia_player.display_name} lost ${bets[trivia_player]:,} and now has ${self.trivia_stats[str(trivia_player.id)][2]:,}. "
 				trivia_bets_output = trivia_bets_output[:-1]
 			with open(clients.data_path + "/trivia_points.json", 'w') as trivia_file:
 				json.dump(self.trivia_stats, trivia_file, indent = 4)
