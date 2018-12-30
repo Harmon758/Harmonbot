@@ -1365,7 +1365,7 @@ class Games:
 					""", 
 					player.id, difference
 				)
-				bets_output.append(f"{player.display_name} {action_text} ${player_bet:,} and now has ${money:,}.")
+				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}.")
 			await ctx.embed_say('\n'.join(bets_output))
 	
 	async def _bet_countdown(self, bet_message, embed):
