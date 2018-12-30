@@ -62,6 +62,31 @@ class Games:
 		clients.create_file("trivia_points")
 		with open(clients.data_path + "/trivia_points.json", 'r') as trivia_file:
 			self.trivia_stats = json.load(trivia_file)
+		
+		self.bot.loop.create_task(self.initialize_database())
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS trivia")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS trivia.users (
+				user_id		BIGINT PRIMARY KEY, 
+				correct		INT,
+				incorrect	INT,
+				money		INT
+			)
+			"""
+		)
+		for user_id, data in self.trivia_stats.items():
+			await self.bot.db.execute(
+				"""
+				INSERT INTO trivia.users (user_id, correct, incorrect, money)
+				VALUES ($1, $2, $3, $4)
+				ON CONFLICT (user_id) DO NOTHING
+				""", 
+				int(user_id), data[0], data[1], data[2]
+			)
 	
 	# Adventure
 	
