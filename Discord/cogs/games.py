@@ -1374,7 +1374,9 @@ class Games:
 		response = await ctx.embed_reply(title = f"Trivia Top {number}")
 		embed = response.embeds[0]
 		for user in top_scores:
-			user_info = await self.bot.get_user_info(user[0])
+			user_info = ctx.bot.get_user(user[0])
+			if not user_info:
+				user_info = await ctx.bot.get_user_info(user[0])
 			correct = user[1][0]
 			incorrect = user[1][1]
 			total = correct + incorrect
