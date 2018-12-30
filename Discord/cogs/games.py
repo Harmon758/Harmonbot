@@ -1349,8 +1349,8 @@ class Games:
 		await ctx.embed_say(f"The answer was `{answer}`", footer_text = correct_players_output)
 		if bet and bets:
 			bets_output = []
-			for trivia_player in bets:
-				if trivia_player in correct_players:
+			for player in bets:
+				if player in correct_players:
 					money = await ctx.bot.db.fetchval(
 						"""
 						UPDATE trivia.users
@@ -1358,9 +1358,9 @@ class Games:
 						WHERE user_id = $1
 						RETURNING money
 						""", 
-						trivia_player.id, bets[trivia_player]
+						player.id, bets[player]
 					)
-					bets_output.append(f"{trivia_player.display_name} won ${bets[trivia_player]:,} and now has ${money:,}.")
+					bets_output.append(f"{player.display_name} won ${bets[player]:,} and now has ${money:,}.")
 				else:
 					money = await ctx.bot.db.fetchval(
 						"""
@@ -1369,9 +1369,9 @@ class Games:
 						WHERE user_id = $1
 						RETURNING money
 						""", 
-						trivia_player.id, bets[trivia_player]
+						player.id, bets[player]
 					)
-					bets_output.append(f"{trivia_player.display_name} lost ${bets[trivia_player]:,} and now has ${money:,}.")
+					bets_output.append(f"{player.display_name} lost ${bets[player]:,} and now has ${money:,}.")
 			await ctx.embed_say('\n'.join(bets_output))
 	
 	async def _bet_countdown(self, bet_message, embed):
