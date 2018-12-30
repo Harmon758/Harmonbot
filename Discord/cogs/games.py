@@ -1224,7 +1224,12 @@ class Games:
 	@trivia.command(name = "bet")
 	@checks.not_forbidden()
 	async def trivia_bet(self, ctx):
-		'''Trivia with betting'''
+		'''
+		Trivia with betting
+		The category is shown first during the betting phase
+		Enter any amount under or equal to the money you have to bet
+		Currently, you start with $100,000
+		'''
 		if self.trivia_active:
 			return await ctx.embed_reply("There is already an ongoing game of trivia")
 		self.trivia_active = True
