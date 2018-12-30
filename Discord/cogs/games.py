@@ -1346,7 +1346,7 @@ class Games:
 				incorrect_player.id
 			)
 		if bet:
-			trivia_bets_output = ""
+			bets_output = []
 			for trivia_player in bets:
 				if trivia_player in correct_players:
 					money = await ctx.bot.db.fetchval(
@@ -1358,7 +1358,7 @@ class Games:
 						""", 
 						trivia_player.id, bets[trivia_player]
 					)
-					trivia_bets_output += f"{trivia_player.display_name} won ${bets[trivia_player]:,} and now has ${money:,}. "
+					bets_output.append(f"{trivia_player.display_name} won ${bets[trivia_player]:,} and now has ${money:,}.")
 				else:
 					money = await ctx.bot.db.fetchval(
 						"""
@@ -1369,12 +1369,11 @@ class Games:
 						""", 
 						trivia_player.id, bets[trivia_player]
 					)
-					trivia_bets_output += f"{trivia_player.display_name} lost ${bets[trivia_player]:,} and now has ${money:,}. "
-			trivia_bets_output = trivia_bets_output[:-1]
+					bets_output.append(f"{trivia_player.display_name} lost ${bets[trivia_player]:,} and now has ${money:,}.")
 		answer = BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")
 		await ctx.embed_say(f"The answer was `{answer}`", footer_text = correct_players_output)
-		if bet and trivia_bets_output:
-			await ctx.embed_say(trivia_bets_output)
+		if bet and bets_output:
+			await ctx.embed_say('\n'.join(bets_output))
 	
 	async def _bet_countdown(self, bet_message, embed):
 		while self.bet_countdown:
