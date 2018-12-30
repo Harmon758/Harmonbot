@@ -1330,8 +1330,9 @@ class Games:
 		'''Trivia score'''
 		correct = self.trivia_stats[str(ctx.author.id)][0]
 		incorrect = self.trivia_stats[str(ctx.author.id)][1]
-		correct_percentage = correct / (correct + incorrect) * 100
-		await ctx.embed_reply(f"You have answered {correct}/{correct + incorrect} ({correct_percentage:.2f}%) correctly.")
+		total = correct + incorrect
+		correct_percentage = correct / total * 100
+		await ctx.embed_reply(f"You have answered {correct}/{total} ({correct_percentage:.2f}%) correctly.")
 	
 	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
