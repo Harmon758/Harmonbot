@@ -1257,7 +1257,15 @@ class Games:
 				else:
 					bet_ctx = await ctx.bot.get_context(message, cls = clients.Context)
 					money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
-					# TODO: Check if new player
+					if not money:
+						money = await ctx.bot.db.fetchval(
+							"""
+							INSERT INTO trivia.users (user_id, correct, incorrect, money)
+							VALUES ($1, 0, 0, 100000)
+							RETURNING money
+							""", 
+							message.author.id
+						)
 					if int(message.content) <= money:
 						bets[message.author] = int(message.content)
 						await bet_ctx.embed_reply(f"Has bet ${message.content}")
