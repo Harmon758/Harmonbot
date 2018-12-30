@@ -1237,7 +1237,7 @@ class Games:
 				embed.set_footer(text = "Betting is over")
 				await bet_message.edit(embed = embed)
 			self.trivia_countdown = int(clients.wait_time)
-			answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = "You have {self.trivia_countdown} seconds left to answer")
+			answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), footer_text = f"You have {self.trivia_countdown} seconds left to answer")
 			embed = answer_message.embeds[0]
 			countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
 			while self.trivia_countdown:
