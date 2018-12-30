@@ -1376,8 +1376,9 @@ class Games:
 			user_info = await self.bot.get_user_info(user[0])
 			correct = user[1][0]
 			incorrect = user[1][1]
-			correct_percentage = correct / (correct + incorrect) * 100
-			embed.add_field(name = user_info, value = f"{correct}/{correct + incorrect} correct ({correct_percentage:.2f}%)\n")
+			total = correct + incorrect
+			correct_percentage = correct / (total) * 100
+			embed.add_field(name = user_info, value = f"{correct}/{total} correct ({correct_percentage:.2f}%)\n")
 			await response.edit(embed = embed)
 	
 	@commands.group()
