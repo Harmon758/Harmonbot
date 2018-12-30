@@ -1209,28 +1209,40 @@ class Games:
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def trivia(self, ctx, *options : str):
+	async def trivia(self, ctx):
 		'''
 		Trivia game
 		Only your last answer is accepted
 		Answers prepended with ! or > are ignored
 		'''
 		if self.trivia_active:
-			return await ctx.embed_reply("There is already an ongoing game of trivia\nOther options: score money")
-		bet, bets = options and options[0] == "bet", {}
-		self.trivia_active, responses = True, {}
+			return await ctx.embed_reply("There is already an ongoing game of trivia")
+		self.trivia_active = True
+		await self._trivia(ctx)
+		self.trivia_active = False
+	
+	@trivia.command(name = "bet")
+	@checks.not_forbidden()
+	async def trivia_bet(self, ctx):
+		'''Trivia with betting'''
+		if self.trivia_active:
+			return await ctx.embed_reply("There is already an ongoing game of trivia")
+		self.trivia_active = True
+		await self._trivia(ctx, bet = True)
+		self.trivia_active = False
+	
+	async def _trivia(self, ctx, bet = False):
+		bets = {}
+		responses = {}
 		data = {}
 		try:
 			async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
 				data = (await resp.json())[0]
 		except aiohttp.ClientConnectionError as e:
-			self.trivia_active = False
 			return await ctx.embed_reply(":no_entry: Error: Error connecting to API")
 		if not data.get("question"):
-			self.trivia_active = False
 			return await ctx.embed_reply(":no_entry: Error: API response missing question")
 		if not data.get("category"):
-			self.trivia_active = False
 			return await ctx.embed_reply(":no_entry: Error: API response missing category")
 		if bet:
 			self.bet_countdown = int(clients.wait_time)
@@ -1352,7 +1364,6 @@ class Games:
 		await ctx.embed_say(f"The answer was `{answer}`", footer_text = correct_players_output)
 		if bet and trivia_bets_output:
 			await ctx.embed_say(trivia_bets_output)
-		self.trivia_active = False
 	
 	async def _bet_countdown(self, bet_message, embed):
 		while self.bet_countdown:
