@@ -1337,7 +1337,7 @@ class Games:
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
 		cash = self.trivia_stats[str(ctx.author.id)][2]
-		await ctx.embed_reply("You have $" + utilities.add_commas(cash))
+		await ctx.embed_reply(f"You have ${cash:,}")
 	
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
 	async def trivia_scores(self, ctx, number : int = 10):
