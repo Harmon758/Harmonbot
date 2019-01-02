@@ -45,7 +45,7 @@ unicodedata2==11.0.0
 wand==0.4.5
 wolframalpha==3.0.1
 wordnik-py3==2.1.2
-youtube-dl==2018.12.17
+youtube-dl==2019.1.2
 
 asn1crypto==0.24.0
 async-timeout==3.0.1
