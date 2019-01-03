@@ -110,6 +110,7 @@ class Trivia:
 						await bet_ctx.embed_reply("You don't have that much money to bet!")
 			while not bet_countdown_task.done():
 				await asyncio.sleep(0.1)
+			embed = bet_message.embeds[0]
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
 		responses = {}
