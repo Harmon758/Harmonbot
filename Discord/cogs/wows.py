@@ -39,6 +39,8 @@ class WoWS:
 			return await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
 		if data["status"] != "ok":
 			return await ctx.embed_reply(":no_entry: Error")
+		if not data["meta"]["count"]:
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		account_id = data["data"][0]["account_id"]
 		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "account_id": account_id}
 		async with clients.aiohttp_session.get(api_url + "account/info/", params = params) as resp:
