@@ -84,8 +84,7 @@ class Trivia:
 			self.trivia_active[ctx.guild.id]["bet_countdown"] = int(clients.wait_time)
 			bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.trivia_active[ctx.guild.id]['bet_countdown']} seconds left to bet")
-			embed = bet_message.embeds[0]
-			bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message, embed))
+			bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message))
 			while self.trivia_active[ctx.guild.id]["bet_countdown"]:
 				try:
 					message = await self.bot.wait_for("message", timeout = self.trivia_active[ctx.guild.id]["bet_countdown"], 
@@ -117,8 +116,7 @@ class Trivia:
 		self.trivia_active[ctx.guild.id]["trivia_countdown"] = int(clients.wait_time)
 		answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.trivia_active[ctx.guild.id]['trivia_countdown']} seconds left to answer")
-		embed = answer_message.embeds[0]
-		countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message, embed))
+		countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message))
 		while self.trivia_active[ctx.guild.id]["trivia_countdown"]:
 			try:
 				message = await self.bot.wait_for("message", timeout = self.trivia_active[ctx.guild.id]["trivia_countdown"], 
@@ -130,6 +128,7 @@ class Trivia:
 					responses[message.author] = message.content
 		while not countdown_task.done():
 			await asyncio.sleep(0.1)
+		embed = answer_message.embeds[0]
 		embed.set_footer(text = "Time's up!")
 		await answer_message.edit(embed = embed)
 		correct_players = []
@@ -153,11 +152,11 @@ class Trivia:
 				correct_players.append(player)
 			else:
 				incorrect_players.append(player)
-		if len(correct_players) == 0:
-			correct_players_output = "Nobody got it right!"
-		else:
+		if correct_players:
 			correct_players_output = clients.inflect_engine.join([player.display_name for player in correct_players])
 			correct_players_output += f" {clients.inflect_engine.plural('was', len(correct_players))} right!"
+		else:
+			correct_players_output = "Nobody got it right!"
 		for correct_player in correct_players:
 			await ctx.bot.db.execute(
 				"""
@@ -201,14 +200,16 @@ class Trivia:
 				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}.")
 			await ctx.embed_say('\n'.join(bets_output))
 	
-	async def _bet_countdown(self, bet_message, embed):
+	async def _bet_countdown(self, bet_message):
+		embed = bet_message.embeds[0]
 		while self.trivia_active[bet_message.guild.id]["bet_countdown"]:
 			await asyncio.sleep(1)
 			self.trivia_active[bet_message.guild.id]["bet_countdown"] -= 1
 			embed.set_footer(text = f"You have {self.trivia_active[bet_message.guild.id]['bet_countdown']} seconds left to bet")
 			await bet_message.edit(embed = embed)
 	
-	async def _trivia_countdown(self, answer_message, embed):
+	async def _trivia_countdown(self, answer_message):
+		embed = answer_message.embeds[0]
 		while self.trivia_active[answer_message.guild.id]["trivia_countdown"]:
 			await asyncio.sleep(1)
 			self.trivia_active[answer_message.guild.id]["trivia_countdown"] -= 1
