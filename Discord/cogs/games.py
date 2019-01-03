@@ -37,6 +37,10 @@ def setup(bot):
 
 class Games:
 	
+	'''
+	Also see Trivia category
+	'''
+	
 	def __init__(self, bot):
 		self.bot = bot
 		self.chess_matches = []
