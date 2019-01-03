@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 
 import clients
 from utilities import checks
+from utilities.context import Context
 
 def setup(bot):
 	bot.add_cog(Trivia(bot))
@@ -92,7 +93,7 @@ class Trivia:
 				except asyncio.TimeoutError:
 					pass
 				else:
-					bet_ctx = await ctx.bot.get_context(message, cls = clients.Context)
+					bet_ctx = await ctx.bot.get_context(message, cls = Context)
 					money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
 					if not money:
 						money = await ctx.bot.db.fetchval(
