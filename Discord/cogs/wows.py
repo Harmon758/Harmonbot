@@ -36,7 +36,7 @@ class WoWS:
 		async with clients.aiohttp_session.get(api_url + "account/list/", params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "error":
-			await ctx.embed_reply(":no_entry: Error: {}".format(data["error"]["message"]))
+			await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
 			return
 		elif data["status"] != "ok":
 			await ctx.embed_reply(":no_entry: Error")
@@ -46,7 +46,7 @@ class WoWS:
 		async with clients.aiohttp_session.get(api_url + "account/info/", params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "error":
-			await ctx.embed_reply(":no_entry: Error: {}".format(data["error"]["message"]))
+			await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
 			return
 		elif data["status"] != "ok":
 			await ctx.embed_reply(":no_entry: Error")
@@ -54,7 +54,7 @@ class WoWS:
 		data = data["data"][str(account_id)]
 		# TODO: handle hidden profile?
 		fields = [("ID", account_id), ("Account Level", data["leveling_tier"])]
-		fields.append(("Account XP", "{:,}".format(data["leveling_points"])))
+		fields.append(("Account XP", f"{data['leveling_points']:,}"))
 		fields.append(("Battles Fought", data["statistics"]["battles"]))
 		fields.append(("Miles Travelled", data["statistics"]["distance"]))
 		created_at = datetime.datetime.utcfromtimestamp(data["created_at"])
