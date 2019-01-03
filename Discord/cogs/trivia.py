@@ -84,10 +84,10 @@ class Trivia:
 			self.active[ctx.guild.id]["bet_countdown"] = int(clients.wait_time)
 			bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.active[ctx.guild.id]['bet_countdown']} seconds left to bet")
-			bet_countdown_task = self.bot.loop.create_task(self._bet_countdown(bet_message))
+			bet_countdown_task = ctx.bot.loop.create_task(self._bet_countdown(bet_message))
 			while self.active[ctx.guild.id]["bet_countdown"]:
 				try:
-					message = await self.bot.wait_for("message", timeout = self.active[ctx.guild.id]["bet_countdown"], 
+					message = await ctx.bot.wait_for("message", timeout = self.active[ctx.guild.id]["bet_countdown"], 
 														check = lambda m: m.channel == ctx.channel and m.content.isdigit())
 				except asyncio.TimeoutError:
 					pass
@@ -117,10 +117,10 @@ class Trivia:
 		self.active[ctx.guild.id]["question_countdown"] = int(clients.wait_time)
 		answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.active[ctx.guild.id]['question_countdown']} seconds left to answer")
-		countdown_task = self.bot.loop.create_task(self._trivia_countdown(answer_message))
+		countdown_task = ctx.bot.loop.create_task(self._trivia_countdown(answer_message))
 		while self.active[ctx.guild.id]["question_countdown"]:
 			try:
-				message = await self.bot.wait_for("message", timeout = self.active[ctx.guild.id]["question_countdown"], 
+				message = await ctx.bot.wait_for("message", timeout = self.active[ctx.guild.id]["question_countdown"], 
 													check = lambda m: m.channel == ctx.channel)
 			except asyncio.TimeoutError:
 				pass
