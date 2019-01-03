@@ -48,7 +48,7 @@ class Trivia:
 			channel = ctx.guild.get_channel(self.active[ctx.guild.id]["channel"])
 			return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
 		self.active[ctx.guild.id] = {"channel": ctx.channel.id, "question_countdown": 0}
-		await self._trivia(ctx)
+		await self.trivia_round(ctx)
 		del self.active[ctx.guild.id]
 	
 	@trivia.command(name = "bet")
@@ -64,10 +64,10 @@ class Trivia:
 			channel = ctx.guild.get_channel(self.active[ctx.guild.id]["channel"])
 			return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
 		self.active[ctx.guild.id] = {"channel": ctx.channel.id, "bet_countdown": 0, "question_countdown": 0}
-		await self._trivia(ctx, bet = True)
+		await self.trivia_round(ctx, bet = True)
 		del self.active[ctx.guild.id]
 	
-	async def _trivia(self, ctx, bet = False):
+	async def trivia_round(self, ctx, bet = False):
 		try:
 			async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
 				data = (await resp.json())[0]
