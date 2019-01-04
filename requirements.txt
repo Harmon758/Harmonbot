@@ -62,7 +62,7 @@ gitdb2==2.0.5
 googleapis-common-protos==1.5.5
 grpcio==1.17.1
 idna==2.8
-jaraco.itertools==4.0.0
+jaraco.itertools==4.1
 jsonschema==2.6.0
 kiwisolver==1.0.1
 lxml==4.3.0
