@@ -23,6 +23,9 @@ class Trivia:
 		self.active = {}
 		self.bot.loop.create_task(self.initialize_database())
 	
+	def __local_check(self, ctx):
+		return checks.not_forbidden_predicate(ctx)
+	
 	async def initialize_database(self):
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS trivia")
@@ -38,7 +41,6 @@ class Trivia:
 		)
 	
 	@commands.group(invoke_without_command = True)
-	@checks.not_forbidden()
 	async def trivia(self, ctx):
 		'''
 		Trivia game
@@ -53,7 +55,6 @@ class Trivia:
 		del self.active[ctx.guild.id]
 	
 	@trivia.command(name = "bet")
-	@checks.not_forbidden()
 	async def trivia_bet(self, ctx):
 		'''
 		Trivia with betting
