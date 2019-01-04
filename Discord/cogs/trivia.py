@@ -198,6 +198,14 @@ class Trivia:
 		elif self.active[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
 			self.active[message.guild.id]["responses"][message.author] = message.content
 	
+	@trivia.command(name = "money", aliases = ["cash"])
+	async def trivia_money(self, ctx):
+		'''Trivia money'''
+		money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", ctx.author.id)
+		if not money:
+			return await ctx.embed_reply("You have not played any trivia yet")
+		await ctx.embed_reply(f"You have ${money:,}")
+	
 	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
 	async def trivia_score(self, ctx):
 		'''Trivia score'''
@@ -207,14 +215,6 @@ class Trivia:
 		total = record["correct"] + record["incorrect"]
 		correct_percentage = record["correct"] / total * 100
 		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
-	
-	@trivia.command(name = "money", aliases = ["cash"])
-	async def trivia_money(self, ctx):
-		'''Trivia money'''
-		money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", ctx.author.id)
-		if not money:
-			return await ctx.embed_reply("You have not played any trivia yet")
-		await ctx.embed_reply(f"You have ${money:,}")
 	
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
 	async def trivia_scores(self, ctx, number : int = 10):
