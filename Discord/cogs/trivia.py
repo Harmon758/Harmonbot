@@ -20,6 +20,7 @@ class Trivia:
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.wait_time = 15
 		self.active = {}
 		self.bot.loop.create_task(self.initialize_database())
 	
@@ -83,7 +84,7 @@ class Trivia:
 		# Add message about making POST request to API/invalid with id?
 		# Include site page to send ^?
 		if bet:
-			self.active[ctx.guild.id]["bet_countdown"] = int(clients.wait_time)
+			self.active[ctx.guild.id]["bet_countdown"] = self.wait_time
 			bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.active[ctx.guild.id]['bet_countdown']} seconds left to bet")
 			embed = bet_message.embeds[0]
@@ -94,7 +95,7 @@ class Trivia:
 				await bet_message.edit(embed = embed)
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
-		self.active[ctx.guild.id]["question_countdown"] = int(clients.wait_time)
+		self.active[ctx.guild.id]["question_countdown"] = self.wait_time
 		answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.active[ctx.guild.id]['question_countdown']} seconds left to answer")
 		embed = answer_message.embeds[0]
