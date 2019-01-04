@@ -106,22 +106,8 @@ class Trivia:
 		await answer_message.edit(embed = embed)
 		correct_players = []
 		incorrect_players = []
-		matches_1 = re.search("\((.+)\) (.+)", data["answer"].lower())
-		matches_2 = re.search("(.+) \((.+)\)", data["answer"].lower())
-		matches_3 = re.search("(.+)\/(.+)", data["answer"].lower())
 		for player, response in self.active[ctx.guild.id]["responses"].items():
-			if data["answer"].lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]] \
-			or response.lower() == BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().lower() \
-			or response.lower().replace('-', ' ') == data["answer"].lower().replace('-', ' ') \
-			or response.lower() == data["answer"].lower().replace("\\'", "'") \
-			or response.lower() == data["answer"].lower().replace('&', "and") \
-			or response.lower() == data["answer"].lower().replace('.', "") \
-			or response.lower() == data["answer"].lower().replace('!', "") \
-			or response.lower().replace('(', "").replace(')', "") == data["answer"].lower().replace('(', "").replace(')', "") \
-			or (matches_1 and (response.lower() in (matches_1.group(1), matches_1.group(2)))) \
-			or (matches_2 and (response.lower() in (matches_2.group(1), matches_2.group(2)))) \
-			or (matches_3 and (response.lower() in (matches_3.group(1), matches_3.group(2)))) \
-			or response.lower().strip('"') == data["answer"].lower().strip('"'):
+			if self.check_answer(data["answer"], response):
 				correct_players.append(player)
 			else:
 				incorrect_players.append(player)
@@ -172,6 +158,36 @@ class Trivia:
 				)
 				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}.")
 			await ctx.embed_say('\n'.join(bets_output))
+	
+	def check_answer(self, answer, response):
+		if answer.lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]]:
+			return True
+		if response.lower() == BeautifulSoup(html.unescape(answer), "html.parser").get_text().lower():
+			return True
+		if response.lower().replace('-', ' ') == answer.lower().replace('-', ' '):
+			return True
+		if response.lower() == answer.lower().replace("\\'", "'"):
+			return True
+		if response.lower() == answer.lower().replace('&', "and"):
+			return True
+		if response.lower() == answer.lower().replace('.', ""):
+			return True
+		if response.lower() == answer.lower().replace('!', ""):
+			return True
+		if response.lower().replace('(', "").replace(')', "") == answer.lower().replace('(', "").replace(')', ""):
+			return True
+		matches = re.search("\((.+)\) (.+)", answer.lower())
+		if matches and response.lower() in (matches.group(1), matches.group(2)):
+			return True
+		matches = re.search("(.+) \((.+)\)", answer.lower())
+		if matches and response.lower() in (matches.group(1), matches.group(2)):
+			return True
+		matches = re.search("(.+)\/(.+)", answer.lower())
+		if matches and response.lower() in (matches.group(1), matches.group(2)):
+			return True
+		if response.lower().strip('"') == answer.lower().strip('"'):
+			return True
+		return False
 	
 	async def on_message(self, message):
 		if message.guild.id not in self.active:
