@@ -160,32 +160,28 @@ class Trivia:
 			await ctx.embed_say('\n'.join(bets_output))
 	
 	def check_answer(self, answer, response):
-		if answer.lower() in [s + response.lower() for s in ["", "a ", "an ", "the "]]:
+		# Make both answer + response lowercase
+		# Replace in answer: \' -> '
+		# Replace: & -> and
+		# Replace - with space
+		# Remove periods and exclamation marks
+		# Strip quotation marks
+		answer = answer.lower().replace("\\'", "'").replace('&', "and").replace('-', ' ').replace('.', "").replace('!', "").strip('"')
+		response = response.lower().replace('&', "and").replace('-', ' ').replace('.', "").replace('!', "").strip('"')
+		if answer in [s + response for s in ("", "a ", "an ", "the ")]:
 			return True
-		if response.lower() == BeautifulSoup(html.unescape(answer), "html.parser").get_text().lower():
+		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
 			return True
-		if response.lower().replace('-', ' ') == answer.lower().replace('-', ' '):
+		if response == BeautifulSoup(html.unescape(answer), "html.parser").get_text().lower():
 			return True
-		if response.lower() == answer.lower().replace("\\'", "'"):
+		matches = re.search("\((.+)\) (.+)", answer)
+		if matches and response in (matches.group(1), matches.group(2)):
 			return True
-		if response.lower() == answer.lower().replace('&', "and"):
+		matches = re.search("(.+) \((.+)\)", answer)
+		if matches and response in (matches.group(1), matches.group(2)):
 			return True
-		if response.lower() == answer.lower().replace('.', ""):
-			return True
-		if response.lower() == answer.lower().replace('!', ""):
-			return True
-		if response.lower().replace('(', "").replace(')', "") == answer.lower().replace('(', "").replace(')', ""):
-			return True
-		matches = re.search("\((.+)\) (.+)", answer.lower())
-		if matches and response.lower() in (matches.group(1), matches.group(2)):
-			return True
-		matches = re.search("(.+) \((.+)\)", answer.lower())
-		if matches and response.lower() in (matches.group(1), matches.group(2)):
-			return True
-		matches = re.search("(.+)\/(.+)", answer.lower())
-		if matches and response.lower() in (matches.group(1), matches.group(2)):
-			return True
-		if response.lower().strip('"') == answer.lower().strip('"'):
+		matches = re.search("(.+)\/(.+)", answer)
+		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		return False
 	
