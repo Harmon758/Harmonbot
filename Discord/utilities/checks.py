@@ -101,6 +101,7 @@ def has_permissions_and_capability(*, guild = False, **permissions):
 	
 	return commands.check(predicate)
 
+# Necessary?
 def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 	
 	def predicate(ctx):
@@ -122,15 +123,14 @@ def not_forbidden_check(ctx):
 	# TODO: Include subcommands?
 	return permitted or permitted is None or is_server_owner_check(ctx)
 
+def not_forbidden_predicate(ctx):
+	if not_forbidden_check(ctx):
+		return True
+	else:
+		raise errors.NotPermitted
+
 def not_forbidden():
-	
-	def predicate(ctx):
-		if not_forbidden_check(ctx):
-			return True
-		else:
-			raise errors.NotPermitted
-	
-	return commands.check(predicate)
+	return commands.check(not_forbidden_predicate)
 
 def is_permitted_check(ctx):
 	'''Check if permitted'''
@@ -159,6 +159,7 @@ def is_permitted():
 
 def has_permissions_and_capability_check(ctx, channel = None, guild = False, **permissions):
 	channel = channel or ctx.channel
+	# TODO: if owner?
 	if not has_permissions_check(ctx, permissions, channel = channel, guild = guild):
 		raise errors.MissingPermissions
 	elif not has_capability_check(ctx, permissions.keys(), channel = channel, guild = guild):
