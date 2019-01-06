@@ -188,7 +188,7 @@ class Trivia:
 		return False
 	
 	async def on_message(self, message):
-		if message.guild.id not in self.active:
+		if not message.guild or message.guild.id not in self.active:
 			return
 		if message.channel.id != self.active[message.guild.id]["channel_id"]:
 			return
