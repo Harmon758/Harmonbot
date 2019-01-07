@@ -173,7 +173,9 @@ class Trivia:
 		# Strip quotation marks
 		answer = ' '.join(answer.split()).lower().strip('"')
 		response = ' '.join(response.split()).lower().strip('"')
-		if answer in [s + response for s in ("", "a ", "an ", "the ")]:
+		if answer in [prefix + response for prefix in ("", "a ", "an ", "the ")]:
+			return True
+		if response in [prefix + answer for prefix in ("", "a ", "an ", "the ")]:
 			return True
 		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
 			return True
