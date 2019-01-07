@@ -162,14 +162,17 @@ class Trivia:
 			await ctx.embed_say('\n'.join(bets_output))
 	
 	def check_answer(self, answer, response):
-		# Make both answer + response lowercase
 		# Replace in answer: \' -> '
 		# Replace: & -> and
 		# Replace - with space
 		# Remove periods and exclamation marks
+		answer = answer.replace("\\'", "'").replace('&', "and").replace('-', ' ').replace('.', "").replace('!', "")
+		response = response.replace('&', "and").replace('-', ' ').replace('.', "").replace('!', "")
+		# Remove extra whitespace
+		# Make lowercase
 		# Strip quotation marks
-		answer = answer.lower().replace("\\'", "'").replace('&', "and").replace('-', ' ').replace('.', "").replace('!', "").strip('"')
-		response = response.lower().replace('&', "and").replace('-', ' ').replace('.', "").replace('!', "").strip('"')
+		answer = ' '.join(answer.split()).lower().strip('"')
+		response = ' '.join(response.split()).lower().strip('"')
 		if answer in [s + response for s in ("", "a ", "an ", "the ")]:
 			return True
 		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
