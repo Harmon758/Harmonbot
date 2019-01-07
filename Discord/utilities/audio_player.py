@@ -7,8 +7,9 @@ import json
 import logging
 import os
 import random
-import speech_recognition
 import subprocess
+
+import speech_recognition
 import youtube_dl
 
 import clients
