@@ -164,10 +164,9 @@ class Trivia:
 	def check_answer(self, answer, response):
 		# Replace in answer: \' -> '
 		# Replace: & -> and
-		# Replace - with space
 		# Remove periods and exclamation marks
-		answer = answer.replace("\\'", "'").replace('&', "and").replace('-', ' ').replace('.', "").replace('!', "")
-		response = response.replace('&', "and").replace('-', ' ').replace('.', "").replace('!', "")
+		answer = answer.replace("\\'", "'").replace('&', "and").replace('.', "").replace('!', "")
+		response = response.replace('&', "and").replace('.', "").replace('!', "")
 		# Remove extra whitespace
 		# Make lowercase
 		# Strip quotation marks
@@ -177,6 +176,11 @@ class Trivia:
 		if answer in [prefix + response for prefix in ("", "a ", "an ", "the ")]:
 			return True
 		if response in [prefix + answer for prefix in ("", "a ", "an ", "the ")]:
+			return True
+		# Check removal of/replacement of - with space
+		if answer.replace('-', ' ') == response.replace('-', ' '):
+			return True
+		if answer.replace('-', "") == response.replace('-', ""):
 			return True
 		# Check removal of parentheses
 		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
