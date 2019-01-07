@@ -3,6 +3,7 @@ import discord
 
 import functools
 import logging
+import shlex
 import subprocess
 import os
 
@@ -13,14 +14,24 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	
 	'''
 	Modified discord.FFmpegPCMAudio
-	To use ffmpeg log as stderr
+	To use ffmpeg log as stderr and use shell
 	'''
 	
 	def __init__(self, source, before_options = None):
 		self.source = source
 		with open(clients.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			super().__init__(source, before_options = before_options, stderr = ffmpeg_log, 
-								executable = "bin/ffmpeg")
+			args = ["bin\\ffmpeg", "-i", source, "-f", "s16le", "-ar", "48000", 
+					"-ac", '2', "-loglevel", "warning", "pipe:1"]
+			if isinstance(before_options, str):
+				args.insert(1, shlex.split(before_options))
+			self._process = None
+			try:
+				self._process = subprocess.Popen(args, stdout = subprocess.PIPE, stderr = ffmpeg_log, shell = True)
+				self._stdout = self._process.stdout
+			except FileNotFoundError:
+				raise discord.ClientException("bin/ffmpeg was not found.") from None
+			except subprocess.SubprocessError as exc:
+				raise discord.ClientException(f"Popen failed: {exc.__class__.__name__}: {exc}") from exc
 
 
 class ModifiedPCMVolumeTransformer(discord.PCMVolumeTransformer):
