@@ -23,7 +23,7 @@ class Discord:
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
-	async def delete(self, ctx, number : int, *, user : str = ""):
+	async def delete(self, ctx, number : int, *, user : discord.Member = None):
 		'''
 		Delete messages
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
@@ -34,7 +34,7 @@ class Discord:
 			await self.bot.attempt_delete_message(ctx.message)
 			await ctx.channel.purge(limit = number)
 		elif user:
-			await self.delete_number(ctx, number, check = lambda m: m.author.name == user)
+			await self.delete_number(ctx, number, check = lambda m: m.author.id == user.id)
 	
 	@delete.command(name = "attachments", aliases = ["images"])
 	@checks.has_permissions_and_capability(manage_messages = True)
