@@ -67,7 +67,8 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 	generate_file and initialize_source must be called before usage
 	'''
 	
-	def __init__(self, ctx, message, *, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
+	def __init__(self, ctx, message, *, 
+					amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
 		self.ctx = ctx
 		self.bot = ctx.bot
 		self.requester = ctx.author
@@ -83,7 +84,9 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 		self.title = "TTS Message: `{}`".format(self.message)
 	
 	async def generate_file(self):
-		func = functools.partial(subprocess.run, ["bin\espeak", f"-a {self.amplitude}", f"-p {self.pitch}", f"-s {self.speed}", f"-g {self.word_gap}", f"-v{self.voice}", f"-w {clients.data_path}/temp/tts.wav", self.message], shell = True)
+		func = functools.partial(subprocess.run, ["bin\espeak", f"-a {self.amplitude}", f"-p {self.pitch}", 
+													f"-s {self.speed}", f"-g {self.word_gap}", f"-v{self.voice}", 
+													f"-w {clients.data_path}/temp/tts.wav", self.message], shell = True)
 		await self.bot.loop.run_in_executor(None, func)
 	
 	def initialize_source(self, volume):
@@ -92,7 +95,9 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 	
 	@classmethod
 	async def replay(cls, original):
-		source = cls(original.ctx, original.message, amplitude = original.amplitude, pitch = original.pitch, speed = original.speed, word_gap = original.word_gap, voice = original.voice)
+		source = cls(original.ctx, original.message, amplitude = original.amplitude, 
+						pitch = original.pitch, speed = original.speed, 
+						word_gap = original.word_gap, voice = original.voice)
 		if not os.path.exists(clients.data_path + "/temp/tts.wav"):
 			await source.generate_file()
 		source.initialize_source(original.volume)
