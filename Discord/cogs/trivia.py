@@ -173,20 +173,26 @@ class Trivia:
 		# Strip quotation marks
 		answer = ' '.join(answer.split()).lower().strip('"')
 		response = ' '.join(response.split()).lower().strip('"')
+		# Check answer with optional article prefixes
 		if answer in [prefix + response for prefix in ("", "a ", "an ", "the ")]:
 			return True
 		if response in [prefix + answer for prefix in ("", "a ", "an ", "the ")]:
 			return True
+		# Check removal of parentheses
 		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
 			return True
+		# Check html unescaped answer
 		if response == BeautifulSoup(html.unescape(answer), "html.parser").get_text().lower():
 			return True
+		# Check (XX) YY
 		matches = re.search("\((.+)\) (.+)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
+		# Check XX (or YY)
 		matches = re.search("(.+) \((?:or )?(.+)\)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
+		# Check XX/YY
 		matches = re.search("(.+)\/(.+)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
