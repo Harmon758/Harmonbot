@@ -182,7 +182,7 @@ class Trivia:
 		matches = re.search("\((.+)\) (.+)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
-		matches = re.search("(.+) \((.+)\)", answer)
+		matches = re.search("(.+) \((?:or )?(.+)\)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		matches = re.search("(.+)\/(.+)", answer)
