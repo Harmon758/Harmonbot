@@ -89,7 +89,7 @@ class RSS:
 		self.new_unique_feeds_following = set(feed for feeds in self.feeds_following.values() for feed in feeds)
 		with open(clients.data_path + "/rss_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_following, feeds_file, indent = 4)
-		await ctx.embed_reply("The feed, {}, has been removed from this channel".format(url))
+		await ctx.embed_reply(f"The feed, {url}, has been removed from this channel")
 
 	@rss.command(aliases = ["feed"])
 	@checks.not_forbidden()
