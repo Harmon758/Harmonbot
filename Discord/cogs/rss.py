@@ -53,6 +53,30 @@ class RSS:
 	def __unload(self):
 		self.task.cancel()
 	
+	async def inititalize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS rss")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS rss.feeds (
+				channel_id		BIGINT, 
+				feed			TEXT, 
+				PRIMARY KEY		(channel_id, feed)
+			)
+			"""
+		)
+		# Migrate existing data
+		for channel_id, feeds in self.feeds_following.items():
+			for feed in feeds:
+				await self.bot.db.execute(
+					"""
+					INSERT INTO rss.feeds (channel_id, feed)
+					VALUES ($1, $2)
+					ON CONFLICT (channel_id, feed) DO NOTHING
+					""", 
+					int(channel_id), feed
+				)
+	
 	@commands.group(aliases = ["feed"], invoke_without_command = True)
 	@checks.is_permitted()
 	async def rss(self, ctx):
@@ -98,6 +122,7 @@ class RSS:
 		await ctx.embed_reply('\n'.join(self.feeds_following[str(ctx.channel.id)]))
 	
 	async def check_rss_feeds(self):
+		await self.inititalize_database()
 		await self.bot.wait_until_ready()
 		offset_aware_task_start_time = datetime.datetime.now(datetime.timezone.utc)
 		## offset_naive_task_start_time = datetime.datetime.utcnow()
