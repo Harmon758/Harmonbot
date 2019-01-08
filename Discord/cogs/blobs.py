@@ -4,6 +4,8 @@ from discord.ext import commands
 import difflib
 import json
 
+import asyncpg
+
 import clients
 from utilities import checks
 
@@ -32,13 +34,6 @@ class Blobs:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		clients.create_file("blobs", content = {})
-		clients.create_file("blob_stats", content = {})
-		with open(clients.data_path + "/blob_stats.json", 'r') as stats_file:
-			self.stats = json.load(stats_file)
-		with open(clients.data_path + "/blobs.json", 'r') as blobs_file:
-			self.data = json.load(blobs_file)
-		self.generate_reference()
 		self.bot.loop.create_task(self.initialize_database())
 	
 	async def initialize_database(self):
@@ -56,61 +51,21 @@ class Blobs:
 			"""
 			CREATE TABLE IF NOT EXISTS blobs.aliases (
 				alias	TEXT PRIMARY KEY, 
-				blob	TEXT REFERENCES blobs.blobs(blob)
+				blob	TEXT REFERENCES blobs.blobs(blob) ON DELETE CASCADE
 			)
 			"""
 		)
 		await self.bot.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS blobs.stats (
-				blob			TEXT REFERENCES blobs.blobs(blob), 
+				blob			TEXT REFERENCES blobs.blobs(blob) ON DELETE CASCADE, 
 				user_id			BIGINT, 
 				count			BIGINT, 
 				PRIMARY KEY		(blob, user_id)
 			)
 			"""
 		)
-		# Migrate existing data
-		for blob, data in self.data.items():
-			await self.bot.db.execute(
-				"""
-				INSERT INTO blobs.blobs (blob, image)
-				VALUES ($1, $2)
-				ON CONFLICT (blob) DO UPDATE SET image = $2
-				""", 
-				blob, data[0]
-			)
-			for alias in data[1]:
-				await self.bot.db.execute(
-					"""
-					INSERT INTO blobs.aliases (alias, blob)
-					VALUES ($1, $2)
-					ON CONFLICT (alias) DO UPDATE SET blob = $2
-					""", 
-					alias, blob
-				)
-		for blob, data in self.stats.items():
-			name = await self.bot.db.fetchval("SELECT EXISTS (SELECT 1 FROM blobs.blobs WHERE blob = $1)", 
-												blob)
-			if not name:
-				blob = await self.bot.db.fetchval("SELECT blob from blobs.aliases WHERE alias = $1", blob)
-			for user_id, count in data.items():
-				await self.bot.db.execute(
-					"""
-					INSERT INTO blobs.stats (blob, user_id, count)
-					VALUES ($1, $2, $3)
-					ON CONFLICT (blob, user_id) DO UPDATE SET count = stats.count + $3
-					""", 
-					blob, int(user_id), count
-				)
 	
-	def generate_reference(self):
-		self.reference = {}
-		for name, data in self.data.items():
-			self.reference[name] = data[0]
-			for alias in data[1]:
-				self.reference[alias] = data[0]
-
 	@commands.group(aliases = ["blob"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def blobs(self, ctx, *, blob : str):
@@ -120,70 +75,134 @@ class Blobs:
 		if subcommand: await subcommand.invoke(ctx)
 		else: await ctx.embed_reply(":no_entry: Blob not found")
 		'''
-		close_match = difflib.get_close_matches(blob, self.reference.keys(), n = 1)
+		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs")
+		blob_names = [record["blob"] for record in records]
+		records = await ctx.bot.db.fetch("SELECT alias FROM blobs.aliases")
+		blob_names.extend(record["alias"] for record in records)
+		close_match = difflib.get_close_matches(blob, blob_names, n = 1)
 		if not close_match:
 			return await ctx.embed_reply(":no_entry: Blob not found")
 		blob = close_match[0]
-		await ctx.embed_reply(title = blob, image_url = self.reference[blob])
-		if blob not in self.stats: self.stats[blob] = {}
-		self.stats[blob][str(ctx.author.id)] = self.stats[blob].get(str(ctx.author.id), 0) + 1
-		with open(clients.data_path + "/blob_stats.json", 'w') as stats_file:
-			json.dump(self.stats, stats_file, indent = 4)
+		image_url = await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", blob)
+		if not image_url:
+			blob = await ctx.bot.db.fetchval("SELECT blob FROM blobs.aliases WHERE alias = $1", blob)
+			image_url = await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", blob)
+		await ctx.embed_reply(title = blob, image_url = image_url)
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO blobs.stats (blob, user_id, count)
+			VALUES ($1, $2, 1)
+			ON CONFLICT (blob, user_id) DO
+			UPDATE SET count = stats.count + 1
+			""", 
+			blob, ctx.author.id
+		)
 	
 	@blobs.command(aliases = ["edit"])
 	@commands.is_owner()
 	async def add(self, ctx, name : str, image_url : str, *aliases : str):
 		'''Add or edit a blob'''
-		self.data[name] = [image_url, aliases]
-		self.generate_reference()
-		with open(clients.data_path + "/blobs.json", 'w') as blobs_file:
-			json.dump(self.data, blobs_file, indent = 4)
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO blobs.blobs (blob, image)
+			VALUES ($1, $2)
+			ON CONFLICT (blob) DO
+			UPDATE SET image = $2
+			""", 
+			name, image_url
+		)
+		await ctx.bot.db.execute("DELETE FROM blobs.aliases WHERE blob = $1", name)
+		for alias in aliases:
+			try:
+				await ctx.bot.db.execute(
+					"""
+					INSERT INTO blobs.aliases (alias, blob)
+					VALUES ($1, $2)
+					""", 
+					alias, name
+				)
+			except asyncpg.UniqueViolationError:
+				await ctx.embed_reply(f"Failed to add already existing alias: {alias}")
 		await ctx.embed_reply("Blob added/edited")
 	
 	@blobs.command(aliases = ["details"])
 	@commands.is_owner()
 	async def info(self, ctx, name : str):
 		'''Information about a blob'''
-		await ctx.embed_reply(self.data[name][0], title = name, fields = (("Aliases", ", ".join(self.data[name][1]) or "None"),))
+		image_url = await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", name)
+		if not image_url:
+			name = await ctx.bot.db.fetchval("SELECT blob FROM blobs.aliases WHERE alias = $1", name)
+			if not name:
+				return await ctx.embed_reply(f":no_entry: Blob not found")
+			image_url = await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", name)
+		records = await ctx.bot.db.fetch("SELECT alias FROM blobs.aliases WHERE blob = $1", name)
+		aliases = [record["alias"] for record in records]
+		await ctx.embed_reply(image_url, title = name, fields = (("Aliases", ", ".join(aliases) or "None"),))
 	
 	@blobs.command()
 	@checks.not_forbidden()
 	async def list(self, ctx):
 		'''List blobs'''
-		await ctx.embed_reply(", ".join(sorted(self.data.keys())))
+		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs")
+		blob_names = [record["blob"] for record in records]
+		await ctx.embed_reply(", ".join(sorted(blob_names)))
 	
 	@blobs.command(aliases = ["delete"])
 	@commands.is_owner()
 	async def remove(self, ctx, name : str):
 		'''Remove a blob'''
-		del self.data[name]
-		self.generate_reference()
-		with open(clients.data_path + "/blobs.json", 'w') as blobs_file:
-			json.dump(self.data, blobs_file, indent = 4)
+		await ctx.bot.db.execute("DELETE FROM blobs.blobs WHERE blob = $1", name)
 		await ctx.embed_reply("Blob removed")
 	
-	@blobs.command(name = "stats")
+	@blobs.command()
 	@checks.not_forbidden()
-	async def blobs_stats(self, ctx, *, blob : str):
+	async def stats(self, ctx, *, blob : str):
 		'''Blob emoji stats'''
-		close_match = difflib.get_close_matches(blob, self.reference.keys(), n = 1)
+		records = await ctx.bot.db.fetch("SELECT blobs FROM blobs.blobs")
+		blob_names = [record["blobs"] for record in records]
+		records = await ctx.bot.db.fetch("SELECT alias FROM blobs.aliases")
+		blob_names.extend(record["alias"] for record in records)
+		close_match = difflib.get_close_matches(blob, blob_names, n = 1)
 		# subcommand = self.blobs.get_command(blob.replace(' ', ""))
 		if not close_match:
 			return await ctx.embed_reply(":no_entry: Blob not found")
 		blob = close_match[0]
-		if blob not in self.stats:
-			return await ctx.embed_reply("Personal: 0\nTotal: 0")
-		personal = self.stats[blob].get(str(ctx.author.id), 0)
-		total = sum(self.stats[blob].values())
+		records = await ctx.bot.db.fetch("SELECT user_id, count FROM blobs.stats WHERE blob = $1", blob)
+		if not records:
+			blob = await ctx.bot.db.fetchval("SELECT blob FROM blobs.aliases WHERE alias = $1", blob)
+			records = await ctx.bot.db.fetch("SELECT user_id, count FROM blobs.stats WHERE blob = $1", blob)
+		personal = 0
+		total = 0
+		for record in records:
+			if record["user_id"] == ctx.author.id:
+				personal = record["count"]
+			total += record["count"]
 		await ctx.embed_reply(f"Personal: {personal}\nTotal: {total}")
 	
 	@blobs.command()
 	@checks.not_forbidden()
 	async def top(self, ctx):
 		'''Top blob emoji'''
-		personal = sorted(self.stats.items(), key = lambda subcommand: subcommand[1].get(str(ctx.author.id), 0), reverse = True)
-		top_personal = '\n'.join(f"{i + 1}. {personal[i][0]} ({personal[i][1].get(str(ctx.author.id), 0)})" for i in range(min(5, len(personal))))
-		total = sorted(self.stats.items(), key = lambda subcommand: sum(subcommand[1].values()), reverse = True)
-		top_total = '\n'.join(f"{i + 1}. {total[i][0]} ({sum(total[i][1].values())})" for i in range(min(5, len(total))))
-		await ctx.embed_reply(fields = (("Personal", top_personal), ("Total", top_total)))
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT blob, count
+			FROM blobs.stats
+			WHERE user_id = $1
+			ORDER BY count
+			DESC LIMIT 5
+			""", 
+			ctx.author.id
+		)
+		personal = [f"{count}. {record['blob']} ({record['count']})" for count, record in enumerate(records, start = 1)]
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT blob, SUM(count) as count
+			FROM blobs.stats
+			GROUP BY blob
+			ORDER BY SUM(count)
+			DESC LIMIT 5
+			"""
+		)
+		total = [f"{count}. {record['blob']} ({record['count']})" for count, record in enumerate(records, start = 1)]
+		await ctx.embed_reply(fields = (("Personal", '\n'.join(personal)), ("Total", '\n'.join(total))))
 
