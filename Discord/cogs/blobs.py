@@ -52,10 +52,8 @@ class Blobs:
 	@checks.not_forbidden()
 	async def blobs(self, ctx, *, blob : str):
 		'''Blob/Google Emoji'''
-		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs")
+		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs UNION SELECT alias FROM blobs.aliases")
 		blob_names = [record["blob"] for record in records]
-		records = await ctx.bot.db.fetch("SELECT alias FROM blobs.aliases")
-		blob_names.extend(record["alias"] for record in records)
 		close_match = difflib.get_close_matches(blob, blob_names, n = 1)
 		if not close_match:
 			return await ctx.embed_reply(":no_entry: Blob not found")
@@ -135,10 +133,8 @@ class Blobs:
 	@checks.not_forbidden()
 	async def stats(self, ctx, *, blob : str):
 		'''Blob emoji stats'''
-		records = await ctx.bot.db.fetch("SELECT blobs FROM blobs.blobs")
-		blob_names = [record["blobs"] for record in records]
-		records = await ctx.bot.db.fetch("SELECT alias FROM blobs.aliases")
-		blob_names.extend(record["alias"] for record in records)
+		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs UNION SELECT alias FROM blobs.aliases")
+		blob_names = [record["blob"] for record in records]
 		close_match = difflib.get_close_matches(blob, blob_names, n = 1)
 		if not close_match:
 			return await ctx.embed_reply(":no_entry: Blob not found")
