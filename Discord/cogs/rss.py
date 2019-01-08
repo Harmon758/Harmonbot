@@ -7,7 +7,6 @@ import datetime
 import functools
 import html
 import io
-import json
 import re
 import sys
 import time
@@ -16,6 +15,7 @@ import traceback
 import urllib
 
 import aiohttp
+import asyncpg
 from bs4 import BeautifulSoup
 import dateutil.parser
 import dateutil.tz
@@ -34,11 +34,6 @@ class RSS:
 	def __init__(self, bot):
 		self.bot = bot
 		self.feeds_ids = {}
-		clients.create_file("rss_feeds", content = {})
-		with open(clients.data_path + "/rss_feeds.json", 'r') as feeds_file:
-			self.feeds_following = json.load(feeds_file)
-		self.unique_feeds_following = set(feed for feeds in self.feeds_following.values() for feed in feeds)
-		self.new_unique_feeds_following = self.unique_feeds_following.copy()
 		
 		# Generate tzinfos
 		self.tzinfos = {}
@@ -65,17 +60,6 @@ class RSS:
 			)
 			"""
 		)
-		# Migrate existing data
-		for channel_id, feeds in self.feeds_following.items():
-			for feed in feeds:
-				await self.bot.db.execute(
-					"""
-					INSERT INTO rss.feeds (channel_id, feed)
-					VALUES ($1, $2)
-					ON CONFLICT (channel_id, feed) DO NOTHING
-					""", 
-					int(channel_id), feed
-				)
 	
 	@commands.group(aliases = ["feed"], invoke_without_command = True)
 	@checks.is_permitted()
@@ -88,10 +72,10 @@ class RSS:
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
 		# TODO: check if already following
-		self.feeds_following[str(ctx.channel.id)] = self.feeds_following.get(str(ctx.channel.id), []) + [url]
-		self.new_unique_feeds_following.add(url)
-		with open(clients.data_path + "/rss_feeds.json", 'w') as feeds_file:
-			json.dump(self.feeds_following, feeds_file, indent = 4)
+		try:
+			await ctx.bot.db.execute("INSERT INTO rss.feeds (channel_id, feed) VALUES ($1, $2)", ctx.channel.id, url)
+		except asyncpg.UniqueViolationError:
+			return await ctx.embed_reply(":no_entry: This channel is already following that feed")
 		# Add entry IDs
 		if url not in self.feeds_ids: self.feeds_ids[url] = set()
 		async with clients.aiohttp_session.get(url) as resp:
@@ -106,27 +90,34 @@ class RSS:
 	@checks.is_permitted()
 	async def rss_remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
-		if url not in self.feeds_following.get(str(ctx.channel.id), []):
+		deleted = await ctx.bot.db.fetchval(
+			"""
+			DELETE FROM rss.feeds
+			WHERE channel_id = $1 AND feed = $2
+			RETURNING *
+			""", 
+			ctx.channel.id, url
+		)
+		if not deleted:
 			return await ctx.embed_reply(":no_entry: This channel isn't following that feed")
-		self.feeds_following[str(ctx.channel.id)].remove(url)
-		self.new_unique_feeds_following = set(feed for feeds in self.feeds_following.values() for feed in feeds)
-		with open(clients.data_path + "/rss_feeds.json", 'w') as feeds_file:
-			json.dump(self.feeds_following, feeds_file, indent = 4)
 		await ctx.embed_reply(f"The feed, {url}, has been removed from this channel")
 
 	@rss.command(aliases = ["feed"])
 	@checks.not_forbidden()
 	async def feeds(self, ctx):
 		'''Show feeds being followed in this channel'''
-		await ctx.embed_reply('\n'.join(self.feeds_following[str(ctx.channel.id)]))
+		records = await ctx.bot.db.fetch("SELECT feed FROM rss.feeds WHERE channel_id = $1", ctx.channel.id)
+		await ctx.embed_reply('\n'.join(record["feed"] for record in records))
 	
 	async def check_rss_feeds(self):
 		await self.inititalize_database()
+		records = await self.bot.db.fetch("SELECT DISTINCT feed FROM rss.feeds")
+		unique_feeds_following = set(record["feed"] for record in records)
 		await self.bot.wait_until_ready()
 		offset_aware_task_start_time = datetime.datetime.now(datetime.timezone.utc)
 		## offset_naive_task_start_time = datetime.datetime.utcnow()
 		feeds_failed_to_initialize = []
-		for feed in self.unique_feeds_following:
+		for feed in unique_feeds_following:
 			try:
 				self.feeds_ids[feed] = set()
 				async with clients.aiohttp_session.get(feed) as resp:
@@ -146,9 +137,13 @@ class RSS:
 				logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				feeds_failed_to_initialize.append(feed)
 		while not self.bot.is_closed():
-			if not self.unique_feeds_following:
+			records = await self.bot.db.fetch("SELECT * FROM rss.feeds")
+			feeds = {}
+			for record in records:
+				feeds[record["feed"]] = feeds.get(record["feed"], []) + [record["channel_id"]]
+			if not feeds:
 				await asyncio.sleep(60)
-			for feed in self.unique_feeds_following:
+			for feed in set(feeds):
 				if feed in feeds_failed_to_initialize:
 					continue
 				try:
@@ -243,15 +238,14 @@ class RSS:
 								if image_parsed_values:
 									footer_icon_url = image_parsed_values[0]
 						embed.set_footer(text = feed_info.feed.title, icon_url = footer_icon_url)
-						for text_channel_id, feeds in self.feeds_following.items():
-							if feed in feeds:
-								text_channel = self.bot.get_channel(int(text_channel_id))
-								if text_channel:
-									try:
-										await text_channel.send(embed = embed)
-									except discord.Forbidden:
-										pass
-								# TODO: Remove text channel data if now non-existent
+						for text_channel_id in feeds[feed]:
+							text_channel = self.bot.get_channel(text_channel_id)
+							if text_channel:
+								try:
+									await text_channel.send(embed = embed)
+								except discord.Forbidden:
+									pass
+							# TODO: Remove text channel data if now non-existent
 				except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError) as e:
 					error_message = f"{self.bot.console_message_prefix}RSS Task Connection Error @ "
 					error_message += f"{datetime.datetime.now().time().isoformat()}: "
@@ -274,5 +268,4 @@ class RSS:
 					logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
 					print(f" (feed: {feed})")
 					await asyncio.sleep(60)
-			self.unique_feeds_following = self.new_unique_feeds_following.copy()
 
