@@ -136,13 +136,11 @@ class RSS:
 				feeds_failed_to_initialize.append(feed)
 		await self.bot.wait_until_ready()
 		while not self.bot.is_closed():
-			records = await self.bot.db.fetch("SELECT * FROM rss.feeds")
-			feeds = {}
-			for record in records:
-				feeds[record["feed"]] = feeds.get(record["feed"], []) + [record["channel_id"]]
-			if not feeds:
+			records = await self.bot.db.fetch("SELECT DISTINCT feed FROM rss.feeds")
+			if not records:
 				await asyncio.sleep(60)
-			for feed, text_channel_ids in feeds.items():
+			for record in records:
+				feed = record["feed"]
 				if feed in feeds_failed_to_initialize:
 					continue
 				try:
@@ -237,8 +235,9 @@ class RSS:
 								if image_parsed_values:
 									footer_icon_url = image_parsed_values[0]
 						embed.set_footer(text = feed_info.feed.title, icon_url = footer_icon_url)
-						for text_channel_id in text_channel_ids:
-							text_channel = self.bot.get_channel(text_channel_id)
+						channel_records = await self.bot.db.fetch("SELECT channel_id FROM rss.feeds WHERE feed = $1", feed)
+						for record in channel_records:
+							text_channel = self.bot.get_channel(record["channel_id"])
 							if text_channel:
 								try:
 									await text_channel.send(embed = embed)
