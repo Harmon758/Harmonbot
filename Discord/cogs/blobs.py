@@ -10,24 +10,6 @@ import clients
 from utilities import checks
 
 def setup(bot):
-	'''
-	def blob_wrapper(name, image_url, aliases = []):
-		@commands.command(name = name, help = name.capitalize() + " blob", aliases = aliases)
-		@checks.not_forbidden()
-		async def blob_command(self, ctx):
-			await ctx.embed_reply(None, image_url = image_url)
-		return blob_command
-	
-	with open(clients.data_path + "/blobs.json", 'r') as blobs_file:
-		blobs_data = json.load(blobs_file)
-	
-	for name, data in blobs_data.items():
-		setattr(Blobs, name, blob_wrapper(name, data[0], data[1]))
-
-	for name, command in inspect.getmembers(Blobs):
-		if isinstance(command, commands.Command) and command.parent is None and name != "blobs":
-			Blobs.blobs.add_command(command)
-	'''
 	bot.add_cog(Blobs(bot))
 
 class Blobs:
@@ -70,11 +52,6 @@ class Blobs:
 	@checks.not_forbidden()
 	async def blobs(self, ctx, *, blob : str):
 		'''Blob/Google Emoji'''
-		'''
-		subcommand = self.blobs.get_command(ctx.message.content.lstrip(ctx.prefix + ctx.invoked_with).replace(' ', ""))
-		if subcommand: await subcommand.invoke(ctx)
-		else: await ctx.embed_reply(":no_entry: Blob not found")
-		'''
 		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs")
 		blob_names = [record["blob"] for record in records]
 		records = await ctx.bot.db.fetch("SELECT alias FROM blobs.aliases")
@@ -163,7 +140,6 @@ class Blobs:
 		records = await ctx.bot.db.fetch("SELECT alias FROM blobs.aliases")
 		blob_names.extend(record["alias"] for record in records)
 		close_match = difflib.get_close_matches(blob, blob_names, n = 1)
-		# subcommand = self.blobs.get_command(blob.replace(' ', ""))
 		if not close_match:
 			return await ctx.embed_reply(":no_entry: Blob not found")
 		blob = close_match[0]
