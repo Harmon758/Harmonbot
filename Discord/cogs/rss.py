@@ -33,7 +33,6 @@ class RSS:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.feeds_ids = {}
 		
 		# Generate tzinfos
 		self.tzinfos = {}
@@ -60,6 +59,15 @@ class RSS:
 			)
 			"""
 		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS rss.entries (
+				entry			TEXT, 
+				feed			TEXT, 
+				PRIMARY KEY		(entry, feed)
+			)
+			"""
+		)
 	
 	@commands.group(aliases = ["feed"], invoke_without_command = True)
 	@checks.is_permitted()
@@ -76,13 +84,19 @@ class RSS:
 		except asyncpg.UniqueViolationError:
 			return await ctx.embed_reply(":no_entry: This channel is already following that feed")
 		# Add entry IDs
-		if url not in self.feeds_ids: self.feeds_ids[url] = set()
 		async with clients.aiohttp_session.get(url) as resp:
 			feed_text = await resp.text()
 		feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": url}))
 		# Still necessary to run in executor?
 		for entry in feed_info.entries:
-			self.feeds_ids[url].add(entry.id)
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO rss.entries (entry, feed)
+				VALUES ($1, $2)
+				ON CONFLICT (entry, feed) DO NOTHING
+				""", 
+				entry.id, url
+			)
 		await ctx.embed_reply(f"The feed, {url}, has been added to this channel")
 
 	@rss.command(name = "remove", aliases = ["delete"])
@@ -117,14 +131,20 @@ class RSS:
 		for record in records:
 			feed = record["feed"]
 			try:
-				self.feeds_ids[feed] = set()
 				async with clients.aiohttp_session.get(feed) as resp:
 					feed_text = await resp.text()
 				feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 				# Still necessary to run in executor?
 				for entry in feed_info.entries:
 					if "id" in entry:
-						self.feeds_ids[feed].add(entry.id)
+						await self.bot.db.execute(
+							"""
+							INSERT INTO rss.entries (entry, feed)
+							VALUES ($1, $2)
+							ON CONFLICT (entry, feed) DO NOTHING
+							""", 
+							entry.id, feed
+						)
 			except aiohttp.ClientConnectionError as e:
 				print(f"Failed to initialize feed in RSS Task: {feed}\n"
 						f" Connection Error: {type(e).__name__}: {e}", file = sys.stderr)
@@ -149,9 +169,13 @@ class RSS:
 					feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 					# Still necessary to run in executor?
 					for entry in feed_info.entries:
-						if "id" not in entry or entry.id in self.feeds_ids[feed]:
+						if "id" not in entry:
 							continue
-						self.feeds_ids[feed].add(entry.id)
+						try:
+							await self.bot.db.execute("INSERT INTO rss.entries (entry, feed) VALUES ($1, $2)", 
+														entry.id, feed)
+						except asyncpg.UniqueViolationError:
+							continue
 						# Get timestamp
 						## if "published_parsed" in entry:
 						##  timestamp = datetime.datetime.fromtimestamp(time.mktime(entry.published_parsed))
