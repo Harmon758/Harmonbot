@@ -142,7 +142,7 @@ class RSS:
 				feeds[record["feed"]] = feeds.get(record["feed"], []) + [record["channel_id"]]
 			if not feeds:
 				await asyncio.sleep(60)
-			for feed in set(feeds):
+			for feed, text_channel_ids in feeds.items():
 				if feed in feeds_failed_to_initialize:
 					continue
 				try:
@@ -237,7 +237,7 @@ class RSS:
 								if image_parsed_values:
 									footer_icon_url = image_parsed_values[0]
 						embed.set_footer(text = feed_info.feed.title, icon_url = footer_icon_url)
-						for text_channel_id in feeds[feed]:
+						for text_channel_id in text_channel_ids:
 							text_channel = self.bot.get_channel(text_channel_id)
 							if text_channel:
 								try:
