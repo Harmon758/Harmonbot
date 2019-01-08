@@ -152,7 +152,7 @@ class Blobs:
 		'''List blobs'''
 		await ctx.embed_reply(", ".join(sorted(self.data.keys())))
 	
-	@blobs.command(alises = ["delete"])
+	@blobs.command(aliases = ["delete"])
 	@commands.is_owner()
 	async def remove(self, ctx, name : str):
 		'''Remove a blob'''
