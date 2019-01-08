@@ -6,7 +6,6 @@ import json
 
 import asyncpg
 
-import clients
 from utilities import checks
 
 def setup(bot):
