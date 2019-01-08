@@ -121,8 +121,8 @@ class Blobs:
 	async def top(self, ctx):
 		'''Top blob emoji'''
 		personal = sorted(self.stats.items(), key = lambda subcommand: subcommand[1].get(str(ctx.author.id), 0), reverse = True)
-		top_personal = '\n'.join("{}. {} ({})".format(i + 1, personal[i][0], personal[i][1].get(str(ctx.author.id), 0)) for i in range(min(5, len(personal))))
+		top_personal = '\n'.join(f"{i + 1}. {personal[i][0]} ({personal[i][1].get(str(ctx.author.id), 0)})" for i in range(min(5, len(personal))))
 		total = sorted(self.stats.items(), key = lambda subcommand: sum(subcommand[1].values()), reverse = True)
-		top_total = '\n'.join("{}. {} ({})".format(i + 1, total[i][0], sum(total[i][1].values())) for i in range(min(5, len(total))))
+		top_total = '\n'.join(f"{i + 1}. {total[i][0]} ({sum(total[i][1].values())})" for i in range(min(5, len(total))))
 		await ctx.embed_reply(fields = (("Personal", top_personal), ("Total", top_total)))
 
