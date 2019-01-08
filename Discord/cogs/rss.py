@@ -107,8 +107,7 @@ class RSS:
 	async def rss_remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
 		if url not in self.feeds_following.get(str(ctx.channel.id), []):
-			await ctx.embed_reply(":no_entry: This channel isn't following that feed")
-			return
+			return await ctx.embed_reply(":no_entry: This channel isn't following that feed")
 		self.feeds_following[str(ctx.channel.id)].remove(url)
 		self.new_unique_feeds_following = set(feed for feeds in self.feeds_following.values() for feed in feeds)
 		with open(clients.data_path + "/rss_feeds.json", 'w') as feeds_file:
