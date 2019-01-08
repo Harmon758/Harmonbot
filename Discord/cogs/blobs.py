@@ -122,10 +122,9 @@ class Blobs:
 		'''
 		close_match = difflib.get_close_matches(blob, self.reference.keys(), n = 1)
 		if not close_match:
-			await ctx.embed_reply(":no_entry: Blob not found")
-			return
+			return await ctx.embed_reply(":no_entry: Blob not found")
 		blob = close_match[0]
-		await ctx.embed_reply(None, title = blob, image_url = self.reference[blob])
+		await ctx.embed_reply(title = blob, image_url = self.reference[blob])
 		if blob not in self.stats: self.stats[blob] = {}
 		self.stats[blob][str(ctx.author.id)] = self.stats[blob].get(str(ctx.author.id), 0) + 1
 		with open(clients.data_path + "/blob_stats.json", 'w') as stats_file:
