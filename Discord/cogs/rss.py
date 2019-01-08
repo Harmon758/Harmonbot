@@ -229,18 +229,18 @@ class RSS:
 										pass
 								# TODO: Remove text channel data if now non-existent
 				except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError) as e:
-					error_message = "{}RSS Task Connection Error @ ".format(self.bot.console_message_prefix)
-					error_message += "{}: ".format(datetime.datetime.now().time().isoformat())
-					error_message += "{}: {}".format(type(e).__name__, e)
+					error_message = f"{self.bot.console_message_prefix}RSS Task Connection Error @ "
+					error_message += f"{datetime.datetime.now().time().isoformat()}: "
+					error_message += f"{type(e).__name__}: {e}"
 					if len(error_message) > self.bot.console_line_limit - len(feed) - 9:
 						# 9 = length of " (feed: )"
 						error_message += '\n'
-					print(error_message + " (feed: {})".format(feed))
+					print(f"{error_message} (feed: {feed})")
 					await asyncio.sleep(10)
 					# TODO: Add variable for sleep time
 					'''
 					except asyncio.CancelledError:
-						print("{}RSS Task Cancelled @ {}".format(self.bot.console_message_prefix, datetime.datetime.now().time().isoformat()))
+						print(f"{self.bot.console_message_prefix}RSS Task Cancelled @ {datetime.datetime.now().time().isoformat()}")
 						return
 					'''
 					# TODO: Handle canceled error/task cleanup
@@ -248,7 +248,7 @@ class RSS:
 					print("Exception in RSS Task", file = sys.stderr)
 					traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 					logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
-					print(" (feed: {})".format(feed))
+					print(f" (feed: {feed})")
 					await asyncio.sleep(60)
 			self.unique_feeds_following = self.new_unique_feeds_following.copy()
 
