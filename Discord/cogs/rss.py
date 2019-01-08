@@ -71,7 +71,6 @@ class RSS:
 	@checks.is_permitted()
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
-		# TODO: check if already following
 		try:
 			await ctx.bot.db.execute("INSERT INTO rss.feeds (channel_id, feed) VALUES ($1, $2)", ctx.channel.id, url)
 		except asyncpg.UniqueViolationError:
@@ -110,14 +109,13 @@ class RSS:
 		await ctx.embed_reply('\n'.join(record["feed"] for record in records))
 	
 	async def check_rss_feeds(self):
-		await self.inititalize_database()
-		records = await self.bot.db.fetch("SELECT DISTINCT feed FROM rss.feeds")
-		unique_feeds_following = set(record["feed"] for record in records)
-		await self.bot.wait_until_ready()
 		offset_aware_task_start_time = datetime.datetime.now(datetime.timezone.utc)
 		## offset_naive_task_start_time = datetime.datetime.utcnow()
+		await self.inititalize_database()
+		records = await self.bot.db.fetch("SELECT DISTINCT feed FROM rss.feeds")
 		feeds_failed_to_initialize = []
-		for feed in unique_feeds_following:
+		for record in records:
+			feed = record["feed"]
 			try:
 				self.feeds_ids[feed] = set()
 				async with clients.aiohttp_session.get(feed) as resp:
@@ -136,6 +134,7 @@ class RSS:
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 				logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				feeds_failed_to_initialize.append(feed)
+		await self.bot.wait_until_ready()
 		while not self.bot.is_closed():
 			records = await self.bot.db.fetch("SELECT * FROM rss.feeds")
 			feeds = {}
