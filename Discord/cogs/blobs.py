@@ -39,6 +39,70 @@ class Blobs:
 		with open(clients.data_path + "/blobs.json", 'r') as blobs_file:
 			self.data = json.load(blobs_file)
 		self.generate_reference()
+		self.bot.loop.create_task(self.initialize_database())
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS blobs")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS blobs.blobs (
+				blob	TEXT PRIMARY KEY, 
+				image	TEXT
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS blobs.aliases (
+				alias	TEXT PRIMARY KEY, 
+				blob	TEXT REFERENCES blobs.blobs(blob)
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS blobs.stats (
+				blob			TEXT REFERENCES blobs.blobs(blob), 
+				user_id			BIGINT, 
+				count			BIGINT, 
+				PRIMARY KEY		(blob, user_id)
+			)
+			"""
+		)
+		# Migrate existing data
+		for blob, data in self.data.items():
+			await self.bot.db.execute(
+				"""
+				INSERT INTO blobs.blobs (blob, image)
+				VALUES ($1, $2)
+				ON CONFLICT (blob) DO UPDATE SET image = $2
+				""", 
+				blob, data[0]
+			)
+			for alias in data[1]:
+				await self.bot.db.execute(
+					"""
+					INSERT INTO blobs.aliases (alias, blob)
+					VALUES ($1, $2)
+					ON CONFLICT (alias) DO UPDATE SET blob = $2
+					""", 
+					alias, blob
+				)
+		for blob, data in self.stats.items():
+			name = await self.bot.db.fetchval("SELECT EXISTS (SELECT 1 FROM blobs.blobs WHERE blob = $1)", 
+												blob)
+			if not name:
+				blob = await self.bot.db.fetchval("SELECT blob from blobs.aliases WHERE alias = $1", blob)
+			for user_id, count in data.items():
+				await self.bot.db.execute(
+					"""
+					INSERT INTO blobs.stats (blob, user_id, count)
+					VALUES ($1, $2, $3)
+					ON CONFLICT (blob, user_id) DO UPDATE SET count = stats.count + $3
+					""", 
+					blob, int(user_id), count
+				)
 	
 	def generate_reference(self):
 		self.reference = {}
