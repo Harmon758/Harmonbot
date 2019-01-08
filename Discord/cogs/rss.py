@@ -76,7 +76,7 @@ class RSS:
 		# Still necessary to run in executor?
 		for entry in feed_info.entries:
 			self.feeds_ids[url].add(entry.id)
-		await ctx.embed_reply("The feed, {}, has been added to this channel".format(url))
+		await ctx.embed_reply(f"The feed, {url}, has been added to this channel")
 
 	@rss.command(name = "remove", aliases = ["delete"])
 	@checks.is_permitted()
