@@ -169,12 +169,10 @@ class Blobs:
 		close_match = difflib.get_close_matches(blob, self.reference.keys(), n = 1)
 		# subcommand = self.blobs.get_command(blob.replace(' ', ""))
 		if not close_match:
-			await ctx.embed_reply(":no_entry: Blob not found")
-			return
+			return await ctx.embed_reply(":no_entry: Blob not found")
 		blob = close_match[0]
 		if blob not in self.stats:
-			await ctx.embed_reply("Personal: 0\nTotal: 0")
-			return
+			return await ctx.embed_reply("Personal: 0\nTotal: 0")
 		personal = self.stats[blob].get(str(ctx.author.id), 0)
 		total = sum(self.stats[blob].values())
 		await ctx.embed_reply(f"Personal: {personal}\nTotal: {total}")
