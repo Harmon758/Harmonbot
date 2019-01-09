@@ -26,7 +26,7 @@ class AudioPlayer:
 	def __init__(self, client, text_channel):
 		self.bot = client
 		self.text_channel = text_channel
-		self.server = text_channel.guild
+		self.guild = text_channel.guild
 		self.queue = asyncio.Queue()
 		self.current = None
 		self.play_next_song = asyncio.Event()
@@ -58,20 +58,20 @@ class AudioPlayer:
 			voice_channel = user.voice_channel
 		else:
 			voice_channel = discord.utils.find(lambda _channel: _channel.type == discord.ChannelType.voice and \
-				utilities.remove_symbols(_channel.name).startswith(' '.join(channel)), self.server.channels)
+				utilities.remove_symbols(_channel.name).startswith(' '.join(channel)), self.guild.channels)
 		if not voice_channel:
 			raise errors.AudioNotPlaying
-		if self.server.voice_client:
-			await self.server.voice_client.move_to(voice_channel)
+		if self.guild.voice_client:
+			await self.guild.voice_client.move_to(voice_channel)
 			return True
 		await self.bot.join_voice_channel(voice_channel)
 	
 	async def leave_channel(self):
-		if self.server.voice_client:
+		if self.guild.voice_client:
 			if self.current and self.current["stream"].is_playing():
 				self.current["stream"].stop()
 			self.player.cancel()
-			await self.server.voice_client.disconnect()
+			await self.guild.voice_client.disconnect()
 			return True
 	
 	async def add_song(self, song, requester, timestamp, *, stream = False):
@@ -121,7 +121,7 @@ class AudioPlayer:
 			await self.not_interrupted.wait()
 			if current["info"].get("is_live") or current.get("stream"):
 				with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-					stream = self.server.voice_client.create_ffmpeg_player(current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
+					stream = self.guild.voice_client.create_ffmpeg_player(current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
 				stream.volume = self.default_volume / 1000
 				self.current = current
 				self.current["stream"] = stream
@@ -138,7 +138,7 @@ class AudioPlayer:
 				if current["info"].get("start_time"): before_options = "-ss {}".format(current["info"]["start_time"])
 				self.previous_played_time = current["info"].get("start_time") if current["info"].get("start_time") else 0
 				with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-					stream = self.server.voice_client.create_ffmpeg_player(filename, before_options = before_options, after = self._play_next_song, stderr = ffmpeg_log)
+					stream = self.guild.voice_client.create_ffmpeg_player(filename, before_options = before_options, after = self._play_next_song, stderr = ffmpeg_log)
 				stream.volume = self.default_volume / 1000
 				self.current = current
 				self.current["stream"] = stream
@@ -146,7 +146,7 @@ class AudioPlayer:
 				embed.description = ":arrow_forward: Now playing"
 				await self.bot.edit_message(now_playing_message, embed = embed)
 			## stream.buff.read(stream.frame_size * 100 / stream.delay)
-			number_of_listeners = len(self.server.voice_client.channel.voice_members) - 1
+			number_of_listeners = len(self.guild.voice_client.channel.voice_members) - 1
 			self.skip_votes_required = number_of_listeners // 2 + number_of_listeners % 2
 			self.skip_votes.clear()
 			await self.play_next_song.wait()
@@ -204,7 +204,7 @@ class AudioPlayer:
 		if not self.current or not self.current.get("info").get("url"):
 			return False
 		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			stream = self.server.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
+			stream = self.guild.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
 		stream.volume = self.default_volume / 1000
 		duplicate = self.current.copy()
 		duplicate["stream"] = stream
@@ -334,7 +334,7 @@ class AudioPlayer:
 			else:
 				paused = True
 			self.not_interrupted.clear()
-			while self.server.voice_client and self.library_flag:
+			while self.guild.voice_client and self.library_flag:
 				await self.play_from_library("", requester, timestamp, clear_flag = False)
 				await asyncio.sleep(0.1) # wait to check
 			self.not_interrupted.set()
@@ -350,7 +350,7 @@ class AudioPlayer:
 		if not self.not_interrupted.is_set() and clear_flag:
 			return False
 		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			stream = self.server.voice_client.create_ffmpeg_player(source, after = self._resume_from_interruption, stderr = ffmpeg_log)
+			stream = self.guild.voice_client.create_ffmpeg_player(source, after = self._resume_from_interruption, stderr = ffmpeg_log)
 		stream.volume = self.default_volume / 1000
 		try:
 			self.pause()
@@ -413,7 +413,7 @@ class AudioPlayer:
 				paused = False
 			else:
 				paused = True
-			while self.server.voice_client and self.radio_flag:
+			while self.guild.voice_client and self.radio_flag:
 				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, ctx.bot.GOOGLE_API_KEY)
 				async with clients.aiohttp_session.get(url) as resp:
 					data = await resp.json()
@@ -449,7 +449,7 @@ class AudioPlayer:
 	async def listen_once(self):
 		if not self.not_interrupted.is_set():
 			return False
-		if self.bot.listener_bot not in self.server.voice_client.channel.voice_members:
+		if self.bot.listener_bot not in self.guild.voice_client.channel.voice_members:
 			await self.bot.send_embed(self.text_channel, ":no_entry: {} needs to be in the voice channel".format(self.bot.listener_bot.mention))
 			return None
 		try:
