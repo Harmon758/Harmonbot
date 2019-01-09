@@ -1002,7 +1002,7 @@ class Games:
 		response = await ctx.send("Please choose 10 reactions")
 		while len(response.reactions) < 10:
 			await self.bot.wait_for_reaction(message = response)
-			response = await self.bot.get_message(ctx.channel, response.id)
+			response = await ctx.channel.get_message(response.id)
 		reactions = response.reactions
 		reaction = random.choice(reactions)
 		await response.edit(content = "Please wait..")
