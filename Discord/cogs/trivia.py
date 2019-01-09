@@ -193,7 +193,7 @@ class Trivia:
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		# Check XX (or YY)
-		matches = re.search("(.+) \((?:or )?(.+)\)", answer)
+		matches = re.search("(.+?) \((?:or )?(.+)\)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		# Check XX/YY
