@@ -1008,7 +1008,8 @@ class Games:
 		await response.edit(content = "Please wait..")
 		for _reaction in reactions:
 			try:
-				await self.bot.add_reaction(response, _reaction.emoji)
+				await response.add_reaction(_reaction.emoji)
+				# Unable to add custom emoji?
 			except discord.HTTPException:
 				await response.edit(content = ":no_entry: Error: Please don't deselect your reactions before I've selected them")
 				return
