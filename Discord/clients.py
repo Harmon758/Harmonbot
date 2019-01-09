@@ -208,7 +208,7 @@ class Bot(commands.Bot):
 		self.db = self.database = self.database_connection_pool = None
 		self.connected_to_database = asyncio.Event()
 		self.connected_to_database.set()
-		self.loop.create_task(self.connect_to_database())
+		self.loop.create_task(self.initialize_database())
 		
 		# HTTP Web Server
 		self.aiohttp_web_app = web.Application()
@@ -251,6 +251,34 @@ class Bot(commands.Bot):
 			self.connected_to_database.set()
 		else:
 			await self.connected_to_database.wait()
+	
+	async def initialize_database(self):
+		await self.connect_to_database()
+		await self.db.execute("CREATE SCHEMA IF NOT EXISTS users")
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS users.stats (
+				user_id				BIGINT PRIMARY KEY, 
+				commands_executed	INT
+			)
+			"""
+		)
+		# Migrate existing data
+		for dirpath, dirnames, filenames in os.walk(data_path + "/user_data"):
+			try:
+				with open(os.path.join(dirpath, "stats.json"), 'r') as stats_file:
+					stats = json.load(stats_file)
+				await self.db.execute(
+					"""
+					INSERT INTO users.stats (user_id, commands_executed)
+					VALUES ($1, $2)
+					ON CONFLICT (user_id) DO
+					UPDATE SET commands_executed = $2
+					""", 
+					int(dirpath.split('\\')[-1]), stats["commands_executed"]
+				)
+			except FileNotFoundError:
+				pass
 	
 	async def web_server_get_handler(self, request):
 		'''
