@@ -23,8 +23,8 @@ playlist_logger.addHandler(handler)
 
 class AudioPlayer:
 	
-	def __init__(self, client, text_channel):
-		self.bot = client
+	def __init__(self, bot, text_channel):
+		self.bot = bot
 		self.text_channel = text_channel
 		self.guild = text_channel.guild
 		self.queue = asyncio.Queue()
