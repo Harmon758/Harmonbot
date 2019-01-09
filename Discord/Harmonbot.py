@@ -92,7 +92,7 @@ if __name__ == "__main__":
 		# TODO: Transfer respects paid data?
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.author.name) # | / \ : ? * " < >
 		clients.create_file(f"user_data/{ctx.author.id}/{clean_name}")
-		with open(f"{clients.data_path}/user_data/{ctx.author.id}/stats.json", "r") as stats_file:
+		with open(f"{clients.data_path}/user_data/{ctx.author.id}/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		stats["commands_executed"] += 1
 		stats["points"] += 1
