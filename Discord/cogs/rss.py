@@ -68,6 +68,16 @@ class RSS:
 			)
 			"""
 		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS rss.errors (
+				timestamp		TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
+				feed			TEXT, 
+				type			TEXT, 
+				message			TEXT
+			)
+			"""
+		)
 	
 	@commands.group(aliases = ["feed"], invoke_without_command = True)
 	@checks.is_permitted()
@@ -269,13 +279,14 @@ class RSS:
 									pass
 							# TODO: Remove text channel data if now non-existent
 				except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError) as e:
-					error_message = f"{self.bot.console_message_prefix}RSS Task Connection Error @ "
-					error_message += f"{datetime.datetime.now().time().isoformat()}: "
-					error_message += f"{type(e).__name__}: {e}"
-					if len(error_message) > self.bot.console_line_limit - len(feed) - 9:
-						# 9 = length of " (feed: )"
-						error_message += '\n'
-					print(f"{error_message} (feed: {feed})")
+					await self.bot.db.execute(
+						"""
+						INSERT INTO rss.errors (feed, type, message)
+						VALUES ($1, $2, $3)
+						""", 
+						feed, type(e).__name__, str(e)
+					)
+					# Print error?
 					await asyncio.sleep(10)
 					# TODO: Add variable for sleep time
 					'''
