@@ -88,7 +88,7 @@ if __name__ == "__main__":
 		with open(clients.data_path + "/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 		clients.create_folder(clients.data_path + "/user_data/{}".format(ctx.author.id))
-		clients.create_file("user_data/{}/stats".format(ctx.author.id), content = {"commands_executed": 0, "points": 0, "respects_paid": 0})
+		clients.create_file("user_data/{}/stats".format(ctx.author.id), content = {"commands_executed": 0, "points": 0})
 		# TODO: Transfer respects paid data?
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.author.name) # | / \ : ? * " < >
 		clients.create_file("user_data/{}/{}".format(ctx.author.id, clean_name))
