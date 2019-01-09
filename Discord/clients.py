@@ -263,22 +263,6 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
-		# Migrate existing data
-		for dirpath, dirnames, filenames in os.walk(data_path + "/user_data"):
-			try:
-				with open(os.path.join(dirpath, "stats.json"), 'r') as stats_file:
-					stats = json.load(stats_file)
-				await self.db.execute(
-					"""
-					INSERT INTO users.stats (user_id, commands_executed)
-					VALUES ($1, $2)
-					ON CONFLICT (user_id) DO
-					UPDATE SET commands_executed = $2
-					""", 
-					int(dirpath.split('\\')[-1]), stats["commands_executed"]
-				)
-			except FileNotFoundError:
-				pass
 	
 	async def web_server_get_handler(self, request):
 		'''

@@ -180,9 +180,15 @@ class Meta:
 	@commands.command()
 	async def points(self, ctx):
 		'''WIP'''
-		with open(f"{clients.data_path}/user_data/{ctx.author.id}/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
-		await ctx.embed_reply(f"You have {stats['commands_executed']} points")
+		commands_executed = await ctx.bot.db.fetchval(
+			"""
+			SELECT commands_executed
+			FROM users.stats
+			WHERE user_id = $1
+			""", 
+			ctx.author.id
+		)
+		await ctx.embed_reply(f"You have {commands_executed} points")
 	
 	@commands.command(aliases = ["server_setting"])
 	@checks.is_server_owner()

@@ -88,15 +88,17 @@ if __name__ == "__main__":
 		with open(clients.data_path + "/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 		clients.create_folder(f"{clients.data_path}/user_data/{ctx.author.id}")
-		clients.create_file(f"user_data/{ctx.author.id}/stats", content = {"commands_executed": 0})
-		# TODO: Transfer respects paid data?
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.author.name) # | / \ : ? * " < >
 		clients.create_file(f"user_data/{ctx.author.id}/{clean_name}")
-		with open(f"{clients.data_path}/user_data/{ctx.author.id}/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
-		stats["commands_executed"] += 1
-		with open(f"{clients.data_path}/user_data/{ctx.author.id}/stats.json", 'w') as stats_file:
-			json.dump(stats, stats_file, indent = 4)
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO users.stats (user_id, commands_executed)
+			VALUES ($1, 1)
+			ON CONFLICT (user_id) DO
+			UPDATE SET commands_executed = stats.commands_executed + 1
+			""", 
+			ctx.author.id
+		)
 	
 	# TODO: log message edits
 	
