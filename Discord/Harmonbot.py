@@ -87,16 +87,16 @@ if __name__ == "__main__":
 		stats["commands_usage"][ctx.command.name] = stats["commands_usage"].get(ctx.command.name, 0) + 1
 		with open(clients.data_path + "/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
-		clients.create_folder(clients.data_path + "/user_data/{}".format(ctx.author.id))
-		clients.create_file("user_data/{}/stats".format(ctx.author.id), content = {"commands_executed": 0, "points": 0})
+		clients.create_folder(f"{clients.data_path}/user_data/{ctx.author.id}")
+		clients.create_file(f"user_data/{ctx.author.id}/stats", content = {"commands_executed": 0, "points": 0})
 		# TODO: Transfer respects paid data?
 		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.author.name) # | / \ : ? * " < >
-		clients.create_file("user_data/{}/{}".format(ctx.author.id, clean_name))
-		with open(clients.data_path + "/user_data/{}/stats.json".format(ctx.author.id), "r") as stats_file:
+		clients.create_file(f"user_data/{ctx.author.id}/{clean_name}")
+		with open(f"{clients.data_path}/user_data/{ctx.author.id}/stats.json", "r") as stats_file:
 			stats = json.load(stats_file)
 		stats["commands_executed"] += 1
 		stats["points"] += 1
-		with open(clients.data_path + "/user_data/{}/stats.json".format(ctx.author.id), 'w') as stats_file:
+		with open(f"{clients.data_path}/user_data/{ctx.author.id}/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
 	
 	# TODO: log message edits
