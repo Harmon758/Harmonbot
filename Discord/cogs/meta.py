@@ -327,7 +327,7 @@ class Meta:
 			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[5:10])) ## since 2016-11-14
 		if session_top_5: embed.add_field(name = "(This Session)", 
 			value = "\n".join("{:,} {}".format(uses, command) for command, uses in session_top_5))
-		await self.bot.send_message(ctx.message.channel, embed = embed)
+		await ctx.send(embed = embed)
 	
 	@commands.command()
 	async def uptime(self, ctx):
