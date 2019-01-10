@@ -181,12 +181,20 @@ class RSS:
 				feeds_failed_to_initialize.append(feed)
 		await self.bot.wait_until_ready()
 		while not self.bot.is_closed():
-			records = await self.bot.db.fetch("SELECT DISTINCT feed FROM rss.feeds")
+			records = await self.bot.db.fetch(
+				"""
+				SELECT DISTINCT ON (feed) feed, last_checked, ttl
+				FROM rss.feeds
+				ORDER BY feed, last_checked
+				"""
+			)
 			if not records:
 				await asyncio.sleep(60)
 			for record in records:
 				feed = record["feed"]
 				if feed in feeds_failed_to_initialize:
+					continue
+				if record["ttl"] and datetime.datetime.now(datetime.timezone.utc) < record["last_checked"] + datetime.timedelta(minutes = record["ttl"]):
 					continue
 				try:
 					async with clients.aiohttp_session.get(feed) as resp:
