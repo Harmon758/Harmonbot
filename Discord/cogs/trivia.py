@@ -172,10 +172,14 @@ class Trivia:
 		# Strip quotation marks
 		answer = ' '.join(answer.split()).lower().strip('"')
 		response = ' '.join(response.split()).lower().strip('"')
-		# Check answer with optional article prefixes
-		if answer in [prefix + response for prefix in ("", "a ", "an ", "the ")]:
-			return True
-		if response in [prefix + answer for prefix in ("", "a ", "an ", "the ")]:
+		# Remove article prefixes
+		for article in ("a ", "an ", "the "):
+			if answer.startswith(article):
+				answer = answer[len(article):]
+			if response.startswith(article):
+				response = response[len(article):]
+		# Check equivalence
+		if answer == response:
 			return True
 		# Check removal of/replacement of - with space
 		if answer.replace('-', ' ') == response.replace('-', ' '):
