@@ -55,6 +55,8 @@ class RSS:
 			CREATE TABLE IF NOT EXISTS rss.feeds (
 				channel_id		BIGINT, 
 				feed			TEXT, 
+				last_checked	TIMESTAMPTZ, 
+				ttl				INT, 
 				PRIMARY KEY		(channel_id, feed)
 			)
 			"""
@@ -98,6 +100,19 @@ class RSS:
 			feed_text = await resp.text()
 		feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": url}))
 		# Still necessary to run in executor?
+		# TODO: Handle if feed already being followed elsewhere
+		ttl = None
+		if "ttl" in feed_info.feed:
+			ttl = int(feed_info.feed.ttl)
+		await ctx.bot.db.execute(
+			"""
+			UPDATE rss.feeds
+			SET last_checked = NOW(), 
+				ttl = $1
+			WHERE channel_id = $2 AND feed = $3
+			""", 
+			ttl, ctx.channel.id, url
+		)
 		for entry in feed_info.entries:
 			await ctx.bot.db.execute(
 				"""
@@ -178,6 +193,18 @@ class RSS:
 						feed_text = await resp.text()
 					feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 					# Still necessary to run in executor?
+					ttl = None
+					if "ttl" in feed_info.feed:
+						ttl = int(feed_info.feed.ttl)
+					await self.bot.db.execute(
+						"""
+						UPDATE rss.feeds
+						SET last_checked = NOW(), 
+							ttl = $1
+						WHERE feed = $2
+						""", 
+						ttl, feed
+					)
 					for entry in feed_info.entries:
 						if "id" not in entry:
 							continue
