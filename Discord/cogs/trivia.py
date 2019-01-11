@@ -180,6 +180,9 @@ class Trivia:
 				answer = answer[len(article):]
 			if response.startswith(article):
 				response = response[len(article):]
+		# Strip quotation marks
+		answer = answer.strip('"')
+		response = response.strip('"')
 		# Check equivalence
 		if answer == response:
 			return True
