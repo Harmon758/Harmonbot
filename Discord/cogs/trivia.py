@@ -183,8 +183,13 @@ class Trivia:
 		# Strip quotation marks
 		answer = answer.strip('"')
 		response = response.strip('"')
+		# Get items in lists
+		answer_items = [item.strip() for item in answer.split(',')]
+		answer_items[-1:] = [item.strip() for item in answer_items[-1].split("and") if item]
+		response_items = [item.strip() for item in response.split(',')]
+		response_items[-1:] = [item.strip() for item in response_items[-1].split("and") if item]
 		# Check equivalence
-		if answer == response:
+		if set(answer_items) == set(response_items):
 			return True
 		# Check removal of/replacement of - with space
 		if answer.replace('-', ' ') == response.replace('-', ' '):
