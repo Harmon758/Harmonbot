@@ -162,6 +162,8 @@ class Trivia:
 			await ctx.embed_say('\n'.join(bets_output))
 	
 	def check_answer(self, answer, response):
+		# Unescape HTML entities in answer and extract text between HTML tags
+		answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
 		# Replace in answer: \' -> '
 		# Replace: & -> and
 		# Remove periods and exclamation marks
@@ -188,9 +190,6 @@ class Trivia:
 			return True
 		# Check removal of parentheses
 		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
-			return True
-		# Check html unescaped answer
-		if response == BeautifulSoup(html.unescape(answer), "html.parser").get_text().lower():
 			return True
 		# Check (XX) YY
 		matches = re.search("\((.+)\) (.+)", answer)
