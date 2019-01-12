@@ -199,6 +199,21 @@ class Trivia:
 		# Check removal of parentheses
 		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
 			return True
+		# Check numbers to words conversion
+		answer_words = answer.split(' ')
+		response_words = response.split(' ')
+		for index, answer_word in enumerate(answer_words):
+			try:
+				answer_words[index] = self.bot.inflect_engine.number_to_words(int(answer_word))
+			except ValueError:
+				continue
+		for index, response_word in enumerate(response_words):
+			try:
+				response_words[index] = self.bot.inflect_engine.number_to_words(int(response_word))
+			except ValueError:
+				continue
+		if ' '.join(answer_words) == ' '.join(response_words):
+			return True
 		# Check (XX) YY
 		matches = re.search("\((.+)\) (.+)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
