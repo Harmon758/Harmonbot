@@ -199,8 +199,17 @@ class Trivia:
 		# Check removal of parentheses
 		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
 			return True
-		# Check numbers to words conversion
+		# Check XX/YY ZZ
 		answer_words = answer.split(' ')
+		answers = answer_words[0].split('/')
+		for answer_word in answer_words[1:]:
+			if '/' in answer_word:
+				answers = [f"{permutation} {word}" for permutation in answers for word in answer_word.split('/')]
+			else:
+				answers = [f"{permutation} {answer_word}" for permutation in answers]
+		if response in answers:
+			return True
+		# Check numbers to words conversion
 		response_words = response.split(' ')
 		for index, answer_word in enumerate(answer_words):
 			try:
