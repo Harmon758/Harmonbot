@@ -13,6 +13,8 @@ import os
 import sys
 import traceback
 
+import aiohttp
+
 import clients
 from modules import logging
 from modules import utilities
@@ -186,6 +188,9 @@ class YouTube:
 							del self.streams_announced[announced_video_id]
 					# TODO: Handle no longer being followed?
 				await asyncio.sleep(20)
+			except aiohttp.ClientOSError:
+				print(f"ClientOSError in Youtube Task (channel ID: {channel_id})")
+				await asyncio.sleep(10)
 			except asyncio.CancelledError:
 				for announced_video_id, announcements in self.streams_announced.items():
 					for announcement in announcements:
