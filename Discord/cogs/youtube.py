@@ -144,8 +144,10 @@ class YouTube:
 				channel_ids = set(itertools.chain(*[channel["channel_ids"] for channel in self.streams_info["channels"].values()]))
 				video_ids = []
 				for channel_id in channel_ids:
-					url = "https://www.googleapis.com/youtube/v3/search?part=snippet&eventType=live&type=video&channelId={}&key={}"
-					async with clients.aiohttp_session.get(url.format(channel_id, self.bot.GOOGLE_API_KEY)) as resp:
+					url = "https://www.googleapis.com/youtube/v3/search"
+					params = {"part": "snippet", "eventType": "live", "type": "video", 
+								"channelId": channel_id, "key": self.bot.GOOGLE_API_KEY}
+					async with clients.aiohttp_session.get(url, params = params) as resp:
 						stream_data = await resp.json()
 					# Multiple streams from one channel possible
 					for item in stream_data.get("items", []):
