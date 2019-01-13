@@ -256,7 +256,7 @@ class YouTube:
 		if not channel or channel_id not in channel["yt_channel_ids"]:
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
 		channel["yt_channel_ids"].remove(channel_id)
-		self.youtube_uploads_following.discard(channel_id)
+		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"])
 		url = "https://pubsubhubbub.appspot.com/"
 		headers = {"content-type": "application/x-www-form-urlencoded"}
 		data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "unsubscribe", 
