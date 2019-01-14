@@ -86,45 +86,45 @@ class YouTube:
 	# Handle stream alias when audio cog not loaded first | aliases = ["stream"]
 	@checks.is_permitted()
 	async def youtube_streams(self, ctx):
-		'''Youtube Streams'''
+		'''YouTube Streams'''
 		await ctx.invoke(self.bot.get_command("help"), "youtube", ctx.invoked_with)
 	
 	@youtube_streams.command(name = "add", invoke_without_command = True)
 	@checks.is_permitted()
 	async def youtube_streams_add(self, ctx, channel : str):
-		'''Add Youtube channel to follow'''
+		'''Add YouTube channel to follow'''
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
-			return await ctx.embed_reply(":no_entry: Error: Youtube channel not found")
+			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
 		text_channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if text_channel:
 			if channel_id in text_channel["channel_ids"]:
-				return await ctx.embed_reply(":no_entry: This text channel is already following that Youtube channel")
+				return await ctx.embed_reply(":no_entry: This text channel is already following that YouTube channel")
 			text_channel["channel_ids"].append(channel_id)
 		else:
 			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
 		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Added the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
-		"I will now announce here when this Youtube channel goes live".format(channel_id))
+		await ctx.embed_reply("Added the YouTube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
+		"I will now announce here when this YouTube channel goes live".format(channel_id))
 	
 	@youtube_streams.command(name = "remove", aliases = ["delete"], invoke_without_command = True)
 	@checks.is_permitted()
 	async def youtube_streams_remove(self, ctx, channel_id : str):
-		'''Remove Youtube channel being followed'''
+		'''Remove YouTube channel being followed'''
 		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or channel_id not in channel["channel_ids"]:
-			await ctx.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
+			await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
 			return
 		channel["channel_ids"].remove(channel_id)
 		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Removed the Youtube channel, [`{0}`](https://www.youtube.com/channel/{0}), from this text channel".format(channel_id))
+		await ctx.embed_reply("Removed the YouTube channel, [`{0}`](https://www.youtube.com/channel/{0}), from this text channel".format(channel_id))
 	
 	@youtube_streams.command(name = "channels", aliases = ["streams"])
 	@checks.not_forbidden()
 	async def youtube_streams_channels(self, ctx):
-		'''Show Youtube channels being followed in this text channel'''
+		'''Show YouTube channels being followed in this text channel'''
 		await ctx.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(str(ctx.channel.id), {}).get("channel_ids", []))))
 	
 	async def check_youtube_streams(self):
@@ -170,7 +170,7 @@ class YouTube:
 										# TODO: Remove text channel data if now non-existent
 										continue
 									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = self.bot.youtube_color)
-									embed.set_author(name = "{} is live now on Youtube".format(item_data["channelTitle"]), url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
+									embed.set_author(name = "{} is live now on YouTube".format(item_data["channelTitle"]), url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
 									message = await text_channel.send(embed = embed)
@@ -189,7 +189,7 @@ class YouTube:
 					# TODO: Handle no longer being followed?
 				await asyncio.sleep(20)
 			except aiohttp.ClientOSError:
-				print(f"ClientOSError in Youtube Task (channel ID: {channel_id})")
+				print(f"ClientOSError in YouTube Task (channel ID: {channel_id})")
 				await asyncio.sleep(10)
 			except asyncio.CancelledError:
 				for announced_video_id, announcements in self.streams_announced.items():
@@ -199,12 +199,12 @@ class YouTube:
 						announcement[1] = announcement[1].to_dict()
 				with open(clients.data_path + "/temp/youtube_streams_announced.json", 'w') as streams_file:
 					json.dump(self.streams_announced, streams_file, indent = 4)
-				print("{}Youtube Task cancelled".format(self.bot.console_message_prefix))
+				print("{}YouTube Task cancelled".format(self.bot.console_message_prefix))
 				return
 			except Exception as e:
-				print("Exception in Youtube Task", file = sys.stderr)
+				print("Exception in YouTube Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-				logging.errors_logger.error("Uncaught Youtube Task exception\n", exc_info = (type(e), e, e.__traceback__))
+				logging.errors_logger.error("Uncaught YouTube Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				await asyncio.sleep(60)
 	
 	# TODO: Follow channels/new video uploads
@@ -212,20 +212,20 @@ class YouTube:
 	@commands.group(name = "uploads", aliases = ["videos"], invoke_without_command = True)
 	@checks.is_permitted()
 	async def youtube_uploads(self, ctx):
-		'''Youtube Uploads/Videos'''
+		'''YouTube Uploads/Videos'''
 		await ctx.invoke(self.bot.get_command("help"), "youtube", ctx.invoked_with)
 	
 	@youtube_uploads.command(name = "add", aliases = ["subscribe"], invoke_without_command = True)
 	@checks.is_permitted()
 	async def youtube_uploads_add(self, ctx, channel : str):
-		'''Add Youtube channel to follow'''
+		'''Add YouTube channel to follow'''
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
-			return await ctx.embed_reply(":no_entry: Error: Youtube channel not found")
+			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
 		text_channel = self.uploads_info["channels"].get(str(ctx.channel.id))
 		if text_channel:
 			if channel_id in text_channel["yt_channel_ids"]:
-				return await ctx.embed_reply(":no_entry: This text channel is already following that Youtube channel")
+				return await ctx.embed_reply(":no_entry: This text channel is already following that YouTube channel")
 			text_channel["yt_channel_ids"].append(channel_id)
 		else:
 			self.uploads_info["channels"][str(ctx.channel.id)] = {"yt_channel_ids": [channel_id]}
@@ -243,18 +243,18 @@ class YouTube:
 		self.youtube_uploads_following.add(channel_id)
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
-		await ctx.embed_reply(f"Added the Youtube channel, "
+		await ctx.embed_reply(f"Added the YouTube channel, "
 								f"[`{channel_id}`](https://www.youtube.com/channel/{channel_id}), "
 								"to this text channel\n"
-								"I will now announce here when this Youtube channel uploads videos")
+								"I will now announce here when this YouTube channel uploads videos")
 	
 	@youtube_uploads.command(name = "remove", aliases = ["delete", "unsubscribe"], invoke_without_command = True)
 	@checks.is_permitted()
 	async def youtube_uploads_remove(self, ctx, channel_id : str):
-		'''Remove Youtube channel being followed'''
+		'''Remove YouTube channel being followed'''
 		channel = self.uploads_info["channels"].get(str(ctx.channel.id))
 		if not channel or channel_id not in channel["yt_channel_ids"]:
-			return await ctx.embed_reply(":no_entry: This text channel isn't following that Youtube channel")
+			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
 		channel["yt_channel_ids"].remove(channel_id)
 		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"])
 		url = "https://pubsubhubbub.appspot.com/"
@@ -270,14 +270,14 @@ class YouTube:
 				return
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
-		await ctx.embed_reply("Removed the Youtube channel, "
+		await ctx.embed_reply("Removed the YouTube channel, "
 								f"[`{channel_id}`](https://www.youtube.com/channel/{channel_id}), "
 								"from this text channel")
 	
 	@youtube_uploads.command(name = "channels", aliases = ["uploads", "videos"])
 	@checks.not_forbidden()
 	async def youtube_uploads_channels(self, ctx):
-		'''Show Youtube channels being followed in this text channel'''
+		'''Show YouTube channels being followed in this text channel'''
 		await ctx.embed_reply(clients.code_block.format('\n'.join(self.uploads_info["channels"].get(str(ctx.channel.id), {}).get("yt_channel_ids", []))))
 	
 	async def process_youtube_upload(self, channel_id, request_content):
@@ -289,7 +289,7 @@ class YouTube:
 			# Don't process videos published more than an hour ago
 			if time_published < datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours = 1): return
 			embed = discord.Embed(title = video_data.title, url = video_data.link, timestamp = time_published, color = self.bot.youtube_color)
-			embed.set_author(name = "{} just uploaded a video on Youtube".format(video_data.author), url = video_data.author_detail.href, icon_url = self.bot.youtube_icon_url)
+			embed.set_author(name = "{} just uploaded a video on YouTube".format(video_data.author), url = video_data.author_detail.href, icon_url = self.bot.youtube_icon_url)
 			# TODO: Add channel icon as author icon?
 			# Add description + thumbnail + length
 			async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/videos", params = {"id": video_data.yt_videoid, "key": self.bot.GOOGLE_API_KEY, "part": "snippet,contentDetails"}) as resp:
