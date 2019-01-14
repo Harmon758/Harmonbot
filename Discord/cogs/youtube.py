@@ -130,8 +130,8 @@ class YouTube:
 			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
 		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Added the YouTube channel, [`{0}`](https://www.youtube.com/channel/{0}), to this text channel\n"
-		"I will now announce here when this YouTube channel goes live".format(channel_id))
+		await ctx.embed_reply(f"Added the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
+		"I will now announce here when this YouTube channel goes live")
 	
 	@youtube_streams.command(name = "remove", aliases = ["delete"], invoke_without_command = True)
 	@checks.is_permitted()
