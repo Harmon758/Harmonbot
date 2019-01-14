@@ -146,7 +146,7 @@ class YouTube:
 		text_channel["channel_ids"].remove(channel_id)
 		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Removed the YouTube channel, [`{0}`](https://www.youtube.com/channel/{0}), from this text channel".format(channel_id))
+		await ctx.embed_reply(f"Removed the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), from this text channel")
 	
 	@youtube_streams.command(name = "channels", aliases = ["streams"])
 	@checks.not_forbidden()
