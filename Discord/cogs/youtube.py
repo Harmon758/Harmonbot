@@ -139,8 +139,7 @@ class YouTube:
 		'''Remove YouTube channel being followed'''
 		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or channel_id not in channel["channel_ids"]:
-			await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
-			return
+			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
 		channel["channel_ids"].remove(channel_id)
 		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
