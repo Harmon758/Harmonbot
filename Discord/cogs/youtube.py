@@ -77,6 +77,16 @@ class YouTube:
 			)
 			"""
 		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS youtube.streams_announced (
+				video_id		TEXT, 
+				channel_id		BIGINT, 
+				message_id		BIGINT, 
+				PRIMARY KEY		(video_id, channel_id)
+			)
+			"""
+		)
 	
 	# TODO: use on_ready instead?
 	# TODO: renew after hub.lease_seconds?
@@ -162,17 +172,20 @@ class YouTube:
 			for announced_video_id, announcements in self.streams_announced.copy().items():
 				self.streams_announced[announced_video_id] = []
 				for announcement in announcements:
-					if isinstance(announcement, list):
-						channel_id = announcement[2]
-						message_id = announcement[0]
-					else:
-						channel_id = announcement["channel"]
-						message_id = announcement["message"]
-					text_channel = self.bot.get_channel(int(channel_id))
+					text_channel = self.bot.get_channel(int(announcement["channel"]))
 					# TODO: Handle text channel not existing anymore
-					message = await text_channel.get_message(int(message_id))
+					message = await text_channel.get_message(int(announcement["message"]))
 					# TODO: Handle message deleted
 					self.streams_announced[announced_video_id].append(message)
+					# Migrate to database
+					await self.bot.db.execute(
+						"""
+						INSERT INTO youtube.streams_announced (video_id, channel_id, message_id)
+						VALUES ($1, $2, $3)
+						ON CONFLICT DO NOTHING
+						""", 
+						announced_video_id, int(announcement["channel"]), int(announcement["message"])
+					)
 		## os.remove(clients.data_path + "/temp/youtube_streams_announced.json")
 		while not self.bot.is_closed():
 			try:
