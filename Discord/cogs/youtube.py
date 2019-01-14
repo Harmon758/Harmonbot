@@ -159,14 +159,20 @@ class YouTube:
 		if os.path.isfile(clients.data_path + "/temp/youtube_streams_announced.json"):
 			with open(clients.data_path + "/temp/youtube_streams_announced.json", 'r') as streams_file:
 				self.streams_announced = json.load(streams_file)
-			for announced_video_id, announcements in self.streams_announced.items():
+			for announced_video_id, announcements in self.streams_announced.copy().items():
+				self.streams_announced[announced_video_id] = []
 				for announcement in announcements:
-					text_channel = self.bot.get_channel(int(announcement[2]))
+					if isinstance(announcement, list):
+						channel_id = announcement[2]
+						message_id = announcement[0]
+					else:
+						channel_id = announcement["channel"]
+						message_id = announcement["message"]
+					text_channel = self.bot.get_channel(int(channel_id))
 					# TODO: Handle text channel not existing anymore
-					announcement[0] = await text_channel.get_message(int(announcement[0]))
+					message = await text_channel.get_message(int(message_id))
 					# TODO: Handle message deleted
-					announcement[1] = discord.Embed.from_data(announcement[1])
-					del announcement[2]
+					self.streams_announced[announced_video_id].append(message)
 		## os.remove(clients.data_path + "/temp/youtube_streams_announced.json")
 		while not self.bot.is_closed():
 			try:
@@ -185,9 +191,9 @@ class YouTube:
 						item_data = item["snippet"]
 						if video_id in self.old_streams_announced:
 							for announcement in self.old_streams_announced[video_id]:
-								embed = announcement[1]
+								embed = announcement.embed
 								embed.set_author(name = embed.author.name.replace("was live", "is live now"), url = embed.author.url, icon_url = embed.author.icon_url)
-								await announcement[0].edit(embed = embed)
+								await announcement.edit(embed = embed)
 							self.streams_announced[video_id] = self.old_streams_announced[video_id]
 							del self.old_streams_announced[video_id]
 						elif video_id not in self.streams_announced:
@@ -207,16 +213,16 @@ class YouTube:
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
 									message = await text_channel.send(embed = embed)
-									self.streams_announced[video_id] = self.streams_announced.get(video_id, []) + [[message, embed]]
+									self.streams_announced[video_id] = self.streams_announced.get(video_id, []) + [message]
 								# TODO: Remove text channel data if now non-existent
 						video_ids.append(video_id)
 					await asyncio.sleep(1)
 				for announced_video_id, announcements in self.streams_announced.copy().items():
 					if announced_video_id not in video_ids:
 						for announcement in announcements:
-							embed = announcement[1]
+							embed = announcement.embed
 							embed.set_author(name = embed.author.name.replace("is live now", "was live"), url = embed.author.url, icon_url = embed.author.icon_url)
-							await announcement[0].edit(embed = embed)
+							await announcement.edit(embed = embed)
 							# TODO: Handle message deleted
 							self.old_streams_announced[announced_video_id] = self.streams_announced[announced_video_id]
 							del self.streams_announced[announced_video_id]
@@ -226,11 +232,8 @@ class YouTube:
 				print(f"ClientOSError in YouTube Task (channel ID: {channel_id})")
 				await asyncio.sleep(10)
 			except asyncio.CancelledError:
-				for announced_video_id, announcements in self.streams_announced.items():
-					for announcement in announcements:
-						announcement.append(str(announcement[0].channel.id))
-						announcement[0] = str(announcement[0].id)
-						announcement[1] = announcement[1].to_dict()
+				for announced_video_id, announcements in self.streams_announced.copy().items():
+					self.streams_announced[announced_video_id] = [{"message": str(message.id), "channel": str(message.channel.id)} for message in announcements]
 				with open(clients.data_path + "/temp/youtube_streams_announced.json", 'w') as streams_file:
 					json.dump(self.streams_announced, streams_file, indent = 4)
 				print("{}YouTube Task cancelled".format(self.bot.console_message_prefix))
