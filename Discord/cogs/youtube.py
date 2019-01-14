@@ -4,9 +4,6 @@ from discord.ext import commands
 
 import asyncio
 import datetime
-import dateutil.parser
-import feedparser
-import isodate
 import itertools
 import json
 import os
@@ -14,6 +11,9 @@ import sys
 import traceback
 
 import aiohttp
+import dateutil.parser
+import feedparser
+import isodate
 
 import clients
 from modules import logging
