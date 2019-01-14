@@ -11,6 +11,7 @@ import sys
 import traceback
 
 import aiohttp
+import asyncpg
 import dateutil.parser
 import feedparser
 import isodate
@@ -47,9 +48,6 @@ class YouTube:
 		utilities.add_as_subcommand(self, self.youtube_streams, "Audio.audio", "streams", aliases = ["stream"])
 		utilities.add_as_subcommand(self, self.youtube_uploads, "Audio.audio", "uploads", aliases = ["videos"])
 		
-		clients.create_file("youtube_streams", content = {"channels" : {}})
-		with open(clients.data_path + "/youtube_streams.json", 'r') as streams_file:
-			self.streams_info = json.load(streams_file)
 		self.streams_task = self.bot.loop.create_task(self.check_youtube_streams())
 		
 		clients.create_file("youtube_uploads", content = {"channels" : {}})
@@ -57,8 +55,6 @@ class YouTube:
 			self.uploads_info = json.load(uploads_file)
 		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"])
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
-		
-		self.bot.loop.create_task(self.initialize_database())
 	
 	def __unload(self):
 		utilities.remove_as_subcommand(self, "Audio.audio", "streams")
@@ -81,16 +77,6 @@ class YouTube:
 			)
 			"""
 		)
-		for discord_channel_id, data in self.streams_info["channels"].items():
-			for youtube_channel_id in data["channel_ids"]:
-				await self.bot.db.execute(
-					"""
-					INSERT INTO youtube.streams (discord_channel_id, youtube_channel_id)
-					VALUES ($1, $2)
-					ON CONFLICT DO NOTHING
-					""", 
-					int(discord_channel_id), youtube_channel_id
-				)
 	
 	# TODO: use on_ready instead?
 	# TODO: renew after hub.lease_seconds?
@@ -121,15 +107,16 @@ class YouTube:
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
 			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
-		text_channel = self.streams_info["channels"].get(str(ctx.channel.id))
-		if text_channel:
-			if channel_id in text_channel["channel_ids"]:
-				return await ctx.embed_reply(":no_entry: This text channel is already following that YouTube channel")
-			text_channel["channel_ids"].append(channel_id)
-		else:
-			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
-		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
-			json.dump(self.streams_info, streams_file, indent = 4)
+		try:
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO youtube.streams (discord_channel_id, youtube_channel_id)
+				VALUES ($1, $2)
+				""", 
+				ctx.channel.id, channel_id
+			)
+		except asyncpg.UniqueViolationError:
+			return await ctx.embed_reply(":no_entry: This text channel is already following that YouTube channel")
 		await ctx.embed_reply(f"Added the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
 		"I will now announce here when this YouTube channel goes live")
 	
@@ -140,21 +127,34 @@ class YouTube:
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
 			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
-		text_channel = self.streams_info["channels"].get(str(ctx.channel.id))
-		if not text_channel or channel_id not in text_channel["channel_ids"]:
+		deleted = await ctx.bot.db.fetchval(
+			"""
+			DELETE FROM youtube.streams
+			WHERE discord_channel_id = $1 AND youtube_channel_id = $2
+			RETURNING *
+			""", 
+			ctx.channel.id, channel_id
+		)
+		if not deleted:
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
-		text_channel["channel_ids"].remove(channel_id)
-		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
-			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply(f"Removed the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), from this text channel")
 	
 	@youtube_streams.command(name = "channels", aliases = ["streams"])
 	@checks.not_forbidden()
 	async def youtube_streams_channels(self, ctx):
 		'''Show YouTube channels being followed in this text channel'''
-		await ctx.embed_reply(clients.code_block.format('\n'.join(self.streams_info["channels"].get(str(ctx.channel.id), {}).get("channel_ids", []))))
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT youtube_channel_id
+			FROM youtube.streams
+			WHERE discord_channel_id = $1
+			""", 
+			ctx.channel.id
+		)
+		await ctx.embed_reply(clients.code_block.format('\n'.join(record["youtube_channel_id"] for record in records)))
 	
 	async def check_youtube_streams(self):
+		await self.initialize_database()
 		await self.bot.wait_until_ready()
 		if os.path.isfile(clients.data_path + "/temp/youtube_streams_announced.json"):
 			with open(clients.data_path + "/temp/youtube_streams_announced.json", 'r') as streams_file:
@@ -170,9 +170,10 @@ class YouTube:
 		## os.remove(clients.data_path + "/temp/youtube_streams_announced.json")
 		while not self.bot.is_closed():
 			try:
-				channel_ids = set(itertools.chain(*[channel["channel_ids"] for channel in self.streams_info["channels"].values()]))
+				records = await self.bot.db.fetch("SELECT DISTINCT youtube_channel_id FROM youtube.streams")
 				video_ids = []
-				for channel_id in channel_ids:
+				for record in records:
+					channel_id = record["youtube_channel_id"]
 					url = "https://www.googleapis.com/youtube/v3/search"
 					params = {"part": "snippet", "eventType": "live", "type": "video", 
 								"channelId": channel_id, "key": self.bot.GOOGLE_API_KEY}
@@ -190,18 +191,24 @@ class YouTube:
 							self.streams_announced[video_id] = self.old_streams_announced[video_id]
 							del self.old_streams_announced[video_id]
 						elif video_id not in self.streams_announced:
-							for text_channel_id, channel_info in self.streams_info["channels"].items():
-								if channel_id in channel_info["channel_ids"]:
-									text_channel = self.bot.get_channel(int(text_channel_id))
-									if not text_channel:
-										# TODO: Remove text channel data if now non-existent
-										continue
+							channel_records = await self.bot.db.fetch(
+								"""
+								SELECT discord_channel_id
+								FROM youtube.streams
+								WHERE youtube_channel_id = $1
+								""", 
+								channel_id
+							)
+							for record in channel_records:
+								text_channel = self.bot.get_channel(record["discord_channel_id"])
+								if text_channel:
 									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = self.bot.youtube_color)
 									embed.set_author(name = "{} is live now on YouTube".format(item_data["channelTitle"]), url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
 									message = await text_channel.send(embed = embed)
 									self.streams_announced[video_id] = self.streams_announced.get(video_id, []) + [[message, embed]]
+								# TODO: Remove text channel data if now non-existent
 						video_ids.append(video_id)
 					await asyncio.sleep(1)
 				for announced_video_id, announcements in self.streams_announced.copy().items():
