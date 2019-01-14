@@ -91,16 +91,16 @@ class YouTube:
 	
 	@youtube_streams.command(name = "add", invoke_without_command = True)
 	@checks.is_permitted()
-	async def youtube_streams_add(self, ctx, channel_id : str):
+	async def youtube_streams_add(self, ctx, channel : str):
 		'''Add Youtube channel to follow'''
 		# TODO: Check channel ID validity
-		# TODO: Add by username option
-		channel = self.streams_info["channels"].get(str(ctx.channel.id))
-		if channel:
-			if channel_id in channel["channel_ids"]:
+		channel_id = await self.get_youtube_channel_id(channel)
+		text_channel = self.streams_info["channels"].get(str(ctx.channel.id))
+		if text_channel:
+			if channel_id in text_channel["channel_ids"]:
 				await ctx.embed_reply(":no_entry: This text channel is already following that Youtube channel")
 				return
-			channel["channel_ids"].append(channel_id)
+			text_channel["channel_ids"].append(channel_id)
 		else:
 			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
 		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
