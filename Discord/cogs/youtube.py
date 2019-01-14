@@ -339,11 +339,17 @@ class YouTube:
 	
 	# TODO: get to remove as well
 	async def get_youtube_channel_id(self, id_or_username):
-		async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/channels", params = {"part": "id", "id": id_or_username, "key": self.bot.GOOGLE_API_KEY}) as resp:
+		url = "https://www.googleapis.com/youtube/v3/channels"
+		params = {"part": "id", "id": id_or_username, "key": self.bot.GOOGLE_API_KEY}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		if data["pageInfo"]["totalResults"]: return data["items"][0]["id"]
-		async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/channels", params = {"part": "id", "forUsername": id_or_username, "key": self.bot.GOOGLE_API_KEY}) as resp:
+		if data["pageInfo"]["totalResults"]:
+			return data["items"][0]["id"]
+		url = "https://www.googleapis.com/youtube/v3/channels"
+		params = {"part": "id", "forUsername": id_or_username, "key": self.bot.GOOGLE_API_KEY}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		if data["pageInfo"]["totalResults"]: return data["items"][0]["id"]
+		if data["pageInfo"]["totalResults"]:
+			return data["items"][0]["id"]
 		return ""
 
