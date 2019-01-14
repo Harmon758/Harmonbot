@@ -57,6 +57,8 @@ class YouTube:
 			self.uploads_info = json.load(uploads_file)
 		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"])
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
+		
+		self.bot.loop.create_task(self.initialize_database())
 	
 	def __unload(self):
 		utilities.remove_as_subcommand(self, "Audio.audio", "streams")
@@ -66,6 +68,29 @@ class YouTube:
 		# youtube.remove_command("streams") # Handle when audio cog not loaded first
 		self.streams_task.cancel()
 		self.renew_uploads_task.cancel()
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS youtube")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS youtube.streams (
+				discord_channel_id	BIGINT, 
+				youtube_channel_id	TEXT, 
+				PRIMARY KEY			(discord_channel_id, youtube_channel_id)
+			)
+			"""
+		)
+		for discord_channel_id, data in self.streams_info["channels"].items():
+			for youtube_channel_id in data["channel_ids"]:
+				await self.bot.db.execute(
+					"""
+					INSERT INTO youtube.streams (discord_channel_id, youtube_channel_id)
+					VALUES ($1, $2)
+					ON CONFLICT DO NOTHING
+					""", 
+					int(discord_channel_id), youtube_channel_id
+				)
 	
 	# TODO: use on_ready instead?
 	# TODO: renew after hub.lease_seconds?
