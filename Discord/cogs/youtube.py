@@ -138,6 +138,8 @@ class YouTube:
 	async def youtube_streams_remove(self, ctx, channel : str):
 		'''Remove YouTube channel being followed'''
 		channel_id = await self.get_youtube_channel_id(channel)
+		if not channel_id:
+			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
 		text_channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not text_channel or channel_id not in text_channel["channel_ids"]:
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
