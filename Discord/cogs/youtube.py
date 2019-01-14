@@ -79,7 +79,7 @@ class YouTube:
 		)
 		await self.bot.db.execute(
 			"""
-			CREATE TABLE IF NOT EXISTS youtube.streams_announced (
+			CREATE TABLE IF NOT EXISTS youtube.stream_announcements (
 				video_id		TEXT, 
 				channel_id		BIGINT, 
 				message_id		BIGINT, 
@@ -181,7 +181,7 @@ class YouTube:
 					# Migrate to database
 					await self.bot.db.execute(
 						"""
-						INSERT INTO youtube.streams_announced (video_id, channel_id, message_id, live)
+						INSERT INTO youtube.stream_announcements (video_id, channel_id, message_id, live)
 						VALUES ($1, $2, $3, TRUE)
 						ON CONFLICT (video_id, channel_id) DO
 						UPDATE SET live = TRUE
