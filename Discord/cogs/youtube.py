@@ -135,12 +135,13 @@ class YouTube:
 	
 	@youtube_streams.command(name = "remove", aliases = ["delete"], invoke_without_command = True)
 	@checks.is_permitted()
-	async def youtube_streams_remove(self, ctx, channel_id : str):
+	async def youtube_streams_remove(self, ctx, channel : str):
 		'''Remove YouTube channel being followed'''
-		channel = self.streams_info["channels"].get(str(ctx.channel.id))
-		if not channel or channel_id not in channel["channel_ids"]:
+		channel_id = await self.get_youtube_channel_id(channel)
+		text_channel = self.streams_info["channels"].get(str(ctx.channel.id))
+		if not text_channel or channel_id not in text_channel["channel_ids"]:
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
-		channel["channel_ids"].remove(channel_id)
+		text_channel["channel_ids"].remove(channel_id)
 		with open(clients.data_path + "/youtube_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply("Removed the YouTube channel, [`{0}`](https://www.youtube.com/channel/{0}), from this text channel".format(channel_id))
