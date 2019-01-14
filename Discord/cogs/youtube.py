@@ -95,13 +95,11 @@ class YouTube:
 		'''Add Youtube channel to follow'''
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
-			await ctx.embed_reply(":no_entry: Error: Youtube channel not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Youtube channel not found")
 		text_channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if text_channel:
 			if channel_id in text_channel["channel_ids"]:
-				await ctx.embed_reply(":no_entry: This text channel is already following that Youtube channel")
-				return
+				return await ctx.embed_reply(":no_entry: This text channel is already following that Youtube channel")
 			text_channel["channel_ids"].append(channel_id)
 		else:
 			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "channel_ids": [channel_id]}
