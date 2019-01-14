@@ -337,19 +337,13 @@ class YouTube:
 						await text_channel.send(embed = embed)
 					# TODO: Remove text channel data if now non-existent
 	
-	# TODO: get to remove as well
 	async def get_youtube_channel_id(self, id_or_username):
 		url = "https://www.googleapis.com/youtube/v3/channels"
-		params = {"part": "id", "id": id_or_username, "key": self.bot.GOOGLE_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if data["pageInfo"]["totalResults"]:
-			return data["items"][0]["id"]
-		url = "https://www.googleapis.com/youtube/v3/channels"
-		params = {"part": "id", "forUsername": id_or_username, "key": self.bot.GOOGLE_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if data["pageInfo"]["totalResults"]:
-			return data["items"][0]["id"]
+		for key in ("id", "forUsername"):
+			params = {"part": "id", key: id_or_username, "key": self.bot.GOOGLE_API_KEY}
+			async with clients.aiohttp_session.get(url, params = params) as resp:
+				data = await resp.json()
+			if data["pageInfo"]["totalResults"]:
+				return data["items"][0]["id"]
 		return ""
 
