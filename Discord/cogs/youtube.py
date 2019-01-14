@@ -165,7 +165,7 @@ class YouTube:
 					# TODO: Handle text channel not existing anymore
 					announcement[0] = await text_channel.get_message(int(announcement[0]))
 					# TODO: Handle message deleted
-					announcement[1] = discord.Embed(title = announcement[1]["title"], description = announcement[1].get("description"), url = announcement[1]["url"], timestamp = dateutil.parser.parse(announcement[1]["timestamp"]), color = announcement[1]["color"]).set_thumbnail(url = announcement[1]["thumbnail"]["url"]).set_author(name = announcement[1]["author"]["name"], url = announcement[1]["author"]["url"], icon_url = announcement[1]["author"]["icon_url"])
+					announcement[1] = discord.Embed.from_data(announcement[1])
 					del announcement[2]
 		## os.remove(clients.data_path + "/temp/youtube_streams_announced.json")
 		while not self.bot.is_closed():
