@@ -206,7 +206,7 @@ class YouTube:
 						item_data = item["snippet"]
 						if video_id in self.old_streams_announced:
 							for announcement in self.old_streams_announced[video_id]:
-								embed = announcement.embed
+								embed = announcement.embeds[0]
 								embed.set_author(name = embed.author.name.replace("was live", "is live now"), url = embed.author.url, icon_url = embed.author.icon_url)
 								await announcement.edit(embed = embed)
 							self.streams_announced[video_id] = self.old_streams_announced[video_id]
@@ -235,7 +235,7 @@ class YouTube:
 				for announced_video_id, announcements in self.streams_announced.copy().items():
 					if announced_video_id not in video_ids:
 						for announcement in announcements:
-							embed = announcement.embed
+							embed = announcement.embeds[0]
 							embed.set_author(name = embed.author.name.replace("is live now", "was live"), url = embed.author.url, icon_url = embed.author.icon_url)
 							await announcement.edit(embed = embed)
 							# TODO: Handle message deleted
