@@ -83,6 +83,7 @@ class YouTube:
 				video_id		TEXT, 
 				channel_id		BIGINT, 
 				message_id		BIGINT, 
+				live			BOOL, 
 				PRIMARY KEY		(video_id, channel_id)
 			)
 			"""
@@ -180,9 +181,10 @@ class YouTube:
 					# Migrate to database
 					await self.bot.db.execute(
 						"""
-						INSERT INTO youtube.streams_announced (video_id, channel_id, message_id)
-						VALUES ($1, $2, $3)
-						ON CONFLICT DO NOTHING
+						INSERT INTO youtube.streams_announced (video_id, channel_id, message_id, live)
+						VALUES ($1, $2, $3, TRUE)
+						ON CONFLICT (video_id, channel_id) DO
+						UPDATE SET live = TRUE
 						""", 
 						announced_video_id, int(announcement["channel"]), int(announcement["message"])
 					)
