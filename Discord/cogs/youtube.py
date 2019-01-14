@@ -93,8 +93,10 @@ class YouTube:
 	@checks.is_permitted()
 	async def youtube_streams_add(self, ctx, channel : str):
 		'''Add Youtube channel to follow'''
-		# TODO: Check channel ID validity
 		channel_id = await self.get_youtube_channel_id(channel)
+		if not channel_id:
+			await ctx.embed_reply(":no_entry: Error: Youtube channel not found")
+			return
 		text_channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if text_channel:
 			if channel_id in text_channel["channel_ids"]:
