@@ -86,6 +86,16 @@ class YouTube:
 			)
 			"""
 		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS youtube.stream_errors (
+				timestamp	TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
+				channel_id	TEXT, 
+				type		TEXT, 
+				message		TEXT
+			)
+			"""
+		)
 	
 	# TODO: use on_ready instead?
 	# TODO: renew after hub.lease_seconds?
@@ -170,8 +180,8 @@ class YouTube:
 				records = await self.bot.db.fetch("SELECT DISTINCT youtube_channel_id FROM youtube.streams")
 				video_ids = []
 				for record in records:
+					channel_id = record["youtube_channel_id"]
 					try:
-						channel_id = record["youtube_channel_id"]
 						url = "https://www.googleapis.com/youtube/v3/search"
 						params = {"part": "snippet", "eventType": "live", "type": "video", 
 									"channelId": channel_id, "key": self.bot.GOOGLE_API_KEY}
@@ -232,8 +242,15 @@ class YouTube:
 										)
 							video_ids.append(video_id)
 						await asyncio.sleep(1)
-					except aiohttp.ClientOSError:
-						print(f"ClientOSError in YouTube Task (channel ID: {channel_id})")
+					except aiohttp.ClientOSError as e:
+						await self.bot.db.execute(
+							"""
+							INSERT INTO youtube.stream_errors (channel_id, type, message)
+							VALUES ($1, $2, $3)
+							""", 
+							channel_id, type(e).__name__, str(e)
+						)
+						# Print error?
 						await asyncio.sleep(10)
 				records = await self.bot.db.fetch(
 					"""
