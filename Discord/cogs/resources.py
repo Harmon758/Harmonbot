@@ -226,6 +226,28 @@ class Resources:
 	
 	@commands.command()
 	@checks.not_forbidden()
+	async def latex(self, ctx, *, input : str):
+		'''
+		Render LaTeX
+		"The server is currently running TeX Live 2016 with most* popular packages installed."
+		"Potential security flaws such as \write18 and \input have been disabled."
+		"There is a rendering time limit of 8 seconds."
+		'''
+		# http://rtex.probablyaweb.site/docs
+		url = "http://rtex.probablyaweb.site/api/v2"
+		data = {"code": input, "format": "png"}
+		# TODO: Add jpg + pdf format options
+		async with clients.aiohttp_session.post(url, data = data) as resp:
+			if resp.status == 500:
+				return await ctx.embed_reply(":no_entry: Error")
+			data = await resp.json()
+		if data["status"] == "error":
+			return await ctx.embed_reply(f":no_entry: Error: {data['description']}")
+			# TODO: Include log?
+		await ctx.embed_reply(image_url = f"{url}/{data['filename']}")
+	
+	@commands.command()
+	@checks.not_forbidden()
 	async def longurl(self, ctx, url : str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url"
