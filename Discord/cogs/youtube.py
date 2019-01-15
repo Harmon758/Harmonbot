@@ -41,8 +41,6 @@ class YouTube:
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.streams_announced = {}
-		self.old_streams_announced = {}
 		self.uploads_processed = []
 		
 		utilities.add_as_subcommand(self, self.youtube_streams, "Audio.audio", "streams", aliases = ["stream"])
@@ -167,28 +165,6 @@ class YouTube:
 	async def check_youtube_streams(self):
 		await self.initialize_database()
 		await self.bot.wait_until_ready()
-		if os.path.isfile(clients.data_path + "/temp/youtube_streams_announced.json"):
-			with open(clients.data_path + "/temp/youtube_streams_announced.json", 'r') as streams_file:
-				self.streams_announced = json.load(streams_file)
-			for announced_video_id, announcements in self.streams_announced.copy().items():
-				self.streams_announced[announced_video_id] = []
-				for announcement in announcements:
-					text_channel = self.bot.get_channel(int(announcement["channel"]))
-					# TODO: Handle text channel not existing anymore
-					message = await text_channel.get_message(int(announcement["message"]))
-					# TODO: Handle message deleted
-					self.streams_announced[announced_video_id].append(message)
-					# Migrate to database
-					await self.bot.db.execute(
-						"""
-						INSERT INTO youtube.stream_announcements (video_id, channel_id, message_id, live)
-						VALUES ($1, $2, $3, TRUE)
-						ON CONFLICT (video_id, channel_id) DO
-						UPDATE SET live = TRUE
-						""", 
-						announced_video_id, int(announcement["channel"]), int(announcement["message"])
-					)
-		## os.remove(clients.data_path + "/temp/youtube_streams_announced.json")
 		while not self.bot.is_closed():
 			try:
 				records = await self.bot.db.fetch("SELECT DISTINCT youtube_channel_id FROM youtube.streams")
@@ -204,53 +180,87 @@ class YouTube:
 					for item in stream_data.get("items", []):
 						video_id = item["id"]["videoId"]
 						item_data = item["snippet"]
-						if video_id in self.old_streams_announced:
-							for announcement in self.old_streams_announced[video_id]:
-								embed = announcement.embeds[0]
-								embed.set_author(name = embed.author.name.replace("was live", "is live now"), url = embed.author.url, icon_url = embed.author.icon_url)
-								await announcement.edit(embed = embed)
-							self.streams_announced[video_id] = self.old_streams_announced[video_id]
-							del self.old_streams_announced[video_id]
-						elif video_id not in self.streams_announced:
-							channel_records = await self.bot.db.fetch(
+						channel_records = await self.bot.db.fetch(
+							"""
+							SELECT discord_channel_id
+							FROM youtube.streams
+							WHERE youtube_channel_id = $1
+							""", 
+							channel_id
+						)
+						for channel_record in channel_records:
+							record = await self.bot.db.fetchrow(
 								"""
-								SELECT discord_channel_id
-								FROM youtube.streams
-								WHERE youtube_channel_id = $1
+								SELECT message_id, live
+								FROM youtube.stream_announcements
+								WHERE video_id = $1 AND channel_id = $2
 								""", 
-								channel_id
+								video_id, channel_record["discord_channel_id"]
 							)
-							for record in channel_records:
-								text_channel = self.bot.get_channel(record["discord_channel_id"])
+							if not record:
+								text_channel = self.bot.get_channel(channel_record["discord_channel_id"])
 								if text_channel:
 									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = self.bot.youtube_color)
 									embed.set_author(name = "{} is live now on YouTube".format(item_data["channelTitle"]), url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
 									message = await text_channel.send(embed = embed)
-									self.streams_announced[video_id] = self.streams_announced.get(video_id, []) + [message]
+									await self.bot.db.execute(
+										"""
+										INSERT INTO youtube.stream_announcements (video_id, channel_id, message_id, live)
+										VALUES ($1, $2, $3, TRUE)
+										""", 
+										video_id, text_channel.id, message.id
+									)
 								# TODO: Remove text channel data if now non-existent
+							elif not record["live"]:
+								text_channel = self.bot.get_channel(channel_record["discord_channel_id"])
+								if text_channel:
+									message = await text_channel.get_message(record["message_id"])
+									# TODO: Handle message deleted
+									embed = message.embeds[0]
+									embed.set_author(name = embed.author.name.replace("was live", "is live now"), url = embed.author.url, icon_url = embed.author.icon_url)
+									await message.edit(embed = embed)
+									await self.bot.db.execute(
+										"""
+										UPDATE youtube.stream_announcements
+										SET live = TRUE
+										WHERE video_id = $1 AND channel_id = $2
+										""", 
+										video_id, channel_record["discord_channel_id"]
+									)
 						video_ids.append(video_id)
 					await asyncio.sleep(1)
-				for announced_video_id, announcements in self.streams_announced.copy().items():
-					if announced_video_id not in video_ids:
-						for announcement in announcements:
-							embed = announcement.embeds[0]
-							embed.set_author(name = embed.author.name.replace("is live now", "was live"), url = embed.author.url, icon_url = embed.author.icon_url)
-							await announcement.edit(embed = embed)
+				records = await self.bot.db.fetch(
+					"""
+					SELECT video_id, channel_id, message_id
+					FROM youtube.stream_announcements
+					WHERE live = TRUE
+					"""
+				)
+				for record in records:
+					if record["video_id"] not in video_ids:
+						text_channel = self.bot.get_channel(record["channel_id"])
+						if text_channel:
+							message = await text_channel.get_message(record["message_id"])
 							# TODO: Handle message deleted
-							self.old_streams_announced[announced_video_id] = self.streams_announced[announced_video_id]
-							del self.streams_announced[announced_video_id]
+							embed = message.embeds[0]
+							embed.set_author(name = embed.author.name.replace("is live now", "was live"), url = embed.author.url, icon_url = embed.author.icon_url)
+							await message.edit(embed = embed)
+							await self.bot.db.execute(
+								"""
+								UPDATE youtube.stream_announcements
+								SET live = FALSE
+								WHERE video_id = $1 AND channel_id = $2
+								""", 
+								record["video_id"], record["channel_id"]
+							)
 					# TODO: Handle no longer being followed?
 				await asyncio.sleep(20)
 			except aiohttp.ClientOSError:
 				print(f"ClientOSError in YouTube Task (channel ID: {channel_id})")
 				await asyncio.sleep(10)
 			except asyncio.CancelledError:
-				for announced_video_id, announcements in self.streams_announced.copy().items():
-					self.streams_announced[announced_video_id] = [{"message": str(message.id), "channel": str(message.channel.id)} for message in announcements]
-				with open(clients.data_path + "/temp/youtube_streams_announced.json", 'w') as streams_file:
-					json.dump(self.streams_announced, streams_file, indent = 4)
 				print("{}YouTube Task cancelled".format(self.bot.console_message_prefix))
 				return
 			except Exception as e:
