@@ -60,7 +60,7 @@ future==0.17.1
 geojson==2.4.1
 gitdb2==2.0.5
 googleapis-common-protos==1.5.6
-grpcio==1.17.1
+grpcio==1.18.0
 idna==2.8
 jaraco.itertools==4.4.1
 jsonschema==2.6.0
