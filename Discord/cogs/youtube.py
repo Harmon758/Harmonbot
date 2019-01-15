@@ -201,7 +201,7 @@ class YouTube:
 								text_channel = self.bot.get_channel(channel_record["discord_channel_id"])
 								if text_channel:
 									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = self.bot.youtube_color)
-									embed.set_author(name = "{} is live now on YouTube".format(item_data["channelTitle"]), url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
+									embed.set_author(name = f"{item_data['channelTitle']} is live now on YouTube", url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
 									message = await text_channel.send(embed = embed)
@@ -261,7 +261,7 @@ class YouTube:
 				print(f"ClientOSError in YouTube Task (channel ID: {channel_id})")
 				await asyncio.sleep(10)
 			except asyncio.CancelledError:
-				print("{}YouTube Task cancelled".format(self.bot.console_message_prefix))
+				print(f"{self.bot.console_message_prefix}YouTube Task cancelled")
 				return
 			except Exception as e:
 				print("Exception in YouTube Task", file = sys.stderr)
