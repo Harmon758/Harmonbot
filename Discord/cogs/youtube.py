@@ -48,10 +48,10 @@ class YouTube:
 		
 		self.streams_task = self.bot.loop.create_task(self.check_youtube_streams())
 		
-		clients.create_file("youtube_uploads", content = {"channels" : {}})
+		clients.create_file("youtube_uploads", content = {})
 		with open(clients.data_path + "/youtube_uploads.json", 'r') as uploads_file:
 			self.uploads_info = json.load(uploads_file)
-		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"])
+		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
 	
 	def __unload(self):
@@ -302,13 +302,13 @@ class YouTube:
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
 			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
-		text_channel = self.uploads_info["channels"].get(str(ctx.channel.id))
-		if text_channel:
-			if channel_id in text_channel["yt_channel_ids"]:
+		channels = self.uploads_info.get(str(ctx.channel.id))
+		if channels:
+			if channel_id in channels:
 				return await ctx.embed_reply(":no_entry: This text channel is already following that YouTube channel")
-			text_channel["yt_channel_ids"].append(channel_id)
+			channels.append(channel_id)
 		else:
-			self.uploads_info["channels"][str(ctx.channel.id)] = {"yt_channel_ids": [channel_id]}
+			self.uploads_info[str(ctx.channel.id)] = [channel_id]
 		url = "https://pubsubhubbub.appspot.com/"
 		headers = {"content-type": "application/x-www-form-urlencoded"}
 		data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", 
@@ -318,7 +318,7 @@ class YouTube:
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
 				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
-				self.uploads_info["channels"][str(ctx.channel.id)]["yt_channel_ids"].remove(channel_id)
+				self.uploads_info[str(ctx.channel.id)].remove(channel_id)
 				return
 		self.youtube_uploads_following.add(channel_id)
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
@@ -332,11 +332,11 @@ class YouTube:
 	@checks.is_permitted()
 	async def youtube_uploads_remove(self, ctx, channel_id : str):
 		'''Remove YouTube channel being followed'''
-		channel = self.uploads_info["channels"].get(str(ctx.channel.id))
-		if not channel or channel_id not in channel["yt_channel_ids"]:
+		channels = self.uploads_info.get(str(ctx.channel.id))
+		if not channels or channel_id not in channels:
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
-		channel["yt_channel_ids"].remove(channel_id)
-		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info["channels"].values() for channel_id in channels["yt_channel_ids"])
+		channels.remove(channel_id)
+		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
 		url = "https://pubsubhubbub.appspot.com/"
 		headers = {"content-type": "application/x-www-form-urlencoded"}
 		data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "unsubscribe", 
@@ -345,7 +345,7 @@ class YouTube:
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
 				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
-				self.uploads_info["channels"][str(ctx.channel.id)]["yt_channel_ids"].append(channel_id)
+				self.uploads_info[str(ctx.channel.id)].append(channel_id)
 				self.youtube_uploads_following.add(channel_id)
 				return
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
@@ -358,7 +358,7 @@ class YouTube:
 	@checks.not_forbidden()
 	async def youtube_uploads_channels(self, ctx):
 		'''Show YouTube channels being followed in this text channel'''
-		await ctx.embed_reply(clients.code_block.format('\n'.join(self.uploads_info["channels"].get(str(ctx.channel.id), {}).get("yt_channel_ids", []))))
+		await ctx.embed_reply(clients.code_block.format('\n'.join(self.uploads_info.get(str(ctx.channel.id), []))))
 	
 	async def process_youtube_upload(self, channel_id, request_content):
 		request_info = await self.bot.loop.run_in_executor(None, feedparser.parse, request_content) # Necessary to run in executor?
@@ -383,8 +383,8 @@ class YouTube:
 			if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
 			duration = data.get("contentDetails", {}).get("duration")
 			if duration: embed.description += f"\nLength: {utilities.secs_to_letter_format(isodate.parse_duration(duration).total_seconds())}"
-			for text_channel_id, channel_info in self.uploads_info["channels"].items():
-				if channel_id in channel_info["yt_channel_ids"]:
+			for text_channel_id, yt_channels in self.uploads_info.items():
+				if channel_id in yt_channels:
 					text_channel = self.bot.get_channel(int(text_channel_id))
 					if text_channel:
 						await text_channel.send(embed = embed)
