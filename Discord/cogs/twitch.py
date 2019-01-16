@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+import aiohttp
 import asyncio
 import datetime
 import dateutil.parser
@@ -265,6 +266,9 @@ class Twitch:
 							del self.streams_announced[announced_stream_id]
 					# TODO: Handle no longer being followed?
 				await asyncio.sleep(20)
+			except aiohttp.ClientConnectionError as e:
+				print("{}Twitch Task Connection Error: {}: {}".format(self.bot.console_message_prefix, type(e).__name__, str(e)))
+				await asyncio.sleep(10)
 			except asyncio.CancelledError:
 				for announced_stream_id, announcements in self.streams_announced.items():
 					for announcement in announcements:
