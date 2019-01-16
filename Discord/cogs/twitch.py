@@ -260,6 +260,9 @@ class Twitch:
 							try:
 								await announcement[0].edit(embed = embed)
 							except discord.Forbidden:
+								# Missing permission to edit?
+								pass
+							except discord.NotFound:
 								# Announcement was deleted
 								pass
 							self.old_streams_announced[announced_stream_id] = self.streams_announced[announced_stream_id]
