@@ -298,8 +298,8 @@ class Twitch:
 						embed = discord.Embed(title = stream["channel"]["status"] if len(stream["channel"]["status"]) <= 256 else stream["channel"]["status"][:253] + "...", description = "{0[channel][display_name]} is playing {0[game]}".format(stream) if stream["channel"]["game"] else discord.Embed.Empty, url = stream["channel"]["url"], timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), color = self.bot.twitch_color)
 						embed.set_author(name = "{} just went live on Twitch".format(stream["channel"]["display_name"]), icon_url = self.bot.twitch_icon_url)
 						if stream["channel"]["logo"]: embed.set_thumbnail(url = stream["channel"]["logo"])
-						embed.add_field(name = "Followers", value = stream["channel"]["followers"])
-						embed.add_field(name = "Views", value = stream["channel"]["views"])
+						embed.add_field(name = "Followers", value = f"{stream['channel']['followers']:,}")
+						embed.add_field(name = "Views", value = f"{stream['channel']['views']:,}")
 						text_channel = self.bot.get_channel(int(channel_id))
 						if not text_channel:
 							# TODO: Remove text channel data if now non-existent
