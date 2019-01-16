@@ -369,7 +369,7 @@ class YouTube:
 			# Don't process videos published more than an hour ago
 			if time_published < datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours = 1): return
 			embed = discord.Embed(title = video_data.title, url = video_data.link, timestamp = time_published, color = self.bot.youtube_color)
-			embed.set_author(name = "{} just uploaded a video on YouTube".format(video_data.author), url = video_data.author_detail.href, icon_url = self.bot.youtube_icon_url)
+			embed.set_author(name = f"{video_data.author} just uploaded a video on YouTube", url = video_data.author_detail.href, icon_url = self.bot.youtube_icon_url)
 			# TODO: Add channel icon as author icon?
 			# Add description + thumbnail + length
 			async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/videos", params = {"id": video_data.yt_videoid, "key": self.bot.GOOGLE_API_KEY, "part": "snippet,contentDetails"}) as resp:
@@ -382,7 +382,7 @@ class YouTube:
 			thumbnail_url = data.get("snippet", {}).get("thumbnails", {}).get("high", {}).get("url", None)
 			if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
 			duration = data.get("contentDetails", {}).get("duration")
-			if duration: embed.description += "\nLength: {}".format(utilities.secs_to_letter_format(isodate.parse_duration(duration).total_seconds()))
+			if duration: embed.description += f"\nLength: {utilities.secs_to_letter_format(isodate.parse_duration(duration).total_seconds())}"
 			for text_channel_id, channel_info in self.uploads_info["channels"].items():
 				if channel_id in channel_info["yt_channel_ids"]:
 					text_channel = self.bot.get_channel(int(text_channel_id))
