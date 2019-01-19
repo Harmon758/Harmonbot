@@ -199,6 +199,9 @@ class Trivia:
 		# Check removal of parentheses
 		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
 			return True
+		# Check XX or YY
+		if response in answer.split(" or "):
+			return True
 		# Check XX/YY ZZ
 		answer_words = answer.split(' ')
 		answers = answer_words[0].split('/')
