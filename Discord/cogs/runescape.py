@@ -32,8 +32,7 @@ class Runescape:
 		async with clients.aiohttp_session.get("https://runescape.wiki/api.php", params = {"action": "opensearch", "search": item}) as resp:
 			data = await resp.json()
 		if not data[1]:
-			await ctx.embed_reply(":no_entry: Item not found")
-			return
+			return await ctx.embed_reply(":no_entry: Item not found")
 		for i in data[1]:
 			# https://www.semantic-mediawiki.org/wiki/Help:Ask
 			# https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
@@ -45,12 +44,10 @@ class Runescape:
 				item_id = item_id[0]
 				break
 		if not item_id:
-			await ctx.embed_reply(f":no_entry: {item} is not an item")
-			return
+			return await ctx.embed_reply(f":no_entry: {item} is not an item")
 		async with clients.aiohttp_session.get("https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json", params = {"item": item_id}) as resp:
 			if resp.status == 404:
-				await ctx.embed_reply(f":no_entry: Error: {item} not found on the Grand Exchange")
-				return
+				return await ctx.embed_reply(f":no_entry: Error: {item} not found on the Grand Exchange")
 			data = await resp.json(content_type = "text/html")
 		data = data["item"]
 		await ctx.embed_reply(data["description"], title = data["name"], title_url = f"https://services.runescape.com/m=itemdb_rs/viewitem?obj={item_id}", thumbnail_url = data["icon_large"], fields = (("Current", data["current"]["price"]), ("Today", data["today"]["price"]), ("30 Day", data["day30"]["change"]), ("90 Day", data["day90"]["change"]), ("180 Day", data["day180"]["change"]), ("Category", data["type"])))
