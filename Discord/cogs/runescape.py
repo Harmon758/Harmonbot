@@ -72,8 +72,7 @@ class Runescape:
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
 		if data[0] == "none":
-			await ctx.embed_reply(":no_entry: Monster not found")
-			return
+			return await ctx.embed_reply(":no_entry: Monster not found")
 		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
 		params = {"beastid": data[0]["value"]}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
