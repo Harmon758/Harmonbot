@@ -88,13 +88,19 @@ class Runescape:
 	@checks.not_forbidden()
 	async def stats(self, ctx, *, username : str):
 		'''Stats'''
-		async with clients.aiohttp_session.get("http://services.runescape.com/m=hiscore/index_lite.ws", params = {"player": username}) as resp:
+		url = "http://services.runescape.com/m=hiscore/index_lite.ws"
+		params = {"player": username}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
 				return await ctx.embed_reply(":no_entry: Player not found")
 			data = await resp.text()
 		data = csv.DictReader(data.splitlines(), fieldnames = ("rank", "level", "xp"))
 		stats = collections.OrderedDict()
-		stats_names = ("Overall", "Attack", "Defence", "Strength", "Constitution", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving", "Slayer", "Farming", "Runecrafting", "Hunter", "Construction", "Summoning", "Dungeoneering", "Divination", "Invention")
+		stats_names = ("Overall", "Attack", "Defence", "Strength", "Constitution", "Ranged", 
+						"Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", 
+						"Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", 
+						"Thieving", "Slayer", "Farming", "Runecrafting", "Hunter", "Construction", 
+						"Summoning", "Dungeoneering", "Divination", "Invention")
 		for stat in stats_names:
 			stats[stat] = next(data)
 
@@ -109,7 +115,8 @@ class Runescape:
 		output = [f"""`| {values["level"].rjust(4).ljust(5)}| {f"{int(values['xp']):,d}".rjust(max_length)}`""" for values in stats.values()]
 		fields.append(("| Level | Experience", '\n'.join(output)))
 		
-		await ctx.embed_reply(title = username, title_url = f"http://services.runescape.com/m=hiscore/compare?user1={username.replace(' ', '+')}", fields = fields)
+		title_url = f"http://services.runescape.com/m=hiscore/compare?user1={username.replace(' ', '+')}"
+		await ctx.embed_reply(title = username, title_url = title_url, fields = fields)
 	
 	@runescape.command()
 	@checks.not_forbidden()
