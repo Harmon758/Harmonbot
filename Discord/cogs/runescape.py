@@ -82,7 +82,7 @@ class Runescape:
 											("XP/Kill", data["xp"]), ("Lifepoints", data["lifepoints"]), 
 											("Members", "Yes" if data["members"] else "No"), 
 											("Aggressive", "Yes" if data["aggressive"] else "No")))
-		# add other? - http://runescape.wikia.com/wiki/RuneScape_Bestiary#beastData
+		# add other? - https://runescape.wiki/w/RuneScape_Bestiary#beastData
 	
 	@runescape.command(aliases = ["levels", "level", "xp", "ranks", "rank"])
 	@checks.not_forbidden()
