@@ -90,8 +90,7 @@ class Runescape:
 		'''Stats'''
 		async with clients.aiohttp_session.get("http://services.runescape.com/m=hiscore/index_lite.ws", params = {"player": username}) as resp:
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Player not found")
-				return
+				return await ctx.embed_reply(":no_entry: Player not found")
 			data = await resp.text()
 		data = csv.DictReader(data.splitlines(), fieldnames = ("rank", "level", "xp"))
 		stats = collections.OrderedDict()
@@ -104,11 +103,11 @@ class Runescape:
 		output = [f"`{name}`" for name in stats_names]
 		embed.add_field(name = "Skill", value = '\n'.join(output))
 		
-		max_length = max([len(f"{int(values['rank']):,d}") for values in stats.values()])
+		max_length = max(len(f"{int(values['rank']):,d}") for values in stats.values())
 		output = [f"""`| {f"{int(values['rank']):,d}".rjust(max_length)}`""" for values in stats.values()]
 		embed.add_field(name = "| Rank", value = '\n'.join(output))
 		
-		max_length = max([len(f"{int(values['xp']):,d}") for values in stats.values()])
+		max_length = max(len(f"{int(values['xp']):,d}") for values in stats.values())
 		output = [f"""`| {values["level"].rjust(4).ljust(5)}| {f"{int(values['xp']):,d}".rjust(max_length)}`""" for values in stats.values()]
 		embed.add_field(name = "| Level | Experience", value = '\n'.join(output))
 		
