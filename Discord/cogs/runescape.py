@@ -77,7 +77,11 @@ class Runescape:
 		params = {"beastid": data[0]["value"]}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
-		await ctx.embed_reply(data["description"], title = data["name"], fields = (("Level", data["level"]), ("Weakness", data["weakness"]), ("XP/Kill", data["xp"]), ("Lifepoints", data["lifepoints"]), ("Members", "Yes" if data["members"] else "No"), ("Aggressive", "Yes" if data["aggressive"] else "No")))
+		await ctx.embed_reply(data["description"], title = data["name"], 
+								fields = (("Level", data["level"]), ("Weakness", data["weakness"]), 
+											("XP/Kill", data["xp"]), ("Lifepoints", data["lifepoints"]), 
+											("Members", "Yes" if data["members"] else "No"), 
+											("Aggressive", "Yes" if data["aggressive"] else "No")))
 		# add other? - http://runescape.wikia.com/wiki/RuneScape_Bestiary#beastData
 	
 	@runescape.command(aliases = ["levels", "level", "xp", "ranks", "rank"])
