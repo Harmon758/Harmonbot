@@ -98,18 +98,18 @@ class Runescape:
 		stats_names = ("Overall", "Attack", "Defence", "Strength", "Constitution", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving", "Slayer", "Farming", "Runecrafting", "Hunter", "Construction", "Summoning", "Dungeoneering", "Divination", "Invention")
 		for stat in stats_names:
 			stats[stat] = next(data)
-		embed = discord.Embed(title = username, url = "http://services.runescape.com/m=hiscore/compare?user1={}".format(username.replace(' ', '+')), color = ctx.bot.bot_color)
+		embed = discord.Embed(title = username, url = f"http://services.runescape.com/m=hiscore/compare?user1={username.replace(' ', '+')}", color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 
-		output = ["`{}`".format(name) for name in stats_names]
+		output = [f"`{name}`" for name in stats_names]
 		embed.add_field(name = "Skill", value = '\n'.join(output))
 		
-		max_length = max([len("{:,d}".format(int(values["rank"]))) for values in stats.values()])
-		output = ["`| {}`".format("{:,d}".format(int(values["rank"])).rjust(max_length)) for values in stats.values()]
+		max_length = max([len(f"{int(values['rank']):,d}") for values in stats.values()])
+		output = [f"""`| {f"{int(values['rank']):,d}".rjust(max_length)}`""" for values in stats.values()]
 		embed.add_field(name = "| Rank", value = '\n'.join(output))
 		
-		max_length = max([len("{:,d}".format(int(values["xp"]))) for values in stats.values()])
-		output = ["`| {}| {}`".format(values["level"].rjust(4).ljust(5), "{:,d}".format(int(values["xp"])).rjust(max_length)) for values in stats.values()]
+		max_length = max([len(f"{int(values['xp']):,d}") for values in stats.values()])
+		output = [f"""`| {values["level"].rjust(4).ljust(5)}| {f"{int(values['xp']):,d}".rjust(max_length)}`""" for values in stats.values()]
 		embed.add_field(name = "| Level | Experience", value = '\n'.join(output))
 		
 		await ctx.send(embed = embed)
