@@ -26,10 +26,10 @@ class Runescape:
 	@checks.not_forbidden()
 	async def ge(self, ctx, *, item):
 		'''Grand Exchange'''
-		# https://runescape.wikia.com/wiki/Application_programming_interface#Grand_Exchange_Database_API		
+        # https://runescape.wiki/w/Application_programming_interface#Grand_Exchange_Database_API
 		# https://www.mediawiki.org/wiki/API:Opensearch
 		# TODO: Handle redirects?
-		async with clients.aiohttp_session.get("http://runescape.wikia.com/api.php", params = {"action": "opensearch", "search": item}) as resp:
+		async with clients.aiohttp_session.get("http://runescape.wiki/api.php", params = {"action": "opensearch", "search": item}) as resp:
 			data = await resp.json()
 		if not data[1]:
 			await ctx.embed_reply(":no_entry: Item not found")
@@ -37,7 +37,7 @@ class Runescape:
 		for i in data[1]:
 			# https://www.semantic-mediawiki.org/wiki/Help:Ask
 			# https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
-			async with clients.aiohttp_session.get("http://runescape.wikia.com/api.php", params = {"action": "ask", "query": f"[[{i}]]|?Item_ID", "format": "json"}) as resp:
+			async with clients.aiohttp_session.get("http://runescape.wiki/api.php", params = {"action": "ask", "query": f"[[{i}]]|?Item_ID", "format": "json"}) as resp:
 				data = await resp.json()
 			item_id = list(data["query"]["results"].values())[0]["printouts"]["Item ID"]
 			if item_id:
