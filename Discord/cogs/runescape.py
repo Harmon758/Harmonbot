@@ -37,7 +37,7 @@ class Runescape:
 		for i in data[1]:
 			# https://www.semantic-mediawiki.org/wiki/Help:Ask
 			# https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
-			async with clients.aiohttp_session.get("http://runescape.wikia.com/api.php", params = {"action": "ask", "query": "[[{}]]|?Item_ID".format(i), "format": "json"}) as resp:
+			async with clients.aiohttp_session.get("http://runescape.wikia.com/api.php", params = {"action": "ask", "query": f"[[{i}]]|?Item_ID", "format": "json"}) as resp:
 				data = await resp.json()
 			item_id = list(data["query"]["results"].values())[0]["printouts"]["Item ID"]
 			if item_id:
@@ -45,15 +45,15 @@ class Runescape:
 				item_id = item_id[0]
 				break
 		if not item_id:
-			await ctx.embed_reply(":no_entry: {} is not an item".format(item))
+			await ctx.embed_reply(f":no_entry: {item} is not an item")
 			return
 		async with clients.aiohttp_session.get("http://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json", params = {"item": item_id}) as resp:
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: {} not found on the Grand Exchange".format(item))
+				await ctx.embed_reply(f":no_entry: Error: {item} not found on the Grand Exchange")
 				return
 			data = await resp.json(content_type = "text/html")
 		data = data["item"]
-		await ctx.embed_reply(data["description"], title = data["name"], title_url = "http://services.runescape.com/m=itemdb_rs/viewitem?obj={}".format(item_id), thumbnail_url = data["icon_large"], fields = (("Current", data["current"]["price"]), ("Today", data["today"]["price"]), ("30 Day", data["day30"]["change"]), ("90 Day", data["day90"]["change"]), ("180 Day", data["day180"]["change"]), ("Category", data["type"])))
+		await ctx.embed_reply(data["description"], title = data["name"], title_url = f"http://services.runescape.com/m=itemdb_rs/viewitem?obj={item_id}", thumbnail_url = data["icon_large"], fields = (("Current", data["current"]["price"]), ("Today", data["today"]["price"]), ("30 Day", data["day30"]["change"]), ("90 Day", data["day90"]["change"]), ("180 Day", data["day180"]["change"]), ("Category", data["type"])))
 		# id?, members
 	
 	@runescape.command(aliases = ["bestiary"])
