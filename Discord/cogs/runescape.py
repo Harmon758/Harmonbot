@@ -29,14 +29,17 @@ class Runescape:
 		# https://runescape.wiki/w/Application_programming_interface#Grand_Exchange_Database_API
 		# https://www.mediawiki.org/wiki/API:Opensearch
 		# TODO: Handle redirects?
-		async with clients.aiohttp_session.get("https://runescape.wiki/api.php", params = {"action": "opensearch", "search": item}) as resp:
+		url = "https://runescape.wiki/api.php"
+		params = {"action": "opensearch", "search": item}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data[1]:
 			return await ctx.embed_reply(":no_entry: Item not found")
 		for i in data[1]:
 			# https://www.semantic-mediawiki.org/wiki/Help:Ask
 			# https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
-			async with clients.aiohttp_session.get("https://runescape.wiki/api.php", params = {"action": "ask", "query": f"[[{i}]]|?Item_ID", "format": "json"}) as resp:
+			params = {"action": "ask", "query": f"[[{i}]]|?Item_ID", "format": "json"}
+			async with clients.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			item_id = list(data["query"]["results"].values())[0]["printouts"]["Item ID"]
 			if item_id:
@@ -45,12 +48,19 @@ class Runescape:
 				break
 		if not item_id:
 			return await ctx.embed_reply(f":no_entry: {item} is not an item")
-		async with clients.aiohttp_session.get("https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json", params = {"item": item_id}) as resp:
+		url = "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json"
+		params = {"item": item_id}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {item} not found on the Grand Exchange")
 			data = await resp.json(content_type = "text/html")
 		data = data["item"]
-		await ctx.embed_reply(data["description"], title = data["name"], title_url = f"https://services.runescape.com/m=itemdb_rs/viewitem?obj={item_id}", thumbnail_url = data["icon_large"], fields = (("Current", data["current"]["price"]), ("Today", data["today"]["price"]), ("30 Day", data["day30"]["change"]), ("90 Day", data["day90"]["change"]), ("180 Day", data["day180"]["change"]), ("Category", data["type"])))
+		await ctx.embed_reply(data["description"], title = data["name"], 
+								title_url = f"https://services.runescape.com/m=itemdb_rs/viewitem?obj={item_id}", 
+								thumbnail_url = data["icon_large"], 
+								fields = (("Current", data["current"]["price"]), ("Today", data["today"]["price"]), 
+											("30 Day", data["day30"]["change"]), ("90 Day", data["day90"]["change"]), 
+											("180 Day", data["day180"]["change"]), ("Category", data["type"])))
 		# id?, members
 	
 	@runescape.command(aliases = ["bestiary"])
