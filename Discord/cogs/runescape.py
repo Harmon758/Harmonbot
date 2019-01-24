@@ -26,7 +26,7 @@ class Runescape:
 	@checks.not_forbidden()
 	async def ge(self, ctx, *, item):
 		'''Grand Exchange'''
-        # https://runescape.wiki/w/Application_programming_interface#Grand_Exchange_Database_API
+		# https://runescape.wiki/w/Application_programming_interface#Grand_Exchange_Database_API
 		# https://www.mediawiki.org/wiki/API:Opensearch
 		# TODO: Handle redirects?
 		async with clients.aiohttp_session.get("https://runescape.wiki/api.php", params = {"action": "opensearch", "search": item}) as resp:
@@ -112,10 +112,10 @@ class Runescape:
 	@checks.not_forbidden()
 	async def zybez(self, ctx):
 		'''
-        This command has been deprecated
-        Zybez RuneScape Community was shut down on September 17th, 2018
-        https://forums.zybez.net/topic/1783583-exit-post-the-end/
-        '''
+		This command has been deprecated
+		Zybez RuneScape Community was shut down on September 17th, 2018
+		https://forums.zybez.net/topic/1783583-exit-post-the-end/
+		'''
 		# Previously used https://forums.zybez.net/runescape-2007-prices/api/?info
 		await ctx.embed_reply("See https://forums.zybez.net/topic/1783583-exit-post-the-end/")
 
