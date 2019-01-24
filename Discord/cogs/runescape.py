@@ -16,14 +16,15 @@ class Runescape:
 	def __init__(self, bot):
 		self.bot = bot
 	
+	def __local_check(self, ctx):
+		return checks.not_forbidden_predicate(ctx)
+	
 	@commands.group(aliases = ["rs"], invoke_without_command = True)
-	@checks.not_forbidden()
 	async def runescape(self, ctx):
 		'''Runescape'''
 		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
 	
 	@runescape.command(aliases = ["grandexchange", "grand_exchange"])
-	@checks.not_forbidden()
 	async def ge(self, ctx, *, item):
 		'''Grand Exchange'''
 		# https://runescape.wiki/w/Application_programming_interface#Grand_Exchange_Database_API
@@ -64,7 +65,6 @@ class Runescape:
 		# id?, members
 	
 	@runescape.command(aliases = ["bestiary"])
-	@checks.not_forbidden()
 	async def monster(self, ctx, *, monster : str):
 		'''Bestiary'''
 		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json"
@@ -85,7 +85,6 @@ class Runescape:
 		# add other? - https://runescape.wiki/w/RuneScape_Bestiary#beastData
 	
 	@runescape.command(aliases = ["levels", "level", "xp", "ranks", "rank"])
-	@checks.not_forbidden()
 	async def stats(self, ctx, *, username : str):
 		'''Stats'''
 		url = "http://services.runescape.com/m=hiscore/index_lite.ws"
@@ -119,13 +118,11 @@ class Runescape:
 		await ctx.embed_reply(title = username, title_url = title_url, fields = fields)
 	
 	@runescape.command()
-	@checks.not_forbidden()
 	async def wiki(self, ctx):
 		'''WIP'''
 		...
 	
 	@runescape.command(hidden = True)
-	@checks.not_forbidden()
 	async def zybez(self, ctx):
 		'''
 		This command has been deprecated
