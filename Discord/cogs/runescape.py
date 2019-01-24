@@ -67,14 +67,16 @@ class Runescape:
 	@checks.not_forbidden()
 	async def monster(self, ctx, *, monster : str):
 		'''Bestiary'''
-		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term={}".format(monster.replace(' ', '+'))
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json"
+		params = {"term": monster}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
 		if data[0] == "none":
 			await ctx.embed_reply(":no_entry: Monster not found")
 			return
-		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid={}".format(data[0]["value"])
-		async with clients.aiohttp_session.get(url) as resp:
+		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
+		params = {"beastid": data[0]["value"]}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
 		await ctx.embed_reply(data["description"], title = data["name"], fields = (("Level", data["level"]), ("Weakness", data["weakness"]), ("XP/Kill", data["xp"]), ("Lifepoints", data["lifepoints"]), ("Members", "Yes" if data["members"] else "No"), ("Aggressive", "Yes" if data["aggressive"] else "No")))
 		# add other? - http://runescape.wikia.com/wiki/RuneScape_Bestiary#beastData
