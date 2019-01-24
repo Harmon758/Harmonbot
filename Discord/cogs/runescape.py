@@ -88,7 +88,7 @@ class Runescape:
 	@checks.not_forbidden()
 	async def stats(self, ctx, *, username : str):
 		'''Stats'''
-		async with clients.aiohttp_session.get("http://services.runescape.com/m=hiscore/index_lite.ws?player={}".format(username.replace(' ', '+'))) as resp:
+		async with clients.aiohttp_session.get("http://services.runescape.com/m=hiscore/index_lite.ws", params = {"player": username}) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Player not found")
 				return
