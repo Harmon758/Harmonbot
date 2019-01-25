@@ -301,10 +301,13 @@ class Random:
 	@checks.not_forbidden()
 	async def fact(self, ctx):
 		'''Random fact'''
-		url = "http://mentalfloss.com/api/1.0/views/amazing_facts.json?limit=1&bypass={}".format(random.random())
+		url = "http://mentalfloss.com/api/facts"
+		# params = {"limit": 1, "cb": random.random()}
+		# https://mentalfloss.com/amazingfactgenerator
+		# uses page, limit, and cb parameters, seemingly to no effect
 		async with clients.aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		await ctx.embed_reply(BeautifulSoup(data[0]["nid"]).text)
+			data = await resp.json(content_type = "text/plain")
+		await ctx.embed_reply(BeautifulSoup(data[0]["fact"]).text)
 	
 	@fact.command(name = "cat", aliases = ["cats"])
 	@checks.not_forbidden()
