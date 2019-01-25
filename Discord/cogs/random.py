@@ -307,7 +307,7 @@ class Random:
 		# uses page, limit, and cb parameters, seemingly to no effect
 		async with clients.aiohttp_session.get(url) as resp:
 			data = await resp.json(content_type = "text/plain")
-		await ctx.embed_reply(BeautifulSoup(data[0]["fact"]).text, image_url = data[0]["primaryImage"])
+		await ctx.embed_reply(BeautifulSoup(data[0]["fact"], "lxml").text, image_url = data[0]["primaryImage"])
 	
 	@fact.command(name = "cat", aliases = ["cats"])
 	@checks.not_forbidden()
