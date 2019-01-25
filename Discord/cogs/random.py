@@ -301,7 +301,7 @@ class Random:
 	@checks.not_forbidden()
 	async def fact(self, ctx):
 		'''Random fact'''
-		url = "http://mentalfloss.com/api/facts"
+		url = "https://mentalfloss.com/api/facts"
 		# params = {"limit": 1, "cb": random.random()}
 		# https://mentalfloss.com/amazingfactgenerator
 		# uses page, limit, and cb parameters, seemingly to no effect
