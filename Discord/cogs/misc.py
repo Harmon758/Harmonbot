@@ -31,6 +31,11 @@ class Misc:
 	def __init__(self, bot):
 		self.bot = bot
 	
+	@commands.command(aliases = ["bigmote"])
+	@checks.not_forbidden()
+	async def bigmoji(self, ctx, emoji : discord.PartialEmoji):
+		await ctx.embed_reply(image_url = emoji.url)
+	
 	@commands.command(aliases = ["emotify"])
 	@checks.not_forbidden()
 	async def emojify(self, ctx, *, text : str):
