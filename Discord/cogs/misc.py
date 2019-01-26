@@ -87,7 +87,7 @@ class Misc:
 	@checks.not_forbidden()
 	async def fingers(self, ctx, *, text : str):
 		'''Add fingers'''
-		await ctx.embed_reply(":point_right::skin-tone-2: {} :point_left::skin-tone-2:".format(text))
+		await ctx.embed_reply(f":point_right::skin-tone-2: {text} :point_left::skin-tone-2:")
 	
 	@commands.command()
 	@checks.not_forbidden()
