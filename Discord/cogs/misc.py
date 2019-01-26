@@ -44,9 +44,9 @@ class Misc:
 		output = ""
 		for character in text:
 			if 'a' <= character.lower() <= 'z':
-				output += ":regional_indicator_{}:".format(character.lower())
+				output += f":regional_indicator_{character.lower()}:"
 			elif '0' <= character <= '9':
-				output += ":{}:".format(clients.inflect_engine.number_to_words(int(character)))
+				output += f":{clients.inflect_engine.number_to_words(int(character))}:"
 			else:
 				output += character
 		try:
