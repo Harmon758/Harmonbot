@@ -175,11 +175,8 @@ class Trivia:
 		answer = ' '.join(answer.split()).lower().strip('"')
 		response = ' '.join(response.split()).lower().strip('"')
 		# Remove article prefixes
-		for article in ("a ", "an ", "the "):
-			if answer.startswith(article):
-				answer = answer[len(article):]
-			if response.startswith(article):
-				response = response[len(article):]
+		answer = self.remove_article_prefix(answer)
+		response = self.remove_article_prefix(response)
 		# Strip quotation marks
 		answer = answer.strip('"')
 		response = response.strip('"')
@@ -197,7 +194,7 @@ class Trivia:
 		if answer.replace('-', "") == response.replace('-', ""):
 			return True
 		# Check removal of parentheses
-		if response.replace('(', "").replace(')', "") == answer.replace('(', "").replace(')', ""):
+		if response == self.remove_article_prefix(answer.replace('(', "").replace(')', "")):
 			return True
 		# Check XX or YY
 		if response in answer.split(" or "):
@@ -239,6 +236,12 @@ class Trivia:
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		return False
+	
+	def remove_article_prefix(self, input):
+		for article in ("a ", "an ", "the "):
+			if input.startswith(article):
+				return input[len(article):]
+		return input
 	
 	async def on_message(self, message):
 		if not message.guild or message.guild.id not in self.active:
