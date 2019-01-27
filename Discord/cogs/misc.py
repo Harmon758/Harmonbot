@@ -129,20 +129,20 @@ class Misc:
 		if not to_poke:
 			await ctx.embed_reply(":no_entry: User not found")
 		elif to_poke == self.bot.user:
-			await ctx.embed_reply("!poke {}".format(ctx.author.mention))
+			await ctx.embed_reply(f"!poke {ctx.author.mention}")
 		else:
-			clients.create_folder(clients.data_path + "/user_data/{}".format(ctx.author.id))
-			clients.create_file("user_data/{}/pokes".format(ctx.author.id))
-			with open(clients.data_path + "/user_data/{}/pokes.json".format(ctx.author.id), 'r') as pokes_file:
+			clients.create_folder(f"{clients.data_path}/user_data/{ctx.author.id}")
+			clients.create_file(f"user_data/{ctx.author.id}/pokes")
+			with open(f"{clients.data_path}/user_data/{ctx.author.id}/pokes.json", 'r') as pokes_file:
 				pokes_data = json.load(pokes_file)
 			pokes_data[str(to_poke.id)] = pokes_data.get(str(to_poke.id), 0) + 1
-			with open(clients.data_path + "/user_data/{}/pokes.json".format(ctx.author.id), 'w') as pokes_file:
+			with open(f"{clients.data_path}/user_data/{ctx.author.id}/pokes.json", 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
 			embed = discord.Embed(color = ctx.bot.bot_color)
 			embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-			embed.description = "Poked you for the {} time!".format(clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)]))
+			embed.description = f"Poked you for the {clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])} time!"
 			await to_poke.send(embed = embed)
-			await ctx.embed_reply("You have poked {} for the {} time!".format(to_poke.mention, clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])), footer_text = "In response to: {}".format(ctx.message.clean_content))
+			await ctx.embed_reply(f"You have poked {to_poke.mention} for the {clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])} time!", footer_text = f"In response to: {ctx.message.clean_content}")
 	
 	@commands.command()
 	@checks.not_forbidden()
