@@ -123,26 +123,23 @@ class Misc:
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def poke(self, ctx, *, user : str):
+	async def poke(self, ctx, *, user : discord.Member):
 		'''Poke someone'''
-		to_poke = await utilities.get_user(ctx, user)
-		if not to_poke:
-			await ctx.embed_reply(":no_entry: User not found")
-		elif to_poke == self.bot.user:
+		if user == self.bot.user:
 			await ctx.embed_reply(f"!poke {ctx.author.mention}")
 		else:
 			clients.create_folder(f"{clients.data_path}/user_data/{ctx.author.id}")
 			clients.create_file(f"user_data/{ctx.author.id}/pokes")
 			with open(f"{clients.data_path}/user_data/{ctx.author.id}/pokes.json", 'r') as pokes_file:
 				pokes_data = json.load(pokes_file)
-			pokes_data[str(to_poke.id)] = pokes_data.get(str(to_poke.id), 0) + 1
+			pokes_data[str(user.id)] = pokes_data.get(str(user.id), 0) + 1
 			with open(f"{clients.data_path}/user_data/{ctx.author.id}/pokes.json", 'w') as pokes_file:
 				json.dump(pokes_data, pokes_file, indent = 4)
 			embed = discord.Embed(color = ctx.bot.bot_color)
 			embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-			embed.description = f"Poked you for the {clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])} time!"
-			await to_poke.send(embed = embed)
-			await ctx.embed_reply(f"You have poked {to_poke.mention} for the {clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])} time!")
+			embed.description = f"Poked you for the {clients.inflect_engine.ordinal(pokes_data[str(user.id)])} time!"
+			await user.send(embed = embed)
+			await ctx.embed_reply(f"You have poked {user.mention} for the {clients.inflect_engine.ordinal(pokes_data[str(user.id)])} time!")
 	
 	@commands.command()
 	@checks.not_forbidden()
