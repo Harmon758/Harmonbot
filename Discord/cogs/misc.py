@@ -142,7 +142,7 @@ class Misc:
 			embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
 			embed.description = f"Poked you for the {clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])} time!"
 			await to_poke.send(embed = embed)
-			await ctx.embed_reply(f"You have poked {to_poke.mention} for the {clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])} time!", footer_text = f"In response to: {ctx.message.clean_content}")
+			await ctx.embed_reply(f"You have poked {to_poke.mention} for the {clients.inflect_engine.ordinal(pokes_data[str(to_poke.id)])} time!")
 	
 	@commands.command()
 	@checks.not_forbidden()
