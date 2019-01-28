@@ -30,6 +30,39 @@ class Misc:
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.bot.loop.create_task(self.initialize_database())
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS pokes")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS pokes.pokes (
+				poker			BIGINT, 
+				pokee			BIGINT, 
+				count			INT, 
+				PRIMARY KEY		(poker, pokee)
+			)
+			"""
+		)
+		# Migrate existing data
+		import os
+		for dirpath, dirnames, filenames in os.walk(clients.data_path + "/user_data"):
+			try:
+				with open(os.path.join(dirpath, "pokes.json"), 'r') as pokes_file:
+					pokes = json.load(pokes_file)
+				for pokee, count in pokes.items():
+					await self.bot.db.execute(
+						"""
+						INSERT INTO pokes.pokes (poker, pokee, count)
+						VALUES ($1, $2, $3)
+						ON CONFLICT (poker, pokee) DO
+						UPDATE SET count = $3
+						""", 
+						int(dirpath.split('\\')[-1]), int(pokee), count
+					)
+			except FileNotFoundError:
+				pass
 	
 	@commands.command(aliases = ["bigmote"])
 	@checks.not_forbidden()
