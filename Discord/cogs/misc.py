@@ -45,24 +45,6 @@ class Misc:
 			)
 			"""
 		)
-		# Migrate existing data
-		import os
-		for dirpath, dirnames, filenames in os.walk(clients.data_path + "/user_data"):
-			try:
-				with open(os.path.join(dirpath, "pokes.json"), 'r') as pokes_file:
-					pokes = json.load(pokes_file)
-				for pokee, count in pokes.items():
-					await self.bot.db.execute(
-						"""
-						INSERT INTO pokes.pokes (poker, pokee, count)
-						VALUES ($1, $2, $3)
-						ON CONFLICT (poker, pokee) DO
-						UPDATE SET count = $3
-						""", 
-						int(dirpath.split('\\')[-1]), int(pokee), count
-					)
-			except FileNotFoundError:
-				pass
 	
 	@commands.command(aliases = ["bigmote"])
 	@checks.not_forbidden()
@@ -160,14 +142,17 @@ class Misc:
 		'''Poke someone'''
 		if user == self.bot.user:
 			return await ctx.embed_reply(f"!poke {ctx.author.mention}")
-		clients.create_folder(f"{clients.data_path}/user_data/{ctx.author.id}")
-		clients.create_file(f"user_data/{ctx.author.id}/pokes")
-		with open(f"{clients.data_path}/user_data/{ctx.author.id}/pokes.json", 'r') as pokes_file:
-			pokes_data = json.load(pokes_file)
-		pokes_data[str(user.id)] = pokes_data.get(str(user.id), 0) + 1
-		with open(f"{clients.data_path}/user_data/{ctx.author.id}/pokes.json", 'w') as pokes_file:
-			json.dump(pokes_data, pokes_file, indent = 4)
-		times = clients.inflect_engine.ordinal(pokes_data[str(user.id)])
+		times = await ctx.bot.db.fetchval(
+			"""
+			INSERT INTO pokes.pokes (poker, pokee, count)
+			VALUES ($1, $2, 1)
+			ON CONFLICT (poker, pokee) DO
+			UPDATE SET count = pokes.count + 1
+			RETURNING count
+			""", 
+			ctx.message.author.id, user.id
+		)
+		times = clients.inflect_engine.ordinal(times)
 		embed = discord.Embed(color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
 		embed.description = f"Poked you for the {times} time!"
