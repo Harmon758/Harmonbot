@@ -96,11 +96,12 @@ class Tools:
 		seaborn.jointplot(**eval(data)).savefig(filename)
 		await ctx.channel.send(file = discord.File(filename), content = ctx.author.display_name + ':')
 	
-	@commands.command(aliases = ["spoil"])
+	@commands.command(aliases = ["spoil"], hidden = True)
 	@checks.not_forbidden()
 	async def spoiler(self, ctx, name : str, *, text : str):
 		'''
 		Spoiler GIF
+		This command is now deprecated, as Discord now has native spoiler tags
 		Make sure you have the "Automatically play GIFs when Discord is focused." setting off
 		Otherwise, the spoiler will automatically be displayed
 		This setting is under User Settings -> Text & Images
