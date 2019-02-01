@@ -101,7 +101,7 @@ class Tools:
 	async def spoiler(self, ctx, name : str, *, text : str):
 		'''
 		Spoiler GIF
-		This command is now deprecated, as Discord now has native spoiler tags
+		This command is now deprecated, as Discord now has native [spoiler tags](https://support.discordapp.com/hc/en-us/articles/360022320632-Spoiler-Tags-)
 		Make sure you have the "Automatically play GIFs when Discord is focused." setting off
 		Otherwise, the spoiler will automatically be displayed
 		This setting is under User Settings -> Text & Images
