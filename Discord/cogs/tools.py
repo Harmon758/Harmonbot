@@ -116,7 +116,7 @@ class Tools:
 		content_font_size = 20
 		guide_font_size = 10
 		text_vertical_margin = 20
-		text_opacity = 180 # 0-255, 180 = ~70%
+		text_opacity = 180  # 0-255, 180 = ~70%
 		character_wrap = 55
 		# Initialize values
 		spoiler_text = textwrap.fill(text, character_wrap)
@@ -141,7 +141,7 @@ class Tools:
 			frame = Image.new("RGBA", (text_width + (avatar_size + 2 * margin_size) * 2, text_height + text_vertical_margin * 2), discord.Color(self.bot.dark_theme_background_color).to_rgb())
 			try:
 				frame.paste(avatar, (margin_size, margin_size), avatar)
-			except ValueError: # if bad transparency mask
+			except ValueError:  # if bad transparency mask
 				frame.paste(avatar, (margin_size, margin_size))
 			transparent_text = Image.new("RGBA", frame.size, discord.Color(self.bot.white_color).to_rgb() + (0,))
 			draw = ImageDraw.Draw(transparent_text)
