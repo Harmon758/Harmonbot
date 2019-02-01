@@ -166,14 +166,13 @@ class Trivia:
 		answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
 		# Replace in answer: \' -> '
 		# Replace: & -> and
-		# Remove periods and exclamation marks
-		answer = answer.replace("\\'", "'").replace('&', "and").replace('.', "").replace('!', "")
-		response = response.replace('&', "and").replace('.', "").replace('!', "")
+		# Remove periods, exclamation marks, and quotation marks
+		answer = answer.replace("\\'", "'").replace('&', "and").replace('.', "").replace('!', "").replace('"', "")
+		response = response.replace('&', "and").replace('.', "").replace('!', "").replace('"', "")
 		# Remove extra whitespace
 		# Make lowercase
-		# Strip quotation marks
-		answer = ' '.join(answer.split()).lower().strip('"')
-		response = ' '.join(response.split()).lower().strip('"')
+		answer = ' '.join(answer.split()).lower()
+		response = ' '.join(response.split()).lower()
 		# Remove article prefixes
 		answer = self.remove_article_prefix(answer)
 		response = self.remove_article_prefix(response)
