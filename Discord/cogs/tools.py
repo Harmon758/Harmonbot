@@ -138,15 +138,22 @@ class Tools:
 		## text_width, text_height = map(max, zip(*map(content_font.getsize, (spoiler_text, spoiler_title))))
 		# Create frames
 		for frame_number, frame_text in zip(range(1, 3), (spoiler_title, spoiler_text)):
-			frame = Image.new("RGBA", (text_width + (avatar_size + 2 * margin_size) * 2, text_height + text_vertical_margin * 2), discord.Color(self.bot.dark_theme_background_color).to_rgb())
+			frame = Image.new("RGBA", 
+								(text_width + (avatar_size + 2 * margin_size) * 2, text_height + text_vertical_margin * 2), 
+								discord.Color(self.bot.dark_theme_background_color).to_rgb())
 			try:
 				frame.paste(avatar, (margin_size, margin_size), avatar)
 			except ValueError:  # if bad transparency mask
 				frame.paste(avatar, (margin_size, margin_size))
 			transparent_text = Image.new("RGBA", frame.size, discord.Color(self.bot.white_color).to_rgb() + (0,))
 			draw = ImageDraw.Draw(transparent_text)
-			draw.text((avatar_size + 2 * margin_size, text_vertical_margin), frame_text, fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,), font = content_font)
-			if frame_number == 1: draw.text((avatar_size + 2 * margin_size, text_height + 2 * margin_size), "(Hover to reveal spoiler)", fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,), font = guide_font)
+			draw.text((avatar_size + 2 * margin_size, text_vertical_margin), frame_text, 
+						fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,), 
+						font = content_font)
+			if frame_number == 1:
+				draw.text((avatar_size + 2 * margin_size, text_height + 2 * margin_size), 
+							"(Hover to reveal spoiler)", font = guide_font, 
+							fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,))
 			frame = Image.alpha_composite(frame, transparent_text)
 			frame.save(f"{clients.data_path}/temp/spoiler_frame_{frame_number}.png")
 		# Create + send .gif
