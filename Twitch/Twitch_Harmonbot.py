@@ -28,7 +28,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.4.1"
+		self.version = "2.4.2"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -1103,7 +1103,7 @@ class TwitchClient(pydle.Client):
 			await self.message(target, "Restarting")
 			print("Restarting Twitch Harmonbot...")
 			await self.aiohttp_session.close()
-			self.disconnect()
+			await self.disconnect()
 	
 	def is_mod(self, target, source):
 		return source in self.channels[target]["modes"].get('o', [])
