@@ -198,6 +198,9 @@ class Trivia:
 		# Check XX or YY
 		if response in answer.split(" or "):
 			return True
+		# Check XX/YY
+		if response in answer.split('/'):
+			return True
 		# Check XX/YY ZZ
 		answer_words = answer.split(' ')
 		answers = answer_words[0].split('/')
@@ -231,10 +234,6 @@ class Trivia:
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
-			return True
-		# Check XX/YY
-		matches = re.search("(.+)\/(.+)", answer)
-		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		return False
 	
