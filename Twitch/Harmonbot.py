@@ -44,6 +44,14 @@ class Bot(commands.Bot):
 	
 	async def initialize_database(self):
 		await self.connect_to_database()
+		await self.db.execute("CREATE SCHEMA IF NOT EXISTS twitch")
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitch.channels (
+				channel		TEXT PRIMARY KEY
+			)
+			"""
+		)
 	
 	async def event_ready(self):
 		print(f"Ready | {self.nick}")
