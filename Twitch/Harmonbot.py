@@ -10,7 +10,7 @@ import dotenv
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.0"
+		self.version = "3.0.0-b.1"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -59,6 +59,10 @@ class Bot(commands.Bot):
 	
 	async def event_ready(self):
 		print(f"Ready | {self.nick}")
+	
+	@commands.command()
+	async def test(self, ctx):
+		await ctx.send("Hello, World!")
 
 dotenv.load_dotenv()
 bot = Bot(irc_token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN"), 
