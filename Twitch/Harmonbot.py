@@ -9,10 +9,11 @@ import dotenv
 
 class Bot(commands.Bot):
 	
-	def __init__(self, loop = None, **kwargs):
-		self.version = "3.0.0-a.1"
+	def __init__(self, loop = None, initial_channels = [], **kwargs):
+		self.version = "3.0.0-b.0"
 		
 		loop = loop or asyncio.get_event_loop()
+		initial_channels = list(initial_channels)
 		
 		# Credentials
 		for credential in ("DATABASE_PASSWORD", "POSTGRES_HOST"):
@@ -27,7 +28,10 @@ class Bot(commands.Bot):
 		self.connected_to_database.set()
 		loop.run_until_complete(self.initialize_database())
 		
-		super().__init__(loop = loop, **kwargs)
+		records = loop.run_until_complete(self.db.fetch("SELECT channel FROM twitch.channels"))
+		initial_channels.extend(record["channel"] for record in records)
+		super().__init__(loop = loop, initial_channels = initial_channels, **kwargs)
+		# TODO: Handle channel name changes?
 	
 	async def connect_to_database(self):
 		if self.database_connection_pool:
@@ -59,6 +63,6 @@ class Bot(commands.Bot):
 dotenv.load_dotenv()
 bot = Bot(irc_token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN"), 
 			client_id = os.getenv("TWITCH_CLIENT_ID"), 
-			nick = "harmonbot", prefix = '!', initial_channels = ("harmonbot",))
+			nick = "harmonbot", prefix = '!')
 bot.run()
 
