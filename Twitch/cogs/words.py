@@ -1,9 +1,7 @@
 
 from twitchio.ext import commands
 
-def prepare(bot):
-	bot.add_cog(Words(bot))
-
+@commands.cog()
 class Words:
 	
 	def __init__(self, bot):
