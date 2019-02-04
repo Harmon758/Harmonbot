@@ -16,7 +16,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.4"
+		self.version = "3.0.0-b.5"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -41,6 +41,11 @@ class Bot(commands.Bot):
 		initial_channels.extend(record["channel"] for record in records)
 		super().__init__(loop = loop, initial_channels = initial_channels, **kwargs)
 		# TODO: Handle channel name changes?
+		
+		# Load cogs
+		for file in sorted(os.listdir("cogs")):
+			if file.endswith(".py"):
+				self.load_module("cogs." + file[:-3])
 	
 	async def connect_to_database(self):
 		if self.database_connection_pool:
@@ -80,17 +85,6 @@ class Bot(commands.Bot):
 	@commands.command()
 	async def test(self, ctx):
 		await ctx.send("Hello, World!")
-	
-	@commands.command()
-	async def audiodefine(self, ctx, word):
-		url = f"http://api.wordnik.com:80/v4/word.json/{word}/audio"
-		params = {"useCanonical": "false", "limit": 1, "api_key": self.WORDNIK_API_KEY}
-		async with self.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if data:
-			await ctx.send(f"{data[0]['word'].capitalize()}: {data[0]['fileUrl']}")
-		else:
-			await ctx.send("Word or audio not found.")
 	
 	@commands.command(aliases = ("8ball", '\N{BILLIARDS}'))
 	async def eightball(self, ctx):
