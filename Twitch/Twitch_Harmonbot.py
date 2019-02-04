@@ -141,15 +141,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, self.meta_commands[message[1:]])
 		
 		# Main Commands
-		elif message.startswith("!audiodefine"):
-			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/audio"
-			params = {"useCanonical": "false", "limit": 1, "api_key": self.WORDNIK_API_KEY}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data:
-				await self.message(target, data[0]["word"].capitalize() + ": " + data[0]["fileUrl"])
-			else:
-				await self.message(target, "Word or audio not found.")
 		elif message.startswith("!averagefps"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": self.TWITCH_CLIENT_ID}

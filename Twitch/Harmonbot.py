@@ -5,6 +5,7 @@ import asyncio
 import os
 import sys
 
+import aiohttp
 import asyncpg
 import dotenv
 
@@ -15,13 +16,16 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.2"
+		self.version = "3.0.0-b.3"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
 		
+		# aiohttp Client Session - initialized on ready
+		self.aiohttp_session = None
+		
 		# Credentials
-		for credential in ("DATABASE_PASSWORD", "POSTGRES_HOST"):
+		for credential in ("DATABASE_PASSWORD", "POSTGRES_HOST", "WORDNIK_API_KEY"):
 			setattr(self, credential, os.getenv(credential))
 		if not self.POSTGRES_HOST:
 			self.POSTGRES_HOST = "localhost"
@@ -64,6 +68,9 @@ class Bot(commands.Bot):
 	
 	async def event_ready(self):
 		print(f"Ready | {self.nick}")
+		
+		# Initialize aiohttp Client Session
+		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
 	
 	async def event_message(self, message):
 		await self.handle_commands(message)
@@ -73,6 +80,17 @@ class Bot(commands.Bot):
 	@commands.command()
 	async def test(self, ctx):
 		await ctx.send("Hello, World!")
+	
+	@commands.command()
+	async def audiodefine(self, ctx, word):
+		url = f"http://api.wordnik.com:80/v4/word.json/{word}/audio"
+		params = {"useCanonical": "false", "limit": 1, "api_key": self.WORDNIK_API_KEY}
+		async with self.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		if data:
+			await ctx.send(data[0]["word"].capitalize() + ": " + data[0]["fileUrl"])
+		else:
+			await ctx.send("Word or audio not found.")
 	
 	@commands.command(aliases = ("8ball", '\N{BILLIARDS}'))
 	async def eightball(self, ctx):
