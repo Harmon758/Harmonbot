@@ -123,7 +123,7 @@ class Bot(commands.Bot):
 		else:
 			await ctx.send(f"{user.title()}, {ctx.author.name.capitalize()} says goodbye!")
 	
-	@commands.command()
+	@commands.command(aliases = ("hi",))
 	async def hello(self, ctx, *, user = None):
 		if not user or user.lower() == "harmonbot":
 			await ctx.send(f"Hello, {ctx.author.name.capitalize()}!")
