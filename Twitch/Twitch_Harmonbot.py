@@ -232,11 +232,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "Congratulations!!!!!")
 			else:
 				await self.message(target, f"Congratulations, {' '.join(message.split()[1:]).title()}!!!!!")
-		elif message.startswith("!hello"):
-			if len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
-				await self.message(target, f"Hello, {source.capitalize()}!")
-			else:
-				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says hello!")
 		elif message.startswith("!highfive"):
 			if len(message.split()) == 1:
 				await self.message(target, f"{source.capitalize()} highfives no one. :-/")
