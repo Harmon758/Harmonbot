@@ -72,6 +72,17 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitch.messages (
+				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
+				channel				TEXT, 
+				author				TEXT, 
+				message				TEXT, 
+				message_timestamp	TIMESTAMPTZ
+			)
+			"""
+		)
 	
 	async def event_ready(self):
 		print(f"Ready | {self.nick}")
