@@ -188,12 +188,6 @@ class TwitchClient(pydle.Client):
 					birthday = birthday.replace(year = birthday.year + 1)
 				seconds = int((birthday - now).total_seconds())
 				await self.message(target, f"{secs_to_duration(seconds)} until {target[1:].capitalize()}'s birthday!")
-		elif message.startswith("!bye"):
-			if len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
-				#await self.message(target, "Bye, {source}!", source=source)
-				await self.message(target, f"Bye, {source.capitalize()}!")
-			else:
-				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says goodbye!")
 		elif message.startswith(("!char", "!character", "!unicode")):
 			try:
 				await self.message(target, unicodedata.lookup(' '.join(message.split()[1:])))

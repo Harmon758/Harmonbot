@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.8"
+		self.version = "3.0.0-b.9"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -115,6 +115,13 @@ class Bot(commands.Bot):
 	@commands.command()
 	async def test(self, ctx):
 		await ctx.send("Hello, World!")
+	
+	@commands.command()
+	async def bye(self, ctx, *, user = None):
+		if not user or user.lower() == "harmonbot":
+			await ctx.send(f"Bye, {ctx.author.name.capitalize()}!")
+		else:
+			await ctx.send(f"{user.title()}, {ctx.author.name.capitalize()} says goodbye!")
 	
 	@commands.command(aliases = ("8ball", '\N{BILLIARDS}'))
 	async def eightball(self, ctx):
