@@ -2,6 +2,7 @@
 from twitchio.ext import commands
 
 import asyncio
+import datetime
 import os
 import sys
 
@@ -91,6 +92,14 @@ class Bot(commands.Bot):
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
 	
 	async def event_message(self, message):
+		await self.db.execute(
+			"""
+			INSERT INTO twitch.messages (channel, author, message, message_timestamp)
+			VALUES ($1, $2, $3, $4)
+			""", 
+			message.channel.name, message.author.name, message.content, 
+			None if message.echo else message.timestamp.replace(tzinfo = datetime.timezone.utc)
+		)
 		await self.handle_commands(message)
 		if message.content.startswith('\N{BILLIARDS}'):
 			await message.channel.send(f"\N{BILLIARDS} {eightball()}")
