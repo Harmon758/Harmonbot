@@ -9,6 +9,8 @@ import aiohttp
 import asyncpg
 import dotenv
 
+from utilities import logging
+
 sys.path.insert(0, "..")
 from units.games import eightball
 sys.path.pop(0)
@@ -16,7 +18,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.6"
+		self.version = "3.0.0-b.7"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
