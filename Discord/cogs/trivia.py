@@ -226,11 +226,11 @@ class Trivia:
 		if ' '.join(answer_words) == ' '.join(response_words):
 			return True
 		# Check (XX) YY
-		matches = re.search("\((.+)\) (.+)", answer)
+		matches = re.search("\((.+)\)\s?(.+)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		# Check XX (or YY)
-		matches = re.search("(.+?) \((?:or )?(.+)\)", answer)
+		matches = re.search("(.+?)\s?\((?:or )?(.+)\)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
