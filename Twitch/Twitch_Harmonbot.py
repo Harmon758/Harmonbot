@@ -193,16 +193,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, unicodedata.lookup(' '.join(message.split()[1:])))
 			except KeyError:
 				await self.message(target, "\N{NO ENTRY} Unicode character not found")
-		elif message.startswith("!define"):
-			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/definitions"
-			params = {"limit": 1, "includeRelated": "false", "useCanonical": "false", "includeTags": "false", 
-						"api_key": self.WORDNIK_API_KEY}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data:
-				await self.message(target, data[0]["word"].capitalize() + ": " + data[0]["text"])
-			else:
-				await self.message(target, "Definition not found.")
 		elif message.startswith("!element"):
 			elements = {"ac": "Actinium", "ag": "Silver", "al": "Aluminum", "am": "Americium", "ar": "Argon", }
 			if len(message.split()) > 1 and message.split()[1] in elements:
