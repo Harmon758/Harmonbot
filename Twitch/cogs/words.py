@@ -26,7 +26,7 @@ class Words:
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data:
-			await ctx.send(data[0]["word"].capitalize() + ": " + data[0]["text"])
+			await ctx.send(f"{data[0]['word'].capitalize()}: {data[0]['text']}")
 		else:
 			await ctx.send("Definition not found.")
 
