@@ -21,7 +21,6 @@ import dotenv
 # import unicodedata2 as unicodedata
 
 sys.path.insert(0, "..")
-from units.games import eightball
 from units.location import get_geocode_data, get_timezone_data, UnitOutputError
 sys.path.pop(0)
 
@@ -142,17 +141,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, self.meta_commands[message[1:]])
 		
 		# Main Commands
-		elif message.startswith(("!8ball", "!eightball", "!\N{BILLIARDS}", '\N{BILLIARDS}')):
-			await self.message(target, f"\N{BILLIARDS} {eightball()}")
-		elif message.startswith("!audiodefine"):
-			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/audio"
-			params = {"useCanonical": "false", "limit": 1, "api_key": self.WORDNIK_API_KEY}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data:
-				await self.message(target, data[0]["word"].capitalize() + ": " + data[0]["fileUrl"])
-			else:
-				await self.message(target, "Word or audio not found.")
 		elif message.startswith("!averagefps"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": self.TWITCH_CLIENT_ID}
@@ -200,27 +188,11 @@ class TwitchClient(pydle.Client):
 					birthday = birthday.replace(year = birthday.year + 1)
 				seconds = int((birthday - now).total_seconds())
 				await self.message(target, f"{secs_to_duration(seconds)} until {target[1:].capitalize()}'s birthday!")
-		elif message.startswith("!bye"):
-			if len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
-				#await self.message(target, "Bye, {source}!", source=source)
-				await self.message(target, f"Bye, {source.capitalize()}!")
-			else:
-				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says goodbye!")
 		elif message.startswith(("!char", "!character", "!unicode")):
 			try:
 				await self.message(target, unicodedata.lookup(' '.join(message.split()[1:])))
 			except KeyError:
 				await self.message(target, "\N{NO ENTRY} Unicode character not found")
-		elif message.startswith("!define"):
-			url = f"http://api.wordnik.com:80/v4/word.json/{message.split()[1]}/definitions"
-			params = {"limit": 1, "includeRelated": "false", "useCanonical": "false", "includeTags": "false", 
-						"api_key": self.WORDNIK_API_KEY}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data:
-				await self.message(target, data[0]["word"].capitalize() + ": " + data[0]["text"])
-			else:
-				await self.message(target, "Definition not found.")
 		elif message.startswith("!element"):
 			elements = {"ac": "Actinium", "ag": "Silver", "al": "Aluminum", "am": "Americium", "ar": "Argon", }
 			if len(message.split()) > 1 and message.split()[1] in elements:
@@ -250,11 +222,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "Congratulations!!!!!")
 			else:
 				await self.message(target, f"Congratulations, {' '.join(message.split()[1:]).title()}!!!!!")
-		elif message.startswith("!hello"):
-			if len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
-				await self.message(target, f"Hello, {source.capitalize()}!")
-			else:
-				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says hello!")
 		elif message.startswith("!highfive"):
 			if len(message.split()) == 1:
 				await self.message(target, f"{source.capitalize()} highfives no one. :-/")
@@ -266,13 +233,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, f"!highfive {source.capitalize()}")
 			else:
 				await self.message(target, f"{source.capitalize()} highfives {' '.join(message.split()[1:]).title()}!")
-		elif message.startswith("!hi"):
-			if message.startswith(("!hiscore", "!highscore")):
-				pass
-			elif len(message.split()) == 1 or message.split()[1].lower() == "harmonbot":
-				await self.message(target, f"Hello, {source.capitalize()}!")
-			else:
-				await self.message(target, f"{' '.join(message.split()[1:]).title()}, {source.capitalize()} says hello!")
 		elif message.startswith("!hug"):
 			if len(message.split()) == 1:
 				await self.message(target, f"{source.capitalize()} hugs no one. :-/")
