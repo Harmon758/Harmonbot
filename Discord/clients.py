@@ -382,9 +382,9 @@ class Bot(commands.Bot):
 			await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
 		# TODO: check embed links permission
 		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
-			print(f"{ctx.bot.console_message_prefix}Missing Permissions for {ctx.command.name} in #{ctx.channel.name} in {ctx.guild.name}")
+			print(f"{self.console_message_prefix}Missing Permissions for {ctx.command.name} in #{ctx.channel.name} in {ctx.guild.name}")
 		else:
-			ctx.bot.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
+			self.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
 			print(f"Ignoring exception in command {ctx.command}", file = sys.stderr)
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
