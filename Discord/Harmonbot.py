@@ -236,12 +236,12 @@ if __name__ == "__main__":
 		if type is discord.Forbidden:
 			for arg in args:
 				if isinstance(arg, commands.context.Context):
-					print("{0.bot.console_message_prefix}Missing Permissions for {0.command.name} in #{0.channel.name} in {0.guild.name}".format(arg))
+					print(f"{arg.bot.console_message_prefix}Missing Permissions for {arg.command.name} in #{arg.channel.name} in {arg.guild.name}")
 					return
 				elif isinstance(arg, discord.Message):
-					print("Missing Permissions for #{0.channel.name} in {0.guild.name}".format(arg))
+					print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
 					return
-		print('Ignoring exception in {}'.format(event_method), file = sys.stderr)
+		print(f'Ignoring exception in {event_method}', file = sys.stderr)
 		traceback.print_exc()
 		logging.errors_logger.error("Uncaught exception\n", exc_info = (type, value, _traceback))
 	
