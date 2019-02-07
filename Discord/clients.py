@@ -5,6 +5,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import json
+import logging
 import os
 import random
 import sys
@@ -27,8 +28,8 @@ import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 
-from utilities.context import Context
 from utilities import errors
+from utilities.context import Context
 from utilities.help_formatter import CustomHelpFormatter
 
 # TODO: Relocate as Bot variables
@@ -388,7 +389,7 @@ class Bot(commands.Bot):
 			self.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
 			print(f"Ignoring exception in command {ctx.command}", file = sys.stderr)
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
-			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
+			logging.getLogger("errors").error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
 	
 	async def on_error(self, event_method, *args, **kwargs):
 		type, value, _traceback = sys.exc_info()
@@ -401,7 +402,7 @@ class Bot(commands.Bot):
 					print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
 					return
 		await super().on_error(event_method, *args, **kwargs)
-		logging.errors_logger.error("Uncaught exception\n", exc_info = (type, value, _traceback))
+		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (type, value, _traceback))
 	
 	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
