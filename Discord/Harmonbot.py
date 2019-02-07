@@ -245,51 +245,6 @@ if __name__ == "__main__":
 		traceback.print_exc()
 		logging.errors_logger.error("Uncaught exception\n", exc_info = (type, value, _traceback))
 	
-	@client.event
-	async def on_command_error(ctx, error):
-		if (isinstance(error, commands.NotOwner) or
-			isinstance(error, (commands.CommandNotFound, commands.DisabledCommand)) or
-			isinstance(error, commands.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError)):
-			# Not owner
-			# Command disabled or not found
-			# Handled with local error handler
-			return
-		if isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)):
-			# Also for commands.NotOwner?
-			await ctx.embed_reply(":no_entry: You don't have permission to do that")
-		elif isinstance(error, errors.MissingCapability):
-			if "embed_links" in error.permissions:
-				await ctx.send("I don't have permission to do that here\n"
-								"I need the permission(s): " + ', '.join(error.permissions))
-			else:
-				await ctx.embed_reply("I don't have permission to do that here\n"
-										"I need the permission(s): " + ', '.join(error.permissions))
-		elif isinstance(error, errors.PermittedVoiceNotConnected):
-			await ctx.embed_reply("I'm not in a voice channel\n"
-									f"Please use `{ctx.prefix}join` first")
-		elif isinstance(error, errors.NotPermittedVoiceNotConnected):
-			await ctx.embed_reply("I'm not in a voice channel\n"
-									f"Please ask someone with permission to use `{ctx.prefix}join` first")
-		elif isinstance(error, commands.NoPrivateMessage):
-			await ctx.embed_reply("Please use that command in a server")
-		elif isinstance(error, commands.MissingRequiredArgument):
-			await ctx.embed_reply(str(error).rstrip('.').replace("argument", "input"))
-		elif isinstance(error, errors.NotPermitted):
-			await ctx.embed_reply(":no_entry: You don't have permission to use that command here")
-		elif isinstance(error, commands.BadArgument):
-			await ctx.embed_reply(f":no_entry: Error: Invalid Input: {error}")
-		elif (isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException)
-				and error.original.code == 50034):
-			await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
-		# TODO: check embed links permission
-		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
-			print(f"{ctx.bot.console_message_prefix}Missing Permissions for {ctx.command.name} in #{ctx.channel.name} in {ctx.guild.name}")
-		else:
-			ctx.bot.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
-			print(f"Ignoring exception in command {ctx.command}", file = sys.stderr)
-			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
-			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
-	
 	ci = os.getenv("CI")
 	
 	if ci or clients.beta:
