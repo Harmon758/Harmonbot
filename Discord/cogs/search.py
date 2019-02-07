@@ -54,7 +54,7 @@ class Search:
 	@youtube.error
 	async def youtube_error(self, error, ctx):
 		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
-			await ctx.embed_reply(":no_entry: Error: {}".format(error.original))
+			await ctx.embed_reply(f":no_entry: Error: {error.original}")
 	
 	@commands.command()
 	@checks.not_forbidden()
