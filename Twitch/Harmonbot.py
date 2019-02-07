@@ -108,6 +108,9 @@ class Bot(commands.Bot):
 		# TODO: Handle command not found
 		if isinstance(error, commands.MissingRequiredArgument):
 			await ctx.send(str(error).rstrip('.'))
+		else:
+			# TODO: Sentry
+			await super().event_command_error(ctx, error)
 	
 	async def event_raw_data(self, data):
 		logging.raw_data_logger.info(data)
