@@ -258,9 +258,9 @@ if __name__ == "__main__":
 			else:
 				await ctx.embed_reply("I don't have permission to do that here\nI need the permission(s): " + ', '.join(error.permissions))
 		elif isinstance(error, errors.PermittedVoiceNotConnected):
-			await ctx.embed_reply("I'm not in a voice channel\nPlease use `{}join` first".format(ctx.prefix))
+			await ctx.embed_reply(f"I'm not in a voice channel\nPlease use `{ctx.prefix}join` first")
 		elif isinstance(error, errors.NotPermittedVoiceNotConnected):
-			await ctx.embed_reply("I'm not in a voice channel\nPlease ask someone with permission to use `{}join` first".format(ctx.prefix))
+			await ctx.embed_reply(f"I'm not in a voice channel\nPlease ask someone with permission to use `{ctx.prefix}join` first")
 		elif isinstance(error, commands.NoPrivateMessage):
 			await ctx.embed_reply("Please use that command in a server")
 		elif isinstance(error, commands.MissingRequiredArgument):
@@ -268,15 +268,15 @@ if __name__ == "__main__":
 		elif isinstance(error, errors.NotPermitted):
 			await ctx.embed_reply(":no_entry: You don't have permission to use that command here")
 		elif isinstance(error, commands.BadArgument):
-			await ctx.embed_reply(":no_entry: Error: Invalid Input: {}".format(error))
+			await ctx.embed_reply(f":no_entry: Error: Invalid Input: {error}")
 		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, discord.HTTPException) and error.original.code == 50034:
 			await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
 		# TODO: check embed links permission
 		elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, (discord.Forbidden)):
-			print("{0.bot.console_message_prefix}Missing Permissions for {0.command.name} in #{0.channel.name} in {0.guild.name}".format(ctx))
+			print(f"{ctx.bot.console_message_prefix}Missing Permissions for {ctx.command.name} in #{ctx.channel.name} in {ctx.guild.name}")
 		else:
 			ctx.bot.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
-			print("Ignoring exception in command {}".format(ctx.command), file = sys.stderr)
+			print(f"Ignoring exception in command {ctx.command}", file = sys.stderr)
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
 	
