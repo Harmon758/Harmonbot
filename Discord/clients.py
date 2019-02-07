@@ -8,6 +8,7 @@ import json
 import os
 import random
 import sys
+import traceback
 from urllib import parse
 
 import aiml
@@ -388,6 +389,20 @@ class Bot(commands.Bot):
 			print(f"Ignoring exception in command {ctx.command}", file = sys.stderr)
 			traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 			logging.errors_logger.error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
+	
+	async def on_error(self, event_method, *args, **kwargs):
+		type, value, _traceback = sys.exc_info()
+		if type is discord.Forbidden:
+			for arg in args:
+				if isinstance(arg, commands.context.Context):
+					print(f"{arg.bot.console_message_prefix}Missing Permissions for {arg.command.name} in #{arg.channel.name} in {arg.guild.name}")
+					return
+				elif isinstance(arg, discord.Message):
+					print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
+					return
+		print(f'Ignoring exception in {event_method}', file = sys.stderr)
+		traceback.print_exc()
+		logging.errors_logger.error("Uncaught exception\n", exc_info = (type, value, _traceback))
 	
 	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 

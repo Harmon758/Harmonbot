@@ -12,12 +12,10 @@ if __name__ == "__main__":
 	import os
 	import re
 	import sys
-	import traceback
 	
 	import aiohttp
 	from aiohttp import web
 	import pkg_resources  # from setuptools
-	import youtube_dl
 	
 	import clients
 	from clients import client
@@ -229,21 +227,6 @@ if __name__ == "__main__":
 			respects_command = ctx.bot.get_command("respects")
 			if respects_command:
 				await ctx.invoke(respects_command.get_command("pay"))
-	
-	@client.event
-	async def on_error(event_method, *args, **kwargs):
-		type, value, _traceback = sys.exc_info()
-		if type is discord.Forbidden:
-			for arg in args:
-				if isinstance(arg, commands.context.Context):
-					print(f"{arg.bot.console_message_prefix}Missing Permissions for {arg.command.name} in #{arg.channel.name} in {arg.guild.name}")
-					return
-				elif isinstance(arg, discord.Message):
-					print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
-					return
-		print(f'Ignoring exception in {event_method}', file = sys.stderr)
-		traceback.print_exc()
-		logging.errors_logger.error("Uncaught exception\n", exc_info = (type, value, _traceback))
 	
 	ci = os.getenv("CI")
 	
