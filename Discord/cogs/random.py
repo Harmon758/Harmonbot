@@ -122,7 +122,7 @@ class Random:
 	@checks.not_forbidden()
 	async def time(self, ctx):
 		'''Random time'''
-		await ctx.embed_reply("{:02d}:{:02d}".format(random.randint(0, 23), random.randint(0, 59)))
+		await ctx.embed_reply(f"{random.randint(0, 23):02d}:{random.randint(0, 59):02d}")
 	
 	@random.command()
 	@checks.not_forbidden()
