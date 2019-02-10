@@ -38,7 +38,6 @@ class Words:
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["code"] != 200:
-			await ctx.send(f"Error: {data['message']}")
-			return
+			return await ctx.send(f"Error: {data['message']}")
 		await ctx.send(data["text"][0])
 
