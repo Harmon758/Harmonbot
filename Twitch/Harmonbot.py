@@ -19,10 +19,13 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.24"
+		self.version = "3.0.0-b.25"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
+		
+		# Constants
+		self.char_limit = self.character_limit = 500
 		
 		# aiohttp Client Session - initialized on ready
 		self.aiohttp_session = None

@@ -61,8 +61,8 @@ class Words:
 			return await ctx.send("No results found.")
 		definition = data["list"][0]
 		message = f"{definition['word']}: " + definition['definition'].replace('\n', ' ')
-		if len(message + definition["permalink"]) > 423:
-			message = message[:423 - len(definition["permalink"]) - 4] + "..."
+		if len(message + definition["permalink"]) > self.bot.char_limit:
+			message = message[:self.bot.char_limit - len(definition["permalink"]) - 4] + "..."
 		message += ' ' + definition["permalink"]
 		await ctx.send(message)
 
