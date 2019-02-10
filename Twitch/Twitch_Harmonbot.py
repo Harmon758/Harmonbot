@@ -388,20 +388,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, secs_to_duration(int((datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(data["stream"]["created_at"])).total_seconds())))
 			else:
 				await self.message(target, "Uptime not found.")
-		elif message.startswith("!urband"):
-			url = "http://api.urbandictionary.com/v0/define"
-			params = {"term": '+'.join(message.split()[1:])}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if not data or "list" not in data or not data["list"]:
-				await self.message(target, "No results found.")
-				return
-			definition = data["list"][0]
-			message = f"{definition['word']}: " + definition['definition'].replace('\n', ' ')
-			if len(message + definition["permalink"]) > 423:
-				message = message[:423 - len(definition["permalink"]) - 4] + "..."
-			message += ' ' + definition["permalink"]
-			await self.message(target, message)
 		elif message.startswith("!viewers"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": self.TWITCH_CLIENT_ID}

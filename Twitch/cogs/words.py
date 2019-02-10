@@ -50,4 +50,20 @@ class Words:
 		if data["code"] != 200:
 			return await ctx.send(f"Error: {data['message']}")
 		await ctx.send(data["text"][0])
+	
+	@commands.command(aliases = ("urband",))
+	async def urbandictionary(self, ctx, *, word):
+		url = "http://api.urbandictionary.com/v0/define"
+		params = {"term": word}
+		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		if not data or "list" not in data or not data["list"]:
+			await ctx.send("No results found.")
+			return
+		definition = data["list"][0]
+		message = f"{definition['word']}: " + definition['definition'].replace('\n', ' ')
+		if len(message + definition["permalink"]) > 423:
+			message = message[:423 - len(definition["permalink"]) - 4] + "..."
+		message += ' ' + definition["permalink"]
+		await ctx.send(message)
 
