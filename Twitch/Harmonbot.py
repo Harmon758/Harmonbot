@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.17"
+		self.version = "3.0.0-b.18"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -28,7 +28,7 @@ class Bot(commands.Bot):
 		self.aiohttp_session = None
 		
 		# Credentials
-		for credential in ("DATABASE_PASSWORD", "POSTGRES_HOST", "WORDNIK_API_KEY"):
+		for credential in ("DATABASE_PASSWORD", "POSTGRES_HOST", "WORDNIK_API_KEY", "YANDEX_TRANSLATE_API_KEY"):
 			setattr(self, credential, os.getenv(credential))
 		if not self.POSTGRES_HOST:
 			self.POSTGRES_HOST = "localhost"

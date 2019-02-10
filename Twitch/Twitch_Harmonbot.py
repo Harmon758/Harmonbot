@@ -45,7 +45,6 @@ class TwitchClient(pydle.Client):
 		self.RIOT_GAMES_API_KEY = os.getenv("RIOT_GAMES_API_KEY")
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
-		self.YANDEX_TRANSLATE_API_KEY = os.getenv("YANDEX_TRANSLATE_API_KEY")
 		# aiohttp Client Session - initialized on connect
 		self.aiohttp_session = None
 		# Dynamically load commands
@@ -394,16 +393,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, data["stream"]["channel"]["status"])
 			else:
 				await self.message(target, "Title not found.")
-		elif message.startswith("!translate"):
-			url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
-			params = {"lang": "en", "text": ' '.join(message.split()[1:]), "options": 1, 
-						"key": self.YANDEX_TRANSLATE_API_KEY}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data["code"] != 200:
-				await self.message(target, f"Error: {data['message']}")
-				return
-			await self.message(target, data["text"][0])
 		elif message.startswith("!uptime"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": self.TWITCH_CLIENT_ID}
