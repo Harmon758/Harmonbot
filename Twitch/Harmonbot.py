@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.20"
+		self.version = "3.0.0-b.21"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -92,6 +92,7 @@ class Bot(commands.Bot):
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
 	
 	async def event_message(self, message):
+		# Log messages
 		await self.db.execute(
 			"""
 			INSERT INTO twitch.messages (channel, author, message, message_timestamp)
@@ -100,6 +101,10 @@ class Bot(commands.Bot):
 			message.channel.name, message.author.name, message.content, 
 			None if message.echo else message.timestamp.replace(tzinfo = datetime.timezone.utc)
 		)
+		# Ignore own messages
+		if message.author.name == "harmonbot":
+			return
+		# Handle commands
 		await self.handle_commands(message)
 		if message.content.startswith('\N{BILLIARDS}'):
 			await message.channel.send(f"\N{BILLIARDS} {eightball()}")
