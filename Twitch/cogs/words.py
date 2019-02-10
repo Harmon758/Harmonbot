@@ -1,6 +1,8 @@
 
 from twitchio.ext import commands
 
+import textwrap
+
 @commands.cog()
 class Words:
 	
@@ -60,9 +62,8 @@ class Words:
 		if not data or not data.get("list"):
 			return await ctx.send("No results found.")
 		definition = data["list"][0]
-		message = f"{definition['word']}: " + definition['definition'].replace('\n', ' ')
-		if len(message + definition["permalink"]) > self.bot.char_limit:
-			message = message[:self.bot.char_limit - len(definition["permalink"]) - 4] + "..."
-		message += ' ' + definition["permalink"]
-		await ctx.send(message)
+		message = textwrap.shorten(f"{definition['word']}: {definition['definition']}", 
+									width = self.bot.char_limit - len(definition["permalink"]) - 1, 
+									placeholder = "...")
+		await ctx.send(f"{message} {definition['permalink']}")
 
