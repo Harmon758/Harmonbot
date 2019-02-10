@@ -31,6 +31,16 @@ class Words:
 			await ctx.send("Definition not found.")
 	
 	@commands.command()
+	async def randomword(self, ctx):
+		url = "http://api.wordnik.com:80/v4/words.json/randomWord"
+		params = {"hasDictionaryDef": "false", "minCorpusCount": 0, "maxCorpusCount": -1, 
+					"minDictionaryCount": 1, "maxDictionaryCount": -1, "minLength": 5, "maxLength": -1, 
+					"api_key": self.bot.WORDNIK_API_KEY}
+		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		await ctx.send(data["word"].capitalize())
+	
+	@commands.command()
 	async def translate(self, ctx, *, words):
 		url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
 		params = {"lang": "en", "text": words, "options": 1, 

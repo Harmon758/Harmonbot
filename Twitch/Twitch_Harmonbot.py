@@ -44,7 +44,6 @@ class TwitchClient(pydle.Client):
 		# Credentials
 		self.RIOT_GAMES_API_KEY = os.getenv("RIOT_GAMES_API_KEY")
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
-		self.WORDNIK_API_KEY = os.getenv("WORDNIK_API_KEY")
 		# aiohttp Client Session - initialized on connect
 		self.aiohttp_session = None
 		# Dynamically load commands
@@ -250,14 +249,6 @@ class TwitchClient(pydle.Client):
 		elif message.startswith("!mods"):
 			mods = self.channels[target]["modes"].get('o', [])
 			await self.message(target, f"Mods Online ({len(mods)}): {', '.join(mod.capitalize() for mod in mods)}")
-		elif message.startswith("!randomword"):
-			url = "http://api.wordnik.com:80/v4/words.json/randomWord"
-			params = {"hasDictionaryDef": "false", "minCorpusCount": 0, "maxCorpusCount": -1, 
-						"minDictionaryCount": 1, "maxDictionaryCount": -1, "minLength": 5, "maxLength": -1, 
-						"api_key": self.WORDNIK_API_KEY}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			await self.message(target, data["word"].capitalize())
 		elif message.startswith("!randomviewer"):
 			if not hasattr(self, f"{target[1:]}_variables"):
 				setattr(self, f"{target[1:]}_variables", {})
