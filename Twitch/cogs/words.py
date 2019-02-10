@@ -57,9 +57,8 @@ class Words:
 		params = {"term": word}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		if not data or "list" not in data or not data["list"]:
-			await ctx.send("No results found.")
-			return
+		if not data or not data.get("list"):
+			return await ctx.send("No results found.")
 		definition = data["list"][0]
 		message = f"{definition['word']}: " + definition['definition'].replace('\n', ' ')
 		if len(message + definition["permalink"]) > 423:
