@@ -215,11 +215,6 @@ class TwitchClient(pydle.Client):
 			await self.message(target, f"There are currently {data['_total']} people following {target[1:].capitalize()}.")
 		elif message.startswith("!google"):
 			await self.message(target, "https://google.com/search?q=" + '+'.join(message.split()[1:]))
-		elif message.startswith(("!congrats", "!grats", "!gz")):
-			if len(message.split()) == 1:
-				await self.message(target, "Congratulations!!!!!")
-			else:
-				await self.message(target, f"Congratulations, {' '.join(message.split()[1:]).title()}!!!!!")
 		elif message.startswith("!highfive"):
 			if len(message.split()) == 1:
 				await self.message(target, f"{source.capitalize()} highfives no one. :-/")
