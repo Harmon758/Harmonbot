@@ -246,8 +246,8 @@ class Twitter:
 					try:
 						feeds[channel_id] = feeds.get(channel_id, []) + [self.bot.twitter_api.get_user(handle).id_str]
 					except tweepy.error.TweepError as e:
-						if e.api_code == 50:
-							# User not found
+						if e.api_code in (50, 63):
+							# User not found (50) or suspended (63)
 							continue
 						else:
 							raise e
