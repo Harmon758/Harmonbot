@@ -30,7 +30,8 @@ class TwitterStreamListener(tweepy.StreamListener):
 		self.reconnecting = False
 	
 	def __del__(self):
-		self.stream.disconnect()
+		if self.stream:
+			self.stream.disconnect()
 	
 	async def start_feeds(self, *, feeds = None):
 		if self.reconnecting:
