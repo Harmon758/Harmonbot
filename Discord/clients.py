@@ -23,6 +23,7 @@ import imgurpython
 import inflect
 import pyowm
 import raven
+import raven_aiohttp
 import requests
 import tweepy
 import wolframalpha
@@ -155,7 +156,7 @@ class Bot(commands.Bot):
 		## Open Weather Map
 		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 		## Sentry (Raven)
-		self.sentry_client = self.raven_client = raven.Client(self.SENTRY_DSN)
+		self.sentry_client = self.raven_client = raven.Client(self.SENTRY_DSN, transport = raven_aiohttp.AioHttpTransport)
 		## Twitter
 		self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
 		self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
@@ -577,6 +578,8 @@ async def shutdown_tasks():
 	# Cancel audio tasks
 	audio_cog = client.get_cog("Audio")
 	if audio_cog: audio_cog.cancel_all_tasks()
+	# Close Sentry transport
+	await client.sentry_client.remote.get_transport().close()
 	# Close aiohttp session
 	await aiohttp_session.close()
 	# Close database connection
