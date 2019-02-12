@@ -577,9 +577,12 @@ async def restart_tasks(channel_id):
 async def shutdown_tasks():
 	# Cancel audio tasks
 	audio_cog = client.get_cog("Audio")
-	if audio_cog: audio_cog.cancel_all_tasks()
+	if audio_cog:
+		audio_cog.cancel_all_tasks()
 	# Close Sentry transport
-	await client.sentry_client.remote.get_transport().close()
+	sentry_transport = client.sentry_client.remote.get_transport()
+	if sentry_transport:
+		await sentry_transport.close()
 	# Close aiohttp session
 	await aiohttp_session.close()
 	# Close database connection
