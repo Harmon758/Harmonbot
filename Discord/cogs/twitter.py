@@ -249,8 +249,7 @@ class Twitter:
 						if e.api_code in (50, 63):
 							# User not found (50) or suspended (63)
 							continue
-						else:
-							raise e
+						raise e
 			await self.stream_listener.start_feeds(feeds = feeds)
 		except Exception as e:
 			print("Exception in Twitter Task", file = sys.stderr)
