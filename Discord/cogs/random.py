@@ -213,7 +213,7 @@ class Random:
 	@checks.not_forbidden()
 	async def coin(self, ctx):
 		'''Flip a coin'''
-		await ctx.embed_reply(random.choice(["Heads!", "Tails!"]))
+		await ctx.embed_reply(random.choice(("Heads!", "Tails!")))
 	
 	@commands.command()
 	@checks.not_forbidden()
