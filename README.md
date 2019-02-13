@@ -1,5 +1,6 @@
 # Harmonbot
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/38a8ff62492d438cb1fd1f2a77cebb2a)](https://app.codacy.com/app/Harmon758/Harmonbot?utm_source=github.com&utm_medium=referral&utm_content=Harmon758/Harmonbot&utm_campaign=Badge_Grade_Dashboard)
 [![CircleCI](https://circleci.com/gh/Harmon758/Harmonbot.svg?style=svg)](https://circleci.com/gh/Harmon758/Harmonbot)
 [![pipeline status](https://gitlab.com/Harmon758/Harmonbot/badges/rewrite/pipeline.svg)](https://gitlab.com/Harmon758/Harmonbot/commits/rewrite)
 [![Build Status](https://travis-ci.org/Harmon758/Harmonbot.svg?branch=rewrite)](https://travis-ci.org/Harmon758/Harmonbot)
