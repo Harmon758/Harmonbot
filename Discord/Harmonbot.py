@@ -21,7 +21,6 @@ if __name__ == "__main__":
 	from modules import conversions
 	from modules import logging
 	from modules import utilities
-	from utilities import checks
 	from utilities import errors
 	from utilities import audio_player
 	
