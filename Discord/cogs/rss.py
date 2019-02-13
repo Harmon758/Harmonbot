@@ -312,6 +312,12 @@ class RSS:
 									await text_channel.send(embed = embed)
 								except discord.Forbidden:
 									pass
+								except discord.HTTPException as e:
+									if e.status == 400 and e.code == 50035 and "In embed.url: Not a well formed URL." in e.text:
+										embed.url = discord.Embed.Empty
+										await text_channel.send(embed = embed)
+									else:
+										raise
 							# TODO: Remove text channel data if now non-existent
 				except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError) as e:
 					await self.bot.db.execute(
