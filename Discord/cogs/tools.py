@@ -35,18 +35,6 @@ class Tools:
 		with open(clients.data_path + "/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
 	
-	@commands.command(aliases = ["choice", "pick"])
-	@checks.not_forbidden()
-	async def choose(self, ctx, *choices : str):
-		'''
-		Randomly chooses between multiple options
-		choose <option1> <option2> <...>
-		'''
-		if not choices:
-			await ctx.embed_reply("Choose between what?")
-			return
-		await ctx.embed_reply(random.choice(choices))
-	
 	@commands.group(aliases = ["plot"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):

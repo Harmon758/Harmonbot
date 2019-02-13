@@ -209,6 +209,18 @@ class Random:
 		else:
 			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 	
+	@commands.command(aliases = ["choice", "pick"])
+	@checks.not_forbidden()
+	async def choose(self, ctx, *choices : str):
+		'''
+		Randomly chooses between multiple options
+		choose <option1> <option2> <...>
+		'''
+		if not choices:
+			await ctx.embed_reply("Choose between what?")
+			return
+		await ctx.embed_reply(random.choice(choices))
+	
 	@commands.command(aliases = ["flip"])
 	@checks.not_forbidden()
 	async def coin(self, ctx):
