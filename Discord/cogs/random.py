@@ -217,8 +217,7 @@ class Random:
 		choose <option1> <option2> <...>
 		'''
 		if not choices:
-			await ctx.embed_reply("Choose between what?")
-			return
+			return await ctx.embed_reply("Choose between what?")
 		await ctx.embed_reply(random.choice(choices))
 	
 	@commands.command(aliases = ["flip"])
