@@ -14,4 +14,8 @@ class Search:
 	@commands.command()
 	async def imfeelinglucky(self, ctx, *search):
 		await ctx.send("https://google.com/search?btnI&q=" + '+'.join(search))
+	
+	@commands.command()
+	async def lmgtfy(self, ctx, *search):
+		await ctx.send("lmgtfy.com/?q=" + '+'.join(search))
 
