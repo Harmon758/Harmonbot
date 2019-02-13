@@ -4,7 +4,6 @@ if __name__ == "__main__":
 	print("Starting up Discord Harmonbot...")
 	
 	import discord
-	from discord.ext import commands
 	
 	import asyncio
 	import ctypes
