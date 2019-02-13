@@ -392,8 +392,6 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, "Stream is offline.")
 			# No one is watching right now :-/
-		elif message.startswith("!wiki"):
-			await self.message(target, "wikipedia.org/wiki/" + '_'.join(message.split()[1:]))
 		
 		# Channel-specific commands and aliases
 		channel_aliases = getattr(self, f"{target[1:]}_aliases", {})

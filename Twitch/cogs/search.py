@@ -18,4 +18,8 @@ class Search:
 	@commands.command()
 	async def lmgtfy(self, ctx, *search):
 		await ctx.send("https://lmgtfy.com/?q=" + '+'.join(search))
+	
+	@commands.command(aliases = ("wiki",))
+	async def wikipedia(self, ctx, *search):
+		await ctx.send("wikipedia.org/wiki/" + '_'.join(search))
 
