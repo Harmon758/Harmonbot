@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.32"
+		self.version = "3.0.0-b.33"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -92,7 +92,8 @@ class Bot(commands.Bot):
 		print(f"Ready | {self.nick}")
 		
 		# Initialize aiohttp Client Session
-		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
+		if not self.aiohttp_session:
+			self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
 	
 	async def event_message(self, message):
 		# Log messages
