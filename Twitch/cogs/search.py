@@ -10,4 +10,8 @@ class Search:
 	@commands.command()
 	async def google(self, ctx, *search):
 		await ctx.send("https://google.com/search?q=" + '+'.join(search))
+	
+	@commands.command()
+	async def imfeelinglucky(self, ctx, *search):
+		await ctx.send("https://google.com/search?btnI&q=" + '+'.join(search))
 

@@ -235,8 +235,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, f"!hug {source.capitalize()}")
 			else:
 				await self.message(target, f"{source.capitalize()} hugs {' '.join(message.split()[1:]).title()}!")
-		elif message.startswith("!imfeelinglucky"):
-			await self.message(target, "https://google.com/search?btnI&q=" + '+'.join(message.split()[1:]))
 		elif message.startswith("!lmgtfy"):
 			await self.message(target, "lmgtfy.com/?q=" + '+'.join(message.split()[1:]))
 		elif message.startswith("!mods"):
