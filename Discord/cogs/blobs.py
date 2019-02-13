@@ -2,7 +2,6 @@
 from discord.ext import commands
 
 import difflib
-import json
 
 import asyncpg
 
