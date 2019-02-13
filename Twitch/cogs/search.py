@@ -21,5 +21,5 @@ class Search:
 	
 	@commands.command(aliases = ("wiki",))
 	async def wikipedia(self, ctx, *search):
-		await ctx.send("wikipedia.org/wiki/" + '_'.join(search))
+		await ctx.send("https://wikipedia.org/wiki/" + '_'.join(search))
 
