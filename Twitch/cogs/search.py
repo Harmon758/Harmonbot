@@ -17,5 +17,5 @@ class Search:
 	
 	@commands.command()
 	async def lmgtfy(self, ctx, *search):
-		await ctx.send("lmgtfy.com/?q=" + '+'.join(search))
+		await ctx.send("https://lmgtfy.com/?q=" + '+'.join(search))
 
