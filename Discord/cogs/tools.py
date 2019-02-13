@@ -47,12 +47,6 @@ class Tools:
 			return
 		await ctx.embed_reply(random.choice(choices))
 	
-	@commands.command(aliases = ["flip"])
-	@checks.not_forbidden()
-	async def coin(self, ctx):
-		'''Flip a coin'''
-		await ctx.embed_reply(random.choice(["Heads!", "Tails!"]))
-	
 	@commands.group(aliases = ["plot"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):

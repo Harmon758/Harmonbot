@@ -209,6 +209,12 @@ class Random:
 		else:
 			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 	
+	@commands.command(aliases = ["flip"])
+	@checks.not_forbidden()
+	async def coin(self, ctx):
+		'''Flip a coin'''
+		await ctx.embed_reply(random.choice(["Heads!", "Tails!"]))
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def command(self, ctx):
