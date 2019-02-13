@@ -11,7 +11,6 @@ import numexpr
 import numpy
 import pandas
 from PIL import Image, ImageDraw, ImageFont
-import random
 import re
 import seaborn
 import textwrap
