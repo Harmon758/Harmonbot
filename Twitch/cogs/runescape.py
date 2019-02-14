@@ -46,6 +46,8 @@ class Runescape:
 						"hunter": [(0, 5000), (12031, 40000), (247886, 80000), (1986068, 110000), 
 									(3972294, 135000), (13034431, 155000)], 
 						"construction": [(0, 20000), (18247, 100000), (101333, 230000), (1096278, 410000)]}
+		self.ehp_responses = {"hitpoints": "None.", "prayer": "For Prayer: 1 ehp = 500,000 xp/h", 
+								"magic": "For Magic: 1 ehp = 250,000 xp/h"}
 		
 		self.skill_aliases = {"att": "attack", "con": "construction", "cook": "cooking", "craft": "crafting", 
 								"def": "defence", "defense": "defence", "farm": "farming", "fish": "fishing", 
@@ -61,14 +63,10 @@ class Runescape:
 		if xp > 200000000:
 			return await ctx.send(f"You can't have that much xp, {ctx.author.name.capitalize()}! Reported.")
 		skill = self.skill_aliases.get(skill, skill)
-		if skill in self.ehp_data:
+		if skill in self.ehp_responses:
+			await ctx.send(self.ehp_responses[skill])
+		elif skill in self.ehp_data:
 			index = bisect.bisect([boundary[0] for boundary in self.ehp_data[skill]], xp) - 1
 			await ctx.send(f"At {xp} {skill.capitalize()} xp: 1 ehp = {self.ehp_data[skill][index][1]:,} xp/h")
-		elif skill == "hitpoints":
-			await ctx.send("None.")
-		elif skill == "prayer":
-			await ctx.send("For Prayer: 1 ehp = 500,000 xp/h")
-		elif skill == "magic":
-			await ctx.send("For Magic: 1 ehp = 250,000 xp/h")
 		# TODO: Handle skill not found
 
