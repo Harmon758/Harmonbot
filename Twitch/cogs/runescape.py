@@ -14,7 +14,7 @@ class Runescape:
 		# TODO: Handle negative xp input
 		xp = int(xp)
 		if xp > 200000000:
-			await ctx.send(f"You can't have that much xp, {ctx.author.name.capitalize()}) ! Reported.")
+			await ctx.send(f"You can't have that much xp, {ctx.author.name.capitalize()}! Reported.")
 			return
 		ehp = {"attack": [(0, 15000), (37224, 38000), (100000, 55000), (1000000, 65000), 
 							(1986068, 80000), (3000000, 90000), (5346332, 105000), (13034431, 120000)], 
