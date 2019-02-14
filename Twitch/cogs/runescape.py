@@ -68,15 +68,15 @@ class Runescape:
 	
 	@commands.command()
 	async def level(self, ctx, level : int):
-		if 1 <= level < 127:
+		if 1 <= level <= 126:
 			xp = sum(int(i + 300 * 2 ** (i / 7)) for i in range(1, level)) // 4
 			await ctx.send(f"Runescape Level {level} = {xp:,} xp")
-		elif level > 9000:
-			await ctx.send("It's over 9000!")
-		elif level == 9000:
-			await ctx.send("Almost there.")
 		elif 126 < level < 9000:
 			await ctx.send(f"I was gonna calculate xp at Level {level}. Then I took an arrow to the knee.")
+		elif level == 9000:
+			await ctx.send("Almost there.")
+		elif level > 9000:
+			await ctx.send("It's over 9000!")
 		else:
 			await ctx.send(f"Level {level} does not exist.")
 
