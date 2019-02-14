@@ -9,6 +9,7 @@ import sys
 import traceback
 
 import tweepy
+import urllib3
 
 import clients
 from modules import logging
@@ -97,6 +98,11 @@ class TwitterStreamListener(tweepy.StreamListener):
 	def on_error(self, status_code):
 		print(f"Twitter Error: {status_code}")
 		return False
+	
+	def on_exception(self, exception):
+		if isinstance(exception, urllib3.exceptions.ReadTimeoutError):
+			print(f"{self.bot.console_message_prefix}Twitter stream timed out | Recreating stream..")
+			self.bot.loop.create_task(self.start_feeds())
 
 class Twitter:
 	
