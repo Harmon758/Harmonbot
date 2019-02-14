@@ -728,27 +728,6 @@ class TwitchClient(pydle.Client):
 					skill = skill.capitalize()
 				stat_text = f"'s {skill} level is {stat:,}"
 			await self.message(target, f"{username.capitalize()}{stat_text} on {hiscores_name}.")
-		elif message.startswith("!level"):
-			if len(message.split()) == 1:
-				await self.message(target, "Please enter a level.")
-			elif is_number(message.split()[1]):
-				level = int(message.split()[1])
-				if 1 <= level < 127:
-					xp = 0
-					for i in range(1, level):
-						xp += int(i + 300 * 2 ** (i / 7))
-					xp = int(xp / 4)
-					await self.message(target, f"Runescape Level {level} = {xp:,} xp")
-				elif level > 9000:
-					await self.message(target, "It's over 9000!")
-				elif level == 9000:
-					await self.message(target, "Almost there.")
-				elif level > 126 and level < 9000:
-					await self.message(target, f"I was gonna calculate xp at Level {level}. Then I took an arrow to the knee.")
-				else:
-					await self.message(target, f"Level {level} does not exist.")
-			else:
-				await self.message(target, "Syntax error.")
 		elif message.startswith("!monster"):
 			if len(message.split()) == 1:
 				await self.message(target, "Please specify a monster.")

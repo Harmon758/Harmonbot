@@ -65,4 +65,21 @@ class Runescape:
 			index = bisect.bisect([boundary[0] for boundary in self.ehp_data[skill]], xp) - 1
 			await ctx.send(f"At {xp} {skill.capitalize()} xp: 1 ehp = {self.ehp_data[skill][index][1]:,} xp/h")
 		# TODO: Handle skill not found
+	
+	@commands.command()
+	async def level(self, ctx, level : int):
+		if 1 <= level < 127:
+			xp = 0
+			for i in range(1, level):
+				xp += int(i + 300 * 2 ** (i / 7))
+			xp = int(xp / 4)
+			await ctx.send(f"Runescape Level {level} = {xp:,} xp")
+		elif level > 9000:
+			await ctx.send("It's over 9000!")
+		elif level == 9000:
+			await ctx.send("Almost there.")
+		elif level > 126 and level < 9000:
+			await ctx.send(f"I was gonna calculate xp at Level {level}. Then I took an arrow to the knee.")
+		else:
+			await ctx.send(f"Level {level} does not exist.")
 
