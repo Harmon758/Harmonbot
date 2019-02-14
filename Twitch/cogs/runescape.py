@@ -49,10 +49,11 @@ class Runescape:
 		
 		self.skill_aliases = {"att": "attack", "con": "construction", "cook": "cooking", "craft": "crafting", 
 								"def": "defence", "defense": "defence", "farm": "farming", "fish": "fishing", 
-								"fletch": "fletching", "fm": "firemaking", "herb": "herblore", "hunt": "hunter", 
-								"mine": "mining", "range": "ranged", "rc": "runecrafting", "slay": "slayer", 
-								"smith": "smithing", "str": "strength", "thief": "thieving", "thieve": "thieving", 
-								"wc": "woodcutting"}
+								"fletch": "fletching", "fm": "firemaking", "herb": "herblore", "hp": "hitpoints", 
+								"hunt": "hunter", "mage": "magic", "mine": "mining", "pray": "prayer", 
+								"range": "ranged", "rc": "runecrafting", "slay": "slayer", "smith": "smithing", 
+								"str": "strength", "thief": "thieving", "thieve": "thieving", "wc": "woodcutting"}
+		# TODO: Add constitution as alias?
 	
 	@commands.command()
 	async def ehp(self, ctx, skill, xp : int):
@@ -63,12 +64,11 @@ class Runescape:
 		if skill in self.ehp_data:
 			index = bisect.bisect([boundary[0] for boundary in self.ehp_data[skill]], xp) - 1
 			await ctx.send(f"At {xp} {skill.capitalize()} xp: 1 ehp = {self.ehp_data[skill][index][1]:,} xp/h")
-		elif skill in ("hp", "hitpoints"):
-			# TODO: Add constitution as alias?
+		elif skill == "hitpoints":
 			await ctx.send("None.")
-		elif skill in ("pray", "prayer"):
+		elif skill == "prayer":
 			await ctx.send("For Prayer: 1 ehp = 500,000 xp/h")
-		elif skill in ("mage", "magic"):
+		elif skill == "magic":
 			await ctx.send("For Magic: 1 ehp = 250,000 xp/h")
 		# TODO: Handle skill not found
 
