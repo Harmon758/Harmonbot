@@ -79,4 +79,14 @@ class Runescape:
 			await ctx.send("It's over 9000!")
 		else:
 			await ctx.send(f"Level {level} does not exist.")
+	
+	@commands.command()
+	async def xpbetween(self, ctx, startlevel : int, endlevel : int):
+		xp, startxp, betweenxp = 0, 0, 0
+		for level in range(1, endlevel):
+			if level == startlevel:
+				startxp = int(xp / 4)
+			xp += int(level + 300 * 2 ** (level / 7))
+		betweenxp = int(xp / 4) - startxp
+		await ctx.send(f"{betweenxp:,} xp between level {startlevel} and level {endlevel}")
 

@@ -776,19 +776,6 @@ class TwitchClient(pydle.Client):
 					await self.message(target, "You can't have that much xp!")
 			else:
 				await self.message(target, "Syntax error.")
-		elif message.startswith("!xpbetween"):
-			if len(message.split()) >= 3 and is_number(message.split()[1]) and 1 <= float(message.split()[1]) < 127 and is_number(message.split()[2]) and 1 <= float(message.split()[2]) < 127:
-				startlevel = int(message.split()[1])
-				endlevel = int(message.split()[2])
-				xp, startxp, betweenxp = 0, 0, 0
-				for level in range(1, endlevel):
-					if level == startlevel:
-						startxp = int(xp / 4)
-					xp += int(level + 300 * 2 ** (level / 7))
-				betweenxp = int(xp / 4) - startxp
-				await self.message(target, f"{betweenxp:,} xp between level {startlevel} and level {endlevel}")
-			else:
-				await self.message(target, "Syntax error.")
 		
 		# League of Legends Commands
 		# WIP using development API key
