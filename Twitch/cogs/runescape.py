@@ -47,12 +47,12 @@ class Runescape:
 									(3972294, 135000), (13034431, 155000)], 
 						"construction": [(0, 20000), (18247, 100000), (101333, 230000), (1096278, 410000)]}
 		
-		self.skill_aliases = {"att": "attack", "def": "defence", "defense": "defence", "str": "strength", 
-								"range": "ranged", "cook": "cooking", "wc": "woodcutting", "fletch": "fletching", 
-								"fish": "fishing", "fm": "firemaking", "craft": "crafting", "smith": "smithing", 
-								"mine": "mining", "herb": "herblore", "thief": "thieving", "thieve": "thieving", 
-								"slay": "slayer", "farm": "farming", "rc": "runecrafting", "hunt": "hunter", 
-								"con": "construction"}
+		self.skill_aliases = {"att": "attack", "con": "construction", "cook": "cooking", "craft": "crafting", 
+								"def": "defence", "defense": "defence", "farm": "farming", "fish": "fishing", 
+								"fletch": "fletching", "fm": "firemaking", "herb": "herblore", "hunt": "hunter", 
+								"mine": "mining", "range": "ranged", "rc": "runecrafting", "slay": "slayer", 
+								"smith": "smithing", "str": "strength", "thief": "thieving", "thieve": "thieving", 
+								"wc": "woodcutting"}
 	
 	@commands.command()
 	async def ehp(self, ctx, skill, xp : int):
