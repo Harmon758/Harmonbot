@@ -207,12 +207,6 @@ class TwitchClient(pydle.Client):
 				# %#d for removal of leading zero on Windows with native Python executable
 			else:
 				await self.message(target, f"{source.capitalize()}, you haven't followed yet!")
-		elif message.startswith("!followers"):
-			url = f"https://api.twitch.tv/kraken/channels/{target[1:]}/follows"
-			params = {"client_id": self.TWITCH_CLIENT_ID}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			await self.message(target, f"There are currently {data['_total']} people following {target[1:].capitalize()}.")
 		elif message.startswith("!highfive"):
 			if len(message.split()) == 1:
 				await self.message(target, f"{source.capitalize()} highfives no one. :-/")
