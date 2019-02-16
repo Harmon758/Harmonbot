@@ -9,9 +9,11 @@ class Twitch:
 	
 	@commands.command()
 	async def followers(self, ctx):
-		url = f"https://api.twitch.tv/kraken/channels/{ctx.channel.name}/follows"
-		params = {"client_id": self.bot.http.client_id}
-		async with self.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		await ctx.send(f"There are currently {data['_total']} people following {ctx.channel.name.capitalize()}.")
+		# Waiting for Get Users endpoint to include follower count
+		# https://discuss.dev.twitch.tv/t/new-twitch-api-get-total-followers-count/12489
+		# https://discuss.dev.twitch.tv/t/regarding-data-in-kraken-not-present-in-new-twitch-api/13045
+		# https://discuss.dev.twitch.tv/t/helix-get-user-missing-total-followers/15449
+		users = await self.bot.get_users(ctx.channel.name)
+		count = await self.bot.get_followers(users[0].id, count = True)
+		await ctx.send(f"There are currently {count} people following {ctx.channel.name.capitalize()}.")
 
