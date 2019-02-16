@@ -16,4 +16,12 @@ class Twitch:
 		users = await self.bot.get_users(ctx.channel.name)
 		count = await self.bot.get_followers(users[0].id, count = True)
 		await ctx.send(f"There are currently {count} people following {ctx.channel.name.capitalize()}.")
+	
+	@commands.command(aliases = ("shout",))
+	async def shoutout(self, ctx, channel = None):
+		if not channel:
+			return await ctx.send('\N{SPEAKING HEAD IN SILHOUETTE}')
+		await ctx.send("https://www.twitch.tv/" + channel)
+	
+	# TODO: views command
 

@@ -319,10 +319,6 @@ class TwitchClient(pydle.Client):
 														"SCISSORS -- Dang it, it's a draw.")))
 				else:
 					await self.message(target, f"{source.capitalize()} is a cheater. Reported.")
-		elif message.startswith("!shout"):
-			if len(message.split()) == 1:
-				return await self.message(target, '\N{SPEAKING HEAD IN SILHOUETTE}')
-			await self.message(target, "https://www.twitch.tv/" + message.split()[1])
 		elif message.startswith("!time"):
 			# TODO: Document
 			# TODO: Add ability to reset
