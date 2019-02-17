@@ -103,7 +103,7 @@ class Runescape:
 	
 	@commands.command()
 	async def rswiki(self, ctx, *search):
-		await ctx.send("runescape.wikia.com/wiki/" + '_'.join(search))
+		await ctx.send("https://runescape.wikia.com/wiki/" + '_'.join(search))
 	
 	@commands.command()
 	async def xpbetween(self, ctx, start_level : int, end_level : int):
