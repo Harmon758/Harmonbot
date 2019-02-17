@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.62"
+		self.version = "3.0.0-b.63"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -47,6 +47,9 @@ class Bot(commands.Bot):
 		initial_channels.extend(record["channel"] for record in records)
 		super().__init__(loop = loop, initial_channels = initial_channels, **kwargs)
 		# TODO: Handle channel name changes?
+		
+		# Add commands with set responses
+		loop.run_until_complete(self.add_set_response_commands())
 		
 		# Load cogs
 		for file in sorted(os.listdir("cogs")):
@@ -98,6 +101,17 @@ class Bot(commands.Bot):
 			"""
 		)
 	
+	async def add_set_response_commands(self):
+		"""Add commands with set responses"""
+		records = await self.db.fetch("SELECT name, text FROM twitch.commands WHERE channel = 'harmonbot'")
+		def set_response_command_wrapper(text):
+			async def set_response_command(ctx):
+				await ctx.send(text)
+			return set_response_command
+		for record in records:
+			self.add_command(commands.Command(name = record["name"], 
+												func = set_response_command_wrapper(record["text"])))
+	
 	async def event_ready(self):
 		print(f"Ready | {self.nick}")
 		
@@ -121,7 +135,7 @@ class Bot(commands.Bot):
 		# Get Context
 		ctx = await self.get_context(message)
 		# Handle channel-specific commands with set responses
-		if ctx.prefix:
+		if ctx.prefix and ctx.channel.name != "harmonbot":
 			command = message.content[len(ctx.prefix):].lstrip(' ')
 			text = await self.db.fetchval(
 				"""

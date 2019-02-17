@@ -134,10 +134,6 @@ class TwitchClient(pydle.Client):
 		if message == "!test":
 			await self.message(target, "Hello, World!")
 		
-		# Meta Commands
-		if message.startswith('!') and message[1:] in self.meta_commands:
-				await self.message(target, self.meta_commands[message[1:]])
-		
 		# Main Commands
 		elif message.startswith("!averagefps"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
@@ -801,9 +797,7 @@ class TwitchClient(pydle.Client):
 					await self.message(target, ", ".join(p["summonerName"] for p in game_data["participants"]))
 		
 		# Miscellaneous Commands
-		if message.startswith('!') and message[1:] in self.misc_commands:
-			await self.message(target, self.misc_commands[message[1:]])
-		elif message.startswith("!christmas"):
+		if message.startswith("!christmas"):
 			now = datetime.datetime.utcnow()
 			christmas = datetime.datetime(now.year, 12, 25)
 			if now > christmas:
