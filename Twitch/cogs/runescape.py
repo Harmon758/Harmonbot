@@ -81,10 +81,10 @@ class Runescape:
 			await ctx.send(f"Level {level} does not exist.")
 	
 	@commands.command()
-	async def monster(self, ctx, *monster):
-		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term="
-		url += '+'.join(monster)
-		async with self.bot.aiohttp_session.get(url) as resp:
+	async def monster(self, ctx, *, monster):
+		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json"
+		params = {"term": monster}
+		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
 		if "value" in data[0]:
 			monster_id = data[0]["value"]
