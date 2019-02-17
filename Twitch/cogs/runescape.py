@@ -102,6 +102,10 @@ class Runescape:
 						f"Aggressive: {data['aggressive']}")
 	
 	@commands.command()
+	async def rswiki(self, ctx, *search):
+		await ctx.send("runescape.wikia.com/wiki/" + '_'.join(search))
+	
+	@commands.command()
 	async def xpbetween(self, ctx, start_level : int, end_level : int):
 		start_xp = sum(int(level + 300 * 2 ** (level / 7)) for level in range(1, start_level))
 		end_xp = (start_xp + sum(int(level + 300 * 2 ** (level / 7)) for level in range(start_level, end_level))) // 4

@@ -720,8 +720,6 @@ class TwitchClient(pydle.Client):
 			await self.message(target, f"{username.capitalize()}{stat_text} on {hiscores_name}.")
 		elif message.startswith("!reset"):
 			await self.message(target, f"{secs_to_duration(int(86400 - time.time() % 86400))} until reset.")
-		elif message.startswith("!rswiki"):
-			await self.message(target, "runescape.wikia.com/wiki/" + '_'.join(message.split()[1:]))
 		elif message.startswith("!warbands"):
 			await self.message(target, f"{secs_to_duration(int(25200 - time.time() % 25200))} until Warbands.")
 		elif message.startswith("!xpat"):
