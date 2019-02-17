@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.63"
+		self.version = "3.0.0-b.64"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -91,6 +91,17 @@ class Bot(commands.Bot):
 		)
 		await self.db.execute(
 			"""
+			CREATE TABLE IF NOT EXISTS twitch.aliases (
+				channel			TEXT, 
+				name			TEXT, 
+				alias			TEXT, 
+				PRIMARY KEY		(channel, alias), 
+				FOREIGN KEY		(channel, name) REFERENCES twitch.commands (channel, name) ON DELETE CASCADE
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
 			CREATE TABLE IF NOT EXISTS twitch.messages (
 				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
 				channel				TEXT, 
@@ -100,6 +111,22 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
+		# Migrate aliases
+		import json
+		for file in os.listdir("data/commands/aliases"):
+			channel = file[:-5]  # - .json
+			with open(f"data/commands/aliases/{channel}.json", 'r') as aliases_file:
+				aliases = json.load(aliases_file)
+			for alias, name in aliases.items():
+				await self.db.execute(
+					"""
+					INSERT INTO twitch.aliases (channel, name, alias)
+					VALUES ($1, $2, $3)
+					ON CONFLICT (channel, alias) DO
+					UPDATE SET name = $2
+					""", 
+					channel, name, alias
+				)
 	
 	async def add_set_response_commands(self):
 		"""Add commands with set responses"""
