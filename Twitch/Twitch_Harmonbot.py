@@ -390,8 +390,8 @@ class TwitchClient(pydle.Client):
 			if message.startswith('!'):
 				if message[1:] in channel_aliases:
 					message = '!' + channel_aliases[message[1:]]
-				if message[1:] in channel_commands:
-					await self.message(target, channel_commands[message[1:]])
+					if message[1:] in channel_commands:
+						await self.message(target, channel_commands[message[1:]])
 		
 		# Mikki Commands
 		if target == "#mikki":

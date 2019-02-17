@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.61"
+		self.version = "3.0.0-b.62"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -97,26 +97,6 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
-		# Migrate commands
-		import json
-		for file in os.listdir("data/commands"):
-			if file == "aliases":
-				continue
-			channel = file[:-5]  # - .json
-			with open(f"data/commands/{channel}.json", 'r') as commands_file:
-				commands = json.load(commands_file)
-			if channel in ("meta", "misc"):
-				channel = "harmonbot"
-			for name, text in commands.items():
-				await self.db.execute(
-					"""
-					INSERT INTO twitch.commands (channel, name, text)
-					VALUES ($1, $2, $3)
-					ON CONFLICT (channel, name) DO
-					UPDATE SET text = $3
-					""", 
-					channel, name, text
-				)
 	
 	async def event_ready(self):
 		print(f"Ready | {self.nick}")
@@ -138,10 +118,25 @@ class Bot(commands.Bot):
 		# Ignore own messages
 		if message.author.name == "harmonbot":
 			return
+		# Get Context
+		ctx = await self.get_context(message)
+		# Handle channel-specific commands with set responses
+		if ctx.prefix:
+			command = message.content[len(ctx.prefix):].lstrip(' ')
+			text = await self.db.fetchval(
+				"""
+				SELECT text
+				FROM twitch.commands
+				WHERE channel = $1 AND name = $2
+				""", 
+				ctx.channel.name, command
+			)
+			if text:
+				await ctx.send(text)
 		# Handle commands
-		await self.handle_commands(message)
+		await self.handle_commands(message, ctx = ctx)
 		if message.content.startswith('\N{BILLIARDS}'):
-			await message.channel.send(f"\N{BILLIARDS} {eightball()}")
+			await ctx.send(f"\N{BILLIARDS} {eightball()}")
 	
 	async def event_command_error(self, ctx, error):
 		# TODO: Handle bad argument
