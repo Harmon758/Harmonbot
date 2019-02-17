@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.64"
+		self.version = "3.0.0-b.65"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -111,22 +111,6 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
-		# Migrate aliases
-		import json
-		for file in os.listdir("data/commands/aliases"):
-			channel = file[:-5]  # - .json
-			with open(f"data/commands/aliases/{channel}.json", 'r') as aliases_file:
-				aliases = json.load(aliases_file)
-			for alias, name in aliases.items():
-				await self.db.execute(
-					"""
-					INSERT INTO twitch.aliases (channel, name, alias)
-					VALUES ($1, $2, $3)
-					ON CONFLICT (channel, alias) DO
-					UPDATE SET name = $2
-					""", 
-					channel, name, alias
-				)
 	
 	async def add_set_response_commands(self):
 		"""Add commands with set responses"""
@@ -164,6 +148,16 @@ class Bot(commands.Bot):
 		# Handle channel-specific commands with set responses
 		if ctx.prefix and ctx.channel.name != "harmonbot":
 			command = message.content[len(ctx.prefix):].lstrip(' ')
+			aliased = await self.db.fetchval(
+				"""
+				SELECT name
+				from twitch.aliases
+				WHERE channel = $1 AND alias = $2
+				""", 
+				ctx.channel.name, command
+			)
+			if aliased:
+				command = aliased
 			text = await self.db.fetchval(
 				"""
 				SELECT text

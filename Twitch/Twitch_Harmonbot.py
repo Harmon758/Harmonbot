@@ -45,18 +45,6 @@ class TwitchClient(pydle.Client):
 		self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 		# aiohttp Client Session - initialized on connect
 		self.aiohttp_session = None
-		# Dynamically load commands
-		for file in os.listdir("data/commands"):
-			if file == "aliases":
-				continue
-			category = file[:-5]  # - .json
-			with open(f"data/commands/{category}.json", 'r') as commands_file:
-				setattr(self, f"{category}_commands", json.load(commands_file))
-		# Dynamically load aliases
-		for file in os.listdir("data/commands/aliases"):
-			category = file[:-5]  # - .json
-			with open(f"data/commands/aliases/{category}.json", 'r') as aliases_file:
-				setattr(self, f"{category}_aliases", json.load(aliases_file))
 		# Dynamically load variables
 		for file in os.listdir("data/variables"):
 			category = file[:-5]  # - .json
@@ -378,16 +366,6 @@ class TwitchClient(pydle.Client):
 			else:
 				await self.message(target, "Stream is offline.")
 			# No one is watching right now :-/
-		
-		# Channel-specific commands and aliases
-		channel_aliases = getattr(self, f"{target[1:]}_aliases", {})
-		channel_commands = getattr(self, f"{target[1:]}_commands", {})
-		if channel_commands:
-			if message.startswith('!'):
-				if message[1:] in channel_aliases:
-					message = '!' + channel_aliases[message[1:]]
-					if message[1:] in channel_commands:
-						await self.message(target, channel_commands[message[1:]])
 		
 		# Mikki Commands
 		if target == "#mikki":
