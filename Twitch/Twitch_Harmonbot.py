@@ -620,9 +620,7 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "PMFornud pls")
 		
 		# Runescape Commands
-		if message.startswith(("!07rswiki", "!rswiki07", "!osrswiki", "!rswikios")):
-			await self.message(target, "oldschoolrunescape.wikia.com/wiki/" + '_'.join(message.split()[1:]))
-		elif message.startswith("!cache"):
+		if message.startswith("!cache"):
 			await self.message(target, f"{secs_to_duration(int(10800 - time.time() % 10800))} until Guthixian Cache.")
 		elif message.startswith(("!hiscore", "!highscore")):
 			# TODO: Other RS3 hiscores?

@@ -101,6 +101,10 @@ class Runescape:
 						f"Members: {data['members']}, "
 						f"Aggressive: {data['aggressive']}")
 	
+	@commands.command(aliases = ("07rswiki", "rswiki07", "rswikios"))
+	async def osrswiki(self, ctx, *search):
+		await ctx.send("oldschoolrunescape.wikia.com/wiki/" + '_'.join(search))
+	
 	@commands.command()
 	async def rswiki(self, ctx, *search):
 		await ctx.send("https://runescape.wiki/w/" + '_'.join(search))
