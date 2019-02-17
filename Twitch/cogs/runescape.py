@@ -81,6 +81,25 @@ class Runescape:
 			await ctx.send(f"Level {level} does not exist.")
 	
 	@commands.command()
+	async def monster(self, ctx, *monster):
+		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term="
+		url += '+'.join(monster)
+		async with self.bot.aiohttp_session.get(url) as resp:
+			data = await resp.json(content_type = "text/html")
+		if "value" in data[0]:
+			monster_id = data[0]["value"]
+			url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
+			params = {"beastid": monster_id}
+			async with self.bot.aiohttp_session.get(url, params = params) as resp:
+				data = await resp.json(content_type = "text/html")
+			level = data.get("level", "N/A")
+			weakness = data.get("weakness", "N/A")
+			hp = data.get("lifepoints", "N/A")
+			await ctx.send(f"{data['name']}: {data['description']}, Level: {level}, Weakness: {weakness}, XP/Kill: {data['xp']}, HP: {hp}, Members: {data['members']}, Aggressive: {data['aggressive']}")
+		else:
+			await ctx.send("Monster not found.")
+	
+	@commands.command()
 	async def xpbetween(self, ctx, start_level : int, end_level : int):
 		start_xp = sum(int(level + 300 * 2 ** (level / 7)) for level in range(1, start_level))
 		end_xp = (start_xp + sum(int(level + 300 * 2 ** (level / 7)) for level in range(start_level, end_level))) // 4

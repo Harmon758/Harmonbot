@@ -718,26 +718,6 @@ class TwitchClient(pydle.Client):
 					skill = skill.capitalize()
 				stat_text = f"'s {skill} level is {stat:,}"
 			await self.message(target, f"{username.capitalize()}{stat_text} on {hiscores_name}.")
-		elif message.startswith("!monster"):
-			if len(message.split()) == 1:
-				await self.message(target, "Please specify a monster.")
-				return
-			url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term="
-			url += '+'.join(message.split()[1:])
-			async with self.aiohttp_session.get(url) as resp:
-				data = await resp.json(content_type = "text/html")
-			if "value" in data[0]:
-				monster_id = data[0]["value"]
-				url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
-				params = {"beastid": monster_id}
-				async with self.aiohttp_session.get(url, params = params) as resp:
-					data = await resp.json(content_type = "text/html")
-				level = data.get("level", "N/A")
-				weakness = data.get("weakness", "N/A")
-				hp = data.get("lifepoints", "N/A")
-				await self.message(target, f"{data['name']}: {data['description']}, Level: {level}, Weakness: {weakness}, XP/Kill: {data['xp']}, HP: {hp}, Members: {data['members']}, Aggressive: {data['aggressive']}")
-			else:
-				await self.message(target, "Monster not found.")
 		elif message.startswith("!reset"):
 			await self.message(target, f"{secs_to_duration(int(86400 - time.time() % 86400))} until reset.")
 		elif message.startswith("!rswiki"):
