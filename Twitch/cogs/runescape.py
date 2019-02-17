@@ -93,10 +93,13 @@ class Runescape:
 		params = {"beastid": monster_id}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
-		level = data.get("level", "N/A")
-		weakness = data.get("weakness", "N/A")
-		hp = data.get("lifepoints", "N/A")
-		await ctx.send(f"{data['name']}: {data['description']}, Level: {level}, Weakness: {weakness}, XP/Kill: {data['xp']}, HP: {hp}, Members: {data['members']}, Aggressive: {data['aggressive']}")
+		await ctx.send(f"{data['name']}: {data['description']}, "
+						f"Level: {data.get('level', 'N/A')}, "
+						f"Weakness: {data.get('weakness', 'N/A')}, "
+						f"XP/Kill: {data['xp']}, "
+						f"HP: {data.get('lifepoints', 'N/A')}, "
+						f"Members: {data['members']}, "
+						f"Aggressive: {data['aggressive']}")
 	
 	@commands.command()
 	async def xpbetween(self, ctx, start_level : int, end_level : int):
