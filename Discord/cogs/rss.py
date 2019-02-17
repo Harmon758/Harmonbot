@@ -313,8 +313,11 @@ class RSS:
 								except discord.Forbidden:
 									pass
 								except discord.HTTPException as e:
-									if e.status == 400 and e.code == 50035 and "In embed.url: Not a well formed URL." in e.text:
-										embed.url = discord.Embed.Empty
+									if e.status == 400 and e.code == 50035:
+										if "In embed.url: Not a well formed URL." in e.text:
+											embed.url = discord.Embed.Empty
+										if "In embed.thumbnail.url: Not a well formed URL." in e.text:
+											embed.set_thumbnail(url = "")
 										await text_channel.send(embed = embed)
 									else:
 										raise
