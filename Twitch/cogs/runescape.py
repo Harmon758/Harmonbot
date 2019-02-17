@@ -103,7 +103,7 @@ class Runescape:
 	
 	@commands.command(aliases = ("07rswiki", "rswiki07", "rswikios"))
 	async def osrswiki(self, ctx, *search):
-		await ctx.send("https://oldschoolrunescape.wikia.com/wiki/" + '_'.join(search))
+		await ctx.send("https://oldschool.runescape.wiki/w/" + '_'.join(search))
 	
 	@commands.command()
 	async def rswiki(self, ctx, *search):
