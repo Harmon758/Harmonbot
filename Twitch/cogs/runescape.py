@@ -86,18 +86,17 @@ class Runescape:
 		params = {"term": monster}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
-		if "value" in data[0]:
-			monster_id = data[0]["value"]
-			url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
-			params = {"beastid": monster_id}
-			async with self.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json(content_type = "text/html")
-			level = data.get("level", "N/A")
-			weakness = data.get("weakness", "N/A")
-			hp = data.get("lifepoints", "N/A")
-			await ctx.send(f"{data['name']}: {data['description']}, Level: {level}, Weakness: {weakness}, XP/Kill: {data['xp']}, HP: {hp}, Members: {data['members']}, Aggressive: {data['aggressive']}")
-		else:
-			await ctx.send("Monster not found.")
+		if "value" not in data[0]:
+			return await ctx.send("Monster not found.")
+		monster_id = data[0]["value"]
+		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
+		params = {"beastid": monster_id}
+		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json(content_type = "text/html")
+		level = data.get("level", "N/A")
+		weakness = data.get("weakness", "N/A")
+		hp = data.get("lifepoints", "N/A")
+		await ctx.send(f"{data['name']}: {data['description']}, Level: {level}, Weakness: {weakness}, XP/Kill: {data['xp']}, HP: {hp}, Members: {data['members']}, Aggressive: {data['aggressive']}")
 	
 	@commands.command()
 	async def xpbetween(self, ctx, start_level : int, end_level : int):
