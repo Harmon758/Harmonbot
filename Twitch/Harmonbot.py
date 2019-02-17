@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.65"
+		self.version = "3.0.0-b.66"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -84,7 +84,7 @@ class Bot(commands.Bot):
 			CREATE TABLE IF NOT EXISTS twitch.commands (
 				channel			TEXT, 
 				name			TEXT, 
-				text			TEXT, 
+				response		TEXT, 
 				PRIMARY KEY		(channel, name)
 			)
 			"""
@@ -114,14 +114,14 @@ class Bot(commands.Bot):
 	
 	async def add_set_response_commands(self):
 		"""Add commands with set responses"""
-		records = await self.db.fetch("SELECT name, text FROM twitch.commands WHERE channel = 'harmonbot'")
-		def set_response_command_wrapper(text):
+		records = await self.db.fetch("SELECT name, response FROM twitch.commands WHERE channel = 'harmonbot'")
+		def set_response_command_wrapper(response):
 			async def set_response_command(ctx):
-				await ctx.send(text)
+				await ctx.send(response)
 			return set_response_command
 		for record in records:
 			self.add_command(commands.Command(name = record["name"], 
-												func = set_response_command_wrapper(record["text"])))
+												func = set_response_command_wrapper(record["response"])))
 	
 	async def event_ready(self):
 		print(f"Ready | {self.nick}")
@@ -158,16 +158,16 @@ class Bot(commands.Bot):
 			)
 			if aliased:
 				command = aliased
-			text = await self.db.fetchval(
+			response = await self.db.fetchval(
 				"""
-				SELECT text
+				SELECT response
 				FROM twitch.commands
 				WHERE channel = $1 AND name = $2
 				""", 
 				ctx.channel.name, command
 			)
-			if text:
-				await ctx.send(text)
+			if response:
+				await ctx.send(response)
 		# Handle commands
 		await self.handle_commands(message, ctx = ctx)
 		if message.content.startswith('\N{BILLIARDS}'):
