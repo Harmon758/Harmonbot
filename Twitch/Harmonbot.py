@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.60"
+		self.version = "3.0.0-b.61"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -78,6 +78,16 @@ class Bot(commands.Bot):
 		)
 		await self.db.execute(
 			"""
+			CREATE TABLE IF NOT EXISTS twitch.commands (
+				channel			TEXT, 
+				name			TEXT, 
+				text			TEXT, 
+				PRIMARY KEY		(channel, name)
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
 			CREATE TABLE IF NOT EXISTS twitch.messages (
 				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
 				channel				TEXT, 
@@ -87,6 +97,26 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
+		# Migrate commands
+		import json
+		for file in os.listdir("data/commands"):
+			if file == "aliases":
+				continue
+			channel = file[:-5]  # - .json
+			with open(f"data/commands/{channel}.json", 'r') as commands_file:
+				commands = json.load(commands_file)
+			if channel in ("meta", "misc"):
+				channel = "harmonbot"
+			for name, text in commands.items():
+				await self.db.execute(
+					"""
+					INSERT INTO twitch.commands (channel, name, text)
+					VALUES ($1, $2, $3)
+					ON CONFLICT (channel, name) DO
+					UPDATE SET text = $3
+					""", 
+					channel, name, text
+				)
 	
 	async def event_ready(self):
 		print(f"Ready | {self.nick}")
