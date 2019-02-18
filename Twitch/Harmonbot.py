@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.66"
+		self.version = "3.0.0-b.67"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -111,6 +111,35 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitch.toggles (
+				channel			TEXT, 
+				name			TEXT, 
+				status			BOOLEAN, 
+				PRIMARY KEY		(channel, name)
+			)
+			"""
+		)
+		# Migrate toggles
+		import json
+		for file in os.listdir("data/variables"):
+			channel = file[:-5]  # - .json
+			with open(f"data/variables/{channel}.json", 'r') as variables_file:
+				variables = json.load(variables_file)
+				for name, status in variables.items():
+					if status in (True, False, None):
+						if name.endswith(".status"):
+							name = name[:-7]
+						await self.db.execute(
+							"""
+							INSERT INTO twitch.toggles (channel, name, status)
+							VALUES ($1, $2, $3)
+							ON CONFLICT (channel, name) DO
+							UPDATE SET status = $3
+							""", 
+							channel, name, status
+						)
 	
 	async def add_set_response_commands(self):
 		"""Add commands with set responses"""
