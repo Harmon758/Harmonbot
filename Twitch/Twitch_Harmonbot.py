@@ -20,7 +20,7 @@ import dotenv
 # import unicodedata2 as unicodedata
 
 sys.path.insert(0, "..")
-from units.location import get_geocode_data, get_timezone_data, UnitOutputError
+from units.location import get_timezone_data, UnitOutputError
 sys.path.pop(0)
 
 class TwitchClient(pydle.Client):
@@ -303,41 +303,6 @@ class TwitchClient(pydle.Client):
 														"SCISSORS -- Dang it, it's a draw.")))
 				else:
 					await self.message(target, f"{source.capitalize()} is a cheater. Reported.")
-		elif message.startswith("!time"):
-			# TODO: Document
-			# TODO: Add ability to reset
-			if not hasattr(self, f"{target[1:]}_variables"):
-				setattr(self, f"{target[1:]}_variables", {})
-			channel_variables = getattr(self, f"{target[1:]}_variables")
-			if source == target[1:] and len(message.split()) > 2 and message.split()[1].lower() == target[1:]:
-				location = ' '.join(message.split()[2:])
-				channel_variables["timezone_location"] = location
-				with open(f"data/variables/{target[1:]}.json", 'w') as variables_file:
-					json.dump(channel_variables, variables_file, indent = 4)
-				await self.message(target, f"Timezone location set to {location}")
-			else:
-				if len(message.split()) == 1 or message.split()[1].lower() == target[1:]:
-					if "timezone_location" not in channel_variables:
-						await self.message(target, f"Error: Location not specified")
-						return
-					location = channel_variables["timezone_location"]
-				else:
-					location = ' '.join(message.split()[1:])
-				try:
-					geocode_data = await get_geocode_data(location, aiohttp_session = self.aiohttp_session)
-					latitude = geocode_data["geometry"]["location"]["lat"]
-					longitude = geocode_data["geometry"]["location"]["lng"]
-					timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
-															aiohttp_session = self.aiohttp_session)
-				except UnitOutputError as e:
-					await self.message(target, f"Error: {e}")
-					return
-				location_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(
-								seconds = timezone_data["dstOffset"] + timezone_data["rawOffset"])))
-				# TODO: Use method for Discord time command
-				time_string = location_time.strftime(f"%#I:%M %p on %b. %#d (%a.) in {geocode_data['formatted_address']} (%Z)")
-				await self.message(target, f"It is currently {time_string}.")
-				# %#I and %#d for removal of leading zero on Windows with native Python executable
 		elif message.startswith("!title"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": self.TWITCH_CLIENT_ID}

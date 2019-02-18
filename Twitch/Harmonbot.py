@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.70"
+		self.version = "3.0.0-b.71"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -199,16 +199,6 @@ class Bot(commands.Bot):
 								""", 
 								channel, name, value
 							)
-					elif isinstance(value, str):
-						await self.db.execute(
-							"""
-							INSERT INTO twitch.timezones (channel, location)
-							VALUES ($1, $2)
-							ON CONFLICT (channel) DO
-							UPDATE SET location = $2
-							""", 
-							channel, value
-						)
 	
 	async def add_set_response_commands(self):
 		"""Add commands with set responses"""
