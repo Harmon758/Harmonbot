@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.67"
+		self.version = "3.0.0-b.68"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -102,6 +102,16 @@ class Bot(commands.Bot):
 		)
 		await self.db.execute(
 			"""
+			CREATE TABLE IF NOT EXISTS twitch.counters (
+				channel			TEXT, 
+				name			TEXT, 
+				value			INT, 
+				PRIMARY KEY		(channel, name)
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
 			CREATE TABLE IF NOT EXISTS twitch.messages (
 				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
 				channel				TEXT, 
@@ -121,14 +131,14 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
-		# Migrate toggles
+		# Migrate variables
 		import json
 		for file in os.listdir("data/variables"):
 			channel = file[:-5]  # - .json
 			with open(f"data/variables/{channel}.json", 'r') as variables_file:
 				variables = json.load(variables_file)
-				for name, status in variables.items():
-					if status in (True, False, None):
+				for name, value in variables.items():
+					if value in (True, False, None):
 						if name.endswith(".status"):
 							name = name[:-7]
 						await self.db.execute(
@@ -138,7 +148,17 @@ class Bot(commands.Bot):
 							ON CONFLICT (channel, name) DO
 							UPDATE SET status = $3
 							""", 
-							channel, name, status
+							channel, name, value
+						)
+					elif isinstance(value, int) and not name.startswith("birthday"):
+						await self.db.execute(
+							"""
+							INSERT INTO twitch.counters (channel, name, value)
+							VALUES ($1, $2, $3)
+							ON CONFLICT (channel, name) DO
+							UPDATE SET value = $3
+							""", 
+							channel, name, value
 						)
 	
 	async def add_set_response_commands(self):
