@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 import asyncio
-import json
 
 from modules import utilities
 from utilities import checks
