@@ -82,9 +82,6 @@ if __name__ == "__main__":
 		stats["commands_usage"][ctx.command.name] = stats["commands_usage"].get(ctx.command.name, 0) + 1
 		with open(clients.data_path + "/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
-		clients.create_folder(f"{clients.data_path}/user_data/{ctx.author.id}")
-		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", ctx.author.name) # | / \ : ? * " < >
-		clients.create_file(f"user_data/{ctx.author.id}/{clean_name}")
 		await ctx.bot.db.execute(
 			"""
 			INSERT INTO users.stats (user_id, commands_executed)
@@ -94,6 +91,7 @@ if __name__ == "__main__":
 			""", 
 			ctx.author.id
 		)
+		# TODO: Track names
 	
 	# TODO: log message edits
 	
