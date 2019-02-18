@@ -591,10 +591,10 @@ class Resources:
 		params = {"term": term}
 		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		if not data or "list" not in data or not data["list"]:
-			await ctx.embed_reply(":no_entry: No results found")
-			return
-		num_results = len(data["list"]) # if one definition
+		if not data.get("list"):
+			return await ctx.embed_reply(":no_entry: No results found")
+		num_results = len(data["list"])
+		# TODO: Handle if one definition
 		if num_results > 10: num_results = 10  # necessary?
 		response = await ctx.embed_reply("React with a number from 1 to {} to view each definition".format(num_results))
 		embed = response.embeds[0]
