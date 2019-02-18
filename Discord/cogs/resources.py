@@ -586,7 +586,10 @@ class Resources:
 	async def urbandictionary(self, ctx, *, term : str):
 		'''Urban Dictionary'''
 		# TODO: Integrate into reactions system; Return first definition instead for non-reaction version?
-		async with clients.aiohttp_session.get("http://api.urbandictionary.com/v0/define?term={}".format(term.replace('+', ' '))) as resp:
+		# TODO: Convert to define/dictionary subcommand urban and add urband etc. as command aliases
+		url = "http://api.urbandictionary.com/v0/define"
+		params = {"term": term}
+		async with clients.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data or "list" not in data or not data["list"]:
 			await ctx.embed_reply(":no_entry: No results found")
