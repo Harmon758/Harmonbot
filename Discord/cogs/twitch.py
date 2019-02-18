@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import aiohttp
 import asyncio
-import datetime
 import dateutil.parser
 import itertools
 import json
