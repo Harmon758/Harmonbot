@@ -29,26 +29,23 @@ class Time:
 				""", 
 				ctx.channel.name, location
 			)
-			await ctx.send(f"Timezone location set to {location}")
-		else:
-			if not location or location.lower() == ctx.channel.name:
-				location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
-				if not location:
-					await ctx.send(f"Error: Location not specified")
-					return
-			try:
-				geocode_data = await get_geocode_data(location, aiohttp_session = self.bot.aiohttp_session)
-				latitude = geocode_data["geometry"]["location"]["lat"]
-				longitude = geocode_data["geometry"]["location"]["lng"]
-				timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
-														aiohttp_session = self.bot.aiohttp_session)
-			except UnitOutputError as e:
-				await ctx.send(f"Error: {e}")
-				return
-			location_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(
-							seconds = timezone_data["dstOffset"] + timezone_data["rawOffset"])))
-			# TODO: Use method for Discord time command
-			time_string = location_time.strftime(f"%#I:%M %p on %b. %#d (%a.) in {geocode_data['formatted_address']} (%Z)")
-			await ctx.send(f"It is currently {time_string}.")
-			# %#I and %#d for removal of leading zero on Windows with native Python executable
+			return await ctx.send(f"Timezone location set to {location}")
+		if not location or location.lower() == ctx.channel.name:
+			location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
+			if not location:
+				return await ctx.send(f"Error: Location not specified")
+		try:
+			geocode_data = await get_geocode_data(location, aiohttp_session = self.bot.aiohttp_session)
+			latitude = geocode_data["geometry"]["location"]["lat"]
+			longitude = geocode_data["geometry"]["location"]["lng"]
+			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
+													aiohttp_session = self.bot.aiohttp_session)
+		except UnitOutputError as e:
+			return await ctx.send(f"Error: {e}")
+		location_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(
+						seconds = timezone_data["dstOffset"] + timezone_data["rawOffset"])))
+		# TODO: Use method for Discord time command
+		time_string = location_time.strftime(f"%#I:%M %p on %b. %#d (%a.) in {geocode_data['formatted_address']} (%Z)")
+		await ctx.send(f"It is currently {time_string}.")
+		# %#I and %#d for removal of leading zero on Windows with native Python executable
 
