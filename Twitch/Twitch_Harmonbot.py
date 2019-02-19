@@ -780,7 +780,6 @@ def secs_to_duration(secs):
 
 if __name__ == "__main__":
 	print("Starting up Twitch Harmonbot...")
-	create_folder("data/commands/aliases")
 	create_folder("data/logs/channels")
 	create_folder("data/logs/client")
 	create_folder("data/variables")
