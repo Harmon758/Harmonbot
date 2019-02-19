@@ -38,21 +38,21 @@ class Time:
 			return await ctx.send(f"Birthday set to {date.strftime('%B %#d')}")
 			# %#d for removal of leading zero on Windows with native Python executable
 		record = await self.bot.db.fetchrow("SELECT month, day FROM twitch.birthdays WHERE channel = $1", ctx.channel.name)
-		if record and record["month"] and record["day"]:
-			location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
-			if location:
-				try:
-					timezone_data = await get_timezone_data(location = location, aiohttp_session = self.aiohttp_session)
-				except UnitOutputError as e:
-					return await ctx.send(f"Error: {e}")
-				now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
-														timezone_data["dstOffset"] + timezone_data["rawOffset"])
-			birthday = datetime.datetime(now.year, record["month"], record["day"])
-			if now > birthday:
-				birthday = birthday.replace(year = birthday.year + 1)
-			seconds = int((birthday - now).total_seconds())
-			await ctx.send(f"{self.secs_to_duration(seconds)} until {ctx.channel.name.capitalize()}'s birthday!")
-		# TODO: Handle birthday not set
+		if not record or not record["month"] or not record["day"]:
+			return await ctx.send(f"Error: Birthday not set")
+		location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
+		if location:
+			try:
+				timezone_data = await get_timezone_data(location = location, aiohttp_session = self.aiohttp_session)
+			except UnitOutputError as e:
+				return await ctx.send(f"Error: {e}")
+			now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
+													timezone_data["dstOffset"] + timezone_data["rawOffset"])
+		birthday = datetime.datetime(now.year, record["month"], record["day"])
+		if now > birthday:
+			birthday = birthday.replace(year = birthday.year + 1)
+		seconds = int((birthday - now).total_seconds())
+		await ctx.send(f"{self.secs_to_duration(seconds)} until {ctx.channel.name.capitalize()}'s birthday!")
 	
 	@commands.command()
 	async def time(self, ctx, *, location = ""):
