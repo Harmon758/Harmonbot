@@ -19,13 +19,13 @@ class Time:
 		# TODO: Document
 		# TODO: Add ability to reset
 		# TODO: Handle leap day
+		# TODO: Add custom birthday ability for any viewer
 		now = datetime.datetime.utcnow()
 		if ctx.author.name == ctx.channel.name and month and day:
 			try:
 				date = datetime.date(year = now.year, month = month, day = day)
 			except ValueError as e:
-				await ctx.send(f"Error: {e}")
-				return
+				return await ctx.send(f"Error: {e}")
 			await self.bot.db.execute(
 				"""
 				INSERT INTO twitch.birthdays (channel, month, day)
@@ -35,25 +35,24 @@ class Time:
 				""", 
 				ctx.channel.name, month, day
 			)
-			await ctx.send(f"Birthday set to {date.strftime('%B %#d')}")
+			return await ctx.send(f"Birthday set to {date.strftime('%B %#d')}")
 			# %#d for removal of leading zero on Windows with native Python executable
-		else:
-			record = await self.bot.db.fetchrow("SELECT month, day FROM twitch.birthdays WHERE channel = $1", ctx.channel.name)
-			if record and record["month"] and record["day"]:
-				location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
-				if location:
-					try:
-						timezone_data = await get_timezone_data(location = location, aiohttp_session = self.aiohttp_session)
-					except UnitOutputError as e:
-						await ctx.send(f"Error: {e}")
-						return
-					now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
-															timezone_data["dstOffset"] + timezone_data["rawOffset"])
-				birthday = datetime.datetime(now.year, record["month"], record["day"])
-				if now > birthday:
-					birthday = birthday.replace(year = birthday.year + 1)
-				seconds = int((birthday - now).total_seconds())
-				await ctx.send(f"{self.secs_to_duration(seconds)} until {ctx.channel.name.capitalize()}'s birthday!")
+		record = await self.bot.db.fetchrow("SELECT month, day FROM twitch.birthdays WHERE channel = $1", ctx.channel.name)
+		if record and record["month"] and record["day"]:
+			location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
+			if location:
+				try:
+					timezone_data = await get_timezone_data(location = location, aiohttp_session = self.aiohttp_session)
+				except UnitOutputError as e:
+					return await ctx.send(f"Error: {e}")
+				now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
+														timezone_data["dstOffset"] + timezone_data["rawOffset"])
+			birthday = datetime.datetime(now.year, record["month"], record["day"])
+			if now > birthday:
+				birthday = birthday.replace(year = birthday.year + 1)
+			seconds = int((birthday - now).total_seconds())
+			await ctx.send(f"{self.secs_to_duration(seconds)} until {ctx.channel.name.capitalize()}'s birthday!")
+		# TODO: Handle birthday not set
 	
 	@commands.command()
 	async def time(self, ctx, *, location = ""):
@@ -93,6 +92,8 @@ class Time:
 	
 	@staticmethod
 	def secs_to_duration(secs):
+		# TODO: Generalize/Improve
+		# TODO: Move to units
 		output = ""
 		for dur_name, dur_in_secs in (("year", 31536000), ("week", 604800), ("day", 86400), ("hour", 3600), ("minute", 60)):
 			if secs >= dur_in_secs:
