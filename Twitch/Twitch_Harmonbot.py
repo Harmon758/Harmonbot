@@ -610,8 +610,6 @@ class TwitchClient(pydle.Client):
 					skill = skill.capitalize()
 				stat_text = f"'s {skill} level is {stat:,}"
 			await self.message(target, f"{username.capitalize()}{stat_text} on {hiscores_name}.")
-		elif message.startswith("!warbands"):
-			await self.message(target, f"{secs_to_duration(int(25200 - time.time() % 25200))} until Warbands.")
 		elif message.startswith("!xpat"):
 			if len(message.split()) == 1:
 				await self.message(target, "Please enter xp.")

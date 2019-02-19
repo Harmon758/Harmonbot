@@ -129,6 +129,12 @@ class Runescape:
 		await ctx.send("https://runescape.wiki/w/" + '_'.join(search))
 	
 	@commands.command()
+	async def warbands(self, ctx):
+		seconds = int(25200 - time.time() % 25200)
+		# 25200 = seconds in 7 hours
+		await ctx.send(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until Warbands.")
+	
+	@commands.command()
 	async def xpbetween(self, ctx, start_level : int, end_level : int):
 		start_xp = sum(int(level + 300 * 2 ** (level / 7)) for level in range(1, start_level))
 		end_xp = (start_xp + sum(int(level + 300 * 2 ** (level / 7)) for level in range(start_level, end_level))) // 4
