@@ -18,6 +18,7 @@ class Time:
 	async def time(self, ctx, *, location = ""):
 		# TODO: Document
 		# TODO: Add ability to reset
+		# TODO: Add custom location ability for any viewer
 		if ctx.author.name == ctx.channel.name and location.lower().startswith(ctx.channel.name + ' '):
 			location = location[len(ctx.channel.name) + 1:]
 			await self.bot.db.execute(
@@ -46,6 +47,6 @@ class Time:
 						seconds = timezone_data["dstOffset"] + timezone_data["rawOffset"])))
 		# TODO: Use method for Discord time command
 		time_string = location_time.strftime(f"%#I:%M %p on %b. %#d (%a.) in {geocode_data['formatted_address']} (%Z)")
-		await ctx.send(f"It is currently {time_string}.")
 		# %#I and %#d for removal of leading zero on Windows with native Python executable
+		await ctx.send(f"It is currently {time_string}.")
 
