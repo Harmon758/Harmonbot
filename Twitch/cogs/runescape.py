@@ -119,6 +119,12 @@ class Runescape:
 		await ctx.send("https://oldschool.runescape.wiki/w/" + '_'.join(search))
 	
 	@commands.command()
+	async def reset(self, ctx):
+		seconds = int(86400 - time.time() % 86400)
+		# 86400 = seconds in 24 hours
+		await ctx.send(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until reset.")
+	
+	@commands.command()
 	async def rswiki(self, ctx, *search):
 		await ctx.send("https://runescape.wiki/w/" + '_'.join(search))
 	
