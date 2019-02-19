@@ -55,6 +55,16 @@ class Time:
 		await ctx.send(f"{self.secs_to_duration(seconds)} until {ctx.channel.name.capitalize()}'s birthday!")
 	
 	@commands.command()
+	async def christmas(self, ctx):
+		# TODO: Use streamer timezone if available
+		now = datetime.datetime.utcnow()
+		christmas = datetime.datetime(now.year, 12, 25)
+		if now > christmas:
+			christmas = christmas.replace(year = christmas.year + 1)
+		seconds = int((christmas - now).total_seconds())
+		await ctx.send(f"{self.secs_to_duration(seconds)} until Christmas!")
+	
+	@commands.command()
 	async def time(self, ctx, *, location = ""):
 		# TODO: Document
 		# TODO: Add ability to reset

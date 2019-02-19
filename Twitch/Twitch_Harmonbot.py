@@ -698,14 +698,7 @@ class TwitchClient(pydle.Client):
 					await self.message(target, ", ".join(p["summonerName"] for p in game_data["participants"]))
 		
 		# Miscellaneous Commands
-		if message.startswith("!christmas"):
-			now = datetime.datetime.utcnow()
-			christmas = datetime.datetime(now.year, 12, 25)
-			if now > christmas:
-				christmas = christmas.replace(year = christmas.year + 1)
-			seconds = int((christmas - now).total_seconds())
-			await self.message(target, f"{secs_to_duration(seconds)} until Christmas!")
-		elif message.startswith("!easter"):
+		if message.startswith("!easter"):
 			now = datetime.datetime.utcnow()
 			easter = datetime.datetime.combine(dateutil.easter.easter(now.year), datetime.time.min)
 			if now > easter:
