@@ -45,7 +45,7 @@ class Time:
 		location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
 		if location:
 			try:
-				timezone_data = await get_timezone_data(location = location, aiohttp_session = self.aiohttp_session)
+				timezone_data = await get_timezone_data(location = location, aiohttp_session = self.bot.aiohttp_session)
 			except UnitOutputError as e:
 				return await ctx.send(f"Error: {e}")
 			now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
