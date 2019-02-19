@@ -14,7 +14,6 @@ import time
 import unicodedata
 
 import aiohttp
-import dateutil.easter
 import dateutil.parser
 import dotenv
 # import unicodedata2 as unicodedata
@@ -698,14 +697,7 @@ class TwitchClient(pydle.Client):
 					await self.message(target, ", ".join(p["summonerName"] for p in game_data["participants"]))
 		
 		# Miscellaneous Commands
-		if message.startswith("!easter"):
-			now = datetime.datetime.utcnow()
-			easter = datetime.datetime.combine(dateutil.easter.easter(now.year), datetime.time.min)
-			if now > easter:
-				easter = datetime.datetime.combine(dateutil.easter.easter(now.year + 1), datetime.time.min)
-			seconds = int((easter - now).total_seconds())
-			await self.message(target, f"{secs_to_duration(seconds)} until Easter!")
-		elif message.startswith(("!kitten", "!kitty")):
+		if message.startswith(("!kitten", "!kitty")):
 			await self.message(target, random.choice(("CoolCat", "DxCat")))
 		elif message.startswith("!puppy"):
 			await self.message(target, random.choice(("BegWan", "ChefFrank", "CorgiDerp", "FrankerZ", "RalpherZ")))

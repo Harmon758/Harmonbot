@@ -4,6 +4,8 @@ from twitchio.ext import commands
 import datetime
 import sys
 
+import dateutil.easter
+
 sys.path.insert(0, "..")
 from units.location import get_geocode_data, get_timezone_data, UnitOutputError
 sys.path.pop(0)
@@ -63,6 +65,16 @@ class Time:
 			christmas = christmas.replace(year = christmas.year + 1)
 		seconds = int((christmas - now).total_seconds())
 		await ctx.send(f"{self.secs_to_duration(seconds)} until Christmas!")
+	
+	@commands.command()
+	async def easter(self, ctx):
+		# TODO: Use streamer timezone if available
+		now = datetime.datetime.utcnow()
+		easter = datetime.datetime.combine(dateutil.easter.easter(now.year), datetime.time.min)
+		if now > easter:
+			easter = datetime.datetime.combine(dateutil.easter.easter(now.year + 1), datetime.time.min)
+		seconds = int((easter - now).total_seconds())
+		await ctx.send(f"{self.secs_to_duration(seconds)} until Easter!")
 	
 	@commands.command()
 	async def time(self, ctx, *, location = ""):
