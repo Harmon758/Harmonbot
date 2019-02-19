@@ -19,10 +19,6 @@ import dateutil.parser
 import dotenv
 # import unicodedata2 as unicodedata
 
-sys.path.insert(0, "..")
-from units.location import get_timezone_data, UnitOutputError
-sys.path.pop(0)
-
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
@@ -132,44 +128,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, f"Average FPS: {data['stream']['average_fps']}")
 			else:
 				await self.message(target, "Average FPS not found.")
-		elif message.startswith(("!bday", "!birthday")):
-			# TODO: Document
-			# TODO: Add ability to reset
-			# TODO: Handle leap day
-			now = datetime.datetime.utcnow()
-			if not hasattr(self, f"{target[1:]}_variables"):
-				setattr(self, f"{target[1:]}_variables", {})
-			channel_variables = getattr(self, f"{target[1:]}_variables")
-			if (source == target[1:] and len(message.split()) >= 3 and 
-				is_number(message.split()[1]) and is_number(message.split()[2])):
-				month = int(message.split()[1])
-				day = int(message.split()[2])
-				try:
-					date = datetime.date(year = now.year, month = month, day = day)
-				except ValueError as e:
-					await self.message(target, f"Error: {e}")
-					return
-				channel_variables["birthday_month"] = month
-				channel_variables["birthday_day"] = day
-				with open(f"data/variables/{target[1:]}.json", 'w') as variables_file:
-					json.dump(channel_variables, variables_file, indent = 4)
-				await self.message(target, f"Birthday set to {date.strftime('%B %#d')}")
-				# %#d for removal of leading zero on Windows with native Python executable
-			elif "birthday_month" in channel_variables and "birthday_day" in channel_variables:
-				if "timezone_location" in channel_variables:
-					try:
-						timezone_data = await get_timezone_data(location = channel_variables["timezone_location"], 
-																aiohttp_session = self.aiohttp_session)
-					except UnitOutputError as e:
-						await self.message(target, f"Error: {e}")
-						return
-					now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
-															timezone_data["dstOffset"] + timezone_data["rawOffset"])
-				birthday = datetime.datetime(now.year, channel_variables["birthday_month"], channel_variables["birthday_day"])
-				if now > birthday:
-					birthday = birthday.replace(year = birthday.year + 1)
-				seconds = int((birthday - now).total_seconds())
-				await self.message(target, f"{secs_to_duration(seconds)} until {target[1:].capitalize()}'s birthday!")
 		elif message.startswith(("!char", "!character", "!unicode")):
 			try:
 				await self.message(target, unicodedata.lookup(' '.join(message.split()[1:])))

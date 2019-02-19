@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.73"
+		self.version = "3.0.0-b.74"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -155,7 +155,7 @@ class Bot(commands.Bot):
 			with open(f"data/variables/{channel}.json", 'r') as variables_file:
 				variables = json.load(variables_file)
 				for name, value in variables.items():
-					if value in (True, False, None):
+					if isinstance(value, bool) or value is None:
 						if name.endswith(".status"):
 							name = name[:-7]
 						await self.db.execute(
@@ -167,38 +167,16 @@ class Bot(commands.Bot):
 							""", 
 							channel, name, value
 						)
-					elif isinstance(value, int):
-						if name.startswith("birthday"):
-							if name == "birthday_month":
-								await self.db.execute(
-									"""
-									INSERT INTO twitch.birthdays (channel, month)
-									VALUES ($1, $2)
-									ON CONFLICT (channel) DO
-									UPDATE SET month = $2
-									""", 
-									channel, value
-								)
-							elif name == "birthday_day":
-								await self.db.execute(
-									"""
-									INSERT INTO twitch.birthdays (channel, day)
-									VALUES ($1, $2)
-									ON CONFLICT (channel) DO
-									UPDATE SET day = $2
-									""", 
-									channel, value
-								)
-						else:
-							await self.db.execute(
-								"""
-								INSERT INTO twitch.counters (channel, name, value)
-								VALUES ($1, $2, $3)
-								ON CONFLICT (channel, name) DO
-								UPDATE SET value = $3
-								""", 
-								channel, name, value
-							)
+					elif isinstance(value, int) and not name.startswith("birthday"):
+						await self.db.execute(
+							"""
+							INSERT INTO twitch.counters (channel, name, value)
+							VALUES ($1, $2, $3)
+							ON CONFLICT (channel, name) DO
+							UPDATE SET value = $3
+							""", 
+							channel, name, value
+						)
 	
 	async def add_set_response_commands(self):
 		"""Add commands with set responses"""
