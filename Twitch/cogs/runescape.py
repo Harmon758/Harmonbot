@@ -2,6 +2,13 @@
 from twitchio.ext import commands
 
 import bisect
+import datetime
+import sys
+import time
+
+sys.path.insert(0, "..")
+from units.time import duration_to_string
+sys.path.pop(0)
 
 @commands.cog()
 class Runescape:
@@ -52,6 +59,12 @@ class Runescape:
 								"range": "ranged", "rc": "runecrafting", "slay": "slayer", "smith": "smithing", 
 								"str": "strength", "thief": "thieving", "thieve": "thieving", "wc": "woodcutting"}
 		# TODO: Add constitution as alias?
+	
+	@commands.command()
+	async def cache(self, ctx):
+		seconds = int(10800 - time.time() % 10800)
+		# 10800 = seconds in 3 hours
+		await ctx.send(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until Guthixian Cache.")
 	
 	@commands.command()
 	async def ehp(self, ctx, skill, xp : int):

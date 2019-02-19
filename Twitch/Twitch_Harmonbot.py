@@ -516,9 +516,7 @@ class TwitchClient(pydle.Client):
 				await self.message(target, "PMFornud pls")
 		
 		# Runescape Commands
-		if message.startswith("!cache"):
-			await self.message(target, f"{secs_to_duration(int(10800 - time.time() % 10800))} until Guthixian Cache.")
-		elif message.startswith(("!hiscore", "!highscore")):
+		if message.startswith(("!hiscore", "!highscore")):
 			# TODO: Other RS3 hiscores?
 			if len(message.split()) == 1:
 				return await self.message(target, "Please enter a username. "
