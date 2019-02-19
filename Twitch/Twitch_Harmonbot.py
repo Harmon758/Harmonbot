@@ -10,7 +10,6 @@ import os
 import random
 import re
 import sys
-import time
 import unicodedata
 
 import aiohttp
@@ -765,12 +764,6 @@ def is_number(characters):
 		return True
 	except ValueError:
 		return False
-
-def time_left(start, interval):
-	if time.time() <= start or not interval:
-		return start - time.time()
-	else:
-		return interval - (time.time() - start) % interval
 
 def secs_to_duration(secs):
 	output = ""
