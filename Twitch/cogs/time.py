@@ -8,6 +8,7 @@ import dateutil.easter
 
 sys.path.insert(0, "..")
 from units.location import get_geocode_data, get_timezone_data, UnitOutputError
+from units.time import duration_to_string
 sys.path.pop(0)
 
 @commands.cog()
@@ -53,8 +54,7 @@ class Time:
 		birthday = datetime.datetime(now.year, record["month"], record["day"])
 		if now > birthday:
 			birthday = birthday.replace(year = birthday.year + 1)
-		seconds = int((birthday - now).total_seconds())
-		await ctx.send(f"{self.secs_to_duration(seconds)} until {ctx.channel.name.capitalize()}'s birthday!")
+		await ctx.send(f"{duration_to_string(birthday - now)} until {ctx.channel.name.capitalize()}'s birthday!")
 	
 	@commands.command()
 	async def christmas(self, ctx):
@@ -63,8 +63,7 @@ class Time:
 		christmas = datetime.datetime(now.year, 12, 25)
 		if now > christmas:
 			christmas = christmas.replace(year = christmas.year + 1)
-		seconds = int((christmas - now).total_seconds())
-		await ctx.send(f"{self.secs_to_duration(seconds)} until Christmas!")
+		await ctx.send(f"{duration_to_string(christmas - now)} until Christmas!")
 	
 	@commands.command()
 	async def easter(self, ctx):
@@ -73,8 +72,7 @@ class Time:
 		easter = datetime.datetime.combine(dateutil.easter.easter(now.year), datetime.time.min)
 		if now > easter:
 			easter = datetime.datetime.combine(dateutil.easter.easter(now.year + 1), datetime.time.min)
-		seconds = int((easter - now).total_seconds())
-		await ctx.send(f"{self.secs_to_duration(seconds)} until Easter!")
+		await ctx.send(f"{duration_to_string(easter - now)} until Easter!")
 	
 	@commands.command()
 	async def time(self, ctx, *, location = ""):
@@ -111,20 +109,4 @@ class Time:
 		time_string = location_time.strftime(f"%#I:%M %p on %b. %#d (%a.) in {geocode_data['formatted_address']} (%Z)")
 		# %#I and %#d for removal of leading zero on Windows with native Python executable
 		await ctx.send(f"It is currently {time_string}.")
-	
-	@staticmethod
-	def secs_to_duration(secs):
-		# TODO: Generalize/Improve
-		# TODO: Move to units
-		output = ""
-		for dur_name, dur_in_secs in (("year", 31536000), ("week", 604800), ("day", 86400), ("hour", 3600), ("minute", 60)):
-			if secs >= dur_in_secs:
-				num_dur = int(secs / dur_in_secs)
-				output += f" {num_dur} {dur_name}"
-				if (num_dur > 1): output += 's'
-				secs -= num_dur * dur_in_secs
-		if secs != 0:
-			output += f" {secs} second"
-			if (secs != 1): output += 's'
-		return output[1:] if output else f"{secs} seconds"
 
