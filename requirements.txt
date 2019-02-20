@@ -1,7 +1,7 @@
 # discord.py@rewrite
 git+git://github.com/Rapptz/discord.py.git@cfc2e47#egg=discord.py[voice]
 # TwitchIO@rewrite
-git+git://github.com/TwitchIO/Twitchio.git@dd4dc63#egg=twitchio
+git+git://github.com/TwitchIO/Twitchio.git@978eeb2#egg=twitchio
 pydle==0.9.1
 python-telegram-bot==11.1.0
 
