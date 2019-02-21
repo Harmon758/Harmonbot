@@ -20,7 +20,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.85"
+		self.version = "3.0.0-b.86"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -235,6 +235,8 @@ class Bot(commands.Bot):
 			)
 			if response:
 				await ctx.send(response)
+				ctx.channel_command = command
+				# Return? Override main commands?
 		# Handle commands
 		await self.handle_commands(message, ctx = ctx)
 		if message.content.startswith('\N{BILLIARDS}'):
@@ -242,7 +244,10 @@ class Bot(commands.Bot):
 	
 	async def event_command_error(self, ctx, error):
 		# TODO: Handle bad argument
-		# TODO: Handle command not found
+		if isinstance(error, commands.CommandNotFound):
+			# TODO: Handle command not found
+			if ctx.channel_command:
+				return
 		if isinstance(error, commands.MissingRequiredArgument):
 			await ctx.send(str(error).rstrip('.').replace("argument", "input"))
 		else:
