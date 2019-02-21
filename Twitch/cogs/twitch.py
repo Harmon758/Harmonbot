@@ -20,13 +20,12 @@ class Twitch:
 	async def followage(self, ctx):
 		users = await self.bot.get_users(ctx.channel.name)
 		follow = await self.bot.get_follow(ctx.author.id, users[0].id)
-		if follow:
-			followed_at = dateutil.parser.parse(follow["followed_at"])
-			ago = duration_to_string(datetime.datetime.now(datetime.timezone.utc) - followed_at)
-			await ctx.send(f"{ctx.author.name.capitalize()} followed on {followed_at.strftime('%B %#d %Y')}, {ago} ago")
-			# %#d for removal of leading zero on Windows with native Python executable
-		else:
-			await ctx.send(f"{ctx.author.name.capitalize()}, you haven't followed yet!")
+		if not follow:
+			return await ctx.send(f"{ctx.author.name.capitalize()}, you haven't followed yet!")
+		followed_at = dateutil.parser.parse(follow["followed_at"])
+		ago = duration_to_string(datetime.datetime.now(datetime.timezone.utc) - followed_at)
+		await ctx.send(f"{ctx.author.name.capitalize()} followed on {followed_at.strftime('%B %#d %Y')}, {ago} ago")
+		# %#d for removal of leading zero on Windows with native Python executable
 	
 	@commands.command()
 	async def followers(self, ctx):
