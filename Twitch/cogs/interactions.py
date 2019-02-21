@@ -27,4 +27,17 @@ class Interactions:
 			await ctx.send("Congratulations!!!!!")
 		else:
 			await ctx.send(f"Congratulations, {user.title()}!!!!!")
+	
+	@commands.command()
+	async def highfive(self, ctx, *, user = None):
+		if not user:
+			await ctx.send(f"{ctx.author.name.capitalize()} highfives no one. :-/")
+		elif user.lower() == "random":
+			await ctx.send(f"{ctx.author.name.capitalize()} highfives {ctx.random_viewer().name.capitalize()}!")
+		elif user.lower() == ctx.author.name:
+			await ctx.send(f"{ctx.author.name.capitalize()} highfives themselves. o_O")
+		elif user.lower() == "harmonbot":
+			await ctx.send(f"!highfive {ctx.author.name.capitalize()}")
+		else:
+			await ctx.send(f"{ctx.author.name.capitalize()} highfives {user.title()}!")
 
