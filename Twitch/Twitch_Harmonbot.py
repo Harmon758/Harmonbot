@@ -575,28 +575,6 @@ class TwitchClient(pydle.Client):
 					skill = skill.capitalize()
 				stat_text = f"'s {skill} level is {stat:,}"
 			await self.message(target, f"{username.capitalize()}{stat_text} on {hiscores_name}.")
-		elif message.startswith("!xpat"):
-			if len(message.split()) == 1:
-				await self.message(target, "Please enter xp.")
-				return
-			xp = message.split()[1].replace(',', '')
-			if is_number(xp):
-				xp = float(xp)
-				if 0 <= xp < 200000001:
-					xp = int(xp)
-					_level = 1
-					_xp = 0
-					while xp >= _xp:
-						_xp *= 4
-						_xp += int(_level + 300 * 2 ** (_level / 7))
-						_xp /= 4
-						_level += 1
-					_level -= 1
-					await self.message(target, f"{xp:,} xp = level {_level}")
-				else:
-					await self.message(target, "You can't have that much xp!")
-			else:
-				await self.message(target, "Syntax error.")
 		
 		# League of Legends Commands
 		# WIP using development API key

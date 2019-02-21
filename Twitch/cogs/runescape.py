@@ -135,6 +135,21 @@ class Runescape:
 		await ctx.send(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until Warbands.")
 	
 	@commands.command()
+	async def xpat(self, ctx, xp : int):
+		if 0 <= xp < 200000001:
+			_level = 1
+			_xp = 0
+			while xp >= _xp:
+				_xp *= 4
+				_xp += int(_level + 300 * 2 ** (_level / 7))
+				_xp /= 4
+				_level += 1
+			_level -= 1
+			await ctx.send(f"{xp:,} xp = level {_level}")
+		else:
+			await ctx.send("You can't have that much xp!")
+	
+	@commands.command()
 	async def xpbetween(self, ctx, start_level : int, end_level : int):
 		start_xp = sum(int(level + 300 * 2 ** (level / 7)) for level in range(1, start_level))
 		end_xp = (start_xp + sum(int(level + 300 * 2 ** (level / 7)) for level in range(start_level, end_level))) // 4
