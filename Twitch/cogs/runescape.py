@@ -136,16 +136,16 @@ class Runescape:
 	
 	@commands.command()
 	async def xpat(self, ctx, xp : int):
-		if 0 <= xp < 200000001:
-			_level = 1
-			_xp = 0
-			while xp >= _xp:
-				_xp *= 4
-				_xp += int(_level + 300 * 2 ** (_level / 7))
-				_xp /= 4
-				_level += 1
-			_level -= 1
-			await ctx.send(f"{xp:,} xp = level {_level}")
+		if 0 <= xp <= 200000000:
+			level = 1
+			level_xp = 0
+			while xp >= level_xp:
+				level_xp *= 4
+				level_xp += int(level + 300 * 2 ** (level / 7))
+				level_xp /= 4
+				level += 1
+			level -= 1
+			await ctx.send(f"{xp:,} xp = level {level}")
 		else:
 			await ctx.send("You can't have that much xp!")
 	
