@@ -19,7 +19,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.83"
+		self.version = "3.0.0-b.84"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -200,10 +200,10 @@ class Bot(commands.Bot):
 		# Log messages
 		await self.db.execute(
 			"""
-			INSERT INTO twitch.messages (channel, author, message, message_timestamp)
-			VALUES ($1, $2, $3, $4)
+			INSERT INTO twitch.messages (timestamp, channel, author, message, message_timestamp)
+			VALUES ($1, $2, $3, $4, $5)
 			""", 
-			message.channel.name, message.author.name, message.content, 
+			datetime.datetime.now(), message.channel.name, message.author.name, message.content, 
 			None if message.echo else message.timestamp.replace(tzinfo = datetime.timezone.utc)
 		)
 		# Ignore own messages
