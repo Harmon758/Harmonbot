@@ -135,17 +135,6 @@ class TwitchClient(pydle.Client):
 			elements = {"ac": "Actinium", "ag": "Silver", "al": "Aluminum", "am": "Americium", "ar": "Argon", }
 			if len(message.split()) > 1 and message.split()[1] in elements:
 				await self.message(target, elements[message.split()[1]])
-		elif message.startswith("!hug"):
-			if len(message.split()) == 1:
-				await self.message(target, f"{source.capitalize()} hugs no one. :-/")
-			elif message.split()[1].lower() == "random":
-				await self.message(target, f"{source.capitalize()} hugs {self.random_viewer(target)}!")
-			elif message.split()[1].lower() == source:
-				await self.message(target, f"{source.capitalize()} hugs themselves. o_O")
-			elif message.split()[1].lower() == "harmonbot":
-				await self.message(target, f"!hug {source.capitalize()}")
-			else:
-				await self.message(target, f"{source.capitalize()} hugs {' '.join(message.split()[1:]).title()}!")
 		elif message.startswith("!mods"):
 			mods = self.channels[target]["modes"].get('o', [])
 			await self.message(target, f"Mods Online ({len(mods)}): {', '.join(mod.capitalize() for mod in mods)}")
