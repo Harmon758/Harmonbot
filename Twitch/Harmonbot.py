@@ -10,6 +10,7 @@ import aiohttp
 import asyncpg
 import dotenv
 
+from utilities import context
 from utilities import logging
 
 sys.path.insert(0, "..")
@@ -19,7 +20,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.84"
+		self.version = "3.0.0-b.85"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -210,7 +211,7 @@ class Bot(commands.Bot):
 		if message.author.name == "harmonbot":
 			return
 		# Get Context
-		ctx = await self.get_context(message)
+		ctx = await self.get_context(message, cls = context.Context)
 		# Handle channel-specific commands with set responses
 		if ctx.prefix and ctx.channel.name != "harmonbot":
 			command = message.content[len(ctx.prefix):].lstrip(' ')
