@@ -20,7 +20,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.95"
+		self.version = "3.0.0-b.96"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -243,12 +243,13 @@ class Bot(commands.Bot):
 			await ctx.send(f"\N{BILLIARDS} {eightball()}")
 	
 	async def event_command_error(self, ctx, error):
-		# TODO: Handle bad argument
-		if isinstance(error, commands.CommandNotFound):
+		if isinstance(error, commands.BadArgument):
+			await ctx.send(str(error).replace('`', "'").replace("<class ", "").replace('>', ""))
+		elif isinstance(error, commands.CommandNotFound):
 			# TODO: Handle command not found
 			if ctx.channel_command:
 				return
-		if isinstance(error, commands.MissingRequiredArgument):
+		elif isinstance(error, commands.MissingRequiredArgument):
 			await ctx.send(str(error).rstrip('.').replace("argument", "input"))
 		else:
 			# TODO: Sentry
