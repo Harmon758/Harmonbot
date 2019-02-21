@@ -7,7 +7,7 @@ class Interactions:
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.command()
+	@commands.command(aliases = ("goodbye",))
 	async def bye(self, ctx, *, user = None):
 		if not user or user.lower() == "harmonbot":
 			await ctx.send(f"Bye, {ctx.author.name.capitalize()}!")
