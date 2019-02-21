@@ -135,18 +135,6 @@ class TwitchClient(pydle.Client):
 			elements = {"ac": "Actinium", "ag": "Silver", "al": "Aluminum", "am": "Americium", "ar": "Argon", }
 			if len(message.split()) > 1 and message.split()[1] in elements:
 				await self.message(target, elements[message.split()[1]])
-		elif message.startswith(("!followage", "!followed", "!howlong")):
-			url = f"https://api.twitch.tv/kraken/users/{source}/follows/channels/{target[1:]}"
-			params = {"client_id": self.TWITCH_CLIENT_ID}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if "created_at" in data:
-				created_at = dateutil.parser.parse(data["created_at"])
-				seconds = int((datetime.datetime.now(datetime.timezone.utc) - created_at).total_seconds())
-				await self.message(target, f"{source.capitalize()} followed on {created_at.strftime('%B %#d %Y')}, {secs_to_duration(seconds)} ago")
-				# %#d for removal of leading zero on Windows with native Python executable
-			else:
-				await self.message(target, f"{source.capitalize()}, you haven't followed yet!")
 		elif message.startswith("!highfive"):
 			if len(message.split()) == 1:
 				await self.message(target, f"{source.capitalize()} highfives no one. :-/")
