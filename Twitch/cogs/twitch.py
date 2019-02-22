@@ -16,6 +16,17 @@ class Twitch:
 	def __init__(self, bot):
 		self.bot = bot
 	
+	@commands.command()
+	async def averagefps(self, ctx):
+		url = "https://api.twitch.tv/kraken/streams/" + ctx.channel.name
+		params = {"client_id": self.bot.http.client_id}
+		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		if data.get("stream"):
+			await ctx.send(f"Average FPS: {data['stream']['average_fps']}")
+		else:
+			await ctx.send("Average FPS not found.")
+	
 	@commands.command(aliases = ("followed", "howlong"))
 	async def followage(self, ctx):
 		users = await self.bot.get_users(ctx.channel.name)

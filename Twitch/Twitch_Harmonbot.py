@@ -115,15 +115,6 @@ class TwitchClient(pydle.Client):
 			await self.message(target, "Hello, World!")
 		
 		# Main Commands
-		elif message.startswith("!averagefps"):
-			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
-			params = {"client_id": self.TWITCH_CLIENT_ID}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data.get("stream"):
-				await self.message(target, f"Average FPS: {data['stream']['average_fps']}")
-			else:
-				await self.message(target, "Average FPS not found.")
 		elif message.startswith(("!char", "!character", "!unicode")):
 			try:
 				await self.message(target, unicodedata.lookup(' '.join(message.split()[1:])))
