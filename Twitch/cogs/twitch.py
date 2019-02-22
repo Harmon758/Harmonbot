@@ -46,7 +46,7 @@ class Twitch:
 	@commands.command()
 	async def title(self, ctx):
 		stream = await ctx.get_stream()
-		if not stream:
+		if not stream or not stream.get("title"):
 			return await ctx.send("Title not found.")
 		await ctx.send(stream["title"])
 	
