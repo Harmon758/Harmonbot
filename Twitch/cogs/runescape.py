@@ -59,7 +59,7 @@ class Runescape:
 									"range": "ranged", "rc": "runecrafting", "slay": "slayer", "smith": "smithing", 
 									"str": "strength", "thief": "thieving", "thieve": "thieving", "wc": "woodcutting"}
 		self.rs3_skill_aliases = self.osrs_skill_aliases
-		self.rs3_skill_aliases.update({"hp": "constitution", "div": "divination", "dg": "dungeonering", 
+		self.rs3_skill_aliases.update({"hp": "constitution", "div": "divination", "dg": "dungeoneering", 
 										"dung": "dungeoneering", "inventor": "invention", "invent": "invention"})
 	
 	@commands.command()
