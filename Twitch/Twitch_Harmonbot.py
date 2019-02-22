@@ -234,16 +234,6 @@ class TwitchClient(pydle.Client):
 				await self.message(target, secs_to_duration(int((datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(data["stream"]["created_at"])).total_seconds())))
 			else:
 				await self.message(target, "Uptime not found.")
-		elif message.startswith("!viewers"):
-			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
-			params = {"client_id": self.TWITCH_CLIENT_ID}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data.get("stream"):
-				await self.message(target, f"{data['stream']['viewers']} viewers watching now.")
-			else:
-				await self.message(target, "Stream is offline.")
-			# No one is watching right now :-/
 		
 		# Mikki Commands
 		if target == "#mikki":
