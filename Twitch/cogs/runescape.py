@@ -52,13 +52,15 @@ class Runescape:
 		self.ehp_responses = {"defence": "For Defence: 1 ehp = 350,000 xp/h", "hitpoints": "None", 
 								"magic": "For Magic: 1 ehp = 250,000 xp/h"}
 		
-		self.skill_aliases = {"att": "attack", "con": "construction", "cook": "cooking", "craft": "crafting", 
-								"def": "defence", "defense": "defence", "farm": "farming", "fish": "fishing", 
-								"fletch": "fletching", "fm": "firemaking", "herb": "herblore", "hp": "hitpoints", 
-								"hunt": "hunter", "mage": "magic", "mine": "mining", "pray": "prayer", 
-								"range": "ranged", "rc": "runecrafting", "slay": "slayer", "smith": "smithing", 
-								"str": "strength", "thief": "thieving", "thieve": "thieving", "wc": "woodcutting"}
-		# TODO: Add constitution as alias?
+		self.osrs_skill_aliases = {"att": "attack", "atk": "attack", "con": "construction", "cook": "cooking", 
+									"craft": "crafting", "def": "defence", "defense": "defence", "farm": "farming", 
+									"fish": "fishing", "fletch": "fletching", "fm": "firemaking", "herb": "herblore", 
+									"hp": "hitpoints", "hunt": "hunter", "mage": "magic", "mine": "mining", "pray": "prayer", 
+									"range": "ranged", "rc": "runecrafting", "slay": "slayer", "smith": "smithing", 
+									"str": "strength", "thief": "thieving", "thieve": "thieving", "wc": "woodcutting"}
+		self.rs3_skill_aliases = self.osrs_skill_aliases
+		self.rs3_skill_aliases.update({"hp": "constitution", "div": "divination", "dg": "dungeonering", 
+										"dung": "dungeoneering", "inventor": "invention", "invent": "invention"})
 	
 	@commands.command()
 	async def cache(self, ctx):
@@ -71,7 +73,7 @@ class Runescape:
 		# TODO: Handle negative xp input
 		if xp > 200000000:
 			return await ctx.send(f"You can't have that much xp, {ctx.author.name.capitalize()}! Reported.")
-		skill = self.skill_aliases.get(skill, skill)
+		skill = self.osrs_skill_aliases.get(skill, skill)
 		if skill in self.ehp_responses:
 			await ctx.send(self.ehp_responses[skill])
 		elif skill in self.ehp_data:
@@ -89,17 +91,9 @@ class Runescape:
 						"crafting", "smithing", "mining", "herblore", "agility", "thieving", "slayer", 
 						"farming", "runecrafting", "hunter", "construction", "summoning", "dungeoneering", 
 						"divination", "invention")
-		skill_aliases = {"att": "attack", "atk": "attack", "defense": "defence", "def": "defence", 
-							"str": "strength", "hp": "constitution", "range": "ranged", "pray": "prayer", 
-							"mage": "magic", "cook": "cooking", "wc": "woodcutting", "fletch": "fletching", 
-							"fish": "fishing", "fm": "firemaking", "craft": "crafting", "smith": "smithing", 
-							"mine": "mining", "herb": "herblore", "thief": "thieving", "slay": "slayer", 
-							"farm": "farming", "rc": "runecrafting", "hunt": "hunter", "con": "construction", 
-							"dung": "dungeoneering", "dg": "dungeonering", "div": "divination", 
-							"inventor": "invention", "invent": "invention"}
 		skill = skill_or_total.lower()
-		if skill in skill_aliases:
-			skill = skill_aliases[skill]
+		if skill in self.rs3_skill_aliases:
+			skill = self.rs3_skill_aliases[skill]
 		if skill not in skill_order:
 			return await ctx.send("Invalid skill. Use _'s for spaces in usernames.")
 		hiscores_type = hiscores_type.lower()
