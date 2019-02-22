@@ -53,11 +53,11 @@ class Twitch:
 	@commands.command()
 	async def viewers(self, ctx):
 		stream = await ctx.get_stream()
-		if stream:
-			await ctx.send(f"{stream['viewer_count']} viewers watching now.")
-		else:
-			await ctx.send("Stream is offline.")
-		# No one is watching right now :-/
+		if not stream:
+			return await ctx.send("Stream is offline.")
+		await ctx.send(f"{stream['viewer_count']} viewers watching now.")
+		# TODO: Handle single viewer
+		# TODO: Handle no viewers: No one is watching right now :-/
 	
 	# TODO: views command
 
