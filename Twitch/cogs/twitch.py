@@ -53,10 +53,10 @@ class Twitch:
 	@commands.command()
 	async def uptime(self, ctx):
 		stream = await ctx.get_stream()
-		if stream:
-			await ctx.send(duration_to_string(datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(stream["started_at"])))
-		else:
-			await ctx.send("Uptime not found.")
+		if not stream:
+			return await ctx.send("Uptime not found.")
+		duration = datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(stream["started_at"])
+		await ctx.send(duration_to_string(duration))
 	
 	@commands.command()
 	async def viewers(self, ctx):
