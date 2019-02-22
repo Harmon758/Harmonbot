@@ -225,15 +225,6 @@ class TwitchClient(pydle.Client):
 														"SCISSORS -- Dang it, it's a draw.")))
 				else:
 					await self.message(target, f"{source.capitalize()} is a cheater. Reported.")
-		elif message.startswith("!title"):
-			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
-			params = {"client_id": self.TWITCH_CLIENT_ID}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data.get("stream"):
-				await self.message(target, data["stream"]["channel"]["status"])
-			else:
-				await self.message(target, "Title not found.")
 		elif message.startswith("!uptime"):
 			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
 			params = {"client_id": self.TWITCH_CLIENT_ID}

@@ -43,5 +43,13 @@ class Twitch:
 			return await ctx.send('\N{SPEAKING HEAD IN SILHOUETTE}')
 		await ctx.send("https://www.twitch.tv/" + channel)
 	
+	@commands.command()
+	async def title(self, ctx):
+		stream = await ctx.get_stream()
+		if stream:
+			await ctx.send(stream["title"])
+		else:
+			await ctx.send("Title not found.")
+	
 	# TODO: views command
 
