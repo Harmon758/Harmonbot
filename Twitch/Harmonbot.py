@@ -20,7 +20,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.108"
+		self.version = "3.0.0-b.109"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)

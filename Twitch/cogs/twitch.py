@@ -22,10 +22,10 @@ class Twitch:
 		params = {"client_id": self.bot.http.client_id}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		if data.get("stream"):
-			await ctx.send(f"Average FPS: {data['stream']['average_fps']}")
-		else:
-			await ctx.send("Average FPS not found.")
+		stream = data.get("stream")
+		if not stream:
+			return await ctx.send("Average FPS not found.")
+		await ctx.send(f"Average FPS: {stream['average_fps']}")
 	
 	@commands.command(aliases = ("followed", "howlong"))
 	async def followage(self, ctx):
