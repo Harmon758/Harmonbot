@@ -61,6 +61,25 @@ class Runescape:
 		self.rs3_skill_aliases = self.osrs_skill_aliases
 		self.rs3_skill_aliases.update({"hp": "constitution", "div": "divination", "dg": "dungeoneering", 
 										"dung": "dungeoneering", "inventor": "invention", "invent": "invention"})
+		self.skill_order = ("total", "attack", "defence", "strength", "constitution", "ranged", "prayer", 
+							"magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking", 
+							"crafting", "smithing", "mining", "herblore", "agility", "thieving", "slayer", 
+							"farming", "runecrafting", "hunter", "construction", "summoning", "dungeoneering", 
+							"divination", "invention")
+		
+		self.hiscores_types = ("", "ironman", "hardcore_ironman", "oldschool", "oldschool_ironman", 
+								"oldschool_ultimate", "oldschool_hardcore_ironman", "oldschool_deadman", 
+								"oldschool_seasonal", "oldschool_tournament")
+		self.hiscores_type_aliases = {"rs3": "", "runescape_3": "", "runescape3": "", 
+										"07": "oldschool", "osrs": "oldschool", "os": "oldschool", 
+										"hcim": "hardcore_ironman", "hc": "hardcore", "uim": "ultimate", 
+										"tourny": "tournament"}
+		self.hiscores_names = {"": "RS3", "ironman": "RS3 (Ironman)", "hardcore_ironman": "RS3 (Hardcore Ironman)", 
+								"oldschool": "OSRS", "oldschool_ironman": "OSRS (Ironman)", 
+								"oldschool_ultimate": "OSRS (Ultimate Ironman)", 
+								"oldschool_hardcore_ironman": "OSRS (Hardcore Ironman)", 
+								"oldschool_deadman": "OSRS (Deadman Mode)", "oldschool_seasonal": "OSRS (Seasonal)", 
+								"oldschool_tournament": "OSRS (Tournament)"}
 	
 	@commands.command()
 	async def cache(self, ctx):
@@ -86,44 +105,26 @@ class Runescape:
 		# TODO: Document
 		# TODO: Other RS3 hiscores?
 		username = username.replace('_', ' ')
-		skill_order = ("total", "attack", "defence", "strength", "constitution", "ranged", "prayer", 
-						"magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking", 
-						"crafting", "smithing", "mining", "herblore", "agility", "thieving", "slayer", 
-						"farming", "runecrafting", "hunter", "construction", "summoning", "dungeoneering", 
-						"divination", "invention")
 		skill = skill_or_total.lower()
 		if skill in self.rs3_skill_aliases:
 			skill = self.rs3_skill_aliases[skill]
-		if skill not in skill_order:
+		if skill not in self.skill_order:
 			return await ctx.send("Invalid skill. Use _'s for spaces in usernames.")
 		hiscores_type = hiscores_type.lower()
-		hiscores_types = ("", "ironman", "hardcore_ironman", "oldschool", "oldschool_ironman", 
-							"oldschool_ultimate", "oldschool_hardcore_ironman", "oldschool_deadman", 
-							"oldschool_seasonal", "oldschool_tournament")
-		hiscores_type_aliases = {"rs3": "", "runescape_3": "", "runescape3": "", 
-									"07": "oldschool", "osrs": "oldschool", "os": "oldschool", 
-									"hcim": "hardcore_ironman", "hc": "hardcore", "uim": "ultimate", 
-									"tourny": "tournament"}
-		hiscores_names = {"": "RS3", "ironman": "RS3 (Ironman)", "hardcore_ironman": "RS3 (Hardcore Ironman)", 
-							"oldschool": "OSRS", "oldschool_ironman": "OSRS (Ironman)", 
-							"oldschool_ultimate": "OSRS (Ultimate Ironman)", 
-							"oldschool_hardcore_ironman": "OSRS (Hardcore Ironman)", 
-							"oldschool_deadman": "OSRS (Deadman Mode)", "oldschool_seasonal": "OSRS (Seasonal)", 
-							"oldschool_tournament": "OSRS (Tournament)"}
-		for alias, name in hiscores_type_aliases.items():
+		for alias, name in self.hiscores_type_aliases.items():
 			hiscores_type = hiscores_type.replace(alias, name)
 		hiscores_type = hiscores_type.lstrip('_')
 		if skill in ("dungeoneering", "divination", "invention") and hiscores_type.startswith("oldschool"):
 			return await ctx.send("Invalid skill for OSRS.")
-		if hiscores_type not in hiscores_types:
+		if hiscores_type not in self.hiscores_types:
 			valid_types = []
-			for type in hiscores_types:
+			for type in self.hiscores_types:
 				if not type.startswith("oldschool"):
 					type = "runescape_3_" + type
 					type = type.rstrip('_')
 				valid_types.append(type)
 			return await ctx.send(f"Invalid hiscores type. Valid types: {', '.join(valid_types)}")
-		hiscores_name = hiscores_names[hiscores_type]
+		hiscores_name = self.hiscores_names[hiscores_type]
 		if hiscores_type:
 			hiscores_type = '_' + hiscores_type
 		stat_types = ("rank", "level", "xp")
@@ -140,7 +141,7 @@ class Runescape:
 				return await ctx.send("Username not found.")
 			data = await resp.text()
 		data = data.split()
-		skill_data = data[skill_order.index(skill)].split(',')
+		skill_data = data[self.skill_order.index(skill)].split(',')
 		stat = int(skill_data[stat_types.index(stat_type)])
 		if stat_type == "rank":
 			if skill == "total":
