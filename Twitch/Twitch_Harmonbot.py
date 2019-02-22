@@ -2,7 +2,6 @@
 import pydle
 
 import asyncio
-import datetime
 import json
 import logging
 import logging.handlers
@@ -13,7 +12,6 @@ import sys
 import unicodedata
 
 import aiohttp
-import dateutil.parser
 import dotenv
 # import unicodedata2 as unicodedata
 
@@ -225,15 +223,6 @@ class TwitchClient(pydle.Client):
 														"SCISSORS -- Dang it, it's a draw.")))
 				else:
 					await self.message(target, f"{source.capitalize()} is a cheater. Reported.")
-		elif message.startswith("!uptime"):
-			url = "https://api.twitch.tv/kraken/streams/" + target[1:]
-			params = {"client_id": self.TWITCH_CLIENT_ID}
-			async with self.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data.get("stream"):
-				await self.message(target, secs_to_duration(int((datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(data["stream"]["created_at"])).total_seconds())))
-			else:
-				await self.message(target, "Uptime not found.")
 		
 		# Mikki Commands
 		if target == "#mikki":
