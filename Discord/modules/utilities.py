@@ -154,7 +154,7 @@ def add_as_subcommand(cog, command, parent_name, subcommand_name, *, aliases = [
 	if isinstance(parent_name, commands.Command):
 		parent = parent_name
 		# parent_cog = cog.bot.get_cog(parent.cog_name)
-		parent_cog = parent.instance
+		parent_cog = parent.cog
 		parent_command_name = parent.name
 	else:
 		parent_cog_name, parent_command_name = parent_name.split('.')
