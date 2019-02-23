@@ -35,7 +35,7 @@ sys.path.pop(0)
 def setup(bot):
 	bot.add_cog(Games(bot))
 
-class Games:
+class Games(commands.Cog):
 	
 	'''
 	Also see Trivia category

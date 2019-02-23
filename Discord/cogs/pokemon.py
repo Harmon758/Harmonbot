@@ -8,7 +8,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Pokemon(bot))
 
-class Pokemon:
+class Pokemon(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

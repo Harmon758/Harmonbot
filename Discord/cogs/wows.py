@@ -9,7 +9,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(WoWS(bot))
 
-class WoWS:
+class WoWS(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

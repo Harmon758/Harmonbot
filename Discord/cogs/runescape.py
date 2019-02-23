@@ -10,7 +10,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Runescape(bot))
 
-class Runescape:
+class Runescape(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

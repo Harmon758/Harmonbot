@@ -13,7 +13,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Discord(bot))
 
-class Discord:
+class Discord(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

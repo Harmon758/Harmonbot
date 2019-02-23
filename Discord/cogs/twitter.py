@@ -104,7 +104,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 			print(f"{self.bot.console_message_prefix}Twitter stream timed out | Recreating stream..")
 			self.bot.loop.create_task(self.start_feeds())
 
-class Twitter:
+class Twitter(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

@@ -16,7 +16,7 @@ from utilities.context import Context
 def setup(bot):
 	bot.add_cog(Trivia(bot))
 
-class Trivia:
+class Trivia(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

@@ -7,7 +7,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Words(bot))
 
-class Words:
+class Words(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

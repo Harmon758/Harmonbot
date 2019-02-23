@@ -11,7 +11,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Permissions(bot))
 
-class Permissions:
+class Permissions(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

@@ -10,7 +10,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Osu(bot))
 
-class Osu:
+class Osu(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

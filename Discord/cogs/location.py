@@ -16,7 +16,7 @@ sys.path.pop(0)
 def setup(bot):
 	bot.add_cog(Location(bot))
 
-class Location:
+class Location(commands.Cog):
 	
 	'''
 	Commands regarding locations

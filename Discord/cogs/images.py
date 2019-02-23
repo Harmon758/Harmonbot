@@ -14,7 +14,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Images(bot))
 
-class Images:
+class Images(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

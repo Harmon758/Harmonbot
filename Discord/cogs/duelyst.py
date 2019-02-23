@@ -7,7 +7,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Duelyst(bot))
 
-class Duelyst:
+class Duelyst(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

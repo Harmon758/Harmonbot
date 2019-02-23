@@ -7,7 +7,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Channel(bot))
 
-class Channel:
+class Channel(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

@@ -29,7 +29,7 @@ from modules import logging
 def setup(bot):
 	bot.add_cog(RSS(bot))
 
-class RSS:
+class RSS(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

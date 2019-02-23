@@ -35,7 +35,7 @@ def setup(bot):
 		if "Reactions" in bot.cogs and reaction.message.id in bot.cogs["Reactions"].reaction_messages:
 			await process_reactions(reaction, user)
 
-class Reactions:
+class Reactions(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

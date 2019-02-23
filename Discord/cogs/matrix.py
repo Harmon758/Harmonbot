@@ -10,7 +10,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Matrix())
 
-class Matrix:
+class Matrix(commands.Cog):
 	
 	# TODO: move to converters file
 	class Matrix(commands.Converter):

@@ -15,7 +15,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Math())
 
-class Math:
+class Math(commands.Cog):
 	
 	'''
 	Also see Matrix category

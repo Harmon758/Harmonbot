@@ -27,7 +27,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Meta(bot))
 
-class Meta:
+class Meta(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

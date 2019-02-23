@@ -12,7 +12,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Respects(bot))
 
-class Respects:
+class Respects(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

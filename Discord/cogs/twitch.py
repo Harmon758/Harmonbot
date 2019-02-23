@@ -18,7 +18,7 @@ from modules import logging
 def setup(bot):
 	bot.add_cog(Twitch(bot))
 
-class Twitch:
+class Twitch(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

@@ -30,7 +30,7 @@ def setup(bot):
 # TODO: Handle audio cog not loaded
 ## youtube = getattr(clients.client.get_cog("Audio"), "audio", commands)
 
-class YouTube:
+class YouTube(commands.Cog):
 	'''
 	YouTube streams and uploads notification system
 	Uploads system relevant documentation:

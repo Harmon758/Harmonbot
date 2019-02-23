@@ -16,7 +16,7 @@ from utilities import errors
 def setup(bot):
 	bot.add_cog(Audio(bot))
 
-class Audio:
+class Audio(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

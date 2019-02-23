@@ -17,7 +17,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Info(bot))
 
-class Info:
+class Info(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

@@ -9,7 +9,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Role(bot))
 
-class Role:
+class Role(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

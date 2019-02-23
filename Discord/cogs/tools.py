@@ -26,7 +26,7 @@ from utilities import paginator
 def setup(bot):
 	bot.add_cog(Tools(bot))
 
-class Tools:
+class Tools(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

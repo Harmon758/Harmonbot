@@ -9,7 +9,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Pinboard(bot))
 
-class Pinboard:
+class Pinboard(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

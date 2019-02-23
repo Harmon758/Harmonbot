@@ -19,7 +19,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Cryptography(bot))
 
-class Cryptography:
+class Cryptography(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

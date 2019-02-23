@@ -16,7 +16,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(Finance(bot))
 
-class Finance:
+class Finance(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

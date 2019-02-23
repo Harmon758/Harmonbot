@@ -8,7 +8,7 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(RotMG(bot))
 
-class RotMG:
+class RotMG(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
