@@ -18,7 +18,7 @@ class Matrix(commands.Cog):
 			return ast.literal_eval(argument)
 			# TODO: check matrix
 	
-	def __local_check(self, ctx):
+	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(aliases = ["matrices"], invoke_without_command = True)

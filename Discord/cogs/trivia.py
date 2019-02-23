@@ -24,7 +24,7 @@ class Trivia(commands.Cog):
 		self.active = {}
 		self.bot.loop.create_task(self.initialize_database())
 	
-	def __local_check(self, ctx):
+	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
 	async def initialize_database(self):

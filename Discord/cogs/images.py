@@ -32,7 +32,7 @@ class Images(commands.Cog):
 		utilities.remove_as_subcommand(self, "Search.google", "images")
 		utilities.remove_as_subcommand(self, "Search.search", "imgur")
 	
-	def __local_check(self, ctx):
+	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(aliases = ["images"], invoke_without_command = True)

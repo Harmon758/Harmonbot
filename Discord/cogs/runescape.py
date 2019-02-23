@@ -15,7 +15,7 @@ class Runescape(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	def __local_check(self, ctx):
+	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(aliases = ["rs"], invoke_without_command = True)

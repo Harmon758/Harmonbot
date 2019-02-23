@@ -53,7 +53,7 @@ class Respects(commands.Cog):
 			"""
 		)
 	
-	def __local_check(self, ctx):
+	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(aliases = ["respect"], invoke_without_command = True)

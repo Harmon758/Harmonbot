@@ -21,7 +21,7 @@ class Math(commands.Cog):
 	Also see Matrix category
 	'''
 	
-	def __local_check(self, ctx):
+	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
 	# Basic
