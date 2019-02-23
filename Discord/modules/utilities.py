@@ -164,6 +164,10 @@ def add_as_subcommand(cog, command, parent_name, subcommand_name, *, aliases = [
 	subcommand = copy.copy(command)
 	subcommand.name = subcommand_name
 	subcommand.aliases = aliases
+	subcommand.parent = parent
+	if isinstance(subcommand, commands.Group):
+		for subsubcommand in subcommand.commands:
+			subsubcommand.parent = subcommand 
 	# async def wrapper(*args, **kwargs):
 	# async def wrapper(*args, command = command, **kwargs):
 	# 	await command.callback(cog, *args, **kwargs)
