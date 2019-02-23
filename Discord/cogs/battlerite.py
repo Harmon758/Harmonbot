@@ -20,6 +20,7 @@ class Battlerite(commands.Cog):
 		if self.bot.is_ready():
 			self.bot.loop.create_task(self.on_ready())
 	
+	@commands.Cog.listener()
 	async def on_ready(self):
 		await self.load_mappings()
 		self.load_emoji()

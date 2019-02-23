@@ -16,6 +16,7 @@ class Osu(commands.Cog):
 		self.bot = bot
 		self.load_emoji()
 	
+	@commands.Cog.listener()
 	async def on_ready(self):
 		self.load_emoji()
 	

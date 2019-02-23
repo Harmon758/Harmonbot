@@ -29,6 +29,7 @@ class Lichess(commands.Cog):
 		self.load_emoji()
 		self.generate_user_mode_commands()
 	
+	@commands.Cog.listener()
 	async def on_ready(self):
 		self.load_emoji()
 		self.generate_user_mode_commands()
