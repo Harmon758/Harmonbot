@@ -243,6 +243,7 @@ class Trivia(commands.Cog):
 				return input[len(article):]
 		return input
 	
+	@commands.Cog.listener()
 	async def on_message(self, message):
 		if not message.guild or message.guild.id not in self.active:
 			return

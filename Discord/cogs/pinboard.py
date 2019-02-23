@@ -152,6 +152,7 @@ class Pinboard(commands.Cog):
 			else:
 				await ctx.embed_reply(f"The current pinboard threshold is the default of 3")
 	
+	@commands.Cog.listener()
 	async def on_raw_reaction_add(self, payload):
 		if str(payload.emoji) not in self.pin_emotes:
 			# Reaction is not for pinboard
