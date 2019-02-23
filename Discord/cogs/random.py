@@ -25,7 +25,11 @@ from modules import utilities
 from utilities import checks
 
 def setup(bot):
-	bot.add_cog(Random(bot))
+	cog = Random(bot)
+	bot.add_cog(cog)
+	# Add fact subcommands as subcommands of corresponding commands
+	for command, parent in ((cog.fact_cat, cog.cat), (cog.fact_date, cog.date), (cog.fact_number, cog.number)):
+		utilities.add_as_subcommand(cog, command, parent, "fact", aliases = ["facts"])
 
 class Random(commands.Cog):
 	
@@ -36,9 +40,6 @@ class Random(commands.Cog):
 			if isinstance(command, commands.Command) and command.parent is None and name != "random":
 				self.bot.add_command(command)
 				self.random.add_command(command)
-		# Add fact subcommands as subcommands of corresponding commands
-		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
-			utilities.add_as_subcommand(self, command, parent, "fact", aliases = ["facts"])
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_subcommands = ((self.blob, "Blobs.blobs"), (self.color, "Resources.color"), (self.giphy, "Images.giphy"), (self.map, "Location.map"), (self.streetview, "Location.streetview"), (self.uesp, "Search.uesp"), (self.time, "Location.time"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
