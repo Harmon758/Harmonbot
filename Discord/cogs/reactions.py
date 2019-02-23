@@ -50,7 +50,7 @@ class Reactions(commands.Cog):
 		for command, parent_name in self.reaction_commands:
 			utilities.add_as_subcommand(self, command, parent_name, "reactions", aliases = ["reaction", 'r'])
 	
-	def __unload(self):
+	def cog_unload(self):
 		for command, parent_name in self.reaction_commands:
 			utilities.remove_as_subcommand(self, parent_name, "reactions")
 	

@@ -27,7 +27,7 @@ class Search(commands.Cog):
 		for command, parent_name in self.search_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "search")
 	
-	def __unload(self):
+	def cog_unload(self):
 		for command, parent_name in self.search_subcommands:
 			utilities.remove_as_subcommand(self, parent_name, "search")
 	

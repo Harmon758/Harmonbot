@@ -53,7 +53,7 @@ class Random(commands.Cog):
 		except FileNotFoundError:
 			pass
 	
-	def __unload(self):
+	def cog_unload(self):
 		for command, parent_name in self.random_subcommands:
 			utilities.remove_as_subcommand(self, parent_name, "random")
 	

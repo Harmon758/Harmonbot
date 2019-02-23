@@ -54,7 +54,7 @@ class YouTube(commands.Cog):
 		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
 	
-	def __unload(self):
+	def cog_unload(self):
 		utilities.remove_as_subcommand(self, "Audio.audio", "streams")
 		utilities.remove_as_subcommand(self, "Audio.audio", "uploads")
 		

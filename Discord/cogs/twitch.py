@@ -29,7 +29,7 @@ class Twitch(commands.Cog):
 			self.streams_info = json.load(streams_file)
 		self.task = self.bot.loop.create_task(self.check_twitch_streams())
 	
-	def __unload(self):
+	def cog_unload(self):
 		self.task.cancel()
 	
 	@commands.group(invoke_without_command = True)

@@ -26,7 +26,7 @@ class Info(commands.Cog):
 		for command, parent_name in self.info_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "info", aliases = ["information"])
 	
-	def __unload(self):
+	def cog_unload(self):
 		for command, parent_name in self.info_subcommands:
 			utilities.remove_as_subcommand(self, parent_name, "info")
 	

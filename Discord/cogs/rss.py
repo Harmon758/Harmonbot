@@ -44,7 +44,7 @@ class RSS(commands.Cog):
 		
 		self.task = self.bot.loop.create_task(self.check_rss_feeds())
 	
-	def __unload(self):
+	def cog_unload(self):
 		self.task.cancel()
 	
 	async def inititalize_database(self):

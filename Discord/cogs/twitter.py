@@ -128,7 +128,7 @@ class Twitter(commands.Cog):
 		self.stream_listener = TwitterStreamListener(bot, self.blacklisted_handles)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
-	def __unload(self):
+	def cog_unload(self):
 		self.stream_listener.stream.disconnect()
 		self.task.cancel()
 	

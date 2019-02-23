@@ -28,7 +28,7 @@ class Images(commands.Cog):
 		# Add imgur search subcommand as search imgur subcommand
 		utilities.add_as_subcommand(self, self.imgur_search, "Search.search", "imgur")
 	
-	def __unload(self):
+	def cog_unload(self):
 		utilities.remove_as_subcommand(self, "Search.google", "images")
 		utilities.remove_as_subcommand(self, "Search.search", "imgur")
 	
