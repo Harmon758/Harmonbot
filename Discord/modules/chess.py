@@ -1,8 +1,9 @@
 
 import discord
 
-import asyncio
+# import asyncio
 import datetime
+import subprocess
 
 import chess
 import chess.engine
@@ -19,8 +20,12 @@ class chess_match(chess.Board):
 		self.text_channel = text_channel
 		self.white_player = white_player
 		self.black_player = black_player
+		# TODO: Use in place of shell = True in other places
+		startupinfo = subprocess.STARTUPINFO()
+		startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+		# startupinfo.wShowWindow = subprocess.SW_HIDE  # Default
 		# TODO: Dynamically load chess engine not locked to version?
-		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin\stockfish_10_x64.exe")
+		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin\stockfish_10_x64.exe", startupinfo = startupinfo)
 		# TODO: Use popcnt.exe?
 		self.match_message = None
 		self.match_embed = None
