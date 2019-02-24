@@ -465,7 +465,7 @@ class Games(commands.Cog):
 				await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
 				return
 		match = chess_match()
-		match.initialize(self.bot, ctx.channel, white_player, black_player)
+		await match.initialize(self.bot, ctx.channel, white_player, black_player)
 		self.chess_matches.append(match)
 	
 	def get_chess_match(self, text_channel, player):

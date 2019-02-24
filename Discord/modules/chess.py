@@ -5,29 +5,25 @@ import asyncio
 import datetime
 
 import chess
+import chess.engine
 import chess.pgn
 import chess.svg
-import chess.uci
 from wand.image import Image
 
 import clients
 
 class chess_match(chess.Board):
 	
-	def initialize(self, client, text_channel, white_player, black_player):
+	async def initialize(self, client, text_channel, white_player, black_player):
 		self.bot = client
 		self.text_channel = text_channel
 		self.white_player = white_player
 		self.black_player = black_player
 		# TODO: Dynamically load chess engine not locked to version?
-		self.chess_engine = chess.uci.popen_engine("bin\stockfish_10_x64.exe", shell = True)
+		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin\stockfish_10_x64.exe")
 		# TODO: Use popcnt.exe?
-		self.chess_engine.uci()
 		self.match_message = None
 		self.match_embed = None
-		self.generated_move = asyncio.Event()
-		self.best_move = None
-		self.ponder = None
 		self.task = self.bot.loop.create_task(self.match_task())
 	
 	def make_move(self, move):
@@ -57,12 +53,9 @@ class chess_match(chess.Board):
 			player = [self.black_player, self.white_player][int(self.turn)]
 			if player == self.bot.user:
 				await self.match_message.edit(embed = self.match_embed.set_footer(text = "I'm thinking.."))
-				self.chess_engine.position(self)
-				self.chess_engine.go(movetime = 2000, async_callback = self.process_chess_engine_command)
-				await self.generated_move.wait()
-				self.generated_move.clear()
-				self.push(self.best_move)
-				await self.update_match_embed(footer_text = "I moved {}".format(self.best_move))
+				result = await self.chess_engine.play(self, chess.engine.Limit(time = 2))
+				self.push(result.move)
+				await self.update_match_embed(footer_text = "I moved {}".format(result.move))
 			else:
 				message = await self.bot.wait_for("message", check = lambda msg: msg.author == player and msg.channel == self.text_channel and self.valid_move(msg.content))
 				await self.match_message.edit(embed = self.match_embed.set_footer(text = "Processing move.."))
@@ -109,8 +102,4 @@ class chess_match(chess.Board):
 		if self.match_message: await self.match_message.delete()
 		self.match_message = None
 		await self.update_match_embed(flipped = flipped, footer_text = footer_text)
-	
-	def process_chess_engine_command(self, command):
-		self.best_move, self.ponder = command.result()
-		self.bot.loop.call_soon_threadsafe(self.generated_move.set)
 
