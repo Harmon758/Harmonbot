@@ -554,7 +554,8 @@ def get_prefix(bot, message):
 
 # Use Proactor Event Loop
 
-asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+if sys.platform == 'win32':
+	asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
 # Initialize client + aiohttp client session
 
