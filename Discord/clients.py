@@ -552,6 +552,10 @@ def get_prefix(bot, message):
 	return prefixes if prefixes else '!'
 
 
+# Use Proactor Event Loop
+
+asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+
 # Initialize client + aiohttp client session
 
 client = Bot(command_prefix = get_prefix)
