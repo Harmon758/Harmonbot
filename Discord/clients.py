@@ -7,6 +7,7 @@ import datetime
 import json
 import logging
 import os
+import platform
 import random
 import sys
 import traceback
@@ -554,7 +555,7 @@ def get_prefix(bot, message):
 
 # Use Proactor Event Loop
 
-if sys.platform == 'win32':
+if platform.system() == "Windows":
 	asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
 # Initialize client + aiohttp client session
