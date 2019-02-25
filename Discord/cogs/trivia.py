@@ -75,7 +75,7 @@ class Trivia(commands.Cog):
 		try:
 			async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
 				data = (await resp.json())[0]
-		except aiohttp.ClientConnectionError as e:
+		except (aiohttp.ClientConnectionError, asyncio.TimeoutError) as e:
 			return await ctx.embed_reply(":no_entry: Error: Error connecting to API")
 		if not data.get("question"):
 			return await ctx.embed_reply(":no_entry: Error: API response missing question")
