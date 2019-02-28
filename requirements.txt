@@ -9,7 +9,7 @@ aiohttp==3.5.4
 asyncpg==0.18.3
 beautifulsoup4==4.7.1
 clarifai==2.5.2
-cryptography==2.5
+cryptography==2.6.1
 # deuces==0.1
 dice==2.4.0
 emoji==0.5.1
