@@ -19,7 +19,7 @@ imageio==2.5.0
 imgurpython==1.1.7
 inflect==2.1.0
 isodate==0.6.0
-matplotlib==3.0.2
+matplotlib==3.0.3
 more-itertools==6.0.0
 numexpr==2.6.9
 numpy==1.16.1
