@@ -127,7 +127,7 @@ class Cryptography(commands.Cog):
 		if len(data) < 16:
 			await ctx.embed_reply(":no_entry: Error: data length must be at least 16")
 			return
-		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("utf-8")).decrypt(bytearray.fromhex(data)).decode("utf-8"))
+		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).decrypt(bytearray.fromhex(data)).decode("UTF-8"))
 	
 	@decode.command(name = "morse")
 	@checks.not_forbidden()
