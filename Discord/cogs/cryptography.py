@@ -152,17 +152,14 @@ class Cryptography(commands.Cog):
 		url = f"https://api.qrserver.com/v1/read-qr-code/?fileurl={file_url}"
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
-				await ctx.embed_reply(":no_entry: Error")
-				return
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
 		if data[0]["symbol"][0]["error"]:
-			await ctx.embed_reply(f":no_entry: Error: {data[0]['symbol'][0]['error']}")
-			return
+			return await ctx.embed_reply(f":no_entry: Error: {data[0]['symbol'][0]['error']}")
 		decoded = data[0]["symbol"][0]["data"].replace("QR-Code:", "")
 		if len(decoded) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-			await ctx.embed_reply(decoded[:ctx.bot.EDCL - 3] + "...", footer_text = "Decoded message exceeded character limit")
+			return await ctx.embed_reply(decoded[:ctx.bot.EDCL - 3] + "...", footer_text = "Decoded message exceeded character limit")
 			# EDCL: Embed Description Character Limit
-			return
 		await ctx.embed_reply(decoded)
 	
 	@decode.command(name = "reverse")
