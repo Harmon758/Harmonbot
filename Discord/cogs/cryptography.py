@@ -149,14 +149,14 @@ class Cryptography(commands.Cog):
 	
 	async def _decode_qr(self, ctx, file_url):
 		# TODO: use textwrap
-		url = "https://api.qrserver.com/v1/read-qr-code/?fileurl={}".format(file_url)
+		url = f"https://api.qrserver.com/v1/read-qr-code/?fileurl={file_url}"
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
 				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
 		if data[0]["symbol"][0]["error"]:
-			await ctx.embed_reply(":no_entry: Error: {}".format(data[0]["symbol"][0]["error"]))
+			await ctx.embed_reply(f":no_entry: Error: {data[0]['symbol'][0]['error']}")
 			return
 		decoded = data[0]["symbol"][0]["data"].replace("QR-Code:", "")
 		if len(decoded) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
