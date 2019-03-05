@@ -179,7 +179,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_adler32(self, ctx, *, message : str):
 		'''Compute Adler-32 checksum'''
-		await ctx.embed_reply(zlib.adler32(message.encode("utf-8")))
+		await ctx.embed_reply(zlib.adler32(message.encode("UTF-8")))
 	
 	@encode.command(name = "blake2b")
 	@checks.not_forbidden()
