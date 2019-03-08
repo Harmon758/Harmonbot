@@ -205,8 +205,7 @@ class Cryptography(commands.Cog):
 		key: 0 - 26
 		'''
 		if not 0 <= key <= 26:
-			await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
-			return
+			return await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
 		await ctx.embed_reply(ciphers.encode_caesar(message, key))
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
