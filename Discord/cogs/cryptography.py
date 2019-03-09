@@ -212,7 +212,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_crc32(self, ctx, *, message : str):
 		'''Compute CRC32 checksum'''
-		await ctx.embed_reply(zlib.crc32(message.encode("utf-8")))
+		await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 	
 	@encode.group(name = "gost", aliases = ["гост"], invoke_without_command = True)
 	@checks.not_forbidden()
