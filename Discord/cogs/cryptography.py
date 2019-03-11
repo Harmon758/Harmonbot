@@ -259,7 +259,7 @@ class Cryptography(commands.Cog):
 	async def encode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
 		'''Magma with CNT mode of operation'''
 		try:
-			await ctx.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.cnt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
 		except ValueError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
