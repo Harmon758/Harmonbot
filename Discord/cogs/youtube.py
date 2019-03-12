@@ -126,15 +126,16 @@ class YouTube(commands.Cog):
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
 			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
-		try:
-			await ctx.bot.db.execute(
-				"""
-				INSERT INTO youtube.streams (discord_channel_id, youtube_channel_id)
-				VALUES ($1, $2)
-				""", 
-				ctx.channel.id, channel_id
-			)
-		except asyncpg.UniqueViolationError:
+		inserted = await ctx.bot.db.fetchrow(
+			"""
+			INSERT INTO youtube.streams (discord_channel_id, youtube_channel_id)
+			VALUES ($1, $2)
+			ON CONFLICT DO NOTHING
+			RETURNING *
+			""", 
+			ctx.channel.id, channel_id
+		)
+		if not inserted:
 			return await ctx.embed_reply(":no_entry: This text channel is already following that YouTube channel")
 		await ctx.embed_reply(f"Added the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
 		"I will now announce here when this YouTube channel goes live")
