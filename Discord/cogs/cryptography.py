@@ -281,8 +281,8 @@ class Cryptography(commands.Cog):
 	async def encode_gost_28147_89_mac(self, ctx, key : str, *, data : str):
 		'''Magma with MAC mode of operation'''
 		try:
-			mac = pygost.gost28147_mac.MAC(key = key.encode("utf-8"))
-			mac.update(data.encode("utf-8"))
+			mac = pygost.gost28147_mac.MAC(key = key.encode("UTF-8"))
+			mac.update(data.encode("UTF-8"))
 			await ctx.embed_reply(mac.hexdigest())
 		except ValueError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
