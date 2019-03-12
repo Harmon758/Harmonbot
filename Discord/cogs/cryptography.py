@@ -304,7 +304,7 @@ class Cryptography(commands.Cog):
 		GOST 34.11-2012 256-bit hash function
 		Also known as Streebog-256
 		'''
-		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 32).hexdigest())
+		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 32).hexdigest())
 	
 	@encode_gost_34_11_2012.command(name = "512")
 	@checks.not_forbidden()
