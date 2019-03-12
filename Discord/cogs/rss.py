@@ -91,9 +91,16 @@ class RSS(commands.Cog):
 	@checks.is_permitted()
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
-		try:
-			await ctx.bot.db.execute("INSERT INTO rss.feeds (channel_id, feed) VALUES ($1, $2)", ctx.channel.id, url)
-		except asyncpg.UniqueViolationError:
+		inserted = await ctx.bot.db.fetchrow(
+			"""
+			INSERT INTO rss.feeds (channel_id, feed)
+			VALUES ($1, $2)
+			ON CONFLICT DO NOTHING
+			RETURNING *
+			""", 
+			ctx.channel.id, url
+		)
+		if not inserted:
 			return await ctx.embed_reply(":no_entry: This channel is already following that feed")
 		# Add entry IDs
 		async with clients.aiohttp_session.get(url) as resp:
