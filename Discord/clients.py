@@ -3,12 +3,14 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import contextlib
 import datetime
 import json
 import logging
 import os
 import platform
 import random
+import ssl
 import sys
 import traceback
 from urllib import parse
@@ -458,6 +460,24 @@ class Bot(commands.Bot):
 	async def update_all_listing_stats(self):
 		for site in self.listing_sites:
 			await self.update_listing_stats(site)
+	
+	@contextlib.contextmanager
+	def suppress_SSLCertVerificationError(self):
+		# https://stackoverflow.com/questions/52012488/ssl-asyncio-traceback-even-when-error-is-handled
+		# https://bugs.python.org/issue34506
+		old_handler_function = old_handler = self.loop.get_exception_handler()
+		if not old_handler_function:
+			old_handler_function = lambda loop, ctx: self.loop.default_exception_handler(ctx)
+		def new_handler(loop, ctx):
+			exc = ctx.get("exception")
+			if isinstance(exc, ssl.SSLCertVerificationError):
+				return
+			old_handler_function(loop, ctx)
+		self.loop.set_exception_handler(new_handler)
+		try:
+			yield
+		finally:
+			self.loop.set_exception_handler(old_handler)
 	
 	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
