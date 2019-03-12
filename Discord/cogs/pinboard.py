@@ -2,8 +2,6 @@
 import discord
 from discord.ext import commands
 
-import asyncpg
-
 from utilities import checks
 
 def setup(bot):
