@@ -313,7 +313,7 @@ class Cryptography(commands.Cog):
 		GOST 34.11-2012 512-bit hash function
 		Also known as Streebog-512
 		'''
-		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("utf-8"), digest_size = 64).hexdigest())
+		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 64).hexdigest())
 	
 	@encode_gost.command(name = "34.11-94")
 	@checks.not_forbidden()
