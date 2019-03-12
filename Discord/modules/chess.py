@@ -20,7 +20,6 @@ class chess_match(chess.Board):
 		self.text_channel = text_channel
 		self.white_player = white_player
 		self.black_player = black_player
-		# TODO: Use creationflags = subprocess.CREATE_NO_WINDOW in place of shell = True in other places
 		# TODO: Dynamically load chess engine not locked to version?
 		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin\stockfish_10_x64.exe", creationflags = subprocess.CREATE_NO_WINDOW)
 		# TODO: Use popcnt.exe?

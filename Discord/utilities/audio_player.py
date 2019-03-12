@@ -482,6 +482,7 @@ class AudioPlayer:
 			await self.bot.send_embed(self.text_channel, ":warning: No input found")
 			return
 		func = functools.partial(subprocess.call, ["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", clients.data_path + "/temp/heard.pcm", clients.data_path + "/temp/heard.wav"], shell = True)
+		# TODO: Use creationflags = subprocess.CREATE_NO_WINDOW in place of shell = True
 		await self.bot.loop.run_in_executor(None, func)
 		with speech_recognition.AudioFile(clients.data_path + "/temp/heard.wav") as source:
 			audio = self.recognizer.record(source)
