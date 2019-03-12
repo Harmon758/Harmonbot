@@ -272,7 +272,7 @@ class Cryptography(commands.Cog):
 		This means the data length must be a multiple of 8
 		'''
 		try:
-			await ctx.embed_reply(pygost.gost28147.ecb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.ecb_encrypt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
 		except ValueError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
