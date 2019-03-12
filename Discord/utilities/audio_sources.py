@@ -14,7 +14,7 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	
 	'''
 	Modified discord.FFmpegPCMAudio
-	To use ffmpeg log as stderr and use shell
+	To use ffmpeg log as stderr and suppress subprocess window
 	'''
 	
 	def __init__(self, source, before_options = None):
@@ -26,7 +26,8 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 				args.insert(1, shlex.split(before_options))
 			self._process = None
 			try:
-				self._process = subprocess.Popen(args, stdout = subprocess.PIPE, stderr = ffmpeg_log, shell = True)
+				self._process = subprocess.Popen(args, stdout = subprocess.PIPE, stderr = ffmpeg_log, 
+													creationflags = subprocess.CREATE_NO_WINDOW)
 				self._stdout = self._process.stdout
 			except FileNotFoundError:
 				raise discord.ClientException("bin/ffmpeg was not found.") from None
