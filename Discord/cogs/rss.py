@@ -216,10 +216,16 @@ class RSS(commands.Cog):
 					for entry in feed_info.entries:
 						if "id" not in entry:
 							continue
-						try:
-							await self.bot.db.execute("INSERT INTO rss.entries (entry, feed) VALUES ($1, $2)", 
-														entry.id, feed)
-						except asyncpg.UniqueViolationError:
+						inserted = await self.bot.db.fetchrow(
+							"""
+							INSERT INTO rss.entries (entry, feed)
+							VALUES ($1, $2)
+							ON CONFLICT DO NOTHING
+							RETURNING *
+							""", 
+							entry.id, feed
+						)
+						if not inserted:
 							continue
 						# Get timestamp
 						## if "published_parsed" in entry:
