@@ -183,12 +183,17 @@ class Pinboard(commands.Cog):
 																ON CONFLICT (message_id) DO UPDATE SET guild_id = $2
 																RETURNING pinboard_message_id""", 
 																message_id, payload.guild_id, payload.channel_id)
-		try:
-			# Add user as pinner
-			await self.bot.db.execute("""INSERT INTO pinboard.pinners (message_id, pinner_id)
-											VALUES ($1, $2)""", 
-											message_id, payload.user_id)
-		except asyncpg.UniqueViolationError:
+		# Add user as pinner
+		inserted = await self.bot.db.fetchrow(
+			"""
+			INSERT INTO pinboard.pinners (message_id, pinner_id)
+			VALUES ($1, $2)
+			ON CONFLICT DO NOTHING
+			RETURNING *
+			""", 
+			message_id, payload.user_id
+		)
+		if not inserted:
 			# User has already pinned this message
 			return
 		pin_count = await self.bot.db.fetchval("SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
