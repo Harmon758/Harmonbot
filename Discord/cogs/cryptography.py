@@ -285,7 +285,7 @@ class Cryptography(commands.Cog):
 			mac.update(data.encode("utf-8"))
 			await ctx.embed_reply(mac.hexdigest())
 		except ValueError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost.group(name = "34.11-2012", aliases = ["стрибог", "streebog"], invoke_without_command = True)
 	@checks.not_forbidden()
