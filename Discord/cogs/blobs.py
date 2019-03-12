@@ -3,8 +3,6 @@ from discord.ext import commands
 
 import difflib
 
-import asyncpg
-
 from utilities import checks
 
 def setup(bot):
