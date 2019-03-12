@@ -1,7 +1,7 @@
 
 import atexit
 from queue import Queue
-from subprocess import Popen, PIPE
+from subprocess import CREATE_NO_WINDOW, Popen, PIPE
 import sys
 from threading import Thread
 from tkinter import BOTH, BooleanVar, Checkbutton, END, Frame, NONE, Text, Tk, ttk
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 	def start_process(process):
 		process_kwargs = {"stdout": PIPE, "stderr": PIPE, "bufsize": 1, "universal_newlines": True}
 		if process == "discord_listener":
-			process_kwargs["shell"] = True
+			process_kwargs["creationflags"] = CREATE_NO_WINDOW
 		processes[process] = Popen(process_args[process], cwd = process.split('_')[0].capitalize(), **process_kwargs)
 	
 	def enqueue_output(out, queue):
