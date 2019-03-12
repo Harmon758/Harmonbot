@@ -15,7 +15,6 @@ import traceback
 import urllib
 
 import aiohttp
-import asyncpg
 from bs4 import BeautifulSoup
 import dateutil.parser
 import dateutil.tz
