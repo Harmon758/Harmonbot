@@ -86,15 +86,16 @@ class Blobs(commands.Cog):
 		)
 		await ctx.bot.db.execute("DELETE FROM blobs.aliases WHERE blob = $1", name)
 		for alias in aliases:
-			try:
-				await ctx.bot.db.execute(
-					"""
-					INSERT INTO blobs.aliases (alias, blob)
-					VALUES ($1, $2)
-					""", 
-					alias, name
-				)
-			except asyncpg.UniqueViolationError:
+			inserted = await ctx.bot.db.fetchrow(
+				"""
+				INSERT INTO blobs.aliases (alias, blob)
+				VALUES ($1, $2)
+				ON CONFLICT DO NOTHING
+				RETURNING *
+				""", 
+				alias, name
+			)
+			if not inserted:
 				await ctx.embed_reply(f"Failed to add already existing alias: {alias}")
 		await ctx.embed_reply("Blob added/edited")
 	
