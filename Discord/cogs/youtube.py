@@ -11,7 +11,6 @@ import sys
 import traceback
 
 import aiohttp
-import asyncpg
 import dateutil.parser
 import feedparser
 import isodate
