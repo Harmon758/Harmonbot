@@ -97,7 +97,8 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 	async def generate_file(self):
 		func = functools.partial(subprocess.run, ["bin\espeak", f"-a {self.amplitude}", f"-p {self.pitch}", 
 													f"-s {self.speed}", f"-g {self.word_gap}", f"-v{self.voice}", 
-													f"-w {clients.data_path}/temp/tts.wav", self.message], shell = True)
+													f"-w {clients.data_path}/temp/tts.wav", self.message], 
+													creationflags = subprocess.CREATE_NO_WINDOW)
 		await self.bot.loop.run_in_executor(None, func)
 	
 	def initialize_source(self, volume):
