@@ -274,7 +274,7 @@ class Cryptography(commands.Cog):
 		try:
 			await ctx.embed_reply(pygost.gost28147.ecb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
 		except ValueError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "mac")
 	@checks.not_forbidden()
