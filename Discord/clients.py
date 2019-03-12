@@ -3,12 +3,14 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import contextlib
 import datetime
 import json
 import logging
 import os
 import platform
 import random
+import ssl
 import sys
 import traceback
 from urllib import parse
@@ -227,6 +229,12 @@ class Bot(commands.Bot):
 		self.add_command(self.reload)
 		self.load.add_command(self.load_aiml)
 		self.unload.add_command(self.unload_aiml)
+		
+		self.load = staticmethod(self.load)
+		self.unload = staticmethod(self.unload)
+		self.reload = staticmethod(self.reload)
+		self.load_aiml = staticmethod(self.load_aiml)
+		self.unload_aiml = staticmethod(self.unload_aiml)
 		
 		# Remove default help command (to override)
 		self.remove_command("help")
@@ -459,12 +467,30 @@ class Bot(commands.Bot):
 		for site in self.listing_sites:
 			await self.update_listing_stats(site)
 	
+	@contextlib.contextmanager
+	def suppress_SSLCertVerificationError(self):
+		# https://stackoverflow.com/questions/52012488/ssl-asyncio-traceback-even-when-error-is-handled
+		# https://bugs.python.org/issue34506
+		old_handler_function = old_handler = self.loop.get_exception_handler()
+		if not old_handler_function:
+			old_handler_function = lambda loop, ctx: self.loop.default_exception_handler(ctx)
+		def new_handler(loop, ctx):
+			exc = ctx.get("exception")
+			if isinstance(exc, ssl.SSLCertVerificationError):
+				return
+			old_handler_function(loop, ctx)
+		self.loop.set_exception_handler(new_handler)
+		try:
+			yield
+		finally:
+			self.loop.set_exception_handler(old_handler)
+	
 	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
-	async def load(self, ctx, cog : str):
+	async def load(ctx, cog : str):
 		'''Load cog'''
 		try:
-			self.load_extension("cogs." + cog)
+			ctx.bot.load_extension("cogs." + cog)
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to load `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
@@ -472,23 +498,23 @@ class Bot(commands.Bot):
 	
 	@commands.command(name = "aiml", aliases = ["brain"])
 	@commands.is_owner()
-	async def load_aiml(self, ctx):
+	async def load_aiml(ctx):
 		'''Load AIML'''
-		for predicate, value in self.aiml_predicates.items():
-			self.aiml_kernel.setBotPredicate(predicate, value)
+		for predicate, value in ctx.bot.aiml_predicates.items():
+			ctx.bot.aiml_kernel.setBotPredicate(predicate, value)
 		if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
-			self.aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
+			ctx.bot.aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
 		elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
-			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
-			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
+			ctx.bot.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+			ctx.bot.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Loaded AIML")
 	
 	@commands.group(invoke_without_command = True)
 	@commands.is_owner()
-	async def unload(self, ctx, cog : str):
+	async def unload(ctx, cog : str):
 		'''Unload cog'''
 		try:
-			self.unload_extension("cogs." + cog)
+			ctx.bot.unload_extension("cogs." + cog)
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to unload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
@@ -496,22 +522,22 @@ class Bot(commands.Bot):
 	
 	@commands.command(name = "aiml", aliases = ["brain"])
 	@commands.is_owner()
-	async def unload_aiml(self, ctx):
+	async def unload_aiml(ctx):
 		'''Unload AIML'''
-		self.aiml_kernel.resetBrain()
+		ctx.bot.aiml_kernel.resetBrain()
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Unloaded AIML")
 	
 	@commands.command()
 	@commands.is_owner()
-	async def reload(self, ctx, cog : str):
+	async def reload(ctx, cog : str):
 		'''Reload cog'''
 		try:
-			self.unload_extension("cogs." + cog)
-			self.load_extension("cogs." + cog)
+			ctx.bot.unload_extension("cogs." + cog)
+			ctx.bot.load_extension("cogs." + cog)
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to reload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
-			# TODO: self.stats
+			# TODO: ctx.bot.stats
 			with open(data_path + "/stats.json", 'r') as stats_file:
 				stats = json.load(stats_file)
 			stats["cogs_reloaded"] += 1

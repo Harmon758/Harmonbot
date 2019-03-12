@@ -8,6 +8,10 @@ def duration_to_string(duration, weeks = True, milliseconds = False, microsecond
 	# TODO: Support colon format
 	if not isinstance(duration, datetime.timedelta):
 		raise UnitExecutionError("duration must be datetime.timedelta")
+	negative = False
+	if duration.total_seconds() < 0:
+		duration = abs(duration)
+		negative = True
 	units = {"year": duration.days // 365}
 	if weeks:
 		units["week"] = duration.days % 365 // 7
@@ -25,6 +29,8 @@ def duration_to_string(duration, weeks = True, milliseconds = False, microsecond
 	for name, value in units.items():
 		if not value:
 			continue
+		if negative:
+			value = -value
 		if abbreviate:
 			if name == "millisecond":
 				output = f"{value}ms"
@@ -34,7 +40,7 @@ def duration_to_string(duration, weeks = True, milliseconds = False, microsecond
 				output = f"{value}{name[0]}"
 		else:
 			output = f"{value} {name}"
-			if value > 1:
+			if abs(value) > 1:
 				output += 's'
 		outputs.append(output)
 	return separator.join(outputs)

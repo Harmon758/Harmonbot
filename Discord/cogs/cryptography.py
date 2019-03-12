@@ -122,12 +122,10 @@ class Cryptography(commands.Cog):
 		'''
 		# TODO: Add decode kuznyechik alias
 		if len(key) < 32:
-			await ctx.embed_reply(":no_entry: Error: key length must be at least 32")
-			return
+			return await ctx.embed_reply(":no_entry: Error: key length must be at least 32")
 		if len(data) < 16:
-			await ctx.embed_reply(":no_entry: Error: data length must be at least 16")
-			return
-		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("utf-8")).decrypt(bytearray.fromhex(data)).decode("utf-8"))
+			return await ctx.embed_reply(":no_entry: Error: data length must be at least 16")
+		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).decrypt(bytearray.fromhex(data)).decode("UTF-8"))
 	
 	@decode.command(name = "morse")
 	@checks.not_forbidden()
@@ -151,20 +149,18 @@ class Cryptography(commands.Cog):
 	
 	async def _decode_qr(self, ctx, file_url):
 		# TODO: use textwrap
-		url = "https://api.qrserver.com/v1/read-qr-code/?fileurl={}".format(file_url)
+		url = f"https://api.qrserver.com/v1/read-qr-code/?fileurl={file_url}"
 		async with clients.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
-				await ctx.embed_reply(":no_entry: Error")
-				return
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
 		if data[0]["symbol"][0]["error"]:
-			await ctx.embed_reply(":no_entry: Error: {}".format(data[0]["symbol"][0]["error"]))
-			return
+			return await ctx.embed_reply(f":no_entry: Error: {data[0]['symbol'][0]['error']}")
 		decoded = data[0]["symbol"][0]["data"].replace("QR-Code:", "")
 		if len(decoded) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-			await ctx.embed_reply(decoded[:ctx.bot.EDCL - 3] + "...", footer_text = "Decoded message exceeded character limit")
+			return await ctx.embed_reply(decoded[:ctx.bot.EDCL - 3] + "...", 
+											footer_text = "Decoded message exceeded character limit")
 			# EDCL: Embed Description Character Limit
-			return
 		await ctx.embed_reply(decoded)
 	
 	@decode.command(name = "reverse")
@@ -183,14 +179,14 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_adler32(self, ctx, *, message : str):
 		'''Compute Adler-32 checksum'''
-		await ctx.embed_reply(zlib.adler32(message.encode("utf-8")))
+		await ctx.embed_reply(zlib.adler32(message.encode("UTF-8")))
 	
 	@encode.command(name = "blake2b")
 	@checks.not_forbidden()
 	async def encode_blake2b(self, ctx, *, message : str):
 		'''64-byte digest BLAKE2b'''
 		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2b(64), backend = openssl_backend)
-		digest.update(message.encode("utf-8"))
+		digest.update(message.encode("UTF-8"))
 		await ctx.embed_reply(digest.finalize())
 	
 	@encode.command(name = "blake2s")
@@ -198,7 +194,7 @@ class Cryptography(commands.Cog):
 	async def encode_blake2s(self, ctx, *, message : str):
 		'''32-byte digest BLAKE2s'''
 		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2s(32), backend = openssl_backend)
-		digest.update(message.encode("utf-8"))
+		digest.update(message.encode("UTF-8"))
 		await ctx.embed_reply(digest.finalize())
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
@@ -209,15 +205,14 @@ class Cryptography(commands.Cog):
 		key: 0 - 26
 		'''
 		if not 0 <= key <= 26:
-			await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
-			return
+			return await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
 		await ctx.embed_reply(ciphers.encode_caesar(message, key))
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
 	@checks.not_forbidden()
 	async def encode_crc32(self, ctx, *, message : str):
 		'''Compute CRC32 checksum'''
-		await ctx.embed_reply(zlib.crc32(message.encode("utf-8")))
+		await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 	
 	@encode.group(name = "gost", aliases = ["гост"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -246,27 +241,27 @@ class Cryptography(commands.Cog):
 	async def encode_gost_28147_89_cbc(self, ctx, key : str, *, data : str):
 		'''Magma with CBC mode of operation'''
 		try:
-			await ctx.embed_reply(pygost.gost28147.cbc_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.cbc_encrypt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
 		except ValueError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "cfb")
 	@checks.not_forbidden()
 	async def encode_gost_28147_89_cfb(self, ctx, key : str, *, data : str):
 		'''Magma with CFB mode of operation'''
 		try:
-			await ctx.embed_reply(pygost.gost28147.cfb_encrypt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.cfb_encrypt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
 		except ValueError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "cnt")
 	@checks.not_forbidden()
 	async def encode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
 		'''Magma with CNT mode of operation'''
 		try:
-			await ctx.embed_reply(pygost.gost28147.cnt(key.encode("utf-8"), data.encode("utf-8")).hex())
+			await ctx.embed_reply(pygost.gost28147.cnt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
 		except ValueError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "ecb")
 	@checks.not_forbidden()
