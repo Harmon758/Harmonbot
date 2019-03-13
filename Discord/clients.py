@@ -8,7 +8,6 @@ import datetime
 import json
 import logging
 import os
-import platform
 import random
 import ssl
 import sys
@@ -617,14 +616,4 @@ def get_prefix(bot, message):
 	else:
 		prefixes = all_prefixes.get(str(message.guild.id), None)
 	return prefixes if prefixes else '!'
-
-
-# Use Proactor Event Loop
-
-if platform.system() == "Windows":
-	asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-
-# Initialize client
-
-client = Bot(command_prefix = get_prefix)
 

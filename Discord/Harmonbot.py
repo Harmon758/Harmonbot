@@ -9,6 +9,7 @@ if __name__ == "__main__":
 	import ctypes
 	import json
 	import os
+	import platform
 	import re
 	import sys
 	
@@ -17,13 +18,19 @@ if __name__ == "__main__":
 	import pkg_resources  # from setuptools
 	
 	import clients
-	from clients import client
 	from modules import conversions
 	from modules import logging
 	from modules import utilities
 	from utilities import audio_player
 	
 	mention_spammers = []
+	
+	# Use Proactor Event Loop
+	if platform.system() == "Windows":
+		asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+	
+	# Initialize client
+	client = clients.Bot(command_prefix = clients.get_prefix)
 	
 	@client.listen()
 	async def on_ready():
