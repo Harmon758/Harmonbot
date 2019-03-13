@@ -166,9 +166,14 @@ class Trivia(commands.Cog):
 		answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
 		# Replace in answer: \' -> '
 		# Replace: & -> and
-		# Remove periods, exclamation marks, and quotation marks
-		answer = answer.replace("\\'", "'").replace('&', "and").replace('.', "").replace('!', "").replace('"', "")
-		response = response.replace('&', "and").replace('.', "").replace('!', "").replace('"', "")
+		answer = answer.replace("\\'", "'").replace('&', "and")
+		response = response.replace('&', "and")
+		# Remove exclamation marks, periods, and quotation marks
+		for character in '!."':
+			if character in answer:
+				answer = answer.replace(character, "")
+			if character in response:
+				response = response.replace(character, "")
 		# Remove extra whitespace
 		# Make lowercase
 		answer = ' '.join(answer.split()).lower()
@@ -184,6 +189,11 @@ class Trivia(commands.Cog):
 		# Check equivalence
 		if set(answer_items) == set(response_items):
 			return True
+		# Remove commas
+		if ',' in answer:
+			answer = answer.replace(',', "")
+		if ',' in response:
+			response = response.replace(',', "")
 		# Check removal of/replacement of - with space
 		if answer.replace('-', ' ') == response.replace('-', ' '):
 			return True
