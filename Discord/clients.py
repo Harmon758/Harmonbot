@@ -20,7 +20,6 @@ from aiohttp import web
 import asyncpg
 import clarifai
 import clarifai.rest
-import dotenv
 import imgurpython
 import inflect
 import pyowm
@@ -47,10 +46,6 @@ online_time = datetime.datetime.utcnow()
 
 # TODO: Already moved to Bot constants, update all references to
 bot_color = discord.Color.blurple()
-
-# Load credentials from .env
-# TODO: Move to Harmonbot.py
-dotenv.load_dotenv()
 
 class Bot(commands.Bot):
 	

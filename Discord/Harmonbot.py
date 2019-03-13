@@ -15,6 +15,7 @@ if __name__ == "__main__":
 	
 	import aiohttp
 	from aiohttp import web
+	import dotenv
 	import pkg_resources  # from setuptools
 	
 	import clients
@@ -28,6 +29,9 @@ if __name__ == "__main__":
 	# Use Proactor Event Loop
 	if platform.system() == "Windows":
 		asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+	
+	# Load credentials from .env
+	dotenv.load_dotenv()
 	
 	# Initialize client
 	client = clients.Bot(command_prefix = clients.get_prefix)
