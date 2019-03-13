@@ -638,9 +638,9 @@ class Games(commands.Cog):
 		Guess <max> <tries>
 		'''
 		tries = False
-		if len(options) >= 2 and utilities.is_digit_gtz(options[1]):
+		if len(options) >= 2 and options[1].isdigit() and options[1] != '0':
 			tries = int(options[1])
-		if len(options) >= 1 and utilities.is_digit_gtz(options[0]):
+		if len(options) >= 1 and options[0].isdigit() and options[0] != '0':
 			max_value = int(options[0])
 		else:
 			await ctx.embed_reply("What range of numbers would you like to guess to? 1 to _")

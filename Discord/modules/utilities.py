@@ -31,9 +31,6 @@ def is_hex(s):
 	return all(c in hex_digits for c in s)
 '''
 
-def is_digit_gtz(s):
-	return s.isdigit() and s != '0'
-
 def secs_to_duration(secs, limit = 0):
 	duration = []
 	time_in_secs = [31536000, 604800, 86400, 3600, 60]
