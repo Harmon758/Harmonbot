@@ -7,7 +7,6 @@ import re
 import clarifai.rest
 import imgurpython
 
-import clients
 from modules import utilities
 from utilities import checks
 
@@ -69,7 +68,7 @@ class Images(commands.Cog):
 		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
 					"searchType": "image", 'q': search, "num": 1, "safe": "active"}
 		# TODO: Option to disable SafeSearch
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 403:
 				return await ctx.embed_reply(":no_entry: Daily limit exceeded")
 			data = await resp.json()
@@ -104,7 +103,7 @@ class Images(commands.Cog):
 		'''Find an image on giphy'''
 		url = "http://api.giphy.com/v1/gifs/search"
 		params = {"api_key": ctx.bot.GIPHY_API_KEY, 'q': search, "limit": 1}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
@@ -113,7 +112,7 @@ class Images(commands.Cog):
 		'''Trending gif'''
 		url = "http://api.giphy.com/v1/gifs/trending"
 		params = {"api_key": ctx.bot.GIPHY_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	

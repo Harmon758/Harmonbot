@@ -577,7 +577,7 @@ class Games(commands.Cog):
 		# TODO: Move to utilities?
 		url = "https://www.cleverbot.com/getreply"
 		params = {"key": self.bot.CLEVERBOT_API_KEY, "input": message}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		return data["output"]
 	
@@ -715,7 +715,7 @@ class Games(commands.Cog):
 			self.jeopardy_question_active = True
 			self.jeopardy_answered = None
 			url = "http://jservice.io/api/category?id=" + str(self.jeopardy_board[row_number - 1][0])
-			async with clients.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
 			await ctx.embed_say("Category: " + string.capwords(data["title"]) + "\n" + data["clues"][value_index]["question"])
@@ -772,12 +772,12 @@ class Games(commands.Cog):
 		self.jeopardy_board_output = ""
 		url = "http://jservice.io/api/random"
 		for i in range(6):
-			async with clients.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			categories.append(data[0]["category_id"])
 		for category in categories:
 			url = "http://jservice.io/api/category?id=" + str(category)
-			async with clients.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			category_titles.append(string.capwords(data["title"]))
 			self.jeopardy_board.append([category, False, False, False, False, False])
@@ -1148,7 +1148,7 @@ class Games(commands.Cog):
 				await ctx.embed_reply("\nI chose `{}`\n{} {} {}\nYou win! :tada:".format(value, emotes[object], resolution[object][standard_value], emotes[standard_value]))
 	
 	async def generate_erps_dict(self):
-		async with clients.aiohttp_session.get("http://www.umop.com/rps101/alloutcomes.htm") as resp:
+		async with self.bot.aiohttp_session.get("http://www.umop.com/rps101/alloutcomes.htm") as resp:
 			data = await resp.text()
 		raw_text = BeautifulSoup(data).text
 		raw_text = re.sub("\n+", '\n', raw_text).strip()

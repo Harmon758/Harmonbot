@@ -10,7 +10,6 @@ import unicodedata
 import dateutil
 # import spotipy
 
-import clients
 from modules import utilities
 from utilities import checks
 
@@ -63,7 +62,7 @@ class Resources(commands.Cog):
 	
 	async def process_color(self, ctx, url, params = {}):
 		params["format"] = "json"
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Error")
@@ -82,7 +81,7 @@ class Resources(commands.Cog):
 			id = "cve" + id
 		elif not id.startswith("cve"):
 			id = "cve-" + id
-		async with clients.aiohttp_session.get("http://cve.circl.lu/api/cve/{}".format(id)) as resp:
+		async with ctx.bot.aiohttp_session.get("http://cve.circl.lu/api/cve/{}".format(id)) as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Error: Not found")
@@ -98,7 +97,7 @@ class Resources(commands.Cog):
 		except ValueError:
 			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
 			params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": account}
-			async with clients.aiohttp_session.get(url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			url = f"https://www.dotabuff.com/players/{int(data['response']['steamid']) - 76561197960265728}"
 		await ctx.embed_reply(title = f"{account}'s Dotabuff profile", title_url = url)
@@ -109,7 +108,7 @@ class Resources(commands.Cog):
 		'''Gender of a name'''
 		# TODO: add localization options?
 		url = "https://api.genderize.io/"
-		async with clients.aiohttp_session.get(url, params = {"name": name}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = {"name": name}) as resp:
 			# TODO: check status code
 			data = await resp.json()
 		if not data["gender"]:
@@ -125,7 +124,7 @@ class Resources(commands.Cog):
 	async def hastebin(self, ctx, *, contents : str):
 		'''Hastebin'''
 		url = "https://hastebin.com/documents"
-		async with clients.aiohttp_session.post(url, data = contents) as resp:
+		async with ctx.bot.aiohttp_session.post(url, data = contents) as resp:
 			if resp.status == 503:
 				return await ctx.embed_reply(f":no_entry: Error: {resp.reason}")
 			data = await resp.json()
@@ -136,7 +135,7 @@ class Resources(commands.Cog):
 	async def haveibeenpwned(self, ctx, name : str):
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/" + name
-		async with clients.aiohttp_session.get(url, params = {"truncateResponse": "true"}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = {"truncateResponse": "true"}) as resp:
 			status = resp.status
 			if status in (400, 404):
 				breachedaccounts = "None"
@@ -144,7 +143,7 @@ class Resources(commands.Cog):
 				data = await resp.json()
 				breachedaccounts = ", ".join(acc["Name"] for acc in data)
 		url = "https://haveibeenpwned.com/api/v2/pasteaccount/" + name
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			status = resp.status
 			if status in (400, 404):
 				pastedaccounts = "None"
@@ -163,7 +162,7 @@ class Resources(commands.Cog):
 	@checks.not_forbidden()
 	async def horoscope_signs(self, ctx):
 		'''Sun signs'''
-		async with clients.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/sunsigns") as resp:
+		async with ctx.bot.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/sunsigns") as resp:
 			data = await resp.json()
 		await ctx.embed_reply(", ".join(data))
 	
@@ -189,7 +188,7 @@ class Resources(commands.Cog):
 		if len(sign) == 1:
 			sign = unicodedata.name(sign).lower()
 		url = f"http://sandipbgt.com/theastrologer/api/horoscope/{sign}/{day}/"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -207,7 +206,7 @@ class Resources(commands.Cog):
 		'''IMDb Information'''
 		url = "http://www.omdbapi.com/"
 		params = {'t': search, "plot": "short", "apikey": ctx.bot.OMDB_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["Response"] == "False":
 			return await ctx.embed_reply(f":no_entry: Error: {data['Error']}")
@@ -239,7 +238,7 @@ class Resources(commands.Cog):
 		url = "http://rtex.probablyaweb.site/api/v2"
 		data = {"code": input, "format": "png"}
 		# TODO: Add jpg + pdf format options
-		async with clients.aiohttp_session.post(url, data = data) as resp:
+		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
 			if resp.status == 500:
 				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
@@ -254,7 +253,7 @@ class Resources(commands.Cog):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url"
 		params = {"shortUrl": url, "key": ctx.bot.GOOGLE_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -270,7 +269,7 @@ class Resources(commands.Cog):
 		'''
 		url = "https://newsapi.org/v1/articles"
 		params = {"source": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
 			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
@@ -312,7 +311,7 @@ class Resources(commands.Cog):
 		News sources
 		https://newsapi.org/sources
 		'''
-		async with clients.aiohttp_session.get("https://newsapi.org/v1/sources") as resp:
+		async with ctx.bot.aiohttp_session.get("https://newsapi.org/v1/sources") as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
 			await ctx.embed_reply(":no_entry: Error")
@@ -326,7 +325,7 @@ class Resources(commands.Cog):
 		'''The On-Line Encyclopedia of Integer Sequences'''
 		url = "http://oeis.org/search"
 		params = {"fmt": "json", 'q': search.replace(' ', "")}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["results"]:
 			await ctx.embed_reply(data["results"][0]["data"], title = data["results"][0]["name"])
@@ -341,7 +340,7 @@ class Resources(commands.Cog):
 		'''Graphs from The On-Line Encyclopedia of Integer Sequences'''
 		url = "http://oeis.org/search"
 		params = {"fmt": "json", 'q': search.replace(' ', "")}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["results"]:
 			# TODO: Handle no graph
@@ -355,7 +354,7 @@ class Resources(commands.Cog):
 	@checks.not_forbidden()
 	async def phone(self, ctx, *, phone : str): # add reactions version
 		'''Get phone specifications'''
-		async with clients.aiohttp_session.get("https://fonoapi.freshpixl.com/v1/getdevice?device={}&position=0&token={}".format(phone.replace(' ', '+'), ctx.bot.FONO_API_TOKEN)) as resp:
+		async with ctx.bot.aiohttp_session.get("https://fonoapi.freshpixl.com/v1/getdevice?device={}&position=0&token={}".format(phone.replace(' ', '+'), ctx.bot.FONO_API_TOKEN)) as resp:
 			data = await resp.json()
 		if "status" in data and data["status"] == "error":
 			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
@@ -487,7 +486,7 @@ class Resources(commands.Cog):
 		await ctx.embed_reply(short_url)
 	
 	async def _shorturl(self, url):
-		async with clients.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(self.bot.GOOGLE_API_KEY), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url + '"}') as resp:
+		async with self.bot.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(self.bot.GOOGLE_API_KEY), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url + '"}') as resp:
 			data = await resp.json()
 		return data["id"]
 	
@@ -512,7 +511,7 @@ class Resources(commands.Cog):
 	async def steam_appid(self, ctx, *, app : str):
 		'''Get the AppID'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		apps = data["applist"]["apps"]
 		appid = 0
@@ -528,12 +527,12 @@ class Resources(commands.Cog):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
 		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": vanity_name}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		id = data["response"]["steamid"]
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
 		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": id}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
 		await ctx.embed_reply(f"{vanity_name} has {gamecount} games")
@@ -543,7 +542,7 @@ class Resources(commands.Cog):
 	async def steam_gameinfo(self, ctx, *, game : str):
 		'''Information about a game'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
 		if not app:
@@ -551,7 +550,7 @@ class Resources(commands.Cog):
 			return
 		appid = str(app["appid"])
 		url = "http://store.steampowered.com/api/appdetails/?appids={}".format(appid)
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data[appid]["data"]
 		await ctx.embed_reply(data["short_description"], title = data["name"], title_url = data["website"], fields = (("Release Date", data["release_date"]["date"]), ("Free", "Yes" if data["is_free"] else "No"), ("App ID", data["steam_appid"])), image_url = data["header_image"])
@@ -561,7 +560,7 @@ class Resources(commands.Cog):
 	async def steam_run(self, ctx, *, game : str):
 		'''Generate a steam link to launch a game'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
 		if not app:
@@ -577,7 +576,7 @@ class Resources(commands.Cog):
 		'''
 		url = "https://strawpoll.me/api/v2/polls"
 		data = json.dumps({"title" : question, "options" : options})
-		async with clients.aiohttp_session.post(url, data = data) as resp:
+		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
 			poll = await resp.json()
 		await ctx.reply("http://strawpoll.me/" + str(poll["id"]))
 	
@@ -589,7 +588,7 @@ class Resources(commands.Cog):
 		# TODO: Convert to define/dictionary subcommand urban and add urband etc. as command aliases
 		url = "http://api.urbandictionary.com/v0/define"
 		params = {"term": term}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data.get("list"):
 			return await ctx.embed_reply(":no_entry: No results found")
@@ -623,7 +622,7 @@ class Resources(commands.Cog):
 		params = {"p2i_url": url, "p2i_screen": "1280x1024", "p2i_size": "1280x0", 
 					"p2i_fullpage": 1, "p2i_key": ctx.bot.PAGE2IMAGES_REST_API_KEY}
 		while True:
-			async with clients.aiohttp_session.get(api_url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
 				data = await resp.json(content_type = "text/html")
 			if data["status"] == "processing":
 				wait_time = int(data["estimated_need_time"])
@@ -649,7 +648,7 @@ class Resources(commands.Cog):
 			await ctx.embed_reply("What is what?")
 		else:
 			url = "https://kgsearch.googleapis.com/v1/entities:search?limit=1&query={}&key={}".format('+'.join(search), ctx.bot.GOOGLE_API_KEY)
-			async with clients.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
 				await ctx.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
@@ -667,7 +666,7 @@ class Resources(commands.Cog):
 		await self.process_xkcd(ctx, url)
 	
 	async def process_xkcd(self, ctx, url):
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Error")
 				return

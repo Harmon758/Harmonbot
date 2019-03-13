@@ -226,7 +226,7 @@ class Twitch(commands.Cog):
 				# Games
 				games = set(itertools.chain(*[channel["games"] for channel in self.streams_info["channels"].values()]))
 				for game in games:
-					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?game={}&client_id={}&limit=100".format(game.replace(' ', '+'), self.bot.TWITCH_CLIENT_ID)) as resp:
+					async with self.bot.aiohttp_session.get("https://api.twitch.tv/kraken/streams?game={}&client_id={}&limit=100".format(game.replace(' ', '+'), self.bot.TWITCH_CLIENT_ID)) as resp:
 						games_data = await resp.json()
 					streams = games_data.get("streams", [])
 					stream_ids += [stream["_id"] for stream in streams]
@@ -235,7 +235,7 @@ class Twitch(commands.Cog):
 				# Keywords
 				keywords = set(itertools.chain(*[channel["keywords"] for channel in self.streams_info["channels"].values()]))
 				for keyword in keywords:
-					async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/search/streams?q={}&client_id={}&limit=100".format(keyword.replace(' ', '+'), self.bot.TWITCH_CLIENT_ID)) as resp:
+					async with self.bot.aiohttp_session.get("https://api.twitch.tv/kraken/search/streams?q={}&client_id={}&limit=100".format(keyword.replace(' ', '+'), self.bot.TWITCH_CLIENT_ID)) as resp:
 						keywords_data = await resp.json()
 					streams = keywords_data.get("streams", [])
 					stream_ids += [stream["_id"] for stream in streams]
@@ -243,7 +243,7 @@ class Twitch(commands.Cog):
 					await asyncio.sleep(1)
 				# Streams
 				streams = set(itertools.chain(*[channel["streams"] for channel in self.streams_info["channels"].values()]))
-				async with clients.aiohttp_session.get("https://api.twitch.tv/kraken/streams?channel={}&client_id={}&limit=100".format(','.join(streams), self.bot.TWITCH_CLIENT_ID)) as resp:
+				async with self.bot.aiohttp_session.get("https://api.twitch.tv/kraken/streams?channel={}&client_id={}&limit=100".format(','.join(streams), self.bot.TWITCH_CLIENT_ID)) as resp:
 					# TODO: Handle >100 streams
 					if resp.status != 504:
 						streams_data = await resp.json()

@@ -207,6 +207,9 @@ class Bot(commands.Bot):
 			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
 			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 		
+		# Aiohttp Client Session
+		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
+		
 		# Inflect engine
 		self.inflect_engine = inflect.engine()
 		
@@ -457,7 +460,7 @@ class Bot(commands.Bot):
 		site["data"][site["guild_count_name"]] = len(self.guilds)
 		# TODO: Add users and voice_connections for discordbotlist.com
 		data = json.dumps(site["data"])
-		async with aiohttp_session.post(url, headers = headers, data = data) as resp:
+		async with self.aiohttp_session.post(url, headers = headers, data = data) as resp:
 			if resp.status == 204:
 				return "204 No Content"
 			return await resp.text()
@@ -490,7 +493,7 @@ class Bot(commands.Bot):
 		if sentry_transport:
 			await sentry_transport.close()
 		# Close aiohttp session
-		await aiohttp_session.close()
+		await self.aiohttp_session.close()
 		# Close database connection
 		await self.database_connection_pool.close()
 		# Stop web server
@@ -621,9 +624,7 @@ def get_prefix(bot, message):
 if platform.system() == "Windows":
 	asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
-# Initialize client + aiohttp client session
+# Initialize client
 
 client = Bot(command_prefix = get_prefix)
-aiohttp_session = aiohttp.ClientSession(loop = client.loop)
-# TODO: Move ^ to Bot
 

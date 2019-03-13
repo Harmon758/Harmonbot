@@ -54,7 +54,7 @@ class Astronomy(commands.Cog):
 		http://archive.eso.org/eso/eso_archive_main.html
 		http://telbib.eso.org/
 		'''
-		async with clients.aiohttp_session.get("https://api.arcsecond.io/archives/ESO/{}/summary/".format(program_id), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/archives/ESO/{}/summary/".format(program_id), params = {"format": "json"}) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Error: Not Found")
 				return
@@ -81,7 +81,7 @@ class Astronomy(commands.Cog):
 		Hubble Space Telescope (HST)
 		https://archive.stsci.edu/hst/
 		'''
-		async with clients.aiohttp_session.get("https://api.arcsecond.io/archives/HST/{}/summary/".format(proposal_id), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/archives/HST/{}/summary/".format(proposal_id), params = {"format": "json"}) as resp:
 			data = await resp.json()
 		# TODO: include allocation?, pi_institution?, programme_type_auxiliary?, programme_status?, related_programmes?
 		fields = []
@@ -95,7 +95,7 @@ class Astronomy(commands.Cog):
 	async def exoplanet(self, ctx, *, exoplanet : str):
 		'''Exoplanets'''
 		# TODO: list?
-		async with clients.aiohttp_session.get("https://api.arcsecond.io/exoplanets/{}".format(exoplanet), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/exoplanets/{}".format(exoplanet), params = {"format": "json"}) as resp:
 			if resp.status in (404, 500):
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -211,7 +211,7 @@ class Astronomy(commands.Cog):
 		# Detection Method
 		if data["detection_method"] != "Unknown": fields.append(("Detection Method", data["detection_method"]))
 		# Parent Star
-		async with clients.aiohttp_session.get(data["parent_star"]) as resp:
+		async with ctx.bot.aiohttp_session.get(data["parent_star"]) as resp:
 			parent_star_data = await resp.json()
 		fields.append(("Parent Star", parent_star_data["name"]))
 		await ctx.embed_reply(title = data["name"], fields = fields)
@@ -225,7 +225,7 @@ class Astronomy(commands.Cog):
 		Overhead is defined as 10° in elevation for the observer at an altitude of 100m
 		'''
 		if latitude and longitude:
-			async with clients.aiohttp_session.get("http://api.open-notify.org/iss-pass.json", params = {"n": 1, "lat": str(latitude), "lon": str(longitude)}) as resp:
+			async with ctx.bot.aiohttp_session.get("http://api.open-notify.org/iss-pass.json", params = {"n": 1, "lat": str(latitude), "lon": str(longitude)}) as resp:
 				if resp.status == 500:
 					await ctx.embed_reply(":no_entry: Error")
 					return
@@ -235,7 +235,7 @@ class Astronomy(commands.Cog):
 				return
 			await ctx.embed_reply(fields = (("Duration", utilities.secs_to_letter_format(data["response"][0]["duration"])),), footer_text = "Rise Time", timestamp = datetime.datetime.utcfromtimestamp(data["response"][0]["risetime"]))
 		else:
-			async with clients.aiohttp_session.get("http://api.open-notify.org/iss-now.json") as resp:
+			async with ctx.bot.aiohttp_session.get("http://api.open-notify.org/iss-now.json") as resp:
 				data = await resp.json()
 			latitude = data["iss_position"]["latitude"]
 			longitude = data["iss_position"]["longitude"]
@@ -259,7 +259,7 @@ class Astronomy(commands.Cog):
 		Observing sites on Earth
 		'''
 		# TODO: list?
-		async with clients.aiohttp_session.get("https://api.arcsecond.io/observingsites/", params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/observingsites/", params = {"format": "json"}) as resp:
 			data = await resp.json()
 		for _observatory in data:
 			if observatory.lower() in _observatory["name"].lower():
@@ -270,7 +270,7 @@ class Astronomy(commands.Cog):
 				if _observatory["IAUCode"]: fields.append(("IAU Code", _observatory["IAUCode"]))
 				telescopes = []
 				for telescope in _observatory["telescopes"]:
-					async with clients.aiohttp_session.get(telescope) as resp:
+					async with ctx.bot.aiohttp_session.get(telescope) as resp:
 						telescope_data = await resp.json()
 					telescopes.append(telescope_data["name"])
 				if telescopes: fields.append(("Telescopes", '\n'.join(telescopes)))
@@ -283,7 +283,7 @@ class Astronomy(commands.Cog):
 	async def people(self, ctx):
 		'''Current people in space'''
 		# TODO: add input/search option
-		async with clients.aiohttp_session.get("http://api.open-notify.org/astros.json") as resp:
+		async with ctx.bot.aiohttp_session.get("http://api.open-notify.org/astros.json") as resp:
 			data = await resp.json()
 		await ctx.embed_reply('\n'.join("{0[name]} ({0[craft]})".format(person) for person in data["people"]), title = "Current People In Space ({})".format(data["number"]))
 	
@@ -291,7 +291,7 @@ class Astronomy(commands.Cog):
 	@checks.not_forbidden()
 	async def publication(self, ctx, *, bibcode : str):
 		'''Publications'''
-		async with clients.aiohttp_session.get("https://api.arcsecond.io/publications/{}/".format(bibcode), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/publications/{}/".format(bibcode), params = {"format": "json"}) as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Publication not found")
@@ -313,7 +313,7 @@ class Astronomy(commands.Cog):
 		http://www.astronomerstelegram.org/
 		'''
 		# TODO: use textwrap
-		async with clients.aiohttp_session.get("https://api.arcsecond.io/telegrams/ATel/{}/".format(number), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/telegrams/ATel/{}/".format(number), params = {"format": "json"}) as resp:
 			if resp.status == 500:
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -338,7 +338,7 @@ class Astronomy(commands.Cog):
 		https://gcn.gsfc.nasa.gov/
 		'''
 		# TODO: use textwrap
-		async with clients.aiohttp_session.get("https://api.arcsecond.io/telegrams/GCN/Circulars/{}/".format(number), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/telegrams/GCN/Circulars/{}/".format(number), params = {"format": "json"}) as resp:
 			if resp.status in (404, 500):
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -358,11 +358,11 @@ class Astronomy(commands.Cog):
 		At observing sites on Earth
 		'''
 		# TODO: list?
-		async with clients.aiohttp_session.get("https://api.arcsecond.io/telescopes/", params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/telescopes/", params = {"format": "json"}) as resp:
 			data = await resp.json()
 		for _telescope in data:
 			if telescope.lower() in _telescope["name"].lower():
-				async with clients.aiohttp_session.get(_telescope["observing_site"]) as resp:
+				async with ctx.bot.aiohttp_session.get(_telescope["observing_site"]) as resp:
 					observatory_data = await resp.json()
 				fields = [("Observatory", "[{0[name]}]({0[homepage_url]})".format(observatory_data) if observatory_data["homepage_url"] else observatory_data["name"])]
 				if _telescope["mounting"] != "Unknown": fields.append(("Mounting", _telescope["mounting"]))

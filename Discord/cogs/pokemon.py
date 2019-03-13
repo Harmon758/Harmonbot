@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -30,7 +29,7 @@ class Pokemon(commands.Cog):
 		Pokémon have multiple possible abilities but can have only one ability at a time
 		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Ability) for greater detail
 		'''
-		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
+		async with ctx.bot.aiohttp_session.get("https://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
@@ -45,7 +44,7 @@ class Pokemon(commands.Cog):
 		Small fruits that can provide HP and status condition restoration, stat enhancement, and even damage negation when eaten by Pokémon
 		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Berry) for greater detail
 		'''
-		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/berry/" + id_or_name) as resp:
+		async with ctx.bot.aiohttp_session.get("https://pokeapi.co/api/v2/berry/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
@@ -79,7 +78,7 @@ class Pokemon(commands.Cog):
 		Categories judges use to weigh a Pokémon's condition in Pokémon contests
 		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Contest_condition) for greater detail
 		'''
-		async with clients.aiohttp_session.get("https://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
+		async with ctx.bot.aiohttp_session.get("https://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")

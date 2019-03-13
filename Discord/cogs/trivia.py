@@ -73,7 +73,7 @@ class Trivia(commands.Cog):
 	
 	async def trivia_round(self, ctx, bet = False):
 		try:
-			async with clients.aiohttp_session.get("http://jservice.io/api/random") as resp:
+			async with ctx.bot.aiohttp_session.get("http://jservice.io/api/random") as resp:
 				data = (await resp.json())[0]
 		except (aiohttp.ClientConnectionError, asyncio.TimeoutError) as e:
 			return await ctx.embed_reply(":no_entry: Error: Error connecting to API")

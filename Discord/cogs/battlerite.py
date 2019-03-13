@@ -47,7 +47,7 @@ class Battlerite(commands.Cog):
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
 					"47438/stackables.json")
-			async with clients.aiohttp_session.get(url) as resp:
+			async with self.bot.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(clients.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
 				stackables_file.write(data)
@@ -56,7 +56,7 @@ class Battlerite(commands.Cog):
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
 					"47438/Localization/English.ini")
-			async with clients.aiohttp_session.get(url) as resp:
+			async with self.bot.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(clients.data_path + "/battlerite/English.ini", "wb") as localization_file:
 				localization_file.write(data)
@@ -89,7 +89,7 @@ class Battlerite(commands.Cog):
 		url = "https://api.developer.battlerite.com/shards/global/players"
 		headers = {"Authorization": self.bot.BATTLERITE_API_KEY, "Accept": "application/vnd.api+json"}
 		params = {"filter[playerNames]": player}
-		async with clients.aiohttp_session.get(url, headers = headers, params = params) as resp:
+		async with self.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
 			data = await resp.json()
 		return(next(iter(data["data"]), None))
 	

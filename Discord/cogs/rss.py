@@ -21,7 +21,6 @@ import dateutil.tz
 import feedparser
 import pytz
 
-import clients
 from utilities import checks
 from modules import logging
 
@@ -102,7 +101,7 @@ class RSS(commands.Cog):
 		if not inserted:
 			return await ctx.embed_reply(":no_entry: This channel is already following that feed")
 		# Add entry IDs
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			feed_text = await resp.text()
 		feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": url}))
 		# Still necessary to run in executor?
@@ -163,7 +162,7 @@ class RSS(commands.Cog):
 			feed = record["feed"]
 			try:
 				with self.bot.suppress_SSLCertVerificationError():
-					async with clients.aiohttp_session.get(feed) as resp:
+					async with self.bot.aiohttp_session.get(feed) as resp:
 						feed_text = await resp.text()
 				feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 				# Still necessary to run in executor?
@@ -205,7 +204,7 @@ class RSS(commands.Cog):
 					continue
 				try:
 					with self.bot.suppress_SSLCertVerificationError():
-						async with clients.aiohttp_session.get(feed) as resp:
+						async with self.bot.aiohttp_session.get(feed) as resp:
 							feed_text = await resp.text()
 					feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 					# Still necessary to run in executor?

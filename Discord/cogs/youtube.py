@@ -100,7 +100,7 @@ class YouTube(commands.Cog):
 			headers = {"content-type": "application/x-www-form-urlencoded"}
 			data = {"hub.callback": self.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", 
 					"hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}
-			async with clients.aiohttp_session.post(url, headers = headers, data = data) as resp:
+			async with self.bot.aiohttp_session.post(url, headers = headers, data = data) as resp:
 				if resp.status not in (202, 204):
 					error_description = await resp.text()
 					print(f"{self.bot.console_message_prefix}Google PubSubHubbub Error {resp.status} "
@@ -181,7 +181,7 @@ class YouTube(commands.Cog):
 						url = "https://www.googleapis.com/youtube/v3/search"
 						params = {"part": "snippet", "eventType": "live", "type": "video", 
 									"channelId": channel_id, "key": self.bot.GOOGLE_API_KEY}
-						async with clients.aiohttp_session.get(url, params = params) as resp:
+						async with self.bot.aiohttp_session.get(url, params = params) as resp:
 							stream_data = await resp.json()
 						# Multiple streams from one channel possible
 						for item in stream_data.get("items", []):
@@ -309,7 +309,7 @@ class YouTube(commands.Cog):
 		headers = {"content-type": "application/x-www-form-urlencoded"}
 		data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", 
 				"hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}
-		async with clients.aiohttp_session.post(url, headers = headers, data = data) as resp:
+		async with ctx.bot.aiohttp_session.post(url, headers = headers, data = data) as resp:
 			# TODO: unique callback url for each subscription?
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
@@ -337,7 +337,7 @@ class YouTube(commands.Cog):
 		headers = {"content-type": "application/x-www-form-urlencoded"}
 		data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "unsubscribe", 
 				"hub.topic": "https://www.youtube.com/xml/feeds/videos.xml?channel_id=" + channel_id}
-		async with clients.aiohttp_session.post(url, headers = headers, data = data) as resp:
+		async with ctx.bot.aiohttp_session.post(url, headers = headers, data = data) as resp:
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
 				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
@@ -368,7 +368,7 @@ class YouTube(commands.Cog):
 			embed.set_author(name = f"{video_data.author} just uploaded a video on YouTube", url = video_data.author_detail.href, icon_url = self.bot.youtube_icon_url)
 			# TODO: Add channel icon as author icon?
 			# Add description + thumbnail + length
-			async with clients.aiohttp_session.get("https://www.googleapis.com/youtube/v3/videos", params = {"id": video_data.yt_videoid, "key": self.bot.GOOGLE_API_KEY, "part": "snippet,contentDetails"}) as resp:
+			async with self.bot.aiohttp_session.get("https://www.googleapis.com/youtube/v3/videos", params = {"id": video_data.yt_videoid, "key": self.bot.GOOGLE_API_KEY, "part": "snippet,contentDetails"}) as resp:
 				data = await resp.json()
 			data = next(iter(data.get("items", [])), {})
 			if data.get("snippet", {}).get("liveBroadcastContent") in ("live", "upcoming"): return
@@ -390,7 +390,7 @@ class YouTube(commands.Cog):
 		url = "https://www.googleapis.com/youtube/v3/channels"
 		for key in ("id", "forUsername"):
 			params = {"part": "id", key: id_or_username, "key": self.bot.GOOGLE_API_KEY}
-			async with clients.aiohttp_session.get(url, params = params) as resp:
+			async with self.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data["pageInfo"]["totalResults"]:
 				return data["items"][0]["id"]

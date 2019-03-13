@@ -1,7 +1,6 @@
 
 from discord.ext import commands
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -63,7 +62,7 @@ class Words(commands.Cog):
 		url = "https://api.cognitive.microsoft.com/bing/v5.0/spellcheck"
 		headers = {"Ocp-Apim-Subscription-Key" : ctx.bot.BING_SPELL_CHECK_API_KEY}
 		params = {"Text": words.replace(' ', '+')}  # replace necessary?
-		async with clients.aiohttp_session.post(url, headers = headers, params = params) as resp:
+		async with ctx.bot.aiohttp_session.post(url, headers = headers, params = params) as resp:
 			data = await resp.json()
 		corrections = data["flaggedTokens"]
 		corrected = words
@@ -110,7 +109,7 @@ class Words(commands.Cog):
 		'''Language Codes'''
 		url = "https://translate.yandex.net/api/v1.5/tr.json/getLangs"
 		params = {"ui": language_code, "key": ctx.bot.YANDEX_TRANSLATE_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if "langs" not in data:
 			return await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
@@ -131,7 +130,7 @@ class Words(commands.Cog):
 		params = {"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, 
 					"lang": to_language_code if not from_language_code else f"{from_language_code}-{to_language_code}", 
 					"text": text, "options": 1}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:  # Bad Request
 				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()

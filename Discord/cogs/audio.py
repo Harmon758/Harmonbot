@@ -252,7 +252,7 @@ class Audio(commands.Cog):
 	async def audio_random(self, ctx):
 		'''Play a random song from YouTube's top 50'''
 		url = "https://www.googleapis.com/youtube/v3/videos?part=id&chart=mostPopular&maxResults=50&videoCategoryId=10&key={}".format(ctx.bot.GOOGLE_API_KEY)
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		song = random.choice([video["id"] for video in data["items"]])
 		response = await ctx.embed_reply(":cd: Loading..")
@@ -573,14 +573,14 @@ class Audio(commands.Cog):
 		if path[:7] != "/track/":
 			return False
 		url = "https://api.spotify.com/v1/tracks/{}".format(path[7:])
-		async with clients.aiohttp_session.get(url) as resp:
+		async with self.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "name" not in data:
 			return False
 		songname = '+'.join(data["name"].split())
 		artistname = '+'.join(data["artists"][0]["name"].split())
 		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+by+{}&key={}".format(songname, artistname, self.bot.GOOGLE_API_KEY)
-		async with clients.aiohttp_session.get(url) as resp:
+		async with self.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["items"][0]
 		if "videoId" not in data["id"]:
@@ -597,7 +597,7 @@ class Audio(commands.Cog):
 		authorization = base64.b64encode(authorization.encode()).decode()
 		headers = {"Authorization": f"Basic {authorization}", 
 					"Content-Type": "application/x-www-form-urlencoded"}
-		async with clients.aiohttp_session.post(url, params = params, headers = headers) as resp:
+		async with self.bot.aiohttp_session.post(url, params = params, headers = headers) as resp:
 			data = await resp.json()
 		return data["access_token"]
 	

@@ -10,7 +10,6 @@ import dateutil
 import isodate
 # import unicodedata2 as unicodedata
 
-import clients
 from modules import utilities
 from utilities import checks
 
@@ -124,7 +123,7 @@ class Info(commands.Cog):
 			await ctx.embed_reply(":no_entry: Syntax error")
 			return
 		spotify_access_token = await self.bot.cogs["Audio"].get_spotify_access_token()
-		async with clients.aiohttp_session.get("https://api.spotify.com/v1/tracks/" + path[7:], headers = {"Authorization": "Bearer {}".format(spotify_access_token)}) as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.spotify.com/v1/tracks/" + path[7:], headers = {"Authorization": "Bearer {}".format(spotify_access_token)}) as resp:
 			data = await resp.json()
 		# tracknumber = str(data["track_number"])
 		# TODO: handle track not found
@@ -175,7 +174,7 @@ class Info(commands.Cog):
 		api_url = "https://www.googleapis.com/youtube/v3/videos"
 		params = {"id": query['v'][0], "key": ctx.bot.GOOGLE_API_KEY,
 					"part": "snippet,contentDetails,statistics"}
-		async with clients.aiohttp_session.get(api_url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Error")

@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import datetime
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -29,21 +28,21 @@ class WoW(commands.Cog):
 		classes = {}
 		url = "https://us.api.battle.net/wow/data/character/classes"
 		params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		for wow_class in data["classes"]:
 			classes[wow_class["id"]] = wow_class["name"]
 		# get races
 		races = {}
 		url = "https://us.api.battle.net/wow/data/character/races"
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		for wow_race in data["races"]:
 			races[wow_race["id"]] = wow_race["name"]
 			# add side/faction?
 		genders = {0: "Male", 1: "Female"}
 		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 			if resp.status != 200:
 				return await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
@@ -65,7 +64,7 @@ class WoW(commands.Cog):
 		'''WIP'''
 		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
 		params = {"fields": "statistics", "apikey": ctx.bot.BATTLE_NET_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		statistics = data["statistics"]
 		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}/"

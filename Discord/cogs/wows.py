@@ -3,7 +3,6 @@ from discord.ext import commands
 
 import datetime
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -33,7 +32,7 @@ class WoWS(commands.Cog):
 		'''Player details'''
 		api_url = self.api_urls.get(region.lower(), "na")
 		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "search": player, "limit": 1}
-		async with clients.aiohttp_session.get(api_url + "account/list/", params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(api_url + "account/list/", params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "error":
 			return await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
@@ -43,7 +42,7 @@ class WoWS(commands.Cog):
 			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		account_id = data["data"][0]["account_id"]
 		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "account_id": account_id}
-		async with clients.aiohttp_session.get(api_url + "account/info/", params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(api_url + "account/info/", params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "error":
 			return await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")

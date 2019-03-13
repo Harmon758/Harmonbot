@@ -28,7 +28,7 @@ class Overwatch(commands.Cog):
 	async def overwatch_ability(self, ctx, *, ability : str):
 		'''Abilities/Weapons'''
 		url = "https://overwatch-api.net/api/v1/ability"
-		async with clients.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
 			data = await resp.json()
 		data = data["data"]
 		ability_data = discord.utils.find(lambda a: a["name"].lower() == ability.lower(), data)
@@ -43,7 +43,7 @@ class Overwatch(commands.Cog):
 	async def overwatch_achievement(self, ctx, *, achievement : str):
 		'''Achievements'''
 		url = "https://overwatch-api.net/api/v1/achievement"
-		async with clients.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
 			data = await resp.json()
 		data = data["data"]
 		achievement_data = discord.utils.find(lambda a: a["name"].lower() == achievement.lower(), data)
@@ -62,7 +62,7 @@ class Overwatch(commands.Cog):
 	async def overwatch_hero(self, ctx, *, hero : str):
 		'''Heroes'''
 		url = "https://overwatch-api.net/api/v1/hero"
-		async with clients.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
 			data = await resp.json()
 		data = data["data"]
 		hero_data = discord.utils.find(lambda h: h["name"].lower() == hero.lower(), data)
@@ -104,7 +104,7 @@ class Overwatch(commands.Cog):
 		BattleTags are case sensitive
 		'''
 		url = "https://owapi.net/api/v3/u/{}/stats".format(battletag.replace('#', '-'))
-		async with clients.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await ctx.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
@@ -133,7 +133,7 @@ class Overwatch(commands.Cog):
 		BattleTags are case sensitive
 		'''
 		url = "https://owapi.net/api/v3/u/{}/stats".format(battletag.replace('#', '-'))
-		async with clients.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await ctx.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
@@ -166,7 +166,7 @@ class Overwatch(commands.Cog):
 		BattleTags are case sensitive
 		'''
 		url = "https://owapi.net/api/v3/u/{}/stats".format(battletag.replace('#', '-'))
-		async with clients.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await ctx.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
@@ -199,7 +199,7 @@ class Overwatch(commands.Cog):
 		BattleTags are case sensitive
 		'''
 		url = "https://owapi.net/api/v3/u/{}/heroes".format(battletag.replace('#', '-'))
-		async with clients.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
+		async with ctx.bot.aiohttp_session.get(url, headers = {"User-Agent": clients.user_agent}) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await ctx.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))

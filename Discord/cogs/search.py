@@ -6,7 +6,6 @@ import inspect
 import re
 import youtube_dl
 
-import clients
 from modules import utilities
 from utilities import checks
 
@@ -168,18 +167,18 @@ class Search(commands.Cog):
 	async def process_uesp(self, ctx, search, random = False, redirect = True):
 		# TODO: Add User-Agent
 		if random:
-			async with clients.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": "0|" + '|'.join(str(i) for i in range(100, 152)) + "|200|201", "format": "json"}) as resp:
+			async with ctx.bot.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": "0|" + '|'.join(str(i) for i in range(100, 152)) + "|200|201", "format": "json"}) as resp:
 				data = await resp.json()
 			search = data["query"]["random"][0]["title"]
 		else:
-			async with clients.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}) as resp:
+			async with ctx.bot.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}) as resp:
 				data = await resp.json()
 			try:
 				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
 			except IndexError:
 				await ctx.embed_reply(":no_entry: Page not found")
 				return
-		async with clients.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|revisions|images", "titles": search, "inprop": "url", "rvprop": "content", "format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get("http://en.uesp.net/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|revisions|images", "titles": search, "inprop": "url", "rvprop": "content", "format": "json"}) as resp:
 			data = await resp.json()
 		if "pages" not in data["query"]:
 			await ctx.embed_reply(":no_entry: Error")
@@ -226,18 +225,18 @@ class Search(commands.Cog):
 		# TODO: Add User-Agent
 		# TODO: use textwrap
 		if random:
-			async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": 0, "format": "json"}) as resp:
+			async with ctx.bot.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": 0, "format": "json"}) as resp:
 				data = await resp.json()
 			search = data["query"]["random"][0]["title"]
 		else:
-			async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}) as resp:
+			async with ctx.bot.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}) as resp:
 				data = await resp.json()
 			try:
 				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
 			except IndexError:
 				await ctx.embed_reply(":no_entry: Page not found")
 				return
-		async with clients.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, "inprop": "url", "exintro": "", "explaintext": "", "pithumbsize": 9000, "pilicense": "any", "format": "json"}) as resp: # exchars?
+		async with ctx.bot.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, "inprop": "url", "exintro": "", "explaintext": "", "pithumbsize": 9000, "pilicense": "any", "format": "json"}) as resp: # exchars?
 			data = await resp.json()
 		if "pages" not in data["query"]:
 			await ctx.embed_reply(":no_entry: Error")

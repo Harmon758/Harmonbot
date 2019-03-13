@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import pycountry
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -67,7 +66,7 @@ class Osu(commands.Cog):
 	async def get_user(self, ctx, user, mode = 0):
 		url = "https://osu.ppy.sh/api/get_user"
 		params = {'k': ctx.bot.OSU_API_KEY, 'u': user, 'm': mode}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Error: User not found")

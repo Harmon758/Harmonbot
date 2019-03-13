@@ -100,7 +100,7 @@ class Lichess(commands.Cog):
 	class LichessUser(commands.Converter):
 		async def convert(self, ctx, argument):
 			url = f"https://en.lichess.org/api/user/{argument}"
-			async with clients.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				if resp.status == 404:
 					raise commands.BadArgument
 				data = await resp.json()
@@ -127,7 +127,7 @@ class Lichess(commands.Cog):
 	async def tournament_current(self, ctx):
 		'''Current tournaments'''
 		url = "https://en.lichess.org/api/tournament"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["started"]
 		fields = []
@@ -176,7 +176,7 @@ class Lichess(commands.Cog):
 		'''User activity'''
 		# TODO: Use converter?
 		url = f"https://lichess.org/api/user/{username}/activity"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 			if resp.status == 429 and "error" in data:
 				await ctx.embed_reply(f":no_entry: Error: {data['error']}")

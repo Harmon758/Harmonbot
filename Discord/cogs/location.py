@@ -34,7 +34,7 @@ class Location(commands.Cog):
 		'''Information about a country'''
 		# TODO: subcommands for other options to search by (e.g. capital)
 		url = "https://restcountries.eu/rest/v2/name/" + country
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -133,7 +133,7 @@ class Location(commands.Cog):
 	async def geocode(self, ctx, *, address : str):
 		'''Convert addresses to geographic coordinates'''
 		try:
-			data = await get_geocode_data(address, aiohttp_session = clients.aiohttp_session)
+			data = await get_geocode_data(address, aiohttp_session = ctx.bot.aiohttp_session)
 		except UnitOutputError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return
@@ -148,7 +148,7 @@ class Location(commands.Cog):
 		'''Convert geographic coordinates to addresses'''
 		url = "https://maps.googleapis.com/maps/api/geocode/json"
 		params = {"latlng": f"{latitude},{longitude}", "key": ctx.bot.GOOGLE_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "ZERO_RESULTS":
 			await ctx.embed_reply(":no_entry: Address/Location not found")
@@ -195,11 +195,11 @@ class Location(commands.Cog):
 	async def time(self, ctx, *, location : str):
 		'''Current time of a location'''
 		try:
-			geocode_data = await get_geocode_data(location, aiohttp_session = clients.aiohttp_session)
+			geocode_data = await get_geocode_data(location, aiohttp_session = ctx.bot.aiohttp_session)
 			latitude = geocode_data["geometry"]["location"]["lat"]
 			longitude = geocode_data["geometry"]["location"]["lng"]
 			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
-													aiohttp_session = clients.aiohttp_session)
+													aiohttp_session = ctx.bot.aiohttp_session)
 		except UnitOutputError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 			return

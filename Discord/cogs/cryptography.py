@@ -12,7 +12,6 @@ import pygost.gost34112012
 import pygost.gost341194
 import pygost.gost3412
 
-import clients
 from modules import ciphers
 from utilities import checks
 
@@ -150,7 +149,7 @@ class Cryptography(commands.Cog):
 	async def _decode_qr(self, ctx, file_url):
 		# TODO: use textwrap
 		url = f"https://api.qrserver.com/v1/read-qr-code/?fileurl={file_url}"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
 				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()

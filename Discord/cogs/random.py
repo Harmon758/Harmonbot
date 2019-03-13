@@ -97,7 +97,7 @@ class Random(commands.Cog):
 		'''Random gif from giphy'''
 		url = "http://api.giphy.com/v1/gifs/random"
 		params = {"api_key": ctx.bot.GIPHY_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"]["image_url"])
 	
@@ -148,7 +148,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def xkcd(self, ctx):
 		'''Random xkcd'''
-		async with clients.aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
+		async with ctx.bot.aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
 			data = await resp.text()
 		total = json.loads(data)["num"]
 		url = "http://xkcd.com/{}/info.0.json".format(random.randint(1, total))
@@ -160,7 +160,7 @@ class Random(commands.Cog):
 	async def bunny(self, ctx):
 		'''Random bunny'''
 		url = "https://api.bunnies.io/v2/loop/random/?media=gif"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		gif = data["media"]["gif"]
 		await ctx.embed_reply(f"[:rabbit2:]({gif})", image_url = gif)
@@ -176,7 +176,7 @@ class Random(commands.Cog):
 	async def cat(self, ctx, category : str = ""):
 		'''Random image of a cat'''
 		if category:
-			async with clients.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={}".format(category)) as resp:
+			async with ctx.bot.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={}".format(category)) as resp:
 				data = await resp.text()
 			try:
 				url = xml.etree.ElementTree.fromstring(data).find(".//url")
@@ -188,7 +188,7 @@ class Random(commands.Cog):
 			else:
 				await ctx.embed_reply(":no_entry: Error: Category not found")
 		else:
-			async with clients.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
+			async with ctx.bot.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
 				data = await resp.text()
 			try:
 				url = xml.etree.ElementTree.fromstring(data).find(".//url").text
@@ -201,7 +201,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def cat_categories(self, ctx):
 		'''Categories of cat images'''
-		async with clients.aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
+		async with ctx.bot.aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
 			data = await resp.text()
 		try:
 			categories = xml.etree.ElementTree.fromstring(data).findall(".//name")
@@ -288,14 +288,14 @@ class Random(commands.Cog):
 		[breed] [sub-breed] to specify a specific sub-breed
 		'''
 		if breed:
-			async with clients.aiohttp_session.get("https://dog.ceo/api/breed/{}/images/random".format(breed.lower().replace(' ', '/'))) as resp:
+			async with ctx.bot.aiohttp_session.get("https://dog.ceo/api/breed/{}/images/random".format(breed.lower().replace(' ', '/'))) as resp:
 				data = await resp.json()
 			if data["status"] == "error":
 				await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			else:
 				await ctx.embed_reply("[:dog2:]({})".format(data["message"]), image_url = data["message"])
 		else:
-			async with clients.aiohttp_session.get("https://dog.ceo/api/breeds/image/random") as resp:
+			async with ctx.bot.aiohttp_session.get("https://dog.ceo/api/breeds/image/random") as resp:
 				data = await resp.json()
 			await ctx.embed_reply("[:dog2:]({})".format(data["message"]), image_url = data["message"])
 	
@@ -303,7 +303,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def dog_breeds(self, ctx):
 		'''Breeds and sub-breeds of dogs for which images are categorized under'''
-		async with clients.aiohttp_session.get("https://dog.ceo/api/breeds/list/all") as resp:
+		async with ctx.bot.aiohttp_session.get("https://dog.ceo/api/breeds/list/all") as resp:
 			data = await resp.json()
 		breeds = data["message"]
 		for breed in breeds:
@@ -324,7 +324,7 @@ class Random(commands.Cog):
 		# params = {"limit": 1, "cb": random.random()}
 		# https://mentalfloss.com/amazingfactgenerator
 		# uses page, limit, and cb parameters, seemingly to no effect
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json(content_type = "text/plain")
 		await ctx.embed_reply(BeautifulSoup(data[0]["fact"], "lxml").text, 
 								image_url = data[0]["primaryImage"])
@@ -333,7 +333,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def fact_cat(self, ctx):
 		'''Random fact about cats'''
-		async with clients.aiohttp_session.get("http://catfacts-api.appspot.com/api/facts") as resp:
+		async with ctx.bot.aiohttp_session.get("http://catfacts-api.appspot.com/api/facts") as resp:
 			data = await resp.json()
 		if data["success"]:
 			await ctx.embed_reply(data["facts"][0])
@@ -348,7 +348,7 @@ class Random(commands.Cog):
 		Format: month/date
 		Example: 1/1
 		'''
-		async with clients.aiohttp_session.get("http://numbersapi.com/{}/date".format(date)) as resp:
+		async with ctx.bot.aiohttp_session.get("http://numbersapi.com/{}/date".format(date)) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -359,7 +359,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def fact_math(self, ctx, number : int):
 		'''Random math fact about a number'''
-		async with clients.aiohttp_session.get("http://numbersapi.com/{}/math".format(number)) as resp:
+		async with ctx.bot.aiohttp_session.get("http://numbersapi.com/{}/math".format(number)) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
@@ -367,7 +367,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def fact_number(self, ctx, number : int):
 		'''Random fact about a number'''
-		async with clients.aiohttp_session.get("http://numbersapi.com/{}".format(number)) as resp:
+		async with ctx.bot.aiohttp_session.get("http://numbersapi.com/{}".format(number)) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
@@ -375,7 +375,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def fact_year(self, ctx, year : int):
 		'''Random fact about a year'''
-		async with clients.aiohttp_session.get("http://numbersapi.com/{}/year".format(year)) as resp:
+		async with ctx.bot.aiohttp_session.get("http://numbersapi.com/{}/year".format(year)) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
@@ -383,7 +383,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def idea(self, ctx):
 		'''Random idea'''
-		async with clients.aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
+		async with ctx.bot.aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
 			data = await resp.json(content_type = "text/javascript")
 		await ctx.embed_reply("{0[this]} for {0[that]}".format(data))
 	
@@ -391,7 +391,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def insult(self, ctx):
 		'''Random insult'''
-		async with clients.aiohttp_session.get("http://quandyfactory.com/insult/json") as resp:
+		async with ctx.bot.aiohttp_session.get("http://quandyfactory.com/insult/json") as resp:
 			data = await resp.json()
 		await ctx.embed_say(data["insult"])
 	
@@ -410,13 +410,13 @@ class Random(commands.Cog):
 		'''Random dad joke'''
 		# TODO: search, GraphQL?
 		if joke_id:
-			async with clients.aiohttp_session.get("https://icanhazdadjoke.com/j/" + joke_id, headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
+			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/j/" + joke_id, headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
 				data = await resp.json()
 				if data["status"] == 404:
 					await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 					return
 		else:
-			async with clients.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
+			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
 				data = await resp.json()
 		await ctx.embed_reply(data["joke"], footer_text = "Joke ID: {}".format(data["id"]))
 	
@@ -425,7 +425,7 @@ class Random(commands.Cog):
 	async def joke_dad_image(self, ctx, joke_id : str = ""):
 		'''Random dad joke as an image'''
 		if not joke_id:
-			async with clients.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
+			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
 				data = await resp.json()
 			joke_id = data["id"]
 		await ctx.embed_reply(image_url = "https://icanhazdadjoke.com/j/{}.png".format(joke_id))
@@ -470,7 +470,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def question(self, ctx):
 		'''Random question'''
-		async with clients.aiohttp_session.get("http://xkcd.com/why.txt") as resp:
+		async with ctx.bot.aiohttp_session.get("http://xkcd.com/why.txt") as resp:
 			data = await resp.text()
 		questions = data.split('\n')
 		await ctx.embed_reply("{}?".format(random.choice(questions).capitalize()))
@@ -479,7 +479,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def quote(self, ctx):
 		'''Random quote'''
-		async with clients.aiohttp_session.get("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en") as resp:
+		async with ctx.bot.aiohttp_session.get("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en") as resp:
 			try:
 				data = await resp.json()
 			except:

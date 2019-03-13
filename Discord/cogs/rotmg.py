@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -19,7 +18,7 @@ class RotMG(commands.Cog):
 		'''Realm of the Mad God player information'''
 		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await ctx.embed_reply("Error: " + data["error"])
@@ -50,7 +49,7 @@ class RotMG(commands.Cog):
 		'''Realm of the Mad God player characters information'''
 		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await ctx.embed_reply("Error: " + data["error"])

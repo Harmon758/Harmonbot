@@ -30,7 +30,7 @@ class Finance(commands.Cog):
 		'''
 		if currency:
 			url = "https://api.coindesk.com/v1/bpi/currentprice/" + currency
-			async with clients.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				if resp.status == 404:
 					error = await resp.text()
 					await ctx.embed_reply(":no_entry: Error: " + error)
@@ -42,7 +42,7 @@ class Finance(commands.Cog):
 			fields = ()
 		else:
 			url = "https://api.coindesk.com/v1/bpi/currentprice.json"
-			async with clients.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json(content_type = "application/javascript")
 			title = data["chartName"]
 			description = ""
@@ -60,7 +60,7 @@ class Finance(commands.Cog):
 	@checks.not_forbidden()
 	async def bitcoin_currencies(self, ctx):
 		'''Supported currencies for BPI conversion'''
-		async with clients.aiohttp_session.get("https://api.coindesk.com/v1/bpi/supported-currencies.json") as resp:
+		async with ctx.bot.aiohttp_session.get("https://api.coindesk.com/v1/bpi/supported-currencies.json") as resp:
 			data = await resp.json(content_type = "text/html")
 		await ctx.embed_reply(", ".join("{0[currency]} ({0[country]})".format(c) for c in data[:int(len(data) / 2)]))
 		await ctx.embed_reply(", ".join("{0[currency]} ({0[country]})".format(c) for c in data[int(len(data) / 2):]))
@@ -83,7 +83,7 @@ class Finance(commands.Cog):
 		else:
 			params = {"for": "yesterday"}
 		url = "https://api.coindesk.com/v1/bpi/historical/close.json"
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
 				error = await resp.text()
 				await ctx.embed_reply(":no_entry: Error: " + error)
@@ -137,7 +137,7 @@ class Finance(commands.Cog):
 		'''Currency symbols'''
 		url = "https://data.fixer.io/api/symbols"
 		params = {"access_key": ctx.bot.FIXER_API_KEY}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			# TODO: handle errors
 			data = await resp.json()
 		if not data.get("success"):
@@ -164,7 +164,7 @@ class Finance(commands.Cog):
 			params["symbols"] = request.upper()
 		url = "https://data.fixer.io/api/"
 		url += str(date) if date else "latest"
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			# TODO: use ETags
 			if resp.status in (404, 422):
 				# TODO: handle other errors
@@ -203,7 +203,7 @@ class Finance(commands.Cog):
 		'''
 		# TODO: Add https://iextrading.com/api-exhibit-a to TOS
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/price"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		attribution = "\nData provided for free by [IEX](https://iextrading.com/developer)."
 		await ctx.embed_reply(data + attribution)
@@ -213,10 +213,10 @@ class Finance(commands.Cog):
 	async def stock_company(self, ctx, symbol : str):
 		'''Company Information'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/company"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/logo"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			logo_data = await resp.json()
 		description = f"{data['description']}\nWebsite: {data['website']}"
 		attribution = "\nData provided for free by [IEX](https://iextrading.com/developer)."
@@ -231,7 +231,7 @@ class Finance(commands.Cog):
 	async def stock_earnings(self, ctx, symbol : str):
 		'''Earnings data from the most recent reported quarter'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/earnings"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		report = data["earnings"][0]
 		# TODO: paginate other reports
@@ -251,7 +251,7 @@ class Finance(commands.Cog):
 	async def stock_financials(self, ctx, symbol : str):
 		'''Income statement, balance sheet, and cash flow data from the most recent reported quarter'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/financials"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		report = data["financials"][0]
 		# TODO: paginate other reports
@@ -275,7 +275,7 @@ class Finance(commands.Cog):
 	async def stock_quote(self, ctx, symbol : str):
 		'''WIP'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/quote"
-		async with clients.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		description = data["companyName"] + "\nData provided for free by [IEX](https://iextrading.com/developer)."
 		fields = []

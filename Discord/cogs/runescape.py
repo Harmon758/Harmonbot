@@ -4,7 +4,6 @@ from discord.ext import commands
 import collections
 import csv
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -31,7 +30,7 @@ class Runescape(commands.Cog):
 		# TODO: Handle redirects?
 		url = "https://runescape.wiki/api.php"
 		params = {"action": "opensearch", "search": item}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data[1]:
 			return await ctx.embed_reply(":no_entry: Item not found")
@@ -39,7 +38,7 @@ class Runescape(commands.Cog):
 			# https://www.semantic-mediawiki.org/wiki/Help:Ask
 			# https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
 			params = {"action": "ask", "query": f"[[{i}]]|?Item_ID", "format": "json"}
-			async with clients.aiohttp_session.get(url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			item_id = list(data["query"]["results"].values())[0]["printouts"]["Item ID"]
 			if item_id:
@@ -50,7 +49,7 @@ class Runescape(commands.Cog):
 			return await ctx.embed_reply(f":no_entry: {item} is not an item")
 		url = "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json"
 		params = {"item": item_id}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
 				return await ctx.embed_reply(f":no_entry: Error: {item} not found on the Grand Exchange")
 			data = await resp.json(content_type = "text/html")
@@ -68,13 +67,13 @@ class Runescape(commands.Cog):
 		'''Bestiary'''
 		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json"
 		params = {"term": monster}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
 		if data[0] == "none":
 			return await ctx.embed_reply(":no_entry: Monster not found")
 		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
 		params = {"beastid": data[0]["value"]}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json(content_type = "text/html")
 		await ctx.embed_reply(data["description"], title = data["name"], 
 								fields = (("Level", data["level"]), ("Weakness", data["weakness"]), 
@@ -88,7 +87,7 @@ class Runescape(commands.Cog):
 		'''Stats'''
 		url = "http://services.runescape.com/m=hiscore/index_lite.ws"
 		params = {"player": username}
-		async with clients.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
 				return await ctx.embed_reply(":no_entry: Player not found")
 			data = await resp.text()

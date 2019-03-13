@@ -415,7 +415,7 @@ class AudioPlayer:
 				paused = True
 			while self.guild.voice_client and self.radio_flag:
 				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, ctx.bot.GOOGLE_API_KEY)
-				async with clients.aiohttp_session.get(url) as resp:
+				async with ctx.bot.aiohttp_session.get(url) as resp:
 					data = await resp.json()
 				videoid = random.choice(data["items"])["id"]["videoId"]
 				await self.add_song_interrupt(videoid, requester, timestamp)
