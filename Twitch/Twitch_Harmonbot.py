@@ -18,7 +18,7 @@ import dotenv
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.4.3"
+		self.version = "2.4.4"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -51,15 +51,16 @@ class TwitchClient(pydle.Client):
 			self.aiohttp_session = aiohttp.ClientSession(loop = self.eventloop)
 		# Client logger
 		self.logger.setLevel(logging.DEBUG)
-		console_handler = logging.StreamHandler(sys.stdout)
-		console_handler.setLevel(logging.ERROR)
-		console_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
-		file_handler = logging.handlers.TimedRotatingFileHandler(
-			filename = "data/logs/client/client.log", when = "midnight", 
-			backupCount = 3650000, encoding = "UTF-8")
-		file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
-		self.logger.addHandler(console_handler)
-		self.logger.addHandler(file_handler)
+		if not self.logger.handlers:
+			console_handler = logging.StreamHandler(sys.stdout)
+			console_handler.setLevel(logging.ERROR)
+			console_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+			self.logger.addHandler(console_handler)
+			file_handler = logging.handlers.TimedRotatingFileHandler(
+				filename = "data/logs/client/client.log", when = "midnight", 
+				backupCount = 3650000, encoding = "UTF-8")
+			file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
+			self.logger.addHandler(file_handler)
 		# Request capabilities
 		await self.raw("CAP REQ :twitch.tv/membership\r\n")
 		await self.raw("CAP REQ :twitch.tv/tags\r\n")
@@ -69,10 +70,11 @@ class TwitchClient(pydle.Client):
 			await self.join('#' + channel)
 			channel_logger = logging.getLogger('#' + channel)
 			channel_logger.setLevel(logging.DEBUG)
-			channel_logger_handler = logging.FileHandler(filename = f"data/logs/channels/{channel}.log", 
-															encoding = "UTF-8", mode = 'a')
-			channel_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
-			channel_logger.addHandler(channel_logger_handler)
+			if not channel_logger.handlers:
+				channel_logger_handler = logging.FileHandler(filename = f"data/logs/channels/{channel}.log", 
+																encoding = "UTF-8", mode = 'a')
+				channel_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+				channel_logger.addHandler(channel_logger_handler)
 		# Console output
 		print(f"Started up Twitch Harmonbot | Connected to {' | '.join('#' + channel for channel in self.CHANNELS)}")
 	
