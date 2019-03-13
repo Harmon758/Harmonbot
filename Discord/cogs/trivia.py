@@ -176,9 +176,6 @@ class Trivia(commands.Cog):
 		# Remove article prefixes
 		answer = self.remove_article_prefix(answer)
 		response = self.remove_article_prefix(response)
-		# Strip quotation marks
-		answer = answer.strip('"')
-		response = response.strip('"')
 		# Get items in lists
 		answer_items = [item.strip() for item in answer.split(',')]
 		answer_items[-1:] = [item.strip() for item in answer_items[-1].split("and") if item]
