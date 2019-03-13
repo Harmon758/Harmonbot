@@ -268,7 +268,7 @@ if __name__ == "__main__":
 	except aiohttp.errors.ClientOSError:
 		pass
 	finally:
-		client.loop.run_until_complete(clients.shutdown_tasks())
+		client.loop.run_until_complete(client.shutdown_tasks())
 		client.loop.close()
 		os._exit(0)
 

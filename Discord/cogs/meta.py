@@ -535,7 +535,7 @@ class Meta(commands.Cog):
 		'''Shut me down'''
 		await ctx.embed_say(":scream: Shutting down.")
 		print("Forcing Shutdown...")
-		await clients.shutdown_tasks()
+		await ctx.bot.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
 		subprocess.call(["taskkill", "/f", "/im", "python.exe"])
 	

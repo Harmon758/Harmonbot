@@ -480,6 +480,30 @@ class Bot(commands.Bot):
 		with open(data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
 			json.dump({"restart_channel": channel_id, "voice_channels": voice_channels}, restart_channel_file)
 	
+	async def shutdown_tasks(self):
+		# Cancel audio tasks
+		audio_cog = self.get_cog("Audio")
+		if audio_cog:
+			audio_cog.cancel_all_tasks()
+		# Close Sentry transport
+		sentry_transport = self.sentry_client.remote.get_transport()
+		if sentry_transport:
+			await sentry_transport.close()
+		# Close aiohttp session
+		await aiohttp_session.close()
+		# Close database connection
+		await self.database_connection_pool.close()
+		# Stop web server
+		await self.aiohttp_app_runner.cleanup()
+		# Save uptime
+		with open(data_path + "/stats.json", 'r') as stats_file:
+			stats = json.load(stats_file)
+		now = datetime.datetime.utcnow()
+		uptime = now - online_time
+		stats["uptime"] += uptime.total_seconds()
+		with open(data_path + "/stats.json", 'w') as stats_file:
+			json.dump(stats, stats_file, indent = 4)
+	
 	@contextlib.contextmanager
 	def suppress_SSLCertVerificationError(self):
 		# https://stackoverflow.com/questions/52012488/ssl-asyncio-traceback-even-when-error-is-handled
@@ -602,31 +626,4 @@ if platform.system() == "Windows":
 client = Bot(command_prefix = get_prefix)
 aiohttp_session = aiohttp.ClientSession(loop = client.loop)
 # TODO: Move ^ to Bot
-
-
-# Shutdown Tasks
-
-async def shutdown_tasks():
-	# Cancel audio tasks
-	audio_cog = client.get_cog("Audio")
-	if audio_cog:
-		audio_cog.cancel_all_tasks()
-	# Close Sentry transport
-	sentry_transport = client.sentry_client.remote.get_transport()
-	if sentry_transport:
-		await sentry_transport.close()
-	# Close aiohttp session
-	await aiohttp_session.close()
-	# Close database connection
-	await client.database_connection_pool.close()
-	# Stop web server
-	await client.aiohttp_app_runner.cleanup()
-	# Save uptime
-	with open(data_path + "/stats.json", 'r') as stats_file:
-		stats = json.load(stats_file)
-	now = datetime.datetime.utcnow()
-	uptime = now - online_time
-	stats["uptime"] += uptime.total_seconds()
-	with open(data_path + "/stats.json", 'w') as stats_file:
-		json.dump(stats, stats_file, indent = 4)
 
