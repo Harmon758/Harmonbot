@@ -31,9 +31,6 @@ def is_hex(s):
 	return all(c in hex_digits for c in s)
 '''
 
-def message_is_digit_gtz(m):
-	return m.content.isdigit() and m.content != '0'
-
 def is_digit_gtz(s):
 	return s.isdigit() and s != '0'
 
