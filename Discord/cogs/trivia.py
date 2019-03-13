@@ -9,7 +9,6 @@ import string
 import aiohttp
 from bs4 import BeautifulSoup
 
-import clients
 from utilities import checks
 from utilities.context import Context
 
@@ -114,8 +113,8 @@ class Trivia(commands.Cog):
 			else:
 				incorrect_players.append(player)
 		if correct_players:
-			correct_players_output = clients.inflect_engine.join([player.display_name for player in correct_players])
-			correct_players_output += f" {clients.inflect_engine.plural('was', len(correct_players))} right!"
+			correct_players_output = ctx.bot.inflect_engine.join([player.display_name for player in correct_players])
+			correct_players_output += f" {ctx.bot.inflect_engine.plural('was', len(correct_players))} right!"
 		else:
 			correct_players_output = "Nobody got it right!"
 		for correct_player in correct_players:

@@ -210,8 +210,8 @@ class Overwatch(commands.Cog):
 				sorted_data = sorted(data[region]["heroes"]["playtime"]["quickplay"].items(), key = lambda h: h[1], reverse = True)
 				for hero, time in sorted_data:
 					if time >= 1:
-						output.append("**{}**: {:g} {}".format(hero.capitalize(), time, clients.inflect_engine.plural("hour", int(time))))
+						output.append("**{}**: {:g} {}".format(hero.capitalize(), time, ctx.bot.inflect_engine.plural("hour", int(time))))
 					else:
-						output.append("**{}**: {:g} {}".format(hero.capitalize(), time * 60, clients.inflect_engine.plural("minute", int(time * 60))))
+						output.append("**{}**: {:g} {}".format(hero.capitalize(), time * 60, ctx.bot.inflect_engine.plural("minute", int(time * 60))))
 				await ctx.embed_reply('\n'.join(output))
 

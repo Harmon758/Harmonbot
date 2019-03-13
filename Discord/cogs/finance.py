@@ -182,14 +182,14 @@ class Finance(commands.Cog):
 			parts = max(parts, 3)
 		rates_parts = more_itertools.divide(parts, rates)
 		tabulated_rates = tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')
-		field_title = f"Currency {clients.inflect_engine.plural('Rate', len(rates))} Against {data['base']}"
+		field_title = f"Currency {ctx.bot.inflect_engine.plural('Rate', len(rates))} Against {data['base']}"
 		fields = [(field_title, clients.code_block.format(tabulated_rates))]
 		for rates_part in rates_parts[1:]:
 			tabulated_rates = tabulate.tabulate(rates_part, tablefmt = "plain", floatfmt = 'f')
 			fields.append((ctx.bot.ZERO_WIDTH_SPACE, clients.code_block.format(tabulated_rates)))
 			# Zero-width space for empty field title
 		# TODO: paginate
-		footer_text = clients.inflect_engine.plural("Rate", len(rates)) + " from"
+		footer_text = ctx.bot.inflect_engine.plural("Rate", len(rates)) + " from"
 		timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"])
 		await ctx.embed_reply(fields = fields, footer_text = footer_text, timestamp = timestamp)
 	

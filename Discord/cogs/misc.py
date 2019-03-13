@@ -6,7 +6,6 @@ import asyncio
 
 from modules import utilities
 from utilities import checks
-import clients
 
 def setup(bot):
 	
@@ -60,7 +59,7 @@ class Misc(commands.Cog):
 			if 'a' <= character.lower() <= 'z':
 				output += f":regional_indicator_{character.lower()}:"
 			elif '0' <= character <= '9':
-				output += f":{clients.inflect_engine.number_to_words(int(character))}:"
+				output += f":{ctx.bot.inflect_engine.number_to_words(int(character))}:"
 			else:
 				output += character
 		try:
@@ -151,7 +150,7 @@ class Misc(commands.Cog):
 			""", 
 			ctx.message.author.id, user.id
 		)
-		times = clients.inflect_engine.ordinal(times)
+		times = ctx.bot.inflect_engine.ordinal(times)
 		embed = discord.Embed(color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
 		embed.description = f"Poked you for the {times} time!"

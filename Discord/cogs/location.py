@@ -6,7 +6,6 @@ import sys
 import datetime
 import pyowm.exceptions
 
-import clients
 from utilities import checks
 
 sys.path.insert(0, "..")
@@ -72,7 +71,7 @@ class Location(commands.Cog):
 			languages = languages[0]
 		else:
 			languages = '\n'.join(l.replace('\n', ' ') for l in languages)
-		field_title = clients.inflect_engine.plural("Language", len(country_data["languages"]))
+		field_title = ctx.bot.inflect_engine.plural("Language", len(country_data["languages"]))
 		fields.append((field_title, languages))
 		# Currencies
 		currencies = []
@@ -87,7 +86,7 @@ class Location(commands.Cog):
 			currencies = currencies[0]
 		else:
 			currencies = '\n'.join(c.replace('\n', ' ') for c in currencies)
-		field_title = clients.inflect_engine.plural("currency", len(country_data["currencies"]))
+		field_title = ctx.bot.inflect_engine.plural("currency", len(country_data["currencies"]))
 		field_title = field_title.capitalize()
 		fields.append((field_title, currencies))
 		# Regions/Subregions
@@ -102,25 +101,25 @@ class Location(commands.Cog):
 				regional_blocs = regional_blocs[0]
 			else:
 				regional_blocs = '\n'.join(rb.replace('\n', ' ') for rb in regional_blocs)
-			field_title = clients.inflect_engine.plural("Regional Bloc", len(country_data["regionalBlocs"]))
+			field_title = ctx.bot.inflect_engine.plural("Regional Bloc", len(country_data["regionalBlocs"]))
 			fields.append((field_title, regional_blocs))
 		# Borders
 		if country_data["borders"]:
-			field_title = clients.inflect_engine.plural("Border", len(country_data["borders"]))
+			field_title = ctx.bot.inflect_engine.plural("Border", len(country_data["borders"]))
 			fields.append((field_title, '\n'.join(", ".join(country_data["borders"][i:i + 4]) for i in range(0, len(country_data["borders"]), 4))))
 		# Timezones
-		field_title = clients.inflect_engine.plural("Timezone", len(country_data["timezones"]))
+		field_title = ctx.bot.inflect_engine.plural("Timezone", len(country_data["timezones"]))
 		fields.append((field_title, '\n'.join(", ".join(country_data["timezones"][i:i + 2]) for i in range(0, len(country_data["timezones"]), 2))))
 		# Demonym
 		if country_data["demonym"]:
 			fields.append(("Demonym", country_data["demonym"]))
 		# Top-Level Domains
 		if country_data["topLevelDomain"][0]:
-			field_title = clients.inflect_engine.plural("Top-Level Domain", len(country_data["topLevelDomain"]))
+			field_title = ctx.bot.inflect_engine.plural("Top-Level Domain", len(country_data["topLevelDomain"]))
 			fields.append((field_title, ", ".join(country_data["topLevelDomain"])))
 		# Calling Codes
 		if country_data["callingCodes"] and country_data["callingCodes"][0]:
-			field_title = clients.inflect_engine.plural("Calling Code", len(country_data["callingCodes"]))
+			field_title = ctx.bot.inflect_engine.plural("Calling Code", len(country_data["callingCodes"]))
 			fields.append((field_title, ", ".join('+' + cc for cc in country_data["callingCodes"])))
 		# Name
 		country_name = country_data["name"]

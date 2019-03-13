@@ -44,7 +44,6 @@ wait_time = 15.0
 code_block = "```\n{}\n```"  # Moved, update all references to
 py_code_block = "```py\n{}\n```"  # Moved, update all references to
 online_time = datetime.datetime.utcnow()
-inflect_engine = inflect.engine()  # Moved, update all references to
 
 # TODO: Already moved to Bot constants, update all references to
 bot_color = discord.Color.blurple()
