@@ -526,7 +526,7 @@ class Meta(commands.Cog):
 		'''Restart me'''
 		await ctx.embed_say(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Discord Harmonbot...")
-		await clients.restart_tasks(ctx.channel.id)
+		await self.bot.restart_tasks(ctx.channel.id)
 		await self.bot.logout()
 	
 	@commands.command(aliases = ["crash", "panic"])

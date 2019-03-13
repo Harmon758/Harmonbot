@@ -467,6 +467,19 @@ class Bot(commands.Bot):
 		for site in self.listing_sites:
 			await self.update_listing_stats(site)
 	
+	async def restart_tasks(self, channel_id):
+		# Increment restarts counter
+		with open(data_path + "/stats.json", 'r') as stats_file:
+			stats = json.load(stats_file)
+		stats["restarts"] += 1
+		with open(data_path + "/stats.json", 'w') as stats_file:
+			json.dump(stats, stats_file, indent = 4)
+		# Save restart text channel + voice channels
+		audio_cog = self.get_cog("Audio")
+		voice_channels = audio_cog.save_voice_channels() if audio_cog else []
+		with open(data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
+			json.dump({"restart_channel": channel_id, "voice_channels": voice_channels}, restart_channel_file)
+	
 	@contextlib.contextmanager
 	def suppress_SSLCertVerificationError(self):
 		# https://stackoverflow.com/questions/52012488/ssl-asyncio-traceback-even-when-error-is-handled
@@ -591,20 +604,7 @@ aiohttp_session = aiohttp.ClientSession(loop = client.loop)
 # TODO: Move ^ to Bot
 
 
-# Restart + Shutdown Tasks
-
-async def restart_tasks(channel_id):
-	# Increment restarts counter
-	with open(data_path + "/stats.json", 'r') as stats_file:
-		stats = json.load(stats_file)
-	stats["restarts"] += 1
-	with open(data_path + "/stats.json", 'w') as stats_file:
-		json.dump(stats, stats_file, indent = 4)
-	# Save restart text channel + voice channels
-	audio_cog = client.get_cog("Audio")
-	voice_channels = audio_cog.save_voice_channels() if audio_cog else []
-	with open(data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
-		json.dump({"restart_channel": channel_id, "voice_channels": voice_channels}, restart_channel_file)
+# Shutdown Tasks
 
 async def shutdown_tasks():
 	# Cancel audio tasks
