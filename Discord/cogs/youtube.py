@@ -26,9 +26,6 @@ def setup(bot):
 		bot.remove_command("streams")
 		bot.remove_command("uploads")
 
-# TODO: Handle audio cog not loaded
-## youtube = getattr(clients.client.get_cog("Audio"), "audio", commands)
-
 class YouTube(commands.Cog):
 	'''
 	YouTube streams and uploads notification system
@@ -57,8 +54,7 @@ class YouTube(commands.Cog):
 		utilities.remove_as_subcommand(self, "Audio.audio", "streams")
 		utilities.remove_as_subcommand(self, "Audio.audio", "uploads")
 		
-		self.youtube_streams.recursively_remove_all_commands() # Necessary?
-		# youtube.remove_command("streams") # Handle when audio cog not loaded first
+		self.youtube_streams.recursively_remove_all_commands()  # Necessary?
 		self.streams_task.cancel()
 		self.renew_uploads_task.cancel()
 	
