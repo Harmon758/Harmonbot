@@ -188,6 +188,17 @@ class Trivia(commands.Cog):
 		# Check equivalence
 		if set(answer_items) == set(response_items):
 			return True
+		# Check XX and YY ZZ
+		last = answer_items[-1].split()
+		if len(last) > 1:
+			suffix = last[-1]
+			if set([f"{item} {suffix}" for item in answer_items[:-1]] + [answer_items[-1]]) == set(response_items):
+				return True
+		last = response_items[-1].split()
+		if len(last) > 1:
+			suffix = last[-1]
+			if set(answer_items) == set([f"{item} {suffix}" for item in response_items[:-1]] + [response_items[-1]]):
+				return True
 		# Remove commas
 		if ',' in answer:
 			answer = answer.replace(',', "")
