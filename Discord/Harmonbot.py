@@ -71,7 +71,7 @@ if __name__ == "__main__":
 	
 	@client.listen()
 	async def on_guild_remove(guild):
-		me = discord.utils.get(client.get_all_members(), id = clients.client.owner_id)
+		me = discord.utils.get(client.get_all_members(), id = client.owner_id)
 		await client.send_embed(me, None, title = "Left Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
 	
 	@client.listen()
