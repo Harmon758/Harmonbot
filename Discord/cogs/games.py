@@ -720,7 +720,7 @@ class Games(commands.Cog):
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
 			await ctx.embed_say("Category: " + string.capwords(data["title"]) + "\n" + data["clues"][value_index]["question"])
 			counter = int(clients.wait_time)
-			answer_message, embed = await ctx.say("You have {} seconds left to answer".format(str(counter)))
+			answer_message = await ctx.send("You have {} seconds left to answer".format(str(counter)))
 			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
 			while counter:
 				await asyncio.sleep(1)
