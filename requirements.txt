@@ -30,7 +30,7 @@ pydealer==1.4.0
 pygost==3.15
 pyowm==2.10.0
 python-aiml==0.9.1
-python-chess==0.26.0
+python-chess==0.27.0
 python-dateutil==2.8.0
 python-dotenv==0.10.1
 pytz==2018.9
