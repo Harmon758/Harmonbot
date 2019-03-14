@@ -103,6 +103,9 @@ class TwitterStreamListener(tweepy.StreamListener):
 		if isinstance(exception, urllib3.exceptions.ReadTimeoutError):
 			print(f"{self.bot.console_message_prefix}Twitter stream timed out | Recreating stream..")
 			self.bot.loop.create_task(self.start_feeds())
+		elif isinstance(exception, urllib3.exceptions.ProtocolError):
+			print(f"{self.bot.console_message_prefix}Twitter stream Incomplete Read error | Recreating stream..")
+			self.bot.loop.create_task(self.start_feeds())
 
 class Twitter(commands.Cog):
 	
