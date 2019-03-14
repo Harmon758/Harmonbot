@@ -417,11 +417,9 @@ class Bot(commands.Bot):
 		if type is discord.Forbidden:
 			for arg in args:
 				if isinstance(arg, commands.context.Context):
-					print(f"{self.console_message_prefix}Missing Permissions for {arg.command.name} in #{arg.channel.name} in {arg.guild.name}")
-					return
-				elif isinstance(arg, discord.Message):
-					print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
-					return
+					return print(f"{self.console_message_prefix}Missing Permissions for {arg.command.name} in #{arg.channel.name} in {arg.guild.name}")
+				if isinstance(arg, discord.Message):
+					return print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
 		await super().on_error(event_method, *args, **kwargs)
 		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (type, value, _traceback))
 	
