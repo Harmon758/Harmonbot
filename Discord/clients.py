@@ -391,6 +391,9 @@ class Bot(commands.Bot):
 		## Missing required input
 		if isinstance(error, commands.MissingRequiredArgument):
 			return await ctx.embed_reply(str(error).rstrip('.').replace("argument", "input"))
+		## Input parsing error
+		if isinstance(error, commands.ArgumentParsingError):
+			return await ctx.embed_reply(":no_entry: Error parsing input: " + str(error).replace("'", '`'))
 		## Bad input
 		if isinstance(error, commands.BadArgument):
 			return await ctx.embed_reply(f":no_entry: Error: Invalid Input: {error}")
