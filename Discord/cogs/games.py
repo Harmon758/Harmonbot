@@ -725,10 +725,10 @@ class Games(commands.Cog):
 			while counter:
 				await asyncio.sleep(1)
 				counter -= 1
-				await answer_message.edit("You have {} seconds left to answer".format(counter))
+				await answer_message.edit(content = "You have {} seconds left to answer".format(counter))
 				if self.jeopardy_answered:
 					break
-			await answer_message.edit("Time's up!")
+			await answer_message.edit(content = "Time's up!")
 			if self.jeopardy_answered:
 				if self.jeopardy_answered in self.jeopardy_scores:
 					self.jeopardy_scores[self.jeopardy_answered] += int(value)
