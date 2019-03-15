@@ -12,6 +12,7 @@ import re
 import string
 import sys
 import timeit
+import typing
 
 from bs4 import BeautifulSoup
 # import chess
@@ -632,17 +633,9 @@ class Games(commands.Cog):
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
-	async def guess(self, ctx, *options : str):
-		'''
-		Guessing game
-		Guess <max> <tries>
-		'''
-		tries = False
-		if len(options) >= 2 and options[1].isdigit() and options[1] != '0':
-			tries = int(options[1])
-		if len(options) >= 1 and options[0].isdigit() and options[0] != '0':
-			max_value = int(options[0])
-		else:
+	async def guess(self, ctx, max_value : typing.Optional[int], tries : typing.Optional[int]):
+		'''Guessing game'''
+		if not max_value:
 			await ctx.embed_reply("What range of numbers would you like to guess to? 1 to _")
 			try:
 				max_value = await self.bot.wait_for("message", timeout = clients.wait_time, check = lambda m: m.author == ctx.author and m.content.isdigit() and m.content != '0')
@@ -650,7 +643,6 @@ class Games(commands.Cog):
 				max_value = 10
 			else:
 				max_value = int(max_value.content)
-		answer = random.randint(1, max_value)
 		if not tries:
 			await ctx.embed_reply("How many tries would you like?")
 			try:
@@ -659,6 +651,7 @@ class Games(commands.Cog):
 				tries = 1
 			else:
 				tries = int(tries.content)
+		answer = random.randint(1, max_value)
 		await ctx.embed_reply("Guess a number between 1 to {}".format(max_value))
 		while tries != 0:
 			try:
