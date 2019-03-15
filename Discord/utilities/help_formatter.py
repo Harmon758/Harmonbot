@@ -103,7 +103,7 @@ class CustomHelpFormatter(HelpFormatter):
 		for name, command in commands:
 			if name in command.aliases: # skip aliases
 				continue
-			line = '{0:<{width}}  {1}'.format(name, command.short_doc, width = max_width)
+			line = "{0:<{width}}  {1}".format(name, command.short_doc, width = max_width)
 			# line = '{indent}{0:<{width}}  {1}'.format(name, command.short_doc, width = max_width, indent = "  " if indent else "")
 			if len(line) <= 55:
 				lines.append(line)
