@@ -252,6 +252,11 @@ class Trivia(commands.Cog):
 			return True
 		if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
 			return True
+		# Check abbreviations
+		for abbreviation, word in (("st", "saint"),):
+			if (re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", answer) == 
+				re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", response)):
+				return True
 		return False
 	
 	def remove_article_prefix(self, input):
