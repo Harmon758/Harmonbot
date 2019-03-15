@@ -68,8 +68,8 @@ class CustomHelpFormatter(HelpFormatter):
 					return [discord.Embed(title = title, description = description, color = self.embed_color)]
 				return self.embeds(title, description_paginator)
 			subcommands = sorted(filtered_command_list, key = lambda c: c[0])
-			subcommands_lines = self._subcommands_lines(max_width, subcommands)
-			if (not self.command.help or len(self.command.help) <= 2048) and len('\n'.join(subcommands_lines)) <= self.embed_field_limit - 8:
+			subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
+			if (not self.command.help or len(self.command.help) <= 2048) and len('\n'.join(subcommand_lines)) <= self.embed_field_limit - 8:
 			# 8: len("```\n") * 2
 				embed = discord.Embed(color = self.embed_color)
 				value = "{}\n".format(description_paginator.pages[0]) if description_paginator.pages else ""
@@ -78,7 +78,7 @@ class CustomHelpFormatter(HelpFormatter):
 					embed.title = title
 				else:
 					embed.add_field(name = title, value = value, inline = False)
-				embed.add_field(name = "Subcommands for {}".format(self.command), value = clients.code_block.format('\n'.join(subcommands_lines)), inline = False)
+				embed.add_field(name = "Subcommands for {}".format(self.command), value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
 				return [embed]
 			description_paginator.add_line("Subcommands for {}:".format(self.command))
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
@@ -93,11 +93,11 @@ class CustomHelpFormatter(HelpFormatter):
 		return self.embeds(title, description_paginator)
 	
 	def _add_subcommands_to_page(self, max_width, commands, paginator):
-		for line in self._subcommands_lines(max_width, commands):
+		for line in self.generate_subcommand_lines(max_width, commands):
 			paginator.add_line(line)
 	
 	@staticmethod
-	def _subcommands_lines(max_width, commands):
+	def generate_subcommand_lines(max_width, commands):
 	# def _subcommands_lines(max_width, commands, indent = True):
 		lines = []
 		for name, command in commands:
