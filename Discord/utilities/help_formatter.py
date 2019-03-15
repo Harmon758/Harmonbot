@@ -1,7 +1,7 @@
 
 import discord
 from discord.ext.commands.formatter import HelpFormatter, Paginator
-from discord.ext.commands import Command
+from discord.ext.commands import Command, Group
 
 import inspect
 import itertools
@@ -17,7 +17,9 @@ class CustomHelpFormatter(HelpFormatter):
 		self.embed_color = embed_color
 		self.embed_total_limit = 6000
 		self.embed_field_limit = 1024
+		self.embed_codeblock_row_limit = 55
 		self.embed_fields_limit = 25
+		super().__init__()
 	
 	async def format(self):
 		'''Format'''
@@ -92,29 +94,64 @@ class CustomHelpFormatter(HelpFormatter):
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
 		return self.embeds(title, description_paginator)
 	
+	@property
+	def max_name_size(self):
+		"""int: Returns the largest name length of a command or if it has subcommands
+		the largest subcommand name."""
+		try:
+			commands = self.command.all_commands.copy() if not self.is_cog() else self.context.bot.all_commands.copy()
+			if commands:
+				# Include subcommands of subcommands
+				for _, command in commands.copy().items():
+					if isinstance(command, Group):
+						commands.update(command.all_commands)
+				return max(map(lambda c: len(c.name) if self.show_hidden or not c.hidden else 0, commands.values()))
+			return 0
+		except AttributeError:
+			return len(self.command.name)
+	
 	def _add_subcommands_to_page(self, max_width, commands, paginator):
 		for line in self.generate_subcommand_lines(max_width, commands):
 			paginator.add_line(line)
 	
-	@staticmethod
-	def generate_subcommand_lines(max_width, commands):
-	# def _subcommands_lines(max_width, commands, indent = True):
+	def generate_subcommand_lines(self, max_width, commands):
 		lines = []
+		# Add 3 for "┣ "/"┗ "
+		for _, command in commands:
+			if isinstance(command, Group) and command.commands:
+				max_width += 3
+				break
 		for name, command in commands:
 			if name in command.aliases: # skip aliases
 				continue
+			prefix = "┃ " if isinstance(command, Group) and command.commands else " "
+			buffer = 2 if isinstance(command, Group) and command.commands else 0
 			line = "{0:<{width}}  {1}".format(name, command.short_doc, width = max_width)
-			# line = '{indent}{0:<{width}}  {1}'.format(name, command.short_doc, width = max_width, indent = "  " if indent else "")
-			if len(line) <= 55:
-				lines.append(line)
-			else:
-				cutoff = line[:55].rfind(' ')
-				lines.append(line[:cutoff])
-				while cutoff + 55 < len(line):
-					new_cutoff = line[:cutoff + 55].rfind(' ')
-					lines.append(' ' * (max_width + 2) + line[cutoff + 1:new_cutoff])
-					cutoff = new_cutoff
-				lines.append(' ' * (max_width + 2) + line[cutoff + 1:])
+			lines = self.append_subcommand_line(lines, line, max_width, prefix, buffer)
+			# Add subcommands of subcommands
+			if isinstance(command, Group) and command.commands:
+				subcommands = sorted(command.commands, key = lambda c: c.name)
+				for subcommand in subcommands[:-1]:
+					line = "┣ {0:<{width}}  {1}".format(subcommand.name, subcommand.short_doc, width = max_width - 2)
+					lines = self.append_subcommand_line(lines, line, max_width, "┃ ", 1)
+				line = "┗ {0:<{width}}  {1}".format(subcommands[-1].name, subcommands[-1].short_doc, width = max_width - 2)
+				lines = self.append_subcommand_line(lines, line, max_width, "  ", 0)
+		return lines
+	
+	def append_subcommand_line(self, lines, line, max_width, prefix, buffer):
+		limit = self.embed_codeblock_row_limit
+		if '┣' in prefix + line or '┗' in prefix + line:
+			limit -= 1
+		if len(line) <= limit:
+			lines.append(line)
+		else:
+			cutoff = line[:limit].rfind(' ')
+			lines.append(line[:cutoff])
+			while len(prefix) + max_width + 2 - buffer + len(line[cutoff + 1:]) >= limit:
+				new_cutoff = line[:cutoff + limit - len(prefix) - max_width - 2 + buffer].rfind(' ')
+				lines.append(prefix + ' ' * (max_width + 2 - buffer) + line[cutoff + 1:new_cutoff])
+				cutoff = new_cutoff
+			lines.append(prefix + ' ' * (max_width + 2 - buffer) + line[cutoff + 1:])
 		return lines
 	
 	def embeds(self, title, paginator):
