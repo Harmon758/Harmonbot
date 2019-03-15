@@ -230,16 +230,10 @@ class Trivia(commands.Cog):
 			return True
 		# Check numbers to words conversion
 		response_words = response.split(' ')
-		for index, answer_word in enumerate(answer_words):
-			try:
-				answer_words[index] = self.bot.inflect_engine.number_to_words(int(answer_word))
-			except ValueError:
-				continue
-		for index, response_word in enumerate(response_words):
-			try:
-				response_words[index] = self.bot.inflect_engine.number_to_words(int(response_word))
-			except ValueError:
-				continue
+		for words in (answer_words, response_words):
+			for index, word in enumerate(words):
+				if word[0].isdigit():
+					words[index] = self.bot.inflect_engine.number_to_words(word)
 		if ' '.join(answer_words) == ' '.join(response_words):
 			return True
 		# Check (XX) YY
