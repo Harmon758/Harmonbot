@@ -71,7 +71,7 @@ class Meta(commands.Cog):
 					output += "\nDid you mean `{}`?".format(close_matches[0])
 				await ctx.embed_reply(output)
 				return
-			embeds = self.bot.formatter.format_help_for(ctx, command)
+			embeds = await self.bot.formatter.format_help_for(ctx, command)
 		else:
 			name = _mention_pattern.sub(repl, commands[0])
 			command = self.bot.all_commands.get(name)
@@ -88,7 +88,7 @@ class Meta(commands.Cog):
 				except AttributeError:
 					await ctx.embed_reply("`{}` command has no subcommands".format(command.name))
 					return
-			embeds = self.bot.formatter.format_help_for(ctx, command)
+			embeds = await self.bot.formatter.format_help_for(ctx, command)
 		
 		if len(embeds) > 1:
 			destination = ctx.author
@@ -104,7 +104,7 @@ class Meta(commands.Cog):
 	@help.command(name = "all")
 	async def help_all(self, ctx):
 		'''All commands'''
-		embeds = self.bot.formatter.format_help_for(ctx, self.bot)
+		embeds = await self.bot.formatter.format_help_for(ctx, self.bot)
 		for embed in embeds:
 			await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
@@ -131,8 +131,8 @@ class Meta(commands.Cog):
 		'''All the commands'''
 		# TODO: Fix/Deprecate?, all_commands alias
 		formatter = commands.HelpFormatter(show_check_failure = True, show_hidden = True)
-		formatter.format_help_for(ctx, self.bot)
-		_commands = formatter.filter_command_list()
+		await formatter.format_help_for(ctx, self.bot)
+		_commands = await formatter.filter_command_list()
 		_allcommands = ""
 		for name, _command in _commands:
 			_allcommands += name + ' '

@@ -16,17 +16,18 @@ class CustomHelpFormatter(HelpFormatter):
 	def __init__(self, embed_color):
 		self.embed_color = embed_color
 	
-	def format(self):
+	async def format(self):
 		'''Format'''
 		description_paginator = Paginator(max_size = 2048)
 		max_width = self.max_name_size
+		if not isinstance(self.command, Command) or self.has_subcommands():
+			filtered_command_list = await self.filter_command_list()
 		if self.is_bot():
 			def category(tup):
 				cog = tup[1].cog_name
 				# we insert the zero width space there to give it approximate last place sorting position
 				return cog if cog is not None else "\u200bNo Category"
-			## data = sorted(self.filter_command_list(), key = category)
-			data = sorted(self.filter_command_list(), key = lambda c: category(c).lower())
+			data = sorted(filtered_command_list, key = lambda c: category(c).lower())
 			embeds = [discord.Embed(title = "My Commands", color = self.embed_color)]
 			for category, commands in itertools.groupby(data, key = category):
 				commands = sorted(commands, key = lambda c: c[0])
@@ -54,7 +55,7 @@ class CustomHelpFormatter(HelpFormatter):
 			if self.command.help:
 				description_paginator.add_line(self.command.help, empty = True)
 			# end it here if it's just a regular command
-			if not self.has_subcommands() or not list(self.filter_command_list()):
+			if not self.has_subcommands() or not list(filtered_command_list):
 				description_paginator.close_page()
 				if not self.command.help:
 					return [discord.Embed(title = title, description = self.command.description, color = self.embed_color)]
@@ -63,7 +64,7 @@ class CustomHelpFormatter(HelpFormatter):
 					description += "\n" + self.command.description
 					return [discord.Embed(title = title, description = description, color = self.embed_color)]
 				return self.embeds(title, description_paginator)
-			subcommands = sorted(self.filter_command_list(), key = lambda c: c[0])
+			subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 			subcommands_lines = self._subcommands_lines(max_width, subcommands)
 			if (not self.command.help or len(self.command.help) <= 2048) and len('\n'.join(subcommands_lines)) <= 1016:
 				# 1024 - 4 * 2
@@ -84,7 +85,7 @@ class CustomHelpFormatter(HelpFormatter):
 				# <description> portion
 				description_paginator.add_line(description, empty = True)
 			title = "{} Commands".format(type(self.command).__name__)
-			subcommands = sorted(self.filter_command_list(), key = lambda c: c[0])
+			subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
 		return self.embeds(title, description_paginator)
 	
