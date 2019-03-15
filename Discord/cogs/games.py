@@ -652,12 +652,12 @@ class Games(commands.Cog):
 			else:
 				tries = int(tries.content)
 		answer = random.randint(1, max_value)
-		await ctx.embed_reply("Guess a number between 1 to {}".format(max_value))
+		await ctx.embed_reply(f"Guess a number between 1 to {max_value}")
 		while tries != 0:
 			try:
 				guess = await self.bot.wait_for("message", timeout = clients.wait_time, check = lambda m: m.author == ctx.author and m.content.isdigit() and m.content != '0')
 			except asyncio.TimeoutError:
-				await ctx.embed_reply("Sorry, you took too long\nIt was {}".format(answer))
+				await ctx.embed_reply(f"Sorry, you took too long\nIt was {answer}")
 				return
 			if int(guess.content) == answer:
 				await ctx.embed_reply("You are right!")
@@ -669,7 +669,7 @@ class Games(commands.Cog):
 				await ctx.embed_reply("It's greater than " + guess.content)
 				tries -= 1
 			else:
-				await ctx.embed_reply("Sorry, it was actually {}".format(answer))
+				await ctx.embed_reply(f"Sorry, it was actually {answer}")
 				return
 	
 	@commands.group(aliases = ["hrmp"], hidden = True)
