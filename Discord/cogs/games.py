@@ -657,11 +657,9 @@ class Games(commands.Cog):
 			try:
 				guess = await self.bot.wait_for("message", timeout = clients.wait_time, check = lambda m: m.author == ctx.author and m.content.isdigit() and m.content != '0')
 			except asyncio.TimeoutError:
-				await ctx.embed_reply(f"Sorry, you took too long\nIt was {answer}")
-				return
+				return await ctx.embed_reply(f"Sorry, you took too long\nIt was {answer}")
 			if int(guess.content) == answer:
-				await ctx.embed_reply("You are right!")
-				return
+				return await ctx.embed_reply("You are right!")
 			elif tries != 1 and int(guess.content) > answer:
 				await ctx.embed_reply("It's less than " + guess.content)
 				tries -= 1
@@ -669,8 +667,7 @@ class Games(commands.Cog):
 				await ctx.embed_reply("It's greater than " + guess.content)
 				tries -= 1
 			else:
-				await ctx.embed_reply(f"Sorry, it was actually {answer}")
-				return
+				return await ctx.embed_reply(f"Sorry, it was actually {answer}")
 	
 	@commands.group(aliases = ["hrmp"], hidden = True)
 	@checks.not_forbidden()
