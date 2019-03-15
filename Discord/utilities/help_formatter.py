@@ -15,7 +15,7 @@ class CustomHelpFormatter(HelpFormatter):
 	
 	def __init__(self, embed_color):
 		self.embed_color = embed_color
-		self.embed_total_limit = 4000
+		self.embed_total_limit = 6000
 		self.embed_field_limit = 1024
 		self.embed_fields_limit = 25
 	
