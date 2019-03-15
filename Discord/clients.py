@@ -254,7 +254,8 @@ class Bot(commands.Bot):
 			self.connected_to_database.clear()
 			self.database_connection_pool = await asyncpg.create_pool(user = "harmonbot", 
 																		password = self.DATABASE_PASSWORD, 
-																		database = "harmonbot", host = self.DATABASE_HOST)
+																		database = "harmonbot_beta" if beta else "harmonbot", 
+																		host = self.DATABASE_HOST)
 			self.db = self.database = self.database_connection_pool
 			self.connected_to_database.set()
 		else:
