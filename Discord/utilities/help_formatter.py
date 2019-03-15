@@ -15,6 +15,9 @@ class CustomHelpFormatter(HelpFormatter):
 	
 	def __init__(self, embed_color):
 		self.embed_color = embed_color
+		self.embed_total_limit = 4000
+		self.embed_field_limit = 1024
+		self.embed_fields_limit = 25
 	
 	async def format(self):
 		'''Format'''
@@ -32,16 +35,16 @@ class CustomHelpFormatter(HelpFormatter):
 			for category, commands in itertools.groupby(data, key = category):
 				commands = sorted(commands, key = lambda c: c[0])
 				if len(commands) > 0:
-					field_paginator = Paginator(max_size = 1024)
+					field_paginator = Paginator(max_size = self.embed_field_limit)
 					self._add_subcommands_to_page(max_width, commands, field_paginator)
 					# Embed Limit
 					total_paginator_characters = len(field_paginator.pages) * len(category + " (coninued)") 
 					for page in field_paginator.pages:
 						total_paginator_characters += len(page)
-					if utilities.embed_total_characters(embeds[-1]) + total_paginator_characters > 4000:
+					if utilities.embed_total_characters(embeds[-1]) + total_paginator_characters > self.embed_total_limit:
 						embeds.append(discord.Embed(color = self.embed_color))
 					# 
-					if len(embeds[-1].fields) <= 25 - len(field_paginator.pages):
+					if len(embeds[-1].fields) <= self.embed_fields_limit - len(field_paginator.pages):
 						embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
 					else:
 						embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
@@ -66,8 +69,8 @@ class CustomHelpFormatter(HelpFormatter):
 				return self.embeds(title, description_paginator)
 			subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 			subcommands_lines = self._subcommands_lines(max_width, subcommands)
-			if (not self.command.help or len(self.command.help) <= 2048) and len('\n'.join(subcommands_lines)) <= 1016:
-				# 1024 - 4 * 2
+			if (not self.command.help or len(self.command.help) <= 2048) and len('\n'.join(subcommands_lines)) <= self.embed_field_limit - 8:
+			# 8: len("```\n") * 2
 				embed = discord.Embed(color = self.embed_color)
 				value = "{}\n".format(description_paginator.pages[0]) if description_paginator.pages else ""
 				value += self.command.description
