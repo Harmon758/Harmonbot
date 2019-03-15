@@ -83,16 +83,6 @@ def subscript(string):
 
 # Discord
 
-def embed_total_characters(embed):
-	total_characters = 0
-	if embed.author.name: total_characters += len(embed.author.name)
-	if embed.title: total_characters += len(embed.title)
-	if embed.description: total_characters += len(embed.description)
-	if embed.footer.text: total_characters += len(embed.footer.text)
-	for field in embed.fields:
-		total_characters += len(field.name) + len(field.value)
-	return total_characters
-
 async def get_user(ctx, name):
 	# check if mention
 	mention = re.match(r"<@\!?([0-9]+)>", name)

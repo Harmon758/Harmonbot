@@ -5,7 +5,6 @@ from discord.ext.commands import Command, Group
 
 import inspect
 import itertools
-from modules import utilities
 
 import clients
 
@@ -43,7 +42,7 @@ class CustomHelpFormatter(HelpFormatter):
 					total_paginator_characters = len(field_paginator.pages) * len(category + " (coninued)") 
 					for page in field_paginator.pages:
 						total_paginator_characters += len(page)
-					if utilities.embed_total_characters(embeds[-1]) + total_paginator_characters > self.embed_total_limit:
+					if len(embeds[-1]) + total_paginator_characters > self.embed_total_limit:
 						embeds.append(discord.Embed(color = self.embed_color))
 					# 
 					if len(embeds[-1].fields) <= self.embed_fields_limit - len(field_paginator.pages):
