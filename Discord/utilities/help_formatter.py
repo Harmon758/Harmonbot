@@ -92,12 +92,6 @@ class CustomHelpFormatter(HelpFormatter):
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
 		return self.embeds(title, description_paginator)
 	
-	def embeds(self, title, paginator):
-		embeds = [discord.Embed(title = title, description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
-		for page in paginator.pages[1:]:
-			embeds.append(discord.Embed(description = page, color = self.embed_color))
-		return embeds
-	
 	def _add_subcommands_to_page(self, max_width, commands, paginator):
 		for line in self._subcommands_lines(max_width, commands):
 			paginator.add_line(line)
@@ -122,4 +116,10 @@ class CustomHelpFormatter(HelpFormatter):
 					cutoff = new_cutoff
 				lines.append(' ' * (max_width + 2) + line[cutoff + 1:])
 		return lines
+	
+	def embeds(self, title, paginator):
+		embeds = [discord.Embed(title = title, description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
+		for page in paginator.pages[1:]:
+			embeds.append(discord.Embed(description = page, color = self.embed_color))
+		return embeds
 
