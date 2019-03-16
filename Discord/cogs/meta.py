@@ -51,15 +51,15 @@ class Meta(commands.Cog):
 											f"`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
 						("Also see:", f"`{ctx.prefix}about`\n`"
 										f"{ctx.prefix}{ctx.invoked_with} help`\n"
-										f"`{ctx.prefix}{ctx.invoked_with} other`"), # TODO: Include stats?
+										f"`{ctx.prefix}{ctx.invoked_with} other`"),  # TODO: Include stats?
 						("For all commands:", f"`{ctx.prefix}{ctx.invoked_with} all`", False))
 			return await ctx.embed_reply(description, title = "Categories", fields = fields)
 		
 		def repl(obj):
-			return _mentions_transforms.get(obj.group(0), '')
+			return _mentions_transforms.get(obj.group(0), "")
 		
+		name = _mention_pattern.sub(repl, commands[0])
 		if len(commands) == 1:
-			name = _mention_pattern.sub(repl, commands[0])
 			if name in self.bot.cogs:
 				command = self.bot.cogs[name]
 			elif name.lower() in self.bot.all_commands:
@@ -74,7 +74,6 @@ class Meta(commands.Cog):
 				return await ctx.embed_reply(output)
 			embeds = await self.bot.formatter.format_help_for(ctx, command)
 		else:
-			name = _mention_pattern.sub(repl, commands[0])
 			command = self.bot.all_commands.get(name)
 			if command is None:
 				return await ctx.embed_reply(self.command_not_found.format(name))
