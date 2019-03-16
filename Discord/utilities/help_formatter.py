@@ -15,6 +15,7 @@ class CustomHelpFormatter(HelpFormatter):
 	def __init__(self, embed_color):
 		self.embed_color = embed_color
 		self.embed_total_limit = 6000
+		self.embed_description_limit = 2048
 		self.embed_field_limit = 1024
 		self.embed_codeblock_row_limit = 55
 		self.embed_fields_limit = 25
@@ -22,7 +23,7 @@ class CustomHelpFormatter(HelpFormatter):
 	
 	async def format(self):
 		'''Format'''
-		description_paginator = Paginator(max_size = 2048)
+		description_paginator = Paginator(max_size = self.embed_description_limit)
 		max_width = self.max_name_size
 		if not isinstance(self.command, Command) or self.has_subcommands():
 			filtered_command_list = await self.filter_command_list()
@@ -63,14 +64,14 @@ class CustomHelpFormatter(HelpFormatter):
 				description_paginator.close_page()
 				if not self.command.help:
 					return [discord.Embed(title = title, description = self.command.description, color = self.embed_color)]
-				elif len(self.command.help) <= 2048:
+				elif len(self.command.help) <= self.embed_description_limit:
 					description = clients.code_block.format(self.command.help) if "  " in self.command.help else self.command.help
 					description += "\n" + self.command.description
 					return [discord.Embed(title = title, description = description, color = self.embed_color)]
 				return self.embeds(title, description_paginator)
 			subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 			subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
-			if (not self.command.help or len(self.command.help) <= 2048) and len('\n'.join(subcommand_lines)) <= self.embed_field_limit - 8:
+			if (not self.command.help or len(self.command.help) <= self.embed_description_limit) and len('\n'.join(subcommand_lines)) <= self.embed_field_limit - 8:
 			# 8: len("```\n") * 2
 				embed = discord.Embed(color = self.embed_color)
 				value = "{}\n".format(description_paginator.pages[0]) if description_paginator.pages else ""
