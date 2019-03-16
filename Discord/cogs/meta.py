@@ -43,12 +43,13 @@ class Meta(commands.Cog):
 		Inputs in square brackets, [], are optional
 		If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
 		'''
+		# TODO: pass alias used to help formatter?
 		if len(commands) == 0:
 			embed = discord.Embed(title = "Categories", color = ctx.bot.bot_color)
 			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 			embed.description = "  ".join("`{}`".format(category) for category in sorted(self.bot.cogs, key = str.lower))
 			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
-			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} help`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with)) # stats?
+			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} help`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with))  # TODO: include stats?
 			embed.add_field(name = "For all commands:", value = "`{}{} all`".format(ctx.prefix, ctx.invoked_with), inline = False)
 			await ctx.send(embed = embed)
 			return
@@ -62,7 +63,7 @@ class Meta(commands.Cog):
 				command = self.bot.cogs[name]
 			elif name.lower() in self.bot.all_commands:
 				command = self.bot.all_commands[name.lower()]
-			elif name.lower() in [cog.lower() for cog in self.bot.cogs.keys()]: # more efficient way?
+			elif name.lower() in [cog.lower() for cog in self.bot.cogs.keys()]:  # TODO: More efficient way?
 				command = discord.utils.find(lambda c: c[0].lower() == name.lower(), self.bot.cogs.items())[1]
 			else:
 				output = self.command_not_found.format(name)
