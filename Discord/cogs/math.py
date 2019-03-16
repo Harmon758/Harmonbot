@@ -88,6 +88,23 @@ class Math(commands.Cog):
 		'''Greatest common divisor'''
 		await ctx.embed_reply(math.gcd(value_a, value_b))
 	
+	@commands.command(aliases = ['π'])
+	async def pi(self, ctx, digits : int = 3, start : int = 1):
+		'''Digits of pi'''
+		# Handle decimal point being considered digit
+		if start <= 1:
+			start = 0
+			# Don't exceed 1000 digit limit
+			if 1 < digits < 1000:
+				digits += 1
+		url = "https://api.pi.delivery/v1/pi"
+		params = {"start": start, "numberOfDigits": digits}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		if "content" in data:
+			return await ctx.embed_reply(data["content"])
+		await ctx.embed_reply(f":no_entry: Error: {data.get('Error', 'N/A')}")
+	
 	@commands.command(aliases = ["squareroot", "square_root"])
 	async def sqrt(self, ctx, value : float):
 		'''Square root'''
