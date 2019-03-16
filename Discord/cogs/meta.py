@@ -43,11 +43,15 @@ class Meta(commands.Cog):
 		Inputs in square brackets, [], are optional
 		If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
 		'''
-		# TODO: pass alias used to help formatter?
+		# TODO: Pass alias used to help formatter?
 		if not commands:
 			description = "  ".join(f"`{category}`" for category in sorted(self.bot.cogs, key = str.lower))
-			fields = (("For more info:", f"`{ctx.prefix}{ctx.invoked_with} [category]`\n`{ctx.prefix}{ctx.invoked_with} [command]`\n`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
-						("Also see:", f"`{ctx.prefix}about`\n`{ctx.prefix}{ctx.invoked_with} help`\n`{ctx.prefix}{ctx.invoked_with} other`"), # TODO: include stats?
+			fields = (("For more info:", f"`{ctx.prefix}{ctx.invoked_with} [category]`\n"
+											f"`{ctx.prefix}{ctx.invoked_with} [command]`\n"
+											f"`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
+						("Also see:", f"`{ctx.prefix}about`\n`"
+										f"{ctx.prefix}{ctx.invoked_with} help`\n"
+										f"`{ctx.prefix}{ctx.invoked_with} other`"), # TODO: Include stats?
 						("For all commands:", f"`{ctx.prefix}{ctx.invoked_with} all`", False))
 			return await ctx.embed_reply(description, title = "Categories", fields = fields)
 		
