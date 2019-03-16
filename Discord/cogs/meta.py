@@ -47,10 +47,10 @@ class Meta(commands.Cog):
 		if len(commands) == 0:
 			embed = discord.Embed(title = "Categories", color = ctx.bot.bot_color)
 			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			embed.description = "  ".join("`{}`".format(category) for category in sorted(self.bot.cogs, key = str.lower))
-			embed.add_field(name = "For more info:", value = "`{0}{1} [category]`\n`{0}{1} [command]`\n`{0}{1} [command] [subcommand]`".format(ctx.prefix, ctx.invoked_with))
-			embed.add_field(name = "Also see:", value = "`{0}about`\n`{0}{1} help`\n`{0}{1} other`".format(ctx.prefix, ctx.invoked_with))  # TODO: include stats?
-			embed.add_field(name = "For all commands:", value = "`{}{} all`".format(ctx.prefix, ctx.invoked_with), inline = False)
+			embed.description = "  ".join(f"`{category}`" for category in sorted(self.bot.cogs, key = str.lower))
+			embed.add_field(name = "For more info:", value = f"`{ctx.prefix}{ctx.invoked_with} [category]`\n`{ctx.prefix}{ctx.invoked_with} [command]`\n`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`")
+			embed.add_field(name = "Also see:", value = f"`{ctx.prefix}about`\n`{ctx.prefix}{ctx.invoked_with} help`\n`{ctx.prefix}{ctx.invoked_with} other`")  # TODO: include stats?
+			embed.add_field(name = "For all commands:", value = f"`{ctx.prefix}{ctx.invoked_with} all`", inline = False)
 			await ctx.send(embed = embed)
 			return
 		
@@ -69,7 +69,7 @@ class Meta(commands.Cog):
 				output = self.command_not_found.format(name)
 				close_matches = difflib.get_close_matches(name, self.bot.all_commands.keys(), n = 1)
 				if close_matches:
-					output += "\nDid you mean `{}`?".format(close_matches[0])
+					output += f"\nDid you mean `{close_matches[0]}`?"
 				await ctx.embed_reply(output)
 				return
 			embeds = await self.bot.formatter.format_help_for(ctx, command)
@@ -87,7 +87,7 @@ class Meta(commands.Cog):
 						await ctx.embed_reply(self.command_not_found.format(key))
 						return
 				except AttributeError:
-					await ctx.embed_reply("`{}` command has no subcommands".format(command.name))
+					await ctx.embed_reply(f"`{command.name}` command has no subcommands")
 					return
 			embeds = await self.bot.formatter.format_help_for(ctx, command)
 		
