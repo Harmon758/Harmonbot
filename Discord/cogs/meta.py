@@ -44,13 +44,12 @@ class Meta(commands.Cog):
 		If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
 		'''
 		# TODO: pass alias used to help formatter?
-		if len(commands) == 0:
+		if not commands:
 			description = "  ".join(f"`{category}`" for category in sorted(self.bot.cogs, key = str.lower))
 			fields = (("For more info:", f"`{ctx.prefix}{ctx.invoked_with} [category]`\n`{ctx.prefix}{ctx.invoked_with} [command]`\n`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
 						("Also see:", f"`{ctx.prefix}about`\n`{ctx.prefix}{ctx.invoked_with} help`\n`{ctx.prefix}{ctx.invoked_with} other`"), # TODO: include stats?
 						("For all commands:", f"`{ctx.prefix}{ctx.invoked_with} all`", False))
-			await ctx.embed_reply(description, title = "Categories", fields = fields)
-			return
+			return await ctx.embed_reply(description, title = "Categories", fields = fields)
 		
 		def repl(obj):
 			return _mentions_transforms.get(obj.group(0), '')
@@ -68,25 +67,21 @@ class Meta(commands.Cog):
 				close_matches = difflib.get_close_matches(name, self.bot.all_commands.keys(), n = 1)
 				if close_matches:
 					output += f"\nDid you mean `{close_matches[0]}`?"
-				await ctx.embed_reply(output)
-				return
+				return await ctx.embed_reply(output)
 			embeds = await self.bot.formatter.format_help_for(ctx, command)
 		else:
 			name = _mention_pattern.sub(repl, commands[0])
 			command = self.bot.all_commands.get(name)
 			if command is None:
-				await ctx.embed_reply(self.command_not_found.format(name))
-				return
+				return await ctx.embed_reply(self.command_not_found.format(name))
 			for key in commands[1:]:
 				try:
 					key = _mention_pattern.sub(repl, key)
 					command = command.all_commands.get(key)
 					if command is None:
-						await ctx.embed_reply(self.command_not_found.format(key))
-						return
+						return await ctx.embed_reply(self.command_not_found.format(key))
 				except AttributeError:
-					await ctx.embed_reply(f"`{command.name}` command has no subcommands")
-					return
+					return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
 			embeds = await self.bot.formatter.format_help_for(ctx, command)
 		
 		if len(embeds) > 1:
