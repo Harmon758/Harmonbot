@@ -113,15 +113,13 @@ class Meta(commands.Cog):
 		'''Additional commands and information'''
 		# TODO: Update
 		# TODO: Add last updated date?
-		embed = discord.Embed(title = f"Commands not in {ctx.prefix}help", color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		embed.description = f"See `{ctx.prefix}help` for the main commands"
-		embed.add_field(name = "Conversion Commands", value = f"see `{ctx.prefix}conversions`", inline = False)
-		embed.add_field(name = "In Progress", value = "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", inline = False)
-		embed.add_field(name = "Misc", value = "invite randomgame test test_on_message", inline = False)
-		embed.add_field(name = "Owner Only", value = "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", inline = False)
-		embed.add_field(name = "No Prefix", value = "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", inline = False)
-		await ctx.send(embed = embed)
+		fields = (("Conversion Commands", f"see `{ctx.prefix}conversions`", False), 
+					("In Progress", "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", False), 
+					("Misc", "invite randomgame test test_on_message", False), 
+					("Owner Only", "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", False), 
+					("No Prefix", "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", False))
+		await ctx.embed_reply(f"See `{ctx.prefix}help` for the main commands", 
+								title = f"Commands not in {ctx.prefix}help", fields = fields)
 	
 	@commands.command()
 	@commands.is_owner()
