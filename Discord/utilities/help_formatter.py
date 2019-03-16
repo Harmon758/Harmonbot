@@ -51,7 +51,7 @@ class CustomHelpFormatter(HelpFormatter):
 					else:
 						embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
 					for page in field_paginator.pages[1:]:
-						embeds[-1].add_field(name = "{} (continued)".format(category), value = page, inline = False)
+						embeds[-1].add_field(name = f"{category} (continued)", value = page, inline = False)
 			return embeds
 		elif isinstance(self.command, Command):
 			# <signature portion>
@@ -74,22 +74,22 @@ class CustomHelpFormatter(HelpFormatter):
 			if (not self.command.help or len(self.command.help) <= self.embed_description_limit) and len('\n'.join(subcommand_lines)) <= self.embed_field_limit - 8:
 			# 8: len("```\n") * 2
 				embed = discord.Embed(color = self.embed_color)
-				value = "{}\n".format(description_paginator.pages[0]) if description_paginator.pages else ""
+				value = f"{description_paginator.pages[0]}\n" if description_paginator.pages else ""
 				value += self.command.description
 				if not value:
 					embed.title = title
 				else:
 					embed.add_field(name = title, value = value, inline = False)
-				embed.add_field(name = "Subcommands for {}".format(self.command), value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
+				embed.add_field(name = f"Subcommands for {self.command}", value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
 				return [embed]
-			description_paginator.add_line("Subcommands for {}:".format(self.command))
+			description_paginator.add_line(f"Subcommands for {self.command}:")
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
 		else: # cog
 			description = inspect.getdoc(self.command)
 			if description:
 				# <description> portion
 				description_paginator.add_line(description, empty = True)
-			title = "{} Commands".format(type(self.command).__name__)
+			title = f"{type(self.command).__name__} Commands"
 			subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
 		return self.embeds(title, description_paginator)
@@ -126,15 +126,15 @@ class CustomHelpFormatter(HelpFormatter):
 				continue
 			prefix = "┃ " if isinstance(command, Group) and command.commands else " "
 			buffer = 2 if isinstance(command, Group) and command.commands else 0
-			line = "{0:<{width}}  {1}".format(name, command.short_doc, width = max_width)
+			line = f"{name:<{max_width}}  {command.short_doc}"
 			lines = self.append_subcommand_line(lines, line, max_width, prefix, buffer)
 			# Add subcommands of subcommands
 			if isinstance(command, Group) and command.commands:
 				subcommands = sorted(command.commands, key = lambda c: c.name)
 				for subcommand in subcommands[:-1]:
-					line = "┣ {0:<{width}}  {1}".format(subcommand.name, subcommand.short_doc, width = max_width - 2)
+					line = f"┣ {subcommand.name:<{max_width - 2}}  {subcommand.short_doc}"
 					lines = self.append_subcommand_line(lines, line, max_width, "┃ ", 1)
-				line = "┗ {0:<{width}}  {1}".format(subcommands[-1].name, subcommands[-1].short_doc, width = max_width - 2)
+				line = f"┗ {subcommands[-1].name:<{max_width - 2}}  {subcommands[-1].short_doc}"
 				lines = self.append_subcommand_line(lines, line, max_width, "  ", 0)
 		return lines
 	
