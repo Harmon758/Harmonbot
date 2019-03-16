@@ -113,10 +113,10 @@ class Meta(commands.Cog):
 		'''Additional commands and information'''
 		# TODO: Update
 		# TODO: Add last updated date?
-		embed = discord.Embed(title = "Commands not in {}help".format(ctx.prefix), color = ctx.bot.bot_color)
+		embed = discord.Embed(title = f"Commands not in {ctx.prefix}help", color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		embed.description = "See `{}help` for the main commands".format(ctx.prefix)
-		embed.add_field(name = "Conversion Commands", value = "see `{}conversions`".format(ctx.prefix), inline = False)
+		embed.description = f"See `{ctx.prefix}help` for the main commands"
+		embed.add_field(name = "Conversion Commands", value = f"see `{ctx.prefix}conversions`", inline = False)
 		embed.add_field(name = "In Progress", value = "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", inline = False)
 		embed.add_field(name = "Misc", value = "invite randomgame test test_on_message", inline = False)
 		embed.add_field(name = "Owner Only", value = "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", inline = False)
