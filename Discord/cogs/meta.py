@@ -45,13 +45,11 @@ class Meta(commands.Cog):
 		'''
 		# TODO: pass alias used to help formatter?
 		if len(commands) == 0:
-			embed = discord.Embed(title = "Categories", color = ctx.bot.bot_color)
-			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			embed.description = "  ".join(f"`{category}`" for category in sorted(self.bot.cogs, key = str.lower))
-			embed.add_field(name = "For more info:", value = f"`{ctx.prefix}{ctx.invoked_with} [category]`\n`{ctx.prefix}{ctx.invoked_with} [command]`\n`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`")
-			embed.add_field(name = "Also see:", value = f"`{ctx.prefix}about`\n`{ctx.prefix}{ctx.invoked_with} help`\n`{ctx.prefix}{ctx.invoked_with} other`")  # TODO: include stats?
-			embed.add_field(name = "For all commands:", value = f"`{ctx.prefix}{ctx.invoked_with} all`", inline = False)
-			await ctx.send(embed = embed)
+			description = "  ".join(f"`{category}`" for category in sorted(self.bot.cogs, key = str.lower))
+			fields = (("For more info:", f"`{ctx.prefix}{ctx.invoked_with} [category]`\n`{ctx.prefix}{ctx.invoked_with} [command]`\n`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
+						("Also see:", f"`{ctx.prefix}about`\n`{ctx.prefix}{ctx.invoked_with} help`\n`{ctx.prefix}{ctx.invoked_with} other`"), # TODO: include stats?
+						("For all commands:", f"`{ctx.prefix}{ctx.invoked_with} all`", False))
+			await ctx.embed_reply(description, title = "Categories", fields = fields)
 			return
 		
 		def repl(obj):
