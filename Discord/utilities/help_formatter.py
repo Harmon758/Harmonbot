@@ -7,6 +7,7 @@ import inspect
 import itertools
 
 import clients
+# TODO: Remove clients import
 
 class CustomHelpFormatter(HelpFormatter):
 	
@@ -20,6 +21,13 @@ class CustomHelpFormatter(HelpFormatter):
 		self.embed_codeblock_row_limit = 55
 		self.embed_fields_limit = 25
 		super().__init__()
+	
+	# TODO: Update codeblock row limit
+	# TODO: Capitalize constants
+	# TODO: Use Bot attribute constants?
+	
+	# TODO: Separate embeds instead of fields with (continued) title?
+	# TODO: ZWS instead of (continued) title?
 	
 	async def format(self):
 		'''Format'''
@@ -39,13 +47,13 @@ class CustomHelpFormatter(HelpFormatter):
 				if len(commands) > 0:
 					field_paginator = Paginator(max_size = self.embed_field_limit)
 					self._add_subcommands_to_page(max_width, commands, field_paginator)
-					# Embed Limit
+					# Embed Limits
 					total_paginator_characters = len(field_paginator.pages) * len(category + " (coninued)") 
 					for page in field_paginator.pages:
 						total_paginator_characters += len(page)
 					if len(embeds[-1]) + total_paginator_characters > self.embed_total_limit:
 						embeds.append(discord.Embed(color = self.embed_color))
-					# 
+					# TODO: Add until limit?
 					if len(embeds[-1].fields) <= self.embed_fields_limit - len(field_paginator.pages):
 						embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
 					else:
@@ -84,7 +92,7 @@ class CustomHelpFormatter(HelpFormatter):
 				return [embed]
 			description_paginator.add_line(f"Subcommands for {self.command}:")
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
-		else: # cog
+		else:  # cog
 			description = inspect.getdoc(self.command)
 			if description:
 				# <description> portion
@@ -122,7 +130,8 @@ class CustomHelpFormatter(HelpFormatter):
 				max_width += 3
 				break
 		for name, command in commands:
-			if name in command.aliases: # skip aliases
+			# Skip aliases
+			if name in command.aliases:
 				continue
 			prefix = "┃ " if isinstance(command, Group) and command.commands else " "
 			buffer = 2 if isinstance(command, Group) and command.commands else 0
