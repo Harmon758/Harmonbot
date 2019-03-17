@@ -80,10 +80,13 @@ class Images(commands.Cog):
 		# TODO: handle 403 daily limit exceeded error
 	
 	@image.command(name = "recognition")
-	async def image_recognition(self, ctx, image_url : str):
+	async def image_recognition(self, ctx, image_url : str = ""):
 		'''Image recognition'''
+		if not (image_url or ctx.message.attachments):
+			return await ctx.embed_reply(":no_entry: Please input an image and/or url")
+		image = image_url or ctx.message.attachments[0].url
 		try:
-			response = self.bot.clarifai_app.public_models.general_model.predict_by_url(image_url)
+			response = self.bot.clarifai_app.public_models.general_model.predict_by_url(image)
 		except clarifai.rest.ApiError as e:
 			return await ctx.embed_reply(f":no_entry: Error: `{e.response.json()['outputs'][0]['status']['details']}`")
 		if response["status"]["description"] != "Ok":
@@ -95,7 +98,7 @@ class Images(commands.Cog):
 		for name, value in sorted(names.items(), key = lambda i: i[1], reverse = True):
 			output += f"**{name}**: {value:.2f}%, "
 		output = output[:-2]
-		await ctx.embed_reply(output, thumbnail_url = image_url)
+		await ctx.embed_reply(output, thumbnail_url = image)
 	
 	# TODO: add as search subcommand
 	@commands.group(invoke_without_command = True)
