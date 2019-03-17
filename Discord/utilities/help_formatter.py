@@ -54,7 +54,7 @@ class CustomHelpFormatter(HelpFormatter):
 					if len(embeds[-1]) + total_paginator_characters > self.embed_total_limit:
 						embeds.append(discord.Embed(color = self.embed_color))
 					# TODO: Add until limit?
-					if len(embeds[-1].fields) <= self.embed_fields_limit - len(field_paginator.pages):
+					if len(embeds[-1].fields) + len(field_paginator.pages) <= self.embed_fields_limit:
 						embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
 					else:
 						embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
