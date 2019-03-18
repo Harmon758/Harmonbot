@@ -121,7 +121,7 @@ class HelpCommand(commands.HelpCommand):
 			if self.command.help:
 				description_paginator.add_line(self.command.help, empty = True)
 			# end it here if it's just a regular command
-			if not self.has_subcommands() or not list(filtered_command_list):
+			if not self.has_subcommands() or not filtered_command_list:
 				description_paginator.close_page()
 				if not self.command.help:
 					return [discord.Embed(title = title, description = self.command.description, color = self.embed_color)]
