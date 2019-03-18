@@ -156,8 +156,12 @@ class Images(commands.Cog):
 			await ctx.embed_reply(image_url = result.link)
 	
 	@commands.command()
-	async def nsfw(self, ctx, image_url : str):
+	async def nsfw(self, ctx, image_url : Optional[str]):
 		'''NSFW recognition'''
+		if not image_url:
+			if not ctx.message.attachments:
+				return await ctx.embed_reply(":no_entry: Please input an image and/or url")
+			image_url = ctx.message.attachments[0].url
 		try:
 			response = self.bot.clarifai_app.public_models.nsfw_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
