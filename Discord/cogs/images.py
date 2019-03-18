@@ -44,11 +44,15 @@ class Images(commands.Cog):
 		await ctx.invoke(ctx.bot.get_command("help"), ctx.invoked_with)
 	
 	@image.command(name = "color", aliases = ["colour"])
-	async def image_color(self, ctx, image_url : str):
+	async def image_color(self, ctx, image_url : Optional[str]):
 		'''
 		Image color density values
 		and the closest W3C color name for each identified color
 		'''
+		if not image_url:
+			if not ctx.message.attachments:
+				return await ctx.embed_reply(":no_entry: Please input an image and/or url")
+			image_url = ctx.message.attachments[0].url
 		try:
 			response = self.bot.clarifai_app.public_models.color_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
