@@ -1,7 +1,7 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import Command, Group, Paginator
+from discord.ext.commands import Command, Group, GroupMixin, Paginator
 
 import inspect
 import itertools
@@ -28,6 +28,49 @@ class HelpCommand(commands.HelpCommand):
 	
 	# TODO: Separate embeds instead of fields with (continued) title?
 	# TODO: ZWS instead of (continued) title?
+	
+	def has_subcommands(self):
+		return isinstance(self.command, GroupMixin)
+	
+	def is_bot(self):
+		return self.command is self.context.bot
+	
+	def is_cog(self):
+		return not self.is_bot() and not isinstance(self.command, Command)
+	
+	async def filter_command_list(self):
+		def sane_no_suspension_point_predicate(tup):
+			cmd = tup[1]
+			if self.is_cog():
+				# filter commands that don't exist to this cog.
+				if cmd.cog is not self.command:
+					return False
+			if cmd.hidden and not self.show_hidden:
+				return False
+			return True
+		async def predicate(tup):
+			if sane_no_suspension_point_predicate(tup) is False:
+				return False
+			cmd = tup[1]
+			try:
+				return await cmd.can_run(self.context)
+			except CommandError:
+				return False
+		iterator = self.command.all_commands.items() if not self.is_cog() else self.context.bot.all_commands.items()
+		if self.show_check_failure:
+			return filter(sane_no_suspension_point_predicate, iterator)
+		# Gotta run every check and verify it
+		ret = []
+		for elem in iterator:
+			valid = await predicate(elem)
+			if valid:
+				ret.append(elem)
+		return ret
+	
+	async def format_help_for(self, context, command_or_bot):
+		self.context = context
+		self.command = command_or_bot
+		return await self.format()
 	
 	async def format(self):
 		'''Format'''
