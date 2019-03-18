@@ -69,9 +69,9 @@ class Bot(commands.Bot):
 		self.stream_url = "https://www.twitch.tv/harmonbot"
 		
 		# Initialization
-		help_formatter = CustomHelpFormatter(self.bot_color)
+		help_command = HelpCommand(self.bot_color)
 		activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url)
-		super().__init__(command_prefix = command_prefix, formatter = help_formatter, 
+		super().__init__(command_prefix = command_prefix, help_command = help_command, 
 							activity = activity, case_insensitive = True)
 		
 		# Constants
@@ -231,9 +231,6 @@ class Bot(commands.Bot):
 		self.reload = staticmethod(self.reload)
 		self.load_aiml = staticmethod(self.load_aiml)
 		self.unload_aiml = staticmethod(self.unload_aiml)
-		
-		# Remove default help command (to override)
-		self.remove_command("help")
 		
 		# Load cogs
 		for file in sorted(os.listdir("cogs")):
