@@ -991,7 +991,7 @@ class Games(commands.Cog):
 		# TODO: Randomly add reactions
 		response = await ctx.send("Please choose 10 reactions")
 		while len(response.reactions) < 10:
-			await self.bot.wait_for_reaction(message = response)
+			await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id)
 			response = await ctx.channel.get_message(response.id)
 		reactions = response.reactions
 		reaction = random.choice(reactions)
@@ -1008,7 +1008,8 @@ class Games(commands.Cog):
 			await asyncio.sleep(1)
 		await response.edit(content = "First to select the reaction {} wins. Go!".format(reaction.emoji))
 		start_time = timeit.default_timer()
-		winner = await self.bot.wait_for_reaction(message = response, emoji = reaction.emoji)
+		winner = await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id and r.emoji == reaction.emoji)
+		# TODO: Support reaction remove
 		elapsed = timeit.default_timer() - start_time
 		await response.edit(content = "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
 	
