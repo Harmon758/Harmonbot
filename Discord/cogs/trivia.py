@@ -102,7 +102,10 @@ class Trivia(commands.Cog):
 			await asyncio.sleep(1)
 			self.active[answer_message.guild.id]["question_countdown"] -= 1
 			embed.set_footer(text = f"You have {self.active[answer_message.guild.id]['question_countdown']} seconds left to answer")
-			await answer_message.edit(embed = embed)
+			try:
+				await answer_message.edit(embed = embed)
+			except aiohttp.ClientConnectionError:
+				continue
 		embed.set_footer(text = "Time's up!")
 		await answer_message.edit(embed = embed)
 		correct_players = []
