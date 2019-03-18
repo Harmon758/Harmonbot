@@ -101,12 +101,12 @@ class Lichess(commands.Cog):
 			url = f"https://en.lichess.org/api/user/{argument}"
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				if resp.status == 404:
-					raise commands.BadArgument
+					raise commands.BadArgument("User not found")
 				data = await resp.json()
-			if not data or data.get("closed"):
-				raise commands.BadArgument
-			# await ctx.embed_reply(":no_entry: User not found")
-			# TODO: custom error message?
+			if not data:
+				raise commands.BadArgument("User not found")
+			if data.get("closed"):
+				raise commands.BadArgument("This account is closed")
 			return data
 
 	@commands.group(invoke_without_command = True)
