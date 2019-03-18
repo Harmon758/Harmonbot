@@ -144,7 +144,7 @@ class Respects(commands.Cog):
 		last_power_of_10 = math.ceil(numpy.log10(max(respects_paid)))
 		bins = (10 ** numpy.arange(last_power_of_10))[:, numpy.newaxis] * numpy.arange(1, 10)
 		bins = bins.flatten()
-		matplotlib.pyplot.hist(respects_paid, bins = bins, log = True)
+		matplotlib.pyplot.hist(respects_paid, bins = bins, log = True, ec = "black")
 		## bin_centers = bins[:-1] + numpy.diff(bins) / 2
 		## def func(x, a, b, c):
 		##	return a * numpy.exp(-b * x) + c
