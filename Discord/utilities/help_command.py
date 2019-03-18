@@ -1,7 +1,7 @@
 
 import discord
-from discord.ext.commands.formatter import HelpFormatter, Paginator
-from discord.ext.commands import Command, Group
+from discord.ext import commands
+from discord.ext.commands import Command, Group, Paginator
 
 import inspect
 import itertools
@@ -9,9 +9,9 @@ import itertools
 import clients
 # TODO: Remove clients import
 
-class CustomHelpFormatter(HelpFormatter):
+class HelpCommand(commands.HelpCommand):
 	
-	'''Custom Help Formatter'''
+	'''Custom Help Command'''
 	
 	def __init__(self, embed_color):
 		self.embed_color = embed_color

@@ -32,7 +32,7 @@ from wordnik import swagger, WordApi, WordsApi
 
 from utilities import errors
 from utilities.context import Context
-from utilities.help_formatter import CustomHelpFormatter
+from utilities.help_command import HelpCommand
 
 # TODO: Relocate as Bot variables
 beta = any("beta" in arg.lower() for arg in sys.argv)

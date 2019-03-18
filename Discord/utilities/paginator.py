@@ -1,5 +1,5 @@
 
-from discord.ext.commands.formatter import Paginator
+from discord.ext.commands import Paginator
 
 class CustomPaginator(Paginator):
 	
