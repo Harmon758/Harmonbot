@@ -1,13 +1,11 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
 
 import asyncio
 import datetime
 import copy
 import ctypes
-import difflib
 import inspect
 import json
 import os
@@ -32,93 +30,6 @@ class Meta(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		clients.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
-		self.command_not_found = "No command called `{}` found"
-	
-	@commands.group(aliases = ["commands"], hidden = True, invoke_without_command = True)
-	@checks.dm_or_has_capability("embed_links")
-	async def help(self, ctx, *commands : str):
-		'''
-		Shows this message
-		Inputs in angle brackets, <>, are required
-		Inputs in square brackets, [], are optional
-		If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
-		'''
-		# TODO: Pass alias used to help formatter?
-		if not commands:
-			description = "  ".join(f"`{category}`" for category in sorted(ctx.bot.cogs, key = str.lower))
-			fields = (("For more info:", f"`{ctx.prefix}{ctx.invoked_with} [category]`\n"
-											f"`{ctx.prefix}{ctx.invoked_with} [command]`\n"
-											f"`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
-						("Also see:", f"`{ctx.prefix}about`\n`"
-										f"{ctx.prefix}{ctx.invoked_with} help`\n"
-										f"`{ctx.prefix}{ctx.invoked_with} other`"),  # TODO: Include stats?
-						("For all commands:", f"`{ctx.prefix}{ctx.invoked_with} all`", False))
-			return await ctx.embed_reply(description, title = "Categories", fields = fields)
-		
-		def repl(obj):
-			return _mentions_transforms.get(obj.group(0), "")
-		
-		name = _mention_pattern.sub(repl, commands[0])
-		if len(commands) == 1:
-			if name in ctx.bot.cogs:
-				command = ctx.bot.cogs[name]
-			elif name.lower() in ctx.bot.all_commands:
-				command = ctx.bot.all_commands[name.lower()]
-			elif name.lower() in [cog.lower() for cog in ctx.bot.cogs.keys()]:  # TODO: More efficient way?
-				command = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())[1]
-			else:
-				output = self.command_not_found.format(name)
-				close_matches = difflib.get_close_matches(name, ctx.bot.all_commands.keys(), n = 1)
-				if close_matches:
-					output += f"\nDid you mean `{close_matches[0]}`?"
-				return await ctx.embed_reply(output)
-			embeds = await ctx.bot.formatter.format_help_for(ctx, command)
-		else:
-			command = ctx.bot.all_commands.get(name)
-			if command is None:
-				return await ctx.embed_reply(self.command_not_found.format(name))
-			for key in commands[1:]:
-				try:
-					key = _mention_pattern.sub(repl, key)
-					command = command.all_commands.get(key)
-					if command is None:
-						return await ctx.embed_reply(self.command_not_found.format(key))
-				except AttributeError:
-					return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
-			embeds = await ctx.bot.formatter.format_help_for(ctx, command)
-		
-		if len(embeds) > 1:
-			destination = ctx.author
-			if not isinstance(ctx.channel, discord.DMChannel):
-				await ctx.embed_reply("Check your DMs")
-		else:
-			destination = ctx.channel
-		for embed in embeds:
-			if destination == ctx.channel:
-				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			await destination.send(embed = embed)
-	
-	@help.command(name = "all")
-	async def help_all(self, ctx):
-		'''All commands'''
-		embeds = await ctx.bot.formatter.format_help_for(ctx, ctx.bot)
-		for embed in embeds:
-			await ctx.whisper(embed = embed)
-		if not isinstance(ctx.channel, discord.DMChannel):
-			await ctx.embed_reply("Check your DMs")
-	
-	@help.command(name = "other")
-	async def help_other(self, ctx):
-		'''Additional commands and information'''
-		# TODO: Update
-		# TODO: Add last updated date?
-		fields = (("Conversion Commands", f"see `{ctx.prefix}conversions`", False), 
-					("In Progress", "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", False), 
-					("Misc", "invite randomgame test test_on_message", False), 
-					("Owner Only", "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", False), 
-					("No Prefix", "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", False))
-		await ctx.embed_reply(f"See `{ctx.prefix}help` for the main commands", 
-								title = f"Commands not in {ctx.prefix}help", fields = fields)
 	
 	@commands.command()
 	@commands.is_owner()
