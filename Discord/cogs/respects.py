@@ -170,14 +170,16 @@ class Respects(commands.Cog):
 								image_url = "attachment://respects.png", file = discord.File(filename))
 	
 	@respects.command(aliases = ["most"])
-	async def top(self, ctx):
+	async def top(self, ctx, number : int = 10):
 		'''Top respects paid'''
+		if number > 10:
+			number = 10
 		fields = []
 		async with ctx.bot.database_connection_pool.acquire() as connection:
 			async with connection.transaction():
 				# Postgres requires non-scrollable cursors to be created
 				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM respects.users ORDER BY respects DESC LIMIT 10"):
+				async for record in connection.cursor("SELECT * FROM respects.users ORDER BY respects DESC LIMIT $1", number):
 					user = ctx.bot.get_user(record["user_id"])
 					if not user:
 						user = await ctx.bot.get_user_info(record["user_id"])
