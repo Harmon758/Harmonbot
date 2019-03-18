@@ -101,7 +101,7 @@ class Meta(commands.Cog):
 	@help.command(name = "all")
 	async def help_all(self, ctx):
 		'''All commands'''
-		embeds = await self.bot.formatter.format_help_for(ctx, self.bot)
+		embeds = await ctx.bot.formatter.format_help_for(ctx, ctx.bot)
 		for embed in embeds:
 			await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
