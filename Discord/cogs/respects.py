@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 ## import astropy.modeling
+import math
 import matplotlib
 import numpy
 ## import scipy
@@ -140,8 +141,10 @@ class Respects(commands.Cog):
 		filename = ctx.bot.data_path + "/temp/respects.png"
 		# TODO: Fit curve
 		## n, bins, _ = matplotlib.pyplot.hist(respects_paid, log = True, 
-		matplotlib.pyplot.hist(respects_paid, log = True, 
-								bins = numpy.logspace(numpy.log10(1), numpy.log10(max(respects_paid)), 50))
+		last_power_of_10 = math.ceil(numpy.log10(max(respects_paid)))
+		bins = (10 ** numpy.arange(last_power_of_10))[:, numpy.newaxis] * numpy.arange(1, 10)
+		bins = bins.flatten()
+		matplotlib.pyplot.hist(respects_paid, bins = bins, log = True)
 		## bin_centers = bins[:-1] + numpy.diff(bins) / 2
 		## def func(x, a, b, c):
 		##	return a * numpy.exp(-b * x) + c
