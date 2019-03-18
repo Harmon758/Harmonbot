@@ -234,7 +234,7 @@ class HelpCommand(commands.HelpCommand):
 		if len(commands) == 1:
 			if commands[0] == "all":
 				'''All commands'''
-				embeds = await ctx.bot.formatter.format_help_for(ctx, ctx.bot)
+				embeds = await self.format_help_for(ctx, ctx.bot)
 				for embed in embeds:
 					await ctx.whisper(embed = embed)
 				if not isinstance(ctx.channel, discord.DMChannel):
@@ -280,7 +280,7 @@ class HelpCommand(commands.HelpCommand):
 				if close_matches:
 					output += f"\nDid you mean `{close_matches[0]}`?"
 				return await ctx.embed_reply(output)
-			embeds = await ctx.bot.formatter.format_help_for(ctx, command)
+			embeds = await self.format_help_for(ctx, command)
 		else:
 			command = ctx.bot.all_commands.get(name)
 			if command is None:
@@ -293,7 +293,7 @@ class HelpCommand(commands.HelpCommand):
 						return await ctx.embed_reply(self.command_not_found.format(key))
 				except AttributeError:
 					return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
-			embeds = await ctx.bot.formatter.format_help_for(ctx, command)
+			embeds = await self.format_help_for(ctx, command)
 		
 		if len(embeds) > 1:
 			destination = ctx.author
