@@ -73,6 +73,8 @@ class Bot(commands.Bot):
 		activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url)
 		super().__init__(command_prefix = command_prefix, help_command = help_command, 
 							activity = activity, case_insensitive = True)
+		## Hide help command
+		self.get_command("help").hidden = True
 		
 		# Constants
 		## Custom
