@@ -45,7 +45,7 @@ class Meta(commands.Cog):
 		'''
 		# TODO: Pass alias used to help formatter?
 		if not commands:
-			description = "  ".join(f"`{category}`" for category in sorted(self.bot.cogs, key = str.lower))
+			description = "  ".join(f"`{category}`" for category in sorted(ctx.bot.cogs, key = str.lower))
 			fields = (("For more info:", f"`{ctx.prefix}{ctx.invoked_with} [category]`\n"
 											f"`{ctx.prefix}{ctx.invoked_with} [command]`\n"
 											f"`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
@@ -60,21 +60,21 @@ class Meta(commands.Cog):
 		
 		name = _mention_pattern.sub(repl, commands[0])
 		if len(commands) == 1:
-			if name in self.bot.cogs:
-				command = self.bot.cogs[name]
-			elif name.lower() in self.bot.all_commands:
-				command = self.bot.all_commands[name.lower()]
-			elif name.lower() in [cog.lower() for cog in self.bot.cogs.keys()]:  # TODO: More efficient way?
-				command = discord.utils.find(lambda c: c[0].lower() == name.lower(), self.bot.cogs.items())[1]
+			if name in ctx.bot.cogs:
+				command = ctx.bot.cogs[name]
+			elif name.lower() in ctx.bot.all_commands:
+				command = ctx.bot.all_commands[name.lower()]
+			elif name.lower() in [cog.lower() for cog in ctx.bot.cogs.keys()]:  # TODO: More efficient way?
+				command = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())[1]
 			else:
 				output = self.command_not_found.format(name)
-				close_matches = difflib.get_close_matches(name, self.bot.all_commands.keys(), n = 1)
+				close_matches = difflib.get_close_matches(name, ctx.bot.all_commands.keys(), n = 1)
 				if close_matches:
 					output += f"\nDid you mean `{close_matches[0]}`?"
 				return await ctx.embed_reply(output)
-			embeds = await self.bot.formatter.format_help_for(ctx, command)
+			embeds = await ctx.bot.formatter.format_help_for(ctx, command)
 		else:
-			command = self.bot.all_commands.get(name)
+			command = ctx.bot.all_commands.get(name)
 			if command is None:
 				return await ctx.embed_reply(self.command_not_found.format(name))
 			for key in commands[1:]:
@@ -85,7 +85,7 @@ class Meta(commands.Cog):
 						return await ctx.embed_reply(self.command_not_found.format(key))
 				except AttributeError:
 					return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
-			embeds = await self.bot.formatter.format_help_for(ctx, command)
+			embeds = await ctx.bot.formatter.format_help_for(ctx, command)
 		
 		if len(embeds) > 1:
 			destination = ctx.author
