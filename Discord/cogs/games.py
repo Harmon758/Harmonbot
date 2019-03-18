@@ -1008,10 +1008,10 @@ class Games(commands.Cog):
 			await asyncio.sleep(1)
 		await response.edit(content = "First to select the reaction {} wins. Go!".format(reaction.emoji))
 		start_time = timeit.default_timer()
-		winner = await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id and r.emoji == reaction.emoji)
+		reaction, winner = await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id and r.emoji == reaction.emoji)
 		# TODO: Support reaction remove
 		elapsed = timeit.default_timer() - start_time
-		await response.edit(content = "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.user.display_name, reaction.emoji, elapsed))
+		await response.edit(content = "{} was the first to select {} and won with a time of {:.5} seconds!".format(winner.display_name, reaction.emoji, elapsed))
 	
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
 	@checks.not_forbidden()
