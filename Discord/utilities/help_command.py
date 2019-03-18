@@ -67,7 +67,7 @@ class HelpCommand(commands.HelpCommand):
 			except CommandError:
 				return False
 		iterator = self.command.all_commands.items() if not self.is_cog() else self.context.bot.all_commands.items()
-		if self.show_check_failure:
+		if self.verify_checks:
 			return filter(sane_no_suspension_point_predicate, iterator)
 		# Gotta run every check and verify it
 		ret = []
