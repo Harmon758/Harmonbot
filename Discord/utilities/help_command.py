@@ -116,7 +116,7 @@ class HelpCommand(commands.HelpCommand):
 			return embeds
 		elif isinstance(self.command, Command):
 			# <signature portion>
-			title = self.get_command_signature()
+			title = self.get_command_signature(self.command)
 			# <long doc> section
 			if self.command.help:
 				description_paginator.add_line(self.command.help, empty = True)
