@@ -226,7 +226,6 @@ class HelpCommand(commands.HelpCommand):
 			embeds.append(discord.Embed(description = page, color = self.embed_color))
 		return embeds
 	
-	# aliases = ["commands"]
 	# @checks.dm_or_has_capability("embed_links")
 	async def command_callback(self, ctx, *commands : str):
 		if len(commands) == 1:
