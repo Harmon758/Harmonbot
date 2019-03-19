@@ -53,6 +53,8 @@ class HelpCommand(commands.HelpCommand):
 		await ctx.embed_reply(description, title = "Categories", fields = fields)
 	
 	async def send_cog_help(self, cog):
+		self.command = cog
+		
 		ctx = self.context
 		paginator = Paginator(max_size = self.embed_description_limit)
 		description = inspect.getdoc(cog)
