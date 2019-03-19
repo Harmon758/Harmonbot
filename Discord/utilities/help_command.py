@@ -63,7 +63,17 @@ class HelpCommand(commands.HelpCommand):
 		title = f"{type(cog).__name__} Commands"
 		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 		self._add_subcommands_to_page(max_width, subcommands, description_paginator)
-		return self.embeds(title, description_paginator)
+		embeds = self.embeds(title, description_paginator)
+		if len(embeds) > 1:
+			destination = ctx.author
+			if not isinstance(ctx.channel, discord.DMChannel):
+				await ctx.embed_reply("Check your DMs")
+		else:
+			destination = ctx.channel
+		for embed in embeds:
+			if destination == ctx.channel:
+				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
+			await destination.send(embed = embed)
 	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
@@ -260,13 +270,13 @@ class HelpCommand(commands.HelpCommand):
 		if len(commands) == 1:
 			if name in ctx.bot.cogs:
 				cog = ctx.bot.cogs[name]
-				embeds = await self.send_cog_help(cog)
-			elif name.lower() in ctx.bot.all_commands:
+				return await self.send_cog_help(cog)
+			if name.lower() in ctx.bot.all_commands:
 				command = ctx.bot.all_commands[name.lower()]
 				embeds = await self.format_help_for(command)
 			elif name.lower() in [cog.lower() for cog in ctx.bot.cogs.keys()]:  # TODO: More efficient way?
 				cog = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())[1]
-				embeds = await self.send_cog_help(cog)
+				return await self.send_cog_help(cog)
 			else:
 				output = self.command_not_found(name)
 				close_matches = difflib.get_close_matches(name, ctx.bot.all_commands.keys(), n = 1)
