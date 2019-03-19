@@ -6,17 +6,9 @@ from discord.ext.commands import Command, Group, GroupMixin, Paginator
 import difflib
 import inspect
 import itertools
-import re
 
 import clients
 # TODO: Remove clients import
-
-_mentions_transforms = {
-	'@everyone': '@\u200beveryone',
-	'@here': '@\u200bhere'
-}
-
-_mention_pattern = re.compile('|'.join(_mentions_transforms.keys()))
 
 class HelpCommand(commands.HelpCommand):
 	
@@ -258,11 +250,7 @@ class HelpCommand(commands.HelpCommand):
 		# TODO: Pass alias used to help formatter?
 		if not commands:
 			return await super().command_callback(ctx)
-		
-		def repl(obj):
-			return _mentions_transforms.get(obj.group(0), "")
-		
-		name = _mention_pattern.sub(repl, commands[0])
+		name = self.remove_mentions(commands[0])
 		if len(commands) == 1:
 			if name in ctx.bot.cogs:
 				command = ctx.bot.cogs[name]
@@ -283,7 +271,7 @@ class HelpCommand(commands.HelpCommand):
 				return await ctx.embed_reply(self.command_not_found.format(name))
 			for key in commands[1:]:
 				try:
-					key = _mention_pattern.sub(repl, key)
+					key = self.remove_mentions(key)
 					command = command.all_commands.get(key)
 					if command is None:
 						return await ctx.embed_reply(self.command_not_found.format(key))
