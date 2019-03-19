@@ -84,8 +84,7 @@ class HelpCommand(commands.HelpCommand):
 				ret.append(elem)
 		return ret
 	
-	async def format_help_for(self, context, command_or_bot):
-		self.context = context
+	async def format_help_for(self, command_or_bot):
 		self.command = command_or_bot
 		
 		description_paginator = Paginator(max_size = self.embed_description_limit)
@@ -228,10 +227,11 @@ class HelpCommand(commands.HelpCommand):
 	
 	# @checks.dm_or_has_capability("embed_links")
 	async def command_callback(self, ctx, *commands : str):
+		self.context = ctx
 		if len(commands) == 1:
 			if commands[0] == "all":
 				'''All commands'''
-				embeds = await self.format_help_for(ctx, ctx.bot)
+				embeds = await self.format_help_for(ctx.bot)
 				for embed in embeds:
 					await ctx.whisper(embed = embed)
 				if not isinstance(ctx.channel, discord.DMChannel):
@@ -265,7 +265,7 @@ class HelpCommand(commands.HelpCommand):
 				if close_matches:
 					output += f"\nDid you mean `{close_matches[0]}`?"
 				return await ctx.embed_reply(output)
-			embeds = await self.format_help_for(ctx, command)
+			embeds = await self.format_help_for(command)
 		else:
 			command = ctx.bot.all_commands.get(name)
 			if command is None:
@@ -278,7 +278,7 @@ class HelpCommand(commands.HelpCommand):
 						return await ctx.embed_reply(self.command_not_found(key))
 				except AttributeError:
 					return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
-			embeds = await self.format_help_for(ctx, command)
+			embeds = await self.format_help_for(command)
 		
 		if len(embeds) > 1:
 			destination = ctx.author
