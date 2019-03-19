@@ -4,7 +4,6 @@ from discord.ext import commands
 from discord.ext.commands import Command, Group, GroupMixin, Paginator
 
 import difflib
-import inspect
 import itertools
 
 import clients
@@ -57,9 +56,8 @@ class HelpCommand(commands.HelpCommand):
 		
 		ctx = self.context
 		paginator = Paginator(max_size = self.embed_description_limit)
-		description = inspect.getdoc(cog)
-		if description:
-			paginator.add_line(description, empty = True)
+		if cog.description:
+			paginator.add_line(cog.description, empty = True)
 		filtered_command_list = await self.filter_command_list()
 		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 		self._add_subcommands_to_page(self.max_name_size, subcommands, paginator)
