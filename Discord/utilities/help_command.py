@@ -46,9 +46,6 @@ class HelpCommand(commands.HelpCommand):
 	# TODO: Separate embeds instead of fields with (continued) title?
 	# TODO: ZWS instead of (continued) title?
 	
-	def has_subcommands(self):
-		return isinstance(self.command, GroupMixin)
-	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
 	
@@ -90,7 +87,7 @@ class HelpCommand(commands.HelpCommand):
 		'''Format'''
 		description_paginator = Paginator(max_size = self.embed_description_limit)
 		max_width = self.max_name_size
-		if not isinstance(self.command, Command) or self.has_subcommands():
+		if not isinstance(self.command, Command) or isinstance(self.command, GroupMixin):
 			filtered_command_list = await self.filter_command_list()
 		if self.command is self.context.bot:
 			def category(tup):
@@ -125,7 +122,7 @@ class HelpCommand(commands.HelpCommand):
 			if self.command.help:
 				description_paginator.add_line(self.command.help, empty = True)
 			# end it here if it's just a regular command
-			if not self.has_subcommands() or not filtered_command_list:
+			if not isinstance(self.command, GroupMixin) or not filtered_command_list:
 				description_paginator.close_page()
 				if not self.command.help:
 					return [discord.Embed(title = title, description = self.command.description, color = self.embed_color)]
