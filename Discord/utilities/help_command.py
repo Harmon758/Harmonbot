@@ -22,7 +22,7 @@ class HelpCommand(commands.HelpCommand):
 	
 	'''Custom Help Command'''
 	
-	def __init__(self, embed_color):
+	def __init__(self, embed_color, **options):
 		self.embed_color = embed_color
 		self.embed_total_limit = 6000
 		self.embed_description_limit = 2048
@@ -30,7 +30,7 @@ class HelpCommand(commands.HelpCommand):
 		self.embed_codeblock_row_limit = 55
 		self.embed_fields_limit = 25
 		self.command_not_found = "No command called `{}` found"
-		super().__init__()
+		super().__init__(**options)
 	
 	# TODO: Update codeblock row limit
 	# TODO: Capitalize constants

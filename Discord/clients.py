@@ -69,12 +69,10 @@ class Bot(commands.Bot):
 		self.stream_url = "https://www.twitch.tv/harmonbot"
 		
 		# Initialization
-		help_command = HelpCommand(self.bot_color)
+		help_command = HelpCommand(self.bot_color, command_attrs = {"hidden": True})
 		activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url)
 		super().__init__(command_prefix = command_prefix, help_command = help_command, 
 							activity = activity, case_insensitive = True)
-		## Hide help command
-		self.get_command("help").hidden = True
 		
 		# Constants
 		## Custom
