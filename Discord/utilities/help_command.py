@@ -49,11 +49,8 @@ class HelpCommand(commands.HelpCommand):
 	def has_subcommands(self):
 		return isinstance(self.command, GroupMixin)
 	
-	def is_bot(self):
-		return self.command is self.context.bot
-	
 	def is_cog(self):
-		return not self.is_bot() and not isinstance(self.command, Command)
+		return not self.command is self.context.bot and not isinstance(self.command, Command)
 	
 	async def filter_command_list(self):
 		def sane_no_suspension_point_predicate(tup):
@@ -95,7 +92,7 @@ class HelpCommand(commands.HelpCommand):
 		max_width = self.max_name_size
 		if not isinstance(self.command, Command) or self.has_subcommands():
 			filtered_command_list = await self.filter_command_list()
-		if self.is_bot():
+		if self.command is self.context.bot:
 			def category(tup):
 				cog = tup[1].cog_name
 				# we insert the zero width space there to give it approximate last place sorting position
