@@ -81,10 +81,7 @@ class HelpCommand(commands.HelpCommand):
 	async def format_help_for(self, context, command_or_bot):
 		self.context = context
 		self.command = command_or_bot
-		return await self.format()
-	
-	async def format(self):
-		'''Format'''
+		
 		description_paginator = Paginator(max_size = self.embed_description_limit)
 		max_width = self.max_name_size
 		if not isinstance(self.command, Command) or isinstance(self.command, GroupMixin):
