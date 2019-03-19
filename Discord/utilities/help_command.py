@@ -46,6 +46,18 @@ class HelpCommand(commands.HelpCommand):
 	# TODO: Separate embeds instead of fields with (continued) title?
 	# TODO: ZWS instead of (continued) title?
 	
+	async def send_bot_help(self, mapping):
+		ctx = self.context
+		description = "  ".join(f"`{category}`" for category in sorted(ctx.bot.cogs, key = str.lower))
+		fields = (("For more info:", f"`{ctx.prefix}{ctx.invoked_with} [category]`\n"
+										f"`{ctx.prefix}{ctx.invoked_with} [command]`\n"
+										f"`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
+					("Also see:", f"`{ctx.prefix}about`\n`"
+									f"{ctx.prefix}{ctx.invoked_with} help`\n"
+									f"`{ctx.prefix}{ctx.invoked_with} other`"),  # TODO: Include stats?
+					("For all commands:", f"`{ctx.prefix}{ctx.invoked_with} all`", False))
+		await ctx.embed_reply(description, title = "Categories", fields = fields)
+	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
 	
@@ -245,15 +257,7 @@ class HelpCommand(commands.HelpCommand):
 												title = f"Commands not in {ctx.prefix}help", fields = fields)
 		# TODO: Pass alias used to help formatter?
 		if not commands:
-			description = "  ".join(f"`{category}`" for category in sorted(ctx.bot.cogs, key = str.lower))
-			fields = (("For more info:", f"`{ctx.prefix}{ctx.invoked_with} [category]`\n"
-											f"`{ctx.prefix}{ctx.invoked_with} [command]`\n"
-											f"`{ctx.prefix}{ctx.invoked_with} [command] [subcommand]`"), 
-						("Also see:", f"`{ctx.prefix}about`\n`"
-										f"{ctx.prefix}{ctx.invoked_with} help`\n"
-										f"`{ctx.prefix}{ctx.invoked_with} other`"),  # TODO: Include stats?
-						("For all commands:", f"`{ctx.prefix}{ctx.invoked_with} all`", False))
-			return await ctx.embed_reply(description, title = "Categories", fields = fields)
+			return await super().command_callback(ctx)
 		
 		def repl(obj):
 			return _mentions_transforms.get(obj.group(0), "")
