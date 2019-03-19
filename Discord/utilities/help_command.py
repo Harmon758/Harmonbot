@@ -53,17 +53,15 @@ class HelpCommand(commands.HelpCommand):
 		await ctx.embed_reply(description, title = "Categories", fields = fields)
 	
 	async def send_cog_help(self, cog):
-		description_paginator = Paginator(max_size = self.embed_description_limit)
-		max_width = self.max_name_size
-		filtered_command_list = await self.filter_command_list()
+		ctx = self.context
+		paginator = Paginator(max_size = self.embed_description_limit)
 		description = inspect.getdoc(cog)
 		if description:
-			# <description> portion
-			description_paginator.add_line(description, empty = True)
-		title = f"{type(cog).__name__} Commands"
+			paginator.add_line(description, empty = True)
+		filtered_command_list = await self.filter_command_list()
 		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
-		self._add_subcommands_to_page(max_width, subcommands, description_paginator)
-		embeds = self.embeds(title, description_paginator)
+		self._add_subcommands_to_page(self.max_name_size, subcommands, paginator)
+		embeds = self.embeds(f"{type(cog).__name__} Commands", paginator)
 		if len(embeds) > 1:
 			destination = ctx.author
 			if not isinstance(ctx.channel, discord.DMChannel):
