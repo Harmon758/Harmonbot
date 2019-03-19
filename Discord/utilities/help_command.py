@@ -21,7 +21,6 @@ class HelpCommand(commands.HelpCommand):
 		self.embed_field_limit = 1024
 		self.embed_codeblock_row_limit = 55
 		self.embed_fields_limit = 25
-		self.command_not_found = "No command called `{}` found"
 		
 		attrs = options.setdefault("command_attrs", {})
 		attrs.setdefault("help", "Shows this message\n"
@@ -37,6 +36,9 @@ class HelpCommand(commands.HelpCommand):
 	
 	# TODO: Separate embeds instead of fields with (continued) title?
 	# TODO: ZWS instead of (continued) title?
+	
+	def command_not_found(self, string):
+		return f"No command called `{string}` found"
 	
 	async def send_bot_help(self, mapping):
 		ctx = self.context
@@ -259,7 +261,7 @@ class HelpCommand(commands.HelpCommand):
 			elif name.lower() in [cog.lower() for cog in ctx.bot.cogs.keys()]:  # TODO: More efficient way?
 				command = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())[1]
 			else:
-				output = self.command_not_found.format(name)
+				output = self.command_not_found(name)
 				close_matches = difflib.get_close_matches(name, ctx.bot.all_commands.keys(), n = 1)
 				if close_matches:
 					output += f"\nDid you mean `{close_matches[0]}`?"
@@ -268,13 +270,13 @@ class HelpCommand(commands.HelpCommand):
 		else:
 			command = ctx.bot.all_commands.get(name)
 			if command is None:
-				return await ctx.embed_reply(self.command_not_found.format(name))
+				return await ctx.embed_reply(self.command_not_found(name))
 			for key in commands[1:]:
 				try:
 					key = self.remove_mentions(key)
 					command = command.all_commands.get(key)
 					if command is None:
-						return await ctx.embed_reply(self.command_not_found.format(key))
+						return await ctx.embed_reply(self.command_not_found(key))
 				except AttributeError:
 					return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
 			embeds = await self.format_help_for(ctx, command)
