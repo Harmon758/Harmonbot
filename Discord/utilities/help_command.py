@@ -30,6 +30,13 @@ class HelpCommand(commands.HelpCommand):
 		self.embed_codeblock_row_limit = 55
 		self.embed_fields_limit = 25
 		self.command_not_found = "No command called `{}` found"
+		
+		attrs = options.setdefault("command_attrs", {})
+		attrs.setdefault("help", "Shows this message\n"
+									"Inputs in angle brackets, <>, are required\n"
+									"Inputs in square brackets, [], are optional\n"
+									"If you are not currently able to use a command in the channel where you executed help, "
+									"it will not be displayed in the corresponding help message")
 		super().__init__(**options)
 	
 	# TODO: Update codeblock row limit
@@ -225,12 +232,6 @@ class HelpCommand(commands.HelpCommand):
 	# aliases = ["commands"]
 	# @checks.dm_or_has_capability("embed_links")
 	async def command_callback(self, ctx, *commands : str):
-		'''
-		Shows this message
-		Inputs in angle brackets, <>, are required
-		Inputs in square brackets, [], are optional
-		If you are not currently able to use a command in the channel where you executed help, it will not be displayed in the corresponding help message
-		'''
 		if len(commands) == 1:
 			if commands[0] == "all":
 				'''All commands'''
