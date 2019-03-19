@@ -52,6 +52,19 @@ class HelpCommand(commands.HelpCommand):
 					("For all commands:", f"`{ctx.prefix}{ctx.invoked_with} all`", False))
 		await ctx.embed_reply(description, title = "Categories", fields = fields)
 	
+	async def send_cog_help(self, cog):
+		description_paginator = Paginator(max_size = self.embed_description_limit)
+		max_width = self.max_name_size
+		filtered_command_list = await self.filter_command_list()
+		description = inspect.getdoc(cog)
+		if description:
+			# <description> portion
+			description_paginator.add_line(description, empty = True)
+		title = f"{type(cog).__name__} Commands"
+		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
+		self._add_subcommands_to_page(max_width, subcommands, description_paginator)
+		return self.embeds(title, description_paginator)
+	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
 	
@@ -147,14 +160,6 @@ class HelpCommand(commands.HelpCommand):
 				embed.add_field(name = f"Subcommands for {self.command}", value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
 				return [embed]
 			description_paginator.add_line(f"Subcommands for {self.command}:")
-			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
-		else:  # cog
-			description = inspect.getdoc(self.command)
-			if description:
-				# <description> portion
-				description_paginator.add_line(description, empty = True)
-			title = f"{type(self.command).__name__} Commands"
-			subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
 		return self.embeds(title, description_paginator)
 	
@@ -254,18 +259,20 @@ class HelpCommand(commands.HelpCommand):
 		name = self.remove_mentions(commands[0])
 		if len(commands) == 1:
 			if name in ctx.bot.cogs:
-				command = ctx.bot.cogs[name]
+				cog = ctx.bot.cogs[name]
+				embeds = await self.send_cog_help(cog)
 			elif name.lower() in ctx.bot.all_commands:
 				command = ctx.bot.all_commands[name.lower()]
+				embeds = await self.format_help_for(command)
 			elif name.lower() in [cog.lower() for cog in ctx.bot.cogs.keys()]:  # TODO: More efficient way?
-				command = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())[1]
+				cog = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())[1]
+				embeds = await self.send_cog_help(cog)
 			else:
 				output = self.command_not_found(name)
 				close_matches = difflib.get_close_matches(name, ctx.bot.all_commands.keys(), n = 1)
 				if close_matches:
 					output += f"\nDid you mean `{close_matches[0]}`?"
 				return await ctx.embed_reply(output)
-			embeds = await self.format_help_for(command)
 		else:
 			command = ctx.bot.all_commands.get(name)
 			if command is None:
