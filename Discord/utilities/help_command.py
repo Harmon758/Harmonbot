@@ -118,32 +118,29 @@ class HelpCommand(commands.HelpCommand):
 	async def send_command_help(self, command):
 		ctx = self.context
 		title = self.get_command_signature(command)
-		if command.help:
-			description = command.help
-			if "  " in command.help:
-				description = clients.code_block.format(description)
-			description += '\n' + command.description
-			if len(description) <= self.embed_description_limit:
-				return await ctx.embed_reply(title = title, description = description)
-			else:
-				paginator = Paginator(max_size = self.embed_description_limit)
-				paginator.add_line(command.help, empty = True)
-				paginator.close_page()  # Necessary?
-				embeds = [discord.Embed(title = title, description = paginator.pages[0], color = self.embed_color)]
-				for page in paginator.pages[1:-1]:
-					embeds.append(discord.Embed(description = page, color = self.embed_color))
-				if len(paginator.pages[-1] + command.description) + 1 > self.embed_description_limit:
-					embeds.append(discord.Embed(description = paginator.pages[-1], color = self.embed_color))
-					embeds.append(discord.Embed(description = command.description, color = self.embed_color))
-				else:
-					embeds.append(discord.Embed(description = paginator.pages[-1] + '\n' + command.description, color = self.embed_color))
-				destination = ctx.author
-				if not isinstance(ctx.channel, discord.DMChannel):
-					await ctx.embed_reply("Check your DMs")
-				for embed in embeds:
-					await destination.send(embed = embed)
-		else:
+		if not command.help:
 			return await ctx.embed_reply(title = title, description = command.description)
+		description = command.help
+		if "  " in command.help:
+			description = clients.code_block.format(description)
+		description += '\n' + command.description
+		if len(description) <= self.embed_description_limit:
+			return await ctx.embed_reply(title = title, description = description)
+		paginator = Paginator(max_size = self.embed_description_limit)
+		paginator.add_line(command.help, empty = True)
+		paginator.close_page()  # Necessary?
+		await ctx.whisper(embed = discord.Embed(title = title, 
+												description = paginator.pages[0], color = self.embed_color))
+		for page in paginator.pages[1:-1]:
+			await ctx.whisper(embed = discord.Embed(description = page, color = self.embed_color))
+		if len(paginator.pages[-1] + command.description) + 1 > self.embed_description_limit:
+			await ctx.whisper(embed = discord.Embed(description = paginator.pages[-1], color = self.embed_color))
+			await ctx.whisper(embed = discord.Embed(description = command.description, color = self.embed_color))
+		else:
+			await ctx.whisper(embed = discord.Embed(description = f"{paginator.pages[-1]}\n{command.description}", 
+													color = self.embed_color))
+		if not isinstance(ctx.channel, discord.DMChannel):
+			await ctx.embed_reply("Check your DMs")
 	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
