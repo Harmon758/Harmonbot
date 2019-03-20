@@ -17,7 +17,6 @@ class HelpCommand(commands.HelpCommand):
 		self.embed_color = embed_color
 		self.embed_total_limit = 6000
 		self.embed_description_limit = 2048
-		self.embed_field_limit = 1024
 		self.embed_codeblock_row_limit = 55
 		self.embed_fields_limit = 25
 		
@@ -31,7 +30,7 @@ class HelpCommand(commands.HelpCommand):
 	
 	# TODO: Update codeblock row limit
 	# TODO: Capitalize constants
-	# TODO: Use Bot attribute constants?
+	# TODO: Use Bot attribute constants
 	
 	# TODO: Separate embeds instead of fields with (continued) title?
 	# TODO: ZWS instead of (continued) title?
@@ -89,7 +88,8 @@ class HelpCommand(commands.HelpCommand):
 			return await self.send_command_help(command)
 		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
-		if (not self.command.help or len(self.command.help) <= self.embed_description_limit) and len('\n'.join(subcommand_lines)) <= self.embed_field_limit - 8:
+		if (not self.command.help or len(self.command.help) <= self.embed_description_limit) and len('\n'.join(subcommand_lines)) <= ctx.bot.EFVCL - 8:
+		# EFVCL = Embed Field Value Character Limit
 		# 8: len("```\n") * 2
 			embed = discord.Embed(color = self.embed_color)
 			value = f"{description_paginator.pages[0]}\n" if description_paginator.pages else ""
@@ -157,7 +157,8 @@ class HelpCommand(commands.HelpCommand):
 		for category, commands in itertools.groupby(data, key = category):
 			commands = sorted(commands, key = lambda c: c[0])
 			if len(commands) > 0:
-				field_paginator = Paginator(max_size = self.embed_field_limit)
+				field_paginator = Paginator(max_size = ctx.bot.EFVCL)
+				# EFVCL = Embed Field Value Character Limit
 				self._add_subcommands_to_page(max_width, commands, field_paginator)
 				# Embed Limits
 				total_paginator_characters = len(field_paginator.pages) * len(category + " (coninued)") 
