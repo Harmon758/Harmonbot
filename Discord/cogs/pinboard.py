@@ -184,19 +184,27 @@ class Pinboard(commands.Cog):
 		if payload.channel_id == pinboard_channel_id:
 			# Message being reacted to is on the pinboard
 			pinboard_message_id = payload.message_id
-			record = await self.bot.db.fetchrow("""SELECT message_id, channel_id
-													FROM pinboard.pins WHERE pinboard_message_id = $1""", 
-													pinboard_message_id)
+			record = await self.bot.db.fetchrow(
+				"""
+				SELECT message_id, channel_id
+				FROM pinboard.pins WHERE pinboard_message_id = $1
+				""", 
+				pinboard_message_id
+			)
 			message_id = record["message_id"]
 			channel_id = record["channel_id"]
 		else:
 			message_id = payload.message_id
 			channel_id = payload.channel_id
-			pinboard_message_id = await self.bot.db.fetchval("""INSERT INTO pinboard.pins (message_id, guild_id, channel_id)
-																VALUES ($1, $2, $3)
-																ON CONFLICT (message_id) DO UPDATE SET guild_id = $2
-																RETURNING pinboard_message_id""", 
-																message_id, payload.guild_id, payload.channel_id)
+			pinboard_message_id = await self.bot.db.fetchval(
+				"""
+				INSERT INTO pinboard.pins (message_id, guild_id, channel_id)
+				VALUES ($1, $2, $3)
+				ON CONFLICT (message_id) DO UPDATE SET guild_id = $2
+				RETURNING pinboard_message_id
+				""", 
+				message_id, payload.guild_id, payload.channel_id
+			)
 		# Add user as pinner
 		inserted = await self.bot.db.fetchrow(
 			"""
