@@ -1,7 +1,7 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import Command, Group, Paginator
+from discord.ext.commands import Cog, Command, Group, Paginator
 
 import difflib
 import itertools
@@ -178,13 +178,10 @@ class HelpCommand(commands.HelpCommand):
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
-	def is_cog(self):
-		return not self.command is self.context.bot and not isinstance(self.command, Command)
-	
 	async def filter_command_list(self):
 		def sane_no_suspension_point_predicate(tup):
 			cmd = tup[1]
-			if self.is_cog():
+			if isinstance(self.command, Cog):
 				# filter commands that don't exist to this cog.
 				if cmd.cog is not self.command:
 					return False
@@ -199,7 +196,7 @@ class HelpCommand(commands.HelpCommand):
 				return await cmd.can_run(self.context)
 			except CommandError:
 				return False
-		iterator = self.command.all_commands.items() if not self.is_cog() else self.context.bot.all_commands.items()
+		iterator = self.command.all_commands.items() if not isinstance(self.command, Cog) else self.context.bot.all_commands.items()
 		if self.verify_checks:
 			return filter(sane_no_suspension_point_predicate, iterator)
 		# Gotta run every check and verify it
@@ -215,7 +212,7 @@ class HelpCommand(commands.HelpCommand):
 		"""int: Returns the largest name length of a command or if it has subcommands
 		the largest subcommand name."""
 		try:
-			commands = self.command.all_commands.copy() if not self.is_cog() else self.context.bot.all_commands.copy()
+			commands = self.command.all_commands.copy() if not isinstance(self.command, Cog) else self.context.bot.all_commands.copy()
 			if commands:
 				# Include subcommands of subcommands
 				for _, command in commands.copy().items():
