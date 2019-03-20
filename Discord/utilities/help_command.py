@@ -155,7 +155,7 @@ class HelpCommand(commands.HelpCommand):
 				field_paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
 				self._add_subcommands_to_page(max_width, commands, field_paginator)
 				# Embed Limits
-				total_paginator_characters = len(field_paginator.pages) * len(category + " (coninued)") 
+				total_paginator_characters = len(category) + len(field_paginator.pages) - 1
 				for page in field_paginator.pages:
 					total_paginator_characters += len(page)
 				if len(embeds[-1]) + total_paginator_characters > self.embed_total_limit:
