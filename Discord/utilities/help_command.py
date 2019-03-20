@@ -116,25 +116,20 @@ class HelpCommand(commands.HelpCommand):
 			await destination.send(embed = embed)
 	
 	async def send_command_help(self, command):
-		self.command = command  # Temporary
-		
 		ctx = self.context
-		description_paginator = Paginator(max_size = self.embed_description_limit)
-		max_width = self.max_name_size
-		# <signature portion>
-		title = self.get_command_signature(self.command)
-		# <long doc> section
-		if self.command.help:
-			description_paginator.add_line(self.command.help, empty = True)
-		description_paginator.close_page()
-		if not self.command.help:
-			embeds = [discord.Embed(title = title, description = self.command.description, color = self.embed_color)]
-		elif len(self.command.help) <= self.embed_description_limit:
-			description = clients.code_block.format(self.command.help) if "  " in self.command.help else self.command.help
-			description += "\n" + self.command.description
-			embeds = [discord.Embed(title = title, description = description, color = self.embed_color)]
+		title = self.get_command_signature(command)
+		if command.help:
+			if len(command.help) <= self.embed_description_limit:
+				description = clients.code_block.format(command.help) if "  " in command.help else command.help
+				description += '\n' + command.description
+				embeds = [discord.Embed(title = title, description = description, color = self.embed_color)]
+			else:
+				paginator = Paginator(max_size = self.embed_description_limit)
+				paginator.add_line(command.help, empty = True)
+				paginator.close_page()
+				embeds = self.embeds(title, paginator)
 		else:
-			embeds = self.embeds(title, description_paginator)
+			embeds = [discord.Embed(title = title, description = command.description, color = self.embed_color)]
 		if len(embeds) > 1:
 			destination = ctx.author
 			if not isinstance(ctx.channel, discord.DMChannel):
