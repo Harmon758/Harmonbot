@@ -32,9 +32,6 @@ class HelpCommand(commands.HelpCommand):
 	# TODO: Capitalize constants
 	# TODO: Use Bot attribute constants
 	
-	# TODO: Separate embeds instead of fields with (continued) title?
-	# TODO: ZWS instead of (continued) title?
-	
 	def command_not_found(self, string):
 		return f"No command called `{string}` found"
 	
@@ -155,8 +152,7 @@ class HelpCommand(commands.HelpCommand):
 		for category, commands in itertools.groupby(data, key = category):
 			commands = sorted(commands, key = lambda c: c[0])
 			if len(commands) > 0:
-				field_paginator = Paginator(max_size = ctx.bot.EFVCL)
-				# EFVCL = Embed Field Value Character Limit
+				field_paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
 				self._add_subcommands_to_page(max_width, commands, field_paginator)
 				# Embed Limits
 				total_paginator_characters = len(field_paginator.pages) * len(category + " (coninued)") 
@@ -170,7 +166,7 @@ class HelpCommand(commands.HelpCommand):
 				else:
 					embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
 				for page in field_paginator.pages[1:]:
-					embeds[-1].add_field(name = f"{category} (continued)", value = page, inline = False)
+					embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 		for embed in embeds:
 			await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
