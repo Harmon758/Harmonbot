@@ -119,15 +119,24 @@ class HelpCommand(commands.HelpCommand):
 		ctx = self.context
 		title = self.get_command_signature(command)
 		if command.help:
-			if len(command.help) <= self.embed_description_limit:
-				description = clients.code_block.format(command.help) if "  " in command.help else command.help
-				description += '\n' + command.description
+			description = command.help
+			if "  " in command.help:
+				description = clients.code_block.format(description)
+			description += '\n' + command.description
+			if len(description) <= self.embed_description_limit:
 				embeds = [discord.Embed(title = title, description = description, color = self.embed_color)]
 			else:
 				paginator = Paginator(max_size = self.embed_description_limit)
 				paginator.add_line(command.help, empty = True)
-				paginator.close_page()
-				embeds = self.embeds(title, paginator)
+				paginator.close_page()  # Necessary?
+				embeds = [discord.Embed(title = title, description = paginator.pages[0], color = self.embed_color)]
+				for page in paginator.pages[1:-1]:
+					embeds.append(discord.Embed(description = page, color = self.embed_color))
+				if len(paginator.pages[-1] + command.description) + 1 > self.embed_description_limit:
+					embeds.append(discord.Embed(description = paginator.pages[-1], color = self.embed_color))
+					embeds.append(discord.Embed(description = command.description, color = self.embed_color))
+				else:
+					embeds.append(discord.Embed(description = paginator.pages[-1] + '\n' + command.description, color = self.embed_color))
 		else:
 			embeds = [discord.Embed(title = title, description = command.description, color = self.embed_color)]
 		if len(embeds) > 1:
