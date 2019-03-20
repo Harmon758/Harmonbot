@@ -1,7 +1,7 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import Command, Group, GroupMixin, Paginator
+from discord.ext.commands import Command, Group, Paginator
 
 import difflib
 import itertools
@@ -142,6 +142,37 @@ class HelpCommand(commands.HelpCommand):
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
+	async def send_all_help(self):
+		self.command = self.context.bot
+		
+		max_width = self.max_name_size
+		filtered_command_list = await self.filter_command_list()
+		def category(tup):
+			cog = tup[1].cog_name
+			# we insert the zero width space there to give it approximate last place sorting position
+			return cog if cog is not None else "\u200bNo Category"
+		data = sorted(filtered_command_list, key = lambda c: category(c).lower())
+		embeds = [discord.Embed(title = "My Commands", color = self.embed_color)]
+		for category, commands in itertools.groupby(data, key = category):
+			commands = sorted(commands, key = lambda c: c[0])
+			if len(commands) > 0:
+				field_paginator = Paginator(max_size = self.embed_field_limit)
+				self._add_subcommands_to_page(max_width, commands, field_paginator)
+				# Embed Limits
+				total_paginator_characters = len(field_paginator.pages) * len(category + " (coninued)") 
+				for page in field_paginator.pages:
+					total_paginator_characters += len(page)
+				if len(embeds[-1]) + total_paginator_characters > self.embed_total_limit:
+					embeds.append(discord.Embed(color = self.embed_color))
+				# TODO: Add until limit?
+				if len(embeds[-1].fields) + len(field_paginator.pages) <= self.embed_fields_limit:
+					embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
+				else:
+					embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
+				for page in field_paginator.pages[1:]:
+					embeds[-1].add_field(name = f"{category} (continued)", value = page, inline = False)
+		return embeds
+	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
 	
@@ -173,39 +204,6 @@ class HelpCommand(commands.HelpCommand):
 			if valid:
 				ret.append(elem)
 		return ret
-	
-	async def format_help_for(self, command_or_bot):
-		self.command = command_or_bot
-		
-		max_width = self.max_name_size
-		if not isinstance(self.command, Command) or isinstance(self.command, GroupMixin):
-			filtered_command_list = await self.filter_command_list()
-		if self.command is self.context.bot:
-			def category(tup):
-				cog = tup[1].cog_name
-				# we insert the zero width space there to give it approximate last place sorting position
-				return cog if cog is not None else "\u200bNo Category"
-			data = sorted(filtered_command_list, key = lambda c: category(c).lower())
-			embeds = [discord.Embed(title = "My Commands", color = self.embed_color)]
-			for category, commands in itertools.groupby(data, key = category):
-				commands = sorted(commands, key = lambda c: c[0])
-				if len(commands) > 0:
-					field_paginator = Paginator(max_size = self.embed_field_limit)
-					self._add_subcommands_to_page(max_width, commands, field_paginator)
-					# Embed Limits
-					total_paginator_characters = len(field_paginator.pages) * len(category + " (coninued)") 
-					for page in field_paginator.pages:
-						total_paginator_characters += len(page)
-					if len(embeds[-1]) + total_paginator_characters > self.embed_total_limit:
-						embeds.append(discord.Embed(color = self.embed_color))
-					# TODO: Add until limit?
-					if len(embeds[-1].fields) + len(field_paginator.pages) <= self.embed_fields_limit:
-						embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
-					else:
-						embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
-					for page in field_paginator.pages[1:]:
-						embeds[-1].add_field(name = f"{category} (continued)", value = page, inline = False)
-			return embeds
 	
 	@property
 	def max_name_size(self):
@@ -280,7 +278,7 @@ class HelpCommand(commands.HelpCommand):
 		if len(commands) == 1:
 			if commands[0] == "all":
 				'''All commands'''
-				embeds = await self.format_help_for(ctx.bot)
+				embeds = await self.send_all_help()
 				for embed in embeds:
 					await ctx.whisper(embed = embed)
 				if not isinstance(ctx.channel, discord.DMChannel):
