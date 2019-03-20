@@ -209,19 +209,17 @@ class HelpCommand(commands.HelpCommand):
 	
 	@property
 	def max_name_size(self):
-		"""int: Returns the largest name length of a command or if it has subcommands
-		the largest subcommand name."""
-		try:
-			commands = self.command.all_commands.copy() if not isinstance(self.command, Cog) else self.context.bot.all_commands.copy()
-			if commands:
-				# Include subcommands of subcommands
-				for _, command in commands.copy().items():
-					if isinstance(command, Group):
-						commands.update(command.all_commands)
-				return max(map(lambda c: len(c.name) if self.show_hidden or not c.hidden else 0, commands.values()))
-			return 0
-		except AttributeError:
-			return len(self.command.name)
+		if isinstance(self.command, Cog):
+			commands = self.context.bot.all_commands.copy()
+		else:
+			commands = self.command.all_commands.copy()
+		if commands:
+			# Include subcommands of subcommands
+			for _, command in commands.copy().items():
+				if isinstance(command, Group):
+					commands.update(command.all_commands)
+			return max(map(lambda c: len(c.name) if self.show_hidden or not c.hidden else 0, commands.values()))
+		return 0
 	
 	def _add_subcommands_to_page(self, max_width, commands, paginator):
 		for line in self.generate_subcommand_lines(max_width, commands):
