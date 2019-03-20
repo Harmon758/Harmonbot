@@ -2,6 +2,8 @@
 import discord
 from discord.ext import commands
 
+import typing
+
 from utilities import checks
 
 def setup(bot):
@@ -22,9 +24,10 @@ class Pinboard(commands.Cog):
 		await self.bot.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS pinboard.pinboards (
-				guild_id	BIGINT PRIMARY KEY, 
-				channel_id	BIGINT, 
-				threshold	INT
+				guild_id			BIGINT PRIMARY KEY, 
+				channel_id			BIGINT, 
+				threshold			INT, 
+				private_channels	BOOL
 			)
 			"""
 		)
@@ -65,10 +68,11 @@ class Pinboard(commands.Cog):
 		Backfill pins into current pinboard channel
 		This can take a while depending on how many missing pinned messages there are
 		'''
-		record = await ctx.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards WHERE guild_id = $1", 
+		record = await ctx.bot.db.fetchrow("SELECT channel_id, threshold, private_channels FROM pinboard.pinboards WHERE guild_id = $1", 
 											ctx.guild.id)
 		pinboard_channel_id = record["channel_id"]
 		threshold = record["threshold"] or self.default_threshold
+		private_channels_setting = record["private_channels"]
 		if not pinboard_channel_id:
 			return await ctx.embed_reply(":no_entry: Error: Pinboard channel not set")
 		response = await ctx.embed_reply("Backfilling...")
@@ -87,6 +91,8 @@ class Pinboard(commands.Cog):
 						if pin_count < threshold:
 							continue
 						pinned_message_channel = self.bot.get_channel(record["channel_id"])
+						if not private_channels_setting and pinned_message_channel.overwrites_for(ctx.guild.default_role).read_messages == False:
+							continue
 						pinned_message = await pinned_message_channel.get_message(record["message_id"])
 						pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
 						await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
@@ -147,6 +153,41 @@ class Pinboard(commands.Cog):
 		await ctx.embed_reply(' '.join(pinner.mention for pinner in pinners), 
 								title = f"{len(records)} pinners of {message_id}")
 	
+	@pinboard.command(aliases = ["private"])
+	@checks.is_permitted()
+	async def private_channels(self, ctx, setting : typing.Optional[bool]):
+		'''
+		Set/get whether to include pins from private channels
+		Default: False
+		A channel is considered private if the "Read Messages" permission is off for the everyone role
+		'''
+		# TODO: Handle case where guild-level "Read Messages" permission is off for @everyone?
+		if setting is None:
+			setting = await ctx.bot.db.fetchval(
+				"""
+				SELECT private_channels
+				FROM pinboard.pinboards
+				WHERE guild_id = $1
+				""", 
+				ctx.guild.id
+			)
+			if setting is None:
+				await ctx.embed_reply(f"Current pinboard setting: Ignore private channels (Default)")
+			elif setting:
+				await ctx.embed_reply(f"Current pinboard setting: Include private channels")
+			else:
+				await ctx.embed_reply(f"Current pinboard setting: Ignore private channels")
+		else:
+			await ctx.bot.db.execute(
+				"""
+				UPDATE pinboard.pinboards
+				SET private_channels = $1
+				WHERE guild_id = $2
+				""", 
+				setting, ctx.guild.id
+			)
+			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard private channels setting to {setting}")
+	
 	@pinboard.command()
 	@checks.is_permitted()
 	async def threshold(self, ctx, threshold_number : int = None):
@@ -174,13 +215,14 @@ class Pinboard(commands.Cog):
 		if not payload.guild_id:
 			# Reaction is not in a guild
 			return
-		record = await self.bot.db.fetchrow("SELECT channel_id, threshold FROM pinboard.pinboards WHERE guild_id = $1", 
+		record = await self.bot.db.fetchrow("SELECT channel_id, threshold, private_channels FROM pinboard.pinboards WHERE guild_id = $1", 
 												payload.guild_id)
 		if not record:
 			# Guild doesn't have a pinboard
 			return
 		pinboard_channel_id = record["channel_id"]
 		threshold = record["threshold"] or self.default_threshold
+		private_channels_setting = record["private_channels"]
 		if payload.channel_id == pinboard_channel_id:
 			# Message being reacted to is on the pinboard
 			pinboard_message_id = payload.message_id
@@ -223,8 +265,12 @@ class Pinboard(commands.Cog):
 		if pin_count < threshold:
 			# Pin count has not reached threshold yet
 			return
+		guild = self.bot.get_guild(payload.guild_id)
 		pinboard_channel = self.bot.get_channel(pinboard_channel_id)
 		pinned_message_channel = self.bot.get_channel(channel_id)
+		if not private_channels_setting and pinned_message_channel.overwrites_for(guild.default_role).read_messages == False:
+			# Set to ignore private channels and message is in private channel
+			return
 		pinned_message = await pinned_message_channel.get_message(message_id)
 		if pinboard_message_id:
 			# Pinboard message already exists
