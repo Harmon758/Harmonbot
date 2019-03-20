@@ -1,7 +1,7 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import Cog, Command, Group, Paginator
+from discord.ext.commands import Cog, Group, Paginator
 
 import difflib
 import itertools
