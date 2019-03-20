@@ -145,6 +145,7 @@ class HelpCommand(commands.HelpCommand):
 	async def send_all_help(self):
 		self.command = self.context.bot
 		
+		ctx = self.context
 		max_width = self.max_name_size
 		filtered_command_list = await self.filter_command_list()
 		def category(tup):
@@ -171,7 +172,10 @@ class HelpCommand(commands.HelpCommand):
 					embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
 				for page in field_paginator.pages[1:]:
 					embeds[-1].add_field(name = f"{category} (continued)", value = page, inline = False)
-		return embeds
+		for embed in embeds:
+			await ctx.whisper(embed = embed)
+		if not isinstance(ctx.channel, discord.DMChannel):
+			await ctx.embed_reply("Check your DMs")
 	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
@@ -278,12 +282,7 @@ class HelpCommand(commands.HelpCommand):
 		if len(commands) == 1:
 			if commands[0] == "all":
 				'''All commands'''
-				embeds = await self.send_all_help()
-				for embed in embeds:
-					await ctx.whisper(embed = embed)
-				if not isinstance(ctx.channel, discord.DMChannel):
-					await ctx.embed_reply("Check your DMs")
-				return
+				return await self.send_all_help()
 			if commands[0] == "other":
 				'''Additional commands and information'''
 				# TODO: Update
