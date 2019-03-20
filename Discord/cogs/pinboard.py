@@ -126,12 +126,16 @@ class Pinboard(commands.Cog):
 		Show who pinned a message
 		message_id can be the message ID for the pinned message or the message in the pinboard channel
 		'''
-		records = await ctx.bot.db.fetch("""SELECT pinboard.pinners.pinner_id
-											FROM pinboard.pinners
-											INNER JOIN pinboard.pins
-											ON pinboard.pinners.message_id = pinboard.pins.message_id
-											WHERE pinboard.pins.message_id = $1 OR pinboard.pins.pinboard_message_id = $1""", 
-											message_id)
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT pinboard.pinners.pinner_id
+			FROM pinboard.pinners
+			INNER JOIN pinboard.pins
+			ON pinboard.pinners.message_id = pinboard.pins.message_id
+			WHERE pinboard.pins.message_id = $1 OR pinboard.pins.pinboard_message_id = $1
+			""", 
+			message_id
+		)
 		if not records:
 			return await ctx.embed_reply("No one has pinned this message or this is not a valid message ID")
 		pinners = []
