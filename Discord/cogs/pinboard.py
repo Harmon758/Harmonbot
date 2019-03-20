@@ -19,22 +19,34 @@ class Pinboard(commands.Cog):
 	async def initialize_database(self):
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS pinboard")
-		await self.bot.db.execute("""CREATE TABLE IF NOT EXISTS pinboard.pinboards (
-										guild_id	BIGINT PRIMARY KEY, 
-										channel_id	BIGINT, 
-										threshold	INT
-										)""")
-		await self.bot.db.execute("""CREATE TABLE IF NOT EXISTS pinboard.pins (
-										message_id			BIGINT PRIMARY KEY, 
-										guild_id			BIGINT, 
-										channel_id			BIGINT, 
-										pinboard_message_id BIGINT
-										)""")
-		await self.bot.db.execute("""CREATE TABLE IF NOT EXISTS pinboard.pinners (
-										message_id	BIGINT REFERENCES pinboard.pins (message_id) ON DELETE CASCADE, 
-										pinner_id	BIGINT, 
-										PRIMARY KEY (message_id, pinner_id)
-										)""")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS pinboard.pinboards (
+				guild_id	BIGINT PRIMARY KEY, 
+				channel_id	BIGINT, 
+				threshold	INT
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS pinboard.pins (
+				message_id			BIGINT PRIMARY KEY, 
+				guild_id			BIGINT, 
+				channel_id			BIGINT, 
+				pinboard_message_id BIGINT
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS pinboard.pinners (
+				message_id	BIGINT REFERENCES pinboard.pins (message_id) ON DELETE CASCADE, 
+				pinner_id	BIGINT, 
+				PRIMARY KEY (message_id, pinner_id)
+			)
+			"""
+		)
 	
 	@commands.group(aliases = ["starboard"], invoke_without_command = True)
 	@commands.is_owner()
