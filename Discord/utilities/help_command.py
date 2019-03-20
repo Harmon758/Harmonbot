@@ -124,7 +124,7 @@ class HelpCommand(commands.HelpCommand):
 				description = clients.code_block.format(description)
 			description += '\n' + command.description
 			if len(description) <= self.embed_description_limit:
-				embeds = [discord.Embed(title = title, description = description, color = self.embed_color)]
+				return await ctx.embed_reply(title = title, description = description)
 			else:
 				paginator = Paginator(max_size = self.embed_description_limit)
 				paginator.add_line(command.help, empty = True)
@@ -137,18 +137,13 @@ class HelpCommand(commands.HelpCommand):
 					embeds.append(discord.Embed(description = command.description, color = self.embed_color))
 				else:
 					embeds.append(discord.Embed(description = paginator.pages[-1] + '\n' + command.description, color = self.embed_color))
+				destination = ctx.author
+				if not isinstance(ctx.channel, discord.DMChannel):
+					await ctx.embed_reply("Check your DMs")
+				for embed in embeds:
+					await destination.send(embed = embed)
 		else:
-			embeds = [discord.Embed(title = title, description = command.description, color = self.embed_color)]
-		if len(embeds) > 1:
-			destination = ctx.author
-			if not isinstance(ctx.channel, discord.DMChannel):
-				await ctx.embed_reply("Check your DMs")
-		else:
-			destination = ctx.channel
-		for embed in embeds:
-			if destination == ctx.channel:
-				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			await destination.send(embed = embed)
+			return await ctx.embed_reply(title = title, description = command.description)
 	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
