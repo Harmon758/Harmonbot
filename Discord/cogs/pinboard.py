@@ -68,8 +68,14 @@ class Pinboard(commands.Cog):
 		Backfill pins into current pinboard channel
 		This can take a while depending on how many missing pinned messages there are
 		'''
-		record = await ctx.bot.db.fetchrow("SELECT channel_id, threshold, private_channels FROM pinboard.pinboards WHERE guild_id = $1", 
-											ctx.guild.id)
+		record = await ctx.bot.db.fetchrow(
+			"""
+			SELECT channel_id, threshold, private_channels
+			FROM pinboard.pinboards
+			WHERE guild_id = $1
+			""", 
+			ctx.guild.id
+		)
 		pinboard_channel_id = record["channel_id"]
 		threshold = record["threshold"] or self.default_threshold
 		private_channels_setting = record["private_channels"]
