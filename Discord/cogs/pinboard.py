@@ -221,8 +221,14 @@ class Pinboard(commands.Cog):
 		if not payload.guild_id:
 			# Reaction is not in a guild
 			return
-		record = await self.bot.db.fetchrow("SELECT channel_id, threshold, private_channels FROM pinboard.pinboards WHERE guild_id = $1", 
-												payload.guild_id)
+		record = await self.bot.db.fetchrow(
+			"""
+			SELECT channel_id, threshold, private_channels
+			FROM pinboard.pinboards
+			WHERE guild_id = $1
+			""", 
+			payload.guild_id
+		)
 		if not record:
 			# Guild doesn't have a pinboard
 			return
