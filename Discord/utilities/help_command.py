@@ -73,6 +73,45 @@ class HelpCommand(commands.HelpCommand):
 				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
 			await destination.send(embed = embed)
 	
+	async def send_command_help(self, command):
+		self.command = command
+		
+		description_paginator = Paginator(max_size = self.embed_description_limit)
+		max_width = self.max_name_size
+		if isinstance(self.command, GroupMixin):
+			filtered_command_list = await self.filter_command_list()
+		# <signature portion>
+		title = self.get_command_signature(self.command)
+		# <long doc> section
+		if self.command.help:
+			description_paginator.add_line(self.command.help, empty = True)
+		# end it here if it's just a regular command
+		if not isinstance(self.command, GroupMixin) or not filtered_command_list:
+			description_paginator.close_page()
+			if not self.command.help:
+				return [discord.Embed(title = title, description = self.command.description, color = self.embed_color)]
+			elif len(self.command.help) <= self.embed_description_limit:
+				description = clients.code_block.format(self.command.help) if "  " in self.command.help else self.command.help
+				description += "\n" + self.command.description
+				return [discord.Embed(title = title, description = description, color = self.embed_color)]
+			return self.embeds(title, description_paginator)
+		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
+		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
+		if (not self.command.help or len(self.command.help) <= self.embed_description_limit) and len('\n'.join(subcommand_lines)) <= self.embed_field_limit - 8:
+		# 8: len("```\n") * 2
+			embed = discord.Embed(color = self.embed_color)
+			value = f"{description_paginator.pages[0]}\n" if description_paginator.pages else ""
+			value += self.command.description
+			if not value:
+				embed.title = title
+			else:
+				embed.add_field(name = title, value = value, inline = False)
+			embed.add_field(name = f"Subcommands for {self.command}", value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
+			return [embed]
+		description_paginator.add_line(f"Subcommands for {self.command}:")
+		self._add_subcommands_to_page(max_width, subcommands, description_paginator)
+		return self.embeds(title, description_paginator)
+	
 	def is_cog(self):
 		return not self.command is self.context.bot and not isinstance(self.command, Command)
 	
@@ -108,7 +147,6 @@ class HelpCommand(commands.HelpCommand):
 	async def format_help_for(self, command_or_bot):
 		self.command = command_or_bot
 		
-		description_paginator = Paginator(max_size = self.embed_description_limit)
 		max_width = self.max_name_size
 		if not isinstance(self.command, Command) or isinstance(self.command, GroupMixin):
 			filtered_command_list = await self.filter_command_list()
@@ -138,38 +176,6 @@ class HelpCommand(commands.HelpCommand):
 					for page in field_paginator.pages[1:]:
 						embeds[-1].add_field(name = f"{category} (continued)", value = page, inline = False)
 			return embeds
-		elif isinstance(self.command, Command):
-			# <signature portion>
-			title = self.get_command_signature(self.command)
-			# <long doc> section
-			if self.command.help:
-				description_paginator.add_line(self.command.help, empty = True)
-			# end it here if it's just a regular command
-			if not isinstance(self.command, GroupMixin) or not filtered_command_list:
-				description_paginator.close_page()
-				if not self.command.help:
-					return [discord.Embed(title = title, description = self.command.description, color = self.embed_color)]
-				elif len(self.command.help) <= self.embed_description_limit:
-					description = clients.code_block.format(self.command.help) if "  " in self.command.help else self.command.help
-					description += "\n" + self.command.description
-					return [discord.Embed(title = title, description = description, color = self.embed_color)]
-				return self.embeds(title, description_paginator)
-			subcommands = sorted(filtered_command_list, key = lambda c: c[0])
-			subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
-			if (not self.command.help or len(self.command.help) <= self.embed_description_limit) and len('\n'.join(subcommand_lines)) <= self.embed_field_limit - 8:
-			# 8: len("```\n") * 2
-				embed = discord.Embed(color = self.embed_color)
-				value = f"{description_paginator.pages[0]}\n" if description_paginator.pages else ""
-				value += self.command.description
-				if not value:
-					embed.title = title
-				else:
-					embed.add_field(name = title, value = value, inline = False)
-				embed.add_field(name = f"Subcommands for {self.command}", value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
-				return [embed]
-			description_paginator.add_line(f"Subcommands for {self.command}:")
-			self._add_subcommands_to_page(max_width, subcommands, description_paginator)
-		return self.embeds(title, description_paginator)
 	
 	@property
 	def max_name_size(self):
@@ -271,7 +277,7 @@ class HelpCommand(commands.HelpCommand):
 				return await self.send_cog_help(cog)
 			if name.lower() in ctx.bot.all_commands:
 				command = ctx.bot.all_commands[name.lower()]
-				embeds = await self.format_help_for(command)
+				embeds = await self.send_command_help(command)
 			elif name.lower() in [cog.lower() for cog in ctx.bot.cogs.keys()]:  # TODO: More efficient way?
 				cog = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())[1]
 				return await self.send_cog_help(cog)
@@ -293,7 +299,7 @@ class HelpCommand(commands.HelpCommand):
 						return await ctx.embed_reply(self.command_not_found(key))
 				except AttributeError:
 					return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
-			embeds = await self.format_help_for(command)
+			embeds = await self.send_command_help(command)
 		
 		if len(embeds) > 1:
 			destination = ctx.author
