@@ -54,9 +54,8 @@ class HelpCommand(commands.HelpCommand):
 		paginator = Paginator(max_size = self.embed_description_limit)
 		if cog.description:
 			paginator.add_line(cog.description, empty = True)
-		filtered_command_list = await self.filter_command_list()
-		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
-		self._add_subcommands_to_page(self.max_name_size, subcommands, paginator)
+		filtered_commands = await self.filter_commands(cog.get_commands(), sort = True)
+		self._add_subcommands_to_page(self.max_name_size, filtered_commands, paginator)
 		embeds = [discord.Embed(title = f"{type(cog).__name__} Commands", description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
 		for page in paginator.pages[1:]:
 			embeds.append(discord.Embed(description = page, color = self.embed_color))
@@ -75,9 +74,8 @@ class HelpCommand(commands.HelpCommand):
 	async def send_group_help(self, group):
 		self.command = group
 		
-		filtered_command_list = await self.filter_command_list()
-		if not filtered_command_list:
-			# No subcommands
+		subcommands = await self.filter_commands(group.commands, sort = True)
+		if not subcommands:
 			return await self.send_command_help(group)
 		
 		ctx = self.context
@@ -106,7 +104,6 @@ class HelpCommand(commands.HelpCommand):
 														color = self.embed_color))
 		
 		max_width = self.max_name_size
-		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
 		if len('\n'.join(subcommand_lines)) + 8 <= ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT:
 		# 8 = len("```\n") * 2
@@ -164,15 +161,14 @@ class HelpCommand(commands.HelpCommand):
 		
 		ctx = self.context
 		max_width = self.max_name_size
-		filtered_command_list = await self.filter_command_list()
-		def category(tup):
-			cog = tup[1].cog_name
+		def category(command):
+			cog = command.cog_name
 			# we insert the zero width space there to give it approximate last place sorting position
 			return cog if cog is not None else "\u200bNo Category"
-		data = sorted(filtered_command_list, key = lambda c: category(c).lower())
+		filtered_commands = await self.filter_commands(ctx.bot.commands, sort = True, key = lambda c: category(c).lower())
 		embeds = [discord.Embed(title = "My Commands", color = self.embed_color)]
-		for category, commands in itertools.groupby(data, key = category):
-			commands = sorted(commands, key = lambda c: c[0])
+		for category, commands in itertools.groupby(filtered_commands, key = category):
+			commands = sorted(commands, key = lambda c: c.name)
 			if len(commands) > 0:
 				field_paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
 				self._add_subcommands_to_page(max_width, commands, field_paginator)
@@ -193,35 +189,6 @@ class HelpCommand(commands.HelpCommand):
 			await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
-	
-	async def filter_command_list(self):
-		def sane_no_suspension_point_predicate(tup):
-			cmd = tup[1]
-			if isinstance(self.command, Cog):
-				# filter commands that don't exist to this cog.
-				if cmd.cog is not self.command:
-					return False
-			if cmd.hidden and not self.show_hidden:
-				return False
-			return True
-		async def predicate(tup):
-			if sane_no_suspension_point_predicate(tup) is False:
-				return False
-			cmd = tup[1]
-			try:
-				return await cmd.can_run(self.context)
-			except CommandError:
-				return False
-		iterator = self.command.all_commands.items() if not isinstance(self.command, Cog) else self.context.bot.all_commands.items()
-		if self.verify_checks:
-			return filter(sane_no_suspension_point_predicate, iterator)
-		# Gotta run every check and verify it
-		ret = []
-		for elem in iterator:
-			valid = await predicate(elem)
-			if valid:
-				ret.append(elem)
-		return ret
 	
 	@property
 	def max_name_size(self):
