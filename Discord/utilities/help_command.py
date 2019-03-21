@@ -57,7 +57,10 @@ class HelpCommand(commands.HelpCommand):
 		filtered_command_list = await self.filter_command_list()
 		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 		self._add_subcommands_to_page(self.max_name_size, subcommands, paginator)
-		embeds = self.embeds(f"{type(cog).__name__} Commands", paginator)
+		embeds = [discord.Embed(title = f"{type(cog).__name__} Commands", description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
+		for page in paginator.pages[1:]:
+			embeds.append(discord.Embed(description = page, color = self.embed_color))
+		
 		if len(embeds) > 1:
 			destination = ctx.author
 			if not isinstance(ctx.channel, discord.DMChannel):
@@ -278,12 +281,6 @@ class HelpCommand(commands.HelpCommand):
 				cutoff = new_cutoff
 			lines.append(prefix + ' ' * (max_width + 2 - buffer) + line[cutoff + 1:])
 		return lines
-	
-	def embeds(self, title, paginator):
-		embeds = [discord.Embed(title = title, description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
-		for page in paginator.pages[1:]:
-			embeds.append(discord.Embed(description = page, color = self.embed_color))
-		return embeds
 	
 	# @checks.dm_or_has_capability("embed_links")
 	async def command_callback(self, ctx, *commands : str):
