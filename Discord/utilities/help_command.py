@@ -72,33 +72,53 @@ class HelpCommand(commands.HelpCommand):
 	async def send_group_help(self, group):
 		self.command = group
 		
-		ctx = self.context
-		paginator = Paginator(max_size = self.embed_description_limit)
-		max_width = self.max_name_size
 		filtered_command_list = await self.filter_command_list()
-		title = self.get_command_signature(group)
-		if group.help:
-			paginator.add_line(group.help, empty = True)
 		if not filtered_command_list:
+			# No subcommands
 			return await self.send_command_help(group)
+		
+		ctx = self.context
+		title = self.get_command_signature(group)
+		if not group.help:
+			description = group.description
+		else:
+			description = group.help
+			if "  " in group.help:
+				description = clients.code_block.format(description)
+			description += '\n' + group.description
+		if len(description) <= self.embed_description_limit:
+			embeds = [discord.Embed(title = title, description = description, color = self.embed_color)]
+		else:
+			paginator = Paginator(max_size = self.embed_description_limit)
+			paginator.add_line(group.help, empty = True)
+			paginator.close_page()  # Necessary?
+			embeds = [discord.Embed(title = title, description = paginator.pages[0], color = self.embed_color)]
+			for page in paginator.pages[1:-1]:
+				embeds.append(discord.Embed(description = page, color = self.embed_color))
+			if len(paginator.pages[-1] + group.description) + 1 > self.embed_description_limit:
+				embeds.append(discord.Embed(description = paginator.pages[-1], color = self.embed_color))
+				embeds.append(discord.Embed(description = command.description, color = self.embed_color))
+			else:
+				embeds.append(embed = discord.Embed(description = f"{paginator.pages[-1]}\n{command.description}", 
+														color = self.embed_color))
+		
+		max_width = self.max_name_size
 		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
-		if (not group.help or len(group.help) <= self.embed_description_limit) and len('\n'.join(subcommand_lines)) <= ctx.bot.EFVCL - 8:
+		if len('\n'.join(subcommand_lines)) + 8 <= ctx.bot.EFVCL:
 		# EFVCL = Embed Field Value Character Limit
-		# 8: len("```\n") * 2
-			embed = discord.Embed(color = self.embed_color)
-			value = f"{paginator.pages[0]}\n" if paginator.pages else ""
-			value += group.description
-			if not value:
-				embed.title = title
-			else:
-				embed.add_field(name = title, value = value, inline = False)
-			embed.add_field(name = f"Subcommands for {group}", value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
-			embeds = [embed]
+		# 8 = len("```\n") * 2
+			embeds[-1].add_field(name = f"Subcommands for {group}", value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
 		else:
-			paginator.add_line(f"Subcommands for {group}:")
+			paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
 			self._add_subcommands_to_page(max_width, subcommands, paginator)
-			embeds = self.embeds(title, paginator)
+			embeds[-1].add_field(name = f"Subcommands for {group}", value = paginator.pages[0])
+			for page in paginator.pages[1:]:
+				embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page)
+				if len(embeds[-1]) > self.embed_total_limit:
+					embeds[-1].remove_field(-1)
+					embeds.append(discord.Embed(description = page, color = self.embed_color))
+		
 		if len(embeds) > 1:
 			destination = ctx.author
 			if not isinstance(ctx.channel, discord.DMChannel):
