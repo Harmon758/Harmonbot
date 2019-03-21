@@ -56,8 +56,6 @@ class HelpCommand(commands.HelpCommand):
 		await ctx.embed_reply(description, title = "Categories", fields = fields)
 	
 	async def send_cog_help(self, cog):
-		self.command = cog
-		
 		ctx = self.context
 		paginator = Paginator(max_size = self.embed_description_limit)
 		if cog.description:
@@ -80,8 +78,6 @@ class HelpCommand(commands.HelpCommand):
 			await destination.send(embed = embed)
 	
 	async def send_group_help(self, group):
-		self.command = group
-		
 		subcommands = await self.filter_commands(group.commands, sort = True)
 		if not subcommands:
 			return await self.send_command_help(group)
@@ -165,8 +161,6 @@ class HelpCommand(commands.HelpCommand):
 			await ctx.embed_reply("Check your DMs")
 	
 	async def send_all_help(self):
-		self.command = self.context.bot
-		
 		ctx = self.context
 		def category(command):
 			cog = command.cog_name
