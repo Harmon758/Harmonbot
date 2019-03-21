@@ -6,9 +6,6 @@ from discord.ext.commands import Group, Paginator
 import difflib
 import itertools
 
-import clients
-# TODO: Remove clients import
-
 # Use DefaultHelpCommand?
 class HelpCommand(commands.HelpCommand):
 	
@@ -87,7 +84,7 @@ class HelpCommand(commands.HelpCommand):
 		else:
 			description = group.help
 			if "  " in group.help:
-				description = clients.code_block.format(description)
+				description = ctx.bot.CODE_BLOCK.format(description)
 			description += '\n' + group.description
 		if len(description) <= ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 			embeds = [discord.Embed(title = title, description = description, color = self.embed_color)]
@@ -109,7 +106,7 @@ class HelpCommand(commands.HelpCommand):
 		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
 		if len('\n'.join(subcommand_lines)) + 8 <= ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT:
 		# 8 = len("```\n") * 2
-			embeds[-1].add_field(name = f"Subcommands for {group}", value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
+			embeds[-1].add_field(name = f"Subcommands for {group}", value = ctx.bot.CODE_BLOCK.format('\n'.join(subcommand_lines)), inline = False)
 		else:
 			paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
 			self._add_subcommands_to_page(max_width, subcommands, paginator)
@@ -138,7 +135,7 @@ class HelpCommand(commands.HelpCommand):
 			return await ctx.embed_reply(title = title, description = command.description)
 		description = command.help
 		if "  " in command.help:
-			description = clients.code_block.format(description)
+			description = ctx.bot.CODE_BLOCK.format(description)
 		description += '\n' + command.description
 		if len(description) <= ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 			return await ctx.embed_reply(title = title, description = description)
