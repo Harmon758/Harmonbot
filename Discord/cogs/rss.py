@@ -259,8 +259,8 @@ class RSS(commands.Cog):
 								space_index = description.rfind(' ', 0, self.bot.EDCL - 3)
 								# EDCL: Embed Description Character Limit
 								description = description[:space_index] + "..."
-						title = textwrap.shorten(entry.get("title"), width = self.bot.ETCL, placeholder = "...")
-						# ETCL: Embed Title Character Limit
+						title = textwrap.shorten(entry.get("title"), width = self.bot.ETiCL, placeholder = "...")
+						# ETiCL: Embed Title Character Limit
 						embed = discord.Embed(title = html.unescape(title), 
 												url = entry.link, 
 												description = description, 
