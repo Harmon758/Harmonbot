@@ -105,8 +105,7 @@ class HelpCommand(commands.HelpCommand):
 		max_width = self.max_name_size
 		subcommands = sorted(filtered_command_list, key = lambda c: c[0])
 		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
-		if len('\n'.join(subcommand_lines)) + 8 <= ctx.bot.EFVCL:
-		# EFVCL = Embed Field Value Character Limit
+		if len('\n'.join(subcommand_lines)) + 8 <= ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT:
 		# 8 = len("```\n") * 2
 			embeds[-1].add_field(name = f"Subcommands for {group}", value = clients.code_block.format('\n'.join(subcommand_lines)), inline = False)
 		else:
