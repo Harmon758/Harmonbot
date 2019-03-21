@@ -55,7 +55,7 @@ class HelpCommand(commands.HelpCommand):
 		if cog.description:
 			paginator.add_line(cog.description, empty = True)
 		filtered_commands = await self.filter_commands(cog.get_commands(), sort = True)
-		self._add_subcommands_to_page(self.max_name_size(filtered_commands), filtered_commands, paginator)
+		self._add_subcommands_to_page(self.get_max_size(filtered_commands), filtered_commands, paginator)
 		embeds = [discord.Embed(title = f"{type(cog).__name__} Commands", description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
 		for page in paginator.pages[1:]:
 			embeds.append(discord.Embed(description = page, color = self.embed_color))
@@ -103,7 +103,7 @@ class HelpCommand(commands.HelpCommand):
 				embeds.append(embed = discord.Embed(description = f"{paginator.pages[-1]}\n{command.description}", 
 														color = self.embed_color))
 		
-		max_width = self.max_name_size(subcommands)
+		max_width = self.get_max_size(subcommands)
 		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
 		if len('\n'.join(subcommand_lines)) + 8 <= ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT:
 		# 8 = len("```\n") * 2
@@ -165,7 +165,7 @@ class HelpCommand(commands.HelpCommand):
 			# we insert the zero width space there to give it approximate last place sorting position
 			return cog if cog is not None else "\u200bNo Category"
 		filtered_commands = await self.filter_commands(ctx.bot.commands, sort = True, key = lambda c: category(c).lower())
-		max_width = self.max_name_size(filtered_commands)
+		max_width = self.get_max_size(filtered_commands)
 		embeds = [discord.Embed(title = "My Commands", color = self.embed_color)]
 		for category, commands in itertools.groupby(filtered_commands, key = category):
 			commands = sorted(commands, key = lambda c: c.name)
@@ -190,15 +190,13 @@ class HelpCommand(commands.HelpCommand):
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
-	def max_name_size(self, commands):
-		if commands:
-			# Include subcommands
-			commands = commands.copy()
-			for command in commands.copy():
-				if isinstance(command, Group):
-					commands.extend(command.commands)
-			return max(map(lambda c: len(c.name), commands))
-		return 0
+	def get_max_size(self, commands):
+		# Include subcommands
+		commands = commands.copy()
+		for command in commands.copy():
+			if isinstance(command, Group):
+				commands.extend(command.commands)
+		return super().get_max_size(commands)
 	
 	def _add_subcommands_to_page(self, max_width, commands, paginator):
 		for line in self.generate_subcommand_lines(max_width, commands):
