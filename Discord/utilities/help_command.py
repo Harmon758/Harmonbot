@@ -16,7 +16,6 @@ class HelpCommand(commands.HelpCommand):
 	def __init__(self, embed_color, **options):
 		self.embed_color = embed_color
 		self.embed_codeblock_row_limit = 55
-		self.embed_fields_limit = 25
 		
 		attrs = options.setdefault("command_attrs", {})
 		attrs.setdefault("help", "Shows this message\n"
@@ -179,7 +178,7 @@ class HelpCommand(commands.HelpCommand):
 				if len(embeds[-1]) + total_paginator_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
 					embeds.append(discord.Embed(color = self.embed_color))
 				# TODO: Add until limit?
-				if len(embeds[-1].fields) + len(field_paginator.pages) <= self.embed_fields_limit:
+				if len(embeds[-1].fields) + len(field_paginator.pages) <= ctx.bot.EMBED_FIELD_AMOUNT_LIMIT:
 					embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
 				else:
 					embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
