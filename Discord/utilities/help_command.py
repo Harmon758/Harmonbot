@@ -211,17 +211,14 @@ class HelpCommand(commands.HelpCommand):
 	def generate_subcommand_lines(self, max_width, commands):
 		lines = []
 		# Add 3 for "┣ "/"┗ "
-		for _, command in commands:
+		for command in commands:
 			if isinstance(command, Group) and command.commands:
 				max_width += 3
 				break
-		for name, command in commands:
-			# Skip aliases
-			if name in command.aliases:
-				continue
+		for command in commands:
 			prefix = "┃ " if isinstance(command, Group) and command.commands else " "
 			buffer = 2 if isinstance(command, Group) and command.commands else 0
-			line = f"{name:<{max_width}}  {command.short_doc}"
+			line = f"{command.name:<{max_width}}  {command.short_doc}"
 			lines = self.append_subcommand_line(lines, line, max_width, prefix, buffer)
 			# Add subcommands of subcommands
 			if isinstance(command, Group) and command.commands:
