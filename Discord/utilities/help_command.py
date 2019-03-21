@@ -35,6 +35,14 @@ class HelpCommand(commands.HelpCommand):
 	def command_not_found(self, string):
 		return f"No command called `{string}` found"
 	
+	def get_max_size(self, commands):
+		# Include subcommands
+		commands = commands.copy()
+		for command in commands.copy():
+			if isinstance(command, Group):
+				commands.extend(command.commands)
+		return super().get_max_size(commands)
+	
 	async def send_bot_help(self, mapping):
 		ctx = self.context
 		description = "  ".join(f"`{category}`" for category in sorted(ctx.bot.cogs, key = str.lower))
@@ -189,14 +197,6 @@ class HelpCommand(commands.HelpCommand):
 			await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
-	
-	def get_max_size(self, commands):
-		# Include subcommands
-		commands = commands.copy()
-		for command in commands.copy():
-			if isinstance(command, Group):
-				commands.extend(command.commands)
-		return super().get_max_size(commands)
 	
 	def _add_subcommands_to_page(self, max_width, commands, paginator):
 		for line in self.generate_subcommand_lines(max_width, commands):
