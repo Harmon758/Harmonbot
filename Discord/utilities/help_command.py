@@ -1,7 +1,7 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import Cog, Group, Paginator
+from discord.ext.commands import Group, Paginator
 
 import difflib
 import itertools
@@ -9,6 +9,7 @@ import itertools
 import clients
 # TODO: Remove clients import
 
+# Use DefaultHelpCommand?
 class HelpCommand(commands.HelpCommand):
 	
 	'''Custom Help Command'''
