@@ -11,9 +11,7 @@ class HelpCommand(commands.HelpCommand):
 	
 	'''Custom Help Command'''
 	
-	def __init__(self, embed_color, **options):
-		self.embed_color = embed_color
-		
+	def __init__(self, **options):
 		attrs = options.setdefault("command_attrs", {})
 		attrs.setdefault("help", "Shows this message\n"
 									"Inputs in angle brackets, <>, are required\n"
@@ -23,7 +21,6 @@ class HelpCommand(commands.HelpCommand):
 		super().__init__(**options)
 	
 	# TODO: Mitigate code block cutoff issue
-	# TODO: Use Bot color attribute for embed color
 	
 	def command_not_found(self, string):
 		return f"No command called `{string}` found"
@@ -60,9 +57,9 @@ class HelpCommand(commands.HelpCommand):
 			# TODO: Response when no description or permitted commands in cog?
 		if len(paginator.pages) == 1:
 			return await ctx.embed_reply(title = f"{cog.qualified_name} Commands", description = paginator.pages[0])
-		await ctx.author.send(embed = discord.Embed(title = f"{cog.qualified_name} Commands", description = paginator.pages[0], color = self.embed_color))
+		await ctx.author.send(embed = discord.Embed(title = f"{cog.qualified_name} Commands", description = paginator.pages[0], color = ctx.bot.bot_color))
 		for page in paginator.pages[1:]:
-			await ctx.author.send(embed = discord.Embed(description = page, color = self.embed_color))
+			await ctx.author.send(embed = discord.Embed(description = page, color = ctx.bot.bot_color))
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
@@ -81,20 +78,20 @@ class HelpCommand(commands.HelpCommand):
 				description = ctx.bot.CODE_BLOCK.format(description)
 			description += '\n' + group.description
 		if len(description) <= ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-			embeds = [discord.Embed(title = title, description = description, color = self.embed_color)]
+			embeds = [discord.Embed(title = title, description = description, color = ctx.bot.bot_color)]
 		else:
 			paginator = Paginator(max_size = ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT)
 			paginator.add_line(group.help, empty = True)
 			paginator.close_page()  # Necessary?
-			embeds = [discord.Embed(title = title, description = paginator.pages[0], color = self.embed_color)]
+			embeds = [discord.Embed(title = title, description = paginator.pages[0], color = ctx.bot.bot_color)]
 			for page in paginator.pages[1:-1]:
-				embeds.append(discord.Embed(description = page, color = self.embed_color))
+				embeds.append(discord.Embed(description = page, color = ctx.bot.bot_color))
 			if len(paginator.pages[-1] + group.description) + 1 > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-				embeds.append(discord.Embed(description = paginator.pages[-1], color = self.embed_color))
-				embeds.append(discord.Embed(description = command.description, color = self.embed_color))
+				embeds.append(discord.Embed(description = paginator.pages[-1], color = ctx.bot.bot_color))
+				embeds.append(discord.Embed(description = command.description, color = ctx.bot.bot_color))
 			else:
 				embeds.append(embed = discord.Embed(description = f"{paginator.pages[-1]}\n{command.description}", 
-														color = self.embed_color))
+														color = ctx.bot.bot_color))
 		
 		max_width = self.get_max_size(subcommands)
 		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
@@ -109,7 +106,7 @@ class HelpCommand(commands.HelpCommand):
 				embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page)
 				if len(embeds[-1]) > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
 					embeds[-1].remove_field(-1)
-					embeds.append(discord.Embed(description = page, color = self.embed_color))
+					embeds.append(discord.Embed(description = page, color = ctx.bot.bot_color))
 		
 		if len(embeds) == 1:
 			await ctx.channel.send(embed = embeds[0].set_author(name = ctx.author.display_name, 
@@ -135,15 +132,15 @@ class HelpCommand(commands.HelpCommand):
 		paginator.add_line(command.help, empty = True)
 		paginator.close_page()  # Necessary?
 		await ctx.whisper(embed = discord.Embed(title = title, 
-												description = paginator.pages[0], color = self.embed_color))
+												description = paginator.pages[0], color = ctx.bot.bot_color))
 		for page in paginator.pages[1:-1]:
-			await ctx.whisper(embed = discord.Embed(description = page, color = self.embed_color))
+			await ctx.whisper(embed = discord.Embed(description = page, color = ctx.bot.bot_color))
 		if len(paginator.pages[-1] + command.description) + 1 > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-			await ctx.whisper(embed = discord.Embed(description = paginator.pages[-1], color = self.embed_color))
-			await ctx.whisper(embed = discord.Embed(description = command.description, color = self.embed_color))
+			await ctx.whisper(embed = discord.Embed(description = paginator.pages[-1], color = ctx.bot.bot_color))
+			await ctx.whisper(embed = discord.Embed(description = command.description, color = ctx.bot.bot_color))
 		else:
 			await ctx.whisper(embed = discord.Embed(description = f"{paginator.pages[-1]}\n{command.description}", 
-													color = self.embed_color))
+													color = ctx.bot.bot_color))
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
@@ -155,7 +152,7 @@ class HelpCommand(commands.HelpCommand):
 			return cog if cog is not None else "\u200bNo Category"
 		filtered_commands = await self.filter_commands(ctx.bot.commands, sort = True, key = lambda c: category(c).lower())
 		max_width = self.get_max_size(filtered_commands)
-		embeds = [discord.Embed(title = "My Commands", color = self.embed_color)]
+		embeds = [discord.Embed(title = "My Commands", color = ctx.bot.bot_color)]
 		for category, commands in itertools.groupby(filtered_commands, key = category):
 			commands = sorted(commands, key = lambda c: c.name)
 			if len(commands) > 0:
@@ -166,12 +163,12 @@ class HelpCommand(commands.HelpCommand):
 				for page in field_paginator.pages:
 					total_paginator_characters += len(page)
 				if len(embeds[-1]) + total_paginator_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
-					embeds.append(discord.Embed(color = self.embed_color))
+					embeds.append(discord.Embed(color = ctx.bot.bot_color))
 				# TODO: Add until limit?
 				if len(embeds[-1].fields) + len(field_paginator.pages) <= ctx.bot.EMBED_FIELD_AMOUNT_LIMIT:
 					embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
 				else:
-					embeds.append(discord.Embed(color = self.embed_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
+					embeds.append(discord.Embed(color = ctx.bot.bot_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
 				for page in field_paginator.pages[1:]:
 					embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 		for embed in embeds:
