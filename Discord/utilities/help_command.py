@@ -113,16 +113,14 @@ class HelpCommand(commands.HelpCommand):
 					embeds[-1].remove_field(-1)
 					embeds.append(discord.Embed(description = page, color = self.embed_color))
 		
-		if len(embeds) > 1:
-			destination = ctx.author
+		if len(embeds) == 1:
+			await ctx.channel.send(embed = embeds[0].set_author(name = ctx.author.display_name, 
+																icon_url = ctx.author.avatar_url))
+		else:
+			for embed in embeds:
+				await ctx.author.send(embed = embed)
 			if not isinstance(ctx.channel, discord.DMChannel):
 				await ctx.embed_reply("Check your DMs")
-		else:
-			destination = ctx.channel
-		for embed in embeds:
-			if destination == ctx.channel:
-				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			await destination.send(embed = embed)
 	
 	async def send_command_help(self, command):
 		ctx = self.context
