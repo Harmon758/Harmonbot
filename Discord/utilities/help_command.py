@@ -57,20 +57,16 @@ class HelpCommand(commands.HelpCommand):
 			paginator.add_line(cog.description, empty = True)
 		filtered_commands = await self.filter_commands(cog.get_commands(), sort = True)
 		self._add_subcommands_to_page(self.get_max_size(filtered_commands), filtered_commands, paginator)
-		embeds = [discord.Embed(title = f"{cog.qualified_name} Commands", description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
+		if not paginator.pages:
+			return await ctx.embed_reply(title = f"{cog.qualified_name} Commands")
+			# TODO: Response when no description or permitted commands in cog?
+		if len(paginator.pages) == 1:
+			return await ctx.embed_reply(title = f"{cog.qualified_name} Commands", description = paginator.pages[0])
+		await ctx.author.send(embed = discord.Embed(title = f"{cog.qualified_name} Commands", description = paginator.pages[0], color = self.embed_color))
 		for page in paginator.pages[1:]:
-			embeds.append(discord.Embed(description = page, color = self.embed_color))
-		
-		if len(embeds) > 1:
-			destination = ctx.author
-			if not isinstance(ctx.channel, discord.DMChannel):
-				await ctx.embed_reply("Check your DMs")
-		else:
-			destination = ctx.channel
-		for embed in embeds:
-			if destination == ctx.channel:
-				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-			await destination.send(embed = embed)
+			await ctx.author.send(embed = discord.Embed(description = page, color = self.embed_color))
+		if not isinstance(ctx.channel, discord.DMChannel):
+			await ctx.embed_reply("Check your DMs")
 	
 	async def send_group_help(self, group):
 		subcommands = await self.filter_commands(group.commands, sort = True)
