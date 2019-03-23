@@ -13,7 +13,6 @@ class HelpCommand(commands.HelpCommand):
 	
 	def __init__(self, embed_color, **options):
 		self.embed_color = embed_color
-		self.embed_codeblock_row_limit = 55
 		
 		attrs = options.setdefault("command_attrs", {})
 		attrs.setdefault("help", "Shows this message\n"
@@ -23,9 +22,8 @@ class HelpCommand(commands.HelpCommand):
 									"it will not be displayed in the corresponding help message")
 		super().__init__(**options)
 	
-	# TODO: Update codeblock row limit
-	# TODO: Capitalize constants
-	# TODO: Use Bot attribute constants
+	# TODO: Mitigate code block cutoff issue
+	# TODO: Use Bot color attribute for embed color
 	
 	def command_not_found(self, string):
 		return f"No command called `{string}` found"
@@ -208,7 +206,8 @@ class HelpCommand(commands.HelpCommand):
 		return lines
 	
 	def append_subcommand_line(self, lines, line, max_width, prefix, buffer):
-		limit = self.embed_codeblock_row_limit
+		ctx = self.context
+		limit = ctx.bot.EMBED_CODE_BLOCK_ROW_CHARACTER_LIMIT
 		if '┣' in prefix + line or '┗' in prefix + line:
 			limit -= 1
 		if len(line) <= limit:
