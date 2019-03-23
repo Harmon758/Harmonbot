@@ -261,8 +261,9 @@ class HelpCommand(commands.HelpCommand):
 					return await self.send_group_help(command)
 				else:
 					return await self.send_command_help(command)
-			if name.lower() in [cog.lower() for cog in ctx.bot.cogs.keys()]:  # TODO: More efficient way?
-				cog = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())[1]
+			cog = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())
+			if cog:
+				cog = cog[1]
 				return await self.send_cog_help(cog)
 			output = self.command_not_found(name)
 			close_matches = difflib.get_close_matches(name, ctx.bot.all_commands.keys(), n = 1)
