@@ -57,7 +57,7 @@ class HelpCommand(commands.HelpCommand):
 			paginator.add_line(cog.description, empty = True)
 		filtered_commands = await self.filter_commands(cog.get_commands(), sort = True)
 		self._add_subcommands_to_page(self.get_max_size(filtered_commands), filtered_commands, paginator)
-		embeds = [discord.Embed(title = f"{type(cog).__name__} Commands", description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
+		embeds = [discord.Embed(title = f"{cog.qualified_name} Commands", description = paginator.pages[0] if paginator.pages else None, color = self.embed_color)]
 		for page in paginator.pages[1:]:
 			embeds.append(discord.Embed(description = page, color = self.embed_color))
 		
