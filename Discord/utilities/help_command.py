@@ -153,25 +153,17 @@ class HelpCommand(commands.HelpCommand):
 		embed = discord.Embed(title = "My Commands", color = ctx.bot.bot_color)
 		for category, commands in itertools.groupby(filtered_commands, key = get_category):
 			commands = sorted(commands, key = lambda c: c.name)
-			if commands:
-				paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
-				self._add_subcommands_to_page(self.get_max_size(filtered_commands), commands, paginator)
-				# Embed Limits
-				total_paginator_characters = len(category) + len(paginator.pages) - 1
-				for page in paginator.pages:
-					total_paginator_characters += len(page)
-				if len(embed) + total_paginator_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
-					await ctx.whisper(embed = embed)
-					embed = discord.Embed(color = ctx.bot.bot_color)
-				# TODO: Add until limit?
-				if len(embed.fields) + len(paginator.pages) <= ctx.bot.EMBED_FIELD_AMOUNT_LIMIT:
-					embed.add_field(name = category, value = paginator.pages[0], inline = False)
-				else:
-					await ctx.whisper(embed = embed)
-					embed = discord.Embed(color = ctx.bot.bot_color)
-					embed.add_field(name = category, value = paginator.pages[0], inline = False)
-				for page in paginator.pages[1:]:
-					embed.add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
+			paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
+			self._add_subcommands_to_page(self.get_max_size(filtered_commands), commands, paginator)
+			total_category_characters = (len(category) + len(paginator.pages) - 1
+											+ sum(len(page) for page in paginator.pages))
+			if (len(embed) + total_category_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT or 
+				len(embed.fields) + len(paginator.pages) > ctx.bot.EMBED_FIELD_AMOUNT_LIMIT):
+				await ctx.whisper(embed = embed)
+				embed = discord.Embed(color = ctx.bot.bot_color)
+			embed.add_field(name = category, value = paginator.pages[0], inline = False)
+			for page in paginator.pages[1:]:
+				embed.add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 		await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
