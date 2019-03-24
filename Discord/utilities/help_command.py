@@ -146,30 +146,28 @@ class HelpCommand(commands.HelpCommand):
 	
 	async def send_all_help(self):
 		ctx = self.context
-		def category(command):
-			cog = command.cog_name
-			# we insert the zero width space there to give it approximate last place sorting position
-			return cog if cog is not None else "\u200bNo Category"
-		filtered_commands = await self.filter_commands(ctx.bot.commands, sort = True, key = lambda c: category(c).lower())
-		max_width = self.get_max_size(filtered_commands)
+		def get_category(command):
+			return command.cog_name or f"{ctx.bot.ZERO_WIDTH_SPACE}No Category"
+			# Zero width space to position as last category when sorted
+		filtered_commands = await self.filter_commands(ctx.bot.commands, sort = True, key = lambda c: get_category(c).lower())
 		embeds = [discord.Embed(title = "My Commands", color = ctx.bot.bot_color)]
-		for category, commands in itertools.groupby(filtered_commands, key = category):
+		for category, commands in itertools.groupby(filtered_commands, key = get_category):
 			commands = sorted(commands, key = lambda c: c.name)
-			if len(commands) > 0:
-				field_paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
-				self._add_subcommands_to_page(max_width, commands, field_paginator)
+			if commands:
+				paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
+				self._add_subcommands_to_page(self.get_max_size(filtered_commands), commands, paginator)
 				# Embed Limits
-				total_paginator_characters = len(category) + len(field_paginator.pages) - 1
-				for page in field_paginator.pages:
+				total_paginator_characters = len(category) + len(paginator.pages) - 1
+				for page in paginator.pages:
 					total_paginator_characters += len(page)
 				if len(embeds[-1]) + total_paginator_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
 					embeds.append(discord.Embed(color = ctx.bot.bot_color))
 				# TODO: Add until limit?
-				if len(embeds[-1].fields) + len(field_paginator.pages) <= ctx.bot.EMBED_FIELD_AMOUNT_LIMIT:
-					embeds[-1].add_field(name = category, value = field_paginator.pages[0], inline = False)
+				if len(embeds[-1].fields) + len(paginator.pages) <= ctx.bot.EMBED_FIELD_AMOUNT_LIMIT:
+					embeds[-1].add_field(name = category, value = paginator.pages[0], inline = False)
 				else:
-					embeds.append(discord.Embed(color = ctx.bot.bot_color).add_field(name = category, value = field_paginator.pages[0], inline = False))
-				for page in field_paginator.pages[1:]:
+					embeds.append(discord.Embed(color = ctx.bot.bot_color).add_field(name = category, value = paginator.pages[0], inline = False))
+				for page in paginator.pages[1:]:
 					embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 		for embed in embeds:
 			await ctx.whisper(embed = embed)
