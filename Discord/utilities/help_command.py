@@ -150,7 +150,7 @@ class HelpCommand(commands.HelpCommand):
 			return command.cog_name or f"{ctx.bot.ZERO_WIDTH_SPACE}No Category"
 			# Zero width space to position as last category when sorted
 		filtered_commands = await self.filter_commands(ctx.bot.commands, sort = True, key = lambda c: get_category(c).lower())
-		embeds = [discord.Embed(title = "My Commands", color = ctx.bot.bot_color)]
+		embed = discord.Embed(title = "My Commands", color = ctx.bot.bot_color)
 		for category, commands in itertools.groupby(filtered_commands, key = get_category):
 			commands = sorted(commands, key = lambda c: c.name)
 			if commands:
@@ -160,17 +160,19 @@ class HelpCommand(commands.HelpCommand):
 				total_paginator_characters = len(category) + len(paginator.pages) - 1
 				for page in paginator.pages:
 					total_paginator_characters += len(page)
-				if len(embeds[-1]) + total_paginator_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
-					embeds.append(discord.Embed(color = ctx.bot.bot_color))
+				if len(embed) + total_paginator_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
+					await ctx.whisper(embed = embed)
+					embed = discord.Embed(color = ctx.bot.bot_color)
 				# TODO: Add until limit?
-				if len(embeds[-1].fields) + len(paginator.pages) <= ctx.bot.EMBED_FIELD_AMOUNT_LIMIT:
-					embeds[-1].add_field(name = category, value = paginator.pages[0], inline = False)
+				if len(embed.fields) + len(paginator.pages) <= ctx.bot.EMBED_FIELD_AMOUNT_LIMIT:
+					embed.add_field(name = category, value = paginator.pages[0], inline = False)
 				else:
-					embeds.append(discord.Embed(color = ctx.bot.bot_color).add_field(name = category, value = paginator.pages[0], inline = False))
+					await ctx.whisper(embed = embed)
+					embed = discord.Embed(color = ctx.bot.bot_color)
+					embed.add_field(name = category, value = paginator.pages[0], inline = False)
 				for page in paginator.pages[1:]:
-					embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
-		for embed in embeds:
-			await ctx.whisper(embed = embed)
+					embed.add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
+		await ctx.whisper(embed = embed)
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
