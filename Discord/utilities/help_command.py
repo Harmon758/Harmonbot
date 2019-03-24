@@ -149,7 +149,8 @@ class HelpCommand(commands.HelpCommand):
 		def get_category(command):
 			return command.cog_name or f"{ctx.bot.ZERO_WIDTH_SPACE}No Category"
 			# Zero width space to position as last category when sorted
-		filtered_commands = await self.filter_commands(ctx.bot.commands, sort = True, key = lambda c: get_category(c).lower())
+		filtered_commands = await self.filter_commands(ctx.bot.commands, sort = True, 
+														key = lambda c: get_category(c).lower())
 		embed = discord.Embed(title = "My Commands", color = ctx.bot.bot_color)
 		for category, commands in itertools.groupby(filtered_commands, key = get_category):
 			commands = sorted(commands, key = lambda c: c.name)
