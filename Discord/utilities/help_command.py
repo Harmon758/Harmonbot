@@ -175,33 +175,32 @@ class HelpCommand(commands.HelpCommand):
 			prefix = "┃ " if isinstance(command, Group) and command.commands else " "
 			buffer = 2 if isinstance(command, Group) and command.commands else 0
 			line = f"{command.name:<{max_width}}  {command.short_doc}"
-			lines = self.append_command_line(lines, line, max_width, prefix, buffer)
-			# Add subcommands of subcommands
+			lines.extend(self.wrap_line(line, max_width, prefix, buffer))
+			# Add subcommands of commands
 			if isinstance(command, Group) and command.commands:
 				subcommands = sorted(command.commands, key = lambda c: c.name)
 				for subcommand in subcommands[:-1]:
 					line = f"┣ {subcommand.name:<{max_width - 2}}  {subcommand.short_doc}"
-					lines = self.append_command_line(lines, line, max_width, "┃ ", 1)
+					lines.extend(self.wrap_line(line, max_width, "┃ ", 1))
 				line = f"┗ {subcommands[-1].name:<{max_width - 2}}  {subcommands[-1].short_doc}"
-				lines = self.append_command_line(lines, line, max_width, "  ", 0)
+				lines.extend(self.wrap_line(line, max_width, "  ", 0))
 		for line in lines:
 			paginator.add_line(line)
 	
-	def append_command_line(self, lines, line, max_width, prefix, buffer):
+	def wrap_line(self, line, max_width, prefix, buffer):
 		ctx = self.context
 		limit = ctx.bot.EMBED_CODE_BLOCK_ROW_CHARACTER_LIMIT
 		if '┣' in prefix + line or '┗' in prefix + line:
 			limit -= 1
 		if len(line) <= limit:
-			lines.append(line)
-		else:
-			cutoff = line[:limit].rfind(' ')
-			lines.append(line[:cutoff])
-			while len(prefix) + max_width + 2 - buffer + len(line[cutoff + 1:]) >= limit:
-				new_cutoff = line[:cutoff + limit - len(prefix) - max_width - 2 + buffer].rfind(' ')
-				lines.append(prefix + ' ' * (max_width + 2 - buffer) + line[cutoff + 1:new_cutoff])
-				cutoff = new_cutoff
-			lines.append(prefix + ' ' * (max_width + 2 - buffer) + line[cutoff + 1:])
+			return [line]
+		cutoff = line[:limit].rfind(' ')
+		lines = [line[:cutoff]]
+		while len(prefix) + max_width + 2 - buffer + len(line[cutoff + 1:]) >= limit:
+			new_cutoff = line[:cutoff + limit - len(prefix) - max_width - 2 + buffer].rfind(' ')
+			lines.append(prefix + ' ' * (max_width + 2 - buffer) + line[cutoff + 1:new_cutoff])
+			cutoff = new_cutoff
+		lines.append(prefix + ' ' * (max_width + 2 - buffer) + line[cutoff + 1:])
 		return lines
 	
 	# @checks.dm_or_has_capability("embed_links")
