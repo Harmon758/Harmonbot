@@ -94,19 +94,14 @@ class HelpCommand(commands.HelpCommand):
 														color = ctx.bot.bot_color))
 		
 		max_width = self.get_max_size(subcommands)
-		subcommand_lines = self.generate_subcommand_lines(max_width, subcommands)
-		if len('\n'.join(subcommand_lines)) + 8 <= ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT:
-		# 8 = len("```\n") * 2
-			embeds[-1].add_field(name = f"Subcommands for {group}", value = ctx.bot.CODE_BLOCK.format('\n'.join(subcommand_lines)), inline = False)
-		else:
-			paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
-			self._add_subcommands_to_page(max_width, subcommands, paginator)
-			embeds[-1].add_field(name = f"Subcommands for {group}", value = paginator.pages[0], inline = False)
-			for page in paginator.pages[1:]:
-				embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
-				if len(embeds[-1]) > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
-					embeds[-1].remove_field(-1)
-					embeds.append(discord.Embed(description = page, color = ctx.bot.bot_color))
+		paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
+		self._add_subcommands_to_page(max_width, subcommands, paginator)
+		embeds[-1].add_field(name = f"Subcommands for {group}", value = paginator.pages[0], inline = False)
+		for page in paginator.pages[1:]:
+			embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
+			if len(embeds[-1]) > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
+				embeds[-1].remove_field(-1)
+				embeds.append(discord.Embed(description = page, color = ctx.bot.bot_color))
 		
 		if len(embeds) == 1:
 			await ctx.channel.send(embed = embeds[0].set_author(name = ctx.author.display_name, 
