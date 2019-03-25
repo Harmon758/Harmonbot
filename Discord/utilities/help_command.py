@@ -51,7 +51,7 @@ class HelpCommand(commands.HelpCommand):
 		if cog.description:
 			paginator.add_line(cog.description, empty = True)
 		filtered_commands = await self.filter_commands(cog.get_commands(), sort = True)
-		self._add_subcommands_to_page(self.get_max_size(filtered_commands), filtered_commands, paginator)
+		self.add_commands(self.get_max_size(filtered_commands), filtered_commands, paginator)
 		if not paginator.pages:
 			return await ctx.embed_reply(title = f"{cog.qualified_name} Commands")
 			# TODO: Response when no description or permitted commands in cog?
@@ -95,7 +95,7 @@ class HelpCommand(commands.HelpCommand):
 		
 		max_width = self.get_max_size(subcommands)
 		paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
-		self._add_subcommands_to_page(max_width, subcommands, paginator)
+		self.add_commands(max_width, subcommands, paginator)
 		embeds[-1].add_field(name = f"Subcommands for {group}", value = paginator.pages[0], inline = False)
 		for page in paginator.pages[1:]:
 			embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
@@ -150,7 +150,7 @@ class HelpCommand(commands.HelpCommand):
 		for category, commands in itertools.groupby(filtered_commands, key = get_category):
 			commands = sorted(commands, key = lambda c: c.name)
 			paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
-			self._add_subcommands_to_page(self.get_max_size(filtered_commands), commands, paginator)
+			self.add_commands(self.get_max_size(filtered_commands), commands, paginator)
 			total_category_characters = (len(category) + len(paginator.pages) - 1
 											+ sum(len(page) for page in paginator.pages))
 			if (len(embed) + total_category_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT or 
@@ -164,7 +164,7 @@ class HelpCommand(commands.HelpCommand):
 		if not isinstance(ctx.channel, discord.DMChannel):
 			await ctx.embed_reply("Check your DMs")
 	
-	def _add_subcommands_to_page(self, max_width, commands, paginator):
+	def add_commands(self, max_width, commands, paginator):
 		lines = []
 		# Add 3 for "┣ "/"┗ "
 		for command in commands:
@@ -175,19 +175,19 @@ class HelpCommand(commands.HelpCommand):
 			prefix = "┃ " if isinstance(command, Group) and command.commands else " "
 			buffer = 2 if isinstance(command, Group) and command.commands else 0
 			line = f"{command.name:<{max_width}}  {command.short_doc}"
-			lines = self.append_subcommand_line(lines, line, max_width, prefix, buffer)
+			lines = self.append_command_line(lines, line, max_width, prefix, buffer)
 			# Add subcommands of subcommands
 			if isinstance(command, Group) and command.commands:
 				subcommands = sorted(command.commands, key = lambda c: c.name)
 				for subcommand in subcommands[:-1]:
 					line = f"┣ {subcommand.name:<{max_width - 2}}  {subcommand.short_doc}"
-					lines = self.append_subcommand_line(lines, line, max_width, "┃ ", 1)
+					lines = self.append_command_line(lines, line, max_width, "┃ ", 1)
 				line = f"┗ {subcommands[-1].name:<{max_width - 2}}  {subcommands[-1].short_doc}"
-				lines = self.append_subcommand_line(lines, line, max_width, "  ", 0)
+				lines = self.append_command_line(lines, line, max_width, "  ", 0)
 		for line in lines:
 			paginator.add_line(line)
 	
-	def append_subcommand_line(self, lines, line, max_width, prefix, buffer):
+	def append_command_line(self, lines, line, max_width, prefix, buffer):
 		ctx = self.context
 		limit = ctx.bot.EMBED_CODE_BLOCK_ROW_CHARACTER_LIMIT
 		if '┣' in prefix + line or '┗' in prefix + line:
