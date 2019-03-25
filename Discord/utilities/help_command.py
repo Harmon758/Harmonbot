@@ -165,10 +165,6 @@ class HelpCommand(commands.HelpCommand):
 			await ctx.embed_reply("Check your DMs")
 	
 	def _add_subcommands_to_page(self, max_width, commands, paginator):
-		for line in self.generate_subcommand_lines(max_width, commands):
-			paginator.add_line(line)
-	
-	def generate_subcommand_lines(self, max_width, commands):
 		lines = []
 		# Add 3 for "┣ "/"┗ "
 		for command in commands:
@@ -188,7 +184,8 @@ class HelpCommand(commands.HelpCommand):
 					lines = self.append_subcommand_line(lines, line, max_width, "┃ ", 1)
 				line = f"┗ {subcommands[-1].name:<{max_width - 2}}  {subcommands[-1].short_doc}"
 				lines = self.append_subcommand_line(lines, line, max_width, "  ", 0)
-		return lines
+		for line in lines:
+			paginator.add_line(line)
 	
 	def append_subcommand_line(self, lines, line, max_width, prefix, buffer):
 		ctx = self.context
