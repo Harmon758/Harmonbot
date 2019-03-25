@@ -340,7 +340,7 @@ class Cryptography(commands.Cog):
 	async def encode_md4(self, ctx, *, message : str):
 		'''Generate MD4 hash'''
 		h = hashlib.new("md4")
-		h.update(message.encode("utf-8"))
+		h.update(message.encode("UTF-8"))
 		await ctx.embed_reply(h.hexdigest())
 	
 	@encode.command(name = "md5")
