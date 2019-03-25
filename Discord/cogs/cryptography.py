@@ -339,9 +339,9 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_md4(self, ctx, *, message : str):
 		'''Generate MD4 hash'''
-		h = hashlib.new("MD4")
-		h.update(message.encode("UTF-8"))
-		await ctx.embed_reply(h.hexdigest())
+		hash = hashlib.new("MD4")
+		hash.update(message.encode("UTF-8"))
+		await ctx.embed_reply(hash.hexdigest())
 	
 	@encode.command(name = "md5")
 	@checks.not_forbidden()
