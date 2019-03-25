@@ -101,9 +101,9 @@ class HelpCommand(commands.HelpCommand):
 		else:
 			paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
 			self._add_subcommands_to_page(max_width, subcommands, paginator)
-			embeds[-1].add_field(name = f"Subcommands for {group}", value = paginator.pages[0])
+			embeds[-1].add_field(name = f"Subcommands for {group}", value = paginator.pages[0], inline = False)
 			for page in paginator.pages[1:]:
-				embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page)
+				embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 				if len(embeds[-1]) > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
 					embeds[-1].remove_field(-1)
 					embeds.append(discord.Embed(description = page, color = ctx.bot.bot_color))
