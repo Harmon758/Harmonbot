@@ -69,7 +69,7 @@ idna==2.8
 jaraco.itertools==4.4.1
 jsonschema==3.0.1
 kiwisolver==1.0.1
-lxml==4.3.2
+lxml==4.3.3
 mpmath==1.1.0
 multidict==4.5.2
 oauthlib==3.0.1
