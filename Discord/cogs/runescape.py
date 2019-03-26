@@ -20,7 +20,7 @@ class Runescape(commands.Cog):
 	@commands.group(aliases = ["rs"], invoke_without_command = True)
 	async def runescape(self, ctx):
 		'''Runescape'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@runescape.command(aliases = ["grandexchange", "grand_exchange"])
 	async def ge(self, ctx, *, item):

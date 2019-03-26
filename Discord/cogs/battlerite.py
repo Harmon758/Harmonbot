@@ -82,7 +82,7 @@ class Battlerite(commands.Cog):
 		Battlerite
 		Using revision 47438 mappings
 		'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	# TODO: optimize modularization?
 	async def get_player(self, player):

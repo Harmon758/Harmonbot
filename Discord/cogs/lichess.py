@@ -113,13 +113,13 @@ class Lichess(commands.Cog):
 	@checks.not_forbidden()
 	async def lichess(self, ctx):
 		'''Lichess'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@lichess.group(aliases = ["tournaments"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def tournament(self, ctx):
 		'''Tournaments'''
-		await ctx.invoke(self.bot.get_command("help"), "lichess", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@tournament.command(name = "current", aliases = ["started"])
 	@checks.not_forbidden()

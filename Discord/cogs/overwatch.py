@@ -18,7 +18,7 @@ class Overwatch(commands.Cog):
 	@checks.not_forbidden()
 	async def overwatch(self, ctx):
 		'''BattleTags are case sensitive'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	# TODO: Finish Stats (Add Achievements, Improve)
 	# TODO: Maps, Items

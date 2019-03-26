@@ -394,7 +394,7 @@ class Games(commands.Cog):
 		 white
 		 e2e4
 		'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 		'''
 		else:
 			try:
@@ -784,7 +784,7 @@ class Games(commands.Cog):
 		[w, a, s, d] to move
 		Also see mazer
 		'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@maze.command(name = "start", aliases = ["begin"])
 	@checks.not_forbidden()

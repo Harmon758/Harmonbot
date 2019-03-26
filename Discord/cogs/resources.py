@@ -26,7 +26,7 @@ class Resources(commands.Cog):
 	@checks.not_forbidden()
 	async def battlenet(self, ctx):
 		'''Battle.net'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@battlenet.command(name = "run", aliases = ["launch"])
 	@checks.not_forbidden()

@@ -20,7 +20,7 @@ class Role(commands.Cog):
 	@checks.not_forbidden()
 	async def role(self, ctx):
 		'''Role'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	# TODO: check role hierarchy
 	# TODO: reason options?

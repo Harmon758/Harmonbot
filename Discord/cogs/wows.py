@@ -24,7 +24,7 @@ class WoWS(commands.Cog):
 		World of Warships
 		Realms/Regions: Asia, EU, NA, RU (Default: NA)
 		'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@wows.group(invoke_without_command = True)
 	@checks.not_forbidden()

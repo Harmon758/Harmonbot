@@ -31,19 +31,19 @@ class Osu(commands.Cog):
 	@checks.not_forbidden()
 	async def osu(self, ctx):
 		'''osu!'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@osu.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def taiko(self, ctx):
 		'''Taiko'''
-		await ctx.invoke(self.bot.get_command("help"), "osu", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@osu.group(invoke_without_command = True)
 	@checks.not_forbidden()
 	async def mania(self, ctx):
 		'''osu!mania'''
-		await ctx.invoke(self.bot.get_command("help"), "osu", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@osu.command()
 	@checks.not_forbidden()

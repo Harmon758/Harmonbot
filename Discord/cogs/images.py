@@ -41,7 +41,7 @@ class Images(commands.Cog):
 		Images
 		All image subcommands are also commands
 		'''
-		await ctx.invoke(ctx.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@image.command(name = "color", aliases = ["colour"])
 	async def image_color(self, ctx, image_url : Optional[str]):
@@ -128,7 +128,7 @@ class Images(commands.Cog):
 	@commands.group(invoke_without_command = True)
 	async def imgur(self, ctx):
 		'''Imgur'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@imgur.command(name = "upload")
 	async def imgur_upload(self, ctx, url : str = ""):

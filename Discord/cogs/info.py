@@ -33,7 +33,7 @@ class Info(commands.Cog):
 	@checks.not_forbidden()
 	async def info(self, ctx):
 		'''Info'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	# TODO: Add about command
 	# TODO: Add soundcloud info

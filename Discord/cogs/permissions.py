@@ -20,7 +20,7 @@ class Permissions(commands.Cog):
 	@checks.is_permitted()
 	async def setpermission(self, ctx):
 		'''Set a permission'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@setpermission.command(name = "everyone")
 	@commands.guild_only()
@@ -123,7 +123,7 @@ class Permissions(commands.Cog):
 	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
 	async def getpermissions(self, ctx):
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@getpermissions.command(name = "everyone")
 	@commands.guild_only()

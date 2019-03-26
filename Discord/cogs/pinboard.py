@@ -59,7 +59,7 @@ class Pinboard(commands.Cog):
 		Pinboard/Starboard
 		Inspired by Rapptz/Danny's Robo/R. Danny's starboard
 		'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@pinboard.command()
 	@checks.is_permitted()

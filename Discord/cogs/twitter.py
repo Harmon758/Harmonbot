@@ -139,7 +139,7 @@ class Twitter(commands.Cog):
 	@checks.is_permitted()
 	async def twitter(self, ctx):
 		'''Twitter'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@twitter.command(name = "status")
 	@checks.not_forbidden()

@@ -83,7 +83,7 @@ class RSS(commands.Cog):
 	@checks.is_permitted()
 	async def rss(self, ctx):
 		'''RSS'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@rss.command(name = "add")
 	@checks.is_permitted()

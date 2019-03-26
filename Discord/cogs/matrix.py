@@ -28,7 +28,7 @@ class Matrix(commands.Cog):
 		Input matrices as a list of lists (array of arrays)
 		e.g.: [[1,2],[3,4]]
 		'''
-		await ctx.invoke(ctx.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@matrix.command(aliases = ["addition", "plus", '+'])
 	async def add(self, ctx, matrix_a : Matrix, matrix_b : Matrix):

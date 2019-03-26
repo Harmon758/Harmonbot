@@ -18,7 +18,7 @@ class Pokemon(commands.Cog):
 		'''WIP'''
 		# TODO: colors?, egg groups?, forms?, genders?, habitats?, 
 		#		pokeathlon stats?, shapes?, stats?, version groups?
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@pokemon.command()
 	@checks.not_forbidden()

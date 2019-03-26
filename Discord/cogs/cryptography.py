@@ -29,7 +29,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def decode(self, ctx):
 		'''Decodes coded messages'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@decode.group(name = "caesar", aliases = ["rot"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -58,7 +58,7 @@ class Cryptography(commands.Cog):
 		From GOsudarstvennyy STandart
 		(ГОсударственный СТандарт)
 		'''
-		await ctx.invoke(self.bot.get_command("help"), "decode", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@decode_gost.group(name = "28147-89", aliases = ["магма", "magma"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -69,7 +69,7 @@ class Cryptography(commands.Cog):
 		key length must be 32 (256-bit)
 		'''
 		# TODO: Add decode magma alias
-		await ctx.invoke(self.bot.get_command("help"), "decode", "gost", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@decode_gost_28147_89.command(name = "cbc")
 	@checks.not_forbidden()
@@ -172,7 +172,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode(self, ctx):
 		'''Encode messages'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@encode.command(name = "adler32", aliases = ["adler-32"])
 	@checks.not_forbidden()
@@ -222,7 +222,7 @@ class Cryptography(commands.Cog):
 		From GOsudarstvennyy STandart
 		(ГОсударственный СТандарт)
 		'''
-		await ctx.invoke(self.bot.get_command("help"), "encode", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@encode_gost.group(name = "28147-89", aliases = ["магма", "magma"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -233,7 +233,7 @@ class Cryptography(commands.Cog):
 		key length must be 32 (256-bit)
 		'''
 		# TODO: Add encode magma alias
-		await ctx.invoke(self.bot.get_command("help"), "encode", "gost", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@encode_gost_28147_89.command(name = "cbc")
 	@checks.not_forbidden()
@@ -294,7 +294,7 @@ class Cryptography(commands.Cog):
 		Also known as Стрибог or Streebog
 		'''
 		# TODO: Add encode streebog-256 and encode streebog-512 aliases
-		await ctx.invoke(self.bot.get_command("help"), "encode", "gost", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@encode_gost_34_11_2012.command(name = "256")
 	@checks.not_forbidden()

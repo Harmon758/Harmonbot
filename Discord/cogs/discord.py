@@ -200,7 +200,7 @@ class Discord(commands.Cog):
 	@checks.not_forbidden()
 	async def user(self, ctx):
 		'''User'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@user.command(name = "add_role", aliases = ["addrole"])
 	@commands.guild_only()

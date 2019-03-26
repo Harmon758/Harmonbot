@@ -29,7 +29,7 @@ class Astronomy(commands.Cog):
 	@checks.not_forbidden()
 	async def astronomy(self, ctx):
 		'''exoplanet, iss, observatory, and telescope are also commands as well as subcommands'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@astronomy.command()
 	@checks.not_forbidden()
@@ -42,7 +42,7 @@ class Astronomy(commands.Cog):
 	@checks.not_forbidden()
 	async def data(self, ctx):
 		'''Data Archives'''
-		await ctx.invoke(self.bot.get_command("help"), "astronomy", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@data.command(name = "eso")
 	@checks.not_forbidden()
@@ -303,7 +303,7 @@ class Astronomy(commands.Cog):
 	@checks.not_forbidden()
 	async def telegram(self, ctx):
 		'''Quick publications, often related to ongoing events occuring in the sky'''
-		await ctx.invoke(self.bot.get_command("help"), "astronomy", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@telegram.command(name = "atel", aliases = ["astronomerstelegram"])
 	@checks.not_forbidden()

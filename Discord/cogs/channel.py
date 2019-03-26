@@ -17,7 +17,7 @@ class Channel(commands.Cog):
 	@checks.not_forbidden()
 	async def channel(self, ctx):
 		'''Channel'''
-		await ctx.invoke(self.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	# TODO: help - filter subcommands list
 	
@@ -29,7 +29,7 @@ class Channel(commands.Cog):
 	@checks.not_forbidden()
 	async def category(self, ctx):
 		'''Category'''
-		await ctx.invoke(self.bot.get_command("help"), "channel", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@category.command(name = "create", aliases = ["make", "new"])
 	@commands.guild_only()
@@ -92,7 +92,7 @@ class Channel(commands.Cog):
 	@checks.not_forbidden()
 	async def text(self, ctx):
 		'''Text Channel'''
-		await ctx.invoke(self.bot.get_command("help"), "channel", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@text.command(name = "category")
 	@commands.guild_only()
@@ -214,7 +214,7 @@ class Channel(commands.Cog):
 	@checks.not_forbidden()
 	async def voice(self, ctx):
 		'''Voice Channel'''
-		await ctx.invoke(self.bot.get_command("help"), "channel", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@voice.command(name = "bitrate")
 	@commands.guild_only()

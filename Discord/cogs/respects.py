@@ -63,7 +63,7 @@ class Respects(commands.Cog):
 		Press F to Pay Respects
 		https://knowyourmeme.com/memes/press-f-to-pay-respects
 		'''
-		await ctx.invoke(ctx.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@respects.command()
 	async def paid(self, ctx):

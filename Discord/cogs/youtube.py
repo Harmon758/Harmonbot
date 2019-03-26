@@ -112,7 +112,7 @@ class YouTube(commands.Cog):
 	@checks.is_permitted()
 	async def youtube_streams(self, ctx):
 		'''YouTube Streams'''
-		await ctx.invoke(self.bot.get_command("help"), "youtube", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@youtube_streams.command(name = "add", invoke_without_command = True)
 	@checks.is_permitted()
@@ -289,7 +289,7 @@ class YouTube(commands.Cog):
 	@checks.is_permitted()
 	async def youtube_uploads(self, ctx):
 		'''YouTube Uploads/Videos'''
-		await ctx.invoke(self.bot.get_command("help"), "youtube", ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@youtube_uploads.command(name = "add", aliases = ["subscribe"], invoke_without_command = True)
 	@checks.is_permitted()

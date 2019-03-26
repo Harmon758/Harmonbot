@@ -15,7 +15,7 @@ class Duelyst(commands.Cog):
 	@checks.not_forbidden()
 	async def duelyst(self, ctx):
 		'''Duelyst'''
-		await ctx.invoke(ctx.bot.get_command("help"), ctx.invoked_with)
+		await ctx.send_help(ctx.command)
 	
 	@duelyst.group()
 	@checks.not_forbidden()
