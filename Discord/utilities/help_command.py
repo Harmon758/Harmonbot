@@ -203,28 +203,28 @@ class HelpCommand(commands.HelpCommand):
 		return lines
 	
 	# @checks.dm_or_has_capability("embed_links")
-	async def command_callback(self, ctx, *commands : str):
+	async def command_callback(self, ctx, *, command : str = None):
 		self.context = ctx
-		if len(commands) == 1:
-			if commands[0] == "all":
-				'''All commands'''
-				return await self.send_all_help()
-			if commands[0] == "other":
-				'''Additional commands and information'''
-				# TODO: Update
-				# TODO: Add last updated date?
-				fields = (("Conversion Commands", f"see `{ctx.prefix}conversions`", False), 
-							("In Progress", "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", False), 
-							("Misc", "invite randomgame test test_on_message", False), 
-							("Owner Only", "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", False), 
-							("No Prefix", "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", False))
-				return await ctx.embed_reply(f"See `{ctx.prefix}help` for the main commands", 
-												title = f"Commands not in {ctx.prefix}help", fields = fields)
+		if command == "all":
+			'''All commands'''
+			return await self.send_all_help()
+		if command == "other":
+			'''Additional commands and information'''
+			# TODO: Update
+			# TODO: Add last updated date?
+			fields = (("Conversion Commands", f"see `{ctx.prefix}conversions`", False), 
+						("In Progress", "gofish redditsearch roleposition rolepositions taboo userlimit webmtogif whatis", False), 
+						("Misc", "invite randomgame test test_on_message", False), 
+						("Owner Only", "allcommands changenickname deletetest cleargame clearstreaming echo eval exec load reload repl restart servers setgame setstreaming shutdown unload updateavatar", False), 
+						("No Prefix", "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", False))
+			return await ctx.embed_reply(f"See `{ctx.prefix}help` for the main commands", 
+											title = f"Commands not in {ctx.prefix}help", fields = fields)
 		# TODO: Pass alias used to help formatter?
-		if not commands:
+		if not command:
 			return await super().command_callback(ctx)
-		name = self.remove_mentions(commands[0])
-		if len(commands) == 1:
+		keys = command.split()
+		name = self.remove_mentions(keys[0])
+		if len(keys) == 1:
 			if name in ctx.bot.cogs:
 				cog = ctx.bot.cogs[name]
 				return await self.send_cog_help(cog)
@@ -247,7 +247,7 @@ class HelpCommand(commands.HelpCommand):
 			command = ctx.bot.all_commands.get(name)
 			if command is None:
 				return await ctx.embed_reply(self.command_not_found(name))
-			for key in commands[1:]:
+			for key in keys[1:]:
 				try:
 					key = self.remove_mentions(key)
 					command = command.all_commands.get(key)
