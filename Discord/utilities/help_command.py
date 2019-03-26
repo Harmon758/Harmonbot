@@ -223,7 +223,8 @@ class HelpCommand(commands.HelpCommand):
 											title = f"Commands not in {ctx.prefix}help", fields = fields)
 		
 		if not command:
-			return await super().command_callback(ctx)
+			mapping = self.get_bot_mapping()
+			return await self.send_bot_help(mapping)
 		
 		cog = ctx.bot.get_cog(command)
 		if cog:
