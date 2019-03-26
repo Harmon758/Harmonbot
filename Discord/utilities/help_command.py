@@ -23,7 +23,12 @@ class HelpCommand(commands.HelpCommand):
 	# TODO: Mitigate code block cutoff issue
 	
 	def command_not_found(self, string):
-		return f"No command called `{string}` found"
+		ctx = self.context
+		output = f"No command called `{string}` found"
+		close_matches = difflib.get_close_matches(string, ctx.bot.all_commands.keys(), n = 1)
+		if close_matches:
+			output += f"\nDid you mean `{close_matches[0]}`?"
+		return output
 	
 	def subcommand_not_found(self, command, string):
 		if isinstance(command, Group) and command.all_commands:
@@ -244,11 +249,7 @@ class HelpCommand(commands.HelpCommand):
 				cog = cog[1]
 				return await self.send_cog_help(cog)
 			
-			output = self.command_not_found(self.remove_mentions(keys[0]))
-			close_matches = difflib.get_close_matches(keys[0], ctx.bot.all_commands.keys(), n = 1)
-			if close_matches:
-				output += f"\nDid you mean `{close_matches[0]}`?"
-			return await ctx.embed_reply(output)
+			return await ctx.embed_reply(self.command_not_found(self.remove_mentions(keys[0])))
 		
 		for key in keys[1:]:
 			if not isinstance(command, Group) or key not in command.all_commands:
