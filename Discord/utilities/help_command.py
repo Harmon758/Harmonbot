@@ -228,33 +228,31 @@ class HelpCommand(commands.HelpCommand):
 			return await self.send_cog_help(cog)
 		
 		keys = command.split()
-		name = self.remove_mentions(keys[0])
 		if len(keys) == 1:
-			if name.lower() in ctx.bot.all_commands:
-				command = ctx.bot.all_commands[name.lower()]
+			if keys[0].lower() in ctx.bot.all_commands:
+				command = ctx.bot.all_commands[keys[0].lower()]
 				if isinstance(command, Group):
 					return await self.send_group_help(command)
 				else:
 					return await self.send_command_help(command)
-			cog = discord.utils.find(lambda c: c[0].lower() == name.lower(), ctx.bot.cogs.items())
+			cog = discord.utils.find(lambda c: c[0].lower() == keys[0].lower(), ctx.bot.cogs.items())
 			if cog:
 				cog = cog[1]
 				return await self.send_cog_help(cog)
-			output = self.command_not_found(name)
-			close_matches = difflib.get_close_matches(name, ctx.bot.all_commands.keys(), n = 1)
+			output = self.command_not_found(self.remove_mentions(keys[0]))
+			close_matches = difflib.get_close_matches(keys[0], ctx.bot.all_commands.keys(), n = 1)
 			if close_matches:
 				output += f"\nDid you mean `{close_matches[0]}`?"
 			return await ctx.embed_reply(output)
 		else:
-			command = ctx.bot.all_commands.get(name)
+			command = ctx.bot.all_commands.get(keys[0])
 			if command is None:
-				return await ctx.embed_reply(self.command_not_found(name))
+				return await ctx.embed_reply(self.command_not_found(self.remove_mentions(keys[0])))
 			for key in keys[1:]:
 				try:
-					key = self.remove_mentions(key)
 					command = command.all_commands.get(key)
 					if command is None:
-						return await ctx.embed_reply(self.command_not_found(key))
+						return await ctx.embed_reply(self.command_not_found(self.remove_mentions(key)))
 				except AttributeError:
 					return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
 			if isinstance(command, Group):
