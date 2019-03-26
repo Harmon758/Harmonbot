@@ -204,7 +204,7 @@ class HelpCommand(commands.HelpCommand):
 	
 	# @checks.dm_or_has_capability("embed_links")
 	async def command_callback(self, ctx, *, command : str = None):
-		self.context = ctx
+		await self.prepare_help_command(ctx, command)
 		
 		if command == "all":
 			'''All commands'''
