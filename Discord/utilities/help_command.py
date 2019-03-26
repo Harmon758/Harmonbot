@@ -25,6 +25,11 @@ class HelpCommand(commands.HelpCommand):
 	def command_not_found(self, string):
 		return f"No command called `{string}` found"
 	
+	def subcommand_not_found(self, command, string):
+		if isinstance(command, Group) and command.all_commands:
+			return f"`{command.qualified_name}` command has no subcommand named {string}"
+		return f"`{command.qualified_name}` command has no subcommands"
+	
 	def get_max_size(self, commands):
 		# Include subcommands
 		commands = commands.copy()
@@ -233,6 +238,7 @@ class HelpCommand(commands.HelpCommand):
 		keys = command.split()
 		command = ctx.bot.all_commands.get(keys[0])
 		if not command:
+			# TODO: Use entire input?
 			cog = discord.utils.find(lambda c: c[0].lower() == keys[0].lower(), ctx.bot.cogs.items())
 			if cog:
 				cog = cog[1]
@@ -245,13 +251,10 @@ class HelpCommand(commands.HelpCommand):
 			return await ctx.embed_reply(output)
 		
 		for key in keys[1:]:
-			try:
-				command = command.all_commands.get(key)
-			except AttributeError:
-				# TODO: Respond with alias used?
-				return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
-			if not command:
-				return await ctx.embed_reply(self.command_not_found(self.remove_mentions(key)))
+			if not isinstance(command, Group) or key not in command.all_commands:
+				# TODO: Pass aliases used?
+				return await ctx.embed_reply(self.subcommand_not_found(command, self.remove_mentions(key)))
+			command = command.all_commands[key]
 		
 		# TODO: Pass alias used?
 		if isinstance(command, Group):
