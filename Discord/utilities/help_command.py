@@ -205,9 +205,11 @@ class HelpCommand(commands.HelpCommand):
 	# @checks.dm_or_has_capability("embed_links")
 	async def command_callback(self, ctx, *, command : str = None):
 		self.context = ctx
+		
 		if command == "all":
 			'''All commands'''
 			return await self.send_all_help()
+			
 		if command == "other":
 			'''Additional commands and information'''
 			# TODO: Update
@@ -219,7 +221,7 @@ class HelpCommand(commands.HelpCommand):
 						("No Prefix", "@Harmonbot :8ball: (exactly: f|F) (anywhere in message: getprefix)", False))
 			return await ctx.embed_reply(f"See `{ctx.prefix}help` for the main commands", 
 											title = f"Commands not in {ctx.prefix}help", fields = fields)
-		# TODO: Pass alias used to help formatter?
+		
 		if not command:
 			return await super().command_callback(ctx)
 		
@@ -228,12 +230,13 @@ class HelpCommand(commands.HelpCommand):
 			return await self.send_cog_help(cog)
 		
 		keys = command.split()
-		command = ctx.bot.all_commands.get(keys[0].lower())
+		command = ctx.bot.all_commands.get(keys[0])
 		if not command:
 			cog = discord.utils.find(lambda c: c[0].lower() == keys[0].lower(), ctx.bot.cogs.items())
 			if cog:
 				cog = cog[1]
 				return await self.send_cog_help(cog)
+			
 			output = self.command_not_found(self.remove_mentions(keys[0]))
 			close_matches = difflib.get_close_matches(keys[0], ctx.bot.all_commands.keys(), n = 1)
 			if close_matches:
@@ -243,11 +246,13 @@ class HelpCommand(commands.HelpCommand):
 		for key in keys[1:]:
 			try:
 				command = command.all_commands.get(key)
-				if command is None:
-					return await ctx.embed_reply(self.command_not_found(self.remove_mentions(key)))
 			except AttributeError:
+				# TODO: Respond with alias used?
 				return await ctx.embed_reply(f"`{command.name}` command has no subcommands")
+			if not command:
+				return await ctx.embed_reply(self.command_not_found(self.remove_mentions(key)))
 		
+		# TODO: Pass alias used?
 		if isinstance(command, Group):
 			return await self.send_group_help(command)
 		else:
