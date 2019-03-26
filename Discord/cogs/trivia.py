@@ -164,6 +164,8 @@ class Trivia(commands.Cog):
 			await ctx.embed_say('\n'.join(bets_output))
 	
 	def check_answer(self, answer, response):
+		if not response:
+			return False
 		# Unescape HTML entities in answer and extract text between HTML tags
 		answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
 		# Replace in answer: \' -> '
