@@ -222,12 +222,14 @@ class HelpCommand(commands.HelpCommand):
 		# TODO: Pass alias used to help formatter?
 		if not command:
 			return await super().command_callback(ctx)
+		
+		cog = ctx.bot.get_cog(command)
+		if cog:
+			return await self.send_cog_help(cog)
+		
 		keys = command.split()
 		name = self.remove_mentions(keys[0])
 		if len(keys) == 1:
-			if name in ctx.bot.cogs:
-				cog = ctx.bot.cogs[name]
-				return await self.send_cog_help(cog)
 			if name.lower() in ctx.bot.all_commands:
 				command = ctx.bot.all_commands[name.lower()]
 				if isinstance(command, Group):
