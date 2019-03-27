@@ -227,7 +227,7 @@ class Meta(commands.Cog):
 		embed.add_field(name = "Uptime", value = uptime)
 		embed.add_field(name = "Total Recorded Uptime", value = total_uptime)
 		embed.add_field(name = "Recorded Restarts", value = "{:,}".format(stats["restarts"]))
-		embed.add_field(name = "Main Commands", value = len(set(self.bot.commands.values())))
+		embed.add_field(name = "Main Commands", value = len(self.bot.commands))
 		embed.add_field(name = "Commands Executed", 
 			value = "{} this session\n{:,} total recorded".format(self.bot.session_commands_executed, stats["commands_executed"])) 
 		embed.add_field(name = "Cogs Reloaded", value = "{:,}".format(stats["cogs_reloaded"]))
