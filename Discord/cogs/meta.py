@@ -198,7 +198,11 @@ class Meta(commands.Cog):
 	
 	@commands.command()
 	async def stats(self, ctx):
-		'''Bot stats'''
+		'''
+		Bot stats
+		Total uptime and restarts recorded since 2016-04-17
+		Commands executed and cogs reloaded recorded since 2016-06-10
+		'''
 		with open(clients.data_path + "/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		
@@ -222,15 +226,11 @@ class Meta(commands.Cog):
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)  # url?
 		embed.add_field(name = "Uptime", value = uptime)
 		embed.add_field(name = "Total Recorded Uptime", value = total_uptime)
-		# since 2016-04-17, fixed 2016-05-10
 		embed.add_field(name = "Recorded Restarts", value = "{:,}".format(stats["restarts"]))
-		# since 2016-04-17, fixed 2016-05-10
 		embed.add_field(name = "Main Commands", value = len(set(self.bot.commands.values())))
 		embed.add_field(name = "Commands Executed", 
 			value = "{} this session\n{:,} total recorded".format(self.bot.session_commands_executed, stats["commands_executed"])) 
-		# since 2016-06-10 (cog commands)
 		embed.add_field(name = "Cogs Reloaded", value = "{:,}".format(stats["cogs_reloaded"]))
-		# since 2016-06-10 - implemented cog reloading
 		# TODO: cogs reloaded this session
 		embed.add_field(name = "Servers", value = len(self.bot.guilds))
 		embed.add_field(name = "Channels", value = "{} text\n{} voice (playing in {}/{})".format(text_count, voice_count, playing_in_voice_count, in_voice_count))
