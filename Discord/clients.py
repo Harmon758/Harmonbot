@@ -586,8 +586,7 @@ class Bot(commands.Bot):
 	async def reload(ctx, cog : str):
 		'''Reload cog'''
 		try:
-			ctx.bot.unload_extension("cogs." + cog)
-			ctx.bot.load_extension("cogs." + cog)
+			ctx.bot.reload_extension("cogs." + cog)
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to reload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
