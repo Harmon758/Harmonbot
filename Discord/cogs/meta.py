@@ -201,7 +201,8 @@ class Meta(commands.Cog):
 		'''
 		Bot stats
 		Total uptime and restarts recorded since 2016-04-17
-		Commands executed and cogs reloaded recorded since 2016-06-10
+		Total commands executed and cogs reloaded recorded since 2016-06-10
+		Top total commands executed recorded since 2016-11-14
 		'''
 		with open(clients.data_path + "/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
@@ -238,9 +239,9 @@ class Meta(commands.Cog):
 		embed.add_field(name = "Members (Online)", 
 			value = "{:,} total ({:,})\n{:,} unique ({:,})".format(total_members, total_members_online, len(unique_members), unique_members_online))
 		if top_commands[:5]: embed.add_field(name = "Top Commands Executed", 
-			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[:5])) ## since 2016-11-14
+			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[:5]))
 		if top_commands[5:10]: embed.add_field(name = "(Total Recorded)", 
-			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[5:10])) ## since 2016-11-14
+			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[5:10]))
 		if session_top_5: embed.add_field(name = "(This Session)", 
 			value = "\n".join("{:,} {}".format(uses, command) for command, uses in session_top_5))
 		await ctx.send(embed = embed)
