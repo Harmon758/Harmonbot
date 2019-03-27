@@ -221,13 +221,14 @@ class Meta(commands.Cog):
 		session_top_5 = sorted(self.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		in_voice_count = len(self.bot.cogs["Audio"].players)
 		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
+		total_command_count = len(set(self.bot.walk_commands()))
 		
 		embed = discord.Embed(description = "__**Stats**__ :bar_chart:", color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)  # url?
 		embed.add_field(name = "Uptime", value = uptime)
 		embed.add_field(name = "Total Recorded Uptime", value = total_uptime)
 		embed.add_field(name = "Recorded Restarts", value = "{:,}".format(stats["restarts"]))
-		embed.add_field(name = "Main Commands", value = len(self.bot.commands))
+		embed.add_field(name = "Commands", value = "{} main\n{} total".format(len(self.bot.commands), total_command_count))
 		embed.add_field(name = "Commands Executed", 
 			value = "{} this session\n{:,} total recorded".format(self.bot.session_commands_executed, stats["commands_executed"])) 
 		embed.add_field(name = "Cogs Reloaded", value = "{:,}".format(stats["cogs_reloaded"]))
