@@ -233,9 +233,9 @@ class Meta(commands.Cog):
 		embed.add_field(name = "Channels", value = "{} text\n{} voice (playing in {}/{})".format(text_count, voice_count, playing_in_voice_count, in_voice_count))
 		embed.add_field(name = "Members", 
 			value = "{:,} total\n({:,} online)\n{:,} unique\n({:,} online)".format(total_members, total_members_online, len(unique_members), unique_members_online))
-		embed.add_field(name = "Top Commands Executed", 
+		if top_commands[:5]: embed.add_field(name = "Top Commands Executed", 
 			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[:5])) ## since 2016-11-14
-		embed.add_field(name = "(Total Recorded)", 
+		if top_commands[5:10]: embed.add_field(name = "(Total Recorded)", 
 			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[5:10])) ## since 2016-11-14
 		if session_top_5: embed.add_field(name = "(This Session)", 
 			value = "\n".join("{:,} {}".format(uses, command) for command, uses in session_top_5))
