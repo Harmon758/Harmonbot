@@ -182,7 +182,7 @@ class Respects(commands.Cog):
 				async for record in connection.cursor("SELECT * FROM respects.users ORDER BY respects DESC LIMIT $1", number):
 					user = ctx.bot.get_user(record["user_id"])
 					if not user:
-						user = await ctx.bot.get_user_info(record["user_id"])
+						user = await ctx.bot.fetch_user(record["user_id"])
 					fields.append((str(user), f"{record['respects']:,}"))
 		await ctx.embed_reply(title = "Top Respects Paid", fields = fields)
 

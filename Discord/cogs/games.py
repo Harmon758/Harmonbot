@@ -899,7 +899,7 @@ class Games(commands.Cog):
 				if value < best_hand_value:
 					best_hand_value = value
 					best_player = player
-			player = await self.bot.get_user_info(player)
+			player = await self.bot.fetch_user(player)
 			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 			await ctx.embed_say("{} is the winner with a {}".format(player.mention, type))
 	

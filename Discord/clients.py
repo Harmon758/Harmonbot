@@ -323,7 +323,7 @@ class Bot(commands.Bot):
 	async def on_ready(self):
 		self.application_info_data = await self.application_info()
 		self.cache_channel = self.get_channel(self.cache_channel_id)
-		self.listener_bot = await self.get_user_info(self.listener_id)
+		self.listener_bot = await self.fetch_user(self.listener_id)
 		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
 													"url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", 
 													"data": {"guildCount": len(self.guilds)}, 

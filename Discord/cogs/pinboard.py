@@ -154,7 +154,7 @@ class Pinboard(commands.Cog):
 		for record in records:
 			pinner = ctx.bot.get_user(record[0])
 			if not pinner:
-				pinner = await ctx.bot.get_user_info(record[0])
+				pinner = await ctx.bot.fetch_user(record[0])
 			pinners.append(pinner)
 		await ctx.embed_reply(' '.join(pinner.mention for pinner in pinners), 
 								title = f"{len(records)} pinners of {message_id}")

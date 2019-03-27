@@ -322,7 +322,7 @@ class Trivia(commands.Cog):
 					# SELECT user_id, correct, incorrect?
 					user = ctx.bot.get_user(record["user_id"])
 					if not user:
-						user = await ctx.bot.get_user_info(record["user_id"])
+						user = await ctx.bot.fetch_user(record["user_id"])
 					total = record["correct"] + record["incorrect"]
 					correct_percentage = record["correct"] / total * 100
 					fields.append((str(user), f"{record['correct']}/{total} correct ({correct_percentage:.2f}%)"))
