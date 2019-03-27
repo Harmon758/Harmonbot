@@ -545,6 +545,16 @@ class Bot(commands.Bot):
 		'''Load cog'''
 		try:
 			ctx.bot.load_extension("cogs." + cog)
+		except commands.ExtensionAlreadyLoaded:
+			await ctx.embed_reply(":no_entry: Error: Cog already loaded")
+		except commands.ExtensionFailed as e:
+			await ctx.embed_reply(f":no_entry: Error in setup function: {e.original.__class__.__name__}: {e.original}")
+		except commands.ExtensionNotFound as e:
+			await ctx.embed_reply(f":no_entry: Error: Cog/Module not found: {e.original.__class__.__name__}: {e.original}")
+		except commands.NoEntryPointError:
+			await ctx.embed_reply(":no_entry: Error: Setup function not found")
+		except commands.ExtensionError as e:
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to load `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
@@ -569,6 +579,10 @@ class Bot(commands.Bot):
 		'''Unload cog'''
 		try:
 			ctx.bot.unload_extension("cogs." + cog)
+		except commands.ExtensionNotLoaded:
+			await ctx.embed_reply(":no_entry: Error: Cog not found/loaded")
+		except commands.ExtensionError as e:
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to unload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
@@ -587,6 +601,16 @@ class Bot(commands.Bot):
 		'''Reload cog'''
 		try:
 			ctx.bot.reload_extension("cogs." + cog)
+		except commands.ExtensionFailed as e:
+			await ctx.embed_reply(f":no_entry: Error in setup function: {e.original.__class__.__name__}: {e.original}")
+		except commands.ExtensionNotFound as e:
+			await ctx.embed_reply(f":no_entry: Error: Cog/Module not found: {e.original.__class__.__name__}: {e.original}")
+		except commands.ExtensionNotLoaded:
+			await ctx.embed_reply(":no_entry: Error: Cog not found/loaded")
+		except commands.NoEntryPointError:
+			await ctx.embed_reply(":no_entry: Error: Setup function not found")
+		except commands.ExtensionError as e:
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to reload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
