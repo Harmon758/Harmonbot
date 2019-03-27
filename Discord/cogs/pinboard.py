@@ -90,7 +90,7 @@ class Pinboard(commands.Cog):
 				async for record in connection.cursor("SELECT * FROM pinboard.pins WHERE guild_id = $1 ORDER BY message_id", 
 														ctx.guild.id):
 					try:
-						await pinboard_channel.get_message(record["pinboard_message_id"])
+						await pinboard_channel.fetch_message(record["pinboard_message_id"])
 					except (discord.NotFound, discord.HTTPException):
 						pin_count = await self.bot.db.fetchval("SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
 																record["message_id"])
@@ -99,7 +99,7 @@ class Pinboard(commands.Cog):
 						pinned_message_channel = self.bot.get_channel(record["channel_id"])
 						if not private_channels_setting and pinned_message_channel.overwrites_for(ctx.guild.default_role).read_messages == False:
 							continue
-						pinned_message = await pinned_message_channel.get_message(record["message_id"])
+						pinned_message = await pinned_message_channel.fetch_message(record["message_id"])
 						pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
 						await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
 													pinboard_message.id, record["message_id"])
@@ -283,10 +283,10 @@ class Pinboard(commands.Cog):
 		if not private_channels_setting and pinned_message_channel.overwrites_for(guild.default_role).read_messages == False:
 			# Set to ignore private channels and message is in private channel
 			return
-		pinned_message = await pinned_message_channel.get_message(message_id)
+		pinned_message = await pinned_message_channel.fetch_message(message_id)
 		if pinboard_message_id:
 			# Pinboard message already exists
-			pinboard_message = await pinboard_channel.get_message(pinboard_message_id)
+			pinboard_message = await pinboard_channel.fetch_message(pinboard_message_id)
 			embed = pinboard_message.embeds[0]
 			embed.clear_fields()
 			embed.add_field(name = f"**{pin_count}** \N{PUSHPIN}", value = f"[Message Link]({pinned_message.jump_url})")

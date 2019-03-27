@@ -223,7 +223,7 @@ class YouTube(commands.Cog):
 								elif not record["live"]:
 									text_channel = self.bot.get_channel(channel_record["discord_channel_id"])
 									if text_channel:
-										message = await text_channel.get_message(record["message_id"])
+										message = await text_channel.fetch_message(record["message_id"])
 										# TODO: Handle message deleted
 										embed = message.embeds[0]
 										embed.set_author(name = embed.author.name.replace("was live", "is live now"), url = embed.author.url, icon_url = embed.author.icon_url)
@@ -259,7 +259,7 @@ class YouTube(commands.Cog):
 					if record["video_id"] not in video_ids:
 						text_channel = self.bot.get_channel(record["channel_id"])
 						if text_channel:
-							message = await text_channel.get_message(record["message_id"])
+							message = await text_channel.fetch_message(record["message_id"])
 							# TODO: Handle message deleted
 							embed = message.embeds[0]
 							embed.set_author(name = embed.author.name.replace("is live now", "was live"), url = embed.author.url, icon_url = embed.author.icon_url)

@@ -992,7 +992,7 @@ class Games(commands.Cog):
 		response = await ctx.send("Please choose 10 reactions")
 		while len(response.reactions) < 10:
 			await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id)
-			response = await ctx.channel.get_message(response.id)
+			response = await ctx.channel.fetch_message(response.id)
 		reactions = response.reactions
 		reaction = random.choice(reactions)
 		await response.edit(content = "Please wait..")

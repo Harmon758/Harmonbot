@@ -201,7 +201,7 @@ class Twitch(commands.Cog):
 						text_channel = self.bot.get_channel(int(announcement[2]))
 						# TODO: Handle text channel not existing anymore
 						try:
-							announcement[0] = await text_channel.get_message(announcement[0])
+							announcement[0] = await text_channel.fetch_message(announcement[0])
 						except discord.NotFound:
 							# Announcement was deleted
 							continue

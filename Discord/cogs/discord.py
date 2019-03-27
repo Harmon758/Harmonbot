@@ -122,7 +122,7 @@ class Discord(commands.Cog):
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin(self, ctx, message_id : int):
 		'''Pin message by message ID'''
-		message = await ctx.channel.get_message(message_id)
+		message = await ctx.channel.fetch_message(message_id)
 		await message.pin()
 		await ctx.embed_reply(":pushpin: Pinned message")
 	
@@ -138,7 +138,7 @@ class Discord(commands.Cog):
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def unpin(self, ctx, message_id : int):
 		'''Unpin message by message ID'''
-		message = await ctx.channel.get_message(message_id)
+		message = await ctx.channel.fetch_message(message_id)
 		await message.unpin()
 		await ctx.embed_reply(":wastebasket: Unpinned message")
 	
