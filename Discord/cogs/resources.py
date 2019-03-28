@@ -163,7 +163,7 @@ class Resources(commands.Cog):
 	async def horoscope_signs(self, ctx):
 		'''Sun signs'''
 		async with ctx.bot.aiohttp_session.get("http://sandipbgt.com/theastrologer/api/sunsigns") as resp:
-			data = await resp.json()
+			data = await resp.json(content_type = "text/html")
 		await ctx.embed_reply(", ".join(data))
 	
 	@horoscope.command(name = "today")
