@@ -7,7 +7,6 @@ import dateutil.parser
 import inspect
 import re
 
-import clients
 from modules import utilities
 from utilities import checks
 
@@ -347,7 +346,7 @@ class Astronomy(commands.Cog):
 		description = re.sub("([^\n])\n([^\n])", r"\1 \2", data["content"])
 		description = re.sub("\n\s*\n", '\n', description)
 		if len(description) > 1000: description = description[:1000] + "..."
-		description = clients.code_block.format(description)
+		description = ctx.bot.CODE_BLOCK.format(description)
 		await ctx.embed_reply(description, title = data["title"] or discord.Embed.Empty, title_url = "https://gcn.gsfc.nasa.gov/gcn3/{}.gcn3".format(number), timestamp = dateutil.parser.parse(data["date"]) if data["date"] else discord.Embed.Empty)
 	
 	@astronomy.command(aliases = ["instrument"])

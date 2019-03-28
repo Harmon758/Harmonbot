@@ -491,7 +491,7 @@ class Games(commands.Cog):
 		if not match:
 			await ctx.embed_reply(":no_entry: Chess match not found")
 			return
-		await ctx.reply(clients.code_block.format(match))
+		await ctx.reply(ctx.bot.CODE_BLOCK.format(match))
 	
 	@chess.command(name = "fen")
 	async def chess_fen(self, ctx):
@@ -774,7 +774,7 @@ class Games(commands.Cog):
 		self.jeopardy_max_width = max(len(category_title) for category_title in category_titles)
 		for category_title in category_titles:
 			self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
-		await ctx.embed_say(clients.code_block.format(self.jeopardy_board_output))
+		await ctx.embed_say(ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output))
 	
 	@commands.group(invoke_without_command = True)
 	@checks.not_forbidden()
@@ -799,7 +799,7 @@ class Games(commands.Cog):
 			return
 		self.mazes[ctx.channel.id] = maze.Maze(width, height, random_start = random_start, random_end = random_end)
 		maze_instance = self.mazes[ctx.channel.id]
-		maze_message = await ctx.embed_reply(clients.code_block.format(maze_instance.print_visible()))
+		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(maze_instance.print_visible()))
 		'''
 		maze_print = ""
 		for r in maze_instance.test_print():
@@ -807,14 +807,14 @@ class Games(commands.Cog):
 			for cell in r:
 				row_print += cell + ' '
 			maze_print += row_print + "\n"
-		await ctx.reply(clients.code_block.format(maze_print))
+		await ctx.reply(ctx.bot.CODE_BLOCK.format(maze_print))
 		'''
-		# await ctx.reply(clients.code_block.format(repr(maze_instance)))
+		# await ctx.reply(ctx.bot.CODE_BLOCK.format(repr(maze_instance)))
 		convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
 		while not maze_instance.reached_end():
 			move = await self.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel) # author = ctx.author
 			moved = maze_instance.move(convert_move[move.content.lower()])
-			response = clients.code_block.format(maze_instance.print_visible())
+			response = ctx.bot.CODE_BLOCK.format(maze_instance.print_visible())
 			if not moved:
 				response += "\n:no_entry: You can't go that way"
 			new_maze_message = await ctx.embed_reply(response)
@@ -829,7 +829,7 @@ class Games(commands.Cog):
 	async def maze_current(self, ctx):
 		'''Current maze game'''
 		if ctx.channel.id in self.mazes:
-			await ctx.embed_reply(clients.code_block.format(self.mazes[ctx.channel.id].print_visible()))
+			await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.mazes[ctx.channel.id].print_visible()))
 		else:
 			await ctx.embed_reply(":no_entry: There's no maze game currently going on")
 	

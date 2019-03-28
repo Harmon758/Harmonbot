@@ -10,7 +10,6 @@ import dateutil.parser
 import more_itertools
 import tabulate
 
-import clients
 from utilities import checks
 
 def setup(bot):
@@ -148,10 +147,10 @@ class Finance(commands.Cog):
 		# EFVCL = Embed Field Value Character Limit
 		symbols_parts = more_itertools.divide(parts, symbols)
 		tabulated_symbols = tabulate.tabulate(symbols_parts[0], tablefmt = "plain")
-		fields = [("Currency Symbols", clients.code_block.format(tabulated_symbols))]
+		fields = [("Currency Symbols", ctx.bot.CODE_BLOCK.format(tabulated_symbols))]
 		for symbols_part in symbols_parts[1:]:
 			tabulated_symbols = tabulate.tabulate(symbols_part, tablefmt = "plain")
-			fields.append((ctx.bot.ZERO_WIDTH_SPACE, clients.code_block.format(tabulated_symbols)))
+			fields.append((ctx.bot.ZERO_WIDTH_SPACE, ctx.bot.CODE_BLOCK.format(tabulated_symbols)))
 			# Zero-width space for empty field title
 		# TODO: paginate
 		await ctx.embed_reply(fields = fields)
@@ -183,10 +182,10 @@ class Finance(commands.Cog):
 		rates_parts = more_itertools.divide(parts, rates)
 		tabulated_rates = tabulate.tabulate(rates_parts[0], tablefmt = "plain", floatfmt = 'f')
 		field_title = f"Currency {ctx.bot.inflect_engine.plural('Rate', len(rates))} Against {data['base']}"
-		fields = [(field_title, clients.code_block.format(tabulated_rates))]
+		fields = [(field_title, ctx.bot.CODE_BLOCK.format(tabulated_rates))]
 		for rates_part in rates_parts[1:]:
 			tabulated_rates = tabulate.tabulate(rates_part, tablefmt = "plain", floatfmt = 'f')
-			fields.append((ctx.bot.ZERO_WIDTH_SPACE, clients.code_block.format(tabulated_rates)))
+			fields.append((ctx.bot.ZERO_WIDTH_SPACE, ctx.bot.CODE_BLOCK.format(tabulated_rates)))
 			# Zero-width space for empty field title
 		# TODO: paginate
 		footer_text = ctx.bot.inflect_engine.plural("Rate", len(rates)) + " from"

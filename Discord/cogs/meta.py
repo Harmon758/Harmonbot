@@ -263,7 +263,7 @@ class Meta(commands.Cog):
 		'''FFmpeg version'''
 		output = subprocess.run("bin\\ffmpeg -version", capture_output = True, 
 								creationflags = subprocess.CREATE_NO_WINDOW).stdout
-		await ctx.embed_reply(clients.code_block.format(output.decode("UTF-8")))
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(output.decode("UTF-8")))
 	
 	@version.command(name = "library", aliases = ["requirement"])
 	@commands.is_owner()
@@ -477,7 +477,7 @@ class Meta(commands.Cog):
 	@checks.not_forbidden()
 	async def codeblock(self, ctx, *, input : str):
 		'''Wrap your message in a code block'''
-		await ctx.embed_reply(clients.code_block.format(input))
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(input))
 	
 	@codeblock.command(name = "python", aliases = ["py"])
 	@checks.not_forbidden()

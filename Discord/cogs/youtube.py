@@ -166,7 +166,7 @@ class YouTube(commands.Cog):
 			""", 
 			ctx.channel.id
 		)
-		await ctx.embed_reply(clients.code_block.format('\n'.join(record["youtube_channel_id"] for record in records)))
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(record["youtube_channel_id"] for record in records)))
 	
 	async def check_youtube_streams(self):
 		await self.initialize_database()
@@ -354,7 +354,7 @@ class YouTube(commands.Cog):
 	@checks.not_forbidden()
 	async def youtube_uploads_channels(self, ctx):
 		'''Show YouTube channels being followed in this text channel'''
-		await ctx.embed_reply(clients.code_block.format('\n'.join(self.uploads_info.get(str(ctx.channel.id), []))))
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.uploads_info.get(str(ctx.channel.id), []))))
 	
 	async def process_youtube_upload(self, channel_id, request_content):
 		request_info = await self.bot.loop.run_in_executor(None, feedparser.parse, request_content) # Necessary to run in executor?

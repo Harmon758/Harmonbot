@@ -126,7 +126,7 @@ class Reactions(commands.Cog):
 		React with an arrow key to move
 		'''
 		maze_instance = maze.Maze(width, height, random_start = random_start, random_end = random_end)
-		maze_message = await ctx.embed_reply(clients.code_block.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
+		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
 		self.mazes[maze_message.id] = maze_instance
 		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
 			await maze_message.add_reaction(emote)
@@ -146,12 +146,12 @@ class Reactions(commands.Cog):
 			embed.set_footer(text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
 			if moved:
 				if maze_instance.reached_end():
-					embed.description = "{}\nCongratulations! You reached the end of the maze in {} moves".format(clients.code_block.format(maze_instance.print_visible()), maze_instance.move_counter)
+					embed.description = "{}\nCongratulations! You reached the end of the maze in {} moves".format(self.bot.CODE_BLOCK.format(maze_instance.print_visible()), maze_instance.move_counter)
 					del self.reaction_messages[reaction.message.id]
 				else:
-					embed.description = "{}".format(clients.code_block.format(maze_instance.print_visible()))
+					embed.description = "{}".format(self.bot.CODE_BLOCK.format(maze_instance.print_visible()))
 			else:
-				embed.description = "{}\n:no_entry: You can't go that way".format(clients.code_block.format(maze_instance.print_visible()))
+				embed.description = "{}\n:no_entry: You can't go that way".format(self.bot.CODE_BLOCK.format(maze_instance.print_visible()))
 			await reaction.message.edit(embed = embed)
 	
 	@commands.command(aliases = ["player"])
