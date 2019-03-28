@@ -50,7 +50,6 @@ class Bot(commands.Bot):
 	def __init__(self, command_prefix):
 		
 		# Constants necessary for initialization
-		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
 								"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
 								"not enough space here to", "the meaning of life is", "the Reimann hypothesis", 
@@ -84,6 +83,7 @@ class Bot(commands.Bot):
 		self.data_path = "data/beta" if beta else "data"
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
+		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.rss_color = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 		self.twitch_color = 0x6441a4
 		self.twitter_color = 0x00ACED
