@@ -40,7 +40,6 @@ data_path = "data/beta" if beta else "data"  # Moved, update all references to
 user_agent = "Discord Bot"
 library_files = "D:/Data (D)/Music/"
 wait_time = 15.0
-py_code_block = "```py\n{}\n```"  # Moved, update all references to
 online_time = datetime.datetime.utcnow()
 
 # TODO: Already moved to Bot constants, update all references to
@@ -96,7 +95,7 @@ class Bot(commands.Bot):
 		self.white_color = 0xffffff
 		## Constant
 		self.CODE_BLOCK = "```\n{}\n```"  # TODO: Change to method?
-		self.PY_CODE_BLOCK = "```py\n{}\n```"
+		self.PY_CODE_BLOCK = "```py\n{}\n```"  # TODO: Change to method?
 		self.ZERO_WIDTH_SPACE = self.ZWSP = self.ZWS = '\N{ZERO WIDTH SPACE}'
 		### Discord
 		self.EMBED_CODE_BLOCK_ROW_CHARACTER_LIMIT = self.EMBED_CODE_BLOCK_ROW_CHAR_LIMIT = self.ECBRCL = 55

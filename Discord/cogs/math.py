@@ -9,7 +9,6 @@ import multiprocessing
 
 import sympy
 
-from clients import py_code_block
 from utilities import checks
 
 def setup(bot):
@@ -123,7 +122,7 @@ class Math(commands.Cog):
 			await ctx.embed_reply(f"`{sympy.diff(equation.strip('`'), x)}`",
                                     title = f"Derivative of {equation}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"),
+			await ctx.embed_reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
                                     title = "Error")
 	
 	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
@@ -137,7 +136,7 @@ class Math(commands.Cog):
 			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), x)}`",
                                     title = f"Integral of {equation}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"),
+			await ctx.embed_reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
                                     title = "Error")
 	
 	@integrate.command(name = "definite")
@@ -151,7 +150,7 @@ class Math(commands.Cog):
 			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))}`",
                                     title = f"Definite Integral of {equation} from {lower_limit} to {upper_limit}")
 		except Exception as e:
-			await ctx.embed_reply(py_code_block.format(f"{type(e).__name__}: {e}"),
+			await ctx.embed_reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
                                     title = "Error")
 	
 	# Trigonometry

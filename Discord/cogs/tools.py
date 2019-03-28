@@ -17,7 +17,6 @@ import textwrap
 import time
 
 import clients
-from clients import py_code_block
 from modules import utilities
 from utilities import checks
 from utilities import errors
@@ -48,7 +47,7 @@ class Tools(commands.Cog):
 		try:
 			y = numexpr.evaluate(equation)
 		except Exception as e:
-			await ctx.reply(py_code_block.format("{}: {}".format(type(e).__name__, e)))
+			await ctx.reply(ctx.bot.PY_CODE_BLOCK.format("{}: {}".format(type(e).__name__, e)))
 			return
 		try:
 			matplotlib.pyplot.plot(x, y)
