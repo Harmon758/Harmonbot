@@ -84,15 +84,15 @@ class Bot(commands.Bot):
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
 		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
-		self.rss_color = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
-		self.twitch_color = 0x6441a4
-		self.twitter_color = 0x00ACED
-		self.youtube_color = 0xcd201f  # change to ff0000?; previously on https://www.youtube.com/yt/brand/color.html
+		self.rss_color = self.rss_colour = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
+		self.twitch_color = self.twitch_colour = 0x6441a4
+		self.twitter_color = self.twitter_colour = 0x00ACED
+		self.youtube_color = self.youtube_colour = 0xcd201f  # change to ff0000?; previously on https://www.youtube.com/yt/brand/color.html
 		self.twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
 		self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 		self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
-		self.dark_theme_background_color = 0x36393e
-		self.white_color = 0xffffff
+		self.dark_theme_background_color = self.dark_theme_background_colour = 0x36393e
+		self.white_color = self.white_colour = 0xffffff
 		## Constant
 		self.CODE_BLOCK = "```\n{}\n```"  # TODO: Change to method?
 		self.PY_CODE_BLOCK = "```py\n{}\n```"  # TODO: Change to method?
