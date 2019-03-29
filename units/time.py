@@ -23,8 +23,10 @@ def duration_to_string(duration, weeks = True, milliseconds = False, microsecond
 	units["second"] = duration.seconds % 60
 	if milliseconds:
 		units["millisecond"] = duration.microseconds // 1000
-	if microseconds:
-		units["microsecond"] = duration.microseconds % 1000
+		if microseconds:
+			units["microsecond"] = duration.microseconds % 1000
+	elif microseconds:
+		units["microsecond"] = duration.microseconds
 	outputs = []
 	for name, value in units.items():
 		if not value:
