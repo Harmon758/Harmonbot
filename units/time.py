@@ -3,8 +3,9 @@ import datetime
 
 from .errors import UnitExecutionError
 
-def duration_to_string(duration, weeks = True, milliseconds = False, microseconds = False,
-						abbreviate = False, separator = ' '):
+def duration_to_string(duration: datetime.timedelta, weeks: bool = True, 
+						milliseconds: bool = False, microseconds: bool = False, 
+						abbreviate: bool = False, separator: str = ' ') -> str:
 	# TODO: Support colon format
 	if not isinstance(duration, datetime.timedelta):
 		raise UnitExecutionError("duration must be datetime.timedelta")
