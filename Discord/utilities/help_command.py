@@ -98,9 +98,9 @@ class HelpCommand(commands.HelpCommand):
 				embeds.append(discord.Embed(description = page, color = ctx.bot.bot_color))
 			if len(paginator.pages[-1] + group.description) + 1 > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 				embeds.append(discord.Embed(description = paginator.pages[-1], color = ctx.bot.bot_color))
-				embeds.append(discord.Embed(description = command.description, color = ctx.bot.bot_color))
+				embeds.append(discord.Embed(description = group.description, color = ctx.bot.bot_color))
 			else:
-				embeds.append(embed = discord.Embed(description = f"{paginator.pages[-1]}\n{command.description}", 
+				embeds.append(embed = discord.Embed(description = f"{paginator.pages[-1]}\n{group.description}", 
 														color = ctx.bot.bot_color))
 		
 		max_width = self.get_max_size(subcommands)
