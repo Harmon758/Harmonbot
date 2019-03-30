@@ -262,7 +262,32 @@ class Bot(commands.Bot):
 	
 	async def initialize_database(self):
 		await self.connect_to_database()
+		await self.db.execute("CREATE SCHEMA IF NOT EXISTS guilds")
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS users")
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS guilds.settings (
+				guild_id	BIGINT, 
+				name		TEXT, 
+				setting		BOOL, 
+				PRIMARY KEY	(guild_id, name)
+			)
+			"""
+		)
+		# Migrate existing data
+		for guild_id in os.listdir(self.data_path + "/server_data"):
+			with open(self.data_path + f"/server_data/{guild_id}/settings.json", 'r') as settings_file:
+				data = json.load(settings_file)
+			for name, setting in data.items():
+				if setting:
+					await self.db.execute(
+						"""
+						INSERT INTO guilds.settings (guild_id, name, setting)
+						VALUES ($1, $2, $3)
+						ON CONFLICT DO NOTHING
+						""", 
+						int(guild_id), name, setting
+					)
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS users.stats (
