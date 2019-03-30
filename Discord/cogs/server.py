@@ -58,12 +58,23 @@ class Server(commands.Cog):
 		'''The server region'''
 		await ctx.embed_reply(ctx.guild.region)
 	
-	@server.group(aliases = ["setting"])
+	@server.group(aliases = ["setting"], invoke_without_command = True)
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def settings(self, ctx):
-		'''Server settings'''
-		...
+	async def settings(self, ctx, setting : str, on_off : bool):
+		'''WIP'''
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO guilds.settings (guild_id, name, setting)
+			VALUES ($1, $2, $3)
+			ON CONFLICT (guild_id, name) DO
+			UPDATE SET setting = $3
+			""", 
+			ctx.guild.id, setting, on_off
+		)
+		# TODO: Check valid setting
+		# await ctx.embed_reply("Setting not found")
+		await ctx.embed_reply("{} set to {}".format(setting, on_off))
 	
 	@settings.group(name = "logs", aliases = ["log"])
 	@commands.guild_only()
