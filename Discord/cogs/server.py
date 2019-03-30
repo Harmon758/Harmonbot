@@ -74,7 +74,7 @@ class Server(commands.Cog):
 		)
 		# TODO: Check valid setting
 		# await ctx.embed_reply("Setting not found")
-		await ctx.embed_reply("{} set to {}".format(setting, on_off))
+		await ctx.embed_reply(f"{setting} set to {on_off}")
 	
 	@settings.group(name = "logs", aliases = ["log"])
 	@commands.guild_only()
