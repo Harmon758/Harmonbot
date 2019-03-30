@@ -115,6 +115,7 @@ class Bot(commands.Bot):
 		# TODO: Include owner variable for user object?
 		
 		# Variables
+		self.guild_settings = {}
 		self.session_commands_executed = 0
 		self.session_commands_usage = {}
 		
@@ -467,6 +468,41 @@ class Bot(commands.Bot):
 		return ctx
 	
 	# TODO: Case-Insensitive subcommands (override Group)
+	
+	async def get_guild_setting(self, guild_id, name):
+		if guild_id not in self.guild_settings:
+			await self.retrieve_guild_settings(guild_id)
+		return self.guild_settings[guild_id].get(name)
+	
+	async def get_guild_settings(self, guild_id):
+		if guild_id not in self.guild_settings:
+			await self.retrieve_guild_settings(guild_id)
+		return self.guild_settings[guild_id]
+	
+	async def retrieve_guild_settings(self, guild_id):
+		self.guild_settings[guild_id] = {}
+		records = await self.db.fetch(
+			"""
+			SELECT name, setting
+			FROM guilds.settings
+			WHERE guild_id = $1
+			""", 
+			guild_id
+		)
+		for record in records:
+			self.guild_settings[guild_id][record["name"]] = record["setting"]
+	
+	async def set_guild_setting(self, guild_id, name, setting):
+		await self.db.execute(
+			"""
+			INSERT INTO guilds.settings (guild_id, name, setting)
+			VALUES ($1, $2, $3)
+			ON CONFLICT (guild_id, name) DO
+			UPDATE SET setting = $3
+			""", 
+			guild_id, name, setting
+		)
+		self.guild_settings.setdefault(guild_id, {})[name] = setting
 	
 	# Update stats on sites listing Discord bots
 	async def update_listing_stats(self, site):
