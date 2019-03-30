@@ -53,32 +53,17 @@ if __name__ == "__main__":
 				if text_channel:
 					client.cogs["Audio"].players[text_channel.guild.id] = audio_player.AudioPlayer(client, text_channel)
 					await client.get_channel(voice_channel[0]).connect()
-		'''
-		for folder in os.listdir(clients.data_path + "/server_data"):
-			with open(clients.data_path + "/server_data/{}/settings.json".format(folder), 'r') as settings_file:
-				data = json.load(settings_file)
-			data["anti-spam"] = False
-			with open(clients.data_path + "/server_data/{}/settings.json".format(folder), 'w') as settings_file:
-				json.dump(data, settings_file, indent = 4)
-		'''
-		for guild in client.guilds:
-			clients.create_folder(clients.data_path + "/server_data/{}".format(guild.id))
-			clients.create_file("server_data/{}/settings".format(guild.id), content = {"anti-spam": False, "respond_to_bots": False})
-			if guild.name:
-				clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", guild.name) # | / \ : ? * " < >
-				clients.create_file("server_data/{}/{}".format(guild.id, clean_name))
-			# TODO: DM if joined new server
-			# TODO: DM if left server
+		
+		# TODO: DM if joined new server
+		# TODO: DM if left server
+		# TODO: Track guild names
 		# await voice.detectvoice()
 	
 	@client.listen()
 	async def on_guild_join(guild):
-		clients.create_folder(clients.data_path + "/server_data/{}".format(guild.id))
-		clients.create_file("server_data/{}/settings".format(guild.id), content = {"anti-spam": False, "respond_to_bots": False})
 		me = discord.utils.get(client.get_all_members(), id = client.owner_id)
 		await client.send_embed(me, None, title = "Joined Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
-		clean_name = re.sub(r"[\|/\\:\?\*\"<>]", "", guild.name) # | / \ : ? * " < >
-		clients.create_file("server_data/{}/{}".format(guild.id, clean_name))
+		# TODO: Track guild names
 	
 	@client.listen()
 	async def on_guild_remove(guild):
@@ -123,13 +108,19 @@ if __name__ == "__main__":
 		
 		# Server specific settings
 		if message.guild is not None:
-			try:
-				with open(clients.data_path + "/server_data/{}/settings.json".format(message.guild.id), 'r') as settings_file:
-					data = json.load(settings_file)
-			except FileNotFoundError:
-				# TODO: Handle/Fix, create new file with default settings
-				data = {}
-			if data.get("anti-spam") and len(message.mentions) > 10:
+			# TODO: cache?
+			guild_settings = {}
+			records = await ctx.bot.db.fetch(
+				"""
+				SELECT name, setting
+				FROM guilds.settings
+				WHERE guild_id = $1
+				""", 
+				ctx.guild.id
+			)
+			for record in records:
+				guild_settings[record["name"]] = record["setting"]
+			if guild_settings.get("anti-spam") and len(message.mentions) > 10:
 				global mention_spammers
 				if message.author.id in mention_spammers:
 					# TODO: Handle across different servers
@@ -145,7 +136,7 @@ if __name__ == "__main__":
 					mention_spammers.append(message.author.id)
 					await asyncio.sleep(3600)
 					mention_spammers.remove(message.author.id)
-			if not data.get("respond_to_bots") and message.author.bot:
+			if not guild_settings.get("respond_to_bots") and message.author.bot:
 				return
 		
 		# Invoke Commands

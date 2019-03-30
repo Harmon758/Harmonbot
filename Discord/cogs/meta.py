@@ -100,15 +100,17 @@ class Meta(commands.Cog):
 	@checks.is_server_owner()
 	async def server_settings(self, ctx, setting : str, on_off : bool):
 		'''WIP'''
-		with open(clients.data_path + "/server_data/{}/settings.json".format(ctx.guild.id), 'r') as settings_file:
-			data = json.load(settings_file)
-		if setting in data:
-			data[setting] = on_off
-		else:
-			await ctx.embed_reply("Setting not found")
-			return
-		with open(clients.data_path + "/server_data/{}/settings.json".format(ctx.guild.id), 'w') as settings_file:
-			json.dump(data, settings_file, indent = 4)
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO guilds.settings (guild_id, name, setting)
+			VALUES ($1, $2, $3)
+			ON CONFLICT (guild_id, name) DO
+			UPDATE SET setting = $3
+			""", 
+			ctx.guild.id, setting, on_off
+		)
+		# TODO: Check valid setting
+		# await ctx.embed_reply("Setting not found")
 		await ctx.embed_reply("{} set to {}".format(setting, on_off))
 	
 	@commands.command()
