@@ -63,15 +63,7 @@ class Server(commands.Cog):
 	@checks.is_permitted()
 	async def settings(self, ctx, setting : str, on_off : bool):
 		'''WIP'''
-		await ctx.bot.db.execute(
-			"""
-			INSERT INTO guilds.settings (guild_id, name, setting)
-			VALUES ($1, $2, $3)
-			ON CONFLICT (guild_id, name) DO
-			UPDATE SET setting = $3
-			""", 
-			ctx.guild.id, setting, on_off
-		)
+		await ctx.bot.set_guild_setting(ctx.guild.id, setting, on_off)
 		# TODO: Check valid setting
 		# await ctx.embed_reply("Setting not found")
 		await ctx.embed_reply(f"{setting} set to {on_off}")

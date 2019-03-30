@@ -108,18 +108,7 @@ if __name__ == "__main__":
 		
 		# Server specific settings
 		if message.guild is not None:
-			# TODO: cache?
-			guild_settings = {}
-			records = await ctx.bot.db.fetch(
-				"""
-				SELECT name, setting
-				FROM guilds.settings
-				WHERE guild_id = $1
-				""", 
-				ctx.guild.id
-			)
-			for record in records:
-				guild_settings[record["name"]] = record["setting"]
+			guild_settings = await ctx.bot.get_guild_settings(message.guild.id)
 			if guild_settings.get("anti-spam") and len(message.mentions) > 10:
 				global mention_spammers
 				if message.author.id in mention_spammers:
