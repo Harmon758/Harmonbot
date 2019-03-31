@@ -347,7 +347,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_md5(self, ctx, *, message : str):
 		'''Generate MD5 hash'''
-		await ctx.embed_reply(hashlib.md5(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "morse")
 	@checks.not_forbidden()
