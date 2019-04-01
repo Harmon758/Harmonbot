@@ -359,7 +359,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_qr(self, ctx, *, message : str):
 		'''Encode a message in a QR code'''
-		url = "https://api.qrserver.com/v1/create-qr-code/?data={}".format(message).replace(' ', '+')
+		url = f"https://api.qrserver.com/v1/create-qr-code/?data={message.replace(' ', '+')}"
 		await ctx.embed_reply(image_url = url)
 	
 	@encode.command(name = "reverse")
