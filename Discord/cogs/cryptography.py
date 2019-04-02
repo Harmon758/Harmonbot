@@ -372,7 +372,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_ripemd160(self, ctx, *, message : str):
 		'''Generate RIPEMD-160 hash'''
-		h = hashlib.new("ripemd160")
+		h = hashlib.new("RIPEMD160")
 		h.update(message.encode("UTF-8"))
 		await ctx.embed_reply(h.hexdigest())
 	
