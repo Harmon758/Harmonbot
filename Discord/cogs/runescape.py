@@ -3,8 +3,13 @@ from discord.ext import commands
 
 import collections
 import csv
+import sys
 
 from utilities import checks
+
+sys.path.insert(0, "..")
+from units.runescape import get_monster_data, UnitOutputError
+sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Runescape(bot))
@@ -65,16 +70,10 @@ class Runescape(commands.Cog):
 	@runescape.command(aliases = ["bestiary"])
 	async def monster(self, ctx, *, monster : str):
 		'''Bestiary'''
-		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json"
-		params = {"term": monster}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json(content_type = "text/html")
-		if data[0] == "none":
-			return await ctx.embed_reply(":no_entry: Monster not found")
-		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
-		params = {"beastid": data[0]["value"]}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json(content_type = "text/html")
+		try:
+			data = await get_monster_data(monster, aiohttp_session = ctx.bot.aiohttp_session)
+		except UnitOutputError as e:
+			return await ctx.embed_reply(f":no_entry: Error: {e}")
 		await ctx.embed_reply(data["description"], title = data["name"], 
 								fields = (("Level", data["level"]), ("Weakness", data["weakness"]), 
 											("XP/Kill", data["xp"]), ("Lifepoints", data["lifepoints"]), 
