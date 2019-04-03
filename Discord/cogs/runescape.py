@@ -39,15 +39,14 @@ class Runescape(commands.Cog):
 			data = await resp.json()
 		if not data[1]:
 			return await ctx.embed_reply(":no_entry: Item not found")
-		for i in data[1]:
+		for item in data[1]:
 			# https://www.semantic-mediawiki.org/wiki/Help:Ask
 			# https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
-			params = {"action": "ask", "query": f"[[{i}]]|?Item_ID", "format": "json"}
+			params = {"action": "ask", "query": f"[[{item}]]|?Item_ID", "format": "json"}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			item_id = list(data["query"]["results"].values())[0]["printouts"]["Item ID"]
 			if item_id:
-				item = i
 				item_id = item_id[0]
 				break
 		if not item_id:
