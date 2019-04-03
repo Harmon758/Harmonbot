@@ -190,8 +190,7 @@ class Resources(commands.Cog):
 		url = f"http://sandipbgt.com/theastrologer/api/horoscope/{sign}/{day}/"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error")
-				return
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json(content_type = "text/html")
 		fields = sorted((k.capitalize(), v) for k, v in data["meta"].items())
 		date = [int(d) for d in data["date"].split('-')]
