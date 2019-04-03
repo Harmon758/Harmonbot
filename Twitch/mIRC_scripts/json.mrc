@@ -119,19 +119,3 @@ alias -l json.comcheck {
     noop $com(%c,addcode,1,bstr,urlcache = {})
   }
 }
-;-------------------;
-
-;;;Basic Google Web Search Identifier;;;
-;;;Only the first 8 results are retrieved;;;
-;;;Syntax: $gws(<search params>,<result number>,<count|url|title|content>)
-;;;Requires $json
-alias gws {
-  ;ensure a proper property (count, etc) is selected and result number is between 1 and 8
-  if (!$istok(count url title content,$3,32) && $2 !isnum 1-8) { return }
-
-  var %url = http://ajax.googleapis.com/ajax/services/search/web?q= $+ $json.enccomponent($1) $+ &v=1.0&safe=active&rsz=large
-
-  ;check to see if results were found
-  ;since results often come back with bolds, remove them
-  if ($json(%url,responseData,results,0)) { return $iif($3 == count,$json(%url,responseData,cursor,estimatedResultCount).http,$remove($json(%url,responseData,results,$calc($2 - 1),$3).http,<b>,</b>)) }
-}
