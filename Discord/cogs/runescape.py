@@ -8,7 +8,7 @@ import sys
 from utilities import checks
 
 sys.path.insert(0, "..")
-from units.runescape import get_monster_data, UnitOutputError
+from units.runescape import get_ge_data, get_item_id, get_monster_data, UnitOutputError
 sys.path.pop(0)
 
 def setup(bot):
@@ -30,34 +30,11 @@ class Runescape(commands.Cog):
 	@runescape.command(aliases = ["grandexchange", "grand_exchange"])
 	async def ge(self, ctx, *, item):
 		'''Grand Exchange'''
-		# https://runescape.wiki/w/Application_programming_interface#Grand_Exchange_Database_API
-		# https://www.mediawiki.org/wiki/API:Opensearch
-		# TODO: Handle redirects?
-		url = "https://runescape.wiki/api.php"
-		params = {"action": "opensearch", "search": item}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if not data[1]:
-			return await ctx.embed_reply(":no_entry: Item not found")
-		for item in data[1]:
-			# https://www.semantic-mediawiki.org/wiki/Help:Ask
-			# https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
-			params = {"action": "ask", "query": f"[[{item}]]|?Item_ID", "format": "json"}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			item_id = list(data["query"]["results"].values())[0]["printouts"]["Item ID"]
-			if item_id:
-				item_id = item_id[0]
-				break
-		if not item_id:
-			return await ctx.embed_reply(f":no_entry: {item} is not an item")
-		url = "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json"
-		params = {"item": item_id}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			if resp.status == 404:
-				return await ctx.embed_reply(f":no_entry: Error: {item} not found on the Grand Exchange")
-			data = await resp.json(content_type = "text/html")
-		data = data["item"]
+		try:
+			item_id = await get_item_id(item, aiohttp_session = ctx.bot.aiohttp_session)
+			data = await get_ge_data(item, item_id = item_id, aiohttp_session = ctx.bot.aiohttp_session)
+		except UnitOutputError as e:
+			return await ctx.embed_reply(f":no_entry: Error: {e}")
 		await ctx.embed_reply(data["description"], title = data["name"], 
 								title_url = f"https://services.runescape.com/m=itemdb_rs/viewitem?obj={item_id}", 
 								thumbnail_url = data["icon_large"], 
