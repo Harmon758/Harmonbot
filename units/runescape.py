@@ -30,7 +30,7 @@ async def get_ge_data(item, item_id = None, aiohttp_session = None):
 		raise UnitExecutionError("aiohttp session required")
 		# TODO: Default aiohttp session?
 	if not item_id:
-		item_id = get_item_id(item, aiohttp_session = aiohttp_session)
+		item_id = await get_item_id(item, aiohttp_session = aiohttp_session)
 	url = "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json"
 	params = {"item": item_id}
 	async with aiohttp_session.get(url, params = params) as resp:
