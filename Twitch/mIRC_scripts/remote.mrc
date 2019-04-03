@@ -133,6 +133,8 @@ on *:text:!cache*:#:{
   if (%timeleft isnum 0-) msg # $my_duration(%timeleft) until Guthixian Cache.
 }
 on *:text:!calc*:#: msg # $iif($regsubex($remove($2-,$chr(32),$chr(44)),/((^|[+-/^*%]+)(([0-9]|\56)+)(k|m|b)|(^|[+-/^*%]+)(([0-9]|\56)+)|(^|[+-/^*%]+)(\50(.+?)\51))/ig,),Syntax Error,$iif(!$2,Syntax Error,$2- = $regsubex($ticks,$calc($regsubex($ticks,$remove($2-,$chr(44),$chr(32)),/(^|[+-/*%]+|[+-/*%]+\50)(([0-9]|\56)+)(k|m|b)/ig,\1 $+ ( $+ \2 $+ $iif(\4 == b,*1000000000,$iif(\4 == m,*1000000,*1000)) $+ ))),/\G([+-]?\d+?)(?=(?:\d{3})++(?=\.\d++$|$))/g,\1 $+ $chr(44)))) 
+on *:text:!christmas*:#:{ msg # $my_duration($timeleft($ctime(December 24 2016 18:00:00))) until Christmas! }
+on *:text:!easter*:#:{ msg # $my_duration($timeleft($ctime(March 27 2016 18:00:00))) until Easter! }
 on *:text:!followers*:#:{
   var %url = https://api.twitch.tv/kraken/channels/ $+ $mid($chan,2-) $+ /follows $+ ?client_id=***REMOVED***
   var %followercount = $json(%url,_total)

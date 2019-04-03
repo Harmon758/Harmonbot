@@ -138,3 +138,11 @@ on *:text:!whatis*:#:{
   elseif ($define($2)) { msg # $capital(%define_word) $+ : $define($2) }
   else { msg # I don't know what that is. Try !google !wiki !rswiki !rswiki07 }
 }
+
+alias cheese return http://en.wikipedia.org/wiki/Cheese
+alias guthixiancache return runescape.wikia.com/wiki/Guthixian_Cache
+alias illuminati return http://en.wikipedia.org/wiki/Illuminati
+alias ironman return runescape.wikia.com/wiki/Ironman_Mode
+alias life return http://en.wikipedia.org/wiki/Life
+alias love return http://en.wikipedia.org/wiki/Love https://www.youtube.com/watch?v=HEXWRTEbj1I
+alias zezima return http://rsplayers.wikia.com/wiki/Zezima
