@@ -20,7 +20,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.113"
+		self.version = "3.0.0-b.114"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -214,7 +214,7 @@ class Bot(commands.Bot):
 		ctx = await self.get_context(message, cls = context.Context)
 		# Handle channel-specific commands with set responses
 		if ctx.prefix and ctx.channel.name != "harmonbot":
-			command = message.content[len(ctx.prefix):].lstrip(' ').lower()
+			command = message.content[len(ctx.prefix):].lstrip().lower().split()[0]
 			aliased = await self.db.fetchval(
 				"""
 				SELECT name
