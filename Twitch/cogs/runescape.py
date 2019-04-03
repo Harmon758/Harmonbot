@@ -231,4 +231,8 @@ class Runescape:
 		end_xp = (start_xp + sum(int(level + 300 * 2 ** (level / 7)) for level in range(start_level, end_level))) // 4
 		start_xp //= 4
 		await ctx.send(f"{end_xp - start_xp:,} xp between level {start_level} and level {end_level}")
+	
+	@commands.command()
+	async def zybez(self, ctx):
+		return await ctx.send("See https://forums.zybez.net/topic/1783583-exit-post-the-end/")
 
