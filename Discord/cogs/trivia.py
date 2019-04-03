@@ -210,6 +210,9 @@ class Trivia(commands.Cog):
 			answer = answer.replace(',', "")
 		if ',' in response:
 			response = response.replace(',', "")
+		# Check for list separated by /
+		if set(item.strip() for item in answer.split('/')) == set(item.strip() for item in response.split('/')):
+			return True
 		# Check removal of/replacement of - with space
 		if answer.replace('-', ' ') == response.replace('-', ' '):
 			return True
