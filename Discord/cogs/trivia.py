@@ -164,8 +164,6 @@ class Trivia(commands.Cog):
 			await ctx.embed_say('\n'.join(bets_output))
 	
 	def check_answer(self, answer, response):
-		if not response:
-			return False
 		# Unescape HTML entities in answer and extract text between HTML tags
 		answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
 		# Replace in answer: \' -> '
@@ -185,6 +183,9 @@ class Trivia(commands.Cog):
 		# Remove article prefixes
 		answer = self.remove_article_prefix(answer)
 		response = self.remove_article_prefix(response)
+		# Return False if empty response
+		if not response:
+			return False
 		# Get items in lists
 		answer_items = [item.strip() for item in answer.split(',')]
 		answer_items[-1:] = [item.strip() for item in answer_items[-1].split("and") if item]
