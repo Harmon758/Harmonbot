@@ -7,6 +7,7 @@ import sys
 import time
 
 sys.path.insert(0, "..")
+from units.runescape import get_monster_data, UnitOutputError
 from units.time import duration_to_string
 sys.path.pop(0)
 
@@ -175,17 +176,10 @@ class Runescape:
 	
 	@commands.command()
 	async def monster(self, ctx, *, monster):
-		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json"
-		params = {"term": monster}
-		async with self.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json(content_type = "text/html")
-		if "value" not in data[0]:
-			return await ctx.send("Monster not found.")
-		monster_id = data[0]["value"]
-		url = "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json"
-		params = {"beastid": monster_id}
-		async with self.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json(content_type = "text/html")
+		try:
+			data = await get_monster_data(monster, aiohttp_session = self.bot.aiohttp_session)
+		except UnitOutputError as e:
+			return await ctx.send(f"Error: {e}")
 		await ctx.send(f"{data['name']}: {data['description']}, "
 						f"Level: {data.get('level', 'N/A')}, "
 						f"Weakness: {data.get('weakness', 'N/A')}, "
