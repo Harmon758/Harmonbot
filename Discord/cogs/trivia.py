@@ -246,8 +246,8 @@ class Trivia(commands.Cog):
 		matches = re.search("\((.+)\)\s?(.+)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
-		# Check XX (or YY)
-		matches = re.search("(.+?)\s?\((?:or )?(.+)\)", answer)
+		# Check XX (or YY accepted)
+		matches = re.search("(.+?)\s?\((?:or )?(.+)(?: accepted)\)", answer)
 		if matches and response in (matches.group(1), matches.group(2)):
 			return True
 		if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
