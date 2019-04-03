@@ -185,19 +185,24 @@ class Resources(commands.Cog):
 		await self.process_horoscope(ctx, sign, "yesterday")
 	
 	async def process_horoscope(self, ctx, sign, day):
+		# https://github.com/sandipbgt/theastrologer-api/issues/13
 		if len(sign) == 1:
 			sign = unicodedata.name(sign).lower()
-		url = f"http://sandipbgt.com/theastrologer/api/horoscope/{sign}/{day}/"
+		# url = f"http://sandipbgt.com/theastrologer/api/horoscope/{sign}/{day}/"
+		url = f"http://theastrologer-api.herokuapp.com/api/horoscope/{sign}/{day}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
 				return await ctx.embed_reply(":no_entry: Error")
-			data = await resp.json(content_type = "text/html")
+			# data = await resp.json(content_type = "text/html")
+			data = await resp.json()
 		fields = sorted((k.capitalize(), v) for k, v in data["meta"].items())
 		date = [int(d) for d in data["date"].split('-')]
 		timestamp = datetime.datetime(date[0], date[1], date[2])
-		await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""), 
+		# await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""), 
+		await ctx.embed_reply(data["horoscope"], 
 								title = data["sunsign"], fields = fields, 
-								footer_text = data["credit"], timestamp = timestamp)
+		#						footer_text = data["credit"], timestamp = timestamp)
+								timestamp = timestamp)
 	
 	@commands.command(aliases = ["movie"])
 	@checks.not_forbidden()
