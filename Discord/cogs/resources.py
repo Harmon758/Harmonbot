@@ -187,7 +187,8 @@ class Resources(commands.Cog):
 	async def process_horoscope(self, ctx, sign, day):
 		# https://github.com/sandipbgt/theastrologer-api/issues/13
 		if len(sign) == 1:
-			sign = unicodedata.name(sign).lower()
+			sign = unicodedata.name(sign)
+		sign = sign.lower()
 		# url = f"http://sandipbgt.com/theastrologer/api/horoscope/{sign}/{day}/"
 		url = f"http://theastrologer-api.herokuapp.com/api/horoscope/{sign}/{day}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
