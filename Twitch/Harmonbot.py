@@ -20,7 +20,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.114"
+		self.version = "3.0.0-b.115"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -133,7 +133,7 @@ class Bot(commands.Bot):
 		)
 		await self.db.execute(
 			"""
-			CREATE TABLE IF NOT EXISTS twitch.timezones (
+			CREATE TABLE IF NOT EXISTS twitch.locations (
 				channel		TEXT PRIMARY KEY, 
 				location	TEXT
 			)

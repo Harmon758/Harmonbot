@@ -43,7 +43,7 @@ class Time:
 		record = await self.bot.db.fetchrow("SELECT month, day FROM twitch.birthdays WHERE channel = $1", ctx.channel.name)
 		if not record or not record["month"] or not record["day"]:
 			return await ctx.send(f"Error: Birthday not set")
-		location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
+		location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
 		if location:
 			try:
 				timezone_data = await get_timezone_data(location = location, aiohttp_session = self.bot.aiohttp_session)
@@ -83,7 +83,7 @@ class Time:
 			location = location[len(ctx.channel.name) + 1:]
 			await self.bot.db.execute(
 				"""
-				INSERT INTO twitch.timezones (channel, location)
+				INSERT INTO twitch.locations (channel, location)
 				VALUES ($1, $2)
 				ON CONFLICT (channel) DO
 				UPDATE SET location = $2
@@ -92,7 +92,7 @@ class Time:
 			)
 			return await ctx.send(f"Timezone location set to {location}")
 		if not location or location.lower() == ctx.channel.name:
-			location = await self.bot.db.fetchval("SELECT location FROM twitch.timezones WHERE channel = $1", ctx.channel.name)
+			location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
 			if not location:
 				return await ctx.send(f"Error: Location not specified")
 		try:
