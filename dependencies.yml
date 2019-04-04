@@ -1,17 +1,9 @@
-collectors:
-
-- type: python-pip
+version: 2
+dependencies:
+- type: python
   path: requirements.txt
-  actors:
-  # pull requests for all major, minor, and patch updates
-  # - type: python-pip
-    # versions: "Y.Y.Y"
-    # settings:
-      # related_pr_behavior: close
-      # github_labels:
-      # - dependency update
-  - type: repo-issue
-    versions: "Y.Y.Y"
-    settings:
-      github_labels:
-      - dependency update
+  settings:
+    python_version: "3.7.2"
+    github_labels:
+    - dependency update
+    related_pr_behavior: close
