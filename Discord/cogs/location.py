@@ -214,7 +214,6 @@ class Location(commands.Cog):
 	@checks.not_forbidden()
 	async def weather(self, ctx, *, location : str):
 		'''Weather'''
-		# wunderground?
 		try:
 			observation = self.bot.owm_client.weather_at_place(location)
 		except (pyowm.exceptions.api_response_error.NotFoundError, 
@@ -225,8 +224,9 @@ class Location(commands.Cog):
 		description = f"**__{location.get_name()}, {location.get_country()}__**"
 		weather = observation.get_weather()
 		condition = weather.get_status()
-		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Rain": ":cloud_rain:", "Snow": ":cloud_snow:"}
-		# Mist?
+		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Fog": ":foggy:", 
+							"Rain": ":cloud_rain:", "Snow": ":cloud_snow:"}
+		# Emotes for Haze?, Mist?
 		emote = ' '
 		emote += condition_emotes.get(condition, "")
 		fields = [("Conditions", f"{condition}{emote}")]
