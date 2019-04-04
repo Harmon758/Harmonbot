@@ -195,6 +195,8 @@ class Resources(commands.Cog):
 				return await ctx.embed_reply(":no_entry: Error")
 			# data = await resp.json(content_type = "text/html")
 			data = await resp.json()
+			if resp.status == 400:
+				return await ctx.embed_reply(f":no_entry: Error: {data.get('message')}")
 		fields = sorted((k.capitalize(), v) for k, v in data["meta"].items())
 		date = [int(d) for d in data["date"].split('-')]
 		timestamp = datetime.datetime(date[0], date[1], date[2])
