@@ -1,43 +1,41 @@
-; ***REMOVED***
-;
-; 3/13/15
+; 2015-03-13
 ; fixed !ge
-; 3/10/15
+; 2015-03-10
 ; added !ge, !zybez, !monster
 ; added simple !whatis ehp
 ; added random to !caught !hug
 ; fixed !poke random
 ; added !viewers
-; 3/3/15
+; 2015-03-03
 ; removed spaces before commas
 ; organized
 ; added randomviewer alias
 ; added random to !highfive, !poke
-; 2/17/15
+; 2015-02-17
 ; added no options and harmonbot to !hello
 ; removed spaces before commas
 ; added !bye
 ; reordered !mikki and !mikkitime, added * to !mikki
 ; added !hug, fixed !poke
-; 2/12/15
+; 2015-02-12
 ; added !slay
 ; added alt
 ; added 3 different accounts?
 ; added !str !range !def ?
 ; add? stats? show stats
-; 2/10/15
+; 2015-02-10
 ; changed !indecentcode to !indecentcodehs
 ; added !rotation
 ; added !google !imfeelinglucky
-; 2/9/15
+; 2015-02-09
 ; added !pray !fletch !indecent !asylum !hello !remindwarbands
 ; added this broadcaster to !noob
-; 2/1/15
+; 2015-02-01
 ; added !99rc
 ; added construction - !con
 ; added thieving - !thief !thieving
 ; added warbands - !warbands
-; 12/23/14
+; 2014-12-23
 ; lb to kg made
 ; kg to lb made
 ; total xp made
@@ -51,7 +49,7 @@
 ; moved rps to new file
 ; implemented with inc
 ; organized, updated commands list, whatis, etc.
-; 12/18/14
+; 2014-12-18
 ; added 3accs
 ; added 3accs on/off
 ; added comma support for xp + error message
@@ -60,7 +58,7 @@
 ; !xpbetween
 ; changed !xp to !xpat
 ; added !pouch
-; 12/17/14
+; 2014-12-17
 ; added lots of commands + options
 ; added !122, !mining, !fishing
 ; fix pi (fixed outside script)
@@ -79,20 +77,20 @@
 ; added three accs and three accounts
 ; added c to f, f to c
 ; added $wiki and $rswiki and $rswiki07
-; 12/15/14
+; 2014-12-15
 ; added lots of commands + options
 ; added !07rswiki, !harmon, !harmonbot, !puppy, !mikki, !indecentcode
 ; added !uptime - untested
 ; added !tick - untested
 ; standardized !cache and !remindcache - untested
-; 12/14/14
+; 2014-12-14
 ; added lots of commands + options
 ; edited number of connection retries (outside script)
 ; added !lag
 ; added !nightbot
 ; added wiki to !whatis
 ; added !help
-; 12/13/14
+; 2014-12-13
 ; added lots of commands + options
 ; fixed !remindcache
 ; added !noob
