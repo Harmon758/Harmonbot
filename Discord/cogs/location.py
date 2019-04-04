@@ -222,7 +222,7 @@ class Location(commands.Cog):
 			# TODO: Catch base exceptions?
 			return await ctx.embed_reply(f":no_entry: Error: {e}")
 		location = observation.get_location()
-		description = f"**__{location.get_name()}__**"
+		description = f"**__{location.get_name()}, {location.get_country()}__**"
 		weather = observation.get_weather()
 		condition = weather.get_status()
 		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Rain": ":cloud_rain:", "Snow": ":cloud_snow:"}
