@@ -76,21 +76,6 @@ class Time:
 	
 	@commands.command()
 	async def time(self, ctx, *, location = ""):
-		# TODO: Document
-		# TODO: Add ability to reset
-		# TODO: Add custom location ability for any viewer
-		if ctx.author.name == ctx.channel.name and location.lower().startswith(ctx.channel.name + ' '):
-			location = location[len(ctx.channel.name) + 1:]
-			await self.bot.db.execute(
-				"""
-				INSERT INTO twitch.locations (channel, location)
-				VALUES ($1, $2)
-				ON CONFLICT (channel) DO
-				UPDATE SET location = $2
-				""", 
-				ctx.channel.name, location
-			)
-			return await ctx.send(f"Timezone location set to {location}")
 		if not location or location.lower() == ctx.channel.name:
 			location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
 			if not location:
