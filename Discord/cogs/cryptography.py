@@ -380,7 +380,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_sha1(self, ctx, *, message : str):
 		'''Generate SHA-1 hash'''
-		await ctx.embed_reply(hashlib.sha1(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.sha1(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "sha224", aliases = ["sha-224"])
 	@checks.not_forbidden()
