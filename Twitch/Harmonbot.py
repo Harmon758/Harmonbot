@@ -9,6 +9,7 @@ import sys
 import aiohttp
 import asyncpg
 import dotenv
+import pyowm
 
 from utilities import context
 from utilities import logging
@@ -20,7 +21,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.118"
+		self.version = "3.0.0-b.119"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -32,11 +33,15 @@ class Bot(commands.Bot):
 		self.aiohttp_session = None
 		
 		# Credentials
-		for credential in ("DATABASE_PASSWORD", "POSTGRES_HOST", "WORDNIK_API_KEY", "YANDEX_TRANSLATE_API_KEY"):
+		for credential in ("DATABASE_PASSWORD", "OWM_API_KEY", "POSTGRES_HOST", "WORDNIK_API_KEY", 
+							"YANDEX_TRANSLATE_API_KEY"):
 			setattr(self, credential, os.getenv(credential))
 		if not self.POSTGRES_HOST:
 			self.POSTGRES_HOST = "localhost"
 		self.DATABASE_HOST = self.POSTGRES_HOST
+		
+		## OpenWeatherMap
+		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 		
 		# PostgreSQL database connection
 		self.db = self.database = self.database_connection_pool = None
