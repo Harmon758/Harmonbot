@@ -9,7 +9,7 @@ import pyowm.exceptions
 from utilities import checks
 
 sys.path.insert(0, "..")
-from units.location import get_geocode_data, get_timezone_data, UnitOutputError
+from units.location import get_geocode_data, get_timezone_data, wind_degrees_to_direction, UnitOutputError
 sys.path.pop(0)
 
 def setup(bot):
@@ -234,7 +234,7 @@ class Location(commands.Cog):
 		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
 		fields.append(("Temperature", f"{temperature_c}°C\n{temperature_f}°F"))
 		wind = weather.get_wind()
-		wind_direction = self.wind_degrees_to_direction(wind.get("deg", -1))
+		wind_direction = wind_degrees_to_direction(wind.get("deg", -1))
 		fields.append(("Wind", f"{wind_direction} {wind['speed'] * 3.6:.2f} km/h\n"
 								f"{wind_direction} {wind['speed'] * 2.236936:.2f} mi/h"))
 		fields.append(("Humidity", f"{weather.get_humidity()}%"))
@@ -247,24 +247,4 @@ class Location(commands.Cog):
 											f"{visibility * 0.000621371192237:.2f} mi"))
 		timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None)
 		await ctx.embed_reply(description, fields = fields, timestamp = timestamp)
-	
-	def wind_degrees_to_direction(self, degrees):
-		# http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
-		if 0 <= degrees <= 11.25 or 348.75 <= degrees <= 360: return 'N'
-		elif 11.25 <= degrees <= 33.75: return "NNE"
-		elif 33.75 <= degrees <= 56.25: return "NE"
-		elif 56.25 <= degrees <= 78.75: return "ENE"
-		elif 78.75 <= degrees <= 101.25: return 'E'
-		elif 101.25 <= degrees <= 123.75: return "ESE"
-		elif 123.75 <= degrees <= 146.25: return "SE"
-		elif 146.25 <= degrees <= 168.75: return "SSE"
-		elif 168.75 <= degrees <= 191.25: return 'S'
-		elif 191.25 <= degrees <= 213.75: return "SSW"
-		elif 213.75 <= degrees <= 236.25: return "SW"
-		elif 236.25 <= degrees <= 258.75: return "WSW"
-		elif 258.75 <= degrees <= 281.25: return 'W'
-		elif 281.25 <= degrees <= 303.75: return "WNW"
-		elif 303.75 <= degrees <= 326.25: return "NW"
-		elif 326.25 <= degrees <= 348.75: return "NNW"
-		else: return ""
 
