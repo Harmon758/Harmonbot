@@ -15,6 +15,8 @@ class Words:
 		params = {"useCanonical": "false", "limit": 1, "api_key": self.bot.WORDNIK_API_KEY}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+			if resp.status == 429:
+				return await ctx.send(f"Error: {data['message']}")
 		if data:
 			await ctx.send(f"{data[0]['word'].capitalize()}: {data[0]['fileUrl']}")
 		else:
