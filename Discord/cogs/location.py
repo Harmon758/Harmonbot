@@ -234,7 +234,9 @@ class Location(commands.Cog):
 		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
 		fields.append(("Temperature", f"{temperature_c}°C\n{temperature_f}°F"))
 		wind = weather.get_wind()
-		wind_direction = wind_degrees_to_direction(wind.get("deg", -1))
+		wind_direction = wind.get("deg", "")
+		if wind_direction:
+			wind_direction = wind_degrees_to_direction(wind_direction)
 		fields.append(("Wind", f"{wind_direction} {wind['speed'] * 3.6:.2f} km/h\n"
 								f"{wind_direction} {wind['speed'] * 2.236936:.2f} mi/h"))
 		fields.append(("Humidity", f"{weather.get_humidity()}%"))
