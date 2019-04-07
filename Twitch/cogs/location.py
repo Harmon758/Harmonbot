@@ -1,7 +1,13 @@
 
 from twitchio.ext import commands
 
+import sys
+
 import pyowm
+
+sys.path.insert(0, "..")
+from units.location import wind_degrees_to_direction
+sys.path.pop(0)
 
 @commands.cog()
 class Location:
@@ -47,5 +53,21 @@ class Location:
 		condition = weather.get_status()
 		temperature_c = weather.get_temperature(unit = "celsius")["temp"]
 		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
-		await ctx.send(f"{location.get_name()}, {location.get_country()}: {condition} and {temperature_c}°C/{temperature_f}°F")
+		output = (f"{location.get_name()}, {location.get_country()}: "
+					f"{condition} and {temperature_c}°C / {temperature_f}°F | Wind: ")
+		wind = weather.get_wind()
+		wind_degrees = wind.get("deg", "")
+		if wind_degrees:
+			output += f"{wind_degrees_to_direction(wind_degrees)} "
+		output += (f"{wind['speed'] * 3.6:.2f} km/h / {wind['speed'] * 2.236936:.2f} mi/h"
+					f" | Humidity: {weather.get_humidity()}%")
+		pressure = weather.get_pressure()["press"]
+		output += f" | Pressure: {pressure} mb (hPa) / {pressure * 0.0295299830714:.2f} inHg"
+		visibility = weather.get_visibility_distance()
+		if visibility:
+			output += f" | Visibility: {visibility / 1000:.2f} km / {visibility * 0.000621371192237:.2f} mi"
+		# TODO: Heat Index [°C/°F], not possible to get from weather.get_heat_index()?
+		# TODO: Windchill [°C/°F]?
+		# TODO: Dew (point) [°C/°F]?
+		await ctx.send(output)
 
