@@ -26,6 +26,8 @@ class Words:
 		url = f"http://api.wordnik.com:80/v4/word.json/{word}/audio"
 		params = {"useCanonical": "false", "limit": 1, "api_key": self.bot.WORDNIK_API_KEY}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+			if resp.status == 404:
+				return await ctx.send("Error: Not found")
 			data = await resp.json()
 			if resp.status == 429:
 				return await ctx.send(f"Error: {data['message']}")
