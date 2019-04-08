@@ -21,7 +21,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = [], **kwargs):
-		self.version = "3.0.0-b.123"
+		self.version = "3.0.0-b.124"
 		
 		loop = loop or asyncio.get_event_loop()
 		initial_channels = list(initial_channels)
@@ -42,6 +42,8 @@ class Bot(commands.Bot):
 		
 		## OpenWeatherMap
 		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
+		# TODO: Async OWM calls
+		# TODO: Weather functions in location unit
 		
 		# PostgreSQL database connection
 		self.db = self.database = self.database_connection_pool = None
@@ -244,6 +246,8 @@ class Bot(commands.Bot):
 				# Return? Override main commands?
 		# Handle commands
 		await self.handle_commands(message, ctx = ctx)
+		# TODO: command on/off settings
+		# TODO: help command, command help?
 		if message.content.startswith('\N{BILLIARDS}'):
 			await ctx.send(f"\N{BILLIARDS} {eightball()}")
 	

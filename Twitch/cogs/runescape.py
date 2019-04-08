@@ -115,8 +115,7 @@ class Runescape:
 		# TODO: Other RS3 hiscores?
 		username = username.replace('_', ' ')
 		skill = skill_or_total.lower()
-		if skill in self.rs3_skill_aliases:
-			skill = self.rs3_skill_aliases[skill]
+		skill = self.rs3_skill_aliases.get(skill, skill)
 		if skill not in self.skill_order:
 			return await ctx.send("Invalid skill. Use _'s for spaces in usernames.")
 		hiscores_type = hiscores_type.lower()
@@ -139,8 +138,7 @@ class Runescape:
 		stat_types = ("rank", "level", "xp")
 		stat_type_aliases = {"exp": "xp", "experience": "xp", "lvl": "level"}
 		stat_type = stat_type.lower()
-		if stat_type in stat_type_aliases:
-			stat_type = stat_type_aliases[stat_type]
+		stat_type = stat_type_aliases.get(stat_type, stat_type)
 		if stat_type not in stat_types:
 			stat_type = "level"
 		hiscores_url = f"https://secure.runescape.com/m=hiscore{hiscores_type}/index_lite.ws"

@@ -16,6 +16,17 @@ class Location:
 	def __init__(self, bot):
 		self.bot = bot
 	
+	# TODO: almanac? - record highs and lows
+	#       format: KTUL Airport: Normal High: 85°F/29°C, Normal Low: 64°F/17°C | Record High: 106°F/41°C in 1911, Record Low: 50°F/10°C in 1998
+	#       error formats: Location Not Found. Try location near an airport.
+	#                      {Location} Found. No data provided.
+	# TODO: alert(s)? - weather alerts in area
+	#       format: New York City: 2 Alerts: Winter Weather Advisory till 2:00 AM EST on March 04, 2015 | Winter Weather Advisory till 2:00 AM EST on March 04, 2015 | Use * !alertinfo * for alert details
+	#               New York City: No Alerts
+	# TODO: alert(s)info? - detailed report of alerts in area
+	#       format: Jefferson City, Missouri: 1 Alerts | * Winter Weather Advisory * from 3:12 PM CST on December 17, 2014 till 10:00 AM CST on December 18, 2014 ...Winter Weather Advisory remains in effect from midnight tonight to 10 am CST Thursday... * timing...snow will spread across the area tonight and continue through mid-morning on Thursday. * Accumulations...1 to 2 inches of snow. * Winds...east 5 mph or less. * Impacts...the wintry precipitation will result in hazardous travel conditions on bridges...overpasses...and untreated roads. Parking lots and sidewalks will become slippery as well. Precautionary/preparedness actions... A Winter Weather Advisory is issued for a variety of winter weather conditions...such as snow...blowing snow...sleet...or freezing drizzle and rain. It only takes a small amount of wintry precipitation to make roads...bridges...sidewalks...and parking lots icy and dangerous. It is often difficult to tell when ice begins to form...so do not be caught off guard.
+	#               Jefferson City, Missouri: No Alerts
+	
 	@commands.command()
 	async def location(self, ctx, *, location = ""):
 		# TODO: Document

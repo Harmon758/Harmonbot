@@ -3,6 +3,9 @@ from twitchio.ext import commands
 
 import textwrap
 
+# TODO: Create words unit
+# TODO: Use wordnik library?
+
 @commands.cog()
 class Words:
 	
@@ -23,6 +26,7 @@ class Words:
 	
 	@commands.command(aliases = ("audiodefine", "pronounce"))
 	async def pronunciation(self, ctx, word):
+		# TODO: Add phonetic/text pronunciation
 		url = f"http://api.wordnik.com:80/v4/word.json/{word}/audio"
 		params = {"useCanonical": "false", "limit": 1, "api_key": self.bot.WORDNIK_API_KEY}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
