@@ -110,7 +110,7 @@ class Info(commands.Cog):
 								specific_emojis[0], False))
 				for emoji in specific_emojis[1:]:
 					fields.append((ctx.bot.ZERO_WIDTH_SPACE, emoji, False))
-		await ctx.embed_reply(title = ctx.guild.name, title_url = ctx.guild.icon_url, 
+		await ctx.embed_reply(title = ctx.guild.name, title_url = str(ctx.guild.icon_url), 
 								thumbnail_url = ctx.guild.icon_url, fields = fields, 
 								footer_text = "Created", timestamp = ctx.guild.created_at)
 	
