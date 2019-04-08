@@ -154,7 +154,7 @@ class Info(commands.Cog):
 							activities.replace("Listening", "Listening to")))
 			# inflect_engine.plural("Activity") returns "Activitys"
 		fields.append(("Bot", user.bot))
-		await ctx.embed_reply(title = str(user), title_url = user.avatar_url, 
+		await ctx.embed_reply(title = str(user), title_url = str(user.avatar_url), 
 								thumbnail_url = user.avatar_url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
 		# member info, roles, color, joined at, etc.
