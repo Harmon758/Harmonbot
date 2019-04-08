@@ -1,55 +1,62 @@
-; ***REMOVED***
-;--- Weather ---
-;changed user msg to channel msg in places
-;edited help
-;removed old section
-;removed version history
-;removed requirements
-;changed .notice to .msg in places
-;changed wu_nick to capital
-;changed to show options on one line when multiple results
-;changed some timers to instant one line outputs
-;changed formatting
-;removed !w
-;removed weather options list - changed to limit, 5
-;
-;weather underground for mIRC v5.41 by eqrunner
-;http://www.hawkee.com/snippet/7010/
-;
-; commands: !alert !alertinfo !alerts !alertsinfo !almanac !current !forecast !forecast[1-10] !time !weather
-;
-; http://www.wunderground.com/?apiref=9c058cf3508b0cc4
+; based on weather underground for mIRC v5.41 by eqrunner
+; http://www.hawkee.com/snippet/7010/
+
+; https://apicommunity.wunderground.com/weatherapi/topics/end-of-service-for-the-weather-underground-api
+; https://apicommunity.wunderground.com/weatherapi/topics/weather-underground-api-update
+
+; changed user msg to channel msg
+; modified help
+; removed old section
+; removed version history
+; removed requirements
+; changed .notice to .msg
+; changed to capitalize location and user
+; changed to show options on one line when multiple results
+; changed timers to instant one line outputs
+; changed/improved formatting
+; removed !w alias
+; limited weather location options list to 5
+; changed weather location options to not list when > 5
+; removed extraneous comments
+; changed to check for exact commands instead of starts with
+; improved comment formatting and consistency
+; corrected spelling mistakes
+; removed channel specific settings
+; added user prefix to error response
+; removed user prefix for command responses
+; fixed almanac command
 
 /*
 -- COMMANDS --
-!weather [zipcode|city,state|city,country|airport] = will return weather current conditions.
-!current [zipcode|city,state|city,country|airport] = will return current conditions.
-!forecast [zipcode|city,state|city,country|airport] = will give detailed 3 day forecast (for us)
-!forecast[1-10] [zipcode|city,state|city,country|airport] = will send from 1 day up to 10 day forecast to $nick that requested. (to prevent chan flooding)
-!alerts [zipcode|city,state|city,country|airport] = will tell you if there are any weather alerts in your area.
-!alertinfo [zipcode|city,state|city,country|airport] = will send $nick the detailed report of alerts in said area
-!time [zipcode|city,state|city,country|airport] = will return current time.
-!almanac [zipcode|city,state|city,country|airport] = will return the record highs and lows.
+!weather [zipcode|city,state|city,country|airport] = will return current weather conditions
+!current [zipcode|city,state|city,country|airport] = will return detailed current conditions
+!forecast [zipcode|city,state|city,country|airport] = will give detailed 3 day forecast (for US)
+!forecast[1-10] [zipcode|city,state|city,country|airport] = will send from 1 day up to 10 day forecast to $nick that requested (to prevent chan flooding)
+!alert(s) [zipcode|city,state|city,country|airport] = will tell you if there are any weather alerts in your area
+!alert(s)info [zipcode|city,state|city,country|airport] = will send $nick the detailed report of alerts in said area
+!time [zipcode|city,state|city,country|airport] = will return current time
+!almanac [zipcode|city,state|city,country|airport] = will return the record highs and lows
 
 -- REGISTER --
-Register - Each user can assign a default location with themself. So in the future they can use just the command ( !weather, or !forecast, or !alerts, etc)
+Register - Each user can assign a default location with themself. So in the future they can use just use the command (!weather, or !forecast, or !alerts, etc)
 ![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will link user to said default location
-![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will CHANGE users default if they already have registured.
-![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] REMOVE = will remove the users default location
-User can use any of the !commands to registure. !weather register 90210, will work just as well as !time register 90210
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] REGISTER [zipcode|city,state|city,country|airport] = will CHANGE user's default if they already have registered
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] REMOVE = will remove the user's default location
+User can use any of the !commands to register. !weather register 90210, will work just as well as !time register 90210
 
 -- HELP --
-![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] [?|help] = Will message user the list of above commands just as they are written.
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] [?|help] = will message user the list of above commands just as they are written
 
 -- Switch --
-![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] [ON|OFF] = Will turn the script ON or OFF. Currently only set for Ops only.
+![weather|forecast|forecast5|alerts|alertinfo|time|current|almanac] [ON|OFF] = will turn the script ON or OFF
+Currently only set for Ops only.
 
 -- NOTES- -
-Notes from wunderground:
-We don't support old style abbreviations like Conn. for Connecticut, use CT
+Notes from Weather Underground:
+We don't support old style abbreviations like Conn. for Connecticut; use CT
 If you are searching for an international city, try the name of the country or province
-Don't use provinces for non-us cities (ie: Vancouver, BC)
-Zipcodes only work in Canada, UK and the US
+Don't use provinces for non-US cities (e.g.: Vancouver, BC)
+Zipcodes only work for Canada, UK, and the US
 */
 
 on *:CONNECT: {
@@ -59,19 +66,18 @@ on *:CONNECT: {
 on *:DISCONNECT: { if ($hget(wu_reg)) { hsave -o wu_reg wu_reg.dat } }
 on $*:INPUT:#: { if ($regex($1,/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si)) wunderground $1- }
 on $*:text:/^[!](weather|forecast|forecast5|alert|alerts|alertinfo|alertsinfo|time|current|almanac)/Si:#: {
-  if ($1 == !weather || $1 == !forecast || $1 == !forecast? || $1 == !alert || $1 == !alerts || $1 == !alertinfo || $1 == !alerts info || $1 == !time || $1 == !current || $1 == !almanac) {
+  if ($1 == !weather || $1 == !forecast || $1 == !forecast? || $1 == !alert || $1 == !alerts || $1 == !alertinfo || $1 == !alertsinfo || $1 == !time || $1 == !current || $1 == !almanac) {
     wunderground $1-
   }
 }
 
 ;-----------------------------------------------------------------------------
-; Preperation
+; Preparation
 ;-----------------------------------------------------------------------------
 
 alias wunderground {
-  ;botabuse 
   unset %wu_*
-  ;--- Preperation. Sets up all the variables needed for the script ---
+  ;--- Preparation. Sets up all the variables needed for the script ---
   set %wu_command $1
   set %wu_2 $2
   set %wu_location $capital($2-)
@@ -81,7 +87,7 @@ alias wunderground {
   set %wu_network $network
   set %wu_chan $chan
   set %wu_host api.wunderground.com
-  set %wu_api ***REMOVED***
+  set %wu_api API_KEY
   set %wu_result_count 0
   ;--- Registration Check. Checks to see if the $nick already has a 'default' location on file ---
   if ($2 == $null) { 
@@ -104,7 +110,7 @@ alias wunderground {
       wu_cleanup
       halt
     }
-    ;--- Checks to see if the $2 is an already registured nick. ---
+    ;--- Checks to see if the $2 is an already registered nick. ---
     if ($hget(wu_reg,%wu_2) != $null) { set %wu_location $hget(wu_reg,%wu_2) }
     if (%wu_2 == ?) || (%wu_2 == help) { 
       wu_help 
@@ -126,35 +132,33 @@ alias wunderground {
         halt     
       }
     } ;end of %wu_on/off
-    ;--- Default for a channel ---
-    ;if ($2 == shoutdrive) && (%wu_network == iPocalypse) { set %wu_location 90046 } ; end of Default for a channel
   } ;end of ($2 != $null)
   ;--- Checks if wunderground is supposed to be OFF for the channel --
   if ($($+(%,wunderground_,%wu_chan),2) == OFF) {
     wu_cleanup
     halt
   }
-  ;---Command Prep. Checks command to see which data file it will be pulling from depending on command entered ---
-  ;Reformats City, State to the corrected  /State/City.xml
+  ;--- Command Prep. Checks command to see which data file it will be pulling from depending on command entered ---
+  ; Reformats City, State to the corrected  /State/City.xml
   if ($chr(44) isin %wu_location) {
     var %wu_location_city $replace($gettok(%wu_location,1,44),$chr(32),$chr(95))
     var %wu_location_state $remove($gettok(%wu_location,2,44),$chr(32))
     set %wu_address $+(/,%wu_location_state,/,%wu_location_city)
   }
   if ($chr(44) !isin %wu_location) { set %wu_address $replace(%wu_location,$chr(32),$chr(95)) }
-  ;-- Sets specific %wu_links depending on what is requested.
+  ;-- Sets specific %wu_links depending on what is requested
   ;-- Weather --
   if (%wu_command == !weather) || (%wu_command == !current) || (%wu_command == !time) { set %wu_link $+(/api/,%wu_api,/conditions/q/,%wu_address,.xml) } ;Eample: set %wu_link $+(/api/154dfe245e155eee1/conditions/q/20721.xml)
   ;-- Forecast --
-  ;- Below finds out if it is a !forecast or a !forecast[1-10]. If there is a number, then it strips the number and sets %wu_command back to !forecast5 so remainder of the code works. and creates a %wu_forecast_count to be used after the sock closes.
+  ;- Below finds out if it is a !forecast or a !forecast[1-10]. If there is a number, then it strips the number and sets %wu_command back to !forecast5 so remainder of the code works and creates a %wu_forecast_count to be used after the sock closes.
   if ($left(%wu_command,9) == !forecast) {
     if ($mid(%wu_command,10,0) > 0)  {
-      set %wu_forecast_count $remove(%wu_command,!forecast) 
+      set %wu_forecast_count $remove(%wu_command,!forecast)
       ; ^ removes !forecast, leaving only the number
-      if (%wu_forecast_count > 10) set %wu_forecast_count 10 
+      if (%wu_forecast_count > 10) set %wu_forecast_count 10
       ; ^ If number is greater than 10. Changes it to 10. (no one wants 999 days of forecast)
       set %wu_command !forecast5
-      ; ^ resets %wu_command back to !forecast5 so the rest of the code works.
+      ; ^ resets %wu_command back to !forecast5 so the rest of the code works
     }
   }
   if (%wu_command == !forecast) || (%wu_command == !forecast5) { set %wu_link $+(/api/,%wu_api,/forecast10day/q/,%wu_address,.xml) }
@@ -186,7 +190,7 @@ on *:sockread:wunderground: {
   set %wu_temp $replacex(%wu_temp,&quot;,",&amp;lt;,<,&amp;rt;,>,&amp;deg;,°,&amp;,&)
   if (<name> isin %wu_temp) && (%wu_name == $null) %wu_name = $remove(%wu_temp,<name>,</name>,$chr(9))
   ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
-  ;checks for an error
+  ; checks for an error
   if (<error> isin %wu_temp) set %wu_error Error
   if (%wu_error == Error) && (<description> isin %wu_temp) { set %wu_error_description $remove(%wu_temp,<description>,</description>,$chr(9)) }
   if (<results> isin %wu_temp) set %wu_results ON
@@ -197,7 +201,7 @@ on *:sockread:wunderground: {
     if (<country_name> isin %wu_temp) set $+(%,wu_result_country_name,%wu_result_count) $remove(%wu_temp,<country_name>,</country_name>,$chr(9))
   }
   ;-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING-ERROR-CHECKING
-  ;--- Variables for Weather, Current and Time Command ---
+  ;--- Variables for Weather, Current, and Time Commands ---
   if (%wu_command == !weather) || (%wu_command == !current) || (%wu_command == !time) { 
     if (<full> isin %wu_temp) && (%wu_full == $null) %wu_full = $remove(%wu_temp,<full>,</full>,$chr(9)) 
     if (<city> isin %wu_temp) && (%wu_city == $null) %wu_city = $remove(%wu_temp,<city>,</city>,$chr(9)) 
@@ -264,9 +268,9 @@ on *:sockread:wunderground: {
   }
   ;--- Variables for Alerts Command ---
   if (%wu_command == !alerts) || (%wu_command == !alertinfo) { 
-    ;-- Counts the amount of alerts.
+    ;-- Counts the amount of alerts
     if (<alert> isin %wu_temp) { inc %wu_a_i | inc %wu_a_count }
-    ;-- Writes variables for each alert. 
+    ;-- Writes variables for each alert
     if (<type> isin %wu_temp) set $+(%,wu_a,%wu_a_i,_type) $remove(%wu_temp,<type>,</type>,$chr(9)) 
     if (<description> isin %wu_temp) set $+(%,wu_a,%wu_a_i,_description) $remove(%wu_temp,<description>,</description>,$chr(9))
     if (<date> isin %wu_temp) set $+(%,wu_a,%wu_a_i,_date) $remove(%wu_temp,<date>,</date>,$chr(9))
@@ -299,7 +303,7 @@ on *:sockread:wunderground: {
   }
   ;--- End of xml ---
   if (</response> isin %wu_temp) {
-    ; This is so at the end of the reading, it immedely closes the socket and moves on, instead of waiting for the connection to time out.
+    ; This is so at the end of the reading, it immediateely closes the socket and moves on, instead of waiting for the connection to time out.
     sockclose wunderground
     wu_sockclose
   }
@@ -422,7 +426,7 @@ alias wu_sockclose {
 }
 alias wu_help {
   msg %wu_chan Weather Commands: !weather !current !forecast !forecast5 !alerts !alertinfo !time !almanac $+($chr(32),$chr(124),$chr(32)) Use these commands with your desired location. You can also set a default location for yourself. Just type: !weather REGISTER [location]. To be removed from the list, simply type !weather REMOVE. After you have registered, you can simply use !weather and it will bring up your default
-  ;!weather [zipcode|city,state|city,country|airport] Examples: !weather 90210 - !weather Beverly Hills, CA - !weather LAX - !weather E2J4C7
+  ; !weather [zipcode|city,state|city,country|airport] Examples: !weather 90210 - !weather Beverly Hills, CA - !weather LAX - !weather E2J4C7
   wu_cleanup
 }
 alias wu_cleanup { unset %wu_* }
