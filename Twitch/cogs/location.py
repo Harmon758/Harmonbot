@@ -1,6 +1,7 @@
 
 from twitchio.ext import commands
 
+import datetime
 import sys
 
 import pyowm
@@ -35,6 +36,36 @@ class Location:
 		if not location:
 			return await ctx.send(f"Error: Location not specified")
 		await ctx.send(location)
+	
+	@commands.command()
+	async def forecast(self, ctx, *, location = ""):
+		# TODO: Detailed forecast option?
+		if not location or location.lower() == ctx.channel.name:
+			location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
+			if not location:
+				return await ctx.send(f"Error: Location not specified")
+		try:
+			forecaster = self.bot.owm_client.daily_forecast(location)
+		except (pyowm.exceptions.api_response_error.NotFoundError, 
+				pyowm.exceptions.api_call_error.BadGatewayError) as e:
+			# TODO: Catch base exceptions?
+			return await ctx.send(f"Error: {e}")
+		forecast = forecaster.get_forecast()
+		location = forecast.get_location()
+		output = f"{location.get_name()}, {location.get_country()}"
+		for weather in forecast:
+			date = weather.get_reference_time(timeformat = "date")
+			if datetime.datetime.now(datetime.timezone.utc) > date:
+				continue
+			temperature_c = weather.get_temperature(unit = "celsius")
+			temperature_f = weather.get_temperature(unit = "fahrenheit")
+			weather_output = (f" | {date.strftime('%A')}: {weather.get_status()}. "
+								f"High: {temperature_c['max']}°C/{temperature_f['max']}°F, "
+								f"Low: {temperature_c['min']}°C/{temperature_f['min']}°F")
+			if len(output + weather_output) > self.bot.character_limit:
+				break
+			output += weather_output
+		await ctx.send(output)
 	
 	@commands.command()
 	async def weather(self, ctx, *, location = ""):
