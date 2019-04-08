@@ -67,5 +67,4 @@ def wind_degrees_to_direction(degrees):
 	if 281.25 <= degrees <= 303.75: return "WNW"
 	if 303.75 <= degrees <= 326.25: return "NW"
 	if 326.25 <= degrees <= 348.75: return "NNW"
-	
 

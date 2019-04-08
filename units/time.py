@@ -7,6 +7,7 @@ def duration_to_string(duration: datetime.timedelta, weeks: bool = True,
 						milliseconds: bool = False, microseconds: bool = False, 
 						abbreviate: bool = False, separator: str = ' ') -> str:
 	# TODO: Support colon format
+	# TODO: Default output for duration of 0?
 	if not isinstance(duration, datetime.timedelta):
 		raise UnitExecutionError("duration must be datetime.timedelta")
 	negative = False
