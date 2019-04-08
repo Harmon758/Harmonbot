@@ -10,7 +10,7 @@ class Words:
 		self.bot = bot
 	
 	@commands.command()
-	async def define(self, ctx, word):
+	async def define(self, ctx, *, word):
 		url = f"http://api.wordnik.com:80/v4/word.json/{word}/definitions"
 		params = {"limit": 1, "includeRelated": "false", "useCanonical": "false", "includeTags": "false", 
 					"api_key": self.bot.WORDNIK_API_KEY}
