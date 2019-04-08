@@ -12,7 +12,7 @@ clarifai==2.6.1
 cryptography==2.6.1
 # deuces==0.1
 dice==2.4.0
-emoji==0.5.1
+emoji==0.5.2
 feedparser==5.2.1
 gitpython==2.1.11
 hypothesis==4.14.6
