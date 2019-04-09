@@ -184,7 +184,6 @@ if __name__ == "__main__":
 				prefixes = ctx.bot.command_prefix
 			if "help" in message.content.lower():
 				ctx.prefix = prefixes[0]
-				ctx.invoked_with = "help"
 				await ctx.send_help()
 			else:
 				await ctx.embed_reply("Prefixes: " + ' '.join("`{}`".format(prefix) for prefix in prefixes))
