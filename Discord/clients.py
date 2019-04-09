@@ -108,7 +108,7 @@ class Bot(commands.Bot):
 		## Functional
 		self.delete_limit = 10000
 		### Set on ready
-		self.application_info_data = None
+		self.app_info = None
 		self.cache_channel = None
 		self.listener_bot = None  # User object
 		self.listing_sites = {}
@@ -331,7 +331,7 @@ class Bot(commands.Bot):
 			return web.Response(status = 400)  # Return 400 Bad Request
 	
 	async def on_ready(self):
-		self.application_info_data = await self.application_info()
+		self.app_info = await self.application_info()
 		self.cache_channel = self.get_channel(self.cache_channel_id)
 		self.listener_bot = await self.fetch_user(self.listener_id)
 		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 

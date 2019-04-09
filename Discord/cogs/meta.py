@@ -150,7 +150,7 @@ class Meta(commands.Cog):
 											format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)")
 		discord_py_version = pkg_resources.get_distribution("discord.py").version
 		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
-		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(ctx.bot.application_info_data.id))
+		embed.description = "[Changelog (Harmonbot Server)]({})\n[Invite Link]({})".format(self.bot.changelog, discord.utils.oauth_url(ctx.bot.app_info.id))
 		# avatar = ctx.author.avatar_url
 		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		avatar = self.bot.user.avatar_url
@@ -179,7 +179,7 @@ class Meta(commands.Cog):
 	@commands.command(aliases = ["oauth"])
 	async def invite(self, ctx):
 		'''Link to invite me to a server'''
-		await ctx.embed_reply(discord.utils.oauth_url(ctx.bot.application_info_data.id))
+		await ctx.embed_reply(discord.utils.oauth_url(ctx.bot.app_info.id))
 	
 	@commands.command()
 	async def stats(self, ctx):
