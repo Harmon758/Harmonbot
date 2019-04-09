@@ -101,10 +101,7 @@ class Tools(commands.Cog):
 		# Initialize values
 		spoiler_text = textwrap.fill(text, character_wrap)
 		spoiler_title = textwrap.fill(f"{ctx.author.display_name}'s {name} spoiler", character_wrap)
-		async with ctx.bot.aiohttp_session.get(ctx.author.avatar_url_as(format = "png")) as resp:
-			avatar_data = await resp.read()
-		with open(clients.data_path + "/temp/spoiler_avatar.png", "wb") as avatar_file:
-			avatar_file.write(avatar_data)
+		await ctx.author.avatar_url.save(clients.data_path + "/temp/spoiler_avatar.png")
 		avatar = Image.open(clients.data_path + "/temp/spoiler_avatar.png")
 		avatar.thumbnail((avatar_size, avatar_size))
 		content_font = ImageFont.truetype(content_font, content_font_size)
