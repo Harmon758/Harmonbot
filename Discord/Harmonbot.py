@@ -176,7 +176,7 @@ if __name__ == "__main__":
 					return
 				await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 				
-		# help or prefix/es DM or mention
+		# help or prefix(es) DM or mention
 		elif (message.content.lower() in ("help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ("help", "prefix", "prefixes"):
 			try:
 				prefixes = ctx.bot.command_prefix(ctx.bot, message)
@@ -186,7 +186,7 @@ if __name__ == "__main__":
 				ctx.prefix = prefixes[0]
 				await ctx.send_help()
 			else:
-				await ctx.embed_reply("Prefixes: " + ' '.join("`{}`".format(prefix) for prefix in prefixes))
+				await ctx.embed_reply("Prefixes: " + ' '.join(f"`{prefix}`" for prefix in prefixes))
 		
 		# Chatbot
 		elif message.content.startswith((ctx.me.mention, ctx.me.mention.replace('!', ""))):
