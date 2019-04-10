@@ -272,16 +272,18 @@ class Trivia(commands.Cog):
 		accepted = [""]
 		for item in parsed:
 			accepted = add_accepted(accepted, item)
+		for item in parsed:
+			if isinstance(item, list):
+				accepted.extend(add_optional_accepted([""], item)[1:])
+		for item in accepted:
+			if item.startswith("or "):
+				accepted.append(item[3:])
+			if item.endswith(" accepted"):
+				accepted.append(item[:-9])
 		if response in accepted:
 			return True
-		# Check (XX) YY
-		matches = re.search("\((.+)\)\s?(.+)", answer)
-		if matches and response in (matches.group(1), matches.group(2)):
-			return True
-		# Check XX (or YY accepted)
+		# Check XX YY (or ZZ accepted)
 		matches = re.search("(.+?)\s?\((?:or )?(.+)(?: accepted)?\)", answer)
-		if matches and response in (matches.group(1), matches.group(2)):
-			return True
 		if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
 			return True
 		# Check abbreviations
