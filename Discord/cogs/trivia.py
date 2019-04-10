@@ -229,7 +229,7 @@ class Trivia(commands.Cog):
 		if response in answer.split('/'):
 			return True
 		# Check XX/YY ZZ
-		answer_words = answer.split(' ')
+		answer_words = answer.split()
 		answers = answer_words[0].split('/')
 		for answer_word in answer_words[1:]:
 			if '/' in answer_word:
@@ -239,7 +239,7 @@ class Trivia(commands.Cog):
 		if response in answers:
 			return True
 		# Check numbers to words conversion
-		response_words = response.split(' ')
+		response_words = response.split()
 		for words in (answer_words, response_words):
 			for index, word in enumerate(words):
 				if word[0].isdigit():
