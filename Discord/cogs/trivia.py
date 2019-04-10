@@ -8,6 +8,7 @@ import string
 
 import aiohttp
 from bs4 import BeautifulSoup
+from pyparsing import Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
 
 from utilities import checks
 from utilities.context import Context
@@ -244,6 +245,34 @@ class Trivia(commands.Cog):
 				if word[0].isdigit():
 					words[index] = self.bot.inflect_engine.number_to_words(word)
 		if ' '.join(answer_words) == ' '.join(response_words):
+			return True
+		# Handle optional parentheses
+		word = Word(printables, excludeChars = "()")
+		token = Forward()
+		token << ( word | Group(Suppress('(') + OneOrMore(token) + Suppress(')')) )
+		expression = ZeroOrMore(token)
+		parsed = expression.parseString(answer).asList()
+		def add_accepted(accepted, item, initial_length = 0):
+			if isinstance(item, list):
+				accepted = add_optional_accepted(accepted, item)
+			else:
+				for accepted_index, accepted_item in enumerate(accepted[initial_length:]):
+					accepted[initial_length + accepted_index] = f"{accepted_item} {item}".lstrip()
+			return accepted
+		def add_optional_accepted(accepted, optional):
+			initial_length = len(accepted)
+			if isinstance(optional[0], list):
+				accepted = add_optional_accepted(accepted, optional[0])
+			else:
+				for accepted_item in accepted.copy():
+					accepted.append(f"{accepted_item} {optional[0]}".lstrip())
+			for item in optional[1:]:
+				add_accepted(accepted, item, initial_length = initial_length)
+			return accepted
+		accepted = [""]
+		for item in parsed:
+			accepted = add_accepted(accepted, item)
+		if response in accepted:
 			return True
 		# Check (XX) YY
 		matches = re.search("\((.+)\)\s?(.+)", answer)
