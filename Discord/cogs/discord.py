@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import asyncio
 import datetime
+import time
 
 import clients
 from modules import conversions
@@ -62,6 +63,11 @@ class Discord(commands.Cog):
 		await ctx.channel.purge(limit = self.bot.delete_limit, after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes))
 	
 	# TODO: delete mentions, invites?
+	# TODO: server settings/options:
+	#       in progress + count summary for command
+	#       case-insensitive
+	#       include embed text
+	# TODO: increase delete limit?
 	
 	# TODO: handle messages older than 14 days, like purge
 	async def delete_number(self, ctx, number, check, delete_command = True):
@@ -70,10 +76,14 @@ class Discord(commands.Cog):
 			return
 		to_delete = []
 		count = 0
+		minimum_time = int((time.time() - 14 * 24 * 60 * 60) * 1000 - discord.utils.DISCORD_EPOCH) << 22
 		if delete_command: await self.bot.attempt_delete_message(ctx.message)
 		async for message in ctx.channel.history(limit = self.bot.delete_limit):
 			if check(message):
-				to_delete.append(message)
+				if message.id < minimum_time:  # older than 14 days
+					await ctx.bot.attempt_delete_message(message)
+				else:
+					to_delete.append(message)
 				count += 1
 				if count == number:
 					break
