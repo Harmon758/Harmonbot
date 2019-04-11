@@ -69,14 +69,15 @@ class Discord(commands.Cog):
 	#       include embed text
 	# TODO: increase delete limit?
 	
+	# TODO: make Bot method?
 	async def delete_number(self, ctx, number, check, delete_command = True):
 		if number <= 0:
 			return await ctx.embed_reply(":no_entry: Syntax error")
 		to_delete = []
 		count = 0
 		minimum_time = int((time.time() - 14 * 24 * 60 * 60) * 1000 - discord.utils.DISCORD_EPOCH) << 22
-		if delete_command: await self.bot.attempt_delete_message(ctx.message)
-		async for message in ctx.channel.history(limit = self.bot.delete_limit):
+		if delete_command: await ctx.bot.attempt_delete_message(ctx.message)
+		async for message in ctx.channel.history(limit = ctx.bot.delete_limit):
 			if check(message):
 				if message.id < minimum_time:  # older than 14 days
 					await ctx.bot.attempt_delete_message(message)
@@ -90,7 +91,7 @@ class Discord(commands.Cog):
 					to_delete.clear()
 					await asyncio.sleep(1)
 		if len(to_delete) == 1:
-			await self.bot.attempt_delete_message(to_delete[0])
+			await ctx.bot.attempt_delete_message(to_delete[0])
 		elif len(to_delete) > 1:
 			await ctx.channel.delete_messages(to_delete)
 	
