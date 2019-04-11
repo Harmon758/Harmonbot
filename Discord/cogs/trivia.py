@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import asyncio
@@ -105,10 +106,13 @@ class Trivia(commands.Cog):
 			embed.set_footer(text = f"You have {self.active[question_message.guild.id]['question_countdown']} seconds left to answer")
 			try:
 				await question_message.edit(embed = embed)
-			except aiohttp.ClientConnectionError:
+			except (aiohttp.ClientConnectionError, discord.NotFound):
 				continue
 		embed.set_footer(text = "Time's up!")
-		await question_message.edit(embed = embed)
+		try:
+			await question_message.edit(embed = embed)
+		except discord.NotFound:
+			pass
 		correct_players = []
 		incorrect_players = []
 		for player, response in self.active[ctx.guild.id]["responses"].items():
