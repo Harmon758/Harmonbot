@@ -96,19 +96,19 @@ class Trivia(commands.Cog):
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
 		self.active[ctx.guild.id]["question_countdown"] = self.wait_time
-		answer_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
+		question_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.active[ctx.guild.id]['question_countdown']} seconds left to answer")
-		embed = answer_message.embeds[0]
-		while self.active[answer_message.guild.id]["question_countdown"]:
+		embed = question_message.embeds[0]
+		while self.active[question_message.guild.id]["question_countdown"]:
 			await asyncio.sleep(1)
-			self.active[answer_message.guild.id]["question_countdown"] -= 1
-			embed.set_footer(text = f"You have {self.active[answer_message.guild.id]['question_countdown']} seconds left to answer")
+			self.active[question_message.guild.id]["question_countdown"] -= 1
+			embed.set_footer(text = f"You have {self.active[question_message.guild.id]['question_countdown']} seconds left to answer")
 			try:
-				await answer_message.edit(embed = embed)
+				await question_message.edit(embed = embed)
 			except aiohttp.ClientConnectionError:
 				continue
 		embed.set_footer(text = "Time's up!")
-		await answer_message.edit(embed = embed)
+		await question_message.edit(embed = embed)
 		correct_players = []
 		incorrect_players = []
 		for player, response in self.active[ctx.guild.id]["responses"].items():
