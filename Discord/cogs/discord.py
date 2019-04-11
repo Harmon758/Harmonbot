@@ -29,7 +29,7 @@ class Discord(commands.Cog):
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
 		if isinstance(ctx.channel, discord.DMChannel):
-			await self.bot.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
+			await self.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		elif not user:
 			await self.bot.attempt_delete_message(ctx.message)
 			await ctx.channel.purge(limit = number)
@@ -63,6 +63,7 @@ class Discord(commands.Cog):
 	
 	# TODO: delete mentions, invites?
 	
+	# TODO: handle messages older than 14 days, like purge
 	async def delete_number(self, ctx, number, check, delete_command = True):
 		if number <= 0:
 			await ctx.embed_reply(":no_entry: Syntax error")
