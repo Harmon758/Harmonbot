@@ -69,11 +69,9 @@ class Discord(commands.Cog):
 	#       include embed text
 	# TODO: increase delete limit?
 	
-	# TODO: handle messages older than 14 days, like purge
 	async def delete_number(self, ctx, number, check, delete_command = True):
 		if number <= 0:
-			await ctx.embed_reply(":no_entry: Syntax error")
-			return
+			return await ctx.embed_reply(":no_entry: Syntax error")
 		to_delete = []
 		count = 0
 		minimum_time = int((time.time() - 14 * 24 * 60 * 60) * 1000 - discord.utils.DISCORD_EPOCH) << 22
