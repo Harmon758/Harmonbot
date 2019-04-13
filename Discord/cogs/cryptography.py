@@ -386,7 +386,7 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_sha224(self, ctx, *, message : str):
 		'''Generate SHA-224 hash'''
-		await ctx.embed_reply(hashlib.sha224(message.encode("utf-8")).hexdigest())
+		await ctx.embed_reply(hashlib.sha224(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "sha256", aliases = ["sha-256"])
 	@checks.not_forbidden()
