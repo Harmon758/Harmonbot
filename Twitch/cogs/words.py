@@ -18,6 +18,8 @@ class Words:
 		params = {"limit": 1, "includeRelated": "false", "useCanonical": "false", "includeTags": "false", 
 					"api_key": self.bot.WORDNIK_API_KEY}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+			if resp.status == 404:
+				return await ctx.send("Error: Not found")
 			data = await resp.json()
 		if data:
 			await ctx.send(f"{data[0]['word'].capitalize()}: {data[0]['text']}")
