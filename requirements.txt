@@ -10,7 +10,7 @@ beautifulsoup4==4.7.1
 clarifai==2.6.1
 cryptography==2.6.1
 # deuces==0.1
-dice==2.4.0
+dice==2.4.1
 emoji==0.5.2
 feedparser==5.2.1
 gitpython==2.1.11
