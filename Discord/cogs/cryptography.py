@@ -2,6 +2,7 @@
 from discord.ext import commands
 
 import hashlib
+import sys
 import zlib
 
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
@@ -14,6 +15,10 @@ import pygost.gost3412
 
 from modules import ciphers
 from utilities import checks
+
+sys.path.insert(0, "..")
+from units.cryptography import decode_morse_code, encode_morse_code, UnitOutputError
+sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Cryptography(bot))
@@ -130,7 +135,10 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def decode_morse(self, ctx, *, message : str):
 		'''Decodes morse code'''
-		await ctx.embed_reply(ciphers.decode_morse(message))
+		try:
+			await ctx.embed_reply(decode_morse_code(message))
+		except UnitOutputError as e:
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode.command(name = "qr")
 	@checks.not_forbidden()
@@ -353,7 +361,10 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def encode_morse(self, ctx, *, message : str):
 		'''Encode a message in morse code'''
-		await ctx.embed_reply(ciphers.encode_morse(message))
+		try:
+			await ctx.embed_reply(encode_morse_code(message))
+		except UnitOutputError as e:
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode.command(name = "qr")
 	@checks.not_forbidden()
