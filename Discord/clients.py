@@ -108,7 +108,6 @@ class Bot(commands.Bot):
 		## Functional
 		self.delete_limit = 100000
 		### Set on ready
-		self.app_info = None
 		self.cache_channel = None
 		self.listener_bot = None  # User object
 		self.listing_sites = {}
@@ -247,6 +246,12 @@ class Bot(commands.Bot):
 		# TODO: Catch exceptions on fail to load?
 		# TODO: Move all to on_ready?
 	
+	@property
+	async def app_info(self):
+		if not hasattr(self, "_app_info"):
+			self._app_info = await self.application_info()
+		return self._app_info
+	
 	async def connect_to_database(self):
 		if self.database_connection_pool:
 			return
@@ -331,7 +336,6 @@ class Bot(commands.Bot):
 			return web.Response(status = 400)  # Return 400 Bad Request
 	
 	async def on_ready(self):
-		self.app_info = await self.application_info()
 		self.cache_channel = self.get_channel(self.cache_channel_id)
 		self.listener_bot = await self.fetch_user(self.listener_id)
 		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
