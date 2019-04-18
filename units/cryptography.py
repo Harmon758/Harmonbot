@@ -1,5 +1,5 @@
 
-from .errors import UnitOutputError
+from .errors import UnitExecutionError, UnitOutputError
 
 character_to_morse = {
 	'A': ".-", 'B': "-...", 'C': "-.-.", 'D': "-..", 'E': '.', 'F': "..-.", 'G': "--.", 'H': "....", 
@@ -11,16 +11,21 @@ character_to_morse = {
 	'(': "-.--.", ')': "-.--.-", '&': ".-...", ';': "-.-.-.", '=': "-...-", '+': ".-.-.", 
 	'_': "..--.-", '"': ".-..-.", '$': "...-..-", '@': ".--.-.", ' ': '/'
 }
+# TODO: Add non-English extensions
 
 morse_to_character = {value: key for key, value in character_to_morse.items()}
 
 def encode_morse_code(message):
+	if not isinstance(message, str):
+		raise UnitExecutionError("message must be str")
 	try:
 		return ' '.join(character_to_morse[character] for character in message.upper())
 	except KeyError as e:
 		raise UnitOutputError(f"Unable to encode {e}")
 
 def decode_morse_code(message):
+	if not isinstance(message, str):
+		raise UnitExecutionError("message must be str")
 	try:
 		return ' '.join("".join(morse_to_character[character] for character in word.split()) 
 						for word in message.split(" / "))
