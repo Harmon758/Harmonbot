@@ -22,7 +22,8 @@ def encode_morse_code(message):
 
 def decode_morse_code(message):
 	try:
-		return ' '.join(''.join(morse_to_character[character] for character in word.split(' ')) for word in message.split(" / "))
+		return ' '.join("".join(morse_to_character[character] for character in word.split()) 
+						for word in message.split(" / "))
 	except KeyError as e:
 		raise UnitOutputError(f"Unable to decode {e}")
 
