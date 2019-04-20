@@ -56,7 +56,7 @@ asn1crypto==0.24.0
 async-timeout==3.0.1
 attrs==19.1.0
 certifi==2019.3.9
-cffi==1.12.2
+cffi==1.12.3
 chardet==3.0.4
 configparser==3.7.4
 cycler==0.10.0
