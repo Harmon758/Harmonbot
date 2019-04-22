@@ -287,7 +287,7 @@ class Trivia(commands.Cog):
 		if response in accepted:
 			return True
 		# Check XX YY (or ZZ accepted)
-		matches = re.search("(.+?)\s?\((?:or )?(.+)(?: accepted)?\)", answer)
+		matches = re.search("(.+?)\s?\((?:or )?(.+?)(?: accepted)?\)", answer)
 		if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
 			return True
 		# Check abbreviations
