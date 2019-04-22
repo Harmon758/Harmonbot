@@ -282,12 +282,14 @@ class Trivia(commands.Cog):
 		for item in accepted:
 			if item.startswith("or "):
 				accepted.append(item[3:])
+				accepted.append(self.remove_article_prefix(item[3:]))
 			if item.endswith(" accepted"):
 				accepted.append(item[:-9])
+				accepted.append(self.remove_article_prefix(item[:-9]))
 		if response in accepted:
 			return True
 		# Check XX YY (or ZZ accepted)
-		matches = re.search("(.+?)\s?\((?:or )?(.+?)(?: accepted)?\)", answer)
+		matches = re.search("(.+?)\s?\((?:or )?(?:a |an |the )?(.+?)(?: accepted)?\)", answer)
 		if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
 			return True
 		# Check abbreviations
