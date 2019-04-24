@@ -1,4 +1,6 @@
 
+from string import ascii_lowercase, ascii_uppercase
+
 from .errors import UnitExecutionError, UnitOutputError
 
 # Caesar Cipher
@@ -8,12 +10,10 @@ def encode_caesar_cipher(message, key):
 	for character in message:
 		if not character.isalpha() or not character.isascii():
 			encoded_message += character
-			continue
-		shifted = ord(character) + int(key)
-		if character.islower() and shifted > ord('z') or character.isupper() and shifted > ord('Z'):
-			encoded_message += chr(shifted - 26)
+		elif character.islower():
+			encoded_message += ascii_lowercase[(ascii_lowercase.index(character) + key) % 26]
 		else:
-			encoded_message += chr(shifted)
+			encoded_message += ascii_uppercase[(ascii_uppercase.index(character) + key) % 26]
 	return encoded_message
 
 def decode_caesar_cipher(message, key):
@@ -21,12 +21,10 @@ def decode_caesar_cipher(message, key):
 	for character in message:
 		if not character.isalpha() or not character.isascii():
 			decoded_message += character
-			continue
-		shifted = ord(character) - int(key)
-		if character.islower() and shifted < ord('a') or character.isupper() and shifted < ord('A'):
-			decoded_message += chr(shifted + 26)
+		elif character.islower():
+			decoded_message += ascii_lowercase[(ascii_lowercase.index(character) - key) % 26]
 		else:
-			decoded_message += chr(shifted)
+			decoded_message += ascii_uppercase[(ascii_uppercase.index(character) - key) % 26]
 	return decoded_message
 
 # Morse Code
