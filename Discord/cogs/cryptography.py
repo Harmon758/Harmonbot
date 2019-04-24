@@ -13,11 +13,11 @@ import pygost.gost34112012
 import pygost.gost341194
 import pygost.gost3412
 
-from modules import ciphers
 from utilities import checks
 
 sys.path.insert(0, "..")
-from units.cryptography import decode_morse_code, encode_morse_code, UnitOutputError
+from units.cryptography import (brute_force_caesar_cipher, decode_caesar_cipher, encode_caesar_cipher, 
+								decode_morse_code, encode_morse_code, UnitOutputError)
 sys.path.pop(0)
 
 def setup(bot):
@@ -46,13 +46,13 @@ class Cryptography(commands.Cog):
 		if not 0 <= key <= 26:
 			await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
 			return
-		await ctx.embed_reply(ciphers.decode_caesar(message, key))
+		await ctx.embed_reply(decode_caesar_cipher(message, key))
 	
 	@decode_caesar.command(name = "brute")
 	@checks.not_forbidden()
 	async def decode_caesar_brute(self, ctx, message : str):
 		'''Brute force decode caesar code'''
-		await ctx.embed_reply(ciphers.brute_force_caesar(message))
+		await ctx.embed_reply(brute_force_caesar_cipher(message))
 	
 	@decode.group(name = "gost", aliases = ["гост"], invoke_without_command = True)
 	@checks.not_forbidden()
@@ -213,7 +213,7 @@ class Cryptography(commands.Cog):
 		'''
 		if not 0 <= key <= 26:
 			return await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
-		await ctx.embed_reply(ciphers.encode_caesar(message, key))
+		await ctx.embed_reply(encode_caesar_cipher(message, key))
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
 	@checks.not_forbidden()
