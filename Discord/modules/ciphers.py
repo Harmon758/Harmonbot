@@ -28,5 +28,5 @@ def decode_caesar(message, key):
 def brute_force_caesar(message):
 	decodes = ""
 	for key in range(26):
-		decodes += str(key) + ": " + decode_caesar(message, key) + '\n'
+		decodes += f"{key}: {decode_caesar(message, key)}\n"
 	return decodes
