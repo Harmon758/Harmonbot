@@ -6,6 +6,10 @@ from .errors import UnitExecutionError, UnitOutputError
 # Caesar Cipher
 
 def encode_caesar_cipher(message, key):
+	if not isinstance(message, str):
+		raise UnitExecutionError("message must be str")
+	if not isinstance(key, int):
+		raise UnitExecutionError("key must be int")
 	encoded_message = ""
 	for character in message:
 		if not character.isalpha() or not character.isascii():
@@ -17,6 +21,10 @@ def encode_caesar_cipher(message, key):
 	return encoded_message
 
 def decode_caesar_cipher(message, key):
+	if not isinstance(message, str):
+		raise UnitExecutionError("message must be str")
+	if not isinstance(key, int):
+		raise UnitExecutionError("key must be int")
 	return encode_caesar_cipher(message, -key)
 
 # Morse Code
