@@ -16,8 +16,9 @@ import pygost.gost3412
 from utilities import checks
 
 sys.path.insert(0, "..")
-from units.cryptography import (brute_force_caesar_cipher, decode_caesar_cipher, encode_caesar_cipher, 
-								decode_morse_code, encode_morse_code, UnitOutputError)
+from units.cryptography import (decode_caesar_cipher, encode_caesar_cipher, 
+								decode_morse_code, encode_morse_code, 
+								UnitOutputError)
 sys.path.pop(0)
 
 def setup(bot):
@@ -52,7 +53,8 @@ class Cryptography(commands.Cog):
 	@checks.not_forbidden()
 	async def decode_caesar_brute(self, ctx, message : str):
 		'''Brute force decode caesar code'''
-		await ctx.embed_reply(brute_force_caesar_cipher(message))
+		# TODO: Paginate if too long
+		await ctx.embed_reply('\n'.join(f"{key}: {decode_caesar_cipher(message, key)}" for key in range(26)))
 	
 	@decode.group(name = "gost", aliases = ["гост"], invoke_without_command = True)
 	@checks.not_forbidden()
