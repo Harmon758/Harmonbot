@@ -1,6 +1,42 @@
 
 from .errors import UnitExecutionError, UnitOutputError
 
+# Caesar Cipher
+
+def encode_caesar_cipher(message, key):
+	encoded_message = ""
+	for character in message:
+		if not character.isalpha() or not character.isascii():
+			encoded_message += character
+			continue
+		shifted = ord(character) + int(key)
+		if character.islower() and shifted > ord('z') or character.isupper() and shifted > ord('Z'):
+			encoded_message += chr(shifted - 26)
+		else:
+			encoded_message += chr(shifted)
+	return encoded_message
+
+def decode_caesar_cipher(message, key):
+	decoded_message = ""
+	for character in message:
+		if not character.isalpha() or not character.isascii():
+			decoded_message += character
+			continue
+		shifted = ord(character) - int(key)
+		if character.islower() and shifted < ord('a') or character.isupper() and shifted < ord('A'):
+			decoded_message += chr(shifted + 26)
+		else:
+			decoded_message += chr(shifted)
+	return decoded_message
+
+def brute_force_caesar_cipher(message):
+	decodes = ""
+	for key in range(26):
+		decodes += f"{key}: {decode_caesar_cipher(message, key)}\n"
+	return decodes
+
+# Morse Code
+
 character_to_morse = {
 	'A': ".-", 'B': "-...", 'C': "-.-.", 'D': "-..", 'E': '.', 'F': "..-.", 'G': "--.", 'H': "....", 
 	'I': "..", 'J': ".---", 'K': "-.-", 'L': ".-..", 'M': "--", 'N': "-.", 'O': "---", 'P': ".--.", 
