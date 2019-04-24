@@ -29,12 +29,6 @@ def decode_caesar_cipher(message, key):
 			decoded_message += chr(shifted)
 	return decoded_message
 
-def brute_force_caesar_cipher(message):
-	decodes = ""
-	for key in range(26):
-		decodes += f"{key}: {decode_caesar_cipher(message, key)}\n"
-	return decodes
-
 # Morse Code
 
 character_to_morse = {
