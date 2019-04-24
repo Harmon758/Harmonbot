@@ -34,25 +34,19 @@ class Cryptography(commands.Cog):
 	@commands.group(aliases = ["decrpyt"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def decode(self, ctx):
-		'''Decodes coded messages'''
+		'''Decode coded messages'''
 		await ctx.send_help(ctx.command)
 	
 	@decode.group(name = "caesar", aliases = ["rot"], invoke_without_command = True)
 	@checks.not_forbidden()
 	async def decode_caesar(self, ctx, key : int, *, message : str):
-		'''
-		Decodes caesar codes
-		key: 0 - 26
-		'''
-		if not 0 <= key <= 26:
-			await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
-			return
+		'''Decode caesar cipher'''
 		await ctx.embed_reply(decode_caesar_cipher(message, key))
 	
 	@decode_caesar.command(name = "brute")
 	@checks.not_forbidden()
 	async def decode_caesar_brute(self, ctx, message : str):
-		'''Brute force decode caesar code'''
+		'''Brute force decode caesar cipher'''
 		# TODO: Paginate if too long
 		await ctx.embed_reply('\n'.join(f"{key}: {decode_caesar_cipher(message, key)}" for key in range(26)))
 	
@@ -209,12 +203,7 @@ class Cryptography(commands.Cog):
 	@encode.command(name = "caesar", aliases = ["rot"])
 	@checks.not_forbidden()
 	async def encode_caesar(self, ctx, key : int, *, message : str):
-		'''
-		Encode a message using caesar code
-		key: 0 - 26
-		'''
-		if not 0 <= key <= 26:
-			return await ctx.embed_reply(":no_entry: Key must be in range 0 - 26")
+		'''Encode a message using a caesar cipher'''
 		await ctx.embed_reply(encode_caesar_cipher(message, key))
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
