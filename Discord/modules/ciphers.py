@@ -2,7 +2,7 @@
 def encode_caesar(message, key):
 	encoded_message = ""
 	for character in message:
-		if not ('a' <= character <= 'z' or 'A' <= character <= 'Z'): # .isalpha() ?
+		if not character.isalpha() or not character.isascii():
 			encoded_message += character
 			continue
 		shifted = ord(character) + int(key)
@@ -15,7 +15,7 @@ def encode_caesar(message, key):
 def decode_caesar(message, key):
 	decoded_message = ""
 	for character in message:
-		if not ('a' <= character <= 'z' or 'A' <= character <= 'Z'): # .isalpha() ?
+		if not character.isalpha() or not character.isascii():
 			decoded_message += character
 			continue
 		shifted = ord(character) - int(key)
