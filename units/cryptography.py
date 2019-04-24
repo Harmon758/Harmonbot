@@ -17,15 +17,7 @@ def encode_caesar_cipher(message, key):
 	return encoded_message
 
 def decode_caesar_cipher(message, key):
-	decoded_message = ""
-	for character in message:
-		if not character.isalpha() or not character.isascii():
-			decoded_message += character
-		elif character.islower():
-			decoded_message += ascii_lowercase[(ascii_lowercase.index(character) - key) % 26]
-		else:
-			decoded_message += ascii_uppercase[(ascii_uppercase.index(character) - key) % 26]
-	return decoded_message
+	return encode_caesar_cipher(message, -key)
 
 # Morse Code
 
