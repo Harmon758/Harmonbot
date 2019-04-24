@@ -5,7 +5,7 @@ from .errors import UnitExecutionError, UnitOutputError
 
 # Caesar Cipher
 
-def encode_caesar_cipher(message, key):
+def encode_caesar_cipher(message: str, key: int):
 	if not isinstance(message, str):
 		raise UnitExecutionError("message must be str")
 	if not isinstance(key, int):
@@ -20,7 +20,7 @@ def encode_caesar_cipher(message, key):
 			encoded_message += ascii_uppercase[(ascii_uppercase.index(character) + key) % 26]
 	return encoded_message
 
-def decode_caesar_cipher(message, key):
+def decode_caesar_cipher(message: str, key: int):
 	if not isinstance(message, str):
 		raise UnitExecutionError("message must be str")
 	if not isinstance(key, int):
@@ -43,7 +43,7 @@ character_to_morse = {
 
 morse_to_character = {value: key for key, value in character_to_morse.items()}
 
-def encode_morse_code(message):
+def encode_morse_code(message: str):
 	if not isinstance(message, str):
 		raise UnitExecutionError("message must be str")
 	try:
@@ -51,7 +51,7 @@ def encode_morse_code(message):
 	except KeyError as e:
 		raise UnitOutputError(f"Unable to encode {e}")
 
-def decode_morse_code(message):
+def decode_morse_code(message: str):
 	if not isinstance(message, str):
 		raise UnitExecutionError("message must be str")
 	try:
