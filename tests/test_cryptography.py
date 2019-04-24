@@ -2,10 +2,33 @@
 import unittest
 
 from hypothesis import assume, given
-from hypothesis.strategies import characters, text, uuids
+from hypothesis.strategies import characters, integers, text, uuids
 
-from units.cryptography import decode_morse_code, encode_morse_code
+from units.cryptography import (decode_caesar_cipher, encode_caesar_cipher, 
+								decode_morse_code, encode_morse_code)
 from units.errors import UnitExecutionError, UnitOutputError
+
+class TestCaesarCipher(unittest.TestCase):
+	
+	@given(uuids(), integers())
+	def test_decode_invalid_message_type(self, message, key):
+		self.assertRaises(UnitExecutionError, decode_caesar_cipher, message, key)
+	
+	@given(uuids(), integers())
+	def test_encode_invalid_message_type(self, message, key):
+		self.assertRaises(UnitExecutionError, encode_caesar_cipher, message, key)
+	
+	@given(text(), uuids())
+	def test_decode_invalid_key_type(self, message, key):
+		self.assertRaises(UnitExecutionError, decode_caesar_cipher, message, key)
+	
+	@given(text(), uuids())
+	def test_encode_invalid_key_type(self, message, key):
+		self.assertRaises(UnitExecutionError, encode_caesar_cipher, message, key)
+	
+	@given(text(), integers())
+	def test_decode_inverts_encode(self, message, key):
+		self.assertEqual(message, decode_caesar_cipher(encode_caesar_cipher(message, key), key))
 
 class TestMorseCode(unittest.TestCase):
 	
