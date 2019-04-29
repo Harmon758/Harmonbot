@@ -46,7 +46,7 @@ sympy==1.4
 tabulate==0.8.3
 tweepy==3.7.0
 unicodedata2==11.0.0
-urllib3==1.25.1
+urllib3==1.25.2
 wand==0.5.3
 wolframalpha==3.0.1
 wordnik-py3==2.1.2
