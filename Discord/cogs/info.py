@@ -50,8 +50,8 @@ class Info(commands.Cog):
 		except ValueError:
 			name = "UNKNOWN"
 		hex_char = hex(ord(character))
-		url = "http://www.fileformat.info/info/unicode/char/{}/index.htm".format(hex_char[2:])
-		await ctx.embed_reply("`{} ({})`".format(character, hex_char), title = name, title_url = url)
+		url = f"http://www.fileformat.info/info/unicode/char/{hex_char[2:]}/index.htm"
+		await ctx.embed_reply(f"`{character} ({hex_char})`", title = name, title_url = url)
 	
 	@info.command()
 	@commands.guild_only()
