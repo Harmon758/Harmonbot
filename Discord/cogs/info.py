@@ -43,15 +43,21 @@ class Info(commands.Cog):
 	@checks.not_forbidden()
 	async def character(self, ctx, character : str):
 		'''Information about unicode characters'''
-		character = character[0]
-		# TODO: Return info on each character in the input string; use paste tool api?
-		try:
-			name = unicodedata.name(character)
-		except ValueError:
-			name = "UNKNOWN"
-		hex_char = hex(ord(character))
-		url = f"http://www.fileformat.info/info/unicode/char/{hex_char[2:]}/index.htm"
-		await ctx.embed_reply(f"`{character} ({hex_char})`", title = name, title_url = url)
+		output = []
+		for char in character:
+			output.append({"char": char})
+			try:
+				output[-1]["name"] = unicodedata.name(char)
+			except ValueError:
+				output[-1]["name"] = "UNKNOWN"
+			output[-1]["hex"] = hex(ord(char))
+			output[-1]["url"] = f"http://www.fileformat.info/info/unicode/char/{output[-1]['hex'][2:]}/index.htm"
+		if len(output) == 1:
+			await ctx.embed_reply(f"`{output[0]['char']} ({output[0]['hex']})`", 
+									title = output[0]["name"], title_url = output[0]["url"])
+		else:
+			await ctx.embed_reply('\n'.join(f"[{char['name']}]({char['url']}): `{char['char']} ({char['hex']})`" 
+									for char in output))
 	
 	@info.command()
 	@commands.guild_only()
