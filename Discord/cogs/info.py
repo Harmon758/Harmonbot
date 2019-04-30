@@ -41,7 +41,7 @@ class Info(commands.Cog):
 	
 	@info.command(aliases = ["char"])
 	@checks.not_forbidden()
-	async def character(self, ctx, character : str):
+	async def character(self, ctx, character: str):
 		'''Information about unicode characters'''
 		output = []
 		for char in character:
