@@ -56,8 +56,12 @@ class Info(commands.Cog):
 			await ctx.embed_reply(f"`{output[0]['char']}` ({output[0]['hex']})", 
 									title = output[0]["name"], title_url = output[0]["url"])
 		else:
-			await ctx.embed_reply('\n'.join(f"[{char['name']}]({char['url']}): `{char['char']}` ({char['hex']})" 
-									for char in output))
+			output = '\n'.join(f"[{char['name']}]({char['url']}): `{char['char']}` ({char['hex']})" 
+								for char in output)
+			if len(output) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+				output = output[:ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT]
+				output = output[:output.rfind('\n')]
+			await ctx.embed_reply(output)
 	
 	@info.command()
 	@commands.guild_only()
