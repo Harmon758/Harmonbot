@@ -335,7 +335,8 @@ class RSS(commands.Cog):
 									else:
 										raise
 							# TODO: Remove text channel data if now non-existent
-				except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, asyncio.TimeoutError) as e:
+				except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, 
+						asyncio.TimeoutError, UnicodeDecodeError) as e:
 					await self.bot.db.execute(
 						"""
 						INSERT INTO rss.errors (feed, type, message)
