@@ -82,7 +82,7 @@ class Bot(commands.Bot):
 		self.console_line_limit = 167
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.data_path = "data/beta" if beta else "data"
-		self.emoji_skin_tone = self.emote_skin_tone = ":skin-tone-2:"  # TODO: use everywhere
+		self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: use everywhere
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
 		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
