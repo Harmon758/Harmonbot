@@ -1022,7 +1022,8 @@ class Games(commands.Cog):
 		value = random.choice(("rock", "paper", "scissors"))
 		short_shape = object[0].lower()
 		resolution = {'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}}
-		emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:"}
+		emotes = {'r': f":fist:{ctx.bot.emoji_skin_tone}", 'p': f":raised_hand:{ctx.bot.emoji_skin_tone}", 
+					's': f":v:{ctx.bot.emoji_skin_tone}"}
 		if value[0] == short_shape:
 			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
 		elif short_shape in resolution[value[0]]:
