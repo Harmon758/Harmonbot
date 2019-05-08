@@ -1075,26 +1075,25 @@ class Games(commands.Cog):
 		'''
 		object = object.lower().replace('-', "")
 		if object not in ("rock", "paper", "scissors", "lizard", "spock", "spiderman", "batman", "wizard", "glock"):
-			await ctx.embed_reply(":no_entry: That's not a valid object")
+			return await ctx.embed_reply(":no_entry: That's not a valid object")
+		value = random.choice(("rock", "paper", "scissors", "lizard", "Spock", "Spider-Man", "Batman", "wizard", "Glock"))
+		resolution = {"rock": {"scissors": "crushes", "lizard": "crushes", "spiderman": "knocks out", "wizard": "interrupts"}, 
+		"paper": {"rock": "covers", "spock": "disproves", "batman": "delays", "glock": "jams"}, 
+		"scissors": {"paper": "cuts", "lizard": "decapitates", "spiderman": "cuts", "wizard": "cuts"}, 
+		"lizard": {"paper": "eats", "spock": "poisons", "batman": "confuses", "glock": "is too small for"}, 
+		"spock": {"rock": "vaporizes", "scissors": "smashes", "spiderman": "befuddles", "wizard": "zaps"}, 
+		"spiderman": {"paper": "rips", "lizard": "defeats", "wizard": "annoys", "glock": "disarms"}, 
+		"batman": {"rock": "explodes", "scissors": "dismantles", "spiderman": "scares", "spock": "hangs"}, 
+		"wizard": {"paper": "burns", "lizard": "transforms", "batman": "stuns", "glock": "melts"}, 
+		"glock": {"rock": "breaks", "scissors": "dents", "batman": "kills parents of", "spock": "shoots"}}
+		emotes = {"rock": ":fist::skin-tone-2:", "paper": ":raised_hand::skin-tone-2:", "scissors": ":v::skin-tone-2:", "lizard": ":lizard:", "spock": ":vulcan::skin-tone-2:", "spiderman": ":spider:", "batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
+		standard_value = value.lower().replace('-', "")
+		if standard_value == object:
+			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
+		elif object in resolution[standard_value]:
+			await ctx.embed_reply(f"I chose `{value}`\n{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\nYou lose :slight_frown:")
 		else:
-			value = random.choice(("rock", "paper", "scissors", "lizard", "Spock", "Spider-Man", "Batman", "wizard", "Glock"))
-			resolution = {"rock": {"scissors": "crushes", "lizard": "crushes", "spiderman": "knocks out", "wizard": "interrupts"}, 
-			"paper": {"rock": "covers", "spock": "disproves", "batman": "delays", "glock": "jams"}, 
-			"scissors": {"paper": "cuts", "lizard": "decapitates", "spiderman": "cuts", "wizard": "cuts"}, 
-			"lizard": {"paper": "eats", "spock": "poisons", "batman": "confuses", "glock": "is too small for"}, 
-			"spock": {"rock": "vaporizes", "scissors": "smashes", "spiderman": "befuddles", "wizard": "zaps"}, 
-			"spiderman": {"paper": "rips", "lizard": "defeats", "wizard": "annoys", "glock": "disarms"}, 
-			"batman": {"rock": "explodes", "scissors": "dismantles", "spiderman": "scares", "spock": "hangs"}, 
-			"wizard": {"paper": "burns", "lizard": "transforms", "batman": "stuns", "glock": "melts"}, 
-			"glock": {"rock": "breaks", "scissors": "dents", "batman": "kills parents of", "spock": "shoots"}}
-			emotes = {"rock": ":fist::skin-tone-2:", "paper": ":raised_hand::skin-tone-2:", "scissors": ":v::skin-tone-2:", "lizard": ":lizard:", "spock": ":vulcan::skin-tone-2:", "spiderman": ":spider:", "batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
-			standard_value = value.lower().replace('-', "")
-			if standard_value == object:
-				await ctx.embed_reply(f"\nI chose `{value}`\nIt's a draw :confused:")
-			elif object in resolution[standard_value]:
-				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\nYou lose :slight_frown:")
-			else:
-				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\nYou win! :tada:")
+			await ctx.embed_reply(f"I chose `{value}`\n{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\nYou win! :tada:")
 	
 	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"])
 	@checks.not_forbidden()
