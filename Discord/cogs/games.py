@@ -1018,18 +1018,17 @@ class Games(commands.Cog):
 	async def rps(self, ctx, object : str):
 		'''Rock paper scissors'''
 		if object.lower() not in ('r', 'p', 's', "rock", "paper", "scissors"):
-			await ctx.embed_reply(":no_entry: That's not a valid object")
-			return
+			return await ctx.embed_reply(":no_entry: That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors"))
 		short_shape = object[0].lower()
 		resolution = {'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}}
 		emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:"}
 		if value[0] == short_shape:
-			await ctx.embed_reply(f"\nI chose `{value}`\nIt's a draw :confused:")
+			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
 		elif short_shape in resolution[value[0]]:
-			await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\nYou lose :slight_frown:")
+			await ctx.embed_reply(f"I chose `{value}`\n{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\nYou lose :slight_frown:")
 		else:
-			await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\nYou win! :tada:")
+			await ctx.embed_reply(f"I chose `{value}`\n{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\nYou win! :tada:")
 	
 	@commands.command(aliases = ["rockpaperscissorslizardspock", "rock-paper-scissors-lizard-spock"])
 	@checks.not_forbidden()
