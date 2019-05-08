@@ -1090,11 +1090,11 @@ class Games(commands.Cog):
 			emotes = {"rock": ":fist::skin-tone-2:", "paper": ":raised_hand::skin-tone-2:", "scissors": ":v::skin-tone-2:", "lizard": ":lizard:", "spock": ":vulcan::skin-tone-2:", "spiderman": ":spider:", "batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
 			standard_value = value.lower().replace('-', "")
 			if standard_value == object:
-				await ctx.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
+				await ctx.embed_reply(f"\nI chose `{value}`\nIt's a draw :confused:")
 			elif object in resolution[standard_value]:
-				await ctx.embed_reply("\nI chose `{}`\n{} {} {}\nYou lose :slight_frown:".format(value, emotes[standard_value], resolution[standard_value][object], emotes[object]))
+				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\nYou lose :slight_frown:")
 			else:
-				await ctx.embed_reply("\nI chose `{}`\n{} {} {}\nYou win! :tada:".format(value, emotes[object], resolution[object][standard_value], emotes[standard_value]))
+				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\nYou win! :tada:")
 	
 	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"])
 	@checks.not_forbidden()
