@@ -1150,15 +1150,14 @@ class Games(commands.Cog):
 			resolution = json.load(erps_file)
 		value = random.choice(list(emotes.keys()))
 		if object not in emotes:
-			await ctx.embed_reply(":no_entry: That's not a valid object")
-		else:
-			standard_value = value.lower().replace('.', "").replace("video game", "game")
-			if standard_value == object:
-				await ctx.embed_reply(f"\nI chose `{value}`\nIt's a draw :confused:")
-			elif object in resolution[standard_value]:
-				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\nYou lose :slight_frown:")
-			elif standard_value in resolution[object]:
-				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\nYou win! :tada:")
+			return await ctx.embed_reply(":no_entry: That's not a valid object")
+		standard_value = value.lower().replace('.', "").replace("video game", "game")
+		if standard_value == object:
+			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
+		elif object in resolution[standard_value]:
+			await ctx.embed_reply(f"I chose `{value}`\n{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\nYou lose :slight_frown:")
+		elif standard_value in resolution[object]:
+			await ctx.embed_reply(f"I chose `{value}`\n{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\nYou win! :tada:")
 	
 	async def generate_erps_dict(self):
 		async with self.bot.aiohttp_session.get("http://www.umop.com/rps101/alloutcomes.htm") as resp:
