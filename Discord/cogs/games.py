@@ -1050,11 +1050,11 @@ class Games(commands.Cog):
 			resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 'S': {'r': "vaporizes", 's': "smashes"}}
 			emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:", 'l': ":lizard:", 'S': ":vulcan::skin-tone-2:"}
 			if value[0] == short_shape:
-				await ctx.embed_reply("\nI chose `{}`\nIt's a draw :confused:".format(value))
+				await ctx.embed_reply(f"\nI chose `{value}`\nIt's a draw :confused:")
 			elif short_shape in resolution[value[0]]:
-				await ctx.embed_reply("\nI chose `{}`\n{} {} {}\nYou lose :slight_frown:".format(value, emotes[value[0]], resolution[value[0]][short_shape], emotes[short_shape]))
+				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\nYou lose :slight_frown:")
 			else:
-				await ctx.embed_reply("\nI chose `{}`\n{} {} {}\nYou win! :tada:".format(value, emotes[short_shape], resolution[short_shape][value[0]], emotes[value[0]]))
+				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\nYou win! :tada:")
 	
 	@commands.command(aliases = ["rockpaperscissorslizardspockspidermanbatmanwizardglock", "rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"])
 	@checks.not_forbidden()
