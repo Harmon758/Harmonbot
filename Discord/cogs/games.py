@@ -1043,18 +1043,17 @@ class Games(commands.Cog):
 		https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
 		'''
 		if object.lower() not in ('r', 'p', 's', 'l', "rock", "paper", "scissors", "lizard", "spock"):
-			await ctx.embed_reply(":no_entry: That's not a valid object")
+			return await ctx.embed_reply(":no_entry: That's not a valid object")
+		value = random.choice(("rock", "paper", "scissors", "lizard", "Spock"))
+		short_shape = 'S' if object[0] == 'S' and object.lower() != "scissors" or object.lower() == "spock" else object[0].lower()
+		resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 'S': {'r': "vaporizes", 's': "smashes"}}
+		emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:", 'l': ":lizard:", 'S': ":vulcan::skin-tone-2:"}
+		if value[0] == short_shape:
+			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
+		elif short_shape in resolution[value[0]]:
+			await ctx.embed_reply(f"I chose `{value}`\n{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\nYou lose :slight_frown:")
 		else:
-			value = random.choice(("rock", "paper", "scissors", "lizard", "Spock"))
-			short_shape = 'S' if object[0] == 'S' and object.lower() != "scissors" or object.lower() == "spock" else object[0].lower()
-			resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 'S': {'r': "vaporizes", 's': "smashes"}}
-			emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:", 'l': ":lizard:", 'S': ":vulcan::skin-tone-2:"}
-			if value[0] == short_shape:
-				await ctx.embed_reply(f"\nI chose `{value}`\nIt's a draw :confused:")
-			elif short_shape in resolution[value[0]]:
-				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\nYou lose :slight_frown:")
-			else:
-				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\nYou win! :tada:")
+			await ctx.embed_reply(f"I chose `{value}`\n{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\nYou win! :tada:")
 	
 	@commands.command(aliases = ["rockpaperscissorslizardspockspidermanbatmanwizardglock", "rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"])
 	@checks.not_forbidden()
