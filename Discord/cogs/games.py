@@ -1052,8 +1052,9 @@ class Games(commands.Cog):
 		resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 
 						's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 
 						'S': {'r': "vaporizes", 's': "smashes"}}
-		emotes = {'r': f":fist:{ctx.bot.emoji_skin_tone}", 'p': f":raised_hand:{ctx.bot.emoji_skin_tone}", 
-					's': f":v:{ctx.bot.emoji_skin_tone}", 'l': ":lizard:", 'S': f":vulcan:{ctx.bot.emoji_skin_tone}"}
+		emotes = {'r': f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}", 'p': f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", 
+					's': f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}", 'l': ":lizard:", 
+					'S': f"\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}{ctx.bot.emoji_skin_tone}"}
 		if value[0] == short_shape:
 			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
 		elif short_shape in resolution[value[0]]:
