@@ -1138,7 +1138,29 @@ class Games(commands.Cog):
 		object = object.lower().replace('.', "").replace("video game", "game")
 		# dynamite: outwits gun
 		# tornado: sweeps away -> blows away, fills pit, ruins camera
-		emotes = {"dynamite": ":boom:", "tornado": ":cloud_tornado:", "quicksand": "quicksand", "pit": ":black_circle:", "chain": ":chains:", "gun": ":gun:", "law": ":scales:", "whip": "whip", "sword": ":crossed_swords:", "rock": ":fist::skin-tone-2:", "death": ":skull:", "wall": "wall", "sun": ":sunny:", "camera": ":camera:", "fire": ":fire:", "chainsaw": "chainsaw", "school": ":school:", "scissors": ":scissors:", "poison": "poison", "cage": "cage", "axe": "axe", "peace": ":peace:", "computer": ":computer:", "castle": ":european_castle:", "snake": ":snake:", "blood": "blood", "porcupine": "porcupine", "vulture": "vulture", "monkey": ":monkey:", "king": "king", "queen": "queen", "prince": "prince", "princess": "princess", "police": ":police_car:", "woman": ":woman::skin-tone-2:", "baby": ":baby::skin-tone-2:", "man": ":man::skin-tone-2:", "home": ":homes:", "train": ":train:", "car": ":red_car:", "noise": "noise", "bicycle": ":bicyclist::skin-tone-2:", "tree": ":evergreen_tree:", "turnip": "turnip", "duck": ":duck:", "wolf": ":wolf:", "cat": ":cat:", "bird": ":bird:", "fish": ":fish:", "spider": ":spider:", "cockroach": "cockroach", "brain": "brain", "community": "community", "cross": ":cross:", "money": ":moneybag:", "vampire": "vampire", "sponge": "sponge", "church": ":church:", "butter": "butter", "book": ":book:", "paper": ":raised_hand::skin-tone-2:", "cloud": ":cloud:", "airplane": ":airplane:", "moon": ":full_moon:", "grass": "grass", "film": ":film_frames:", "toilet": ":toilet:", "air": "air", "planet": "planet", "guitar": ":guitar:", "bowl": "bowl", "cup": "cup", "beer": ":beer:", "rain": ":cloud_rain:", "water": ":potable_water:", "tv": ":tv:", "rainbow": ":rainbow:", "ufo": "ufo", "alien": ":alien:", "prayer": ":pray::skin-tone-2:", "mountain": ":mountain:", "satan": "satan", "dragon": ":dragon:", "diamond": "diamond", "platinum": "platinum", "gold": "gold", "devil": "devil", "fence": "fence", "game": ":video_game:", "math": "math", "robot": ":robot:", "heart": ":heart:", "electricity": ":zap:", "lightning": ":cloud_lightning:", "medusa": "medusa", "power": ":electric_plug:", "laser": "laser", "nuke": ":bomb:", "sky": "sky", "tank": "tank", "helicopter": ":helicopter:"}
+		emotes = {"dynamite": ":boom:", "tornado": ":cloud_tornado:", "quicksand": "quicksand", 
+					"pit": ":black_circle:", "chain": ":chains:", "gun": ":gun:", "law": ":scales:", "whip": "whip", 
+					"sword": ":crossed_swords:", "rock": ":fist::skin-tone-2:", "death": ":skull:", "wall": "wall", 
+					"sun": ":sunny:", "camera": ":camera:", "fire": ":fire:", "chainsaw": "chainsaw", "school": ":school:", 
+					"scissors": ":scissors:", "poison": "poison", "cage": "cage", "axe": "axe", "peace": ":peace:", 
+					"computer": ":computer:", "castle": ":european_castle:", "snake": ":snake:", "blood": "blood", 
+					"porcupine": "porcupine", "vulture": "vulture", "monkey": ":monkey:", "king": "king", "queen": "queen", 
+					"prince": "prince", "princess": "princess", "police": ":police_car:", "woman": ":woman::skin-tone-2:", 
+					"baby": ":baby::skin-tone-2:", "man": ":man::skin-tone-2:", "home": ":homes:", "train": ":train:", 
+					"car": ":red_car:", "noise": "noise", "bicycle": ":bicyclist::skin-tone-2:", "tree": ":evergreen_tree:", 
+					"turnip": "turnip", "duck": ":duck:", "wolf": ":wolf:", "cat": ":cat:", "bird": ":bird:", 
+					"fish": ":fish:", "spider": ":spider:", "cockroach": "cockroach", "brain": "brain", 
+					"community": "community", "cross": ":cross:", "money": ":moneybag:", "vampire": "vampire", 
+					"sponge": "sponge", "church": ":church:", "butter": "butter", "book": ":book:", 
+					"paper": ":raised_hand::skin-tone-2:", "cloud": ":cloud:", "airplane": ":airplane:", 
+					"moon": ":full_moon:", "grass": "grass", "film": ":film_frames:", "toilet": ":toilet:", "air": "air", 
+					"planet": "planet", "guitar": ":guitar:", "bowl": "bowl", "cup": "cup", "beer": ":beer:", 
+					"rain": ":cloud_rain:", "water": ":potable_water:", "tv": ":tv:", "rainbow": ":rainbow:", "ufo": "ufo", 
+					"alien": ":alien:", "prayer": ":pray::skin-tone-2:", "mountain": ":mountain:", "satan": "satan", 
+					"dragon": ":dragon:", "diamond": "diamond", "platinum": "platinum", "gold": "gold", "devil": "devil", 
+					"fence": "fence", "game": ":video_game:", "math": "math", "robot": ":robot:", "heart": ":heart:", 
+					"electricity": ":zap:", "lightning": ":cloud_lightning:", "medusa": "medusa", "power": ":electric_plug:", 
+					"laser": "laser", "nuke": ":bomb:", "sky": "sky", "tank": "tank", "helicopter": ":helicopter:"}
 		'''
 		for _object in emotes:
 			if _object == emotes[_object]:
@@ -1153,11 +1175,16 @@ class Games(commands.Cog):
 			return await ctx.embed_reply(":no_entry: That's not a valid object")
 		standard_value = value.lower().replace('.', "").replace("video game", "game")
 		if standard_value == object:
-			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
+			await ctx.embed_reply(f"I chose `{value}`\n"
+									"It's a draw :confused:")
 		elif object in resolution[standard_value]:
-			await ctx.embed_reply(f"I chose `{value}`\n{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\nYou lose :slight_frown:")
+			await ctx.embed_reply(f"I chose `{value}`\n"
+									f"{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\n"
+									"You lose :slight_frown:")
 		elif standard_value in resolution[object]:
-			await ctx.embed_reply(f"I chose `{value}`\n{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\nYou win! :tada:")
+			await ctx.embed_reply(f"I chose `{value}`\n"
+									f"{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\n"
+									"You win! :tada:")
 	
 	async def generate_erps_dict(self):
 		async with self.bot.aiohttp_session.get("http://www.umop.com/rps101/alloutcomes.htm") as resp:
