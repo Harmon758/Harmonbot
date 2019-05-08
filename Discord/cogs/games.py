@@ -1045,15 +1045,25 @@ class Games(commands.Cog):
 		if object.lower() not in ('r', 'p', 's', 'l', "rock", "paper", "scissors", "lizard", "spock"):
 			return await ctx.embed_reply(":no_entry: That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors", "lizard", "Spock"))
-		short_shape = 'S' if object[0] == 'S' and object.lower() != "scissors" or object.lower() == "spock" else object[0].lower()
-		resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 'S': {'r': "vaporizes", 's': "smashes"}}
-		emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 's': ":v::skin-tone-2:", 'l': ":lizard:", 'S': ":vulcan::skin-tone-2:"}
+		if object[0] == 'S' and object.lower() != "scissors" or object.lower() == "spock":
+			short_shape = 'S'
+		else:
+			short_shape = object[0].lower()
+		resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 
+						's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 
+						'S': {'r': "vaporizes", 's': "smashes"}}
+		emotes = {'r': ":fist::skin-tone-2:", 'p': ":raised_hand::skin-tone-2:", 
+					's': ":v::skin-tone-2:", 'l': ":lizard:", 'S': ":vulcan::skin-tone-2:"}
 		if value[0] == short_shape:
 			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
 		elif short_shape in resolution[value[0]]:
-			await ctx.embed_reply(f"I chose `{value}`\n{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\nYou lose :slight_frown:")
+			await ctx.embed_reply(f"I chose `{value}`\n"
+									f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
+									"You lose :slight_frown:")
 		else:
-			await ctx.embed_reply(f"I chose `{value}`\n{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\nYou win! :tada:")
+			await ctx.embed_reply(f"I chose `{value}`\n"
+									f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
+									"You win! :tada:")
 	
 	@commands.command(aliases = ["rockpaperscissorslizardspockspidermanbatmanwizardglock", "rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"])
 	@checks.not_forbidden()
