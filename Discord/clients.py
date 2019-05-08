@@ -13,6 +13,7 @@ import ssl
 import sys
 import traceback
 from urllib import parse
+# TODO: use urllib.parse
 
 import aiml
 import aiohttp
@@ -112,6 +113,7 @@ class Bot(commands.Bot):
 		self.listener_bot = None  # User object
 		self.listing_sites = {}
 		# TODO: Include owner variable for user object?
+		# TODO: skin tone + emote constants/variables
 		
 		# Variables
 		self.guild_settings = {}
@@ -151,7 +153,7 @@ class Bot(commands.Bot):
 			self.imgur_client = imgurpython.ImgurClient(self.IMGUR_CLIENT_ID, self.IMGUR_CLIENT_SECRET)
 		except imgurpython.helpers.error.ImgurClientError as e:
 			print(f"{self.console_message_prefix}Failed to initialize Imgur Client: {e}")
-		## Open Weather Map
+		## OpenWeatherMap
 		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 		## Sentry (Raven)
 		self.sentry_client = self.raven_client = raven.Client(self.SENTRY_DSN, transport = raven_aiohttp.AioHttpTransport)
@@ -227,7 +229,7 @@ class Bot(commands.Bot):
 		self.add_command(self.reload)
 		self.load.add_command(self.load_aiml)
 		self.unload.add_command(self.unload_aiml)
-		
+		# Necessary?
 		self.load = staticmethod(self.load)
 		self.unload = staticmethod(self.unload)
 		self.reload = staticmethod(self.reload)
