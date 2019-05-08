@@ -1087,9 +1087,10 @@ class Games(commands.Cog):
 						"batman": {"rock": "explodes", "scissors": "dismantles", "spiderman": "scares", "spock": "hangs"}, 
 						"wizard": {"paper": "burns", "lizard": "transforms", "batman": "stuns", "glock": "melts"}, 
 						"glock": {"rock": "breaks", "scissors": "dents", "batman": "kills parents of", "spock": "shoots"}}
-		emotes = {"rock": ":fist::skin-tone-2:", "paper": ":raised_hand::skin-tone-2:", "scissors": ":v::skin-tone-2:", 
-					"lizard": ":lizard:", "spock": ":vulcan::skin-tone-2:", "spiderman": ":spider:", "batman": ":bat:", 
-					"wizard": ":tophat:", "glock": ":gun:"}
+		emotes = {"rock": f":fist:{ctx.bot.emoji_skin_tone}", "paper": f":raised_hand:{ctx.bot.emoji_skin_tone}", 
+					"scissors": f":v:{ctx.bot.emoji_skin_tone}", "lizard": ":lizard:", 
+					"spock": f":vulcan:{ctx.bot.emoji_skin_tone}", "spiderman": ":spider:", 
+					"batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
 		standard_value = value.lower().replace('-', "")
 		if standard_value == object:
 			await ctx.embed_reply(f"I chose `{value}`\n"
