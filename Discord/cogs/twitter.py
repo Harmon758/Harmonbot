@@ -210,16 +210,14 @@ class Twitter(commands.Cog):
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
 		if handle in self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", []):
-			await ctx.embed_reply(":no_entry: This text channel is already following that Twitter handle")
-			return
+			return await ctx.embed_reply(":no_entry: This text channel is already following that Twitter handle")
 		message = await ctx.embed_reply(":hourglass: Please wait")
 		embed = message.embeds[0]
 		try:
 			await self.stream_listener.add_feed(ctx.channel, handle)
 		except tweepy.error.TweepError as e:
 			embed.description = f":no_entry: Error: {e}"
-			await message.edit(embed = embed)
-			return
+			return await message.edit(embed = embed)
 		if str(ctx.channel.id) in self.feeds_info["channels"]:
 			self.feeds_info["channels"][str(ctx.channel.id)]["handles"].append(handle)
 		else:
