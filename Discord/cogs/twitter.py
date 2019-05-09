@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import functools
 import html
 import json
 import sys
@@ -255,8 +256,11 @@ class Twitter(commands.Cog):
 			for channel_id, channel_info in self.feeds_info["channels"].items():
 				for handle in channel_info["handles"]:
 					try:
-						feeds[channel_id] = feeds.get(channel_id, []) + [self.bot.twitter_api.get_user(handle).id_str]
+						partial = functools.partial(self.bot.twitter_api.get_user, handle)
+						user = await self.bot.loop.run_in_executor(None, partial)
+						feeds[channel_id] = feeds.get(channel_id, []) + [user.id_str]
 					except tweepy.error.TweepError as e:
+						# TODO: Handle rate limit
 						if e.api_code in (50, 63):
 							# User not found (50) or suspended (63)
 							continue
