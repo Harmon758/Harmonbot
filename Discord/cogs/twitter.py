@@ -133,7 +133,8 @@ class Twitter(commands.Cog):
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
 	def cog_unload(self):
-		self.stream_listener.stream.disconnect()
+		if self.stream_listener.stream:
+			self.stream_listener.stream.disconnect()
 		self.task.cancel()
 	
 	async def initialize_database(self):
