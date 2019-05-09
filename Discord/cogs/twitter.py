@@ -244,7 +244,7 @@ class Twitter(commands.Cog):
 			message = await ctx.embed_reply(":hourglass: Please wait")
 			await self.stream_listener.remove_feed(ctx.channel, handle)
 			embed = message.embeds[0]
-			embed.description = "Removed the Twitter handle, [`{0}`](https://twitter.com/{0}), from this text channel.".format(handle)
+			embed.description = f"Removed the Twitter handle, [`{handle}`](https://twitter.com/{handle}), from this text channel."
 			await message.edit(embed = embed)
 
 	@twitter.command(aliases = ["handle", "feeds", "feed", "list"])
