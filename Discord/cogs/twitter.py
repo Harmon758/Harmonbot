@@ -136,6 +136,32 @@ class Twitter(commands.Cog):
 		self.stream_listener.stream.disconnect()
 		self.task.cancel()
 	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS twitter")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitter.handles (
+				channel_id		BIGINT, 
+				handle			TEXT, 
+				replies			BOOL, 
+				retweets		BOOL, 
+				PRIMARY KEY		(channel_id, handle)
+			)
+			"""
+		)
+		# Migrate existing data
+		for channel_id, channels in self.feeds_info["channels"].items():
+			for handle in channels["handles"]:
+				await self.bot.db.execute(
+					"""
+					INSERT INTO twitter.handles (channel_id, handle)
+					VALUES ($1, $2)
+					ON CONFLICT (channel_id, handle) DO NOTHING
+					""", 
+					int(channel_id), handle
+				)
+	
 	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
 	async def twitter(self, ctx):
@@ -250,6 +276,7 @@ class Twitter(commands.Cog):
 	
 	# TODO: move to on_ready
 	async def start_twitter_feeds(self):
+		await self.initialize_database()
 		await self.bot.wait_until_ready()
 		feeds = {}
 		try:
