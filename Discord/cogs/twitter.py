@@ -5,14 +5,12 @@ from discord.ext import commands
 import asyncio
 import functools
 import html
-import json
 import sys
 import traceback
 
 import tweepy
 import urllib3
 
-import clients
 from modules import logging
 from utilities import checks
 
@@ -55,13 +53,13 @@ class TwitterStreamListener(tweepy.StreamListener):
 	
 	async def add_feed(self, channel, handle):
 		id = self.bot.twitter_api.get_user(handle).id_str
-		self.feeds[str(channel.id)] = self.feeds.get(str(channel.id), []) + [id]
+		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [id]
 		if id not in self.unique_feeds:
 			self.unique_feeds.add(id)
 			await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
-		self.feeds[str(channel.id)].remove(self.bot.twitter_api.get_user(handle).id_str)
+		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(handle).id_str)
 		self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
 		await self.start_feeds()  # Necessary?
 	
@@ -75,7 +73,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 			# TODO: Settings for including replies, retweets, etc.
 			for channel_id, channel_feeds in self.feeds.items():
 				if status.user.id_str in channel_feeds:
-					channel = self.bot.get_channel(int(channel_id))
+					channel = self.bot.get_channel(channel_id)
 					if channel:
 						if hasattr(status, "extended_tweet"):
 							text = status.extended_tweet["full_text"]
@@ -112,9 +110,6 @@ class Twitter(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		clients.create_file("twitter_feeds", content = {"channels" : {}})
-		with open(clients.data_path + "/twitter_feeds.json", 'r') as feeds_file:
-			self.feeds_info = json.load(feeds_file)
 		self.blacklisted_handles = []
 		try:
 			twitter_account = self.bot.twitter_api.verify_credentials()
@@ -151,17 +146,6 @@ class Twitter(commands.Cog):
 			)
 			"""
 		)
-		# Migrate existing data
-		for channel_id, channels in self.feeds_info["channels"].items():
-			for handle in channels["handles"]:
-				await self.bot.db.execute(
-					"""
-					INSERT INTO twitter.handles (channel_id, handle)
-					VALUES ($1, $2)
-					ON CONFLICT (channel_id, handle) DO NOTHING
-					""", 
-					int(channel_id), handle
-				)
 	
 	@commands.group(invoke_without_command = True)
 	@checks.is_permitted()
@@ -210,7 +194,16 @@ class Twitter(commands.Cog):
 		Add a Twitter handle to a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
-		if handle in self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", []):
+		following = await ctx.bot.db.fetchval(
+			"""
+			SELECT EXISTS (
+				SELECT FROM twitter.handles
+				WHERE channel_id = $1 AND handle = $2
+			)
+			""", 
+			ctx.channel.id, handle
+		)
+		if following:
 			return await ctx.embed_reply(":no_entry: This text channel is already following that Twitter handle")
 		message = await ctx.embed_reply(":hourglass: Please wait")
 		embed = message.embeds[0]
@@ -219,12 +212,13 @@ class Twitter(commands.Cog):
 		except tweepy.error.TweepError as e:
 			embed.description = f":no_entry: Error: {e}"
 			return await message.edit(embed = embed)
-		if str(ctx.channel.id) in self.feeds_info["channels"]:
-			self.feeds_info["channels"][str(ctx.channel.id)]["handles"].append(handle)
-		else:
-			self.feeds_info["channels"][str(ctx.channel.id)] = {"name" : ctx.channel.name, "handles" : [handle]}
-		with open(clients.data_path + "/twitter_feeds.json", 'w') as feeds_file:
-			json.dump(self.feeds_info, feeds_file, indent = 4)
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO twitter.handles (channel_id, handle)
+			VALUES ($1, $2)
+			""", 
+			ctx.channel.id, handle
+		)
 		embed.description = f"Added the Twitter handle, [`{handle}`](https://twitter.com/{handle}), to this text channel"
 		await message.edit(embed = embed)
 	
@@ -235,24 +229,33 @@ class Twitter(commands.Cog):
 		Remove a Twitter handle from a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
-		try:
-			self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", []).remove(handle)
-		except ValueError:
-			await ctx.embed_reply(":no_entry: This text channel isn't following that Twitter handle")
-		else:
-			with open(clients.data_path + "/twitter_feeds.json", 'w') as feeds_file:
-				json.dump(self.feeds_info, feeds_file, indent = 4)
-			message = await ctx.embed_reply(":hourglass: Please wait")
-			await self.stream_listener.remove_feed(ctx.channel, handle)
-			embed = message.embeds[0]
-			embed.description = f"Removed the Twitter handle, [`{handle}`](https://twitter.com/{handle}), from this text channel."
-			await message.edit(embed = embed)
+		deleted = await ctx.bot.db.execute(
+			"""
+			DELETE FROM twitter.handles
+			WHERE channel_id = $1 AND handle = $2
+			""", 
+			ctx.channel.id, handle
+		)
+		if not int(deleted[-1]):
+			return await ctx.embed_reply(":no_entry: This text channel isn't following that Twitter handle")
+		message = await ctx.embed_reply(":hourglass: Please wait")
+		await self.stream_listener.remove_feed(ctx.channel, handle)
+		embed = message.embeds[0]
+		embed.description = f"Removed the Twitter handle, [`{handle}`](https://twitter.com/{handle}), from this text channel."
+		await message.edit(embed = embed)
 
 	@twitter.command(aliases = ["handle", "feeds", "feed", "list"])
 	@checks.not_forbidden()
 	async def handles(self, ctx):
 		'''Show Twitter handles being followed in a text channel'''
-		await ctx.embed_reply('\n'.join(self.feeds_info["channels"].get(str(ctx.channel.id), {}).get("handles", [])))
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT handle FROM twitter.handles
+			WHERE channel_id = $1
+			""", 
+			ctx.channel.id
+		)
+		await ctx.embed_reply('\n'.join(record["handle"] for record in records))
 		# TODO: Add message if none
 	
 	def process_tweet_text(self, text, entities):
@@ -279,18 +282,20 @@ class Twitter(commands.Cog):
 		await self.bot.wait_until_ready()
 		feeds = {}
 		try:
-			for channel_id, channel_info in self.feeds_info["channels"].items():
-				for handle in channel_info["handles"]:
-					try:
-						partial = functools.partial(self.bot.twitter_api.get_user, handle)
-						user = await self.bot.loop.run_in_executor(None, partial)
-						feeds[channel_id] = feeds.get(channel_id, []) + [user.id_str]
-					except tweepy.error.TweepError as e:
-						# TODO: Handle rate limit
-						if e.api_code in (50, 63):
-							# User not found (50) or suspended (63)
-							continue
-						raise e
+			async with self.bot.database_connection_pool.acquire() as connection:
+				async with connection.transaction():
+					# Postgres requires non-scrollable cursors to be created and used in a transaction.
+					async for record in connection.cursor("SELECT * FROM twitter.handles"):
+						try:
+							partial = functools.partial(self.bot.twitter_api.get_user, record["handle"])
+							user = await self.bot.loop.run_in_executor(None, partial)
+							feeds[record["channel_id"]] = feeds.get(record["channel_id"], []) + [user.id_str]
+						except tweepy.error.TweepError as e:
+							# TODO: Handle rate limit
+							if e.api_code in (50, 63):
+								# User not found (50) or suspended (63)
+								continue
+							raise e
 			await self.stream_listener.start_feeds(feeds = feeds)
 		except Exception as e:
 			print("Exception in Twitter Task", file = sys.stderr)
