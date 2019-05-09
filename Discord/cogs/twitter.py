@@ -217,7 +217,7 @@ class Twitter(commands.Cog):
 		try:
 			await self.stream_listener.add_feed(ctx.channel, handle)
 		except tweepy.error.TweepError as e:
-			embed.description = ":no_entry: Error: {}".format(e)
+			embed.description = f":no_entry: Error: {e}"
 			await message.edit(embed = embed)
 			return
 		if str(ctx.channel.id) in self.feeds_info["channels"]:
@@ -226,7 +226,7 @@ class Twitter(commands.Cog):
 			self.feeds_info["channels"][str(ctx.channel.id)] = {"name" : ctx.channel.name, "handles" : [handle]}
 		with open(clients.data_path + "/twitter_feeds.json", 'w') as feeds_file:
 			json.dump(self.feeds_info, feeds_file, indent = 4)
-		embed.description = "Added the Twitter handle, [`{0}`](https://twitter.com/{0}), to this text channel".format(handle)
+		embed.description = f"Added the Twitter handle, [`{handle}`](https://twitter.com/{handle}), to this text channel"
 		await message.edit(embed = embed)
 	
 	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"])
