@@ -581,7 +581,7 @@ class Resources(commands.Cog):
 		Generate a strawpoll link
 		Use qoutes for spaces in the question or options
 		'''
-		url = "https://strawpoll.me/api/v2/polls"
+		url = "https://www.strawpoll.me/api/v2/polls"
 		data = json.dumps({"title" : question, "options" : options})
 		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
 			poll = await resp.json()
