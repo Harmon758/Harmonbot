@@ -38,9 +38,12 @@ if __name__ == "__main__":
 	
 	@client.listen()
 	async def on_ready():
+		# TODO: make recommended shards command
 		# data = await client.http.get(client.http.GATEWAY + "/bot")
+		# http.get_bot_gateway()
 		# print(data)
-		print("Started up Discord {0} ({1})".format(str(client.user), client.user.id))
+		print(f"Started up Discord {client.user} ({client.user.id})")
+		
 		if os.path.isfile(clients.data_path + "/temp/restart_channel.json"):
 			with open(clients.data_path + "/temp/restart_channel.json", 'r') as restart_channel_file:
 				restart_data = json.load(restart_channel_file)
