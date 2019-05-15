@@ -132,6 +132,17 @@ class Meta(commands.Cog):
 			json.dump(all_prefixes, prefixes_file, indent = 4)
 		await ctx.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
+	@commands.group(aliases = ["shard"], invoke_without_command = True)
+	async def shards(self, ctx):
+		'''Current number of shards'''
+		await ctx.embed_reply(ctx.bot.shard_count or 1)
+	
+	@shards.command(aliases = ["recommend"])
+	async def recommended(self, ctx):
+		'''Recommended number of shards to use by Discord API'''
+		count, _ = await ctx.bot.http.get_bot_gateway()
+		await ctx.embed_reply(count)
+	
 	@commands.command(aliases = ["typing"], hidden = True)
 	@checks.not_forbidden()
 	async def type(self, ctx):
