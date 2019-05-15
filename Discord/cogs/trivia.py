@@ -6,6 +6,7 @@ import asyncio
 import html
 import re
 import string
+import unicodedata
 
 import aiohttp
 from bs4 import BeautifulSoup
@@ -185,6 +186,11 @@ class Trivia(commands.Cog):
 				answer = answer.replace(character, "")
 			if character in response:
 				response = response.replace(character, "")
+		# Remove diacritics
+		answer = "".join(character for character in unicodedata.normalize("NFD", answer) 
+							if not unicodedata.combining(character))
+		response = "".join(character for character in unicodedata.normalize("NFD", response) 
+							if not unicodedata.combining(character))
 		# Remove extra whitespace
 		# Make lowercase
 		answer = ' '.join(answer.split()).lower()
