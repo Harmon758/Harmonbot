@@ -168,12 +168,11 @@ class Finance(commands.Cog):
 			if resp.status in (404, 422):
 				# TODO: handle other errors
 				data = await resp.json(content_type = "text/html")
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["error"]))
-				return
+				return await ctx.embed_reply(":no_entry: Error: {}".format(data["error"]))
 			data = await resp.json()
 		if not data.get("success"):
-			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
-			return
+			# TODO: Include error message
+			return await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
 		rates = list(data["rates"].items())
 		parts = len(tabulate.tabulate(rates, tablefmt = "plain", floatfmt = 'f')) // ctx.bot.EFVCL + 1
 		# EFVCL = Embed Field Value Character Limit
