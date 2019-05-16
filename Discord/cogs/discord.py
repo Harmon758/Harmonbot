@@ -21,13 +21,12 @@ class Discord(commands.Cog):
 	
 	# TODO: Include spaces in quotes explanation (in help)
 	
-	# TODO: merge with quote command?
-	# TODO: improve
+	# TODO: Merge with quote command?
 	@commands.command()
-	@commands.guild_only()
 	@checks.is_permitted()
 	async def archive(self, ctx, message_id: int, channel: discord.TextChannel = None):
 		'''Archive messages'''
+		# TODO: Handle rich presence messages?
 		if not channel:
 			channel = ctx.channel
 		try:
@@ -38,7 +37,9 @@ class Discord(commands.Cog):
 			description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict())
 		else:
 			description = message.content
+			# TODO: Use system_content?
 		# TODO: Handle both content + embeds
+		# TODO: Handle multiple embeds
 		reactions = ""
 		for reaction in message.reactions:
 			users = await reaction.users(limit = 3).flatten()
@@ -56,10 +57,15 @@ class Discord(commands.Cog):
 		image_url = discord.Embed.Empty
 		if message.attachments:
 			image_url = message.attachments[0].url
+		# TODO: Handle non-image attachments
+		# TODO: Handle multiple attachments
 		await ctx.embed_say(description, 
 							author_name = message.author.display_name, author_icon_url = message.author.avatar_url, 
 							fields = fields, image_url = image_url, 
 							footer_text = f"In #{channel}", timestamp = message.created_at)
+		# TODO: Include message author ID/username#discriminator
+		# TODO: Mention channel or include channel ID
+		# TODO: Include message.edited_at
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
