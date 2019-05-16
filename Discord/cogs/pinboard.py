@@ -133,7 +133,7 @@ class Pinboard(commands.Cog):
 	
 	@pinboard.command(aliases = ["starrers", "who"])
 	@checks.not_forbidden()
-	async def pinners(self, ctx, message_id : int):
+	async def pinners(self, ctx, message_id: int):
 		'''
 		Show who pinned a message
 		message_id can be the message ID for the pinned message or the message in the pinboard channel
