@@ -34,18 +34,31 @@ class Discord(commands.Cog):
 			message = await channel.fetch_message(message_id)
 		except discord.NotFound:
 			return await ctx.embed_reply(":no_entry: Error: Message not found")
-		description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict()) if message.embeds else message.content
+		if message.embeds:
+			description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict())
+		else:
+			description = message.content
 		reactions = []
 		for reaction in message.reactions:
 			users = await reaction.users(limit = 3).flatten()
 			users_message = ", ".join(user.mention for user in sorted(users, key = str))
-			if reaction.count > 3: users_message += ", etc."
+			if reaction.count > 3:
+				users_message += ", etc."
 			reactions.append(f"{reaction.emoji}: {reaction.count} ({users_message})")
 		reactions = '\n'.join(reactions)
-		index = reactions[:1024].rfind('\n') if len(reactions) > 1024 else 1024
-		fields = (("Reactions", reactions[:index]),) if reactions else ()
-		image_url = message.attachments[0].url if message.attachments else discord.Embed.Empty
-		await ctx.embed_say(description, author_name = message.author.display_name, author_icon_url = message.author.avatar_url, fields = fields, image_url = image_url, footer_text = f"In #{channel}", timestamp = message.created_at)
+		index = 1024
+		fields = []
+		image_url = discord.Embed.Empty
+		if len(reactions) > 1024:
+			index = reactions[:1024].rfind('\n')
+		if reactions:
+			fields.append(("Reactions", reactions[:index]))
+		if message.attachments:
+			image_url = message.attachments[0].url
+		await ctx.embed_say(description, 
+							author_name = message.author.display_name, author_icon_url = message.author.avatar_url, 
+							fields = fields, image_url = image_url, 
+							footer_text = f"In #{channel}", timestamp = message.created_at)
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
