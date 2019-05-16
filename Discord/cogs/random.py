@@ -477,7 +477,7 @@ class Random(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def quote(self, ctx, message_id : int = None, channel_id : int = None):
+	async def quote(self, ctx, message_id: int = None, channel_id: int = None):
 		'''Random quote or quote a message'''
 		# TODO: other options to quote by?
 		if message_id is not None:
