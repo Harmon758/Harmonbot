@@ -477,16 +477,27 @@ class Random(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def quote(self, ctx):
-		'''Random quote'''
-		async with ctx.bot.aiohttp_session.get("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en") as resp:
+	async def quote(self, ctx, message_id : int = None, channel_id : int = None):
+		'''Random quote or quote a message'''
+		# TODO: other options to quote by?
+		if message_id is not None:
+			channel = ctx.guild.get_channel(channel_id) if channel_id is not None else ctx.channel
 			try:
-				data = await resp.json()
-			except:
-				await ctx.embed_reply(":no_entry: Error")
-				return
-		await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"]) # quoteLink?
+				message = await channel.get_message(message_id)
+			except discord.NotFound:
+				await ctx.embed_reply(":no_entry: Message not found")
+			else:
+				await ctx.embed_say(message.content, author_name = message.author.display_name, author_icon_url = message.author.avatar_url, footer_text = "Sent on", timestamp = message.created_at, attempt_delete = False)
+		else:
+			async with ctx.bot.aiohttp_session.get("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en") as resp:
+				try:
+					data = await resp.json()
+				except:
+					await ctx.embed_reply(":no_entry: Error")
+					return
+			await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"]) # quoteLink?
 	
+	# TODO: separate quote command
 	
 	@commands.command()
 	@checks.not_forbidden()
