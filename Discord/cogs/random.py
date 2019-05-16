@@ -501,7 +501,7 @@ class Random(commands.Cog):
 				except:
 					await ctx.embed_reply(":no_entry: Error")
 					return
-			await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"]) # quoteLink?
+			await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"])  # quoteLink?
 	
 	@commands.command()
 	@checks.not_forbidden()
