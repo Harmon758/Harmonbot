@@ -31,7 +31,7 @@ class Discord(commands.Cog):
 		if not channel:
 			channel = ctx.channel
 		try:
-			message = await channel.get_message(message_id)
+			message = await channel.fetch_message(message_id)
 		except discord.NotFound:
 			await ctx.embed_reply(":no_entry: Error: Message not found")
 			return
