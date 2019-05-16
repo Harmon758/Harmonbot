@@ -481,7 +481,7 @@ class Random(commands.Cog):
 	async def quote(self, ctx, message_id: int = None, channel: discord.TextChannel = None):
 		'''Random quote or quote a message'''
 		# TODO: other options to quote by?
-		if message_id is not None:
+		if message_id:
 			if not channel:
 				channel = ctx.channel
 			try:
@@ -500,8 +500,7 @@ class Random(commands.Cog):
 				try:
 					data = await resp.json()
 				except:
-					await ctx.embed_reply(":no_entry: Error")
-					return
+					return await ctx.embed_reply(":no_entry: Error")
 			await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"])  # quoteLink?
 	
 	@commands.command()
