@@ -38,6 +38,7 @@ class Discord(commands.Cog):
 			description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict())
 		else:
 			description = message.content
+		# TODO: Handle both content + embeds
 		reactions = ""
 		for reaction in message.reactions:
 			users = await reaction.users(limit = 3).flatten()
@@ -45,7 +46,7 @@ class Discord(commands.Cog):
 			if reaction.count > 3:
 				users_message += ", etc."
 			reaction_string = f"{reaction.emoji}: {reaction.count} ({users_message})"
-			if len(reactions) + len(reaction_string) > 1024:
+			if len(reactions) + len(reaction_string) > ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT:
 				break
 				# TODO: Handle too long for field value
 			reactions += reaction_string + '\n'
