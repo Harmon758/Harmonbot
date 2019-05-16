@@ -494,8 +494,9 @@ class Random(commands.Cog):
 									footer_text = "Sent", timestamp = message.created_at, 
 									attempt_delete = False)
 		else:
-			url = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en"
-			async with ctx.bot.aiohttp_session.get(url) as resp:
+			url = "http://api.forismatic.com/api/1.0/"
+			params = {"method": "getQuote", "format": "json", "lang": "en"}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				try:
 					data = await resp.json()
 				except:
