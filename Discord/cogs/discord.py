@@ -21,6 +21,32 @@ class Discord(commands.Cog):
 	
 	# TODO: Include spaces in quotes explanation (in help)
 	
+	# TODO: merge with quote command?
+	# TODO: improve
+	@commands.command()
+	@commands.guild_only()
+	@checks.is_permitted()
+	async def archive(self, ctx, message_id : int, channel : discord.TextChannel = None):
+		'''Archive messages'''
+		if not channel:
+			channel = ctx.channel
+		try:
+			message = await channel.get_message(message_id)
+		except discord.NotFound:
+			await ctx.embed_reply(":no_entry: Error: Message not found")
+			return
+		description = clients.code_block.format(message.embeds[0].to_dict()) if message.embeds else message.content
+		reactions = []
+		for reaction in message.reactions:
+			users = await reaction.users(limit = 3).flatten()
+			users_message = ", ".join(user.mention for user in sorted(users, key = str))
+			if reaction.count > 3: users_message += ", etc."
+			reactions.append("{}: {} ({})".format(reaction.emoji, reaction.count, users_message))
+		reactions = '\n'.join(reactions)
+		index = reactions[:1024].rfind('\n') if len(reactions) > 1024 else 1024
+		fields = (("Reactions", reactions[:index]),) if reactions else ()
+		image_url = message.attachments[0].url if message.attachments else discord.Embed.Empty
+		await ctx.embed_say(description, author_name = message.author.display_name, author_icon_url = message.author.avatar_url, fields = fields, image_url = image_url, footer_text = "In #{}".format(channel), timestamp = message.created_at)
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
