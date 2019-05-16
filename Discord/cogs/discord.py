@@ -41,12 +41,12 @@ class Discord(commands.Cog):
 			users = await reaction.users(limit = 3).flatten()
 			users_message = ", ".join(user.mention for user in sorted(users, key = str))
 			if reaction.count > 3: users_message += ", etc."
-			reactions.append("{}: {} ({})".format(reaction.emoji, reaction.count, users_message))
+			reactions.append(f"{reaction.emoji}: {reaction.count} ({users_message})")
 		reactions = '\n'.join(reactions)
 		index = reactions[:1024].rfind('\n') if len(reactions) > 1024 else 1024
 		fields = (("Reactions", reactions[:index]),) if reactions else ()
 		image_url = message.attachments[0].url if message.attachments else discord.Embed.Empty
-		await ctx.embed_say(description, author_name = message.author.display_name, author_icon_url = message.author.avatar_url, fields = fields, image_url = image_url, footer_text = "In #{}".format(channel), timestamp = message.created_at)
+		await ctx.embed_say(description, author_name = message.author.display_name, author_icon_url = message.author.avatar_url, fields = fields, image_url = image_url, footer_text = f"In #{channel}", timestamp = message.created_at)
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
