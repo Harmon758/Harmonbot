@@ -488,7 +488,7 @@ class Random(commands.Cog):
 			except discord.NotFound:
 				await ctx.embed_reply(":no_entry: Message not found")
 			else:
-				await ctx.embed_say(message.content, author_name = message.author.display_name, author_icon_url = message.author.avatar_url, footer_text = "Sent on", timestamp = message.created_at, attempt_delete = False)
+				await ctx.embed_say(message.content, author_name = message.author.display_name, author_icon_url = message.author.avatar_url, footer_text = "Sent", timestamp = message.created_at, attempt_delete = False)
 		else:
 			async with ctx.bot.aiohttp_session.get("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en") as resp:
 				try:
