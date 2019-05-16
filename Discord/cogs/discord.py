@@ -38,21 +38,21 @@ class Discord(commands.Cog):
 			description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict())
 		else:
 			description = message.content
-		reactions = []
+		reactions = ""
 		for reaction in message.reactions:
 			users = await reaction.users(limit = 3).flatten()
 			users_message = ", ".join(user.mention for user in sorted(users, key = str))
 			if reaction.count > 3:
 				users_message += ", etc."
-			reactions.append(f"{reaction.emoji}: {reaction.count} ({users_message})")
-		reactions = '\n'.join(reactions)
-		index = 1024
+			reaction_string = f"{reaction.emoji}: {reaction.count} ({users_message})"
+			if len(reactions) + len(reaction_string) > 1024:
+				break
+				# TODO: Handle too long for field value
+			reactions += reaction_string + '\n'
 		fields = []
-		image_url = discord.Embed.Empty
-		if len(reactions) > 1024:
-			index = reactions[:1024].rfind('\n')
 		if reactions:
-			fields.append(("Reactions", reactions[:index]))
+			fields.append(("Reactions", reactions[:-1]))
+		image_url = discord.Embed.Empty
 		if message.attachments:
 			image_url = message.attachments[0].url
 		await ctx.embed_say(description, 
