@@ -23,9 +23,10 @@ class Discord(commands.Cog):
 	
 	# TODO: Merge with quote command?
 	@commands.command()
-	@checks.is_permitted()
+	@checks.not_forbidden()
 	async def archive(self, ctx, message_id: int, channel: discord.TextChannel = None):
 		'''Archive messages'''
+		# TODO: Add option to delete message?
 		# TODO: Handle rich presence messages?
 		if not channel:
 			channel = ctx.channel
