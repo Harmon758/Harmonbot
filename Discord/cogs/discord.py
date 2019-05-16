@@ -35,7 +35,7 @@ class Discord(commands.Cog):
 		except discord.NotFound:
 			await ctx.embed_reply(":no_entry: Error: Message not found")
 			return
-		description = clients.code_block.format(message.embeds[0].to_dict()) if message.embeds else message.content
+		description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict()) if message.embeds else message.content
 		reactions = []
 		for reaction in message.reactions:
 			users = await reaction.users(limit = 3).flatten()
