@@ -176,7 +176,7 @@ class Discord(commands.Cog):
 	
 	@commands.group(invoke_without_command = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
-	async def pin(self, ctx, message_id : int):
+	async def pin(self, ctx, message_id: int):
 		'''Pin message by message ID'''
 		message = await ctx.channel.fetch_message(message_id)
 		await message.pin()
