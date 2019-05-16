@@ -483,7 +483,7 @@ class Random(commands.Cog):
 		if message_id is not None:
 			channel = ctx.guild.get_channel(channel_id) if channel_id is not None else ctx.channel
 			try:
-				message = await channel.get_message(message_id)
+				message = await channel.fetch_message(message_id)
 			except discord.NotFound:
 				await ctx.embed_reply(":no_entry: Message not found")
 			else:
