@@ -26,7 +26,7 @@ class Discord(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def archive(self, ctx, message_id : int, channel : discord.TextChannel = None):
+	async def archive(self, ctx, message_id: int, channel: discord.TextChannel = None):
 		'''Archive messages'''
 		if not channel:
 			channel = ctx.channel
