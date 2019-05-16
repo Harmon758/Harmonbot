@@ -477,11 +477,12 @@ class Random(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def quote(self, ctx, message_id: int = None, channel_id: int = None):
+	async def quote(self, ctx, message_id: int = None, channel: discord.TextChannel = None):
 		'''Random quote or quote a message'''
 		# TODO: other options to quote by?
 		if message_id is not None:
-			channel = ctx.guild.get_channel(channel_id) if channel_id is not None else ctx.channel
+			if not channel:
+				channel = ctx.channel
 			try:
 				message = await channel.fetch_message(message_id)
 			except discord.NotFound:
