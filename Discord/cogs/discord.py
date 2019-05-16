@@ -33,8 +33,7 @@ class Discord(commands.Cog):
 		try:
 			message = await channel.fetch_message(message_id)
 		except discord.NotFound:
-			await ctx.embed_reply(":no_entry: Error: Message not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Message not found")
 		description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict()) if message.embeds else message.content
 		reactions = []
 		for reaction in message.reactions:
