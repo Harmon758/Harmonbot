@@ -24,16 +24,10 @@ class Discord(commands.Cog):
 	# TODO: Merge with quote command?
 	@commands.command()
 	@checks.not_forbidden()
-	async def archive(self, ctx, message_id: int, channel: discord.TextChannel = None):
+	async def archive(self, ctx, message: discord.Message):
 		'''Archive messages'''
 		# TODO: Add option to delete message?
 		# TODO: Handle rich presence messages?
-		if not channel:
-			channel = ctx.channel
-		try:
-			message = await channel.fetch_message(message_id)
-		except discord.NotFound:
-			return await ctx.embed_reply(":no_entry: Error: Message not found")
 		if message.embeds:
 			description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict())
 		else:
@@ -63,10 +57,11 @@ class Discord(commands.Cog):
 		await ctx.embed_say(description, 
 							author_name = message.author.display_name, author_icon_url = message.author.avatar_url, 
 							fields = fields, image_url = image_url, 
-							footer_text = f"In #{channel}", timestamp = message.created_at)
+							footer_text = f"In #{message.channel}", timestamp = message.created_at)
 		# TODO: Include message author ID/username#discriminator
 		# TODO: Mention channel or include channel ID
 		# TODO: Include message.edited_at
+		# TODO: Don't attempt delete command message or include who invoked command somehow?
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True, case_insensitive = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
