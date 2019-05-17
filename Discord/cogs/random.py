@@ -499,8 +499,10 @@ class Random(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				try:
 					data = await resp.json()
-				except:
-					return await ctx.embed_reply(":no_entry: Error")
+				except json.JSONDecodeError:
+					# Handle invalid JSON - escaped single quotes
+					data = await resp.text()
+					data = json.loads(data.replace("\\'", "'"))
 			await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"])  # quoteLink?
 	
 	@commands.command()
