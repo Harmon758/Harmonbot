@@ -186,9 +186,8 @@ class Discord(commands.Cog):
 	
 	@commands.command()
 	@checks.has_permissions_and_capability(manage_messages = True)
-	async def unpin(self, ctx, message_id: int):
+	async def unpin(self, ctx, message: discord.Message):
 		'''Unpin message by message ID'''
-		message = await ctx.channel.fetch_message(message_id)
 		await message.unpin()
 		await ctx.embed_reply(":wastebasket: Unpinned message")
 	
