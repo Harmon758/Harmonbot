@@ -133,10 +133,10 @@ class Pinboard(commands.Cog):
 	
 	@pinboard.command(aliases = ["starrers", "who"])
 	@checks.not_forbidden()
-	async def pinners(self, ctx, message_id: int):
+	async def pinners(self, ctx, message: discord.Message):
 		'''
 		Show who pinned a message
-		message_id can be the message ID for the pinned message or the message in the pinboard channel
+		message input can be the pinned message or the message in the pinboard channel
 		'''
 		records = await ctx.bot.db.fetch(
 			"""
@@ -146,7 +146,7 @@ class Pinboard(commands.Cog):
 			ON pinboard.pinners.message_id = pinboard.pins.message_id
 			WHERE pinboard.pins.message_id = $1 OR pinboard.pins.pinboard_message_id = $1
 			""", 
-			message_id
+			message.id
 		)
 		if not records:
 			return await ctx.embed_reply("No one has pinned this message or this is not a valid message ID")
@@ -157,7 +157,8 @@ class Pinboard(commands.Cog):
 				pinner = await ctx.bot.fetch_user(record[0])
 			pinners.append(pinner)
 		await ctx.embed_reply(' '.join(pinner.mention for pinner in pinners), 
-								title = f"{len(records)} pinners of {message_id}")
+								title = f"{len(records)} pinners of {message.jump_url}")
+		# TODO: dynamic plurality
 	
 	@pinboard.command(aliases = ["private"])
 	@checks.is_permitted()
