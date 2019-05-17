@@ -21,7 +21,7 @@ class Matrix(commands.Cog):
 	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
-	@commands.group(aliases = ["matrices"], invoke_without_command = True)
+	@commands.group(aliases = ["matrices"], invoke_without_command = True, case_insensitive = True)
 	async def matrix(self, ctx):
 		'''
 		Matrix operations
@@ -36,7 +36,7 @@ class Matrix(commands.Cog):
 		# TODO: unlimited number?
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) + numpy.matrix(matrix_b)))
 	
-	@matrix.group(aliases = ["cosine"], invoke_without_command = True)
+	@matrix.group(aliases = ["cosine"], invoke_without_command = True, case_insensitive = True)
 	async def cos(self, ctx, *, matrix : Matrix):
 		'''Cosine of a matrix'''
 		await ctx.embed_reply(str(scipy.linalg.cosm(matrix)))
@@ -77,7 +77,7 @@ class Matrix(commands.Cog):
 		p, l, u = scipy.linalg.lu(matrix)
 		await ctx.embed_reply(fields = (("P", p), ("L", l), ("U", u)))
 	
-	@matrix.group(aliases = ["times", '*'], invoke_without_command = True)
+	@matrix.group(aliases = ["times", '*'], invoke_without_command = True, case_insensitive = True)
 	async def multiply(self, ctx, matrix_a : Matrix, matrix_b : Matrix):
 		'''Multiply two matrices'''
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) * numpy.matrix(matrix_b)))
@@ -105,7 +105,7 @@ class Matrix(commands.Cog):
 		'''Matrix sign function'''
 		await ctx.embed_reply(str(scipy.linalg.signm(matrix)))
 	
-	@matrix.group(aliases = ["sine"], invoke_without_command = True)
+	@matrix.group(aliases = ["sine"], invoke_without_command = True, case_insensitive = True)
 	async def sin(self, ctx, *, matrix : Matrix):
 		'''Sine of a matrix'''
 		await ctx.embed_reply(str(scipy.linalg.sinm(matrix)))
@@ -125,7 +125,7 @@ class Matrix(commands.Cog):
 		'''Subtract two matrices'''
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) - numpy.matrix(matrix_b)))
 	
-	@matrix.group(aliases = ["tangent"], invoke_without_command = True)
+	@matrix.group(aliases = ["tangent"], invoke_without_command = True, case_insensitive = True)
 	async def tan(self, ctx, *, matrix : Matrix):
 		'''Tangent of a matrix'''
 		await ctx.embed_reply(str(scipy.linalg.tanm(matrix)))
@@ -135,7 +135,7 @@ class Matrix(commands.Cog):
 		'''Hyperbolic tangent of a matrix'''
 		await ctx.embed_reply(str(scipy.linalg.tanhm(matrix)))
 	
-	@matrix.group(naliases = ["transposition"], invoke_without_command = True)
+	@matrix.group(naliases = ["transposition"], invoke_without_command = True, case_insensitive = True)
 	async def transpose(self, ctx, *, matrix : Matrix):
 		'''Transpose of a matrix'''
 		await ctx.embed_reply(str(numpy.matrix(matrix).T))

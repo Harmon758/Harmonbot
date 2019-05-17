@@ -16,7 +16,7 @@ class Role(commands.Cog):
 	
 	# Role
 	
-	@commands.group(aliases = ["roles"], invoke_without_command = True)
+	@commands.group(aliases = ["roles"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def role(self, ctx):
 		'''Role'''

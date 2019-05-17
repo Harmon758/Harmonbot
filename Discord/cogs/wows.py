@@ -17,7 +17,8 @@ class WoWS(commands.Cog):
 						"na": "https://api.worldofwarships.com/wows/", 
 						"ru": "https://api.worldofwarships.ru/wows/"}
 	
-	@commands.group(aliases = ["worldofwarships", "world_of_warships"], invoke_without_command = True)
+	@commands.group(aliases = ["worldofwarships", "world_of_warships"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def wows(self, ctx):
 		'''
@@ -26,7 +27,7 @@ class WoWS(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@wows.group(invoke_without_command = True)
+	@wows.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def player(self, ctx, player : str, region : str = "NA"):
 		'''Player details'''

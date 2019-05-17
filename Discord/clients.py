@@ -591,7 +591,7 @@ class Bot(commands.Bot):
 		finally:
 			self.loop.set_exception_handler(old_handler)
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
 	async def load(ctx, cog : str):
 		'''Load cog'''
@@ -625,7 +625,7 @@ class Bot(commands.Bot):
 			ctx.bot.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Loaded AIML")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
 	async def unload(ctx, cog : str):
 		'''Unload cog'''

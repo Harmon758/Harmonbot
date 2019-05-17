@@ -79,7 +79,7 @@ class RSS(commands.Cog):
 			"""
 		)
 	
-	@commands.group(aliases = ["feed"], invoke_without_command = True)
+	@commands.group(aliases = ["feed"], invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def rss(self, ctx):
 		'''RSS'''

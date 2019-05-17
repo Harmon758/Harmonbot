@@ -31,13 +31,14 @@ class Cryptography(commands.Cog):
 	
 	# TODO: not forbidden global check?
 	
-	@commands.group(aliases = ["decrpyt"], invoke_without_command = True)
+	@commands.group(aliases = ["decrpyt"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def decode(self, ctx):
 		'''Decode coded messages'''
 		await ctx.send_help(ctx.command)
 	
-	@decode.group(name = "caesar", aliases = ["rot"], invoke_without_command = True)
+	@decode.group(name = "caesar", aliases = ["rot"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def decode_caesar(self, ctx, key : int, *, message : str):
 		'''Decode caesar cipher'''
@@ -50,7 +51,8 @@ class Cryptography(commands.Cog):
 		# TODO: Paginate if too long
 		await ctx.embed_reply('\n'.join(f"{key}: {decode_caesar_cipher(message, key)}" for key in range(26)))
 	
-	@decode.group(name = "gost", aliases = ["гост"], invoke_without_command = True)
+	@decode.group(name = "gost", aliases = ["гост"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def decode_gost(self, ctx):
 		'''
@@ -61,7 +63,8 @@ class Cryptography(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@decode_gost.group(name = "28147-89", aliases = ["магма", "magma"], invoke_without_command = True)
+	@decode_gost.group(name = "28147-89", aliases = ["магма", "magma"], 
+						invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def decode_gost_28147_89(self, ctx):
 		'''
@@ -172,7 +175,7 @@ class Cryptography(commands.Cog):
 		'''Reverses text'''
 		await ctx.embed_reply(message[::-1])
 	
-	@commands.group(aliases = ["encrypt"], invoke_without_command = True)
+	@commands.group(aliases = ["encrypt"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def encode(self, ctx):
 		'''Encode messages'''
@@ -212,7 +215,8 @@ class Cryptography(commands.Cog):
 		'''Compute CRC32 checksum'''
 		await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 	
-	@encode.group(name = "gost", aliases = ["гост"], invoke_without_command = True)
+	@encode.group(name = "gost", aliases = ["гост"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def encode_gost(self, ctx):
 		'''
@@ -223,7 +227,8 @@ class Cryptography(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@encode_gost.group(name = "28147-89", aliases = ["магма", "magma"], invoke_without_command = True)
+	@encode_gost.group(name = "28147-89", aliases = ["магма", "magma"], 
+						invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def encode_gost_28147_89(self, ctx):
 		'''
@@ -285,7 +290,8 @@ class Cryptography(commands.Cog):
 		except ValueError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
-	@encode_gost.group(name = "34.11-2012", aliases = ["стрибог", "streebog"], invoke_without_command = True)
+	@encode_gost.group(name = "34.11-2012", aliases = ["стрибог", "streebog"], 
+						invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def encode_gost_34_11_2012(self, ctx):
 		'''

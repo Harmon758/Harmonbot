@@ -68,7 +68,7 @@ class Discord(commands.Cog):
 		# TODO: Mention channel or include channel ID
 		# TODO: Include message.edited_at
 	
-	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True)
+	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True, case_insensitive = True)
 	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
 	async def delete(self, ctx, number : int, *, user : discord.Member = None):
 		'''
@@ -174,7 +174,7 @@ class Discord(commands.Cog):
 			await self.bot.edit_role(ctx.guild, role_to_change, colour = new_colour)
 			await ctx.embed_reply("Changed your role color to {}".format(color))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
 	async def pin(self, ctx, message_id: int):
 		'''Pin message by message ID'''
@@ -252,7 +252,7 @@ class Discord(commands.Cog):
 	# TODO: create cog, add commands
 	# TODO: role removal
 	
-	@commands.group(aliases = ["member"], invoke_without_command = True)
+	@commands.group(aliases = ["member"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def user(self, ctx):
 		'''User'''

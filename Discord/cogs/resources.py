@@ -22,7 +22,7 @@ class Resources(commands.Cog):
 		self.bot = bot
 		# spotify = spotipy.Spotify()
 	
-	@commands.group(aliases = ["blizzard", "battle.net"], invoke_without_command = True)
+	@commands.group(aliases = ["blizzard", "battle.net"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def battlenet(self, ctx):
 		'''Battle.net'''
@@ -44,7 +44,7 @@ class Resources(commands.Cog):
 			return
 		await ctx.embed_reply(f"[Launch {game}](battlenet://{abbreviation})")
 	
-	@commands.group(aliases = ["colour"], invoke_without_command = True)
+	@commands.group(aliases = ["colour"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def color(self, ctx, *, color : str):
 		'''
@@ -152,7 +152,7 @@ class Resources(commands.Cog):
 				pastedaccounts = ", ".join(f"{acc['Source']} ({acc['Id']})" for acc in data)
 		await ctx.embed_reply(f"Breached accounts: {breachedaccounts}\nPastes: {pastedaccounts}")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def horoscope(self, ctx, sign : str):
 		'''Horoscope'''
@@ -267,7 +267,7 @@ class Resources(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply(data["longUrl"])
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def news(self, ctx, source : str):
 		'''
@@ -326,7 +326,7 @@ class Resources(commands.Cog):
 		# for source in data["sources"]:
 		await ctx.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def oeis(self, ctx, *, search : str):
 		'''The On-Line Encyclopedia of Integer Sequences'''
@@ -507,7 +507,7 @@ class Resources(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: Error")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def steam(self, ctx):
 		'''Steam Information'''
@@ -664,7 +664,7 @@ class Resources(commands.Cog):
 			else:
 				await ctx.embed_reply("I don't know what that is")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def xkcd(self, ctx, number : int = 0):
 		'''Find xkcd's'''

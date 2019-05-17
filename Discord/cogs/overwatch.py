@@ -14,7 +14,7 @@ class Overwatch(commands.Cog):
 		self.bot = bot
 		self.request_limit = 1000
 
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def overwatch(self, ctx):
 		'''BattleTags are case sensitive'''
@@ -95,7 +95,8 @@ class Overwatch(commands.Cog):
 		'''
 		...
 	
-	@overwatch.group(name = "stats", aliases = ["statistics"], invoke_without_command = True)
+	@overwatch.group(name = "stats", aliases = ["statistics"], 
+						invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def stats(self, ctx, battletag : str):
 		'''
@@ -125,7 +126,8 @@ class Overwatch(commands.Cog):
 				'''
 				await ctx.send(embed = embed)
 	
-	@stats.group(name = "quickplay", aliases = ["qp"], invoke_without_command = True)
+	@stats.group(name = "quickplay", aliases = ["qp"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def stats_quickplay(self, ctx, battletag : str):
 		'''
@@ -158,7 +160,8 @@ class Overwatch(commands.Cog):
 				embed.add_field(name = "Deaths", value = "{:,g} total\n{:,g} average".format(stats["game_stats"]["deaths"], stats["average_stats"].get("deaths_avg", -1)))
 				await ctx.send(embed = embed)
 	
-	@stats.group(name = "competitive", aliases = ["comp"], invoke_without_command = True)
+	@stats.group(name = "competitive", aliases = ["comp"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def stats_competitive(self, ctx, battletag : str):
 		'''

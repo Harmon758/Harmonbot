@@ -132,7 +132,7 @@ class Meta(commands.Cog):
 			json.dump(all_prefixes, prefixes_file, indent = 4)
 		await ctx.embed_reply("Prefix(es) set: {}".format(' '.join(['`"{}"`'.format(prefix) for prefix in prefixes])))
 	
-	@commands.group(aliases = ["shard"], invoke_without_command = True)
+	@commands.group(aliases = ["shard"], invoke_without_command = True, case_insensitive = True)
 	async def shards(self, ctx):
 		'''Current number of shards'''
 		await ctx.embed_reply(ctx.bot.shard_count or 1)
@@ -251,7 +251,7 @@ class Meta(commands.Cog):
 		uptime = now - clients.online_time
 		await ctx.embed_reply(utilities.secs_to_letter_format(uptime.total_seconds()))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def version(self, ctx):
 		'''Bot version'''
 		await ctx.embed_reply("I am Harmonbot `v{}`".format(self.bot.version))
@@ -279,13 +279,14 @@ class Meta(commands.Cog):
 	
 	# Update Bot Stuff
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def harmonbot(self, ctx):
 		'''Me'''
 		await ctx.send_help(ctx.command)
 	
-	@harmonbot.group(name = "activity", aliases = ["game", "playing", "status"], invoke_without_command = True)
+	@harmonbot.group(name = "activity", aliases = ["game", "playing", "status"], 
+						invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
 	async def harmonbot_activity(self, ctx, *, name : str = ""):
@@ -450,7 +451,7 @@ class Meta(commands.Cog):
 	
 	# Testing
 	
-	@commands.group(hidden = True, invoke_without_command = True)
+	@commands.group(hidden = True, invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def test(self, ctx):
 		'''Basic test command'''
@@ -471,7 +472,7 @@ class Meta(commands.Cog):
 		# Implemented in on_message
 		return
 	
-	@commands.group(aliases = ["code_block"], invoke_without_command = True)
+	@commands.group(aliases = ["code_block"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def codeblock(self, ctx, *, input : str):
 		'''Wrap your message in a code block'''
@@ -492,7 +493,7 @@ class Meta(commands.Cog):
 		for _ in range(times):
 			await self.bot.process_commands(msg)
 	
-	@commands.group(aliases = ["say"], invoke_without_command = True)
+	@commands.group(aliases = ["say"], invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
 	async def echo(self, ctx, *, message):
 		'''Echoes the message'''

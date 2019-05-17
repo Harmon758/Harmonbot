@@ -109,13 +109,13 @@ class Lichess(commands.Cog):
 				raise commands.BadArgument("This account is closed")
 			return data
 
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def lichess(self, ctx):
 		'''Lichess'''
 		await ctx.send_help(ctx.command)
 	
-	@lichess.group(aliases = ["tournaments"], invoke_without_command = True)
+	@lichess.group(aliases = ["tournaments"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def tournament(self, ctx):
 		'''Tournaments'''
@@ -140,7 +140,8 @@ class Lichess(commands.Cog):
 			fields.append((tournament["fullName"], value))
 		await ctx.embed_reply(title = "Current Lichess Tournaments", fields = fields)
 	
-	@lichess.group(aliases = ["stats", "statistics", "stat", "statistic"], invoke_without_command = True)
+	@lichess.group(aliases = ["stats", "statistics", "stat", "statistic"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def user(self, ctx, username : LichessUser):
 		'''User stats'''

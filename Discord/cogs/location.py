@@ -126,7 +126,7 @@ class Location(commands.Cog):
 			country_name += f" ({country_data['nativeName']})"
 		await ctx.embed_reply(title = country_name, fields = fields)
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def geocode(self, ctx, *, address : str):
 		'''Convert addresses to geographic coordinates'''
@@ -159,7 +159,7 @@ class Location(commands.Cog):
 	
 	# TODO: random address command?
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def map(self, ctx, *, location : str):
 		'''See map of location'''
@@ -180,7 +180,7 @@ class Location(commands.Cog):
 			f"?center={location}&zoom={zoom}&maptype={maptype}&size=640x640")
 		await ctx.embed_reply(f"[:map:]({map_url})", image_url = map_url)
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def streetview(self, ctx, *, location : str):
 		'''Generate street view of a location'''
@@ -188,7 +188,7 @@ class Location(commands.Cog):
 		image_url = f"https://maps.googleapis.com/maps/api/streetview?size=400x400&location={location}"
 		await ctx.embed_reply(image_url = image_url)
 	
-	@commands.group(aliases = ["timezone"], invoke_without_command = True)
+	@commands.group(aliases = ["timezone"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def time(self, ctx, *, location : str):
 		'''Current time of a location'''

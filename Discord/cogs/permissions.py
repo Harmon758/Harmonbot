@@ -16,7 +16,7 @@ class Permissions(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def setpermission(self, ctx):
 		'''Set a permission'''
@@ -72,7 +72,7 @@ class Permissions(commands.Cog):
 			json.dump(permissions_data, permissions_file, indent = 4)
 		await ctx.embed_reply("Permission updated\n{} set to {} for {}".format(permission, setting, _user))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermission(self, ctx, *options : str):
@@ -120,7 +120,7 @@ class Permissions(commands.Cog):
 		setting = ctx.get_permission(command, id = _user.id)
 		await ctx.embed_reply("{} is set to {} for {}".format(permission, setting, _user))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def getpermissions(self, ctx):
 		await ctx.send_help(ctx.command)

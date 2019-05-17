@@ -107,7 +107,7 @@ class YouTube(commands.Cog):
 							f"re-subscribing to {channel_id}: {error_description}")
 			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
 	
-	@commands.group(name = "streams", invoke_without_command = True)
+	@commands.group(name = "streams", invoke_without_command = True, case_insensitive = True)
 	# Handle stream alias when audio cog not loaded first | aliases = ["stream"]
 	@checks.is_permitted()
 	async def youtube_streams(self, ctx):
@@ -285,7 +285,8 @@ class YouTube(commands.Cog):
 	
 	# TODO: Follow channels/new video uploads
 	
-	@commands.group(name = "uploads", aliases = ["videos"], invoke_without_command = True)
+	@commands.group(name = "uploads", aliases = ["videos"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def youtube_uploads(self, ctx):
 		'''YouTube Uploads/Videos'''

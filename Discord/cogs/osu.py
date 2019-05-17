@@ -27,19 +27,19 @@ class Osu(commands.Cog):
 		self.s_emoji = discord.utils.get(self.bot.emojis, name = "osu_s") or 'S'
 		self.a_emoji = discord.utils.get(self.bot.emojis, name = "osu_a") or 'A'
 	
-	@commands.group(aliases = ["osu!"], invoke_without_command = True)
+	@commands.group(aliases = ["osu!"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def osu(self, ctx):
 		'''osu!'''
 		await ctx.send_help(ctx.command)
 	
-	@osu.group(invoke_without_command = True)
+	@osu.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def taiko(self, ctx):
 		'''Taiko'''
 		await ctx.send_help(ctx.command)
 	
-	@osu.group(invoke_without_command = True)
+	@osu.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def mania(self, ctx):
 		'''osu!mania'''

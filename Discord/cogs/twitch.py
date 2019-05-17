@@ -32,13 +32,13 @@ class Twitch(commands.Cog):
 	def cog_unload(self):
 		self.task.cancel()
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def twitch(self, ctx):
 		'''Twitch'''
 		await ctx.send_help(ctx.command)
 	
-	@twitch.group(name = "add", invoke_without_command = True)
+	@twitch.group(name = "add", invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def twitch_add(self, ctx):
 		'''Add Twitch games, keywords, or channels to follow'''
@@ -106,7 +106,8 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply("Added the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), to this text channel\n"
 		"I will now announce here when this Twitch channel goes live".format(username))
 	
-	@twitch.group(name = "remove", aliases = ["delete"], invoke_without_command = True)
+	@twitch.group(name = "remove", aliases = ["delete"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def twitch_remove(self, ctx):
 		'''Remove Twitch games, keywords, or channels being followed'''

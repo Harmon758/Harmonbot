@@ -14,7 +14,7 @@ class Server(commands.Cog):
 	
 	# TODO: add commands
 	
-	@commands.group(aliases = ["guild"], invoke_without_command = True)
+	@commands.group(aliases = ["guild"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def server(self, ctx):
 		'''Server'''
@@ -58,7 +58,7 @@ class Server(commands.Cog):
 		'''The server region'''
 		await ctx.embed_reply(ctx.guild.region)
 	
-	@server.group(aliases = ["setting"], invoke_without_command = True)
+	@server.group(aliases = ["setting"], invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def settings(self, ctx, setting : str, on_off : bool):
@@ -68,7 +68,7 @@ class Server(commands.Cog):
 		# await ctx.embed_reply("Setting not found")
 		await ctx.embed_reply(f"{setting} set to {on_off}")
 	
-	@settings.group(name = "logs", aliases = ["log"])
+	@settings.group(name = "logs", aliases = ["log"], case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def settings_logs(self, ctx):
@@ -89,7 +89,7 @@ class Server(commands.Cog):
 		'''WIP'''
 		...
 	
-	@settings_logs.group(name = "message", aliases = ["messages"])
+	@settings_logs.group(name = "message", aliases = ["messages"], case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def settings_logs_message(self, ctx):
@@ -117,7 +117,7 @@ class Server(commands.Cog):
 		'''WIP'''
 		...
 	
-	@settings_logs.group(name = "reaction", aliases = ["reactions"])
+	@settings_logs.group(name = "reaction", aliases = ["reactions"], case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def settings_logs_reaction(self, ctx):

@@ -24,7 +24,7 @@ class Astronomy(commands.Cog):
 	
 	# TODO: random exoplanet, observatory, telescope
 	
-	@commands.group(aliases = ["space"], invoke_without_command = True)
+	@commands.group(aliases = ["space"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def astronomy(self, ctx):
 		'''exoplanet, iss, observatory, and telescope are also commands as well as subcommands'''
@@ -37,7 +37,7 @@ class Astronomy(commands.Cog):
 		# paginate, https://api.arcsecond.io/findingcharts/HD%205980/
 		...
 	
-	@astronomy.group(aliases = ["archive", "archives"], invoke_without_command = True)
+	@astronomy.group(aliases = ["archive", "archives"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def data(self, ctx):
 		'''Data Archives'''
@@ -298,7 +298,7 @@ class Astronomy(commands.Cog):
 		if isinstance(data, list): data = data[0]
 		await ctx.embed_reply(title = data["title"], fields = (("Journal", data["journal"]), ("Year", data["year"]), ("Authors", data["authors"])))
 	
-	@astronomy.group(invoke_without_command = True)
+	@astronomy.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def telegram(self, ctx):
 		'''Quick publications, often related to ongoing events occuring in the sky'''

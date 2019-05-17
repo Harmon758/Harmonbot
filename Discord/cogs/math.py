@@ -125,7 +125,7 @@ class Math(commands.Cog):
 			await ctx.embed_reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
                                     title = "Error")
 	
-	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True)
+	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True, case_insensitive = True)
 	async def integrate(self, ctx, *, equation : str):
 		'''
 		Integrate an equation

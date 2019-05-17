@@ -33,7 +33,7 @@ class Tools(commands.Cog):
 		with open(clients.data_path + "/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
 	
-	@commands.group(aliases = ["plot"], invoke_without_command = True)
+	@commands.group(aliases = ["plot"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):
 		'''WIP'''
@@ -139,7 +139,8 @@ class Tools(commands.Cog):
 		await ctx.channel.send(file = discord.File(clients.data_path + "/temp/spoiler.gif"))
 		await self.bot.attempt_delete_message(response)
 	
-	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], invoke_without_command = True)
+	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def tag(self, ctx, tag : str = ""):
 		'''Tags/notes that you can trigger later'''
@@ -249,7 +250,7 @@ class Tools(commands.Cog):
 	
 	# TODO: rename, aliases
 	
-	@tag.group(name = "global", invoke_without_command = True)
+	@tag.group(name = "global", invoke_without_command = True, case_insensitive = True)
 	async def tag_global(self, ctx):
 		'''Global tags'''
 		await ctx.send_help(ctx.command)

@@ -51,7 +51,7 @@ class Pinboard(commands.Cog):
 			"""
 		)
 	
-	@commands.group(aliases = ["starboard"], invoke_without_command = True)
+	@commands.group(aliases = ["starboard"], invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
 	async def pinboard(self, ctx):
 		'''

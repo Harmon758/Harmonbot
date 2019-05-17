@@ -11,13 +11,13 @@ class Duelyst(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def duelyst(self, ctx):
 		'''Duelyst'''
 		await ctx.send_help(ctx.command)
 	
-	@duelyst.group()
+	@duelyst.group(case_insensitive = True)
 	@checks.not_forbidden()
 	async def card(self, ctx, *, name : str):
 		'''Details of a specific card'''

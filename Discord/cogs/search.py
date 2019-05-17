@@ -30,7 +30,7 @@ class Search(commands.Cog):
 		for command, parent_name in self.search_subcommands:
 			utilities.remove_as_subcommand(self, parent_name, "search")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def search(self, ctx):
 		'''
@@ -90,7 +90,7 @@ class Search(commands.Cog):
 		'''Search with DuckDuckGo'''
 		await ctx.embed_reply("[DuckDuckGo search for \"{}\"](https://www.duckduckgo.com/?q={})".format(' '.join(search), '+'.join(search)))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def google(self, ctx, *, search : str):
 		'''Google search'''
@@ -158,7 +158,8 @@ class Search(commands.Cog):
 		'''Search with StartPage'''
 		await ctx.embed_reply("[StartPage search for \"{}\"](https://www.startpage.com/do/search?query={})".format(' '.join(search), '+'.join(search)))
 	
-	@commands.group(description = "[UESP](http://uesp.net/wiki/Main_Page)", invoke_without_command = True)
+	@commands.group(description = "[UESP](http://uesp.net/wiki/Main_Page)", 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def uesp(self, ctx, *, search : str):
 		'''Look something up on the Unofficial Elder Scrolls Pages'''
@@ -215,7 +216,7 @@ class Search(commands.Cog):
 			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
-	@commands.group(aliases = ["wiki"], invoke_without_command = True)
+	@commands.group(aliases = ["wiki"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def wikipedia(self, ctx, *, search : str):
 		'''Look something up on Wikipedia'''
@@ -257,7 +258,7 @@ class Search(commands.Cog):
 			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
-	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True)
+	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def wolframalpha(self, ctx, *, search : str):
 		'''

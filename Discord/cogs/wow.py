@@ -14,7 +14,8 @@ class WoW(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.group(aliases = ["worldofwarcraft", "world_of_warcraft"], invoke_without_command = True)
+	@commands.group(aliases = ["worldofwarcraft", "world_of_warcraft"], 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def wow(self, ctx):
 		'''World of Warcraft'''

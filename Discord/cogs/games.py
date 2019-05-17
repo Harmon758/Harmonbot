@@ -64,7 +64,7 @@ class Games(commands.Cog):
 	
 	# Adventure
 	
-	@commands.group(aliases = ["rpg"], invoke_without_command = True, hidden = True)
+	@commands.group(aliases = ["rpg"], invoke_without_command = True, case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
 	async def adventure(self, ctx):
 		'''WIP'''
@@ -77,7 +77,7 @@ class Games(commands.Cog):
 			self.adventure_players[user_id] = player
 		return player
 	
-	@adventure.group(name = "stats", aliases = ["stat", "levels", "level", "lvls", "lvl"], invoke_without_command = True)
+	@adventure.group(name = "stats", aliases = ["stat", "levels", "level", "lvls", "lvl"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def adventure_stats(self, ctx):
 		'''Stats'''
@@ -138,7 +138,7 @@ class Games(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: You don't have that item")
 	
-	@adventure.group(name = "forage", aliases = ["gather"], invoke_without_command = True)
+	@adventure.group(name = "forage", aliases = ["gather"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def adventure_forage(self, ctx, *, item : str = ""):
 		'''Foraging'''
@@ -215,7 +215,7 @@ class Games(commands.Cog):
 		else:
 			await ctx.embed_reply("You have created {}".format(created))
 	
-	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], invoke_without_command = True)
+	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def adventure_woodcutting(self, ctx, *, wood_type : str = ""):
 		'''Woodcutting'''
@@ -383,7 +383,7 @@ class Games(commands.Cog):
 		if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11: total += 10
 		return total
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def chess(self, ctx):
 		'''
@@ -475,7 +475,8 @@ class Games(commands.Cog):
 	#dm
 	#check mate, etc.
 	
-	@chess.group(name = "board", aliases = ["match"], invoke_without_command = True)
+	@chess.group(name = "board", aliases = ["match"], 
+					invoke_without_command = True, case_insensitive = True)
 	async def chess_board(self, ctx):
 		'''Current match/board'''
 		match = self.get_chess_match(ctx.channel, ctx.author)
@@ -591,13 +592,13 @@ class Games(commands.Cog):
 		'''
 		await ctx.embed_reply(f"\N{BILLIARDS} {games.eightball()}")
 	
-	@commands.group(hidden = True)
+	@commands.group(case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
 	async def gofish(self, ctx):
 		'''WIP'''
 		return
 	
-	@gofish.command(hidden = True, name = "start")
+	@gofish.command(case_insensitive = True, hidden = True, name = "start")
 	@commands.guild_only()
 	@commands.is_owner()
 	async def gofish_start(self, ctx, *players : str):
@@ -631,7 +632,7 @@ class Games(commands.Cog):
 		if ctx.author in gofish_players:
 			pass
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def guess(self, ctx, max_value : typing.Optional[int], tries : typing.Optional[int]):
 		'''Guessing game'''
@@ -669,7 +670,7 @@ class Games(commands.Cog):
 			else:
 				return await ctx.embed_reply(f"Sorry, it was actually {answer}")
 	
-	@commands.group(aliases = ["hrmp"], hidden = True)
+	@commands.group(aliases = ["hrmp"], case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
 	async def harmonopoly(self, ctx):
 		'''
@@ -680,7 +681,7 @@ class Games(commands.Cog):
 		'''
 		pass
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def jeopardy(self, ctx, row_number : int, value : int):
 		'''
@@ -776,7 +777,7 @@ class Games(commands.Cog):
 			self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
 		await ctx.embed_say(ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def maze(self, ctx):
 		'''
@@ -835,7 +836,7 @@ class Games(commands.Cog):
 	
 	# add maze print, position?
 	
-	@commands.group()
+	@commands.group(case_insensitive = True)
 	@checks.not_forbidden()
 	async def poker(self, ctx):
 		'''WIP'''
@@ -1209,7 +1210,7 @@ class Games(commands.Cog):
 		with open(clients.data_path + "/erps_dict.json", 'w') as erps_file:
 			json.dump(objects, erps_file, indent = 4)
 	
-	@commands.group(hidden = True)
+	@commands.group(case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
 	async def taboo(self, ctx):
 		'''WIP'''
@@ -1235,7 +1236,7 @@ class Games(commands.Cog):
 		if message.guild:
 			pass
 	
-	@commands.group()
+	@commands.group(case_insensitive = True)
 	@checks.not_forbidden()
 	async def war(self, ctx):
 		'''

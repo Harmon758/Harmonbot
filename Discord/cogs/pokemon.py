@@ -12,7 +12,7 @@ class Pokemon(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.group(aliases = ["pokémon"], invoke_without_command = True)
+	@commands.group(aliases = ["pokémon"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def pokemon(self, ctx, id_or_name : str):
 		'''WIP'''
@@ -63,7 +63,7 @@ class Pokemon(commands.Cog):
 		'''WIP'''
 		...
 	
-	@pokemon.group(invoke_without_command = True)
+	@pokemon.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def contest(self, ctx):
 		'''WIP'''
@@ -87,7 +87,7 @@ class Pokemon(commands.Cog):
 		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
 								fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
 	
-	@pokemon.group(invoke_without_command = True)
+	@pokemon.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def encounter(self, ctx):
 		'''WIP'''
@@ -100,7 +100,7 @@ class Pokemon(commands.Cog):
 		'''WIP'''
 		...
 	
-	@pokemon.group(invoke_without_command = True)
+	@pokemon.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def evolution(self, ctx):
 		'''WIP'''
@@ -130,7 +130,7 @@ class Pokemon(commands.Cog):
 		'''WIP'''
 		...
 	
-	@pokemon.group()
+	@pokemon.group(case_insensitive = True)
 	@checks.not_forbidden()
 	async def item(self, ctx, id_or_name : str):
 		'''WIP'''
@@ -155,7 +155,7 @@ class Pokemon(commands.Cog):
 		'''WIP'''
 		...
 	
-	@pokemon.group()
+	@pokemon.group(case_insensitive = True)
 	@checks.not_forbidden()
 	async def location(self, ctx, id : int):
 		'''WIP'''
@@ -174,7 +174,7 @@ class Pokemon(commands.Cog):
 		'''WIP'''
 		...
 	
-	@pokemon.group()
+	@pokemon.group(case_insensitive = True)
 	@checks.not_forbidden()
 	async def move(self, ctx, id_or_name : str):
 		'''WIP'''

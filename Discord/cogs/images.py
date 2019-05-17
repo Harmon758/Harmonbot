@@ -35,7 +35,7 @@ class Images(commands.Cog):
 	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
-	@commands.group(aliases = ["images"], invoke_without_command = True)
+	@commands.group(aliases = ["images"], invoke_without_command = True, case_insensitive = True)
 	async def image(self, ctx):
 		'''
 		Images
@@ -107,7 +107,7 @@ class Images(commands.Cog):
 		await ctx.embed_reply(output, thumbnail_url = image_url)
 	
 	# TODO: add as search subcommand
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def giphy(self, ctx, *, search : str):
 		'''Find an image on giphy'''
 		url = "http://api.giphy.com/v1/gifs/search"
@@ -125,7 +125,7 @@ class Images(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def imgur(self, ctx):
 		'''Imgur'''
 		await ctx.send_help(ctx.command)

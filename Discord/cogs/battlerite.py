@@ -75,7 +75,7 @@ class Battlerite(commands.Cog):
 			json.dump(self.mappings, mappings_file, indent = 4)
 	
 	# TODO: Handle 25+ fields
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def battlerite(self, ctx):
 		'''
@@ -93,7 +93,7 @@ class Battlerite(commands.Cog):
 			data = await resp.json()
 		return(next(iter(data["data"]), None))
 	
-	@battlerite.group(invoke_without_command = True)
+	@battlerite.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def player(self, ctx, player : str):
 		'''Player'''
@@ -141,7 +141,7 @@ class Battlerite(commands.Cog):
 			fields.append(("Brawl Winrate", f"{wins / (wins + losses) * 100:.2f}%"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player.group(name = "casual", aliases = ["unranked"])
+	@player.group(name = "casual", aliases = ["unranked"], case_insensitive = True)
 	@checks.not_forbidden()
 	async def player_casual(self, ctx, player : str):
 		'''Casual'''
@@ -202,7 +202,7 @@ class Battlerite(commands.Cog):
 			fields.append((f"{emoji} {name}", f"{levels[name]} ({value:,} XP)"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player.group(name = "ranked", aliases = ["comp", "competitive", "league"])
+	@player.group(name = "ranked", aliases = ["comp", "competitive", "league"], case_insensitive = True)
 	@checks.not_forbidden()
 	async def player_ranked(self, ctx, player : str):
 		'''Ranked'''

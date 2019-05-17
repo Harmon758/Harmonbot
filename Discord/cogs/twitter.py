@@ -147,7 +147,7 @@ class Twitter(commands.Cog):
 			"""
 		)
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def twitter(self, ctx):
 		'''Twitter'''

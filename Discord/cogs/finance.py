@@ -20,7 +20,8 @@ class Finance(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	@commands.group(invoke_without_command = True, description = "Powered by [CoinDesk](https://www.coindesk.com/price/)")
+	@commands.group(description = "Powered by [CoinDesk](https://www.coindesk.com/price/)", 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def bitcoin(self, ctx, currency : str = ""):
 		'''
@@ -97,7 +98,7 @@ class Finance(commands.Cog):
 		timestamp = dateutil.parser.parse(data["time"]["updated"])
 		await ctx.embed_reply(description, footer_text = footer_text, timestamp = timestamp)
 	
-	@commands.group(aliases = ["exchange", "rates"], invoke_without_command = True)
+	@commands.group(aliases = ["exchange", "rates"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def currency(self, ctx, against : str = "", request : str = ""):
 		'''
@@ -192,7 +193,9 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(fields = fields, footer_text = footer_text, timestamp = timestamp)
 	
 	# TODO: Handle ServerDisconnectedError ?
-	@commands.group(aliases = ["stocks"], description = "Data provided for free by [IEX](https://iextrading.com/developer).", invoke_without_command = True)
+	@commands.group(aliases = ["stocks"], 
+					description = "Data provided for free by [IEX](https://iextrading.com/developer).", 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def stock(self, ctx, symbol : str):
 		'''

@@ -12,7 +12,7 @@ class RotMG(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True)
+	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def rotmg(self, ctx, player : str):
 		'''Realm of the Mad God player information'''

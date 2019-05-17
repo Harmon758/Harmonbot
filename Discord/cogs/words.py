@@ -85,7 +85,8 @@ class Words(commands.Cog):
 		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
 	
 	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
-	"Powered by [Yandex.Translate](http://translate.yandex.com/)", invoke_without_command = True)
+						"Powered by [Yandex.Translate](http://translate.yandex.com/)", 
+					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def translate(self, ctx, *, text : str):
 		'''Translate to English'''

@@ -58,7 +58,7 @@ class Random(commands.Cog):
 		for command, parent_name in self.random_subcommands:
 			utilities.remove_as_subcommand(self, parent_name, "random")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def random(self, ctx):
 		'''
@@ -171,7 +171,7 @@ class Random(commands.Cog):
 		'''Random playing card'''
 		await ctx.embed_reply(":{}: {}".format(random.choice(pydealer.const.SUITS).lower(), random.choice(pydealer.const.VALUES)))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def cat(self, ctx, category : str = ""):
 		'''Random image of a cat'''
@@ -268,7 +268,7 @@ class Random(commands.Cog):
 			except dice.DiceFatalException as e:
 				await ctx.embed_reply(f":no_entry: Error: {e}")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def date(self, ctx):
 		'''Random date'''
@@ -280,7 +280,7 @@ class Random(commands.Cog):
 		'''Random day of week'''
 		await ctx.embed_reply(random.choice(calendar.day_name))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def dog(self, ctx, *, breed : str = ""):
 		'''
@@ -316,7 +316,7 @@ class Random(commands.Cog):
 		'''Random emote/emoji'''
 		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI)))
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def fact(self, ctx):
 		'''Random fact'''
@@ -395,7 +395,7 @@ class Random(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_say(data["insult"])
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def joke(self, ctx):
 		'''Random joke'''
@@ -404,7 +404,7 @@ class Random(commands.Cog):
 		# https://www.kaggle.com/abhinavmoudgil95/short-jokes (https://github.com/amoudgl/short-jokes-dataset)
 		if self.jokes: await ctx.embed_reply(random.choice(self.jokes))
 	
-	@joke.group(name = "dad", invoke_without_command = True)
+	@joke.group(name = "dad", invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def joke_dad(self, ctx, joke_id : str = ""):
 		'''Random dad joke'''
@@ -454,7 +454,7 @@ class Random(commands.Cog):
 		'''Random longitude'''
 		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
-	@commands.group(aliases = ["rng"], invoke_without_command = True)
+	@commands.group(aliases = ["rng"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def number(self, ctx, number : int = 10):
 		'''

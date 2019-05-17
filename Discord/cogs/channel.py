@@ -12,7 +12,7 @@ class Channel(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
 	async def channel(self, ctx):
@@ -24,7 +24,7 @@ class Channel(commands.Cog):
 	# TODO: commands/parameters; reason options?
 	# TODO: default channel?: text, voice, category
 	
-	@channel.group(invoke_without_command = True)
+	@channel.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
 	async def category(self, ctx):
@@ -87,7 +87,7 @@ class Channel(commands.Cog):
 		else:
 			await ctx.embed_reply(channel.mention + "'s position is {}".format(channel.position))
 	
-	@channel.group(invoke_without_command = True)
+	@channel.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
 	async def text(self, ctx):
@@ -209,7 +209,7 @@ class Channel(commands.Cog):
 		await channel.edit(sync_permissions = True)
 		await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
 	
-	@channel.group(invoke_without_command = True)
+	@channel.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
 	async def voice(self, ctx):

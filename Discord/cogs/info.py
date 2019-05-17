@@ -29,7 +29,7 @@ class Info(commands.Cog):
 		for command, parent_name in self.info_subcommands:
 			utilities.remove_as_subcommand(self, parent_name, "info")
 	
-	@commands.group(aliases = ["information"], invoke_without_command = True)
+	@commands.group(aliases = ["information"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def info(self, ctx):
 		'''Info'''

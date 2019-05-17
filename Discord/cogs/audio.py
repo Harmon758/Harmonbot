@@ -26,7 +26,10 @@ class Audio(commands.Cog):
 				self.bot.add_command(command)
 				self.audio.add_command(command)
 	
-	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", "playlist", "spotify", "budio", "music", "download"], description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify", invoke_without_command = True)
+	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", 
+								"playlist", "spotify", "budio", "music", "download"], 
+					description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify", 
+					invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
@@ -124,7 +127,7 @@ class Audio(commands.Cog):
 		else:
 			await ctx.embed_reply(":play_pause: Resumed song")
 	
-	@commands.group(aliases = ["next", "remove"], invoke_without_command = True)
+	@commands.group(aliases = ["next", "remove"], invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
@@ -271,7 +274,7 @@ class Audio(commands.Cog):
 			embed.description = ":warning: Error loading `{}`".format(song)
 			await self.bot.edit_message(response, embed = embed)
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	@checks.is_voice_connected()
@@ -320,7 +323,7 @@ class Audio(commands.Cog):
 		self.players[ctx.guild.id].text_channel = ctx.channel
 		await ctx.embed_reply(":writing_hand::skin-tone-2: Changed text channel")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	@checks.is_voice_connected()
@@ -370,7 +373,7 @@ class Audio(commands.Cog):
 		'''List existing audio files'''
 		await ctx.embed_reply(self.players[ctx.guild.id].list_files())
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	@checks.is_voice_connected()
@@ -446,7 +449,7 @@ class Audio(commands.Cog):
 			# TODO: use textwrap/paginate
 			await ctx.embed_reply(":no_entry: Too many results\nTry a more specific search")
 	
-	@commands.group(invoke_without_command = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
 	@checks.is_voice_connected()
@@ -487,7 +490,7 @@ class Audio(commands.Cog):
 			self.players[ctx.guild.id].default_volume = volume_setting
 			await ctx.embed_reply(":sound: Set default volume to {:g}".format(volume_setting))
 	
-	@commands.group(aliases = ["current"], invoke_without_command = True)
+	@commands.group(aliases = ["current"], invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_voice_connected()
 	@checks.not_forbidden()
@@ -515,7 +518,7 @@ class Audio(commands.Cog):
 	
 	# Voice Input
 	
-	@commands.group(invoke_without_command = True, hidden = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True, hidden = True)
 	@checks.is_voice_connected()
 	@checks.is_permitted()
 	async def listen(self, ctx):
