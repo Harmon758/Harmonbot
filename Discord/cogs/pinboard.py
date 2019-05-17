@@ -131,7 +131,7 @@ class Pinboard(commands.Cog):
 										channel.id, ctx.guild.id)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard channel to {channel.mention}")
 	
-	@pinboard.command(aliases = ["starrers", "who"])
+	@pinboard.command(aliases = ["starrers", "who", "pinner", "starrer"])
 	@checks.not_forbidden()
 	async def pinners(self, ctx, message: discord.Message):
 		'''
