@@ -157,8 +157,7 @@ class Pinboard(commands.Cog):
 				pinner = await ctx.bot.fetch_user(record[0])
 			pinners.append(pinner)
 		await ctx.embed_reply(' '.join(pinner.mention for pinner in pinners), 
-								title = f"{len(records)} pinners of {message.jump_url}")
-		# TODO: dynamic plurality
+								title = f"{len(records)} {ctx.bot.inflect_engine.plural('pinner', len(records))} of {message.jump_url}")
 	
 	@pinboard.command(aliases = ["private"])
 	@checks.is_permitted()
