@@ -171,9 +171,8 @@ class Discord(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.has_permissions_and_capability(manage_messages = True)
-	async def pin(self, ctx, message_id: int):
+	async def pin(self, ctx, message: discord.Message):
 		'''Pin message by message ID'''
-		message = await ctx.channel.fetch_message(message_id)
 		await message.pin()
 		await ctx.embed_reply(":pushpin: Pinned message")
 	
