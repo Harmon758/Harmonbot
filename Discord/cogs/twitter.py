@@ -52,10 +52,10 @@ class TwitterStreamListener(tweepy.StreamListener):
 		self.reconnecting = False
 	
 	async def add_feed(self, channel, handle):
-		id = self.bot.twitter_api.get_user(handle).id_str
-		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [id]
-		if id not in self.unique_feeds:
-			self.unique_feeds.add(id)
+		user_id = self.bot.twitter_api.get_user(handle).id_str
+		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [user_id]
+		if user_id not in self.unique_feeds:
+			self.unique_feeds.add(user_id)
 			await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
