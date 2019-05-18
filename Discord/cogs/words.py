@@ -1,6 +1,8 @@
 
 from discord.ext import commands
 
+import urllib.error
+
 from utilities import checks
 
 def setup(bot):
@@ -25,7 +27,12 @@ class Words(commands.Cog):
 	@checks.not_forbidden()
 	async def define(self, ctx, word : str):
 		'''Define a word'''
-		definition = self.bot.wordnik_word_api.getDefinitions(word, limit = 1)  # useCanonical = True ?
+		try:
+			definition = self.bot.wordnik_word_api.getDefinitions(word, limit = 1)  # useCanonical = True ?
+		except urllib.error.HTTPError as e:
+			if e.code == 404:
+				return await ctx.embed_reply(":no_entry: Error: Not found")
+			raise
 		if not definition:
 			return await ctx.embed_reply(":no_entry: Definition not found")
 		await ctx.embed_reply(definition[0].text, title = definition[0].word, 
