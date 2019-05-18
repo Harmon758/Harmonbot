@@ -536,9 +536,8 @@ class Resources(commands.Cog):
 		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": vanity_name}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		id = data["response"]["steamid"]
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
-		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": id}
+		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": data["response"]["steamid"]}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
