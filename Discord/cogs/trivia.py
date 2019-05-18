@@ -309,11 +309,11 @@ class Trivia(commands.Cog):
 				return True
 		return False
 	
-	def remove_article_prefix(self, input):
+	def remove_article_prefix(self, string):
 		for article in ("a ", "an ", "the "):
-			if input.startswith(article):
-				return input[len(article):]
-		return input
+			if string.startswith(article):
+				return string[len(article):]
+		return string
 	
 	@commands.Cog.listener()
 	async def on_message(self, message):
