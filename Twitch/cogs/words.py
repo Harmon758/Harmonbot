@@ -21,10 +21,9 @@ class Words:
 			if resp.status == 404:
 				return await ctx.send("Error: Not found")
 			data = await resp.json()
-		if data:
-			await ctx.send(f"{data[0]['word']}: {data[0]['text']}")
-		else:
-			await ctx.send("Definition not found.")
+		if not data:
+			return await ctx.send("Definition not found.")
+		await ctx.send(f"{data[0]['word']}: {data[0]['text']}")
 	
 	@commands.command(aliases = ("audiodefine", "pronounce"))
 	async def pronunciation(self, ctx, word):
