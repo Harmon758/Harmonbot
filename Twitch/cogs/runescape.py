@@ -126,11 +126,11 @@ class Runescape:
 			return await ctx.send("Invalid skill for OSRS.")
 		if hiscores_type not in self.hiscores_types:
 			valid_types = []
-			for type in self.hiscores_types:
-				if not type.startswith("oldschool"):
-					type = "runescape_3_" + type
-					type = type.rstrip('_')
-				valid_types.append(type)
+			for valid_type in self.hiscores_types:
+				if not valid_type.startswith("oldschool"):
+					valid_type = "runescape_3_" + valid_type
+					valid_type = valid_type.rstrip('_')
+				valid_types.append(valid_type)
 			return await ctx.send(f"Invalid hiscores type. Valid types: {', '.join(valid_types)}")
 		hiscores_name = self.hiscores_names[hiscores_type]
 		if hiscores_type:
