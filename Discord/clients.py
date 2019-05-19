@@ -232,6 +232,10 @@ class Bot(commands.Bot):
 		self.aiohttp_app_runner = web.AppRunner(self.aiohttp_web_app)
 		self.aiohttp_site = None  # Initialized when starting web server
 		
+		# Create folders
+		create_folder(data_path + "/permissions")
+		create_folder(data_path + "/temp")
+		
 		# Add load, unload, and reload commands
 		self.add_command(self.load)
 		self.add_command(self.unload)
@@ -681,12 +685,6 @@ class Bot(commands.Bot):
 			with open(data_path + "/stats.json", 'w') as stats_file:
 				json.dump(stats, stats_file, indent = 4)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Reloaded `{cog}` cog :gear:")
-
-
-# Create folders
-
-create_folder(data_path + "/permissions")
-create_folder(data_path + "/temp")
 
 
 # Custom prefixes (Create files)
