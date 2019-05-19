@@ -274,9 +274,10 @@ class Search(commands.Cog):
 		await self._wolframalpha(ctx, search, location = location)
 	
 	async def _wolframalpha(self, ctx, search, location = None):
+		# TODO: process asynchronously
 		if not location: location = self.bot.fake_location
 		search = search.strip('`')
-		result = self.bot.wolfram_alpha_client.query(search, ip = self.bot.fake_ip, location = location) # options
+		result = self.bot.wolfram_alpha_client.query(search, ip = self.bot.fake_ip, location = location)  # options
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
@@ -287,6 +288,7 @@ class Search(commands.Cog):
 		if hasattr(result, "pods"):
 			for pod in result.pods:
 				images, text_output = [], []
+				# TODO: use text output by default?
 				for subpod in pod.subpods:
 					image = next(subpod.img)
 					images.append(image.src)
