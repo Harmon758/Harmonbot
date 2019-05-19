@@ -27,7 +27,7 @@ if __name__ == "__main__":
 	mention_spammers = []
 	
 	# Use Proactor Event Loop
-	if platform.system() == "Windows":
+	if platform.system() == "Windows" and hasattr(asyncio, "WindowsProactorEventLoopPolicy"):
 		asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 	
 	# Load credentials from .env
@@ -38,10 +38,6 @@ if __name__ == "__main__":
 	
 	@client.listen()
 	async def on_ready():
-		# TODO: make recommended shards command
-		# data = await client.http.get(client.http.GATEWAY + "/bot")
-		# http.get_bot_gateway()
-		# print(data)
 		print(f"Started up Discord {client.user} ({client.user.id})")
 		
 		if os.path.isfile(clients.data_path + "/temp/restart_channel.json"):
