@@ -148,69 +148,70 @@ if __name__ == "__main__":
 		
 		# Test on_message command
 		if ctx.prefix and message.content.startswith(ctx.prefix + "test on_message"):
-			await ctx.send("Hello, World!")
+			return await ctx.send("Hello, World!")
 		
 		# Conversion commands (regex)
-		elif ctx.prefix and not ctx.command:
+		if ctx.prefix and not ctx.command:
 			units = re.match(r"^(\w+)to(\w+)", message.content[len(ctx.prefix):], re.I)
 			if not units: return
-			elif len(message.content.split()) == 1:
-				await ctx.embed_reply(":no_entry: Please enter input")
-			elif not utilities.is_number(message.content.split()[1]):
-				await ctx.embed_reply(":no_entry: Syntax error")
+			if len(message.content.split()) == 1:
+				return await ctx.embed_reply(":no_entry: Please enter input")
+			if not utilities.is_number(message.content.split()[1]):
+				return await ctx.embed_reply(":no_entry: Syntax error")
+			value = float(message.content.split()[1])
+			unit1 = units.group(1)
+			unit2 = units.group(2)
+			converted_temperature_value, temperature_unit1, temperature_unit2 = conversions.temperatureconversion(value, unit1, unit2)
+			converted_mass_value = conversions.massconversion(value, unit1, unit2)
+			if converted_temperature_value:
+				converted_value = converted_temperature_value
+				unit1 = temperature_unit1
+				unit2 = temperature_unit2
+			elif converted_mass_value:
+				converted_value = converted_mass_value
 			else:
-				value = float(message.content.split()[1])
-				unit1 = units.group(1)
-				unit2 = units.group(2)
-				converted_temperature_value, temperature_unit1, temperature_unit2 = conversions.temperatureconversion(value, unit1, unit2)
-				converted_mass_value = conversions.massconversion(value, unit1, unit2)
-				if converted_temperature_value:
-					converted_value = converted_temperature_value
-					unit1 = temperature_unit1
-					unit2 = temperature_unit2
-				elif converted_mass_value:
-					converted_value = converted_mass_value
-				else:
-					await ctx.embed_reply(f"Units, {unit1} and/or {unit2}, not found\nSee the conversions command")
-					return
-				await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
+				await ctx.embed_reply(f"Units, {unit1} and/or {unit2}, not found\nSee the conversions command")
+				return
+			return await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 		
 		# help or prefix(es) DM or mention
-		elif (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
+		if (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
 			try:
 				prefixes = ctx.bot.command_prefix(ctx.bot, message)
 			except TypeError:  # if Beta (*)
 				prefixes = ctx.bot.command_prefix
 			if any(string in message.content.lower() for string in ('?', "commands", "help")):
 				ctx.prefix = prefixes[0]
-				await ctx.send_help()
+				return await ctx.send_help()
 			else:
-				await ctx.embed_reply("Prefixes: " + ' '.join(f"`{prefix}`" for prefix in prefixes))
+				return await ctx.embed_reply("Prefixes: " + ' '.join(f"`{prefix}`" for prefix in prefixes))
 		
 		# Chatbot
-		elif message.content.startswith((ctx.me.mention, ctx.me.mention.replace('!', ""))):
+		if message.content.startswith((ctx.me.mention, ctx.me.mention.replace('!', ""))):
 			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
 			aiml_response = ctx.bot.aiml_kernel.respond(content, sessionID = message.author.id)
 			# TODO: Handle brain not loaded?
 			if aiml_response:
-				await ctx.embed_reply(aiml_response, attempt_delete = False)
+				return await ctx.embed_reply(aiml_response, attempt_delete = False)
 			else:
 				games_cog = ctx.bot.get_cog("Games")
 				if games_cog:
 					cleverbot_response = await games_cog.cleverbot_get_reply(content)
-					await ctx.embed_reply(cleverbot_response, attempt_delete = False)
+					return await ctx.embed_reply(cleverbot_response, attempt_delete = False)
 		
+		# TODO: Server setting to disable prefix-less commands
 		
 		# :8ball:
-		elif message.content.startswith('\N{BILLIARDS}'):
+		if message.content.startswith('\N{BILLIARDS}'):
 			if '\N{BILLIARDS}' in ctx.bot.all_commands:
-				await ctx.invoke(ctx.bot.all_commands['\N{BILLIARDS}'])
+				return await ctx.invoke(ctx.bot.all_commands['\N{BILLIARDS}'])
 		
 		# Respects (f) system
-		elif message.content.lower() == 'f':
+		if message.content.lower() == 'f':
+			# TODO: Server setting to disable respects system
 			respects_command = ctx.bot.get_command("respects")
 			if respects_command:
-				await ctx.invoke(respects_command.get_command("pay"))
+				return await ctx.invoke(respects_command.get_command("pay"))
 	
 	ci = os.getenv("CI")
 	
