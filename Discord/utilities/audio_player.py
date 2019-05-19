@@ -16,11 +16,6 @@ import clients
 from modules import utilities
 from utilities import errors
 
-playlist_logger = logging.getLogger("playlist")
-playlist_logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename = "data/temp/playlist_info.json", encoding = "utf-8", mode = 'w')
-playlist_logger.addHandler(handler)
-
 class AudioPlayer:
 	
 	def __init__(self, bot, text_channel):
@@ -34,8 +29,8 @@ class AudioPlayer:
 			"format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
 		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, 
 			"format": "bestaudio/best", "extractaudio": True, "outtmpl": "data/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True} # "audioformat": "mp3" ?
-		self.ytdl_playlist_options = {"default_search": "auto", "extract_flat": True, "forcejson": True, "quiet": True, 
-			"logger": playlist_logger}
+		self.ytdl_playlist_options = {"default_search": "auto", "ignoreerrors": True, "quiet": True, 
+			"format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
 		self.default_volume = 100.0
 		self.skip_votes_required = 0
 		self.skip_votes = set()
@@ -377,14 +372,11 @@ class AudioPlayer:
 		response = await ctx.embed_reply(":cd: Loading..")
 		ydl = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
 		func = functools.partial(ydl.extract_info, playlist, download = False)
-		await self.bot.loop.run_in_executor(None, func)
-		with open("data/temp/playlist_info.json", "r+") as playlist_info_file:
-			videos = [json.loads(line) for line in playlist_info_file if line.startswith('{')]
-			playlist_info_file.seek(0)
-			playlist_info_file.truncate()
+		info = await self.bot.loop.run_in_executor(None, func)
 		embed = response.embeds[0]
-		for position, video in enumerate(videos, start = 1):
-			embed.description = ":cd: Loading {}/{}".format(position, len(videos))
+		for position, video in enumerate(info["entries"], start = 1):
+			if not video: continue
+			embed.description = ":cd: Loading {}/{}".format(position, len(info["entries"]))
 			await self.bot.edit_message(response, embed = embed)
 			try:
 				await self.add_song(video["url"], requester, timestamp)
