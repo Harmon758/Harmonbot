@@ -114,9 +114,9 @@ if __name__ == "__main__":
 					# TODO: Handle across different servers
 					if message.guild.me.permissions_in(message.channel).kick_members:
 						# TODO: Check hierarchy, if able to kick
-						await ctx.author.send("You were kicked from {} for spamming mentions".format(message.guild))
+						await ctx.author.send(f"You were kicked from {message.guild} for spamming mentions")
 						await ctx.bot.kick(message.author)
-						await ctx.send("{} has been kicked for spamming mentions".format(message.author))
+						await ctx.send(f"{message.author} has been kicked for spamming mentions")
 					else:
 						await ctx.send("I need permission to kick members from the server to enforce anti-spam")
 				else:
@@ -135,12 +135,12 @@ if __name__ == "__main__":
 			me = discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)
 			if message.author == ctx.bot.user:
 				try:
-					await me.send("To {0.channel.recipient}: {0.content}".format(message), embed = message.embeds[0] if message.embeds else None)
+					await me.send(f"To {message.channel.recipient}: {message.content}", embed = message.embeds[0] if message.embeds else None)
 				except discord.HTTPException:
 					# TODO: use textwrap/paginate
-					await me.send("To {0.channel.recipient}: `DM too long to forward`".format(message))
+					await me.send(f"To {message.channel.recipient}: `DM too long to forward`")
 			else:
-				await me.send("From {0.author}: {0.content}".format(message), embed = message.embeds[0] if message.embeds else None)
+				await me.send(f"From {message.author}: {message.content}", embed = message.embeds[0] if message.embeds else None)
 		
 		# Ignore own and blank messages
 		if message.author == ctx.bot.user or not message.content:
