@@ -174,14 +174,14 @@ if __name__ == "__main__":
 					await ctx.embed_reply(f"Units, {unit1} and/or {unit2}, not found\nSee the conversions command")
 					return
 				await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
-				
+		
 		# help or prefix(es) DM or mention
-		elif (message.content.lower() in ("help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ("help", "prefix", "prefixes"):
+		elif (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
 			try:
 				prefixes = ctx.bot.command_prefix(ctx.bot, message)
 			except TypeError:  # if Beta (*)
 				prefixes = ctx.bot.command_prefix
-			if "help" in message.content.lower():
+			if any(string in message.content.lower() for string in ('?', "commands", "help")):
 				ctx.prefix = prefixes[0]
 				await ctx.send_help()
 			else:
