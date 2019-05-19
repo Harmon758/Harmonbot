@@ -5,10 +5,14 @@ import sys
 
 import clients
 
+sys.path.insert(0, "..")
+from units.files import create_folder
+sys.path.pop(0)
+
 path = clients.data_path + "/logs/"
-clients.create_folder(path + "aiohttp")
-clients.create_folder(path + "chat")
-clients.create_folder(path + "discord")
+create_folder(path + "aiohttp")
+create_folder(path + "chat")
+create_folder(path + "discord")
 
 # console log
 console_logger = logging.getLogger("console")

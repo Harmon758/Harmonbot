@@ -4,10 +4,15 @@ from discord.ext import commands
 
 import json
 import os
+import sys
 
 import clients
 from modules import utilities
 from utilities import checks
+
+sys.path.insert(0, "..")
+from units.files import create_folder
+sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Battlerite(bot))
@@ -37,7 +42,7 @@ class Battlerite(commands.Cog):
 			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
 	
 	async def load_mappings(self):
-		clients.create_folder(clients.data_path + "/battlerite")
+		create_folder(clients.data_path + "/battlerite")
 		if os.path.isfile(clients.data_path + "/battlerite/mappings.json"):
 			with open(clients.data_path + "/battlerite/mappings.json", 'r') as mappings_file:
 				self.mappings = json.load(mappings_file)

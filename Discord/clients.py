@@ -35,6 +35,10 @@ from utilities import errors
 from utilities.context import Context
 from utilities.help_command import HelpCommand
 
+sys.path.insert(0, "..")
+from units.files import create_folder
+sys.path.pop(0)
+
 # TODO: Relocate as Bot variables
 beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"  # Moved, update all references to
@@ -680,10 +684,6 @@ class Bot(commands.Bot):
 
 
 # Create folders
-
-def create_folder(folder):
-	if not os.path.exists(folder):
-		os.makedirs(folder)
 
 create_folder(data_path + "/permissions")
 create_folder(data_path + "/temp")
