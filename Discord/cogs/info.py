@@ -209,6 +209,6 @@ class Info(commands.Cog):
 		timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"]).replace(tzinfo = None)
 		await ctx.embed_reply(info, title = data["snippet"]["title"], title_url = url, 
 								thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], 
-								footer_text = "Published on", timestamp = timestamp)
+								footer_text = "Published", timestamp = timestamp)
 		# TODO: Handle invalid url
 
