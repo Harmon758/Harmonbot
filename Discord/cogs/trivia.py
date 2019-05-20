@@ -10,6 +10,7 @@ import unicodedata
 
 import aiohttp
 from bs4 import BeautifulSoup
+import dateutil.parser
 from pyparsing import Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
 
 from utilities import checks
@@ -49,6 +50,7 @@ class Trivia(commands.Cog):
 		Trivia game
 		Only your last answer is accepted
 		Answers prepended with ! or > are ignored
+		Questions are taken from Jeopardy!
 		'''
 		if ctx.guild.id in self.active:
 			channel = ctx.guild.get_channel(self.active[ctx.guild.id]["channel_id"])
@@ -103,17 +105,17 @@ class Trivia(commands.Cog):
 			await bet_message.edit(embed = embed)
 		self.active[ctx.guild.id]["question_countdown"] = self.wait_time
 		question_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
-												footer_text = f"You have {self.active[ctx.guild.id]['question_countdown']} seconds left to answer")
+												footer_text = f"You have {self.active[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date", timestamp = dateutil.parser.parse(data["airdate"]))
 		embed = question_message.embeds[0]
 		while self.active[question_message.guild.id]["question_countdown"]:
 			await asyncio.sleep(1)
 			self.active[question_message.guild.id]["question_countdown"] -= 1
-			embed.set_footer(text = f"You have {self.active[question_message.guild.id]['question_countdown']} seconds left to answer")
+			embed.set_footer(text = f"You have {self.active[question_message.guild.id]['question_countdown']} seconds left to answer | Air Date")
 			try:
 				await question_message.edit(embed = embed)
 			except (aiohttp.ClientConnectionError, discord.NotFound):
 				continue
-		embed.set_footer(text = "Time's up!")
+		embed.set_footer(text = "Time's up! | Air Date")
 		try:
 			await question_message.edit(embed = embed)
 		except discord.NotFound:
