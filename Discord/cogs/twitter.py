@@ -5,14 +5,16 @@ from discord.ext import commands
 import asyncio
 import functools
 import html
+import logging
 import sys
 import traceback
 
 import tweepy
 import urllib3
 
-from modules import logging
 from utilities import checks
+
+errors_logger = logging.getLogger("errors")
 
 def setup(bot):
 	bot.add_cog(Twitter(bot))
@@ -300,6 +302,6 @@ class Twitter(commands.Cog):
 		except Exception as e:
 			print("Exception in Twitter Task", file = sys.stderr)
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-			logging.errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
+			errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			return
 

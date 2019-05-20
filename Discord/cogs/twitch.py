@@ -7,13 +7,15 @@ import asyncio
 import dateutil.parser
 import itertools
 import json
+import logging
 import os
 import sys
 import traceback
 
 import clients
 from utilities import checks
-from modules import logging
+
+errors_logger = logging.getLogger("errors")
 
 def setup(bot):
 	bot.add_cog(Twitch(bot))
@@ -219,7 +221,7 @@ class Twitch(commands.Cog):
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-			logging.errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
+			errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			return
 		while not self.bot.is_closed():
 			try:
@@ -285,7 +287,7 @@ class Twitch(commands.Cog):
 			except Exception as e:
 				print("Exception in Twitch Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-				logging.errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
+				errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				await asyncio.sleep(60)
 	
 	async def process_twitch_streams(self, streams, type, match = None):

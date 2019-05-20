@@ -7,6 +7,7 @@ import datetime
 import functools
 import html
 import io
+import logging
 import re
 import sys
 import time
@@ -22,7 +23,8 @@ import feedparser
 import pytz
 
 from utilities import checks
-from modules import logging
+
+errors_logger = logging.getLogger("errors")
 
 def setup(bot):
 	bot.add_cog(RSS(bot))
@@ -323,7 +325,7 @@ class RSS(commands.Cog):
 			except Exception as e:
 				print("Exception in RSS Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-				logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
+				errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				print(f" (feed: {feed})")
 				await asyncio.sleep(60)
 	
@@ -359,7 +361,7 @@ class RSS(commands.Cog):
 			except Exception as e:
 				print(f"Failed to initialize feed in RSS Task: {feed}\nException:", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-				logging.errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
+				errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				self.feeds_failed_to_initialize.append(feed)
 		await self.bot.wait_until_ready()
 

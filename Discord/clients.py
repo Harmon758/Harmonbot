@@ -31,6 +31,7 @@ import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 
+from modules.logging import initialize_logging
 from utilities import errors
 from utilities.context import Context
 from utilities.help_command import HelpCommand
@@ -55,6 +56,7 @@ class Bot(commands.Bot):
 	def __init__(self, command_prefix):
 		
 		# Constants necessary for initialization
+		self.data_path = "data/beta" if beta else "data"
 		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
 								"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
 								"not enough space here to", "the meaning of life is", "the Reimann hypothesis", 
@@ -69,6 +71,9 @@ class Bot(commands.Bot):
 								"with Voyager 1", "with Waste Allocation Load Lifter: Earth-Class", "world domination", 
 								"with Clyde")
 		self.stream_url = "https://www.twitch.tv/harmonbot"
+		
+		# Initialize logging
+		initialize_logging(self.data_path)
 		
 		# Initialization
 		help_command = HelpCommand(command_attrs = {"aliases": ["commands"], "hidden": True})
@@ -85,7 +90,6 @@ class Bot(commands.Bot):
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.console_line_limit = 167
 		self.console_message_prefix = "Discord Harmonbot: "
-		self.data_path = "data/beta" if beta else "data"
 		self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: use everywhere
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"

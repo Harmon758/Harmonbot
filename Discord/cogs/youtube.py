@@ -6,6 +6,7 @@ import asyncio
 import datetime
 import itertools
 import json
+import logging
 import os
 import sys
 import traceback
@@ -16,9 +17,10 @@ import feedparser
 import isodate
 
 import clients
-from modules import logging
 from modules import utilities
 from utilities import checks
+
+errors_logger = logging.getLogger("errors")
 
 def setup(bot):
 	bot.add_cog(YouTube(bot))
@@ -280,7 +282,7 @@ class YouTube(commands.Cog):
 			except Exception as e:
 				print("Exception in YouTube Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-				logging.errors_logger.error("Uncaught YouTube Task exception\n", exc_info = (type(e), e, e.__traceback__))
+				errors_logger.error("Uncaught YouTube Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				await asyncio.sleep(60)
 	
 	# TODO: Follow channels/new video uploads

@@ -8,6 +8,7 @@ if __name__ == "__main__":
 	import asyncio
 	import ctypes
 	import json
+	import logging
 	import os
 	import platform
 	import re
@@ -20,10 +21,10 @@ if __name__ == "__main__":
 	
 	import clients
 	from modules import conversions
-	from modules import logging
 	from modules import utilities
 	from utilities import audio_player
 	
+	chat_logger = logging.getLogger("chat")
 	mention_spammers = []
 	
 	# Use Proactor Event Loop
@@ -100,7 +101,7 @@ if __name__ == "__main__":
 		else:
 			log_entry += "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
 		log_entry += f": {message.content} {[embed.to_dict() for embed in message.embeds]}"
-		logging.chat_logger.info(log_entry)
+		chat_logger.info(log_entry)
 		
 		# Get Context
 		ctx = await client.get_context(message)
