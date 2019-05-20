@@ -695,7 +695,7 @@ class Bot(commands.Bot):
 
 def create_file(filename, *, content = {}):
 	try:
-		with open(data_path + "/{}.json".format(filename), 'x') as file:
+		with open(f"{data_path}/{filename}.json", 'x') as file:
 			json.dump(content, file, indent = 4)
 	except FileExistsError:
 		pass
