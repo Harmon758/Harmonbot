@@ -693,14 +693,16 @@ class Bot(commands.Bot):
 
 # Custom prefixes (Create files)
 
-def create_file(filename, *, content = {}):
+def create_file(filename, content = None):
+	if content is None:
+		content = {}
 	try:
 		with open(f"{data_path}/{filename}.json", 'x') as file:
 			json.dump(content, file, indent = 4)
 	except FileExistsError:
 		pass
 	except OSError:
-		pass
+		pass  # TODO: Handle?
 
 create_file("prefixes")
 
