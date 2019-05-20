@@ -42,7 +42,7 @@ class Context(commands.Context):
 		if isinstance(self.channel, discord.DMChannel) or getattr(self.channel.permissions_for(self.channel.guild.me), "embed_links", None):
 			message = await self.send(*args, embed = embed, **kwargs)
 		elif not (title or title_url or image_url or thumbnail_url or footer_text or footer_icon_url or timestamp or fields):
-			message = await self.reply(utilities.clean_content(description))
+			message = await self.reply(utilities.clean_content(str(description)))
 			# TODO: Clean role + user mentions, etc.?
 		else:
 			raise errors.MissingCapability(["embed_links"])
