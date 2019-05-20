@@ -31,10 +31,10 @@ import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 
-from modules.logging import initialize_logging
 from utilities import errors
 from utilities.context import Context
 from utilities.help_command import HelpCommand
+from utilities.logging import initialize_logging
 
 sys.path.insert(0, "..")
 from units.files import create_folder
