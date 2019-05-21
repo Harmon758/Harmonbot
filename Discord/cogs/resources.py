@@ -77,7 +77,7 @@ class Resources(commands.Cog):
 	@checks.not_forbidden()
 	async def cve(self, ctx, identifier_number : str):
 		identifier_number = identifier_number.lower()
-		if identifier_number.startswith("-"):
+		if identifier_number.startswith('-'):
 			identifier_number = "cve" + identifier_number
 		elif not identifier_number.startswith("cve"):
 			identifier_number = "cve-" + identifier_number
