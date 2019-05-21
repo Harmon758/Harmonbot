@@ -75,13 +75,13 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def cve(self, ctx, id : str):
-		id = id.lower()
-		if id.startswith("-"):
-			id = "cve" + id
-		elif not id.startswith("cve"):
-			id = "cve-" + id
-		async with ctx.bot.aiohttp_session.get("http://cve.circl.lu/api/cve/{}".format(id)) as resp:
+	async def cve(self, ctx, identifier_number : str):
+		identifier_number = identifier_number.lower()
+		if identifier_number.startswith("-"):
+			identifier_number = "cve" + identifier_number
+		elif not identifier_number.startswith("cve"):
+			identifier_number = "cve-" + identifier_number
+		async with ctx.bot.aiohttp_session.get("http://cve.circl.lu/api/cve/{}".format(identifier_number)) as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Error: Not found")
