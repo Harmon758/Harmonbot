@@ -76,17 +76,14 @@ class Resources(commands.Cog):
 	@commands.command()
 	@checks.not_forbidden()
 	async def cve(self, ctx, identifier_number : str):
-		identifier_number = identifier_number.lower()
-		if identifier_number.startswith('-'):
-			identifier_number = "cve" + identifier_number
-		elif not identifier_number.startswith("cve"):
+		identifier_number = identifier_number.lower().lstrip('-')
+		if not identifier_number.startswith("cve-"):
 			identifier_number = "cve-" + identifier_number
 		url = f"http://cve.circl.lu/api/cve/{identifier_number}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: Not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Not found")
 		await ctx.embed_reply(data["summary"], title = data["id"], fields = (("CVSS", data["cvss"]),), 
 								footer_text = "Published", timestamp = dateutil.parser.parse(data["Published"]))
 	
