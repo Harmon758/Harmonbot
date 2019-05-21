@@ -216,7 +216,7 @@ if __name__ == "__main__":
 	
 	ci = os.getenv("CI")
 	
-	if ci or clients.beta:
+	if ci or client.beta:
 		client.command_prefix = '*'
 		token = os.getenv("DISCORD_BETA_BOT_TOKEN")
 	else:

@@ -41,7 +41,7 @@ from units.files import create_folder
 sys.path.pop(0)
 
 # TODO: Relocate as Bot variables
-beta = any("beta" in arg.lower() for arg in sys.argv)
+beta = any("beta" in arg.lower() for arg in sys.argv)  # Moved, only for data_path
 data_path = "data/beta" if beta else "data"  # Moved, update all references to
 library_files = "D:/Data (D)/Music/"
 wait_time = 15.0
@@ -55,7 +55,7 @@ class Bot(commands.Bot):
 		
 		# Constants necessary for initialization
 		self.beta = any("beta" in arg.lower() for arg in sys.argv)
-		self.data_path = "data/beta" if beta else "data"
+		self.data_path = "data/beta" if self.beta else "data"
 		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
 								"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
 								"not enough space here to", "the meaning of life is", "the Reimann hypothesis", 
@@ -277,10 +277,12 @@ class Bot(commands.Bot):
 			return
 		if self.connected_to_database.is_set():
 			self.connected_to_database.clear()
-			self.database_connection_pool = await asyncpg.create_pool(user = "harmonbot", 
-																		password = self.DATABASE_PASSWORD, 
-																		database = "harmonbot_beta" if beta else "harmonbot", 
-																		host = self.DATABASE_HOST)
+			self.database_connection_pool = await asyncpg.create_pool(
+												user = "harmonbot", 
+												password = self.DATABASE_PASSWORD, 
+												database = "harmonbot_beta" if self.beta else "harmonbot", 
+												host = self.DATABASE_HOST
+											)
 			self.db = self.database = self.database_connection_pool
 			self.connected_to_database.set()
 		else:
