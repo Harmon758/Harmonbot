@@ -410,13 +410,13 @@ class Random(commands.Cog):
 		'''Random dad joke'''
 		# TODO: search, GraphQL?
 		if joke_id:
-			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/j/" + joke_id, headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
+			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/j/" + joke_id, headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}) as resp:
 				data = await resp.json()
 				if data["status"] == 404:
 					await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 					return
 		else:
-			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
+			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}) as resp:
 				data = await resp.json()
 		await ctx.embed_reply(data["joke"], footer_text = "Joke ID: {}".format(data["id"]))
 	
@@ -425,7 +425,7 @@ class Random(commands.Cog):
 	async def joke_dad_image(self, ctx, joke_id : str = ""):
 		'''Random dad joke as an image'''
 		if not joke_id:
-			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": clients.user_agent}) as resp:
+			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}) as resp:
 				data = await resp.json()
 			joke_id = data["id"]
 		await ctx.embed_reply(image_url = "https://icanhazdadjoke.com/j/{}.png".format(joke_id))
