@@ -123,7 +123,7 @@ class AudioPlayer:
 				self.current["stream"].start()
 				await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing", title = current["info"].get("title", "N/A"), title_url = current["info"].get("webpage_url"), timestamp = current["timestamp"], footer_text = current["requester"].display_name, footer_icon_url = current["requester"].avatar_url or current["requester"].default_avatar_url, thumbnail_url = current["info"].get("thumbnail"))
 			else:
-				embed = discord.Embed(title = current["info"].get("title", "N/A"), url = current["info"].get("webpage_url"), description = ":arrow_down: Downloading..", timestamp = current["timestamp"], color = clients.bot_color)
+				embed = discord.Embed(title = current["info"].get("title", "N/A"), url = current["info"].get("webpage_url"), description = ":arrow_down: Downloading..", timestamp = current["timestamp"], color = self.bot.bot_color)
 				embed.set_footer(text = current["requester"].display_name, icon_url = current["requester"].avatar_url or current["requester"].default_avatar_url)
 				thumbnail = current["info"].get("thumbnail")
 				if thumbnail: embed.set_thumbnail(url = thumbnail)
@@ -223,7 +223,7 @@ class AudioPlayer:
 	def current_embed(self):
 		if not self.current or self.current["stream"].is_done():
 			raise errors.AudioNotPlaying
-		embed = discord.Embed(title = self.current.get("info", {}).get("title"), url = self.current.get("info", {}).get("webpage_url"), color = clients.bot_color)
+		embed = discord.Embed(title = self.current.get("info", {}).get("title"), url = self.current.get("info", {}).get("webpage_url"), color = self.bot.bot_color)
 		requester = self.current.get("requester")
 		if requester: embed.set_footer(text = "Added by " + requester.display_name, icon_url = requester.avatar_url or requester.default_avatar_url)
 		timestamp = self.current.get("timestamp")

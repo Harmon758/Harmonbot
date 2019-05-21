@@ -45,9 +45,6 @@ beta = any("beta" in arg.lower() for arg in sys.argv)  # Moved, only for data_pa
 data_path = "data/beta" if beta else "data"  # Moved, update all references to
 wait_time = 15.0
 
-# TODO: Already moved to Bot constants, update all references to
-bot_color = discord.Color.blurple()
-
 class Bot(commands.Bot):
 	
 	def __init__(self, command_prefix):
