@@ -333,12 +333,9 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def fact_cat(self, ctx):
 		'''Random fact about cats'''
-		async with ctx.bot.aiohttp_session.get("http://catfacts-api.appspot.com/api/facts") as resp:
-			data = await resp.json()
-		if data["success"]:
-			await ctx.embed_reply(data["facts"][0])
-		else:
-			await ctx.embed_reply(":no_entry: Error")
+		async with ctx.bot.aiohttp_session.get("https://cat-facts-as-a-service.appspot.com/fact") as resp:
+			fact = await resp.text()
+		await ctx.embed_reply(fact)
 	
 	@fact.command(name = "date")
 	@checks.not_forbidden()
