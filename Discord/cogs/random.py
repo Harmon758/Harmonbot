@@ -333,7 +333,8 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def fact_cat(self, ctx):
 		'''Random fact about cats'''
-		async with ctx.bot.aiohttp_session.get("https://cat-facts-as-a-service.appspot.com/fact") as resp:
+		url = "https://cat-facts-as-a-service.appspot.com/fact"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			fact = await resp.text()
 		await ctx.embed_reply(fact)
 	
