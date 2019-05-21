@@ -130,6 +130,7 @@ class Bot(commands.Bot):
 		
 		# Variables
 		self.guild_settings = {}
+		self.online_time = datetime.datetime.utcnow()
 		self.session_commands_executed = 0
 		self.session_commands_usage = {}
 		
