@@ -54,6 +54,7 @@ class Bot(commands.Bot):
 	def __init__(self, command_prefix):
 		
 		# Constants necessary for initialization
+		self.beta = any("beta" in arg.lower() for arg in sys.argv)
 		self.data_path = "data/beta" if beta else "data"
 		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
 								"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
