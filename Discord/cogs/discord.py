@@ -285,17 +285,15 @@ class Discord(commands.Cog):
 		Your own or someone else's discriminator
 		'''
 		if not name:
-			await ctx.embed_reply("Your discriminator: #" + ctx.author.discriminator)
-			return
+			return await ctx.embed_reply("Your discriminator: #" + ctx.author.discriminator)
 		if not ctx.guild:
-			await ctx.embed_reply(":no_entry: Please use that command in a server")
-			return
+			return await ctx.embed_reply(":no_entry: Please use that command in a server")
 		flag = True
 		for member in ctx.guild.members:
 			if member.name == name:
 				await ctx.embed_reply(name + "'s discriminator: #" + member.discriminator, footer_text = str(member), footer_icon_url = member.avatar_url)
 				flag = False
-		if flag and name:
+		if flag:
 			await ctx.embed_reply(name + " was not found on this server")
 	
 	@user.command(name = "name")
