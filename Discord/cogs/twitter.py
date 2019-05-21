@@ -21,9 +21,11 @@ def setup(bot):
 
 class TwitterStreamListener(tweepy.StreamListener):
 	
-	def __init__(self, bot, blacklisted_handles = []):
+	def __init__(self, bot, blacklisted_handles = None):
 		super().__init__()
 		self.bot = bot
+		if blacklisted_handles is None:
+			blacklisted_handles = []
 		self.blacklisted_handles = blacklisted_handles
 		self.stream = None
 		self.feeds = {}
