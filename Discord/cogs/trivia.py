@@ -79,7 +79,7 @@ class Trivia(commands.Cog):
 		try:
 			async with ctx.bot.aiohttp_session.get("http://jservice.io/api/random") as resp:
 				data = (await resp.json())[0]
-		except (aiohttp.ClientConnectionError, asyncio.TimeoutError) as e:
+		except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
 			return await ctx.embed_reply(":no_entry: Error: Error connecting to API")
 		if not data.get("question") or not data.get("category") or data["question"] == '=':
 			if response:
