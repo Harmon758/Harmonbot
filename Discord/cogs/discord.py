@@ -294,8 +294,7 @@ class Discord(commands.Cog):
 		for member in ctx.guild.members:
 			if member.name == name:
 				embed = discord.Embed(description = name + "'s discriminator: #" + member.discriminator, color = clients.bot_color)
-				avatar = member.default_avatar_url if not member.avatar else member.avatar_url
-				embed.set_author(name = str(member), icon_url = avatar)
+				embed.set_author(name = str(member), icon_url = member.avatar_url)
 				await ctx.send("", embed = embed)
 				flag = False
 		if flag and name:
