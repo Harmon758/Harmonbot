@@ -81,7 +81,7 @@ class Resources(commands.Cog):
 			identifier_number = "cve" + identifier_number
 		elif not identifier_number.startswith("cve"):
 			identifier_number = "cve-" + identifier_number
-		async with ctx.bot.aiohttp_session.get("http://cve.circl.lu/api/cve/{}".format(identifier_number)) as resp:
+		async with ctx.bot.aiohttp_session.get(f"http://cve.circl.lu/api/cve/{identifier_number}") as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Error: Not found")
