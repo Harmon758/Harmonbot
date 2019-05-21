@@ -60,7 +60,9 @@ class Resources(commands.Cog):
 			params = {"numResult": 1, "keywords": color}
 		await self.process_color(ctx, url, params)
 	
-	async def process_color(self, ctx, url, params = {}):
+	async def process_color(self, ctx, url, params = None):
+		if params is None:
+			params = {}
 		params["format"] = "json"
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
