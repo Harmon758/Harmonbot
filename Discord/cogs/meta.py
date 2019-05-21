@@ -206,7 +206,7 @@ class Meta(commands.Cog):
 			stats = json.load(stats_file)
 		
 		now = datetime.datetime.utcnow()
-		uptime = now - clients.online_time
+		uptime = now - ctx.bot.online_time
 		uptime = utilities.secs_to_letter_format(int(uptime.total_seconds()))
 		total_members = sum(len(g.members) for g in self.bot.guilds)
 		total_members_online = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
@@ -248,7 +248,7 @@ class Meta(commands.Cog):
 	async def uptime(self, ctx):
 		'''Bot uptime'''
 		now = datetime.datetime.utcnow()
-		uptime = now - clients.online_time
+		uptime = now - ctx.bot.online_time
 		await ctx.embed_reply(utilities.secs_to_letter_format(uptime.total_seconds()))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)

@@ -45,7 +45,6 @@ beta = any("beta" in arg.lower() for arg in sys.argv)
 data_path = "data/beta" if beta else "data"  # Moved, update all references to
 library_files = "D:/Data (D)/Music/"
 wait_time = 15.0
-online_time = datetime.datetime.utcnow()
 
 # TODO: Already moved to Bot constants, update all references to
 bot_color = discord.Color.blurple()
@@ -585,7 +584,7 @@ class Bot(commands.Bot):
 		with open(data_path + "/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		now = datetime.datetime.utcnow()
-		uptime = now - online_time
+		uptime = now - self.online_time
 		stats["uptime"] += uptime.total_seconds()
 		with open(data_path + "/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
