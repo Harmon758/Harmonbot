@@ -18,7 +18,6 @@ from urllib import parse
 import aiml
 import aiohttp
 from aiohttp import web
-import asyncpg
 import clarifai
 import clarifai.rest
 import imgurpython
