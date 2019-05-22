@@ -9,7 +9,6 @@ import os
 
 import clients
 
-
 class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	
 	'''
