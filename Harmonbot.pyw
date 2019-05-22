@@ -74,7 +74,8 @@ if __name__ == "__main__":
 	process_args["telegram"] = [sys.executable, "-u", "Telegram_Harmonbot.py"]
 	
 	def start_process(process):
-		process_kwargs = {"stdout": PIPE, "stderr": PIPE, "bufsize": 1, "universal_newlines": True}
+		process_kwargs = {"stdout": PIPE, "stderr": PIPE, "bufsize": 1, "encoding": "UTF-8"}
+		# "errors": "backslashreplace" necessary?
 		if process == "discord_listener":
 			process_kwargs["creationflags"] = CREATE_NO_WINDOW
 		processes[process] = Popen(process_args[process], cwd = process.split('_')[0].capitalize(), **process_kwargs)
