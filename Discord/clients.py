@@ -228,7 +228,8 @@ class Bot(commands.Bot):
 		self.loop.run_until_complete(initialize_aiohttp_access_logging(self.database))
 		self.aiohttp_web_app = web.Application()
 		self.aiohttp_web_app.add_routes([web.get('/', self.web_server_get_handler), 
-										web.post('/', self.web_server_post_handler)])
+										web.post('/', self.web_server_post_handler), 
+										web.get("/robots.txt", self.web_server_robots_txt)])
 		self.aiohttp_app_runner = web.AppRunner(self.aiohttp_web_app, 
 												access_log_class = AiohttpAccessLogger)
 		self.aiohttp_site = None  # Initialized when starting web server
@@ -346,6 +347,9 @@ class Bot(commands.Bot):
 			return web.Response()
 		else:
 			return web.Response(status = 400)  # Return 400 Bad Request
+	
+	async def web_server_robots_txt(self, request):
+		return web.Response(text = "User-agent: *\nDisallow: /")
 	
 	async def on_ready(self):
 		self.cache_channel = self.get_channel(self.cache_channel_id)
