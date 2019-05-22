@@ -18,9 +18,11 @@ class ConsoleLogger(object):
 	'''Console Logger'''
 	
 	def __init__(self, log, prefix = ""):
-		self.console = sys.__stdout__
 		self.log = log
 		self.prefix = prefix
+		
+		self.console = sys.__stdout__
+		self.console.reconfigure(encoding = "UTF-8")
 	
 	def write(self, message):
 		self.console.write(message)
