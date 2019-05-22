@@ -33,8 +33,9 @@ from wordnik import swagger, WordApi, WordsApi
 
 from utilities import errors
 from utilities.context import Context
+from utilities.database import create_database_pool
 from utilities.help_command import HelpCommand
-from utilities.logging import initialize_logging
+from utilities.logging import AiohttpAccessLogger, initialize_aiohttp_access_logging, initialize_logging
 
 sys.path.insert(0, "..")
 from units.files import create_folder
@@ -134,23 +135,20 @@ class Bot(commands.Bot):
 		# Credentials
 		for credential in ("BATTLE_NET_API_KEY", "BATTLERITE_API_KEY", 
 							"BING_SPELL_CHECK_API_SUBSCRIPTION_KEY", "CLARIFAI_API_KEY", "CLEVERBOT_API_KEY", 
-							"DATABASE_PASSWORD", "DISCORDBOTLIST.COM_API_TOKEN", "DISCORD.BOTS.GG_API_TOKEN", 
-							"DISCORDBOTS.ORG_API_KEY", "FIXER_API_KEY", "FONO_API_TOKEN", "GIPHY_PUBLIC_BETA_API_KEY", 
-							"GOOGLE_API_KEY", "GOOGLE_CUSTOM_SEARCH_ENGINE_ID", "HTTP_SERVER_CALLBACK_URL", "IMGUR_CLIENT_ID", 
+							"DISCORDBOTLIST.COM_API_TOKEN", "DISCORD.BOTS.GG_API_TOKEN", "DISCORDBOTS.ORG_API_KEY", 
+							"FIXER_API_KEY", "FONO_API_TOKEN", "GIPHY_PUBLIC_BETA_API_KEY", "GOOGLE_API_KEY", 
+							"GOOGLE_CUSTOM_SEARCH_ENGINE_ID", "HTTP_SERVER_CALLBACK_URL", "IMGUR_CLIENT_ID", 
 							"IMGUR_CLIENT_SECRET", "NEWSAPI.ORG_API_KEY", "OMDB_API_KEY", "OSU_API_KEY", "OWM_API_KEY", 
-							"PAGE2IMAGES_REST_API_KEY", "POSTGRES_HOST", "SENTRY_DSN", "SPOTIFY_CLIENT_ID", 
-							"SPOTIFY_CLIENT_SECRET_KEY", "STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITTER_CONSUMER_KEY", 
-							"TWITTER_CONSUMER_SECRET", "TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET", 
-							"WARGAMING_APPLICATION_ID", "WOLFRAM_ALPHA_APP_ID", "WORDNIK_API_KEY", "YANDEX_TRANSLATE_API_KEY"):
+							"PAGE2IMAGES_REST_API_KEY", "SENTRY_DSN", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET_KEY", 
+							"STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_SECRET", 
+							"TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET", "WARGAMING_APPLICATION_ID", 
+							"WOLFRAM_ALPHA_APP_ID", "WORDNIK_API_KEY", "YANDEX_TRANSLATE_API_KEY"):
 			setattr(self, credential.replace('.', '_'), os.getenv(credential))
 		if not self.BATTLE_NET_API_KEY:
 			self.BATTLE_NET_API_KEY = os.getenv("BLIZZARD_API_KEY")
 		self.BLIZZARD_API_KEY = self.BATTLE_NET_API_KEY
 		self.BING_SPELL_CHECK_API_KEY = self.BING_SPELL_CHECK_API_SUBSCRIPTION_KEY
 		self.GIPHY_API_KEY = self.GIPHY_PUBLIC_BETA_API_KEY
-		if not self.POSTGRES_HOST:
-			self.POSTGRES_HOST = "localhost"
-		self.DATABASE_HOST = self.POSTGRES_HOST
 		
 		# External Clients
 		## Clarifai
@@ -225,13 +223,15 @@ class Bot(commands.Bot):
 		self.db = self.database = self.database_connection_pool = None
 		self.connected_to_database = asyncio.Event()
 		self.connected_to_database.set()
-		self.loop.create_task(self.initialize_database())
+		self.loop.run_until_complete(self.initialize_database())
 		
 		# HTTP Web Server
+		self.loop.run_until_complete(initialize_aiohttp_access_logging(self.database))
 		self.aiohttp_web_app = web.Application()
 		self.aiohttp_web_app.add_routes([web.get('/', self.web_server_get_handler), 
 										web.post('/', self.web_server_post_handler)])
-		self.aiohttp_app_runner = web.AppRunner(self.aiohttp_web_app)
+		self.aiohttp_app_runner = web.AppRunner(self.aiohttp_web_app, 
+												access_log_class = AiohttpAccessLogger)
 		self.aiohttp_site = None  # Initialized when starting web server
 		
 		# Create folders
@@ -274,13 +274,7 @@ class Bot(commands.Bot):
 			return
 		if self.connected_to_database.is_set():
 			self.connected_to_database.clear()
-			self.database_connection_pool = await asyncpg.create_pool(
-												user = "harmonbot", 
-												password = self.DATABASE_PASSWORD, 
-												database = "harmonbot_beta" if self.beta else "harmonbot", 
-												host = self.DATABASE_HOST
-											)
-			self.db = self.database = self.database_connection_pool
+			self.db = self.database = self.database_connection_pool = await create_database_pool()
 			self.connected_to_database.set()
 		else:
 			await self.connected_to_database.wait()

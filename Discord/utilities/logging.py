@@ -1,7 +1,13 @@
 
+import asyncio
+import datetime
 import logging
 import logging.handlers
 import sys
+
+from aiohttp.web_log import AccessLogger
+
+from utilities.database import create_database_connection
 
 sys.path.insert(0, "..")
 from units.files import create_folder
@@ -76,15 +82,19 @@ def initialize_logging(data_path):
 	
 	# handler to output to console
 	## console_handler = logging.StreamHandler(sys.stdout)
+	# not used by aiohttp server log
 	
 	# aiohttp logs
 	
 	# aiohttp server access log
-	aiohttp_access_logger = logging.getLogger("aiohttp.access")
-	aiohttp_access_logger.setLevel(logging.DEBUG)
-	aiohttp_access_logger_handler = logging.FileHandler(filename = path + "aiohttp/access.log", encoding = "UTF-8", mode = 'a')
-	aiohttp_access_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
-	aiohttp_access_logger.addHandler(aiohttp_access_logger_handler)
+	# replaced by AiohttpAccessLogger logging to database
+	## TODO: Rotate
+	## aiohttp_access_logger = logging.getLogger("aiohttp.access")
+	## aiohttp_access_logger.setLevel(logging.DEBUG)
+	## aiohttp_access_logger_handler = logging.FileHandler(filename = path + "aiohttp/access.log", 
+	##														encoding = "UTF-8", mode = 'a')
+	## aiohttp_access_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+	## aiohttp_access_logger.addHandler(aiohttp_access_logger_handler)
 	
 	# aiohttp client log
 	aiohttp_client_logger = logging.getLogger("aiohttp.client")
@@ -106,4 +116,42 @@ def initialize_logging(data_path):
 	aiohttp_web_logger_handler = logging.FileHandler(filename = path + "aiohttp/web.log", encoding = "UTF-8", mode = 'a')
 	aiohttp_web_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
 	aiohttp_web_logger.addHandler(aiohttp_web_logger_handler)
+
+class AiohttpAccessLogger(AccessLogger):
+	
+	def log(self, request, response, time):
+		# super().log(request, response, time)
+		asyncio.create_task(self.log_to_database(request, response, time))
+	
+	async def log_to_database(self, request, response, time):
+		async with create_database_connection() as connection:
+			await connection.execute(
+				"""
+				INSERT INTO aiohttp.access_log
+				VALUES ($1, $2, $3, $4, $5, $6, $7)
+				""", 
+				datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds = time), 
+				self._format_a(request, response, time), 
+				self._format_r(request, response, time), 
+				response.status, response.body_length, 
+				self._format_i("Referer", request, response, time), 
+				self._format_i("User-Agent", request, response, time)
+			)
+
+
+async def initialize_aiohttp_access_logging(database):
+	await database.execute("CREATE SCHEMA IF NOT EXISTS aiohttp")
+	await database.execute(
+		"""
+		CREATE TABLE IF NOT EXISTS aiohttp.access_log (
+			request_start_timestamp		TIMESTAMPTZ PRIMARY KEY, 
+			remote_ip_address			TEXT, 
+			request_first_line			TEXT, 
+			response_status_code		INT, 
+			response_bytes_size			INT, 
+			request_referer				TEXT, 
+			request_user_agent			TEXT
+		)
+		"""
+	)
 
