@@ -135,7 +135,7 @@ class AiohttpAccessLogger(AccessLogger):
 				self._format_r(request, response, time), 
 				response.status, response.body_length, 
 				self._format_i("Referer", request, response, time), 
-				self._format_i("User-Agent", request, response, time)
+				self._format_i("User-Agent", request, response, time).encode("UTF-8", "backslashreplace").decode("UTF-8")
 			)
 
 
