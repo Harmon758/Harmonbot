@@ -115,9 +115,9 @@ if __name__ == "__main__":
 					# TODO: Handle across different servers
 					if message.guild.me.permissions_in(message.channel).kick_members:
 						# TODO: Check hierarchy, if able to kick
-						await ctx.author.send(f"You were kicked from {message.guild} for spamming mentions")
 						await ctx.bot.kick(message.author)
 						await ctx.send(f"{message.author} has been kicked for spamming mentions")
+						await ctx.author.send(f"You were kicked from {message.guild} for spamming mentions")
 					else:
 						await ctx.send("I need permission to kick members from the server to enforce anti-spam")
 				else:
