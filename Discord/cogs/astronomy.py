@@ -140,12 +140,18 @@ class Astronomy(commands.Cog):
 		# Spin-Orbit Misalignment
 		# Sky-projected angle between the planetary orbital spin and the stellar rotational spin
 		lambda_angle = ""
-		if data["lambda_angle"]["value"]: lambda_angle += str(data["lambda_angle"]["value"])
-		if data["lambda_angle"]["error_min"] or data["lambda_angle"]["error_max"]:
-			if data["lambda_angle"]["error_min"] == data["lambda_angle"]["error_max"]: lambda_angle += '±' + str(data["lambda_angle"]["error_min"])
-			else: lambda_angle += "(-{0[error_min]}/+{0[error_max]})".format(data["lambda_angle"])
-		if data["lambda_angle"]["value"]: lambda_angle += data["lambda_angle"]["unit"]
-		if lambda_angle: fields.append(("Spin-Orbit Misalignment", lambda_angle))
+		lambda_angle_data = data.get("lambda_angle") or {}
+		if lambda_angle_data.get("value"):
+			lambda_angle += str(lambda_angle_data["value"])
+		if lambda_angle_data.get("error_min") or lambda_angle_data.get("error_max"):
+			if lambda_angle_data.get("error_min") == lambda_angle_data.get("error_max"):
+				lambda_angle += '±' + str(lambda_angle_data["error_min"])
+			else:
+				lambda_angle += "(-{0[error_min]}/+{0[error_max]})".format(lambda_angle_data)
+		if lambda_angle_data.get("value"):
+			lambda_angle += lambda_angle_data["unit"]
+		if lambda_angle:
+			fields.append(("Spin-Orbit Misalignment", lambda_angle))
 		# Periastron Time
 		# https://exoplanetarchive.ipac.caltech.edu/docs/parhelp.html#Obs_Time_Periastron
 		time_periastron = ""
@@ -156,35 +162,56 @@ class Astronomy(commands.Cog):
 		if time_periastron: fields.append(("Periastron Time", time_periastron))
 		# Conjunction Time
 		time_conjonction = ""
-		if data["time_conjonction"]["value"]: time_conjonction += str(data["time_conjonction"]["value"])
-		if data["time_conjonction"]["error_min"] or data["time_conjonction"]["error_max"]:
-			if data["time_conjonction"]["error_min"] == data["time_conjonction"]["error_max"]: time_conjonction += '±' + str(data["time_conjonction"]["error_min"])
-			else: time_conjonction += "(-{0[error_min]}/+{0[error_max]})".format(data["time_conjonction"]) # Necessary?
-		if time_conjonction: fields.append(("Conjunction Time", time_conjonction))
+		time_conjonction_data = data.get("time_conjonction") or {}
+		if time_conjonction_data.get("value"):
+			time_conjonction += str(time_conjonction_data["value"])
+		if time_conjonction_data.get("error_min") or time_conjonction_data.get("error_max"):
+			if time_conjonction_data.get("error_min") == time_conjonction_data("error_max"):
+				time_conjonction += '±' + str(time_conjonction_data["error_min"])
+			else:
+				time_conjonction += "(-{0[error_min]}/+{0[error_max]})".format(time_conjonction_data) # Necessary?
+		if time_conjonction:
+			fields.append(("Conjunction Time", time_conjonction))
 		# Primary Transit
 		# in Julian Days (JD)
 		primary_transit = ""
-		if data["primary_transit"]["value"]: primary_transit += str(data["primary_transit"]["value"])
-		if data["primary_transit"]["error_min"] or data["primary_transit"]["error_max"]:
-			if data["primary_transit"]["error_min"] == data["primary_transit"]["error_max"]: primary_transit += '±' + str(data["primary_transit"]["error_min"])
-			else: primary_transit += "(-{0[error_min]}/+{0[error_max]})".format(data["primary_transit"]) # Necessary?
-		if primary_transit: fields.append(("Primary Transit", primary_transit))
+		primary_transit_data = data.get("primary_transit") or {}
+		if primary_transit_data.get("value"):
+			primary_transit += str(primary_transit_data["value"])
+		if primary_transit_data.get("error_min") or primary_transit_data.get("error_max"):
+			if primary_transit_data.get("error_min") == primary_transit_data.get("error_max"):
+				primary_transit += '±' + str(primary_transit_data["error_min"])
+			else:
+				primary_transit += "(-{0[error_min]}/+{0[error_max]})".format(primary_transit_data) # Necessary?
+		if primary_transit:
+			fields.append(("Primary Transit", primary_transit))
 		# Secondary Transit
 		# in Julian Days (JD)
 		secondary_transit = ""
-		if data["secondary_transit"]["value"]: secondary_transit += str(data["secondary_transit"]["value"])
-		if data["secondary_transit"]["error_min"] or data["secondary_transit"]["error_max"]:
-			if data["secondary_transit"]["error_min"] == data["secondary_transit"]["error_max"]: secondary_transit += '±' + str(data["secondary_transit"]["error_min"])
-			else: secondary_transit += "(-{0[error_min]}/+{0[error_max]})".format(data["secondary_transit"])
-		if secondary_transit: fields.append(("Secondary Transit", secondary_transit))
+		secondary_transit_data = data.get("secondary_transit") or {}
+		if secondary_transit_data.get("value"):
+			secondary_transit += str(secondary_transit_data["value"])
+		if secondary_transit_data.get("error_min") or secondary_transit_data.get("error_max"):
+			if secondary_transit_data.get("error_min") == secondary_transit_data.get("error_max"):
+				secondary_transit += '±' + str(secondary_transit_data["error_min"])
+			else:
+				secondary_transit += "(-{0[error_min]}/+{0[error_max]})".format(secondary_transit_data)
+		if secondary_transit:
+			fields.append(("Secondary Transit", secondary_transit))
 		# Impact Parameter
 		impact_parameter = ""
-		if data["impact_parameter"]["value"]: impact_parameter += str(data["impact_parameter"]["value"])
-		if data["impact_parameter"]["error_min"] or data["impact_parameter"]["error_max"]:
-			if data["impact_parameter"]["error_min"] == data["impact_parameter"]["error_max"]: impact_parameter += '±' + str(data["impact_parameter"]["error_min"])
-			else: impact_parameter += "(-{0[error_min]}/+{0[error_max]})".format(data["impact_parameter"]) # Necessary?
-		if data["impact_parameter"]["value"]: impact_parameter += data["impact_parameter"]["unit"]
-		if impact_parameter: fields.append(("Impact Parameter", impact_parameter))
+		impact_parameter_data = data.get("impact_parameter") or {}
+		if impact_parameter_data.get("value"):
+			impact_parameter += str(impact_parameter_data["value"])
+		if impact_parameter_data.get("error_min") or impact_parameter_data.get("error_max"):
+			if impact_parameter_data.get("error_min") == impact_parameter_data.get("error_max"):
+				impact_parameter += '±' + str(impact_parameter_data["error_min"])
+			else:
+				impact_parameter += "(-{0[error_min]}/+{0[error_max]})".format(impact_parameter_data) # Necessary?
+		if impact_parameter_data.get("value"):
+			impact_parameter += impact_parameter_data["unit"]
+		if impact_parameter:
+			fields.append(("Impact Parameter", impact_parameter))
 		# Radial Velocity Semi-Amplitude
 		velocity_semiamplitude = ""
 		if data["velocity_semiamplitude"]["value"]: velocity_semiamplitude += str(data["velocity_semiamplitude"]["value"])
@@ -195,15 +222,23 @@ class Astronomy(commands.Cog):
 		if velocity_semiamplitude: fields.append(("Radial Velocity Semi-Amplitude", velocity_semiamplitude))
 		# Calculated Temperature
 		calculated_temperature = ""
-		if data["calculated_temperature"]["value"]: calculated_temperature += str(data["calculated_temperature"]["value"])
-		if data["calculated_temperature"]["error_min"] or data["calculated_temperature"]["error_max"]:
-			if data["calculated_temperature"]["error_min"] == data["calculated_temperature"]["error_max"]: calculated_temperature += '±' + str(data["calculated_temperature"]["error_min"])
-			else: calculated_temperature += "(-{0[error_min]}/+{0[error_max]})".format(data["calculated_temperature"]) # Necessary?
-		if data["calculated_temperature"]["value"]: calculated_temperature += " K" if data["calculated_temperature"]["unit"] == "Kelvin" else ' ' + data["calculated_temperature"]["unit"]
-		if calculated_temperature: fields.append(("Calculated Temperature", calculated_temperature))
+		calculated_temperature_data = data.get("calculated_temperature") or {}
+		if calculated_temperature_data.get("value"):
+			calculated_temperature += str(calculated_temperature_data["value"])
+		if calculated_temperature_data.get("error_min") or calculated_temperature_data.get("error_max"):
+			if calculated_temperature_data.get("error_min") == calculated_temperature_data.get("error_max"):
+				calculated_temperature += '±' + str(calculated_temperature_data["error_min"])
+			else:
+				calculated_temperature += "(-{0[error_min]}/+{0[error_max]})".format(calculated_temperature_data) # Necessary?
+		if calculated_temperature_data.get("value"):
+			calculated_temperature += " K" if calculated_temperature_data.get("unit") == "Kelvin" else ' ' + calculated_temperature_data.get("unit")
+		if calculated_temperature:
+			fields.append(("Calculated Temperature", calculated_temperature))
 		# Measured Temperature
 		# TODO: include measured_temperature error_max + error_min?
-		if data["measured_temperature"]["value"]: fields.append(("Measured Temperature", "{} {}".format(data["measured_temperature"]["value"], 'K' if data["measured_temperature"]["unit"] == "Kelvin" else data["measured_temperature"]["unit"])))
+		measured_temperature_data = data.get("measured_temperature") or {}
+		if measured_temperature_data.get("value"):
+			fields.append(("Measured Temperature", "{} {}".format(datameasured_temperature_data["value"], 'K' if measured_temperature_data.get("unit") == "Kelvin" else measured_temperature_data.get("unit"))))
 		# Geometric Albedo
 		# TODO: include geometric_albedo error_max + error_min?
 		if data["geometric_albedo"]["value"]: fields.append(("Geometric Albedo", data["geometric_albedo"]["value"]))
