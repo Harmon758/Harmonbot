@@ -238,7 +238,7 @@ class Astronomy(commands.Cog):
 		# TODO: include measured_temperature error_max + error_min?
 		measured_temperature_data = data.get("measured_temperature") or {}
 		if measured_temperature_data.get("value"):
-			fields.append(("Measured Temperature", "{} {}".format(datameasured_temperature_data["value"], 'K' if measured_temperature_data.get("unit") == "Kelvin" else measured_temperature_data.get("unit"))))
+			fields.append(("Measured Temperature", "{} {}".format(measured_temperature_data["value"], 'K' if measured_temperature_data.get("unit") == "Kelvin" else measured_temperature_data.get("unit"))))
 		# Geometric Albedo
 		# TODO: include geometric_albedo error_max + error_min?
 		if data["geometric_albedo"]["value"]: fields.append(("Geometric Albedo", data["geometric_albedo"]["value"]))
