@@ -589,7 +589,7 @@ class Bot(commands.Bot):
 			json.dump(stats, stats_file, indent = 4)
 	
 	@contextlib.contextmanager
-	def suppress_SSLCertVerificationError(self):
+	def suppress_duplicate_event_loop_exceptions(self):
 		# https://stackoverflow.com/questions/52012488/ssl-asyncio-traceback-even-when-error-is-handled
 		# https://bugs.python.org/issue34506
 		old_handler_function = old_handler = self.loop.get_exception_handler()
@@ -597,7 +597,12 @@ class Bot(commands.Bot):
 			old_handler_function = lambda loop, ctx: self.loop.default_exception_handler(ctx)
 		def new_handler(loop, ctx):
 			exc = ctx.get("exception")
+			# Suppress ssl.SSLCertVerificationError
 			if isinstance(exc, ssl.SSLCertVerificationError):
+				return
+			# Suppress OSError: [WinError 121] The semaphore timeout period has expired
+			# https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes--0-499-
+			if isinstance(exc, OSError) and exc.errno == 121:  # Use exc.winerror?
 				return
 			old_handler_function(loop, ctx)
 		self.loop.set_exception_handler(new_handler)

@@ -172,7 +172,7 @@ class RSS(commands.Cog):
 			if record["ttl"] and datetime.datetime.now(datetime.timezone.utc) < record["last_checked"] + datetime.timedelta(minutes = record["ttl"]):
 				continue
 			try:
-				with self.bot.suppress_SSLCertVerificationError():
+				with self.bot.suppress_duplicate_event_loop_exceptions():
 					async with self.bot.aiohttp_session.get(feed) as resp:
 						feed_text = await resp.text()
 				feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
@@ -339,7 +339,7 @@ class RSS(commands.Cog):
 		for record in records:
 			feed = record["feed"]
 			try:
-				with self.bot.suppress_SSLCertVerificationError():
+				with self.bot.suppress_duplicate_event_loop_exceptions():
 					async with self.bot.aiohttp_session.get(feed) as resp:
 						feed_text = await resp.text()
 				feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
