@@ -101,9 +101,8 @@ async def get_user(ctx, name):
 				members += "{}: {}".format(str(index), str(member))
 				if member.nick: members += " ({})".format(member.nick)
 				members += '\n'
-			await ctx.bot.say("Multiple users with the name, {}. Which one did you mean?\n"
-			"**Enter the number it is in the list.**".format(name))
-			await ctx.bot.say(members)
+			await ctx.embed_reply("Multiple users with the name, {}. Which one did you mean?\n"
+			"**Enter the number it is in the list.**\n".format(name) + members)
 			message = await ctx.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.content.isdigit() and 1 <= int(m.content) <= len(matches))
 			return matches[int(message.content) - 1]
 		# check if beginning match
@@ -116,8 +115,7 @@ async def get_user(ctx, name):
 				members += "{}: {}".format(str(index), str(member))
 				if member.nick: members += " ({})".format(member.nick)
 				members += '\n'
-			await ctx.bot.reply("Multiple users with names starting with {}. Which one did you mean? **Enter the number.**".format(name))
-			await ctx.bot.say(members)
+			await ctx.embed_reply("Multiple users with names starting with {}. Which one did you mean? **Enter the number.**\n".format(name) + members)
 			message = await ctx.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.content.isdigit() and 1 <= int(m.content) <= len(start_matches))
 			return start_matches[int(message.content) - 1]
 	# check if with discriminator
