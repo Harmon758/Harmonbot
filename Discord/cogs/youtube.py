@@ -184,6 +184,16 @@ class YouTube(commands.Cog):
 						params = {"part": "snippet", "eventType": "live", "type": "video", 
 									"channelId": channel_id, "key": self.bot.GOOGLE_API_KEY}
 						async with self.bot.aiohttp_session.get(url, params = params) as resp:
+							if resp.status == 502:
+								await self.bot.db.execute(
+									"""
+									INSERT INTO youtube.stream_errors (channel_id, type, message)
+									VALUES ($1, $2, $3)
+									""", 
+									channel_id, resp.status, resp.reason
+								)
+								await asyncio.sleep(10)
+								continue
 							stream_data = await resp.json()
 						# Multiple streams from one channel possible
 						for item in stream_data.get("items", []):
