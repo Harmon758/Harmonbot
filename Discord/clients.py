@@ -602,7 +602,9 @@ class Bot(commands.Bot):
 				return
 			# Suppress OSError: [WinError 121] The semaphore timeout period has expired
 			# https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes--0-499-
-			if isinstance(exc, OSError) and exc.errno == 121:  # Use exc.winerror?
+			# Suppress ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+			# https://docs.microsoft.com/en-us/windows/desktop/winsock/windows-sockets-error-codes-2
+			if isinstance(exc, OSError) and exc.errno in (121, 10054):  # Use exc.winerror?
 				return
 			old_handler_function(loop, ctx)
 		self.loop.set_exception_handler(new_handler)
