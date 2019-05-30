@@ -417,8 +417,8 @@ class Cryptography(commands.Cog):
 	@encode.command(name = "whirlpool")
 	@checks.not_forbidden()
 	async def encode_whirlpool(self, ctx, *, message : str):
-		'''Generate Whirlpool hash'''
-		h = hashlib.new("whirlpool")
+		'''Generate WHIRLPOOL hash'''
+		h = hashlib.new("WHIRLPOOL")
 		h.update(message.encode("UTF-8"))
 		await ctx.embed_reply(h.hexdigest())
 
