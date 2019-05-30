@@ -597,8 +597,8 @@ class Bot(commands.Bot):
 			old_handler_function = lambda loop, ctx: self.loop.default_exception_handler(ctx)
 		def new_handler(loop, ctx):
 			exc = ctx.get("exception")
-			# Suppress ConnectionResetError and SSLCertVerificationError
-			if isinstance(exc, (ConnectionResetError, ssl.SSLCertVerificationError)):
+			# Suppress ConnectionResetError and SSLError
+			if isinstance(exc, (ConnectionResetError, ssl.SSLError)):
 				return
 			# Suppress OSError: [WinError 121] The semaphore timeout period has expired
 			# https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes--0-499-
