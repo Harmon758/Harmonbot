@@ -597,14 +597,12 @@ class Bot(commands.Bot):
 			old_handler_function = lambda loop, ctx: self.loop.default_exception_handler(ctx)
 		def new_handler(loop, ctx):
 			exc = ctx.get("exception")
-			# Suppress ssl.SSLCertVerificationError
-			if isinstance(exc, ssl.SSLCertVerificationError):
+			# Suppress ConnectionResetError and SSLCertVerificationError
+			if isinstance(exc, (ConnectionResetError, ssl.SSLCertVerificationError)):
 				return
 			# Suppress OSError: [WinError 121] The semaphore timeout period has expired
 			# https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes--0-499-
-			# Suppress ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
-			# https://docs.microsoft.com/en-us/windows/desktop/winsock/windows-sockets-error-codes-2
-			if isinstance(exc, OSError) and exc.errno in (121, 10054):  # Use exc.winerror?
+			if isinstance(exc, OSError) and exc.errno == 121:  # Use exc.winerror?
 				return
 			old_handler_function(loop, ctx)
 		self.loop.set_exception_handler(new_handler)
