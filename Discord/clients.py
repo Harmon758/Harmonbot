@@ -602,7 +602,7 @@ class Bot(commands.Bot):
 				return
 			# Suppress OSError: [WinError 121] The semaphore timeout period has expired
 			# https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes--0-499-
-			if isinstance(exc, OSError) and exc.errno == 121:  # Use exc.winerror?
+			if isinstance(exc, OSError) and exc.winerror == 121:
 				return
 			old_handler_function(loop, ctx)
 		self.loop.set_exception_handler(new_handler)
