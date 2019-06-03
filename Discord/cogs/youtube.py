@@ -190,7 +190,7 @@ class YouTube(commands.Cog):
 									INSERT INTO youtube.stream_errors (channel_id, type, message)
 									VALUES ($1, $2, $3)
 									""", 
-									channel_id, resp.status, resp.reason
+									channel_id, str(resp.status), resp.reason
 								)
 								await asyncio.sleep(10)
 								continue
