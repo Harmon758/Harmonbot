@@ -690,17 +690,13 @@ class Games(commands.Cog):
 		Based on Jeopardy
 		'''
 		if not self.jeopardy_active:
-			await ctx.embed_reply(":no_entry: There's not a jeopardy game currently in progress")
-			return
+			return await ctx.embed_reply(":no_entry: There's not a jeopardy game currently in progress")
 		if self.jeopardy_question_active:
-			await ctx.embed_reply(":no_entry: There's already a jeopardy question in play")
-			return
+			return await ctx.embed_reply(":no_entry: There's already a jeopardy question in play")
 		if row_number < 1 or row_number > 6:
-			await ctx.embed_reply(":no_entry: That's not a valid row number")
-			return
-		if value not in [200, 400, 600, 800, 1000]:
-			await ctx.embed_reply(":no_entry: That's not a valid value")
-			return
+			return await ctx.embed_reply(":no_entry: That's not a valid row number")
+		if value not in (200, 400, 600, 800, 1000):
+			return await ctx.embed_reply(":no_entry: That's not a valid value")
 		value_index = ["200", "400", "600", "800", "1000"].index(str(value))
 		if not self.jeopardy_board[row_number - 1][value_index + 1]:
 			self.jeopardy_question_active = True
