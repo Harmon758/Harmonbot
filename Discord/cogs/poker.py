@@ -178,5 +178,5 @@ class Poker(commands.Cog):
 	# Utility Functions
 	
 	def cards_to_string(self, cards):
-		return "".join(":{}: {} ".format(card.suit.lower(), card.value) for card in cards)
+		return "".join(f":{card.suit.lower()}: {card.value} " for card in cards)
 
