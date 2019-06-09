@@ -33,8 +33,8 @@ class Poker(commands.Cog):
 		'''WIP'''
 		await ctx.send_help(ctx.command)
 	
-	@poker.command(name = "start")
-	async def poker_start(self, ctx):
+	@poker.command()
+	async def start(self, ctx):
 		if self.poker_status not in (None, "started"):
 			await ctx.embed_reply("There's already a round of poker in progress")
 		elif self.poker_status is None:
@@ -95,8 +95,8 @@ class Poker(commands.Cog):
 			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 			await ctx.embed_say("{} is the winner with a {}".format(player.mention, type))
 	
-	@poker.command(name = "join")
-	async def poker_join(self, ctx):
+	@poker.command()
+	async def join(self, ctx):
 		if self.poker_status == "started":
 			self.poker_players.append(ctx.author)
 			self.poker_hands[ctx.author.id] = self.poker_deck.deal(2)
@@ -123,8 +123,8 @@ class Poker(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
 	
-	@poker.command(name = "call")
-	async def poker_call(self, ctx):
+	@poker.command()
+	async def call(self, ctx):
 		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			if self.poker_current_bet == 0 or (self.poker_turn.id in self.poker_bets and self.poker_bets[self.poker_turn.id] == self.poker_current_bet):
 				await ctx.embed_reply("You can't call\nYou have checked instead")
@@ -136,8 +136,8 @@ class Poker(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
 	
-	@poker.command(name = "check")
-	async def poker_check(self, ctx):
+	@poker.command()
+	async def check(self, ctx):
 		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			if self.poker_current_bet != 0 and (self.poker_turn.id not in self.poker_bets or self.poker_bets[self.poker_turn.id] < self.poker_current_bet):
 				await ctx.embed_reply(":no_entry: You can't check")
@@ -148,8 +148,8 @@ class Poker(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now.")
 	
-	@poker.command(name = "fold")
-	async def poker_fold(self, ctx):
+	@poker.command()
+	async def fold(self, ctx):
 		if self.poker_turn and self.poker_turn.id == ctx.author.id:
 			self.poker_bets[self.poker_turn.id] = -1
 			self.poker_folded.append(self.poker_turn)
