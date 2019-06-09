@@ -369,5 +369,5 @@ class RSS(commands.Cog):
 	
 	@check_rss_feeds.after_loop
 	async def after_check_rss_feeds(self):
-		print(f"{self.bot.console_message_prefix}RSS Task Cancelled @ {datetime.datetime.now().time().isoformat()}")
+		print(f"{self.bot.console_message_prefix}RSS task cancelled @ {datetime.datetime.now().time().isoformat()}")
 
