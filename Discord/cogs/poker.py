@@ -45,35 +45,35 @@ class Poker(commands.Cog):
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
-			await ctx.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.author.display_name, ctx.prefix))
+			await ctx.embed_say(f"{ctx.author.display_name} has started a round of poker\n`{ctx.prefix}poker join` to join\n`{1}poker start` again to start")
 		else:
 			self.status = "pre-flop"
-			await ctx.embed_say("The poker round has started\nPlayers: {}".format(' '.join(player.mention for player in self.players)))
+			await ctx.embed_say(f"The poker round has started\nPlayers: {' '.join(player.mention for player in self.players)}")
 			for player in self.players:
 				cards_string = self.cards_to_string(self.hands[player.id].cards)
-				await self.bot.send_embed(player, "Your poker hand: {}".format(cards_string))
+				await self.bot.send_embed(player, f"Your poker hand: {cards_string}")
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
-			await ctx.embed_say("The pot: {}".format(self.pot))
+			await ctx.embed_say(f"The pot: {self.pot}")
 			self.community_cards = self.deck.deal(3)
-			await ctx.embed_say("The flop: {}".format(self.cards_to_string(self.community_cards)))
+			await ctx.embed_say(f"The flop: {self.cards_to_string(self.community_cards)}")
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
-			await ctx.embed_say("The pot: {}".format(self.pot))
+			await ctx.embed_say(f"The pot: {self.pot}")
 			self.community_cards.add(self.deck.deal(1))
-			await ctx.embed_say("The turn: {}".format(self.cards_to_string(self.community_cards)))
+			await ctx.embed_say(f"The turn: {self.cards_to_string(self.community_cards)}")
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
-			await ctx.embed_say("The pot: {}".format(self.pot))
+			await ctx.embed_say(f"The pot: {self.pot}")
 			self.community_cards.add(self.deck.deal(1))
-			await ctx.embed_say("The river: {}".format(self.cards_to_string(self.community_cards)))
+			await ctx.embed_say(f"The river: {self.cards_to_string(self.community_cards)}")
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
-			await ctx.embed_say("The pot: {}".format(self.pot))
+			await ctx.embed_say(f"The pot: {self.pot}")
 			
 			evaluator = treys.Evaluator()
 			board = []
@@ -93,7 +93,7 @@ class Poker(commands.Cog):
 					best_player = player
 			player = await self.bot.fetch_user(player)
 			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-			await ctx.embed_say("{} is the winner with a {}".format(player.mention, type))
+			await ctx.embed_say(f"{player.mention} is the winner with a {type}")
 	
 	@poker.command()
 	async def join(self, ctx):
