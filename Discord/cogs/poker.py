@@ -48,7 +48,7 @@ class Poker(commands.Cog):
 			await ctx.embed_say("{0} has started a round of poker\n`{1}poker join` to join\n`{1}poker start` again to start".format(ctx.author.display_name, ctx.prefix))
 		else:
 			self.status = "pre-flop"
-			await ctx.embed_say("The poker round has started\nPlayers: {}".format(" ".join([player.mention for player in self.players])))
+			await ctx.embed_say("The poker round has started\nPlayers: {}".format(' '.join([player.mention for player in self.players])))
 			for player in self.players:
 				cards_string = self.cards_to_string(self.hands[player.id].cards)
 				await self.bot.send_embed(player, "Your poker hand: {}".format(cards_string))
