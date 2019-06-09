@@ -15,7 +15,16 @@ class Poker(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.poker_status, self.poker_players, self.poker_deck, self.poker_hands, self.poker_turn, self.poker_bets, self.poker_current_bet, self.poker_pot, self.poker_community_cards, self.poker_folded = None, [], None, {}, None, {}, None, None, None, []
+		self.poker_status = None
+		self.poker_players = []
+		self.poker_deck = None
+		self.poker_hands = {}
+		self.poker_turn = None
+		self.poker_bets = {}
+		self.poker_current_bet = None
+		self.poker_pot = None
+		self.poker_community_cards = None
+		self.poker_folded = []
 		# check default values
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
