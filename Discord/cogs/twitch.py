@@ -282,7 +282,7 @@ class Twitch(commands.Cog):
 						announcement[1] = announcement[1].to_dict()
 				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'w') as streams_file:
 					json.dump(self.streams_announced, streams_file, indent = 4)
-				print("{}Twitch Task cancelled".format(self.bot.console_message_prefix))
+				print("{}Twitch task cancelled".format(self.bot.console_message_prefix))
 				return
 			except Exception as e:
 				print("Exception in Twitch Task", file = sys.stderr)
