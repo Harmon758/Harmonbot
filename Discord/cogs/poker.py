@@ -100,9 +100,9 @@ class Poker(commands.Cog):
 		if self.status == "started":
 			self.players.append(ctx.author)
 			self.hands[ctx.author.id] = self.deck.deal(2)
-			await ctx.embed_say("{} has joined the poker match".format(ctx.author.display_name))
+			await ctx.embed_say(f"{ctx.author.display_name} has joined the poker match")
 		elif self.status is None:
-			await ctx.embed_reply("There's not currently a round of poker going on\nUse `{}poker start` to start one".format(ctx.prefix))
+			await ctx.embed_reply(f"There's not currently a round of poker going on\nUse `{ctx.prefix}poker start` to start one")
 		else:
 			await ctx.embed_reply(":no_entry: The current round of poker already started")
 	
