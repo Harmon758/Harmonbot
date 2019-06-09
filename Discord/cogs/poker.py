@@ -112,11 +112,11 @@ class Poker(commands.Cog):
 			if points > self.current_bet:
 				self.bets[self.turn.id] = points
 				self.current_bet = points
-				await ctx.embed_reply("{} has raised to {}".format(ctx.author.display_name, points))
+				await ctx.embed_reply(f"{ctx.author.display_name} has raised to {points}")
 				self.turn = None
 			elif points == self.current_bet:
 				self.bets[self.turn.id] = points
-				await ctx.embed_say("{} has called".format(ctx.author.display_name))
+				await ctx.embed_say(f"{ctx.author.display_name} has called")
 				self.turn = None
 			else:
 				await ctx.embed_reply("The current bet is more than that")
