@@ -128,10 +128,10 @@ class Poker(commands.Cog):
 		if self.turn and self.turn.id == ctx.author.id:
 			if self.current_bet == 0 or (self.turn.id in self.bets and self.bets[self.turn.id] == self.current_bet):
 				await ctx.embed_reply("You can't call\nYou have checked instead")
-				await ctx.embed_say("{} has checked".format(ctx.author.display_name))
+				await ctx.embed_say(f"{ctx.author.display_name} has checked")
 			else:
 				self.bets[self.turn.id] = self.current_bet
-				await ctx.embed_say("{} has called".format(ctx.author.display_name))
+				await ctx.embed_say(f"{ctx.author.display_name} has called")
 			self.turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
