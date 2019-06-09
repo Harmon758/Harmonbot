@@ -43,25 +43,25 @@ class Poker(commands.Cog):
 			for player in self.poker_players:
 				cards_string = self.cards_to_string(self.poker_hands[player.id].cards)
 				await self.bot.send_embed(player, "Your poker hand: {}".format(cards_string))
-			await self.poker_betting()
+			await self.poker_betting(ctx)
 			while self.poker_status:
 				await asyncio.sleep(1)
 			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards = self.poker_deck.deal(3)
 			await ctx.embed_say("The flop: {}".format(self.cards_to_string(self.poker_community_cards)))
-			await self.poker_betting()
+			await self.poker_betting(ctx)
 			while self.poker_status:
 				await asyncio.sleep(1)
 			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards.add(self.poker_deck.deal(1))
 			await ctx.embed_say("The turn: {}".format(self.cards_to_string(self.poker_community_cards)))
-			await self.poker_betting()
+			await self.poker_betting(ctx)
 			while self.poker_status:
 				await asyncio.sleep(1)
 			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			self.poker_community_cards.add(self.poker_deck.deal(1))
 			await ctx.embed_say("The river: {}".format(self.cards_to_string(self.poker_community_cards)))
-			await self.poker_betting()
+			await self.poker_betting(ctx)
 			while self.poker_status:
 				await asyncio.sleep(1)
 			await ctx.embed_say("The pot: {}".format(self.poker_pot))
@@ -148,7 +148,7 @@ class Poker(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
 	
-	async def poker_betting(self):
+	async def poker_betting(self, ctx):
 		self.poker_status = "betting"
 		self.poker_current_bet = 0
 		while True:
