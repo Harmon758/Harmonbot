@@ -3,8 +3,8 @@ from discord.ext import commands
 
 import asyncio
 
-import treys
 import pydealer
+import treys
 
 from utilities import checks
 
