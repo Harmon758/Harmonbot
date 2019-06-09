@@ -143,7 +143,7 @@ class Poker(commands.Cog):
 				await ctx.embed_reply(":no_entry: You can't check")
 			else:
 				self.bets[self.turn.id] = self.current_bet
-				await ctx.embed_say("{} has checked".format(ctx.author.display_name))
+				await ctx.embed_say(f"{ctx.author.display_name} has checked")
 				self.turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now.")
