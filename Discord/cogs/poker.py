@@ -3,7 +3,7 @@ from discord.ext import commands
 
 import asyncio
 
-# import deuces
+import treys
 import pydealer
 
 from utilities import checks
@@ -66,18 +66,18 @@ class Poker(commands.Cog):
 				await asyncio.sleep(1)
 			await ctx.embed_say("The pot: {}".format(self.poker_pot))
 			
-			evaluator = deuces.Evaluator()
+			evaluator = treys.Evaluator()
 			board = []
 			for card in self.poker_community_cards.cards:
 				abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
-				board.append(deuces.Card.new(abbreviation))
+				board.append(treys.Card.new(abbreviation))
 			best_hand_value = 7462
 			best_player = None
 			for player, hand in self.poker_hands.items():
 				hand_stack = []
 				for card in hand:
 					abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
-					hand_stack.append(deuces.Card.new(abbreviation))
+					hand_stack.append(treys.Card.new(abbreviation))
 				value = evaluator.evaluate(board, hand_stack)
 				if value < best_hand_value:
 					best_hand_value = value
