@@ -322,12 +322,8 @@ class RSS(commands.Cog):
 				# Print error?
 				await asyncio.sleep(10)
 				# TODO: Add variable for sleep time
-				'''
-				except asyncio.CancelledError:
-					print(f"{self.bot.console_message_prefix}RSS Task Cancelled @ {datetime.datetime.now().time().isoformat()}")
-					return
-				'''
-				# TODO: Handle canceled error/task cleanup
+			except asyncio.CancelledError:
+				raise
 			except Exception as e:
 				print("Exception in RSS Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
@@ -370,4 +366,8 @@ class RSS(commands.Cog):
 				errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
 				self.feeds_failed_to_initialize.append(feed)
 		await self.bot.wait_until_ready()
+	
+	@check_rss_feeds.after_loop
+	async def after_check_rss_feeds(self):
+		print(f"{self.bot.console_message_prefix}RSS Task Cancelled @ {datetime.datetime.now().time().isoformat()}")
 
