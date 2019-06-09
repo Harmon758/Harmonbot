@@ -165,7 +165,7 @@ class Poker(commands.Cog):
 				self.turn = player
 				if player in self.folded:
 					continue
-				await ctx.embed_say("{}'s turn".format(player.mention))
+				await ctx.embed_say(f"{player.mention}'s turn")
 				while self.turn:
 					await asyncio.sleep(1)
 			if all([bet == -1 or bet == self.current_bet for bet in self.bets.values()]):
