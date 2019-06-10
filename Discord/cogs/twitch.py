@@ -324,14 +324,14 @@ class Twitch(commands.Cog):
 						else:
 							title = stream["channel"]["status"][:253] + "..."
 						if stream["channel"]["game"]:
-							description = "{0[channel][display_name]} is playing {0[game]}".format(stream)
+							description = f"{stream['channel']['display_name']} is playing {stream['game']}"
 						else:
 							description = discord.Embed.Empty
 						embed = discord.Embed(title = title, url = stream["channel"]["url"], 
 												description = description, 
 												timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), 
 												color = self.bot.twitch_color)
-						embed.set_author(name = "{} just went live on Twitch".format(stream["channel"]["display_name"]), 
+						embed.set_author(name = f"{stream['channel']['display_name']} just went live on Twitch", 
 											icon_url = self.bot.twitch_icon_url)
 						if stream["channel"]["logo"]:
 							embed.set_thumbnail(url = stream["channel"]["logo"])
