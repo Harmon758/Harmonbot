@@ -309,18 +309,32 @@ class Twitch(commands.Cog):
 			if stream["_id"] in self.old_streams_announced:
 				for announcement in self.old_streams_announced[stream["_id"]]:
 					embed = announcement[1]
-					embed.set_author(name = embed.author.name.replace("was", "just went"), url = embed.author.url, icon_url = embed.author.icon_url)
+					embed.set_author(name = embed.author.name.replace("was", "just went"), 
+										url = embed.author.url, icon_url = embed.author.icon_url)
 					await announcement[0].edit(embed = embed)
 				self.streams_announced[stream["_id"]] = self.old_streams_announced[stream["_id"]]
 				del self.old_streams_announced[stream["_id"]]
 			elif stream["_id"] not in self.streams_announced:
 				for channel_id, channel_info in self.streams_info["channels"].items():
-					if (match in channel_info[type] or 
-					not match and stream["channel"]["name"] in [s.lower() for s in channel_info[type]]) and \
-					all(filter in stream["channel"]["status"] for filter in channel_info["filters"]):
-						embed = discord.Embed(title = stream["channel"]["status"] if len(stream["channel"]["status"]) <= 256 else stream["channel"]["status"][:253] + "...", description = "{0[channel][display_name]} is playing {0[game]}".format(stream) if stream["channel"]["game"] else discord.Embed.Empty, url = stream["channel"]["url"], timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), color = self.bot.twitch_color)
-						embed.set_author(name = "{} just went live on Twitch".format(stream["channel"]["display_name"]), icon_url = self.bot.twitch_icon_url)
-						if stream["channel"]["logo"]: embed.set_thumbnail(url = stream["channel"]["logo"])
+					if ((match in channel_info[type] or 
+							not match and stream["channel"]["name"] in [s.lower() for s in channel_info[type]]) and 
+							all(filter in stream["channel"]["status"] for filter in channel_info["filters"])):
+						if len(stream["channel"]["status"]) <= 256:
+							title = stream["channel"]["status"]
+						else:
+							title = stream["channel"]["status"][:253] + "..."
+						if stream["channel"]["game"]:
+							description = "{0[channel][display_name]} is playing {0[game]}".format(stream)
+						else:
+							description = discord.Embed.Empty
+						embed = discord.Embed(title = title, url = stream["channel"]["url"], 
+												description = description, 
+												timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), 
+												color = self.bot.twitch_color)
+						embed.set_author(name = "{} just went live on Twitch".format(stream["channel"]["display_name"]), 
+											icon_url = self.bot.twitch_icon_url)
+						if stream["channel"]["logo"]:
+							embed.set_thumbnail(url = stream["channel"]["logo"])
 						embed.add_field(name = "Followers", value = f"{stream['channel']['followers']:,}")
 						embed.add_field(name = "Views", value = f"{stream['channel']['views']:,}")
 						text_channel = self.bot.get_channel(int(channel_id))
