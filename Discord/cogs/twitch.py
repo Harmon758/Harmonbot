@@ -280,8 +280,8 @@ class Twitch(commands.Cog):
 							except discord.NotFound:
 								# Announcement was deleted
 								pass
-							self.old_streams_announced[announced_stream_id] = self.streams_announced[announced_stream_id]
-							del self.streams_announced[announced_stream_id]
+						self.old_streams_announced[announced_stream_id] = self.streams_announced[announced_stream_id]
+						del self.streams_announced[announced_stream_id]
 					# TODO: Handle no longer being followed?
 				await asyncio.sleep(20)
 			except aiohttp.ClientConnectionError as e:
