@@ -285,7 +285,7 @@ class Twitch(commands.Cog):
 					# TODO: Handle no longer being followed?
 				await asyncio.sleep(20)
 			except aiohttp.ClientConnectionError as e:
-				print("{}Twitch Task Connection Error: {}: {}".format(self.bot.console_message_prefix, type(e).__name__, str(e)))
+				print(f"{self.bot.console_message_prefix}Twitch Task Connection Error: {type(e).__name__}: {e}")
 				await asyncio.sleep(10)
 			except asyncio.CancelledError:
 				for announced_stream_id, announcements in self.streams_announced.items():
@@ -295,7 +295,7 @@ class Twitch(commands.Cog):
 						announcement[1] = announcement[1].to_dict()
 				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'w') as streams_file:
 					json.dump(self.streams_announced, streams_file, indent = 4)
-				print("{}Twitch task cancelled".format(self.bot.console_message_prefix))
+				print(f"{self.bot.console_message_prefix}Twitch task cancelled")
 				return
 			except Exception as e:
 				print("Exception in Twitch Task", file = sys.stderr)
