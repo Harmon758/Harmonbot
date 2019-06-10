@@ -209,14 +209,20 @@ class Twitch(commands.Cog):
 							# Announcement was deleted
 							continue
 						embed_data = announcement[1]
-						announcement[1] = discord.Embed(title = embed_data.get("title"), description = embed_data.get("description", discord.Embed.Empty), url = embed_data["url"], timestamp = dateutil.parser.parse(embed_data["timestamp"]), color = embed_data["color"]).set_author(name = embed_data["author"]["name"], icon_url = embed_data["author"]["icon_url"])
+						announcement[1] = discord.Embed(title = embed_data.get("title"), url = embed_data["url"], 
+														description = embed_data.get("description", discord.Embed.Empty), 
+														timestamp = dateutil.parser.parse(embed_data["timestamp"]), 
+														color = embed_data["color"])
+						announcement[1].set_author(name = embed_data["author"]["name"], 
+													icon_url = embed_data["author"]["icon_url"])
 						if embed_data.get("thumbnail", {}).get("url"):
 							announcement[1].set_thumbnail(url = embed_data["thumbnail"]["url"])
 						for field in embed_data["fields"]:
 							announcement[1].add_field(name = field["name"], value = field["value"], inline = field["inline"])
 						del announcement[2]
 					# Remove deleted announcements
-					self.streams_announced[announced_stream_id] = [announcement for announcement in announcements if len(announcement) == 2]
+					self.streams_announced[announced_stream_id] = [announcement for announcement in announcements
+																	if len(announcement) == 2]
 			## os.remove(clients.data_path + "/temp/twitch_streams_announced.json")
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
@@ -229,7 +235,8 @@ class Twitch(commands.Cog):
 				# Games
 				games = set(itertools.chain(*[channel["games"] for channel in self.streams_info["channels"].values()]))
 				for game in games:
-					async with self.bot.aiohttp_session.get("https://api.twitch.tv/kraken/streams?game={}&client_id={}&limit=100".format(game.replace(' ', '+'), self.bot.TWITCH_CLIENT_ID)) as resp:
+					url = "https://api.twitch.tv/kraken/streams?game={}&client_id={}&limit=100".format(game.replace(' ', '+'), self.bot.TWITCH_CLIENT_ID)
+					async with self.bot.aiohttp_session.get(url) as resp:
 						games_data = await resp.json()
 					streams = games_data.get("streams", [])
 					stream_ids += [stream["_id"] for stream in streams]
@@ -238,7 +245,8 @@ class Twitch(commands.Cog):
 				# Keywords
 				keywords = set(itertools.chain(*[channel["keywords"] for channel in self.streams_info["channels"].values()]))
 				for keyword in keywords:
-					async with self.bot.aiohttp_session.get("https://api.twitch.tv/kraken/search/streams?q={}&client_id={}&limit=100".format(keyword.replace(' ', '+'), self.bot.TWITCH_CLIENT_ID)) as resp:
+					url = "https://api.twitch.tv/kraken/search/streams?q={}&client_id={}&limit=100".format(keyword.replace(' ', '+'), self.bot.TWITCH_CLIENT_ID)
+					async with self.bot.aiohttp_session.get(url) as resp:
 						keywords_data = await resp.json()
 					streams = keywords_data.get("streams", [])
 					stream_ids += [stream["_id"] for stream in streams]
@@ -246,7 +254,8 @@ class Twitch(commands.Cog):
 					await asyncio.sleep(1)
 				# Streams
 				streams = set(itertools.chain(*[channel["streams"] for channel in self.streams_info["channels"].values()]))
-				async with self.bot.aiohttp_session.get("https://api.twitch.tv/kraken/streams?channel={}&client_id={}&limit=100".format(','.join(streams), self.bot.TWITCH_CLIENT_ID)) as resp:
+				url = "https://api.twitch.tv/kraken/streams?channel={}&client_id={}&limit=100".format(','.join(streams), self.bot.TWITCH_CLIENT_ID)
+				async with self.bot.aiohttp_session.get(url) as resp:
 					# TODO: Handle >100 streams
 					if resp.status != 504:
 						streams_data = await resp.json()
@@ -258,7 +267,8 @@ class Twitch(commands.Cog):
 					if announced_stream_id not in stream_ids:
 						for announcement in announcements:
 							embed = announcement[1]
-							embed.set_author(name = embed.author.name.replace("just went", "was"), url = embed.author.url, icon_url = embed.author.icon_url)
+							embed.set_author(name = embed.author.name.replace("just went", "was"), 
+												url = embed.author.url, icon_url = embed.author.icon_url)
 							try:
 								await announcement[0].edit(embed = embed)
 							except discord.Forbidden:
