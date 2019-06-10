@@ -175,8 +175,18 @@ class RSS(commands.Cog):
 				with self.bot.suppress_duplicate_event_loop_exceptions():
 					async with self.bot.aiohttp_session.get(feed) as resp:
 						feed_text = await resp.text()
-				feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
+				try:
+					feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 				# Still necessary to run in executor?
+				except RuntimeError as e:
+					# Handle RuntimeError: generator raised StopIteration in feedparser _gen_georss_coords
+					# https://github.com/kurtmckee/feedparser/issues/130
+					# Wait for feedparser release with fix
+					# https://github.com/kurtmckee/feedparser/pull/131
+					# Update to feedparser@develop?
+					if str(e) == "generator raised StopIteration":
+						continue
+					raise
 				ttl = None
 				if "ttl" in feed_info.feed:
 					ttl = int(feed_info.feed.ttl)
