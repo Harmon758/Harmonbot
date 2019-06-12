@@ -20,6 +20,10 @@ import clients
 from modules import utilities
 from utilities import checks
 
+sys.path.insert(0, "..")
+from units.time import duration_to_string
+sys.path.pop(0)
+
 errors_logger = logging.getLogger("errors")
 
 def setup(bot):
@@ -396,7 +400,7 @@ class YouTube(commands.Cog):
 			thumbnail_url = data.get("snippet", {}).get("thumbnails", {}).get("high", {}).get("url", None)
 			if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
 			duration = data.get("contentDetails", {}).get("duration")
-			if duration: embed.description += f"\nLength: {utilities.secs_to_letter_format(isodate.parse_duration(duration).total_seconds())}"
+			if duration: embed.description += f"\nLength: {duration_to_string(isodate.parse_duration(duration), abbreviate = True)}"
 			for text_channel_id, yt_channels in self.uploads_info.items():
 				if channel_id in yt_channels:
 					text_channel = self.bot.get_channel(int(text_channel_id))
