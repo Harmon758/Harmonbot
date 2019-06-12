@@ -19,7 +19,6 @@ import pkg_resources  # from setuptools
 import psutil
 
 import clients
-from modules import utilities
 from utilities import checks
 
 sys.path.insert(0, "..")
@@ -217,7 +216,7 @@ class Meta(commands.Cog):
 		channel_types = [type(c) for c in self.bot.get_all_channels()]
 		text_count = channel_types.count(discord.TextChannel)
 		voice_count = channel_types.count(discord.VoiceChannel)
-		total_uptime = utilities.secs_to_letter_format(int(stats["uptime"]))
+		total_uptime = duration_to_string(datetime.timedelta(seconds = int(stats["uptime"])), abbreviate = True)
 		top_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)
 		session_top_5 = sorted(self.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		in_voice_count = len(self.bot.cogs["Audio"].players)
