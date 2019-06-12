@@ -169,7 +169,7 @@ class Finance(commands.Cog):
 			if resp.status in (404, 422):
 				# TODO: handle other errors
 				data = await resp.json(content_type = "text/html")
-				return await ctx.embed_reply(":no_entry: Error: {}".format(data["error"]))
+				return await ctx.embed_reply(f":no_entry: Error: {data['error']}")
 			data = await resp.json()
 		if not data.get("success"):
 			# TODO: Include error message
