@@ -209,9 +209,7 @@ class Meta(commands.Cog):
 		with open(clients.data_path + "/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		
-		now = datetime.datetime.utcnow()
-		uptime = now - ctx.bot.online_time
-		uptime = duration_to_string(uptime, abbreviate = True)
+		uptime = duration_to_string(datetime.datetime.utcnow() - ctx.bot.online_time, abbreviate = True)
 		total_members = sum(len(g.members) for g in self.bot.guilds)
 		total_members_online = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(self.bot.get_all_members())
