@@ -22,6 +22,10 @@ import clients
 from modules import utilities
 from utilities import checks
 
+sys.path.insert(0, "..")
+from units.time import duration_to_string
+sys.path.pop(0)
+
 def setup(bot):
 	bot.add_cog(Meta(bot))
 
@@ -207,7 +211,7 @@ class Meta(commands.Cog):
 		
 		now = datetime.datetime.utcnow()
 		uptime = now - ctx.bot.online_time
-		uptime = utilities.secs_to_letter_format(int(uptime.total_seconds()))
+		uptime = duration_to_string(uptime, abbreviate = True)
 		total_members = sum(len(g.members) for g in self.bot.guilds)
 		total_members_online = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(self.bot.get_all_members())
