@@ -263,12 +263,10 @@ class Astronomy(commands.Cog):
 			params = {"n": 1, "lat": str(latitude), "lon": str(longitude)}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				if resp.status == 500:
-					await ctx.embed_reply(":no_entry: Error")
-					return
+					return await ctx.embed_reply(":no_entry: Error")
 				data = await resp.json()
 			if data["message"] == "failure":
-				await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
-				return
+				return await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
 			duration = utilities.secs_to_letter_format(data["response"][0]["duration"])
 			timestamp = datetime.datetime.utcfromtimestamp(data["response"][0]["risetime"])
 			await ctx.embed_reply(fields = (("Duration", duration),), 
