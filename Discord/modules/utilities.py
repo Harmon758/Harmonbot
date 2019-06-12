@@ -56,12 +56,6 @@ def secs_to_letter_format(secs, limit = 0):
 def secs_to_colon_format(secs, limit = 0):
 	return duration_to_colon_format(secs_to_duration(secs, limit = limit))
 
-def add_commas(number):
-	try:
-		return "{:,}".format(number)
-	except:
-		return number
-
 def remove_symbols(string):
 	plain_string = ""
 	for character in string:
