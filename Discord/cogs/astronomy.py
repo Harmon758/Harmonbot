@@ -259,7 +259,9 @@ class Astronomy(commands.Cog):
 		Overhead is defined as 10° in elevation for the observer at an altitude of 100m
 		'''
 		if latitude and longitude:
-			async with ctx.bot.aiohttp_session.get("http://api.open-notify.org/iss-pass.json", params = {"n": 1, "lat": str(latitude), "lon": str(longitude)}) as resp:
+			url = "http://api.open-notify.org/iss-pass.json"
+			params = {"n": 1, "lat": str(latitude), "lon": str(longitude)}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				if resp.status == 500:
 					await ctx.embed_reply(":no_entry: Error")
 					return
@@ -267,16 +269,24 @@ class Astronomy(commands.Cog):
 			if data["message"] == "failure":
 				await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
 				return
-			await ctx.embed_reply(fields = (("Duration", utilities.secs_to_letter_format(data["response"][0]["duration"])),), footer_text = "Rise Time", timestamp = datetime.datetime.utcfromtimestamp(data["response"][0]["risetime"]))
+			duration = utilities.secs_to_letter_format(data["response"][0]["duration"])
+			timestamp = datetime.datetime.utcfromtimestamp(data["response"][0]["risetime"])
+			await ctx.embed_reply(fields = (("Duration", duration),), 
+									footer_text = "Rise Time", timestamp = timestamp)
 		else:
-			async with ctx.bot.aiohttp_session.get("http://api.open-notify.org/iss-now.json") as resp:
+			url = "http://api.open-notify.org/iss-now.json"
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			latitude = data["iss_position"]["latitude"]
 			longitude = data["iss_position"]["longitude"]
 			map_icon = "http://i.imgur.com/KPfeEcc.png" # 64x64 satellite emoji png
-			map_url = "https://maps.googleapis.com/maps/api/staticmap"
-			map_url += f"?center={latitude},{longitude}&zoom=3&size=640x640&maptype=hybrid&markers=icon:{map_icon}|anchor:center|{latitude},{longitude}"
-			await ctx.embed_reply(f"[:satellite_orbital: ]({map_url})", fields = (("Latitude", latitude), ("Longitude", longitude)), image_url = map_url, timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"]))
+			map_url = ("https://maps.googleapis.com/maps/api/staticmap?"
+						f"center={latitude},{longitude}&zoom=3&size=640x640&maptype=hybrid&"
+						f"markers=icon:{map_icon}|anchor:center|{latitude},{longitude}")
+			timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"])
+			await ctx.embed_reply(f"[:satellite_orbital: ]({map_url})", 
+									fields = (("Latitude", latitude), ("Longitude", longitude)), 
+									image_url = map_url, timestamp = timestamp)
 	
 	@astronomy.command()
 	@checks.not_forbidden()
