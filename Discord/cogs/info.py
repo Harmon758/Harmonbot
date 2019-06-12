@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+import sys
 import textwrap
 import unicodedata
 import urllib
@@ -12,6 +13,10 @@ import isodate
 
 from modules import utilities
 from utilities import checks
+
+sys.path.insert(0, "..")
+from units.time import duration_to_string
+sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Info(bot))
@@ -192,7 +197,7 @@ class Info(commands.Cog):
 		data = data["items"][0]
 		# TODO: Handle no items
 		duration = isodate.parse_duration(data["contentDetails"]["duration"])
-		info = f"Length: {utilities.secs_to_letter_format(duration.total_seconds())}"
+		info = f"Length: {duration_to_string(duration, abbreviate = True)}"
 		if "likeCount" in data["statistics"]:
 			likes = int(data["statistics"]["likeCount"])
 			dislikes = int(data["statistics"]["dislikeCount"])
