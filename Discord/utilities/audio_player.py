@@ -244,15 +244,15 @@ class AudioPlayer:
 			played_duration = utilities.secs_to_colon_format(played_duration)
 			total_duration = utilities.secs_to_colon_format(total_duration)
 			description = ":arrow_forward: {}`[{}/{}]`".format(playing_bar, played_duration, total_duration) # Add :sound:?
-		views = utilities.add_commas(self.current.get("info", {}).get("view_count"))
-		likes = utilities.add_commas(self.current.get("info", {}).get("like_count"))
-		dislikes = utilities.add_commas(self.current.get("info", {}).get("dislike_count"))
+		views = self.current.get("info", {}).get("view_count")
+		likes = self.current.get("info", {}).get("like_count")
+		dislikes = self.current.get("info", {}).get("dislike_count")
 		description += '\n' if views or likes or dislikes else ""
-		description += views + " :eye:" if views else ""
+		description += f"{views:,} :eye:" if views else ""
 		description += " | " if views and (likes or dislikes) else ""
-		description += likes + " :thumbsup::skin-tone-2:" if likes else ""
+		description += f"{likes:,} :thumbsup::skin-tone-2:" if likes else ""
 		description += " | " if likes and dislikes else ""
-		description += dislikes + " :thumbsdown::skin-tone-2:" if dislikes else ""
+		description += f"{dislikes:,} :thumbsdown::skin-tone-2:" if dislikes else ""
 		embed.description = description
 		return embed
 	
