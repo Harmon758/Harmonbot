@@ -277,7 +277,7 @@ class Astronomy(commands.Cog):
 				data = await resp.json()
 			latitude = data["iss_position"]["latitude"]
 			longitude = data["iss_position"]["longitude"]
-			map_icon = "http://i.imgur.com/KPfeEcc.png" # 64x64 satellite emoji png
+			map_icon = "http://i.imgur.com/KPfeEcc.png"  # 64x64 satellite emoji png
 			map_url = ("https://maps.googleapis.com/maps/api/staticmap?"
 						f"center={latitude},{longitude}&zoom=3&size=640x640&maptype=hybrid&"
 						f"markers=icon:{map_icon}|anchor:center|{latitude},{longitude}")
