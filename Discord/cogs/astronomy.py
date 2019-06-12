@@ -265,7 +265,7 @@ class Astronomy(commands.Cog):
 					return
 				data = await resp.json()
 			if data["message"] == "failure":
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["reason"]))
+				await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
 				return
 			await ctx.embed_reply(fields = (("Duration", utilities.secs_to_letter_format(data["response"][0]["duration"])),), footer_text = "Rise Time", timestamp = datetime.datetime.utcfromtimestamp(data["response"][0]["risetime"]))
 		else:
@@ -275,8 +275,8 @@ class Astronomy(commands.Cog):
 			longitude = data["iss_position"]["longitude"]
 			map_icon = "http://i.imgur.com/KPfeEcc.png" # 64x64 satellite emoji png
 			map_url = "https://maps.googleapis.com/maps/api/staticmap"
-			map_url += "?center={0},{1}&zoom=3&size=640x640&maptype=hybrid&markers=icon:{2}|anchor:center|{0},{1}".format(latitude, longitude, map_icon)
-			await ctx.embed_reply("[:satellite_orbital: ]({})".format(map_url), fields = (("Latitude", latitude), ("Longitude", longitude)), image_url = map_url, timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"]))
+			map_url += f"?center={latitude},{longitude}&zoom=3&size=640x640&maptype=hybrid&markers=icon:{map_icon}|anchor:center|{latitude},{longitude}"
+			await ctx.embed_reply(f"[:satellite_orbital: ]({map_url})", fields = (("Latitude", latitude), ("Longitude", longitude)), image_url = map_url, timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"]))
 	
 	@astronomy.command()
 	@checks.not_forbidden()
