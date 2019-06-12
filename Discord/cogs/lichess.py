@@ -3,12 +3,16 @@ import discord
 from discord.ext import commands
 
 import datetime
+import sys
 
 import emoji
 import pycountry
 
-from modules import utilities
 from utilities import checks
+
+sys.path.insert(0, "..")
+from units.time import duration_to_string
+sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Lichess(bot))
@@ -395,9 +399,11 @@ class Lichess(commands.Cog):
 		fields.append(("Following", user_data["nbFollowing"]))
 		playtime = user_data.get("playTime", {})
 		if "total" in playtime:
-			fields.append(("Time Spent Playing", utilities.secs_to_letter_format(playtime["total"])))
+			fields.append(("Time Spent Playing", 
+							duration_to_string(datetime.timedelta(seconds = playtime["total"]), abbreviate = True)))
 		if "tv" in playtime:
-			fields.append(("Time On TV", utilities.secs_to_letter_format(playtime["tv"])))
+			fields.append(("Time On TV", 
+							duration_to_string(datetime.timedelta(seconds = playtime["tv"]), abbreviate = True)))
 		if "links" in profile:
 			fields.append(("Links", profile["links"], False))
 		if "seenAt" in user_data:
