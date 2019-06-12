@@ -249,9 +249,8 @@ class Meta(commands.Cog):
 	@commands.command()
 	async def uptime(self, ctx):
 		'''Bot uptime'''
-		now = datetime.datetime.utcnow()
-		uptime = now - ctx.bot.online_time
-		await ctx.embed_reply(duration_to_string(uptime, abbreviate = True))
+		await ctx.embed_reply(duration_to_string(datetime.datetime.utcnow() - ctx.bot.online_time, 
+													abbreviate = True))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def version(self, ctx):
