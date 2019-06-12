@@ -6,9 +6,13 @@ import datetime
 import dateutil.parser
 import inspect
 import re
+import sys
 
-from modules import utilities
 from utilities import checks
+
+sys.path.insert(0, "..")
+from units.time import duration_to_string
+sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Astronomy(bot))
@@ -267,7 +271,7 @@ class Astronomy(commands.Cog):
 				data = await resp.json()
 			if data["message"] == "failure":
 				return await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
-			duration = utilities.secs_to_letter_format(data["response"][0]["duration"])
+			duration = duration_to_string(datetime.timedelta(seconds = data["response"][0]["duration"]))
 			timestamp = datetime.datetime.utcfromtimestamp(data["response"][0]["risetime"])
 			await ctx.embed_reply(fields = (("Duration", duration),), 
 									footer_text = "Rise Time", timestamp = timestamp)
