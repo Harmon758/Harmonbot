@@ -165,7 +165,7 @@ class Images(commands.Cog):
 		try:
 			response = self.bot.clarifai_app.public_models.nsfw_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(e.response.json()["outputs"][0]["status"]["details"]))
+			await ctx.embed_reply(f":no_entry: Error: `{e.response.json()['outputs'][0]['status']['details']}`")
 			return
 		if response["status"]["description"] != "Ok":
 			await ctx.embed_reply(":no_entry: Error")
@@ -173,5 +173,5 @@ class Images(commands.Cog):
 		percentages = {}
 		for concept in response["outputs"][0]["data"]["concepts"]:
 			percentages[concept["name"]] = concept["value"] * 100
-		await ctx.embed_reply("NSFW: {:.2f}%".format(percentages["nsfw"]), thumbnail_url = image_url)
+		await ctx.embed_reply(f"NSFW: {percentages['nsfw']:.2f}%", thumbnail_url = image_url)
 
