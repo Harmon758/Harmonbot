@@ -9,11 +9,11 @@ import os
 import random
 import re
 import sys
-import unicodedata
+# import unicodedata
 
 import aiohttp
 import dotenv
-# import unicodedata2 as unicodedata
+import unicodedata2 as unicodedata
 
 sys.path.insert(0, "..")
 from units.files import create_folder
