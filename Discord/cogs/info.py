@@ -4,12 +4,12 @@ from discord.ext import commands
 
 import sys
 import textwrap
-import unicodedata
+# import unicodedata
 import urllib
 
 import dateutil
 import isodate
-# import unicodedata2 as unicodedata
+import unicodedata2 as unicodedata
 
 from modules import utilities
 from utilities import checks
