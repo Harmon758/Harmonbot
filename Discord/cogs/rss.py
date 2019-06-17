@@ -167,8 +167,6 @@ class RSS(commands.Cog):
 			await asyncio.sleep(60)
 		for record in records:
 			feed = record["feed"]
-			if feed in self.feeds_failed_to_initialize:
-				continue
 			if record["ttl"] and datetime.datetime.now(datetime.timezone.utc) < record["last_checked"] + datetime.timedelta(minutes = record["ttl"]):
 				continue
 			try:
@@ -223,10 +221,6 @@ class RSS(commands.Cog):
 						timestamp = dateutil.parser.parse(entry.updated, tzinfos = self.tzinfos)
 					else:
 						timestamp = discord.Embed.Empty
-					# TODO: Better method?
-					if timestamp and timestamp.tzinfo and timestamp < self.offset_aware_task_start_time:
-						continue
-					## elif timestamp < self.offset_naive_task_start_time: continue
 					# Get and set description, title, url + set timestamp
 					description = entry.get("summary")
 					if not description and "content" in entry:
@@ -332,6 +326,7 @@ class RSS(commands.Cog):
 				# Print error?
 				await asyncio.sleep(10)
 				# TODO: Add variable for sleep time
+				# TODO: Remove persistently erroring feed or exponentially backoff?
 			except asyncio.CancelledError:
 				raise
 			except Exception as e:
@@ -343,38 +338,7 @@ class RSS(commands.Cog):
 	
 	@check_rss_feeds.before_loop
 	async def before_check_rss_feeds(self):
-		self.offset_aware_task_start_time = datetime.datetime.now(datetime.timezone.utc)
-		## self.offset_naive_task_start_time = datetime.datetime.utcnow()
 		await self.inititalize_database()
-		records = await self.bot.db.fetch("SELECT DISTINCT feed FROM rss.feeds")
-		self.feeds_failed_to_initialize = []
-		for record in records:
-			feed = record["feed"]
-			try:
-				with self.bot.suppress_duplicate_event_loop_exceptions():
-					async with self.bot.aiohttp_session.get(feed) as resp:
-						feed_text = await resp.text()
-				feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
-				# Still necessary to run in executor?
-				for entry in feed_info.entries:
-					if "id" in entry:
-						await self.bot.db.execute(
-							"""
-							INSERT INTO rss.entries (entry, feed)
-							VALUES ($1, $2)
-							ON CONFLICT (entry, feed) DO NOTHING
-							""", 
-							entry.id, feed
-						)
-			except aiohttp.ClientConnectionError as e:
-				print(f"Failed to initialize feed in RSS Task: {feed}\n"
-						f" Connection Error: {type(e).__name__}: {e}", file = sys.stderr)
-				self.feeds_failed_to_initialize.append(feed)
-			except Exception as e:
-				print(f"Failed to initialize feed in RSS Task: {feed}\nException:", file = sys.stderr)
-				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-				errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
-				self.feeds_failed_to_initialize.append(feed)
 		await self.bot.wait_until_ready()
 	
 	@check_rss_feeds.after_loop
