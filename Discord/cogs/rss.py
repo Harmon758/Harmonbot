@@ -91,35 +91,26 @@ class RSS(commands.Cog):
 	@checks.is_permitted()
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
-		inserted = await ctx.bot.db.fetchrow(
+		following = await ctx.bot.db.fetchval(
 			"""
-			INSERT INTO rss.feeds (channel_id, feed)
-			VALUES ($1, $2)
-			ON CONFLICT DO NOTHING
-			RETURNING *
+			SELECT EXISTS (
+				SELECT FROM rss.feeds
+				WHERE channel_id = $1 AND feed = $2
+			)
 			""", 
 			ctx.channel.id, url
 		)
-		if not inserted:
-			return await ctx.embed_reply(":no_entry: This channel is already following that feed")
-		# Add entry IDs
+		if following:
+			return await ctx.embed_reply(":no_entry: This text channel is already following that feed")
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			feed_text = await resp.text()
+		# TODO: Handle issues getting URL
 		feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": url}))
 		# Still necessary to run in executor?
 		# TODO: Handle if feed already being followed elsewhere
 		ttl = None
 		if "ttl" in feed_info.feed:
 			ttl = int(feed_info.feed.ttl)
-		await ctx.bot.db.execute(
-			"""
-			UPDATE rss.feeds
-			SET last_checked = NOW(), 
-				ttl = $1
-			WHERE channel_id = $2 AND feed = $3
-			""", 
-			ttl, ctx.channel.id, url
-		)
 		for entry in feed_info.entries:
 			await ctx.bot.db.execute(
 				"""
@@ -129,6 +120,13 @@ class RSS(commands.Cog):
 				""", 
 				entry.id, url
 			)
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO rss.feeds (channel_id, feed, last_checked, ttl)
+			VALUES ($1, $2, NOW(), $3)
+			""", 
+			ctx.channel.id, url, ttl
+		)
 		await ctx.embed_reply(f"The feed, {url}, has been added to this channel")
 
 	@rss.command(name = "remove", aliases = ["delete"])
