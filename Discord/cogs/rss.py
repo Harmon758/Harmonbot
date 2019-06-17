@@ -105,7 +105,9 @@ class RSS(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			feed_text = await resp.text()
 		# TODO: Handle issues getting URL
-		feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": url}))
+		partial = functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), 
+																	response_headers = {"Content-Location": url})
+		feed_info = await self.bot.loop.run_in_executor(None, partial)
 		# Still necessary to run in executor?
 		# TODO: Handle if feed already being followed elsewhere
 		ttl = None
