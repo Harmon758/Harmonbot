@@ -136,10 +136,9 @@ class Info(commands.Cog):
 			if specific_emojis:
 				specific_emojis = textwrap.wrap(' '.join(specific_emojis), width = ctx.bot.EFVCL)
 				# EFVCL = Embed Field Value Character Limit
-				fields.append((f"{emoji_type.replace('standard', '').capitalize()} Emojis", 
-								specific_emojis[0], False))
+				fields.append((f"{emoji_type.replace('standard', '').capitalize()} Emojis", specific_emojis[0]))
 				for emoji in specific_emojis[1:]:
-					fields.append((ctx.bot.ZERO_WIDTH_SPACE, emoji, False))
+					fields.append((ctx.bot.ZERO_WIDTH_SPACE, emoji))
 		await ctx.embed_reply(title = ctx.guild.name, title_url = str(ctx.guild.icon_url), 
 								thumbnail_url = ctx.guild.icon_url, fields = fields, 
 								footer_text = "Created", timestamp = ctx.guild.created_at)
