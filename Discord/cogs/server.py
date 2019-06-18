@@ -57,7 +57,7 @@ class Server(commands.Cog):
 	@checks.not_forbidden()
 	async def region(self, ctx):
 		'''The server region'''
-		await ctx.embed_reply(ctx.guild.region)
+		await ctx.embed_reply(str(ctx.guild.region).replace('-', ' ').title().replace("Vip", "VIP").replace("Us", "US").replace("Eu", "EU"))
 	
 	@server.group(aliases = ["setting"], invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
