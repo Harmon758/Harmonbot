@@ -100,8 +100,8 @@ class Info(commands.Cog):
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
 					("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"), 
 					("Roles", len(ctx.guild.roles)), ("Region", region), 
-					("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."), 
 					("AFK Channel", ctx.guild.afk_channel), 
+					("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."), 
 					# ZWS = Zero Width Space
 					("Default Notification Settings", ctx.guild.default_notifications.name.replace('_', ' ').title().replace("Mentions", f"@{ctx.bot.ZWS}mentions")), 
 					("Verification Level", str(ctx.guild.verification_level).capitalize()), 
@@ -179,7 +179,7 @@ class Info(commands.Cog):
 		await ctx.embed_reply(title = str(user), title_url = str(user.avatar_url), 
 								thumbnail_url = user.avatar_url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
-		# member info, roles, color, joined at, etc.
+		# member info, roles, color, joined at, boosting since, etc.
 		# TODO: more detailed activities
 	
 	@info.command(aliases = ["yt"])
