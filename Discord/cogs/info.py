@@ -121,6 +121,9 @@ class Info(commands.Cog):
 					("Limits", f"Emoji: {ctx.guild.emoji_limit}\n"
 								f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
 								f"Filesize: {ctx.guild.filesize_limit // 1024 ** 2} MB")]
+		if "VANITY_URL" in ctx.guild.features:
+			invite = await ctx.guild.vanity_invite()
+			fields.append(("Vanity Invite URL", invite))
 		emojis = {"standard": [], "animated": [], "managed": [], "unavailable": []}
 		for emoji in ctx.guild.emojis:
 			if not emoji.available:
