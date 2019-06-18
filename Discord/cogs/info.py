@@ -126,6 +126,8 @@ class Info(commands.Cog):
 			fields.append(("Vanity Invite URL", invite))
 		if "INVITE_SPLASH" in ctx.guild.features:
 			fields.append(("Invite Splash", f"[URL]({ctx.guild.splash_url})"))
+		if "BANNER" in ctx.guild.features:
+			fields.append(("Banner", f"[URL]({ctx.guild.banner_url})"))
 		emojis = {"standard": [], "animated": [], "managed": [], "unavailable": []}
 		for emoji in ctx.guild.emojis:
 			if not emoji.available:
