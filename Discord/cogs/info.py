@@ -100,8 +100,9 @@ class Info(commands.Cog):
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
 					("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"), 
 					("Roles", len(ctx.guild.roles)), ("Region", region), 
-					("AFK Channel", ctx.guild.afk_channel), 
+					("AFK Channel", getattr(ctx.guild.afk_channel, "mention", ctx.guild.afk_channel)), 
 					("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."), 
+					("System Messages Channel", getattr(ctx.guild.system_channel, 'mention', ctx.guild.system_channel)), 
 					# ZWS = Zero Width Space
 					("Default Notification Settings", ctx.guild.default_notifications.name.replace('_', ' ').title().replace("Mentions", f"@{ctx.bot.ZWS}mentions")), 
 					("Verification Level", str(ctx.guild.verification_level).capitalize()), 
@@ -112,7 +113,6 @@ class Info(commands.Cog):
 					("Limits", f"Emoji: {ctx.guild.emoji_limit}\n"
 								f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
 								f"Filesize: {ctx.guild.filesize_limit // 1024 ** 2} MB")]
-		# TODO: Add system channel
 		emojis = {"standard": [], "animated": [], "managed": [], "unavailable": []}
 		for emoji in ctx.guild.emojis:
 			if not emoji.available:
