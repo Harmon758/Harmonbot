@@ -117,7 +117,7 @@ class Info(commands.Cog):
 					("Explicit Content Filter", str(ctx.guild.explicit_content_filter).replace('_', ' ').title()), 
 					("2FA Requirement", bool(ctx.guild.mfa_level)), 
 					("Boost Status", f"Level {ctx.guild.premium_tier}\n"
-										f"{ctx.guild.premium_subscription_count} Boosts"), 
+										f"{ctx.guild.premium_subscription_count} {ctx.bot.inflect_engine.plural('Boost', ctx.guild.premium_subscription_count)}"), 
 					("Limits", f"Emoji: {ctx.guild.emoji_limit}\n"
 								f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
 								f"Filesize: {ctx.guild.filesize_limit // 1024 ** 2} MB")]
