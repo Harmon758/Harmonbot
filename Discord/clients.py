@@ -441,7 +441,7 @@ class Bot(commands.Bot):
 				return await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
 			## Bot missing permissions (Unhandled)
 			if isinstance(error.original, (discord.Forbidden)):
-				return print(f"{self.console_message_prefix}Missing Permissions for {ctx.command.name} in #{ctx.channel.name} in {ctx.guild.name}")
+				return print(f"{self.console_message_prefix}Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}")
 			## Handled with local error handler
 			if isinstance(error.original, youtube_dl.utils.DownloadError):
 				return
@@ -457,7 +457,7 @@ class Bot(commands.Bot):
 		if type is discord.Forbidden:
 			for arg in args:
 				if isinstance(arg, commands.context.Context):
-					return print(f"{self.console_message_prefix}Missing Permissions for {arg.command.name} in #{arg.channel.name} in {arg.guild.name}")
+					return print(f"{self.console_message_prefix}Missing Permissions for {arg.command.qualified_name} in #{arg.channel.name} in {arg.guild.name}")
 				if isinstance(arg, discord.Message):
 					return print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
 		await super().on_error(event_method, *args, **kwargs)
