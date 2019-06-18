@@ -97,16 +97,16 @@ class Info(commands.Cog):
 		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in ctx.guild.channels)
 		bot_count = sum(m.bot for m in ctx.guild.members)
 		fields = [("Owner", ctx.guild.owner.mention), ("ID", ctx.guild.id), 
-					("Region", region), ("Roles", len(ctx.guild.roles)), 
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
 					("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"), 
+					("Roles", len(ctx.guild.roles)), ("Region", region), 
 					("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."), 
 					("AFK Channel", ctx.guild.afk_channel), 
-					("Verification Level", str(ctx.guild.verification_level).capitalize()), 
-					("2FA Requirement", bool(ctx.guild.mfa_level)), 
-					("Explicit Content Filter", str(ctx.guild.explicit_content_filter).replace('_', ' ').title()), 
 					# ZWS = Zero Width Space
 					("Default Notification Settings", ctx.guild.default_notifications.name.replace('_', ' ').title().replace("Mentions", f"@{ctx.bot.ZWS}mentions")), 
+					("Verification Level", str(ctx.guild.verification_level).capitalize()), 
+					("Explicit Content Filter", str(ctx.guild.explicit_content_filter).replace('_', ' ').title()), 
+					("2FA Requirement", bool(ctx.guild.mfa_level)), 
 					("Nitro Boost Level", f"{ctx.guild.premium_tier}"), 
 					("Limits", f"Emoji: {ctx.guild.emoji_limit}\n"
 								f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
