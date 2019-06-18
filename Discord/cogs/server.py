@@ -12,7 +12,22 @@ class Server(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	# TODO: add commands
+	# TODO: Add subcommands:
+	#         for info in info command: emojis, afk timeout, afk channel, mfa level, verification level, 
+	#                                   explicit content filter, default notifications, premium tier, 
+	#                                   premium subscription count, emoji limit, bitrate limit, filesize limit, 
+	#                                   member count, created at, system channel, system channel flags, 
+	#                                   features: vanity url, invite splash, banner
+	#         features: vip, verified, partnered, more emoji?, discoverable, commerce, lurkable, news, animated icon
+	#                   (add verified, partner to info command, via emoji?, also emoji for owner, boost?)
+	#                   (add discoverable, commerce, lurkable, news to info command?)
+	#         audit logs (disabled by default) (integration with?), bans (disabled by default), create custom emoji, 
+	#         estimate pruned members, invites (disabled by default), kick, leave?, prune?, unban, webhooks?, widget?, 
+	#         channels?, channels voice?, channels text?, channels category?, members?, roles?, large?, premium subscribers?
+	#         max_presences?, max_members?, description? (also add to info command?)
+	#       Integrate with channel + role cogs?
+	#       Add option to set/edit: icon, name, region
+	# TODO: Server settings
 	
 	@commands.group(aliases = ["guild"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
