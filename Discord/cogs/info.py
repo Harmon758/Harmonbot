@@ -106,7 +106,11 @@ class Info(commands.Cog):
 					("2FA Requirement", bool(ctx.guild.mfa_level)), 
 					("Explicit Content Filter", str(ctx.guild.explicit_content_filter).replace('_', ' ').title()), 
 					# ZWS = Zero Width Space
-					("Default Notification Settings", ctx.guild.default_notifications.name.replace('_', ' ').title().replace("Mentions", f"@{ctx.bot.ZWS}mentions"))]
+					("Default Notification Settings", ctx.guild.default_notifications.name.replace('_', ' ').title().replace("Mentions", f"@{ctx.bot.ZWS}mentions")), 
+					("Nitro Boost Level", f"{ctx.guild.premium_tier}"), 
+					("Limits", f"Emoji: {ctx.guild.emoji_limit}\n"
+								f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
+								f"Filesize: {ctx.guild.filesize_limit // 1024 ** 2} MB")]
 		# TODO: Add system channel
 		emojis = {"standard": [], "animated": [], "managed": []}
 		for emoji in ctx.guild.emojis:
