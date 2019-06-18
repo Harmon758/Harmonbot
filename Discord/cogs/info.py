@@ -113,15 +113,17 @@ class Info(commands.Cog):
 								f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
 								f"Filesize: {ctx.guild.filesize_limit // 1024 ** 2} MB")]
 		# TODO: Add system channel
-		emojis = {"standard": [], "animated": [], "managed": []}
+		emojis = {"standard": [], "animated": [], "managed": [], "unavailable": []}
 		for emoji in ctx.guild.emojis:
-			if emoji.managed:
+			if not emoji.available:
+				emojis["unavailable"].append(str(emoji))
+			elif emoji.managed:
 				emojis["managed"].append(str(emoji))
 			elif emoji.animated:
 				emojis["animated"].append(str(emoji))
 			else:
 				emojis["standard"].append(str(emoji))
-		for emoji_type in ("standard", "animated", "managed"):
+		for emoji_type in ("standard", "animated", "managed", "unavailable"):
 			specific_emojis = emojis[emoji_type]
 			if specific_emojis:
 				specific_emojis = textwrap.wrap(' '.join(specific_emojis), width = ctx.bot.EFVCL)
