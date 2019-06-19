@@ -87,7 +87,7 @@ class Overwatch(commands.Cog):
 	
 	@overwatch.command()
 	@checks.not_forbidden()
-	async def map(self, ctx, * map : str):
+	async def map(self, ctx, *, map : str):
 		'''
 		WIP
 		Maps
