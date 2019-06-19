@@ -96,7 +96,7 @@ if __name__ == "__main__":
 		
 		# Log message
 		log_entry = "{0.created_at}: [{0.id}] {0.author.display_name} ({0.author}) ({0.author.id}) in ".format(message)
-		if isinstance(message.channel, discord.DMChannel):
+		if message.channel.type is discord.ChannelType.private:
 			log_entry += "Direct Message"
 		else:
 			log_entry += "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 		await ctx.bot.invoke(ctx)
 		
 		# Forward DMs
-		if isinstance(message.channel, discord.DMChannel) and message.channel.recipient.id != ctx.bot.owner_id:
+		if message.channel.type is discord.ChannelType.private and message.channel.recipient.id != ctx.bot.owner_id:
 			me = discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)
 			if message.author == ctx.bot.user:
 				try:
@@ -176,7 +176,7 @@ if __name__ == "__main__":
 			return await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 		
 		# help or prefix(es) DM or mention
-		if (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and isinstance(message.channel, discord.DMChannel)) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
+		if (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and message.channel.type is discord.ChannelType.private) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
 			try:
 				prefixes = ctx.bot.command_prefix(ctx.bot, message)
 			except TypeError:  # if Beta (*)

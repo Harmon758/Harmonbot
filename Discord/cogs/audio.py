@@ -423,7 +423,7 @@ class Audio(commands.Cog):
 	@checks.is_voice_connected()
 	async def library_files(self, ctx):
 		'''List song files in the library'''
-		if not isinstance(ctx.channel, discord.DMChannel):
+		if ctx.channel.type is not discord.ChannelType.private:
 			await ctx.embed_reply("Check your DMs")
 		output = "```"
 		for filename in self.players[ctx.guild.id].library_files:

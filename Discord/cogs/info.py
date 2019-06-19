@@ -94,7 +94,7 @@ class Info(commands.Cog):
 		region = str(ctx.guild.region).replace('-', ' ').title()
 		region = region.replace("Vip", "VIP").replace("Us", "US").replace("Eu", "EU")
 		text_count = sum(isinstance(channel, discord.TextChannel) for channel in ctx.guild.channels)
-		voice_count = sum(isinstance(channel, discord.VoiceChannel) for channel in ctx.guild.channels)
+		voice_count = sum(channel.type is discord.ChannelType.voice for channel in ctx.guild.channels)
 		bot_count = sum(m.bot for m in ctx.guild.members)
 		if ctx.guild.system_channel:  # Use := in Python 3.8
 			system_messages = ctx.guild.system_channel.mention

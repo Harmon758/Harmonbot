@@ -127,7 +127,7 @@ class Meta(commands.Cog):
 			prefixes = ['!']
 		with open(clients.data_path + "/prefixes.json", 'r') as prefixes_file:
 			all_prefixes = json.load(prefixes_file)
-		if isinstance(ctx.channel, discord.DMChannel):
+		if ctx.channel.type is discord.ChannelType.private:
 			all_prefixes[ctx.channel.id] = prefixes
 		else:
 			all_prefixes[ctx.guild.id] = prefixes

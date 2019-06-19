@@ -70,7 +70,7 @@ class HelpCommand(commands.HelpCommand):
 		await ctx.author.send(embed = discord.Embed(title = f"{cog.qualified_name} Commands", description = paginator.pages[0], color = ctx.bot.bot_color))
 		for page in paginator.pages[1:]:
 			await ctx.author.send(embed = discord.Embed(description = page, color = ctx.bot.bot_color))
-		if not isinstance(ctx.channel, discord.DMChannel):
+		if ctx.channel.type is not discord.ChannelType.private:
 			await ctx.embed_reply("Check your DMs")
 	
 	async def send_group_help(self, group):
@@ -119,7 +119,7 @@ class HelpCommand(commands.HelpCommand):
 		else:
 			for embed in embeds:
 				await ctx.author.send(embed = embed)
-			if not isinstance(ctx.channel, discord.DMChannel):
+			if ctx.channel.type is not discord.ChannelType.private:
 				await ctx.embed_reply("Check your DMs")
 	
 	async def send_command_help(self, command):
@@ -146,7 +146,7 @@ class HelpCommand(commands.HelpCommand):
 		else:
 			await ctx.whisper(embed = discord.Embed(description = f"{paginator.pages[-1]}\n{command.description}", 
 													color = ctx.bot.bot_color))
-		if not isinstance(ctx.channel, discord.DMChannel):
+		if ctx.channel.type is not discord.ChannelType.private:
 			await ctx.embed_reply("Check your DMs")
 	
 	async def send_all_help(self):
@@ -170,7 +170,7 @@ class HelpCommand(commands.HelpCommand):
 			for page in paginator.pages[1:]:
 				embed.add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 		await ctx.whisper(embed = embed)
-		if not isinstance(ctx.channel, discord.DMChannel):
+		if ctx.channel.type is not discord.ChannelType.private:
 			await ctx.embed_reply("Check your DMs")
 	
 	def add_commands(self, max_width, commands, paginator):

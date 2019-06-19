@@ -10,7 +10,7 @@ def is_owner_check(ctx):
 	return ctx.author.id == ctx.bot.owner_id
 
 def is_server_owner_check(ctx):
-	return isinstance(ctx.channel, discord.DMChannel) or ctx.author == ctx.guild.owner or is_owner_check(ctx)
+	return ctx.channel.type is discord.ChannelType.private or ctx.author == ctx.guild.owner or is_owner_check(ctx)
 
 def is_server_owner():
 	
@@ -55,7 +55,7 @@ def has_permissions(*, guild = False, **permissions):
 def dm_or_has_permissions(*, guild = False, **permissions):
 	
 	def predicate(ctx):
-		if isinstance(ctx.channel, discord.DMChannel) or has_permissions_check(ctx, permissions, guild = guild):
+		if ctx.channel.type is discord.ChannelType.private or has_permissions_check(ctx, permissions, guild = guild):
 			return True
 		else:
 			raise errors.MissingPermissions
@@ -80,7 +80,7 @@ def has_capability(*permissions, guild = False):
 def dm_or_has_capability(*permissions, guild = False):
 	
 	def predicate(ctx):
-		if isinstance(ctx.channel, discord.DMChannel) or has_capability_check(ctx, permissions, guild = guild):
+		if ctx.channel.type is discord.ChannelType.private or has_capability_check(ctx, permissions, guild = guild):
 			return True
 		else:
 			raise errors.MissingCapability(permissions)
@@ -90,7 +90,7 @@ def dm_or_has_capability(*permissions, guild = False):
 def has_permissions_and_capability(*, guild = False, **permissions):
 	
 	def predicate(ctx):
-		if isinstance(ctx.channel, discord.DMChannel):
+		if ctx.channel.type is discord.ChannelType.private:
 			return False
 		elif not has_permissions_check(ctx, permissions, guild = guild):
 			raise errors.MissingPermissions
@@ -105,7 +105,7 @@ def has_permissions_and_capability(*, guild = False, **permissions):
 def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 	
 	def predicate(ctx):
-		if isinstance(ctx.channel, discord.DMChannel):
+		if ctx.channel.type is discord.ChannelType.private:
 			return True
 		elif not has_permissions_check(ctx, permissions, guild = guild):
 			raise errors.MissingPermissions
@@ -117,7 +117,7 @@ def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 	return commands.check(predicate)
 
 def not_forbidden_check(ctx):
-	if isinstance(ctx.channel, discord.DMChannel):
+	if ctx.channel.type is discord.ChannelType.private:
 		return True
 	permitted = ctx.get_permission(ctx.command.name, id = ctx.author.id)
 	# TODO: Include subcommands?
@@ -134,7 +134,7 @@ def not_forbidden():
 
 def is_permitted_check(ctx):
 	'''Check if permitted'''
-	if isinstance(ctx.channel, discord.DMChannel):
+	if ctx.channel.type is discord.ChannelType.private:
 		return True
 	command = ctx.command
 	permitted = ctx.get_permission(command.name, id = ctx.author.id)
