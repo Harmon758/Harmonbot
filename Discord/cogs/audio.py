@@ -428,7 +428,7 @@ class Audio(commands.Cog):
 		output = "```"
 		for filename in self.players[ctx.guild.id].library_files:
 			if len(output) + len(filename) > 1997: # 2000 - 3
-				await self.bot.whisper(output[:-2] + "```")
+				await ctx.author.send(output[:-2] + "```")
 				output = "```" + filename + ", "
 			else:
 				output += filename + ", "
