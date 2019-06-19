@@ -453,15 +453,15 @@ class Bot(commands.Bot):
 		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
 	
 	async def on_error(self, event_method, *args, **kwargs):
-		type, value, _traceback = sys.exc_info()
-		if type is discord.Forbidden:
+		error_type, value, error_traceback = sys.exc_info()
+		if error_type is discord.Forbidden:
 			for arg in args:
 				if isinstance(arg, commands.context.Context):
 					return print(f"{self.console_message_prefix}Missing Permissions for {arg.command.qualified_name} in #{arg.channel.name} in {arg.guild.name}")
 				if isinstance(arg, discord.Message):
 					return print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
 		await super().on_error(event_method, *args, **kwargs)
-		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (type, value, _traceback))
+		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (error_type, value, error_traceback))
 	
 	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
