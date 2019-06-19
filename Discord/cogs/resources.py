@@ -537,6 +537,8 @@ class Resources(commands.Cog):
 		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": vanity_name}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		if data["response"]["success"] == 42:  # NoMatch, https://partner.steamgames.com/doc/api/steam_api#EResult
+			return await ctx.embed_reply(":no_entry: Error: User not found")
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
 		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": data["response"]["steamid"]}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
