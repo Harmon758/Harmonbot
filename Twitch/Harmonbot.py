@@ -21,7 +21,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = None, **kwargs):
-		self.version = "3.0.0-b.130"
+		self.version = "3.0.0-b.131"
 		
 		loop = loop or asyncio.get_event_loop()
 		if initial_channels is None:
@@ -223,29 +223,31 @@ class Bot(commands.Bot):
 		ctx = await self.get_context(message, cls = context.Context)
 		# Handle channel-specific commands with set responses
 		if ctx.prefix and ctx.channel.name != "harmonbot":
-			command = message.content[len(ctx.prefix):].lstrip().lower().split()[0]
-			aliased = await self.db.fetchval(
-				"""
-				SELECT name
-				from twitch.aliases
-				WHERE channel = $1 AND alias = $2
-				""", 
-				ctx.channel.name, command
-			)
-			if aliased:
-				command = aliased
-			response = await self.db.fetchval(
-				"""
-				SELECT response
-				FROM twitch.commands
-				WHERE channel = $1 AND name = $2
-				""", 
-				ctx.channel.name, command
-			)
-			if response:
-				await ctx.send(response)
-				ctx.channel_command = command
-				# Return? Override main commands?
+			arguments = message.content[len(ctx.prefix):].lstrip().lower().split()
+			if arguments:
+				command = arguments[0]
+				aliased = await self.db.fetchval(
+					"""
+					SELECT name
+					from twitch.aliases
+					WHERE channel = $1 AND alias = $2
+					""", 
+					ctx.channel.name, command
+				)
+				if aliased:
+					command = aliased
+				response = await self.db.fetchval(
+					"""
+					SELECT response
+					FROM twitch.commands
+					WHERE channel = $1 AND name = $2
+					""", 
+					ctx.channel.name, command
+				)
+				if response:
+					await ctx.send(response)
+					ctx.channel_command = command
+					# Return? Override main commands?
 		# Handle commands
 		await self.handle_commands(message, ctx = ctx)
 		# TODO: command on/off settings
