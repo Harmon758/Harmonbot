@@ -290,9 +290,9 @@ class Astronomy(commands.Cog):
 									fields = (("Latitude", latitude), ("Longitude", longitude)), 
 									image_url = map_url, timestamp = timestamp)
 	
-	@astronomy.command()
+	@astronomy.command(name = "object")
 	@checks.not_forbidden()
-	async def object(self, ctx, *, object : str):
+	async def astronomy_object(self, ctx, *, object : str):
 		'''WIP'''
 		# https://api.arcsecond.io/objects/alpha%20centurai/
 		...
