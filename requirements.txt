@@ -1,4 +1,5 @@
-discord.py[voice]==1.2.1
+# discord.py[voice]==1.2.1
+-e git+git://github.com/Rapptz/discord.py.git@3730e66#egg=discord.py[voice]
 # TwitchIO@rewrite
 -e git+git://github.com/TwitchIO/Twitchio.git@9c99b72#egg=twitchio
 pydle==0.9.1
