@@ -418,16 +418,17 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "files")
-	@commands.guild_only() # enable for DMs?
+	@commands.guild_only()  # enable for DMs?
 	@checks.not_forbidden()
-	@checks.is_voice_connected()
+	@checks.is_voice_connected()  # don't require
 	async def library_files(self, ctx):
 		'''List song files in the library'''
+		# TODO: Better pagination method
 		if ctx.channel.type is not discord.ChannelType.private:
 			await ctx.embed_reply("Check your DMs")
 		output = "```"
 		for filename in self.players[ctx.guild.id].library_files:
-			if len(output) + len(filename) > 1997: # 2000 - 3
+			if len(output) + len(filename) > 1997:  # 2000 - 3
 				await ctx.author.send(output[:-2] + "```")
 				output = "```" + filename + ", "
 			else:
