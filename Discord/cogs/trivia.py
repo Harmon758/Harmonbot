@@ -208,6 +208,11 @@ class Trivia(commands.Cog):
 		answer_items[-1:] = [item.strip() for item in answer_items[-1].split("and") if item]
 		response_items = [item.strip() for item in response.split(',')]
 		response_items[-1:] = [item.strip() for item in response_items[-1].split("and") if item]
+		# Remove article prefixes
+		for index, item in enumerate(answer_items):
+			answer_items[index] = self.remove_article_prefix(item)
+		for index, item in enumerate(response_items):
+			response_items[index] = self.remove_article_prefix(item)
 		# Check equivalence
 		if set(answer_items) == set(response_items):
 			return True
