@@ -231,22 +231,22 @@ class Meta(commands.Cog):
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)  # url?
 		embed.add_field(name = "Uptime", value = uptime)
 		embed.add_field(name = "Total Recorded Uptime", value = total_uptime)
-		embed.add_field(name = "Recorded Restarts", value = "{:,}".format(stats["restarts"]))
-		embed.add_field(name = "Commands", value = "{} main\n{} total".format(len(self.bot.commands), total_command_count))
+		embed.add_field(name = "Recorded Restarts", value = f"{stats['restarts']:,}")
+		embed.add_field(name = "Commands", value = f"{len(self.bot.commands)} main\n{total_command_count} total")
 		embed.add_field(name = "Commands Executed", 
-			value = "{} this session\n{:,} total recorded".format(self.bot.session_commands_executed, stats["commands_executed"])) 
-		embed.add_field(name = "Cogs Reloaded", value = "{:,}".format(stats["cogs_reloaded"]))
+			value = f"{self.bot.session_commands_executed} this session\n{stats['commands_executed']:,} total recorded") 
+		embed.add_field(name = "Cogs Reloaded", value = f"{stats['cogs_reloaded']:,}")
 		# TODO: cogs reloaded this session
 		embed.add_field(name = "Servers", value = len(self.bot.guilds))
-		embed.add_field(name = "Channels", value = "{} text\n{} voice (playing in {}/{})".format(text_count, voice_count, playing_in_voice_count, in_voice_count))
+		embed.add_field(name = "Channels", value = f"{text_count} text\n{voice_count} voice (playing in {playing_in_voice_count}/{in_voice_count})")
 		embed.add_field(name = "Members (Online)", 
-			value = "{:,} total ({:,})\n{:,} unique ({:,})".format(total_members, total_members_online, len(unique_members), unique_members_online))
+			value = f"{total_members:,} total ({total_members_online:,})\n{len(unique_members):,} unique ({unique_members_online:,})")
 		if top_commands[:5]: embed.add_field(name = "Top Commands Executed", 
-			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[:5]))
+			value = "\n".join(f"{uses:,} {command}" for command, uses in top_commands[:5]))
 		if top_commands[5:10]: embed.add_field(name = "(Total Recorded)", 
-			value = "\n".join("{:,} {}".format(uses, command) for command, uses in top_commands[5:10]))
+			value = "\n".join(f"{uses:,} {command}" for command, uses in top_commands[5:10]))
 		if session_top_5: embed.add_field(name = "(This Session)", 
-			value = "\n".join("{:,} {}".format(uses, command) for command, uses in session_top_5))
+			value = "\n".join(f"{uses:,} {command}" for command, uses in session_top_5))
 		await ctx.send(embed = embed)
 	
 	@commands.command()
