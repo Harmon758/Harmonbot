@@ -279,7 +279,7 @@ class Meta(commands.Cog):
 		try:
 			await ctx.embed_reply(pkg_resources.get_distribution(library).version)
 		except pkg_resources.DistributionNotFound as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
+			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@version.command(name = "opus", aliases = ["libopus"])
 	async def version_opus(self, ctx):
