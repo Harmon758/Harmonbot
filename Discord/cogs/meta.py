@@ -533,8 +533,9 @@ class Meta(commands.Cog):
 		code = code.strip('`')
 		try:
 			exec(code)
+			# TODO: await?
 		except Exception as e:
-			await ctx.reply(ctx.bot.PY_CODE_BLOCK.format("{}: {}".format(type(e).__name__, e)))
+			await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"))
 			return
 		await ctx.embed_reply("Successfully executed")
 	
