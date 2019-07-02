@@ -579,7 +579,7 @@ class Meta(commands.Cog):
 				try:
 					code = compile(code, "<repl>", "exec")
 				except SyntaxError as e:
-					await ctx.reply(ctx.bot.PY_CODE_BLOCK.format("{0.text}{1:>{0.offset}}\n{2}: {0}".format(e, '^', type(e).__name__)))
+					await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{e.text}{'^':>{e.offset}}\n{type(e).__name__}: {e}"))
 					continue
 			try:
 				result = function(code, variables)
@@ -592,7 +592,7 @@ class Meta(commands.Cog):
 					try:
 						await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(result))
 					except Exception as e:
-						await ctx.reply(ctx.bot.PY_CODE_BLOCK.format("{}: {}".format(type(e).__name__, e)))
+						await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"))
 				variables["last"] = result
 	
 	@commands.command(aliases = ["github"])
