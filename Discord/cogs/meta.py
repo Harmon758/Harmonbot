@@ -586,7 +586,7 @@ class Meta(commands.Cog):
 				if inspect.isawaitable(result):
 					result = await result
 			except:
-				await ctx.reply(ctx.bot.PY_CODE_BLOCK.format("\n".join(traceback.format_exc().splitlines()[-2:]).strip()))
+				await ctx.reply(ctx.bot.PY_CODE_BLOCK.format('\n'.join(traceback.format_exc().splitlines()[-2:]).strip()))
 			else:
 				if function is eval:
 					try:
