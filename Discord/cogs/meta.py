@@ -52,13 +52,12 @@ class Meta(commands.Cog):
 	async def benchmark(self, ctx):
 		'''Benchmark'''
 		process = psutil.Process()
-		memory = process.memory_info().rss / 2 ** 20
 		process.cpu_percent()
-		message = await ctx.embed_reply(fields = (("RAM", f"{memory:.2f} MiB"), ("CPU", "Calculating CPU usage..")))
+		message = await ctx.embed_reply(fields = (("RAM", f"{process.memory_info().rss / 2 ** 20:.2f} MiB"), 
+													("CPU", "Calculating CPU usage..")))
 		await asyncio.sleep(1)
-		cpu = process.cpu_percent() / psutil.cpu_count()
 		embed = message.embeds[0]
-		embed.set_field_at(1, name = "CPU", value = f"{cpu}%")
+		embed.set_field_at(1, name = "CPU", value = f"{process.cpu_percent() / psutil.cpu_count()}%")
 		await message.edit(embed = embed)
 	
 	@commands.command(aliases = ["category"])
