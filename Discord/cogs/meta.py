@@ -54,12 +54,10 @@ class Meta(commands.Cog):
 		process = psutil.Process()
 		memory = process.memory_info().rss / 2 ** 20
 		process.cpu_percent()
-		embed = discord.Embed(color = ctx.bot.bot_color)
-		embed.add_field(name = "RAM", value = f"{memory:.2f} MiB")
-		embed.add_field(name = "CPU", value = "Calculating CPU usage..")
-		message = await ctx.send(embed = embed)
+		message = await ctx.embed_reply(fields = (("RAM", f"{memory:.2f} MiB"), ("CPU", "Calculating CPU usage..")))
 		await asyncio.sleep(1)
 		cpu = process.cpu_percent() / psutil.cpu_count()
+		embed = message.embeds[0]
 		embed.set_field_at(1, name = "CPU", value = f"{cpu}%")
 		await message.edit(embed = embed)
 	
