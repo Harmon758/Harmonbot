@@ -81,7 +81,7 @@ class Meta(commands.Cog):
 	async def enable(self, ctx, command : str):
 		'''Enable a command'''
 		self.bot.all_commands[command].enabled = True
-		await ctx.embed_reply("`{}{}` has been enabled".format(ctx.prefix, command))
+		await ctx.embed_reply(f"`{ctx.prefix}{command}` has been enabled")
 	
 	@commands.command()
 	async def points(self, ctx):
