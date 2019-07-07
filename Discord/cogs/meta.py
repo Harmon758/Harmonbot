@@ -130,7 +130,7 @@ class Meta(commands.Cog):
 			all_prefixes[ctx.guild.id] = prefixes
 		with open(clients.data_path + "/prefixes.json", 'w') as prefixes_file:
 			json.dump(all_prefixes, prefixes_file, indent = 4)
-		await ctx.embed_reply("Prefix(es) set: {}".format(' '.join([f'`"{prefix}"`' for prefix in prefixes])))
+		await ctx.embed_reply("Prefix(es) set: " + ' '.join(f'`"{prefix}"`' for prefix in prefixes))
 	
 	@commands.group(aliases = ["shard"], invoke_without_command = True, case_insensitive = True)
 	async def shards(self, ctx):
