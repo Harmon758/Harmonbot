@@ -243,13 +243,13 @@ class Meta(commands.Cog):
 								f"{len(unique_members):,} unique ({unique_members_online:,})")
 		if top_commands[:5]:
 			embed.add_field(name = "Top Commands Executed", 
-							value = "\n".join(f"{uses:,} {command}" for command, uses in top_commands[:5]))
+							value = '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[:5]))
 		if top_commands[5:10]:
 			embed.add_field(name = "(Total Recorded)", 
-							value = "\n".join(f"{uses:,} {command}" for command, uses in top_commands[5:10]))
+							value = '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[5:10]))
 		if session_top_5:
 			embed.add_field(name = "(This Session)", 
-							value = "\n".join(f"{uses:,} {command}" for command, uses in session_top_5))
+							value = '\n'.join(f"{uses:,} {command}" for command, uses in session_top_5))
 		await ctx.send(embed = embed)
 	
 	@commands.command()
