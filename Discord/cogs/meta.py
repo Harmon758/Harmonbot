@@ -209,29 +209,27 @@ class Meta(commands.Cog):
 		with open(clients.data_path + "/stats.json", 'r') as stats_file:
 			stats = json.load(stats_file)
 		
-		uptime = duration_to_string(datetime.datetime.utcnow() - ctx.bot.online_time, abbreviate = True)
+		channel_types = [type(c) for c in self.bot.get_all_channels()]
+		voice_count = channel_types.count(discord.VoiceChannel)
+		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
+		in_voice_count = len(self.bot.cogs["Audio"].players)
 		total_members = sum(len(g.members) for g in self.bot.guilds)
 		total_members_online = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(self.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
-		channel_types = [type(c) for c in self.bot.get_all_channels()]
-		text_count = channel_types.count(discord.TextChannel)
-		voice_count = channel_types.count(discord.VoiceChannel)
-		total_uptime = duration_to_string(datetime.timedelta(seconds = int(stats["uptime"])), abbreviate = True)
 		top_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)
 		session_top_5 = sorted(self.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
-		in_voice_count = len(self.bot.cogs["Audio"].players)
-		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
-		total_command_count = len(set(self.bot.walk_commands()))
 		
-		fields = [("Uptime", uptime), ("Total Recorded Uptime", total_uptime), 
+		fields = [("Uptime", duration_to_string(datetime.datetime.utcnow() - ctx.bot.online_time, abbreviate = True)), 
+					("Total Recorded Uptime", duration_to_string(datetime.timedelta(seconds = int(stats["uptime"])), 
+																	abbreviate = True)), 
 					("Recorded Restarts", f"{stats['restarts']:,}"), 
-					("Commands", f"{len(self.bot.commands)} main\n{total_command_count} total"), 
+					("Commands", f"{len(self.bot.commands)} main\n{len(set(self.bot.walk_commands()))} total"), 
 					("Commands Executed", f"{self.bot.session_commands_executed} this session\n"
 											f"{stats['commands_executed']:,} total recorded"), 
 					("Cogs Reloaded", f"{stats['cogs_reloaded']:,}"),  # TODO: cogs reloaded this session
 					("Servers", len(self.bot.guilds)), 
-					("Channels", f"{text_count} text\n"
+					("Channels", f"{channel_types.count(discord.TextChannel)} text\n"
 									f"{voice_count} voice (playing in {playing_in_voice_count}/{in_voice_count})"), 
 					("Members (Online)", f"{total_members:,} total ({total_members_online:,})\n"
 											f"{len(unique_members):,} unique ({unique_members_online:,})")]
