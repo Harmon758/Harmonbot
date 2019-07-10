@@ -19,7 +19,6 @@ import time
 import clients
 from modules import utilities
 from utilities import checks
-from utilities import errors
 from utilities import paginator
 
 def setup(bot):
