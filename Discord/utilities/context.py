@@ -11,14 +11,17 @@ from utilities import errors
 class Context(commands.Context):
 	
 	def embed_reply(self, *args, in_response_to = True, **kwargs):
+		in_response_to_text = "In response to"
 		if "author_name" not in kwargs and "author_icon_url" not in kwargs:
 			kwargs["author_name"] = self.author.display_name
 			kwargs["author_icon_url"] = self.author.avatar_url
+		else:
+			in_response_to_text += f" {self.author} ({self.author.id})"
 		if in_response_to:
 			if not kwargs.get("footer_text"):
-				kwargs["footer_text"] = f"In response to: {self.message.clean_content}"
+				kwargs["footer_text"] = f"{in_response_to_text}: {self.message.clean_content}"
 			elif len(args) < 2:
-				args = (next(iter(args), None), f"In response to: `{self.message.clean_content}`")
+				args = (next(iter(args), None), f"{in_response_to_text}: `{self.message.clean_content}`")
 		return self.embed_say(*args, **kwargs)
 	
 	# TODO: optimize/improve clarity
