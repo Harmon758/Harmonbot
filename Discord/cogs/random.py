@@ -480,10 +480,10 @@ class Random(commands.Cog):
 		# TODO: separate message quoting
 		# TODO: other options to quote by?
 		if message:
-			return await ctx.embed_say(message.content, 
-										author_name = message.author.display_name, author_icon_url = message.author.avatar_url, 
-										footer_text = "Sent", timestamp = message.created_at, 
-										attempt_delete = False)
+			return await ctx.embed_reply(message.content, 
+											author_name = message.author.display_name, 
+											author_icon_url = message.author.avatar_url, 
+											footer_text = "Sent", timestamp = message.created_at)
 		url = "http://api.forismatic.com/api/1.0/"
 		params = {"method": "getQuote", "format": "json", "lang": "en"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
