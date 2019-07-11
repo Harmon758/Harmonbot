@@ -45,10 +45,10 @@ class Poker(commands.Cog):
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
-			await ctx.embed_say(f"{ctx.author.display_name} has started a round of poker\n`{ctx.prefix}poker join` to join\n`{ctx.prefix}poker start` again to start")
+			await ctx.embed_reply(f"has started a round of poker\n`{ctx.prefix}poker join` to join\n`{ctx.prefix}poker start` again to start")
 		else:
 			self.status = "pre-flop"
-			await ctx.embed_say(f"The poker round has started\nPlayers: {' '.join(player.mention for player in self.players)}")
+			await ctx.embed_reply(f"The poker round has started\nPlayers: {' '.join(player.mention for player in self.players)}")
 			for player in self.players:
 				cards_string = self.cards_to_string(self.hands[player.id].cards)
 				await self.bot.send_embed(player, f"Your poker hand: {cards_string}")
@@ -100,7 +100,7 @@ class Poker(commands.Cog):
 		if self.status == "started":
 			self.players.append(ctx.author)
 			self.hands[ctx.author.id] = self.deck.deal(2)
-			await ctx.embed_say(f"{ctx.author.display_name} has joined the poker match")
+			await ctx.embed_reply("has joined the poker match")
 		elif self.status is None:
 			await ctx.embed_reply(f"There's not currently a round of poker going on\nUse `{ctx.prefix}poker start` to start one")
 		else:
@@ -116,7 +116,7 @@ class Poker(commands.Cog):
 				self.turn = None
 			elif points == self.current_bet:
 				self.bets[self.turn.id] = points
-				await ctx.embed_say(f"{ctx.author.display_name} has called")
+				await ctx.embed_reply("has called")
 				self.turn = None
 			else:
 				await ctx.embed_reply("The current bet is more than that")
@@ -128,10 +128,10 @@ class Poker(commands.Cog):
 		if self.turn and self.turn.id == ctx.author.id:
 			if self.current_bet == 0 or (self.turn.id in self.bets and self.bets[self.turn.id] == self.current_bet):
 				await ctx.embed_reply("You can't call\nYou have checked instead")
-				await ctx.embed_say(f"{ctx.author.display_name} has checked")
+				await ctx.embed_reply("has checked")
 			else:
 				self.bets[self.turn.id] = self.current_bet
-				await ctx.embed_say(f"{ctx.author.display_name} has called")
+				await ctx.embed_reply("has called")
 			self.turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
@@ -143,7 +143,7 @@ class Poker(commands.Cog):
 				await ctx.embed_reply(":no_entry: You can't check")
 			else:
 				self.bets[self.turn.id] = self.current_bet
-				await ctx.embed_say(f"{ctx.author.display_name} has checked")
+				await ctx.embed_reply("has checked")
 				self.turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now.")
