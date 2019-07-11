@@ -10,10 +10,15 @@ from utilities import errors
 
 class Context(commands.Context):
 	
-	def embed_reply(self, *args, **kwargs):
+	def embed_reply(self, *args, in_response_to = True, **kwargs):
 		if "author_name" not in kwargs and "author_icon_url" not in kwargs:
 			kwargs["author_name"] = self.author.display_name
 			kwargs["author_icon_url"] = self.author.avatar_url
+		if in_response_to:
+			if not kwargs.get("footer_text"):
+				kwargs["footer_text"] = f"In response to: {self.message.clean_content}"
+			elif not args:
+				args = (f"In response to: `{self.message.clean_content}`",)
 		return self.embed_say(*args, **kwargs)
 	
 	# TODO: optimize/improve clarity
@@ -22,8 +27,7 @@ class Context(commands.Context):
 						author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
 						image_url = None, thumbnail_url = None, 
 						footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
-						timestamp = discord.Embed.Empty, fields = [], color = None, 
-						in_response_to = True, attempt_delete = True, **kwargs):
+						timestamp = discord.Embed.Empty, fields = [], color = None, attempt_delete = True, **kwargs):
 		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = color or self.bot.bot_color)
 		embed.description = str(description) if description else discord.Embed.Empty
 		if author_name:
@@ -33,10 +37,6 @@ class Context(commands.Context):
 		if thumbnail_url:
 			embed.set_thumbnail(url = thumbnail_url)
 		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
-		if footer_text == discord.Embed.Empty and in_response_to:
-			embed.set_footer(text = f"In response to: {self.message.clean_content}", icon_url = footer_icon_url)
-		elif in_response_to and not args:
-			args = (f"In response to: `{self.message.clean_content}`",)
 		for field in fields:
 			if len(field) >= 3:
 				embed.add_field(name = field[0], value = field[1], inline = field[2])
