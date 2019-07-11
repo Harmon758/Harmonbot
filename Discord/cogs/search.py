@@ -301,7 +301,7 @@ class Search(commands.Cog):
 				if not text_output:
 					await ctx.embed_reply(title = pod.title, image_url = images[0])
 					for image in images[1:]:
-						await ctx.embed_say(None, image_url = image)
+						await ctx.embed_say(image_url = image)
 				else:
 					for i, link in enumerate(images):
 						images[i] = await self._shorturl(link)
