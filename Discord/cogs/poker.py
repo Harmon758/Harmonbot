@@ -45,7 +45,7 @@ class Poker(commands.Cog):
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
-			await ctx.embed_say(f"{ctx.author.display_name} has started a round of poker\n`{ctx.prefix}poker join` to join\n`{1}poker start` again to start")
+			await ctx.embed_say(f"{ctx.author.display_name} has started a round of poker\n`{ctx.prefix}poker join` to join\n`{ctx.prefix}poker start` again to start")
 		else:
 			self.status = "pre-flop"
 			await ctx.embed_say(f"The poker round has started\nPlayers: {' '.join(player.mention for player in self.players)}")
