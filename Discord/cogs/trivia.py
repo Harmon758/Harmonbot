@@ -344,7 +344,7 @@ class Trivia(commands.Cog):
 				)
 			if int(message.content) <= money:
 				self.active[message.guild.id]["bets"][message.author] = int(message.content)
-				await ctx.embed_reply(f"Has bet ${message.content}")
+				await ctx.embed_reply(f"has bet ${message.content}")
 			else:
 				await ctx.embed_reply("You don't have that much money to bet!")
 		elif self.active[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
