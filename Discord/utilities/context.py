@@ -11,7 +11,10 @@ from utilities import errors
 class Context(commands.Context):
 	
 	def embed_reply(self, *args, **kwargs):
-		return self.embed_say(*args, author_name = self.author.display_name, author_icon_url = self.author.avatar_url, **kwargs)
+		if "author_name" not in kwargs and "author_icon_url" not in kwargs:
+			kwargs["author_name"] = self.author.display_name
+			kwargs["author_icon_url"] = self.author.avatar_url
+		return self.embed_say(*args, **kwargs)
 	
 	# TODO: optimize/improve clarity
 	async def embed_say(self, description = None, *args, 
