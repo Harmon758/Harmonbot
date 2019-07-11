@@ -31,9 +31,9 @@ class Context(commands.Context):
 			embed.set_thumbnail(url = thumbnail_url)
 		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
 		if footer_text == discord.Embed.Empty and in_response_to:
-			embed.set_footer(text = "In response to: {}".format(self.message.clean_content), icon_url = footer_icon_url)
+			embed.set_footer(text = f"In response to: {self.message.clean_content}", icon_url = footer_icon_url)
 		elif in_response_to and not args:
-			args = ("In response to: `{}`".format(self.message.clean_content),)
+			args = (f"In response to: `{self.message.clean_content}`",)
 		for field in fields:
 			if len(field) >= 3:
 				embed.add_field(name = field[0], value = field[1], inline = field[2])
