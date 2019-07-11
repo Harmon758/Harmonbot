@@ -45,10 +45,13 @@ class Poker(commands.Cog):
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
-			await ctx.embed_reply(f"has started a round of poker\n`{ctx.prefix}poker join` to join\n`{ctx.prefix}poker start` again to start")
+			await ctx.embed_reply("has started a round of poker\n"
+									f"`{ctx.prefix}poker join` to join\n"
+									f"`{ctx.prefix}poker start` again to start")
 		else:
 			self.status = "pre-flop"
-			await ctx.embed_reply(f"The poker round has started\nPlayers: {' '.join(player.mention for player in self.players)}")
+			await ctx.embed_reply("The poker round has started\n"
+									f"Players: {' '.join(player.mention for player in self.players)}")
 			for player in self.players:
 				cards_string = self.cards_to_string(self.hands[player.id].cards)
 				await self.bot.send_embed(player, f"Your poker hand: {cards_string}")
@@ -102,7 +105,8 @@ class Poker(commands.Cog):
 			self.hands[ctx.author.id] = self.deck.deal(2)
 			await ctx.embed_reply("has joined the poker match")
 		elif self.status is None:
-			await ctx.embed_reply(f"There's not currently a round of poker going on\nUse `{ctx.prefix}poker start` to start one")
+			await ctx.embed_reply("There's not currently a round of poker going on\n"
+									f"Use `{ctx.prefix}poker start` to start one")
 		else:
 			await ctx.embed_reply(":no_entry: The current round of poker already started")
 	
