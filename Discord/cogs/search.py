@@ -265,15 +265,15 @@ class Search(commands.Cog):
 		Wolfram|Alpha
 		http://www.wolframalpha.com/examples/
 		'''
-		await self._wolframalpha(ctx, search)
+		await self.process_wolframalpha(ctx, search)
 	
 	@wolframalpha.command(name = "location")
 	@checks.not_forbidden()
 	async def wolframalpha_location(self, ctx, location: str, *, search : str):
 		'''Input location'''
-		await self._wolframalpha(ctx, search, location = location)
+		await self.process_wolframalpha(ctx, search, location = location)
 	
-	async def _wolframalpha(self, ctx, search, location = None):
+	async def process_wolframalpha(self, ctx, search, location = None):
 		# TODO: process asynchronously
 		if not location: location = self.bot.fake_location
 		search = search.strip('`')
