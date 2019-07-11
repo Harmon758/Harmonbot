@@ -15,6 +15,10 @@ def setup(bot):
 	bot.add_cog(Images(bot))
 
 class Images(commands.Cog):
+
+	'''
+	All image subcommands are also commands
+	'''
 	
 	def __init__(self, bot):
 		self.bot = bot
@@ -35,13 +39,22 @@ class Images(commands.Cog):
 	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
-	@commands.group(aliases = ["images"], invoke_without_command = True, case_insensitive = True)
-	async def image(self, ctx):
-		'''
-		Images
-		All image subcommands are also commands
-		'''
-		await ctx.send_help(ctx.command)
+	@commands.group(aliases = ["images", "photo", "photos"], invoke_without_command = True, case_insensitive = True)
+	async def image(self, ctx, *, query):
+		'''Images/Photos'''
+		url = "https://api.unsplash.com/search/photos"
+		headers = {"Accept-Version": "v1", "Authorization": f"Client-ID {ctx.bot.UNSPLASH_ACCESS_KEY}"}
+		params = {"query": query, "per_page": 1}
+		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
+			data = await resp.json()
+		if not data["results"]:
+			return await ctx.embed_reply("No photo results found")
+		photo = data["results"][0]
+		await ctx.embed_reply(photo["description"] or "", 
+								author_name = f"{photo['user']['name']} on Unsplash", 
+								author_url = f"{photo['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
+								author_icon_url = photo["user"]["profile_image"]["small"], 
+								image_url = photo["urls"]["full"])
 	
 	@image.command(name = "color", aliases = ["colour"])
 	async def image_color(self, ctx, image_url : Optional[str]):
