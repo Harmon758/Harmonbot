@@ -10,7 +10,7 @@ from utilities import errors
 
 class Context(commands.Context):
 	
-	def embed_reply(self, *args, in_response_to = True, **kwargs):
+	async def embed_reply(self, *args, in_response_to = True, attempt_delete = True, **kwargs):
 		in_response_to_text = "In response to"
 		if "author_name" not in kwargs and "author_icon_url" not in kwargs:
 			kwargs["author_name"] = self.author.display_name
@@ -22,7 +22,10 @@ class Context(commands.Context):
 				kwargs["footer_text"] = f"{in_response_to_text}: {self.message.clean_content}"
 			elif len(args) < 2:
 				args = (next(iter(args), None), f"{in_response_to_text}: `{self.message.clean_content}`")
-		return self.embed_say(*args, **kwargs)
+		message = await self.embed_say(*args, **kwargs)
+		if attempt_delete:
+			await self.bot.attempt_delete_message(self.message)
+		return message
 	
 	# TODO: optimize/improve clarity
 	async def embed_say(self, description = None, *args, 
@@ -30,7 +33,7 @@ class Context(commands.Context):
 						author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
 						image_url = None, thumbnail_url = None, 
 						footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
-						timestamp = discord.Embed.Empty, fields = [], color = None, attempt_delete = True, **kwargs):
+						timestamp = discord.Embed.Empty, fields = [], color = None, **kwargs):
 		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = color or self.bot.bot_color)
 		embed.description = str(description) if description else discord.Embed.Empty
 		if author_name:
@@ -46,15 +49,12 @@ class Context(commands.Context):
 			else:
 				embed.add_field(name = field[0], value = field[1])
 		if self.channel.type is discord.ChannelType.private or getattr(self.channel.permissions_for(self.channel.guild.me), "embed_links", None):
-			message = await self.send(*args, embed = embed, **kwargs)
+			return await self.send(*args, embed = embed, **kwargs)
 		elif not (title or title_url or image_url or thumbnail_url or footer_text or footer_icon_url or timestamp or fields):
-			message = await self.reply(utilities.clean_content(str(description)))
+			return await self.reply(utilities.clean_content(str(description)))
 			# TODO: Clean role + user mentions, etc.?
 		else:
 			raise errors.MissingCapability(["embed_links"])
-		if attempt_delete:
-			await self.bot.attempt_delete_message(self.message)
-		return message
 	
 	def reply(self, content, *args, **kwargs):
 		return self.send(f"{self.author.display_name}:\n{content}", **kwargs)
