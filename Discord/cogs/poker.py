@@ -35,6 +35,7 @@ class Poker(commands.Cog):
 	
 	@poker.command()
 	async def start(self, ctx):
+		# TODO: Handle folds
 		if self.status not in (None, "started"):
 			await ctx.embed_reply("There's already a round of poker in progress")
 		elif self.status is None:
@@ -157,6 +158,7 @@ class Poker(commands.Cog):
 		if self.turn and self.turn.id == ctx.author.id:
 			self.bets[self.turn.id] = -1
 			self.folded.append(self.turn)
+			await ctx.embed_reply("has folded")
 			self.turn = None
 		else:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
