@@ -93,7 +93,7 @@ class Trivia(commands.Cog):
 		# Include site page to send ^?
 		if bet:
 			self.active[ctx.guild.id]["bet_countdown"] = self.wait_time
-			bet_message = await ctx.embed_say(None, title = string.capwords(data["category"]["title"]), 
+			bet_message = await ctx.embed_reply(None, author_name = None, title = string.capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.active[ctx.guild.id]['bet_countdown']} seconds left to bet")
 			embed = bet_message.embeds[0]
 			while self.active[bet_message.guild.id]["bet_countdown"]:
@@ -104,8 +104,9 @@ class Trivia(commands.Cog):
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
 		self.active[ctx.guild.id]["question_countdown"] = self.wait_time
-		question_message = await ctx.embed_say(data["question"], title = string.capwords(data["category"]["title"]), 
-												footer_text = f"You have {self.active[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date", timestamp = dateutil.parser.parse(data["airdate"]))
+		question_message = await ctx.embed_reply(data["question"], author_name = None, 
+													title = string.capwords(data["category"]["title"]), 
+													footer_text = f"You have {self.active[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date", timestamp = dateutil.parser.parse(data["airdate"]))
 		embed = question_message.embeds[0]
 		while self.active[question_message.guild.id]["question_countdown"]:
 			await asyncio.sleep(1)
@@ -153,7 +154,7 @@ class Trivia(commands.Cog):
 				incorrect_player.id
 			)
 		answer = BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")
-		await ctx.embed_say(f"The answer was `{answer}`", footer_text = correct_players_output)
+		await ctx.embed_reply(f"The answer was `{answer}`", author_name = None, footer_text = correct_players_output)
 		if bet and self.active[ctx.guild.id]["bets"]:
 			bets_output = []
 			for player, player_bet in self.active[ctx.guild.id]["bets"].items():
@@ -173,7 +174,7 @@ class Trivia(commands.Cog):
 					player.id, difference
 				)
 				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}.")
-			await ctx.embed_say('\n'.join(bets_output))
+			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
 	
 	def check_answer(self, answer, response):
 		# Unescape HTML entities in answer and extract text between HTML tags
