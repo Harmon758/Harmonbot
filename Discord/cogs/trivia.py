@@ -157,7 +157,9 @@ class Trivia(commands.Cog):
 				incorrect_player.id
 			)
 		answer = BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")
-		await ctx.embed_reply(f"The answer was `{answer}`", author_name = None, footer_text = correct_players_output)
+		await ctx.embed_reply(f"The answer was `{answer}`", 
+								footer_text = correct_players_output, 
+								author_name = None, in_response_to = False)
 		if bet and self.active[ctx.guild.id]["bets"]:
 			bets_output = []
 			for player, player_bet in self.active[ctx.guild.id]["bets"].items():
