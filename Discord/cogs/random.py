@@ -391,7 +391,7 @@ class Random(commands.Cog):
 		'''Random insult'''
 		async with ctx.bot.aiohttp_session.get("http://quandyfactory.com/insult/json") as resp:
 			data = await resp.json()
-		await ctx.embed_say(data["insult"])
+		await ctx.embed_reply(data["insult"])
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
