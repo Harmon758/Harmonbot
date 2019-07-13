@@ -484,7 +484,7 @@ class Trivia(commands.Cog):
 		category_titles = []
 		self.jeopardy_board_output = ""
 		url = "http://jservice.io/api/random"
-		for i in range(6):
+		for _ in range(6):
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			categories.append(data[0]["category_id"])
