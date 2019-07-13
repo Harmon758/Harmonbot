@@ -479,8 +479,7 @@ class Trivia(commands.Cog):
 	@jeopardy.command(name = "start")
 	async def jeopardy_start(self, ctx):
 		if self.jeopardy_active:
-			await ctx.embed_reply(":no_entry: There's already a jeopardy game in progress")
-			return
+			return await ctx.embed_reply(":no_entry: There's already a jeopardy game in progress")
 		self.jeopardy_active = True
 		categories = []
 		category_titles = []
