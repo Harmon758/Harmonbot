@@ -193,6 +193,132 @@ class Trivia(commands.Cog):
 				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}.")
 			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
 	
+	@trivia.command(name = "money", aliases = ["cash"])
+	async def trivia_money(self, ctx):
+		'''Trivia money'''
+		money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", ctx.author.id)
+		if not money:
+			return await ctx.embed_reply("You have not played any trivia yet")
+		await ctx.embed_reply(f"You have ${money:,}")
+	
+	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
+	async def trivia_score(self, ctx):
+		'''Trivia score'''
+		record = await ctx.bot.db.fetchrow("SELECT correct, incorrect FROM trivia.users WHERE user_id = $1", ctx.author.id)
+		if not record:
+			return await ctx.embed_reply("You have not played any trivia yet")
+		total = record["correct"] + record["incorrect"]
+		correct_percentage = record["correct"] / total * 100
+		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
+	
+	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
+	async def trivia_scores(self, ctx, number: int = 10):
+		'''Trivia scores'''
+		if number > 15:
+			number = 15
+		fields = []
+		async with ctx.bot.database_connection_pool.acquire() as connection:
+			async with connection.transaction():
+				# Postgres requires non-scrollable cursors to be created
+				# and used in a transaction.
+				async for record in connection.cursor("SELECT * FROM trivia.users ORDER BY correct DESC LIMIT $1", number):
+					# SELECT user_id, correct, incorrect?
+					user = ctx.bot.get_user(record["user_id"])
+					if not user:
+						user = await ctx.bot.fetch_user(record["user_id"])
+					total = record["correct"] + record["incorrect"]
+					correct_percentage = record["correct"] / total * 100
+					fields.append((str(user), f"{record['correct']}/{total} correct ({correct_percentage:.2f}%)"))
+		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
+	
+	@commands.group(invoke_without_command = True, case_insensitive = True)
+	async def jeopardy(self, ctx, row_number: int, value: int):
+		'''
+		Trivia with categories
+		jeopardy [row number] [value] to pick the question
+		Based on Jeopardy!
+		'''
+		if not self.jeopardy_active:
+			return await ctx.embed_reply(":no_entry: There's not a jeopardy game currently in progress")
+		if self.jeopardy_question_active:
+			return await ctx.embed_reply(":no_entry: There's already a jeopardy question in play")
+		if row_number < 1 or row_number > 6:
+			return await ctx.embed_reply(":no_entry: That's not a valid row number")
+		if value not in (200, 400, 600, 800, 1000):
+			return await ctx.embed_reply(":no_entry: That's not a valid value")
+		value_index = [200, 400, 600, 800, 1000].index(value)
+		if not self.jeopardy_board[row_number - 1][value_index + 1]:
+			self.jeopardy_question_active = True
+			self.jeopardy_answered = None
+			url = "http://jservice.io/api/category"
+			params = {"id": self.jeopardy_board[row_number - 1][0]}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				data = await resp.json()
+			self.jeopardy_answer = data["clues"][value_index]["answer"]
+			counter = self.wait_time
+			message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
+											title = string.capwords(data['title']),
+											author_name = None, 
+											footer_text = f"You have {counter} seconds left to answer")
+			embed = message.embeds[0]
+			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
+			while counter:
+				await asyncio.sleep(1)
+				counter -= 1
+				embed.set_footer(text = f"You have {counter} seconds left to answer")
+				await message.edit(embed = embed)
+				if self.jeopardy_answered:
+					break
+			embed.set_footer(text = "Time's up!")
+			await message.edit(embed = embed)
+			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
+			response = f"The answer was `{answer}`\n"
+			if self.jeopardy_answered:
+				self.jeopardy_scores[self.jeopardy_answered] = self.jeopardy_scores.get(self.jeopardy_answered, 0) + int(value)
+				response += f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}\n"
+			else:
+				response += "Nobody got it right\n"
+			response += ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items()) + '\n'
+			self.jeopardy_board[row_number - 1][value_index + 1] = True
+			self.jeopardy_board_lines[row_number - 1] = (len(str(value)) * ' ').join(self.jeopardy_board_lines[row_number - 1].rsplit(str(value), 1))
+			response += ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines))
+			await ctx.embed_say(response)
+			self.jeopardy_question_active = False
+	
+	async def jeopardy_wait_for_answer(self):
+		if self.jeopardy_question_active:
+			try:
+				message = await self.bot.wait_for("message", timeout = self.wait_time, check = lambda m: self.check_answer(self.jeopardy_answer, m.content))
+			except asyncio.TimeoutError:
+				return
+			if not message.content.startswith('>'):
+				self.jeopardy_answered = message.author
+	
+	@jeopardy.command(name = "start")
+	async def jeopardy_start(self, ctx):
+		if self.jeopardy_active:
+			return await ctx.embed_reply(":no_entry: There's already a jeopardy game in progress")
+		self.jeopardy_active = True
+		categories = []
+		category_titles = []
+		url = "http://jservice.io/api/random"
+		for _ in range(6):
+			async with ctx.bot.aiohttp_session.get(url) as resp:
+				data = await resp.json()
+			categories.append(data[0]["category_id"])
+			# TODO: Handle potential duplicate category
+			category_titles.append(string.capwords(data[0]["category"]["title"]))
+			self.jeopardy_board.append([data[0]["category_id"], False, False, False, False, False])
+		# TODO: Get and store all questions data?
+		max_width = max(len(category_title) for category_title in category_titles)
+		self.jeopardy_board_lines = [category_title.ljust(max_width) + "  200 400 600 800 1000" for category_title in category_titles]
+		# TODO: Handle line too long for embed code block
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines)), 
+								title = "Jeopardy!", 
+								author_name = None)
+	
+	# TODO: jeopardy stats
+	
 	def check_answer(self, answer, response):
 		# Unescape HTML entities in answer and extract text between HTML tags
 		answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
@@ -365,130 +491,4 @@ class Trivia(commands.Cog):
 				await ctx.embed_reply("You don't have that much money to bet!")
 		elif self.active_trivia[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
 			self.active_trivia[message.guild.id]["responses"][message.author] = message.content
-	
-	@trivia.command(name = "money", aliases = ["cash"])
-	async def trivia_money(self, ctx):
-		'''Trivia money'''
-		money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", ctx.author.id)
-		if not money:
-			return await ctx.embed_reply("You have not played any trivia yet")
-		await ctx.embed_reply(f"You have ${money:,}")
-	
-	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
-	async def trivia_score(self, ctx):
-		'''Trivia score'''
-		record = await ctx.bot.db.fetchrow("SELECT correct, incorrect FROM trivia.users WHERE user_id = $1", ctx.author.id)
-		if not record:
-			return await ctx.embed_reply("You have not played any trivia yet")
-		total = record["correct"] + record["incorrect"]
-		correct_percentage = record["correct"] / total * 100
-		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
-	
-	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
-	async def trivia_scores(self, ctx, number: int = 10):
-		'''Trivia scores'''
-		if number > 15:
-			number = 15
-		fields = []
-		async with ctx.bot.database_connection_pool.acquire() as connection:
-			async with connection.transaction():
-				# Postgres requires non-scrollable cursors to be created
-				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM trivia.users ORDER BY correct DESC LIMIT $1", number):
-					# SELECT user_id, correct, incorrect?
-					user = ctx.bot.get_user(record["user_id"])
-					if not user:
-						user = await ctx.bot.fetch_user(record["user_id"])
-					total = record["correct"] + record["incorrect"]
-					correct_percentage = record["correct"] / total * 100
-					fields.append((str(user), f"{record['correct']}/{total} correct ({correct_percentage:.2f}%)"))
-		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
-	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def jeopardy(self, ctx, row_number: int, value: int):
-		'''
-		Trivia with categories
-		jeopardy [row number] [value] to pick the question
-		Based on Jeopardy!
-		'''
-		if not self.jeopardy_active:
-			return await ctx.embed_reply(":no_entry: There's not a jeopardy game currently in progress")
-		if self.jeopardy_question_active:
-			return await ctx.embed_reply(":no_entry: There's already a jeopardy question in play")
-		if row_number < 1 or row_number > 6:
-			return await ctx.embed_reply(":no_entry: That's not a valid row number")
-		if value not in (200, 400, 600, 800, 1000):
-			return await ctx.embed_reply(":no_entry: That's not a valid value")
-		value_index = [200, 400, 600, 800, 1000].index(value)
-		if not self.jeopardy_board[row_number - 1][value_index + 1]:
-			self.jeopardy_question_active = True
-			self.jeopardy_answered = None
-			url = "http://jservice.io/api/category"
-			params = {"id": self.jeopardy_board[row_number - 1][0]}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			self.jeopardy_answer = data["clues"][value_index]["answer"]
-			counter = self.wait_time
-			message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
-											title = string.capwords(data['title']),
-											author_name = None, 
-											footer_text = f"You have {counter} seconds left to answer")
-			embed = message.embeds[0]
-			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
-			while counter:
-				await asyncio.sleep(1)
-				counter -= 1
-				embed.set_footer(text = f"You have {counter} seconds left to answer")
-				await message.edit(embed = embed)
-				if self.jeopardy_answered:
-					break
-			embed.set_footer(text = "Time's up!")
-			await message.edit(embed = embed)
-			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
-			response = f"The answer was `{answer}`\n"
-			if self.jeopardy_answered:
-				self.jeopardy_scores[self.jeopardy_answered] = self.jeopardy_scores.get(self.jeopardy_answered, 0) + int(value)
-				response += f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}\n"
-			else:
-				response += "Nobody got it right\n"
-			response += ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items()) + '\n'
-			self.jeopardy_board[row_number - 1][value_index + 1] = True
-			self.jeopardy_board_lines[row_number - 1] = (len(str(value)) * ' ').join(self.jeopardy_board_lines[row_number - 1].rsplit(str(value), 1))
-			response += ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines))
-			await ctx.embed_say(response)
-			self.jeopardy_question_active = False
-	
-	async def jeopardy_wait_for_answer(self):
-		if self.jeopardy_question_active:
-			try:
-				message = await self.bot.wait_for("message", timeout = self.wait_time, check = lambda m: self.check_answer(self.jeopardy_answer, m.content))
-			except asyncio.TimeoutError:
-				return
-			if not message.content.startswith('>'):
-				self.jeopardy_answered = message.author
-	
-	@jeopardy.command(name = "start")
-	async def jeopardy_start(self, ctx):
-		if self.jeopardy_active:
-			return await ctx.embed_reply(":no_entry: There's already a jeopardy game in progress")
-		self.jeopardy_active = True
-		categories = []
-		category_titles = []
-		url = "http://jservice.io/api/random"
-		for _ in range(6):
-			async with ctx.bot.aiohttp_session.get(url) as resp:
-				data = await resp.json()
-			categories.append(data[0]["category_id"])
-			# TODO: Handle potential duplicate category
-			category_titles.append(string.capwords(data[0]["category"]["title"]))
-			self.jeopardy_board.append([data[0]["category_id"], False, False, False, False, False])
-		# TODO: Get and store all questions data?
-		max_width = max(len(category_title) for category_title in category_titles)
-		self.jeopardy_board_lines = [category_title.ljust(max_width) + "  200 400 600 800 1000" for category_title in category_titles]
-		# TODO: Handle line too long for embed code block
-		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines)), 
-								title = "Jeopardy!", 
-								author_name = None)
-	
-	# TODO: jeopardy stats
 
