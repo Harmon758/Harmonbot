@@ -461,7 +461,8 @@ class Trivia(commands.Cog):
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "    " + self.jeopardy_board_output[clue_delete_cursor + 4:]
 			else:
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
-			await ctx.embed_say(f"The answer was {BeautifulSoup(html.unescape(self.jeopardy_answer), 'html.parser').get_text()}\n"
+			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
+			await ctx.embed_say(f"The answer was {answer}\n"
 								f"{answered_message}\n"
 								f"{score_output}\n"
 								f"```{self.jeopardy_board_output}```")
