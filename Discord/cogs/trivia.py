@@ -24,8 +24,7 @@ class Trivia(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.wait_time = 15
-		self.active = {}
-		
+		self.active_trivia = {}
 		self.jeopardy_active = False
 		self.jeopardy_question_active = False
 		self.jeopardy_board = []
@@ -65,14 +64,14 @@ class Trivia(commands.Cog):
 		Answers prepended with ! or > are ignored
 		Questions are taken from Jeopardy!
 		'''
-		if ctx.guild.id in self.active:
-			channel = ctx.guild.get_channel(self.active[ctx.guild.id]["channel_id"])
+		if ctx.guild.id in self.active_trivia:
+			channel = ctx.guild.get_channel(self.active_trivia[ctx.guild.id]["channel_id"])
 			return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
-		self.active[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}}
+		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}}
 		try:
 			await self.trivia_round(ctx)
 		finally:
-			del self.active[ctx.guild.id]
+			del self.active_trivia[ctx.guild.id]
 	
 	@trivia.command(name = "bet")
 	async def trivia_bet(self, ctx):
@@ -82,13 +81,13 @@ class Trivia(commands.Cog):
 		Enter any amount under or equal to the money you have to bet
 		Currently, you start with $100,000
 		'''
-		if ctx.guild.id in self.active:
-			channel = ctx.guild.get_channel(self.active[ctx.guild.id]["channel_id"])
+		if ctx.guild.id in self.active_trivia:
+			channel = ctx.guild.get_channel(self.active_trivia[ctx.guild.id]["channel_id"])
 			return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
-		self.active[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}, 
-										"bet_countdown": 0, "bets": {}}
+		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}, 
+											"bet_countdown": 0, "bets": {}}
 		await self.trivia_round(ctx, bet = True)
-		del self.active[ctx.guild.id]
+		del self.active_trivia[ctx.guild.id]
 	
 	async def trivia_round(self, ctx, bet = False, response = None):
 		try:
@@ -107,27 +106,27 @@ class Trivia(commands.Cog):
 		# Add message about making POST request to API/invalid with id?
 		# Include site page to send ^?
 		if bet:
-			self.active[ctx.guild.id]["bet_countdown"] = self.wait_time
+			self.active_trivia[ctx.guild.id]["bet_countdown"] = self.wait_time
 			bet_message = await ctx.embed_reply(author_name = None, title = string.capwords(data["category"]["title"]), 
-												footer_text = f"You have {self.active[ctx.guild.id]['bet_countdown']} seconds left to bet")
+												footer_text = f"You have {self.active_trivia[ctx.guild.id]['bet_countdown']} seconds left to bet")
 			embed = bet_message.embeds[0]
-			while self.active[bet_message.guild.id]["bet_countdown"]:
+			while self.active_trivia[bet_message.guild.id]["bet_countdown"]:
 				await asyncio.sleep(1)
-				self.active[bet_message.guild.id]["bet_countdown"] -= 1
-				embed.set_footer(text = f"You have {self.active[bet_message.guild.id]['bet_countdown']} seconds left to bet")
+				self.active_trivia[bet_message.guild.id]["bet_countdown"] -= 1
+				embed.set_footer(text = f"You have {self.active_trivia[bet_message.guild.id]['bet_countdown']} seconds left to bet")
 				await bet_message.edit(embed = embed)
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
-		self.active[ctx.guild.id]["question_countdown"] = self.wait_time
+		self.active_trivia[ctx.guild.id]["question_countdown"] = self.wait_time
 		question_message = await ctx.embed_reply(data["question"], author_name = None, 
 													title = string.capwords(data["category"]["title"]), 
-													footer_text = f"You have {self.active[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date", 
+													footer_text = f"You have {self.active_trivia[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date", 
 													timestamp = dateutil.parser.parse(data["airdate"]))
 		embed = question_message.embeds[0]
-		while self.active[question_message.guild.id]["question_countdown"]:
+		while self.active_trivia[question_message.guild.id]["question_countdown"]:
 			await asyncio.sleep(1)
-			self.active[question_message.guild.id]["question_countdown"] -= 1
-			embed.set_footer(text = f"You have {self.active[question_message.guild.id]['question_countdown']} seconds left to answer | Air Date")
+			self.active_trivia[question_message.guild.id]["question_countdown"] -= 1
+			embed.set_footer(text = f"You have {self.active_trivia[question_message.guild.id]['question_countdown']} seconds left to answer | Air Date")
 			try:
 				await question_message.edit(embed = embed)
 			except (aiohttp.ClientConnectionError, discord.NotFound):
@@ -139,7 +138,7 @@ class Trivia(commands.Cog):
 			pass
 		correct_players = []
 		incorrect_players = []
-		for player, response in self.active[ctx.guild.id]["responses"].items():
+		for player, response in self.active_trivia[ctx.guild.id]["responses"].items():
 			if self.check_answer(data["answer"], response):
 				correct_players.append(player)
 			else:
@@ -173,9 +172,9 @@ class Trivia(commands.Cog):
 		await ctx.embed_reply(f"The answer was `{answer}`", 
 								footer_text = correct_players_output, 
 								author_name = None, in_response_to = False)
-		if bet and self.active[ctx.guild.id]["bets"]:
+		if bet and self.active_trivia[ctx.guild.id]["bets"]:
 			bets_output = []
-			for player, player_bet in self.active[ctx.guild.id]["bets"].items():
+			for player, player_bet in self.active_trivia[ctx.guild.id]["bets"].items():
 				if player in correct_players:
 					difference = player_bet
 					action_text = "won"
@@ -343,11 +342,11 @@ class Trivia(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_message(self, message):
-		if not message.guild or message.guild.id not in self.active:
+		if not message.guild or message.guild.id not in self.active_trivia:
 			return
-		if message.channel.id != self.active[message.guild.id]["channel_id"]:
+		if message.channel.id != self.active_trivia[message.guild.id]["channel_id"]:
 			return
-		if self.active[message.guild.id].get("bet_countdown") and message.content.isdigit():
+		if self.active_trivia[message.guild.id].get("bet_countdown") and message.content.isdigit():
 			ctx = await self.bot.get_context(message, cls = Context)
 			money = await self.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
 			if not money:
@@ -360,12 +359,12 @@ class Trivia(commands.Cog):
 					message.author.id
 				)
 			if int(message.content) <= money:
-				self.active[message.guild.id]["bets"][message.author] = int(message.content)
+				self.active_trivia[message.guild.id]["bets"][message.author] = int(message.content)
 				await ctx.embed_reply(f"has bet ${message.content}")
 			else:
 				await ctx.embed_reply("You don't have that much money to bet!")
-		elif self.active[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
-			self.active[message.guild.id]["responses"][message.author] = message.content
+		elif self.active_trivia[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
+			self.active_trivia[message.guild.id]["responses"][message.author] = message.content
 	
 	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
@@ -430,21 +429,21 @@ class Trivia(commands.Cog):
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
 			counter = self.wait_time
-			answer_message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
-													title = string.capwords(data['title']),
-													author_name = None, 
-													footer_text = f"You have {counter} seconds left to answer")
-			embed = answer_message.embeds[0]
+			message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
+											title = string.capwords(data['title']),
+											author_name = None, 
+											footer_text = f"You have {counter} seconds left to answer")
+			embed = message.embeds[0]
 			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
 			while counter:
 				await asyncio.sleep(1)
 				counter -= 1
 				embed.set_footer(text = f"You have {counter} seconds left to answer")
-				await answer_message.edit(embed = embed)
+				await message.edit(embed = embed)
 				if self.jeopardy_answered:
 					break
 			embed.set_footer(text = "Time's up!")
-			await answer_message.edit(embed = embed)
+			await message.edit(embed = embed)
 			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
 			response = f"The answer was `{answer}`\n"
 			if self.jeopardy_answered:
