@@ -388,7 +388,7 @@ class Trivia(commands.Cog):
 		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
 	
 	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
-	async def trivia_scores(self, ctx, number : int = 10):
+	async def trivia_scores(self, ctx, number: int = 10):
 		'''Trivia scores'''
 		if number > 15:
 			number = 15
@@ -408,7 +408,7 @@ class Trivia(commands.Cog):
 		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def jeopardy(self, ctx, row_number : int, value : int):
+	async def jeopardy(self, ctx, row_number: int, value: int):
 		'''
 		Trivia with categories
 		jeopardy [row number] [value] to pick the question
