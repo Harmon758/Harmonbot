@@ -431,8 +431,9 @@ class Trivia(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
-			await ctx.embed_say(f"Category: {string.capwords(data['title'])}\n"
-								f"{data['clues'][value_index]['question']}")
+			await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
+									title = string.capwords(data['title']),
+									author_name = None)
 			counter = int(self.wait_time)
 			answer_message = await ctx.send(f"You have {counter} seconds left to answer")
 			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
@@ -462,7 +463,7 @@ class Trivia(commands.Cog):
 			else:
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
 			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
-			await ctx.embed_say(f"The answer was {answer}\n"
+			await ctx.embed_say(f"The answer was `{answer}`\n"
 								f"{answered_message}\n"
 								f"{score_output}\n"
 								f"```{self.jeopardy_board_output}```")
