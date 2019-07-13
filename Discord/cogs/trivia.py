@@ -444,6 +444,7 @@ class Trivia(commands.Cog):
 				if self.jeopardy_answered:
 					break
 			await answer_message.edit(content = "Time's up!")
+			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
 			if self.jeopardy_answered:
 				if self.jeopardy_answered in self.jeopardy_scores:
 					self.jeopardy_scores[self.jeopardy_answered] += int(value)
@@ -459,11 +460,10 @@ class Trivia(commands.Cog):
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "    " + self.jeopardy_board_output[clue_delete_cursor + 4:]
 			else:
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
-			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
 			await ctx.embed_say(f"The answer was `{answer}`\n"
 								f"{answered_message}\n"
 								f"{score_output}\n"
-								f"```{self.jeopardy_board_output}```")
+								f"{ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output)}")
 			self.jeopardy_question_active = False
 	
 	async def jeopardy_wait_for_answer(self):
