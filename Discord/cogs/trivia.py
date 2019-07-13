@@ -410,7 +410,7 @@ class Trivia(commands.Cog):
 		'''
 		Trivia with categories
 		jeopardy [row number] [value] to pick the question
-		Based on Jeopardy
+		Based on Jeopardy!
 		'''
 		if not self.jeopardy_active:
 			return await ctx.embed_reply(":no_entry: There's not a jeopardy game currently in progress")
@@ -451,7 +451,7 @@ class Trivia(commands.Cog):
 					self.jeopardy_scores[self.jeopardy_answered] += int(value)
 				else:
 					self.jeopardy_scores[self.jeopardy_answered] = int(value)
-				answered_message = f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}."
+				answered_message = f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}"
 			else:
 				answered_message = "Nobody got it right"
 			score_output = ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items())
