@@ -26,8 +26,15 @@ class Trivia(commands.Cog):
 		self.wait_time = 15
 		self.active = {}
 		
-		self.jeopardy_active, self.jeopardy_question_active, self.jeopardy_board, self.jeopardy_answer, self.jeopardy_answered, self.jeopardy_scores, self.jeopardy_board_output, self.jeopardy_max_width = False, False, [], None, None, {}, None, None
-		#check default values
+		self.jeopardy_active = False
+		self.jeopardy_question_active = False
+		self.jeopardy_board = []
+		self.jeopardy_answer = None
+		self.jeopardy_answered = None
+		self.jeopardy_scores = {}
+		self.jeopardy_board_output = None
+		self.jeopardy_max_width = None
+		# TODO: check default values
 		
 		# Add jeopardy as trivia subcommand
 		self.bot.add_command(self.jeopardy)
@@ -464,8 +471,6 @@ class Trivia(commands.Cog):
 			if not message.content.startswith('>'):
 				self.jeopardy_answered = message.author
 	
-	#jeopardy stats
-	
 	@jeopardy.command(name = "start")
 	async def jeopardy_start(self, ctx):
 		if self.jeopardy_active:
@@ -490,4 +495,6 @@ class Trivia(commands.Cog):
 		for category_title in category_titles:
 			self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
 		await ctx.embed_say(ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output))
+	
+	# TODO: jeopardy stats
 
