@@ -29,6 +29,10 @@ class Trivia(commands.Cog):
 		self.jeopardy_active, self.jeopardy_question_active, self.jeopardy_board, self.jeopardy_answer, self.jeopardy_answered, self.jeopardy_scores, self.jeopardy_board_output, self.jeopardy_max_width = False, False, [], None, None, {}, None, None
 		#check default values
 		
+		# Add jeopardy as trivia subcommand
+		self.bot.add_command(self.jeopardy)
+		self.trivia.add_command(self.jeopardy)
+		
 		self.bot.loop.create_task(self.initialize_database())
 	
 	def cog_check(self, ctx):
