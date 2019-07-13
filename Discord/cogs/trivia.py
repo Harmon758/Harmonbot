@@ -483,22 +483,18 @@ class Trivia(commands.Cog):
 		self.jeopardy_active = True
 		categories = []
 		category_titles = []
-		self.jeopardy_board_output = ""
 		url = "http://jservice.io/api/random"
 		for _ in range(6):
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			categories.append(data[0]["category_id"])
-		for category in categories:
-			url = "http://jservice.io/api/category"
-			params = {"id": category}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			category_titles.append(string.capwords(data["title"]))
-			self.jeopardy_board.append([category, False, False, False, False, False])
+			# TODO: Handle potential duplicate category
+			category_titles.append(string.capwords(data[0]["category"]["title"]))
+			self.jeopardy_board.append([data[0]["category_id"], False, False, False, False, False])
+		# TODO: Get and store all questions data?
 		self.jeopardy_max_width = max(len(category_title) for category_title in category_titles)
-		for category_title in category_titles:
-			self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
+		self.jeopardy_board_output = '\n'.join(category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000" for category_title in category_titles)
+		# TODO: Handle line too long for embed code block
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output), 
 								title = "Jeopardy!", 
 								author_name = None)
