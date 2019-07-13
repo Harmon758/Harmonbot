@@ -422,7 +422,7 @@ class Trivia(commands.Cog):
 			return await ctx.embed_reply(":no_entry: That's not a valid row number")
 		if value not in (200, 400, 600, 800, 1000):
 			return await ctx.embed_reply(":no_entry: That's not a valid value")
-		value_index = ["200", "400", "600", "800", "1000"].index(str(value))
+		value_index = [200, 400, 600, 800, 1000].index(value)
 		if not self.jeopardy_board[row_number - 1][value_index + 1]:
 			self.jeopardy_question_active = True
 			self.jeopardy_answered = None
@@ -452,10 +452,7 @@ class Trivia(commands.Cog):
 				answered_message = f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}."
 			else:
 				answered_message = "Nobody got it right"
-			score_output = ""
-			for player, score in self.jeopardy_scores.items():
-				score_output += f"{player.name}: ${score}, "
-			score_output = score_output[:-2]
+			score_output = ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items())
 			self.jeopardy_board[row_number - 1][value_index + 1] = True
 			clue_delete_cursor = (self.jeopardy_max_width + 2) * row_number + 1 * (row_number - 1) + 20 * (row_number - 1) + 4 * value_index
 			if value_index == 4:
