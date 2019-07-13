@@ -431,7 +431,7 @@ class Trivia(commands.Cog):
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
 			await ctx.embed_say(f"Category: {string.capwords(data['title'])}\n{data['clues'][value_index]['question']}")
-			counter = int(clients.wait_time)
+			counter = int(self.wait_time)
 			answer_message = await ctx.send(f"You have {counter} seconds left to answer")
 			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
 			while counter:
@@ -465,7 +465,7 @@ class Trivia(commands.Cog):
 	async def jeopardy_wait_for_answer(self):
 		if self.jeopardy_question_active:
 			try:
-				message = await self.bot.wait_for("message", timeout = clients.wait_time, check = lambda m: self.jeopardy_answer.lower() in [s + m.content.lower() for s in ["", "a ", "an ", "the "]] or m.content.lower() == BeautifulSoup(html.unescape(self.jeopardy_answer.lower()), "html.parser").get_text().lower())
+				message = await self.bot.wait_for("message", timeout = self.wait_time, check = lambda m: self.jeopardy_answer.lower() in [s + m.content.lower() for s in ["", "a ", "an ", "the "]] or m.content.lower() == BeautifulSoup(html.unescape(self.jeopardy_answer.lower()), "html.parser").get_text().lower())
 			except asyncio.TimeoutError:
 				return
 			if not message.content.startswith('>'):
