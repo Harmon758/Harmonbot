@@ -431,7 +431,7 @@ class Trivia(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
-			counter = int(self.wait_time)
+			counter = self.wait_time
 			answer_message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
 													title = string.capwords(data['title']),
 													author_name = None, 
@@ -458,11 +458,9 @@ class Trivia(commands.Cog):
 				answered_message = "Nobody got it right"
 			score_output = ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items())
 			self.jeopardy_board[row_number - 1][value_index + 1] = True
-			clue_delete_cursor = (self.jeopardy_max_width + 2) * row_number + 1 * (row_number - 1) + 20 * (row_number - 1) + 4 * value_index
-			if value_index == 4:
-				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "    " + self.jeopardy_board_output[clue_delete_cursor + 4:]
-			else:
-				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
+			board_lines = self.jeopardy_board_output.split('\n')
+			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
+			self.jeopardy_board_output = '\n'.join(board_lines)
 			await ctx.embed_say(f"The answer was `{answer}`\n"
 								f"{answered_message}\n"
 								f"{score_output}\n"
