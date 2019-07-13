@@ -430,7 +430,8 @@ class Trivia(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
-			await ctx.embed_say(f"Category: {string.capwords(data['title'])}\n{data['clues'][value_index]['question']}")
+			await ctx.embed_say(f"Category: {string.capwords(data['title'])}\n"
+								f"{data['clues'][value_index]['question']}")
 			counter = int(self.wait_time)
 			answer_message = await ctx.send(f"You have {counter} seconds left to answer")
 			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
@@ -459,7 +460,10 @@ class Trivia(commands.Cog):
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "    " + self.jeopardy_board_output[clue_delete_cursor + 4:]
 			else:
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
-			await ctx.embed_say(f"The answer was {BeautifulSoup(html.unescape(self.jeopardy_answer), 'html.parser').get_text()}\n{answered_message}\n{score_output}\n```{self.jeopardy_board_output}```")
+			await ctx.embed_say(f"The answer was {BeautifulSoup(html.unescape(self.jeopardy_answer), 'html.parser').get_text()}\n"
+								f"{answered_message}\n"
+								f"{score_output}\n"
+								f"```{self.jeopardy_board_output}```")
 			self.jeopardy_question_active = False
 	
 	async def jeopardy_wait_for_answer(self):
