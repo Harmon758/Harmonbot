@@ -446,21 +446,17 @@ class Trivia(commands.Cog):
 			embed.set_footer(text = "Time's up!")
 			await answer_message.edit(embed = embed)
 			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
+			response = f"The answer was `{answer}`\n"
 			if self.jeopardy_answered:
-				if self.jeopardy_answered in self.jeopardy_scores:
-					self.jeopardy_scores[self.jeopardy_answered] += int(value)
-				else:
-					self.jeopardy_scores[self.jeopardy_answered] = int(value)
-				answered_message = f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}"
+				self.jeopardy_scores[self.jeopardy_answered] = self.jeopardy_scores.get(self.jeopardy_answered, 0) + int(value)
+				response += f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}\n"
 			else:
-				answered_message = "Nobody got it right"
-			score_output = ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items())
+				response += "Nobody got it right\n"
+			response += ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items()) + '\n'
 			self.jeopardy_board[row_number - 1][value_index + 1] = True
 			self.jeopardy_board_lines[row_number - 1] = (len(str(value)) * ' ').join(self.jeopardy_board_lines[row_number - 1].rsplit(str(value), 1))
-			await ctx.embed_say(f"The answer was `{answer}`\n"
-								f"{answered_message}\n"
-								f"{score_output}\n"
-								+ ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines)))
+			response += ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines))
+			await ctx.embed_say(response)
 			self.jeopardy_question_active = False
 	
 	async def jeopardy_wait_for_answer(self):
