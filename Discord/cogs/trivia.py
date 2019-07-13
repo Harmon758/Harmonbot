@@ -32,9 +32,7 @@ class Trivia(commands.Cog):
 		self.jeopardy_answer = None
 		self.jeopardy_answered = None
 		self.jeopardy_scores = {}
-		self.jeopardy_board_output = None
-		self.jeopardy_max_width = None
-		# TODO: check default values
+		self.jeopardy_board_lines = []
 		
 		# Add jeopardy as trivia subcommand
 		self.bot.add_command(self.jeopardy)
@@ -458,13 +456,11 @@ class Trivia(commands.Cog):
 				answered_message = "Nobody got it right"
 			score_output = ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items())
 			self.jeopardy_board[row_number - 1][value_index + 1] = True
-			board_lines = self.jeopardy_board_output.split('\n')
-			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
-			self.jeopardy_board_output = '\n'.join(board_lines)
+			self.jeopardy_board_lines[row_number - 1] = (len(str(value)) * ' ').join(self.jeopardy_board_lines[row_number - 1].rsplit(str(value), 1))
 			await ctx.embed_say(f"The answer was `{answer}`\n"
 								f"{answered_message}\n"
 								f"{score_output}\n"
-								f"{ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output)}")
+								+ ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines)))
 			self.jeopardy_question_active = False
 	
 	async def jeopardy_wait_for_answer(self):
@@ -492,10 +488,10 @@ class Trivia(commands.Cog):
 			category_titles.append(string.capwords(data[0]["category"]["title"]))
 			self.jeopardy_board.append([data[0]["category_id"], False, False, False, False, False])
 		# TODO: Get and store all questions data?
-		self.jeopardy_max_width = max(len(category_title) for category_title in category_titles)
-		self.jeopardy_board_output = '\n'.join(category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000" for category_title in category_titles)
+		max_width = max(len(category_title) for category_title in category_titles)
+		self.jeopardy_board_lines = [category_title.ljust(max_width) + "  200 400 600 800 1000" for category_title in category_titles]
 		# TODO: Handle line too long for embed code block
-		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output), 
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines)), 
 								title = "Jeopardy!", 
 								author_name = None)
 	
