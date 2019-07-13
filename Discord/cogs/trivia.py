@@ -426,8 +426,9 @@ class Trivia(commands.Cog):
 		if not self.jeopardy_board[row_number - 1][value_index + 1]:
 			self.jeopardy_question_active = True
 			self.jeopardy_answered = None
-			url = "http://jservice.io/api/category?id=" + str(self.jeopardy_board[row_number - 1][0])
-			async with ctx.bot.aiohttp_session.get(url) as resp:
+			url = "http://jservice.io/api/category"
+			params = {"id": self.jeopardy_board[row_number - 1][0]}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
 			await ctx.embed_say(f"Category: {string.capwords(data['title'])}\n"
@@ -490,8 +491,9 @@ class Trivia(commands.Cog):
 				data = await resp.json()
 			categories.append(data[0]["category_id"])
 		for category in categories:
-			url = "http://jservice.io/api/category?id=" + str(category)
-			async with ctx.bot.aiohttp_session.get(url) as resp:
+			url = "http://jservice.io/api/category"
+			params = {"id": category}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			category_titles.append(string.capwords(data["title"]))
 			self.jeopardy_board.append([category, False, False, False, False, False])
