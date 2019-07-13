@@ -431,19 +431,22 @@ class Trivia(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
-			await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
-									title = string.capwords(data['title']),
-									author_name = None)
 			counter = int(self.wait_time)
-			answer_message = await ctx.send(f"You have {counter} seconds left to answer")
+			answer_message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
+													title = string.capwords(data['title']),
+													author_name = None, 
+													footer_text = f"You have {counter} seconds left to answer")
+			embed = answer_message.embeds[0]
 			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
 			while counter:
 				await asyncio.sleep(1)
 				counter -= 1
-				await answer_message.edit(content = f"You have {counter} seconds left to answer")
+				embed.set_footer(text = f"You have {counter} seconds left to answer")
+				await answer_message.edit(embed = embed)
 				if self.jeopardy_answered:
 					break
-			await answer_message.edit(content = "Time's up!")
+			embed.set_footer(text = "Time's up!")
+			await answer_message.edit(embed = embed)
 			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
 			if self.jeopardy_answered:
 				if self.jeopardy_answered in self.jeopardy_scores:
