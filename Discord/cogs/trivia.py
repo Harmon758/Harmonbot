@@ -430,14 +430,14 @@ class Trivia(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			self.jeopardy_answer = data["clues"][value_index]["answer"]
-			await ctx.embed_say("Category: " + string.capwords(data["title"]) + "\n" + data["clues"][value_index]["question"])
+			await ctx.embed_say(f"Category: {string.capwords(data['title'])}\n{data['clues'][value_index]['question']}")
 			counter = int(clients.wait_time)
-			answer_message = await ctx.send("You have {} seconds left to answer".format(str(counter)))
+			answer_message = await ctx.send(f"You have {counter} seconds left to answer")
 			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
 			while counter:
 				await asyncio.sleep(1)
 				counter -= 1
-				await answer_message.edit(content = "You have {} seconds left to answer".format(counter))
+				await answer_message.edit(content = f"You have {counter} seconds left to answer")
 				if self.jeopardy_answered:
 					break
 			await answer_message.edit(content = "Time's up!")
@@ -446,12 +446,12 @@ class Trivia(commands.Cog):
 					self.jeopardy_scores[self.jeopardy_answered] += int(value)
 				else:
 					self.jeopardy_scores[self.jeopardy_answered] = int(value)
-				answered_message = "{} was right! They now have ${}.".format(self.jeopardy_answered.name, str(self.jeopardy_scores[self.jeopardy_answered]))
+				answered_message = f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}."
 			else:
 				answered_message = "Nobody got it right"
 			score_output = ""
 			for player, score in self.jeopardy_scores.items():
-				score_output += "{}: ${}, ".format(player.name, str(score))
+				score_output += f"{player.name}: ${score}, "
 			score_output = score_output[:-2]
 			self.jeopardy_board[row_number - 1][value_index + 1] = True
 			clue_delete_cursor = (self.jeopardy_max_width + 2) * row_number + 1 * (row_number - 1) + 20 * (row_number - 1) + 4 * value_index
@@ -459,7 +459,7 @@ class Trivia(commands.Cog):
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "    " + self.jeopardy_board_output[clue_delete_cursor + 4:]
 			else:
 				self.jeopardy_board_output = self.jeopardy_board_output[:clue_delete_cursor] + "   " + self.jeopardy_board_output[clue_delete_cursor + 3:]
-			await ctx.embed_say("The answer was " + BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text() + "\n" + answered_message + "\n" + score_output + "\n```" + self.jeopardy_board_output + "```")
+			await ctx.embed_say(f"The answer was {BeautifulSoup(html.unescape(self.jeopardy_answer), 'html.parser').get_text()}\n{answered_message}\n{score_output}\n```{self.jeopardy_board_output}```")
 			self.jeopardy_question_active = False
 	
 	async def jeopardy_wait_for_answer(self):
