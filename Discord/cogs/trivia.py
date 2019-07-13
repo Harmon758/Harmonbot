@@ -499,7 +499,9 @@ class Trivia(commands.Cog):
 		self.jeopardy_max_width = max(len(category_title) for category_title in category_titles)
 		for category_title in category_titles:
 			self.jeopardy_board_output += category_title.ljust(self.jeopardy_max_width) + "  200 400 600 800 1000\n"
-		await ctx.embed_say(ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output))
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.jeopardy_board_output), 
+								title = "Jeopardy!", 
+								author_name = None)
 	
 	# TODO: jeopardy stats
 
