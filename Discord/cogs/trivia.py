@@ -258,71 +258,12 @@ class Trivia(commands.Cog):
 		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def jeopardy(self, ctx, row_number: int, value: int):
+	async def jeopardy(self, ctx):
 		'''
 		Trivia with categories
-		jeopardy [row number] [value] to pick the question
+		[row number] [value] to pick the question
 		Based on Jeopardy!
 		'''
-		if ctx.guild.id not in self.active_jeopardy:
-			return await ctx.embed_reply(":no_entry: There's not a jeopardy game currently in progress")
-		channel_id = self.active_jeopardy[ctx.guild.id]["channel_id"]
-		if ctx.channel.id != channel_id:
-			channel = ctx.guild.get_channel(channel_id)
-			return await ctx.embed_reply(f"There is already an ongoing game of jeopardy in {channel.mention}")
-		if self.active_jeopardy[ctx.guild.id]["question_active"]:
-			return await ctx.embed_reply(":no_entry: There's already a jeopardy question in play")
-		if row_number < 1 or row_number > 6:
-			return await ctx.embed_reply(":no_entry: That's not a valid row number")
-		if value not in (200, 400, 600, 800, 1000):
-			return await ctx.embed_reply(":no_entry: That's not a valid value")
-		value_index = [200, 400, 600, 800, 1000].index(value)
-		board = self.active_jeopardy[ctx.guild.id]["board"]
-		category_id = list(board.keys())[row_number - 1]
-		if not board[category_id][value_index]:
-			return await ctx.embed_reply(":no_entry: That question has already been chosen")
-		self.active_jeopardy[ctx.guild.id]["question_active"] = True
-		self.active_jeopardy[ctx.guild.id]["answerer"] = None
-		url = "http://jservice.io/api/category"
-		params = {"id": category_id}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		self.active_jeopardy[ctx.guild.id]["answer"] = data["clues"][value_index]["answer"]
-		self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
-		message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
-										title = string.capwords(data['title']),
-										author_name = None, 
-										footer_text = f"You have {self.wait_time} seconds left to answer")
-		embed = message.embeds[0]
-		while self.active_jeopardy[message.guild.id]["question_countdown"]:
-			await asyncio.sleep(1)
-			self.active_jeopardy[message.guild.id]["question_countdown"] -= 1
-			embed.set_footer(text = f"You have {self.active_jeopardy[message.guild.id]['question_countdown']} seconds left to answer")
-			await message.edit(embed = embed)
-			if self.active_jeopardy[ctx.guild.id]["answerer"]:
-				break
-		embed.set_footer(text = "Time's up!")
-		await message.edit(embed = embed)
-		answer = BeautifulSoup(html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]), 
-								"html.parser").get_text().replace("\\'", "'")
-		response = f"The answer was `{answer}`\n"
-		answerer = self.active_jeopardy[ctx.guild.id]["answerer"]
-		scores = self.active_jeopardy[ctx.guild.id]["scores"]
-		if answerer:  # Use := in Python 3.8
-			scores[answerer] = scores.get(answerer, 0) + int(value)
-			response += f"{answerer.mention} was right! They now have ${scores[answerer]}\n"
-		else:
-			response += "Nobody got it right\n"
-		response += ", ".join(f"{player.mention}: ${score}" for player, score in scores.items()) + '\n'
-		board[category_id][value_index] = False
-		board_lines = self.active_jeopardy[ctx.guild.id]["board_lines"]
-		board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
-		response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
-		await ctx.embed_say(response)
-		self.active_jeopardy[ctx.guild.id]["question_active"] = False
-	
-	@jeopardy.command(name = "start")
-	async def jeopardy_start(self, ctx):
 		if ctx.guild.id in self.active_jeopardy:
 			channel_id = self.active_jeopardy[ctx.guild.id]["channel_id"]
 			if ctx.channel.id == channel_id:
@@ -331,8 +272,7 @@ class Trivia(commands.Cog):
 				channel = ctx.guild.get_channel(channel_id)
 				return await ctx.embed_reply(f"There is already an ongoing game of jeopardy in {channel.mention}")
 		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "board": {}, "board_lines": [], 
-												"question_active": False, "question_countdown": 0, 
-												"answer": None, "answerer": None, 
+												"question_countdown": 0, "answer": None, "answerer": None, 
 												"scores": {}}
 		board = self.active_jeopardy[ctx.guild.id]["board"]
 		url = "http://jservice.io/api/random"
@@ -352,6 +292,70 @@ class Trivia(commands.Cog):
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.active_jeopardy[ctx.guild.id]["board_lines"])), 
 								title = "Jeopardy!", 
 								author_name = None)
+		
+		def choice_check(message):
+			if message.channel.id != ctx.channel.id:
+				return False
+			parts = message.content.split()
+			if len(parts) < 2:
+				return False
+			return parts[0].isdecimal() and parts[1].isdecimal()
+		
+		while any(question for category in board.values() for question in category):
+			message = await ctx.bot.wait_for("message", check = choice_check)
+			ctx = await ctx.bot.get_context(message)
+			message_parts = message.content.split()
+			row_number = int(message_parts[0])
+			value = int(message_parts[1])
+			if row_number < 1 or row_number > 6:
+				await ctx.embed_reply(":no_entry: That's not a valid row number")
+				continue
+			if value not in (200, 400, 600, 800, 1000):
+				await ctx.embed_reply(":no_entry: That's not a valid value")
+				continue
+			value_index = [200, 400, 600, 800, 1000].index(value)
+			board = self.active_jeopardy[ctx.guild.id]["board"]
+			category_id = list(board.keys())[row_number - 1]
+			if not board[category_id][value_index]:
+				await ctx.embed_reply(":no_entry: That question has already been chosen")
+				continue
+			self.active_jeopardy[ctx.guild.id]["answerer"] = None
+			url = "http://jservice.io/api/category"
+			params = {"id": category_id}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				data = await resp.json()
+			self.active_jeopardy[ctx.guild.id]["answer"] = data["clues"][value_index]["answer"]
+			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
+			message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
+											title = string.capwords(data['title']),
+											author_name = None, 
+											footer_text = f"You have {self.wait_time} seconds left to answer")
+			embed = message.embeds[0]
+			while self.active_jeopardy[message.guild.id]["question_countdown"]:
+				await asyncio.sleep(1)
+				self.active_jeopardy[message.guild.id]["question_countdown"] -= 1
+				embed.set_footer(text = f"You have {self.active_jeopardy[message.guild.id]['question_countdown']} seconds left to answer")
+				await message.edit(embed = embed)
+				if self.active_jeopardy[ctx.guild.id]["answerer"]:
+					break
+			embed.set_footer(text = "Time's up!")
+			await message.edit(embed = embed)
+			answer = BeautifulSoup(html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]), 
+									"html.parser").get_text().replace("\\'", "'")
+			response = f"The answer was `{answer}`\n"
+			answerer = self.active_jeopardy[ctx.guild.id]["answerer"]
+			scores = self.active_jeopardy[ctx.guild.id]["scores"]
+			if answerer:  # Use := in Python 3.8
+				scores[answerer] = scores.get(answerer, 0) + int(value)
+				response += f"{answerer.mention} was right! They now have ${scores[answerer]}\n"
+			else:
+				response += "Nobody got it right\n"
+			response += ", ".join(f"{player.mention}: ${score}" for player, score in scores.items()) + '\n'
+			board[category_id][value_index] = False
+			board_lines = self.active_jeopardy[ctx.guild.id]["board_lines"]
+			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
+			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
+			await ctx.embed_say(response)
 	
 	@commands.Cog.listener("on_message")
 	async def jeopardy_on_message(self, message):
