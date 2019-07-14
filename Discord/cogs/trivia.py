@@ -197,6 +197,32 @@ class Trivia(commands.Cog):
 				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}.")
 			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
 	
+	@commands.Cog.listener("on_message")
+	async def trivia_on_message(self, message):
+		if not message.guild or message.guild.id not in self.active_trivia:
+			return
+		if message.channel.id != self.active_trivia[message.guild.id]["channel_id"]:
+			return
+		if self.active_trivia[message.guild.id].get("bet_countdown") and message.content.isdigit():
+			ctx = await self.bot.get_context(message, cls = Context)
+			money = await self.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
+			if not money:
+				money = await self.bot.db.fetchval(
+					"""
+					INSERT INTO trivia.users (user_id, correct, incorrect, money)
+					VALUES ($1, 0, 0, 100000)
+					RETURNING money
+					""", 
+					message.author.id
+				)
+			if int(message.content) <= money:
+				self.active_trivia[message.guild.id]["bets"][message.author] = int(message.content)
+				await ctx.embed_reply(f"has bet ${message.content}")
+			else:
+				await ctx.embed_reply("You don't have that much money to bet!")
+		elif self.active_trivia[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
+			self.active_trivia[message.guild.id]["responses"][message.author] = message.content
+	
 	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
@@ -466,30 +492,4 @@ class Trivia(commands.Cog):
 			if string.startswith(article):
 				return string[len(article):]
 		return string
-	
-	@commands.Cog.listener()
-	async def on_message(self, message):
-		if not message.guild or message.guild.id not in self.active_trivia:
-			return
-		if message.channel.id != self.active_trivia[message.guild.id]["channel_id"]:
-			return
-		if self.active_trivia[message.guild.id].get("bet_countdown") and message.content.isdigit():
-			ctx = await self.bot.get_context(message, cls = Context)
-			money = await self.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
-			if not money:
-				money = await self.bot.db.fetchval(
-					"""
-					INSERT INTO trivia.users (user_id, correct, incorrect, money)
-					VALUES ($1, 0, 0, 100000)
-					RETURNING money
-					""", 
-					message.author.id
-				)
-			if int(message.content) <= money:
-				self.active_trivia[message.guild.id]["bets"][message.author] = int(message.content)
-				await ctx.embed_reply(f"has bet ${message.content}")
-			else:
-				await ctx.embed_reply("You don't have that much money to bet!")
-		elif self.active_trivia[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
-			self.active_trivia[message.guild.id]["responses"][message.author] = message.content
 
