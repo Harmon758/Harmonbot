@@ -124,7 +124,7 @@ class Trivia(commands.Cog):
 		self.active_trivia[ctx.guild.id]["question_countdown"] = self.wait_time
 		question_message = await ctx.embed_reply(data["question"], author_name = None, 
 													title = string.capwords(data["category"]["title"]), 
-													footer_text = f"You have {self.active_trivia[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date", 
+													footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
 													timestamp = dateutil.parser.parse(data["airdate"]))
 		embed = question_message.embeds[0]
 		while self.active_trivia[question_message.guild.id]["question_countdown"]:
