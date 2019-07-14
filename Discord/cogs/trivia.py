@@ -265,7 +265,6 @@ class Trivia(commands.Cog):
 		Based on Jeopardy!
 		'''
 		# TODO: Daily Double?
-		# TODO: Optimizations
 		# TODO: Add question air dates
 		if ctx.guild.id in self.active_jeopardy:
 			channel_id = self.active_jeopardy[ctx.guild.id]["channel_id"]
@@ -274,10 +273,9 @@ class Trivia(commands.Cog):
 			else:
 				channel = ctx.guild.get_channel(channel_id)
 				return await ctx.embed_reply(f"There is already an ongoing game of jeopardy in {channel.mention}")
-		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "board": {}, "board_lines": [], 
-												"question_countdown": 0, "answer": None, "answerer": None, 
-												"scores": {}}
-		board = self.active_jeopardy[ctx.guild.id]["board"]
+		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, 
+												"answer": None, "answerer": None}
+		board = {}
 		url = "http://jservice.io/api/random"
 		category_titles = []
 		while len(board) < 6:
@@ -289,12 +287,12 @@ class Trivia(commands.Cog):
 				board[category_id] = [True] * 5
 		# TODO: Get and store all questions data?
 		max_width = max(len(category_title) for category_title in category_titles)
-		self.active_jeopardy[ctx.guild.id]["board_lines"] = [f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
-																for number, category_title in enumerate(category_titles)]
+		board_lines = [f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
+						for number, category_title in enumerate(category_titles)]
 		# TODO: Handle line too long for embed code block
-		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.active_jeopardy[ctx.guild.id]["board_lines"])), 
-								title = "Jeopardy!", 
-								author_name = None)
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(board_lines)), 
+								title = "Jeopardy!", author_name = None)
+		scores = {}
 		
 		def choice_check(message):
 			if message.channel.id != ctx.channel.id:
@@ -317,7 +315,6 @@ class Trivia(commands.Cog):
 				await ctx.embed_reply(":no_entry: That's not a valid value")
 				continue
 			value_index = [200, 400, 600, 800, 1000].index(value)
-			board = self.active_jeopardy[ctx.guild.id]["board"]
 			category_id = list(board.keys())[row_number - 1]
 			if not board[category_id][value_index]:
 				await ctx.embed_reply(":no_entry: That question has already been chosen")
@@ -347,7 +344,6 @@ class Trivia(commands.Cog):
 									"html.parser").get_text().replace("\\'", "'")
 			response = f"The answer was `{answer}`\n"
 			answerer = self.active_jeopardy[ctx.guild.id]["answerer"]
-			scores = self.active_jeopardy[ctx.guild.id]["scores"]
 			if answerer:  # Use := in Python 3.8
 				scores[answerer] = scores.get(answerer, 0) + int(value)
 				response += f"{answerer.mention} was right! They now have ${scores[answerer]}\n"
@@ -355,7 +351,6 @@ class Trivia(commands.Cog):
 				response += "Nobody got it right\n"
 			response += ", ".join(f"{player.mention}: ${score}" for player, score in scores.items()) + '\n'
 			board[category_id][value_index] = False
-			board_lines = self.active_jeopardy[ctx.guild.id]["board_lines"]
 			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
 			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
 			await ctx.embed_say(response)
