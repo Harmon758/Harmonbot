@@ -265,7 +265,6 @@ class Trivia(commands.Cog):
 		Based on Jeopardy!
 		'''
 		# TODO: Daily Double?
-		# TODO: Add question air dates
 		if ctx.guild.id in self.active_jeopardy:
 			channel_id = self.active_jeopardy[ctx.guild.id]["channel_id"]
 			if ctx.channel.id == channel_id:
@@ -327,18 +326,18 @@ class Trivia(commands.Cog):
 			self.active_jeopardy[ctx.guild.id]["answer"] = data["clues"][value_index]["answer"]
 			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
 			message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
-											title = string.capwords(data['title']),
-											author_name = None, 
-											footer_text = f"You have {self.wait_time} seconds left to answer")
+											title = string.capwords(data['title']), author_name = None, 
+											footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
+											timestamp = dateutil.parser.parse(data["clues"][value_index]["airdate"]))
 			embed = message.embeds[0]
 			while self.active_jeopardy[message.guild.id]["question_countdown"]:
 				await asyncio.sleep(1)
 				self.active_jeopardy[message.guild.id]["question_countdown"] -= 1
-				embed.set_footer(text = f"You have {self.active_jeopardy[message.guild.id]['question_countdown']} seconds left to answer")
+				embed.set_footer(text = f"You have {self.active_jeopardy[message.guild.id]['question_countdown']} seconds left to answer | Air Date")
 				await message.edit(embed = embed)
 				if self.active_jeopardy[ctx.guild.id]["answerer"]:
 					break
-			embed.set_footer(text = "Time's up!")
+			embed.set_footer(text = "Time's up! | Air Date")
 			await message.edit(embed = embed)
 			answer = BeautifulSoup(html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]), 
 									"html.parser").get_text().replace("\\'", "'")
