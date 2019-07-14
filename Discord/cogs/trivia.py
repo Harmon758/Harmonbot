@@ -264,6 +264,9 @@ class Trivia(commands.Cog):
 		[row number] [value] to pick the question
 		Based on Jeopardy!
 		'''
+		# TODO: Daily Double?
+		# TODO: Optimizations
+		# TODO: Add question air dates
 		if ctx.guild.id in self.active_jeopardy:
 			channel_id = self.active_jeopardy[ctx.guild.id]["channel_id"]
 			if ctx.channel.id == channel_id:
@@ -356,6 +359,8 @@ class Trivia(commands.Cog):
 			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
 			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
 			await ctx.embed_say(response)
+		# TODO: Announce winner(s)
+		del self.active_jeopardy[ctx.guild.id]
 	
 	@commands.Cog.listener("on_message")
 	async def jeopardy_on_message(self, message):
