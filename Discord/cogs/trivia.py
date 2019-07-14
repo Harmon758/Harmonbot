@@ -342,8 +342,8 @@ class Trivia(commands.Cog):
 			self.active_jeopardy[ctx.guild.id]["board"][data[0]["category_id"]] = [True] * 5
 		# TODO: Get and store all questions data?
 		max_width = max(len(category_title) for category_title in category_titles)
-		self.active_jeopardy[ctx.guild.id]["board_lines"] = [category_title.ljust(max_width) + "  200 400 600 800 1000"
-																for category_title in category_titles]
+		self.active_jeopardy[ctx.guild.id]["board_lines"] = [f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
+																for number, category_title in enumerate(category_titles)]
 		# TODO: Handle line too long for embed code block
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.active_jeopardy[ctx.guild.id]["board_lines"])), 
 								title = "Jeopardy!", 
