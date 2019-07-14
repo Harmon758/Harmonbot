@@ -275,46 +275,49 @@ class Trivia(commands.Cog):
 		if value not in (200, 400, 600, 800, 1000):
 			return await ctx.embed_reply(":no_entry: That's not a valid value")
 		value_index = [200, 400, 600, 800, 1000].index(value)
-		if not self.active_jeopardy[ctx.guild.id]["board"][row_number - 1][value_index + 1]:
-			self.active_jeopardy[ctx.guild.id]["question_active"] = True
-			self.active_jeopardy[ctx.guild.id]["answerer"] = None
-			url = "http://jservice.io/api/category"
-			params = {"id": self.active_jeopardy[ctx.guild.id]["board"][row_number - 1][0]}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			self.active_jeopardy[ctx.guild.id]["answer"] = data["clues"][value_index]["answer"]
-			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
-			message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
-											title = string.capwords(data['title']),
-											author_name = None, 
-											footer_text = f"You have {self.wait_time} seconds left to answer")
-			embed = message.embeds[0]
-			while self.active_jeopardy[message.guild.id]["question_countdown"]:
-				await asyncio.sleep(1)
-				self.active_jeopardy[message.guild.id]["question_countdown"] -= 1
-				embed.set_footer(text = f"You have {self.active_jeopardy[message.guild.id]['question_countdown']} seconds left to answer")
-				await message.edit(embed = embed)
-				if self.active_jeopardy[ctx.guild.id]["answerer"]:
-					break
-			embed.set_footer(text = "Time's up!")
+		board = self.active_jeopardy[ctx.guild.id]["board"]
+		category_id = list(board.keys())[row_number - 1]
+		if not board[category_id][value_index]:
+			return await ctx.embed_reply(":no_entry: That question has already been chosen")
+		self.active_jeopardy[ctx.guild.id]["question_active"] = True
+		self.active_jeopardy[ctx.guild.id]["answerer"] = None
+		url = "http://jservice.io/api/category"
+		params = {"id": category_id}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		self.active_jeopardy[ctx.guild.id]["answer"] = data["clues"][value_index]["answer"]
+		self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
+		message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
+										title = string.capwords(data['title']),
+										author_name = None, 
+										footer_text = f"You have {self.wait_time} seconds left to answer")
+		embed = message.embeds[0]
+		while self.active_jeopardy[message.guild.id]["question_countdown"]:
+			await asyncio.sleep(1)
+			self.active_jeopardy[message.guild.id]["question_countdown"] -= 1
+			embed.set_footer(text = f"You have {self.active_jeopardy[message.guild.id]['question_countdown']} seconds left to answer")
 			await message.edit(embed = embed)
-			answer = BeautifulSoup(html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]), 
-									"html.parser").get_text().replace("\\'", "'")
-			response = f"The answer was `{answer}`\n"
-			answerer = self.active_jeopardy[ctx.guild.id]["answerer"]
-			scores = self.active_jeopardy[ctx.guild.id]["scores"]
-			if answerer:  # Use := in Python 3.8
-				scores[answerer] = scores.get(answerer, 0) + int(value)
-				response += f"{answerer.name} was right! They now have ${scores[answerer]}\n"
-			else:
-				response += "Nobody got it right\n"
-			response += ", ".join(f"{player.name}: ${score}" for player, score in scores.items()) + '\n'
-			self.active_jeopardy[ctx.guild.id]["board"][row_number - 1][value_index + 1] = True
-			board_lines = self.active_jeopardy[ctx.guild.id]["board_lines"]
-			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
-			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
-			await ctx.embed_say(response)
-			self.active_jeopardy[ctx.guild.id]["question_active"] = False
+			if self.active_jeopardy[ctx.guild.id]["answerer"]:
+				break
+		embed.set_footer(text = "Time's up!")
+		await message.edit(embed = embed)
+		answer = BeautifulSoup(html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]), 
+								"html.parser").get_text().replace("\\'", "'")
+		response = f"The answer was `{answer}`\n"
+		answerer = self.active_jeopardy[ctx.guild.id]["answerer"]
+		scores = self.active_jeopardy[ctx.guild.id]["scores"]
+		if answerer:  # Use := in Python 3.8
+			scores[answerer] = scores.get(answerer, 0) + int(value)
+			response += f"{answerer.name} was right! They now have ${scores[answerer]}\n"
+		else:
+			response += "Nobody got it right\n"
+		response += ", ".join(f"{player.name}: ${score}" for player, score in scores.items()) + '\n'
+		board[category_id][value_index] = False
+		board_lines = self.active_jeopardy[ctx.guild.id]["board_lines"]
+		board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
+		response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
+		await ctx.embed_say(response)
+		self.active_jeopardy[ctx.guild.id]["question_active"] = False
 	
 	@jeopardy.command(name = "start")
 	async def jeopardy_start(self, ctx):
@@ -325,7 +328,7 @@ class Trivia(commands.Cog):
 			else:
 				channel = ctx.guild.get_channel(channel_id)
 				return await ctx.embed_reply(f"There is already an ongoing game of jeopardy in {channel.mention}")
-		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "board": [], "board_lines": [], 
+		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "board": {}, "board_lines": [], 
 												"question_active": False, "question_countdown": 0, 
 												"answer": None, "answerer": None, 
 												"scores": {}}
@@ -336,7 +339,7 @@ class Trivia(commands.Cog):
 				data = await resp.json()
 			# TODO: Handle potential duplicate category
 			category_titles.append(string.capwords(data[0]["category"]["title"]))
-			self.active_jeopardy[ctx.guild.id]["board"].append([data[0]["category_id"], False, False, False, False, False])
+			self.active_jeopardy[ctx.guild.id]["board"][data[0]["category_id"]] = [True] * 5
 		# TODO: Get and store all questions data?
 		max_width = max(len(category_title) for category_title in category_titles)
 		self.active_jeopardy[ctx.guild.id]["board_lines"] = [category_title.ljust(max_width) + "  200 400 600 800 1000"
