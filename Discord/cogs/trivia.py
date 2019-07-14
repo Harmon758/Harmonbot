@@ -332,14 +332,16 @@ class Trivia(commands.Cog):
 												"question_active": False, "question_countdown": 0, 
 												"answer": None, "answerer": None, 
 												"scores": {}}
-		category_titles = []
+		board = self.active_jeopardy[ctx.guild.id]["board"]
 		url = "http://jservice.io/api/random"
-		for _ in range(6):
+		category_titles = []
+		while len(board) < 6:
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
-			# TODO: Handle potential duplicate category
-			category_titles.append(string.capwords(data[0]["category"]["title"]))
-			self.active_jeopardy[ctx.guild.id]["board"][data[0]["category_id"]] = [True] * 5
+			category_id = data[0]["category_id"]
+			if category_id not in board:
+				category_titles.append(string.capwords(data[0]["category"]["title"]))
+				board[category_id] = [True] * 5
 		# TODO: Get and store all questions data?
 		max_width = max(len(category_title) for category_title in category_titles)
 		self.active_jeopardy[ctx.guild.id]["board_lines"] = [f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
