@@ -299,13 +299,11 @@ class Trivia(commands.Cog):
 		if self.jeopardy_active:
 			return await ctx.embed_reply(":no_entry: There's already a jeopardy game in progress")
 		self.jeopardy_active = True
-		categories = []
 		category_titles = []
 		url = "http://jservice.io/api/random"
 		for _ in range(6):
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
-			categories.append(data[0]["category_id"])
 			# TODO: Handle potential duplicate category
 			category_titles.append(string.capwords(data[0]["category"]["title"]))
 			self.jeopardy_board.append([data[0]["category_id"], False, False, False, False, False])
