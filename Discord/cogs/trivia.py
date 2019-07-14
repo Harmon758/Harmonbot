@@ -84,8 +84,10 @@ class Trivia(commands.Cog):
 			return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
 		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}, 
 											"bet_countdown": 0, "bets": {}}
-		await self.trivia_round(ctx, bet = True)
-		del self.active_trivia[ctx.guild.id]
+		try:
+			await self.trivia_round(ctx, bet = True)
+		finally:
+			del self.active_trivia[ctx.guild.id]
 	
 	async def trivia_round(self, ctx, bet = False, response = None):
 		try:
