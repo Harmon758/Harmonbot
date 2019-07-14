@@ -290,13 +290,12 @@ class Trivia(commands.Cog):
 			self.jeopardy_question_active = False
 	
 	async def jeopardy_wait_for_answer(self):
-		if self.jeopardy_question_active:
-			try:
-				message = await self.bot.wait_for("message", timeout = self.wait_time, check = lambda m: self.check_answer(self.jeopardy_answer, m.content))
-			except asyncio.TimeoutError:
-				return
-			if not message.content.startswith('>'):
-				self.jeopardy_answered = message.author
+		try:
+			message = await self.bot.wait_for("message", timeout = self.wait_time, check = lambda m: self.check_answer(self.jeopardy_answer, m.content))
+		except asyncio.TimeoutError:
+			return
+		if not message.content.startswith('>'):
+			self.jeopardy_answered = message.author
 	
 	@jeopardy.command(name = "start")
 	async def jeopardy_start(self, ctx):
