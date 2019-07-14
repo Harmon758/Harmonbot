@@ -65,8 +65,12 @@ class Trivia(commands.Cog):
 		Questions are taken from Jeopardy!
 		'''
 		if ctx.guild.id in self.active_trivia:
-			channel = ctx.guild.get_channel(self.active_trivia[ctx.guild.id]["channel_id"])
-			return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
+			channel_id = self.active_trivia[ctx.guild.id]["channel_id"]
+			if ctx.channel.id == channel_id:
+				return await ctx.embed_reply(f"There is already an ongoing game of trivia here")
+			else:
+				channel = ctx.guild.get_channel(channel_id)
+				return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
 		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}}
 		try:
 			await self.trivia_round(ctx)
