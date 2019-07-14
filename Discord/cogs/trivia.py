@@ -25,13 +25,7 @@ class Trivia(commands.Cog):
 		self.bot = bot
 		self.wait_time = 15
 		self.active_trivia = {}
-		self.jeopardy_active = False
-		self.jeopardy_question_active = False
-		self.jeopardy_board = []
-		self.jeopardy_answer = None
-		self.jeopardy_answered = None
-		self.jeopardy_scores = {}
-		self.jeopardy_board_lines = []
+		self.active_jeopardy = {}
 		
 		# Add jeopardy as trivia subcommand
 		self.bot.add_command(self.jeopardy)
@@ -268,66 +262,73 @@ class Trivia(commands.Cog):
 		jeopardy [row number] [value] to pick the question
 		Based on Jeopardy!
 		'''
-		if not self.jeopardy_active:
+		if ctx.guild.id not in self.active_jeopardy:
 			return await ctx.embed_reply(":no_entry: There's not a jeopardy game currently in progress")
-		if self.jeopardy_question_active:
+		channel_id = self.active_jeopardy[ctx.guild.id]["channel_id"]
+		if ctx.channel.id != channel_id:
+			channel = ctx.guild.get_channel(channel_id)
+			return await ctx.embed_reply(f"There is already an ongoing game of jeopardy in {channel.mention}")
+		if self.active_jeopardy[ctx.guild.id]["question_active"]:
 			return await ctx.embed_reply(":no_entry: There's already a jeopardy question in play")
 		if row_number < 1 or row_number > 6:
 			return await ctx.embed_reply(":no_entry: That's not a valid row number")
 		if value not in (200, 400, 600, 800, 1000):
 			return await ctx.embed_reply(":no_entry: That's not a valid value")
 		value_index = [200, 400, 600, 800, 1000].index(value)
-		if not self.jeopardy_board[row_number - 1][value_index + 1]:
-			self.jeopardy_question_active = True
-			self.jeopardy_answered = None
+		if not self.active_jeopardy[ctx.guild.id]["board"][row_number - 1][value_index + 1]:
+			self.active_jeopardy[ctx.guild.id]["question_active"] = True
+			self.active_jeopardy[ctx.guild.id]["answerer"] = None
 			url = "http://jservice.io/api/category"
-			params = {"id": self.jeopardy_board[row_number - 1][0]}
+			params = {"id": self.active_jeopardy[ctx.guild.id]["board"][row_number - 1][0]}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
-			self.jeopardy_answer = data["clues"][value_index]["answer"]
-			counter = self.wait_time
+			self.active_jeopardy[ctx.guild.id]["answer"] = data["clues"][value_index]["answer"]
+			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
 			message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
 											title = string.capwords(data['title']),
 											author_name = None, 
-											footer_text = f"You have {counter} seconds left to answer")
+											footer_text = f"You have {self.wait_time} seconds left to answer")
 			embed = message.embeds[0]
-			self.bot.loop.create_task(self.jeopardy_wait_for_answer())
-			while counter:
+			while self.active_jeopardy[message.guild.id]["question_countdown"]:
 				await asyncio.sleep(1)
-				counter -= 1
-				embed.set_footer(text = f"You have {counter} seconds left to answer")
+				self.active_jeopardy[message.guild.id]["question_countdown"] -= 1
+				embed.set_footer(text = f"You have {self.active_jeopardy[message.guild.id]['question_countdown']} seconds left to answer")
 				await message.edit(embed = embed)
-				if self.jeopardy_answered:
+				if self.active_jeopardy[ctx.guild.id]["answerer"]:
 					break
 			embed.set_footer(text = "Time's up!")
 			await message.edit(embed = embed)
-			answer = BeautifulSoup(html.unescape(self.jeopardy_answer), "html.parser").get_text().replace("\\'", "'")
+			answer = BeautifulSoup(html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]), 
+									"html.parser").get_text().replace("\\'", "'")
 			response = f"The answer was `{answer}`\n"
-			if self.jeopardy_answered:
-				self.jeopardy_scores[self.jeopardy_answered] = self.jeopardy_scores.get(self.jeopardy_answered, 0) + int(value)
-				response += f"{self.jeopardy_answered.name} was right! They now have ${self.jeopardy_scores[self.jeopardy_answered]}\n"
+			answerer = self.active_jeopardy[ctx.guild.id]["answerer"]
+			scores = self.active_jeopardy[ctx.guild.id]["scores"]
+			if answerer:  # Use := in Python 3.8
+				scores[answerer] = scores.get(answerer, 0) + int(value)
+				response += f"{answerer.name} was right! They now have ${scores[answerer]}\n"
 			else:
 				response += "Nobody got it right\n"
-			response += ", ".join(f"{player.name}: ${score}" for player, score in self.jeopardy_scores.items()) + '\n'
-			self.jeopardy_board[row_number - 1][value_index + 1] = True
-			self.jeopardy_board_lines[row_number - 1] = (len(str(value)) * ' ').join(self.jeopardy_board_lines[row_number - 1].rsplit(str(value), 1))
-			response += ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines))
+			response += ", ".join(f"{player.name}: ${score}" for player, score in scores.items()) + '\n'
+			self.active_jeopardy[ctx.guild.id]["board"][row_number - 1][value_index + 1] = True
+			board_lines = self.active_jeopardy[ctx.guild.id]["board_lines"]
+			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
+			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
 			await ctx.embed_say(response)
-			self.jeopardy_question_active = False
-	
-	async def jeopardy_wait_for_answer(self):
-		try:
-			message = await self.bot.wait_for("message", timeout = self.wait_time, check = lambda m: self.check_answer(self.jeopardy_answer, m.content))
-		except asyncio.TimeoutError:
-			return
-		if not message.content.startswith('>'):
-			self.jeopardy_answered = message.author
+			self.active_jeopardy[ctx.guild.id]["question_active"] = False
 	
 	@jeopardy.command(name = "start")
 	async def jeopardy_start(self, ctx):
-		if self.jeopardy_active:
-			return await ctx.embed_reply(":no_entry: There's already a jeopardy game in progress")
-		self.jeopardy_active = True
+		if ctx.guild.id in self.active_jeopardy:
+			channel_id = self.active_jeopardy[ctx.guild.id]["channel_id"]
+			if ctx.channel.id == channel_id:
+				return await ctx.embed_reply(f"There is already an ongoing game of jeopardy here")
+			else:
+				channel = ctx.guild.get_channel(channel_id)
+				return await ctx.embed_reply(f"There is already an ongoing game of jeopardy in {channel.mention}")
+		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "board": [], "board_lines": [], 
+												"question_active": False, "question_countdown": 0, 
+												"answer": None, "answerer": None, 
+												"scores": {}}
 		category_titles = []
 		url = "http://jservice.io/api/random"
 		for _ in range(6):
@@ -335,14 +336,25 @@ class Trivia(commands.Cog):
 				data = await resp.json()
 			# TODO: Handle potential duplicate category
 			category_titles.append(string.capwords(data[0]["category"]["title"]))
-			self.jeopardy_board.append([data[0]["category_id"], False, False, False, False, False])
+			self.active_jeopardy[ctx.guild.id]["board"].append([data[0]["category_id"], False, False, False, False, False])
 		# TODO: Get and store all questions data?
 		max_width = max(len(category_title) for category_title in category_titles)
-		self.jeopardy_board_lines = [category_title.ljust(max_width) + "  200 400 600 800 1000" for category_title in category_titles]
+		self.active_jeopardy[ctx.guild.id]["board_lines"] = [category_title.ljust(max_width) + "  200 400 600 800 1000"
+																for category_title in category_titles]
 		# TODO: Handle line too long for embed code block
-		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.jeopardy_board_lines)), 
+		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.active_jeopardy[ctx.guild.id]["board_lines"])), 
 								title = "Jeopardy!", 
 								author_name = None)
+	
+	@commands.Cog.listener("on_message")
+	async def jeopardy_on_message(self, message):
+		if not message.guild or message.guild.id not in self.active_jeopardy:
+			return
+		if message.channel.id != self.active_jeopardy[message.guild.id]["channel_id"]:
+			return
+		if (self.active_jeopardy[message.guild.id]["question_countdown"] and 
+			self.check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content)):
+				self.active_jeopardy[message.guild.id]["answerer"] = message.author
 	
 	# TODO: jeopardy stats
 	
