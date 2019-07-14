@@ -405,6 +405,9 @@ class Trivia(commands.Cog):
 		answer_items[-1:] = [item.strip() for item in answer_items[-1].split("and") if item]
 		response_items = [item.strip() for item in response.split(',')]
 		response_items[-1:] = [item.strip() for item in response_items[-1].split("and") if item]
+		# Return False if only "and"
+		if not response_items:
+			return False
 		# Remove article prefixes
 		for index, item in enumerate(answer_items):
 			answer_items[index] = self.remove_article_prefix(item)
