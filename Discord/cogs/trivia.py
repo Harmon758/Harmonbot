@@ -308,10 +308,10 @@ class Trivia(commands.Cog):
 		scores = self.active_jeopardy[ctx.guild.id]["scores"]
 		if answerer:  # Use := in Python 3.8
 			scores[answerer] = scores.get(answerer, 0) + int(value)
-			response += f"{answerer.name} was right! They now have ${scores[answerer]}\n"
+			response += f"{answerer.mention} was right! They now have ${scores[answerer]}\n"
 		else:
 			response += "Nobody got it right\n"
-		response += ", ".join(f"{player.name}: ${score}" for player, score in scores.items()) + '\n'
+		response += ", ".join(f"{player.mention}: ${score}" for player, score in scores.items()) + '\n'
 		board[category_id][value_index] = False
 		board_lines = self.active_jeopardy[ctx.guild.id]["board_lines"]
 		board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
