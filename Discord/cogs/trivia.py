@@ -303,6 +303,8 @@ class Trivia(commands.Cog):
 		
 		while any(question for category in board.values() for question in category):
 			message = await ctx.bot.wait_for("message", check = choice_check)
+			# TODO: Timeout?
+			# TODO: Enforce last person to answer correctly chooses?
 			ctx = await ctx.bot.get_context(message)
 			message_parts = message.content.split()
 			row_number = int(message_parts[0])
@@ -367,7 +369,8 @@ class Trivia(commands.Cog):
 		if message.channel.id != self.active_jeopardy[message.guild.id]["channel_id"]:
 			return
 		if (self.active_jeopardy[message.guild.id]["question_countdown"] and 
-			self.check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content)):
+			self.check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content) and 
+			not self.active_jeopardy[message.guild.id]["answerer"]):
 				self.active_jeopardy[message.guild.id]["answerer"] = message.author
 	
 	# TODO: jeopardy stats
