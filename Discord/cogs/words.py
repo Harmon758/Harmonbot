@@ -3,6 +3,8 @@ from discord.ext import commands
 
 import urllib.error
 
+from bs4 import BeautifulSoup
+
 from utilities import checks
 
 def setup(bot):
@@ -35,7 +37,8 @@ class Words(commands.Cog):
 			raise
 		if not definition:
 			return await ctx.embed_reply(":no_entry: Definition not found")
-		await ctx.embed_reply(definition[0].text, title = definition[0].word, 
+		await ctx.embed_reply(BeautifulSoup(definition[0].text, "html.parser").get_text(), 
+								title = definition[0].word, 
 								footer_text = definition[0].attributionText)
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
