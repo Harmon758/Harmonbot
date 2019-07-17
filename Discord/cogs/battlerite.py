@@ -92,7 +92,7 @@ class Battlerite(commands.Cog):
 		params = {"filter[playerNames]": player}
 		async with self.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
 			data = await resp.json()
-		return(next(iter(data["data"]), None))
+		return next(iter(data["data"]), None)
 	
 	# TODO: Handle missing Battlerite Arena stats
 	# TODO: Get values safely + handle division by zero
