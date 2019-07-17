@@ -103,8 +103,7 @@ class Battlerite(commands.Cog):
 		'''Player'''
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: Player not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		stats = data["attributes"]["stats"]
 		'''
 		# Code to print/list mappings:
@@ -140,8 +139,7 @@ class Battlerite(commands.Cog):
 		'''Brawl'''
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: Player not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		stats = data["attributes"]["stats"]
 		wins = stats.get("18", 0)
 		losses = stats.get("19", 0)
@@ -156,8 +154,7 @@ class Battlerite(commands.Cog):
 		'''Casual'''
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: Player not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		stats = data["attributes"]["stats"]
 		wins_2v2 = stats.get("10", 0)
 		losses_2v2 = stats.get("11", 0)
@@ -181,8 +178,7 @@ class Battlerite(commands.Cog):
 		'''Levels'''
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: Player not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		stats = data["attributes"]["stats"]
 		fields = [("Account Level", f"{stats['26']} ({stats['25']:,} XP)", False)]
 		levels = {}
@@ -205,8 +201,7 @@ class Battlerite(commands.Cog):
 		'''Ranked'''
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: Player not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		stats = data["attributes"]["stats"]
 		wins_2v2 = stats.get("14", 0)
 		losses_2v2 = stats.get("15", 0)
@@ -230,8 +225,7 @@ class Battlerite(commands.Cog):
 		'''Time Played'''
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: Player not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		stats = data["attributes"]["stats"]
 		fields = [("Total Time Played", utilities.secs_to_letter_format(stats['8'], limit = 3600), False)]
 		time_played = {}
@@ -251,8 +245,7 @@ class Battlerite(commands.Cog):
 		'''Wins/Losses'''
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: Player not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
 		stats = data["attributes"]["stats"]
 		field_value = f"{stats['2']} - {stats['3']} ({stats['2'] / (stats['2'] + stats['3']) * 100:.2f}%)"
 		# TODO: Handle division by 0
