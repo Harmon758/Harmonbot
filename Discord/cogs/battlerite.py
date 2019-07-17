@@ -34,9 +34,9 @@ class Battlerite(commands.Cog):
 		champions = filter(lambda m: m["Type"] == "Characters", self.mappings.values())
 		champions = set(c["Name"].lower().replace(' ', '_') for c in champions)
 		champions.discard("random_champion")
-		champions.discard("egg_bakko")
-		champions.discard("rabbit")  # For Battlerite Royale?
-		# https://www.reddit.com/r/BattleRite/comments/8u7ab9/next_champion_critter/
+		champions.discard("egg_bakko")  # For Easter Event Egg Brawl
+		champions.discard("egg_raigon")  # For Easter Event Egg Brawl
+		champions.discard("rabbit")  # For Battlerite Royale
 		for champion in champions:
 			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
 	
@@ -50,7 +50,7 @@ class Battlerite(commands.Cog):
 			# TODO: get revision dynamically?
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"62165/stackables.json")
+					"64910/stackables.json")
 			async with self.bot.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(self.bot.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
@@ -59,7 +59,7 @@ class Battlerite(commands.Cog):
 			# TODO: get revision dynamically?
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"62165/Localization/English.ini")
+					"64910/Localization/English.ini")
 			async with self.bot.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(self.bot.data_path + "/battlerite/English.ini", "wb") as localization_file:
@@ -84,7 +84,7 @@ class Battlerite(commands.Cog):
 	async def battlerite(self, ctx):
 		'''
 		Battlerite
-		Using revision 62165 mappings
+		Using revision 64910 mappings
 		'''
 		await ctx.send_help(ctx.command)
 	
