@@ -50,7 +50,7 @@ class Battlerite(commands.Cog):
 			# TODO: get revision dynamically?
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"47438/stackables.json")
+					"56451/stackables.json")
 			async with self.bot.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(self.bot.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
@@ -59,7 +59,7 @@ class Battlerite(commands.Cog):
 			# TODO: get revision dynamically?
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"47438/Localization/English.ini")
+					"56451/Localization/English.ini")
 			async with self.bot.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(self.bot.data_path + "/battlerite/English.ini", "wb") as localization_file:
@@ -67,7 +67,7 @@ class Battlerite(commands.Cog):
 		with open(self.bot.data_path + "/battlerite/stackables.json", 'r') as stackables_file:
 			stackables = json.load(stackables_file)
 		localization = {}
-		with open(self.bot.data_path + "/battlerite/English.ini", 'r', encoding = "UTF-8") as localization_file:
+		with open(self.bot.data_path + "/battlerite/English.ini", 'r', encoding = "UTF-16") as localization_file:
 			for line in localization_file:
 				id_name = line.strip().split('=', maxsplit = 1)
 				localization[id_name[0]] = id_name[1]
@@ -84,7 +84,7 @@ class Battlerite(commands.Cog):
 	async def battlerite(self, ctx):
 		'''
 		Battlerite
-		Using revision 47438 mappings
+		Using revision 56451 mappings
 		'''
 		await ctx.send_help(ctx.command)
 	
