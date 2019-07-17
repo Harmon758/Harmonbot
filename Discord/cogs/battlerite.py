@@ -21,15 +21,13 @@ class Battlerite(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.mappings = {}
-		if self.bot.is_ready():
-			self.bot.loop.create_task(self.on_ready())
+		self.bot.loop.create_task(self.load_mappings_and_emoji())
 	
-	@commands.Cog.listener()
-	async def on_ready(self):
+	async def load_mappings_and_emoji(self):
 		await self.load_mappings()
-		self.load_emoji()
+		await self.load_emoji()
 	
-	def load_emoji(self):
+	async def load_emoji(self):
 		# TODO: Check only within Emoji Server emojis?
 		champions = filter(lambda m: m["Type"] == "Characters", self.mappings.values())
 		champions = set(c["Name"].lower().replace(' ', '_') for c in champions)
@@ -37,6 +35,7 @@ class Battlerite(commands.Cog):
 		champions.discard("egg_bakko")  # For Easter Event Egg Brawl
 		champions.discard("egg_raigon")  # For Easter Event Egg Brawl
 		champions.discard("rabbit")  # For Battlerite Royale
+		await self.bot.wait_until_ready()
 		for champion in champions:
 			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
 	
