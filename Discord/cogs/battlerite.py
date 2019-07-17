@@ -101,6 +101,7 @@ class Battlerite(commands.Cog):
 	@checks.not_forbidden()
 	async def player(self, ctx, player : str):
 		'''Player'''
+		# TODO: Handle missing Battlerite Arena stats
 		data = await self.get_player(player)
 		if not data:
 			await ctx.embed_reply(":no_entry: Error: Player not found")
@@ -293,4 +294,56 @@ class Battlerite(commands.Cog):
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	# TODO: dynamic? champion commands
+	
+	@battlerite.group(invoke_without_command = True, case_insensitive = True)
+	@checks.not_forbidden()
+	async def royale(self, ctx):
+		'''Battlerite Royale'''
+		await ctx.send_help(ctx.command)
+	
+	@royale.group(name = "player", invoke_without_command = True, case_insensitive = True)
+	@checks.not_forbidden()
+	async def royale_player(self, ctx, player: str):
+		'''Player'''
+		data = await self.get_player(player)
+		if not data:
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
+		stats = data["attributes"]["stats"]
+		fields = []
+		level_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountLevel", self.mappings.items())[0]
+		if level_id in stats:
+			fields.append(("Account Level", stats[level_id]))
+		xp_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountXP", self.mappings.items())[0]
+		if xp_id in stats:
+			fields.append(("Account XP", f"{stats[xp_id]:,}"))
+		time_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleTimePlayed", self.mappings.items())[0]
+		if time_id in stats:
+			fields.append(("Time Played", utilities.secs_to_letter_format(stats[time_id], limit = 3600)))
+		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+	
+	@royale_player.command(name = "levels", aliases = ["level", "xp", "exp", "experience"])
+	@checks.not_forbidden()
+	async def royale_player_levels(self, ctx, player: str):
+		'''Levels'''
+		data = await self.get_player(player)
+		if not data:
+			return await ctx.embed_reply(":no_entry: Error: Player not found")
+		stats = data["attributes"]["stats"]
+		fields = []
+		account_level_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountLevel", self.mappings.items())[0]
+		account_xp_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountXP", self.mappings.items())[0]
+		if account_level_id in stats and account_xp_id in stats:
+			fields.append(("Account Level", f"{stats[account_level_id]} ({stats[account_xp_id]:,} XP)", False))
+		levels = {}
+		xp = {}
+		for stat, value in stats.items():
+			if self.mappings.get(stat, {}).get("Type") == "RoyaleChampionLevel":
+				levels[self.mappings[stat]["Name"]] = value
+			elif self.mappings.get(stat, {}).get("Type") == "RoyaleChampionXP":
+				xp[self.mappings[stat]["Name"]] = value
+		xp = sorted(xp.items(), key = lambda x: x[1], reverse = True)
+		for name, value in xp:
+			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
+			fields.append((f"{emoji} {name}", f"{levels[name]} ({value:,} XP)"))
+		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 
