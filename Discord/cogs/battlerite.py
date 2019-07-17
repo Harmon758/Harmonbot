@@ -50,7 +50,7 @@ class Battlerite(commands.Cog):
 			# TODO: get revision dynamically?
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"58428/stackables.json")
+					"60201/stackables.json")
 			async with self.bot.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(self.bot.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
@@ -59,7 +59,7 @@ class Battlerite(commands.Cog):
 			# TODO: get revision dynamically?
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"58428/Localization/English.ini")
+					"60201/Localization/English.ini")
 			async with self.bot.aiohttp_session.get(url) as resp:
 				data = await resp.content.read()
 			with open(self.bot.data_path + "/battlerite/English.ini", "wb") as localization_file:
@@ -84,7 +84,7 @@ class Battlerite(commands.Cog):
 	async def battlerite(self, ctx):
 		'''
 		Battlerite
-		Using revision 58428 mappings
+		Using revision 60201 mappings
 		'''
 		await ctx.send_help(ctx.command)
 	
