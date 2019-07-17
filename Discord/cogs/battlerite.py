@@ -47,7 +47,6 @@ class Battlerite(commands.Cog):
 				self.mappings = json.load(mappings_file)
 			return
 		if not os.path.isfile(self.bot.data_path + "/battlerite/stackables.json"):
-			# TODO: get revision dynamically?
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
 					"67104/stackables.json")
@@ -56,7 +55,6 @@ class Battlerite(commands.Cog):
 			with open(self.bot.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
 				stackables_file.write(data)
 		if not os.path.isfile(self.bot.data_path + "/battlerite/English.ini"):
-			# TODO: get revision dynamically?
 			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
 					"67104/Localization/English.ini")
@@ -78,7 +76,6 @@ class Battlerite(commands.Cog):
 		with open(self.bot.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
 			json.dump(self.mappings, mappings_file, indent = 4)
 	
-	# TODO: Handle 25+ fields
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def battlerite(self, ctx):
@@ -88,7 +85,7 @@ class Battlerite(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	# TODO: optimize modularization?
+	# TODO: Optimize modularization?
 	async def get_player(self, player):
 		url = "https://api.developer.battlerite.com/shards/global/players"
 		headers = {"Authorization": self.bot.BATTLERITE_API_KEY, "Accept": "application/vnd.api+json"}
@@ -97,17 +94,20 @@ class Battlerite(commands.Cog):
 			data = await resp.json()
 		return(next(iter(data["data"]), None))
 	
+	# TODO: Handle missing Battlerite Arena stats
+	# TODO: Get values safely + handle division by zero
+	# TODO: Get values by type name
 	@battlerite.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def player(self, ctx, player : str):
 		'''Player'''
-		# TODO: Handle missing Battlerite Arena stats
 		data = await self.get_player(player)
 		if not data:
 			await ctx.embed_reply(":no_entry: Error: Player not found")
 			return
 		stats = data["attributes"]["stats"]
 		'''
+		# Code to print/list mappings:
 		for stat, value in stats.items():
 			if stat in self.mappings:
 				print(f"{self.mappings[stat]['Name']} {self.mappings[stat]['Type']} ({stat}): {value}")
@@ -127,8 +127,12 @@ class Battlerite(commands.Cog):
 					("Casual 3v3 Wins - Losses (Winrate)", 
 						f"{stats['12']} - {stats['13']} ({stats['12'] / (stats['12'] + stats['13']) * 100:.2f}%)"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
-		# TODO: get values safely + handle division by zero
-		# TODO: get values by type name
+	
+	# TODO: Handle 25+ fields
+	# TODO: Dynamic champion commands?
+	# TODO: Battle Season Level and XP?
+	
+	# Casual and Ranked 2v2 and 3v3 subcommands blocked by https://github.com/StunlockStudios/battlerite-assets/issues/8
 	
 	@player.command(name = "brawl")
 	@checks.not_forbidden()
@@ -170,18 +174,6 @@ class Battlerite(commands.Cog):
 		elif wins_2v2 + losses_2v2:
 			fields.append(("Casual 3v3 Winrate", "N/A"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
-	
-	@player_casual.command(name = "2v2", aliases = ['2'])
-	@checks.not_forbidden()
-	async def player_casual_2v2(self, ctx, player : str):
-		'''WIP'''
-		...
-	
-	@player_casual.command(name = "3v3", aliases = ['3'])
-	@checks.not_forbidden()
-	async def player_casual_3v3(self, ctx, player : str):
-		'''WIP'''
-		...
 	
 	@player.command(name = "levels", aliases = ["level", "xp", "exp", "experience"])
 	@checks.not_forbidden()
@@ -232,18 +224,6 @@ class Battlerite(commands.Cog):
 			fields.append(("Ranked 3v3 Winrate", "N/A"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player_ranked.command(name = "2v2", aliases = ['2'])
-	@checks.not_forbidden()
-	async def player_ranked_2v2(self, ctx, player : str):
-		'''WIP'''
-		...
-	
-	@player_ranked.command(name = "3v3", aliases = ['3'])
-	@checks.not_forbidden()
-	async def player_ranked_3v3(self, ctx, player : str):
-		'''WIP'''
-		...
-	
 	@player.command(name = "time", aliases = ["played"])
 	@checks.not_forbidden()
 	async def player_time(self, ctx, player : str):
@@ -292,8 +272,6 @@ class Battlerite(commands.Cog):
 			# TODO: Handle division by 0
 			fields.append((f"{emoji} {name}", field_value))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
-	
-	# TODO: dynamic? champion commands
 	
 	@battlerite.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
