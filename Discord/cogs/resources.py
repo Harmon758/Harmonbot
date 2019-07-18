@@ -133,7 +133,7 @@ class Resources(commands.Cog):
 	
 	@commands.command(aliases = ["hibp"])
 	@checks.not_forbidden()
-	async def haveibeenpwned(self, ctx, name : str):
+	async def haveibeenpwned(self, ctx, name: str):
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/" + name
 		params = {"truncateResponse": "true"}
