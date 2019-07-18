@@ -131,7 +131,7 @@ class Resources(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply("https://hastebin.com/" + data["key"])
 	
-	@commands.command()
+	@commands.command(aliases = ["hibp"])
 	@checks.not_forbidden()
 	async def haveibeenpwned(self, ctx, name : str):
 		'''Check if your account has been breached'''
