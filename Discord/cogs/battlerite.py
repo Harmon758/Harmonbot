@@ -75,8 +75,10 @@ class Battlerite(commands.Cog):
 		with open(self.bot.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
 			json.dump(self.mappings, mappings_file, indent = 4)
 	
+	def cog_check(self, ctx):
+		return checks.not_forbidden_predicate(ctx)
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def battlerite(self, ctx):
 		'''
 		Battlerite
@@ -97,7 +99,6 @@ class Battlerite(commands.Cog):
 	# TODO: Get values safely + handle division by zero
 	# TODO: Get values by type name
 	@battlerite.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def player(self, ctx, player: str):
 		'''Player'''
 		data = await self.get_player(player)
@@ -133,7 +134,6 @@ class Battlerite(commands.Cog):
 	# Casual and Ranked 2v2 and 3v3 subcommands blocked by https://github.com/StunlockStudios/battlerite-assets/issues/8
 	
 	@player.command(name = "brawl")
-	@checks.not_forbidden()
 	async def player_brawl(self, ctx, player: str):
 		'''Brawl'''
 		data = await self.get_player(player)
@@ -148,7 +148,6 @@ class Battlerite(commands.Cog):
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@player.group(name = "casual", aliases = ["unranked"], case_insensitive = True)
-	@checks.not_forbidden()
 	async def player_casual(self, ctx, player: str):
 		'''Casual'''
 		data = await self.get_player(player)
@@ -172,7 +171,6 @@ class Battlerite(commands.Cog):
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@player.command(name = "levels", aliases = ["level", "xp", "exp", "experience"])
-	@checks.not_forbidden()
 	async def player_levels(self, ctx, player: str):
 		'''Levels'''
 		data = await self.get_player(player)
@@ -195,7 +193,6 @@ class Battlerite(commands.Cog):
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@player.group(name = "ranked", aliases = ["comp", "competitive", "league"], case_insensitive = True)
-	@checks.not_forbidden()
 	async def player_ranked(self, ctx, player: str):
 		'''Ranked'''
 		data = await self.get_player(player)
@@ -219,7 +216,6 @@ class Battlerite(commands.Cog):
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@player.command(name = "time", aliases = ["played"])
-	@checks.not_forbidden()
 	async def player_time(self, ctx, player: str):
 		'''Time Played'''
 		data = await self.get_player(player)
@@ -239,7 +235,6 @@ class Battlerite(commands.Cog):
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@player.command(name = "wins", aliases = ["losses"])
-	@checks.not_forbidden()
 	async def player_wins(self, ctx, player: str):
 		'''Wins/Losses'''
 		data = await self.get_player(player)
@@ -266,13 +261,11 @@ class Battlerite(commands.Cog):
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@battlerite.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def royale(self, ctx):
 		'''Battlerite Royale'''
 		await ctx.send_help(ctx.command)
 	
 	@royale.group(name = "player", invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def royale_player(self, ctx, player: str):
 		'''Player'''
 		data = await self.get_player(player)
@@ -292,7 +285,6 @@ class Battlerite(commands.Cog):
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
 	@royale_player.command(name = "levels", aliases = ["level", "xp", "exp", "experience"])
-	@checks.not_forbidden()
 	async def royale_player_levels(self, ctx, player: str):
 		'''Levels'''
 		data = await self.get_player(player)
