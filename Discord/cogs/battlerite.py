@@ -18,6 +18,12 @@ def setup(bot):
 
 class Battlerite(commands.Cog):
 	
+	'''
+	Deprecated now that the Battlerite API is closed/shut down:
+	https://developer.battlerite.com/
+	https://twitter.com/Battlerite/status/1151092200106876933
+	'''
+	
 	def __init__(self, bot):
 		self.bot = bot
 		self.mappings = {}
@@ -46,7 +52,6 @@ class Battlerite(commands.Cog):
 				self.mappings = json.load(mappings_file)
 			return
 		if not os.path.isfile(self.bot.data_path + "/battlerite/stackables.json"):
-			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
 					"67104/stackables.json")
 			async with self.bot.aiohttp_session.get(url) as resp:
@@ -54,7 +59,6 @@ class Battlerite(commands.Cog):
 			with open(self.bot.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
 				stackables_file.write(data)
 		if not os.path.isfile(self.bot.data_path + "/battlerite/English.ini"):
-			# https://api.github.com/repos/StunlockStudios/battlerite-assets/contents/mappings
 			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
 					"67104/Localization/English.ini")
 			async with self.bot.aiohttp_session.get(url) as resp:
@@ -78,27 +82,33 @@ class Battlerite(commands.Cog):
 	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(hidden = True, 
+					invoke_without_command = True, case_insensitive = True)
 	async def battlerite(self, ctx):
 		'''
 		Battlerite
-		Using revision 67104 mappings
+		Deprecated now that the Battlerite API is closed/shut down:
+		https://developer.battlerite.com/
+		https://twitter.com/Battlerite/status/1151092200106876933
+		Was previously using revision 67104 mappings
 		'''
 		await ctx.send_help(ctx.command)
 	
-	# TODO: Optimize modularization?
+	# TODO: Make converter?
 	async def get_player(self, player):
 		url = "https://api.developer.battlerite.com/shards/global/players"
 		headers = {"Authorization": self.bot.BATTLERITE_API_KEY, "Accept": "application/vnd.api+json"}
 		params = {"filter[playerNames]": player}
 		async with self.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
 			data = await resp.json()
+		# TODO: Raise and handle error if not found?
 		return next(iter(data["data"]), None)
 	
 	# TODO: Handle missing Battlerite Arena stats
 	# TODO: Get values safely + handle division by zero
 	# TODO: Get values by type name
-	@battlerite.group(invoke_without_command = True, case_insensitive = True)
+	@battlerite.group(enabled = False, hidden = True, 
+						invoke_without_command = True, case_insensitive = True)
 	async def player(self, ctx, player: str):
 		'''Player'''
 		data = await self.get_player(player)
@@ -133,7 +143,7 @@ class Battlerite(commands.Cog):
 	
 	# Casual and Ranked 2v2 and 3v3 subcommands blocked by https://github.com/StunlockStudios/battlerite-assets/issues/8
 	
-	@player.command(name = "brawl")
+	@player.command(enabled = False, hidden = True, name = "brawl")
 	async def player_brawl(self, ctx, player: str):
 		'''Brawl'''
 		data = await self.get_player(player)
@@ -147,7 +157,8 @@ class Battlerite(commands.Cog):
 			fields.append(("Brawl Winrate", f"{wins / (wins + losses) * 100:.2f}%"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player.group(name = "casual", aliases = ["unranked"], case_insensitive = True)
+	@player.group(enabled = False, hidden = True, 
+					name = "casual", aliases = ["unranked"], case_insensitive = True)
 	async def player_casual(self, ctx, player: str):
 		'''Casual'''
 		data = await self.get_player(player)
@@ -170,7 +181,8 @@ class Battlerite(commands.Cog):
 			fields.append(("Casual 3v3 Winrate", "N/A"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player.command(name = "levels", aliases = ["level", "xp", "exp", "experience"])
+	@player.command(enabled = False, hidden = True, 
+					name = "levels", aliases = ["level", "xp", "exp", "experience"])
 	async def player_levels(self, ctx, player: str):
 		'''Levels'''
 		data = await self.get_player(player)
@@ -192,7 +204,8 @@ class Battlerite(commands.Cog):
 			fields.append((f"{emoji} {name}", f"{levels[name]} ({value:,} XP)"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player.group(name = "ranked", aliases = ["comp", "competitive", "league"], case_insensitive = True)
+	@player.group(enabled = False, hidden = True, 
+					name = "ranked", aliases = ["comp", "competitive", "league"], case_insensitive = True)
 	async def player_ranked(self, ctx, player: str):
 		'''Ranked'''
 		data = await self.get_player(player)
@@ -215,7 +228,8 @@ class Battlerite(commands.Cog):
 			fields.append(("Ranked 3v3 Winrate", "N/A"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player.command(name = "time", aliases = ["played"])
+	@player.command(enabled = False, hidden = True, 
+					name = "time", aliases = ["played"])
 	async def player_time(self, ctx, player: str):
 		'''Time Played'''
 		data = await self.get_player(player)
@@ -234,7 +248,8 @@ class Battlerite(commands.Cog):
 			fields.append((f"{emoji} {name}", utilities.secs_to_letter_format(value, limit = 3600)))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player.command(name = "wins", aliases = ["losses"])
+	@player.command(enabled = False, hidden = True, 
+					name = "wins", aliases = ["losses"])
 	async def player_wins(self, ctx, player: str):
 		'''Wins/Losses'''
 		data = await self.get_player(player)
@@ -260,12 +275,14 @@ class Battlerite(commands.Cog):
 			fields.append((f"{emoji} {name}", field_value))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@battlerite.group(invoke_without_command = True, case_insensitive = True)
+	@battlerite.group(enabled = False, hidden = True, 
+						invoke_without_command = True, case_insensitive = True)
 	async def royale(self, ctx):
 		'''Battlerite Royale'''
 		await ctx.send_help(ctx.command)
 	
-	@royale.group(name = "player", invoke_without_command = True, case_insensitive = True)
+	@royale.group(enabled = False, hidden = True, 
+					name = "player", invoke_without_command = True, case_insensitive = True)
 	async def royale_player(self, ctx, player: str):
 		'''Player'''
 		data = await self.get_player(player)
@@ -284,7 +301,8 @@ class Battlerite(commands.Cog):
 			fields.append(("Time Played", utilities.secs_to_letter_format(stats[time_id], limit = 3600)))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@royale_player.command(name = "levels", aliases = ["level", "xp", "exp", "experience"])
+	@royale_player.command(enabled = False, hidden = True, 
+							name = "levels", aliases = ["level", "xp", "exp", "experience"])
 	async def royale_player_levels(self, ctx, player: str):
 		'''Levels'''
 		data = await self.get_player(player)
