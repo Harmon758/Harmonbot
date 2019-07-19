@@ -30,7 +30,7 @@ class WoWS(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@wows.group(invoke_without_command = True, case_insensitive = True)
-	async def player(self, ctx, player : str, region : str = "NA"):
+	async def player(self, ctx, player: str, region: str = "NA"):
 		'''Player details'''
 		api_url = self.api_urls.get(region.lower(), "na")
 		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "search": player, "limit": 1}
