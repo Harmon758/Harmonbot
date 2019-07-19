@@ -23,7 +23,8 @@ class Duelyst(commands.Cog):
 	async def card(self, ctx, *, name: str):
 		'''Details of a specific card'''
 		url = "https://duelyststats.info/scripts/carddata/get.php"
-		async with ctx.bot.aiohttp_session.get(url, params = {"cardName": name}) as resp:
+		params = {"cardName": name}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
@@ -31,7 +32,8 @@ class Duelyst(commands.Cog):
 	async def card_random(self, ctx):
 		'''Details of a random card'''
 		url = "https://duelyststats.info/scripts/carddata/get.php"
-		async with ctx.bot.aiohttp_session.get(url, params = {"random": 1}) as resp:
+		params = {"random": 1}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
 
