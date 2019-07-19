@@ -98,7 +98,7 @@ class Battlerite(commands.Cog):
 	# TODO: Get values by type name
 	@battlerite.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def player(self, ctx, player : str):
+	async def player(self, ctx, player: str):
 		'''Player'''
 		data = await self.get_player(player)
 		if not data:
@@ -134,7 +134,7 @@ class Battlerite(commands.Cog):
 	
 	@player.command(name = "brawl")
 	@checks.not_forbidden()
-	async def player_brawl(self, ctx, player : str):
+	async def player_brawl(self, ctx, player: str):
 		'''Brawl'''
 		data = await self.get_player(player)
 		if not data:
@@ -149,7 +149,7 @@ class Battlerite(commands.Cog):
 	
 	@player.group(name = "casual", aliases = ["unranked"], case_insensitive = True)
 	@checks.not_forbidden()
-	async def player_casual(self, ctx, player : str):
+	async def player_casual(self, ctx, player: str):
 		'''Casual'''
 		data = await self.get_player(player)
 		if not data:
@@ -173,7 +173,7 @@ class Battlerite(commands.Cog):
 	
 	@player.command(name = "levels", aliases = ["level", "xp", "exp", "experience"])
 	@checks.not_forbidden()
-	async def player_levels(self, ctx, player : str):
+	async def player_levels(self, ctx, player: str):
 		'''Levels'''
 		data = await self.get_player(player)
 		if not data:
@@ -196,7 +196,7 @@ class Battlerite(commands.Cog):
 	
 	@player.group(name = "ranked", aliases = ["comp", "competitive", "league"], case_insensitive = True)
 	@checks.not_forbidden()
-	async def player_ranked(self, ctx, player : str):
+	async def player_ranked(self, ctx, player: str):
 		'''Ranked'''
 		data = await self.get_player(player)
 		if not data:
@@ -220,7 +220,7 @@ class Battlerite(commands.Cog):
 	
 	@player.command(name = "time", aliases = ["played"])
 	@checks.not_forbidden()
-	async def player_time(self, ctx, player : str):
+	async def player_time(self, ctx, player: str):
 		'''Time Played'''
 		data = await self.get_player(player)
 		if not data:
@@ -240,7 +240,7 @@ class Battlerite(commands.Cog):
 	
 	@player.command(name = "wins", aliases = ["losses"])
 	@checks.not_forbidden()
-	async def player_wins(self, ctx, player : str):
+	async def player_wins(self, ctx, player: str):
 		'''Wins/Losses'''
 		data = await self.get_player(player)
 		if not data:
