@@ -17,9 +17,11 @@ class WoWS(commands.Cog):
 							"na": "https://api.worldofwarships.com/wows/", 
 							"ru": "https://api.worldofwarships.ru/wows/"}
 	
+	def cog_check(self, ctx):
+		return checks.not_forbidden_predicate(ctx)
+	
 	@commands.group(aliases = ["worldofwarships", "world_of_warships"], 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def wows(self, ctx):
 		'''
 		World of Warships
@@ -28,7 +30,6 @@ class WoWS(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@wows.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def player(self, ctx, player : str, region : str = "NA"):
 		'''Player details'''
 		api_url = self.api_urls.get(region.lower(), "na")
