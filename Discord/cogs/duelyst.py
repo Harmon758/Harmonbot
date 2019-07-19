@@ -20,7 +20,7 @@ class Duelyst(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@duelyst.group(case_insensitive = True)
-	async def card(self, ctx, *, name : str):
+	async def card(self, ctx, *, name: str):
 		'''Details of a specific card'''
 		url = "https://duelyststats.info/scripts/carddata/get.php"
 		async with ctx.bot.aiohttp_session.get(url, params = {"cardName": name}) as resp:
