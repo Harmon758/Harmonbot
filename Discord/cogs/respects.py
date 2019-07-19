@@ -170,7 +170,7 @@ class Respects(commands.Cog):
 								image_url = "attachment://respects.png", file = discord.File(filename))
 	
 	@respects.command(aliases = ["most"])
-	async def top(self, ctx, number : int = 10):
+	async def top(self, ctx, number: int = 10):
 		'''Top respects paid'''
 		if number > 10:
 			number = 10
