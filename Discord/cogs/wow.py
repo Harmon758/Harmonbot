@@ -14,15 +14,16 @@ class WoW(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
+	def cog_check(self, ctx):
+		return checks.not_forbidden_predicate(ctx)
+	
 	@commands.group(aliases = ["worldofwarcraft", "world_of_warcraft"], 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def wow(self, ctx):
 		'''World of Warcraft'''
 		await ctx.send_help(ctx.command)
 	
 	@wow.command()
-	@checks.not_forbidden()
 	async def character(self, ctx, character : str, *, realm : str):
 		'''WIP'''
 		# get classes
@@ -60,7 +61,6 @@ class WoW(commands.Cog):
 		# faction and total honorable kills?
 	
 	@wow.command()
-	@checks.not_forbidden()
 	async def statistics(self, ctx, character : str, *, realm : str):
 		'''WIP'''
 		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
