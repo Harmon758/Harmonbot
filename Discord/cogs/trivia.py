@@ -285,10 +285,21 @@ class Trivia(commands.Cog):
 				category_titles.append(string.capwords(data[0]["category"]["title"]))
 				board[category_id] = [True] * 5
 		# TODO: Get and store all questions data?
-		max_width = max(len(category_title) for category_title in category_titles)
-		board_lines = [f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
-						for number, category_title in enumerate(category_titles)]
-		# TODO: Handle line too long for embed code block
+		for index, category_title in enumerate(category_titles):
+			category_title_line_character_limit = ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
+			# len("#) " + "  200 400 600 800 1000") = 25
+			if len(category_title) > category_title_line_character_limit:
+				split_index = category_title.rfind(' ', 0, category_title_line_character_limit)
+				category_titles[index] = category_title[:split_index] + '\n' + category_title[split_index + 1:]
+		max_width = max(len(section) for category_title in category_titles for section in category_title.split('\n'))
+		board_lines = []
+		for number, category_title in enumerate(category_titles):
+			try:
+				split_index = category_title.index('\n')
+				board_lines.append(f"{number + 1}) {category_title[:split_index]}\n"
+									f"   {category_title[split_index + 1:].ljust(max_width)}  200 400 600 800 1000")
+			except ValueError:
+				board_lines.append(f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000")
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(board_lines)), 
 								title = "Jeopardy!", author_name = None)
 		scores = {}
