@@ -61,7 +61,8 @@ class HelpCommand(commands.HelpCommand):
 		if cog.description:
 			paginator.add_line(cog.description, empty = True)
 		filtered_commands = await self.filter_commands(cog.get_commands(), sort = True)
-		self.add_commands(self.get_max_size(filtered_commands), filtered_commands, paginator)
+		self.add_commands(self.get_max_size(filtered_commands), ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT, 
+							filtered_commands, paginator)
 		if not paginator.pages:
 			return await ctx.embed_reply(title = f"{cog.qualified_name} Commands")
 			# TODO: Response when no description or permitted commands in cog?
@@ -105,13 +106,13 @@ class HelpCommand(commands.HelpCommand):
 		
 		max_width = self.get_max_size(subcommands)
 		paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
-		self.add_commands(max_width, subcommands, paginator)
+		self.add_commands(max_width, ctx.bot.EMBED_FIELD_VALUE_CODE_BLOCK_ROW_CHARACTER_LIMIT, 
+							subcommands, paginator)
 		embeds[-1].add_field(name = f"Subcommands for {group}", value = paginator.pages[0], inline = False)
 		for page in paginator.pages[1:]:
-			embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 			if len(embeds[-1]) > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT:
-				embeds[-1].remove_field(-1)
-				embeds.append(discord.Embed(description = page, color = ctx.bot.bot_color))
+				embeds.append(discord.Embed(color = ctx.bot.bot_color))
+			embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 		
 		if len(embeds) == 1:
 			await ctx.channel.send(embed = embeds[0].set_author(name = ctx.author.display_name, 
@@ -160,7 +161,8 @@ class HelpCommand(commands.HelpCommand):
 		for category, commands in itertools.groupby(filtered_commands, key = get_category):
 			commands = sorted(commands, key = lambda c: c.name)
 			paginator = Paginator(max_size = ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT)
-			self.add_commands(self.get_max_size(filtered_commands), commands, paginator)
+			self.add_commands(self.get_max_size(filtered_commands), ctx.bot.EMBED_FIELD_VALUE_CODE_BLOCK_ROW_CHARACTER_LIMIT, 
+								commands, paginator)
 			total_category_characters = len(category) + len(paginator.pages) - 1 + len(paginator)
 			if (len(embed) + total_category_characters > ctx.bot.EMBED_TOTAL_CHARACTER_LIMIT or 
 				len(embed.fields) + len(paginator.pages) > ctx.bot.EMBED_FIELD_AMOUNT_LIMIT):
@@ -173,7 +175,7 @@ class HelpCommand(commands.HelpCommand):
 		if ctx.channel.type is not discord.ChannelType.private:
 			await ctx.embed_reply("Check your DMs")
 	
-	def add_commands(self, max_width, commands, paginator):
+	def add_commands(self, max_width, line_limit, commands, paginator):
 		lines = []
 		# Add 3 for "┣ "/"┗ "
 		for command in commands:
@@ -184,21 +186,20 @@ class HelpCommand(commands.HelpCommand):
 			prefix = "┃ " if isinstance(command, Group) and command.commands else " "
 			buffer = 2 if isinstance(command, Group) and command.commands else 0
 			line = f"{command.name:<{max_width}}  {command.short_doc}"
-			lines.extend(self.wrap_line(line, max_width, prefix, buffer))
+			lines.extend(self.wrap_line(line, max_width, line_limit, prefix, buffer))
 			# Add subcommands of commands
 			if isinstance(command, Group) and command.commands:
 				subcommands = sorted(command.commands, key = lambda c: c.name)
 				for subcommand in subcommands[:-1]:
 					line = f"┣ {subcommand.name:<{max_width - 2}}  {subcommand.short_doc}"
-					lines.extend(self.wrap_line(line, max_width, "┃ ", 1))
+					lines.extend(self.wrap_line(line, max_width, line_limit, "┃ ", 1))
 				line = f"┗ {subcommands[-1].name:<{max_width - 2}}  {subcommands[-1].short_doc}"
-				lines.extend(self.wrap_line(line, max_width, "  ", 0))
+				lines.extend(self.wrap_line(line, max_width, line_limit, "  ", 0))
 		for line in lines:
 			paginator.add_line(line)
 	
-	def wrap_line(self, line, max_width, prefix, buffer):
+	def wrap_line(self, line, max_width, limit, prefix, buffer):
 		ctx = self.context
-		limit = ctx.bot.EMBED_CODE_BLOCK_ROW_CHARACTER_LIMIT
 		if '┣' in prefix + line or '┗' in prefix + line:
 			limit -= 1
 		if len(line) <= limit:
