@@ -10,7 +10,7 @@ asyncpg==0.18.3
 beautifulsoup4==4.8.0
 clarifai==2.6.2
 cryptography==2.7
-dice==2.4.1
+dice==2.4.2
 emoji==0.5.2
 feedparser==5.2.1
 gitpython==2.1.12
