@@ -83,9 +83,9 @@ class Channel(commands.Cog):
 		if position is not None:
 			checks.has_permissions_and_capability_check(ctx, channel, manage_channels = True)
 			await channel.edit(position = position)
-			await ctx.embed_reply(channel.mention + "'s position has been set to {}".format(position))
+			await ctx.embed_reply(f"{channel.mention}'s position has been set to {position}")
 		else:
-			await ctx.embed_reply(channel.mention + "'s position is {}".format(channel.position))
+			await ctx.embed_reply(f"{channel.mention}'s position is {channel.position}")
 	
 	@channel.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
