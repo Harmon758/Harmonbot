@@ -398,7 +398,9 @@ class Astronomy(commands.Cog):
 		https://gcn.gsfc.nasa.gov/
 		'''
 		# TODO: use textwrap
-		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/telegrams/GCN/Circulars/{}/".format(number), params = {"format": "json"}) as resp:
+		url = "https://api.arcsecond.io/telegrams/GCN/Circulars/{}/".format(number)
+		params = {"format": "json"}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status in (404, 500):
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -406,9 +408,12 @@ class Astronomy(commands.Cog):
 		# TODO: include submitter?, authors?, related_circulars?, external_links?
 		description = re.sub("([^\n])\n([^\n])", r"\1 \2", data["content"])
 		description = re.sub("\n\s*\n", '\n', description)
-		if len(description) > 1000: description = description[:1000] + "..."
+		if len(description) > 1000:
+			description = description[:1000] + "..."
 		description = ctx.bot.CODE_BLOCK.format(description)
-		await ctx.embed_reply(description, title = data["title"] or discord.Embed.Empty, title_url = "https://gcn.gsfc.nasa.gov/gcn3/{}.gcn3".format(number), timestamp = dateutil.parser.parse(data["date"]) if data["date"] else discord.Embed.Empty)
+		await ctx.embed_reply(description, title = data["title"] or discord.Embed.Empty, 
+								title_url = "https://gcn.gsfc.nasa.gov/gcn3/{}.gcn3".format(number), 
+								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else discord.Embed.Empty)
 	
 	@astronomy.command(aliases = ["instrument"])
 	@checks.not_forbidden()
