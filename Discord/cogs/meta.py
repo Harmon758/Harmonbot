@@ -255,7 +255,7 @@ class Meta(commands.Cog):
 	@version.command(name = "ffmpeg")
 	async def version_ffmpeg(self, ctx):
 		'''FFmpeg version'''
-		output = subprocess.run("bin\\ffmpeg -version", capture_output = True, 
+		output = subprocess.run("bin/ffmpeg -version", capture_output = True, 
 								creationflags = subprocess.CREATE_NO_WINDOW).stdout
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(output.decode("UTF-8")))
 	
