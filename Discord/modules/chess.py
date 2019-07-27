@@ -16,19 +16,21 @@ import clients
 class ChessMatch(chess.Board):
 	
 	@classmethod
-	async def start(cls, client, text_channel, white_player, black_player):
+	async def start(cls, ctx, white_player, black_player):
 		self = cls()
-		self.bot = client
-		self.text_channel = text_channel
+		self.ctx = ctx
 		self.white_player = white_player
 		self.black_player = black_player
+		self.bot = ctx.bot
 		# TODO: Dynamically load chess engine not locked to version?
 		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin\stockfish_10_x64.exe", creationflags = subprocess.CREATE_NO_WINDOW)
 		# TODO: Use popcnt.exe?
 		self.match_message = None
 		self.match_embed = None
-		self.task = self.bot.loop.create_task(self.match_task())
+		self.task = ctx.bot.loop.create_task(self.match_task())
 		return self
+	
+	# TODO: Cancel task on deletion/bot shutdown
 	
 	def make_move(self, move):
 		try:
@@ -51,7 +53,7 @@ class ChessMatch(chess.Board):
 		return True
 	
 	async def match_task(self):
-		self.match_message = await self.bot.send_embed(self.text_channel, "Loading..")
+		self.match_message = await self.ctx.embed_say("Loading..")
 		await self.update_match_embed()
 		while True:
 			player = [self.black_player, self.white_player][int(self.turn)]
@@ -61,7 +63,7 @@ class ChessMatch(chess.Board):
 				self.push(result.move)
 				await self.update_match_embed(footer_text = "I moved {}".format(result.move))
 			else:
-				message = await self.bot.wait_for("message", check = lambda msg: msg.author == player and msg.channel == self.text_channel and self.valid_move(msg.content))
+				message = await self.bot.wait_for("message", check = lambda msg: msg.author == player and msg.channel == self.ctx.channel and self.valid_move(msg.content))
 				await self.match_message.edit(embed = self.match_embed.set_footer(text = "Processing move.."))
 				self.make_move(message.content)
 				footer_text = discord.Embed.Empty if self.is_game_over() else "It is {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
@@ -96,7 +98,7 @@ class ChessMatch(chess.Board):
 		chess_pgn.headers["Black"] = self.black_player.mention
 		self.match_embed.description = str(chess_pgn)
 		if not self.match_message:
-			self.match_message = await self.text_channel.send(embed = self.match_embed)
+			self.match_message = await self.ctx.send(embed = self.match_embed)
 		else:
 			await self.match_message.edit(embed = self.match_embed)
 	
