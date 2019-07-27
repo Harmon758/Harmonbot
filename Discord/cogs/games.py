@@ -460,9 +460,8 @@ class Games(commands.Cog):
 			if message.content.lower() in ("no", 'n'):
 				await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
 				return
-		match = ChessMatch()
-		await match.initialize(self.bot, ctx.channel, white_player, black_player)
-		self.chess_matches.append(match)
+		chess_match = await ChessMatch.start(self.bot, ctx.channel, white_player, black_player)
+		self.chess_matches.append(chess_match)
 	
 	def get_chess_match(self, text_channel, player):
 		return discord.utils.find(lambda cb: cb.text_channel == text_channel and (cb.white_player == player or cb.black_player == player), self.chess_matches)

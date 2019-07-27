@@ -15,7 +15,9 @@ import clients
 
 class ChessMatch(chess.Board):
 	
-	async def initialize(self, client, text_channel, white_player, black_player):
+	@classmethod
+	async def start(cls, client, text_channel, white_player, black_player):
+		self = cls()
 		self.bot = client
 		self.text_channel = text_channel
 		self.white_player = white_player
@@ -26,6 +28,7 @@ class ChessMatch(chess.Board):
 		self.match_message = None
 		self.match_embed = None
 		self.task = self.bot.loop.create_task(self.match_task())
+		return self
 	
 	def make_move(self, move):
 		try:
