@@ -57,7 +57,7 @@ class Astronomy(commands.Cog):
 		http://archive.eso.org/eso/eso_archive_main.html
 		http://telbib.eso.org/
 		'''
-		url = "https://api.arcsecond.io/archives/ESO/{}/summary/".format(program_id)
+		url = f"https://api.arcsecond.io/archives/ESO/{program_id}/summary/"
 		params = {"format": "json"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
@@ -72,7 +72,7 @@ class Astronomy(commands.Cog):
 		if data["raw_files_url"]:
 			links.append("[Raw Files]({})".format(data["raw_files_url"].replace(')', "\)")))
 		if data["publications_url"]:
-			links.append("[Publications]({})".format(data["publications_url"]))
+			links.append(f"[Publications]({data['publications_url']})")
 		if data["programme_title"] != "(Undefined)":
 			title = data["programme_title"]
 		else:
