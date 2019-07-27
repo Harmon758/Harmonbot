@@ -23,7 +23,8 @@ class ChessMatch(chess.Board):
 		self.black_player = black_player
 		self.bot = ctx.bot
 		# TODO: Dynamically load chess engine not locked to version?
-		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin\stockfish_10_x64.exe", creationflags = subprocess.CREATE_NO_WINDOW)
+		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin\stockfish_10_x64.exe", 
+																				creationflags = subprocess.CREATE_NO_WINDOW)
 		# TODO: Use popcnt.exe?
 		self.match_message = None
 		self.match_embed = None
