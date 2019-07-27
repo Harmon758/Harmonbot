@@ -61,8 +61,7 @@ class Astronomy(commands.Cog):
 		params = {"format": "json"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error: Not Found")
-				return
+				return await ctx.embed_reply(":no_entry: Error: Not Found")
 			data = await resp.json()
 		# TODO: handle errors
 		# TODO: include programme_type?, remarks?, abstract?, observer_name?
