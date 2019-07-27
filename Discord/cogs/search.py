@@ -195,7 +195,7 @@ class Search(commands.Cog):
 			# TODO: Handle section links/tofragments
 		else:
 			description = page["revisions"][0]['*']
-			description = re.sub("\s+ \s+", ' ', description)
+			description = re.sub(r"\s+ \s+", ' ', description)
 			while re.findall("{{[^{]+?}}", description):
 				description = re.sub("{{[^{]+?}}", "", description)
 			while re.findall("{[^{]*?}", description):
@@ -208,8 +208,8 @@ class Search(commands.Cog):
 				description = '\n'.join(description.split('\n')[:-1])
 			description = description.split("==")[0]
 			## description = description if len(description) <= 1024 else description[:1024] + "..."
-			description = re.sub("\[\[Category:.+?\]\]", "", description)
-			description = re.sub("\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", lambda match: "[{}](http://en.uesp.net/wiki/{})".format(match.group(2), match.group(1).replace(' ', '_')) if match.group(1) else "[{}]({})".format(match.group(4), match.group(3)), description)
+			description = re.sub(r"\[\[Category:.+?\]\]", "", description)
+			description = re.sub(r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", lambda match: "[{}](http://en.uesp.net/wiki/{})".format(match.group(2), match.group(1).replace(' ', '_')) if match.group(1) else "[{}]({})".format(match.group(4), match.group(3)), description)
 			description = description.replace("'''", "**").replace("''", "*")
 			description = re.sub("\n+", '\n', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
