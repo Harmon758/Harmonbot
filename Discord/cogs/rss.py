@@ -227,7 +227,7 @@ class RSS(commands.Cog):
 						description = entry["content"][0].get("value")
 					if description:
 						description = BeautifulSoup(description, "lxml").get_text(separator = '\n')
-						description = re.sub("\n\s*\n", '\n', description)
+						description = re.sub(r"\n\s*\n", '\n', description)
 						if len(description) > self.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 							space_index = description.rfind(' ', 0, self.bot.EDCL - 3)
 							# EDCL: Embed Description Character Limit
@@ -327,7 +327,7 @@ class RSS(commands.Cog):
 				await asyncio.sleep(10)
 				# TODO: Add variable for sleep time
 				# TODO: Remove persistently erroring feed or exponentially backoff?
-			except asyncio.CancelledError:
+			except asyncio.CancelledError:  # Remove in Python 3.8
 				raise
 			except Exception as e:
 				print("Exception in RSS Task", file = sys.stderr)
