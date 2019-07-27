@@ -253,7 +253,7 @@ class Search(commands.Cog):
 			# TODO: Handle section links/tofragments
 		else:
 			description = page["extract"] if len(page["extract"]) <= 512 else page["extract"][:512] + "..."
-			description = re.sub("\s+ \s+", ' ', description)
+			description = re.sub(r"\s+ \s+", ' ', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
 			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
