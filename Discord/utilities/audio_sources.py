@@ -19,7 +19,7 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	def __init__(self, source, before_options = None):
 		self.source = source
 		with open(clients.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			args = ["bin\\ffmpeg", "-i", source, "-f", "s16le", "-ar", "48000", 
+			args = ["bin/ffmpeg", "-i", source, "-f", "s16le", "-ar", "48000", 
 					"-ac", '2', "-loglevel", "warning", "pipe:1"]
 			if isinstance(before_options, str):
 				args.insert(1, shlex.split(before_options))
