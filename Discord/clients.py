@@ -216,7 +216,7 @@ class Bot(commands.Bot):
 			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
 		
 		# Aiohttp Client Session
-		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
+		self.loop.run_until_complete(self.initialize_aiohttp_client_session())
 		
 		# Inflect engine
 		self.inflect_engine = inflect.engine()
@@ -271,6 +271,9 @@ class Bot(commands.Bot):
 		if not hasattr(self, "_app_info"):
 			self._app_info = await self.application_info()
 		return self._app_info
+	
+	async def initialize_aiohttp_client_session(self):
+		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
 	
 	async def connect_to_database(self):
 		if self.database_connection_pool:
