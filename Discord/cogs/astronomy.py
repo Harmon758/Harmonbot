@@ -67,9 +67,9 @@ class Astronomy(commands.Cog):
 		# TODO: include programme_type?, remarks?, abstract?, observer_name?
 		links = []
 		if data["abstract_url"]:
-			links.append("[Abstract]({})".format(data["abstract_url"].replace(')', "\)")))
+			links.append("[Abstract]({})".format(data["abstract_url"].replace(')', "\\)")))
 		if data["raw_files_url"]:
-			links.append("[Raw Files]({})".format(data["raw_files_url"].replace(')', "\)")))
+			links.append("[Raw Files]({})".format(data["raw_files_url"].replace(')', "\\)")))
 		if data["publications_url"]:
 			links.append(f"[Publications]({data['publications_url']})")
 		if data["programme_title"] != "(Undefined)":
