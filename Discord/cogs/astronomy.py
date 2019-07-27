@@ -57,7 +57,9 @@ class Astronomy(commands.Cog):
 		http://archive.eso.org/eso/eso_archive_main.html
 		http://telbib.eso.org/
 		'''
-		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/archives/ESO/{}/summary/".format(program_id), params = {"format": "json"}) as resp:
+		url = "https://api.arcsecond.io/archives/ESO/{}/summary/".format(program_id)
+		params = {"format": "json"}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Error: Not Found")
 				return
@@ -65,17 +67,30 @@ class Astronomy(commands.Cog):
 		# TODO: handle errors
 		# TODO: include programme_type?, remarks?, abstract?, observer_name?
 		links = []
-		if data["abstract_url"]: links.append("[Abstract]({})".format(data["abstract_url"].replace(')', "\)")))
-		if data["raw_files_url"]: links.append("[Raw Files]({})".format(data["raw_files_url"].replace(')', "\)")))
-		if data["publications_url"]: links.append("[Publications]({})".format(data["publications_url"]))
+		if data["abstract_url"]:
+			links.append("[Abstract]({})".format(data["abstract_url"].replace(')', "\)")))
+		if data["raw_files_url"]:
+			links.append("[Raw Files]({})".format(data["raw_files_url"].replace(')', "\)")))
+		if data["publications_url"]:
+			links.append("[Publications]({})".format(data["publications_url"]))
+		if data["programme_title"] != "(Undefined)":
+			title = data["programme_title"]
+		else:
+			title = discord.Embed.Empty
 		fields = []
-		if data["period"]: fields.append(("Period", data["period"]))
-		if data["observing_mode"] != "(Undefined)": fields.append(("Observing Mode", data["observing_mode"]))
-		if data["allocated_time"]: fields.append(("Allocated Time", data["allocated_time"]))
-		if data["telescope_name"]: fields.append(("Telescope", data["telescope_name"]))
-		if data["instrument_name"]: fields.append(("Instrument", data["instrument_name"]))
-		if data["investigators_list"]: fields.append(("Investigators", data["investigators_list"]))
-		await ctx.embed_reply('\n'.join(links), title = data["programme_title"] if data["programme_title"] != "(Undefined)" else discord.Embed.Empty, fields = fields)
+		if data["period"]:
+			fields.append(("Period", data["period"]))
+		if data["observing_mode"] != "(Undefined)":
+			fields.append(("Observing Mode", data["observing_mode"]))
+		if data["allocated_time"]:
+			fields.append(("Allocated Time", data["allocated_time"]))
+		if data["telescope_name"]:
+			fields.append(("Telescope", data["telescope_name"]))
+		if data["instrument_name"]:
+			fields.append(("Instrument", data["instrument_name"]))
+		if data["investigators_list"]:
+			fields.append(("Investigators", data["investigators_list"]))
+		await ctx.embed_reply('\n'.join(links), title = title, fields = fields)
 	
 	@data.command(name = "hst")
 	@checks.not_forbidden()
