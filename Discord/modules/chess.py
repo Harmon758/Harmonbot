@@ -13,7 +13,7 @@ from wand.image import Image
 
 import clients
 
-class chess_match(chess.Board):
+class ChessMatch(chess.Board):
 	
 	async def initialize(self, client, text_channel, white_player, black_player):
 		self.bot = client

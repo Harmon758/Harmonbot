@@ -19,7 +19,7 @@ import pydealer
 
 import clients
 from modules import adventure
-from modules.chess import chess_match
+from modules.chess import ChessMatch
 # from modules import gofish
 from modules import maze
 from modules import utilities
@@ -460,7 +460,7 @@ class Games(commands.Cog):
 			if message.content.lower() in ("no", 'n'):
 				await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
 				return
-		match = chess_match()
+		match = ChessMatch()
 		await match.initialize(self.bot, ctx.channel, white_player, black_player)
 		self.chess_matches.append(match)
 	
