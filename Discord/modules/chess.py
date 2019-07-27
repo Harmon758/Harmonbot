@@ -54,7 +54,7 @@ class ChessMatch(chess.Board):
 		return True
 	
 	async def match_task(self):
-		self.match_message = await self.ctx.embed_say("Loading..")
+		self.match_message = await self.ctx.embed_send("Loading..")
 		await self.update_match_embed()
 		while True:
 			player = [self.black_player, self.white_player][int(self.turn)]

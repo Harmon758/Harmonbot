@@ -22,13 +22,13 @@ class Context(commands.Context):
 				kwargs["footer_text"] = f"{in_response_to_text}: {self.message.clean_content}"
 			elif len(args) < 2:
 				args = (next(iter(args), None), f"{in_response_to_text}: `{self.message.clean_content}`")
-		message = await self.embed_say(*args, **kwargs)
+		message = await self.embed_send(*args, **kwargs)
 		if attempt_delete:
 			await self.bot.attempt_delete_message(self.message)
 		return message
 	
 	# TODO: optimize/improve clarity
-	async def embed_say(self, description = None, *args, 
+	async def embed_send(self, description = None, *args, 
 						title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
 						author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
 						image_url = None, thumbnail_url = None, 

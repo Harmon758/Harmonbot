@@ -430,7 +430,7 @@ class Meta(commands.Cog):
 	@commands.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
-		await ctx.embed_say(":ok_hand::skin-tone-2: Restarting...")
+		await ctx.embed_send(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Discord Harmonbot...")
 		await ctx.bot.restart_tasks(ctx.channel.id)
 		await ctx.bot.logout()
@@ -439,7 +439,7 @@ class Meta(commands.Cog):
 	@commands.is_owner()
 	async def shutdown(self, ctx):
 		'''Shut me down'''
-		await ctx.embed_say(":scream: Shutting down.")
+		await ctx.embed_send(":scream: Shutting down.")
 		print("Forcing Shutdown...")
 		await ctx.bot.shutdown_tasks()
 		subprocess.call(["taskkill", "/f", "/im", "cmd.exe"])
@@ -499,7 +499,7 @@ class Meta(commands.Cog):
 	@commands.is_owner()
 	async def echo_embed(self, ctx, *, message):
 		'''Echoes the message in an embed'''
-		await ctx.embed_say(message)
+		await ctx.embed_send(message)
 	
 	@commands.command()
 	@commands.is_owner()

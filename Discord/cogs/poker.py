@@ -59,25 +59,25 @@ class Poker(commands.Cog):
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
-			await ctx.embed_say(f"The pot: {self.pot}")
+			await ctx.embed_send(f"The pot: {self.pot}")
 			self.community_cards = self.deck.deal(3)
-			await ctx.embed_say(f"The flop: {self.cards_to_string(self.community_cards)}")
+			await ctx.embed_send(f"The flop: {self.cards_to_string(self.community_cards)}")
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
-			await ctx.embed_say(f"The pot: {self.pot}")
+			await ctx.embed_send(f"The pot: {self.pot}")
 			self.community_cards.add(self.deck.deal(1))
-			await ctx.embed_say(f"The turn: {self.cards_to_string(self.community_cards)}")
+			await ctx.embed_send(f"The turn: {self.cards_to_string(self.community_cards)}")
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
-			await ctx.embed_say(f"The pot: {self.pot}")
+			await ctx.embed_send(f"The pot: {self.pot}")
 			self.community_cards.add(self.deck.deal(1))
-			await ctx.embed_say(f"The river: {self.cards_to_string(self.community_cards)}")
+			await ctx.embed_send(f"The river: {self.cards_to_string(self.community_cards)}")
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
-			await ctx.embed_say(f"The pot: {self.pot}")
+			await ctx.embed_send(f"The pot: {self.pot}")
 			
 			evaluator = treys.Evaluator()
 			board = []
@@ -97,7 +97,7 @@ class Poker(commands.Cog):
 					best_player = player
 			player = await self.bot.fetch_user(player)
 			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-			await ctx.embed_say(f"{player.mention} is the winner with a {type}")
+			await ctx.embed_send(f"{player.mention} is the winner with a {type}")
 	
 	@poker.command()
 	async def join(self, ctx):
@@ -171,7 +171,7 @@ class Poker(commands.Cog):
 				self.turn = player
 				if player in self.folded:
 					continue
-				await ctx.embed_say(f"{player.mention}'s turn")
+				await ctx.embed_send(f"{player.mention}'s turn")
 				while self.turn:
 					await asyncio.sleep(1)
 			if all([bet == -1 or bet == self.current_bet for bet in self.bets.values()]):

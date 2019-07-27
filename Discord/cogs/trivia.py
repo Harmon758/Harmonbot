@@ -365,12 +365,12 @@ class Trivia(commands.Cog):
 			board[category_id][value_index] = False
 			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
 			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
-			await ctx.embed_say(response)
+			await ctx.embed_send(response)
 		highest_score = max(scores.values())
 		winners = [answerer.mention for answerer, score in scores.items() if score == highest_score]
-		await ctx.embed_say(f"{ctx.bot.inflect_engine.join(winners)} {ctx.bot.inflect_engine.plural('is', len(winners))} "
-							f"the {ctx.bot.inflect_engine.plural('winner', len(winners))} with ${highest_score}!", 
-							title = "Jeopardy!")
+		await ctx.embed_send(f"{ctx.bot.inflect_engine.join(winners)} {ctx.bot.inflect_engine.plural('is', len(winners))} "
+								f"the {ctx.bot.inflect_engine.plural('winner', len(winners))} with ${highest_score}!", 
+								title = "Jeopardy!")
 		del self.active_jeopardy[ctx.guild.id]
 	
 	@commands.Cog.listener("on_message")
