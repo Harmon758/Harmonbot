@@ -406,7 +406,7 @@ class Astronomy(commands.Cog):
 			data = await resp.json()
 		# TODO: include submitter?, authors?, related_circulars?, external_links?
 		description = re.sub("([^\n])\n([^\n])", r"\1 \2", data["content"])
-		description = re.sub("\n\s*\n", '\n', description)
+		description = re.sub(r"\n\s*\n", '\n', description)
 		if len(description) > 1000:
 			description = description[:1000] + "..."
 		description = ctx.bot.CODE_BLOCK.format(description)
