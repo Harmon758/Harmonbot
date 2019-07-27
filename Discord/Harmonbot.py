@@ -231,6 +231,8 @@ if __name__ == "__main__":
 		### Discard additional information from git describe
 		harmonbot_opus_version = harmonbot_opus_version.split('-')[0]
 		harmonbot_opus_version = pkg_resources.parse_version(harmonbot_opus_version)
+		## Load Opus provided by discord.py
+		discord.opus._load_default()
 		## Get Opus version provided by discord.py
 		discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p
 		library_opus_version = discord.opus._lib.opus_get_version_string().decode("UTF-8")
