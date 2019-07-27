@@ -235,7 +235,7 @@ class Resources(commands.Cog):
 	@commands.command()
 	@checks.not_forbidden()
 	async def latex(self, ctx, *, input : str):
-		'''
+		r'''
 		Render LaTeX
 		"The server is currently running TeX Live 2016 with most* popular packages installed."
 		"Potential security flaws such as \write18 and \input have been disabled."
