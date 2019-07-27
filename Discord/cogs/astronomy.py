@@ -398,7 +398,7 @@ class Astronomy(commands.Cog):
 		https://gcn.gsfc.nasa.gov/
 		'''
 		# TODO: use textwrap
-		url = "https://api.arcsecond.io/telegrams/GCN/Circulars/{}/".format(number)
+		url = f"https://api.arcsecond.io/telegrams/GCN/Circulars/{number}/"
 		params = {"format": "json"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status in (404, 500):
@@ -412,7 +412,7 @@ class Astronomy(commands.Cog):
 			description = description[:1000] + "..."
 		description = ctx.bot.CODE_BLOCK.format(description)
 		await ctx.embed_reply(description, title = data["title"] or discord.Embed.Empty, 
-								title_url = "https://gcn.gsfc.nasa.gov/gcn3/{}.gcn3".format(number), 
+								title_url = f"https://gcn.gsfc.nasa.gov/gcn3/{number}.gcn3", 
 								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else discord.Embed.Empty)
 	
 	@astronomy.command(aliases = ["instrument"])
