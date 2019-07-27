@@ -402,8 +402,7 @@ class Astronomy(commands.Cog):
 		params = {"format": "json"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status in (404, 500):
-				await ctx.embed_reply(":no_entry: Error")
-				return
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
 		# TODO: include submitter?, authors?, related_circulars?, external_links?
 		description = re.sub("([^\n])\n([^\n])", r"\1 \2", data["content"])
