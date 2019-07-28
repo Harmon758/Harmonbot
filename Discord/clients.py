@@ -596,6 +596,14 @@ class Bot(commands.Bot):
 	
 	@contextlib.contextmanager
 	def suppress_duplicate_event_loop_exceptions(self):
+		# Will no longer be necessary in Python 3.7.4/3.8?
+		# https://bugs.python.org/issue37035
+		# https://github.com/python/cpython/pull/13548
+		# https://github.com/python/cpython/commit/1f39c28e489cca0397fc4c3675d13569318122ac
+		# https://github.com/python/cpython/pull/13594
+		# https://github.com/python/cpython/commit/a79b6c578fcd2ea8be29440fdd8a998e5527200f
+		# https://github.com/aio-libs/aiohttp/issues/3535
+		# https://github.com/aio-libs/aiohttp/issues/3675
 		# https://stackoverflow.com/questions/52012488/ssl-asyncio-traceback-even-when-error-is-handled
 		# https://bugs.python.org/issue34506
 		old_handler_function = old_handler = self.loop.get_exception_handler()
