@@ -62,12 +62,12 @@ class ChessMatch(chess.Board):
 				await self.match_message.edit(embed = embed.set_footer(text = "I'm thinking.."))
 				result = await self.chess_engine.play(self, chess.engine.Limit(time = 2))
 				self.push(result.move)
-				await self.update_match_embed(footer_text = "I moved {}".format(result.move))
+				await self.update_match_embed(footer_text = f"I moved {result.move}")
 			else:
 				message = await self.bot.wait_for("message", check = lambda msg: msg.author == player and msg.channel == self.ctx.channel and self.valid_move(msg.content))
 				await self.match_message.edit(embed = embed.set_footer(text = "Processing move.."))
 				self.make_move(message.content)
-				footer_text = discord.Embed.Empty if self.is_game_over() else "It is {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
+				footer_text = discord.Embed.Empty if self.is_game_over() else f"It is {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
 				await self.update_match_embed(footer_text = footer_text)
 				await self.bot.attempt_delete_message(message)
 	
