@@ -27,7 +27,6 @@ class ChessMatch(chess.Board):
 																				creationflags = subprocess.CREATE_NO_WINDOW)
 		# TODO: Use popcnt.exe?
 		self.match_message = None
-		self.match_embed = None
 		self.task = ctx.bot.loop.create_task(self.match_task())
 		return self
 	
@@ -58,14 +57,15 @@ class ChessMatch(chess.Board):
 		await self.update_match_embed()
 		while True:
 			player = [self.black_player, self.white_player][int(self.turn)]
+			embed = self.match_message.embeds[0]
 			if player == self.bot.user:
-				await self.match_message.edit(embed = self.match_embed.set_footer(text = "I'm thinking.."))
+				await self.match_message.edit(embed = embed.set_footer(text = "I'm thinking.."))
 				result = await self.chess_engine.play(self, chess.engine.Limit(time = 2))
 				self.push(result.move)
 				await self.update_match_embed(footer_text = "I moved {}".format(result.move))
 			else:
 				message = await self.bot.wait_for("message", check = lambda msg: msg.author == player and msg.channel == self.ctx.channel and self.valid_move(msg.content))
-				await self.match_message.edit(embed = self.match_embed.set_footer(text = "Processing move.."))
+				await self.match_message.edit(embed = embed.set_footer(text = "Processing move.."))
 				self.make_move(message.content)
 				footer_text = discord.Embed.Empty if self.is_game_over() else "It is {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
 				await self.update_match_embed(footer_text = footer_text)
@@ -82,26 +82,28 @@ class ChessMatch(chess.Board):
 			img.format = "png"
 			img.save(filename = clients.data_path + "/temp/chess_board.png")
 		# asyncio.sleep(0.2) # necessary?, wasn't even awaited
-		if not self.match_embed:
-			self.match_embed = discord.Embed(color = self.bot.bot_color)
+		if self.match_message:
+			embed = self.match_message.embeds[0]
+		else:
+			embed = discord.Embed(color = self.bot.bot_color)
 		# TODO: Upload into embed + delete and re-send to update?
 		'''
-		self.match_embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
-		self.match_embed.set_image(url = data["data"]["img_url"])
+		embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
+		embed.set_image(url = data["data"]["img_url"])
 		'''
 		image_message = await self.bot.cache_channel.send(file = discord.File(clients.data_path + "/temp/chess_board.png"))
-		self.match_embed.set_image(url = image_message.attachments[0].url)
-		self.match_embed.set_footer(text = footer_text)
+		embed.set_image(url = image_message.attachments[0].url)
+		embed.set_footer(text = footer_text)
 		chess_pgn = chess.pgn.Game.from_board(self)
 		chess_pgn.headers["Site"] = "Discord"
 		chess_pgn.headers["Date"] = datetime.datetime.utcnow().strftime("%Y.%m.%d")
 		chess_pgn.headers["White"] = self.white_player.mention
 		chess_pgn.headers["Black"] = self.black_player.mention
-		self.match_embed.description = str(chess_pgn)
+		embed.description = str(chess_pgn)
 		if not self.match_message:
-			self.match_message = await self.ctx.send(embed = self.match_embed)
+			self.match_message = await self.ctx.send(embed = embed)
 		else:
-			await self.match_message.edit(embed = self.match_embed)
+			await self.match_message.edit(embed = embed)
 	
 	async def new_match_embed(self, *, flipped = None, footer_text = None):
 		if flipped is None: flipped = not self.turn
