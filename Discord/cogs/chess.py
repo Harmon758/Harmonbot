@@ -18,7 +18,7 @@ class Chess(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.chess_matches = []
+		self.matches = []
 	
 	def cog_check(self, ctx):
 		return checks.not_forbidden_predicate(ctx)
@@ -47,14 +47,14 @@ class Chess(commands.Cog):
 			await self._update_chess_board_embed()
 		'''
 	
-	@chess.command(name = "play", aliases = ["start"])
-	async def chess_play(self, ctx, *, opponent : str = ""):
+	@chess.command(aliases = ["start"])
+	async def play(self, ctx, *, opponent : str = ""):
 		'''
 		Challenge someone to a match
 		You can play me as well
 		'''
 		# check if already playing a match in this channel
-		if self.get_chess_match(ctx.channel, ctx.author):
+		if self.get_match(ctx.channel, ctx.author):
 			await ctx.embed_reply(":no_entry: You're already playing a chess match here")
 			return
 		# prompt for opponent
@@ -74,7 +74,7 @@ class Chess(commands.Cog):
 				await ctx.embed_reply(":no_entry: Opponent not found")
 				return
 		# check if opponent already playing a match in this channel
-		if opponent != self.bot.user and self.get_chess_match(ctx.channel, opponent):
+		if opponent != self.bot.user and self.get_match(ctx.channel, opponent):
 			await ctx.embed_reply(":no_entry: Your chosen opponent is playing a chess match here")
 			return
 		# prompt for color
@@ -103,56 +103,55 @@ class Chess(commands.Cog):
 			if message.content.lower() in ("no", 'n'):
 				await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
 				return
-		chess_match = await ChessMatch.start(ctx, white_player, black_player)
-		self.chess_matches.append(chess_match)
+		match = await ChessMatch.start(ctx, white_player, black_player)
+		self.matches.append(match)
 	
-	def get_chess_match(self, text_channel, player):
-		return discord.utils.find(lambda cb: cb.ctx.channel == text_channel and (cb.white_player == player or cb.black_player == player), self.chess_matches)
+	def get_match(self, text_channel, player):
+		return discord.utils.find(lambda match: match.ctx.channel == text_channel and (match.white_player == player or match.black_player == player), self.matches)
 	
 	# TODO: Handle matches in DMs
 	# TODO: Handle end of match: check mate, draw, etc.
 	
-	@chess.group(name = "board", aliases = ["match"], 
-					invoke_without_command = True, case_insensitive = True)
-	async def chess_board(self, ctx):
+	@chess.group(aliases = ["match"], invoke_without_command = True, case_insensitive = True)
+	async def board(self, ctx):
 		'''Current match/board'''
-		match = self.get_chess_match(ctx.channel, ctx.author)
+		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
 			await ctx.embed_reply(":no_entry: Chess match not found")
 			return
 		await match.new_match_embed()
 	
-	@chess_board.command(name = "text")
-	async def chess_board_text(self, ctx):
+	@board.command(name = "text")
+	async def board_text(self, ctx):
 		'''Text version of the current board'''
-		match = self.get_chess_match(ctx.channel, ctx.author)
+		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
 			await ctx.embed_reply(":no_entry: Chess match not found")
 			return
 		await ctx.reply(ctx.bot.CODE_BLOCK.format(match))
 	
-	@chess.command(name = "fen")
-	async def chess_fen(self, ctx):
+	@chess.command()
+	async def fen(self, ctx):
 		'''FEN of the current board'''
-		match = self.get_chess_match(ctx.channel, ctx.author)
+		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
 			await ctx.embed_reply(":no_entry: Chess match not found")
 			return
 		await ctx.embed_reply(match.fen())
 	
-	@chess.command(name = "pgn", hidden = True)
-	async def chess_pgn(self, ctx):
+	@chess.command(hidden = True)
+	async def pgn(self, ctx):
 		'''PGN of the current game'''
-		match = self.get_chess_match(ctx.channel, ctx.author)
+		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
 			await ctx.embed_reply(":no_entry: Chess match not found")
 			return
 		await ctx.embed_reply(chess.pgn.Game.from_board(match))
 	
-	@chess.command(name = "turn", hidden = True)
-	async def chess_turn(self, ctx):
+	@chess.command(hidden = True)
+	async def turn(self, ctx):
 		'''Who's turn it is to move'''
-		match = self.get_chess_match(ctx.channel, ctx.author)
+		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
 			await ctx.embed_reply(":no_entry: Chess match not found")
 			return
@@ -162,16 +161,16 @@ class Chess(commands.Cog):
 			await ctx.embed_reply("It's black's turn to move")
 	
 	"""
-	@chess.command(name = "reset")
-	async def chess_reset(self, ctx):
+	@chess.command()
+	async def reset(self, ctx):
 		'''Reset the board'''
 		self._chess_board.reset()
 		await ctx.embed_reply("The board has been reset")
 	"""
 	
 	"""
-	@chess.command(name = "undo")
-	async def chess_undo(self, ctx):
+	@chess.command()
+	async def undo(self, ctx):
 		'''Undo the previous move'''
 		try:
 			self._chess_board.pop()
@@ -180,10 +179,10 @@ class Chess(commands.Cog):
 			await ctx.embed_reply(":no_entry: There are no more moves to undo")
 	"""
 	
-	@chess.command(name = "previous", aliases = ["last"], hidden = True)
-	async def chess_previous(self, ctx):
+	@chess.command(aliases = ["last"], hidden = True)
+	async def previous(self, ctx):
 		'''Previous move'''
-		match = self.get_chess_match(ctx.channel, ctx.author)
+		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
 			await ctx.embed_reply(":no_entry: Chess match not found")
 			return
@@ -194,7 +193,7 @@ class Chess(commands.Cog):
 	
 	"""
 	@chess.command(name = "(╯°□°）╯︵", hidden = True)
-	async def chess_flip(self, ctx):
+	async def flip(self, ctx):
 		'''Flip the table over'''
 		self._chess_board.clear()
 		await ctx.say(ctx.author.name + " flipped the table over in anger!")
