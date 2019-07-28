@@ -107,7 +107,9 @@ class Chess(commands.Cog):
 		self.matches.append(match)
 	
 	def get_match(self, text_channel, player):
-		return discord.utils.find(lambda match: match.ctx.channel == text_channel and (match.white_player == player or match.black_player == player), self.matches)
+		return discord.utils.find(lambda match: match.ctx.channel == text_channel and 
+												(match.white_player == player or match.black_player == player), 
+									self.matches)
 	
 	# TODO: Handle matches in DMs
 	# TODO: Handle end of match: check mate, draw, etc.
