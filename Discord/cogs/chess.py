@@ -47,7 +47,7 @@ class Chess(commands.Cog):
 		'''
 	
 	@chess.command(aliases = ["start"])
-	async def play(self, ctx, *, opponent : str = ""):
+	async def play(self, ctx, *, opponent: str = ""):
 		'''
 		Challenge someone to a match
 		You can play me as well
