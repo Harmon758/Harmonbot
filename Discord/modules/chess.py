@@ -119,9 +119,15 @@ class ChessMatch(chess.Board):
 			await self.match_message.edit(embed = embed)
 	
 	async def new_match_embed(self, *, flipped = None, footer_text = None):
-		if flipped is None: flipped = not self.turn
-		if footer_text is None: footer_text = discord.Embed.Empty if self.is_game_over() else "It's {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
-		if self.match_message: await self.match_message.delete()
+		if flipped is None:
+			flipped = not self.turn
+		if footer_text is None:
+			if self.is_game_over():
+				footer_text = discord.Embed.Empty
+			else:
+				footer_text = "It's {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
+		if self.match_message:
+			await self.match_message.delete()
 		self.match_message = None
 		await self.update_match_embed(flipped = flipped, footer_text = footer_text)
 
