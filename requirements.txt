@@ -14,7 +14,7 @@ dice==2.4.2
 emoji==0.5.2
 feedparser==5.2.1
 gitpython==2.1.12
-hypothesis==4.28.2
+hypothesis==4.31.1
 imageio==2.5.0
 imgurpython==1.1.7
 inflect==2.1.0
