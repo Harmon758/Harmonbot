@@ -42,8 +42,7 @@ class Chess(commands.Cog):
 				try:
 					self._chess_board.push_uci(move)
 				except ValueError:
-					await ctx.embed_reply(":no_entry: Invalid move")
-					return
+					return await ctx.embed_reply(":no_entry: Invalid move")
 			await self._update_chess_board_embed()
 		'''
 	
@@ -55,8 +54,7 @@ class Chess(commands.Cog):
 		'''
 		# check if already playing a match in this channel
 		if self.get_match(ctx.channel, ctx.author):
-			await ctx.embed_reply(":no_entry: You're already playing a chess match here")
-			return
+			return await ctx.embed_reply(":no_entry: You're already playing a chess match here")
 		# prompt for opponent
 		if not opponent:
 			await ctx.embed_reply("Who would you like to play?")
@@ -71,12 +69,10 @@ class Chess(commands.Cog):
 		else:
 			opponent = await utilities.get_user(ctx, opponent)
 			if not opponent:
-				await ctx.embed_reply(":no_entry: Opponent not found")
-				return
+				return await ctx.embed_reply(":no_entry: Opponent not found")
 		# check if opponent already playing a match in this channel
 		if opponent != self.bot.user and self.get_match(ctx.channel, opponent):
-			await ctx.embed_reply(":no_entry: Your chosen opponent is playing a chess match here")
-			return
+			return await ctx.embed_reply(":no_entry: Your chosen opponent is playing a chess match here")
 		# prompt for color
 		if opponent == ctx.author:
 			color = 'w'
@@ -98,11 +94,9 @@ class Chess(commands.Cog):
 			try:
 				message = await self.bot.wait_for("message", check = lambda m: m.author == opponent and m.channel == ctx.channel and m.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
 			except asyncio.TimeoutError:
-				await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
-				return
+				return await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
 			if message.content.lower() in ("no", 'n'):
-				await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
-				return
+				return await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
 		match = await ChessMatch.start(ctx, white_player, black_player)
 		self.matches.append(match)
 	
@@ -117,8 +111,7 @@ class Chess(commands.Cog):
 		'''Current match/board'''
 		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
-			await ctx.embed_reply(":no_entry: Chess match not found")
-			return
+			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await match.new_match_embed()
 	
 	@board.command(name = "text")
@@ -126,8 +119,7 @@ class Chess(commands.Cog):
 		'''Text version of the current board'''
 		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
-			await ctx.embed_reply(":no_entry: Chess match not found")
-			return
+			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await ctx.reply(ctx.bot.CODE_BLOCK.format(match))
 	
 	@chess.command()
@@ -135,8 +127,7 @@ class Chess(commands.Cog):
 		'''FEN of the current board'''
 		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
-			await ctx.embed_reply(":no_entry: Chess match not found")
-			return
+			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await ctx.embed_reply(match.fen())
 	
 	@chess.command(hidden = True)
@@ -144,8 +135,7 @@ class Chess(commands.Cog):
 		'''PGN of the current game'''
 		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
-			await ctx.embed_reply(":no_entry: Chess match not found")
-			return
+			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await ctx.embed_reply(chess.pgn.Game.from_board(match))
 	
 	@chess.command(hidden = True)
@@ -153,8 +143,7 @@ class Chess(commands.Cog):
 		'''Who's turn it is to move'''
 		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
-			await ctx.embed_reply(":no_entry: Chess match not found")
-			return
+			return await ctx.embed_reply(":no_entry: Chess match not found")
 		if match.turn:
 			await ctx.embed_reply("It's white's turn to move")
 		else:
@@ -184,8 +173,7 @@ class Chess(commands.Cog):
 		'''Previous move'''
 		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
-			await ctx.embed_reply(":no_entry: Chess match not found")
-			return
+			return await ctx.embed_reply(":no_entry: Chess match not found")
 		try:
 			await ctx.embed_reply(match.peek())
 		except IndexError:
