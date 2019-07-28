@@ -56,7 +56,9 @@ class Chess(commands.Cog):
 			return await ctx.embed_reply(":no_entry: You're already playing a chess match here")
 		if not opponent:
 			await ctx.embed_reply("Who would you like to play?")
-			message = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel)
+			message = await self.bot.wait_for("message", 
+												check = lambda message: message.author == ctx.author and 
+																		message.channel == ctx.channel)
 			opponent = message.content
 		color = None
 		if opponent.lower() in ("harmonbot", "you"):
@@ -74,7 +76,11 @@ class Chess(commands.Cog):
 			color = 'w'
 		if not color:
 			await ctx.embed_reply("Would you like to play white, black, or random?")
-			message = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ("white", "black", "random", 'w', 'b', 'r'))
+			message = await self.bot.wait_for("message", 
+												check = lambda message: message.author == ctx.author and 
+																		message.channel == ctx.channel and 
+																		message.content.lower() in ("white", "black", "random", 
+																									'w', 'b', 'r'))
 			color = message.content.lower()
 		if color in ("random", 'r'):
 			color = random.choice(('w', 'b'))
@@ -85,9 +91,14 @@ class Chess(commands.Cog):
 			white_player = opponent
 			black_player = ctx.author
 		if opponent != self.bot.user and opponent != ctx.author:
-			await ctx.send(f"{opponent.mention}: {ctx.author} has challenged you to a chess match\nWould you like to accept? Yes/No")
+			await ctx.send(f"{opponent.mention}: {ctx.author} has challenged you to a chess match\n"
+							"Would you like to accept? Yes/No")
 			try:
-				message = await self.bot.wait_for("message", check = lambda m: m.author == opponent and m.channel == ctx.channel and m.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
+				message = await self.bot.wait_for("message", 
+													check = lambda message: message.author == opponent and 
+																			message.channel == ctx.channel and 
+																			message.content.lower() in ("yes", "no", 'y', 'n'), 
+													timeout = 300)
 			except asyncio.TimeoutError:
 				return await ctx.send(f"{ctx.author.mention}: {opponent} has declined your challenge")
 			if message.content.lower() in ("no", 'n'):
