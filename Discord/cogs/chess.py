@@ -52,10 +52,8 @@ class Chess(commands.Cog):
 		Challenge someone to a match
 		You can play me as well
 		'''
-		# check if already playing a match in this channel
 		if self.get_match(ctx.channel, ctx.author):
 			return await ctx.embed_reply(":no_entry: You're already playing a chess match here")
-		# prompt for opponent
 		if not opponent:
 			await ctx.embed_reply("Who would you like to play?")
 			message = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel)
@@ -70,10 +68,8 @@ class Chess(commands.Cog):
 			opponent = await utilities.get_user(ctx, opponent)
 			if not opponent:
 				return await ctx.embed_reply(":no_entry: Opponent not found")
-		# check if opponent already playing a match in this channel
 		if opponent != self.bot.user and self.get_match(ctx.channel, opponent):
 			return await ctx.embed_reply(":no_entry: Your chosen opponent is playing a chess match here")
-		# prompt for color
 		if opponent == ctx.author:
 			color = 'w'
 		if not color:
@@ -88,15 +84,14 @@ class Chess(commands.Cog):
 		elif color in ("black", 'b'):
 			white_player = opponent
 			black_player = ctx.author
-		# prompt opponent
 		if opponent != self.bot.user and opponent != ctx.author:
-			await ctx.send("{}: {} has challenged you to a chess match\nWould you like to accept? Yes/No".format(opponent.mention, ctx.author))
+			await ctx.send(f"{opponent.mention}: {ctx.author} has challenged you to a chess match\nWould you like to accept? Yes/No")
 			try:
 				message = await self.bot.wait_for("message", check = lambda m: m.author == opponent and m.channel == ctx.channel and m.content.lower() in ("yes", "no", 'y', 'n'), timeout = 300)
 			except asyncio.TimeoutError:
-				return await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
+				return await ctx.send(f"{ctx.author.mention}: {opponent} has declined your challenge")
 			if message.content.lower() in ("no", 'n'):
-				return await ctx.send("{}: {} has declined your challenge".format(ctx.author.mention, opponent))
+				return await ctx.send(f"{ctx.author.mention}: {opponent} has declined your challenge")
 		match = await ChessMatch.start(ctx, white_player, black_player)
 		self.matches.append(match)
 	
