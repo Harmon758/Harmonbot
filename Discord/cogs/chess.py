@@ -130,6 +130,14 @@ class Chess(commands.Cog):
 			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await ctx.embed_reply(match.fen())
 	
+	"""
+	@chess.command(name = "(╯°□°）╯︵", hidden = True)
+	async def flip(self, ctx):
+		'''Flip the table over'''
+		self._chess_board.clear()
+		await ctx.say(ctx.author.name + " flipped the table over in anger!")
+	"""
+	
 	@chess.command(hidden = True)
 	async def pgn(self, ctx):
 		'''PGN of the current game'''
@@ -137,6 +145,25 @@ class Chess(commands.Cog):
 		if not match:
 			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await ctx.embed_reply(chess.pgn.Game.from_board(match))
+	
+	@chess.command(aliases = ["last"], hidden = True)
+	async def previous(self, ctx):
+		'''Previous move'''
+		match = self.get_match(ctx.channel, ctx.author)
+		if not match:
+			return await ctx.embed_reply(":no_entry: Chess match not found")
+		try:
+			await ctx.embed_reply(match.peek())
+		except IndexError:
+			await ctx.embed_reply(":no_entry: There was no previous move")
+	
+	"""
+	@chess.command()
+	async def reset(self, ctx):
+		'''Reset the board'''
+		self._chess_board.reset()
+		await ctx.embed_reply("The board has been reset")
+	"""
 	
 	@chess.command(hidden = True)
 	async def turn(self, ctx):
@@ -151,14 +178,6 @@ class Chess(commands.Cog):
 	
 	"""
 	@chess.command()
-	async def reset(self, ctx):
-		'''Reset the board'''
-		self._chess_board.reset()
-		await ctx.embed_reply("The board has been reset")
-	"""
-	
-	"""
-	@chess.command()
 	async def undo(self, ctx):
 		'''Undo the previous move'''
 		try:
@@ -166,24 +185,5 @@ class Chess(commands.Cog):
 			await self._display_chess_board(ctx, message = "The previous move was undone")
 		except IndexError:
 			await ctx.embed_reply(":no_entry: There are no more moves to undo")
-	"""
-	
-	@chess.command(aliases = ["last"], hidden = True)
-	async def previous(self, ctx):
-		'''Previous move'''
-		match = self.get_match(ctx.channel, ctx.author)
-		if not match:
-			return await ctx.embed_reply(":no_entry: Chess match not found")
-		try:
-			await ctx.embed_reply(match.peek())
-		except IndexError:
-			await ctx.embed_reply(":no_entry: There was no previous move")
-	
-	"""
-	@chess.command(name = "(╯°□°）╯︵", hidden = True)
-	async def flip(self, ctx):
-		'''Flip the table over'''
-		self._chess_board.clear()
-		await ctx.say(ctx.author.name + " flipped the table over in anger!")
 	"""
 
