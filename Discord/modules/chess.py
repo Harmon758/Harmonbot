@@ -78,20 +78,35 @@ class ChessMatch(chess.Board):
 				await self.bot.attempt_delete_message(message)
 	
 	async def update_match_embed(self, *, flipped = None, footer_text = discord.Embed.Empty):
-		if flipped is None: flipped = not self.turn
+		if flipped is None:
+			flipped = not self.turn
+		if self.move_stack:
+			lastmove = self.peek()
+		else:
+			lastmove = None
+		if self.is_check():
+			check = self.king(self.turn)
+		else:
+			check = None
 		# svg = self._repr_svg_()
-		svg = chess.svg.board(self, lastmove = self.peek() if self.move_stack else None, check = self.king(self.turn) if self.is_check() else None, flipped = flipped)
+		svg = chess.svg.board(self, lastmove = lastmove, check = check, flipped = flipped)
 		svg = svg.replace("y=\"390\"", "y=\"395\"")
 		with open(clients.data_path + "/temp/chess_board.svg", 'w') as image:
 			print(svg, file = image)
 		with Image(filename = clients.data_path + "/temp/chess_board.svg") as img:
 			img.format = "png"
 			img.save(filename = clients.data_path + "/temp/chess_board.png")
-		# asyncio.sleep(0.2) # necessary?, wasn't even awaited
+		# asyncio.sleep(0.2)  # necessary?, wasn't even awaited
 		if self.match_message:
 			embed = self.match_message.embeds[0]
 		else:
 			embed = discord.Embed(color = self.bot.bot_color)
+		chess_pgn = chess.pgn.Game.from_board(self)
+		chess_pgn.headers["Site"] = "Discord"
+		chess_pgn.headers["Date"] = datetime.datetime.utcnow().strftime("%Y.%m.%d")
+		chess_pgn.headers["White"] = self.white_player.mention
+		chess_pgn.headers["Black"] = self.black_player.mention
+		embed.description = str(chess_pgn)
 		# TODO: Upload into embed + delete and re-send to update?
 		'''
 		embed.set_image(url = self.bot.imgur_client.upload_from_path(clients.data_path + "/temp/chess_board.png")["link"])
@@ -100,12 +115,6 @@ class ChessMatch(chess.Board):
 		image_message = await self.bot.cache_channel.send(file = discord.File(clients.data_path + "/temp/chess_board.png"))
 		embed.set_image(url = image_message.attachments[0].url)
 		embed.set_footer(text = footer_text)
-		chess_pgn = chess.pgn.Game.from_board(self)
-		chess_pgn.headers["Site"] = "Discord"
-		chess_pgn.headers["Date"] = datetime.datetime.utcnow().strftime("%Y.%m.%d")
-		chess_pgn.headers["White"] = self.white_player.mention
-		chess_pgn.headers["Black"] = self.black_player.mention
-		embed.description = str(chess_pgn)
 		if not self.match_message:
 			self.match_message = await self.ctx.send(embed = embed)
 		else:
