@@ -125,7 +125,7 @@ class ChessMatch(chess.Board):
 			if self.is_game_over():
 				footer_text = discord.Embed.Empty
 			else:
-				footer_text = "It's {}'s ({}'s) turn to move".format(["black", "white"][int(self.turn)], [self.black_player, self.white_player][int(self.turn)])
+				footer_text = f"It's {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
 		if self.match_message:
 			await self.match_message.delete()
 		self.match_message = None
