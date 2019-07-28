@@ -626,9 +626,9 @@ class Bot(commands.Bot):
 		except commands.ExtensionAlreadyLoaded:
 			await ctx.embed_reply(":no_entry: Error: Cog already loaded")
 		except commands.ExtensionFailed as e:
-			await ctx.embed_reply(f":no_entry: Error in setup function: {e.original.__class__.__name__}: {e.original}")
-		except commands.ExtensionNotFound as e:
-			await ctx.embed_reply(f":no_entry: Error: Cog/Module not found: {e.original.__class__.__name__}: {e.original}")
+			await ctx.embed_reply(f":no_entry: Error loading cog: {e.original.__class__.__name__}: {e.original}")
+		except commands.ExtensionNotFound:
+			await ctx.embed_reply(":no_entry: Error: Cog not found")
 		except commands.NoEntryPointError:
 			await ctx.embed_reply(":no_entry: Error: Setup function not found")
 		except commands.ExtensionError as e:
@@ -680,9 +680,9 @@ class Bot(commands.Bot):
 		try:
 			ctx.bot.reload_extension("cogs." + cog)
 		except commands.ExtensionFailed as e:
-			await ctx.embed_reply(f":no_entry: Error in setup function: {e.original.__class__.__name__}: {e.original}")
-		except commands.ExtensionNotFound as e:
-			await ctx.embed_reply(f":no_entry: Error: Cog/Module not found: {e.original.__class__.__name__}: {e.original}")
+			await ctx.embed_reply(f":no_entry: Error loading cog: {e.original.__class__.__name__}: {e.original}")
+		except commands.ExtensionNotFound:
+			await ctx.embed_reply(":no_entry: Error: Cog not found")
 		except commands.ExtensionNotLoaded:
 			await ctx.embed_reply(":no_entry: Error: Cog not found/loaded")
 		except commands.NoEntryPointError:
