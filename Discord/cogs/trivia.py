@@ -278,12 +278,14 @@ class Trivia(commands.Cog):
 		url = "http://jservice.io/api/random"
 		category_titles = []
 		while len(board) < 6:
-			async with ctx.bot.aiohttp_session.get(url) as resp:
+			params = {"count": 6 - len(board)}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
-			category_id = data[0]["category_id"]
-			if category_id not in board:
-				category_titles.append(string.capwords(data[0]["category"]["title"]))
-				board[category_id] = [True] * 5
+			for clue in data:
+				category_id = clue["category_id"]
+				if category_id not in board:
+					category_titles.append(string.capwords(clue["category"]["title"]))
+					board[category_id] = [True] * 5
 		# TODO: Get and store all questions data?
 		for index, category_title in enumerate(category_titles):
 			category_title_line_character_limit = ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
