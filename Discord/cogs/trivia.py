@@ -274,9 +274,10 @@ class Trivia(commands.Cog):
 				return await ctx.embed_reply(f"There is already an ongoing game of jeopardy in {channel.mention}")
 		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, 
 												"answer": None, "answerer": None}
+		message = await ctx.embed_reply("Generating board..", title = "Jeopardy!", author_name = None)
 		board = {}
-		url = "http://jservice.io/api/random"
 		category_titles = []
+		url = "http://jservice.io/api/random"
 		while len(board) < 6:
 			params = {"count": 6 - len(board)}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
@@ -284,8 +285,8 @@ class Trivia(commands.Cog):
 			for clue in data:
 				category_id = clue["category_id"]
 				if category_id not in board:
-					category_titles.append(string.capwords(clue["category"]["title"]))
 					board[category_id] = [True] * 5
+					category_titles.append(string.capwords(clue["category"]["title"]))
 		# TODO: Get and store all questions data?
 		for index, category_title in enumerate(category_titles):
 			category_title_line_character_limit = ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
@@ -302,8 +303,9 @@ class Trivia(commands.Cog):
 									f"   {category_title[split_index + 1:].ljust(max_width)}  200 400 600 800 1000")
 			except ValueError:
 				board_lines.append(f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000")
-		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(board_lines)), 
-								title = "Jeopardy!", author_name = None)
+		embed = message.embeds[0]
+		embed.description = ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
+		await message.edit(embed = embed)
 		scores = {}
 		
 		def choice_check(message):
