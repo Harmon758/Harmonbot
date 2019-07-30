@@ -349,14 +349,14 @@ class Trivia(commands.Cog):
 			self.active_jeopardy[ctx.guild.id]["answerer"] = None
 			self.active_jeopardy[ctx.guild.id]["answer"] = clue["answer"]
 			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
-			message = await ctx.embed_reply(clue["question"], title = board[category_id]['title'], author_name = None, 
+			message = await ctx.embed_reply(clue["question"], title = board[category_id]["title"], author_name = None, 
 											footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
 											timestamp = dateutil.parser.parse(clue["airdate"]))
 			embed = message.embeds[0]
-			while self.active_jeopardy[message.guild.id]["question_countdown"]:
+			while self.active_jeopardy[ctx.guild.id]["question_countdown"]:
 				await asyncio.sleep(1)
-				self.active_jeopardy[message.guild.id]["question_countdown"] -= 1
-				embed.set_footer(text = f"You have {self.active_jeopardy[message.guild.id]['question_countdown']} seconds left to answer | Air Date")
+				self.active_jeopardy[ctx.guild.id]["question_countdown"] -= 1
+				embed.set_footer(text = f"You have {self.active_jeopardy[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date")
 				await message.edit(embed = embed)
 				if self.active_jeopardy[ctx.guild.id]["answerer"]:
 					break
