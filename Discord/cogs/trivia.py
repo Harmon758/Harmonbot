@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import asyncio
 import html
+import random
 import re
 import string
 import unicodedata
@@ -276,17 +277,27 @@ class Trivia(commands.Cog):
 												"answer": None, "answerer": None}
 		message = await ctx.embed_reply("Generating board..", title = "Jeopardy!", author_name = None)
 		board = {}
-		url = "http://jservice.io/api/random"
 		while len(board) < 6:
+			url = "http://jservice.io/api/random"
 			params = {"count": 6 - len(board)}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
-			for clue in data:
-				category_id = clue["category_id"]
-				if category_id not in board:
-					board[category_id] = {"title": string.capwords(clue["category"]["title"]), 
-											"clues": [True] * 5}
-		# TODO: Get and store all clues data?
+			for random_clue in data:
+				category_id = random_clue["category_id"]
+				if category_id in board:
+					continue
+				url = "http://jservice.io/api/category"
+				params = {"id": category_id}
+				async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+					data = await resp.json()
+				try:
+					clues = [random.choice([clue for clue in data["clues"]
+											if clue["value"] == value and clue["question"]])
+								for value in (200, 400, 600, 800, 1000)]
+				except IndexError:
+					continue
+				board[category_id] = {"title": string.capwords(random_clue["category"]["title"]), 
+										"clues": clues}
 		for index, category_title in enumerate(category["title"] for category in board.values()):
 			category_title_line_character_limit = ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
 			# len("#) " + "  200 400 600 800 1000") = 25
@@ -331,20 +342,17 @@ class Trivia(commands.Cog):
 				continue
 			value_index = [200, 400, 600, 800, 1000].index(value)
 			category_id = list(board.keys())[row_number - 1]
-			if not board[category_id]["clues"][value_index]:
+			clue = board[category_id]["clues"][value_index]
+			if not clue:  # Use := in Python 3.8
 				await ctx.embed_reply(":no_entry: That question has already been chosen")
 				continue
 			self.active_jeopardy[ctx.guild.id]["answerer"] = None
-			url = "http://jservice.io/api/category"
-			params = {"id": category_id}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			self.active_jeopardy[ctx.guild.id]["answer"] = data["clues"][value_index]["answer"]
+			self.active_jeopardy[ctx.guild.id]["answer"] = clue["answer"]
 			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
-			message = await ctx.embed_reply(f"{data['clues'][value_index]['question']}",
-											title = string.capwords(data['title']), author_name = None, 
+			message = await ctx.embed_reply(f"{clue['question']}",
+											title = string.capwords(board[category_id]['title']), author_name = None, 
 											footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
-											timestamp = dateutil.parser.parse(data["clues"][value_index]["airdate"]))
+											timestamp = dateutil.parser.parse(clue["airdate"]))
 			embed = message.embeds[0]
 			while self.active_jeopardy[message.guild.id]["question_countdown"]:
 				await asyncio.sleep(1)
@@ -365,7 +373,7 @@ class Trivia(commands.Cog):
 			else:
 				response += "Nobody got it right\n"
 			response += ", ".join(f"{player.mention}: ${score}" for player, score in scores.items()) + '\n'
-			board[category_id]["clues"][value_index] = False
+			board[category_id]["clues"][value_index] = None
 			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
 			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
 			await ctx.embed_send(response)
