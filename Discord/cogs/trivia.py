@@ -349,8 +349,7 @@ class Trivia(commands.Cog):
 			self.active_jeopardy[ctx.guild.id]["answerer"] = None
 			self.active_jeopardy[ctx.guild.id]["answer"] = clue["answer"]
 			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
-			message = await ctx.embed_reply(f"{clue['question']}",
-											title = string.capwords(board[category_id]['title']), author_name = None, 
+			message = await ctx.embed_reply(clue["question"], title = board[category_id]['title'], author_name = None, 
 											footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
 											timestamp = dateutil.parser.parse(clue["airdate"]))
 			embed = message.embeds[0]
