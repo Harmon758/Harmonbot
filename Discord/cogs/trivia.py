@@ -278,6 +278,7 @@ class Trivia(commands.Cog):
 												"answer": None, "answerer": None}
 		message = await ctx.embed_reply("Generating board..", title = "Jeopardy!", author_name = None)
 		board = {}
+		values = [200, 400, 600, 800, 1000]
 		while len(board) < 6:
 			url = "http://jservice.io/api/random"
 			params = {"count": 6 - len(board)}
@@ -298,15 +299,17 @@ class Trivia(commands.Cog):
 				# jService uses noon UTC for airdates
 				# jService doesn't include Double Jeopardy! clues
 				transition_date = datetime.datetime(2001, 11, 26, 12, tzinfo = datetime.timezone.utc)
+				clues = {value: [] for value in values}
 				for clue in data["clues"]:
+					if not clue["question"] or not clue["value"]:
+						continue
 					if dateutil.parser.parse(clue["airdate"]) < transition_date:
-						clue["value"] *= 2
-				try:
-					clues = [random.choice([clue for clue in data["clues"]
-											if clue["value"] == value and clue["question"]])
-								for value in (200, 400, 600, 800, 1000)]
-				except IndexError:
+						clues[clue["value"] * 2].append(clue)
+					else:
+						clues[clue["value"]].append(clue)
+				if not all(clues.values()):
 					continue
+				clues = [random.choice(clues[value]) for value in values]
 				board[category_id] = {"title": string.capwords(random_clue["category"]["title"]), 
 										"clues": clues}
 		for index, category_title in enumerate(category["title"] for category in board.values()):
@@ -348,10 +351,10 @@ class Trivia(commands.Cog):
 			if row_number < 1 or row_number > 6:
 				await ctx.embed_reply(":no_entry: That's not a valid row number")
 				continue
-			if value not in (200, 400, 600, 800, 1000):
+			if value not in values:
 				await ctx.embed_reply(":no_entry: That's not a valid value")
 				continue
-			value_index = [200, 400, 600, 800, 1000].index(value)
+			value_index = values.index(value)
 			category_id = list(board.keys())[row_number - 1]
 			clue = board[category_id]["clues"][value_index]
 			if not clue:  # Use := in Python 3.8
