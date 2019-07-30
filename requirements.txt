@@ -51,7 +51,7 @@ urllib3==1.25.3
 wand==0.5.5
 wolframalpha==3.0.1
 wordnik-py3==2.1.2
-youtube-dl==2019.7.16
+youtube-dl==2019.7.30
 
 asn1crypto==0.24.0
 async-timeout==3.0.1
