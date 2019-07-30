@@ -276,7 +276,6 @@ class Trivia(commands.Cog):
 												"answer": None, "answerer": None}
 		message = await ctx.embed_reply("Generating board..", title = "Jeopardy!", author_name = None)
 		board = {}
-		category_titles = []
 		url = "http://jservice.io/api/random"
 		while len(board) < 6:
 			params = {"count": 6 - len(board)}
@@ -285,18 +284,18 @@ class Trivia(commands.Cog):
 			for clue in data:
 				category_id = clue["category_id"]
 				if category_id not in board:
-					board[category_id] = [True] * 5
-					category_titles.append(string.capwords(clue["category"]["title"]))
-		# TODO: Get and store all questions data?
-		for index, category_title in enumerate(category_titles):
+					board[category_id] = {"title": string.capwords(clue["category"]["title"]), 
+											"clues": [True] * 5}
+		# TODO: Get and store all clues data?
+		for index, category_title in enumerate(category["title"] for category in board.values()):
 			category_title_line_character_limit = ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
 			# len("#) " + "  200 400 600 800 1000") = 25
 			if len(category_title) > category_title_line_character_limit:
 				split_index = category_title.rfind(' ', 0, category_title_line_character_limit)
 				category_titles[index] = category_title[:split_index] + '\n' + category_title[split_index + 1:]
-		max_width = max(len(section) for category_title in category_titles for section in category_title.split('\n'))
+		max_width = max(len(section) for category in board.values() for section in category["title"].split('\n'))
 		board_lines = []
-		for number, category_title in enumerate(category_titles):
+		for number, category_title in enumerate(category["title"] for category in board.values()):
 			try:
 				split_index = category_title.index('\n')
 				board_lines.append(f"{number + 1}) {category_title[:split_index]}\n"
@@ -316,7 +315,7 @@ class Trivia(commands.Cog):
 				return False
 			return parts[0].isdecimal() and parts[1].isdecimal()
 		
-		while any(question for category in board.values() for question in category):
+		while any(clue for category in board.values() for clue in category["clues"]):
 			message = await ctx.bot.wait_for("message", check = choice_check)
 			# TODO: Timeout?
 			# TODO: Enforce last person to answer correctly chooses?
@@ -332,7 +331,7 @@ class Trivia(commands.Cog):
 				continue
 			value_index = [200, 400, 600, 800, 1000].index(value)
 			category_id = list(board.keys())[row_number - 1]
-			if not board[category_id][value_index]:
+			if not board[category_id]["clues"][value_index]:
 				await ctx.embed_reply(":no_entry: That question has already been chosen")
 				continue
 			self.active_jeopardy[ctx.guild.id]["answerer"] = None
@@ -366,7 +365,7 @@ class Trivia(commands.Cog):
 			else:
 				response += "Nobody got it right\n"
 			response += ", ".join(f"{player.mention}: ${score}" for player, score in scores.items()) + '\n'
-			board[category_id][value_index] = False
+			board[category_id]["clues"][value_index] = False
 			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
 			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
 			await ctx.embed_send(response)
