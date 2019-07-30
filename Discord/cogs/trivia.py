@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import datetime
 import html
 import random
 import re
@@ -290,6 +291,16 @@ class Trivia(commands.Cog):
 				params = {"id": category_id}
 				async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 					data = await resp.json()
+				# The first round originally ranged from $100 to $500
+				# and was doubled to $200 to $1,000 on November 26, 2001
+				# https://en.wikipedia.org/wiki/Jeopardy!
+				# http://www.j-archive.com/showgame.php?game_id=1062
+				# jService uses noon UTC for airdates
+				# jService doesn't include Double Jeopardy! clues
+				transition_date = datetime.datetime(2001, 11, 26, 12, tzinfo = datetime.timezone.utc)
+				for clue in data["clues"]:
+					if dateutil.parser.parse(clue["airdate"]) < transition_date:
+						clue["value"] *= 2
 				try:
 					clues = [random.choice([clue for clue in data["clues"]
 											if clue["value"] == value and clue["question"]])
