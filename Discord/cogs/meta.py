@@ -278,7 +278,10 @@ class Meta(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def harmonbot(self, ctx):
-		'''Me'''
+		'''
+		Me
+		Also see help and about commands
+		'''
 		await ctx.send_help(ctx.command)
 	
 	@harmonbot.group(name = "activity", aliases = ["game", "playing", "status"], 
