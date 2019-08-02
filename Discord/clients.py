@@ -198,7 +198,7 @@ class Bot(commands.Bot):
 								"feelings": "as a bot, I lack human emotions", "footballteam": "Trojans", 
 								"forfun": "chat online", "friend": "Alice", 
 								"friends": "Cleverbot, Eliza, Jabberwacky, Mitsuku, Rose, Suzette, Ultra Hal", "gender": "male", 
-								"genus": "python bot", "girlfriend": "Samantha", "job": "Discord bot", "kingdom": "machine", 
+								"genus": "Python bot", "girlfriend": "Samantha", "job": "Discord bot", "kingdom": "machine", 
 								"language": "Python", "location": "the Internet", "looklike": "a computer", "master": "Harmon", 
 								"maxclients": '∞', "memory": "8 GB", "name": "Harmonbot", "nationality": "American", 
 								"order": "artificial intelligence", "os": "Windows", "phylum": "software", "sign": "Capricorn", 
