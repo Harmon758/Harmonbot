@@ -162,7 +162,9 @@ class Info(commands.Cog):
 			await ctx.embed_reply(":no_entry: Syntax error")
 			return
 		spotify_access_token = await self.bot.cogs["Audio"].get_spotify_access_token()
-		async with ctx.bot.aiohttp_session.get("https://api.spotify.com/v1/tracks/" + path[7:], headers = {"Authorization": f"Bearer {spotify_access_token}"}) as resp:
+		url = "https://api.spotify.com/v1/tracks/" + path[7:]
+		headers = {"Authorization": f"Bearer {spotify_access_token}"}
+		async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
 			data = await resp.json()
 		# tracknumber = str(data["track_number"])
 		# TODO: handle track not found
@@ -171,7 +173,8 @@ class Info(commands.Cog):
 		description += f"Duration: {utilities.secs_to_colon_format(data['duration_ms'] / 1000)}\n"
 		# TODO: handle no preview
 		description += f"[Preview]({data['preview_url']})"
-		await ctx.embed_reply(description, title = data["name"], title_url = url, thumbnail_url = data["album"]["images"][0]["url"])
+		await ctx.embed_reply(description, title = data["name"], title_url = url, 
+								thumbnail_url = data["album"]["images"][0]["url"])
 		# TODO: keep spotify embed?
 	
 	@info.command(aliases = ["member"])
