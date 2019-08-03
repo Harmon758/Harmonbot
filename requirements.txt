@@ -71,7 +71,7 @@ googleapis-common-protos==1.6.0
 grpcio==1.22.0
 idna==2.8
 jaraco.itertools==4.4.2
-jsonschema==3.0.1
+jsonschema==3.0.2
 kiwisolver==1.1.0
 lxml==4.4.0
 mpmath==1.1.0
