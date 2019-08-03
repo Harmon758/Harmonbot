@@ -159,8 +159,7 @@ class Info(commands.Cog):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
 		if path[:7] != "/track/":
-			await ctx.embed_reply(":no_entry: Syntax error")
-			return
+			return await ctx.embed_reply(":no_entry: Syntax error")
 		spotify_access_token = await self.bot.cogs["Audio"].get_spotify_access_token()
 		url = "https://api.spotify.com/v1/tracks/" + path[7:]
 		headers = {"Authorization": f"Bearer {spotify_access_token}"}
@@ -168,9 +167,9 @@ class Info(commands.Cog):
 			data = await resp.json()
 		# tracknumber = str(data["track_number"])
 		# TODO: handle track not found
-		description = f"Artist: [{data['artists'][0]['name']}]({data['artists'][0]['external_urls']['spotify']})\n"
-		description += f"Album: [{data['album']['name']}]({data['album']['external_urls']['spotify']})\n"
-		description += f"Duration: {utilities.secs_to_colon_format(data['duration_ms'] / 1000)}\n"
+		description = (f"Artist: [{data['artists'][0]['name']}]({data['artists'][0]['external_urls']['spotify']})\n"
+						f"Album: [{data['album']['name']}]({data['album']['external_urls']['spotify']})\n"
+						f"Duration: {utilities.secs_to_colon_format(data['duration_ms'] / 1000)}\n")
 		# TODO: handle no preview
 		description += f"[Preview]({data['preview_url']})"
 		await ctx.embed_reply(description, title = data["name"], title_url = url, 
