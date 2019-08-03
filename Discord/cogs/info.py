@@ -155,7 +155,7 @@ class Info(commands.Cog):
 	
 	@info.command()
 	@checks.not_forbidden()
-	async def spotify(self, ctx, url : str):
+	async def spotify(self, ctx, url: str):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
 		if path[:7] != "/track/":
