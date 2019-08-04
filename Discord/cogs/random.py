@@ -300,7 +300,7 @@ class Random(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def dog(self, ctx, *, breed : str = ""):
+	async def dog(self, ctx, *, breed: str = ""):
 		'''
 		Random image of a dog
 		[breed] [sub-breed] to specify a specific sub-breed
