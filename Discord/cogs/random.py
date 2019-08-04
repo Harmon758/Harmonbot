@@ -306,14 +306,15 @@ class Random(commands.Cog):
 		[breed] [sub-breed] to specify a specific sub-breed
 		'''
 		if breed:
-			async with ctx.bot.aiohttp_session.get(f"https://dog.ceo/api/breed/{breed.lower().replace(' ', '/')}/images/random") as resp:
+			url = f"https://dog.ceo/api/breed/{breed.lower().replace(' ', '/')}/images/random"
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data["status"] == "error":
-				await ctx.embed_reply(f":no_entry: Error: {data['message']}")
-			else:
-				await ctx.embed_reply(f"[:dog2:]({data['message']})", image_url = data["message"])
+				return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+			await ctx.embed_reply(f"[:dog2:]({data['message']})", image_url = data["message"])
 		else:
-			async with ctx.bot.aiohttp_session.get("https://dog.ceo/api/breeds/image/random") as resp:
+			url = "https://dog.ceo/api/breeds/image/random"
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			await ctx.embed_reply(f"[:dog2:]({data['message']})", image_url = data["message"])
 	
