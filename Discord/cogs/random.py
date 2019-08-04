@@ -306,16 +306,16 @@ class Random(commands.Cog):
 		[breed] [sub-breed] to specify a specific sub-breed
 		'''
 		if breed:
-			async with ctx.bot.aiohttp_session.get("https://dog.ceo/api/breed/{}/images/random".format(breed.lower().replace(' ', '/'))) as resp:
+			async with ctx.bot.aiohttp_session.get(f"https://dog.ceo/api/breed/{breed.lower().replace(' ', '/')}/images/random") as resp:
 				data = await resp.json()
 			if data["status"] == "error":
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
+				await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 			else:
-				await ctx.embed_reply("[:dog2:]({})".format(data["message"]), image_url = data["message"])
+				await ctx.embed_reply(f"[:dog2:]({data['message']})", image_url = data["message"])
 		else:
 			async with ctx.bot.aiohttp_session.get("https://dog.ceo/api/breeds/image/random") as resp:
 				data = await resp.json()
-			await ctx.embed_reply("[:dog2:]({})".format(data["message"]), image_url = data["message"])
+			await ctx.embed_reply(f"[:dog2:]({data['message']})", image_url = data["message"])
 	
 	@dog.command(name = "breeds", aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"])
 	@checks.not_forbidden()
