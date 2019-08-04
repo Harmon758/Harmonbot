@@ -12,6 +12,7 @@ import json
 import multiprocessing
 import random
 import string
+from typing import Optional
 import xml.etree.ElementTree
 
 from bs4 import BeautifulSoup
@@ -300,7 +301,7 @@ class Random(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def dog(self, ctx, *, breed: str = ""):
+	async def dog(self, ctx, *, breed: Optional[str]):
 		'''
 		Random image of a dog
 		[breed] [sub-breed] to specify a specific sub-breed
