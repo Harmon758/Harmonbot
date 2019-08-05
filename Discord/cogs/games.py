@@ -10,7 +10,7 @@ import random
 import re
 import sys
 import timeit
-import typing
+from typing import Optional
 
 from bs4 import BeautifulSoup
 import pydealer
@@ -444,7 +444,7 @@ class Games(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def guess(self, ctx, max_value : typing.Optional[int], tries : typing.Optional[int]):
+	async def guess(self, ctx, max_value : Optional[int], tries : Optional[int]):
 		'''Guessing game'''
 		if not max_value:
 			await ctx.embed_reply("What range of numbers would you like to guess to? 1 to _")
