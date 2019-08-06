@@ -161,7 +161,7 @@ class Pinboard(commands.Cog):
 	
 	@pinboard.command(aliases = ["private"])
 	@checks.is_permitted()
-	async def private_channels(self, ctx, setting : Optional[bool]):
+	async def private_channels(self, ctx, setting: Optional[bool]):
 		'''
 		Set/get whether to include pins from private channels
 		Default: False
