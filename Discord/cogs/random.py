@@ -327,8 +327,8 @@ class Random(commands.Cog):
 			data = await resp.json()
 		breeds = data["message"]
 		for breed in breeds:
-			breeds[breed] = " ({})".format(", ".join(sub.capitalize() for sub in breeds[breed])) if breeds[breed] else ""
-		await ctx.embed_reply(", ".join("**{}**{}".format(breed.capitalize(), breeds[breed]) for breed in breeds), footer_text = "Sub-breeds are in parentheses after the corresponding breed")
+			breeds[breed] = f" ({', '.join(sub.capitalize() for sub in breeds[breed])})" if breeds[breed] else ""
+		await ctx.embed_reply(", ".join(f"**{breed.capitalize()}**{breeds[breed]}" for breed in breeds), footer_text = "Sub-breeds are in parentheses after the corresponding breed")
 	
 	@commands.command(aliases = ["emoji"])
 	@checks.not_forbidden()
