@@ -323,10 +323,14 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def dog_breeds(self, ctx):
 		'''Breeds and sub-breeds of dogs for which images are categorized under'''
-		async with ctx.bot.aiohttp_session.get("https://dog.ceo/api/breeds/list/all") as resp:
+		url = "https://dog.ceo/api/breeds/list/all"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		breeds = data["message"]
-		await ctx.embed_reply(", ".join(f"""**{breed.capitalize()}**{f" ({', '.join(sub.capitalize() for sub in subs)})" if subs else ""}""" for breed, subs in breeds.items()), footer_text = "Sub-breeds are in parentheses after the corresponding breed")
+		await ctx.embed_reply(", ".join(f"**{breed.capitalize()}** ({', '.join(sub.capitalize() for sub in subs)})" if subs 
+										else f"**{breed.capitalize()}**"
+										for breed, subs in breeds.items()), 
+								footer_text = "Sub-breeds are in parentheses after the corresponding breed")
 	
 	@commands.command(aliases = ["emoji"])
 	@checks.not_forbidden()
