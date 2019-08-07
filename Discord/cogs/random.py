@@ -326,9 +326,7 @@ class Random(commands.Cog):
 		async with ctx.bot.aiohttp_session.get("https://dog.ceo/api/breeds/list/all") as resp:
 			data = await resp.json()
 		breeds = data["message"]
-		for breed in breeds:
-			breeds[breed] = f" ({', '.join(sub.capitalize() for sub in breeds[breed])})" if breeds[breed] else ""
-		await ctx.embed_reply(", ".join(f"**{breed.capitalize()}**{breeds[breed]}" for breed in breeds), footer_text = "Sub-breeds are in parentheses after the corresponding breed")
+		await ctx.embed_reply(", ".join(f"""**{breed.capitalize()}**{f" ({', '.join(sub.capitalize() for sub in subs)})" if subs else ""}""" for breed, subs in breeds.items()), footer_text = "Sub-breeds are in parentheses after the corresponding breed")
 	
 	@commands.command(aliases = ["emoji"])
 	@checks.not_forbidden()
