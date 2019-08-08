@@ -362,7 +362,7 @@ class Random(commands.Cog):
 	
 	@fact.command(name = "date")
 	@checks.not_forbidden()
-	async def fact_date(self, ctx, date : str):
+	async def fact_date(self, ctx, date: str):
 		'''
 		Random fact about a date
 		Format: month/date
