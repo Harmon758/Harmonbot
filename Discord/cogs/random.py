@@ -371,8 +371,7 @@ class Random(commands.Cog):
 		url = f"http://numbersapi.com/{date}/date"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error")
-				return
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
