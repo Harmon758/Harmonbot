@@ -368,7 +368,8 @@ class Random(commands.Cog):
 		Format: month/date
 		Example: 1/1
 		'''
-		async with ctx.bot.aiohttp_session.get("http://numbersapi.com/{}/date".format(date)) as resp:
+		url = "http://numbersapi.com/{}/date".format(date)
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
 				await ctx.embed_reply(":no_entry: Error")
 				return
