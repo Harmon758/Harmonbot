@@ -379,7 +379,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def fact_math(self, ctx, number : int):
 		'''Random math fact about a number'''
-		url = "http://numbersapi.com/{}/math".format(number)
+		url = f"http://numbersapi.com/{number}/math"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
