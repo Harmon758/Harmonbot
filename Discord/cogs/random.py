@@ -388,7 +388,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def fact_number(self, ctx, number : int):
 		'''Random fact about a number'''
-		url = "http://numbersapi.com/{}".format(number)
+		url = f"http://numbersapi.com/{number}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
