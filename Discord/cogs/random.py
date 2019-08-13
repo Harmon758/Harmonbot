@@ -395,7 +395,7 @@ class Random(commands.Cog):
 	
 	@fact.command(name = "year")
 	@checks.not_forbidden()
-	async def fact_year(self, ctx, year : int):
+	async def fact_year(self, ctx, year: int):
 		'''Random fact about a year'''
 		url = f"http://numbersapi.com/{year}/year"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
