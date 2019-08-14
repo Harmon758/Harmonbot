@@ -408,7 +408,7 @@ class Random(commands.Cog):
 		'''Random idea'''
 		async with ctx.bot.aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
 			data = await resp.json(content_type = "text/javascript")
-		await ctx.embed_reply("{0[this]} for {0[that]}".format(data))
+		await ctx.embed_reply(f"{data['this']} for {data['that']}")
 	
 	@commands.command()
 	@checks.not_forbidden()
