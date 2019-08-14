@@ -406,7 +406,8 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def idea(self, ctx):
 		'''Random idea'''
-		async with ctx.bot.aiohttp_session.get("http://itsthisforthat.com/api.php?json") as resp:
+		url = "http://itsthisforthat.com/api.php?json"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json(content_type = "text/javascript")
 		await ctx.embed_reply(f"{data['this']} for {data['that']}")
 	
