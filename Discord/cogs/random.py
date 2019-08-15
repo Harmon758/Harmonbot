@@ -415,7 +415,8 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def insult(self, ctx):
 		'''Random insult'''
-		async with ctx.bot.aiohttp_session.get("http://quandyfactory.com/insult/json") as resp:
+		url = "http://quandyfactory.com/insult/json"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(data["insult"])
 	
