@@ -68,7 +68,7 @@ geojson==2.5.0
 gitdb==0.6.4
 gitdb2==2.0.5
 googleapis-common-protos==1.6.0
-grpcio==1.22.0
+grpcio==1.23.0
 idna==2.8
 jaraco.itertools==4.4.2
 jsonschema==3.0.2
