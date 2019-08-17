@@ -170,7 +170,7 @@ class Random(commands.Cog):
 		async with ctx.bot.aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
 			data = await resp.text()
 		total = json.loads(data)["num"]
-		url = "http://xkcd.com/{}/info.0.json".format(random.randint(1, total))
+		url = f"http://xkcd.com/{random.randint(1, total)}/info.0.json"
 		cog = self.bot.get_cog("Resources")
 		if cog: await cog.process_xkcd(ctx, url)
 	
