@@ -167,12 +167,14 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def xkcd(self, ctx):
 		'''Random xkcd'''
-		async with ctx.bot.aiohttp_session.get("http://xkcd.com/info.0.json") as resp:
+		url = "http://xkcd.com/info.0.json"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		total = json.loads(data)["num"]
 		url = f"http://xkcd.com/{random.randint(1, total)}/info.0.json"
 		cog = self.bot.get_cog("Resources")
-		if cog: await cog.process_xkcd(ctx, url)
+		if cog:  # Use := in Python 3.8
+			await cog.process_xkcd(ctx, url)
 	
 	@commands.command(aliases = ["rabbit"])
 	@checks.not_forbidden()
