@@ -169,9 +169,9 @@ class Info(commands.Cog):
 		# TODO: handle track not found
 		description = (f"Artist: [{data['artists'][0]['name']}]({data['artists'][0]['external_urls']['spotify']})\n"
 						f"Album: [{data['album']['name']}]({data['album']['external_urls']['spotify']})\n"
-						f"Duration: {utilities.secs_to_colon_format(data['duration_ms'] / 1000)}\n")
-		# TODO: handle no preview
-		description += f"[Preview]({data['preview_url']})"
+						f"Duration: {utilities.secs_to_colon_format(data['duration_ms'] / 1000)}")
+		if data["preview_url"]:  # TODO: Use := in Python 3.8
+			description += f"\n[Preview]({data['preview_url']})"
 		await ctx.embed_reply(description, title = data["name"], title_url = url, 
 								thumbnail_url = data["album"]["images"][0]["url"])
 		# TODO: keep spotify embed?
