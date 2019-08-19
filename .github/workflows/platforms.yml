@@ -27,6 +27,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Test Discord Harmonbot
+      env:
+        DISCORD_BETA_BOT_TOKEN: ${{ secrets.DISCORD_BETA_BOT_TOKEN }}
       run: |
         cd Discord
         python Harmonbot.py
@@ -55,6 +57,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Test Telegram Harmonbot
+      env:
+        TELEGRAM_BOT_API_TOKEN: ${{ secrets.TELEGRAM_BOT_API_TOKEN }}
       run: |
         cd Telegram
         python Telegram_Harmonbot.py
@@ -82,6 +86,8 @@ jobs:
         go get github.com/bwmarrin/dgvoice
         go get github.com/joho/godotenv
     - name: Test Discord Listener
+      env:
+        DISCORD_LISTENER_BOT_TOKEN: ${{ secrets.DISCORD_LISTENER_BOT_TOKEN }}
       run: |
         cd Discord
         go run Harmonbot_Listener.go
