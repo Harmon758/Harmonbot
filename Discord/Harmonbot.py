@@ -223,7 +223,7 @@ if __name__ == "__main__":
 		token = os.getenv("DISCORD_BOT_TOKEN")
 		# Load Opus
 		## Get Opus version in bin folder
-		opus = discord.opus.libopus_loader("bin/opus")
+		opus = discord.opus.libopus_loader("bin/opus.dll")
 		opus.opus_get_version_string.restype = ctypes.c_char_p
 		harmonbot_opus_version = opus.opus_get_version_string().decode("UTF-8")
 		if harmonbot_opus_version.startswith("libopus "):
