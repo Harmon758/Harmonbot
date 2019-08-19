@@ -215,8 +215,9 @@ if __name__ == "__main__":
 				return await ctx.invoke(respects_command.get_command("pay"))
 	
 	ci = os.getenv("CI")
+	github_action = os.getenv("GITHUB_ACTION")
 	
-	if ci or client.beta:
+	if ci or github_action or client.beta:
 		client.command_prefix = '*'
 		token = os.getenv("DISCORD_BETA_BOT_TOKEN")
 	else:
@@ -252,7 +253,7 @@ if __name__ == "__main__":
 		# Try port >1024? or sudo? for CI
 	
 	try:
-		if ci:
+		if ci or github_action:
 			client.loop.create_task(client.start(token))
 			client.loop.run_until_complete(asyncio.sleep(10))
 			# TODO: stop after ready
