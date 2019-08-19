@@ -9,9 +9,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        # Python not available on macOS?
-        # No available versions found by actions/setup-python
+        os: [ubuntu-latest]
+        # Container action (for PostgreSQL) is only supported on Linux
         postgresql-version: ['10']
         python-version: ['3.7']
     runs-on: ${{ matrix.os }}
