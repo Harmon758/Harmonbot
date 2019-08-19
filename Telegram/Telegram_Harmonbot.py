@@ -32,6 +32,6 @@ updater.start_polling()
 bot_info = bot.getMe()
 print(f"Started up Telegram Harmonbot ({bot_info['username']}) ({bot_info['id']})")
 
-if os.getenv("CI"):
+if os.getenv("CI") or os.getenv("GITHUB_ACTION"):
 	updater.stop()
 
