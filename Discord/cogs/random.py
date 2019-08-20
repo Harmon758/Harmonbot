@@ -190,7 +190,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def card(self, ctx):
 		'''Random playing card'''
-		await ctx.embed_reply(":{}: {}".format(random.choice(pydealer.const.SUITS).lower(), random.choice(pydealer.const.VALUES)))
+		await ctx.embed_reply(f":{random.choice(pydealer.const.SUITS).lower()}: {random.choice(pydealer.const.VALUES)}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
