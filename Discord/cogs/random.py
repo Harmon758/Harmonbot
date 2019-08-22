@@ -252,7 +252,7 @@ class Random(commands.Cog):
 	@checks.not_forbidden()
 	async def command(self, ctx):
 		'''Random command'''
-		await ctx.embed_reply("{}{}".format(ctx.prefix, random.choice(tuple(set(command.name for command in self.bot.commands)))))
+		await ctx.embed_reply(f"{ctx.prefix}{random.choice(tuple(set(command.name for command in self.bot.commands)))}")
 	
 	@commands.command(aliases = ["die", "roll"])
 	@checks.not_forbidden()
