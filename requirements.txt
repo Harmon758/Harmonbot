@@ -76,7 +76,7 @@ kiwisolver==1.1.0
 lxml==4.4.0
 mpmath==1.1.0
 multidict==4.5.2
-oauthlib==3.0.2
+oauthlib==3.1.0
 pillow==6.1.0
 protobuf==3.9.1
 pycparser==2.19
