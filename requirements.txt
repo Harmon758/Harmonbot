@@ -23,7 +23,7 @@ matplotlib==3.1.1
 more-itertools==7.2.0
 numexpr==2.6.9
 numpy==1.17.0
-pandas==0.25.0
+pandas==0.25.1
 psutil==5.6.3
 pycountry==19.7.15
 pydealer==1.4.0
