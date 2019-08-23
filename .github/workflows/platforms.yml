@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Set up PostgreSQL ${{ matrix.postgresql-version }}
-      uses: harmon758/postgresql-action@master
+      uses: harmon758/postgresql-action@v1
       with:
         postgresql version: ${{ matrix.postgresql-version }}
         postgresql db: harmonbot
