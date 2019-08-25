@@ -31,15 +31,7 @@ class DotA(commands.Cog):
 	
 	# TODO: Add dota buff subcommand alias
 	@commands.command()
-	async def dotabuff(self, ctx, account: str):
+	async def dotabuff(self, ctx, account: SteamAccount):
 		'''Get Dotabuff link'''
-		try:
-			url = f"https://www.dotabuff.com/players/{int(account) - 76561197960265728}"
-		except ValueError:
-			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
-			params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": account}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			url = f"https://www.dotabuff.com/players/{int(data['response']['steamid']) - 76561197960265728}"
-		await ctx.embed_reply(title = f"{account}'s Dotabuff profile", title_url = url)
+		await ctx.embed_reply(f"https://www.dotabuff.com/players/{account}")
 
