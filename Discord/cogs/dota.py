@@ -18,7 +18,7 @@ class DotA(commands.Cog):
 	
 	# TODO: Add dota buff subcommand alias
 	@commands.command()
-	async def dotabuff(self, ctx, account : str):
+	async def dotabuff(self, ctx, account: str):
 		'''Get Dotabuff link'''
 		try:
 			url = f"https://www.dotabuff.com/players/{int(account) - 76561197960265728}"
