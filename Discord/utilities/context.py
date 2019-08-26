@@ -29,11 +29,11 @@ class Context(commands.Context):
 	
 	# TODO: optimize/improve clarity
 	async def embed_send(self, description = None, *args, 
-						title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
-						author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
-						image_url = None, thumbnail_url = None, 
-						footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
-						timestamp = discord.Embed.Empty, fields = [], color = None, **kwargs):
+							title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
+							author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
+							image_url = None, thumbnail_url = None, 
+							footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
+							timestamp = discord.Embed.Empty, fields = [], color = None, **kwargs):
 		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = color or self.bot.bot_color)
 		embed.description = str(description) if description else discord.Embed.Empty
 		if author_name:
