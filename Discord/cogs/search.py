@@ -58,7 +58,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def amazon(self, ctx, *search : str):
 		'''Search with Amazon'''
-		await ctx.embed_reply("[Amazon search for \"{}\"](https://smile.amazon.com/s/?field-keywords={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[Amazon search for \"{' '.join(search)}\"](https://smile.amazon.com/s/?field-keywords={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
