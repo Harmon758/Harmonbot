@@ -64,7 +64,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def aol(self, ctx, *search : str):
 		'''Search with AOL'''
-		await ctx.embed_reply("[AOL search for \"{}\"](https://search.aol.com/aol/search?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[AOL search for \"{' '.join(search)}\"](https://search.aol.com/aol/search?q={'+'.join(search)})")
 	
 	@commands.command(name = "ask.com")
 	@checks.not_forbidden()
