@@ -3,7 +3,7 @@
 # TwitchIO@rewrite
 -e git+git://github.com/TwitchIO/Twitchio.git@9c99b72#egg=twitchio
 pydle==0.9.1
-python-telegram-bot==11.1.0
+python-telegram-bot==12.0.0
 
 aiohttp==3.5.4
 asyncpg==0.18.3
