@@ -70,7 +70,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def ask_com(self, ctx, *search : str):
 		'''Search with Ask.com'''
-		await ctx.embed_reply("[Ask.com search for \"{}\"](http://www.ask.com/web?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[Ask.com search for \"{' '.join(search)}\"](http://www.ask.com/web?q={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
