@@ -76,7 +76,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def baidu(self, ctx, *search : str):
 		'''Search with Baidu'''
-		await ctx.embed_reply("[Baidu search for \"{}\"](http://www.baidu.com/s?wd={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[Baidu search for \"{' '.join(search)}\"](http://www.baidu.com/s?wd={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
