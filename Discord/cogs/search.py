@@ -82,7 +82,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def bing(self, ctx, *search : str):
 		'''Search with Bing'''
-		await ctx.embed_reply("[Bing search for \"{}\"](http://www.bing.com/search?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[Bing search for \"{' '.join(search)}\"](http://www.bing.com/search?q={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
