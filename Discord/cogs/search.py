@@ -88,7 +88,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def duckduckgo(self, ctx, *search : str):
 		'''Search with DuckDuckGo'''
-		await ctx.embed_reply("[DuckDuckGo search for \"{}\"](https://www.duckduckgo.com/?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[DuckDuckGo search for \"{' '.join(search)}\"](https://www.duckduckgo.com/?q={'+'.join(search)})")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
