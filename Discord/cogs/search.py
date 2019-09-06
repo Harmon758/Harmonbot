@@ -94,7 +94,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def google(self, ctx, *, search : str):
 		'''Google search'''
-		await ctx.embed_reply("[Google search for \"{}\"](https://www.google.com/search?q={})".format(search, search.replace(' ', '+')))
+		await ctx.embed_reply(f"[Google search for \"{search}\"](https://www.google.com/search?q={search.replace(' ', '+')})")
 	
 	@commands.command(aliases = ["im_feeling_lucky"])
 	@checks.not_forbidden()
