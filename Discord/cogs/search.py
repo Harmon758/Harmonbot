@@ -100,7 +100,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def imfeelinglucky(self, ctx, *search : str):
 		'''First Google result of a search'''
-		await ctx.embed_reply("[First Google result of \"{}\"](https://www.google.com/search?btnI&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[First Google result of \"{' '.join(search)}\"](https://www.google.com/search?btnI&q={'+'.join(search)})")
 	
 	@commands.command(name = "lma.ctfy")
 	@checks.not_forbidden()
