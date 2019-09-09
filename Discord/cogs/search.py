@@ -106,7 +106,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def lma_ctfy(self, ctx, *search : str):
 		'''Let Me Ask.Com That For You'''
-		await ctx.embed_reply("[LMA.CTFY: \"{}\"](http://lmgtfy.com/?s=k&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[LMA.CTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=k&q={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
