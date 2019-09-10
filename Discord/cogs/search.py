@@ -112,7 +112,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def lmaoltfy(self, ctx, *search : str):
 		'''Let Me AOL That For You'''
-		await ctx.embed_reply("[LMAOLTFY: \"{}\"](http://lmgtfy.com/?s=a&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[LMAOLTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=a&q={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
