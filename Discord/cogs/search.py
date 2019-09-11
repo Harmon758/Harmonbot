@@ -118,7 +118,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def lmatfy(self, ctx, *search : str):
 		'''Let Me Amazon That For You'''
-		await ctx.embed_reply("[LMATFY: \"{}\"](http://lmatfy.co/?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[LMATFY: \"{' '.join(search)}\"](http://lmatfy.co/?q={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
