@@ -124,7 +124,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def lmbdtfy(self, ctx, *search : str):
 		'''Let Me Baidu That For You'''
-		await ctx.embed_reply("[LMBDTFY: \"{}\"](https://lmbtfy.cn/?{})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[LMBDTFY: \"{' '.join(search)}\"](https://lmbtfy.cn/?{'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
