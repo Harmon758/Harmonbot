@@ -56,7 +56,7 @@ youtube-dl==2019.8.13
 asn1crypto==0.24.0
 async-timeout==3.0.1
 attrs==19.1.0
-certifi==2019.6.16
+certifi==2019.9.11
 cffi==1.12.3
 chardet==3.0.4
 configparser==3.8.1
