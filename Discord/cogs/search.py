@@ -130,8 +130,8 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def lmbtfy(self, ctx, *search : str):
 		'''Let Me Bing That For You'''
-		output = "[LMBTFY: \"{}\"](http://lmbtfy.com/?s=b&q={})\n".format(' '.join(search), '+'.join(search))
-		output += "[LMBTFY: \"{}\"](http://letmebingthatforyou.com/q={})".format(' '.join(search), '+'.join(search))
+		output = f"[LMBTFY: \"{' '.join(search)}\"](http://lmbtfy.com/?s=b&q={'+'.join(search)})\n"
+		output += f"[LMBTFY: \"{' '.join(search)}\"](http://letmebingthatforyou.com/q={'+'.join(search)})"
 		await ctx.embed_reply(output)
 	
 	@commands.command()
