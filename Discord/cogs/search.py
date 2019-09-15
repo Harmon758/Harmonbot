@@ -144,7 +144,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def lmgtfy(self, ctx, *search : str):
 		'''Let Me Google That For You'''
-		await ctx.embed_reply("[LMGTFY: \"{}\"](http://lmgtfy.com/?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[LMGTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?q={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
