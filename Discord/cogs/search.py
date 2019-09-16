@@ -150,7 +150,7 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def lmytfy(self, ctx, *search : str):
 		'''Let Me Yahoo That For You'''
-		await ctx.embed_reply("[LMYTFY: \"{}\"](http://lmgtfy.com/?s=y&q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[LMYTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=y&q={'+'.join(search)})")
 	
 	@commands.command()
 	@checks.not_forbidden()
