@@ -320,5 +320,5 @@ class Search(commands.Cog):
 	@checks.not_forbidden()
 	async def yahoo(self, ctx, *search : str):
 		'''Search with Yahoo'''
-		await ctx.embed_reply("[Yahoo search for \"{}\"](https://search.yahoo.com/search?q={})".format(' '.join(search), '+'.join(search)))
+		await ctx.embed_reply(f"[Yahoo search for \"{' '.join(search)}\"](https://search.yahoo.com/search?q={'+'.join(search)})")
 
