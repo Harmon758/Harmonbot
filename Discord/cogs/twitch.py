@@ -58,8 +58,8 @@ class Twitch(commands.Cog):
 			self.streams_info["channels"][str(ctx.channel.id)] = {"name": ctx.channel.name, "filters": [string], "games": [], "keywords": [], "streams": []}
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Added the filter, `{}`, to this text channel\n"
-		"I will now filter all streams for this string in the title".format(string))
+		await ctx.embed_reply(f"Added the filter, `{string}`, to this text channel\n"
+		"I will now filter all streams for this string in the title")
 	
 	@twitch_add.command(name = "game")
 	@checks.is_permitted()
