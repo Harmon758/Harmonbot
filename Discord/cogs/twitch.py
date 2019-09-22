@@ -106,7 +106,7 @@ class Twitch(commands.Cog):
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
 		await ctx.embed_reply(f"Added the Twitch channel, [`{username}`](https://www.twitch.tv/{username}), to this text channel\n"
-		"I will now announce here when this Twitch channel goes live")
+								"I will now announce here when this Twitch channel goes live")
 	
 	@twitch.group(name = "remove", aliases = ["delete"], 
 					invoke_without_command = True, case_insensitive = True)
