@@ -121,8 +121,7 @@ class Twitch(commands.Cog):
 		'''Remove a string Twitch stream titles are being filtered by'''
 		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or filter not in channel["filters"]:
-			await ctx.embed_reply(":no_entry: This text channel doesn't have that filter")
-			return
+			return await ctx.embed_reply(":no_entry: This text channel doesn't have that filter")
 		channel["filters"].remove(filter)
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
