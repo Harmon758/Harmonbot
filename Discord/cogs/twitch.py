@@ -126,7 +126,7 @@ class Twitch(commands.Cog):
 		channel["filters"].remove(filter)
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Removed the filter, `{}`, from this text channel".format(string))
+		await ctx.embed_reply(f"Removed the filter, `{string}`, from this text channel")
 	
 	@twitch_remove.command(name = "game")
 	@checks.is_permitted()
