@@ -138,7 +138,7 @@ class Twitch(commands.Cog):
 		channel["games"].remove(game)
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Removed the game, [`{0}`](https://www.twitch.tv/directory/game/{0}), from this text channel".format(game))
+		await ctx.embed_reply(f"Removed the game, [`{game}`](https://www.twitch.tv/directory/game/{game}), from this text channel")
 	
 	@twitch_remove.command(name = "keyword", aliases = ["query", "search"])
 	@checks.is_permitted()
