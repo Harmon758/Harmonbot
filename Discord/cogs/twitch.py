@@ -133,8 +133,7 @@ class Twitch(commands.Cog):
 		'''Remove a Twitch game being followed'''
 		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or game not in channel["games"]:
-			await ctx.embed_reply(":no_entry: This text channel isn't following that game")
-			return
+			return await ctx.embed_reply(":no_entry: This text channel isn't following that game")
 		channel["games"].remove(game)
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
