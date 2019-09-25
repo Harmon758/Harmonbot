@@ -150,7 +150,7 @@ class Twitch(commands.Cog):
 		channel["keywords"].remove(keyword)
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Removed the Twitch keyword search, `{}`, from this text channel".format(keyword))
+		await ctx.embed_reply(f"Removed the Twitch keyword search, `{keyword}`, from this text channel")
 	
 	@twitch_remove.command(name = "channel", aliases = ["stream"])
 	@checks.is_permitted()
