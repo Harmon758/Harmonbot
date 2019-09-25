@@ -145,8 +145,7 @@ class Twitch(commands.Cog):
 		'''Remove a Twitch keyword(s) search being followed'''
 		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or keyword not in channel["keywords"]:
-			await ctx.embed_reply(":no_entry: This text channel isn't following that keyword")
-			return
+			return await ctx.embed_reply(":no_entry: This text channel isn't following that keyword")
 		channel["keywords"].remove(keyword)
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
