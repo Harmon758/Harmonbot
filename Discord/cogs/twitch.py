@@ -157,8 +157,7 @@ class Twitch(commands.Cog):
 		'''Remove a Twitch channel being followed'''
 		channel = self.streams_info["channels"].get(str(ctx.channel.id))
 		if not channel or username not in channel["streams"]:
-			await ctx.embed_reply(":no_entry: This text channel isn't following that Twitch channel")
-			return
+			return await ctx.embed_reply(":no_entry: This text channel isn't following that Twitch channel")
 		channel["streams"].remove(username)
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
