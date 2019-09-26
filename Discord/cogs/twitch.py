@@ -162,7 +162,7 @@ class Twitch(commands.Cog):
 		channel["streams"].remove(username)
 		with open(clients.data_path + "/twitch_streams.json", 'w') as streams_file:
 			json.dump(self.streams_info, streams_file, indent = 4)
-		await ctx.embed_reply("Removed the Twitch channel, [`{0}`](https://www.twitch.tv/{0}), from this text channel".format(username))
+		await ctx.embed_reply(f"Removed the Twitch channel, [`{username}`](https://www.twitch.tv/{username}), from this text channel")
 	
 	@twitch.command(name = "filters")
 	@checks.not_forbidden()
