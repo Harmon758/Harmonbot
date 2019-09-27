@@ -33,8 +33,7 @@ class Finance(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				if resp.status == 404:
 					error = await resp.text()
-					await ctx.embed_reply(":no_entry: Error: " + error)
-					return
+					return await ctx.embed_reply(":no_entry: Error: " + error)
 				data = await resp.json(content_type = "application/javascript")
 			currency_data = data["bpi"][currency.upper()]
 			title = currency_data["description"]
