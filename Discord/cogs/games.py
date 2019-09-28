@@ -94,9 +94,9 @@ class Games(commands.Cog):
 		'''Foraging stats'''
 		player = self.get_adventure_player(ctx.author.id)
 		foraging_xp = player.foraging_xp
-		await ctx.embed_reply(f"\n:herb: Foraging xp: {foraging_xp}\n"
+		await ctx.embed_reply(f":herb: Foraging xp: {foraging_xp:,}\n"
 								f"{self.level_bar(foraging_xp)}\n"
-								f"{adventure.xp_left_to_next_lvl(foraging_xp)} xp to next level")
+								f"{adventure.xp_left_to_next_lvl(foraging_xp):,} xp to next level")
 	
 	def level_bar(self, xp):
 		lvl = adventure.xp_to_lvl(xp)
