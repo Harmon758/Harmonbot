@@ -120,7 +120,7 @@ class Games(commands.Cog):
 	
 	@adventure.command(name = "examine")
 	@checks.not_forbidden()
-	async def adventure_examine(self, ctx, *, item : str):
+	async def adventure_examine(self, ctx, *, item: str):
 		'''Examine items'''
 		player = self.get_adventure_player(ctx.author.id)
 		inventory = player.inventory
