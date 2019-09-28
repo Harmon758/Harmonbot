@@ -104,7 +104,7 @@ class Games(commands.Cog):
 		next_xp = adventure.lvl_to_xp(lvl + 1)
 		difference = next_xp - previous_xp
 		shaded = int((xp - previous_xp) / difference * 10)
-		bar = chr(9632) * shaded + chr(9633) * (10 - shaded)
+		bar = '\N{BLACK SQUARE}' * shaded + '\N{WHITE SQUARE}' * (10 - shaded)
 		return f"Level {lvl:,} ({previous_xp:,} xp) [{bar}] Level {lvl + 1:,} ({next_xp:,} xp)"
 	
 	@adventure.command(name = "inventory")
