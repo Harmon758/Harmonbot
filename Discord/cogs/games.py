@@ -84,7 +84,7 @@ class Games(commands.Cog):
 		'''Woodcutting stats'''
 		player = self.get_adventure_player(ctx.author.id)
 		woodcutting_xp = player.woodcutting_xp
-		await ctx.embed_reply("\n:evergreen_tree: Woodcutting xp: {}\n{}\n{} xp to next level".format(woodcutting_xp, self.level_bar(woodcutting_xp), adventure.xp_left_to_next_lvl(woodcutting_xp)))
+		await ctx.embed_reply(f"\n:evergreen_tree: Woodcutting xp: {woodcutting_xp}\n{self.level_bar(woodcutting_xp)}\n{adventure.xp_left_to_next_lvl(woodcutting_xp)} xp to next level")
 	
 	@adventure_stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"])
 	@checks.not_forbidden()
