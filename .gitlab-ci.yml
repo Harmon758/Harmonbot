@@ -12,7 +12,7 @@ Discord:
   # https://hub.docker.com/r/library/python/tags/
   image: python:3.7.3
   services:
-    - postgres:10.5
+    - postgres:10.10
   # Pip's cache doesn't store the python packages
   # https://pip.pypa.io/en/stable/reference/pip_install/#caching
   # If you want to also cache the installed packages, you have to install
