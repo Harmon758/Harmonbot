@@ -114,9 +114,9 @@ class Games(commands.Cog):
 		player = self.get_adventure_player(ctx.author.id)
 		inventory = player.inventory
 		if item in inventory:
-			await ctx.embed_reply("{}: {}".format(item, inventory[item]))
+			await ctx.embed_reply(f"{item}: {inventory[item]}")
 		else:
-			await ctx.embed_reply(", ".join(["{}: {}".format(item, amount) for item, amount in sorted(inventory.items())]))
+			await ctx.embed_reply(", ".join([f"{item}: {amount}" for item, amount in sorted(inventory.items())]))
 	
 	@adventure.command(name = "examine")
 	@checks.not_forbidden()
