@@ -309,13 +309,8 @@ class RSS(commands.Cog):
 									raise
 						# TODO: Remove text channel data if now non-existent
 			except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, 
-					aiohttp.client_exceptions.TooManyRedirects, 
-					# aiohttp.TooManyRedirects not properly publicly exposed
-					# Change back when fix released
-					# https://github.com/aio-libs/aiohttp/issues/3818
-					# https://github.com/aio-libs/aiohttp/pull/3819
-					# https://github.com/aio-libs/aiohttp/pull/3820
-					asyncio.TimeoutError, UnicodeDecodeError) as e:
+					aiohttp.TooManyRedirects, asyncio.TimeoutError, 
+					UnicodeDecodeError) as e:
 				await self.bot.db.execute(
 					"""
 					INSERT INTO rss.errors (feed, type, message)
