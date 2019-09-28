@@ -66,7 +66,7 @@ docopt==0.6.2
 future==0.17.1
 geojson==2.5.0
 gitdb==0.6.4
-gitdb2==2.0.5
+gitdb2==2.0.6
 googleapis-common-protos==1.6.0
 grpcio==1.23.0
 idna==2.8
