@@ -124,13 +124,12 @@ class Games(commands.Cog):
 		'''Examine items'''
 		player = self.get_adventure_player(ctx.author.id)
 		inventory = player.inventory
-		if item in inventory:
-			if item in adventure.examine_messages:
-				await ctx.embed_reply("{}".format(adventure.examine_messages[item]))
-			else:
-				await ctx.embed_reply("{}".format(item))
+		if item not in inventory:
+			return await ctx.embed_reply(":no_entry: You don't have that item")
+		if item in adventure.examine_messages:
+			await ctx.embed_reply(adventure.examine_messages[item])
 		else:
-			await ctx.embed_reply(":no_entry: You don't have that item")
+			await ctx.embed_reply(item)
 	
 	@adventure.group(name = "forage", aliases = ["gather"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
