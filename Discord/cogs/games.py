@@ -72,10 +72,10 @@ class Games(commands.Cog):
 	async def adventure_stats(self, ctx):
 		'''Stats'''
 		player = self.get_adventure_player(ctx.author.id)
-		await ctx.embed_reply("\n:fishing_pole_and_fish: Fishing xp: {} (Level {})"
-		"\n:herb: Foraging xp: {} (Level {})"
-		"\n:pick: Mining xp: {} (Level {})"
-		"\n:evergreen_tree: Woodcutting xp: {} (Level {})".format(player.fishing_xp, player.fishing_lvl, player.foraging_xp, player.foraging_lvl, player.mining_xp, player.mining_lvl, player.woodcutting_xp, player.woodcutting_lvl))
+		await ctx.embed_reply(f"\n:fishing_pole_and_fish: Fishing xp: {player.fishing_xp} (Level {player.fishing_lvl})"
+		f"\n:herb: Foraging xp: {player.foraging_xp} (Level {player.foraging_lvl})"
+		f"\n:pick: Mining xp: {player.mining_xp} (Level {player.mining_lvl})"
+		f"\n:evergreen_tree: Woodcutting xp: {player.woodcutting_xp} (Level {player.woodcutting_lvl})")
 		# time started/played
 	
 	@adventure_stats.command(name = "woodcutting", aliases = ["wc"])
