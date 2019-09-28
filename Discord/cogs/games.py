@@ -109,7 +109,7 @@ class Games(commands.Cog):
 	
 	@adventure.command(name = "inventory")
 	@checks.not_forbidden()
-	async def adventure_inventory(self, ctx, *, item : str = ""):
+	async def adventure_inventory(self, ctx, *, item: str = ""):
 		'''Inventory'''
 		player = self.get_adventure_player(ctx.author.id)
 		inventory = player.inventory
