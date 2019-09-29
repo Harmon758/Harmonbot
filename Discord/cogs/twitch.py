@@ -233,7 +233,8 @@ class Twitch(commands.Cog):
 				for game in games:
 					url = "https://api.twitch.tv/kraken/streams"
 					params = {"game": game, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-					async with self.bot.aiohttp_session.get(url, params = params) as resp:
+					headers = {"Accept": "application/vnd.twitchtv.v5+json"}
+					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 						games_data = await resp.json()
 					streams = games_data.get("streams", [])
 					stream_ids += [stream["_id"] for stream in streams]
@@ -243,18 +244,28 @@ class Twitch(commands.Cog):
 				keywords = set(itertools.chain(*[channel["keywords"] for channel in self.streams_info["channels"].values()]))
 				for keyword in keywords:
 					url = "https://api.twitch.tv/kraken/search/streams"
-					params = {'q': keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-					async with self.bot.aiohttp_session.get(url, params = params) as resp:
+					params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
+					headers = {"Accept": "application/vnd.twitchtv.v5+json"}
+					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 						keywords_data = await resp.json()
 					streams = keywords_data.get("streams", [])
 					stream_ids += [stream["_id"] for stream in streams]
 					await self.process_twitch_streams(streams, "keywords", match = keyword)
 					await asyncio.sleep(1)
 				# Streams
-				streams = set(itertools.chain(*[channel["streams"] for channel in self.streams_info["channels"].values()]))
+				streams = list(set(itertools.chain(*[channel["streams"] for channel in self.streams_info["channels"].values()])))
+				user_ids = []
+				url = "https://api.twitch.tv/kraken/users"
+				for index in range(0, len(streams), 100):
+					params = {"login": ','.join(streams[index:index + 100]), "client_id": self.bot.TWITCH_CLIENT_ID}
+					headers = {"Accept": "application/vnd.twitchtv.v5+json"}
+					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
+						users_data = await resp.json()
+					for user in users_data["users"]:
+						user_ids.append(user["_id"])
 				url = "https://api.twitch.tv/kraken/streams"
-				params = {"channel": ','.join(streams), "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-				async with self.bot.aiohttp_session.get(url, params = params) as resp:
+				params = {"channel": ','.join(user_ids), "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
+				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 					# TODO: Handle >100 streams
 					if resp.status != 504:
 						streams_data = await resp.json()
