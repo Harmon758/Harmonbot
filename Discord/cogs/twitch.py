@@ -280,8 +280,6 @@ class Twitch(commands.Cog):
 			if os.path.isfile(clients.data_path + "/temp/twitch_streams_announced.json"):
 				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'r') as streams_file:
 					self.streams_announced = json.load(streams_file)
-				# Convert json string keys back to int
-				self.streams_announced = {int(k): v for k, v in self.streams_announced.items()}
 				for announced_stream_id, announcements in self.streams_announced.items():
 					for announcement in announcements:
 						text_channel = self.bot.get_channel(int(announcement[2]))
@@ -324,7 +322,7 @@ class Twitch(commands.Cog):
 					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 						games_data = await resp.json()
 					streams = games_data.get("streams", [])
-					stream_ids += [stream["_id"] for stream in streams]
+					stream_ids += [str(stream["_id"]) for stream in streams]
 					await self.process_twitch_streams(streams, "games", match = game)
 					await asyncio.sleep(1)
 				# Keywords
@@ -335,7 +333,7 @@ class Twitch(commands.Cog):
 					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 						keywords_data = await resp.json()
 					streams = keywords_data.get("streams", [])
-					stream_ids += [stream["_id"] for stream in streams]
+					stream_ids += [str(stream["_id"]) for stream in streams]
 					await self.process_twitch_streams(streams, "keywords", match = keyword)
 					await asyncio.sleep(1)
 				# Streams
@@ -355,7 +353,7 @@ class Twitch(commands.Cog):
 					if resp.status != 504:
 						streams_data = await resp.json()
 				streams = streams_data.get("streams", [])
-				stream_ids += [stream["_id"] for stream in streams]
+				stream_ids += [str(stream["_id"]) for stream in streams]
 				await self.process_twitch_streams(streams, "streams")
 				# Update streams announced
 				for announced_stream_id, announcements in self.streams_announced.copy().items():
@@ -398,15 +396,15 @@ class Twitch(commands.Cog):
 	async def process_twitch_streams(self, streams, type, match = None):
 		# TODO: use textwrap
 		for stream in streams:
-			if stream["_id"] in self.old_streams_announced:
-				for announcement in self.old_streams_announced[stream["_id"]]:
+			if str(stream["_id"]) in self.old_streams_announced:
+				for announcement in self.old_streams_announced[str(stream["_id"])]:
 					embed = announcement[1]
 					embed.set_author(name = embed.author.name.replace("was", "just went"), 
 										url = embed.author.url, icon_url = embed.author.icon_url)
 					await announcement[0].edit(embed = embed)
-				self.streams_announced[stream["_id"]] = self.old_streams_announced[stream["_id"]]
-				del self.old_streams_announced[stream["_id"]]
-			elif stream["_id"] not in self.streams_announced:
+				self.streams_announced[str(stream["_id"])] = self.old_streams_announced[str(stream["_id"])]
+				del self.old_streams_announced[str(stream["_id"])]
+			elif str(stream["_id"]) not in self.streams_announced:
 				for channel_id, channel_info in self.streams_info["channels"].items():
 					if not match and stream["channel"]["name"] not in [s.lower() for s in channel_info[type]]:
 						continue
@@ -437,5 +435,5 @@ class Twitch(commands.Cog):
 						# TODO: Remove text channel data if now non-existent
 						continue
 					message = await text_channel.send(embed = embed)
-					self.streams_announced[stream["_id"]] = self.streams_announced.get(stream["_id"], []) + [[message, embed]]
+					self.streams_announced[str(stream["_id"])] = self.streams_announced.get(str(stream["_id"]), []) + [[message, embed]]
 
