@@ -34,6 +34,92 @@ class Twitch(commands.Cog):
 	def cog_unload(self):
 		self.task.cancel()
 	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS twitch_notifications")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitch_notifications.channels (
+				channel_id		BIGINT, 
+				user_name		TEXT, 
+				user_id			TEXT, 
+				PRIMARY KEY		(channel_id, user_id)
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitch_notifications.filters (
+				channel_id		BIGINT, 
+				filter			TEXT, 
+				PRIMARY KEY		(channel_id, filter)
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitch_notifications.games (
+				channel_id		BIGINT, 
+				game			TEXT, 
+				PRIMARY KEY		(channel_id, game)
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitch_notifications.keywords (
+				channel_id		BIGINT, 
+				keyword			TEXT, 
+				PRIMARY KEY		(channel_id, keyword)
+			)
+			"""
+		)
+		# Migrate existing data
+		for channel_id, channel in self.streams_info["channels"].items():
+			for filter in channel["filters"]:
+				await self.bot.db.execute(
+					"""
+					INSERT INTO twitch_notifications.filters (channel_id, filter)
+					VALUES ($1, $2)
+					ON CONFLICT (channel_id, filter) DO NOTHING
+					""", 
+					int(channel_id), filter
+				)
+			for game in channel["games"]:
+				await self.bot.db.execute(
+					"""
+					INSERT INTO twitch_notifications.games (channel_id, game)
+					VALUES ($1, $2)
+					ON CONFLICT (channel_id, game) DO NOTHING
+					""", 
+					int(channel_id), game
+				)
+			for keyword in channel["keywords"]:
+				await self.bot.db.execute(
+					"""
+					INSERT INTO twitch_notifications.keywords (channel_id, keyword)
+					VALUES ($1, $2)
+					ON CONFLICT (channel_id, keyword) DO NOTHING
+					""", 
+					int(channel_id), keyword
+				)
+			if channel["streams"]:
+				url = "https://api.twitch.tv/kraken/users"
+				params = {"login": ','.join(channel["streams"]), "client_id": self.bot.TWITCH_CLIENT_ID}
+				headers = {"Accept": "application/vnd.twitchtv.v5+json"}
+				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
+					users_data = await resp.json()
+				for user in users_data["users"]:
+					await self.bot.db.execute(
+						"""
+						INSERT INTO twitch_notifications.channels (channel_id, user_name, user_id)
+						VALUES ($1, $2, $3)
+						ON CONFLICT (channel_id, user_id) DO NOTHING
+						""", 
+						int(channel_id), user["name"], user["_id"]
+					)
+				await asyncio.sleep(1)
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
 	async def twitch(self, ctx):
@@ -188,6 +274,7 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.streams_info["channels"].get(str(ctx.channel.id), {}).get("streams", []))))
 	
 	async def check_twitch_streams(self):
+		await self.initialize_database()
 		await self.bot.wait_until_ready()
 		try:
 			if os.path.isfile(clients.data_path + "/temp/twitch_streams_announced.json"):
