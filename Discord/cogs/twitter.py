@@ -233,14 +233,15 @@ class Twitter(commands.Cog):
 		Remove a Twitter handle from a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
-		deleted = await ctx.bot.db.execute(
+		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM twitter.handles
 			WHERE channel_id = $1 AND handle = $2
+			RETURNING *
 			""", 
 			ctx.channel.id, handle
 		)
-		if not int(deleted[-1]):
+		if not deleted:
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that Twitter handle")
 		message = await ctx.embed_reply(":hourglass: Please wait")
 		await self.stream_listener.remove_feed(ctx.channel, handle)
