@@ -161,7 +161,7 @@ class Twitch(commands.Cog):
 	@checks.is_permitted()
 	async def twitch_remove_filter(self, ctx, *, string : str):
 		'''Remove a string Twitch stream titles are being filtered by'''
-		deleted = await ctx.bot.db.execute(
+		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM twitch_notifications.filters
 			WHERE channel_id = $1 AND filter = $2
@@ -177,7 +177,7 @@ class Twitch(commands.Cog):
 	@checks.is_permitted()
 	async def twitch_remove_game(self, ctx, *, game : str):
 		'''Remove a Twitch game being followed'''
-		deleted = await ctx.bot.db.execute(
+		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM twitch_notifications.games
 			WHERE channel_id = $1 AND game = $2
@@ -193,7 +193,7 @@ class Twitch(commands.Cog):
 	@checks.is_permitted()
 	async def twitch_remove_keyword(self, ctx, *, keyword : str):
 		'''Remove a Twitch keyword(s) search being followed'''
-		deleted = await ctx.bot.db.execute(
+		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM twitch_notifications.keywords
 			WHERE channel_id = $1 AND keyword = $2
@@ -214,7 +214,7 @@ class Twitch(commands.Cog):
 		params = {"login": username, "client_id": ctx.bot.TWITCH_CLIENT_ID}
 		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
 			users_data = await resp.json()
-		deleted = await ctx.bot.db.execute(
+		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM twitch_notifications.channels
 			WHERE channel_id = $1 AND user_id = $2
