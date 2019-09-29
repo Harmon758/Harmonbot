@@ -408,31 +408,34 @@ class Twitch(commands.Cog):
 				del self.old_streams_announced[stream["_id"]]
 			elif stream["_id"] not in self.streams_announced:
 				for channel_id, channel_info in self.streams_info["channels"].items():
-					if ((match in channel_info[type] or 
-							not match and stream["channel"]["name"] in [s.lower() for s in channel_info[type]]) and 
-							all(filter in stream["channel"]["status"] for filter in channel_info["filters"])):
-						if len(stream["channel"]["status"]) <= 256:
-							title = stream["channel"]["status"]
-						else:
-							title = stream["channel"]["status"][:253] + "..."
-						if stream["channel"]["game"]:
-							description = f"{stream['channel']['display_name']} is playing {stream['game']}"
-						else:
-							description = discord.Embed.Empty
-						embed = discord.Embed(title = title, url = stream["channel"]["url"], 
-												description = description, 
-												timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), 
-												color = self.bot.twitch_color)
-						embed.set_author(name = f"{stream['channel']['display_name']} just went live on Twitch", 
-											icon_url = self.bot.twitch_icon_url)
-						if stream["channel"]["logo"]:
-							embed.set_thumbnail(url = stream["channel"]["logo"])
-						embed.add_field(name = "Followers", value = f"{stream['channel']['followers']:,}")
-						embed.add_field(name = "Views", value = f"{stream['channel']['views']:,}")
-						text_channel = self.bot.get_channel(int(channel_id))
-						if not text_channel:
-							# TODO: Remove text channel data if now non-existent
-							continue
-						message = await text_channel.send(embed = embed)
-						self.streams_announced[stream["_id"]] = self.streams_announced.get(stream["_id"], []) + [[message, embed]]
+					if not match and stream["channel"]["name"] not in [s.lower() for s in channel_info[type]]:
+						continue
+					if match not in channel_info[type]:
+						continue
+					if not all(filter in stream["channel"]["status"] for filter in channel_info["filters"]):
+						continue
+					if len(stream["channel"]["status"]) <= 256:
+						title = stream["channel"]["status"]
+					else:
+						title = stream["channel"]["status"][:253] + "..."
+					if stream["channel"]["game"]:
+						description = f"{stream['channel']['display_name']} is playing {stream['game']}"
+					else:
+						description = discord.Embed.Empty
+					embed = discord.Embed(title = title, url = stream["channel"]["url"], 
+											description = description, 
+											timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), 
+											color = self.bot.twitch_color)
+					embed.set_author(name = f"{stream['channel']['display_name']} just went live on Twitch", 
+										icon_url = self.bot.twitch_icon_url)
+					if stream["channel"]["logo"]:
+						embed.set_thumbnail(url = stream["channel"]["logo"])
+					embed.add_field(name = "Followers", value = f"{stream['channel']['followers']:,}")
+					embed.add_field(name = "Views", value = f"{stream['channel']['views']:,}")
+					text_channel = self.bot.get_channel(int(channel_id))
+					if not text_channel:
+						# TODO: Remove text channel data if now non-existent
+						continue
+					message = await text_channel.send(embed = embed)
+					self.streams_announced[stream["_id"]] = self.streams_announced.get(stream["_id"], []) + [[message, embed]]
 
