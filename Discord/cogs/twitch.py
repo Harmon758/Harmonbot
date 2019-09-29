@@ -225,15 +225,15 @@ class Twitch(commands.Cog):
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 			errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			return
+		headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
 		while not self.bot.is_closed():
 			try:
 				stream_ids = []
 				# Games
 				games = set(itertools.chain(*[channel["games"] for channel in self.streams_info["channels"].values()]))
+				url = "https://api.twitch.tv/kraken/streams"
 				for game in games:
-					url = "https://api.twitch.tv/kraken/streams"
 					params = {"game": game, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-					headers = {"Accept": "application/vnd.twitchtv.v5+json"}
 					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 						games_data = await resp.json()
 					streams = games_data.get("streams", [])
@@ -242,10 +242,9 @@ class Twitch(commands.Cog):
 					await asyncio.sleep(1)
 				# Keywords
 				keywords = set(itertools.chain(*[channel["keywords"] for channel in self.streams_info["channels"].values()]))
+				url = "https://api.twitch.tv/kraken/search/streams"
 				for keyword in keywords:
-					url = "https://api.twitch.tv/kraken/search/streams"
 					params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-					headers = {"Accept": "application/vnd.twitchtv.v5+json"}
 					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 						keywords_data = await resp.json()
 					streams = keywords_data.get("streams", [])
@@ -258,7 +257,6 @@ class Twitch(commands.Cog):
 				url = "https://api.twitch.tv/kraken/users"
 				for index in range(0, len(streams), 100):
 					params = {"login": ','.join(streams[index:index + 100]), "client_id": self.bot.TWITCH_CLIENT_ID}
-					headers = {"Accept": "application/vnd.twitchtv.v5+json"}
 					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 						users_data = await resp.json()
 					for user in users_data["users"]:
