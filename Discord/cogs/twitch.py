@@ -263,8 +263,8 @@ class Twitch(commands.Cog):
 			""", 
 			ctx.channel.id
 		)
-		# TODO: Improve response
-		await ctx.embed_reply('\n'.join(record["game"] for record in records))
+		await ctx.embed_reply('\n'.join(record["game"] for record in records), 
+								title = "Twitch games being followed in this text channel")
 	
 	@twitch.command(name = "keywords", aliases = ["queries", "searches"])
 	@checks.not_forbidden()
