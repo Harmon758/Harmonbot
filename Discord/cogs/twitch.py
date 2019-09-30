@@ -5,13 +5,10 @@ from discord.ext import commands
 import aiohttp
 import asyncio
 import dateutil.parser
-import json
 import logging
-import os
 import sys
 import traceback
 
-import clients
 from utilities import checks
 
 errors_logger = logging.getLogger("errors")
