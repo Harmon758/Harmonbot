@@ -125,14 +125,17 @@ class Twitch(commands.Cog):
 	async def twitch_add_keyword(self, ctx, *, keyword : str):
 		'''Add a Twitch keyword(s) search to follow'''
 		# TODO: Add documentation on 100 limit
-		await ctx.bot.db.execute(
+		inserted = await ctx.bot.db.fetchrow(
 			"""
 			INSERT INTO twitch_notifications.keywords (channel_id, keyword)
 			VALUES ($1, $2)
+			ON CONFLICT DO NOTHING
+			RETURNING *
 			""", 
 			ctx.channel.id, keyword
 		)
-		# TODO: Handle already following
+		if not inserted:
+			return await ctx.embed_reply(f"This text channel is already following the keyword, `{keyword}`")
 		await ctx.embed_reply(f"Added the keyword search, `{keyword}`, to this text channel\n"
 								"I will now announce here when Twitch streams with this keyword go live")
 	
