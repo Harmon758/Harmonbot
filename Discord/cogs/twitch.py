@@ -301,8 +301,8 @@ class Twitch(commands.Cog):
 			channels.append(user_data["display_name"])
 			# TODO: Add note about name change to response
 			#       user_data["name"] != record["user_name"]
-		# TODO: Improve response
-		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(channels)))
+		await ctx.embed_reply('\n'.join(f"[{channel}](https://www.twitch.tv/{channel})" for channel in channels), 
+								title = "Twitch channels being followed in this text channel")
 	
 	async def check_twitch_streams(self):
 		await self.initialize_database()
