@@ -148,14 +148,17 @@ class Twitch(commands.Cog):
 		params = {"login": username, "client_id": ctx.bot.TWITCH_CLIENT_ID}
 		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
 			users_data = await resp.json()
-		await ctx.bot.db.execute(
+		inserted = await ctx.bot.db.fetchrow(
 			"""
 			INSERT INTO twitch_notifications.channels (channel_id, user_name, user_id)
 			VALUES ($1, $2, $3)
+			ON CONFLICT DO NOTHING
+			RETURNING *
 			""", 
 			ctx.channel.id, username, users_data["users"][0]["_id"]
 		)
-		# TODO: Handle already following
+		if not inserted:
+			return await ctx.embed_reply(f"This text channel is already following the channel, `{channel}`")
 		await ctx.embed_reply(f"Added the Twitch channel, [`{username}`](https://www.twitch.tv/{username}), to this text channel\n"
 								"I will now announce here when this Twitch channel goes live")
 	
