@@ -106,14 +106,17 @@ class Twitch(commands.Cog):
 	async def twitch_add_game(self, ctx, *, game : str):
 		'''Add a Twitch game to follow'''
 		# TODO: Add documentation on 100 limit
-		await ctx.bot.db.execute(
+		inserted = await ctx.bot.db.fetchrow(
 			"""
 			INSERT INTO twitch_notifications.games (channel_id, game)
 			VALUES ($1, $2)
+			ON CONFLICT DO NOTHING
+			RETURNING *
 			""", 
 			ctx.channel.id, game
 		)
-		# TODO: Handle already following
+		if not inserted:
+			return await ctx.embed_reply(f"This text channel is already following the game, `{game}`")
 		await ctx.embed_reply(f"Added the game, [`{game}`](https://www.twitch.tv/directory/game/{game}), to this text channel\n"
 								"I will now announce here when Twitch streams playing this game go live")
 	
