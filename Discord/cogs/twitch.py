@@ -311,30 +311,6 @@ class Twitch(commands.Cog):
 			if os.path.isfile(clients.data_path + "/temp/twitch_streams_announced.json"):
 				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'r') as streams_file:
 					self.streams_announced = json.load(streams_file)
-				for announced_stream_id, announcements in self.streams_announced.items():
-					for announcement in announcements:
-						text_channel = self.bot.get_channel(int(announcement[2]))
-						# TODO: Handle text channel not existing anymore
-						try:
-							announcement[0] = await text_channel.fetch_message(announcement[0])
-						except discord.NotFound:
-							# Announcement was deleted
-							continue
-						embed_data = announcement[1]
-						announcement[1] = discord.Embed(title = embed_data.get("title"), url = embed_data["url"], 
-														description = embed_data.get("description", discord.Embed.Empty), 
-														timestamp = dateutil.parser.parse(embed_data["timestamp"]), 
-														color = embed_data["color"])
-						announcement[1].set_author(name = embed_data["author"]["name"], 
-													icon_url = embed_data["author"]["icon_url"])
-						if embed_data.get("thumbnail", {}).get("url"):
-							announcement[1].set_thumbnail(url = embed_data["thumbnail"]["url"])
-						for field in embed_data["fields"]:
-							announcement[1].add_field(name = field["name"], value = field["value"], inline = field["inline"])
-						del announcement[2]
-					# Remove deleted announcements
-					self.streams_announced[announced_stream_id] = [announcement for announcement in announcements
-																	if len(announcement) == 2]
 			## os.remove(clients.data_path + "/temp/twitch_streams_announced.json")
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
@@ -385,11 +361,18 @@ class Twitch(commands.Cog):
 				for announced_stream_id, announcements in self.streams_announced.copy().items():
 					if announced_stream_id not in stream_ids:
 						for announcement in announcements:
-							embed = announcement[1]
+							text_channel = self.bot.get_channel(announcement[0])
+							# TODO: Handle text channel not existing anymore
+							try:
+								message = await text_channel.fetch_message(announcement[1])
+							except discord.NotFound:
+								# Announcement was deleted
+								continue
+							embed = message.embeds[0]
 							embed.set_author(name = embed.author.name.replace("just went", "was"), 
 												url = embed.author.url, icon_url = embed.author.icon_url)
 							try:
-								await announcement[0].edit(embed = embed)
+								await message.edit(embed = embed)
 							except discord.Forbidden:
 								# Missing permission to edit?
 								pass
@@ -404,11 +387,6 @@ class Twitch(commands.Cog):
 				print(f"{self.bot.console_message_prefix}Twitch Task Connection Error: {type(e).__name__}: {e}")
 				await asyncio.sleep(10)
 			except asyncio.CancelledError:
-				for announced_stream_id, announcements in self.streams_announced.items():
-					for announcement in announcements:
-						announcement.append(announcement[0].channel.id)
-						announcement[0] = announcement[0].id
-						announcement[1] = announcement[1].to_dict()
 				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'w') as streams_file:
 					json.dump(self.streams_announced, streams_file, indent = 4)
 				print(f"{self.bot.console_message_prefix}Twitch task cancelled")
@@ -424,10 +402,17 @@ class Twitch(commands.Cog):
 		for stream in streams:
 			if str(stream["_id"]) in self.old_streams_announced:
 				for announcement in self.old_streams_announced[str(stream["_id"])]:
-					embed = announcement[1]
+					text_channel = self.bot.get_channel(announcement[0])
+					# TODO: Handle text channel not existing anymore
+					try:
+						message = await text_channel.fetch_message(announcement[1])
+					except discord.NotFound:
+						# Announcement was deleted
+						continue
+					embed = message.embeds[0]
 					embed.set_author(name = embed.author.name.replace("was", "just went"), 
 										url = embed.author.url, icon_url = embed.author.icon_url)
-					await announcement[0].edit(embed = embed)
+					await message.edit(embed = embed)
 				self.streams_announced[str(stream["_id"])] = self.old_streams_announced[str(stream["_id"])]
 				del self.old_streams_announced[str(stream["_id"])]
 			elif str(stream["_id"]) not in self.streams_announced:
@@ -488,5 +473,5 @@ class Twitch(commands.Cog):
 						# TODO: Remove text channel data if now non-existent
 						continue
 					message = await text_channel.send(embed = embed)
-					self.streams_announced[str(stream["_id"])] = self.streams_announced.get(str(stream["_id"]), []) + [[message, embed]]
+					self.streams_announced[str(stream["_id"])] = self.streams_announced.get(str(stream["_id"]), []) + [[channel_id, message.id]]
 
