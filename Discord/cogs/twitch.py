@@ -249,8 +249,8 @@ class Twitch(commands.Cog):
 			""", 
 			ctx.channel.id
 		)
-		# TODO: Improve response
-		await ctx.embed_reply('\n'.join(record["filter"] for record in records))
+		await ctx.embed_reply('\n'.join(record["filter"] for record in records), 
+								title = "Twitch stream title filters in this text channel")
 	
 	@twitch.command(name = "games")
 	@checks.not_forbidden()
