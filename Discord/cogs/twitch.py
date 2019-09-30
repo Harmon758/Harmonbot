@@ -87,14 +87,17 @@ class Twitch(commands.Cog):
 	@checks.is_permitted()
 	async def twitch_add_filter(self, ctx, *, string : str):
 		'''Add string to filter Twitch stream titles by'''
-		await ctx.bot.db.execute(
+		inserted = await ctx.bot.db.fetchrow(
 			"""
 			INSERT INTO twitch_notifications.filters (channel_id, filter)
 			VALUES ($1, $2)
+			ON CONFLICT DO NOTHING
+			RETURNING *
 			""", 
 			ctx.channel.id, string
 		)
-		# TODO: Handle already filtered
+		if not inserted:
+			return await ctx.embed_reply(f"This text channel already has the filter, `{string}`")
 		await ctx.embed_reply(f"Added the filter, `{string}`, to this text channel\n"
 								"I will now filter all streams for this string in the title")
 	
