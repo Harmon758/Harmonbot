@@ -23,8 +23,6 @@ class Twitch(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.streams_announced = {}
-		self.old_streams_announced = {}
 		self.task = self.bot.loop.create_task(self.check_twitch_streams())
 	
 	def cog_unload(self):
@@ -67,6 +65,17 @@ class Twitch(commands.Cog):
 				channel_id		BIGINT, 
 				keyword			TEXT, 
 				PRIMARY KEY		(channel_id, keyword)
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS twitch_notifications.notifications (
+				stream_id		TEXT, 
+				channel_id		BIGINT, 
+				message_id		BIGINT, 
+				live			BOOL, 
+				PRIMARY KEY		(stream_id, channel_id)
 			)
 			"""
 		)
@@ -307,16 +316,6 @@ class Twitch(commands.Cog):
 	async def check_twitch_streams(self):
 		await self.initialize_database()
 		await self.bot.wait_until_ready()
-		try:
-			if os.path.isfile(clients.data_path + "/temp/twitch_streams_announced.json"):
-				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'r') as streams_file:
-					self.streams_announced = json.load(streams_file)
-			## os.remove(clients.data_path + "/temp/twitch_streams_announced.json")
-		except Exception as e:
-			print("Exception in Twitch Task", file = sys.stderr)
-			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-			errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
-			return
 		headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
 		while not self.bot.is_closed():
 			try:
@@ -357,38 +356,45 @@ class Twitch(commands.Cog):
 				streams = streams_data.get("streams", [])
 				stream_ids += [str(stream["_id"]) for stream in streams]
 				await self.process_twitch_streams(streams, "streams")
-				# Update streams announced
-				for announced_stream_id, announcements in self.streams_announced.copy().items():
-					if announced_stream_id not in stream_ids:
-						for announcement in announcements:
-							text_channel = self.bot.get_channel(announcement[0])
-							# TODO: Handle text channel not existing anymore
-							try:
-								message = await text_channel.fetch_message(announcement[1])
-							except discord.NotFound:
-								# Announcement was deleted
-								continue
-							embed = message.embeds[0]
-							embed.set_author(name = embed.author.name.replace("just went", "was"), 
-												url = embed.author.url, icon_url = embed.author.icon_url)
-							try:
-								await message.edit(embed = embed)
-							except discord.Forbidden:
-								# Missing permission to edit?
-								pass
-							except discord.NotFound:
-								# Announcement was deleted
-								pass
-						self.old_streams_announced[announced_stream_id] = self.streams_announced[announced_stream_id]
-						del self.streams_announced[announced_stream_id]
+				# Update streams notified
+				records = await self.bot.db.fetch(
+					"""
+					SELECT stream_id, channel_id, message_id
+					FROM twitch_notifications.notifications
+					WHERE live = TRUE
+					"""
+				)
+				for record in records:
+					if record["stream_id"] not in stream_ids:
+						text_channel = self.bot.get_channel(record["channel_id"])
+						# TODO: Handle text channel not existing anymore
+						try:
+							message = await text_channel.fetch_message(record["message_id"])
+						except discord.NotFound:
+							# Notification was deleted
+							continue
+						embed = message.embeds[0]
+						embed.set_author(name = embed.author.name.replace("just went", "was"), 
+											url = embed.author.url, icon_url = embed.author.icon_url)
+						try:
+							await message.edit(embed = embed)
+						except discord.Forbidden:
+							# Missing permission to edit?
+							pass
+						await self.bot.db.execute(
+							"""
+							UPDATE twitch_notifications.notifications
+							SET live = FALSE
+							WHERE stream_id = $1 AND channel_id = $2
+							""", 
+							record["stream_id"], record["channel_id"]
+						)
 					# TODO: Handle no longer being followed?
 				await asyncio.sleep(20)
 			except aiohttp.ClientConnectionError as e:
 				print(f"{self.bot.console_message_prefix}Twitch Task Connection Error: {type(e).__name__}: {e}")
 				await asyncio.sleep(10)
 			except asyncio.CancelledError:
-				with open(clients.data_path + "/temp/twitch_streams_announced.json", 'w') as streams_file:
-					json.dump(self.streams_announced, streams_file, indent = 4)
 				print(f"{self.bot.console_message_prefix}Twitch task cancelled")
 				return
 			except Exception as e:
@@ -400,22 +406,37 @@ class Twitch(commands.Cog):
 	async def process_twitch_streams(self, streams, type, match = None):
 		# TODO: use textwrap
 		for stream in streams:
-			if str(stream["_id"]) in self.old_streams_announced:
-				for announcement in self.old_streams_announced[str(stream["_id"])]:
-					text_channel = self.bot.get_channel(announcement[0])
+			records = await self.bot.db.fetch(
+				"""
+				SELECT channel_id, message_id, live
+				FROM twitch_notifications.notifications
+				WHERE stream_id = $1
+				""", 
+				str(stream["_id"])
+			)
+			# TODO: Handle streams notified already, but followed by new channel
+			for record in records:
+				if not record["live"]:
+					text_channel = self.bot.get_channel(record["channel_id"])
 					# TODO: Handle text channel not existing anymore
 					try:
-						message = await text_channel.fetch_message(announcement[1])
+						message = await text_channel.fetch_message(record["message_id"])
 					except discord.NotFound:
-						# Announcement was deleted
+						# Notification was deleted
 						continue
 					embed = message.embeds[0]
 					embed.set_author(name = embed.author.name.replace("was", "just went"), 
 										url = embed.author.url, icon_url = embed.author.icon_url)
 					await message.edit(embed = embed)
-				self.streams_announced[str(stream["_id"])] = self.old_streams_announced[str(stream["_id"])]
-				del self.old_streams_announced[str(stream["_id"])]
-			elif str(stream["_id"]) not in self.streams_announced:
+					await self.bot.db.execute(
+						"""
+						UPDATE twitch_notifications.notifications
+						SET live = TRUE
+						WHERE stream_id = $1 AND channel_id = $2
+						""", 
+						str(stream["_id"]), record["channel_id"]
+					)
+			if not records:
 				# Construct embed
 				if len(stream["channel"]["status"]) <= 256:
 					title = stream["channel"]["status"]
@@ -473,5 +494,11 @@ class Twitch(commands.Cog):
 						# TODO: Remove text channel data if now non-existent
 						continue
 					message = await text_channel.send(embed = embed)
-					self.streams_announced[str(stream["_id"])] = self.streams_announced.get(str(stream["_id"]), []) + [[channel_id, message.id]]
+					await self.bot.db.execute(
+						"""
+						INSERT INTO twitch_notifications.notifications (stream_id, channel_id, message_id, live)
+						VALUES ($1, $2, $3, TRUE)
+						""", 
+						str(stream["_id"]), channel_id, message.id
+					)
 
