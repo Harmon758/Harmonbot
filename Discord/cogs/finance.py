@@ -134,7 +134,7 @@ class Finance(commands.Cog):
 	@checks.not_forbidden()
 	async def currency_symbols(self, ctx):
 		'''Currency symbols'''
-		url = "https://data.fixer.io/api/symbols"
+		url = "http://data.fixer.io/api/symbols"
 		params = {"access_key": ctx.bot.FIXER_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			# TODO: handle errors
@@ -161,7 +161,7 @@ class Finance(commands.Cog):
 			params["base"] = against
 		if request:
 			params["symbols"] = request.upper()
-		url = "https://data.fixer.io/api/"
+		url = "http://data.fixer.io/api/"
 		url += str(date) if date else "latest"
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			# TODO: use ETags
