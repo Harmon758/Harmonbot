@@ -1,6 +1,6 @@
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 import aiohttp
 import asyncio
@@ -20,10 +20,10 @@ class Twitch(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.task = self.bot.loop.create_task(self.check_twitch_streams())
+		self.check_twitch_streams.start()
 	
 	def cog_unload(self):
-		self.task.cancel()
+		self.check_twitch_streams.cancel()
 	
 	async def initialize_database(self):
 		await self.bot.connect_to_database()
@@ -310,95 +310,100 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply('\n'.join(f"[{channel}](https://www.twitch.tv/{channel})" for channel in channels), 
 								title = "Twitch channels being followed in this text channel")
 	
+	@tasks.loop(seconds = 20)
 	async def check_twitch_streams(self):
+		headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
+		try:
+			stream_ids = []
+			# Games
+			records = await self.bot.db.fetch("SELECT DISTINCT game FROM twitch_notifications.games")
+			url = "https://api.twitch.tv/kraken/streams"
+			for record in records:
+				game = record["game"]
+				params = {"game": game, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
+				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
+					games_data = await resp.json()
+				streams = games_data.get("streams", [])
+				stream_ids += [str(stream["_id"]) for stream in streams]
+				await self.process_twitch_streams(streams, "games", match = game)
+				await asyncio.sleep(1)
+			# Keywords
+			records = await self.bot.db.fetch("SELECT DISTINCT keyword FROM twitch_notifications.keywords")
+			url = "https://api.twitch.tv/kraken/search/streams"
+			for record in records:
+				keyword = record["keyword"]
+				params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
+				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
+					keywords_data = await resp.json()
+				streams = keywords_data.get("streams", [])
+				stream_ids += [str(stream["_id"]) for stream in streams]
+				await self.process_twitch_streams(streams, "keywords", match = keyword)
+				await asyncio.sleep(1)
+			# Streams
+			records = await self.bot.db.fetch("SELECT DISTINCT user_id FROM twitch_notifications.channels")
+			url = "https://api.twitch.tv/kraken/streams"
+			params = {"channel": ','.join(record["user_id"] for record in records), 
+						"client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
+			async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
+				# TODO: Handle >100 streams
+				if resp.status != 504:
+					streams_data = await resp.json()
+			streams = streams_data.get("streams", [])
+			stream_ids += [str(stream["_id"]) for stream in streams]
+			await self.process_twitch_streams(streams, "streams")
+			# Update streams notified
+			records = await self.bot.db.fetch(
+				"""
+				SELECT stream_id, channel_id, message_id
+				FROM twitch_notifications.notifications
+				WHERE live = TRUE
+				"""
+			)
+			for record in records:
+				if record["stream_id"] not in stream_ids:
+					text_channel = self.bot.get_channel(record["channel_id"])
+					# TODO: Handle text channel not existing anymore
+					try:
+						message = await text_channel.fetch_message(record["message_id"])
+					except discord.NotFound:
+						# Notification was deleted
+						continue
+					embed = message.embeds[0]
+					embed.set_author(name = embed.author.name.replace("just went", "was"), 
+										url = embed.author.url, icon_url = embed.author.icon_url)
+					try:
+						await message.edit(embed = embed)
+					except discord.Forbidden:
+						# Missing permission to edit?
+						pass
+					await self.bot.db.execute(
+						"""
+						UPDATE twitch_notifications.notifications
+						SET live = FALSE
+						WHERE stream_id = $1 AND channel_id = $2
+						""", 
+						record["stream_id"], record["channel_id"]
+					)
+				# TODO: Handle no longer being followed?
+		except aiohttp.ClientConnectionError as e:
+			print(f"{self.bot.console_message_prefix}Twitch Task Connection Error: {type(e).__name__}: {e}")
+			await asyncio.sleep(10)
+		except asyncio.CancelledError:
+			raise
+		except Exception as e:
+			print("Exception in Twitch Task", file = sys.stderr)
+			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
+			errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
+			await asyncio.sleep(60)
+	
+	@check_twitch_streams.before_loop
+	async def before_check_twitch_streams(self):
 		await self.initialize_database()
 		await self.bot.wait_until_ready()
-		headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
-		while not self.bot.is_closed():
-			try:
-				stream_ids = []
-				# Games
-				records = await self.bot.db.fetch("SELECT DISTINCT game FROM twitch_notifications.games")
-				url = "https://api.twitch.tv/kraken/streams"
-				for record in records:
-					game = record["game"]
-					params = {"game": game, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
-						games_data = await resp.json()
-					streams = games_data.get("streams", [])
-					stream_ids += [str(stream["_id"]) for stream in streams]
-					await self.process_twitch_streams(streams, "games", match = game)
-					await asyncio.sleep(1)
-				# Keywords
-				records = await self.bot.db.fetch("SELECT DISTINCT keyword FROM twitch_notifications.keywords")
-				url = "https://api.twitch.tv/kraken/search/streams"
-				for record in records:
-					keyword = record["keyword"]
-					params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-					async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
-						keywords_data = await resp.json()
-					streams = keywords_data.get("streams", [])
-					stream_ids += [str(stream["_id"]) for stream in streams]
-					await self.process_twitch_streams(streams, "keywords", match = keyword)
-					await asyncio.sleep(1)
-				# Streams
-				records = await self.bot.db.fetch("SELECT DISTINCT user_id FROM twitch_notifications.channels")
-				url = "https://api.twitch.tv/kraken/streams"
-				params = {"channel": ','.join(record["user_id"] for record in records), 
-							"client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
-					# TODO: Handle >100 streams
-					if resp.status != 504:
-						streams_data = await resp.json()
-				streams = streams_data.get("streams", [])
-				stream_ids += [str(stream["_id"]) for stream in streams]
-				await self.process_twitch_streams(streams, "streams")
-				# Update streams notified
-				records = await self.bot.db.fetch(
-					"""
-					SELECT stream_id, channel_id, message_id
-					FROM twitch_notifications.notifications
-					WHERE live = TRUE
-					"""
-				)
-				for record in records:
-					if record["stream_id"] not in stream_ids:
-						text_channel = self.bot.get_channel(record["channel_id"])
-						# TODO: Handle text channel not existing anymore
-						try:
-							message = await text_channel.fetch_message(record["message_id"])
-						except discord.NotFound:
-							# Notification was deleted
-							continue
-						embed = message.embeds[0]
-						embed.set_author(name = embed.author.name.replace("just went", "was"), 
-											url = embed.author.url, icon_url = embed.author.icon_url)
-						try:
-							await message.edit(embed = embed)
-						except discord.Forbidden:
-							# Missing permission to edit?
-							pass
-						await self.bot.db.execute(
-							"""
-							UPDATE twitch_notifications.notifications
-							SET live = FALSE
-							WHERE stream_id = $1 AND channel_id = $2
-							""", 
-							record["stream_id"], record["channel_id"]
-						)
-					# TODO: Handle no longer being followed?
-				await asyncio.sleep(20)
-			except aiohttp.ClientConnectionError as e:
-				print(f"{self.bot.console_message_prefix}Twitch Task Connection Error: {type(e).__name__}: {e}")
-				await asyncio.sleep(10)
-			except asyncio.CancelledError:
-				print(f"{self.bot.console_message_prefix}Twitch task cancelled")
-				return
-			except Exception as e:
-				print("Exception in Twitch Task", file = sys.stderr)
-				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-				errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
-				await asyncio.sleep(60)
+	
+	@check_twitch_streams.after_loop
+	async def after_check_twitch_streams(self):
+		print(f"{self.bot.console_message_prefix}Twitch task cancelled")
 	
 	async def process_twitch_streams(self, streams, type, match = None):
 		# TODO: use textwrap
