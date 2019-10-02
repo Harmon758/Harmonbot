@@ -96,9 +96,12 @@ if __name__ == "__main__":
 		# Get Context
 		ctx = await client.get_context(message)
 		
-		# Log message
 		author = message.author
-		if message.channel.type is discord.ChannelType.private:
+		channel = message.channel
+		guild = message.guild
+		
+		# Log message
+		if channel.type is discord.ChannelType.private:
 			await ctx.bot.db.execute(
 				"""
 				INSERT INTO chat.messages (
@@ -114,8 +117,6 @@ if __name__ == "__main__":
 				message.content, [embed.to_dict() for embed in message.embeds]
 			)
 		else:
-			channel = message.channel
-			guild = message.guild
 			await ctx.bot.db.execute(
 				"""
 				INSERT INTO chat.messages (
@@ -133,44 +134,44 @@ if __name__ == "__main__":
 			)
 		
 		# Server specific settings
-		if message.guild is not None:
-			guild_settings = await ctx.bot.get_guild_settings(message.guild.id)
+		if guild is not None:
+			guild_settings = await ctx.bot.get_guild_settings(guild.id)
 			if guild_settings.get("anti-spam") and len(message.mentions) > 10:
 				global mention_spammers
-				if message.author.id in mention_spammers:
+				if author.id in mention_spammers:
 					# TODO: Handle across different servers
-					if message.guild.me.permissions_in(message.channel).kick_members:
+					if guild.me.permissions_in(channel).kick_members:
 						# TODO: Check hierarchy, if able to kick
-						await ctx.bot.kick(message.author)
-						await ctx.send(f"{message.author} has been kicked for spamming mentions")
-						await ctx.author.send(f"You were kicked from {message.guild} for spamming mentions")
+						await ctx.bot.kick(author)
+						await ctx.send(f"{author} has been kicked for spamming mentions")
+						await ctx.author.send(f"You were kicked from {guild} for spamming mentions")
 					else:
 						await ctx.send("I need permission to kick members from the server to enforce anti-spam")
 				else:
 					await ctx.embed_reply(":warning: You will be kicked if you continue spamming mentions")
-					mention_spammers.append(message.author.id)
+					mention_spammers.append(author.id)
 					await asyncio.sleep(3600)
-					mention_spammers.remove(message.author.id)
-			if not guild_settings.get("respond_to_bots") and message.author.bot:
+					mention_spammers.remove(author.id)
+			if not guild_settings.get("respond_to_bots") and author.bot:
 				return
 		
 		# Invoke Commands
 		await ctx.bot.invoke(ctx)
 		
 		# Forward DMs
-		if message.channel.type is discord.ChannelType.private and message.channel.recipient.id != ctx.bot.owner_id:
+		if channel.type is discord.ChannelType.private and channel.recipient.id != ctx.bot.owner_id:
 			me = discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)
-			if message.author == ctx.bot.user:
+			if author == ctx.bot.user:
 				try:
-					await me.send(f"To {message.channel.recipient}: {message.content}", embed = message.embeds[0] if message.embeds else None)
+					await me.send(f"To {channel.recipient}: {message.content}", embed = message.embeds[0] if message.embeds else None)
 				except discord.HTTPException:
 					# TODO: use textwrap/paginate
-					await me.send(f"To {message.channel.recipient}: `DM too long to forward`")
+					await me.send(f"To {channel.recipient}: `DM too long to forward`")
 			else:
-				await me.send(f"From {message.author}: {message.content}", embed = message.embeds[0] if message.embeds else None)
+				await me.send(f"From {author}: {message.content}", embed = message.embeds[0] if message.embeds else None)
 		
 		# Ignore own and blank messages
-		if message.author == ctx.bot.user or not message.content:
+		if author == ctx.bot.user or not message.content:
 			return
 		
 		# Test on_message command
@@ -202,7 +203,7 @@ if __name__ == "__main__":
 			return await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 		
 		# help or prefix(es) DM or mention
-		if (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and message.channel.type is discord.ChannelType.private) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
+		if (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and channel.type is discord.ChannelType.private) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
 			try:
 				prefixes = ctx.bot.command_prefix(ctx.bot, message)
 			except TypeError:  # if Beta (*)
@@ -216,7 +217,7 @@ if __name__ == "__main__":
 		# Chatbot
 		if message.content.startswith((ctx.me.mention, ctx.me.mention.replace('!', ""))):
 			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
-			aiml_response = ctx.bot.aiml_kernel.respond(content, sessionID = message.author.id)
+			aiml_response = ctx.bot.aiml_kernel.respond(content, sessionID = author.id)
 			# TODO: Handle brain not loaded?
 			if aiml_response:
 				return await ctx.embed_reply(aiml_response, attempt_delete = False)
