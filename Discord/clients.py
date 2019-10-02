@@ -292,19 +292,6 @@ class Bot(commands.Bot):
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS users")
 		await self.db.execute(
 			"""
-			CREATE TABLE IF NOT EXISTS chat.edits (
-				edited_at		TIMESTAMPTZ, 
-				message_id		BIGINT REFERENCES chat.messages(message_id) ON DELETE CASCADE, 
-				before_content	TEXT,
-				after_content	TEXT, 
-				before_embeds	jsonb [], 
-				after_embeds	jsonb [], 
-				PRIMARY KEY		(edited_at, message_id)
-			)
-			"""
-		)
-		await self.db.execute(
-			"""
 			CREATE TABLE IF NOT EXISTS chat.messages (
 				created_at				TIMESTAMPTZ, 
 				message_id				BIGINT PRIMARY KEY, 
@@ -319,6 +306,19 @@ class Bot(commands.Bot):
 				guild_name				TEXT, 
 				message_content			TEXT, 
 				embeds					jsonb []
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS chat.edits (
+				edited_at		TIMESTAMPTZ, 
+				message_id		BIGINT REFERENCES chat.messages(message_id) ON DELETE CASCADE, 
+				before_content	TEXT,
+				after_content	TEXT, 
+				before_embeds	jsonb [], 
+				after_embeds	jsonb [], 
+				PRIMARY KEY		(edited_at, message_id)
 			)
 			"""
 		)
