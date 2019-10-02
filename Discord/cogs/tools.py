@@ -89,7 +89,7 @@ class Tools(commands.Cog):
 		# TODO: add border?, adjust fonts?
 		# Constants
 		content_font = "pala.ttf"
-		guide_font = "GOTHIC.TTF"
+		guide_font = "verdana.ttf"
 		margin_size = 10
 		avatar_size = 40
 		content_font_size = 20
