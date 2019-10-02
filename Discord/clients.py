@@ -287,8 +287,28 @@ class Bot(commands.Bot):
 	
 	async def initialize_database(self):
 		await self.connect_to_database()
+		await self.db.execute("CREATE SCHEMA IF NOT EXISTS chat")
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS guilds")
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS users")
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS chat.messages (
+				created_at				TIMESTAMPTZ, 
+				message_id				BIGINT PRIMARY KEY, 
+				author_id				BIGINT, 
+				author_name				TEXT, 
+				author_discriminator	TEXT, 
+				author_display_name		TEXT, 
+				direct_message			BOOL, 
+				channel_id				BIGINT, 
+				channel_name			TEXT, 
+				guild_id				BIGINT, 
+				guild_name				TEXT, 
+				message_content			TEXT, 
+				embeds					jsonb []
+			)
+			"""
+		)
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS guilds.settings (

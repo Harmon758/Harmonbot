@@ -38,7 +38,6 @@ def initialize_logging(data_path):
 	
 	# Create log folders
 	create_folder(path + "aiohttp")
-	create_folder(path + "chat")
 	create_folder(path + "discord")
 	
 	# Console log
@@ -75,12 +74,6 @@ def initialize_logging(data_path):
 	discord_handler = logging.handlers.TimedRotatingFileHandler(filename = path + "discord/discord.log", when = "midnight", backupCount = 3650000, encoding = "UTF-8")
 	discord_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
 	discord_logger.addHandler(discord_handler)
-	
-	# Chat log
-	chat_logger = logging.getLogger("chat")
-	chat_logger.setLevel(logging.DEBUG)
-	chat_logger_handler = logging.handlers.TimedRotatingFileHandler(filename = path + "chat/chat.log", when = "midnight", backupCount = 3650000, encoding = "UTF-8")
-	chat_logger.addHandler(chat_logger_handler)
 	
 	# handler to output to console
 	## console_handler = logging.StreamHandler(sys.stdout)

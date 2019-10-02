@@ -24,7 +24,6 @@ if __name__ == "__main__":
 	from modules import utilities
 	from utilities import audio_player
 	
-	chat_logger = logging.getLogger("chat")
 	mention_spammers = []
 	
 	# Use Proactor Event Loop
@@ -94,17 +93,44 @@ if __name__ == "__main__":
 	@client.event
 	async def on_message(message):
 		
-		# Log message
-		log_entry = "{0.created_at}: [{0.id}] {0.author.display_name} ({0.author}) ({0.author.id}) in ".format(message)
-		if message.channel.type is discord.ChannelType.private:
-			log_entry += "Direct Message"
-		else:
-			log_entry += "#{0.channel.name} ({0.channel.id}) [{0.guild.name} ({0.guild.id})]".format(message)
-		log_entry += f": {message.content} {[embed.to_dict() for embed in message.embeds]}"
-		chat_logger.info(log_entry)
-		
 		# Get Context
 		ctx = await client.get_context(message)
+		
+		# Log message
+		author = message.author
+		if message.channel.type is discord.ChannelType.private:
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO chat.messages (
+					created_at, message_id, 
+					author_id, author_name, author_discriminator, author_display_name, 
+					direct_message, 
+					message_content, embeds
+				)
+				VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7, CAST($8 AS jsonb[]))
+				""", 
+				message.created_at, message.id, 
+				author.id, author.name, author.discriminator, author.display_name, 
+				message.content, [embed.to_dict() for embed in message.embeds]
+			)
+		else:
+			channel = message.channel
+			guild = message.guild
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO chat.messages (
+					created_at, message_id, 
+					author_id, author_name, author_discriminator, author_display_name, 
+					direct_message, channel_id, channel_name, guild_id, guild_name, 
+					message_content, embeds
+				)
+				VALUES ($1, $2, $3, $4, $5, $6, FALSE, $7, $8, $9, $10, $11, CAST($12 AS jsonb[]))
+				""", 
+				message.created_at, message.id, 
+				author.id, author.name, author.discriminator, author.display_name, 
+				channel.id, channel.name, guild.id, guild.name, 
+				message.content, [embed.to_dict() for embed in message.embeds]
+			)
 		
 		# Server specific settings
 		if message.guild is not None:
