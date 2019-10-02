@@ -89,8 +89,6 @@ if __name__ == "__main__":
 		)
 		# TODO: Track names
 	
-	# TODO: log message edits
-	
 	@client.event
 	async def on_message(message):
 		

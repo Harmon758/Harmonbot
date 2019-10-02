@@ -292,6 +292,19 @@ class Bot(commands.Bot):
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS users")
 		await self.db.execute(
 			"""
+			CREATE TABLE IF NOT EXISTS chat.edits (
+				edited_at		TIMESTAMPTZ, 
+				message_id		BIGINT REFERENCES chat.messages(message_id) ON DELETE CASCADE, 
+				before_content	TEXT,
+				after_content	TEXT, 
+				before_embeds	jsonb [], 
+				after_embeds	jsonb [], 
+				PRIMARY KEY		(edited_at, message_id)
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
 			CREATE TABLE IF NOT EXISTS chat.messages (
 				created_at				TIMESTAMPTZ, 
 				message_id				BIGINT PRIMARY KEY, 
@@ -488,6 +501,29 @@ class Bot(commands.Bot):
 					return print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
 		await super().on_error(event_method, *args, **kwargs)
 		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (error_type, value, error_traceback))
+	
+	async def on_message_edit(self, before, after):
+		if after.edited_at != before.edited_at:
+			if before.content != after.content:
+				await self.db.execute(
+					"""
+					INSERT INTO chat.edits (edited_at, message_id, before_content, after_content)
+					VALUES ($1, $2, $3, $4)
+					""", 
+					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before.content, after.content
+				)
+			before_embeds = [embed.to_dict() for embed in before.embeds]
+			after_embeds = [embed.to_dict() for embed in after.embeds]
+			if before_embeds != after_embeds:
+				await self.db.execute(
+					"""
+					INSERT INTO chat.edits (edited_at, message_id, before_embeds, after_embeds)
+					VALUES ($1, $2, CAST($3 AS jsonb[]), CAST($4 AS jsonb[]))
+					ON CONFLICT (edited_at, message_id) DO
+					UPDATE SET before_embeds = CAST($3 AS jsonb[]), after_embeds = CAST($4 AS jsonb[])
+					""", 
+					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before_embeds, after_embeds
+				)
 	
 	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
