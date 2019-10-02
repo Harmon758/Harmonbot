@@ -509,6 +509,8 @@ class Bot(commands.Bot):
 					"""
 					INSERT INTO chat.edits (edited_at, message_id, before_content, after_content)
 					VALUES ($1, $2, $3, $4)
+					ON CONFLICT (edited_at, message_id) DO
+					UPDATE SET before_content = $3, after_content = $4
 					""", 
 					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before.content, after.content
 				)
