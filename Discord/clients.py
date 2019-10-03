@@ -508,7 +508,8 @@ class Bot(commands.Bot):
 				await self.db.execute(
 					"""
 					INSERT INTO chat.edits (edited_at, message_id, before_content, after_content)
-					VALUES ($1, $2, $3, $4)
+					SELECT $1, $2, $3, $4
+					WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
 					ON CONFLICT (edited_at, message_id) DO
 					UPDATE SET before_content = $3, after_content = $4
 					""", 
@@ -520,7 +521,8 @@ class Bot(commands.Bot):
 				await self.db.execute(
 					"""
 					INSERT INTO chat.edits (edited_at, message_id, before_embeds, after_embeds)
-					VALUES ($1, $2, CAST($3 AS jsonb[]), CAST($4 AS jsonb[]))
+					SELECT $1, $2, $3, $4
+					WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
 					ON CONFLICT (edited_at, message_id) DO
 					UPDATE SET before_embeds = CAST($3 AS jsonb[]), after_embeds = CAST($4 AS jsonb[])
 					""", 
