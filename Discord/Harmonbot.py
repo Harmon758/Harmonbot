@@ -113,7 +113,7 @@ if __name__ == "__main__":
 				""", 
 				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 
-				message.content, [embed.to_dict() for embed in message.embeds]
+				message.content.replace('\N{NULL}', ""), [embed.to_dict() for embed in message.embeds]
 			)
 		else:
 			await ctx.bot.db.execute(
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 
 				channel.id, channel.name, guild.id, guild.name, 
-				message.content, [embed.to_dict() for embed in message.embeds]
+				message.content.replace('\N{NULL}', ""), [embed.to_dict() for embed in message.embeds]
 			)
 		
 		# Server specific settings
