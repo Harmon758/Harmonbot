@@ -11,7 +11,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         # Container action (for PostgreSQL) is only supported on Linux
-        postgresql-version: ['10']
+        postgresql-version: ['10.10']
         python-version: ['3.7']
     runs-on: ${{ matrix.os }}
 
