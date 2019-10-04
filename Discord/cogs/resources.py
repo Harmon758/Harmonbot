@@ -547,7 +547,12 @@ class Resources(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		data = data[appid]["data"]
-		await ctx.embed_reply(data["short_description"], title = data["name"], title_url = data["website"], fields = (("Release Date", data["release_date"]["date"]), ("Free", "Yes" if data["is_free"] else "No"), ("App ID", data["steam_appid"])), image_url = data["header_image"])
+		await ctx.embed_reply(data["short_description"], 
+								title = data["name"], title_url = data["website"], 
+								fields = (("Release Date", data["release_date"]["date"]), 
+											("Free", "Yes" if data["is_free"] else "No"), 
+											("App ID", data["steam_appid"])), 
+								image_url = data["header_image"])
 	
 	@steam.command(name = "run", aliases = ["launch"])
 	@checks.not_forbidden()
