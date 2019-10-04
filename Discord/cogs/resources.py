@@ -540,8 +540,7 @@ class Resources(commands.Cog):
 			data = await resp.json()
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
 		if not app:
-			await ctx.embed_reply(":no_entry: Game not found")
-			return
+			return await ctx.embed_reply(":no_entry: Game not found")
 		appid = str(app["appid"])
 		url = "http://store.steampowered.com/api/appdetails/"
 		params = {"appids": appid}
