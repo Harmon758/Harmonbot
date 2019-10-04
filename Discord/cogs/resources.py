@@ -533,7 +533,7 @@ class Resources(commands.Cog):
 	
 	@steam.command(name = "gameinfo", aliases = ["game_info"])
 	@checks.not_forbidden()
-	async def steam_gameinfo(self, ctx, *, game : str):
+	async def steam_gameinfo(self, ctx, *, game: str):
 		'''Information about a game'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
