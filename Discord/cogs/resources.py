@@ -508,9 +508,9 @@ class Resources(commands.Cog):
 			data = await resp.json()
 		apps = data["applist"]["apps"]
 		appid = 0
-		for _app in apps:
-			if _app["name"].lower() == app.lower():
-				appid = _app["appid"]
+		for app_info in apps:
+			if app_info["name"].lower() == app.lower():
+				appid = app_info["appid"]
 				break
 		await ctx.embed_reply(appid)
 	
