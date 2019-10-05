@@ -501,7 +501,7 @@ class Resources(commands.Cog):
 	
 	@steam.command(name = "appid")
 	@checks.not_forbidden()
-	async def steam_appid(self, ctx, *, app : str):
+	async def steam_appid(self, ctx, *, app: str):
 		'''Get the AppID'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
