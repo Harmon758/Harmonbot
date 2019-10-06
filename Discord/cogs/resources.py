@@ -516,7 +516,7 @@ class Resources(commands.Cog):
 	
 	@steam.command(name = "gamecount", aliases = ["game_count"])
 	@checks.not_forbidden()
-	async def steam_gamecount(self, ctx, vanity_name : str):
+	async def steam_gamecount(self, ctx, vanity_name: str):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
 		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": vanity_name}
