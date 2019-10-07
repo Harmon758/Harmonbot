@@ -556,7 +556,7 @@ class Resources(commands.Cog):
 	
 	@steam.command(name = "run", aliases = ["launch"])
 	@checks.not_forbidden()
-	async def steam_run(self, ctx, *, game : str):
+	async def steam_run(self, ctx, *, game: str):
 		'''Generate a steam link to launch a game'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
