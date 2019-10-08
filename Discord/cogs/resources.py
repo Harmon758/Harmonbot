@@ -568,7 +568,7 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def strawpoll(self, ctx, question : str, *options : str):
+	async def strawpoll(self, ctx, question: str, *options: str):
 		'''
 		Generate a strawpoll link
 		Use qoutes for spaces in the question or options
