@@ -312,12 +312,13 @@ class Trivia(commands.Cog):
 				clues = [random.choice(clues[value]) for value in values]
 				board[category_id] = {"title": string.capwords(random_clue["category"]["title"]), 
 										"clues": clues}
-		for index, category_title in enumerate(category["title"] for category in board.values()):
+		for category_id, category_info in board.items():
+			category_title = category_info["title"]
 			category_title_line_character_limit = ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
 			# len("#) " + "  200 400 600 800 1000") = 25
 			if len(category_title) > category_title_line_character_limit:
 				split_index = category_title.rfind(' ', 0, category_title_line_character_limit)
-				category_titles[index] = category_title[:split_index] + '\n' + category_title[split_index + 1:]
+				board[category_id]["title"] = category_title[:split_index] + '\n' + category_title[split_index + 1:]
 		max_width = max(len(section) for category in board.values() for section in category["title"].split('\n'))
 		board_lines = []
 		for number, category_title in enumerate(category["title"] for category in board.values()):
