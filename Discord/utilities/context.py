@@ -63,25 +63,40 @@ class Context(commands.Context):
 		return self.author.send(*args, **kwargs)
 	
 	# TODO: Improve + Optimize
-	def get_permission(self, permission, *, type = "user", id = None):
-		try:
-			with open(f"{self.bot.data_path}/permissions/{self.guild.id}.json", "x+") as permissions_file:
-				json.dump({"name" : self.guild.name}, permissions_file, indent = 4)
-		except FileExistsError:
-			pass
-		else:
-			return None
-		with open(f"{self.bot.data_path}/permissions/{self.guild.id}.json", 'r') as permissions_file:
-			permissions_data = json.load(permissions_file)
+	async def get_permission(self, permission, *, type = "user", id = None):
 		if type == "everyone":
-			return permissions_data.get("everyone", {}).get(permission)
+			return await self.bot.db.fetchval(
+				"""
+				SELECT setting FROM permissions.everyone
+				WHERE guild_id = $1 AND permission = $2
+				""", 
+				self.guild.id, permission
+			)
 		elif type == "role":
-			role_setting = permissions_data.get("roles", {}).get(str(id), {}).get(permission)
+			role_setting = await self.bot.db.fetchval(
+				"""
+				SELECT setting FROM permissions.roles
+				WHERE guild_id = $1 AND role_id = $2 AND permission = $3
+				""", 
+				self.guild.id, id, permission
+			)
 			if role_setting is not None:
 				return role_setting
-			return permissions_data.get("everyone", {}).get(permission)
+			return await self.bot.db.fetchval(
+				"""
+				SELECT setting FROM permissions.everyone
+				WHERE guild_id = $1 AND permission = $2
+				""", 
+				self.guild.id, permission
+			)
 		elif type == "user":
-			user_setting = permissions_data.get("users", {}).get(str(id), {}).get(permission)
+			user_setting  = await self.bot.db.fetchval(
+				"""
+				SELECT setting FROM permissions.users
+				WHERE guild_id = $1 AND user_id = $2 AND permission = $3
+				""", 
+				self.guild.id, id, permission
+			)
 			if user_setting is not None:
 				return user_setting
 			user = discord.utils.get(self.guild.members, id = id)
@@ -90,8 +105,20 @@ class Context(commands.Context):
 				role_positions[role.position] = role
 			sorted_role_positions = collections.OrderedDict(sorted(role_positions.items(), reverse = True))
 			for role_position, role in sorted_role_positions.items():
-				role_setting = permissions_data.get("roles", {}).get(str(role.id), {}).get(permission)
+				role_setting = await self.bot.db.fetchval(
+					"""
+					SELECT setting FROM permissions.roles
+					WHERE guild_id = $1 AND role_id = $2 AND permission = $3
+					""", 
+					self.guild.id, role.id, permission
+				)
 				if role_setting is not None:
 					return role_setting
-			return permissions_data.get("everyone", {}).get(permission)
+			return await self.bot.db.fetchval(
+				"""
+				SELECT setting FROM permissions.everyone
+				WHERE guild_id = $1 AND permission = $2
+				""", 
+				self.guild.id, permission
+			)
 

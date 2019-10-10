@@ -11,8 +11,8 @@ class Duelyst(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	def cog_check(self, ctx):
-		return checks.not_forbidden_predicate(ctx)
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def duelyst(self, ctx):

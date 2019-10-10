@@ -20,8 +20,8 @@ class Math(commands.Cog):
 	Also see Matrix category
 	'''
 	
-	def cog_check(self, ctx):
-		return checks.not_forbidden_predicate(ctx)
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
 	
 	# Basic
 	

@@ -79,8 +79,8 @@ class Battlerite(commands.Cog):
 		with open(self.bot.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
 			json.dump(self.mappings, mappings_file, indent = 4)
 	
-	def cog_check(self, ctx):
-		return checks.not_forbidden_predicate(ctx)
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(hidden = True, 
 					invoke_without_command = True, case_insensitive = True)

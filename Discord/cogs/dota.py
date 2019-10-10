@@ -8,8 +8,8 @@ def setup(bot):
 
 class DotA(commands.Cog):
 	
-	def cog_check(self, ctx):
-		return checks.not_forbidden_predicate(ctx)
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
 	
 	# TODO: Move to converters file
 	class SteamAccount(commands.Converter):

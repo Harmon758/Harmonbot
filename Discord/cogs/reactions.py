@@ -177,7 +177,8 @@ class Reactions(commands.Cog):
 	async def playingr_processr(self, ctx, reaction, user):
 		if reaction.emoji in self.controls:
 			if self.controls[reaction.emoji] == "pause_resume":
-				if ctx.get_permission("pause", id = user.id) or user == ctx.guild.owner or user.id == self.bot.owner_id:
+				permitted = await ctx.get_permission("pause", id = user.id)
+				if permitted or user == ctx.guild.owner or user.id == self.bot.owner_id:
 					embed = discord.Embed(color = ctx.bot.bot_color).set_author(name = user.display_name, icon_url = user.avatar_url)
 					try:
 						self.bot.cogs["Audio"].players[ctx.guild.id].pause()
@@ -191,13 +192,15 @@ class Reactions(commands.Cog):
 					await self.bot.send_message(ctx.channel, embed = embed)
 					await self.bot.attempt_delete_message(ctx.message)
 			elif self.controls[reaction.emoji] in ("skip", "replay", "shuffle", "radio"):
-				if ctx.get_permission(self.controls[reaction.emoji], id = user.id) or user.id in (ctx.guild.owner.id, self.bot.owner_id):
+				permitted = await ctx.get_permission(self.controls[reaction.emoji], id = user.id)
+				if permitted or user.id in (ctx.guild.owner.id, self.bot.owner_id):
 					message = copy.copy(ctx.message)
 					message.content = "{}{}".format(ctx.prefix, self.controls[reaction.emoji])
 					await self.bot.process_commands(message)
 					# Timestamp for radio
 			elif self.controls[reaction.emoji] in ("volume_down", "volume_up"):
-				if ctx.get_permission("volume", id = user.id) or user.id in (ctx.guild.owner, self.bot.owner_id):
+				permitted = await ctx.get_permission("volume", id = user.id)
+				if permitted or user.id in (ctx.guild.owner, self.bot.owner_id):
 					try:
 						current_volume = self.bot.cogs["Audio"].players[ctx.guild.id].get_volume()
 					except errors.AudioNotPlaying:

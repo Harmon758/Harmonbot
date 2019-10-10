@@ -35,8 +35,8 @@ class Trivia(commands.Cog):
 		
 		self.bot.loop.create_task(self.initialize_database())
 	
-	def cog_check(self, ctx):
-		return checks.not_forbidden_predicate(ctx)
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
 	
 	async def initialize_database(self):
 		await self.bot.connect_to_database()

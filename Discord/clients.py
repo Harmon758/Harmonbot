@@ -237,8 +237,7 @@ class Bot(commands.Bot):
 												access_log_class = AiohttpAccessLogger)
 		self.aiohttp_site = None  # Initialized when starting web server
 		
-		# Create folders
-		create_folder(data_path + "/permissions")
+		# Create temp folder
 		create_folder(data_path + "/temp")
 		
 		# Add load, unload, and reload commands

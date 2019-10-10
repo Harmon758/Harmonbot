@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import json
 
-import clients
 from modules import utilities
 from utilities import checks
 
@@ -53,47 +52,6 @@ class Permissions(commands.Cog):
 			)
 			"""
 		)
-		# Migrate existing data
-		import os
-		for filename in os.listdir(self.bot.data_path + "/permissions"):
-			with open(f"{self.bot.data_path}/permissions/{filename}", 'r') as permissions_file:
-				data = json.load(permissions_file)
-			if "everyone" in data:
-				for permission, setting in data["everyone"].items():
-					await self.bot.db.execute(
-						"""
-						INSERT INTO permissions.everyone (guild_id, permission, setting)
-						VALUES ($1, $2, $3)
-						ON CONFLICT DO NOTHING
-						""", 
-						int(filename[:-5]), permission, setting
-					)
-			if "roles" in data:
-				for role_id, role_data in data["roles"].items():
-					for permission, setting in role_data.items():
-						if permission == "name":
-							continue
-						await self.bot.db.execute(
-							"""
-							INSERT INTO permissions.roles (guild_id, role_id, permission, setting)
-							VALUES ($1, $2, $3, $4)
-							ON CONFLICT DO NOTHING
-							""", 
-							int(filename[:-5]), int(role_id), permission, setting
-						)
-			if "users" in data:
-				for user_id, user_data in data["users"].items():
-					for permission, setting in user_data.items():
-						if permission == "name":
-							continue
-						await self.bot.db.execute(
-							"""
-							INSERT INTO permissions.users (guild_id, user_id, permission, setting)
-							VALUES ($1, $2, $3, $4)
-							ON CONFLICT DO NOTHING
-							""", 
-							int(filename[:-5]), int(user_id), permission, setting
-						)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
@@ -107,12 +65,15 @@ class Permissions(commands.Cog):
 	async def setpermission_everyone(self, ctx, permission : str, setting : bool = None):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
 		command = self.bot.all_commands[permission].name
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
-			permissions_data = json.load(permissions_file)
-		permissions_data.setdefault("everyone", {})
-		permissions_data["everyone"][command] = setting
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'w') as permissions_file:
-			json.dump(permissions_data, permissions_file, indent = 4)		
+		await self.bot.db.execute(
+			"""
+			INSERT INTO permissions.everyone (guild_id, permission, setting)
+			VALUES ($1, $2, $3)
+			ON CONFLICT (guild_id, permission) DO
+			UPDATE SET setting = $3
+			""", 
+			ctx.guild.id, command, setting
+		)
 		await ctx.embed_reply("Permission updated\n{} set to {} for everyone".format(permission, setting))
 	
 	@setpermission.command(name = "role")
@@ -125,13 +86,15 @@ class Permissions(commands.Cog):
 		if len(matches) > 1: return (await ctx.embed_reply("Error: multiple roles with the name, {}".format(role)))
 		elif len(matches) == 0: return (await ctx.embed_reply('Error: role with name, "{}", not found'.format(role)))
 		else: _role = matches[0]
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
-			permissions_data = json.load(permissions_file)
-		permissions_data.setdefault("roles", {})
-		permissions_data["roles"].setdefault(str(_role.id), {"name" : _role.name})
-		permissions_data["roles"][str(_role.id)][command] = setting
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'w') as permissions_file:
-			json.dump(permissions_data, permissions_file, indent = 4)		
+		await self.bot.db.execute(
+			"""
+			INSERT INTO permissions.roles (guild_id, role_id, permission, setting)
+			VALUES ($1, $2, $3, $4)
+			ON CONFLICT (guild_id, role_id, permission) DO
+			UPDATE SET setting = $4
+			""", 
+			ctx.guild.id, _role.id, command, setting
+		)
 		await ctx.embed_reply("Permission updated\n{} set to {} for the {} role".format(permission, setting, _role.name))
 	
 	@setpermission.command(name = "user")
@@ -142,13 +105,15 @@ class Permissions(commands.Cog):
 		command = self.bot.all_commands[permission].name
 		_user = await utilities.get_user(ctx, user)
 		if not _user: return (await ctx.embed_reply("Error: user not found"))
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
-			permissions_data = json.load(permissions_file)
-		permissions_data.setdefault("users", {})
-		permissions_data["users"].setdefault(str(_user.id), {"name" : _user.name})
-		permissions_data["users"][str(_user.id)][command] = setting
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'w') as permissions_file:
-			json.dump(permissions_data, permissions_file, indent = 4)
+		await self.bot.db.execute(
+			"""
+			INSERT INTO permissions.users (guild_id, user_id, permission, setting)
+			VALUES ($1, $2, $3, $4)
+			ON CONFLICT (guild_id, user_id, permission) DO
+			UPDATE SET setting = $4
+			""", 
+			ctx.guild.id, _user.id, command, setting
+		)
 		await ctx.embed_reply("Permission updated\n{} set to {} for {}".format(permission, setting, _user))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
@@ -161,7 +126,7 @@ class Permissions(commands.Cog):
 			command = self.bot.all_commands[options[1]].name
 			user = await utilities.get_user(ctx, options[0])
 			if not user: return (await ctx.embed_reply("Error: user not found"))
-			setting = ctx.get_permission(command, id = user.id)
+			setting = await ctx.get_permission(command, id = user.id)
 			await ctx.embed_reply("{} is set to {} for {}".format(options[1], setting, user))
 		else:
 			await ctx.embed_reply(":no_entry: Invalid input\ngetpermission everyone|role|user or <user> <permission>") #options
@@ -172,7 +137,7 @@ class Permissions(commands.Cog):
 	async def getpermission_everyone(self, ctx, permission : str):
 		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
 		command = self.bot.all_commands[permission].name
-		setting = ctx.get_permission(command, type = "everyone")
+		setting = await ctx.get_permission(command, type = "everyone")
 		await ctx.embed_reply("{} is set to {} for everyone".format(permission, setting))
 	
 	@getpermission.command(name = "role")
@@ -185,7 +150,7 @@ class Permissions(commands.Cog):
 		if len(matches) > 1: return (await ctx.embed_reply("Error: multiple roles with the name, {}".format(role)))
 		elif len(matches) == 0: return (await ctx.embed_reply('Error: role with name, "{}", not found'.format(role)))
 		else: _role = matches[0]
-		setting = ctx.get_permission(command, type = "role", id = _role.id)
+		setting = await ctx.get_permission(command, type = "role", id = _role.id)
 		await ctx.embed_reply("{} is set to {} for the {} role".format(permission, setting, _role.name))
 	
 	@getpermission.command(name = "user")
@@ -196,7 +161,7 @@ class Permissions(commands.Cog):
 		command = self.bot.all_commands[permission].name
 		_user = await utilities.get_user(ctx, user)
 		if not _user: return (await ctx.embed_reply("Error: user not found"))
-		setting = ctx.get_permission(command, id = _user.id)
+		setting = await ctx.get_permission(command, id = _user.id)
 		await ctx.embed_reply("{} is set to {} for {}".format(permission, setting, _user))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
@@ -208,12 +173,16 @@ class Permissions(commands.Cog):
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def getpermissions_everyone(self, ctx):
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
-			permissions_data = json.load(permissions_file)
-		everyone_settings = permissions_data.get("everyone", {})
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT permission, setting FROM permissions.everyone
+			WHERE guild_id = $1
+			""", 
+			ctx.guild.id
+		)
 		output = "__Permissions for everyone__\n"
-		for permission, setting in everyone_settings.items():
-			output += "{}: {}\n".format(permission, str(setting))
+		for record in records:
+			output += "{}: {}\n".format(record["permission"], str(record["setting"]))
 		await ctx.send(output)
 	
 	@getpermissions.command(name = "role")
@@ -224,13 +193,16 @@ class Permissions(commands.Cog):
 		if len(matches) > 1: return (await ctx.embed_reply("Error: multiple roles with the name, {}".format(role)))
 		elif len(matches) == 0: return (await ctx.embed_reply('Error: role with name, "{}", not found'.format(role)))
 		else: _role = matches[0]
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
-			permissions_data = json.load(permissions_file)
-		role_settings = permissions_data.get("roles", {}).get(str(_role.id), {})
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT permission, setting FROM permissions.roles
+			WHERE guild_id = $1 AND role_id = $2
+			""", 
+			ctx.guild.id, _role.id
+		)
 		output = "__Permissions for {}__\n".format(_role.name)
-		role_settings.pop("name", None)
-		for permission, setting in role_settings.items():
-			output += "{}: {}\n".format(permission, str(setting))
+		for record in records:
+			output += "{}: {}\n".format(record["permission"], str(record["setting"]))
 		await ctx.send(output)
 	
 	@getpermissions.command(name = "user")
@@ -239,13 +211,16 @@ class Permissions(commands.Cog):
 	async def getpermissions_user(self, ctx, user : str):
 		_user = await utilities.get_user(ctx, user)
 		if not _user: return (await ctx.embed_reply("Error: user not found"))
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
-			permissions_data = json.load(permissions_file)
-		user_settings = permissions_data.get("users", {}).get(str(_user.id), {})
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT permission, setting FROM permissions.users
+			WHERE guild_id = $1 AND user_id = $2
+			""", 
+			ctx.guild.id, _user.id
+		)
 		output = "__Permissions for {}__\n".format(_user.name)
-		user_settings.pop("name", None)
-		for permission, setting in user_settings.items():
-			output += "{}: {}\n".format(permission, str(setting))
+		for record in records:
+			output += "{}: {}\n".format(record["permission"], str(record["setting"]))
 		await ctx.send(output)
 	
 	@getpermissions.command(name = "command")
@@ -253,17 +228,36 @@ class Permissions(commands.Cog):
 	@checks.is_permitted()
 	async def getpermissions_command(self, ctx, command : str):
 		if command not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(command)))
-		with open(clients.data_path + "/permissions/{}.json".format(ctx.guild.id), 'r') as permissions_file:
-			permissions_data = json.load(permissions_file)
 		output = "__Permissions for {}__\n".format(command)
-		permissions_data.pop("name", None)
-		everyone_data = permissions_data.pop("everyone", {})
-		if command in everyone_data:
-			output += "**Everyone**: {}\n".format(everyone_data[command])
-		for type, objects in permissions_data.items():
-			output += "**{}**\n".format(type.capitalize())
-			for id, settings in objects.items():
-				if command in settings:
-					output += "{}: {}\n".format(settings["name"], str(settings[command]))
+		setting = await ctx.bot.db.fetchval(
+			"""
+			SELECT setting FROM permissions.everyone
+			WHERE guild_id = $1 AND permission = $2
+			""", 
+			ctx.guild.id, command
+		)
+		output += "**Everyone**: {}\n".format(setting)
+		output += "**Roles**\n"
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT role_id, setting FROM permissions.roles
+			WHERE guild_id = $1 AND permission = $2
+			""", 
+			ctx.guild.id, command
+		)
+		for record in records:
+			output += "{}: {}\n".format(ctx.guild.get_role(record["role_id"]), str(record["setting"]))
+			# TODO: Handle role no longer existing
+		output += "**Users**\n"
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT user_id, setting FROM permissions.users
+			WHERE guild_id = $1 AND permission = $2
+			""", 
+			ctx.guild.id, command
+		)
+		for record in records:
+			output += "{}: {}\n".format(ctx.bot.get_user(record["user_id"]), str(record["setting"]))
+			# TODO: Handle user no longer visible
 		await ctx.send(output)
 

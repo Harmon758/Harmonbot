@@ -27,9 +27,10 @@ def is_voice_connected_check(ctx):
 
 def is_voice_connected():
 	
-	def predicate(ctx):
+	async def predicate(ctx):
 		if not is_voice_connected_check(ctx):
-			if is_server_owner_check(ctx) or ctx.get_permission("join", id = ctx.author.id):
+			permitted = await ctx.get_permission("join", id = ctx.author.id)
+			if is_server_owner_check(ctx) or permitted:
 				raise errors.PermittedVoiceNotConnected
 			else:
 				raise errors.NotPermittedVoiceNotConnected
@@ -116,15 +117,16 @@ def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 	
 	return commands.check(predicate)
 
-def not_forbidden_check(ctx):
+async def not_forbidden_check(ctx):
 	if ctx.channel.type is discord.ChannelType.private:
 		return True
-	permitted = ctx.get_permission(ctx.command.name, id = ctx.author.id)
+	permitted = await ctx.get_permission(ctx.command.name, id = ctx.author.id)
 	# TODO: Include subcommands?
 	return permitted or permitted is None or is_server_owner_check(ctx)
 
-def not_forbidden_predicate(ctx):
-	if not_forbidden_check(ctx):
+async def not_forbidden_predicate(ctx):
+	not_forbidden = await not_forbidden_check(ctx)
+	if not_forbidden:
 		return True
 	else:
 		raise errors.NotPermitted
@@ -132,23 +134,24 @@ def not_forbidden_predicate(ctx):
 def not_forbidden():
 	return commands.check(not_forbidden_predicate)
 
-def is_permitted_check(ctx):
+async def is_permitted_check(ctx):
 	'''Check if permitted'''
 	if ctx.channel.type is discord.ChannelType.private:
 		return True
 	command = ctx.command
-	permitted = ctx.get_permission(command.name, id = ctx.author.id)
+	permitted = await ctx.get_permission(command.name, id = ctx.author.id)
 	while command.parent is not None and not permitted:
 		# permitted is None instead?
 		command = command.parent
-		permitted = ctx.get_permission(command.name, id = ctx.author.id)
+		permitted = await ctx.get_permission(command.name, id = ctx.author.id)
 		# include non-final parent commands?
 	return permitted or is_server_owner_check(ctx)
 
 def is_permitted():
 	
-	def predicate(ctx):
-		if is_permitted_check(ctx):
+	async def predicate(ctx):
+		permitted = await is_permitted_check(ctx)
+		if permitted:
 			return True
 		else:
 			raise errors.NotPermitted

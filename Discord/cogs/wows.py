@@ -17,8 +17,8 @@ class WoWS(commands.Cog):
 							"na": "https://api.worldofwarships.com/wows/", 
 							"ru": "https://api.worldofwarships.ru/wows/"}
 	
-	def cog_check(self, ctx):
-		return checks.not_forbidden_predicate(ctx)
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(aliases = ["worldofwarships", "world_of_warships"], 
 					invoke_without_command = True, case_insensitive = True)

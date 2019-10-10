@@ -20,8 +20,8 @@ class Chess(commands.Cog):
 		self.bot = bot
 		self.matches = []
 	
-	def cog_check(self, ctx):
-		return checks.not_forbidden_predicate(ctx)
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def chess(self, ctx):

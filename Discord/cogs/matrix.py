@@ -18,8 +18,8 @@ class Matrix(commands.Cog):
 			return ast.literal_eval(argument)
 			# TODO: check matrix
 	
-	def cog_check(self, ctx):
-		return checks.not_forbidden_predicate(ctx)
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
 	
 	@commands.group(aliases = ["matrices"], invoke_without_command = True, case_insensitive = True)
 	async def matrix(self, ctx):
