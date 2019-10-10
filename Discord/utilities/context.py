@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-import collections
 from operator import attrgetter
 
 from modules import utilities
