@@ -15,6 +15,85 @@ class Permissions(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		
+		self.bot.loop.create_task(self.initialize_database())
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS permissions")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS permissions.everyone (
+				guild_id		BIGINT, 
+				permission		TEXT, 
+				setting			BOOL, 
+				PRIMARY KEY		(guild_id, permission)
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS permissions.roles (
+				guild_id		BIGINT, 
+				role_id			BIGINT, 
+				permission		TEXT, 
+				setting			BOOL, 
+				PRIMARY KEY		(guild_id, role_id, permission)
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS permissions.users (
+				guild_id		BIGINT, 
+				user_id			BIGINT, 
+				permission		TEXT, 
+				setting			BOOL, 
+				PRIMARY KEY		(guild_id, user_id, permission)
+			)
+			"""
+		)
+		# Migrate existing data
+		import os
+		for filename in os.listdir(self.bot.data_path + "/permissions"):
+			with open(f"{self.bot.data_path}/permissions/{filename}", 'r') as permissions_file:
+				data = json.load(permissions_file)
+			if "everyone" in data:
+				for permission, setting in data["everyone"].items():
+					await self.bot.db.execute(
+						"""
+						INSERT INTO permissions.everyone (guild_id, permission, setting)
+						VALUES ($1, $2, $3)
+						ON CONFLICT DO NOTHING
+						""", 
+						int(filename[:-5]), permission, setting
+					)
+			if "roles" in data:
+				for role_id, role_data in data["roles"].items():
+					for permission, setting in role_data.items():
+						if permission == "name":
+							continue
+						await self.bot.db.execute(
+							"""
+							INSERT INTO permissions.roles (guild_id, role_id, permission, setting)
+							VALUES ($1, $2, $3, $4)
+							ON CONFLICT DO NOTHING
+							""", 
+							int(filename[:-5]), int(role_id), permission, setting
+						)
+			if "users" in data:
+				for user_id, user_data in data["users"].items():
+					for permission, setting in user_data.items():
+						if permission == "name":
+							continue
+						await self.bot.db.execute(
+							"""
+							INSERT INTO permissions.users (guild_id, user_id, permission, setting)
+							VALUES ($1, $2, $3, $4)
+							ON CONFLICT DO NOTHING
+							""", 
+							int(filename[:-5]), int(user_id), permission, setting
+						)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
