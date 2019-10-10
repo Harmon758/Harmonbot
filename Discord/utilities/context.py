@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 import collections
+from operator import attrgetter
 
 from modules import utilities
 from utilities import errors
@@ -61,34 +62,10 @@ class Context(commands.Context):
 	def whisper(self, *args, **kwargs):
 		return self.author.send(*args, **kwargs)
 	
-	# TODO: Improve + Optimize
+	# TODO: Improve
 	async def get_permission(self, permission, *, type = "user", id = None):
-		if type == "everyone":
-			return await self.bot.db.fetchval(
-				"""
-				SELECT setting FROM permissions.everyone
-				WHERE guild_id = $1 AND permission = $2
-				""", 
-				self.guild.id, permission
-			)
-		elif type == "role":
-			role_setting = await self.bot.db.fetchval(
-				"""
-				SELECT setting FROM permissions.roles
-				WHERE guild_id = $1 AND role_id = $2 AND permission = $3
-				""", 
-				self.guild.id, id, permission
-			)
-			if role_setting is not None:
-				return role_setting
-			return await self.bot.db.fetchval(
-				"""
-				SELECT setting FROM permissions.everyone
-				WHERE guild_id = $1 AND permission = $2
-				""", 
-				self.guild.id, permission
-			)
-		elif type == "user":
+		role_ids = []
+		if type == "user":
 			user_setting  = await self.bot.db.fetchval(
 				"""
 				SELECT setting FROM permissions.users
@@ -98,26 +75,25 @@ class Context(commands.Context):
 			)
 			if user_setting is not None:
 				return user_setting
-			user = discord.utils.get(self.guild.members, id = id)
-			role_positions = {}
-			for role in user.roles:
-				role_positions[role.position] = role
-			sorted_role_positions = collections.OrderedDict(sorted(role_positions.items(), reverse = True))
-			for role_position, role in sorted_role_positions.items():
-				role_setting = await self.bot.db.fetchval(
-					"""
-					SELECT setting FROM permissions.roles
-					WHERE guild_id = $1 AND role_id = $2 AND permission = $3
-					""", 
-					self.guild.id, role.id, permission
-				)
-				if role_setting is not None:
-					return role_setting
-			return await self.bot.db.fetchval(
+			user = self.guild.get_member(id)
+			role_ids.extend(role.id for role in sorted(user.roles, key = attrgetter("position"), reverse = True))
+		elif type == "role":
+			role_ids.append(id)
+		for role_id in role_ids:
+			role_setting = await self.bot.db.fetchval(
 				"""
-				SELECT setting FROM permissions.everyone
-				WHERE guild_id = $1 AND permission = $2
+				SELECT setting FROM permissions.roles
+				WHERE guild_id = $1 AND role_id = $2 AND permission = $3
 				""", 
-				self.guild.id, permission
+				self.guild.id, role_id, permission
 			)
+			if role_setting is not None:
+				return role_setting
+		return await self.bot.db.fetchval(
+			"""
+			SELECT setting FROM permissions.everyone
+			WHERE guild_id = $1 AND permission = $2
+			""", 
+			self.guild.id, permission
+		)
 
