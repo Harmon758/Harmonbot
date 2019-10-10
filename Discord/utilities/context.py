@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 import collections
-import json
 
 from modules import utilities
 from utilities import errors
