@@ -63,7 +63,7 @@ configparser==4.0.2
 cycler==0.10.0
 ddt==1.2.1
 docopt==0.6.2
-future==0.17.1
+future==0.18.0
 geojson==2.5.0
 gitdb==0.6.4
 gitdb2==2.0.6
