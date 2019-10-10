@@ -88,7 +88,7 @@ class Bot(commands.Bot):
 		self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: use everywhere
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
-		self.library_path = "D:/Data (D)/Music/"
+		self.library_path = "D:/Music/"
 		self.user_agent = "Discord Bot"  # TODO: Make more specific?
 		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.rss_color = self.rss_colour = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
