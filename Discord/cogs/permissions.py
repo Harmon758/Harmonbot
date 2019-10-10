@@ -257,8 +257,9 @@ class Permissions(commands.Cog):
 			permissions_data = json.load(permissions_file)
 		output = "__Permissions for {}__\n".format(command)
 		permissions_data.pop("name", None)
-		if command in permissions_data.get("everyone", {}):
-			output += "**Everyone**: {}\n".format(permissions_data.pop("everyone")[command])
+		everyone_data = permissions_data.pop("everyone", {})
+		if command in everyone_data:
+			output += "**Everyone**: {}\n".format(everyone_data[command])
 		for type, objects in permissions_data.items():
 			output += "**{}**\n".format(type.capitalize())
 			for id, settings in objects.items():
