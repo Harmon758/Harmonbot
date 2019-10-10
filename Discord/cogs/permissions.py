@@ -2,8 +2,6 @@
 import discord
 from discord.ext import commands
 
-import json
-
 from modules import utilities
 from utilities import checks
 
