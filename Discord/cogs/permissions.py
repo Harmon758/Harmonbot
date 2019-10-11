@@ -2,6 +2,8 @@
 import discord
 from discord.ext import commands
 
+from typing import Optional
+
 from modules import utilities
 from utilities import checks
 
@@ -114,10 +116,10 @@ class Permissions(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def getpermission(self, ctx, *options: str):
+	async def getpermission(self, ctx, user: Optional[str], permission: Optional[str]):
 		'''Get a permission'''
-		if len(options) == 2:
-			await ctx.invoke(self.getpermission_user, options[0], options[1])
+		if user and permission:
+			await ctx.invoke(self.getpermission_user, user, permission)
 		else:
 			await ctx.embed_reply(":no_entry: Invalid input\ngetpermission everyone|role|user or <user> <permission>") #options
 	
