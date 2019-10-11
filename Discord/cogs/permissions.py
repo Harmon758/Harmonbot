@@ -103,10 +103,12 @@ class Permissions(commands.Cog):
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def setpermission_user(self, ctx, user : str, permission : str, setting : bool = None):
-		if permission not in self.bot.all_commands: return (await ctx.embed_reply(f"Error: {permission} is not a command"))
+		if permission not in self.bot.all_commands:
+			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		command = self.bot.all_commands[permission].name
 		_user = await utilities.get_user(ctx, user)
-		if not _user: return (await ctx.embed_reply("Error: user not found"))
+		if not _user:
+			return await ctx.embed_reply("Error: user not found")
 		await self.bot.db.execute(
 			"""
 			INSERT INTO permissions.users (guild_id, user_id, permission, setting)
@@ -116,7 +118,8 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id, _user.id, command, setting
 		)
-		await ctx.embed_reply(f"Permission updated\n{permission} set to {setting} for {_user}")
+		await ctx.embed_reply("Permission updated\n"
+								f"{permission} set to {setting} for {_user}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
