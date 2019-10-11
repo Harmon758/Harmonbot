@@ -129,8 +129,7 @@ class Permissions(commands.Cog):
 	async def getpermission_everyone(self, ctx, permission : str):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		command = self.bot.all_commands[permission].name
-		setting = await ctx.get_permission(command, type = "everyone")
+		setting = await ctx.get_permission(self.bot.all_commands[permission].name, type = "everyone")
 		await ctx.embed_reply(f"{permission} is set to {setting} for everyone")
 	
 	@getpermission.command(name = "role")
