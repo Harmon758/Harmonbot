@@ -149,7 +149,7 @@ class Permissions(commands.Cog):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		setting = await ctx.get_permission(self.bot.all_commands[permission].name, id = user.id)
-		await ctx.embed_reply(f"{permission} is set to {setting} for {user}")
+		await ctx.embed_reply(f"{permission} is set to {setting} for {user.mention}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
