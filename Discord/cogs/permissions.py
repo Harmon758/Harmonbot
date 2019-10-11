@@ -121,7 +121,7 @@ class Permissions(commands.Cog):
 		if user and permission:
 			await ctx.invoke(self.getpermission_user, user, permission)
 		else:
-			await ctx.embed_reply(":no_entry: Invalid input\ngetpermission everyone|role|user or <user> <permission>") #options
+			await ctx.send_help(ctx.command)
 	
 	@getpermission.command(name = "everyone")
 	@commands.guild_only()
