@@ -117,12 +117,7 @@ class Permissions(commands.Cog):
 	async def getpermission(self, ctx, *options : str):
 		'''Get a permission'''
 		if len(options) == 2:
-			if options[1] not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(options[1])))
-			command = self.bot.all_commands[options[1]].name
-			user = await utilities.get_user(ctx, options[0])
-			if not user: return (await ctx.embed_reply("Error: user not found"))
-			setting = await ctx.get_permission(command, id = user.id)
-			await ctx.embed_reply("{} is set to {} for {}".format(options[1], setting, user))
+			await ctx.invoke(self.getpermission_user, options[0], options[1])
 		else:
 			await ctx.embed_reply(":no_entry: Invalid input\ngetpermission everyone|role|user or <user> <permission>") #options
 	
