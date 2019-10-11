@@ -135,18 +135,12 @@ class Permissions(commands.Cog):
 	@getpermission.command(name = "role")
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def getpermission_role(self, ctx, role: str, permission: str):
+	async def getpermission_role(self, ctx, role: discord.Role, permission: str):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		matches = [_role for _role in ctx.guild.roles if _role.name == role]
-		if len(matches) == 0:
-			return await ctx.embed_reply(f'Error: role with name, "{role}", not found')
-		if len(matches) > 1:
-			return await ctx.embed_reply(f"Error: multiple roles with the name, {role}")
-		_role = matches[0]
 		setting = await ctx.get_permission(self.bot.all_commands[permission].name, 
-											type = "role", id = _role.id)
-		await ctx.embed_reply(f"{permission} is set to {setting} for the {_role.name} role")
+											type = "role", id = role.id)
+		await ctx.embed_reply(f"{permission} is set to {setting} for the {role.name} role")
 	
 	@getpermission.command(name = "user")
 	@commands.guild_only()
