@@ -102,7 +102,7 @@ class Permissions(commands.Cog):
 	@setpermission.command(name = "user")
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def setpermission_user(self, ctx, user : str, permission : str, setting : bool = None):
+	async def setpermission_user(self, ctx, user: str, permission: str, setting: bool = None):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		_user = await utilities.get_user(ctx, user)
