@@ -78,15 +78,9 @@ class Permissions(commands.Cog):
 	@setpermission.command(name = "role")
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def setpermission_role(self, ctx, role: str, permission: str, setting: bool = None):
+	async def setpermission_role(self, ctx, role: discord.Role, permission: str, setting: bool = None):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		matches = [_role for _role in ctx.guild.roles if _role.name == role]
-		if len(matches) == 0:
-			return await ctx.embed_reply(f'Error: role with name, "{role}", not found')
-		if len(matches) > 1:
-			return await ctx.embed_reply(f"Error: multiple roles with the name, {role}")
-		_role = matches[0]
 		await self.bot.db.execute(
 			"""
 			INSERT INTO permissions.roles (guild_id, role_id, permission, setting)
@@ -94,10 +88,10 @@ class Permissions(commands.Cog):
 			ON CONFLICT (guild_id, role_id, permission) DO
 			UPDATE SET setting = $4
 			""", 
-			ctx.guild.id, _role.id, self.bot.all_commands[permission].name, setting
+			ctx.guild.id, role.id, self.bot.all_commands[permission].name, setting
 		)
 		await ctx.embed_reply("Permission updated\n"
-								f"{permission} set to {setting} for the {_role.name} role")
+								f"{permission} set to {setting} for the {role.name} role")
 	
 	@setpermission.command(name = "user")
 	@commands.guild_only()
