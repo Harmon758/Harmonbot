@@ -79,11 +79,11 @@ class Permissions(commands.Cog):
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def setpermission_role(self, ctx, role : str, permission : str, setting : bool = None):
-		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
+		if permission not in self.bot.all_commands: return (await ctx.embed_reply(f"Error: {permission} is not a command"))
 		command = self.bot.all_commands[permission].name
 		matches = [_role for _role in ctx.guild.roles if _role.name == role]
-		if len(matches) > 1: return (await ctx.embed_reply("Error: multiple roles with the name, {}".format(role)))
-		elif len(matches) == 0: return (await ctx.embed_reply('Error: role with name, "{}", not found'.format(role)))
+		if len(matches) > 1: return (await ctx.embed_reply(f"Error: multiple roles with the name, {role}"))
+		elif len(matches) == 0: return (await ctx.embed_reply(f'Error: role with name, "{role}", not found'))
 		else: _role = matches[0]
 		await self.bot.db.execute(
 			"""
@@ -94,7 +94,7 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id, _role.id, command, setting
 		)
-		await ctx.embed_reply("Permission updated\n{} set to {} for the {} role".format(permission, setting, _role.name))
+		await ctx.embed_reply(f"Permission updated\n{permission} set to {setting} for the {_role.name} role")
 	
 	@setpermission.command(name = "user")
 	@commands.guild_only()
