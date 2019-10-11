@@ -116,7 +116,7 @@ class Permissions(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def getpermission(self, ctx, user: Optional[str], permission: Optional[str]):
+	async def getpermission(self, ctx, user: Optional[discord.Member], permission: Optional[str]):
 		'''Get a permission'''
 		if user and permission:
 			await ctx.invoke(self.getpermission_user, user, permission)
@@ -145,14 +145,11 @@ class Permissions(commands.Cog):
 	@getpermission.command(name = "user")
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def getpermission_user(self, ctx, user: str, permission: str):
+	async def getpermission_user(self, ctx, user: discord.Member, permission: str):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		_user = await utilities.get_user(ctx, user)
-		if not _user:
-			return await ctx.embed_reply("Error: user not found")
-		setting = await ctx.get_permission(self.bot.all_commands[permission].name, id = _user.id)
-		await ctx.embed_reply(f"{permission} is set to {setting} for {_user}")
+		setting = await ctx.get_permission(self.bot.all_commands[permission].name, id = user.id)
+		await ctx.embed_reply(f"{permission} is set to {setting} for {user}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
