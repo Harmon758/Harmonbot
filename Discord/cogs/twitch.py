@@ -322,7 +322,7 @@ class Twitch(commands.Cog):
 				game = record["game"]
 				params = {"game": game, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
 				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
-					if resp.status == 421:
+					if resp.status in (421, 503):
 						continue
 					games_data = await resp.json()
 				streams = games_data.get("streams", [])
