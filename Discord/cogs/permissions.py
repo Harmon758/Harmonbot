@@ -140,7 +140,7 @@ class Permissions(commands.Cog):
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		setting = await ctx.get_permission(self.bot.all_commands[permission].name, 
 											type = "role", id = role.id)
-		await ctx.embed_reply(f"{permission} is set to {setting} for the {role.name} role")
+		await ctx.embed_reply(f"{permission} is set to {setting} for the role, {role.mention}")
 	
 	@getpermission.command(name = "user")
 	@commands.guild_only()
