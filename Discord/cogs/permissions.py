@@ -82,12 +82,11 @@ class Permissions(commands.Cog):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		matches = [_role for _role in ctx.guild.roles if _role.name == role]
+		if len(matches) == 0:
+			return await ctx.embed_reply(f'Error: role with name, "{role}", not found')
 		if len(matches) > 1:
 			return await ctx.embed_reply(f"Error: multiple roles with the name, {role}")
-		elif len(matches) == 0:
-			return await ctx.embed_reply(f'Error: role with name, "{role}", not found')
-		else:
-			_role = matches[0]
+		_role = matches[0]
 		await self.bot.db.execute(
 			"""
 			INSERT INTO permissions.roles (guild_id, role_id, permission, setting)
