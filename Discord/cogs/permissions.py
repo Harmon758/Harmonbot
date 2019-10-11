@@ -61,7 +61,7 @@ class Permissions(commands.Cog):
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def setpermission_everyone(self, ctx, permission : str, setting : bool = None):
-		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
+		if permission not in self.bot.all_commands: return (await ctx.embed_reply(f"Error: {permission} is not a command"))
 		command = self.bot.all_commands[permission].name
 		await self.bot.db.execute(
 			"""
@@ -72,7 +72,7 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id, command, setting
 		)
-		await ctx.embed_reply("Permission updated\n{} set to {} for everyone".format(permission, setting))
+		await ctx.embed_reply(f"Permission updated\n{permission} set to {setting} for everyone")
 	
 	@setpermission.command(name = "role")
 	@commands.guild_only()
