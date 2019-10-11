@@ -90,8 +90,8 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id, role.id, self.bot.all_commands[permission].name, setting
 		)
-		await ctx.embed_reply("Permission updated\n"
-								f"{permission} set to {setting} for the {role.name} role")
+		await ctx.embed_reply(f"{permission} set to {setting} for the role, {role.mention}", 
+								title = "Permission Updated")
 	
 	@setpermission.command(name = "user")
 	@commands.guild_only()
