@@ -154,11 +154,10 @@ class Permissions(commands.Cog):
 	async def getpermission_user(self, ctx, user : str, permission : str):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		command = self.bot.all_commands[permission].name
 		_user = await utilities.get_user(ctx, user)
 		if not _user:
 			return await ctx.embed_reply("Error: user not found")
-		setting = await ctx.get_permission(command, id = _user.id)
+		setting = await ctx.get_permission(self.bot.all_commands[permission].name, id = _user.id)
 		await ctx.embed_reply(f"{permission} is set to {setting} for {_user}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
