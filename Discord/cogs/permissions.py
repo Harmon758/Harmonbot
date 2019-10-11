@@ -103,7 +103,7 @@ class Permissions(commands.Cog):
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def setpermission_user(self, ctx, user : str, permission : str, setting : bool = None):
-		if permission not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(permission)))
+		if permission not in self.bot.all_commands: return (await ctx.embed_reply(f"Error: {permission} is not a command"))
 		command = self.bot.all_commands[permission].name
 		_user = await utilities.get_user(ctx, user)
 		if not _user: return (await ctx.embed_reply("Error: user not found"))
@@ -116,7 +116,7 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id, _user.id, command, setting
 		)
-		await ctx.embed_reply("Permission updated\n{} set to {} for {}".format(permission, setting, _user))
+		await ctx.embed_reply(f"Permission updated\n{permission} set to {setting} for {_user}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
