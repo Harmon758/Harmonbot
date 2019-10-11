@@ -114,7 +114,7 @@ class Permissions(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def getpermission(self, ctx, *options : str):
+	async def getpermission(self, ctx, *options: str):
 		'''Get a permission'''
 		if len(options) == 2:
 			await ctx.invoke(self.getpermission_user, options[0], options[1])
