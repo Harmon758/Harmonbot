@@ -105,7 +105,6 @@ class Permissions(commands.Cog):
 	async def setpermission_user(self, ctx, user : str, permission : str, setting : bool = None):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		command = self.bot.all_commands[permission].name
 		_user = await utilities.get_user(ctx, user)
 		if not _user:
 			return await ctx.embed_reply("Error: user not found")
@@ -116,7 +115,7 @@ class Permissions(commands.Cog):
 			ON CONFLICT (guild_id, user_id, permission) DO
 			UPDATE SET setting = $4
 			""", 
-			ctx.guild.id, _user.id, command, setting
+			ctx.guild.id, _user.id, self.bot.all_commands[permission].name, setting
 		)
 		await ctx.embed_reply("Permission updated\n"
 								f"{permission} set to {setting} for {_user}")
