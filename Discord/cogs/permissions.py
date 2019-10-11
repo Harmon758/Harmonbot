@@ -78,7 +78,7 @@ class Permissions(commands.Cog):
 	@setpermission.command(name = "role")
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def setpermission_role(self, ctx, role : str, permission : str, setting : bool = None):
+	async def setpermission_role(self, ctx, role: str, permission: str, setting: bool = None):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		matches = [_role for _role in ctx.guild.roles if _role.name == role]
