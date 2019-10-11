@@ -93,7 +93,7 @@ class Permissions(commands.Cog):
 		await ctx.embed_reply(f"{permission} set to {setting} for the role, {role.mention}", 
 								title = "Permission Updated")
 	
-	@setpermission.command(name = "user")
+	@setpermission.command(name = "user", aliases = ["member"])
 	@commands.guild_only()
 	@checks.is_permitted()
 	async def setpermission_user(self, ctx, user: discord.Member, permission: str, setting: bool = None):
