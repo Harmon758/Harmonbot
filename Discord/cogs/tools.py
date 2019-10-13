@@ -100,8 +100,8 @@ class Tools(commands.Cog):
 		# Initialize values
 		spoiler_text = textwrap.fill(text, character_wrap)
 		spoiler_title = textwrap.fill(f"{ctx.author.display_name}'s {name} spoiler", character_wrap)
-		await ctx.author.avatar_url.save(clients.data_path + "/temp/spoiler_avatar.png")
-		avatar = Image.open(clients.data_path + "/temp/spoiler_avatar.png")
+		await ctx.author.avatar_url.save(self.bot.data_path + "/temp/spoiler_avatar.png")
+		avatar = Image.open(self.bot.data_path + "/temp/spoiler_avatar.png")
 		avatar.thumbnail((avatar_size, avatar_size))
 		content_font = ImageFont.truetype(content_font, content_font_size)
 		guide_font = ImageFont.truetype(guide_font, guide_font_size)
@@ -131,11 +131,11 @@ class Tools(commands.Cog):
 							"(Hover to reveal spoiler)", font = guide_font, 
 							fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,))
 			frame = Image.alpha_composite(frame, transparent_text)
-			frame.save(f"{clients.data_path}/temp/spoiler_frame_{frame_number}.png")
+			frame.save(f"{self.bot.data_path}/temp/spoiler_frame_{frame_number}.png")
 		# Create + send .gif
-		images = [imageio.imread(f) for f in [f"{clients.data_path}/temp/spoiler_frame_{i}.png" for i in range(1, 3)]]
-		imageio.mimsave(clients.data_path + "/temp/spoiler.gif", images, loop = 1, duration = 0.5)
-		await ctx.channel.send(file = discord.File(clients.data_path + "/temp/spoiler.gif"))
+		images = [imageio.imread(f) for f in [f"{self.bot.data_path}/temp/spoiler_frame_{i}.png" for i in range(1, 3)]]
+		imageio.mimsave(self.bot.data_path + "/temp/spoiler.gif", images, loop = 1, duration = 0.5)
+		await ctx.channel.send(file = discord.File(self.bot.data_path + "/temp/spoiler.gif"))
 		await self.bot.attempt_delete_message(response)
 	
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], 
