@@ -204,7 +204,7 @@ if __name__ == "__main__":
 		# help or prefix(es) DM or mention
 		if (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and channel.type is discord.ChannelType.private) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
 			try:
-				prefixes = ctx.bot.command_prefix(ctx.bot, message)
+				prefixes = await ctx.bot.command_prefix(ctx.bot, message)
 			except TypeError:  # if Beta (*)
 				prefixes = ctx.bot.command_prefix
 			if any(string in message.content.lower() for string in ('?', "commands", "help")):

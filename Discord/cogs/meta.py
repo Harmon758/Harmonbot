@@ -122,14 +122,26 @@ class Meta(commands.Cog):
 		'''
 		if not prefixes:
 			prefixes = ['!']
-		with open(clients.data_path + "/prefixes.json", 'r') as prefixes_file:
-			all_prefixes = json.load(prefixes_file)
 		if ctx.channel.type is discord.ChannelType.private:
-			all_prefixes[ctx.channel.id] = prefixes
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO direct_messages.prefixes (channel_id, prefixes)
+				VALUES ($1, $2)
+				ON CONFLICT (channel_id) DO
+				UPDATE SET prefixes = $2
+				""", 
+				ctx.channel.id, prefixes
+			)
 		else:
-			all_prefixes[ctx.guild.id] = prefixes
-		with open(clients.data_path + "/prefixes.json", 'w') as prefixes_file:
-			json.dump(all_prefixes, prefixes_file, indent = 4)
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO guilds.prefixes (guild_id, prefixes)
+				VALUES ($1, $2)
+				ON CONFLICT (guild_id) DO
+				UPDATE SET prefixes = $2
+				""", 
+				ctx.guild.id, prefixes
+			)
 		await ctx.embed_reply("Prefix(es) set: " + ' '.join(f'`"{prefix}"`' for prefix in prefixes))
 	
 	@commands.group(aliases = ["shard"], invoke_without_command = True, case_insensitive = True)

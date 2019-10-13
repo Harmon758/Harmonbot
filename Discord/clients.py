@@ -424,56 +424,6 @@ class Bot(commands.Bot):
 														"guild_count_name": "guilds"}}
 		# TODO: Add users and voice_connections for discordbotlist.com
 		await self.update_all_listing_stats()
-		# Migrate existing data
-		with open(data_path + "/prefixes.json", 'r') as prefixes_file:
-			data = json.load(prefixes_file)
-		async def insert_guild_prefixes(discord_id, prefixes):
-			await self.db.execute(
-				"""
-				INSERT INTO guilds.prefixes (guild_id, prefixes)
-				VALUES ($1, $2)
-				ON CONFLICT DO NOTHING
-				""", 
-				int(discord_id), prefixes
-			)
-		async def insert_direct_message_prefixes(discord_id, prefixes):
-			await self.db.execute(
-				"""
-				INSERT INTO direct_messages.prefixes (channel_id, prefixes)
-				VALUES ($1, $2)
-				ON CONFLICT DO NOTHING
-				""", 
-				int(discord_id), prefixes
-			)
-		for discord_id, prefixes in data.items():
-			if self.get_guild(int(discord_id)):
-				await insert_guild_prefixes(discord_id, prefixes)
-				continue
-			if self.get_channel(int(discord_id)) or self.get_user(int(discord_id)):
-				await insert_direct_message_prefixes(discord_id, prefixes)
-				continue
-			try:
-				await self.fetch_guild(int(discord_id))
-			except discord.Forbidden:
-				pass
-			else:
-				await insert_guild_prefixes(discord_id, prefixes)
-				continue
-			try:
-				await self.fetch_channel(int(discord_id))
-			except (discord.Forbidden, discord.NotFound):
-				pass
-			else:
-				await insert_direct_message_prefixes(discord_id, prefixes)
-				continue
-			try:
-				await self.fetch_user(int(discord_id))
-			except discord.NotFound:
-				pass
-			else:
-				await insert_direct_message_prefixes(discord_id, prefixes)
-				continue
-			print(discord_id)  # Manually migrate
 	
 	async def on_resumed(self):
 		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().time().isoformat()}")
@@ -802,8 +752,6 @@ class Bot(commands.Bot):
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Reloaded `{cog}` cog :gear:")
 
 
-# Custom prefixes (Create files)
-
 def create_file(filename, content = None, filetype = "json"):
 	if content is None:
 		content = {}
@@ -815,14 +763,24 @@ def create_file(filename, content = None, filetype = "json"):
 	except OSError:
 		pass  # TODO: Handle?
 
-create_file("prefixes")
-
-def get_prefix(bot, message):
-	with open(data_path + "/prefixes.json", 'r') as prefixes_file:
-		all_prefixes = json.load(prefixes_file)
+async def get_prefix(bot, message):
 	if isinstance(message.channel, discord.DMChannel):
-		prefixes = all_prefixes.get(str(message.channel.id), None)
+		prefixes = await bot.db.fetchval(
+			"""
+			SELECT prefixes
+			FROM direct_messages.prefixes
+			WHERE channel_id = $1
+			""", 
+			message.channel.id
+		)
 	else:
-		prefixes = all_prefixes.get(str(message.guild.id), None)
+		prefixes = await bot.db.fetchval(
+			"""
+			SELECT prefixes
+			FROM guilds.prefixes
+			WHERE guild_id = $1
+			""", 
+			message.guild.id
+		)
 	return prefixes if prefixes else '!'
 
