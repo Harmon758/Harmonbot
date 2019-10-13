@@ -2,7 +2,7 @@ matrix:
   include:
     - name: Discord
       language: python
-      python: 3.7.3
+      python: 3.7.4
       dist: xenial
       # Required for Python 3.7
       # https://docs.travis-ci.com/user/languages/python/#python-37-and-higher
@@ -21,7 +21,7 @@ matrix:
         - python Harmonbot.py
     - name: Telegram
       language: python
-      python: 3.7.3
+      python: 3.7.4
       dist: xenial
       # Required for Python 3.7
       # https://docs.travis-ci.com/user/languages/python/#python-37-and-higher
