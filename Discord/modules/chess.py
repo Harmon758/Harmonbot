@@ -91,9 +91,9 @@ class ChessMatch(chess.Board):
 		svg = svg.replace("y=\"390\"", "y=\"395\"")
 		with open(self.bot.data_path + "/temp/chess_board.svg", 'w') as image:
 			print(svg, file = image)
-		with Image(filename = self.bot.data_path + "/temp/chess_board.svg") as img:
-			img.format = "png"
-			img.save(filename = self.bot.data_path + "/temp/chess_board.png")
+		with Image(filename = self.bot.data_path + "/temp/chess_board.svg") as image:
+			image.format = "png"
+			image.save(filename = self.bot.data_path + "/temp/chess_board.png")
 		# asyncio.sleep(0.2)  # necessary?, wasn't even awaited
 		if self.match_message:
 			embed = self.match_message.embeds[0]
