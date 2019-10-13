@@ -302,7 +302,7 @@ class Bot(commands.Bot):
 				guild_id				BIGINT, 
 				guild_name				TEXT, 
 				message_content			TEXT, 
-				embeds					jsonb []
+				embeds					JSONB []
 			)
 			"""
 		)
@@ -313,8 +313,8 @@ class Bot(commands.Bot):
 				message_id		BIGINT REFERENCES chat.messages(message_id) ON DELETE CASCADE, 
 				before_content	TEXT,
 				after_content	TEXT, 
-				before_embeds	jsonb [], 
-				after_embeds	jsonb [], 
+				before_embeds	JSONB [], 
+				after_embeds	JSONB [], 
 				PRIMARY KEY		(edited_at, message_id)
 			)
 			"""
