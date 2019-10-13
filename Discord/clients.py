@@ -285,6 +285,7 @@ class Bot(commands.Bot):
 	async def initialize_database(self):
 		await self.connect_to_database()
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS chat")
+		await self.db.execute("CREATE SCHEMA IF NOT EXISTS direct_messages")
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS guilds")
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS users")
 		await self.db.execute(
@@ -316,6 +317,22 @@ class Bot(commands.Bot):
 				before_embeds	JSONB [], 
 				after_embeds	JSONB [], 
 				PRIMARY KEY		(edited_at, message_id)
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS direct_messages.prefixes (
+				channel_id	BIGINT PRIMARY KEY, 
+				prefixes	TEXT []
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS guilds.prefixes (
+				guild_id	BIGINT PRIMARY KEY, 
+				prefixes	TEXT []
 			)
 			"""
 		)
@@ -407,6 +424,56 @@ class Bot(commands.Bot):
 														"guild_count_name": "guilds"}}
 		# TODO: Add users and voice_connections for discordbotlist.com
 		await self.update_all_listing_stats()
+		# Migrate existing data
+		with open(data_path + "/prefixes.json", 'r') as prefixes_file:
+			data = json.load(prefixes_file)
+		async def insert_guild_prefixes(discord_id, prefixes):
+			await self.db.execute(
+				"""
+				INSERT INTO guilds.prefixes (guild_id, prefixes)
+				VALUES ($1, $2)
+				ON CONFLICT DO NOTHING
+				""", 
+				int(discord_id), prefixes
+			)
+		async def insert_direct_message_prefixes(discord_id, prefixes):
+			await self.db.execute(
+				"""
+				INSERT INTO direct_messages.prefixes (channel_id, prefixes)
+				VALUES ($1, $2)
+				ON CONFLICT DO NOTHING
+				""", 
+				int(discord_id), prefixes
+			)
+		for discord_id, prefixes in data.items():
+			if self.get_guild(int(discord_id)):
+				await insert_guild_prefixes(discord_id, prefixes)
+				continue
+			if self.get_channel(int(discord_id)) or self.get_user(int(discord_id)):
+				await insert_direct_message_prefixes(discord_id, prefixes)
+				continue
+			try:
+				await self.fetch_guild(int(discord_id))
+			except discord.Forbidden:
+				pass
+			else:
+				await insert_guild_prefixes(discord_id, prefixes)
+				continue
+			try:
+				await self.fetch_channel(int(discord_id))
+			except (discord.Forbidden, discord.NotFound):
+				pass
+			else:
+				await insert_direct_message_prefixes(discord_id, prefixes)
+				continue
+			try:
+				await self.fetch_user(int(discord_id))
+			except discord.NotFound:
+				pass
+			else:
+				await insert_direct_message_prefixes(discord_id, prefixes)
+				continue
+			print(discord_id)  # Manually migrate
 	
 	async def on_resumed(self):
 		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().time().isoformat()}")
