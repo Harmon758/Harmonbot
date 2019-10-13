@@ -1,3 +1,10 @@
+#! C:\Program Files\Python37\pythonw.exe
+# Remove (or stop using explicit path) with 3.8.0 release
+# https://bugs.python.org/issue38359
+# https://github.com/python/cpython/pull/16561
+# https://github.com/python/cpython/commit/353fb1ecbfd58752dabae115c4964095e1e35e5f#diff-41ba1d8c5d477907e94ef67e224bb6bc
+# https://github.com/python/cpython/pull/16564
+# https://github.com/python/cpython/commit/e74fa70bcc379de1ce956273c5386fc8a7b9c5e6
 
 import atexit
 from queue import Queue
