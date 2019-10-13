@@ -41,7 +41,6 @@ sys.path.pop(0)
 # TODO: Relocate as Bot variables
 beta = any("beta" in arg.lower() for arg in sys.argv)  # Moved, only for data_path
 data_path = "data/beta" if beta else "data"  # Moved, update all references to
-wait_time = 15.0
 
 class Bot(commands.Bot):
 	
