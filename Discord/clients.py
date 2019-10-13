@@ -322,10 +322,10 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS guilds.settings (
-				guild_id	BIGINT, 
-				name		TEXT, 
-				setting		BOOL, 
-				PRIMARY KEY	(guild_id, name)
+				guild_id		BIGINT, 
+				name			TEXT, 
+				setting			BOOL, 
+				PRIMARY KEY		(guild_id, name)
 			)
 			"""
 		)
