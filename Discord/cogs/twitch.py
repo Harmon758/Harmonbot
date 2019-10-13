@@ -2,12 +2,13 @@
 import discord
 from discord.ext import commands, tasks
 
-import aiohttp
 import asyncio
-import dateutil.parser
 import logging
 import sys
 import traceback
+
+import aiohttp
+import dateutil.parser
 
 from utilities import checks
 
