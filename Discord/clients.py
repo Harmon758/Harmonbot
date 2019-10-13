@@ -764,7 +764,7 @@ def create_file(filename, content = None, filetype = "json"):
 		pass  # TODO: Handle?
 
 async def get_prefix(bot, message):
-	if isinstance(message.channel, discord.DMChannel):
+	if message.channel.type is discord.ChannelType.private:
 		prefixes = await bot.db.fetchval(
 			"""
 			SELECT prefixes
