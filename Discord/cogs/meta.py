@@ -113,7 +113,7 @@ class Meta(commands.Cog):
 	
 	@commands.command(aliases = ["setprefixes"])
 	@checks.is_permitted()
-	async def setprefix(self, ctx, *prefixes : str):
+	async def setprefix(self, ctx, *prefixes: str):
 		'''
 		Set the bot prefix(es)
 		For the server or for DMs
