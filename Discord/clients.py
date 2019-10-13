@@ -3,13 +3,11 @@ import discord
 from discord.ext import commands
 
 import asyncio
-import contextlib
 import datetime
 import json
 import logging
 import os
 import random
-import ssl
 import sys
 import traceback
 from urllib import parse
@@ -652,37 +650,6 @@ class Bot(commands.Bot):
 		stats["uptime"] += uptime.total_seconds()
 		with open(data_path + "/stats.json", 'w') as stats_file:
 			json.dump(stats, stats_file, indent = 4)
-	
-	@contextlib.contextmanager
-	def suppress_duplicate_event_loop_exceptions(self):
-		# Will no longer be necessary in Python 3.7.4/3.8?
-		# https://bugs.python.org/issue37035
-		# https://github.com/python/cpython/pull/13548
-		# https://github.com/python/cpython/commit/1f39c28e489cca0397fc4c3675d13569318122ac
-		# https://github.com/python/cpython/pull/13594
-		# https://github.com/python/cpython/commit/a79b6c578fcd2ea8be29440fdd8a998e5527200f
-		# https://github.com/aio-libs/aiohttp/issues/3535
-		# https://github.com/aio-libs/aiohttp/issues/3675
-		# https://stackoverflow.com/questions/52012488/ssl-asyncio-traceback-even-when-error-is-handled
-		# https://bugs.python.org/issue34506
-		old_handler_function = old_handler = self.loop.get_exception_handler()
-		if not old_handler_function:
-			old_handler_function = lambda loop, ctx: self.loop.default_exception_handler(ctx)
-		def new_handler(loop, ctx):
-			exc = ctx.get("exception")
-			# Suppress ConnectionResetError and SSLError
-			if isinstance(exc, (ConnectionResetError, ssl.SSLError)):
-				return
-			# Suppress OSError: [WinError 121] The semaphore timeout period has expired
-			# https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes--0-499-
-			if isinstance(exc, OSError) and exc.winerror == 121:
-				return
-			old_handler_function(loop, ctx)
-		self.loop.set_exception_handler(new_handler)
-		try:
-			yield
-		finally:
-			self.loop.set_exception_handler(old_handler)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()

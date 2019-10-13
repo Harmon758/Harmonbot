@@ -170,9 +170,8 @@ class RSS(commands.Cog):
 			if record["ttl"] and datetime.datetime.now(datetime.timezone.utc) < record["last_checked"] + datetime.timedelta(minutes = record["ttl"]):
 				continue
 			try:
-				with self.bot.suppress_duplicate_event_loop_exceptions():
-					async with self.bot.aiohttp_session.get(feed) as resp:
-						feed_text = await resp.text()
+				async with self.bot.aiohttp_session.get(feed) as resp:
+					feed_text = await resp.text()
 				try:
 					feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
 				# Still necessary to run in executor?
