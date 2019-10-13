@@ -113,10 +113,10 @@ class ChessMatch(chess.Board):
 		image_message = await self.bot.cache_channel.send(file = discord.File(self.bot.data_path + "/temp/chess_board.png"))
 		embed.set_image(url = image_message.attachments[0].url)
 		embed.set_footer(text = footer_text)
-		if not self.match_message:
-			self.match_message = await self.ctx.send(embed = embed)
-		else:
+		if self.match_message:
 			await self.match_message.edit(embed = embed)
+		else:
+			self.match_message = await self.ctx.send(embed = embed)
 	
 	async def new_match_embed(self, *, flipped = None, footer_text = None):
 		if flipped is None:
