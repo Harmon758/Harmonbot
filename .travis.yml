@@ -21,7 +21,7 @@ matrix:
         pip: true
       before_script:
         - psql -c "CREATE DATABASE harmonbot"
-        - psql -v pwd="$DATABASE_PASSWORD" -c "CREATE USER harmonbot SUPERUSER PASSWORD :'pwd'"
+        - psql -v pwd="$DATABASE_PASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pwd'"
         - cd Discord
       script:
         - python Harmonbot.py
