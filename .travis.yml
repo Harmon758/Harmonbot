@@ -17,7 +17,7 @@ matrix:
           - postgresql-client-11
       env:
         global:
-         - PGPORT=5433
+        - PGPORT=5433
       cache:
         pip: true
       before_script:
