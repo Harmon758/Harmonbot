@@ -11,6 +11,13 @@ matrix:
         - postgresql
       addons:
         postgresql: "11"
+        apt:
+          packages:
+          - postgresql-11
+          - postgresql-client-11
+      env:
+        global:
+         - PGPORT=5432
       cache:
         pip: true
       before_script:
