@@ -10,7 +10,7 @@ matrix:
       services:
         - postgresql
       addons:
-        postgresql: "10"
+        postgresql: "11"
       cache:
         pip: true
       before_script:
