@@ -3,10 +3,6 @@ matrix:
     - name: Discord
       language: python
       python: 3.7.4
-      dist: xenial
-      # Required for Python 3.7
-      # https://docs.travis-ci.com/user/languages/python/#python-37-and-higher
-      # https://github.com/travis-ci/travis-ci/issues/9815
       services:
         - postgresql
       addons:
@@ -28,10 +24,6 @@ matrix:
     - name: Telegram
       language: python
       python: 3.7.4
-      dist: xenial
-      # Required for Python 3.7
-      # https://docs.travis-ci.com/user/languages/python/#python-37-and-higher
-      # https://github.com/travis-ci/travis-ci/issues/9815
       cache:
         pip: true
       before_script:
