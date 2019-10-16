@@ -3,7 +3,7 @@ dependencies:
 - type: python
   path: requirements.txt
   settings:
-    python_version: "3.7.4"
+    python_version: "3.7.5"
     github_labels:
     - dependency update
     related_pr_behavior: close
