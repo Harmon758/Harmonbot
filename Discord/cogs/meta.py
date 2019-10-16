@@ -284,6 +284,10 @@ class Meta(commands.Cog):
 		discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p  # Necessary?
 		await ctx.embed_reply(discord.opus._lib.opus_get_version_string().decode("UTF-8"))
 	
+	@version.command(name = "postgresql", aliases = ["database"])
+	async def version_postgresql(self, ctx):
+		postgresql_version = await ctx.bot.db.fetchval("SELECT version()")
+		await ctx.embed_reply(postgresql_version)
 	
 	# Update Bot Stuff
 	
