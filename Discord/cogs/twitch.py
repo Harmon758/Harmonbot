@@ -350,7 +350,7 @@ class Twitch(commands.Cog):
 			params = {"channel": ','.join(record["user_id"] for record in records), 
 						"client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
 			async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
-				if resp.status not in (503, 504):
+				if resp.status not in (502, 503, 504):
 					streams_data = await resp.json()
 				# TODO: Handle >100 streams
 			streams = streams_data.get("streams", [])
