@@ -46,7 +46,7 @@ sympy==1.4
 tabulate==0.8.5
 treys==0.1.3
 tweepy==3.8.0
-unicodedata2==12.0.0
+unicodedata2==12.1.0
 urllib3==1.25.6
 wand==0.5.7
 wolframalpha==3.0.1
