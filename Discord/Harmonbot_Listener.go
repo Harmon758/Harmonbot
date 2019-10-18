@@ -11,6 +11,7 @@ import "encoding/binary"
 import "io/ioutil"
 import "fmt"
 import "os"
+import "runtime"
 import "strings"
 
 const owner_id string = "115691005197549570"
@@ -114,6 +115,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				changeAvatar(s)
 				s.ChannelMessageSend(m.ChannelID, "Avatar Updated")
 			}
+		case ">version go":
+			s.ChannelMessageSend(m.ChannelID, runtime.Version())
 	}
 	if strings.HasPrefix(m.Content, ">join") {
 		
