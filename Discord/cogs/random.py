@@ -42,7 +42,7 @@ class Random(commands.Cog):
 				self.bot.add_command(command)
 				self.random.add_command(command)
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.blob, "Blobs.blobs"), (self.color, "Resources.color"), (self.giphy, "Images.giphy"), (self.map, "Location.map"), (self.photo, "Images.image"), (self.streetview, "Location.streetview"), (self.uesp, "Search.uesp"), (self.time, "Location.time"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
+		self.random_subcommands = ((self.blob, "Blobs.blobs"), (self.color, "Resources.color"), (self.giphy, "Images.giphy"), (self.map, "Location.map"), (self.photo, "Images.image"), (self.streetview, "Location.streetview"), (self.time, "Location.time"), (self.uesp, "Search.uesp"), (self.wikipedia, "Search.wikipedia"), (self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
 		# Import jokes
