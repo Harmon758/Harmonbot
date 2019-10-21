@@ -602,7 +602,7 @@ class Resources(commands.Cog):
 		for number_emote in sorted(numbers.keys())[:num_results]:
 			await response.add_reaction(number_emote)
 		while True:
-			reaction, user = await self.bot.wait_for("reaction_add", check = lambda reaction, user: user == ctx.author and reaction.message.id == response.id and str(reaction.emoji) in sorted(numbers.keys())[:num_results])
+			reaction, user = await self.bot.wait_for_reaction_add_or_remove(message = response, user = ctx.author, emoji = sorted(numbers.keys())[:num_results])
 			number = numbers[reaction.emoji]
 			definition = data["list"][number - 1]
 			embed.clear_fields()
