@@ -575,13 +575,13 @@ class Games(commands.Cog):
 				await response.edit(content = ":no_entry: Error: Please don't deselect your reactions before I've selected them")
 				return
 		for countdown in range(10, 0, -1):
-			await response.edit(content = "First to click the reaction _ wins.\nGet ready! {}".format(countdown))
+			await response.edit(content = f"First to click the reaction _ wins.\nGet ready! {countdown}")
 			await asyncio.sleep(1)
-		await response.edit(content = "First to click the reaction {} wins. Go!".format(reaction.emoji))
+		await response.edit(content = f"First to click the reaction {reaction.emoji} wins. Go!")
 		start_time = timeit.default_timer()
 		reaction, winner = await self.bot.wait_for_reaction_add_or_remove(message = response, emoji = reaction.emoji)
 		elapsed = timeit.default_timer() - start_time
-		await response.edit(content = "{} was the first to click {} and won with a time of {:.5} seconds!".format(winner.display_name, reaction.emoji, elapsed))
+		await response.edit(content = f"{winner.display_name} was the first to click {reaction.emoji} and won with a time of {elapsed:.5} seconds!")
 	
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
 	@checks.not_forbidden()
