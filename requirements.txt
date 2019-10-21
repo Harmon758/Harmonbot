@@ -24,6 +24,7 @@ more-itertools==7.2.0
 numexpr==2.7.0
 numpy==1.17.3
 pandas==0.25.1
+pillow==6.2.1
 psutil==5.6.3
 pycountry==19.8.18
 pydealer==1.4.0
@@ -75,7 +76,6 @@ lxml==4.4.1
 mpmath==1.1.0
 multidict==4.5.2
 oauthlib==3.1.0
-pillow==6.2.1
 protobuf==3.10.0
 pycparser==2.19
 pynacl==1.3.0
