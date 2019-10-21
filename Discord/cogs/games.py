@@ -559,7 +559,7 @@ class Games(commands.Cog):
 	async def reaction_time(self, ctx):
 		'''Reaction time game'''
 		# TODO: Randomly add reactions
-		response = await ctx.embed_reply("Please choose 10 reactions", author_name = None, attempt_delete = False)
+		response = await ctx.embed_reply("Please add 10 reactions to this message", author_name = None, attempt_delete = False)
 		embed = response.embeds[0]
 		while len(response.reactions) < 10:
 			await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id)
@@ -573,14 +573,14 @@ class Games(commands.Cog):
 				await response.add_reaction(_reaction.emoji)
 				# Unable to add custom emoji?
 			except discord.HTTPException:
-				embed.description = ":no_entry: Error: Please don't deselect your reactions before I've selected them"
+				embed.description = ":no_entry: Error: Please don't remove your reactions before I've selected them"
 				await response.edit(embed = embed)
 				return
 		for countdown in range(10, 0, -1):
-			embed.description = f"First to click the reaction _ wins.\nGet ready! {countdown}"
+			embed.description = f"First to click the _ reaction wins.\nGet ready! {countdown}"
 			await response.edit(embed = embed)
 			await asyncio.sleep(1)
-		embed.description = f"First to click the reaction {reaction.emoji} wins. Go!"
+		embed.description = f"First to click the {reaction.emoji} reaction wins. Go!"
 		await response.edit(embed = embed)
 		start_time = timeit.default_timer()
 		reaction, winner = await self.bot.wait_for_reaction_add_or_remove(message = response, emoji = reaction.emoji)
