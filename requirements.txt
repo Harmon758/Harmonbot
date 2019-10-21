@@ -75,7 +75,7 @@ lxml==4.4.1
 mpmath==1.1.0
 multidict==4.5.2
 oauthlib==3.1.0
-pillow==6.2.0
+pillow==6.2.1
 protobuf==3.10.0
 pycparser==2.19
 pynacl==1.3.0
