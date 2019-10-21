@@ -283,8 +283,8 @@ class Resources(commands.Cog):
 		for number_emote in sorted(numbers.keys()):
 			await response.add_reaction(number_emote)
 		while True:
-			emoji_response = await self.bot.wait_for_reaction(user = ctx.author, message = response, emoji = numbers.keys())
-			reaction = emoji_response.reaction
+			reaction, user = await self.bot.wait_for("reaction_add", check = lambda reaction, user: user == ctx.author and reaction.message.id == response.id and str(reaction.emoji) in numbers.keys())
+			# TODO: Support reaction removal
 			number = numbers[reaction.emoji]
 			article = data["articles"][number - 1]
 			output = f"Article {number}:"
