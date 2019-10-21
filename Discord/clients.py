@@ -563,6 +563,26 @@ class Bot(commands.Bot):
 		except (discord.Forbidden, discord.NotFound):
 			pass
 	
+	async def wait_for_reaction_add_or_remove(self, *, emoji = None, message = None, user = None, timeout = None):
+		def reaction_check(reaction, reaction_user):
+			if emoji:
+				if isinstance(emoji, (str, discord.Emoji, discord.PartialEmoji)) and reaction.emoji != emoji:
+					return False
+				elif reaction.emoji not in emoji:
+					return False
+			if message and reaction.message.id != message.id:
+				return False
+			if user and reaction_user.id != user.id:
+				return False
+			return True
+		
+		add = self.wait_for("reaction_add", check = reaction_check, timeout = timeout)
+		remove = self.wait_for("reaction_remove", check = reaction_check, timeout = timeout)
+		done, pending = await asyncio.wait((add, remove), return_when = asyncio.FIRST_COMPLETED)
+		for task in pending:
+			task.cancel()
+		return done.pop().result()
+	
 	# Override Context class
 	async def get_context(self, message, *, cls = Context):
 		ctx = await super().get_context(message, cls = cls)
