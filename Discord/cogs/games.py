@@ -565,12 +565,12 @@ class Games(commands.Cog):
 			await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id)
 			response = await ctx.channel.fetch_message(response.id)
 		reactions = response.reactions
-		reaction = random.choice(reactions)
+		winning_emoji = random.choice(reactions).emoji
 		embed.description = "Please wait.."
 		await response.edit(embed = embed)
-		for _reaction in reactions:
+		for reaction in reactions:
 			try:
-				await response.add_reaction(_reaction.emoji)
+				await response.add_reaction(reaction.emoji)
 				# Unable to add custom emoji?
 			except discord.HTTPException:
 				embed.description = ":no_entry: Error: Please don't remove your reactions before I've selected them"
@@ -580,13 +580,13 @@ class Games(commands.Cog):
 			embed.description = f"First to click the _ reaction wins.\nGet ready! {countdown}"
 			await response.edit(embed = embed)
 			await asyncio.sleep(1)
-		embed.description = f"First to click the {reaction.emoji} reaction wins. Go!"
+		embed.description = f"First to click the {winning_emoji} reaction wins. Go!"
 		await response.edit(embed = embed)
 		start_time = timeit.default_timer()
-		reaction, winner = await self.bot.wait_for_reaction_add_or_remove(message = response, emoji = reaction.emoji)
+		_, winner = await self.bot.wait_for_reaction_add_or_remove(message = response, emoji = winning_emoji)
 		elapsed = timeit.default_timer() - start_time
 		embed.set_author(name = winner.display_name, icon_url = winner.avatar_url)
-		embed.description = f"was the first to click {reaction.emoji} and won with a time of {elapsed:.5} seconds!"
+		embed.description = f"was the first to click {winning_emoji} and won with a time of {elapsed:.5} seconds!"
 		await response.edit(embed = embed)
 	
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
