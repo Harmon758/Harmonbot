@@ -285,8 +285,6 @@ if __name__ == "__main__":
 			# TODO: stop after ready
 		else:
 			client.loop.run_until_complete(client.start(token))
-	except aiohttp.errors.ClientOSError:
-		pass
 	finally:
 		client.loop.run_until_complete(client.shutdown_tasks())
 		client.loop.close()
