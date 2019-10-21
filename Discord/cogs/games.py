@@ -558,30 +558,36 @@ class Games(commands.Cog):
 	@checks.not_forbidden()
 	async def reaction_time(self, ctx):
 		'''Reaction time game'''
-		# TODO: Use embeds
 		# TODO: Randomly add reactions
-		response = await ctx.send("Please choose 10 reactions")
+		response = await ctx.embed_reply("Please choose 10 reactions", author_name = None, attempt_delete = False)
+		embed = response.embeds[0]
 		while len(response.reactions) < 10:
 			await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id)
 			response = await ctx.channel.fetch_message(response.id)
 		reactions = response.reactions
 		reaction = random.choice(reactions)
-		await response.edit(content = "Please wait..")
+		embed.description = "Please wait.."
+		await response.edit(embed = embed)
 		for _reaction in reactions:
 			try:
 				await response.add_reaction(_reaction.emoji)
 				# Unable to add custom emoji?
 			except discord.HTTPException:
-				await response.edit(content = ":no_entry: Error: Please don't deselect your reactions before I've selected them")
+				embed.description = ":no_entry: Error: Please don't deselect your reactions before I've selected them"
+				await response.edit(embed = embed)
 				return
 		for countdown in range(10, 0, -1):
-			await response.edit(content = f"First to click the reaction _ wins.\nGet ready! {countdown}")
+			embed.description = f"First to click the reaction _ wins.\nGet ready! {countdown}"
+			await response.edit(embed = embed)
 			await asyncio.sleep(1)
-		await response.edit(content = f"First to click the reaction {reaction.emoji} wins. Go!")
+		embed.description = f"First to click the reaction {reaction.emoji} wins. Go!"
+		await response.edit(embed = embed)
 		start_time = timeit.default_timer()
 		reaction, winner = await self.bot.wait_for_reaction_add_or_remove(message = response, emoji = reaction.emoji)
 		elapsed = timeit.default_timer() - start_time
-		await response.edit(content = f"{winner.display_name} was the first to click {reaction.emoji} and won with a time of {elapsed:.5} seconds!")
+		embed.set_author(name = winner.display_name, icon_url = winner.avatar_url)
+		embed.description = f"was the first to click {reaction.emoji} and won with a time of {elapsed:.5} seconds!"
+		await response.edit(embed = embed)
 	
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
 	@checks.not_forbidden()
