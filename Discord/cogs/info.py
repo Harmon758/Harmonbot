@@ -92,7 +92,8 @@ class Info(commands.Cog):
 	async def server(self, ctx):
 		'''Information about the server'''
 		region = str(ctx.guild.region).replace('-', ' ').title()
-		region = region.replace("Vip", "VIP").replace("Us", "US").replace("Eu", "EU")
+		region = region.replace("Vip", "VIP").replace("Us", "US").replace("Eu ", "EU ")
+		region = region.replace("Hongkong", "Hong Kong").replace("Southafrica", "South Africa")
 		text_count = sum(isinstance(channel, discord.TextChannel) for channel in ctx.guild.channels)
 		voice_count = sum(channel.type is discord.ChannelType.voice for channel in ctx.guild.channels)
 		bot_count = sum(m.bot for m in ctx.guild.members)
