@@ -346,16 +346,17 @@ class Twitch(commands.Cog):
 			# Streams
 			streams_data = {}
 			records = await self.bot.db.fetch("SELECT DISTINCT user_id FROM twitch_notifications.channels")
-			url = "https://api.twitch.tv/kraken/streams"
-			params = {"channel": ','.join(record["user_id"] for record in records), 
-						"client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-			async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
-				if resp.status not in (502, 503, 504):
-					streams_data = await resp.json()
-				# TODO: Handle >100 streams
-			streams = streams_data.get("streams", [])
-			stream_ids += [str(stream["_id"]) for stream in streams]
-			await self.process_twitch_streams(streams, "streams")
+			if records:
+				url = "https://api.twitch.tv/kraken/streams"
+				params = {"channel": ','.join(record["user_id"] for record in records), 
+							"client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
+				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
+					if resp.status not in (502, 503, 504):
+						streams_data = await resp.json()
+					# TODO: Handle >100 streams
+				streams = streams_data.get("streams", [])
+				stream_ids += [str(stream["_id"]) for stream in streams]
+				await self.process_twitch_streams(streams, "streams")
 			# Update streams notified
 			records = await self.bot.db.fetch(
 				"""
