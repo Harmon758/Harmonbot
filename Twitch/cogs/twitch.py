@@ -18,9 +18,11 @@ class Twitch:
 	
 	@commands.command()
 	async def averagefps(self, ctx):
-		url = "https://api.twitch.tv/kraken/streams/" + ctx.channel.name
+		users = await self.bot.get_users(ctx.channel.name)
+		url = "https://api.twitch.tv/kraken/streams/" + users[0].id
 		params = {"client_id": self.bot.http.client_id}
-		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+		headers = {"Accept": "application/vnd.twitchtv.v5+json"}
+		async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 			data = await resp.json()
 		stream = data.get("stream")
 		if not stream:

@@ -21,7 +21,7 @@ sys.path.pop(0)
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = None, **kwargs):
-		self.version = "3.0.0-b.132"
+		self.version = "3.0.0-b.133"
 		
 		loop = loop or asyncio.get_event_loop()
 		if initial_channels is None:
@@ -56,7 +56,7 @@ class Bot(commands.Bot):
 		records = loop.run_until_complete(self.db.fetch("SELECT channel FROM twitch.channels"))
 		initial_channels.extend(record["channel"] for record in records)
 		super().__init__(loop = loop, initial_channels = initial_channels, **kwargs)
-		# TODO: Handle channel name changes?
+		# TODO: Handle channel name changes, store channel ID
 		
 		# Add commands with set responses
 		loop.run_until_complete(self.add_set_response_commands())
