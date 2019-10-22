@@ -46,7 +46,7 @@ class Twitch:
 		# https://discuss.dev.twitch.tv/t/helix-get-user-missing-total-followers/15449
 		users = await self.bot.get_users(ctx.channel.name)
 		count = await self.bot.get_followers(users[0].id, count = True)
-		await ctx.send(f"There are currently {count} people following {ctx.channel.name.capitalize()}.")
+		await ctx.send(f"There are currently {count:,} people following {ctx.channel.name.capitalize()}.")
 	
 	@commands.command(aliases = ("shout",))
 	async def shoutout(self, ctx, channel = None):
