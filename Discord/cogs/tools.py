@@ -15,7 +15,6 @@ import pandas
 from PIL import Image, ImageDraw, ImageFont
 import seaborn
 
-import clients
 from modules import utilities
 from utilities import checks
 from utilities import paginator
@@ -58,7 +57,7 @@ class Tools(commands.Cog):
 	@checks.not_forbidden()
 	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):
 		'''WIP'''
-		filename = clients.data_path + "/temp/graph.png"
+		filename = ctx.bot.data_path + "/temp/graph.png"
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
@@ -93,7 +92,7 @@ class Tools(commands.Cog):
 	@commands.is_owner()
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
-		filename = clients.data_path + "/temp/graph_alternative.png"
+		filename = ctx.bot.data_path + "/temp/graph_alternative.png"
 		seaborn.jointplot(**eval(data)).savefig(filename)
 		await ctx.channel.send(file = discord.File(filename), content = ctx.author.display_name + ':')
 	
