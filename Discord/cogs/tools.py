@@ -4,17 +4,18 @@ from discord.ext import commands
 
 import asyncio
 import difflib
-import imageio
 import json
+import re
+import textwrap
+import time
+
+import imageio
 import matplotlib
 import numexpr
 import numpy
 import pandas
 from PIL import Image, ImageDraw, ImageFont
-import re
 import seaborn
-import textwrap
-import time
 
 import clients
 from modules import utilities
