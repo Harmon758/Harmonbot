@@ -4,10 +4,8 @@ from discord.ext import commands
 
 import asyncio
 import difflib
-import json
 import re
 import textwrap
-import time
 
 import imageio
 import matplotlib
