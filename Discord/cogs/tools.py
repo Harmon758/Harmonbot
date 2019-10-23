@@ -31,6 +31,57 @@ class Tools(commands.Cog):
 		clients.create_file("tags", content = {"global": {}})
 		with open(clients.data_path + "/tags.json", 'r') as tags_file:
 			self.tags_data = json.load(tags_file)
+		self.bot.loop.create_task(self.initialize_database())
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS tags")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS tags.global (
+				tag			TEXT PRIMARY KEY, 
+				content		TEXT, 
+				created_at	TIMESTAMPTZ, 
+				owner_id	BIGINT, 
+				uses		INT
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS tags.individual (
+				user_id			BIGINT, 
+				tag				TEXT, 
+				content			TEXT, 
+				PRIMARY KEY		(user_id, tag)
+			)
+			"""
+		)
+		# Migrate existing data
+		import datetime
+		for user_id, tags_data in self.tags_data.items():
+			if user_id == "global":
+				for tag, tag_data in tags_data.items():
+					await self.bot.db.execute(
+						"""
+						INSERT INTO tags.global (tag, content, created_at, owner_id, uses)
+						VALUES ($1, $2, $3, $4, $5)
+						ON CONFLICT DO NOTHING
+						""", 
+						tag, tag_data["response"], 
+						datetime.datetime.fromtimestamp(tag_data["created_at"], tz = datetime.timezone.utc), 
+						int(tag_data["owner"]), tag_data["usage_counter"]
+					)
+			else:
+				for tag, content in tags_data["tags"].items():
+					await self.bot.db.execute(
+						"""
+						INSERT INTO tags.individual (user_id, tag, content)
+						VALUES ($1, $2, $3)
+						ON CONFLICT DO NOTHING
+						""", 
+						int(user_id), tag, content
+					)
 	
 	@commands.group(aliases = ["plot"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
