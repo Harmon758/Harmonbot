@@ -526,7 +526,8 @@ class Bot(commands.Bot):
 					ON CONFLICT (edited_at, message_id) DO
 					UPDATE SET before_content = $3, after_content = $4
 					""", 
-					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before.content, after.content
+					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, 
+					before.content.replace('\N{NULL}', ""), after.content.replace('\N{NULL}', "")
 				)
 			before_embeds = [embed.to_dict() for embed in before.embeds]
 			after_embeds = [embed.to_dict() for embed in after.embeds]
