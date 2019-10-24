@@ -458,10 +458,10 @@ class Meta(commands.Cog):
 		if not filename:
 			await ctx.embed_reply(title = "My avatar", image_url = ctx.me.avatar_url)
 		elif checks.is_owner_check(ctx):
-			if not os.path.isfile(f"{clients.data_path}/avatars/{filename}"):
+			if not os.path.isfile(f"{self.bot.data_path}/avatars/{filename}"):
 				await ctx.embed_reply(":no_entry: Avatar not found")
 				return
-			with open(f"{clients.data_path}/avatars/{filename}", "rb") as avatar_file:
+			with open(f"{self.bot.data_path}/avatars/{filename}", "rb") as avatar_file:
 				await self.bot.user.edit(avatar = avatar_file.read())
 			await ctx.embed_reply("Updated avatar")
 		else:
