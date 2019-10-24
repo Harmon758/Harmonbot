@@ -565,7 +565,8 @@ class Meta(commands.Cog):
 		msg = copy.copy(ctx.message)
 		msg.content = command
 		for _ in range(times):
-			await self.bot.process_commands(msg)
+			ctx = await self.bot.get_context(msg, cls = clients.Context)
+			await self.bot.invoke(ctx)
 	
 	@commands.group(aliases = ["say"], invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
