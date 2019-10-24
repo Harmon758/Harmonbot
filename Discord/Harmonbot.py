@@ -72,12 +72,27 @@ if __name__ == "__main__":
 	
 	@client.listen()
 	async def on_command(ctx):
-		with open(clients.data_path + "/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
-		stats["commands_executed"] += 1
-		stats["commands_usage"][ctx.command.name] = stats["commands_usage"].get(ctx.command.name, 0) + 1
-		with open(clients.data_path + "/stats.json", 'w') as stats_file:
-			json.dump(stats, stats_file, indent = 4)
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
+				SELECT uptime, restarts, cogs_reloaded, commands_invoked + 1, reaction_responses
+				FROM meta.stats
+				ORDER BY timestamp DESC
+				LIMIT 1
+			ON CONFLICT (timestamp) DO
+			UPDATE SET commands_invoked = excluded.commands_invoked
+			"""
+		)
+		await ctx.bot.db.execute(
+			"""
+			INSERT INTO meta.commands_invoked (command, invokes)
+			VALUES ($1, 1)
+			ON CONFLICT (command) DO
+			UPDATE SET invokes = commands_invoked.invokes + 1
+			""", 
+			ctx.command.name
+		)
+		# TODO: Handle subcommand names
 		await ctx.bot.db.execute(
 			"""
 			INSERT INTO users.stats (user_id, commands_executed)

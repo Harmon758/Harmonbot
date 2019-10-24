@@ -5,7 +5,6 @@ from discord.ext import commands
 import collections
 import copy
 import inspect
-import json
 import random
 
 import clients
@@ -19,11 +18,17 @@ def setup(bot):
 	
 	async def process_reactions(reaction, user):
 		await bot.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
-		with open(clients.data_path + "/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
-		stats["reaction_responses"] += 1
-		with open(clients.data_path + "/stats.json", 'w') as stats_file:
-			json.dump(stats, stats_file, indent = 4)
+		await bot.db.execute(
+			"""
+			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
+				SELECT uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses + 1
+				FROM meta.stats
+				ORDER BY timestamp DESC
+				LIMIT 1
+			ON CONFLICT (timestamp) DO
+			UPDATE SET reaction_responses = excluded.reaction_responses
+			"""
+		)
 	
 	@bot.event
 	async def on_reaction_add(reaction, user):

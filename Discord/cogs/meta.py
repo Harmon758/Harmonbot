@@ -7,7 +7,6 @@ import datetime
 import copy
 import ctypes
 import inspect
-import json
 import os
 import random
 import subprocess
@@ -32,7 +31,6 @@ class Meta(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		clients.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
 		self.bot.loop.create_task(self.initialize_database())
 	
 	async def initialize_database(self):
@@ -58,27 +56,6 @@ class Meta(commands.Cog):
 			)
 			"""
 		)
-		# Migrate existing data
-		with open(self.bot.data_path + "/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
-		await self.bot.db.execute(
-			"""
-			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
-			VALUES ($1, $2, $3, $4, $5)
-			""", 
-			datetime.timedelta(seconds = stats["uptime"]), 
-			stats["restarts"], stats["cogs_reloaded"], stats["commands_executed"], stats["reaction_responses"]
-		)
-		for command, invokes in stats["commands_usage"].items():
-			await self.bot.db.execute(
-				"""
-				INSERT INTO meta.commands_invoked (command, invokes)
-				VALUES ($1, $2)
-				ON CONFLICT (command) DO
-				UPDATE SET invokes = $2
-				""", 
-				command, invokes
-			)
 	
 	@commands.command()
 	@commands.is_owner()
@@ -264,8 +241,20 @@ class Meta(commands.Cog):
 		Total commands executed and cogs reloaded recorded since 2016-06-10
 		Top total commands executed recorded since 2016-11-14
 		'''
-		with open(clients.data_path + "/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
+		stats = await ctx.bot.db.fetchrow(
+			"""
+			SELECT * FROM meta.stats
+			ORDER BY timestamp DESC
+			LIMIT 1
+			"""
+		)
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT * FROM meta.commands_invoked
+			ORDER BY invokes DESC
+			LIMIT 10
+			"""
+		)
 		
 		channel_types = [type(c) for c in self.bot.get_all_channels()]
 		voice_count = channel_types.count(discord.VoiceChannel)
@@ -275,16 +264,15 @@ class Meta(commands.Cog):
 		total_members_online = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(self.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
-		top_commands = sorted(stats["commands_usage"].items(), key = lambda i: i[1], reverse = True)
+		top_commands = [(record["command"], record["invokes"]) for record in records]
 		session_top_5 = sorted(self.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		
 		fields = [("Uptime", duration_to_string(datetime.datetime.utcnow() - ctx.bot.online_time, abbreviate = True)), 
-					("Total Recorded Uptime", duration_to_string(datetime.timedelta(seconds = int(stats["uptime"])), 
-																	abbreviate = True)), 
+					("Total Recorded Uptime", duration_to_string(stats["uptime"], abbreviate = True)), 
 					("Recorded Restarts", f"{stats['restarts']:,}"), 
 					("Commands", f"{len(self.bot.commands)} main\n{len(set(self.bot.walk_commands()))} total"), 
 					("Commands Executed", f"{self.bot.session_commands_executed} this session\n"
-											f"{stats['commands_executed']:,} total recorded"), 
+											f"{stats['commands_invoked']:,} total recorded"), 
 					("Cogs Reloaded", f"{stats['cogs_reloaded']:,}"),  # TODO: cogs reloaded this session
 					("Servers", len(self.bot.guilds)), 
 					("Channels", f"{channel_types.count(discord.TextChannel)} text\n"

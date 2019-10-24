@@ -653,11 +653,17 @@ class Bot(commands.Bot):
 	
 	async def restart_tasks(self, channel_id):
 		# Increment restarts counter
-		with open(data_path + "/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
-		stats["restarts"] += 1
-		with open(data_path + "/stats.json", 'w') as stats_file:
-			json.dump(stats, stats_file, indent = 4)
+		await self.db.execute(
+			"""
+			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
+				SELECT uptime, restarts + 1, cogs_reloaded, commands_invoked, reaction_responses
+				FROM meta.stats
+				ORDER BY timestamp DESC
+				LIMIT 1
+			ON CONFLICT (timestamp) DO
+			UPDATE SET restarts = excluded.restarts
+			"""
+		)
 		# Save restart text channel + voice channels
 		audio_cog = self.get_cog("Audio")
 		voice_channels = audio_cog.save_voice_channels() if audio_cog else []
@@ -669,6 +675,21 @@ class Bot(commands.Bot):
 		audio_cog = self.get_cog("Audio")
 		if audio_cog:
 			audio_cog.cancel_all_tasks()
+		# Save uptime
+		now = datetime.datetime.utcnow()
+		uptime = now - self.online_time
+		await self.db.execute(
+			"""
+			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
+				SELECT uptime + $1, restarts, cogs_reloaded, commands_invoked, reaction_responses
+				FROM meta.stats
+				ORDER BY timestamp DESC
+				LIMIT 1
+			ON CONFLICT (timestamp) DO
+			UPDATE SET uptime = excluded.uptime
+			""", 
+			uptime
+		)
 		# Close Sentry transport
 		sentry_transport = self.sentry_client.remote.get_transport()
 		if sentry_transport:
@@ -679,14 +700,6 @@ class Bot(commands.Bot):
 		await self.database_connection_pool.close()
 		# Stop web server
 		await self.aiohttp_app_runner.cleanup()
-		# Save uptime
-		with open(data_path + "/stats.json", 'r') as stats_file:
-			stats = json.load(stats_file)
-		now = datetime.datetime.utcnow()
-		uptime = now - self.online_time
-		stats["uptime"] += uptime.total_seconds()
-		with open(data_path + "/stats.json", 'w') as stats_file:
-			json.dump(stats, stats_file, indent = 4)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
@@ -763,12 +776,17 @@ class Bot(commands.Bot):
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to reload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
-			# TODO: ctx.bot.stats
-			with open(data_path + "/stats.json", 'r') as stats_file:
-				stats = json.load(stats_file)
-			stats["cogs_reloaded"] += 1
-			with open(data_path + "/stats.json", 'w') as stats_file:
-				json.dump(stats, stats_file, indent = 4)
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
+					SELECT uptime, restarts, cogs_reloaded + 1, commands_invoked, reaction_responses
+					FROM meta.stats
+					ORDER BY timestamp DESC
+					LIMIT 1
+				ON CONFLICT (timestamp) DO
+				UPDATE SET cogs_reloaded = excluded.cogs_reloaded
+				"""
+			)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Reloaded `{cog}` cog :gear:")
 
 
