@@ -127,7 +127,7 @@ class Bot(commands.Bot):
 		# Variables
 		self.guild_settings = {}
 		self.online_time = datetime.datetime.now(datetime.timezone.utc)
-		self.session_commands_executed = {}
+		self.session_commands_invoked = {}
 		
 		# Credentials
 		for credential in ("BATTLE_NET_API_KEY", "BATTLERITE_API_KEY", 
@@ -348,7 +348,7 @@ class Bot(commands.Bot):
 			"""
 			CREATE TABLE IF NOT EXISTS users.stats (
 				user_id				BIGINT PRIMARY KEY, 
-				commands_executed	INT
+				commands_invoked	INT
 			)
 			"""
 		)
@@ -437,7 +437,7 @@ class Bot(commands.Bot):
 	
 	# TODO: on_command_completion
 	async def on_command(self, ctx):
-		self.session_commands_executed[ctx.command.name] = self.session_commands_executed.get(ctx.command.name, 0) + 1
+		self.session_commands_invoked[ctx.command.name] = self.session_commands_invoked.get(ctx.command.name, 0) + 1
 	
 	async def on_command_error(self, ctx, error):
 		# Ignore

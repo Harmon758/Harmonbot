@@ -92,10 +92,10 @@ if __name__ == "__main__":
 		# TODO: Handle subcommand names
 		await ctx.bot.db.execute(
 			"""
-			INSERT INTO users.stats (user_id, commands_executed)
+			INSERT INTO users.stats (user_id, commands_invoked)
 			VALUES ($1, 1)
 			ON CONFLICT (user_id) DO
-			UPDATE SET commands_executed = stats.commands_executed + 1
+			UPDATE SET commands_invoked = stats.commands_invoked + 1
 			""", 
 			ctx.author.id
 		)

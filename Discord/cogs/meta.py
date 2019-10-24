@@ -134,15 +134,15 @@ class Meta(commands.Cog):
 	@commands.command()
 	async def points(self, ctx):
 		'''WIP'''
-		commands_executed = await ctx.bot.db.fetchval(
+		commands_invoked = await ctx.bot.db.fetchval(
 			"""
-			SELECT commands_executed
+			SELECT commands_invoked
 			FROM users.stats
 			WHERE user_id = $1
 			""", 
 			ctx.author.id
 		)
-		await ctx.embed_reply(f"You have {commands_executed} points")
+		await ctx.embed_reply(f"You have {commands_invoked} points")
 	
 	@commands.command()
 	@commands.is_owner()
@@ -263,8 +263,8 @@ class Meta(commands.Cog):
 		'''
 		Bot stats
 		Total uptime and restarts recorded since 2016-04-17
-		Total commands executed and cogs reloaded recorded since 2016-06-10
-		Top total commands executed recorded since 2016-11-14
+		Total commands invoked and cogs reloaded recorded since 2016-06-10
+		Top total commands invoked recorded since 2016-11-14
 		'''
 		stats = await ctx.bot.db.fetchrow(
 			"""
@@ -290,13 +290,13 @@ class Meta(commands.Cog):
 		unique_members = set(ctx.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
 		top_commands = [(record["command"], record["invokes"]) for record in records]
-		session_top_5 = sorted(ctx.bot.session_commands_executed.items(), key = lambda i: i[1], reverse = True)[:5]
+		session_top_5 = sorted(ctx.bot.session_commands_invoked.items(), key = lambda i: i[1], reverse = True)[:5]
 		
 		fields = [("Uptime", duration_to_string(datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time, abbreviate = True)), 
 					("Total Recorded Uptime", duration_to_string(stats["uptime"], abbreviate = True)), 
 					("Recorded Restarts", f"{stats['restarts']:,}"), 
 					("Commands", f"{len(ctx.bot.commands)} main\n{len(set(ctx.bot.walk_commands()))} total"), 
-					("Commands Executed", f"{sum(ctx.bot.session_commands_executed.values())} this session\n"
+					("Commands Invoked", f"{sum(ctx.bot.session_commands_invoked.values())} this session\n"
 											f"{stats['commands_invoked']:,} total recorded"), 
 					("Cogs Reloaded", f"{stats['cogs_reloaded']:,}"),  # TODO: cogs reloaded this session
 					("Servers", len(ctx.bot.guilds)), 
@@ -305,7 +305,7 @@ class Meta(commands.Cog):
 					("Members (Online)", f"{total_members:,} total ({total_members_online:,})\n"
 											f"{len(unique_members):,} unique ({unique_members_online:,})")]
 		if top_commands[:5]:
-			fields.append(("Top Commands Executed", '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[:5])))
+			fields.append(("Top Commands Invoked", '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[:5])))
 		if top_commands[5:10]:
 			fields.append(("(Total Recorded)", '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[5:10])))
 		if session_top_5:
