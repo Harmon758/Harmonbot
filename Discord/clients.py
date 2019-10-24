@@ -126,7 +126,7 @@ class Bot(commands.Bot):
 		
 		# Variables
 		self.guild_settings = {}
-		self.online_time = datetime.datetime.utcnow()
+		self.online_time = datetime.datetime.now(datetime.timezone.utc)
 		self.session_commands_executed = 0
 		self.session_commands_usage = {}
 		
@@ -655,14 +655,11 @@ class Bot(commands.Bot):
 		# Increment restarts counter
 		await self.db.execute(
 			"""
-			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
-				SELECT uptime, restarts + 1, cogs_reloaded, commands_invoked, reaction_responses
-				FROM meta.stats
-				ORDER BY timestamp DESC
-				LIMIT 1
-			ON CONFLICT (timestamp) DO
-			UPDATE SET restarts = excluded.restarts
-			"""
+			UPDATE meta.stats
+			SET restarts = restarts + 1
+			WHERE timestamp = $1
+			""", 
+			self.online_time
 		)
 		# Save restart text channel + voice channels
 		audio_cog = self.get_cog("Audio")
@@ -676,19 +673,15 @@ class Bot(commands.Bot):
 		if audio_cog:
 			audio_cog.cancel_all_tasks()
 		# Save uptime
-		now = datetime.datetime.utcnow()
+		now = datetime.datetime.now(datetime.timezone.utc)
 		uptime = now - self.online_time
 		await self.db.execute(
 			"""
-			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
-				SELECT uptime + $1, restarts, cogs_reloaded, commands_invoked, reaction_responses
-				FROM meta.stats
-				ORDER BY timestamp DESC
-				LIMIT 1
-			ON CONFLICT (timestamp) DO
-			UPDATE SET uptime = excluded.uptime
+			UPDATE meta.stats
+			SET uptime = uptime + $2
+			WHERE timestamp = $1
 			""", 
-			uptime
+			self.online_time, uptime
 		)
 		# Close Sentry transport
 		sentry_transport = self.sentry_client.remote.get_transport()
@@ -778,14 +771,11 @@ class Bot(commands.Bot):
 		else:
 			await ctx.bot.db.execute(
 				"""
-				INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
-					SELECT uptime, restarts, cogs_reloaded + 1, commands_invoked, reaction_responses
-					FROM meta.stats
-					ORDER BY timestamp DESC
-					LIMIT 1
-				ON CONFLICT (timestamp) DO
-				UPDATE SET cogs_reloaded = excluded.cogs_reloaded
-				"""
+				UPDATE meta.stats
+				SET cogs_reloaded = cogs_reloaded + 1
+				WHERE timestamp = $1
+				""", 
+				ctx.bot.online_time
 			)
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Reloaded `{cog}` cog :gear:")
 

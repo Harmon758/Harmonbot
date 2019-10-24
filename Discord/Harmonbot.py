@@ -74,14 +74,11 @@ if __name__ == "__main__":
 	async def on_command(ctx):
 		await ctx.bot.db.execute(
 			"""
-			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
-				SELECT uptime, restarts, cogs_reloaded, commands_invoked + 1, reaction_responses
-				FROM meta.stats
-				ORDER BY timestamp DESC
-				LIMIT 1
-			ON CONFLICT (timestamp) DO
-			UPDATE SET commands_invoked = excluded.commands_invoked
-			"""
+			UPDATE meta.stats
+			SET commands_invoked = commands_invoked + 1
+			WHERE timestamp = $1
+			""", 
+			ctx.bot.online_time
 		)
 		await ctx.bot.db.execute(
 			"""

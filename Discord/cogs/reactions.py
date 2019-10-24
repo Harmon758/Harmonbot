@@ -20,14 +20,11 @@ def setup(bot):
 		await bot.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
 		await bot.db.execute(
 			"""
-			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
-				SELECT uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses + 1
-				FROM meta.stats
-				ORDER BY timestamp DESC
-				LIMIT 1
-			ON CONFLICT (timestamp) DO
-			UPDATE SET reaction_responses = excluded.reaction_responses
-			"""
+			UPDATE meta.stats
+			SET reaction_responses = reaction_responses + 1
+			WHERE timestamp = $1
+			""", 
+			bot.online_time
 		)
 	
 	@bot.event

@@ -56,6 +56,31 @@ class Meta(commands.Cog):
 			)
 			"""
 		)
+		previous = await self.bot.db.fetchrow(
+			"""
+			SELECT * FROM meta.stats
+			ORDER BY timestamp DESC
+			LIMIT 1
+			"""
+		)
+		if previous:
+			await self.bot.db.execute(
+				"""
+				INSERT INTO meta.stats (timestamp, uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
+				VALUES ($1, $2, $3, $4, $5, $6)
+				ON CONFLICT DO NOTHING
+				""", 
+				self.bot.online_time, previous["uptime"], previous["restarts"], 
+				previous["cogs_reloaded"], previous["commands_invoked"], previous["reaction_responses"]
+			)
+		else:
+			await self.bot.db.execute(
+				"""
+				INSERT INTO meta.stats (timestamp, uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
+				VALUES ($1, INTERVAL '0 seconds', 0, 0, 0, 0)
+				""", 
+				self.bot.online_time
+			)
 	
 	@commands.command()
 	@commands.is_owner()
@@ -244,9 +269,9 @@ class Meta(commands.Cog):
 		stats = await ctx.bot.db.fetchrow(
 			"""
 			SELECT * FROM meta.stats
-			ORDER BY timestamp DESC
-			LIMIT 1
-			"""
+			WHERE timestamp = $1
+			""", 
+			ctx.bot.online_time
 		)
 		records = await ctx.bot.db.fetch(
 			"""
@@ -267,7 +292,7 @@ class Meta(commands.Cog):
 		top_commands = [(record["command"], record["invokes"]) for record in records]
 		session_top_5 = sorted(self.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		
-		fields = [("Uptime", duration_to_string(datetime.datetime.utcnow() - ctx.bot.online_time, abbreviate = True)), 
+		fields = [("Uptime", duration_to_string(datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time, abbreviate = True)), 
 					("Total Recorded Uptime", duration_to_string(stats["uptime"], abbreviate = True)), 
 					("Recorded Restarts", f"{stats['restarts']:,}"), 
 					("Commands", f"{len(self.bot.commands)} main\n{len(set(self.bot.walk_commands()))} total"), 
@@ -290,7 +315,7 @@ class Meta(commands.Cog):
 	@commands.command()
 	async def uptime(self, ctx):
 		'''Bot uptime'''
-		await ctx.embed_reply(duration_to_string(datetime.datetime.utcnow() - ctx.bot.online_time, 
+		await ctx.embed_reply(duration_to_string(datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time, 
 													abbreviate = True))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
