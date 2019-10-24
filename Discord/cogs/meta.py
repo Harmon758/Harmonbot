@@ -290,13 +290,13 @@ class Meta(commands.Cog):
 		unique_members = set(ctx.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
 		top_commands = [(record["command"], record["invokes"]) for record in records]
-		session_top_5 = sorted(ctx.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
+		session_top_5 = sorted(ctx.bot.session_commands_executed.items(), key = lambda i: i[1], reverse = True)[:5]
 		
 		fields = [("Uptime", duration_to_string(datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time, abbreviate = True)), 
 					("Total Recorded Uptime", duration_to_string(stats["uptime"], abbreviate = True)), 
 					("Recorded Restarts", f"{stats['restarts']:,}"), 
 					("Commands", f"{len(ctx.bot.commands)} main\n{len(set(ctx.bot.walk_commands()))} total"), 
-					("Commands Executed", f"{ctx.bot.session_commands_executed} this session\n"
+					("Commands Executed", f"{sum(ctx.bot.session_commands_executed.values())} this session\n"
 											f"{stats['commands_invoked']:,} total recorded"), 
 					("Cogs Reloaded", f"{stats['cogs_reloaded']:,}"),  # TODO: cogs reloaded this session
 					("Servers", len(ctx.bot.guilds)), 

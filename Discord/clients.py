@@ -127,8 +127,7 @@ class Bot(commands.Bot):
 		# Variables
 		self.guild_settings = {}
 		self.online_time = datetime.datetime.now(datetime.timezone.utc)
-		self.session_commands_executed = 0
-		self.session_commands_usage = {}
+		self.session_commands_executed = {}
 		
 		# Credentials
 		for credential in ("BATTLE_NET_API_KEY", "BATTLERITE_API_KEY", 
@@ -437,10 +436,8 @@ class Bot(commands.Bot):
 		await self.update_all_listing_stats()
 	
 	# TODO: on_command_completion
-	# TODO: optimize
 	async def on_command(self, ctx):
-		self.session_commands_executed += 1
-		self.session_commands_usage[ctx.command.name] = self.session_commands_usage.get(ctx.command.name, 0) + 1
+		self.session_commands_executed[ctx.command.name] = self.session_commands_executed.get(ctx.command.name, 0) + 1
 	
 	async def on_command_error(self, ctx, error):
 		# Ignore
