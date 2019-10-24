@@ -33,6 +33,52 @@ class Meta(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		clients.create_file("stats", content = {"uptime" : 0, "restarts" : 0, "cogs_reloaded" : 0, "commands_executed" : 0, "commands_usage": {}, "reaction_responses": 0})
+		self.bot.loop.create_task(self.initialize_database())
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS meta")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS meta.stats (
+				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
+				uptime				INTERVAL, 
+				restarts			INT, 
+				cogs_reloaded		INT, 
+				commands_invoked	BIGINT, 
+				reaction_responses	BIGINT
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS meta.commands_invoked (
+				command		TEXT PRIMARY KEY, 
+				invokes		BIGINT
+			)
+			"""
+		)
+		# Migrate existing data
+		with open(self.bot.data_path + "/stats.json", 'r') as stats_file:
+			stats = json.load(stats_file)
+		await self.bot.db.execute(
+			"""
+			INSERT INTO meta.stats (uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
+			VALUES ($1, $2, $3, $4, $5)
+			""", 
+			datetime.timedelta(seconds = stats["uptime"]), 
+			stats["restarts"], stats["cogs_reloaded"], stats["commands_executed"], stats["reaction_responses"]
+		)
+		for command, invokes in stats["commands_usage"].items():
+			await self.bot.db.execute(
+				"""
+				INSERT INTO meta.commands_invoked (command, invokes)
+				VALUES ($1, $2)
+				ON CONFLICT (command) DO
+				UPDATE SET invokes = $2
+				""", 
+				command, invokes
+			)
 	
 	@commands.command()
 	@commands.is_owner()
