@@ -281,25 +281,25 @@ class Meta(commands.Cog):
 			"""
 		)
 		
-		channel_types = [type(c) for c in self.bot.get_all_channels()]
+		channel_types = [type(c) for c in ctx.bot.get_all_channels()]
 		voice_count = channel_types.count(discord.VoiceChannel)
-		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in self.bot.cogs["Audio"].players.values())
-		in_voice_count = len(self.bot.cogs["Audio"].players)
-		total_members = sum(len(g.members) for g in self.bot.guilds)
-		total_members_online = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
-		unique_members = set(self.bot.get_all_members())
+		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in ctx.bot.cogs["Audio"].players.values())
+		in_voice_count = len(ctx.bot.cogs["Audio"].players)
+		total_members = sum(len(g.members) for g in ctx.bot.guilds)
+		total_members_online = sum(1 for m in ctx.bot.get_all_members() if m.status != discord.Status.offline)
+		unique_members = set(ctx.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
 		top_commands = [(record["command"], record["invokes"]) for record in records]
-		session_top_5 = sorted(self.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
+		session_top_5 = sorted(ctx.bot.session_commands_usage.items(), key = lambda i: i[1], reverse = True)[:5]
 		
 		fields = [("Uptime", duration_to_string(datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time, abbreviate = True)), 
 					("Total Recorded Uptime", duration_to_string(stats["uptime"], abbreviate = True)), 
 					("Recorded Restarts", f"{stats['restarts']:,}"), 
-					("Commands", f"{len(self.bot.commands)} main\n{len(set(self.bot.walk_commands()))} total"), 
-					("Commands Executed", f"{self.bot.session_commands_executed} this session\n"
+					("Commands", f"{len(ctx.bot.commands)} main\n{len(set(ctx.bot.walk_commands()))} total"), 
+					("Commands Executed", f"{ctx.bot.session_commands_executed} this session\n"
 											f"{stats['commands_invoked']:,} total recorded"), 
 					("Cogs Reloaded", f"{stats['cogs_reloaded']:,}"),  # TODO: cogs reloaded this session
-					("Servers", len(self.bot.guilds)), 
+					("Servers", len(ctx.bot.guilds)), 
 					("Channels", f"{channel_types.count(discord.TextChannel)} text\n"
 									f"{voice_count} voice (playing in {playing_in_voice_count}/{in_voice_count})"), 
 					("Members (Online)", f"{total_members:,} total ({total_members_online:,})\n"
