@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import asyncio
 import copy
-import os
 import random
 import re
 import sys
