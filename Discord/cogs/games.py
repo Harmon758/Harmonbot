@@ -775,12 +775,13 @@ class Games(commands.Cog):
 		object = raw_text[0].split()[-1]
 		object_info = {}
 		for line in raw_text[1:]:
-			if line.split()[0].isdigit() and line.split()[1] == '-':
+			words = line.split()
+			if words[0].isdecimal() and words[1] == '-':
 				objects[object] = object_info
-				object = line.split()[-1]
+				object = words[-1]
 				object_info = {}
 			else:
-				object_info[line.split()[-1]] = ' '.join(line.split()[:-1])
+				object_info[words[-1]] = ' '.join(words[:-1])
 		objects[object] = object_info
 		with open(clients.data_path + "/erps_dict.json", 'w') as erps_file:
 			json.dump(objects, erps_file, indent = 4)
