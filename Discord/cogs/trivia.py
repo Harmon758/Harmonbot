@@ -16,7 +16,6 @@ import dateutil.parser
 from pyparsing import Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
 
 from utilities import checks
-from utilities.context import Context
 
 def setup(bot):
 	bot.add_cog(Trivia(bot))
@@ -202,7 +201,7 @@ class Trivia(commands.Cog):
 		if message.channel.id != self.active_trivia[message.guild.id]["channel_id"]:
 			return
 		if self.active_trivia[message.guild.id].get("bet_countdown") and message.content.isdigit():
-			ctx = await self.bot.get_context(message, cls = Context)
+			ctx = await self.bot.get_context(message)
 			money = await self.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
 			if not money:
 				money = await self.bot.db.fetchval(
