@@ -51,6 +51,46 @@ class Games(commands.Cog):
 		
 		# Necessary for maze generation
 		sys.setrecursionlimit(5000)
+		
+		self.bot.loop.create_task(self.initialize_database())
+
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS games")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS games.erps (
+				object			TEXT, 
+				against			TEXT, 
+				action			TEXT, 
+				PRIMARY KEY 	(object, against)
+			)
+			"""
+		)
+		exists = await self.bot.db.fetchval("SELECT EXISTS (SELECT * from games.erps)")
+		if not exists:
+			url = "http://www.umop.com/rps101/alloutcomes.htm"
+			async with self.bot.aiohttp_session.get(url) as resp:
+				data = await resp.text()
+			raw_text = BeautifulSoup(data, "lxml").text
+			raw_text = re.sub("\n+", '\n', raw_text).strip()
+			raw_text = raw_text.lower().replace("video game", "game")
+			raw_text = raw_text.split('\n')[:-1]
+			for line in raw_text:
+				words = line.split()
+				if words[0].isdecimal() and words[1] == '-':
+					object = words[-1]
+				else:
+					await self.bot.db.execute(
+						"""
+						INSERT INTO games.erps (object, against, action)
+						VALUES ($1, $2, $3)
+						ON CONFLICT (object, against) DO
+						UPDATE SET action = $3
+						""", 
+						object, words[-1], ' '.join(words[:-1])
+					)
+			# TODO: Properly handle object against not at end
 	
 	# Adventure
 	
