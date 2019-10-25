@@ -775,7 +775,7 @@ class Games(commands.Cog):
 		object = raw_text[0].split()[-1]
 		object_info = {}
 		for line in raw_text[1:]:
-			if line.lstrip()[0].isdigit():
+			if line.split()[0].isdigit() and line.split()[1] == '-':
 				objects[object] = object_info
 				object = line.split()[-1]
 				object_info = {}
