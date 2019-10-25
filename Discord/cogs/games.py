@@ -808,9 +808,11 @@ class Games(commands.Cog):
 			object, standard_value
 		)
 		if action:
-			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[object]} {action} {emotes[standard_value]}\n"
-									"You win! :tada:")
+			return await ctx.embed_reply(f"I chose `{value}`\n"
+											f"{emotes[object]} {action} {emotes[standard_value]}\n"
+											"You win! :tada:")
+		return await ctx.embed_reply(":no_entry: Error: I don't know the relationship between "
+										f"{emotes[object]} and {emotes[standard_value]}, the object that I chose")
 	
 	@commands.group(case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
