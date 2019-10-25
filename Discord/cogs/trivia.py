@@ -455,6 +455,9 @@ class Trivia(commands.Cog):
 		# Check equivalence
 		if set(answer_items) == set(response_items):
 			return True
+		# Check plurality
+		if response == self.bot.inflect_engine.plural(answer):
+			return True
 		# Check XX and YY ZZ
 		last = answer_items[-1].split()
 		if len(last) > 1:
