@@ -17,7 +17,6 @@ import git
 import pkg_resources  # from setuptools
 import psutil
 
-import clients
 from utilities import checks
 
 sys.path.insert(0, "..")
@@ -565,7 +564,7 @@ class Meta(commands.Cog):
 		msg = copy.copy(ctx.message)
 		msg.content = command
 		for _ in range(times):
-			ctx = await self.bot.get_context(msg, cls = clients.Context)
+			ctx = await self.bot.get_context(msg)
 			await self.bot.invoke(ctx)
 	
 	@commands.group(aliases = ["say"], invoke_without_command = True, case_insensitive = True)
