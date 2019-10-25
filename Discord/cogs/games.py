@@ -767,7 +767,7 @@ class Games(commands.Cog):
 	async def generate_erps_dict(self):
 		async with self.bot.aiohttp_session.get("http://www.umop.com/rps101/alloutcomes.htm") as resp:
 			data = await resp.text()
-		raw_text = BeautifulSoup(data).text
+		raw_text = BeautifulSoup(data, "lxml").text
 		raw_text = re.sub("\n+", '\n', raw_text).strip()
 		raw_text = raw_text.lower().replace("video game", "game")
 		raw_text = raw_text.split('\n')[:-1]
