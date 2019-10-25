@@ -16,6 +16,8 @@ def setup(bot):
 	bot.add_cog(Reactions(bot))
 	
 	async def process_reactions(reaction, user):
+		if user == ctx.bot.user:
+			return
 		await bot.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
 		await bot.db.execute(
 			"""
@@ -25,6 +27,7 @@ def setup(bot):
 			""", 
 			bot.online_time
 		)
+		# Count fixed to stop counting own reactions on 2019-10-25
 	
 	@bot.event
 	async def on_reaction_add(reaction, user):
