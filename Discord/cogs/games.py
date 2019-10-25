@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import asyncio
 import copy
-import json
 import os
 import random
 import re
@@ -15,7 +14,6 @@ from typing import Optional
 from bs4 import BeautifulSoup
 import pydealer
 
-import clients
 from modules import adventure
 # from modules import gofish
 from modules import maze
@@ -784,47 +782,35 @@ class Games(commands.Cog):
 			if _object == emotes[_object]:
 				print(_object)
 		'''
-		if not os.path.isfile(clients.data_path + "/erps_dict.json"):
-			await self.generate_erps_dict()
-		with open(clients.data_path + "/erps_dict.json", 'r') as erps_file:
-			resolution = json.load(erps_file)
 		value = random.choice(list(emotes.keys()))
 		if object not in emotes:
 			return await ctx.embed_reply(":no_entry: That's not a valid object")
 		standard_value = value.lower().replace('.', "").replace("video game", "game")
 		if standard_value == object:
+			return await ctx.embed_reply(f"I chose `{value}`\n"
+											"It's a draw :confused:")
+		action = await ctx.bot.db.fetchval(
+			"""
+			SELECT action FROM games.erps
+			WHERE object = $1 AND against = $2
+			""", 
+			standard_value, object
+		)
+		if action:
+			return await ctx.embed_reply(f"I chose `{value}`\n"
+											f"{emotes[standard_value]} {action} {emotes[object]}\n"
+											"You lose :slight_frown:")
+		action = await ctx.bot.db.fetchval(
+			"""
+			SELECT action FROM games.erps
+			WHERE object = $1 AND against = $2
+			""", 
+			object, standard_value
+		)
+		if action:
 			await ctx.embed_reply(f"I chose `{value}`\n"
-									"It's a draw :confused:")
-		elif object in resolution[standard_value]:
-			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\n"
-									"You lose :slight_frown:")
-		elif standard_value in resolution[object]:
-			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\n"
+									f"{emotes[object]} {action} {emotes[standard_value]}\n"
 									"You win! :tada:")
-	
-	async def generate_erps_dict(self):
-		async with self.bot.aiohttp_session.get("http://www.umop.com/rps101/alloutcomes.htm") as resp:
-			data = await resp.text()
-		raw_text = BeautifulSoup(data, "lxml").text
-		raw_text = re.sub("\n+", '\n', raw_text).strip()
-		raw_text = raw_text.lower().replace("video game", "game")
-		raw_text = raw_text.split('\n')[:-1]
-		objects = {}
-		object = raw_text[0].split()[-1]
-		object_info = {}
-		for line in raw_text[1:]:
-			words = line.split()
-			if words[0].isdecimal() and words[1] == '-':
-				objects[object] = object_info
-				object = words[-1]
-				object_info = {}
-			else:
-				object_info[words[-1]] = ' '.join(words[:-1])
-		objects[object] = object_info
-		with open(clients.data_path + "/erps_dict.json", 'w') as erps_file:
-			json.dump(objects, erps_file, indent = 4)
 	
 	@commands.group(case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
