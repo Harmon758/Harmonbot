@@ -4,7 +4,6 @@ from discord.ext import commands
 
 from operator import attrgetter
 
-from modules import utilities
 from utilities import errors
 
 class Context(commands.Context):
@@ -50,7 +49,7 @@ class Context(commands.Context):
 		if self.channel.type is discord.ChannelType.private or getattr(self.channel.permissions_for(self.channel.guild.me), "embed_links", None):
 			return await self.send(*args, embed = embed, **kwargs)
 		elif not (title or title_url or image_url or thumbnail_url or footer_icon_url or timestamp or fields) and (not footer_text or footer_text.startswith("In response to")):
-			return await self.reply(utilities.clean_content(str(description)))
+			return await self.reply(discord.utils.escape_mentions(str(description)))
 			# TODO: Clean role + user mentions, etc.?
 		else:
 			raise errors.MissingCapability(["embed_links"])

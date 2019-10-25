@@ -15,7 +15,6 @@ import pandas
 from PIL import Image, ImageDraw, ImageFont
 import seaborn
 
-from modules import utilities
 from utilities import checks
 from utilities import paginator
 
@@ -236,7 +235,7 @@ class Tools(commands.Cog):
 			ON CONFLICT DO NOTHING
 			RETURNING *
 			""", 
-			ctx.author.id, tag, utilities.clean_content(content)
+			ctx.author.id, tag, discord.utils.escape_mentions(content)
 		)
 		if not inserted:
 			await ctx.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
@@ -253,7 +252,7 @@ class Tools(commands.Cog):
 			UPDATE tags.individual SET content = $3
 			WHERE user_id = $1 AND tag = $2
 			""", 
-			ctx.author.id, tag, utilities.clean_content(content)
+			ctx.author.id, tag, discord.utils.escape_mentions(content)
 		)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
@@ -364,7 +363,7 @@ class Tools(commands.Cog):
 			ON CONFLICT DO NOTHING
 			RETURNING *
 			""", 
-			tag, utilities.clean_content(content), ctx.author.id
+			tag, discord.utils.escape_mentions(content), ctx.author.id
 		)
 		if not inserted:
 			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
@@ -392,7 +391,7 @@ class Tools(commands.Cog):
 			UPDATE tags.global SET content = $2
 			WHERE tag = $1
 			""", 
-			tag, utilities.clean_content(content)
+			tag, discord.utils.escape_mentions(content)
 		)
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
 	
@@ -469,6 +468,7 @@ class Tools(commands.Cog):
 	@checks.not_forbidden()
 	async def webmtogif(self, ctx):
 		'''
+		WebM to GIF
 		This command has been deprecated
 		See https://imgur.com/vidgif instead
 		'''

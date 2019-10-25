@@ -121,9 +121,6 @@ async def get_user(ctx, name):
 		if user: return user
 	return None
 
-def clean_content(content):
-	return content.replace("@everyone", "@\u200beveryone").replace("@here", "@\u200bhere")
-
 # Commands
 
 def add_as_subcommand(cog, command, parent_name, subcommand_name, *, aliases = []):
