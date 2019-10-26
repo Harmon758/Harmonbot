@@ -307,14 +307,15 @@ class Games(commands.Cog):
 			try:
 				message = await self.bot.wait_for("message", timeout = 10, check = lambda m: m.author == ctx.author and m.content == prompt)
 			except asyncio.TimeoutError:
-				await ctx.embed_reply(f":stop_sign: You have stopped actively chopping {wood_type}")
+				return await ctx.embed_reply(f":stop_sign: You have stopped actively chopping {wood_type}")
 			else:
 				chopped = player.chop_once(wood_type)
 				if chopped_message:
 					await self.bot.attempt_delete_message(chopped_message)
 				chopped_message = await ctx.embed_reply(f":evergreen_tree: You chopped a {wood_type} tree.\n"
 														f"You now have {chopped[0]:,} {wood_type} and {chopped[1]:,} woodcutting xp")
-			await self.bot.attempt_delete_message(prompt_message)
+			finally:
+				await self.bot.attempt_delete_message(prompt_message)
 	
 	@adventure_woodcutting.command(name = "stop", aliases = ["off"])
 	@checks.not_forbidden()
