@@ -286,16 +286,14 @@ class Games(commands.Cog):
 		try:
 			message = await self.bot.wait_for("message", timeout = 60, check = lambda m: m.author == ctx.author and m.content.lower() in ('y', "yes", 'n', "no"))
 		except asyncio.TimeoutError:
+			return
+		finally:
 			await self.bot.attempt_delete_message(ask_message)
-			return
-		await self.bot.attempt_delete_message(ask_message)
 		if message.content.lower() in ('n', "no"):
-			await self.bot.attempt_delete_message(message)
-			return
+			return await self.bot.attempt_delete_message(message)
 		rate = player.wood_rate(wood_type) * player.woodcutting_rate
 		if rate == 0:
-			await ctx.embed_reply(":no_entry: You can't chop this wood yet")
-			return
+			return await ctx.embed_reply(":no_entry: You can't chop this wood yet")
 		time = int(60 / rate)
 		chopped_message = None
 		while message:
@@ -303,7 +301,7 @@ class Games(commands.Cog):
 			await asyncio.sleep(random.randint(1, time))
 			await self.bot.attempt_delete_message(message)
 			await self.bot.attempt_delete_message(chopping)
-			prompt = random.choice(["chop", "whack", "swing", "cut"])
+			prompt = random.choice(("chop", "whack", "swing", "cut"))
 			prompt_message = await ctx.embed_reply(f'Reply with "{prompt}" in the next 10 sec. to continue')
 			try:
 				message = await self.bot.wait_for("message", timeout = 10, check = lambda m: m.author == ctx.author and m.content == prompt)
