@@ -284,10 +284,10 @@ class Games(commands.Cog):
 		player = self.get_adventure_player(ctx.author.id)
 		ask_message = await ctx.embed_reply("\n:grey_question: Would you like to chop {} trees actively? Yes/No".format(wood_type))
 		message = await self.bot.wait_for_message(timeout = 60, author = ctx.author, check = lambda m: m.content.lower() in ('y', "yes", 'n', "no"))
-		await self.bot.delete_message(ask_message)
+		await self.bot.attempt_delete_message(ask_message)
 		if not message or message.content.lower() in ('n', "no"):
 			if message:
-				await self.bot.delete_message(message)
+				await self.bot.attempt_delete_message(message)
 			return
 		rate = player.wood_rate(wood_type) * player.woodcutting_rate
 		if rate == 0:
@@ -298,19 +298,19 @@ class Games(commands.Cog):
 		while message:
 			chopping = await ctx.embed_reply("\n:evergreen_tree: Chopping.. (this could take up to {} sec.)".format(time))
 			await asyncio.sleep(random.randint(1, time))
-			await self.bot.delete_message(message)
-			await self.bot.delete_message(chopping)
+			await self.bot.attempt_delete_message(message)
+			await self.bot.attempt_delete_message(chopping)
 			prompt = random.choice(["chop", "whack", "swing", "cut"])
 			prompt_message = await ctx.embed_reply('Reply with "{}" in the next 10 sec. to continue'.format(prompt))
 			message = await self.bot.wait_for_message(timeout = 10, author = ctx.author, content = prompt)
 			if message:
 				chopped = player.chop_once(wood_type)
 				if chopped_message:
-					await self.bot.delete_message(chopped_message)
+					await self.bot.attempt_delete_message(chopped_message)
 				chopped_message = await ctx.embed_reply("\n:evergreen_tree: You chopped a {0} tree. You now have {1[0]} {0} and {1[1]} woodcutting xp".format(wood_type, chopped))
 			else:
 				await ctx.embed_reply("\n:stop_sign: You have stopped actively chopping {}".format(wood_type))
-			await self.bot.delete_message(prompt_message)
+			await self.bot.attempt_delete_message(prompt_message)
 	
 	@adventure_woodcutting.command(name = "stop", aliases = ["off"])
 	@checks.not_forbidden()
