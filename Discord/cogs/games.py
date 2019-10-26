@@ -282,7 +282,7 @@ class Games(commands.Cog):
 	
 	async def woodcutting_active(self, ctx, wood_type):
 		player = self.get_adventure_player(ctx.author.id)
-		ask_message = await ctx.embed_reply("\n:grey_question: Would you like to chop {} trees actively? Yes/No".format(wood_type))
+		ask_message = await ctx.embed_reply(f"\n:grey_question: Would you like to chop {wood_type} trees actively? Yes/No")
 		try:
 			message = await self.bot.wait_for("message", timeout = 60, check = lambda m: m.author == ctx.author and m.content.lower() in ('y', "yes", 'n', "no"))
 		except asyncio.TimeoutError:
@@ -299,21 +299,21 @@ class Games(commands.Cog):
 		time = int(60 / rate)
 		chopped_message = None
 		while message:
-			chopping = await ctx.embed_reply("\n:evergreen_tree: Chopping.. (this could take up to {} sec.)".format(time))
+			chopping = await ctx.embed_reply(f"\n:evergreen_tree: Chopping.. (this could take up to {time} sec.)")
 			await asyncio.sleep(random.randint(1, time))
 			await self.bot.attempt_delete_message(message)
 			await self.bot.attempt_delete_message(chopping)
 			prompt = random.choice(["chop", "whack", "swing", "cut"])
-			prompt_message = await ctx.embed_reply('Reply with "{}" in the next 10 sec. to continue'.format(prompt))
+			prompt_message = await ctx.embed_reply(f'Reply with "{prompt}" in the next 10 sec. to continue')
 			try:
 				message = await self.bot.wait_for("message", timeout = 10, check = lambda m: m.author == ctx.author and m.content == prompt)
 			except asyncio.TimeoutError:
-				await ctx.embed_reply("\n:stop_sign: You have stopped actively chopping {}".format(wood_type))
+				await ctx.embed_reply(f"\n:stop_sign: You have stopped actively chopping {wood_type}")
 			else:
 				chopped = player.chop_once(wood_type)
 				if chopped_message:
 					await self.bot.attempt_delete_message(chopped_message)
-				chopped_message = await ctx.embed_reply("\n:evergreen_tree: You chopped a {0} tree. You now have {1[0]} {0} and {1[1]} woodcutting xp".format(wood_type, chopped))
+				chopped_message = await ctx.embed_reply(f"\n:evergreen_tree: You chopped a {wood_type} tree. You now have {chopped[0]} {wood_type} and {chopped[1]} woodcutting xp")
 			await self.bot.attempt_delete_message(prompt_message)
 	
 	@adventure_woodcutting.command(name = "stop", aliases = ["off"])
