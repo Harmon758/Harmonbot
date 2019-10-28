@@ -253,18 +253,18 @@ class Games(commands.Cog):
 		started = player.start_woodcutting(wood_type)
 		if started == "woodcutting":
 			stopped = player.stop_woodcutting()
-			await ctx.embed_reply("\n:evergreen_tree: You were chopping {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and {0[3]} xp".format(stopped))
+			await ctx.embed_reply(f"\n:evergreen_tree: You were chopping {stopped[0]} for {stopped[1]:.2f} min. and received {stopped[2]} {stopped[0]} and {stopped[3]} xp")
 			if wood_type:
 				started = player.start_woodcutting(wood_type)
 			else:
 				return
 		if started is True:
-			await ctx.embed_reply("\n:evergreen_tree: You have started chopping {} trees".format(wood_type))
+			await ctx.embed_reply(f"\n:evergreen_tree: You have started chopping {wood_type} trees")
 			await self.woodcutting_active(ctx, wood_type)
 		elif started is False:
 			await ctx.embed_reply(":no_entry: That wood type doesn't exist")
 		else:
-			await ctx.embed_reply(":no_entry: You're currently {}! You can't start/stop woodcutting right now".format(started))
+			await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start/stop woodcutting right now")
 	
 	@adventure_woodcutting.command(name = "start", aliases = ["on"])
 	@checks.not_forbidden()
