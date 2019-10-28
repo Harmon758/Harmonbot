@@ -243,7 +243,7 @@ class Games(commands.Cog):
 		elif created is False:
 			await ctx.embed_reply("You were unable to create anything with those items")
 		else:
-			await ctx.embed_reply("You have created {}".format(created))
+			await ctx.embed_reply(f"You have created {created}")
 	
 	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
