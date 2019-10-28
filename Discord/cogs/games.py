@@ -324,7 +324,7 @@ class Games(commands.Cog):
 		player = self.get_adventure_player(ctx.author.id)
 		stopped = player.stop_woodcutting()
 		if stopped[0]:
-			await ctx.embed_reply("\n:evergreen_tree: You were chopping {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and {0[3]} xp".format(stopped))
+			await ctx.embed_reply(f"\n:evergreen_tree: You were chopping {stopped[0]} for {stopped[1]:.2f} min. and received {stopped[2]} {stopped[0]} and {stopped[3]} xp")
 		elif stopped[1]:
 			await ctx.embed_reply(":no_entry: You're currently {}! You aren't woodcutting right now")
 		else:
