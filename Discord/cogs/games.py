@@ -338,7 +338,7 @@ class Games(commands.Cog):
 	
 	@adventure_woodcutting.command(name = "rate", aliases = ["rates"])
 	@checks.not_forbidden()
-	async def woodcutting_rate(self, ctx, *, wood_type : str):
+	async def woodcutting_rate(self, ctx, *, wood_type: str):
 		'''Rate of chopping certain wood'''
 		player = self.get_adventure_player(ctx.author.id)
 		if wood_type in adventure.wood_types:
