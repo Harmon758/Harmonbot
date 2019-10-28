@@ -268,7 +268,7 @@ class Games(commands.Cog):
 	
 	@adventure_woodcutting.command(name = "start", aliases = ["on"])
 	@checks.not_forbidden()
-	async def woodcutting_start(self, ctx, *, wood_type : str):
+	async def woodcutting_start(self, ctx, *, wood_type: str):
 		'''Start chopping wood'''
 		player = self.get_adventure_player(ctx.author.id)
 		started = player.start_woodcutting(wood_type)
