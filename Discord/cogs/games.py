@@ -342,7 +342,7 @@ class Games(commands.Cog):
 		'''Rate of chopping certain wood'''
 		player = self.get_adventure_player(ctx.author.id)
 		if wood_type in adventure.wood_types:
-			await ctx.embed_reply("You will get {:.2f} {}/min. at your current level".format(player.wood_rate(wood_type) * player.woodcutting_rate, wood_type))
+			await ctx.embed_reply(f"You will get {player.wood_rate(wood_type) * player.woodcutting_rate:.2f} {wood_type}/min. at your current level")
 		else:
 			await ctx.embed_reply(":no_entry: That wood type doesn't exist")
 	
