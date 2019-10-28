@@ -230,7 +230,7 @@ class Games(commands.Cog):
 	
 	@adventure.command(name = "create", aliases = ["make", "craft"])
 	@checks.not_forbidden()
-	async def adventure_create(self, ctx, *items : str):
+	async def adventure_create(self, ctx, *items: str):
 		'''
 		Create item
 		items: items to use to attempt to create something else
