@@ -213,9 +213,10 @@ class Games(commands.Cog):
 		player = self.get_adventure_player(ctx.author.id)
 		stopped = player.stop_foraging()
 		if stopped[0]:
-			output = f"\n:herb: You were foraging {stopped[0]} for {stopped[1]:.2f} min. and received {stopped[2]} {stopped[0]} and xp. While you were foraging, you also found {stopped[3]} {adventure.forageables[stopped[0]][0]}"
+			output = (f":herb: You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
+						f"While you were foraging, you also found {stopped[3]:,} {adventure.forageables[stopped[0]][0]}")
 			if stopped[4]:
-				output += f" and {stopped[4]} {adventure.forageables[stopped[0]][1]}!"
+				output += f" and {stopped[4]:,} {adventure.forageables[stopped[0]][1]}!"
 			await ctx.embed_reply(output)
 		elif stopped[1]:
 			await ctx.embed_reply(f":no_entry: You're currently {stopped[1][0]}! You aren't foraging right now")
