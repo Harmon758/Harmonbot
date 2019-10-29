@@ -218,7 +218,7 @@ class Games(commands.Cog):
 				output += f" and {stopped[4]} {adventure.forageables[stopped[0]][1]}!"
 			await ctx.embed_reply(output)
 		elif stopped[1]:
-			await ctx.embed_reply(":no_entry: You're currently {}! You aren't foraging right now")
+			await ctx.embed_reply(f":no_entry: You're currently {stopped[1][0]}! You aren't foraging right now")
 		else:
 			await ctx.embed_reply(":no_entry: You aren't foraging")
 	
