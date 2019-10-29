@@ -46,15 +46,15 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        # Python not available on macOS?
-        # No available versions found by actions/setup-python
+        os: [macOS-latest, ubuntu-latest, windows-latest]
         python-version: ['3.7.4', '3.7.5']
         exclude:
           - os: ubuntu-latest
             python-version: '3.7.4'
           - os: windows-latest
             python-version: '3.7.5'
+          - os: macOS-latest
+            python-version: '3.7.4'
     runs-on: ${{ matrix.os }}
 
     steps:
