@@ -170,7 +170,7 @@ class Games(commands.Cog):
 	
 	@adventure.group(name = "forage", aliases = ["gather"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def adventure_forage(self, ctx, *, item : str = ""):
+	async def adventure_forage(self, ctx, *, item: str = ""):
 		'''Foraging'''
 		player = self.get_adventure_player(ctx.author.id)
 		started = player.start_foraging(item)
