@@ -54,7 +54,7 @@ jobs:
           - os: windows-latest
             python-version: '3.7.5'
           - os: macOS-latest
-            python-version: '3.7.4'
+            python-version: '3.7.5'
     runs-on: ${{ matrix.os }}
 
     steps:
