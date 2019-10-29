@@ -176,21 +176,21 @@ class Games(commands.Cog):
 		started = player.start_foraging(item)
 		if started == "foraging":
 			stopped = player.stop_foraging()
-			output = "\n:herb: You were foraging {0[0]} for {0[1]:.2f} min. and received {0[2]} {0[0]} and xp. While you were foraging, you also found {0[3]} {1}".format(stopped, adventure.forageables[stopped[0]][0])
+			output = f"\n:herb: You were foraging {stopped[0]} for {stopped[1]:.2f} min. and received {stopped[2]} {stopped[0]} and xp. While you were foraging, you also found {stopped[3]} {adventure.forageables[stopped[0]][0]}"
 			if stopped[4]:
-				output += " and {0[4]} {1}!".format(stopped, adventure.forageables[stopped[0]][1])
+				output += f" and {stopped[4]} {adventure.forageables[stopped[0]][1]}!"
 			await ctx.embed_reply(output)
 			if item:
 				started = player.start_foraging(item)
 			else:
 				return
 		if started is True:
-			await ctx.embed_reply("\n:herb: You have started foraging for {}".format(item))
+			await ctx.embed_reply(f"\n:herb: You have started foraging for {item}")
 			# active?
 		elif started is False:
 			await ctx.embed_reply(":no_entry: That item type doesn't exist")
 		else:
-			await ctx.embed_reply(":no_entry: You're currently {}! You can't start/stop foraging right now".format(started))
+			await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start/stop foraging right now")
 	
 	@adventure_forage.command(name = "start", aliases = ["on"])
 	@checks.not_forbidden()
