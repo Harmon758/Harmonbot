@@ -176,17 +176,18 @@ class Games(commands.Cog):
 		started = player.start_foraging(item)
 		if started == "foraging":
 			stopped = player.stop_foraging()
-			output = f"\n:herb: You were foraging {stopped[0]} for {stopped[1]:.2f} min. and received {stopped[2]} {stopped[0]} and xp. While you were foraging, you also found {stopped[3]} {adventure.forageables[stopped[0]][0]}"
+			output = (f":herb: You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
+						f"While you were foraging, you also found {stopped[3]:,} {adventure.forageables[stopped[0]][0]}")
 			if stopped[4]:
-				output += f" and {stopped[4]} {adventure.forageables[stopped[0]][1]}!"
+				output += f" and {stopped[4]:,} {adventure.forageables[stopped[0]][1]}!"
 			await ctx.embed_reply(output)
 			if item:
 				started = player.start_foraging(item)
 			else:
 				return
 		if started is True:
-			await ctx.embed_reply(f"\n:herb: You have started foraging for {item}")
-			# active?
+			await ctx.embed_reply(f":herb: You have started foraging for {item}")
+			# TODO: active option?
 		elif started is False:
 			await ctx.embed_reply(":no_entry: That item type doesn't exist")
 		else:
