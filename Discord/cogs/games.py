@@ -199,12 +199,12 @@ class Games(commands.Cog):
 		player = self.get_adventure_player(ctx.author.id)
 		started = player.start_foraging(item)
 		if started is True:
-			await ctx.embed_reply("\n:herb: You have started foraging for {}".format(item))
-			# active?
+			await ctx.embed_reply(f"\n:herb: You have started foraging for {item}")
+			# TODO: active option?
 		elif started is False:
 			await ctx.embed_reply(":no_entry: That item type doesn't exist")
 		else:
-			await ctx.embed_reply(":no_entry: You're currently {}! You can't start foraging right now".format(started))
+			await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start foraging right now")
 	
 	@adventure_forage.command(name = "stop", aliases = ["off"])
 	@checks.not_forbidden()
