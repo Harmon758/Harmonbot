@@ -194,7 +194,7 @@ class Games(commands.Cog):
 	
 	@adventure_forage.command(name = "start", aliases = ["on"])
 	@checks.not_forbidden()
-	async def forage_start(self, ctx, *, item : str):
+	async def forage_start(self, ctx, *, item: str):
 		'''Start foraging'''
 		player = self.get_adventure_player(ctx.author.id)
 		started = player.start_foraging(item)
