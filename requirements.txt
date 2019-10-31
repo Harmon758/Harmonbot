@@ -62,7 +62,7 @@ chardet==3.0.4
 configparser==4.0.2
 cycler==0.10.0
 docopt==0.6.2
-future==0.18.1
+future==0.18.2
 geojson==2.5.0
 gitdb2==2.0.6
 googleapis-common-protos==1.6.0
