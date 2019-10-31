@@ -31,52 +31,21 @@ class Adventure(commands.Cog):
 			self.adventure_players[user_id] = player
 		return player
 	
-	@adventure.group(aliases = ["stat", "levels", "level", "lvls", "lvl"], invoke_without_command = True, case_insensitive = True)
-	async def stats(self, ctx):
-		'''Stats'''
+	@adventure.command(aliases = ["make", "craft"])
+	async def create(self, ctx, *items: str):
+		'''
+		Create item
+		items: items to use to attempt to create something else
+		Use quotes for spaces in item names
+		'''
 		player = self.get_adventure_player(ctx.author.id)
-		await ctx.embed_reply(f":fishing_pole_and_fish: Fishing xp: {player.fishing_xp:,} (Level {player.fishing_lvl:,})\n"
-								f":herb: Foraging xp: {player.foraging_xp:,} (Level {player.foraging_lvl:,})\n"
-								f":pick: Mining xp: {player.mining_xp:,} (Level {player.mining_lvl:,})\n"
-								f":evergreen_tree: Woodcutting xp: {player.woodcutting_xp:,} (Level {player.woodcutting_lvl:,})")
-		# time started/played
-	
-	@stats.command(name = "woodcutting", aliases = ["wc"])
-	async def stats_woodcutting(self, ctx):
-		'''Woodcutting stats'''
-		player = self.get_adventure_player(ctx.author.id)
-		woodcutting_xp = player.woodcutting_xp
-		await ctx.embed_reply(f":evergreen_tree: Woodcutting xp: {woodcutting_xp:,}\n"
-								f"{self.level_bar(woodcutting_xp)}\n"
-								f"{adventure.xp_left_to_next_lvl(woodcutting_xp):,} xp to next level")
-	
-	@stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"])
-	async def stats_foraging(self, ctx):
-		'''Foraging stats'''
-		player = self.get_adventure_player(ctx.author.id)
-		foraging_xp = player.foraging_xp
-		await ctx.embed_reply(f":herb: Foraging xp: {foraging_xp:,}\n"
-								f"{self.level_bar(foraging_xp)}\n"
-								f"{adventure.xp_left_to_next_lvl(foraging_xp):,} xp to next level")
-	
-	def level_bar(self, xp):
-		lvl = adventure.xp_to_lvl(xp)
-		previous_xp = adventure.lvl_to_xp(lvl)
-		next_xp = adventure.lvl_to_xp(lvl + 1)
-		difference = next_xp - previous_xp
-		shaded = int((xp - previous_xp) / difference * 10)
-		bar = '\N{BLACK SQUARE}' * shaded + '\N{WHITE SQUARE}' * (10 - shaded)
-		return f"Level {lvl:,} ({previous_xp:,} xp) [{bar}] Level {lvl + 1:,} ({next_xp:,} xp)"
-	
-	@adventure.command()
-	async def inventory(self, ctx, *, item: str = ""):
-		'''Inventory'''
-		player = self.get_adventure_player(ctx.author.id)
-		inventory = player.inventory
-		if item in inventory:
-			await ctx.embed_reply(f"{item}: {inventory[item]}")
+		created = player.create_item(items)
+		if created is None:
+			await ctx.embed_reply("You don't have those items")
+		elif created is False:
+			await ctx.embed_reply("You were unable to create anything with those items")
 		else:
-			await ctx.embed_reply(", ".join(f"{item}: {amount:,}" for item, amount in sorted(inventory.items())))
+			await ctx.embed_reply(f"You have created {created}")
 	
 	@adventure.command()
 	async def examine(self, ctx, *, item: str):
@@ -148,21 +117,52 @@ class Adventure(commands.Cog):
 		'''Forageable items'''
 		await ctx.embed_reply(", ".join(adventure.forageables.keys()))
 	
-	@adventure.command(aliases = ["make", "craft"])
-	async def create(self, ctx, *items: str):
-		'''
-		Create item
-		items: items to use to attempt to create something else
-		Use quotes for spaces in item names
-		'''
+	@adventure.command()
+	async def inventory(self, ctx, *, item: str = ""):
+		'''Inventory'''
 		player = self.get_adventure_player(ctx.author.id)
-		created = player.create_item(items)
-		if created is None:
-			await ctx.embed_reply("You don't have those items")
-		elif created is False:
-			await ctx.embed_reply("You were unable to create anything with those items")
+		inventory = player.inventory
+		if item in inventory:
+			await ctx.embed_reply(f"{item}: {inventory[item]}")
 		else:
-			await ctx.embed_reply(f"You have created {created}")
+			await ctx.embed_reply(", ".join(f"{item}: {amount:,}" for item, amount in sorted(inventory.items())))
+	
+	@adventure.group(aliases = ["stat", "levels", "level", "lvls", "lvl"], invoke_without_command = True, case_insensitive = True)
+	async def stats(self, ctx):
+		'''Stats'''
+		player = self.get_adventure_player(ctx.author.id)
+		await ctx.embed_reply(f":fishing_pole_and_fish: Fishing xp: {player.fishing_xp:,} (Level {player.fishing_lvl:,})\n"
+								f":herb: Foraging xp: {player.foraging_xp:,} (Level {player.foraging_lvl:,})\n"
+								f":pick: Mining xp: {player.mining_xp:,} (Level {player.mining_lvl:,})\n"
+								f":evergreen_tree: Woodcutting xp: {player.woodcutting_xp:,} (Level {player.woodcutting_lvl:,})")
+		# time started/played
+	
+	@stats.command(name = "woodcutting", aliases = ["wc"])
+	async def stats_woodcutting(self, ctx):
+		'''Woodcutting stats'''
+		player = self.get_adventure_player(ctx.author.id)
+		woodcutting_xp = player.woodcutting_xp
+		await ctx.embed_reply(f":evergreen_tree: Woodcutting xp: {woodcutting_xp:,}\n"
+								f"{self.level_bar(woodcutting_xp)}\n"
+								f"{adventure.xp_left_to_next_lvl(woodcutting_xp):,} xp to next level")
+	
+	@stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"])
+	async def stats_foraging(self, ctx):
+		'''Foraging stats'''
+		player = self.get_adventure_player(ctx.author.id)
+		foraging_xp = player.foraging_xp
+		await ctx.embed_reply(f":herb: Foraging xp: {foraging_xp:,}\n"
+								f"{self.level_bar(foraging_xp)}\n"
+								f"{adventure.xp_left_to_next_lvl(foraging_xp):,} xp to next level")
+	
+	def level_bar(self, xp):
+		lvl = adventure.xp_to_lvl(xp)
+		previous_xp = adventure.lvl_to_xp(lvl)
+		next_xp = adventure.lvl_to_xp(lvl + 1)
+		difference = next_xp - previous_xp
+		shaded = int((xp - previous_xp) / difference * 10)
+		bar = '\N{BLACK SQUARE}' * shaded + '\N{WHITE SQUARE}' * (10 - shaded)
+		return f"Level {lvl:,} ({previous_xp:,} xp) [{bar}] Level {lvl + 1:,} ({next_xp:,} xp)"
 	
 	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], invoke_without_command = True, case_insensitive = True)
 	async def woodcutting(self, ctx, *, wood_type: str = ""):
