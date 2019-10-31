@@ -16,8 +16,10 @@ class Adventure(commands.Cog):
 		self.bot = bot
 		self.adventure_players = {}
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden_predicate(ctx)
+	
 	@commands.group(aliases = ["rpg"], invoke_without_command = True, case_insensitive = True, hidden = True)
-	@checks.not_forbidden()
 	async def adventure(self, ctx):
 		'''WIP'''
 		pass
@@ -30,7 +32,6 @@ class Adventure(commands.Cog):
 		return player
 	
 	@adventure.group(name = "stats", aliases = ["stat", "levels", "level", "lvls", "lvl"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def adventure_stats(self, ctx):
 		'''Stats'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -41,7 +42,6 @@ class Adventure(commands.Cog):
 		# time started/played
 	
 	@adventure_stats.command(name = "woodcutting", aliases = ["wc"])
-	@checks.not_forbidden()
 	async def stats_woodcutting(self, ctx):
 		'''Woodcutting stats'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -51,7 +51,6 @@ class Adventure(commands.Cog):
 								f"{adventure.xp_left_to_next_lvl(woodcutting_xp):,} xp to next level")
 	
 	@adventure_stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"])
-	@checks.not_forbidden()
 	async def stats_foraging(self, ctx):
 		'''Foraging stats'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -70,7 +69,6 @@ class Adventure(commands.Cog):
 		return f"Level {lvl:,} ({previous_xp:,} xp) [{bar}] Level {lvl + 1:,} ({next_xp:,} xp)"
 	
 	@adventure.command(name = "inventory")
-	@checks.not_forbidden()
 	async def adventure_inventory(self, ctx, *, item: str = ""):
 		'''Inventory'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -81,7 +79,6 @@ class Adventure(commands.Cog):
 			await ctx.embed_reply(", ".join(f"{item}: {amount:,}" for item, amount in sorted(inventory.items())))
 	
 	@adventure.command(name = "examine")
-	@checks.not_forbidden()
 	async def adventure_examine(self, ctx, *, item: str):
 		'''Examine items'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -94,7 +91,6 @@ class Adventure(commands.Cog):
 			await ctx.embed_reply(item)
 	
 	@adventure.group(name = "forage", aliases = ["gather"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def adventure_forage(self, ctx, *, item: str = ""):
 		'''Foraging'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -119,7 +115,6 @@ class Adventure(commands.Cog):
 			await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start/stop foraging right now")
 	
 	@adventure_forage.command(name = "start", aliases = ["on"])
-	@checks.not_forbidden()
 	async def forage_start(self, ctx, *, item: str):
 		'''Start foraging'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -133,7 +128,6 @@ class Adventure(commands.Cog):
 			await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start foraging right now")
 	
 	@adventure_forage.command(name = "stop", aliases = ["off"])
-	@checks.not_forbidden()
 	async def forage_stop(self, ctx):
 		'''Stop foraging'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -150,13 +144,11 @@ class Adventure(commands.Cog):
 			await ctx.embed_reply(":no_entry: You aren't foraging")
 	
 	@adventure_forage.command(name = "items", aliases = ["item", "type", "types"])
-	@checks.not_forbidden()
 	async def forage_items(self, ctx):
 		'''Forageable items'''
 		await ctx.embed_reply(", ".join(adventure.forageables.keys()))
 	
 	@adventure.command(name = "create", aliases = ["make", "craft"])
-	@checks.not_forbidden()
 	async def adventure_create(self, ctx, *items: str):
 		'''
 		Create item
@@ -173,7 +165,6 @@ class Adventure(commands.Cog):
 			await ctx.embed_reply(f"You have created {created}")
 	
 	@adventure.group(name = "chop", aliases = ["woodcutting", "wc"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def adventure_woodcutting(self, ctx, *, wood_type: str = ""):
 		'''Woodcutting'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -194,7 +185,6 @@ class Adventure(commands.Cog):
 			await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start/stop woodcutting right now")
 	
 	@adventure_woodcutting.command(name = "start", aliases = ["on"])
-	@checks.not_forbidden()
 	async def woodcutting_start(self, ctx, *, wood_type: str):
 		'''Start chopping wood'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -245,7 +235,6 @@ class Adventure(commands.Cog):
 				await self.bot.attempt_delete_message(prompt_message)
 	
 	@adventure_woodcutting.command(name = "stop", aliases = ["off"])
-	@checks.not_forbidden()
 	async def woodcutting_stop(self, ctx):
 		'''Stop chopping wood'''
 		player = self.get_adventure_player(ctx.author.id)
@@ -258,13 +247,11 @@ class Adventure(commands.Cog):
 			await ctx.embed_reply(":no_entry: You aren't woodcutting")
 	
 	@adventure_woodcutting.command(name = "types", aliases = ["type", "item", "items"])
-	@checks.not_forbidden()
 	async def woodcutting_types(self, ctx):
 		'''Types of wood'''
 		await ctx.embed_reply(", ".join(adventure.wood_types))
 	
 	@adventure_woodcutting.command(name = "rate", aliases = ["rates"])
-	@checks.not_forbidden()
 	async def woodcutting_rate(self, ctx, *, wood_type: str):
 		'''Rate of chopping certain wood'''
 		player = self.get_adventure_player(ctx.author.id)
