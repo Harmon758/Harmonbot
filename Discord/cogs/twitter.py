@@ -21,12 +21,9 @@ def setup(bot):
 
 class TwitterStreamListener(tweepy.StreamListener):
 	
-	def __init__(self, bot, blacklisted_handles = None):
+	def __init__(self, bot):
 		super().__init__()
 		self.bot = bot
-		if blacklisted_handles is None:
-			blacklisted_handles = []
-		self.blacklisted_handles = blacklisted_handles
 		self.stream = None
 		self.feeds = {}
 		self.unique_feeds = set()
@@ -70,8 +67,6 @@ class TwitterStreamListener(tweepy.StreamListener):
 	def on_status(self, status):
 		if status.in_reply_to_status_id:
 			# Ignore replies
-			return
-		if status.user.screen_name.lower() in self.blacklisted_handles:
 			return
 		if status.user.id_str in self.unique_feeds:
 			# TODO: Settings for including replies, retweets, etc.
@@ -128,7 +123,7 @@ class Twitter(commands.Cog):
 						self.blacklisted_handles.append(friend.screen_name.lower())
 		except tweepy.error.TweepError as e:
 			print(f"{self.bot.console_message_prefix}Failed to initialize Twitter cog blacklist: {e}")
-		self.stream_listener = TwitterStreamListener(bot, self.blacklisted_handles)
+		self.stream_listener = TwitterStreamListener(bot)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
 	
 	def cog_unload(self):
