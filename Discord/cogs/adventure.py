@@ -155,7 +155,8 @@ class Adventure(commands.Cog):
 								f"{self.level_bar(foraging_xp)}\n"
 								f"{adventure.xp_left_to_next_lvl(foraging_xp):,} xp to next level")
 	
-	def level_bar(self, xp):
+	@staticmethod
+	def level_bar(xp):
 		lvl = adventure.xp_to_lvl(xp)
 		previous_xp = adventure.lvl_to_xp(lvl)
 		next_xp = adventure.lvl_to_xp(lvl + 1)
