@@ -16,15 +16,15 @@ sys.path.insert(0, "..")
 from units.files import create_folder
 sys.path.pop(0)
 
-initial_data = {"xp": {"woodcutting": 0, "mining": 0, "fishing": 0, "foraging": 0}, "inventory": {}, "last_action": None, "last_action_time": None, "time_started": None}
-skills = ["woodcutting", "mining", "fishing", "foraging"]
-forageables = {"rock": ("stone", "boulder"), "stick": ("branch", "trunk"), "plant": ("shrub", "bush")}
-craftables = {("rock", "stick"): "rock attached to stick"}
-wood_types = ["cuipo", "balsa", "eastern white pine", "basswood", "western white pine", "hemlock", "chestnut", "larch", "red alder", "western juniper", "douglas fir", "southern yellow pine", "silver maple", "radiata pine", "shedua", "box elder", "sycamore", "parana", "honduran mahogany", "african mahogany", "lacewood", "eastern red cedar", "paper birch", "boire", "red maple", "imbusia", "cherry", "black walnut", "boreal", "peruvian walnut", "siberian larch", "makore", "english oak", "rose gum", "teak", "larch", "carapa guianensis", "heart pine", "movingui", "yellow birch", "caribbean heart pine", "red oak", "american beech", "ash", "ribbon gum", "tasmanian oak", "white oak", "australian cypress", "bamboo", "kentucky coffeetree", "caribbean walnut", "hard maple", "sweet birch", "curupixa", "sapele", "peroba", "true pine", "zebrawood", "tualang", "wenge", "highland beech", "black locust", "kempas", "merbau", "blackwood", "african padauk", "rosewood", "bangkirai", "afzelia", "hickory", "tigerwood", "purpleheart", "jarrah", "amendoim", "merbau", "tallowwood", "cameron", "bubinga", "sydney blue gum", "karri", "osage orange", "brushbox", "brazilian koa", "pradoo", "bocote", "balfourodendron riedelianum", "golden teak", "mesquite", "jatoba", "spotted gum", "southern chestnut", "live oak", "turpentine", "bloodwood", "cocobolo", "yvyraro", "massaranduba", "ebony", "ironwood", "sucupira", "cumaru", "lapacho", "bolivian cherry", "grey ironbark", "moabi", "lapacho", "brazilian ebony", "brazilian olivewood", "snakewood", "piptadenia macrocarpa", "lignum vitae", "schinopsis balansae", "schinopsis brasiliensis", "australian buloke"]
+INITIAL_DATA = {"xp": {"woodcutting": 0, "mining": 0, "fishing": 0, "foraging": 0}, "inventory": {}, "last_action": None, "last_action_time": None, "time_started": None}
+SKILLS = ["woodcutting", "mining", "fishing", "foraging"]
+FORAGEABLES = {"rock": ("stone", "boulder"), "stick": ("branch", "trunk"), "plant": ("shrub", "bush")}
+CRAFTABLES = {("rock", "stick"): "rock attached to stick"}
+WOOD_TYPES = ["cuipo", "balsa", "eastern white pine", "basswood", "western white pine", "hemlock", "chestnut", "larch", "red alder", "western juniper", "douglas fir", "southern yellow pine", "silver maple", "radiata pine", "shedua", "box elder", "sycamore", "parana", "honduran mahogany", "african mahogany", "lacewood", "eastern red cedar", "paper birch", "boire", "red maple", "imbusia", "cherry", "black walnut", "boreal", "peruvian walnut", "siberian larch", "makore", "english oak", "rose gum", "teak", "larch", "carapa guianensis", "heart pine", "movingui", "yellow birch", "caribbean heart pine", "red oak", "american beech", "ash", "ribbon gum", "tasmanian oak", "white oak", "australian cypress", "bamboo", "kentucky coffeetree", "caribbean walnut", "hard maple", "sweet birch", "curupixa", "sapele", "peroba", "true pine", "zebrawood", "tualang", "wenge", "highland beech", "black locust", "kempas", "merbau", "blackwood", "african padauk", "rosewood", "bangkirai", "afzelia", "hickory", "tigerwood", "purpleheart", "jarrah", "amendoim", "merbau", "tallowwood", "cameron", "bubinga", "sydney blue gum", "karri", "osage orange", "brushbox", "brazilian koa", "pradoo", "bocote", "balfourodendron riedelianum", "golden teak", "mesquite", "jatoba", "spotted gum", "southern chestnut", "live oak", "turpentine", "bloodwood", "cocobolo", "yvyraro", "massaranduba", "ebony", "ironwood", "sucupira", "cumaru", "lapacho", "bolivian cherry", "grey ironbark", "moabi", "lapacho", "brazilian ebony", "brazilian olivewood", "snakewood", "piptadenia macrocarpa", "lignum vitae", "schinopsis balansae", "schinopsis brasiliensis", "australian buloke"]
 # https://en.wikipedia.org/wiki/Janka_hardness_test
-minerals = {"talc": (1), "graphite": (1.5), "putnisite": (1.75, 1), "bauxite": (2, 10), "gypsum": (2), "halite": (2.25), "galena": (2.625), "chalcocite": (2.75), "copper": (3), "celestine": (3.25), "chalcopyrite": (3.5), "strontianite": (3.5), "azurite": (3.75), "cuprite": (3.75), "malachite": (3.75), "cassiterite": (6.5), "pollucite": (6.75), "qingsongite": (9.5, 1), "quartz": (7, 10)}
+MINERALS = {"talc": (1), "graphite": (1.5), "putnisite": (1.75, 1), "bauxite": (2, 10), "gypsum": (2), "halite": (2.25), "galena": (2.625), "chalcocite": (2.75), "copper": (3), "celestine": (3.25), "chalcopyrite": (3.5), "strontianite": (3.5), "azurite": (3.75), "cuprite": (3.75), "malachite": (3.75), "cassiterite": (6.5), "pollucite": (6.75), "qingsongite": (9.5, 1), "quartz": (7, 10)}
 # https://en.wikipedia.org/wiki/Mohs_scale_of_mineral_hardness
-examine_messages = {"rock": "it's a rock..", "stone": "it's a bigger rock..", "boulder": "wow, that's a big rock", "stick": "pointy", "rock attached to stick": "it must have taken you a long time to make this"}
+EXAMINE_MESSAGES = {"rock": "it's a rock..", "stone": "it's a bigger rock..", "boulder": "wow, that's a big rock", "stick": "pointy", "rock attached to stick": "it must have taken you a long time to make this"}
 
 def setup(bot):
 	bot.add_cog(Adventure(bot))
@@ -75,8 +75,8 @@ class Adventure(commands.Cog):
 		inventory = player.inventory
 		if item not in inventory:
 			return await ctx.embed_reply(":no_entry: You don't have that item")
-		if item in examine_messages:
-			await ctx.embed_reply(examine_messages[item])
+		if item in EXAMINE_MESSAGES:
+			await ctx.embed_reply(EXAMINE_MESSAGES[item])
 		else:
 			await ctx.embed_reply(item)
 	
@@ -88,9 +88,9 @@ class Adventure(commands.Cog):
 		if started == "foraging":
 			stopped = player.stop_foraging()
 			output = (f":herb: You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
-						f"While you were foraging, you also found {stopped[3]:,} {forageables[stopped[0]][0]}")
+						f"While you were foraging, you also found {stopped[3]:,} {FORAGEABLES[stopped[0]][0]}")
 			if stopped[4]:
-				output += f" and {stopped[4]:,} {forageables[stopped[0]][1]}!"
+				output += f" and {stopped[4]:,} {FORAGEABLES[stopped[0]][1]}!"
 			await ctx.embed_reply(output)
 			if item:
 				started = player.start_foraging(item)
@@ -124,9 +124,9 @@ class Adventure(commands.Cog):
 		stopped = player.stop_foraging()
 		if stopped[0]:
 			output = (f":herb: You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
-						f"While you were foraging, you also found {stopped[3]:,} {forageables[stopped[0]][0]}")
+						f"While you were foraging, you also found {stopped[3]:,} {FORAGEABLES[stopped[0]][0]}")
 			if stopped[4]:
-				output += f" and {stopped[4]:,} {forageables[stopped[0]][1]}!"
+				output += f" and {stopped[4]:,} {FORAGEABLES[stopped[0]][1]}!"
 			await ctx.embed_reply(output)
 		elif stopped[1]:
 			await ctx.embed_reply(f":no_entry: You're currently {stopped[1][0]}! You aren't foraging right now")
@@ -136,7 +136,7 @@ class Adventure(commands.Cog):
 	@forage.command(name = "items", aliases = ["item", "type", "types"])
 	async def forage_items(self, ctx):
 		'''Forageable items'''
-		await ctx.embed_reply(", ".join(forageables.keys()))
+		await ctx.embed_reply(", ".join(FORAGEABLES.keys()))
 	
 	@adventure.command()
 	async def inventory(self, ctx, *, item: str = ""):
@@ -271,13 +271,13 @@ class Adventure(commands.Cog):
 	@woodcutting.command(name = "types", aliases = ["type", "item", "items"])
 	async def woodcutting_types(self, ctx):
 		'''Types of wood'''
-		await ctx.embed_reply(", ".join(wood_types))
+		await ctx.embed_reply(", ".join(WOOD_TYPES))
 	
 	@woodcutting.command(name = "rate", aliases = ["rates"])
 	async def woodcutting_rate(self, ctx, *, wood_type: str):
 		'''Rate of chopping certain wood'''
 		player = self.get_adventure_player(ctx.author.id)
-		if wood_type in wood_types:
+		if wood_type in WOOD_TYPES:
 			await ctx.embed_reply(f"You will get {player.wood_rate(wood_type) * player.woodcutting_rate:.2f} {wood_type}/min. at your current level")
 		else:
 			await ctx.embed_reply(":no_entry: That wood type doesn't exist")
@@ -299,7 +299,7 @@ def xp_to_rate(xp):
 	return lvl_to_rate(xp_to_lvl(xp))
 
 def wood_lvl(wood_type):
-	return wood_types.index(wood_type) + 1
+	return WOOD_TYPES.index(wood_type) + 1
 
 class AdventurePlayer:
 	
@@ -307,7 +307,7 @@ class AdventurePlayer:
 	
 	def __init__(self, user_id):
 		self.user_id = user_id
-		_initial_data = initial_data.copy()
+		_initial_data = INITIAL_DATA.copy()
 		_initial_data["time_started"] = time.time()
 		clients.create_file("adventure_players/{}".format(user_id), content = _initial_data)
 		with open(clients.data_path + "/adventure_players/{}.json".format(user_id), 'r') as player_file:
@@ -323,7 +323,7 @@ class AdventurePlayer:
 	def start_foraging(self, item):
 		if self.last_action is not None:
 			return self.last_action[0]
-		elif item.lower() in forageables:
+		elif item.lower() in FORAGEABLES:
 			self.last_action = ("foraging", item)
 			self.last_action_time = time.time()
 			self.write_data()
@@ -342,8 +342,8 @@ class AdventurePlayer:
 			if self.inventory[item] == 0:
 				del self.inventory[item]
 			self.foraging_xp += item_amount
-			secondary_item = forageables[item][0]
-			tertiary_item = forageables[item][1]
+			secondary_item = FORAGEABLES[item][0]
+			tertiary_item = FORAGEABLES[item][1]
 			secondary_amount = random.randint(0, item_amount)
 			tertiary_amount = math.floor(random.randint(0, item_amount) / 100)
 			self.inventory[secondary_item] = self.inventory.get(secondary_item, 0) + secondary_amount
@@ -363,9 +363,9 @@ class AdventurePlayer:
 			if item not in self.inventory:
 				return None
 		sorted_items = tuple(sorted(items))
-		if sorted_items not in craftables:
+		if sorted_items not in CRAFTABLES:
 			return False
-		crafted_item = craftables[sorted_items]
+		crafted_item = CRAFTABLES[sorted_items]
 		for item in items:
 			self.inventory[item] -= 1
 			if self.inventory[item] == 0:
@@ -376,7 +376,7 @@ class AdventurePlayer:
 	def start_woodcutting(self, wood_type):
 		if self.last_action is not None:
 			return self.last_action[0]
-		elif wood_type.lower() in wood_types:
+		elif wood_type.lower() in WOOD_TYPES:
 			self.last_action = ("woodcutting", wood_type)
 			self.last_action_time = time.time()
 			self.write_data()
@@ -409,13 +409,13 @@ class AdventurePlayer:
 		self.write_data()
 		return wood, xp
 
-for info in initial_data:
+for info in INITIAL_DATA:
 	def set_info(self, value, info = info):
 		self.data[info] = value
 		# write_data?
 	setattr(AdventurePlayer, info, property(lambda self, info = info: self.data[info], set_info))
 
-for skill in skills:
+for skill in SKILLS:
 	def set_xp(self, value, skill = skill):
 		self.data["xp"][skill] = value
 		# write data?
