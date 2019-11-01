@@ -7,7 +7,6 @@ import json
 import random
 import sys
 import time
-import types
 
 import clients
 from utilities import checks
