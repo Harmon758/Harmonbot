@@ -42,7 +42,7 @@ class Adventure(commands.Cog):
 				mining_xp			BIGINT DEFAULT 0, 
 				woodcutting_xp		BIGINT DEFAULT 0, 
 				last_action			TEXT, 
-				last_action_object	TEXT, 
+				last_action_item	TEXT, 
 				last_action_time	TIMESTAMPTZ
 			)
 			"""
@@ -51,9 +51,9 @@ class Adventure(commands.Cog):
 			"""
 			CREATE TABLE IF NOT EXISTS adventure.inventories (
 				user_id			BIGINT REFERENCES adventure.players (user_id) ON DELETE CASCADE, 
-				object			TEXT, 
+				item			TEXT, 
 				count			BIGINT, 
-				PRIMARY KEY		(user_id, object)
+				PRIMARY KEY		(user_id, item)
 			)
 			"""
 		)
@@ -169,7 +169,7 @@ class Adventure(commands.Cog):
 			if count:
 				return await ctx.embed_reply(f"{item}: {count}")
 		records = await player.inventory()
-		await ctx.embed_reply(", ".join(f"{record['object']}: {record['count']:,}" for record in sorted(records, key = itemgetter("object"))))
+		await ctx.embed_reply(", ".join(f"{record['item']}: {record['count']:,}" for record in sorted(records, key = itemgetter("item"))))
 	
 	@adventure.group(aliases = ["stat", "levels", "level", "lvls", "lvl"], invoke_without_command = True, case_insensitive = True)
 	async def stats(self, ctx):
@@ -354,61 +354,61 @@ class AdventurePlayer:
 		for skill in SKILLS:
 			setattr(self, skill + "_xp", record[skill + "_xp"])
 		self.last_action = record["last_action"]
-		self.last_action_object = record["last_action_object"]
+		self.last_action_item = record["last_action_item"]
 		self.last_action_time = record["last_action_time"]
 		self.initialized.set()
 	
-	async def add_to_inventory(self, object, count):
+	async def add_to_inventory(self, item, count):
 		return await self.bot.db.fetchval(
 			"""
-			INSERT INTO adventure.inventories (user_id, object, count)
+			INSERT INTO adventure.inventories (user_id, item, count)
 			VALUES ($1, $2, $3)
-			ON CONFLICT (user_id, object) DO
+			ON CONFLICT (user_id, item) DO
 			UPDATE SET count = inventories.count + $3
 			RETURNING count
 			""", 
-			self.user_id, object, count
+			self.user_id, item, count
 		)
 	
-	async def inventory(self, object = None):
-		if object:
+	async def inventory(self, item = None):
+		if item:
 			return await self.bot.db.fetchval(
 				"""
 				SELECT count FROM adventure.inventories
-				WHERE user_id = $1 AND object = $2
+				WHERE user_id = $1 AND item = $2
 				""", 
-				self.user_id, object
+				self.user_id, item
 			)
 		else:
 			return await self.bot.db.fetch(
 				"""
-				SELECT object, count FROM adventure.inventories
+				SELECT item, count FROM adventure.inventories
 				WHERE user_id = $1
 				""", 
 				self.user_id
 			)
 	
-	async def start_action(self, action, object):
+	async def start_action(self, action, item):
 		self.last_action = action
-		self.last_action_object = object
+		self.last_action_item = item
 		self.last_action_time = datetime.datetime.now(datetime.timezone.utc)
 		await self.bot.db.execute(
 			"""
 			UPDATE adventure.players
-			SET last_action = $2, last_action_object = $3, last_action_time = $4
+			SET last_action = $2, last_action_item = $3, last_action_time = $4
 			WHERE user_id = $1
 			""", 
-			self.user_id, action, object, self.last_action_time
+			self.user_id, action, item, self.last_action_time
 		)
 	
 	async def stop_action(self):
 		self.last_action = None
-		self.last_action_object = None
+		self.last_action_item = None
 		self.last_action_time = None
 		await self.bot.db.execute(
 			"""
 			UPDATE adventure.players
-			SET last_action = NULL, last_action_object = NULL, last_action_time = NULL
+			SET last_action = NULL, last_action_item = NULL, last_action_time = NULL
 			WHERE user_id = $1
 			""", 
 			self.user_id
@@ -428,7 +428,7 @@ class AdventurePlayer:
 	
 	async def stop_foraging(self):
 		if self.last_action == "foraging":
-			item = self.last_action_object
+			item = self.last_action_item
 			time_spent = math.ceil((datetime.datetime.now(datetime.timezone.utc) - self.last_action_time).total_seconds()) / 60
 			await self.stop_action()
 			item_amount = math.floor(time_spent * self.foraging_rate)
@@ -470,7 +470,7 @@ class AdventurePlayer:
 	
 	async def stop_woodcutting(self):
 		if self.last_action == "woodcutting":
-			wood_type = self.last_action_object
+			wood_type = self.last_action_item
 			time_spent = math.ceil((datetime.datetime.now(datetime.timezone.utc) - self.last_action_time).total_seconds()) / 60
 			await self.stop_action()
 			current_wood_lvl = wood_lvl(wood_type)
