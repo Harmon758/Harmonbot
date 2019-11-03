@@ -62,6 +62,8 @@ class Context(commands.Context):
 	
 	# TODO: Improve
 	async def get_permission(self, permission, *, type = "user", id = None):
+		if not self.guild:
+			return True
 		role_ids = []
 		if type == "user":
 			user_setting  = await self.bot.db.fetchval(
