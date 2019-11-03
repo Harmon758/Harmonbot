@@ -35,6 +35,63 @@ class Adventure(commands.Cog):
 		self.adventure_players = {}
 		
 		create_folder(clients.data_path + "/adventure_players")
+		self.bot.loop.create_task(self.initialize_database())
+	
+	async def initialize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS adventure")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS adventure.players (
+				user_id				BIGINT PRIMARY KEY, 
+				creation_time		TIMESTAMPTZ DEFAULT NOW(), 
+				fishing_xp			BIGINT DEFAULT 0, 
+				foraging_xp			BIGINT DEFAULT 0, 
+				mining_xp			BIGINT DEFAULT 0, 
+				woodcutting_xp		BIGINT DEFAULT 0, 
+				last_action			TEXT, 
+				last_action_object	TEXT, 
+				last_action_time	TIMESTAMPTZ
+			)
+			"""
+		)
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS adventure.inventories (
+				user_id			BIGINT REFERENCES adventure.players (user_id) ON DELETE CASCADE, 
+				object			TEXT, 
+				count			BIGINT, 
+				PRIMARY KEY		(user_id, object)
+			)
+			"""
+		)
+		# Migrate existing data
+		import datetime
+		import os
+		for filename in os.listdir(self.bot.data_path + "/adventure_players"):
+			with open(f"{self.bot.data_path}/adventure_players/{filename}", 'r') as player_file:
+				data = json.load(player_file)
+			user_id = int(filename[:-5])
+			await self.bot.db.execute(
+				"""
+				INSERT INTO adventure.players (user_id, creation_time, fishing_xp, foraging_xp, mining_xp, woodcutting_xp, last_action, last_action_object, last_action_time)
+				VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+				ON CONFLICT DO NOTHING
+				""", 
+				user_id, datetime.datetime.fromtimestamp(data["time_started"], tz = datetime.timezone.utc), 
+				data["xp"]["fishing"], data["xp"]["foraging"], data["xp"]["mining"], data["xp"]["woodcutting"], 
+				data["last_action"] and data["last_action"][0], data["last_action"] and data["last_action"][1], 
+				datetime.datetime.fromtimestamp(data["last_action_time"], tz = datetime.timezone.utc)
+			)
+			for object_name, count in data["inventory"].items():
+				await self.bot.db.execute(
+					"""
+					INSERT INTO adventure.inventories (user_id, object, count)
+					VALUES ($1, $2, $3)
+					ON CONFLICT DO NOTHING
+					""", 
+					user_id, object_name, count
+				)
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden_predicate(ctx)
