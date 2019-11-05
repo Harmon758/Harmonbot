@@ -32,7 +32,7 @@ matrix:
         - python Telegram_Harmonbot.py
     - name: Discord Listener
       language: go
-      go: "1.13.3"
+      go: "1.13.4"
       install:
         - go get github.com/bwmarrin/discordgo
         - go get github.com/bwmarrin/dgvoice
