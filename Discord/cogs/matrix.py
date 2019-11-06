@@ -31,7 +31,7 @@ class Matrix(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@matrix.command(aliases = ["addition", "plus", '+'])
-	async def add(self, ctx, matrix_a : Matrix, matrix_b : Matrix):
+	async def add(self, ctx, matrix_a: Matrix, matrix_b: Matrix):
 		'''Add two matrices'''
 		# TODO: unlimited number?
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) + numpy.matrix(matrix_b)))
