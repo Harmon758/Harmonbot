@@ -42,7 +42,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(str(scipy.linalg.cosm(matrix)))
 	
 	@cos.command(name = "hyperbolic", aliases = ['h'])
-	async def cos_hyperbolic(self, ctx, *, matrix : Matrix):
+	async def cos_hyperbolic(self, ctx, *, matrix: Matrix):
 		'''Hyperbolic cosine of a matrix'''
 		await ctx.embed_reply(str(scipy.linalg.coshm(matrix)))
 	
