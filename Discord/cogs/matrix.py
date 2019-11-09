@@ -47,7 +47,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(str(scipy.linalg.coshm(matrix)))
 	
 	@matrix.command()
-	async def determinant(self, ctx, *, matrix : Matrix):
+	async def determinant(self, ctx, *, matrix: Matrix):
 		'''Determinant of a matrix'''
 		await ctx.embed_reply(scipy.linalg.det(matrix))
 	
