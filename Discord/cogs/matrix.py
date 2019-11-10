@@ -52,7 +52,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(scipy.linalg.det(matrix))
 	
 	@matrix.command(aliases = ["division", '/'])
-	async def divide(self, ctx, matrix_a : Matrix, matrix_b : Matrix):
+	async def divide(self, ctx, matrix_a: Matrix, matrix_b: Matrix):
 		'''Divide two matrices'''
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) / numpy.matrix(matrix_b)))
 	
