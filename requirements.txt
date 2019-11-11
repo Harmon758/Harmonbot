@@ -22,7 +22,7 @@ isodate==0.6.0
 matplotlib==3.1.1
 more-itertools==7.2.0
 numexpr==2.7.0
-numpy==1.17.3
+numpy==1.17.4
 pandas==0.25.3
 pillow==6.2.1
 psutil==5.6.4
