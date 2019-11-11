@@ -57,7 +57,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) / numpy.matrix(matrix_b)))
 	
 	@matrix.command(naliases = ["exponential"])
-	async def exp(self, ctx, matrix : Matrix):
+	async def exp(self, ctx, matrix: Matrix):
 		'''Compute the matrix exponential using Pade approximation'''
 		await ctx.embed_reply(str(scipy.linalg.expm(matrix)))
 	
