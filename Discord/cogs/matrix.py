@@ -62,7 +62,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(str(scipy.linalg.expm(matrix)))
 	
 	@matrix.command()
-	async def inverse(self, ctx, *, matrix : Matrix):
+	async def inverse(self, ctx, *, matrix: Matrix):
 		'''Inverse of a matrix'''
 		await ctx.embed_reply(str(numpy.matrix(matrix).I))
 	
