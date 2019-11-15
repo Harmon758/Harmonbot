@@ -16,7 +16,7 @@ def setup(bot):
 	bot.add_cog(Reactions(bot))
 	
 	async def process_reactions(reaction, user):
-		if user == ctx.bot.user:
+		if user == bot.user:
 			return
 		await bot.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
 		await bot.db.execute(
