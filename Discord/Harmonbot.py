@@ -101,6 +101,17 @@ if __name__ == "__main__":
 		)
 		# TODO: Track names
 	
+	# TODO: Move to utilities
+	def replace_null_character(data):
+		data_type = type(data)
+		if data_type is str:
+			return data.replace('\N{NULL}', "")
+		if data_type is dict:
+			return {key: replace_null_character(value) for key, value in data.items()}
+		if data_type is list:
+			return [replace_null_character(item) for item in data]
+		return data
+	
 	@client.event
 	async def on_message(message):
 		
@@ -125,7 +136,8 @@ if __name__ == "__main__":
 				""", 
 				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 
-				message.content.replace('\N{NULL}', ""), [embed.to_dict() for embed in message.embeds]
+				message.content.replace('\N{NULL}', ""), 
+				[replace_null_character(embed.to_dict()) for embed in message.embeds]
 			)
 		else:
 			await ctx.bot.db.execute(
@@ -141,7 +153,8 @@ if __name__ == "__main__":
 				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 
 				channel.id, channel.name, guild.id, guild.name, 
-				message.content.replace('\N{NULL}', ""), [embed.to_dict() for embed in message.embeds]
+				message.content.replace('\N{NULL}', ""), 
+				[replace_null_character(embed.to_dict()) for embed in message.embeds]
 			)
 		
 		# Server specific settings
