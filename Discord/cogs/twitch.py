@@ -409,7 +409,7 @@ class Twitch(commands.Cog):
 	
 	@check_twitch_streams.after_loop
 	async def after_check_twitch_streams(self):
-		print(f"{self.bot.console_message_prefix}Twitch task cancelled @ {datetime.datetime.now().time().isoformat()}")
+		print(f"{self.bot.console_message_prefix}Twitch task cancelled @ {datetime.datetime.now().isoformat()}")
 	
 	async def process_twitch_streams(self, streams, type, match = None):
 		# TODO: use textwrap

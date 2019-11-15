@@ -424,10 +424,10 @@ class Bot(commands.Bot):
 		await self.update_all_listing_stats()
 	
 	async def on_resumed(self):
-		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().time().isoformat()}")
+		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().isoformat()}")
 	
 	async def on_disconnect(self):
-		print(f"{self.console_message_prefix}disconnected @ {datetime.datetime.now().time().isoformat()}")
+		print(f"{self.console_message_prefix}disconnected @ {datetime.datetime.now().isoformat()}")
 	
 	async def on_guild_join(self, guild):
 		await self.update_all_listing_stats()

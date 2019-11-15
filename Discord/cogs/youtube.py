@@ -302,7 +302,7 @@ class YouTube(commands.Cog):
 	
 	@check_youtube_streams.after_loop
 	async def after_check_youtube_streams(self):
-		print(f"{self.bot.console_message_prefix}YouTube streams task cancelled @ {datetime.datetime.now().time().isoformat()}")
+		print(f"{self.bot.console_message_prefix}YouTube streams task cancelled @ {datetime.datetime.now().isoformat()}")
 	
 	# TODO: Follow channels/new video uploads
 	
