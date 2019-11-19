@@ -78,7 +78,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(fields = (("P", p), ("L", l), ("U", u)))
 	
 	@matrix.group(aliases = ["times", '*'], invoke_without_command = True, case_insensitive = True)
-	async def multiply(self, ctx, matrix_a : Matrix, matrix_b : Matrix):
+	async def multiply(self, ctx, matrix_a: Matrix, matrix_b: Matrix):
 		'''Multiply two matrices'''
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) * numpy.matrix(matrix_b)))
 	
