@@ -65,7 +65,7 @@ class Audio(commands.Cog):
 			embed.url = url
 			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
 		finally:
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 			await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(aliases = ["summon", "move"])
@@ -198,7 +198,7 @@ class Audio(commands.Cog):
 		embed = response.embeds[0]
 		replayed = await self.players[ctx.guild.id].replay()
 		embed.description = ":repeat_one: Restarted song" if replayed else ":no_entry: There is nothing to replay"
-		await self.bot.edit_message(response, embed = embed)
+		await response.edit(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command()
@@ -224,7 +224,7 @@ class Audio(commands.Cog):
 		else:
 			embed.description = ":ballot_box_with_check: `{}` has been inserted into position #{} in the queue".format(title, position_number)
 		finally:
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 			await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(aliases = ["clear"])
@@ -246,7 +246,7 @@ class Audio(commands.Cog):
 		embed = response.embeds[0]
 		await self.players[ctx.guild.id].shuffle_queue()
 		embed.description = ":twisted_rightwards_arrows: Shuffled songs"
-		await self.bot.edit_message(response, embed = embed)
+		await response.edit(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@audio.command(name = "random", aliases = ["top"])
@@ -270,10 +270,10 @@ class Audio(commands.Cog):
 			embed.url = url
 			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
 		try:
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 		except discord.HTTPException:
 			embed.description = ":warning: Error loading `{}`".format(song)
-			await self.bot.edit_message(response, embed = embed)
+			await response.edit(embed = embed)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
