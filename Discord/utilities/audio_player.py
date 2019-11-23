@@ -290,14 +290,25 @@ class AudioPlayer:
 		for song in song_list:
 			await self.queue.put(song)
 	
-	async def play_tts(self, message, requester, *, timestamp = None, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
-		if self.interrupted: return False
-		func = functools.partial(subprocess.call, ["bin\espeak", "-a {}".format(amplitude), "-p {}".format(pitch), "-s {}".format(speed), "-g {}".format(word_gap), "-v{}".format(voice), "-w data/temp/tts.wav", message], shell = True)
-		await self.bot.loop.run_in_executor(None, func)
-		interrupt_message = await self._interrupt("data/temp/tts.wav", "TTS message", requester, timestamp)
-		if interrupt_message: await self.bot.delete_message(interrupt_message)
-		if os.path.exists("data/temp/tts.wav"): os.remove("data/temp/tts.wav")
-		return interrupt_message
+	async def add_playlist(self, playlist, requester, timestamp):
+		response = await ctx.embed_reply(":cd: Loading..")
+		ydl = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
+		func = functools.partial(ydl.extract_info, playlist, download = False)
+		info = await self.bot.loop.run_in_executor(None, func)
+		embed = response.embeds[0]
+		for position, video in enumerate(info["entries"], start = 1):
+			if not video: continue
+			embed.description = ":cd: Loading {}/{}".format(position, len(info["entries"]))
+			await self.bot.edit_message(response, embed = embed)
+			try:
+				await self.add_song(video["url"], requester, timestamp)
+			except Exception as e:
+				try:
+					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>\n{}: {}".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist, type(e).__name__, e))
+				except discord.errors.HTTPException:
+					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist))
+		embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
+		await response.edit(embed = embed)
 	
 	async def play_file(self, filename, requester, timestamp):
 		if not filename:
@@ -309,6 +320,15 @@ class AudioPlayer:
 	
 	def list_files(self):
 		return ", ".join(self.audio_files)
+	
+	async def play_tts(self, message, requester, *, timestamp = None, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
+		if self.interrupted: return False
+		func = functools.partial(subprocess.call, ["bin\espeak", "-a {}".format(amplitude), "-p {}".format(pitch), "-s {}".format(speed), "-g {}".format(word_gap), "-v{}".format(voice), "-w data/temp/tts.wav", message], shell = True)
+		await self.bot.loop.run_in_executor(None, func)
+		interrupt_message = await self._interrupt("data/temp/tts.wav", "TTS message", requester, timestamp)
+		if interrupt_message: await self.bot.delete_message(interrupt_message)
+		if os.path.exists("data/temp/tts.wav"): os.remove("data/temp/tts.wav")
+		return interrupt_message
 	
 	async def play_from_library(self, filename, requester, timestamp, *, clear_flag = True):
 		if not filename:
@@ -370,26 +390,6 @@ class AudioPlayer:
 	
 	def _resume_from_interruption(self):
 		self.bot.loop.call_soon_threadsafe(self.resume_flag.set)
-	
-	async def add_playlist(self, playlist, requester, timestamp):
-		response = await ctx.embed_reply(":cd: Loading..")
-		ydl = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
-		func = functools.partial(ydl.extract_info, playlist, download = False)
-		info = await self.bot.loop.run_in_executor(None, func)
-		embed = response.embeds[0]
-		for position, video in enumerate(info["entries"], start = 1):
-			if not video: continue
-			embed.description = ":cd: Loading {}/{}".format(position, len(info["entries"]))
-			await self.bot.edit_message(response, embed = embed)
-			try:
-				await self.add_song(video["url"], requester, timestamp)
-			except Exception as e:
-				try:
-					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>\n{}: {}".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist, type(e).__name__, e))
-				except discord.errors.HTTPException:
-					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist))
-		embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
-		await response.edit(embed = embed)
 	
 	async def radio_on(self, requester, timestamp):
 		if self.interrupted:
