@@ -9,7 +9,6 @@ if __name__ == "__main__":
 	import ctypes
 	import datetime
 	import json
-	import logging
 	import os
 	import platform
 	import re
