@@ -15,7 +15,6 @@ if __name__ == "__main__":
 	import re
 	import sys
 	
-	import aiohttp
 	from aiohttp import web
 	import dotenv
 	import pkg_resources  # from setuptools
