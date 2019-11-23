@@ -63,7 +63,7 @@ class AudioPlayer:
 		if self.guild.voice_client:
 			await self.guild.voice_client.move_to(voice_channel)
 			return True
-		await self.bot.join_voice_channel(voice_channel)
+		await voice_channel.connect()
 	
 	async def leave_channel(self):
 		if self.guild.voice_client:
