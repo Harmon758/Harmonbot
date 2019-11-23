@@ -66,7 +66,6 @@ class Audio(commands.Cog):
 			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
 		finally:
 			await response.edit(embed = embed)
-			await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(aliases = ["summon", "move"])
 	@commands.guild_only()
@@ -199,7 +198,6 @@ class Audio(commands.Cog):
 		replayed = await self.players[ctx.guild.id].replay()
 		embed.description = ":repeat_one: Restarted song" if replayed else ":no_entry: There is nothing to replay"
 		await response.edit(embed = embed)
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command()
 	@commands.guild_only()
@@ -225,7 +223,6 @@ class Audio(commands.Cog):
 			embed.description = ":ballot_box_with_check: `{}` has been inserted into position #{} in the queue".format(title, position_number)
 		finally:
 			await response.edit(embed = embed)
-			await self.bot.attempt_delete_message(ctx.message)
 	
 	@commands.command(aliases = ["clear"])
 	@commands.guild_only()
@@ -247,7 +244,6 @@ class Audio(commands.Cog):
 		await self.players[ctx.guild.id].shuffle_queue()
 		embed.description = ":twisted_rightwards_arrows: Shuffled songs"
 		await response.edit(embed = embed)
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@audio.command(name = "random", aliases = ["top"])
 	@commands.guild_only()
@@ -289,7 +285,6 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":stop_sign: Turned radio off")
 		elif (await self.players[ctx.guild.id].radio_on(ctx.author, ctx.message.created_at)) is False:
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@radio.command(name = "on", aliases = ["start"])
 	@commands.guild_only()
@@ -301,7 +296,6 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":no_entry: Radio is already on")
 		elif (await self.players[ctx.guild.id].radio_on(ctx.author, ctx.message.created_at)) is False:
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
-		await self.bot.attempt_delete_message(ctx.message)
 	
 	@radio.command(name = "off", aliases = ["stop"])
 	@commands.guild_only()
