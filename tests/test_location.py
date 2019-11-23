@@ -15,7 +15,6 @@ class TestWindDegreesToDirection(unittest.TestCase):
 	
 	@given(floats(max_value = 0, exclude_max = True))
 	def test_negative_degrees(self, degrees):
-		assume(degrees != 0)  # Exclude -0.0
 		self.assertRaises(UnitExecutionError, wind_degrees_to_direction, degrees)
 	
 	@given(floats(min_value = 360, exclude_min = True))
