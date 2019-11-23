@@ -143,7 +143,7 @@ class AudioPlayer:
 				self.current["stream"] = stream
 				self.current["stream"].start()
 				embed.description = ":arrow_forward: Now playing"
-				await self.bot.edit_message(now_playing_message, embed = embed)
+				await now_playing_message.edit(embed = embed)
 			## stream.buff.read(stream.frame_size * 100 / stream.delay)
 			number_of_listeners = len(self.guild.voice_client.channel.voice_members) - 1
 			self.skip_votes_required = number_of_listeners // 2 + number_of_listeners % 2
@@ -389,7 +389,7 @@ class AudioPlayer:
 				except discord.errors.HTTPException:
 					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist))
 		embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
-		await self.bot.edit_message(response, embed = embed)
+		await response.edit(embed = embed)
 	
 	async def radio_on(self, requester, timestamp):
 		if self.interrupted:
