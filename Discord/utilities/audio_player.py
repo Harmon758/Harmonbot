@@ -323,7 +323,7 @@ class AudioPlayer:
 		if self.interrupted:
 			return False
 		if not self.library_flag:
-			await self.bot.embed_say(":notes: Playing songs from my library")
+			await ctx.embed_send(":notes: Playing songs from my library")
 			self.library_flag = True
 			try:
 				self.pause()
