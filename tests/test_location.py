@@ -1,7 +1,7 @@
 
 import unittest
 
-from hypothesis import assume, given
+from hypothesis import given
 from hypothesis.strategies import floats, uuids
 
 from units.location import wind_degrees_to_direction
