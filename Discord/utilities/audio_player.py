@@ -47,6 +47,10 @@ class AudioPlayer:
 		self.listen_paused = False
 		self.previous_played_time = 0
 
+	@property
+	def interrupted(self):
+		return not self.not_interrupted.is_set()
+	
 	async def join_channel(self, user, channel):
 		# join logic
 		if user.voice_channel:
@@ -287,8 +291,7 @@ class AudioPlayer:
 			await self.queue.put(song)
 	
 	async def play_tts(self, message, requester, *, timestamp = None, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
-		if not self.not_interrupted.is_set():
-			return False
+		if self.interrupted: return False
 		func = functools.partial(subprocess.call, ["bin\espeak", "-a {}".format(amplitude), "-p {}".format(pitch), "-s {}".format(speed), "-g {}".format(word_gap), "-v{}".format(voice), "-w data/temp/tts.wav", message], shell = True)
 		await self.bot.loop.run_in_executor(None, func)
 		interrupt_message = await self._interrupt("data/temp/tts.wav", "TTS message", requester, timestamp)
@@ -317,7 +320,7 @@ class AudioPlayer:
 		## print([f for f in os.listdir(self.bot.library_path) if not f.endswith((".mp3", ".m4a", ".jpg"))])
 	
 	async def play_library(self, requester, timestamp):
-		if not self.not_interrupted.is_set():
+		if self.interrupted:
 			return False
 		if not self.library_flag:
 			await self.bot.embed_say(":notes: Playing songs from my library")
@@ -342,7 +345,7 @@ class AudioPlayer:
 			self.skip()
 	
 	async def _interrupt(self, source, title, requester, timestamp, *, clear_flag = True):
-		if not self.not_interrupted.is_set() and clear_flag:
+		if self.interrupted and clear_flag:
 			return False
 		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
 			stream = self.guild.voice_client.create_ffmpeg_player(source, after = self._resume_from_interruption, stderr = ffmpeg_log)
@@ -389,7 +392,7 @@ class AudioPlayer:
 		await self.bot.edit_message(response, embed = embed)
 	
 	async def radio_on(self, requester, timestamp):
-		if not self.not_interrupted.is_set():
+		if self.interrupted:
 			return False
 		if not self.radio_flag:
 			if not self.current:
@@ -439,7 +442,7 @@ class AudioPlayer:
 		self.listener = None
 				
 	async def listen_once(self):
-		if not self.not_interrupted.is_set():
+		if self.interrupted:
 			return False
 		if self.bot.listener_bot not in self.guild.voice_client.channel.voice_members:
 			await self.bot.send_embed(self.text_channel, ":no_entry: {} needs to be in the voice channel".format(self.bot.listener_bot.mention))
