@@ -88,7 +88,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(str(numpy.matrix(matrix) * scalar))
 	
 	@matrix.command(aliases = ['^', "**"])
-	async def power(self, ctx, matrix : Matrix, power : int):
+	async def power(self, ctx, matrix: Matrix, power: int):
 		'''Raise a matrix to a power'''
 		try:
 			await ctx.embed_reply(str(numpy.matrix(matrix) ** power))
