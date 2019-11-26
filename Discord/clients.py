@@ -179,7 +179,8 @@ class Bot(commands.Bot):
 		except Exception as e:
 			print(f"{self.console_message_prefix}Failed to initialize Wordnik Client: {e}")
 		## youtube-dl
-		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "bestaudio/best", "extractaudio": True, "outtmpl": self.data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True} # "audioformat": "mp3" ?
+		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "bestaudio/best", "extractaudio": True, 
+										"outtmpl": self.data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True}  # "audioformat": "mp3" ?
 		self.ytdl_download = youtube_dl.YoutubeDL(self.ytdl_download_options)
 		self.ytdl_info_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
 		self.ytdl_info = youtube_dl.YoutubeDL(self.ytdl_info_options)
