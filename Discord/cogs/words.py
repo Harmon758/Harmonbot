@@ -37,9 +37,10 @@ class Words(commands.Cog):
 			raise
 		if not definition:
 			return await ctx.embed_reply(":no_entry: Definition not found")
-		await ctx.embed_reply(BeautifulSoup(definition[0].text, "html.parser").get_text(), 
+		await ctx.embed_reply(BeautifulSoup(definition[0].text or "", "html.parser").get_text(), 
 								title = definition[0].word, 
 								footer_text = definition[0].attributionText)
+		# TODO: Use others after limit = 1 if missing definition text, e.g. definition, broken, town
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	@checks.not_forbidden()
