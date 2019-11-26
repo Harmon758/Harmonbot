@@ -30,17 +30,17 @@ class Words(commands.Cog):
 	async def define(self, ctx, word : str):
 		'''Define a word'''
 		try:
-			definition = self.bot.wordnik_word_api.getDefinitions(word, limit = 1)  # useCanonical = True ?
+			definitions = self.bot.wordnik_word_api.getDefinitions(word)  # useCanonical = True ?
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
 				return await ctx.embed_reply(":no_entry: Error: Not found")
 			raise
-		if not definition:
-			return await ctx.embed_reply(":no_entry: Definition not found")
-		await ctx.embed_reply(BeautifulSoup(definition[0].text or "", "html.parser").get_text(), 
-								title = definition[0].word, 
-								footer_text = definition[0].attributionText)
-		# TODO: Use others after limit = 1 if missing definition text, e.g. definition, broken, town
+		for definition in definitions:
+			if definition.text:
+				return await ctx.embed_reply(BeautifulSoup(definition.text, "html.parser").get_text(), 
+												title = definition.word, 
+												footer_text = definition.attributionText)
+		await ctx.embed_reply(":no_entry: Definition not found")
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	@checks.not_forbidden()
