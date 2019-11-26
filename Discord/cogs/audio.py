@@ -74,7 +74,7 @@ class Audio(commands.Cog):
 		'''Get me to join a voice channel'''
 		# TODO: Permit all when not in voice channel?
 		if ctx.guild.id not in self.players:
-			self.players[ctx.guild.id] = audio_player.AudioPlayer(self.bot, ctx.channel)
+			self.players[ctx.guild.id] = audio_player.AudioPlayer.from_context(ctx)
 		try:
 			moved = await self.players[ctx.guild.id].join_channel(ctx.author, channel)
 		except errors.AudioNotPlaying:

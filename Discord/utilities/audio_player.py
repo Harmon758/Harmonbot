@@ -46,7 +46,11 @@ class AudioPlayer:
 		self.listener = None
 		self.listen_paused = False
 		self.previous_played_time = 0
-
+	
+	@classmethod
+	def from_context(cls, ctx):
+		return cls(ctx.bot, ctx.channel)
+	
 	@property
 	def interrupted(self):
 		return not self.not_interrupted.is_set()
