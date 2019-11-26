@@ -179,7 +179,7 @@ class Bot(commands.Bot):
 		except Exception as e:
 			print(f"{self.console_message_prefix}Failed to initialize Wordnik Client: {e}")
 		## youtube-dl
-		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "bestaudio/best", "extractaudio": True, "outtmpl": data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True} # "audioformat": "mp3" ?
+		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "bestaudio/best", "extractaudio": True, "outtmpl": self.data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True} # "audioformat": "mp3" ?
 		self.ytdl_download = youtube_dl.YoutubeDL(self.ytdl_download_options)
 		self.ytdl_info_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
 		self.ytdl_info = youtube_dl.YoutubeDL(self.ytdl_info_options)
@@ -213,11 +213,11 @@ class Bot(commands.Bot):
 		### orientation, party, president, question, religion, state, totalclients
 		for predicate, value in self.aiml_predicates.items():
 			self.aiml_kernel.setBotPredicate(predicate, value)
-		if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
-			self.aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
-		elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
-			self.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
-			self.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
+		if os.path.isfile(self.data_path + "/aiml/aiml_brain.brn"):
+			self.aiml_kernel.bootstrap(brainFile = self.data_path + "/aiml/aiml_brain.brn")
+		elif os.path.isfile(self.data_path + "/aiml/std-startup.xml"):
+			self.aiml_kernel.bootstrap(learnFiles = self.data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+			self.aiml_kernel.saveBrain(self.data_path + "/aiml/aiml_brain.brn")
 		
 		# Aiohttp Client Session
 		self.loop.run_until_complete(self.initialize_aiohttp_client_session())
@@ -242,7 +242,7 @@ class Bot(commands.Bot):
 		self.aiohttp_site = None  # Initialized when starting web server
 		
 		# Create temp folder
-		create_folder(data_path + "/temp")
+		create_folder(self.data_path + "/temp")
 		
 		# Add load, unload, and reload commands
 		self.add_command(self.load)
@@ -669,7 +669,7 @@ class Bot(commands.Bot):
 		# Save restart text channel + voice channels
 		audio_cog = self.get_cog("Audio")
 		voice_channels = audio_cog.save_voice_channels() if audio_cog else []
-		with open(data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
+		with open(self.data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
 			json.dump({"restart_channel": channel_id, "voice_channels": voice_channels}, restart_channel_file)
 	
 	async def shutdown_tasks(self):
@@ -726,11 +726,11 @@ class Bot(commands.Bot):
 		'''Load AIML'''
 		for predicate, value in ctx.bot.aiml_predicates.items():
 			ctx.bot.aiml_kernel.setBotPredicate(predicate, value)
-		if os.path.isfile(data_path + "/aiml/aiml_brain.brn"):
-			ctx.bot.aiml_kernel.bootstrap(brainFile = data_path + "/aiml/aiml_brain.brn")
-		elif os.path.isfile(data_path + "/aiml/std-startup.xml"):
-			ctx.bot.aiml_kernel.bootstrap(learnFiles = data_path + "/aiml/std-startup.xml", commands = "load aiml b")
-			ctx.bot.aiml_kernel.saveBrain(data_path + "/aiml/aiml_brain.brn")
+		if os.path.isfile(self.data_path + "/aiml/aiml_brain.brn"):
+			ctx.bot.aiml_kernel.bootstrap(brainFile = self.data_path + "/aiml/aiml_brain.brn")
+		elif os.path.isfile(self.data_path + "/aiml/std-startup.xml"):
+			ctx.bot.aiml_kernel.bootstrap(learnFiles = self.data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+			ctx.bot.aiml_kernel.saveBrain(self.data_path + "/aiml/aiml_brain.brn")
 		await ctx.embed_reply(":ok_hand::skin-tone-2: Loaded AIML")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
