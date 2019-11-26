@@ -104,7 +104,7 @@ class Meta(commands.Cog):
 													("CPU", "Calculating CPU usage..")))
 		await asyncio.sleep(1)
 		embed = message.embeds[0]
-		embed.set_field_at(1, name = "CPU", value = f"{process.cpu_percent() / psutil.cpu_count()}%")
+		embed.set_field_at(1, name = "CPU", value = f"{process.cpu_percent() / psutil.cpu_count():.5g}%")
 		await message.edit(embed = embed)
 	
 	@commands.command(aliases = ["category"])
