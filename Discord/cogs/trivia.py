@@ -490,6 +490,9 @@ class Trivia(commands.Cog):
 		# Check XX/YY
 		if response in answer.split('/'):
 			return True
+		# Check XX and/or YY
+		if response in answer.split(" and/or "):
+			return True
 		# Check XX/YY ZZ
 		answer_words = answer.split()
 		answers = answer_words[0].split('/')
