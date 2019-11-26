@@ -27,6 +27,7 @@ import requests
 import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
+import youtube_dl
 
 from utilities import errors
 from utilities.context import Context
@@ -177,6 +178,13 @@ class Bot(commands.Bot):
 			self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
 		except Exception as e:
 			print(f"{self.console_message_prefix}Failed to initialize Wordnik Client: {e}")
+		## youtube-dl
+		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "bestaudio/best", "extractaudio": True, "outtmpl": data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True} # "audioformat": "mp3" ?
+		self.ytdl_download = youtube_dl.YoutubeDL(self.ytdl_download_options)
+		self.ytdl_info_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
+		self.ytdl_info = youtube_dl.YoutubeDL(self.ytdl_info_options)
+		self.ytdl_playlist_options = {"default_search": "auto", "ignoreerrors": True, "quiet": True, "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
+		self.ytdl_playlist = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
 		
 		# AIML Kernel
 		self.aiml_kernel = aiml.Kernel()

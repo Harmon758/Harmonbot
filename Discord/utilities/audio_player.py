@@ -10,7 +10,6 @@ import random
 import subprocess
 
 import speech_recognition
-import youtube_dl
 
 import clients
 from modules import utilities
@@ -25,12 +24,6 @@ class AudioPlayer:
 		self.queue = asyncio.Queue()
 		self.current = None
 		self.play_next_song = asyncio.Event()
-		self.ytdl_options = {"default_search": "auto", "noplaylist": True, "quiet": True, 
-			"format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
-		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, 
-			"format": "bestaudio/best", "extractaudio": True, "outtmpl": "data/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True} # "audioformat": "mp3" ?
-		self.ytdl_playlist_options = {"default_search": "auto", "ignoreerrors": True, "quiet": True, 
-			"format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
 		self.default_volume = 100.0
 		self.skip_votes_required = 0
 		self.skip_votes = set()
@@ -296,8 +289,7 @@ class AudioPlayer:
 	
 	async def add_playlist(self, playlist, requester, timestamp):
 		response = await ctx.embed_reply(":cd: Loading..")
-		ydl = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
-		func = functools.partial(ydl.extract_info, playlist, download = False)
+		func = functools.partial(self.bot.ytdl_playlist.extract_info, playlist, download = False)
 		info = await self.bot.loop.run_in_executor(None, func)
 		embed = response.embeds[0]
 		for position, video in enumerate(info["entries"], start = 1):
