@@ -25,7 +25,7 @@ numexpr==2.7.0
 numpy==1.17.4
 pandas==0.25.3
 pillow==6.2.1
-psutil==5.6.6
+psutil==5.6.7
 pycountry==19.8.18
 pydealer==1.4.0
 pygost==4.0
