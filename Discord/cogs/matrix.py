@@ -96,7 +96,7 @@ class Matrix(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@matrix.command()
-	async def rank(self, ctx, matrix : Matrix):
+	async def rank(self, ctx, matrix: Matrix):
 		'''Rank of a matrix'''
 		await ctx.embed_reply(numpy.linalg.matrix_rank(matrix))
 	
