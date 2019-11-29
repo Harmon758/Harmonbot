@@ -572,14 +572,14 @@ class Audio(commands.Cog):
 		if path[:7] != "/track/":
 			return False
 		spotify_access_token = await self.get_spotify_access_token()
-		url = "https://api.spotify.com/v1/tracks/{}".format(path[7:])
-		async with self.bot.aiohttp_session.get(url, headers = {"Authorization": "Bearer {}".format(spotify_access_token)}) as resp:
+		url = f"https://api.spotify.com/v1/tracks/{path[7:]}"
+		async with self.bot.aiohttp_session.get(url, headers = {"Authorization": f"Bearer {spotify_access_token}"}) as resp:
 			data = await resp.json()
 		if "name" not in data:
 			return False
 		song_name = '+'.join(data["name"].split())
 		artist_name = '+'.join(data["artists"][0]["name"].split())
-		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+-+{}&key={}".format(song_name, artist_name, self.bot.GOOGLE_API_KEY)
+		url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={song_name}+-+{artist_name}&key={self.bot.GOOGLE_API_KEY}"
 		async with self.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		for item in data["items"]:
