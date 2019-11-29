@@ -582,13 +582,9 @@ class Audio(commands.Cog):
 		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+-+{}&key={}".format(song_name, artist_name, self.bot.GOOGLE_API_KEY)
 		async with self.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		data = data["items"][0]
-		if "videoId" not in data["id"]:
-			async with clients.aiohttp_session.get(url) as resp:
-				data = await resp.json()
-			data = data["items"][1]
-		link = "https://www.youtube.com/watch?v=" + data["id"]["videoId"]
-		return link
+		for item in data["items"]:
+			if "videoId" in item["id"]:
+				return "https://www.youtube.com/watch?v=" + item["id"]["videoId"]
 	
 	async def get_spotify_access_token(self):
 		url = "https://accounts.spotify.com/api/token"
