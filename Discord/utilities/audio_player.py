@@ -148,19 +148,16 @@ class AudioPlayer:
 			await self.play_next_song.wait()
 	
 	def skip(self):
-		if not self.current or self.current["stream"].is_done():
-			raise errors.AudioNotPlaying
-		self.current["stream"].stop()
-		self.skip_votes.clear()
+		if self.guild.voice_client and self.guild.voice_client.is_playing() or self.guild.voice_client.is_paused():
+			# Avoid setting _player to None (with voice_client.stop()) in case of use (e.g. replay) after skip
+			self.guild.voice_client._player.stop()
+			self.skip_votes.clear()
+			return True
 	
 	def vote_skip(self, voter):
-		if not self.current or self.current["stream"].is_done():
-			raise errors.AudioNotPlaying
-		if voter.id in self.skip_votes:
-			raise errors.AudioAlreadyDone
 		self.skip_votes.add(voter.id)
 		vote_count = len(self.skip_votes)
-		if vote_count < self.skip_votes_required and voter.id != self.current["requester"].id:
+		if vote_count < self.skip_votes_required and voter.id != self.guild.voice_client.source.requester.id:
 			return len(self.skip_votes)
 		self.skip()
 	
