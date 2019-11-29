@@ -147,21 +147,6 @@ class AudioPlayer:
 			self.skip_votes.clear()
 			await self.play_next_song.wait()
 	
-	def pause(self):
-		if not self.current or self.current["stream"].is_done():
-			raise errors.AudioNotPlaying
-		if not self.current["stream"].is_playing():
-			raise errors.AudioAlreadyDone
-		self.current["stream"].pause()
-	
-	def resume(self):
-		if not self.current or self.current["stream"].is_done():
-			raise errors.AudioNotPlaying
-		if self.current["stream"].is_playing():
-			raise errors.AudioAlreadyDone
-		self.previous_played_time += self.current["stream"].delay * self.current["stream"].loops
-		self.current["stream"].resume()
-	
 	def skip(self):
 		if not self.current or self.current["stream"].is_done():
 			raise errors.AudioNotPlaying

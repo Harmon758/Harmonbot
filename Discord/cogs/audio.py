@@ -102,14 +102,13 @@ class Audio(commands.Cog):
 	@checks.is_voice_connected()
 	async def pause(self, ctx):
 		'''Pause the current song'''
-		try:
-			self.players[ctx.guild.id].pause()
-		except errors.AudioNotPlaying:
-			await ctx.embed_reply(":no_entry: There is no song to pause")
-		except errors.AudioAlreadyDone:
+		if ctx.guild.voice_client.is_playing():
+			ctx.guild.voice_client.pause()
+			await ctx.embed_reply(":pause_button: Paused song")
+		elif ctx.guild.voice_client.is_paused():
 			await ctx.embed_reply(":no_entry: The song is already paused")
 		else:
-			await ctx.embed_reply(":pause_button: Paused song")
+			await ctx.embed_reply(":no_entry: There is no song to pause")
 	
 	@commands.command(aliases = ["start"])
 	@commands.guild_only()
@@ -117,14 +116,14 @@ class Audio(commands.Cog):
 	@checks.is_voice_connected()
 	async def resume(self, ctx):
 		'''Resume the current song'''
-		try:
-			self.players[ctx.guild.id].resume()
-		except errors.AudioNotPlaying:
-			await ctx.embed_reply(":no_entry: There is no song to resume")
-		except errors.AudioAlreadyDone:
+		if ctx.guild.voice_client.is_paused():
+			ctx.guild.voice_client.source.previous_played_time += ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
+			ctx.guild.voice_client.resume()
+			await ctx.embed_reply(":play_pause: Resumed song")
+		elif ctx.guild.voice_client.is_playing():
 			await ctx.embed_reply(":no_entry: The song is already playing")
 		else:
-			await ctx.embed_reply(":play_pause: Resumed song")
+			await ctx.embed_reply(":no_entry: There is no song to resume")
 	
 	@commands.group(aliases = ["next", "remove"], invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
