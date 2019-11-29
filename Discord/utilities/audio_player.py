@@ -171,7 +171,7 @@ class AudioPlayer:
 	
 	async def skip_to_song(self, number):
 		if not 1 <= number <= self.queue.qsize():
-			raise errors.AudioNotPlaying
+			raise errors.AudioError("There aren't that many songs in the queue")
 		songs = []
 		for i in range(number - 1):
 			songs.append(await self.queue.get())

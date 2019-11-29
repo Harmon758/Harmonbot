@@ -176,8 +176,8 @@ class Audio(commands.Cog):
 		'''
 		try:
 			songs = await self.players[ctx.guild.id].skip_to_song(number)
-		except errors.AudioNotPlaying:
-			await ctx.embed_reply(":no_entry: There aren't that many songs in the queue", footer_text = "In response to: {}".format(ctx.message.content))
+		except errors.AudioError as e:
+			await ctx.embed_reply(":no_entry: {}".format(e))
 		else:
 			await ctx.embed_reply(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
 			del songs
