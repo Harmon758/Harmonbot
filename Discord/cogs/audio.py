@@ -571,8 +571,9 @@ class Audio(commands.Cog):
 		path = urllib.parse.urlparse(link).path
 		if path[:7] != "/track/":
 			return False
+		spotify_access_token = await self.get_spotify_access_token()
 		url = "https://api.spotify.com/v1/tracks/{}".format(path[7:])
-		async with self.bot.aiohttp_session.get(url) as resp:
+		async with self.bot.aiohttp_session.get(url, headers = {"Authorization": "Bearer {}".format(spotify_access_token)}) as resp:
 			data = await resp.json()
 		if "name" not in data:
 			return False
