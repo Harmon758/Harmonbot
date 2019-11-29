@@ -149,14 +149,12 @@ class Audio(commands.Cog):
 					await ctx.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number, song["info"]["title"]))
 					del song
 			else:
-				try:
-					player.skip()
-				except errors.AudioNotPlaying:
-					await ctx.embed_reply(":no_entry: There is no song to skip")
-				else:
+				if self.players[ctx.guild.id].skip():
 					await ctx.embed_reply(":next_track: Song skipped")
 					# TODO: Include title of skipped song
-		elif ctx.author in self.bot.voice_client_in(ctx.guild).channel.voice_members:
+				else:
+					await ctx.embed_reply(":no_entry: There is no song to skip")
+		elif ctx.author in ctx.guild.voice_client.channel.members:
 			if not ctx.guild.voice_client.is_playing() and not ctx.guild.voice_client.is_paused():
 				await ctx.embed_reply(":no_entry: There is no song to skip")
 			elif ctx.author.id in player.skip_votes:
