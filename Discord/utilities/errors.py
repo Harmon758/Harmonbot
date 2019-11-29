@@ -38,7 +38,3 @@ class AudioNotPlaying(AudioError):
 	'''Audio Not Playing'''
 	pass
 
-class AudioAlreadyDone(AudioError):
-	'''Audio Already Done playing'''
-	pass
-
