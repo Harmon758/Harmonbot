@@ -101,7 +101,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(numpy.linalg.matrix_rank(matrix))
 	
 	@matrix.command()
-	async def sign(self, ctx, matrix : Matrix):
+	async def sign(self, ctx, matrix: Matrix):
 		'''Matrix sign function'''
 		await ctx.embed_reply(str(scipy.linalg.signm(matrix)))
 	
