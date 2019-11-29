@@ -576,9 +576,9 @@ class Audio(commands.Cog):
 			data = await resp.json()
 		if "name" not in data:
 			return False
-		songname = '+'.join(data["name"].split())
-		artistname = '+'.join(data["artists"][0]["name"].split())
-		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+by+{}&key={}".format(songname, artistname, self.bot.GOOGLE_API_KEY)
+		song_name = '+'.join(data["name"].split())
+		artist_name = '+'.join(data["artists"][0]["name"].split())
+		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={}+by+{}&key={}".format(song_name, artist_name, self.bot.GOOGLE_API_KEY)
 		async with self.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		data = data["items"][0]
