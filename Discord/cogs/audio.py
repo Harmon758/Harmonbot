@@ -143,8 +143,8 @@ class Audio(commands.Cog):
 			if number:
 				try:
 					song = await player.skip_specific(number)
-				except errors.AudioNotPlaying:
-					await ctx.embed_reply(":no_entry: There's not that many songs in the queue", footer_text = "In response to: {}".format(ctx.message.content))
+				except errors.AudioError as e:
+					await ctx.embed_reply(":no_entry: {}".format(e))
 				else:
 					await ctx.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number, song["info"]["title"]))
 					del song

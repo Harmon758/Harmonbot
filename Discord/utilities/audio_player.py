@@ -163,7 +163,7 @@ class AudioPlayer:
 	
 	async def skip_specific(self, number):
 		if not 1 <= number <= self.queue.qsize():
-			raise errors.AudioNotPlaying
+			raise errors.AudioError("There aren't that many songs in the queue")
 		self.queue._queue.rotate(-(number - 1))
 		song = await self.queue.get()
 		self.queue._queue.rotate(number - 1)
