@@ -56,7 +56,7 @@ class AudioPlayer:
 			voice_channel = discord.utils.find(lambda _channel: _channel.type == discord.ChannelType.voice and \
 				utilities.remove_symbols(_channel.name).startswith(' '.join(channel)), self.guild.channels)
 		if not voice_channel:
-			raise errors.AudioNotPlaying
+			raise errors.AudioError("Voice channel not found")
 		if self.guild.voice_client:
 			await self.guild.voice_client.move_to(voice_channel)
 			return True

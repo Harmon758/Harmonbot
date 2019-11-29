@@ -77,8 +77,8 @@ class Audio(commands.Cog):
 			self.players[ctx.guild.id] = audio_player.AudioPlayer.from_context(ctx)
 		try:
 			moved = await self.players[ctx.guild.id].join_channel(ctx.author, channel)
-		except errors.AudioNotPlaying:
-			await ctx.embed_reply(":no_entry: Voice channel not found", footer_text = "In response to: {}".format(ctx.message.content))
+		except errors.AudioError as e:
+			await ctx.embed_reply(":no_entry: {}".format(e))
 		except concurrent.futures._base.TimeoutError:
 			await ctx.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join")
 		else:
