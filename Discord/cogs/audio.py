@@ -580,7 +580,7 @@ class Audio(commands.Cog):
 			return False
 		url = "https://www.googleapis.com/youtube/v3/search"
 		params = {"part": "snippet", "key": self.bot.GOOGLE_API_KEY, 
-					'q': f"{data['name']} - {data['artists'][0]['name']}"}
+					'q': f"{data['artists'][0]['name']} - {data['name']}"}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		for item in data["items"]:
