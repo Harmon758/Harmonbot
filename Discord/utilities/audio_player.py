@@ -193,42 +193,6 @@ class AudioPlayer:
 		self.queue._queue.pop()
 		return True
 	
-	def current_embed(self):
-		if not self.current or self.current["stream"].is_done():
-			raise errors.AudioNotPlaying
-		embed = discord.Embed(title = self.current.get("info", {}).get("title"), url = self.current.get("info", {}).get("webpage_url"), color = self.bot.bot_color)
-		requester = self.current.get("requester")
-		if requester: embed.set_footer(text = "Added by " + requester.display_name, icon_url = requester.avatar_url or requester.default_avatar_url)
-		timestamp = self.current.get("timestamp")
-		if timestamp: embed.timestamp = timestamp
-		# Description
-		if self.radio_flag:
-			description = ":radio: Radio is currently playing"
-		elif self.library_flag:
-			description = ":notes: Playing song from my library"
-		else:
-			description = ":musical_note: Currently playing"
-		played_duration = self.previous_played_time + self.current["stream"].delay * self.current["stream"].loops
-		total_duration = self.current.get("info", {}).get("duration")
-		if total_duration:
-			playing_bar = "▬" * 10
-			button_spot = int(played_duration / (total_duration / 10))
-			playing_bar = playing_bar[:button_spot] + ":radio_button: " + playing_bar[button_spot + 1:]
-			played_duration = utilities.secs_to_colon_format(played_duration)
-			total_duration = utilities.secs_to_colon_format(total_duration)
-			description = ":arrow_forward: {}`[{}/{}]`".format(playing_bar, played_duration, total_duration) # Add :sound:?
-		views = self.current.get("info", {}).get("view_count")
-		likes = self.current.get("info", {}).get("like_count")
-		dislikes = self.current.get("info", {}).get("dislike_count")
-		description += '\n' if views or likes or dislikes else ""
-		description += f"{views:,} :eye:" if views else ""
-		description += " | " if views and (likes or dislikes) else ""
-		description += f"{likes:,} :thumbsup::skin-tone-2:" if likes else ""
-		description += " | " if likes and dislikes else ""
-		description += f"{dislikes:,} :thumbsdown::skin-tone-2:" if dislikes else ""
-		embed.description = description
-		return embed
-	
 	def queue_embed(self):
 		if self.radio_flag:
 			return discord.Embed(title = ":radio: Radio is currently on", color = self.bot.bot_color)

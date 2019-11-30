@@ -10,6 +10,7 @@ import urllib
 
 import clients
 from utilities import audio_player
+from utilities import audio_sources
 from utilities import checks
 from utilities import errors
 
@@ -486,14 +487,46 @@ class Audio(commands.Cog):
 	@checks.not_forbidden()
 	async def playing(self, ctx):
 		'''See the currently playing song'''
-		try:
-			embed = self.players[ctx.guild.id].current_embed()
-		except errors.AudioNotPlaying:
-			await ctx.embed_reply(":speaker: There is no song currently playing")
+		if ctx.guild.voice_client.is_playing():
+			requester = ctx.guild.voice_client.source.requester
+			# Description
+			if self.players[ctx.guild.id].radio_flag:
+				description = ":radio: Radio is currently playing"
+			elif self.players[ctx.guild.id].library_flag:
+				description = ":notes: Playing song from my library"
+			elif isinstance(ctx.guild.voice_client.source, audio_sources.FileSource):
+				description = ":floppy_disk: Playing audio file"
+			elif isinstance(ctx.guild.voice_client.source, audio_sources.TTSSource):
+				description = ":speaking_head: Playing TTS Message"
+			else:
+				description = ":musical_note: Currently playing"
+				played_duration = ctx.guild.voice_client.source.previous_played_time + ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
+				total_duration = ctx.guild.voice_client.source.info.get("duration")
+				if total_duration:
+					playing_bar = "▬" * 10
+					button_spot = int(played_duration / (total_duration / 10))
+					playing_bar = playing_bar[:button_spot] + ":radio_button: " + playing_bar[button_spot + 1:]
+					played_duration = utilities.secs_to_colon_format(played_duration)
+					total_duration = utilities.secs_to_colon_format(total_duration)
+					description = ":arrow_forward: {}`[{}/{}]`".format(playing_bar, played_duration, total_duration) # Add :sound:?
+				views = ctx.guild.voice_client.source.info.get("view_count")
+				likes = ctx.guild.voice_client.source.info.get("like_count")
+				dislikes = ctx.guild.voice_client.source.info.get("dislike_count")
+				description += '\n' if views or likes or dislikes else ""
+				description += f"{views:,} :eye:" if views else ""
+				description += " | " if views and (likes or dislikes) else ""
+				description += f"{likes:,} :thumbsup::skin-tone-2:" if likes else ""
+				description += " | " if likes and dislikes else ""
+				description += f"{dislikes:,} :thumbsdown::skin-tone-2:" if dislikes else ""
+			if hasattr(ctx.guild.voice_client.source, "info"):
+				title = ctx.guild.voice_client.source.info.get("title")
+				title_url = ctx.guild.voice_client.source.info.get("webpage_url")
+			else:
+				title = ctx.guild.voice_client.source.title
+				title_url = discord.Embed.Empty
+			await ctx.embed_reply(description, title = title, title_url = title_url, footer_text = "Added by " + requester.display_name, footer_icon_url = requester.avatar_url, timestamp = ctx.guild.voice_client.source.timestamp)
 		else:
-			embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url or ctx.author.default_avatar_url)
-			await self.bot.say(embed = embed)
-		await self.bot.attempt_delete_message(ctx.message)
+			await ctx.embed_reply(":speaker: There is no song currently playing")
 	
 	@commands.command()
 	@commands.guild_only()
