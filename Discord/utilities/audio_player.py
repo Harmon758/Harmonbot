@@ -365,14 +365,14 @@ class AudioPlayer:
 				await ctx.embed_reply(":no_entry: Please play a song to base the radio station off of first")
 				# TODO: Non song based station?
 				return None
-			await self.bot.send_embed(self.text_channel, ":radio: Radio based on `{}` is now on".format(self.guild.voice_client.source.info["title"]))
+			await self.bot.send_embed(self.text_channel, f":radio: Radio based on `{self.guild.voice_client.source.info['title']}` is now on")
 			self.radio_flag = True
 			videoid = self.guild.voice_client.source.info["id"]
 			was_playing = self.guild.voice_client.is_playing()
 			if was_playing:  # Use := in Python 3.8
 				self.guild.voice_client.pause()
 			while self.guild.voice_client and self.radio_flag:
-				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, ctx.bot.GOOGLE_API_KEY)
+				url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={videoid}&type=video&key={ctx.bot.GOOGLE_API_KEY}"
 				async with ctx.bot.aiohttp_session.get(url) as resp:
 					data = await resp.json()
 				videoid = random.choice(data["items"])["id"]["videoId"]
