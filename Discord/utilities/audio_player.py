@@ -314,11 +314,12 @@ class AudioPlayer:
 			await ctx.embed_send(":notes: Playing songs from my library")
 			self.library_flag = True
 			was_playing = self.guild.voice_client.is_playing()
-			if was_playing: self.guild.voice_client.pause()
+			if was_playing:  # Use := in Python 3.8
+				self.guild.voice_client.pause()
 			self.not_interrupted.clear()
 			while self.guild.voice_client and self.library_flag:
 				await self.play_from_library("", requester, timestamp, clear_flag = False)
-				await asyncio.sleep(0.1) # wait to check
+				await asyncio.sleep(0.1)  # wait to check
 			self.not_interrupted.set()
 			if self.guild.voice_client and was_playing:
 				self.guild.voice_client.resume()
