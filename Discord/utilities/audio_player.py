@@ -361,19 +361,15 @@ class AudioPlayer:
 		if self.interrupted:
 			return False
 		if not self.radio_flag:
-			if not self.current:
+			if not self.guild.voice_client.source:
 				await ctx.embed_reply(":no_entry: Please play a song to base the radio station off of first")
 				# TODO: Non song based station?
 				return None
-			await self.bot.send_embed(self.text_channel, ":radio: Radio based on `{}` is now on".format(self.current["info"]["title"]))
+			await self.bot.send_embed(self.text_channel, ":radio: Radio based on `{}` is now on".format(self.guild.voice_client.source.info["title"]))
 			self.radio_flag = True
-			videoid = self.current["info"]["id"]
-			try:
-				self.pause()
-			except errors.AudioError:
-				paused = False
-			else:
-				paused = True
+			videoid = self.guild.voice_client.source.info["id"]
+			was_playing = self.guild.voice_client.is_playing()
+			if was_playing: self.guild.voice_client.pause()
 			while self.guild.voice_client and self.radio_flag:
 				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, ctx.bot.GOOGLE_API_KEY)
 				async with ctx.bot.aiohttp_session.get(url) as resp:
@@ -381,7 +377,8 @@ class AudioPlayer:
 				videoid = random.choice(data["items"])["id"]["videoId"]
 				await self.add_song_interrupt(videoid, requester, timestamp)
 				await asyncio.sleep(0.1) # wait to check
-			if paused: self.resume()
+			if self.guild.voice_client and was_playing:
+				self.guild.voice_client.resume()
 			return True
 	
 	def radio_off(self):
