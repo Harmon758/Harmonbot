@@ -273,7 +273,7 @@ class AudioPlayer:
 			except Exception as e:
 				try:
 					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>\n{}: {}".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist, type(e).__name__, e))
-				except discord.errors.HTTPException:
+				except discord.HTTPException:
 					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist))
 		embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
 		await response.edit(embed = embed)
