@@ -451,19 +451,17 @@ class Audio(commands.Cog):
 		volume_setting: 0 - 2000
 		'''
 		if volume_setting is None:
-			try:
-				await ctx.embed_reply(":sound: Current volume: {:g}".format(self.players[ctx.guild.id].get_volume()))
-			except errors.AudioNotPlaying:
-				await ctx.embed_reply(":no_entry: There's nothing playing right now", footer_text = "In response to: {}".format(ctx.message.content))
-		else:
-			try:
-				self.players[ctx.guild.id].set_volume(volume_setting)
-			except errors.AudioNotPlaying:
-				await ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now", footer_text = "In response to: {}".format(ctx.message.content))
+			if ctx.guild.voice_client.is_playing():
+				await ctx.embed_reply(":sound: Current volume: {:g}".format(ctx.guild.voice_client.source.volume))
 			else:
-				if volume_setting > 2000: volume_setting = 2000
-				elif volume_setting < 0: volume_setting = 0
+				await ctx.embed_reply(":no_entry: There's nothing playing right now")
+		else:
+			if ctx.guild.voice_client.is_playing():
+				ctx.guild.voice_client.source.volume = volume_setting
+				volume_setting = min(max(0, volume_setting), 2000)
 				await ctx.embed_reply(":sound: Set volume to {:g}".format(volume_setting))
+			else:
+				await ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
 	
 	@volume.command(name = "default")
 	@commands.guild_only()
