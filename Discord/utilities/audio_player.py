@@ -64,8 +64,8 @@ class AudioPlayer:
 	
 	async def leave_channel(self):
 		if self.guild.voice_client:
-			if self.current and self.current["stream"].is_playing():
-				self.current["stream"].stop()
+			if self.guild.voice_client.is_playing():
+				self.guild.voice_client.stop()
 			self.player.cancel()
 			await self.guild.voice_client.disconnect()
 			return True
