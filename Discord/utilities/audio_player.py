@@ -369,14 +369,15 @@ class AudioPlayer:
 			self.radio_flag = True
 			videoid = self.guild.voice_client.source.info["id"]
 			was_playing = self.guild.voice_client.is_playing()
-			if was_playing: self.guild.voice_client.pause()
+			if was_playing:  # Use := in Python 3.8
+				self.guild.voice_client.pause()
 			while self.guild.voice_client and self.radio_flag:
 				url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(videoid, ctx.bot.GOOGLE_API_KEY)
 				async with ctx.bot.aiohttp_session.get(url) as resp:
 					data = await resp.json()
 				videoid = random.choice(data["items"])["id"]["videoId"]
 				await self.add_song_interrupt(videoid, requester, timestamp)
-				await asyncio.sleep(0.1) # wait to check
+				await asyncio.sleep(0.1)  # wait to check
 			if self.guild.voice_client and was_playing:
 				self.guild.voice_client.resume()
 			return True
