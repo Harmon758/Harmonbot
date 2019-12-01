@@ -50,11 +50,10 @@ class AudioPlayer:
 	
 	async def join_channel(self, user, channel):
 		# join logic
-		if user.voice_channel:
-			voice_channel = user.voice_channel
+		if user.voice and user.voice.channel:
+			voice_channel = user.voice.channel
 		else:
-			voice_channel = discord.utils.find(lambda _channel: _channel.type == discord.ChannelType.voice and \
-				utilities.remove_symbols(_channel.name).startswith(' '.join(channel)), self.guild.channels)
+			voice_channel = discord.utils.find(lambda c: isinstance(c, discord.VoiceChannel) and utilities.remove_symbols(c.name).startswith(' '.join(channel)), self.guild.channels)
 		if not voice_channel:
 			raise errors.AudioError("Voice channel not found")
 		if self.guild.voice_client:
