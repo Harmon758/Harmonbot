@@ -374,7 +374,7 @@ class Audio(commands.Cog):
 		if self.players[ctx.guild.id].library_flag:
 			self.players[ctx.guild.id].stop_library()
 			await ctx.embed_reply(":stop_sign: Stopped playing songs from my library")
-		elif not (await self.players[ctx.guild.id].play_library(ctx.author, ctx.message.created_at)):
+		elif not (await self.players[ctx.guild.id].play_library(ctx)):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "play", aliases = ["start"])
@@ -385,7 +385,7 @@ class Audio(commands.Cog):
 		'''Start playing songs from my library'''
 		if self.players[ctx.guild.id].library_flag:
 			await ctx.embed_reply(":no_entry: I'm already playing songs from my library")
-		elif not (await self.players[ctx.guild.id].play_library(ctx.author, ctx.message.created_at)):
+		elif not (await self.players[ctx.guild.id].play_library(ctx)):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "stop")
@@ -406,7 +406,7 @@ class Audio(commands.Cog):
 	@checks.is_voice_connected()
 	async def library_song(self, ctx, *, filename : str = ""):
 		'''Play a song from my library'''
-		if not (await self.players[ctx.guild.id].play_from_library(filename, ctx.author, ctx.message.created_at)):
+		if not (await self.players[ctx.guild.id].play_from_library(ctx, filename = filename)):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "files")

@@ -277,16 +277,16 @@ class AudioPlayer:
 		interrupt_message = await self.interrupt(source)
 		return interrupt_message
 	
-	async def play_from_library(self, filename, requester, timestamp, *, clear_flag = True):
+	async def play_from_library(self, ctx, *, filename = None, clear_flag = True):
 		if not filename:
 			filename = random.choice(self.library_files)
 		elif filename not in self.library_files:
 			await ctx.embed_reply(":no_entry: Song file not found")
 			return True
-		return (await self._interrupt(self.bot.library_path + filename, filename, requester, timestamp, clear_flag = clear_flag))
-		## print([f for f in os.listdir(self.bot.library_path) if not f.endswith((".mp3", ".m4a", ".jpg"))])
+		return (await self.interrupt(FileSource(ctx, ctx.bot.library_path + filename, self.default_volume, title_prefix = "Library File: "), clear_flag = clear_flag))
+		## print([f for f in os.listdir(ctx.bot.library_path) if not f.endswith((".mp3", ".m4a", ".jpg"))])
 	
-	async def play_library(self, requester, timestamp):
+	async def play_library(self, ctx):
 		if self.interrupted:
 			return False
 		if not self.library_flag:
@@ -297,7 +297,7 @@ class AudioPlayer:
 				self.guild.voice_client.pause()
 			self.not_interrupted.clear()
 			while self.guild.voice_client and self.library_flag:
-				await self.play_from_library("", requester, timestamp, clear_flag = False)
+				await self.play_from_library(ctx, clear_flag = False)
 				await asyncio.sleep(0.1)  # wait to check
 			self.not_interrupted.set()
 			if self.guild.voice_client and was_playing:
