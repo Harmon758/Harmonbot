@@ -9,6 +9,7 @@ import random
 import urllib
 
 import clients
+from modules import utilities
 from utilities import audio_player
 from utilities import audio_sources
 from utilities import checks
