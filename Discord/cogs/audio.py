@@ -52,7 +52,7 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":grey_question: What would you like to play?")
 			return
 		if "playlist" in song:
-			await self.players[ctx.guild.id].add_playlist(song, ctx.author, ctx.message.created_at)
+			await self.players[ctx.guild.id].add_playlist(ctx, song)
 			return
 		if "spotify" in song:
 			song = await self.spotify_to_youtube(song)

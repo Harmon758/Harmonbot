@@ -219,22 +219,22 @@ class AudioPlayer:
 		for song in song_list:
 			await self.queue.put(song)
 	
-	async def add_playlist(self, playlist, requester, timestamp):
+	async def add_playlist(self, ctx, playlist):
 		response = await ctx.embed_reply(":cd: Loading..")
 		func = functools.partial(self.bot.ytdl_playlist.extract_info, playlist, download = False)
 		info = await self.bot.loop.run_in_executor(None, func)
-		embed = response.embeds[0]
 		for position, video in enumerate(info["entries"], start = 1):
 			if not video: continue
-			embed.description = ":cd: Loading {}/{}".format(position, len(info["entries"]))
-			await self.bot.edit_message(response, embed = embed)
 			try:
-				await self.add_song(video["url"], requester, timestamp)
+				source = YTDLSource(ctx, video["id"])
+				source.set_info(video)
+				await self.queue.put(source)
 			except Exception as e:
 				try:
-					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>\n{}: {}".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist, type(e).__name__, e))
+					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>\n{}: {}".format(ctx.author.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist, type(e).__name__, e))
 				except discord.HTTPException:
-					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>".format(requester.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist))
+					await self.bot.send_embed(self.text_channel, "{}: :warning: Error loading video {} (<{}>) from <{}>".format(ctx.author.mention, position, "https://www.youtube.com/watch?v=" + video["id"], playlist))
+		embed = response.embeds[0]
 		embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
 		await response.edit(embed = embed)
 	
