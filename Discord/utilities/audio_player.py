@@ -263,13 +263,13 @@ class AudioPlayer:
 		self.bot.loop.call_soon_threadsafe(self.resume_flag.clear)
 		return interrupt_message
 	
-	async def play_file(self, filename, requester, timestamp):
+	async def play_file(self, ctx, filename):
 		if not filename:
 			filename = random.choice(self.audio_files)
 		elif filename not in self.audio_files:
 			await ctx.embed_reply(":no_entry: File not found")
 			return True
-		return (await self._interrupt("data/audio_files/" + filename, filename, requester, timestamp))
+		return (await self.interrupt(FileSource(ctx, clients.data_path + "/audio_files/" + filename, self.default_volume, title_prefix = "Audio File: ")))
 	
 	def list_files(self):
 		return ", ".join(self.audio_files)
