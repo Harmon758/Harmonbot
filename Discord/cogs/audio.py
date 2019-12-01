@@ -210,14 +210,14 @@ class Audio(commands.Cog):
 		response = await ctx.embed_reply(":cd: Loading..")
 		embed = response.embeds[0]
 		try:
-			title = await self.players[ctx.guild.id].insert_song(song, ctx.author, ctx.message.created_at, position_number)
+			source = await self.players[ctx.guild.id].insert_song(ctx, song, position_number)
 		except Exception as e:
 			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
 			if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 				embed.description = embed.description[:ctx.bot.EDCL - 4] + "...`"
 				# EDCL: Embed Description Character Limit
 		else:
-			embed.description = ":ballot_box_with_check: `{}` has been inserted into position #{} in the queue".format(title, position_number)
+			embed.description = ":ballot_box_with_check: `{}` has been inserted into position #{} in the queue".format(source.title, position_number)
 		finally:
 			await response.edit(embed = embed)
 	

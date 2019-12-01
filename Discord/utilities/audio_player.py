@@ -74,12 +74,13 @@ class AudioPlayer:
 		await self.queue.put({"info": info, "requester": requester, "timestamp": timestamp, "stream": stream})
 		return info["title"], info["webpage_url"]
 	
-	async def insert_song(self, song, requester, timestamp, position):
-		info = await self._get_song_info(song)
-		self.queue._queue.insert(position - 1, {"info": info, "requester": requester, "timestamp": timestamp})
+	async def insert_song(self, ctx, song, position):
+		source = YTDLSource(ctx, song)
+		await source.get_info()
+		self.queue._queue.insert(position - 1, source)
 		await self.queue.put(None) # trigger get
 		self.queue._queue.pop()
-		return info["title"]
+		return source
 	
 	async def _get_song_info(self, song):
 		ydl = youtube_dl.YoutubeDL(self.ytdl_options)
