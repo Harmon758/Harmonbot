@@ -74,10 +74,6 @@ class AudioPlayer:
 		await self.queue.put({"info": info, "requester": requester, "timestamp": timestamp, "stream": stream})
 		return info["title"], info["webpage_url"]
 	
-	async def add_song_interrupt(self, videoid, requester, timestamp):
-		info = await self._get_song_info(videoid)
-		return (await self._interrupt(info["url"], info["title"], requester, timestamp))
-	
 	async def insert_song(self, song, requester, timestamp, position):
 		info = await self._get_song_info(song)
 		self.queue._queue.insert(position - 1, {"info": info, "requester": requester, "timestamp": timestamp})
