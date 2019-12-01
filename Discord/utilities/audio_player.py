@@ -11,7 +11,6 @@ import subprocess
 
 import speech_recognition
 
-import clients
 from modules import utilities
 from utilities import errors
 
@@ -31,7 +30,7 @@ class AudioPlayer:
 		self.resume_flag = asyncio.Event()
 		self.not_interrupted = asyncio.Event()
 		self.not_interrupted.set()
-		self.audio_files = os.listdir(clients.data_path + "/audio_files/")
+		self.audio_files = os.listdir(self.bot.data_path + "/audio_files/")
 		self.library_files = [f for f in os.listdir(self.bot.library_path) if f.endswith((".mp3", ".m4a"))]
 		self.library_flag = False
 		self.radio_flag = False
@@ -269,7 +268,7 @@ class AudioPlayer:
 		elif filename not in self.audio_files:
 			await ctx.embed_reply(":no_entry: File not found")
 			return True
-		return (await self.interrupt(FileSource(ctx, clients.data_path + "/audio_files/" + filename, self.default_volume, title_prefix = "Audio File: ")))
+		return (await self.interrupt(FileSource(ctx, ctx.bot.data_path + "/audio_files/" + filename, self.default_volume, title_prefix = "Audio File: ")))
 	
 	def list_files(self):
 		return ", ".join(self.audio_files)
@@ -396,13 +395,13 @@ class AudioPlayer:
 		await self.bot.delete_message(stop_message)
 	
 	async def process_listen(self):
-		if not os.path.isfile(clients.data_path + "/temp/heard.pcm") or os.stat(clients.data_path + "/temp/heard.pcm").st_size == 0:
+		if not os.path.isfile(self.bot.data_path + "/temp/heard.pcm") or os.stat(self.bot.data_path + "/temp/heard.pcm").st_size == 0:
 			await self.bot.send_embed(self.text_channel, ":warning: No input found")
 			return
-		func = functools.partial(subprocess.call, ["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", clients.data_path + "/temp/heard.pcm", clients.data_path + "/temp/heard.wav"], shell = True)
+		func = functools.partial(subprocess.call, ["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", self.bot.data_path + "/temp/heard.pcm", self.bot.data_path + "/temp/heard.wav"], shell = True)
 		# TODO: Use creationflags = subprocess.CREATE_NO_WINDOW in place of shell = True
 		await self.bot.loop.run_in_executor(None, func)
-		with speech_recognition.AudioFile(clients.data_path + "/temp/heard.wav") as source:
+		with speech_recognition.AudioFile(self.bot.data_path + "/temp/heard.wav") as source:
 			audio = self.recognizer.record(source)
 		'''
 		try:
@@ -429,6 +428,6 @@ class AudioPlayer:
 				response = await games_cog.cleverbot_get_reply(text)
 			await self.bot.send_embed(self.text_channel, "Responding with: `{}`".format(response))
 			await self.play_tts(response, self.bot.user)
-		# open(clients.data_path + "/heard.pcm", 'w').close() # necessary?
+		# open(self.bot.data_path + "/heard.pcm", 'w').close() # necessary?
 		# os.remove ?
 
