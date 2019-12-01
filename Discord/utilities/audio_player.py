@@ -280,7 +280,7 @@ class AudioPlayer:
 		return interrupt_message
 	
 	async def play_from_library(self, ctx, *, filename = None, clear_flag = True):
-		if not filename:
+		if not filename and self.library_files:
 			filename = random.choice(self.library_files)
 		elif filename not in self.library_files:
 			await ctx.embed_reply(":no_entry: Song file not found")
