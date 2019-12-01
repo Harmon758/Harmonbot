@@ -268,7 +268,7 @@ class AudioPlayer:
 		elif filename not in self.audio_files:
 			await ctx.embed_reply(":no_entry: File not found")
 			return True
-		return (await self.interrupt(FileSource(ctx, ctx.bot.data_path + "/audio_files/" + filename, self.default_volume, title_prefix = "Audio File: ")))
+		return await self.interrupt(FileSource(ctx, ctx.bot.data_path + "/audio_files/" + filename, self.default_volume, title_prefix = "Audio File: "))
 	
 	def list_files(self):
 		return ", ".join(self.audio_files)
