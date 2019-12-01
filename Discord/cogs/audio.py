@@ -321,7 +321,7 @@ class Audio(commands.Cog):
 	@checks.is_voice_connected()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
-		if not (await self.players[ctx.guild.id].play_tts(message, ctx.author, timestamp = ctx.message.created_at)):
+		if not (await self.players[ctx.guild.id].play_tts(ctx, message)):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@tts.command(name = "options")
@@ -345,7 +345,7 @@ class Audio(commands.Cog):
 		if amplitude > 1000: amplitude = 1000
 		if speed > 9000: speed = 9000
 		if word_gap > 1000: word_gap = 1000
-		if not (await self.players[ctx.guild.id].play_tts(message, ctx.author, timestamp = ctx.message.created_at, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
+		if not (await self.players[ctx.guild.id].play_tts(ctx, message, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@commands.command()

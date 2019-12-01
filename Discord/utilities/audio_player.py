@@ -274,13 +274,12 @@ class AudioPlayer:
 	def list_files(self):
 		return ", ".join(self.audio_files)
 	
-	async def play_tts(self, message, requester, *, timestamp = None, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
+	async def play_tts(self, ctx, message, *, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
 		if self.interrupted: return False
-		func = functools.partial(subprocess.call, ["bin\espeak", "-a {}".format(amplitude), "-p {}".format(pitch), "-s {}".format(speed), "-g {}".format(word_gap), "-v{}".format(voice), "-w data/temp/tts.wav", message], shell = True)
-		await self.bot.loop.run_in_executor(None, func)
-		interrupt_message = await self._interrupt("data/temp/tts.wav", "TTS message", requester, timestamp)
-		if interrupt_message: await self.bot.delete_message(interrupt_message)
-		if os.path.exists("data/temp/tts.wav"): os.remove("data/temp/tts.wav")
+		source = TTSSource(ctx, message, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)
+		await source.generate_file()
+		source.initialize_source(self.default_volume)
+		interrupt_message = await self.interrupt(source)
 		return interrupt_message
 	
 	async def play_from_library(self, filename, requester, timestamp, *, clear_flag = True):
