@@ -12,8 +12,8 @@ import subprocess
 import speech_recognition
 
 from modules import utilities
-from utilities.audio_sources import FileSource, TTSSource, YTDLSource
 from utilities import errors
+from utilities.audio_sources import FileSource, TTSSource, YTDLSource
 
 class AudioPlayer:
 	
