@@ -283,7 +283,7 @@ class AudioPlayer:
 		elif filename not in self.library_files:
 			await ctx.embed_reply(":no_entry: Song file not found")
 			return True
-		return (await self.interrupt(FileSource(ctx, ctx.bot.library_path + filename, self.default_volume, title_prefix = "Library File: "), clear_flag = clear_flag))
+		return await self.interrupt(FileSource(ctx, ctx.bot.library_path + filename, self.default_volume, title_prefix = "Library File: "), clear_flag = clear_flag)
 		## print([f for f in os.listdir(ctx.bot.library_path) if not f.endswith((".mp3", ".m4a", ".jpg"))])
 	
 	async def play_library(self, ctx):
