@@ -27,6 +27,8 @@ class Audio(commands.Cog):
 			if isinstance(command, commands.Command) and command.parent is None and name != "audio":
 				self.bot.add_command(command)
 				self.audio.add_command(command)
+		clients.create_folder(clients.data_path + "/audio_cache")
+		clients.create_folder(clients.data_path + "/audio_files")
 	
 	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", 
 								"playlist", "spotify", "budio", "music", "download"], 
