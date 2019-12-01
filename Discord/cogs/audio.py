@@ -35,7 +35,6 @@ class Audio(commands.Cog):
 					description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify", 
 					invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
-	@checks.is_voice_connected()
 	@checks.not_forbidden()
 	async def audio(self, ctx, *, song : str = ""): #elif options[0] == "full":
 		'''
@@ -43,6 +42,12 @@ class Audio(commands.Cog):
 		All audio subcommands are also commands
 		For cleanup of audio commands, the Manage Messages permission is required
 		'''
+		if ctx.subcommand_passed and ctx.subcommand_passed.lower() == "info":
+			if ctx.invoked_with.lower() == "spotify":
+				await ctx.invoke(self.bot.cogs["Info"].spotify, song.lstrip(song.split()[0]).lstrip())
+			else:
+				await ctx.invoke(self.bot.cogs["Info"].youtube, song.lstrip(song.split()[0]).lstrip())
+			return
 		if not song:
 			await ctx.embed_reply(":grey_question: What would you like to play?")
 			return
