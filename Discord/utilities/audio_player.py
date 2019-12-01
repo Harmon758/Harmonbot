@@ -261,7 +261,7 @@ class AudioPlayer:
 		return interrupt_message
 	
 	async def play_file(self, ctx, filename):
-		if not filename:
+		if not filename and self.audio_files:
 			filename = random.choice(self.audio_files)
 		elif filename not in self.audio_files:
 			await ctx.embed_reply(":no_entry: File not found")
