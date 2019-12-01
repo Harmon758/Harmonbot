@@ -263,9 +263,13 @@ class Astronomy(commands.Cog):
 		# Detection Method
 		if data["detection_method"] != "Unknown": fields.append(("Detection Method", data["detection_method"]))
 		# Parent Star
-		async with ctx.bot.aiohttp_session.get(data["parent_star"]) as resp:
-			parent_star_data = await resp.json()
-		fields.append(("Parent Star", parent_star_data["name"]))
+		parent_star_data = data.get("parent_star") or {}
+		if parent_star_data.get("name"):
+			fields.append(("Parent Star", parent_star_data["name"]))
+		elif parent_star_data.get("url"):
+			async with ctx.bot.aiohttp_session.get(parent_star_data["url"]) as resp:
+				parent_star_data = await resp.json()
+			fields.append(("Parent Star", parent_star_data["name"]))
 		await ctx.embed_reply(title = data["name"], fields = fields)
 	
 	@astronomy.command(aliases = ["international_space_station", "internationalspacestation"])
