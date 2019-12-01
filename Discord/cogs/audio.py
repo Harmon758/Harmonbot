@@ -280,7 +280,7 @@ class Audio(commands.Cog):
 		if self.players[ctx.guild.id].radio_flag:
 			self.players[ctx.guild.id].radio_off()
 			await ctx.embed_reply(":stop_sign: Turned radio off")
-		elif (await self.players[ctx.guild.id].radio_on(ctx.author, ctx.message.created_at)) is False:
+		elif (await self.players[ctx.guild.id].radio_on(ctx)) is False:
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@radio.command(name = "on", aliases = ["start"])
@@ -291,7 +291,7 @@ class Audio(commands.Cog):
 		'''Turn radio on'''
 		if self.players[ctx.guild.id].radio_flag:
 			await ctx.embed_reply(":no_entry: Radio is already on")
-		elif (await self.players[ctx.guild.id].radio_on(ctx.author, ctx.message.created_at)) is False:
+		elif (await self.players[ctx.guild.id].radio_on(ctx)) is False:
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@radio.command(name = "off", aliases = ["stop"])

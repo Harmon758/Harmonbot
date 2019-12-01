@@ -313,7 +313,7 @@ class AudioPlayer:
 			self.library_flag = False
 			self.skip()
 	
-	async def radio_on(self, requester, timestamp):
+	async def radio_on(self, ctx):
 		if self.interrupted:
 			return False
 		if not self.radio_flag:
@@ -334,7 +334,12 @@ class AudioPlayer:
 				async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 					data = await resp.json()
 				videoid = random.choice(data["items"])["id"]["videoId"]
-				await self.add_song_interrupt(videoid, requester, timestamp)
+				
+				source = YTDLSource(ctx, videoid, stream = True)
+				await source.get_info()
+				await source.initialize_source(self.default_volume)
+				await self.interrupt(source)
+				
 				await asyncio.sleep(0.1)  # wait to check
 			if self.guild.voice_client and was_playing:
 				self.guild.voice_client.resume()
