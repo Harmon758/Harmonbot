@@ -294,32 +294,23 @@ class AudioPlayer:
 			self.library_flag = False
 			self.skip()
 	
-	async def _interrupt(self, source, title, requester, timestamp, *, clear_flag = True):
+	async def interrupt(self, source, *, clear_flag = True):
 		if self.interrupted and clear_flag:
 			return False
-		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			stream = self.guild.voice_client.create_ffmpeg_player(source, after = self._resume_from_interruption, stderr = ffmpeg_log)
-		stream.volume = self.default_volume / 1000
-		try:
-			self.pause()
-		except errors.AudioError:
-			paused = False
-		else:
-			paused = True
-		stream.start()
-		temp_current = self.current
-		self.current = {"stream": stream, "info": {"title": title, "webpage_url": None}, "requester": requester, "timestamp": timestamp}
+		was_playing = self.guild.voice_client.is_playing()
+		if was_playing: self.guild.voice_client.pause()
+		interrupted_source = self.guild.voice_client.source if isinstance(self.guild.voice_client.source, YTDLSource) else None
+		self.guild.voice_client.play(source, after = lambda e: self.bot.loop.call_soon_threadsafe(self.resume_flag.set))
 		if clear_flag: self.not_interrupted.clear()
-		interrupt_message = await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing: " + title)
+		interrupt_message = await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing: " + source.title)
 		await self.resume_flag.wait()
-		self.current = temp_current
-		if paused: self.resume()
+		if interrupted_source:
+			self.guild.voice_client.play(interrupted_source)
+		if was_playing:
+			self.guild.voice_client.resume()
 		if clear_flag: self.not_interrupted.set()
 		self.bot.loop.call_soon_threadsafe(self.resume_flag.clear)
 		return interrupt_message
-	
-	def _resume_from_interruption(self):
-		self.bot.loop.call_soon_threadsafe(self.resume_flag.set)
 	
 	async def radio_on(self, requester, timestamp):
 		if self.interrupted:
