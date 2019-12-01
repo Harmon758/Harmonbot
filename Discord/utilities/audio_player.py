@@ -242,6 +242,24 @@ class AudioPlayer:
 		embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
 		await response.edit(embed = embed)
 	
+	async def interrupt(self, source, *, clear_flag = True):
+		if self.interrupted and clear_flag:
+			return False
+		was_playing = self.guild.voice_client.is_playing()
+		if was_playing: self.guild.voice_client.pause()
+		interrupted_source = self.guild.voice_client.source if isinstance(self.guild.voice_client.source, YTDLSource) else None
+		self.guild.voice_client.play(source, after = lambda e: self.bot.loop.call_soon_threadsafe(self.resume_flag.set))
+		if clear_flag: self.not_interrupted.clear()
+		interrupt_message = await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing: " + source.title)
+		await self.resume_flag.wait()
+		if interrupted_source:
+			self.guild.voice_client.play(interrupted_source)
+		if was_playing:
+			self.guild.voice_client.resume()
+		if clear_flag: self.not_interrupted.set()
+		self.bot.loop.call_soon_threadsafe(self.resume_flag.clear)
+		return interrupt_message
+	
 	async def play_file(self, filename, requester, timestamp):
 		if not filename:
 			filename = random.choice(self.audio_files)
@@ -293,24 +311,6 @@ class AudioPlayer:
 		if self.library_flag:
 			self.library_flag = False
 			self.skip()
-	
-	async def interrupt(self, source, *, clear_flag = True):
-		if self.interrupted and clear_flag:
-			return False
-		was_playing = self.guild.voice_client.is_playing()
-		if was_playing: self.guild.voice_client.pause()
-		interrupted_source = self.guild.voice_client.source if isinstance(self.guild.voice_client.source, YTDLSource) else None
-		self.guild.voice_client.play(source, after = lambda e: self.bot.loop.call_soon_threadsafe(self.resume_flag.set))
-		if clear_flag: self.not_interrupted.clear()
-		interrupt_message = await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing: " + source.title)
-		await self.resume_flag.wait()
-		if interrupted_source:
-			self.guild.voice_client.play(interrupted_source)
-		if was_playing:
-			self.guild.voice_client.resume()
-		if clear_flag: self.not_interrupted.set()
-		self.bot.loop.call_soon_threadsafe(self.resume_flag.clear)
-		return interrupt_message
 	
 	async def radio_on(self, requester, timestamp):
 		if self.interrupted:
