@@ -69,10 +69,11 @@ class AudioPlayer:
 			await self.guild.voice_client.disconnect()
 			return True
 	
-	async def add_song(self, song, requester, timestamp, *, stream = False):
-		info = await self._get_song_info(song)
-		await self.queue.put({"info": info, "requester": requester, "timestamp": timestamp, "stream": stream})
-		return info["title"], info["webpage_url"]
+	async def add_song(self, ctx, song, *, stream = False):
+		source = YTDLSource(ctx, song, stream = stream)
+		await source.get_info()
+		await self.queue.put(source)
+		return source
 	
 	async def insert_song(self, ctx, song, position):
 		source = YTDLSource(ctx, song)
