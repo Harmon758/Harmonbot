@@ -246,17 +246,20 @@ class AudioPlayer:
 		if self.interrupted and clear_flag:
 			return False
 		was_playing = self.guild.voice_client.is_playing()
-		if was_playing: self.guild.voice_client.pause()
+		if was_playing:  # Use := in Python 3.8
+			self.guild.voice_client.pause()
 		interrupted_source = self.guild.voice_client.source if isinstance(self.guild.voice_client.source, YTDLSource) else None
 		self.guild.voice_client.play(source, after = lambda e: self.bot.loop.call_soon_threadsafe(self.resume_flag.set))
-		if clear_flag: self.not_interrupted.clear()
+		if clear_flag:
+			self.not_interrupted.clear()
 		interrupt_message = await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing: " + source.title)
 		await self.resume_flag.wait()
 		if interrupted_source:
 			self.guild.voice_client.play(interrupted_source)
 		if was_playing:
 			self.guild.voice_client.resume()
-		if clear_flag: self.not_interrupted.set()
+		if clear_flag:
+			self.not_interrupted.set()
 		self.bot.loop.call_soon_threadsafe(self.resume_flag.clear)
 		return interrupt_message
 	
