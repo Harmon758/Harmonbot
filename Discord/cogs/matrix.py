@@ -111,7 +111,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(str(scipy.linalg.sinm(matrix)))
 	
 	@sin.command(name = "hyperbolic", aliases = ['h'])
-	async def sin_hyperbolic(self, ctx, *, matrix : Matrix):
+	async def sin_hyperbolic(self, ctx, *, matrix: Matrix):
 		'''Hyperbolic sine of a matrix'''
 		await ctx.embed_reply(str(scipy.linalg.sinhm(matrix)))
 	
