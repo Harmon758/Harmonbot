@@ -34,7 +34,3 @@ class AudioError(CommandError):
 	'''Audio Error'''
 	pass
 
-class AudioNotPlaying(AudioError):
-	'''Audio Not Playing'''
-	pass
-
