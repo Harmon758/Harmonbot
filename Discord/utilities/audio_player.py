@@ -7,6 +7,7 @@ import json
 import os
 import random
 import subprocess
+import traceback
 
 import speech_recognition
 
@@ -82,6 +83,7 @@ class AudioPlayer:
 		return source
 	
 	async def player_task(self):
+		# TODO: Handle errors, print tracebacks
 		while True:
 			self.play_next_song.clear()
 			source = await self.queue.get()
@@ -89,7 +91,7 @@ class AudioPlayer:
 			if not source.stream:
 				now_playing_message = await self.bot.send_embed(self.text_channel, ":arrow_down: Downloading..", title = source.info.get("title", "N/A"), title_url = source.info.get("webpage_url"), timestamp = source.timestamp, footer_text = source.requester.display_name, footer_icon_url = source.requester.avatar_url, thumbnail_url = source.info.get("thumbnail"))
 			if not source.initialized: await source.initialize_source(self.default_volume)
-			self.guild.voice_client.play(source, after = lambda e: self.bot.loop.call_soon_threadsafe(self.play_next_song.set))
+			self.guild.voice_client.play(source, after = self.after_song)
 			if source.stream:
 				await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing", title = source.info.get("title", "N/A"), title_url = source.info.get("webpage_url"), timestamp = source.timestamp, footer_text = source.requester.display_name, footer_icon_url = source.requester.avatar_url, thumbnail_url = source.info.get("thumbnail"))
 			else:
@@ -102,6 +104,14 @@ class AudioPlayer:
 			# TODO: server specific setting for skip votes required
 			self.skip_votes.clear()
 			await self.play_next_song.wait()
+	
+	def after_song(self, error):
+		if error:
+			traceback.print_exception(type(error), error, error.__traceback__)
+		elif self.interrupted:
+			self.bot.loop.call_soon_threadsafe(self.resume_flag.set)
+		else:
+			self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
 	
 	def skip(self):
 		if self.guild.voice_client and self.guild.voice_client.is_playing() or self.guild.voice_client.is_paused():
@@ -202,7 +212,7 @@ class AudioPlayer:
 		if was_playing:  # Use := in Python 3.8
 			self.guild.voice_client.pause()
 		interrupted_source = self.guild.voice_client.source if isinstance(self.guild.voice_client.source, YTDLSource) else None
-		self.guild.voice_client.play(source, after = lambda e: self.bot.loop.call_soon_threadsafe(self.resume_flag.set))
+		self.guild.voice_client.play(source, after = self.after_song)
 		if clear_flag:
 			self.not_interrupted.clear()
 		interrupt_message = await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing: " + source.title)
