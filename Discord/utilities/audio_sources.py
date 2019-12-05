@@ -94,7 +94,8 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 		self.title = "TTS Message: `{}`".format(self.message)
 	
 	async def generate_file(self):
-		func = functools.partial(subprocess.run, ["bin/espeak", f"-a {self.amplitude}", f"-p {self.pitch}", 
+		func = functools.partial(subprocess.run, ["bin/eSpeak NG/espeak-ng", "--path=bin/eSpeak NG", 
+													f"-a {self.amplitude}", f"-p {self.pitch}", 
 													f"-s {self.speed}", f"-g {self.word_gap}", f"-v{self.voice}", 
 													f"-w {clients.data_path}/temp/tts.wav", self.message], 
 													creationflags = subprocess.CREATE_NO_WINDOW)
