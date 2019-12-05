@@ -218,7 +218,7 @@ class AudioPlayer:
 		interrupt_message = await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing: " + source.title)
 		await self.resume_flag.wait()
 		if interrupted_source:
-			self.guild.voice_client.play(interrupted_source)
+			self.guild.voice_client.play(interrupted_source, after = self.after_song)
 		if was_playing:
 			self.guild.voice_client.resume()
 		if clear_flag:
