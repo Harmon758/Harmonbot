@@ -176,19 +176,16 @@ class AudioPlayer:
 		return songs
 	
 	async def replay(self):
-		if not self.current or not self.current.get("info").get("url"):
-			return False
-		with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			stream = self.guild.voice_client.create_ffmpeg_player(self.current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
-		stream.volume = self.default_volume / 1000
-		duplicate = self.current.copy()
-		duplicate["stream"] = stream
-		if not self.current["stream"].is_done():
+		if not self.guild.voice_client.source:
+			raise errors.AudioError("There is nothing to replay")
+		duplicate = await type(self.guild.voice_client.source).replay(self.guild.voice_client.source)
+		if self.guild.voice_client.is_playing() or self.guild.voice_client.is_paused():
+			self.guild.voice_client.source = duplicate
+		elif isinstance(duplicate, YTDLSource):
+			await self.queue.put(duplicate)
+		else:
 			self.skip()
-		self.queue._queue.appendleft(duplicate)
-		await self.queue.put(None) # trigger get
-		self.queue._queue.pop()
-		return True
+			await self.interrupt(duplicate)
 	
 	def queue_embed(self):
 		if self.radio_flag:

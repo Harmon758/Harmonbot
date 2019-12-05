@@ -200,9 +200,14 @@ class Audio(commands.Cog):
 		# TODO: Add restart alias?
 		response = await ctx.embed_reply(":repeat_one: Restarting song..")
 		embed = response.embeds[0]
-		replayed = await self.players[ctx.guild.id].replay()
-		embed.description = ":repeat_one: Restarted song" if replayed else ":no_entry: There is nothing to replay"
-		await response.edit(embed = embed)
+		try:
+			await self.players[ctx.guild.id].replay()
+		except errors.AudioError as e:
+			embed.description = ":no_entry: {}".format(e)
+		else:
+			embed.description = ":repeat_one: Restarted song"
+		finally:
+			await response.edit(embed = embed)
 	
 	@commands.command()
 	@commands.guild_only()
