@@ -348,7 +348,10 @@ class Audio(commands.Cog):
 		defaults: 100, 50, 150, 0, en-us+f1 (input -1 for defaults)
 		limits: 0-1000, 0-99, 80-9000, 0-1000, valid voice
 		word_gap: length of pause between words, in units of 10 ms
-		voice: see http://espeak.sourceforge.net/languages.html
+		voice:
+		http://espeak.sourceforge.net/languages.html
+		https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md#languages
+		https://github.com/espeak-ng/espeak-ng/tree/master/espeak-ng-data/voices/!v
 		'''
 		if amplitude == -1: amplitude = 100
 		if pitch == -1: pitch = 50
