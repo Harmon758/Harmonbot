@@ -1,5 +1,6 @@
 
 import discord
+# from discord.oggparse import OggStream
 
 import functools
 import logging
@@ -21,11 +22,15 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 		with open(clients.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
 			args = ["-i", source, "-f", "s16le", "-ar", "48000", 
 					"-ac", '2', "-loglevel", "warning", "pipe:1"]
+			# For FFmpegOpusAudio:
+			# args = ["-i", source, "-map_metadata", "-1", "-f", "opus", "-c:a", "libopus", "-ar", "48000", 
+			# 		"-ac", '2', "-b:a", "128k", "-loglevel", "warning", "pipe:1"]  # Increase bitrate?
 			if isinstance(before_options, str):
 				args.insert(0, shlex.split(before_options))
 			super(discord.FFmpegPCMAudio, self).__init__(source, executable = "bin/ffmpeg", 
 															args = args, stderr = ffmpeg_log, 
 															creationflags = subprocess.CREATE_NO_WINDOW)
+			# self._packet_iter = OggStream(self._stdout).iter_packets()
 
 
 class ModifiedPCMVolumeTransformer(discord.PCMVolumeTransformer):
@@ -179,6 +184,6 @@ class YTDLSource(ModifiedPCMVolumeTransformer):
 		if self.filename and os.path.exists(self.filename):
 			try:
 				os.remove(self.filename)
-			except PermissionError as e: # TODO: Fix
+			except PermissionError as e:  # TODO: Fix
 				print(str(e))
 
