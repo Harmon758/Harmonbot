@@ -17,21 +17,15 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	'''
 	
 	def __init__(self, source, before_options = None):
-		self.source = source
+		self.source = source  # Unnecessary?
 		with open(clients.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			args = ["bin/ffmpeg", "-i", source, "-f", "s16le", "-ar", "48000", 
+			args = ["-i", source, "-f", "s16le", "-ar", "48000", 
 					"-ac", '2', "-loglevel", "warning", "pipe:1"]
 			if isinstance(before_options, str):
-				args.insert(1, shlex.split(before_options))
-			self._process = None
-			try:
-				self._process = subprocess.Popen(args, stdout = subprocess.PIPE, stderr = ffmpeg_log, 
-													creationflags = subprocess.CREATE_NO_WINDOW)
-				self._stdout = self._process.stdout
-			except FileNotFoundError:
-				raise discord.ClientException("bin/ffmpeg was not found.") from None
-			except subprocess.SubprocessError as exc:
-				raise discord.ClientException(f"Popen failed: {exc.__class__.__name__}: {exc}") from exc
+				args.insert(0, shlex.split(before_options))
+			super(discord.FFmpegPCMAudio, self).__init__(source, executable = "bin/ffmpeg", 
+															args = args, stderr = ffmpeg_log, 
+															creationflags = subprocess.CREATE_NO_WINDOW)
 
 
 class ModifiedPCMVolumeTransformer(discord.PCMVolumeTransformer):
