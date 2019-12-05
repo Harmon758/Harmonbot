@@ -4,7 +4,6 @@ import discord
 import asyncio
 import functools
 import json
-import logging
 import os
 import random
 import subprocess
@@ -22,9 +21,9 @@ class AudioPlayer:
 		self.text_channel = text_channel
 		self.guild = text_channel.guild
 		self.queue = asyncio.Queue()
-		self.current = None
 		self.play_next_song = asyncio.Event()
 		self.default_volume = 100.0
+		# TODO: server specific default volume
 		self.skip_votes_required = 0
 		self.skip_votes = set()
 		self.player = self.bot.loop.create_task(self.player_task())
@@ -38,7 +37,6 @@ class AudioPlayer:
 		self.recognizer = speech_recognition.Recognizer()
 		self.listener = None
 		self.listen_paused = False
-		self.previous_played_time = 0
 	
 	@classmethod
 	def from_context(cls, ctx):
@@ -83,64 +81,25 @@ class AudioPlayer:
 		self.queue._queue.pop()
 		return source
 	
-	async def _get_song_info(self, song):
-		ydl = youtube_dl.YoutubeDL(self.ytdl_options)
-		func = functools.partial(ydl.extract_info, song, download = False)
-		info = await self.bot.loop.run_in_executor(None, func)
-		if "entries" in info:
-			info = info["entries"][0]
-		logging.getLogger("discord").info("playing URL {}".format(song))
-		return info
-	
-	async def _download_song(self, song):
-		ydl = youtube_dl.YoutubeDL(self.ytdl_download_options)
-		func = functools.partial(ydl.extract_info, song, download = True)
-		info = await self.bot.loop.run_in_executor(None, func)
-		return ydl.prepare_filename(info)
-	
-	def _play_next_song(self):
-		self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
-
 	async def player_task(self):
-		filename = None
 		while True:
 			self.play_next_song.clear()
-			if filename:
-				try:
-					os.remove(filename)
-				except PermissionError as e:
-					print(str(e))
-			current = await self.queue.get()
+			source = await self.queue.get()
 			await self.not_interrupted.wait()
-			if current["info"].get("is_live") or current.get("stream"):
-				with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-					stream = self.guild.voice_client.create_ffmpeg_player(current["info"]["url"], after = self._play_next_song, stderr = ffmpeg_log)
-				stream.volume = self.default_volume / 1000
-				self.current = current
-				self.current["stream"] = stream
-				self.current["stream"].start()
-				await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing", title = current["info"].get("title", "N/A"), title_url = current["info"].get("webpage_url"), timestamp = current["timestamp"], footer_text = current["requester"].display_name, footer_icon_url = current["requester"].avatar_url or current["requester"].default_avatar_url, thumbnail_url = current["info"].get("thumbnail"))
+			if not source.stream:
+				now_playing_message = await self.bot.send_embed(self.text_channel, ":arrow_down: Downloading..", title = source.info.get("title", "N/A"), title_url = source.info.get("webpage_url"), timestamp = source.timestamp, footer_text = source.requester.display_name, footer_icon_url = source.requester.avatar_url, thumbnail_url = source.info.get("thumbnail"))
+			if not source.initialized: await source.initialize_source(self.default_volume)
+			self.guild.voice_client.play(source, after = lambda e: self.bot.loop.call_soon_threadsafe(self.play_next_song.set))
+			if source.stream:
+				await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing", title = source.info.get("title", "N/A"), title_url = source.info.get("webpage_url"), timestamp = source.timestamp, footer_text = source.requester.display_name, footer_icon_url = source.requester.avatar_url, thumbnail_url = source.info.get("thumbnail"))
 			else:
-				embed = discord.Embed(title = current["info"].get("title", "N/A"), url = current["info"].get("webpage_url"), description = ":arrow_down: Downloading..", timestamp = current["timestamp"], color = self.bot.bot_color)
-				embed.set_footer(text = current["requester"].display_name, icon_url = current["requester"].avatar_url or current["requester"].default_avatar_url)
-				thumbnail = current["info"].get("thumbnail")
-				if thumbnail: embed.set_thumbnail(url = thumbnail)
-				now_playing_message = await self.bot.send_message(self.text_channel, embed = embed)
-				filename = await self._download_song(current["info"]["webpage_url"]) #
-				before_options = None
-				if current["info"].get("start_time"): before_options = "-ss {}".format(current["info"]["start_time"])
-				self.previous_played_time = current["info"].get("start_time") if current["info"].get("start_time") else 0
-				with open("data/logs/ffmpeg.log", 'a') as ffmpeg_log:
-					stream = self.guild.voice_client.create_ffmpeg_player(filename, before_options = before_options, after = self._play_next_song, stderr = ffmpeg_log)
-				stream.volume = self.default_volume / 1000
-				self.current = current
-				self.current["stream"] = stream
-				self.current["stream"].start()
+				embed = now_playing_message.embeds[0]
 				embed.description = ":arrow_forward: Now playing"
 				await now_playing_message.edit(embed = embed)
 			## stream.buff.read(stream.frame_size * 100 / stream.delay)
-			number_of_listeners = len(self.guild.voice_client.channel.voice_members) - 1
+			number_of_listeners = len(self.guild.voice_client.channel.members) - 1
 			self.skip_votes_required = number_of_listeners // 2 + number_of_listeners % 2
+			# TODO: server specific setting for skip votes required
 			self.skip_votes.clear()
 			await self.play_next_song.wait()
 	
