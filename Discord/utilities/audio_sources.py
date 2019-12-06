@@ -97,12 +97,12 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 		func = functools.partial(subprocess.run, ["bin/eSpeak NG/espeak-ng", "--path=bin/eSpeak NG", 
 													f"-a {self.amplitude}", f"-p {self.pitch}", 
 													f"-s {self.speed}", f"-g {self.word_gap}", f"-v{self.voice}", 
-													f"-w {clients.data_path}/temp/tts.wav", self.message], 
+													f"-w {self.bot.data_path}/temp/tts.wav", self.message], 
 													creationflags = subprocess.CREATE_NO_WINDOW)
 		await self.bot.loop.run_in_executor(None, func)
 	
 	def initialize_source(self, volume):
-		super().__init__(ModifiedFFmpegPCMAudio(clients.data_path + "/temp/tts.wav"), volume)
+		super().__init__(ModifiedFFmpegPCMAudio(self.bot.data_path + "/temp/tts.wav"), volume)
 		self.initialized = True
 	
 	@classmethod
@@ -110,7 +110,7 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 		source = cls(original.ctx, original.message, amplitude = original.amplitude, 
 						pitch = original.pitch, speed = original.speed, 
 						word_gap = original.word_gap, voice = original.voice)
-		if not os.path.exists(clients.data_path + "/temp/tts.wav"):
+		if not os.path.exists(self.bot.data_path + "/temp/tts.wav"):
 			await source.generate_file()
 		source.initialize_source(original.volume)
 		return source
@@ -118,9 +118,9 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 	def cleanup(self):
 		if self.initialized: super().cleanup()
 		'''
-		if os.path.exists(clients.data_path + "/temp/tts.wav"):
+		if os.path.exists(self.bot.data_path + "/temp/tts.wav"):
 			try:
-				os.remove(clients.data_path + "/temp/tts.wav")
+				os.remove(self.bot.data_path + "/temp/tts.wav")
 			except PermissionError:
 				pass
 		'''
