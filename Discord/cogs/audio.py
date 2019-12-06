@@ -60,10 +60,10 @@ class Audio(commands.Cog):
 				await ctx.embed_reply(":warning: Error")
 				return
 		response = await ctx.embed_reply(":cd: Loading..")
+		# TODO: Handle no embed permission
 		embed = response.embeds[0]
-		stream = ctx.invoked_with == "stream"
 		try:
-			source = await self.players[ctx.guild.id].add_song(ctx, song, stream = stream)
+			source = await self.players[ctx.guild.id].add_song(ctx, song, stream = ctx.invoked_with == "stream")
 		except Exception as e:
 			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
 			if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
