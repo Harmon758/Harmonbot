@@ -282,7 +282,7 @@ class Meta(commands.Cog):
 		
 		channel_types = [type(c) for c in ctx.bot.get_all_channels()]
 		voice_count = channel_types.count(discord.VoiceChannel)
-		playing_in_voice_count = sum(player.current is not None and player.current["stream"].is_playing() for player in ctx.bot.cogs["Audio"].players.values())
+		playing_in_voice_count = sum(vc.is_playing() for vc in ctx.bot.voice_clients)
 		in_voice_count = len(ctx.bot.cogs["Audio"].players)
 		total_members = sum(len(g.members) for g in ctx.bot.guilds)
 		total_members_online = sum(1 for m in ctx.bot.get_all_members() if m.status != discord.Status.offline)
