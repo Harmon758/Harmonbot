@@ -8,8 +8,6 @@ import shlex
 import subprocess
 import os
 
-import clients
-
 class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	
 	'''
@@ -17,9 +15,11 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	To use ffmpeg log as stderr and suppress subprocess window
 	'''
 	
-	def __init__(self, source, before_options = None):
+	def __init__(self, ctx, source, before_options = None):
+		self.ctx = ctx
 		self.source = source  # Unnecessary?
-		with open(clients.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
+		self.bot = ctx.bot
+		with open(self.bot.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
 			args = ["-i", source, "-f", "s16le", "-ar", "48000", 
 					"-ac", '2', "-loglevel", "warning", "pipe:1"]
 			# For FFmpegOpusAudio:
@@ -63,7 +63,7 @@ class FileSource(ModifiedPCMVolumeTransformer):
 		self.volume = volume
 		self.title_prefix = title_prefix
 		self.title = title_prefix + "`{}`".format(os.path.basename(self.filename))
-		super().__init__(ModifiedFFmpegPCMAudio(filename), volume)
+		super().__init__(ModifiedFFmpegPCMAudio(ctx, filename), volume)
 	
 	@classmethod
 	async def replay(cls, original):
@@ -102,7 +102,7 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 		await self.bot.loop.run_in_executor(None, func)
 	
 	def initialize_source(self, volume):
-		super().__init__(ModifiedFFmpegPCMAudio(self.bot.data_path + "/temp/tts.wav"), volume)
+		super().__init__(ModifiedFFmpegPCMAudio(self.ctx, self.bot.data_path + "/temp/tts.wav"), volume)
 		self.initialized = True
 	
 	@classmethod
@@ -162,7 +162,7 @@ class YTDLSource(ModifiedPCMVolumeTransformer):
 	
 	async def initialize_source(self, volume):
 		if self.stream:
-			super().__init__(ModifiedFFmpegPCMAudio(self.info["url"]), volume)
+			super().__init__(ModifiedFFmpegPCMAudio(self.ctx, self.info["url"]), volume)
 		else:
 			func = functools.partial(self.bot.ytdl_download.extract_info, self.info["webpage_url"], download = True)
 			info = await self.bot.loop.run_in_executor(None, func)
@@ -170,7 +170,7 @@ class YTDLSource(ModifiedPCMVolumeTransformer):
 			
 			before_options = "-ss {}".format(self.info["start_time"]) if self.info.get("start_time") else None
 			self.previous_played_time = self.info.get("start_time") if self.info.get("start_time") else 0
-			super().__init__(ModifiedFFmpegPCMAudio(self.filename, before_options = before_options), volume)
+			super().__init__(ModifiedFFmpegPCMAudio(self.ctx, self.filename, before_options = before_options), volume)
 		self.initialized = True
 	
 	@classmethod

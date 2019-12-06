@@ -76,7 +76,7 @@ class Bot(commands.Bot):
 		
 		# Constants
 		## Custom
-		self.version = "1.0.0-rc.5"
+		self.version = "1.0.0-rc.6"
 		self.owner_id = 115691005197549570
 		self.listener_id = 180994984038760448
 		self.cache_channel_id = 254051856219635713
