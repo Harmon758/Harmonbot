@@ -6,14 +6,18 @@ import base64
 import concurrent.futures
 import inspect
 import random
+import sys
 import urllib
 
-import clients
 from modules import utilities
 from utilities import audio_player
 from utilities import audio_sources
 from utilities import checks
 from utilities import errors
+
+sys.path.insert(0, "..")
+from units.files import create_folder
+sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Audio(bot))
@@ -27,8 +31,8 @@ class Audio(commands.Cog):
 			if isinstance(command, commands.Command) and command.parent is None and name != "audio":
 				self.bot.add_command(command)
 				self.audio.add_command(command)
-		clients.create_folder(self.bot.data_path + "/audio_cache")
-		clients.create_folder(self.bot.data_path + "/audio_files")
+		create_folder(self.bot.data_path + "/audio_cache")
+		create_folder(self.bot.data_path + "/audio_files")
 	
 	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", 
 								"playlist", "spotify", "budio", "music", "download"], 
