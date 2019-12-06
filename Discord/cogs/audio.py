@@ -48,6 +48,17 @@ class Audio(commands.Cog):
 			else:
 				await ctx.invoke(self.bot.cogs["Info"].youtube, song.lstrip(song.split()[0]).lstrip())
 			return
+		if not ctx.guild.voice_client:
+			if ctx.guild.id not in self.players:
+				self.players[ctx.guild.id] = audio_player.AudioPlayer.from_context(ctx)
+			if checks.is_server_owner_check(ctx) or clients.get_permission(ctx, "join", id = ctx.author.id):
+				if ctx.author.voice and ctx.author.voice.channel:
+					await ctx.author.voice.channel.connect()
+					await ctx.embed_reply(":headphones: I've joined the voice channel")
+				else:
+					raise errors.PermittedVoiceNotConnected
+			else:
+				raise errors.NotPermittedVoiceNotConnected
 		if not song:
 			await ctx.embed_reply(":grey_question: What would you like to play?")
 			return
