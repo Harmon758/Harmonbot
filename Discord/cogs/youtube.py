@@ -287,7 +287,7 @@ class YouTube(commands.Cog):
 							record["video_id"], record["channel_id"]
 						)
 				# TODO: Handle no longer being followed?
-		except asyncio.CancelledError:
+		except asyncio.CancelledError:  # Remove in Python 3.8
 			raise
 		except Exception as e:
 			print("Exception in YouTube Task", file = sys.stderr)
