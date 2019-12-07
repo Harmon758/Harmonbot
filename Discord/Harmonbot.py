@@ -224,16 +224,20 @@ if __name__ == "__main__":
 				return
 			return await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 		
-		# help or prefix(es) DM or mention
-		if (message.content.lower() in ('?', "commands", "help", "prefix", "prefixes") and channel.type is discord.ChannelType.private) or ctx.me.mention in message.content and message.content.replace(ctx.me.mention, "").strip().lower() in ('?', "commands", "help", "prefix", "prefixes"):
+		# DM or mention
+		if channel.type is discord.ChannelType.private or ctx.me.mention in message.content:
+			content = message.content.replace(ctx.me.mention, "").strip().lower()
+			# TODO: Replace ctx.me.mention.replace('!', "") as well?
 			try:
 				prefixes = await ctx.bot.command_prefix(ctx.bot, message)
 			except TypeError:  # if Beta (*)
 				prefixes = ctx.bot.command_prefix
-			if any(string in message.content.lower() for string in ('?', "commands", "help")):
+			# help
+			if content in ('?', "commands", "help"):
 				ctx.prefix = prefixes[0]
 				return await ctx.send_help()
-			else:
+			# prefix(es)
+			if content in ("prefix", "prefixes"):
 				return await ctx.embed_reply("Prefixes: " + ' '.join(f"`{prefix}`" for prefix in prefixes))
 		
 		# Chatbot
