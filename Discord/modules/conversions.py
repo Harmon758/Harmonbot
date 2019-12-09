@@ -246,7 +246,7 @@ def temperatureconversion(value, unit1, unit2):
 
 # https://en.wikipedia.org/wiki/Conversion_of_units#Mass
 masses = {
-	"amu" : 1.66053904 * 10 ** -27, "me" : 9.10938291 * 10 ** -31, "bagc" : 60, 
+	"amu" : 1.6605390666 * 10 ** -27, "me" : 9.10938291 * 10 ** -31, "bagc" : 60, 
 	"bagpc" : 42.63768278, "barge" : 20411.65665, "kt" : 0.0002051965483, "ct" : 0.0002, 
 	"clove" : 3.62873896, "crith" : 8.99349 * 10 ** -5, "da" : 1.66053904 * 10 ** -27, 
 	"drt" : 0.0038879346, "drav" : 0.0017718451953125, "ev" : 1.78266184 * 10 ** -36, 
