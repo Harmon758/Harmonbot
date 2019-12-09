@@ -120,7 +120,7 @@ class Matrix(commands.Cog):
 		'''Square root of a matrix'''
 		await ctx.embed_reply(str(scipy.linalg.sqrtm(matrix)))
 	
-	@matrix.command(naliases = ["subtraction", "minus", '-'])
+	@matrix.command(aliases = ["subtraction", "minus", '-'])
 	async def subtract(self, ctx, matrix_a : Matrix, matrix_b : Matrix):
 		'''Subtract two matrices'''
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) - numpy.matrix(matrix_b)))
