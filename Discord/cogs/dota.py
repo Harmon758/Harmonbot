@@ -74,15 +74,15 @@ class DotA(commands.Cog):
 		url = f"https://api.opendota.com/api/players/{account}/wordcloud"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		wordcloud = WordCloud()
+		word_cloud = WordCloud()
 		if not data["my_word_counts"]:
 			return await ctx.embed_reply(":no_entry: Error: No words found")
-		wordcloud.fit_words(data["my_word_counts"])
+		word_cloud.fit_words(data["my_word_counts"])
 		buffer = io.BytesIO()
-		wordcloud.to_image().save(buffer, "PNG")
+		word_cloud.to_image().save(buffer, "PNG")
 		buffer.seek(0)
-		await ctx.embed_reply(file = discord.File(buffer, filename = "wordcloud.png"), 
-								image_url = "attachment://wordcloud.png")
+		await ctx.embed_reply(file = discord.File(buffer, filename = "word_cloud.png"), 
+								image_url = "attachment://word_cloud.png")
 	
 	@player_words.command(name = "read", invoke_without_command = True, case_insensitive = True)
 	async def player_words_read(self, ctx, account: SteamAccount):
