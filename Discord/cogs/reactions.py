@@ -140,8 +140,7 @@ class Reactions(commands.Cog):
 		if user == player:
 			maze_instance = self.mazes[reaction.message.id]
 			if reaction.emoji in self.arrows.keys():
-				embed = discord.Embed(color = self.bot.bot_color)
-				embed.set_author(name = player.display_name, icon_url = player.avatar_url)
+				embed = reaction.message.embeds[0]
 				moved = maze_instance.move(self.arrows[reaction.emoji].lower())
 				embed.set_footer(text = f"Your current position: {maze_instance.column + 1}, {maze_instance.row + 1}")
 				if moved:
