@@ -154,7 +154,7 @@ class Reactions(commands.Cog):
 					embed.description = "{}\nCongratulations! You reached the end of the maze in {} moves".format(self.bot.CODE_BLOCK.format(maze_instance.print_visible()), maze_instance.move_counter)
 					del self.reaction_messages[reaction.message.id]
 				else:
-					embed.description = "{}".format(self.bot.CODE_BLOCK.format(maze_instance.print_visible()))
+					embed.description = self.bot.CODE_BLOCK.format(maze_instance.print_visible())
 			else:
 				embed.description = "{}\n:no_entry: You can't go that way".format(self.bot.CODE_BLOCK.format(maze_instance.print_visible()))
 			await reaction.message.edit(embed = embed)
