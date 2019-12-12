@@ -141,20 +141,20 @@ class Tools(commands.Cog):
 		for frame_text in (spoiler_title, spoiler_text):
 			frame = Image.new("RGBA", 
 								(text_width + (avatar_size + 2 * margin_size) * 2, text_height + text_vertical_margin * 2), 
-								discord.Color(self.bot.dark_theme_background_color).to_rgb())
+								discord.Color(ctx.bot.dark_theme_background_color).to_rgb())
 			try:
 				frame.paste(avatar, (margin_size, margin_size), avatar)
 			except ValueError:  # if bad transparency mask
 				frame.paste(avatar, (margin_size, margin_size))
-			transparent_text = Image.new("RGBA", frame.size, discord.Color(self.bot.white_color).to_rgb() + (0,))
+			transparent_text = Image.new("RGBA", frame.size, discord.Color(ctx.bot.white_color).to_rgb() + (0,))
 			draw = ImageDraw.Draw(transparent_text)
 			draw.text((avatar_size + 2 * margin_size, text_vertical_margin), frame_text, 
-						fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,), 
+						fill = discord.Color(ctx.bot.white_color).to_rgb() + (text_opacity,), 
 						font = content_font)
 			if not frames:
 				draw.text((avatar_size + 2 * margin_size, text_height + 2 * margin_size), 
 							"(Hover to reveal spoiler)", font = guide_font, 
-							fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,))
+							fill = discord.Color(ctx.bot.white_color).to_rgb() + (text_opacity,))
 			frame = Image.alpha_composite(frame, transparent_text)
 			buffer = io.BytesIO()
 			frame.save(buffer, "PNG")
@@ -165,7 +165,7 @@ class Tools(commands.Cog):
 		imageio.mimsave(buffer, [imageio.imread(frame) for frame in frames], "GIF", loop = 1, duration = 0.5)
 		buffer.seek(0)
 		await ctx.channel.send(file = discord.File(buffer, filename = "spoiler.gif"))
-		await self.bot.attempt_delete_message(response)
+		await ctx.bot.attempt_delete_message(response)
 	
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], 
 					invoke_without_command = True, case_insensitive = True)
