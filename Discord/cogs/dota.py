@@ -94,7 +94,9 @@ class DotA(commands.Cog):
 		if not data["all_word_counts"]:
 			return await ctx.embed_reply(":no_entry: Error: No words found")
 		wordcloud.fit_words(data["all_word_counts"])
-		wordcloud.to_file(ctx.bot.data_path + "/temp/wordcloud.png")
-		await ctx.embed_reply(file = discord.File(ctx.bot.data_path + "/temp/wordcloud.png"), 
+		buffer = io.BytesIO()
+		wordcloud.to_image().save(buffer, "PNG")
+		buffer.seek(0)
+		await ctx.embed_reply(file = discord.File(buffer, filename = "wordcloud.png"), 
 								image_url = "attachment://wordcloud.png")
 
