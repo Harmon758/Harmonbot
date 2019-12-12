@@ -60,19 +60,16 @@ class Tools(commands.Cog):
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
-			return
+			return await ctx.embed_reply(":no_entry: Error: {}".format(e))
 		x = numpy.linspace(lower_limit, upper_limit, 250)
 		try:
 			y = numexpr.evaluate(equation)
 		except Exception as e:
-			await ctx.reply(ctx.bot.PY_CODE_BLOCK.format("{}: {}".format(type(e).__name__, e)))
-			return
+			return await ctx.reply(ctx.bot.PY_CODE_BLOCK.format("{}: {}".format(type(e).__name__, e)))
 		try:
 			matplotlib.pyplot.plot(x, y)
 		except ValueError as e:
-			await ctx.embed_reply(":no_entry: Error: {}".format(e))
-			return
+			return await ctx.embed_reply(":no_entry: Error: {}".format(e))
 		with tempfile.TemporaryFile(dir = ctx.bot.data_path + "/temp") as image:
 			matplotlib.pyplot.savefig(image, format = "png")
 			image.flush()
