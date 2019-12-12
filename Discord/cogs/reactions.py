@@ -6,6 +6,7 @@ import collections
 import copy
 import inspect
 import random
+import tempfile
 
 from modules import maze
 from modules import utilities
@@ -139,9 +140,11 @@ class Reactions(commands.Cog):
 		if user == player and reaction.emoji in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
 			maze_instance = self.mazes[reaction.message.id]
 			if reaction.emoji == "\N{PRINTER}":
-				with open(self.bot.data_path + "/temp/maze.txt", 'w') as maze_file:
-					maze_file.write('\n'.join(maze_instance.visible))
-				return await reaction.message.channel.send(content = "{}:\nYour maze is attached".format(player.display_name), file = discord.File(self.bot.data_path + "/temp/maze.txt"))
+				with tempfile.TemporaryFile(dir = self.bot.data_path + "/temp") as maze_file:
+					maze_file.write(('\n'.join(maze_instance.visible)).encode())
+					maze_file.flush()
+					maze_file.seek(0)
+					return await reaction.message.channel.send(content = "{}:\nYour maze is attached".format(player.display_name), file = discord.File(maze_file.file, filename = "maze.txt"))
 			embed = discord.Embed(color = self.bot.bot_color)
 			embed.set_author(name = player.display_name, icon_url = player.avatar_url)
 			moved = maze_instance.move(self.arrows[reaction.emoji].lower())
