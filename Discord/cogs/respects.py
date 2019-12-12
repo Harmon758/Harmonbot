@@ -2,9 +2,10 @@
 import discord
 from discord.ext import commands
 
-## import astropy.modeling
 import io
 import math
+
+## import astropy.modeling
 import matplotlib
 import numpy
 ## import scipy
