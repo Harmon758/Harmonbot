@@ -141,8 +141,7 @@ class Reactions(commands.Cog):
 			if reaction.emoji == "\N{PRINTER}":
 				with open(self.bot.data_path + "/temp/maze.txt", 'w') as maze_file:
 					maze_file.write('\n'.join(maze_instance.visible))
-				await reaction.message.channel.send(content = "{}:\nYour maze is attached".format(player.display_name), file = discord.File(self.bot.data_path + "/temp/maze.txt"))
-				return
+				return await reaction.message.channel.send(content = "{}:\nYour maze is attached".format(player.display_name), file = discord.File(self.bot.data_path + "/temp/maze.txt"))
 			embed = discord.Embed(color = self.bot.bot_color)
 			embed.set_author(name = player.display_name, icon_url = player.avatar_url)
 			moved = maze_instance.move(self.arrows[reaction.emoji].lower())
