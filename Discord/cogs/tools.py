@@ -77,6 +77,7 @@ class Tools(commands.Cog):
 			await ctx.embed_reply(image_url = "attachment://graph.png", 
 									file = discord.File(image.file, filename = "graph.png"))
 		matplotlib.pyplot.clf()
+		matplotlib.pyplot.close()
 	
 	def string_to_equation(self, string):
 		replacements = {'^': "**"}
