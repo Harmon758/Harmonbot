@@ -138,7 +138,7 @@ class Tools(commands.Cog):
 		## text_width, text_height = map(max, zip(*map(content_font.getsize, (spoiler_text, spoiler_title))))
 		# Create frames
 		frames = []
-		for frame_number, frame_text in zip(range(1, 3), (spoiler_title, spoiler_text)):
+		for frame_text in (spoiler_title, spoiler_text):
 			frame = Image.new("RGBA", 
 								(text_width + (avatar_size + 2 * margin_size) * 2, text_height + text_vertical_margin * 2), 
 								discord.Color(self.bot.dark_theme_background_color).to_rgb())
@@ -151,7 +151,7 @@ class Tools(commands.Cog):
 			draw.text((avatar_size + 2 * margin_size, text_vertical_margin), frame_text, 
 						fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,), 
 						font = content_font)
-			if frame_number == 1:
+			if not frames:
 				draw.text((avatar_size + 2 * margin_size, text_height + 2 * margin_size), 
 							"(Hover to reveal spoiler)", font = guide_font, 
 							fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,))
@@ -161,9 +161,8 @@ class Tools(commands.Cog):
 			buffer.seek(0)
 			frames.append(buffer)
 		# Create + send .gif
-		images = [imageio.imread(f) for f in frames]
 		buffer = io.BytesIO()
-		imageio.mimsave(buffer, images, "GIF", loop = 1, duration = 0.5)
+		imageio.mimsave(buffer, [imageio.imread(f) for f in frames], "GIF", loop = 1, duration = 0.5)
 		buffer.seek(0)
 		await ctx.channel.send(file = discord.File(buffer, filename = "spoiler.gif"))
 		await self.bot.attempt_delete_message(response)
