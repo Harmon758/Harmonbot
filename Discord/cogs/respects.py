@@ -138,7 +138,6 @@ class Respects(commands.Cog):
 				async for record in connection.cursor("SELECT * FROM respects.users"):
 					respects_paid.append(record["respects"])
 		# TODO: Optimize
-		filename = ctx.bot.data_path + "/temp/respects.png"
 		# TODO: Fit curve
 		## n, bins, _ = matplotlib.pyplot.hist(respects_paid, log = True, 
 		last_power_of_10 = math.ceil(numpy.log10(max(respects_paid)))
@@ -163,6 +162,7 @@ class Respects(commands.Cog):
 		axes.get_yaxis().set_major_formatter(formatter)
 		axes.set_xlabel("Respects Paid")
 		axes.set_ylabel("People")
+		filename = ctx.bot.data_path + "/temp/respects.png"
 		matplotlib.pyplot.savefig(filename)
 		matplotlib.pyplot.clf()
 		await ctx.embed_reply(fields = (("Total respects paid", f"{total_respects:,}"), 
