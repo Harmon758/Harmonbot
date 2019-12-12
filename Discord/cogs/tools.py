@@ -73,7 +73,7 @@ class Tools(commands.Cog):
 		except ValueError as e:
 			return await ctx.embed_reply(f":no_entry: Error: {e}")
 		buffer = io.BytesIO()
-		figure.savefig(buffer, format = "png")
+		figure.savefig(buffer, format = "PNG")
 		buffer.seek(0)
 		await ctx.embed_reply(image_url = "attachment://graph.png", 
 								file = discord.File(buffer, filename = "graph.png"))
