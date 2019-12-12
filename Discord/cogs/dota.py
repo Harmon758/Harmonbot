@@ -18,6 +18,7 @@ class DotA(commands.Cog):
 		return await checks.not_forbidden_predicate(ctx)
 	
 	# TODO: Move to converters file
+	#       Use for steam gamecount command?
 	class SteamAccount(commands.Converter):
 		async def convert(self, ctx, argument):
 			try:
@@ -28,6 +29,8 @@ class DotA(commands.Cog):
 				async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 					# TODO: Handle 429?
 					data = await resp.json()
+				if data["response"]["success"] == 42:  # NoMatch, https://partner.steamgames.com/doc/api/steam_api#EResult
+					raise commands.BadArgument("Account not found")
 				return int(data['response']['steamid']) - 76561197960265728
 	
 	@commands.group(aliases = ["dota2"], invoke_without_command = True, case_insensitive = True)
