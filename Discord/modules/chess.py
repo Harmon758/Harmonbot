@@ -87,16 +87,6 @@ class ChessMatch(chess.Board):
 			check = self.king(self.turn)
 		else:
 			check = None
-		# svg = self._repr_svg_()
-		svg = chess.svg.board(self, lastmove = lastmove, check = check, flipped = flipped)
-		svg = svg.replace("y=\"390\"", "y=\"395\"")
-		buffer = io.BytesIO()
-		with Image(blob = svg.encode()) as image:
-			image.format = "png"
-			## image.save(filename = self.bot.data_path + "/temp/chess_board.png")
-			image.save(file = buffer)
-		buffer.seek(0)
-		# asyncio.sleep(0.2)  # necessary?, wasn't even awaited
 		if self.match_message:
 			embed = self.match_message.embeds[0]
 		else:
@@ -107,11 +97,18 @@ class ChessMatch(chess.Board):
 		chess_pgn.headers["White"] = self.white_player.mention
 		chess_pgn.headers["Black"] = self.black_player.mention
 		embed.description = str(chess_pgn)
+		## svg = self._repr_svg_()
+		svg = chess.svg.board(self, lastmove = lastmove, check = check, flipped = flipped)
+		svg = svg.replace("y=\"390\"", "y=\"395\"")
+		buffer = io.BytesIO()
+		with Image(blob = svg.encode()) as image:
+			image.format = "png"
+			## image.save(filename = self.bot.data_path + "/temp/chess_board.png")
+			image.save(file = buffer)
+		buffer.seek(0)
 		# TODO: Upload into embed + delete and re-send to update?
-		'''
-		embed.set_image(url = self.bot.imgur_client.upload_from_path(self.bot.data_path + "/temp/chess_board.png")["link"])
-		embed.set_image(url = data["data"]["img_url"])
-		'''
+		## embed.set_image(url = self.bot.imgur_client.upload_from_path(self.bot.data_path + "/temp/chess_board.png")["link"])
+		## embed.set_image(url = data["data"]["img_url"])
 		image_message = await self.bot.cache_channel.send(file = discord.File(buffer, filename = "chess_board.png"))
 		embed.set_image(url = image_message.attachments[0].url)
 		embed.set_footer(text = footer_text)
