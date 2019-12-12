@@ -3,6 +3,7 @@ import discord
 
 # import asyncio
 import datetime
+import io
 import subprocess
 
 import chess
@@ -89,11 +90,12 @@ class ChessMatch(chess.Board):
 		# svg = self._repr_svg_()
 		svg = chess.svg.board(self, lastmove = lastmove, check = check, flipped = flipped)
 		svg = svg.replace("y=\"390\"", "y=\"395\"")
-		with open(self.bot.data_path + "/temp/chess_board.svg", 'w') as image:
-			print(svg, file = image)
-		with Image(filename = self.bot.data_path + "/temp/chess_board.svg") as image:
+		buffer = io.BytesIO()
+		with Image(blob = svg.encode()) as image:
 			image.format = "png"
-			image.save(filename = self.bot.data_path + "/temp/chess_board.png")
+			## image.save(filename = self.bot.data_path + "/temp/chess_board.png")
+			image.save(file = buffer)
+		buffer.seek(0)
 		# asyncio.sleep(0.2)  # necessary?, wasn't even awaited
 		if self.match_message:
 			embed = self.match_message.embeds[0]
@@ -110,7 +112,7 @@ class ChessMatch(chess.Board):
 		embed.set_image(url = self.bot.imgur_client.upload_from_path(self.bot.data_path + "/temp/chess_board.png")["link"])
 		embed.set_image(url = data["data"]["img_url"])
 		'''
-		image_message = await self.bot.cache_channel.send(file = discord.File(self.bot.data_path + "/temp/chess_board.png"))
+		image_message = await self.bot.cache_channel.send(file = discord.File(buffer, filename = "chess_board.png"))
 		embed.set_image(url = image_message.attachments[0].url)
 		embed.set_footer(text = footer_text)
 		if self.match_message:
