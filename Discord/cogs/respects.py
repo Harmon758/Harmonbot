@@ -172,6 +172,7 @@ class Respects(commands.Cog):
 									image_url = "attachment://respects.png", 
 									file = discord.File(image.file, filename = "respects.png"))
 		matplotlib.pyplot.clf()
+		matplotlib.pyplot.close()
 	
 	@respects.command(aliases = ["most"])
 	async def top(self, ctx, number: int = 10):
