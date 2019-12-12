@@ -93,7 +93,7 @@ class Tools(commands.Cog):
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
 		buffer = io.BytesIO()
-		seaborn.jointplot(**eval(data)).savefig(buffer, format = "png")
+		seaborn.jointplot(**eval(data)).savefig(buffer, format = "PNG")
 		buffer.seek(0)
 		await ctx.embed_reply(image_url = "attachment://graph.png", 
 								file = discord.File(buffer, filename = "graph.png"))
