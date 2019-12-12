@@ -142,12 +142,11 @@ class Respects(commands.Cog):
 		# TODO: Optimize
 		# TODO: Fit curve
 		## n, bins, _ = matplotlib.pyplot.hist(respects_paid, log = True, 
-		last_power_of_10 = math.ceil(numpy.log10(max(respects_paid)))
-		bins = (10 ** numpy.arange(last_power_of_10))[:, numpy.newaxis] * numpy.arange(1, 10)
-		bins = bins.flatten()
 		figure = matplotlib.figure.Figure()
 		axes = figure.add_subplot(xscale = "log", xlabel = "Respects Paid", ylabel = "People")
-		axes.hist(respects_paid, bins = bins, log = True, ec = "black")
+		last_power_of_10 = math.ceil(numpy.log10(max(respects_paid)))
+		bins = (10 ** numpy.arange(last_power_of_10))[:, numpy.newaxis] * numpy.arange(1, 10)
+		axes.hist(respects_paid, bins = bins.flatten(), log = True, ec = "black")
 		## bin_centers = bins[:-1] + numpy.diff(bins) / 2
 		## def func(x, a, b, c):
 		##	return a * numpy.exp(-b * x) + c
