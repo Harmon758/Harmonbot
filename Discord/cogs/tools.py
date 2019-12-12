@@ -92,9 +92,10 @@ class Tools(commands.Cog):
 	@commands.is_owner()
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
-		filename = ctx.bot.data_path + "/temp/graph_alternative.png"
-		seaborn.jointplot(**eval(data)).savefig(filename)
-		await ctx.channel.send(file = discord.File(filename), content = ctx.author.display_name + ':')
+		buffer = io.BytesIO()
+		seaborn.jointplot(**eval(data)).savefig(buffer, format = "png")
+		buffer.seek(0)
+		await ctx.channel.send(file = discord.File(buffer, filename = "graph.png"), content = ctx.author.display_name + ':')
 	
 	@commands.command(aliases = ["spoil"], hidden = True)
 	@checks.not_forbidden()
