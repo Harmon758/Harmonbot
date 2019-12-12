@@ -146,7 +146,7 @@ class Respects(commands.Cog):
 		bins = (10 ** numpy.arange(last_power_of_10))[:, numpy.newaxis] * numpy.arange(1, 10)
 		bins = bins.flatten()
 		figure = matplotlib.figure.Figure()
-		axes = figure.add_subplot()
+		axes = figure.add_subplot(xscale = "log", xlabel = "Respects Paid", ylabel = "People")
 		axes.hist(respects_paid, bins = bins, log = True, ec = "black")
 		## bin_centers = bins[:-1] + numpy.diff(bins) / 2
 		## def func(x, a, b, c):
@@ -157,14 +157,11 @@ class Respects(commands.Cog):
 		## t = fit_t(t_init, bin_centers, n)
 		## x_interval_for_fit = numpy.linspace(bins[0], bins[-1], 10000)
 		## matplotlib.pyplot.plot(x_interval_for_fit, func(x_interval_for_fit, *popt), color = "red")
-		axes.set_xscale("log")
 		## axes.set_ylim(0.8)
 		formatter = matplotlib.ticker.ScalarFormatter()
 		formatter.set_scientific(False)
 		axes.get_xaxis().set_major_formatter(formatter)
 		axes.get_yaxis().set_major_formatter(formatter)
-		axes.set_xlabel("Respects Paid")
-		axes.set_ylabel("People")
 		buffer = io.BytesIO()
 		figure.savefig(buffer, format = "png")
 		buffer.seek(0)
