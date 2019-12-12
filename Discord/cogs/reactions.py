@@ -139,15 +139,7 @@ class Reactions(commands.Cog):
 	async def mazer_processr(self, player, reaction, user):
 		if user == player:
 			maze_instance = self.mazes[reaction.message.id]
-			if reaction.emoji == "\N{PRINTER}":
-				with tempfile.TemporaryFile(dir = self.bot.data_path + "/temp") as maze_file:
-					maze_file.write(('\n'.join(maze_instance.visible)).encode())
-					maze_file.flush()
-					maze_file.seek(0)
-					await reaction.message.channel.send(content = f"{player.display_name}:\n"
-																	"Your maze is attached", 
-														file = discord.File(maze_file.file, filename = "maze.txt"))
-			elif reaction.emoji in self.arrows.keys():
+			if reaction.emoji in self.arrows.keys():
 				embed = discord.Embed(color = self.bot.bot_color)
 				embed.set_author(name = player.display_name, icon_url = player.avatar_url)
 				moved = maze_instance.move(self.arrows[reaction.emoji].lower())
@@ -163,6 +155,14 @@ class Reactions(commands.Cog):
 					embed.description = (f"{self.bot.CODE_BLOCK.format(maze_instance.print_visible())}\n"
 											":no_entry: You can't go that way")
 				await reaction.message.edit(embed = embed)
+			elif reaction.emoji == "\N{PRINTER}":
+				with tempfile.TemporaryFile(dir = self.bot.data_path + "/temp") as maze_file:
+					maze_file.write(('\n'.join(maze_instance.visible)).encode())
+					maze_file.flush()
+					maze_file.seek(0)
+					await reaction.message.channel.send(content = f"{player.display_name}:\n"
+																	"Your maze is attached", 
+														file = discord.File(maze_file.file, filename = "maze.txt"))
 	
 	@commands.command(aliases = ["player"])
 	@commands.guild_only()
