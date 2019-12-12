@@ -5,6 +5,7 @@ from discord.ext import commands
 import asyncio
 import difflib
 import re
+import tempfile
 import textwrap
 
 import imageio
@@ -56,7 +57,6 @@ class Tools(commands.Cog):
 	@checks.not_forbidden()
 	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):
 		'''WIP'''
-		filename = ctx.bot.data_path + "/temp/graph.png"
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
@@ -73,9 +73,13 @@ class Tools(commands.Cog):
 		except ValueError as e:
 			await ctx.embed_reply(":no_entry: Error: {}".format(e))
 			return
-		matplotlib.pyplot.savefig(filename)
+		with tempfile.TemporaryFile(dir = ctx.bot.data_path + "/temp") as image:
+			matplotlib.pyplot.savefig(image, format = "png")
+			image.flush()
+			image.seek(0)
+			await ctx.embed_reply(image_url = "attachment://graph.png", 
+									file = discord.File(image.file, filename = "graph.png"))
 		matplotlib.pyplot.clf()
-		await ctx.embed_reply(image_url = "attachment://graph.png", file = discord.File(filename))
 	
 	def string_to_equation(self, string):
 		replacements = {'^': "**"}
