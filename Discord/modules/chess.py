@@ -102,7 +102,7 @@ class ChessMatch(chess.Board):
 		svg = svg.replace("y=\"390\"", "y=\"395\"")
 		buffer = io.BytesIO()
 		with Image(blob = svg.encode()) as image:
-			image.format = "png"
+			image.format = "PNG"
 			## image.save(filename = self.bot.data_path + "/temp/chess_board.png")
 			image.save(file = buffer)
 		buffer.seek(0)
