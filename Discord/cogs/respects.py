@@ -7,6 +7,7 @@ import math
 import matplotlib
 import numpy
 ## import scipy
+import tempfile
 
 from utilities import checks
 
@@ -162,12 +163,15 @@ class Respects(commands.Cog):
 		axes.get_yaxis().set_major_formatter(formatter)
 		axes.set_xlabel("Respects Paid")
 		axes.set_ylabel("People")
-		filename = ctx.bot.data_path + "/temp/respects.png"
-		matplotlib.pyplot.savefig(filename)
+		with tempfile.TemporaryFile(dir = ctx.bot.data_path + "/temp") as image:
+			matplotlib.pyplot.savefig(image, format = "png")
+			image.flush()
+			image.seek(0)
+			await ctx.embed_reply(fields = (("Total respects paid", f"{total_respects:,}"), 
+											("People who paid respects", f"{len(respects_paid):,}")),
+									image_url = "attachment://respects.png", 
+									file = discord.File(image.file, filename = "respects.png"))
 		matplotlib.pyplot.clf()
-		await ctx.embed_reply(fields = (("Total respects paid", f"{total_respects:,}"), 
-										("People who paid respects", f"{len(respects_paid):,}")),
-								image_url = "attachment://respects.png", file = discord.File(filename))
 	
 	@respects.command(aliases = ["most"])
 	async def top(self, ctx, number: int = 10):
