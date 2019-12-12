@@ -3,11 +3,11 @@ import discord
 from discord.ext import commands
 
 ## import astropy.modeling
+import io
 import math
 import matplotlib
 import numpy
 ## import scipy
-import tempfile
 
 from utilities import checks
 
@@ -144,7 +144,9 @@ class Respects(commands.Cog):
 		last_power_of_10 = math.ceil(numpy.log10(max(respects_paid)))
 		bins = (10 ** numpy.arange(last_power_of_10))[:, numpy.newaxis] * numpy.arange(1, 10)
 		bins = bins.flatten()
-		matplotlib.pyplot.hist(respects_paid, bins = bins, log = True, ec = "black")
+		figure = matplotlib.figure.Figure()
+		axes = figure.add_subplot()
+		axes.hist(respects_paid, bins = bins, log = True, ec = "black")
 		## bin_centers = bins[:-1] + numpy.diff(bins) / 2
 		## def func(x, a, b, c):
 		##	return a * numpy.exp(-b * x) + c
@@ -154,7 +156,6 @@ class Respects(commands.Cog):
 		## t = fit_t(t_init, bin_centers, n)
 		## x_interval_for_fit = numpy.linspace(bins[0], bins[-1], 10000)
 		## matplotlib.pyplot.plot(x_interval_for_fit, func(x_interval_for_fit, *popt), color = "red")
-		axes = matplotlib.pyplot.gca()
 		axes.set_xscale("log")
 		## axes.set_ylim(0.8)
 		formatter = matplotlib.ticker.ScalarFormatter()
@@ -163,16 +164,13 @@ class Respects(commands.Cog):
 		axes.get_yaxis().set_major_formatter(formatter)
 		axes.set_xlabel("Respects Paid")
 		axes.set_ylabel("People")
-		with tempfile.TemporaryFile(dir = ctx.bot.data_path + "/temp") as image:
-			matplotlib.pyplot.savefig(image, format = "png")
-			image.flush()
-			image.seek(0)
-			await ctx.embed_reply(fields = (("Total respects paid", f"{total_respects:,}"), 
-											("People who paid respects", f"{len(respects_paid):,}")),
-									image_url = "attachment://respects.png", 
-									file = discord.File(image.file, filename = "respects.png"))
-		matplotlib.pyplot.clf()
-		matplotlib.pyplot.close()
+		buffer = io.BytesIO()
+		figure.savefig(buffer, format = "png")
+		buffer.seek(0)
+		await ctx.embed_reply(fields = (("Total respects paid", f"{total_respects:,}"), 
+										("People who paid respects", f"{len(respects_paid):,}")),
+								image_url = "attachment://respects.png", 
+								file = discord.File(buffer, filename = "respects.png"))
 	
 	@respects.command(aliases = ["most"])
 	async def top(self, ctx, number: int = 10):
