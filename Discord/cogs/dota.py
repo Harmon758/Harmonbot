@@ -74,9 +74,9 @@ class DotA(commands.Cog):
 		url = f"https://api.opendota.com/api/players/{account}/wordcloud"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
-		word_cloud = WordCloud()
 		if not data["my_word_counts"]:
 			return await ctx.embed_reply(":no_entry: Error: No words found")
+		word_cloud = WordCloud()
 		word_cloud.fit_words(data["my_word_counts"])
 		buffer = io.BytesIO()
 		word_cloud.to_image().save(buffer, "PNG")
