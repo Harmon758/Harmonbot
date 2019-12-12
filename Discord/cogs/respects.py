@@ -162,7 +162,7 @@ class Respects(commands.Cog):
 		axes.get_xaxis().set_major_formatter(formatter)
 		axes.get_yaxis().set_major_formatter(formatter)
 		buffer = io.BytesIO()
-		figure.savefig(buffer, format = "png")
+		figure.savefig(buffer, format = "PNG")
 		buffer.seek(0)
 		await ctx.embed_reply(fields = (("Total respects paid", f"{total_respects:,}"), 
 										("People who paid respects", f"{len(respects_paid):,}")),
