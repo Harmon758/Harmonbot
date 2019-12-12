@@ -95,7 +95,7 @@ class Tools(commands.Cog):
 		buffer = io.BytesIO()
 		seaborn.jointplot(**eval(data)).savefig(buffer, format = "png")
 		buffer.seek(0)
-		await ctx.channel.send(content = ctx.author.display_name + ':', 
+		await ctx.embed_reply(image_url = "attachment://graph.png", 
 								file = discord.File(buffer, filename = "graph.png"))
 	
 	@commands.command(aliases = ["spoil"], hidden = True)
