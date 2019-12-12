@@ -144,19 +144,19 @@ class Reactions(commands.Cog):
 					maze_file.write(('\n'.join(maze_instance.visible)).encode())
 					maze_file.flush()
 					maze_file.seek(0)
-					return await reaction.message.channel.send(content = "{}:\nYour maze is attached".format(player.display_name), file = discord.File(maze_file.file, filename = "maze.txt"))
+					return await reaction.message.channel.send(content = f"{player.display_name}:\nYour maze is attached", file = discord.File(maze_file.file, filename = "maze.txt"))
 			embed = discord.Embed(color = self.bot.bot_color)
 			embed.set_author(name = player.display_name, icon_url = player.avatar_url)
 			moved = maze_instance.move(self.arrows[reaction.emoji].lower())
-			embed.set_footer(text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
+			embed.set_footer(text = f"Your current position: {maze_instance.column + 1}, {maze_instance.row + 1}")
 			if moved:
 				if maze_instance.reached_end():
-					embed.description = "{}\nCongratulations! You reached the end of the maze in {} moves".format(self.bot.CODE_BLOCK.format(maze_instance.print_visible()), maze_instance.move_counter)
+					embed.description = f"{self.bot.CODE_BLOCK.format(maze_instance.print_visible())}\nCongratulations! You reached the end of the maze in {maze_instance.move_counter} moves"
 					del self.reaction_messages[reaction.message.id]
 				else:
 					embed.description = self.bot.CODE_BLOCK.format(maze_instance.print_visible())
 			else:
-				embed.description = "{}\n:no_entry: You can't go that way".format(self.bot.CODE_BLOCK.format(maze_instance.print_visible()))
+				embed.description = f"{self.bot.CODE_BLOCK.format(maze_instance.print_visible())}\n:no_entry: You can't go that way"
 			await reaction.message.edit(embed = embed)
 	
 	@commands.command(aliases = ["player"])
