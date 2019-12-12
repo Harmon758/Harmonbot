@@ -4,8 +4,8 @@ from discord.ext import commands
 
 import asyncio
 import difflib
+import io
 import re
-import tempfile
 import textwrap
 
 import imageio
@@ -66,18 +66,17 @@ class Tools(commands.Cog):
 			y = numexpr.evaluate(equation)
 		except Exception as e:
 			return await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"))
+		figure = matplotlib.figure.Figure()
+		axes = figure.add_subplot()
 		try:
-			matplotlib.pyplot.plot(x, y)
+			axes.plot(x, y)
 		except ValueError as e:
 			return await ctx.embed_reply(f":no_entry: Error: {e}")
-		with tempfile.TemporaryFile(dir = ctx.bot.data_path + "/temp") as image:
-			matplotlib.pyplot.savefig(image, format = "png")
-			image.flush()
-			image.seek(0)
-			await ctx.embed_reply(image_url = "attachment://graph.png", 
-									file = discord.File(image.file, filename = "graph.png"))
-		matplotlib.pyplot.clf()
-		matplotlib.pyplot.close()
+		buffer = io.BytesIO()
+		figure.savefig(buffer, format = "png")
+		buffer.seek(0)
+		await ctx.embed_reply(image_url = "attachment://graph.png", 
+								file = discord.File(buffer, filename = "graph.png"))
 	
 	def string_to_equation(self, string):
 		replacements = {'^': "**"}
