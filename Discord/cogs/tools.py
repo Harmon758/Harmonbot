@@ -123,8 +123,9 @@ class Tools(commands.Cog):
 		# Initialize values
 		spoiler_text = textwrap.fill(text, character_wrap)
 		spoiler_title = textwrap.fill(f"{ctx.author.display_name}'s {name} spoiler", character_wrap)
-		await ctx.author.avatar_url.save(self.bot.data_path + "/temp/spoiler_avatar.png")
-		avatar = Image.open(self.bot.data_path + "/temp/spoiler_avatar.png")
+		buffer = io.BytesIO()
+		await ctx.author.avatar_url.save(buffer, seek_begin = True)
+		avatar = Image.open(buffer)
 		avatar.thumbnail((avatar_size, avatar_size))
 		content_font = ImageFont.truetype(content_font, content_font_size)
 		guide_font = ImageFont.truetype(guide_font, guide_font_size)
@@ -136,6 +137,7 @@ class Tools(commands.Cog):
 		## more optimal, but doesn't handle multiline
 		## text_width, text_height = map(max, zip(*map(content_font.getsize, (spoiler_text, spoiler_title))))
 		# Create frames
+		frames = []
 		for frame_number, frame_text in zip(range(1, 3), (spoiler_title, spoiler_text)):
 			frame = Image.new("RGBA", 
 								(text_width + (avatar_size + 2 * margin_size) * 2, text_height + text_vertical_margin * 2), 
@@ -154,11 +156,16 @@ class Tools(commands.Cog):
 							"(Hover to reveal spoiler)", font = guide_font, 
 							fill = discord.Color(self.bot.white_color).to_rgb() + (text_opacity,))
 			frame = Image.alpha_composite(frame, transparent_text)
-			frame.save(f"{self.bot.data_path}/temp/spoiler_frame_{frame_number}.png")
+			buffer = io.BytesIO()
+			frame.save(buffer, "PNG")
+			buffer.seek(0)
+			frames.append(buffer)
 		# Create + send .gif
-		images = [imageio.imread(f) for f in [f"{self.bot.data_path}/temp/spoiler_frame_{i}.png" for i in range(1, 3)]]
-		imageio.mimsave(self.bot.data_path + "/temp/spoiler.gif", images, loop = 1, duration = 0.5)
-		await ctx.channel.send(file = discord.File(self.bot.data_path + "/temp/spoiler.gif"))
+		images = [imageio.imread(f) for f in frames]
+		buffer = io.BytesIO()
+		imageio.mimsave(buffer, images, "GIF", loop = 1, duration = 0.5)
+		buffer.seek(0)
+		await ctx.channel.send(file = discord.File(buffer, filename = "spoiler.gif"))
 		await self.bot.attempt_delete_message(response)
 	
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], 
