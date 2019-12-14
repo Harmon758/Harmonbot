@@ -131,7 +131,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(str(scipy.linalg.tanm(matrix)))
 	
 	@tan.command(name = "hyperbolic", aliases = ['h'])
-	async def tan_hyperbolic(self, ctx, *, matrix : Matrix):
+	async def tan_hyperbolic(self, ctx, *, matrix: Matrix):
 		'''Hyperbolic tangent of a matrix'''
 		await ctx.embed_reply(str(scipy.linalg.tanhm(matrix)))
 	
