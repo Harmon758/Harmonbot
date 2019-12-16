@@ -241,7 +241,7 @@ if __name__ == "__main__":
 				return await ctx.embed_reply("Prefixes: " + ' '.join(f"`{prefix}`" for prefix in prefixes))
 		
 		# Chatbot
-		if message.content.startswith((ctx.me.mention, ctx.me.mention.replace('!', ""))):
+		if message.content.startswith((ctx.me.mention, ctx.me.mention.replace('!', ""), ctx.me.mention.replace('@', "@!"))):
 			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
 			aiml_response = ctx.bot.aiml_kernel.respond(content, sessionID = author.id)
 			# TODO: Handle brain not loaded?
