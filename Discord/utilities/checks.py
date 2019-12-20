@@ -110,14 +110,17 @@ def not_forbidden():
 	async def predicate(ctx):
 		if ctx.channel.type is discord.ChannelType.private:
 			return True
-		permitted = await ctx.get_permission(ctx.command.name, id = ctx.author.id)
-		if permitted or permitted is None:
+		command = ctx.command
+		permitted = await ctx.get_permission(command.name, id = ctx.author.id)
+		while command.parent is not None and permitted is None:
+			command = command.parent
+			permitted = await ctx.get_permission(command.name, id = ctx.author.id)
+		if permitted is not False:
 			return True
 		try:
 			return await is_server_owner().predicate(ctx)
 		except errors.NotServerOwner:
 			raise errors.NotPermitted
-		# TODO: Include subcommands?
 	
 	return commands.check(predicate)
 
