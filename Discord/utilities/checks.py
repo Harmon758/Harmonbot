@@ -155,15 +155,16 @@ async def is_permitted_check(ctx):
 	command = ctx.command
 	permitted = await ctx.get_permission(command.name, id = ctx.author.id)
 	while command.parent is not None and not permitted:
-		# permitted is None instead?
 		command = command.parent
 		permitted = await ctx.get_permission(command.name, id = ctx.author.id)
-		# include non-final parent commands?
+		if permitted:
+			return True
+		if permitted is not None:
+			break
 	try:
-		is_server_owner = await is_server_owner().predicate(ctx)
+		return await is_server_owner().predicate(ctx)
 	except errors.NotServerOwner:
-		is_server_owner = False
-	return permitted or is_server_owner
+		return False
 
 def is_permitted():
 	
