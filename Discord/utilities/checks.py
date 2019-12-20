@@ -4,8 +4,6 @@ from discord.ext import commands
 
 from utilities import errors
 
-# Decorators & Predicates
-
 def is_server_owner():
 	
 	async def predicate(ctx):
@@ -84,13 +82,13 @@ def dm_or_has_capability(*permissions, guild = False):
 	
 	return commands.check(predicate)
 
-def has_permissions_and_capability(*, guild = False, **permissions):
+def has_permissions_and_capability(*, channel = None, guild = False, **permissions):
 	
 	async def predicate(ctx):
-		if ctx.channel.type is discord.ChannelType.private:
+		if (channel or ctx.channel).type is discord.ChannelType.private:
 			return False
-		await has_permissions(guild = guild, **permissions).predicate(ctx)
-		return has_capability(*permissions.keys(), guild = guild).predicate(ctx)
+		await has_permissions(channel = channel, guild = guild, **permissions).predicate(ctx)
+		return has_capability(*permissions.keys(), channel = channel, guild = guild).predicate(ctx)
 	
 	return commands.check(predicate)
 
@@ -142,12 +140,4 @@ def is_permitted():
 			raise errors.NotPermitted
 	
 	return commands.check(predicate)
-
-# Functions
-
-async def has_permissions_and_capability_check(ctx, channel = None, guild = False, **permissions):
-	channel = channel or ctx.channel
-	# TODO: if owner?
-	await has_permissions(channel = channel, guild = guild, **permissions).predicate(ctx)
-	has_capability(*permissions.keys(), channel = channel, guild = guild).predicate(ctx)
 
