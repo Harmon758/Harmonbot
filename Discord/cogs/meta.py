@@ -367,8 +367,12 @@ class Meta(commands.Cog):
 		# TODO: Handle in DMs
 		activity = ctx.me.activity
 		if not name:
-			await ctx.embed_reply(activity.name)
-		elif checks.is_owner_check(ctx):
+			return await ctx.embed_reply(activity.name)
+		try:
+			is_owner = await commands.is_owner().predicate(ctx)
+		except commands.NotOwner:
+			is_owner = False
+		if is_owner:
 			if not activity:
 				activity = discord.Activity(name = name, type = discord.ActivityType.playing)
 			else:
@@ -412,8 +416,12 @@ class Meta(commands.Cog):
 		'''
 		activity = ctx.me.activity
 		if not type:
-			await ctx.embed_reply(str(activity.type).replace("ActivityType.", ""))
-		elif checks.is_owner_check(ctx):
+			return await ctx.embed_reply(str(activity.type).replace("ActivityType.", ""))
+		try:
+			is_owner = await commands.is_owner().predicate(ctx)
+		except commands.NotOwner:
+			is_owner = False
+		if is_owner:
 			# TODO: lowercase converter
 			if type.lower() in ("play", "stream", "listen", "watch"):
 				type = type.lower() + "ing"
@@ -439,8 +447,12 @@ class Meta(commands.Cog):
 		'''My activity url'''
 		activity = ctx.me.activity
 		if not url:
-			await ctx.embed_reply(activity.url)
-		elif checks.is_owner_check(ctx):
+			return await ctx.embed_reply(activity.url)
+		try:
+			is_owner = await commands.is_owner().predicate(ctx)
+		except commands.NotOwner:
+			is_owner = False
+		if is_owner:
 			if not activity:
 				activity = discord.Streaming(name = random.choice(self.bot.game_statuses), url = url)
 			else:
@@ -455,8 +467,12 @@ class Meta(commands.Cog):
 	async def harmonbot_avatar(self, ctx, filename : str = ""):
 		'''My avatar'''
 		if not filename:
-			await ctx.embed_reply(title = "My avatar", image_url = ctx.me.avatar_url)
-		elif checks.is_owner_check(ctx):
+			return await ctx.embed_reply(title = "My avatar", image_url = ctx.me.avatar_url)
+		try:
+			is_owner = await commands.is_owner().predicate(ctx)
+		except commands.NotOwner:
+			is_owner = False
+		if is_owner:
 			if not os.path.isfile(f"{self.bot.data_path}/avatars/{filename}"):
 				await ctx.embed_reply(":no_entry: Avatar not found")
 				return
@@ -472,8 +488,12 @@ class Meta(commands.Cog):
 	async def harmonbot_nickname(self, ctx, *, nickname : str = ""):
 		'''My nickname'''
 		if not nickname:
-			await ctx.embed_reply(ctx.me.nick)
-		elif checks.is_owner_check(ctx):
+			return await ctx.embed_reply(ctx.me.nick)
+		try:
+			is_owner = await commands.is_owner().predicate(ctx)
+		except commands.NotOwner:
+			is_owner = False
+		if is_owner:
 			await ctx.me.edit(nick = nickname)
 		else:
 			raise commands.NotOwner
