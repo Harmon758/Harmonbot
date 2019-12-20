@@ -442,7 +442,7 @@ class Meta(commands.Cog):
 			await ctx.embed_reply(activity.url)
 		elif checks.is_owner_check(ctx):
 			if not activity:
-				activity = discord.Stream(name = random.choice(self.bot.game_statuses), url = url)
+				activity = discord.Streaming(name = random.choice(self.bot.game_statuses), url = url)
 			else:
 				activity.url = url
 			await self.bot.change_presence(activity = activity)
