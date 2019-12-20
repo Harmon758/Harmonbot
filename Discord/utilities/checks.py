@@ -105,7 +105,7 @@ def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 	
 	return commands.check(predicate)
 
-async def not_forbidden_check(ctx):
+async def not_forbidden_predicate(ctx):
 	if ctx.channel.type is discord.ChannelType.private:
 		return True
 	permitted = await ctx.get_permission(ctx.command.name, id = ctx.author.id)
@@ -114,15 +114,8 @@ async def not_forbidden_check(ctx):
 	try:
 		return await is_server_owner().predicate(ctx)
 	except errors.NotServerOwner:
-		return False
-	# TODO: Include subcommands?
-
-async def not_forbidden_predicate(ctx):
-	not_forbidden = await not_forbidden_check(ctx)
-	if not_forbidden:
-		return True
-	else:
 		raise errors.NotPermitted
+	# TODO: Include subcommands?
 
 def not_forbidden():
 	return commands.check(not_forbidden_predicate)
