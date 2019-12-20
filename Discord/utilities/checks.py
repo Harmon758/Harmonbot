@@ -36,22 +36,15 @@ def is_voice_connected():
 	
 	return commands.check(predicate)
 
-async def has_permissions_check(ctx, permissions, *, channel = None, guild = False):
-	channel = channel or ctx.channel
-	author_permissions = ctx.author.guild_permissions if guild else channel.permissions_for(ctx.author)
-	try:
-		is_owner = await commands.is_owner().predicate(ctx)
-	except commands.NotOwner:
-		is_owner = False
-	return all(getattr(author_permissions, permission, None) == setting for permission, setting in permissions.items()) or is_owner
-
-def has_permissions(*, guild = False, **permissions):
+def has_permissions(*, channel = None, guild = False, **permissions):
 	
 	async def predicate(ctx):
-		has_permissions = await has_permissions_check(ctx, permissions, guild = guild)
-		if has_permissions:
+		author_permissions = ctx.author.guild_permissions if guild else (channel or ctx.channel).permissions_for(ctx.author)
+		if all(getattr(author_permissions, permission, None) == setting for permission, setting in permissions.items()):
 			return True
-		else:
+		try:
+			return await commands.is_owner().predicate(ctx)
+		except commands.NotOwner:
 			raise errors.MissingPermissions
 	
 	return commands.check(predicate)
@@ -59,11 +52,9 @@ def has_permissions(*, guild = False, **permissions):
 def dm_or_has_permissions(*, guild = False, **permissions):
 	
 	async def predicate(ctx):
-		has_permissions = await has_permissions_check(ctx, permissions, guild = guild)
-		if ctx.channel.type is discord.ChannelType.private or has_permissions:
+		if ctx.channel.type is discord.ChannelType.private:
 			return True
-		else:
-			raise errors.MissingPermissions
+		return await has_permissions(guild = guild, **permissions).predicate(ctx)
 	
 	return commands.check(predicate)
 
@@ -97,10 +88,8 @@ def has_permissions_and_capability(*, guild = False, **permissions):
 	async def predicate(ctx):
 		if ctx.channel.type is discord.ChannelType.private:
 			return False
-		has_permissions = await has_permissions_check(ctx, permissions, guild = guild)
-		if not has_permissions:
-			raise errors.MissingPermissions
-		elif not has_capability_check(ctx, permissions.keys(), guild = guild):
+		await has_permissions(guild = guild, **permissions).predicate(ctx)
+		if not has_capability_check(ctx, permissions.keys(), guild = guild):
 			raise errors.MissingCapability(permissions.keys())
 		else:
 			return True
@@ -113,10 +102,8 @@ def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 	async def predicate(ctx):
 		if ctx.channel.type is discord.ChannelType.private:
 			return True
-		has_permissions = await has_permissions_check(ctx, permissions, guild = guild)
-		if not has_permissions:
-			raise errors.MissingPermissions
-		elif not has_capability_check(ctx, permissions.keys(), guild = guild):
+		await has_permissions(guild = guild, **permissions).predicate(ctx)
+		if not has_capability_check(ctx, permissions.keys(), guild = guild):
 			raise errors.MissingCapability(permissions.keys())
 		else:
 			return True
@@ -179,9 +166,7 @@ def is_permitted():
 async def has_permissions_and_capability_check(ctx, channel = None, guild = False, **permissions):
 	channel = channel or ctx.channel
 	# TODO: if owner?
-	has_permissions = await has_permissions_check(ctx, permissions, channel = channel, guild = guild)
-	if not has_permissions:
-		raise errors.MissingPermissions
-	elif not has_capability_check(ctx, permissions.keys(), channel = channel, guild = guild):
+	await has_permissions(channel = channel, guild = guild, **permissions).predicate(ctx)
+	if not has_capability_check(ctx, permissions.keys(), channel = channel, guild = guild):
 		raise errors.MissingCapability(permissions.keys())
 
