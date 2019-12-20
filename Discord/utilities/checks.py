@@ -39,7 +39,10 @@ def is_voice_connected():
 def has_permissions(*, channel = None, guild = False, **permissions):
 	
 	async def predicate(ctx):
-		author_permissions = ctx.author.guild_permissions if guild else (channel or ctx.channel).permissions_for(ctx.author)
+		if guild:
+			author_permissions = ctx.author.guild_permissions
+		else:
+			author_permissions = (channel or ctx.channel).permissions_for(ctx.author)
 		if all(getattr(author_permissions, permission, None) == setting for permission, setting in permissions.items()):
 			return True
 		try:
