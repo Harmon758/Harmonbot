@@ -57,7 +57,7 @@ class Respects(commands.Cog):
 		)
 	
 	async def cog_check(self, ctx):
-		return await checks.not_forbidden_predicate(ctx)
+		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["respect"], invoke_without_command = True, case_insensitive = True)
 	async def respects(self, ctx):

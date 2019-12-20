@@ -80,7 +80,7 @@ class Battlerite(commands.Cog):
 			json.dump(self.mappings, mappings_file, indent = 4)
 	
 	async def cog_check(self, ctx):
-		return await checks.not_forbidden_predicate(ctx)
+		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(hidden = True, 
 					invoke_without_command = True, case_insensitive = True)

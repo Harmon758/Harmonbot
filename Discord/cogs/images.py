@@ -37,7 +37,7 @@ class Images(commands.Cog):
 		utilities.remove_as_subcommand(self, "Search.search", "imgur")
 	
 	async def cog_check(self, ctx):
-		return await checks.not_forbidden_predicate(ctx)
+		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["images", "photo", "photos"], invoke_without_command = True, case_insensitive = True)
 	async def image(self, ctx, *, query):

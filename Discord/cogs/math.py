@@ -21,7 +21,7 @@ class Math(commands.Cog):
 	'''
 	
 	async def cog_check(self, ctx):
-		return await checks.not_forbidden_predicate(ctx)
+		return await checks.not_forbidden().predicate(ctx)
 	
 	# Basic
 	

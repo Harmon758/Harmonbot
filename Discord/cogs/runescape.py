@@ -20,7 +20,7 @@ class Runescape(commands.Cog):
 		self.bot = bot
 	
 	async def cog_check(self, ctx):
-		return await checks.not_forbidden_predicate(ctx)
+		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["rs"], invoke_without_command = True, case_insensitive = True)
 	async def runescape(self, ctx):

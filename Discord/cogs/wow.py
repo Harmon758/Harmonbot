@@ -15,7 +15,7 @@ class WoW(commands.Cog):
 		self.bot = bot
 	
 	async def cog_check(self, ctx):
-		return await checks.not_forbidden_predicate(ctx)
+		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["worldofwarcraft", "world_of_warcraft"], 
 					invoke_without_command = True, case_insensitive = True)

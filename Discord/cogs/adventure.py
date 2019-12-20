@@ -59,7 +59,7 @@ class Adventure(commands.Cog):
 		)
 	
 	async def cog_check(self, ctx):
-		return await checks.not_forbidden_predicate(ctx)
+		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["rpg"], invoke_without_command = True, case_insensitive = True)
 	async def adventure(self, ctx):

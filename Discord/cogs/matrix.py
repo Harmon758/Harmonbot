@@ -19,7 +19,7 @@ class Matrix(commands.Cog):
 			# TODO: check matrix
 	
 	async def cog_check(self, ctx):
-		return await checks.not_forbidden_predicate(ctx)
+		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["matrices"], invoke_without_command = True, case_insensitive = True)
 	async def matrix(self, ctx):
