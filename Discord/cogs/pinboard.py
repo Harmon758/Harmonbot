@@ -279,7 +279,7 @@ class Pinboard(commands.Cog):
 			return
 		pinboard_channel = self.bot.get_channel(pinboard_channel_id)
 		pinned_message_channel = self.bot.get_channel(channel_id)
-		if not private_channels_setting and pinned_message_channel.overwrites_for(payload.member.guild.default_role).read_messages == False:
+		if not private_channels_setting and pinned_message_channel.overwrites_for(payload.member.guild.default_role).read_messages is False:
 			# Set to ignore private channels and message is in private channel
 			return
 		pinned_message = await pinned_message_channel.fetch_message(message_id)
