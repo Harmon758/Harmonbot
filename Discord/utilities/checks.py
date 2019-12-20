@@ -4,6 +4,9 @@ from discord.ext import commands
 
 from utilities import errors
 
+# TODO: Check necessity of all checks
+# TODO: Use native discord.py check predicates?
+
 def is_server_owner():
 	
 	async def predicate(ctx):
@@ -92,7 +95,6 @@ def has_permissions_and_capability(*, channel = None, guild = False, **permissio
 	
 	return commands.check(predicate)
 
-# Necessary?
 def dm_or_has_permissions_and_capability(*, guild = False, **permissions):
 	
 	async def predicate(ctx):
