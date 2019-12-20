@@ -55,7 +55,10 @@ class Audio(commands.Cog):
 		if not ctx.guild.voice_client:
 			if ctx.guild.id not in self.players:
 				self.players[ctx.guild.id] = audio_player.AudioPlayer.from_context(ctx)
-			is_server_owner = await checks.is_server_owner_check(ctx)
+			try:
+				is_server_owner = await checks.is_server_owner().predicate(ctx)
+			except errors.NotServerOwner:
+				is_server_owner = False
 			permitted = await ctx.get_permission("join", id = ctx.author.id)
 			if is_server_owner or permitted:
 				if ctx.author.voice and ctx.author.voice.channel:

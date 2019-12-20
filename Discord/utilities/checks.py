@@ -6,20 +6,16 @@ from utilities import errors
 
 # Decorators & Predicates
 
-async def is_server_owner_check(ctx):
-	try:
-		is_owner = await commands.is_owner().predicate(ctx)
-	except commands.NotOwner:
-		is_owner = False
-	return ctx.channel.type is discord.ChannelType.private or ctx.author == ctx.guild.owner or is_owner
-
 def is_server_owner():
 	
 	async def predicate(ctx):
-		is_server_owner = await is_server_owner_check(ctx)
-		if is_server_owner:
+		if ctx.channel.type is discord.ChannelType.private:
 			return True
-		else:
+		if ctx.author == ctx.guild.owner:
+			return True
+		try:
+			return await commands.is_owner().predicate(ctx)
+		except commands.NotOwner:
 			raise errors.NotServerOwner
 	
 	return commands.check(predicate)
@@ -31,7 +27,10 @@ def is_voice_connected():
 	
 	async def predicate(ctx):
 		if not is_voice_connected_check(ctx):
-			is_server_owner = await is_server_owner_check(ctx)
+			try:
+				is_server_owner = await is_server_owner().predicate(ctx)
+			except errors.NotServerOwner:
+				is_server_owner = False
 			permitted = await ctx.get_permission("join", id = ctx.author.id)
 			if is_server_owner or permitted:
 				raise errors.PermittedVoiceNotConnected
@@ -132,7 +131,10 @@ async def not_forbidden_check(ctx):
 	if ctx.channel.type is discord.ChannelType.private:
 		return True
 	permitted = await ctx.get_permission(ctx.command.name, id = ctx.author.id)
-	is_server_owner = await is_server_owner_check(ctx)
+	try:
+		is_server_owner = await is_server_owner().predicate(ctx)
+	except errors.NotServerOwner:
+		is_server_owner = False
 	# TODO: Include subcommands?
 	return permitted or permitted is None or is_server_owner
 
@@ -157,7 +159,10 @@ async def is_permitted_check(ctx):
 		command = command.parent
 		permitted = await ctx.get_permission(command.name, id = ctx.author.id)
 		# include non-final parent commands?
-	is_server_owner = await is_server_owner_check(ctx)
+	try:
+		is_server_owner = await is_server_owner().predicate(ctx)
+	except errors.NotServerOwner:
+		is_server_owner = False
 	return permitted or is_server_owner
 
 def is_permitted():
