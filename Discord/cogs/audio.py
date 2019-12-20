@@ -168,10 +168,19 @@ class Audio(commands.Cog):
 		# TODO: Implement override permission
 		player = self.players[ctx.guild.id]
 		try:
-			permitted = await checks.is_permitted().predicate(ctx)
+			await checks.is_permitted().predicate(ctx)
 		except errors.NotPermitted:
-			permitted = False
-		if ctx.author.id in (ctx.guild.owner.id, self.bot.owner_id) or permitted:
+			if ctx.author in ctx.guild.voice_client.channel.members:
+				if not ctx.guild.voice_client.is_playing() and not ctx.guild.voice_client.is_paused():
+					await ctx.embed_reply(":no_entry: There is no song to skip")
+				elif ctx.author.id in player.skip_votes:
+					await ctx.embed_reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
+				else:
+					vote = player.vote_skip(ctx.author)
+					await ctx.embed_reply(":white_check_mark: You voted to skip the current song\n{}".format("Skips: {}/{}".format(vote, player.skip_votes_required) if vote else ":next_track: Song skipped"))
+			else:
+				await ctx.embed_reply(":no_entry: You're not even listening!")
+		else:
 			if number:
 				try:
 					song = await player.skip_specific(number)
@@ -186,16 +195,6 @@ class Audio(commands.Cog):
 					# TODO: Include title of skipped song
 				else:
 					await ctx.embed_reply(":no_entry: There is no song to skip")
-		elif ctx.author in ctx.guild.voice_client.channel.members:
-			if not ctx.guild.voice_client.is_playing() and not ctx.guild.voice_client.is_paused():
-				await ctx.embed_reply(":no_entry: There is no song to skip")
-			elif ctx.author.id in player.skip_votes:
-				await ctx.embed_reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
-			else:
-				vote = player.vote_skip(ctx.author)
-				await ctx.embed_reply(":white_check_mark: You voted to skip the current song\n{}".format("Skips: {}/{}".format(vote, player.skip_votes_required) if vote else ":next_track: Song skipped"))
-		else:
-			await ctx.embed_reply(":no_entry: You're not even listening!")
 	
 	@skip.command(name = "to")
 	@commands.guild_only()
