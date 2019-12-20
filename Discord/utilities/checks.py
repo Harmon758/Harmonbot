@@ -64,8 +64,11 @@ def dm_or_has_permissions(*, guild = False, **permissions):
 def has_capability(*permissions, channel = None, guild = False):
 	
 	def predicate(ctx):
-		bot_permissions = ctx.me.guild_permissions if guild else (channel or ctx.channel).permissions_for(ctx.me)
-		if all(getattr(bot_permissions, permission, None) == True for permission in permissions):
+		if guild:
+			bot_permissions = ctx.me.guild_permissions
+		else:
+			bot_permissions = (channel or ctx.channel).permissions_for(ctx.me)
+		if all(getattr(bot_permissions, permission, None) for permission in permissions):
 			return True
 		else:
 			raise errors.MissingCapability(permissions)
