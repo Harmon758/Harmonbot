@@ -20,22 +20,19 @@ def is_server_owner():
 	
 	return commands.check(predicate)
 
-def is_voice_connected_check(ctx):
-	return ctx.guild and ctx.guild.voice_client
-
 def is_voice_connected():
 	
 	async def predicate(ctx):
-		if not is_voice_connected_check(ctx):
-			permitted = await ctx.get_permission("join", id = ctx.author.id)
-			if permitted:
-				raise errors.PermittedVoiceNotConnected
-			try:
-				await is_server_owner().predicate(ctx)
-				raise errors.PermittedVoiceNotConnected
-			except errors.NotServerOwner:
-				raise errors.NotPermittedVoiceNotConnected
-		return True
+		if ctx.guild and ctx.guild.voice_client:
+			return True
+		permitted = await ctx.get_permission("join", id = ctx.author.id)
+		if permitted:
+			raise errors.PermittedVoiceNotConnected
+		try:
+			await is_server_owner().predicate(ctx)
+			raise errors.PermittedVoiceNotConnected
+		except errors.NotServerOwner:
+			raise errors.NotPermittedVoiceNotConnected
 	
 	return commands.check(predicate)
 
