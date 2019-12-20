@@ -167,7 +167,10 @@ class Audio(commands.Cog):
 		'''
 		# TODO: Implement override permission
 		player = self.players[ctx.guild.id]
-		permitted = await checks.is_permitted_check(ctx)
+		try:
+			permitted = await checks.is_permitted().predicate(ctx)
+		except errors.NotPermitted:
+			permitted = False
 		if ctx.author.id in (ctx.guild.owner.id, self.bot.owner_id) or permitted:
 			if number:
 				try:

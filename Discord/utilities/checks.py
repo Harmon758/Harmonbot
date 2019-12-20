@@ -124,29 +124,21 @@ def not_forbidden():
 	
 	return commands.check(predicate)
 
-async def is_permitted_check(ctx):
-	'''Check if permitted'''
-	if ctx.channel.type is discord.ChannelType.private:
-		return True
-	command = ctx.command
-	permitted = await ctx.get_permission(command.name, id = ctx.author.id)
-	while command.parent is not None and permitted is None:
-		command = command.parent
-		permitted = await ctx.get_permission(command.name, id = ctx.author.id)
-	if permitted:
-		return True
-	try:
-		return await is_server_owner().predicate(ctx)
-	except errors.NotServerOwner:
-		return False
-
 def is_permitted():
 	
 	async def predicate(ctx):
-		permitted = await is_permitted_check(ctx)
+		if ctx.channel.type is discord.ChannelType.private:
+			return True
+		command = ctx.command
+		permitted = await ctx.get_permission(command.name, id = ctx.author.id)
+		while command.parent is not None and permitted is None:
+			command = command.parent
+			permitted = await ctx.get_permission(command.name, id = ctx.author.id)
 		if permitted:
 			return True
-		else:
+		try:
+			return await is_server_owner().predicate(ctx)
+		except errors.NotServerOwner:
 			raise errors.NotPermitted
 	
 	return commands.check(predicate)
