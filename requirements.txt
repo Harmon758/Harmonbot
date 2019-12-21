@@ -17,7 +17,7 @@ gitpython==3.0.3
 hypothesis==4.56.1
 imageio==2.6.1
 imgurpython==1.1.7
-inflect==3.0.2
+inflect==4.0.0
 isodate==0.6.0
 matplotlib==3.1.2
 more-itertools==8.0.2
