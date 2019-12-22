@@ -224,10 +224,15 @@ if __name__ == "__main__":
 				return
 			return await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 		
+		mentions = (ctx.me.mention, 
+					ctx.me.mention.replace('!', "") if '!' in ctx.me.mention else ctx.me.mention.replace('@', "@!"))
+		
 		# DM or mention
-		if channel.type is discord.ChannelType.private or ctx.me.mention in message.content:
-			content = message.content.replace(ctx.me.mention, "").strip().lower()
-			# TODO: Replace ctx.me.mention.replace('!', "") as well?
+		if channel.type is discord.ChannelType.private or any(mention in message.content for mention in mentions):
+			content = message.content
+			for mention in mentions:
+				content = content.replace(mention, "")
+			content = content.strip().lower()
 			try:
 				prefixes = await ctx.bot.command_prefix(ctx.bot, message)
 			except TypeError:  # if Beta (*)
@@ -241,7 +246,7 @@ if __name__ == "__main__":
 				return await ctx.embed_reply("Prefixes: " + ' '.join(f"`{prefix}`" for prefix in prefixes))
 		
 		# Chatbot
-		if message.content.startswith((ctx.me.mention, ctx.me.mention.replace('!', ""), ctx.me.mention.replace('@', "@!"))):
+		if message.content.startswith(mentions):
 			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
 			aiml_response = ctx.bot.aiml_kernel.respond(content, sessionID = author.id)
 			# TODO: Handle brain not loaded?
