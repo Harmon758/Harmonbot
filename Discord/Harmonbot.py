@@ -220,8 +220,7 @@ if __name__ == "__main__":
 			elif converted_mass_value:
 				converted_value = converted_mass_value
 			else:
-				await ctx.embed_reply(f"Units, {unit1} and/or {unit2}, not found\nSee the conversions command")
-				return
+				return await ctx.embed_reply(f"Units, {unit1} and/or {unit2}, not found\nSee the conversions command")
 			return await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 		
 		mentions = (ctx.me.mention, 
