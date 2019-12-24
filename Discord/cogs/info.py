@@ -26,7 +26,7 @@ class Info(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		# Add info subcommands as subcommands of corresponding commands
-		self.info_subcommands = ((self.role, "Role.role"), (self.server, "Server.server"), (self.user, "Discord.user"))
+		self.info_subcommands = ((self.role, "Role.role"), (self.server, "Server.server"), (self.user, "User.user"))
 		for command, parent_name in self.info_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "info", aliases = ["information"])
 	

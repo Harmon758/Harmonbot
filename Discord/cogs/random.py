@@ -46,7 +46,7 @@ class Random(commands.Cog):
 									(self.giphy, "Images.giphy"), (self.map, "Location.map"), 
 									(self.photo, "Images.image"), (self.streetview, "Location.streetview"), 
 									(self.time, "Location.time"), (self.uesp, "Search.uesp"), 
-									(self.user, "Discord.user"), (self.wikipedia, "Search.wikipedia"), 
+									(self.user, "User.user"), (self.wikipedia, "Search.wikipedia"), 
 									(self.xkcd, "Resources.xkcd"))
 		for command, parent_name in self.random_subcommands:
 			utilities.add_as_subcommand(self, command, parent_name, "random")
