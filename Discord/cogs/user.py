@@ -2,6 +2,8 @@
 import discord
 from discord.ext import commands
 
+import inspect
+
 from modules import utilities
 from utilities import checks
 
@@ -12,6 +14,10 @@ class User(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		for name, command in inspect.getmembers(self):
+			if isinstance(command, commands.Command) and command.parent is None and name != "user":
+				self.bot.add_command(command)
+				self.user.add_command(command)
 	
 	# TODO: add commands
 	# TODO: role removal
@@ -19,10 +25,13 @@ class User(commands.Cog):
 	@commands.group(aliases = ["member"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def user(self, ctx):
-		'''User'''
+		'''
+		User
+		All user subcommands are also commands
+		'''
 		await ctx.send_help(ctx.command)
 	
-	@user.command(aliases = ["addrole"])
+	@commands.command(aliases = ["addrole"])
 	@commands.guild_only()
 	@checks.has_permissions_and_capability(manage_roles = True)
 	async def add_role(self, ctx, member : discord.Member, *, role : discord.Role):
@@ -67,7 +76,7 @@ class User(commands.Cog):
 		if not found:
 			await ctx.embed_reply(name + " was not found on this server")
 	
-	@user.command()
+	@commands.command()
 	@checks.not_forbidden()
 	async def name(self, ctx, *, user : discord.Member):
 		'''The name of a user'''
