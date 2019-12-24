@@ -66,7 +66,7 @@ class User(commands.Cog):
 		found = False
 		for member in ctx.guild.members:
 			if member.name == name:
-				await ctx.embed_reply(name + "'s discriminator: #" + member.discriminator, footer_text = str(member), footer_icon_url = member.avatar_url)
+				await ctx.embed_reply(member.mention + "'s discriminator: #" + member.discriminator, footer_text = str(member), footer_icon_url = member.avatar_url)
 				found = True
 		if not found:
 			await ctx.embed_reply(name + " was not found on this server")
