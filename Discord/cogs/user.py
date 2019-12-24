@@ -76,22 +76,16 @@ class User(commands.Cog):
 		if not found:
 			await ctx.embed_reply(name + " was not found on this server")
 	
+	@commands.command(name = "id")
+	@checks.not_forbidden()
+	async def id_command(self, ctx, *, user : discord.Member):
+		'''Get ID of user'''
+		# Include mention?
+		await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
+	
 	@commands.command()
 	@checks.not_forbidden()
 	async def name(self, ctx, *, user : discord.Member):
 		'''The name of a user'''
-		# Include mention?
 		await ctx.embed_reply(user.mention, footer_text = str(user), footer_icon_url = user.avatar_url)
-	
-	@commands.command(aliases = ["usertoid", "usernametoid", "name_to_id", "user_to_id", "username_to_id"])
-	@commands.guild_only()
-	@checks.not_forbidden()
-	async def nametoid(self, ctx, *, name : str):
-		'''Convert username to id'''
-		user = await utilities.get_user(ctx, name)
-		if not user:
-			await ctx.embed_reply(":no_entry: Error: {} was not found on this server".format(name))
-		else:
-			# Include mention?
-			await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
 
