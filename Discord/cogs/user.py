@@ -54,7 +54,7 @@ class User(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def discriminator(self, ctx, *, user : Optional[discord.Member]):
+	async def discriminator(self, ctx, *, user: Optional[discord.Member]):
 		'''
 		Get a discriminator
 		Your own or someone else's discriminator
