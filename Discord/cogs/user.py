@@ -54,22 +54,15 @@ class User(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def discriminator(self, ctx, *, name : str = ""):
+	async def discriminator(self, ctx, *, user : discord.Member = None):
 		'''
 		Get a discriminator
 		Your own or someone else's discriminator
 		'''
-		if not name:
-			return await ctx.embed_reply("Your discriminator: #" + ctx.author.discriminator)
-		if not ctx.guild:
-			return await ctx.embed_reply(":no_entry: Please use that command in a server")
-		found = False
-		for member in ctx.guild.members:
-			if member.name == name:
-				await ctx.embed_reply(member.mention + "'s discriminator: #" + member.discriminator, footer_text = str(member), footer_icon_url = member.avatar_url)
-				found = True
-		if not found:
-			await ctx.embed_reply(name + " was not found on this server")
+		if not user:
+			await ctx.embed_reply("Your discriminator: #" + ctx.author.discriminator)
+		else:
+			await ctx.embed_reply(user.mention + "'s discriminator: #" + user.discriminator, footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	@commands.command(name = "id")
 	@checks.not_forbidden()
