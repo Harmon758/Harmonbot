@@ -41,19 +41,15 @@ class User(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def avatar(self, ctx, *, name : str = ""):
+	async def avatar(self, ctx, *, user : discord.Member = None):
 		'''
 		See a bigger version of an avatar
 		Your own or someone else's avatar
 		'''
-		if not name:
+		if not user:
 			await ctx.embed_reply(title = "Your avatar", image_url = ctx.author.avatar_url)
 		else:
-			user = await utilities.get_user(ctx, name)
-			if not user:
-				await ctx.embed_reply(":no_entry: Error: {} was not found on this server".format(name))
-			else:
-				await ctx.embed_reply(title = "{}'s avatar".format(user), image_url = user.avatar_url)
+			await ctx.embed_reply(title = "{}'s avatar".format(user), image_url = user.avatar_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
