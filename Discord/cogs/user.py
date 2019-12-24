@@ -70,11 +70,11 @@ class User(commands.Cog):
 	@checks.not_forbidden()
 	async def id_command(self, ctx, *, user: Optional[discord.Member]):
 		'''Get ID of user'''
-		# Include mention?
 		if not user:
 			await ctx.embed_reply(f"Your ID: {ctx.author.id}")
 		else:
-			await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
+			await ctx.embed_reply(f"{user.mention}'s ID: {user.id}", 
+									footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
