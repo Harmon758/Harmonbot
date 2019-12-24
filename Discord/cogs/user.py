@@ -49,7 +49,7 @@ class User(commands.Cog):
 		if not user:
 			await ctx.embed_reply(title = "Your avatar", image_url = ctx.author.avatar_url)
 		else:
-			await ctx.embed_reply(title = "{}'s avatar".format(user), image_url = user.avatar_url)
+			await ctx.embed_reply(title = f"{user}'s avatar", image_url = user.avatar_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
