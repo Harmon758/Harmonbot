@@ -48,8 +48,6 @@ class User(commands.Cog):
 		'''
 		if not name:
 			await ctx.embed_reply(title = "Your avatar", image_url = ctx.author.avatar_url)
-		elif not ctx.guild:
-			await ctx.embed_reply(":no_entry: Error: Please use that command in a server")
 		else:
 			user = await utilities.get_user(ctx, name)
 			if not user:
