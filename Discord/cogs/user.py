@@ -62,7 +62,7 @@ class User(commands.Cog):
 		if not user:
 			await ctx.embed_reply("Your discriminator: #" + ctx.author.discriminator)
 		else:
-			await ctx.embed_reply(user.mention + "'s discriminator: #" + user.discriminator, footer_text = str(user), footer_icon_url = user.avatar_url)
+			await ctx.embed_reply(f"{user.mention}'s discriminator: #{user.discriminator}", footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	@commands.command(name = "id")
 	@checks.not_forbidden()
