@@ -78,7 +78,7 @@ class User(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def name(self, ctx, *, user : discord.Member):
+	async def name(self, ctx, *, user: discord.Member):
 		'''The name of a user'''
 		await ctx.embed_reply(user.mention, footer_text = str(user), footer_icon_url = user.avatar_url)
 
