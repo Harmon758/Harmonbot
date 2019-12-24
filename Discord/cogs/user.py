@@ -42,7 +42,7 @@ class User(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def avatar(self, ctx, *, user : Optional[discord.Member]):
+	async def avatar(self, ctx, *, user: Optional[discord.Member]):
 		'''
 		See a bigger version of an avatar
 		Your own or someone else's avatar
