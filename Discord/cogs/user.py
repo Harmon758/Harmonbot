@@ -76,9 +76,14 @@ class User(commands.Cog):
 			await ctx.embed_reply(f"{user.mention}'s ID: {user.id}", 
 									footer_text = str(user), footer_icon_url = user.avatar_url)
 	
+	# TODO: Make general name command with subcommands
 	@commands.command()
 	@checks.not_forbidden()
-	async def name(self, ctx, *, user: discord.Member):
+	async def name(self, ctx, *, user: Optional[discord.Member]):
 		'''The name of a user'''
-		await ctx.embed_reply(user.mention, footer_text = str(user), footer_icon_url = user.avatar_url)
+		if not user:
+			await ctx.embed_reply(ctx.author.mention)
+		else:
+			await ctx.embed_reply(user.mention, 
+									footer_text = str(user), footer_icon_url = user.avatar_url)
 
