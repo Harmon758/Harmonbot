@@ -65,12 +65,16 @@ class User(commands.Cog):
 			await ctx.embed_reply(f"{user.mention}'s discriminator: #{user.discriminator}", 
 									footer_text = str(user), footer_icon_url = user.avatar_url)
 	
+	# TODO: Make general ID command with subcommands
 	@commands.command(name = "id")
 	@checks.not_forbidden()
-	async def id_command(self, ctx, *, user: discord.Member):
+	async def id_command(self, ctx, *, user: Optional[discord.Member]):
 		'''Get ID of user'''
 		# Include mention?
-		await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
+		if not user:
+			await ctx.embed_reply(f"Your ID: {ctx.author.id}")
+		else:
+			await ctx.embed_reply(user.id, footer_text = str(user), footer_icon_url = user.avatar_url)
 	
 	@commands.command()
 	@checks.not_forbidden()
