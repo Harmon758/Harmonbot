@@ -208,8 +208,7 @@ class AudioPlayer:
 	async def interrupt(self, source, *, clear_flag = True):
 		if self.interrupted and clear_flag:
 			return False
-		was_playing = self.guild.voice_client.is_playing()
-		if was_playing:  # Use := in Python 3.8
+		if was_playing := self.guild.voice_client.is_playing():
 			self.guild.voice_client.pause()
 		interrupted_source = self.guild.voice_client.source if isinstance(self.guild.voice_client.source, YTDLSource) else None
 		self.guild.voice_client.play(source, after = self.after_song)
