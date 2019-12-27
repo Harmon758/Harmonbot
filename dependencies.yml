@@ -1,9 +1,0 @@
-version: 2
-dependencies:
-- type: python
-  path: requirements.txt
-  settings:
-    python_version: "3.8.0"
-    github_labels:
-    - dependency update
-    related_pr_behavior: close
