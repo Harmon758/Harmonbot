@@ -312,8 +312,7 @@ class Tools(commands.Cog):
 			ctx.author.id
 		)
 		tags = [record["tag"] for record in records]
-		results = [t for t in tags if search in t]
-		if results:  # Use := in Python 3.8
+		if results := [t for t in tags if search in t]:
 			await ctx.embed_reply("{} tags found: {}".format(len(results), ", ".join(results)))
 			return
 		close_matches = difflib.get_close_matches(search, tags)
