@@ -141,7 +141,7 @@ class Matrix(commands.Cog):
 		await ctx.embed_reply(str(numpy.matrix(matrix).T))
 	
 	@transpose.command(name = "conjugate")
-	async def transpose_conjugate(self, ctx, *, matrix : Matrix):
+	async def transpose_conjugate(self, ctx, *, matrix: Matrix):
 		'''Conjugate trasponse of a matrix'''
 		await ctx.embed_reply(str(numpy.matrix(matrix).H))
 
