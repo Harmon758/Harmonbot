@@ -301,7 +301,7 @@ class Tools(commands.Cog):
 		await ctx.embed_reply(":ok_hand::skin-tone-2: {}'s tag has been deleted".format(owner.mention))
 	
 	@tag.command(name = "search", aliases = ["contains", "find"])
-	async def tag_search(self, ctx, *, search : str):
+	async def tag_search(self, ctx, *, search: str):
 		'''Search your tags'''
 		if (await self.check_no_tags(ctx)): return
 		records = await ctx.bot.db.fetch(
