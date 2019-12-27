@@ -356,8 +356,7 @@ class Trivia(commands.Cog):
 				continue
 			value_index = values.index(value)
 			category_id = list(board.keys())[row_number - 1]
-			clue = board[category_id]["clues"][value_index]
-			if not clue:  # Use := in Python 3.8
+			if not (clue := board[category_id]["clues"][value_index]):
 				await ctx.embed_reply(":no_entry: That question has already been chosen")
 				continue
 			self.active_jeopardy[ctx.guild.id]["answerer"] = None
@@ -379,8 +378,7 @@ class Trivia(commands.Cog):
 			answer = BeautifulSoup(html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]), 
 									"html.parser").get_text().replace("\\'", "'")
 			response = f"The answer was `{answer}`\n"
-			answerer = self.active_jeopardy[ctx.guild.id]["answerer"]
-			if answerer:  # Use := in Python 3.8
+			if answerer := self.active_jeopardy[ctx.guild.id]["answerer"]:
 				scores[answerer] = scores.get(answerer, 0) + int(value)
 				response += f"{answerer.mention} was right! They now have ${scores[answerer]}\n"
 			else:
