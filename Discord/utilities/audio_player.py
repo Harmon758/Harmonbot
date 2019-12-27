@@ -286,8 +286,7 @@ class AudioPlayer:
 			await self.bot.send_embed(self.text_channel, f":radio: Radio based on `{self.guild.voice_client.source.info['title']}` is now on")
 			self.radio_flag = True
 			videoid = self.guild.voice_client.source.info["id"]
-			was_playing = self.guild.voice_client.is_playing()
-			if was_playing:  # Use := in Python 3.8
+			if was_playing := self.guild.voice_client.is_playing():
 				self.guild.voice_client.pause()
 			while self.guild.voice_client and self.radio_flag:
 				url = f"https://www.googleapis.com/youtube/v3/search"
