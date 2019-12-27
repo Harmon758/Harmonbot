@@ -321,8 +321,6 @@ class RSS(commands.Cog):
 				await asyncio.sleep(10)
 				# TODO: Add variable for sleep time
 				# TODO: Remove persistently erroring feed or exponentially backoff?
-			except asyncio.CancelledError:  # Remove in Python 3.8
-				raise
 			except Exception as e:
 				print("Exception in RSS Task", file = sys.stderr)
 				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
