@@ -313,10 +313,10 @@ class Tools(commands.Cog):
 		)
 		tags = [record["tag"] for record in records]
 		if results := [t for t in tags if search in t]:
-			return await ctx.embed_reply("{} tags found: {}".format(len(results), ", ".join(results)))
+			return await ctx.embed_reply(f"{len(results)} tags found: {', '.join(results)}")
 		close_matches = difflib.get_close_matches(search, tags)
 		close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
-		await ctx.embed_reply("No tags found{}".format(close_matches))
+		await ctx.embed_reply(f"No tags found{close_matches}")
 	
 	@tag.command(name = "globalize", aliases = ["globalise"])
 	async def tag_globalize(self, ctx, tag : str):
