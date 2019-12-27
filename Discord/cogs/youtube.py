@@ -4,7 +4,6 @@ from discord.ext import commands, tasks
 
 import asyncio
 import datetime
-import itertools
 import json
 import logging
 import sys
