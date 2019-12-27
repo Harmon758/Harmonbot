@@ -5,7 +5,6 @@ from discord.ext import commands
 import inspect
 from typing import Optional
 
-from modules import utilities
 from utilities import checks
 
 def setup(bot):
@@ -20,8 +19,9 @@ class User(commands.Cog):
 				self.bot.add_command(command)
 				self.user.add_command(command)
 	
-	# TODO: add commands
-	# TODO: role removal
+	# TODO: Add commands
+	#       ban, role removal
+	#       username?, nickname?
 	
 	@commands.group(aliases = ["member"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
@@ -32,6 +32,7 @@ class User(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
+	# TODO: Integrate with role command
 	@commands.command(aliases = ["addrole"])
 	@commands.guild_only()
 	@checks.has_permissions_and_capability(manage_roles = True)
