@@ -184,8 +184,7 @@ class Random(commands.Cog):
 			data = await resp.text()
 		total = json.loads(data)["num"]
 		url = f"http://xkcd.com/{random.randint(1, total)}/info.0.json"
-		cog = self.bot.get_cog("Resources")
-		if cog:  # Use := in Python 3.8
+		if cog := self.bot.get_cog("Resources"):
 			await cog.process_xkcd(ctx, url)
 	
 	@commands.command(aliases = ["rabbit"])
