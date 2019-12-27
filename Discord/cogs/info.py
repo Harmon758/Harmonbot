@@ -97,14 +97,12 @@ class Info(commands.Cog):
 		text_count = sum(isinstance(channel, discord.TextChannel) for channel in ctx.guild.channels)
 		voice_count = sum(channel.type is discord.ChannelType.voice for channel in ctx.guild.channels)
 		bot_count = sum(m.bot for m in ctx.guild.members)
-		if ctx.guild.system_channel:  # Use := in Python 3.8
-			system_messages = ctx.guild.system_channel.mention
+		if system_messages := ctx.guild.system_channel:
+			system_messages = system_messages.mention
 			if ctx.guild.system_channel_flags.join_notifications:
 				system_messages += "\nRandom welcome messages"
 			if ctx.guild.system_channel_flags.premium_subscriptions:
 				system_messages += "\nBoosts"
-		else:
-			system_messages = ctx.guild.system_channel
 		fields = [("Owner", ctx.guild.owner.mention), ("ID", ctx.guild.id), 
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
 					("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"), 
