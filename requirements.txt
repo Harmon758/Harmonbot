@@ -28,7 +28,7 @@ pillow==6.2.1
 psutil==5.6.7
 pycountry==19.8.18
 pydealer==1.4.0
-pygost==4.0
+pygost==4.3
 pyowm==2.10.0
 pyparsing==2.4.6
 python-aiml==0.9.3
