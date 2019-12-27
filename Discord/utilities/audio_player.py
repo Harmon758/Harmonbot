@@ -259,8 +259,7 @@ class AudioPlayer:
 		if not self.library_flag:
 			await ctx.embed_send(":notes: Playing songs from my library")
 			self.library_flag = True
-			was_playing = self.guild.voice_client.is_playing()
-			if was_playing:  # Use := in Python 3.8
+			if was_playing := self.guild.voice_client.is_playing():
 				self.guild.voice_client.pause()
 			self.not_interrupted.clear()
 			while self.guild.voice_client and self.library_flag:
