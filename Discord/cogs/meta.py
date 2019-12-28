@@ -15,7 +15,6 @@ import sys
 import traceback
 
 import git
-import pkg_resources  # from setuptools
 import psutil
 
 from utilities import checks
@@ -334,9 +333,9 @@ class Meta(commands.Cog):
 	@commands.is_owner()
 	async def version_library(self, ctx, library : str):
 		try:
-			await ctx.embed_reply(pkg_resources.get_distribution(library).version)
-		except pkg_resources.DistributionNotFound as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(importlib.metadata.version(library))
+		except importlib.metadata.PackageNotFoundError:
+			await ctx.embed_reply(f":no_entry: Error: {library} library not found")
 	
 	@version.command(name = "opus", aliases = ["libopus"])
 	async def version_opus(self, ctx):
