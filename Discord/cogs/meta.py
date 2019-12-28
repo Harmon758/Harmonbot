@@ -331,7 +331,7 @@ class Meta(commands.Cog):
 	
 	@version.command(name = "library", aliases = ["requirement"])
 	@commands.is_owner()
-	async def version_library(self, ctx, library : str):
+	async def version_library(self, ctx, library: str):
 		try:
 			await ctx.embed_reply(importlib.metadata.version(library))
 		except importlib.metadata.PackageNotFoundError:
