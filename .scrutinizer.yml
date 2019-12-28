@@ -1,3 +1,0 @@
-build:
-    environment:
-        python: 3.8.1
