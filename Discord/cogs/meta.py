@@ -6,6 +6,7 @@ import asyncio
 import datetime
 import copy
 import ctypes
+import importlib.metadata
 import inspect
 import os
 import random
@@ -219,7 +220,7 @@ class Meta(commands.Cog):
 		app_info = await ctx.bot.app_info
 		changes = git.Repo("..").git.log("-3", "--first-parent", 
 											format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)")
-		discord_py_version = pkg_resources.get_distribution("discord.py").version
+		discord_py_version = importlib.metadata.version("discord.py")
 		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
 		embed.description = (f"[Changelog (Harmonbot Server)]({self.bot.changelog})\n"
 								f"[Invite Link]({discord.utils.oauth_url(app_info.id)})")
