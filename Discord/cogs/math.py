@@ -33,6 +33,7 @@ class Math(commands.Cog):
 			return
 		await ctx.embed_reply(f"{' + '.join(f'{number:g}' for number in numbers)} = {sum(numbers):g}")
 	
+	# TODO: Fix/Improve
 	@commands.command(aliases = ["calc", "calculator"])
 	async def calculate(self, ctx, *, equation : str):
 		'''Calculator'''
@@ -49,7 +50,7 @@ class Math(commands.Cog):
 			async_result = pool.apply_async(eval, (equation,))
 			future = ctx.bot.loop.run_in_executor(None, async_result.get, 10.0)
 			try:
-				result = await asyncio.wait_for(future, 10.0, loop = ctx.bot.loop)
+				result = await asyncio.wait_for(future, 10.0)
 				await ctx.embed_reply(f"{equation} = {result}")
 			except discord.HTTPException:
 				# TODO: use textwrap/paginate
