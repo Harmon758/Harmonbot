@@ -285,7 +285,7 @@ class Random(commands.Cog):
 			async_result = pool.apply_async(dice.roll, (input,))
 			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
 			try:
-				result = await asyncio.wait_for(future, 10.0, loop = self.bot.loop)
+				result = await asyncio.wait_for(future, 10.0)
 				if isinstance(result, int):
 					await ctx.embed_reply(result)
 				else:
