@@ -22,7 +22,7 @@ sys.path.pop(0)
 class TwitchClient(pydle.Client):
 	
 	def __init__(self, nickname):
-		self.version = "2.4.5"
+		self.version = "2.4.6"
 		# Pydle logger
 		pydle_logger = logging.getLogger("pydle")
 		pydle_logger.setLevel(logging.DEBUG)
@@ -596,10 +596,8 @@ if __name__ == "__main__":
 	create_folder("data/variables")
 	# Load credentials from .env
 	dotenv.load_dotenv()
-	client = TwitchClient("Harmonbot")
 	oauth_token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN")
-	loop = asyncio.get_event_loop()
-	asyncio.ensure_future(client.connect("irc.chat.twitch.tv", password = oauth_token), loop = loop)
+	client = TwitchClient("Harmonbot")
+	client.run("irc.chat.twitch.tv", password = oauth_token)
 	# DEFAULT_PORT = 6667
-	loop.run_forever()
 
