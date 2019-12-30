@@ -312,6 +312,7 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply('\n'.join(f"[{channel}](https://www.twitch.tv/{channel})" for channel in channels), 
 								title = "Twitch channels being followed in this text channel")
 	
+	# R/PT20S
 	@tasks.loop(seconds = 20)
 	async def check_twitch_streams(self):
 		headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5

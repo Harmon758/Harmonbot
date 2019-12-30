@@ -154,6 +154,7 @@ class RSS(commands.Cog):
 		records = await ctx.bot.db.fetch("SELECT feed FROM rss.feeds WHERE channel_id = $1", ctx.channel.id)
 		await ctx.embed_reply('\n'.join(record["feed"] for record in records))
 	
+	# R/PT0S
 	@tasks.loop()
 	async def check_rss_feeds(self):
 		records = await self.bot.db.fetch(

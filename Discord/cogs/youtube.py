@@ -172,6 +172,7 @@ class YouTube(commands.Cog):
 		)
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(record["youtube_channel_id"] for record in records)))
 	
+	# R/PT20S
 	@tasks.loop(seconds = 20)
 	async def check_youtube_streams(self):
 		try:
