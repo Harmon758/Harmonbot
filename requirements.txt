@@ -75,7 +75,7 @@ jsonschema==3.2.0
 kiwisolver==1.1.0
 lxml==4.4.2
 mpmath==1.1.0
-multidict==4.7.2
+multidict==4.7.3
 oauthlib==3.1.0
 protobuf==3.11.2
 pycparser==2.19
