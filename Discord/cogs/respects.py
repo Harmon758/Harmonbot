@@ -93,34 +93,34 @@ class Respects(commands.Cog):
 		Can also be triggered with 'f' or 'F'
 		'''
 		total_respects = await ctx.bot.db.fetchval(
-								"""
-								UPDATE respects.stats
-								SET value = value + 1
-								WHERE stat = 'total'
-								RETURNING value
-								"""
-							)
+			"""
+			UPDATE respects.stats
+			SET value = value + 1
+			WHERE stat = 'total'
+			RETURNING value
+			"""
+		)
 		if ctx.guild:
 			guild_respects = await ctx.bot.db.fetchval(
-									"""
-									INSERT INTO respects.guilds (guild_id, respects)
-									VALUES ($1, 1)
-									ON CONFLICT (guild_id) DO
-									UPDATE SET respects = guilds.respects + 1
-									RETURNING respects
-									""", 
-									ctx.guild.id
-								)
+				"""
+				INSERT INTO respects.guilds (guild_id, respects)
+				VALUES ($1, 1)
+				ON CONFLICT (guild_id) DO
+				UPDATE SET respects = guilds.respects + 1
+				RETURNING respects
+				""", 
+				ctx.guild.id
+			)
 		user_respects = await ctx.bot.db.fetchval(
-							"""
-							INSERT INTO respects.users (user_id, respects)
-							VALUES ($1, 1)
-							ON CONFLICT (user_id) DO
-							UPDATE SET respects = users.respects + 1
-							RETURNING respects
-							""", 
-							ctx.author.id
-						)
+			"""
+			INSERT INTO respects.users (user_id, respects)
+			VALUES ($1, 1)
+			ON CONFLICT (user_id) DO
+			UPDATE SET respects = users.respects + 1
+			RETURNING respects
+			""", 
+			ctx.author.id
+		)
 		suffix = ctx.bot.inflect_engine.ordinal(user_respects)[len(str(user_respects)):]
 		response = f"{ctx.author.mention} has paid their respects for the {user_respects:,}{suffix} time\n"
 		if ctx.guild:
