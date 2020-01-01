@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import collections
 import copy
-import inspect
 import random
 import tempfile
 
