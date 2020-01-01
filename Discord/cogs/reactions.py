@@ -51,17 +51,29 @@ class Reactions(commands.Cog):
 			self.numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1 # '\u0031' - 1
 		self.arrows = collections.OrderedDict([('\N{LEFTWARDS BLACK ARROW}', 'W'), ('\N{UPWARDS BLACK ARROW}', 'N'), ('\N{DOWNWARDS BLACK ARROW}', 'S'), ('\N{BLACK RIGHTWARDS ARROW}', 'E')]) # tuple?
 		self.controls = collections.OrderedDict([('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', "pause_resume"), ('\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}', "skip"), ('\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}', "replay"), ('\N{TWISTED RIGHTWARDS ARROWS}', "shuffle"), ('\N{RADIO}', "radio"), ('\N{SPEAKER WITH ONE SOUND WAVE}', "volume_down"), ('\N{SPEAKER WITH THREE SOUND WAVES}', "volume_up")])
-		self.reaction_commands = ((self.guessr, "Games.guess"), (self.newsr, "Resources.news"), (self.mazer, "Games.maze"), (self.playingr, "Audio.playing"))
-		for command, parent_name in self.reaction_commands:
-			utilities.add_as_subcommand(self, command, parent_name, "reactions", aliases = ["reaction", 'r'])
+		self.reaction_commands = (
+			(self.guess, "Games", "guess", [], [checks.not_forbidden()]), 
+			(self.news, "Resources", "news", [], [checks.not_forbidden()]), 
+			(self.maze, "Games", "maze", [], [checks.not_forbidden()]), 
+			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden(), commands.guild_only()])
+		)
+		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
+			self.reactions.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
+			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
+				parent.add_command(commands.Command(command, name = "reactions", aliases = ["reaction", 'r'], checks = command_checks))
 	
 	def cog_unload(self):
-		for command, parent_name in self.reaction_commands:
-			utilities.remove_as_subcommand(self, parent_name, "reactions")
+		for command, cog_name, parent_name, *_ in self.reaction_commands:
+			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
+				parent.remove_command("reactions")
 	
-	@commands.command(aliases = ["guessreactions", "guessreaction"])
+	@commands.group(aliases = ["reaction"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def guessr(self, ctx):
+	async def reactions(self, ctx):
+		'''Reactions versions of commands'''
+		await ctx.send_help(ctx.command)
+	
+	async def guess(self, ctx):
 		'''
 		Guessing game
 		With reactions
@@ -71,9 +83,9 @@ class Reactions(commands.Cog):
 		answer = random.randint(1, 10)
 		for number_emote in sorted(self.numbers.keys()):
 			await guess_message.add_reaction(number_emote)
-		self.reaction_messages[guess_message.id] = lambda reaction, user: self.guessr_processr(ctx.author, answer, embed, reaction, user)
+		self.reaction_messages[guess_message.id] = lambda reaction, user: self.guess_reaction_processor(ctx.author, answer, embed, reaction, user)
 	
-	async def guessr_processr(self, player, answer, embed, reaction, user):
+	async def guess_reaction_processor(self, player, answer, embed, reaction, user):
 		if user == player and reaction.emoji in self.numbers:
 			if self.numbers[reaction.emoji] == answer:
 				embed.description = "{}: It was {}!".format(player.display_name, self.numbers[reaction.emoji])
@@ -83,9 +95,7 @@ class Reactions(commands.Cog):
 				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(player.display_name, self.numbers[reaction.emoji])
 				await reaction.message.edit(embed = embed)
 	
-	@commands.command()
-	@checks.not_forbidden()
-	async def newsr(self, ctx, source : str):
+	async def news(self, ctx, source : str):
 		'''
 		News
 		With Reactions
@@ -119,9 +129,7 @@ class Reactions(commands.Cog):
 	# TODO: urband
 	# TODO: rtg
 	
-	@commands.command()
-	@checks.not_forbidden()
-	async def mazer(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
+	async def maze(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
 		'''
 		Maze game
 		With reactions
@@ -134,9 +142,9 @@ class Reactions(commands.Cog):
 		self.mazes[maze_message.id] = maze_instance
 		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
 			await maze_message.add_reaction(emote)
-		self.reaction_messages[maze_message.id] = lambda reaction, user: self.mazer_processr(ctx.author, reaction, user)
+		self.reaction_messages[maze_message.id] = lambda reaction, user: self.maze_reactions_processor(ctx.author, reaction, user)
 	
-	async def mazer_processr(self, player, reaction, user):
+	async def maze_reactions_processor(self, player, reaction, user):
 		if user == player:
 			maze_instance = self.mazes[reaction.message.id]
 			if reaction.emoji in self.arrows.keys():
@@ -163,10 +171,7 @@ class Reactions(commands.Cog):
 																	"Your maze is attached", 
 														file = discord.File(maze_file.file, filename = "maze.txt"))
 	
-	@commands.command(aliases = ["player"])
-	@commands.guild_only()
-	@checks.not_forbidden()
-	async def playingr(self, ctx):
+	async def playing(self, ctx):
 		'''Audio player'''
 		try:
 			embed = self.bot.cogs["Audio"].players[ctx.guild.id].current_embed()
@@ -178,12 +183,12 @@ class Reactions(commands.Cog):
 		await self.bot.attempt_delete_message(ctx.message)
 		for control_emote in self.controls.keys():
 			await player_message.add_reaction(control_emote)
-		self.reaction_messages[player_message.id] = lambda reaction, user: self.playingr_processr(ctx, reaction, user)
+		self.reaction_messages[player_message.id] = lambda reaction, user: self.playing_reactions_processor(ctx, reaction, user)
 	
 	# TODO: Queue?, Empty?, Settext?, Other?
 	# TODO: Resend player?
 	
-	async def playingr_processr(self, ctx, reaction, user):
+	async def playing_reactions_processor(self, ctx, reaction, user):
 		if reaction.emoji in self.controls:
 			if self.controls[reaction.emoji] == "pause_resume":
 				permitted = await ctx.get_permission("pause", id = user.id)
