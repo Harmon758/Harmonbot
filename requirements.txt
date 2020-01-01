@@ -32,7 +32,7 @@ pygost==4.0
 pyowm==2.10.0
 pyparsing==2.4.6
 python-aiml==0.9.3
-python-chess==0.28.3
+python-chess==0.30.0
 python-dateutil==2.8.1
 python-dotenv==0.10.3
 pytz==2019.3
