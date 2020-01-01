@@ -83,7 +83,7 @@ class Reactions(commands.Cog):
 				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(player.display_name, self.numbers[reaction.emoji])
 				await reaction.message.edit(embed = embed)
 	
-	@commands.command(invoke_without_command = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def newsr(self, ctx, source : str):
 		'''
