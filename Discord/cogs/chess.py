@@ -4,11 +4,11 @@ from discord.ext import commands
 
 import asyncio
 import random
+from typing import Union
 
 import chess.pgn
 
 from modules.chess import ChessMatch
-from modules import utilities
 from utilities import checks
 
 def setup(bot):
@@ -47,28 +47,21 @@ class Chess(commands.Cog):
 		'''
 	
 	@chess.command(aliases = ["start"])
-	async def play(self, ctx, *, opponent: str = ""):
+	async def play(self, ctx, *, opponent: Union[discord.Member, str]):
 		'''
 		Challenge someone to a match
 		You can play me as well
 		'''
 		if self.get_match(ctx.channel, ctx.author):
 			return await ctx.embed_reply(":no_entry: You're already playing a chess match here")
-		if not opponent:
-			await ctx.embed_reply("Who would you like to play?")
-			message = await self.bot.wait_for("message", 
-												check = lambda message: message.author == ctx.author and 
-																		message.channel == ctx.channel)
-			opponent = message.content
 		color = None
-		if opponent.lower() in ("harmonbot", "you"):
-			opponent = self.bot.user
-		elif opponent.lower() in ("myself", "me"):
-			opponent = ctx.author
-			color = 'w'
-		else:
-			opponent = await utilities.get_user(ctx, opponent)
-			if not opponent:
+		if type(opponent) is str:
+			if opponent.lower() in ("harmonbot", "you"):
+				opponent = self.bot.user
+			elif opponent.lower() in ("myself", "me"):
+				opponent = ctx.author
+				color = 'w'
+			else:
 				return await ctx.embed_reply(":no_entry: Opponent not found")
 		if opponent != self.bot.user and self.get_match(ctx.channel, opponent):
 			return await ctx.embed_reply(":no_entry: Your chosen opponent is playing a chess match here")
