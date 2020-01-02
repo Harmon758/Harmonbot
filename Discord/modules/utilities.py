@@ -1,13 +1,5 @@
 
-import discord
-from discord.ext import commands
-
-import copy
-# import inspect
 import math
-import re
-
-# Utility
 
 def is_number(characters):
 	try:
