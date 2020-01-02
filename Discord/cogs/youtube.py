@@ -68,19 +68,19 @@ class YouTube(commands.Cog):
 			command.add_command(uploads_command)
 			self.bot.add_command(command)
 		
-		self.check_youtube_streams.start()
+		self.check_streams.start()
 		
 		clients.create_file("youtube_uploads", content = {})
 		with open(clients.data_path + "/youtube_uploads.json", 'r') as uploads_file:
 			self.uploads_info = json.load(uploads_file)
-		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
+		self.uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
 	
 	def cog_unload(self):
 		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
 			parent.remove_command("streams")
 			parent.remove_command("uploads")
-		self.check_youtube_streams.cancel()
+		self.check_streams.cancel()
 		self.renew_uploads_task.cancel()
 	
 	async def initialize_database(self):
@@ -120,7 +120,7 @@ class YouTube(commands.Cog):
 	# TODO: use on_ready instead?
 	# TODO: renew after hub.lease_seconds?
 	async def renew_upload_supscriptions(self):
-		for channel_id in self.youtube_uploads_following:
+		for channel_id in self.uploads_following:
 			url = "https://pubsubhubbub.appspot.com/"
 			headers = {"content-type": "application/x-www-form-urlencoded"}
 			data = {"hub.callback": self.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "subscribe", 
@@ -142,7 +142,7 @@ class YouTube(commands.Cog):
 	
 	async def streams_add(self, ctx, channel : str):
 		'''Add YouTube channel to follow'''
-		channel_id = await self.get_youtube_channel_id(channel)
+		channel_id = await self.get_channel_id(channel)
 		if not channel_id:
 			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
 		inserted = await ctx.bot.db.fetchrow(
@@ -161,7 +161,7 @@ class YouTube(commands.Cog):
 	
 	async def streams_remove(self, ctx, channel : str):
 		'''Remove YouTube channel being followed'''
-		channel_id = await self.get_youtube_channel_id(channel)
+		channel_id = await self.get_channel_id(channel)
 		if not channel_id:
 			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
 		deleted = await ctx.bot.db.fetchval(
@@ -190,7 +190,7 @@ class YouTube(commands.Cog):
 	
 	# R/PT20S
 	@tasks.loop(seconds = 20)
-	async def check_youtube_streams(self):
+	async def check_streams(self):
 		try:
 			records = await self.bot.db.fetch("SELECT DISTINCT youtube_channel_id FROM youtube.streams")
 			video_ids = []
@@ -308,13 +308,13 @@ class YouTube(commands.Cog):
 			errors_logger.error("Uncaught YouTube Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			await asyncio.sleep(60)
 	
-	@check_youtube_streams.before_loop
-	async def before_check_youtube_streams(self):
+	@check_streams.before_loop
+	async def before_check_streams(self):
 		await self.initialize_database()
 		await self.bot.wait_until_ready()
 	
-	@check_youtube_streams.after_loop
-	async def after_check_youtube_streams(self):
+	@check_streams.after_loop
+	async def after_check_streams(self):
 		print(f"{self.bot.console_message_prefix}YouTube streams task cancelled @ {datetime.datetime.now().isoformat()}")
 	
 	# TODO: Follow channels/new video uploads
@@ -325,7 +325,7 @@ class YouTube(commands.Cog):
 	
 	async def uploads_add(self, ctx, channel : str):
 		'''Add YouTube channel to follow'''
-		channel_id = await self.get_youtube_channel_id(channel)
+		channel_id = await self.get_channel_id(channel)
 		if not channel_id:
 			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
 		channels = self.uploads_info.get(str(ctx.channel.id))
@@ -346,7 +346,7 @@ class YouTube(commands.Cog):
 				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
 				self.uploads_info[str(ctx.channel.id)].remove(channel_id)
 				return
-		self.youtube_uploads_following.add(channel_id)
+		self.uploads_following.add(channel_id)
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
 		await ctx.embed_reply(f"Added the YouTube channel, "
@@ -360,7 +360,7 @@ class YouTube(commands.Cog):
 		if not channels or channel_id not in channels:
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
 		channels.remove(channel_id)
-		self.youtube_uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
+		self.uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
 		url = "https://pubsubhubbub.appspot.com/"
 		headers = {"content-type": "application/x-www-form-urlencoded"}
 		data = {"hub.callback": ctx.bot.HTTP_SERVER_CALLBACK_URL, "hub.mode": "unsubscribe", 
@@ -370,7 +370,7 @@ class YouTube(commands.Cog):
 				error_description = await resp.text()
 				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
 				self.uploads_info[str(ctx.channel.id)].append(channel_id)
-				self.youtube_uploads_following.add(channel_id)
+				self.uploads_following.add(channel_id)
 				return
 		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
@@ -382,7 +382,7 @@ class YouTube(commands.Cog):
 		'''Show YouTube channels being followed in this text channel'''
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.uploads_info.get(str(ctx.channel.id), []))))
 	
-	async def process_youtube_upload(self, channel_id, request_content):
+	async def process_upload(self, channel_id, request_content):
 		request_info = await self.bot.loop.run_in_executor(None, feedparser.parse, request_content) # Necessary to run in executor?
 		if request_info.entries and not request_info.entries[0].yt_videoid in self.uploads_processed:
 			video_data = request_info.entries[0]
@@ -412,7 +412,7 @@ class YouTube(commands.Cog):
 						await text_channel.send(embed = embed)
 					# TODO: Remove text channel data if now non-existent
 	
-	async def get_youtube_channel_id(self, id_or_username):
+	async def get_channel_id(self, id_or_username):
 		url = "https://www.googleapis.com/youtube/v3/channels"
 		for key in ("id", "forUsername"):
 			params = {"part": "id", key: id_or_username, "key": self.bot.GOOGLE_API_KEY}

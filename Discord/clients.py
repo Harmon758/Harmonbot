@@ -375,8 +375,8 @@ class Bot(commands.Bot):
 			if "YouTube" not in self.cogs:
 				return web.Response(status = 503)  # Return 503 Service Unavailable
 			channel_id = parse.parse_qs(parse.urlparse(request.query.get("hub.topic")).query)["channel_id"][0]
-			if ((channel_id in self.get_cog("YouTube").youtube_uploads_following and hub_mode == "subscribe") or 
-				(channel_id not in self.get_cog("YouTube").youtube_uploads_following and hub_mode == "unsubscribe")):
+			if ((channel_id in self.get_cog("YouTube").uploads_following and hub_mode == "subscribe") or 
+				(channel_id not in self.get_cog("YouTube").uploads_following and hub_mode == "unsubscribe")):
 				return web.Response(body = request.query.get("hub.challenge"))
 			else:
 				return web.Response(status = 404)  # Return 404 Not Found
@@ -399,13 +399,13 @@ class Bot(commands.Bot):
 						return web.Response(status = 400)  # Return 400 Bad Request
 				elif link["rel"] == "self":
 					channel_id = parse.parse_qs(parse.urlparse(link["url"]).query)["channel_id"][0]
-					if channel_id not in self.get_cog("YouTube").youtube_uploads_following:
+					if channel_id not in self.get_cog("YouTube").uploads_following:
 						return web.Response(status = 404)  # Return 404 Not Found
 						# TODO: Handle unsubscribe?
 				else:
 					return web.Response(status = 400)  # Return 400 Bad Request
 			request_content = await request.content.read()
-			await self.get_cog("YouTube").process_youtube_upload(channel_id, request_content)
+			await self.get_cog("YouTube").process_upload(channel_id, request_content)
 			return web.Response()
 		else:
 			return web.Response(status = 400)  # Return 400 Bad Request
