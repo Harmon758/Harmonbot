@@ -52,7 +52,7 @@ class Search(commands.Cog):
 	
 	@youtube.error
 	async def youtube_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
+		if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
 			await ctx.embed_reply(f":no_entry: Error: {error.original}")
 	
 	@commands.command()
