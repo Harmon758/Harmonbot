@@ -8,7 +8,6 @@ from typing import Optional
 import clarifai.rest
 import imgurpython
 
-from modules import utilities
 from utilities import checks
 
 def setup(bot):
@@ -27,14 +26,20 @@ class Images(commands.Cog):
 			if isinstance(command, commands.Command) and command.parent is None and name != "image":
 				self.bot.add_command(command)
 				self.image.add_command(command)
-		# Add image google subcommand as google images subcommand
-		utilities.add_as_subcommand(self, self.image_google, "Search.google", "images", aliases = ["image"])
-		# Add imgur search subcommand as search imgur subcommand
-		utilities.add_as_subcommand(self, self.imgur_search, "Search.search", "imgur")
+		# Add image google / google images subcommands
+		self.image.add_command(commands.Command(self.google, aliases = ["search"], checks = [checks.not_forbidden().predicate]))
+		if (cog := self.bot.get_cog("Search")) and (parent := getattr(cog, "google")):
+			parent.add_command(commands.Command(self.google, name = "images", aliases = ["image"], checks = [checks.not_forbidden().predicate]))
+		# Add imgur search / search imgur subcommands
+		self.imgur.add_command(commands.Command(self.imgur_search, name = "search", checks = [checks.not_forbidden().predicate]))
+		if cog and (parent := getattr(cog, "search")):
+			parent.add_command(commands.Command(self.imgur_search, name = "imgur", checks = [checks.not_forbidden().predicate]))
 	
 	def cog_unload(self):
-		utilities.remove_as_subcommand(self, "Search.google", "images")
-		utilities.remove_as_subcommand(self, "Search.search", "imgur")
+		if (cog := self.bot.get_cog("Search")) and (parent := getattr(cog, "google")):
+			parent.remove_command("images")
+		if cog and (parent := getattr(cog, "search")):
+			parent.remove_command("imgur")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -79,8 +84,7 @@ class Images(commands.Cog):
 														f"({color['w3c']['hex'].upper()})"))
 		await ctx.embed_reply(title = "Color Density", fields = fields, thumbnail_url = image_url)
 	
-	@image.command(name = "google", aliases = ["search"])
-	async def image_google(self, ctx, *, search : str):
+	async def google(self, ctx, *, search : str):
 		'''Google image search something'''
 		url = "https://www.googleapis.com/customsearch/v1"
 		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
@@ -154,7 +158,6 @@ class Images(commands.Cog):
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
-	@imgur.command(name = "search")
 	async def imgur_search(self, ctx, *, search : str):
 		'''Search images on Imgur'''
 		result = self.bot.imgur_client.gallery_search(search, sort = "top")
