@@ -75,8 +75,10 @@ class Random(commands.Cog):
 			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
 				parent.remove_command("random")
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def random(self, ctx):
 		'''
 		Random things
@@ -177,7 +179,6 @@ class Random(commands.Cog):
 			await cog.process_xkcd(ctx, url)
 	
 	@commands.command(aliases = ["rabbit"])
-	@checks.not_forbidden()
 	async def bunny(self, ctx):
 		'''Random bunny'''
 		url = "https://api.bunnies.io/v2/loop/random/?media=gif"
@@ -187,13 +188,11 @@ class Random(commands.Cog):
 		await ctx.embed_reply(f"[:rabbit2:]({gif})", image_url = gif)
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def card(self, ctx):
 		'''Random playing card'''
 		await ctx.embed_reply(f":{random.choice(pydealer.const.SUITS).lower()}: {random.choice(pydealer.const.VALUES)}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def cat(self, ctx, category : str = ""):
 		'''Random image of a cat'''
 		if category:
@@ -219,7 +218,6 @@ class Random(commands.Cog):
 				await ctx.embed_reply("[:cat:]({})".format(url), image_url = url)
 	
 	@cat.command(name = "categories", aliases = ["cats"])
-	@checks.not_forbidden()
 	async def cat_categories(self, ctx):
 		'''Categories of cat images'''
 		async with ctx.bot.aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
@@ -232,7 +230,6 @@ class Random(commands.Cog):
 			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 	
 	@commands.command(aliases = ["choice", "pick"])
-	@checks.not_forbidden()
 	async def choose(self, ctx, *choices : str):
 		'''
 		Randomly chooses between multiple options
@@ -243,19 +240,16 @@ class Random(commands.Cog):
 		await ctx.embed_reply(random.choice(choices))
 	
 	@commands.command(aliases = ["flip"])
-	@checks.not_forbidden()
 	async def coin(self, ctx):
 		'''Flip a coin'''
 		await ctx.embed_reply(random.choice(("Heads!", "Tails!")))
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def command(self, ctx):
 		'''Random command'''
 		await ctx.embed_reply(f"{ctx.prefix}{random.choice(tuple(set(command.name for command in self.bot.commands)))}")
 	
 	@commands.command(aliases = ["die", "roll"])
-	@checks.not_forbidden()
 	async def dice(self, ctx, *, input : str = '6'):
 		'''
 		Roll dice
@@ -290,19 +284,16 @@ class Random(commands.Cog):
 				await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def date(self, ctx):
 		'''Random date'''
 		await ctx.embed_reply(datetime.date.fromordinal(random.randint(1, 365)).strftime("%B %d"))
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def day(self, ctx):
 		'''Random day of week'''
 		await ctx.embed_reply(random.choice(calendar.day_name))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def dog(self, ctx, *, breed: Optional[str]):
 		'''
 		Random image of a dog
@@ -322,7 +313,6 @@ class Random(commands.Cog):
 			await ctx.embed_reply(f"[:dog2:]({data['message']})", image_url = data["message"])
 	
 	@dog.command(name = "breeds", aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"])
-	@checks.not_forbidden()
 	async def dog_breeds(self, ctx):
 		'''Breeds and sub-breeds of dogs for which images are categorized under'''
 		url = "https://dog.ceo/api/breeds/list/all"
@@ -335,13 +325,11 @@ class Random(commands.Cog):
 								footer_text = "Sub-breeds are in parentheses after the corresponding breed")
 	
 	@commands.command(aliases = ["emoji"])
-	@checks.not_forbidden()
 	async def emote(self, ctx):
 		'''Random emote/emoji'''
 		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI)))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def fact(self, ctx):
 		'''Random fact'''
 		url = "https://mentalfloss.com/api/facts"
@@ -374,7 +362,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply(data)
 	
 	@fact.command(name = "math")
-	@checks.not_forbidden()
 	async def fact_math(self, ctx, number: int):
 		'''Random math fact about a number'''
 		url = f"http://numbersapi.com/{number}/math"
@@ -390,7 +377,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply(data)
 	
 	@fact.command(name = "year")
-	@checks.not_forbidden()
 	async def fact_year(self, ctx, year: int):
 		'''Random fact about a year'''
 		url = f"http://numbersapi.com/{year}/year"
@@ -399,7 +385,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply(data)
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def idea(self, ctx):
 		'''Random idea'''
 		url = "http://itsthisforthat.com/api.php"
@@ -408,7 +393,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply(f"{data['this']} for {data['that']}")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def insult(self, ctx):
 		'''Random insult'''
 		url = "http://quandyfactory.com/insult/json"
@@ -417,7 +401,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply(data["insult"])
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def joke(self, ctx):
 		'''Random joke'''
 		# Sources:
@@ -427,7 +410,6 @@ class Random(commands.Cog):
 			await ctx.embed_reply(random.choice(self.jokes))
 	
 	@joke.group(name = "dad", invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def joke_dad(self, ctx, joke_id : str = ""):
 		'''Random dad joke'''
 		# TODO: search, GraphQL?
@@ -443,7 +425,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply(data["joke"], footer_text = "Joke ID: {}".format(data["id"]))
 	
 	@joke_dad.command(name = "image")
-	@checks.not_forbidden()
 	async def joke_dad_image(self, ctx, joke_id : str = ""):
 		'''Random dad joke as an image'''
 		if not joke_id:
@@ -453,31 +434,26 @@ class Random(commands.Cog):
 		await ctx.embed_reply(image_url = "https://icanhazdadjoke.com/j/{}.png".format(joke_id))
 	
 	@commands.command(aliases = ["lat"])
-	@checks.not_forbidden()
 	async def latitude(self, ctx):
 		'''Random latitude'''
 		await ctx.embed_reply(str(random.uniform(-90, 90)))
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def letter(self, ctx):
 		'''Random letter'''
 		await ctx.embed_reply(random.choice(string.ascii_uppercase))
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def location(self, ctx):
 		'''Random location'''
 		await ctx.embed_reply("{}, {}".format(random.uniform(-90, 90), random.uniform(-180, 180)))
 	
 	@commands.command(aliases = ["long"])
-	@checks.not_forbidden()
 	async def longitude(self, ctx):
 		'''Random longitude'''
 		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
 	@commands.group(aliases = ["rng"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def number(self, ctx, number : int = 10):
 		'''
 		Random number
@@ -489,7 +465,6 @@ class Random(commands.Cog):
 			await ctx.embed_reply(":no_entry: Error: Input must be >= 1")
 	
 	@commands.command(aliases = ["why"])
-	@checks.not_forbidden()
 	async def question(self, ctx):
 		'''Random question'''
 		async with ctx.bot.aiohttp_session.get("http://xkcd.com/why.txt") as resp:
@@ -498,7 +473,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply("{}?".format(random.choice(questions).capitalize()))
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def quote(self, ctx, message: discord.Message = None):
 		'''Random quote or quote a message'''
 		# TODO: separate message quoting
@@ -520,7 +494,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"])  # quoteLink?
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def word(self, ctx):
 		'''Random word'''
 		await ctx.embed_reply(self.bot.wordnik_words_api.getRandomWord().word.capitalize())
