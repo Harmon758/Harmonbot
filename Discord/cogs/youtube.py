@@ -118,7 +118,7 @@ class YouTube(commands.Cog):
 		'''YouTube Streams'''
 		await ctx.send_help(ctx.command)
 	
-	@youtube_streams.command(name = "add", invoke_without_command = True)
+	@youtube_streams.command(name = "add")
 	@checks.is_permitted()
 	async def youtube_streams_add(self, ctx, channel : str):
 		'''Add YouTube channel to follow'''
@@ -139,7 +139,7 @@ class YouTube(commands.Cog):
 		await ctx.embed_reply(f"Added the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
 		"I will now announce here when this YouTube channel goes live")
 	
-	@youtube_streams.command(name = "remove", aliases = ["delete"], invoke_without_command = True)
+	@youtube_streams.command(name = "remove", aliases = ["delete"])
 	@checks.is_permitted()
 	async def youtube_streams_remove(self, ctx, channel : str):
 		'''Remove YouTube channel being followed'''
@@ -310,7 +310,7 @@ class YouTube(commands.Cog):
 		'''YouTube Uploads/Videos'''
 		await ctx.send_help(ctx.command)
 	
-	@youtube_uploads.command(name = "add", aliases = ["subscribe"], invoke_without_command = True)
+	@youtube_uploads.command(name = "add", aliases = ["subscribe"])
 	@checks.is_permitted()
 	async def youtube_uploads_add(self, ctx, channel : str):
 		'''Add YouTube channel to follow'''
@@ -343,7 +343,7 @@ class YouTube(commands.Cog):
 								"to this text channel\n"
 								"I will now announce here when this YouTube channel uploads videos")
 	
-	@youtube_uploads.command(name = "remove", aliases = ["delete", "unsubscribe"], invoke_without_command = True)
+	@youtube_uploads.command(name = "remove", aliases = ["delete", "unsubscribe"])
 	@checks.is_permitted()
 	async def youtube_uploads_remove(self, ctx, channel_id : str):
 		'''Remove YouTube channel being followed'''
