@@ -4,7 +4,6 @@ from discord.ext import commands
 
 from typing import Optional
 
-from modules import utilities
 from utilities import checks
 
 def setup(bot):
@@ -195,17 +194,15 @@ class Permissions(commands.Cog):
 	@getpermissions.command(name = "user")
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def getpermissions_user(self, ctx, user : str):
-		_user = await utilities.get_user(ctx, user)
-		if not _user: return (await ctx.embed_reply("Error: user not found"))
+	async def getpermissions_user(self, ctx, user : discord.Member):
 		records = await ctx.bot.db.fetch(
 			"""
 			SELECT permission, setting FROM permissions.users
 			WHERE guild_id = $1 AND user_id = $2
 			""", 
-			ctx.guild.id, _user.id
+			ctx.guild.id, user.id
 		)
-		output = "__Permissions for {}__\n".format(_user.name)
+		output = "__Permissions for {}__\n".format(user.name)
 		for record in records:
 			output += "{}: {}\n".format(record["permission"], str(record["setting"]))
 		await ctx.send(output)
