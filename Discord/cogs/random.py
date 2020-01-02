@@ -153,8 +153,10 @@ class Random(commands.Cog):
 		Random UESP page
 		[UESP](http://uesp.net/wiki/Main_Page)
 		'''
-		if cog := self.bot.get_cog("Search"): await cog.process_uesp(ctx, None, random = True)
-		else: await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random") # necessary?
+		if cog := self.bot.get_cog("Search"):
+			await cog.process_uesp(ctx, None, random = True)
+		else:
+			await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random")  # necessary?
 	
 	async def user(self, ctx):
 		'''Random user/member'''
