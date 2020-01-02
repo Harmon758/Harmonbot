@@ -26,13 +26,20 @@ class Info(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		# Add info subcommands as subcommands of corresponding commands
-		self.info_subcommands = ((self.role, "Role.role"), (self.server, "Server.server"), (self.user, "User.user"))
-		for command, parent_name in self.info_subcommands:
-			utilities.add_as_subcommand(self, command, parent_name, "info", aliases = ["information"])
+		self.info_commands = (
+			(self.role, "Role", "role", [], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
+			(self.server, "Server", "server", ["guild"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
+			(self.user, "User", "user", ["member"], [checks.not_forbidden().predicate])
+		)
+		for command, cog_name, parent_name, aliases, command_checks in self.info_commands:
+			self.info.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
+			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
+				parent.add_command(commands.Command(command, name = "info", aliases = ["information"], checks = command_checks))
 	
 	def cog_unload(self):
-		for command, parent_name in self.info_subcommands:
-			utilities.remove_as_subcommand(self, parent_name, "info")
+		for command, cog_name, parent_name, *_ in self.info_commands:
+			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
+				parent.remove_command("info")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -69,8 +76,6 @@ class Info(commands.Cog):
 				output = output[:output.rfind('\n')]
 			await ctx.embed_reply(output)
 	
-	@info.command()
-	@commands.guild_only()
 	async def role(self, ctx, *, role : discord.Role):
 		'''Information about a role'''
 		embed = discord.Embed(description = role.mention, title = role.name, timestamp = role.created_at, color = ctx.bot.bot_color)
@@ -86,8 +91,6 @@ class Info(commands.Cog):
 		embed.set_footer(text = "Created")
 		await ctx.send(embed = embed)
 	
-	@info.command(aliases = ["guild"])
-	@commands.guild_only()
 	async def server(self, ctx):
 		'''Information about the server'''
 		region = str(ctx.guild.region).replace('-', ' ').title()
@@ -173,7 +176,6 @@ class Info(commands.Cog):
 								thumbnail_url = data["album"]["images"][0]["url"])
 		# TODO: keep spotify embed?
 	
-	@info.command(aliases = ["member"])
 	async def user(self, ctx, *, user : discord.Member = None):
 		'''Information about a user'''
 		if not user:
