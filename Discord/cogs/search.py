@@ -30,8 +30,10 @@ class Search(commands.Cog):
 		for command, parent_name in self.search_subcommands:
 			utilities.remove_as_subcommand(self, parent_name, "search")
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def search(self, ctx):
 		'''
 		Search things
@@ -40,7 +42,6 @@ class Search(commands.Cog):
 		await ctx.embed_reply(":grey_question: Search what?")
 	
 	@search.command(aliases = ["yt"])
-	@checks.not_forbidden()
 	async def youtube(self, ctx, *, search : str):
 		'''Find a Youtube video'''
 		ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
@@ -55,79 +56,66 @@ class Search(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {error.original}")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def amazon(self, ctx, *search : str):
 		'''Search with Amazon'''
 		await ctx.embed_reply(f"[Amazon search for \"{' '.join(search)}\"](https://smile.amazon.com/s/?field-keywords={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def aol(self, ctx, *search : str):
 		'''Search with AOL'''
 		await ctx.embed_reply(f"[AOL search for \"{' '.join(search)}\"](https://search.aol.com/aol/search?q={'+'.join(search)})")
 	
 	@commands.command(name = "ask.com")
-	@checks.not_forbidden()
 	async def ask_com(self, ctx, *search : str):
 		'''Search with Ask.com'''
 		await ctx.embed_reply(f"[Ask.com search for \"{' '.join(search)}\"](http://www.ask.com/web?q={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def baidu(self, ctx, *search : str):
 		'''Search with Baidu'''
 		await ctx.embed_reply(f"[Baidu search for \"{' '.join(search)}\"](http://www.baidu.com/s?wd={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def bing(self, ctx, *search : str):
 		'''Search with Bing'''
 		await ctx.embed_reply(f"[Bing search for \"{' '.join(search)}\"](http://www.bing.com/search?q={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def duckduckgo(self, ctx, *search : str):
 		'''Search with DuckDuckGo'''
 		await ctx.embed_reply(f"[DuckDuckGo search for \"{' '.join(search)}\"](https://www.duckduckgo.com/?q={'+'.join(search)})")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def google(self, ctx, *, search : str):
 		'''Google search'''
 		await ctx.embed_reply(f"[Google search for \"{search}\"](https://www.google.com/search?q={search.replace(' ', '+')})")
 	
 	@commands.command(aliases = ["im_feeling_lucky"])
-	@checks.not_forbidden()
 	async def imfeelinglucky(self, ctx, *search : str):
 		'''First Google result of a search'''
 		await ctx.embed_reply(f"[First Google result of \"{' '.join(search)}\"](https://www.google.com/search?btnI&q={'+'.join(search)})")
 	
 	@commands.command(name = "lma.ctfy")
-	@checks.not_forbidden()
 	async def lma_ctfy(self, ctx, *search : str):
 		'''Let Me Ask.Com That For You'''
 		await ctx.embed_reply(f"[LMA.CTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=k&q={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def lmaoltfy(self, ctx, *search : str):
 		'''Let Me AOL That For You'''
 		await ctx.embed_reply(f"[LMAOLTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=a&q={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def lmatfy(self, ctx, *search : str):
 		'''Let Me Amazon That For You'''
 		await ctx.embed_reply(f"[LMATFY: \"{' '.join(search)}\"](http://lmatfy.co/?q={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def lmbdtfy(self, ctx, *search : str):
 		'''Let Me Baidu That For You'''
 		await ctx.embed_reply(f"[LMBDTFY: \"{' '.join(search)}\"](https://lmbtfy.cn/?{'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def lmbtfy(self, ctx, *search : str):
 		'''Let Me Bing That For You'''
 		output = f"[LMBTFY: \"{' '.join(search)}\"](http://lmbtfy.com/?s=b&q={'+'.join(search)})\n"
@@ -135,32 +123,27 @@ class Search(commands.Cog):
 		await ctx.embed_reply(output)
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def lmdtfy(self, ctx, *search : str):
 		'''Let Me DuckDuckGo That For You'''
 		await ctx.embed_reply(f"[LMDTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=d&q={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def lmgtfy(self, ctx, *search : str):
 		'''Let Me Google That For You'''
 		await ctx.embed_reply(f"[LMGTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?q={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def lmytfy(self, ctx, *search : str):
 		'''Let Me Yahoo That For You'''
 		await ctx.embed_reply(f"[LMYTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=y&q={'+'.join(search)})")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def startpage(self, ctx, *search : str):
 		'''Search with StartPage'''
 		await ctx.embed_reply(f"[StartPage search for \"{' '.join(search)}\"](https://www.startpage.com/do/search?query={'+'.join(search)})")
 	
 	@commands.group(description = "[UESP](http://uesp.net/wiki/Main_Page)", 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def uesp(self, ctx, *, search : str):
 		'''Look something up on the Unofficial Elder Scrolls Pages'''
 		await self.process_uesp(ctx, search)
@@ -217,7 +200,6 @@ class Search(commands.Cog):
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def wikipedia(self, ctx, *, search : str):
 		'''Look something up on Wikipedia'''
 		await self.process_wikipedia(ctx, search)
@@ -259,7 +241,6 @@ class Search(commands.Cog):
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def wolframalpha(self, ctx, *, search : str):
 		'''
 		Wolfram|Alpha
@@ -268,7 +249,6 @@ class Search(commands.Cog):
 		await self.process_wolframalpha(ctx, search)
 	
 	@wolframalpha.command(name = "location")
-	@checks.not_forbidden()
 	async def wolframalpha_location(self, ctx, location: str, *, search : str):
 		'''Input location'''
 		await self.process_wolframalpha(ctx, search, location = location)
@@ -317,7 +297,6 @@ class Search(commands.Cog):
 		# await ctx.reply(next(result.results).text)
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def yahoo(self, ctx, *search : str):
 		'''Search with Yahoo'''
 		await ctx.embed_reply(f"[Yahoo search for \"{' '.join(search)}\"](https://search.yahoo.com/search?q={'+'.join(search)})")
