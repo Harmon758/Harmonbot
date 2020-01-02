@@ -141,7 +141,7 @@ class Random(commands.Cog):
 		'''Generate street view of a random location'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
-		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={},{}".format(latitude, longitude)
+		image_url = f"https://maps.googleapis.com/maps/api/streetview?size=400x400&location={latitude},{longitude}"
 		await ctx.embed_reply(image_url = image_url)
 	
 	async def time(self, ctx):
