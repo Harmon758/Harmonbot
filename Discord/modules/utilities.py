@@ -75,52 +75,6 @@ def subscript(string):
 	subscripts = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉', '+': '₊', '-': '₋', '=': '₌', '(': '₍', ')': '₎', 'a': 'ₐ', 'e': 'ₑ', 'o': 'ₒ', 'x': 'ₓ', 'ə': 'ₔ', 'h': 'ₕ', 'k': 'ₖ', 'l': 'ₗ', 'm': 'ₘ', 'n': 'ₙ', 'p': 'ₚ', 's': 'ₛ', 't': 'ₜ'}
 	return "".join(subscripts.get(c, c) for c in str(string))
 
-# Discord
-
-async def get_user(ctx, name):
-	# check if mention
-	mention = re.match(r"<@\!?([0-9]+)>", name)
-	if mention:
-		user_id = mention.group(1)
-		user = await ctx.bot.fetch_user(user_id)
-		if user: return user
-	if ctx.guild:
-		# check if exact match
-		matches = [member for member in ctx.guild.members if member.name == name or member.nick == name]
-		if len(matches) == 1:
-			return matches[0]
-		elif len(matches) > 1:
-			members = ""
-			for index, member in enumerate(matches, 1):
-				members += "{}: {}".format(str(index), str(member))
-				if member.nick: members += " ({})".format(member.nick)
-				members += '\n'
-			await ctx.embed_reply("Multiple users with the name, {}. Which one did you mean?\n"
-			"**Enter the number it is in the list.**\n".format(name) + members)
-			message = await ctx.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.content.isdigit() and 1 <= int(m.content) <= len(matches))
-			return matches[int(message.content) - 1]
-		# check if beginning match
-		start_matches = [member for member in ctx.guild.members if member.name.startswith(name) or member.nick and member.nick.startswith(name)]
-		if len(start_matches) == 1:
-			return start_matches[0]
-		elif len(start_matches) > 1:
-			members = ""
-			for index, member in enumerate(start_matches, 1):
-				members += "{}: {}".format(str(index), str(member))
-				if member.nick: members += " ({})".format(member.nick)
-				members += '\n'
-			await ctx.embed_reply("Multiple users with names starting with {}. Which one did you mean? **Enter the number.**\n".format(name) + members)
-			message = await ctx.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.content.isdigit() and 1 <= int(m.content) <= len(start_matches))
-			return start_matches[int(message.content) - 1]
-	# check if with discriminator
-	user_info = re.match(r"^(.+)#(\d{4})", name)
-	if user_info:
-		user_name = user_info.group(1)
-		user_discriminator = user_info.group(2)
-		user = discord.utils.find(lambda m: m.name == user_name and str(m.discriminator) == user_discriminator, ctx.bot.get_all_members())
-		if user: return user
-	return None
-
 # Commands
 
 def add_as_subcommand(cog, command, parent_name, subcommand_name, *, aliases = []):
