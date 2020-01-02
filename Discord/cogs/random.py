@@ -96,9 +96,9 @@ class Random(commands.Cog):
 		for subcommand in ("random", "stats", "top"): del all_blobs[subcommand]
 		await ctx.invoke(random.choice(list(all_blobs.values())))
 		'''
-		blobs_cog = self.bot.get_cog("Blobs")
-		if not blobs_cog: return
-		await ctx.invoke(self.bot.get_command("blobs"), blob = random.choice(list(blobs_cog.data.keys())))
+		cog = self.bot.get_cog("Blobs")
+		if not cog: return
+		await ctx.invoke(self.bot.get_command("blobs"), blob = random.choice(list(cog.data.keys())))
 	
 	async def color(self, ctx):
 		'''Information on a random color'''
