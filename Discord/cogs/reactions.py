@@ -51,10 +51,10 @@ class Reactions(commands.Cog):
 		self.arrows = collections.OrderedDict([('\N{LEFTWARDS BLACK ARROW}', 'W'), ('\N{UPWARDS BLACK ARROW}', 'N'), ('\N{DOWNWARDS BLACK ARROW}', 'S'), ('\N{BLACK RIGHTWARDS ARROW}', 'E')]) # tuple?
 		self.controls = collections.OrderedDict([('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', "pause_resume"), ('\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}', "skip"), ('\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}', "replay"), ('\N{TWISTED RIGHTWARDS ARROWS}', "shuffle"), ('\N{RADIO}', "radio"), ('\N{SPEAKER WITH ONE SOUND WAVE}', "volume_down"), ('\N{SPEAKER WITH THREE SOUND WAVES}', "volume_up")])
 		self.reaction_commands = (
-			(self.guess, "Games", "guess", [], [checks.not_forbidden()]), 
-			(self.news, "Resources", "news", [], [checks.not_forbidden()]), 
-			(self.maze, "Games", "maze", [], [checks.not_forbidden()]), 
-			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden(), commands.guild_only()])
+			(self.guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
+			(self.news, "Resources", "news", [], [checks.not_forbidden().predicate]), 
+			(self.maze, "Games", "maze", [], [checks.not_forbidden().predicate]), 
+			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate])
 		)
 		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
 			self.reactions.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
