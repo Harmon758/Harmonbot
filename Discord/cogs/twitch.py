@@ -500,7 +500,36 @@ class Twitch(commands.Cog):
 					if not text_channel:
 						# TODO: Remove text channel data if now non-existent
 						continue
-					message = await text_channel.send(embed = embed)
+					try:
+						message = await text_channel.send(embed = embed)
+					except discord.Forbidden:
+						if not (permissions := text_channel.permissions_for(text_channel.guild.me)).embed_links and permissions.send_messages:
+							if not match:
+								await self.bot.db.execute(
+									"""
+									DELETE FROM twitch_notifications.channels
+									WHERE channel_id = $1 AND user_id = $2
+									""", 
+									channel_id, str(stream["channel"]["_id"])
+								)
+								await text_channel.send("I am unable to send the embed notification in this text channel for "
+														f"{stream['channel']['display_name']} going live on Twitch, "
+														"so this text channel is no longer following that Twitch channel.")
+							else:
+								await self.bot.db.execute(
+									f"""
+									DELETE FROM twitch_notifications.{type}
+									WHERE channel_id = $1 AND {type[:-1]} = $2
+									""", 
+									channel_id, match
+								)
+								await text_channel.send("I am unable to send the embed notification in this text channel for "
+														f"a stream going live on Twitch matching the {type[:-1]}, {match}, "
+														f"so this text channel is no longer following that {type[:-1]} for Twitch streams.")
+						else:
+							# TODO: Handle no longer able to send messages in text channel
+							print(f"Twitch Task: Missing permissions to send message in #{text_channel.name} in {text_channel.guild.name}")
+						continue
 					await self.bot.db.execute(
 						"""
 						INSERT INTO twitch_notifications.notifications (stream_id, channel_id, message_id, live)
