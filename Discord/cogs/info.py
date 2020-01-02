@@ -34,8 +34,10 @@ class Info(commands.Cog):
 		for command, parent_name in self.info_subcommands:
 			utilities.remove_as_subcommand(self, parent_name, "info")
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(aliases = ["information"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def info(self, ctx):
 		'''Info'''
 		await ctx.send_help(ctx.command)
@@ -45,7 +47,6 @@ class Info(commands.Cog):
 	# TODO: Add member info
 	
 	@info.command(aliases = ["char"])
-	@checks.not_forbidden()
 	async def character(self, ctx, character: str):
 		'''Information about unicode characters'''
 		output = []
@@ -70,7 +71,6 @@ class Info(commands.Cog):
 	
 	@info.command()
 	@commands.guild_only()
-	@checks.not_forbidden()
 	async def role(self, ctx, *, role : discord.Role):
 		'''Information about a role'''
 		embed = discord.Embed(description = role.mention, title = role.name, timestamp = role.created_at, color = ctx.bot.bot_color)
@@ -88,7 +88,6 @@ class Info(commands.Cog):
 	
 	@info.command(aliases = ["guild"])
 	@commands.guild_only()
-	@checks.not_forbidden()
 	async def server(self, ctx):
 		'''Information about the server'''
 		region = str(ctx.guild.region).replace('-', ' ').title()
@@ -153,7 +152,6 @@ class Info(commands.Cog):
 								footer_text = "Created", timestamp = ctx.guild.created_at)
 	
 	@info.command()
-	@checks.not_forbidden()
 	async def spotify(self, ctx, url: str):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
@@ -176,7 +174,6 @@ class Info(commands.Cog):
 		# TODO: keep spotify embed?
 	
 	@info.command(aliases = ["member"])
-	@checks.not_forbidden()
 	async def user(self, ctx, *, user : discord.Member = None):
 		'''Information about a user'''
 		if not user:
@@ -202,7 +199,6 @@ class Info(commands.Cog):
 		# TODO: more detailed activities
 	
 	@info.command(aliases = ["yt"])
-	@checks.not_forbidden()
 	async def youtube(self, ctx, url : str):
 		'''Information about YouTube videos'''
 		# TODO: Automatic on YouTube links, server specific toggleable option
