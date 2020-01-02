@@ -8,7 +8,6 @@ import random
 import tempfile
 
 from modules import maze
-from modules import utilities
 from utilities import checks
 from utilities import errors
 
