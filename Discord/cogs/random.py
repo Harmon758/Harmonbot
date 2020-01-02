@@ -164,8 +164,10 @@ class Random(commands.Cog):
 	
 	async def wikipedia(self, ctx):
 		'''Random Wikipedia article'''
-		if cog := self.bot.get_cog("Search"): await cog.process_wikipedia(ctx, None, random = True)
-		else: await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random") # necessary?
+		if cog := self.bot.get_cog("Search"):
+			await cog.process_wikipedia(ctx, None, random = True)
+		else:
+			await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")  # necessary?
 	
 	async def xkcd(self, ctx):
 		'''Random xkcd'''
