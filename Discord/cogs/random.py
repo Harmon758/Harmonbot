@@ -45,7 +45,7 @@ class Random(commands.Cog):
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_commands = (
 			(self.blob, "Blobs", "blobs", []), 
-			(self.color, "Resources", "color", []), 
+			(self.color, "Resources", "color", ["colour"]), 
 			(self.giphy, "Images", "giphy", []), 
 			(self.map, "Location", "map", []), 
 			(self.photo, "Images", "image", ["image"]), 
