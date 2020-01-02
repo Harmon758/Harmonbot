@@ -118,8 +118,8 @@ class Random(commands.Cog):
 		'''See map of random location'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
-		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=13&size=640x640".format(latitude, longitude)
-		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
+		map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={latitude},{longitude}&zoom=13&size=640x640"
+		await ctx.embed_reply(f"[:map:]({map_url})", image_url = map_url)
 	
 	async def photo(self, ctx, *, query = ""):
 		'''Random photo from Unsplash'''
