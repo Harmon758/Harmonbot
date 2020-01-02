@@ -27,6 +27,7 @@ def setup(bot):
 	bot.add_cog(YouTube(bot))
 
 class YouTube(commands.Cog):
+	
 	'''
 	YouTube streams and uploads notification system
 	See also documentation for youtube command
