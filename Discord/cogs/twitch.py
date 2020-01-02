@@ -299,18 +299,21 @@ class Twitch(commands.Cog):
 			""", 
 			ctx.channel.id
 		)
-		channels = []
+		description = ""
 		for record in records:
 			url = f"https://api.twitch.tv/kraken/users/{record['user_id']}"
 			headers = {"Accept": "application/vnd.twitchtv.v5+json"}
 			params = {"client_id": self.bot.TWITCH_CLIENT_ID}
 			async with self.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
 				user_data = await resp.json()
-			channels.append(user_data["display_name"])
 			# TODO: Add note about name change to response
 			#       user_data["name"] != record["user_name"]
-		await ctx.embed_reply('\n'.join(f"[{channel}](https://www.twitch.tv/{channel})" for channel in channels), 
-								title = "Twitch channels being followed in this text channel")
+			link = f"[{user_data['display_name']}](https://www.twitch.tv/{user_data['display_name']})"
+			if len(description + link) > self.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+				await ctx.embed_reply(description[:-1], title = "Twitch channels being followed in this text channel")
+				description = ""
+			description += link + '\n'
+		await ctx.embed_reply(description[:-1], title = "Twitch channels being followed in this text channel")
 	
 	# R/PT20S
 	@tasks.loop(seconds = 20)
