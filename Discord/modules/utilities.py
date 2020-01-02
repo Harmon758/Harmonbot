@@ -75,37 +75,3 @@ def subscript(string):
 	subscripts = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉', '+': '₊', '-': '₋', '=': '₌', '(': '₍', ')': '₎', 'a': 'ₐ', 'e': 'ₑ', 'o': 'ₒ', 'x': 'ₓ', 'ə': 'ₔ', 'h': 'ₕ', 'k': 'ₖ', 'l': 'ₗ', 'm': 'ₘ', 'n': 'ₙ', 'p': 'ₚ', 's': 'ₛ', 't': 'ₜ'}
 	return "".join(subscripts.get(c, c) for c in str(string))
 
-# Commands
-
-def add_as_subcommand(cog, command, parent_name, subcommand_name, *, aliases = []):
-	if isinstance(parent_name, commands.Command):
-		parent = parent_name
-		# parent_cog = cog.bot.get_cog(parent.cog_name)
-		parent_cog = parent.cog
-		parent_command_name = parent.name
-	else:
-		parent_cog_name, parent_command_name = parent_name.split('.')
-		parent_cog = cog.bot.get_cog(parent_cog_name)
-		parent = getattr(parent_cog, parent_command_name, None)
-		if not parent: return
-	subcommand = copy.copy(command)
-	subcommand.name = subcommand_name
-	subcommand.aliases = aliases
-	subcommand.parent = parent
-	subcommand.cog = parent_cog
-	if isinstance(subcommand, commands.Group):
-		for subsubcommand in subcommand.commands:
-			subsubcommand.parent = subcommand
-	# async def wrapper(*args, **kwargs):
-	# async def wrapper(*args, command = command, **kwargs):
-	# 	await command.callback(cog, *args, **kwargs)
-	# subcommand.callback = wrapper
-	# subcommand.params = inspect.signature(subcommand.callback).parameters.copy()
-	setattr(parent_cog, "{}_{}".format(parent_command_name, subcommand_name), subcommand)
-	parent.add_command(subcommand)
-
-def remove_as_subcommand(cog, parent_name, subcommand_name):
-	parent_cog_name, parent_command_name = parent_name.split('.')
-	parent = getattr(cog.bot.get_cog(parent_cog_name), parent_command_name, None)
-	if parent: parent.remove_command(subcommand_name)
-
