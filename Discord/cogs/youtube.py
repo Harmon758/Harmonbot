@@ -15,7 +15,6 @@ import feedparser
 import isodate
 
 import clients
-from modules import utilities
 from utilities import checks
 
 sys.path.insert(0, "..")
@@ -26,13 +25,11 @@ errors_logger = logging.getLogger("errors")
 
 def setup(bot):
 	bot.add_cog(YouTube(bot))
-	if "Audio" in bot.cogs:
-		bot.remove_command("streams")
-		bot.remove_command("uploads")
 
 class YouTube(commands.Cog):
 	'''
 	YouTube streams and uploads notification system
+	See also documentation for youtube command
 	Uploads system relevant documentation:
 	https://developers.google.com/youtube/v3/guides/push_notifications
 	https://pubsubhubbub.appspot.com/
@@ -42,9 +39,34 @@ class YouTube(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.uploads_processed = []
-		
-		utilities.add_as_subcommand(self, self.youtube_streams, "Audio.audio", "streams", aliases = ["stream"])
-		utilities.add_as_subcommand(self, self.youtube_uploads, "Audio.audio", "uploads", aliases = ["videos"])
+		# Add youtube (audio) streams and uploads subcommands and their corresponding subcommands
+		streams_command = commands.Group(self.streams, aliases = ["stream"], 
+											invoke_without_command = True, case_insensitive = True, 
+											checks = [checks.is_permitted().predicate])
+		streams_command.add_command(commands.Command(self.streams_add, name = "add", checks = [checks.is_permitted().predicate]))
+		streams_command.add_command(commands.Command(self.streams_remove, name = "remove", aliases = ["delete"], 
+														checks = [checks.is_permitted().predicate]))
+		streams_command.add_command(commands.Command(self.streams_channels, name = "channels", aliases = ["streams"], 
+														checks = [checks.not_forbidden().predicate]))
+		uploads_command = commands.Group(self.uploads, aliases = ["videos"], 
+											invoke_without_command = True, case_insensitive = True, 
+											checks = [checks.is_permitted().predicate])
+		uploads_command.add_command(commands.Command(self.uploads_add, name = "add", aliases = ["subscribe"], 
+														checks = [checks.is_permitted().predicate]))
+		uploads_command.add_command(commands.Command(self.uploads_remove, name = "remove", aliases = ["delete", "unsubscribe"], 
+														checks = [checks.is_permitted().predicate]))
+		uploads_command.add_command(commands.Command(self.uploads_channels, name = "channels", aliases = ["uploads", "videos"], 
+														checks = [checks.not_forbidden().predicate]))
+		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
+			parent.add_command(streams_command)
+			parent.add_command(uploads_command)
+		else:
+			command = commands.Group(self.youtube, aliases = ["yt"], 
+										invoke_without_command = True, case_insensitive = True, 
+										checks = [checks.not_forbidden().predicate])
+			command.add_command(streams_command)
+			command.add_command(uploads_command)
+			self.bot.add_command(command)
 		
 		self.check_youtube_streams.start()
 		
@@ -55,10 +77,9 @@ class YouTube(commands.Cog):
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
 	
 	def cog_unload(self):
-		utilities.remove_as_subcommand(self, "Audio.audio", "streams")
-		utilities.remove_as_subcommand(self, "Audio.audio", "uploads")
-		
-		self.youtube_streams.recursively_remove_all_commands()  # Necessary?
+		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
+			parent.remove_command("streams")
+			parent.remove_command("uploads")
 		self.check_youtube_streams.cancel()
 		self.renew_uploads_task.cancel()
 	
@@ -111,16 +132,15 @@ class YouTube(commands.Cog):
 							f"re-subscribing to {channel_id}: {error_description}")
 			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
 	
-	@commands.group(name = "streams", invoke_without_command = True, case_insensitive = True)
-	# Handle stream alias when audio cog not loaded first | aliases = ["stream"]
-	@checks.is_permitted()
-	async def youtube_streams(self, ctx):
+	async def youtube(self, ctx):
+		'''YouTube'''
+		await ctx.send_help(ctx.command)
+	
+	async def streams(self, ctx):
 		'''YouTube Streams'''
 		await ctx.send_help(ctx.command)
 	
-	@youtube_streams.command(name = "add")
-	@checks.is_permitted()
-	async def youtube_streams_add(self, ctx, channel : str):
+	async def streams_add(self, ctx, channel : str):
 		'''Add YouTube channel to follow'''
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
@@ -139,9 +159,7 @@ class YouTube(commands.Cog):
 		await ctx.embed_reply(f"Added the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
 		"I will now announce here when this YouTube channel goes live")
 	
-	@youtube_streams.command(name = "remove", aliases = ["delete"])
-	@checks.is_permitted()
-	async def youtube_streams_remove(self, ctx, channel : str):
+	async def streams_remove(self, ctx, channel : str):
 		'''Remove YouTube channel being followed'''
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
@@ -158,9 +176,7 @@ class YouTube(commands.Cog):
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
 		await ctx.embed_reply(f"Removed the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), from this text channel")
 	
-	@youtube_streams.command(name = "channels", aliases = ["streams"])
-	@checks.not_forbidden()
-	async def youtube_streams_channels(self, ctx):
+	async def streams_channels(self, ctx):
 		'''Show YouTube channels being followed in this text channel'''
 		records = await ctx.bot.db.fetch(
 			"""
@@ -303,16 +319,11 @@ class YouTube(commands.Cog):
 	
 	# TODO: Follow channels/new video uploads
 	
-	@commands.group(name = "uploads", aliases = ["videos"], 
-					invoke_without_command = True, case_insensitive = True)
-	@checks.is_permitted()
-	async def youtube_uploads(self, ctx):
+	async def uploads(self, ctx):
 		'''YouTube Uploads/Videos'''
 		await ctx.send_help(ctx.command)
 	
-	@youtube_uploads.command(name = "add", aliases = ["subscribe"])
-	@checks.is_permitted()
-	async def youtube_uploads_add(self, ctx, channel : str):
+	async def uploads_add(self, ctx, channel : str):
 		'''Add YouTube channel to follow'''
 		channel_id = await self.get_youtube_channel_id(channel)
 		if not channel_id:
@@ -343,9 +354,7 @@ class YouTube(commands.Cog):
 								"to this text channel\n"
 								"I will now announce here when this YouTube channel uploads videos")
 	
-	@youtube_uploads.command(name = "remove", aliases = ["delete", "unsubscribe"])
-	@checks.is_permitted()
-	async def youtube_uploads_remove(self, ctx, channel_id : str):
+	async def uploads_remove(self, ctx, channel_id : str):
 		'''Remove YouTube channel being followed'''
 		channels = self.uploads_info.get(str(ctx.channel.id))
 		if not channels or channel_id not in channels:
@@ -369,9 +378,7 @@ class YouTube(commands.Cog):
 								f"[`{channel_id}`](https://www.youtube.com/channel/{channel_id}), "
 								"from this text channel")
 	
-	@youtube_uploads.command(name = "channels", aliases = ["uploads", "videos"])
-	@checks.not_forbidden()
-	async def youtube_uploads_channels(self, ctx):
+	async def uploads_channels(self, ctx):
 		'''Show YouTube channels being followed in this text channel'''
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(self.uploads_info.get(str(ctx.channel.id), []))))
 	
