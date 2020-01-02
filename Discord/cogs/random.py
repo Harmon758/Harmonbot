@@ -22,15 +22,10 @@ import pydealer
 import pyparsing
 
 import clients
-from modules import utilities
 from utilities import checks
 
 def setup(bot):
-	cog = Random(bot)
-	bot.add_cog(cog)
-	# Add fact subcommands as subcommands of corresponding commands
-	for command, parent in ((cog.fact_cat, cog.cat), (cog.fact_date, cog.date), (cog.fact_number, cog.number)):
-		utilities.add_as_subcommand(cog, command, parent, "fact", aliases = ["facts"])
+	bot.add_cog(Random(bot))
 
 class Random(commands.Cog):
 	
@@ -41,15 +36,30 @@ class Random(commands.Cog):
 			if isinstance(command, commands.Command) and command.parent is None and name != "random":
 				self.bot.add_command(command)
 				self.random.add_command(command)
+		# Add fact subcommands as subcommands of corresponding commands
+		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
+			self.fact.add_command(commands.Command(command, name = parent.name, aliases = [parent.name + 's'], 
+													checks = [checks.not_forbidden().predicate]))
+			parent.add_command(commands.Command(command, name = "fact", aliases = ["facts"], 
+													checks = [checks.not_forbidden().predicate]))
 		# Add random subcommands as subcommands of corresponding commands
-		self.random_subcommands = ((self.blob, "Blobs.blobs"), (self.color, "Resources.color"), 
-									(self.giphy, "Images.giphy"), (self.map, "Location.map"), 
-									(self.photo, "Images.image"), (self.streetview, "Location.streetview"), 
-									(self.time, "Location.time"), (self.uesp, "Search.uesp"), 
-									(self.user, "User.user"), (self.wikipedia, "Search.wikipedia"), 
-									(self.xkcd, "Resources.xkcd"))
-		for command, parent_name in self.random_subcommands:
-			utilities.add_as_subcommand(self, command, parent_name, "random")
+		self.random_commands = (
+			(self.blob, "Blobs", "blobs", []), 
+			(self.color, "Resources", "color", []), 
+			(self.giphy, "Images", "giphy", []), 
+			(self.map, "Location", "map", []), 
+			(self.photo, "Images", "image", ["image"]), 
+			(self.streetview, "Location", "streetview", []), 
+			(self.time, "Location", "time", []), 
+			(self.uesp, "Search", "uesp", []), 
+			(self.user, "User", "user", ["member"]), 
+			(self.wikipedia, "Search", "wikipedia", ["wiki"]), 
+			(self.xkcd, "Resources", "xkcd", [])
+		)
+		for command, cog_name, parent_name, aliases in self.random_commands:
+			self.random.add_command(commands.Command(command, aliases = aliases, checks = [checks.not_forbidden().predicate]))
+			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
+				parent.add_command(commands.Command(command, name = "random", checks = [checks.not_forbidden().predicate]))
 		# Import jokes
 		self.jokes = []
 		try:
@@ -61,8 +71,9 @@ class Random(commands.Cog):
 			pass
 	
 	def cog_unload(self):
-		for command, parent_name in self.random_subcommands:
-			utilities.remove_as_subcommand(self, parent_name, "random")
+		for command, cog_name, parent_name, _ in self.random_commands:
+			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
+				parent.remove_command("random")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
@@ -74,8 +85,6 @@ class Random(commands.Cog):
 		# TODO: random random
 		await ctx.embed_reply(":grey_question: Random what?")
 	
-	@random.command()
-	@checks.not_forbidden()
 	async def blob(self, ctx):
 		'''Random blob emoji'''
 		'''
@@ -89,8 +98,6 @@ class Random(commands.Cog):
 		if not blobs_cog: return
 		await ctx.invoke(self.bot.get_command("blobs"), blob = random.choice(list(blobs_cog.data.keys())))
 	
-	@random.command()
-	@checks.not_forbidden()
 	async def color(self, ctx):
 		'''Information on a random color'''
 		url = "http://www.colourlovers.com/api/colors/random"
@@ -98,8 +105,6 @@ class Random(commands.Cog):
 		cog = self.bot.get_cog("Resources")
 		if cog: await cog.process_color(ctx, url, params)
 	
-	@random.command()
-	@checks.not_forbidden()
 	async def giphy(self, ctx):
 		'''Random gif from giphy'''
 		url = "http://api.giphy.com/v1/gifs/random"
@@ -108,8 +113,6 @@ class Random(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"]["image_url"])
 	
-	@random.command()
-	@checks.not_forbidden()
 	async def map(self, ctx):
 		'''See map of random location'''
 		latitude = random.uniform(-90, 90)
@@ -117,8 +120,6 @@ class Random(commands.Cog):
 		map_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=13&size=640x640".format(latitude, longitude)
 		await ctx.embed_reply("[:map:]({})".format(map_url), image_url = map_url)
 	
-	@random.command(aliases = ["image"])
-	@checks.not_forbidden()
 	async def photo(self, ctx, *, query = ""):
 		'''Random photo from Unsplash'''
 		url = "https://api.unsplash.com/photos/random"
@@ -135,8 +136,6 @@ class Random(commands.Cog):
 								author_icon_url = data["user"]["profile_image"]["small"], 
 								image_url = data["urls"]["full"])
 	
-	@random.command()
-	@checks.not_forbidden()
 	async def streetview(self, ctx):
 		'''Generate street view of a random location'''
 		latitude = random.uniform(-90, 90)
@@ -144,14 +143,10 @@ class Random(commands.Cog):
 		image_url = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location={},{}".format(latitude, longitude)
 		await ctx.embed_reply(image_url = image_url)
 	
-	@random.command()
-	@checks.not_forbidden()
 	async def time(self, ctx):
 		'''Random time'''
 		await ctx.embed_reply(f"{random.randint(0, 23):02d}:{random.randint(0, 59):02d}")
 	
-	@random.command()
-	@checks.not_forbidden()
 	async def uesp(self, ctx):
 		'''
 		Random UESP page
@@ -161,22 +156,16 @@ class Random(commands.Cog):
 		if cog: await cog.process_uesp(ctx, None, random = True)
 		else: await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random") # necessary?
 	
-	@random.command(aliases = ["member"])
-	@checks.not_forbidden()
 	async def user(self, ctx):
 		'''Random user/member'''
 		await ctx.embed_reply(random.choice(ctx.guild.members).mention)
 	
-	@random.command(aliases = ["wiki"])
-	@checks.not_forbidden()
 	async def wikipedia(self, ctx):
 		'''Random Wikipedia article'''
 		cog = self.bot.get_cog("Search")
 		if cog: await cog.process_wikipedia(ctx, None, random = True)
 		else: await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random") # necessary?
 	
-	@random.command()
-	@checks.not_forbidden()
 	async def xkcd(self, ctx):
 		'''Random xkcd'''
 		url = "http://xkcd.com/info.0.json"
@@ -364,8 +353,6 @@ class Random(commands.Cog):
 		await ctx.embed_reply(BeautifulSoup(data[0]["fact"], "lxml").text, 
 								image_url = data[0]["primaryImage"])
 	
-	@fact.command(name = "cat", aliases = ["cats"])
-	@checks.not_forbidden()
 	async def fact_cat(self, ctx):
 		'''Random fact about cats'''
 		url = "https://cat-facts-as-a-service.appspot.com/fact"
@@ -373,8 +360,6 @@ class Random(commands.Cog):
 			fact = await resp.text()
 		await ctx.embed_reply(fact)
 	
-	@fact.command(name = "date")
-	@checks.not_forbidden()
 	async def fact_date(self, ctx, date: str):
 		'''
 		Random fact about a date
@@ -397,8 +382,6 @@ class Random(commands.Cog):
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
-	@fact.command(name = "number")
-	@checks.not_forbidden()
 	async def fact_number(self, ctx, number: int):
 		'''Random fact about a number'''
 		url = f"http://numbersapi.com/{number}"
