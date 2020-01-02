@@ -6,7 +6,6 @@ import inspect
 import re
 import youtube_dl
 
-from modules import utilities
 from utilities import checks
 
 def setup(bot):
