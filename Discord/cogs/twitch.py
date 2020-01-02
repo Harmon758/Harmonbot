@@ -496,8 +496,7 @@ class Twitch(commands.Cog):
 							break
 				# Send notifications
 				for channel_id in channel_ids:
-					text_channel = self.bot.get_channel(channel_id)
-					if not text_channel:
+					if not (text_channel := self.bot.get_channel(channel_id)):
 						# TODO: Remove text channel data if now non-existent
 						continue
 					try:
