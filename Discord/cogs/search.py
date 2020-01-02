@@ -21,14 +21,18 @@ class Search(commands.Cog):
 			if isinstance(command, commands.Command) and command.parent is None and name != "search":
 				self.bot.add_command(command)
 				self.search.add_command(command)
-		# Add search subcommands as subcommands of corresponding commands
-		self.search_subcommands = ((self.youtube, "Audio.audio"),)
-		for command, parent_name in self.search_subcommands:
-			utilities.add_as_subcommand(self, command, parent_name, "search")
+		# Add search youtube / youtube (audio) search subcommands
+		command = commands.Command(self.youtube, aliases = ["yt"], checks = [checks.not_forbidden().predicate])
+		command.error(self.youtube_error)
+		self.search.add_command(command)
+		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
+			command = commands.Command(self.youtube, name = "search", checks = [checks.not_forbidden().predicate])
+			command.error(self.youtube_error)
+			parent.add_command(command)
 	
 	def cog_unload(self):
-		for command, parent_name in self.search_subcommands:
-			utilities.remove_as_subcommand(self, parent_name, "search")
+		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
+			parent.remove_command("search")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -41,7 +45,6 @@ class Search(commands.Cog):
 		'''
 		await ctx.embed_reply(":grey_question: Search what?")
 	
-	@search.command(aliases = ["yt"])
 	async def youtube(self, ctx, *, search : str):
 		'''Find a Youtube video'''
 		ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
@@ -50,7 +53,6 @@ class Search(commands.Cog):
 		if "entries" in info: info = info["entries"][0]
 		await ctx.reply(info.get("webpage_url"))
 	
-	@youtube.error
 	async def youtube_error(self, ctx, error):
 		if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
 			await ctx.embed_reply(f":no_entry: Error: {error.original}")
