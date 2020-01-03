@@ -1,13 +1,6 @@
 
 import math
 
-def is_number(characters):
-	try:
-		float(characters)
-		return True
-	except ValueError:
-		return False
-
 def is_hex(characters):
 	try:
 		int(characters, 16)
