@@ -2,7 +2,7 @@
 import discord
 from discord.ext import commands
 
-from typing import Optional
+from typing import Optional, Union
 
 from utilities import checks
 
@@ -115,40 +115,23 @@ class Permissions(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def getpermission(self, ctx, user: Optional[discord.Member], permission: Optional[str]):
-		'''Get a permission'''
-		if user and permission:
-			await ctx.invoke(self.getpermission_user, user, permission)
-		else:
-			await ctx.send_help(ctx.command)
-	
-	@getpermission.command(name = "everyone")
-	@commands.guild_only()
-	@checks.is_permitted()
-	async def getpermission_everyone(self, ctx, permission: str):
+	async def getpermission(self, ctx, permission, users: Optional[Union[discord.Member, discord.Role]]):
+		'''
+		Get a permission for a user, role, or everyone
+		Defaults to everyone if no user or role is specified
+		'''
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		setting = await ctx.get_permission(self.bot.all_commands[permission].name, type = "everyone")
-		await ctx.embed_reply(f"{permission} is set to {setting} for everyone")
-	
-	@getpermission.command(name = "role")
-	@commands.guild_only()
-	@checks.is_permitted()
-	async def getpermission_role(self, ctx, role: discord.Role, permission: str):
-		if permission not in self.bot.all_commands:
-			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		setting = await ctx.get_permission(self.bot.all_commands[permission].name, 
-											type = "role", id = role.id)
-		await ctx.embed_reply(f"{permission} is set to {setting} for the role, {role.mention}")
-	
-	@getpermission.command(name = "user", aliases = ["member"])
-	@commands.guild_only()
-	@checks.is_permitted()
-	async def getpermission_user(self, ctx, user: discord.Member, permission: str):
-		if permission not in self.bot.all_commands:
-			return await ctx.embed_reply(f"Error: {permission} is not a command")
-		setting = await ctx.get_permission(self.bot.all_commands[permission].name, id = user.id)
-		await ctx.embed_reply(f"{permission} is set to {setting} for {user.mention}")
+		if not users:
+			setting = await ctx.get_permission(self.bot.all_commands[permission].name, type = "everyone")
+			return await ctx.embed_reply(f"{permission} is set to {setting} for everyone")
+		if isinstance(users, discord.Member):
+			setting = await ctx.get_permission(self.bot.all_commands[permission].name, id = users.id)
+			return await ctx.embed_reply(f"{permission} is set to {setting} for {users.mention}")
+		if isinstance(users, discord.Role):
+			setting = await ctx.get_permission(self.bot.all_commands[permission].name, 
+												type = "role", id = users.id)
+			return await ctx.embed_reply(f"{permission} is set to {setting} for the role, {users.mention}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_permitted()
