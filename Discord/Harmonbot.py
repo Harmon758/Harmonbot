@@ -205,9 +205,10 @@ if __name__ == "__main__":
 			if not units: return
 			if len(message.content.split()) == 1:
 				return await ctx.embed_reply(":no_entry: Please enter input")
-			if not utilities.is_number(message.content.split()[1]):
+			try:
+				value = float(message.content.split()[1])
+			except ValueError:
 				return await ctx.embed_reply(":no_entry: Syntax error")
-			value = float(message.content.split()[1])
 			unit1 = units.group(1)
 			unit2 = units.group(2)
 			converted_temperature_value, temperature_unit1, temperature_unit2 = conversions.temperatureconversion(value, unit1, unit2)
