@@ -54,8 +54,8 @@ class GuessMenu(menus.Menu):
 		super().__init__(timeout = None, check_embeds = True)
 		self.numbers = {str(number) + '\N{COMBINING ENCLOSING KEYCAP}': number for number in range(1, 10)}
 		self.numbers['\N{KEYCAP TEN}'] = 10
-		for emote, number in self.numbers.items():
-			self.add_button(menus.Button(emote, self.process_reaction, position = number))
+		for emoji, number in self.numbers.items():
+			self.add_button(menus.Button(emoji, self.process_reaction, position = number))
 	
 	# TODO: Track number of tries
 	
