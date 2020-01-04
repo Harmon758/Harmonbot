@@ -11,7 +11,7 @@ from typing import Optional
 import urllib
 
 from modules import utilities
-from utilities import audio_player
+from utilities.audio_player import AudioPlayer
 from utilities import audio_sources
 from utilities import checks
 from utilities import errors
@@ -55,7 +55,7 @@ class Audio(commands.Cog):
 			return
 		if not ctx.guild.voice_client:
 			if ctx.guild.id not in self.players:
-				self.players[ctx.guild.id] = audio_player.AudioPlayer.from_context(ctx)
+				self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
 			try:
 				is_server_owner = await checks.is_server_owner().predicate(ctx)
 			except errors.NotServerOwner:
@@ -104,7 +104,7 @@ class Audio(commands.Cog):
 		'''Get me to join a voice channel'''
 		# TODO: Permit all when not in voice channel?
 		if ctx.guild.id not in self.players:
-			self.players[ctx.guild.id] = audio_player.AudioPlayer.from_context(ctx)
+			self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
 		if not channel and (not ctx.author.voice or not (channel := ctx.author.voice.channel)):
 			return await ctx.embed_reply(":no_entry: Voice channel not found")
 		try:
