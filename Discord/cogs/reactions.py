@@ -13,30 +13,10 @@ from utilities import checks
 
 def setup(bot):
 	bot.add_cog(Reactions(bot))
-	
-	async def process_reactions(reaction, user):
-		if user == bot.user:
-			return
-		await bot.cogs["Reactions"].reaction_messages[reaction.message.id](reaction, user)
-		await bot.db.execute(
-			"""
-			UPDATE meta.stats
-			SET reaction_responses = reaction_responses + 1
-			WHERE timestamp = $1
-			""", 
-			bot.online_time
-		)
-		# Count fixed to stop counting own reactions on 2019-10-25
-	
-	@bot.event
-	async def on_reaction_add(reaction, user):
-		if "Reactions" in bot.cogs and reaction.message.id in bot.cogs["Reactions"].reaction_messages:
-			await process_reactions(reaction, user)
 
-	@bot.event
-	async def on_reaction_remove(reaction, user):
-		if "Reactions" in bot.cogs and reaction.message.id in bot.cogs["Reactions"].reaction_messages:
-			await process_reactions(reaction, user)
+# meta.stats reaction_responses column:
+#  Fixed to stop counting own reactions on 2019-10-25
+#  Deprecated on 2020-01-04 in favor of menu_reactions
 
 async def increment_menu_reaction_count(bot):
 	await bot.db.execute(
@@ -135,12 +115,62 @@ class NewsMenu(menus.MenuPages):
 		await ctx.bot.attempt_delete_message(ctx.message)
 		return message
 
+class PlayingMenu(menus.Menu):
+	
+	def __init__(self):
+		super().__init__(timeout = None, check_embeds = True)
+		self.controls = collections.OrderedDict([('\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}', "skip"), ('\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}', "replay"), ('\N{TWISTED RIGHTWARDS ARROWS}', "shuffle"), ('\N{RADIO}', "radio")])
+		for number, control_emote in enumerate(self.controls.keys(), start = 2):
+			self.add_button(menus.Button(control_emote, self.on_direct_action_reaction, position = number, lock = False))
+	
+	async def send_initial_message(self, ctx, channel):
+		return await ctx.invoke(ctx.bot.cogs["Audio"].playing)
+	
+	# TODO: Queue?, Empty?, Settext?, Other?
+	# TODO: Resend player?
+	
+	def reaction_check(self, payload):
+		return payload.message_id == self.message.id and payload.user_id != self.bot.user.id and str(payload.emoji) in self.buttons
+	
+	@menus.button('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', position = 1)
+	async def on_pause_or_resume(self, payload):
+		permitted = await self.ctx.get_permission("pause", id = payload.user_id)
+		if permitted or payload.user_id == self.ctx.guild.owner.id or payload.user_id == self.bot.owner_id:
+			if self.ctx.guild.voice_client.is_playing():
+				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].pause)
+			else:
+				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].resume)
+	
+	async def on_direct_action_reaction(self, payload):
+		permitted = await self.ctx.get_permission(self.controls[str(payload.emoji)], id = payload.user_id)
+		if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
+			await self.ctx.invoke(getattr(self.ctx.bot.cogs["Audio"], self.controls[str(payload.emoji)]))
+			# Timestamp for radio
+	
+	@menus.button('\N{SPEAKER WITH ONE SOUND WAVE}', position = 6)
+	async def on_volume_down(self, payload):
+		permitted = await self.ctx.get_permission("volume", id = payload.user_id)
+		if permitted or payload.user_id in (self.ctx.guild.owner, self.bot.owner_id):
+			if self.ctx.guild.voice_client.is_playing():
+				current_volume = self.ctx.guild.voice_client.source.volume
+			else:
+				await self.ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
+			await self.ctx.invoke(self.ctx.bot.cogs["Audio"].volume, volume_setting = current_volume - 10)
+	
+	@menus.button('\N{SPEAKER WITH THREE SOUND WAVES}', position = 7)
+	async def on_volume_up(self, payload):
+		permitted = await self.ctx.get_permission("volume", id = payload.user_id)
+		if permitted or payload.user_id in (self.ctx.guild.owner, self.bot.owner_id):
+			if self.ctx.guild.voice_client.is_playing():
+				current_volume = self.ctx.guild.voice_client.source.volume
+			else:
+				await self.ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
+			await self.ctx.invoke(self.ctx.bot.cogs["Audio"].volume, volume_setting = current_volume + 10)
+
 class Reactions(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.reaction_messages = {}
-		self.controls = collections.OrderedDict([('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', "pause_resume"), ('\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}', "skip"), ('\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}', "replay"), ('\N{TWISTED RIGHTWARDS ARROWS}', "shuffle"), ('\N{RADIO}', "radio"), ('\N{SPEAKER WITH ONE SOUND WAVE}', "volume_down"), ('\N{SPEAKER WITH THREE SOUND WAVES}', "volume_up")])
 		self.reaction_commands = (
 			(self.guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
 			(self.maze, "Games", "maze", [], [checks.not_forbidden().predicate]), 
@@ -201,36 +231,5 @@ class Reactions(commands.Cog):
 	
 	async def playing(self, ctx):
 		'''Audio player'''
-		player_message = await ctx.invoke(ctx.bot.cogs["Audio"].playing)
-		for control_emote in self.controls.keys():
-			await player_message.add_reaction(control_emote)
-		self.reaction_messages[player_message.id] = lambda reaction, user: self.playing_reactions_processor(ctx, reaction, user)
-	
-	# TODO: Queue?, Empty?, Settext?, Other?
-	# TODO: Resend player?
-	
-	async def playing_reactions_processor(self, ctx, reaction, user):
-		if reaction.emoji in self.controls:
-			if self.controls[reaction.emoji] == "pause_resume":
-				permitted = await ctx.get_permission("pause", id = user.id)
-				if permitted or user == ctx.guild.owner or user.id == self.bot.owner_id:
-					if ctx.guild.voice_client.is_playing():
-						await ctx.invoke(ctx.bot.cogs["Audio"].pause)
-					else:
-						await ctx.invoke(ctx.bot.cogs["Audio"].resume)
-			elif self.controls[reaction.emoji] in ("skip", "replay", "shuffle", "radio"):
-				permitted = await ctx.get_permission(self.controls[reaction.emoji], id = user.id)
-				if permitted or user.id in (ctx.guild.owner.id, self.bot.owner_id):
-					await ctx.invoke(getattr(ctx.bot.cogs["Audio"], self.controls[reaction.emoji]))
-					# Timestamp for radio
-			elif self.controls[reaction.emoji] in ("volume_down", "volume_up"):
-				permitted = await ctx.get_permission("volume", id = user.id)
-				if permitted or user.id in (ctx.guild.owner, self.bot.owner_id):
-					if ctx.guild.voice_client.is_playing():
-						current_volume = ctx.guild.voice_client.source.volume
-					else:
-						await ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
-					if self.controls[reaction.emoji] == "volume_down": set_volume = current_volume - 10
-					elif self.controls[reaction.emoji] == "volume_up": set_volume = current_volume + 10
-					await ctx.invoke(ctx.bot.cogs["Audio"].volume, volume_setting = set_volume)
+		await PlayingMenu().start(ctx)
 
