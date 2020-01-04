@@ -4,8 +4,8 @@ from discord.ext import commands, menus
 
 import collections
 import copy
+import io
 import random
-import tempfile
 
 from modules.maze import Maze
 from utilities import checks
@@ -104,13 +104,10 @@ class MazeMenu(menus.Menu):
 	
 	@menus.button("\N{PRINTER}", position = 5, lock = False)
 	async def on_printer(self, payload):
-		with tempfile.TemporaryFile(dir = self.bot.data_path + "/temp") as maze_file:
-			maze_file.write(('\n'.join(self.maze.visible)).encode())
-			maze_file.flush()
-			maze_file.seek(0)
-			await self.message.channel.send(content = f"{self.ctx.author.display_name}:\n"
-														"Your maze is attached", 
-											file = discord.File(maze_file.file, filename = "maze.txt"))
+		await self.message.channel.send(content = f"{self.ctx.author.display_name}:\n"
+													"Your maze is attached", 
+										file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
+															filename = "maze.txt"))
 		await increment_menu_reaction_count(self.bot)
 
 class Reactions(commands.Cog):
