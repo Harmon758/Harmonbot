@@ -118,7 +118,9 @@ class PlayingMenu(menus.Menu):
 	
 	def __init__(self):
 		super().__init__(timeout = None, check_embeds = True)
-		self.controls = {'\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}': "skip", '\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}': "replay", '\N{TWISTED RIGHTWARDS ARROWS}': "shuffle", '\N{RADIO}': "radio"}
+		self.controls = {'\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}': "skip", 
+							'\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}': "replay", 
+							'\N{TWISTED RIGHTWARDS ARROWS}': "shuffle", '\N{RADIO}': "radio"}
 		for number, control_emote in enumerate(self.controls.keys(), start = 2):
 			self.add_button(menus.Button(control_emote, self.on_direct_action_reaction, position = number, lock = False))
 	
