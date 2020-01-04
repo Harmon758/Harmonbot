@@ -58,11 +58,10 @@ class GuessMenu(menus.Menu):
 			embed = self.message.embeds[0]
 			if self.numbers[str(payload.emoji)] == self.answer:
 				embed.description = "{}: It was {}!".format(self.ctx.author.display_name, self.numbers[str(payload.emoji)])
-				await self.message.edit(embed = embed)
 				self.stop()
 			else:
 				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(self.ctx.author.display_name, self.numbers[str(payload.emoji)])
-				await self.message.edit(embed = embed)
+			await self.message.edit(embed = embed)
 
 class Reactions(commands.Cog):
 	
