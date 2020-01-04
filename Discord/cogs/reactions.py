@@ -84,7 +84,7 @@ class MazeMenu(menus.Menu):
 			self.add_button(menus.Button(emote, self.on_direction, position = number))
 	
 	async def send_initial_message(self, ctx, channel):
-		return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.maze.print_visible()), footer_text = "Your current position: {}, {}".format(self.maze.column + 1, self.maze.row + 1))
+		return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.maze.print_visible()), footer_text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
 	
 	async def on_direction(self, payload):
 		embed = self.message.embeds[0]
