@@ -51,16 +51,17 @@ class GuessMenu(menus.Menu):
 	
 	async def send_initial_message(self, ctx, channel):
 		self.answer = random.randint(1, 10)
-		return await ctx.embed_reply("Guess a number between 1 to 10")
+		return await ctx.embed_reply(f"{ctx.author.mention}: Guess a number between 1 to 10")
 	
 	async def process_reaction(self, payload):
 		if payload.user_id == self.ctx.author.id:
 			embed = self.message.embeds[0]
 			if self.numbers[str(payload.emoji)] == self.answer:
-				embed.description = f"{self.ctx.author.display_name}: It was {self.numbers[str(payload.emoji)]}!"
+				embed.description = f"{self.ctx.author.mention}: It was {self.numbers[str(payload.emoji)]}!"
 				self.stop()
 			else:
-				embed.description = f"{self.ctx.author.display_name}: Guess a number between 1 to 10. No, it's not {self.numbers[str(payload.emoji)]}"
+				embed.description = (f"{self.ctx.author.mention}: Guess a number between 1 to 10\n"
+										f"No, it's not {self.numbers[str(payload.emoji)]}")
 			await self.message.edit(embed = embed)
 
 class Reactions(commands.Cog):
