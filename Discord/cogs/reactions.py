@@ -181,7 +181,7 @@ class Reactions(commands.Cog):
 	# TODO: urband
 	# TODO: rtg
 	
-	async def maze(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
+	async def maze(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Maze game
 		With reactions
