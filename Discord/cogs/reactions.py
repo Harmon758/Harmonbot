@@ -3,15 +3,12 @@ import discord
 from discord.ext import commands, menus
 
 import collections
-import copy
 import io
 import random
 
 import dateutil.parser
 
 from modules.maze import Maze
-from modules import utilities
-from utilities import audio_sources
 from utilities import checks
 
 def setup(bot):
@@ -204,46 +201,7 @@ class Reactions(commands.Cog):
 	
 	async def playing(self, ctx):
 		'''Audio player'''
-		if ctx.guild.voice_client.is_playing():
-			requester = ctx.guild.voice_client.source.requester
-			# Description
-			if ctx.bot.cogs["Audio"].players[ctx.guild.id].radio_flag:
-				description = ":radio: Radio is currently playing"
-			elif ctx.bot.cogs["Audio"].players[ctx.guild.id].library_flag:
-				description = ":notes: Playing song from my library"
-			elif isinstance(ctx.guild.voice_client.source, audio_sources.FileSource):
-				description = ":floppy_disk: Playing audio file"
-			elif isinstance(ctx.guild.voice_client.source, audio_sources.TTSSource):
-				description = ":speaking_head: Playing TTS Message"
-			else:
-				description = ":musical_note: Currently playing"
-				played_duration = ctx.guild.voice_client.source.previous_played_time + ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
-				total_duration = ctx.guild.voice_client.source.info.get("duration")
-				if total_duration:
-					playing_bar = "▬" * 10
-					button_spot = int(played_duration / (total_duration / 10))
-					playing_bar = playing_bar[:button_spot] + ":radio_button: " + playing_bar[button_spot + 1:]
-					played_duration = utilities.secs_to_colon_format(played_duration)
-					total_duration = utilities.secs_to_colon_format(total_duration)
-					description = ":arrow_forward: {}`[{}/{}]`".format(playing_bar, played_duration, total_duration) # Add :sound:?
-				views = ctx.guild.voice_client.source.info.get("view_count")
-				likes = ctx.guild.voice_client.source.info.get("like_count")
-				dislikes = ctx.guild.voice_client.source.info.get("dislike_count")
-				description += '\n' if views or likes or dislikes else ""
-				description += f"{views:,} :eye:" if views else ""
-				description += " | " if views and (likes or dislikes) else ""
-				description += f"{likes:,} :thumbsup::skin-tone-2:" if likes else ""
-				description += " | " if likes and dislikes else ""
-				description += f"{dislikes:,} :thumbsdown::skin-tone-2:" if dislikes else ""
-			if hasattr(ctx.guild.voice_client.source, "info"):
-				title = ctx.guild.voice_client.source.info.get("title")
-				title_url = ctx.guild.voice_client.source.info.get("webpage_url")
-			else:
-				title = ctx.guild.voice_client.source.title
-				title_url = discord.Embed.Empty
-			player_message = await ctx.embed_reply(description, title = title, title_url = title_url, footer_text = "Added by " + requester.display_name, footer_icon_url = requester.avatar_url, timestamp = ctx.guild.voice_client.source.timestamp)
-		else:
-			player_message = await ctx.embed_reply(":speaker: There is no song currently playing")
+		player_message = await ctx.invoke(ctx.bot.cogs["Audio"].playing)
 		for control_emote in self.controls.keys():
 			await player_message.add_reaction(control_emote)
 		self.reaction_messages[player_message.id] = lambda reaction, user: self.playing_reactions_processor(ctx, reaction, user)
@@ -256,24 +214,14 @@ class Reactions(commands.Cog):
 			if self.controls[reaction.emoji] == "pause_resume":
 				permitted = await ctx.get_permission("pause", id = user.id)
 				if permitted or user == ctx.guild.owner or user.id == self.bot.owner_id:
-					embed = discord.Embed(color = ctx.bot.bot_color).set_author(name = user.display_name, icon_url = user.avatar_url)
 					if ctx.guild.voice_client.is_playing():
-						ctx.guild.voice_client.pause()
-						embed.description = ":pause_button: Paused song"
-					elif ctx.guild.voice_client.is_paused():
-						ctx.guild.voice_client.source.previous_played_time += ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
-						ctx.guild.voice_client.resume()
-						embed.description = ":play_pause: Resumed song"
+						await ctx.invoke(ctx.bot.cogs["Audio"].pause)
 					else:
-						embed.description = ":no_entry: There is no song to pause"
-					await ctx.send(embed = embed)
-					await self.bot.attempt_delete_message(ctx.message)
+						await ctx.invoke(ctx.bot.cogs["Audio"].resume)
 			elif self.controls[reaction.emoji] in ("skip", "replay", "shuffle", "radio"):
 				permitted = await ctx.get_permission(self.controls[reaction.emoji], id = user.id)
 				if permitted or user.id in (ctx.guild.owner.id, self.bot.owner_id):
-					message = copy.copy(ctx.message)
-					message.content = "{}{}".format(ctx.prefix, self.controls[reaction.emoji])
-					await self.bot.process_commands(message)
+					await ctx.invoke(getattr(ctx.bot.cogs["Audio"], self.controls[reaction.emoji]))
 					# Timestamp for radio
 			elif self.controls[reaction.emoji] in ("volume_down", "volume_up"):
 				permitted = await ctx.get_permission("volume", id = user.id)
@@ -284,7 +232,5 @@ class Reactions(commands.Cog):
 						await ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
 					if self.controls[reaction.emoji] == "volume_down": set_volume = current_volume - 10
 					elif self.controls[reaction.emoji] == "volume_up": set_volume = current_volume + 10
-					message = copy.copy(ctx.message)
-					message.content = "{}volume {}".format(ctx.prefix, set_volume)
-					await self.bot.process_commands(message)
+					await ctx.invoke(ctx.bot.cogs["Audio"].volume, volume_setting = set_volume)
 

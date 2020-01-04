@@ -567,9 +567,9 @@ class Audio(commands.Cog):
 			else:
 				title = ctx.guild.voice_client.source.title
 				title_url = discord.Embed.Empty
-			await ctx.embed_reply(description, title = title, title_url = title_url, footer_text = "Added by " + requester.display_name, footer_icon_url = requester.avatar_url, timestamp = ctx.guild.voice_client.source.timestamp)
+			return await ctx.embed_reply(description, title = title, title_url = title_url, footer_text = "Added by " + requester.display_name, footer_icon_url = requester.avatar_url, timestamp = ctx.guild.voice_client.source.timestamp)
 		else:
-			await ctx.embed_reply(":speaker: There is no song currently playing")
+			return await ctx.embed_reply(":speaker: There is no song currently playing")
 	
 	@commands.command()
 	@commands.guild_only()
