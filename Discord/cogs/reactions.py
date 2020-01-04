@@ -51,6 +51,9 @@ class GuessMenu(menus.Menu):
 			embed.description = (f"{self.ctx.author.mention}: Guess a number between 1 to 10\n"
 									f"No, it's not {number}")
 		await self.message.edit(embed = embed)
+	
+	async def update(self, payload):
+		await super().update(payload)
 		await increment_menu_reaction_count(self.bot)
 
 class MazeMenu(menus.Menu):
@@ -79,7 +82,6 @@ class MazeMenu(menus.Menu):
 			embed.description = self.bot.CODE_BLOCK.format(self.maze.print_visible())
 		embed.set_footer(text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
 		await self.message.edit(embed = embed)
-		await increment_menu_reaction_count(self.bot)
 	
 	@menus.button("\N{PRINTER}", position = 5, lock = False)
 	async def on_printer(self, payload):
@@ -87,6 +89,9 @@ class MazeMenu(menus.Menu):
 													"Your maze is attached", 
 										file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
 															filename = "maze.txt"))
+	
+	async def update(self, payload):
+		await super().update(payload)
 		await increment_menu_reaction_count(self.bot)
 
 class NewsSource(menus.ListPageSource):
