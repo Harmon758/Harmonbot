@@ -56,12 +56,12 @@ class GuessMenu(menus.Menu):
 	async def process_reaction(self, payload):
 		if payload.user_id == self.ctx.author.id:
 			embed = self.message.embeds[0]
-			if self.numbers[str(payload.emoji)] == self.answer:
-				embed.description = f"{self.ctx.author.mention}: It was {self.numbers[str(payload.emoji)]}!"
+			if (number := self.numbers[str(payload.emoji)]) == self.answer:
+				embed.description = f"{self.ctx.author.mention}: It was {number}!"
 				self.stop()
 			else:
 				embed.description = (f"{self.ctx.author.mention}: Guess a number between 1 to 10\n"
-										f"No, it's not {self.numbers[str(payload.emoji)]}")
+										f"No, it's not {number}")
 			await self.message.edit(embed = embed)
 
 class Reactions(commands.Cog):
