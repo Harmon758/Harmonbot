@@ -173,7 +173,7 @@ class Reactions(commands.Cog):
 		'''
 		await MazeMenu(width, height, random_start, random_end).start(ctx)
 	
-	async def news(self, ctx, source : str):
+	async def news(self, ctx, source: str):
 		'''
 		News
 		With Reactions
