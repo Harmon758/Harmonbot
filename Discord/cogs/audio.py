@@ -100,7 +100,7 @@ class Audio(commands.Cog):
 	@commands.command(aliases = ["summon", "move"])
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def join(self, ctx, *, channel : Optional[discord.VoiceChannel]):
+	async def join(self, ctx, *, channel: Optional[discord.VoiceChannel]):
 		'''Get me to join a voice channel'''
 		# TODO: Permit all when not in voice channel?
 		if ctx.guild.id not in self.players:
