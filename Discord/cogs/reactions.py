@@ -120,8 +120,8 @@ class Reactions(commands.Cog):
 		self.controls = collections.OrderedDict([('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', "pause_resume"), ('\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}', "skip"), ('\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}', "replay"), ('\N{TWISTED RIGHTWARDS ARROWS}', "shuffle"), ('\N{RADIO}', "radio"), ('\N{SPEAKER WITH ONE SOUND WAVE}', "volume_down"), ('\N{SPEAKER WITH THREE SOUND WAVES}', "volume_up")])
 		self.reaction_commands = (
 			(self.guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
-			(self.news, "Resources", "news", [], [checks.not_forbidden().predicate]), 
 			(self.maze, "Games", "maze", [], [checks.not_forbidden().predicate]), 
+			(self.news, "Resources", "news", [], [checks.not_forbidden().predicate]), 
 			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate])
 		)
 		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
@@ -140,12 +140,25 @@ class Reactions(commands.Cog):
 		'''Reactions versions of commands'''
 		await ctx.send_help(ctx.command)
 	
+	# TODO: rtg
+	# TODO: urband
+	
 	async def guess(self, ctx):
 		'''
 		Guessing game
 		With reactions
 		'''
 		await GuessMenu().start(ctx)
+	
+	async def maze(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
+		'''
+		Maze game
+		With reactions
+		width: 2 - 100
+		height: 2 - 100
+		React with an arrow key to move
+		'''
+		await MazeMenu(width, height, random_start, random_end).start(ctx)
 	
 	async def news(self, ctx, source : str):
 		'''
@@ -177,19 +190,6 @@ class Reactions(commands.Cog):
 			output += "\n{}".format(article["url"])
 			output += "\nSelect a different number for another article"
 			await response.edit(content = "{}: {}".format(ctx.author.display_name, output))
-	
-	# TODO: urband
-	# TODO: rtg
-	
-	async def maze(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
-		'''
-		Maze game
-		With reactions
-		width: 2 - 100
-		height: 2 - 100
-		React with an arrow key to move
-		'''
-		await MazeMenu(width, height, random_start, random_end).start(ctx)
 	
 	async def playing(self, ctx):
 		'''Audio player'''
