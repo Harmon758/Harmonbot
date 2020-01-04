@@ -74,13 +74,49 @@ class GuessMenu(menus.Menu):
 		await self.message.edit(embed = embed)
 		await increment_menu_reaction_count(self.bot)
 
+class MazeMenu(menus.Menu):
+	
+	def __init__(self, width, height, random_start, random_end):
+		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
+		self.maze = Maze(width, height, random_start = random_start, random_end = random_end)
+		self.arrows = collections.OrderedDict([('\N{LEFTWARDS BLACK ARROW}', 'W'), ('\N{UPWARDS BLACK ARROW}', 'N'), ('\N{DOWNWARDS BLACK ARROW}', 'S'), ('\N{BLACK RIGHTWARDS ARROW}', 'E')])  # tuple?
+		for number, emote in enumerate(self.arrows.keys(), start = 1):
+			self.add_button(menus.Button(emote, self.on_direction, position = number))
+	
+	async def send_initial_message(self, ctx, channel):
+		return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.maze.print_visible()), footer_text = "Your current position: {}, {}".format(self.maze.column + 1, self.maze.row + 1))
+	
+	async def on_direction(self, payload):
+		embed = self.message.embeds[0]
+		moved = self.maze.move(self.arrows[str(payload.emoji)].lower())
+		embed.set_footer(text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
+		if moved:
+			if self.maze.reached_end():
+				embed.description = (f"{self.bot.CODE_BLOCK.format(self.maze.print_visible())}\n"
+										f"Congratulations! You reached the end of the maze in {self.maze.move_counter} moves")
+				self.stop()
+			else:
+				embed.description = self.bot.CODE_BLOCK.format(self.maze.print_visible())
+		else:
+			embed.description = (f"{self.bot.CODE_BLOCK.format(self.maze.print_visible())}\n"
+									":no_entry: You can't go that way")
+		await self.message.edit(embed = embed)
+	
+	@menus.button("\N{PRINTER}", position = 5, lock = False)
+	async def on_printer(self, payload):
+		with tempfile.TemporaryFile(dir = self.bot.data_path + "/temp") as maze_file:
+			maze_file.write(('\n'.join(self.maze.visible)).encode())
+			maze_file.flush()
+			maze_file.seek(0)
+			await self.message.channel.send(content = f"{self.ctx.author.display_name}:\n"
+														"Your maze is attached", 
+											file = discord.File(maze_file.file, filename = "maze.txt"))
+
 class Reactions(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
 		self.reaction_messages = {}
-		self.mazes = {}
-		self.arrows = collections.OrderedDict([('\N{LEFTWARDS BLACK ARROW}', 'W'), ('\N{UPWARDS BLACK ARROW}', 'N'), ('\N{DOWNWARDS BLACK ARROW}', 'S'), ('\N{BLACK RIGHTWARDS ARROW}', 'E')])  # tuple?
 		self.controls = collections.OrderedDict([('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', "pause_resume"), ('\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}', "skip"), ('\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}', "replay"), ('\N{TWISTED RIGHTWARDS ARROWS}', "shuffle"), ('\N{RADIO}', "radio"), ('\N{SPEAKER WITH ONE SOUND WAVE}', "volume_down"), ('\N{SPEAKER WITH THREE SOUND WAVES}', "volume_up")])
 		self.reaction_commands = (
 			(self.guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
@@ -153,39 +189,7 @@ class Reactions(commands.Cog):
 		height: 2 - 100
 		React with an arrow key to move
 		'''
-		maze_instance = Maze(width, height, random_start = random_start, random_end = random_end)
-		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
-		self.mazes[maze_message.id] = maze_instance
-		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
-			await maze_message.add_reaction(emote)
-		self.reaction_messages[maze_message.id] = lambda reaction, user: self.maze_reactions_processor(ctx.author, reaction, user)
-	
-	async def maze_reactions_processor(self, player, reaction, user):
-		if user == player:
-			maze_instance = self.mazes[reaction.message.id]
-			if reaction.emoji in self.arrows.keys():
-				embed = reaction.message.embeds[0]
-				moved = maze_instance.move(self.arrows[reaction.emoji].lower())
-				embed.set_footer(text = f"Your current position: {maze_instance.column + 1}, {maze_instance.row + 1}")
-				if moved:
-					if maze_instance.reached_end():
-						embed.description = (f"{self.bot.CODE_BLOCK.format(maze_instance.print_visible())}\n"
-												f"Congratulations! You reached the end of the maze in {maze_instance.move_counter} moves")
-						del self.reaction_messages[reaction.message.id]
-					else:
-						embed.description = self.bot.CODE_BLOCK.format(maze_instance.print_visible())
-				else:
-					embed.description = (f"{self.bot.CODE_BLOCK.format(maze_instance.print_visible())}\n"
-											":no_entry: You can't go that way")
-				await reaction.message.edit(embed = embed)
-			elif reaction.emoji == "\N{PRINTER}":
-				with tempfile.TemporaryFile(dir = self.bot.data_path + "/temp") as maze_file:
-					maze_file.write(('\n'.join(maze_instance.visible)).encode())
-					maze_file.flush()
-					maze_file.seek(0)
-					await reaction.message.channel.send(content = f"{player.display_name}:\n"
-																	"Your maze is attached", 
-														file = discord.File(maze_file.file, filename = "maze.txt"))
+		await MazeMenu(width, height, random_start, random_end).start(ctx)
 	
 	async def playing(self, ctx):
 		'''Audio player'''
