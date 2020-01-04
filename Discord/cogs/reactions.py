@@ -101,6 +101,7 @@ class MazeMenu(menus.Menu):
 			embed.description = (f"{self.bot.CODE_BLOCK.format(self.maze.print_visible())}\n"
 									":no_entry: You can't go that way")
 		await self.message.edit(embed = embed)
+		await increment_menu_reaction_count(self.bot)
 	
 	@menus.button("\N{PRINTER}", position = 5, lock = False)
 	async def on_printer(self, payload):
@@ -111,6 +112,7 @@ class MazeMenu(menus.Menu):
 			await self.message.channel.send(content = f"{self.ctx.author.display_name}:\n"
 														"Your maze is attached", 
 											file = discord.File(maze_file.file, filename = "maze.txt"))
+		await increment_menu_reaction_count(self.bot)
 
 class Reactions(commands.Cog):
 	
