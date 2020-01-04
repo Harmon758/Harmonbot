@@ -184,7 +184,7 @@ class Reactions(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			return await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 		await menus.MenuPages(NewsSource(data["articles"]), timeout = None, clear_reactions_after = True).start(ctx)
 	
 	async def playing(self, ctx):
