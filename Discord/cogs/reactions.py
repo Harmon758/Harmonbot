@@ -110,6 +110,21 @@ class MazeMenu(menus.Menu):
 															filename = "maze.txt"))
 		await increment_menu_reaction_count(self.bot)
 
+class NewsSource(menus.ListPageSource):
+	
+	def __init__(self, articles):
+		super().__init__(articles, per_page = 1)
+	
+	async def format_page(self, menu, article):
+		output = "Article {}:".format(menu.current_page + 1)
+		output += "\n**{}**".format(article["title"])
+		if article.get("publishedAt"):
+			output += " ({})".format(article.get("publishedAt").replace('T', " ").replace('Z', ""))
+		# output += "\n{}".format(article["description"])
+		# output += "\n<{}>".format(article["url"])
+		output += "\n{}".format(article["url"])
+		return "{}: {}".format(menu.ctx.author.display_name, output)
+
 class Reactions(commands.Cog):
 	
 	def __init__(self, bot):
@@ -169,25 +184,7 @@ class Reactions(commands.Cog):
 		if data["status"] != "ok":
 			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
 			return
-		response = await ctx.reply("React with a number from 1 to 10 to view each news article")
-		numbers = {'\N{KEYCAP TEN}': 10}
-		for number in range(9):
-			numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1  # '\u0031' - 1
-		for number_emote in sorted(numbers.keys()):
-			await response.add_reaction(number_emote)
-		while True:
-			reaction, user = await self.bot.wait_for_reaction_add_or_remove(message = response, user = ctx.author, emoji = numbers.keys())
-			number = numbers[reaction.emoji]
-			article = data["articles"][number - 1]
-			output = "Article {}:".format(number)
-			output += "\n**{}**".format(article["title"])
-			if article.get("publishedAt"):
-				output += " ({})".format(article.get("publishedAt").replace('T', " ").replace('Z', ""))
-			# output += "\n{}".format(article["description"])
-			# output += "\n<{}>".format(article["url"])
-			output += "\n{}".format(article["url"])
-			output += "\nSelect a different number for another article"
-			await response.edit(content = "{}: {}".format(ctx.author.display_name, output))
+		await menus.MenuPages(NewsSource(data["articles"]), timeout = None, clear_reactions_after = True).start(ctx)
 	
 	async def playing(self, ctx):
 		'''Audio player'''
