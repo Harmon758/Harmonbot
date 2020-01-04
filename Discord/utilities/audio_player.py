@@ -11,7 +11,6 @@ import traceback
 
 import speech_recognition
 
-from modules import utilities
 from utilities import errors
 from utilities.audio_sources import FileSource, TTSSource, YTDLSource
 
