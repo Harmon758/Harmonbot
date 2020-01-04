@@ -118,11 +118,11 @@ class PlayingMenu(menus.Menu):
 	
 	def __init__(self):
 		super().__init__(timeout = None, check_embeds = True)
-		self.controls = {'\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}': "skip", 
-							'\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}': "replay", 
-							'\N{TWISTED RIGHTWARDS ARROWS}': "shuffle", '\N{RADIO}': "radio"}
-		for number, control_emote in enumerate(self.controls.keys(), start = 2):
-			self.add_button(menus.Button(control_emote, self.on_direct_action_reaction, position = number, lock = False))
+		self.direct_actions = {'\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}': "skip", 
+								'\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}': "replay", 
+								'\N{TWISTED RIGHTWARDS ARROWS}': "shuffle", '\N{RADIO}': "radio"}
+		for number, emoji in enumerate(self.direct_actions.keys(), start = 2):
+			self.add_button(menus.Button(emoji, self.on_direct_action_reaction, position = number, lock = False))
 	
 	async def send_initial_message(self, ctx, channel):
 		return await ctx.invoke(ctx.bot.cogs["Audio"].playing)
@@ -143,9 +143,9 @@ class PlayingMenu(menus.Menu):
 				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].resume)
 	
 	async def on_direct_action_reaction(self, payload):
-		permitted = await self.ctx.get_permission(self.controls[str(payload.emoji)], id = payload.user_id)
+		permitted = await self.ctx.get_permission(self.direct_actions[str(payload.emoji)], id = payload.user_id)
 		if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
-			await self.ctx.invoke(getattr(self.ctx.bot.cogs["Audio"], self.controls[str(payload.emoji)]))
+			await self.ctx.invoke(getattr(self.ctx.bot.cogs["Audio"], self.direct_actions[str(payload.emoji)]))
 			# Timestamp for radio
 	
 	@menus.button('\N{SPEAKER WITH ONE SOUND WAVE}', position = 6)
