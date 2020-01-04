@@ -78,7 +78,7 @@ class MazeMenu(menus.Menu):
 	
 	def __init__(self, width, height, random_start, random_end):
 		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
-		self.maze = Maze(width, height, random_start = random_start, random_end = random_end)
+		self.maze = Maze(width, height, random_start, random_end)
 		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': 'w', '\N{UPWARDS BLACK ARROW}': 'n', '\N{DOWNWARDS BLACK ARROW}': 's', '\N{BLACK RIGHTWARDS ARROW}': 'e'}
 		for number, emoji in enumerate(self.arrows.keys(), start = 1):
 			self.add_button(menus.Button(emoji, self.on_direction, position = number))
