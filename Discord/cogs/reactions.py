@@ -80,8 +80,8 @@ class MazeMenu(menus.Menu):
 		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
 		self.maze = Maze(width, height, random_start = random_start, random_end = random_end)
 		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': 'w', '\N{UPWARDS BLACK ARROW}': 'n', '\N{DOWNWARDS BLACK ARROW}': 's', '\N{BLACK RIGHTWARDS ARROW}': 'e'}
-		for number, emote in enumerate(self.arrows.keys(), start = 1):
-			self.add_button(menus.Button(emote, self.on_direction, position = number))
+		for number, emoji in enumerate(self.arrows.keys(), start = 1):
+			self.add_button(menus.Button(emoji, self.on_direction, position = number))
 	
 	async def send_initial_message(self, ctx, channel):
 		return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.maze.print_visible()), 
