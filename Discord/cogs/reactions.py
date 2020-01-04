@@ -35,7 +35,7 @@ class GuessMenu(menus.Menu):
 		self.numbers = {str(number) + '\N{COMBINING ENCLOSING KEYCAP}': number for number in range(1, 10)}
 		self.numbers['\N{KEYCAP TEN}'] = 10
 		for emoji, number in self.numbers.items():
-			self.add_button(menus.Button(emoji, self.process_reaction, position = number))
+			self.add_button(menus.Button(emoji, self.on_number, position = number))
 	
 	# TODO: Track number of tries
 	
@@ -43,7 +43,7 @@ class GuessMenu(menus.Menu):
 		self.answer = random.randint(1, 10)
 		return await ctx.embed_reply(f"{ctx.author.mention}: Guess a number between 1 to 10")
 	
-	async def process_reaction(self, payload):
+	async def on_number(self, payload):
 		embed = self.message.embeds[0]
 		if (number := self.numbers[str(payload.emoji)]) == self.answer:
 			embed.description = f"{self.ctx.author.mention}: It was {number}!"
