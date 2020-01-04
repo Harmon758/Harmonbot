@@ -7,7 +7,7 @@ import copy
 import random
 import tempfile
 
-from modules import maze
+from modules.maze import Maze
 from utilities import checks
 from utilities import errors
 
@@ -154,7 +154,7 @@ class Reactions(commands.Cog):
 		height: 2 - 100
 		React with an arrow key to move
 		'''
-		maze_instance = maze.Maze(width, height, random_start = random_start, random_end = random_end)
+		maze_instance = Maze(width, height, random_start = random_start, random_end = random_end)
 		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(maze_instance.print_visible()), footer_text = "Your current position: {}, {}".format(maze_instance.column + 1, maze_instance.row + 1))
 		self.mazes[maze_message.id] = maze_instance
 		for emote in tuple(self.arrows.keys()) + ("\N{PRINTER}",):
