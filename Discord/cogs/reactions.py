@@ -125,7 +125,17 @@ class NewsSource(menus.ListPageSource):
 		embed.set_footer(text = f"{article['source']['name']} (Article {menu.current_page + 1})")
 		if timestamp := article.get("publishedAt"):
 			embed.timestamp = dateutil.parser.parse(timestamp)
-		return embed
+		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
+
+class NewsMenu(menus.MenuPages):
+	
+	def __init__(self, articles):
+		super().__init__(NewsSource(articles), timeout = None, clear_reactions_after = True)
+	
+	async def send_initial_message(self, ctx, channel):
+		message = await super().send_initial_message(ctx, channel)
+		await ctx.bot.attempt_delete_message(ctx.message)
+		return message
 
 class Reactions(commands.Cog):
 	
@@ -189,7 +199,7 @@ class Reactions(commands.Cog):
 			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 		if not data["totalResults"]:
 			return await ctx.embed_reply(f":no_entry: Error: No news articles found for that source")
-		await menus.MenuPages(NewsSource(data["articles"]), timeout = None, clear_reactions_after = True).start(ctx)
+		await NewsMenu(data["articles"]).start(ctx)
 	
 	async def playing(self, ctx):
 		'''Audio player'''
