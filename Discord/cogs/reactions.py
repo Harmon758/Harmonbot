@@ -118,6 +118,10 @@ class NewsMenu(menus.MenuPages):
 		message = await super().send_initial_message(ctx, channel)
 		await ctx.bot.attempt_delete_message(ctx.message)
 		return message
+	
+	async def update(self, payload):
+		await super().update(payload)
+		await increment_menu_reaction_count(self.bot)
 
 class PlayingMenu(menus.Menu):
 	
