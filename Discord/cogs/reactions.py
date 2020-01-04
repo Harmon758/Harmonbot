@@ -57,10 +57,10 @@ class GuessMenu(menus.Menu):
 		if payload.user_id == self.ctx.author.id:
 			embed = self.message.embeds[0]
 			if self.numbers[str(payload.emoji)] == self.answer:
-				embed.description = "{}: It was {}!".format(self.ctx.author.display_name, self.numbers[str(payload.emoji)])
+				embed.description = f"{self.ctx.author.display_name}: It was {self.numbers[str(payload.emoji)]}!"
 				self.stop()
 			else:
-				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(self.ctx.author.display_name, self.numbers[str(payload.emoji)])
+				embed.description = f"{self.ctx.author.display_name}: Guess a number between 1 to 10. No, it's not {self.numbers[str(payload.emoji)]}"
 			await self.message.edit(embed = embed)
 
 class Reactions(commands.Cog):
