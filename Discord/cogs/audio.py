@@ -114,7 +114,7 @@ class Audio(commands.Cog):
 			else:
 				await channel.connect()
 				await ctx.embed_reply(":headphones: I've joined the voice channel")
-		except concurrent.futures._base.TimeoutError:
+		except concurrent.futures.TimeoutError:
 			await ctx.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join")
 	
 	@commands.command()
