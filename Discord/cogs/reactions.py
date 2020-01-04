@@ -17,7 +17,7 @@ def setup(bot):
 #  Fixed to stop counting own reactions on 2019-10-25
 #  Deprecated on 2020-01-04 in favor of menu_reactions
 
-async def increment_menu_reaction_count(bot):
+async def increment_menu_reactions_count(bot):
 	await bot.db.execute(
 		"""
 		UPDATE meta.stats
@@ -54,7 +54,7 @@ class GuessMenu(menus.Menu):
 	
 	async def update(self, payload):
 		await super().update(payload)
-		await increment_menu_reaction_count(self.bot)
+		await increment_menu_reactions_count(self.bot)
 
 class MazeMenu(menus.Menu):
 	
@@ -92,7 +92,7 @@ class MazeMenu(menus.Menu):
 	
 	async def update(self, payload):
 		await super().update(payload)
-		await increment_menu_reaction_count(self.bot)
+		await increment_menu_reactions_count(self.bot)
 
 class NewsSource(menus.ListPageSource):
 	
@@ -121,7 +121,7 @@ class NewsMenu(menus.MenuPages):
 	
 	async def update(self, payload):
 		await super().update(payload)
-		await increment_menu_reaction_count(self.bot)
+		await increment_menu_reactions_count(self.bot)
 
 class PlayingMenu(menus.Menu):
 	
@@ -179,7 +179,7 @@ class PlayingMenu(menus.Menu):
 	
 	async def update(self, payload):
 		await super().update(payload)
-		await increment_menu_reaction_count(self.bot)
+		await increment_menu_reactions_count(self.bot)
 
 class Reactions(commands.Cog):
 	
