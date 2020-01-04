@@ -7,6 +7,7 @@ import concurrent.futures
 import inspect
 import random
 import sys
+from typing import Optional
 import urllib
 
 from modules import utilities
@@ -99,19 +100,22 @@ class Audio(commands.Cog):
 	@commands.command(aliases = ["summon", "move"])
 	@commands.guild_only()
 	@checks.is_permitted()
-	async def join(self, ctx, *channel : str):
+	async def join(self, ctx, *, channel : Optional[discord.VoiceChannel]):
 		'''Get me to join a voice channel'''
 		# TODO: Permit all when not in voice channel?
 		if ctx.guild.id not in self.players:
 			self.players[ctx.guild.id] = audio_player.AudioPlayer.from_context(ctx)
+		if not channel and (not ctx.author.voice or not (channel := ctx.author.voice.channel)):
+			return await ctx.embed_reply(":no_entry: Voice channel not found")
 		try:
-			moved = await self.players[ctx.guild.id].join_channel(ctx.author, channel)
-		except errors.AudioError as e:
-			await ctx.embed_reply(":no_entry: {}".format(e))
+			if ctx.guild.voice_client:
+				await ctx.guild.voice_client.move_to(channel)
+				await ctx.embed_reply(":arrow_right_hook: I've moved to the voice channel")
+			else:
+				await channel.connect()
+				await ctx.embed_reply(":headphones: I've joined the voice channel")
 		except concurrent.futures._base.TimeoutError:
 			await ctx.embed_reply(":no_entry: Error joining the voice channel\nPlease check that I'm permitted to join")
-		else:
-			await ctx.embed_reply(":arrow_right_hook: I've moved to the voice channel" if moved else ":headphones: I've joined the voice channel")
 	
 	@commands.command()
 	@commands.guild_only()

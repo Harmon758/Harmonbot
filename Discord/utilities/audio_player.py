@@ -47,19 +47,6 @@ class AudioPlayer:
 	def interrupted(self):
 		return not self.not_interrupted.is_set()
 	
-	async def join_channel(self, user, channel):
-		# join logic
-		if user.voice and user.voice.channel:
-			voice_channel = user.voice.channel
-		else:
-			voice_channel = discord.utils.find(lambda c: isinstance(c, discord.VoiceChannel) and utilities.remove_symbols(c.name).startswith(' '.join(channel)), self.guild.channels)
-		if not voice_channel:
-			raise errors.AudioError("Voice channel not found")
-		if self.guild.voice_client:
-			await self.guild.voice_client.move_to(voice_channel)
-			return True
-		await voice_channel.connect()
-	
 	async def leave_channel(self):
 		if self.guild.voice_client:
 			if self.guild.voice_client.is_playing():
