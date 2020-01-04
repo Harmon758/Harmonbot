@@ -185,6 +185,8 @@ class Reactions(commands.Cog):
 			data = await resp.json()
 		if data["status"] != "ok":
 			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+		if not data["totalResults"]:
+			return await ctx.embed_reply(f":no_entry: Error: No news articles found for that source")
 		await menus.MenuPages(NewsSource(data["articles"]), timeout = None, clear_reactions_after = True).start(ctx)
 	
 	async def playing(self, ctx):
