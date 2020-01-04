@@ -4,7 +4,6 @@ from discord.ext import commands, menus
 
 import collections
 import copy
-from operator import itemgetter
 import random
 import tempfile
 
@@ -43,11 +42,12 @@ class GuessMenu(menus.Menu):
 	
 	def __init__(self):
 		super().__init__(timeout = None, check_embeds = True)
-		self.numbers = {'\N{KEYCAP TEN}': 10}
-		for number in range(9):
-			self.numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1  # '\u0031' - 1
-		for number_emote, number in sorted(self.numbers.items(), key = itemgetter(1)):
-			self.add_button(menus.Button(number_emote, self.process_reaction, position = number))
+		self.numbers = {str(number) + '\N{COMBINING ENCLOSING KEYCAP}': number for number in range(1, 10)}
+		self.numbers['\N{KEYCAP TEN}'] = 10
+		for emote, number in self.numbers.items():
+			self.add_button(menus.Button(emote, self.process_reaction, position = number))
+	
+	# TODO: Track number of tries
 	
 	async def send_initial_message(self, ctx, channel):
 		self.answer = random.randint(1, 10)
