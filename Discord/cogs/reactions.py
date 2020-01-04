@@ -123,8 +123,8 @@ class NewsSource(menus.ListPageSource):
 		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
 		embed.set_image(url = article["urlToImage"])
 		embed.set_footer(text = f"{article['source']['name']} (Article {menu.current_page + 1})")
-		if article.get("publishedAt"):
-			embed.timestamp = dateutil.parser.parse(article["publishedAt"])
+		if timestamp := article.get("publishedAt"):
+			embed.timestamp = dateutil.parser.parse(timestamp)
 		return embed
 
 class Reactions(commands.Cog):
