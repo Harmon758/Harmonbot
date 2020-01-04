@@ -7,6 +7,8 @@ import copy
 import io
 import random
 
+import dateutil.parser
+
 from modules.maze import Maze
 from utilities import checks
 from utilities import errors
@@ -116,14 +118,14 @@ class NewsSource(menus.ListPageSource):
 		super().__init__(articles, per_page = 1)
 	
 	async def format_page(self, menu, article):
-		output = f"Article {menu.current_page + 1}:"
-		output += f"\n**{article['title']}**"
+		embed = discord.Embed(title = article["title"], url = article["url"], 
+								description = article["description"], color = menu.bot.bot_color)
+		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
+		embed.set_image(url = article["urlToImage"])
+		embed.set_footer(text = f"{article['source']['name']} (Article {menu.current_page + 1})")
 		if article.get("publishedAt"):
-			output += f" ({article.get('publishedAt').replace('T', ' ').replace('Z', '')})"
-		# output += f"\n{article['description']}"
-		# output += f"\n<{article['url']}>"
-		output += f"\n{article['url']}"
-		return f"{menu.ctx.author.display_name}: {output}"
+			embed.timestamp = dateutil.parser.parse(article["publishedAt"])
+		return embed
 
 class Reactions(commands.Cog):
 	
