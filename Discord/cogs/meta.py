@@ -43,7 +43,8 @@ class Meta(commands.Cog):
 				restarts			INT, 
 				cogs_reloaded		INT, 
 				commands_invoked	BIGINT, 
-				reaction_responses	BIGINT
+				reaction_responses	BIGINT, 
+				menu_reactions		BIGINT
 			)
 			"""
 		)
@@ -65,18 +66,18 @@ class Meta(commands.Cog):
 		if previous:
 			await self.bot.db.execute(
 				"""
-				INSERT INTO meta.stats (timestamp, uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
-				VALUES ($1, $2, $3, $4, $5, $6)
+				INSERT INTO meta.stats (timestamp, uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses, menu_reactions)
+				VALUES ($1, $2, $3, $4, $5, $6, $7)
 				ON CONFLICT DO NOTHING
 				""", 
 				self.bot.online_time, previous["uptime"], previous["restarts"], 
-				previous["cogs_reloaded"], previous["commands_invoked"], previous["reaction_responses"]
+				previous["cogs_reloaded"], previous["commands_invoked"], previous["reaction_responses"], previous["menu_reactions"]
 			)
 		else:
 			await self.bot.db.execute(
 				"""
-				INSERT INTO meta.stats (timestamp, uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses)
-				VALUES ($1, INTERVAL '0 seconds', 0, 0, 0, 0)
+				INSERT INTO meta.stats (timestamp, uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses, menu_reactions)
+				VALUES ($1, INTERVAL '0 seconds', 0, 0, 0, 0, 0)
 				""", 
 				self.bot.online_time
 			)

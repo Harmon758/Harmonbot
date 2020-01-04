@@ -38,6 +38,16 @@ def setup(bot):
 		if "Reactions" in bot.cogs and reaction.message.id in bot.cogs["Reactions"].reaction_messages:
 			await process_reactions(reaction, user)
 
+async def increment_menu_reaction_count(bot):
+	await bot.db.execute(
+		"""
+		UPDATE meta.stats
+		SET menu_reactions = menu_reactions + 1
+		WHERE timestamp = $1
+		""", 
+		bot.online_time
+	)
+
 class GuessMenu(menus.Menu):
 	
 	def __init__(self):
@@ -63,6 +73,7 @@ class GuessMenu(menus.Menu):
 				embed.description = (f"{self.ctx.author.mention}: Guess a number between 1 to 10\n"
 										f"No, it's not {number}")
 			await self.message.edit(embed = embed)
+			await increment_menu_reaction_count(self.bot)
 
 class Reactions(commands.Cog):
 	
