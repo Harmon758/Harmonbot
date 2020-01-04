@@ -116,14 +116,14 @@ class NewsSource(menus.ListPageSource):
 		super().__init__(articles, per_page = 1)
 	
 	async def format_page(self, menu, article):
-		output = "Article {}:".format(menu.current_page + 1)
-		output += "\n**{}**".format(article["title"])
+		output = f"Article {menu.current_page + 1}:"
+		output += f"\n**{article['title']}**"
 		if article.get("publishedAt"):
-			output += " ({})".format(article.get("publishedAt").replace('T', " ").replace('Z', ""))
-		# output += "\n{}".format(article["description"])
-		# output += "\n<{}>".format(article["url"])
-		output += "\n{}".format(article["url"])
-		return "{}: {}".format(menu.ctx.author.display_name, output)
+			output += f" ({article.get('publishedAt').replace('T', ' ').replace('Z', '')})"
+		# output += f"\n{article['description']}"
+		# output += f"\n<{article['url']}>"
+		output += f"\n{article['url']}"
+		return f"{menu.ctx.author.display_name}: {output}"
 
 class Reactions(commands.Cog):
 	
