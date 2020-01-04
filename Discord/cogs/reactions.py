@@ -1,9 +1,10 @@
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, menus
 
 import collections
 import copy
+from operator import itemgetter
 import random
 import tempfile
 
@@ -38,15 +39,37 @@ def setup(bot):
 		if "Reactions" in bot.cogs and reaction.message.id in bot.cogs["Reactions"].reaction_messages:
 			await process_reactions(reaction, user)
 
+class GuessMenu(menus.Menu):
+	
+	def __init__(self):
+		super().__init__(timeout = None, check_embeds = True)
+		self.numbers = {'\N{KEYCAP TEN}': 10}
+		for number in range(9):
+			self.numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1  # '\u0031' - 1
+		for number_emote, number in sorted(self.numbers.items(), key = itemgetter(1)):
+			self.add_button(menus.Button(number_emote, self.process_reaction, position = number))
+	
+	async def send_initial_message(self, ctx, channel):
+		self.answer = random.randint(1, 10)
+		return await ctx.embed_reply("Guess a number between 1 to 10")
+	
+	async def process_reaction(self, payload):
+		if payload.user_id == self.ctx.author.id:
+			embed = self.message.embeds[0]
+			if self.numbers[str(payload.emoji)] == self.answer:
+				embed.description = "{}: It was {}!".format(self.ctx.author.display_name, self.numbers[str(payload.emoji)])
+				await self.message.edit(embed = embed)
+				self.stop()
+			else:
+				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(self.ctx.author.display_name, self.numbers[str(payload.emoji)])
+				await self.message.edit(embed = embed)
+
 class Reactions(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
 		self.reaction_messages = {}
 		self.mazes = {}
-		self.numbers = {'\N{KEYCAP TEN}': 10}
-		for number in range(9):
-			self.numbers[chr(ord('\u0031') + number) + '\N{COMBINING ENCLOSING KEYCAP}'] = number + 1  # '\u0031' - 1
 		self.arrows = collections.OrderedDict([('\N{LEFTWARDS BLACK ARROW}', 'W'), ('\N{UPWARDS BLACK ARROW}', 'N'), ('\N{DOWNWARDS BLACK ARROW}', 'S'), ('\N{BLACK RIGHTWARDS ARROW}', 'E')]) # tuple?
 		self.controls = collections.OrderedDict([('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', "pause_resume"), ('\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}', "skip"), ('\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}', "replay"), ('\N{TWISTED RIGHTWARDS ARROWS}', "shuffle"), ('\N{RADIO}', "radio"), ('\N{SPEAKER WITH ONE SOUND WAVE}', "volume_down"), ('\N{SPEAKER WITH THREE SOUND WAVES}', "volume_up")])
 		self.reaction_commands = (
@@ -76,22 +99,7 @@ class Reactions(commands.Cog):
 		Guessing game
 		With reactions
 		'''
-		guess_message = await ctx.embed_reply("Guess a number between 1 to 10")
-		embed = guess_message.embeds[0]
-		answer = random.randint(1, 10)
-		for number_emote in sorted(self.numbers.keys()):
-			await guess_message.add_reaction(number_emote)
-		self.reaction_messages[guess_message.id] = lambda reaction, user: self.guess_reaction_processor(ctx.author, answer, embed, reaction, user)
-	
-	async def guess_reaction_processor(self, player, answer, embed, reaction, user):
-		if user == player and reaction.emoji in self.numbers:
-			if self.numbers[reaction.emoji] == answer:
-				embed.description = "{}: It was {}!".format(player.display_name, self.numbers[reaction.emoji])
-				await reaction.message.edit(embed = embed)
-				del self.reaction_messages[reaction.message.id]
-			else:
-				embed.description = "{}: Guess a number between 1 to 10. No, it's not {}".format(player.display_name, self.numbers[reaction.emoji])
-				await reaction.message.edit(embed = embed)
+		await GuessMenu().start(ctx)
 	
 	async def news(self, ctx, source : str):
 		'''
