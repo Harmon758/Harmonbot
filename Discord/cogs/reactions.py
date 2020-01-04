@@ -89,18 +89,16 @@ class MazeMenu(menus.Menu):
 	
 	async def on_direction(self, payload):
 		embed = self.message.embeds[0]
-		moved = self.maze.move(self.arrows[str(payload.emoji)])
-		embed.set_footer(text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
-		if moved:
-			if self.maze.reached_end():
-				embed.description = (f"{self.bot.CODE_BLOCK.format(self.maze.print_visible())}\n"
-										f"Congratulations! You reached the end of the maze in {self.maze.move_counter} moves")
-				self.stop()
-			else:
-				embed.description = self.bot.CODE_BLOCK.format(self.maze.print_visible())
+		if not self.maze.move(self.arrows[str(payload.emoji)]):
+			embed.description = (self.bot.CODE_BLOCK.format(self.maze.print_visible())
+									+ "\n:no_entry: You can't go that way")
+		elif self.maze.reached_end():
+			embed.description = (self.bot.CODE_BLOCK.format(self.maze.print_visible())
+									+ f"\nCongratulations! You reached the end of the maze in {self.maze.move_counter} moves")
+			self.stop()
 		else:
-			embed.description = (f"{self.bot.CODE_BLOCK.format(self.maze.print_visible())}\n"
-									":no_entry: You can't go that way")
+			embed.description = self.bot.CODE_BLOCK.format(self.maze.print_visible())
+		embed.set_footer(text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
 		await self.message.edit(embed = embed)
 		await increment_menu_reaction_count(self.bot)
 	
