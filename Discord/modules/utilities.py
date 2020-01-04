@@ -41,15 +41,6 @@ def secs_to_letter_format(secs, limit = 0):
 def secs_to_colon_format(secs, limit = 0):
 	return duration_to_colon_format(secs_to_duration(secs, limit = limit))
 
-def remove_symbols(string):
-	plain_string = ""
-	for character in string:
-		if 0 <= ord(character) <= 127:
-			plain_string += character
-	if plain_string.startswith(' '):
-		plain_string = plain_string[1:]
-	return plain_string
-
 # https://en.wikipedia.org/wiki/Unicode_subscripts_and_superscripts#Superscripts_and_subscripts_block
 
 def superscript(string):
