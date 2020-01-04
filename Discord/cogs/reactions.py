@@ -145,7 +145,7 @@ class PlayingMenu(menus.Menu):
 	@menus.button('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', position = 1)
 	async def on_pause_or_resume(self, payload):
 		permitted = await self.ctx.get_permission("pause", id = payload.user_id)
-		if permitted or payload.user_id == self.ctx.guild.owner.id or payload.user_id == self.bot.owner_id:
+		if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
 			if self.ctx.guild.voice_client.is_playing():
 				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].pause)
 			else:
