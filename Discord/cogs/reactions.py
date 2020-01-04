@@ -176,6 +176,10 @@ class PlayingMenu(menus.Menu):
 			else:
 				await self.ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
 			await self.ctx.invoke(self.ctx.bot.cogs["Audio"].volume, volume_setting = current_volume + 10)
+	
+	async def update(self, payload):
+		await super().update(payload)
+		await increment_menu_reaction_count(self.bot)
 
 class Reactions(commands.Cog):
 	
