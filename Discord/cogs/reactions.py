@@ -179,8 +179,9 @@ class Reactions(commands.Cog):
 		With Reactions
 		Powered by NewsAPI.org
 		'''
-		url = "https://newsapi.org/v1/articles?source={}&apiKey={}".format(source, ctx.bot.NEWSAPI_ORG_API_KEY)
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+		url = "https://newsapi.org/v1/articles"
+		params = {"source": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
 			return await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
