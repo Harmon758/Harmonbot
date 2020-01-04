@@ -127,14 +127,14 @@ class Reactions(commands.Cog):
 		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
 			self.reactions.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
 			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
-				parent.add_command(commands.Command(command, name = "reactions", aliases = ["reaction", 'r'], checks = command_checks))
+				parent.add_command(commands.Command(command, name = "reactions", aliases = ["reaction", 'r', "menus", "menu", 'm'], checks = command_checks))
 	
 	def cog_unload(self):
 		for command, cog_name, parent_name, *_ in self.reaction_commands:
 			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
 				parent.remove_command("reactions")
 	
-	@commands.group(aliases = ["reaction"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["reaction", "menus", "menu"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def reactions(self, ctx):
 		'''Reactions versions of commands'''
