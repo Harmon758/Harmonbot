@@ -180,10 +180,13 @@ class Location(commands.Cog):
 		Zoom: 0 - 21+ (Default: 13)
 		Map Types: roadmap, satellite, hybrid, terrain (Default: roadmap)
 		'''
-		location = location.replace(' ', '+')
-		map_url = ("https://maps.googleapis.com/maps/api/staticmap"
-			f"?center={location}&zoom={zoom}&maptype={maptype}&size=640x640")
-		await ctx.embed_reply(f"[:map:]({map_url})", image_url = map_url)
+		url = "https://maps.googleapis.com/maps/api/staticmap"
+		params = {"center": location, "zoom": zoom, "maptype": maptype, "size": "640x640", 
+					"key": ctx.bot.GOOGLE_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.read()
+		await ctx.embed_reply(image_url = "attachment://map.png", 
+								file = discord.File(io.BytesIO(data), filename = "map.png"))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
