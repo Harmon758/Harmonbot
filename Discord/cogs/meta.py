@@ -631,6 +631,15 @@ class Meta(commands.Cog):
 		for i in range(1, 101):
 			await ctx.send(i)
 	
+	@commands.command(name = "query")
+	@commands.is_owner()
+	async def query_command(self, ctx, *, query):
+		'''Query database'''
+		result = await ctx.bot.db.fetch(query)
+		# TODO: Handle errors, e.g. syntax
+		await ctx.embed_reply(result)
+		# TODO: Improve result/response format
+	
 	@commands.command(aliases = ["repeattext"])
 	@commands.is_owner()
 	async def repeat_text(self, ctx, number : int, *, text):
