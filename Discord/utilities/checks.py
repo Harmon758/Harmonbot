@@ -111,14 +111,11 @@ def not_forbidden():
 		if ctx.channel.type is discord.ChannelType.private:
 			return True
 		command = ctx.command
-		permitted = await ctx.get_permission(command.name, id = ctx.author.id)
-		while command.parent is not None and permitted is None:
+		while ((permitted := await ctx.get_permission(command.name, id = ctx.author.id)) is None
+				and command.parent is not None):
 			command = command.parent
-			permitted = await ctx.get_permission(command.name, id = ctx.author.id)
-		if permitted is not False:
-			return True
 		try:
-			return await is_server_owner().predicate(ctx)
+			return permitted is not False or await is_server_owner().predicate(ctx)
 		except errors.NotServerOwner:
 			raise errors.NotPermitted
 	
