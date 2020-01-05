@@ -139,6 +139,7 @@ class PlayingMenu(menus.Menu):
 	# TODO: Queue?, Empty?, Settext?, Join?, Leave?, Other?
 	# TODO: Resend player?
 	# TODO: player command: Timestamp for radio?
+	# TODO: Fix embed replying to user who invoked command rather than clicked button
 	
 	def reaction_check(self, payload):
 		if payload.message_id != self.message.id:
@@ -178,12 +179,12 @@ class PlayingMenu(menus.Menu):
 	async def change_volume(self, user_id, volume_change):
 		command = self.ctx.bot.cogs["Audio"].volume
 		if await self.is_permitted(command, user_id):
+			# TODO: Just invoke without checking?
 			if self.ctx.guild.voice_client.is_playing():
-				current_volume = self.ctx.guild.voice_client.source.volume
+				await self.ctx.invoke(command, volume_setting = self.ctx.guild.voice_client.source.volume + volume_change)
 			else:
 				await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
 											"There's nothing playing right now")
-			await self.ctx.invoke(command, volume_setting = current_volume + volume_change)
 	
 	async def update(self, payload):
 		await super().update(payload)
