@@ -192,9 +192,12 @@ class Location(commands.Cog):
 	@checks.not_forbidden()
 	async def streetview(self, ctx, *, location : str):
 		'''Generate street view of a location'''
-		location = location.replace(' ', '+')
-		image_url = f"https://maps.googleapis.com/maps/api/streetview?size=400x400&location={location}"
-		await ctx.embed_reply(image_url = image_url)
+		url = "https://maps.googleapis.com/maps/api/streetview"
+		params = {"location": location, "size": "400x400", "key": ctx.bot.GOOGLE_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.read()
+		await ctx.embed_reply(image_url = "attachment://streetview.png", 
+								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
 	
 	@commands.group(aliases = ["timezone"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
