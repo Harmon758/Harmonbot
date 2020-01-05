@@ -5,6 +5,7 @@ from discord.ext import commands
 import datetime
 import dateutil.parser
 import inspect
+import io
 import re
 import sys
 
@@ -299,14 +300,18 @@ class Astronomy(commands.Cog):
 				data = await resp.json()
 			latitude = data["iss_position"]["latitude"]
 			longitude = data["iss_position"]["longitude"]
-			map_icon = "http://i.imgur.com/KPfeEcc.png"  # 64x64 satellite emoji png
-			map_url = ("https://maps.googleapis.com/maps/api/staticmap?"
-						f"center={latitude},{longitude}&zoom=3&size=640x640&maptype=hybrid&"
-						f"markers=icon:{map_icon}|anchor:center|{latitude},{longitude}")
 			timestamp = datetime.datetime.utcfromtimestamp(data["timestamp"])
-			await ctx.embed_reply(f"[:satellite_orbital: ]({map_url})", 
-									fields = (("Latitude", latitude), ("Longitude", longitude)), 
-									image_url = map_url, timestamp = timestamp)
+			map_icon = "http://i.imgur.com/KPfeEcc.png"  # 64x64 satellite emoji png
+			url = "https://maps.googleapis.com/maps/api/staticmap"
+			params = {"center": f"{latitude},{longitude}", "zoom": 3, "maptype": "hybrid", "size": "640x640", 
+						"markers": f"icon:{map_icon}|anchor:center|{latitude},{longitude}", 
+						"key": ctx.bot.GOOGLE_API_KEY}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				data = await resp.read()
+			await ctx.embed_reply(fields = (("Latitude", latitude), ("Longitude", longitude)), 
+									image_url = "attachment://map.png", 
+									file = discord.File(io.BytesIO(data), filename = "map.png"), 
+									timestamp = timestamp)
 	
 	@astronomy.command(name = "object")
 	@checks.not_forbidden()
