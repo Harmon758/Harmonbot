@@ -142,36 +142,45 @@ class PlayingMenu(menus.Menu):
 	def reaction_check(self, payload):
 		return payload.message_id == self.message.id and payload.user_id != self.bot.user.id and str(payload.emoji) in self.buttons
 	
+	async def is_permitted(self, command, user_id):
+		while ((permitted := await self.ctx.get_permission(command.name, id = user_id)) is None and 
+				command.parent is not None):
+			command = command.parent
+		return permitted or user_id in (self.ctx.guild.owner.id, self.bot.owner_id)
+	
 	@menus.button('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', position = 1)
 	async def on_pause_or_resume(self, payload):
 		if self.ctx.guild.voice_client.is_playing():
-			if await self.ctx.get_permission("pause", id = payload.user_id) or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
-				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].pause)
+			command = self.ctx.bot.cogs["Audio"].pause
 		else:
-			if await self.ctx.get_permission("resume", id = payload.user_id) or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
-				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].resume)
+			command = self.ctx.bot.cogs["Audio"].resume
+		if await self.is_permitted(command, payload.user_id):
+			await self.ctx.invoke(command)
 	
 	async def on_direct_action_reaction(self, payload):
-		if await self.ctx.get_permission(self.direct_actions[str(payload.emoji)], id = payload.user_id) or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
-			await self.ctx.invoke(getattr(self.ctx.bot.cogs["Audio"], self.direct_actions[str(payload.emoji)]))
+		command = getattr(self.ctx.bot.cogs["Audio"], self.direct_actions[str(payload.emoji)])
+		if await self.is_permitted(command, payload.user_id):
+			await self.ctx.invoke(command)
 	
 	@menus.button('\N{SPEAKER WITH ONE SOUND WAVE}', position = 6)
 	async def on_volume_down(self, payload):
-		if await self.ctx.get_permission("volume", id = payload.user_id) or payload.user_id in (self.ctx.guild.owner, self.bot.owner_id):
+		command = self.ctx.bot.cogs["Audio"].volume
+		if await self.is_permitted(command, payload.user_id):
 			if self.ctx.guild.voice_client.is_playing():
 				current_volume = self.ctx.guild.voice_client.source.volume
 			else:
 				await self.ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
-			await self.ctx.invoke(self.ctx.bot.cogs["Audio"].volume, volume_setting = current_volume - 10)
+			await self.ctx.invoke(command, volume_setting = current_volume - 10)
 	
 	@menus.button('\N{SPEAKER WITH THREE SOUND WAVES}', position = 7)
 	async def on_volume_up(self, payload):
-		if await self.ctx.get_permission("volume", id = payload.user_id) or payload.user_id in (self.ctx.guild.owner, self.bot.owner_id):
+		command = self.ctx.bot.cogs["Audio"].volume
+		if await self.is_permitted(command, payload.user_id):
 			if self.ctx.guild.voice_client.is_playing():
 				current_volume = self.ctx.guild.voice_client.source.volume
 			else:
 				await self.ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
-			await self.ctx.invoke(self.ctx.bot.cogs["Audio"].volume, volume_setting = current_volume + 10)
+			await self.ctx.invoke(command, volume_setting = current_volume + 10)
 	
 	async def update(self, payload):
 		await super().update(payload)
