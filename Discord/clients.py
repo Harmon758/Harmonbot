@@ -447,6 +447,34 @@ class Bot(commands.Bot):
 	# TODO: on_command_completion
 	async def on_command(self, ctx):
 		self.session_commands_invoked[ctx.command.name] = self.session_commands_invoked.get(ctx.command.name, 0) + 1
+		await self.db.execute(
+			"""
+			UPDATE meta.stats
+			SET commands_invoked = commands_invoked + 1
+			WHERE timestamp = $1
+			""", 
+			self.online_time
+		)
+		await self.db.execute(
+			"""
+			INSERT INTO meta.commands_invoked (command, invokes)
+			VALUES ($1, 1)
+			ON CONFLICT (command) DO
+			UPDATE SET invokes = commands_invoked.invokes + 1
+			""", 
+			ctx.command.name
+		)
+		# TODO: Handle subcommand names
+		await self.db.execute(
+			"""
+			INSERT INTO users.stats (user_id, commands_invoked)
+			VALUES ($1, 1)
+			ON CONFLICT (user_id) DO
+			UPDATE SET commands_invoked = stats.commands_invoked + 1
+			""", 
+			ctx.author.id
+		)
+		# TODO: Track names
 	
 	async def on_command_error(self, ctx, error):
 		# Ignore

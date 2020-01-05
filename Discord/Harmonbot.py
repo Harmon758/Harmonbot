@@ -63,37 +63,6 @@ if __name__ == "__main__":
 		me = discord.utils.get(client.get_all_members(), id = client.owner_id)
 		await client.send_embed(me, None, title = "Left Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
 	
-	@client.listen()
-	async def on_command(ctx):
-		await ctx.bot.db.execute(
-			"""
-			UPDATE meta.stats
-			SET commands_invoked = commands_invoked + 1
-			WHERE timestamp = $1
-			""", 
-			ctx.bot.online_time
-		)
-		await ctx.bot.db.execute(
-			"""
-			INSERT INTO meta.commands_invoked (command, invokes)
-			VALUES ($1, 1)
-			ON CONFLICT (command) DO
-			UPDATE SET invokes = commands_invoked.invokes + 1
-			""", 
-			ctx.command.name
-		)
-		# TODO: Handle subcommand names
-		await ctx.bot.db.execute(
-			"""
-			INSERT INTO users.stats (user_id, commands_invoked)
-			VALUES ($1, 1)
-			ON CONFLICT (user_id) DO
-			UPDATE SET commands_invoked = stats.commands_invoked + 1
-			""", 
-			ctx.author.id
-		)
-		# TODO: Track names
-	
 	# TODO: Move to utilities
 	def replace_null_character(data):
 		data_type = type(data)
