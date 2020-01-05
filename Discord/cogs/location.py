@@ -29,10 +29,12 @@ class Location(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	# TODO: handle random location command
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def country(self, ctx, *, country : str):
 		'''Information about a country'''
 		# TODO: subcommands for other options to search by (e.g. capital)
@@ -131,7 +133,6 @@ class Location(commands.Cog):
 		await ctx.embed_reply(title = country_name, fields = fields)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def geocode(self, ctx, *, address : str):
 		'''Convert addresses to geographic coordinates'''
 		try:
@@ -145,7 +146,6 @@ class Location(commands.Cog):
 		await ctx.embed_reply(title = title, fields = fields)
 	
 	@geocode.command(name = "reverse")
-	@checks.not_forbidden()
 	async def geocode_reverse(self, ctx, latitude : float, longitude : float):
 		'''Convert geographic coordinates to addresses'''
 		url = "https://maps.googleapis.com/maps/api/geocode/json"
@@ -164,7 +164,6 @@ class Location(commands.Cog):
 	# TODO: random address command?
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def map(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap", *, location: str):
 		'''
 		See map of location
@@ -180,7 +179,6 @@ class Location(commands.Cog):
 								file = discord.File(io.BytesIO(data), filename = "map.png"))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def streetview(self, ctx, *, location : str):
 		'''Generate street view of a location'''
 		url = "https://maps.googleapis.com/maps/api/streetview"
@@ -191,7 +189,6 @@ class Location(commands.Cog):
 								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
 	
 	@commands.group(aliases = ["timezone"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def time(self, ctx, *, location : str):
 		'''Current time of a location'''
 		try:
@@ -212,7 +209,6 @@ class Location(commands.Cog):
 		await ctx.embed_reply(description, title = title, fields = fields)
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def weather(self, ctx, *, location : str):
 		'''Weather'''
 		try:
