@@ -1,6 +1,8 @@
 
+import discord
 from discord.ext import commands
 
+import io
 import sys
 
 import datetime
@@ -163,9 +165,12 @@ class Location(commands.Cog):
 	@checks.not_forbidden()
 	async def map(self, ctx, *, location : str):
 		'''See map of location'''
-		location = location.replace(' ', '+')
-		map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={location}&zoom=13&size=640x640"
-		await ctx.embed_reply(f"[:map:]({map_url})", image_url = map_url)
+		url = "https://maps.googleapis.com/maps/api/staticmap"
+		params = {"center": location, "zoom": 13, "size": "640x640", "key": ctx.bot.GOOGLE_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.read()
+		await ctx.embed_reply(image_url = "attachment://map.png", 
+								file = discord.File(io.BytesIO(data), filename = "map.png"))
 	
 	@map.command(name = "options")
 	@checks.not_forbidden()
