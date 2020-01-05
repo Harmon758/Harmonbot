@@ -174,7 +174,7 @@ class Location(commands.Cog):
 	
 	@map.command(name = "options")
 	@checks.not_forbidden()
-	async def map_options(self, ctx, zoom : int, maptype : str, *, location : str):
+	async def map_options(self, ctx, zoom: int, maptype: str, *, location: str):
 		'''
 		More customized map of a location
 		Zoom: 0 - 21+ (Default: 13)
