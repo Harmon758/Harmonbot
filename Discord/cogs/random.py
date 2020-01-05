@@ -152,10 +152,8 @@ class Random(commands.Cog):
 	async def streetview(self, ctx, radius: int = 5_000_000):
 		'''
 		Generate street view of a random location
-		Radius: in which to search for a street view
-		        specified in meters
-		        centered on the random latitude and longitude
-		        valid values are non-negative integers
+		`radius`: sets a radius, specified in meters, in which to search for a panorama, centered on the given latitude and longitude.
+		Valid values are non-negative integers.
 		'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)

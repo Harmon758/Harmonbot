@@ -182,13 +182,10 @@ class Location(commands.Cog):
 	async def streetview(self, ctx, pitch: Optional[int] = 0, *, location: str):
 		'''
 		Generate street view of a location
-		Pitch: specifies the up or down angle of the camera
-		       relative to the Street View vehicle
-		       this is often, but not always, flat horizontal
-		       positive values angle the camera up
-		       (with 90 degrees indicating straight up)
-		       negative values angle the camera down
-		       (with -90 indicating straight down)
+		`pitch`: specifies the up or down angle of the camera relative to the Street View vehicle.
+		This is often, but not always, flat horizontal.
+		Positive values angle the camera up (with `90` degrees indicating straight up);
+		negative values angle the camera down (with `-90` indicating straight down).
 		'''
 		url = "https://maps.googleapis.com/maps/api/streetview"
 		params = {"location": location, "size": "640x640", "fov": 120, "pitch": pitch, 
