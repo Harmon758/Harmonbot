@@ -145,24 +145,19 @@ class PlayingMenu(menus.Menu):
 	@menus.button('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', position = 1)
 	async def on_pause_or_resume(self, payload):
 		if self.ctx.guild.voice_client.is_playing():
-			permitted = await self.ctx.get_permission("pause", id = payload.user_id)
-			if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
+			if await self.ctx.get_permission("pause", id = payload.user_id) or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
 				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].pause)
 		else:
-			permitted = await self.ctx.get_permission("resume", id = payload.user_id)
-			if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
+			if await self.ctx.get_permission("resume", id = payload.user_id) or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
 				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].resume)
 	
 	async def on_direct_action_reaction(self, payload):
-		permitted = await self.ctx.get_permission(self.direct_actions[str(payload.emoji)], id = payload.user_id)
-		if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
+		if await self.ctx.get_permission(self.direct_actions[str(payload.emoji)], id = payload.user_id) or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
 			await self.ctx.invoke(getattr(self.ctx.bot.cogs["Audio"], self.direct_actions[str(payload.emoji)]))
-			# Timestamp for radio
 	
 	@menus.button('\N{SPEAKER WITH ONE SOUND WAVE}', position = 6)
 	async def on_volume_down(self, payload):
-		permitted = await self.ctx.get_permission("volume", id = payload.user_id)
-		if permitted or payload.user_id in (self.ctx.guild.owner, self.bot.owner_id):
+		if await self.ctx.get_permission("volume", id = payload.user_id) or payload.user_id in (self.ctx.guild.owner, self.bot.owner_id):
 			if self.ctx.guild.voice_client.is_playing():
 				current_volume = self.ctx.guild.voice_client.source.volume
 			else:
@@ -171,8 +166,7 @@ class PlayingMenu(menus.Menu):
 	
 	@menus.button('\N{SPEAKER WITH THREE SOUND WAVES}', position = 7)
 	async def on_volume_up(self, payload):
-		permitted = await self.ctx.get_permission("volume", id = payload.user_id)
-		if permitted or payload.user_id in (self.ctx.guild.owner, self.bot.owner_id):
+		if await self.ctx.get_permission("volume", id = payload.user_id) or payload.user_id in (self.ctx.guild.owner, self.bot.owner_id):
 			if self.ctx.guild.voice_client.is_playing():
 				current_volume = self.ctx.guild.voice_client.source.volume
 			else:
