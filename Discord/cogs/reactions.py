@@ -164,23 +164,21 @@ class PlayingMenu(menus.Menu):
 	
 	@menus.button('\N{SPEAKER WITH ONE SOUND WAVE}', position = 6)
 	async def on_volume_down(self, payload):
-		command = self.ctx.bot.cogs["Audio"].volume
-		if await self.is_permitted(command, payload.user_id):
-			if self.ctx.guild.voice_client.is_playing():
-				current_volume = self.ctx.guild.voice_client.source.volume
-			else:
-				await self.ctx.embed_reply(":no_entry: Couldn't decrease volume\nThere's nothing playing right now")
-			await self.ctx.invoke(command, volume_setting = current_volume - 10)
+		await self.change_volume(payload.user_id, -10)
 	
 	@menus.button('\N{SPEAKER WITH THREE SOUND WAVES}', position = 7)
 	async def on_volume_up(self, payload):
+		await self.change_volume(payload.user_id, 10)
+	
+	async def change_volume(self, user_id, volume_change):
 		command = self.ctx.bot.cogs["Audio"].volume
-		if await self.is_permitted(command, payload.user_id):
+		if await self.is_permitted(command, user_id):
 			if self.ctx.guild.voice_client.is_playing():
 				current_volume = self.ctx.guild.voice_client.source.volume
 			else:
-				await self.ctx.embed_reply(":no_entry: Couldn't increase volume\nThere's nothing playing right now")
-			await self.ctx.invoke(command, volume_setting = current_volume + 10)
+				await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
+											"There's nothing playing right now")
+			await self.ctx.invoke(command, volume_setting = current_volume + volume_change)
 	
 	async def update(self, payload):
 		await super().update(payload)
