@@ -24,6 +24,7 @@ import pyparsing
 
 import clients
 from utilities import checks
+from utilities.converters import Maptype
 
 def setup(bot):
 	bot.add_cog(Random(bot))
@@ -115,12 +116,16 @@ class Random(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"]["image_url"])
 	
-	async def map(self, ctx):
-		'''See map of random location'''
+	async def map(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap"):
+		'''
+		See map of random location
+		Zoom: 0 - 21+
+		Map Types: roadmap, satellite, hybrid, terrain
+		'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
 		url = "https://maps.googleapis.com/maps/api/staticmap"
-		params = {"center": f"{latitude},{longitude}", "zoom": 13, "size": "640x640", 
+		params = {"center": f"{latitude},{longitude}", "zoom": zoom, "maptype": maptype, "size": "640x640", 
 					"key": ctx.bot.GOOGLE_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.read()
