@@ -97,6 +97,7 @@ class MazeMenu(menus.Menu):
 class NewsSource(menus.ListPageSource):
 	
 	def __init__(self, articles):
+		self.articles = articles
 		super().__init__(articles, per_page = 1)
 	
 	async def format_page(self, menu, article):
@@ -104,7 +105,7 @@ class NewsSource(menus.ListPageSource):
 								description = article["description"], color = menu.bot.bot_color)
 		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
 		embed.set_image(url = article["urlToImage"])
-		embed.set_footer(text = f"{article['source']['name']} (Article {menu.current_page + 1})")
+		embed.set_footer(text = f"{article['source']['name']} (Article {menu.current_page + 1} of {len(self.articles)})")
 		if timestamp := article.get("publishedAt"):
 			embed.timestamp = dateutil.parser.parse(timestamp)
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
