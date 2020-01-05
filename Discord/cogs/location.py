@@ -179,7 +179,7 @@ class Location(commands.Cog):
 								file = discord.File(io.BytesIO(data), filename = "map.png"))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def streetview(self, ctx, *, location : str):
+	async def streetview(self, ctx, *, location: str):
 		'''Generate street view of a location'''
 		url = "https://maps.googleapis.com/maps/api/streetview"
 		params = {"location": location, "size": "640x640", "key": ctx.bot.GOOGLE_API_KEY}
