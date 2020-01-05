@@ -179,10 +179,19 @@ class Location(commands.Cog):
 								file = discord.File(io.BytesIO(data), filename = "map.png"))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def streetview(self, ctx, *, location: str):
-		'''Generate street view of a location'''
+	async def streetview(self, ctx, pitch: Optional[int] = 0, *, location: str):
+		'''
+		Generate street view of a location
+		Pitch: specifies the up or down angle of the camera
+		       relative to the Street View vehicle
+		       this is often, but not always, flat horizontal
+		       positive values angle the camera up
+		       (with 90 degrees indicating straight up)
+		       negative values angle the camera down
+		       (with -90 indicating straight down)
+		'''
 		url = "https://maps.googleapis.com/maps/api/streetview"
-		params = {"location": location, "size": "640x640", "fov": 120, 
+		params = {"location": location, "size": "640x640", "fov": 120, "pitch": pitch, 
 					"key": ctx.bot.GOOGLE_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.read()
