@@ -577,6 +577,16 @@ class Bot(commands.Bot):
 					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before_embeds, after_embeds
 				)
 	
+	async def increment_menu_reactions_count(self):
+		await self.db.execute(
+			"""
+			UPDATE meta.stats
+			SET menu_reactions = menu_reactions + 1
+			WHERE timestamp = $1
+			""", 
+			self.online_time
+		)
+	
 	# TODO: optimize/overhaul
 	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
 	author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
