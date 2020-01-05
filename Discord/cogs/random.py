@@ -8,6 +8,7 @@ import concurrent.futures
 import csv
 import datetime
 import inspect
+import io
 import json
 import multiprocessing
 import random
@@ -118,8 +119,14 @@ class Random(commands.Cog):
 		'''See map of random location'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
-		map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={latitude},{longitude}&zoom=13&size=640x640"
-		await ctx.embed_reply(f"[:map:]({map_url})", image_url = map_url)
+		url = "https://maps.googleapis.com/maps/api/staticmap"
+		params = {"center": f"{latitude},{longitude}", "zoom": 13, "size": "640x640", 
+					"key": ctx.bot.GOOGLE_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.read()
+		await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
+								image_url = "attachment://map.png", 
+								file = discord.File(io.BytesIO(data), filename = "map.png"))
 	
 	async def photo(self, ctx, *, query = ""):
 		'''Random photo from Unsplash'''
