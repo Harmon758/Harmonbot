@@ -169,7 +169,7 @@ class PlayingMenu(menus.Menu):
 			if self.ctx.guild.voice_client.is_playing():
 				current_volume = self.ctx.guild.voice_client.source.volume
 			else:
-				await self.ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
+				await self.ctx.embed_reply(":no_entry: Couldn't decrease volume\nThere's nothing playing right now")
 			await self.ctx.invoke(command, volume_setting = current_volume - 10)
 	
 	@menus.button('\N{SPEAKER WITH THREE SOUND WAVES}', position = 7)
@@ -179,7 +179,7 @@ class PlayingMenu(menus.Menu):
 			if self.ctx.guild.voice_client.is_playing():
 				current_volume = self.ctx.guild.voice_client.source.volume
 			else:
-				await self.ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
+				await self.ctx.embed_reply(":no_entry: Couldn't increase volume\nThere's nothing playing right now")
 			await self.ctx.invoke(command, volume_setting = current_volume + 10)
 	
 	async def update(self, payload):
