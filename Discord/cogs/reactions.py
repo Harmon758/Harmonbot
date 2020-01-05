@@ -144,11 +144,13 @@ class PlayingMenu(menus.Menu):
 	
 	@menus.button('\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}', position = 1)
 	async def on_pause_or_resume(self, payload):
-		permitted = await self.ctx.get_permission("pause", id = payload.user_id)
-		if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
-			if self.ctx.guild.voice_client.is_playing():
+		if self.ctx.guild.voice_client.is_playing():
+			permitted = await self.ctx.get_permission("pause", id = payload.user_id)
+			if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
 				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].pause)
-			else:
+		else:
+			permitted = await self.ctx.get_permission("resume", id = payload.user_id)
+			if permitted or payload.user_id in (self.ctx.guild.owner.id, self.bot.owner_id):
 				await self.ctx.invoke(self.ctx.bot.cogs["Audio"].resume)
 	
 	async def on_direct_action_reaction(self, payload):
