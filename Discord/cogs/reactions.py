@@ -17,7 +17,13 @@ def setup(bot):
 #  Fixed to stop counting own reactions on 2019-10-25
 #  Deprecated on 2020-01-04 in favor of menu_reactions
 
-class GuessMenu(menus.Menu):
+class CustomMenu(menus.Menu):
+	
+	async def update(self, payload):
+		await super().update(payload)
+		await self.bot.increment_menu_reactions_count()
+
+class GuessMenu(CustomMenu):
 	
 	def __init__(self):
 		super().__init__(timeout = None, check_embeds = True)
@@ -41,12 +47,8 @@ class GuessMenu(menus.Menu):
 			embed.description = (f"{self.ctx.author.mention}: Guess a number between 1 to 10\n"
 									f"No, it's not {number}")
 		await self.message.edit(embed = embed)
-	
-	async def update(self, payload):
-		await super().update(payload)
-		await self.bot.increment_menu_reactions_count()
 
-class MazeMenu(menus.Menu):
+class MazeMenu(CustomMenu):
 	
 	def __init__(self, width, height, random_start, random_end):
 		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
@@ -79,10 +81,6 @@ class MazeMenu(menus.Menu):
 													"Your maze is attached", 
 										file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
 															filename = "maze.txt"))
-	
-	async def update(self, payload):
-		await super().update(payload)
-		await self.bot.increment_menu_reactions_count()
 
 class NewsSource(menus.ListPageSource):
 	
@@ -100,7 +98,7 @@ class NewsSource(menus.ListPageSource):
 			embed.timestamp = dateutil.parser.parse(timestamp)
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
-class NewsMenu(menus.MenuPages):
+class NewsMenu(CustomMenu, menus.MenuPages):
 	
 	def __init__(self, articles):
 		super().__init__(NewsSource(articles), timeout = None, clear_reactions_after = True)
@@ -109,12 +107,8 @@ class NewsMenu(menus.MenuPages):
 		message = await super().send_initial_message(ctx, channel)
 		await ctx.bot.attempt_delete_message(ctx.message)
 		return message
-	
-	async def update(self, payload):
-		await super().update(payload)
-		await self.bot.increment_menu_reactions_count()
 
-class PlayingMenu(menus.Menu):
+class PlayingMenu(CustomMenu):
 	
 	def __init__(self):
 		super().__init__(timeout = None, check_embeds = True)
@@ -176,10 +170,6 @@ class PlayingMenu(menus.Menu):
 			else:
 				await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
 											"There's nothing playing right now")
-	
-	async def update(self, payload):
-		await super().update(payload)
-		await self.bot.increment_menu_reactions_count()
 
 class Reactions(commands.Cog):
 	
