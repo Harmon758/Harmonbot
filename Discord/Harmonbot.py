@@ -25,10 +25,6 @@ if __name__ == "__main__":
 	
 	mention_spammers = []
 	
-	# Use Proactor Event Loop
-	if platform.system() == "Windows":
-		asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-	
 	# Load credentials from .env
 	dotenv.load_dotenv()
 	
