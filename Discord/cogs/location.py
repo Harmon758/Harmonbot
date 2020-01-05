@@ -163,7 +163,7 @@ class Location(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def map(self, ctx, *, location : str):
+	async def map(self, ctx, *, location: str):
 		'''See map of location'''
 		url = "https://maps.googleapis.com/maps/api/staticmap"
 		params = {"center": location, "zoom": 13, "size": "640x640", "key": ctx.bot.GOOGLE_API_KEY}
