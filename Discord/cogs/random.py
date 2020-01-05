@@ -148,8 +148,13 @@ class Random(commands.Cog):
 		'''Generate street view of a random location'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
-		image_url = f"https://maps.googleapis.com/maps/api/streetview?size=400x400&location={latitude},{longitude}"
-		await ctx.embed_reply(image_url = image_url)
+		url = "https://maps.googleapis.com/maps/api/streetview"
+		params = {"location": f"{latitude},{longitude}", "size": "400x400", "key": ctx.bot.GOOGLE_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.read()
+		await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
+								image_url = "attachment://streetview.png", 
+								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
 	
 	async def time(self, ctx):
 		'''Random time'''
