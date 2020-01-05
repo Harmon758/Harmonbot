@@ -136,15 +136,20 @@ class PlayingMenu(menus.Menu):
 	async def send_initial_message(self, ctx, channel):
 		return await ctx.invoke(ctx.bot.cogs["Audio"].playing)
 	
-	# TODO: Queue?, Empty?, Settext?, Other?
+	# TODO: Queue?, Empty?, Settext?, Join?, Leave?, Other?
 	# TODO: Resend player?
+	# TODO: player command: Timestamp for radio?
 	
 	def reaction_check(self, payload):
-		return payload.message_id == self.message.id and payload.user_id != self.bot.user.id and str(payload.emoji) in self.buttons
+		if payload.message_id != self.message.id:
+			return False
+		if payload.user_id == self.bot.user.id:
+			return False
+		return str(payload.emoji) in self.buttons
 	
 	async def is_permitted(self, command, user_id):
-		while ((permitted := await self.ctx.get_permission(command.name, id = user_id)) is None and 
-				command.parent is not None):
+		while ((permitted := await self.ctx.get_permission(command.name, id = user_id)) is None
+				and command.parent is not None):
 			command = command.parent
 		return permitted or user_id in (self.ctx.guild.owner.id, self.bot.owner_id)
 	
