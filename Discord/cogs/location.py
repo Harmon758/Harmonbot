@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import io
 import sys
+from typing import Optional
 
 import datetime
 import pyowm.exceptions
@@ -161,24 +162,20 @@ class Location(commands.Cog):
 	
 	# TODO: random address command?
 	
+	# TODO: Move to converters file
+	class Maptype(commands.Converter):
+		async def convert(self, ctx, argument):
+			if argument not in ("roadmap", "satellite", "hybrid", "terrain"):
+				raise commands.BadArgument("Invalid map type")
+			return argument
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def map(self, ctx, *, location: str):
-		'''See map of location'''
-		url = "https://maps.googleapis.com/maps/api/staticmap"
-		params = {"center": location, "zoom": 13, "size": "640x640", "key": ctx.bot.GOOGLE_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.read()
-		await ctx.embed_reply(image_url = "attachment://map.png", 
-								file = discord.File(io.BytesIO(data), filename = "map.png"))
-	
-	@map.command(name = "options")
-	@checks.not_forbidden()
-	async def map_options(self, ctx, zoom: int, maptype: str, *, location: str):
+	async def map(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap", *, location: str):
 		'''
-		More customized map of a location
-		Zoom: 0 - 21+ (Default: 13)
-		Map Types: roadmap, satellite, hybrid, terrain (Default: roadmap)
+		See map of location
+		Zoom: 0 - 21+
+		Map Types: roadmap, satellite, hybrid, terrain
 		'''
 		url = "https://maps.googleapis.com/maps/api/staticmap"
 		params = {"center": location, "zoom": zoom, "maptype": maptype, "size": "640x640", 
