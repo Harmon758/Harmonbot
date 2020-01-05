@@ -182,7 +182,8 @@ class Location(commands.Cog):
 	async def streetview(self, ctx, *, location: str):
 		'''Generate street view of a location'''
 		url = "https://maps.googleapis.com/maps/api/streetview"
-		params = {"location": location, "size": "640x640", "key": ctx.bot.GOOGLE_API_KEY}
+		params = {"location": location, "size": "640x640", "fov": 120, 
+					"key": ctx.bot.GOOGLE_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.read()
 		await ctx.embed_reply(image_url = "attachment://streetview.png", 

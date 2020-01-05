@@ -154,7 +154,8 @@ class Random(commands.Cog):
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
 		url = "https://maps.googleapis.com/maps/api/streetview"
-		params = {"location": f"{latitude},{longitude}", "size": "640x640", "key": ctx.bot.GOOGLE_API_KEY}
+		params = {"location": f"{latitude},{longitude}", "size": "640x640", "fov": 120, 
+					"key": ctx.bot.GOOGLE_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.read()
 		await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
