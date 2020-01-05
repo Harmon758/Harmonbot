@@ -10,6 +10,7 @@ import datetime
 import pyowm.exceptions
 
 from utilities import checks
+from utilities.converters import Maptype
 
 sys.path.insert(0, "..")
 from units.location import get_geocode_data, get_timezone_data, wind_degrees_to_direction, UnitOutputError
@@ -161,13 +162,6 @@ class Location(commands.Cog):
 		await ctx.embed_reply(data["formatted_address"], title = f"Address for {latitude}, {longitude}")
 	
 	# TODO: random address command?
-	
-	# TODO: Move to converters file
-	class Maptype(commands.Converter):
-		async def convert(self, ctx, argument):
-			if argument not in ("roadmap", "satellite", "hybrid", "terrain"):
-				raise commands.BadArgument("Invalid map type")
-			return argument
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
