@@ -149,12 +149,18 @@ class Random(commands.Cog):
 								author_icon_url = data["user"]["profile_image"]["small"], 
 								image_url = data["urls"]["full"])
 	
-	async def streetview(self, ctx):
-		'''Generate street view of a random location'''
+	async def streetview(self, ctx, radius: int = 5_000_000):
+		'''
+		Generate street view of a random location
+		Radius: in which to search for a street view
+		        specified in meters
+		        centered on the random latitude and longitude
+		        valid values are non-negative integers
+		'''
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
 		url = "https://maps.googleapis.com/maps/api/streetview"
-		params = {"location": f"{latitude},{longitude}", "size": "640x640", "fov": 120, "radius": 5_000_000, 
+		params = {"location": f"{latitude},{longitude}", "size": "640x640", "fov": 120, "radius": radius, 
 					"key": ctx.bot.GOOGLE_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.read()
