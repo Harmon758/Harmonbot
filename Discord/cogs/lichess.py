@@ -16,6 +16,19 @@ sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Lichess(bot))
+	
+class LichessUser(commands.Converter):
+	async def convert(self, ctx, argument):
+		url = f"https://en.lichess.org/api/user/{argument}"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
+			if resp.status == 404:
+				raise commands.BadArgument("User not found")
+			data = await resp.json()
+		if not data:
+			raise commands.BadArgument("User not found")
+		if data.get("closed"):
+			raise commands.BadArgument("This account is closed")
+		return data
 
 class Lichess(commands.Cog):
 	
@@ -78,7 +91,7 @@ class Lichess(commands.Cog):
 			@self.user.command(name = name.lower().replace(' ', "").replace('-', ""), 
 								help = f"User {name} stats")
 			@checks.not_forbidden()
-			async def user_mode_command(ctx, username : self.LichessUser):
+			async def user_mode_command(ctx, username : LichessUser):
 				mode_data = username["perfs"][mode]
 				prov = ""
 				if username["perfs"][mode].get("prov"):
@@ -99,19 +112,6 @@ class Lichess(commands.Cog):
 			# Such as on ready after cog initialized
 			self.user.remove_command(internal_name)
 			setattr(self, "user_" + internal_name, user_mode_wrapper(mode, name, emoji))
-	
-	class LichessUser(commands.Converter):
-		async def convert(self, ctx, argument):
-			url = f"https://en.lichess.org/api/user/{argument}"
-			async with ctx.bot.aiohttp_session.get(url) as resp:
-				if resp.status == 404:
-					raise commands.BadArgument("User not found")
-				data = await resp.json()
-			if not data:
-				raise commands.BadArgument("User not found")
-			if data.get("closed"):
-				raise commands.BadArgument("This account is closed")
-			return data
 
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
