@@ -20,7 +20,6 @@ class SteamID32(commands.Converter):
 	async def convert(self, ctx, argument):
 		return await SteamID64().convert(ctx, argument) - STEAM_ID_64_BASE
 
-# TODO: Use for steam gamecount command
 class SteamID64(commands.Converter):
 	async def convert(self, ctx, argument):
 		try:
@@ -34,4 +33,11 @@ class SteamID64(commands.Converter):
 			if data["response"]["success"] == 42:  # NoMatch, https://partner.steamgames.com/doc/api/steam_api#EResult
 				raise commands.BadArgument("Account not found")
 			return int(data['response']['steamid'])
+
+class SteamProfile(commands.Converter):
+	async def convert(self, ctx, argument):
+		url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/"
+		params = {"steamids": await SteamID64().convert(ctx, argument), "key": ctx.bot.STEAM_WEB_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			return (await resp.json())["response"]["players"][0]
 

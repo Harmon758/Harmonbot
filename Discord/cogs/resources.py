@@ -12,6 +12,7 @@ import dateutil
 
 from modules import utilities
 from utilities import checks
+from utilities.converters import SteamProfile
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -515,20 +516,14 @@ class Resources(commands.Cog):
 	
 	@steam.command(name = "gamecount", aliases = ["game_count"])
 	@checks.not_forbidden()
-	async def steam_gamecount(self, ctx, vanity_name: str):
+	async def steam_gamecount(self, ctx, account: SteamProfile):
 		'''Find how many games someone has'''
-		url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
-		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": vanity_name}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if data["response"]["success"] == 42:  # NoMatch, https://partner.steamgames.com/doc/api/steam_api#EResult
-			return await ctx.embed_reply(":no_entry: Error: User not found")
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
-		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": data["response"]["steamid"]}
+		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": account["steamid"]}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
-		await ctx.embed_reply(f"{vanity_name} has {gamecount} games")
+		await ctx.embed_reply(f"{account['personaname']} has {gamecount} games")
 	
 	@steam.command(name = "gameinfo", aliases = ["game_info"])
 	@checks.not_forbidden()
