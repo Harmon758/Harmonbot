@@ -8,7 +8,7 @@ import pycountry
 from wordcloud import WordCloud
 
 from utilities import checks
-from utilities.converters import SteamAccount
+from utilities.converters import SteamID32
 
 def setup(bot):
 	bot.add_cog(DotA())
@@ -25,12 +25,12 @@ class DotA(commands.Cog):
 	
 	# TODO: Add dota buff subcommand alias
 	@commands.command()
-	async def dotabuff(self, ctx, account: SteamAccount):
+	async def dotabuff(self, ctx, account: SteamID32):
 		'''Get Dotabuff link'''
 		await ctx.embed_reply(f"https://www.dotabuff.com/players/{account}")
 	
 	@dota.group(invoke_without_command = True, case_insensitive = True)
-	async def player(self, ctx, account: SteamAccount):
+	async def player(self, ctx, account: SteamID32):
 		'''DotA 2 player'''
 		url = f"https://api.opendota.com/api/players/{account}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
@@ -57,7 +57,7 @@ class DotA(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@player_words.command(name = "said", invoke_without_command = True, case_insensitive = True)
-	async def player_words_said(self, ctx, account: SteamAccount):
+	async def player_words_said(self, ctx, account: SteamID32):
 		'''Word cloud of words said in all chat'''
 		url = f"https://api.opendota.com/api/players/{account}/wordcloud"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
@@ -73,7 +73,7 @@ class DotA(commands.Cog):
 								image_url = "attachment://word_cloud.png")
 	
 	@player_words.command(name = "read", invoke_without_command = True, case_insensitive = True)
-	async def player_words_read(self, ctx, account: SteamAccount):
+	async def player_words_read(self, ctx, account: SteamID32):
 		'''Word cloud of words read in all chat'''
 		url = f"https://api.opendota.com/api/players/{account}/wordcloud"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
