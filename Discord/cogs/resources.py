@@ -523,7 +523,8 @@ class Resources(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
-		await ctx.embed_reply(f"{account['personaname']} has {gamecount} games")
+		await ctx.embed_reply(f"[{account['personaname']}]({account['profileurl']}) has {gamecount} games", 
+								thumbnail_url = account["avatarfull"])
 	
 	@steam.command(name = "gameinfo", aliases = ["game_info"])
 	@checks.not_forbidden()
