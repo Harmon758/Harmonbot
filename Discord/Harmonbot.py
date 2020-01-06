@@ -10,7 +10,6 @@ if __name__ == "__main__":
 	import datetime
 	import json
 	import os
-	import platform
 	import re
 	import sys
 	
