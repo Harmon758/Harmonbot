@@ -10,8 +10,10 @@ def setup(bot):
 
 class Steam(commands.Cog):
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def steam(self, ctx):
 		'''Steam Information'''
 		await ctx.send_help(ctx.command)
@@ -24,7 +26,6 @@ class Steam(commands.Cog):
 	# TODO: alias steam as info subcommand?
 	
 	@steam.command()
-	@checks.not_forbidden()
 	async def appid(self, ctx, *, app: str):
 		'''Get the AppID'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
@@ -39,7 +40,6 @@ class Steam(commands.Cog):
 		await ctx.embed_reply(appid)
 	
 	@steam.command(aliases = ["game_count"])
-	@checks.not_forbidden()
 	async def gamecount(self, ctx, account: SteamProfile):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
@@ -51,7 +51,6 @@ class Steam(commands.Cog):
 								thumbnail_url = account["avatarfull"])
 	
 	@steam.command(aliases = ["game_info"])
-	@checks.not_forbidden()
 	async def gameinfo(self, ctx, *, game: str):
 		'''Information about a game'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
@@ -74,7 +73,6 @@ class Steam(commands.Cog):
 								image_url = data["header_image"])
 	
 	@steam.command(aliases = ["launch"])
-	@checks.not_forbidden()
 	async def run(self, ctx, *, game: str):
 		'''Generate a steam link to launch a game'''
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
