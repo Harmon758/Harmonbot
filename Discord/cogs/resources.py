@@ -497,7 +497,7 @@ class Resources(commands.Cog):
 	@checks.not_forbidden()
 	async def steam(self, ctx):
 		'''Steam Information'''
-		return
+		await ctx.send_help(ctx.command)
 	
 	@steam.command(name = "appid")
 	@checks.not_forbidden()
