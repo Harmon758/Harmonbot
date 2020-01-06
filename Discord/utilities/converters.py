@@ -13,3 +13,18 @@ class Maptype(commands.Converter):
 			raise commands.BadArgument("Invalid map type")
 		return argument
 
+# TODO: Use for steam gamecount command?
+class SteamAccount(commands.Converter):
+	async def convert(self, ctx, argument):
+		try:
+			return int(argument) - 76561197960265728
+		except ValueError:
+			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
+			params = {"key": ctx.bot.STEAM_WEB_API_KEY, "vanityurl": argument}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				# TODO: Handle 429?
+				data = await resp.json()
+			if data["response"]["success"] == 42:  # NoMatch, https://partner.steamgames.com/doc/api/steam_api#EResult
+				raise commands.BadArgument("Account not found")
+			return int(data['response']['steamid']) - 76561197960265728
+
