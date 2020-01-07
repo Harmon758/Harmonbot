@@ -62,7 +62,7 @@ class Discord(commands.Cog):
 		# TODO: Don't attempt delete command message or include who invoked command somehow?
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True, case_insensitive = True)
-	@checks.dm_or_has_permissions_and_capability(manage_messages = True)
+	@commands.check_any(commands.dm_only(), checks.has_permissions_and_capability(manage_messages = True))
 	async def delete(self, ctx, number : int, *, user : discord.Member = None):
 		'''
 		Delete messages

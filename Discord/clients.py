@@ -485,6 +485,9 @@ class Bot(commands.Bot):
 		if isinstance(error, (commands.CommandNotFound, commands.DisabledCommand)):
 			return
 		# Check Failure
+		## Use last error in case where all checks in any failed
+		if isinstance(error, commands.CheckAnyFailure):
+			error = self.errors[-1]
 		## Guild only
 		if isinstance(error, commands.NoPrivateMessage):
 			return await ctx.embed_reply("Please use that command in a server")
