@@ -209,7 +209,7 @@ class Channel(commands.Cog):
 	
 	@text.command(name = "sync")
 	@commands.bot_has_permissions(manage_channels = True, manage_roles = True)
-	@checks.has_permissions(manage_channels = True, manage_roles = True)
+	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_channels = True, manage_roles = True))
 	@commands.guild_only()
 	async def text_sync(self, ctx, *, channel : discord.TextChannel):
 		'''Sync permissions with category the text channel belongs to'''
@@ -296,7 +296,7 @@ class Channel(commands.Cog):
 	
 	@voice.command(name = "sync")
 	@commands.bot_has_permissions(manage_channels = True, manage_roles = True)
-	@checks.has_permissions(manage_channels = True, manage_roles = True)
+	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_channels = True, manage_roles = True))
 	@commands.guild_only()
 	async def voice_sync(self, ctx, *, channel : discord.VoiceChannel):
 		'''Sync permissions with category the voice channel belongs to'''
