@@ -122,15 +122,16 @@ class Resources(commands.Cog):
 	async def haveibeenpwned(self, ctx, name: str):
 		'''Check if your account has been breached'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/" + name
+		headers = {"User-Agent": ctx.bot.user_agent}
 		params = {"truncateResponse": "true"}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
 			if resp.status in (400, 404):
 				breachedaccounts = "None"
 			else:
 				data = await resp.json()
 				breachedaccounts = ", ".join(acc["Name"] for acc in data)
 		url = "https://haveibeenpwned.com/api/v2/pasteaccount/" + name
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
 			if resp.status in (400, 404):
 				pastedaccounts = "None"
 			else:
