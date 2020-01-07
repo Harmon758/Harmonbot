@@ -31,8 +31,6 @@ if __name__ == "__main__":
 	
 	@client.listen()
 	async def on_ready():
-		print(f"Started up Discord {client.user} ({client.user.id})")
-		
 		if restart_channel_id := await client.db.fetchval(
 			"""
 			DELETE FROM meta.restart_channels

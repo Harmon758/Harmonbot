@@ -468,6 +468,7 @@ class Bot(commands.Bot):
 		return web.Response(text = "User-agent: *\nDisallow: /")
 	
 	async def on_ready(self):
+		print(f"Started up Discord {self.user} ({self.user.id})")
 		self.cache_channel = self.get_channel(self.cache_channel_id)
 		self.listener_bot = await self.fetch_user(self.listener_id)
 		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
