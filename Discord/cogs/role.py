@@ -31,8 +31,8 @@ class Role(commands.Cog):
 	async def role_color(self, ctx, role : discord.Role, *, color : discord.Color = None):
 		'''The color of a role'''
 		if color:
-			await checks.has_permissions(manage_roles = True, guild = True). predicate(ctx)
-			await checks.has_capability("manage_roles", guild = True). predicate(ctx)
+			await checks.has_permissions(manage_roles = True, guild = True).predicate(ctx)
+			await checks.has_capability("manage_roles", guild = True).predicate(ctx)
 			await role.edit(color = color)
 			await ctx.embed_reply(role.mention + " has been recolored")
 		else:
@@ -61,8 +61,8 @@ class Role(commands.Cog):
 	async def role_hoisted(self, ctx, role : discord.Role, hoist : bool = None):
 		'''Whether a role is displayed separately from other members or not'''
 		if hoist is not None:
-			await checks.has_permissions(manage_roles = True, guild = True). predicate(ctx)
-			await checks.has_capability("manage_roles", guild = True). predicate(ctx)
+			await checks.has_permissions(manage_roles = True, guild = True).predicate(ctx)
+			await checks.has_capability("manage_roles", guild = True).predicate(ctx)
 			await role.edit(hoist = hoist)
 			await ctx.embed_reply(role.mention + " has been {}hoisted".format("" if hoist else "un"))
 		else:
@@ -88,8 +88,8 @@ class Role(commands.Cog):
 	async def role_mentionable(self, ctx, role : discord.Role, mentionable : bool = None):
 		'''Whether a role is mentionable or not'''
 		if mentionable is not None:
-			await checks.has_permissions(manage_roles = True, guild = True). predicate(ctx)
-			await checks.has_capability("manage_roles", guild = True). predicate(ctx)
+			await checks.has_permissions(manage_roles = True, guild = True).predicate(ctx)
+			await checks.has_capability("manage_roles", guild = True).predicate(ctx)
 			await role.edit(mentionable = mentionable)
 			await ctx.embed_reply(role.mention + " is now {}mentionable".format("" if mentionable else "not "))
 		else:
@@ -101,8 +101,8 @@ class Role(commands.Cog):
 	async def role_name(self, ctx, role : discord.Role, *, name : str = ""):
 		'''The name of a role'''
 		if name:
-			await checks.has_permissions(manage_roles = True, guild = True). predicate(ctx)
-			await checks.has_capability("manage_roles", guild = True). predicate(ctx)
+			await checks.has_permissions(manage_roles = True, guild = True).predicate(ctx)
+			await checks.has_capability("manage_roles", guild = True).predicate(ctx)
 			await role.edit(name = name)
 			await ctx.embed_reply(role.mention + " has been renamed")
 		else:
@@ -118,8 +118,8 @@ class Role(commands.Cog):
 		The bottom role has a position of 0
 		'''
 		if position is not None:
-			await checks.has_permissions(manage_roles = True, guild = True). predicate(ctx)
-			await checks.has_capability("manage_roles", guild = True). predicate(ctx)
+			await checks.has_permissions(manage_roles = True, guild = True).predicate(ctx)
+			await checks.has_capability("manage_roles", guild = True).predicate(ctx)
 			await role.edit(position = position)
 			await ctx.embed_reply(role.mention + "'s position has been set to {}".format(position))
 		else:
