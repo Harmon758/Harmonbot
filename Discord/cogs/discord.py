@@ -26,13 +26,10 @@ class Discord(commands.Cog):
 		'''Archive messages'''
 		# TODO: Add option to delete message?
 		# TODO: Handle rich presence messages?
-		if message.embeds:
-			description = ctx.bot.CODE_BLOCK.format(message.embeds[0].to_dict())
-		else:
-			description = message.content
-			# TODO: Use system_content?
-		# TODO: Handle both content + embeds
-		# TODO: Handle multiple embeds
+		# TODO: Use system_content?
+		fields = []
+		for embed in message.embeds:
+			fields.append(("Embed", ctx.bot.CODE_BLOCK.format(embed.to_dict()), False))
 		reactions = ""
 		for reaction in message.reactions:
 			users = await reaction.users(limit = 3).flatten()
@@ -44,7 +41,6 @@ class Discord(commands.Cog):
 				break
 				# TODO: Handle too long for field value
 			reactions += reaction_string + '\n'
-		fields = []
 		if reactions:
 			fields.append(("Reactions", reactions[:-1]))
 		image_url = discord.Embed.Empty
@@ -52,14 +48,13 @@ class Discord(commands.Cog):
 			image_url = message.attachments[0].url
 		# TODO: Handle non-image attachments
 		# TODO: Handle multiple attachments
-		await ctx.embed_reply(description, 
+		await ctx.embed_reply(message.content, 
 								author_name = message.author.display_name, author_icon_url = message.author.avatar_url, 
 								fields = fields, image_url = image_url, 
 								footer_text = f"In #{message.channel}", timestamp = message.created_at)
 		# TODO: Include message author ID/username#discriminator
 		# TODO: Mention channel or include channel ID
 		# TODO: Include message.edited_at
-		# TODO: Don't attempt delete command message or include who invoked command somehow?
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True, case_insensitive = True)
 	async def delete(self, ctx, number : int, *, user : discord.Member = None):
