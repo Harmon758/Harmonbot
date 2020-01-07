@@ -32,8 +32,8 @@ class Channel(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@category.command(name = "create", aliases = ["make", "new"])
-	@checks.has_capability("manage_channels")
-	@checks.has_permissions(manage_channels = True)
+	@checks.has_capability("manage_channels", guild = True)
+	@checks.has_permissions(manage_channels = True, guild = True)
 	@commands.guild_only()
 	async def category_create(self, ctx, *, name : str):
 		'''Create category'''
@@ -111,8 +111,8 @@ class Channel(commands.Cog):
 			await ctx.embed_reply(channel.category.mention if channel.category else channel.mention + " is not under a category")
 	
 	@text.command(name = "create", aliases = ["make", "new"])
-	@checks.has_capability("manage_channels")
-	@checks.has_permissions(manage_channels = True)
+	@checks.has_capability("manage_channels", guild = True)
+	@checks.has_permissions(manage_channels = True, guild = True)
 	@commands.guild_only()
 	async def text_create(self, ctx, name : str):
 		'''Create text channel'''
@@ -252,8 +252,8 @@ class Channel(commands.Cog):
 			await ctx.embed_reply(channel.category.mention if channel.category else channel.mention + " is not under a category")
 	
 	@voice.command(name = "create", aliases = ["make", "new"])
-	@checks.has_capability("manage_channels")
-	@checks.has_permissions(manage_channels = True)
+	@checks.has_capability("manage_channels", guild = True)
+	@checks.has_permissions(manage_channels = True, guild = True)
 	@commands.guild_only()
 	async def voice_create(self, ctx, *, name : str):
 		'''Create voice channel'''
