@@ -52,7 +52,7 @@ class Channel(commands.Cog):
 	async def category_name(self, ctx, channel : discord.CategoryChannel, *, name : str = ""):
 		'''Name of a category'''
 		if name:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(name = name)
 			await ctx.embed_reply(channel.mention + " has been renamed")
@@ -65,7 +65,7 @@ class Channel(commands.Cog):
 	async def category_nsfw(self, ctx, channel : discord.CategoryChannel, nsfw : bool = None):
 		'''Whether a category is NSFW or not'''
 		if nsfw is not None:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(nsfw = nsfw)
 			await ctx.embed_reply(channel.mention + " has been set to {}NSFW".format("" if nsfw else "not "))
@@ -82,7 +82,7 @@ class Channel(commands.Cog):
 		e.g. the top category is position 0
 		'''
 		if position is not None:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(position = position)
 			await ctx.embed_reply(f"{channel.mention}'s position has been set to {position}")
@@ -102,7 +102,7 @@ class Channel(commands.Cog):
 	async def text_category(self, ctx, channel : discord.TextChannel, *, category : discord.CategoryChannel = None):
 		'''Category the text channel belongs to'''
 		if category:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(category = category)
 			await ctx.embed_reply(channel.mention + " is now under " + category.mention)
@@ -131,7 +131,7 @@ class Channel(commands.Cog):
 	async def text_name(self, ctx, channel : discord.TextChannel, *, name : str = ""):
 		'''Name of a text channel'''
 		if name:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(name = name)
 			await ctx.embed_reply(channel.mention + " has been renamed")
@@ -144,7 +144,7 @@ class Channel(commands.Cog):
 	async def text_nsfw(self, ctx, channel : discord.TextChannel, nsfw : bool = None):
 		'''Whether a text channel is NSFW or not'''
 		if nsfw is not None:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(nsfw = nsfw)
 			await ctx.embed_reply(channel.mention + " has been set to {}NSFW".format("" if nsfw else "not "))
@@ -161,7 +161,7 @@ class Channel(commands.Cog):
 		e.g. the top category is position 0
 		'''
 		if position is not None:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(position = position)
 			await ctx.embed_reply(channel.mention + "'s position has been set to {}".format(position))
@@ -178,7 +178,7 @@ class Channel(commands.Cog):
 		Set slowmode delay to 0 to disable slowmode
 		'''
 		if slowmode_delay is not None:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			if slowmode_delay < 0:
 				return await ctx.embed_reply("Slowmode delay must be greater than 0")
@@ -200,7 +200,7 @@ class Channel(commands.Cog):
 	async def text_topic(self, ctx, channel : discord.TextChannel, *, topic : str = ""):
 		'''Name of a text channel'''
 		if topic:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(topic = topic)
 			await ctx.embed_reply(channel.mention + "'s topic has been changed")
@@ -229,7 +229,7 @@ class Channel(commands.Cog):
 	async def voice_bitrate(self, ctx, channel : discord.VoiceChannel, bitrate : int = None):
 		'''Voice channel’s preferred audio bitrate in bits per second'''
 		if bitrate is not None:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(bitrate = bitrate)
 			await ctx.embed_reply(channel.mention + "'s bitrate has been set to {}".format(bitrate))
@@ -242,7 +242,7 @@ class Channel(commands.Cog):
 	async def voice_category(self, ctx, channel : discord.VoiceChannel, *, category : discord.CategoryChannel = None):
 		'''Category the voice channel belongs to'''
 		if category:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(category = category)
 			await ctx.embed_reply(channel.mention + " is now under " + category.mention)
@@ -270,7 +270,7 @@ class Channel(commands.Cog):
 	async def voice_name(self, ctx, channel : discord.VoiceChannel, *, name : str = ""):
 		'''Name of a voice channel'''
 		if name:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(name = name)
 			await ctx.embed_reply(channel.mention + " has been renamed")
@@ -287,7 +287,7 @@ class Channel(commands.Cog):
 		e.g. the top category is position 0
 		'''
 		if position is not None:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(position = position)
 			await ctx.embed_reply(channel.mention + "'s position has been set to {}".format(position))
@@ -309,7 +309,7 @@ class Channel(commands.Cog):
 	async def voice_user_limit(self, ctx, channel : discord.VoiceChannel, user_limit : int = None):
 		'''Limit for number of members that can be in the voice channel'''
 		if user_limit is not None:
-			await checks.has_permissions(manage_channels = True, channel = channel).predicate(ctx)
+			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(user_limit = user_limit)
 			await ctx.embed_reply(channel.mention + "'s user limit has been set to {}".format(user_limit))

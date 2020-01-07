@@ -37,19 +37,13 @@ def is_voice_connected():
 	
 	return commands.check(predicate)
 
-def has_permissions(*, channel = None, guild = False, **permissions):
+def has_permissions_for(channel, **permissions):
 	
 	async def predicate(ctx):
-		if guild:
-			author_permissions = ctx.author.guild_permissions
-		else:
-			author_permissions = (channel or ctx.channel).permissions_for(ctx.author)
-		if all(getattr(author_permissions, permission, None) == setting for permission, setting in permissions.items()):
+		if not (missing := [permission for permission, setting in permissions.items()
+							if getattr(channel.permissions_for(ctx.author), permission, None) != setting]):
 			return True
-		try:
-			return await commands.is_owner().predicate(ctx)
-		except commands.NotOwner:
-			raise errors.MissingPermissions
+		raise commands.MissingPermissions(missing)
 	
 	return commands.check(predicate)
 
