@@ -128,7 +128,7 @@ if __name__ == "__main__":
 						# TODO: Check hierarchy, if able to kick
 						await ctx.bot.kick(author)
 						await ctx.send(f"{author} has been kicked for spamming mentions")
-						await ctx.author.send(f"You were kicked from {guild} for spamming mentions")
+						await ctx.whisper(f"You were kicked from {guild} for spamming mentions")
 					else:
 						await ctx.send("I need permission to kick members from the server to enforce anti-spam")
 				else:
