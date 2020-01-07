@@ -12,9 +12,11 @@ class Overwatch(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.request_limit = 1000
-
+	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def overwatch(self, ctx):
 		'''BattleTags are case sensitive'''
 		await ctx.send_help(ctx.command)
@@ -23,7 +25,6 @@ class Overwatch(commands.Cog):
 	# TODO: Maps, Items
 	
 	@overwatch.command(name = "ability", aliases = ["weapon"])
-	@checks.not_forbidden()
 	async def overwatch_ability(self, ctx, *, ability : str):
 		'''Abilities/Weapons'''
 		url = "https://overwatch-api.net/api/v1/ability"
@@ -38,7 +39,6 @@ class Overwatch(commands.Cog):
 		await ctx.embed_reply(ability_data["description"], title = ability_data["name"], fields = fields)
 	
 	@overwatch.command(name = "achievement")
-	@checks.not_forbidden()
 	async def overwatch_achievement(self, ctx, *, achievement : str):
 		'''Achievements'''
 		url = "https://overwatch-api.net/api/v1/achievement"
@@ -57,7 +57,6 @@ class Overwatch(commands.Cog):
 								fields = fields)
 	
 	@overwatch.command(name = "hero")
-	@checks.not_forbidden()
 	async def overwatch_hero(self, ctx, *, hero : str):
 		'''Heroes'''
 		url = "https://overwatch-api.net/api/v1/hero"
@@ -77,7 +76,6 @@ class Overwatch(commands.Cog):
 		await ctx.embed_reply(hero_data["description"], title = hero_data["name"], fields = fields)
 	
 	@overwatch.command()
-	@checks.not_forbidden()
 	async def item(self, ctx, *, item : str):
 		'''
 		WIP
@@ -86,7 +84,6 @@ class Overwatch(commands.Cog):
 		...
 	
 	@overwatch.command()
-	@checks.not_forbidden()
 	async def map(self, ctx, *, map : str):
 		'''
 		WIP
@@ -96,7 +93,6 @@ class Overwatch(commands.Cog):
 	
 	@overwatch.group(name = "stats", aliases = ["statistics"], 
 						invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def stats(self, ctx, battletag : str):
 		'''
 		WIP
@@ -127,7 +123,6 @@ class Overwatch(commands.Cog):
 	
 	@stats.group(name = "quickplay", aliases = ["qp"], 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def stats_quickplay(self, ctx, battletag : str):
 		'''
 		Quick Play player statistics
@@ -161,7 +156,6 @@ class Overwatch(commands.Cog):
 	
 	@stats.group(name = "competitive", aliases = ["comp"], 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def stats_competitive(self, ctx, battletag : str):
 		'''
 		Competitive player statistics
@@ -194,7 +188,6 @@ class Overwatch(commands.Cog):
 				await ctx.send(embed = embed)
 	
 	@stats_quickplay.command(name = "heroes")
-	@checks.not_forbidden()
 	async def stats_quickplay_heroes(self, ctx, battletag : str):
 		'''
 		Quick Play player hero statistics
