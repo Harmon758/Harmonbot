@@ -33,12 +33,10 @@ if __name__ == "__main__":
 	async def on_ready():
 		print(f"Started up Discord {client.user} ({client.user.id})")
 		
-		restart_channel_id = await client.db.fetchval("DELETE FROM meta.restart_channels WHERE player_text_channel_id IS NULL RETURNING channel_id")
-		if restart_channel_id:
+		if restart_channel_id := await client.db.fetchval("DELETE FROM meta.restart_channels WHERE player_text_channel_id IS NULL RETURNING channel_id"):
 			await client.send_embed(client.get_channel(restart_channel_id), ":thumbsup::skin-tone-2: Restarted")
 		for record in await client.db.fetch("DELETE FROM meta.restart_channels RETURNING *"):
-			text_channel = client.get_channel(record["player_text_channel_id"])
-			if text_channel:
+			if text_channel := client.get_channel(record["player_text_channel_id"]):
 				client.cogs["Audio"].players[text_channel.guild.id] = audio_player.AudioPlayer(client, text_channel)
 				await client.get_channel(record["channel_id"]).connect()
 		
