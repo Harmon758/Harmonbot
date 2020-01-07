@@ -19,7 +19,6 @@ if __name__ == "__main__":
 	
 	import clients
 	from modules import conversions
-	from modules import utilities
 	from utilities import audio_player
 	
 	mention_spammers = []
