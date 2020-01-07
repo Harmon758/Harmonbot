@@ -111,7 +111,7 @@ class Discord(commands.Cog):
 	# TODO: make Bot method?
 	async def delete_number(self, ctx, number, check, delete_command = True):
 		if number <= 0:
-			return await ctx.embed_reply(":no_entry: Syntax error")
+			return await ctx.embed_reply(":no_entry: Error: Number of messages to delete must be greater than 0")
 		to_delete = []
 		count = 0
 		minimum_time = int((time.time() - 14 * 24 * 60 * 60) * 1000 - discord.utils.DISCORD_EPOCH) << 22
