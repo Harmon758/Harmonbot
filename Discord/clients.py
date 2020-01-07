@@ -494,6 +494,7 @@ class Bot(commands.Bot):
 	
 	async def startup_tasks(self):
 		await self.wait_until_ready()
+		print(f"Started up Discord {self.user} ({self.user.id})")
 		if restart_channel_id := await self.db.fetchval(
 			"""
 			DELETE FROM meta.restart_channels
@@ -513,7 +514,7 @@ class Bot(commands.Bot):
 		# await voice.detectvoice()
 	
 	async def on_ready(self):
-		print(f"Started up Discord {self.user} ({self.user.id})")
+		print(f"{self.console_message_prefix}readied @ {datetime.datetime.now().isoformat()}")
 	
 	async def on_resumed(self):
 		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().isoformat()}")
