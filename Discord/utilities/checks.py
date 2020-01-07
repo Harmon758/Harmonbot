@@ -76,8 +76,6 @@ def not_forbidden():
 def is_permitted():
 	
 	async def predicate(ctx):
-		if ctx.channel.type is discord.ChannelType.private:
-			return True
 		command = ctx.command
 		while ((permitted := await ctx.get_permission(command.name, id = ctx.author.id)) is None
 				and command.parent is not None):
