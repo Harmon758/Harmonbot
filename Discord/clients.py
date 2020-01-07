@@ -715,10 +715,6 @@ class Bot(commands.Bot):
 			json.dump(data, restart_channel_file)
 	
 	async def shutdown_tasks(self):
-		# Cancel audio tasks
-		audio_cog = self.get_cog("Audio")
-		if audio_cog:
-			audio_cog.cancel_all_tasks()
 		# Save uptime
 		now = datetime.datetime.now(datetime.timezone.utc)
 		uptime = now - self.online_time

@@ -35,6 +35,11 @@ class Audio(commands.Cog):
 		create_folder(self.bot.data_path + "/audio_cache")
 		create_folder(self.bot.data_path + "/audio_files")
 	
+	def cog_unload(self):
+		# TODO: Leave voice channels?
+		for player in self.players.values():
+			player.player.cancel()
+	
 	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", 
 								"playlist", "spotify", "budio", "music", "download"], 
 					description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify", 
@@ -673,10 +678,4 @@ class Audio(commands.Cog):
 		async with self.bot.aiohttp_session.post(url, params = params, headers = headers) as resp:
 			data = await resp.json()
 		return data["access_token"]
-	
-	# Termination
-	
-	def cancel_all_tasks(self):
-		for player in self.players.values():
-			player.player.cancel()
 
