@@ -492,7 +492,7 @@ class Bot(commands.Bot):
 		if isinstance(error, commands.NoPrivateMessage):
 			return await ctx.embed_reply("Please use that command in a server")
 		## User missing permissions
-		if isinstance(error, (errors.NotServerOwner, errors.MissingPermissions)):
+		if isinstance(error, (errors.NotServerOwner, commands.MissingPermissions)):
 			# Also for commands.NotOwner?
 			return await ctx.embed_reply(":no_entry: You don't have permission to do that")
 		## Bot missing permissions
