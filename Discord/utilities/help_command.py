@@ -68,9 +68,9 @@ class HelpCommand(commands.HelpCommand):
 			# TODO: Response when no description or permitted commands in cog?
 		if len(paginator.pages) == 1:
 			return await ctx.embed_reply(title = f"{cog.qualified_name} Commands", description = paginator.pages[0])
-		await ctx.author.send(embed = discord.Embed(title = f"{cog.qualified_name} Commands", description = paginator.pages[0], color = ctx.bot.bot_color))
+		await ctx.whisper(embed = discord.Embed(title = f"{cog.qualified_name} Commands", description = paginator.pages[0], color = ctx.bot.bot_color))
 		for page in paginator.pages[1:]:
-			await ctx.author.send(embed = discord.Embed(description = page, color = ctx.bot.bot_color))
+			await ctx.whisper(embed = discord.Embed(description = page, color = ctx.bot.bot_color))
 		if ctx.channel.type is not discord.ChannelType.private:
 			await ctx.embed_reply("Check your DMs")
 	
@@ -119,7 +119,7 @@ class HelpCommand(commands.HelpCommand):
 																icon_url = ctx.author.avatar_url))
 		else:
 			for embed in embeds:
-				await ctx.author.send(embed = embed)
+				await ctx.whisper(embed = embed)
 			if ctx.channel.type is not discord.ChannelType.private:
 				await ctx.embed_reply("Check your DMs")
 	
