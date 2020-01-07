@@ -17,10 +17,6 @@ class NotPermittedVoiceNotConnected(VoiceNotConnected):
 	'''Voice Not Connected, and Not Permitted'''
 	pass
 
-class MissingPermissions(CommandError):
-	'''Missing Permissions'''
-	pass
-
 class NotPermitted(CommandError):
 	'''Not Permitted'''
 	pass
