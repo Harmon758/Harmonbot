@@ -71,11 +71,11 @@ class Discord(commands.Cog):
 			return await self.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		await checks.has_permissions(manage_messages = True).predicate(ctx)
 		await checks.has_capability("manage_messages").predicate(ctx)
-		if not user:
+		if user:
+			await self.delete_number(ctx, number, check = lambda m: m.author.id == user.id)
+		else:
 			await self.bot.attempt_delete_message(ctx.message)
 			await ctx.channel.purge(limit = number)
-		elif user:
-			await self.delete_number(ctx, number, check = lambda m: m.author.id == user.id)
 	
 	@delete.command(name = "attachments", aliases = ["images"])
 	@checks.has_capability("manage_messages")
