@@ -29,23 +29,23 @@ class Cryptography(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	# TODO: not forbidden global check?
 	
 	@commands.group(aliases = ["decrpyt"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def decode(self, ctx):
 		'''Decode coded messages'''
 		await ctx.send_help(ctx.command)
 	
 	@decode.group(name = "caesar", aliases = ["rot"], 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def decode_caesar(self, ctx, key : int, *, message : str):
 		'''Decode caesar cipher'''
 		await ctx.embed_reply(decode_caesar_cipher(message, key))
 	
 	@decode_caesar.command(name = "brute")
-	@checks.not_forbidden()
 	async def decode_caesar_brute(self, ctx, message : str):
 		'''Brute force decode caesar cipher'''
 		# TODO: Paginate if too long
@@ -53,7 +53,6 @@ class Cryptography(commands.Cog):
 	
 	@decode.group(name = "gost", aliases = ["гост"], 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def decode_gost(self, ctx):
 		'''
 		Russian Federation/Soviet Union GOST
@@ -65,7 +64,6 @@ class Cryptography(commands.Cog):
 	
 	@decode_gost.group(name = "28147-89", aliases = ["магма", "magma"], 
 						invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def decode_gost_28147_89(self, ctx):
 		'''
 		GOST 28147-89 block cipher
@@ -76,7 +74,6 @@ class Cryptography(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@decode_gost_28147_89.command(name = "cbc")
-	@checks.not_forbidden()
 	async def decode_gost_28147_89_cbc(self, ctx, key : str, *, data : str):
 		'''Magma with CBC mode of operation'''
 		try:
@@ -85,7 +82,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode_gost_28147_89.command(name = "cfb")
-	@checks.not_forbidden()
 	async def decode_gost_28147_89_cfb(self, ctx, key : str, *, data : str):
 		'''Magma with CFB mode of operation'''
 		try:
@@ -94,7 +90,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode_gost_28147_89.command(name = "cnt")
-	@checks.not_forbidden()
 	async def decode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
 		'''Magma with CNT mode of operation'''
 		try:
@@ -103,7 +98,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode_gost_28147_89.command(name = "ecb")
-	@checks.not_forbidden()
 	async def decode_gost_28147_89_ecb(self, ctx, key : str, *, data : str):
 		'''
 		Magma with ECB mode of operation
@@ -116,7 +110,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
-	@checks.not_forbidden()
 	async def decode_gost_34_12_2015(self, ctx, key : str, *, data : str):
 		'''
 		GOST 34.12-2015 128-bit block cipher
@@ -131,7 +124,6 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).decrypt(bytearray.fromhex(data)).decode("UTF-8"))
 	
 	@decode.command(name = "morse")
-	@checks.not_forbidden()
 	async def decode_morse(self, ctx, *, message : str):
 		'''Decodes morse code'''
 		try:
@@ -140,7 +132,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode.command(name = "qr")
-	@checks.not_forbidden()
 	async def decode_qr(self, ctx, file_url : str = ""):
 		'''
 		Decodes QR codes
@@ -170,25 +161,21 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(decoded)
 	
 	@decode.command(name = "reverse")
-	@checks.not_forbidden()
 	async def decode_reverse(self, ctx, *, message : str):
 		'''Reverses text'''
 		await ctx.embed_reply(message[::-1])
 	
 	@commands.group(aliases = ["encrypt"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def encode(self, ctx):
 		'''Encode messages'''
 		await ctx.send_help(ctx.command)
 	
 	@encode.command(name = "adler32", aliases = ["adler-32"])
-	@checks.not_forbidden()
 	async def encode_adler32(self, ctx, *, message : str):
 		'''Compute Adler-32 checksum'''
 		await ctx.embed_reply(zlib.adler32(message.encode("UTF-8")))
 	
 	@encode.command(name = "blake2b")
-	@checks.not_forbidden()
 	async def encode_blake2b(self, ctx, *, message : str):
 		'''64-byte digest BLAKE2b'''
 		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2b(64), backend = openssl_backend)
@@ -196,7 +183,6 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(digest.finalize())
 	
 	@encode.command(name = "blake2s")
-	@checks.not_forbidden()
 	async def encode_blake2s(self, ctx, *, message : str):
 		'''32-byte digest BLAKE2s'''
 		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2s(32), backend = openssl_backend)
@@ -204,20 +190,17 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(digest.finalize())
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
-	@checks.not_forbidden()
 	async def encode_caesar(self, ctx, key : int, *, message : str):
 		'''Encode a message using a caesar cipher'''
 		await ctx.embed_reply(encode_caesar_cipher(message, key))
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
-	@checks.not_forbidden()
 	async def encode_crc32(self, ctx, *, message : str):
 		'''Compute CRC32 checksum'''
 		await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 	
 	@encode.group(name = "gost", aliases = ["гост"], 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def encode_gost(self, ctx):
 		'''
 		Russian Federation/Soviet Union GOST
@@ -229,7 +212,6 @@ class Cryptography(commands.Cog):
 	
 	@encode_gost.group(name = "28147-89", aliases = ["магма", "magma"], 
 						invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def encode_gost_28147_89(self, ctx):
 		'''
 		GOST 28147-89 block cipher
@@ -240,7 +222,6 @@ class Cryptography(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@encode_gost_28147_89.command(name = "cbc")
-	@checks.not_forbidden()
 	async def encode_gost_28147_89_cbc(self, ctx, key : str, *, data : str):
 		'''Magma with CBC mode of operation'''
 		try:
@@ -249,7 +230,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "cfb")
-	@checks.not_forbidden()
 	async def encode_gost_28147_89_cfb(self, ctx, key : str, *, data : str):
 		'''Magma with CFB mode of operation'''
 		try:
@@ -258,7 +238,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "cnt")
-	@checks.not_forbidden()
 	async def encode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
 		'''Magma with CNT mode of operation'''
 		try:
@@ -267,7 +246,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "ecb")
-	@checks.not_forbidden()
 	async def encode_gost_28147_89_ecb(self, ctx, key : str, *, data : str):
 		'''
 		Magma with ECB mode of operation
@@ -280,7 +258,6 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "mac")
-	@checks.not_forbidden()
 	async def encode_gost_28147_89_mac(self, ctx, key : str, *, data : str):
 		'''Magma with MAC mode of operation'''
 		try:
@@ -292,7 +269,6 @@ class Cryptography(commands.Cog):
 	
 	@encode_gost.group(name = "34.11-2012", aliases = ["стрибог", "streebog"], 
 						invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def encode_gost_34_11_2012(self, ctx):
 		'''
 		GOST 34.11-2012 hash function
@@ -302,7 +278,6 @@ class Cryptography(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@encode_gost_34_11_2012.command(name = "256")
-	@checks.not_forbidden()
 	async def encode_gost_34_11_2012_256(self, ctx, *, data : str):
 		'''
 		GOST 34.11-2012 256-bit hash function
@@ -311,7 +286,6 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 32).hexdigest())
 	
 	@encode_gost_34_11_2012.command(name = "512")
-	@checks.not_forbidden()
 	async def encode_gost_34_11_2012_512(self, ctx, *, data : str):
 		'''
 		GOST 34.11-2012 512-bit hash function
@@ -320,13 +294,11 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 64).hexdigest())
 	
 	@encode_gost.command(name = "34.11-94")
-	@checks.not_forbidden()
 	async def encode_gost_34_11_94(self, ctx, *, data : str):
 		'''GOST 34.11-94 hash function'''
 		await ctx.embed_reply(pygost.gost341194.GOST341194(data.encode("UTF-8")).hexdigest())
 	
 	@encode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
-	@checks.not_forbidden()
 	async def encode_gost_34_12_2015(self, ctx, key : str, *, data : str):
 		'''
 		GOST 34.12-2015 128-bit block cipher
@@ -341,7 +313,6 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).encrypt(data.encode("UTF-8")).hex())
 	
 	@encode.command(name = "md4")
-	@checks.not_forbidden()
 	async def encode_md4(self, ctx, *, message : str):
 		'''Generate MD4 hash'''
 		md4_hash = hashlib.new("MD4")
@@ -349,13 +320,11 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(md4_hash.hexdigest())
 	
 	@encode.command(name = "md5")
-	@checks.not_forbidden()
 	async def encode_md5(self, ctx, *, message : str):
 		'''Generate MD5 hash'''
 		await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "morse")
-	@checks.not_forbidden()
 	async def encode_morse(self, ctx, *, message : str):
 		'''Encode a message in morse code'''
 		try:
@@ -364,20 +333,17 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode.command(name = "qr")
-	@checks.not_forbidden()
 	async def encode_qr(self, ctx, *, message : str):
 		'''Encode a message in a QR code'''
 		url = f"https://api.qrserver.com/v1/create-qr-code/?data={message.replace(' ', '+')}"
 		await ctx.embed_reply(image_url = url)
 	
 	@encode.command(name = "reverse")
-	@checks.not_forbidden()
 	async def encode_reverse(self, ctx, *, message : str):
 		'''Reverses text'''
 		await ctx.embed_reply(message[::-1])
 	
 	@encode.command(name = "ripemd160", aliases = ["ripemd-160"])
-	@checks.not_forbidden()
 	async def encode_ripemd160(self, ctx, *, message : str):
 		'''Generate RIPEMD-160 hash'''
 		h = hashlib.new("RIPEMD160")
@@ -385,37 +351,31 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(h.hexdigest())
 	
 	@encode.command(name = "sha1", aliases = ["sha-1"])
-	@checks.not_forbidden()
 	async def encode_sha1(self, ctx, *, message : str):
 		'''Generate SHA-1 hash'''
 		await ctx.embed_reply(hashlib.sha1(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "sha224", aliases = ["sha-224"])
-	@checks.not_forbidden()
 	async def encode_sha224(self, ctx, *, message : str):
 		'''Generate SHA-224 hash'''
 		await ctx.embed_reply(hashlib.sha224(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "sha256", aliases = ["sha-256"])
-	@checks.not_forbidden()
 	async def encode_sha256(self, ctx, *, message : str):
 		'''Generate SHA-256 hash'''
 		await ctx.embed_reply(hashlib.sha256(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "sha384", aliases = ["sha-384"])
-	@checks.not_forbidden()
 	async def encode_sha384(self, ctx, *, message : str):
 		'''Generate SHA-384 hash'''
 		await ctx.embed_reply(hashlib.sha384(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "sha512", aliases = ["sha-512"])
-	@checks.not_forbidden()
 	async def encode_sha512(self, ctx, *, message : str):
 		'''Generate SHA-512 hash'''
 		await ctx.embed_reply(hashlib.sha512(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "whirlpool")
-	@checks.not_forbidden()
 	async def encode_whirlpool(self, ctx, *, message : str):
 		'''Generate WHIRLPOOL hash'''
 		h = hashlib.new("WHIRLPOOL")
