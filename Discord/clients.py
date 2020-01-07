@@ -29,7 +29,7 @@ import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 import youtube_dl
 
-from utilities import audio_player
+from utilities.audio_player import AudioPlayer
 from utilities import errors
 from utilities.context import Context
 from utilities.database import create_database_pool
@@ -505,7 +505,7 @@ class Bot(commands.Bot):
 		if audio_cog := self.get_cog("Audio"):
 			for record in await self.db.fetch("DELETE FROM meta.restart_channels RETURNING *"):
 				if text_channel := self.get_channel(record["player_text_channel_id"]):
-					audio_cog.players[text_channel.guild.id] = audio_player.AudioPlayer(self, text_channel)
+					audio_cog.players[text_channel.guild.id] = AudioPlayer(self, text_channel)
 					await self.get_channel(record["channel_id"]).connect()
 		# TODO: DM if joined new server
 		# TODO: DM if left server
