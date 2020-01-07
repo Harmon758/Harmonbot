@@ -292,6 +292,7 @@ class Bot(commands.Bot):
 		await self.connect_to_database()
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS chat")
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS direct_messages")
+		await self.db.execute("CREATE SCHEMA IF NOT EXISTS meta")
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS guilds")
 		await self.db.execute("CREATE SCHEMA IF NOT EXISTS users")
 		await self.db.execute(
@@ -352,6 +353,52 @@ class Bot(commands.Bot):
 			)
 			"""
 		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS meta.commands_invoked (
+				command		TEXT PRIMARY KEY, 
+				invokes		BIGINT
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS meta.stats (
+				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
+				uptime				INTERVAL, 
+				restarts			INT, 
+				cogs_reloaded		INT, 
+				commands_invoked	BIGINT, 
+				reaction_responses	BIGINT, 
+				menu_reactions		BIGINT
+			)
+			"""
+		)
+		previous = await self.db.fetchrow(
+			"""
+			SELECT * FROM meta.stats
+			ORDER BY timestamp DESC
+			LIMIT 1
+			"""
+		)
+		if previous:
+			await self.db.execute(
+				"""
+				INSERT INTO meta.stats (timestamp, uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses, menu_reactions)
+				VALUES ($1, $2, $3, $4, $5, $6, $7)
+				ON CONFLICT DO NOTHING
+				""", 
+				self.online_time, previous["uptime"], previous["restarts"], 
+				previous["cogs_reloaded"], previous["commands_invoked"], previous["reaction_responses"], previous["menu_reactions"]
+			)
+		else:
+			await self.db.execute(
+				"""
+				INSERT INTO meta.stats (timestamp, uptime, restarts, cogs_reloaded, commands_invoked, reaction_responses, menu_reactions)
+				VALUES ($1, INTERVAL '0 seconds', 0, 0, 0, 0, 0)
+				""", 
+				self.online_time
+			)
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS users.stats (
