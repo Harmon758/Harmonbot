@@ -587,6 +587,7 @@ class Audio(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True, hidden = True)
 	@checks.is_voice_connected()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def listen(self, ctx):
 		if self.players[ctx.guild.id].listener:
 			await self.players[ctx.guild.id].stop_listening()
@@ -596,6 +597,7 @@ class Audio(commands.Cog):
 	@listen.command(name = "start", aliases = ["on"])
 	@checks.is_voice_connected()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def listen_start(self, ctx):
 		if self.players[ctx.guild.id].listener:
 			await ctx.embed_reply(":no_entry: I'm already listening")
@@ -605,6 +607,7 @@ class Audio(commands.Cog):
 	@listen.command(name = "stop", aliases = ["off"])
 	@checks.is_voice_connected()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def listen_stop(self, ctx):
 		if self.players[ctx.guild.id].listener:
 			await self.players[ctx.guild.id].stop_listening()
@@ -614,6 +617,7 @@ class Audio(commands.Cog):
 	@listen.command(name = "once")
 	@checks.is_voice_connected()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def listen_once(self, ctx):
 		if self.players[ctx.guild.id].listener:
 			await ctx.embed_reply(":no_entry: I'm already listening")
@@ -623,6 +627,7 @@ class Audio(commands.Cog):
 	@listen.command(name = "finish")
 	@checks.is_voice_connected()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def listen_finish(self, ctx):
 		if self.players[ctx.guild.id].listener:
 			await self.players[ctx.guild.id].finish_listening()
@@ -632,6 +637,7 @@ class Audio(commands.Cog):
 	@listen.command(name = "process")
 	@checks.is_voice_connected()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def listen_process(self, ctx):
 		await self.players[ctx.guild.id].process_listen()
 	
