@@ -118,7 +118,8 @@ class Discord(commands.Cog):
 		if delete_command: await ctx.bot.attempt_delete_message(ctx.message)
 		async for message in ctx.channel.history(limit = ctx.bot.delete_limit):
 			if check(message):
-				if message.id < minimum_time:  # older than 14 days
+				if message.id < minimum_time or ctx.channel.type is discord.ChannelType.private:
+					# Too old (older than 14 days) to bulk delete or in DM
 					await ctx.bot.attempt_delete_message(message)
 				else:
 					to_delete.append(message)
