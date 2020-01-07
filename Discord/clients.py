@@ -523,10 +523,15 @@ class Bot(commands.Bot):
 		print(f"{self.console_message_prefix}disconnected @ {datetime.datetime.now().isoformat()}")
 	
 	async def on_guild_join(self, guild):
-		await self.update_all_listing_stats()
+		self.loop.create_task(self.update_all_listing_stats())
+		me = discord.utils.get(self.get_all_members(), id = self.owner_id)
+		await self.send_embed(me, None, title = "Joined Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
+		# TODO: Track guild names
 	
 	async def on_guild_remove(self, guild):
-		await self.update_all_listing_stats()
+		self.loop.create_task(self.update_all_listing_stats())
+		me = discord.utils.get(self.get_all_members(), id = self.owner_id)
+		await self.send_embed(me, None, title = "Left Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
 	
 	# TODO: on_command_completion
 	async def on_command(self, ctx):

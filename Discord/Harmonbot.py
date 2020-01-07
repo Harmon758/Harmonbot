@@ -28,17 +28,6 @@ if __name__ == "__main__":
 	# Initialize client
 	client = clients.Bot(command_prefix = clients.get_prefix)
 	
-	@client.listen()
-	async def on_guild_join(guild):
-		me = discord.utils.get(client.get_all_members(), id = client.owner_id)
-		await client.send_embed(me, None, title = "Joined Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
-		# TODO: Track guild names
-	
-	@client.listen()
-	async def on_guild_remove(guild):
-		me = discord.utils.get(client.get_all_members(), id = client.owner_id)
-		await client.send_embed(me, None, title = "Left Server", timestamp = guild.created_at, thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))))
-	
 	# TODO: Move to utilities
 	def replace_null_character(data):
 		data_type = type(data)
