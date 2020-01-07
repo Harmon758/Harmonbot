@@ -98,8 +98,8 @@ class Audio(commands.Cog):
 			await response.edit(embed = embed)
 	
 	@commands.command(aliases = ["summon", "move"])
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def join(self, ctx, *, channel: Optional[discord.VoiceChannel]):
 		'''Get me to join a voice channel'''
 		# TODO: Permit all when not in voice channel?
@@ -119,9 +119,9 @@ class Audio(commands.Cog):
 									"Please check that I'm permitted to join")
 	
 	@commands.command()
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def leave(self, ctx):
 		'''Tell me to leave the voice channel'''
 		if (await self.players[ctx.guild.id].leave_channel()):
@@ -131,9 +131,9 @@ class Audio(commands.Cog):
 		## await ctx.embed_reply("The leave command is currently disabled right now, due to an issue/bug with Discord.")
 	
 	@commands.command(aliases = ["stop"])
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def pause(self, ctx):
 		'''Pause the current song'''
 		if ctx.guild.voice_client.is_playing():
@@ -145,9 +145,9 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":no_entry: There is no song to pause")
 	
 	@commands.command(aliases = ["start"])
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def resume(self, ctx):
 		'''Resume the current song'''
 		if ctx.guild.voice_client.is_paused():
@@ -202,9 +202,9 @@ class Audio(commands.Cog):
 					await ctx.embed_reply(":no_entry: There is no song to skip")
 	
 	@skip.command(name = "to")
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def skip_to(self, ctx, number : int):
 		'''
 		Skip to a song in the queue
@@ -219,9 +219,9 @@ class Audio(commands.Cog):
 			del songs
 	
 	@commands.command(aliases = ["repeat"])
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def replay(self, ctx):
 		'''Repeat the current song'''
 		# TODO: Add restart alias?
@@ -237,9 +237,9 @@ class Audio(commands.Cog):
 			await response.edit(embed = embed)
 	
 	@commands.command()
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def insert(self, ctx, position_number : int, *, song : str):
 		'''Insert a song into the queue'''
 		if "spotify" in song:
@@ -262,18 +262,18 @@ class Audio(commands.Cog):
 			await response.edit(embed = embed)
 	
 	@commands.command(aliases = ["clear"])
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def empty(self, ctx):
 		'''Empty the queue'''
 		await self.players[ctx.guild.id].empty_queue()
 		await ctx.embed_reply(":wastebasket: Emptied queue")
 	
 	@commands.command()
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def shuffle(self, ctx):
 		'''Shuffle the queue'''
 		response = await ctx.embed_reply(":twisted_rightwards_arrows: Shuffling..")
@@ -309,9 +309,9 @@ class Audio(commands.Cog):
 			await response.edit(embed = embed)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def radio(self, ctx):
 		'''
 		Radio station based on the current song
@@ -324,9 +324,9 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@radio.command(name = "on", aliases = ["start"])
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def radio_on(self, ctx):
 		'''Turn radio on'''
 		if self.players[ctx.guild.id].radio_flag:
@@ -335,9 +335,9 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@radio.command(name = "off", aliases = ["stop"])
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def radio_off(self, ctx):
 		'''Turn radio off'''
 		if self.players[ctx.guild.id].radio_flag:
@@ -347,18 +347,18 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":no_entry: Radio is already off")
 	
 	@commands.command(aliases = ["set_text"])
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def settext(self, ctx):
 		'''Set text channel for messages'''
 		self.players[ctx.guild.id].text_channel = ctx.channel
 		await ctx.embed_reply(":writing_hand::skin-tone-2: Changed text channel")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
 		if not (await self.players[ctx.guild.id].play_tts(ctx, message)):
@@ -392,9 +392,9 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@commands.command()
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def file(self, ctx, *, filename : str = ""):
 		'''Play an audio file'''
 		if not (await self.players[ctx.guild.id].play_file(ctx, filename)):
@@ -409,9 +409,9 @@ class Audio(commands.Cog):
 		await ctx.embed_reply(self.players[ctx.guild.id].list_files())
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def library(self, ctx):
 		'''Start/stop playing songs from my library'''
 		if self.players[ctx.guild.id].library_flag:
@@ -421,9 +421,9 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "play", aliases = ["start"])
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def library_play(self, ctx):
 		'''Start playing songs from my library'''
 		if self.players[ctx.guild.id].library_flag:
@@ -432,9 +432,9 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 	
 	@library.command(name = "stop")
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def library_stop(self, ctx):
 		'''Stop playing songs from my library'''
 		if self.players[ctx.guild.id].library_flag:
@@ -444,9 +444,9 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":no_entry: Not currently playing songs from my library")
 	
 	@library.command(name = "song")
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def library_song(self, ctx, *, filename : str = ""):
 		'''Play a song from my library'''
 		if not (await self.players[ctx.guild.id].play_from_library(ctx, filename = filename)):
@@ -486,9 +486,9 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":no_entry: Too many results\nTry a more specific search")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def volume(self, ctx, *, volume_setting : float = None):
 		'''
 		Change the volume of the current song
@@ -508,9 +508,9 @@ class Audio(commands.Cog):
 				await ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
 	
 	@volume.command(name = "default")
-	@commands.guild_only()
-	@checks.is_permitted()
 	@checks.is_voice_connected()
+	@checks.is_permitted()
+	@commands.guild_only()
 	async def volume_default(self, ctx, *, volume_setting : float = None):
 		'''
 		Change the default volume for the current player

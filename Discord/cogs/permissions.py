@@ -59,8 +59,8 @@ class Permissions(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@setpermission.command(name = "everyone")
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def setpermission_everyone(self, ctx, permission: str, setting: Optional[bool]):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
@@ -77,8 +77,8 @@ class Permissions(commands.Cog):
 								title = "Permission Updated")
 	
 	@setpermission.command(name = "role")
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def setpermission_role(self, ctx, role: discord.Role, permission: str, setting: Optional[bool]):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
@@ -95,8 +95,8 @@ class Permissions(commands.Cog):
 								title = "Permission Updated")
 	
 	@setpermission.command(name = "user", aliases = ["member"])
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def setpermission_user(self, ctx, user: discord.Member, permission: str, setting: Optional[bool]):
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
@@ -113,8 +113,8 @@ class Permissions(commands.Cog):
 								title = "Permission Updated")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def getpermission(self, ctx, permission, users: Optional[Union[discord.Member, discord.Role]]):
 		'''
 		Get a permission for a user, role, or everyone
@@ -139,8 +139,8 @@ class Permissions(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@getpermissions.command(name = "everyone")
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def getpermissions_everyone(self, ctx):
 		records = await ctx.bot.db.fetch(
 			"""
@@ -155,8 +155,8 @@ class Permissions(commands.Cog):
 		await ctx.send(output)
 	
 	@getpermissions.command(name = "role")
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def getpermissions_role(self, ctx, role : discord.Role):
 		records = await ctx.bot.db.fetch(
 			"""
@@ -171,8 +171,8 @@ class Permissions(commands.Cog):
 		await ctx.send(output)
 	
 	@getpermissions.command(name = "user")
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def getpermissions_user(self, ctx, user : discord.Member):
 		records = await ctx.bot.db.fetch(
 			"""
@@ -187,8 +187,8 @@ class Permissions(commands.Cog):
 		await ctx.send(output)
 	
 	@getpermissions.command(name = "command")
-	@commands.guild_only()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def getpermissions_command(self, ctx, command : str):
 		if command not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(command)))
 		output = "__Permissions for {}__\n".format(command)
