@@ -53,15 +53,6 @@ def has_permissions(*, channel = None, guild = False, **permissions):
 	
 	return commands.check(predicate)
 
-def dm_or_has_permissions(*, guild = False, **permissions):
-	
-	async def predicate(ctx):
-		if ctx.channel.type is discord.ChannelType.private:
-			return True
-		return await has_permissions(guild = guild, **permissions).predicate(ctx)
-	
-	return commands.check(predicate)
-
 def has_capability(*permissions, channel = None, guild = False):
 	
 	def predicate(ctx):
