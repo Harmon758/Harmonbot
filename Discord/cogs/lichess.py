@@ -317,7 +317,7 @@ class Lichess(commands.Cog):
 				# TODO: Add link
 			# TODO: Use embed limit variables
 			# TODO: Better method of checking total embed size
-			date = datetime.datetime.utcfromtimestamp(day["interval"]["start"])
+			date = datetime.datetime.utcfromtimestamp(day["interval"]["start"] / 1000)
 			date = date.strftime("%b %#d, %Y")
 			# %#d for removal of leading zero on Windows with native Python executable
 			total_length += len(date) + len(activity)
