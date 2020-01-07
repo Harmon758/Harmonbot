@@ -4,8 +4,6 @@ from discord.ext import commands
 
 from operator import attrgetter
 
-from utilities import errors
-
 class Context(commands.Context):
 	
 	async def embed_reply(self, *args, in_response_to = True, attempt_delete = True, **kwargs):
@@ -52,7 +50,7 @@ class Context(commands.Context):
 			return await self.reply(discord.utils.escape_mentions(str(description)))
 			# TODO: Clean role + user mentions, etc.?
 		else:
-			raise errors.MissingCapability(["embed_links"])
+			raise commands.BotMissingPermissions(["embed_links"])
 	
 	def reply(self, content, *args, **kwargs):
 		return self.send(f"{self.author.display_name}:\n{content}", **kwargs)
