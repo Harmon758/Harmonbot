@@ -70,7 +70,7 @@ class Discord(commands.Cog):
 		if ctx.channel.type is discord.ChannelType.private:
 			return await self.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		await checks.has_permissions(manage_messages = True).predicate(ctx)
-		await checks.has_capability("manage_messages").predicate(ctx)
+		await commands.bot_has_permissions(manage_messages = True).predicate(ctx)
 		if user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.id == user.id)
 		else:
@@ -78,7 +78,7 @@ class Discord(commands.Cog):
 			await ctx.channel.purge(limit = number)
 	
 	@delete.command(name = "attachments", aliases = ["images"])
-	@checks.has_capability("manage_messages")
+	@commands.bot_has_permissions(manage_messages = True)
 	@checks.has_permissions(manage_messages = True)
 	@commands.guild_only()
 	# TODO: Handle in DMs
@@ -87,7 +87,7 @@ class Discord(commands.Cog):
 		await self.delete_number(ctx, number, check = lambda m: m.attachments)
 	
 	@delete.command(name = "contains")
-	@checks.has_capability("manage_messages")
+	@commands.bot_has_permissions(manage_messages = True)
 	@checks.has_permissions(manage_messages = True)
 	@commands.guild_only()
 	# TODO: Handle in DMs
@@ -96,7 +96,7 @@ class Discord(commands.Cog):
 		await self.delete_number(ctx, number, check = lambda m: string in m.content)
 	
 	@delete.command(name = "embeds")
-	@checks.has_capability("manage_messages")
+	@commands.bot_has_permissions(manage_messages = True)
 	@checks.has_permissions(manage_messages = True)
 	@commands.guild_only()
 	# TODO: Handle in DMs
@@ -105,7 +105,7 @@ class Discord(commands.Cog):
 		await self.delete_number(ctx, number, check = lambda m: m.embeds)
 	
 	@delete.command(name = "time")
-	@checks.has_capability("manage_messages")
+	@commands.bot_has_permissions(manage_messages = True)
 	@checks.has_permissions(manage_messages = True)
 	@commands.guild_only()
 	# TODO: Handle in DMs
@@ -183,7 +183,7 @@ class Discord(commands.Cog):
 			await ctx.embed_reply("Changed your role color to {}".format(color))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.has_capability("manage_messages")
+	@commands.bot_has_permissions(manage_messages = True)
 	@checks.has_permissions(manage_messages = True)
 	@commands.guild_only()
 	# TODO: Handle in DMs
@@ -193,7 +193,7 @@ class Discord(commands.Cog):
 		await ctx.embed_reply(":pushpin: Pinned message")
 	
 	@pin.command(name = "first")
-	@checks.has_capability("manage_messages")
+	@commands.bot_has_permissions(manage_messages = True)
 	@checks.has_permissions(manage_messages = True)
 	@commands.guild_only()
 	# TODO: Handle in DMs
@@ -204,7 +204,7 @@ class Discord(commands.Cog):
 		await ctx.embed_reply(":pushpin: Pinned first message in this channel")
 	
 	@commands.command()
-	@checks.has_capability("manage_messages")
+	@commands.bot_has_permissions(manage_messages = True)
 	@checks.has_permissions(manage_messages = True)
 	@commands.guild_only()
 	# TODO: Handle in DMs
