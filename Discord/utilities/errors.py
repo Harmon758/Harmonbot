@@ -21,11 +21,6 @@ class MissingPermissions(CommandError):
 	'''Missing Permissions'''
 	pass
 
-class MissingCapability(CommandError):
-	'''Missing Capability'''
-	def __init__(self, permissions):
-		self.permissions = permissions
-
 class NotPermitted(CommandError):
 	'''Not Permitted'''
 	pass
