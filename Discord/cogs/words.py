@@ -15,8 +15,10 @@ class Words(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.command(aliases = ["antonyms"])
-	@checks.not_forbidden()
 	async def antonym(self, ctx, word : str):
 		'''Antonyms of a word'''
 		antonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", 
@@ -26,7 +28,6 @@ class Words(commands.Cog):
 		await ctx.embed_reply(", ".join(antonyms[0].words), title = f"Antonyms of {word.capitalize()}")
 	
 	@commands.command(aliases = ["dictionary"])
-	@checks.not_forbidden()
 	async def define(self, ctx, word : str):
 		'''Define a word'''
 		try:
@@ -43,7 +44,6 @@ class Words(commands.Cog):
 		await ctx.embed_reply(":no_entry: Definition not found")
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
-	@checks.not_forbidden()
 	async def pronunciation(self, ctx, word : str):
 		'''Pronunciation of a word'''
 		pronunciation = self.bot.wordnik_word_api.getTextPronunciations(word, limit = 1)
@@ -56,7 +56,6 @@ class Words(commands.Cog):
 		await ctx.embed_reply(description, title = f"Pronunciation of {word.capitalize()}")
 	
 	@commands.command(aliases = ["rhymes"])
-	@checks.not_forbidden()
 	async def rhyme(self, ctx, word : str):
 		'''Rhymes of a word'''
 		rhymes = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", 
@@ -67,7 +66,6 @@ class Words(commands.Cog):
 								title = f"Words that rhyme with {word.capitalize()}")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def spellcheck(self, ctx, *, words : str):
 		'''Spell check words'''
 		url = "https://api.cognitive.microsoft.com/bing/v5.0/spellcheck"
@@ -86,7 +84,6 @@ class Words(commands.Cog):
 		await ctx.embed_reply(corrected)
 	
 	@commands.command(aliases = ["synonyms"])
-	@checks.not_forbidden()
 	async def synonym(self, ctx, word : str):
 		'''Synonyms of a word'''
 		synonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", 
@@ -98,14 +95,12 @@ class Words(commands.Cog):
 	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
 						"Powered by [Yandex.Translate](http://translate.yandex.com/)", 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def translate(self, ctx, *, text : str):
 		'''Translate to English'''
 		# TODO: From and to language code options?
 		await self.process_translate(ctx, text, "en")
 	
 	@translate.command(name = "from")
-	@checks.not_forbidden()
 	async def translate_from(self, ctx, from_language_code : str, to_language_code : str, *, text : str):
 		'''
 		Translate from a specific language to another
@@ -116,7 +111,6 @@ class Words(commands.Cog):
 		await self.process_translate(ctx, text, to_language_code, from_language_code)
 	
 	@translate.command(name = "languages", aliases = ["codes", "language_codes"])
-	@checks.not_forbidden()
 	async def translate_languages(self, ctx, language_code : str = "en"):
 		'''Language Codes'''
 		url = "https://translate.yandex.net/api/v1.5/tr.json/getLangs"
@@ -128,7 +122,6 @@ class Words(commands.Cog):
 		await ctx.embed_reply(", ".join(sorted(f"{language} ({code})" for code, language in data["langs"].items())))
 	
 	@translate.command(name = "to")
-	@checks.not_forbidden()
 	async def translate_to(self, ctx, language_code : str, *, text : str):
 		'''
 		Translate to a specific language
