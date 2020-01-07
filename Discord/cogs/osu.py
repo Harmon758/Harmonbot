@@ -27,38 +27,35 @@ class Osu(commands.Cog):
 		self.s_emoji = discord.utils.get(self.bot.emojis, name = "osu_s") or 'S'
 		self.a_emoji = discord.utils.get(self.bot.emojis, name = "osu_a") or 'A'
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(aliases = ["osu!"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def osu(self, ctx):
 		'''osu!'''
 		await ctx.send_help(ctx.command)
 	
 	@osu.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def taiko(self, ctx):
 		'''Taiko'''
 		await ctx.send_help(ctx.command)
 	
 	@osu.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def mania(self, ctx):
 		'''osu!mania'''
 		await ctx.send_help(ctx.command)
 	
 	@osu.command()
-	@checks.not_forbidden()
 	async def user(self, ctx, *, user : str):
 		'''General user information'''
 		await self.get_user(ctx, user)
 	
 	@taiko.command(name = "user")
-	@checks.not_forbidden()
 	async def taiko_user(self, ctx, *, user : str):
 		'''General user information'''
 		await self.get_user(ctx, user, 1)
 	
 	@mania.command(name = "user")
-	@checks.not_forbidden()
 	async def mania_user(self, ctx, *, user : str):
 		'''General user information'''
 		await self.get_user(ctx, user, 2)
