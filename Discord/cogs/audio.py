@@ -57,11 +57,11 @@ class Audio(commands.Cog):
 			if ctx.guild.id not in self.players:
 				self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
 			try:
-				is_server_owner = await checks.is_server_owner().predicate(ctx)
+				is_guild_owner = await checks.is_guild_owner().predicate(ctx)
 			except errors.NotServerOwner:
-				is_server_owner = False
+				is_guild_owner = False
 			permitted = await ctx.get_permission("join", id = ctx.author.id)
-			if is_server_owner or permitted:
+			if is_guild_owner or permitted:
 				if ctx.author.voice and ctx.author.voice.channel:
 					await ctx.author.voice.channel.connect()
 					await ctx.embed_reply(":headphones: I've joined the voice channel")

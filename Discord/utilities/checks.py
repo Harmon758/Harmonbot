@@ -7,7 +7,7 @@ from utilities import errors
 # TODO: Check necessity of all checks
 # TODO: Use native discord.py check predicates?
 
-def is_server_owner():
+def is_guild_owner():
 	
 	async def predicate(ctx):
 		if ctx.channel.type is discord.ChannelType.private:
@@ -30,7 +30,7 @@ def is_voice_connected():
 		if permitted:
 			raise errors.PermittedVoiceNotConnected
 		try:
-			await is_server_owner().predicate(ctx)
+			await is_guild_owner().predicate(ctx)
 			raise errors.PermittedVoiceNotConnected
 		except errors.NotServerOwner:
 			raise errors.NotPermittedVoiceNotConnected
@@ -115,7 +115,7 @@ def not_forbidden():
 				and command.parent is not None):
 			command = command.parent
 		try:
-			return permitted is not False or await is_server_owner().predicate(ctx)
+			return permitted is not False or await is_guild_owner().predicate(ctx)
 		except errors.NotServerOwner:
 			raise errors.NotPermitted
 	
@@ -131,7 +131,7 @@ def is_permitted():
 				and command.parent is not None):
 			command = command.parent
 		try:
-			return permitted or await is_server_owner().predicate(ctx)
+			return permitted or await is_guild_owner().predicate(ctx)
 		except errors.NotServerOwner:
 			raise errors.NotPermitted
 	
