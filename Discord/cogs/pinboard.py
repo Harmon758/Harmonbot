@@ -63,6 +63,7 @@ class Pinboard(commands.Cog):
 	
 	@pinboard.command()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def backfill(self, ctx):
 		'''
 		Backfill pins into current pinboard channel
@@ -113,6 +114,7 @@ class Pinboard(commands.Cog):
 	# TODO: pinboard off option
 	@pinboard.command()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def channel(self, ctx, channel : discord.TextChannel = None):
 		'''Set/get channel'''
 		channel_id = await ctx.bot.db.fetchval("SELECT channel_id FROM pinboard.pinboards WHERE guild_id = $1", 
@@ -161,6 +163,7 @@ class Pinboard(commands.Cog):
 	
 	@pinboard.command(aliases = ["private"])
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def private_channels(self, ctx, setting: Optional[bool]):
 		'''
 		Set/get whether to include pins from private channels
@@ -196,6 +199,7 @@ class Pinboard(commands.Cog):
 	
 	@pinboard.command()
 	@checks.is_permitted()
+	@commands.guild_only()
 	async def threshold(self, ctx, threshold_number : int = None):
 		'''
 		Set/get the number of reactions needed to pin message
