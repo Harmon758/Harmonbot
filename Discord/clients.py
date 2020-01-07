@@ -525,13 +525,19 @@ class Bot(commands.Bot):
 	async def on_guild_join(self, guild):
 		self.loop.create_task(self.update_all_listing_stats())
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id)
-		await self.send_embed(me, title = "Joined Server", thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))), timestamp = guild.created_at)
+		await self.send_embed(me, title = "Joined Server", thumbnail_url = guild.icon_url, 
+								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), 
+											("Members", str(guild.member_count)), ("Server Region", str(guild.region))), 
+								timestamp = guild.created_at)
 		# TODO: Track guild names
 	
 	async def on_guild_remove(self, guild):
 		self.loop.create_task(self.update_all_listing_stats())
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id)
-		await self.send_embed(me, title = "Left Server", thumbnail_url = guild.icon_url, fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), ("Members", str(guild.member_count)), ("Server Region", str(guild.region))), timestamp = guild.created_at)
+		await self.send_embed(me, title = "Left Server", thumbnail_url = guild.icon_url, 
+								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), 
+											("Members", str(guild.member_count)), ("Server Region", str(guild.region))), 
+								timestamp = guild.created_at)
 	
 	# TODO: on_command_completion
 	async def on_command(self, ctx):
