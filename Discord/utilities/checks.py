@@ -50,8 +50,8 @@ def has_permissions_for(channel, **permissions):
 def bot_has_permissions_for(channel, **permissions):
 	
 	def predicate(ctx):
-		if not (missing := [permission for permission, permitted in permissions.items()
-							if getattr(channel.permissions_for(ctx.me), permission, None) != permitted]):
+		if not (missing := [permission for permission, setting in permissions.items()
+							if getattr(channel.permissions_for(ctx.me), permission, None) != setting]):
 			return True
 		raise commands.BotMissingPermissions(missing)
 	
