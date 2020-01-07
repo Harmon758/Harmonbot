@@ -65,7 +65,7 @@ class Discord(commands.Cog):
 		if ctx.channel.type is discord.ChannelType.private:
 			return await self.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
 		await commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True)).predicate(ctx)
-		await commands.bot_has_permissions(manage_messages = True).predicate(ctx)
+		commands.bot_has_permissions(manage_messages = True).predicate(ctx)
 		if user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.id == user.id)
 		else:
