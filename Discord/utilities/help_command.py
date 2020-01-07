@@ -213,7 +213,7 @@ class HelpCommand(commands.HelpCommand):
 		lines.append(prefix + ' ' * (max_width + 2 - buffer) + line[cutoff + 1:])
 		return lines
 	
-	# @checks.dm_or_has_capability("embed_links")
+	# @commands.check_any(commands.dm_only(), checks.has_capability("embed_links"))
 	async def command_callback(self, ctx, *, command : str = None):
 		await self.prepare_help_command(ctx, command)
 		
