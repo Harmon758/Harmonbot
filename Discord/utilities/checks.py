@@ -67,16 +67,6 @@ def has_capability(*permissions, channel = None, guild = False):
 	
 	return commands.check(predicate)
 
-def has_permissions_and_capability(*, channel = None, guild = False, **permissions):
-	
-	async def predicate(ctx):
-		if (channel or ctx.channel).type is discord.ChannelType.private:
-			return False
-		await has_permissions(channel = channel, guild = guild, **permissions).predicate(ctx)
-		return has_capability(*permissions.keys(), channel = channel, guild = guild).predicate(ctx)
-	
-	return commands.check(predicate)
-
 def not_forbidden():
 	
 	async def predicate(ctx):

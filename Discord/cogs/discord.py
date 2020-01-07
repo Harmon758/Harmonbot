@@ -62,40 +62,53 @@ class Discord(commands.Cog):
 		# TODO: Don't attempt delete command message or include who invoked command somehow?
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True, case_insensitive = True)
-	@commands.check_any(commands.dm_only(), checks.has_permissions_and_capability(manage_messages = True))
 	async def delete(self, ctx, number : int, *, user : discord.Member = None):
 		'''
 		Delete messages
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
 		'''
 		if ctx.channel.type is discord.ChannelType.private:
-			await self.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
-		elif not user:
+			return await self.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
+		await checks.has_permissions(manage_messages = True).predicate(ctx)
+		await checks.has_capability("manage_messages").predicate(ctx)
+		if not user:
 			await self.bot.attempt_delete_message(ctx.message)
 			await ctx.channel.purge(limit = number)
 		elif user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.id == user.id)
 	
 	@delete.command(name = "attachments", aliases = ["images"])
-	@checks.has_permissions_and_capability(manage_messages = True)
+	@checks.has_capability("manage_messages")
+	@checks.has_permissions(manage_messages = True)
+	@commands.guild_only()
+	# TODO: Handle in DMs
 	async def delete_attachments(self, ctx, number : int):
 		'''Deletes the <number> most recent messages with attachments'''
 		await self.delete_number(ctx, number, check = lambda m: m.attachments)
 	
 	@delete.command(name = "contains")
-	@checks.has_permissions_and_capability(manage_messages = True)
+	@checks.has_capability("manage_messages")
+	@checks.has_permissions(manage_messages = True)
+	@commands.guild_only()
+	# TODO: Handle in DMs
 	async def delete_contains(self, ctx, string : str, number : int):
 		'''Deletes the <number> most recent messages with <string> in them'''
 		await self.delete_number(ctx, number, check = lambda m: string in m.content)
 	
 	@delete.command(name = "embeds")
-	@checks.has_permissions_and_capability(manage_messages = True)
+	@checks.has_capability("manage_messages")
+	@checks.has_permissions(manage_messages = True)
+	@commands.guild_only()
+	# TODO: Handle in DMs
 	async def delete_embeds(self, ctx, number: int):
 		'''Deletes the <number> most recent messages with embeds'''
 		await self.delete_number(ctx, number, check = lambda m: m.embeds)
 	
 	@delete.command(name = "time")
-	@checks.has_permissions_and_capability(manage_messages = True)
+	@checks.has_capability("manage_messages")
+	@checks.has_permissions(manage_messages = True)
+	@commands.guild_only()
+	# TODO: Handle in DMs
 	async def delete_time(self, ctx, minutes : int):
 		'''Deletes messages in the past <minutes> minutes'''
 		await self.bot.attempt_delete_message(ctx.message)
@@ -170,14 +183,20 @@ class Discord(commands.Cog):
 			await ctx.embed_reply("Changed your role color to {}".format(color))
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.has_permissions_and_capability(manage_messages = True)
+	@checks.has_capability("manage_messages")
+	@checks.has_permissions(manage_messages = True)
+	@commands.guild_only()
+	# TODO: Handle in DMs
 	async def pin(self, ctx, message: discord.Message):
 		'''Pin message by message ID'''
 		await message.pin()
 		await ctx.embed_reply(":pushpin: Pinned message")
 	
 	@pin.command(name = "first")
-	@checks.has_permissions_and_capability(manage_messages = True)
+	@checks.has_capability("manage_messages")
+	@checks.has_permissions(manage_messages = True)
+	@commands.guild_only()
+	# TODO: Handle in DMs
 	async def pin_first(self, ctx):
 		'''Pin first message'''
 		message = await ctx.channel.history(after = ctx.channel, limit = 1).iterate()
@@ -185,7 +204,10 @@ class Discord(commands.Cog):
 		await ctx.embed_reply(":pushpin: Pinned first message in this channel")
 	
 	@commands.command()
-	@checks.has_permissions_and_capability(manage_messages = True)
+	@checks.has_capability("manage_messages")
+	@checks.has_permissions(manage_messages = True)
+	@commands.guild_only()
+	# TODO: Handle in DMs
 	async def unpin(self, ctx, message: discord.Message):
 		'''Unpin message by message ID'''
 		await message.unpin()
