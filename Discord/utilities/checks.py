@@ -53,17 +53,13 @@ def has_permissions(*, channel = None, guild = False, **permissions):
 	
 	return commands.check(predicate)
 
-def has_capability(*permissions, channel = None, guild = False):
+def bot_has_permissions_for(channel, **permissions):
 	
 	def predicate(ctx):
-		if guild:
-			bot_permissions = ctx.me.guild_permissions
-		else:
-			bot_permissions = (channel or ctx.channel).permissions_for(ctx.me)
-		if all(getattr(bot_permissions, permission, None) for permission in permissions):
+		if not (missing := [permission for permission, permitted in permissions.items()
+							if getattr(channel.permissions_for(ctx.me), permission, None) != permitted]):
 			return True
-		else:
-			raise errors.MissingCapability(permissions)
+		raise commands.BotMissingPermissions(missing)
 	
 	return commands.check(predicate)
 
