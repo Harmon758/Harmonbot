@@ -117,10 +117,10 @@ class Resources(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply("https://hastebin.com/" + data["key"])
 	
-	@commands.command(aliases = ["hibp"])
-	@checks.not_forbidden()
+	# TODO: Pwned Passwords API?
+	@commands.command(aliases = ["hibp"], enabled = False, hidden = True)
 	async def haveibeenpwned(self, ctx, name: str):
-		'''Check if your account has been breached'''
+		'''Deprecated, due to https://www.troyhunt.com/authentication-and-the-have-i-been-pwned-api/'''
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/" + name
 		headers = {"User-Agent": ctx.bot.user_agent}
 		params = {"truncateResponse": "true"}
