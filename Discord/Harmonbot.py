@@ -282,5 +282,6 @@ if __name__ == "__main__":
 	finally:
 		client.loop.run_until_complete(client.shutdown_tasks())
 		client.loop.close()
-		os._exit(0)
+		sys.exit(0)
+		os._exit(0)  # Shouldn't be necessary
 
