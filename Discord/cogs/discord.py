@@ -144,6 +144,18 @@ class Discord(commands.Cog):
 		elif len(to_delete) > 1:
 			await ctx.channel.delete_messages(to_delete)
 	
+	@commands.command(aliases = ["here"])
+	@checks.not_forbidden()
+	async def everyone(self, ctx):
+		'''
+		Check if you can mention everyone/here
+		For the channel you execute the command in
+		'''
+		if ctx.author.permissions_in(ctx.channel).mention_everyone:
+			await ctx.embed_reply("You are able to mention everyone/here in this channel")
+		else:
+			await ctx.embed_reply("You are not able to mention everyone/here in this channel")
+	
 	@commands.command(aliases = ["mycolour", "my_color", "my_colour"])
 	@commands.guild_only()
 	@checks.not_forbidden()
@@ -257,18 +269,4 @@ class Discord(commands.Cog):
 				await self.bot.delete_channel(temp_voice_channel)
 				await self.bot.delete_channel(temp_text_channel)
 				return
-	
-	# Checks
-	
-	@commands.command(aliases = ["here"])
-	@checks.not_forbidden()
-	async def everyone(self, ctx):
-		'''
-		Check if you can mention everyone/here
-		For the channel you execute the command in
-		'''
-		if ctx.author.permissions_in(ctx.channel).mention_everyone:
-			await ctx.embed_reply("You are able to mention everyone/here in this channel")
-		else:
-			await ctx.embed_reply("You are not able to mention everyone/here in this channel")
 
