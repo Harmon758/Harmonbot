@@ -12,8 +12,10 @@ class Pokemon(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(aliases = ["pokémon"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def pokemon(self, ctx, id_or_name : str):
 		'''WIP'''
 		# TODO: colors?, egg groups?, forms?, genders?, habitats?, 
@@ -21,7 +23,6 @@ class Pokemon(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def ability(self, ctx, id_or_name : str):
 		'''
 		WIP
@@ -37,7 +38,6 @@ class Pokemon(commands.Cog):
 								fields = (("Generation", data["generation"]["name"]),))
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def berry(self, ctx, id_or_name : str):
 		'''
 		Berries
@@ -58,20 +58,17 @@ class Pokemon(commands.Cog):
 											("Flavors (Potency)", ", ".join(f"{f['flavor']['name']} ({f['potency']})" for f in data["flavors"]))))
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def characteristic(self, ctx, id : int):
 		'''WIP'''
 		...
 	
 	@pokemon.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def contest(self, ctx):
 		'''WIP'''
 		# TODO: contest effects?, super contest effects?
 		...
 	
 	@contest.command(name = "condition", aliases = ["type"])
-	@checks.not_forbidden()
 	async def contest_condition(self, ctx, id_or_name : str):
 		'''
 		Contest conditions
@@ -88,137 +85,115 @@ class Pokemon(commands.Cog):
 								fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
 	
 	@pokemon.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def encounter(self, ctx):
 		'''WIP'''
 		# TODO: conditions?/condition values?
 		...
 	
 	@encounter.command(name = "method")
-	@checks.not_forbidden()
 	async def encounter_method(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def evolution(self, ctx):
 		'''WIP'''
 		...
 	
 	@evolution.command(name = "chain")
-	@checks.not_forbidden()
 	async def evolution_chain(self, ctx, id : int):
 		'''WIP'''
 		...
 	
 	@evolution.command(name = "trigger")
-	@checks.not_forbidden()
 	async def evolution_trigger(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def generation(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.command(aliases = ["rate", "growthrate", "growth_rate"])
-	@checks.not_forbidden()
 	async def growth(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.group(case_insensitive = True)
-	@checks.not_forbidden()
 	async def item(self, ctx, id_or_name : str):
 		'''WIP'''
 		# TODO: fling effect?
 		...
 	
 	@item.command(name = "attribute")
-	@checks.not_forbidden()
 	async def item_attribute(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@item.command(name = "category")
-	@checks.not_forbidden()
 	async def item_category(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@item.command(name = "pocket")
-	@checks.not_forbidden()
 	async def item_pocket(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.group(case_insensitive = True)
-	@checks.not_forbidden()
 	async def location(self, ctx, id : int):
 		'''WIP'''
 		# TODO: pal park areas?
 		...
 	
 	@location.command(name = "area")
-	@checks.not_forbidden()
 	async def location_area(self, ctx, id : int):
 		'''WIP'''
 		...
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def machine(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.group(case_insensitive = True)
-	@checks.not_forbidden()
 	async def move(self, ctx, id_or_name : str):
 		'''WIP'''
 		# TODO: damage classes?, learn methods?, targets?
 		...
 	
 	@move.command(name = "ailment")
-	@checks.not_forbidden()
 	async def move_ailment(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@move.command(name = "category")
-	@checks.not_forbidden()
 	async def move_category(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def nature(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def pokedex(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def region(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def species(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
 	
 	@pokemon.command()
-	@checks.not_forbidden()
 	async def type(self, ctx, id_or_name : str):
 		'''WIP'''
 		...
