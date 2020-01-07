@@ -12,8 +12,10 @@ class RotMG(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def rotmg(self, ctx, player : str):
 		'''Realm of the Mad God player information'''
 		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
@@ -44,7 +46,6 @@ class RotMG(commands.Cog):
 		await ctx.send(embed = embed)
 	
 	@rotmg.command(name = "characters")
-	@checks.not_forbidden()
 	async def rotmg_characters(self, ctx, player : str):
 		'''Realm of the Mad God player characters information'''
 		url = "https://nightfirec.at/realmeye-api/?player={}".format(player)
