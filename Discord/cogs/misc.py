@@ -11,7 +11,7 @@ def setup(bot):
 	
 	def emote_wrapper(emote):
 		async def emote_command(self, ctx):
-			await ctx.embed_reply(":{}:".format(emote))
+			await ctx.embed_reply(f":{emote}:")
 		return emote_command
 	
 	for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc", "horse", "penguin", "dragon", "eagle", "bird"):
