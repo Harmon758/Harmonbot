@@ -114,12 +114,12 @@ class Discord(commands.Cog):
 			return await ctx.embed_reply(":no_entry: Error: Number of messages to delete must be greater than 0")
 		to_delete = []
 		count = 0
-		minimum_time = int((time.time() - 14 * 24 * 60 * 60) * 1000 - discord.utils.DISCORD_EPOCH) << 22
 		if delete_command:
 			await ctx.bot.attempt_delete_message(ctx.message)
 		async for message in ctx.channel.history(limit = ctx.bot.delete_limit):
 			if check(message):
-				if message.id < minimum_time or ctx.channel.type is discord.ChannelType.private:
+				if (message.id < int((time.time() - 14 * 24 * 60 * 60) * 1000 - discord.utils.DISCORD_EPOCH) << 22 or 
+					ctx.channel.type is discord.ChannelType.private):
 					# Too old (older than 14 days) to bulk delete or in DM
 					await ctx.bot.attempt_delete_message(message)
 				else:
@@ -130,7 +130,7 @@ class Discord(commands.Cog):
 				elif len(to_delete) == 100:
 					await ctx.channel.delete_messages(to_delete)
 					to_delete.clear()
-					await asyncio.sleep(1)
+					await asyncio.sleep(1)  # Necessary?
 		if len(to_delete) == 1:
 			await ctx.bot.attempt_delete_message(to_delete[0])
 		elif len(to_delete) > 1:
