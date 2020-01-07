@@ -27,29 +27,28 @@ class Astronomy(commands.Cog):
 			if isinstance(command, commands.Command) and name in ("exoplanet", "iss", "observatory", "telescope"):
 				self.bot.add_command(command)
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	# TODO: random exoplanet, observatory, telescope
 	
 	@commands.group(aliases = ["space"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def astronomy(self, ctx):
 		'''exoplanet, iss, observatory, and telescope are also commands as well as subcommands'''
 		await ctx.send_help(ctx.command)
 	
 	@astronomy.command()
-	@checks.not_forbidden()
 	async def chart(self, ctx, *, chart : str):
 		'''WIP'''
 		# paginate, https://api.arcsecond.io/findingcharts/HD%205980/
 		...
 	
 	@astronomy.group(aliases = ["archive", "archives"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def data(self, ctx):
 		'''Data Archives'''
 		await ctx.send_help(ctx.command)
 	
 	@data.command(name = "eso")
-	@checks.not_forbidden()
 	async def data_eso(self, ctx, program_id : str):
 		'''
 		European Southern Observatory
@@ -93,7 +92,6 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply('\n'.join(links), title = title, fields = fields)
 	
 	@data.command(name = "hst")
-	@checks.not_forbidden()
 	async def data_hst(self, ctx, proposal_id : int):
 		'''
 		Hubble Space Telescope (HST)
@@ -109,7 +107,6 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(data["abstract"], title = data["title"], fields = fields)
 	
 	@astronomy.command()
-	@checks.not_forbidden()
 	async def exoplanet(self, ctx, *, exoplanet : str):
 		'''Exoplanets'''
 		# TODO: list?
@@ -274,7 +271,6 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(title = data["name"], fields = fields)
 	
 	@astronomy.command(aliases = ["international_space_station", "internationalspacestation"])
-	@checks.not_forbidden()
 	async def iss(self, ctx, latitude : float = 0.0, longitude : float = 0.0):
 		'''
 		Current location of the International Space Station (ISS)
@@ -314,14 +310,12 @@ class Astronomy(commands.Cog):
 									timestamp = timestamp)
 	
 	@astronomy.command(name = "object")
-	@checks.not_forbidden()
 	async def astronomy_object(self, ctx, *, object : str):
 		'''WIP'''
 		# https://api.arcsecond.io/objects/alpha%20centurai/
 		...
 	
 	@astronomy.command()
-	@checks.not_forbidden()
 	async def observatory(self, ctx, *, observatory : str):
 		'''
 		Observatories
@@ -348,7 +342,6 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(":no_entry: Observatory not found")
 	
 	@astronomy.command()
-	@checks.not_forbidden()
 	async def people(self, ctx):
 		'''Current people in space'''
 		# TODO: add input/search option
@@ -357,7 +350,6 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply('\n'.join("{0[name]} ({0[craft]})".format(person) for person in data["people"]), title = "Current People In Space ({})".format(data["number"]))
 	
 	@astronomy.command()
-	@checks.not_forbidden()
 	async def publication(self, ctx, *, bibcode : str):
 		'''Publications'''
 		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/publications/{}/".format(bibcode), params = {"format": "json"}) as resp:
@@ -369,13 +361,11 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(title = data["title"], fields = (("Journal", data["journal"]), ("Year", data["year"]), ("Authors", data["authors"])))
 	
 	@astronomy.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def telegram(self, ctx):
 		'''Quick publications, often related to ongoing events occuring in the sky'''
 		await ctx.send_help(ctx.command)
 	
 	@telegram.command(name = "atel", aliases = ["astronomerstelegram"])
-	@checks.not_forbidden()
 	async def telegram_atel(self, ctx, number : int):
 		'''
 		The Astronomer's Telegram
@@ -400,7 +390,6 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(description, title = data["title"], title_url = "http://www.astronomerstelegram.org/?read={}".format(number), fields = fields)
 	
 	@telegram.command(name = "gcn", aliases = ["circulars"])
-	@checks.not_forbidden()
 	async def telegram_gcn(self, ctx, number : str):
 		'''
 		GCN Circulars
@@ -424,7 +413,6 @@ class Astronomy(commands.Cog):
 								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else discord.Embed.Empty)
 	
 	@astronomy.command(aliases = ["instrument"])
-	@checks.not_forbidden()
 	async def telescope(self, ctx, *, telescope : str):
 		'''
 		Telescopes and instruments
