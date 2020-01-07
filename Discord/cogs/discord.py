@@ -115,7 +115,8 @@ class Discord(commands.Cog):
 		to_delete = []
 		count = 0
 		minimum_time = int((time.time() - 14 * 24 * 60 * 60) * 1000 - discord.utils.DISCORD_EPOCH) << 22
-		if delete_command: await ctx.bot.attempt_delete_message(ctx.message)
+		if delete_command:
+			await ctx.bot.attempt_delete_message(ctx.message)
 		async for message in ctx.channel.history(limit = ctx.bot.delete_limit):
 			if check(message):
 				if message.id < minimum_time or ctx.channel.type is discord.ChannelType.private:
