@@ -33,8 +33,7 @@ class Channel(commands.Cog):
 	
 	@category.command(name = "create", aliases = ["make", "new"])
 	@commands.bot_has_guild_permissions(manage_channels = True)
-	@checks.has_permissions(manage_channels = True, guild = True)
-	@commands.guild_only()
+	@commands.check_any(commands.is_owner(), commands.has_guild_permissions(manage_channels = True))
 	async def category_create(self, ctx, *, name : str):
 		'''Create category'''
 		channel = await ctx.guild.create_category_channel(name)
@@ -112,8 +111,7 @@ class Channel(commands.Cog):
 	
 	@text.command(name = "create", aliases = ["make", "new"])
 	@commands.bot_has_guild_permissions(manage_channels = True)
-	@checks.has_permissions(manage_channels = True, guild = True)
-	@commands.guild_only()
+	@commands.check_any(commands.is_owner(), commands.has_guild_permissions(manage_channels = True))
 	async def text_create(self, ctx, name : str):
 		'''Create text channel'''
 		channel = await ctx.guild.create_text_channel(name)
@@ -253,8 +251,7 @@ class Channel(commands.Cog):
 	
 	@voice.command(name = "create", aliases = ["make", "new"])
 	@commands.bot_has_guild_permissions(manage_channels = True)
-	@checks.has_permissions(manage_channels = True, guild = True)
-	@commands.guild_only()
+	@commands.check_any(commands.is_owner(), commands.has_guild_permissions(manage_channels = True))
 	async def voice_create(self, ctx, *, name : str):
 		'''Create voice channel'''
 		channel = await ctx.guild.create_voice_channel(name)

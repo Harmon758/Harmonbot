@@ -35,8 +35,7 @@ class User(commands.Cog):
 	# TODO: Integrate with role command
 	@commands.command(aliases = ["addrole"])
 	@commands.bot_has_guild_permissions(manage_roles = True)
-	@checks.has_permissions(manage_roles = True, guild = True)
-	@commands.guild_only()
+	@commands.check_any(commands.is_owner(), commands.has_guild_permissions(manage_roles = True))
 	async def add_role(self, ctx, member : discord.Member, *, role : discord.Role):
 		'''Gives a user a role'''
 		await member.add_roles(role)
