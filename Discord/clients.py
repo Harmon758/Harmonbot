@@ -29,6 +29,7 @@ import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 import youtube_dl
 
+from utilities import audio_player
 from utilities import errors
 from utilities.context import Context
 from utilities.database import create_database_pool
@@ -269,6 +270,8 @@ class Bot(commands.Bot):
 		self.load_extension("cogs.reactions")
 		# TODO: Document inter-cog dependencies/subcommands
 		# TODO: Catch exceptions on fail to load?
+		
+		self.loop.create_task(self.startup_tasks())
 	
 	@property
 	async def app_info(self):
@@ -488,6 +491,26 @@ class Bot(commands.Bot):
 														"guild_count_name": "guilds"}}
 		# TODO: Add users and voice_connections for discordbotlist.com
 		await self.update_all_listing_stats()
+	
+	async def startup_tasks(self):
+		await self.wait_until_ready()
+		if restart_channel_id := await self.db.fetchval(
+			"""
+			DELETE FROM meta.restart_channels
+			WHERE player_text_channel_id IS NULL
+			RETURNING channel_id
+			"""
+		):
+			await self.send_embed(self.get_channel(restart_channel_id), ":thumbsup::skin-tone-2: Restarted")
+		if audio_cog := self.get_cog("Audio"):
+			for record in await self.db.fetch("DELETE FROM meta.restart_channels RETURNING *"):
+				if text_channel := self.get_channel(record["player_text_channel_id"]):
+					audio_cog.players[text_channel.guild.id] = audio_player.AudioPlayer(self, text_channel)
+					await self.get_channel(record["channel_id"]).connect()
+		# TODO: DM if joined new server
+		# TODO: DM if left server
+		# TODO: Track guild names
+		# await voice.detectvoice()
 	
 	async def on_ready(self):
 		print(f"Started up Discord {self.user} ({self.user.id})")

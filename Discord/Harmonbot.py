@@ -19,7 +19,6 @@ if __name__ == "__main__":
 	
 	import clients
 	from modules import conversions
-	from utilities import audio_player
 	
 	mention_spammers = []
 	
@@ -28,27 +27,6 @@ if __name__ == "__main__":
 	
 	# Initialize client
 	client = clients.Bot(command_prefix = clients.get_prefix)
-	
-	@client.listen()
-	async def on_ready():
-		if restart_channel_id := await client.db.fetchval(
-			"""
-			DELETE FROM meta.restart_channels
-			WHERE player_text_channel_id IS NULL
-			RETURNING channel_id
-			"""
-		):
-			await client.send_embed(client.get_channel(restart_channel_id), ":thumbsup::skin-tone-2: Restarted")
-		if audio_cog := client.get_cog("Audio"):
-			for record in await client.db.fetch("DELETE FROM meta.restart_channels RETURNING *"):
-				if text_channel := client.get_channel(record["player_text_channel_id"]):
-					audio_cog.players[text_channel.guild.id] = audio_player.AudioPlayer(client, text_channel)
-					await client.get_channel(record["channel_id"]).connect()
-		
-		# TODO: DM if joined new server
-		# TODO: DM if left server
-		# TODO: Track guild names
-		# await voice.detectvoice()
 	
 	@client.listen()
 	async def on_guild_join(guild):
