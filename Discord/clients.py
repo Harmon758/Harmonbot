@@ -268,7 +268,6 @@ class Bot(commands.Bot):
 		self.load_extension("cogs.reactions")
 		# TODO: Document inter-cog dependencies/subcommands
 		# TODO: Catch exceptions on fail to load?
-		# TODO: Move all to on_ready?
 	
 	@property
 	async def app_info(self):

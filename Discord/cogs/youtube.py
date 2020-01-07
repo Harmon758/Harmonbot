@@ -118,7 +118,6 @@ class YouTube(commands.Cog):
 			"""
 		)
 	
-	# TODO: use on_ready instead?
 	# TODO: renew after hub.lease_seconds?
 	async def renew_upload_supscriptions(self):
 		for channel_id in self.uploads_following:

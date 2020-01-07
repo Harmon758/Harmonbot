@@ -276,7 +276,6 @@ class Twitter(commands.Cog):
 		# Unescape HTML entities (&gt;, &lt;, &amp;, etc.)
 		return html.unescape(text.replace('\uFE0F', ""))
 	
-	# TODO: move to on_ready
 	async def start_twitter_feeds(self):
 		await self.initialize_database()
 		await self.bot.wait_until_ready()
