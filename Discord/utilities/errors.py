@@ -1,8 +1,8 @@
 
 from discord.ext.commands.errors import CommandError
 
-class NotServerOwner(CommandError):
-	'''Not Server Owner'''
+class NotGuildOwner(CommandError):
+	'''Not Guild Owner'''
 	pass
 
 class VoiceNotConnected(CommandError):

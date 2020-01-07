@@ -58,7 +58,7 @@ class Audio(commands.Cog):
 				self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
 			try:
 				is_guild_owner = await checks.is_guild_owner().predicate(ctx)
-			except errors.NotServerOwner:
+			except errors.NotGuildOwner:
 				is_guild_owner = False
 			permitted = await ctx.get_permission("join", id = ctx.author.id)
 			if is_guild_owner or permitted:

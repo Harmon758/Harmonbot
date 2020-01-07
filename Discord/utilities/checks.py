@@ -17,7 +17,7 @@ def is_guild_owner():
 		try:
 			return await commands.is_owner().predicate(ctx)
 		except commands.NotOwner:
-			raise errors.NotServerOwner
+			raise errors.NotGuildOwner
 	
 	return commands.check(predicate)
 
@@ -32,7 +32,7 @@ def is_voice_connected():
 		try:
 			await is_guild_owner().predicate(ctx)
 			raise errors.PermittedVoiceNotConnected
-		except errors.NotServerOwner:
+		except errors.NotGuildOwner:
 			raise errors.NotPermittedVoiceNotConnected
 	
 	return commands.check(predicate)
@@ -68,7 +68,7 @@ def not_forbidden():
 			command = command.parent
 		try:
 			return permitted is not False or await is_guild_owner().predicate(ctx)
-		except errors.NotServerOwner:
+		except errors.NotGuildOwner:
 			raise errors.NotPermitted
 	
 	return commands.check(predicate)
@@ -84,7 +84,7 @@ def is_permitted():
 			command = command.parent
 		try:
 			return permitted or await is_guild_owner().predicate(ctx)
-		except errors.NotServerOwner:
+		except errors.NotGuildOwner:
 			raise errors.NotPermitted
 	
 	return commands.check(predicate)
