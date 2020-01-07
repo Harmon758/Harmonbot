@@ -44,14 +44,15 @@ class Misc(commands.Cog):
 			"""
 		)
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.command(aliases = ["bigmote"])
-	@checks.not_forbidden()
 	async def bigmoji(self, ctx, emoji : discord.PartialEmoji):
 		'''See larger versions of custom emoji'''
 		await ctx.embed_reply(image_url = emoji.url)
 	
 	@commands.command(aliases = ["emotify"])
-	@checks.not_forbidden()
 	async def emojify(self, ctx, *, text : str):
 		'''Emojify text'''
 		output = ""
@@ -69,7 +70,6 @@ class Misc(commands.Cog):
 			await ctx.embed_reply(":no_entry: Error")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def fancify(self, ctx, *, text : str):
 		'''Fancify text'''
 		output = ""
@@ -85,7 +85,6 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(output)
 	
 	@commands.command(aliases = ["full-width", "full_width"])
-	@checks.not_forbidden()
 	async def fullwidth(self, ctx, *, text : str):
 		'''Make text fullwidth'''
 		output = ""
@@ -97,13 +96,11 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(output)
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def fingers(self, ctx, *, text : str):
 		'''Add fingers'''
 		await ctx.embed_reply(f":point_right::skin-tone-2: {text} :point_left::skin-tone-2:")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def loading_bar(self, ctx):
 		'''
 		A loading bar
@@ -121,7 +118,6 @@ class Misc(commands.Cog):
 			await loading_message.edit(embed = embed)
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def lorem(self, ctx):
 		'''Lorem Ipsum generator'''
 		# TODO: add options?
@@ -135,7 +131,6 @@ class Misc(commands.Cog):
 		await ctx.embed_reply("pong")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def poke(self, ctx, *, user : discord.Member):
 		'''Poke someone'''
 		if user == self.bot.user:
@@ -158,7 +153,6 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(f"You have poked {user.mention} for the {times} time!")
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def subscript(self, ctx, *, text : str):
 		'''
 		Subscript text
@@ -167,7 +161,6 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(utilities.subscript(text))
 	
 	@commands.command()
-	@checks.not_forbidden()
 	async def superscript(self, ctx, *, text : str):
 		'''
 		Superscript text
