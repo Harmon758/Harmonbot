@@ -33,17 +33,16 @@ if __name__ == "__main__":
 	async def on_ready():
 		print(f"Started up Discord {client.user} ({client.user.id})")
 		
-		if os.path.isfile(clients.data_path + "/temp/restart_channel.json"):
-			with open(clients.data_path + "/temp/restart_channel.json", 'r') as restart_channel_file:
-				restart_data = json.load(restart_channel_file)
-			os.remove(clients.data_path + "/temp/restart_channel.json")
-			restart_channel = client.get_channel(restart_data["restart_channel"])
+		restart_channel_id = await client.db.fetchval("DELETE FROM meta.restart_channels WHERE player_text_channel_id IS NULL RETURNING channel_id")
+		if restart_channel_id:
+			restart_channel = client.get_channel(restart_channel_id)
 			await client.send_embed(restart_channel, ":thumbsup::skin-tone-2: Restarted")
-			for voice_channel in restart_data["voice_channels"]:
-				text_channel = client.get_channel(voice_channel[1])
-				if text_channel:
-					client.cogs["Audio"].players[text_channel.guild.id] = audio_player.AudioPlayer(client, text_channel)
-					await client.get_channel(voice_channel[0]).connect()
+		records = await client.db.fetch("DELETE FROM meta.restart_channels RETURNING *")
+		for record in records:
+			text_channel = client.get_channel(record["player_text_channel_id"])
+			if text_channel:
+				client.cogs["Audio"].players[text_channel.guild.id] = audio_player.AudioPlayer(client, text_channel)
+				await client.get_channel(record["channel_id"]).connect()
 		
 		# TODO: DM if joined new server
 		# TODO: DM if left server

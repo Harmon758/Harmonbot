@@ -363,6 +363,14 @@ class Bot(commands.Bot):
 		)
 		await self.db.execute(
 			"""
+			CREATE TABLE IF NOT EXISTS meta.restart_channels (
+				channel_id				BIGINT PRIMARY KEY, 
+				player_text_channel_id	BIGINT
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
 			CREATE TABLE IF NOT EXISTS meta.stats (
 				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
 				uptime				INTERVAL, 
@@ -753,13 +761,26 @@ class Bot(commands.Bot):
 			self.online_time
 		)
 		# Save restart text channel + voice channels
-		data = {"restart_channel": channel_id, "voice_channels": []}
+		await self.db.execute(
+			"""
+			INSERT INTO meta.restart_channels (channel_id)
+			VALUES ($1)
+			ON CONFLICT (channel_id) DO NOTHING
+			""", 
+			channel_id
+		)
 		if audio_cog := self.get_cog("Audio"):
 			for voice_client in self.voice_clients:
 				if player := audio_cog.players.get(voice_client.guild.id):
-					data["voice_channels"].append([voice_client.channel.id, player.text_channel.id])
-		with open(self.data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
-			json.dump(data, restart_channel_file)
+					await self.db.execute(
+						"""
+						INSERT INTO meta.restart_channels (channel_id, player_text_channel_id)
+						VALUES ($1, $2)
+						ON CONFLICT (channel_id) DO
+						UPDATE SET player_text_channel_id = $2
+						""", 
+						voice_client.channel.id, player.text_channel.id
+					)
 	
 	async def shutdown_tasks(self):
 		# Save uptime
