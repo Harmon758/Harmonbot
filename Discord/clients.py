@@ -124,6 +124,7 @@ class Bot(commands.Bot):
 		self.listing_sites = {}
 		# TODO: Include owner variable for user object?
 		# TODO: emote constants/variables
+		self.loop.create_task(self.initialize_constant_objects())
 		
 		# Variables
 		self.guild_settings = {}
@@ -467,10 +468,11 @@ class Bot(commands.Bot):
 	async def web_server_robots_txt(self, request):
 		return web.Response(text = "User-agent: *\nDisallow: /")
 	
-	async def on_ready(self):
-		print(f"Started up Discord {self.user} ({self.user.id})")
+	async def initialize_constant_objects(self):
+		await self.wait_until_ready()
 		self.cache_channel = self.get_channel(self.cache_channel_id)
 		self.listener_bot = await self.fetch_user(self.listener_id)
+		# TODO: Handle NotFound and HTTPException?
 		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
 													"url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", 
 													"data": {"guildCount": len(self.guilds)}, 
@@ -486,6 +488,9 @@ class Bot(commands.Bot):
 														"guild_count_name": "guilds"}}
 		# TODO: Add users and voice_connections for discordbotlist.com
 		await self.update_all_listing_stats()
+	
+	async def on_ready(self):
+		print(f"Started up Discord {self.user} ({self.user.id})")
 	
 	async def on_resumed(self):
 		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().isoformat()}")
