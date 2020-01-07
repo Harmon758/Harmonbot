@@ -496,12 +496,12 @@ class Bot(commands.Bot):
 			# Also for commands.NotOwner?
 			return await ctx.embed_reply(":no_entry: You don't have permission to do that")
 		## Bot missing permissions
-		if isinstance(error, errors.MissingCapability):
-			if "embed_links" in error.permissions:
+		if isinstance(error, commands.BotMissingPermissions):
+			if "embed_links" in error.missing_perms:
 				return await ctx.send("I don't have permission to do that here\n"
-										"I need the permission(s): " + ', '.join(error.permissions))
+										"I need the permission(s): " + ', '.join(error.missing_perms))
 			return await ctx.embed_reply("I don't have permission to do that here\n"
-											"I need the permission(s): " + ', '.join(error.permissions))
+											"I need the permission(s): " + ', '.join(error.missing_perms))
 		## User not permitted to use command
 		if isinstance(error, errors.NotPermitted):
 			return await ctx.embed_reply(":no_entry: You don't have permission to use that command here")
