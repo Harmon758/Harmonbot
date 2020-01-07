@@ -53,7 +53,7 @@ class Permissions(commands.Cog):
 		)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.is_permitted()
+	@checks.not_forbidden()
 	async def setpermission(self, ctx):
 		'''Set a permission'''
 		await ctx.send_help(ctx.command)
@@ -134,7 +134,7 @@ class Permissions(commands.Cog):
 			return await ctx.embed_reply(f"{permission} is set to {setting} for the role, {users.mention}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.is_permitted()
+	@checks.not_forbidden()
 	async def getpermissions(self, ctx):
 		await ctx.send_help(ctx.command)
 	
