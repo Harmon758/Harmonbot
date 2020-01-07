@@ -19,10 +19,12 @@ class Finance(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-
+	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(description = "Powered by [CoinDesk](https://www.coindesk.com/price/)", 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def bitcoin(self, ctx, currency : str = ""):
 		'''
 		Bitcoin Price Index (BPI)
@@ -56,7 +58,6 @@ class Finance(commands.Cog):
 								footer_text = footer_text, timestamp = timestamp)
 	
 	@bitcoin.command(name = "currencies")
-	@checks.not_forbidden()
 	async def bitcoin_currencies(self, ctx):
 		'''Supported currencies for BPI conversion'''
 		async with ctx.bot.aiohttp_session.get("https://api.coindesk.com/v1/bpi/supported-currencies.json") as resp:
@@ -66,7 +67,6 @@ class Finance(commands.Cog):
 		# TODO: paginate
 	
 	@bitcoin.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
-	@checks.not_forbidden()
 	async def bitcoin_historical(self, ctx, date : str = "", currency : str = ""):
 		'''
 		Historical BPI
@@ -98,7 +98,6 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(description, footer_text = footer_text, timestamp = timestamp)
 	
 	@commands.group(aliases = ["exchange", "rates"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def currency(self, ctx, against : str = "", request : str = ""):
 		'''
 		Current foreign exchange rates
@@ -116,7 +115,6 @@ class Finance(commands.Cog):
 		await self.process_currency(ctx, against, request)
 	
 	@currency.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
-	@checks.not_forbidden()
 	async def currency_historical(self, ctx, date : str, against : str = "", request : str = ""):
 		'''
 		Historical foreign exchange rates
@@ -131,7 +129,6 @@ class Finance(commands.Cog):
 		await self.process_currency(ctx, against, request, date)
 	
 	@currency.command(name = "symbols", aliases = ["acronyms", "abbreviations"])
-	@checks.not_forbidden()
 	async def currency_symbols(self, ctx):
 		'''Currency symbols'''
 		url = "http://data.fixer.io/api/symbols"
@@ -195,7 +192,6 @@ class Finance(commands.Cog):
 	@commands.group(aliases = ["stocks"], 
 					description = "Data provided for free by [IEX](https://iextrading.com/developer).", 
 					invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def stock(self, ctx, symbol : str):
 		'''
 		WIP
@@ -209,7 +205,6 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(data + attribution)
 	
 	@stock.command(name = "company")
-	@checks.not_forbidden()
 	async def stock_company(self, ctx, symbol : str):
 		'''Company Information'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/company"
@@ -227,7 +222,6 @@ class Finance(commands.Cog):
 								fields = fields, thumbnail_url = thumbnail_url)
 	
 	@stock.command(name = "earnings")
-	@checks.not_forbidden()
 	async def stock_earnings(self, ctx, symbol : str):
 		'''Earnings data from the most recent reported quarter'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/earnings"
@@ -247,7 +241,6 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(title = data["symbol"], fields = fields, footer_text = footer_text)
 	
 	@stock.command(name = "financials")
-	@checks.not_forbidden()
 	async def stock_financials(self, ctx, symbol : str):
 		'''Income statement, balance sheet, and cash flow data from the most recent reported quarter'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/financials"
@@ -271,7 +264,6 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(title = data["symbol"], fields = fields, footer_text = footer_text)
 	
 	@stock.command(name = "quote")
-	@checks.not_forbidden()
 	async def stock_quote(self, ctx, symbol : str):
 		'''WIP'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/quote"
