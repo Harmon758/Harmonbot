@@ -8,31 +8,24 @@ from modules import utilities
 from utilities import checks
 
 def setup(bot):
+	
+	def emote_wrapper(emote):
+		async def emote_command(self, ctx):
+			await ctx.embed_reply(":{}:".format(emote))
+		return emote_command
+	
+	for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc", "horse", "penguin", "dragon", "eagle", "bird"):
+		command = commands.Command(emote_wrapper(emote), name = emote, help = emote.capitalize() + " emote", checks = [checks.not_forbidden().predicate])
+		setattr(Misc, emote, command)
+		Misc.__cog_commands__.append(command)
+	for name, emote in (("cow", "cow2"), ("panda", "panda_face")):
+		command = commands.Command(emote_wrapper(emote), name = name, help = name.capitalize() + " emote", checks = [checks.not_forbidden().predicate])
+		setattr(Misc, name, command)
+		Misc.__cog_commands__.append(command)
+	
 	bot.add_cog(Misc(bot))
 
 class Misc(commands.Cog):
-	
-	def __new__(cls, *args, **kwargs):
-		def emote_wrapper(name, emote = None):
-			if emote is None: emote = name
-			@commands.command(name = name, help = name.capitalize() + " emote")
-			@checks.not_forbidden()
-			async def emote_command(self, ctx):
-				await ctx.embed_reply(":{}:".format(emote))
-			return emote_command
-		
-		for emote in ("fish", "frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc", "horse", "penguin", "dragon", "eagle", "bird"):
-			command = emote_wrapper(emote)
-			setattr(cls, emote, command)
-			cls.__cog_commands__.append(command)
-		command = emote_wrapper("cow", emote = "cow2")
-		setattr(cls, "cow", command)
-		cls.__cog_commands__.append(command)
-		command = emote_wrapper("panda", emote = "panda_face")
-		setattr(cls, "panda", command)
-		cls.__cog_commands__.append(command)
-		
-		return super().__new__(cls, *args, **kwargs)
 	
 	def __init__(self, bot):
 		self.bot = bot
