@@ -706,10 +706,13 @@ class Bot(commands.Bot):
 			self.online_time
 		)
 		# Save restart text channel + voice channels
-		audio_cog = self.get_cog("Audio")
-		voice_channels = audio_cog.save_voice_channels() if audio_cog else []
+		data = {"restart_channel": channel_id, "voice_channels": []}
+		if audio_cog := self.get_cog("Audio"):
+			for voice_client in self.voice_clients:
+				if player := audio_cog.players.get(voice_client.guild.id):
+					data["voice_channels"].append([voice_client.channel.id, player.text_channel.id])
 		with open(self.data_path + "/temp/restart_channel.json", 'w') as restart_channel_file:
-			json.dump({"restart_channel": channel_id, "voice_channels": voice_channels}, restart_channel_file)
+			json.dump(data, restart_channel_file)
 	
 	async def shutdown_tasks(self):
 		# Cancel audio tasks
