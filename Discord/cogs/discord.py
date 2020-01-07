@@ -52,7 +52,7 @@ class Discord(commands.Cog):
 			image_url = message.attachments[0].url
 		# TODO: Handle non-image attachments
 		# TODO: Handle multiple attachments
-		await ctx.embed_send(description, 
+		await ctx.embed_reply(description, 
 								author_name = message.author.display_name, author_icon_url = message.author.avatar_url, 
 								fields = fields, image_url = image_url, 
 								footer_text = f"In #{message.channel}", timestamp = message.created_at)
