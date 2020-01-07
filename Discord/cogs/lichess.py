@@ -88,9 +88,6 @@ class Lichess(commands.Cog):
 	def generate_user_mode_commands(self):
 		# Creates user subcommand for a mode
 		def user_mode_wrapper(mode, name, emoji):
-			@self.user.command(name = name.lower().replace(' ', "").replace('-', ""), 
-								help = f"User {name} stats")
-			@checks.not_forbidden()
 			async def user_mode_command(ctx, username : LichessUser):
 				mode_data = username["perfs"][mode]
 				prov = ""
@@ -111,7 +108,11 @@ class Lichess(commands.Cog):
 			# Remove existing command in cases where already generated
 			# Such as on ready after cog initialized
 			self.user.remove_command(internal_name)
-			setattr(self, "user_" + internal_name, user_mode_wrapper(mode, name, emoji))
+			command = commands.Command(user_mode_wrapper(mode, name, emoji), 
+										name = name.lower().replace(' ', "").replace('-', ""), 
+										help = f"User {name} stats", checks = [checks.not_forbidden().predicate])
+			setattr(self, "user_" + internal_name, command)
+			self.user.add_command(command)
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
