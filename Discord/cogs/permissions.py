@@ -149,8 +149,8 @@ class Permissions(commands.Cog):
 				""", 
 				ctx.guild.id, subject.id
 			)
-			return await ctx.embed_reply('\n'.join(f"{record['permission']}: {record['setting']}" for record in records), 
-											title = f"Permissions for {subject.name}")
+			return await ctx.embed_reply('\n'.join(f"{record['permission']}: `{record['setting']}`" for record in records), 
+											title = f"Permissions for user: {subject}")
 		if isinstance(subject, discord.Role):
 			records = await ctx.bot.db.fetch(
 				"""
@@ -159,8 +159,8 @@ class Permissions(commands.Cog):
 				""", 
 				ctx.guild.id, subject.id
 			)
-			return await ctx.embed_reply('\n'.join(f"{record['permission']}: {record['setting']}" for record in records), 
-											title = f"Permissions for {subject.name}")
+			return await ctx.embed_reply('\n'.join(f"{record['permission']}: `{record['setting']}`" for record in records), 
+											title = f"Permissions for role: {subject}")
 		if subject and subject in self.bot.all_commands:
 			setting = await ctx.bot.db.fetchval(
 				"""
@@ -169,7 +169,7 @@ class Permissions(commands.Cog):
 				""", 
 				ctx.guild.id, subject
 			)
-			fields = [("Everyone", setting)]
+			fields = [("Everyone", f"`{setting}`")]
 			records = await ctx.bot.db.fetch(
 				"""
 				SELECT role_id, setting FROM permissions.roles
@@ -177,7 +177,7 @@ class Permissions(commands.Cog):
 				""", 
 				ctx.guild.id, subject
 			)
-			fields.append(("Roles", '\n'.join(f"{ctx.guild.get_role(record['role_id'])}: {record['setting']}" for record in records)))
+			fields.append(("Roles", '\n'.join(f"{ctx.guild.get_role(record['role_id']).mention}: `{record['setting']}`" for record in records)))
 			# TODO: Handle role no longer existing
 			records = await ctx.bot.db.fetch(
 				"""
@@ -186,9 +186,9 @@ class Permissions(commands.Cog):
 				""", 
 				ctx.guild.id, subject
 			)
-			fields.append(("Users", '\n'.join(f"{ctx.bot.get_user(record['user_id'])}: {record['setting']}" for record in records)))
+			fields.append(("Users", '\n'.join(f"{ctx.bot.get_user(record['user_id']).mention}: `{record['setting']}`" for record in records)))
 			# TODO: Handle user no longer visible
-			return await ctx.embed_reply(title = f"Permissions for {subject}", fields = fields)
+			return await ctx.embed_reply(title = f"Permissions for command: {subject}", fields = fields)
 		records = await ctx.bot.db.fetch(
 			"""
 			SELECT permission, setting FROM permissions.everyone
@@ -196,6 +196,6 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id
 		)
-		await ctx.embed_reply('\n'.join(f"{record['permission']}: {record['setting']}" for record in records), 
+		await ctx.embed_reply('\n'.join(f"{record['permission']}: `{record['setting']}`" for record in records), 
 										title = "Permissions for everyone")
 
