@@ -190,7 +190,8 @@ class Permissions(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def getpermissions_command(self, ctx, command : str):
-		if command not in self.bot.all_commands: return (await ctx.embed_reply(f"Error: {command} is not a command"))
+		if command not in self.bot.all_commands:
+			return (await ctx.embed_reply(f"Error: {command} is not a command"))
 		output = f"__Permissions for {command}__\n"
 		setting = await ctx.bot.db.fetchval(
 			"""
