@@ -151,7 +151,7 @@ class Permissions(commands.Cog):
 		)
 		output = "__Permissions for everyone__\n"
 		for record in records:
-			output += "{}: {}\n".format(record["permission"], str(record["setting"]))
+			output += f"{record['permission']}: {record['setting']}\n"
 		await ctx.send(output)
 	
 	@getpermissions.command(name = "role")
