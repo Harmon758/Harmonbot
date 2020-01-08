@@ -264,7 +264,7 @@ class Search(commands.Cog):
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
-			await ctx.embed_reply("Using closest Wolfram|Alpha interpretation: `{}`".format(didyoumean))
+			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
 			result = self.bot.wolfram_alpha_client.query(didyoumean, ip = self.bot.fake_ip, location = location)
 		if hasattr(result, "pods"):
 			for pod in result.pods:
@@ -278,7 +278,7 @@ class Search(commands.Cog):
 						print(image.title)
 						print(image.alt)
 						print(subpod.plaintext.replace('\n', ' '))
-						text_output.append("\n{}".format(subpod.plaintext))
+						text_output.append(f"\n{subpod.plaintext}")
 				if not text_output:
 					await ctx.embed_reply(title = pod.title, image_url = images[0])
 					for image in images[1:]:
@@ -286,11 +286,11 @@ class Search(commands.Cog):
 				else:
 					for i, link in enumerate(images):
 						images[i] = await self._shorturl(link)
-					output = ("**{}** ({})".format(pod.title, ', '.join(images)))
+					output = (f"**{pod.title}** ({', '.join(images)})")
 					output += "".join(text_output)
 					await ctx.reply(output)
 			if result.timedout:
-				await ctx.embed_reply("Some results timed out: {}".format(result.timedout.replace(',', ", ")))
+				await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
 		elif result.timedout:
 			await ctx.embed_reply("Standard computation time exceeded")
 		else:
