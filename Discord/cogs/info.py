@@ -202,7 +202,7 @@ class Info(commands.Cog):
 	
 	@info.command(aliases = ["yt"])
 	async def youtube(self, ctx, url : str):
-		'''Information about YouTube videos'''
+		'''Information about a YouTube video'''
 		# TODO: Automatic on YouTube links, server specific toggleable option
 		# TODO: Handle playlists
 		url_data = urllib.parse.urlparse(url)
