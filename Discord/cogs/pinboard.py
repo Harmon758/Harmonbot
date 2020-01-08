@@ -62,7 +62,7 @@ class Pinboard(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@pinboard.command()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def backfill(self, ctx):
 		'''
@@ -113,7 +113,7 @@ class Pinboard(commands.Cog):
 	
 	# TODO: pinboard off option
 	@pinboard.command()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def channel(self, ctx, channel : discord.TextChannel = None):
 		'''Set/get channel'''
@@ -162,7 +162,7 @@ class Pinboard(commands.Cog):
 								title = f"{len(records)} {ctx.bot.inflect_engine.plural('pinner', len(records))} of {message.jump_url}")
 	
 	@pinboard.command(aliases = ["private"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def private_channels(self, ctx, setting: Optional[bool]):
 		'''
@@ -198,7 +198,7 @@ class Pinboard(commands.Cog):
 			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard private channels setting to {setting}")
 	
 	@pinboard.command()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def threshold(self, ctx, threshold_number : int = None):
 		'''

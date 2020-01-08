@@ -103,7 +103,7 @@ class Audio(commands.Cog):
 			await response.edit(embed = embed)
 	
 	@commands.command(aliases = ["summon", "move"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def join(self, ctx, *, channel: Optional[discord.VoiceChannel]):
 		'''Get me to join a voice channel'''
@@ -125,7 +125,7 @@ class Audio(commands.Cog):
 	
 	@commands.command()
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def leave(self, ctx):
 		'''Tell me to leave the voice channel'''
@@ -137,7 +137,7 @@ class Audio(commands.Cog):
 	
 	@commands.command(aliases = ["stop"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def pause(self, ctx):
 		'''Pause the current song'''
@@ -151,7 +151,7 @@ class Audio(commands.Cog):
 	
 	@commands.command(aliases = ["start"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def resume(self, ctx):
 		'''Resume the current song'''
@@ -178,8 +178,8 @@ class Audio(commands.Cog):
 		# TODO: Implement override permission
 		player = self.players[ctx.guild.id]
 		try:
-			await checks.is_permitted().predicate(ctx)
-		except errors.NotPermitted:
+			await commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate(ctx)
+		except commands.CheckAnyFailure:
 			if ctx.author in ctx.guild.voice_client.channel.members:
 				if not ctx.guild.voice_client.is_playing() and not ctx.guild.voice_client.is_paused():
 					await ctx.embed_reply(":no_entry: There is no song to skip")
@@ -208,7 +208,7 @@ class Audio(commands.Cog):
 	
 	@skip.command(name = "to")
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def skip_to(self, ctx, number : int):
 		'''
@@ -225,7 +225,7 @@ class Audio(commands.Cog):
 	
 	@commands.command(aliases = ["repeat"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def replay(self, ctx):
 		'''Repeat the current song'''
@@ -243,7 +243,7 @@ class Audio(commands.Cog):
 	
 	@commands.command()
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def insert(self, ctx, position_number : int, *, song : str):
 		'''Insert a song into the queue'''
@@ -268,7 +268,7 @@ class Audio(commands.Cog):
 	
 	@commands.command(aliases = ["clear"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def empty(self, ctx):
 		'''Empty the queue'''
@@ -277,7 +277,7 @@ class Audio(commands.Cog):
 	
 	@commands.command()
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def shuffle(self, ctx):
 		'''Shuffle the queue'''
@@ -315,7 +315,7 @@ class Audio(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def radio(self, ctx):
 		'''
@@ -330,7 +330,7 @@ class Audio(commands.Cog):
 	
 	@radio.command(name = "on", aliases = ["start"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def radio_on(self, ctx):
 		'''Turn radio on'''
@@ -341,7 +341,7 @@ class Audio(commands.Cog):
 	
 	@radio.command(name = "off", aliases = ["stop"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def radio_off(self, ctx):
 		'''Turn radio off'''
@@ -353,7 +353,7 @@ class Audio(commands.Cog):
 	
 	@commands.command(aliases = ["set_text"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def settext(self, ctx):
 		'''Set text channel for messages'''
@@ -362,7 +362,7 @@ class Audio(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def tts(self, ctx, *, message : str):
 		'''Text to speech'''
@@ -398,7 +398,7 @@ class Audio(commands.Cog):
 	
 	@commands.command()
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def file(self, ctx, *, filename : str = ""):
 		'''Play an audio file'''
@@ -415,7 +415,7 @@ class Audio(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def library(self, ctx):
 		'''Start/stop playing songs from my library'''
@@ -427,7 +427,7 @@ class Audio(commands.Cog):
 	
 	@library.command(name = "play", aliases = ["start"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def library_play(self, ctx):
 		'''Start playing songs from my library'''
@@ -438,7 +438,7 @@ class Audio(commands.Cog):
 	
 	@library.command(name = "stop")
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def library_stop(self, ctx):
 		'''Stop playing songs from my library'''
@@ -450,7 +450,7 @@ class Audio(commands.Cog):
 	
 	@library.command(name = "song")
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def library_song(self, ctx, *, filename : str = ""):
 		'''Play a song from my library'''
@@ -492,7 +492,7 @@ class Audio(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def volume(self, ctx, *, volume_setting : float = None):
 		'''
@@ -514,7 +514,7 @@ class Audio(commands.Cog):
 	
 	@volume.command(name = "default")
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def volume_default(self, ctx, *, volume_setting : float = None):
 		'''
@@ -591,7 +591,7 @@ class Audio(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True, hidden = True)
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def listen(self, ctx):
 		if self.players[ctx.guild.id].listener:
@@ -601,7 +601,7 @@ class Audio(commands.Cog):
 	
 	@listen.command(name = "start", aliases = ["on"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def listen_start(self, ctx):
 		if self.players[ctx.guild.id].listener:
@@ -611,7 +611,7 @@ class Audio(commands.Cog):
 	
 	@listen.command(name = "stop", aliases = ["off"])
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def listen_stop(self, ctx):
 		if self.players[ctx.guild.id].listener:
@@ -621,7 +621,7 @@ class Audio(commands.Cog):
 	
 	@listen.command(name = "once")
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def listen_once(self, ctx):
 		if self.players[ctx.guild.id].listener:
@@ -631,7 +631,7 @@ class Audio(commands.Cog):
 	
 	@listen.command(name = "finish")
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def listen_finish(self, ctx):
 		if self.players[ctx.guild.id].listener:
@@ -641,7 +641,7 @@ class Audio(commands.Cog):
 	
 	@listen.command(name = "process")
 	@checks.is_voice_connected()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def listen_process(self, ctx):
 		await self.players[ctx.guild.id].process_listen()

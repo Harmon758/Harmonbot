@@ -92,7 +92,7 @@ class Twitch(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@twitch_add.command(name = "filter")
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitch_add_filter(self, ctx, *, string : str):
 		'''Add string to filter Twitch stream titles by'''
 		inserted = await ctx.bot.db.fetchrow(
@@ -110,7 +110,7 @@ class Twitch(commands.Cog):
 								"I will now filter all streams for this string in the title")
 	
 	@twitch_add.command(name = "game")
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitch_add_game(self, ctx, *, game : str):
 		'''Add a Twitch game to follow'''
 		# TODO: Add documentation on 100 limit
@@ -129,7 +129,7 @@ class Twitch(commands.Cog):
 								"I will now announce here when Twitch streams playing this game go live")
 	
 	@twitch_add.command(name = "keyword", aliases = ["query", "search"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitch_add_keyword(self, ctx, *, keyword : str):
 		'''Add a Twitch keyword(s) search to follow'''
 		# TODO: Add documentation on 100 limit
@@ -148,7 +148,7 @@ class Twitch(commands.Cog):
 								"I will now announce here when Twitch streams with this keyword go live")
 	
 	@twitch_add.command(name = "channel", aliases = ["stream"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitch_add_channel(self, ctx, username : str):
 		'''Add a Twitch channel to follow'''
 		url = "https://api.twitch.tv/kraken/users"
@@ -178,7 +178,7 @@ class Twitch(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@twitch_remove.command(name = "filter")
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitch_remove_filter(self, ctx, *, string : str):
 		'''Remove a string Twitch stream titles are being filtered by'''
 		deleted = await ctx.bot.db.fetchval(
@@ -194,7 +194,7 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(f"Removed the filter, `{string}`, from this text channel")
 	
 	@twitch_remove.command(name = "game")
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitch_remove_game(self, ctx, *, game : str):
 		'''Remove a Twitch game being followed'''
 		deleted = await ctx.bot.db.fetchval(
@@ -210,7 +210,7 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(f"Removed the game, [`{game}`](https://www.twitch.tv/directory/game/{game}), from this text channel")
 	
 	@twitch_remove.command(name = "keyword", aliases = ["query", "search"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitch_remove_keyword(self, ctx, *, keyword : str):
 		'''Remove a Twitch keyword(s) search being followed'''
 		deleted = await ctx.bot.db.fetchval(
@@ -226,7 +226,7 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(f"Removed the Twitch keyword search, `{keyword}`, from this text channel")
 	
 	@twitch_remove.command(name = "channel", aliases = ["stream"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitch_remove_channel(self, ctx, username : str):
 		'''Remove a Twitch channel being followed'''
 		url = "https://api.twitch.tv/kraken/users"

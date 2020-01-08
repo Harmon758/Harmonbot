@@ -80,10 +80,9 @@ def is_permitted():
 		while ((permitted := await ctx.get_permission(command.name, id = ctx.author.id)) is None
 				and command.parent is not None):
 			command = command.parent
-		try:
-			return permitted or await is_guild_owner().predicate(ctx)
-		except errors.NotGuildOwner:
-			raise errors.NotPermitted
+		if permitted:
+			return True
+		raise errors.NotPermitted
 	
 	return commands.check(predicate)
 

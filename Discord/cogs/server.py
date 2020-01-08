@@ -76,7 +76,7 @@ class Server(commands.Cog):
 	
 	@server.group(aliases = ["setting"], invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings(self, ctx, setting : str, on_off : bool):
 		'''WIP'''
 		await ctx.bot.set_guild_setting(ctx.guild.id, setting, on_off)
@@ -86,70 +86,70 @@ class Server(commands.Cog):
 	
 	@settings.group(name = "logs", aliases = ["log"], case_insensitive = True)
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs.command(name = "channel")
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_channel(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs.command(name = "typing", aliases = ["type"])
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_typing(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs.group(name = "message", aliases = ["messages"], case_insensitive = True)
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_message(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_message.command(name = "send")
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_message_send(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_message.command(name = "delete")
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_message_delete(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_message.command(name = "edit")
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_message_edit(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs.group(name = "reaction", aliases = ["reactions"], case_insensitive = True)
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_reaction(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_reaction.command(name = "add")
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_reaction_add(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_reaction.command(name = "remove")
 	@commands.guild_only()
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_reaction_remove(self, ctx):
 		'''WIP'''
 		...

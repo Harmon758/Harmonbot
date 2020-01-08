@@ -88,7 +88,7 @@ class RSS(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@rss.command(name = "add")
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def rss_add(self, ctx, url : str):
 		'''Add a feed to a channel'''
 		following = await ctx.bot.db.fetchval(
@@ -132,7 +132,7 @@ class RSS(commands.Cog):
 		await ctx.embed_reply(f"The feed, {url}, has been added to this channel")
 
 	@rss.command(name = "remove", aliases = ["delete"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def rss_remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
 		deleted = await ctx.bot.db.fetchval(

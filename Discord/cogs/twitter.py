@@ -187,7 +187,7 @@ class Twitter(commands.Cog):
 								timestamp = tweet.created_at, color = self.bot.twitter_color)
 	
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitter_add(self, ctx, handle : str):
 		'''
 		Add a Twitter handle to a text channel
@@ -222,7 +222,7 @@ class Twitter(commands.Cog):
 		await message.edit(embed = embed)
 	
 	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def twitter_remove(self, ctx, handle : str):
 		'''
 		Remove a Twitter handle from a text channel

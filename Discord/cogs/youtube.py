@@ -43,19 +43,20 @@ class YouTube(commands.Cog):
 		# Add youtube (audio) streams and uploads subcommands and their corresponding subcommands
 		streams_command = commands.Group(self.streams, aliases = ["stream"], 
 											invoke_without_command = True, case_insensitive = True, 
-											checks = [checks.is_permitted().predicate])
-		streams_command.add_command(commands.Command(self.streams_add, name = "add", checks = [checks.is_permitted().predicate]))
+											checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate])
+		streams_command.add_command(commands.Command(self.streams_add, name = "add", 
+														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
 		streams_command.add_command(commands.Command(self.streams_remove, name = "remove", aliases = ["delete"], 
-														checks = [checks.is_permitted().predicate]))
+														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
 		streams_command.add_command(commands.Command(self.streams_channels, name = "channels", aliases = ["streams"], 
 														checks = [checks.not_forbidden().predicate]))
 		uploads_command = commands.Group(self.uploads, aliases = ["videos"], 
 											invoke_without_command = True, case_insensitive = True, 
-											checks = [checks.is_permitted().predicate])
+											checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate])
 		uploads_command.add_command(commands.Command(self.uploads_add, name = "add", aliases = ["subscribe"], 
-														checks = [checks.is_permitted().predicate]))
+														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
 		uploads_command.add_command(commands.Command(self.uploads_remove, name = "remove", aliases = ["delete", "unsubscribe"], 
-														checks = [checks.is_permitted().predicate]))
+														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
 		uploads_command.add_command(commands.Command(self.uploads_channels, name = "channels", aliases = ["uploads", "videos"], 
 														checks = [checks.not_forbidden().predicate]))
 		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):

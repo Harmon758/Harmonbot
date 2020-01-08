@@ -109,7 +109,7 @@ class Meta(commands.Cog):
 			await ctx.whisper(embed = embed)
 	
 	@commands.command(aliases = ["setprefixes"])
-	@checks.is_permitted()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def setprefix(self, ctx, *prefixes: str):
 		'''
 		Set the bot prefix(es)
