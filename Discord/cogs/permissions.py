@@ -112,7 +112,7 @@ class Permissions(commands.Cog):
 		await ctx.embed_reply(f"{permission} set to {setting} for {user.mention}", 
 								title = "Permission Updated")
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.command()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def getpermission(self, ctx, permission, users: Optional[Union[discord.Member, discord.Role]]):
