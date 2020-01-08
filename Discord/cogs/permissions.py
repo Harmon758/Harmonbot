@@ -62,6 +62,7 @@ class Permissions(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def setpermission_everyone(self, ctx, permission: str, setting: Optional[bool]):
+		'''Set a permission for everyone'''
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		await self.bot.db.execute(
@@ -80,6 +81,7 @@ class Permissions(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def setpermission_role(self, ctx, role: discord.Role, permission: str, setting: Optional[bool]):
+		'''Set a permission for a role'''
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		await self.bot.db.execute(
@@ -98,6 +100,7 @@ class Permissions(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def setpermission_user(self, ctx, user: discord.Member, permission: str, setting: Optional[bool]):
+		'''Set a permission for a user'''
 		if permission not in self.bot.all_commands:
 			return await ctx.embed_reply(f"Error: {permission} is not a command")
 		await self.bot.db.execute(
