@@ -181,9 +181,9 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id, user.id
 		)
-		output = "__Permissions for {}__\n".format(user.name)
+		output = f"__Permissions for {user.name}__\n"
 		for record in records:
-			output += "{}: {}\n".format(record["permission"], str(record["setting"]))
+			output += f"{record['permission']}: {record['setting']}\n"
 		await ctx.send(output)
 	
 	@getpermissions.command(name = "command")
