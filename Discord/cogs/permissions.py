@@ -190,8 +190,8 @@ class Permissions(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
 	async def getpermissions_command(self, ctx, command : str):
-		if command not in self.bot.all_commands: return (await ctx.embed_reply("Error: {} is not a command".format(command)))
-		output = "__Permissions for {}__\n".format(command)
+		if command not in self.bot.all_commands: return (await ctx.embed_reply(f"Error: {command} is not a command"))
+		output = f"__Permissions for {command}__\n"
 		setting = await ctx.bot.db.fetchval(
 			"""
 			SELECT setting FROM permissions.everyone
@@ -199,7 +199,7 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id, command
 		)
-		output += "**Everyone**: {}\n".format(setting)
+		output += f"**Everyone**: {setting}\n"
 		output += "**Roles**\n"
 		records = await ctx.bot.db.fetch(
 			"""
@@ -209,7 +209,7 @@ class Permissions(commands.Cog):
 			ctx.guild.id, command
 		)
 		for record in records:
-			output += "{}: {}\n".format(ctx.guild.get_role(record["role_id"]), str(record["setting"]))
+			output += f"{ctx.guild.get_role(record['role_id'])}: {record['setting']}\n"
 			# TODO: Handle role no longer existing
 		output += "**Users**\n"
 		records = await ctx.bot.db.fetch(
@@ -220,7 +220,7 @@ class Permissions(commands.Cog):
 			ctx.guild.id, command
 		)
 		for record in records:
-			output += "{}: {}\n".format(ctx.bot.get_user(record["user_id"]), str(record["setting"]))
+			output += f"{ctx.bot.get_user(record['user_id'])}: {record['setting']}\n"
 			# TODO: Handle user no longer visible
 		await ctx.send(output)
 
