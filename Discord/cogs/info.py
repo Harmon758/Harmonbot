@@ -55,7 +55,7 @@ class Info(commands.Cog):
 	
 	@info.command(aliases = ["char"])
 	async def character(self, ctx, character: str):
-		'''Information about unicode characters'''
+		'''Information about a Unicode character'''
 		output = []
 		for char in character:
 			output.append({"char": char})
