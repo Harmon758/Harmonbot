@@ -221,6 +221,26 @@ class Discord(commands.Cog):
 		await ctx.embed_reply(":wastebasket: Unpinned message")
 	
 	@commands.command()
+	@commands.bot_has_permissions(manage_messages = True)
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
+	@commands.guild_only()
+	# TODO: Handle own messages (in DMs)
+	async def suppress(self, ctx, message: discord.Message):
+		'''Suppress embeds in a message'''
+		await message.edit(suppress = True)
+		await ctx.embed_reply(f"\N{FACE WITH FINGER COVERING CLOSED LIPS} Suppressed embeds in [message]({message.jump_url})")
+	
+	@commands.command()
+	@commands.bot_has_permissions(manage_messages = True)
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
+	@commands.guild_only()
+	# TODO: Handle own messages (in DMs)
+	async def unsuppress(self, ctx, message: discord.Message):
+		'''Unsuppress embeds in a message'''
+		await message.edit(suppress = False)
+		await ctx.embed_reply(f"\N{SPEAKING HEAD IN SILHOUETTE} Unsuppressed embeds in [message]({message.jump_url})")
+	
+	@commands.command()
 	@commands.guild_only()
 	@checks.not_forbidden()
 	async def tempchannel(self, ctx, *options : str):
