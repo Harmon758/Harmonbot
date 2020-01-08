@@ -133,15 +133,71 @@ class Permissions(commands.Cog):
 												type = "role", id = users.id)
 			return await ctx.embed_reply(f"{permission} is set to {setting} for the role, {users.mention}")
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
-	async def getpermissions(self, ctx):
-		await ctx.send_help(ctx.command)
-	
-	@getpermissions.command(name = "everyone")
+	@commands.command()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	@commands.guild_only()
-	async def getpermissions_everyone(self, ctx):
+	async def getpermissions(self, ctx, subject: Optional[Union[discord.Member, discord.Role, str]]):
+		'''
+		Get permissions for a user, role, command, or everyone
+		Defaults to everyone if no user, role, or command is specified or found
+		'''
+		if isinstance(subject, discord.Member):
+			records = await ctx.bot.db.fetch(
+				"""
+				SELECT permission, setting FROM permissions.users
+				WHERE guild_id = $1 AND user_id = $2
+				""", 
+				ctx.guild.id, subject.id
+			)
+			output = f"__Permissions for {subject.name}__\n"
+			for record in records:
+				output += f"{record['permission']}: {record['setting']}\n"
+			return await ctx.send(output)
+		if isinstance(subject, discord.Role):
+			records = await ctx.bot.db.fetch(
+				"""
+				SELECT permission, setting FROM permissions.roles
+				WHERE guild_id = $1 AND role_id = $2
+				""", 
+				ctx.guild.id, subject.id
+			)
+			output = f"__Permissions for {subject.name}__\n"
+			for record in records:
+				output += f"{record['permission']}: {record['setting']}\n"
+			return await ctx.send(output)
+		if subject and subject in self.bot.all_commands:
+			output = f"__Permissions for {subject}__\n"
+			setting = await ctx.bot.db.fetchval(
+				"""
+				SELECT setting FROM permissions.everyone
+				WHERE guild_id = $1 AND permission = $2
+				""", 
+				ctx.guild.id, subject
+			)
+			output += (f"**Everyone**: {setting}\n"
+						"**Roles**\n")
+			records = await ctx.bot.db.fetch(
+				"""
+				SELECT role_id, setting FROM permissions.roles
+				WHERE guild_id = $1 AND permission = $2
+				""", 
+				ctx.guild.id, subject
+			)
+			for record in records:
+				output += f"{ctx.guild.get_role(record['role_id'])}: {record['setting']}\n"
+				# TODO: Handle role no longer existing
+			output += "**Users**\n"
+			records = await ctx.bot.db.fetch(
+				"""
+				SELECT user_id, setting FROM permissions.users
+				WHERE guild_id = $1 AND permission = $2
+				""", 
+				ctx.guild.id, subject
+			)
+			for record in records:
+				output += f"{ctx.bot.get_user(record['user_id'])}: {record['setting']}\n"
+				# TODO: Handle user no longer visible
+			return await ctx.send(output)
 		records = await ctx.bot.db.fetch(
 			"""
 			SELECT permission, setting FROM permissions.everyone
@@ -152,76 +208,5 @@ class Permissions(commands.Cog):
 		output = "__Permissions for everyone__\n"
 		for record in records:
 			output += f"{record['permission']}: {record['setting']}\n"
-		await ctx.send(output)
-	
-	@getpermissions.command(name = "role")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	@commands.guild_only()
-	async def getpermissions_role(self, ctx, role : discord.Role):
-		records = await ctx.bot.db.fetch(
-			"""
-			SELECT permission, setting FROM permissions.roles
-			WHERE guild_id = $1 AND role_id = $2
-			""", 
-			ctx.guild.id, role.id
-		)
-		output = f"__Permissions for {role.name}__\n"
-		for record in records:
-			output += f"{record['permission']}: {record['setting']}\n"
-		await ctx.send(output)
-	
-	@getpermissions.command(name = "user")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	@commands.guild_only()
-	async def getpermissions_user(self, ctx, user : discord.Member):
-		records = await ctx.bot.db.fetch(
-			"""
-			SELECT permission, setting FROM permissions.users
-			WHERE guild_id = $1 AND user_id = $2
-			""", 
-			ctx.guild.id, user.id
-		)
-		output = f"__Permissions for {user.name}__\n"
-		for record in records:
-			output += f"{record['permission']}: {record['setting']}\n"
-		await ctx.send(output)
-	
-	@getpermissions.command(name = "command")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	@commands.guild_only()
-	async def getpermissions_command(self, ctx, command : str):
-		if command not in self.bot.all_commands:
-			return await ctx.embed_reply(f"Error: {command} is not a command")
-		output = f"__Permissions for {command}__\n"
-		setting = await ctx.bot.db.fetchval(
-			"""
-			SELECT setting FROM permissions.everyone
-			WHERE guild_id = $1 AND permission = $2
-			""", 
-			ctx.guild.id, command
-		)
-		output += (f"**Everyone**: {setting}\n"
-					"**Roles**\n")
-		records = await ctx.bot.db.fetch(
-			"""
-			SELECT role_id, setting FROM permissions.roles
-			WHERE guild_id = $1 AND permission = $2
-			""", 
-			ctx.guild.id, command
-		)
-		for record in records:
-			output += f"{ctx.guild.get_role(record['role_id'])}: {record['setting']}\n"
-			# TODO: Handle role no longer existing
-		output += "**Users**\n"
-		records = await ctx.bot.db.fetch(
-			"""
-			SELECT user_id, setting FROM permissions.users
-			WHERE guild_id = $1 AND permission = $2
-			""", 
-			ctx.guild.id, command
-		)
-		for record in records:
-			output += f"{ctx.bot.get_user(record['user_id'])}: {record['setting']}\n"
-			# TODO: Handle user no longer visible
 		await ctx.send(output)
 
