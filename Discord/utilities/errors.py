@@ -1,11 +1,11 @@
 
-from discord.ext.commands.errors import CommandError
+from discord.ext.commands.errors import CheckFailure
 
-class NotGuildOwner(CommandError):
+class NotGuildOwner(CheckFailure):
 	'''Not Guild Owner'''
 	pass
 
-class VoiceNotConnected(CommandError):
+class VoiceNotConnected(CheckFailure):
 	'''Voice Not Connected'''
 	pass
 
@@ -17,11 +17,11 @@ class NotPermittedVoiceNotConnected(VoiceNotConnected):
 	'''Voice Not Connected, and Not Permitted'''
 	pass
 
-class NotPermitted(CommandError):
+class NotPermitted(CheckFailure):
 	'''Not Permitted'''
 	pass
 
-class AudioError(CommandError):
+class AudioError(CheckFailure):
 	'''Audio Error'''
 	pass
 
