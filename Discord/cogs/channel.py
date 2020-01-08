@@ -33,7 +33,7 @@ class Channel(commands.Cog):
 	
 	@category.command(name = "create", aliases = ["make", "new"])
 	@commands.bot_has_guild_permissions(manage_channels = True)
-	@commands.check_any(commands.is_owner(), commands.has_guild_permissions(manage_channels = True))
+	@commands.check_any(commands.has_guild_permissions(manage_channels = True), commands.is_owner())
 	async def category_create(self, ctx, *, name : str):
 		'''Create category'''
 		channel = await ctx.guild.create_category_channel(name)
@@ -111,7 +111,7 @@ class Channel(commands.Cog):
 	
 	@text.command(name = "create", aliases = ["make", "new"])
 	@commands.bot_has_guild_permissions(manage_channels = True)
-	@commands.check_any(commands.is_owner(), commands.has_guild_permissions(manage_channels = True))
+	@commands.check_any(commands.has_guild_permissions(manage_channels = True), commands.is_owner())
 	async def text_create(self, ctx, name : str):
 		'''Create text channel'''
 		channel = await ctx.guild.create_text_channel(name)
@@ -209,7 +209,7 @@ class Channel(commands.Cog):
 	
 	@text.command(name = "sync")
 	@commands.bot_has_permissions(manage_channels = True, manage_roles = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_channels = True, manage_roles = True))
+	@commands.check_any(commands.has_permissions(manage_channels = True, manage_roles = True), commands.is_owner())
 	@commands.guild_only()
 	async def text_sync(self, ctx, *, channel : discord.TextChannel):
 		'''Sync permissions with category the text channel belongs to'''
@@ -251,7 +251,7 @@ class Channel(commands.Cog):
 	
 	@voice.command(name = "create", aliases = ["make", "new"])
 	@commands.bot_has_guild_permissions(manage_channels = True)
-	@commands.check_any(commands.is_owner(), commands.has_guild_permissions(manage_channels = True))
+	@commands.check_any(commands.has_guild_permissions(manage_channels = True), commands.is_owner())
 	async def voice_create(self, ctx, *, name : str):
 		'''Create voice channel'''
 		channel = await ctx.guild.create_voice_channel(name)
@@ -296,7 +296,7 @@ class Channel(commands.Cog):
 	
 	@voice.command(name = "sync")
 	@commands.bot_has_permissions(manage_channels = True, manage_roles = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_channels = True, manage_roles = True))
+	@commands.check_any(commands.has_permissions(manage_channels = True, manage_roles = True), commands.is_owner())
 	@commands.guild_only()
 	async def voice_sync(self, ctx, *, channel : discord.VoiceChannel):
 		'''Sync permissions with category the voice channel belongs to'''

@@ -64,7 +64,7 @@ class Discord(commands.Cog):
 		'''
 		if ctx.channel.type is discord.ChannelType.private:
 			return await self.delete_number(ctx, number, check = lambda m: m.author == self.bot.user, delete_command = False)
-		await commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True)).predicate(ctx)
+		await commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner()).predicate(ctx)
 		commands.bot_has_permissions(manage_messages = True).predicate(ctx)
 		if user:
 			await self.delete_number(ctx, number, check = lambda m: m.author.id == user.id)
@@ -74,7 +74,7 @@ class Discord(commands.Cog):
 	
 	@delete.command(name = "attachments", aliases = ["images"])
 	@commands.bot_has_permissions(manage_messages = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True))
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
 	async def delete_attachments(self, ctx, number : int):
@@ -83,7 +83,7 @@ class Discord(commands.Cog):
 	
 	@delete.command(name = "contains")
 	@commands.bot_has_permissions(manage_messages = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True))
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
 	async def delete_contains(self, ctx, string : str, number : int):
@@ -92,7 +92,7 @@ class Discord(commands.Cog):
 	
 	@delete.command(name = "embeds")
 	@commands.bot_has_permissions(manage_messages = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True))
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
 	async def delete_embeds(self, ctx, number: int):
@@ -101,7 +101,7 @@ class Discord(commands.Cog):
 	
 	@delete.command(name = "time")
 	@commands.bot_has_permissions(manage_messages = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True))
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
 	async def delete_time(self, ctx, minutes : int):
@@ -191,7 +191,7 @@ class Discord(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.bot_has_permissions(manage_messages = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True))
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
 	async def pin(self, ctx, message: discord.Message):
@@ -201,7 +201,7 @@ class Discord(commands.Cog):
 	
 	@pin.command(name = "first")
 	@commands.bot_has_permissions(manage_messages = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True))
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
 	async def pin_first(self, ctx):
@@ -212,7 +212,7 @@ class Discord(commands.Cog):
 	
 	@commands.command()
 	@commands.bot_has_permissions(manage_messages = True)
-	@commands.check_any(commands.is_owner(), commands.has_permissions(manage_messages = True))
+	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
 	async def unpin(self, ctx, message: discord.Message):
