@@ -191,7 +191,7 @@ class Permissions(commands.Cog):
 	@commands.guild_only()
 	async def getpermissions_command(self, ctx, command : str):
 		if command not in self.bot.all_commands:
-			return (await ctx.embed_reply(f"Error: {command} is not a command"))
+			return await ctx.embed_reply(f"Error: {command} is not a command")
 		output = f"__Permissions for {command}__\n"
 		setting = await ctx.bot.db.fetchval(
 			"""
@@ -200,8 +200,8 @@ class Permissions(commands.Cog):
 			""", 
 			ctx.guild.id, command
 		)
-		output += f"**Everyone**: {setting}\n"
-		output += "**Roles**\n"
+		output += (f"**Everyone**: {setting}\n"
+					"**Roles**\n")
 		records = await ctx.bot.db.fetch(
 			"""
 			SELECT role_id, setting FROM permissions.roles
