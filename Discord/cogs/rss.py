@@ -42,10 +42,10 @@ class RSS(commands.Cog):
 			if len(matching_utc_offsets) == 1:
 				self.tzinfos[timezone_abbreviation] = dateutil.tz.gettz(matching_timezones[0])
 		
-		self.check_rss_feeds.start()
+		self.check_feeds.start()
 	
 	def cog_unload(self):
-		self.check_rss_feeds.cancel()
+		self.check_feeds.cancel()
 	
 	async def inititalize_database(self):
 		await self.bot.connect_to_database()
@@ -87,9 +87,9 @@ class RSS(commands.Cog):
 		'''RSS'''
 		await ctx.send_help(ctx.command)
 	
-	@rss.command(name = "add")
+	@rss.command()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def rss_add(self, ctx, url : str):
+	async def add(self, ctx, url : str):
 		'''Add a feed to a channel'''
 		following = await ctx.bot.db.fetchval(
 			"""
@@ -131,9 +131,9 @@ class RSS(commands.Cog):
 		)
 		await ctx.embed_reply(f"The feed, {url}, has been added to this channel")
 
-	@rss.command(name = "remove", aliases = ["delete"])
+	@rss.command(aliases = ["delete"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def rss_remove(self, ctx, url : str):
+	async def remove(self, ctx, url : str):
 		'''Remove a feed from a channel'''
 		deleted = await ctx.bot.db.fetchval(
 			"""
@@ -156,7 +156,7 @@ class RSS(commands.Cog):
 	
 	# R/PT0S
 	@tasks.loop()
-	async def check_rss_feeds(self):
+	async def check_feeds(self):
 		records = await self.bot.db.fetch(
 			"""
 			SELECT DISTINCT ON (feed) feed, last_checked, ttl
@@ -317,12 +317,12 @@ class RSS(commands.Cog):
 				print(f" (feed: {feed})")
 				await asyncio.sleep(60)
 	
-	@check_rss_feeds.before_loop
-	async def before_check_rss_feeds(self):
+	@check_feeds.before_loop
+	async def before_check_feeds(self):
 		await self.inititalize_database()
 		await self.bot.wait_until_ready()
 	
-	@check_rss_feeds.after_loop
-	async def after_check_rss_feeds(self):
+	@check_feeds.after_loop
+	async def after_check_feeds(self):
 		print(f"{self.bot.console_message_prefix}RSS task cancelled @ {datetime.datetime.now().isoformat()}")
 
