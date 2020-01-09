@@ -589,6 +589,12 @@ class Meta(commands.Cog):
 		await ctx.embed_reply(result)
 		# TODO: Improve result/response format
 	
+	@commands.command()
+	@commands.is_owner()
+	async def latency(self, ctx):
+		'''Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds'''
+		await ctx.embed_reply(f"{ctx.bot.latency:.6}s")
+	
 	@commands.command(aliases = ["repeattext"])
 	@commands.is_owner()
 	async def repeat_text(self, ctx, number : int, *, text):
