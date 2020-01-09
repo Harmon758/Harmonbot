@@ -248,7 +248,7 @@ class RSS(commands.Cog):
 						if media_image:
 							thumbnail_url = media_image.get("url")
 					if not thumbnail_url and "links" in entry:
-						image_link = discord.utils.find(lambda l: "image" in l["type"], entry["links"])
+						image_link = discord.utils.find(lambda l: "image" in l.get("type", ""), entry["links"])
 						if image_link:
 							thumbnail_url = image_link.get("href")
 					if not thumbnail_url and "content" in entry:
