@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import functools
@@ -257,8 +258,8 @@ class Search(commands.Cog):
 	async def process_wolframalpha(self, ctx, search, location = None):
 		# TODO: process asynchronously
 		if not location: location = self.bot.fake_location
-		search = search.strip('`')
-		result = self.bot.wolfram_alpha_client.query(search, ip = self.bot.fake_ip, location = location)  # options
+		result = self.bot.wolfram_alpha_client.query(search = search.strip('`'), ip = self.bot.fake_ip, location = location)
+		# TODO: other options?
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
@@ -271,31 +272,25 @@ class Search(commands.Cog):
 				return await ctx.embed_reply("Standard computation time exceeded")
 			else:
 				return await ctx.embed_reply(":no_entry: No results found")
-		for pod in result.pods:
-			images, text_output = [], []
-			# TODO: use text output by default?
-			for subpod in pod.subpods:
-				image = next(subpod.img)
-				images.append(image.src)
-				if subpod.plaintext and subpod.plaintext.replace('\n', ' ') not in (image.title, image.alt, image.title.strip(' '), image.alt.strip(' ')) or not ctx.me.permissions_in(ctx.channel).embed_links:
-					print("Wolfram Alpha:\n")
-					print(image.title)
-					print(image.alt)
-					print(subpod.plaintext.replace('\n', ' '))
-					text_output.append(f"\n{subpod.plaintext}")
-			if not text_output:
-				await ctx.embed_reply(title = pod.title, image_url = images[0])
-				for image in images[1:]:
-					await ctx.embed_send(image_url = image)
-			else:
-				for i, link in enumerate(images):
-					images[i] = await self._shorturl(link)
-				output = (f"**{pod.title}** ({', '.join(images)})")
-				output += "".join(text_output)
-				await ctx.reply(output)
+		if ctx.me.permissions_in(ctx.channel).embed_links:
+			for pod_number, pod in enumerate(result.pods):
+				for subpod_number, subpod in enumerate(pod.subpods):
+					if subpod_number:
+						await ctx.embed_send(image_url = next(subpod.img).src)
+					elif pod_number:
+						await ctx.embed_send(title = pod.title, image_url = next(subpod.img).src)
+					else:
+						await ctx.embed_reply(title = pod.title, image_url = next(subpod.img).src, footer_text = discord.Embed.Empty)
+		else:
+			text_output = ""
+			for pod in result.pods:
+				text_output += f"**{pod.title}**\n"
+				for subpod in pod.subpods:
+					if subpod.plaintext:
+						text_output += ctx.bot.CODE_BLOCK.format(subpod.plaintext) + '\n'
+			await ctx.reply(text_output)
 		if result.timedout:
 			await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
-		# await ctx.reply(next(result.results).text)
 	
 	@commands.command()
 	async def yahoo(self, ctx, *search : str):
