@@ -171,6 +171,30 @@ class PlayingMenu(CustomMenu):
 				await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
 											"There's nothing playing right now")
 
+class WolframAlphaSource(menus.ListPageSource):
+	
+	def __init__(self, subpods):
+		self.subpods = subpods
+		super().__init__(subpods, per_page = 1)
+	
+	async def format_page(self, menu, subpod):
+		pod, subpod = subpod
+		embed = discord.Embed(title = pod.title, color = menu.bot.bot_color)
+		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
+		embed.set_image(url = next(subpod.img).src)
+		embed.set_footer(text = f"Pod {menu.current_page + 1} of {len(self.subpods)}")
+		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
+
+class WolframAlphaMenu(CustomMenu, menus.MenuPages):
+	
+	def __init__(self, subpods):
+		super().__init__(WolframAlphaSource(subpods), timeout = None, clear_reactions_after = True, check_embeds = True)
+	
+	async def send_initial_message(self, ctx, channel):
+		message = await super().send_initial_message(ctx, channel)
+		await ctx.bot.attempt_delete_message(ctx.message)
+		return message
+
 class Reactions(commands.Cog):
 	
 	def __init__(self, bot):
@@ -179,7 +203,8 @@ class Reactions(commands.Cog):
 			(self.guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
 			(self.maze, "Games", "maze", [], [checks.not_forbidden().predicate]), 
 			(self.news, "Resources", "news", [], [checks.not_forbidden().predicate]), 
-			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate])
+			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
+			(self.wolframalpha, "Search", "wolframalpha", ["wa", "wolfram_alpha"], [checks.not_forbidden().predicate])
 		)
 		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
 			self.reactions.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
@@ -238,4 +263,30 @@ class Reactions(commands.Cog):
 	async def playing(self, ctx):
 		'''Audio player'''
 		await PlayingMenu().start(ctx)
+	
+	async def wolframalpha(self, ctx, *, search):
+		'''
+		Wolfram|Alpha
+		With reactions
+		'''
+		# TODO: process asynchronously
+		# TODO: location option?
+		location = self.bot.fake_location
+		result = self.bot.wolfram_alpha_client.query(search.strip('`'), ip = self.bot.fake_ip, location = location) 
+		# TODO: other options?
+		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
+			if result.didyoumeans["@count"] == '1':
+				didyoumean = result.didyoumeans["didyoumean"]["#text"]
+			else:
+				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
+			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
+			result = self.bot.wolfram_alpha_client.query(didyoumean, ip = self.bot.fake_ip, location = location)
+		if hasattr(result, "pods"):
+			await WolframAlphaMenu([(pod, subpod) for pod in result.pods for subpod in pod.subpods]).start(ctx)
+			if result.timedout:
+				await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
+		elif result.timedout:
+			await ctx.embed_reply("Standard computation time exceeded")
+		else:
+			await ctx.embed_reply(":no_entry: No results found")
 
