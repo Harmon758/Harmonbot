@@ -181,7 +181,7 @@ class RSS(commands.Cog):
 					# https://github.com/kurtmckee/feedparser/issues/130
 					# Wait for feedparser release with fix
 					# https://github.com/kurtmckee/feedparser/pull/131
-					# Update to feedparser@develop?
+					# Update to 6.0.0b1?
 					if str(e) == "generator raised StopIteration":
 						continue
 					raise
@@ -222,8 +222,7 @@ class RSS(commands.Cog):
 					else:
 						timestamp = discord.Embed.Empty
 					# Get and set description, title, url + set timestamp
-					description = entry.get("summary")
-					if not description and "content" in entry:
+					if not (description := entry.get("summary")) and "content" in entry:
 						description = entry["content"][0].get("value")
 					if description:
 						description = BeautifulSoup(description, "lxml").get_text(separator = '\n')
@@ -241,59 +240,48 @@ class RSS(commands.Cog):
 											color = self.bot.rss_color)
 					# Get and set thumbnail url
 					thumbnail_url = None
-					if "media_thumbnail" in entry:
-						thumbnail_url = entry["media_thumbnail"][0].get("url")
-					if not thumbnail_url and "media_content" in entry:
-						media_image = discord.utils.find(lambda c: "image" in c.get("medium", ""), entry["media_content"])
-						if media_image:
+					if media_thumbnail := entry.get("media_thumbnail"):
+						thumbnail_url = media_thumbnail[0].get("url")
+					if not thumbnail_url and (media_content := entry.get("media_content")):
+						if media_image := discord.utils.find(lambda c: "image" in c.get("medium", ""), media_content):
 							thumbnail_url = media_image.get("url")
-					if not thumbnail_url and "links" in entry:
-						image_link = discord.utils.find(lambda l: "image" in l.get("type", ""), entry["links"])
-						if image_link:
+					if not thumbnail_url and (links := entry.get("links")):
+						if image_link := discord.utils.find(lambda l: "image" in l.get("type", ""), links):
 							thumbnail_url = image_link.get("href")
-					if not thumbnail_url and "content" in entry:
-						content_value = entry["content"][0].get("value")
-						if content_value:
+					if not thumbnail_url and (content := entry.get("content")):
+						if content_value := content[0].get("value"):
 							parsed_content_value = BeautifulSoup(content_value, "lxml")
-							content_img = getattr(parsed_content_value, "img")
-							if content_img:
+							if content_img := getattr(parsed_content_value, "img"):
 								thumbnail_url = content_img.get("src")
-					if not thumbnail_url and "media_content" in entry:
-						media_content = discord.utils.find(lambda c: "url" in c, entry["media_content"])
-						if media_content:
+					if not thumbnail_url and (media_content := entry.get("media_content")):
+						if media_content := discord.utils.find(lambda c: "url" in c, media_content):
 							thumbnail_url = media_content["url"]
-					if not thumbnail_url and "description" in entry:
-						parsed_description = BeautifulSoup(entry.description, "lxml")
-						description_img = getattr(parsed_description, "img")
-						if description_img:
+					if not thumbnail_url and (description := entry.get("description")):
+						parsed_description = BeautifulSoup(description, "lxml")
+						if description_img := getattr(parsed_description, "img"):
 							thumbnail_url = description_img.get("src")
 					if thumbnail_url:
 						if not urllib.parse.urlparse(thumbnail_url).netloc:
 							thumbnail_url = feed_info.feed.link + thumbnail_url
 						embed.set_thumbnail(url = thumbnail_url)
 					# Get and set footer icon url
-					feed_channel_info = feed_info.feed
 					footer_icon_url = discord.Embed.Empty
-					if "icon" in feed_channel_info:
-						footer_icon_url = feed_channel_info["icon"]
-					if not footer_icon_url and "logo" in feed_channel_info:
-						footer_icon_url = feed_channel_info["logo"]
-					if not footer_icon_url and "image" in feed_channel_info:
-						feed_image = feed_channel_info["image"]
+					if icon := (feed_channel_info := feed_info.feed).get("icon"):
+						footer_icon_url = icon
+					if not footer_icon_url and (logo := feed_channel_info.get("logo")):
+						footer_icon_url = logo
+					if not footer_icon_url and (feed_image := feed_channel_info.get("image")):
 						if "href" in feed_image:
 							footer_icon_url = feed_image["href"]
 					if not footer_icon_url:
 						parsed_text = BeautifulSoup(feed_text, "lxml")
-						image_parsed = getattr(parsed_text, "image")
-						if image_parsed:
-							image_parsed_values = list(image_parsed.attrs.values())
-							if image_parsed_values:
+						if image_parsed := getattr(parsed_text, "image"):
+							if image_parsed_values := list(image_parsed.attrs.values()):
 								footer_icon_url = image_parsed_values[0]
 					embed.set_footer(text = feed_info.feed.title, icon_url = footer_icon_url)
 					channel_records = await self.bot.db.fetch("SELECT channel_id FROM rss.feeds WHERE feed = $1", feed)
 					for record in channel_records:
-						text_channel = self.bot.get_channel(record["channel_id"])
-						if text_channel:
+						if text_channel := self.bot.get_channel(record["channel_id"]):
 							try:
 								await text_channel.send(embed = embed)
 							except discord.Forbidden:
