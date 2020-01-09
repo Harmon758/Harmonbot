@@ -258,8 +258,8 @@ class Search(commands.Cog):
 	async def process_wolframalpha(self, ctx, search, location = None):
 		# TODO: process asynchronously
 		if not location:
-			location = self.bot.fake_location
-		result = self.bot.wolfram_alpha_client.query(search = search.strip('`'), ip = self.bot.fake_ip, location = location)
+			location = ctx.bot.fake_location
+		result = ctx.bot.wolfram_alpha_client.query(search = search.strip('`'), ip = ctx.bot.fake_ip, location = location)
 		# TODO: other options?
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
@@ -267,7 +267,7 @@ class Search(commands.Cog):
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
 			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
-			result = self.bot.wolfram_alpha_client.query(didyoumean, ip = self.bot.fake_ip, location = location)
+			result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
 		if not hasattr(result, "pods"):
 			if result.timedout:
 				return await ctx.embed_reply("Standard computation time exceeded")
