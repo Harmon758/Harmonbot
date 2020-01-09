@@ -239,46 +239,47 @@ class RSS(commands.Cog):
 											timestamp = timestamp, 
 											color = self.bot.rss_color)
 					# Get and set thumbnail url
-					thumbnail_url = None
-					if media_thumbnail := entry.get("media_thumbnail"):
-						thumbnail_url = media_thumbnail[0].get("url")
-					if not thumbnail_url and (media_content := entry.get("media_content")):
-						if media_image := discord.utils.find(lambda c: "image" in c.get("medium", ""), media_content):
-							thumbnail_url = media_image.get("url")
-					if not thumbnail_url and (links := entry.get("links")):
-						if image_link := discord.utils.find(lambda l: "image" in l.get("type", ""), links):
-							thumbnail_url = image_link.get("href")
-					if not thumbnail_url and (content := entry.get("content")):
-						if content_value := content[0].get("value"):
-							parsed_content_value = BeautifulSoup(content_value, "lxml")
-							if content_img := getattr(parsed_content_value, "img"):
-								thumbnail_url = content_img.get("src")
-					if not thumbnail_url and (media_content := entry.get("media_content")):
-						if media_content := discord.utils.find(lambda c: "url" in c, media_content):
-							thumbnail_url = media_content["url"]
-					if not thumbnail_url and (description := entry.get("description")):
-						parsed_description = BeautifulSoup(description, "lxml")
-						if description_img := getattr(parsed_description, "img"):
-							thumbnail_url = description_img.get("src")
+					thumbnail_url = (
+						(media_thumbnail := entry.get("media_thumbnail")) and media_thumbnail[0].get("url") or 
+						(
+							(media_content := entry.get("media_content")) and 
+							(media_image := discord.utils.find(lambda c: "image" in c.get("medium", ""), media_content)) and 
+							media_image.get("url")
+						) or 
+						(
+							(links := entry.get("links")) and 
+							(image_link := discord.utils.find(lambda l: "image" in l.get("type", ""), links)) and 
+							image_link.get("href")
+						 ) or 
+						(
+							(content := entry.get("content")) and (content_value := content[0].get("value")) and 
+							(content_img := getattr(BeautifulSoup(content_value, "lxml"), "img")) and 
+							content_img.get("src")
+						) or 
+						(
+							(media_content := entry.get("media_content")) and 
+							(media_content := discord.utils.find(lambda c: "url" in c, media_content)) and 
+							media_content["url"]
+						) or 
+						(
+							(description := entry.get("description")) and 
+							(description_img := getattr(BeautifulSoup(description, "lxml"), "img")) and 
+							description_img.get("src")
+						)
+					)
 					if thumbnail_url:
 						if not urllib.parse.urlparse(thumbnail_url).netloc:
 							thumbnail_url = feed_info.feed.link + thumbnail_url
 						embed.set_thumbnail(url = thumbnail_url)
 					# Get and set footer icon url
-					footer_icon_url = discord.Embed.Empty
-					if icon := (feed_channel_info := feed_info.feed).get("icon"):
-						footer_icon_url = icon
-					if not footer_icon_url and (logo := feed_channel_info.get("logo")):
-						footer_icon_url = logo
-					if not footer_icon_url and (feed_image := feed_channel_info.get("image")):
-						if "href" in feed_image:
-							footer_icon_url = feed_image["href"]
-					if not footer_icon_url:
-						parsed_text = BeautifulSoup(feed_text, "lxml")
-						if image_parsed := getattr(parsed_text, "image"):
-							if image_parsed_values := list(image_parsed.attrs.values()):
-								footer_icon_url = image_parsed_values[0]
+					footer_icon_url = (
+						feed_info.feed.get("icon") or feed_info.feed.get("logo") or 
+						(feed_image := feed_info.feed.get("image")) and feed_image.get("href") or 
+						(parsed_image := BeautifulSoup(feed_text, "lxml").image) and next(iter(parsed_image.attrs.values()), None) or 
+						discord.Embed.Empty
+					)
 					embed.set_footer(text = feed_info.feed.title, icon_url = footer_icon_url)
+					# Send embed(s)
 					channel_records = await self.bot.db.fetch("SELECT channel_id FROM rss.feeds WHERE feed = $1", feed)
 					for record in channel_records:
 						if text_channel := self.bot.get_channel(record["channel_id"]):
