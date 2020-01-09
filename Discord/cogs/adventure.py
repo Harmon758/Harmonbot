@@ -27,7 +27,7 @@ class Adventure(commands.Cog):
 		self.bot = bot
 		self.adventure_players = {}
 		
-		self.bot.loop.create_task(self.initialize_database())
+		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
 	
 	async def initialize_database(self):
 		await self.bot.connect_to_database()
@@ -333,7 +333,7 @@ class AdventurePlayer:
 		self.user_id = user_id
 		
 		self.initialized = asyncio.Event()
-		self.bot.loop.create_task(self.initialize_player())
+		self.bot.loop.create_task(self.initialize_player(), name = "Initialize Adventure Player")
 	
 	async def initialize_player(self):
 		await self.bot.db.execute(

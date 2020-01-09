@@ -27,7 +27,7 @@ class Battlerite(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.mappings = {}
-		self.bot.loop.create_task(self.load_mappings_and_emoji())
+		self.bot.loop.create_task(self.load_mappings_and_emoji(), name = "Load Battlerite mappings and emoji")
 	
 	async def load_mappings_and_emoji(self):
 		await self.load_mappings()

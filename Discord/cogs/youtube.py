@@ -76,7 +76,7 @@ class YouTube(commands.Cog):
 		with open(clients.data_path + "/youtube_uploads.json", 'r') as uploads_file:
 			self.uploads_info = json.load(uploads_file)
 		self.uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
-		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions())
+		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions(), name = "Renew YouTube upload subscriptions")
 	
 	def cog_unload(self):
 		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):

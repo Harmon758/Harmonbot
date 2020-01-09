@@ -46,7 +46,7 @@ class Games(commands.Cog):
 		# Necessary for maze generation
 		sys.setrecursionlimit(5000)
 		
-		self.bot.loop.create_task(self.initialize_database())
+		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
 
 	async def initialize_database(self):
 		await self.bot.connect_to_database()

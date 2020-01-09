@@ -91,7 +91,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 							embed.set_image(url = extended_entities["media"][0]["media_url_https"])
 							embed.description = embed.description.replace(extended_entities["media"][0]["url"], "")
 						embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
-						self.bot.loop.create_task(channel.send(embed = embed))
+						self.bot.loop.create_task(channel.send(embed = embed), name = "Send embed for Tweet")
 	
 	def on_error(self, status_code):
 		print(f"Twitter Error: {status_code}")
@@ -100,10 +100,10 @@ class TwitterStreamListener(tweepy.StreamListener):
 	def on_exception(self, exception):
 		if isinstance(exception, urllib3.exceptions.ReadTimeoutError):
 			print(f"{self.bot.console_message_prefix}Twitter stream timed out | Recreating stream..")
-			self.bot.loop.create_task(self.start_feeds())
+			self.bot.loop.create_task(self.start_feeds(), name = "Restart Twitter Stream")
 		elif isinstance(exception, urllib3.exceptions.ProtocolError):
 			print(f"{self.bot.console_message_prefix}Twitter stream Incomplete Read error | Recreating stream..")
-			self.bot.loop.create_task(self.start_feeds())
+			self.bot.loop.create_task(self.start_feeds(), name = "Restart Twitter Stream")
 
 class Twitter(commands.Cog):
 	
@@ -124,7 +124,7 @@ class Twitter(commands.Cog):
 		except tweepy.error.TweepError as e:
 			print(f"{self.bot.console_message_prefix}Failed to initialize Twitter cog blacklist: {e}")
 		self.stream_listener = TwitterStreamListener(bot)
-		self.task = self.bot.loop.create_task(self.start_twitter_feeds())
+		self.task = self.bot.loop.create_task(self.start_twitter_feeds(), name = "Start Twitter Stream")
 	
 	def cog_unload(self):
 		if self.stream_listener.stream:

@@ -116,7 +116,7 @@ class AiohttpAccessLogger(AccessLogger):
 	
 	def log(self, request, response, time):
 		# super().log(request, response, time)
-		asyncio.create_task(self.log_to_database(request, response, time))
+		asyncio.create_task(self.log_to_database(request, response, time), name = "Log aiohttp access to database")
 	
 	async def log_to_database(self, request, response, time):
 		async with create_database_connection() as connection:

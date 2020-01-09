@@ -125,7 +125,7 @@ class Bot(commands.Bot):
 		self.listing_sites = {}
 		# TODO: Include owner variable for user object?
 		# TODO: emote constants/variables
-		self.loop.create_task(self.initialize_constant_objects())
+		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
 		
 		# Variables
 		self.guild_settings = {}
@@ -271,7 +271,7 @@ class Bot(commands.Bot):
 		# TODO: Document inter-cog dependencies/subcommands
 		# TODO: Catch exceptions on fail to load?
 		
-		self.loop.create_task(self.startup_tasks())
+		self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
 	
 	@property
 	async def app_info(self):
@@ -523,7 +523,7 @@ class Bot(commands.Bot):
 		print(f"{self.console_message_prefix}disconnected @ {datetime.datetime.now().isoformat()}")
 	
 	async def on_guild_join(self, guild):
-		self.loop.create_task(self.update_all_listing_stats())
+		self.loop.create_task(self.update_all_listing_stats(), name = "Update all bot listing stats")
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id)
 		await self.send_embed(me, title = "Joined Server", thumbnail_url = guild.icon_url, 
 								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), 
@@ -532,7 +532,7 @@ class Bot(commands.Bot):
 		# TODO: Track guild names
 	
 	async def on_guild_remove(self, guild):
-		self.loop.create_task(self.update_all_listing_stats())
+		self.loop.create_task(self.update_all_listing_stats(), name = "Update all bot listing stats")
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id)
 		await self.send_embed(me, title = "Left Server", thumbnail_url = guild.icon_url, 
 								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild.owner)), 

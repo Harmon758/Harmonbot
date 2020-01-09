@@ -241,7 +241,7 @@ if __name__ == "__main__":
 	
 	try:
 		if ci or github_action:
-			client.loop.create_task(client.start(token))
+			client.loop.create_task(client.start(token), name = "Client")
 			client.loop.run_until_complete(asyncio.sleep(10))
 			# TODO: stop after ready
 		else:

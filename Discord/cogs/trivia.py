@@ -32,7 +32,7 @@ class Trivia(commands.Cog):
 		self.bot.add_command(self.jeopardy)
 		self.trivia.add_command(self.jeopardy)
 		
-		self.bot.loop.create_task(self.initialize_database())
+		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)

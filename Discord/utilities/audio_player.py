@@ -26,7 +26,7 @@ class AudioPlayer:
 		# TODO: server specific default volume
 		self.skip_votes_required = 0
 		self.skip_votes = set()
-		self.player = self.bot.loop.create_task(self.player_task())
+		self.player = self.bot.loop.create_task(self.player_task(), name = "Audio Player")
 		self.resume_flag = asyncio.Event()
 		self.not_interrupted = asyncio.Event()
 		self.not_interrupted.set()
@@ -299,7 +299,7 @@ class AudioPlayer:
 	
 	async def start_listening(self):
 		if not self.listener and self.not_interrupted.is_set():
-			self.listener = self.bot.loop.create_task(self.listen_task())
+			self.listener = self.bot.loop.create_task(self.listen_task(), name = "Audio Player listener")
 			return True
 	
 	async def stop_listening(self):

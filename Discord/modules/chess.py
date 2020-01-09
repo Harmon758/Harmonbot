@@ -26,7 +26,7 @@ class ChessMatch(chess.Board):
 																				creationflags = subprocess.CREATE_NO_WINDOW)
 		# TODO: Use popcnt.exe?
 		self.match_message = None
-		self.task = ctx.bot.loop.create_task(self.match_task())
+		self.task = ctx.bot.loop.create_task(self.match_task(), name = "Chess Match")
 		return self
 	
 	# TODO: Cancel task on deletion/bot shutdown
