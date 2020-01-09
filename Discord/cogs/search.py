@@ -259,7 +259,7 @@ class Search(commands.Cog):
 		# TODO: process asynchronously
 		if not location:
 			location = ctx.bot.fake_location
-		result = ctx.bot.wolfram_alpha_client.query(search = search.strip('`'), ip = ctx.bot.fake_ip, location = location)
+		result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
 		# TODO: other options?
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
