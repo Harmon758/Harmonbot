@@ -14,7 +14,7 @@ class Context(commands.Context):
 		else:
 			in_response_to_text += f" {self.author} ({self.author.id})"
 		if in_response_to:
-			if not kwargs.get("footer_text"):
+			if "footer_text" not in kwargs:
 				kwargs["footer_text"] = f"{in_response_to_text}: {self.message.clean_content}"
 			elif len(args) < 2:
 				args = (next(iter(args), None), f"{in_response_to_text}: `{self.message.clean_content}`")
