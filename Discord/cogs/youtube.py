@@ -70,7 +70,8 @@ class YouTube(commands.Cog):
 			command.add_command(uploads_command)
 			self.bot.add_command(command)
 		
-		self.check_streams.start()
+		self.streams_task = self.check_streams.start()
+		self.streams_task.set_name("YouTube streams")
 		
 		clients.create_file("youtube_uploads", content = {})
 		with open(clients.data_path + "/youtube_uploads.json", 'r') as uploads_file:

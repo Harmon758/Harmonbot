@@ -42,7 +42,8 @@ class RSS(commands.Cog):
 			if len(matching_utc_offsets) == 1:
 				self.tzinfos[timezone_abbreviation] = dateutil.tz.gettz(matching_timezones[0])
 		
-		self.check_feeds.start()
+		self.task = self.check_feeds.start()
+		self.task.set_name("RSS")
 	
 	def cog_unload(self):
 		self.check_feeds.cancel()
