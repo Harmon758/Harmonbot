@@ -22,11 +22,11 @@ class Twitch(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.task = self.check_twitch_streams.start()
+		self.task = self.check_streams.start()
 		self.task.set_name("Twitch")
 	
 	def cog_unload(self):
-		self.check_twitch_streams.cancel()
+		self.check_streams.cancel()
 	
 	async def initialize_database(self):
 		await self.bot.connect_to_database()
@@ -86,15 +86,15 @@ class Twitch(commands.Cog):
 		'''Twitch'''
 		await ctx.send_help(ctx.command)
 	
-	@twitch.group(name = "add", invoke_without_command = True, case_insensitive = True)
+	@twitch.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def twitch_add(self, ctx):
+	async def add(self, ctx):
 		'''Add Twitch games, keywords, or channels to follow'''
 		await ctx.send_help(ctx.command)
 	
-	@twitch_add.command(name = "filter")
+	@add.command(name = "filter")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitch_add_filter(self, ctx, *, string : str):
+	async def add_filter(self, ctx, *, string : str):
 		'''Add string to filter Twitch stream titles by'''
 		inserted = await ctx.bot.db.fetchrow(
 			"""
@@ -110,9 +110,9 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(f"Added the filter, `{string}`, to this text channel\n"
 								"I will now filter all streams for this string in the title")
 	
-	@twitch_add.command(name = "game")
+	@add.command(name = "game")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitch_add_game(self, ctx, *, game : str):
+	async def add_game(self, ctx, *, game : str):
 		'''Add a Twitch game to follow'''
 		# TODO: Add documentation on 100 limit
 		inserted = await ctx.bot.db.fetchrow(
@@ -129,9 +129,9 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(f"Added the game, [`{game}`](https://www.twitch.tv/directory/game/{game}), to this text channel\n"
 								"I will now announce here when Twitch streams playing this game go live")
 	
-	@twitch_add.command(name = "keyword", aliases = ["query", "search"])
+	@add.command(name = "keyword", aliases = ["query", "search"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitch_add_keyword(self, ctx, *, keyword : str):
+	async def add_keyword(self, ctx, *, keyword : str):
 		'''Add a Twitch keyword(s) search to follow'''
 		# TODO: Add documentation on 100 limit
 		inserted = await ctx.bot.db.fetchrow(
@@ -148,9 +148,9 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(f"Added the keyword search, `{keyword}`, to this text channel\n"
 								"I will now announce here when Twitch streams with this keyword go live")
 	
-	@twitch_add.command(name = "channel", aliases = ["stream"])
+	@add.command(name = "channel", aliases = ["stream"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitch_add_channel(self, ctx, username : str):
+	async def add_channel(self, ctx, username : str):
 		'''Add a Twitch channel to follow'''
 		url = "https://api.twitch.tv/kraken/users"
 		headers = {"Accept": "application/vnd.twitchtv.v5+json"}
@@ -171,16 +171,15 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(f"Added the Twitch channel, [`{username}`](https://www.twitch.tv/{username}), to this text channel\n"
 								"I will now announce here when this Twitch channel goes live")
 	
-	@twitch.group(name = "remove", aliases = ["delete"], 
-					invoke_without_command = True, case_insensitive = True)
+	@twitch.group(aliases = ["delete"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def twitch_remove(self, ctx):
+	async def remove(self, ctx):
 		'''Remove Twitch games, keywords, or channels being followed'''
 		await ctx.send_help(ctx.command)
 	
-	@twitch_remove.command(name = "filter")
+	@remove.command(name = "filter")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitch_remove_filter(self, ctx, *, string : str):
+	async def remove_filter(self, ctx, *, string : str):
 		'''Remove a string Twitch stream titles are being filtered by'''
 		deleted = await ctx.bot.db.fetchval(
 			"""
@@ -194,9 +193,9 @@ class Twitch(commands.Cog):
 			return await ctx.embed_reply(":no_entry: This text channel doesn't have that filter")
 		await ctx.embed_reply(f"Removed the filter, `{string}`, from this text channel")
 	
-	@twitch_remove.command(name = "game")
+	@remove.command(name = "game")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitch_remove_game(self, ctx, *, game : str):
+	async def remove_game(self, ctx, *, game : str):
 		'''Remove a Twitch game being followed'''
 		deleted = await ctx.bot.db.fetchval(
 			"""
@@ -210,9 +209,9 @@ class Twitch(commands.Cog):
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that game")
 		await ctx.embed_reply(f"Removed the game, [`{game}`](https://www.twitch.tv/directory/game/{game}), from this text channel")
 	
-	@twitch_remove.command(name = "keyword", aliases = ["query", "search"])
+	@remove.command(name = "keyword", aliases = ["query", "search"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitch_remove_keyword(self, ctx, *, keyword : str):
+	async def remove_keyword(self, ctx, *, keyword : str):
 		'''Remove a Twitch keyword(s) search being followed'''
 		deleted = await ctx.bot.db.fetchval(
 			"""
@@ -226,9 +225,9 @@ class Twitch(commands.Cog):
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that keyword")
 		await ctx.embed_reply(f"Removed the Twitch keyword search, `{keyword}`, from this text channel")
 	
-	@twitch_remove.command(name = "channel", aliases = ["stream"])
+	@remove.command(name = "channel", aliases = ["stream"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitch_remove_channel(self, ctx, username : str):
+	async def remove_channel(self, ctx, username : str):
 		'''Remove a Twitch channel being followed'''
 		url = "https://api.twitch.tv/kraken/users"
 		headers = {"Accept": "application/vnd.twitchtv.v5+json"}
@@ -247,9 +246,9 @@ class Twitch(commands.Cog):
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that Twitch channel")
 		await ctx.embed_reply(f"Removed the Twitch channel, [`{username}`](https://www.twitch.tv/{username}), from this text channel")
 	
-	@twitch.command(name = "filters")
+	@twitch.command()
 	@checks.not_forbidden()
-	async def twitch_filters(self, ctx):
+	async def filters(self, ctx):
 		'''Show strings Twitch stream titles are being filtered by in this text channel'''
 		records = await ctx.bot.db.fetch(
 			"""
@@ -261,9 +260,9 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply('\n'.join(record["filter"] for record in records), 
 								title = "Twitch stream title filters in this text channel")
 	
-	@twitch.command(name = "games")
+	@twitch.command()
 	@checks.not_forbidden()
-	async def twitch_games(self, ctx):
+	async def games(self, ctx):
 		'''Show Twitch games being followed in this text channel'''
 		records = await ctx.bot.db.fetch(
 			"""
@@ -275,9 +274,9 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply('\n'.join(record["game"] for record in records), 
 								title = "Twitch games being followed in this text channel")
 	
-	@twitch.command(name = "keywords", aliases = ["queries", "searches"])
+	@twitch.command(aliases = ["queries", "searches"])
 	@checks.not_forbidden()
-	async def twitch_keywords(self, ctx):
+	async def keywords(self, ctx):
 		'''Show Twitch keywords being followed in this text channel'''
 		records = await ctx.bot.db.fetch(
 			"""
@@ -289,9 +288,9 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply('\n'.join(record["keyword"] for record in records), 
 								title = "Twitch keywords being followed in this text channel")
 	
-	@twitch.command(name = "channels", aliases = ["streams"])
+	@twitch.command(aliases = ["streams"])
 	@checks.not_forbidden()
-	async def twitch_channels(self, ctx):
+	async def channels(self, ctx):
 		'''Show Twitch channels being followed in this text channel'''
 		records = await ctx.bot.db.fetch(
 			"""
@@ -318,7 +317,7 @@ class Twitch(commands.Cog):
 	
 	# R/PT20S
 	@tasks.loop(seconds = 20)
-	async def check_twitch_streams(self):
+	async def check_streams(self):
 		headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
 		try:
 			stream_ids = []
@@ -334,7 +333,7 @@ class Twitch(commands.Cog):
 					games_data = await resp.json()
 				streams = games_data.get("streams", [])
 				stream_ids += [str(stream["_id"]) for stream in streams]
-				await self.process_twitch_streams(streams, "games", match = game)
+				await self.process_streams(streams, "games", match = game)
 				await asyncio.sleep(1)
 			# Keywords
 			records = await self.bot.db.fetch("SELECT DISTINCT keyword FROM twitch_notifications.keywords")
@@ -346,7 +345,7 @@ class Twitch(commands.Cog):
 					keywords_data = await resp.json()
 				streams = keywords_data.get("streams", [])
 				stream_ids += [str(stream["_id"]) for stream in streams]
-				await self.process_twitch_streams(streams, "keywords", match = keyword)
+				await self.process_streams(streams, "keywords", match = keyword)
 				await asyncio.sleep(1)
 			# Streams
 			streams_data = {}
@@ -361,7 +360,7 @@ class Twitch(commands.Cog):
 					# TODO: Handle >100 streams
 				streams = streams_data.get("streams", [])
 				stream_ids += [str(stream["_id"]) for stream in streams]
-				await self.process_twitch_streams(streams, "streams")
+				await self.process_streams(streams, "streams")
 			# Update streams notified
 			records = await self.bot.db.fetch(
 				"""
@@ -405,16 +404,16 @@ class Twitch(commands.Cog):
 			errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			await asyncio.sleep(60)
 	
-	@check_twitch_streams.before_loop
-	async def before_check_twitch_streams(self):
+	@check_streams.before_loop
+	async def before_check_streams(self):
 		await self.initialize_database()
 		await self.bot.wait_until_ready()
 	
-	@check_twitch_streams.after_loop
-	async def after_check_twitch_streams(self):
+	@check_streams.after_loop
+	async def after_check_streams(self):
 		print(f"{self.bot.console_message_prefix}Twitch task cancelled @ {datetime.datetime.now().isoformat()}")
 	
-	async def process_twitch_streams(self, streams, type, match = None):
+	async def process_streams(self, streams, type, match = None):
 		# TODO: use textwrap
 		for stream in streams:
 			records = await self.bot.db.fetch(
