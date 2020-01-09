@@ -266,35 +266,35 @@ class Search(commands.Cog):
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
 			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
 			result = self.bot.wolfram_alpha_client.query(didyoumean, ip = self.bot.fake_ip, location = location)
-		if hasattr(result, "pods"):
-			for pod in result.pods:
-				images, text_output = [], []
-				# TODO: use text output by default?
-				for subpod in pod.subpods:
-					image = next(subpod.img)
-					images.append(image.src)
-					if subpod.plaintext and subpod.plaintext.replace('\n', ' ') not in (image.title, image.alt, image.title.strip(' '), image.alt.strip(' ')) or not ctx.me.permissions_in(ctx.channel).embed_links:
-						print("Wolfram Alpha:\n")
-						print(image.title)
-						print(image.alt)
-						print(subpod.plaintext.replace('\n', ' '))
-						text_output.append(f"\n{subpod.plaintext}")
-				if not text_output:
-					await ctx.embed_reply(title = pod.title, image_url = images[0])
-					for image in images[1:]:
-						await ctx.embed_send(image_url = image)
-				else:
-					for i, link in enumerate(images):
-						images[i] = await self._shorturl(link)
-					output = (f"**{pod.title}** ({', '.join(images)})")
-					output += "".join(text_output)
-					await ctx.reply(output)
+		if not hasattr(result, "pods"):
 			if result.timedout:
-				await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
-		elif result.timedout:
-			await ctx.embed_reply("Standard computation time exceeded")
-		else:
-			await ctx.embed_reply(":no_entry: No results found")
+				return await ctx.embed_reply("Standard computation time exceeded")
+			else:
+				return await ctx.embed_reply(":no_entry: No results found")
+		for pod in result.pods:
+			images, text_output = [], []
+			# TODO: use text output by default?
+			for subpod in pod.subpods:
+				image = next(subpod.img)
+				images.append(image.src)
+				if subpod.plaintext and subpod.plaintext.replace('\n', ' ') not in (image.title, image.alt, image.title.strip(' '), image.alt.strip(' ')) or not ctx.me.permissions_in(ctx.channel).embed_links:
+					print("Wolfram Alpha:\n")
+					print(image.title)
+					print(image.alt)
+					print(subpod.plaintext.replace('\n', ' '))
+					text_output.append(f"\n{subpod.plaintext}")
+			if not text_output:
+				await ctx.embed_reply(title = pod.title, image_url = images[0])
+				for image in images[1:]:
+					await ctx.embed_send(image_url = image)
+			else:
+				for i, link in enumerate(images):
+					images[i] = await self._shorturl(link)
+				output = (f"**{pod.title}** ({', '.join(images)})")
+				output += "".join(text_output)
+				await ctx.reply(output)
+		if result.timedout:
+			await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
 		# await ctx.reply(next(result.results).text)
 	
 	@commands.command()
