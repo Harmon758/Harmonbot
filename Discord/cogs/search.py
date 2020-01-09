@@ -288,8 +288,9 @@ class Search(commands.Cog):
 				text_output += f"**{pod.title}**\n"
 				for subpod in pod.subpods:
 					if subpod.plaintext:
-						text_output += ctx.bot.CODE_BLOCK.format(subpod.plaintext) + '\n'
+						text_output += ctx.bot.CODE_BLOCK.format(subpod.plaintext)
 			await ctx.reply(text_output)
+		# TODO: single embed with plaintext version?
 		if result.timedout:
 			await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
 	
