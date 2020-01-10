@@ -475,7 +475,10 @@ class Resources(commands.Cog):
 	@checks.not_forbidden()
 	async def shorturl(self, ctx, url : str):
 		'''Generate a short goo.gl url for your link'''
-		async with self.bot.aiohttp_session.post("https://www.googleapis.com/urlshortener/v1/url?key={}".format(self.bot.GOOGLE_API_KEY), headers = {'Content-Type': 'application/json'}, data = '{"longUrl": "' + url + '"}') as resp:
+		url = "https://www.googleapis.com/urlshortener/v1/url?key={}".format(self.bot.GOOGLE_API_KEY)
+		headers = {'Content-Type': 'application/json'}
+		data = '{"longUrl": "' + url + '"}'
+		async with self.bot.aiohttp_session.post(url, headers = headers, data = data) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(data["id"])
 	
