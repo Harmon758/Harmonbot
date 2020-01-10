@@ -473,7 +473,7 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def shorturl(self, ctx, url : str):
+	async def shorturl(self, ctx, url: str):
 		'''Generate a short goo.gl url for your link'''
 		url = f"https://www.googleapis.com/urlshortener/v1/url"
 		params = {"key": self.bot.GOOGLE_API_KEY}
