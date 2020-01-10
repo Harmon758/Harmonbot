@@ -241,10 +241,10 @@ class Resources(commands.Cog):
 			# TODO: Include log?
 		await ctx.embed_reply(image_url = f"{url}/{data['filename']}")
 	
-	@commands.command()
-	@checks.not_forbidden()
+	# TODO: Use other URL unshortener API?
+	@commands.command(enabled = False, hidden = True)
 	async def longurl(self, ctx, url: str):
-		'''Expand a short goo.gl url'''
+		'''Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html'''
 		url = "https://www.googleapis.com/urlshortener/v1/url"
 		params = {"shortUrl": url, "key": ctx.bot.GOOGLE_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
@@ -470,10 +470,10 @@ class Resources(commands.Cog):
 		'''WIP'''
 		return
 	
-	@commands.command()
-	@checks.not_forbidden()
+	# TODO: Use other URL shortener API? e.g. Bitly?, Ow.ly?
+	@commands.command(enabled = False, hidden = True)
 	async def shorturl(self, ctx, url: str):
-		'''Generate a short goo.gl url for your link'''
+		'''Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html'''
 		url = f"https://www.googleapis.com/urlshortener/v1/url"
 		params = {"key": self.bot.GOOGLE_API_KEY}
 		headers = {"Content-Type": "application/json"}
