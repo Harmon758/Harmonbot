@@ -243,7 +243,7 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def longurl(self, ctx, url : str):
+	async def longurl(self, ctx, url: str):
 		'''Expand a short goo.gl url'''
 		url = "https://www.googleapis.com/urlshortener/v1/url"
 		params = {"shortUrl": url, "key": ctx.bot.GOOGLE_API_KEY}
