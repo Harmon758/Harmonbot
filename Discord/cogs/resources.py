@@ -477,7 +477,7 @@ class Resources(commands.Cog):
 		'''Generate a short goo.gl url for your link'''
 		url = f"https://www.googleapis.com/urlshortener/v1/url"
 		params = {"key": self.bot.GOOGLE_API_KEY}
-		headers = {'Content-Type': 'application/json'}
+		headers = {"Content-Type": "application/json"}
 		data = f'{{"longUrl": "{url}"}}'
 		async with self.bot.aiohttp_session.post(url, params = params, headers = headers, data = data) as resp:
 			data = await resp.json()
