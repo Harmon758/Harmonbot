@@ -1,6 +1,6 @@
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, menus
 
 import asyncio
 import datetime
@@ -621,8 +621,18 @@ class Bot(commands.Bot):
 			## Unable to bulk delete messages older than 14 days
 			if isinstance(error.original, discord.HTTPException) and error.original.code == 50034:
 				return await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
+			## Menus
+			if isinstance(error.original, menus.CannotEmbedLinks):
+				return await ctx.embed_reply("I need to be able to send embeds to show menus\n"
+												"Plese give me permission to Embed Links")
+			if isinstance(error.original, menus.CannotAddReactions):
+				return await ctx.embed_reply("I need to be able to add reactions to show menus\n"
+												"Please give me permission to Add Reactions")
+			if isinstance(error.original, menus.CannotReadMessageHistory):
+				return await ctx.embed_reply("I need to be able to read message history to show menus\n"
+												"Please give me permission to Read Message History")
 			## Bot missing permissions (Unhandled)
-			if isinstance(error.original, (discord.Forbidden)):
+			if isinstance(error.original, (discord.Forbidden, menus.CannotSendMessages)):
 				return print(f"{self.console_message_prefix}Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}")
 			## Handled with local error handler
 			if isinstance(error.original, youtube_dl.utils.DownloadError):
