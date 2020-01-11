@@ -4,12 +4,9 @@ from discord.ext import commands
 from utilities import checks
 
 def setup(bot):
-	bot.add_cog(Duelyst(bot))
+	bot.add_cog(Duelyst())
 
 class Duelyst(commands.Cog):
-	
-	def __init__(self, bot):
-		self.bot = bot
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
