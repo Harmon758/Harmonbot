@@ -309,7 +309,7 @@ class Audio(commands.Cog):
 			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
 		try:
 			await response.edit(embed = embed)
-		except discord.HTTPException:
+		except discord.HTTPException: # Necessary?
 			embed.description = ":warning: Error loading `{}`".format(song)
 			await response.edit(embed = embed)
 	
