@@ -51,12 +51,12 @@ class WoWS(commands.Cog):
 		if data["status"] != "ok":
 			return await ctx.embed_reply(":no_entry: Error")
 		data = data["data"][str(account_id)]
-		# TODO: handle hidden profile?
-		fields = [("ID", account_id), ("Account Level", data["leveling_tier"])]
-		fields.append(("Account XP", f"{data['leveling_points']:,}"))
-		fields.append(("Battles Fought", data["statistics"]["battles"]))
-		fields.append(("Miles Travelled", data["statistics"]["distance"]))
-		created_at = datetime.datetime.utcfromtimestamp(data["created_at"])
-		await ctx.embed_reply(title = data["nickname"], fields = fields, 
-								footer_text = "Account Created", timestamp = created_at)
+		# TODO: Handle hidden profile?
+		await ctx.embed_reply(title = data["nickname"], 
+								fields = (("ID", account_id), ("Account Level", data["leveling_tier"]), 
+											("Account XP", f"{data['leveling_points']:,}"), 
+											("Battles Fought", data["statistics"]["battles"]), 
+											("Miles Travelled", data["statistics"]["distance"])), 
+								footer_text = "Account Created", 
+								timestamp = datetime.datetime.utcfromtimestamp(data["created_at"]))
 
