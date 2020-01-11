@@ -6,7 +6,7 @@ import datetime
 from utilities import checks
 
 def setup(bot):
-	bot.add_cog(WoWS(bot))
+	bot.add_cog(WoWS())
 
 API_URLS = {
 	"asia": "https://api.worldofwarships.asia/wows/", 
@@ -16,9 +16,6 @@ API_URLS = {
 }
 
 class WoWS(commands.Cog):
-	
-	def __init__(self, bot):
-		self.bot = bot
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
