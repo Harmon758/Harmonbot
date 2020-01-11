@@ -259,7 +259,12 @@ class Search(commands.Cog):
 		# TODO: process asynchronously
 		if not location:
 			location = ctx.bot.fake_location
-		result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
+		try:
+			result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
+		except Exception as e:
+			if str(e).startswith("Error "):
+				return await ctx.embed_reply(f":no_entry: {e}")
+			raise
 		# TODO: other options?
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
@@ -267,7 +272,12 @@ class Search(commands.Cog):
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
 			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
-			result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
+			try:
+				result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
+			except Exception as e:
+				if str(e).startswith("Error "):
+					return await ctx.embed_reply(f":no_entry: {e}")
+				raise
 		if not hasattr(result, "pods"):
 			if result.timedout:
 				return await ctx.embed_reply("Standard computation time exceeded")

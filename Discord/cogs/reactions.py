@@ -272,7 +272,12 @@ class Reactions(commands.Cog):
 		# TODO: process asynchronously
 		# TODO: location option?
 		location = self.bot.fake_location
-		result = self.bot.wolfram_alpha_client.query(search.strip('`'), ip = self.bot.fake_ip, location = location)
+		try:
+			result = self.bot.wolfram_alpha_client.query(search.strip('`'), ip = self.bot.fake_ip, location = location)
+		except Exception as e:
+			if str(e).startswith("Error "):
+				return await ctx.embed_reply(f":no_entry: {e}")
+			raise
 		# TODO: other options?
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
@@ -280,7 +285,12 @@ class Reactions(commands.Cog):
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
 			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
-			result = self.bot.wolfram_alpha_client.query(didyoumean, ip = self.bot.fake_ip, location = location)
+			try:
+				result = self.bot.wolfram_alpha_client.query(didyoumean, ip = self.bot.fake_ip, location = location)
+			except Exception as e:
+				if str(e).startswith("Error "):
+					return await ctx.embed_reply(f":no_entry: {e}")
+				raise
 		if hasattr(result, "pods"):
 			await WolframAlphaMenu([(pod, subpod) for pod in result.pods for subpod in pod.subpods]).start(ctx)
 			if result.timedout:
