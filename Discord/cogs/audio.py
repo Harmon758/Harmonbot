@@ -46,7 +46,7 @@ class Audio(commands.Cog):
 					invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def audio(self, ctx, *, song : str = ""): #elif options[0] == "full":
+	async def audio(self, ctx, *, song : str = ""):  #elif options[0] == "full":
 		'''
 		Audio System - play a song
 		All audio subcommands are also commands
@@ -309,7 +309,7 @@ class Audio(commands.Cog):
 			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
 		try:
 			await response.edit(embed = embed)
-		except discord.HTTPException: # Necessary?
+		except discord.HTTPException:  # Necessary?
 			embed.description = ":warning: Error loading `{}`".format(song)
 			await response.edit(embed = embed)
 	
@@ -555,7 +555,7 @@ class Audio(commands.Cog):
 					playing_bar = playing_bar[:button_spot] + ":radio_button: " + playing_bar[button_spot + 1:]
 					played_duration = utilities.secs_to_colon_format(played_duration)
 					total_duration = utilities.secs_to_colon_format(total_duration)
-					description = ":arrow_forward: {}`[{}/{}]`".format(playing_bar, played_duration, total_duration) # Add :sound:?
+					description = ":arrow_forward: {}`[{}/{}]`".format(playing_bar, played_duration, total_duration)  # Add :sound:?
 				views = ctx.guild.voice_client.source.info.get("view_count")
 				likes = ctx.guild.voice_client.source.info.get("like_count")
 				dislikes = ctx.guild.voice_client.source.info.get("dislike_count")
