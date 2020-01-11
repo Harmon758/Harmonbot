@@ -272,7 +272,7 @@ class Reactions(commands.Cog):
 		# TODO: process asynchronously
 		# TODO: location option?
 		location = self.bot.fake_location
-		result = self.bot.wolfram_alpha_client.query(search.strip('`'), ip = self.bot.fake_ip, location = location) 
+		result = self.bot.wolfram_alpha_client.query(search.strip('`'), ip = self.bot.fake_ip, location = location)
 		# TODO: other options?
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
