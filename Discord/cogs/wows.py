@@ -8,14 +8,17 @@ from utilities import checks
 def setup(bot):
 	bot.add_cog(WoWS(bot))
 
+API_URLS = {
+	"asia": "https://api.worldofwarships.asia/wows/", 
+	"eu": "https://api.worldofwarships.eu/wows/", 
+	"na": "https://api.worldofwarships.com/wows/", 
+	"ru": "https://api.worldofwarships.ru/wows/"
+}
+
 class WoWS(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.api_urls = {"asia": "https://api.worldofwarships.asia/wows/", 
-							"eu": "https://api.worldofwarships.eu/wows/", 
-							"na": "https://api.worldofwarships.com/wows/", 
-							"ru": "https://api.worldofwarships.ru/wows/"}
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -32,7 +35,7 @@ class WoWS(commands.Cog):
 	@wows.group(invoke_without_command = True, case_insensitive = True)
 	async def player(self, ctx, player: str, region: str = "NA"):
 		'''Player details'''
-		api_url = self.api_urls.get(region.lower(), "na")
+		api_url = API_URLS.get(region.lower(), "na")
 		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "search": player, "limit": 1}
 		async with ctx.bot.aiohttp_session.get(api_url + "account/list/", params = params) as resp:
 			data = await resp.json()
