@@ -524,8 +524,7 @@ class Audio(commands.Cog):
 		if volume_setting is None:
 			await ctx.embed_reply(":sound: Current default volume: {:g}".format(self.players[ctx.guild.id].default_volume))
 		else:
-			if volume_setting > 2000: volume_setting = 2000
-			elif volume_setting < 0: volume_setting = 0
+			volume_setting = min(max(0, volume_setting), 2000)
 			self.players[ctx.guild.id].default_volume = volume_setting
 			await ctx.embed_reply(":sound: Set default volume to {:g}".format(volume_setting))
 	
