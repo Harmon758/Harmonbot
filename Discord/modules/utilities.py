@@ -9,11 +9,10 @@ def is_hex(characters):
 		return False
 
 '''
-import string
+from string import hexdigits
 def is_hex(s):
-	hex_digits = set(string.hexdigits)
 	# if s is long, then it is faster to check against a set
-	return all(c in hex_digits for c in s)
+	return all(c in set(hexdigits) for c in s)
 '''
 
 def secs_to_duration(secs, limit = 0):
