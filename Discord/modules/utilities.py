@@ -1,20 +1,6 @@
 
 import math
 
-def is_hex(characters):
-	try:
-		int(characters, 16)
-		return True
-	except ValueError:
-		return False
-
-'''
-from string import hexdigits
-def is_hex(s):
-	# if s is long, then it is faster to check against a set
-	return all(c in set(hexdigits) for c in s)
-'''
-
 def secs_to_duration(secs, limit = 0):
 	duration = []
 	time_in_secs = [31536000, 604800, 86400, 3600, 60]
