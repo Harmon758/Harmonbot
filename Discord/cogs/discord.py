@@ -107,7 +107,8 @@ class Discord(commands.Cog):
 	async def delete_time(self, ctx, minutes : int):
 		'''Deletes messages in the past <minutes> minutes'''
 		await self.bot.attempt_delete_message(ctx.message)
-		await ctx.channel.purge(after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes), limit = None)
+		await ctx.channel.purge(after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes), 
+								limit = None, oldest_first = False)
 	
 	# TODO: delete mentions, invites?
 	# TODO: server settings/options:
