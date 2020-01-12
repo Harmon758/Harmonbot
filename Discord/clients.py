@@ -118,7 +118,6 @@ class Bot(commands.Bot):
 		self.EMBED_TITLE_CHARACTER_LIMIT = self.EMBED_TITLE_CHAR_LIMIT = self.ETiCL = 256
 		self.EMBED_TOTAL_CHARACTER_LIMIT = self.EMBED_TOTAL_CHAR_LIMIT = self.EToCL = 6000
 		## Functional
-		self.delete_limit = 100000
 		### Set on ready
 		self.cache_channel = None
 		self.listener_bot = None  # User object
