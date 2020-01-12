@@ -206,7 +206,7 @@ class Discord(commands.Cog):
 	# TODO: Handle in DMs
 	async def pin_first(self, ctx):
 		'''Pin first message'''
-		message = await ctx.channel.history(after = ctx.channel, limit = 1).next()
+		message = await ctx.history(after = ctx.channel, limit = 1).next()
 		await message.pin()
 		await ctx.embed_reply(":pushpin: Pinned first message in this channel")
 	
