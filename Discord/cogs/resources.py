@@ -10,7 +10,6 @@ import unicodedata
 import dateutil
 # import spotipy
 
-from modules import utilities
 from utilities import checks
 
 def setup(bot):
@@ -52,12 +51,15 @@ class Resources(commands.Cog):
 		Accepts hex color codes and search by keyword
 		'''
 		color = color.strip('#')
-		if utilities.is_hex(color) and len(color) == 6:
-			url = "http://www.colourlovers.com/api/color/" + color
+		try:
+			if (int_color := int(color, 16)) < 0 or int_color >= 16 ** 6:
+				raise ValueError
+			url = f"http://www.colourlovers.com/api/color/{int_color:0>6X}"
 			params = {}
-		else:
+		except ValueError:
 			url = "http://www.colourlovers.com/api/colors"
 			params = {"numResult": 1, "keywords": color}
+		# TODO: Allow explicit keyword search, to fix ambiguity for hex vs keyword, e.g. fab
 		await self.process_color(ctx, url, params)
 	
 	async def process_color(self, ctx, url, params = None):
