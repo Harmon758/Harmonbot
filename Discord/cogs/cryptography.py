@@ -3,6 +3,7 @@ from discord.ext import commands
 
 import hashlib
 import sys
+from typing import Optional
 import zlib
 
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
@@ -132,7 +133,7 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode.command(name = "qr")
-	async def decode_qr(self, ctx, file_url: str = ""):
+	async def decode_qr(self, ctx, file_url: Optional[str]):
 		'''
 		Decodes QR codes
 		Input a file url or attach an image
