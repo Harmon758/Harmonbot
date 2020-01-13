@@ -137,14 +137,11 @@ class Cryptography(commands.Cog):
 		Decodes QR codes
 		Input a file url or attach an image
 		'''
-		if file_url:
-			await self._decode_qr(ctx, file_url)
-		if ctx.message.attachments:
-			await self._decode_qr(ctx, ctx.message.attachments[0].url)
-		if not file_url and not ctx.message.attachments:
-			await ctx.embed_reply(":no_entry: Please input a file url or attach an image")
-	
-	async def _decode_qr(self, ctx, file_url):
+		if not file_url:
+			if ctx.message.attachments:
+				file_url = ctx.message.attachments[0].url
+			else:
+				return await ctx.embed_reply(":no_entry: Please input a file url or attach an image")
 		# TODO: use textwrap
 		url = f"https://api.qrserver.com/v1/read-qr-code/?fileurl={file_url}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
