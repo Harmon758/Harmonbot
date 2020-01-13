@@ -332,7 +332,7 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode.command(name = "qr")
-	async def encode_qr(self, ctx, *, message : str):
+	async def encode_qr(self, ctx, *, message: str):
 		'''Encode a message in a QR code'''
 		url = f"https://api.qrserver.com/v1/create-qr-code/?data={message.replace(' ', '+')}"
 		await ctx.embed_reply(image_url = url)
