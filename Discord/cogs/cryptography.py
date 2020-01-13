@@ -132,7 +132,7 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode.command(name = "qr")
-	async def decode_qr(self, ctx, file_url : str = ""):
+	async def decode_qr(self, ctx, file_url: str = ""):
 		'''
 		Decodes QR codes
 		Input a file url or attach an image
