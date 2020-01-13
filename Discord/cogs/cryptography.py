@@ -139,9 +139,9 @@ class Cryptography(commands.Cog):
 		'''
 		if file_url:
 			await self._decode_qr(ctx, file_url)
-		if ctx.message.attachments and "filename" in ctx.message.attachments[0]:
-			await self._decode_qr(ctx, ctx.message.attachments[0]["url"])
-		if not file_url and not (ctx.message.attachments and "filename" in ctx.message.attachments[0]):
+		if ctx.message.attachments:
+			await self._decode_qr(ctx, ctx.message.attachments[0].url)
+		if not file_url and not ctx.message.attachments:
 			await ctx.embed_reply(":no_entry: Please input a file url or attach an image")
 	
 	async def _decode_qr(self, ctx, file_url):
