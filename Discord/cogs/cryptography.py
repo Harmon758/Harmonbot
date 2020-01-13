@@ -143,8 +143,9 @@ class Cryptography(commands.Cog):
 			else:
 				return await ctx.embed_reply(":no_entry: Please input a file url or attach an image")
 		# TODO: use textwrap
-		url = f"https://api.qrserver.com/v1/read-qr-code/?fileurl={file_url}"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+		url = f"https://api.qrserver.com/v1/read-qr-code/"
+		params = {"fileurl": file_url}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:
 				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
