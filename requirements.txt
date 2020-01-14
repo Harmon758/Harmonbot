@@ -68,7 +68,7 @@ docopt==0.6.2
 future==0.18.2
 geojson==2.5.0
 gitdb2==2.0.6
-googleapis-common-protos==1.6.0
+googleapis-common-protos==1.50.0
 grpcio==1.26.0
 idna==2.8
 jaraco.itertools==5.0.0
