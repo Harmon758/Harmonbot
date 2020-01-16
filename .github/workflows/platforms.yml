@@ -59,7 +59,7 @@ jobs:
           - os: ubuntu-latest
             python-version: '3.8.1'
           - os: windows-latest
-            python-version: '3.8.1'
+            python-version: '3.8.0'
           - os: macOS-latest
             python-version: '3.8.0'
     runs-on: ${{ matrix.os }}
