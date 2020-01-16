@@ -187,8 +187,8 @@ class Info(commands.Cog):
 			if status is not discord.Status.offline:
 				fields.append((status_type.replace('_', ' ').title(), 
 								status.name.capitalize().replace('Dnd', 'Do Not Disturb')))
-		activities = '\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} {activity}"
-								for activity in user.activities)
+		activities = '\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
+								+ (activity.name if isinstance(activity, discord.Activity) else str(activity)) for activity in user.activities)
 		if activities:
 			fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), activities))
 			# inflect_engine.plural("Activity") returns "Activitys"
