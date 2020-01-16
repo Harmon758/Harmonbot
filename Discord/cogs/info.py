@@ -181,12 +181,12 @@ class Info(commands.Cog):
 		'''Information about a user'''
 		if not user:
 			user = ctx.author
-		fields = [("User", user.mention), ("ID", user.id), 
-					("Status", user.status.name.capitalize().replace('Dnd', 'Do Not Disturb'))]
-		for status_type in ("desktop_status", "web_status", "mobile_status"):
-			if (status := getattr(user, status_type)) is not discord.Status.offline:
-				fields.append((status_type.replace('_', ' ').title(), 
-								status.name.capitalize().replace('Dnd', 'Do Not Disturb')))
+		fields = [("User", user.mention), ("ID", user.id)]
+		statuses = user.status.name.capitalize().replace('Dnd', 'Do Not Disturb')
+		for status_type in ("desktop", "web", "mobile"):
+			if (status := getattr(user, f"{status_type}_status")) is not discord.Status.offline:
+				statuses += f"\n{status_type.capitalize()}: {status.name.capitalize().replace('Dnd', 'Do Not Disturb')}"
+		fields.append(("Status", statuses))
 		if activities := '\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
 									+ (activity.name if isinstance(activity, discord.Activity) else str(activity)) for activity in user.activities):
 			fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), activities))
