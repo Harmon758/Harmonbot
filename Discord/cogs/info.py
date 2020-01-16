@@ -191,12 +191,15 @@ class Info(commands.Cog):
 									+ (activity.name if isinstance(activity, discord.Activity) else str(activity)) for activity in user.activities):
 			fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), activities))
 			# inflect_engine.plural("Activity") returns "Activitys"
+		if user.color.value:
+			fields.append(("Color", f"#{user.color.value:0>6X}\n{user.color.to_rgb()}"))
 		fields.append(("Bot", user.bot))
 		await ctx.embed_reply(title = str(user), title_url = str(user.avatar_url), 
 								thumbnail_url = user.avatar_url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
-		# member info, roles, color, joined at, boosting since, etc.
-		# TODO: more detailed activities
+		# TODO: Add member info: roles, joined at, boosting since, voice state?
+		# TODO: More detailed activities?
+		# TODO: Guild permissions?, separate command?
 	
 	@info.command(aliases = ["yt"])
 	async def youtube(self, ctx, url : str):
