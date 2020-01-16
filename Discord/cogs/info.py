@@ -4,6 +4,7 @@ from discord.ext import commands
 
 import sys
 import textwrap
+from typing import Optional
 # import unicodedata
 import urllib
 
@@ -176,7 +177,7 @@ class Info(commands.Cog):
 								thumbnail_url = data["album"]["images"][0]["url"])
 		# TODO: keep spotify embed?
 	
-	async def user(self, ctx, *, user: discord.Member = None):
+	async def user(self, ctx, *, user: Optional[discord.Member]):
 		'''Information about a user'''
 		if not user:
 			user = ctx.author
