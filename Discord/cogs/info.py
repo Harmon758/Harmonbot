@@ -176,7 +176,7 @@ class Info(commands.Cog):
 								thumbnail_url = data["album"]["images"][0]["url"])
 		# TODO: keep spotify embed?
 	
-	async def user(self, ctx, *, user : discord.Member = None):
+	async def user(self, ctx, *, user: discord.Member = None):
 		'''Information about a user'''
 		if not user:
 			user = ctx.author
