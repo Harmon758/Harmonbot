@@ -187,11 +187,10 @@ class Info(commands.Cog):
 			if status is not discord.Status.offline:
 				fields.append((status_type.replace('_', ' ').title(), 
 								status.name.capitalize().replace('Dnd', 'Do Not Disturb')))
-		activities = '\n'.join((f"{activity.type.name.capitalize()} " if type(activity.type) is not int else "")
-								+ activity.name for activity in user.activities)
+		activities = '\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} {activity}"
+								for activity in user.activities)
 		if activities:
-			fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), 
-							activities.replace("Listening", "Listening to")))
+			fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), activities))
 			# inflect_engine.plural("Activity") returns "Activitys"
 		fields.append(("Bot", user.bot))
 		await ctx.embed_reply(title = str(user), title_url = str(user.avatar_url), 
