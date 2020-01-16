@@ -187,14 +187,12 @@ class Info(commands.Cog):
 			if (status := getattr(user, f"{status_type}_status")) is not discord.Status.offline:
 				statuses += f"\n{status_type.capitalize()}: {status.name.capitalize().replace('Dnd', 'Do Not Disturb')}"
 		fields.append(("Status", statuses))
-		if activities := '\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
-									+ (activity.name if isinstance(activity, discord.Activity) else str(activity)) for activity in user.activities):
-			fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), activities))
-			# inflect_engine.plural("Activity") returns "Activitys"
-		if user.color.value:
-			fields.append(("Color", f"#{user.color.value:0>6X}\n{user.color.to_rgb()}"))
-		if len(user.roles) > 1:
-			fields.append(("Roles", ", ".join(role.mention for role in user.roles[1:])))
+		fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), 
+						'\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
+									+ (activity.name if isinstance(activity, discord.Activity) else str(activity)) for activity in user.activities) or None))
+		# inflect_engine.plural("Activity") returns "Activitys"
+		fields.append(("Color", f"#{user.color.value:0>6X}\n{user.color.to_rgb()}" if user.color.value else None))
+		fields.append(("Roles", ", ".join(role.mention for role in user.roles[1:]) or None))
 		fields.append(("Joined", user.joined_at.isoformat(timespec = "milliseconds")))
 		if user.premium_since:
 			fields.append(("Boosting Since", user.premium_since.isoformat(timespec = "milliseconds")))
