@@ -193,11 +193,13 @@ class Info(commands.Cog):
 			# inflect_engine.plural("Activity") returns "Activitys"
 		if user.color.value:
 			fields.append(("Color", f"#{user.color.value:0>6X}\n{user.color.to_rgb()}"))
+		if len(user.roles) > 1:
+			fields.append(("Roles", ", ".join(role.mention for role in user.roles[1:])))
 		fields.append(("Bot", user.bot))
 		await ctx.embed_reply(title = str(user), title_url = str(user.avatar_url), 
 								thumbnail_url = user.avatar_url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
-		# TODO: Add member info: roles, joined at, boosting since, voice state?
+		# TODO: Add member info: joined at, boosting since, voice state?
 		# TODO: More detailed activities?
 		# TODO: Guild permissions?, separate command?
 	
