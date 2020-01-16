@@ -196,11 +196,13 @@ class Info(commands.Cog):
 		if len(user.roles) > 1:
 			fields.append(("Roles", ", ".join(role.mention for role in user.roles[1:])))
 		fields.append(("Joined", user.joined_at.isoformat(timespec = "milliseconds")))
+		if user.premium_since:
+			fields.append(("Boosting Since", user.premium_since.isoformat(timespec = "milliseconds")))
 		fields.append(("Bot", user.bot))
 		await ctx.embed_reply(title = str(user), title_url = str(user.avatar_url), 
 								thumbnail_url = user.avatar_url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
-		# TODO: Add member info: boosting since, voice state?
+		# TODO: Add voice state?
 		# TODO: Accept User input?
 		# TODO: More detailed activities?
 		# TODO: Guild permissions?, separate command?
