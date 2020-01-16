@@ -183,13 +183,11 @@ class Info(commands.Cog):
 		fields = [("User", user.mention), ("ID", user.id), 
 					("Status", user.status.name.capitalize().replace('Dnd', 'Do Not Disturb'))]
 		for status_type in ("desktop_status", "web_status", "mobile_status"):
-			status = getattr(user, status_type)
-			if status is not discord.Status.offline:
+			if (status := getattr(user, status_type)) is not discord.Status.offline:
 				fields.append((status_type.replace('_', ' ').title(), 
 								status.name.capitalize().replace('Dnd', 'Do Not Disturb')))
-		activities = '\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
-								+ (activity.name if isinstance(activity, discord.Activity) else str(activity)) for activity in user.activities)
-		if activities:
+		if activities := '\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
+									+ (activity.name if isinstance(activity, discord.Activity) else str(activity)) for activity in user.activities):
 			fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), activities))
 			# inflect_engine.plural("Activity") returns "Activitys"
 		fields.append(("Bot", user.bot))
