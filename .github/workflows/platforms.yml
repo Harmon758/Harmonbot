@@ -54,7 +54,14 @@ jobs:
       max-parallel: 1
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
-        python-version: ['3.8.0']
+        python-version: ['3.8.0', '3.8.1']
+        exclude:
+          - os: ubuntu-latest
+            python-version: '3.8.1'
+          - os: windows-latest
+            python-version: '3.8.1'
+          - os: macOS-latest
+            python-version: '3.8.0'
     runs-on: ${{ matrix.os }}
 
     steps:
