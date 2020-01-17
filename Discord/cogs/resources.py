@@ -5,6 +5,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import json
+from typing import Optional
 import unicodedata
 
 import dateutil
@@ -586,7 +587,7 @@ class Resources(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def xkcd(self, ctx, number: int = 0):
+	async def xkcd(self, ctx, number: Optional[int]):
 		'''Find xkcd's'''
 		if not number:
 			url = "http://xkcd.com/info.0.json"
