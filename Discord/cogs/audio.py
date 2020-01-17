@@ -64,8 +64,7 @@ class Audio(commands.Cog):
 				is_guild_owner = await checks.is_guild_owner().predicate(ctx)
 			except errors.NotGuildOwner:
 				is_guild_owner = False
-			permitted = await ctx.get_permission("join", id = ctx.author.id)
-			if is_guild_owner or permitted:
+			if is_guild_owner or await ctx.get_permission("join", id = ctx.author.id):
 				if ctx.author.voice and ctx.author.voice.channel:
 					await ctx.author.voice.channel.connect()
 					await ctx.embed_reply(":headphones: I've joined the voice channel")
