@@ -599,5 +599,7 @@ class Resources(commands.Cog):
 			if resp.status == 404:
 				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
-		await ctx.embed_reply(title = data["title"], title_url = f"http://xkcd.com/{data['num']}", image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
+		await ctx.embed_reply(title = data["title"], title_url = f"http://xkcd.com/{data['num']}", 
+								image_url = data["img"], footer_text = data["alt"], 
+								timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
 
