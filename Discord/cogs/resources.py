@@ -586,7 +586,7 @@ class Resources(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def xkcd(self, ctx, number : int = 0):
+	async def xkcd(self, ctx, number: int = 0):
 		'''Find xkcd's'''
 		if not number:
 			url = "http://xkcd.com/info.0.json"
