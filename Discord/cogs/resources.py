@@ -591,7 +591,7 @@ class Resources(commands.Cog):
 		if not number:
 			url = "http://xkcd.com/info.0.json"
 		else:
-			url = "http://xkcd.com/{0}/info.0.json".format(number)
+			url = f"http://xkcd.com/{number}/info.0.json"
 		await self.process_xkcd(ctx, url)
 	
 	async def process_xkcd(self, ctx, url):
