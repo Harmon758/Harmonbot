@@ -589,9 +589,9 @@ class Resources(commands.Cog):
 	async def xkcd(self, ctx, number : int = 0):
 		'''Find xkcd's'''
 		if not number:
-			url = "http://xkcd.com/info.0.json" # http://dynamic.xkcd.com/api-0/jsonp/comic/
+			url = "http://xkcd.com/info.0.json"
 		else:
-			url = "http://xkcd.com/{0}/info.0.json".format(number) # http://dynamic.xkcd.com/api-0/jsonp/comic/#
+			url = "http://xkcd.com/{0}/info.0.json".format(number)
 		await self.process_xkcd(ctx, url)
 	
 	async def process_xkcd(self, ctx, url):
