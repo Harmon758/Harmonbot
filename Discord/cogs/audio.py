@@ -77,8 +77,7 @@ class Audio(commands.Cog):
 		if "playlist" in song:
 			return await self.players[ctx.guild.id].add_playlist(ctx, song)
 		if "spotify" in song:
-			song = await self.spotify_to_youtube(song)
-			if not song:
+			if not (song := await self.spotify_to_youtube(song)):
 				return await ctx.embed_reply(":warning: Error")
 		response = await ctx.embed_reply(":cd: Loading..")
 		# TODO: Handle no embed permission
