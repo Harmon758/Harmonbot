@@ -600,5 +600,5 @@ class Resources(commands.Cog):
 				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
-		await ctx.embed_reply(title = data["title"], title_url = "http://xkcd.com/{}".format(data["num"]), image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
+		await ctx.embed_reply(title = data["title"], title_url = f"http://xkcd.com/{data['num']}", image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
 
