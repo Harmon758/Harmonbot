@@ -91,14 +91,14 @@ class Audio(commands.Cog):
 		try:
 			source = await self.players[ctx.guild.id].add_song(ctx, song, stream = ctx.invoked_with == "stream")
 		except Exception as e:
-			embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
+			embed.description = f":warning: Error loading `{song}`\n`{type(e).__name__}: {e}`"
 			if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 				embed.description = embed.description[:ctx.bot.EDCL - 4] + "...`"
 				# EDCL: Embed Description Character Limit
 		else:
 			embed.title = source.info["title"]
 			embed.url = source.info["webpage_url"]
-			embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
+			embed.description = f":ballot_box_with_check: Successfully added `{song}` to the queue"
 		finally:
 			await response.edit(embed = embed)
 	
