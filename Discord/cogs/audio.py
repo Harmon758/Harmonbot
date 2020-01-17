@@ -46,7 +46,7 @@ class Audio(commands.Cog):
 					invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def audio(self, ctx, *, song : str = ""):  #elif options[0] == "full":
+	async def audio(self, ctx, *, song: str = ""):  #elif options[0] == "full":
 		'''
 		Audio System - play a song
 		All audio subcommands are also commands
