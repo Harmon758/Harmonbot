@@ -597,8 +597,7 @@ class Resources(commands.Cog):
 	async def process_xkcd(self, ctx, url):
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
-				await ctx.embed_reply(":no_entry: Error")
-				return
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
 		await ctx.embed_reply(title = data["title"], title_url = f"http://xkcd.com/{data['num']}", image_url = data["img"], footer_text = data["alt"], timestamp = datetime.datetime(int(data["year"]), int(data["month"]), int(data["day"])))
 
