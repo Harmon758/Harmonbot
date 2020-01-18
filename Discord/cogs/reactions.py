@@ -2,8 +2,10 @@
 import discord
 from discord.ext import commands, menus
 
+import datetime
 import io
 import random
+from typing import Optional
 
 import dateutil.parser
 
@@ -195,6 +197,55 @@ class WolframAlphaMenu(CustomMenu, menus.MenuPages):
 		await ctx.bot.attempt_delete_message(ctx.message)
 		return message
 
+class XKCDSource(menus.PageSource):
+	
+	async def prepare(self, ctx):
+		self.bot = ctx.bot
+		url = "http://xkcd.com/info.0.json"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		self.max_pages = data["num"]
+	
+	def is_paginating(self):
+		return True
+	
+	def get_max_pages(self):
+		return self.max_pages
+	
+	async def get_page(self, page_number):
+		url = f"http://xkcd.com/{page_number + 1}/info.0.json"
+		async with self.bot.aiohttp_session.get(url) as resp:
+			return await resp.json()
+	
+	async def format_page(self, menu, page):
+		embed = discord.Embed(title = page["title"], url = f"http://xkcd.com/{page['num']}")
+		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
+		embed.set_image(url = page["img"])
+		embed.set_footer(text = page["alt"])
+		embed.timestamp = datetime.datetime(int(page["year"]), int(page["month"]), int(page["day"]))
+		return embed
+
+class XKCDMenu(CustomMenu, menus.MenuPages):
+	
+	def __init__(self, initial_number = None):
+		self.initial_number = initial_number
+		super().__init__(XKCDSource(), timeout = None, clear_reactions_after = True, check_embeds = True)
+	
+	async def send_initial_message(self, ctx, channel):
+		if self.initial_number is None or self.initial_number >= self.source.max_pages:
+			self.current_page = self.source.max_pages - 1
+		else:
+			self.current_page = max(0, self.initial_number - 1)
+		page = await self.source.get_page(self.current_page)
+		embed = await self.source.format_page(self, page)
+		message = await channel.send(embed = embed)
+		await ctx.bot.attempt_delete_message(ctx.message)
+		return message
+	
+	async def start(self, ctx):
+		await self.source.prepare(ctx)
+		await menus.Menu.start(self, ctx)
+
 class Reactions(commands.Cog):
 	
 	def __init__(self, bot):
@@ -204,7 +255,8 @@ class Reactions(commands.Cog):
 			(self.maze, "Games", "maze", [], [checks.not_forbidden().predicate]), 
 			(self.news, "Resources", "news", [], [checks.not_forbidden().predicate]), 
 			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
-			(self.wolframalpha, "Search", "wolframalpha", ["wa", "wolfram_alpha"], [checks.not_forbidden().predicate])
+			(self.wolframalpha, "Search", "wolframalpha", ["wa", "wolfram_alpha"], [checks.not_forbidden().predicate]), 
+			(self.xkcd, "Resources", "xkcd", [], [checks.not_forbidden().predicate])
 		)
 		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
 			self.reactions.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
@@ -299,4 +351,11 @@ class Reactions(commands.Cog):
 			await ctx.embed_reply("Standard computation time exceeded")
 		else:
 			await ctx.embed_reply(":no_entry: No results found")
+	
+	async def xkcd(self, ctx, *, number: Optional[int]):
+		'''
+		See xkcd comics
+		With reactions
+		'''
+		await XKCDMenu(number).start(ctx)
 
