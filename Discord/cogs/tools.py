@@ -464,7 +464,7 @@ class Tools(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def timer(self, ctx, seconds : int):
+	async def timer(self, ctx, seconds: int):
 		'''Timer'''
 		# TODO: other units, persistence through restarts
 		await ctx.embed_reply(f"I'll remind you in {seconds} seconds")
