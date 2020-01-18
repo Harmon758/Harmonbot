@@ -273,23 +273,19 @@ class Reactions(commands.Cog):
 	@commands.group(aliases = ["reaction", "menus", "menu"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def reactions(self, ctx):
-		'''Reactions versions of commands'''
+		'''Menu versions of commands'''
 		await ctx.send_help(ctx.command)
 	
 	# TODO: rtg
 	# TODO: urband
 	
 	async def guess(self, ctx):
-		'''
-		Guessing game
-		With reactions
-		'''
+		'''Guessing game menu'''
 		await GuessMenu().start(ctx)
 	
 	async def maze(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
-		Maze game
-		With reactions
+		Maze game menu
 		width: 2 - 100
 		height: 2 - 100
 		React with an arrow key to move
@@ -298,8 +294,7 @@ class Reactions(commands.Cog):
 	
 	async def news(self, ctx, source: str):
 		'''
-		News
-		With Reactions
+		News menu
 		Powered by NewsAPI.org
 		'''
 		url = "https://newsapi.org/v2/top-headlines"
@@ -317,10 +312,7 @@ class Reactions(commands.Cog):
 		await PlayingMenu().start(ctx)
 	
 	async def wolframalpha(self, ctx, *, search):
-		'''
-		Wolfram|Alpha
-		With reactions
-		'''
+		'''Wolfram|Alpha menu'''
 		# TODO: process asynchronously
 		# TODO: location option?
 		location = self.bot.fake_location
@@ -353,9 +345,6 @@ class Reactions(commands.Cog):
 			await ctx.embed_reply(":no_entry: No results found")
 	
 	async def xkcd(self, ctx, *, number: Optional[int]):
-		'''
-		See xkcd comics
-		With reactions
-		'''
+		'''xkcd comics menu'''
 		await XKCDMenu(number).start(ctx)
 
