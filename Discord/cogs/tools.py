@@ -467,9 +467,9 @@ class Tools(commands.Cog):
 	async def timer(self, ctx, seconds : int):
 		'''Timer'''
 		# TODO: other units, persistence through restarts
-		await ctx.embed_reply("I'll remind you in {} seconds".format(seconds))
+		await ctx.embed_reply(f"I'll remind you in {seconds} seconds")
 		await asyncio.sleep(seconds)
-		await ctx.send("{}: {} seconds have passed".format(ctx.author.mention, seconds))
+		await ctx.send(f"{ctx.author.mention}: {seconds} seconds have passed")
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
