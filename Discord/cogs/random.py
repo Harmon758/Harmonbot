@@ -195,9 +195,9 @@ class Random(commands.Cog):
 		'''Random xkcd'''
 		url = "http://xkcd.com/info.0.json"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
-			data = await resp.text()
-		total = json.loads(data)["num"]
-		url = f"http://xkcd.com/{random.randint(1, total)}/info.0.json"
+			data = await resp.json()
+		number = random.randint(1, data['num'])
+		url = f"http://xkcd.com/{number}/info.0.json"
 		if cog := self.bot.get_cog("Resources"):
 			await cog.process_xkcd(ctx, url)
 	
