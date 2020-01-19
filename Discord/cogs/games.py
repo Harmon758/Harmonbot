@@ -536,7 +536,7 @@ class Games(commands.Cog):
 		'''
 		value = random.choice(list(emotes.keys()))
 		if erps_object not in emotes:
-			return await ctx.embed_reply(":no_entry: That's not a valid object")
+			raise commands.BadArgument("That's not a valid object")
 		standard_value = value.lower().replace('.', "").replace("video game", "game")
 		if standard_value == erps_object:
 			return await ctx.embed_reply(f"I chose `{value}`\n"
