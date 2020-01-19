@@ -369,14 +369,15 @@ class Games(commands.Cog):
 		embed.description = f"was the first to click {winning_emoji} and won with a time of {elapsed:.5} seconds!"
 		await response.edit(embed = embed)
 	
-	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"])
+	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"], 
+						usage = "<object>")
 	@checks.not_forbidden()
-	async def rps(self, ctx, object : str):
+	async def rps(self, ctx, rps_object : str):
 		'''Rock paper scissors'''
-		if object.lower() not in ('r', 'p', 's', "rock", "paper", "scissors"):
+		if rps_object.lower() not in ('r', 'p', 's', "rock", "paper", "scissors"):
 			return await ctx.embed_reply(":no_entry: That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors"))
-		short_shape = object[0].lower()
+		short_shape = rps_object[0].lower()
 		resolution = {'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}}
 		emotes = {'r': f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}", 'p': f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", 
 					's': f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}"}
