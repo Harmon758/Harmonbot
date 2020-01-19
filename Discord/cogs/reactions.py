@@ -218,7 +218,7 @@ class XKCDSource(menus.PageSource):
 			return await resp.json()
 	
 	async def format_page(self, menu, page):
-		embed = discord.Embed(title = page["title"], url = f"http://xkcd.com/{page['num']}")
+		embed = discord.Embed(title = page["title"], url = f"http://xkcd.com/{page['num']}", color = menu.bot.bot_color)
 		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
 		embed.set_image(url = page["img"])
 		embed.set_footer(text = page["alt"])
