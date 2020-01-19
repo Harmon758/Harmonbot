@@ -45,7 +45,7 @@ class Reminders(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["timer", "remind"], invoke_without_command = True, case_insensitive = True)
-	async def reminder(self, ctx, seconds: int, about: str):
+	async def reminder(self, ctx, seconds: int, *, about: str = ""):
 		'''Reminder'''
 		# TODO: Better input method
 		response = await ctx.embed_reply(f"I'll remind you in {seconds} seconds")
@@ -94,9 +94,9 @@ class Reminders(commands.Cog):
 		embed = discord.Embed(color = self.bot.bot_color)
 		try:
 			message = await channel.fetch_message(record["message_id"])
-			embed.description = f"[{record['reminder']}]({message.jump_url})"
+			embed.description = f"[{record['reminder'] or 'Reminder'}]({message.jump_url})"
 		except discord.NotFound:
-			embed.description = record["reminder"]
+			embed.description = record["reminder"] or "Reminder"
 		embed.set_footer(text = "Reminder set")
 		embed.timestamp = record["created_time"]
 		try:
