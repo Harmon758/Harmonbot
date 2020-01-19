@@ -479,11 +479,11 @@ class Games(commands.Cog):
 			resolution = {'c': {'n': "survives"}, 'f': {'c': "squashes"}, 'n': {'f': "blows up"}}
 			emotes = {'c': ":bug:", 'f': ":footprints:", 'n': ":bomb:"}
 			if value[0] == short_shape:
-				await ctx.embed_reply(f"\nI chose `{value}`\nIt's a draw :confused:")
+				await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
 			elif short_shape in resolution[value[0]]:
-				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\nYou lose :slight_frown:")
+				await ctx.embed_reply(f"I chose `{value}`\n{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\nYou lose :slight_frown:")
 			else:
-				await ctx.embed_reply(f"\nI chose `{value}`\n{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\nYou win! :tada:")
+				await ctx.embed_reply(f"I chose `{value}`\n{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\nYou win! :tada:")
 	
 	@commands.command(aliases = ["extremerps", "rps-101", "rps101"])
 	@checks.not_forbidden()
