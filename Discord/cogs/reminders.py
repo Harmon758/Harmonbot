@@ -83,7 +83,7 @@ class Reminders(commands.Cog):
 		reminder = reminder[:start_pos] + reminder[end_pos + 1:]
 		reminder = reminder.strip()
 		response = await ctx.embed_reply(fields = (("Reminder", reminder or ctx.bot.ZWS),), 
-											footer_text = f"Set for {parsed_datetime.isoformat()}", 
+											footer_text = f"Set for {parsed_datetime.isoformat(timespec = 'seconds').replace('+00:00', 'Z')}", 
 											timestamp = parsed_datetime)
 		# Insert into database
 		created_time = ctx.message.created_at.replace(tzinfo = datetime.timezone.utc)
