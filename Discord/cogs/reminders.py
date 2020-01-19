@@ -171,7 +171,7 @@ class Reminders(commands.Cog):
 			# TODO: Attempt to fetch channel?
 			value += f"\nAt {record['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}"
 			fields.append((f"ID: {record['id']}", value))
-		await ctx.embed_reply(fields = fields)
+		await ctx.embed_reply(title = "Reminders", fields = fields)
 	
 	# TODO: clear subcommand
 	
