@@ -64,7 +64,10 @@ class Reminders(commands.Cog):
 	@commands.group(name = "reminder", aliases = ["remind", "reminders", "timer", "timers"], 
 					invoke_without_command = True, case_insensitive = True)
 	async def reminder_command(self, ctx, *, reminder: Optional[commands.clean_content]):
-		'''See and set reminders'''
+		'''
+		See and set reminders
+		Times are in UTC
+		'''
 		if ctx.invoked_with in ("reminders", "timers"):
 			offset = 0
 			count = 10
