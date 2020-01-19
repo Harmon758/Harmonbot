@@ -428,7 +428,7 @@ class Games(commands.Cog):
 									"rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"], 
 						usage = "<object>")
 	@checks.not_forbidden()
-	async def rpslssbwg(self, ctx, rpslssbwg_object : str):
+	async def rpslssbwg(self, ctx, rpslssbwg_object: str):
 		'''
 		RPSLS Spider-Man Batman wizard Glock
 		http://i.imgur.com/m9C2UTP.jpg
