@@ -8,7 +8,6 @@ if __name__ == "__main__":
 	import asyncio
 	import ctypes
 	import datetime
-	import json
 	import os
 	import re
 	import sys
