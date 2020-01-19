@@ -49,6 +49,7 @@ class Reminders(commands.Cog):
 				remind_time		TIMESTAMPTZ, 
 				reminder		TEXT, 
 				reminded		BOOL DEFAULT FALSE, 
+				cancelled 		BOOL DEFAULT FALSE, 
 				failed			BOOL DEFAULT FALSE
 			)
 			"""
@@ -94,15 +95,36 @@ class Reminders(commands.Cog):
 			ctx.author.id, ctx.channel.id, response.id, created_time, parsed_datetime, reminder
 		)
 		# Update timer
-		if self.current_timer and parsed_datetime < self.current_timer:
+		if self.current_timer and parsed_datetime < self.current_timer["remind_time"]:
 			self.restarting_timer = True
 			self.timer.restart()
 			self.timer.get_task().set_name("Reminders")
 		else:
 			self.new_reminder.set()
 	
+	@reminder_command.command(aliases = ["delete", "remove"])
+	async def cancel(self, ctx, reminder_id: int):
+		'''Cancel a reminder'''
+		cancelled = await ctx.bot.db.fetchrow(
+			"""
+			UPDATE reminders.reminders
+			SET cancelled = TRUE
+			WHERE id = $1 AND user_id = $2 AND reminded = FALSE AND failed = FALSE
+			RETURNING *
+			""", 
+			reminder_id, ctx.author.id
+		)
+		if not cancelled:
+			return await ctx.embed_reply(":no_entry: Error: Unable to find and cancel reminder")
+		if self.current_timer and self.current_timer["id"] == reminder_id:
+			self.restarting_timer = True
+			self.timer.restart()
+			self.timer.get_task().set_name("Reminders")
+		await ctx.embed_reply(fields = (("Cancelled Reminder", cancelled["reminder"] or ctx.bot.ZWS),), 
+								footer_text = f"Set for {cancelled['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}", 
+								timestamp = cancelled["remind_time"])
+	
 	# TODO: reminders command / list subcommand
-	# TODO: delete/cancel/remove subcommand
 	# TODO: clear subcommand
 	
 	# R/PT0S
@@ -111,7 +133,7 @@ class Reminders(commands.Cog):
 		record = await self.bot.db.fetchrow(
 			"""
 			SELECT * FROM reminders.reminders
-			WHERE reminded = FALSE AND failed = FALSE
+			WHERE reminded = FALSE AND cancelled = FALSE AND failed = FALSE
 			ORDER BY remind_time
 			LIMIT 1
 			"""
@@ -119,7 +141,7 @@ class Reminders(commands.Cog):
 		if not record:
 			self.new_reminder.clear()
 			return await self.new_reminder.wait()
-		self.current_timer = record["remind_time"]
+		self.current_timer = record
 		if record["remind_time"] > (now := datetime.datetime.now(datetime.timezone.utc)):
 			await asyncio.sleep((record["remind_time"] - now).total_seconds())
 		if not (channel := self.bot.get_channel(record["channel_id"])):
