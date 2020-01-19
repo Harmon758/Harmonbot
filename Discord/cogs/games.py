@@ -435,7 +435,7 @@ class Games(commands.Cog):
 		'''
 		rpslssbwg_object = rpslssbwg_object.lower().replace('-', "")
 		if rpslssbwg_object not in ("rock", "paper", "scissors", "lizard", "spock", "spiderman", "batman", "wizard", "glock"):
-			return await ctx.embed_reply(":no_entry: That's not a valid object")
+			raise commands.BadArgument("That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors", "lizard", "Spock", "Spider-Man", "Batman", "wizard", "Glock"))
 		resolution = {"rock": {"scissors": "crushes", "lizard": "crushes", "spiderman": "knocks out", "wizard": "interrupts"}, 
 						"paper": {"rock": "covers", "spock": "disproves", "batman": "delays", "glock": "jams"}, 
