@@ -466,7 +466,7 @@ class Games(commands.Cog):
 	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"], 
 						usage = "<object>")
 	@checks.not_forbidden()
-	async def cfn(self, ctx, cfn_object : str):
+	async def cfn(self, ctx, cfn_object: str):
 		'''
 		Cockroach foot nuke
 		https://www.youtube.com/watch?v=wRi2j8k0vjo
