@@ -425,15 +425,16 @@ class Games(commands.Cog):
 									"You win! :tada:")
 	
 	@commands.command(aliases = ["rockpaperscissorslizardspockspidermanbatmanwizardglock", 
-									"rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"])
+									"rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"], 
+						usage = "<object>")
 	@checks.not_forbidden()
-	async def rpslssbwg(self, ctx, object : str):
+	async def rpslssbwg(self, ctx, rpslssbwg_object : str):
 		'''
 		RPSLS Spider-Man Batman wizard Glock
 		http://i.imgur.com/m9C2UTP.jpg
 		'''
-		object = object.lower().replace('-', "")
-		if object not in ("rock", "paper", "scissors", "lizard", "spock", "spiderman", "batman", "wizard", "glock"):
+		rpslssbwg_object = rpslssbwg_object.lower().replace('-', "")
+		if rpslssbwg_object not in ("rock", "paper", "scissors", "lizard", "spock", "spiderman", "batman", "wizard", "glock"):
 			return await ctx.embed_reply(":no_entry: That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors", "lizard", "Spock", "Spider-Man", "Batman", "wizard", "Glock"))
 		resolution = {"rock": {"scissors": "crushes", "lizard": "crushes", "spiderman": "knocks out", "wizard": "interrupts"}, 
@@ -450,16 +451,16 @@ class Games(commands.Cog):
 					"spock": f"\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}{ctx.bot.emoji_skin_tone}", 
 					"spiderman": ":spider:", "batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
 		standard_value = value.lower().replace('-', "")
-		if standard_value == object:
+		if standard_value == rpslssbwg_object:
 			await ctx.embed_reply(f"I chose `{value}`\n"
 									"It's a draw :confused:")
-		elif object in resolution[standard_value]:
+		elif rpslssbwg_object in resolution[standard_value]:
 			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[standard_value]} {resolution[standard_value][object]} {emotes[object]}\n"
+									f"{emotes[standard_value]} {resolution[standard_value][rpslssbwg_object]} {emotes[rpslssbwg_object]}\n"
 									"You lose :slight_frown:")
 		else:
 			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[object]} {resolution[object][standard_value]} {emotes[standard_value]}\n"
+									f"{emotes[rpslssbwg_object]} {resolution[rpslssbwg_object][standard_value]} {emotes[standard_value]}\n"
 									"You win! :tada:")
 	
 	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"])
