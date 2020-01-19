@@ -493,7 +493,7 @@ class Games(commands.Cog):
 	@commands.command(aliases = ["extremerps", "rps-101", "rps101"], 
 						usage = "<object>")
 	@checks.not_forbidden()
-	async def erps(self, ctx, erps_object : str):
+	async def erps(self, ctx, erps_object: str):
 		'''
 		Extreme rock paper scissors
 		http://www.umop.com/rps101.htm
