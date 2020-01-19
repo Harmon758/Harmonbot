@@ -22,8 +22,7 @@ class Twitch(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.task = self.check_streams.start()
-		self.task.set_name("Twitch")
+		self.check_streams.start().set_name("Twitch")
 	
 	def cog_unload(self):
 		self.check_streams.cancel()
