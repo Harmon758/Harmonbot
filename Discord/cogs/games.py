@@ -395,7 +395,7 @@ class Games(commands.Cog):
 	@commands.command(aliases = ["rockpaperscissorslizardspock", "rock-paper-scissors-lizard-spock"], 
 						usage = "<object>")
 	@checks.not_forbidden()
-	async def rpsls(self, ctx, rpsls_object : str):
+	async def rpsls(self, ctx, rpsls_object: str):
 		'''
 		RPS lizard Spock
 		https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
