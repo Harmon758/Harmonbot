@@ -1,7 +1,7 @@
 
-from discord.ext.commands import Paginator
+from discord.ext import commands
 
-class CustomPaginator(Paginator):
+class Paginator(commands.Paginator):
 	
 	def __init__(self, seperator = "\n", prefix='```', suffix='```', max_size=2000):
 		super().__init__(prefix, suffix, max_size)

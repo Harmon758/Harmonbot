@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFont
 import seaborn
 
 from utilities import checks
-from utilities import paginator
+from utilities.paginator import Paginator
 
 def setup(bot):
 	bot.add_cog(Tools(bot))
@@ -219,7 +219,7 @@ class Tools(commands.Cog):
 	async def tag_list(self, ctx):
 		'''List your tags'''
 		if (await self.check_no_tags(ctx)): return
-		tags_paginator = paginator.CustomPaginator(seperator = ", ")
+		tags_paginator = Paginator(seperator = ", ")
 		records = await ctx.bot.db.fetch(
 			"""
 			SELECT tag FROM tags.individual
