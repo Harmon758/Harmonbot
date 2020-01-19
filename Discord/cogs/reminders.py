@@ -4,6 +4,7 @@ from discord.ext import commands, tasks
 
 import asyncio
 import datetime
+from typing import Optional
 
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
@@ -16,7 +17,7 @@ class Reminders(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-
+		
 		self.calendar = Calendar(version = VERSION_CONTEXT_STYLE)
 		# Patch https://github.com/bear/parsedatetime/commit/7a759c1f8ff7563f12ac2c1f2ea0b41452f61dec
 		# until fix is released
@@ -26,7 +27,7 @@ class Reminders(commands.Cog):
 			self.calendar.ptc.units["seconds"].append('s')
 		# Add mo as valid abbreviation for month
 		self.calendar.ptc.units["months"].append("mo")
-
+		
 		self.current_timer = None
 		self.new_reminder = asyncio.Event()
 		self.restarting_timer = False
@@ -58,11 +59,24 @@ class Reminders(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(name = "reminder", aliases = ["remind", "timer"], 
+	# TODO: Allow setting timezone (+ for time command as well)
+	
+	@commands.group(name = "reminder", aliases = ["remind", "reminders", "timer", "timers"], 
 					invoke_without_command = True, case_insensitive = True)
-	async def reminder_command(self, ctx, *, reminder: commands.clean_content):
-		'''Set reminders'''
-		# TODO: Allow setting timezone (+ for time command as well)
+	async def reminder_command(self, ctx, *, reminder: Optional[commands.clean_content]):
+		'''See and set reminders'''
+		if ctx.invoked_with in ("reminders", "timers"):
+			offset = 0
+			count = 10
+			try:
+				inputs = reminder.split()
+				offset = int(inputs[0])
+				count = int(inputs[1])
+			except (AttributeError, IndexError, ValueError):
+				pass
+			return await ctx.invoke(self.list_reminders, offset, count)
+		elif not reminder:
+			raise commands.BadArgument("Time not specified")
 		# Clean reminder input
 		for prefix in ("me about ", "me to ", "me "):
 			if reminder.startswith(prefix):
@@ -124,7 +138,39 @@ class Reminders(commands.Cog):
 								footer_text = f"Set for {cancelled['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}", 
 								timestamp = cancelled["remind_time"])
 	
-	# TODO: reminders command / list subcommand
+	# TODO: Reminders Menu
+	@reminder_command.group(name = "list", invoke_without_command = True, case_insensitive = True)
+	async def list_reminders(self, ctx, offset: Optional[int] = 0, count: Optional[int] = 10):
+		'''
+		List reminders
+		Max count is 10
+		'''
+		count = min(count, 10)
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT id, channel_id, message_id, remind_time, reminder
+			FROM reminders.reminders
+			WHERE user_id = $1 AND reminded = FALSE AND cancelled = FALSE AND failed = FALSE
+			ORDER BY remind_time
+			LIMIT $2 OFFSET $3
+			""", 
+			ctx.author.id, count, offset
+		)
+		fields = []
+		for record in records:
+			value = record["reminder"] or "Reminder"
+			if channel := ctx.bot.get_channel(record["channel_id"]):
+				try:
+					message = await channel.fetch_message(record["message_id"])
+					value = f"[{value}]({message.jump_url})"
+				except discord.NotFound:
+					pass
+				value += f"\nIn {channel.mention}"
+			# TODO: Attempt to fetch channel?
+			value += f"\nAt {record['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}"
+			fields.append((f"ID: {record['id']}", value))
+		await ctx.embed_reply(fields = fields)
+	
 	# TODO: clear subcommand
 	
 	# R/PT0S
