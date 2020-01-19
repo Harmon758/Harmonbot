@@ -148,7 +148,6 @@ class Reminders(commands.Cog):
 		List reminders
 		Max count is 10
 		'''
-		count = min(count, 10)
 		records = await ctx.bot.db.fetch(
 			"""
 			SELECT id, channel_id, message_id, remind_time, reminder
@@ -157,7 +156,7 @@ class Reminders(commands.Cog):
 			ORDER BY remind_time
 			LIMIT $2 OFFSET $3
 			""", 
-			ctx.author.id, count, offset
+			ctx.author.id, min(count, 10), offset
 		)
 		fields = []
 		for record in records:
