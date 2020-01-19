@@ -490,9 +490,10 @@ class Games(commands.Cog):
 										f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
 										"You win! :tada:")
 	
-	@commands.command(aliases = ["extremerps", "rps-101", "rps101"])
+	@commands.command(aliases = ["extremerps", "rps-101", "rps101"], 
+						usage = "<object>")
 	@checks.not_forbidden()
-	async def erps(self, ctx, object : str):
+	async def erps(self, ctx, erps_object : str):
 		'''
 		Extreme rock paper scissors
 		http://www.umop.com/rps101.htm
@@ -500,7 +501,7 @@ class Games(commands.Cog):
 		http://www.umop.com/rps101/rps101chart.html
 		'''
 		# Harmonbot option
-		object = object.lower().replace('.', "").replace("video game", "game")
+		erps_object = erps_object.lower().replace('.', "").replace("video game", "game")
 		# dynamite: outwits gun
 		# tornado: sweeps away -> blows away, fills pit, ruins camera
 		emotes = {"dynamite": ":boom:", "tornado": ":cloud_tornado:", "quicksand": "quicksand", 
@@ -534,10 +535,10 @@ class Games(commands.Cog):
 				print(_object)
 		'''
 		value = random.choice(list(emotes.keys()))
-		if object not in emotes:
+		if erps_object not in emotes:
 			return await ctx.embed_reply(":no_entry: That's not a valid object")
 		standard_value = value.lower().replace('.', "").replace("video game", "game")
-		if standard_value == object:
+		if standard_value == erps_object:
 			return await ctx.embed_reply(f"I chose `{value}`\n"
 											"It's a draw :confused:")
 		action = await ctx.bot.db.fetchval(
@@ -545,25 +546,25 @@ class Games(commands.Cog):
 			SELECT action FROM games.erps
 			WHERE object = $1 AND against = $2
 			""", 
-			standard_value, object
+			standard_value, erps_object
 		)
 		if action:
 			return await ctx.embed_reply(f"I chose `{value}`\n"
-											f"{emotes[standard_value]} {action} {emotes[object]}\n"
+											f"{emotes[standard_value]} {action} {emotes[erps_object]}\n"
 											"You lose :slight_frown:")
 		action = await ctx.bot.db.fetchval(
 			"""
 			SELECT action FROM games.erps
 			WHERE object = $1 AND against = $2
 			""", 
-			object, standard_value
+			erps_object, standard_value
 		)
 		if action:
 			return await ctx.embed_reply(f"I chose `{value}`\n"
-											f"{emotes[object]} {action} {emotes[standard_value]}\n"
+											f"{emotes[erps_object]} {action} {emotes[standard_value]}\n"
 											"You win! :tada:")
 		return await ctx.embed_reply(":no_entry: Error: I don't know the relationship between "
-										f"{emotes[object]} and {emotes[standard_value]}, the object that I chose")
+										f"{emotes[erps_object]} and {emotes[standard_value]}, the object that I chose")
 	
 	@commands.group(case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
