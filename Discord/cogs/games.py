@@ -463,18 +463,19 @@ class Games(commands.Cog):
 									f"{emotes[rpslssbwg_object]} {resolution[rpslssbwg_object][standard_value]} {emotes[standard_value]}\n"
 									"You win! :tada:")
 	
-	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"])
+	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"], 
+						usage = "<object>")
 	@checks.not_forbidden()
-	async def cfn(self, ctx, object : str):
+	async def cfn(self, ctx, cfn_object : str):
 		'''
 		Cockroach foot nuke
 		https://www.youtube.com/watch?v=wRi2j8k0vjo
 		'''
-		if object.lower() not in ('c', 'f', 'n', "cockroach", "foot", "nuke"):
+		if cfn_object.lower() not in ('c', 'f', 'n', "cockroach", "foot", "nuke"):
 			await ctx.embed_reply(":no_entry: That's not a valid object")
 		else:
 			value = random.choice(("cockroach", "foot", "nuke"))
-			short_shape = object[0].lower()
+			short_shape = cfn_object[0].lower()
 			resolution = {'c': {'n': "survives"}, 'f': {'c': "squashes"}, 'n': {'f': "blows up"}}
 			emotes = {'c': ":bug:", 'f': ":footprints:", 'n': ":bomb:"}
 			if value[0] == short_shape:
