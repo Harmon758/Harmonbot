@@ -5,6 +5,8 @@ from discord.ext import commands, tasks
 import asyncio
 import datetime
 
+import parsedatetime
+
 from utilities import checks
 
 def setup(bot):
@@ -14,6 +16,17 @@ class Reminders(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+
+		self.calendar = parsedatetime.Calendar()
+		# Patch https://github.com/bear/parsedatetime/commit/7a759c1f8ff7563f12ac2c1f2ea0b41452f61dec
+		# until fix is released
+		if "secss" in self.calendar.ptc.units["seconds"]:
+			self.calendar.ptc.units["seconds"].append("secs")
+			self.calendar.ptc.units["seconds"].remove("secss")
+			self.calendar.ptc.units["seconds"].append('s')
+		# Add mo as valid abbreviation for month
+		self.calendar.ptc.units["months"].append("mo")
+
 		self.current_timer = None
 		self.new_reminder = asyncio.Event()
 		self.restarting_timer = False
@@ -44,21 +57,41 @@ class Reminders(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["timer", "remind"], invoke_without_command = True, case_insensitive = True)
-	async def reminder(self, ctx, seconds: int, *, about: commands.clean_content = ""):
-		'''Reminder'''
-		# TODO: Better input method
-		response = await ctx.embed_reply(f"I'll remind you in {seconds} seconds")
+	@commands.group(name = "reminder", aliases = ["remind", "timer"], 
+					invoke_without_command = True, case_insensitive = True)
+	async def reminder_command(self, ctx, *, reminder: commands.clean_content):
+		'''Set reminders'''
+		# TODO: Allow setting timezone (+ for time command as well)
+		# Clean reminder input
+		for prefix in ("me about ", "me to ", "me "):
+			if reminder.startswith(prefix):
+				reminder = reminder[len(prefix):]
+		reminder = reminder.replace("from now", "")
+		# Parse reminder
+		now = datetime.datetime.now(datetime.timezone.utc)
+		if not (matches := self.calendar.nlp(reminder, sourceTime = now)):
+			raise commands.BadArgument("Time not specified")
+		parsed_datetime, flags, start_pos, end_pos, matched_text = matches[0]
+		parsed_datetime = parsed_datetime.replace(tzinfo = datetime.timezone.utc)
+		if parsed_datetime < now:
+			raise commands.BadArgument("Time is in the past")
+		# Respond
+		reminder = reminder[:start_pos] + reminder[end_pos + 1:]
+		reminder = reminder.strip()
+		response = await ctx.embed_reply(fields = (("Reminder", reminder or ctx.bot.ZWS),), 
+											footer_text = f"Set for {parsed_datetime.isoformat()}", 
+											timestamp = parsed_datetime)
+		# Insert into database
 		created_time = ctx.message.created_at.replace(tzinfo = datetime.timezone.utc)
-		remind_time = created_time + datetime.timedelta(seconds = seconds)
 		await self.bot.db.execute(
 			"""
 			INSERT INTO reminders.reminders (user_id, channel_id, message_id, created_time, remind_time, reminder)
 			VALUES ($1, $2, $3, $4, $5, $6)
 			""", 
-			ctx.author.id, ctx.channel.id, response.id, created_time, remind_time, about
+			ctx.author.id, ctx.channel.id, response.id, created_time, parsed_datetime, reminder
 		)
-		if self.current_timer and remind_time < self.current_timer:
+		# Update timer
+		if self.current_timer and parsed_datetime < self.current_timer:
 			self.restarting_timer = True
 			self.timer.restart()
 			self.timer.get_task().set_name("Reminders")
