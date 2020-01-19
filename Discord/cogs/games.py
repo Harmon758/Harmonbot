@@ -392,20 +392,21 @@ class Games(commands.Cog):
 									f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
 									"You win! :tada:")
 	
-	@commands.command(aliases = ["rockpaperscissorslizardspock", "rock-paper-scissors-lizard-spock"])
+	@commands.command(aliases = ["rockpaperscissorslizardspock", "rock-paper-scissors-lizard-spock"], 
+						usage = "<object>")
 	@checks.not_forbidden()
-	async def rpsls(self, ctx, object : str):
+	async def rpsls(self, ctx, rpsls_object : str):
 		'''
 		RPS lizard Spock
 		https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
 		'''
-		if object.lower() not in ('r', 'p', 's', 'l', "rock", "paper", "scissors", "lizard", "spock"):
+		if rpsls_object.lower() not in ('r', 'p', 's', 'l', "rock", "paper", "scissors", "lizard", "spock"):
 			return await ctx.embed_reply(":no_entry: That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors", "lizard", "Spock"))
-		if object[0] == 'S' and object.lower() != "scissors" or object.lower() == "spock":
+		if rpsls_object[0] == 'S' and rpsls_object.lower() != "scissors" or rpsls_object.lower() == "spock":
 			short_shape = 'S'
 		else:
-			short_shape = object[0].lower()
+			short_shape = rpsls_object[0].lower()
 		resolution = {'r': {'s': "crushes", 'l': "crushes"}, 'p': {'r': "covers", 'S': "disproves"}, 
 						's': {'p': "cuts", 'l': "decapitates"}, 'l': {'p': "eats", 'S': "poisons"}, 
 						'S': {'r': "vaporizes", 's': "smashes"}}
