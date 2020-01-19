@@ -401,7 +401,7 @@ class Games(commands.Cog):
 		https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
 		'''
 		if rpsls_object.lower() not in ('r', 'p', 's', 'l', "rock", "paper", "scissors", "lizard", "spock"):
-			return await ctx.embed_reply(":no_entry: That's not a valid object")
+			raise commands.BadArgument("That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors", "lizard", "Spock"))
 		if rpsls_object[0] == 'S' and rpsls_object.lower() != "scissors" or rpsls_object.lower() == "spock":
 			short_shape = 'S'
