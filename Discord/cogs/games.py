@@ -500,7 +500,7 @@ class Games(commands.Cog):
 		http://www.umop.com/rps101/alloutcomes.htm
 		http://www.umop.com/rps101/rps101chart.html
 		'''
-		# Harmonbot option
+		# TODO: Harmonbot option
 		erps_object = erps_object.lower().replace('.', "").replace("video game", "game")
 		# dynamite: outwits gun
 		# tornado: sweeps away -> blows away, fills pit, ruins camera
@@ -530,9 +530,9 @@ class Games(commands.Cog):
 					"lightning": ":cloud_lightning:", "medusa": "medusa", "power": ":electric_plug:", "laser": "laser", 
 					"nuke": ":bomb:", "sky": "sky", "tank": "tank", "helicopter": ":helicopter:"}
 		'''
-		for _object in emotes:
-			if _object == emotes[_object]:
-				print(_object)
+		for key, emote in emotes.ites():
+			if key == emote
+				print(key)
 		'''
 		value = random.choice(list(emotes.keys()))
 		if erps_object not in emotes:
