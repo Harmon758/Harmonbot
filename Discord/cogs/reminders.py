@@ -5,7 +5,7 @@ from discord.ext import commands, tasks
 import asyncio
 import datetime
 
-import parsedatetime
+from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
 from utilities import checks
 
@@ -17,7 +17,7 @@ class Reminders(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-		self.calendar = parsedatetime.Calendar()
+		self.calendar = Calendar(version = VERSION_CONTEXT_STYLE)
 		# Patch https://github.com/bear/parsedatetime/commit/7a759c1f8ff7563f12ac2c1f2ea0b41452f61dec
 		# until fix is released
 		if "secss" in self.calendar.ptc.units["seconds"]:
@@ -71,7 +71,10 @@ class Reminders(commands.Cog):
 		now = datetime.datetime.now(datetime.timezone.utc)
 		if not (matches := self.calendar.nlp(reminder, sourceTime = now)):
 			raise commands.BadArgument("Time not specified")
-		parsed_datetime, flags, start_pos, end_pos, matched_text = matches[0]
+		parsed_datetime, context, start_pos, end_pos, matched_text = matches[0]
+		if not context.hasTime:
+			parsed_datetime = parsed_datetime.replace(hour = now.hour, minute = now.minute, 
+														second = now.second, microsecond = now.microsecond)
 		parsed_datetime = parsed_datetime.replace(tzinfo = datetime.timezone.utc)
 		if parsed_datetime < now:
 			raise commands.BadArgument("Time is in the past")
