@@ -375,7 +375,7 @@ class Games(commands.Cog):
 	async def rps(self, ctx, rps_object: str):
 		'''Rock paper scissors'''
 		if rps_object.lower() not in ('r', 'p', 's', "rock", "paper", "scissors"):
-			return await ctx.embed_reply(":no_entry: That's not a valid object")
+			raise commands.BadArgument("That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors"))
 		short_shape = rps_object[0].lower()
 		resolution = {'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}}
