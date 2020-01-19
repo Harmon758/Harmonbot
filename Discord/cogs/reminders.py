@@ -21,8 +21,8 @@ class Reminders(commands.Cog):
 		# Patch https://github.com/bear/parsedatetime/commit/7a759c1f8ff7563f12ac2c1f2ea0b41452f61dec
 		# until fix is released
 		if "secss" in self.calendar.ptc.units["seconds"]:
-			self.calendar.ptc.units["seconds"].append("secs")
 			self.calendar.ptc.units["seconds"].remove("secss")
+			self.calendar.ptc.units["seconds"].append("secs")
 			self.calendar.ptc.units["seconds"].append('s')
 		# Add mo as valid abbreviation for month
 		self.calendar.ptc.units["months"].append("mo")
