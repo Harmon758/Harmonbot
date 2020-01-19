@@ -1,6 +1,6 @@
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands, menus, tasks
 
 import asyncio
 import datetime
@@ -9,6 +9,7 @@ from typing import Optional
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
 from utilities import checks
+from utilities.menu import Menu
 
 def setup(bot):
 	bot.add_cog(Reminders(bot))
@@ -27,6 +28,9 @@ class Reminders(commands.Cog):
 			self.calendar.ptc.units["seconds"].append('s')
 		# Add mo as valid abbreviation for month
 		self.calendar.ptc.units["months"].append("mo")
+		
+		self.reminder_command.add_command(self.menu)
+		self.list_reminders.add_command(self.menu)
 		
 		self.current_timer = None
 		self.new_reminder = asyncio.Event()
@@ -141,7 +145,6 @@ class Reminders(commands.Cog):
 								footer_text = f"Set for {cancelled['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}", 
 								timestamp = cancelled["remind_time"])
 	
-	# TODO: Reminders Menu
 	@reminder_command.group(name = "list", invoke_without_command = True, case_insensitive = True)
 	async def list_reminders(self, ctx, offset: Optional[int] = 0, count: Optional[int] = 10):
 		'''
@@ -172,6 +175,23 @@ class Reminders(commands.Cog):
 			value += f"\nAt {record['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}"
 			fields.append((f"ID: {record['id']}", value))
 		await ctx.embed_reply(title = "Reminders", fields = fields)
+	
+	@commands.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
+	async def menu(self, ctx, per_page: Optional[int] = 10):
+		'''
+		Reminders menu
+		Max per_page is 10
+		'''
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT id, channel_id, message_id, remind_time, reminder
+			FROM reminders.reminders
+			WHERE user_id = $1 AND reminded = FALSE AND cancelled = FALSE AND failed = FALSE
+			ORDER BY remind_time
+			""", 
+			ctx.author.id
+		)
+		await RemindersMenu(records, per_page = min(per_page, 10)).start(ctx)
 	
 	# TODO: clear subcommand
 	
@@ -225,4 +245,46 @@ class Reminders(commands.Cog):
 			self.restarting_timer = False
 		else:
 			print(f"{self.bot.console_message_prefix}Reminders task cancelled @ {datetime.datetime.now().isoformat()}")
+
+class RemindersMenu(Menu, menus.MenuPages):
+	
+	def __init__(self, records, per_page):
+		super().__init__(RemindersSource(records, per_page), timeout = None, clear_reactions_after = True, check_embeds = True)
+	
+	async def send_initial_message(self, ctx, channel):
+		message = await super().send_initial_message(ctx, channel)
+		await ctx.bot.attempt_delete_message(ctx.message)
+		return message
+
+class RemindersSource(menus.ListPageSource):
+	
+	def __init__(self, records, per_page):
+		super().__init__(records, per_page = per_page)
+	
+	async def format_page(self, menu, records):
+		embed = discord.Embed(title = "Reminders", color = menu.bot.bot_color)
+		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
+		if self.per_page == 1:
+			records = [records]
+		for record in records:
+			value = record["reminder"] or "Reminder"
+			if channel := menu.bot.get_channel(record["channel_id"]):
+				try:
+					message = await channel.fetch_message(record["message_id"])
+					value = f"[{value}]({message.jump_url})"
+				except discord.NotFound:
+					pass
+				value += f"\nIn {channel.mention}"
+			# TODO: Attempt to fetch channel?
+			value += f"\nAt {record['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}"
+			embed.add_field(name = f"ID: {record['id']}", value = value)
+		offset = menu.current_page * self.per_page
+		start = offset + 1
+		end = min(offset + self.per_page, len(self.entries))
+		if start == end:
+			reminders_range = f"Reminder {start}"
+		else:
+			reminders_range = f"Reminders {start} - {end}"
+		embed.set_footer(text = f"{reminders_range} of {len(self.entries)}")
+		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
