@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-import asyncio
 import difflib
 import io
 import re
@@ -461,15 +460,6 @@ class Tools(commands.Cog):
 			close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
 			await ctx.embed_reply("You don't have that tag{}".format(close_matches))
 		return not exists
-	
-	@commands.command()
-	@checks.not_forbidden()
-	async def timer(self, ctx, seconds: int):
-		'''Timer'''
-		# TODO: other units, persistence through restarts
-		await ctx.embed_reply(f"I'll remind you in {seconds} seconds")
-		await asyncio.sleep(seconds)
-		await ctx.send(f"{ctx.author.mention}: {seconds} seconds have passed")
 	
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
