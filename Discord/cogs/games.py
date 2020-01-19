@@ -472,7 +472,7 @@ class Games(commands.Cog):
 		https://www.youtube.com/watch?v=wRi2j8k0vjo
 		'''
 		if cfn_object.lower() not in ('c', 'f', 'n', "cockroach", "foot", "nuke"):
-			await ctx.embed_reply(":no_entry: That's not a valid object")
+			raise commands.BadArgument("That's not a valid object")
 		else:
 			value = random.choice(("cockroach", "foot", "nuke"))
 			short_shape = cfn_object[0].lower()
