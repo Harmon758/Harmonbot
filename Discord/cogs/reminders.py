@@ -45,7 +45,7 @@ class Reminders(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["timer", "remind"], invoke_without_command = True, case_insensitive = True)
-	async def reminder(self, ctx, seconds: int, *, about: str = ""):
+	async def reminder(self, ctx, seconds: int, *, about: commands.clean_content = ""):
 		'''Reminder'''
 		# TODO: Better input method
 		response = await ctx.embed_reply(f"I'll remind you in {seconds} seconds")
