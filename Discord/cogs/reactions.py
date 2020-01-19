@@ -11,6 +11,7 @@ import dateutil.parser
 
 from modules.maze import Maze
 from utilities import checks
+from utilities.menu import Menu
 
 def setup(bot):
 	bot.add_cog(Reactions(bot))
@@ -19,13 +20,7 @@ def setup(bot):
 #  Fixed to stop counting own reactions on 2019-10-25
 #  Deprecated on 2020-01-04 in favor of menu_reactions
 
-class CustomMenu(menus.Menu):
-	
-	async def update(self, payload):
-		await super().update(payload)
-		await self.bot.increment_menu_reactions_count()
-
-class GuessMenu(CustomMenu):
+class GuessMenu(Menu):
 	
 	def __init__(self):
 		super().__init__(timeout = None, check_embeds = True)
@@ -50,7 +45,7 @@ class GuessMenu(CustomMenu):
 									f"No, it's not {number}")
 		await self.message.edit(embed = embed)
 
-class MazeMenu(CustomMenu):
+class MazeMenu(Menu):
 	
 	def __init__(self, width, height, random_start, random_end):
 		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
@@ -100,7 +95,7 @@ class NewsSource(menus.ListPageSource):
 			embed.timestamp = dateutil.parser.parse(timestamp)
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
-class NewsMenu(CustomMenu, menus.MenuPages):
+class NewsMenu(Menu, menus.MenuPages):
 	
 	def __init__(self, articles):
 		super().__init__(NewsSource(articles), timeout = None, clear_reactions_after = True, check_embeds = True)
@@ -110,7 +105,7 @@ class NewsMenu(CustomMenu, menus.MenuPages):
 		await ctx.bot.attempt_delete_message(ctx.message)
 		return message
 
-class PlayingMenu(CustomMenu):
+class PlayingMenu(Menu):
 	
 	def __init__(self):
 		super().__init__(timeout = None, check_embeds = True)
@@ -187,7 +182,7 @@ class WolframAlphaSource(menus.ListPageSource):
 		embed.set_footer(text = f"Pod {menu.current_page + 1} of {len(self.subpods)}")
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
-class WolframAlphaMenu(CustomMenu, menus.MenuPages):
+class WolframAlphaMenu(Menu, menus.MenuPages):
 	
 	def __init__(self, subpods):
 		super().__init__(WolframAlphaSource(subpods), timeout = None, clear_reactions_after = True, check_embeds = True)
@@ -225,7 +220,7 @@ class XKCDSource(menus.PageSource):
 		embed.timestamp = datetime.datetime(int(page["year"]), int(page["month"]), int(page["day"]))
 		return embed
 
-class XKCDMenu(CustomMenu, menus.MenuPages):
+class XKCDMenu(Menu, menus.MenuPages):
 	
 	def __init__(self, initial_number = None):
 		self.initial_number = initial_number
