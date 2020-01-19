@@ -29,6 +29,7 @@ class Reminders(commands.Cog):
 		# Add mo as valid abbreviation for month
 		self.calendar.ptc.units["months"].append("mo")
 		
+		# Add menu as subcommand of reminder and reminder list commands
 		self.reminder_command.add_command(self.menu)
 		self.list_reminders.add_command(self.menu)
 		
@@ -72,6 +73,7 @@ class Reminders(commands.Cog):
 		See and set reminders
 		Times are in UTC
 		'''
+		# Invoke list subcommand for reminders and timers invocations
 		if ctx.invoked_with in ("reminders", "timers"):
 			offset = 0
 			count = 10
