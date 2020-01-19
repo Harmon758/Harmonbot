@@ -372,7 +372,7 @@ class Games(commands.Cog):
 	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"], 
 						usage = "<object>")
 	@checks.not_forbidden()
-	async def rps(self, ctx, rps_object : str):
+	async def rps(self, ctx, rps_object: str):
 		'''Rock paper scissors'''
 		if rps_object.lower() not in ('r', 'p', 's', "rock", "paper", "scissors"):
 			return await ctx.embed_reply(":no_entry: That's not a valid object")
