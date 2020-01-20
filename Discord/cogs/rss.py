@@ -42,6 +42,7 @@ class RSS(commands.Cog):
 			if len(matching_utc_offsets) == 1:
 				self.tzinfos[timezone_abbreviation] = dateutil.tz.gettz(matching_timezones[0])
 		
+		self.new_feed = asyncio.Event()
 		self.check_feeds.start().set_name("RSS")
 	
 	def cog_unload(self):
@@ -130,6 +131,7 @@ class RSS(commands.Cog):
 			ctx.channel.id, url, ttl
 		)
 		await ctx.embed_reply(f"The feed, {url}, has been added to this channel")
+		self.new_feed.set()
 
 	@rss.command(aliases = ["delete"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
@@ -165,7 +167,8 @@ class RSS(commands.Cog):
 			"""
 		)
 		if not records:
-			await asyncio.sleep(60)
+			self.new_feed.clear()
+			await self.new_feed.wait()
 		for record in records:
 			feed = record["feed"]
 			if record["ttl"] and datetime.datetime.now(datetime.timezone.utc) < record["last_checked"] + datetime.timedelta(minutes = record["ttl"]):
