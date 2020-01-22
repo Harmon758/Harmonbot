@@ -190,8 +190,8 @@ class YouTube(commands.Cog):
 		)
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(record["youtube_channel_id"] for record in records)))
 	
-	# R/PT20S
-	@tasks.loop(seconds = 20)
+	# R/PT60S
+	@tasks.loop(seconds = 60)
 	async def check_streams(self):
 		try:
 			records = await self.bot.db.fetch("SELECT DISTINCT youtube_channel_id FROM youtube.streams")
