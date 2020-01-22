@@ -212,8 +212,7 @@ class Reminders(commands.Cog):
 			self.new_reminder.clear()
 			return await self.new_reminder.wait()
 		self.current_timer = record
-		if record["remind_time"] > (now := datetime.datetime.now(datetime.timezone.utc)):
-			await asyncio.sleep((record["remind_time"] - now).total_seconds())
+		await discord.utils.sleep_until(record["remind_time"])
 		if not (channel := self.bot.get_channel(record["channel_id"])):
 			# TODO: Attempt to fetch channel?
 			return await self.bot.db.execute("UPDATE reminders.reminders SET failed = TRUE WHERE id = $1", record["id"])
