@@ -314,8 +314,8 @@ class Twitch(commands.Cog):
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that keyword")
 		await ctx.embed_reply(f"Removed the Twitch keyword search, `{keyword}`, from this text channel")
 	
-	# R/PT20S
-	@tasks.loop(seconds = 20)
+	# R/PT60S
+	@tasks.loop(seconds = 60)
 	async def check_streams(self):
 		headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
 		try:
