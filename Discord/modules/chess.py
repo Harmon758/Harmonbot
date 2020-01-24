@@ -22,9 +22,14 @@ class ChessMatch(chess.Board):
 		self.black_player = black_player
 		self.bot = ctx.bot
 		# TODO: Dynamically load chess engine not locked to version?
-		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin/stockfish_10_x64.exe", 
+		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin/stockfish_20011801_x64_bmi2.exe", 
 																				creationflags = subprocess.CREATE_NO_WINDOW)
-		# TODO: Use popcnt.exe?
+		# BMI2 > modern (POPCNT) > neither
+		# http://blog.abrok.eu/stockfish-dev-builds-faq/
+		# https://github.com/glinscott/fishtest/wiki/Building-stockfish-on-Windows
+		# https://en.wikipedia.org/wiki/Bit_Manipulation_Instruction_Sets
+		# https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures
+		# TODO: Check and handle support for BMI2 + POPCNT in order
 		self.match_message = None
 		self.task = ctx.bot.loop.create_task(self.match_task(), name = "Chess Match")
 		return self
