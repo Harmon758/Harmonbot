@@ -13,19 +13,22 @@ import chess.svg
 import cpuinfo
 from wand.image import Image
 
-CPUID = cpuinfo.CPUID()
-CPU_FLAGS = CPUID.get_flags(CPUID.get_max_extension_support())
-if "bmi2" in CPU_FLAGS:
-	STOCKFISH_EXECUTABLE = "stockfish_20011801_x64_bmi2.exe"
-elif "popcnt" in CPU_FLAGS:
-	STOCKFISH_EXECUTABLE = "stockfish_20011801_x64_modern.exe"
-else:
-	STOCKFISH_EXECUTABLE = "stockfish_20011801_x64.exe"
-# BMI2 > modern (POPCNT) > neither
-# http://blog.abrok.eu/stockfish-dev-builds-faq/
-# https://github.com/glinscott/fishtest/wiki/Building-stockfish-on-Windows
-# https://en.wikipedia.org/wiki/Bit_Manipulation_Instruction_Sets
-# https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures
+STOCKFISH_EXECUTABLE = "stockfish_20011801_x64"
+try:
+	CPUID = cpuinfo.CPUID()
+	CPU_FLAGS = CPUID.get_flags(CPUID.get_max_extension_support())
+	if "bmi2" in CPU_FLAGS:
+		STOCKFISH_EXECUTABLE += "_bmi2"
+	elif "popcnt" in CPU_FLAGS:
+		STOCKFISH_EXECUTABLE += "_modern"
+	# BMI2 > modern (POPCNT) > neither
+	# http://blog.abrok.eu/stockfish-dev-builds-faq/
+	# https://github.com/glinscott/fishtest/wiki/Building-stockfish-on-Windows
+	# https://en.wikipedia.org/wiki/Bit_Manipulation_Instruction_Sets
+	# https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures
+except:
+	pass
+STOCKFISH_EXECUTABLE += ".exe"
 
 class ChessMatch(chess.Board):
 	
