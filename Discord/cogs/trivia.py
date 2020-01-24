@@ -51,7 +51,24 @@ class Trivia(commands.Cog):
 			"""
 		)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	max_concurrency = commands.MaxConcurrency(1, per = commands.BucketType.guild, wait = False)
+	
+	async def cog_command_error(self, ctx, error):
+		if isinstance(error, commands.MaxConcurrencyReached):
+			if ctx.guild.id in self.active_trivia:
+				game = "trivia"
+			elif ctx.guild.id in self.active_jeopardy:
+				game = "jeopardy"
+			else:
+				raise RuntimeError("Trivia max concurrency reached, but neither active trivia nor jeopardy found.")
+			channel_id = getattr(self, f"active_{game}")[ctx.guild.id]["channel_id"]
+			if ctx.channel.id == channel_id:
+				return await ctx.embed_reply(f":no_entry: Error: There is already an ongoing game of {game} here")
+			else:
+				channel = ctx.guild.get_channel(channel_id)
+				return await ctx.embed_reply(f":no_entry: Error: There is already an ongoing game of {game} in {channel.mention}")
+	
+	@commands.group(max_concurrency = max_concurrency, invoke_without_command = True, case_insensitive = True)
 	async def trivia(self, ctx):
 		'''
 		Trivia game
@@ -59,20 +76,13 @@ class Trivia(commands.Cog):
 		Answers prepended with ! or > are ignored
 		Questions are taken from Jeopardy!
 		'''
-		if ctx.guild.id in self.active_trivia:
-			channel_id = self.active_trivia[ctx.guild.id]["channel_id"]
-			if ctx.channel.id == channel_id:
-				return await ctx.embed_reply(f"There is already an ongoing game of trivia here")
-			else:
-				channel = ctx.guild.get_channel(channel_id)
-				return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
 		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}}
 		try:
 			await self.trivia_round(ctx)
 		finally:
 			del self.active_trivia[ctx.guild.id]
 	
-	@trivia.command(name = "bet")
+	@trivia.command(name = "bet", max_concurrency = max_concurrency)
 	async def trivia_bet(self, ctx):
 		'''
 		Trivia with betting
@@ -80,9 +90,6 @@ class Trivia(commands.Cog):
 		Enter any amount under or equal to the money you have to bet
 		Currently, you start with $100,000
 		'''
-		if ctx.guild.id in self.active_trivia:
-			channel = ctx.guild.get_channel(self.active_trivia[ctx.guild.id]["channel_id"])
-			return await ctx.embed_reply(f"There is already an ongoing game of trivia in {channel.mention}")
 		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}, 
 											"bet_countdown": 0, "bets": {}}
 		try:
@@ -258,7 +265,7 @@ class Trivia(commands.Cog):
 					fields.append((str(user), f"{record['correct']}/{total} correct ({correct_percentage:.2f}%)"))
 		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(max_concurrency = max_concurrency, invoke_without_command = True, case_insensitive = True)
 	async def jeopardy(self, ctx):
 		'''
 		Trivia with categories
@@ -266,13 +273,6 @@ class Trivia(commands.Cog):
 		Based on Jeopardy!
 		'''
 		# TODO: Daily Double?
-		if ctx.guild.id in self.active_jeopardy:
-			channel_id = self.active_jeopardy[ctx.guild.id]["channel_id"]
-			if ctx.channel.id == channel_id:
-				return await ctx.embed_reply(f"There is already an ongoing game of jeopardy here")
-			else:
-				channel = ctx.guild.get_channel(channel_id)
-				return await ctx.embed_reply(f"There is already an ongoing game of jeopardy in {channel.mention}")
 		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, 
 												"answer": None, "answerer": None}
 		message = await ctx.embed_reply("Generating board..", title = "Jeopardy!", author_name = None)

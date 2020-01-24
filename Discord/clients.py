@@ -640,6 +640,9 @@ class Bot(commands.Bot):
 			# Handled with local error handler
 			if isinstance(error.original, youtube_dl.utils.DownloadError):
 				return
+		# Handled with cog error handler
+		if isinstance(error, commands.MaxConcurrencyReached):
+			return
 		# TODO: check embed links permission
 		# Unhandled
 		self.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
