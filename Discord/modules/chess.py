@@ -10,7 +10,22 @@ import chess
 import chess.engine
 import chess.pgn
 import chess.svg
+import cpuinfo
 from wand.image import Image
+
+CPUID = cpuinfo.CPUID()
+CPU_FLAGS = CPUID.get_flags(CPUID.get_max_extension_support())
+if "bmi2" in CPU_FLAGS:
+	STOCKFISH_EXECUTABLE = "stockfish_20011801_x64_bmi2.exe"
+elif "popcnt" in CPU_FLAGS:
+	STOCKFISH_EXECUTABLE = "stockfish_20011801_x64_modern.exe"
+else:
+	STOCKFISH_EXECUTABLE = "stockfish_20011801_x64.exe"
+# BMI2 > modern (POPCNT) > neither
+# http://blog.abrok.eu/stockfish-dev-builds-faq/
+# https://github.com/glinscott/fishtest/wiki/Building-stockfish-on-Windows
+# https://en.wikipedia.org/wiki/Bit_Manipulation_Instruction_Sets
+# https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures
 
 class ChessMatch(chess.Board):
 	
@@ -22,14 +37,8 @@ class ChessMatch(chess.Board):
 		self.black_player = black_player
 		self.bot = ctx.bot
 		# TODO: Dynamically load chess engine not locked to version?
-		self.engine_transport, self.chess_engine = await chess.engine.popen_uci("bin/stockfish_20011801_x64_bmi2.exe", 
+		self.engine_transport, self.chess_engine = await chess.engine.popen_uci(f"bin/{STOCKFISH_EXECUTABLE}", 
 																				creationflags = subprocess.CREATE_NO_WINDOW)
-		# BMI2 > modern (POPCNT) > neither
-		# http://blog.abrok.eu/stockfish-dev-builds-faq/
-		# https://github.com/glinscott/fishtest/wiki/Building-stockfish-on-Windows
-		# https://en.wikipedia.org/wiki/Bit_Manipulation_Instruction_Sets
-		# https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures
-		# TODO: Check and handle support for BMI2 + POPCNT in order
 		self.match_message = None
 		self.task = ctx.bot.loop.create_task(self.match_task(), name = "Chess Match")
 		return self
