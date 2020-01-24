@@ -188,10 +188,9 @@ if __name__ == "__main__":
 		
 		# TODO: Server setting to disable prefix-less commands
 		
-		# :8ball:
-		if message.content.startswith('\N{BILLIARDS}'):
-			if '\N{BILLIARDS}' in ctx.bot.all_commands:
-				return await ctx.invoke(ctx.bot.all_commands['\N{BILLIARDS}'])
+		# :8ball: command
+		if message.content.startswith('\N{BILLIARDS}') and (command := ctx.bot.get_command('\N{BILLIARDS}')):
+			return await ctx.invoke(command)
 		
 		# Respects (f) system
 		if message.content.lower() == 'f' or message.content == '\N{REGIONAL INDICATOR SYMBOL LETTER F}':
