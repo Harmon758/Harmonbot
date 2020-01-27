@@ -174,7 +174,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 	
 	def __init__(self):
 		self.mazes = {}
-		self.move_mapping = {'w' : Direction.UP, 'a' : Direction.LEFT, 's' : Direction.DOWN, 'd' : Direction.RIGHT}
+		self.move_mapping = {'w': Direction.UP, 'a': Direction.LEFT, 's': Direction.DOWN, 'd': Direction.RIGHT}
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
