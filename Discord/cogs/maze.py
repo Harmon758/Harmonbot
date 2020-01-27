@@ -149,7 +149,7 @@ class Maze:
 		
 		row_offset = 2 * self.row + 1
 		column_offset = 4 * self.column + 2
-		self.visible[row_offset] = self.visible[row_offset][:column_offset] + " " + self.visible[row_offset][column_offset + 1:]
+		self.visible[row_offset] = self.visible[row_offset][:column_offset] + ' ' + self.visible[row_offset][column_offset + 1:]
 		if direction is Direction.UP:
 			self.row -= 1
 		elif direction is Direction.RIGHT:
