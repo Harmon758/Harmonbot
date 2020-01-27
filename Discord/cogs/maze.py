@@ -14,7 +14,7 @@ from utilities.menu import Menu
 sys.setrecursionlimit(5000)
 
 def setup(bot):
-	bot.add_cog(MazeCog(bot))
+	bot.add_cog(MazeCog())
 
 class Direction(IntEnum):
 	UP = 0
@@ -172,8 +172,7 @@ class Maze:
 
 class MazeCog(commands.Cog, name = "Maze"):
 	
-	def __init__(self, bot):
-		self.bot = bot
+	def __init__(self):
 		self.mazes = {}
 	
 	async def cog_check(self, ctx):
