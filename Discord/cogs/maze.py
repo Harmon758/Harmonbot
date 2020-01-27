@@ -21,9 +21,8 @@ class Direction(IntEnum):
 class Maze:
 	
 	def __init__(self, rows, columns, random_start = False, random_end = False):
-		self.rows = min(max(2, rows), 80)
-		self.columns = min(max(2, columns), 80)
-		# TODO: optimize generation algorithm?, previous upper limit of 100x100
+		self.rows = min(max(2, rows), 100)
+		self.columns = min(max(2, columns), 100)
 		self.move_counter = 0
 		
 		self.directions = [[[False] * 4 for column in range(self.columns)] for row in range(self.rows)]
@@ -194,8 +193,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 	async def start(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Start a maze game
-		height: 2 - 80
-		width: 2 - 80
+		height: 2 - 100
+		width: 2 - 100
 		'''
 		# TODO: Add option to restrict to command invoker
 		if ctx.channel.id in self.mazes:
@@ -234,8 +233,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 	async def menu(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Maze game menu
-		height: 2 - 80
-		width: 2 - 80
+		height: 2 - 100
+		width: 2 - 100
 		React with an arrow key to move
 		'''
 		await MazeMenu(height, width, random_start, random_end).start(ctx)
