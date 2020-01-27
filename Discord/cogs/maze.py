@@ -185,8 +185,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@maze.command(name = "start", aliases = ["begin"])
-	async def maze_start(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
+	@maze.command(aliases = ["begin"])
+	async def start(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
 		'''
 		Start a maze game
 		width: 2 - 100
@@ -222,8 +222,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 		await ctx.embed_reply("Congratulations! You reached the end of the maze in {} moves".format(maze_instance.move_counter))
 		del self.mazes[ctx.channel.id]
 	
-	@maze.command(name = "current")
-	async def maze_current(self, ctx):
+	@maze.command()
+	async def current(self, ctx):
 		'''Current maze game'''
 		if ctx.channel.id in self.mazes:
 			await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.mazes[ctx.channel.id].print_visible()))
