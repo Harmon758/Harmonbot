@@ -34,8 +34,26 @@ class Maze:
 		self.columns = min(max(2, columns), 100)
 		self.move_counter = 0
 		
+		# Generate connections
 		self.connections = [[[False] * 4 for column in range(self.columns)] for row in range(self.rows)]
-		self.generate_connections()
+		visited = [[False] * self.columns for row in range(self.rows)]
+		to_visit = [(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))]
+		while to_visit:
+			row, column = to_visit[-1]
+			visited[row][column] = True
+			for direction in random.sample(tuple(Direction), 4):
+				vertical, horizontal = direction.vector
+				new_row, new_column = row + vertical, column + horizontal
+				if not (0 <= new_row < self.rows and 0 <= new_column < self.columns):
+					continue
+				if visited[new_row][new_column]:
+					continue
+				self.connections[row][column][direction] = True
+				self.connections[new_row][new_column][direction.reverse] = True
+				to_visit.append((new_row, new_column))
+				break
+			else:
+				to_visit.pop()
 		
 		# self.visited = [[False] * self.columns for row in range(self.rows)]
 		if random_start:
@@ -115,27 +133,6 @@ class Maze:
 		for row_number, row in enumerate(visible):
 			visible[row_number] = row[4 * start_column:4 * start_column + 41]
 		return '\n'.join(visible)
-	
-	def generate_connections(self):
-		'''Generate connections for the maze'''
-		visited = [[False] * self.columns for row in range(self.rows)]
-		to_visit = [(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))]
-		while to_visit:
-			row, column = to_visit[-1]
-			visited[row][column] = True
-			for direction in random.sample(tuple(Direction), 4):
-				vertical, horizontal = direction.vector
-				new_row, new_column = row + vertical, column + horizontal
-				if not (0 <= new_row < self.rows and 0 <= new_column < self.columns):
-					continue
-				if visited[new_row][new_column]:
-					continue
-				self.connections[row][column][direction] = True
-				self.connections[new_row][new_column][direction.reverse] = True
-				to_visit.append((new_row, new_column))
-				break
-			else:
-				to_visit.pop()
 	
 	def update_visible(self):
 		row_offset = 2 * self.row
