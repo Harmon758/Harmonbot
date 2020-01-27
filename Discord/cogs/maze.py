@@ -200,22 +200,22 @@ class MazeCog(commands.Cog, name = "Maze"):
 		if ctx.channel.id in self.mazes:
 			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
 		self.mazes[ctx.channel.id] = Maze(width, height, random_start = random_start, random_end = random_end)
-		maze_instance = self.mazes[ctx.channel.id]
-		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze_instance)))
-		while not maze_instance.reached_end():
+		maze = self.mazes[ctx.channel.id]
+		message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)))
+		while not maze.reached_end():
 			move = await ctx.bot.wait_for("message", check = lambda message: message.content.lower() in self.move_mapping.keys() and message.channel == ctx.channel)
 			# author = ctx.author
-			moved = maze_instance.move(self.move_mapping[move.content.lower()])
-			response = ctx.bot.CODE_BLOCK.format(str(maze_instance))
+			moved = maze.move(self.move_mapping[move.content.lower()])
+			response = ctx.bot.CODE_BLOCK.format(str(maze))
 			if not moved:
 				response += "\n:no_entry: You can't go that way"
-			new_maze_message = await ctx.embed_reply(response)
+			new_message = await ctx.embed_reply(response)
 			await ctx.bot.attempt_delete_message(move)
-			await ctx.bot.attempt_delete_message(maze_message)
-			maze_message = new_maze_message
-		embed = maze_message.embeds[0]
-		embed.description += f"\nCongratulations! You reached the end of the maze in {maze_instance.move_counter} moves"
-		await maze_message.edit(embed = embed)
+			await ctx.bot.attempt_delete_message(message)
+			message = new_message
+		embed = message.embeds[0]
+		embed.description += f"\nCongratulations! You reached the end of the maze in {maze.move_counter} moves"
+		await message.edit(embed = embed)
 		del self.mazes[ctx.channel.id]
 	
 	@maze.command()
