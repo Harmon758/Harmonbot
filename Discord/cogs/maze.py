@@ -178,6 +178,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 		'''
 		await ctx.send_help(ctx.command)
 	
+	# TODO: Use max concurrency
 	@maze.command(aliases = ["begin"])
 	async def start(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
@@ -204,6 +205,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 		while not maze_instance.reached_end():
 			move = await self.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel)
 			# author = ctx.author
+			# TODO: Add option to restrict to command invoker
 			moved = maze_instance.move(convert_move[move.content.lower()])
 			response = ctx.bot.CODE_BLOCK.format(maze_instance.print_visible())
 			if not moved:
@@ -233,7 +235,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 		'''
 		await MazeMenu(width, height, random_start, random_end).start(ctx)
 	
-	# add maze print, position?
+	# TODO: maze print, position?, stats
 
 class MazeMenu(Menu):
 	
