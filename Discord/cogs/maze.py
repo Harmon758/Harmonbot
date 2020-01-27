@@ -186,7 +186,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 		await ctx.send_help(ctx.command)
 	
 	@maze.command(aliases = ["begin"])
-	async def start(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
+	async def start(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Start a maze game
 		width: 2 - 100
