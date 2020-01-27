@@ -24,9 +24,9 @@ class Direction(IntEnum):
 
 class Maze:
 	
-	def __init__(self, columns, rows, random_start = False, random_end = False):
-		self.columns = min(max(2, columns), 80)
+	def __init__(self, rows, columns, random_start = False, random_end = False):
 		self.rows = min(max(2, rows), 80)
+		self.columns = min(max(2, columns), 80)
 		# TODO: optimize generation algorithm?, previous upper limit of 100x100
 		self.move_counter = 0
 		
@@ -189,16 +189,16 @@ class MazeCog(commands.Cog, name = "Maze"):
 	
 	# TODO: Use max concurrency
 	@maze.command(aliases = ["begin"])
-	async def start(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
+	async def start(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Start a maze game
-		width: 2 - 80
 		height: 2 - 80
+		width: 2 - 80
 		'''
 		# TODO: Add option to restrict to command invoker
 		if ctx.channel.id in self.mazes:
 			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
-		self.mazes[ctx.channel.id] = maze = Maze(width, height, random_start = random_start, random_end = random_end)
+		self.mazes[ctx.channel.id] = maze = Maze(height, width, random_start = random_start, random_end = random_end)
 		message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)))
 		reached_end = False
 		while not reached_end:
@@ -229,22 +229,22 @@ class MazeCog(commands.Cog, name = "Maze"):
 			await ctx.embed_reply(":no_entry: There's no maze game currently going on")
 	
 	@maze.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	async def menu(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
+	async def menu(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Maze game menu
-		width: 2 - 80
 		height: 2 - 80
+		width: 2 - 80
 		React with an arrow key to move
 		'''
-		await MazeMenu(width, height, random_start, random_end).start(ctx)
+		await MazeMenu(height, width, random_start, random_end).start(ctx)
 	
 	# TODO: maze print, position?, stats
 
 class MazeMenu(Menu):
 	
-	def __init__(self, width, height, random_start, random_end):
+	def __init__(self, height, width, random_start, random_end):
 		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
-		self.maze = Maze(width, height, random_start, random_end)
+		self.maze = Maze(height, width, random_start, random_end)
 		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': Direction.LEFT, '\N{UPWARDS BLACK ARROW}': Direction.UP, 
 						'\N{DOWNWARDS BLACK ARROW}': Direction.DOWN, '\N{BLACK RIGHTWARDS ARROW}': Direction.RIGHT}
 		for number, emoji in enumerate(self.arrows.keys(), start = 1):
