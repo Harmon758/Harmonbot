@@ -208,7 +208,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 		# await ctx.reply(ctx.bot.CODE_BLOCK.format(repr(maze_instance)))
 		convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
 		while not maze_instance.reached_end():
-			move = await self.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel) # author = ctx.author
+			move = await self.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel)
+			# author = ctx.author
 			moved = maze_instance.move(convert_move[move.content.lower()])
 			response = ctx.bot.CODE_BLOCK.format(maze_instance.print_visible())
 			if not moved:
