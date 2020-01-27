@@ -181,7 +181,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 		'''
 		Maze game
 		[w, a, s, d] to move
-		Also see mazer
 		'''
 		await ctx.send_help(ctx.command)
 	
