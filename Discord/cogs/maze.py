@@ -241,7 +241,8 @@ class MazeMenu(Menu):
 	def __init__(self, width, height, random_start, random_end):
 		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
 		self.maze = Maze(width, height, random_start, random_end)
-		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': Direction.LEFT, '\N{UPWARDS BLACK ARROW}': Direction.UP, '\N{DOWNWARDS BLACK ARROW}': Direction.DOWN, '\N{BLACK RIGHTWARDS ARROW}': Direction.RIGHT}
+		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': Direction.LEFT, '\N{UPWARDS BLACK ARROW}': Direction.UP, 
+						'\N{DOWNWARDS BLACK ARROW}': Direction.DOWN, '\N{BLACK RIGHTWARDS ARROW}': Direction.RIGHT}
 		for number, emoji in enumerate(self.arrows.keys(), start = 1):
 			self.add_button(menus.Button(emoji, self.on_direction, position = number))
 	
