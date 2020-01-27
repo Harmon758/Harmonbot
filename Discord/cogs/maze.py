@@ -10,6 +10,9 @@ import sys
 from utilities import checks
 from utilities.menu import Menu
 
+# Necessary for maze generation
+sys.setrecursionlimit(5000)
+
 def setup(bot):
 	bot.add_cog(MazeCog(bot))
 
@@ -172,9 +175,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 	def __init__(self, bot):
 		self.bot = bot
 		self.mazes = {}
-		
-		# Necessary for maze generation
-		sys.setrecursionlimit(5000)
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
