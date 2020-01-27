@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands, menus
 
+from enum import IntEnum
 import io
 import random
 import sys
@@ -11,6 +12,12 @@ from utilities.menu import Menu
 
 def setup(bot):
 	bot.add_cog(MazeCog(bot))
+
+class Direction(IntEnum):
+	UP = 0
+	RIGHT = 1
+	DOWN = 2
+	LEFT = 3
 
 class Maze:
 	
@@ -76,25 +83,25 @@ class Maze:
 
 	def move(self, direction):
 		'''Move inside the maze'''
-		if direction.lower() == 'n':
+		if direction is Direction.UP:
 			if not self.directions[self.column][self.row][0]:
 				return False
 			else:
 				self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + " " + self.visible[2 * self.row + 1][4 * self.column + 3:]
 				self.row -= 1
-		elif direction.lower() == 'e':
+		elif direction is Direction.RIGHT:
 			if not self.directions[self.column][self.row][1]:
 				return False
 			else:
 				self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + " " + self.visible[2 * self.row + 1][4 * self.column + 3:]
 				self.column += 1
-		elif direction.lower() == 's':
+		elif direction is direction.DOWN:
 			if not self.directions[self.column][self.row][2]:
 				return False
 			else:
 				self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + " " + self.visible[2 * self.row + 1][4 * self.column + 3:]
 				self.row += 1
-		elif direction.lower() == 'w':
+		elif direction is direction.LEFT:
 			if not self.directions[self.column][self.row][3]:
 				return False
 			else:
@@ -206,7 +213,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 		await ctx.reply(ctx.bot.CODE_BLOCK.format(maze_print))
 		'''
 		# await ctx.reply(ctx.bot.CODE_BLOCK.format(repr(maze_instance)))
-		convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
+		convert_move = {'w' : Direction.UP, 'a' : Direction.LEFT, 's' : Direction.DOWN, 'd' : Direction.RIGHT}
 		while not maze_instance.reached_end():
 			move = await self.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel)
 			# author = ctx.author
@@ -246,7 +253,7 @@ class MazeMenu(Menu):
 	def __init__(self, width, height, random_start, random_end):
 		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
 		self.maze = Maze(width, height, random_start, random_end)
-		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': 'w', '\N{UPWARDS BLACK ARROW}': 'n', '\N{DOWNWARDS BLACK ARROW}': 's', '\N{BLACK RIGHTWARDS ARROW}': 'e'}
+		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': Direction.LEFT, '\N{UPWARDS BLACK ARROW}': Direction.UP, '\N{DOWNWARDS BLACK ARROW}': Direction.DOWN, '\N{BLACK RIGHTWARDS ARROW}': Direction.RIGHT}
 		for number, emoji in enumerate(self.arrows.keys(), start = 1):
 			self.add_button(menus.Button(emoji, self.on_direction, position = number))
 	
