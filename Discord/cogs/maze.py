@@ -203,8 +203,12 @@ class MazeCog(commands.Cog, name = "Maze"):
 		message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)))
 		reached_end = False
 		while not reached_end:
-			move = await ctx.bot.wait_for("message", check = lambda message: message.channel == ctx.channel and message.content.lower() in self.move_mapping.keys())
-			# author = ctx.author
+			move = await ctx.bot.wait_for(
+				"message", 
+				check = lambda message: 
+					message.channel == ctx.channel and message.content.lower() in self.move_mapping.keys()
+					# author = ctx.author
+			)
 			moved = maze.move(self.move_mapping[move.content.lower()])
 			response = ctx.bot.CODE_BLOCK.format(str(maze))
 			if not moved:
