@@ -219,7 +219,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 			await self.bot.attempt_delete_message(move)
 			await self.bot.attempt_delete_message(maze_message)
 			maze_message = new_maze_message
-		await ctx.embed_reply("Congratulations! You reached the end of the maze in {} moves".format(maze_instance.move_counter))
+		await ctx.embed_reply(f"Congratulations! You reached the end of the maze in {maze_instance.move_counter} moves")
 		del self.mazes[ctx.channel.id]
 	
 	@maze.command()
