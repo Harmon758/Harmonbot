@@ -199,23 +199,22 @@ class MazeCog(commands.Cog, name = "Maze"):
 		# TODO: Add option to restrict to command invoker
 		if ctx.channel.id in self.mazes:
 			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
-		self.mazes[ctx.channel.id] = Maze(width, height, random_start = random_start, random_end = random_end)
-		maze = self.mazes[ctx.channel.id]
+		self.mazes[ctx.channel.id] = maze = Maze(width, height, random_start = random_start, random_end = random_end)
 		message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)))
-		while not maze.reached_end():
-			move = await ctx.bot.wait_for("message", check = lambda message: message.content.lower() in self.move_mapping.keys() and message.channel == ctx.channel)
+		reached_end = False
+		while not reached_end:
+			move = await ctx.bot.wait_for("message", check = lambda message: message.channel == ctx.channel and message.content.lower() in self.move_mapping.keys())
 			# author = ctx.author
 			moved = maze.move(self.move_mapping[move.content.lower()])
 			response = ctx.bot.CODE_BLOCK.format(str(maze))
 			if not moved:
 				response += "\n:no_entry: You can't go that way"
+			elif (reached_end := maze.reached_end()):
+				response += f"\nCongratulations! You reached the end of the maze in {maze.move_counter} moves"
 			new_message = await ctx.embed_reply(response)
 			await ctx.bot.attempt_delete_message(move)
 			await ctx.bot.attempt_delete_message(message)
 			message = new_message
-		embed = message.embeds[0]
-		embed.description += f"\nCongratulations! You reached the end of the maze in {maze.move_counter} moves"
-		await message.edit(embed = embed)
 		del self.mazes[ctx.channel.id]
 	
 	@maze.command()
