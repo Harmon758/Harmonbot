@@ -52,13 +52,13 @@ class Maze:
 		self.string = ""
 		for row in range(self.rows):
 			for column in range(self.columns):
-				if self.directions[column][row][0]:
+				if self.directions[column][row][Direction.UP]:
 					self.string += "+   "
 				else:
 					self.string += "+---"
 			self.string += "+\n"
 			for column in range(self.columns):
-				if self.directions[column][row][3]:
+				if self.directions[column][row][Direction.LEFT]:
 					self.string += "    "
 				else:
 					self.string += "|   "
