@@ -120,6 +120,28 @@ class Maze:
 			visible[row_number] = row[4 * start_column:4 * start_column + 41]
 		return '\n'.join(visible)
 	
+	def generate_connection(self, c, r):
+		'''Generate connections for the maze'''
+		self.generate_visited[c][r] = True
+		for horizontal, vertical in random.sample(((-1, 0), (0, -1), (0, 1), (1, 0)), 4):
+			if not (0 <= c + horizontal < self.columns and 0 <= r + vertical < self.rows):
+				continue
+			if self.generate_visited[c + horizontal][r + vertical]:
+				continue
+			if horizontal == 0 and vertical == -1:
+				self.directions[c][r][Direction.UP] = True
+				self.directions[c][r - 1][Direction.DOWN] = True
+			elif horizontal == 1 and vertical == 0:
+				self.directions[c][r][Direction.RIGHT] = True
+				self.directions[c + 1][r][Direction.LEFT] = True
+			elif horizontal == 0 and vertical == 1:
+				self.directions[c][r][Direction.DOWN] = True
+				self.directions[c][r + 1][Direction.UP] = True
+			elif horizontal == -1 and vertical == 0:
+				self.directions[c][r][Direction.LEFT] = True
+				self.directions[c - 1][r][Direction.RIGHT] = True
+			self.generate_connection(c + horizontal, r + vertical)
+	
 	def move(self, direction):
 		'''Move inside the maze'''
 		if not isinstance(direction, Direction) or not self.directions[self.column][self.row][direction]:
@@ -147,28 +169,6 @@ class Maze:
 			return (self.column == self.columns - 1 and self.row == self.rows - 1)
 		else:
 			return self.column == self.e_column and self.row == self.e_row
-	
-	def generate_connection(self, c, r):
-		'''Generate connections for the maze'''
-		self.generate_visited[c][r] = True
-		for horizontal, vertical in random.sample(((-1, 0), (0, -1), (0, 1), (1, 0)), 4):
-			if not (0 <= c + horizontal < self.columns and 0 <= r + vertical < self.rows):
-				continue
-			if self.generate_visited[c + horizontal][r + vertical]:
-				continue
-			if horizontal == 0 and vertical == -1:
-				self.directions[c][r][Direction.UP] = True
-				self.directions[c][r - 1][Direction.DOWN] = True
-			elif horizontal == 1 and vertical == 0:
-				self.directions[c][r][Direction.RIGHT] = True
-				self.directions[c + 1][r][Direction.LEFT] = True
-			elif horizontal == 0 and vertical == 1:
-				self.directions[c][r][Direction.DOWN] = True
-				self.directions[c][r + 1][Direction.UP] = True
-			elif horizontal == -1 and vertical == 0:
-				self.directions[c][r][Direction.LEFT] = True
-				self.directions[c - 1][r][Direction.RIGHT] = True
-			self.generate_connection(c + horizontal, r + vertical)
 
 class MazeCog(commands.Cog, name = "Maze"):
 	
