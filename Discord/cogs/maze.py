@@ -173,8 +173,10 @@ class MazeCog(commands.Cog, name = "Maze"):
 		# Necessary for maze generation
 		sys.setrecursionlimit(5000)
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def maze(self, ctx):
 		'''
 		Maze game
@@ -184,7 +186,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 		await ctx.send_help(ctx.command)
 	
 	@maze.command(name = "start", aliases = ["begin"])
-	@checks.not_forbidden()
 	async def maze_start(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
 		'''
 		Start a maze game
@@ -222,7 +223,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 		del self.mazes[ctx.channel.id]
 	
 	@maze.command(name = "current")
-	@checks.not_forbidden()
 	async def maze_current(self, ctx):
 		'''Current maze game'''
 		if ctx.channel.id in self.mazes:
@@ -231,7 +231,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 			await ctx.embed_reply(":no_entry: There's no maze game currently going on")
 	
 	@maze.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	@checks.not_forbidden()
 	async def menu(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Maze game menu
