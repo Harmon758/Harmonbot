@@ -174,6 +174,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 	
 	def __init__(self):
 		self.mazes = {}
+		self.move_mapping = {'w' : Direction.UP, 'a' : Direction.LEFT, 's' : Direction.DOWN, 'd' : Direction.RIGHT}
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -200,11 +201,10 @@ class MazeCog(commands.Cog, name = "Maze"):
 		self.mazes[ctx.channel.id] = Maze(width, height, random_start = random_start, random_end = random_end)
 		maze_instance = self.mazes[ctx.channel.id]
 		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze_instance)))
-		convert_move = {'w' : Direction.UP, 'a' : Direction.LEFT, 's' : Direction.DOWN, 'd' : Direction.RIGHT}
 		while not maze_instance.reached_end():
-			move = await ctx.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel)
+			move = await ctx.bot.wait_for("message", check = lambda message: message.content.lower() in self.move_mapping.keys() and message.channel == ctx.channel)
 			# author = ctx.author
-			moved = maze_instance.move(convert_move[move.content.lower()])
+			moved = maze_instance.move(self.move_mapping[move.content.lower()])
 			response = ctx.bot.CODE_BLOCK.format(str(maze_instance))
 			if not moved:
 				response += "\n:no_entry: You can't go that way"
