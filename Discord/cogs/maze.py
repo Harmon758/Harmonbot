@@ -28,8 +28,6 @@ class Maze:
 		self.columns = 2 if columns < 2 else 80 if columns > 80 else columns
 		self.rows = 2 if rows < 2 else 80 if rows > 80 else rows
 		# TODO: optimize generation algorithm?, previous upper limit of 100x100
-		self.random_start = random_start
-		self.random_end = random_end
 		self.move_counter = 0
 		
 		self.directions = [[[False] * 4 for row in range(self.rows)] for column in range(self.columns)]
@@ -37,16 +35,19 @@ class Maze:
 		self.generate_connection(random.randint(0, self.columns - 1), random.randint(0, self.rows - 1))
 		
 		# self.visited = [[False for row in range(self.rows)] for column in range(self.columns)]
-		if not self.random_start:
+		if not random_start:
 			self.column = 0
 			self.row = 0
 		else:
 			self.column = random.randint(0, self.columns - 1)
 			self.row = random.randint(0, self.rows - 1)
 		# self.visited[self.column][self.row] = True
-		if self.random_end:
+		if random_end:
 			self.end_column = random.randint(0, self.columns - 1)
 			self.end_row = random.randint(0, self.rows - 1)
+		else:
+			self.end_column = self.columns - 1
+			self.end_row = self.rows - 1
 		
 		self.string = ""
 		for row in range(self.rows):
@@ -68,18 +69,10 @@ class Maze:
 		self.visible = [None] * (2 * self.rows + 1)
 		self.visible[::2] = ["+---" * self.columns + "+"] * (self.rows + 1)
 		self.visible[1::2] = ["| X " * self.columns + "|"] * self.rows
-		if not self.random_start:
-			for row in range(3):
-				self.visible[row] = self.row_strings[row][:5] + self.visible[row][5:]
-			self.visible[1] = self.visible[1][:2] + 'I' + self.visible[1][3:]
-		else:
-			for row in range(2 * self.row, 2 * self.row + 3):
-				self.visible[row] = self.visible[row][:self.column * 4] + self.row_strings[row][self.column * 4:self.column * 4 + 5] + self.visible[row][self.column * 4 + 5:]
-			self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:self.column * 4 + 2] + 'I' + self.visible[2 * self.row + 1][4 * self.column + 3:]
-		if not self.random_end:
-			self.visible[2 * self.rows - 1] = self.visible[2 * self.rows - 1][:4 * self.columns - 2] + 'E' + self.visible[2 * self.rows - 1][4 * self.columns - 1:]
-		else:
-			self.visible[2 * self.end_row + 1] = self.visible[2 * self.end_row + 1][:self.end_column * 4 + 2] + 'E' + self.visible[2 * self.end_row + 1][4 * self.end_column + 3:]
+		for row in range(2 * self.row, 2 * self.row + 3):
+			self.visible[row] = self.visible[row][:self.column * 4] + self.row_strings[row][self.column * 4:self.column * 4 + 5] + self.visible[row][self.column * 4 + 5:]
+		self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:self.column * 4 + 2] + 'I' + self.visible[2 * self.row + 1][4 * self.column + 3:]
+		self.visible[2 * self.end_row + 1] = self.visible[2 * self.end_row + 1][:self.end_column * 4 + 2] + 'E' + self.visible[2 * self.end_row + 1][4 * self.end_column + 3:]
 	
 	def __repr__(self):
 		return self.string
@@ -165,10 +158,7 @@ class Maze:
 		return True
 	
 	def reached_end(self):
-		if not self.random_end:
-			return (self.column == self.columns - 1 and self.row == self.rows - 1)
-		else:
-			return self.column == self.end_column and self.row == self.end_row
+		return self.column == self.end_column and self.row == self.end_row
 
 class MazeCog(commands.Cog, name = "Maze"):
 	
