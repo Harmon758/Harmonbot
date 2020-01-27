@@ -233,8 +233,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 	async def menu(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Maze game menu
-		width: 2 - 100
-		height: 2 - 100
+		width: 2 - 80
+		height: 2 - 80
 		React with an arrow key to move
 		'''
 		await MazeMenu(width, height, random_start, random_end).start(ctx)
