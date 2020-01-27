@@ -125,13 +125,14 @@ class Maze:
 			visited[row][column] = True
 			for direction in random.sample(tuple(Direction), 4):
 				vertical, horizontal = direction.vector
-				if not (0 <= row + vertical < self.rows and 0 <= column + horizontal < self.columns):
+				new_row, new_column = row + vertical, column + horizontal
+				if not (0 <= new_row < self.rows and 0 <= new_column < self.columns):
 					continue
-				if visited[row + vertical][column + horizontal]:
+				if visited[new_row][new_column]:
 					continue
 				self.directions[row][column][direction] = True
-				self.directions[row + vertical][column + horizontal][direction.reverse] = True
-				to_visit.append((row + vertical, column + horizontal))
+				self.directions[new_row][new_column][direction.reverse] = True
+				to_visit.append((new_row, new_column))
 				break
 			else:
 				to_visit.pop()
