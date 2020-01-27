@@ -25,8 +25,8 @@ class Direction(IntEnum):
 class Maze:
 	
 	def __init__(self, columns, rows, random_start = False, random_end = False):
-		self.columns = 2 if columns < 2 else 80 if columns > 80 else columns
-		self.rows = 2 if rows < 2 else 80 if rows > 80 else rows
+		self.columns = min(max(2, columns), 80)
+		self.rows = min(max(2, rows), 80)
 		# TODO: optimize generation algorithm?, previous upper limit of 100x100
 		self.move_counter = 0
 		
