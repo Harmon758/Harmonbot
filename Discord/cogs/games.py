@@ -14,7 +14,6 @@ from bs4 import BeautifulSoup
 import pydealer
 
 # from modules import gofish
-from modules import maze
 # from modules import war
 from utilities import checks
 
@@ -28,7 +27,7 @@ def setup(bot):
 class Games(commands.Cog):
 	
 	'''
-	Also see Adventure, Chess, Poker, and Trivia categories
+	Also see Adventure, Chess, Maze, Poker, and Trivia categories
 	'''
 	
 	def __init__(self, bot):
@@ -36,15 +35,11 @@ class Games(commands.Cog):
 		self.war_channel, self.war_players = None, []
 		self.gofish_channel, self.gofish_players = None, []
 		self.taboo_players = []
-		self.mazes = {}
 		self.blackjack_ranks = copy.deepcopy(pydealer.const.DEFAULT_RANKS)
 		self.blackjack_ranks["values"].update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
 		for value in self.blackjack_ranks["values"]:
 			self.blackjack_ranks["values"][value] += 1
 		#check default values
-		
-		# Necessary for maze generation
-		sys.setrecursionlimit(5000)
 		
 		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
 
@@ -274,65 +269,6 @@ class Games(commands.Cog):
 		Examples: {1,2 Winner(W): 2} {1,3 W: 3} {1,4 W: 1} {1,3,5 W: 5} {1,3,5,7,10 W: 7}
 		'''
 		pass
-	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
-	async def maze(self, ctx):
-		'''
-		Maze game
-		[w, a, s, d] to move
-		Also see mazer
-		'''
-		await ctx.send_help(ctx.command)
-	
-	@maze.command(name = "start", aliases = ["begin"])
-	@checks.not_forbidden()
-	async def maze_start(self, ctx, width : int = 5, height : int = 5, random_start : bool = False, random_end : bool = False):
-		'''
-		Start a maze game
-		width: 2 - 100
-		height: 2 - 100
-		'''
-		if ctx.channel.id in self.mazes:
-			await ctx.embed_reply(":no_entry: There's already a maze game going on")
-			return
-		self.mazes[ctx.channel.id] = maze.Maze(width, height, random_start = random_start, random_end = random_end)
-		maze_instance = self.mazes[ctx.channel.id]
-		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(maze_instance.print_visible()))
-		'''
-		maze_print = ""
-		for r in maze_instance.test_print():
-			row_print = ""
-			for cell in r:
-				row_print += cell + ' '
-			maze_print += row_print + "\n"
-		await ctx.reply(ctx.bot.CODE_BLOCK.format(maze_print))
-		'''
-		# await ctx.reply(ctx.bot.CODE_BLOCK.format(repr(maze_instance)))
-		convert_move = {'w' : 'n', 'a' : 'w', 's' : 's', 'd' : 'e'}
-		while not maze_instance.reached_end():
-			move = await self.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel) # author = ctx.author
-			moved = maze_instance.move(convert_move[move.content.lower()])
-			response = ctx.bot.CODE_BLOCK.format(maze_instance.print_visible())
-			if not moved:
-				response += "\n:no_entry: You can't go that way"
-			new_maze_message = await ctx.embed_reply(response)
-			await self.bot.attempt_delete_message(move)
-			await self.bot.attempt_delete_message(maze_message)
-			maze_message = new_maze_message
-		await ctx.embed_reply("Congratulations! You reached the end of the maze in {} moves".format(maze_instance.move_counter))
-		del self.mazes[ctx.channel.id]
-	
-	@maze.command(name = "current")
-	@checks.not_forbidden()
-	async def maze_current(self, ctx):
-		'''Current maze game'''
-		if ctx.channel.id in self.mazes:
-			await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.mazes[ctx.channel.id].print_visible()))
-		else:
-			await ctx.embed_reply(":no_entry: There's no maze game currently going on")
-	
-	# add maze print, position?
 	
 	@commands.command(aliases = ["rtg", "reactiontime", "reactiontimegame", "reaction_time_game"])
 	@checks.not_forbidden()

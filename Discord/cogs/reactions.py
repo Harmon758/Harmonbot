@@ -3,13 +3,11 @@ import discord
 from discord.ext import commands, menus
 
 import datetime
-import io
 import random
 from typing import Optional
 
 import dateutil.parser
 
-from modules.maze import Maze
 from utilities import checks
 from utilities.menu import Menu
 
@@ -44,40 +42,6 @@ class GuessMenu(Menu):
 			embed.description = (f"{self.ctx.author.mention}: Guess a number between 1 to 10\n"
 									f"No, it's not {number}")
 		await self.message.edit(embed = embed)
-
-class MazeMenu(Menu):
-	
-	def __init__(self, width, height, random_start, random_end):
-		super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
-		self.maze = Maze(width, height, random_start, random_end)
-		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': 'w', '\N{UPWARDS BLACK ARROW}': 'n', '\N{DOWNWARDS BLACK ARROW}': 's', '\N{BLACK RIGHTWARDS ARROW}': 'e'}
-		for number, emoji in enumerate(self.arrows.keys(), start = 1):
-			self.add_button(menus.Button(emoji, self.on_direction, position = number))
-	
-	async def send_initial_message(self, ctx, channel):
-		return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.maze.print_visible()), 
-										footer_text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
-	
-	async def on_direction(self, payload):
-		embed = self.message.embeds[0]
-		if not self.maze.move(self.arrows[str(payload.emoji)]):
-			embed.description = (self.bot.CODE_BLOCK.format(self.maze.print_visible())
-									+ "\n:no_entry: You can't go that way")
-		elif self.maze.reached_end():
-			embed.description = (self.bot.CODE_BLOCK.format(self.maze.print_visible())
-									+ f"\nCongratulations! You reached the end of the maze in {self.maze.move_counter} moves")
-			self.stop()
-		else:
-			embed.description = self.bot.CODE_BLOCK.format(self.maze.print_visible())
-		embed.set_footer(text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
-		await self.message.edit(embed = embed)
-	
-	@menus.button("\N{PRINTER}", position = 5, lock = False)
-	async def on_printer(self, payload):
-		await self.message.channel.send(content = f"{self.ctx.author.display_name}:\n"
-													"Your maze is attached", 
-										file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
-															filename = "maze.txt"))
 
 class NewsSource(menus.ListPageSource):
 	
@@ -245,7 +209,6 @@ class Reactions(commands.Cog):
 		self.bot = bot
 		self.reaction_commands = (
 			(self.guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
-			(self.maze, "Games", "maze", [], [checks.not_forbidden().predicate]), 
 			(self.news, "Resources", "news", [], [checks.not_forbidden().predicate]), 
 			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
 			(self.wolframalpha, "Search", "wolframalpha", ["wa", "wolfram_alpha"], [checks.not_forbidden().predicate]), 
@@ -275,15 +238,6 @@ class Reactions(commands.Cog):
 	async def guess(self, ctx):
 		'''Guessing game menu'''
 		await GuessMenu().start(ctx)
-	
-	async def maze(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
-		'''
-		Maze game menu
-		width: 2 - 100
-		height: 2 - 100
-		React with an arrow key to move
-		'''
-		await MazeMenu(width, height, random_start, random_end).start(ctx)
 	
 	async def news(self, ctx, source: str):
 		'''
