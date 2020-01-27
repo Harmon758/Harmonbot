@@ -77,10 +77,10 @@ class Maze:
 			self.visible[2 * self.rows - 1] = self.visible[2 * self.rows - 1][:4 * self.columns - 2] + 'E' + self.visible[2 * self.rows - 1][4 * self.columns - 1:]
 		else:
 			self.visible[2 * self.e_row + 1] = self.visible[2 * self.e_row + 1][:self.e_column * 4 + 2] + 'E' + self.visible[2 * self.e_row + 1][4 * self.e_column + 3:]
-
+	
 	def __repr__(self):
 		return self.maze_string
-
+	
 	def move(self, direction):
 		'''Move inside the maze'''
 		if not isinstance(direction, Direction) or not self.directions[self.column][self.row][direction]:
@@ -102,7 +102,7 @@ class Maze:
 			self.visible[2 * self.row + r] = self.visible[2 * self.row + r][:4 * self.column] + self.maze_string_array[2 * self.row + r][4 * self.column:4 * self.column + 5] + self.visible[2 * self.row + r][4 * self.column + 5:]
 		self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + "I" + self.visible[2 * self.row + 1][4 * self.column + 3:]
 		return True
-
+	
 	def print_visible(self):
 		'''The visible output of the maze'''
 		if self.rows <= 10 and self.columns <= 10:
@@ -136,7 +136,7 @@ class Maze:
 		return zip(*maze_print)
 	'''
 	# def __str__(self):
-
+	
 	def generate_connection(self, c, r):
 		'''Generate connections for the maze'''
 		self.generate_visited[c][r] = True
