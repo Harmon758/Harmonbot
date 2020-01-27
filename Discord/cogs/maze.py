@@ -83,32 +83,19 @@ class Maze:
 
 	def move(self, direction):
 		'''Move inside the maze'''
-		if direction is Direction.UP:
-			if not self.directions[self.column][self.row][0]:
-				return False
-			else:
-				self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + " " + self.visible[2 * self.row + 1][4 * self.column + 3:]
-				self.row -= 1
-		elif direction is Direction.RIGHT:
-			if not self.directions[self.column][self.row][1]:
-				return False
-			else:
-				self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + " " + self.visible[2 * self.row + 1][4 * self.column + 3:]
-				self.column += 1
-		elif direction is direction.DOWN:
-			if not self.directions[self.column][self.row][2]:
-				return False
-			else:
-				self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + " " + self.visible[2 * self.row + 1][4 * self.column + 3:]
-				self.row += 1
-		elif direction is direction.LEFT:
-			if not self.directions[self.column][self.row][3]:
-				return False
-			else:
-				self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + " " + self.visible[2 * self.row + 1][4 * self.column + 3:]
-				self.column -= 1
-		else:
+		if not isinstance(direction, Direction) or not self.directions[self.column][self.row][direction]:
 			return False
+		
+		self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + " " + self.visible[2 * self.row + 1][4 * self.column + 3:]
+		if direction is Direction.UP:
+			self.row -= 1
+		elif direction is Direction.RIGHT:
+			self.column += 1
+		elif direction is direction.DOWN:
+			self.row += 1
+		elif direction is direction.LEFT:
+			self.column -= 1
+		
 		# self.visited[self.column][self.row] = True
 		self.move_counter += 1
 		for r in range(3):
