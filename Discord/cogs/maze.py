@@ -70,7 +70,9 @@ class Maze:
 		self.visible[::2] = ["+---" * self.columns + "+"] * (self.rows + 1)
 		self.visible[1::2] = ["| X " * self.columns + "|"] * self.rows
 		self.update_visible()
-		self.visible[2 * self.end_row + 1] = self.visible[2 * self.end_row + 1][:self.end_column * 4 + 2] + 'E' + self.visible[2 * self.end_row + 1][4 * self.end_column + 3:]
+		row_offset = 2 * self.end_row + 1
+		column_offset = 4 * self.end_column + 2
+		self.visible[row_offset] = self.visible[row_offset][:column_offset] + 'E' + self.visible[row_offset][column_offset + 1:]
 	
 	def __repr__(self):
 		return self.string
