@@ -111,6 +111,9 @@ class Maze:
 		'''Generate connections for the maze'''
 		visited = [[False] * self.columns for row in range(self.rows)]
 		to_visit = [(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))]
+		vector_mapping = {(-1, 0): Direction.UP, (0, -1): Direction.LEFT, (0, 1): Direction.RIGHT, (1, 0): Direction.DOWN}
+		reverse_direction = {Direction.UP: Direction.DOWN, Direction.LEFT: Direction.RIGHT, 
+								Direction.DOWN: Direction.UP, Direction.RIGHT: Direction.LEFT}
 		while to_visit:
 			r, c = to_visit[-1]
 			visited[r][c] = True
@@ -119,18 +122,9 @@ class Maze:
 					continue
 				if visited[r + vertical][c + horizontal]:
 					continue
-				if vertical == -1 and horizontal == 0:
-					self.directions[r][c][Direction.UP] = True
-					self.directions[r - 1][c][Direction.DOWN] = True
-				elif vertical == 0 and horizontal == 1:
-					self.directions[r][c][Direction.RIGHT] = True
-					self.directions[r][c + 1][Direction.LEFT] = True
-				elif vertical == 1 and horizontal == 0:
-					self.directions[r][c][Direction.DOWN] = True
-					self.directions[r + 1][c][Direction.UP] = True
-				elif vertical == 0 and horizontal == -1:
-					self.directions[r][c][Direction.LEFT] = True
-					self.directions[r][c - 1][Direction.RIGHT] = True
+				direction = vector_mapping[(vertical, horizontal)]
+				self.directions[r][c][direction] = True
+				self.directions[r + vertical][c + horizontal][reverse_direction[direction]] = True
 				to_visit.append((r + vertical, c + horizontal))
 				break
 			else:
