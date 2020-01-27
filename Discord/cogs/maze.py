@@ -17,6 +17,15 @@ class Direction(IntEnum):
 	RIGHT = 1
 	DOWN = 2
 	LEFT = 3
+	
+	@property
+	def reverse(self):
+		return {self.UP: self.DOWN, self.LEFT: self.RIGHT, self.DOWN: self.UP, self.RIGHT: self.LEFT}[self]
+	
+	@property
+	def vector(self):
+		# (-y, x) to match vertical, horizontal / row, column
+		return {self.UP: (-1, 0), self.RIGHT: (0, 1), self.DOWN: (1, 0), self.LEFT: (0, -1)}[self]
 
 class Maze:
 	
@@ -111,20 +120,17 @@ class Maze:
 		'''Generate connections for the maze'''
 		visited = [[False] * self.columns for row in range(self.rows)]
 		to_visit = [(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))]
-		vector_mapping = {(-1, 0): Direction.UP, (0, -1): Direction.LEFT, (0, 1): Direction.RIGHT, (1, 0): Direction.DOWN}
-		reverse_direction = {Direction.UP: Direction.DOWN, Direction.LEFT: Direction.RIGHT, 
-								Direction.DOWN: Direction.UP, Direction.RIGHT: Direction.LEFT}
 		while to_visit:
 			r, c = to_visit[-1]
 			visited[r][c] = True
-			for vertical, horizontal in random.sample(((-1, 0), (0, -1), (0, 1), (1, 0)), 4):
+			for direction in random.sample(tuple(Direction), 4):
+				vertical, horizontal = direction.vector
 				if not (0 <= r + vertical < self.rows and 0 <= c + horizontal < self.columns):
 					continue
 				if visited[r + vertical][c + horizontal]:
 					continue
-				direction = vector_mapping[(vertical, horizontal)]
 				self.directions[r][c][direction] = True
-				self.directions[r + vertical][c + horizontal][reverse_direction[direction]] = True
+				self.directions[r + vertical][c + horizontal][direction.reverse] = True
 				to_visit.append((r + vertical, c + horizontal))
 				break
 			else:
