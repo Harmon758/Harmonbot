@@ -140,23 +140,24 @@ class Maze:
 	def generate_connection(self, c, r):
 		'''Generate connections for the maze'''
 		self.generate_visited[c][r] = True
-		directions = [[0, -1], [1, 0], [0, 1], [-1, 0]]
-		random.shuffle(directions)
-		for direction in directions:
-			if 0 <= c + direction[0] < self.columns and 0 <= r + direction[1] < self.rows and not self.generate_visited[c + direction[0]][r + direction[1]]:
-				if direction[0] == 0 and direction[1] == -1:
-					self.directions[c][r][Direction.UP] = True
-					self.directions[c][r - 1][Direction.DOWN] = True
-				elif direction[0] == 1 and direction[1] == 0:
-					self.directions[c][r][Direction.RIGHT] = True
-					self.directions[c + 1][r][Direction.LEFT] = True
-				elif direction[0] == 0 and direction[1] == 1:
-					self.directions[c][r][Direction.DOWN] = True
-					self.directions[c][r + 1][Direction.UP] = True
-				elif direction[0] == -1 and direction[1] == 0:
-					self.directions[c][r][Direction.LEFT] = True
-					self.directions[c - 1][r][Direction.RIGHT] = True
-				self.generate_connection(c + direction[0], r + direction[1])
+		for horizontal, vertical in random.sample(((-1, 0), (0, -1), (0, 1), (1, 0)), 4):
+			if not (0 <= c + horizontal < self.columns and 0 <= r + vertical < self.rows):
+				continue
+			if self.generate_visited[c + horizontal][r + vertical]:
+				continue
+			if horizontal == 0 and vertical == -1:
+				self.directions[c][r][Direction.UP] = True
+				self.directions[c][r - 1][Direction.DOWN] = True
+			elif horizontal == 1 and vertical == 0:
+				self.directions[c][r][Direction.RIGHT] = True
+				self.directions[c + 1][r][Direction.LEFT] = True
+			elif horizontal == 0 and vertical == 1:
+				self.directions[c][r][Direction.DOWN] = True
+				self.directions[c][r + 1][Direction.UP] = True
+			elif horizontal == -1 and vertical == 0:
+				self.directions[c][r][Direction.LEFT] = True
+				self.directions[c - 1][r][Direction.RIGHT] = True
+			self.generate_connection(c + horizontal, r + vertical)
 
 class MazeCog(commands.Cog, name = "Maze"):
 	
