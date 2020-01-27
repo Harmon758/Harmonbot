@@ -45,44 +45,44 @@ class Maze:
 			self.row = random.randint(0, self.rows - 1)
 		# self.visited[self.column][self.row] = True
 		if self.random_end:
-			self.e_column = random.randint(0, self.columns - 1)
-			self.e_row = random.randint(0, self.rows - 1)
+			self.end_column = random.randint(0, self.columns - 1)
+			self.end_row = random.randint(0, self.rows - 1)
 		
-		self.maze_string = ""
+		self.string = ""
 		for r in range(self.rows):
 			for c in range(self.columns):
 				if self.directions[c][r][0]:
-					self.maze_string += "+   "
+					self.string += "+   "
 				else:
-					self.maze_string += "+---"
-			self.maze_string += "+\n"
+					self.string += "+---"
+			self.string += "+\n"
 			for c in range(self.columns):
 				if self.directions[c][r][3]:
-					self.maze_string += "    "
+					self.string += "    "
 				else:
-					self.maze_string += "|   "
-			self.maze_string += "|\n"
-		self.maze_string += "+---" * self.columns + "+\n"
-		self.maze_string_array = self.maze_string.split('\n')
+					self.string += "|   "
+			self.string += "|\n"
+		self.string += "+---" * self.columns + "+\n"
+		self.row_strings = self.string.split('\n')
 		
 		self.visible = [None] * (2 * self.rows + 1)
 		self.visible[::2] = ["+---" * self.columns + "+"] * (self.rows + 1)
 		self.visible[1::2] = ["| X " * self.columns + "|"] * self.rows
 		if not self.random_start:
 			for r in range(3):
-				self.visible[r] = self.maze_string_array[r][:5] + self.visible[r][5:]
+				self.visible[r] = self.row_strings[r][:5] + self.visible[r][5:]
 			self.visible[1] = self.visible[1][:2] + 'I' + self.visible[1][3:]
 		else:
 			for r in range(2 * self.row, 2 * self.row + 3):
-				self.visible[r] = self.visible[r][:self.column * 4] + self.maze_string_array[r][self.column * 4:self.column * 4 + 5] + self.visible[r][self.column * 4 + 5:]
+				self.visible[r] = self.visible[r][:self.column * 4] + self.row_strings[r][self.column * 4:self.column * 4 + 5] + self.visible[r][self.column * 4 + 5:]
 			self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:self.column * 4 + 2] + 'I' + self.visible[2 * self.row + 1][4 * self.column + 3:]
 		if not self.random_end:
 			self.visible[2 * self.rows - 1] = self.visible[2 * self.rows - 1][:4 * self.columns - 2] + 'E' + self.visible[2 * self.rows - 1][4 * self.columns - 1:]
 		else:
-			self.visible[2 * self.e_row + 1] = self.visible[2 * self.e_row + 1][:self.e_column * 4 + 2] + 'E' + self.visible[2 * self.e_row + 1][4 * self.e_column + 3:]
+			self.visible[2 * self.end_row + 1] = self.visible[2 * self.end_row + 1][:self.end_column * 4 + 2] + 'E' + self.visible[2 * self.end_row + 1][4 * self.end_column + 3:]
 	
 	def __repr__(self):
-		return self.maze_string
+		return self.string
 		# Tuple of connection directions for each cell:
 		# return str(
 		# 	tuple(
@@ -160,7 +160,7 @@ class Maze:
 		# self.visited[self.column][self.row] = True
 		self.move_counter += 1
 		for r in range(3):
-			self.visible[2 * self.row + r] = self.visible[2 * self.row + r][:4 * self.column] + self.maze_string_array[2 * self.row + r][4 * self.column:4 * self.column + 5] + self.visible[2 * self.row + r][4 * self.column + 5:]
+			self.visible[2 * self.row + r] = self.visible[2 * self.row + r][:4 * self.column] + self.row_strings[2 * self.row + r][4 * self.column:4 * self.column + 5] + self.visible[2 * self.row + r][4 * self.column + 5:]
 		self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + "I" + self.visible[2 * self.row + 1][4 * self.column + 3:]
 		return True
 	
@@ -168,7 +168,7 @@ class Maze:
 		if not self.random_end:
 			return (self.column == self.columns - 1 and self.row == self.rows - 1)
 		else:
-			return self.column == self.e_column and self.row == self.e_row
+			return self.column == self.end_column and self.row == self.end_row
 
 class MazeCog(commands.Cog, name = "Maze"):
 	
