@@ -32,11 +32,11 @@ class Maze:
 		self.random_end = random_end
 		self.move_counter = 0
 		
-		self.directions = [[[False] * 4 for r in range(self.rows)] for c in range(self.columns)]
-		self.generate_visited = [[False for r in range(self.rows)] for c in range(self.columns)]
+		self.directions = [[[False] * 4 for row in range(self.rows)] for column in range(self.columns)]
+		self.generate_visited = [[False for row in range(self.rows)] for column in range(self.columns)]
 		self.generate_connection(random.randint(0, self.columns - 1), random.randint(0, self.rows - 1))
 		
-		# self.visited = [[False for r in range(self.rows)] for c in range(self.columns)]
+		# self.visited = [[False for row in range(self.rows)] for column in range(self.columns)]
 		if not self.random_start:
 			self.column = 0
 			self.row = 0
@@ -49,15 +49,15 @@ class Maze:
 			self.end_row = random.randint(0, self.rows - 1)
 		
 		self.string = ""
-		for r in range(self.rows):
-			for c in range(self.columns):
-				if self.directions[c][r][0]:
+		for row in range(self.rows):
+			for column in range(self.columns):
+				if self.directions[column][row][0]:
 					self.string += "+   "
 				else:
 					self.string += "+---"
 			self.string += "+\n"
-			for c in range(self.columns):
-				if self.directions[c][r][3]:
+			for column in range(self.columns):
+				if self.directions[column][row][3]:
 					self.string += "    "
 				else:
 					self.string += "|   "
@@ -69,12 +69,12 @@ class Maze:
 		self.visible[::2] = ["+---" * self.columns + "+"] * (self.rows + 1)
 		self.visible[1::2] = ["| X " * self.columns + "|"] * self.rows
 		if not self.random_start:
-			for r in range(3):
-				self.visible[r] = self.row_strings[r][:5] + self.visible[r][5:]
+			for row in range(3):
+				self.visible[row] = self.row_strings[row][:5] + self.visible[row][5:]
 			self.visible[1] = self.visible[1][:2] + 'I' + self.visible[1][3:]
 		else:
-			for r in range(2 * self.row, 2 * self.row + 3):
-				self.visible[r] = self.visible[r][:self.column * 4] + self.row_strings[r][self.column * 4:self.column * 4 + 5] + self.visible[r][self.column * 4 + 5:]
+			for row in range(2 * self.row, 2 * self.row + 3):
+				self.visible[row] = self.visible[row][:self.column * 4] + self.row_strings[row][self.column * 4:self.column * 4 + 5] + self.visible[row][self.column * 4 + 5:]
 			self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:self.column * 4 + 2] + 'I' + self.visible[2 * self.row + 1][4 * self.column + 3:]
 		if not self.random_end:
 			self.visible[2 * self.rows - 1] = self.visible[2 * self.rows - 1][:4 * self.columns - 2] + 'E' + self.visible[2 * self.rows - 1][4 * self.columns - 1:]
