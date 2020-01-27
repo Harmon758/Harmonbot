@@ -80,6 +80,32 @@ class Maze:
 	
 	def __repr__(self):
 		return self.maze_string
+		# Tuple of connection directions for each cell:
+		# return str(
+		# 	tuple(
+		# 		tuple(
+		# 			tuple(
+		# 				filter(
+		# 					None, (
+		# 						direction.name if self.directions[column][row][direction] else None
+		# 						for direction in Direction
+		# 					)
+		# 				)
+		# 			) for column in range(self.columns)
+		# 		) for row in range(self.rows)
+		# 	)
+		# )
+		# Grid of first letter of connection directions:
+		# return (
+		# 	'\n'.join(
+		# 		"".join(
+		# 			"".join(
+		# 				direction.name[0] if self.directions[column][row][direction] else ""
+		# 				for direction in Direction
+		# 			).ljust(5, ' ') for column in range(self.columns)
+		# 		) for row in range(self.rows)
+		# 	)
+		# )
 	
 	def __str__(self):
 		if self.rows <= 10 and self.columns <= 10:
@@ -90,22 +116,6 @@ class Maze:
 		for row_number, row in enumerate(visible):
 			visible[row_number] = row[4 * start_column:4 * start_column + 41]
 		return '\n'.join(visible)
-	
-	'''
-	def test_print(self):
-		maze_print = [["" for r in range(self.rows)] for c in range(self.columns)]
-		for c in range(self.columns):
-			for r in range(self.rows):
-				if self.directions[c][r][0]:
-					maze_print[c][r] += "N"
-				if self.directions[c][r][1]:
-					maze_print[c][r] += "E"
-				if self.directions[c][r][2]:
-					maze_print[c][r] += "S"
-				if self.directions[c][r][3]:
-					maze_print[c][r] += "W"
-		return zip(*maze_print)
-	'''
 	
 	def move(self, direction):
 		'''Move inside the maze'''
@@ -185,26 +195,16 @@ class MazeCog(commands.Cog, name = "Maze"):
 		width: 2 - 80
 		height: 2 - 80
 		'''
+		# TODO: Add option to restrict to command invoker
 		if ctx.channel.id in self.mazes:
 			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
 		self.mazes[ctx.channel.id] = Maze(width, height, random_start = random_start, random_end = random_end)
 		maze_instance = self.mazes[ctx.channel.id]
 		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze_instance)))
-		'''
-		maze_print = ""
-		for r in maze_instance.test_print():
-			row_print = ""
-			for cell in r:
-				row_print += cell + ' '
-			maze_print += row_print + "\n"
-		await ctx.reply(ctx.bot.CODE_BLOCK.format(maze_print))
-		'''
-		# await ctx.reply(ctx.bot.CODE_BLOCK.format(repr(maze_instance)))
 		convert_move = {'w' : Direction.UP, 'a' : Direction.LEFT, 's' : Direction.DOWN, 'd' : Direction.RIGHT}
 		while not maze_instance.reached_end():
 			move = await self.bot.wait_for("message", check = lambda message: message.content.lower() in ['w', 'a', 's', 'd'] and message.channel == ctx.channel)
 			# author = ctx.author
-			# TODO: Add option to restrict to command invoker
 			moved = maze_instance.move(convert_move[move.content.lower()])
 			response = ctx.bot.CODE_BLOCK.format(str(maze_instance))
 			if not moved:
