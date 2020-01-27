@@ -31,16 +31,16 @@ class Maze:
 		self.move_counter = 0
 		
 		self.directions = [[[False] * 4 for row in range(self.rows)] for column in range(self.columns)]
-		self.generate_visited = [[False for row in range(self.rows)] for column in range(self.columns)]
+		self.generate_visited = [[False] * self.rows for column in range(self.columns)]
 		self.generate_connection(random.randint(0, self.columns - 1), random.randint(0, self.rows - 1))
 		
 		# self.visited = [[False for row in range(self.rows)] for column in range(self.columns)]
-		if not random_start:
-			self.column = 0
-			self.row = 0
-		else:
+		if random_start:
 			self.column = random.randint(0, self.columns - 1)
 			self.row = random.randint(0, self.rows - 1)
+		else:
+			self.column = 0
+			self.row = 0
 		# self.visited[self.column][self.row] = True
 		if random_end:
 			self.end_column = random.randint(0, self.columns - 1)
