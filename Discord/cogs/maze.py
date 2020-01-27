@@ -193,8 +193,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 		height: 2 - 100
 		'''
 		if ctx.channel.id in self.mazes:
-			await ctx.embed_reply(":no_entry: There's already a maze game going on")
-			return
+			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
 		self.mazes[ctx.channel.id] = Maze(width, height, random_start = random_start, random_end = random_end)
 		maze_instance = self.mazes[ctx.channel.id]
 		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(maze_instance.print_visible()))
