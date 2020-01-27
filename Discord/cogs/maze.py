@@ -81,6 +81,32 @@ class Maze:
 	def __repr__(self):
 		return self.maze_string
 	
+	def __str__(self):
+		if self.rows <= 10 and self.columns <= 10:
+			return '\n'.join(self.visible)
+		start_row = self.row - self.row % 10
+		start_column = self.column - self.column % 10
+		visible = self.visible[2 * start_row:2 * start_row + 21]
+		for row_number, row in enumerate(visible):
+			visible[row_number] = row[4 * start_column:4 * start_column + 41]
+		return '\n'.join(visible)
+	
+	'''
+	def test_print(self):
+		maze_print = [["" for r in range(self.rows)] for c in range(self.columns)]
+		for c in range(self.columns):
+			for r in range(self.rows):
+				if self.directions[c][r][0]:
+					maze_print[c][r] += "N"
+				if self.directions[c][r][1]:
+					maze_print[c][r] += "E"
+				if self.directions[c][r][2]:
+					maze_print[c][r] += "S"
+				if self.directions[c][r][3]:
+					maze_print[c][r] += "W"
+		return zip(*maze_print)
+	'''
+	
 	def move(self, direction):
 		'''Move inside the maze'''
 		if not isinstance(direction, Direction) or not self.directions[self.column][self.row][direction]:
@@ -103,39 +129,11 @@ class Maze:
 		self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + "I" + self.visible[2 * self.row + 1][4 * self.column + 3:]
 		return True
 	
-	def print_visible(self):
-		'''The visible output of the maze'''
-		if self.rows <= 10 and self.columns <= 10:
-			return '\n'.join(self.visible)
-		start_row = self.row - self.row % 10
-		start_column = self.column - self.column % 10
-		visible = self.visible[2 * start_row:2 * start_row + 21]
-		for row_number, row in enumerate(visible):
-			visible[row_number] = row[4 * start_column:4 * start_column + 41]
-		return '\n'.join(visible)
-	
 	def reached_end(self):
 		if not self.random_end:
 			return (self.column == self.columns - 1 and self.row == self.rows - 1)
 		else:
 			return self.column == self.e_column and self.row == self.e_row
-	
-	'''
-	def test_print(self):
-		maze_print = [["" for r in range(self.rows)] for c in range(self.columns)]
-		for c in range(self.columns):
-			for r in range(self.rows):
-				if self.directions[c][r][0]:
-					maze_print[c][r] += "N"
-				if self.directions[c][r][1]:
-					maze_print[c][r] += "E"
-				if self.directions[c][r][2]:
-					maze_print[c][r] += "S"
-				if self.directions[c][r][3]:
-					maze_print[c][r] += "W"
-		return zip(*maze_print)
-	'''
-	# def __str__(self):
 	
 	def generate_connection(self, c, r):
 		'''Generate connections for the maze'''
@@ -191,7 +189,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
 		self.mazes[ctx.channel.id] = Maze(width, height, random_start = random_start, random_end = random_end)
 		maze_instance = self.mazes[ctx.channel.id]
-		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(maze_instance.print_visible()))
+		maze_message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze_instance)))
 		'''
 		maze_print = ""
 		for r in maze_instance.test_print():
@@ -208,7 +206,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 			# author = ctx.author
 			# TODO: Add option to restrict to command invoker
 			moved = maze_instance.move(convert_move[move.content.lower()])
-			response = ctx.bot.CODE_BLOCK.format(maze_instance.print_visible())
+			response = ctx.bot.CODE_BLOCK.format(str(maze_instance))
 			if not moved:
 				response += "\n:no_entry: You can't go that way"
 			new_maze_message = await ctx.embed_reply(response)
@@ -222,7 +220,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 	async def current(self, ctx):
 		'''Current maze game'''
 		if ctx.channel.id in self.mazes:
-			await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.mazes[ctx.channel.id].print_visible()))
+			await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(self.mazes[ctx.channel.id])))
 		else:
 			await ctx.embed_reply(":no_entry: There's no maze game currently going on")
 	
@@ -248,20 +246,20 @@ class MazeMenu(Menu):
 			self.add_button(menus.Button(emoji, self.on_direction, position = number))
 	
 	async def send_initial_message(self, ctx, channel):
-		return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(self.maze.print_visible()), 
+		return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(self.maze)), 
 										footer_text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
 	
 	async def on_direction(self, payload):
 		embed = self.message.embeds[0]
 		if not self.maze.move(self.arrows[str(payload.emoji)]):
-			embed.description = (self.bot.CODE_BLOCK.format(self.maze.print_visible())
+			embed.description = (self.bot.CODE_BLOCK.format(str(self.maze))
 									+ "\n:no_entry: You can't go that way")
 		elif self.maze.reached_end():
-			embed.description = (self.bot.CODE_BLOCK.format(self.maze.print_visible())
+			embed.description = (self.bot.CODE_BLOCK.format(str(self.maze))
 									+ f"\nCongratulations! You reached the end of the maze in {self.maze.move_counter} moves")
 			self.stop()
 		else:
-			embed.description = self.bot.CODE_BLOCK.format(self.maze.print_visible())
+			embed.description = self.bot.CODE_BLOCK.format(str(self.maze))
 		embed.set_footer(text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
 		await self.message.edit(embed = embed)
 	
