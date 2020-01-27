@@ -121,17 +121,17 @@ class Maze:
 		visited = [[False] * self.columns for row in range(self.rows)]
 		to_visit = [(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))]
 		while to_visit:
-			r, c = to_visit[-1]
-			visited[r][c] = True
+			row, column = to_visit[-1]
+			visited[row][column] = True
 			for direction in random.sample(tuple(Direction), 4):
 				vertical, horizontal = direction.vector
-				if not (0 <= r + vertical < self.rows and 0 <= c + horizontal < self.columns):
+				if not (0 <= row + vertical < self.rows and 0 <= column + horizontal < self.columns):
 					continue
-				if visited[r + vertical][c + horizontal]:
+				if visited[row + vertical][column + horizontal]:
 					continue
-				self.directions[r][c][direction] = True
-				self.directions[r + vertical][c + horizontal][direction.reverse] = True
-				to_visit.append((r + vertical, c + horizontal))
+				self.directions[row][column][direction] = True
+				self.directions[row + vertical][column + horizontal][direction.reverse] = True
+				to_visit.append((row + vertical, column + horizontal))
 				break
 			else:
 				to_visit.pop()
