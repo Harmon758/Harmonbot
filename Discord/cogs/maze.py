@@ -69,9 +69,7 @@ class Maze:
 		self.visible = [None] * (2 * self.rows + 1)
 		self.visible[::2] = ["+---" * self.columns + "+"] * (self.rows + 1)
 		self.visible[1::2] = ["| X " * self.columns + "|"] * self.rows
-		for row in range(2 * self.row, 2 * self.row + 3):
-			self.visible[row] = self.visible[row][:self.column * 4] + self.row_strings[row][self.column * 4:self.column * 4 + 5] + self.visible[row][self.column * 4 + 5:]
-		self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:self.column * 4 + 2] + 'I' + self.visible[2 * self.row + 1][4 * self.column + 3:]
+		self.update_visible()
 		self.visible[2 * self.end_row + 1] = self.visible[2 * self.end_row + 1][:self.end_column * 4 + 2] + 'E' + self.visible[2 * self.end_row + 1][4 * self.end_column + 3:]
 	
 	def __repr__(self):
@@ -135,6 +133,15 @@ class Maze:
 				self.directions[c - 1][r][Direction.RIGHT] = True
 			self.generate_connection(c + horizontal, r + vertical)
 	
+	def update_visible(self):
+		row_offset = 2 * self.row
+		column_offset = 4 * self.column
+		for row in range(row_offset, row_offset + 3):
+			self.visible[row] = self.visible[row][:column_offset] + self.row_strings[row][column_offset:column_offset + 5] + self.visible[row][column_offset + 5:]
+		row_offset += 1
+		column_offset += 2
+		self.visible[row_offset] = self.visible[row_offset][:column_offset] + 'I' + self.visible[row_offset][column_offset + 1:]
+	
 	def move(self, direction):
 		'''Move inside the maze'''
 		if not isinstance(direction, Direction) or not self.directions[self.column][self.row][direction]:
@@ -152,9 +159,7 @@ class Maze:
 		
 		# self.visited[self.column][self.row] = True
 		self.move_counter += 1
-		for r in range(3):
-			self.visible[2 * self.row + r] = self.visible[2 * self.row + r][:4 * self.column] + self.row_strings[2 * self.row + r][4 * self.column:4 * self.column + 5] + self.visible[2 * self.row + r][4 * self.column + 5:]
-		self.visible[2 * self.row + 1] = self.visible[2 * self.row + 1][:4 * self.column + 2] + "I" + self.visible[2 * self.row + 1][4 * self.column + 3:]
+		self.update_visible()
 		return True
 	
 	def reached_end(self):
