@@ -5,13 +5,9 @@ from discord.ext import commands, menus
 from enum import IntEnum
 import io
 import random
-import sys
 
 from utilities import checks
 from utilities.menu import Menu
-
-# Necessary for maze generation
-sys.setrecursionlimit(5000)
 
 def setup(bot):
 	bot.add_cog(MazeCog())
@@ -31,8 +27,7 @@ class Maze:
 		self.move_counter = 0
 		
 		self.directions = [[[False] * 4 for column in range(self.columns)] for row in range(self.rows)]
-		self.generate_visited = [[False] * self.columns for row in range(self.rows)]
-		self.generate_connection(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))
+		self.generate_connections()
 		
 		# self.visited = [[False] * self.columns for row in range(self.rows)]
 		if random_start:
@@ -113,27 +108,34 @@ class Maze:
 			visible[row_number] = row[4 * start_column:4 * start_column + 41]
 		return '\n'.join(visible)
 	
-	def generate_connection(self, r, c):
+	def generate_connections(self):
 		'''Generate connections for the maze'''
-		self.generate_visited[r][c] = True
-		for vertical, horizontal in random.sample(((-1, 0), (0, -1), (0, 1), (1, 0)), 4):
-			if not (0 <= r + vertical < self.rows and 0 <= c + horizontal < self.columns):
-				continue
-			if self.generate_visited[r + vertical][c + horizontal]:
-				continue
-			if vertical == -1 and horizontal == 0:
-				self.directions[r][c][Direction.UP] = True
-				self.directions[r - 1][c][Direction.DOWN] = True
-			elif vertical == 0 and horizontal == 1:
-				self.directions[r][c][Direction.RIGHT] = True
-				self.directions[r][c + 1][Direction.LEFT] = True
-			elif vertical == 1 and horizontal == 0:
-				self.directions[r][c][Direction.DOWN] = True
-				self.directions[r + 1][c][Direction.UP] = True
-			elif vertical == 0 and horizontal == -1:
-				self.directions[r][c][Direction.LEFT] = True
-				self.directions[r][c - 1][Direction.RIGHT] = True
-			self.generate_connection(r + vertical, c + horizontal)
+		visited = [[False] * self.columns for row in range(self.rows)]
+		to_visit = [(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))]
+		while to_visit:
+			r, c = to_visit[-1]
+			visited[r][c] = True
+			for vertical, horizontal in random.sample(((-1, 0), (0, -1), (0, 1), (1, 0)), 4):
+				if not (0 <= r + vertical < self.rows and 0 <= c + horizontal < self.columns):
+					continue
+				if visited[r + vertical][c + horizontal]:
+					continue
+				if vertical == -1 and horizontal == 0:
+					self.directions[r][c][Direction.UP] = True
+					self.directions[r - 1][c][Direction.DOWN] = True
+				elif vertical == 0 and horizontal == 1:
+					self.directions[r][c][Direction.RIGHT] = True
+					self.directions[r][c + 1][Direction.LEFT] = True
+				elif vertical == 1 and horizontal == 0:
+					self.directions[r][c][Direction.DOWN] = True
+					self.directions[r + 1][c][Direction.UP] = True
+				elif vertical == 0 and horizontal == -1:
+					self.directions[r][c][Direction.LEFT] = True
+					self.directions[r][c - 1][Direction.RIGHT] = True
+				to_visit.append((r + vertical, c + horizontal))
+				break
+			else:
+				to_visit.pop()
 	
 	def update_visible(self):
 		row_offset = 2 * self.row
