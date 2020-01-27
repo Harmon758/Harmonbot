@@ -188,8 +188,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 	async def start(self, ctx, width: int = 5, height: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Start a maze game
-		width: 2 - 100
-		height: 2 - 100
+		width: 2 - 80
+		height: 2 - 80
 		'''
 		if ctx.channel.id in self.mazes:
 			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
