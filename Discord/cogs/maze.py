@@ -174,7 +174,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 	
 	def __init__(self):
 		self.mazes = {}
-		self.move_mapping = {'w': Direction.UP, 'a': Direction.LEFT, 's': Direction.DOWN, 'd': Direction.RIGHT}
+		self.move_mapping = {'w': Direction.UP, 'a': Direction.LEFT, 's': Direction.DOWN, 'd': Direction.RIGHT, 
+								"up": Direction.UP, "left": Direction.LEFT, "down": Direction.DOWN, "right": Direction.RIGHT}
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -183,7 +184,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 	async def maze(self, ctx):
 		'''
 		Maze game
-		[w, a, s, d] to move
+		[w, a, s, d] or [up, left, down, right] to move
 		'''
 		await ctx.send_help(ctx.command)
 	
