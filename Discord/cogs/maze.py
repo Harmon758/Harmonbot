@@ -34,7 +34,7 @@ class Maze:
 		self.columns = min(max(2, columns), 100)
 		self.move_counter = 0
 		
-		self.directions = [[[False] * 4 for column in range(self.columns)] for row in range(self.rows)]
+		self.connections = [[[False] * 4 for column in range(self.columns)] for row in range(self.rows)]
 		self.generate_connections()
 		
 		# self.visited = [[False] * self.columns for row in range(self.rows)]
@@ -55,13 +55,13 @@ class Maze:
 		self.string = ""
 		for row in range(self.rows):
 			for column in range(self.columns):
-				if self.directions[row][column][Direction.UP]:
+				if self.connections[row][column][Direction.UP]:
 					self.string += "+   "
 				else:
 					self.string += "+---"
 			self.string += "+\n"
 			for column in range(self.columns):
-				if self.directions[row][column][Direction.LEFT]:
+				if self.connections[row][column][Direction.LEFT]:
 					self.string += "    "
 				else:
 					self.string += "|   "
@@ -86,7 +86,7 @@ class Maze:
 		# 			tuple(
 		# 				filter(
 		# 					None, (
-		# 						direction.name if self.directions[row][column][direction] else None
+		# 						direction.name if self.connections[row][column][direction] else None
 		# 						for direction in Direction
 		# 					)
 		# 				)
@@ -99,7 +99,7 @@ class Maze:
 		# 	'\n'.join(
 		# 		"".join(
 		# 			"".join(
-		# 				direction.name[0] if self.directions[row][column][direction] else ""
+		# 				direction.name[0] if self.connections[row][column][direction] else ""
 		# 				for direction in Direction
 		# 			).ljust(5, ' ') for column in range(self.columns)
 		# 		) for row in range(self.rows)
@@ -130,8 +130,8 @@ class Maze:
 					continue
 				if visited[new_row][new_column]:
 					continue
-				self.directions[row][column][direction] = True
-				self.directions[new_row][new_column][direction.reverse] = True
+				self.connections[row][column][direction] = True
+				self.connections[new_row][new_column][direction.reverse] = True
 				to_visit.append((new_row, new_column))
 				break
 			else:
@@ -148,7 +148,7 @@ class Maze:
 	
 	def move(self, direction):
 		'''Move inside the maze'''
-		if not isinstance(direction, Direction) or not self.directions[self.row][self.column][direction]:
+		if not isinstance(direction, Direction) or not self.connections[self.row][self.column][direction]:
 			return False
 		
 		row_offset = 2 * self.row + 1
