@@ -225,8 +225,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 	@maze.command()
 	async def current(self, ctx):
 		'''Current maze game'''
-		if ctx.channel.id in self.mazes:
-			await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(self.mazes[ctx.channel.id])))
+		if maze := self.mazes.get(ctx.channel.id):
+			await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)))
 		else:
 			await ctx.embed_reply(":no_entry: There's no maze game currently going on")
 	
