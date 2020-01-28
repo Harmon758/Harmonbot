@@ -281,8 +281,7 @@ class MazeMenu(Menu):
 	
 	@menus.button("\N{PRINTER}", position = 5, lock = False)
 	async def on_printer(self, payload):
-		await self.message.channel.send(content = f"{self.ctx.author.display_name}:\n"
-													"Your maze is attached", 
-										file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
-															filename = "maze.txt"))
+		await self.ctx.reply("Your maze is attached", 
+								file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
+													filename = "maze.txt"))
 
