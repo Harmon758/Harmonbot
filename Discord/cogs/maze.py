@@ -199,7 +199,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 		if ctx.channel.id in self.mazes:
 			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
 		self.mazes[ctx.channel.id] = maze = Maze(height, width, random_start = random_start, random_end = random_end)
-		message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)))
+		message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)), 
+										footer_text = f"Your current position: {maze.column + 1}, {maze.row + 1}")
 		reached_end = False
 		while not reached_end:
 			move = await ctx.bot.wait_for(
@@ -214,7 +215,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 				response += "\n:no_entry: You can't go that way"
 			elif (reached_end := maze.reached_end):
 				response += f"\nCongratulations! You reached the end of the maze in {maze.move_counter} moves"
-			new_message = await ctx.embed_reply(response)
+			new_message = await ctx.embed_reply(response, 
+												footer_text = f"Your current position: {maze.column + 1}, {maze.row + 1}")
 			await ctx.bot.attempt_delete_message(move)
 			await ctx.bot.attempt_delete_message(message)
 			message = new_message
@@ -238,7 +240,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 		'''
 		await MazeMenu(height, width, random_start, random_end).start(ctx)
 	
-	# TODO: maze print, position?, stats
+	# TODO: maze print, stats
 
 class MazeMenu(Menu):
 	
