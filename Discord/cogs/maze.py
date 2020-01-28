@@ -232,6 +232,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 	
 	@maze.command(aliases = ["print"])
 	async def file(self, ctx):
+		'''Text file of the current maze game'''
 		if maze := self.mazes.get(ctx.channel.id):
 			await ctx.reply("Your maze is attached", 
 							file = discord.File(io.BytesIO(('\n'.join(maze.visible)).encode()), 
