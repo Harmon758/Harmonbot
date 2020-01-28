@@ -165,6 +165,7 @@ class Maze:
 		self.update_visible()
 		return True
 	
+	@property
 	def reached_end(self):
 		return self.row == self.end_row and self.column == self.end_column
 
@@ -211,7 +212,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 			response = ctx.bot.CODE_BLOCK.format(str(maze))
 			if not moved:
 				response += "\n:no_entry: You can't go that way"
-			elif (reached_end := maze.reached_end()):
+			elif (reached_end := maze.reached_end):
 				response += f"\nCongratulations! You reached the end of the maze in {maze.move_counter} moves"
 			new_message = await ctx.embed_reply(response)
 			await ctx.bot.attempt_delete_message(move)
@@ -258,7 +259,7 @@ class MazeMenu(Menu):
 		if not self.maze.move(self.arrows[str(payload.emoji)]):
 			embed.description = (self.bot.CODE_BLOCK.format(str(self.maze))
 									+ "\n:no_entry: You can't go that way")
-		elif self.maze.reached_end():
+		elif self.maze.reached_end:
 			embed.description = (self.bot.CODE_BLOCK.format(str(self.maze))
 									+ f"\nCongratulations! You reached the end of the maze in {self.maze.move_counter} moves")
 			self.stop()
