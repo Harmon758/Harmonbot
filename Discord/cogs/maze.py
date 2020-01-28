@@ -88,8 +88,8 @@ class Maze:
 		self.row_strings = self.string.split('\n')
 		
 		self.visible = [None] * (2 * self.rows + 1)
-		self.visible[::2] = ["+---" * self.columns + "+"] * (self.rows + 1)
-		self.visible[1::2] = ["| X " * self.columns + "|"] * self.rows
+		self.visible[::2] = ["+---" * self.columns + '+'] * (self.rows + 1)
+		self.visible[1::2] = ["| X " * self.columns + '|'] * self.rows
 		self.update_visible()
 		row_offset = 2 * self.end_row + 1
 		column_offset = 4 * self.end_column + 2
