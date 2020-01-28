@@ -179,21 +179,14 @@ class MazeCog(commands.Cog, name = "Maze"):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
+	# TODO: Use max concurrency
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def maze(self, ctx):
+	async def maze(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Maze game
-		[w, a, s, d] or [up, left, down, right] to move
-		'''
-		await ctx.send_help(ctx.command)
-	
-	# TODO: Use max concurrency
-	@maze.command(aliases = ["begin"])
-	async def start(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
-		'''
-		Start a maze game
 		height: 2 - 100
 		width: 2 - 100
+		[w, a, s, d] or [up, left, down, right] to move
 		'''
 		# TODO: Add option to restrict to command invoker
 		if ctx.channel.id in self.mazes:
