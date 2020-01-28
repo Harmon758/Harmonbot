@@ -209,8 +209,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 				response += f"\nCongratulations! You reached the end of the maze in {maze.move_counter} moves"
 			new_message = await ctx.embed_reply(response, 
 												footer_text = f"Your current position: {maze.column + 1}, {maze.row + 1}")
-			await ctx.bot.attempt_delete_message(move)
-			await ctx.bot.attempt_delete_message(message)
+			ctx.bot.loop.create_task(ctx.bot.attempt_delete_message(move), name = "Maze move message deletion")
+			ctx.bot.loop.create_task(ctx.bot.attempt_delete_message(message), name = "Previous maze message deletion")
 			message = new_message
 		del self.mazes[ctx.channel.id]
 	
