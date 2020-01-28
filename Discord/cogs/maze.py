@@ -179,7 +179,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	# TODO: Use max concurrency
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def maze(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
@@ -189,8 +188,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 		[w, a, s, d] or [up, left, down, right] to move
 		'''
 		# TODO: Add option to restrict to command invoker
-		if ctx.channel.id in self.mazes:
-			return await ctx.embed_reply(":no_entry: There's already a maze game going on")
+		if maze := self.mazes.get(ctx.channel.id):
+			return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)))
 		self.mazes[ctx.channel.id] = maze = Maze(height, width, random_start = random_start, random_end = random_end)
 		message = await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)), 
 										footer_text = f"Your current position: {maze.column + 1}, {maze.row + 1}")
@@ -214,14 +213,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 			await ctx.bot.attempt_delete_message(message)
 			message = new_message
 		del self.mazes[ctx.channel.id]
-	
-	@maze.command()
-	async def current(self, ctx):
-		'''Current maze game'''
-		if maze := self.mazes.get(ctx.channel.id):
-			await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(maze)))
-		else:
-			await ctx.embed_reply(":no_entry: There's no maze game currently going on")
 	
 	@maze.command(aliases = ["print"])
 	async def file(self, ctx):
