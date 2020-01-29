@@ -1,4 +1,4 @@
-matrix:
+jobs:
   include:
     - name: Discord
       language: python
