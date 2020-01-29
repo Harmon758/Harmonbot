@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands, menus
 
+import asyncio
 from enum import IntEnum
 import io
 import random
@@ -173,11 +174,17 @@ class MazeCog(commands.Cog, name = "Maze"):
 	
 	def __init__(self):
 		self.mazes = {}
+		self.tasks = []
 		self.move_mapping = {'w': Direction.UP, 'a': Direction.LEFT, 's': Direction.DOWN, 'd': Direction.RIGHT, 
 								"up": Direction.UP, "left": Direction.LEFT, "down": Direction.DOWN, "right": Direction.RIGHT}
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
+	
+	def cog_unload(self):
+		# TODO: Persistence - store running mazes and add way to continue previous ones
+		for task in self.tasks:
+			task.cancel()
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def maze(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
@@ -195,12 +202,19 @@ class MazeCog(commands.Cog, name = "Maze"):
 										footer_text = f"Your current position: {maze.column + 1}, {maze.row + 1}")
 		reached_end = False
 		while not reached_end:
-			move = await ctx.bot.wait_for(
+			task = ctx.bot.loop.create_task(ctx.bot.wait_for(
 				"message", 
 				check = lambda message: 
 					message.channel == ctx.channel and message.content.lower() in self.move_mapping.keys()
 					# author = ctx.author
-			)
+			), name = "Wait for maze move message")
+			self.tasks.append(task)
+			try:
+				await task
+			except asyncio.CancelledError:
+				break
+			else:
+				move = task.result()
 			moved = maze.move(self.move_mapping[move.content.lower()])
 			response = ctx.bot.CODE_BLOCK.format(str(maze))
 			if not moved:
