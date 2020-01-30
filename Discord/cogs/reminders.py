@@ -290,9 +290,11 @@ class RemindersSource(menus.ListPageSource):
 		start = offset + 1
 		end = min(offset + self.per_page, len(self.entries))
 		if start == end:
-			reminders_range = f"Reminder {start}"
+			embed.set_footer(text = f"Reminder {start} of {len(self.entries)}")
+		elif start < end:
+			embed.set_footer(text = f"Reminders {start} - {end} of {len(self.entries)}")
 		else:
-			reminders_range = f"Reminders {start} - {end}"
-		embed.set_footer(text = f"{reminders_range} of {len(self.entries)}")
+			embed.set_footer(text = f"In response to: {menu.ctx.message.clean_content}")
+			return embed
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
