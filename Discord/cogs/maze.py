@@ -174,6 +174,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 	
 	def __init__(self):
 		self.mazes = {}
+		self.menus = []
 		self.tasks = []
 		self.move_mapping = {'w': Direction.UP, 'a': Direction.LEFT, 's': Direction.DOWN, 'd': Direction.RIGHT, 
 								"up": Direction.UP, "left": Direction.LEFT, "down": Direction.DOWN, "right": Direction.RIGHT}
@@ -183,6 +184,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 	
 	def cog_unload(self):
 		# TODO: Persistence - store running mazes and add way to continue previous ones
+		for menu in self.menus:
+			menu.stop()
 		for task in self.tasks:
 			task.cancel()
 	
@@ -246,7 +249,10 @@ class MazeCog(commands.Cog, name = "Maze"):
 		width: 2 - 100
 		React with an arrow key to move
 		'''
-		await MazeMenu(height, width, random_start, random_end).start(ctx)
+		menu = MazeMenu(height, width, random_start, random_end)
+		self.menus.append(menu)
+		await menu.start(ctx, wait = True)
+		self.menus.remove(menu)
 	
 	# TODO: maze stats
 
