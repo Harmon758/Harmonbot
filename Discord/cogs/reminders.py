@@ -33,12 +33,16 @@ class Reminders(commands.Cog):
 		self.reminder_command.add_command(self.menu)
 		self.list_reminders.add_command(self.menu)
 		
+		self.menus = []
+		
 		self.current_timer = None
 		self.new_reminder = asyncio.Event()
 		self.restarting_timer = False
 		self.timer.start().set_name("Reminders")
 	
 	def cog_unload(self):
+		for menu in self.menus:
+			menu.stop()
 		self.timer.cancel()
 	
 	async def initialize_database(self):
@@ -193,7 +197,10 @@ class Reminders(commands.Cog):
 			""", 
 			ctx.author.id
 		)
-		await RemindersMenu(records, per_page = min(per_page, 10)).start(ctx)
+		menu = RemindersMenu(records, per_page = min(per_page, 10))
+		self.menus.append(menu)
+		await menu.start(ctx, wait = True)
+		self.menus.remove(menu)
 	
 	# TODO: clear subcommand
 	
