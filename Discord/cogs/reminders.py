@@ -294,7 +294,6 @@ class RemindersSource(menus.ListPageSource):
 		elif start == end:
 			embed.set_footer(text = f"Reminder {start} of {len(self.entries)}")
 		else:
-			embed.set_footer(text = f"In response to: {menu.ctx.message.clean_content}")
-			return embed
+			return embed.set_footer(text = f"In response to: {menu.ctx.message.clean_content}")
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
