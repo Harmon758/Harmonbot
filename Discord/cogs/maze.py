@@ -264,7 +264,7 @@ class MazeMenu(Menu):
 		self.arrows = {'\N{LEFTWARDS BLACK ARROW}': Direction.LEFT, '\N{UPWARDS BLACK ARROW}': Direction.UP, 
 						'\N{DOWNWARDS BLACK ARROW}': Direction.DOWN, '\N{BLACK RIGHTWARDS ARROW}': Direction.RIGHT}
 		for number, emoji in enumerate(self.arrows.keys(), start = 1):
-			self.add_button(menus.Button(emoji, self.on_direction, position = number))
+			self.add_button(menus.Button(emoji, self.on_direction, position = menus.Position(number)))
 	
 	async def send_initial_message(self, ctx, channel):
 		return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(self.maze)), 
@@ -284,7 +284,7 @@ class MazeMenu(Menu):
 		embed.set_footer(text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
 		await self.message.edit(embed = embed)
 	
-	@menus.button("\N{PRINTER}", position = 5, lock = False)
+	@menus.button("\N{PRINTER}", position = menus.Last(), lock = False)
 	async def on_printer(self, payload):
 		await self.ctx.reply("Your maze is attached", 
 								file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
