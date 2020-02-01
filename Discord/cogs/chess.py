@@ -47,8 +47,8 @@ class ChessCog(commands.Cog, name = "Chess"):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def chess(self, ctx):
+	@commands.group(name = "chess", invoke_without_command = True, case_insensitive = True)
+	async def chess_command(self, ctx):
 		'''
 		Play chess
 		Supports standard algebraic and UCI notation
@@ -70,7 +70,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 			await self._update_chess_board_embed()
 		'''
 	
-	@chess.command(aliases = ["start"])
+	@chess_command.command(aliases = ["start"])
 	async def play(self, ctx, *, opponent: Union[discord.Member, str]):
 		'''
 		Challenge someone to a match
@@ -131,7 +131,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 	# TODO: Handle matches in DMs
 	# TODO: Handle end of match: check mate, draw, etc.
 	
-	@chess.group(aliases = ["match"], invoke_without_command = True, case_insensitive = True)
+	@chess_command.group(aliases = ["match"], invoke_without_command = True, case_insensitive = True)
 	async def board(self, ctx):
 		'''Current match/board'''
 		match = self.get_match(ctx.channel, ctx.author)
@@ -147,7 +147,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await ctx.reply(ctx.bot.CODE_BLOCK.format(match))
 	
-	@chess.command()
+	@chess_command.command()
 	async def fen(self, ctx):
 		'''FEN of the current board'''
 		match = self.get_match(ctx.channel, ctx.author)
@@ -156,14 +156,14 @@ class ChessCog(commands.Cog, name = "Chess"):
 		await ctx.embed_reply(match.fen())
 	
 	"""
-	@chess.command(name = "(╯°□°）╯︵", hidden = True)
+	@chess_command.command(name = "(╯°□°）╯︵", hidden = True)
 	async def flip(self, ctx):
 		'''Flip the table over'''
 		self._chess_board.clear()
 		await ctx.say(ctx.author.name + " flipped the table over in anger!")
 	"""
 	
-	@chess.command(hidden = True)
+	@chess_command.command(hidden = True)
 	async def pgn(self, ctx):
 		'''PGN of the current game'''
 		match = self.get_match(ctx.channel, ctx.author)
@@ -171,7 +171,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await ctx.embed_reply(chess.pgn.Game.from_board(match))
 	
-	@chess.command(aliases = ["last"], hidden = True)
+	@chess_command.command(aliases = ["last"], hidden = True)
 	async def previous(self, ctx):
 		'''Previous move'''
 		match = self.get_match(ctx.channel, ctx.author)
@@ -183,14 +183,14 @@ class ChessCog(commands.Cog, name = "Chess"):
 			await ctx.embed_reply(":no_entry: There was no previous move")
 	
 	"""
-	@chess.command()
+	@chess_command.command()
 	async def reset(self, ctx):
 		'''Reset the board'''
 		self._chess_board.reset()
 		await ctx.embed_reply("The board has been reset")
 	"""
 	
-	@chess.command(hidden = True)
+	@chess_command.command(hidden = True)
 	async def turn(self, ctx):
 		'''Who's turn it is to move'''
 		match = self.get_match(ctx.channel, ctx.author)
@@ -202,7 +202,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 			await ctx.embed_reply("It's black's turn to move")
 	
 	"""
-	@chess.command()
+	@chess_command.command()
 	async def undo(self, ctx):
 		'''Undo the previous move'''
 		try:
