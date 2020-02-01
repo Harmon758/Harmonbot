@@ -128,6 +128,8 @@ class ChessCog(commands.Cog, name = "Chess"):
 				return await ctx.send(f"{ctx.author.mention}: {opponent} has declined your challenge")
 		match = await ChessMatch.start(ctx, white_player, black_player)
 		self.matches.append(match)
+		await match.ended.wait()
+		self.matches.remove(match)
 	
 	def get_match(self, text_channel, player):
 		return discord.utils.find(lambda match: match.ctx.channel == text_channel and 
@@ -135,7 +137,8 @@ class ChessCog(commands.Cog, name = "Chess"):
 									self.matches)
 	
 	# TODO: Handle matches in DMs
-	# TODO: Handle end of match: checkmate, draw, etc.
+	# TODO: Allow resignation
+	# TODO: Allow draw offers
 	
 	@chess_command.group(aliases = ["match"], invoke_without_command = True, case_insensitive = True)
 	async def board(self, ctx):
@@ -227,6 +230,7 @@ class ChessMatch(chess.Board):
 		self.white_player = white_player
 		self.black_player = black_player
 		self.bot = ctx.bot
+		self.ended = asyncio.Event()
 		self.engine_transport, self.chess_engine = await chess.engine.popen_uci(f"bin/{STOCKFISH_EXECUTABLE}", 
 																				creationflags = subprocess.CREATE_NO_WINDOW)
 		self.match_message = None
@@ -256,7 +260,7 @@ class ChessMatch(chess.Board):
 	async def match_task(self):
 		self.match_message = await self.ctx.embed_send("Loading..")
 		await self.update_match_embed()
-		while True:
+		while not self.ended.is_set():
 			player = [self.black_player, self.white_player][int(self.turn)]
 			embed = self.match_message.embeds[0]
 			if player == self.bot.user:
@@ -273,6 +277,7 @@ class ChessMatch(chess.Board):
 				self.make_move(message.content)
 				if self.is_game_over():
 					footer_text = discord.Embed.Empty
+					self.ended.set()
 				else:
 					footer_text = f"It is {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
 				await self.update_match_embed(footer_text = footer_text)
