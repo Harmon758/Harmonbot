@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 
+import contextlib
 import sys
 import textwrap
 from typing import Optional
@@ -124,11 +125,9 @@ class Info(commands.Cog):
 								f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
 								f"Filesize: {ctx.guild.filesize_limit // 1024 ** 2} MB")]
 		if "VANITY_URL" in ctx.guild.features:
-			try:
+			with contextlib.suppress(discord.Forbidden):
 				invite = await ctx.guild.vanity_invite()
 				fields.append(("Vanity Invite URL", invite))
-			except discord.Forbidden:
-				pass
 		if "INVITE_SPLASH" in ctx.guild.features:
 			fields.append(("Invite Splash", f"[URL]({ctx.guild.splash_url})"))
 		if "BANNER" in ctx.guild.features:
