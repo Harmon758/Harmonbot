@@ -9,7 +9,6 @@ from typing import Optional, Union
 import unicodedata
 
 import dateutil
-# import spotipy
 
 from utilities import checks
 
@@ -20,7 +19,6 @@ class Resources(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		# spotify = spotipy.Spotify()
 	
 	@commands.group(aliases = ["blizzard", "battle.net"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
