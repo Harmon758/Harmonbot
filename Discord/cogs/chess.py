@@ -37,12 +37,11 @@ except:
 STOCKFISH_EXECUTABLE += ".exe"
 
 def setup(bot):
-	bot.add_cog(ChessCog(bot))
+	bot.add_cog(ChessCog())
 
 class ChessCog(commands.Cog, name = "Chess"):
 	
-	def __init__(self, bot):
-		self.bot = bot
+	def __init__(self):
 		self.matches = []
 	
 	async def cog_check(self, ctx):
