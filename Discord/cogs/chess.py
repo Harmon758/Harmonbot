@@ -88,19 +88,19 @@ class ChessCog(commands.Cog, name = "Chess"):
 		color = None
 		if type(opponent) is str:
 			if opponent.lower() in ("harmonbot", "you"):
-				opponent = self.bot.user
+				opponent = ctx.bot.user
 			elif opponent.lower() in ("myself", "me"):
 				opponent = ctx.author
 				color = 'w'
 			else:
 				return await ctx.embed_reply(":no_entry: Opponent not found")
-		if opponent != self.bot.user and self.get_match(ctx.channel, opponent):
+		if opponent != ctx.bot.user and self.get_match(ctx.channel, opponent):
 			return await ctx.embed_reply(":no_entry: Your chosen opponent is playing a chess match here")
 		if opponent == ctx.author:
 			color = 'w'
 		if not color:
 			await ctx.embed_reply("Would you like to play white, black, or random?")
-			message = await self.bot.wait_for("message", 
+			message = await ctx.bot.wait_for("message", 
 												check = lambda message: message.author == ctx.author and 
 																		message.channel == ctx.channel and 
 																		message.content.lower() in ("white", "black", "random", 
@@ -114,11 +114,11 @@ class ChessCog(commands.Cog, name = "Chess"):
 		elif color in ("black", 'b'):
 			white_player = opponent
 			black_player = ctx.author
-		if opponent != self.bot.user and opponent != ctx.author:
+		if opponent != ctx.bot.user and opponent != ctx.author:
 			await ctx.send(f"{opponent.mention}: {ctx.author} has challenged you to a chess match\n"
 							"Would you like to accept? Yes/No")
 			try:
-				message = await self.bot.wait_for("message", 
+				message = await ctx.bot.wait_for("message", 
 													check = lambda message: message.author == opponent and 
 																			message.channel == ctx.channel and 
 																			message.content.lower() in ("yes", "no", 'y', 'n'), 
