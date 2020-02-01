@@ -48,6 +48,11 @@ class ChessCog(commands.Cog, name = "Chess"):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
+	def cog_unload(self):
+		# TODO: Persistence - store running chess matches and add way to continue previous ones
+		for match in self.matches:
+			match.task.cancel()
+	
 	@commands.group(name = "chess", invoke_without_command = True, case_insensitive = True)
 	async def chess_command(self, ctx):
 		'''
@@ -228,8 +233,6 @@ class ChessMatch(chess.Board):
 		self.match_message = None
 		self.task = ctx.bot.loop.create_task(self.match_task(), name = "Chess Match")
 		return self
-	
-	# TODO: Cancel task on deletion/bot shutdown
 	
 	def make_move(self, move):
 		try:
