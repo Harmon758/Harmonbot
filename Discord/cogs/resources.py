@@ -222,9 +222,9 @@ class Resources(commands.Cog):
 								title_url = f"http://www.imdb.com/title/{data['imdbID']}", 
 								fields = fields, thumbnail_url = thumbnail_url)
 	
-	@commands.command()
+	@commands.command(usage = "<input>")
 	@checks.not_forbidden()
-	async def latex(self, ctx, *, input: str):
+	async def latex(self, ctx, *, latex_input: str):
 		R'''
 		Render LaTeX
 		"The server is currently running TeX Live 2016 with most* popular packages installed."
@@ -233,16 +233,16 @@ class Resources(commands.Cog):
 		'''
 		# http://rtex.probablyaweb.site/docs
 		url = "http://rtex.probablyaweb.site/api/v2"
-		input = (
+		latex_input = (
 			R"\documentclass{article}" '\n'
 			R"\usepackage{pagecolor}" '\n'
 			R"\begin{document}" '\n'
 			R"\pagecolor{white}" '\n'
-			f"{input}\n"
+			f"{latex_input}\n"
 			R"\pagenumbering{gobble}" '\n'
 			R"\end{document}"
 		)
-		data = {"code": input, "format": "png"}
+		data = {"code": latex_input, "format": "png"}
 		# TODO: Add jpg + pdf format options
 		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
 			if resp.status == 500:
