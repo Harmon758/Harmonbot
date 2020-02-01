@@ -233,6 +233,15 @@ class Resources(commands.Cog):
 		'''
 		# http://rtex.probablyaweb.site/docs
 		url = "http://rtex.probablyaweb.site/api/v2"
+		input = (
+			R"\documentclass{article}" '\n'
+			R"\usepackage{pagecolor}" '\n'
+			R"\begin{document}" '\n'
+			R"\pagecolor{white}" '\n'
+			f"{input}\n"
+			R"\pagenumbering{gobble}" '\n'
+			R"\end{document}"
+		)
 		data = {"code": input, "format": "png"}
 		# TODO: Add jpg + pdf format options
 		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
