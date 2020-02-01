@@ -224,7 +224,7 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def latex(self, ctx, *, input : str):
+	async def latex(self, ctx, *, input: str):
 		R'''
 		Render LaTeX
 		"The server is currently running TeX Live 2016 with most* popular packages installed."
