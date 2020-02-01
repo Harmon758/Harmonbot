@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands, menus
 
 import asyncio
+import contextlib
 import datetime
 import json
 import logging
@@ -715,10 +716,8 @@ class Bot(commands.Bot):
 		return destination.send(embed = embed)
 	
 	async def attempt_delete_message(self, message):
-		try:
+		with contextlib.suppress(discord.Forbidden, discord.NotFound):
 			await message.delete()
-		except (discord.Forbidden, discord.NotFound):
-			pass
 	
 	async def wait_for_reaction_add_or_remove(self, *, emoji = None, message = None, user = None, timeout = None):
 		def reaction_check(reaction, reaction_user):
