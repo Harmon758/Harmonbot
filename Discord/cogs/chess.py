@@ -18,6 +18,7 @@ from wand.image import Image
 
 from utilities import checks
 
+# TODO: Dynamically load chess engine not locked to version?
 STOCKFISH_EXECUTABLE = "stockfish_20011801_x64"
 try:
 	CPUID = cpuinfo.CPUID()
@@ -70,6 +71,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 			await self._update_chess_board_embed()
 		'''
 	
+	# TODO: Use max concurrency?
 	@chess_command.command(aliases = ["start"])
 	async def play(self, ctx, *, opponent: Union[discord.Member, str]):
 		'''
@@ -129,7 +131,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 									self.matches)
 	
 	# TODO: Handle matches in DMs
-	# TODO: Handle end of match: check mate, draw, etc.
+	# TODO: Handle end of match: checkmate, draw, etc.
 	
 	@chess_command.group(aliases = ["match"], invoke_without_command = True, case_insensitive = True)
 	async def board(self, ctx):
@@ -221,7 +223,6 @@ class ChessMatch(chess.Board):
 		self.white_player = white_player
 		self.black_player = black_player
 		self.bot = ctx.bot
-		# TODO: Dynamically load chess engine not locked to version?
 		self.engine_transport, self.chess_engine = await chess.engine.popen_uci(f"bin/{STOCKFISH_EXECUTABLE}", 
 																				creationflags = subprocess.CREATE_NO_WINDOW)
 		self.match_message = None
