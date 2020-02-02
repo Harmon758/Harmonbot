@@ -24,13 +24,13 @@ cache:
 #   - postgresql12
 # https://github.com/appveyor/ci/issues/3299
 
+install:
+  - pip install --upgrade --requirement requirements.txt
+
 build_script:
   - net start postgresql-x64-12
   - createdb harmonbot
   - createuser harmonbot --no-password
-
-install:
-  - pip install --upgrade --requirement requirements.txt
 
 test_script:
   - cd Discord && python Harmonbot.py
