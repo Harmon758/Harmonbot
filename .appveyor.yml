@@ -19,6 +19,7 @@ cache:
 
 # services:
 #   - postgresql12
+# https://github.com/appveyor/ci/issues/3299
 
 build_script:
   - net start postgresql-x64-12
