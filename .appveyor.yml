@@ -1,5 +1,8 @@
 version: 1.0.0-{build}
 
+init:
+  - SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
+
 image:
   - Visual Studio 2019
   - Ubuntu1804
@@ -27,7 +30,6 @@ build_script:
   - createuser harmonbot --no-password
 
 install:
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\Program Files\\PostgreSQL\\12\\bin\\;%PATH%"
   - pip install --upgrade --requirement requirements.txt
 
 test_script:
