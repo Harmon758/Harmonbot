@@ -14,6 +14,9 @@ environment:
       PYTHON_VERSION: "3.8.1"
       PYTHON_ARCH: "64"
 
+cache:
+  - '%LOCALAPPDATA%\pip\Cache'
+
 services:
   - postgresql121
 
