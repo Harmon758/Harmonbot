@@ -18,7 +18,7 @@ cache:
   - '%LOCALAPPDATA%\pip\Cache'
 
 services:
-  - postgresql121
+  - postgresql12
 
 build: off
 
