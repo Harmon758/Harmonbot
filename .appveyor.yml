@@ -1,0 +1,23 @@
+image:
+  Visual Studio 2019
+  Ubuntu1804
+  macos
+
+environment:
+  matrix:
+    - PYTHON: "C:\\Python38"
+      PYTHON_VERSION: "3.8.1"
+      PYTHON_ARCH: "32"
+    - PYTHON: "C:\\Python38-x64"
+      PYTHON_VERSION: "3.8.1"
+      PYTHON_ARCH: "64"
+
+services:
+  - postgresql121
+
+install:
+  pip install --upgrade --requirement requirements.txt
+
+test_script:
+  cd Discord && python Harmonbot.py
+  cd ../Telegram && python Telegram_Harmonbot.py
