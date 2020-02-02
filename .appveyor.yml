@@ -17,10 +17,11 @@ environment:
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
 
-services:
-  - postgresql12
+# services:
+#   - postgresql12
 
 build_script:
+  - net start postgresql-x64-12
   - createdb harmonbot
   - createuser harmonbot --no-password
 
