@@ -32,7 +32,8 @@ install:
 build_script:
   - net start postgresql-x64-12
   - createdb harmonbot
-  - createuser --no-password harmonbot
+  - psql --variable=password=%PGPASSWORD%
+  - psql --command="CREATE USER harmonbot WITH PASSWORD :password"
 
 test_script:
   - cd Discord && python Harmonbot.py
