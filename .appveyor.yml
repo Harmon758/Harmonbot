@@ -23,7 +23,7 @@ services:
 build: off
 
 install:
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\Program Files\\PostgreSQL\\12.1\\bin\\;%PATH%"
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\Program Files\\PostgreSQL\\12\\bin\\;%PATH%"
   - pip install --upgrade --requirement requirements.txt
   - SET PGUSER=harmonbot
   - SET PGPASSWORD=
