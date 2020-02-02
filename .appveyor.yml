@@ -16,7 +16,8 @@ services:
   - postgresql121
 
 install:
-  pip install --upgrade --requirement requirements.txt
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - pip install --upgrade --requirement requirements.txt
 
 test_script:
   cd Discord && python Harmonbot.py
