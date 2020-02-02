@@ -25,8 +25,6 @@ build: off
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\Program Files\\PostgreSQL\\12\\bin\\;%PATH%"
   - pip install --upgrade --requirement requirements.txt
-  - SET PGUSER=postgres
-  - SET PGPASSWORD=Password12!
   - createdb harmonbot
   - createuser harmonbot --no-password
 
