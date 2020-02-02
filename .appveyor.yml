@@ -20,13 +20,13 @@ cache:
 services:
   - postgresql12
 
-build: off
+build_script:
+  - createdb harmonbot
+  - createuser harmonbot --no-password
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\Program Files\\PostgreSQL\\12\\bin\\;%PATH%"
   - pip install --upgrade --requirement requirements.txt
-  - createdb harmonbot
-  - createuser harmonbot --no-password
 
 test_script:
   - cd Discord && python Harmonbot.py
