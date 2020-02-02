@@ -9,6 +9,8 @@ image:
   - macos
 
 environment:
+  PGUSER: postgres
+  PGPASSWORD: Password12!
   matrix:
     - PYTHON: "C:\\Python38"
       PYTHON_VERSION: "3.8.1"
