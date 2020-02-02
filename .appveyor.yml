@@ -32,7 +32,7 @@ install:
 build_script:
   - net start postgresql-x64-12
   - createdb harmonbot
-  - createuser harmonbot --no-password
+  - createuser --no-password harmonbot
 
 test_script:
   - cd Discord && python Harmonbot.py
