@@ -19,22 +19,21 @@ for:
       - sudo --user=postgres createdb harmonbot
       - sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
 
-image:
-  - Visual Studio 2019
-  - Ubuntu
-  - macos
-
 environment:
   # https://www.appveyor.com/docs/services-databases/#postgresql
   PGUSER: postgres
   PGPASSWORD: Password12!
   matrix:
-    - PYTHON: C:\Python38
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: C:\Python38
       PYTHON_VERSION: 3.8.1
       PYTHON_ARCH: 32
-    - PYTHON: C:\Python38-x64
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: C:\Python38-x64
       PYTHON_VERSION: 3.8.1
       PYTHON_ARCH: 64
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos
 
 stack: PostgreSQL 12.1, Python 3.8.1
 
@@ -46,9 +45,6 @@ cache:
 # https://github.com/appveyor/ci/issues/3299
 
 install:
-  - python --version
-  - python -c "import sys, platform, struct;
-    print(sys.platform, platform.machine(), struct.calcsize('P')*8)"
   - pip install --upgrade --requirement requirements.txt
 
 test_script:
