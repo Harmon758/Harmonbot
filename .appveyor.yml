@@ -74,4 +74,4 @@ for:
         - PLATFORM: Telegram
     build: off
     test_script:
-      - cd ../Telegram && python Telegram_Harmonbot.py
+      - cd Telegram && python Telegram_Harmonbot.py
