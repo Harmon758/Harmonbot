@@ -154,19 +154,24 @@ class Search(commands.Cog):
 		# TODO: Add User-Agent
 		url = "https://en.uesp.net/w/api.php"
 		if random:
-			params = {"action": "query", "list": "random", "rnnamespace": f"0|{'|'.join(str(i) for i in range(100, 152))}|200|201", "format": "json"}
+			params = {"action": "query", "list": "random", 
+						"rnnamespace": f"0|{'|'.join(str(i) for i in range(100, 152))}|200|201", 
+						"format": "json"}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			search = data["query"]["random"][0]["title"]
 		else:
-			params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}
+			params = {"action": "query", "list": "search", 
+						"srsearch": search, "srinfo": "suggestion", "srlimit": 1, 
+						"format": "json"}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			try:
 				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
 			except IndexError:
 				return await ctx.embed_reply(":no_entry: Page not found")
-		params = {"action": "query", "redirects": "", "prop": "info|revisions|images", "titles": search, "inprop": "url", "rvprop": "content", "format": "json"}
+		params = {"action": "query", "redirects": "", "prop": "info|revisions|images", 
+					"titles": search, "inprop": "url", "rvprop": "content", "format": "json"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if "pages" not in data["query"]:
@@ -196,7 +201,13 @@ class Search(commands.Cog):
 			description = description.split("==")[0]
 			## description = description if len(description) <= 1024 else description[:1024] + "..."
 			description = re.sub(r"\[\[Category:.+?\]\]", "", description)
-			description = re.sub(r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", lambda match: f"[{match.group(2)}](https://en.uesp.net/wiki/{match.group(1).replace(' ', '_')})" if match.group(1) else f"[{match.group(4)}]({match.group(3)})", description)
+			description = re.sub(
+				r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", 
+				lambda match: 
+					f"[{match.group(2)}](https://en.uesp.net/wiki/{match.group(1).replace(' ', '_')})"
+					if match.group(1) else f"[{match.group(4)}]({match.group(3)})", 
+				description
+			)
 			description = description.replace("'''", "**").replace("''", "*")
 			description = re.sub("\n+", '\n', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
