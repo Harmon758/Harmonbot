@@ -14,7 +14,10 @@ import chess.engine
 import chess.pgn
 import chess.svg
 import cpuinfo
-from wand.image import Image
+try:
+	from wand.image import Image
+except ImportError as e:
+	print(f"Failed to import Wand in Chess cog:\n{e}")
 
 from utilities import checks
 
