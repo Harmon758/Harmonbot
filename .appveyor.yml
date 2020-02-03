@@ -25,6 +25,8 @@ environment:
       PYTHON_VERSION: 3.8.1
       PYTHON_ARCH: 64
 
+stack: PostgreSQL 12.1, Python 3.8.1
+
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
 
