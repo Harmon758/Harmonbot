@@ -33,6 +33,7 @@ cache:
 
 build_script:
   - cmd: net start postgresql-x64-12
+  # https://github.com/appveyor/ci/issues/3299
   - cmd: createdb harmonbot
   - cmd: echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
   - sh: sudo --user=postgres createdb harmonbot
