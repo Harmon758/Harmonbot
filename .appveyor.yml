@@ -9,6 +9,7 @@ image:
   - macos
 
 environment:
+  # https://www.appveyor.com/docs/services-databases/#postgresql
   PGUSER: postgres
   PGPASSWORD: Password12!
   matrix:
