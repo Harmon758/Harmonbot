@@ -19,7 +19,7 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
     - APPVEYOR_BUILD_WORKER_IMAGE: macos
 
-stack: PostgreSQL 12.1, Python 3.8.1
+stack: Python 3.8.1
 
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
