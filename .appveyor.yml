@@ -13,17 +13,11 @@ for:
       - echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
   -
     matrix:
-      only:
-        - image: Ubuntu
-    stack: PostgreSQL 12.1, Python 3.8.1
+      except:
+        - image: Visual Studio 2019
     build_script:
       - sudo --user=postgres createdb harmonbot
       - sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
-  -
-    matrix:
-      only:
-        - image: macos
-    stack: Python 3.8.1
 
 image:
   - Visual Studio 2019
@@ -42,6 +36,8 @@ environment:
       PYTHON_VERSION: 3.8.1
       PYTHON_ARCH: 64
 
+stack: PostgreSQL 12.1, Python 3.8.1
+
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
 
@@ -50,6 +46,9 @@ cache:
 # https://github.com/appveyor/ci/issues/3299
 
 install:
+  - python --version
+  - python -c "import sys, platform, struct;
+    print(sys.platform, platform.machine(), struct.calcsize('P')*8)"
   - pip install --upgrade --requirement requirements.txt
 
 test_script:
