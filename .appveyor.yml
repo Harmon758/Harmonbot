@@ -1,29 +1,29 @@
 version: 1.0.0-{build}
 
 for:
--
-  matrix:
-    only:
-      - image: Visual Studio 2019
-  init:
-    - SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
-  build_script:
-    - net start postgresql-x64-12
-    - createdb harmonbot
-    - echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
--
-  matrix:
-    only:
-      - image: Ubuntu
-  stack: PostgreSQL 12.1, Python 3.8.1
-  build_script:
-    - sudo --user=postgres createdb harmonbot
-    - sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
--
-  matrix:
-    only:
-      - image: macos
-  stack: Python 3.8.1
+  -
+    matrix:
+      only:
+        - image: Visual Studio 2019
+    init:
+      - SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
+    build_script:
+      - net start postgresql-x64-12
+      - createdb harmonbot
+      - echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
+  -
+    matrix:
+      only:
+        - image: Ubuntu
+    stack: PostgreSQL 12.1, Python 3.8.1
+    build_script:
+      - sudo --user=postgres createdb harmonbot
+      - sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
+  -
+    matrix:
+      only:
+        - image: macos
+    stack: Python 3.8.1
 
 image:
   - Visual Studio 2019
