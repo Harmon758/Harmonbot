@@ -14,7 +14,7 @@ for:
 -
   matrix:
     only:
-      - image: Ubuntu1804
+      - image: Ubuntu
   stack: PostgreSQL 12.1, Python 3.8.1
   build_script:
     - sudo --user=postgres createdb harmonbot
