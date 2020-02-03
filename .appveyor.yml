@@ -72,5 +72,6 @@ for:
     matrix:
       only:
         - PLATFORM: Telegram
+    build: off
     test_script:
       - cd ../Telegram && python Telegram_Harmonbot.py
