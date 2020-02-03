@@ -179,40 +179,39 @@ class Search(commands.Cog):
 		page_id = list(data["query"]["pages"].keys())[0]
 		page = data["query"]["pages"][page_id]
 		if "missing" in page:
-			await ctx.embed_reply(":no_entry: Page not found")
-		elif "invalid" in page:
-			await ctx.embed_reply(f":no_entry: Error: {page['invalidreason']}")
-		elif redirect and "redirects" in data["query"]:
-			await self.process_uesp(ctx, data["query"]["redirects"][-1]["to"], redirect = False)
+			return await ctx.embed_reply(":no_entry: Page not found")
+		if "invalid" in page:
+			return await ctx.embed_reply(f":no_entry: Error: {page['invalidreason']}")
+		if redirect and "redirects" in data["query"]:
+			return await self.process_uesp(ctx, data["query"]["redirects"][-1]["to"], redirect = False)
 			# TODO: Handle section links/tofragments
-		else:
-			description = page["revisions"][0]['*']
-			description = re.sub(r"\s+ \s+", ' ', description)
-			while re.findall("{{[^{]+?}}", description):
-				description = re.sub("{{[^{]+?}}", "", description)
-			while re.findall("{[^{]*?}", description):
-				description = re.sub("{[^{]*?}", "", description)
-			description = re.sub("<.+?>", "", description, flags = re.DOTALL)
-			description = re.sub("__.+?__", "", description)
-			description = description.strip()
-			description = '\n'.join(line.lstrip(':') for line in description.split('\n'))
-			while len(description) > 1024:
-				description = '\n'.join(description.split('\n')[:-1])
-			description = description.split("==")[0]
-			## description = description if len(description) <= 1024 else description[:1024] + "..."
-			description = re.sub(r"\[\[Category:.+?\]\]", "", description)
-			description = re.sub(
-				r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", 
-				lambda match: 
-					f"[{match.group(2)}](https://en.uesp.net/wiki/{match.group(1).replace(' ', '_')})"
-					if match.group(1) else f"[{match.group(4)}]({match.group(3)})", 
-				description
-			)
-			description = description.replace("'''", "**").replace("''", "*")
-			description = re.sub("\n+", '\n', description)
-			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
-			image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
-			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url)  # canonicalurl?
+		description = page["revisions"][0]['*']
+		description = re.sub(r"\s+ \s+", ' ', description)
+		while re.findall("{{[^{]+?}}", description):
+			description = re.sub("{{[^{]+?}}", "", description)
+		while re.findall("{[^{]*?}", description):
+			description = re.sub("{[^{]*?}", "", description)
+		description = re.sub("<.+?>", "", description, flags = re.DOTALL)
+		description = re.sub("__.+?__", "", description)
+		description = description.strip()
+		description = '\n'.join(line.lstrip(':') for line in description.split('\n'))
+		while len(description) > 1024:
+			description = '\n'.join(description.split('\n')[:-1])
+		description = description.split("==")[0]
+		## description = description if len(description) <= 1024 else description[:1024] + "..."
+		description = re.sub(r"\[\[Category:.+?\]\]", "", description)
+		description = re.sub(
+			r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", 
+			lambda match: 
+				f"[{match.group(2)}](https://en.uesp.net/wiki/{match.group(1).replace(' ', '_')})"
+				if match.group(1) else f"[{match.group(4)}]({match.group(3)})", 
+			description
+		)
+		description = description.replace("'''", "**").replace("''", "*")
+		description = re.sub("\n+", '\n', description)
+		thumbnail = data["query"]["pages"][page_id].get("thumbnail")
+		image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
+		await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url)  # canonicalurl?
 	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True, case_insensitive = True)
 	async def wikipedia(self, ctx, *, search : str):
