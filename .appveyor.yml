@@ -19,6 +19,11 @@ for:
   build_script:
     - sudo --user=postgres createdb harmonbot
     - sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
+-
+  matrix:
+    only:
+      - image: macos
+  stack: Python 3.8.1
 
 image:
   - Visual Studio 2019
