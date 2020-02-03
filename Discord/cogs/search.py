@@ -201,7 +201,7 @@ class Search(commands.Cog):
 			description = re.sub("\n+", '\n', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
 			image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
-			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
+			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url)  # canonicalurl?
 	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True, case_insensitive = True)
 	async def wikipedia(self, ctx, *, search : str):
