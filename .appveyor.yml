@@ -27,7 +27,7 @@ for:
 
 image:
   - Visual Studio 2019
-  - Ubuntu1804
+  - Ubuntu
   - macos
 
 environment:
