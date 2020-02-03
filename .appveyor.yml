@@ -18,7 +18,7 @@ environment:
 
 matrix:
   allow_failures:
-    - image: macos
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos
     # https://github.com/appveyor/ci/issues/3213
 
 stack: Python 3.8.1, PostgreSQL 12.1
