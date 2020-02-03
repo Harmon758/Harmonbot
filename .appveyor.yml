@@ -1,8 +1,5 @@
 version: 1.0.0-{build}
 
-init:
-  - cmd: SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
-
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
@@ -27,6 +24,9 @@ stack: Python 3.8.1
 # services:
 #   - postgresql12
 # https://github.com/appveyor/ci/issues/3299
+
+init:
+  - cmd: SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
 
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
