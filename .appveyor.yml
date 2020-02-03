@@ -13,8 +13,9 @@ for:
     - echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
 -
   matrix:
-    except:
-      - image: Visual Studio 2019
+    only:
+      - image: Ubuntu1804
+  stack: PostgreSQL 12.1, Python 3.8.1
   build_script:
     - sudo --user=postgres createdb harmonbot
     - sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
@@ -35,8 +36,6 @@ environment:
     - PYTHON: C:\Python38-x64
       PYTHON_VERSION: 3.8.1
       PYTHON_ARCH: 64
-
-stack: PostgreSQL 12.1, Python 3.8.1
 
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
