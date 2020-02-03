@@ -16,7 +16,8 @@ import chess.svg
 import cpuinfo
 try:
 	from wand.image import Image
-except ImportError as e:
+except (ImportError, AttributeError) as e:
+	# https://github.com/emcconville/wand/issues/456
 	print(f"Failed to import Wand in Chess cog:\n{e}")
 
 from utilities import checks
