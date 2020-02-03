@@ -17,7 +17,7 @@ for:
       - image: Visual Studio 2019
   build_script:
     - sudo --user=postgres createdb harmonbot
-    - sudo --user=postgres psql --variable=pgpassword="%PGPASSWORD%" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
+    - sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
 
 image:
   - Visual Studio 2019
