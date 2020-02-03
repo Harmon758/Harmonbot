@@ -152,7 +152,7 @@ class Search(commands.Cog):
 	
 	async def process_uesp(self, ctx, search, random = False, redirect = True):
 		# TODO: Add User-Agent
-		url = "http://en.uesp.net/w/api.php"
+		url = "https://en.uesp.net/w/api.php"
 		if random:
 			params = {"action": "query", "list": "random", "rnnamespace": "0|" + '|'.join(str(i) for i in range(100, 152)) + "|200|201", "format": "json"}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
@@ -196,7 +196,7 @@ class Search(commands.Cog):
 			description = description.split("==")[0]
 			## description = description if len(description) <= 1024 else description[:1024] + "..."
 			description = re.sub(r"\[\[Category:.+?\]\]", "", description)
-			description = re.sub(r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", lambda match: "[{}](http://en.uesp.net/wiki/{})".format(match.group(2), match.group(1).replace(' ', '_')) if match.group(1) else "[{}]({})".format(match.group(4), match.group(3)), description)
+			description = re.sub(r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", lambda match: "[{}](https://en.uesp.net/wiki/{})".format(match.group(2), match.group(1).replace(' ', '_')) if match.group(1) else "[{}]({})".format(match.group(4), match.group(3)), description)
 			description = description.replace("'''", "**").replace("''", "*")
 			description = re.sub("\n+", '\n', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
