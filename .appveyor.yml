@@ -7,6 +7,17 @@ for:
       - image: Visual Studio 2019
   init:
     - SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
+  build_script:
+    - net start postgresql-x64-12
+    - createdb harmonbot
+    - echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
+-
+  matrix:
+    except:
+      - image: Visual Studio 2019
+  build_script:
+    - createdb harmonbot
+    - psql --variable=pgpassword="%PGPASSWORD%" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
 
 image:
   - Visual Studio 2019
@@ -36,11 +47,6 @@ cache:
 
 install:
   - pip install --upgrade --requirement requirements.txt
-
-build_script:
-  - net start postgresql-x64-12
-  - createdb harmonbot
-  - echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
 
 test_script:
   - cd Discord && python Harmonbot.py
