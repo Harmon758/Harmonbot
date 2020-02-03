@@ -154,7 +154,7 @@ class Search(commands.Cog):
 		# TODO: Add User-Agent
 		url = "https://en.uesp.net/w/api.php"
 		if random:
-			params = {"action": "query", "list": "random", "rnnamespace": "0|" + '|'.join(str(i) for i in range(100, 152)) + "|200|201", "format": "json"}
+			params = {"action": "query", "list": "random", "rnnamespace": f"0|{'|'.join(str(i) for i in range(100, 152))}|200|201", "format": "json"}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			search = data["query"]["random"][0]["title"]
@@ -176,7 +176,7 @@ class Search(commands.Cog):
 		if "missing" in page:
 			await ctx.embed_reply(":no_entry: Page not found")
 		elif "invalid" in page:
-			await ctx.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
+			await ctx.embed_reply(f":no_entry: Error: {page['invalidreason']}")
 		elif redirect and "redirects" in data["query"]:
 			await self.process_uesp(ctx, data["query"]["redirects"][-1]["to"], redirect = False)
 			# TODO: Handle section links/tofragments
@@ -196,11 +196,11 @@ class Search(commands.Cog):
 			description = description.split("==")[0]
 			## description = description if len(description) <= 1024 else description[:1024] + "..."
 			description = re.sub(r"\[\[Category:.+?\]\]", "", description)
-			description = re.sub(r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", lambda match: "[{}](https://en.uesp.net/wiki/{})".format(match.group(2), match.group(1).replace(' ', '_')) if match.group(1) else "[{}]({})".format(match.group(4), match.group(3)), description)
+			description = re.sub(r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", lambda match: f"[{match.group(2)}](https://en.uesp.net/wiki/{match.group(1).replace(' ', '_')})" if match.group(1) else f"[{match.group(4)}]({match.group(3)})", description)
 			description = description.replace("'''", "**").replace("''", "*")
 			description = re.sub("\n+", '\n', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
-			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
+			image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True, case_insensitive = True)
