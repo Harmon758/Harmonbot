@@ -24,12 +24,12 @@ environment:
 
 stack: Python 3.8.1
 
-cache:
-  - '%LOCALAPPDATA%\pip\Cache'
-
 # services:
 #   - postgresql12
 # https://github.com/appveyor/ci/issues/3299
+
+cache:
+  - '%LOCALAPPDATA%\pip\Cache'
 
 build_script:
   - cmd: net start postgresql-x64-12
