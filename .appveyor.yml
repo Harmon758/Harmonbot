@@ -6,15 +6,33 @@ environment:
   PGPASSWORD: Password12!
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PLATFORM: Discord
       PYTHON: C:\Python38
       PYTHON_VERSION: 3.8.1
       PYTHON_ARCH: 32
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PLATFORM: Discord
+      PYTHON: C:\Python38-x64
+      PYTHON_VERSION: 3.8.1
+      PYTHON_ARCH: 64
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PLATFORM: Telegram
+      PYTHON: C:\Python38
+      PYTHON_VERSION: 3.8.1
+      PYTHON_ARCH: 32
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PLATFORM: Telegram
       PYTHON: C:\Python38-x64
       PYTHON_VERSION: 3.8.1
       PYTHON_ARCH: 64
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+      PLATFORM: Discord
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+      PLATFORM: Telegram
     - APPVEYOR_BUILD_WORKER_IMAGE: macos
+      PLATFORM: Discord
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos
+      PLATFORM: Telegram
 
 matrix:
   allow_failures:
@@ -33,17 +51,26 @@ init:
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
 
-build_script:
-  - cmd: net start postgresql-x64-12
-  # https://github.com/appveyor/ci/issues/3299
-  - cmd: createdb harmonbot
-  - cmd: echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
-  - sh: sudo --user=postgres createdb harmonbot
-  - sh: sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
-
 install:
   - pip install --upgrade --requirement requirements.txt
 
-test_script:
-  - cd Discord && python Harmonbot.py
-  - cd ../Telegram && python Telegram_Harmonbot.py
+for:
+  -
+    matrix:
+      only:
+        - PLATFORM: Discord
+    build_script:
+      - cmd: net start postgresql-x64-12
+      # https://github.com/appveyor/ci/issues/3299
+      - cmd: createdb harmonbot
+      - cmd: echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
+      - sh: sudo --user=postgres createdb harmonbot
+      - sh: sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
+    test_script:
+      - cd Discord && python Harmonbot.py
+  -
+    matrix:
+      only:
+        - PLATFORM: Telegram
+    test_script:
+      - cd ../Telegram && python Telegram_Harmonbot.py
