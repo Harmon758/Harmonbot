@@ -1,23 +1,7 @@
 version: 1.0.0-{build}
 
-for:
-  -
-    matrix:
-      only:
-        - image: Visual Studio 2019
-    init:
-      - SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
-    build_script:
-      - net start postgresql-x64-12
-      - createdb harmonbot
-      - echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
-  -
-    matrix:
-      except:
-        - image: Visual Studio 2019
-    build_script:
-      - sudo --user=postgres createdb harmonbot
-      - sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
+init:
+  - cmd: SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
 
 environment:
   # https://www.appveyor.com/docs/services-databases/#postgresql
@@ -43,6 +27,13 @@ cache:
 # services:
 #   - postgresql12
 # https://github.com/appveyor/ci/issues/3299
+
+build_script:
+  - cmd: net start postgresql-x64-12
+  - cmd: createdb harmonbot
+  - cmd: echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
+  - sh: sudo --user=postgres createdb harmonbot
+  - sh: sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
 
 install:
   - pip install --upgrade --requirement requirements.txt
