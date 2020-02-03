@@ -165,14 +165,12 @@ class Search(commands.Cog):
 			try:
 				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
 			except IndexError:
-				await ctx.embed_reply(":no_entry: Page not found")
-				return
+				return await ctx.embed_reply(":no_entry: Page not found")
 		params = {"action": "query", "redirects": "", "prop": "info|revisions|images", "titles": search, "inprop": "url", "rvprop": "content", "format": "json"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if "pages" not in data["query"]:
-			await ctx.embed_reply(":no_entry: Error")
-			return
+			return await ctx.embed_reply(":no_entry: Error")
 		page_id = list(data["query"]["pages"].keys())[0]
 		page = data["query"]["pages"][page_id]
 		if "missing" in page:
