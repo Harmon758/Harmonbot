@@ -33,11 +33,16 @@ jobs:
             pip install --upgrade --requirement requirements.txt
 
       - run:
-          name: Run tests
+          name: Run Discord test
           command: |
             . venv/bin/activate
             cd Discord && python Harmonbot.py
-            cd ../Telegram && python Telegram_Harmonbot.py
+
+      - run:
+          name: Run Telegram test
+          command: |
+            . venv/bin/activate
+            cd Telegram && python Telegram_Harmonbot.py
 
       - save_cache:
           paths:
