@@ -291,7 +291,7 @@ class Reactions(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: No results found")
 	
-	async def xkcd(self, ctx, *, number: Optional[int]):
+	async def xkcd(self, ctx, number: Optional[int]):
 		'''xkcd comics menu'''
 		await XKCDMenu(number).start(ctx)
 
