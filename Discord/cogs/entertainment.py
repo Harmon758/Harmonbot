@@ -97,8 +97,8 @@ class Entertainment(commands.Cog):
 		else:
 			await self.process_xkcd(ctx, "http://xkcd.com/info.0.json")
 	
-	@xkcd.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	async def menu(self, ctx, number: Optional[int]):
+	@xkcd.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
+	async def xkcd_menu(self, ctx, number: Optional[int]):
 		'''xkcd comics menu'''
 		await XKCDMenu(number).start(ctx)
 	
