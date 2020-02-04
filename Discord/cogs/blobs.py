@@ -112,9 +112,9 @@ class Blobs(commands.Cog):
 		aliases = [record["alias"] for record in records]
 		await ctx.embed_reply(image_url, title = name, fields = (("Aliases", ", ".join(aliases) or "None"),))
 	
-	@blobs.command()
+	@blobs.command(name = "list")
 	@checks.not_forbidden()
-	async def list(self, ctx, offset: int = 0):
+	async def list_command(self, ctx, offset: int = 0):
 		'''List blobs'''
 		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs")
 		blob_names = [record["blob"] for record in records]
