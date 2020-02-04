@@ -56,7 +56,7 @@ class Random(commands.Cog):
 			(self.uesp, "Search", "uesp", []), 
 			(self.user, "User", "user", ["member"]), 
 			(self.wikipedia, "Search", "wikipedia", ["wiki"]), 
-			(self.xkcd, "Resources", "xkcd", [])
+			(self.xkcd, "Entertainment", "xkcd", [])
 		)
 		for command, cog_name, parent_name, aliases in self.random_commands:
 			self.random.add_command(commands.Command(command, aliases = aliases, checks = [checks.not_forbidden().predicate]))
@@ -192,7 +192,7 @@ class Random(commands.Cog):
 			data = await resp.json()
 		number = random.randint(1, data['num'])
 		url = f"http://xkcd.com/{number}/info.0.json"
-		if cog := self.bot.get_cog("Resources"):
+		if cog := self.bot.get_cog("Entertainment"):
 			await cog.process_xkcd(ctx, url)
 	
 	@commands.command(aliases = ["rabbit"])
