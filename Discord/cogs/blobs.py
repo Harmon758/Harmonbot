@@ -124,9 +124,9 @@ class Blobs(commands.Cog):
 	@checks.not_forbidden()
 	async def list_command(self, ctx, offset: int = 0):
 		'''List blobs'''
-		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs")
+		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs ORDER BY blob")
 		blob_names = [record["blob"] for record in records]
-		await ctx.embed_reply(textwrap.shorten(", ".join(sorted(blob_names)[offset:]), 
+		await ctx.embed_reply(textwrap.shorten(", ".join(blob_names[offset:]), 
 												width = ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT, 
 												placeholder = " ..."))
 	
