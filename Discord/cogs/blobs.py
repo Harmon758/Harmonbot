@@ -2,6 +2,7 @@
 from discord.ext import commands
 
 import difflib
+import textwrap
 
 from utilities import checks
 
@@ -113,11 +114,13 @@ class Blobs(commands.Cog):
 	
 	@blobs.command()
 	@checks.not_forbidden()
-	async def list(self, ctx):
+	async def list(self, ctx, offset: int = 0):
 		'''List blobs'''
 		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs")
 		blob_names = [record["blob"] for record in records]
-		await ctx.embed_reply(", ".join(sorted(blob_names)))
+		await ctx.embed_reply(textwrap.shorten(", ".join(sorted(blob_names)[offset:]), 
+												width = ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT, 
+												placeholder = " ..."))
 	
 	@blobs.command(aliases = ["delete"])
 	@commands.is_owner()
