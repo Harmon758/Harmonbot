@@ -68,11 +68,13 @@ for:
       - sh: sudo --user=postgres createdb harmonbot
       - sh: sudo --user=postgres psql --variable=pgpassword="$PGPASSWORD" <<< "CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword'"
     test_script:
-      - cd Discord && python Harmonbot.py
+      - cd Discord
+      - python Harmonbot.py
   -
     matrix:
       only:
         - PLATFORM: Telegram
     build: off
     test_script:
-      - cd Telegram && python Telegram_Harmonbot.py
+      - cd Telegram
+      - python Telegram_Harmonbot.py
