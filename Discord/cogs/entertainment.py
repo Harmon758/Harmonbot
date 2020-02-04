@@ -13,8 +13,10 @@ def setup(bot):
 
 class Entertainment(commands.Cog):
 	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
+	
 	@commands.command(aliases = ["movie"])
-	@checks.not_forbidden()
 	async def imdb(self, ctx, *, search : str):
 		'''IMDb Information'''
 		url = "http://www.omdbapi.com/"
@@ -39,7 +41,6 @@ class Entertainment(commands.Cog):
 								fields = fields, thumbnail_url = thumbnail_url)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def xkcd(self, ctx, *, query: Optional[Union[int, str]]):
 		'''See xkcd comics'''
 		if isinstance(query, str):
@@ -97,7 +98,6 @@ class Entertainment(commands.Cog):
 			await self.process_xkcd(ctx, "http://xkcd.com/info.0.json")
 	
 	@xkcd.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	@checks.not_forbidden()
 	async def menu(self, ctx, number: Optional[int]):
 		'''xkcd comics menu'''
 		await XKCDMenu(number).start(ctx)
