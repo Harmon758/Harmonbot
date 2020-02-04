@@ -17,7 +17,7 @@ class Entertainment(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.command(aliases = ["movie"])
-	async def imdb(self, ctx, *, search : str):
+	async def imdb(self, ctx, *, search: str):
 		'''IMDb Information'''
 		url = "http://www.omdbapi.com/"
 		params = {'t': search, "plot": "short", "apikey": ctx.bot.OMDB_API_KEY}
