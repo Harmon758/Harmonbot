@@ -349,7 +349,8 @@ class Random(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def fact(self, ctx):
 		'''Random fact'''
-		url = "https://mentalfloss.com/api/facts"
+		url = "http://mentalfloss.com/api/facts"
+		# ClientConnectorCertificateError/SSLCertVerificationError with HTTPS
 		# params = {"limit": 1, "cb": random.random()}
 		# https://mentalfloss.com/amazingfactgenerator
 		# uses page, limit, and cb parameters, seemingly to no effect
