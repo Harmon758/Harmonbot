@@ -1,10 +1,12 @@
 
-from discord.ext import commands
+import discord
+from discord.ext import commands, menus
 
 import difflib
 import textwrap
 
 from utilities import checks
+from utilities.menu import Menu
 
 def setup(bot):
 	bot.add_cog(Blobs(bot))
@@ -13,7 +15,12 @@ class Blobs(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.menus = []
 		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
+		
+	def cog_unload(self):
+		for menu in self.menus:
+			menu.stop()
 	
 	async def initialize_database(self):
 		await self.bot.connect_to_database()
@@ -130,6 +137,16 @@ class Blobs(commands.Cog):
 												width = ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT, 
 												placeholder = " ..."))
 	
+	@blobs.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
+	@checks.not_forbidden()
+	async def menu(self, ctx, number: int = 1):
+		'''Blobs menu'''
+		records = await ctx.bot.db.fetch("SELECT * FROM blobs.blobs ORDER BY blob")
+		menu = BlobsMenu(records, number)
+		self.menus.append(menu)
+		await menu.start(ctx, wait = True)
+		self.menus.remove(menu)
+	
 	@blobs.command(aliases = ["delete"])
 	@commands.is_owner()
 	async def remove(self, ctx, name : str):
@@ -185,4 +202,30 @@ class Blobs(commands.Cog):
 		)
 		total = [f"{count}. {record['blob']} ({record['count']})" for count, record in enumerate(records, start = 1)]
 		await ctx.embed_reply(fields = (("Personal", '\n'.join(personal)), ("Total", '\n'.join(total))))
+
+class BlobsSource(menus.ListPageSource):
+	
+	def __init__(self, records):
+		super().__init__(records, per_page = 1)
+	
+	async def format_page(self, menu, record):
+		embed = discord.Embed(title = record["blob"], color = menu.bot.bot_color)
+		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
+		embed.set_image(url = record["image"])
+		embed.set_footer(text = f"Blob {menu.current_page + 1} of {self.get_max_pages()}")
+		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
+
+class BlobsMenu(Menu, menus.MenuPages):
+	
+	def __init__(self, records, number):
+		super().__init__(BlobsSource(records), timeout = None, clear_reactions_after = True, check_embeds = True)
+		self.initial_offset = number - 1
+	
+	async def send_initial_message(self, ctx, channel):
+		page = await self.source.get_page(self.initial_offset)
+		self.current_page = self.initial_offset
+		kwargs = await self.source.format_page(self, page)
+		message = await channel.send(**kwargs)
+		await ctx.bot.attempt_delete_message(ctx.message)
+		return message
 
