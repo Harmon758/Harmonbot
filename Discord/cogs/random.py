@@ -91,15 +91,9 @@ class Random(commands.Cog):
 	
 	async def blob(self, ctx):
 		'''Random blob emoji'''
-		'''
-		blobs_command = self.bot.get_command("blobs")
-		if not blobs_command: return
-		all_blobs = blobs_command.all_commands.copy()
-		for subcommand in ("random", "stats", "top"): del all_blobs[subcommand]
-		await ctx.invoke(random.choice(list(all_blobs.values())))
-		'''
-		if cog := self.bot.get_cog("Blobs"):
-			await ctx.invoke(self.bot.get_command("blobs"), blob = random.choice(list(cog.data.keys())))
+		if "Blobs" in self.bot.cogs:
+			record = await ctx.bot.db.fetchrow("SELECT * FROM blobs.blobs TABLESAMPLE BERNOULLI (1) LIMIT 1")
+			await ctx.embed_reply(title = record["blob"], image_url = record["image"])
 	
 	async def color(self, ctx):
 		'''Information on a random color'''
