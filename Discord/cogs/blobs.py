@@ -49,17 +49,25 @@ class Blobs(commands.Cog):
 	@checks.not_forbidden()
 	async def blobs(self, ctx, *, blob : str):
 		'''Blob/Google Emoji'''
-		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs UNION SELECT alias FROM blobs.aliases")
-		blob_names = [record["blob"] for record in records]
-		close_match = difflib.get_close_matches(blob, blob_names, n = 1)
+		records = await ctx.bot.db.fetch(
+			"""
+			SELECT blob, NULL as unaliased, image
+			FROM blobs.blobs
+			UNION
+			SELECT blobs.aliases.alias, blobs.blobs.blob, blobs.blobs.image
+			FROM blobs.aliases
+			INNER JOIN blobs.blobs
+			ON blobs.aliases.blob = blobs.blobs.blob
+			"""
+		)
+		blob_data = {}
+		for record in records:
+			blob_data[record["blob"]] = {"image": record["image"], "unaliased": record["unaliased"]}
+		close_match = difflib.get_close_matches(blob, blob_data, n = 1)
 		if not close_match:
 			return await ctx.embed_reply(":no_entry: Blob not found")
 		blob = close_match[0]
-		image_url = await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", blob)
-		if not image_url:
-			blob = await ctx.bot.db.fetchval("SELECT blob FROM blobs.aliases WHERE alias = $1", blob)
-			image_url = await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", blob)
-		await ctx.embed_reply(title = blob, image_url = image_url)
+		await ctx.embed_reply(title = blob, image_url = blob_data[blob]["image"])
 		await ctx.bot.db.execute(
 			"""
 			INSERT INTO blobs.stats (blob, user_id, count)
@@ -67,7 +75,7 @@ class Blobs(commands.Cog):
 			ON CONFLICT (blob, user_id) DO
 			UPDATE SET count = stats.count + 1
 			""", 
-			blob, ctx.author.id
+			blob_data[blob]["unaliased"] or blob, ctx.author.id
 		)
 	
 	@blobs.command(aliases = ["edit"])
