@@ -89,6 +89,7 @@ class Channel(commands.Cog):
 		else:
 			await ctx.embed_reply(f"{channel.mention}'s position is {channel.position}")
 	
+	# TODO: Alias text channel subcommands as channel subcommands
 	@channel.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
@@ -215,6 +216,19 @@ class Channel(commands.Cog):
 			await ctx.embed_reply(channel.mention + "'s topic has been changed")
 		else:
 			await ctx.embed_reply(channel.topic)
+	
+	@text.command(name = "webhooks", aliases = ["webhook"])
+	@commands.bot_has_permissions(manage_webhooks = True)
+	@commands.check_any(commands.has_permissions(manage_webhooks = True), commands.is_owner())
+	@commands.guild_only()
+	async def text_webhooks(self, ctx):
+		'''This text channel's webhooks'''
+		webhooks = await ctx.channel.webhooks()
+		await ctx.embed_reply('\n'.join(webhook.name for webhook in webhooks), 
+								title = "This Channel's Webhooks")
+	
+	# TODO: following command?
+	# TODO: webhooks menu command
 	
 	@channel.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
