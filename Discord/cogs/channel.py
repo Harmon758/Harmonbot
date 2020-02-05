@@ -194,6 +194,15 @@ class Channel(commands.Cog):
 		else:
 			await ctx.embed_reply(f"Slowmode is off for {channel.mention}")
 	
+	@text.command(name = "sync")
+	@commands.bot_has_permissions(manage_channels = True, manage_permissions = True)
+	@commands.check_any(commands.has_permissions(manage_channels = True, manage_permissions = True), commands.is_owner())
+	@commands.guild_only()
+	async def text_sync(self, ctx, *, channel : discord.TextChannel):
+		'''Sync permissions with category the text channel belongs to'''
+		await channel.edit(sync_permissions = True)
+		await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
+	
 	@text.command(name = "topic")
 	@commands.guild_only()
 	@checks.not_forbidden()
@@ -206,15 +215,6 @@ class Channel(commands.Cog):
 			await ctx.embed_reply(channel.mention + "'s topic has been changed")
 		else:
 			await ctx.embed_reply(channel.topic)
-	
-	@text.command(name = "sync")
-	@commands.bot_has_permissions(manage_channels = True, manage_permissions = True)
-	@commands.check_any(commands.has_permissions(manage_channels = True, manage_permissions = True), commands.is_owner())
-	@commands.guild_only()
-	async def text_sync(self, ctx, *, channel : discord.TextChannel):
-		'''Sync permissions with category the text channel belongs to'''
-		await channel.edit(sync_permissions = True)
-		await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
 	
 	@channel.group(invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
