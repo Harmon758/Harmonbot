@@ -282,7 +282,7 @@ class RemindersSource(menus.ListPageSource):
 					value = f"[{value}]({message.jump_url})"
 				except discord.NotFound:
 					pass
-				value += f"\nIn {channel.mention}"
+				value += f"\nIn {getattr(channel, 'mention', 'DMs')}"
 			# TODO: Attempt to fetch channel?
 			value += f"\nAt {record['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}"
 			embed.add_field(name = f"ID: {record['id']}", value = value)
