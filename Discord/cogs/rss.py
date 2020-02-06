@@ -154,7 +154,8 @@ class RSS(commands.Cog):
 	async def feeds(self, ctx):
 		'''Show feeds being followed in this channel'''
 		records = await ctx.bot.db.fetch("SELECT feed FROM rss.feeds WHERE channel_id = $1", ctx.channel.id)
-		await ctx.embed_reply('\n'.join(record["feed"] for record in records))
+		await ctx.embed_reply('\n'.join(record["feed"] for record in records), 
+								"RSS feeds being followed in this channel")
 	
 	# R/PT60S
 	@tasks.loop(seconds = 60)
