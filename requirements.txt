@@ -62,7 +62,7 @@ youtube-dl==2020.1.24
 async-timeout==3.0.1
 attrs==19.3.0
 certifi==2019.11.28
-cffi==1.13.2
+cffi==1.14.0
 chardet==3.0.4
 configparser==4.0.2
 cycler==0.10.0
