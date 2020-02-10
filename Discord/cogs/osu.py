@@ -46,7 +46,7 @@ class Osu(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@osu.command()
-	async def user(self, ctx, *, user : str):
+	async def user(self, ctx, *, user: str):
 		'''General user information'''
 		await self.get_user(ctx, user)
 	
