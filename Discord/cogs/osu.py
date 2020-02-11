@@ -51,7 +51,7 @@ class Osu(commands.Cog):
 		await self.get_user(ctx, user)
 	
 	@taiko.command(name = "user")
-	async def taiko_user(self, ctx, *, user : str):
+	async def taiko_user(self, ctx, *, user: str):
 		'''General user information'''
 		await self.get_user(ctx, user, 1)
 	
