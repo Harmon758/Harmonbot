@@ -49,7 +49,10 @@ class Info(commands.Cog):
 	@commands.group(aliases = ["information"], invoke_without_command = True, case_insensitive = True)
 	async def info(self, ctx):
 		'''Info'''
-		await ctx.send_help(ctx.command)
+		if cog := self.bot.get_cog("Meta"):
+			await ctx.invoke(cog.about)
+		else:
+			await ctx.send_help(ctx.command)
 	
 	# TODO: Add about command
 	# TODO: Add soundcloud info

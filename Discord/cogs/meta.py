@@ -161,8 +161,6 @@ class Meta(commands.Cog):
 	
 	# Public Info
 	
-	# TODO: Move to info cog
-	# aliases = ["info"]
 	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
