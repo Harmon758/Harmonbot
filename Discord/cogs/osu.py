@@ -56,7 +56,7 @@ class Osu(commands.Cog):
 		await self.get_user(ctx, user, 1)
 	
 	@mania.command(name = "user")
-	async def mania_user(self, ctx, *, user : str):
+	async def mania_user(self, ctx, *, user: str):
 		'''General user information'''
 		await self.get_user(ctx, user, 2)
 	
