@@ -207,6 +207,7 @@ class Resources(commands.Cog):
 		url = "http://rtex.probablyaweb.site/api/v2"
 		latex_input = (
 			R"\documentclass{article}" '\n'
+			R"\usepackage{amsmath}" '\n'
 			R"\usepackage{pagecolor}" '\n'
 			R"\begin{document}" '\n'
 			R"\pagecolor{white}" '\n'
