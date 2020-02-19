@@ -41,9 +41,8 @@ matrix:
 
 stack: Python 3.8.1, PostgreSQL 12.1
 
-# services:
-#   - postgresql12
-# https://github.com/appveyor/ci/issues/3299
+services:
+  - postgresql12
 
 init:
   - cmd: SET PATH=%PYTHON%;%PYTHON%\Scripts;C:\Program Files\PostgreSQL\12\bin\;%PATH%
@@ -61,8 +60,6 @@ for:
       only:
         - PLATFORM: Discord
     build_script:
-      - cmd: net start postgresql-x64-12
-      # https://github.com/appveyor/ci/issues/3299
       - cmd: createdb harmonbot
       - cmd: echo CREATE USER harmonbot SUPERUSER PASSWORD :'pgpassword' | psql --variable=pgpassword="%PGPASSWORD%"
       - sh: sudo --user=postgres createdb harmonbot
