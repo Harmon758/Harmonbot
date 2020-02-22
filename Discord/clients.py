@@ -863,7 +863,7 @@ class Bot(commands.Bot):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
-	async def load(ctx, cog : str):
+	async def load(ctx, cog: str):
 		'''Load cog'''
 		try:
 			ctx.bot.load_extension("cogs." + cog)
