@@ -69,7 +69,7 @@ cycler==0.10.0
 docopt==0.6.2
 future==0.18.2
 geojson==2.5.0
-gitdb2==3.0.2
+gitdb2==4.0.1
 googleapis-common-protos==1.51.0
 grpcio==1.27.2
 idna==2.9
