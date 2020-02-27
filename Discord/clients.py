@@ -897,7 +897,7 @@ class Bot(commands.Bot):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
-	async def unload(ctx, cog : str):
+	async def unload(ctx, cog: str):
 		'''Unload cog'''
 		try:
 			ctx.bot.unload_extension("cogs." + cog)
