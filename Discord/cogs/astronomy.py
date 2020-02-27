@@ -38,7 +38,7 @@ class Astronomy(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@astronomy.command()
-	async def chart(self, ctx, *, chart : str):
+	async def chart(self, ctx, *, chart: str):
 		'''WIP'''
 		# paginate, https://api.arcsecond.io/findingcharts/HD%205980/
 		...
