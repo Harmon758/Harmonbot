@@ -49,7 +49,7 @@ class Astronomy(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@data.command(name = "eso")
-	async def data_eso(self, ctx, program_id : str):
+	async def data_eso(self, ctx, program_id: str):
 		'''
 		European Southern Observatory
 		http://archive.eso.org/wdb/wdb/eso/sched_rep_arc/query
