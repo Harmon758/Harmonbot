@@ -92,7 +92,7 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply('\n'.join(links), title = title, fields = fields)
 	
 	@data.command(name = "hst")
-	async def data_hst(self, ctx, proposal_id : int):
+	async def data_hst(self, ctx, proposal_id: int):
 		'''
 		Hubble Space Telescope (HST)
 		https://archive.stsci.edu/hst/
