@@ -107,7 +107,7 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(data["abstract"], title = data["title"], fields = fields)
 	
 	@astronomy.command()
-	async def exoplanet(self, ctx, *, exoplanet : str):
+	async def exoplanet(self, ctx, *, exoplanet: str):
 		'''Exoplanets'''
 		# TODO: list?
 		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/exoplanets/{}".format(exoplanet), params = {"format": "json"}) as resp:
