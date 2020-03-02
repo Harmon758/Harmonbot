@@ -271,7 +271,7 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(title = data["name"], fields = fields)
 	
 	@astronomy.command(aliases = ["international_space_station", "internationalspacestation"])
-	async def iss(self, ctx, latitude : float = 0.0, longitude : float = 0.0):
+	async def iss(self, ctx, latitude: float = 0.0, longitude: float = 0.0):
 		'''
 		Current location of the International Space Station (ISS)
 		Enter a latitude and longitude to compute an estimate of the next time the ISS will be overhead
