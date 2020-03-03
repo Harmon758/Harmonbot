@@ -310,7 +310,7 @@ class Astronomy(commands.Cog):
 									timestamp = timestamp)
 	
 	@astronomy.command(name = "object")
-	async def astronomy_object(self, ctx, *, object : str):
+	async def astronomy_object(self, ctx, *, object: str):
 		'''WIP'''
 		# https://api.arcsecond.io/objects/alpha%20centurai/
 		...
