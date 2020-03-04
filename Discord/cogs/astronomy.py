@@ -316,7 +316,7 @@ class Astronomy(commands.Cog):
 		...
 	
 	@astronomy.command()
-	async def observatory(self, ctx, *, observatory : str):
+	async def observatory(self, ctx, *, observatory: str):
 		'''
 		Observatories
 		Observing sites on Earth
