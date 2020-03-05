@@ -350,7 +350,7 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply('\n'.join("{0[name]} ({0[craft]})".format(person) for person in data["people"]), title = "Current People In Space ({})".format(data["number"]))
 	
 	@astronomy.command()
-	async def publication(self, ctx, *, bibcode : str):
+	async def publication(self, ctx, *, bibcode: str):
 		'''Publications'''
 		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/publications/{}/".format(bibcode), params = {"format": "json"}) as resp:
 			data = await resp.json()
