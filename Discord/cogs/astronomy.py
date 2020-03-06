@@ -366,7 +366,7 @@ class Astronomy(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@telegram.command(name = "atel", aliases = ["astronomerstelegram"])
-	async def telegram_atel(self, ctx, number : int):
+	async def telegram_atel(self, ctx, number: int):
 		'''
 		The Astronomer's Telegram
 		http://www.astronomerstelegram.org/
