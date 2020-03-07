@@ -390,7 +390,7 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(description, title = data["title"], title_url = "http://www.astronomerstelegram.org/?read={}".format(number), fields = fields)
 	
 	@telegram.command(name = "gcn", aliases = ["circulars"])
-	async def telegram_gcn(self, ctx, number : str):
+	async def telegram_gcn(self, ctx, number: str):
 		'''
 		GCN Circulars
 		https://gcn.gsfc.nasa.gov/
