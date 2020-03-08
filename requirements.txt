@@ -57,7 +57,7 @@ wand==0.5.9
 wolframalpha==4.0.0
 wordcloud==1.6.0
 wordnik-py3==2.1.2
-youtube-dl==2020.2.16
+youtube-dl==2020.3.8
 
 async-timeout==3.0.1
 attrs==19.3.0
