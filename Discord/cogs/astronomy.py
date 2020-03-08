@@ -413,7 +413,7 @@ class Astronomy(commands.Cog):
 								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else discord.Embed.Empty)
 	
 	@astronomy.command(aliases = ["instrument"])
-	async def telescope(self, ctx, *, telescope : str):
+	async def telescope(self, ctx, *, telescope: str):
 		'''
 		Telescopes and instruments
 		At observing sites on Earth
