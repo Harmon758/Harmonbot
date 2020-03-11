@@ -83,7 +83,7 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@decode_gost_28147_89.command(name = "cfb")
-	async def decode_gost_28147_89_cfb(self, ctx, key : str, *, data : str):
+	async def decode_gost_28147_89_cfb(self, ctx, key: str, *, data: str):
 		'''Magma with CFB mode of operation'''
 		try:
 			await ctx.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
