@@ -125,7 +125,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).decrypt(bytearray.fromhex(data)).decode("UTF-8"))
 	
 	@decode.command(name = "morse")
-	async def decode_morse(self, ctx, *, message : str):
+	async def decode_morse(self, ctx, *, message: str):
 		'''Decodes morse code'''
 		try:
 			await ctx.embed_reply(decode_morse_code(message))
