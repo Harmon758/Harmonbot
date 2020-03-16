@@ -160,7 +160,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(decoded)
 	
 	@decode.command(name = "reverse")
-	async def decode_reverse(self, ctx, *, message : str):
+	async def decode_reverse(self, ctx, *, message: str):
 		'''Reverses text'''
 		await ctx.embed_reply(message[::-1])
 	
