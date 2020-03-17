@@ -170,7 +170,7 @@ class Cryptography(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@encode.command(name = "adler32", aliases = ["adler-32"])
-	async def encode_adler32(self, ctx, *, message : str):
+	async def encode_adler32(self, ctx, *, message: str):
 		'''Compute Adler-32 checksum'''
 		await ctx.embed_reply(zlib.adler32(message.encode("UTF-8")))
 	
