@@ -175,7 +175,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(zlib.adler32(message.encode("UTF-8")))
 	
 	@encode.command(name = "blake2b")
-	async def encode_blake2b(self, ctx, *, message : str):
+	async def encode_blake2b(self, ctx, *, message: str):
 		'''64-byte digest BLAKE2b'''
 		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2b(64), backend = openssl_backend)
 		digest.update(message.encode("UTF-8"))
