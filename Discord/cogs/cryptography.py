@@ -182,7 +182,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(digest.finalize())
 	
 	@encode.command(name = "blake2s")
-	async def encode_blake2s(self, ctx, *, message : str):
+	async def encode_blake2s(self, ctx, *, message: str):
 		'''32-byte digest BLAKE2s'''
 		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2s(32), backend = openssl_backend)
 		digest.update(message.encode("UTF-8"))
