@@ -189,7 +189,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(digest.finalize())
 	
 	@encode.command(name = "caesar", aliases = ["rot"])
-	async def encode_caesar(self, ctx, key : int, *, message : str):
+	async def encode_caesar(self, ctx, key: int, *, message: str):
 		'''Encode a message using a caesar cipher'''
 		await ctx.embed_reply(encode_caesar_cipher(message, key))
 	
