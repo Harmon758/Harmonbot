@@ -194,7 +194,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(encode_caesar_cipher(message, key))
 	
 	@encode.command(name = "crc32", aliases = ["crc-32"])
-	async def encode_crc32(self, ctx, *, message : str):
+	async def encode_crc32(self, ctx, *, message: str):
 		'''Compute CRC32 checksum'''
 		await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 	
