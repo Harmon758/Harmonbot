@@ -237,7 +237,7 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "cnt")
-	async def encode_gost_28147_89_cnt(self, ctx, key : str, *, data : str):
+	async def encode_gost_28147_89_cnt(self, ctx, key: str, *, data: str):
 		'''Magma with CNT mode of operation'''
 		try:
 			await ctx.embed_reply(pygost.gost28147.cnt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
