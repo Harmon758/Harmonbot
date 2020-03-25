@@ -245,7 +245,7 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "ecb")
-	async def encode_gost_28147_89_ecb(self, ctx, key : str, *, data : str):
+	async def encode_gost_28147_89_ecb(self, ctx, key: str, *, data: str):
 		'''
 		Magma with ECB mode of operation
 		data block size must be 8 (64-bit)
