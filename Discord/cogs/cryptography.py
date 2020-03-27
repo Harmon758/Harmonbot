@@ -277,7 +277,7 @@ class Cryptography(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@encode_gost_34_11_2012.command(name = "256")
-	async def encode_gost_34_11_2012_256(self, ctx, *, data : str):
+	async def encode_gost_34_11_2012_256(self, ctx, *, data: str):
 		'''
 		GOST 34.11-2012 256-bit hash function
 		Also known as Streebog-256
