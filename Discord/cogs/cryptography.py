@@ -285,7 +285,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 32).hexdigest())
 	
 	@encode_gost_34_11_2012.command(name = "512")
-	async def encode_gost_34_11_2012_512(self, ctx, *, data : str):
+	async def encode_gost_34_11_2012_512(self, ctx, *, data: str):
 		'''
 		GOST 34.11-2012 512-bit hash function
 		Also known as Streebog-512
