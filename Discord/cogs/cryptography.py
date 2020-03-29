@@ -293,7 +293,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 64).hexdigest())
 	
 	@encode_gost.command(name = "34.11-94")
-	async def encode_gost_34_11_94(self, ctx, *, data : str):
+	async def encode_gost_34_11_94(self, ctx, *, data: str):
 		'''GOST 34.11-94 hash function'''
 		await ctx.embed_reply(pygost.gost341194.GOST341194(data.encode("UTF-8")).hexdigest())
 	
