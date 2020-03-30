@@ -298,7 +298,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost341194.GOST341194(data.encode("UTF-8")).hexdigest())
 	
 	@encode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
-	async def encode_gost_34_12_2015(self, ctx, key : str, *, data : str):
+	async def encode_gost_34_12_2015(self, ctx, key: str, *, data: str):
 		'''
 		GOST 34.12-2015 128-bit block cipher
 		Also known as Кузнечик or Kuznyechik
