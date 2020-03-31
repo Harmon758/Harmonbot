@@ -312,7 +312,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).encrypt(data.encode("UTF-8")).hex())
 	
 	@encode.command(name = "md4")
-	async def encode_md4(self, ctx, *, message : str):
+	async def encode_md4(self, ctx, *, message: str):
 		'''Generate MD4 hash'''
 		md4_hash = hashlib.new("MD4")
 		md4_hash.update(message.encode("UTF-8"))
