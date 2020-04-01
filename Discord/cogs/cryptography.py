@@ -319,7 +319,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(md4_hash.hexdigest())
 	
 	@encode.command(name = "md5")
-	async def encode_md5(self, ctx, *, message : str):
+	async def encode_md5(self, ctx, *, message: str):
 		'''Generate MD5 hash'''
 		await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 	
