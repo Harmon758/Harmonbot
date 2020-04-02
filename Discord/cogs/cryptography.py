@@ -324,7 +324,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "morse")
-	async def encode_morse(self, ctx, *, message : str):
+	async def encode_morse(self, ctx, *, message: str):
 		'''Encode a message in morse code'''
 		try:
 			await ctx.embed_reply(encode_morse_code(message))
