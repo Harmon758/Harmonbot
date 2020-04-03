@@ -338,7 +338,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(image_url = url)
 	
 	@encode.command(name = "reverse")
-	async def encode_reverse(self, ctx, *, message : str):
+	async def encode_reverse(self, ctx, *, message: str):
 		'''Reverses text'''
 		await ctx.embed_reply(message[::-1])
 	
