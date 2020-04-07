@@ -360,7 +360,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(hashlib.sha224(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "sha256", aliases = ["sha-256"])
-	async def encode_sha256(self, ctx, *, message : str):
+	async def encode_sha256(self, ctx, *, message: str):
 		'''Generate SHA-256 hash'''
 		await ctx.embed_reply(hashlib.sha256(message.encode("UTF-8")).hexdigest())
 	
