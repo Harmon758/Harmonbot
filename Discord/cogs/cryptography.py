@@ -370,7 +370,7 @@ class Cryptography(commands.Cog):
 		await ctx.embed_reply(hashlib.sha384(message.encode("UTF-8")).hexdigest())
 	
 	@encode.command(name = "sha512", aliases = ["sha-512"])
-	async def encode_sha512(self, ctx, *, message : str):
+	async def encode_sha512(self, ctx, *, message: str):
 		'''Generate SHA-512 hash'''
 		await ctx.embed_reply(hashlib.sha512(message.encode("UTF-8")).hexdigest())
 	
