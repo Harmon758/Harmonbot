@@ -25,7 +25,7 @@ class Finance(commands.Cog):
 	
 	@commands.group(description = "Powered by [CoinDesk](https://www.coindesk.com/price/)", 
 					invoke_without_command = True, case_insensitive = True)
-	async def bitcoin(self, ctx, currency : str = ""):
+	async def bitcoin(self, ctx, currency: str = ""):
 		'''
 		Bitcoin Price Index (BPI)
 		To specify a currency, enter the three-character currency code (e.g. USD, GBP, EUR)
