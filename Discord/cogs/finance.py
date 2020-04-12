@@ -67,7 +67,7 @@ class Finance(commands.Cog):
 		# TODO: paginate
 	
 	@bitcoin.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
-	async def bitcoin_historical(self, ctx, date : str = "", currency : str = ""):
+	async def bitcoin_historical(self, ctx, date: str = "", currency: str = ""):
 		'''
 		Historical BPI
 		Date must be in YYYY-MM-DD format (Default is yesterday)
