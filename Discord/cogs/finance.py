@@ -98,7 +98,7 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(description, footer_text = footer_text, timestamp = timestamp)
 	
 	@commands.group(aliases = ["exchange", "rates"], invoke_without_command = True, case_insensitive = True)
-	async def currency(self, ctx, against : str = "", request : str = ""):
+	async def currency(self, ctx, against: str = "", request: str = ""):
 		'''
 		Current foreign exchange rates
 		Hourly Updates
