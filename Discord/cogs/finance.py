@@ -115,7 +115,7 @@ class Finance(commands.Cog):
 		await self.process_currency(ctx, against, request)
 	
 	@currency.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
-	async def currency_historical(self, ctx, date : str, against : str = "", request : str = ""):
+	async def currency_historical(self, ctx, date: str, against: str = "", request: str = ""):
 		'''
 		Historical foreign exchange rates
 		End Of Day historical exchange rates, which become available at 00:05 am GMT 
