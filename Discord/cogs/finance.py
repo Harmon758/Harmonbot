@@ -192,7 +192,7 @@ class Finance(commands.Cog):
 	@commands.group(aliases = ["stocks"], 
 					description = "Data provided for free by [IEX](https://iextrading.com/developer).", 
 					invoke_without_command = True, case_insensitive = True)
-	async def stock(self, ctx, symbol : str):
+	async def stock(self, ctx, symbol: str):
 		'''
 		WIP
 		https://iextrading.com/api-exhibit-a
