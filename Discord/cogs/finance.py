@@ -205,7 +205,7 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(data + attribution)
 	
 	@stock.command(name = "company")
-	async def stock_company(self, ctx, symbol : str):
+	async def stock_company(self, ctx, symbol: str):
 		'''Company Information'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/company"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
