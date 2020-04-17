@@ -222,7 +222,7 @@ class Finance(commands.Cog):
 								fields = fields, thumbnail_url = thumbnail_url)
 	
 	@stock.command(name = "earnings")
-	async def stock_earnings(self, ctx, symbol : str):
+	async def stock_earnings(self, ctx, symbol: str):
 		'''Earnings data from the most recent reported quarter'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/earnings"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
