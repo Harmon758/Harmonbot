@@ -241,7 +241,7 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(title = data["symbol"], fields = fields, footer_text = footer_text)
 	
 	@stock.command(name = "financials")
-	async def stock_financials(self, ctx, symbol : str):
+	async def stock_financials(self, ctx, symbol: str):
 		'''Income statement, balance sheet, and cash flow data from the most recent reported quarter'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/financials"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
