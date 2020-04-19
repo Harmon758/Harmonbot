@@ -264,7 +264,7 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(title = data["symbol"], fields = fields, footer_text = footer_text)
 	
 	@stock.command(name = "quote")
-	async def stock_quote(self, ctx, symbol : str):
+	async def stock_quote(self, ctx, symbol: str):
 		'''WIP'''
 		url = f"https://api.iextrading.com/1.0/stock/{symbol}/quote"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
