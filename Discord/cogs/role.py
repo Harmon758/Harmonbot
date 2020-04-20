@@ -28,7 +28,7 @@ class Role(commands.Cog):
 	@role.command(name = "color", aliases = ["colour"])
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def role_color(self, ctx, role : discord.Role, *, color : discord.Color = None):
+	async def role_color(self, ctx, role: discord.Role, *, color: discord.Color = None):
 		'''The color of a role'''
 		if color:
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
