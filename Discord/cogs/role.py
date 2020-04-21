@@ -41,7 +41,7 @@ class Role(commands.Cog):
 	@role.command(name = "create", aliases = ["make", "new"])
 	@commands.bot_has_guild_permissions(manage_roles = True)
 	@commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner())
-	async def role_create(self, ctx, *, name : str = ""):
+	async def role_create(self, ctx, *, name: str = ""):
 		'''Creates a role'''
 		# TODO: Add more options
 		role = await ctx.guild.create_role(name = name)
