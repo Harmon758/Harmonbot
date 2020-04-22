@@ -50,7 +50,7 @@ class Role(commands.Cog):
 	@role.command(name = "default")
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def role_default(self, ctx, *, role : discord.Role):
+	async def role_default(self, ctx, *, role: discord.Role):
 		'''Whether a role is the default role or not'''
 		await ctx.embed_reply(role.mention + " is {}the default role".format("" if role.is_default() else "not "))
 	
