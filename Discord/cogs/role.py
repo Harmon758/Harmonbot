@@ -57,7 +57,7 @@ class Role(commands.Cog):
 	@role.command(name = "hoisted", aliases = ["hoist"])
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def role_hoisted(self, ctx, role : discord.Role, hoist : bool = None):
+	async def role_hoisted(self, ctx, role: discord.Role, hoist: bool = None):
 		'''Whether a role is displayed separately from other members or not'''
 		if hoist is not None:
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
