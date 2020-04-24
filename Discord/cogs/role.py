@@ -70,7 +70,7 @@ class Role(commands.Cog):
 	@role.command(name = "id")
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def role_id(self, ctx, *, role : discord.Role):
+	async def role_id(self, ctx, *, role: discord.Role):
 		'''The ID of a role'''
 		await ctx.embed_reply(role.id)
 	
