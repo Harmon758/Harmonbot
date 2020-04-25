@@ -77,7 +77,7 @@ class Role(commands.Cog):
 	@role.command(name = "managed")
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def role_managed(self, ctx, *, role : discord.Role):
+	async def role_managed(self, ctx, *, role: discord.Role):
 		'''Indicates if the role is managed by the guild through some form of integrations such as Twitch'''
 		await ctx.embed_reply(role.mention + " is {}managed".format("" if role.managed else "not "))
 	
