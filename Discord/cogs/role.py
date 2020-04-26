@@ -84,7 +84,7 @@ class Role(commands.Cog):
 	@role.command(name = "mentionable")
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def role_mentionable(self, ctx, role : discord.Role, mentionable : bool = None):
+	async def role_mentionable(self, ctx, role: discord.Role, mentionable: bool = None):
 		'''Whether a role is mentionable or not'''
 		if mentionable is not None:
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
