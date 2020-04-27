@@ -97,7 +97,7 @@ class Role(commands.Cog):
 	@role.command(name = "name")
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def role_name(self, ctx, role : discord.Role, *, name : str = ""):
+	async def role_name(self, ctx, role: discord.Role, *, name: str = ""):
 		'''The name of a role'''
 		if name:
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
