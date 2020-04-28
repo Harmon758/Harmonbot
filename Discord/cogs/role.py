@@ -110,7 +110,7 @@ class Role(commands.Cog):
 	@role.command(name = "position")
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def role_position(self, ctx, role : discord.Role, position : int = None):
+	async def role_position(self, ctx, role: discord.Role, position: int = None):
 		'''
 		The position of a role
 		This number is usually positive
