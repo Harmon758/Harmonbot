@@ -90,7 +90,7 @@ class RSS(commands.Cog):
 	
 	@rss.command()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def add(self, ctx, url : str):
+	async def add(self, ctx, url: str):
 		'''Add a feed to a channel'''
 		following = await ctx.bot.db.fetchval(
 			"""
