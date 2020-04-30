@@ -135,7 +135,7 @@ class RSS(commands.Cog):
 
 	@rss.command(aliases = ["delete"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def remove(self, ctx, url : str):
+	async def remove(self, ctx, url: str):
 		'''Remove a feed from a channel'''
 		deleted = await ctx.bot.db.fetchval(
 			"""
