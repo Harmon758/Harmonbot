@@ -154,7 +154,7 @@ class Twitter(commands.Cog):
 	
 	@twitter.command(name = "status")
 	@checks.not_forbidden()
-	async def twitter_status(self, ctx, handle : str, replies : bool = False, retweets : bool = False):
+	async def twitter_status(self, ctx, handle: str, replies: bool = False, retweets: bool = False):
 		'''
 		Get twitter status
 		Excludes replies and retweets by default
