@@ -188,7 +188,7 @@ class Twitter(commands.Cog):
 	
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitter_add(self, ctx, handle : str):
+	async def twitter_add(self, ctx, handle: str):
 		'''
 		Add a Twitter handle to a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
