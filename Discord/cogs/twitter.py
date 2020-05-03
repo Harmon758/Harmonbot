@@ -223,7 +223,7 @@ class Twitter(commands.Cog):
 	
 	@twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def twitter_remove(self, ctx, handle : str):
+	async def twitter_remove(self, ctx, handle: str):
 		'''
 		Remove a Twitter handle from a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
