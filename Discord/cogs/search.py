@@ -45,7 +45,7 @@ class Search(commands.Cog):
 		'''
 		await ctx.embed_reply(":grey_question: Search what?")
 	
-	async def youtube(self, ctx, *, search : str):
+	async def youtube(self, ctx, *, search: str):
 		'''Find a Youtube video'''
 		ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
 		func = functools.partial(ydl.extract_info, search, download = False)
