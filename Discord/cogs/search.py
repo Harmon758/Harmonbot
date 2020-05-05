@@ -58,7 +58,7 @@ class Search(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {error.original}")
 	
 	@commands.command()
-	async def amazon(self, ctx, *search : str):
+	async def amazon(self, ctx, *search: str):
 		'''Search with Amazon'''
 		await ctx.embed_reply(f"[Amazon search for \"{' '.join(search)}\"](https://smile.amazon.com/s/?field-keywords={'+'.join(search)})")
 	
