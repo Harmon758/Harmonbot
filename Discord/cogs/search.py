@@ -63,7 +63,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[Amazon search for \"{' '.join(search)}\"](https://smile.amazon.com/s/?field-keywords={'+'.join(search)})")
 	
 	@commands.command()
-	async def aol(self, ctx, *search : str):
+	async def aol(self, ctx, *search: str):
 		'''Search with AOL'''
 		await ctx.embed_reply(f"[AOL search for \"{' '.join(search)}\"](https://search.aol.com/aol/search?q={'+'.join(search)})")
 	
