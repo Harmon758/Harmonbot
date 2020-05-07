@@ -68,7 +68,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[AOL search for \"{' '.join(search)}\"](https://search.aol.com/aol/search?q={'+'.join(search)})")
 	
 	@commands.command(name = "ask.com")
-	async def ask_com(self, ctx, *search : str):
+	async def ask_com(self, ctx, *search: str):
 		'''Search with Ask.com'''
 		await ctx.embed_reply(f"[Ask.com search for \"{' '.join(search)}\"](http://www.ask.com/web?q={'+'.join(search)})")
 	
