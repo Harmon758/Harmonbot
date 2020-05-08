@@ -73,7 +73,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[Ask.com search for \"{' '.join(search)}\"](http://www.ask.com/web?q={'+'.join(search)})")
 	
 	@commands.command()
-	async def baidu(self, ctx, *search : str):
+	async def baidu(self, ctx, *search: str):
 		'''Search with Baidu'''
 		await ctx.embed_reply(f"[Baidu search for \"{' '.join(search)}\"](http://www.baidu.com/s?wd={'+'.join(search)})")
 	
