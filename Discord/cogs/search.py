@@ -78,7 +78,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[Baidu search for \"{' '.join(search)}\"](http://www.baidu.com/s?wd={'+'.join(search)})")
 	
 	@commands.command()
-	async def bing(self, ctx, *search : str):
+	async def bing(self, ctx, *search: str):
 		'''Search with Bing'''
 		await ctx.embed_reply(f"[Bing search for \"{' '.join(search)}\"](http://www.bing.com/search?q={'+'.join(search)})")
 	
