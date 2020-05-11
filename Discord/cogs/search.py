@@ -88,7 +88,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[DuckDuckGo search for \"{' '.join(search)}\"](https://www.duckduckgo.com/?q={'+'.join(search)})")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def google(self, ctx, *, search : str):
+	async def google(self, ctx, *, search: str):
 		'''Google search'''
 		await ctx.embed_reply(f"[Google search for \"{search}\"](https://www.google.com/search?q={search.replace(' ', '+')})")
 	
