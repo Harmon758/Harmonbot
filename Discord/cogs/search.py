@@ -93,7 +93,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[Google search for \"{search}\"](https://www.google.com/search?q={search.replace(' ', '+')})")
 	
 	@commands.command(aliases = ["im_feeling_lucky"])
-	async def imfeelinglucky(self, ctx, *search : str):
+	async def imfeelinglucky(self, ctx, *search: str):
 		'''First Google result of a search'''
 		await ctx.embed_reply(f"[First Google result of \"{' '.join(search)}\"](https://www.google.com/search?btnI&q={'+'.join(search)})")
 	
