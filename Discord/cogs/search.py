@@ -98,7 +98,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[First Google result of \"{' '.join(search)}\"](https://www.google.com/search?btnI&q={'+'.join(search)})")
 	
 	@commands.command(name = "lma.ctfy")
-	async def lma_ctfy(self, ctx, *search : str):
+	async def lma_ctfy(self, ctx, *search: str):
 		'''Let Me Ask.Com That For You'''
 		await ctx.embed_reply(f"[LMA.CTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=k&q={'+'.join(search)})")
 	
