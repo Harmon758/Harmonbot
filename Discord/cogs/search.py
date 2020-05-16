@@ -113,7 +113,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[LMATFY: \"{' '.join(search)}\"](http://lmatfy.co/?q={'+'.join(search)})")
 	
 	@commands.command()
-	async def lmbdtfy(self, ctx, *search : str):
+	async def lmbdtfy(self, ctx, *search: str):
 		'''Let Me Baidu That For You'''
 		await ctx.embed_reply(f"[LMBDTFY: \"{' '.join(search)}\"](https://lmbtfy.cn/?{'+'.join(search)})")
 	
