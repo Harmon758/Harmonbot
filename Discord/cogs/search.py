@@ -125,7 +125,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(output)
 	
 	@commands.command()
-	async def lmdtfy(self, ctx, *search : str):
+	async def lmdtfy(self, ctx, *search: str):
 		'''Let Me DuckDuckGo That For You'''
 		await ctx.embed_reply(f"[LMDTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=d&q={'+'.join(search)})")
 	
