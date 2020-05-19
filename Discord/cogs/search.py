@@ -130,7 +130,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[LMDTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=d&q={'+'.join(search)})")
 	
 	@commands.command()
-	async def lmgtfy(self, ctx, *search : str):
+	async def lmgtfy(self, ctx, *search: str):
 		'''Let Me Google That For You'''
 		await ctx.embed_reply(f"[LMGTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?q={'+'.join(search)})")
 	
