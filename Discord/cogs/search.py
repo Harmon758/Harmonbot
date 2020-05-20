@@ -135,7 +135,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[LMGTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?q={'+'.join(search)})")
 	
 	@commands.command()
-	async def lmytfy(self, ctx, *search : str):
+	async def lmytfy(self, ctx, *search: str):
 		'''Let Me Yahoo That For You'''
 		await ctx.embed_reply(f"[LMYTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=y&q={'+'.join(search)})")
 	
