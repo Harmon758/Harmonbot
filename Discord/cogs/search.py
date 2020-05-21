@@ -140,7 +140,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(f"[LMYTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?s=y&q={'+'.join(search)})")
 	
 	@commands.command()
-	async def startpage(self, ctx, *search : str):
+	async def startpage(self, ctx, *search: str):
 		'''Search with StartPage'''
 		await ctx.embed_reply(f"[StartPage search for \"{' '.join(search)}\"](https://www.startpage.com/do/search?query={'+'.join(search)})")
 	
