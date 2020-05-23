@@ -214,7 +214,7 @@ class Search(commands.Cog):
 		await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url)  # canonicalurl?
 	
 	@commands.group(aliases = ["wiki"], invoke_without_command = True, case_insensitive = True)
-	async def wikipedia(self, ctx, *, search : str):
+	async def wikipedia(self, ctx, *, search: str):
 		'''Look something up on Wikipedia'''
 		await self.process_wikipedia(ctx, search)
 	
