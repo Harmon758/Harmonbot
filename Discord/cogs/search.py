@@ -255,7 +255,7 @@ class Search(commands.Cog):
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True, case_insensitive = True)
-	async def wolframalpha(self, ctx, *, search : str):
+	async def wolframalpha(self, ctx, *, search: str):
 		'''
 		Wolfram|Alpha
 		http://www.wolframalpha.com/examples/
