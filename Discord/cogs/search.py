@@ -317,7 +317,7 @@ class Search(commands.Cog):
 			await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
 	
 	@commands.command()
-	async def yahoo(self, ctx, *search : str):
+	async def yahoo(self, ctx, *search: str):
 		'''Search with Yahoo'''
 		await ctx.embed_reply(f"[Yahoo search for \"{' '.join(search)}\"](https://search.yahoo.com/search?q={'+'.join(search)})")
 
