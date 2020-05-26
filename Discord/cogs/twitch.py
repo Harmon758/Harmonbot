@@ -93,7 +93,7 @@ class Twitch(commands.Cog):
 	
 	@add.command(name = "channel", aliases = ["stream"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def add_channel(self, ctx, username : str):
+	async def add_channel(self, ctx, username: str):
 		'''Add a Twitch channel to follow'''
 		url = "https://api.twitch.tv/kraken/users"
 		headers = {"Accept": "application/vnd.twitchtv.v5+json"}
