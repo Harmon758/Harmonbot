@@ -116,7 +116,7 @@ class Twitch(commands.Cog):
 	
 	@add.command(name = "filter")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def add_filter(self, ctx, *, string : str):
+	async def add_filter(self, ctx, *, string: str):
 		'''Add string to filter Twitch stream titles by'''
 		inserted = await ctx.bot.db.fetchrow(
 			"""
