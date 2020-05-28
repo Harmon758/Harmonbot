@@ -134,7 +134,7 @@ class Twitch(commands.Cog):
 	
 	@add.command(name = "game")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def add_game(self, ctx, *, game : str):
+	async def add_game(self, ctx, *, game: str):
 		'''Add a Twitch game to follow'''
 		# TODO: Add documentation on 100 limit
 		inserted = await ctx.bot.db.fetchrow(
