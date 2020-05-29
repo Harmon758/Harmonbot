@@ -153,7 +153,7 @@ class Twitch(commands.Cog):
 	
 	@add.command(name = "keyword", aliases = ["query", "search"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def add_keyword(self, ctx, *, keyword : str):
+	async def add_keyword(self, ctx, *, keyword: str):
 		'''Add a Twitch keyword(s) search to follow'''
 		# TODO: Add documentation on 100 limit
 		inserted = await ctx.bot.db.fetchrow(
