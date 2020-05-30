@@ -247,7 +247,7 @@ class Twitch(commands.Cog):
 	
 	@remove.command(name = "channel", aliases = ["stream"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def remove_channel(self, ctx, username : str):
+	async def remove_channel(self, ctx, username: str):
 		'''Remove a Twitch channel being followed'''
 		url = "https://api.twitch.tv/kraken/users"
 		headers = {"Accept": "application/vnd.twitchtv.v5+json"}
