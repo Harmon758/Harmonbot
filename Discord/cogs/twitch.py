@@ -268,7 +268,7 @@ class Twitch(commands.Cog):
 	
 	@remove.command(name = "filter")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def remove_filter(self, ctx, *, string : str):
+	async def remove_filter(self, ctx, *, string: str):
 		'''Remove a string Twitch stream titles are being filtered by'''
 		deleted = await ctx.bot.db.fetchval(
 			"""
