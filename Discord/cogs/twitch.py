@@ -284,7 +284,7 @@ class Twitch(commands.Cog):
 	
 	@remove.command(name = "game")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def remove_game(self, ctx, *, game : str):
+	async def remove_game(self, ctx, *, game: str):
 		'''Remove a Twitch game being followed'''
 		deleted = await ctx.bot.db.fetchval(
 			"""
