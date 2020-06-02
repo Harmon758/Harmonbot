@@ -300,7 +300,7 @@ class Twitch(commands.Cog):
 	
 	@remove.command(name = "keyword", aliases = ["query", "search"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def remove_keyword(self, ctx, *, keyword : str):
+	async def remove_keyword(self, ctx, *, keyword: str):
 		'''Remove a Twitch keyword(s) search being followed'''
 		deleted = await ctx.bot.db.fetchval(
 			"""
