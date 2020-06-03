@@ -26,7 +26,7 @@ class Math(commands.Cog):
 	# Basic
 	
 	@commands.command()
-	async def add(self, ctx, *numbers : float):
+	async def add(self, ctx, *numbers: float):
 		'''Add numbers together'''
 		if not numbers:
 			await ctx.embed_reply("Add what?")
