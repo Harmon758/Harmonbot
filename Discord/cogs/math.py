@@ -35,7 +35,7 @@ class Math(commands.Cog):
 	
 	# TODO: Fix/Improve
 	@commands.command(aliases = ["calc", "calculator"])
-	async def calculate(self, ctx, *, equation : str):
+	async def calculate(self, ctx, *, equation: str):
 		'''Calculator'''
 		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
 		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", 
