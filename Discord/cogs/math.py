@@ -65,7 +65,7 @@ class Math(commands.Cog):
 				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
 	
 	@commands.command()
-	async def exp(self, ctx, value : float):
+	async def exp(self, ctx, value: float):
 		'''
 		Exponential function
 		e ** value | e ^ value
