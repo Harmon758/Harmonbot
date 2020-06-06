@@ -76,7 +76,7 @@ class Math(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@commands.command()
-	async def factorial(self, ctx, value : int):
+	async def factorial(self, ctx, value: int):
 		'''Factorial'''
 		try:
 			await ctx.embed_reply(math.factorial(value))
