@@ -84,7 +84,7 @@ class Math(commands.Cog):
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
 	@commands.command(aliases = ["greatest_common_divisor"])
-	async def gcd(self, ctx, value_a : int, value_b : int):
+	async def gcd(self, ctx, value_a: int, value_b: int):
 		'''Greatest common divisor'''
 		await ctx.embed_reply(math.gcd(value_a, value_b))
 	
