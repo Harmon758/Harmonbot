@@ -89,7 +89,7 @@ class Math(commands.Cog):
 		await ctx.embed_reply(math.gcd(value_a, value_b))
 	
 	@commands.command(aliases = ['π'])
-	async def pi(self, ctx, digits : int = 3, start : int = 1):
+	async def pi(self, ctx, digits: int = 3, start: int = 1):
 		'''Digits of pi'''
 		# Handle decimal point being considered digit
 		if start <= 1:
