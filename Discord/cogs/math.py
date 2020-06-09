@@ -106,7 +106,7 @@ class Math(commands.Cog):
 		await ctx.embed_reply(f":no_entry: Error: {data.get('Error', 'N/A')}")
 	
 	@commands.command(aliases = ["squareroot", "square_root"])
-	async def sqrt(self, ctx, value : float):
+	async def sqrt(self, ctx, value: float):
 		'''Square root'''
 		await ctx.embed_reply(math.sqrt(value))
 	
