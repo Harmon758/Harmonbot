@@ -113,7 +113,7 @@ class Math(commands.Cog):
 	# Calculus
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
-	async def differentiate(self, ctx, *, equation : str):
+	async def differentiate(self, ctx, *, equation: str):
 		'''
 		Differentiate an equation
 		with respect to x (dx)
