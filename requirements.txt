@@ -29,7 +29,7 @@ pandas==1.0.1
 parsedatetime==2.5
 pillow==7.0.0
 psutil==5.7.0
-py-cpuinfo==5.0.0
+py-cpuinfo==6.0.0
 pycountry==19.8.18
 pydealer==1.4.0
 pygost==4.4
