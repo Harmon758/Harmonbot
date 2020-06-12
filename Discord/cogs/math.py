@@ -141,7 +141,7 @@ class Math(commands.Cog):
                                     title = "Error")
 	
 	@integrate.command(name = "definite")
-	async def integrate_definite(self, ctx, lower_limit : str, upper_limit : str, *, equation : str):
+	async def integrate_definite(self, ctx, lower_limit: str, upper_limit: str, *, equation: str):
 		'''
 		Definite integral of an equation
 		with respect to x (dx)
