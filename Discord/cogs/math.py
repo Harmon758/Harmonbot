@@ -168,7 +168,7 @@ class Math(commands.Cog):
 		await ctx.embed_reply(math.acosh(value))
 	
 	@commands.command(alises = ["asine", "arcsin", "arcsine", "a_sine", "arc_sin", "arc_sine"])
-	async def asin(self, ctx, value : float):
+	async def asin(self, ctx, value: float):
 		'''Arc sine function'''
 		await ctx.embed_reply(math.asin(value))
 	
