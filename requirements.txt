@@ -4,7 +4,7 @@ git+git://github.com/Rapptz/discord.py.git@bb1c1e9#egg=discord.py[voice]
 git+git://github.com/Rapptz/discord-ext-menus.git@d9965ec#egg=discord-ext-menus
 # TwitchIO@rewrite
 git+git://github.com/TwitchIO/Twitchio.git@9c99b72#egg=twitchio
-pydle==0.9.2
+pydle==0.9.4
 python-telegram-bot==11.1.0
 
 aiohttp==3.6.2
