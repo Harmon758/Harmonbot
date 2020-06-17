@@ -179,7 +179,7 @@ class Math(commands.Cog):
 	
 	# TODO: atan2
 	@commands.command(alises = ["atangent", "arctan", "arctangent", "a_tangent", "arc_tan", "arc_tangent"])
-	async def atan(self, ctx, value : float):
+	async def atan(self, ctx, value: float):
 		'''Arc tangent function'''
 		await ctx.embed_reply(math.atan(value))
 	
