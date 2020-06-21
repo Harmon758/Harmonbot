@@ -199,7 +199,7 @@ class Math(commands.Cog):
 		await ctx.embed_reply(math.cosh(value))
 	
 	@commands.command(alises = ["sine"])
-	async def sin(self, ctx, value : float):
+	async def sin(self, ctx, value: float):
 		'''Sine function'''
 		await ctx.embed_reply(math.sin(value))
 	
