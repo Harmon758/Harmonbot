@@ -204,7 +204,7 @@ class Math(commands.Cog):
 		await ctx.embed_reply(math.sin(value))
 	
 	@commands.command(alises = ["sineh"])
-	async def sinh(self, ctx, value : float):
+	async def sinh(self, ctx, value: float):
 		'''Hyperbolic sine function'''
 		await ctx.embed_reply(math.sinh(value))
 	
