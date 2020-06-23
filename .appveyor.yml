@@ -39,7 +39,9 @@ matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: macos
     # https://github.com/appveyor/ci/issues/3213
 
-stack: Python 3.8.3, PostgreSQL 12.1
+stack: Python 3.8.2, PostgreSQL 12.1
+# Python 3.8.3 not installed for Ubuntu images yet
+# https://www.appveyor.com/docs/linux-images-software/
 
 # services:
 #   - postgresql12
