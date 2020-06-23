@@ -37,7 +37,8 @@ environment:
 matrix:
   allow_failures:
     - APPVEYOR_BUILD_WORKER_IMAGE: macos
-    # https://github.com/appveyor/ci/issues/3213
+    # PostgreSQL not available for macOS images yet
+    # https://www.appveyor.com/docs/macos-images-software/
 
 stack: Python 3.8.2, PostgreSQL 12.1
 # Python 3.8.3 not installed for Ubuntu images yet
