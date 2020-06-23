@@ -1,4 +1,4 @@
-version: 1.2.0-{build}
+version: 1.2.2-{build}
 
 environment:
   # https://www.appveyor.com/docs/services-databases/#postgresql
