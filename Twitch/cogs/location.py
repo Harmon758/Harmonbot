@@ -56,21 +56,19 @@ class Location:
 			if not location:
 				return await ctx.send(f"Error: Location not specified")
 		try:
-			forecaster = self.bot.owm_client.daily_forecast(location)
-		except (pyowm.exceptions.api_response_error.NotFoundError, 
-				pyowm.exceptions.api_call_error.BadGatewayError) as e:
+			forecaster = self.bot.weather_manager.forecast_at_place(location, "daily")
+		except (pyowm.commons.exceptions.NotFoundError, 
+				pyowm.commons.exceptions.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
 			return await ctx.send(f"Error: {e}")
-		forecast = forecaster.get_forecast()
-		location = forecast.get_location()
-		output = f"{location.get_name()}, {location.get_country()}"
-		for weather in forecast:
-			date = weather.get_reference_time(timeformat = "date")
+		output = f"{forecaster.forecast.location.name}, {forecaster.forecast.location.country}"
+		for weather in forecaster.forecast:
+			date = weather.reference_time(timeformat = "date")
 			if datetime.datetime.now(datetime.timezone.utc) > date:
 				continue
-			temperature_c = weather.get_temperature(unit = "celsius")
-			temperature_f = weather.get_temperature(unit = "fahrenheit")
-			weather_output = (f" | {date.strftime('%A')}: {weather.get_status()}. "
+			temperature_c = weather.temperature(unit = "celsius")
+			temperature_f = weather.temperature(unit = "fahrenheit")
+			weather_output = (f" | {date.strftime('%A')}: {weather.status}. "
 								f"High: {temperature_c['max']}°C/{temperature_f['max']}°F, "
 								f"Low: {temperature_c['min']}°C/{temperature_f['min']}°F")
 			if len(output + weather_output) > self.bot.character_limit:
