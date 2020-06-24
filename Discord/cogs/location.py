@@ -224,38 +224,37 @@ class Location(commands.Cog):
 	async def weather(self, ctx, *, location : str):
 		'''Weather'''
 		try:
-			observation = self.bot.owm_client.weather_at_place(location)
+			observation = self.bot.weather_manager.weather_at_place(location)
 		except (pyowm.commons.exceptions.APIResponseError.NotFoundError, 
 				pyowm.commons.exceptions.APIRequestError.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
 			return await ctx.embed_reply(f":no_entry: Error: {e}")
-		location = observation.get_location()
-		description = f"**__{location.get_name()}, {location.get_country()}__**"
-		weather = observation.get_weather()
-		condition = weather.get_status()
+		description = f"**__{observation.location.name}, {observation.location.country}__**"
+		condition = observation.weather.status
 		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Fog": ":foggy:", 
 							"Rain": ":cloud_rain:", "Snow": ":cloud_snow:"}
 		# Emotes for Haze?, Mist?
 		emote = ' '
 		emote += condition_emotes.get(condition, "")
 		fields = [("Conditions", f"{condition}{emote}")]
-		temperature_c = weather.get_temperature(unit = "celsius")["temp"]
-		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
+		temperature_c = observation.weather.temperature(unit = "celsius")["temp"]
+		temperature_f = observation.weather.temperature(unit = "fahrenheit")["temp"]
 		fields.append(("Temperature", f"{temperature_c}°C\n{temperature_f}°F"))
-		wind = weather.get_wind()
-		wind_direction = wind.get("deg", "")
+		wind_kph = observation.weather.wind(unit = "km_hour")
+		wind_mph = observation.weather.wind(unit = "miles_hour")
+		wind_direction = wind_kph.get("deg", "")
 		if wind_direction:
 			wind_direction = wind_degrees_to_direction(wind_direction)
-		fields.append(("Wind", f"{wind_direction} {wind['speed'] * 3.6:.2f} km/h\n"
-								f"{wind_direction} {wind['speed'] * 2.236936:.2f} mi/h"))
-		fields.append(("Humidity", f"{weather.get_humidity()}%"))
-		pressure = weather.get_pressure()["press"]
+		fields.append(("Wind", f"{wind_direction} {wind_kph['speed']:.2f} km/h\n"
+								f"{wind_direction} {wind_mph['speed']:.2f} mi/h"))
+		fields.append(("Humidity", f"{observation.weather.humidity}%"))
+		pressure = observation.weather.pressure["press"]
 		fields.append(("Pressure", f"{pressure} mb (hPa)\n"
 									f"{pressure * 0.0295299830714:.2f} inHg"))
-		visibility = weather.get_visibility_distance()
+		visibility = observation.weather.visibility_distance
 		if visibility:
 			fields.append(("Visibility", f"{visibility / 1000:.2f} km\n"
 											f"{visibility * 0.000621371192237:.2f} mi"))
-		timestamp = weather.get_reference_time(timeformat = "date").replace(tzinfo = None)
+		timestamp = observation.weather.reference_time(timeformat = "date")
 		await ctx.embed_reply(description, fields = fields, timestamp = timestamp)
 
