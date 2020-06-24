@@ -221,7 +221,7 @@ class Location(commands.Cog):
 		await ctx.embed_reply(description, title = title, fields = fields)
 	
 	@commands.command()
-	async def weather(self, ctx, *, location : str):
+	async def weather(self, ctx, *, location: str):
 		'''Weather'''
 		try:
 			observation = self.bot.weather_manager.weather_at_place(location)
