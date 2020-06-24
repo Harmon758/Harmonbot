@@ -168,7 +168,7 @@ class Bot(commands.Bot):
 			self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 			self.weather_manager = self.owm_client.weather_manager()
 		except AssertionError as e:
-			print(f"{self.console_message_prefix} Failed to initialize OpenWeatherMap client: {e}")
+			print(f"{self.console_message_prefix}Failed to initialize OpenWeatherMap client: {e}")
 		## Sentry (Raven)
 		self.sentry_client = self.raven_client = raven.Client(self.SENTRY_DSN, transport = raven_aiohttp.AioHttpTransport)
 		## Twitter
