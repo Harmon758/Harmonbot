@@ -97,15 +97,13 @@ class Location:
 					f"{condition} and {temperature_c}°C / {temperature_f}°F | Wind: ")
 		wind_kph = observation.weather.wind(unit = "km_hour")
 		wind_mph = observation.weather.wind(unit = "miles_hour")
-		wind_degrees = wind_kph.get("deg", "")
-		if wind_degrees:
+		if wind_degrees := wind_kph.get("deg", ""):
 			output += f"{wind_degrees_to_direction(wind_degrees)} "
 		output += (f"{wind_kph['speed']:.2f} km/h / {wind_mph['speed']:.2f} mi/h"
 					f" | Humidity: {observation.weather.humidity}%")
 		pressure = observation.weather.pressure["press"]
 		output += f" | Pressure: {pressure} mb (hPa) / {pressure * 0.0295299830714:.2f} inHg"
-		visibility = observation.weather.visibility_distance
-		if visibility:
+		if visibility := observation.weather.visibility_distance:
 			output += f" | Visibility: {visibility / 1000:.2f} km / {visibility * 0.000621371192237:.2f} mi"
 		# TODO: Heat Index [°C/°F], not possible to get from weather.heat_index?
 		# TODO: Windchill [°C/°F]?
