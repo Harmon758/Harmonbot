@@ -85,30 +85,29 @@ class Location:
 			if not location:
 				return await ctx.send(f"Error: Location not specified")
 		try:
-			observation = self.bot.owm_client.weather_at_place(location)
-		except (pyowm.exceptions.api_response_error.NotFoundError, 
-				pyowm.exceptions.api_call_error.BadGatewayError) as e:
+			observation = self.bot.weather_manager.weather_at_place(location)
+		except (pyowm.commons.exceptions.NotFoundError, 
+				pyowm.commons.exceptions.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
 			return await ctx.send(f"Error: {e}")
-		location = observation.get_location()
-		weather = observation.get_weather()
-		condition = weather.get_status()
-		temperature_c = weather.get_temperature(unit = "celsius")["temp"]
-		temperature_f = weather.get_temperature(unit = "fahrenheit")["temp"]
-		output = (f"{location.get_name()}, {location.get_country()}: "
+		condition = observation.weather.status
+		temperature_c = observation.weather.temperature(unit = "celsius")["temp"]
+		temperature_f = observation.weather.temperature(unit = "fahrenheit")["temp"]
+		output = (f"{observation.location.name}, {observation.location.country}: "
 					f"{condition} and {temperature_c}°C / {temperature_f}°F | Wind: ")
-		wind = weather.get_wind()
-		wind_degrees = wind.get("deg", "")
+		wind_kph = observation.weather.wind(unit = "km_hour")
+		wind_mph = observation.weather.wind(unit = "miles_hour")
+		wind_degrees = wind_kph.get("deg", "")
 		if wind_degrees:
 			output += f"{wind_degrees_to_direction(wind_degrees)} "
-		output += (f"{wind['speed'] * 3.6:.2f} km/h / {wind['speed'] * 2.236936:.2f} mi/h"
-					f" | Humidity: {weather.get_humidity()}%")
-		pressure = weather.get_pressure()["press"]
+		output += (f"{wind_kph['speed']:.2f} km/h / {wind_mph['speed']:.2f} mi/h"
+					f" | Humidity: {observation.weather.humidity}%")
+		pressure = observation.weather.pressure["press"]
 		output += f" | Pressure: {pressure} mb (hPa) / {pressure * 0.0295299830714:.2f} inHg"
-		visibility = weather.get_visibility_distance()
+		visibility = observation.weather.visibility_distance
 		if visibility:
 			output += f" | Visibility: {visibility / 1000:.2f} km / {visibility * 0.000621371192237:.2f} mi"
-		# TODO: Heat Index [°C/°F], not possible to get from weather.get_heat_index()?
+		# TODO: Heat Index [°C/°F], not possible to get from weather.heat_index?
 		# TODO: Windchill [°C/°F]?
 		# TODO: Dew (point) [°C/°F]?
 		await ctx.send(output)
