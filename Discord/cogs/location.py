@@ -242,8 +242,7 @@ class Location(commands.Cog):
 		fields.append(("Temperature", f"{temperature_c}°C\n{temperature_f}°F"))
 		wind_kph = observation.weather.wind(unit = "km_hour")
 		wind_mph = observation.weather.wind(unit = "miles_hour")
-		wind_direction = wind_kph.get("deg", "")
-		if wind_direction:
+		if wind_direction := wind_kph.get("deg", ""):
 			wind_direction = wind_degrees_to_direction(wind_direction)
 		fields.append(("Wind", f"{wind_direction} {wind_kph['speed']:.2f} km/h\n"
 								f"{wind_direction} {wind_mph['speed']:.2f} mi/h"))
@@ -251,8 +250,7 @@ class Location(commands.Cog):
 		pressure = observation.weather.pressure["press"]
 		fields.append(("Pressure", f"{pressure} mb (hPa)\n"
 									f"{pressure * 0.0295299830714:.2f} inHg"))
-		visibility = observation.weather.visibility_distance
-		if visibility:
+		if visibility := observation.weather.visibility_distance:
 			fields.append(("Visibility", f"{visibility / 1000:.2f} km\n"
 											f"{visibility * 0.000621371192237:.2f} mi"))
 		timestamp = observation.weather.reference_time(timeformat = "date")
