@@ -229,23 +229,17 @@ class Location(commands.Cog):
 				pyowm.commons.exceptions.APIRequestError.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
 			return await ctx.embed_reply(f":no_entry: Error: {e}")
-		description = f"**__{observation.location.name}, {observation.location.country}__**"
 		condition = observation.weather.status
 		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Fog": ":foggy:", 
 							"Rain": ":cloud_rain:", "Snow": ":cloud_snow:"}
 		# Emotes for Haze?, Mist?
-		emote = ' '
-		emote += condition_emotes.get(condition, "")
-		fields = [("Conditions", f"{condition}{emote}")]
-		temperature_c = observation.weather.temperature(unit = "celsius")["temp"]
-		temperature_f = observation.weather.temperature(unit = "fahrenheit")["temp"]
-		fields.append(("Temperature", f"{temperature_c}°C\n{temperature_f}°F"))
-		wind_kph = observation.weather.wind(unit = "km_hour")
-		wind_mph = observation.weather.wind(unit = "miles_hour")
-		if wind_direction := wind_kph.get("deg", ""):
+		fields = [("Conditions", f"{condition} {condition_emotes.get(condition, '')}")]
+		fields.append(("Temperature", f"{observation.weather.temperature(unit = 'celsius')['temp']}°C\n"
+										f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F"))
+		if wind_direction := observation.weather.wnd.get("deg", ""):
 			wind_direction = wind_degrees_to_direction(wind_direction)
-		fields.append(("Wind", f"{wind_direction} {wind_kph['speed']:.2f} km/h\n"
-								f"{wind_direction} {wind_mph['speed']:.2f} mi/h"))
+		fields.append(("Wind", f"{wind_direction} {observation.weather.wind(unit = 'km_hour')['speed']:.2f} km/h\n"
+								f"{wind_direction} {observation.weather.wind(unit = 'miles_hour')['speed']:.2f} mi/h"))
 		fields.append(("Humidity", f"{observation.weather.humidity}%"))
 		pressure = observation.weather.pressure["press"]
 		fields.append(("Pressure", f"{pressure} mb (hPa)\n"
@@ -253,6 +247,6 @@ class Location(commands.Cog):
 		if visibility := observation.weather.visibility_distance:
 			fields.append(("Visibility", f"{visibility / 1000:.2f} km\n"
 											f"{visibility * 0.000621371192237:.2f} mi"))
-		timestamp = observation.weather.reference_time(timeformat = "date")
-		await ctx.embed_reply(description, fields = fields, timestamp = timestamp)
+		await ctx.embed_reply(f"**__{observation.location.name}, {observation.location.country}__**", 
+								fields = fields, timestamp = observation.weather.reference_time(timeformat = "date"))
 
