@@ -44,6 +44,7 @@ class Bot(commands.Bot):
 		
 		## OpenWeatherMap
 		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
+		self.weather_manager = self.owm_client.weather_manager()
 		# TODO: Async OWM calls
 		# TODO: Weather functions in location unit
 		
