@@ -225,8 +225,8 @@ class Location(commands.Cog):
 		'''Weather'''
 		try:
 			observation = self.bot.weather_manager.weather_at_place(location)
-		except (pyowm.commons.exceptions.APIResponseError.NotFoundError, 
-				pyowm.commons.exceptions.APIRequestError.BadGatewayError) as e:
+		except (pyowm.commons.exceptions.NotFoundError, 
+				pyowm.commons.exceptions.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
 			return await ctx.embed_reply(f":no_entry: Error: {e}")
 		condition = observation.weather.status
