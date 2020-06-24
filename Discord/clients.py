@@ -164,7 +164,10 @@ class Bot(commands.Bot):
 		except imgurpython.helpers.error.ImgurClientError as e:
 			print(f"{self.console_message_prefix}Failed to initialize Imgur Client: {e}")
 		## OpenWeatherMap
-		self.owm_client = pyowm.OWM(self.OWM_API_KEY)
+		try:
+			self.owm_client = pyowm.OWM(self.OWM_API_KEY)
+		except AssertionError as e:
+			print(f"{self.console_message_prefix} Failed to initialize OpenWeatherMap client: {e}")
 		## Sentry (Raven)
 		self.sentry_client = self.raven_client = raven.Client(self.SENTRY_DSN, transport = raven_aiohttp.AioHttpTransport)
 		## Twitter
