@@ -90,16 +90,14 @@ class Location:
 				pyowm.commons.exceptions.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
 			return await ctx.send(f"Error: {e}")
-		condition = observation.weather.status
-		temperature_c = observation.weather.temperature(unit = "celsius")["temp"]
-		temperature_f = observation.weather.temperature(unit = "fahrenheit")["temp"]
 		output = (f"{observation.location.name}, {observation.location.country}: "
-					f"{condition} and {temperature_c}°C / {temperature_f}°F | Wind: ")
-		wind_kph = observation.weather.wind(unit = "km_hour")
-		wind_mph = observation.weather.wind(unit = "miles_hour")
-		if wind_degrees := wind_kph.get("deg", ""):
+					f"{observation.weather.status} and "
+					f"{observation.weather.temperature(unit = 'celsius')['temp']}°C / "
+					f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F | Wind: ")
+		if wind_degrees := observation.weather.wnd.get("deg", ""):
 			output += f"{wind_degrees_to_direction(wind_degrees)} "
-		output += (f"{wind_kph['speed']:.2f} km/h / {wind_mph['speed']:.2f} mi/h"
+		output += (f"{observation.weather.wind(unit = 'km_hour')['speed']:.2f} km/h / "
+					f"{observation.weather.wind(unit = 'miles_hour')['speed']:.2f} mi/h"
 					f" | Humidity: {observation.weather.humidity}%")
 		pressure = observation.weather.pressure["press"]
 		output += f" | Pressure: {pressure} mb (hPa) / {pressure * 0.0295299830714:.2f} inHg"
