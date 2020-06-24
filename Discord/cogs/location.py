@@ -7,7 +7,7 @@ import sys
 from typing import Optional
 
 import datetime
-import pyowm.exceptions
+import pyowm.commons.exceptions
 
 from utilities import checks
 from utilities.converters import Maptype
@@ -225,8 +225,8 @@ class Location(commands.Cog):
 		'''Weather'''
 		try:
 			observation = self.bot.owm_client.weather_at_place(location)
-		except (pyowm.exceptions.api_response_error.NotFoundError, 
-				pyowm.exceptions.api_call_error.BadGatewayError) as e:
+		except (pyowm.commons.exceptions.APIResponseError.NotFoundError, 
+				pyowm.commons.exceptions.APIRequestError.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
 			return await ctx.embed_reply(f":no_entry: Error: {e}")
 		location = observation.get_location()
