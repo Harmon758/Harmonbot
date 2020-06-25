@@ -49,7 +49,7 @@ class Poker(commands.Cog):
 			await ctx.embed_reply("has started a round of poker\n"
 									f"`{ctx.prefix}poker join` to join\n"
 									f"`{ctx.prefix}poker start` again to start")
-		else:
+		elif self.players:
 			self.status = "pre-flop"
 			await ctx.embed_reply("The poker round has started\n"
 									f"Players: {' '.join(player.mention for player in self.players)}")
