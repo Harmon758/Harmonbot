@@ -923,7 +923,7 @@ class Bot(commands.Bot):
 	
 	@commands.command()
 	@commands.is_owner()
-	async def reload(ctx, cog : str):
+	async def reload(ctx, cog: str):
 		'''Reload cog'''
 		try:
 			ctx.bot.reload_extension("cogs." + cog)
