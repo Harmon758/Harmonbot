@@ -241,6 +241,15 @@ class Discord(commands.Cog):
 		await ctx.embed_reply(f"\N{SPEAKING HEAD IN SILHOUETTE} Unsuppressed embeds in [message]({message.jump_url})")
 	
 	@commands.command()
+	@checks.not_forbidden()
+	async def timestamp(self, ctx, ID: int):
+		'''Timestamp of a Discord ID'''
+		try:
+			await ctx.embed_reply(discord.utils.snowflake_time(ID).replace(tzinfo = datetime.timezone.utc))
+		except OverflowError:
+			await ctx.embed_reply(":no_entry: Error: Invalid Discord ID")
+	
+	@commands.command()
 	@commands.guild_only()
 	@checks.not_forbidden()
 	async def tempchannel(self, ctx, *options : str):
