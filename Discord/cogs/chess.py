@@ -309,7 +309,6 @@ class ChessMatch(chess.Board):
 		embed.description = str(chess_pgn)
 		## svg = self._repr_svg_()
 		svg = chess.svg.board(self, lastmove = lastmove, check = check, flipped = flipped)
-		svg = svg.replace("y=\"390\"", "y=\"395\"")
 		buffer = io.BytesIO()
 		with Image(blob = svg.encode()) as image:
 			image.format = "PNG"
