@@ -214,7 +214,7 @@ class Math(commands.Cog):
 		await ctx.embed_reply(math.tan(value))
 	
 	@commands.command(alises = ["tangenth"])
-	async def tanh(self, ctx, value : float):
+	async def tanh(self, ctx, value: float):
 		'''Hyperbolic tangent function'''
 		await ctx.embed_reply(math.tanh(value))
 
