@@ -209,7 +209,7 @@ class Math(commands.Cog):
 		await ctx.embed_reply(math.sinh(value))
 	
 	@commands.command(alises = ["tangent"])
-	async def tan(self, ctx, value : float):
+	async def tan(self, ctx, value: float):
 		'''Tangent function'''
 		await ctx.embed_reply(math.tan(value))
 	
