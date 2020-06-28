@@ -72,7 +72,7 @@ geojson==2.5.0
 gitdb==4.0.2
 googleapis-common-protos==1.52.0
 grpcio==1.30.0
-idna==2.9
+idna==2.10
 jaraco.itertools==5.0.0
 jsonschema==3.2.0
 kiwisolver==1.1.0
