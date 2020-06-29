@@ -27,7 +27,7 @@ numexpr==2.7.1
 numpy==1.18.1
 pandas==1.0.5
 parsedatetime==2.5
-pillow==7.0.0
+pillow==7.1.2
 psutil==5.7.0
 py-cpuinfo==5.0.0
 pycountry==19.8.18
