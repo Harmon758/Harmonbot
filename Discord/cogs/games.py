@@ -153,7 +153,7 @@ class Games(commands.Cog):
 	
 	@commands.command(aliases = ["talk", "ask"])
 	@checks.not_forbidden()
-	async def cleverbot(self, ctx, *, message : str):
+	async def cleverbot(self, ctx, *, message: str):
 		'''
 		Talk to Cleverbot
 		Uses [Cleverbot](http://www.cleverbot.com/)'s [API](https://www.cleverbot.com/api/)
