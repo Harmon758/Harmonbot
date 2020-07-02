@@ -30,7 +30,7 @@ parsedatetime==2.5
 pillow==7.1.2
 psutil==5.7.0
 py-cpuinfo==5.0.0
-pycountry==19.8.18
+pycountry==20.7.2
 pydealer==1.4.0
 pygost==4.5
 pyowm==3.0.0
