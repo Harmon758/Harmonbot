@@ -81,7 +81,7 @@ class Info(commands.Cog):
 				output = output[:output.rfind('\n')]
 			await ctx.embed_reply(output)
 	
-	async def role(self, ctx, *, role : discord.Role):
+	async def role(self, ctx, *, role: discord.Role):
 		'''Information about a role'''
 		embed = discord.Embed(description = role.mention, title = role.name, timestamp = role.created_at, color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
