@@ -83,18 +83,13 @@ class Info(commands.Cog):
 	
 	async def role(self, ctx, *, role: discord.Role):
 		'''Information about a role'''
-		embed = discord.Embed(description = role.mention, title = role.name, timestamp = role.created_at, color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		embed.add_field(name = "ID", value = role.id)
-		embed.add_field(name = "Members", value = len(role.members))
-		embed.add_field(name = "Color", value = role.color)
-		embed.add_field(name = "Mentionable", value = role.mentionable)
-		embed.add_field(name = "Displayed Separately", value = role.hoist)
-		embed.add_field(name = "Default", value = role.is_default())
-		embed.add_field(name = "Managed", value = role.managed)
-		embed.add_field(name = "Position", value = role.position)
-		embed.set_footer(text = "Created")
-		await ctx.send(embed = embed)
+		await ctx.embed_reply(role.mention, title = role.name, 
+								fields = (("ID", role.id), ("Members", len(role.members)), 
+											("Color", role.color), ("Mentionable", role.mentionable), 
+											("Displayed Separately", role.hoist), 
+											("Default", role.is_default()), ("Managed", role.managed), 
+											("Position", role.position)), 
+								footer_text = "Created", timestamp = role.created_at)
 	
 	async def server(self, ctx):
 		'''Information about the server'''
