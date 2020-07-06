@@ -17,7 +17,7 @@ emoji==0.5.4
 feedparser==5.2.1
 gitpython==3.1.0
 hypothesis==5.18.3
-imageio==2.6.1
+imageio==2.9.0
 imgurpython==1.1.7
 inflect==4.1.0
 isodate==0.6.0
