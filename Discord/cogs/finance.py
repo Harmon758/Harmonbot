@@ -139,8 +139,7 @@ class Finance(commands.Cog):
 			# TODO: handle errors
 			data = await resp.json()
 		if not data.get("success"):
-			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
-			return
+			return await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
 		symbols = list(data["symbols"].items())
 		tabulated_symbols = tabulate.tabulate(symbols, tablefmt = "plain").split('\n')
 		fields = []
