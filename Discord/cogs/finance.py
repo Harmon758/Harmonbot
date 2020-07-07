@@ -4,7 +4,9 @@ from discord.ext import commands
 
 import datetime
 import html
+import math
 import re
+import textwrap
 
 import dateutil.parser
 import more_itertools
@@ -140,15 +142,31 @@ class Finance(commands.Cog):
 			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
 			return
 		symbols = list(data["symbols"].items())
-		parts = len(tabulate.tabulate(symbols, tablefmt = "plain")) // ctx.bot.EFVCL + 1
-		# EFVCL = Embed Field Value Character Limit
-		symbols_parts = more_itertools.divide(parts, symbols)
-		tabulated_symbols = tabulate.tabulate(symbols_parts[0], tablefmt = "plain")
-		fields = [("Currency Symbols", ctx.bot.CODE_BLOCK.format(tabulated_symbols))]
-		for symbols_part in symbols_parts[1:]:
-			tabulated_symbols = tabulate.tabulate(symbols_part, tablefmt = "plain")
-			fields.append((ctx.bot.ZERO_WIDTH_SPACE, ctx.bot.CODE_BLOCK.format(tabulated_symbols)))
-			# Zero-width space for empty field title
+		tabulated_symbols = tabulate.tabulate(symbols, tablefmt = "plain").split('\n')
+		fields = []
+		while tabulated_symbols:
+			formatted_symbols = ""
+			if not len(fields) % 3:
+				inline_field_count = min(math.ceil((len('\n'.join(tabulated_symbols)) + 8) / ctx.bot.EFVCL), 3)
+				# 8 = len("```\n" + "\n```") for code block
+				# EFVCL = Embed Field Value Character Limit
+				# TODO: Handle possibility of textwrap indents increasing inline field count by 1 when < 3?
+			while tabulated_symbols and len(
+				formatted_symbols + (
+					formatted_line := '\n'.join(textwrap.wrap(tabulated_symbols[0], 
+																ctx.bot.EDCBRCL // inline_field_count, 
+																subsequent_indent = ' ' * 5))
+				)
+			) < ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT - 8:
+			# EDCBRCL = Embed Description Code Block Row Character Limit
+			# 5 = len(symbol + "  "), e.g. "USD  "
+				formatted_symbols += '\n' + formatted_line
+				tabulated_symbols.pop(0)
+			if fields:
+				fields.append((ctx.bot.ZERO_WIDTH_SPACE, ctx.bot.CODE_BLOCK.format(formatted_symbols)))
+				# Zero-width space for empty field title
+			else:
+				fields.append(("Currency Symbols", ctx.bot.CODE_BLOCK.format(formatted_symbols)))
 		# TODO: paginate
 		await ctx.embed_reply(fields = fields)
 	
