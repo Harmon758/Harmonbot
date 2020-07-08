@@ -84,7 +84,7 @@ class Images(commands.Cog):
 														f"({color['w3c']['hex'].upper()})"))
 		await ctx.embed_reply(title = "Color Density", fields = fields, thumbnail_url = image_url)
 	
-	async def google(self, ctx, *, search : str):
+	async def google(self, ctx, *, search: str):
 		'''Google image search something'''
 		url = "https://www.googleapis.com/customsearch/v1"
 		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
