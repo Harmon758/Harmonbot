@@ -102,7 +102,7 @@ class Images(commands.Cog):
 		# TODO: handle 403 daily limit exceeded error
 	
 	@image.command(name = "recognition")
-	async def image_recognition(self, ctx, image_url : Optional[str]):
+	async def image_recognition(self, ctx, image_url: Optional[str]):
 		'''Image recognition'''
 		if not image_url:
 			if not ctx.message.attachments:
