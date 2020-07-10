@@ -125,7 +125,7 @@ class Images(commands.Cog):
 	
 	# TODO: add as search subcommand
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def giphy(self, ctx, *, search : str):
+	async def giphy(self, ctx, *, search: str):
 		'''Find an image on giphy'''
 		url = "http://api.giphy.com/v1/gifs/search"
 		params = {"api_key": ctx.bot.GIPHY_API_KEY, 'q': search, "limit": 1}
