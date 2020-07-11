@@ -148,7 +148,7 @@ class Images(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@imgur.command(name = "upload")
-	async def imgur_upload(self, ctx, url : str = ""):
+	async def imgur_upload(self, ctx, url: str = ""):
 		'''Upload images to Imgur'''
 		if not (url or ctx.message.attachments):
 			return await ctx.embed_reply(":no_entry: Please input an image and/or url")
