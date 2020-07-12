@@ -158,7 +158,7 @@ class Images(commands.Cog):
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await ctx.embed_reply(f":no_entry: Error: {e}")
 	
-	async def imgur_search(self, ctx, *, search : str):
+	async def imgur_search(self, ctx, *, search: str):
 		'''Search images on Imgur'''
 		result = self.bot.imgur_client.gallery_search(search, sort = "top")
 		if not result:
