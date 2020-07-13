@@ -171,7 +171,7 @@ class Images(commands.Cog):
 			await ctx.embed_reply(image_url = result.link)
 	
 	@commands.command()
-	async def nsfw(self, ctx, image_url : Optional[str]):
+	async def nsfw(self, ctx, image_url: Optional[str]):
 		'''NSFW recognition'''
 		if not image_url:
 			if not ctx.message.attachments:
