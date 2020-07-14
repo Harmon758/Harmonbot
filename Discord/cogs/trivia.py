@@ -412,9 +412,10 @@ class Trivia(commands.Cog):
 		# Unescape HTML entities in answer and extract text between HTML tags
 		answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
 		# Replace in answer: \' -> '
+		# Replace in response: ’ -> '
 		# Replace: & -> and
 		answer = answer.replace("\\'", "'").replace('&', "and")
-		response = response.replace('&', "and")
+		response = response.replace('’', "'").replace('&', "and")
 		# Remove exclamation marks, periods, and quotation marks
 		for character in '!."':
 			if character in answer:
