@@ -91,7 +91,15 @@ class TwitterStreamListener(tweepy.StreamListener):
 							embed.set_image(url = extended_entities["media"][0]["media_url_https"])
 							embed.description = embed.description.replace(extended_entities["media"][0]["url"], "")
 						embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
-						self.bot.loop.create_task(channel.send(embed = embed), name = "Send embed for Tweet")
+						self.bot.loop.create_task(self.send_embed(channel, embed), name = "Send embed for Tweet")
+	
+	@staticmethod
+	async def send_embed(channel, embed):
+		try:
+			await channel.send(embed = embed)
+		except discord.Forbidden:
+			# TODO: Handle unable to send embeds/messages in text channel
+			print(f"Twitter Stream Listener: Missing permissions to send embed in #{channel.name} in {channel.guild.name}")
 	
 	def on_error(self, status_code):
 		print(f"Twitter Error: {status_code}")
