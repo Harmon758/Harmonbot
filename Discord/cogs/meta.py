@@ -68,7 +68,7 @@ class Meta(commands.Cog):
 	
 	@commands.command()
 	@commands.is_owner()
-	async def disable(self, ctx, command : str):
+	async def disable(self, ctx, command: str):
 		'''Disable a command'''
 		self.bot.all_commands[command].enabled = False
 		await ctx.embed_reply(f"`{ctx.prefix}{command}` has been disabled")
