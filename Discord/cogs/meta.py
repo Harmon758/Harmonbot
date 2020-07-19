@@ -75,7 +75,7 @@ class Meta(commands.Cog):
 	
 	@commands.command()
 	@commands.is_owner()
-	async def enable(self, ctx, command : str):
+	async def enable(self, ctx, command: str):
 		'''Enable a command'''
 		self.bot.all_commands[command].enabled = True
 		await ctx.embed_reply(f"`{ctx.prefix}{command}` has been enabled")
