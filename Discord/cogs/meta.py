@@ -515,7 +515,7 @@ class Meta(commands.Cog):
 	
 	@commands.group(aliases = ["code_block"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def codeblock(self, ctx, *, input : str):
+	async def codeblock(self, ctx, *, input: str):
 		'''Wrap your message in a code block'''
 		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(input))
 	
