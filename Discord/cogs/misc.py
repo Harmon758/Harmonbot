@@ -49,7 +49,7 @@ class Misc(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.command(aliases = ["bigmote"])
-	async def bigmoji(self, ctx, emoji : discord.PartialEmoji):
+	async def bigmoji(self, ctx, emoji: discord.PartialEmoji):
 		'''See larger versions of custom emoji'''
 		await ctx.embed_reply(image_url = emoji.url)
 	
