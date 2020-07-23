@@ -290,6 +290,8 @@ class Trivia(commands.Cog):
 				url = "http://jservice.io/api/category"
 				params = {"id": category_id}
 				async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+					if resp.status == 404:
+						continue
 					data = await resp.json()
 				# The first round originally ranged from $100 to $500
 				# and was doubled to $200 to $1,000 on November 26, 2001
