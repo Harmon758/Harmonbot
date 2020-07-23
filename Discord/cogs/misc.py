@@ -154,7 +154,7 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(f"You have poked {user.mention} for the {times} time!")
 	
 	@commands.command()
-	async def subscript(self, ctx, *, text : str):
+	async def subscript(self, ctx, *, text: str):
 		'''
 		Subscript text
 		Supports: 0 1 2 3 4 5 6 7 8 9 + - = ( ) a e o x ə h k l m n p s t
