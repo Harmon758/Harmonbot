@@ -92,5 +92,5 @@ sortedcontainers==2.2.2
 soupsieve==2.0.1
 websockets==8.1
 xmltodict==0.12.0
-yarl==1.4.2
+yarl==1.5.0
 
