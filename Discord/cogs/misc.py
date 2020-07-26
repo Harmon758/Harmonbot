@@ -162,7 +162,7 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(utilities.subscript(text))
 	
 	@commands.command()
-	async def superscript(self, ctx, *, text : str):
+	async def superscript(self, ctx, *, text: str):
 		'''
 		Superscript text
 		Supports: 0 1 2 3 4 5 6 7 8 9 + - = ( ) i n
