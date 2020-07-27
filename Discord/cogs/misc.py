@@ -97,7 +97,7 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(output)
 	
 	@commands.command()
-	async def fingers(self, ctx, *, text : str):
+	async def fingers(self, ctx, *, text: str):
 		'''Add fingers'''
 		await ctx.embed_reply(f":point_right::skin-tone-2: {text} :point_left::skin-tone-2:")
 	
