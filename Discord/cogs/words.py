@@ -21,8 +21,13 @@ class Words(commands.Cog):
 	@commands.command(aliases = ["antonyms"])
 	async def antonym(self, ctx, word : str):
 		'''Antonyms of a word'''
-		antonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", 
-																useCanonical = "true", limitPerRelationshipType = 100)
+		try:
+			antonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", 
+																	useCanonical = "true", limitPerRelationshipType = 100)
+		except urllib.error.HTTPError as e:
+			if e.code == 404:
+				return await ctx.embed_reply(":no_entry: Word or antonyms not found")
+			raise
 		if not antonyms:
 			return await ctx.embed_reply(":no_entry: Word or antonyms not found")
 		await ctx.embed_reply(", ".join(antonyms[0].words), title = f"Antonyms of {word.capitalize()}")
