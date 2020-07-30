@@ -43,7 +43,7 @@ pytz==2020.1
 raven==6.10.0
 raven-aiohttp==0.7.0
 requests==2.24.0
-scipy==1.5.1
+scipy==1.5.2
 seaborn==0.10.1
 setuptools==49.2.0
 speechrecognition==3.8.1
