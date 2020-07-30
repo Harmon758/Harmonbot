@@ -63,8 +63,13 @@ class Words(commands.Cog):
 	@commands.command(aliases = ["rhymes"])
 	async def rhyme(self, ctx, word : str):
 		'''Rhymes of a word'''
-		rhymes = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", 
-															limitPerRelationshipType = 100)
+		try:
+			rhymes = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", 
+																limitPerRelationshipType = 100)
+		except urllib.error.HTTPError as e:
+			if e.code == 404:
+				return await ctx.embed_reply(":no_entry: Word or rhymes not found")
+			raise
 		if not rhymes:
 			return await ctx.embed_reply(":no_entry: Word or rhymes not found")
 		await ctx.embed_reply(", ".join(rhymes[0].words), 
