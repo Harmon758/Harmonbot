@@ -80,7 +80,7 @@ lxml==4.5.2
 mpmath==1.1.0
 multidict==4.7.6
 oauthlib==3.1.0
-protobuf==3.12.2
+protobuf==3.12.4
 pycparser==2.20
 pynacl==1.4.0
 pyrsistent==0.16.0
