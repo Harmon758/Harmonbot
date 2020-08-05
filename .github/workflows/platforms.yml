@@ -12,8 +12,9 @@ jobs:
         os: [ubuntu-latest]
         # Container action (for PostgreSQL) is only supported on Linux
         postgresql-version: ['12.1']
-        python-version: ['3.8.3', '3.9.0-beta.5']
-    continue-on-error: ${{ matrix.python-version == '3.9.0-beta.5' }}
+        python-version: ['3.8.3']
+        # python-version: ['3.9.0-beta.5']
+    # continue-on-error: ${{ matrix.python-version == '3.9.0-beta.5' }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -55,8 +56,9 @@ jobs:
       max-parallel: 1
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
-        python-version: ['3.8.3', '3.9.0-beta.5']
-    continue-on-error: ${{ matrix.python-version == '3.9.0-beta.5' }}
+        python-version: ['3.8.3']
+        # python-version: ['3.9.0-beta.5']
+    # continue-on-error: ${{ matrix.python-version == '3.9.0-beta.5' }}
     runs-on: ${{ matrix.os }}
 
     steps:
