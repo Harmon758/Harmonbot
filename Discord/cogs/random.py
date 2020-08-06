@@ -247,7 +247,7 @@ class Random(commands.Cog):
 			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 	
 	@commands.command(aliases = ["choice", "pick"])
-	async def choose(self, ctx, *choices : str):
+	async def choose(self, ctx, *choices: str):
 		'''
 		Randomly chooses between multiple options
 		choose <option1> <option2> <...>
