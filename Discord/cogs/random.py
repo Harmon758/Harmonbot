@@ -433,13 +433,17 @@ class Random(commands.Cog):
 		'''Random dad joke'''
 		# TODO: search, GraphQL?
 		if joke_id:
-			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/j/" + joke_id, headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}) as resp:
+			url = "https://icanhazdadjoke.com/j/" + joke_id
+			headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
+			async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
 				data = await resp.json()
 				if data["status"] == 404:
 					await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 					return
 		else:
-			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}) as resp:
+			url = "https://icanhazdadjoke.com/"
+			headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
+			async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
 				data = await resp.json()
 		await ctx.embed_reply(data["joke"], footer_text = f"Joke ID: {data['id']}")
 	
