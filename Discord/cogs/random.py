@@ -432,19 +432,14 @@ class Random(commands.Cog):
 	async def joke_dad(self, ctx, joke_id: Optional[str]):
 		'''Random dad joke'''
 		# TODO: search, GraphQL?
+		url = "https://icanhazdadjoke.com/"
 		if joke_id:
-			url = "https://icanhazdadjoke.com/j/" + joke_id
-			headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
-			async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
-				data = await resp.json()
-				if data["status"] == 404:
-					await ctx.embed_reply(f":no_entry: Error: {data['message']}")
-					return
-		else:
-			url = "https://icanhazdadjoke.com/"
-			headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
-			async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
-				data = await resp.json()
+			url += "j/" + joke_id
+		headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
+		async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
+			data = await resp.json()
+		if data["status"] == 404:
+			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 		await ctx.embed_reply(data["joke"], footer_text = f"Joke ID: {data['id']}")
 	
 	@joke_dad.command(name = "image")
