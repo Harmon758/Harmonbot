@@ -443,7 +443,7 @@ class Random(commands.Cog):
 		await ctx.embed_reply(data["joke"], footer_text = f"Joke ID: {data['id']}")
 	
 	@joke_dad.command(name = "image")
-	async def joke_dad_image(self, ctx, joke_id : str = ""):
+	async def joke_dad_image(self, ctx, joke_id: str = ""):
 		'''Random dad joke as an image'''
 		if not joke_id:
 			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}) as resp:
