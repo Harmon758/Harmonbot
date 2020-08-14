@@ -449,7 +449,7 @@ class Random(commands.Cog):
 			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}) as resp:
 				data = await resp.json()
 			joke_id = data["id"]
-		await ctx.embed_reply(image_url = "https://icanhazdadjoke.com/j/{}.png".format(joke_id))
+		await ctx.embed_reply(image_url = f"https://icanhazdadjoke.com/j/{joke_id}.png")
 	
 	@commands.command(aliases = ["lat"])
 	async def latitude(self, ctx):
