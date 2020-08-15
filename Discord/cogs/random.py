@@ -446,7 +446,9 @@ class Random(commands.Cog):
 	async def joke_dad_image(self, ctx, joke_id: Optional[str]):
 		'''Random dad joke as an image'''
 		if not joke_id:
-			async with ctx.bot.aiohttp_session.get("https://icanhazdadjoke.com/", headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}) as resp:
+			url = "https://icanhazdadjoke.com/"
+			headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
+			async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
 				data = await resp.json()
 			joke_id = data["id"]
 		await ctx.embed_reply(image_url = f"https://icanhazdadjoke.com/j/{joke_id}.png")
