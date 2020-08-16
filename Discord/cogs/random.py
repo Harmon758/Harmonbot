@@ -466,7 +466,7 @@ class Random(commands.Cog):
 	@commands.command()
 	async def location(self, ctx):
 		'''Random location'''
-		await ctx.embed_reply("{}, {}".format(random.uniform(-90, 90), random.uniform(-180, 180)))
+		await ctx.embed_reply(f"{random.uniform(-90, 90)}, {random.uniform(-180, 180)}")
 	
 	@commands.command(aliases = ["long"])
 	async def longitude(self, ctx):
