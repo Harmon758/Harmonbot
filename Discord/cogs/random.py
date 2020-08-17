@@ -474,7 +474,7 @@ class Random(commands.Cog):
 		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
 	@commands.group(aliases = ["rng"], invoke_without_command = True, case_insensitive = True)
-	async def number(self, ctx, number : int = 10):
+	async def number(self, ctx, number: int = 10):
 		'''
 		Random number
 		Default range is 1 to 10
