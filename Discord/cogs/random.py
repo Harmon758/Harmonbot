@@ -213,7 +213,7 @@ class Random(commands.Cog):
 	async def cat(self, ctx, category: Optional[str]):
 		'''Random image of a cat'''
 		if category:
-			async with ctx.bot.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={}".format(category)) as resp:
+			async with ctx.bot.aiohttp_session.get(f"http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={category}") as resp:
 				data = await resp.text()
 			try:
 				url = xml.etree.ElementTree.fromstring(data).find(".//url")
@@ -221,7 +221,7 @@ class Random(commands.Cog):
 				await ctx.embed_reply(":no_entry: Error")
 				return
 			if url is not None:
-				await ctx.embed_reply("[:cat:]({})".format(url.text), image_url = url.text)
+				await ctx.embed_reply(f"[:cat:]({url.text})", image_url = url.text)
 			else:
 				await ctx.embed_reply(":no_entry: Error: Category not found")
 		else:
@@ -232,7 +232,7 @@ class Random(commands.Cog):
 			except xml.etree.ElementTree.ParseError:
 				await ctx.embed_reply(":no_entry: Error")
 			else:
-				await ctx.embed_reply("[:cat:]({})".format(url), image_url = url)
+				await ctx.embed_reply(f"[:cat:]({url})", image_url = url)
 	
 	@cat.command(name = "categories", aliases = ["cats"])
 	async def cat_categories(self, ctx):
