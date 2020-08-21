@@ -213,7 +213,8 @@ class Random(commands.Cog):
 	async def cat(self, ctx, category: Optional[str]):
 		'''Random image of a cat'''
 		if category:
-			async with ctx.bot.aiohttp_session.get(f"http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={category}") as resp:
+			url = f"http://thecatapi.com/api/images/get?format=xml&results_per_page=1&category={category}"
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.text()
 			try:
 				url = xml.etree.ElementTree.fromstring(data).find(".//url")
@@ -225,7 +226,8 @@ class Random(commands.Cog):
 			else:
 				await ctx.embed_reply(":no_entry: Error: Category not found")
 		else:
-			async with ctx.bot.aiohttp_session.get("http://thecatapi.com/api/images/get?format=xml&results_per_page=1") as resp:
+			url = "http://thecatapi.com/api/images/get?format=xml&results_per_page=1"
+			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.text()
 			try:
 				url = xml.etree.ElementTree.fromstring(data).find(".//url").text
