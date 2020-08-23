@@ -212,31 +212,19 @@ class Random(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def cat(self, ctx, category: Optional[str]):
 		'''Random image of a cat'''
+		url = "http://thecatapi.com/api/images/get"
+		params = {"format": "xml", "results_per_page": 1}
 		if category:
-			url = f"http://thecatapi.com/api/images/get"
-			params = {"format": "xml", "results_per_page": 1, "category": category}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.text()
-			try:
-				url = xml.etree.ElementTree.fromstring(data).find(".//url")
-			except xml.etree.ElementTree.ParseError:
-				await ctx.embed_reply(":no_entry: Error")
-				return
-			if url is not None:
-				await ctx.embed_reply(f"[:cat:]({url.text})", image_url = url.text)
-			else:
-				await ctx.embed_reply(":no_entry: Error: Category not found")
+			params["category"] = category
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.text()
+		try:
+			if (url := xml.etree.ElementTree.fromstring(data).find(".//url")) is None:
+				return await ctx.embed_reply(":no_entry: Error: Category not found")
+		except xml.etree.ElementTree.ParseError:
+			await ctx.embed_reply(":no_entry: Error")
 		else:
-			url = "http://thecatapi.com/api/images/get"
-			params = {"format": "xml", "results_per_page": 1}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.text()
-			try:
-				url = xml.etree.ElementTree.fromstring(data).find(".//url").text
-			except xml.etree.ElementTree.ParseError:
-				await ctx.embed_reply(":no_entry: Error")
-			else:
-				await ctx.embed_reply(f"[:cat:]({url})", image_url = url)
+			await ctx.embed_reply(f"[:cat:]({url.text})", image_url = url.text)
 	
 	@cat.command(name = "categories", aliases = ["cats"])
 	async def cat_categories(self, ctx):
