@@ -43,7 +43,7 @@ class Resources(commands.Cog):
 	
 	@commands.group(aliases = ["colour"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def color(self, ctx, *, color : str):
+	async def color(self, ctx, *, color: str):
 		'''
 		Information on colors
 		Accepts hex color codes and search by keyword
