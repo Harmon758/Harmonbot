@@ -5,6 +5,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import json
+from typing import Union
 import unicodedata
 
 import dateutil
@@ -43,18 +44,15 @@ class Resources(commands.Cog):
 	
 	@commands.group(aliases = ["colour"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def color(self, ctx, *, color: str):
+	async def color(self, ctx, *, color: Union[discord.Color, str]):
 		'''
 		Information on colors
 		Accepts hex color codes and search by keyword
 		'''
-		color = color.strip('#')
-		try:
-			if (int_color := int(color, 16)) < 0 or int_color >= 16 ** 6:
-				raise ValueError
-			url = f"http://www.colourlovers.com/api/color/{int_color:0>6X}"
+		if type(color) is discord.Color:
+			url = f"http://www.colourlovers.com/api/color/{color.value:0>6X}"
 			params = {}
-		except ValueError:
+		else:
 			url = "http://www.colourlovers.com/api/colors"
 			params = {"numResult": 1, "keywords": color}
 		# TODO: Allow explicit keyword search, to fix ambiguity for hex vs keyword, e.g. fab
