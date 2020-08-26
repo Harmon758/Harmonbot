@@ -51,12 +51,13 @@ class Resources(commands.Cog):
 		'''
 		if type(color) is discord.Color:
 			url = f"http://www.colourlovers.com/api/color/{color.value:0>6X}"
-			params = {}
+			await self.process_color(ctx, url)
 		else:
 			url = "http://www.colourlovers.com/api/colors"
 			params = {"numResult": 1, "keywords": color}
+			await self.process_color(ctx, url, params)
+		# TODO: Random color when no input
 		# TODO: Allow explicit keyword search, to fix ambiguity for hex vs keyword, e.g. fab
-		await self.process_color(ctx, url, params)
 	
 	async def process_color(self, ctx, url, params = None):
 		if params is None:
