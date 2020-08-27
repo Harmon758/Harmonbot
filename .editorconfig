@@ -4,6 +4,6 @@
 root = true
 
 # Set indentation tab size to 4
-[*.{go,py,pyw}]
+[*.{go,html,py,pyw}]
 indent_style = tab
 indent_size = 4
