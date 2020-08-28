@@ -210,16 +210,14 @@ class Info(commands.Cog):
 		url_data = urllib.parse.urlparse(url)
 		query = urllib.parse.parse_qs(url_data.query)
 		if 'v' not in query:
-			await ctx.embed_reply(":no_entry: Invalid input")
-			return
+			return await ctx.embed_reply(":no_entry: Invalid input")
 		api_url = "https://www.googleapis.com/youtube/v3/videos"
 		params = {"id": query['v'][0], "key": ctx.bot.GOOGLE_API_KEY,
 					"part": "snippet,contentDetails,statistics"}
 		async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
 			data = await resp.json()
 		if not data:
-			await ctx.embed_reply(":no_entry: Error")
-			return
+			return await ctx.embed_reply(":no_entry: Error")
 		data = data["items"][0]
 		# TODO: Handle no items
 		duration = isodate.parse_duration(data["contentDetails"]["duration"])
