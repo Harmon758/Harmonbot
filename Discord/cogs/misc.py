@@ -124,7 +124,16 @@ class Misc(commands.Cog):
 		# TODO: add options?
 		async with ctx.bot.aiohttp_session.get("http://loripsum.net/api/plaintext") as resp:
 			data = await resp.text()
-		await ctx.embed_reply(data)
+		try:
+			await ctx.embed_reply(data)
+		except discord.HTTPException as e:
+			if e.code == 50035 and len(data) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+				output = ""
+				paragraphs = data.split("\n\n")
+				while len(output) + 2 + len(paragraphs[0]) < ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+					output += "\n\n" + paragraphs.pop()
+				return await ctx.embed_reply(output[2:])
+			raise
 	
 	@commands.command()
 	async def ping(self, ctx):
