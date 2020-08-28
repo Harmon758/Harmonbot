@@ -15,7 +15,10 @@ class Matrix(commands.Cog):
 	# TODO: move to converters file
 	class Matrix(commands.Converter):
 		async def convert(self, ctx, argument):
-			return ast.literal_eval(argument)
+			try:
+				return ast.literal_eval(argument)
+			except SyntaxError:
+				raise commands.BadArgument("Syntax Error")
 			# TODO: check matrix
 	
 	async def cog_check(self, ctx):
