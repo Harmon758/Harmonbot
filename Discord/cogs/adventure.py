@@ -94,7 +94,7 @@ class Adventure(commands.Cog):
 	async def examine(self, ctx, *, item: str):
 		'''Examine items'''
 		player = await self.get_adventure_player(ctx.author.id)
-		count = player.inventory(item)
+		count = await player.inventory(item)
 		if not count:
 			return await ctx.embed_reply(":no_entry: You don't have that item")
 		if item in EXAMINE_MESSAGES:
