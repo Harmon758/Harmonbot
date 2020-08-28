@@ -216,10 +216,9 @@ class Info(commands.Cog):
 					"part": "snippet,contentDetails,statistics"}
 		async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
 			data = await resp.json()
-		if not data:
+		if not data or not data["items"]:
 			return await ctx.embed_reply(":no_entry: Error")
 		data = data["items"][0]
-		# TODO: Handle no items
 		duration = isodate.parse_duration(data["contentDetails"]["duration"])
 		info = f"Length: {duration_to_string(duration, abbreviate = True)}"
 		if "likeCount" in data["statistics"]:
