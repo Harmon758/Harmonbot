@@ -529,7 +529,7 @@ class Games(commands.Cog):
 			for correct_emoji in sequence:
 				try:
 					reaction, user = await ctx.bot.wait_for_reaction_add_or_remove(emoji = emojis, message = message, user = ctx.author, timeout = 5)
-				except asycnio.TimeoutError:
+				except asyncio.TimeoutError:
 					embed.description = f"Game over. You timed out on a sequence of length {len(sequence)}."
 					break
 				if reaction.emoji != correct_emoji:
