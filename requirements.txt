@@ -11,7 +11,7 @@ aiohttp==3.6.2
 asyncpg==0.20.1
 beautifulsoup4==4.9.1
 clarifai==2.6.2
-cryptography==3.0
+cryptography==3.1
 dice==3.1.0
 emoji==0.6.0
 feedparser==5.2.1
