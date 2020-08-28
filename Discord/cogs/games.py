@@ -502,6 +502,44 @@ class Games(commands.Cog):
 		return await ctx.embed_reply(":no_entry: Error: I don't know the relationship between "
 										f"{emotes[erps_object]} and {emotes[standard_value]}, the object that I chose")
 	
+	@commands.command()
+	@checks.not_forbidden()
+	async def simon(self, ctx):
+		'''Based on the electronic memory game'''
+		emojis = ("\N{LARGE BLUE CIRCLE}", "\N{LARGE GREEN CIRCLE}", "\N{LARGE RED CIRCLE}", "\N{LARGE YELLOW CIRCLE}")
+		message = await ctx.embed_reply("Get ready!")
+		embed = message.embeds[0]
+		sequence = []
+		for emoji in emojis:
+			await message.add_reaction(emoji)
+		while not embed.description.startswith("Game over."):
+			await asyncio.sleep(1)
+			sequence.append(random.choice(emojis))
+			for emoji in sequence:
+				display = ["\N{MEDIUM BLACK CIRCLE}"] * 4
+				embed.description = "Playing the sequence:\n" + ' '.join(display)
+				await message.edit(embed = embed)
+				await asyncio.sleep(1)
+				display[emojis.index(emoji)] = emoji
+				embed.description = "Playing the sequence:\n" + ' '.join(display)
+				await message.edit(embed = embed)
+				await asyncio.sleep(1)
+			embed.description = "Playback the sequence:"
+			await message.edit(embed = embed)
+			for correct_emoji in sequence:
+				try:
+					reaction, user = await ctx.bot.wait_for_reaction_add_or_remove(emoji = emojis, message = message, user = ctx.author, timeout = 5)
+				except asycnio.TimeoutError:
+					embed.description = f"Game over. You timed out on a sequence of length {len(sequence)}."
+					break
+				if reaction.emoji != correct_emoji:
+					embed.description = f"Game over. You failed on a sequence of length {len(sequence)}."
+					break
+			else:
+				embed.description = f"You completed the sequence! Get ready for a sequence of length {len(sequence) + 1}."
+			await message.edit(embed = embed)
+		await message.clear_reactions()
+	
 	@commands.group(case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
 	async def taboo(self, ctx):
