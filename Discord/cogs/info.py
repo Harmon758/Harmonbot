@@ -217,7 +217,7 @@ class Info(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
 			data = await resp.json()
 		if not data or not data["items"]:
-			return await ctx.embed_reply(":no_entry: Error")
+			return await ctx.embed_reply(":no_entry: Error: Unable to retrieve video information")
 		data = data["items"][0]
 		duration = isodate.parse_duration(data["contentDetails"]["duration"])
 		info = f"Length: {duration_to_string(duration, abbreviate = True)}"
