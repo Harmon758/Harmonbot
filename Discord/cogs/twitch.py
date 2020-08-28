@@ -110,7 +110,7 @@ class Twitch(commands.Cog):
 			ctx.channel.id, username, users_data["users"][0]["_id"]
 		)
 		if not inserted:
-			return await ctx.embed_reply(f"This text channel is already following the channel, `{channel}`")
+			return await ctx.embed_reply(f"This text channel is already following the channel, `{username}`")
 		await ctx.embed_reply(f"Added the Twitch channel, [`{username}`](https://www.twitch.tv/{username}), to this text channel\n"
 								"I will now announce here when this Twitch channel goes live")
 	
