@@ -203,7 +203,7 @@ class Info(commands.Cog):
 		# TODO: Guild permissions?, separate command?
 	
 	@info.command(aliases = ["yt"])
-	async def youtube(self, ctx, url : str):
+	async def youtube(self, ctx, url: str):
 		'''Information about a YouTube video'''
 		# TODO: Automatic on YouTube links, server specific toggleable option
 		# TODO: Handle playlists
