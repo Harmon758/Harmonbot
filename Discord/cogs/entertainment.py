@@ -82,7 +82,7 @@ class Entertainment(commands.Cog):
 		title = english_title or native_title
 		if native_title != title:
 			title += f" ({native_title})"
-		if romaji_title != english_title:
+		if romaji_title != english_title and len(title) + len(romaji_title) < ctx.bot.EMBED_TITLE_CHARACTER_LIMIT:
 			title += f" ({romaji_title})"
 		# Format + Episodes
 		fields = [("Format", ' '.join(word if word in ("TV", "OVA", "ONA") else word.capitalize() for word in data["format"].split('_'))), 
@@ -181,7 +181,7 @@ class Entertainment(commands.Cog):
 		title = english_title or native_title
 		if native_title != title:
 			title += f" ({native_title})"
-		if romaji_title != english_title:
+		if romaji_title != english_title and len(title) + len(romaji_title) < ctx.bot.EMBED_TITLE_CHARACTER_LIMIT:
 			title += f" ({romaji_title})"
 		await ctx.embed_reply('\n'.join(f"[{link['site']}]({link['url']})" for link in data['externalLinks']), 
 								title = title, title_url = data["siteUrl"], 
