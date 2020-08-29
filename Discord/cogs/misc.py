@@ -124,20 +124,20 @@ class Misc(commands.Cog):
 		# TODO: add options?
 		async with ctx.bot.aiohttp_session.get("http://loripsum.net/api/plaintext") as resp:
 			data = await resp.text()
-		try:
-			await ctx.embed_reply(data)
-		except discord.HTTPException as e:
-			if e.code == 50035 and len(data) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-				output = ""
-				paragraphs = data.split("\n\n")
-				while len(output) + len(paragraphs[0]) < ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-					output += "\n\n" + paragraphs.pop()
-				return await ctx.embed_reply(output[2:])
-			raise
+		if len(data) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+			paragraphs = data.split("\n\n")
+			data = ""
+			while len(data) + len(paragraphs[0]) < ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+				data += "\n\n" + paragraphs.pop()
+			data = data[2:]
+		await ctx.embed_reply(data)
 	
 	@commands.command()
 	async def ping(self, ctx):
 		'''Basic ping - pong command'''
+		# for #general and #development in Discord Bots
+		if ctx.message.channel.id in (110373943822540800, 110374153562886144):
+			return
 		await ctx.embed_reply("pong")
 	
 	@commands.command()
