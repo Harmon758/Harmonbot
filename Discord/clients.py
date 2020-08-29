@@ -736,11 +736,13 @@ class Bot(commands.Bot):
 				return False
 			return True
 		
-		add = self.wait_for("reaction_add", check = reaction_check, timeout = timeout)
-		remove = self.wait_for("reaction_remove", check = reaction_check, timeout = timeout)
-		done, pending = await asyncio.wait((add, remove), return_when = asyncio.FIRST_COMPLETED)
+		add = self.wait_for("reaction_add", check = reaction_check)
+		remove = self.wait_for("reaction_remove", check = reaction_check)
+		done, pending = await asyncio.wait((add, remove), return_when = asyncio.FIRST_COMPLETED, timeout = timeout)
 		for task in pending:
 			task.cancel()
+		if not done:
+			raise asyncio.TimeoutError
 		return done.pop().result()
 	
 	# Override Context class
