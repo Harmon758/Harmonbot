@@ -123,14 +123,14 @@ class Misc(commands.Cog):
 		'''Lorem Ipsum generator'''
 		# TODO: add options?
 		async with ctx.bot.aiohttp_session.get("http://loripsum.net/api/plaintext") as resp:
-			data = await resp.text()
-		if len(data) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-			paragraphs = data.split("\n\n")
-			data = ""
-			while len(data) + len(paragraphs[0]) < ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-				data += "\n\n" + paragraphs.pop()
-			data = data[2:]
-		await ctx.embed_reply(data)
+			output = await resp.text()
+		if len(output) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+			paragraphs = output.split("\n\n")
+			output = ""
+			while len(output) + len(paragraphs[0]) < ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+				output += "\n\n" + paragraphs.pop()
+			output = output[2:]
+		await ctx.embed_reply(output)
 	
 	@commands.command()
 	async def ping(self, ctx):
