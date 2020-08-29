@@ -5,6 +5,8 @@ from discord.ext import commands, menus
 import datetime
 from typing import Optional, Union
 
+from bs4 import BeautifulSoup
+
 from utilities import checks
 from utilities.menu import Menu
 
@@ -16,6 +18,176 @@ class Entertainment(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
+	# TODO: manga
+	# TODO: anime menu
+	
+	@commands.group(aliases = ["anilsit"], invoke_without_command = True, case_insensitive = True)
+	async def anime(self, ctx, *, search: str):
+		'''Search AniList'''
+		url = "https://graphql.anilist.co"
+		query = """
+		query ($search: String) {
+			Media (search: $search, type: ANIME) {
+				title { romaji english native }
+				format status description
+				startDate { year month day }
+				endDate { year month day }
+				season seasonYear episodes duration
+				source (version: 2)
+				hashtag
+				coverImage { extraLarge }
+				bannerImage genres synonyms averageScore meanScore popularity favourites
+				tags { name rank isMediaSpoiler }
+				relations { edges {
+					node {
+						title { romaji english native }
+						type
+						status
+					}
+					relationType
+				} }
+				studios { edges {
+					node { name siteUrl }
+					isMain
+				} }
+				isAdult
+				nextAiringEpisode { airingAt timeUntilAiring episode }
+				rankings { rank type year season allTime context }
+				siteUrl
+			}
+		}
+		"""
+		# Use?:
+		# relations
+		# nextAiringEpisode
+		# rankings
+		# Other commands?:
+		# airingSchedule
+		# characters
+		# recommendations
+		# reviews
+		# staff
+		# stats
+		# streamingEpisodes
+		# trailer
+		# trending
+		# trends
+		data = {"query": query, "variables": {"search": search}}
+		async with ctx.bot.aiohttp_session.post(url, json = data) as resp:
+			data = (await resp.json())["data"]["Media"]
+		# Title
+		english_title = data["title"]["english"]
+		native_title = data["title"]["native"]
+		romaji_title = data["title"]["romaji"]
+		title = english_title or native_title
+		if native_title != title:
+			title += f" ({native_title})"
+		if romaji_title != english_title:
+			title += f" ({romaji_title})"
+		# Format + Episodes
+		fields = [("Format", ' '.join(word if word in ("TV", "OVA", "ONA") else word.capitalize() for word in data["format"].split('_'))), 
+					("Episodes", data["episodes"])]
+		non_inline_fields = []
+		# Episode Duration
+		if duration := data["duration"]:
+			fields.append(("Episode Duration", f"{duration} minutes"))
+		# Status
+		fields.append(("Status", ' '.join(word.capitalize() for word in data["status"].split('_'))))
+		# Start + End Date
+		for date_type in ("start", "end"):
+			if year := data[date_type + "Date"]["year"]:
+				date = str(year)
+				if month := data[date_type + "Date"]["month"]:
+					date += f"-{month:0>2}"
+					if day := data[date_type + "Date"]["day"]:
+						date += f"-{day:0>2}"
+				fields.append((date_type.capitalize() + " Date", date))
+		# Season
+		if data["season"]:  # and data["seasonYear"] ?
+			fields.append(("Season", f"{data['season'].capitalize()} {data['seasonYear']}"))
+		# Average Score
+		if average_score := data["averageScore"]:
+			fields.append(("Average Score", f"{average_score}%"))
+		# Mean Score
+		if mean_score := data["meanScore"]:
+			fields.append(("Mean Score", f"{mean_score}%"))
+		# Popularity + Favorites
+		fields.extend((("Popularity", data["popularity"]), ("Favorites", data["favourites"])))
+		# Main Studio + Producers
+		main_studio = None
+		producers = []
+		for studio in data["studios"]["edges"]:
+			if studio["isMain"]:
+				main_studio = studio["node"]
+			else:
+				producers.append(studio["node"])
+		if main_studio: 
+			fields.append(("Studio", f"[{main_studio['name']}]({main_studio['siteUrl']})"))
+		if producers:
+			fields.append(("Producers", ", ".join(f"[{producer['name']}]({producer['siteUrl']})" for producer in producers), len(producers) <= 2))
+		# Source
+		fields.append(("Source", ' '.join(word.capitalize() for word in data['source'].split('_'))))
+		# Hashtag
+		if hashtag := data["hashtag"]:
+			fields.append(("Hashtag", hashtag))
+		# Genres
+		if len(data["genres"]) <= 2:
+			fields.append(("Genres", ", ".join(data["genres"])))
+		else:
+			non_inline_fields.append(("Genres", ", ".join(data["genres"]), False))
+		# Synonyms
+		if synonyms := data["synonyms"]:
+			fields.append(("Synonyms", ", ".join(synonyms)))
+		# Adult
+		fields.append(("Adult", data["isAdult"]))
+		# Tags
+		tags = []
+		for tag in data["tags"]:
+			if tag["isMediaSpoiler"]:
+				tags.append(f"||{tag['name']}|| ({tag['rank']}%)")
+			else:
+				tags.append(f"{tag['name']} ({tag['rank']}%)")
+		if 0 < len(tags) <= 2:
+			fields.append(("Tags", ", ".join(tags)))
+		elif tags:
+			non_inline_fields.append(("Tags", ", ".join(tags), False))
+		await ctx.embed_reply(BeautifulSoup(data["description"], "lxml").text, 
+								title = title, title_url = data["siteUrl"], 
+								thumbnail_url = data["coverImage"]["extraLarge"], 
+								fields = fields + non_inline_fields, 
+								image_url = data["bannerImage"])
+	
+	@anime.command(name = "links", aliases = ["link"])
+	async def anime_links(self, ctx, *, search: str):
+		'''Links for anime'''
+		url = "https://graphql.anilist.co"
+		query = """
+		query ($search: String) {
+			Media (search: $search, type: ANIME) {
+				title { romaji english native}
+				coverImage { extraLarge }
+				bannerImage
+				externalLinks { url site }
+				siteUrl
+			}
+		}
+		"""
+		data = {"query": query, "variables": {"search": search}}
+		async with ctx.bot.aiohttp_session.post(url, json = data) as resp:
+			data = (await resp.json())["data"]["Media"]
+		english_title = data["title"]["english"]
+		native_title = data["title"]["native"]
+		romaji_title = data["title"]["romaji"]
+		title = english_title or native_title
+		if native_title != title:
+			title += f" ({native_title})"
+		if romaji_title != english_title:
+			title += f" ({romaji_title})"
+		await ctx.embed_reply('\n'.join(f"[{link['site']}]({link['url']})" for link in data['externalLinks']), 
+								title = title, title_url = data["siteUrl"], 
+								thumbnail_url = data["coverImage"]["extraLarge"], image_url = data["bannerImage"])
+	
+	# TODO: Switch name + alias
 	@commands.command(aliases = ["movie"])
 	async def imdb(self, ctx, *, search: str):
 		'''IMDb Information'''
