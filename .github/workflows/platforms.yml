@@ -7,6 +7,7 @@ jobs:
     name: Discord
 
     strategy:
+      fail-fast: false
       max-parallel: 1
       matrix:
         os: [ubuntu-latest]
@@ -53,6 +54,7 @@ jobs:
     name: Telegram
 
     strategy:
+      fail-fast: false
       max-parallel: 1
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
@@ -104,6 +106,7 @@ jobs:
     name: Discord Listener
 
     strategy:
+      fail-fast: false
       max-parallel: 1
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
