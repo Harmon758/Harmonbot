@@ -33,7 +33,7 @@ class Words(commands.Cog):
 		await ctx.embed_reply(", ".join(antonyms[0].words), title = f"Antonyms of {word.capitalize()}")
 	
 	@commands.command(aliases = ["definition", "definitions", "dictionary"])
-	async def define(self, ctx, word : str):
+	async def define(self, ctx, word: str):
 		'''Define a word'''
 		try:
 			definitions = self.bot.wordnik_word_api.getDefinitions(word)  # useCanonical = True ?
