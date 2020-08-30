@@ -239,16 +239,16 @@ class Pinboard(commands.Cog):
 		pinboard_channel_id = record["channel_id"]
 		threshold = record["threshold"] or self.default_threshold
 		private_channels_setting = record["private_channels"]
-		if payload.channel_id == pinboard_channel_id:
-			# Message being reacted to is on the pinboard
-			pinboard_message_id = payload.message_id
-			record = await self.bot.db.fetchrow(
+		if payload.channel_id == pinboard_channel_id and (
+			record := await self.bot.db.fetchrow(
 				"""
 				SELECT message_id, channel_id
 				FROM pinboard.pins WHERE pinboard_message_id = $1
 				""", 
-				pinboard_message_id
+				(pinboard_message_id := payload.message_id)
 			)
+		):
+			# Message being reacted to is on the pinboard
 			message_id = record["message_id"]
 			channel_id = record["channel_id"]
 		else:
