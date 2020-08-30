@@ -241,8 +241,8 @@ class MazeCog(commands.Cog, name = "Maze"):
 		else:
 			await ctx.embed_reply(":no_entry: There's no maze game currently going on")
 	
-	@maze.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	async def menu(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
+	@maze.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
+	async def menu_command(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
 		'''
 		Maze game menu
 		height: 2 - 100
