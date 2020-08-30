@@ -1,11 +1,13 @@
 
-from discord.ext import commands
+import discord
+from discord.ext import commands, menus
 
 import urllib.error
 
 from bs4 import BeautifulSoup
 
 from utilities import checks
+from utilities.menu import Menu
 
 def setup(bot):
 	bot.add_cog(Words(bot))
@@ -14,6 +16,11 @@ class Words(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.menus = []
+	
+	def cog_unload(self):
+		for menu in self.menus:
+			menu.stop()
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -32,7 +39,7 @@ class Words(commands.Cog):
 			return await ctx.embed_reply(":no_entry: Word or antonyms not found")
 		await ctx.embed_reply(", ".join(antonyms[0].words), title = f"Antonyms of {word.capitalize()}")
 	
-	@commands.command(aliases = ["definition", "definitions", "dictionary"])
+	@commands.group(aliases = ["definition", "definitions", "dictionary"], invoke_without_command = True, case_insensitive = True)
 	async def define(self, ctx, word: str):
 		'''Define a word'''
 		try:
@@ -47,6 +54,23 @@ class Words(commands.Cog):
 												title = definition.word, 
 												footer_text = definition.attributionText)
 		await ctx.embed_reply(":no_entry: Definition not found")
+	
+	@define.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
+	async def define_menu(self, ctx, word : str):
+		'''Definitions menu'''
+		try:
+			definitions = self.bot.wordnik_word_api.getDefinitions(word)  # useCanonical = True ?
+		except urllib.error.HTTPError as e:
+			if e.code == 404:
+				return await ctx.embed_reply(":no_entry: Error: Not found")
+			raise
+		definitions = [definition for definition in definitions if definition.text]
+		if not definitions:
+			await ctx.embed_reply(":no_entry: Definition not found")
+		menu = DefineMenu(definitions)
+		self.menus.append(menu)
+		await menu.start(ctx, wait = True)
+		self.menus.remove(menu)
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	async def pronunciation(self, ctx, word : str):
@@ -160,4 +184,26 @@ class Words(commands.Cog):
 		if not from_language_code:
 			footer_text = f"Detected Language Code: {data['detected']['lang']} | " + footer_text
 		await ctx.embed_reply(data["text"][0], footer_text = footer_text)
+
+class DefineSource(menus.ListPageSource):
+	
+	def __init__(self, definitions):
+		super().__init__(definitions, per_page = 1)
+	
+	async def format_page(self, menu, definition):
+		embed = discord.Embed(title = definition.word, 
+								description = BeautifulSoup(definition.text, "html.parser").get_text())
+		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
+		embed.set_footer(text = f"{definition.attributionText} (Definition {menu.current_page + 1} of {self.get_max_pages()})")
+		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
+
+class DefineMenu(Menu, menus.MenuPages):
+	
+	def __init__(self, definitions):
+		super().__init__(DefineSource(definitions), timeout = None, clear_reactions_after = True, check_embeds = True)
+	
+	async def send_initial_message(self, ctx, channel):
+		message = await super().send_initial_message(ctx, channel)
+		await ctx.bot.attempt_delete_message(ctx.message)
+		return message
 
