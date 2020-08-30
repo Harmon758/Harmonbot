@@ -176,8 +176,8 @@ class Reminders(commands.Cog):
 			fields.append((f"ID: {record['id']}", value))
 		await ctx.embed_reply(title = "Reminders", fields = fields)
 	
-	@commands.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	async def menu(self, ctx, per_page: Optional[int] = 10):
+	@commands.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
+	async def menu_command(self, ctx, per_page: Optional[int] = 10):
 		'''
 		Reminders menu
 		Max per_page is 10
