@@ -24,8 +24,8 @@ class Reminders(commands.Cog):
 		self.calendar.ptc.units["months"].append("mo")
 		
 		# Add menu as subcommand of reminder and reminder list commands
-		self.reminder_command.add_command(self.menu)
-		self.list_reminders.add_command(self.menu)
+		self.reminder_command.add_command(self.menu_command)
+		self.list_reminders.add_command(self.menu_command)
 		
 		self.menus = []
 		
