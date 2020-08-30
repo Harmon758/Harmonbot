@@ -137,9 +137,9 @@ class Blobs(commands.Cog):
 												width = ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT, 
 												placeholder = " ..."))
 	
-	@blobs.command(aliases = ['m', "menus", 'r', "reaction", "reactions"])
+	@blobs.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
 	@checks.not_forbidden()
-	async def menu(self, ctx, number: int = 1):
+	async def menu_command(self, ctx, number: int = 1):
 		'''Blobs menu'''
 		records = await ctx.bot.db.fetch("SELECT * FROM blobs.blobs ORDER BY blob")
 		menu = BlobsMenu(records, number)
