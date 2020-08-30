@@ -15,6 +15,13 @@ def setup(bot):
 
 class Entertainment(commands.Cog):
 	
+	def __init__(self):
+		self.menus = []
+	
+	def cog_unload(self):
+		for menu in self.menus:
+			menu.stop()
+	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
@@ -272,7 +279,10 @@ class Entertainment(commands.Cog):
 	@xkcd.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
 	async def xkcd_menu(self, ctx, number: Optional[int]):
 		'''xkcd comics menu'''
-		await XKCDMenu(number).start(ctx)
+		menu = XKCDMenu(number)
+		self.menus.append(menu)
+		await menu.start(ctx, wait = True)
+		self.menus.remove(menu)
 	
 	async def process_xkcd(self, ctx, url):
 		async with ctx.bot.aiohttp_session.get(url) as resp:
@@ -328,7 +338,7 @@ class XKCDMenu(Menu, menus.MenuPages):
 		await ctx.bot.attempt_delete_message(ctx.message)
 		return message
 	
-	async def start(self, ctx):
+	async def start(self, ctx, wait = True):
 		await self.source.prepare(ctx)
-		await menus.Menu.start(self, ctx)
+		await menus.Menu.start(self, ctx, wait = wait)
 
