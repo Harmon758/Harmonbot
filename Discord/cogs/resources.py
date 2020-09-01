@@ -89,7 +89,7 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def gender(self, ctx, name : str):
+	async def gender(self, ctx, name: str):
 		'''Gender of a name'''
 		# TODO: add localization options?
 		url = "https://api.genderize.io/"
