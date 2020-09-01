@@ -98,10 +98,8 @@ class Resources(commands.Cog):
 			data = await resp.json()
 		if not data["gender"]:
 			return await ctx.embed_reply("Gender: Unknown", title = data["name"].capitalize())
-		probability = int(data["probability"] * 100)
-		footer_text = f"Probability: {probability}% ({data['count']} data entries examined)"
 		await ctx.embed_reply(f"Gender: {data['gender']}", title = data["name"].capitalize(), 
-								footer_text = footer_text)
+								footer_text = f"Probability: {data['probability']:.0%} ({data['count']} data entries examined)")
 	
 	@commands.command()
 	@checks.not_forbidden()
