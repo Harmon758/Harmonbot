@@ -97,12 +97,11 @@ class Resources(commands.Cog):
 			# TODO: check status code
 			data = await resp.json()
 		if not data["gender"]:
-			await ctx.embed_reply("Gender: Unknown", title = data["name"].capitalize())
-		else:
-			probability = int(data["probability"] * 100)
-			footer_text = f"Probability: {probability}% ({data['count']} data entries examined)"
-			await ctx.embed_reply(f"Gender: {data['gender']}", title = data["name"].capitalize(), 
-									footer_text = footer_text)
+			return await ctx.embed_reply("Gender: Unknown", title = data["name"].capitalize())
+		probability = int(data["probability"] * 100)
+		footer_text = f"Probability: {probability}% ({data['count']} data entries examined)"
+		await ctx.embed_reply(f"Gender: {data['gender']}", title = data["name"].capitalize(), 
+								footer_text = footer_text)
 	
 	@commands.command()
 	@checks.not_forbidden()
