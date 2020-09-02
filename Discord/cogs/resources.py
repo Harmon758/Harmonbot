@@ -103,7 +103,7 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def hastebin(self, ctx, *, contents : str):
+	async def hastebin(self, ctx, *, contents: str):
 		'''Hastebin'''
 		url = "https://hastebin.com/documents"
 		async with ctx.bot.aiohttp_session.post(url, data = contents) as resp:
