@@ -195,8 +195,7 @@ if __name__ == "__main__":
 		# Respects (f) system
 		if message.content.lower() == 'f' or message.content == '\N{REGIONAL INDICATOR SYMBOL LETTER F}':
 			# TODO: Server setting to disable respects system
-			respects_command = ctx.bot.get_command("respects")
-			if respects_command:
+			if respects_command := ctx.bot.get_command("respects"):
 				return await ctx.invoke(respects_command.get_command("pay"))
 	
 	ci = os.getenv("CI")
