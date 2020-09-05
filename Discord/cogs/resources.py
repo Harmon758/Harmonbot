@@ -136,7 +136,7 @@ class Resources(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def horoscope(self, ctx, sign : str):
+	async def horoscope(self, ctx, sign: str):
 		'''Horoscope'''
 		await self.process_horoscope(ctx, sign, "today")
 	
