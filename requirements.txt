@@ -60,7 +60,7 @@ wordnik-py3==2.1.2
 youtube-dl==2020.7.28
 
 async-timeout==3.0.1
-attrs==20.1.0
+attrs==20.2.0
 certifi==2020.6.20
 cffi==1.14.2
 chardet==3.0.4
