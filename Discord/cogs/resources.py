@@ -294,7 +294,7 @@ class Resources(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def oeis(self, ctx, *, search : str):
+	async def oeis(self, ctx, *, search: str):
 		'''The On-Line Encyclopedia of Integer Sequences'''
 		url = "http://oeis.org/search"
 		params = {"fmt": "json", 'q': search.replace(' ', "")}
