@@ -309,7 +309,7 @@ class Resources(commands.Cog):
 	
 	@oeis.command(name = "graph")
 	@checks.not_forbidden()
-	async def oeis_graph(self, ctx, *, search : str):
+	async def oeis_graph(self, ctx, *, search: str):
 		'''Graphs from The On-Line Encyclopedia of Integer Sequences'''
 		url = "http://oeis.org/search"
 		params = {"fmt": "json", 'q': search.replace(' ', "")}
