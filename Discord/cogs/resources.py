@@ -467,8 +467,7 @@ class Resources(commands.Cog):
 	@checks.not_forbidden()
 	async def spotifytoyoutube(self, ctx, url: str):
 		'''Find a Spotify track on YouTube'''
-		link = await self.bot.cogs["Audio"].spotify_to_youtube(url)
-		if link:
+		if link := (await self.bot.cogs["Audio"].spotify_to_youtube(url)):
 			await ctx.reply(link)
 		else:
 			await ctx.embed_reply(":no_entry: Error")
