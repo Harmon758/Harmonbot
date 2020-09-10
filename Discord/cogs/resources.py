@@ -522,7 +522,7 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def websitescreenshot(self, ctx, url : str):
+	async def websitescreenshot(self, ctx, url: str):
 		'''Take a screenshot of a website'''
 		response = None
 		api_url = "http://api.page2images.com/restfullink"
