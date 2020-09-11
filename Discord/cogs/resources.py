@@ -535,16 +535,16 @@ class Resources(commands.Cog):
 				wait_time = int(data["estimated_need_time"])
 				if response:
 					embed = response.embeds[0]
-					embed.description = "Processing {}\nEstimated wait time: {} sec".format(url, wait_time)
+					embed.description = f"Processing {url}\nEstimated wait time: {wait_time} sec"
 					await response.edit(embed = embed)
 				else:
-					response = await ctx.embed_reply("Processing {}\nEstimated wait time: {} sec".format(url, wait_time))
+					response = await ctx.embed_reply(f"Processing {url}\nEstimated wait time: {wait_time} sec")
 				await asyncio.sleep(wait_time)
 			elif data["status"] == "finished":
-				await ctx.embed_reply("Your screenshot of {}:".format(url), image_url = data["image_url"])
+				await ctx.embed_reply(f"Your screenshot of {url}:", image_url = data["image_url"])
 				return
 			elif data["status"] == "error":
-				await ctx.embed_reply(":no_entry: Error: {}".format(data["msg"]))
+				await ctx.embed_reply(f":no_entry: Error: {data['msg']}")
 				return
 	
 	@commands.command(aliases = ["whatare"])
