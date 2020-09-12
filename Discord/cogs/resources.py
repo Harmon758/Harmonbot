@@ -541,11 +541,9 @@ class Resources(commands.Cog):
 					response = await ctx.embed_reply(f"Processing {url}\nEstimated wait time: {wait_time} sec")
 				await asyncio.sleep(wait_time)
 			elif data["status"] == "finished":
-				await ctx.embed_reply(f"Your screenshot of {url}:", image_url = data["image_url"])
-				return
+				return await ctx.embed_reply(f"Your screenshot of {url}:", image_url = data["image_url"])
 			elif data["status"] == "error":
-				await ctx.embed_reply(f":no_entry: Error: {data['msg']}")
-				return
+				return await ctx.embed_reply(f":no_entry: Error: {data['msg']}")
 	
 	@commands.command(aliases = ["whatare"])
 	@checks.not_forbidden()
