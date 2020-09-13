@@ -547,7 +547,7 @@ class Resources(commands.Cog):
 	
 	@commands.command(aliases = ["whatare"])
 	@checks.not_forbidden()
-	async def whatis(self, ctx, *search : str):
+	async def whatis(self, ctx, *search: str):
 		'''WIP'''
 		if not search:
 			await ctx.embed_reply("What is what?")
