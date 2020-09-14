@@ -552,8 +552,9 @@ class Resources(commands.Cog):
 		if not search:
 			await ctx.embed_reply("What is what?")
 		else:
-			url = "https://kgsearch.googleapis.com/v1/entities:search?limit=1&query={}&key={}".format('+'.join(search), ctx.bot.GOOGLE_API_KEY)
-			async with ctx.bot.aiohttp_session.get(url) as resp:
+			url = "https://kgsearch.googleapis.com/v1/entities:search"
+			params = {"limit": 1, "query": '+'.join(search), "key": ctx.bot.GOOGLE_API_KEY}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
 				await ctx.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
