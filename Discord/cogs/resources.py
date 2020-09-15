@@ -5,7 +5,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import json
-from typing import Union
+from typing import Optional, Union
 import unicodedata
 
 import dateutil
@@ -547,13 +547,13 @@ class Resources(commands.Cog):
 	
 	@commands.command(aliases = ["whatare"])
 	@checks.not_forbidden()
-	async def whatis(self, ctx, *search: str):
+	async def whatis(self, ctx, *, search: Optional[str]):
 		'''WIP'''
 		if not search:
 			await ctx.embed_reply("What is what?")
 		else:
 			url = "https://kgsearch.googleapis.com/v1/entities:search"
-			params = {"limit": 1, "query": '+'.join(search), "key": ctx.bot.GOOGLE_API_KEY}
+			params = {"limit": 1, "query": search, "key": ctx.bot.GOOGLE_API_KEY}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
