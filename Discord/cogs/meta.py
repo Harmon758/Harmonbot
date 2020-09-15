@@ -14,9 +14,11 @@ import subprocess
 import sys
 import traceback
 
+import chess.engine
 import git
 import psutil
 
+from cogs.chess import STOCKFISH_EXECUTABLE
 from utilities import checks
 
 sys.path.insert(0, "..")
@@ -294,6 +296,11 @@ class Meta(commands.Cog):
 	async def version_postgresql(self, ctx):
 		postgresql_version = await ctx.bot.db.fetchval("SELECT version()")
 		await ctx.embed_reply(postgresql_version)
+	
+	@version.command(name = "stockfish")
+	async def version_stockfish(self, ctx):
+		transport, engine = await chess.engine.popen_uci(f"bin/{STOCKFISH_EXECUTABLE}", creationflags = subprocess.CREATE_NO_WINDOW)
+		await ctx.embed_reply(engine.id["name"])
 	
 	# Update Bot Stuff
 	
