@@ -70,7 +70,11 @@ class Discord(commands.Cog):
 			await self.delete_number(ctx, number, check = lambda m: m.author.id == user.id)
 		else:
 			await self.bot.attempt_delete_message(ctx.message)
-			await ctx.channel.purge(limit = number)
+			try:
+				await ctx.channel.purge(limit = number)
+			except discord.NotFound:
+				# TODO: Better handling
+				return
 	
 	@delete.command(name = "attachments", aliases = ["images"])
 	@commands.bot_has_permissions(manage_messages = True)
