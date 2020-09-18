@@ -297,6 +297,8 @@ class RSS(commands.Cog):
 										embed.url = discord.Embed.Empty
 									if "In embed.thumbnail.url: Not a well formed URL." in e.text:
 										embed.set_thumbnail(url = "")
+									if "In embed.footer.icon_url: Not a well formed URL." in e.text:
+										embed.set_footer(text = feed_info.feed.title)
 									await text_channel.send(embed = embed)
 								else:
 									raise
