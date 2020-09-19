@@ -161,6 +161,10 @@ class Respects(commands.Cog):
 		formatter.set_scientific(False)
 		axes.get_xaxis().set_major_formatter(formatter)
 		axes.get_yaxis().set_major_formatter(formatter)
+		# Remove minor ticks < 1
+		axes.set_xticks([tick for tick in axes.get_xticks(minor = True) if tick >= 1], minor = True)
+		axes.set_yticks([tick for tick in axes.get_yticks(minor = True) if tick >= 1], minor = True)
+		axes.autoscale(enable = True)
 		buffer = io.BytesIO()
 		figure.savefig(buffer, format = "PNG")
 		buffer.seek(0)
