@@ -550,14 +550,13 @@ class Resources(commands.Cog):
 	async def whatis(self, ctx, *, search: Optional[str]):
 		'''WIP'''
 		if not search:
-			await ctx.embed_reply("What is what?")
+			return await ctx.embed_reply("What is what?")
+		url = "https://kgsearch.googleapis.com/v1/entities:search"
+		params = {"limit": 1, "query": search, "key": ctx.bot.GOOGLE_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
+			await ctx.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
 		else:
-			url = "https://kgsearch.googleapis.com/v1/entities:search"
-			params = {"limit": 1, "query": search, "key": ctx.bot.GOOGLE_API_KEY}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data.get("itemListElement") and data["itemListElement"][0].get("result", {}).get("detailedDescription", {}).get("articleBody", {}):
-				await ctx.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
-			else:
-				await ctx.embed_reply("I don't know what that is")
+			await ctx.embed_reply("I don't know what that is")
 
