@@ -136,7 +136,8 @@ class Entertainment(commands.Cog):
 		if producers:
 			fields.append(("Producers", ", ".join(f"[{producer['name']}]({producer['siteUrl']})" for producer in producers), len(producers) <= 2))
 		# Source
-		fields.append(("Source", ' '.join(word.capitalize() for word in data['source'].split('_'))))
+		if source := data["source"]:
+			fields.append(("Source", ' '.join(word.capitalize() for word in source.split('_'))))
 		# Hashtag
 		if hashtag := data["hashtag"]:
 			fields.append(("Hashtag", hashtag))
