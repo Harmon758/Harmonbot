@@ -187,7 +187,10 @@ class Entertainment(commands.Cog):
 		"""
 		data = {"query": query, "variables": {"search": search}}
 		async with ctx.bot.aiohttp_session.post(url, json = data) as resp:
-			data = (await resp.json())["data"]["Media"]
+			data = await resp.json()
+		if not data["data"]["Media"] and "errors" in data:
+			return await ctx.embed_reply(f":no_entry: Error: {data['errors'][0]['message']}")
+		data = data["data"]["Media"]
 		english_title = data["title"]["english"]
 		native_title = data["title"]["native"]
 		romaji_title = data["title"]["romaji"]
