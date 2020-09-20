@@ -94,6 +94,10 @@ class Entertainment(commands.Cog):
 			title += f" ({native_title})"
 		if romaji_title != english_title and len(title) + len(romaji_title) < ctx.bot.EMBED_TITLE_CHARACTER_LIMIT:
 			title += f" ({romaji_title})"
+		# Description
+		description = ""
+		if data["description"]:
+			description = BeautifulSoup(data["description"], "lxml").text
 		# Format + Episodes
 		fields = [("Format", ' '.join(word if word in ("TV", "OVA", "ONA") else word.capitalize() for word in data["format"].split('_'))), 
 					("Episodes", data["episodes"])]
@@ -162,8 +166,7 @@ class Entertainment(commands.Cog):
 			fields.append(("Tags", ", ".join(tags)))
 		elif tags:
 			non_inline_fields.append(("Tags", ", ".join(tags), False))
-		await ctx.embed_reply(BeautifulSoup(data["description"], "lxml").text, 
-								title = title, title_url = data["siteUrl"], 
+		await ctx.embed_reply(description, title = title, title_url = data["siteUrl"], 
 								thumbnail_url = data["coverImage"]["extraLarge"], 
 								fields = fields + non_inline_fields, 
 								image_url = data["bannerImage"])
