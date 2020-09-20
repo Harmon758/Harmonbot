@@ -188,20 +188,19 @@ class Entertainment(commands.Cog):
 		data = {"query": query, "variables": {"search": search}}
 		async with ctx.bot.aiohttp_session.post(url, json = data) as resp:
 			data = await resp.json()
-		if not data["data"]["Media"] and "errors" in data:
+		if not (media := data["data"]["Media"]) and "errors" in data:
 			return await ctx.embed_reply(f":no_entry: Error: {data['errors'][0]['message']}")
-		data = data["data"]["Media"]
-		english_title = data["title"]["english"]
-		native_title = data["title"]["native"]
-		romaji_title = data["title"]["romaji"]
+		english_title = media["title"]["english"]
+		native_title = media["title"]["native"]
+		romaji_title = media["title"]["romaji"]
 		title = english_title or native_title
 		if native_title != title:
 			title += f" ({native_title})"
 		if romaji_title != english_title and len(title) + len(romaji_title) < ctx.bot.EMBED_TITLE_CHARACTER_LIMIT:
 			title += f" ({romaji_title})"
-		await ctx.embed_reply('\n'.join(f"[{link['site']}]({link['url']})" for link in data['externalLinks']), 
-								title = title, title_url = data["siteUrl"], 
-								thumbnail_url = data["coverImage"]["extraLarge"], image_url = data["bannerImage"])
+		await ctx.embed_reply('\n'.join(f"[{link['site']}]({link['url']})" for link in media['externalLinks']), 
+								title = title, title_url = media["siteUrl"], 
+								thumbnail_url = media["coverImage"]["extraLarge"], image_url = media["bannerImage"])
 	
 	# TODO: Switch name + alias
 	@commands.command(aliases = ["movie"])
