@@ -104,6 +104,8 @@ class Bot(commands.Bot):
 		self.greyple_color = self.greyple_colour = 0x99aab5
 		self.dark_but_not_black_color = self.dark_but_not_black_colour = 0x2c2f33
 		self.not_quite_black_color = self.not_quite_black_colour = 0x23272a
+		### Emoji
+		self.error_emoji = self.error_emote = '\N{NO ENTRY}'
 		## Constant
 		self.CODE_BLOCK = "```\n{}\n```"  # TODO: Change to method?
 		self.PY_CODE_BLOCK = "```py\n{}\n```"  # TODO: Change to method?
