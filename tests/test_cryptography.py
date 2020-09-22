@@ -30,6 +30,8 @@ class TestCaesarCipher(unittest.TestCase):
 	def test_decode_inverts_encode(self, message, key):
 		self.assertEqual(message, decode_caesar_cipher(encode_caesar_cipher(message, key), key))
 
+invalid_morse_code_characters = ['#', '%', '*', '<', '>', '[', '\\', ']', '^', '`']
+
 class TestMorseCode(unittest.TestCase):
 	
 	@given(uuids())
@@ -48,14 +50,14 @@ class TestMorseCode(unittest.TestCase):
 	
 	@given(text(alphabet = characters(min_codepoint = 123, 
 										whitelist_characters = [chr(code) for code in range(32)] + 
-																['#', '%', '*', '<', '>', '[', '\\', ']', '^', '`'])))
+																invalid_morse_code_characters)))
 	def test_encode_undefined_characters(self, message):
 		assume(message)
 		assume(len(message.upper()) == len(message))  # Ignore test failure for ligatures
 		self.assertRaises(UnitOutputError, encode_morse_code, message)
 	
 	@given(text(alphabet = characters(min_codepoint = 32, max_codepoint = 122, 
-										blacklist_characters = "#%*<>[\\]^`")))
+										blacklist_characters = invalid_morse_code_characters)))
 	def test_decode_inverts_encode(self, message):
 		self.assertEqual(message.upper(), decode_morse_code(encode_morse_code(message)))
 
