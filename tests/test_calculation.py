@@ -8,7 +8,7 @@ from hypothesis.strategies import characters, integers, lists, text
 
 import pyparsing
 
-from units.calculation import calculate, operations
+from units.calculation import calculate
 
 class TestCalculate(unittest.TestCase):
 	
