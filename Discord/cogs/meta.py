@@ -663,7 +663,7 @@ class Meta(commands.Cog):
 		
 		obj = ctx.bot.get_command(command.replace('.', ' '))
 		if obj is None:
-			return await ctx.embed_reply("\N{NO ENTRY} Command not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Command not found")
 		
 		# Access code
 		src = obj.callback.__code__
