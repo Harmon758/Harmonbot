@@ -53,6 +53,8 @@ class TestMorseCode(unittest.TestCase):
 																invalid_morse_code_characters)))
 	def test_encode_undefined_characters(self, message):
 		assume(message)
+		assume(not all(32 <= ord(character) <= 122 and character not in invalid_morse_code_characters 
+				for character in message.upper()))
 		assume(len(message.upper()) == len(message))  # Ignore test failure for ligatures
 		self.assertRaises(UnitOutputError, encode_morse_code, message)
 	
