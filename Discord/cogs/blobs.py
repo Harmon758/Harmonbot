@@ -72,7 +72,7 @@ class Blobs(commands.Cog):
 			blob_data[record["blob"]] = {"image": record["image"], "unaliased": record["unaliased"]}
 		close_match = difflib.get_close_matches(blob, blob_data, n = 1)
 		if not close_match:
-			return await ctx.embed_reply(":no_entry: Blob not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Blob not found")
 		blob = close_match[0]
 		await ctx.embed_reply(title = blob, image_url = blob_data[blob]["image"])
 		await ctx.bot.db.execute(
