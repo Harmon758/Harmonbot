@@ -119,7 +119,7 @@ class Blobs(commands.Cog):
 		'''Information about a blob'''
 		if not (image_url := await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", name)):
 			if not (name := await ctx.bot.db.fetchval("SELECT blob FROM blobs.aliases WHERE alias = $1", name)):
-				return await ctx.embed_reply(f":no_entry: Blob not found")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Blob not found")
 			image_url = await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", name)
 		records = await ctx.bot.db.fetch("SELECT alias FROM blobs.aliases WHERE blob = $1", name)
 		aliases = [record["alias"] for record in records]
