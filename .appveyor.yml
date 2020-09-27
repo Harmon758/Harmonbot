@@ -1,4 +1,4 @@
-version: 1.2.2-{build}
+version: 1.3.0-{build}
 
 environment:
   # https://www.appveyor.com/docs/services-databases/#postgresql
@@ -8,22 +8,22 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: Discord
       PYTHON: C:\Python38
-      PYTHON_VERSION: 3.8.3
+      PYTHON_VERSION: 3.8.4
       PYTHON_ARCH: 32
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: Discord
       PYTHON: C:\Python38-x64
-      PYTHON_VERSION: 3.8.3
+      PYTHON_VERSION: 3.8.4
       PYTHON_ARCH: 64
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: Telegram
       PYTHON: C:\Python38
-      PYTHON_VERSION: 3.8.3
+      PYTHON_VERSION: 3.8.4
       PYTHON_ARCH: 32
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: Telegram
       PYTHON: C:\Python38-x64
-      PYTHON_VERSION: 3.8.3
+      PYTHON_VERSION: 3.8.4
       PYTHON_ARCH: 64
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
       PLATFORM: Discord
@@ -40,9 +40,7 @@ matrix:
     # PostgreSQL not available for macOS images yet
     # https://www.appveyor.com/docs/macos-images-software/
 
-stack: Python 3.8.2, PostgreSQL 12.1
-# Python 3.8.3 not installed for Ubuntu images yet
-# https://www.appveyor.com/docs/linux-images-software/
+stack: Python 3.8.4, PostgreSQL 12.1
 
 # services:
 #   - postgresql12
