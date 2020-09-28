@@ -160,7 +160,7 @@ class Blobs(commands.Cog):
 		blob_names = [record["blob"] for record in records]
 		close_match = difflib.get_close_matches(blob, blob_names, n = 1)
 		if not close_match:
-			return await ctx.embed_reply(":no_entry: Blob not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Blob not found")
 		blob = close_match[0]
 		records = await ctx.bot.db.fetch("SELECT user_id, count FROM blobs.stats WHERE blob = $1", blob)
 		if not records:
