@@ -289,9 +289,9 @@ class ChessMatch(chess.Board):
 				await self.update_match_embed(footer_text = footer_text)
 				await self.bot.attempt_delete_message(message)
 	
-	async def update_match_embed(self, *, flipped = None, footer_text = discord.Embed.Empty):
-		if flipped is None:
-			flipped = not self.turn
+	async def update_match_embed(self, *, orientation = None, footer_text = discord.Embed.Empty):
+		if orientation is None:
+			orientation = self.turn
 		if self.move_stack:
 			lastmove = self.peek()
 		else:
@@ -311,7 +311,7 @@ class ChessMatch(chess.Board):
 		chess_pgn.headers["Black"] = self.black_player.mention
 		embed.description = str(chess_pgn)
 		## svg = self._repr_svg_()
-		svg = chess.svg.board(self, lastmove = lastmove, check = check, flipped = flipped)
+		svg = chess.svg.board(self, lastmove = lastmove, check = check, orientation = orientation)
 		buffer = io.BytesIO()
 		with Image(blob = svg.encode()) as image:
 			image.format = "PNG"
@@ -329,9 +329,9 @@ class ChessMatch(chess.Board):
 		else:
 			self.match_message = await self.ctx.send(embed = embed)
 	
-	async def new_match_embed(self, *, flipped = None, footer_text = None):
-		if flipped is None:
-			flipped = not self.turn
+	async def new_match_embed(self, *, orientation = None, footer_text = None):
+		if orientation is None:
+			orientation = self.turn
 		if footer_text is None:
 			if self.is_game_over():
 				footer_text = discord.Embed.Empty
@@ -340,5 +340,5 @@ class ChessMatch(chess.Board):
 		if self.match_message:
 			await self.match_message.delete()
 		self.match_message = None
-		await self.update_match_embed(flipped = flipped, footer_text = footer_text)
+		await self.update_match_embed(orientation = orientation, footer_text = footer_text)
 
