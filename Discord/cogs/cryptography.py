@@ -108,7 +108,7 @@ class Cryptography(commands.Cog):
 		try:
 			await ctx.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
 		except ValueError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@decode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
 	async def decode_gost_34_12_2015(self, ctx, key: str, *, data: str):
