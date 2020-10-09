@@ -130,7 +130,7 @@ class Cryptography(commands.Cog):
 		try:
 			await ctx.embed_reply(decode_morse_code(message))
 		except UnitOutputError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@decode.command(name = "qr")
 	async def decode_qr(self, ctx, file_url: Optional[str]):
