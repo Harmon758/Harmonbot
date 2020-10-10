@@ -142,16 +142,16 @@ class Cryptography(commands.Cog):
 			if ctx.message.attachments:
 				file_url = ctx.message.attachments[0].url
 			else:
-				return await ctx.embed_reply(":no_entry: Please input a file url or attach an image")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Please input a file url or attach an image")
 		# TODO: use textwrap
 		url = f"https://api.qrserver.com/v1/read-qr-code/"
 		params = {"fileurl": file_url}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:
-				return await ctx.embed_reply(":no_entry: Error")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 			data = await resp.json()
 		if data[0]["symbol"][0]["error"]:
-			return await ctx.embed_reply(f":no_entry: Error: {data[0]['symbol'][0]['error']}")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data[0]['symbol'][0]['error']}")
 		decoded = data[0]["symbol"][0]["data"].replace("QR-Code:", "")
 		if len(decoded) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 			return await ctx.embed_reply(decoded[:ctx.bot.EDCL - 3] + "...", 
