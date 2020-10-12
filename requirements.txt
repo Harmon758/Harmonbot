@@ -94,5 +94,5 @@ soupsieve==2.0.1
 typing-extensions==3.7.4.3
 websockets==8.1
 xmltodict==0.12.0
-yarl==1.5.0
+yarl==1.6.1
 
