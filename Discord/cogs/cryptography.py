@@ -234,7 +234,7 @@ class Cryptography(commands.Cog):
 		try:
 			await ctx.embed_reply(pygost.gost28147.cfb_encrypt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
 		except ValueError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@encode_gost_28147_89.command(name = "cnt")
 	async def encode_gost_28147_89_cnt(self, ctx, key: str, *, data: str):
