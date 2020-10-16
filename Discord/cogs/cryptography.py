@@ -306,9 +306,9 @@ class Cryptography(commands.Cog):
 		'''
 		# TODO: Add encode kuznyechik alias
 		if len(key) < 32:
-			return await ctx.embed_reply(":no_entry: Error: key length must be at least 32")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: key length must be at least 32")
 		if len(data) < 16:
-			return await ctx.embed_reply(":no_entry: Error: data length must be at least 16")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: data length must be at least 16")
 		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).encrypt(data.encode("UTF-8")).hex())
 	
 	@encode.command(name = "md4")
