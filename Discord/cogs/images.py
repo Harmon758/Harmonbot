@@ -92,10 +92,10 @@ class Images(commands.Cog):
 		# TODO: Option to disable SafeSearch
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 403:
-				return await ctx.embed_reply(":no_entry: Daily limit exceeded")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Daily limit exceeded")
 			data = await resp.json()
 		if "items" not in data:
-			return await ctx.embed_reply(":no_entry: No images with that search found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No images with that search found")
 		await ctx.embed_reply(image_url = data["items"][0]["link"], 
 								title = f"Image of {search}", 
 								title_url = data["items"][0]["link"])
