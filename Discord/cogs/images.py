@@ -69,14 +69,14 @@ class Images(commands.Cog):
 		'''
 		if not image_url:
 			if not ctx.message.attachments:
-				return await ctx.embed_reply(":no_entry: Please input an image and/or url")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Please input an image and/or url")
 			image_url = ctx.message.attachments[0].url
 		try:
 			response = self.bot.clarifai_app.public_models.color_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			return await ctx.embed_reply(f":no_entry: Error: `{e.response.json()['outputs'][0]['status']['details']}`")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{e.response.json()['outputs'][0]['status']['details']}`")
 		if response["status"]["description"] != "Ok":
-			return await ctx.embed_reply(":no_entry: Error")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		fields = []
 		for color in sorted(response["outputs"][0]["data"]["colors"], key = lambda c: c["value"], reverse = True):
 			fields.append((color["raw_hex"].upper(), f"{color['value'] * 100:.2f}%\n"
