@@ -151,12 +151,12 @@ class Images(commands.Cog):
 	async def imgur_upload(self, ctx, url: str = ""):
 		'''Upload images to Imgur'''
 		if not (url or ctx.message.attachments):
-			return await ctx.embed_reply(":no_entry: Please input an image and/or url")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Please input an image and/or url")
 		image = url or ctx.message.attachments[0].url
 		try:
 			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(image)["link"])
 		except imgurpython.helpers.error.ImgurClientError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	async def imgur_search(self, ctx, *, search: str):
 		'''Search images on Imgur'''
