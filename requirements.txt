@@ -16,7 +16,7 @@ dice==3.1.0
 emoji==0.6.0
 feedparser==6.0.1
 gitpython==3.1.0
-hypothesis==5.37.0
+hypothesis==5.37.4
 imageio==2.9.0
 imgurpython==1.1.7
 inflect==4.1.0
