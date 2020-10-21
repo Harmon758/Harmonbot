@@ -162,7 +162,7 @@ class Images(commands.Cog):
 		'''Search images on Imgur'''
 		result = self.bot.imgur_client.gallery_search(search, sort = "top")
 		if not result:
-			return await ctx.embed_reply(":no_entry: No results found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 		result = result[0]
 		if result.is_album:
 			result = self.bot.imgur_client.get_album(result.id).images[0]
