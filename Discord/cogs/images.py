@@ -160,8 +160,7 @@ class Images(commands.Cog):
 	
 	async def imgur_search(self, ctx, *, search: str):
 		'''Search images on Imgur'''
-		result = self.bot.imgur_client.gallery_search(search, sort = "top")
-		if not result:
+		if not (result := self.bot.imgur_client.gallery_search(search, sort = "top")):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 		result = result[0]
 		if result.is_album:
