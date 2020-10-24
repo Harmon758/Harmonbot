@@ -182,8 +182,6 @@ class Images(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{e.response.json()['outputs'][0]['status']['details']}`")
 		if response["status"]["description"] != "Ok":
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
-		percentages = {}
-		for concept in response["outputs"][0]["data"]["concepts"]:
-			percentages[concept["name"]] = concept["value"] * 100
+		percentages = {concept["name"]: concept["value"] * 100 for concept in response["outputs"][0]["data"]["concepts"]}
 		await ctx.embed_reply(f"NSFW: {percentages['nsfw']:.2f}%", thumbnail_url = image_url)
 
