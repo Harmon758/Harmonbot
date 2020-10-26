@@ -35,7 +35,7 @@ def evaluate_stack(stack):
 	else:
 		return int(token)
 
-def calculate(input_string):
+def calculate(input_string: str):
 	expression_stack.clear()
 	expression.parseString(input_string, parseAll=True)  # can raise pyparsing.ParseException
 	return evaluate_stack(expression_stack)  # can raise ZeroDivisionError
