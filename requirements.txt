@@ -36,7 +36,7 @@ pygost==5.1
 pyowm==3.0.0
 pyparsing==2.4.7
 python-aiml==0.9.3
-python-chess==1.1.0
+python-chess==1.2.0
 python-dateutil==2.8.1
 python-dotenv==0.14.0
 pytz==2020.1
