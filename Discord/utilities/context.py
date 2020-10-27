@@ -59,7 +59,7 @@ class Context(commands.Context):
 		return self.author.send(*args, **kwargs)
 	
 	# TODO: Improve
-	async def get_permission(self, permission, *, type = "user", id = None):
+	async def get_permission(self, permission, *, type = "user", user = None, id = None):
 		if not self.guild:
 			return True
 		role_ids = []
@@ -73,7 +73,8 @@ class Context(commands.Context):
 			)
 			if user_setting is not None:
 				return user_setting
-			user = self.guild.get_member(id)
+			if not user:
+				user = self.guild.get_member(id)
 			role_ids.extend(role.id for role in sorted(user.roles, key = attrgetter("position"), reverse = True))
 		elif type == "role":
 			role_ids.append(id)
