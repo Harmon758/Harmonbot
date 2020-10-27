@@ -26,7 +26,7 @@ def is_voice_connected():
 	async def predicate(ctx):
 		if ctx.guild and ctx.guild.voice_client:
 			return True
-		permitted = await ctx.get_permission("join", id = ctx.author.id)
+		permitted = await ctx.get_permission("join", user = ctx.author)
 		if permitted:
 			raise errors.PermittedVoiceNotConnected
 		try:
@@ -63,7 +63,7 @@ def not_forbidden():
 		if ctx.channel.type is discord.ChannelType.private:
 			return True
 		command = ctx.command
-		while ((permitted := await ctx.get_permission(command.name, id = ctx.author.id)) is None
+		while ((permitted := await ctx.get_permission(command.name, user = ctx.author)) is None
 				and command.parent is not None):
 			command = command.parent
 		try:
@@ -77,7 +77,7 @@ def is_permitted():
 	
 	async def predicate(ctx):
 		command = ctx.command
-		while ((permitted := await ctx.get_permission(command.name, id = ctx.author.id)) is None
+		while ((permitted := await ctx.get_permission(command.name, user = ctx.author)) is None
 				and command.parent is not None):
 			command = command.parent
 		if permitted:
