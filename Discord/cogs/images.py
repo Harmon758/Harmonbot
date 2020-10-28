@@ -74,7 +74,7 @@ class Images(commands.Cog):
 		try:
 			response = self.bot.clarifai_app.public_models.color_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{e.response.json()['outputs'][0]['status']['details']}`")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{e.response.json()['outputs'][0]['status']['description']}`")
 		if response["status"]["description"] != "Ok":
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		fields = []
@@ -111,7 +111,7 @@ class Images(commands.Cog):
 		try:
 			response = self.bot.clarifai_app.public_models.general_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{e.response.json()['outputs'][0]['status']['details']}`")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{e.response.json()['outputs'][0]['status']['description']}`")
 		if response["status"]["description"] != "Ok":
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		names = {}
@@ -179,7 +179,7 @@ class Images(commands.Cog):
 		try:
 			response = self.bot.clarifai_app.public_models.nsfw_model.predict_by_url(image_url)
 		except clarifai.rest.ApiError as e:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{e.response.json()['outputs'][0]['status']['details']}`")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{e.response.json()['outputs'][0]['status']['description']}`")
 		if response["status"]["description"] != "Ok":
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		percentages = {concept["name"]: concept["value"] * 100 for concept in response["outputs"][0]["data"]["concepts"]}
