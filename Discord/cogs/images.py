@@ -84,11 +84,10 @@ class Images(commands.Cog):
 		)
 		if response.status.code != status_code_pb2.SUCCESS:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}")
-		fields = []
-		for color in sorted(response.outputs[0].data.colors, key = lambda c: c.value, reverse = True):
-			fields.append((color.raw_hex.upper(), f"{color.value * 100:.2f}%\n"
-														f"{re.sub(r'(?!^)(?=[A-Z])', ' ', color.w3c.name)}\n"
-														f"({color.w3c.hex.upper()})"))
+		fields = [(color.raw_hex.upper(), f"{color.value * 100:.2f}%\n"
+											f"{re.sub(r'(?!^)(?=[A-Z])', ' ', color.w3c.name)}\n"
+											f"({color.w3c.hex.upper()})")
+					for color in sorted(response.outputs[0].data.colors, key = lambda c: c.value, reverse = True)]
 		await ctx.embed_reply(title = "Color Density", fields = fields, thumbnail_url = image_url)
 	
 	async def google(self, ctx, *, search: str):
