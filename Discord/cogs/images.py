@@ -122,13 +122,9 @@ class Images(commands.Cog):
 		)
 		if response.status.code != status_code_pb2.SUCCESS:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}")
-		names = {}
-		for concept in response.outputs[0].data.concepts:
-			names[concept.name] = concept.value * 100
-		output = ""
-		for name, value in sorted(names.items(), key = lambda i: i[1], reverse = True):
-			output += f"**{name}**: {value:.2f}%, "
-		output = output[:-2]
+		output = ", ".join(f"**{concept.name}**: {concept.value * 100:.2f}%"
+							for concept in sorted(response.outputs[0].data.concepts, 
+													key = lambda c: c.value, reverse = True))
 		await ctx.embed_reply(output, thumbnail_url = image_url)
 	
 	# TODO: add as search subcommand
