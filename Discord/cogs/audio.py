@@ -580,6 +580,23 @@ class Audio(commands.Cog):
 		await ctx.send(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	
+	# Meta
+	@audio.group(invoke_without_command = True, case_insensitive = True)
+	@commands.guild_only()
+	@checks.is_voice_connected()
+	@checks.not_forbidden()
+	async def latency(self, ctx):
+		'''Latency between a HEARTBEAT and its HEARTBEAT_ACK in seconds'''
+		await ctx.embed_reply(f"{ctx.guild.voice_client.latency}s")
+	
+	@latency.command()
+	@commands.guild_only()
+	@checks.is_voice_connected()
+	@checks.not_forbidden()
+	async def average(self, ctx):
+		'''Average of last 20 HEARTBEAT latencies'''
+		await ctx.embed_reply(f"{ctx.guild.voice_client.average_latency}s")
+	
 	# Voice Input
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True, hidden = True)
