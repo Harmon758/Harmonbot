@@ -70,7 +70,7 @@ future==0.18.2
 geojson==2.5.0
 gitdb==4.0.2
 googleapis-common-protos==1.52.0
-grpcio==1.33.1
+grpcio==1.33.2
 idna==2.10
 jaraco.itertools==5.0.0
 kiwisolver==1.2.0
