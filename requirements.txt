@@ -38,7 +38,7 @@ pyowm==3.0.0
 pyparsing==2.4.7
 python-aiml==0.9.3
 python-dateutil==2.8.1
-python-dotenv==0.14.0
+python-dotenv==0.15.0
 pytz==2020.1
 raven==6.10.0
 raven-aiohttp==0.7.0
