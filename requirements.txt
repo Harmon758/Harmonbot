@@ -88,6 +88,7 @@ six==1.15.0
 smmap==3.0.1
 sortedcontainers==2.2.2
 soupsieve==2.0.1
+tornado==6.0.4
 typing-extensions==3.7.4.3
 websockets==8.1
 xmltodict==0.12.0
