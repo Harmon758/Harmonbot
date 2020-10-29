@@ -351,15 +351,15 @@ class Trivia(commands.Cog):
 			row_number = int(message_parts[0])
 			value = int(message_parts[1])
 			if row_number < 1 or row_number > 6:
-				await ctx.embed_reply(":no_entry: That's not a valid row number")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} That's not a valid row number")
 				continue
 			if value not in values:
-				await ctx.embed_reply(":no_entry: That's not a valid value")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} That's not a valid value")
 				continue
 			value_index = values.index(value)
 			category_id = list(board.keys())[row_number - 1]
 			if not (clue := board[category_id]["clues"][value_index]):
-				await ctx.embed_reply(":no_entry: That question has already been chosen")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} That question has already been chosen")
 				continue
 			self.active_jeopardy[ctx.guild.id]["answerer"] = None
 			self.active_jeopardy[ctx.guild.id]["answer"] = clue["answer"]
