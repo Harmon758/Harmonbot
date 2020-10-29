@@ -311,7 +311,7 @@ class Twitch(commands.Cog):
 			ctx.channel.id, keyword
 		)
 		if not deleted:
-			return await ctx.embed_reply(":no_entry: This text channel isn't following that keyword")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that keyword")
 		await ctx.embed_reply(f"Removed the Twitch keyword search, `{keyword}`, from this text channel")
 	
 	# R/PT60S
