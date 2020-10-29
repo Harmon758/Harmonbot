@@ -63,10 +63,10 @@ class Trivia(commands.Cog):
 				raise RuntimeError("Trivia max concurrency reached, but neither active trivia nor jeopardy found.")
 			channel_id = getattr(self, f"active_{game}")[ctx.guild.id]["channel_id"]
 			if ctx.channel.id == channel_id:
-				return await ctx.embed_reply(f":no_entry: Error: There is already an ongoing game of {game} here")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of {game} here")
 			else:
 				channel = ctx.guild.get_channel(channel_id)
-				return await ctx.embed_reply(f":no_entry: Error: There is already an ongoing game of {game} in {channel.mention}")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of {game} in {channel.mention}")
 	
 	@commands.group(max_concurrency = max_concurrency, invoke_without_command = True, case_insensitive = True)
 	async def trivia(self, ctx):
