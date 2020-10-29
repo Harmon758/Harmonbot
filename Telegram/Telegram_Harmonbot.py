@@ -6,20 +6,20 @@ import os
 
 import dotenv
 
-version = "0.1.4"
+version = "0.2.0"
 
 # Load credentials from .env
 dotenv.load_dotenv()
 token = os.getenv("TELEGRAM_BOT_API_TOKEN")
 
 bot = telegram.Bot(token = token)
-updater = telegram.ext.Updater(token = token)
+updater = telegram.ext.Updater(token = token, use_context = True)
 
-def test(bot, update):
-	bot.sendMessage(chat_id = update.message.chat_id, text = "Hello, World!")
+def test(update, context):
+	context.bot.sendMessage(chat_id = update.message.chat_id, text = "Hello, World!")
 
-def ping(bot, update):
-	bot.sendMessage(chat_id = update.message.chat_id, text = "pong")
+def ping(update, context):
+	context.bot.sendMessage(chat_id = update.message.chat_id, text = "pong")
 
 test_handler = telegram.ext.CommandHandler("test", test)
 updater.dispatcher.add_handler(test_handler)
