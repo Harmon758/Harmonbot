@@ -23,7 +23,7 @@ imgurpython==1.1.7
 inflect==4.1.0
 isodate==0.6.0
 matplotlib==3.3.2
-more-itertools==8.5.0
+more-itertools==8.6.0
 numexpr==2.7.1
 numpy==1.19.2
 pandas==1.1.3
