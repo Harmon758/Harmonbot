@@ -26,7 +26,7 @@ matplotlib==3.3.2
 more-itertools==8.5.0
 numexpr==2.7.1
 numpy==1.19.2
-pandas==1.1.3
+pandas==1.1.4
 parsedatetime==2.6
 pillow==7.2.0
 psutil==5.7.2
