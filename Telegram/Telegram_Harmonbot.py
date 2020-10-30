@@ -2,11 +2,14 @@
 import telegram
 import telegram.ext
 
+import datetime
 import os
 
 import dotenv
 
-version = "0.2.0"
+version = "0.2.1"
+
+# TODO: set up logging and/or make Beta bot for CI
 
 # Load credentials from .env
 dotenv.load_dotenv()
@@ -26,6 +29,14 @@ updater.dispatcher.add_handler(test_handler)
 
 ping_handler = telegram.ext.CommandHandler("ping", ping)
 updater.dispatcher.add_handler(ping_handler)
+
+def error_handler(update, context):
+	if isinstance(context.error, telegram.error.Conflict):
+		print(f"Conflict @ {datetime.datetime.now().isoformat()}")  # probably CI
+	else:
+		raise context.error
+
+updater.dispatcher.add_error_handler(error_handler)
 
 updater.start_polling()
 
