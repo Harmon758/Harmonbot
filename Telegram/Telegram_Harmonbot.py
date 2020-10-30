@@ -7,7 +7,7 @@ import os
 
 import dotenv
 
-version = "0.2.1"
+version = "0.2.2"
 
 # TODO: set up logging and/or make Beta bot for CI
 
@@ -16,7 +16,7 @@ dotenv.load_dotenv()
 token = os.getenv("TELEGRAM_BOT_API_TOKEN")
 
 bot = telegram.Bot(token = token)
-updater = telegram.ext.Updater(token = token, use_context = True)
+updater = telegram.ext.Updater(token = token)
 
 def test(update, context):
 	context.bot.sendMessage(chat_id = update.message.chat_id, text = "Hello, World!")
