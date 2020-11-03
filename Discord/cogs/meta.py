@@ -183,7 +183,8 @@ class Meta(commands.Cog):
 		embed.add_field(name = "Version", value = self.bot.version)
 		embed.add_field(name = "Library", value = f"[discord.py](https://github.com/Rapptz/discord.py) v{discord_py_version}\n"
 													f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})")
-		owner = discord.utils.get(self.bot.get_all_members(), id = self.bot.owner_id)
+		if not (owner := discord.utils.get(self.bot.get_all_members(), id = self.bot.owner_id)):
+			owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
 		embed.set_footer(text = f"Developer/Owner: {owner} (Discord ID: {owner.id})", icon_url = owner.avatar_url)
 		await ctx.reply("", embed = embed)
 		await ctx.send(f"Changelog (Harmonbot Server): {self.bot.changelog}")
