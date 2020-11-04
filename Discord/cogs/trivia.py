@@ -458,6 +458,8 @@ class Trivia(commands.Cog):
 		# Check plurality
 		if response == self.bot.inflect_engine.plural(answer):
 			return True
+		if answer == self.bot.inflect_engine.plural(response):
+			return True
 		# Check XX and YY ZZ
 		last = answer_items[-1].split()
 		if len(last) > 1:
