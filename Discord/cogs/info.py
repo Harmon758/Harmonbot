@@ -193,6 +193,11 @@ class Info(commands.Cog):
 			user = ctx.author
 		description = "".join(str(badge_emoji) for flag_name, flag_value in user.public_flags if flag_value and 
 								(badge_emoji := ctx.bot.get_emoji(BADGE_EMOJI_IDS.get(getattr(discord.PublicUserFlags, flag_name), None))))
+		title = str(user)
+		if user.public_flags.verified_bot:
+			title += " [Verified Bot]"
+		elif user.bot:
+			title += " [Bot]"
 		fields = [("User", user.mention), ("ID", user.id)]
 		statuses = user.status.name.capitalize().replace('Dnd', 'Do Not Disturb')
 		for status_type in ("desktop", "web", "mobile"):
@@ -208,8 +213,7 @@ class Info(commands.Cog):
 		fields.append(("Joined", user.joined_at.isoformat(timespec = "milliseconds")))
 		if user.premium_since:
 			fields.append(("Boosting Since", user.premium_since.isoformat(timespec = "milliseconds")))
-		fields.append(("Bot", user.bot))
-		await ctx.embed_reply(description, title = str(user), title_url = str(user.avatar_url), 
+		await ctx.embed_reply(description, title = title, title_url = str(user.avatar_url), 
 								thumbnail_url = user.avatar_url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
 		# TODO: Add voice state?
