@@ -118,7 +118,9 @@ class Info(commands.Cog):
 				system_messages += "\nRandom welcome messages"
 			if ctx.guild.system_channel_flags.premium_subscriptions:
 				system_messages += "\nBoosts"
-		fields = [("Owner", ctx.guild.owner.mention), ("ID", ctx.guild.id), 
+		if not (guild_owner := ctx.guild.owner):
+			guild_owner = await ctx.guild.fetch_member(ctx.guild.owner_id)
+		fields = [("Owner", guild_owner.mention), ("ID", ctx.guild.id), 
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
 					("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"), 
 					("Roles", len(ctx.guild.roles)), ("Region", region), 
