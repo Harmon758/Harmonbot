@@ -46,7 +46,7 @@ class Words(commands.Cog):
 			definitions = self.bot.wordnik_word_api.getDefinitions(word)  # useCanonical = True ?
 		except urllib.error.HTTPError as e:
 			if e.code in (404, 429):
-				return await ctx.embed_reply(f":no_entry: Error: {e.reason}")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e.reason}")
 			raise
 		for definition in definitions:
 			if definition.text:
