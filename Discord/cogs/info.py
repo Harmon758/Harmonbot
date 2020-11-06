@@ -20,6 +20,19 @@ sys.path.insert(0, "..")
 from units.time import duration_to_string
 sys.path.pop(0)
 
+BADGE_EMOJI_IDS = {
+	discord.PublicUserFlags.staff: 773894866656034816, 
+	discord.PublicUserFlags.partner: 773895031882121218, 
+	discord.PublicUserFlags.hypesquad: 773895189311914064, 
+	discord.PublicUserFlags.bug_hunter: 773895334123798528, 
+	discord.PublicUserFlags.hypesquad_bravery: 773895517478322187, 
+	discord.PublicUserFlags.hypesquad_brilliance: 773895531281252353, 
+	discord.PublicUserFlags.hypesquad_balance: 773895543494672415, 
+	discord.PublicUserFlags.early_supporter: 773895694552662046, 
+	discord.PublicUserFlags.bug_hunter_level_2: 773895708839116840, 
+	discord.PublicUserFlags.verified_bot_developer: 773895804015869953
+}
+
 def setup(bot):
 	bot.add_cog(Info(bot))
 
@@ -178,6 +191,8 @@ class Info(commands.Cog):
 		'''Information about a user'''
 		if not user:
 			user = ctx.author
+		description = "".join(str(badge_emoji) for flag_name, flag_value in user.public_flags if flag_value and 
+								(badge_emoji := ctx.bot.get_emoji(BADGE_EMOJI_IDS.get(getattr(discord.PublicUserFlags, flag_name), None))))
 		fields = [("User", user.mention), ("ID", user.id)]
 		statuses = user.status.name.capitalize().replace('Dnd', 'Do Not Disturb')
 		for status_type in ("desktop", "web", "mobile"):
@@ -194,7 +209,7 @@ class Info(commands.Cog):
 		if user.premium_since:
 			fields.append(("Boosting Since", user.premium_since.isoformat(timespec = "milliseconds")))
 		fields.append(("Bot", user.bot))
-		await ctx.embed_reply(title = str(user), title_url = str(user.avatar_url), 
+		await ctx.embed_reply(description, title = str(user), title_url = str(user.avatar_url), 
 								thumbnail_url = user.avatar_url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
 		# TODO: Add voice state?
