@@ -110,7 +110,8 @@ if __name__ == "__main__":
 		
 		# Forward DMs
 		if channel.type is discord.ChannelType.private and channel.recipient.id != ctx.bot.owner_id:
-			me = discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)
+			if not (me := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
+				me = await ctx.bot.fetch_user(ctx.bot.owner_id)
 			if author == ctx.bot.user:
 				try:
 					await me.send(f"To {channel.recipient}: {message.content}", embed = message.embeds[0] if message.embeds else None)
