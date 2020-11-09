@@ -174,7 +174,7 @@ class Audio(commands.Cog):
 		try:
 			await commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate(ctx)
 		except commands.CheckAnyFailure:
-			if ctx.author in ctx.guild.voice_client.channel.members:
+			if ctx.author in ctx.guild.voice_client.channel.members or ctx.author.id in ctx.guild.voice_client.channel.voice_states:
 				if not ctx.guild.voice_client.is_playing() and not ctx.guild.voice_client.is_paused():
 					await ctx.embed_reply(":no_entry: There is no song to skip")
 				elif ctx.author.id in player.skip_votes:
