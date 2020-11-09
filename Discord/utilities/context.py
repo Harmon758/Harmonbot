@@ -64,6 +64,8 @@ class Context(commands.Context):
 			return True
 		role_ids = []
 		if type == "user":
+			if user:
+				id = user.id
 			user_setting  = await self.bot.db.fetchval(
 				"""
 				SELECT setting FROM permissions.users
