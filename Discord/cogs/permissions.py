@@ -129,7 +129,7 @@ class Permissions(commands.Cog):
 			setting = await ctx.get_permission(self.bot.all_commands[permission].name, type = "everyone")
 			return await ctx.embed_reply(f"{permission} is set to {setting} for everyone")
 		if isinstance(users, discord.Member):
-			setting = await ctx.get_permission(self.bot.all_commands[permission].name, id = users.id)
+			setting = await ctx.get_permission(self.bot.all_commands[permission].name, user = users)
 			return await ctx.embed_reply(f"{permission} is set to {setting} for {users.mention}")
 		if isinstance(users, discord.Role):
 			setting = await ctx.get_permission(self.bot.all_commands[permission].name, 
