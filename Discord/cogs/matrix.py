@@ -95,8 +95,8 @@ class Matrix(commands.Cog):
 		'''Raise a matrix to a power'''
 		try:
 			await ctx.embed_reply(str(numpy.matrix(matrix) ** power))
-		except ValueError as e:  # If not square matrix
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+		except ValueError as e:  # not square matrix
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@matrix.command()
 	async def rank(self, ctx, matrix: Matrix):
