@@ -66,8 +66,7 @@ class Osu(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data:
-			await ctx.embed_reply(":no_entry: Error: User not found")
-			return
+			return await ctx.embed_reply(":no_entry: Error: User not found")
 		data = data[0]
 		title_url = f"https://osu.ppy.sh/users/{data['user_id']}"
 		country_name = pycountry.countries.get(alpha_2 = data["country"]).name
