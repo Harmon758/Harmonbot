@@ -243,7 +243,7 @@ class Search(commands.Cog):
 		if "missing" in page:
 			await ctx.embed_reply(":no_entry: Page not found")
 		elif "invalid" in page:
-			await ctx.embed_reply(":no_entry: Error: {}".format(page["invalidreason"]))
+			await ctx.embed_reply(f":no_entry: Error: {page['invalidreason']}")
 		elif redirect and "redirects" in data["query"]:
 			await self.process_wikipedia(ctx, data["query"]["redirects"][-1]["to"], redirect = False)
 			# TODO: Handle section links/tofragments
@@ -251,7 +251,7 @@ class Search(commands.Cog):
 			description = page["extract"] if len(page["extract"]) <= 512 else page["extract"][:512] + "..."
 			description = re.sub(r"\s+ \s+", ' ', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
-			image_url = thumbnail["source"].replace("{}px".format(thumbnail["width"]), "1200px") if thumbnail else None
+			image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
 	
 	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True, case_insensitive = True)
