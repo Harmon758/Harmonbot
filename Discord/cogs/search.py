@@ -221,19 +221,24 @@ class Search(commands.Cog):
 	async def process_wikipedia(self, ctx, search, random = False, redirect = True):
 		# TODO: Add User-Agent
 		# TODO: use textwrap
+		url = "https://en.wikipedia.org/w/api.php"
 		if random:
-			async with ctx.bot.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "random", "rnnamespace": 0, "format": "json"}) as resp:
+			params = {"action": "query", "list": "random", "rnnamespace": 0, "format": "json"}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			search = data["query"]["random"][0]["title"]
 		else:
-			async with ctx.bot.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}) as resp:
+			params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
 			try:
 				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
 			except IndexError:
 				await ctx.embed_reply(":no_entry: Page not found")
 				return
-		async with ctx.bot.aiohttp_session.get("https://en.wikipedia.org/w/api.php", params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, "inprop": "url", "exintro": "", "explaintext": "", "pithumbsize": 9000, "pilicense": "any", "format": "json"}) as resp: # exchars?
+		params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, 
+					"inprop": "url", "exintro": "", "explaintext": "", "pithumbsize": 9000, "pilicense": "any", "format": "json"}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp: # exchars?
 			data = await resp.json()
 		if "pages" not in data["query"]:
 			await ctx.embed_reply(":no_entry: Error")
