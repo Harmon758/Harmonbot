@@ -397,6 +397,9 @@ class Twitch(commands.Cog):
 		except aiohttp.ClientConnectionError as e:
 			print(f"{self.bot.console_message_prefix}Twitch Task Connection Error: {type(e).__name__}: {e}")
 			await asyncio.sleep(10)
+		except discord.DiscordServerError as e:
+			print(f"{self.bot.console_message_prefix}Twitch Task Discord Server Error: {e}")
+			await asyncio.sleep(60)
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
