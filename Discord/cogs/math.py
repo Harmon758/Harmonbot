@@ -25,12 +25,9 @@ class Math(commands.Cog):
 	
 	# Basic
 	
-	@commands.command()
+	@commands.command(require_var_positional = True)
 	async def add(self, ctx, *numbers: float):
 		'''Add numbers together'''
-		if not numbers:
-			await ctx.embed_reply("Add what?")
-			return
 		await ctx.embed_reply(f"{' + '.join(f'{number:g}' for number in numbers)} = {sum(numbers):g}")
 	
 	# TODO: Fix/Improve
