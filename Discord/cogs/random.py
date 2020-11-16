@@ -238,14 +238,12 @@ class Random(commands.Cog):
 		else:
 			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 	
-	@commands.command(aliases = ["choice", "pick"])
+	@commands.command(aliases = ["choice", "pick"], require_var_positional = True)
 	async def choose(self, ctx, *choices: str):
 		'''
 		Randomly chooses between multiple options
 		choose <option1> <option2> <...>
 		'''
-		if not choices:
-			return await ctx.embed_reply("Choose between what?")
 		await ctx.embed_reply(random.choice(choices))
 	
 	@commands.command(aliases = ["flip"])
