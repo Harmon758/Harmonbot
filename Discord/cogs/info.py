@@ -30,7 +30,7 @@ BADGE_EMOJI_IDS = {
 	discord.PublicUserFlags.hypesquad_balance: 773895543494672415, 
 	discord.PublicUserFlags.early_supporter: 773895694552662046, 
 	discord.PublicUserFlags.bug_hunter_level_2: 773895708839116840, 
-	discord.PublicUserFlags.verified_bot_developer: 773895804015869953
+	discord.PublicUserFlags.early_verified_bot_developer: 773895804015869953
 }
 
 def setup(bot):
