@@ -238,7 +238,7 @@ class Search(commands.Cog):
 				return
 		params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, 
 					"inprop": "url", "exintro": "", "explaintext": "", "pithumbsize": 9000, "pilicense": "any", "format": "json"}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp: # exchars?
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:  # exchars?
 			data = await resp.json()
 		if "pages" not in data["query"]:
 			await ctx.embed_reply(":no_entry: Error")
@@ -257,7 +257,7 @@ class Search(commands.Cog):
 			description = re.sub(r"\s+ \s+", ' ', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
 			image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
-			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url) # canonicalurl?
+			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url)  # canonicalurl?
 	
 	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True, case_insensitive = True)
 	async def wolframalpha(self, ctx, *, search: str):
