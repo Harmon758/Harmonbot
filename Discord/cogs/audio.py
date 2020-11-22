@@ -52,7 +52,7 @@ class Audio(commands.Cog):
 		All audio subcommands are also commands
 		For cleanup of audio commands, the Manage Messages permission is required
 		'''
-		if song.lower().startswith("info "):
+		if song and song.lower().startswith("info "):
 			if ctx.invoked_with.lower() == "spotify":
 				return await ctx.invoke(self.bot.cogs["Info"].spotify, song.lstrip(song.split()[0]).lstrip())
 			elif ctx.invoked_with.lower() in ("yt", "youtube"):
