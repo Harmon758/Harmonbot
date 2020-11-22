@@ -52,10 +52,10 @@ class Audio(commands.Cog):
 		All audio subcommands are also commands
 		For cleanup of audio commands, the Manage Messages permission is required
 		'''
-		if ctx.subcommand_passed and ctx.subcommand_passed.lower() == "info":
+		if song.lower().startswith("info "):
 			if ctx.invoked_with.lower() == "spotify":
 				return await ctx.invoke(self.bot.cogs["Info"].spotify, song.lstrip(song.split()[0]).lstrip())
-			else:
+			elif ctx.invoked_with.lower() in ("yt", "youtube"):
 				return await ctx.invoke(self.bot.cogs["Info"].youtube, song.lstrip(song.split()[0]).lstrip())
 		if not ctx.guild.voice_client:
 			if ctx.guild.id not in self.players:
