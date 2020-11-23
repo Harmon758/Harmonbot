@@ -483,9 +483,9 @@ class Meta(commands.Cog):
 	@commands.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
-		await ctx.embed_send(":ok_hand::skin-tone-2: Restarting...")
+		restart_message = await ctx.embed_send(":ok_hand::skin-tone-2: Restarting...")
 		print("Shutting down Discord Harmonbot...")
-		await ctx.bot.restart_tasks(ctx.channel.id)
+		await ctx.bot.restart_tasks(ctx.channel.id, restart_message.id)
 		await ctx.bot.logout()
 	
 	@commands.command(aliases = ["crash", "panic"])
