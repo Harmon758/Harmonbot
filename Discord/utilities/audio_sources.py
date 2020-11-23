@@ -1,6 +1,5 @@
 
 import discord
-# from discord.oggparse import OggStream
 
 import functools
 import logging
@@ -12,7 +11,7 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 	
 	'''
 	Modified discord.FFmpegPCMAudio
-	To use ffmpeg log as stderr and suppress subprocess window
+	To use ffmpeg log as stderr
 	'''
 	
 	def __init__(self, ctx, source, before_options = None):
@@ -20,17 +19,8 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
 		self.source = source  # Unnecessary?
 		self.bot = ctx.bot
 		with open(self.bot.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
-			args = ["-i", source, "-f", "s16le", "-ar", "48000", 
-					"-ac", '2', "-loglevel", "warning", "pipe:1"]
-			# For FFmpegOpusAudio:
-			# args = ["-i", source, "-map_metadata", "-1", "-f", "opus", "-c:a", "libopus", "-ar", "48000", 
-			# 		"-ac", '2', "-b:a", "128k", "-loglevel", "warning", "pipe:1"]  # Increase bitrate?
-			if isinstance(before_options, str):
-				args.insert(0, shlex.split(before_options))
-			super(discord.FFmpegPCMAudio, self).__init__(source, executable = "bin/ffmpeg", 
-															args = args, stderr = ffmpeg_log, 
-															creationflags = subprocess.CREATE_NO_WINDOW)
-			# self._packet_iter = OggStream(self._stdout).iter_packets()
+			super().__init__(source, executable = "bin/ffmpeg", 
+								stderr = ffmpeg_log, before_options = before_options)
 
 
 class ModifiedPCMVolumeTransformer(discord.PCMVolumeTransformer):
