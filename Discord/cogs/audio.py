@@ -127,7 +127,6 @@ class Audio(commands.Cog):
 			await ctx.embed_reply(":door: I've left the voice channel")
 		del self.players[ctx.guild.id]
 		await self.bot.attempt_delete_message(ctx.message)
-		## await ctx.embed_reply("The leave command is currently disabled right now, due to an issue/bug with Discord.")
 	
 	@commands.command(aliases = ["stop"])
 	@checks.is_voice_connected()
