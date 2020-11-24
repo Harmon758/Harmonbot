@@ -34,7 +34,7 @@ py-cpuinfo==7.0.0
 pycountry==20.7.3
 pydealer==1.4.0
 pygost==5.2
-pyowm==3.0.0
+pyowm==3.1.1
 pyparsing==2.4.7
 python-aiml==0.9.3
 python-dateutil==2.8.1
