@@ -229,13 +229,9 @@ class Location(commands.Cog):
 				pyowm.commons.exceptions.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
 			return await ctx.embed_reply(f":no_entry: Error: {e}")
-		condition = observation.weather.status
-		condition_emotes = {"Clear": ":sunny:", "Clouds": ":cloud:", "Fog": ":foggy:", 
-							"Rain": ":cloud_rain:", "Snow": ":cloud_snow:"}
-		# Emotes for Haze?, Mist?
-		fields = [("Conditions", f"{condition} {condition_emotes.get(condition, '')}")]
-		fields.append(("Temperature", f"{observation.weather.temperature(unit = 'celsius')['temp']}°C\n"
-										f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F"))
+		fields = [("Conditions", f"{observation.weather.status}"), 
+					("Temperature", f"{observation.weather.temperature(unit = 'celsius')['temp']}°C\n"
+										f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F")]
 		if wind_direction := observation.weather.wnd.get("deg", ""):
 			wind_direction = wind_degrees_to_direction(wind_direction)
 		fields.append(("Wind", f"{wind_direction} {observation.weather.wind(unit = 'km_hour')['speed']:.2f} km/h\n"
@@ -248,5 +244,6 @@ class Location(commands.Cog):
 			fields.append(("Visibility", f"{visibility / 1000:.2f} km\n"
 											f"{visibility * 0.000621371192237:.2f} mi"))
 		await ctx.embed_reply(f"**__{observation.location.name}, {observation.location.country}__**", 
-								fields = fields, timestamp = observation.weather.reference_time(timeformat = "date"))
+								thumbnail_url = observation.weather.weather_icon_url(), fields = fields, 
+								timestamp = observation.weather.reference_time(timeformat = "date"))
 
