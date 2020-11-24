@@ -228,7 +228,7 @@ class Location(commands.Cog):
 		except (pyowm.commons.exceptions.NotFoundError, 
 				pyowm.commons.exceptions.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
-			return await ctx.embed_reply(f":no_entry: Error: {e}")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		if wind_direction := observation.weather.wnd.get("deg", ""):
 			wind_direction = wind_degrees_to_direction(wind_direction)
 		pressure = observation.weather.pressure["press"]
