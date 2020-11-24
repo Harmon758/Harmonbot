@@ -5,6 +5,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import time
+from typing import Union
 
 from modules import conversions
 from utilities import checks
@@ -246,8 +247,10 @@ class Discord(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def timestamp(self, ctx, ID: int):
-		'''Timestamp of a Discord ID'''
+	async def timestamp(self, ctx, ID: Union[int, discord.Message]):
+		'''Timestamp of a Discord ID or message'''
+		if isinstance(ID, discord.Message):
+			ID = ID.id
 		try:
 			await ctx.embed_reply(discord.utils.snowflake_time(ID).replace(tzinfo = datetime.timezone.utc))
 		except OverflowError:
