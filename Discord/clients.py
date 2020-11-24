@@ -85,7 +85,6 @@ class Bot(commands.Bot):
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.console_line_limit = 167
 		self.console_message_prefix = "Discord Harmonbot: "
-		self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: use everywhere
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
 		self.library_path = "D:/Music/"
@@ -105,6 +104,7 @@ class Bot(commands.Bot):
 		self.dark_but_not_black_color = self.dark_but_not_black_colour = 0x2c2f33
 		self.not_quite_black_color = self.not_quite_black_colour = 0x23272a
 		### Emoji
+		self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: use everywhere
 		self.error_emoji = self.error_emote = '\N{NO ENTRY}'
 		## Constant
 		self.CODE_BLOCK = "```\n{}\n```"  # TODO: Change to method?
