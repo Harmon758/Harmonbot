@@ -8,15 +8,33 @@ def setup(bot):
 
 class Duelyst(commands.Cog):
 	
+	'''
+	Deprecated now that Duelyst is closed/shut down:
+	https://duelyst.com/news/farewell-duelyst
+	https://web.archive.org/web/20200126025952/https://duelyst.com/news/farewell-duelyst
+	https://steamcommunity.com/games/291410/announcements/detail/1688222120329073284
+	https://twitter.com/PlayDuelyst/status/1220802596081811456
+	and now that the duelyststats.info domain being used for its API has a different owner and website
+	'''
+	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(hidden = True, 
+					invoke_without_command = True, case_insensitive = True)
 	async def duelyst(self, ctx):
-		'''Duelyst'''
+		'''
+		Duelyst
+		Deprecated now that Duelyst is closed/shut down:
+		https://duelyst.com/news/farewell-duelyst
+		https://web.archive.org/web/20200126025952/https://duelyst.com/news/farewell-duelyst
+		https://steamcommunity.com/games/291410/announcements/detail/1688222120329073284
+		https://twitter.com/PlayDuelyst/status/1220802596081811456
+		and now that the duelyststats.info domain being used for its API has a different owner and website
+		'''
 		await ctx.send_help(ctx.command)
 	
-	@duelyst.group(case_insensitive = True)
+	@duelyst.group(enabled = False, hidden = True, case_insensitive = True)
 	async def card(self, ctx, *, name: str):
 		'''Details of a specific card'''
 		url = "https://duelyststats.info/scripts/carddata/get.php"
@@ -25,7 +43,7 @@ class Duelyst(commands.Cog):
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
-	@card.command()
+	@card.command(enabled = False, hidden = True)
 	async def card_random(self, ctx):
 		'''Details of a random card'''
 		url = "https://duelyststats.info/scripts/carddata/get.php"
