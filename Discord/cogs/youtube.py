@@ -74,7 +74,7 @@ class YouTube(commands.Cog):
 		self.streams_task.set_name("YouTube streams")
 		
 		clients.create_file("youtube_uploads", content = {})
-		with open(clients.data_path + "/youtube_uploads.json", 'r') as uploads_file:
+		with open(self.bot.data_path + "/youtube_uploads.json", 'r') as uploads_file:
 			self.uploads_info = json.load(uploads_file)
 		self.uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions(), name = "Renew YouTube upload subscriptions")
@@ -348,7 +348,7 @@ class YouTube(commands.Cog):
 				self.uploads_info[str(ctx.channel.id)].remove(channel_id)
 				return
 		self.uploads_following.add(channel_id)
-		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
+		with open(ctx.bot.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
 		await ctx.embed_reply(f"Added the YouTube channel, "
 								f"[`{channel_id}`](https://www.youtube.com/channel/{channel_id}), "
@@ -373,7 +373,7 @@ class YouTube(commands.Cog):
 				self.uploads_info[str(ctx.channel.id)].append(channel_id)
 				self.uploads_following.add(channel_id)
 				return
-		with open(clients.data_path + "/youtube_uploads.json", 'w') as uploads_file:
+		with open(ctx.bot.data_path + "/youtube_uploads.json", 'w') as uploads_file:
 			json.dump(self.uploads_info, uploads_file, indent = 4)
 		await ctx.embed_reply("Removed the YouTube channel, "
 								f"[`{channel_id}`](https://www.youtube.com/channel/{channel_id}), "
