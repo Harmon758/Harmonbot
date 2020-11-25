@@ -433,6 +433,16 @@ class Trivia(commands.Cog):
 		# Make lowercase
 		answer = ' '.join(answer.split()).lower()
 		response = ' '.join(response.split()).lower()
+		
+		# Check removal of/replacement of - with space (prior to removing article prefixes)
+		# Remove commas beforehand
+		answer_copy = answer.replace(',', "")
+		response_copy = response.replace(',', "")
+		if answer_copy.replace('-', ' ') == response_copy.replace('-', ' '):
+			return True
+		if answer_copy.replace('-', "") == response_copy.replace('-', ""):
+			return True
+		
 		# Remove article prefixes
 		answer = self.remove_article_prefix(answer)
 		response = self.remove_article_prefix(response)
