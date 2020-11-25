@@ -557,7 +557,7 @@ class Trivia(commands.Cog):
 		if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
 			return True
 		# Check abbreviations
-		for abbreviation, word in (("mt", "mount"), ("st", "saint")):
+		for abbreviation, word in (("dr", "doctor"), ("mt", "mount"), ("st", "saint")):
 			if (re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", answer) == 
 				re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", response)):
 				return True
