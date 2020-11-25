@@ -22,7 +22,6 @@ import emoji
 import pydealer
 import pyparsing
 
-import clients
 from utilities import checks
 from utilities.converters import Maptype
 
@@ -65,7 +64,7 @@ class Random(commands.Cog):
 		# Import jokes
 		self.jokes = []
 		try:
-			with open(clients.data_path + "/jokes.csv", newline = "") as jokes_file:
+			with open(self.bot.data_path + "/jokes.csv", newline = "") as jokes_file:
 				jokes_reader = csv.reader(jokes_file)
 				for row in jokes_reader:
 					self.jokes.append(row[0])
