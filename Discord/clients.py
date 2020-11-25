@@ -275,6 +275,9 @@ class Bot(commands.Bot):
 		
 		self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
 	
+	def print(self, message):
+		print(f"[{datetime.datetime.now().isoformat()}] {self.console_message_prefix}{message}")
+	
 	@property
 	async def app_info(self):
 		if not hasattr(self, "_app_info"):
