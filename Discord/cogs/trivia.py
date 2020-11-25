@@ -439,6 +439,7 @@ class Trivia(commands.Cog):
 		# Return False if empty response
 		if not response:
 			return False
+		
 		# Get items in lists
 		answer_items = [item.strip() for item in answer.split(',')]
 		answer_items[-1:] = [item.strip() for item in answer_items[-1].split("and") if item]
@@ -455,6 +456,17 @@ class Trivia(commands.Cog):
 		# Check equivalence
 		if set(answer_items) == set(response_items):
 			return True
+		# Check replacement of - with space
+		answer_items_copy = {item.replace('-', ' ') for item in answer_items}
+		response_items_copy = {item.replace('-', ' ') for item in response_items}
+		if answer_items_copy == response_items_copy:
+			return True
+		# Check removal of -
+		answer_items_copy = {item.replace('-', "") for item in answer_items}
+		response_items_copy = {item.replace('-', "") for item in response_items}
+		if answer_items_copy == response_items_copy:
+			return True
+		
 		# Check plurality
 		if response == self.bot.inflect_engine.plural(answer):
 			return True
