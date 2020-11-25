@@ -395,10 +395,10 @@ class Twitch(commands.Cog):
 					)
 				# TODO: Handle no longer being followed?
 		except aiohttp.ClientConnectionError as e:
-			print(f"{self.bot.console_message_prefix}Twitch Task Connection Error: {type(e).__name__}: {e}")
+			self.bot.print(f"Twitch Task Connection Error: {type(e).__name__}: {e}")
 			await asyncio.sleep(10)
 		except discord.DiscordServerError as e:
-			print(f"{self.bot.console_message_prefix}Twitch Task Discord Server Error: {e}")
+			self.bot.print(f"Twitch Task Discord Server Error: {e}")
 			await asyncio.sleep(60)
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
@@ -413,7 +413,7 @@ class Twitch(commands.Cog):
 	
 	@check_streams.after_loop
 	async def after_check_streams(self):
-		print(f"{self.bot.console_message_prefix}Twitch task cancelled @ {datetime.datetime.now().isoformat()}")
+		self.bot.print("Twitch task cancelled")
 	
 	async def process_streams(self, streams, type, match = None):
 		# TODO: use textwrap

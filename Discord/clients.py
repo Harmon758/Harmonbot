@@ -160,13 +160,13 @@ class Bot(commands.Bot):
 		try:
 			self.imgur_client = imgurpython.ImgurClient(self.IMGUR_CLIENT_ID, self.IMGUR_CLIENT_SECRET)
 		except imgurpython.helpers.error.ImgurClientError as e:
-			print(f"{self.console_message_prefix}Failed to initialize Imgur Client: {e}")
+			self.print(f"Failed to initialize Imgur Client: {e}")
 		## OpenWeatherMap
 		try:
 			self.owm_client = pyowm.OWM(self.OWM_API_KEY)
 			self.weather_manager = self.owm_client.weather_manager()
 		except AssertionError as e:
-			print(f"{self.console_message_prefix}Failed to initialize OpenWeatherMap client: {e}")
+			self.print(f"Failed to initialize OpenWeatherMap client: {e}")
 		## Sentry (Raven)
 		self.sentry_client = self.raven_client = raven.Client(self.SENTRY_DSN, transport = raven_aiohttp.AioHttpTransport)
 		## Twitter
@@ -181,7 +181,7 @@ class Bot(commands.Bot):
 			self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
 			self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
 		except Exception as e:
-			print(f"{self.console_message_prefix}Failed to initialize Wordnik Client: {e}")
+			self.print(f"Failed to initialize Wordnik Client: {e}")
 		## youtube-dl
 		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "bestaudio/best", "extractaudio": True, 
 										"outtmpl": self.data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True}  # "audioformat": "mp3" ?
@@ -530,13 +530,13 @@ class Bot(commands.Bot):
 		# await voice.detectvoice()
 	
 	async def on_ready(self):
-		print(f"{self.console_message_prefix}readied @ {datetime.datetime.now().isoformat()}")
+		self.print("readied")
 	
 	async def on_resumed(self):
-		print(f"{self.console_message_prefix}resumed @ {datetime.datetime.now().isoformat()}")
+		self.print("resumed")
 	
 	async def on_disconnect(self):
-		print(f"{self.console_message_prefix}disconnected @ {datetime.datetime.now().isoformat()}")
+		self.print("disconnected")
 	
 	async def on_guild_join(self, guild):
 		self.loop.create_task(self.update_all_listing_stats(), name = "Update all bot listing stats")
@@ -651,7 +651,7 @@ class Bot(commands.Bot):
 												"Please give me permission to Read Message History")
 			# Bot missing permissions (Unhandled)
 			if isinstance(error.original, (discord.Forbidden, menus.CannotSendMessages)):
-				return print(f"{self.console_message_prefix}Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}")
+				return self.print(f"Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}")
 			# Handled with local error handler
 			if isinstance(error.original, youtube_dl.utils.DownloadError):
 				return
@@ -670,9 +670,9 @@ class Bot(commands.Bot):
 		if error_type is discord.Forbidden:
 			for arg in args:
 				if isinstance(arg, commands.context.Context):
-					return print(f"{self.console_message_prefix}Missing Permissions for {arg.command.qualified_name} in #{arg.channel.name} in {arg.guild.name}")
+					return self.print(f"Missing Permissions for {arg.command.qualified_name} in #{arg.channel.name} in {arg.guild.name}")
 				if isinstance(arg, discord.Message):
-					return print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
+					return self.print(f"Missing Permissions for #{arg.channel.name} in {arg.guild.name}")
 		await super().on_error(event_method, *args, **kwargs)
 		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (error_type, value, error_traceback))
 	

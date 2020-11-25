@@ -130,8 +130,7 @@ class YouTube(commands.Cog):
 			async with self.bot.aiohttp_session.post(url, headers = headers, data = data) as resp:
 				if resp.status not in (202, 204):
 					error_description = await resp.text()
-					print(f"{self.bot.console_message_prefix}Google PubSubHubbub Error {resp.status} "
-							f"re-subscribing to {channel_id}: {error_description}")
+					self.bot.print(f"Google PubSubHubbub Error {resp.status} re-subscribing to {channel_id}: {error_description}")
 			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
 	
 	async def youtube(self, ctx):
@@ -317,7 +316,7 @@ class YouTube(commands.Cog):
 	
 	@check_streams.after_loop
 	async def after_check_streams(self):
-		print(f"{self.bot.console_message_prefix}YouTube streams task cancelled @ {datetime.datetime.now().isoformat()}")
+		self.bot.print("YouTube streams task cancelled")
 	
 	# TODO: Follow channels/new video uploads
 	

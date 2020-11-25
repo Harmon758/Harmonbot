@@ -102,15 +102,15 @@ class TwitterStreamListener(tweepy.StreamListener):
 			print(f"Twitter Stream Listener: Missing permissions to send embed in #{channel.name} in {channel.guild.name}")
 	
 	def on_error(self, status_code):
-		print(f"Twitter Error: {status_code}")
+		self.bot.print(f"Twitter Error: {status_code}")
 		return False
 	
 	def on_exception(self, exception):
 		if isinstance(exception, urllib3.exceptions.ReadTimeoutError):
-			print(f"{self.bot.console_message_prefix}Twitter stream timed out | Recreating stream..")
+			self.bot.print("Twitter stream timed out | Recreating stream..")
 			self.bot.loop.create_task(self.start_feeds(), name = "Restart Twitter Stream")
 		elif isinstance(exception, urllib3.exceptions.ProtocolError):
-			print(f"{self.bot.console_message_prefix}Twitter stream Incomplete Read error | Recreating stream..")
+			self.bot.print("Twitter stream Incomplete Read error | Recreating stream..")
 			self.bot.loop.create_task(self.start_feeds(), name = "Restart Twitter Stream")
 
 class Twitter(commands.Cog):
@@ -130,7 +130,7 @@ class Twitter(commands.Cog):
 					if friend.protected:
 						self.blacklisted_handles.append(friend.screen_name.lower())
 		except tweepy.error.TweepError as e:
-			print(f"{self.bot.console_message_prefix}Failed to initialize Twitter cog blacklist: {e}")
+			self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
 		self.stream_listener = TwitterStreamListener(bot)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds(), name = "Start Twitter Stream")
 	

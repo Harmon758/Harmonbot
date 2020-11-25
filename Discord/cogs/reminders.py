@@ -246,7 +246,7 @@ class Reminders(commands.Cog):
 		if self.restarting_timer:
 			self.restarting_timer = False
 		else:
-			print(f"{self.bot.console_message_prefix}Reminders task cancelled @ {datetime.datetime.now().isoformat()}")
+			self.bot.print("Reminders task cancelled")
 
 class RemindersMenu(Menu, menus.MenuPages):
 	
