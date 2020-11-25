@@ -39,7 +39,7 @@ pyparsing==2.4.7
 python-aiml==0.9.3
 python-dateutil==2.8.1
 python-dotenv==0.15.0
-pytz==2020.1
+pytz==2020.4
 raven==6.10.0
 raven-aiohttp==0.7.0
 requests==2.25.0
