@@ -75,7 +75,7 @@ grpcio==1.33.2
 idna==2.10
 jaraco.itertools==5.0.0
 kiwisolver==1.2.0
-lxml==4.6.1
+lxml==4.6.2
 mpmath==1.1.0
 multidict==5.0.2
 oauthlib==3.1.0
