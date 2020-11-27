@@ -182,7 +182,7 @@ if __name__ == "__main__":
 			if aiml_response := ctx.bot.aiml_kernel.respond(content, sessionID = author.id):
 				embed.description = aiml_response
 				return await message.reply(embed = embed)
-			elif games_cog := ctx.bot.get_cog("Games"):
+			if games_cog := ctx.bot.get_cog("Games"):
 				embed.description = await games_cog.cleverbot_get_reply(content)
 				return await message.reply(embed = embed)
 		
