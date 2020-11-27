@@ -217,7 +217,7 @@ class Reminders(commands.Cog):
 		if not (channel := self.bot.get_channel(record["channel_id"])):
 			# TODO: Attempt to fetch channel?
 			return await self.bot.db.execute("UPDATE reminders.reminders SET failed = TRUE WHERE id = $1", record["id"])
-		user = self.bot.get_user(record["user_id"]) or self.bot.fetch_user(record["user_id"])
+		user = self.bot.get_user(record["user_id"]) or await self.bot.fetch_user(record["user_id"])
 		# TODO: Handle user not found?
 		embed = discord.Embed(color = self.bot.bot_color)
 		try:
