@@ -177,12 +177,14 @@ if __name__ == "__main__":
 		# Chatbot
 		if message.content.startswith(mentions):
 			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
+			embed = discord.Embed(color = ctx.bot.bot_color)
 			# TODO: Handle brain not loaded?
 			if aiml_response := ctx.bot.aiml_kernel.respond(content, sessionID = author.id):
-				return await ctx.embed_reply(aiml_response, attempt_delete = False)
+				embed.description = aiml_response
+				return await message.reply(embed = embed)
 			elif games_cog := ctx.bot.get_cog("Games"):
-				cleverbot_response = await games_cog.cleverbot_get_reply(content)
-				return await ctx.embed_reply(cleverbot_response, attempt_delete = False)
+				embed.description = await games_cog.cleverbot_get_reply(content)
+				return await message.reply(embed = embed)
 		
 		# TODO: Server setting to disable prefix-less commands
 		
