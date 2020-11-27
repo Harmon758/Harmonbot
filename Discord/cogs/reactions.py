@@ -29,15 +29,15 @@ class GuessMenu(Menu):
 	
 	async def send_initial_message(self, ctx, channel):
 		self.answer = random.randint(1, 10)
-		return await ctx.embed_reply(f"{ctx.author.mention}: Guess a number between 1 to 10")
+		return await ctx.embed_reply("Guess a number between 1 to 10")
 	
 	async def on_number(self, payload):
 		embed = self.message.embeds[0]
 		if (number := self.numbers[str(payload.emoji)]) == self.answer:
-			embed.description = f"{self.ctx.author.mention}: It was {number}!"
+			embed.description = f"It was {number}!"
 			self.stop()
 		else:
-			embed.description = (f"{self.ctx.author.mention}: Guess a number between 1 to 10\n"
+			embed.description = ("Guess a number between 1 to 10\n"
 									f"No, it's not {number}")
 		await self.message.edit(embed = embed)
 
