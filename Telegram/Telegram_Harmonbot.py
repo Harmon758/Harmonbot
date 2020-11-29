@@ -33,6 +33,8 @@ updater.dispatcher.add_handler(ping_handler)
 def error_handler(update, context):
 	if isinstance(context.error, telegram.error.Conflict):
 		print(f"Conflict @ {datetime.datetime.now().isoformat()}")  # probably CI
+	elif isinstance(context.error, telegram.error.NetworkError):
+		print(f"Network Error: {context.error} @ {datetime.datetime.now().isoformat()}")
 	else:
 		raise context.error
 
