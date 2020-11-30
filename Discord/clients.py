@@ -884,15 +884,15 @@ class Bot(commands.Bot):
 		try:
 			ctx.bot.load_extension("cogs." + cog)
 		except commands.ExtensionAlreadyLoaded:
-			await ctx.embed_reply(":no_entry: Error: Cog already loaded")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog already loaded")
 		except commands.ExtensionFailed as e:
-			await ctx.embed_reply(f":no_entry: Error loading cog: {e.original.__class__.__name__}: {e.original}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error loading cog: {e.original.__class__.__name__}: {e.original}")
 		except commands.ExtensionNotFound:
-			await ctx.embed_reply(":no_entry: Error: Cog not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog not found")
 		except commands.NoEntryPointError:
-			await ctx.embed_reply(":no_entry: Error: Setup function not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Setup function not found")
 		except commands.ExtensionError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to load `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
