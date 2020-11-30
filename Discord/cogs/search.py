@@ -52,7 +52,7 @@ class Search(commands.Cog):
 		info = await self.bot.loop.run_in_executor(None, func)
 		if not info.get("entries"):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Video not found")
-		await ctx.reply(info["entries"][0].get("webpage_url"))
+		await ctx.message.reply(info["entries"][0].get("webpage_url"))
 	
 	async def youtube_error(self, ctx, error):
 		if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
