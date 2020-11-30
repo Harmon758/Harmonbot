@@ -57,7 +57,8 @@ class AudioPlayer:
 	async def add_song(self, ctx, song, *, stream = False):
 		source = YTDLSource(ctx, song, stream = stream)
 		await source.get_info()
-		await self.queue.put(source)
+		if source.info:
+			await self.queue.put(source)
 		return source
 	
 	async def insert_song(self, ctx, song, position):
