@@ -159,7 +159,11 @@ class Misc(commands.Cog):
 		embed = discord.Embed(color = ctx.bot.bot_color)
 		embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
 		embed.description = f"Poked you for the {times} time!"
-		await user.send(embed = embed)
+		try:
+			await user.send(embed = embed)
+		except discord.HTTPException as e:
+			if e.code != 50007:  # 50007 - Cannot send messages to this user
+				raise
 		await ctx.embed_reply(f"You have poked {user.mention} for the {times} time!")
 	
 	@commands.command()
