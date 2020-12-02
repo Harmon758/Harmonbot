@@ -1,0 +1,13 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "00:00"
+  open-pull-requests-limit: 99
+  labels:
+  - dependency update
+  allow:
+  - dependency-type: direct
+  - dependency-type: indirect
