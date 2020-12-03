@@ -186,8 +186,8 @@ class Meta(commands.Cog):
 		if not (owner := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
 			owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
 		embed.set_footer(text = f"Developer/Owner: {owner} (Discord ID: {owner.id})", icon_url = owner.avatar_url)
-		await ctx.reply("", embed = embed)
-		await ctx.send(f"Changelog (Harmonbot Server): {ctx.bot.changelog}")
+		await ctx.message.reply(embed = embed)
+		await ctx.message.reply(f"Changelog (Harmonbot Server): {ctx.bot.changelog}")
 	
 	@commands.command()
 	async def changelog(self, ctx):
