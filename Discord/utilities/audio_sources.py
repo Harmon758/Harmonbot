@@ -143,7 +143,7 @@ class YTDLSource(ModifiedPCMVolumeTransformer):
 		self.set_info(info)
 	
 	def set_info(self, info):
-		self.info = next(iter(info.get("entries", [])), {})
+		self.info = next(iter(info.get("entries", [])), info)
 		logging.getLogger("discord").info("playing URL {}".format(self.url))
 		
 		self.stream = self.info.get("is_live") or self.stream

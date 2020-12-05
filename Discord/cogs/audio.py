@@ -92,7 +92,7 @@ class Audio(commands.Cog):
 				embed.description = embed.description[:ctx.bot.EDCL - 4] + "...`"
 				# EDCL: Embed Description Character Limit
 		else:
-			if source.info:
+			if source.info["webpage_url"] != "ytsearch:" + song:
 				embed.title = source.info["title"]
 				embed.url = source.info["webpage_url"]
 				embed.description = f":ballot_box_with_check: Successfully added `{song}` to the queue"

@@ -57,7 +57,7 @@ class AudioPlayer:
 	async def add_song(self, ctx, song, *, stream = False):
 		source = YTDLSource(ctx, song, stream = stream)
 		await source.get_info()
-		if source.info:
+		if source.info["webpage_url"] != "ytsearch:" + song:
 			await self.queue.put(source)
 		return source
 	
