@@ -190,7 +190,7 @@ class Audio(commands.Cog):
 				except errors.AudioError as e:
 					await ctx.embed_reply(":no_entry: {}".format(e))
 				else:
-					await ctx.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number, song["info"]["title"]))
+					await ctx.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number, song.info["title"]))
 					del song
 			else:
 				if self.players[ctx.guild.id].skip():
