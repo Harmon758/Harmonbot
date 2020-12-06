@@ -404,8 +404,8 @@ class Trivia(commands.Cog):
 		if message.channel.id != self.active_jeopardy[message.guild.id]["channel_id"]:
 			return
 		if (self.active_jeopardy[message.guild.id]["question_countdown"] and 
-			self.check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content) and 
-			not self.active_jeopardy[message.guild.id]["answerer"]):
+			not self.active_jeopardy[message.guild.id]["answerer"] and 
+			self.check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content)):
 				self.active_jeopardy[message.guild.id]["answerer"] = message.author
 	
 	# TODO: jeopardy stats
