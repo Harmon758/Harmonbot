@@ -62,7 +62,7 @@ youtube-dl==2020.12.5
 APScheduler==3.6.3
 async-timeout==3.0.1
 attrs==20.3.0
-certifi==2020.11.8
+certifi==2020.12.5
 cffi==1.14.2
 chardet==3.0.4
 cycler==0.10.0
