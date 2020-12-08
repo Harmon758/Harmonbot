@@ -54,7 +54,7 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(image_url = emoji.url)
 	
 	@commands.command(aliases = ["emotify"])
-	async def emojify(self, ctx, *, text : str):
+	async def emojify(self, ctx, *, text: str):
 		'''Emojify text'''
 		output = ""
 		for character in text:
