@@ -68,7 +68,7 @@ class Misc(commands.Cog):
 			await ctx.embed_reply(output)
 		except discord.HTTPException:
 			# TODO: use textwrap/paginate
-			await ctx.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 	
 	@commands.command()
 	async def fancify(self, ctx, *, text : str):
