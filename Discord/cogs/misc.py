@@ -71,7 +71,7 @@ class Misc(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 	
 	@commands.command()
-	async def fancify(self, ctx, *, text : str):
+	async def fancify(self, ctx, *, text: str):
 		'''Fancify text'''
 		output = ""
 		for character in text:
