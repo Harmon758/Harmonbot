@@ -86,7 +86,7 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(output)
 	
 	@commands.command(aliases = ["full-width", "full_width"])
-	async def fullwidth(self, ctx, *, text : str):
+	async def fullwidth(self, ctx, *, text: str):
 		'''Make text fullwidth'''
 		output = ""
 		for character in text:
