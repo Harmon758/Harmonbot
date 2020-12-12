@@ -75,7 +75,7 @@ class Poker(commands.Cog):
 		for card in self.community_cards.cards:
 			abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
 			board.append(treys.Card.new(abbreviation))
-		best_hand_value = 7462
+		best_hand_value = evaluator.table.MAX_HIGH_CARD
 		best_player = None
 		for player, hand in self.hands.items():
 			hand_stack = []
