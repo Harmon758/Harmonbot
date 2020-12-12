@@ -56,17 +56,17 @@ class Poker(commands.Cog):
 			cards_string = self.cards_to_string(self.hands[player.id].cards)
 			await ctx.bot.send_embed(player, f"Your poker hand: {cards_string}")
 		await self.betting(ctx)
-		await ctx.embed_send(f"The pot: {self.pot}")
 		self.community_cards = self.deck.deal(3)
-		await ctx.embed_send(f"The flop: {self.cards_to_string(self.community_cards)}")
+		await ctx.embed_send(f"The pot: {self.pot}\n"
+								f"The flop: {self.cards_to_string(self.community_cards)}")
 		await self.betting(ctx)
-		await ctx.embed_send(f"The pot: {self.pot}")
 		self.community_cards.add(self.deck.deal(1))
-		await ctx.embed_send(f"The turn: {self.cards_to_string(self.community_cards)}")
+		await ctx.embed_send(f"The pot: {self.pot}\n"
+								f"The turn: {self.cards_to_string(self.community_cards)}")
 		await self.betting(ctx)
-		await ctx.embed_send(f"The pot: {self.pot}")
 		self.community_cards.add(self.deck.deal(1))
-		await ctx.embed_send(f"The river: {self.cards_to_string(self.community_cards)}")
+		await ctx.embed_send(f"The pot: {self.pot}\n"
+								f"The river: {self.cards_to_string(self.community_cards)}")
 		await self.betting(ctx)
 		await ctx.embed_send(f"The pot: {self.pot}")
 		
