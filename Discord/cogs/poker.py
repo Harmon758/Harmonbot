@@ -128,11 +128,11 @@ class Poker(commands.Cog):
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
 					if response.content.lower() == "call":
+						self.bets[player.id] = self.current_bet
 						if self.current_bet == 0 or (player.id in self.bets and self.bets[player.id] == self.current_bet):
 							embed.description = (f"{player.mention} attempted to call\n"
 													f"Since there's nothing to call, {player.mention} has checked instead")
 						else:
-							self.bets[player.id] = self.current_bet
 							embed.description = f"{player.mention} has called"
 					elif response.content.lower() == "check":
 						if self.current_bet != 0 and (player.id not in self.bets or self.bets[player.id] < self.current_bet):
