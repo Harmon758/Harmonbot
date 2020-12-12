@@ -122,7 +122,8 @@ class Poker(commands.Cog):
 						except ValueError:
 							return False
 					return False
-				await ctx.embed_send(f"{player.mention}'s turn")
+				await ctx.embed_send(f"{player.mention}'s turn\n"
+										"Respond with `call`, `check`, `fold`, or `raise ` and the amount")
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
 					response_ctx = await ctx.bot.get_context(response)
