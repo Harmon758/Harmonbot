@@ -19,7 +19,6 @@ class Poker(commands.Cog):
 		self.players = []
 		self.deck = None
 		self.hands = {}
-		self.turn = None
 		self.bets = {}
 		self.current_bet = None
 		self.pot = None
@@ -104,62 +103,61 @@ class Poker(commands.Cog):
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 		await ctx.embed_send(f"{player.mention} is the winner with a {hand_name}")
 	
-	@poker.command(name = "raise")
-	async def poker_raise(self, ctx, points: int):
-		if not self.turn or self.turn.id == ctx.author.id:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
-		if points < self.current_bet:
-			return await ctx.embed_reply("The current bet is more than that")
-		self.bets[self.turn.id] = points
-		if points > self.current_bet:
-			self.current_bet = points
-			await ctx.embed_reply(f"{ctx.author.display_name} has raised to {points}")
-		else:
-			await ctx.embed_reply("has called")
-		self.turn = None
-	
-	@poker.command()
-	async def call(self, ctx):
-		if not self.turn or self.turn.id != ctx.author.id:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
-		if self.current_bet == 0 or (self.turn.id in self.bets and self.bets[self.turn.id] == self.current_bet):
-			await ctx.embed_reply("You can't call\nYou have checked instead")
-			await ctx.embed_reply("has checked")
-		else:
-			self.bets[self.turn.id] = self.current_bet
-			await ctx.embed_reply("has called")
-		self.turn = None
-	
-	@poker.command()
-	async def check(self, ctx):
-		if not self.turn or self.turn.id != ctx.author.id:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
-		if self.current_bet != 0 and (self.turn.id not in self.bets or self.bets[self.turn.id] < self.current_bet):
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't check")
-		self.bets[self.turn.id] = self.current_bet
-		await ctx.embed_reply("has checked")
-		self.turn = None
-	
-	@poker.command()
-	async def fold(self, ctx):
-		if not self.turn or self.turn.id != ctx.author.id:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
-		self.bets[self.turn.id] = -1
-		self.folded.append(self.turn)
-		await ctx.embed_reply("has folded")
-		self.turn = None
-	
 	async def betting(self, ctx):
 		self.status = "betting"
 		self.current_bet = 0
 		while True:
 			for player in self.players:
-				self.turn = player
 				if player in self.folded:
 					continue
+				def check(message):
+					if message.author != player:
+						return False
+					if message.content.lower() in ("call", "check", "fold"):
+						return True
+					if message.content.lower().startswith("raise "):
+						try:
+							int(message.content[6:])  # Use .removeprefix in Python 3.9
+							return True
+						except ValueError:
+							return False
+					return False
 				await ctx.embed_send(f"{player.mention}'s turn")
-				while self.turn:
-					await asyncio.sleep(1)
+				while True:
+					response = await ctx.bot.wait_for("message", check = check)
+					response_ctx = await ctx.bot.get_context(response)
+					if response.content.lower() == "call":
+						if self.current_bet == 0 or (player.id in self.bets and self.bets[player.id] == self.current_bet):
+							await response_ctx.embed_reply("You can't call\nYou have checked instead")
+							await response_ctx.embed_reply("has checked")
+						else:
+							self.bets[player.id] = self.current_bet
+							await response_ctx.embed_reply("has called")
+						break
+					if response.content.lower() == "check":
+						if self.current_bet != 0 and (player.id not in self.bets or self.bets[player.id] < self.current_bet):
+							await response_ctx.embed_reply(f"{ctx.bot.error_emoji} You can't check")
+							continue
+						self.bets[player.id] = self.current_bet
+						await response_ctx.embed_reply("has checked")
+						break
+					if response.content.lower() == "fold":
+						self.bets[player.id] = -1
+						self.folded.append(player)
+						await response_ctx.embed_reply("has folded")
+						break
+					if response.content.lower().startswith("raise "):
+						amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
+						if amount < self.current_bet:
+							await response_ctx.embed_reply("The current bet is more than that")
+							continue
+						self.bets[player.id] = amount
+						if amount > self.current_bet:
+							self.current_bet = amount
+							await response_ctx.embed_reply(f"{response_ctx.author.display_name} has raised to {amount}")
+						else:
+							await response_ctx.embed_reply("has called")
+						break
 			if all([bet == -1 or bet == self.current_bet for bet in self.bets.values()]):
 				break
 		for bet in self.bets.values():
