@@ -35,9 +35,7 @@ class Poker(commands.Cog):
 	@poker.command()
 	async def start(self, ctx):
 		# TODO: Handle folds
-		if self.status not in (None, "started"):
-			await ctx.embed_reply("There's already a round of poker in progress")
-		elif self.status is None:
+		if self.status is None:
 			self.status = "started"
 			self.players = []
 			self.hands = {}
@@ -45,58 +43,60 @@ class Poker(commands.Cog):
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
-			await ctx.embed_reply("has started a round of poker\n"
-									f"`{ctx.prefix}poker join` to join\n"
-									f"`{ctx.prefix}poker start` again to start")
-		elif self.players:
-			self.status = "pre-flop"
-			await ctx.embed_reply("The poker round has started\n"
-									f"Players: {' '.join(player.mention for player in self.players)}")
-			for player in self.players:
-				cards_string = self.cards_to_string(self.hands[player.id].cards)
-				await ctx.bot.send_embed(player, f"Your poker hand: {cards_string}")
-			await self.betting(ctx)
-			while self.status:
-				await asyncio.sleep(1)
-			await ctx.embed_send(f"The pot: {self.pot}")
-			self.community_cards = self.deck.deal(3)
-			await ctx.embed_send(f"The flop: {self.cards_to_string(self.community_cards)}")
-			await self.betting(ctx)
-			while self.status:
-				await asyncio.sleep(1)
-			await ctx.embed_send(f"The pot: {self.pot}")
-			self.community_cards.add(self.deck.deal(1))
-			await ctx.embed_send(f"The turn: {self.cards_to_string(self.community_cards)}")
-			await self.betting(ctx)
-			while self.status:
-				await asyncio.sleep(1)
-			await ctx.embed_send(f"The pot: {self.pot}")
-			self.community_cards.add(self.deck.deal(1))
-			await ctx.embed_send(f"The river: {self.cards_to_string(self.community_cards)}")
-			await self.betting(ctx)
-			while self.status:
-				await asyncio.sleep(1)
-			await ctx.embed_send(f"The pot: {self.pot}")
-			
-			evaluator = treys.Evaluator()
-			board = []
-			for card in self.community_cards.cards:
+			return await ctx.embed_reply("has started a round of poker\n"
+											f"`{ctx.prefix}poker join` to join\n"
+											f"`{ctx.prefix}poker start` again to start")
+		if self.status != "started":
+			return await ctx.embed_reply("There's already a round of poker in progress")
+		
+		self.status = "pre-flop"
+		await ctx.embed_reply("The poker round has started\n"
+								f"Players: {' '.join(player.mention for player in self.players)}")
+		for player in self.players:
+			cards_string = self.cards_to_string(self.hands[player.id].cards)
+			await ctx.bot.send_embed(player, f"Your poker hand: {cards_string}")
+		await self.betting(ctx)
+		while self.status:
+			await asyncio.sleep(1)
+		await ctx.embed_send(f"The pot: {self.pot}")
+		self.community_cards = self.deck.deal(3)
+		await ctx.embed_send(f"The flop: {self.cards_to_string(self.community_cards)}")
+		await self.betting(ctx)
+		while self.status:
+			await asyncio.sleep(1)
+		await ctx.embed_send(f"The pot: {self.pot}")
+		self.community_cards.add(self.deck.deal(1))
+		await ctx.embed_send(f"The turn: {self.cards_to_string(self.community_cards)}")
+		await self.betting(ctx)
+		while self.status:
+			await asyncio.sleep(1)
+		await ctx.embed_send(f"The pot: {self.pot}")
+		self.community_cards.add(self.deck.deal(1))
+		await ctx.embed_send(f"The river: {self.cards_to_string(self.community_cards)}")
+		await self.betting(ctx)
+		while self.status:
+			await asyncio.sleep(1)
+		await ctx.embed_send(f"The pot: {self.pot}")
+		
+		evaluator = treys.Evaluator()
+		board = []
+		for card in self.community_cards.cards:
+			abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
+			board.append(treys.Card.new(abbreviation))
+		best_hand_value = 7462
+		best_player = None
+		for player, hand in self.hands.items():
+			hand_stack = []
+			for card in hand:
 				abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
-				board.append(treys.Card.new(abbreviation))
-			best_hand_value = 7462
-			best_player = None
-			for player, hand in self.hands.items():
-				hand_stack = []
-				for card in hand:
-					abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
-					hand_stack.append(treys.Card.new(abbreviation))
-				value = evaluator.evaluate(board, hand_stack)
-				if value < best_hand_value:
-					best_hand_value = value
-					best_player = player
-			player = await ctx.bot.fetch_user(best_player)
-			hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-			await ctx.embed_send(f"{player.mention} is the winner with a {hand_name}")
+				hand_stack.append(treys.Card.new(abbreviation))
+			value = evaluator.evaluate(board, hand_stack)
+			if value < best_hand_value:
+				best_hand_value = value
+				best_player = player
+		player = await ctx.bot.fetch_user(best_player)
+		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
+		await ctx.embed_send(f"{player.mention} is the winner with a {hand_name}")
 	
 	@poker.command()
 	async def join(self, ctx):
