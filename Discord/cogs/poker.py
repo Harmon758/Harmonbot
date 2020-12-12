@@ -47,8 +47,10 @@ class Poker(commands.Cog):
 															f"`{ctx.prefix}poker` again to start", 
 															author_name = discord.Embed.Empty)
 			return
+		
 		if self.status != "started":
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} There's already a poker match in progress")
+		
 		if ctx.author not in self.players:
 			self.players.append(ctx.author)
 			self.hands[ctx.author.id] = self.deck.deal(2)
@@ -67,6 +69,7 @@ class Poker(commands.Cog):
 		for player in self.players:
 			cards_string = self.cards_to_string(self.hands[player.id].cards)
 			await ctx.bot.send_embed(player, f"Your poker hand: {cards_string}")
+		
 		await self.betting(ctx)
 		self.community_cards = self.deck.deal(3)
 		await ctx.embed_send(f"The pot: {self.pot}\n"
