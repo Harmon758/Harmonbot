@@ -122,43 +122,48 @@ class Poker(commands.Cog):
 						except ValueError:
 							return False
 					return False
-				await ctx.embed_send(f"{player.mention}'s turn\n"
-										"Respond with `call`, `check`, `fold`, or `raise ` and the amount")
+				message = await ctx.embed_send(f"{player.mention}'s turn\n"
+												"Respond with `call`, `check`, `fold`, or `raise ` and the amount")
+				embed = message.embeds[0]
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
-					response_ctx = await ctx.bot.get_context(response)
 					if response.content.lower() == "call":
 						if self.current_bet == 0 or (player.id in self.bets and self.bets[player.id] == self.current_bet):
-							await response_ctx.embed_reply("You can't call\nYou have checked instead")
-							await response_ctx.embed_reply("has checked")
+							embed.description = (f"{player.mention} attempted to call\n"
+													f"Since there's nothing to call, {player.mention} has checked instead")
 						else:
 							self.bets[player.id] = self.current_bet
-							await response_ctx.embed_reply("has called")
-						break
-					if response.content.lower() == "check":
+							embed.description = f"{player.mention} has called"
+					elif response.content.lower() == "check":
 						if self.current_bet != 0 and (player.id not in self.bets or self.bets[player.id] < self.current_bet):
-							await response_ctx.embed_reply(f"{ctx.bot.error_emoji} You can't check")
+							embed_copy = embed.copy()
+							embed_copy.description += f"\n{player.mention} attempted to check, but there is a bet to call"
+							await message.edit(embed = embed_copy)
+							await ctx.bot.attempt_delete_message(response)
 							continue
 						self.bets[player.id] = self.current_bet
-						await response_ctx.embed_reply("has checked")
-						break
-					if response.content.lower() == "fold":
+						embed.description = f"{player.mention} has checked"
+					elif response.content.lower() == "fold":
 						self.bets[player.id] = -1
 						self.folded.append(player)
-						await response_ctx.embed_reply("has folded")
-						break
-					if response.content.lower().startswith("raise "):
+						embed.description = f"{player.mention} has folded"
+					elif response.content.lower().startswith("raise "):
 						amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
 						if amount < self.current_bet:
-							await response_ctx.embed_reply("The current bet is more than that")
+							embed_copy = embed.copy()
+							embed_copy.description += f"\n{player.mention} attempted to raise to {amount}, but the current bet is more than that"
+							await message.edit(embed = embed_copy)
+							await ctx.bot.attempt_delete_message(response)
 							continue
 						self.bets[player.id] = amount
 						if amount > self.current_bet:
 							self.current_bet = amount
-							await response_ctx.embed_reply(f"{response_ctx.author.display_name} has raised to {amount}")
+							embed.description = f"{player.mention} has raised to {amount}"
 						else:
-							await response_ctx.embed_reply("has called")
-						break
+							embed.description = f"{player.mention} has called"
+					await message.edit(embed = embed)
+					await ctx.bot.attempt_delete_message(response)
+					break
 			if all([bet == -1 or bet == self.current_bet for bet in self.bets.values()]):
 				break
 		for bet in self.bets.values():
