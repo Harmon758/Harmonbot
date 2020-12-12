@@ -130,7 +130,7 @@ class Poker(commands.Cog):
 	@poker.command()
 	async def call(self, ctx):
 		if not self.turn or self.turn.id != ctx.author.id:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
 		if self.current_bet == 0 or (self.turn.id in self.bets and self.bets[self.turn.id] == self.current_bet):
 			await ctx.embed_reply("You can't call\nYou have checked instead")
 			await ctx.embed_reply("has checked")
