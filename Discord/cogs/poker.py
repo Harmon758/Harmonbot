@@ -152,7 +152,7 @@ class Poker(commands.Cog):
 	@poker.command()
 	async def fold(self, ctx):
 		if not self.turn or self.turn.id != ctx.author.id:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
 		self.bets[self.turn.id] = -1
 		self.folded.append(self.turn)
 		await ctx.embed_reply("has folded")
