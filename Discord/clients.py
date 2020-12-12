@@ -733,6 +733,10 @@ class Bot(commands.Bot):
 		with contextlib.suppress(discord.Forbidden, discord.NotFound):
 			await message.delete()
 	
+	async def attempt_edit_message(self, message, **fields):
+		with contextlib.suppress(aiohttp.ClientOSError, discord.Forbidden):
+			await message.edit(**fields)
+	
 	async def wait_for_reaction_add_or_remove(self, *, emoji = None, message = None, user = None, timeout = None):
 		def reaction_check(reaction, reaction_user):
 			if emoji:
