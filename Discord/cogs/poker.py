@@ -96,8 +96,8 @@ class Poker(commands.Cog):
 					best_hand_value = value
 					best_player = player
 			player = await self.bot.fetch_user(best_player)
-			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-			await ctx.embed_send(f"{player.mention} is the winner with a {type}")
+			hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
+			await ctx.embed_send(f"{player.mention} is the winner with a {hand_name}")
 	
 	@poker.command()
 	async def join(self, ctx):
