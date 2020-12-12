@@ -325,7 +325,7 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def phone(self, ctx, *, phone: str): # add reactions version
+	async def phone(self, ctx, *, phone: str):  # add reactions version
 		'''Get phone specifications'''
 		async with ctx.bot.aiohttp_session.get("https://fonoapi.freshpixl.com/v1/getdevice?device={}&position=0&token={}".format(phone.replace(' ', '+'), ctx.bot.FONO_API_TOKEN)) as resp:
 			data = await resp.json()
