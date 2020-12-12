@@ -67,8 +67,7 @@ class Poker(commands.Cog):
 		await self.initial_message.edit(embed = embed)
 		await ctx.bot.attempt_delete_message(ctx.message)
 		for player in self.players:
-			cards_string = self.cards_to_string(self.hands[player.id].cards)
-			await ctx.bot.send_embed(player, f"Your poker hand: {cards_string}")
+			await ctx.bot.send_embed(player, f"Your poker hand: {self.cards_to_string(self.hands[player.id].cards)}")
 		
 		await self.betting(ctx)
 		self.community_cards = self.deck.deal(3)
