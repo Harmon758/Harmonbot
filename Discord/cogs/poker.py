@@ -111,7 +111,7 @@ class Poker(commands.Cog):
 			await ctx.embed_reply(":no_entry: The current round of poker already started")
 	
 	@poker.command(name = "raise")
-	async def poker_raise(self, ctx, points : int):
+	async def poker_raise(self, ctx, points: int):
 		if self.turn and self.turn.id == ctx.author.id:
 			if points > self.current_bet:
 				self.bets[self.turn.id] = points
