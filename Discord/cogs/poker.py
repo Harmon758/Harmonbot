@@ -55,7 +55,7 @@ class Poker(commands.Cog):
 									f"Players: {' '.join(player.mention for player in self.players)}")
 			for player in self.players:
 				cards_string = self.cards_to_string(self.hands[player.id].cards)
-				await self.bot.send_embed(player, f"Your poker hand: {cards_string}")
+				await ctx.bot.send_embed(player, f"Your poker hand: {cards_string}")
 			await self.betting(ctx)
 			while self.status:
 				await asyncio.sleep(1)
@@ -95,7 +95,7 @@ class Poker(commands.Cog):
 				if value < best_hand_value:
 					best_hand_value = value
 					best_player = player
-			player = await self.bot.fetch_user(best_player)
+			player = await ctx.bot.fetch_user(best_player)
 			hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 			await ctx.embed_send(f"{player.mention} is the winner with a {hand_name}")
 	
