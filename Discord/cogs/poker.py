@@ -100,15 +100,14 @@ class Poker(commands.Cog):
 	
 	@poker.command()
 	async def join(self, ctx):
-		if self.status == "started":
-			self.players.append(ctx.author)
-			self.hands[ctx.author.id] = self.deck.deal(2)
-			await ctx.embed_reply("has joined the poker match")
-		elif self.status is None:
-			await ctx.embed_reply("There's not currently a round of poker going on\n"
-									f"Use `{ctx.prefix}poker start` to start one")
-		else:
-			await ctx.embed_reply(":no_entry: The current round of poker already started")
+		if self.status is None:
+			return await ctx.embed_reply("There's not currently a round of poker going on\n"
+											f"Use `{ctx.prefix}poker start` to start one")
+		if self.status != "started":
+			return await ctx.embed_reply(":no_entry: The current round of poker already started")
+		self.players.append(ctx.author)
+		self.hands[ctx.author.id] = self.deck.deal(2)
+		await ctx.embed_reply("has joined the poker match")
 	
 	@poker.command(name = "raise")
 	async def poker_raise(self, ctx, points: int):
