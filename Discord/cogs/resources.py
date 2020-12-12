@@ -174,7 +174,7 @@ class Resources(commands.Cog):
 		# url = f"http://sandipbgt.com/theastrologer/api/horoscope/{sign}/{day}/"
 		url = f"http://theastrologer-api.herokuapp.com/api/horoscope/{sign}/{day}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
-			if resp.status in (404, 503):
+			if resp.status in (404, 500, 503):
 				return await ctx.embed_reply(":no_entry: Error")
 			# data = await resp.json(content_type = "text/html")
 			data = await resp.json()
