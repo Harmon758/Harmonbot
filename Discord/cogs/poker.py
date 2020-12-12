@@ -95,7 +95,7 @@ class Poker(commands.Cog):
 				if value < best_hand_value:
 					best_hand_value = value
 					best_player = player
-			player = await self.bot.fetch_user(player)
+			player = await self.bot.fetch_user(best_player)
 			type = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 			await ctx.embed_send(f"{player.mention} is the winner with a {type}")
 	
