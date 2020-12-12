@@ -34,13 +34,14 @@ class Poker(commands.Cog):
 		# TODO: Handle folds
 		if self.status is None:
 			self.status = "started"
-			self.players = []
-			self.hands = {}
 			self.folded = []
 			# reset other
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
+
+			self.players = [ctx.author]
+			self.hands = {ctx.author.id: self.deck.deal(2)}
 			self.initial_message = await ctx.embed_reply(f"{ctx.author.mention} is starting a poker match\n\n"
 															f"`{ctx.prefix}poker` to join\n"
 															f"`{ctx.prefix}poker` again to start", 
