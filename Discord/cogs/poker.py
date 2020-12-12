@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import asyncio
@@ -40,9 +41,10 @@ class Poker(commands.Cog):
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
-			return await ctx.embed_reply("has started a round of poker\n"
+			return await ctx.embed_reply(f"{ctx.author.mention} has started a round of poker\n"
 											f"`{ctx.prefix}poker` to join\n"
-											f"`{ctx.prefix}poker` again to start")
+											f"`{ctx.prefix}poker` again to start", 
+											author_name = discord.Embed.Empty)
 		if self.status != "started":
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} There's already a round of poker in progress")
 		if ctx.author not in self.players:
