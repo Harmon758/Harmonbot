@@ -142,15 +142,13 @@ class Poker(commands.Cog):
 	
 	@poker.command()
 	async def check(self, ctx):
-		if self.turn and self.turn.id == ctx.author.id:
-			if self.current_bet != 0 and (self.turn.id not in self.bets or self.bets[self.turn.id] < self.current_bet):
-				await ctx.embed_reply(":no_entry: You can't check")
-			else:
-				self.bets[self.turn.id] = self.current_bet
-				await ctx.embed_reply("has checked")
-				self.turn = None
-		else:
-			await ctx.embed_reply(":no_entry: You can't do that right now.")
+		if not self.turn or self.turn.id != ctx.author.id:
+			return await ctx.embed_reply(":no_entry: You can't do that right now.")
+		if self.current_bet != 0 and (self.turn.id not in self.bets or self.bets[self.turn.id] < self.current_bet):
+			return await ctx.embed_reply(":no_entry: You can't check")
+		self.bets[self.turn.id] = self.current_bet
+		await ctx.embed_reply("has checked")
+		self.turn = None
 	
 	@poker.command()
 	async def fold(self, ctx):
