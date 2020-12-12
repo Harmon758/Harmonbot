@@ -175,11 +175,11 @@ class Resources(commands.Cog):
 		url = f"http://theastrologer-api.herokuapp.com/api/horoscope/{sign}/{day}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status in (404, 500, 503):
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} API Error: {resp.status} {resp.reason}")
 			# data = await resp.json(content_type = "text/html")
 			data = await resp.json()
 			if resp.status == 400:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data.get('message')}")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} API Error: {data.get('message')}")
 		fields = sorted((k.capitalize(), v) for k, v in data["meta"].items())
 		date = [int(d) for d in data["date"].split('-')]
 		timestamp = datetime.datetime(date[0], date[1], date[2])
