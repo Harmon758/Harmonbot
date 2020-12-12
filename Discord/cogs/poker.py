@@ -9,12 +9,11 @@ import treys
 from utilities import checks
 
 def setup(bot):
-	bot.add_cog(Poker(bot))
+	bot.add_cog(Poker())
 
 class Poker(commands.Cog):
 	
-	def __init__(self, bot):
-		self.bot = bot
+	def __init__(self):
 		self.status = None
 		self.players = []
 		self.deck = None
