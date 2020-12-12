@@ -154,13 +154,12 @@ class Poker(commands.Cog):
 	
 	@poker.command()
 	async def fold(self, ctx):
-		if self.turn and self.turn.id == ctx.author.id:
-			self.bets[self.turn.id] = -1
-			self.folded.append(self.turn)
-			await ctx.embed_reply("has folded")
-			self.turn = None
-		else:
+		if not self.turn or self.turn.id != ctx.author.id:
 			await ctx.embed_reply(":no_entry: You can't do that right now")
+		self.bets[self.turn.id] = -1
+		self.folded.append(self.turn)
+		await ctx.embed_reply("has folded")
+		self.turn = None
 	
 	async def betting(self, ctx):
 		self.status = "betting"
