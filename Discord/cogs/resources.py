@@ -325,8 +325,9 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def phone(self, ctx, *, phone: str):  # add reactions version
+	async def phone(self, ctx, *, phone: str):
 		'''Get phone specifications'''
+		# TODO: Add menu version
 		async with ctx.bot.aiohttp_session.get("https://fonoapi.freshpixl.com/v1/getdevice?device={}&position=0&token={}".format(phone.replace(' ', '+'), ctx.bot.FONO_API_TOKEN)) as resp:
 			data = await resp.json()
 		if "status" in data and data["status"] == "error":
@@ -442,7 +443,7 @@ class Resources(commands.Cog):
 		if "audio_quality" in data: tests_info.append("Audio quality: " + data["audio_quality"])
 		if "battery_life" in data: tests_info.append("Battery_life: " + data["battery_life"])
 		if tests_info: embed.add_field(name = "Tests", value = '\n'.join(tests_info), inline = False)
-		# send
+		# Send
 		await ctx.send(embed = embed)
 	
 	@commands.command(hidden = True)
