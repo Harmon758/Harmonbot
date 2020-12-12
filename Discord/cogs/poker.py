@@ -30,10 +30,6 @@ class Poker(commands.Cog):
 	@checks.not_forbidden()
 	async def poker(self, ctx):
 		'''WIP'''
-		await ctx.send_help(ctx.command)
-	
-	@poker.command()
-	async def start(self, ctx):
 		# TODO: Handle folds
 		if self.status is None:
 			self.status = "started"
@@ -45,10 +41,14 @@ class Poker(commands.Cog):
 			self.deck.shuffle()
 			self.pot = 0
 			return await ctx.embed_reply("has started a round of poker\n"
-											f"`{ctx.prefix}poker join` to join\n"
-											f"`{ctx.prefix}poker start` again to start")
+											f"`{ctx.prefix}poker` to join\n"
+											f"`{ctx.prefix}poker` again to start")
 		if self.status != "started":
-			return await ctx.embed_reply("There's already a round of poker in progress")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} There's already a round of poker in progress")
+		if ctx.author not in self.players:
+			self.players.append(ctx.author)
+			self.hands[ctx.author.id] = self.deck.deal(2)
+			return await ctx.embed_reply("has joined the poker match")
 		
 		self.status = "pre-flop"
 		await ctx.embed_reply("The poker round has started\n"
@@ -90,17 +90,6 @@ class Poker(commands.Cog):
 		player = await ctx.bot.fetch_user(best_player)
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 		await ctx.embed_send(f"{player.mention} is the winner with a {hand_name}")
-	
-	@poker.command()
-	async def join(self, ctx):
-		if self.status is None:
-			return await ctx.embed_reply("There's not currently a round of poker going on\n"
-											f"Use `{ctx.prefix}poker start` to start one")
-		if self.status != "started":
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} The current round of poker already started")
-		self.players.append(ctx.author)
-		self.hands[ctx.author.id] = self.deck.deal(2)
-		await ctx.embed_reply("has joined the poker match")
 	
 	@poker.command(name = "raise")
 	async def poker_raise(self, ctx, points: int):
