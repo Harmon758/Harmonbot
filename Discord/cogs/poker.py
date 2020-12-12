@@ -113,7 +113,7 @@ class Poker(commands.Cog):
 	@poker.command(name = "raise")
 	async def poker_raise(self, ctx, points: int):
 		if not self.turn or self.turn.id == ctx.author.id
-			return await ctx.embed_reply(":no_entry: You can't do that right now")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} You can't do that right now")
 		if points < self.current_bet:
 			return await ctx.embed_reply("The current bet is more than that")
 		self.bets[self.turn.id] = points
