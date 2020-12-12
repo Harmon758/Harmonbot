@@ -41,16 +41,21 @@ class Poker(commands.Cog):
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
-			return await ctx.embed_reply(f"{ctx.author.mention} has started a round of poker\n"
-											f"`{ctx.prefix}poker` to join\n"
-											f"`{ctx.prefix}poker` again to start", 
-											author_name = discord.Embed.Empty)
+			self.initial_message = await ctx.embed_reply(f"{ctx.author.mention} has started a round of poker\n\n"
+															f"`{ctx.prefix}poker` to join\n"
+															f"`{ctx.prefix}poker` again to start", 
+															author_name = discord.Embed.Empty)
+			return
 		if self.status != "started":
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} There's already a round of poker in progress")
 		if ctx.author not in self.players:
 			self.players.append(ctx.author)
 			self.hands[ctx.author.id] = self.deck.deal(2)
-			return await ctx.embed_reply("has joined the poker match")
+			embed = self.initial_message.embeds[0]
+			index = embed.description.find('\n\n') + 1
+			embed.description = embed.description[:index] + f"{ctx.author.mention} has joined\n" + embed.description[index:]
+			await self.initial_message.edit(embed = embed)
+			return await ctx.bot.attempt_delete_message(ctx.message)
 		
 		self.status = "pre-flop"
 		await ctx.embed_reply("The poker round has started\n"
