@@ -39,6 +39,7 @@ class Poker(commands.Cog):
 			self.status = "started"
 			self.players = []
 			self.hands = {}
+			self.folded = []
 			# reset other
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
