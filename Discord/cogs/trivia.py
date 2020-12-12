@@ -372,7 +372,7 @@ class Trivia(commands.Cog):
 				await asyncio.sleep(1)
 				self.active_jeopardy[ctx.guild.id]["question_countdown"] -= 1
 				embed.set_footer(text = f"You have {self.active_jeopardy[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date")
-				await message.edit(embed = embed)
+				await ctx.bot.attempt_edit_message(message, embed = embed)
 				if self.active_jeopardy[ctx.guild.id]["answerer"]:
 					break
 			embed.set_footer(text = "Time's up! | Air Date")
