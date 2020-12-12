@@ -41,7 +41,7 @@ class Poker(commands.Cog):
 			self.deck = pydealer.Deck()
 			self.deck.shuffle()
 			self.pot = 0
-			self.initial_message = await ctx.embed_reply(f"{ctx.author.mention} has started a match of poker\n\n"
+			self.initial_message = await ctx.embed_reply(f"{ctx.author.mention} is starting a match of poker\n\n"
 															f"`{ctx.prefix}poker` to join\n"
 															f"`{ctx.prefix}poker` again to start", 
 															author_name = discord.Embed.Empty)
