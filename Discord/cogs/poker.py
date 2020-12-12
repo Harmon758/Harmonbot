@@ -58,8 +58,11 @@ class Poker(commands.Cog):
 			return await ctx.bot.attempt_delete_message(ctx.message)
 		
 		self.status = "pre-flop"
-		await ctx.embed_reply("The poker match has started\n"
-								f"Players: {' '.join(player.mention for player in self.players)}")
+		embed = self.initial_message.embeds[0]
+		index = embed.description.find('\n\n') + 1
+		embed.description = embed.description[:index] + f"{ctx.author.mention} has started the match"
+		await self.initial_message.edit(embed = embed)
+		await ctx.bot.attempt_delete_message(ctx.message)
 		for player in self.players:
 			cards_string = self.cards_to_string(self.hands[player.id].cards)
 			await ctx.bot.send_embed(player, f"Your poker hand: {cards_string}")
