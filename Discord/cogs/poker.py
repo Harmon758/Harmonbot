@@ -152,7 +152,7 @@ class PokerHand:
 							initial_embed.description += f"\n{player.mention} has called"
 						bets[player] = current_bet
 					elif response.content.lower() == "check":
-						if current_bet != 0 and (player not in bets or bets[player] < current_bet):
+						if bets.get(player, 0) < current_bet:
 							embed_copy = embed.copy()
 							embed_copy.description += f"\n{player.mention} attempted to check, but there is a bet to call"
 							await message.edit(embed = embed_copy)
