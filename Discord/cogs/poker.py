@@ -2,6 +2,9 @@
 import discord
 from discord.ext import commands
 
+import asyncio
+import contextlib
+
 import pydealer
 import treys
 
@@ -159,8 +162,14 @@ class PokerHand:
 						initial_embed.description += f"\n{player.mention} has checked"
 					elif response.content.lower() == "fold":
 						self.pot += bets.pop(player, 0)
-						self.hands.pop(player)
+						hand = self.hands.pop(player)
 						initial_embed.description += f"\n{player.mention} has folded"
+						prompt = await ctx.embed_send(f"\n{player.mention}: Would you like to show your hand?")
+						with contextlib.suppress(asyncio.TimeoutError):
+							if (await ctx.bot.wait_for_yes_or_no(channel = ctx.channel, message = prompt, user = player, 
+																	timeout = 10, use_reactions = True)):
+								initial_embed.description += f"\n{player.mention}'s hand was {cards_to_string(hand)}"
+						await ctx.bot.attempt_delete_message(prompt)
 					elif response.content.lower().startswith("raise "):
 						amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
 						if amount < current_bet:
