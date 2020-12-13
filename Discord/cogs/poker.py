@@ -81,7 +81,7 @@ class Poker(commands.Cog):
 		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
 												f"The river: {self.cards_to_string(self.community_cards)}")
 		await self.betting(ctx, round_message)
-		await ctx.embed_send(f"The pot: {self.pot}")
+		final_message = await ctx.embed_send(f"The pot: {self.pot}")
 		
 		evaluator = treys.Evaluator()
 		board = []
@@ -101,7 +101,9 @@ class Poker(commands.Cog):
 				best_player = player
 		player = await ctx.bot.fetch_user(best_player)
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-		await ctx.embed_send(f"{player.mention} is the winner with a {hand_name}")
+		embed = final_message.embeds[0]
+		embed.description = f"{player.mention} is the winner of {self.pot} with a {hand_name}"
+		await final_message.edit(embed = embed)
 	
 	async def betting(self, ctx, message = None):
 		self.status = "betting"
