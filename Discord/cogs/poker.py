@@ -128,7 +128,7 @@ class PokerHand:
 				else:
 					embed = message.embeds[0]
 					initial_embed = embed.copy()
-					embed.description += '\n' + turn_message
+					embed.description += "\n\n" + turn_message
 					await message.edit(embed = embed)
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
