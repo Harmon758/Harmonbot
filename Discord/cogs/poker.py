@@ -149,7 +149,7 @@ class PokerHand:
 						bets[player] = current_bet
 						initial_embed.description += f"\n{player.mention} has checked"
 					elif response.content.lower() == "fold":
-						bets.pop(player, None)
+						self.pot += bets.pop(player, 0)
 						self.hands.pop(player)
 						initial_embed.description += f"\n{player.mention} has folded"
 					elif response.content.lower().startswith("raise "):
