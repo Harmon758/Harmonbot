@@ -149,15 +149,15 @@ class PokerHand:
 					await message.edit(embed = embed_copy)
 					await ctx.bot.attempt_delete_message(response)
 				if response.content.lower() == "call":
-					bets[player] = current_bet
 					if can_check:
 						initial_embed.description += (f"\n{player.mention} attempted to call\n"
 														f"Since there's nothing to call, {player.mention} has checked instead")
 					else:
 						initial_embed.description += f"\n{player.mention} has called"
-				elif response.content.lower() == "check":
 					bets[player] = current_bet
+				elif response.content.lower() == "check":
 					initial_embed.description += f"\n{player.mention} has checked"
+					bets[player] = current_bet
 				elif response.content.lower() == "fold":
 					self.pot += bets.pop(player, 0)
 					hand = self.hands.pop(player)
@@ -170,10 +170,15 @@ class PokerHand:
 					await ctx.bot.attempt_delete_message(prompt)
 				elif response.content.lower().startswith("raise "):
 					amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
-					# TODO: Handle raise 0
-					current_bet += amount
+					if not amount:
+						if can_check:
+							initial_embed.description += f"\n{player.mention} has checked"
+						else:
+							initial_embed.description += f"\n{player.mention} has called"
+					else:
+						current_bet += amount
+						initial_embed.description += f"\n{player.mention} has raised to {current_bet}"
 					bets[player] = current_bet
-					initial_embed.description += f"\n{player.mention} has raised to {current_bet}"
 				await message.edit(embed = initial_embed)
 				await ctx.bot.attempt_delete_message(response)
 				if len(self.hands) == 1:
