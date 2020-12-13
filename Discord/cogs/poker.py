@@ -127,7 +127,7 @@ class PokerHand:
 							return False
 					return False
 				turn_message = (f"{player.mention}'s turn\n"
-								"Respond with `call`, `check`, `fold`, or `raise ` and the amount")
+								f"{player.mention}: Would you like to `call`, `check`, `fold`, or `raise ` an amount?")
 				if not message:
 					initial_embed = discord.Embed(color = ctx.bot.bot_color)
 					initial_embed.description = ""
