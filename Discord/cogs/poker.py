@@ -26,6 +26,9 @@ class Poker(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} There's already a poker match in progress here")
 		elif ctx.author not in poker_hand.hands:
 			await poker_hand.add_player(ctx)
+		elif len(poker_hand.hands) == 1:
+			await ctx.embed_reply("Unfortunately, you can't play poker alone")
+			# TODO: Allow playing against bot
 		else:
 			await poker_hand.start(ctx)
 			del self.poker_hands[ctx.channel.id]
@@ -91,7 +94,6 @@ class PokerHand:
 			abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
 			board.append(treys.Card.new(abbreviation))
 		best_hand_value = evaluator.table.MAX_HIGH_CARD
-		winner = None
 		for player, hand in self.hands.items():
 			hand_stack = []
 			for card in hand:
