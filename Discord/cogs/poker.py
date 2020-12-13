@@ -104,6 +104,7 @@ class PokerHand:
 	async def betting(self, ctx, message = None):
 		bets = {}
 		current_bet = 0
+		first_player_turn = True
 		while not bets or not all(bet == current_bet for bet in bets.values()):
 			for player in self.hands.copy():
 				def check(message):
@@ -125,9 +126,13 @@ class PokerHand:
 					initial_embed.description = ""
 					message = await ctx.embed_send(turn_message)
 					embed = message.embeds[0]
+					first_player_turn = False
 				else:
 					embed = message.embeds[0]
 					initial_embed = embed.copy()
+					if first_player_turn:
+						initial_embed.description += '\n'
+						first_player_turn = False
 					embed.description += "\n\n" + turn_message
 					await message.edit(embed = embed)
 				while True:
