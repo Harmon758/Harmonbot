@@ -104,7 +104,7 @@ class PokerHand:
 	async def betting(self, ctx, message = None):
 		bets = {}
 		current_bet = 0
-		while True:
+		while not bets or not all(bet == current_bet for bet in bets.values()):
 			for player in self.hands.copy():
 				def check(message):
 					if message.author != player:
@@ -171,7 +171,5 @@ class PokerHand:
 					break
 				if len(self.hands) == 1:
 					break
-			if all([bet == current_bet for bet in bets.values()]):
-				break
 		self.pot += sum(bets.values())
 
