@@ -763,6 +763,63 @@ class Bot(commands.Bot):
 		if not done:
 			raise asyncio.TimeoutError
 		return done.pop().result()
+
+	async def wait_for_yes_or_no(self, *, channel = None, message = None, user = None, timeout = None, 
+									accept_text = True, use_reactions = False, cleanup = True):
+		def message_check(message):
+			if channel and message.channel != channel:
+				return False
+			if user and message.author != user:
+				return False
+			if message.content not in ("yes", "no", 'y', 'n'):
+				return False
+			return True
+		
+		def raw_reaction_check(payload):
+			if payload.message_id != message.id:
+				return False
+			if user and payload.user_id != user.id:
+				return False
+			if not payload.emoji.is_unicode_emoji():
+				return False
+			if payload.emoji.name not in ('\N{HEAVY CHECK MARK}', '\N{HEAVY MULTIPLICATION X}'):
+				return False
+			return True
+		
+		to_wait_for = []
+		
+		if accept_text:
+			to_wait_for.append(self.wait_for("message", check = message_check))
+		
+		if message and use_reactions:
+			# TODO: Handle unable to add reactions
+			await message.add_reaction('\N{HEAVY CHECK MARK}')
+			await message.add_reaction('\N{HEAVY MULTIPLICATION X}')
+			to_wait_for.append(self.wait_for("raw_reaction_add", check = raw_reaction_check))
+			to_wait_for.append(self.wait_for("raw_reaction_remove", check = raw_reaction_check))
+
+		done, pending = await asyncio.wait(to_wait_for, return_when = asyncio.FIRST_COMPLETED, timeout = timeout)
+		for task in pending:
+			task.cancel()
+		
+		if message and use_reactions and cleanup:
+			await message.remove_reaction('\N{HEAVY CHECK MARK}', message.guild.me)
+			await message.remove_reaction('\N{HEAVY MULTIPLICATION X}', message.guild.me)
+		
+		if not done:
+			raise asyncio.TimeoutError
+		
+		result = done.pop().result()
+		if isinstance(result, discord.Message):
+			if cleanup:
+				await self.attempt_delete_message(result)
+			return result.content in ("yes", 'y')
+		if isinstance(result, discord.RawReactionActionEvent):
+			if cleanup:
+				member = await message.guild.fetch_member(result.user_id)
+				await message.remove_reaction(result.emoji.name, member)
+				# TODO: Handle no permission to remove reaction
+			return result.emoji.name == '\N{HEAVY CHECK MARK}'
 	
 	# Override Context class
 	async def get_context(self, message, *, cls = Context):
