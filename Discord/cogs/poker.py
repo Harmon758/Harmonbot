@@ -92,7 +92,7 @@ class PokerHand:
 			abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
 			board.append(treys.Card.new(abbreviation))
 		best_hand_value = evaluator.table.MAX_HIGH_CARD
-		best_player = None
+		winner = None
 		for player, hand in self.hands.items():
 			hand_stack = []
 			for card in hand:
@@ -101,11 +101,11 @@ class PokerHand:
 			value = evaluator.evaluate(board, hand_stack)
 			if value < best_hand_value:
 				best_hand_value = value
-				best_player = player
+				winner = player
 		
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 		embed = final_message.embeds[0]
-		embed.description = f"{best_player.mention} is the winner of {self.pot} with a {hand_name}"
+		embed.description = f"{winner.mention} is the winner of {self.pot} with a {hand_name}"
 		await final_message.edit(embed = embed)
 	
 	async def betting(self, ctx, message = None):
