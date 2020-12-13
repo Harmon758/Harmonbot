@@ -121,8 +121,7 @@ class PokerHand:
 						return True
 					if message.content.lower().startswith("raise "):
 						try:
-							int(message.content[6:])  # Use .removeprefix in Python 3.9
-							return True
+							return int(message.content[6:]) >= 0  # Use .removeprefix in Python 3.9
 						except ValueError:
 							return False
 					return False
