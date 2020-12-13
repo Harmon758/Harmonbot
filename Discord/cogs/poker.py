@@ -70,17 +70,17 @@ class Poker(commands.Cog):
 		
 		await self.betting(ctx)
 		self.community_cards = self.deck.deal(3)
-		await ctx.embed_send(f"The pot: {self.pot}\n"
-								f"The flop: {self.cards_to_string(self.community_cards)}")
-		await self.betting(ctx)
+		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
+												f"The flop: {self.cards_to_string(self.community_cards)}")
+		await self.betting(ctx, round_message)
 		self.community_cards.add(self.deck.deal(1))
-		await ctx.embed_send(f"The pot: {self.pot}\n"
-								f"The turn: {self.cards_to_string(self.community_cards)}")
-		await self.betting(ctx)
+		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
+												f"The turn: {self.cards_to_string(self.community_cards)}")
+		await self.betting(ctx, round_message)
 		self.community_cards.add(self.deck.deal(1))
-		await ctx.embed_send(f"The pot: {self.pot}\n"
-								f"The river: {self.cards_to_string(self.community_cards)}")
-		await self.betting(ctx)
+		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
+												f"The river: {self.cards_to_string(self.community_cards)}")
+		await self.betting(ctx, round_message)
 		await ctx.embed_send(f"The pot: {self.pot}")
 		
 		evaluator = treys.Evaluator()
@@ -103,7 +103,7 @@ class Poker(commands.Cog):
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 		await ctx.embed_send(f"{player.mention} is the winner with a {hand_name}")
 	
-	async def betting(self, ctx):
+	async def betting(self, ctx, message = None):
 		self.status = "betting"
 		self.current_bet = 0
 		while True:
@@ -122,17 +122,26 @@ class Poker(commands.Cog):
 						except ValueError:
 							return False
 					return False
-				message = await ctx.embed_send(f"{player.mention}'s turn\n"
-												"Respond with `call`, `check`, `fold`, or `raise ` and the amount")
-				embed = message.embeds[0]
+				turn_message = (f"{player.mention}'s turn\n"
+								"Respond with `call`, `check`, `fold`, or `raise ` and the amount")
+				if not message:
+					initial_embed = discord.Embed(color = ctx.bot.bot_color)
+					initial_embed.description = ""
+					message = await ctx.embed_send(turn_message)
+					embed = message.embeds[0]
+				else:
+					embed = message.embeds[0]
+					initial_embed = embed.copy()
+					embed.description += '\n' + turn_message
+					await message.edit(embed = embed)
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
 					if response.content.lower() == "call":
 						if self.current_bet == 0 or (player.id in self.bets and self.bets[player.id] == self.current_bet):
-							embed.description = (f"{player.mention} attempted to call\n"
-													f"Since there's nothing to call, {player.mention} has checked instead")
+							initial_embed.description += (f"\n{player.mention} attempted to call\n"
+															f"Since there's nothing to call, {player.mention} has checked instead")
 						else:
-							embed.description = f"{player.mention} has called"
+							initial_embed.description += f"\n{player.mention} has called"
 						self.bets[player.id] = self.current_bet
 					elif response.content.lower() == "check":
 						if self.current_bet != 0 and (player.id not in self.bets or self.bets[player.id] < self.current_bet):
@@ -142,11 +151,11 @@ class Poker(commands.Cog):
 							await ctx.bot.attempt_delete_message(response)
 							continue
 						self.bets[player.id] = self.current_bet
-						embed.description = f"{player.mention} has checked"
+						initial_embed.description += f"\n{player.mention} has checked"
 					elif response.content.lower() == "fold":
 						self.bets[player.id] = -1
 						self.folded.append(player)
-						embed.description = f"{player.mention} has folded"
+						initial_embed.description += f"\n{player.mention} has folded"
 					elif response.content.lower().startswith("raise "):
 						amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
 						if amount < self.current_bet:
@@ -158,10 +167,10 @@ class Poker(commands.Cog):
 						self.bets[player.id] = amount
 						if amount > self.current_bet:
 							self.current_bet = amount
-							embed.description = f"{player.mention} has raised to {amount}"
+							initial_embed.description += f"\n{player.mention} has raised to {amount}"
 						else:
-							embed.description = f"{player.mention} has called"
-					await message.edit(embed = embed)
+							initial_embed.description += f"\n{player.mention} has called"
+					await message.edit(embed = initial_embed)
 					await ctx.bot.attempt_delete_message(response)
 					break
 			if all([bet == -1 or bet == self.current_bet for bet in self.bets.values()]):
