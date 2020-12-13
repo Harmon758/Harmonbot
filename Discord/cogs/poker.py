@@ -98,7 +98,11 @@ class PokerHand:
 		
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 		embed = round_message.embeds[0]
-		embed.description += f"\n\n{winner.mention} is the winner of {self.pot} with a {hand_name}"
+		embed.description += (f"\n\n{winner.mention} is the winner of {self.pot} with a {hand_name}\n"
+								f"{winner.mention}'s hand: {cards_to_string(self.hands.pop(winner))}\n")
+		for player, hand in self.hands.items():
+			embed.description += f"\n{player.mention}'s hand: {cards_to_string(hand)}"
+			# TODO: Allow mucking
 		await round_message.edit(embed = embed)
 	
 	async def betting(self, ctx, message = None):
