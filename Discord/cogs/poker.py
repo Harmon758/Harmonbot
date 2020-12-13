@@ -38,8 +38,6 @@ def cards_to_string(cards):
 
 class PokerHand:
 	
-	# TODO: Handle folds
-	
 	def __init__(self):
 		self.deck = pydealer.Deck()
 		self.deck.shuffle()
@@ -75,17 +73,25 @@ class PokerHand:
 			await ctx.bot.send_embed(player, f"Your poker hand: {cards_to_string(hand.cards)}")
 		
 		await self.betting(ctx)
+		if len(self.hands) == 1:
+			return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
 		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
 												f"The flop: {cards_to_string(self.community_cards)}")
 		await self.betting(ctx, round_message)
+		if len(self.hands) == 1:
+			return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
 		self.community_cards.add(self.deck.deal(1))
 		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
 												f"The turn: {cards_to_string(self.community_cards)}")
 		await self.betting(ctx, round_message)
+		if len(self.hands) == 1:
+			return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
 		self.community_cards.add(self.deck.deal(1))
 		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
 												f"The river: {cards_to_string(self.community_cards)}")
 		await self.betting(ctx, round_message)
+		if len(self.hands) == 1:
+			return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
 		final_message = await ctx.embed_send(f"The pot: {self.pot}")
 		
 		evaluator = treys.Evaluator()
@@ -176,6 +182,8 @@ class PokerHand:
 							initial_embed.description += f"\n{player.mention} has called"
 					await message.edit(embed = initial_embed)
 					await ctx.bot.attempt_delete_message(response)
+					break
+				if len(self.hands) == 1:
 					break
 			if all([bet == -1 or bet == current_bet for bet in bets.values()]):
 				break
