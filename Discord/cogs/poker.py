@@ -182,8 +182,6 @@ class Poker(commands.Cog):
 				self.pot += bet
 		self.status = None
 	
-	# Utility Functions
-	
 	def cards_to_string(self, cards):
-		return "".join(f":{card.suit.lower()}: {card.value} " for card in cards)
+		return " | ".join(f":{card.suit.lower()}: {card.value}" for card in cards)
 
