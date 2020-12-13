@@ -744,9 +744,9 @@ class Bot(commands.Bot):
 					return False
 				elif reaction.emoji not in emoji:
 					return False
-			if message and reaction.message.id != message.id:
+			if message and reaction.message != message:
 				return False
-			if user and reaction_user.id != user.id:
+			if user and reaction_user != user:
 				return False
 			return True
 		
