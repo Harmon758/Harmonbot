@@ -19,7 +19,6 @@ class Poker(commands.Cog):
 		self.players = []
 		self.deck = None
 		self.hands = {}
-		self.bets = {}
 		self.pot = None
 		self.community_cards = None
 		self.folded = []
@@ -106,6 +105,7 @@ class Poker(commands.Cog):
 	
 	async def betting(self, ctx, message = None):
 		self.status = "betting"
+		bets = {}
 		current_bet = 0
 		while True:
 			for player in self.players:
@@ -138,23 +138,23 @@ class Poker(commands.Cog):
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
 					if response.content.lower() == "call":
-						if current_bet == 0 or (player.id in self.bets and self.bets[player.id] == current_bet):
+						if current_bet == 0 or (player.id in bets and bets[player.id] == current_bet):
 							initial_embed.description += (f"\n{player.mention} attempted to call\n"
 															f"Since there's nothing to call, {player.mention} has checked instead")
 						else:
 							initial_embed.description += f"\n{player.mention} has called"
-						self.bets[player.id] = current_bet
+						bets[player.id] = current_bet
 					elif response.content.lower() == "check":
-						if current_bet != 0 and (player.id not in self.bets or self.bets[player.id] < current_bet):
+						if current_bet != 0 and (player.id not in bets or bets[player.id] < current_bet):
 							embed_copy = embed.copy()
 							embed_copy.description += f"\n{player.mention} attempted to check, but there is a bet to call"
 							await message.edit(embed = embed_copy)
 							await ctx.bot.attempt_delete_message(response)
 							continue
-						self.bets[player.id] = current_bet
+						bets[player.id] = current_bet
 						initial_embed.description += f"\n{player.mention} has checked"
 					elif response.content.lower() == "fold":
-						self.bets[player.id] = -1
+						bets[player.id] = -1
 						self.folded.append(player)
 						initial_embed.description += f"\n{player.mention} has folded"
 					elif response.content.lower().startswith("raise "):
@@ -165,7 +165,7 @@ class Poker(commands.Cog):
 							await message.edit(embed = embed_copy)
 							await ctx.bot.attempt_delete_message(response)
 							continue
-						self.bets[player.id] = amount
+						bets[player.id] = amount
 						if amount > current_bet:
 							current_bet = amount
 							initial_embed.description += f"\n{player.mention} has raised to {amount}"
@@ -174,9 +174,9 @@ class Poker(commands.Cog):
 					await message.edit(embed = initial_embed)
 					await ctx.bot.attempt_delete_message(response)
 					break
-			if all([bet == -1 or bet == current_bet for bet in self.bets.values()]):
+			if all([bet == -1 or bet == current_bet for bet in bets.values()]):
 				break
-		for bet in self.bets.values():
+		for bet in bets.values():
 			if bet != -1:
 				self.pot += bet
 		self.status = None
