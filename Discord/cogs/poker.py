@@ -143,43 +143,39 @@ class PokerHand:
 						first_player_turn = False
 					embed.description += "\n\n" + turn_message
 					await message.edit(embed = embed)
-				while True:
-					response = await ctx.bot.wait_for("message", check = check)
-					if response.content.lower() == "call":
-						if can_check:
-							initial_embed.description += (f"\n{player.mention} attempted to call\n"
-															f"Since there's nothing to call, {player.mention} has checked instead")
-						else:
-							initial_embed.description += f"\n{player.mention} has called"
-						bets[player] = current_bet
-					elif response.content.lower() == "check":
-						if not can_check:
-							embed_copy = embed.copy()
-							embed_copy.description += f"\n{player.mention} attempted to check, but there is a bet to call"
-							await message.edit(embed = embed_copy)
-							await ctx.bot.attempt_delete_message(response)
-							continue
-						bets[player] = current_bet
-						initial_embed.description += f"\n{player.mention} has checked"
-					elif response.content.lower() == "fold":
-						self.pot += bets.pop(player, 0)
-						hand = self.hands.pop(player)
-						initial_embed.description += f"\n{player.mention} has folded"
-						prompt = await ctx.embed_send(f"\n{player.mention}: Would you like to show your hand?")
-						with contextlib.suppress(asyncio.TimeoutError):
-							if (await ctx.bot.wait_for_yes_or_no(channel = ctx.channel, message = prompt, user = player, 
-																	timeout = 10, use_reactions = True)):
-								initial_embed.description += f"\n{player.mention}'s hand was {cards_to_string(hand)}"
-						await ctx.bot.attempt_delete_message(prompt)
-					elif response.content.lower().startswith("raise "):
-						amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
-						# TODO: Handle raise 0
-						current_bet += amount
-						bets[player] = current_bet
-						initial_embed.description += f"\n{player.mention} has raised to {current_bet}"
-					await message.edit(embed = initial_embed)
+				while (response := await ctx.bot.wait_for("message", check = check)).content.lower() == "check" and not can_check:
+					embed_copy = embed.copy()
+					embed_copy.description += f"\n{player.mention} attempted to check, but there is a bet to call"
+					await message.edit(embed = embed_copy)
 					await ctx.bot.attempt_delete_message(response)
-					break
+				if response.content.lower() == "call":
+					bets[player] = current_bet
+					if can_check:
+						initial_embed.description += (f"\n{player.mention} attempted to call\n"
+														f"Since there's nothing to call, {player.mention} has checked instead")
+					else:
+						initial_embed.description += f"\n{player.mention} has called"
+				elif response.content.lower() == "check":
+					bets[player] = current_bet
+					initial_embed.description += f"\n{player.mention} has checked"
+				elif response.content.lower() == "fold":
+					self.pot += bets.pop(player, 0)
+					hand = self.hands.pop(player)
+					initial_embed.description += f"\n{player.mention} has folded"
+					prompt = await ctx.embed_send(f"\n{player.mention}: Would you like to show your hand?")
+					with contextlib.suppress(asyncio.TimeoutError):
+						if (await ctx.bot.wait_for_yes_or_no(channel = ctx.channel, message = prompt, user = player, 
+																timeout = 10, use_reactions = True)):
+							initial_embed.description += f"\n{player.mention}'s hand was {cards_to_string(hand)}"
+					await ctx.bot.attempt_delete_message(prompt)
+				elif response.content.lower().startswith("raise "):
+					amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
+					# TODO: Handle raise 0
+					current_bet += amount
+					bets[player] = current_bet
+					initial_embed.description += f"\n{player.mention} has raised to {current_bet}"
+				await message.edit(embed = initial_embed)
+				await ctx.bot.attempt_delete_message(response)
 				if len(self.hands) == 1:
 					break
 		self.pot += sum(bets.values())
