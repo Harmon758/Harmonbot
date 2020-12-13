@@ -737,21 +737,26 @@ class Bot(commands.Bot):
 		with contextlib.suppress(aiohttp.ClientOSError, discord.Forbidden):
 			await message.edit(**fields)
 	
-	async def wait_for_reaction_add_or_remove(self, *, emoji = None, message = None, user = None, timeout = None):
-		def reaction_check(reaction, reaction_user):
+	async def wait_for_raw_reaction_add_or_remove(self, *, emoji = None, message = None, user = None, timeout = None):
+		def raw_reaction_check(payload):
 			if emoji:
-				if isinstance(emoji, (str, discord.Emoji, discord.PartialEmoji)) and reaction.emoji != emoji:
+				if isinstance(emoji, (discord.Emoji, discord.PartialEmoji)) and payload.emoji != emoji:
 					return False
-				elif reaction.emoji not in emoji:
+				if isinstance(emoji, str) and payload.emoji.name != emoji:
 					return False
-			if message and reaction.message != message:
+				if payload.emoji.is_unicode_emoji():
+					if payload.emoji.name not in emoji:
+						return False
+				elif payload.emoji not in emoji:
+					return False
+			if message and payload.message_id != message.id:
 				return False
-			if user and reaction_user != user:
+			if user and payload.user_id != user.id:
 				return False
 			return True
 		
-		add = self.wait_for("reaction_add", check = reaction_check)
-		remove = self.wait_for("reaction_remove", check = reaction_check)
+		add = self.wait_for("raw_reaction_add", check = raw_reaction_check)
+		remove = self.wait_for("raw_reaction_remove", check = raw_reaction_check)
 		done, pending = await asyncio.wait((add, remove), return_when = asyncio.FIRST_COMPLETED, timeout = timeout)
 		for task in pending:
 			task.cancel()

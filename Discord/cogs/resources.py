@@ -264,8 +264,8 @@ class Resources(commands.Cog):
 		for number_emote in sorted(numbers.keys()):
 			await response.add_reaction(number_emote)
 		while True:
-			reaction, user = await self.bot.wait_for_reaction_add_or_remove(message = response, user = ctx.author, emoji = numbers.keys())
-			number = numbers[reaction.emoji]
+			payload = await self.bot.wait_for_raw_reaction_add_or_remove(message = response, user = ctx.author, emoji = numbers.keys())
+			number = numbers[payload.emoji.name]
 			article = data["articles"][number - 1]
 			output = f"Article {number}:"
 			output += f"\n**{article['title']}**"
@@ -509,8 +509,8 @@ class Resources(commands.Cog):
 		for number_emote in sorted(numbers.keys())[:num_results]:
 			await response.add_reaction(number_emote)
 		while True:
-			reaction, user = await self.bot.wait_for_reaction_add_or_remove(message = response, user = ctx.author, emoji = sorted(numbers.keys())[:num_results])
-			number = numbers[reaction.emoji]
+			payload = await self.bot.wait_for_raw_reaction_add_or_remove(message = response, user = ctx.author, emoji = sorted(numbers.keys())[:num_results])
+			number = numbers[payload.emoji.name]
 			definition = data["list"][number - 1]
 			embed.clear_fields()
 			embed.title = definition["word"]

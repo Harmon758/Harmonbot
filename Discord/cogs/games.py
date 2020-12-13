@@ -299,8 +299,9 @@ class Games(commands.Cog):
 		embed.description = f"First to click the {winning_emoji} reaction wins. Go!"
 		await response.edit(embed = embed)
 		start_time = timeit.default_timer()
-		_, winner = await self.bot.wait_for_reaction_add_or_remove(message = response, emoji = winning_emoji)
+		payload = await self.bot.wait_for_raw_reaction_add_or_remove(message = response, emoji = winning_emoji)
 		elapsed = timeit.default_timer() - start_time
+		winner = await ctx.guild.fetch_member(payload.user_id)
 		embed.set_author(name = winner.display_name, icon_url = winner.avatar_url)
 		embed.description = f"was the first to click {winning_emoji} and won with a time of {elapsed:.5} seconds!"
 		await response.edit(embed = embed)
@@ -528,11 +529,11 @@ class Games(commands.Cog):
 			await message.edit(embed = embed)
 			for correct_emoji in sequence:
 				try:
-					reaction, user = await ctx.bot.wait_for_reaction_add_or_remove(emoji = emojis, message = message, user = ctx.author, timeout = 5)
+					payload = await ctx.bot.wait_for_raw_reaction_add_or_remove(emoji = emojis, message = message, user = ctx.author, timeout = 5)
 				except asyncio.TimeoutError:
 					embed.description = f"Game over. You timed out on a sequence of length {len(sequence)}."
 					break
-				if reaction.emoji != correct_emoji:
+				if payload.emoji.name != correct_emoji:
 					embed.description = f"Game over. You failed on a sequence of length {len(sequence)}."
 					break
 			else:
