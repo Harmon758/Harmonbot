@@ -72,6 +72,7 @@ class PokerHand:
 		embed.description = embed.description[:index] + f"{ctx.author.mention} has started the match"
 		await self.initial_message.edit(embed = embed)
 		await ctx.bot.attempt_delete_message(ctx.message)
+
 		for player in self.players:
 			await ctx.bot.send_embed(player, f"Your poker hand: {cards_to_string(self.hands[player.id].cards)}")
 		
@@ -105,6 +106,7 @@ class PokerHand:
 			if value < best_hand_value:
 				best_hand_value = value
 				best_player = player
+		
 		player = await ctx.bot.fetch_user(best_player)
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 		embed = final_message.embeds[0]
