@@ -133,23 +133,23 @@ class PokerHand:
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
 					if response.content.lower() == "call":
-						if current_bet == 0 or (player.id in bets and bets[player.id] == current_bet):
+						if current_bet == 0 or (player in bets and bets[player] == current_bet):
 							initial_embed.description += (f"\n{player.mention} attempted to call\n"
 															f"Since there's nothing to call, {player.mention} has checked instead")
 						else:
 							initial_embed.description += f"\n{player.mention} has called"
-						bets[player.id] = current_bet
+						bets[player] = current_bet
 					elif response.content.lower() == "check":
-						if current_bet != 0 and (player.id not in bets or bets[player.id] < current_bet):
+						if current_bet != 0 and (player not in bets or bets[player] < current_bet):
 							embed_copy = embed.copy()
 							embed_copy.description += f"\n{player.mention} attempted to check, but there is a bet to call"
 							await message.edit(embed = embed_copy)
 							await ctx.bot.attempt_delete_message(response)
 							continue
-						bets[player.id] = current_bet
+						bets[player] = current_bet
 						initial_embed.description += f"\n{player.mention} has checked"
 					elif response.content.lower() == "fold":
-						bets[player.id] = -1
+						bets[player] = -1
 						self.hands.pop(player)
 						initial_embed.description += f"\n{player.mention} has folded"
 					elif response.content.lower().startswith("raise "):
@@ -160,7 +160,7 @@ class PokerHand:
 							await message.edit(embed = embed_copy)
 							await ctx.bot.attempt_delete_message(response)
 							continue
-						bets[player.id] = amount
+						bets[player] = amount
 						if amount > current_bet:
 							current_bet = amount
 							initial_embed.description += f"\n{player.mention} has raised to {amount}"
