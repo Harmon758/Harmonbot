@@ -15,69 +15,77 @@ def setup(bot):
 class Poker(commands.Cog):
 	
 	def __init__(self):
-		self.status = None
-		self.players = []
-		self.deck = None
-		self.hands = {}
-		self.pot = None
-		self.community_cards = None
-		self.folded = []
-		# check default values
+		self.poker_hands = {}
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def poker(self, ctx):
 		'''WIP'''
-		# TODO: Handle folds
-		if self.status is None:
-			self.status = "started"
-			self.folded = []
-			# reset other
-			self.deck = pydealer.Deck()
-			self.deck.shuffle()
-			self.pot = 0
+		if not (poker_hand := self.poker_hands.get(ctx.channel.id)):
+			self.poker_hands[ctx.channel.id] = PokerHand()
+			await self.poker_hands[ctx.channel.id].initiate(ctx)
+		elif poker_hand.started:
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} There's already a poker match in progress here")
+		elif ctx.author not in poker_hand.players:
+			await poker_hand.add_player(ctx)
+		else:
+			await poker_hand.start(ctx)
+			del self.poker_hands[ctx.channel.id]
 
-			self.players = [ctx.author]
-			self.hands = {ctx.author.id: self.deck.deal(2)}
-			self.initial_message = await ctx.embed_reply(f"{ctx.author.mention} is starting a poker match\n\n"
-															f"`{ctx.prefix}poker` to join\n"
-															f"`{ctx.prefix}poker` again to start", 
-															author_name = discord.Embed.Empty)
-			return
-		
-		if self.status != "started":
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} There's already a poker match in progress")
-		
-		if ctx.author not in self.players:
-			self.players.append(ctx.author)
-			self.hands[ctx.author.id] = self.deck.deal(2)
-			embed = self.initial_message.embeds[0]
-			index = embed.description.find('\n\n') + 1
-			embed.description = embed.description[:index] + f"{ctx.author.mention} has joined\n" + embed.description[index:]
-			await self.initial_message.edit(embed = embed)
-			return await ctx.bot.attempt_delete_message(ctx.message)
-		
-		self.status = "pre-flop"
+def cards_to_string(cards):
+	return " | ".join(f":{card.suit.lower()}: {card.value}" for card in cards)
+
+class PokerHand:
+	
+	# TODO: Handle folds
+	
+	def __init__(self):
+		self.deck = pydealer.Deck()
+		self.deck.shuffle()
+		self.community_cards = self.deck.deal(3)
+		self.folded = []
+		self.pot = 0
+		self.started = False
+	
+	async def initiate(self, ctx):
+		self.players = [ctx.author]
+		self.hands = {ctx.author.id: self.deck.deal(2)}
+		self.initial_message = await ctx.embed_reply(f"{ctx.author.mention} is initiating a poker match\n\n"
+														f"`{ctx.prefix}poker` to join\n"
+														f"`{ctx.prefix}poker` again to start", 
+														author_name = discord.Embed.Empty)
+	
+	async def add_player(self, ctx):
+		self.players.append(ctx.author)
+		self.hands[ctx.author.id] = self.deck.deal(2)
+		embed = self.initial_message.embeds[0]
+		index = embed.description.find('\n\n') + 1
+		embed.description = embed.description[:index] + f"{ctx.author.mention} has joined\n" + embed.description[index:]
+		await self.initial_message.edit(embed = embed)
+		await ctx.bot.attempt_delete_message(ctx.message)
+	
+	async def start(self, ctx):
+		self.started = True
+
 		embed = self.initial_message.embeds[0]
 		index = embed.description.find('\n\n') + 1
 		embed.description = embed.description[:index] + f"{ctx.author.mention} has started the match"
 		await self.initial_message.edit(embed = embed)
 		await ctx.bot.attempt_delete_message(ctx.message)
 		for player in self.players:
-			await ctx.bot.send_embed(player, f"Your poker hand: {self.cards_to_string(self.hands[player.id].cards)}")
+			await ctx.bot.send_embed(player, f"Your poker hand: {cards_to_string(self.hands[player.id].cards)}")
 		
 		await self.betting(ctx)
-		self.community_cards = self.deck.deal(3)
 		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
-												f"The flop: {self.cards_to_string(self.community_cards)}")
+												f"The flop: {cards_to_string(self.community_cards)}")
 		await self.betting(ctx, round_message)
 		self.community_cards.add(self.deck.deal(1))
 		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
-												f"The turn: {self.cards_to_string(self.community_cards)}")
+												f"The turn: {cards_to_string(self.community_cards)}")
 		await self.betting(ctx, round_message)
 		self.community_cards.add(self.deck.deal(1))
 		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
-												f"The river: {self.cards_to_string(self.community_cards)}")
+												f"The river: {cards_to_string(self.community_cards)}")
 		await self.betting(ctx, round_message)
 		final_message = await ctx.embed_send(f"The pot: {self.pot}")
 		
@@ -104,7 +112,6 @@ class Poker(commands.Cog):
 		await final_message.edit(embed = embed)
 	
 	async def betting(self, ctx, message = None):
-		self.status = "betting"
 		bets = {}
 		current_bet = 0
 		while True:
@@ -179,8 +186,4 @@ class Poker(commands.Cog):
 		for bet in bets.values():
 			if bet != -1:
 				self.pot += bet
-		self.status = None
-	
-	def cards_to_string(self, cards):
-		return " | ".join(f":{card.suit.lower()}: {card.value}" for card in cards)
 
