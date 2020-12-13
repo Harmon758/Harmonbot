@@ -149,7 +149,7 @@ class PokerHand:
 						bets[player] = current_bet
 						initial_embed.description += f"\n{player.mention} has checked"
 					elif response.content.lower() == "fold":
-						bets[player] = -1
+						bets.pop(player, None)
 						self.hands.pop(player)
 						initial_embed.description += f"\n{player.mention} has folded"
 					elif response.content.lower().startswith("raise "):
@@ -171,9 +171,7 @@ class PokerHand:
 					break
 				if len(self.hands) == 1:
 					break
-			if all([bet == -1 or bet == current_bet for bet in bets.values()]):
+			if all([bet == current_bet for bet in bets.values()]):
 				break
-		for bet in bets.values():
-			if bet != -1:
-				self.pot += bet
+		self.pot += sum(bets.values())
 
