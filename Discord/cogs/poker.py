@@ -126,8 +126,9 @@ class PokerHand:
 						except ValueError:
 							return False
 					return False
+				can_check = bets.get(player, 0) == current_bet
 				turn_message = (f"{player.mention}'s turn\n"
-								f"{player.mention}: Would you like to `call`, `check`, `fold`, or `raise ` an amount?")
+								f"{player.mention}: Would you like to `{'check' if can_check else 'call'}`, `fold`, or `raise ` an amount?")
 				if not message:
 					initial_embed = discord.Embed(color = ctx.bot.bot_color)
 					initial_embed.description = ""
@@ -145,14 +146,14 @@ class PokerHand:
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
 					if response.content.lower() == "call":
-						if bets.get(player, 0) == current_bet:
+						if can_check:
 							initial_embed.description += (f"\n{player.mention} attempted to call\n"
 															f"Since there's nothing to call, {player.mention} has checked instead")
 						else:
 							initial_embed.description += f"\n{player.mention} has called"
 						bets[player] = current_bet
 					elif response.content.lower() == "check":
-						if bets.get(player, 0) < current_bet:
+						if not can_check:
 							embed_copy = embed.copy()
 							embed_copy.description += f"\n{player.mention} attempted to check, but there is a bet to call"
 							await message.edit(embed = embed_copy)
