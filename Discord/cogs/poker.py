@@ -145,7 +145,7 @@ class PokerHand:
 				while True:
 					response = await ctx.bot.wait_for("message", check = check)
 					if response.content.lower() == "call":
-						if current_bet == 0 or (player in bets and bets[player] == current_bet):
+						if bets.get(player, 0) == current_bet:
 							initial_embed.description += (f"\n{player.mention} attempted to call\n"
 															f"Since there's nothing to call, {player.mention} has checked instead")
 						else:
