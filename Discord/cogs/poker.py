@@ -173,18 +173,10 @@ class PokerHand:
 						await ctx.bot.attempt_delete_message(prompt)
 					elif response.content.lower().startswith("raise "):
 						amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
-						if amount < current_bet:
-							embed_copy = embed.copy()
-							embed_copy.description += f"\n{player.mention} attempted to raise to {amount}, but the current bet is more than that"
-							await message.edit(embed = embed_copy)
-							await ctx.bot.attempt_delete_message(response)
-							continue
-						bets[player] = amount
-						if amount > current_bet:
-							current_bet = amount
-							initial_embed.description += f"\n{player.mention} has raised to {amount}"
-						else:
-							initial_embed.description += f"\n{player.mention} has called"
+						# TODO: Handle raise 0
+						current_bet += amount
+						bets[player] = current_bet
+						initial_embed.description += f"\n{player.mention} has raised to {current_bet}"
 					await message.edit(embed = initial_embed)
 					await ctx.bot.attempt_delete_message(response)
 					break
