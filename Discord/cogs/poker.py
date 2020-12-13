@@ -41,7 +41,7 @@ class PokerHand:
 	def __init__(self):
 		self.deck = pydealer.Deck()
 		self.deck.shuffle()
-		self.community_cards = self.deck.deal(3)
+		self.community_cards = self.deck.deal(5)
 		self.pot = 0
 		self.started = False
 	
@@ -72,27 +72,13 @@ class PokerHand:
 		for player, hand in self.hands.items():
 			await ctx.bot.send_embed(player, f"Your poker hand: {cards_to_string(hand.cards)}")
 		
-		await self.betting(ctx)
-		if len(self.hands) == 1:
-			return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
-		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
-												f"The flop: {cards_to_string(self.community_cards)}")
-		await self.betting(ctx, round_message)
-		if len(self.hands) == 1:
-			return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
-		self.community_cards.add(self.deck.deal(1))
-		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
-												f"The turn: {cards_to_string(self.community_cards)}")
-		await self.betting(ctx, round_message)
-		if len(self.hands) == 1:
-			return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
-		self.community_cards.add(self.deck.deal(1))
-		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
-												f"The river: {cards_to_string(self.community_cards)}")
-		await self.betting(ctx, round_message)
-		if len(self.hands) == 1:
-			return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
-		final_message = await ctx.embed_send(f"The pot: {self.pot}")
+		round_message = None
+		for stage, number_of_cards in zip(("flop", "turn", "river", "showdown"), (3, 4, 5, 5)):
+			await self.betting(ctx, round_message)
+			if len(self.hands) == 1:
+				return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
+			round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
+													f"The {stage}: {cards_to_string(self.community_cards[:number_of_cards])}")
 		
 		evaluator = treys.Evaluator()
 		board = []
@@ -111,9 +97,9 @@ class PokerHand:
 				winner = player
 		
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-		embed = final_message.embeds[0]
+		embed = round_message.embeds[0]
 		embed.description = f"{winner.mention} is the winner of {self.pot} with a {hand_name}"
-		await final_message.edit(embed = embed)
+		await round_message.edit(embed = embed)
 	
 	async def betting(self, ctx, message = None):
 		bets = {}
