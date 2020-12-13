@@ -24,7 +24,7 @@ class Poker(commands.Cog):
 			await self.poker_hands[ctx.channel.id].initiate(ctx)
 		elif poker_hand.started:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} There's already a poker match in progress here")
-		elif ctx.author not in poker_hand.players:
+		elif ctx.author not in poker_hand.hands:
 			await poker_hand.add_player(ctx)
 		else:
 			await poker_hand.start(ctx)
@@ -46,16 +46,14 @@ class PokerHand:
 		self.started = False
 	
 	async def initiate(self, ctx):
-		self.players = [ctx.author]
-		self.hands = {ctx.author.id: self.deck.deal(2)}
+		self.hands = {ctx.author: self.deck.deal(2)}
 		self.initial_message = await ctx.embed_reply(f"{ctx.author.mention} is initiating a poker match\n\n"
 														f"`{ctx.prefix}poker` to join\n"
 														f"`{ctx.prefix}poker` again to start", 
 														author_name = discord.Embed.Empty)
 	
 	async def add_player(self, ctx):
-		self.players.append(ctx.author)
-		self.hands[ctx.author.id] = self.deck.deal(2)
+		self.hands[ctx.author] = self.deck.deal(2)
 		embed = self.initial_message.embeds[0]
 		index = embed.description.find('\n\n') + 1
 		embed.description = embed.description[:index] + f"{ctx.author.mention} has joined\n" + embed.description[index:]
@@ -71,8 +69,8 @@ class PokerHand:
 		await self.initial_message.edit(embed = embed)
 		await ctx.bot.attempt_delete_message(ctx.message)
 
-		for player in self.players:
-			await ctx.bot.send_embed(player, f"Your poker hand: {cards_to_string(self.hands[player.id].cards)}")
+		for player, hand in self.hands.items():
+			await ctx.bot.send_embed(player, f"Your poker hand: {cards_to_string(hand.cards)}")
 		
 		await self.betting(ctx)
 		round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
@@ -105,17 +103,16 @@ class PokerHand:
 				best_hand_value = value
 				best_player = player
 		
-		player = await ctx.bot.fetch_user(best_player)
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 		embed = final_message.embeds[0]
-		embed.description = f"{player.mention} is the winner of {self.pot} with a {hand_name}"
+		embed.description = f"{best_player.mention} is the winner of {self.pot} with a {hand_name}"
 		await final_message.edit(embed = embed)
 	
 	async def betting(self, ctx, message = None):
 		bets = {}
 		current_bet = 0
 		while True:
-			for player in self.players:
+			for player in self.hands:
 				if player in self.folded:
 					continue
 				def check(message):
