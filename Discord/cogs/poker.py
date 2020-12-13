@@ -41,7 +41,6 @@ class PokerHand:
 		self.deck = pydealer.Deck()
 		self.deck.shuffle()
 		self.community_cards = self.deck.deal(3)
-		self.folded = []
 		self.pot = 0
 		self.started = False
 	
@@ -112,9 +111,7 @@ class PokerHand:
 		bets = {}
 		current_bet = 0
 		while True:
-			for player in self.hands:
-				if player in self.folded:
-					continue
+			for player in self.hands.copy():
 				def check(message):
 					if message.author != player:
 						return False
@@ -159,7 +156,7 @@ class PokerHand:
 						initial_embed.description += f"\n{player.mention} has checked"
 					elif response.content.lower() == "fold":
 						bets[player.id] = -1
-						self.folded.append(player)
+						self.hands.pop(player)
 						initial_embed.description += f"\n{player.mention} has folded"
 					elif response.content.lower().startswith("raise "):
 						amount = int(response.content[6:])  # Use .removeprefix in Python 3.9
