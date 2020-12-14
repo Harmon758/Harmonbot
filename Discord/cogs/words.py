@@ -198,7 +198,9 @@ class Words(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 		definition = definitions[0]
 		await ctx.embed_reply(definition["definition"], title = definition["word"], title_url = definition["permalink"], 
-								fields = (("Example", "{0[example]}\n\n\N{THUMBS UP SIGN}{1} {0[thumbs_up]} \N{THUMBS DOWN SIGN}{1} {0[thumbs_down]}".format(definition, ctx.bot.emoji_skin_tone)),))
+								fields = (("Example", f"{definition['example']}\n\n"
+														f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
+														f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"),))
 		# TODO: Check description/definition length?
 	
 	@urbandictionary.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
