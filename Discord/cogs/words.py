@@ -187,7 +187,7 @@ class Words(commands.Cog):
 	
 	@commands.group(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"], 
 					invoke_without_command = True, case_insensitive = True)
-	async def urbandictionary(self, ctx, *, term : str):
+	async def urbandictionary(self, ctx, *, term: str):
 		'''Urban Dictionary'''
 		# TODO: Convert to define/dictionary subcommand urban and add urband etc. as command aliases
 		url = "http://api.urbandictionary.com/v0/define"
