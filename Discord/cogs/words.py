@@ -186,7 +186,6 @@ class Words(commands.Cog):
 		await ctx.embed_reply(data["text"][0], footer_text = footer_text)
 	
 	@commands.command(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"])
-	@checks.not_forbidden()
 	async def urbandictionary(self, ctx, *, term : str):
 		'''Urban Dictionary'''
 		# TODO: Integrate into reactions system; Return first definition instead for non-reaction version
