@@ -185,10 +185,10 @@ class Words(commands.Cog):
 			footer_text = f"Detected Language Code: {data['detected']['lang']} | " + footer_text
 		await ctx.embed_reply(data["text"][0], footer_text = footer_text)
 	
-	@commands.command(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"])
+	@commands.group(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"], 
+					invoke_without_command = True, case_insensitive = True)
 	async def urbandictionary(self, ctx, *, term : str):
 		'''Urban Dictionary'''
-		# TODO: Integrate into reactions system; Return first definition instead for non-reaction version
 		# TODO: Convert to define/dictionary subcommand urban and add urband etc. as command aliases
 		url = "http://api.urbandictionary.com/v0/define"
 		params = {"term": term}
@@ -196,26 +196,24 @@ class Words(commands.Cog):
 			data = await resp.json()
 		if not data.get("list"):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
-		num_results = len(data["list"])
-		# TODO: Handle if one definition
-		if num_results > 10: num_results = 10  # necessary?
-		response = await ctx.embed_reply(f"React with a number from 1 to {num_results} to view each definition")
-		embed = response.embeds[0]
-		numbers = {"1⃣": 1, "2⃣": 2, "3⃣": 3, "4⃣": 4, "5⃣": 5, "6⃣": 6, "7⃣": 7, "8⃣": 8, "9⃣": 9, "🔟" : 10}
-		for number_emote in sorted(numbers.keys())[:num_results]:
-			await response.add_reaction(number_emote)
-		while True:
-			payload = await self.bot.wait_for_raw_reaction_add_or_remove(message = response, user = ctx.author, emoji = sorted(numbers.keys())[:num_results])
-			number = numbers[payload.emoji.name]
-			definition = data["list"][number - 1]
-			embed.clear_fields()
-			embed.title = definition["word"]
-			embed.url = definition["permalink"]
-			embed.description = definition["definition"]
-			# TODO: Check description/definition length?
-			embed.add_field(name = "Example", value = "{0[example]}\n\n\N{THUMBS UP SIGN}{1} {0[thumbs_up]} \N{THUMBS DOWN SIGN}{1} {0[thumbs_down]}".format(definition, ctx.bot.emoji_skin_tone))
-			embed.set_footer(text = "Select a different number for another definition")
-			await response.edit(embed = embed)
+		definition = data["list"][0]
+		await ctx.embed_reply(definition["definition"], title = definition["word"], title_url = definition["permalink"], 
+								fields = (("Example", "{0[example]}\n\n\N{THUMBS UP SIGN}{1} {0[thumbs_up]} \N{THUMBS DOWN SIGN}{1} {0[thumbs_down]}".format(definition, ctx.bot.emoji_skin_tone)),))
+		# TODO: Check description/definition length?
+	
+	@urbandictionary.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
+	async def urbandictionary_menu(self, ctx, *, term: str):
+		'''Urban Dictionary menu'''
+		url = "http://api.urbandictionary.com/v0/define"
+		params = {"term": term}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		if not (definitions := data.get("list")):
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
+		menu = UrbanDictionaryMenu(definitions)
+		self.menus.append(menu)
+		await menu.start(ctx, wait = True)
+		self.menus.remove(menu)
 
 class DefineSource(menus.ListPageSource):
 	
@@ -234,6 +232,30 @@ class DefineMenu(Menu, menus.MenuPages):
 	
 	def __init__(self, definitions):
 		super().__init__(DefineSource(definitions), timeout = None, clear_reactions_after = True, check_embeds = True)
+	
+	async def send_initial_message(self, ctx, channel):
+		message = await super().send_initial_message(ctx, channel)
+		await ctx.bot.attempt_delete_message(ctx.message)
+		return message
+
+class UrbanDictionarySource(menus.ListPageSource):
+	
+	def __init__(self, definitions):
+		super().__init__(definitions, per_page = 1)
+	
+	async def format_page(self, menu, definition):
+		embed = discord.Embed(title = definition["word"], url = definition["permalink"], 
+								description = definition["definition"], 
+								color = menu.bot.bot_color)
+		# TODO: Check description/definition length?
+		embed.add_field(name = "Example", value = "{0[example]}\n\n\N{THUMBS UP SIGN}{1} {0[thumbs_up]} \N{THUMBS DOWN SIGN}{1} {0[thumbs_down]}".format(definition, menu.ctx.bot.emoji_skin_tone))
+		embed.set_footer(text = f"Definition {menu.current_page + 1} of {self.get_max_pages()}")
+		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
+
+class UrbanDictionaryMenu(Menu, menus.MenuPages):
+	
+	def __init__(self, definitions):
+		super().__init__(UrbanDictionarySource(definitions), timeout = None, clear_reactions_after = True, check_embeds = True)
 	
 	async def send_initial_message(self, ctx, channel):
 		message = await super().send_initial_message(ctx, channel)
