@@ -76,9 +76,9 @@ class Words(commands.Cog):
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	async def pronunciation(self, ctx, word : str):
 		'''Pronunciation of a word'''
-		pronunciation = self.bot.wordnik_word_api.getTextPronunciations(word, limit = 1)
+		pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(word, limit = 1)
 		description = pronunciation[0].raw.strip("()") if pronunciation else "Audio File Link"
-		audio_file = self.bot.wordnik_word_api.getAudio(word, limit = 1)
+		audio_file = ctx.bot.wordnik_word_api.getAudio(word, limit = 1)
 		if audio_file:
 			description = f"[{description}]({audio_file[0].fileUrl})"
 		elif not pronunciation:
