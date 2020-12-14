@@ -23,12 +23,9 @@ from units.cryptography import (decode_caesar_cipher, encode_caesar_cipher,
 sys.path.pop(0)
 
 def setup(bot):
-	bot.add_cog(Cryptography(bot))
+	bot.add_cog(Cryptography())
 
 class Cryptography(commands.Cog):
-	
-	def __init__(self, bot):
-		self.bot = bot
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
