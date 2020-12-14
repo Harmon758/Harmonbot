@@ -11,12 +11,11 @@ from utilities import checks
 from utilities.menu import Menu
 
 def setup(bot):
-	bot.add_cog(Words(bot))
+	bot.add_cog(Words())
 
 class Words(commands.Cog):
 	
-	def __init__(self, bot):
-		self.bot = bot
+	def __init__(self):
 		self.menus = []
 	
 	def cog_unload(self):
