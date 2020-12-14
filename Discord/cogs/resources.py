@@ -287,7 +287,7 @@ class Resources(commands.Cog):
 		async with ctx.bot.aiohttp_session.get("https://newsapi.org/v1/sources") as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			return await ctx.embed_reply(":no_entry: Error")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		# TODO: Show source names, descriptions, URLs, etc.
 		await ctx.embed_reply(", ".join(source["id"] for source in data["sources"]), 
 								title = "News Sources", title_url = "https://newsapi.org/sources")
