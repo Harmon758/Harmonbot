@@ -488,39 +488,6 @@ class Resources(commands.Cog):
 				return await ctx.embed_reply(f":no_entry: Error: {poll['errorMessage']}")
 		await ctx.reply("http://strawpoll.me/" + str(poll["id"]))
 	
-	@commands.command(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"])
-	@checks.not_forbidden()
-	async def urbandictionary(self, ctx, *, term : str):
-		'''Urban Dictionary'''
-		# TODO: Integrate into reactions system; Return first definition instead for non-reaction version
-		# TODO: Convert to define/dictionary subcommand urban and add urband etc. as command aliases
-		url = "http://api.urbandictionary.com/v0/define"
-		params = {"term": term}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if not data.get("list"):
-			return await ctx.embed_reply(":no_entry: No results found")
-		num_results = len(data["list"])
-		# TODO: Handle if one definition
-		if num_results > 10: num_results = 10  # necessary?
-		response = await ctx.embed_reply(f"React with a number from 1 to {num_results} to view each definition")
-		embed = response.embeds[0]
-		numbers = {"1⃣": 1, "2⃣": 2, "3⃣": 3, "4⃣": 4, "5⃣": 5, "6⃣": 6, "7⃣": 7, "8⃣": 8, "9⃣": 9, "🔟" : 10}
-		for number_emote in sorted(numbers.keys())[:num_results]:
-			await response.add_reaction(number_emote)
-		while True:
-			payload = await self.bot.wait_for_raw_reaction_add_or_remove(message = response, user = ctx.author, emoji = sorted(numbers.keys())[:num_results])
-			number = numbers[payload.emoji.name]
-			definition = data["list"][number - 1]
-			embed.clear_fields()
-			embed.title = definition["word"]
-			embed.url = definition["permalink"]
-			embed.description = definition["definition"]
-			# TODO: Check description/definition length?
-			embed.add_field(name = "Example", value = "{0[example]}\n\n:thumbsup::skin-tone-2: {0[thumbs_up]} :thumbsdown::skin-tone-2: {0[thumbs_down]}".format(definition))
-			embed.set_footer(text = "Select a different number for another definition")
-			await response.edit(embed = embed)
-	
 	@commands.command()
 	@checks.not_forbidden()
 	async def websitescreenshot(self, ctx, url: str):
