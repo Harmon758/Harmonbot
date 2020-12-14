@@ -290,7 +290,8 @@ class Resources(commands.Cog):
 			await ctx.embed_reply(":no_entry: Error")
 			return
 		# for source in data["sources"]:
-		await ctx.reply("<https://newsapi.org/sources>\n{}".format(", ".join([source["id"] for source in data["sources"]])))
+		await ctx.embed_reply(", ".join([source["id"] for source in data["sources"]]), 
+								title = "News Sources", title_url = "https://newsapi.org/sources")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
