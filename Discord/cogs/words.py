@@ -5,6 +5,7 @@ from discord.ext import commands, menus
 import urllib.error
 
 from bs4 import BeautifulSoup
+import spellchecker
 
 from utilities import checks
 from utilities.menu import Menu
@@ -100,22 +101,13 @@ class Words(commands.Cog):
 								title = f"Words that rhyme with {word.capitalize()}")
 	
 	@commands.command()
-	async def spellcheck(self, ctx, *, words : str):
+	async def spellcheck(self, ctx, *words : str):
 		'''Spell check words'''
-		url = "https://api.cognitive.microsoft.com/bing/v5.0/spellcheck"
-		headers = {"Ocp-Apim-Subscription-Key" : ctx.bot.BING_SPELL_CHECK_API_KEY}
-		params = {"Text": words.replace(' ', '+')}  # replace necessary?
-		async with ctx.bot.aiohttp_session.post(url, headers = headers, params = params) as resp:
-			data = await resp.json()
-		corrections = data["flaggedTokens"]
-		corrected = words
-		offset = 0
-		for correction in corrections:
-			offset += correction["offset"]
-			suggestion = correction["suggestions"][0]["suggestion"]
-			corrected = corrected[:offset] + suggestion + corrected[offset + len(correction["token"]):]
-			offset += (len(suggestion) - len(correction["token"])) - correction["offset"]
-		await ctx.embed_reply(corrected)
+		checker = spellchecker.SpellChecker()
+		if len(words) == 1:
+			await ctx.embed_reply(", ".join(checker.candidates(words[0])))
+		else:
+			await ctx.embed_reply(' '.join(checker.correction(word) for word in words))
 	
 	@commands.command(aliases = ["synonyms"])
 	async def synonym(self, ctx, word : str):
