@@ -89,7 +89,7 @@ class Words(commands.Cog):
 	async def rhyme(self, ctx, word : str):
 		'''Rhymes of a word'''
 		try:
-			rhymes = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", 
+			rhymes = ctx.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "rhyme", 
 																limitPerRelationshipType = 100)
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
