@@ -30,8 +30,8 @@ class Words(commands.Cog):
 	async def antonym(self, ctx, word : str):
 		'''Antonyms of a word'''
 		try:
-			antonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", 
-																	useCanonical = "true", limitPerRelationshipType = 100)
+			antonyms = ctx.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "antonym", 
+																useCanonical = "true", limitPerRelationshipType = 100)
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
 				return await ctx.embed_reply(":no_entry: Word or antonyms not found")
