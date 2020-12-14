@@ -213,7 +213,7 @@ class Words(commands.Cog):
 			embed.url = definition["permalink"]
 			embed.description = definition["definition"]
 			# TODO: Check description/definition length?
-			embed.add_field(name = "Example", value = "{0[example]}\n\n:thumbsup::skin-tone-2: {0[thumbs_up]} :thumbsdown::skin-tone-2: {0[thumbs_down]}".format(definition))
+			embed.add_field(name = "Example", value = "{0[example]}\n\n\N{THUMBS UP SIGN}{1} {0[thumbs_up]} \N{THUMBS DOWN SIGN}{1} {0[thumbs_down]}".format(definition, ctx.bot.emoji_skin_tone))
 			embed.set_footer(text = "Select a different number for another definition")
 			await response.edit(embed = embed)
 
