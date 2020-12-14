@@ -102,7 +102,7 @@ class Words(commands.Cog):
 	
 	@commands.command()
 	async def spellcheck(self, ctx, *words: str):
-		'''Spell check words'''
+		'''Check the spelling of words'''
 		checker = spellchecker.SpellChecker()
 		if len(words) == 1:
 			await ctx.embed_reply(", ".join(checker.candidates(words[0])))
