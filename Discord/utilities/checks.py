@@ -12,7 +12,7 @@ def is_guild_owner():
 	async def predicate(ctx):
 		if ctx.channel.type is discord.ChannelType.private:
 			return True
-		if ctx.author == ctx.guild.owner:
+		if ctx.author.id == ctx.guild.owner_id:
 			return True
 		try:
 			return await commands.is_owner().predicate(ctx)
