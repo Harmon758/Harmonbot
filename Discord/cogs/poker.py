@@ -149,8 +149,7 @@ class PokerHand:
 					await ctx.bot.attempt_delete_message(response)
 				if response.content.lower() == "call":
 					if can_check:
-						initial_embed.description += (f"\n{player.mention} attempted to call\n"
-														f"Since there's nothing to call, {player.mention} has checked instead")
+						initial_embed.description += f"\n{player.mention} has checked"
 					else:
 						initial_embed.description += f"\n{player.mention} has called"
 					bets[player] = current_bet
