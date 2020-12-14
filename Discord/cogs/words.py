@@ -195,7 +195,7 @@ class Words(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data.get("list"):
-			return await ctx.embed_reply(":no_entry: No results found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 		num_results = len(data["list"])
 		# TODO: Handle if one definition
 		if num_results > 10: num_results = 10  # necessary?
