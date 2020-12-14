@@ -79,7 +79,16 @@ class PokerHand:
 		for stage, number_of_cards in zip(("flop", "turn", "river", "showdown"), (3, 4, 5, 5)):
 			await self.betting(ctx, round_message)
 			if len(self.hands) == 1:
-				return await ctx.embed_send(f"{next(iter(self.hands.keys())).mention} is the winner of {self.pot}")
+				winner, hand = next(iter(self.hands.items()))
+				message = await ctx.embed_send(f"{winner.mention} is the winner of {self.pot}")
+				prompt = await ctx.embed_send(f"{winner.mention}: Would you like to show your hand?")
+				with contextlib.suppress(asyncio.TimeoutError):
+					if (await ctx.bot.wait_for_yes_or_no(channel = ctx.channel, message = prompt, user = winner, 
+															timeout = 10, use_reactions = True)):
+						embed = message.embeds[0]
+						embed.description += f"\n{winner.mention}'s hand was {cards_to_string(hand)}"
+						await message.edit(embed = embed)
+				return await ctx.bot.attempt_delete_message(prompt)
 			round_message = await ctx.embed_send(f"The pot: {self.pot}\n"
 													f"The {stage}: {cards_to_string(self.community_cards[:number_of_cards])}")
 		
