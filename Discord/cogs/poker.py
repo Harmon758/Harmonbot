@@ -180,7 +180,7 @@ class PokerHand:
 					bets[player] = current_bet
 				await message.edit(embed = initial_embed)
 				await ctx.bot.attempt_delete_message(response)
-				if len(self.hands) == 1:
+				if len(self.hands) == 1 or (len(self.hands) == len(bets) and all(bet == current_bet for bet in bets.values())):
 					break
 		self.pot += sum(bets.values())
 
