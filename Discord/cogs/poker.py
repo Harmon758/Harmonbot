@@ -112,7 +112,7 @@ class PokerHand:
 		bets = {}
 		current_bet = 0
 		first_player_turn = True
-		while not bets or not all(bet == current_bet for bet in bets.values()):
+		while (not bets and len(self.hands) != 1) or not all(bet == current_bet for bet in bets.values()):
 			for player in self.hands.copy():
 				def check(message):
 					if message.author != player:
