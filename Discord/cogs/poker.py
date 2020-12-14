@@ -84,20 +84,17 @@ class PokerHand:
 													f"The {stage}: {cards_to_string(self.community_cards[:number_of_cards])}")
 		
 		evaluator = treys.Evaluator()
-		board = []
-		for card in self.community_cards.cards:
-			abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
-			board.append(treys.Card.new(abbreviation))
+		board = [treys.Card.new((card.value[0] if card.value != "10" else 'T') + card.suit[0].lower())
+					for card in self.community_cards.cards]
 		best_hand_value = evaluator.table.MAX_HIGH_CARD
 		for player, hand in self.hands.items():
-			hand_stack = []
-			for card in hand:
-				abbreviation = pydealer.card.card_abbrev(card.value[0] if card.value != "10" else 'T', card.suit[0].lower())
-				hand_stack.append(treys.Card.new(abbreviation))
+			hand_stack = [treys.Card.new((card.value[0] if card.value != "10" else 'T') + card.suit[0].lower())
+							for card in hand]
 			value = evaluator.evaluate(board, hand_stack)
 			if value < best_hand_value:
 				best_hand_value = value
 				winner = player
+				# TODO: Handle multiple winners
 		
 		hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
 		embed = round_message.embeds[0]
