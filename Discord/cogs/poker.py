@@ -21,7 +21,7 @@ class Poker(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def poker(self, ctx):
-		'''Texas hold'em'''
+		'''Texas Hold'em'''
 		if not (poker_hand := self.poker_hands.get(ctx.channel.id)):
 			self.poker_hands[ctx.channel.id] = PokerHand()
 			await self.poker_hands[ctx.channel.id].initiate(ctx)
