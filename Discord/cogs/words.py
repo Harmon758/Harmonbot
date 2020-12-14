@@ -101,7 +101,7 @@ class Words(commands.Cog):
 								title = f"Words that rhyme with {word.capitalize()}")
 	
 	@commands.command()
-	async def spellcheck(self, ctx, *words : str):
+	async def spellcheck(self, ctx, *words: str):
 		'''Spell check words'''
 		checker = spellchecker.SpellChecker()
 		if len(words) == 1:
