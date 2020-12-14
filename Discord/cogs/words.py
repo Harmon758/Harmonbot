@@ -113,8 +113,8 @@ class Words(commands.Cog):
 	async def synonym(self, ctx, word : str):
 		'''Synonyms of a word'''
 		try:
-			synonyms = self.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", 
-																	useCanonical = "true", limitPerRelationshipType = 100)
+			synonyms = ctx.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", 
+																useCanonical = "true", limitPerRelationshipType = 100)
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
 				return await ctx.embed_reply(":no_entry: Word or synonyms not found")
