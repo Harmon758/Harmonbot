@@ -194,9 +194,9 @@ class Words(commands.Cog):
 		params = {"term": term}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		if not data.get("list"):
+		if not (definitions := data.get("list")):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
-		definition = data["list"][0]
+		definition = definitions[0]
 		await ctx.embed_reply(definition["definition"], title = definition["word"], title_url = definition["permalink"], 
 								fields = (("Example", "{0[example]}\n\n\N{THUMBS UP SIGN}{1} {0[thumbs_up]} \N{THUMBS DOWN SIGN}{1} {0[thumbs_down]}".format(definition, ctx.bot.emoji_skin_tone)),))
 		# TODO: Check description/definition length?
