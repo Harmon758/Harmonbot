@@ -126,8 +126,8 @@ class PokerHand:
 							return False
 					return False
 				can_check = bets.get(player, 0) == current_bet
-				turn_message = (f"{player.mention}'s turn\n"
-								f"{player.mention}: Would you like to `{'check' if can_check else 'call'}`, `fold`, or `raise ` an amount?")
+				turn_message = (f"{player.mention}'s turn:\n"
+								f"Would you like to `{'check' if can_check else 'call'}`, `fold`, or `raise ` an amount?")
 				if not message:
 					initial_embed = discord.Embed(color = ctx.bot.bot_color)
 					initial_embed.description = ""
