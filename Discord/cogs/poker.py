@@ -170,7 +170,7 @@ class PokerHand:
 					self.pot += bets.pop(player, 0)
 					hand = self.hands.pop(player)
 					initial_embed.description += f"\n{player.mention} has folded"
-					prompt = await ctx.embed_send(f"\n{player.mention}: Would you like to show your hand?")
+					prompt = await ctx.embed_send(f"{player.mention}: Would you like to show your hand?")
 					with contextlib.suppress(asyncio.TimeoutError):
 						if (await ctx.bot.wait_for_yes_or_no(channel = ctx.channel, message = prompt, user = player, 
 																timeout = 10, use_reactions = True)):
