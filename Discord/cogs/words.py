@@ -60,7 +60,7 @@ class Words(commands.Cog):
 	async def define_menu(self, ctx, word : str):
 		'''Definitions menu'''
 		try:
-			definitions = self.bot.wordnik_word_api.getDefinitions(word)  # useCanonical = True ?
+			definitions = ctx.bot.wordnik_word_api.getDefinitions(word)  # useCanonical = True ?
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
 				return await ctx.embed_reply(":no_entry: Error: Not found")
