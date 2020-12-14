@@ -114,17 +114,6 @@ class PokerHand:
 		first_player_turn = True
 		while (not bets and len(self.hands) != 1) or not all(bet == current_bet for bet in bets.values()):
 			for player in self.hands.copy():
-				def check(message):
-					if message.author != player:
-						return False
-					if message.content.lower() in ("call", "check", "fold"):
-						return True
-					if message.content.lower().startswith("raise "):
-						try:
-							return int(message.content[6:]) >= 0  # Use .removeprefix in Python 3.9
-						except ValueError:
-							return False
-					return False
 				can_check = bets.get(player, 0) == current_bet
 				turn_message = (f"{player.mention}'s turn:\n"
 								f"Would you like to `{'check' if can_check else 'call'}`, `fold`, or `raise ` an amount?")
@@ -144,6 +133,19 @@ class PokerHand:
 						first_player_turn = False
 					embed.description += "\n\n" + turn_message
 					await message.edit(embed = embed)
+				
+				def check(message):
+					if message.author != player:
+						return False
+					if message.content.lower() in ("call", "check", "fold"):
+						return True
+					if message.content.lower().startswith("raise "):
+						try:
+							return int(message.content[6:]) >= 0  # Use .removeprefix in Python 3.9
+						except ValueError:
+							return False
+					return False
+				
 				while (response := await ctx.bot.wait_for("message", check = check)).content.lower() == "check" and not can_check:
 					embed_copy = embed.copy()
 					embed_copy.description += f"\n{player.mention} attempted to check, but there is a bet to call"
@@ -181,6 +183,7 @@ class PokerHand:
 					bets[player] = current_bet
 				await message.edit(embed = initial_embed)
 				await ctx.bot.attempt_delete_message(response)
+
 				if len(self.hands) == 1 or (len(self.hands) == len(bets) and all(bet == current_bet for bet in bets.values())):
 					break
 		self.pot += sum(bets.values())
