@@ -250,7 +250,9 @@ class UrbanDictionarySource(menus.ListPageSource):
 								description = definition["definition"], 
 								color = menu.bot.bot_color)
 		# TODO: Check description/definition length?
-		embed.add_field(name = "Example", value = "{0[example]}\n\n\N{THUMBS UP SIGN}{1} {0[thumbs_up]} \N{THUMBS DOWN SIGN}{1} {0[thumbs_down]}".format(definition, menu.ctx.bot.emoji_skin_tone))
+		embed.add_field(name = "Example", value = f"{definition['example']}\n\n"
+													f"\N{THUMBS UP SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
+													f"\N{THUMBS DOWN SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_down']}")
 		embed.set_footer(text = f"Definition {menu.current_page + 1} of {self.get_max_pages()}")
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
