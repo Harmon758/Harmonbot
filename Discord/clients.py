@@ -973,7 +973,7 @@ class Bot(commands.Bot):
 		elif os.path.isfile(self.data_path + "/aiml/std-startup.xml"):
 			ctx.bot.aiml_kernel.bootstrap(learnFiles = self.data_path + "/aiml/std-startup.xml", commands = "load aiml b")
 			ctx.bot.aiml_kernel.saveBrain(self.data_path + "/aiml/aiml_brain.brn")
-		await ctx.embed_reply(":ok_hand::skin-tone-2: Loaded AIML")
+		await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Loaded AIML")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
