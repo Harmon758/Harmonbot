@@ -986,9 +986,9 @@ class Bot(commands.Bot):
 		except commands.ExtensionError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		except Exception as e:
-			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to unload `{cog}` cog\n{type(e).__name__}: {e}")
+			await ctx.embed_reply(f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} Failed to unload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
-			await ctx.embed_reply(f":ok_hand::skin-tone-2: Unloaded `{cog}` cog :gear:")
+			await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded `{cog}` cog \N{GEAR}")
 	
 	@commands.command(name = "aiml", aliases = ["brain"])
 	@commands.is_owner()
