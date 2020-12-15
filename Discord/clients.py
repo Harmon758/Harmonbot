@@ -995,7 +995,7 @@ class Bot(commands.Bot):
 	async def unload_aiml(ctx):
 		'''Unload AIML'''
 		ctx.bot.aiml_kernel.resetBrain()
-		await ctx.embed_reply(":ok_hand::skin-tone-2: Unloaded AIML")
+		await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded AIML")
 	
 	@commands.command()
 	@commands.is_owner()
