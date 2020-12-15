@@ -982,9 +982,9 @@ class Bot(commands.Bot):
 		try:
 			ctx.bot.unload_extension("cogs." + cog)
 		except commands.ExtensionNotLoaded:
-			await ctx.embed_reply(":no_entry: Error: Cog not found/loaded")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog not found/loaded")
 		except commands.ExtensionError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		except Exception as e:
 			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to unload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
