@@ -1014,7 +1014,7 @@ class Bot(commands.Bot):
 		except commands.ExtensionError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		except Exception as e:
-			await ctx.embed_reply(f":thumbsdown::skin-tone-2: Failed to reload `{cog}` cog\n{type(e).__name__}: {e}")
+			await ctx.embed_reply(f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} Failed to reload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
 			await ctx.bot.db.execute(
 				"""
@@ -1024,7 +1024,7 @@ class Bot(commands.Bot):
 				""", 
 				ctx.bot.online_time
 			)
-			await ctx.embed_reply(f":thumbsup::skin-tone-2: Reloaded `{cog}` cog :gear:")
+			await ctx.embed_reply(f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} Reloaded `{cog}` cog \N{GEAR}")
 
 
 def create_file(filename, content = None, filetype = "json"):
