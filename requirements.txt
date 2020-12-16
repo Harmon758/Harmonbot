@@ -43,7 +43,7 @@ python-dotenv==0.15.0
 pytz==2020.4
 raven==6.10.0
 raven-aiohttp==0.7.0
-requests==2.25.0
+requests==2.25.1
 scipy==1.5.4
 seaborn==0.11.0
 setuptools==51.0.0
