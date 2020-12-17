@@ -99,7 +99,8 @@ class Misc(commands.Cog):
 	@commands.command()
 	async def fingers(self, ctx, *, text: str):
 		'''Add fingers'''
-		await ctx.embed_reply(f":point_right::skin-tone-2: {text} :point_left::skin-tone-2:")
+		await ctx.embed_reply(f"\N{WHITE RIGHT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone} "
+								f"{text} \N{WHITE LEFT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}")
 	
 	@commands.command()
 	async def loading_bar(self, ctx):
