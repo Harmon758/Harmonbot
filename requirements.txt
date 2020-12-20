@@ -45,7 +45,7 @@ raven==6.10.0
 raven-aiohttp==0.7.0
 requests==2.25.1
 scipy==1.5.4
-seaborn==0.11.0
+seaborn==0.11.1
 setuptools==51.0.0
 speechrecognition==3.8.1
 sympy==1.7.1
