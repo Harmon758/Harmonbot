@@ -12,6 +12,11 @@ class Python(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.command()
+	async def pep(self, ctx, number: int):
+		'''Generate Python Enhancement Proposal URL'''
+		await ctx.embed_reply(f"https://www.python.org/dev/peps/pep-{number:04}/")
+	
+	@commands.command()
 	async def pypi(self, ctx, package: str):
 		'''Information about a package on PyPI'''
 		url = f"https://pypi.python.org/pypi/{package}/json"
