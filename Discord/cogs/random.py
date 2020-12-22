@@ -161,7 +161,7 @@ class Random(commands.Cog):
 	
 	async def time(self, ctx):
 		'''Random time'''
-		await ctx.embed_reply(f"{random.randint(0, 23):02d}:{random.randint(0, 59):02d}")
+		await ctx.embed_reply(f"{random.randint(0, 23):02}:{random.randint(0, 59):02}")
 	
 	async def uesp(self, ctx):
 		'''
