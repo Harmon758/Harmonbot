@@ -405,6 +405,8 @@ class Random(commands.Cog):
 		'''Random insult'''
 		url = "http://quandyfactory.com/insult/json"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
+			if resp.status == 500:
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} API Error: {resp.status} {resp.reason}")
 			data = await resp.json()
 		await ctx.embed_reply(data["insult"])
 	
