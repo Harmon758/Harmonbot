@@ -24,7 +24,7 @@ inflect==5.0.2
 isodate==0.6.0
 matplotlib==3.3.3
 more-itertools==8.6.0
-numexpr==2.7.1
+numexpr==2.7.2
 numpy==1.19.4
 pandas==1.2.0
 parsedatetime==2.6
