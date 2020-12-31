@@ -1,3 +1,3 @@
 :loop
-py -3.8 Harmonbot.py
+py -3.9 Harmonbot.py
 goto loop
