@@ -2,7 +2,7 @@ jobs:
   include:
     - name: Discord
       language: python
-      python: 3.9.0
+      python: 3.9.1
       services:
         - postgresql
       addons:
@@ -23,7 +23,7 @@ jobs:
         - python Harmonbot.py
     - name: Telegram
       language: python
-      python: 3.9.0
+      python: 3.9.1
       cache:
         pip: true
       before_script:
