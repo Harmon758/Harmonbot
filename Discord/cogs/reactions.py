@@ -181,7 +181,6 @@ class Reactions(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	# TODO: rtg
-	# TODO: urband
 	
 	async def guess(self, ctx):
 		'''Guessing game menu'''
