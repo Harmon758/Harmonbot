@@ -145,6 +145,8 @@ class ChessCog(commands.Cog, name = "Chess"):
 	# TODO: Handle matches in DMs
 	# TODO: Allow resignation
 	# TODO: Allow draw offers
+	# TODO: Track stats
+	# TODO: Log matches?
 	
 	@chess_command.group(aliases = ["match"], invoke_without_command = True, case_insensitive = True)
 	async def board(self, ctx):
@@ -180,7 +182,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 	
 	@chess_command.command(hidden = True)
 	async def pgn(self, ctx):
-		'''PGN of the current game'''
+		'''PGN of the current match'''
 		match = self.get_match(ctx.channel, ctx.author)
 		if not match:
 			return await ctx.embed_reply(":no_entry: Chess match not found")
