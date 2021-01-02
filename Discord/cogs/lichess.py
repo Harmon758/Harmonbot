@@ -398,9 +398,9 @@ class Lichess(commands.Cog):
 		if "total" in playtime:
 			fields.append(("Time Spent Playing", 
 							duration_to_string(datetime.timedelta(seconds = playtime["total"]), abbreviate = True)))
-		if "tv" in playtime:
+		if tv_time := playtime.get("tv"):
 			fields.append(("Time On TV", 
-							duration_to_string(datetime.timedelta(seconds = playtime["tv"]), abbreviate = True)))
+							duration_to_string(datetime.timedelta(seconds = tv_time), abbreviate = True)))
 		if "links" in profile:
 			fields.append(("Links", profile["links"], False))
 		if "seenAt" in user_data:
