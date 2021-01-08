@@ -25,7 +25,7 @@ if __name__ == "__main__":
 	dotenv.load_dotenv()
 	
 	# Initialize client
-	client = clients.Bot(command_prefix = clients.get_prefix)
+	client = clients.Bot()
 	
 	# TODO: Move to utilities
 	def replace_null_character(data):

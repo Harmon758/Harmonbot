@@ -47,7 +47,7 @@ data_path = "data/beta" if beta else "data"  # Moved, update all references to
 
 class Bot(commands.Bot):
 	
-	def __init__(self, command_prefix):
+	def __init__(self):
 		
 		# Constants necessary for initialization
 		self.beta = any("beta" in arg.lower() for arg in sys.argv)
@@ -73,7 +73,7 @@ class Bot(commands.Bot):
 		# Initialization
 		help_command = HelpCommand(command_attrs = {"aliases": ["commands"], "hidden": True})
 		activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url)
-		super().__init__(command_prefix = command_prefix, help_command = help_command, 
+		super().__init__(command_prefix = self.get_command_prefix, help_command = help_command, 
 							activity = activity, case_insensitive = True)
 		
 		# Constants
@@ -526,6 +526,28 @@ class Bot(commands.Bot):
 		# TODO: DM if left server
 		# TODO: Track guild names
 		# await voice.detectvoice()
+
+	@staticmethod
+	async def get_command_prefix(bot, message):
+		if message.channel.type is discord.ChannelType.private:
+			prefixes = await bot.db.fetchval(
+				"""
+				SELECT prefixes
+				FROM direct_messages.prefixes
+				WHERE channel_id = $1
+				""", 
+				message.channel.id
+			)
+		else:
+			prefixes = await bot.db.fetchval(
+				"""
+				SELECT prefixes
+				FROM guilds.prefixes
+				WHERE guild_id = $1
+				""", 
+				message.guild.id
+			)
+		return prefixes if prefixes else '!'
 	
 	async def on_ready(self):
 		self.print("readied")
@@ -1037,25 +1059,4 @@ def create_file(filename, content = None, filetype = "json"):
 		pass
 	except OSError:
 		pass  # TODO: Handle?
-
-async def get_prefix(bot, message):
-	if message.channel.type is discord.ChannelType.private:
-		prefixes = await bot.db.fetchval(
-			"""
-			SELECT prefixes
-			FROM direct_messages.prefixes
-			WHERE channel_id = $1
-			""", 
-			message.channel.id
-		)
-	else:
-		prefixes = await bot.db.fetchval(
-			"""
-			SELECT prefixes
-			FROM guilds.prefixes
-			WHERE guild_id = $1
-			""", 
-			message.guild.id
-		)
-	return prefixes if prefixes else '!'
 
