@@ -34,7 +34,8 @@ class RotMG(commands.Cog):
 		embed.add_field(name = "Class Quests Completed", value = data["rank"])
 		embed.add_field(name = "Account Fame", value = "{:,}".format(data["account_fame"]))
 		embed.add_field(name = "Account Fame Rank", value = "{:,}".format(data["account_fame_rank"]))
-		embed.add_field(name = "Created", value = data["created"])
+		if created := data.get("created"):
+			embed.add_field(name = "Created", value = created)
 		embed.add_field(name = "Total Exp", value = "{:,}".format(data["exp"]))
 		embed.add_field(name = "Exp Rank", value = "{:,}".format(data["exp_rank"]))
 		embed.add_field(name = "Last Seen", value = data["player_last_seen"])
