@@ -39,8 +39,8 @@ class RotMG(commands.Cog):
 		embed.add_field(name = "Total Exp", value = "{:,}".format(data["exp"]))
 		embed.add_field(name = "Exp Rank", value = "{:,}".format(data["exp_rank"]))
 		embed.add_field(name = "Last Seen", value = data["player_last_seen"])
-		if "guild" in data:
-			embed.add_field(name = "Guild", value = data["guild"])
+		if guild := data.get("guild"):
+			embed.add_field(name = "Guild", value = guild)
 			embed.add_field(name = "Guild Position", value = data["guild_rank"])
 		if data["desc1"] or data["desc2"] or data["desc3"]:
 			embed.add_field(name = "Description", value = "{}\n{}\n{}".format(data["desc1"], data["desc2"], data["desc3"]))
