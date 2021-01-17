@@ -24,8 +24,7 @@ class RotMG(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await ctx.embed_reply("Error: " + data["error"])
-			return
+			return await ctx.embed_reply("Error: " + data["error"])
 		fields = [("Characters", data["chars"]), ("Total Fame", f"{data['fame']:,}"), 
 					("Fame Rank", f"{data['fame_rank']:,}"), ("Class Quests Completed", data["rank"]), 
 					("Account Fame", f"{data['account_fame']:,}"), 
