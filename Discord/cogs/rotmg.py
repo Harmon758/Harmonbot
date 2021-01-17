@@ -16,7 +16,7 @@ class RotMG(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True, case_insensitive = True)
-	async def rotmg(self, ctx, player : str):
+	async def rotmg(self, ctx, player: str):
 		'''Realm of the Mad God player information'''
 		url = f"https://nightfirec.at/realmeye-api/"
 		params = {"player": player}
