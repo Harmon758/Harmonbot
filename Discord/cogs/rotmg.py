@@ -26,26 +26,21 @@ class RotMG(commands.Cog):
 		if "error" in data:
 			await ctx.embed_reply("Error: " + data["error"])
 			return
-		embed = discord.Embed(title = data["player"], url = f"https://www.realmeye.com/player/{player}", color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
-		if data["donator"] == "true": embed.description = "Donator"
-		embed.add_field(name = "Characters", value = data["chars"])
-		embed.add_field(name = "Total Fame", value = f"{data['fame']:,}")
-		embed.add_field(name = "Fame Rank", value = f"{data['fame_rank']:,}")
-		embed.add_field(name = "Class Quests Completed", value = data["rank"])
-		embed.add_field(name = "Account Fame", value = f"{data['account_fame']:,}")
-		embed.add_field(name = "Account Fame Rank", value = f"{data['account_fame_rank']:,}")
+		fields = [("Characters", data["chars"]), ("Total Fame", f"{data['fame']:,}"), 
+					("Fame Rank", f"{data['fame_rank']:,}"), ("Class Quests Completed", data["rank"]), 
+					("Account Fame", f"{data['account_fame']:,}"), 
+					("Account Fame Rank", f"{data['account_fame_rank']:,}")]
 		if created := data.get("created"):
-			embed.add_field(name = "Created", value = created)
-		embed.add_field(name = "Total Exp", value = f"{data['exp']:,}")
-		embed.add_field(name = "Exp Rank", value = f"{data['exp_rank']:,}")
-		embed.add_field(name = "Last Seen", value = data["player_last_seen"])
+			fields.append(("Created", created))
+		fields.extend((("Total Exp", f"{data['exp']:,}"), ("Exp Rank", f"{data['exp_rank']:,}"), 
+						("Last Seen", data["player_last_seen"])))
 		if guild := data.get("guild"):
-			embed.add_field(name = "Guild", value = guild)
-			embed.add_field(name = "Guild Position", value = data["guild_rank"])
+			fields.extend((("Guild", guild), ("Guild Position", data["guild_rank"])))
 		if data["desc1"] or data["desc2"] or data["desc3"]:
-			embed.add_field(name = "Description", value = f"{data['desc1']}\n{data['desc2']}\n{data['desc3']}")
-		await ctx.send(embed = embed)
+			fields.append(("Description", f"{data['desc1']}\n{data['desc2']}\n{data['desc3']}"))
+		await ctx.embed_reply(title = data["player"], title_url = f"https://www.realmeye.com/player/{player}", 
+								description = "Donator" if data["donator"] == "true" else discord.Embed.Empty,
+								fields = fields)
 	
 	@rotmg.command(name = "characters")
 	async def rotmg_characters(self, ctx, player : str):
