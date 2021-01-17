@@ -18,9 +18,10 @@ class RotMG(commands.Cog):
 	@commands.group(aliases = ["realmofthemadgod"], invoke_without_command = True, case_insensitive = True)
 	async def rotmg(self, ctx, player : str):
 		'''Realm of the Mad God player information'''
-		url = f"https://nightfirec.at/realmeye-api/?player={player}"
+		url = f"https://nightfirec.at/realmeye-api/"
+		params = {"player": player}
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if "error" in data:
 			await ctx.embed_reply("Error: " + data["error"])
