@@ -3,7 +3,6 @@
 [![CircleCI status](https://circleci.com/gh/Harmon758/Harmonbot.svg?style=svg)](https://circleci.com/gh/Harmon758/Harmonbot)
 [![GitHub Actions workflow status](https://github.com/Harmon758/Harmonbot/workflows/Platforms/badge.svg?branch=rewrite)](https://github.com/Harmon758/Harmonbot/actions)
 [![GitLab pipeline status](https://gitlab.com/Harmon758/Harmonbot/badges/rewrite/pipeline.svg)](https://gitlab.com/Harmon758/Harmonbot/commits/rewrite)
-[![Travis CI build status](https://travis-ci.org/Harmon758/Harmonbot.svg?branch=rewrite)](https://travis-ci.org/Harmon758/Harmonbot)
 [![Codacy quality](https://api.codacy.com/project/badge/Grade/38a8ff62492d438cb1fd1f2a77cebb2a)](https://app.codacy.com/project/Harmon758/Harmonbot/dashboard)
 [![Better Code Hub compliance](https://bettercodehub.com/edge/badge/Harmon758/Harmonbot?branch=rewrite)](https://bettercodehub.com/results/Harmon758/Harmonbot)
 [![PyUp.io updates](https://pyup.io/repos/github/Harmon758/Harmonbot/shield.svg)](https://pyup.io/repos/github/Harmon758/Harmonbot/)
