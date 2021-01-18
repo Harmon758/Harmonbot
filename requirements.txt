@@ -16,7 +16,7 @@ cryptography==3.3.1
 dice==3.1.1
 emoji==0.6.0
 feedparser==6.0.2
-gitpython==3.1.6
+gitpython==3.1.12
 hypothesis==6.0.2
 imageio==2.9.0
 imgurpython==1.1.7
