@@ -627,7 +627,7 @@ class Bot(commands.Bot):
 		## User missing permissions
 		if isinstance(error, (errors.NotGuildOwner, commands.MissingPermissions)):
 			# Also for commands.NotOwner?
-			return await ctx.embed_reply(":no_entry: You don't have permission to do that")
+			return await ctx.embed_reply(f"{self.error_emoji} You don't have permission to do that")
 		## Bot missing permissions
 		if isinstance(error, commands.BotMissingPermissions):
 			missing_perms = self.inflect_engine.join([f"`{permission}`" for permission in error.missing_perms])
@@ -635,7 +635,7 @@ class Bot(commands.Bot):
 											f"I need the {missing_perms} {self.inflect_engine.plural('permission', len(error.missing_perms))}")
 		## User not permitted to use command
 		if isinstance(error, errors.NotPermitted):
-			return await ctx.embed_reply(":no_entry: You don't have permission to use that command here")
+			return await ctx.embed_reply(f"{self.error_emoji} You don't have permission to use that command here")
 		## Not in voice channel + user permitted
 		if isinstance(error, errors.PermittedVoiceNotConnected):
 			return await ctx.embed_reply("I'm not in a voice channel\n"
@@ -650,15 +650,15 @@ class Bot(commands.Bot):
 			return await ctx.embed_reply(str(error).rstrip('.').replace("argument", "input"))
 		## Input parsing error
 		if isinstance(error, commands.ArgumentParsingError):
-			return await ctx.embed_reply(":no_entry: Error parsing input: " + str(error).replace("'", '`'))
+			return await ctx.embed_reply(f"{self.error_emoji} Error parsing input: " + str(error).replace("'", '`'))
 		## Bad input
 		if isinstance(error, commands.BadArgument):
-			return await ctx.embed_reply(f":no_entry: Error: Invalid Input: {error}")
+			return await ctx.embed_reply(f"{self.error_emoji} Error: Invalid Input: {error}")
 		# Command Invoke Error
 		if isinstance(error, commands.CommandInvokeError):
 			# Unable to bulk delete messages older than 14 days
 			if isinstance(error.original, discord.HTTPException) and error.original.code == 50034:
-				return await ctx.embed_reply(":no_entry: Error: You can only bulk delete messages that are under 14 days old")
+				return await ctx.embed_reply(f"{self.error_emoji} Error: You can only bulk delete messages that are under 14 days old")
 			# Menus
 			if isinstance(error.original, menus.CannotEmbedLinks):
 				return await ctx.embed_reply("I need to be able to send embeds to show menus\n"
