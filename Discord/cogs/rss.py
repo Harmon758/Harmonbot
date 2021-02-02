@@ -102,7 +102,7 @@ class RSS(commands.Cog):
 			ctx.channel.id, url
 		)
 		if following:
-			return await ctx.embed_reply(":no_entry: This text channel is already following that feed")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel is already following that feed")
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			feed_text = await resp.text()
 		# TODO: Handle issues getting URL
