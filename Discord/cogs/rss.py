@@ -146,7 +146,7 @@ class RSS(commands.Cog):
 			ctx.channel.id, url
 		)
 		if not deleted:
-			return await ctx.embed_reply(":no_entry: This channel isn't following that feed")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This channel isn't following that feed")
 		await ctx.embed_reply(f"The feed, {url}, has been removed from this channel")
 
 	@rss.command(aliases = ["feed"])
