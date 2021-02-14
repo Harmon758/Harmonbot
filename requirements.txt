@@ -55,7 +55,7 @@ tweepy==3.10.0
 unicodedata2==12.1.0
 urllib3==1.26.2
 wand==0.6.5
-wolframalpha==4.1.1
+wolframalpha==4.3.0
 wordcloud==1.8.1
 wordnik-py3==2.1.2
 youtube-dl==2021.1.16
