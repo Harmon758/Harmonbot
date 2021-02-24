@@ -420,8 +420,8 @@ class Trivia(commands.Cog):
 		# Replace: & -> and
 		answer = answer.replace("\\'", "'").replace('&', "and")
 		response = response.replace('’', "'").replace('&', "and")
-		# Remove exclamation marks, periods, and quotation marks
-		for character in '!."':
+		# Remove exclamation marks, periods, quotation marks, and interpuncts
+		for character in '!."·':
 			if character in answer:
 				answer = answer.replace(character, "")
 			if character in response:
