@@ -287,7 +287,7 @@ class Trivia(commands.Cog):
 				data = await resp.json()
 			for random_clue in data:
 				category_id = random_clue["category_id"]
-				if category_id in board:
+				if category_id is None or category_id in board:
 					continue
 				url = "http://jservice.io/api/category"
 				params = {"id": category_id}
