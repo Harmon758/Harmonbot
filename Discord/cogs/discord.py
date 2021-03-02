@@ -254,7 +254,7 @@ class Discord(commands.Cog):
 		try:
 			await ctx.embed_reply(discord.utils.snowflake_time(ID).replace(tzinfo = datetime.timezone.utc))
 		except OverflowError:
-			await ctx.embed_reply(":no_entry: Error: Invalid Discord ID")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Invalid Discord ID")
 	
 	@commands.command()
 	@commands.guild_only()
