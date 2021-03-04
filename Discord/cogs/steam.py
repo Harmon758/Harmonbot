@@ -80,6 +80,6 @@ class Steam(commands.Cog):
 			data = await resp.json()
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
 		if not app:
-			return await ctx.embed_reply(":no_entry: Game not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
 		await ctx.embed_reply(f"steam://run/{app['appid']}", title = f"Launch {app['name']}")
 
