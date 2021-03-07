@@ -66,7 +66,7 @@ class Words(commands.Cog):
 			raise
 		definitions = [definition for definition in definitions if definition.text]
 		if not definitions:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Definition not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Definition not found")
 		menu = DefineMenu(definitions)
 		self.menus.append(menu)
 		await menu.start(ctx, wait = True)
