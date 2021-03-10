@@ -64,8 +64,7 @@ class Meta(commands.Cog):
 	async def cog(self, ctx, command):
 		'''Find what cog/category a command is in'''
 		if command not in self.bot.all_commands:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: command not found")
-			return
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: command not found")
 		await ctx.embed_reply(self.bot.all_commands[command].cog_name)
 	
 	@commands.command()
