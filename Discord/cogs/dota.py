@@ -36,7 +36,7 @@ class DotA(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if "profile" not in data:
-			return await ctx.embed_reply(":no_entry: Error: DotA 2 profile not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: DotA 2 profile not found")
 		url = f"https://api.opendota.com/api/players/{account}/wl"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			wl_data = await resp.json()
