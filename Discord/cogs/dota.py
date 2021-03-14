@@ -63,7 +63,7 @@ class DotA(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if not data["my_word_counts"]:
-			return await ctx.embed_reply(":no_entry: Error: No words found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: No words found")
 		word_cloud = WordCloud()
 		word_cloud.fit_words(data["my_word_counts"])
 		buffer = io.BytesIO()
