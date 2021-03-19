@@ -163,7 +163,7 @@ class Battlerite(commands.Cog):
 		'''Casual'''
 		data = await self.get_player(player)
 		if not data:
-			return await ctx.embed_reply(":no_entry: Error: Player not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
 		stats = data["attributes"]["stats"]
 		wins_2v2 = stats.get("10", 0)
 		losses_2v2 = stats.get("11", 0)
