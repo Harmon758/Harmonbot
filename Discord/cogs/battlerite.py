@@ -234,7 +234,7 @@ class Battlerite(commands.Cog):
 		'''Time Played'''
 		data = await self.get_player(player)
 		if not data:
-			return await ctx.embed_reply(":no_entry: Error: Player not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
 		stats = data["attributes"]["stats"]
 		fields = [("Total Time Played", utilities.secs_to_letter_format(stats['8'], limit = 3600), False)]
 		time_played = {}
