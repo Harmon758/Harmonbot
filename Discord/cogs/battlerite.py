@@ -254,7 +254,7 @@ class Battlerite(commands.Cog):
 		'''Wins/Losses'''
 		data = await self.get_player(player)
 		if not data:
-			return await ctx.embed_reply(":no_entry: Error: Player not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
 		stats = data["attributes"]["stats"]
 		field_value = f"{stats['2']} - {stats['3']} ({stats['2'] / (stats['2'] + stats['3']) * 100:.2f}%)"
 		# TODO: Handle division by 0
