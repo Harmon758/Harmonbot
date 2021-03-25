@@ -284,7 +284,7 @@ class Search(commands.Cog):
 				return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 			raise
 		# TODO: other options?
-		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
+		if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
 			else:
@@ -296,7 +296,7 @@ class Search(commands.Cog):
 				if str(e).startswith("Error "):
 					return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 				raise
-		if not hasattr(result, "pods"):
+		if not hasattr(result, "pod"):
 			if result.timedout:
 				return await ctx.embed_reply("Standard computation time exceeded")
 			else:
@@ -318,6 +318,7 @@ class Search(commands.Cog):
 					if subpod.plaintext:
 						text_output += ctx.bot.CODE_BLOCK.format(subpod.plaintext)
 			await ctx.reply(text_output)
+			# TODO: Handle message too long
 		# TODO: single embed with plaintext version?
 		if result.timedout:
 			await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
