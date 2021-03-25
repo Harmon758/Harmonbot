@@ -305,11 +305,11 @@ class Search(commands.Cog):
 			for pod_number, pod in enumerate(result.pods):
 				for subpod_number, subpod in enumerate(pod.subpods):
 					if subpod_number:
-						await ctx.embed_send(image_url = next(subpod.img).src)
+						await ctx.embed_send(image_url = subpod.img.src)
 					elif pod_number:
-						await ctx.embed_send(title = pod.title, image_url = next(subpod.img).src)
+						await ctx.embed_send(title = pod.title, image_url = subpod.img.src)
 					else:
-						await ctx.embed_reply(title = pod.title, image_url = next(subpod.img).src, footer_text = discord.Embed.Empty)
+						await ctx.embed_reply(title = pod.title, image_url = subpod.img.src, footer_text = discord.Embed.Empty)
 		else:
 			text_output = ""
 			for pod in result.pods:
