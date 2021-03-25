@@ -269,7 +269,7 @@ class Search(commands.Cog):
 		await self.process_wolframalpha(ctx, search)
 	
 	@wolframalpha.command(name = "location")
-	async def wolframalpha_location(self, ctx, location: str, *, search : str):
+	async def wolframalpha_location(self, ctx, location: str, *, search: str):
 		'''Input location'''
 		await self.process_wolframalpha(ctx, search, location = location)
 	
