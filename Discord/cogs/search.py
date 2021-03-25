@@ -281,7 +281,7 @@ class Search(commands.Cog):
 			result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
 		except Exception as e:
 			if str(e).startswith("Error "):
-				return await ctx.embed_reply(f":no_entry: {e}")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 			raise
 		# TODO: other options?
 		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
@@ -294,13 +294,13 @@ class Search(commands.Cog):
 				result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
 			except Exception as e:
 				if str(e).startswith("Error "):
-					return await ctx.embed_reply(f":no_entry: {e}")
+					return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 				raise
 		if not hasattr(result, "pods"):
 			if result.timedout:
 				return await ctx.embed_reply("Standard computation time exceeded")
 			else:
-				return await ctx.embed_reply(":no_entry: No results found")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 		if ctx.me.permissions_in(ctx.channel).embed_links:
 			for pod_number, pod in enumerate(result.pods):
 				for subpod_number, subpod in enumerate(pod.subpods):
