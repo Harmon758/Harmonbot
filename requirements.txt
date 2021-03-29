@@ -70,7 +70,7 @@ cycler==0.10.0
 decorator==4.4.2
 docopt==0.6.2
 geojson==2.5.0
-gitdb==4.0.5
+gitdb==4.0.6
 googleapis-common-protos==1.53.0
 grpcio==1.36.1
 idna==2.10
