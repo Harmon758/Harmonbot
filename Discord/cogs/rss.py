@@ -272,7 +272,7 @@ class RSS(commands.Cog):
 						(parsed_image := BeautifulSoup(feed_text, "lxml").image) and next(iter(parsed_image.attrs.values()), None) or 
 						discord.Embed.Empty
 					)
-					embed.set_footer(text = feed_info.feed.title, icon_url = footer_icon_url)
+					embed.set_footer(text = feed_info.feed.get("title", feed), icon_url = footer_icon_url)
 					# Send embed(s)
 					channel_records = await self.bot.db.fetch("SELECT channel_id FROM rss.feeds WHERE feed = $1", feed)
 					for record in channel_records:
