@@ -138,8 +138,7 @@ class Location(commands.Cog):
 		try:
 			data = await get_geocode_data(address, aiohttp_session = ctx.bot.aiohttp_session)
 		except UnitOutputError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
-			return
+			return await ctx.embed_reply(f":no_entry: Error: {e}")
 		title = "Geographic Coordinates for " + data["formatted_address"]
 		fields = (("Latitude", data["geometry"]["location"]["lat"]), 
 					("Longitude", data["geometry"]["location"]["lng"]))
