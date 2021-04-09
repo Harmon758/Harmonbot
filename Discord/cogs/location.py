@@ -133,7 +133,7 @@ class Location(commands.Cog):
 		await ctx.embed_reply(title = country_name, fields = fields)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def geocode(self, ctx, *, address : str):
+	async def geocode(self, ctx, *, address: str):
 		'''Convert addresses to geographic coordinates'''
 		try:
 			data = await get_geocode_data(address, aiohttp_session = ctx.bot.aiohttp_session)
