@@ -152,11 +152,9 @@ class Location(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] == "ZERO_RESULTS":
-			await ctx.embed_reply(":no_entry: Address/Location not found")
-			return
+			return await ctx.embed_reply(":no_entry: Address/Location not found")
 		if data["status"] != "OK":
-			await ctx.embed_reply(":no_entry: Error")
-			return
+			return await ctx.embed_reply(":no_entry: Error")
 		data = data["results"][0]
 		await ctx.embed_reply(data["formatted_address"], title = f"Address for {latitude}, {longitude}")
 	
