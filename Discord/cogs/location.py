@@ -35,7 +35,7 @@ class Location(commands.Cog):
 	# TODO: handle random location command
 	
 	@commands.command()
-	async def country(self, ctx, *, country : str):
+	async def country(self, ctx, *, country: str):
 		'''Information about a country'''
 		# TODO: subcommands for other options to search by (e.g. capital)
 		url = "https://restcountries.eu/rest/v2/name/" + country
