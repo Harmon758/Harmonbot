@@ -41,15 +41,13 @@ class Location(commands.Cog):
 		url = "https://restcountries.eu/rest/v2/name/" + country
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 400:
-				await ctx.embed_reply(":no_entry: Error")
-				return
+				return await ctx.embed_reply(":no_entry: Error")
 			data = await resp.json()
 			if resp.status == 404:
 				error_message = ":no_entry: Error"
 				if "message" in data:
 					error_message += ": " + data["message"]
-				await ctx.embed_reply(error_message)
-				return
+				return await ctx.embed_reply(error_message)
 		country_data = {}
 		for c in data:
 			if c["name"].lower() == country.lower() or country.lower() in [n.lower() for n in c["altSpellings"]]:
