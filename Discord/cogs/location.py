@@ -196,7 +196,7 @@ class Location(commands.Cog):
 								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
 	
 	@commands.group(aliases = ["timezone"], invoke_without_command = True, case_insensitive = True)
-	async def time(self, ctx, *, location : str):
+	async def time(self, ctx, *, location: str):
 		'''Current time of a location'''
 		try:
 			geocode_data = await get_geocode_data(location, aiohttp_session = ctx.bot.aiohttp_session)
