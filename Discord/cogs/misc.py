@@ -142,7 +142,7 @@ class Misc(commands.Cog):
 		await ctx.embed_reply("pong")
 	
 	@commands.command()
-	async def poke(self, ctx, *, user : discord.Member):
+	async def poke(self, ctx, *, user: discord.Member):
 		'''Poke someone'''
 		if user == self.bot.user:
 			return await ctx.embed_reply(f"!poke {ctx.author.mention}")
