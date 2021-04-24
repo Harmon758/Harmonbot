@@ -256,7 +256,7 @@ class Random(commands.Cog):
 		await ctx.embed_reply(f"{ctx.prefix}{random.choice(tuple(set(command.name for command in self.bot.commands)))}")
 	
 	@commands.command(aliases = ["die", "roll"])
-	async def dice(self, ctx, *, input : str = '6'):
+	async def dice(self, ctx, *, input: str = '6'):
 		'''
 		Roll dice
 		Inputs:                                      Examples:
