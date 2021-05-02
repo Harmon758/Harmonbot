@@ -30,8 +30,8 @@ import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 import youtube_dl
 
-from utilities.audio_player import AudioPlayer
 from utilities import errors
+from utilities.audio_player import AudioPlayer
 from utilities.context import Context
 from utilities.database import create_database_pool
 from utilities.help_command import HelpCommand
