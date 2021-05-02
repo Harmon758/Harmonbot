@@ -223,7 +223,7 @@ class Random(commands.Cog):
 		except xml.etree.ElementTree.ParseError:
 			await ctx.embed_reply(":no_entry: Error")
 		else:
-			await ctx.embed_reply(f"[:cat:]({url.text})", image_url = url.text)
+			await ctx.embed_reply(f"[\N{CAT FACE}]({url.text})", image_url = url.text)
 	
 	@cat.command(name = "categories", aliases = ["cats"])
 	async def cat_categories(self, ctx):
