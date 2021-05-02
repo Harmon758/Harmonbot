@@ -22,7 +22,7 @@ except ImportError as e:
 from utilities import checks
 
 # TODO: Dynamically load chess engine not locked to version?
-STOCKFISH_EXECUTABLE = "stockfish_20090216_x64"
+STOCKFISH_EXECUTABLE = "stockfish_13_x64"
 try:
 	CPUID = cpuinfo.CPUID()
 	CPU_FLAGS = CPUID.get_flags(CPUID.get_max_extension_support())
