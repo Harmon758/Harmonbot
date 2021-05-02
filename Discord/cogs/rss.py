@@ -209,12 +209,14 @@ class RSS(commands.Cog):
 					## if "published_parsed" in entry:
 					##  timestamp = datetime.datetime.fromtimestamp(time.mktime(entry.published_parsed))
 					### inaccurate
-					if "published" in entry and entry.published:
-						timestamp = dateutil.parser.parse(entry.published, tzinfos = self.tzinfos)
-					elif "updated" in entry:  # and entry.updated necessary?; check updated first?
-						timestamp = dateutil.parser.parse(entry.updated, tzinfos = self.tzinfos)
-					else:
-						timestamp = discord.Embed.Empty
+					timestamp = discord.Embed.Empty
+					try:
+						if "published" in entry and entry.published:
+							timestamp = dateutil.parser.parse(entry.published, tzinfos = self.tzinfos)
+						elif "updated" in entry:  # and entry.updated necessary?; check updated first?
+							timestamp = dateutil.parser.parse(entry.updated, tzinfos = self.tzinfos)
+					except ValueError:
+						pass
 					# Get and set description, title, url + set timestamp
 					if not (description := entry.get("summary")) and "content" in entry:
 						description = entry["content"][0].get("value")
