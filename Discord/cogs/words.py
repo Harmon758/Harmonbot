@@ -148,7 +148,7 @@ class Words(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if "langs" not in data:
-			return await ctx.embed_reply(":no_entry: Error: Invalid Language Code")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Invalid Language Code")
 		await ctx.embed_reply(", ".join(sorted(f"{language} ({code})" for code, language in data["langs"].items())))
 	
 	@translate.command(name = "to")
