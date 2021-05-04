@@ -672,6 +672,9 @@ class Bot(commands.Bot):
 			# Bot missing permissions (Unhandled)
 			if isinstance(error.original, (discord.Forbidden, menus.CannotSendMessages)):
 				return self.print(f"Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}")
+			# Discord Server Error
+			if isinstance(error.original, discord.DiscordServerError):
+				return self.print(f"Discord Server Error for {ctx.command.qualified_name}: {error.original}")
 			# Handled with local error handler
 			if isinstance(error.original, youtube_dl.utils.DownloadError):
 				return
