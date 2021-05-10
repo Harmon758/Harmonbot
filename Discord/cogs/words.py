@@ -152,7 +152,7 @@ class Words(commands.Cog):
 		await ctx.embed_reply(", ".join(sorted(f"{language} ({code})" for code, language in data["langs"].items())))
 	
 	@translate.command(name = "to")
-	async def translate_to(self, ctx, language_code : str, *, text : str):
+	async def translate_to(self, ctx, language_code: str, *, text: str):
 		'''
 		Translate to a specific language
 		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
