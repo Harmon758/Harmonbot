@@ -248,7 +248,7 @@ class Tools(commands.Cog):
 		if not inserted:
 			await ctx.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 			return
-		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
+		await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Your tag has been added")
 	
 	@tag.command(name = "edit", aliases = ["update"])
 	async def tag_edit(self, ctx, tag : str, *, content : str):
