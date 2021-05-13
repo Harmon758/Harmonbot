@@ -78,7 +78,7 @@ lxml==4.6.3
 mpmath==1.2.1
 multidict==5.1.0
 oauthlib==3.1.0
-protobuf==3.15.8
+protobuf==3.17.0
 pycparser==2.20
 pynacl==1.4.0
 pysocks==1.7.1
