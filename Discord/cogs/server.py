@@ -64,8 +64,10 @@ class Server(commands.Cog):
 	@checks.not_forbidden()
 	async def owner(self, ctx):
 		'''The owner of the server'''
-		await ctx.embed_reply(f"The owner of this server is {ctx.guild.owner.mention}", 
-								footer_text = str(ctx.guild.owner), footer_icon_url = ctx.guild.owner.avatar_url)
+		if not (guild_owner := ctx.guild.owner):
+			guild_owner = await ctx.guild.fetch_member(ctx.guild.owner_id)
+		await ctx.embed_reply(f"The owner of this server is {guild_owner.mention}", 
+								footer_text = str(guild_owner), footer_icon_url = guild_owner.avatar_url)
 	
 	@server.command()
 	@commands.guild_only()
