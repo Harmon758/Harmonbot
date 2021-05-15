@@ -25,7 +25,7 @@ isodate==0.6.0
 matplotlib==3.4.2
 more-itertools==8.7.0
 numexpr==2.7.3
-numpy==1.20.2
+numpy==1.20.3
 pandas==1.2.4
 parsedatetime==2.6
 pillow==8.2.0
