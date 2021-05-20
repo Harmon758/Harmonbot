@@ -21,6 +21,8 @@ class Python(commands.Cog):
 		'''Information about a package on PyPI'''
 		url = f"https://pypi.python.org/pypi/{package}/json"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
+			if resp.status == 404:
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Package not found")
 			data = await resp.json()
 		await ctx.embed_reply(title = data["info"]["name"], title_url = data["info"]["package_url"], 
 								description = data["info"]["summary"], fields = (("Version", data["info"]["version"]),))
