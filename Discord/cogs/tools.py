@@ -246,8 +246,7 @@ class Tools(commands.Cog):
 			ctx.author.id, tag, discord.utils.escape_mentions(content)
 		)
 		if not inserted:
-			await ctx.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
-			return
+			return await ctx.embed_reply("You already have that tag\nUse `{}tag edit <tag> <content>` to edit it".format(ctx.prefix))
 		await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Your tag has been added")
 	
 	@tag.command(name = "edit", aliases = ["update"])
