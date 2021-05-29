@@ -1,5 +1,5 @@
 # discord.py[voice]==1.6.0a
-discord.py[voice] @ git+git://github.com/Rapptz/discord.py.git@60f804c
+discord.py[voice] @ git+git://github.com/Rapptz/discord.py.git@6515f33
 # discord-ext-menus==1.0.0a
 discord-ext-menus @ git+git://github.com/Rapptz/discord-ext-menus.git@6f2b873
 # TwitchIO@rewrite
