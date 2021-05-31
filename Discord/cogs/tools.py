@@ -277,8 +277,7 @@ class Tools(commands.Cog):
 			ctx.author.id, tag
 		)
 		if not deleted:
-			await ctx.embed_reply(":no_entry: Tag not found")
-			return
+			return await ctx.embed_reply(":no_entry: Tag not found")
 		await ctx.embed_reply(f":ok_hand:{ctx.bot.emoji_skin_tone} Your tag has been deleted")
 	
 	@tag.command(name = "expunge")
