@@ -35,6 +35,11 @@ class Lichess(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		
+		# Official lichess.org server and #live channel IDs
+		# #live channel: for stream announcements
+		self.LICHESS_SERVER_ID = 280713822073913354
+		self.LICHESS_LIVE_CHANNEL_ID = 352971106715435009
+		
 		self.modes = ("ultraBullet", "bullet", "blitz", "rapid", "classical", "correspondence", 
 						"crazyhouse", "chess960", "kingOfTheHill", "threeCheck", "antichess", 
 						"atomic", "horde", "racingKings", "puzzle")
