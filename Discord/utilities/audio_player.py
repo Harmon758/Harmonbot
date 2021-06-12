@@ -76,11 +76,11 @@ class AudioPlayer:
 			source = await self.queue.get()
 			await self.not_interrupted.wait()
 			if not source.stream:
-				now_playing_message = await self.bot.send_embed(self.text_channel, ":arrow_down: Downloading..", title = source.info.get("title", "N/A"), title_url = source.info.get("webpage_url"), timestamp = source.timestamp, footer_text = source.requester.display_name, footer_icon_url = source.requester.avatar_url, thumbnail_url = source.info.get("thumbnail"))
+				now_playing_message = await self.bot.send_embed(self.text_channel, ":arrow_down: Downloading..", title = source.info.get("title", "N/A"), title_url = source.info.get("webpage_url"), timestamp = source.timestamp, footer_text = source.requester.display_name, footer_icon_url = source.requester.avatar.url, thumbnail_url = source.info.get("thumbnail"))
 			if not source.initialized: await source.initialize_source(self.default_volume)
 			self.guild.voice_client.play(source, after = self.after_song)
 			if source.stream:
-				await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing", title = source.info.get("title", "N/A"), title_url = source.info.get("webpage_url"), timestamp = source.timestamp, footer_text = source.requester.display_name, footer_icon_url = source.requester.avatar_url, thumbnail_url = source.info.get("thumbnail"))
+				await self.bot.send_embed(self.text_channel, ":arrow_forward: Now Playing", title = source.info.get("title", "N/A"), title_url = source.info.get("webpage_url"), timestamp = source.timestamp, footer_text = source.requester.display_name, footer_icon_url = source.requester.avatar.url, thumbnail_url = source.info.get("thumbnail"))
 			else:
 				embed = now_playing_message.embeds[0]
 				embed.description = ":arrow_forward: Now playing"

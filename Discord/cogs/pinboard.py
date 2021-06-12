@@ -305,7 +305,7 @@ class Pinboard(commands.Cog):
 		# TODO: color dependent on custom emote
 		# alternate color: 0xbe1931
 		# star: 0xffac33
-		embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar_url)
+		embed.set_author(name = pinned_message.author.display_name, icon_url = pinned_message.author.avatar.url)
 		content = pinned_message.content
 		if pinned_message.embeds:
 			if pinned_message.embeds[0].type == "image":

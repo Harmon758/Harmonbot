@@ -109,7 +109,7 @@ class Overwatch(commands.Cog):
 			if data.get(region):
 				stats = data[region]["stats"]["quickplay"]
 				embed = discord.Embed(title = battletag, color = ctx.bot.bot_color)
-				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
+				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar.url)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
 				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
@@ -138,7 +138,7 @@ class Overwatch(commands.Cog):
 			if data.get(region):
 				stats = data[region]["stats"]["quickplay"]
 				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = ctx.bot.bot_color)
-				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
+				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar.url)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
 				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
@@ -171,7 +171,7 @@ class Overwatch(commands.Cog):
 			if data.get(region):
 				stats = data[region]["stats"]["competitive"]
 				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = ctx.bot.bot_color)
-				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
+				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar.url)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
 				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])

@@ -208,7 +208,7 @@ class BlobsSource(menus.ListPageSource):
 	
 	async def format_page(self, menu, record):
 		embed = discord.Embed(title = record["blob"], color = menu.bot.bot_color)
-		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
+		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar.url)
 		embed.set_image(url = record["image"])
 		embed.set_footer(text = f"Blob {menu.current_page + 1} of {self.get_max_pages()}")
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}

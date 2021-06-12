@@ -49,9 +49,9 @@ class User(commands.Cog):
 		Your own or someone else's avatar
 		'''
 		if not user:
-			await ctx.embed_reply(title = "Your avatar", image_url = ctx.author.avatar_url)
+			await ctx.embed_reply(title = "Your avatar", image_url = ctx.author.avatar.url)
 		else:
-			await ctx.embed_reply(title = f"{user}'s avatar", image_url = user.avatar_url)
+			await ctx.embed_reply(title = f"{user}'s avatar", image_url = user.avatar.url)
 	
 	@commands.command()
 	@checks.not_forbidden()
@@ -64,7 +64,7 @@ class User(commands.Cog):
 			await ctx.embed_reply(f"Your discriminator: #{ctx.author.discriminator}")
 		else:
 			await ctx.embed_reply(f"{user.mention}'s discriminator: #{user.discriminator}", 
-									footer_text = str(user), footer_icon_url = user.avatar_url)
+									footer_text = str(user), footer_icon_url = user.avatar.url)
 	
 	# TODO: Make general ID command with subcommands
 	@commands.command(name = "id")
@@ -75,7 +75,7 @@ class User(commands.Cog):
 			await ctx.embed_reply(f"Your ID: {ctx.author.id}")
 		else:
 			await ctx.embed_reply(f"{user.mention}'s ID: {user.id}", 
-									footer_text = str(user), footer_icon_url = user.avatar_url)
+									footer_text = str(user), footer_icon_url = user.avatar.url)
 	
 	# TODO: Make general name command with subcommands
 	@commands.command()
@@ -86,5 +86,5 @@ class User(commands.Cog):
 			await ctx.embed_reply(ctx.author.mention)
 		else:
 			await ctx.embed_reply(user.mention, 
-									footer_text = str(user), footer_icon_url = user.avatar_url)
+									footer_text = str(user), footer_icon_url = user.avatar.url)
 

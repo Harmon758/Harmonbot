@@ -541,7 +541,7 @@ class Audio(commands.Cog):
 			else:
 				title = ctx.guild.voice_client.source.title
 				title_url = discord.Embed.Empty
-			return await ctx.embed_reply(description, title = title, title_url = title_url, footer_text = "Added by " + requester.display_name, footer_icon_url = requester.avatar_url, timestamp = ctx.guild.voice_client.source.timestamp)
+			return await ctx.embed_reply(description, title = title, title_url = title_url, footer_text = "Added by " + requester.display_name, footer_icon_url = requester.avatar.url, timestamp = ctx.guild.voice_client.source.timestamp)
 		else:
 			return await ctx.embed_reply(":speaker: There is no song currently playing")
 	
@@ -551,7 +551,7 @@ class Audio(commands.Cog):
 	async def queue(self, ctx):
 		'''See the current queue'''
 		embed = self.players[ctx.guild.id].queue_embed()
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
+		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar.url)
 		await ctx.send(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	

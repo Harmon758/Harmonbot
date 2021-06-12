@@ -265,7 +265,7 @@ class RemindersSource(menus.ListPageSource):
 	
 	async def format_page(self, menu, records):
 		embed = discord.Embed(title = "Reminders", color = menu.bot.bot_color)
-		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar_url)
+		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar.url)
 		if self.per_page == 1:
 			records = [records]
 		for record in records:

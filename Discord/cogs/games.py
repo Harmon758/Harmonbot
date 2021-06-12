@@ -302,7 +302,7 @@ class Games(commands.Cog):
 		payload = await self.bot.wait_for_raw_reaction_add_or_remove(message = response, emoji = winning_emoji)
 		elapsed = timeit.default_timer() - start_time
 		winner = await ctx.guild.fetch_member(payload.user_id)
-		embed.set_author(name = winner.display_name, icon_url = winner.avatar_url)
+		embed.set_author(name = winner.display_name, icon_url = winner.avatar.url)
 		embed.description = f"was the first to click {winning_emoji} and won with a time of {elapsed:.5} seconds!"
 		await response.edit(embed = embed)
 	

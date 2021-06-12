@@ -158,7 +158,7 @@ class Misc(commands.Cog):
 		)
 		times = ctx.bot.inflect_engine.ordinal(times)
 		embed = discord.Embed(color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
+		embed.set_author(name = ctx.author, icon_url = ctx.author.avatar.url)
 		embed.description = f"Poked you for the {times} time!"
 		try:
 			await user.send(embed = embed)

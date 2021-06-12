@@ -50,7 +50,7 @@ class Discord(commands.Cog):
 		# TODO: Handle non-image attachments
 		# TODO: Handle multiple attachments
 		await ctx.embed_reply(message.content, 
-								author_name = message.author.display_name, author_icon_url = message.author.avatar_url, 
+								author_name = message.author.display_name, author_icon_url = message.author.avatar.url, 
 								fields = fields, image_url = image_url, 
 								footer_text = f"In #{message.channel}", timestamp = message.created_at)
 		# TODO: Include message author ID/username#discriminator

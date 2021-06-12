@@ -215,8 +215,8 @@ class Info(commands.Cog):
 		fields.append(("Joined", user.joined_at.isoformat(timespec = "milliseconds")))
 		if user.premium_since:
 			fields.append(("Boosting Since", user.premium_since.isoformat(timespec = "milliseconds")))
-		await ctx.embed_reply(description, title = title, title_url = str(user.avatar_url), 
-								thumbnail_url = user.avatar_url, fields = fields, 
+		await ctx.embed_reply(description, title = title, title_url = user.avatar.url, 
+								thumbnail_url = user.avatar.url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
 		# TODO: Add voice state?
 		# TODO: Accept User input?

@@ -335,7 +335,7 @@ class Resources(commands.Cog):
 			return
 		data = data[0]
 		embed = discord.Embed(title = data["DeviceName"], color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
+		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar.url)
 		# Brand
 		if "Brand" in data: embed.add_field(name = "Brand", value = data["Brand"])
 		# Network (network_c?)
