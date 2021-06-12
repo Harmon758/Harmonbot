@@ -90,7 +90,7 @@ if __name__ == "__main__":
 				global mention_spammers
 				if author.id in mention_spammers:
 					# TODO: Handle across different servers
-					if guild.me.permissions_in(channel).kick_members:
+					if channel.permissions_for(guild.me).kick_members:
 						# TODO: Check hierarchy, if able to kick
 						await ctx.bot.kick(author)
 						await ctx.send(f"{author} has been kicked for spamming mentions")

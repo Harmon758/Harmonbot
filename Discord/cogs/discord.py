@@ -156,7 +156,7 @@ class Discord(commands.Cog):
 		Check if you can mention everyone/here
 		For the channel you execute the command in
 		'''
-		if ctx.author.permissions_in(ctx.channel).mention_everyone:
+		if ctx.channel.permissions_for(ctx.author).mention_everyone:
 			await ctx.embed_reply("You are able to mention everyone/here in this channel")
 		else:
 			await ctx.embed_reply("You are not able to mention everyone/here in this channel")
