@@ -106,7 +106,7 @@ class Meta(commands.Cog):
 									f"Server Region: {guild.region}\n"
 									f"Members: {guild.member_count}\n"
 									f"Created at: {guild.created_at}\n```")
-			embed.set_thumbnail(url = guild.icon_url)
+			embed.set_thumbnail(url = guild.icon.url)
 			await ctx.whisper(embed = embed)
 	
 	@commands.command(aliases = ["setprefixes"])

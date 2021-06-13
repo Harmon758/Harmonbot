@@ -43,7 +43,7 @@ class Server(commands.Cog):
 		if not ctx.guild.icon:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} This server doesn't have an icon")
 		else:
-			await ctx.embed_reply("This server's icon:", image_url = ctx.guild.icon_url)
+			await ctx.embed_reply("This server's icon:", image_url = ctx.guild.icon.url)
 	
 	@server.command()
 	@commands.guild_only()

@@ -163,8 +163,8 @@ class Info(commands.Cog):
 				fields.append((f"{emoji_type.replace('standard', '').capitalize()} Emojis", specific_emojis[0]))
 				for emoji in specific_emojis[1:]:
 					fields.append((ctx.bot.ZERO_WIDTH_SPACE, emoji))
-		await ctx.embed_reply(title = ctx.guild.name, title_url = str(ctx.guild.icon_url), 
-								thumbnail_url = ctx.guild.icon_url, fields = fields, 
+		await ctx.embed_reply(title = ctx.guild.name, title_url = str(ctx.guild.icon.url), 
+								thumbnail_url = ctx.guild.icon.url, fields = fields, 
 								footer_text = "Created", timestamp = ctx.guild.created_at)
 	
 	@info.command()
