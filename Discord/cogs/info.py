@@ -144,7 +144,7 @@ class Info(commands.Cog):
 		if "INVITE_SPLASH" in ctx.guild.features:
 			fields.append(("Invite Splash", f"[URL]({ctx.guild.splash_url})"))
 		if "BANNER" in ctx.guild.features:
-			fields.append(("Banner", f"[URL]({ctx.guild.banner_url})"))
+			fields.append(("Banner", f"[URL]({ctx.guild.banner.url})"))
 		emojis = {"standard": [], "animated": [], "managed": [], "unavailable": []}
 		for emoji in ctx.guild.emojis:
 			if not emoji.available:
