@@ -58,7 +58,7 @@ class Math(commands.Cog):
 				await ctx.embed_reply(f":no_entry: Error: {e}")
 			except ZeroDivisionError:
 				await ctx.embed_reply(":no_entry: Error: Division by zero")
-			except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
+			except (asyncio.TimeoutError, concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
 				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
 	
 	@commands.command()
