@@ -200,7 +200,7 @@ class Trivia(commands.Cog):
 					""", 
 					player.id, difference
 				)
-				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}.")
+				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}")
 			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
 	
 	@commands.Cog.listener("on_message")
