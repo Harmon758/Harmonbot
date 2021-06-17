@@ -125,24 +125,21 @@ class Games(commands.Cog):
 					break
 				embed.set_footer(text = "Dealer's turn..")
 				await response.edit(embed = embed)
-				while True:
+				while dealer_total < 21 and dealer_total <= player_total:
 					await asyncio.sleep(5)
 					dealer.add(deck.deal())
 					dealer_string = self.cards_to_string(dealer.cards)
 					dealer_total = self.blackjack_total(dealer.cards)
 					embed.description = f"Dealer: {dealer_string} ({dealer_total})\n{ctx.author.display_name}: {player_string} ({player_total})\n"
 					await response.edit(embed = embed)
-					if dealer_total > 21:
-						embed.description += ":boom: The dealer busted"
-						embed.set_footer(text = "You win!")
-						break
-					elif dealer_total > player_total:
-						embed.description += "The dealer beat you"
-						embed.set_footer(text = "You lost :(")
-						break
-					elif dealer_total == player_total == 21:
-						embed.set_footer(text = "It's a push (tie)")
-						break
+				if dealer_total > 21:
+					embed.description += ":boom: The dealer busted"
+					embed.set_footer(text = "You win!")
+				elif dealer_total > player_total:
+					embed.description += "The dealer beat you"
+					embed.set_footer(text = "You lost :(")
+				elif dealer_total == player_total == 21:
+					embed.set_footer(text = "It's a push (tie)")
 				break
 		await response.edit(embed = embed)
 	
