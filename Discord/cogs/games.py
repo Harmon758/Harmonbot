@@ -93,11 +93,11 @@ class Games(commands.Cog):
 		deck.shuffle()
 		dealer = deck.deal(2)
 		player = deck.deal(2)
-		dealer_string = ":grey_question: :{}: {}".format(dealer.cards[1].suit.lower(), dealer.cards[1].value)
+		dealer_string = f":grey_question: :{dealer.cards[1].suit.lower()}: {dealer.cards[1].value}"
 		player_string = self.cards_to_string(player.cards)
 		dealer_total = self.blackjack_total(dealer.cards)
 		player_total = self.blackjack_total(player.cards)
-		response = await ctx.embed_reply("Dealer: {} (?)\n{}: {} ({})\n".format(dealer_string, ctx.author.display_name, player_string, player_total), title = "Blackjack", footer_text = "Hit or Stay?")
+		response = await ctx.embed_reply(f"Dealer: {dealer_string} (?)\n{ctx.author.display_name}: {player_string} ({player_total})\n", title = "Blackjack", footer_text = "Hit or Stay?")
 		embed = response.embeds[0]
 		while True:
 			action = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.content.lower().strip('!') in ("hit", "stay"))
@@ -106,7 +106,7 @@ class Games(commands.Cog):
 				player.add(deck.deal())
 				player_string = self.cards_to_string(player.cards)
 				player_total = self.blackjack_total(player.cards)
-				embed.description = "Dealer: {} (?)\n{}: {} ({})\n".format(dealer_string, ctx.author.display_name, player_string, player_total)
+				embed.description = f"Dealer: {dealer_string} (?)\n{ctx.author.display_name}: {player_string} ({player_total})\n"
 				await response.edit(embed = embed)
 				if player_total > 21:
 					embed.description += ":boom: You have busted"
@@ -114,7 +114,7 @@ class Games(commands.Cog):
 					break
 			else:
 				dealer_string = self.cards_to_string(dealer.cards)
-				embed.description = "Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.author.display_name, player_string, player_total)
+				embed.description = f"Dealer: {dealer_string} ({dealer_total})\n{ctx.author.display_name}: {player_string} ({player_total})\n"
 				if dealer_total > 21:
 					embed.description += ":boom: The dealer busted"
 					embed.set_footer(text = "You win!")
@@ -130,7 +130,7 @@ class Games(commands.Cog):
 					dealer.add(deck.deal())
 					dealer_string = self.cards_to_string(dealer.cards)
 					dealer_total = self.blackjack_total(dealer.cards)
-					embed.description = "Dealer: {} ({})\n{}: {} ({})\n".format(dealer_string, dealer_total, ctx.author.display_name, player_string, player_total)
+					embed.description = f"Dealer: {dealer_string} ({dealer_total})\n{ctx.author.display_name}: {player_string} ({player_total})\n"
 					await response.edit(embed = embed)
 					if dealer_total > 21:
 						embed.description += ":boom: The dealer busted"
