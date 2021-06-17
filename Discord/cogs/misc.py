@@ -53,6 +53,15 @@ class Misc(commands.Cog):
 		'''See larger versions of custom emoji'''
 		await ctx.embed_reply(image_url = emoji.url)
 	
+	@commands.command()
+	async def counter(self, ctx):
+		'''A counter'''
+		await ctx.embed_reply(
+			title = "Counter", 
+			footer_text = discord.Embed.Empty, 
+			view = Counter(timeout = None)
+		)
+	
 	@commands.command(aliases = ["emotify"])
 	async def emojify(self, ctx, *, text: str):
 		'''Emojify text'''
@@ -182,4 +191,11 @@ class Misc(commands.Cog):
 		Supports: 0 1 2 3 4 5 6 7 8 9 + - = ( ) i n
 		'''
 		await ctx.embed_reply(utilities.superscript(text))
+
+class Counter(discord.ui.View):
+
+	@discord.ui.button(label = '0', style = discord.ButtonStyle.grey)
+	async def count(self, button, interaction):
+		button.label = str(int(button.label) + 1)
+		await interaction.response.edit_message(view = self)
 
