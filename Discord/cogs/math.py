@@ -7,6 +7,7 @@ import concurrent.futures
 import math
 import multiprocessing
 
+import aiohttp
 import sympy
 
 from utilities import checks
@@ -96,8 +97,13 @@ class Math(commands.Cog):
 				digits += 1
 		url = "https://api.pi.delivery/v1/pi"
 		params = {"start": start, "numberOfDigits": digits}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
+		try:
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				data = await resp.json()
+		except aiohttp.ClientConnectorCertificateError:
+			url = url.replace("https", "http")
+			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				data = await resp.json()
 		if "content" in data:
 			return await ctx.embed_reply(data["content"])
 		await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data.get('Error', 'N/A')}")
