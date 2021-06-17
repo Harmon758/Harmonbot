@@ -123,6 +123,7 @@ class Trivia(commands.Cog):
 			while self.active_trivia[bet_message.guild.id]["bet_countdown"]:
 				await asyncio.sleep(1)
 				self.active_trivia[bet_message.guild.id]["bet_countdown"] -= 1
+				embed.description = '\n'.join(f"{player.mention} has bet ${bet}" for player, bet in self.active_trivia[bet_message.guild.id]["bets"].items())
 				embed.set_footer(text = f"You have {self.active_trivia[bet_message.guild.id]['bet_countdown']} seconds left to bet")
 				await bet_message.edit(embed = embed)
 			embed.set_footer(text = "Betting is over")
@@ -223,7 +224,7 @@ class Trivia(commands.Cog):
 				)
 			if int(message.content) <= money:
 				self.active_trivia[message.guild.id]["bets"][message.author] = int(message.content)
-				await ctx.embed_reply(f"has bet ${message.content}")
+				await self.bot.attempt_delete_message(message)
 			else:
 				await ctx.embed_reply("You don't have that much money to bet!")
 		elif self.active_trivia[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
