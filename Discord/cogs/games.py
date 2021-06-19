@@ -13,7 +13,6 @@ from typing import Optional
 from bs4 import BeautifulSoup
 import pydealer
 
-# from modules import gofish
 # from modules import war
 from utilities import checks
 
@@ -33,7 +32,6 @@ class Games(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.war_channel, self.war_players = None, []
-		self.gofish_channel, self.gofish_players = None, []
 		self.taboo_players = []
 		self.blackjack_ranks = copy.deepcopy(pydealer.const.DEFAULT_RANKS)
 		self.blackjack_ranks["values"].update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
@@ -176,46 +174,6 @@ class Games(commands.Cog):
 		Also triggers on \N{BILLIARDS} without prefix
 		'''
 		await ctx.embed_reply(f"\N{BILLIARDS} {games.eightball()}")
-	
-	@commands.group(case_insensitive = True, hidden = True)
-	@checks.not_forbidden()
-	async def gofish(self, ctx):
-		'''WIP'''
-		return
-	
-	@gofish.command(case_insensitive = True, hidden = True, name = "start")
-	@commands.guild_only()
-	@commands.is_owner()
-	async def gofish_start(self, ctx, *players : str):
-		'''WIP'''
-		self.gofish_channel = ctx.channel
-		if ctx.guild:
-			for member in ctx.guild.members:
-				if member.name in players:
-					self.gofish_players.append(member)
-					break
-		else:
-			await ctx.embed_reply(":no_entry: Please use that command in a server")
-			pass
-		gofish.start(len(players))
-		gofish_players_string = ""
-		for player in self.gofish_players:
-			gofish_players_string += player.name + " and "
-		await ctx.embed_reply("{} has started a game of Go Fish between {}!".format(message.author.display_name, gofish_players_string[:-5]))
-	
-	@gofish.command(hidden = True, name = "hand")
-	@commands.is_owner()
-	async def gofish_hand(self, ctx):
-		'''WIP'''
-		if ctx.author in gofish_players:
-			await ctx.whisper("Your hand: " + gofish.hand(gofish_players.index(ctx.author) + 1))
-	
-	@gofish.command(hidden = True, name = "ask")
-	@commands.is_owner()
-	async def gofish_ask(self, ctx):
-		'''WIP'''
-		if ctx.author in gofish_players:
-			pass
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
