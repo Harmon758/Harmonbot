@@ -255,8 +255,6 @@ class PokerLobby(discord.ui.View):
 
         await self.poker_hand.new_round()
 
-        for child in self.children:
-            child.disabled = True
         self.stop()
 
     @discord.ui.button(label = "Resend Message", style = discord.ButtonStyle.blurple)
