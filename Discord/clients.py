@@ -123,6 +123,7 @@ class Bot(commands.Bot):
 		## Functional
 		### Set on ready
 		self.cache_channel = None
+		self.invite_url = None
 		self.listener_bot = None  # User object
 		self.listing_sites = {}
 		# TODO: Include owner variable for user object?
@@ -477,7 +478,9 @@ class Bot(commands.Bot):
 	
 	async def initialize_constant_objects(self):
 		await self.wait_until_ready()
+		app_info = await self.app_info
 		self.cache_channel = self.get_channel(self.cache_channel_id)
+		self.invite_url = discord.utils.oauth_url(app_info.id, scopes = ("bot", "applications.commands"))
 		self.listener_bot = await self.fetch_user(self.listener_id)
 		# TODO: Handle NotFound and HTTPException?
 		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
