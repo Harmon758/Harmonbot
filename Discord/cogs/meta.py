@@ -204,8 +204,7 @@ class Meta(commands.Cog):
 	@commands.command(aliases = ["oauth"])
 	async def invite(self, ctx):
 		'''Link to invite me to a server'''
-		app_info = await ctx.bot.app_info
-		await ctx.embed_reply(discord.utils.oauth_url(app_info.id))
+		await ctx.embed_reply(ctx.bot.invite_url)
 	
 	@commands.command()
 	async def stats(self, ctx):
