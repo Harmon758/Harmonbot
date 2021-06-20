@@ -171,7 +171,7 @@ class Meta(commands.Cog):
 		discord_py_version = importlib.metadata.version("discord.py")
 		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
 		embed.description = (f"[Changelog (Harmonbot Server)]({ctx.bot.changelog})\n"
-								f"[Invite Link]({discord.utils.oauth_url(app_info.id)})")
+								f"[Invite Link]({ctx.bot.invite_url})")
 		# avatar = ctx.author.avatar.url
 		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		avatar = ctx.bot.user.avatar.url
