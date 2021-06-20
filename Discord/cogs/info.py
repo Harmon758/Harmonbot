@@ -255,7 +255,7 @@ class Info(commands.Cog):
 		info += f"\nChannel: [{data['snippet']['channelTitle']}]"
 		info += f"(https://www.youtube.com/channel/{data['snippet']['channelId']})"
 		# data["snippet"]["description"]
-		timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"]).replace(tzinfo = None)
+		timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"])
 		await ctx.embed_reply(info, title = data["snippet"]["title"], title_url = url, 
 								thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], 
 								footer_text = "Published", timestamp = timestamp)
