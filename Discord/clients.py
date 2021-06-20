@@ -562,7 +562,7 @@ class Bot(commands.Bot):
 		self.loop.create_task(self.update_all_listing_stats(), name = "Update all bot listing stats")
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id) or await self.fetch_user(self.owner_id)
 		guild_owner = guild.owner or await self.fetch_user(guild.owner_id)
-		await self.send_embed(me, title = "Joined Server", thumbnail_url = guild.icon.url, 
+		await self.send_embed(me, title = "Joined Server", thumbnail_url = guild.icon.url if guild.icon else discord.Embed.Empty, 
 								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild_owner)), 
 											("Members", str(guild.member_count)), ("Server Region", str(guild.region))), 
 								timestamp = guild.created_at)
@@ -572,7 +572,7 @@ class Bot(commands.Bot):
 		self.loop.create_task(self.update_all_listing_stats(), name = "Update all bot listing stats")
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id) or await self.fetch_user(self.owner_id)
 		guild_owner = guild.owner or await self.fetch_user(guild.owner_id)
-		await self.send_embed(me, title = "Left Server", thumbnail_url = guild.icon.url, 
+		await self.send_embed(me, title = "Left Server", thumbnail_url = guild.icon.url if guild.icon else discord.Embed.Empty, 
 								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild_owner)), 
 											("Members", str(guild.member_count)), ("Server Region", str(guild.region))), 
 								timestamp = guild.created_at)
