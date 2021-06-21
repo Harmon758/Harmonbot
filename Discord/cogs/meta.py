@@ -165,9 +165,12 @@ class Meta(commands.Cog):
 	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
-		changes = git.Repo("..").git.log("-3", "--first-parent", 
-											format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)")
+		changes = git.Repo("..").git.log(
+			"-3", "--first-parent", 
+			format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"
+		)
 		discord_py_version = importlib.metadata.version("discord.py")
+		
 		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
 		embed.description = f"[Changelog (Harmonbot Server)]({ctx.bot.changelog})"
 		# avatar = ctx.author.avatar.url
@@ -175,7 +178,8 @@ class Meta(commands.Cog):
 		avatar = ctx.bot.user.avatar.url
 		# embed.set_thumbnail(url = avatar)
 		embed.set_author(name = f"Harmonbot (Discord ID: {ctx.bot.user.id})", icon_url = avatar)
-		if changes: embed.add_field(name = "Latest Changes:", value = changes, inline = False)
+		if changes:
+			embed.add_field(name = "Latest Changes:", value = changes, inline = False)
 		embed.add_field(name = "Created on:", value = "February 10th, 2016")
 		embed.add_field(name = "Version", value = ctx.bot.version)
 		embed.add_field(name = "Library", value = f"[discord.py](https://github.com/Rapptz/discord.py) v{discord_py_version}\n"
@@ -183,8 +187,10 @@ class Meta(commands.Cog):
 		if not (owner := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
 			owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
 		embed.set_footer(text = f"Developer/Owner: {owner} (Discord ID: {owner.id})", icon_url = owner.avatar.url)
+		
 		view = discord.ui.View()
 		view.add_item(discord.ui.Button(label = "Invite", url = ctx.bot.invite_url, style = discord.ButtonStyle.link))
+		
 		await ctx.message.reply(embed = embed, view = view)
 		await ctx.message.reply(f"Changelog (Harmonbot Server): {ctx.bot.changelog}")
 	
