@@ -169,8 +169,7 @@ class Meta(commands.Cog):
 											format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)")
 		discord_py_version = importlib.metadata.version("discord.py")
 		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
-		embed.description = (f"[Changelog (Harmonbot Server)]({ctx.bot.changelog})\n"
-								f"[Invite Link]({ctx.bot.invite_url})")
+		embed.description = f"[Changelog (Harmonbot Server)]({ctx.bot.changelog})"
 		# avatar = ctx.author.avatar.url
 		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
 		avatar = ctx.bot.user.avatar.url
@@ -184,7 +183,9 @@ class Meta(commands.Cog):
 		if not (owner := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
 			owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
 		embed.set_footer(text = f"Developer/Owner: {owner} (Discord ID: {owner.id})", icon_url = owner.avatar.url)
-		await ctx.message.reply(embed = embed)
+		view = discord.ui.View()
+		view.add_item(discord.ui.Button(label = "Invite", url = ctx.bot.invite_url, style = discord.ButtonStyle.link))
+		await ctx.message.reply(embed = embed, view = view)
 		await ctx.message.reply(f"Changelog (Harmonbot Server): {ctx.bot.changelog}")
 	
 	@commands.command()
