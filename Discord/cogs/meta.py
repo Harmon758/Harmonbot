@@ -165,24 +165,17 @@ class Meta(commands.Cog):
 	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
-		changes = git.Repo("..").git.log(
-			"-3", "--first-parent", 
-			format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"
-		)
-		discord_py_version = importlib.metadata.version("discord.py")
-		
 		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
 		embed.description = f"[Changelog (Harmonbot Server)]({ctx.bot.changelog})"
-		# avatar = ctx.author.avatar.url
-		# embed.set_author(name = ctx.author.display_name, icon_url = avatar)
-		avatar = ctx.bot.user.avatar.url
-		# embed.set_thumbnail(url = avatar)
-		embed.set_author(name = f"Harmonbot (Discord ID: {ctx.bot.user.id})", icon_url = avatar)
-		if changes:
+		embed.set_author(name = f"Harmonbot (Discord ID: {ctx.bot.user.id})", icon_url = ctx.bot.user.avatar.url)
+		if (changes := git.Repo("..").git.log(
+			"-3", "--first-parent", 
+			format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"
+		)):
 			embed.add_field(name = "Latest Changes:", value = changes, inline = False)
 		embed.add_field(name = "Created on:", value = "February 10th, 2016")
 		embed.add_field(name = "Version", value = ctx.bot.version)
-		embed.add_field(name = "Library", value = f"[discord.py](https://github.com/Rapptz/discord.py) v{discord_py_version}\n"
+		embed.add_field(name = "Library", value = f"[discord.py](https://github.com/Rapptz/discord.py) v{importlib.metadata.version('discord.py')}\n"
 													f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})")
 		if not (owner := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
 			owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
