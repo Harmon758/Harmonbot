@@ -165,7 +165,6 @@ class Meta(commands.Cog):
 	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
-		app_info = await ctx.bot.app_info
 		changes = git.Repo("..").git.log("-3", "--first-parent", 
 											format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)")
 		discord_py_version = importlib.metadata.version("discord.py")
