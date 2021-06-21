@@ -463,7 +463,7 @@ class Twitch(commands.Cog):
 					description = discord.Embed.Empty
 				embed = discord.Embed(title = title, url = stream["channel"]["url"], 
 										description = description, 
-										timestamp = dateutil.parser.parse(stream["created_at"]).replace(tzinfo = None), 
+										timestamp = dateutil.parser.parse(stream["created_at"]), 
 										color = self.bot.twitch_color)
 				embed.set_author(name = f"{stream['channel']['display_name']} just went live on Twitch", 
 									icon_url = self.bot.twitch_icon_url)
