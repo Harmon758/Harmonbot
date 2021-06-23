@@ -330,7 +330,7 @@ class Tools(commands.Cog):
 			tag
 		)
 		if exists:
-			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
+			await ctx.embed_reply(f"That global tag already exists\nIf you own it, use `{ctx.prefix}tag global edit <tag> <content>` to edit it")
 			return
 		deleted = await ctx.bot.db.fetchrow(
 			"""
@@ -348,7 +348,7 @@ class Tools(commands.Cog):
 			tag, deleted["content"], ctx.author.id
 		)
 		# TODO: Optimize into single query
-		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been {}d".format(ctx.invoked_with))
+		await ctx.embed_reply(f":thumbsup::skin-tone-2: Your tag has been {ctx.invoked_with}d")
 	
 	# TODO: rename, aliases
 	
