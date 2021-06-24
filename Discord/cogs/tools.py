@@ -348,7 +348,7 @@ class Tools(commands.Cog):
 			tag, deleted["content"], ctx.author.id
 		)
 		# TODO: Optimize into single query
-		await ctx.embed_reply(f":thumbsup::skin-tone-2: Your tag has been {ctx.invoked_with}d")
+		await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Your tag has been {ctx.invoked_with}d")
 	
 	# TODO: rename, aliases
 	
