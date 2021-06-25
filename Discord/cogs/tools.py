@@ -370,7 +370,7 @@ class Tools(commands.Cog):
 			tag, discord.utils.escape_mentions(content), ctx.author.id
 		)
 		if not inserted:
-			await ctx.embed_reply("That global tag already exists\nIf you own it, use `{}tag global edit <tag> <content>` to edit it".format(ctx.prefix))
+			await ctx.embed_reply(f"That global tag already exists\nIf you own it, use `{ctx.prefix}tag global edit <tag> <content>` to edit it")
 			return
 		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
 	
