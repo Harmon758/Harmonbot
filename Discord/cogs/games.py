@@ -26,7 +26,7 @@ def setup(bot):
 class Games(commands.Cog):
 	
 	'''
-	Also see Adventure, Chess, Maze, Poker, and Trivia categories
+	Also see Adventure, Chess, Fish, Maze, Poker, and Trivia categories
 	'''
 	
 	def __init__(self, bot):
