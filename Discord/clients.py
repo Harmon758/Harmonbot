@@ -153,7 +153,7 @@ class Bot(commands.Bot):
 		self.GIPHY_API_KEY = self.GIPHY_PUBLIC_BETA_API_KEY
 		
 		# Sentry
-		sentry_sdk.init(self.SENTRY_DSN)
+		sentry_sdk.init(self.SENTRY_DSN, release = self.version)
 		
 		# External Clients
 		## Clarifai
