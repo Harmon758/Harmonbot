@@ -22,9 +22,8 @@ from clarifai_grpc.grpc.api import service_pb2_grpc
 import imgurpython
 import inflect
 import pyowm
-import raven
-import raven_aiohttp
 import requests
+import sentry_sdk
 import tweepy
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
@@ -152,6 +151,9 @@ class Bot(commands.Bot):
 		self.BLIZZARD_API_KEY = self.BATTLE_NET_API_KEY
 		self.GIPHY_API_KEY = self.GIPHY_PUBLIC_BETA_API_KEY
 		
+		# Sentry
+		sentry_sdk.init(self.SENTRY_DSN)
+		
 		# External Clients
 		## Clarifai
 		self.clarifai_stub = service_pb2_grpc.V2Stub(ClarifaiChannel.get_grpc_channel())
@@ -166,8 +168,6 @@ class Bot(commands.Bot):
 			self.weather_manager = self.owm_client.weather_manager()
 		except AssertionError as e:
 			self.print(f"Failed to initialize OpenWeatherMap client: {e}")
-		## Sentry (Raven)
-		self.sentry_client = self.raven_client = raven.Client(self.SENTRY_DSN, transport = raven_aiohttp.AioHttpTransport)
 		## Twitter
 		self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
 		self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
@@ -686,7 +686,7 @@ class Bot(commands.Bot):
 			return
 		# TODO: check embed links permission
 		# Unhandled
-		self.sentry_client.captureException(exc_info = (type(error), error, error.__traceback__))
+		sentry_sdk.capture_exception(error)
 		print(f"Ignoring exception in command {ctx.command}", file = sys.stderr)
 		traceback.print_exception(type(error), error, error.__traceback__, file = sys.stderr)
 		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (type(error), error, error.__traceback__))
@@ -958,10 +958,6 @@ class Bot(commands.Bot):
 			""", 
 			self.online_time, uptime
 		)
-		# Close Sentry transport
-		sentry_transport = self.sentry_client.remote.get_transport()
-		if sentry_transport:
-			await sentry_transport.close()
 		# Close aiohttp session
 		await self.aiohttp_session.close()
 		# Close database connection
