@@ -19,6 +19,7 @@ import aiohttp
 from aiohttp import web
 from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import service_pb2_grpc
+import git
 import imgurpython
 import inflect
 import pyowm
@@ -77,7 +78,7 @@ class Bot(commands.Bot):
 		
 		# Constants
 		## Custom
-		self.version = "1.0.0-rc.9"
+		self.version = "1.0.0-rc.9+g" + git.Repo("..").git.rev_parse("--short", "HEAD")
 		self.owner_id = 115691005197549570
 		self.listener_id = 180994984038760448
 		self.cache_channel_id = 254051856219635713
