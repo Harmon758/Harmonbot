@@ -49,16 +49,36 @@ if __name__ == "__main__":
 		guild = message.guild
 		
 		# Log message
-		if channel.type is discord.ChannelType.private:
+		if isinstance(channel, discord.Thread):
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO chat.messages (
+					created_at, message_id, 
+					author_id, author_name, author_discriminator, author_display_name, 
+					direct_message, channel_id, channel_name, guild_id, guild_name, 
+					message_content, embeds, 
+					thread, thread_id, thread_name
+				)
+				VALUES ($1, $2, $3, $4, $5, $6, FALSE, $7, $8, $9, $10, $11, CAST($12 AS jsonb[]), TRUE, $13, $14)
+				""", 
+				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
+				author.id, author.name, author.discriminator, author.display_name, 
+				channel.parent_id, channel.parent.name, guild.id, guild.name, 
+				message.content.replace('\N{NULL}', ""), 
+				[replace_null_character(embed.to_dict()) for embed in message.embeds], 
+				channel.id, channel.name
+			)
+		elif channel.type is discord.ChannelType.private:
 			await ctx.bot.db.execute(
 				"""
 				INSERT INTO chat.messages (
 					created_at, message_id, 
 					author_id, author_name, author_discriminator, author_display_name, 
 					direct_message, 
-					message_content, embeds
+					message_content, embeds, 
+					thread
 				)
-				VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7, CAST($8 AS jsonb[]))
+				VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7, CAST($8 AS jsonb[]), FALSE)
 				""", 
 				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 
@@ -72,9 +92,10 @@ if __name__ == "__main__":
 					created_at, message_id, 
 					author_id, author_name, author_discriminator, author_display_name, 
 					direct_message, channel_id, channel_name, guild_id, guild_name, 
-					message_content, embeds
+					message_content, embeds, 
+					thread
 				)
-				VALUES ($1, $2, $3, $4, $5, $6, FALSE, $7, $8, $9, $10, $11, CAST($12 AS jsonb[]))
+				VALUES ($1, $2, $3, $4, $5, $6, FALSE, $7, $8, $9, $10, $11, CAST($12 AS jsonb[]), FALSE)
 				""", 
 				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 

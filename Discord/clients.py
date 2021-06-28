@@ -319,7 +319,10 @@ class Bot(commands.Bot):
 				guild_id				BIGINT, 
 				guild_name				TEXT, 
 				message_content			TEXT, 
-				embeds					JSONB []
+				embeds					JSONB [], 
+				thread					BOOL, 
+				thread_id				BIGINT, 
+				thread_name				TEXT
 			)
 			"""
 		)
