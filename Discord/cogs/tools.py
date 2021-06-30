@@ -372,7 +372,7 @@ class Tools(commands.Cog):
 		if not inserted:
 			await ctx.embed_reply(f"That global tag already exists\nIf you own it, use `{ctx.prefix}tag global edit <tag> <content>` to edit it")
 			return
-		await ctx.embed_reply(":thumbsup::skin-tone-2: Your tag has been added")
+		await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Your tag has been added")
 	
 	@tag_global.command(name = "edit", aliases = ["update"])
 	async def tag_global_edit(self, ctx, tag : str, *, content : str):
