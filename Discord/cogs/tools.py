@@ -397,7 +397,7 @@ class Tools(commands.Cog):
 			""", 
 			tag, discord.utils.escape_mentions(content)
 		)
-		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been edited")
+		await ctx.embed_reply(f":ok_hand:{ctx.bot.emoji_skin_tone} Your tag has been edited")
 	
 	@tag_global.command(name = "delete", aliases = ["remove", "destroy"])
 	async def tag_global_delete(self, ctx, tag : str):
