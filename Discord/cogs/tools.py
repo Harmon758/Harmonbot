@@ -416,7 +416,7 @@ class Tools(commands.Cog):
 			await ctx.embed_reply(":no_entry: You don't own that global tag")
 			return
 		await ctx.bot.db.execute("DELETE FROM tags.global WHERE tag = $1", tag)
-		await ctx.embed_reply(":ok_hand::skin-tone-2: Your tag has been deleted")
+		await ctx.embed_reply(f":ok_hand:{ctx.bot.emoji_skin_tone} Your tag has been deleted")
 	
 	# TODO: global expunge, search, list?
 	
