@@ -7,7 +7,6 @@ import datetime
 import html
 import random
 import re
-import string
 import unicodedata
 
 import aiohttp
@@ -19,6 +18,13 @@ from utilities import checks
 
 def setup(bot):
 	bot.add_cog(Trivia(bot))
+
+def capwords(string):
+	'''string.capwords with abbreviation handling'''
+	return ' '.join(
+		word.upper() if word.count('.') > 1 else word.capitalize()
+		for word in string.split()
+	)
 
 class Trivia(commands.Cog):
 	
@@ -117,7 +123,7 @@ class Trivia(commands.Cog):
 		# Include site page to send ^?
 		if bet:
 			self.active_trivia[ctx.guild.id]["bet_countdown"] = self.wait_time
-			bet_message = await ctx.embed_reply(author_name = None, title = string.capwords(data["category"]["title"]), 
+			bet_message = await ctx.embed_reply(author_name = None, title = capwords(data["category"]["title"]), 
 												footer_text = f"You have {self.active_trivia[ctx.guild.id]['bet_countdown']} seconds left to bet")
 			embed = bet_message.embeds[0]
 			while self.active_trivia[bet_message.guild.id]["bet_countdown"]:
@@ -130,7 +136,7 @@ class Trivia(commands.Cog):
 			await bet_message.edit(embed = embed)
 		self.active_trivia[ctx.guild.id]["question_countdown"] = self.wait_time
 		question_message = await ctx.embed_reply(data["question"], author_name = None, 
-													title = string.capwords(data["category"]["title"]), 
+													title = capwords(data["category"]["title"]), 
 													footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
 													timestamp = dateutil.parser.parse(data["airdate"]))
 		embed = question_message.embeds[0]
@@ -314,7 +320,7 @@ class Trivia(commands.Cog):
 				if not all(clues.values()):
 					continue
 				clues = [random.choice(clues[value]) for value in values]
-				board[category_id] = {"title": string.capwords(random_clue["category"]["title"]), 
+				board[category_id] = {"title": capwords(random_clue["category"]["title"]), 
 										"clues": clues}
 		for category_id, category_info in board.items():
 			category_title = category_info["title"]
