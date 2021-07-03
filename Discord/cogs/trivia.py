@@ -26,6 +26,12 @@ def capwords(string):
 		for word in string.split()
 	)
 
+def remove_article_prefix(string):
+	for article in ("a ", "an ", "the "):
+		if string.startswith(article):
+			return string[len(article):]
+	return string
+
 class Trivia(commands.Cog):
 	
 	def __init__(self, bot):
@@ -453,8 +459,8 @@ class Trivia(commands.Cog):
 			return True
 		
 		# Remove article prefixes
-		answer = self.remove_article_prefix(answer)
-		response = self.remove_article_prefix(response)
+		answer = remove_article_prefix(answer)
+		response = remove_article_prefix(response)
 		# Return False if empty response
 		if not response:
 			return False
@@ -469,9 +475,9 @@ class Trivia(commands.Cog):
 			return False
 		# Remove article prefixes
 		for index, item in enumerate(answer_items):
-			answer_items[index] = self.remove_article_prefix(item)
+			answer_items[index] = remove_article_prefix(item)
 		for index, item in enumerate(response_items):
-			response_items[index] = self.remove_article_prefix(item)
+			response_items[index] = remove_article_prefix(item)
 		# Check equivalence
 		if set(answer_items) == set(response_items):
 			return True
@@ -516,7 +522,7 @@ class Trivia(commands.Cog):
 		if answer.replace('-', "") == response.replace('-', ""):
 			return True
 		# Check removal of parentheses
-		if response == self.remove_article_prefix(answer.replace('(', "").replace(')', "")):
+		if response == remove_article_prefix(answer.replace('(', "").replace(')', "")):
 			return True
 		# Check XX or YY
 		if response in answer.split(" or "):
@@ -577,10 +583,10 @@ class Trivia(commands.Cog):
 		for item in accepted:
 			if item.startswith("or "):
 				accepted.append(item[3:])
-				accepted.append(self.remove_article_prefix(item[3:]))
+				accepted.append(remove_article_prefix(item[3:]))
 			if item.endswith(" accepted"):
 				accepted.append(item[:-9])
-				accepted.append(self.remove_article_prefix(item[:-9]))
+				accepted.append(remove_article_prefix(item[:-9]))
 		if response in accepted:
 			return True
 		# Check XX YY (or ZZ accepted)
@@ -593,10 +599,4 @@ class Trivia(commands.Cog):
 				re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", response)):
 				return True
 		return False
-	
-	def remove_article_prefix(self, string):
-		for article in ("a ", "an ", "the "):
-			if string.startswith(article):
-				return string[len(article):]
-		return string
 
