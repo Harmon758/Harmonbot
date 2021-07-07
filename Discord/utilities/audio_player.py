@@ -332,7 +332,7 @@ class AudioPlayer:
 		if not self.listener:
 			self.listener = True
 		listen_message = await self.bot.send_message(self.text_channel, ">listen")
-		await self.bot.wait_for_message(author = self.bot.listener_bot, content = ":ear::skin-tone-2: I'm listening..")
+		await self.bot.wait_for_message(author = self.bot.listener_bot, content = f":ear:{self.bot.emoji_skin_tone} I'm listening..")
 		await self.bot.delete_message(listen_message)
 		await self.bot.wait_for_message(author = self.bot.listener_bot, content = ":stop_sign: I stopped listening.")
 		await self.process_listen()
