@@ -124,14 +124,14 @@ class Pinboard(commands.Cog):
 				channel = ctx.channel
 			await ctx.bot.db.execute("INSERT INTO pinboard.pinboards (guild_id, channel_id) VALUES ($1, $2)",
 										ctx.guild.id, channel.id)
-			await ctx.embed_reply(f":thumbsup::skin-tone-2: Pinboard channel set to {channel.mention}")
+			await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Pinboard channel set to {channel.mention}")
 		elif not channel:
 			pinboard_channel = ctx.guild.get_channel(channel_id)
 			await ctx.embed_reply(f"Current pinboard channel: {pinboard_channel.mention}")
 		else:
 			await ctx.bot.db.execute("UPDATE pinboard.pinboards SET channel_id = $1 WHERE guild_id = $2",
 										channel.id, ctx.guild.id)
-			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard channel to {channel.mention}")
+			await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Changed pinboard channel to {channel.mention}")
 	
 	@pinboard.command(aliases = ["starrers", "who", "pinner", "starrer"])
 	@checks.not_forbidden()
