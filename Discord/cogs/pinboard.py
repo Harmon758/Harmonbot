@@ -195,7 +195,7 @@ class Pinboard(commands.Cog):
 				""", 
 				setting, ctx.guild.id
 			)
-			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard private channels setting to {setting}")
+			await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Changed pinboard private channels setting to {setting}")
 	
 	@pinboard.command()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
