@@ -208,7 +208,7 @@ class Pinboard(commands.Cog):
 		if threshold_number:
 			await ctx.bot.db.execute("UPDATE pinboard.pinboards SET threshold = $1 WHERE guild_id = $2",
 										threshold_number, ctx.guild.id)
-			await ctx.embed_reply(f":thumbsup::skin-tone-2: Changed pinboard threshold to {threshold_number}")
+			await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Changed pinboard threshold to {threshold_number}")
 		else:
 			threshold_number = await ctx.bot.db.fetchval("SELECT threshold FROM pinboard.pinboards WHERE guild_id = $1", 
 															ctx.guild.id)
