@@ -145,7 +145,7 @@ class YouTube(commands.Cog):
 		'''Add YouTube channel to follow'''
 		channel_id = await self.get_channel_id(channel)
 		if not channel_id:
-			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: YouTube channel not found")
 		inserted = await ctx.bot.db.fetchrow(
 			"""
 			INSERT INTO youtube.streams (discord_channel_id, youtube_channel_id)
@@ -156,7 +156,7 @@ class YouTube(commands.Cog):
 			ctx.channel.id, channel_id
 		)
 		if not inserted:
-			return await ctx.embed_reply(":no_entry: This text channel is already following that YouTube channel")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel is already following that YouTube channel")
 		await ctx.embed_reply(f"Added the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
 		"I will now announce here when this YouTube channel goes live")
 	
