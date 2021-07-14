@@ -770,11 +770,13 @@ class Bot(commands.Bot):
 	async def wait_for_raw_reaction_add_or_remove(self, *, emoji = None, message = None, user = None, timeout = None):
 		def raw_reaction_check(payload):
 			if emoji:
-				if isinstance(emoji, (discord.Emoji, discord.PartialEmoji)) and payload.emoji != emoji:
-					return False
-				if isinstance(emoji, str) and payload.emoji.name != emoji:
-					return False
-				if payload.emoji.is_unicode_emoji():
+				if isinstance(emoji, (discord.Emoji, discord.PartialEmoji)):
+					if payload.emoji != emoji:
+						return False
+				elif isinstance(emoji, str):
+					if payload.emoji.name != emoji:
+						return False
+				elif payload.emoji.is_unicode_emoji():
 					if payload.emoji.name not in emoji:
 						return False
 				elif payload.emoji not in emoji:
