@@ -520,10 +520,10 @@ class Bot(commands.Bot):
 			try:
 				restart_message = await restart_channel.fetch_message(restart_message_id)
 				embed = restart_message.embeds[0]
-				embed.description += f"\n:thumbsup:{self.emoji_skin_tone} Restarted"
+				embed.description += f"\n\N{THUMBS UP SIGN}{self.emoji_skin_tone} Restarted"
 				await restart_message.edit(embed = embed)
 			except discord.NotFound:
-				await self.send_embed(restart_channel, f":thumbsup:{self.emoji_skin_tone} Restarted")
+				await self.send_embed(restart_channel, f"\N{THUMBS UP SIGN}{self.emoji_skin_tone} Restarted")
 		if audio_cog := self.get_cog("Audio"):
 			for record in await self.db.fetch("DELETE FROM meta.restart_channels RETURNING *"):
 				if text_channel := self.get_channel(record["player_text_channel_id"]):
