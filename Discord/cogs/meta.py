@@ -480,7 +480,7 @@ class Meta(commands.Cog):
 	@commands.is_owner()
 	async def restart(self, ctx):
 		'''Restart me'''
-		restart_message = await ctx.embed_send(f":ok_hand:{ctx.bot.emoji_skin_tone} Restarting...")
+		restart_message = await ctx.embed_send(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Restarting...")
 		print("Shutting down Discord Harmonbot...")
 		await ctx.bot.restart_tasks(ctx.channel.id, restart_message.id)
 		await ctx.bot.close()
