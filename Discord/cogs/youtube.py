@@ -170,7 +170,9 @@ class YouTube(commands.Cog):
 		'''Remove YouTube channel being followed'''
 		channel_id = await self.get_channel_id(channel)
 		if not channel_id:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: YouTube channel not found")
+			return await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: YouTube channel not found"
+			)
 		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM youtube.streams
@@ -180,8 +182,12 @@ class YouTube(commands.Cog):
 			ctx.channel.id, channel_id
 		)
 		if not deleted:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that YouTube channel")
-		await ctx.embed_reply(f"Removed the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), from this text channel")
+			return await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} This text channel isn't following that YouTube channel"
+			)
+		await ctx.embed_reply(
+			f"Removed the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), from this text channel"
+		)
 	
 	async def streams_channels(self, ctx):
 		'''Show YouTube channels being followed in this text channel'''
