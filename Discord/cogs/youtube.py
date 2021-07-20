@@ -340,11 +340,11 @@ class YouTube(commands.Cog):
 		'''Add YouTube channel to follow'''
 		channel_id = await self.get_channel_id(channel)
 		if not channel_id:
-			return await ctx.embed_reply(":no_entry: Error: YouTube channel not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: YouTube channel not found")
 		channels = self.uploads_info.get(str(ctx.channel.id))
 		if channels:
 			if channel_id in channels:
-				return await ctx.embed_reply(":no_entry: This text channel is already following that YouTube channel")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel is already following that YouTube channel")
 			channels.append(channel_id)
 		else:
 			self.uploads_info[str(ctx.channel.id)] = [channel_id]
@@ -356,7 +356,7 @@ class YouTube(commands.Cog):
 			# TODO: unique callback url for each subscription?
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
-				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error {resp.status}: {error_description}")
 				self.uploads_info[str(ctx.channel.id)].remove(channel_id)
 				return
 		self.uploads_following.add(channel_id)
