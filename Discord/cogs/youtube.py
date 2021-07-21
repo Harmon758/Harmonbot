@@ -371,7 +371,7 @@ class YouTube(commands.Cog):
 		'''Remove YouTube channel being followed'''
 		channels = self.uploads_info.get(str(ctx.channel.id))
 		if not channels or channel_id not in channels:
-			return await ctx.embed_reply(":no_entry: This text channel isn't following that YouTube channel")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that YouTube channel")
 		channels.remove(channel_id)
 		self.uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
 		url = "https://pubsubhubbub.appspot.com/"
@@ -381,7 +381,7 @@ class YouTube(commands.Cog):
 		async with ctx.bot.aiohttp_session.post(url, headers = headers, data = data) as resp:
 			if resp.status not in (202, 204):
 				error_description = await resp.text()
-				await ctx.embed_reply(f":no_entry: Error {resp.status}: {error_description}")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error {resp.status}: {error_description}")
 				self.uploads_info[str(ctx.channel.id)].append(channel_id)
 				self.uploads_following.add(channel_id)
 				return
