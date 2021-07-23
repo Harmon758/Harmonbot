@@ -410,10 +410,10 @@ class Tools(commands.Cog):
 			tag
 		)
 		if not owner_id:
-			await ctx.embed_reply(":no_entry: That global tag doesn't exist")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} That global tag doesn't exist")
 			return
 		elif owner_id != ctx.author.id:
-			await ctx.embed_reply(":no_entry: You don't own that global tag")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} You don't own that global tag")
 			return
 		await ctx.bot.db.execute("DELETE FROM tags.global WHERE tag = $1", tag)
 		await ctx.embed_reply(f":ok_hand:{ctx.bot.emoji_skin_tone} Your tag has been deleted")
