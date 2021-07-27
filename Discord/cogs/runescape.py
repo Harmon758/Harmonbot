@@ -64,7 +64,7 @@ class Runescape(commands.Cog):
 		params = {"player": username}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
-				return await ctx.embed_reply(":no_entry: Player not found")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Player not found")
 			data = await resp.text()
 		data = csv.DictReader(data.splitlines(), fieldnames = ("rank", "level", "xp"))
 		stats = collections.OrderedDict()
