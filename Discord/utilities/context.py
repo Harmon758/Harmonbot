@@ -44,7 +44,7 @@ class Context(commands.Context):
 				embed.add_field(name = field[0], value = field[1], inline = field[2])
 			else:
 				embed.add_field(name = field[0], value = field[1])
-		if self.channel.type is discord.ChannelType.private or getattr(self.channel.permissions_for(self.channel.guild.me), "embed_links", None):
+		if not isinstance(self.channel, discord.Thread) and self.channel.type is discord.ChannelType.private or getattr(self.channel.permissions_for(self.channel.guild.me), "embed_links", None):
 			return await self.send(*args, embed = embed, **kwargs)
 		elif not (title or title_url or image_url or thumbnail_url or footer_icon_url or timestamp or fields) and (not footer_text or footer_text.startswith("In response to")):
 			return await self.reply(discord.utils.escape_mentions(str(description)))
