@@ -60,7 +60,7 @@ def bot_has_permissions_for(channel, **permissions):
 def not_forbidden():
 	
 	async def predicate(ctx):
-		if ctx.channel.type is discord.ChannelType.private:
+		if not isinstance(ctx.channel, discord.Thread) and ctx.channel.type is discord.ChannelType.private:
 			return True
 		command = ctx.command
 		while ((permitted := await ctx.get_permission(command.name, user = ctx.author)) is None
