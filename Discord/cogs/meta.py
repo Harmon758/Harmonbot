@@ -188,12 +188,16 @@ class Meta(commands.Cog):
 			url = ctx.bot.invite_url, 
 			style = discord.ButtonStyle.link
 		))
+		view.add_item(discord.ui.Button(
+			label = "Discord Server (#changelog)", 
+			url = ctx.bot.changelog, 
+			style = discord.ButtonStyle.link
+		))
 		
 		await ctx.embed_reply(
 			author_icon_url = ctx.bot.user.avatar.url,
 			author_name = f"Harmonbot (Discord ID: {ctx.bot.user.id})",
 			title = "About Me",
-			description = f"[Changelog (Harmonbot Server)]({ctx.bot.changelog})",
 			fields = fields,
 			footer_icon_url = owner.avatar.url,
 			footer_text = f"Developer/Owner: {owner} (Discord ID: {owner.id})",
