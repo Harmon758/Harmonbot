@@ -165,27 +165,37 @@ class Meta(commands.Cog):
 	@commands.command()
 	async def about(self, ctx):
 		'''About me'''
-		embed = discord.Embed(title = "About Me", color = ctx.bot.bot_color)
-		embed.description = f"[Changelog (Harmonbot Server)]({ctx.bot.changelog})"
-		embed.set_author(name = f"Harmonbot (Discord ID: {ctx.bot.user.id})", icon_url = ctx.bot.user.avatar.url)
+		fields = []
 		if (changes := git.Repo("..").git.log(
 			"-3", "--first-parent", 
 			format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"
 		)):
-			embed.add_field(name = "Latest Changes:", value = changes, inline = False)
-		embed.add_field(name = "Created on:", value = "February 10th, 2016")
-		embed.add_field(name = "Version", value = ctx.bot.version)
-		embed.add_field(name = "Library", value = f"[discord.py](https://github.com/Rapptz/discord.py) v{importlib.metadata.version('discord.py')}\n"
-													f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})")
+			fields.append(("Latest Changes:", changes, False))
+		fields.append(("Created on:", "February 10th, 2016"))
+		fields.append(("Version", ctx.bot.version))
+		fields.append(("Library", f"[discord.py](https://github.com/Rapptz/discord.py) v{importlib.metadata.version('discord.py')}\n"
+									f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})"))
 		if not (owner := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
 			owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
-		embed.set_footer(text = f"Developer/Owner: {owner} (Discord ID: {owner.id})", icon_url = owner.avatar.url)
 		
 		view = discord.ui.View()
 		view.add_item(discord.ui.Button(label = "Invite", url = ctx.bot.invite_url, style = discord.ButtonStyle.link))
 		
-		await ctx.message.reply(embed = embed, view = view)
-		await ctx.message.reply(f"Changelog (Harmonbot Server): {ctx.bot.changelog}")
+		await ctx.embed_reply(
+			author_icon_url = ctx.bot.user.avatar.url,
+			author_name = f"Harmonbot (Discord ID: {ctx.bot.user.id})",
+			title = "About Me",
+			description = f"[Changelog (Harmonbot Server)]({ctx.bot.changelog})",
+			fields = fields,
+			footer_icon_url = owner.avatar.url,
+			footer_text = f"Developer/Owner: {owner} (Discord ID: {owner.id})",
+			view = view
+		)
+		await ctx.send(
+			f"Changelog (Harmonbot Server): {ctx.bot.changelog}",
+			reference = ctx.message.to_reference(fail_if_not_exists = False),
+			mention_author = False
+		)
 	
 	@commands.command()
 	async def changelog(self, ctx):
