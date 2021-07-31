@@ -33,7 +33,7 @@ class Overwatch(commands.Cog):
 		data = data["data"]
 		ability_data = discord.utils.find(lambda a: a["name"].lower() == ability.lower(), data)
 		if not ability_data:
-			await ctx.embed_reply(":no_entry: Error: Ability not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Ability not found")
 			return
 		fields = (("Hero", ability_data["hero"]["name"]), ("Ultimate", ability_data["is_ultimate"]))
 		await ctx.embed_reply(ability_data["description"], title = ability_data["name"], fields = fields)
