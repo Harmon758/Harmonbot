@@ -173,13 +173,20 @@ class Meta(commands.Cog):
 			fields.append(("Latest Changes:", changes, False))
 		fields.append(("Created on:", "February 10th, 2016"))
 		fields.append(("Version", ctx.bot.version))
-		fields.append(("Library", f"[discord.py](https://github.com/Rapptz/discord.py) v{importlib.metadata.version('discord.py')}\n"
-									f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})"))
+		fields.append((
+			"Library", 
+			f"[discord.py](https://github.com/Rapptz/discord.py) v{importlib.metadata.version('discord.py')}\n"
+			f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})"
+		))
 		if not (owner := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
 			owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
 		
 		view = discord.ui.View()
-		view.add_item(discord.ui.Button(label = "Invite", url = ctx.bot.invite_url, style = discord.ButtonStyle.link))
+		view.add_item(discord.ui.Button(
+			label = "Invite", 
+			url = ctx.bot.invite_url, 
+			style = discord.ButtonStyle.link
+		))
 		
 		await ctx.embed_reply(
 			author_icon_url = ctx.bot.user.avatar.url,
