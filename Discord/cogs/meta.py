@@ -168,10 +168,11 @@ class Meta(commands.Cog):
 		fields = []
 		if (changes := git.Repo("..").git.log(
 			"-3", "--first-parent", 
-			format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (%cr)"
+			format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (<t:%ct:R>)"
 		)):
 			fields.append(("Latest Changes:", changes, False))
-		fields.append(("Created on:", "February 10th, 2016"))
+		timestamp = discord.utils.snowflake_time(147207200945733632).timestamp()
+		fields.append(("Created on:", f"<t:{int(timestamp)}:D>"))
 		fields.append(("Version", ctx.bot.version))
 		fields.append((
 			"Library", 
