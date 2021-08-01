@@ -194,6 +194,18 @@ class Meta(commands.Cog):
 			style = discord.ButtonStyle.link
 		))
 		
+		# TODO: Move out of command?
+		class ServerInviteButton(discord.ui.Button):
+			async def callback(self, interaction):
+				await interaction.response.send_message(
+					f"{interaction.user.mention}: Harmonbot Discord Server (#changelog): {ctx.bot.changelog}"
+				)
+		
+		view.add_item(ServerInviteButton(
+			label = "Send Discord Server Invite", 
+			style = discord.ButtonStyle.blurple
+		))
+		
 		await ctx.embed_reply(
 			author_icon_url = ctx.bot.user.avatar.url,
 			author_name = f"Harmonbot (Discord ID: {ctx.bot.user.id})",
@@ -202,11 +214,6 @@ class Meta(commands.Cog):
 			footer_icon_url = owner.avatar.url,
 			footer_text = f"Developer/Owner: {owner} (Discord ID: {owner.id})",
 			view = view
-		)
-		await ctx.send(
-			f"Changelog (Harmonbot Server): {ctx.bot.changelog}",
-			reference = ctx.message.to_reference(fail_if_not_exists = False),
-			mention_author = False
 		)
 	
 	@commands.command()
