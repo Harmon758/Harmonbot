@@ -47,7 +47,7 @@ class Overwatch(commands.Cog):
 		data = data["data"]
 		achievement_data = discord.utils.find(lambda a: a["name"].lower() == achievement.lower(), data)
 		if not achievement_data:
-			await ctx.embed_reply(":no_entry: Error: Achievement not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Achievement not found")
 			return
 		fields = [("Reward", (achievement_data["reward"]["name"] + " " + 
 								achievement_data["reward"]["type"]["name"]))]
