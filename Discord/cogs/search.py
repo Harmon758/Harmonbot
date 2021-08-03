@@ -302,14 +302,24 @@ class Search(commands.Cog):
 			else:
 				return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 		if ctx.channel.permissions_for(ctx.me).embed_links:
+			embeds = []
 			for pod_number, pod in enumerate(result.pods):
 				for subpod_number, subpod in enumerate(pod.subpods):
 					if subpod_number:
-						await ctx.embed_send(image_url = subpod.img.src)
+						embed = discord.Embed(color = ctx.bot.bot_color)
+						embed.set_image(url = subpod.img.src)
+						embeds.append(embed)
 					elif pod_number:
-						await ctx.embed_send(title = pod.title, image_url = subpod.img.src)
+						embed = discord.Embed(
+							title = pod.title, color = ctx.bot.bot_color
+						)
+						embed.set_image(url = subpod.img.src)
+						embeds.append(embed)
 					else:
-						await ctx.embed_reply(title = pod.title, image_url = subpod.img.src, footer_text = discord.Embed.Empty)
+						message = await ctx.embed_reply(title = pod.title, image_url = subpod.img.src, footer_text = discord.Embed.Empty)
+			await message.edit(embeds = message.embeds + embeds[:9])
+			for index in range(9, len(embeds), 10):
+				await ctx.send(embeds = embeds[index:index + 10])
 		else:
 			text_output = ""
 			for pod in result.pods:
