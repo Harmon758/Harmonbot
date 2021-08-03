@@ -217,7 +217,7 @@ class Reactions(commands.Cog):
 				return await ctx.embed_reply(f":no_entry: {e}")
 			raise
 		# TODO: other options?
-		if not hasattr(result, "pods") and hasattr(result, "didyoumeans"):
+		if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
 			else:
@@ -229,7 +229,7 @@ class Reactions(commands.Cog):
 				if str(e).startswith("Error "):
 					return await ctx.embed_reply(f":no_entry: {e}")
 				raise
-		if hasattr(result, "pods"):
+		if hasattr(result, "pod"):
 			await WolframAlphaMenu([(pod, subpod) for pod in result.pods for subpod in pod.subpods]).start(ctx)
 			if result.timedout:
 				await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
