@@ -138,7 +138,7 @@ class WolframAlphaSource(menus.ListPageSource):
 		pod, subpod = subpod
 		embed = discord.Embed(title = pod.title, color = menu.bot.bot_color)
 		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar.url)
-		embed.set_image(url = next(subpod.img).src)
+		embed.set_image(url = subpod.img.src)
 		embed.set_footer(text = f"Pod {menu.current_page + 1} of {self.get_max_pages()}")
 		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
