@@ -171,8 +171,10 @@ class Meta(commands.Cog):
 			format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (<t:%ct:R>)"
 		)):
 			fields.append(("Latest Changes:", changes, False))
-		timestamp = discord.utils.snowflake_time(147207200945733632).timestamp()
-		fields.append(("Created on:", f"<t:{int(timestamp)}:D>"))
+		created_time = discord.utils.snowflake_time(147207200945733632)
+		fields.append((
+			"Created on:", discord.utils.format_dt(created_time, style = 'D')
+		))
 		fields.append(("Version", ctx.bot.version))
 		fields.append((
 			"Library", 
