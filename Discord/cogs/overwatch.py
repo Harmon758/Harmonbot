@@ -99,11 +99,11 @@ class Overwatch(commands.Cog):
 		Player statistics
 		BattleTags are case sensitive
 		'''
-		url = "https://owapi.net/api/v3/u/{}/stats".format(battletag.replace('#', '-'))
+		url = f"https://owapi.net/api/v3/u/{battletag.replace('#', '-')}/stats"
 		async with ctx.bot.aiohttp_session.get(url, headers = {"User-Agent": ctx.bot.user_agent}) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
+			await ctx.embed_reply(f":no_entry: Error: `{data.get('msg')}`")
 			return
 		for region in ("eu", "kr", "us"):
 			if data.get(region):
@@ -115,9 +115,9 @@ class Overwatch(commands.Cog):
 				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
 				embed.add_field(name = "Rank", value = stats["overall_stats"]["comprank"])
 				'''
-				output.append("**Wins/Total**: {0[wins]}/{0[games]} ({1:g}%)".format(data["overall_stats"], 100 * data["overall_stats"]["wins"] / data["overall_stats"]["wins"] + data["overall_stats"]["losses"]))
-				output.append("**Eliminations/Deaths**: {0[kpd]}, **Time Spent On Fire**: {0[time_spent_on_fire]:.2f}".format(data["game_stats"]))
-				output.append("__Most In One Game__ | **Time Spent On Fire**: {0[time_spent_on_fire_most_in_game]:.2f}".format(data["game_stats"]))
+				output.append(f"**Wins/Total**: {data['overall_stats']['wins']}/{data['overall_stats']['games']} ({100 * data['overall_stats']['wins'] / data['overall_stats']['wins'] + data['overall_stats']['losses']:g}%)")
+				output.append(f"**Eliminations/Deaths**: {data['game_stats']['kpd']}, **Time Spent On Fire**: {data['game_stats']['time_spent_on_fire']:.2f}")
+				output.append(f"__Most In One Game__ | **Time Spent On Fire**: {data['game_stats']['time_spent_on_fire_most_in_game']:.2f}")
 				'''
 				await ctx.send(embed = embed)
 	
