@@ -161,30 +161,30 @@ class Overwatch(commands.Cog):
 		Competitive player statistics
 		BattleTags are case sensitive
 		'''
-		url = "https://owapi.net/api/v3/u/{}/stats".format(battletag.replace('#', '-'))
+		url = f"https://owapi.net/api/v3/u/{battletag.replace('#', '-')}/stats"
 		async with ctx.bot.aiohttp_session.get(url, headers = {"User-Agent": ctx.bot.user_agent}) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
+			await ctx.embed_reply(f":no_entry: Error: `{data.get('msg')}`")
 			return
 		for region in ("eu", "kr", "us"):
 			if data.get(region):
 				stats = data[region]["stats"]["competitive"]
-				embed = discord.Embed(title = "{} ({})".format(battletag, region.upper()), color = ctx.bot.bot_color)
+				embed = discord.Embed(title = f"{battletag} ({region.upper()})", color = ctx.bot.bot_color)
 				embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar.url)
 				embed.set_thumbnail(url = stats["overall_stats"]["avatar"])
 				embed.add_field(name = "Level", value = stats["overall_stats"]["level"])
 				embed.add_field(name = "Prestige", value = stats["overall_stats"]["prestige"])
-				embed.add_field(name = "Wins", value = "{:,g}".format(stats["overall_stats"]["wins"]))
-				embed.add_field(name = "Time Played", value = "{:,g}h".format(stats["game_stats"]["time_played"]))
-				embed.add_field(name = "Cards", value = "{:,g}".format(stats["game_stats"]["cards"]))
-				embed.add_field(name = "Medals", value = ":medal: {0[medals]:,g} total\n:first_place_medal: {0[medals_gold]:,g} gold\n:second_place_medal: {0[medals_silver]:,g} silzer\n:third_place_medal: {0[medals_bronze]:,g} bronze".format(stats["game_stats"]))
-				embed.add_field(name = "Eliminations", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["eliminations_most_in_game"], stats["average_stats"]["eliminations_avg"]))
-				embed.add_field(name = "Objective Kills", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["objective_kills_most_in_game"], stats["average_stats"]["objective_kills_avg"]))
-				embed.add_field(name = "Objective Time", value = "{:.2f}m highest in one game\n{:.2f}m average".format(stats["game_stats"]["objective_time_most_in_game"] * 60, stats["average_stats"]["objective_time_avg"] * 60))
-				embed.add_field(name = "Damage Done", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["damage_done_most_in_game"], stats["average_stats"]["damage_done_avg"]))
-				embed.add_field(name = "Healing Done", value = "{:,g} highest in one game\n{:,g} average".format(stats["game_stats"]["healing_done_most_in_game"], stats["average_stats"]["healing_done_avg"]))
-				embed.add_field(name = "Deaths", value = "{:,g} total\n{:,g} average".format(stats["game_stats"]["deaths"], stats["average_stats"]["deaths_avg"]))
+				embed.add_field(name = "Wins", value = f"{stats['overall_stats']['wins']:,g}")
+				embed.add_field(name = "Time Played", value = f"{stats['game_stats']['time_played']:,g}h")
+				embed.add_field(name = "Cards", value = f"{stats['game_stats']['cards']:,g}")
+				embed.add_field(name = "Medals", value = f":medal: {stats['game_stats']['medals']:,g} total\n:first_place_medal: {stats['game_stats']['medals_gold']:,g} gold\n:second_place_medal: {stats['game_stats']['medals_silver']:,g} silzer\n:third_place_medal: {stats['game_stats']['medals_bronze']:,g} bronze")
+				embed.add_field(name = "Eliminations", value = f"{stats['game_stats']['eliminations_most_in_game']:,g} highest in one game\n{stats['average_stats']['eliminations_avg']:,g} average")
+				embed.add_field(name = "Objective Kills", value = f"{stats['game_stats']['objective_kills_most_in_game']:,g} highest in one game\n{stats['average_stats']['objective_kills_avg']:,g} average")
+				embed.add_field(name = "Objective Time", value = f"{stats['game_stats']['objective_time_most_in_game'] * 60:.2f}m highest in one game\n{stats['average_stats']['objective_time_avg'] * 60:.2f}m average")
+				embed.add_field(name = "Damage Done", value = f"{stats['game_stats']['damage_done_most_in_game']:,g} highest in one game\n{stats['average_stats']['damage_done_avg']:,g} average")
+				embed.add_field(name = "Healing Done", value = f"{stats['game_stats']['healing_done_most_in_game']:,g} highest in one game\n{stats['average_stats']['healing_done_avg']:,g} average")
+				embed.add_field(name = "Deaths", value = f"{stats['game_stats']['deaths']:,g} total\n{stats['average_stats']['deaths_avg']:,g} average")
 				await ctx.send(embed = embed)
 	
 	@stats_quickplay.command(name = "heroes")
