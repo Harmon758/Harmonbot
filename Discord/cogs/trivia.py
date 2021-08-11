@@ -258,7 +258,7 @@ class Trivia(commands.Cog):
 			if ctx.channel.id == channel_id:
 				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of {game} here")
 			else:
-				channel = ctx.guild.get_channel(channel_id) or ctx.guild.get_thread(channel_id).parent
+				channel = ctx.guild.get_channel(channel_id) or ctx.guild.get_thread(channel_id)
 				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of {game} in {channel.mention}")
 	
 	@commands.group(max_concurrency = max_concurrency, invoke_without_command = True, case_insensitive = True)
