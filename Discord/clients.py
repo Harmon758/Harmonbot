@@ -536,7 +536,7 @@ class Bot(commands.Bot):
 
 	@staticmethod
 	async def get_command_prefix(bot, message):
-		if not isinstance(message.channel, discord.Thread) and message.channel.type is discord.ChannelType.private:
+		if message.channel.type is discord.ChannelType.private:
 			prefixes = await bot.db.fetchval(
 				"""
 				SELECT prefixes
