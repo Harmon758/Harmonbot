@@ -188,12 +188,12 @@ class Meta(commands.Cog):
 		view.add_item(discord.ui.Button(
 			label = "Invite", 
 			url = ctx.bot.invite_url, 
-			style = discord.ButtonStyle.link
+			style = discord.ButtonStyle.url
 		))
 		view.add_item(discord.ui.Button(
 			label = "Discord Server (#changelog)", 
 			url = ctx.bot.changelog, 
-			style = discord.ButtonStyle.link
+			style = discord.ButtonStyle.url
 		))
 		
 		# TODO: Move out of command?
