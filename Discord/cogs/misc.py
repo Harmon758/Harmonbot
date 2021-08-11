@@ -53,7 +53,7 @@ class Misc(commands.Cog):
 		'''See larger versions of custom emoji'''
 		await ctx.embed_reply(image_url = emoji.url)
 	
-	@commands.command()
+	@commands.command(aliases = ["count"])
 	async def counter(self, ctx):
 		'''A counter'''
 		await ctx.embed_reply(
