@@ -1,0 +1,35 @@
+# No live updates functionality anymore:
+# https://github.blog/2021-04-29-goodbye-dependabot-preview-hello-dependabot/
+# https://github.com/dependabot/dependabot-core/issues/3488
+# https://github.com/Harmon758/Harmonbot/pull/2511
+
+# No unlimited open pull requests anymore:
+# https://github.com/Harmon758/Harmonbot/pull/2511
+# https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/configuration-options-for-dependency-updates#open-pull-requests-limit
+
+# Necessary to specify time now so as not to be random:
+# https://github.blog/changelog/2021-06-16-dependabot-now-schedules-version-updates-uniformly/
+
+version: 2
+
+updates:
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+    labels:
+      - "dependency update"
+    open-pull-requests-limit: 1000
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+    allow:
+      - dependency-type: "all"
+    labels:
+      - "dependency update"
+    open-pull-requests-limit: 1000
