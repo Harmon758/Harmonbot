@@ -176,6 +176,22 @@ class Misc(commands.Cog):
 				raise
 		await ctx.embed_reply(f"You have poked {user.mention} for the {times} time!")
 	
+	@commands.command(aliases = ["select"])
+	async def selector(self, ctx, *options: str):
+		'''A selector'''
+		view = discord.ui.View()
+		view.add_item(discord.ui.Select(
+			options = [
+				discord.SelectOption(label = option)
+				for option in options[:25]
+			]
+		))
+		await ctx.embed_reply(
+			title = "Selector",
+			footer_text = discord.Embed.Empty,
+			view = view
+		)
+	
 	@commands.command()
 	async def subscript(self, ctx, *, text: str):
 		'''
