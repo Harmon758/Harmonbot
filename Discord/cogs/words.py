@@ -53,7 +53,7 @@ class Words(commands.Cog):
 				return await ctx.embed_reply(BeautifulSoup(definition.text, "html.parser").get_text(), 
 												title = definition.word, 
 												footer_text = definition.attributionText)
-		await ctx.embed_reply(":no_entry: Definition not found")
+		await ctx.embed_reply(f"{ctx.bot.error_emoji} Definition not found")
 	
 	@define.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
 	async def define_menu(self, ctx, word : str):
