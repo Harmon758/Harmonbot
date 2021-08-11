@@ -179,7 +179,7 @@ class Misc(commands.Cog):
 	@commands.command(aliases = ["select"])
 	async def selector(self, ctx, *options: str):
 		'''A selector'''
-		view = discord.ui.View()
+		view = discord.ui.View(timeout = None)
 		view.add_item(discord.ui.Select(
 			options = [
 				discord.SelectOption(label = option)
