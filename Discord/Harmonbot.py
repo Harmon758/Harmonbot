@@ -130,7 +130,7 @@ if __name__ == "__main__":
 		await ctx.bot.invoke(ctx)
 		
 		# Forward DMs
-		if not isinstance(channel, discord.Thread) and channel.type is discord.ChannelType.private:
+		if channel.type is discord.ChannelType.private:
 			if not channel.recipient:
 				channel = await ctx.bot.fetch_channel(channel.id)
 			if channel.recipient.id != ctx.bot.owner_id:
@@ -181,7 +181,7 @@ if __name__ == "__main__":
 					ctx.me.mention.replace('!', "") if '!' in ctx.me.mention else ctx.me.mention.replace('@', "@!"))
 		
 		# DM or mention
-		if not isinstance(channel, discord.Thread) and channel.type is discord.ChannelType.private or any(mention in message.content for mention in mentions):
+		if channel.type is discord.ChannelType.private or any(mention in message.content for mention in mentions):
 			content = message.content
 			for mention in mentions:
 				content = content.replace(mention, "")
