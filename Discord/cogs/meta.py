@@ -612,6 +612,12 @@ class Meta(commands.Cog):
 			return
 		await ctx.embed_reply("Successfully executed")
 	
+	@commands.command()
+	@commands.is_owner()
+	async def latency(self, ctx):
+		'''Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds'''
+		await ctx.embed_reply(f"{ctx.bot.latency:.6}s")
+	
 	@commands.command(name = "query")
 	@commands.is_owner()
 	async def query_command(self, ctx, *, query):
@@ -620,12 +626,6 @@ class Meta(commands.Cog):
 		# TODO: Handle errors, e.g. syntax
 		await ctx.embed_reply(result)
 		# TODO: Improve result/response format
-	
-	@commands.command()
-	@commands.is_owner()
-	async def latency(self, ctx):
-		'''Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds'''
-		await ctx.embed_reply(f"{ctx.bot.latency:.6}s")
 	
 	@commands.command(aliases = ["repeattext"])
 	@commands.is_owner()
