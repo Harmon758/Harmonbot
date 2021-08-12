@@ -254,7 +254,8 @@ class Info(commands.Cog):
 			description = description,
 			fields = fields,
 			image_url = fetched_user.banner.url if fetched_user.banner else discord.Embed.Empty,
-			footer_text = "Created", timestamp = user.created_at
+			footer_text = "Created", timestamp = user.created_at,
+			color = fetched_user.accent_color
 		)
 		
 		# TODO: Add voice state?
