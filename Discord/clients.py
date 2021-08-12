@@ -134,6 +134,7 @@ class Bot(commands.Bot):
 		self.guild_settings = {}
 		self.online_time = datetime.datetime.now(datetime.timezone.utc)
 		self.session_commands_invoked = {}
+		self.socket_events = {}
 		
 		# Credentials
 		for credential in ("BATTLE_NET_API_KEY", "BATTLERITE_API_KEY", "CLARIFAI_API_KEY", "CLEVERBOT_API_KEY", 
@@ -733,6 +734,9 @@ class Bot(commands.Bot):
 					""", 
 					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before_embeds, after_embeds
 				)
+	
+	async def on_socket_event_type(self, event_type):
+		self.socket_events[event_type] = self.socket_events.get(event_type, 0) + 1
 	
 	async def increment_menu_reactions_count(self):
 		await self.db.execute(
