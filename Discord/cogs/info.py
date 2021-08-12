@@ -211,7 +211,7 @@ class Info(commands.Cog):
 			)
 		)
 		
-		statuses = user.status.name.capitalize().replace('Dnd', 'Do Not Disturb')
+		statuses = user.status.name.capitalize().replace("Dnd", "Do Not Disturb")
 		for status_type in ("desktop", "web", "mobile"):
 			if (status := getattr(user, f"{status_type}_status")) is not discord.Status.offline:
 				statuses += f"\n{status_type.capitalize()}: {status.name.capitalize().replace('Dnd', 'Do Not Disturb')}"
