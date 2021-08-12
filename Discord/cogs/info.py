@@ -212,9 +212,9 @@ class Info(commands.Cog):
 		# inflect_engine.plural("Activity") returns "Activitys"
 		fields.append(("Color", f"#{user.color.value:0>6X}\n{user.color.to_rgb()}" if user.color.value else None))
 		fields.append(("Roles", ", ".join(role.mention for role in user.roles[1:]) or None))
-		fields.append(("Joined", user.joined_at.isoformat(timespec = "milliseconds")))
+		fields.append(("Joined", f"{discord.utils.format_dt(user.joined_at)} ({user.joined_at.isoformat(timespec = 'milliseconds')})"))
 		if user.premium_since:
-			fields.append(("Boosting Since", user.premium_since.isoformat(timespec = "milliseconds")))
+			fields.append(("Boosting Since", f"{discord.utils.format_dt(user.premium_since)} ({user.premium_since.isoformat(timespec = 'milliseconds')})"))
 		await ctx.embed_reply(description, title = title, title_url = user.avatar.url, 
 								thumbnail_url = user.avatar.url, fields = fields, 
 								footer_text = "Created", timestamp = user.created_at)
