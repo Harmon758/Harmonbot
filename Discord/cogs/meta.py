@@ -532,6 +532,13 @@ class Meta(commands.Cog):
 		'''Basic test command'''
 		await ctx.send("Hello, World!")
 	
+	@test.command(name = "delete")
+	@commands.is_owner()
+	async def test_delete(self, ctx):
+		'''Sends 100 messages'''
+		for i in range(1, 101):
+			await ctx.send(i)
+	
 	@test.command(name = "global_rate_limit", aliases = ["globalratelimit"])
 	@commands.is_owner()
 	async def test_global_rate_limit(self, ctx):
@@ -604,13 +611,6 @@ class Meta(commands.Cog):
 			await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"))
 			return
 		await ctx.embed_reply("Successfully executed")
-	
-	@commands.command(aliases = ["deletetest"])
-	@commands.is_owner()
-	async def delete_test(self, ctx):
-		'''Sends 100 messages'''
-		for i in range(1, 101):
-			await ctx.send(i)
 	
 	@commands.command(name = "query")
 	@commands.is_owner()
