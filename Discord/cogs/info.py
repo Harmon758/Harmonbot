@@ -246,11 +246,14 @@ class Info(commands.Cog):
 				f"{discord.utils.format_dt(user.premium_since)} ({user.premium_since.isoformat(timespec = 'milliseconds')})"
 			))
 		
+		fetched_user = await ctx.bot.fetch_user(user.id)
+		
 		await ctx.embed_reply(
 			title = title, title_url = user.avatar.url,
 			thumbnail_url = user.avatar.url,
 			description = description,
 			fields = fields,
+			image_url = fetched_user.banner.url if fetched_user.banner else discord.Embed.Empty,
 			footer_text = "Created", timestamp = user.created_at
 		)
 		
