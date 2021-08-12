@@ -193,31 +193,67 @@ class Info(commands.Cog):
 		'''Information about a user'''
 		if not user:
 			user = ctx.author
-		description = "".join(str(badge_emoji) for flag_name, flag_value in user.public_flags if flag_value and 
-								(badge_emoji := ctx.bot.get_emoji(BADGE_EMOJI_IDS.get(getattr(discord.PublicUserFlags, flag_name), None))))
+		
 		title = str(user)
 		if user.public_flags.verified_bot:
 			title += " [Verified Bot]"
 		elif user.bot:
 			title += " [Bot]"
-		fields = [("User", user.mention), ("ID", user.id)]
+		
+		description = "".join(
+			str(badge_emoji) for flag_name, flag_value in user.public_flags
+			if flag_value and (
+				badge_emoji := ctx.bot.get_emoji(
+					BADGE_EMOJI_IDS.get(
+						getattr(discord.PublicUserFlags, flag_name), None
+					)
+				)
+			)
+		)
+		
 		statuses = user.status.name.capitalize().replace('Dnd', 'Do Not Disturb')
 		for status_type in ("desktop", "web", "mobile"):
 			if (status := getattr(user, f"{status_type}_status")) is not discord.Status.offline:
 				statuses += f"\n{status_type.capitalize()}: {status.name.capitalize().replace('Dnd', 'Do Not Disturb')}"
-		fields.append(("Status", statuses))
-		fields.append((ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), 
-						'\n'.join(f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
-									+ (activity.name if isinstance(activity, discord.Activity) else str(activity)) for activity in user.activities) or None))
-		# inflect_engine.plural("Activity") returns "Activitys"
-		fields.append(("Color", f"#{user.color.value:0>6X}\n{user.color.to_rgb()}" if user.color.value else None))
-		fields.append(("Roles", ", ".join(role.mention for role in user.roles[1:]) or None))
-		fields.append(("Joined", f"{discord.utils.format_dt(user.joined_at)} ({user.joined_at.isoformat(timespec = 'milliseconds')})"))
+		fields = [
+			("User", user.mention), ("ID", user.id), ("Status", statuses),
+			(
+				ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), 
+				# inflect_engine.plural("Activity") returns "Activitys"
+				'\n'.join(
+					f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
+					+ (activity.name if isinstance(activity, discord.Activity) else str(activity))
+					for activity in user.activities
+				) or None
+			), 
+			(
+				"Color",
+				f"#{user.color.value:0>6X}\n{user.color.to_rgb()}"
+				if user.color.value else None
+			),
+			(
+				"Roles",
+				", ".join(role.mention for role in user.roles[1:]) or None
+			),
+			(
+				"Joined",
+				f"{discord.utils.format_dt(user.joined_at)} ({user.joined_at.isoformat(timespec = 'milliseconds')})"
+			)
+		]
 		if user.premium_since:
-			fields.append(("Boosting Since", f"{discord.utils.format_dt(user.premium_since)} ({user.premium_since.isoformat(timespec = 'milliseconds')})"))
-		await ctx.embed_reply(description, title = title, title_url = user.avatar.url, 
-								thumbnail_url = user.avatar.url, fields = fields, 
-								footer_text = "Created", timestamp = user.created_at)
+			fields.append((
+				"Boosting Since",
+				f"{discord.utils.format_dt(user.premium_since)} ({user.premium_since.isoformat(timespec = 'milliseconds')})"
+			))
+		
+		await ctx.embed_reply(
+			title = title, title_url = user.avatar.url,
+			thumbnail_url = user.avatar.url,
+			description = description,
+			fields = fields,
+			footer_text = "Created", timestamp = user.created_at
+		)
+		
 		# TODO: Add voice state?
 		# TODO: Accept User input?
 		# TODO: More detailed activities?
