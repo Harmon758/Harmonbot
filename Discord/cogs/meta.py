@@ -602,6 +602,16 @@ class Meta(commands.Cog):
 	
 	@commands.command()
 	@commands.is_owner()
+	async def events(self, ctx):
+		'''WebSocket events'''
+		await ctx.embed_reply(
+			ctx.bot.PY_CODE_BLOCK.format(
+				ctx.bot.socket_events
+			)
+		)
+	
+	@commands.command()
+	@commands.is_owner()
 	async def exec(self, ctx, *, code : str):
 		code = code.strip('`')
 		try:
