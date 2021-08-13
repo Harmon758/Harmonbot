@@ -86,10 +86,13 @@ class Misc(commands.Cog):
 		for character in text:
 			if 'A' <= character <= 'Z':
 				output += chr(ord(character) + 119951)
+				# ord('𝓐') - ord('A') = 119951
 			elif 'a' <= character <= 'z':
-				output += chr(ord(character) + 119919)
+				output += chr(ord(character) + 119945)
+				# ord('𝓪') - ord('a') = 119945
 			elif '0' <= character <= '9':
 				output += chr(ord(character) + 120744)
+				# ord('𝟘') - ord('0') = 120744
 			else:
 				output += character
 		await ctx.embed_reply(output)
