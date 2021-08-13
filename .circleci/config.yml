@@ -6,9 +6,7 @@ version: 2
 jobs:
   test-python:
     docker:
-      - image: circleci/python:3.9.4
-      # No image for Python 3.9.5 yet
-      # https://circleci.com/docs/2.0/circleci-images/#python
+      - image: circleci/python:3.9.6
       - image: postgres:12.1
         environment:
           POSTGRES_USER: harmonbot
