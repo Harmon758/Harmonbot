@@ -331,14 +331,11 @@ class ChessMatch(chess.Board):
 		else:
 			self.match_message = await self.ctx.send(embed = embed)
 	
-	async def new_match_embed(self, *, orientation = None, footer_text = None):
+	async def new_match_embed(self, *, orientation = None, footer_text = discord.Embed.Empty):
 		if orientation is None:
 			orientation = self.turn
-		if footer_text is None:
-			if self.is_game_over():
-				footer_text = discord.Embed.Empty
-			else:
-				footer_text = f"It's {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
+		if not footer_text and not self.is_game_over():
+			footer_text = f"It's {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
 		if self.match_message:
 			await self.match_message.delete()
 		self.match_message = None
