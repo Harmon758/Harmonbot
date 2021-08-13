@@ -14,12 +14,23 @@ def setup(bot):
 			await ctx.embed_reply(f":{emote}:")
 		return emote_command
 	
-	for emote in ("frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard", "minidisc", "horse", "penguin", "dragon", "eagle", "bird"):
-		command = commands.Command(emote_wrapper(emote), name = emote, help = emote.capitalize() + " emote", checks = [checks.not_forbidden().predicate])
+	for emote in (
+		"frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard",
+		"minidisc", "horse", "penguin", "dragon", "eagle", "bird"
+	):
+		command = commands.Command(
+			emote_wrapper(emote), name = emote,
+			help = emote.capitalize() + " emote",
+			checks = [checks.not_forbidden().predicate]
+		)
 		setattr(Misc, emote, command)
 		Misc.__cog_commands__.append(command)
 	for name, emote in (("cow", "cow2"), ("panda", "panda_face")):
-		command = commands.Command(emote_wrapper(emote), name = name, help = name.capitalize() + " emote", checks = [checks.not_forbidden().predicate])
+		command = commands.Command(
+			emote_wrapper(emote), name = name,
+			help = name.capitalize() + " emote",
+			checks = [checks.not_forbidden().predicate]
+		)
 		setattr(Misc, name, command)
 		Misc.__cog_commands__.append(command)
 	
