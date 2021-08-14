@@ -291,41 +291,43 @@ class ChessMatch(chess.Board):
 				await self.update_match_embed(footer_text = footer_text)
 				await self.bot.attempt_delete_message(message)
 	
-	async def update_match_embed(self, *, orientation = None, footer_text = discord.Embed.Empty):
-		if orientation is None:
-			orientation = self.turn
-		if self.move_stack:
-			lastmove = self.peek()
-		else:
-			lastmove = None
-		if self.is_check():
-			check = self.king(self.turn)
-		else:
-			check = None
+	async def update_match_embed(
+		self, *, orientation = None, footer_text = discord.Embed.Empty
+	):
 		if self.match_message:
 			embed = self.match_message.embeds[0]
 		else:
 			embed = discord.Embed(color = self.bot.bot_color)
+		
 		chess_pgn = chess.pgn.Game.from_board(self)
 		chess_pgn.headers["Site"] = "Discord"
 		chess_pgn.headers["Date"] = datetime.datetime.utcnow().strftime("%Y.%m.%d")
 		chess_pgn.headers["White"] = self.white_player.mention
 		chess_pgn.headers["Black"] = self.black_player.mention
+		
 		embed.description = str(chess_pgn)
+		
 		## svg = self._repr_svg_()
-		svg = chess.svg.board(self, lastmove = lastmove, check = check, orientation = orientation)
+		svg = chess.svg.board(
+			self, lastmove = self.peek() if self.move_stack else None,
+			check = self.king(self.turn) if self.is_check() else None,
+			orientation = orientation or self.turn
+		)
+		
 		buffer = io.BytesIO()
 		with Image(blob = svg.encode()) as image:
 			image.format = "PNG"
-			## image.save(filename = self.bot.data_path + "/temp/chess_board.png")
 			image.save(file = buffer)
 		buffer.seek(0)
+		
 		# TODO: Upload into embed + delete and re-send to update?
-		## embed.set_image(url = self.bot.imgur_client.upload_from_path(self.bot.data_path + "/temp/chess_board.png")["link"])
-		## embed.set_image(url = data["data"]["img_url"])
-		image_message = await self.bot.cache_channel.send(file = discord.File(buffer, filename = "chess_board.png"))
+		image_message = await self.bot.cache_channel.send(
+			file = discord.File(buffer, filename = "chess_board.png")
+		)
 		embed.set_image(url = image_message.attachments[0].url)
+		
 		embed.set_footer(text = footer_text)
+		
 		if self.match_message:
 			await self.match_message.edit(embed = embed)
 		else:
