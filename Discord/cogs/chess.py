@@ -164,14 +164,6 @@ class ChessCog(commands.Cog, name = "Chess"):
 			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await ctx.reply(ctx.bot.CODE_BLOCK.format(match))
 	
-	@chess_command.command()
-	async def fen(self, ctx):
-		'''FEN of the current board'''
-		match = self.get_match(ctx.channel, ctx.author)
-		if not match:
-			return await ctx.embed_reply(":no_entry: Chess match not found")
-		await ctx.embed_reply(match.fen())
-	
 	"""
 	@chess_command.command(name = "(╯°□°）╯︵", hidden = True)
 	async def flip(self, ctx):
@@ -321,9 +313,13 @@ class ChessMatch(chess.Board):
 		embed.set_footer(text = footer_text)
 		
 		if self.message:
-			await self.message.edit(embed = embed)
+			await self.message.edit(
+				embed = embed, view = ChessMatchView(self.bot, self)
+			)
 		else:
-			self.message = await self.ctx.send(embed = embed)
+			self.message = await self.ctx.send(
+				embed = embed, view = ChessMatchView(self.bot, self)
+			)
 	
 	async def new_match_embed(self, *, orientation = None, footer_text = discord.Embed.Empty):
 		if orientation is None:
@@ -334,4 +330,22 @@ class ChessMatch(chess.Board):
 			await self.message.delete()
 		self.message = None
 		await self.update_match_embed(orientation = orientation, footer_text = footer_text)
+
+class ChessMatchView(discord.ui.View):
+
+	def __init__(self, bot, match):
+		super().__init__(timeout = None)
+		self.bot = bot
+		self.match = match
+
+	@discord.ui.button(label = "FEN")
+	async def fen(self, button, interaction):
+		embed = discord.Embed(color = self.bot.bot_color)
+		embed.set_author(
+			icon_url = interaction.user.avatar.url,
+			name = interaction.user.display_name
+		)
+		embed.title = "FEN"
+		embed.description = self.match.fen()
+		await interaction.response.send_message(embed = embed)
 
