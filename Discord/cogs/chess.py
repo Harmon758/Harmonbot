@@ -233,7 +233,7 @@ class ChessMatch(chess.Board):
 		self.ended = asyncio.Event()
 		self.engine_transport, self.chess_engine = await chess.engine.popen_uci(f"bin/{STOCKFISH_EXECUTABLE}", 
 																				creationflags = subprocess.CREATE_NO_WINDOW)
-		self.match_message = None
+		self.message = None
 		self.task = ctx.bot.loop.create_task(self.match_task(), name = "Chess Match")
 		return self
 	
@@ -258,13 +258,13 @@ class ChessMatch(chess.Board):
 		return True
 	
 	async def match_task(self):
-		self.match_message = await self.ctx.embed_send("Loading..")
+		self.message = await self.ctx.embed_send("Loading..")
 		await self.update_match_embed()
 		while not self.ended.is_set():
 			player = [self.black_player, self.white_player][int(self.turn)]
-			embed = self.match_message.embeds[0]
+			embed = self.message.embeds[0]
 			if player == self.bot.user:
-				await self.match_message.edit(embed = embed.set_footer(text = "I'm thinking.."))
+				await self.message.edit(embed = embed.set_footer(text = "I'm thinking.."))
 				result = await self.chess_engine.play(self, chess.engine.Limit(time = 2))
 				self.push(result.move)
 				await self.update_match_embed(footer_text = f"I moved {result.move}")
@@ -273,7 +273,7 @@ class ChessMatch(chess.Board):
 													check = lambda msg: msg.author == player and 
 																		msg.channel == self.ctx.channel and 
 																		self.valid_move(msg.content))
-				await self.match_message.edit(embed = embed.set_footer(text = "Processing move.."))
+				await self.message.edit(embed = embed.set_footer(text = "Processing move.."))
 				self.make_move(message.content)
 				if self.is_game_over():
 					footer_text = discord.Embed.Empty
@@ -286,8 +286,8 @@ class ChessMatch(chess.Board):
 	async def update_match_embed(
 		self, *, orientation = None, footer_text = discord.Embed.Empty
 	):
-		if self.match_message:
-			embed = self.match_message.embeds[0]
+		if self.message:
+			embed = self.message.embeds[0]
 		else:
 			embed = discord.Embed(color = self.bot.bot_color)
 		
@@ -320,18 +320,18 @@ class ChessMatch(chess.Board):
 		
 		embed.set_footer(text = footer_text)
 		
-		if self.match_message:
-			await self.match_message.edit(embed = embed)
+		if self.message:
+			await self.message.edit(embed = embed)
 		else:
-			self.match_message = await self.ctx.send(embed = embed)
+			self.message = await self.ctx.send(embed = embed)
 	
 	async def new_match_embed(self, *, orientation = None, footer_text = discord.Embed.Empty):
 		if orientation is None:
 			orientation = self.turn
 		if not footer_text and not self.is_game_over():
 			footer_text = f"It's {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
-		if self.match_message:
-			await self.match_message.delete()
-		self.match_message = None
+		if self.message:
+			await self.message.delete()
+		self.message = None
 		await self.update_match_embed(orientation = orientation, footer_text = footer_text)
 
