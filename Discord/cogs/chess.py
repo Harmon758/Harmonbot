@@ -156,14 +156,6 @@ class ChessCog(commands.Cog, name = "Chess"):
 			return await ctx.embed_reply(":no_entry: Chess match not found")
 		await match.new_match_embed()
 	
-	@board.command(name = "text")
-	async def board_text(self, ctx):
-		'''Text version of the current board'''
-		match = self.get_match(ctx.channel, ctx.author)
-		if not match:
-			return await ctx.embed_reply(":no_entry: Chess match not found")
-		await ctx.reply(ctx.bot.CODE_BLOCK.format(match))
-	
 	"""
 	@chess_command.command(name = "(╯°□°）╯︵", hidden = True)
 	async def flip(self, ctx):
@@ -347,5 +339,16 @@ class ChessMatchView(discord.ui.View):
 		)
 		embed.title = "FEN"
 		embed.description = self.match.fen()
+		await interaction.response.send_message(embed = embed)
+
+	@discord.ui.button(label = "Text")
+	async def text(self, button, interaction):
+		embed = discord.Embed(color = self.bot.bot_color)
+		embed.set_author(
+			icon_url = interaction.user.avatar.url,
+			name = interaction.user.display_name
+		)
+		embed.title = "Text"
+		embed.description = self.bot.CODE_BLOCK.format(self.match)
 		await interaction.response.send_message(embed = embed)
 
