@@ -180,14 +180,6 @@ class ChessCog(commands.Cog, name = "Chess"):
 		await ctx.say(ctx.author.name + " flipped the table over in anger!")
 	"""
 	
-	@chess_command.command(hidden = True)
-	async def pgn(self, ctx):
-		'''PGN of the current match'''
-		match = self.get_match(ctx.channel, ctx.author)
-		if not match:
-			return await ctx.embed_reply(":no_entry: Chess match not found")
-		await ctx.embed_reply(chess.pgn.Game.from_board(match))
-	
 	@chess_command.command(aliases = ["last"], hidden = True)
 	async def previous(self, ctx):
 		'''Previous move'''
