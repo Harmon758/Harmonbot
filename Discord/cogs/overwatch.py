@@ -193,20 +193,20 @@ class Overwatch(commands.Cog):
 		Quick Play player hero statistics
 		BattleTags are case sensitive
 		'''
-		url = "https://owapi.net/api/v3/u/{}/heroes".format(battletag.replace('#', '-'))
+		url = f"https://owapi.net/api/v3/u/{battletag.replace('#', '-')}/heroes"
 		async with ctx.bot.aiohttp_session.get(url, headers = {"User-Agent": ctx.bot.user_agent}) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await ctx.embed_reply(":no_entry: Error: `{}`".format(data.get("msg")))
+			await ctx.embed_reply(f":no_entry: Error: `{data.get('msg')}`")
 			return
 		for region in ("eu", "kr", "us"):
 			if data.get(region):
-				output = ["", "__{}__".format(battletag.replace('-', '#'))]
+				output = ["", f"__{battletag.replace('-', '#')}__"]
 				sorted_data = sorted(data[region]["heroes"]["playtime"]["quickplay"].items(), key = lambda h: h[1], reverse = True)
 				for hero, time in sorted_data:
 					if time >= 1:
-						output.append("**{}**: {:g} {}".format(hero.capitalize(), time, ctx.bot.inflect_engine.plural("hour", int(time))))
+						output.append(f"**{hero.capitalize()}**: {time:g} {ctx.bot.inflect_engine.plural('hour', int(time))}")
 					else:
-						output.append("**{}**: {:g} {}".format(hero.capitalize(), time * 60, ctx.bot.inflect_engine.plural("minute", int(time * 60))))
+						output.append(f"**{hero.capitalize()}**: {time * 60:g} {ctx.bot.inflect_engine.plural('minute', int(time * 60))}")
 				await ctx.embed_reply('\n'.join(output))
 
