@@ -197,7 +197,7 @@ class Overwatch(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, headers = {"User-Agent": ctx.bot.user_agent}) as resp:
 			data = await resp.json()
 		if "error" in data:
-			await ctx.embed_reply(f":no_entry: Error: `{data.get('msg')}`")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: `{data.get('msg')}`")
 			return
 		for region in ("eu", "kr", "us"):
 			if data.get(region):
