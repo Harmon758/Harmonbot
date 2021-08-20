@@ -34,7 +34,7 @@ class Runescape(commands.Cog):
 			item_id = await get_item_id(item, aiohttp_session = ctx.bot.aiohttp_session)
 			data = await get_ge_data(item, item_id = item_id, aiohttp_session = ctx.bot.aiohttp_session)
 		except UnitOutputError as e:
-			return await ctx.embed_reply(f":no_entry: Error: {e}")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		await ctx.embed_reply(data["description"], title = data["name"], 
 								title_url = f"https://services.runescape.com/m=itemdb_rs/viewitem?obj={item_id}", 
 								thumbnail_url = data["icon_large"], 
