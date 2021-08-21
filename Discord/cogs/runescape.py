@@ -28,7 +28,7 @@ class Runescape(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@runescape.command(aliases = ["grandexchange", "grand_exchange"])
-	async def ge(self, ctx, *, item):
+	async def ge(self, ctx, *, item: str):
 		'''Grand Exchange'''
 		try:
 			item_id = await get_item_id(item, aiohttp_session = ctx.bot.aiohttp_session)
