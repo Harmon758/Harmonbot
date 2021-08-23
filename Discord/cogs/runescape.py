@@ -57,7 +57,7 @@ class Runescape(commands.Cog):
 		# id?, members
 	
 	@runescape.command(aliases = ["bestiary"])
-	async def monster(self, ctx, *, monster : str):
+	async def monster(self, ctx, *, monster: str):
 		'''Bestiary'''
 		try:
 			data = await get_monster_data(monster, aiohttp_session = ctx.bot.aiohttp_session)
