@@ -60,14 +60,21 @@ class Runescape(commands.Cog):
 	async def monster(self, ctx, *, monster: str):
 		'''Bestiary'''
 		try:
-			data = await get_monster_data(monster, aiohttp_session = ctx.bot.aiohttp_session)
+			data = await get_monster_data(
+				monster, aiohttp_session = ctx.bot.aiohttp_session
+			)
 		except UnitOutputError as e:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
-		await ctx.embed_reply(data["description"], title = data["name"], 
-								fields = (("Level", data["level"]), ("Weakness", data["weakness"]), 
-											("XP/Kill", data["xp"]), ("Lifepoints", data["lifepoints"]), 
-											("Members", "Yes" if data["members"] else "No"), 
-											("Aggressive", "Yes" if data["aggressive"] else "No")))
+		await ctx.embed_reply(
+			data["description"],
+			title = data["name"],
+			fields = (
+				("Level", data["level"]), ("Weakness", data["weakness"]),
+				("XP/Kill", data["xp"]), ("Lifepoints", data["lifepoints"]),
+				("Members", "Yes" if data["members"] else "No"),
+				("Aggressive", "Yes" if data["aggressive"] else "No")
+			)
+		)
 		# add other? - https://runescape.wiki/w/RuneScape_Bestiary#beastData
 	
 	@runescape.command(aliases = ["levels", "level", "xp", "ranks", "rank"])
