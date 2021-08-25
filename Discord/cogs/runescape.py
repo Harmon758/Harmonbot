@@ -39,12 +39,13 @@ class Runescape(commands.Cog):
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except UnitOutputError as e:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			return
 		await ctx.embed_reply(
-			data["description"],
 			title = data["name"],
 			title_url = f"https://services.runescape.com/m=itemdb_rs/viewitem?obj={item_id}",
 			thumbnail_url = data["icon_large"],
+			description = data["description"],
 			fields = (
 				("Current", data["current"]["price"]),
 				("Today", data["today"]["price"]),
