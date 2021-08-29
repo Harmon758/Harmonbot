@@ -123,7 +123,7 @@ class Tools(commands.Cog):
 		spoiler_text = textwrap.fill(text, character_wrap)
 		spoiler_title = textwrap.fill(f"{ctx.author.display_name}'s {name} spoiler", character_wrap)
 		buffer = io.BytesIO()
-		await ctx.author.avatar.save(buffer, seek_begin = True)
+		await ctx.author.display_avatar.save(buffer, seek_begin = True)
 		avatar = Image.open(buffer)
 		avatar.thumbnail((avatar_size, avatar_size))
 		content_font = ImageFont.truetype(content_font, content_font_size)
