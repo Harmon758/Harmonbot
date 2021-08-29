@@ -10,7 +10,7 @@ class Context(commands.Context):
 		in_response_to_text = "In response to"
 		if "author_name" not in kwargs and "author_icon_url" not in kwargs:
 			kwargs["author_name"] = self.author.display_name
-			kwargs["author_icon_url"] = self.author.avatar.url
+			kwargs["author_icon_url"] = self.author.display_avatar.url
 		else:
 			in_response_to_text += f" {self.author} ({self.author.id})"
 		if in_response_to:
