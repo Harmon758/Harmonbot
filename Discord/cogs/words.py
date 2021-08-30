@@ -9,6 +9,7 @@ import spellchecker
 
 from utilities import checks
 from utilities.menu import Menu
+from utilities.paginator import ButtonPaginator
 
 def setup(bot):
 	bot.add_cog(Words())
@@ -56,33 +57,19 @@ class Words(commands.Cog):
 				return
 			raise
 		
-		for definition in definitions:
-			if definition.text:
-				await ctx.embed_reply(
-					title = definition.word,
-					description = BeautifulSoup(definition.text, "html.parser").get_text(),
-					footer_text = definition.attributionText
-				)
-				return
+		definitions = [
+			definition for definition in definitions if definition.text
+		]
 		
-		await ctx.embed_reply(f"{ctx.bot.error_emoji} Definition not found")
-	
-	@define.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	async def define_menu(self, ctx, word : str):
-		'''Definitions menu'''
-		try:
-			definitions = ctx.bot.wordnik_word_api.getDefinitions(word)  # useCanonical = True ?
-		except urllib.error.HTTPError as e:
-			if e.code == 404:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Not found")
-			raise
-		definitions = [definition for definition in definitions if definition.text]
 		if not definitions:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Definition not found")
-		menu = DefineMenu(definitions)
-		self.menus.append(menu)
-		await menu.start(ctx, wait = True)
-		self.menus.remove(menu)
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Definition not found"
+			)
+		
+		paginator = ButtonPaginator(ctx, DefineSource(definitions))
+		await paginator.start()
+		
+		# TODO: Stop pagination on restart / peristence
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	async def pronunciation(self, ctx, word : str):
@@ -231,24 +218,14 @@ class DefineSource(menus.ListPageSource):
 			"embed": discord.Embed(
 				title = definition.word,
 				description = BeautifulSoup(definition.text, "html.parser").get_text(),
-				color = menu.bot.bot_color
+				color = menu.ctx.bot.bot_color
 			).set_author(
 				name = menu.ctx.author.display_name,
 				icon_url = menu.ctx.author.display_avatar.url
 			).set_footer(
-				text = f"{definition.attributionText} (Definition {menu.current_page + 1} of {self.get_max_pages()})"
+				text = definition.attributionText
 			)
 		}
-
-class DefineMenu(Menu, menus.MenuPages):
-	
-	def __init__(self, definitions):
-		super().__init__(DefineSource(definitions), timeout = None, clear_reactions_after = True, check_embeds = True)
-	
-	async def send_initial_message(self, ctx, channel):
-		message = await super().send_initial_message(ctx, channel)
-		await ctx.bot.attempt_delete_message(ctx.message)
-		return message
 
 class UrbanDictionarySource(menus.ListPageSource):
 	
