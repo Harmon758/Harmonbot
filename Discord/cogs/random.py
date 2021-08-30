@@ -489,10 +489,12 @@ class Random(commands.Cog):
 		# TODO: separate message quoting
 		# TODO: other options to quote by?
 		if message:
-			return await ctx.embed_reply(message.content, 
-											author_name = message.author.display_name, 
-											author_icon_url = message.author.display_avatar.url, 
-											footer_text = "Sent", timestamp = message.created_at)
+			return await ctx.embed_reply(
+				message.content,
+				author_name = message.author.display_name,
+				author_icon_url = message.author.display_avatar.url,
+				footer_text = "Sent", timestamp = message.created_at
+			)
 		url = "http://api.forismatic.com/api/1.0/"
 		params = {"method": "getQuote", "format": "json", "lang": "en"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
@@ -502,7 +504,9 @@ class Random(commands.Cog):
 				# Handle invalid JSON - escaped single quotes
 				data = await resp.text()
 				data = json.loads(data.replace("\\'", "'"))
-		await ctx.embed_reply(data["quoteText"], footer_text = data["quoteAuthor"])  # quoteLink?
+		await ctx.embed_reply(
+			data["quoteText"], footer_text = data["quoteAuthor"]
+		)  # quoteLink?
 	
 	@commands.command()
 	async def word(self, ctx):
