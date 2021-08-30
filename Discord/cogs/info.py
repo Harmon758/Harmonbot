@@ -249,8 +249,8 @@ class Info(commands.Cog):
 		fetched_user = await ctx.bot.fetch_user(user.id)
 		
 		await ctx.embed_reply(
-			title = title, title_url = user.avatar.url,
-			thumbnail_url = user.avatar.url,
+			title = title, title_url = user.display_avatar.url,
+			thumbnail_url = user.display_avatar.url,
 			description = description,
 			fields = fields,
 			image_url = fetched_user.banner.url if fetched_user.banner else discord.Embed.Empty,
