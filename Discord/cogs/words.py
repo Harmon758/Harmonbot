@@ -237,7 +237,8 @@ class UrbanDictionarySource(menus.ListPageSource):
 			).add_field(
 				name = "Example",
 				value = f"{definition['example']}\n\n"
-						f"\N{THUMBS UP SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
+						f"\N{THUMBS UP SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_up']}"
+						" | "
 						f"\N{THUMBS DOWN SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"
 			)
 		}
