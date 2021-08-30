@@ -182,6 +182,7 @@ class Words(commands.Cog):
 	async def urbandictionary(self, ctx, *, term: str):
 		'''Urban Dictionary'''
 		# TODO: Convert to define/dictionary subcommand urban and add urband etc. as command aliases
+		
 		url = "http://api.urbandictionary.com/v0/define"
 		params = {"term": term}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
@@ -193,34 +194,10 @@ class Words(commands.Cog):
 			)
 			return
 		
-		definition = definitions[0]
-		await ctx.embed_reply(
-			title = definition["word"], title_url = definition["permalink"],
-			description = definition["definition"],
-			fields = (
-				(
-					"Example",
-					f"{definition['example']}\n\n"
-					f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
-					f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"
-				),
-			)
-		)
-		# TODO: Check description/definition length?
-	
-	@urbandictionary.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	async def urbandictionary_menu(self, ctx, *, term: str):
-		'''Urban Dictionary menu'''
-		url = "http://api.urbandictionary.com/v0/define"
-		params = {"term": term}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if not (definitions := data.get("list")):
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
-		menu = UrbanDictionaryMenu(definitions)
-		self.menus.append(menu)
-		await menu.start(ctx, wait = True)
-		self.menus.remove(menu)
+		paginator = ButtonPaginator(ctx, UrbanDictionarySource(definitions))
+		await paginator.start()
+		
+		# TODO: Stop pagination on restart / peristence
 
 class DefineSource(menus.ListPageSource):
 	
@@ -253,25 +230,16 @@ class UrbanDictionarySource(menus.ListPageSource):
 			"embed": discord.Embed(
 				title = definition["word"], url = definition["permalink"],
 				description = definition["definition"],
-				color = menu.bot.bot_color
+				color = menu.ctx.bot.bot_color
+			).set_author(
+				name = menu.ctx.author.display_name,
+				icon_url = menu.ctx.author.display_avatar.url
 			).add_field(
 				name = "Example",
 				value = f"{definition['example']}\n\n"
 						f"\N{THUMBS UP SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
 						f"\N{THUMBS DOWN SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"
-			).set_footer(
-				text = f"Definition {menu.current_page + 1} of {self.get_max_pages()}"
 			)
 		}
 		# TODO: Check description/definition length?
-
-class UrbanDictionaryMenu(Menu, menus.MenuPages):
-	
-	def __init__(self, definitions):
-		super().__init__(UrbanDictionarySource(definitions), timeout = None, clear_reactions_after = True, check_embeds = True)
-	
-	async def send_initial_message(self, ctx, channel):
-		message = await super().send_initial_message(ctx, channel)
-		await ctx.bot.attempt_delete_message(ctx.message)
-		return message
 
