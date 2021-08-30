@@ -450,19 +450,13 @@ class Meta(commands.Cog):
 		'''My avatar'''
 		if not filename:
 			return await ctx.embed_reply(title = "My avatar", image_url = ctx.me.display_avatar.url)
-		try:
-			is_owner = await commands.is_owner().predicate(ctx)
-		except commands.NotOwner:
-			is_owner = False
-		if is_owner:
-			if not os.path.isfile(f"{self.bot.data_path}/avatars/{filename}"):
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Avatar not found")
-				return
-			with open(f"{self.bot.data_path}/avatars/{filename}", "rb") as avatar_file:
-				await self.bot.user.edit(avatar = avatar_file.read())
-			await ctx.embed_reply("Updated avatar")
-		else:
-			raise commands.NotOwner
+		await commands.is_owner().predicate(ctx)  # Raises if not owner
+		if not os.path.isfile(f"{self.bot.data_path}/avatars/{filename}"):
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Avatar not found")
+			return
+		with open(f"{self.bot.data_path}/avatars/{filename}", "rb") as avatar_file:
+			await self.bot.user.edit(avatar = avatar_file.read())
+		await ctx.embed_reply("Updated avatar")
 	
 	@harmonbot.command(name = "nickname")
 	@commands.guild_only()
