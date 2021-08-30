@@ -175,8 +175,10 @@ class Words(commands.Cog):
 			footer_text = f"Detected Language Code: {data['detected']['lang']} | " + footer_text
 		await ctx.embed_reply(data["text"][0], footer_text = footer_text)
 	
-	@commands.group(aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"], 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def urbandictionary(self, ctx, *, term: str):
 		'''Urban Dictionary'''
 		# TODO: Convert to define/dictionary subcommand urban and add urband etc. as command aliases
@@ -184,13 +186,26 @@ class Words(commands.Cog):
 		params = {"term": term}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		
 		if not (definitions := data.get("list")):
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} No results found"
+			)
+			return
+		
 		definition = definitions[0]
-		await ctx.embed_reply(definition["definition"], title = definition["word"], title_url = definition["permalink"], 
-								fields = (("Example", f"{definition['example']}\n\n"
-														f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
-														f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"),))
+		await ctx.embed_reply(
+			title = definition["word"], title_url = definition["permalink"],
+			description = definition["definition"],
+			fields = (
+				(
+					"Example",
+					f"{definition['example']}\n\n"
+					f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
+					f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"
+				),
+			)
+		)
 		# TODO: Check description/definition length?
 	
 	@urbandictionary.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
