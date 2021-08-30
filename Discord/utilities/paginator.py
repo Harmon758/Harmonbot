@@ -69,7 +69,12 @@ class ButtonPaginator(discord.ui.View):
         emoji = '\N{OCTAGONAL SIGN}'
     )
     async def stop_button(self, button, interaction):
-        await interaction.response.edit_message(view = None)
+        self.start_button.disabled = True
+        self.previous_button.disabled = True
+        self.next_button.disabled = True
+        self.end_button.disabled = True
+        self.remove_item(self.stop_button)
+        await interaction.response.edit_message(view = self)
         self.stop()
 
     async def interaction_check(self, interaction):
