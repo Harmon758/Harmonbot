@@ -449,7 +449,7 @@ class Meta(commands.Cog):
 	async def harmonbot_avatar(self, ctx, filename : str = ""):
 		'''My avatar'''
 		if not filename:
-			return await ctx.embed_reply(title = "My avatar", image_url = ctx.me.avatar.url)
+			return await ctx.embed_reply(title = "My avatar", image_url = ctx.me.display_avatar.url)
 		try:
 			is_owner = await commands.is_owner().predicate(ctx)
 		except commands.NotOwner:
