@@ -226,12 +226,19 @@ class DefineSource(menus.ListPageSource):
 		super().__init__(definitions, per_page = 1)
 	
 	async def format_page(self, menu, definition):
-		embed = discord.Embed(title = definition.word, 
-								description = BeautifulSoup(definition.text, "html.parser").get_text(), 
-								color = menu.bot.bot_color)
-		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.display_avatar.url)
-		embed.set_footer(text = f"{definition.attributionText} (Definition {menu.current_page + 1} of {self.get_max_pages()})")
-		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
+		return {
+			"content": f"In response to: `{menu.ctx.message.clean_content}`",
+			"embed": discord.Embed(
+				title = definition.word,
+				description = BeautifulSoup(definition.text, "html.parser").get_text(),
+				color = menu.bot.bot_color
+			).set_author(
+				name = menu.ctx.author.display_name,
+				icon_url = menu.ctx.author.display_avatar.url
+			).set_footer(
+				text = f"{definition.attributionText} (Definition {menu.current_page + 1} of {self.get_max_pages()})"
+			)
+		}
 
 class DefineMenu(Menu, menus.MenuPages):
 	
