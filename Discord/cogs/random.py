@@ -484,7 +484,7 @@ class Random(commands.Cog):
 		await ctx.embed_reply("{}?".format(random.choice(questions).capitalize()))
 	
 	@commands.command()
-	async def quote(self, ctx, message: discord.Message = None):
+	async def quote(self, ctx, message: Optional[discord.Message]):
 		'''Random quote or quote a message'''
 		# TODO: separate message quoting
 		# TODO: other options to quote by?
