@@ -248,15 +248,22 @@ class UrbanDictionarySource(menus.ListPageSource):
 		super().__init__(definitions, per_page = 1)
 	
 	async def format_page(self, menu, definition):
-		embed = discord.Embed(title = definition["word"], url = definition["permalink"], 
-								description = definition["definition"], 
-								color = menu.bot.bot_color)
+		return {
+			"content": f"In response to: `{menu.ctx.message.clean_content}`",
+			"embed": discord.Embed(
+				title = definition["word"], url = definition["permalink"],
+				description = definition["definition"],
+				color = menu.bot.bot_color
+			).add_field(
+				name = "Example",
+				value = f"{definition['example']}\n\n"
+						f"\N{THUMBS UP SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
+						f"\N{THUMBS DOWN SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"
+			).set_footer(
+				text = f"Definition {menu.current_page + 1} of {self.get_max_pages()}"
+			)
+		}
 		# TODO: Check description/definition length?
-		embed.add_field(name = "Example", value = f"{definition['example']}\n\n"
-													f"\N{THUMBS UP SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_up']} "
-													f"\N{THUMBS DOWN SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_down']}")
-		embed.set_footer(text = f"Definition {menu.current_page + 1} of {self.get_max_pages()}")
-		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
 
 class UrbanDictionaryMenu(Menu, menus.MenuPages):
 	
