@@ -60,8 +60,7 @@ class Words(commands.Cog):
 		
 		paginator = ButtonPaginator(ctx, DefineSource(definitions))
 		await paginator.start()
-		
-		# TODO: Stop pagination on restart / peristence
+		ctx.bot.views.append(paginator)
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	async def pronunciation(self, ctx, word : str):
@@ -188,8 +187,7 @@ class Words(commands.Cog):
 		
 		paginator = ButtonPaginator(ctx, UrbanDictionarySource(definitions))
 		await paginator.start()
-		
-		# TODO: Stop pagination on restart / peristence
+		ctx.bot.views.append(paginator)
 
 class DefineSource(menus.ListPageSource):
 	

@@ -135,6 +135,7 @@ class Bot(commands.Bot):
 		self.online_time = datetime.datetime.now(datetime.timezone.utc)
 		self.session_commands_invoked = {}
 		self.socket_events = {}
+		self.views = []
 		
 		# Credentials
 		for credential in ("BATTLE_NET_API_KEY", "BATTLERITE_API_KEY", "CLARIFAI_API_KEY", "CLEVERBOT_API_KEY", 
@@ -955,6 +956,10 @@ class Bot(commands.Bot):
 						""", 
 						voice_client.channel.id, player.text_channel.id
 					)
+		# Stop views
+		for view in self.views:
+			await view.stop()
+		# TODO: Move to shutdown tasks?
 	
 	async def shutdown_tasks(self):
 		# Save uptime

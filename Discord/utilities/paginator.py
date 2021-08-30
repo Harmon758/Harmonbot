@@ -12,6 +12,8 @@ class ButtonPaginator(discord.ui.View):
         self.ctx = ctx
         self.source = source
 
+        self.message = None
+
         if source.is_paginating():
             self.end_button.label = self.source.get_max_pages()
         else:
@@ -69,13 +71,7 @@ class ButtonPaginator(discord.ui.View):
         emoji = '\N{OCTAGONAL SIGN}'
     )
     async def stop_button(self, button, interaction):
-        self.start_button.disabled = True
-        self.previous_button.disabled = True
-        self.next_button.disabled = True
-        self.end_button.disabled = True
-        self.remove_item(self.stop_button)
-        await interaction.response.edit_message(view = self)
-        self.stop()
+        await self.stop(interaction = interaction)
 
     async def interaction_check(self, interaction):
         if interaction.user.id not in (
@@ -99,7 +95,7 @@ class ButtonPaginator(discord.ui.View):
         self.current_button.label = 1
         self.previous_button.disabled = True
 
-        await self.ctx.send(**kwargs, view = self)
+        self.message = await self.ctx.send(**kwargs, view = self)
         await self.ctx.bot.attempt_delete_message(self.ctx.message)
 
     async def show_page(self, interaction, page_number):
@@ -116,6 +112,18 @@ class ButtonPaginator(discord.ui.View):
         )
 
         await interaction.response.edit_message(**kwargs, view = self)
+
+    async def stop(self, interaction = None):
+        self.start_button.disabled = True
+        self.previous_button.disabled = True
+        self.next_button.disabled = True
+        self.end_button.disabled = True
+        self.remove_item(self.stop_button)
+        if interaction:
+            await interaction.response.edit_message(view = self)
+        elif self.message:
+            await self.message.edit(view = self)
+        super().stop()
 
 
 class Paginator(commands.Paginator):
