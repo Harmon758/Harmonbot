@@ -491,7 +491,7 @@ class Random(commands.Cog):
 		if message:
 			return await ctx.embed_reply(message.content, 
 											author_name = message.author.display_name, 
-											author_icon_url = message.author.avatar.url, 
+											author_icon_url = message.author.display_avatar.url, 
 											footer_text = "Sent", timestamp = message.created_at)
 		url = "http://api.forismatic.com/api/1.0/"
 		params = {"method": "getQuote", "format": "json", "lang": "en"}
