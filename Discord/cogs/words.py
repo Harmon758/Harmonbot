@@ -39,20 +39,32 @@ class Words(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or antonyms not found")
 		await ctx.embed_reply(", ".join(antonyms[0].words), title = f"Antonyms of {word.capitalize()}")
 	
-	@commands.group(aliases = ["definition", "definitions", "dictionary"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		aliases = ["definition", "definitions", "dictionary"],
+		case_insensitive = True, invoke_without_command = True,
+	)
 	async def define(self, ctx, word: str):
 		'''Define a word'''
 		try:
-			definitions = ctx.bot.wordnik_word_api.getDefinitions(word)  # useCanonical = True ?
+			definitions = ctx.bot.wordnik_word_api.getDefinitions(word)
+			# useCanonical = True ?
 		except urllib.error.HTTPError as e:
 			if e.code in (404, 429):
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e.reason}")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: {e.reason}"
+				)
+				return
 			raise
+		
 		for definition in definitions:
 			if definition.text:
-				return await ctx.embed_reply(BeautifulSoup(definition.text, "html.parser").get_text(), 
-												title = definition.word, 
-												footer_text = definition.attributionText)
+				await ctx.embed_reply(
+					title = definition.word,
+					description = BeautifulSoup(definition.text, "html.parser").get_text(),
+					footer_text = definition.attributionText
+				)
+				return
+		
 		await ctx.embed_reply(f"{ctx.bot.error_emoji} Definition not found")
 	
 	@define.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
