@@ -446,7 +446,7 @@ class Meta(commands.Cog):
 	
 	@harmonbot.command(name = "avatar")
 	@checks.not_forbidden()
-	async def harmonbot_avatar(self, ctx, filename : str = ""):
+	async def harmonbot_avatar(self, ctx, filename: str = ""):
 		'''My avatar'''
 		if not filename:
 			await ctx.embed_reply(
@@ -457,6 +457,7 @@ class Meta(commands.Cog):
 		
 		await commands.is_owner().predicate(ctx)  # Raises if not owner
 		
+		# TODO: Change avatar by file upload?
 		if not os.path.isfile(f"{self.bot.data_path}/avatars/{filename}"):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Avatar not found")
 			return
