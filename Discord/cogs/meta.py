@@ -207,11 +207,11 @@ class Meta(commands.Cog):
 		))
 		
 		await ctx.embed_reply(
-			author_icon_url = ctx.bot.user.avatar.url,
+			author_icon_url = ctx.bot.user.display_avatar.url,
 			author_name = f"Harmonbot (Discord ID: {ctx.bot.user.id})",
 			title = "About Me",
 			fields = fields,
-			footer_icon_url = owner.avatar.url,
+			footer_icon_url = owner.display_avatar.url,
 			footer_text = f"Developer/Owner: {owner} (Discord ID: {owner.id})",
 			view = view
 		)
