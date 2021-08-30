@@ -5,6 +5,8 @@ from discord.ext import commands
 
 class ButtonPaginator(discord.ui.View):
 
+    # TODO: Track pages paginated
+
     def __init__(self, ctx, source):
         super().__init__(timeout = None)
         self.ctx = ctx

@@ -8,20 +8,12 @@ from bs4 import BeautifulSoup
 import spellchecker
 
 from utilities import checks
-from utilities.menu import Menu
 from utilities.paginator import ButtonPaginator
 
 def setup(bot):
 	bot.add_cog(Words())
 
 class Words(commands.Cog):
-	
-	def __init__(self):
-		self.menus = []
-	
-	def cog_unload(self):
-		for menu in self.menus:
-			menu.stop()
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
