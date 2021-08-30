@@ -13,6 +13,7 @@ import random
 import subprocess
 import sys
 import traceback
+from typing import Optional
 
 import chess.engine
 import git
@@ -446,7 +447,7 @@ class Meta(commands.Cog):
 	
 	@harmonbot.command(name = "avatar")
 	@checks.not_forbidden()
-	async def harmonbot_avatar(self, ctx, filename: str = ""):
+	async def harmonbot_avatar(self, ctx, filename: Optional[str]):
 		'''My avatar'''
 		if not filename:
 			await ctx.embed_reply(
