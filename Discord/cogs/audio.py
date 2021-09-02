@@ -551,7 +551,10 @@ class Audio(commands.Cog):
 	async def queue(self, ctx):
 		'''See the current queue'''
 		embed = self.players[ctx.guild.id].queue_embed()
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.display_avatar.url)
+		embed.set_author(
+			name = ctx.author.display_name,
+			icon_url = ctx.author.display_avatar.url
+		)
 		await ctx.send(embed = embed)
 		await self.bot.attempt_delete_message(ctx.message)
 	
