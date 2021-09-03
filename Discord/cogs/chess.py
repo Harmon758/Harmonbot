@@ -364,7 +364,7 @@ class ChessMatchView(discord.ui.View):
 	async def fen(self, button, interaction):
 		embed = discord.Embed(color = self.bot.bot_color)
 		embed.set_author(
-			icon_url = interaction.user.avatar.url,
+			icon_url = interaction.user.display_avatar.url,
 			name = interaction.user.display_name
 		)
 		embed.title = "FEN"
