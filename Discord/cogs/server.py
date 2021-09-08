@@ -66,8 +66,11 @@ class Server(commands.Cog):
 		'''The owner of the server'''
 		if not (guild_owner := ctx.guild.owner):
 			guild_owner = await ctx.guild.fetch_member(ctx.guild.owner_id)
-		await ctx.embed_reply(f"The owner of this server is {guild_owner.mention}", 
-								footer_text = str(guild_owner), footer_icon_url = guild_owner.display_avatar.url)
+		await ctx.embed_reply(
+			f"The owner of this server is {guild_owner.mention}",
+			footer_text = str(guild_owner),
+			footer_icon_url = guild_owner.display_avatar.url
+		)
 	
 	@server.command()
 	@commands.guild_only()
