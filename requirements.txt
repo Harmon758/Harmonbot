@@ -94,7 +94,7 @@ soupsieve==2.2.1
 tornado==6.1
 typing-extensions==3.10.0.0
 tzlocal==2.1
-websockets==9.1
+websockets==10.0
 xmltodict==0.12.0
 yarl==1.6.3
 
