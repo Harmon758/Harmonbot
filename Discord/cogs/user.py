@@ -49,9 +49,15 @@ class User(commands.Cog):
 		Your own or someone else's avatar
 		'''
 		if not user:
-			await ctx.embed_reply(title = "Your avatar", image_url = ctx.author.display_avatar.url)
+			await ctx.embed_reply(
+				title = "Your avatar",
+				image_url = ctx.author.display_avatar.url
+			)
 		else:
-			await ctx.embed_reply(title = f"{user}'s avatar", image_url = user.display_avatar.url)
+			await ctx.embed_reply(
+				title = f"{user}'s avatar",
+				image_url = user.display_avatar.url
+			)
 	
 	@commands.command()
 	@checks.not_forbidden()
