@@ -116,7 +116,7 @@ class HelpCommand(commands.HelpCommand):
 		
 		if len(embeds) == 1:
 			await ctx.channel.send(embed = embeds[0].set_author(name = ctx.author.display_name, 
-																icon_url = ctx.author.avatar.url))
+																icon_url = ctx.author.display_avatar.url))
 		else:
 			for embed in embeds:
 				await ctx.whisper(embed = embed)
