@@ -70,7 +70,7 @@ class User(commands.Cog):
 			await ctx.embed_reply(f"Your discriminator: #{ctx.author.discriminator}")
 		else:
 			await ctx.embed_reply(f"{user.mention}'s discriminator: #{user.discriminator}", 
-									footer_text = str(user), footer_icon_url = user.avatar.url)
+									footer_text = str(user), footer_icon_url = user.display_avatar.url)
 	
 	# TODO: Make general ID command with subcommands
 	@commands.command(name = "id")
