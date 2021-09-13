@@ -12,9 +12,9 @@ from units.runescape import get_ge_data, get_item_id, get_monster_data, UnitOutp
 sys.path.pop(0)
 
 def setup(bot):
-	bot.add_cog(Runescape(bot))
+	bot.add_cog(RuneScape(bot))
 
-class Runescape(commands.Cog):
+class RuneScape(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
@@ -24,7 +24,7 @@ class Runescape(commands.Cog):
 	
 	@commands.group(aliases = ["rs"], invoke_without_command = True, case_insensitive = True)
 	async def runescape(self, ctx):
-		'''Runescape'''
+		'''RuneScape'''
 		await ctx.send_help(ctx.command)
 	
 	@runescape.command(aliases = ["grandexchange", "grand_exchange"])
