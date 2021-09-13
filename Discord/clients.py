@@ -578,6 +578,20 @@ class Bot(commands.Bot):
 		# TODO: Track guild names
 	
 	async def on_guild_remove(self, guild):
+		# Despite what the discord.py documentation says, this can be
+		# dispatched with `guild` being unavailable, because GUILD_DELETE
+		# events can be received with no corresponding GUILD_CREATE for guilds
+		# in the READY event list.
+		# discord.py dispatches these to `on_guild_remove` instead of
+		# `on_guild_unavailable` because `unavailable` is not set in the 
+		# GUILD_DELEETE data. According to Danny, Discord says this is
+		# "intended" even though their API documentation indicates otherwise.
+		# https://discord.com/channels/336642139381301249/886973276541304832/887021755535863899
+		# https://discord.com/developers/docs/topics/gateway#guild-delete
+		# Possibly related: https://github.com/discord/discord-api-docs/issues/2850
+		if guild.unavailable:
+			self.print(f"Unavailable guild in on_guild_remove: {guild.id}")
+			return
 		self.loop.create_task(self.update_all_listing_stats(), name = "Update all bot listing stats")
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id) or await self.fetch_user(self.owner_id)
 		guild_owner = guild.owner or await self.fetch_user(guild.owner_id)
