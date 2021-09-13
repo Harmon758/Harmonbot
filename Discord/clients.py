@@ -584,7 +584,7 @@ class Bot(commands.Bot):
 		# in the READY event list.
 		# discord.py dispatches these to `on_guild_remove` instead of
 		# `on_guild_unavailable` because `unavailable` is not set in the
-		# GUILD_DELEETE data. According to Danny, Discord says this is
+		# GUILD_DELETE data. According to Danny, Discord says this is
 		# "intended" even though their API documentation indicates otherwise.
 		# https://discord.com/channels/336642139381301249/886973276541304832/887021755535863899
 		# https://discord.com/developers/docs/topics/gateway#guild-delete
