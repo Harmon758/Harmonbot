@@ -313,14 +313,11 @@ class Discord(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def timestamp(self, ctx, ID: Union[int, discord.Message]):
+	async def timestamp(self, ctx, ID: Union[discord.Message, discord.Object]):
 		'''Timestamp of a Discord ID or message'''
-		if isinstance(ID, discord.Message):
+		if isinstance(ID, (discord.Message, discord.Object)):
 			ID = ID.id
-		try:
-			await ctx.embed_reply(discord.utils.snowflake_time(ID).replace(tzinfo = datetime.timezone.utc))
-		except OverflowError:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Invalid Discord ID")
+		await ctx.embed_reply(discord.utils.snowflake_time(ID).replace(tzinfo = datetime.timezone.utc))
 	
 	@commands.command()
 	@commands.guild_only()
