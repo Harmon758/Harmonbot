@@ -7,6 +7,8 @@ import datetime
 import time
 from typing import Optional, Union
 
+from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
+
 from modules import conversions
 from utilities import checks
 
@@ -25,6 +27,10 @@ class Discord(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		
+		self.calendar = Calendar(version = VERSION_CONTEXT_STYLE)
+		# Add mo as valid abbreviation for month
+		self.calendar.ptc.units["months"].append("mo")
 		
 		def activity_wrapper(activity):
 			async def activity_command(
@@ -313,15 +319,56 @@ class Discord(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def timestamp(self, ctx, ID: Union[discord.Message, discord.Object]):
-		'''Timestamp of a Discord ID or message'''
-		if isinstance(ID, (discord.Message, discord.Object)):
+	async def timestamp(
+		self, ctx, ID: Optional[Union[discord.Message, discord.Object]],
+		*, time: Optional[str]
+	):
+		'''
+		Timestamp of a Discord ID or message or formatted markdown for a time
+		'''
+		if ID:
 			ID = ID.id
-		time = discord.utils.snowflake_time(ID).replace(
-			tzinfo = datetime.timezone.utc
-		)
+			time = discord.utils.snowflake_time(ID).replace(
+				tzinfo = datetime.timezone.utc
+			)
+			await ctx.embed_reply(
+				f"{discord.utils.format_dt(time)}\n{time}"
+			)
+			return
+		
+		if time:
+			time = time.replace("from now", "")
+			now = datetime.datetime.now(datetime.timezone.utc)
+			if not (matches := self.calendar.nlp(time, sourceTime = now)):
+				raise commands.BadArgument("Invalid time")
+			parsed_datetime, context, start_pos, end_pos, matched_text = matches[0]
+			if not context.hasTime:
+				parsed_datetime = parsed_datetime.replace(
+					hour = now.hour, minute = now.minute, 
+					second = now.second, microsecond = now.microsecond
+				)
+			time = parsed_datetime.replace(
+				tzinfo = datetime.timezone.utc
+			)
+		else:
+			time = datetime.datetime.now(datetime.timezone.utc)
+		
+		t = discord.utils.format_dt(time, style = 't')
+		T = discord.utils.format_dt(time, style = 'T')
+		d = discord.utils.format_dt(time, style = 'd')
+		D = discord.utils.format_dt(time, style = 'D')
+		f = discord.utils.format_dt(time, style = 'f')
+		F = discord.utils.format_dt(time, style = 'F')
+		R = discord.utils.format_dt(time, style = 'R')
 		await ctx.embed_reply(
-			f"{discord.utils.format_dt(time)}\n{time}"
+			f"Epoch/POSIX: {time.timestamp()}\n"
+			f"{t} (`{t}`)\n"
+			f"{T} (`{T}`)\n"
+			f"{d} (`{d}`)\n"
+			f"{D} (`{D}`)\n"
+			f"{f} (`{f}`, `{discord.utils.format_dt(time)}`)\n"
+			f"{F} (`{F}`)\n"
+			f"{R} (`{R}`)"
 		)
 	
 	@commands.command()
