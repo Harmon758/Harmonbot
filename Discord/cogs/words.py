@@ -150,20 +150,35 @@ class Words(commands.Cog):
 		'''
 		await self.process_translate(ctx, text, language_code)
 	
-	async def process_translate(self, ctx, text, to_language_code, from_language_code = None):
+	async def process_translate(
+		self, ctx, text, to_language_code, from_language_code = None
+	):
 		url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
-		params = {"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, 
-					"lang": to_language_code if not from_language_code else f"{from_language_code}-{to_language_code}", 
-					"text": text, "options": 1}
+		params = {
+			"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, 
+			"lang": (
+				to_language_code if not from_language_code
+				else f"{from_language_code}-{to_language_code}"
+			), 
+			"text": text, "options": 1
+		}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:  # Bad Request
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+				return
 			data = await resp.json()
+		
 		if data["code"] != 200:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
-		footer_text = "Powered by Yandex.Translate"
-		if not from_language_code:
-			footer_text = f"Detected Language Code: {data['detected']['lang']} | " + footer_text
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['message']}"
+			)
+			return
+		
+		if from_language_code:
+			footer_text = ""
+		else:
+			footer_text = f"Detected Language Code: {data['detected']['lang']} | "
+		footer_text += "Powered by Yandex.Translate"
 		await ctx.embed_reply(data["text"][0], footer_text = footer_text)
 	
 	@commands.group(
