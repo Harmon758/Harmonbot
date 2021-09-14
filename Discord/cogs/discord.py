@@ -317,10 +317,11 @@ class Discord(commands.Cog):
 		'''Timestamp of a Discord ID or message'''
 		if isinstance(ID, (discord.Message, discord.Object)):
 			ID = ID.id
+		time = discord.utils.snowflake_time(ID).replace(
+			tzinfo = datetime.timezone.utc
+		)
 		await ctx.embed_reply(
-			discord.utils.snowflake_time(ID).replace(
-				tzinfo = datetime.timezone.utc
-			)
+			f"{discord.utils.format_dt(time)}\n{time}"
 		)
 	
 	@commands.command()
