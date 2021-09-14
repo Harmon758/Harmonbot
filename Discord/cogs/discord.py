@@ -335,6 +335,23 @@ class Discord(commands.Cog):
 				f"{discord.utils.format_dt(time)}\n{time}"
 			)
 			return
+		elif ctx.message.reference:
+			ID = ctx.message.reference.message_id
+			time = discord.utils.snowflake_time(ID).replace(
+				tzinfo = datetime.timezone.utc
+			)
+			referenced_message = (
+				ctx.message.reference.cached_message or
+				await ctx.channel.fetch_message(ID)
+			)
+			await ctx.embed_reply(
+				f"{discord.utils.format_dt(time)}\n{time}",
+				reference = ctx.message.reference,
+				mention_author = (
+					referenced_message.author in ctx.message.mentions
+				)
+			)
+			return
 		
 		if time:
 			time = time.replace("from now", "")
