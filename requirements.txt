@@ -101,7 +101,7 @@ smmap==4.0.0
 sortedcontainers==2.4.0
 soupsieve==2.2.1
 tornado==6.1
-typing-extensions==3.10.0.0
+typing-extensions==3.10.0.2
 tzlocal==2.1
 websockets==10.0
 xmltodict==0.12.0
