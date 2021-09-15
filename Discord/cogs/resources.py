@@ -246,25 +246,36 @@ class Resources(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['message']}"
+			)
+			return
 		'''
-		paginator = commands.formatter.Paginator(prefix = ctx.author.display_name + ':', suffix = "")
+		paginator = commands.formatter.Paginator(
+			prefix = ctx.author.display_name + ':', suffix = ""
+		)
 		for article in data["articles"]:
-			paginator.add_line(f"**{article['title']}** ({article['publishedAt'].replace('T', ' ').replace('Z', '')})")
+			paginator.add_line(
+				f"**{article['title']}** ({article['publishedAt'].replace('T', ' ').replace('Z', '')})"
+			)
 			paginator.add_line(article["description"])
 			paginator.add_line(f"<{article['url']}>")
 			# output += f"\n{article['urlToImage']}"
 		for page in paginator.pages:
 			await ctx.send(page)
 		'''
-		response = await ctx.reply("React with a number from 1 to 10 to view each news article")
+		response = await ctx.reply(
+			"React with a number from 1 to 10 to view each news article"
+		)
 		numbers = {'\N{KEYCAP TEN}': 10}
 		for number in range(1, 10):
 			numbers[f"{number}\N{COMBINING ENCLOSING KEYCAP}"] = number
 		for number_emote in sorted(numbers.keys()):
 			await response.add_reaction(number_emote)
 		while True:
-			payload = await self.bot.wait_for_raw_reaction_add_or_remove(message = response, user = ctx.author, emoji = numbers.keys())
+			payload = await self.bot.wait_for_raw_reaction_add_or_remove(
+				message = response, user = ctx.author, emoji = numbers.keys()
+			)
 			number = numbers[payload.emoji.name]
 			article = data["articles"][number - 1]
 			output = f"Article {number}:"
@@ -275,7 +286,9 @@ class Resources(commands.Cog):
 			# output += f"\n<{article['url']}>"
 			output += f"\n{article['url']}"
 			output += "\nSelect a different number for another article"
-			await response.edit(content = f"{ctx.author.display_name}: {output}")
+			await response.edit(
+				content = f"{ctx.author.display_name}: {output}"
+			)
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
