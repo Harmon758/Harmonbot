@@ -1,6 +1,6 @@
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, menus
 
 import asyncio
 import datetime
@@ -11,6 +11,7 @@ import unicodedata
 import dateutil
 
 from utilities import checks
+from utilities.paginator import ButtonPaginator
 
 def setup(bot):
 	bot.add_cog(Resources(bot))
@@ -241,54 +242,26 @@ class Resources(commands.Cog):
 		News
 		Powered by NewsAPI.org
 		'''
-		url = "https://newsapi.org/v1/articles"
-		params = {"source": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
+		url = "https://newsapi.org/v2/top-headlines"
+		params = {"sources": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		
 		if data["status"] != "ok":
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Error: {data['message']}"
 			)
 			return
-		'''
-		paginator = commands.formatter.Paginator(
-			prefix = ctx.author.display_name + ':', suffix = ""
-		)
-		for article in data["articles"]:
-			paginator.add_line(
-				f"**{article['title']}** ({article['publishedAt'].replace('T', ' ').replace('Z', '')})"
+		
+		if not data["totalResults"]:
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: No news articles found for that source"
 			)
-			paginator.add_line(article["description"])
-			paginator.add_line(f"<{article['url']}>")
-			# output += f"\n{article['urlToImage']}"
-		for page in paginator.pages:
-			await ctx.send(page)
-		'''
-		response = await ctx.reply(
-			"React with a number from 1 to 10 to view each news article"
-		)
-		numbers = {'\N{KEYCAP TEN}': 10}
-		for number in range(1, 10):
-			numbers[f"{number}\N{COMBINING ENCLOSING KEYCAP}"] = number
-		for number_emote in sorted(numbers.keys()):
-			await response.add_reaction(number_emote)
-		while True:
-			payload = await self.bot.wait_for_raw_reaction_add_or_remove(
-				message = response, user = ctx.author, emoji = numbers.keys()
-			)
-			number = numbers[payload.emoji.name]
-			article = data["articles"][number - 1]
-			output = f"Article {number}:"
-			output += f"\n**{article['title']}**"
-			if article.get("publishedAt"):
-				output += f" ({article.get('publishedAt').replace('T', ' ').replace('Z', '')})"
-			# output += f"\n{article['description']}"
-			# output += f"\n<{article['url']}>"
-			output += f"\n{article['url']}"
-			output += "\nSelect a different number for another article"
-			await response.edit(
-				content = f"{ctx.author.display_name}: {output}"
-			)
+			return
+		
+		paginator = ButtonPaginator(ctx, NewsSource(data["articles"]))
+		await paginator.start()
+		ctx.bot.views.append(paginator)
 	
 	@news.command(name = "sources")
 	@checks.not_forbidden()
@@ -549,4 +522,29 @@ class Resources(commands.Cog):
 			await ctx.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
 		else:
 			await ctx.embed_reply("I don't know what that is")
+
+class NewsSource(menus.ListPageSource):
+	
+	def __init__(self, articles):
+		super().__init__(articles, per_page = 1)
+	
+	async def format_page(self, menu, article):
+		embed = discord.Embed(
+			title = article["title"],
+			url = article["url"],
+			description = article["description"],
+			color = menu.ctx.bot.bot_color
+		)
+		embed.set_author(
+			name = menu.ctx.author.display_name,
+			icon_url = menu.ctx.author.avatar.url
+		)
+		embed.set_image(url = article["urlToImage"])
+		embed.set_footer(text = article['source']['name'])
+		if timestamp := article.get("publishedAt"):
+			embed.timestamp = dateutil.parser.parse(timestamp)
+		return {
+			"content": f"In response to: `{menu.ctx.message.clean_content}`",
+			"embed": embed
+		}
 

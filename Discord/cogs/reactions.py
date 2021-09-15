@@ -4,8 +4,6 @@ from discord.ext import commands, menus
 
 import random
 
-import dateutil.parser
-
 from utilities import checks
 from utilities.menu import Menu
 
@@ -40,48 +38,6 @@ class GuessMenu(Menu):
 			embed.description = ("Guess a number between 1 to 10\n"
 									f"No, it's not {number}")
 		await self.message.edit(embed = embed)
-
-class NewsSource(menus.ListPageSource):
-	
-	def __init__(self, articles):
-		super().__init__(articles, per_page = 1)
-	
-	async def format_page(self, menu, article):
-		embed = discord.Embed(
-			title = article["title"],
-			url = article["url"],
-			description = article["description"],
-			color = menu.bot.bot_color
-		)
-		embed.set_author(
-			name = menu.ctx.author.display_name,
-			icon_url = menu.ctx.author.avatar.url
-		)
-		embed.set_image(url = article["urlToImage"])
-		embed.set_footer(
-			text = f"{article['source']['name']} (Article {menu.current_page + 1} of {self.get_max_pages()})"
-		)
-		if timestamp := article.get("publishedAt"):
-			embed.timestamp = dateutil.parser.parse(timestamp)
-		return {
-			"content": f"In response to: `{menu.ctx.message.clean_content}`",
-			"embed": embed
-		}
-
-class NewsMenu(Menu, menus.MenuPages):
-	
-	def __init__(self, articles):
-		super().__init__(
-			NewsSource(articles),
-			check_embeds = True,
-			clear_reactions_after = True,
-			timeout = None
-		)
-	
-	async def send_initial_message(self, ctx, channel):
-		message = await super().send_initial_message(ctx, channel)
-		await ctx.bot.attempt_delete_message(ctx.message)
-		return message
 
 class PlayingMenu(Menu):
 	
@@ -175,7 +131,6 @@ class Reactions(commands.Cog):
 		self.bot = bot
 		self.reaction_commands = (
 			(self.guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
-			(self.news, "Resources", "news", [], [checks.not_forbidden().predicate]), 
 			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
 			(self.wolframalpha, "Search", "wolframalpha", ["wa", "wolfram_alpha"], [checks.not_forbidden().predicate])
 		)
@@ -202,30 +157,6 @@ class Reactions(commands.Cog):
 	async def guess(self, ctx):
 		'''Guessing game menu'''
 		await GuessMenu().start(ctx)
-	
-	async def news(self, ctx, source: str):
-		'''
-		News menu
-		Powered by NewsAPI.org
-		'''
-		url = "https://newsapi.org/v2/top-headlines"
-		params = {"sources": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		
-		if data["status"] != "ok":
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: {data['message']}"
-			)
-			return
-		
-		if not data["totalResults"]:
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: No news articles found for that source"
-			)
-			return
-		
-		await NewsMenu(data["articles"]).start(ctx)
 	
 	async def playing(self, ctx):
 		'''Audio player'''
