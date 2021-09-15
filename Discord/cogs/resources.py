@@ -259,7 +259,7 @@ class Resources(commands.Cog):
 			)
 			return
 		
-		paginator = ButtonPaginator(ctx, NewsSource(data["articles"]))
+		paginator = NewsButtonPaginator(ctx, NewsSource(data["articles"]))
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 	
@@ -522,6 +522,29 @@ class Resources(commands.Cog):
 			await ctx.embed_reply(data["itemListElement"][0]["result"]["detailedDescription"]["articleBody"])
 		else:
 			await ctx.embed_reply("I don't know what that is")
+
+class NewsButtonPaginator(ButtonPaginator):
+	
+	def __init__(self, ctx, source):
+		super().__init__(ctx, source)
+		if self.children:
+			# Reorder
+			self.remove_item(self.send_article_link)
+			self.remove_item(self.stop_button)
+			self.add_item(self.send_article_link)
+			self.add_item(self.stop_button)
+	
+	@discord.ui.button(
+		label = "Send Article Link", style = discord.ButtonStyle.blurple
+	)
+	async def send_article_link(self, button, interaction):
+		await interaction.response.send_message(
+			f"{interaction.user.mention}: {self.source.entries[self.current_page]['url']}"
+		)
+	
+	async def stop(self, interaction = None):
+		self.send_article_link.disabled = True
+		await super().stop(interaction = interaction)
 
 class NewsSource(menus.ListPageSource):
 	
