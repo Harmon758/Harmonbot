@@ -197,12 +197,14 @@ class Reactions(commands.Cog):
 			data = await resp.json()
 		
 		if data["status"] != "ok":
-			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['message']}"
+			)
 			return
 		
 		if not data["totalResults"]:
 			await ctx.embed_reply(
-				f":no_entry: Error: No news articles found for that source"
+				f"{ctx.bot.error_emoji} Error: No news articles found for that source"
 			)
 			return
 		
