@@ -181,8 +181,21 @@ class Words(commands.Cog):
 		)
 	
 	@translate.command(name = "to")
-	async def translate_to(self, ctx, language_code: str, *, text: str):
+	async def translate_to(self, ctx, language_code: str, *, text: Optional[str]):
 		'''Translate to a specific language'''
+		if not text:
+			if ctx.message.reference:
+				referenced_message = (
+					ctx.message.reference.cached_message or
+					await ctx.channel.fetch_message(
+						ctx.message.reference.message_id
+					)
+				)
+				text = referenced_message.content
+			else:
+				await ctx.send_help(ctx.command)
+				return
+		
 		response = await ctx.bot.google_cloud_translation_service_client.translate_text(
 			contents = [text],
 			mime_type = "text/plain",
@@ -190,9 +203,15 @@ class Words(commands.Cog):
 			target_language_code = language_code
 		)
 		translation = response.translations[0]
+		
 		await ctx.embed_reply(
 			translation.translated_text,
-			footer_text = f"Detected Language Code: {translation.detected_language_code}"
+			footer_text = f"Detected Language Code: {translation.detected_language_code}",
+			reference = ctx.message.reference,
+			mention_author = (
+				referenced_message.author in ctx.message.mentions
+				if ctx.message.reference else None
+			)
 		)
 	
 	@commands.group(
