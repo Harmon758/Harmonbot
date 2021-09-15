@@ -297,13 +297,22 @@ class Resources(commands.Cog):
 		News sources
 		https://newsapi.org/sources
 		'''
-		async with ctx.bot.aiohttp_session.get("https://newsapi.org/v1/sources") as resp:
+		url = "https://newsapi.org/v1/sources"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
+		
 		if data["status"] != "ok":
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+			return
+		
 		# TODO: Show source names, descriptions, URLs, etc.
-		await ctx.embed_reply(", ".join(source["id"] for source in data["sources"]), 
-								title = "News Sources", title_url = "https://newsapi.org/sources")
+		await ctx.embed_reply(
+			title = "News Sources",
+			title_url = "https://newsapi.org/sources",
+			description = ", ".join(
+				source["id"] for source in data["sources"]
+			)
+		)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
