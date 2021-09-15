@@ -115,7 +115,7 @@ class Words(commands.Cog):
 	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
 									"Powered by [Yandex.Translate](http://translate.yandex.com/)", 
 					invoke_without_command = True, case_insensitive = True)
-	async def translate(self, ctx, *, text : str):
+	async def translate(self, ctx, *, text: str):
 		'''Translate to English'''
 		# TODO: From and to language code options?
 		await self.process_translate(ctx, text, "en")
