@@ -71,7 +71,12 @@ class NewsSource(menus.ListPageSource):
 class NewsMenu(Menu, menus.MenuPages):
 	
 	def __init__(self, articles):
-		super().__init__(NewsSource(articles), timeout = None, clear_reactions_after = True, check_embeds = True)
+		super().__init__(
+			NewsSource(articles),
+			check_embeds = True,
+			clear_reactions_after = True,
+			timeout = None
+		)
 	
 	async def send_initial_message(self, ctx, channel):
 		message = await super().send_initial_message(ctx, channel)
