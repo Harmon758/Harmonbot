@@ -20,6 +20,7 @@ from aiohttp import web
 from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import service_pb2_grpc
 import git
+from google.cloud import translate
 import imgurpython
 import inflect
 import pyowm
@@ -146,8 +147,7 @@ class Bot(commands.Bot):
 							"PAGE2IMAGES_REST_API_KEY", "SENTRY_DSN", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET_KEY", 
 							"STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_SECRET", 
 							"TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET", "UNSPLASH_ACCESS_KEY", 
-							"WARGAMING_APPLICATION_ID", "WOLFRAM_ALPHA_APP_ID", "WORDNIK_API_KEY", 
-							"YANDEX_TRANSLATE_API_KEY"):
+							"WARGAMING_APPLICATION_ID", "WOLFRAM_ALPHA_APP_ID", "WORDNIK_API_KEY"):
 			setattr(self, credential.replace('.', '_'), os.getenv(credential))
 		if not self.BATTLE_NET_API_KEY:
 			self.BATTLE_NET_API_KEY = os.getenv("BLIZZARD_API_KEY")
@@ -160,6 +160,9 @@ class Bot(commands.Bot):
 		# External Clients
 		## Clarifai
 		self.clarifai_stub = service_pb2_grpc.V2Stub(ClarifaiChannel.get_grpc_channel())
+		## Google
+		self.google_cloud_translation_service_client = translate.TranslationServiceAsyncClient()
+		self.google_cloud_project_id = "discord-bot-harmonbot"
 		## Imgur
 		try:
 			self.imgur_client = imgurpython.ImgurClient(self.IMGUR_CLIENT_ID, self.IMGUR_CLIENT_SECRET)

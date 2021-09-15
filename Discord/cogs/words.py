@@ -112,91 +112,68 @@ class Words(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or synonyms not found")
 		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
 	
-	@commands.group(description = "[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)\n"
-									"Powered by [Yandex.Translate](http://translate.yandex.com/)", 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def translate(self, ctx, *, text: str):
 		'''Translate to English'''
 		# TODO: From and to language code options?
-		await self.process_translate(ctx, text, "en")
+		response = await ctx.bot.google_cloud_translation_service_client.translate_text(
+			contents = [text],
+			mime_type = "text/plain",
+			parent = f"projects/{ctx.bot.google_cloud_project_id}/locations/global",
+			target_language_code = "en"
+		)
+		translation = response.translations[0]
+		await ctx.embed_reply(
+			translation.translated_text,
+			footer_text = f"Detected Language Code: {translation.detected_language_code}"
+		)
 	
 	@translate.command(name = "from")
 	async def translate_from(
 		self, ctx, from_language_code: str, to_language_code: str, *,
 		text: str
 	):
-		'''
-		Translate from a specific language to another
-		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
-		Powered by [Yandex.Translate](http://translate.yandex.com/)
-		'''
+		'''Translate from a specific language to another'''
 		# TODO: Default to_language_code?
-		await self.process_translate(
-			ctx, text, to_language_code, from_language_code
+		response = await ctx.bot.google_cloud_translation_service_client.translate_text(
+			contents = [text],
+			mime_type = "text/plain",
+			parent = f"projects/{ctx.bot.google_cloud_project_id}/locations/global",
+			source_language_code = from_language_code,
+			target_language_code = to_language_code
 		)
+		await ctx.embed_reply(response.translations[0].translated_text)
 	
 	@translate.command(
 		name = "languages", aliases = ["codes", "language_codes"]
 	)
 	async def translate_languages(self, ctx, language_code: str = "en"):
 		'''Language Codes'''
-		url = "https://translate.yandex.net/api/v1.5/tr.json/getLangs"
-		params = {"ui": language_code, "key": ctx.bot.YANDEX_TRANSLATE_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		
-		if "langs" not in data:
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: Invalid Language Code"
-			)
-			return
-		
+		response = await ctx.bot.google_cloud_translation_service_client.get_supported_languages(
+			display_language_code = language_code,
+			parent = f"projects/{ctx.bot.google_cloud_project_id}/locations/global",
+		)
 		await ctx.embed_reply(
-			", ".join(sorted(
-				f"{language} ({code})"
-				for code, language in data["langs"].items()
-			))
+			", ".join(
+				f"{language.display_name} ({language.language_code})"
+				for language in response.languages
+			)
 		)
 	
 	@translate.command(name = "to")
 	async def translate_to(self, ctx, language_code: str, *, text: str):
-		'''
-		Translate to a specific language
-		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
-		Powered by [Yandex.Translate](http://translate.yandex.com/)
-		'''
-		await self.process_translate(ctx, text, language_code)
-	
-	async def process_translate(
-		self, ctx, text, to_language_code, from_language_code = None
-	):
-		url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
-		params = {
-			"key": ctx.bot.YANDEX_TRANSLATE_API_KEY, 
-			"lang": (
-				to_language_code if not from_language_code
-				else f"{from_language_code}-{to_language_code}"
-			), 
-			"text": text, "options": 1
-		}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			if resp.status == 400:  # Bad Request
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
-				return
-			data = await resp.json()
-		
-		if data["code"] != 200:
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: {data['message']}"
-			)
-			return
-		
-		if from_language_code:
-			footer_text = ""
-		else:
-			footer_text = f"Detected Language Code: {data['detected']['lang']} | "
-		footer_text += "Powered by Yandex.Translate"
-		await ctx.embed_reply(data["text"][0], footer_text = footer_text)
+		'''Translate to a specific language'''
+		response = await ctx.bot.google_cloud_translation_service_client.translate_text(
+			contents = [text],
+			mime_type = "text/plain",
+			parent = f"projects/{ctx.bot.google_cloud_project_id}/locations/global",
+			target_language_code = language_code
+		)
+		translation = response.translations[0]
+		await ctx.embed_reply(
+			translation.translated_text,
+			footer_text = f"Detected Language Code: {translation.detected_language_code}"
+		)
 	
 	@commands.group(
 		aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"],
