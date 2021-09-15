@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands, menus
 
+from typing import Optional
 import urllib.error
 
 from bs4 import BeautifulSoup
@@ -112,10 +113,23 @@ class Words(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or synonyms not found")
 		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def translate(self, ctx, *, text: str):
+	@commands.group(case_insensitive = True, invoke_without_command = True)
+	async def translate(self, ctx, *, text: Optional[str]):
 		'''Translate to English'''
 		# TODO: From and to language code options?
+		if not text:
+			if ctx.message.reference:
+				referenced_message = (
+					ctx.message.reference.cached_message or
+					await ctx.channel.fetch_message(
+						ctx.message.reference.message_id
+					)
+				)
+				text = referenced_message.content
+			else:
+				await ctx.send_help(ctx.command)
+				return
+		
 		response = await ctx.bot.google_cloud_translation_service_client.translate_text(
 			contents = [text],
 			mime_type = "text/plain",
@@ -123,9 +137,15 @@ class Words(commands.Cog):
 			target_language_code = "en"
 		)
 		translation = response.translations[0]
+		
 		await ctx.embed_reply(
 			translation.translated_text,
-			footer_text = f"Detected Language Code: {translation.detected_language_code}"
+			footer_text = f"Detected Language Code: {translation.detected_language_code}",
+			reference = ctx.message.reference,
+			mention_author = (
+				referenced_message.author in ctx.message.mentions
+				if ctx.message.reference else None
+			)
 		)
 	
 	@translate.command(name = "from")
