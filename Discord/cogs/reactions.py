@@ -47,14 +47,26 @@ class NewsSource(menus.ListPageSource):
 		super().__init__(articles, per_page = 1)
 	
 	async def format_page(self, menu, article):
-		embed = discord.Embed(title = article["title"], url = article["url"], 
-								description = article["description"], color = menu.bot.bot_color)
-		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar.url)
+		embed = discord.Embed(
+			title = article["title"],
+			url = article["url"],
+			description = article["description"],
+			color = menu.bot.bot_color
+		)
+		embed.set_author(
+			name = menu.ctx.author.display_name,
+			icon_url = menu.ctx.author.avatar.url
+		)
 		embed.set_image(url = article["urlToImage"])
-		embed.set_footer(text = f"{article['source']['name']} (Article {menu.current_page + 1} of {self.get_max_pages()})")
+		embed.set_footer(
+			text = f"{article['source']['name']} (Article {menu.current_page + 1} of {self.get_max_pages()})"
+		)
 		if timestamp := article.get("publishedAt"):
 			embed.timestamp = dateutil.parser.parse(timestamp)
-		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
+		return {
+			"content": f"In response to: `{menu.ctx.message.clean_content}`",
+			"embed": embed
+		}
 
 class NewsMenu(Menu, menus.MenuPages):
 	
