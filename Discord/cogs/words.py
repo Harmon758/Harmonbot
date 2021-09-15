@@ -135,16 +135,28 @@ class Words(commands.Cog):
 			ctx, text, to_language_code, from_language_code
 		)
 	
-	@translate.command(name = "languages", aliases = ["codes", "language_codes"])
+	@translate.command(
+		name = "languages", aliases = ["codes", "language_codes"]
+	)
 	async def translate_languages(self, ctx, language_code: str = "en"):
 		'''Language Codes'''
 		url = "https://translate.yandex.net/api/v1.5/tr.json/getLangs"
 		params = {"ui": language_code, "key": ctx.bot.YANDEX_TRANSLATE_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		
 		if "langs" not in data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Invalid Language Code")
-		await ctx.embed_reply(", ".join(sorted(f"{language} ({code})" for code, language in data["langs"].items())))
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Invalid Language Code"
+			)
+			return
+		
+		await ctx.embed_reply(
+			", ".join(sorted(
+				f"{language} ({code})"
+				for code, language in data["langs"].items()
+			))
+		)
 	
 	@translate.command(name = "to")
 	async def translate_to(self, ctx, language_code: str, *, text: str):
