@@ -246,7 +246,7 @@ class Resources(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["status"] != "ok":
-			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
 		'''
 		paginator = commands.formatter.Paginator(prefix = ctx.author.display_name + ':', suffix = "")
 		for article in data["articles"]:
