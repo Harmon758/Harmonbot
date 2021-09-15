@@ -131,7 +131,7 @@ class Words(commands.Cog):
 		await self.process_translate(ctx, text, to_language_code, from_language_code)
 	
 	@translate.command(name = "languages", aliases = ["codes", "language_codes"])
-	async def translate_languages(self, ctx, language_code : str = "en"):
+	async def translate_languages(self, ctx, language_code: str = "en"):
 		'''Language Codes'''
 		url = "https://translate.yandex.net/api/v1.5/tr.json/getLangs"
 		params = {"ui": language_code, "key": ctx.bot.YANDEX_TRANSLATE_API_KEY}
