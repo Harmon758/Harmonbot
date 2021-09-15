@@ -121,14 +121,19 @@ class Words(commands.Cog):
 		await self.process_translate(ctx, text, "en")
 	
 	@translate.command(name = "from")
-	async def translate_from(self, ctx, from_language_code: str, to_language_code: str, *, text: str):
+	async def translate_from(
+		self, ctx, from_language_code: str, to_language_code: str, *,
+		text: str
+	):
 		'''
 		Translate from a specific language to another
 		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
 		Powered by [Yandex.Translate](http://translate.yandex.com/)
 		'''
 		# TODO: Default to_language_code?
-		await self.process_translate(ctx, text, to_language_code, from_language_code)
+		await self.process_translate(
+			ctx, text, to_language_code, from_language_code
+		)
 	
 	@translate.command(name = "languages", aliases = ["codes", "language_codes"])
 	async def translate_languages(self, ctx, language_code: str = "en"):
