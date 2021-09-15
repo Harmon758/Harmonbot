@@ -121,7 +121,7 @@ class Words(commands.Cog):
 		await self.process_translate(ctx, text, "en")
 	
 	@translate.command(name = "from")
-	async def translate_from(self, ctx, from_language_code : str, to_language_code : str, *, text : str):
+	async def translate_from(self, ctx, from_language_code: str, to_language_code: str, *, text: str):
 		'''
 		Translate from a specific language to another
 		[Language Codes](https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/#languages)
