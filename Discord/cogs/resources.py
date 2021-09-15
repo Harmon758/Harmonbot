@@ -236,7 +236,7 @@ class Resources(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def news(self, ctx, source : str):
+	async def news(self, ctx, source: str):
 		'''
 		News
 		Powered by NewsAPI.org
