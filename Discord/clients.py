@@ -20,7 +20,8 @@ from aiohttp import web
 from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import service_pb2_grpc
 import git
-from google.cloud import translate
+import google.auth
+import google.cloud.translate
 import imgurpython
 import inflect
 import pyowm
@@ -160,8 +161,13 @@ class Bot(commands.Bot):
 		# External Clients
 		## Clarifai
 		self.clarifai_stub = service_pb2_grpc.V2Stub(ClarifaiChannel.get_grpc_channel())
-		## Google
-		self.google_cloud_translation_service_client = translate.TranslationServiceAsyncClient()
+		## Google Cloud Translation Service
+		try:
+			self.google_cloud_translation_service_client = (
+				google.cloud.translate.TranslationServiceAsyncClient()
+			)
+		except google.auth.exceptions.DefaultCredentialsError as e:
+			self.print(f"Failed to initialize Google Cloud Translation Service Client: {e}")
 		self.google_cloud_project_id = "discord-bot-harmonbot"
 		## Imgur
 		try:
