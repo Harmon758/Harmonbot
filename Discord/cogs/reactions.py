@@ -195,10 +195,17 @@ class Reactions(commands.Cog):
 		params = {"sources": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		
 		if data["status"] != "ok":
-			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+			return
+		
 		if not data["totalResults"]:
-			return await ctx.embed_reply(f":no_entry: Error: No news articles found for that source")
+			await ctx.embed_reply(
+				f":no_entry: Error: No news articles found for that source"
+			)
+			return
+		
 		await NewsMenu(data["articles"]).start(ctx)
 	
 	async def playing(self, ctx):
