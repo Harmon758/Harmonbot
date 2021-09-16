@@ -227,19 +227,22 @@ class Entertainment(commands.Cog):
 								title_url = f"http://www.imdb.com/title/{data['imdbID']}", 
 								fields = fields, thumbnail_url = thumbnail_url)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def xkcd(self, ctx, *, query: Optional[Union[int, str]]):
 		'''See xkcd comics'''
 		if isinstance(query, str):
 			# Query by title
 			url = "https://www.explainxkcd.com/wiki/api.php"
-			params = {"action": "query", "list": "search", "format": "json", 
-						"srsearch": query, "srwhat": "title", "srlimit": "max"}
+			params = {
+				"action": "query", "list": "search", "format": "json", 
+				"srsearch": query, "srwhat": "title", "srlimit": "max"
+			}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				if results := (await resp.json())["query"]["search"]:
 					number = results[0]['title'].split(':')[0]
 					url = f"http://xkcd.com/{number}/info.0.json"
-					return await self.process_xkcd(ctx, url)
+					await self.process_xkcd(ctx, url)
+					return
 			# Query by text
 			params["srwhat"] = "text"
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
@@ -256,8 +259,10 @@ class Entertainment(commands.Cog):
 				for result in exact_results + results:
 					# Parse page sections
 					if (page_id := result["pageid"]) not in sections:
-						params = {"action": "parse", "pageid": page_id, 
-									"prop": "sections", "format": "json"}
+						params = {
+							"action": "parse", "pageid": page_id,
+							"prop": "sections", "format": "json"
+						}
 						async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 							sections[page_id] = (await resp.json())["parse"]["sections"]
 					# Find target section
@@ -268,19 +273,25 @@ class Entertainment(commands.Cog):
 					)
 					if section and section["index"]:
 						# Parse section text
-						params = {"action": "parse", "pageid": page_id, "format": "json", 
-									"prop": "parsetree", "section": section["index"]}
+						params = {
+							"action": "parse", "pageid": page_id,
+							"format": "json", "prop": "parsetree",
+							"section": section["index"]
+						}
 						async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 							section_text = (await resp.json())["parse"]["parsetree"]['*'].lower()
 						# Check for query in section text
 						if query in section_text or all(word in section_text for word in words):
 							number = result['title'].split(':')[0]
 							url = f"http://xkcd.com/{number}/info.0.json"
-							return await self.process_xkcd(ctx, url)
+							await self.process_xkcd(ctx, url)
+							return
 			# Exhausted query results
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Not found")
 		elif query:
-			await self.process_xkcd(ctx, f"http://xkcd.com/{query}/info.0.json")
+			await self.process_xkcd(
+				ctx, f"http://xkcd.com/{query}/info.0.json"
+			)
 		else:
 			await self.process_xkcd(ctx, "http://xkcd.com/info.0.json")
 	
