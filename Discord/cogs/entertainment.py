@@ -333,11 +333,20 @@ class XKCDSource(menus.PageSource):
 			return await resp.json()
 	
 	async def format_page(self, menu, page):
-		embed = discord.Embed(title = page["title"], url = f"http://xkcd.com/{page['num']}", color = menu.bot.bot_color)
-		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar.url)
+		embed = discord.Embed(
+			title = page["title"],
+			url = f"http://xkcd.com/{page['num']}",
+			color = menu.bot.bot_color
+		)
+		embed.set_author(
+			name = menu.ctx.author.display_name,
+			icon_url = menu.ctx.author.avatar.url
+		)
 		embed.set_image(url = page["img"])
 		embed.set_footer(text = page["alt"])
-		embed.timestamp = datetime.datetime(int(page["year"]), int(page["month"]), int(page["day"]))
+		embed.timestamp = datetime.datetime(
+			int(page["year"]), int(page["month"]), int(page["day"])
+		)
 		return embed
 
 class XKCDMenu(Menu, menus.MenuPages):
