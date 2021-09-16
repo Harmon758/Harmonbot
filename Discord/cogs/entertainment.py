@@ -297,7 +297,7 @@ class Entertainment(commands.Cog):
 	async def process_xkcd(self, ctx, url):
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 404:
-				return await ctx.embed_reply(":no_entry: Error: Not found")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Not found")
 			data = await resp.json()
 		await ctx.embed_reply(title = data["title"], title_url = f"http://xkcd.com/{data['num']}", 
 								image_url = data["img"], footer_text = data["alt"], 
