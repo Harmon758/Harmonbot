@@ -353,10 +353,16 @@ class XKCDMenu(Menu, menus.MenuPages):
 	
 	def __init__(self, initial_number = None):
 		self.initial_number = initial_number
-		super().__init__(XKCDSource(), timeout = None, clear_reactions_after = True, check_embeds = True)
+		super().__init__(
+			XKCDSource(),
+			check_embeds = True, clear_reactions_after = True, timeout = None
+		)
 	
 	async def send_initial_message(self, ctx, channel):
-		if self.initial_number is None or self.initial_number >= self.source.max_pages:
+		if (
+			self.initial_number is None or
+			self.initial_number >= self.source.max_pages
+		):
 			self.current_page = self.source.max_pages - 1
 		else:
 			self.current_page = max(0, self.initial_number - 1)
