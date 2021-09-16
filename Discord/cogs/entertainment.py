@@ -278,7 +278,7 @@ class Entertainment(commands.Cog):
 							url = f"http://xkcd.com/{number}/info.0.json"
 							return await self.process_xkcd(ctx, url)
 			# Exhausted query results
-			await ctx.embed_reply(":no_entry: Error: Not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Not found")
 		elif query:
 			await self.process_xkcd(ctx, f"http://xkcd.com/{query}/info.0.json")
 		else:
