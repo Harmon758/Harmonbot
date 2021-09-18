@@ -141,7 +141,7 @@ class Info(commands.Cog):
 			with contextlib.suppress(discord.Forbidden):
 				invite = await ctx.guild.vanity_invite()
 				fields.append(("Vanity Invite URL", invite))
-		if "INVITE_SPLASH" in ctx.guild.features:
+		if "INVITE_SPLASH" in ctx.guild.features and ctx.guild.splash:
 			fields.append(("Invite Splash", f"[URL]({ctx.guild.splash.url})"))
 		if "BANNER" in ctx.guild.features:
 			fields.append(("Banner", f"[URL]({ctx.guild.banner.url})"))
