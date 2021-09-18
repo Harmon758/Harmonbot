@@ -65,10 +65,11 @@ class RuneScape(commands.Cog):
 				monster, aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except UnitOutputError as e:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			return
 		await ctx.embed_reply(
-			data["description"],
 			title = data["name"],
+			description = data["description"],
 			fields = (
 				("Level", data["level"]), ("Weakness", data["weakness"]),
 				("XP/Kill", data["xp"]), ("Lifepoints", data["lifepoints"]),
