@@ -557,13 +557,14 @@ class NewsSource(menus.ListPageSource):
 			url = article["url"],
 			description = article["description"],
 			color = menu.ctx.bot.bot_color
-		)
-		embed.set_author(
+		).set_author(
 			name = menu.ctx.author.display_name,
 			icon_url = menu.ctx.author.avatar.url
+		).set_image(
+			url = article["urlToImage"]
+		).set_footer(
+			text = article['source']['name']
 		)
-		embed.set_image(url = article["urlToImage"])
-		embed.set_footer(text = article['source']['name'])
 		if timestamp := article.get("publishedAt"):
 			embed.timestamp = dateutil.parser.parse(timestamp)
 		return {
