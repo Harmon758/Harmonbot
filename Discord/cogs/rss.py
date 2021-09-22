@@ -291,7 +291,8 @@ class RSS(commands.Cog):
 											"is not supported. Scheme must be one of ('http', 'https')." in e.text)):
 										embed.url = discord.Embed.Empty
 									if ("In embed.thumbnail.url: Not a well formed URL." in e.text or 
-										("In embed.thumbnail.url: Scheme" in e.text and 
+										(("In embed.thumbnail.url: Scheme" in e.text or  # still necessary?
+											"In embeds.0.thumbnail.url: Scheme" in e.text) and 
 											"is not supported. Scheme must be one of ('http', 'https')." in e.text)):
 										embed.set_thumbnail(url = "")
 									if ("In embed.footer.icon_url: Not a well formed URL." in e.text or 
