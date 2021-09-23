@@ -287,7 +287,8 @@ class RSS(commands.Cog):
 								if e.status == 400 and e.code == 50035:
 									if ("In embed.url: Not a well formed URL." in e.text or  # still necessary?
 										"In embeds.0.url: Not a well formed URL." in e.text or
-										("In embed.url: Scheme" in e.text and 
+										(("In embed.url: Scheme" in e.text or  #still necessary?
+											"In embeds.0.url: Scheme" in e.text) and 
 											"is not supported. Scheme must be one of ('http', 'https')." in e.text)):
 										embed.url = discord.Embed.Empty
 									if ("In embed.thumbnail.url: Not a well formed URL." in e.text or 
