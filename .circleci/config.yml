@@ -6,7 +6,7 @@ version: 2
 jobs:
   test-python:
     docker:
-      - image: circleci/python:3.9.6
+      - image: circleci/python:3.9.7
       - image: postgres:12.1
         environment:
           POSTGRES_USER: harmonbot
