@@ -114,7 +114,7 @@ class Twitter(commands.Cog):
 				for friend in some_friends:
 					if friend.protected:
 						self.blacklisted_handles.append(friend.screen_name.lower())
-		except tweepy.TweepyException as e:
+		except (AttributeError, tweepy.TweepyException) as e:
 			self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
 		self.stream = TwitterStream(bot)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds(), name = "Start Twitter Stream")
