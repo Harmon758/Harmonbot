@@ -181,9 +181,12 @@ class Bot(commands.Bot):
 		except AssertionError as e:
 			self.print(f"Failed to initialize OpenWeatherMap client: {e}")
 		## Twitter
-		self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
-		self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
-		self.twitter_api = tweepy.API(self.twitter_auth)
+		try:
+			self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
+			self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
+			self.twitter_api = tweepy.API(self.twitter_auth)
+		except TypeError as e:
+			self.print(f"Failed to initialize Tweepy API: {e}")
 		## Wolfram Alpha
 		self.wolfram_alpha_client = wolframalpha.Client(self.WOLFRAM_ALPHA_APP_ID)
 		## Wordnik
