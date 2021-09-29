@@ -10,7 +10,7 @@ import sys
 import traceback
 
 import tweepy
-import urllib3
+import tweepy.asynchronous
 
 from utilities import checks
 
@@ -19,21 +19,19 @@ errors_logger = logging.getLogger("errors")
 def setup(bot):
 	bot.add_cog(Twitter(bot))
 
-class TwitterStreamListener(tweepy.StreamListener):
+class TwitterStream(tweepy.asynchronous.AsyncStream):
 	
 	def __init__(self, bot):
-		super().__init__()
+		super().__init__(
+			bot.TWITTER_CONSUMER_KEY, bot.TWITTER_CONSUMER_SECRET,
+			bot.TWITTER_ACCESS_TOKEN, bot.TWITTER_ACCESS_TOKEN_SECRET
+		)
 		self.bot = bot
-		self.stream = None
 		self.feeds = {}
 		self.unique_feeds = set()
 		self.reconnect_ready = asyncio.Event()
 		self.reconnect_ready.set()
 		self.reconnecting = False
-	
-	def __del__(self):
-		if self.stream:
-			self.stream.disconnect()
 	
 	async def start_feeds(self, *, feeds = None):
 		if self.reconnecting:
@@ -44,27 +42,27 @@ class TwitterStreamListener(tweepy.StreamListener):
 		if feeds:
 			self.feeds = feeds
 			self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
-		if self.stream:
-			self.stream.disconnect()
-		self.stream = tweepy.Stream(auth = self.bot.twitter_api.auth, listener = self)
+		if self.task:
+			self.disconnect()
+			await self.task
 		if self.feeds:
-			self.stream.filter(follow = self.unique_feeds, is_async = True)
+			self.filter(follow = self.unique_feeds)
 		self.bot.loop.call_later(120, self.reconnect_ready.set)
 		self.reconnecting = False
 	
 	async def add_feed(self, channel, handle):
-		user_id = self.bot.twitter_api.get_user(handle).id_str
+		user_id = self.bot.twitter_api.get_user(screen_name = handle).id_str
 		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [user_id]
 		if user_id not in self.unique_feeds:
 			self.unique_feeds.add(user_id)
 			await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
-		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(handle).id_str)
+		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(screen_name = handle).id_str)
 		self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
 		await self.start_feeds()  # Necessary?
 	
-	def on_status(self, status):
+	async def on_status(self, status):
 		if status.in_reply_to_status_id:
 			# Ignore replies
 			return
@@ -91,27 +89,14 @@ class TwitterStreamListener(tweepy.StreamListener):
 							embed.set_image(url = extended_entities["media"][0]["media_url_https"])
 							embed.description = embed.description.replace(extended_entities["media"][0]["url"], "")
 						embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
-						self.bot.loop.create_task(self.send_embed(channel, embed), name = "Send embed for Tweet")
+						try:
+							await channel.send(embed = embed)
+						except discord.Forbidden:
+							# TODO: Handle unable to send embeds/messages in text channel
+							print(f"Twitter Stream Listener: Missing permissions to send embed in #{channel.name} in {channel.guild.name}")
 	
-	@staticmethod
-	async def send_embed(channel, embed):
-		try:
-			await channel.send(embed = embed)
-		except discord.Forbidden:
-			# TODO: Handle unable to send embeds/messages in text channel
-			print(f"Twitter Stream Listener: Missing permissions to send embed in #{channel.name} in {channel.guild.name}")
-	
-	def on_error(self, status_code):
+	def on_request_error(self, status_code):
 		self.bot.print(f"Twitter Error: {status_code}")
-		return False
-	
-	def on_exception(self, exception):
-		if isinstance(exception, urllib3.exceptions.ReadTimeoutError):
-			self.bot.print("Twitter stream timed out | Recreating stream..")
-			self.bot.loop.create_task(self.start_feeds(), name = "Restart Twitter Stream")
-		elif isinstance(exception, urllib3.exceptions.ProtocolError):
-			self.bot.print("Twitter stream Incomplete Read error | Recreating stream..")
-			self.bot.loop.create_task(self.start_feeds(), name = "Restart Twitter Stream")
 
 class Twitter(commands.Cog):
 	
@@ -123,20 +108,20 @@ class Twitter(commands.Cog):
 			if twitter_account.protected:
 				self.blacklisted_handles.append(twitter_account.screen_name.lower())
 			# TODO: Handle more than 5000 friends/following
-			twitter_friends = self.bot.twitter_api.friends_ids(screen_name = twitter_account.screen_name)
+			twitter_friends = self.bot.twitter_api.get_friend_ids(screen_name = twitter_account.screen_name)
 			for interval in range(0, len(twitter_friends), 100):
-				some_friends = self.bot.twitter_api.lookup_users(twitter_friends[interval:interval + 100])
+				some_friends = self.bot.twitter_api.lookup_users(user_id = twitter_friends[interval:interval + 100])
 				for friend in some_friends:
 					if friend.protected:
 						self.blacklisted_handles.append(friend.screen_name.lower())
-		except tweepy.error.TweepError as e:
+		except tweepy.TweepyException as e:
 			self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
-		self.stream_listener = TwitterStreamListener(bot)
+		self.stream = TwitterStream(bot)
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds(), name = "Start Twitter Stream")
 	
 	def cog_unload(self):
-		if self.stream_listener.stream:
-			self.stream_listener.stream.disconnect()
+		if self.stream:
+			self.stream.disconnect()
 		self.task.cancel()
 	
 	async def initialize_database(self):
@@ -177,11 +162,10 @@ class Twitter(commands.Cog):
 										tweet_mode = "extended", count = 200).items():
 				tweet = status
 				break
-		except tweepy.error.TweepError as e:
-			if e.api_code == 34:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: @{handle} not found")
-			else:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+		except tweepy.NotFound:
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: @{handle} not found")
+		except tweepy.TweepyException as e:
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		if not tweet:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Status not found")
 		text = self.process_tweet_text(tweet.full_text, tweet.entities)
@@ -215,8 +199,8 @@ class Twitter(commands.Cog):
 		message = await ctx.embed_reply(":hourglass: Please wait")
 		embed = message.embeds[0]
 		try:
-			await self.stream_listener.add_feed(ctx.channel, handle)
-		except tweepy.error.TweepError as e:
+			await self.stream.add_feed(ctx.channel, handle)
+		except tweepy.TweepyException as e:
 			embed.description = f":no_entry: Error: {e}"
 			return await message.edit(embed = embed)
 		await ctx.bot.db.execute(
@@ -247,7 +231,7 @@ class Twitter(commands.Cog):
 		if not deleted:
 			return await ctx.embed_reply(":no_entry: This text channel isn't following that Twitter handle")
 		message = await ctx.embed_reply(":hourglass: Please wait")
-		await self.stream_listener.remove_feed(ctx.channel, handle)
+		await self.stream.remove_feed(ctx.channel, handle)
 		embed = message.embeds[0]
 		embed.description = f"Removed the Twitter handle, [`{handle}`](https://twitter.com/{handle}), from this text channel."
 		await message.edit(embed = embed)
@@ -294,16 +278,13 @@ class Twitter(commands.Cog):
 					# Postgres requires non-scrollable cursors to be created and used in a transaction.
 					async for record in connection.cursor("SELECT * FROM twitter.handles"):
 						try:
-							partial = functools.partial(self.bot.twitter_api.get_user, record["handle"])
+							partial = functools.partial(self.bot.twitter_api.get_user, screen_name = record["handle"])
 							user = await self.bot.loop.run_in_executor(None, partial)
 							feeds[record["channel_id"]] = feeds.get(record["channel_id"], []) + [user.id_str]
-						except tweepy.error.TweepError as e:
-							# TODO: Handle rate limit
-							if e.api_code in (50, 63):
-								# User not found (50) or suspended (63)
-								continue
-							raise e
-			await self.stream_listener.start_feeds(feeds = feeds)
+						except (tweepy.Forbidden, tweepy.NotFound):
+							continue
+						# TODO: Handle rate limit
+			await self.stream.start_feeds(feeds = feeds)
 		except Exception as e:
 			print("Exception in Twitter Task", file = sys.stderr)
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
