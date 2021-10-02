@@ -17,6 +17,7 @@ ACTIVITES = {
 	"Chess In The Park": 832012774040141894,
 	"Doodle Crew": 878067389634314250,
 	"Fishington.io": 814288819477020702,
+	"Letter Tile": 879863686565621790,
 	"Poker Night": 755827207812677713,
 	"Watch Together": 880218394199220334,
 	"YouTube Together": 755600276941176913
@@ -64,6 +65,7 @@ class Discord(commands.Cog):
 			("Chess In The Park", "chess", []),
 			("Doodle Crew", "doodle", []),
 			("Fishington.io", "fishington", ["fishing", "fishington.io"]),
+			("Letter Tile", "letter", ["scrabble"]),
 			("Poker Night", "poker", []),
 			("YouTube Together", "youtube", ["yt"]),
 			("Watch Together", "watch", []),
