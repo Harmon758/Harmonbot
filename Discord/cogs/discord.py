@@ -17,6 +17,7 @@ ACTIVITES = {
 	"Chess In The Park": 832012774040141894,
 	"Fishington.io": 814288819477020702,
 	"Poker Night": 755827207812677713,
+	"Watch Together": 880218394199220334,
 	"YouTube Together": 755600276941176913
 }
 
@@ -63,6 +64,7 @@ class Discord(commands.Cog):
 			("Fishington.io", "fishington", ["fishing", "fishington.io"]),
 			("Poker Night", "poker", []),
 			("YouTube Together", "youtube", ["yt"]),
+			("Watch Together", "watch", []),
 		):
 			command = commands.Command(
 				activity_wrapper(activity),
