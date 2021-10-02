@@ -20,6 +20,7 @@ ACTIVITES = {
 	"Letter Tile": 879863686565621790,
 	"Poker Night": 755827207812677713,
 	"Watch Together": 880218394199220334,
+	"Word Snacks": 879863976006127627,
 	"YouTube Together": 755600276941176913
 }
 
@@ -69,6 +70,7 @@ class Discord(commands.Cog):
 			("Poker Night", "poker", []),
 			("YouTube Together", "youtube", ["yt"]),
 			("Watch Together", "watch", []),
+			("Word Snacks", "word", [])
 		):
 			command = commands.Command(
 				activity_wrapper(activity),
