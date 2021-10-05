@@ -95,7 +95,7 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 							# TODO: Handle unable to send embeds/messages in text channel
 							print(f"Twitter Stream Listener: Missing permissions to send embed in #{channel.name} in {channel.guild.name}")
 	
-	def on_request_error(self, status_code):
+	async def on_request_error(self, status_code):
 		self.bot.print(f"Twitter Error: {status_code}")
 
 class Twitter(commands.Cog):
