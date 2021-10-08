@@ -10,7 +10,7 @@ python-telegram-bot==13.7
 aiohttp==3.7.4.post0
 asyncpg==0.24.0
 beautifulsoup4==4.9.3
-chess==1.4.0
+chess==1.6.1
 clarifai-grpc==7.3.0
 cryptography==35.0.0
 dice==3.1.2
