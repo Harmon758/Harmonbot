@@ -74,7 +74,7 @@ geojson==2.5.0
 gitdb==4.0.7
 google-api-core==2.1.0
 google-auth==2.2.1
-google-cloud-core==2.0.0
+google-cloud-core==2.1.0
 googleapis-common-protos==1.53.0
 grpcio==1.40.0
 idna==3.2
