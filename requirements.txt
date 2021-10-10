@@ -11,7 +11,7 @@ aiohttp==3.7.4.post0
 asyncpg==0.24.0
 beautifulsoup4==4.10.0
 chess==1.7.0
-clarifai-grpc==7.3.0
+clarifai-grpc==7.9.0
 cryptography==35.0.0
 dice==3.1.2
 emoji==0.6.0
