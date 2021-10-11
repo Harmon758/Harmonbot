@@ -85,8 +85,11 @@ class User(commands.Cog):
 		if not user:
 			await ctx.embed_reply(f"Your ID: {ctx.author.id}")
 		else:
-			await ctx.embed_reply(f"{user.mention}'s ID: {user.id}", 
-									footer_text = str(user), footer_icon_url = user.avatar.url)
+			await ctx.embed_reply(
+				f"{user.mention}'s ID: {user.id}",
+				footer_text = str(user),
+				footer_icon_url = user.avatar.url
+			)
 	
 	# TODO: Make general name command with subcommands
 	@commands.command()
