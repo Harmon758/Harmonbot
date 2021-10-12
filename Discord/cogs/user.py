@@ -99,6 +99,9 @@ class User(commands.Cog):
 		if not user:
 			await ctx.embed_reply(ctx.author.mention)
 		else:
-			await ctx.embed_reply(user.mention, 
-									footer_text = str(user), footer_icon_url = user.avatar.url)
+			await ctx.embed_reply(
+				user.mention,
+				footer_text = str(user),
+				footer_icon_url = user.avatar.url
+			)
 
