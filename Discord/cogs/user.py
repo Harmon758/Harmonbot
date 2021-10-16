@@ -21,12 +21,14 @@ class User(commands.Cog):
                 self.bot.add_command(command)
                 self.user.add_command(command)
 
+    async def cog_check(self, ctx):
+        return await checks.not_forbidden().predicate(ctx)
+
     # TODO: Add commands
     #       ban, role removal
     #       username?, nickname?
 
     @commands.group(aliases = ["member"], invoke_without_command = True, case_insensitive = True)
-    @checks.not_forbidden()
     async def user(self, ctx):
         '''
         User
@@ -44,7 +46,6 @@ class User(commands.Cog):
         await ctx.embed_reply("I gave the role, {}, to {}".format(role, member))
 
     @commands.command()
-    @checks.not_forbidden()
     async def avatar(self, ctx, *, user: Optional[discord.Member]):
         '''
         See a bigger version of an avatar
@@ -62,7 +63,6 @@ class User(commands.Cog):
             )
 
     @commands.command()
-    @checks.not_forbidden()
     async def discriminator(self, ctx, *, user: Optional[discord.Member]):
         '''
         Get a discriminator
@@ -81,7 +81,6 @@ class User(commands.Cog):
 
     # TODO: Make general ID command with subcommands
     @commands.command(name = "id")
-    @checks.not_forbidden()
     async def id_command(self, ctx, *, user: Optional[discord.Member]):
         '''Get ID of user'''
         if not user:
@@ -95,7 +94,6 @@ class User(commands.Cog):
 
     # TODO: Make general name command with subcommands
     @commands.command()
-    @checks.not_forbidden()
     async def name(self, ctx, *, user: Optional[discord.Member]):
         '''The name of a user'''
         if not user:
