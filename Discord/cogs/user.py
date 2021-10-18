@@ -28,7 +28,10 @@ class User(commands.Cog):
     #       ban, role removal
     #       username?, nickname?
 
-    @commands.group(aliases = ["member"], invoke_without_command = True, case_insensitive = True)
+    @commands.group(
+        aliases = ["member"],
+        case_insensitive = True, invoke_without_command = True
+    )
     async def user(self, ctx):
         '''
         User
