@@ -19,6 +19,7 @@ ACTIVITES = {
 	"Fishington.io": 814288819477020702,
 	"Letter Tile": 879863686565621790,
 	"Poker Night": 755827207812677713,
+	"SpellCast": 852509694341283871,
 	"Watch Together": 880218394199220334,
 	"Word Snacks": 879863976006127627,
 	"YouTube Together": 755600276941176913
@@ -68,6 +69,7 @@ class Discord(commands.Cog):
 			("Fishington.io", "fishington", ["fishing", "fishington.io"]),
 			("Letter Tile", "letter", ["scrabble"]),
 			("Poker Night", "poker", []),
+			("SpellCast", "spellcast", ["spell"]),
 			("YouTube Together", "youtube", ["yt"]),
 			("Watch Together", "watch", []),
 			("Word Snacks", "word", [])
