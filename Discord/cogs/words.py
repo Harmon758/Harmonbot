@@ -97,7 +97,9 @@ class Words(commands.Cog):
 		if len(words) == 1:
 			await ctx.embed_reply(", ".join(checker.candidates(words[0])))
 		else:
-			await ctx.embed_reply(' '.join(checker.correction(word) for word in words))
+			await ctx.embed_reply(
+				' '.join(checker.correction(word) for word in words)
+			)
 	
 	@commands.command(aliases = ["synonyms"])
 	async def synonym(self, ctx, word : str):
