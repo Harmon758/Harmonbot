@@ -89,13 +89,15 @@ class Words(commands.Cog):
 					f"{ctx.bot.error_emoji} Word or rhymes not found"
 				)
 			raise
+		
 		if not rhymes:
 			return await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Word or rhymes not found"
 			)
+		
 		await ctx.embed_reply(
-			", ".join(rhymes[0].words),
-			title = f"Words that rhyme with {word.capitalize()}"
+			title = f"Words that rhyme with {word.capitalize()}",
+			description = ", ".join(rhymes[0].words)
 		)
 	
 	@commands.command()
