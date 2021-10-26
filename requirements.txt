@@ -73,7 +73,7 @@ docopt==0.6.2
 geojson==2.5.0
 gitdb==4.0.7
 google-api-core==2.1.1
-google-auth==2.3.1
+google-auth==2.3.2
 google-cloud-core==2.1.0
 googleapis-common-protos==1.53.0
 grpcio==1.40.0
