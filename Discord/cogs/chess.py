@@ -67,9 +67,10 @@ class ChessCog(commands.Cog, name = "Chess"):
 		Supports standard algebraic and UCI notation
 		'''
 		if match := self.get_match(ctx.channel, ctx.author):
-			return await ctx.embed_reply(
+			await ctx.embed_reply(
 				f"[You're already playing a chess match here]({match.message.jump_url})"
 			)
+			return
 
 		await ctx.embed_reply(
 			"Who would you like to play?"
@@ -98,9 +99,10 @@ class ChessCog(commands.Cog, name = "Chess"):
 				return
 
 		if opponent != ctx.bot.user and self.get_match(ctx.channel, opponent):
-			return await ctx.embed_reply(
+			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Your chosen opponent is playing a chess match here"
 			)
+			return
 
 		if opponent == ctx.author:
 			color = 'w'
@@ -146,13 +148,15 @@ class ChessCog(commands.Cog, name = "Chess"):
 					timeout = 300
 				)
 			except asyncio.TimeoutError:
-				return await ctx.send(
+				await ctx.send(
 					f"{ctx.author.mention}: {opponent} has declined your challenge"
 				)
+				return
 			if message.content.lower() in ("no", 'n'):
-				return await ctx.send(
+				await ctx.send(
 					f"{ctx.author.mention}: {opponent} has declined your challenge"
 				)
+				return
 
 		match = await ChessMatch.start(ctx, white_player, black_player)
 		self.matches.append(match)
