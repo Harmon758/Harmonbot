@@ -71,8 +71,6 @@ class ChessCog(commands.Cog, name = "Chess"):
 				f"[You're already playing a chess match here]({match.message.jump_url})"
 			)
 
-		color = None
-
 		await ctx.embed_reply(
 			"Who would you like to play?"
 		)
@@ -106,8 +104,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 
 		if opponent == ctx.author:
 			color = 'w'
-
-		if not color:
+		else:
 			await ctx.embed_reply(
 				"Would you like to play white, black, or random?"
 			)
