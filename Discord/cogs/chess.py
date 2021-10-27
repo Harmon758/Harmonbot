@@ -238,10 +238,14 @@ class ChessMatch(chess.Board):
         self.black_player = black_player
         self.bot = ctx.bot
         self.ended = asyncio.Event()
-        self.engine_transport, self.chess_engine = await chess.engine.popen_uci(f"bin/{STOCKFISH_EXECUTABLE}",
-                                                                                creationflags = subprocess.CREATE_NO_WINDOW)
+        self.engine_transport, self.chess_engine = await chess.engine.popen_uci(
+            f"bin/{STOCKFISH_EXECUTABLE}",
+            creationflags = subprocess.CREATE_NO_WINDOW
+        )
         self.message = None
-        self.task = ctx.bot.loop.create_task(self.match_task(), name = "Chess Match")
+        self.task = ctx.bot.loop.create_task(
+            self.match_task(), name = "Chess Match"
+        )
         return self
 
     def make_move(self, move):
