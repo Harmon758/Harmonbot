@@ -60,15 +60,11 @@ class ChessCog(commands.Cog, name = "Chess"):
 	
 	# TODO: Use max concurrency?
 	@commands.group(name = "chess", invoke_without_command = True, case_insensitive = True)
-	async def chess_command(self, ctx, *, opponent: Union[discord.Member, str]):
+	async def chess_command(self, ctx):
 		'''
-		Play chess by challenging someone to a match
+		Play chess
 		You can play me as well
 		Supports standard algebraic and UCI notation
-		Example:
-		 !chess you
-		 white
-		 e2e4
 		'''
 		if match := self.get_match(ctx.channel, ctx.author):
 			return await ctx.embed_reply(
@@ -77,14 +73,31 @@ class ChessCog(commands.Cog, name = "Chess"):
 
 		color = None
 
-		if type(opponent) is str:
-			if opponent.lower() in ("harmonbot", "you"):
-				opponent = ctx.bot.user
-			elif opponent.lower() in ("myself", "me"):
-				opponent = ctx.author
-				color = 'w'
-			else:
-				return await ctx.embed_reply(":no_entry: Opponent not found")
+		await ctx.embed_reply(
+			"Who would you like to play?"
+		)
+		message = await ctx.bot.wait_for(
+			"message",
+			check = lambda message: (
+				message.author == ctx.author and
+				message.channel == ctx.channel
+			)
+		)
+
+		if message.content.lower() in ("harmonbot", "you"):
+			opponent = ctx.bot.user
+		elif message.content.lower() in ("myself", "me"):
+			opponent = ctx.author
+		else:
+			try:
+				opponent = await commands.MemberConverter().convert(
+					ctx, message.content
+				)
+			except commands.BadArgument:
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Opponent not found"
+				)
+				return
 
 		if opponent != ctx.bot.user and self.get_match(ctx.channel, opponent):
 			return await ctx.embed_reply(
