@@ -227,6 +227,7 @@ class ChessCog(commands.Cog, name = "Chess"):
             await ctx.embed_reply(":no_entry: There are no more moves to undo")
     """
 
+
 class ChessMatch(chess.Board):
 
     @classmethod
@@ -356,6 +357,7 @@ class ChessMatch(chess.Board):
                 embed = embed, view = ChessMatchView(self.bot, self)
             )
 
+
 class ChessChallengeView(discord.ui.View):
 
     def __init__(self, challengee):
@@ -387,6 +389,7 @@ class ChessChallengeView(discord.ui.View):
         self.accepted = False
         await interaction.response.edit_message(view = None)
         self.stop()
+
 
 class ChessMatchView(discord.ui.View):
 
