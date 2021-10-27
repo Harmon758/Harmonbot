@@ -7,7 +7,6 @@ import datetime
 import io
 import random
 import subprocess
-from typing import Union
 
 import chess
 import chess.engine
