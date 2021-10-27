@@ -88,9 +88,9 @@ class ChessCog(commands.Cog, name = "Chess"):
 		Challenge someone to a match
 		You can play me as well
 		'''
-		if self.get_match(ctx.channel, ctx.author):
+		if match := self.get_match(ctx.channel, ctx.author):
 			return await ctx.embed_reply(
-				":no_entry: You're already playing a chess match here"
+				f"[You're already playing a chess match here]({match.message.jump_url})"
 			)
 
 		color = None
