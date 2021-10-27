@@ -58,35 +58,17 @@ class ChessCog(commands.Cog, name = "Chess"):
 		for match in self.matches:
 			match.task.cancel()
 	
+	# TODO: Use max concurrency?
 	@commands.group(name = "chess", invoke_without_command = True, case_insensitive = True)
-	async def chess_command(self, ctx):
+	async def chess_command(self, ctx, *, opponent: Union[discord.Member, str]):
 		'''
-		Play chess
+		Play chess by challenging someone to a match
+		You can play me as well
 		Supports standard algebraic and UCI notation
 		Example:
-		 !chess play you
+		 !chess you
 		 white
 		 e2e4
-		'''
-		await ctx.send_help(ctx.command)
-		'''
-		else:
-			try:
-				self._chess_board.push_san(move)
-			except ValueError:
-				try:
-					self._chess_board.push_uci(move)
-				except ValueError:
-					return await ctx.embed_reply(":no_entry: Invalid move")
-			await self._update_chess_board_embed()
-		'''
-	
-	# TODO: Use max concurrency?
-	@chess_command.command(aliases = ["start"])
-	async def play(self, ctx, *, opponent: Union[discord.Member, str]):
-		'''
-		Challenge someone to a match
-		You can play me as well
 		'''
 		if match := self.get_match(ctx.channel, ctx.author):
 			return await ctx.embed_reply(
@@ -279,6 +261,7 @@ class ChessMatch(chess.Board):
 													check = lambda msg: msg.author == player and 
 																		msg.channel == self.ctx.channel and 
 																		self.valid_move(msg.content))
+				# TODO: Allow direct input and invalid move error response
 				await self.message.edit(embed = embed.set_footer(text = "Processing move.."))
 				self.make_move(message.content)
 				if self.is_game_over():
