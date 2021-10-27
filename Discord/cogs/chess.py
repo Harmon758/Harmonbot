@@ -133,26 +133,25 @@ class ChessCog(commands.Cog, name = "Chess"):
 			black_player = ctx.author
 
 		if opponent != ctx.bot.user and opponent != ctx.author:
-			await ctx.send(
+			view = ChessChallengeView(opponent)
+			challenge = await ctx.send(
 				f"{opponent.mention}: {ctx.author} has challenged you to a chess match\n"
-				"Would you like to accept? Yes/No"
+				"Would you like to accept?",
+				view = view
 			)
-			try:
-				message = await ctx.bot.wait_for(
-					"message",
-					check = lambda message: (
-						message.author == opponent and
-						message.channel == ctx.channel and
-						message.content.lower() in ("yes", "no", 'y', 'n')
-					),
-					timeout = 300
+			await view.wait()
+
+			if view.accepted:
+				await challenge.edit(
+					f"{opponent.mention}: You have accepted {ctx.author}'s challenge"
 				)
-			except asyncio.TimeoutError:
 				await ctx.send(
-					f"{ctx.author.mention}: {opponent} has declined your challenge"
+					f"{ctx.author.mention}: {opponent} has accepted your challenge"
 				)
-				return
-			if message.content.lower() in ("no", 'n'):
+			else:
+				await challenge.edit(
+					f"{opponent.mention}: You have declined {ctx.author}'s challenge"
+				)
 				await ctx.send(
 					f"{ctx.author.mention}: {opponent} has declined your challenge"
 				)
@@ -331,6 +330,38 @@ class ChessMatch(chess.Board):
 			self.message = await self.ctx.send(
 				embed = embed, view = ChessMatchView(self.bot, self)
 			)
+
+class ChessChallengeView(discord.ui.View):
+
+	def __init__(self, challengee):
+		super().__init__(timeout = None)
+		self.challengee = challengee
+
+	@discord.ui.button(label = "Yes", style = discord.ButtonStyle.green)
+	async def yes(self, button, interaction):
+		if interaction.user != self.challengee:
+			await interaction.response.send_message(
+				"You are not the one being challenged",
+				ephemeral = True
+			)
+			return
+
+		self.accepted = True
+		await interaction.response.edit_message(view = None)
+		self.stop()
+
+	@discord.ui.button(label = "No", style = discord.ButtonStyle.red)
+	async def no(self, button, interaction):
+		if interaction.user != self.challengee:
+			await interaction.response.send_message(
+				"You are not the one being challenged",
+				ephemeral = True
+			)
+			return
+
+		self.accepted = False
+		await interaction.response.edit_message(view = None)
+		self.stop()
 
 class ChessMatchView(discord.ui.View):
 
