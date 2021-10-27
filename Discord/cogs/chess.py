@@ -286,9 +286,13 @@ class ChessMatch(chess.Board):
                 )
                 self.push(result.move)
 
-                await self.update_match_embed(
+                if self.is_game_over():
+                    footer_text = discord.Embed.Empty
+                    self.ended.set()
+                else:
                     footer_text = f"I moved {result.move}"
-                )
+
+                await self.update_match_embed(footer_text = footer_text)
             else:
                 message = await self.bot.wait_for(
                     "message",
