@@ -102,7 +102,7 @@ class ChessCog(commands.Cog, name = "Chess"):
 
         if opponent != ctx.bot.user and self.get_match(ctx.channel, opponent):
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Your chosen opponent is playing a chess match here"
+                f"{ctx.bot.error_emoji} Your chosen opponent is already playing a chess match here"
             )
             return
 
