@@ -76,7 +76,7 @@ class Words(commands.Cog):
 		await ctx.embed_reply(description, title = f"Pronunciation of {word.capitalize()}")
 	
 	@commands.command(aliases = ["rhymes"])
-	async def rhyme(self, ctx, word : str):
+	async def rhyme(self, ctx, word: str):
 		'''Rhymes of a word'''
 		try:
 			rhymes = ctx.bot.wordnik_word_api.getRelatedWords(
