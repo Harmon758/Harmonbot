@@ -178,14 +178,6 @@ class ChessCog(commands.Cog, name = "Chess"):
 	# TODO: Track stats
 	# TODO: Log matches?
 	
-	@chess_command.group(aliases = ["match"], invoke_without_command = True, case_insensitive = True)
-	async def board(self, ctx):
-		'''Current match/board'''
-		match = self.get_match(ctx.channel, ctx.author)
-		if not match:
-			return await ctx.embed_reply(":no_entry: Chess match not found")
-		await match.new_match_embed()
-	
 	"""
 	@chess_command.command(name = "(╯°□°）╯︵", hidden = True)
 	async def flip(self, ctx):
@@ -342,16 +334,6 @@ class ChessMatch(chess.Board):
 			self.message = await self.ctx.send(
 				embed = embed, view = ChessMatchView(self.bot, self)
 			)
-	
-	async def new_match_embed(self, *, orientation = None, footer_text = discord.Embed.Empty):
-		if orientation is None:
-			orientation = self.turn
-		if not footer_text and not self.is_game_over():
-			footer_text = f"It's {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
-		if self.message:
-			await self.message.delete()
-		self.message = None
-		await self.update_match_embed(orientation = orientation, footer_text = footer_text)
 
 class ChessMatchView(discord.ui.View):
 
@@ -359,6 +341,7 @@ class ChessMatchView(discord.ui.View):
 		super().__init__(timeout = None)
 		self.bot = bot
 		self.match = match
+		self.resending = False
 
 	@discord.ui.button(label = "FEN")
 	async def fen(self, button, interaction):
@@ -381,4 +364,23 @@ class ChessMatchView(discord.ui.View):
 		embed.title = "Text"
 		embed.description = self.bot.CODE_BLOCK.format(self.match)
 		await interaction.response.send_message(embed = embed)
+
+	@discord.ui.button(
+		label = "Resend Message", style = discord.ButtonStyle.blurple
+	)
+	async def resend_message(self, button, interaction):
+		if self.resending:
+			return
+		self.resending = True
+
+		self.match.message = None
+		if self.match.is_game_over():
+			footer_text = discord.Embed.Empty
+		else:
+			footer_text = f"It's {['black', 'white'][int(self.match.turn)]}'s ({[self.match.black_player, self.match.white_player][int(self.match.turn)]}'s) turn to move"
+		await self.match.update_match_embed(footer_text = footer_text)
+
+		await self.match.bot.attempt_delete_message(interaction.message)
+
+		self.resending = False
 
