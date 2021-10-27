@@ -167,9 +167,8 @@ class ChessCog(commands.Cog, name = "Chess"):
     def get_match(self, text_channel, player):
         return discord.utils.find(
             lambda match: (
-                match.ctx.channel == text_channel and (
-                    match.white_player == player or match.black_player == player
-                )
+                match.ctx.channel == text_channel and
+                player in (match.white_player, match.black_player)
             ), self.matches
         )
 
