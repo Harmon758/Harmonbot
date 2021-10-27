@@ -266,28 +266,48 @@ class ChessMatch(chess.Board):
     async def match_task(self):
         self.message = await self.ctx.embed_send("Loading..")
         await self.update_match_embed()
+
         while not self.ended.is_set():
             player = [self.black_player, self.white_player][int(self.turn)]
             embed = self.message.embeds[0]
+
             if player == self.bot.user:
-                await self.message.edit(embed = embed.set_footer(text = "I'm thinking.."))
-                result = await self.chess_engine.play(self, chess.engine.Limit(time = 2))
+                await self.message.edit(
+                    embed = embed.set_footer(text = "I'm thinking..")
+                )
+
+                result = await self.chess_engine.play(
+                    self, chess.engine.Limit(time = 2)
+                )
                 self.push(result.move)
-                await self.update_match_embed(footer_text = f"I moved {result.move}")
+
+                await self.update_match_embed(
+                    footer_text = f"I moved {result.move}"
+                )
             else:
-                message = await self.bot.wait_for("message", 
-                                                    check = lambda msg: msg.author == player and 
-                                                                        msg.channel == self.ctx.channel and 
-                                                                        self.valid_move(msg.content))
+                message = await self.bot.wait_for(
+                    "message",
+                    check = lambda msg: (
+                        msg.author == player and
+                        msg.channel == self.ctx.channel and
+                        self.valid_move(msg.content)
+                    )
+                )
                 # TODO: Allow direct input and invalid move error response
-                await self.message.edit(embed = embed.set_footer(text = "Processing move.."))
+
+                await self.message.edit(
+                    embed = embed.set_footer(text = "Processing move..")
+                )
+
                 self.make_move(message.content)
+
                 if self.is_game_over():
                     footer_text = discord.Embed.Empty
                     self.ended.set()
                 else:
                     footer_text = f"It is {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
                 await self.update_match_embed(footer_text = footer_text)
+
                 await self.bot.attempt_delete_message(message)
 
     async def update_match_embed(
