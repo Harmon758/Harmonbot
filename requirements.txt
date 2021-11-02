@@ -107,5 +107,5 @@ tzdata==2021.2.post0
 tzlocal==4.1
 websockets==10.0
 xmltodict==0.12.0
-yarl==1.7.0
+yarl==1.7.2
 
