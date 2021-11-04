@@ -100,7 +100,7 @@ sgmllib3k==1.0.0
 six==1.16.0
 smmap==4.0.0
 sortedcontainers==2.4.0
-soupsieve==2.2.1
+soupsieve==2.3
 tornado==6.1
 typing-extensions==3.10.0.2
 tzdata==2021.5
