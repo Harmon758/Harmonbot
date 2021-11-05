@@ -374,6 +374,9 @@ class Twitch(commands.Cog):
 					# TODO: Handle text channel not existing anymore
 					try:
 						message = await text_channel.fetch_message(record["message_id"])
+					except discord.Forbidden:
+						# TODO: Handle can't access text channel anymore
+						continue
 					except discord.NotFound:
 						# Notification was deleted
 						continue
