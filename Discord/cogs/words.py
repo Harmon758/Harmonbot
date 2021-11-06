@@ -85,15 +85,17 @@ class Words(commands.Cog):
 			)
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
-				return await ctx.embed_reply(
+				await ctx.embed_reply(
 					f"{ctx.bot.error_emoji} Word or rhymes not found"
 				)
+				return
 			raise
 		
 		if not rhymes:
-			return await ctx.embed_reply(
+			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Word or rhymes not found"
 			)
+			return
 		
 		await ctx.embed_reply(
 			title = f"Words that rhyme with {word.capitalize()}",
