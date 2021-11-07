@@ -121,10 +121,12 @@ class Words(commands.Cog):
 																useCanonical = "true", limitPerRelationshipType = 100)
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or synonyms not found")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or synonyms not found")
+				return
 			raise
 		if not synonyms:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or synonyms not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or synonyms not found")
+			return
 		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
