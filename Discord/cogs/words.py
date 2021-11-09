@@ -117,17 +117,26 @@ class Words(commands.Cog):
 	async def synonym(self, ctx, word : str):
 		'''Synonyms of a word'''
 		try:
-			synonyms = ctx.bot.wordnik_word_api.getRelatedWords(word, relationshipTypes = "synonym", 
-																useCanonical = "true", limitPerRelationshipType = 100)
+			synonyms = ctx.bot.wordnik_word_api.getRelatedWords(
+				word, relationshipTypes = "synonym", 
+				useCanonical = "true", limitPerRelationshipType = 100
+			)
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or synonyms not found")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Word or synonyms not found"
+				)
 				return
 			raise
 		if not synonyms:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or synonyms not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Word or synonyms not found"
+			)
 			return
-		await ctx.embed_reply(", ".join(synonyms[0].words), title = f"Synonyms of {word.capitalize()}")
+		await ctx.embed_reply(
+			", ".join(synonyms[0].words),
+			title = f"Synonyms of {word.capitalize()}"
+		)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def translate(self, ctx, *, text: Optional[str]):
