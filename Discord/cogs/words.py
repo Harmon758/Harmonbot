@@ -27,10 +27,12 @@ class Words(commands.Cog):
 																useCanonical = "true", limitPerRelationshipType = 100)
 		except urllib.error.HTTPError as e:
 			if e.code == 404:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or antonyms not found")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or antonyms not found")
+				return
 			raise
 		if not antonyms:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or antonyms not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or antonyms not found")
+			return
 		await ctx.embed_reply(", ".join(antonyms[0].words), title = f"Antonyms of {word.capitalize()}")
 	
 	@commands.group(
