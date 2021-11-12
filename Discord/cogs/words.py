@@ -83,7 +83,8 @@ class Words(commands.Cog):
 		if audio_file:
 			description = f"[{description}]({audio_file[0].fileUrl})"
 		elif not pronunciation:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or pronunciation not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or pronunciation not found")
+			return
 		await ctx.embed_reply(description, title = f"Pronunciation of {word.capitalize()}")
 	
 	@commands.command(aliases = ["rhymes"])
