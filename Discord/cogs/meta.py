@@ -295,7 +295,7 @@ class Meta(commands.Cog):
 		await ctx.embed_reply(duration_to_string(datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time, 
 													abbreviate = True))
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def version(self, ctx):
 		'''Bot version'''
 		await ctx.embed_reply(f"I am Harmonbot `v{self.bot.version}`")
