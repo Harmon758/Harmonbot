@@ -20,7 +20,7 @@ class Words(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.command(aliases = ["antonyms"])
-	async def antonym(self, ctx, word : str):
+	async def antonym(self, ctx, word: str):
 		'''Antonyms of a word'''
 		try:
 			antonyms = ctx.bot.wordnik_word_api.getRelatedWords(
