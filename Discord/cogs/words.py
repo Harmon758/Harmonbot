@@ -40,8 +40,8 @@ class Words(commands.Cog):
 			)
 			return
 		await ctx.embed_reply(
-			", ".join(antonyms[0].words),
-			title = f"Antonyms of {word.capitalize()}"
+			title = f"Antonyms of {word.capitalize()}",
+			description = ", ".join(antonyms[0].words)
 		)
 	
 	@commands.group(
