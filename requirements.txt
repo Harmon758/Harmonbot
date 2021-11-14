@@ -102,7 +102,7 @@ smmap==4.0.0
 sortedcontainers==2.4.0
 soupsieve==2.3
 tornado==6.1
-typing-extensions==3.10.0.2
+typing-extensions==4.0.0
 tzdata==2021.5
 tzlocal==4.1
 websockets==10.0
