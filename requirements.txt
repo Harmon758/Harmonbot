@@ -76,7 +76,7 @@ google-api-core[grpc]==2.2.2
 google-auth==2.3.3
 google-cloud-core==2.1.0
 googleapis-common-protos==1.53.0
-grpcio==1.41.1
+grpcio==1.42.0
 grpcio-status==1.41.1
 idna==3.3
 jaraco.context==4.1.1
