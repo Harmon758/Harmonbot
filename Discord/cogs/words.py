@@ -75,7 +75,7 @@ class Words(commands.Cog):
 		ctx.bot.views.append(paginator)
 	
 	@commands.command(aliases = ["audiodefine", "pronounce"])
-	async def pronunciation(self, ctx, word : str):
+	async def pronunciation(self, ctx, word: str):
 		'''Pronunciation of a word'''
 		pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(word, limit = 1)
 		description = pronunciation[0].raw.strip("()") if pronunciation else "Audio File Link"
