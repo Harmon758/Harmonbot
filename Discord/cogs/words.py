@@ -77,15 +77,24 @@ class Words(commands.Cog):
 	@commands.command(aliases = ["audiodefine", "pronounce"])
 	async def pronunciation(self, ctx, word: str):
 		'''Pronunciation of a word'''
-		pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(word, limit = 1)
-		description = pronunciation[0].raw.strip("()") if pronunciation else "Audio File Link"
+		pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(
+			word, limit = 1
+		)
+		description = (
+			pronunciation[0].raw.strip("()")
+			if pronunciation else "Audio File Link"
+		)
 		audio_file = ctx.bot.wordnik_word_api.getAudio(word, limit = 1)
 		if audio_file:
 			description = f"[{description}]({audio_file[0].fileUrl})"
 		elif not pronunciation:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Word or pronunciation not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Word or pronunciation not found"
+			)
 			return
-		await ctx.embed_reply(description, title = f"Pronunciation of {word.capitalize()}")
+		await ctx.embed_reply(
+			description, title = f"Pronunciation of {word.capitalize()}"
+		)
 	
 	@commands.command(aliases = ["rhymes"])
 	async def rhyme(self, ctx, word: str):
