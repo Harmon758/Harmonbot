@@ -84,6 +84,7 @@ class Words(commands.Cog):
 			pronunciation[0].raw.strip("()")
 			if pronunciation else "Audio File Link"
 		)
+		
 		audio_file = ctx.bot.wordnik_word_api.getAudio(word, limit = 1)
 		if audio_file:
 			description = f"[{description}]({audio_file[0].fileUrl})"
@@ -92,8 +93,10 @@ class Words(commands.Cog):
 				f"{ctx.bot.error_emoji} Word or pronunciation not found"
 			)
 			return
+		
 		await ctx.embed_reply(
-			description, title = f"Pronunciation of {word.capitalize()}"
+			title = f"Pronunciation of {word.capitalize()}",
+			description = description
 		)
 	
 	@commands.command(aliases = ["rhymes"])
