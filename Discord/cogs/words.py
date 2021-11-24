@@ -138,7 +138,7 @@ class Words(commands.Cog):
 			)
 	
 	@commands.command(aliases = ["synonyms"])
-	async def synonym(self, ctx, word : str):
+	async def synonym(self, ctx, word: str):
 		'''Synonyms of a word'''
 		try:
 			synonyms = ctx.bot.wordnik_word_api.getRelatedWords(
