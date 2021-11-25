@@ -152,14 +152,16 @@ class Words(commands.Cog):
 				)
 				return
 			raise
+		
 		if not synonyms:
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Word or synonyms not found"
 			)
 			return
+		
 		await ctx.embed_reply(
-			", ".join(synonyms[0].words),
-			title = f"Synonyms of {word.capitalize()}"
+			title = f"Synonyms of {word.capitalize()}",
+			description = ", ".join(synonyms[0].words)
 		)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
