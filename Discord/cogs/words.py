@@ -34,11 +34,13 @@ class Words(commands.Cog):
                 )
                 return
             raise
+
         if not antonyms:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Word or antonyms not found"
             )
             return
+
         await ctx.embed_reply(
             title = f"Antonyms of {word.capitalize()}",
             description = ", ".join(antonyms[0].words)
