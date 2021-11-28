@@ -48,7 +48,7 @@ class Words(commands.Cog):
 
     @commands.group(
         aliases = ["definition", "definitions", "dictionary"],
-        case_insensitive = True, invoke_without_command = True,
+        case_insensitive = True, invoke_without_command = True
     )
     async def define(self, ctx, word: str):
         '''Define a word'''
