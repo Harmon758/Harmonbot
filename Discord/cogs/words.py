@@ -234,7 +234,9 @@ class Words(commands.Cog):
         )
 
     @translate.command(name = "to")
-    async def translate_to(self, ctx, language_code: str, *, text: Optional[str]):
+    async def translate_to(
+        self, ctx, language_code: str, *, text: Optional[str]
+    ):
         '''Translate to a specific language'''
         if not text:
             if ctx.message.reference:
