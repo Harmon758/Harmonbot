@@ -270,13 +270,14 @@ class Words(commands.Cog):
         )
 
     @commands.group(
-        aliases = ["urband", "urban_dictionary", "urbandefine", "urban_define"],
-        case_insensitive = True, invoke_without_command = True
+        aliases = [
+            "urband", "urban_dictionary", "urbandefine", "urban_define"
+        ], case_insensitive = True, invoke_without_command = True
     )
     async def urbandictionary(self, ctx, *, term: str):
         '''Urban Dictionary'''
-        # TODO: Convert to define/dictionary subcommand urban and add urband etc. as command aliases
-
+        # TODO: Convert to define/dictionary subcommand urban and add urband
+        # etc. as command aliases
         url = "http://api.urbandictionary.com/v0/define"
         params = {"term": term}
         async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
