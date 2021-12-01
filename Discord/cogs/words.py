@@ -303,7 +303,9 @@ class DefineSource(menus.ListPageSource):
             "content": f"In response to: `{menu.ctx.message.clean_content}`",
             "embed": discord.Embed(
                 title = definition.word,
-                description = BeautifulSoup(definition.text, "html.parser").get_text(),
+                description = BeautifulSoup(
+                    definition.text, "html.parser"
+                ).get_text(),
                 color = menu.ctx.bot.bot_color
             ).set_author(
                 name = menu.ctx.author.display_name,
