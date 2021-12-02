@@ -80,7 +80,7 @@ class RuneScape(commands.Cog):
 		# add other? - https://runescape.wiki/w/RuneScape_Bestiary#beastData
 	
 	@runescape.command(aliases = ["levels", "level", "xp", "ranks", "rank"])
-	async def stats(self, ctx, *, username : str):
+	async def stats(self, ctx, *, username: str):
 		'''Stats'''
 		url = "http://services.runescape.com/m=hiscore/index_lite.ws"
 		params = {"player": username}
