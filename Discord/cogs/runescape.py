@@ -86,31 +86,50 @@ class RuneScape(commands.Cog):
 		params = {"player": username}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Player not found")
+				return await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Player not found"
+				)
 			data = await resp.text()
-		data = csv.DictReader(data.splitlines(), fieldnames = ("rank", "level", "xp"))
+		data = csv.DictReader(
+			data.splitlines(), fieldnames = ("rank", "level", "xp")
+		)
 		stats = collections.OrderedDict()
-		stats_names = ("Overall", "Attack", "Defence", "Strength", "Constitution", "Ranged", 
-						"Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", 
-						"Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", 
-						"Thieving", "Slayer", "Farming", "Runecrafting", "Hunter", "Construction", 
-						"Summoning", "Dungeoneering", "Divination", "Invention")
+		stats_names = (
+			"Overall", "Attack", "Defence", "Strength", "Constitution",
+			"Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching",
+			"Fishing", "Firemaking", "Crafting", "Smithing", "Mining",
+			"Herblore", "Agility", "Thieving", "Slayer", "Farming",
+			"Runecrafting", "Hunter", "Construction", "Summoning",
+			"Dungeoneering", "Divination", "Invention"
+		)
 		for stat in stats_names:
 			stats[stat] = next(data)
 
 		output = [f"`{name}`" for name in stats_names]
 		fields = [("Skill", '\n'.join(output))]
 		
-		max_length = max(len(f"{int(values['rank']):,d}") for values in stats.values())
-		output = [f"""`| {f"{int(values['rank']):,d}".rjust(max_length)}`""" for values in stats.values()]
+		max_length = max(
+			len(f"{int(values['rank']):,d}") for values in stats.values()
+		)
+		output = [
+			f"""`| {f"{int(values['rank']):,d}".rjust(max_length)}`"""
+			for values in stats.values()
+		]
 		fields.append(("| Rank", '\n'.join(output)))
 		
-		max_length = max(len(f"{int(values['xp']):,d}") for values in stats.values())
-		output = [f"""`| {values["level"].rjust(4).ljust(5)}| {f"{int(values['xp']):,d}".rjust(max_length)}`""" for values in stats.values()]
+		max_length = max(
+			len(f"{int(values['xp']):,d}") for values in stats.values()
+		)
+		output = [
+			f"""`| {values["level"].rjust(4).ljust(5)}| {f"{int(values['xp']):,d}".rjust(max_length)}`"""
+			for values in stats.values()
+		]
 		fields.append(("| Level | Experience", '\n'.join(output)))
 		
 		title_url = f"http://services.runescape.com/m=hiscore/compare?user1={username.replace(' ', '+')}"
-		await ctx.embed_reply(title = username, title_url = title_url, fields = fields)
+		await ctx.embed_reply(
+			title = username, title_url = title_url, fields = fields
+		)
 	
 	@runescape.command()
 	async def wiki(self, ctx):
