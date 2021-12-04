@@ -143,6 +143,9 @@ class RuneScape(commands.Cog):
 		Zybez RuneScape Community was shut down on September 17th, 2018
 		https://forums.zybez.net/topic/1783583-exit-post-the-end/
 		'''
-		# Previously used https://forums.zybez.net/runescape-2007-prices/api/?info
-		await ctx.embed_reply("See https://forums.zybez.net/topic/1783583-exit-post-the-end/")
+		# Previously used 
+		# https://forums.zybez.net/runescape-2007-prices/api/?info
+		await ctx.embed_reply(
+			"See https://forums.zybez.net/topic/1783583-exit-post-the-end/"
+		)
 
