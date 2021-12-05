@@ -22,7 +22,7 @@ class RuneScape(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["rs"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["rs"], case_insensitive = True, invoke_without_command = True)
 	async def runescape(self, ctx):
 		'''RuneScape'''
 		await ctx.send_help(ctx.command)
