@@ -26,9 +26,10 @@ class Python(commands.Cog):
         url = f"https://pypi.python.org/pypi/{package}/json"
         async with ctx.bot.aiohttp_session.get(url) as resp:
             if resp.status == 404:
-                return await ctx.embed_reply(
+                await ctx.embed_reply(
                     f"{ctx.bot.error_emoji} Package not found"
                 )
+                return
             data = await resp.json()
         await ctx.embed_reply(
             title = data["info"]["name"],
