@@ -21,7 +21,7 @@ class Resources(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.group(aliases = ["blizzard", "battle.net"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["blizzard", "battle.net"], case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def battlenet(self, ctx):
 		'''Battle.net'''
