@@ -235,7 +235,7 @@ class Resources(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply(data["longUrl"])
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def news(self, ctx, source: str):
 		'''
