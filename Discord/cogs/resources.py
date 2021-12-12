@@ -32,7 +32,7 @@ class Resources(commands.Cog):
 	
 	@battlenet.command(name = "run", aliases = ["launch"])
 	@checks.not_forbidden()
-	async def battlenet_run(self, ctx, *, game : str):
+	async def battlenet_run(self, ctx, *, game: str):
 		'''
 		Generate a Battle.net link to launch a game
 		You must have the Battle.net launcher open for the link to work
