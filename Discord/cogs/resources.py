@@ -37,9 +37,11 @@ class Resources(commands.Cog):
 		Generate a Battle.net link to launch a game
 		You must have the Battle.net launcher open for the link to work
 		'''
-		abbreviations = {"world of warcraft": "WoW", "wow": "WoW", "diablo 3": "D3", 
-						"starcraft 2": "S2", "hearthstone": "WTCG", "heroes of the storm": "Hero", 
-						"hots": "Hero", "overwatch": "Pro"}
+		abbreviations = {
+			"world of warcraft": "WoW", "wow": "WoW", "diablo 3": "D3",
+			"starcraft 2": "S2", "hearthstone": "WTCG",
+			"heroes of the storm": "Hero", "hots": "Hero", "overwatch": "Pro"
+		}
 		abbreviation = abbreviations.get(game.lower())
 		if not abbreviation:
 			await ctx.embed_reply(":no_entry: Game not found")
