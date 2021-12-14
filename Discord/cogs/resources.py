@@ -44,7 +44,7 @@ class Resources(commands.Cog):
 		}
 		abbreviation = abbreviations.get(game.lower())
 		if not abbreviation:
-			await ctx.embed_reply(":no_entry: Game not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
 			return
 		await ctx.embed_reply(f"[Launch {game}](battlenet://{abbreviation})")
 	
