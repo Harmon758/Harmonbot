@@ -42,8 +42,7 @@ class Resources(commands.Cog):
 			"starcraft 2": "S2", "hearthstone": "WTCG",
 			"heroes of the storm": "Hero", "hots": "Hero", "overwatch": "Pro"
 		}
-		abbreviation = abbreviations.get(game.lower())
-		if not abbreviation:
+		if not (abbreviation := abbreviations.get(game.lower())):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
 			return
 		await ctx.embed_reply(f"[Launch {game}](battlenet://{abbreviation})")
