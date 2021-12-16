@@ -47,7 +47,7 @@ class Resources(commands.Cog):
 			return
 		await ctx.embed_reply(f"[Launch {game}](battlenet://{abbreviation})")
 	
-	@commands.group(aliases = ["colour"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["colour"], case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def color(self, ctx, *, color: Union[discord.Color, str]):
 		'''
