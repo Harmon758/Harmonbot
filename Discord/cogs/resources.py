@@ -139,7 +139,7 @@ class Resources(commands.Cog):
 				pastedaccounts = ", ".join(f"{acc['Source']} ({acc['Id']})" for acc in data)
 		await ctx.embed_reply(f"Breached accounts: {breachedaccounts}\nPastes: {pastedaccounts}")
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def horoscope(self, ctx, sign: str):
 		'''Horoscope'''
