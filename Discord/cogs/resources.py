@@ -124,7 +124,9 @@ class Resources(commands.Cog):
 		url = "https://haveibeenpwned.com/api/v2/breachedaccount/" + name
 		headers = {"User-Agent": ctx.bot.user_agent}
 		params = {"truncateResponse": "true"}
-		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			url, headers = headers, params = params
+		) as resp:
 			if resp.status in (400, 404):
 				breachedaccounts = "None"
 			else:
@@ -136,8 +138,12 @@ class Resources(commands.Cog):
 				pastedaccounts = "None"
 			else:
 				data = await resp.json()
-				pastedaccounts = ", ".join(f"{acc['Source']} ({acc['Id']})" for acc in data)
-		await ctx.embed_reply(f"Breached accounts: {breachedaccounts}\nPastes: {pastedaccounts}")
+				pastedaccounts = ", ".join(
+					f"{acc['Source']} ({acc['Id']})" for acc in data
+				)
+		await ctx.embed_reply(
+			f"Breached accounts: {breachedaccounts}\nPastes: {pastedaccounts}"
+		)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
