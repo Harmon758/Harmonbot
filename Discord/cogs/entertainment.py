@@ -28,7 +28,7 @@ class Entertainment(commands.Cog):
 	# TODO: manga
 	# TODO: anime menu
 	
-	@commands.group(aliases = ["anilsit"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["anilsit"], case_insensitive = True, invoke_without_command = True)
 	async def anime(self, ctx, *, search: str):
 		'''Search AniList'''
 		url = "https://graphql.anilist.co"
