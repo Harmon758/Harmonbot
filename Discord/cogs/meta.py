@@ -143,7 +143,7 @@ class Meta(commands.Cog):
 			)
 		await ctx.embed_reply("Prefix(es) set: " + ' '.join(f'`"{prefix}"`' for prefix in prefixes))
 	
-	@commands.group(aliases = ["shard"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["shard"], case_insensitive = True, invoke_without_command = True)
 	async def shards(self, ctx):
 		'''Current number of shards'''
 		await ctx.embed_reply(ctx.bot.shard_count or 1)
