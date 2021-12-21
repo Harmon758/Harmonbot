@@ -208,7 +208,7 @@ class Random(commands.Cog):
 		'''Random playing card'''
 		await ctx.embed_reply(f":{random.choice(pydealer.const.SUITS).lower()}: {random.choice(pydealer.const.VALUES)}")
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def cat(self, ctx, category: Optional[str]):
 		'''Random image of a cat'''
 		url = "http://thecatapi.com/api/images/get"
