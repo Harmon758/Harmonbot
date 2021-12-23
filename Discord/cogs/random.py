@@ -219,9 +219,9 @@ class Random(commands.Cog):
 			data = await resp.text()
 		try:
 			if (url := xml.etree.ElementTree.fromstring(data).find(".//url")) is None:
-				return await ctx.embed_reply(":no_entry: Error: Category not found")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Category not found")
 		except xml.etree.ElementTree.ParseError:
-			await ctx.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		else:
 			await ctx.embed_reply(f"[\N{CAT FACE}]({url.text})", image_url = url.text)
 	
