@@ -219,7 +219,8 @@ class Random(commands.Cog):
 			data = await resp.text()
 		try:
 			if (url := xml.etree.ElementTree.fromstring(data).find(".//url")) is None:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Category not found")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Category not found")
+				return
 		except xml.etree.ElementTree.ParseError:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		else:
