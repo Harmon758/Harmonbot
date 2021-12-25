@@ -234,7 +234,7 @@ class Random(commands.Cog):
 		try:
 			categories = xml.etree.ElementTree.fromstring(data).findall(".//name")
 		except xml.etree.ElementTree.ParseError:
-			await ctx.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		else:
 			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 	
