@@ -229,7 +229,8 @@ class Random(commands.Cog):
 	@cat.command(name = "categories", aliases = ["cats"])
 	async def cat_categories(self, ctx):
 		'''Categories of cat images'''
-		async with ctx.bot.aiohttp_session.get("http://thecatapi.com/api/categories/list") as resp:
+		url = "http://thecatapi.com/api/categories/list"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		try:
 			categories = xml.etree.ElementTree.fromstring(data).findall(".//name")
