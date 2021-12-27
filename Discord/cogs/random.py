@@ -291,7 +291,7 @@ class Random(commands.Cog):
 			except dice.DiceFatalException as e:
 				await ctx.embed_reply(f":no_entry: Error: {e}")
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def date(self, ctx):
 		'''Random date'''
 		await ctx.embed_reply(datetime.date.fromordinal(random.randint(1, 365)).strftime("%B %d"))
