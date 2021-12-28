@@ -294,7 +294,11 @@ class Random(commands.Cog):
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def date(self, ctx):
 		'''Random date'''
-		await ctx.embed_reply(datetime.date.fromordinal(random.randint(1, 365)).strftime("%B %d"))
+		await ctx.embed_reply(
+			datetime.date.fromordinal(
+				random.randint(1, 365)
+			).strftime("%B %d")
+		)
 	
 	@commands.command()
 	async def day(self, ctx):
