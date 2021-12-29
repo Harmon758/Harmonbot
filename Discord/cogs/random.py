@@ -305,7 +305,7 @@ class Random(commands.Cog):
 		'''Random day of week'''
 		await ctx.embed_reply(random.choice(calendar.day_name))
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def dog(self, ctx, *, breed: Optional[str]):
 		'''
 		Random image of a dog
