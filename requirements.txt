@@ -30,7 +30,7 @@ numpy==1.21.4
 pandas==1.3.4
 parsedatetime==2.6
 pillow==8.4.0
-psutil==5.8.0
+psutil==5.9.0
 py-cpuinfo==8.0.0
 pycountry==20.7.3
 pydealer==1.4.0
