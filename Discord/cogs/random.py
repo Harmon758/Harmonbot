@@ -316,7 +316,8 @@ class Random(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
 			if data["status"] == "error":
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
+				return
 			await ctx.embed_reply(f"[:dog2:]({data['message']})", image_url = data["message"])
 		else:
 			url = "https://dog.ceo/api/breeds/image/random"
