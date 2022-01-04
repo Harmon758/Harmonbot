@@ -342,7 +342,7 @@ class Random(commands.Cog):
 		'''Random emote/emoji'''
 		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI)))
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def fact(self, ctx):
 		'''Random fact'''
 		url = "https://mentalfloss.com/api/facts"
