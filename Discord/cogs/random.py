@@ -351,7 +351,7 @@ class Random(commands.Cog):
 		# uses page, limit, and cb parameters, seemingly to no effect
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 503:
-				return await ctx.embed_reply(":no_entry: Error: API Service Unavailable")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: API Service Unavailable")
 			data = await resp.json(content_type = "text/plain")
 		await ctx.embed_reply(BeautifulSoup(data[0]["fact"], "lxml").text, 
 								image_url = data[0]["primaryImage"])
