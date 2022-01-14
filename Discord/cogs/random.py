@@ -427,7 +427,8 @@ class Random(commands.Cog):
 		'''Random joke'''
 		# Sources:
 		# https://github.com/KiaFathi/tambalAPI
-		# https://www.kaggle.com/abhinavmoudgil95/short-jokes (https://github.com/amoudgl/short-jokes-dataset)
+		# https://www.kaggle.com/abhinavmoudgil95/short-jokes 
+		# (https://github.com/amoudgl/short-jokes-dataset)
 		if self.jokes:
 			await ctx.embed_reply(random.choice(self.jokes))
 	
