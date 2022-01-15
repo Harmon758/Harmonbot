@@ -432,7 +432,7 @@ class Random(commands.Cog):
 		if self.jokes:
 			await ctx.embed_reply(random.choice(self.jokes))
 	
-	@joke.group(name = "dad", invoke_without_command = True, case_insensitive = True)
+	@joke.group(name = "dad", case_insensitive = True, invoke_without_command = True)
 	async def joke_dad(self, ctx, joke_id: Optional[str]):
 		'''Random dad joke'''
 		# TODO: search, GraphQL?
