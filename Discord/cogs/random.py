@@ -442,8 +442,11 @@ class Random(commands.Cog):
 		headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
 		async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
 			data = await resp.json()
+		
 		if data["status"] == 404:
-			return await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+			return
+		
 		await ctx.embed_reply(data["joke"], footer_text = f"Joke ID: {data['id']}")
 	
 	@joke_dad.command(name = "image")
