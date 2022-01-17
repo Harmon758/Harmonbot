@@ -444,7 +444,7 @@ class Random(commands.Cog):
 			data = await resp.json()
 		
 		if data["status"] == 404:
-			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
 			return
 		
 		await ctx.embed_reply(data["joke"], footer_text = f"Joke ID: {data['id']}")
