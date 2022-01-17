@@ -14,7 +14,7 @@ chess==1.7.0
 clarifai-grpc==7.9.0
 cryptography==35.0.0
 dice==3.1.2
-emoji==0.6.0
+emoji==1.6.3
 feedparser==6.0.8
 gitpython==3.1.8
 google-cloud-translate==3.6.1
