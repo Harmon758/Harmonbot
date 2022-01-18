@@ -432,22 +432,30 @@ class Random(commands.Cog):
 		if self.jokes:
 			await ctx.embed_reply(random.choice(self.jokes))
 	
-	@joke.group(name = "dad", case_insensitive = True, invoke_without_command = True)
+	@joke.group(
+		name = "dad", case_insensitive = True, invoke_without_command = True
+	)
 	async def joke_dad(self, ctx, joke_id: Optional[str]):
 		'''Random dad joke'''
 		# TODO: search, GraphQL?
 		url = "https://icanhazdadjoke.com/"
 		if joke_id:
 			url += "j/" + joke_id
-		headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
+		headers = {
+			"Accept": "application/json", "User-Agent": ctx.bot.user_agent
+		}
 		async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
 			data = await resp.json()
 		
 		if data["status"] == 404:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['message']}"
+			)
 			return
 		
-		await ctx.embed_reply(data["joke"], footer_text = f"Joke ID: {data['id']}")
+		await ctx.embed_reply(
+			data["joke"], footer_text = f"Joke ID: {data['id']}"
+		)
 	
 	@joke_dad.command(name = "image")
 	async def joke_dad_image(self, ctx, joke_id: Optional[str]):
