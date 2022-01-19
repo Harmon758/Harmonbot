@@ -462,11 +462,17 @@ class Random(commands.Cog):
 		'''Random dad joke as an image'''
 		if not joke_id:
 			url = "https://icanhazdadjoke.com/"
-			headers = {"Accept": "application/json", "User-Agent": ctx.bot.user_agent}
-			async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
+			headers = {
+				"Accept": "application/json", "User-Agent": ctx.bot.user_agent
+			}
+			async with ctx.bot.aiohttp_session.get(
+				url, headers = headers
+			) as resp:
 				data = await resp.json()
 			joke_id = data["id"]
-		await ctx.embed_reply(image_url = f"https://icanhazdadjoke.com/j/{joke_id}.png")
+		await ctx.embed_reply(
+			image_url = f"https://icanhazdadjoke.com/j/{joke_id}.png"
+		)
 	
 	@commands.command(aliases = ["lat"])
 	async def latitude(self, ctx):
