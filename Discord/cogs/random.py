@@ -496,7 +496,7 @@ class Random(commands.Cog):
 		'''Random longitude'''
 		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
-	@commands.group(aliases = ["rng"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["rng"], case_insensitive = True, invoke_without_command = True)
 	async def number(self, ctx, number: int = 10):
 		'''
 		Random number
