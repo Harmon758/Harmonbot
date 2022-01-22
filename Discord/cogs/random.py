@@ -505,7 +505,7 @@ class Random(commands.Cog):
 		try:
 			await ctx.embed_reply(random.randint(1, number))
 		except ValueError:
-			await ctx.embed_reply(":no_entry: Error: Input must be >= 1")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Input must be >= 1")
 	
 	@commands.command(aliases = ["why"])
 	async def question(self, ctx):
