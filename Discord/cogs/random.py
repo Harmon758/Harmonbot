@@ -496,7 +496,10 @@ class Random(commands.Cog):
 		'''Random longitude'''
 		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
-	@commands.group(aliases = ["rng"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["rng"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def number(self, ctx, number: int = 10):
 		'''
 		Random number
@@ -505,7 +508,9 @@ class Random(commands.Cog):
 		try:
 			await ctx.embed_reply(random.randint(1, number))
 		except ValueError:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Input must be >= 1")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Input must be >= 1"
+			)
 	
 	@commands.command(aliases = ["why"])
 	async def question(self, ctx):
