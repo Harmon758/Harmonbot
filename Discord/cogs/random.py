@@ -551,5 +551,7 @@ class Random(commands.Cog):
 	@commands.command()
 	async def word(self, ctx):
 		'''Random word'''
-		await ctx.embed_reply(self.bot.wordnik_words_api.getRandomWord().word.capitalize())
+		await ctx.embed_reply(
+			self.bot.wordnik_words_api.getRandomWord().word.capitalize()
+		)
 
