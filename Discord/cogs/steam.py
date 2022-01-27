@@ -78,8 +78,12 @@ class Steam(commands.Cog):
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
+		
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
+		
 		if not app:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
+			return
+		
 		await ctx.embed_reply(f"steam://run/{app['appid']}", title = f"Launch {app['name']}")
 
