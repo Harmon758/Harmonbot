@@ -94,7 +94,7 @@ pycparser==2.20
 pynacl==1.4.0
 pysocks==1.7.1
 pytz-deprecation-shim==0.1.0.post0
-requests-oauthlib==1.3.0
+requests-oauthlib==1.3.1
 rsa==4.7.2
 sgmllib3k==1.0.0
 six==1.16.0
