@@ -83,5 +83,5 @@ class Steam(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
 			return
 		
-		await ctx.embed_reply(f"steam://run/{app['appid']}", title = f"Launch {app['name']}")
+		await ctx.embed_reply(title = f"Launch {app['name']}", description = f"steam://run/{app['appid']}")
 
