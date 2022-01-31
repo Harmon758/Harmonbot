@@ -79,9 +79,17 @@ class Steam(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		
-		if not (app := discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])):
+		if not (
+			app := discord.utils.find(
+				lambda app: app["name"].lower() == game.lower(),
+				data["applist"]["apps"]
+			)
+		):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
 			return
 		
-		await ctx.embed_reply(title = f"Launch {app['name']}", description = f"steam://run/{app['appid']}")
+		await ctx.embed_reply(
+			title = f"Launch {app['name']}",
+			description = f"steam://run/{app['appid']}"
+		)
 
