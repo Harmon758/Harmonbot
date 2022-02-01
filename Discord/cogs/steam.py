@@ -56,17 +56,23 @@ class Steam(commands.Cog):
 		url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
+		
 		app = discord.utils.find(lambda app: app["name"].lower() == game.lower(), data["applist"]["apps"])
+		
 		if not app:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
+			return
+		
 		appid = str(app["appid"])
+		
 		url = "http://store.steampowered.com/api/appdetails/"
 		params = {"appids": appid}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		
 		data = data[appid]["data"]
-		await ctx.embed_reply(data["short_description"], 
-								title = data["name"], title_url = data["website"], 
+		await ctx.embed_reply(title = data["name"], title_url = data["website"], 
+								description = data["short_description"], 
 								fields = (("Release Date", data["release_date"]["date"]), 
 											("Free", "Yes" if data["is_free"] else "No"), 
 											("App ID", data["steam_appid"])), 
