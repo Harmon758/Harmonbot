@@ -43,12 +43,16 @@ class Steam(commands.Cog):
 	async def gamecount(self, ctx, account: SteamProfile):
 		'''Find how many games someone has'''
 		url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
-		params = {"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": account["steamid"]}
+		params = {
+			"key": ctx.bot.STEAM_WEB_API_KEY, "steamid": account["steamid"]
+		}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		gamecount = data["response"]["game_count"]
-		await ctx.embed_reply(f"[{account['personaname']}]({account['profileurl']}) has {gamecount} games", 
-								thumbnail_url = account["avatarfull"])
+		await ctx.embed_reply(
+			f"[{account['personaname']}]({account['profileurl']}) has {gamecount} games", 
+			thumbnail_url = account["avatarfull"]
+		)
 	
 	@steam.command(aliases = ["game_info"])
 	async def gameinfo(self, ctx, *, game: str):
