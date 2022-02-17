@@ -93,7 +93,10 @@ class Search(commands.Cog):
 	@commands.command()
 	async def bing(self, ctx, *search: str):
 		'''Search with Bing'''
-		await ctx.embed_reply(f"[Bing search for \"{' '.join(search)}\"](http://www.bing.com/search?q={'+'.join(search)})")
+		await ctx.embed_reply(
+			f"[Bing search for \"{' '.join(search)}\"]"
+			f"(http://www.bing.com/search?q={'+'.join(search)})"
+		)
 	
 	@commands.command()
 	async def duckduckgo(self, ctx, *search: str):
