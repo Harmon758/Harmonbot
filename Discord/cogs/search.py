@@ -101,7 +101,10 @@ class Search(commands.Cog):
 	@commands.command()
 	async def duckduckgo(self, ctx, *search: str):
 		'''Search with DuckDuckGo'''
-		await ctx.embed_reply(f"[DuckDuckGo search for \"{' '.join(search)}\"](https://www.duckduckgo.com/?q={'+'.join(search)})")
+		await ctx.embed_reply(
+			f"[DuckDuckGo search for \"{' '.join(search)}\"]"
+			f"(https://www.duckduckgo.com/?q={'+'.join(search)})"
+		)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def google(self, ctx, *, search: str):
