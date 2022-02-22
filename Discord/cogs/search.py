@@ -109,7 +109,10 @@ class Search(commands.Cog):
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def google(self, ctx, *, search: str):
 		'''Google search'''
-		await ctx.embed_reply(f"[Google search for \"{search}\"](https://www.google.com/search?q={search.replace(' ', '+')})")
+		await ctx.embed_reply(
+			f"[Google search for \"{search}\"]"
+			f"(https://www.google.com/search?q={search.replace(' ', '+')})"
+		)
 	
 	@commands.command(aliases = ["im_feeling_lucky"])
 	async def imfeelinglucky(self, ctx, *search: str):
