@@ -17,7 +17,7 @@ dice==3.1.2
 emoji==0.6.0
 feedparser==6.0.8
 gitpython==3.1.8
-google-cloud-translate==3.6.1
+google-cloud-translate==3.7.0
 hypothesis==6.24.2
 imageio==2.10.3
 imgurpython==1.1.7
