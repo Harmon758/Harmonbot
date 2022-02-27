@@ -60,7 +60,7 @@ wordcloud==1.8.1
 wordnik-py3==2.1.2
 youtube-dl==2021.6.6
 
-APScheduler==3.6.3
+APScheduler==3.9.1
 async-timeout==3.0.1
 attrs==21.2.0
 cachetools==4.2.2
