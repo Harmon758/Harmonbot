@@ -57,12 +57,6 @@ jobs:
     docker:
       - image: cimg/go:1.16.15
 
-    #### TEMPLATE_NOTE: go expects specific checkout path representing url
-    #### expecting it in the form of
-    ####   /go/src/github.com/circleci/go-tool
-    ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
-
     steps:
       - checkout
       - run: go get github.com/bwmarrin/discordgo
