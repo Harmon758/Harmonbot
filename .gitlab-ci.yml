@@ -10,7 +10,7 @@ variables:
 Discord:
   # Official language image. Look for the different tagged releases at:
   # https://hub.docker.com/r/library/python/tags/
-  image: python:3.9.7
+  image: python:3.9.9
   services:
     - postgres:12.1
   # Pip's cache doesn't store the python packages
@@ -35,7 +35,7 @@ Discord:
 Telegram:
   # Official language image. Look for the different tagged releases at:
   # https://hub.docker.com/r/library/python/tags/
-  image: python:3.9.7
+  image: python:3.9.9
   # Pip's cache doesn't store the python packages
   # https://pip.pypa.io/en/stable/reference/pip_install/#caching
   # If you want to also cache the installed packages, you have to install
