@@ -193,6 +193,6 @@ func changeAvatar(s *discordgo.Session) {
 
 	avatar := fmt.Sprintf("data:image/png;base64,%s", string(base64))
 
-	_, err = s.UserUpdate("", "", me.Username, avatar, "")
+	_, err = s.UserUpdate(me.Username, avatar)
 	check(err)
 }
