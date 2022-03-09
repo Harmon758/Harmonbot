@@ -6,7 +6,7 @@ version: 2
 jobs:
   test-python:
     docker:
-      - image: circleci/python:3.9.7
+      - image: cimg/python:3.9.7
       - image: postgres:12.1
         environment:
           POSTGRES_USER: harmonbot
@@ -55,7 +55,7 @@ jobs:
 
   test-golang:
     docker:
-      - image: circleci/golang:1.16.15
+      - image: cimg/go:1.16.15
 
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
