@@ -28,7 +28,7 @@ Discord:
     - virtualenv venv
     - source venv/bin/activate
   script:
-    - pip install --upgrade --no-deps --requirement requirements.txt
+    - pip install --upgrade --requirement requirements.txt
     - cd Discord
     - python -u Harmonbot.py
 
@@ -51,7 +51,7 @@ Telegram:
     - virtualenv venv
     - source venv/bin/activate
   script:
-    - pip install --upgrade --no-deps --requirement requirements.txt
+    - pip install --upgrade --requirement requirements.txt
     - cd Telegram
     - python Telegram_Harmonbot.py
 

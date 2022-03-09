@@ -44,7 +44,7 @@ cache:
 
 install:
   - python -m pip install --upgrade pip
-  - pip install --upgrade --no-deps --requirement requirements.txt
+  - pip install --upgrade --requirement requirements.txt
 
 for:
   -

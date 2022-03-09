@@ -28,7 +28,7 @@ jobs:
             python -m venv venv
             . venv/bin/activate
             pip install --upgrade pip
-            pip install --upgrade --no-deps --requirement requirements.txt
+            pip install --upgrade --requirement requirements.txt
 
       - run:
           name: Run Discord test
