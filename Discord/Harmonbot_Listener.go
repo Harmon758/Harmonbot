@@ -70,7 +70,6 @@ func main() {
 	if dgv != nil {
 		dgv.Close()
 	}
-	dg.Logout()
 	dg.Close()
 
 	return
