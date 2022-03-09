@@ -55,7 +55,7 @@ jobs:
 
   test-golang:
     docker:
-      - image: circleci/golang:1.14.15
+      - image: circleci/golang:1.15.15
 
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
