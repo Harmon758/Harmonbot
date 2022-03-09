@@ -58,7 +58,7 @@ Telegram:
 Discord Listener:
   variables:
     REPO_NAME: github.com/harmon758/harmonbot
-  image: golang:1.13.8
+  image: golang:1.14.15
   # The problem is that to be able to use go get, one needs to put
   # the repository in the $GOPATH. So for example, if your gitlab domain
   # is gitlab.com, and your repository is namespace/project, and with
