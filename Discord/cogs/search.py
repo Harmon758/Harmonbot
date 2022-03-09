@@ -172,7 +172,10 @@ class Search(commands.Cog):
 	@commands.command()
 	async def lmgtfy(self, ctx, *search: str):
 		'''Let Me Google That For You'''
-		await ctx.embed_reply(f"[LMGTFY: \"{' '.join(search)}\"](http://lmgtfy.com/?q={'+'.join(search)})")
+		await ctx.embed_reply(
+			f"[LMGTFY: \"{' '.join(search)}\"]"
+			f"(http://lmgtfy.com/?q={'+'.join(search)})"
+		)
 	
 	@commands.command()
 	async def lmytfy(self, ctx, *search: str):
