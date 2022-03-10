@@ -1,4 +1,4 @@
-version: 1.16.0-{build}
+version: 1.16.1-{build}
 
 environment:
   # https://www.appveyor.com/docs/services-databases/#postgresql
@@ -7,12 +7,12 @@ environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: Discord
-      PYTHON: C:\Python38-x64
+      PYTHON: C:\Python39-x64
       PYTHON_VERSION: 3.9.10
       PYTHON_ARCH: 64
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PLATFORM: Telegram
-      PYTHON: C:\Python38-x64
+      PYTHON: C:\Python39-x64
       PYTHON_VERSION: 3.9.10
       PYTHON_ARCH: 64
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
