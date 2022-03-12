@@ -91,7 +91,7 @@ protobuf==3.19.4
 proto-plus==1.20.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
-pycparser==2.20
+pycparser==2.21
 pynacl==1.4.0
 pysocks==1.7.1
 pytz-deprecation-shim==0.1.0.post0
