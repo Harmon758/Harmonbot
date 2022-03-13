@@ -188,7 +188,10 @@ class Search(commands.Cog):
 	@commands.command()
 	async def startpage(self, ctx, *search: str):
 		'''Search with StartPage'''
-		await ctx.embed_reply(f"[StartPage search for \"{' '.join(search)}\"](https://www.startpage.com/do/search?query={'+'.join(search)})")
+		await ctx.embed_reply(
+			f"[StartPage search for \"{' '.join(search)}\"]"
+			f"(https://www.startpage.com/do/search?query={'+'.join(search)})"
+		)
 	
 	@commands.group(description = "[UESP](http://uesp.net/wiki/Main_Page)", 
 					invoke_without_command = True, case_insensitive = True)
