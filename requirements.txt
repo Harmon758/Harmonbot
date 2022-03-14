@@ -86,7 +86,7 @@ lxml==4.8.0
 mpmath==1.2.1
 multidict==5.2.0
 oauthlib==3.2.0
-orjson==3.6.4
+orjson==3.6.7
 protobuf==3.19.4
 proto-plus==1.20.3
 pyasn1==0.4.8
