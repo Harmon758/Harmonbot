@@ -76,7 +76,7 @@ gitdb==4.0.7
 google-api-core[grpc]==2.2.2
 google-auth==2.3.3
 google-cloud-core==2.1.0
-googleapis-common-protos==1.53.0
+googleapis-common-protos==1.55.0
 grpcio==1.44.0
 grpcio-status==1.44.0
 idna==3.3
