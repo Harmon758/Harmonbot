@@ -12,7 +12,7 @@ asyncpg==0.24.0
 beautifulsoup4==4.10.0
 chess==1.7.0
 clarifai-grpc==7.9.0
-cryptography==35.0.0
+cryptography==36.0.2
 dice==3.1.2
 emoji==0.6.0
 feedparser==6.0.8
