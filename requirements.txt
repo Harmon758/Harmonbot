@@ -46,7 +46,7 @@ requests[socks]==2.27.1
 scipy==1.8.0
 seaborn==0.11.2
 sentry-sdk==1.5.7
-setuptools==60.9.3
+setuptools==60.10.0
 speechrecognition==3.8.1
 sympy==1.10
 tabulate==0.8.9
