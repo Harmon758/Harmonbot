@@ -35,7 +35,7 @@ py-cpuinfo==8.0.0
 pycountry==22.3.5
 pydealer==1.4.0
 pygost==5.6
-pyowm==3.1.1
+pyowm==3.3.0
 pyparsing==2.4.7
 pyspellchecker==0.6.3
 python-aiml==0.9.3
