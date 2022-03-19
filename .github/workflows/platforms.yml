@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3.0.0
     - name: Set up PostgreSQL ${{ matrix.postgresql-version }}
       uses: harmon758/postgresql-action@v1
       with:
@@ -64,7 +64,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3.0.0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2.2.2
       with:
@@ -119,7 +119,7 @@ jobs:
       with:
         go-version: ${{ matrix.go-version }}
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3.0.0
     - name: Get dependencies
       run: |
         go get github.com/bwmarrin/discordgo
