@@ -5,7 +5,7 @@ discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@fbb8803
 # TwitchIO@rewrite
 twitchio @ git+https://github.com/TwitchIO/Twitchio.git@0100974
 pydle==0.9.2
-python-telegram-bot==13.9
+python-telegram-bot==13.10
 
 aiohttp==3.8.1
 asyncpg==0.25.0
