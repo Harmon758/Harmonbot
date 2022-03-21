@@ -3,7 +3,7 @@ discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@45d498c
 # discord-ext-menus==1.0.0a
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@fbb8803
 # TwitchIO@rewrite
-twitchio @ git+https://github.com/TwitchIO/Twitchio.git@665c7ce
+twitchio @ git+https://github.com/TwitchIO/Twitchio.git@8a77d78
 pydle==0.9.2
 python-telegram-bot==13.11
 
