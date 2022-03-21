@@ -103,7 +103,7 @@ smmap==4.0.0
 sortedcontainers==2.4.0
 soupsieve==2.3
 tornado==6.1
-tzdata==2021.5
+tzdata==2022.1
 tzlocal==4.1
 websockets==10.0
 xmltodict==0.12.0
