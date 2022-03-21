@@ -58,7 +58,7 @@ wand==0.6.7
 wolframalpha==5.0.0
 wordcloud==1.8.1
 wordnik-py3==2.1.2
-youtube-dl==2021.6.6
+youtube-dl==2021.12.17
 
 aiosignal==1.2.0
 APScheduler==3.6.3
