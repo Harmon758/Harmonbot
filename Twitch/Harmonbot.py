@@ -283,6 +283,7 @@ class Bot(commands.Bot):
 dotenv.load_dotenv()
 bot = Bot(irc_token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN"), 
 			client_id = os.getenv("TWITCH_CLIENT_ID"), 
+			client_secret = os.getenv("TWITCH_CLIENT_SECRET"), 
 			nick = "harmonbot", prefix = '!')
 bot.run()
 
