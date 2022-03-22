@@ -12,11 +12,13 @@ from typing import Optional
 
 from bs4 import BeautifulSoup
 import pydealer
+import pyparsing
 
 # from modules import war
 from utilities import checks
 
 sys.path.insert(0, "..")
+from units.calculation import calculate
 from units import games
 sys.path.pop(0)
 
@@ -78,6 +80,63 @@ class Games(commands.Cog):
 						object, words[-1], ' '.join(words[:-1])
 					)
 			# TODO: Properly handle object against not at end
+	
+	@commands.command(name = "24", aliases = ["twenty-four"])
+	@checks.not_forbidden()
+	async def twenty_four(self, ctx):
+		'''24 Game'''
+		
+		def check_solution(numbers):
+			for index_1, number_1 in enumerate(numbers[:-1]):
+				for index_2, number_2 in enumerate(numbers[index_1 + 1:], index_1 + 1):
+					values = {number_1 + number_2, number_1 * number_2, number_1 - number_2, number_2 - number_1}
+					if number_1:
+						values.add(number_2 / number_1)
+					if number_2:
+						values.add(number_1 / number_2)
+					if len(numbers) > 2:
+						next_items = numbers[:index_1] + numbers[index_1 + 1:index_2] + numbers[index_2 + 1:]
+						for value in values:
+							if check_solution(next_items + [value]):
+								return True
+					else:
+						return any(abs(value - 24) < 0.1 for value in values)
+			return False
+		
+		while not check_solution(numbers := [random.randint(1,9) for _ in range(4)]):
+			pass
+		
+		CEK = '\N{COMBINING ENCLOSING KEYCAP}'
+		numbers = list(map(str, numbers))
+		await ctx.embed_reply(f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
+								f"{numbers[2]}{CEK}{numbers[3]}{CEK}\n")
+		
+		async def incorrect(message, value):
+			response_ctx = await ctx.bot.get_context(message)
+			await response_ctx.embed_reply(f"{message.content} = {value}", title = "Incorrect", 
+											in_response_to = False, attempt_delete = False)
+		
+		def check(message):
+			if message.channel != ctx.channel:
+				return False
+			if any(character not in numbers + [' ', '+', '-', '*', '/', '(', ')'] for character in message.content):
+				return False
+			for number in set(numbers):
+				if message.content.count(number) != numbers.count(number):
+					return False
+			try:
+				if (value := round(calculate(message.content), 1)) != 24:
+					ctx.bot.loop.create_task(incorrect(message, int(value)), 
+												name = "Send response to incorrect solution for 24 Game")
+					return False
+			except pyparsing.ParseException:
+				return False
+			return True
+		
+		message = await ctx.bot.wait_for('message', check = check)
+		ctx = await ctx.bot.get_context(message)
+		await ctx.embed_reply(f"{message.content} = 24", title = "Correct!", 
+								in_response_to = False, attempt_delete = False)
 	
 	@commands.command()
 	@checks.not_forbidden()
