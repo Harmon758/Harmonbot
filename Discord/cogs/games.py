@@ -88,13 +88,17 @@ class Games(commands.Cog):
 		
 		CEK = '\N{COMBINING ENCLOSING KEYCAP}'
 		numbers = list(map(str, numbers))
-		await ctx.embed_reply(f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
-								f"{numbers[2]}{CEK}{numbers[3]}{CEK}\n")
+		await ctx.embed_reply(
+			f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
+			f"{numbers[2]}{CEK}{numbers[3]}{CEK}\n"
+		)
 		
 		async def incorrect(message, value):
 			response_ctx = await ctx.bot.get_context(message)
-			await response_ctx.embed_reply(f"{message.content} = {value}", title = "Incorrect", 
-											in_response_to = False, attempt_delete = False)
+			await response_ctx.embed_reply(
+				f"{message.content} = {value}", title = "Incorrect", 
+				in_response_to = False, attempt_delete = False
+			)
 		
 		def check(message):
 			if message.channel != ctx.channel:
@@ -102,15 +106,19 @@ class Games(commands.Cog):
 			if (value := check_solution(numbers, message.content)) is False:
 				return False
 			elif value != 24:
-				ctx.bot.loop.create_task(incorrect(message, int(value)), 
-											name = "Send response to incorrect solution for 24 Game")
+				ctx.bot.loop.create_task(
+					incorrect(message, int(value)), 
+					name = "Send response to incorrect solution for 24 Game"
+				)
 				return False
 			return True
 		
 		message = await ctx.bot.wait_for('message', check = check)
 		ctx = await ctx.bot.get_context(message)
-		await ctx.embed_reply(f"{message.content} = 24", title = "Correct!", 
-								in_response_to = False, attempt_delete = False)
+		await ctx.embed_reply(
+			f"{message.content} = 24", title = "Correct!", 
+			in_response_to = False, attempt_delete = False
+		)
 	
 	@commands.command()
 	@checks.not_forbidden()
