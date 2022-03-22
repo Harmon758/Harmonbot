@@ -96,7 +96,8 @@ class Games(commands.Cog):
 		async def incorrect(message, value):
 			response_ctx = await ctx.bot.get_context(message)
 			await response_ctx.embed_reply(
-				f"{message.content} = {value}", title = "Incorrect", 
+				title = "Incorrect",
+				description = f"{message.content} = {value}",
 				in_response_to = False, attempt_delete = False
 			)
 		
@@ -105,7 +106,7 @@ class Games(commands.Cog):
 				return False
 			if (value := check_solution(numbers, message.content)) is False:
 				return False
-			elif value != 24:
+			if value != 24:
 				ctx.bot.loop.create_task(
 					incorrect(message, int(value)), 
 					name = "Send response to incorrect solution for 24 Game"
@@ -116,7 +117,7 @@ class Games(commands.Cog):
 		message = await ctx.bot.wait_for('message', check = check)
 		ctx = await ctx.bot.get_context(message)
 		await ctx.embed_reply(
-			f"{message.content} = 24", title = "Correct!", 
+			title = "Correct!", description = f"{message.content} = 24",
 			in_response_to = False, attempt_delete = False
 		)
 	
