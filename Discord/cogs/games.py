@@ -121,7 +121,7 @@ class Games(commands.Cog):
 				return False
 			if any(character not in numbers + [' ', '+', '-', '*', '/', '(', ')'] for character in message.content):
 				return False
-			if len(re.split("\W+", message.content)) != 4:
+			if len(list(filter(None, re.split("\W+", message.content)))) != 4:
 				return False
 			for number in set(numbers):
 				if message.content.count(number) != numbers.count(number):
