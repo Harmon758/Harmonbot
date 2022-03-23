@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands, tasks
 
 import asyncio
-import datetime
 from itertools import zip_longest
 import logging
 import sys
