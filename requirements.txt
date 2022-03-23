@@ -34,7 +34,7 @@ psutil==5.9.0
 py-cpuinfo==8.0.0
 pycountry==22.3.5
 pydealer==1.4.0
-pygost==5.6
+pygost==5.11
 pyowm==3.1.1
 pyparsing==2.4.7
 pyspellchecker==0.6.3
