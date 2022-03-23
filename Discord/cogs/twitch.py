@@ -338,10 +338,17 @@ class Twitch(commands.Cog):
 		)
 		
 		if not deleted:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that game")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} "
+				"This text channel isn't following that game"
+			)
 			return
 		
-		await ctx.embed_reply(f"Removed the game, [`{game}`](https://www.twitch.tv/directory/game/{game}), from this text channel")
+		await ctx.embed_reply(
+			"Removed the game, "
+			f"[`{game}`](https://www.twitch.tv/directory/game/{game}), "
+			"from this text channel"
+		)
 	
 	@remove.command(name = "keyword", aliases = ["query", "search"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
