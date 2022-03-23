@@ -115,14 +115,21 @@ class RSS(commands.Cog):
 		if "ttl" in feed_info.feed:
 			ttl = int(feed_info.feed.ttl)
 		for entry in feed_info.entries:
-			await ctx.bot.db.execute(
-				"""
-				INSERT INTO rss.entries (entry, feed)
-				VALUES ($1, $2)
-				ON CONFLICT (entry, feed) DO NOTHING
-				""", 
-				entry.id, url
-			)
+			try:
+				await ctx.bot.db.execute(
+					"""
+					INSERT INTO rss.entries (entry, feed)
+					VALUES ($1, $2)
+					ON CONFLICT (entry, feed) DO NOTHING
+					""", 
+					entry.id, url
+				)
+			except AttributeError:
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} "
+					"Error processing feed: Feed entry missing ID"
+				)
+				return
 		await ctx.bot.db.execute(
 			"""
 			INSERT INTO rss.feeds (channel_id, feed, last_checked, ttl)
