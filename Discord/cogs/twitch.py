@@ -29,7 +29,9 @@ class Twitch(commands.Cog):
 	
 	async def initialize_database(self):
 		await self.bot.connect_to_database()
-		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS twitch_notifications")
+		await self.bot.db.execute(
+			"CREATE SCHEMA IF NOT EXISTS twitch_notifications"
+		)
 		await self.bot.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS twitch_notifications.channels (
