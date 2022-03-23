@@ -111,10 +111,14 @@ class Twitch(commands.Cog):
 			ctx.channel.id, username, user.id
 		)
 		if not inserted:
-			await ctx.embed_reply(f"This text channel is already following the channel, `{user.display_name}`")
+			await ctx.embed_reply(
+				f"This text channel is already following the channel, `{user.display_name}`"
+			)
 			return
-		await ctx.embed_reply(f"Added the Twitch channel, [`{user.display_name}`](https://www.twitch.tv/{user.login}), to this text channel\n"
-								"I will now announce here when this Twitch channel goes live")
+		await ctx.embed_reply(
+			f"Added the Twitch channel, [`{user.display_name}`](https://www.twitch.tv/{user.login}), to this text channel\n"
+			"I will now announce here when this Twitch channel goes live"
+		)
 	
 	@add.command(name = "filter")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
