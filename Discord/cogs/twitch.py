@@ -284,8 +284,11 @@ class Twitch(commands.Cog):
 			""", 
 			ctx.channel.id, user.id
 		)
+		
 		if not deleted:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that Twitch channel")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that Twitch channel")
+			return
+		
 		await ctx.embed_reply(f"Removed the Twitch channel, [`{user.display_name}`](https://www.twitch.tv/{user.login}), from this text channel")
 	
 	@remove.command(name = "filter")
