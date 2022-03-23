@@ -312,10 +312,15 @@ class Twitch(commands.Cog):
 		)
 		
 		if not deleted:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel doesn't have that filter")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} "
+				"This text channel doesn't have that filter"
+			)
 			return
 		
-		await ctx.embed_reply(f"Removed the filter, `{string}`, from this text channel")
+		await ctx.embed_reply(
+			f"Removed the filter, `{string}`, from this text channel"
+		)
 	
 	@remove.command(name = "game")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
