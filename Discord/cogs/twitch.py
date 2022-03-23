@@ -310,8 +310,11 @@ class Twitch(commands.Cog):
 			""", 
 			ctx.channel.id, string
 		)
+		
 		if not deleted:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel doesn't have that filter")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel doesn't have that filter")
+			return
+		
 		await ctx.embed_reply(f"Removed the filter, `{string}`, from this text channel")
 	
 	@remove.command(name = "game")
