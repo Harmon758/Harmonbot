@@ -227,8 +227,8 @@ class Twitch(commands.Cog):
 			ctx.channel.id
 		)
 		await ctx.embed_reply(
-			'\n'.join(record["filter"] for record in records), 
-			title = "Twitch stream title filters in this text channel"
+			title = "Twitch stream title filters in this text channel",
+			description = '\n'.join(record["filter"] for record in records)
 		)
 	
 	@twitch.command()
