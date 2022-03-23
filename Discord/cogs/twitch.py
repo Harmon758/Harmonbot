@@ -261,7 +261,7 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply('\n'.join(record["keyword"] for record in records), 
 								title = "Twitch keywords being followed in this text channel")
 	
-	@twitch.group(aliases = ["delete"], invoke_without_command = True, case_insensitive = True)
+	@twitch.group(aliases = ["delete"], case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def remove(self, ctx):
 		'''Remove Twitch channels, games, or keywords being followed'''
