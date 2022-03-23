@@ -134,10 +134,14 @@ class Twitch(commands.Cog):
 			ctx.channel.id, string
 		)
 		if not inserted:
-			await ctx.embed_reply(f"This text channel already has the filter, `{string}`")
+			await ctx.embed_reply(
+				f"This text channel already has the filter, `{string}`"
+			)
 			return
-		await ctx.embed_reply(f"Added the filter, `{string}`, to this text channel\n"
-								"I will now filter all streams for this string in the title")
+		await ctx.embed_reply(
+			f"Added the filter, `{string}`, to this text channel\n"
+			"I will now filter all streams for this string in the title"
+		)
 	
 	@add.command(name = "game")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
