@@ -86,7 +86,7 @@ class Twitch(commands.Cog):
 		'''Twitch'''
 		await ctx.send_help(ctx.command)
 	
-	@twitch.group(invoke_without_command = True, case_insensitive = True)
+	@twitch.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def add(self, ctx):
 		'''Add Twitch channels, games, or keywords to follow'''
