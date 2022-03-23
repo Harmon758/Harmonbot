@@ -163,7 +163,8 @@ class Twitch(commands.Cog):
 			ctx.channel.id, game["id"], game["name"]
 		)
 		if not inserted:
-			return await ctx.embed_reply(f"This text channel is already following the game, `{game['name']}`")
+			await ctx.embed_reply(f"This text channel is already following the game, `{game['name']}`")
+			return
 		await ctx.embed_reply(f"Added the game, [`{game['name']}`](https://www.twitch.tv/directory/game/{game['name']}), to this text channel\n"
 								"I will now announce here when Twitch streams playing this game go live")
 	
