@@ -235,8 +235,10 @@ class Twitch(commands.Cog):
 			""", 
 			ctx.channel.id
 		)
-		await ctx.embed_reply('\n'.join(record["game_name"] for record in records), 
-								title = "Twitch games being followed in this text channel")
+		await ctx.embed_reply(
+			'\n'.join(record["game_name"] for record in records), 
+			title = "Twitch games being followed in this text channel"
+		)
 	
 	@twitch.command(aliases = ["queries", "searches"])
 	@checks.not_forbidden()
