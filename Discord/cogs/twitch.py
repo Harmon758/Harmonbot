@@ -4,6 +4,7 @@ from discord.ext import commands, tasks
 
 import asyncio
 import datetime
+from itertools import zip_longest
 import logging
 import sys
 import traceback
@@ -53,8 +54,9 @@ class Twitch(commands.Cog):
 			"""
 			CREATE TABLE IF NOT EXISTS twitch_notifications.games (
 				channel_id		BIGINT, 
-				game			TEXT, 
-				PRIMARY KEY		(channel_id, game)
+				game_id			TEXT, 
+				game_name		TEXT, 
+				PRIMARY KEY		(channel_id, game_id)
 			)
 			"""
 		)
@@ -95,11 +97,8 @@ class Twitch(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def add_channel(self, ctx, username: str):
 		'''Add a Twitch channel to follow'''
-		url = "https://api.twitch.tv/kraken/users"
-		headers = {"Accept": "application/vnd.twitchtv.v5+json"}
-		params = {"login": username, "client_id": ctx.bot.TWITCH_CLIENT_ID}
-		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
-			users_data = await resp.json()
+		users_data = await ctx.bot.twitch_client.get_users(username)
+		user = users_data[0]
 		inserted = await ctx.bot.db.fetchrow(
 			"""
 			INSERT INTO twitch_notifications.channels (channel_id, user_name, user_id)
@@ -107,11 +106,11 @@ class Twitch(commands.Cog):
 			ON CONFLICT DO NOTHING
 			RETURNING *
 			""", 
-			ctx.channel.id, username, users_data["users"][0]["_id"]
+			ctx.channel.id, username, user.id
 		)
 		if not inserted:
-			return await ctx.embed_reply(f"This text channel is already following the channel, `{username}`")
-		await ctx.embed_reply(f"Added the Twitch channel, [`{username}`](https://www.twitch.tv/{username}), to this text channel\n"
+			return await ctx.embed_reply(f"This text channel is already following the channel, `{user.display_name}`")
+		await ctx.embed_reply(f"Added the Twitch channel, [`{user.display_name}`](https://www.twitch.tv/{user.login}), to this text channel\n"
 								"I will now announce here when this Twitch channel goes live")
 	
 	@add.command(name = "filter")
@@ -137,18 +136,23 @@ class Twitch(commands.Cog):
 	async def add_game(self, ctx, *, game: str):
 		'''Add a Twitch game to follow'''
 		# TODO: Add documentation on 100 limit
+		if not (games := await ctx.bot.twitch_client.get_games(game)):
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
+			return
+
+		game = games[0]
 		inserted = await ctx.bot.db.fetchrow(
 			"""
-			INSERT INTO twitch_notifications.games (channel_id, game)
-			VALUES ($1, $2)
+			INSERT INTO twitch_notifications.games (channel_id, game_id, game_name)
+			VALUES ($1, $2, $3)
 			ON CONFLICT DO NOTHING
 			RETURNING *
 			""", 
-			ctx.channel.id, game
+			ctx.channel.id, game["id"], game["name"]
 		)
 		if not inserted:
-			return await ctx.embed_reply(f"This text channel is already following the game, `{game}`")
-		await ctx.embed_reply(f"Added the game, [`{game}`](https://www.twitch.tv/directory/game/{game}), to this text channel\n"
+			return await ctx.embed_reply(f"This text channel is already following the game, `{game['name']}`")
+		await ctx.embed_reply(f"Added the game, [`{game['name']}`](https://www.twitch.tv/directory/game/{game['name']}), to this text channel\n"
 								"I will now announce here when Twitch streams playing this game go live")
 	
 	@add.command(name = "keyword", aliases = ["query", "search"])
@@ -183,14 +187,11 @@ class Twitch(commands.Cog):
 		)
 		description = ""
 		for record in records:
-			url = f"https://api.twitch.tv/kraken/users/{record['user_id']}"
-			headers = {"Accept": "application/vnd.twitchtv.v5+json"}
-			params = {"client_id": self.bot.TWITCH_CLIENT_ID}
-			async with self.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
-				user_data = await resp.json()
+			user_data = await ctx.bot.twitch_client.get_users(record["user_id"])
 			# TODO: Add note about name change to response
 			#       user_data["name"] != record["user_name"]
-			link = f"[{user_data['display_name']}](https://www.twitch.tv/{user_data['display_name']})"
+			user = user_data[0]
+			link = f"[{user.display_name}](https://www.twitch.tv/{user.login})"
 			if len(description + link) > self.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 				await ctx.embed_reply(description[:-1], title = "Twitch channels being followed in this text channel")
 				description = ""
@@ -217,12 +218,12 @@ class Twitch(commands.Cog):
 		'''Show Twitch games being followed in this text channel'''
 		records = await ctx.bot.db.fetch(
 			"""
-			SELECT game FROM twitch_notifications.games
+			SELECT game_name FROM twitch_notifications.games
 			WHERE channel_id = $1
 			""", 
 			ctx.channel.id
 		)
-		await ctx.embed_reply('\n'.join(record["game"] for record in records), 
+		await ctx.embed_reply('\n'.join(record["game_name"] for record in records), 
 								title = "Twitch games being followed in this text channel")
 	
 	@twitch.command(aliases = ["queries", "searches"])
@@ -249,22 +250,19 @@ class Twitch(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def remove_channel(self, ctx, username: str):
 		'''Remove a Twitch channel being followed'''
-		url = "https://api.twitch.tv/kraken/users"
-		headers = {"Accept": "application/vnd.twitchtv.v5+json"}
-		params = {"login": username, "client_id": ctx.bot.TWITCH_CLIENT_ID}
-		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
-			users_data = await resp.json()
+		users_data = await ctx.bot.twitch_client.get_users(username)
+		user = users_data[0]
 		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM twitch_notifications.channels
 			WHERE channel_id = $1 AND user_id = $2
 			RETURNING *
 			""", 
-			ctx.channel.id, users_data["users"][0]["_id"]
+			ctx.channel.id, user.id
 		)
 		if not deleted:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that Twitch channel")
-		await ctx.embed_reply(f"Removed the Twitch channel, [`{username}`](https://www.twitch.tv/{username}), from this text channel")
+		await ctx.embed_reply(f"Removed the Twitch channel, [`{user.display_name}`](https://www.twitch.tv/{user.login}), from this text channel")
 	
 	@remove.command(name = "filter")
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
@@ -289,7 +287,7 @@ class Twitch(commands.Cog):
 		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM twitch_notifications.games
-			WHERE channel_id = $1 AND game = $2
+			WHERE channel_id = $1 AND game_name = $2
 			RETURNING *
 			""", 
 			ctx.channel.id, game
@@ -321,18 +319,12 @@ class Twitch(commands.Cog):
 		try:
 			stream_ids = []
 			# Games
-			records = await self.bot.db.fetch("SELECT DISTINCT game FROM twitch_notifications.games")
-			url = "https://api.twitch.tv/kraken/streams"
+			records = await self.bot.db.fetch("SELECT DISTINCT game_id FROM twitch_notifications.games")
 			for record in records:
-				game = record["game"]
-				params = {"game": game, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
-					if resp.status in (421, 500, 502, 503, 504):
-						continue
-					games_data = await resp.json()
-				streams = games_data.get("streams", [])
-				stream_ids += [str(stream["_id"]) for stream in streams]
-				await self.process_streams(streams, "games", match = game)
+				game_id = record["game_id"]
+				streams = await self.bot.twitch_client.get_streams(game_id = game_id, limit = 100)
+				stream_ids += [stream["id"] for stream in streams]
+				await self.process_streams(streams, "games", game = record)
 				await asyncio.sleep(1)
 			# Keywords
 			records = await self.bot.db.fetch("SELECT DISTINCT keyword FROM twitch_notifications.keywords")
@@ -347,19 +339,12 @@ class Twitch(commands.Cog):
 				await self.process_streams(streams, "keywords", match = keyword)
 				await asyncio.sleep(1)
 			# Streams
-			streams_data = {}
 			records = await self.bot.db.fetch("SELECT DISTINCT user_id FROM twitch_notifications.channels")
-			if records:
-				url = "https://api.twitch.tv/kraken/streams"
-				params = {"channel": ','.join(record["user_id"] for record in records), 
-							"client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
-					if resp.status not in (500, 502, 503, 504):
-						streams_data = await resp.json()
-					# TODO: Handle >100 streams
-				streams = streams_data.get("streams", [])
-				stream_ids += [str(stream["_id"]) for stream in streams]
+			for records_chunk in zip_longest(*[iter(records)] * 100):
+				streams = await self.bot.twitch_client.get_streams(channels = [record["user_id"] for record in records_chunk if record], limit = 100)
+				stream_ids += [stream["id"] for stream in streams]
 				await self.process_streams(streams, "streams")
+				await asyncio.sleep(1)
 			# Update streams notified
 			records = await self.bot.db.fetch(
 				"""
@@ -421,7 +406,7 @@ class Twitch(commands.Cog):
 	async def after_check_streams(self):
 		self.bot.print("Twitch task cancelled")
 	
-	async def process_streams(self, streams, type, match = None):
+	async def process_streams(self, streams, type, game = None, match = None):
 		# TODO: use textwrap
 		for stream in streams:
 			records = await self.bot.db.fetch(
@@ -430,7 +415,7 @@ class Twitch(commands.Cog):
 				FROM twitch_notifications.notifications
 				WHERE stream_id = $1
 				""", 
-				str(stream["_id"])
+				stream["id"]
 			)
 			# TODO: Handle streams notified already, but followed by new channel
 			for record in records:
@@ -452,36 +437,41 @@ class Twitch(commands.Cog):
 						SET live = TRUE
 						WHERE stream_id = $1 AND channel_id = $2
 						""", 
-						str(stream["_id"]), record["channel_id"]
+						stream["id"], record["channel_id"]
 					)
 			if not records:
 				# Construct embed
-				if len(stream["channel"]["status"]) <= 256:
-					title = stream["channel"]["status"]
+				if len(stream["title"]) <= 256:
+					title = stream["title"]
 				else:
-					title = stream["channel"]["status"][:253] + "..."
-				if stream["channel"]["game"]:
-					description = f"{stream['channel']['display_name']} is playing {stream['game']}"
+					title = stream["title"][:253] + "..."
+				if stream["game_name"]:
+					description = f"{stream['user_name']} is playing {stream['game_name']}"
 				else:
 					description = discord.Embed.Empty
-				embed = discord.Embed(title = title, url = stream["channel"]["url"], 
+				embed = discord.Embed(title = title, url = f"https://www.twitch.tv/{stream['user_login']}", 
 										description = description, 
-										timestamp = dateutil.parser.parse(stream["created_at"]), 
+										timestamp = dateutil.parser.parse(stream["started_at"]), 
 										color = self.bot.twitch_color)
-				embed.set_author(name = f"{stream['channel']['display_name']} just went live on Twitch", 
+				embed.set_author(name = f"{stream['user_name']} just went live on Twitch", 
 									icon_url = self.bot.twitch_icon_url)
-				if stream["channel"]["logo"]:
-					embed.set_thumbnail(url = stream["channel"]["logo"])
-				embed.add_field(name = "Followers", value = f"{stream['channel']['followers']:,}")
-				embed.add_field(name = "Views", value = f"{stream['channel']['views']:,}")
+				# TODO: Include profile image (logo), follower count, viewer count?
 				# Get text channel IDs
-				if not match:
+				if game:
+					records = await self.bot.db.fetch(
+						"""
+						SELECT channel_id FROM twitch_notifications.games
+						WHERE game_id = $1
+						""", 
+						game["game_id"]
+					)
+				elif not match:
 					records = await self.bot.db.fetch(
 						"""
 						SELECT channel_id FROM twitch_notifications.channels
 						WHERE user_id = $1
 						""", 
-						str(stream["channel"]["_id"])
+						stream["user_id"]
 					)
 				else:
 					records = await self.bot.db.fetch(
@@ -502,7 +492,7 @@ class Twitch(commands.Cog):
 					)
 					for record in records:
 						# TODO: Make filter case-insensitive?
-						if record["filter"] not in stream["channel"]["status"]:
+						if record["filter"] not in stream["title"]:
 							channel_ids.remove(channel_id)
 							break
 				# Send notifications
@@ -514,7 +504,18 @@ class Twitch(commands.Cog):
 						message = await text_channel.send(embed = embed)
 					except discord.Forbidden:
 						if not (permissions := text_channel.permissions_for(text_channel.guild.me)).embed_links and permissions.send_messages:
-							if not match:
+							if game:
+								await self.bot.db.execute(
+									"""
+									DELETE FROM twitch_notifications.games
+									WHERE channel_id = $1 AND game_id = $2
+									""", 
+									channel_id, game["game_id"]
+								)
+								await text_channel.send("I am unable to send the embed notification in this text channel for "
+														f"a stream going live on Twitch matching the game, {game['game_name']}, "
+														f"so this text channel is no longer following that game for Twitch streams.")
+							elif not match:
 								await self.bot.db.execute(
 									"""
 									DELETE FROM twitch_notifications.channels
@@ -545,6 +546,6 @@ class Twitch(commands.Cog):
 						INSERT INTO twitch_notifications.notifications (stream_id, channel_id, message_id, live)
 						VALUES ($1, $2, $3, TRUE)
 						""", 
-						str(stream["_id"]), channel_id, message.id
+						stream["id"], channel_id, message.id
 					)
 

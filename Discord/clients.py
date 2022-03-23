@@ -28,6 +28,7 @@ import pyowm
 import requests
 import sentry_sdk
 import tweepy
+import twitchio
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 import youtube_dl
@@ -150,11 +151,11 @@ class Bot(commands.Bot):
 			"IMGUR_CLIENT_SECRET", "NEWSAPI.ORG_API_KEY", "OMDB_API_KEY",
 			"OSU_API_KEY", "OWM_API_KEY", "PAGE2IMAGES_REST_API_KEY",
 			"SENTRY_DSN", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET_KEY",
-			"STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITTER_CONSUMER_KEY",
-			"TWITTER_CONSUMER_SECRET", "TWITTER_ACCESS_TOKEN",
-			"TWITTER_ACCESS_TOKEN_SECRET", "UNSPLASH_ACCESS_KEY",
-			"WARGAMING_APPLICATION_ID", "WOLFRAM_ALPHA_APP_ID",
-			"WORDNIK_API_KEY"
+			"STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET",
+			"TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_SECRET",
+			"TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET",
+			"UNSPLASH_ACCESS_KEY", "WARGAMING_APPLICATION_ID",
+			"WOLFRAM_ALPHA_APP_ID", "WORDNIK_API_KEY"
 		):
 			setattr(self, credential.replace('.', '_'), os.getenv(credential))
 		if not self.BATTLE_NET_API_KEY:
@@ -187,6 +188,11 @@ class Bot(commands.Bot):
 			self.weather_manager = self.owm_client.weather_manager()
 		except AssertionError as e:
 			self.print(f"Failed to initialize OpenWeatherMap client: {e}")
+		## Twitch
+		self.twitch_client = twitchio.Client(
+			client_id = self.TWITCH_CLIENT_ID,
+			client_secret = self.TWITCH_CLIENT_SECRET
+		)
 		## Twitter
 		try:
 			self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
