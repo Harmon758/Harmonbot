@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands, menus
 
+import textwrap
 from typing import Optional
 import urllib.error
 
@@ -321,6 +322,11 @@ class UrbanDictionarySource(menus.ListPageSource):
         super().__init__(definitions, per_page = 1)
 
     async def format_page(self, menu, definition):
+        votes = (
+            f"\N{THUMBS UP SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_up']}"
+            " | "
+            f"\N{THUMBS DOWN SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"
+        )
         return {
             "content": f"In response to: `{menu.ctx.message.clean_content}`",
             "embed": discord.Embed(
@@ -332,10 +338,14 @@ class UrbanDictionarySource(menus.ListPageSource):
                 icon_url = menu.ctx.author.display_avatar.url
             ).add_field(
                 name = "Example",
-                value = f"{definition['example']}\n\n"
-                        f"\N{THUMBS UP SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_up']}"
-                        " | "
-                        f"\N{THUMBS DOWN SIGN}{menu.ctx.bot.emoji_skin_tone} {definition['thumbs_down']}"
+                value = (
+                    textwrap.shorten(
+                        definition["example"],
+                        width = menu.ctx.bot.EFVCL - len(votes) - 2,
+                        # EFVCL: Embed Field Value Character Limit
+                        placeholder = "..."
+                    ) + "\n\n" + votes
+                )
             )
         }
         # TODO: Check description/definition length?
