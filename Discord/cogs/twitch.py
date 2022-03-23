@@ -96,7 +96,10 @@ class Twitch(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def add_channel(self, ctx, username: str):
 		'''Add a Twitch channel to follow'''
-		users_data = await ctx.bot.twitch_client.get_users(username)
+		if not (users_data := await ctx.bot.twitch_client.get_users(username)):
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Channel not found")
+			return
+		
 		user = users_data[0]
 		inserted = await ctx.bot.db.fetchrow(
 			"""
