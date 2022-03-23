@@ -533,10 +533,10 @@ class Twitch(commands.Cog):
 									DELETE FROM twitch_notifications.channels
 									WHERE channel_id = $1 AND user_id = $2
 									""", 
-									channel_id, str(stream["channel"]["_id"])
+									channel_id, stream["user_id"]
 								)
 								await text_channel.send("I am unable to send the embed notification in this text channel for "
-														f"{stream['channel']['display_name']} going live on Twitch, "
+														f"{stream['user_name']} going live on Twitch, "
 														"so this text channel is no longer following that Twitch channel.")
 							else:
 								await self.bot.db.execute(
