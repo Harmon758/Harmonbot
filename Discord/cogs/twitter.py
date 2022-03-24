@@ -275,6 +275,7 @@ class Twitter(commands.Cog):
 		await self.bot.wait_until_ready()
 		feeds = {}
 		try:
+			self.bot.twitter_api.wait_on_rate_limit = True
 			async with self.bot.database_connection_pool.acquire() as connection:
 				async with connection.transaction():
 					# Postgres requires non-scrollable cursors to be created and used in a transaction.
@@ -285,11 +286,12 @@ class Twitter(commands.Cog):
 							feeds[record["channel_id"]] = feeds.get(record["channel_id"], []) + [user.id_str]
 						except (tweepy.Forbidden, tweepy.NotFound):
 							continue
-						# TODO: Handle rate limit
 			await self.stream.start_feeds(feeds = feeds)
 		except Exception as e:
 			print("Exception in Twitter Task", file = sys.stderr)
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 			errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			return
+		finally:
+			self.bot.twitter_api.wait_on_rate_limit = False
 
