@@ -7,6 +7,7 @@ from typing import Optional
 import urllib.error
 
 from bs4 import BeautifulSoup
+from google.api_core.exceptions import InvalidArgument
 import spellchecker
 
 from utilities import checks
@@ -209,13 +210,17 @@ class Words(commands.Cog):
     ):
         '''Translate from a specific language to another'''
         # TODO: Default to_language_code?
-        response = await ctx.bot.google_cloud_translation_service_client.translate_text(
-            contents = [text],
-            mime_type = "text/plain",
-            parent = f"projects/{ctx.bot.google_cloud_project_id}/locations/global",
-            source_language_code = from_language_code,
-            target_language_code = to_language_code
-        )
+        try:
+            response = await ctx.bot.google_cloud_translation_service_client.translate_text(
+                contents = [text],
+                mime_type = "text/plain",
+                parent = f"projects/{ctx.bot.google_cloud_project_id}/locations/global",
+                source_language_code = from_language_code,
+                target_language_code = to_language_code
+            )
+        except InvalidArgument as e:
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+            return
         await ctx.embed_reply(response.translations[0].translated_text)
 
     @translate.command(
