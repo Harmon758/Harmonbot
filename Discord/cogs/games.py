@@ -97,7 +97,7 @@ class Games(commands.Cog):
 			response_ctx = await ctx.bot.get_context(message)
 			await response_ctx.embed_reply(
 				title = "Incorrect",
-				description = f"{message.content} = {value}",
+				description = f"`{message.content} = {value}`",
 				in_response_to = False, attempt_delete = False
 			)
 		
@@ -117,7 +117,7 @@ class Games(commands.Cog):
 		message = await ctx.bot.wait_for('message', check = check)
 		ctx = await ctx.bot.get_context(message)
 		await ctx.embed_reply(
-			title = "Correct!", description = f"{message.content} = 24",
+			title = "Correct!", description = f"`{message.content} = 24`",
 			in_response_to = False, attempt_delete = False
 		)
 	
