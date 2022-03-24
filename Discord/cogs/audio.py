@@ -586,6 +586,16 @@ class Audio(commands.Cog):
 		await ctx.guild.change_voice_state(channel = ctx.guild.voice_client.channel, self_deaf = True, self_mute = ctx.guild.me.voice.self_mute)
 		await ctx.embed_reply("I've deafened myself")
 	
+	@commands.command()
+	@checks.is_voice_connected()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+	async def mute(self, ctx):
+		'''Mute'''
+		if ctx.guild.me.voice.self_mute:
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm already muted")
+		await ctx.guild.change_voice_state(channel = ctx.guild.voice_client.channel, self_mute = True, self_deaf = ctx.guild.me.voice.self_deaf)
+		await ctx.embed_reply("I've muted myself")
+	
 	# Voice Input
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True, hidden = True)
