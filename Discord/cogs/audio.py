@@ -606,6 +606,16 @@ class Audio(commands.Cog):
 		await ctx.guild.change_voice_state(channel = ctx.guild.voice_client.channel, self_deaf = False, self_mute = ctx.guild.me.voice.self_mute)
 		await ctx.embed_reply("I've undeafened myself")
 	
+	@commands.command()
+	@checks.is_voice_connected()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+	async def unmute(self, ctx):
+		'''Unmute'''
+		if not ctx.guild.me.voice.self_mute:
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm not muted")
+		await ctx.guild.change_voice_state(channel = ctx.guild.voice_client.channel, self_mute = False, self_deaf = ctx.guild.me.voice.self_deaf)
+		await ctx.embed_reply("I've unmuted myself")
+	
 	# Voice Input
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True, hidden = True)
