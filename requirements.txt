@@ -14,7 +14,7 @@ chess==1.9.0
 clarifai-grpc==8.0.0
 cryptography==36.0.2
 dice==3.1.2
-emoji==0.6.0
+emoji==1.7.0
 feedparser==6.0.8
 gitpython==3.1.8
 google-api-core[grpc]==2.2.2
