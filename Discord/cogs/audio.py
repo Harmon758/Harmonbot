@@ -574,6 +574,18 @@ class Audio(commands.Cog):
 		'''Average of last 20 HEARTBEAT latencies'''
 		await ctx.embed_reply(f"{ctx.guild.voice_client.average_latency}s")
 	
+	# Discord Control
+
+	@commands.command()
+	@checks.is_voice_connected()
+	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+	async def deafen(self, ctx):
+		'''Deafen'''
+		if ctx.guild.me.voice.self_deaf:
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm already deafened")
+		await ctx.guild.change_voice_state(channel = ctx.guild.voice_client.channel, self_deaf = True, self_mute = ctx.guild.me.voice.self_mute)
+		await ctx.embed_reply("I've deafened myself")
+	
 	# Voice Input
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True, hidden = True)
