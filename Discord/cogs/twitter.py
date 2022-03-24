@@ -249,7 +249,7 @@ class Twitter(commands.Cog):
 			""", 
 			ctx.channel.id
 		)
-		await ctx.embed_reply('\n'.join(record["handle"] for record in records))
+		await ctx.embed_reply('\n'.join(sorted([record["handle"] for record in records], key = str.casefold)))
 		# TODO: Add message if none
 	
 	def process_tweet_text(self, text, entities):
