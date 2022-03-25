@@ -119,10 +119,16 @@ class ButtonPaginator(discord.ui.View):
         self.next_button.disabled = True
         self.end_button.disabled = True
         self.remove_item(self.stop_button)
+
         if interaction:
             await interaction.response.edit_message(view = self)
         elif self.message:
-            await self.message.edit(view = self)
+            try:
+                await self.message.edit(view = self)
+            except discord.HTTPException as e:
+                if e.code != 50083:  # 50083 == Thread is archived
+                    raise
+
         super().stop()
 
 
