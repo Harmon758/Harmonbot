@@ -234,54 +234,58 @@ if __name__ == "__main__":
 			if respects_command := ctx.bot.get_command("respects"):
 				return await ctx.invoke(respects_command.get_command("pay"))
 	
-	ci = os.getenv("CI")
-	github_action = os.getenv("GITHUB_ACTION")
+	async def main():
+		async with client:
+			ci = os.getenv("CI")
+			github_action = os.getenv("GITHUB_ACTION")
+			
+			if ci or github_action or client.beta:
+				client.command_prefix = '*'
+				token = os.getenv("DISCORD_BETA_BOT_TOKEN")
+			else:
+				token = os.getenv("DISCORD_BOT_TOKEN")
+				# Load Opus
+				## Get Opus version in bin folder
+				opus = discord.opus.libopus_loader("bin/opus.dll")
+				opus.opus_get_version_string.restype = ctypes.c_char_p
+				harmonbot_opus_version = opus.opus_get_version_string().decode("UTF-8")
+				if harmonbot_opus_version.startswith("libopus "):
+					harmonbot_opus_version = harmonbot_opus_version[8:]
+				### Discard additional information from git describe
+				harmonbot_opus_version = harmonbot_opus_version.split('-')[0]
+				harmonbot_opus_version = pkg_resources.parse_version(harmonbot_opus_version)
+				## Load Opus provided by discord.py
+				discord.opus._load_default()
+				## Get Opus version provided by discord.py
+				discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p
+				library_opus_version = discord.opus._lib.opus_get_version_string().decode("UTF-8")
+				if library_opus_version.startswith("libopus "):
+					library_opus_version = library_opus_version[8:]
+				### Discard additional information from git describe
+				library_opus_version = library_opus_version.split('-')[0]
+				library_opus_version = pkg_resources.parse_version(library_opus_version)
+				## Compare Opus versions and use bin folder one if newer
+				if harmonbot_opus_version > library_opus_version:
+					discord.opus._lib = opus
+				# Start web server
+				await client.aiohttp_app_runner.setup()
+				client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
+				await client.aiohttp_site.start()
+				# Can't bind to/open port 80 without being root on Linux
+				# Try port >1024? or sudo? for CI
+			
+			try:
+				if ci or github_action:
+					client.loop.create_task(client.start(token), name = "Client")
+					await asyncio.sleep(10)
+					# TODO: stop after ready
+				else:
+					await client.start(token)
+			finally:
+				await client.shutdown_tasks()
+				# client.loop.close()  # unnecessary?, causing Event loop is closed exceptions on restart
+				sys.exit(0)
+				os._exit(0)  # Shouldn't be necessary
 	
-	if ci or github_action or client.beta:
-		client.command_prefix = '*'
-		token = os.getenv("DISCORD_BETA_BOT_TOKEN")
-	else:
-		token = os.getenv("DISCORD_BOT_TOKEN")
-		# Load Opus
-		## Get Opus version in bin folder
-		opus = discord.opus.libopus_loader("bin/opus.dll")
-		opus.opus_get_version_string.restype = ctypes.c_char_p
-		harmonbot_opus_version = opus.opus_get_version_string().decode("UTF-8")
-		if harmonbot_opus_version.startswith("libopus "):
-			harmonbot_opus_version = harmonbot_opus_version[8:]
-		### Discard additional information from git describe
-		harmonbot_opus_version = harmonbot_opus_version.split('-')[0]
-		harmonbot_opus_version = pkg_resources.parse_version(harmonbot_opus_version)
-		## Load Opus provided by discord.py
-		discord.opus._load_default()
-		## Get Opus version provided by discord.py
-		discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p
-		library_opus_version = discord.opus._lib.opus_get_version_string().decode("UTF-8")
-		if library_opus_version.startswith("libopus "):
-			library_opus_version = library_opus_version[8:]
-		### Discard additional information from git describe
-		library_opus_version = library_opus_version.split('-')[0]
-		library_opus_version = pkg_resources.parse_version(library_opus_version)
-		## Compare Opus versions and use bin folder one if newer
-		if harmonbot_opus_version > library_opus_version:
-			discord.opus._lib = opus
-		# Start web server
-		client.loop.run_until_complete(client.aiohttp_app_runner.setup())
-		client.aiohttp_site = web.TCPSite(client.aiohttp_app_runner, port = 80)
-		client.loop.run_until_complete(client.aiohttp_site.start())
-		# Can't bind to/open port 80 without being root on Linux
-		# Try port >1024? or sudo? for CI
-	
-	try:
-		if ci or github_action:
-			client.loop.create_task(client.start(token), name = "Client")
-			client.loop.run_until_complete(asyncio.sleep(10))
-			# TODO: stop after ready
-		else:
-			client.loop.run_until_complete(client.start(token))
-	finally:
-		client.loop.run_until_complete(client.shutdown_tasks())
-		client.loop.close()
-		sys.exit(0)
-		os._exit(0)  # Shouldn't be necessary
+	asyncio.run(main())
 
