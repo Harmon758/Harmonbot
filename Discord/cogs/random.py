@@ -98,7 +98,7 @@ class Random(commands.Cog):
 		'''Information on a random color'''
 		url = "http://www.colourlovers.com/api/colors/random"
 		params = {"numResults": 1}
-		if cog := self.bot.get_cog("Resources"):
+		if cog := ctx.bot.get_cog("Resources"):
 			await cog.process_color(ctx, url, params)
 	
 	async def giphy(self, ctx):
