@@ -349,21 +349,20 @@ class ChessMatch(chess.Board):
             image.save(file = buffer)
         buffer.seek(0)
 
-        # TODO: Upload into embed + delete and re-send to update?
-        image_message = await self.bot.cache_channel.send(
-            file = discord.File(buffer, filename = "chess_board.png")
-        )
-        embed.set_image(url = image_message.attachments[0].url)
-
+        embed.set_image(url = "attachment://chess_board.png")
         embed.set_footer(text = footer_text)
 
         if send:
             self.message = await self.ctx.send(
-                embed = embed, view = ChessMatchView(self.bot, self)
+                embed = embed,
+                file = discord.File(buffer, filename = "chess_board.png"),
+                view = ChessMatchView(self.bot, self)
             )
         else:
             await self.message.edit(
-                embed = embed, view = ChessMatchView(self.bot, self)
+                attachments = [
+                    discord.File(buffer, filename = "chess_board.png")
+                ], embed = embed, view = ChessMatchView(self.bot, self)
             )
 
 
