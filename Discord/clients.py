@@ -611,7 +611,7 @@ class Bot(commands.Bot):
 		guild_owner = guild.owner or await self.fetch_user(guild.owner_id)
 		await self.send_embed(me, title = "Left Server", thumbnail_url = guild.icon.url if guild.icon else None, 
 								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild_owner)), 
-											("Members", str(guild.member_count)), ("Server Region", str(guild.region))), 
+											("Members", str(guild.member_count))), 
 								timestamp = guild.created_at)
 	
 	# TODO: on_command_completion
