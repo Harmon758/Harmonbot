@@ -64,8 +64,8 @@ class PokerHand:
         self.lines = [f"{ctx.author.mention} is initiating a poker match"]
         self.message = await ctx.embed_reply(
             self.lines[0],
-            author_name = discord.Embed.Empty,
-            footer_text = discord.Embed.Empty,
+            author_name = None,
+            footer_text = None,
             view = PokerLobby(self)
         )
         self.embed = self.message.embeds[0]

@@ -68,7 +68,7 @@ class Misc(commands.Cog):
 		'''A counter'''
 		await ctx.embed_reply(
 			title = "Counter", 
-			footer_text = discord.Embed.Empty, 
+			footer_text = None, 
 			view = Counter(timeout = None)
 		)
 	
@@ -201,7 +201,7 @@ class Misc(commands.Cog):
 		))
 		await ctx.embed_reply(
 			title = "Selector",
-			footer_text = discord.Embed.Empty,
+			footer_text = None,
 			view = view
 		)
 	

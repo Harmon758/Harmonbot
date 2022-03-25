@@ -38,7 +38,7 @@ class RotMG(commands.Cog):
 		if data["desc1"] or data["desc2"] or data["desc3"]:
 			fields.append(("Description", f"{data['desc1']}\n{data['desc2']}\n{data['desc3']}"))
 		await ctx.embed_reply(title = data["player"], title_url = f"https://www.realmeye.com/player/{player}", 
-								description = "Donator" if data["donator"] == "true" else discord.Embed.Empty,
+								description = "Donator" if data["donator"] == "true" else None,
 								fields = fields)
 	
 	@rotmg.command(name = "characters")

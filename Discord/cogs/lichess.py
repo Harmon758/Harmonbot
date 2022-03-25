@@ -170,7 +170,7 @@ class Lichess(commands.Cog):
 			footer_text = "Last seen"
 			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
 		else:
-			footer_text = timestamp = discord.Embed.Empty
+			footer_text = timestamp = None
 		await ctx.embed_reply(title = title, title_url = username["url"], fields = fields, 
 								footer_text = footer_text, timestamp = timestamp)
 	
@@ -351,7 +351,7 @@ class Lichess(commands.Cog):
 			footer_text = "Last seen"
 			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
 		else:
-			footer_text = timestamp = discord.Embed.Empty
+			footer_text = timestamp = None
 		await ctx.embed_reply(title = title, title_url = username["url"], fields = fields, 
 								footer_text = footer_text, timestamp = timestamp)
 	
@@ -407,7 +407,7 @@ class Lichess(commands.Cog):
 			footer_text = "Last seen"
 			timestamp = datetime.datetime.utcfromtimestamp(user_data["seenAt"] / 1000.0)
 		else:
-			footer_text = timestamp = discord.Embed.Empty
+			footer_text = timestamp = None
 		await ctx.embed_reply(description, title = title, title_url = user_data["url"], 
 								fields = fields, footer_text = footer_text, timestamp = timestamp)
 

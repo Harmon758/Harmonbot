@@ -287,7 +287,7 @@ class ChessMatch(chess.Board):
                 self.push(result.move)
 
                 if self.is_game_over():
-                    footer_text = discord.Embed.Empty
+                    footer_text = None
                     self.ended.set()
                 else:
                     footer_text = f"I moved {result.move}"
@@ -311,7 +311,7 @@ class ChessMatch(chess.Board):
                 self.make_move(message.content)
 
                 if self.is_game_over():
-                    footer_text = discord.Embed.Empty
+                    footer_text = None
                     self.ended.set()
                 else:
                     footer_text = f"It is {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
@@ -320,7 +320,7 @@ class ChessMatch(chess.Board):
                 await self.bot.attempt_delete_message(message)
 
     async def update_match_embed(
-        self, *, orientation = None, footer_text = discord.Embed.Empty,
+        self, *, orientation = None, footer_text = None,
         send = False
     ):
         if self.message:
@@ -439,7 +439,7 @@ class ChessMatchView(discord.ui.View):
         self.resending = True
 
         if self.match.is_game_over():
-            footer_text = discord.Embed.Empty
+            footer_text = None
         else:
             footer_text = f"It's {['black', 'white'][int(self.match.turn)]}'s ({[self.match.black_player, self.match.white_player][int(self.match.turn)]}'s) turn to move"
         await self.match.update_match_embed(

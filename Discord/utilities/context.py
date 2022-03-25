@@ -25,13 +25,13 @@ class Context(commands.Context):
 	
 	# TODO: optimize/improve clarity
 	async def embed_send(self, description = None, *args, 
-							title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
-							author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
+							title = None, title_url = None, 
+							author_name = "", author_url = None, author_icon_url = None, 
 							image_url = None, thumbnail_url = None, 
-							footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
-							timestamp = discord.Embed.Empty, fields = [], color = None, **kwargs):
+							footer_text = None, footer_icon_url = None, 
+							timestamp = None, fields = [], color = None, **kwargs):
 		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = color or self.bot.bot_color)
-		embed.description = str(description) if description else discord.Embed.Empty
+		embed.description = str(description) if description else None
 		if author_name:
 			embed.set_author(name = author_name, url = author_url, icon_url = author_icon_url)
 		if image_url:

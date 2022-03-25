@@ -289,7 +289,7 @@ async def user(ctx, *, user: Optional[discord.Member]):
 		thumbnail_url = user.display_avatar.url,
 		description = description,
 		fields = fields,
-		image_url = fetched_user.banner.url if fetched_user.banner else discord.Embed.Empty,
+		image_url = fetched_user.banner.url if fetched_user.banner else None,
 		footer_text = "Created", timestamp = user.created_at,
 		color = fetched_user.accent_color
 	)

@@ -517,7 +517,7 @@ class Meta(commands.Cog):
 		'''
 		if site:
 			response = await ctx.bot.update_listing_stats(site)
-			title = title_url = discord.Embed.Empty
+			title = title_url = None
 			if site in ctx.bot.listing_sites:
 				title = ctx.bot.listing_sites[site]["name"]
 				title_url = f"https://{site}/"

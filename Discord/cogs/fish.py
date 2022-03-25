@@ -71,8 +71,8 @@ class GoFishMatch:
         self.message = await ctx.embed_reply(
             self.lines[0],
             title = '\N{FISH}',
-            author_name = discord.Embed.Empty,
-            footer_text = discord.Embed.Empty,
+            author_name = None,
+            footer_text = None,
             view = GoFishLobby(self)
         )
         self.embed = self.message.embeds[0]

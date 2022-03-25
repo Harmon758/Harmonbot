@@ -60,7 +60,7 @@ class Discord(commands.Cog):
 				)
 				await ctx.embed_reply(
 					title = activity,
-					footer_text = discord.Embed.Empty,
+					footer_text = None,
 					view = ActivityView(ctx, invite)
 				)
 			return activity_command
@@ -132,7 +132,7 @@ class Discord(commands.Cog):
 			reactions += reaction_string + '\n'
 		if reactions:
 			fields.append(("Reactions", reactions[:-1]))
-		image_url = discord.Embed.Empty
+		image_url = None
 		if message.attachments:
 			image_url = message.attachments[0].url
 		# TODO: Handle non-image attachments

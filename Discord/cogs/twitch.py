@@ -502,7 +502,7 @@ class Twitch(commands.Cog):
 				if stream["game_name"]:
 					description = f"{stream['user_name']} is playing {stream['game_name']}"
 				else:
-					description = discord.Embed.Empty
+					description = None
 				embed = discord.Embed(title = title, url = f"https://www.twitch.tv/{stream['user_login']}", 
 										description = description, 
 										timestamp = dateutil.parser.parse(stream["started_at"]), 

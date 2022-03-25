@@ -75,7 +75,7 @@ class Astronomy(commands.Cog):
 		if data["programme_title"] != "(Undefined)":
 			title = data["programme_title"]
 		else:
-			title = discord.Embed.Empty
+			title = None
 		fields = []
 		if data["period"]:
 			fields.append(("Period", data["period"]))
@@ -337,7 +337,7 @@ class Astronomy(commands.Cog):
 						telescope_data = await resp.json()
 					telescopes.append(telescope_data["name"])
 				if telescopes: fields.append(("Telescopes", '\n'.join(telescopes)))
-				await ctx.embed_reply(title = _observatory["name"], title_url = _observatory["homepage_url"] or discord.Embed.Empty, fields = fields)
+				await ctx.embed_reply(title = _observatory["name"], title_url = _observatory["homepage_url"] or None, fields = fields)
 				return
 		await ctx.embed_reply(":no_entry: Observatory not found")
 	
@@ -408,9 +408,9 @@ class Astronomy(commands.Cog):
 		if len(description) > 1000:
 			description = description[:1000] + "..."
 		description = ctx.bot.CODE_BLOCK.format(description)
-		await ctx.embed_reply(description, title = data["title"] or discord.Embed.Empty, 
+		await ctx.embed_reply(description, title = data["title"] or None, 
 								title_url = f"https://gcn.gsfc.nasa.gov/gcn3/{number}.gcn3", 
-								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else discord.Embed.Empty)
+								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else None)
 	
 	@astronomy.command(aliases = ["instrument"])
 	async def telescope(self, ctx, *, telescope: str):

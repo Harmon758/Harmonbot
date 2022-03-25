@@ -1,5 +1,4 @@
 
-import discord
 from discord.ext import commands
 
 import datetime
@@ -234,7 +233,7 @@ class Finance(commands.Cog):
 		attribution = "\nData provided for free by [IEX](https://iextrading.com/developer)."
 		title = f"{data['companyName']} ({data['symbol']})"
 		fields = (("Exchange", data["exchange"]), ("Industry", data["industry"]), ("CEO", data["CEO"]))
-		thumbnail_url = logo_data.get("url", discord.Embed.Empty)
+		thumbnail_url = logo_data.get("url")
 		await ctx.embed_reply(description + attribution, title = title, 
 								fields = fields, thumbnail_url = thumbnail_url)
 	
@@ -290,7 +289,7 @@ class Finance(commands.Cog):
 		fields = []
 		if "iexRealtimePrice" in data:
 			fields.append(("IEX Real-Time Price", data["iexRealtimePrice"]))
-		timestamp = discord.Embed.Empty
+		timestamp = None
 		iex_last_updated = data.get("iexLastUpdated")
 		if iex_last_updated and iex_last_updated != -1:
 			timestamp = datetime.datetime.utcfromtimestamp(iex_last_updated / 1000)

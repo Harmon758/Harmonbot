@@ -216,7 +216,7 @@ class RSS(commands.Cog):
 					## if "published_parsed" in entry:
 					##  timestamp = datetime.datetime.fromtimestamp(time.mktime(entry.published_parsed))
 					### inaccurate
-					timestamp = discord.Embed.Empty
+					timestamp = None
 					try:
 						if "published" in entry and entry.published:
 							timestamp = dateutil.parser.parse(entry.published, tzinfos = self.tzinfos)
@@ -279,7 +279,7 @@ class RSS(commands.Cog):
 						feed_info.feed.get("icon") or feed_info.feed.get("logo") or 
 						(feed_image := feed_info.feed.get("image")) and feed_image.get("href") or 
 						(parsed_image := BeautifulSoup(feed_text, "lxml").image) and next(iter(parsed_image.attrs.values()), None) or 
-						discord.Embed.Empty
+						None
 					)
 					embed.set_footer(text = feed_info.feed.get("title", feed), icon_url = footer_icon_url)
 					# Send embed(s)
@@ -297,7 +297,7 @@ class RSS(commands.Cog):
 										(("In embed.url: Scheme" in e.text or  #still necessary?
 											"In embeds.0.url: Scheme" in e.text) and 
 											"is not supported. Scheme must be one of ('http', 'https')." in e.text)):
-										embed.url = discord.Embed.Empty
+										embed.url = None
 									if ("In embed.thumbnail.url: Not a well formed URL." in e.text or  # still necessary?
 										"In embeds.0.thumbnail.url: Not a well formed URL." in e.text or 
 										(("In embed.thumbnail.url: Scheme" in e.text or  # still necessary?

@@ -585,7 +585,7 @@ class Bot(commands.Bot):
 		self.loop.create_task(self.update_all_listing_stats(), name = "Update all bot listing stats")
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id) or await self.fetch_user(self.owner_id)
 		guild_owner = guild.owner or await self.fetch_user(guild.owner_id)
-		await self.send_embed(me, title = "Joined Server", thumbnail_url = guild.icon.url if guild.icon else discord.Embed.Empty, 
+		await self.send_embed(me, title = "Joined Server", thumbnail_url = guild.icon.url if guild.icon else None, 
 								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild_owner)), 
 											("Members", str(guild.member_count))), 
 								timestamp = guild.created_at)
@@ -609,7 +609,7 @@ class Bot(commands.Bot):
 		self.loop.create_task(self.update_all_listing_stats(), name = "Update all bot listing stats")
 		me = discord.utils.get(self.get_all_members(), id = self.owner_id) or await self.fetch_user(self.owner_id)
 		guild_owner = guild.owner or await self.fetch_user(guild.owner_id)
-		await self.send_embed(me, title = "Left Server", thumbnail_url = guild.icon.url if guild.icon else discord.Embed.Empty, 
+		await self.send_embed(me, title = "Left Server", thumbnail_url = guild.icon.url if guild.icon else None, 
 								fields = (("Name", guild.name), ("ID", guild.id), ("Owner", str(guild_owner)), 
 											("Members", str(guild.member_count)), ("Server Region", str(guild.region))), 
 								timestamp = guild.created_at)
@@ -778,12 +778,12 @@ class Bot(commands.Bot):
 		)
 	
 	# TODO: optimize/overhaul
-	def send_embed(self, destination, description = None, *, title = discord.Embed.Empty, title_url = discord.Embed.Empty, 
-	author_name = "", author_url = discord.Embed.Empty, author_icon_url = discord.Embed.Empty, 
-	image_url = None, thumbnail_url = None, footer_text = discord.Embed.Empty, footer_icon_url = discord.Embed.Empty, 
-	timestamp = discord.Embed.Empty, fields = []):
+	def send_embed(self, destination, description = None, *, title = None, title_url = None, 
+	author_name = "", author_url = None, author_icon_url = None, 
+	image_url = None, thumbnail_url = None, footer_text = None, footer_icon_url = None, 
+	timestamp = None, fields = []):
 		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = self.bot_color)
-		embed.description = str(description) if description else discord.Embed.Empty
+		embed.description = str(description) if description else None
 		if author_name: embed.set_author(name = author_name, url = author_url, icon_url = author_icon_url)
 		if image_url: embed.set_image(url = image_url)
 		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)

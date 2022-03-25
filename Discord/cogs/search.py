@@ -364,7 +364,7 @@ class Search(commands.Cog):
 						embed.set_image(url = subpod.img.src)
 						embeds.append(embed)
 					else:
-						message = await ctx.embed_reply(title = pod.title, image_url = subpod.img.src, footer_text = discord.Embed.Empty)
+						message = await ctx.embed_reply(title = pod.title, image_url = subpod.img.src, footer_text = None)
 			await message.edit(embeds = message.embeds + embeds[:9])
 			for index in range(9, len(embeds), 10):
 				await ctx.send(embeds = embeds[index:index + 10])
