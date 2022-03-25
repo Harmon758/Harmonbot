@@ -41,14 +41,14 @@ class YouTube(commands.Cog):
 		self.bot = bot
 		self.uploads_processed = []
 		# Add youtube (audio) streams and uploads subcommands and their corresponding subcommands
-		streams_command = commands.Group(self.streams, aliases = ["stream"], 
+		streams_command = commands.Group(streams, aliases = ["stream"], 
 											invoke_without_command = True, case_insensitive = True, 
 											checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate])
-		streams_command.add_command(commands.Command(self.streams_add, name = "add", 
+		streams_command.add_command(commands.Command(streams_add, name = "add", 
 														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
-		streams_command.add_command(commands.Command(self.streams_remove, name = "remove", aliases = ["delete"], 
+		streams_command.add_command(commands.Command(streams_remove, name = "remove", aliases = ["delete"], 
 														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
-		streams_command.add_command(commands.Command(self.streams_channels, name = "channels", aliases = ["streams"], 
+		streams_command.add_command(commands.Command(streams_channels, name = "channels", aliases = ["streams"], 
 														checks = [checks.not_forbidden().predicate]))
 		uploads_command = commands.Group(self.uploads, aliases = ["videos"], 
 											invoke_without_command = True, case_insensitive = True, 
@@ -63,7 +63,7 @@ class YouTube(commands.Cog):
 			parent.add_command(streams_command)
 			parent.add_command(uploads_command)
 		else:
-			command = commands.Group(self.youtube, aliases = ["yt"], 
+			command = commands.Group(youtube, aliases = ["yt"], 
 										invoke_without_command = True, case_insensitive = True, 
 										checks = [checks.not_forbidden().predicate])
 			command.add_command(streams_command)
@@ -132,74 +132,6 @@ class YouTube(commands.Cog):
 					error_description = await resp.text()
 					self.bot.print(f"Google PubSubHubbub Error {resp.status} re-subscribing to {channel_id}: {error_description}")
 			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
-	
-	async def youtube(self, ctx):
-		'''YouTube'''
-		await ctx.send_help(ctx.command)
-	
-	async def streams(self, ctx):
-		'''YouTube Streams'''
-		await ctx.send_help(ctx.command)
-	
-	async def streams_add(self, ctx, channel : str):
-		'''Add YouTube channel to follow'''
-		channel_id = await self.get_channel_id(channel)
-		if not channel_id:
-			return await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: YouTube channel not found"
-			)
-		inserted = await ctx.bot.db.fetchrow(
-			"""
-			INSERT INTO youtube.streams (discord_channel_id, youtube_channel_id)
-			VALUES ($1, $2)
-			ON CONFLICT DO NOTHING
-			RETURNING *
-			""", 
-			ctx.channel.id, channel_id
-		)
-		if not inserted:
-			return await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} This text channel is already following that YouTube channel"
-			)
-		await ctx.embed_reply(
-			f"Added the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
-			"I will now announce here when this YouTube channel goes live"
-		)
-	
-	async def streams_remove(self, ctx, channel : str):
-		'''Remove YouTube channel being followed'''
-		channel_id = await self.get_channel_id(channel)
-		if not channel_id:
-			return await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: YouTube channel not found"
-			)
-		deleted = await ctx.bot.db.fetchval(
-			"""
-			DELETE FROM youtube.streams
-			WHERE discord_channel_id = $1 AND youtube_channel_id = $2
-			RETURNING *
-			""", 
-			ctx.channel.id, channel_id
-		)
-		if not deleted:
-			return await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} This text channel isn't following that YouTube channel"
-			)
-		await ctx.embed_reply(
-			f"Removed the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), from this text channel"
-		)
-	
-	async def streams_channels(self, ctx):
-		'''Show YouTube channels being followed in this text channel'''
-		records = await ctx.bot.db.fetch(
-			"""
-			SELECT youtube_channel_id
-			FROM youtube.streams
-			WHERE discord_channel_id = $1
-			""", 
-			ctx.channel.id
-		)
-		await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(record["youtube_channel_id"] for record in records)))
 	
 	# R/PT60S
 	@tasks.loop(seconds = 60)
@@ -338,7 +270,7 @@ class YouTube(commands.Cog):
 	
 	async def uploads_add(self, ctx, channel : str):
 		'''Add YouTube channel to follow'''
-		channel_id = await self.get_channel_id(channel)
+		channel_id = await get_channel_id(ctx, channel)
 		if not channel_id:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: YouTube channel not found")
 		channels = self.uploads_info.get(str(ctx.channel.id))
@@ -424,14 +356,83 @@ class YouTube(commands.Cog):
 					if text_channel:
 						await text_channel.send(embed = embed)
 					# TODO: Remove text channel data if now non-existent
-	
-	async def get_channel_id(self, id_or_username):
-		url = "https://www.googleapis.com/youtube/v3/channels"
-		for key in ("id", "forUsername"):
-			params = {"part": "id", key: id_or_username, "key": self.bot.GOOGLE_API_KEY}
-			async with self.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			if data["pageInfo"]["totalResults"]:
-				return data["items"][0]["id"]
-		return ""
+
+
+async def youtube(ctx):
+	'''YouTube'''
+	await ctx.send_help(ctx.command)
+
+async def streams(ctx):
+	'''YouTube Streams'''
+	await ctx.send_help(ctx.command)
+
+async def streams_add(ctx, channel : str):
+	'''Add YouTube channel to follow'''
+	channel_id = await get_channel_id(ctx, channel)
+	if not channel_id:
+		return await ctx.embed_reply(
+			f"{ctx.bot.error_emoji} Error: YouTube channel not found"
+		)
+	inserted = await ctx.bot.db.fetchrow(
+		"""
+		INSERT INTO youtube.streams (discord_channel_id, youtube_channel_id)
+		VALUES ($1, $2)
+		ON CONFLICT DO NOTHING
+		RETURNING *
+		""", 
+		ctx.channel.id, channel_id
+	)
+	if not inserted:
+		return await ctx.embed_reply(
+			f"{ctx.bot.error_emoji} This text channel is already following that YouTube channel"
+		)
+	await ctx.embed_reply(
+		f"Added the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), to this text channel\n"
+		"I will now announce here when this YouTube channel goes live"
+	)
+
+async def streams_remove(ctx, channel : str):
+	'''Remove YouTube channel being followed'''
+	channel_id = await get_channel_id(ctx, channel)
+	if not channel_id:
+		return await ctx.embed_reply(
+			f"{ctx.bot.error_emoji} Error: YouTube channel not found"
+		)
+	deleted = await ctx.bot.db.fetchval(
+		"""
+		DELETE FROM youtube.streams
+		WHERE discord_channel_id = $1 AND youtube_channel_id = $2
+		RETURNING *
+		""", 
+		ctx.channel.id, channel_id
+	)
+	if not deleted:
+		return await ctx.embed_reply(
+			f"{ctx.bot.error_emoji} This text channel isn't following that YouTube channel"
+		)
+	await ctx.embed_reply(
+		f"Removed the YouTube channel, [`{channel}`](https://www.youtube.com/channel/{channel_id}), from this text channel"
+	)
+
+async def streams_channels(ctx):
+	'''Show YouTube channels being followed in this text channel'''
+	records = await ctx.bot.db.fetch(
+		"""
+		SELECT youtube_channel_id
+		FROM youtube.streams
+		WHERE discord_channel_id = $1
+		""", 
+		ctx.channel.id
+	)
+	await ctx.embed_reply(ctx.bot.CODE_BLOCK.format('\n'.join(record["youtube_channel_id"] for record in records)))
+
+async def get_channel_id(ctx, id_or_username):
+	url = "https://www.googleapis.com/youtube/v3/channels"
+	for key in ("id", "forUsername"):
+		params = {"part": "id", key: id_or_username, "key": ctx.bot.GOOGLE_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.json()
+		if data["pageInfo"]["totalResults"]:
+			return data["items"][0]["id"]
+	return ""
 
