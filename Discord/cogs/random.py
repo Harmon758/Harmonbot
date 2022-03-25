@@ -191,7 +191,7 @@ class Random(commands.Cog):
 			data = await resp.json()
 		number = random.randint(1, data['num'])
 		url = f"http://xkcd.com/{number}/info.0.json"
-		if cog := self.bot.get_cog("Entertainment"):
+		if cog := ctx.bot.get_cog("Entertainment"):
 			await cog.process_xkcd(ctx, url)
 	
 	@commands.command(aliases = ["rabbit"])
