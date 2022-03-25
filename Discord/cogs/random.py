@@ -90,7 +90,7 @@ class Random(commands.Cog):
 	
 	async def blob(self, ctx):
 		'''Random blob emoji'''
-		if "Blobs" in self.bot.cogs:
+		if "Blobs" in ctx.bot.cogs:
 			record = await ctx.bot.db.fetchrow("SELECT * FROM blobs.blobs TABLESAMPLE BERNOULLI (1) LIMIT 1")
 			await ctx.embed_reply(title = record["blob"], image_url = record["image"])
 	
