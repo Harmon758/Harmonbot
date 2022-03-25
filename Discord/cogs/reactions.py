@@ -166,9 +166,9 @@ class Reactions(commands.Cog):
 		'''Wolfram|Alpha menu'''
 		# TODO: process asynchronously
 		# TODO: location option?
-		location = self.bot.fake_location
+		location = ctx.bot.fake_location
 		try:
-			result = self.bot.wolfram_alpha_client.query(search.strip('`'), ip = self.bot.fake_ip, location = location)
+			result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
 		except Exception as e:
 			if str(e).startswith("Error "):
 				return await ctx.embed_reply(f":no_entry: {e}")
@@ -181,7 +181,7 @@ class Reactions(commands.Cog):
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
 			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
 			try:
-				result = self.bot.wolfram_alpha_client.query(didyoumean, ip = self.bot.fake_ip, location = location)
+				result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
 			except Exception as e:
 				if str(e).startswith("Error "):
 					return await ctx.embed_reply(f":no_entry: {e}")
