@@ -19,6 +19,8 @@ if __name__ == "__main__":
 	import clients
 	from modules import conversions
 	
+	discord.http._set_api_version(9)
+	
 	mention_spammers = []
 	
 	# Load credentials from .env
