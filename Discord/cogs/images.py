@@ -15,8 +15,8 @@ CLARIFAI_COLOR_MODEL_ID = "eeed0b6733a644cea07cf4c60f87ebb7"
 CLARIFAI_GENERAL_MODEL_ID = "aaa03c23b3724a16a56b629203edc62c"
 CLARIFAI_NSFW_MODEL_ID = "e9576d86d2004ed1a38ba0cf39ecb4b1"
 
-def setup(bot):
-	bot.add_cog(Images(bot))
+async def setup(bot):
+	await bot.add_cog(Images(bot))
 
 class Images(commands.Cog):
 

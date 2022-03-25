@@ -10,8 +10,8 @@ from wordcloud import WordCloud
 from utilities import checks
 from utilities.converters import SteamID32
 
-def setup(bot):
-	bot.add_cog(DotA())
+async def setup(bot):
+	await bot.add_cog(DotA())
 
 class DotA(commands.Cog):
 	

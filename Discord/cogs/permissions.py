@@ -6,8 +6,8 @@ from typing import Optional, Union
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Permissions(bot))
+async def setup(bot):
+	await bot.add_cog(Permissions(bot))
 
 class Permissions(commands.Cog):
 	

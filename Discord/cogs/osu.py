@@ -6,8 +6,8 @@ import pycountry
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Osu(bot))
+async def setup(bot):
+	await bot.add_cog(Osu(bot))
 
 class Osu(commands.Cog):
 	

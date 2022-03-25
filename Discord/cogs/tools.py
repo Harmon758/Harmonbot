@@ -18,8 +18,8 @@ import seaborn
 from utilities import checks
 from utilities.paginator import Paginator
 
-def setup(bot):
-	bot.add_cog(Tools(bot))
+async def setup(bot):
+	await bot.add_cog(Tools(bot))
 
 class Tools(commands.Cog):
 	

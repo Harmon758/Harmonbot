@@ -25,8 +25,8 @@ import pyparsing
 from utilities import checks
 from utilities.converters import Maptype
 
-def setup(bot):
-	bot.add_cog(Random(bot))
+async def setup(bot):
+	await bot.add_cog(Random(bot))
 
 class Random(commands.Cog):
 	

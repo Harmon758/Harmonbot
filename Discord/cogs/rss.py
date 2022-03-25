@@ -26,8 +26,8 @@ from utilities import checks
 
 errors_logger = logging.getLogger("errors")
 
-def setup(bot):
-	bot.add_cog(RSS(bot))
+async def setup(bot):
+	await bot.add_cog(RSS(bot))
 
 class RSS(commands.Cog):
 	

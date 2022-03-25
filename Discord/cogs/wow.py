@@ -6,8 +6,8 @@ import datetime
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(WoW(bot))
+async def setup(bot):
+	await bot.add_cog(WoW(bot))
 
 class WoW(commands.Cog):
 	

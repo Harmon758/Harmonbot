@@ -20,8 +20,8 @@ sys.path.insert(0, "..")
 from units import games
 sys.path.pop(0)
 
-def setup(bot):
-	bot.add_cog(Games(bot))
+async def setup(bot):
+	await bot.add_cog(Games(bot))
 
 class Games(commands.Cog):
 	

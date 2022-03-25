@@ -13,8 +13,8 @@ import spellchecker
 from utilities import checks
 from utilities.paginator import ButtonPaginator
 
-def setup(bot):
-    bot.add_cog(Words())
+async def setup(bot):
+    await bot.add_cog(Words())
 
 class Words(commands.Cog):
 

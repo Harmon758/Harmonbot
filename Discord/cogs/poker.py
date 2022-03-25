@@ -10,8 +10,8 @@ import treys
 from utilities import checks
 
 
-def setup(bot):
-    bot.add_cog(Poker())
+async def setup(bot):
+    await bot.add_cog(Poker())
 
 def cards_to_string(cards):
     return " | ".join(f":{card.suit.lower()}: {card.value}" for card in cards)

@@ -10,8 +10,8 @@ from bs4 import BeautifulSoup
 from utilities import checks
 from utilities.menu import Menu
 
-def setup(bot):
-	bot.add_cog(Entertainment())
+async def setup(bot):
+	await bot.add_cog(Entertainment())
 
 class Entertainment(commands.Cog):
 	

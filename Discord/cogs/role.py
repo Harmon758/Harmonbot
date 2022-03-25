@@ -6,8 +6,8 @@ from operator import attrgetter
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Role(bot))
+async def setup(bot):
+	await bot.add_cog(Role(bot))
 
 class Role(commands.Cog):
 	

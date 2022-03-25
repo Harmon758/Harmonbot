@@ -4,8 +4,8 @@ from discord.ext import commands
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Channel(bot))
+async def setup(bot):
+	await bot.add_cog(Channel(bot))
 
 class Channel(commands.Cog):
 	

@@ -10,8 +10,8 @@ from units.twenty_four import check_solution, generate_numbers
 sys.path.pop(0)
 
 
-def setup(bot):
-    bot.add_cog(TwentyFour())
+async def setup(bot):
+    await bot.add_cog(TwentyFour())
 
 
 class TwentyFour(commands.Cog, name = "24"):

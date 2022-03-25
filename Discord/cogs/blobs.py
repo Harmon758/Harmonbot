@@ -8,8 +8,8 @@ import textwrap
 from utilities import checks
 from utilities.menu import Menu
 
-def setup(bot):
-	bot.add_cog(Blobs(bot))
+async def setup(bot):
+	await bot.add_cog(Blobs(bot))
 
 class Blobs(commands.Cog):
 	

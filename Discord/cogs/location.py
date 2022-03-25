@@ -16,8 +16,8 @@ sys.path.insert(0, "..")
 from units.location import get_geocode_data, get_timezone_data, wind_degrees_to_direction, UnitOutputError
 sys.path.pop(0)
 
-def setup(bot):
-	bot.add_cog(Location(bot))
+async def setup(bot):
+	await bot.add_cog(Location(bot))
 
 class Location(commands.Cog):
 	

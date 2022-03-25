@@ -28,8 +28,8 @@ ACTIVITES = {
 	"YouTube Together": 755600276941176913
 }
 
-def setup(bot):
-	bot.add_cog(Discord(bot))
+async def setup(bot):
+	await bot.add_cog(Discord(bot))
 
 class Discord(commands.Cog):
 	

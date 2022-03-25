@@ -10,8 +10,8 @@ import random
 from utilities import checks
 from utilities.menu import Menu
 
-def setup(bot):
-	bot.add_cog(MazeCog())
+async def setup(bot):
+	await bot.add_cog(MazeCog())
 
 class Direction(IntEnum):
 	UP = 0

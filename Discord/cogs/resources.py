@@ -13,8 +13,8 @@ import dateutil
 from utilities import checks
 from utilities.paginator import ButtonPaginator
 
-def setup(bot):
-	bot.add_cog(Resources(bot))
+async def setup(bot):
+	await bot.add_cog(Resources(bot))
 
 class Resources(commands.Cog):
 	

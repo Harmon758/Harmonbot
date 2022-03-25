@@ -18,8 +18,8 @@ sys.path.insert(0, "..")
 from units.trivia import capwords, check_answer
 sys.path.pop(0)
 
-def setup(bot):
-	bot.add_cog(Trivia(bot))
+async def setup(bot):
+	await bot.add_cog(Trivia(bot))
 
 class Trivia(commands.Cog):
 	

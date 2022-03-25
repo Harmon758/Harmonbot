@@ -11,8 +11,8 @@ from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 from utilities import checks
 from utilities.menu import Menu
 
-def setup(bot):
-	bot.add_cog(Reminders(bot))
+async def setup(bot):
+	await bot.add_cog(Reminders(bot))
 
 class Reminders(commands.Cog):
 	

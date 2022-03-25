@@ -14,8 +14,8 @@ import tabulate
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Finance(bot))
+async def setup(bot):
+	await bot.add_cog(Finance(bot))
 
 class Finance(commands.Cog):
 	

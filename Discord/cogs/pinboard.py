@@ -6,8 +6,8 @@ from typing import Optional
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Pinboard(bot))
+async def setup(bot):
+	await bot.add_cog(Pinboard(bot))
 
 class Pinboard(commands.Cog):
 	

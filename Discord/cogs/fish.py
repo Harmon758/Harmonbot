@@ -10,8 +10,8 @@ import pydealer
 from utilities import checks
 
 
-def setup(bot):
-    bot.add_cog(Fish())
+async def setup(bot):
+    await bot.add_cog(Fish())
 
 def card_value(card):
     try:

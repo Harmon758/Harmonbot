@@ -27,8 +27,8 @@ sys.path.insert(0, "..")
 from units.time import duration_to_string
 sys.path.pop(0)
 
-def setup(bot):
-	bot.add_cog(Meta(bot))
+async def setup(bot):
+	await bot.add_cog(Meta(bot))
 	bot.tree.add_command(link, override = True)
 	bot.tree.add_command(avatar, override = True)
 

@@ -7,7 +7,7 @@ import asyncio
 from modules import utilities
 from utilities import checks
 
-def setup(bot):
+async def setup(bot):
 	
 	def emote_wrapper(emote):
 		async def emote_command(self, ctx):
@@ -34,7 +34,7 @@ def setup(bot):
 		setattr(Misc, name, command)
 		Misc.__cog_commands__.append(command)
 	
-	bot.add_cog(Misc(bot))
+	await bot.add_cog(Misc(bot))
 
 class Misc(commands.Cog):
 	

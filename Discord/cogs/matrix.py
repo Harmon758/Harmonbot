@@ -7,8 +7,8 @@ import scipy
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Matrix())
+async def setup(bot):
+	await bot.add_cog(Matrix())
 
 class Matrix(commands.Cog):
 	

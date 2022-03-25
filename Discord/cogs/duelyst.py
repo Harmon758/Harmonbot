@@ -4,8 +4,8 @@ from discord.ext import commands
 from utilities import checks
 
 
-def setup(bot):
-    bot.add_cog(Duelyst())
+async def setup(bot):
+    await bot.add_cog(Duelyst())
 
 
 class Duelyst(commands.Cog):

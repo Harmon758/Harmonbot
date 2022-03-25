@@ -7,8 +7,8 @@ import random
 from utilities import checks
 from utilities.menu import Menu
 
-def setup(bot):
-	bot.add_cog(Reactions(bot))
+async def setup(bot):
+	await bot.add_cog(Reactions(bot))
 
 # meta.stats reaction_responses column:
 #  Fixed to stop counting own reactions on 2019-10-25

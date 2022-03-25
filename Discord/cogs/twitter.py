@@ -16,8 +16,8 @@ from utilities import checks
 
 errors_logger = logging.getLogger("errors")
 
-def setup(bot):
-	bot.add_cog(Twitter(bot))
+async def setup(bot):
+	await bot.add_cog(Twitter(bot))
 
 class TwitterStream(tweepy.asynchronous.AsyncStream):
 	

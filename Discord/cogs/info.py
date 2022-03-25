@@ -33,8 +33,8 @@ BADGE_EMOJI_IDS = {
 	discord.PublicUserFlags.early_verified_bot_developer: 773895804015869953
 }
 
-def setup(bot):
-	bot.add_cog(Info(bot))
+async def setup(bot):
+	await bot.add_cog(Info(bot))
 
 class Info(commands.Cog):
 	

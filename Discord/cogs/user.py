@@ -8,8 +8,8 @@ from typing import Optional
 from utilities import checks
 
 
-def setup(bot):
-    bot.add_cog(User(bot))
+async def setup(bot):
+    await bot.add_cog(User(bot))
 
 
 class User(commands.Cog):

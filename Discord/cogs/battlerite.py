@@ -13,8 +13,8 @@ sys.path.insert(0, "..")
 from units.files import create_folder
 sys.path.pop(0)
 
-def setup(bot):
-	bot.add_cog(Battlerite(bot))
+async def setup(bot):
+	await bot.add_cog(Battlerite(bot))
 
 class Battlerite(commands.Cog):
 	

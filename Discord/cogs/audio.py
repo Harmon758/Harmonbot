@@ -20,8 +20,8 @@ sys.path.insert(0, "..")
 from units.files import create_folder
 sys.path.pop(0)
 
-def setup(bot):
-	bot.add_cog(Audio(bot))
+async def setup(bot):
+	await bot.add_cog(Audio(bot))
 
 class Audio(commands.Cog):
 	

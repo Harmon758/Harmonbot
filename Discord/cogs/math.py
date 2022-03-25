@@ -12,8 +12,8 @@ import sympy
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Math())
+async def setup(bot):
+	await bot.add_cog(Math())
 
 class Math(commands.Cog):
 	

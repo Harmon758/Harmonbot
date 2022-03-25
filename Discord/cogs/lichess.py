@@ -14,8 +14,8 @@ sys.path.insert(0, "..")
 from units.time import duration_to_string
 sys.path.pop(0)
 
-def setup(bot):
-	bot.add_cog(Lichess(bot))
+async def setup(bot):
+	await bot.add_cog(Lichess(bot))
 	
 class LichessUser(commands.Converter):
 	async def convert(self, ctx, argument):

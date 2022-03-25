@@ -15,8 +15,8 @@ from utilities import checks
 
 errors_logger = logging.getLogger("errors")
 
-def setup(bot):
-	bot.add_cog(Twitch(bot))
+async def setup(bot):
+	await bot.add_cog(Twitch(bot))
 
 class Twitch(commands.Cog):
 	

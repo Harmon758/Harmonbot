@@ -13,8 +13,8 @@ from units.runescape import (
 )
 sys.path.pop(0)
 
-def setup(bot):
-    bot.add_cog(RuneScape(bot))
+async def setup(bot):
+    await bot.add_cog(RuneScape(bot))
 
 class RuneScape(commands.Cog):
 

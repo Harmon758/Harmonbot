@@ -5,8 +5,8 @@ import datetime
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(WoWS())
+async def setup(bot):
+	await bot.add_cog(WoWS())
 
 API_URLS = {
 	"asia": "https://api.worldofwarships.asia/wows/", 

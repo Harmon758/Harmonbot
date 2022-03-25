@@ -12,8 +12,8 @@ import numpy
 
 from utilities import checks
 
-def setup(bot):
-	bot.add_cog(Respects(bot))
+async def setup(bot):
+	await bot.add_cog(Respects(bot))
 
 class Respects(commands.Cog):
 	

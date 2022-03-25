@@ -23,8 +23,8 @@ sys.path.pop(0)
 
 errors_logger = logging.getLogger("errors")
 
-def setup(bot):
-	bot.add_cog(YouTube(bot))
+async def setup(bot):
+	await bot.add_cog(YouTube(bot))
 
 class YouTube(commands.Cog):
 	

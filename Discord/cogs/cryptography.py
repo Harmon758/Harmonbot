@@ -22,8 +22,8 @@ from units.cryptography import (decode_caesar_cipher, encode_caesar_cipher,
 								UnitOutputError)
 sys.path.pop(0)
 
-def setup(bot):
-	bot.add_cog(Cryptography())
+async def setup(bot):
+	await bot.add_cog(Cryptography())
 
 class Cryptography(commands.Cog):
 	

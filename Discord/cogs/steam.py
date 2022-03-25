@@ -6,8 +6,8 @@ from utilities import checks
 from utilities.converters import SteamProfile
 
 
-def setup(bot):
-    bot.add_cog(Steam())
+async def setup(bot):
+    await bot.add_cog(Steam())
 
 class Steam(commands.Cog):
 
