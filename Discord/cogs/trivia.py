@@ -32,13 +32,8 @@ class Trivia(commands.Cog):
 		# Add jeopardy as trivia subcommand
 		self.bot.add_command(self.jeopardy)
 		self.trivia.add_command(self.jeopardy)
-		
-		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
 	
-	async def cog_check(self, ctx):
-		return await checks.not_forbidden().predicate(ctx)
-	
-	async def initialize_database(self):
+	async def cog_load(self):
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS trivia")
 		await self.bot.db.execute(
@@ -51,6 +46,9 @@ class Trivia(commands.Cog):
 			)
 			"""
 		)
+	
+	async def cog_check(self, ctx):
+		return await checks.not_forbidden().predicate(ctx)
 	
 	max_concurrency = commands.MaxConcurrency(1, per = commands.BucketType.guild, wait = False)
 	

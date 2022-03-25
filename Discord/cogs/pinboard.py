@@ -16,9 +16,8 @@ class Pinboard(commands.Cog):
 		self.default_threshold = 3
 		self.pin_emotes = ("\N{PUSHPIN}", "\N{ROUND PUSHPIN}", 
 							"\N{WHITE MEDIUM STAR}", "\N{GLOWING STAR}", "\N{SHOOTING STAR}")
-		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
 	
-	async def initialize_database(self):
+	async def cog_load(self):
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS pinboard")
 		await self.bot.db.execute(

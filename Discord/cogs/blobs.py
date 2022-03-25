@@ -16,13 +16,8 @@ class Blobs(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.menus = []
-		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
-		
-	def cog_unload(self):
-		for menu in self.menus:
-			menu.stop()
 	
-	async def initialize_database(self):
+	async def cog_load(self):
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS blobs")
 		await self.bot.db.execute(
@@ -51,6 +46,10 @@ class Blobs(commands.Cog):
 			)
 			"""
 		)
+		
+	def cog_unload(self):
+		for menu in self.menus:
+			menu.stop()
 	
 	@commands.group(aliases = ["blob"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()

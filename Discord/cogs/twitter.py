@@ -119,14 +119,9 @@ class Twitter(commands.Cog):
 		except (AttributeError, tweepy.TweepyException) as e:
 			self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
 		self.stream = TwitterStream(bot)
-		self.task = self.bot.loop.create_task(self.start_twitter_feeds(), name = "Start Twitter Stream")
 	
-	def cog_unload(self):
-		if self.stream:
-			self.stream.disconnect()
-		self.task.cancel()
-	
-	async def initialize_database(self):
+	async def cog_load(self):
+		# Initialize database
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS twitter")
 		await self.bot.db.execute(
@@ -140,6 +135,12 @@ class Twitter(commands.Cog):
 			)
 			"""
 		)
+		self.task = self.bot.loop.create_task(self.start_twitter_feeds(), name = "Start Twitter Stream")
+	
+	def cog_unload(self):
+		if self.stream:
+			self.stream.disconnect()
+		self.task.cancel()
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
@@ -276,7 +277,6 @@ class Twitter(commands.Cog):
 		return html.unescape(text.replace('\uFE0F', ""))
 	
 	async def start_twitter_feeds(self):
-		await self.initialize_database()
 		await self.bot.wait_until_ready()
 		feeds = {}
 		try:

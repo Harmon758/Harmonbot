@@ -27,25 +27,9 @@ class Battlerite(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.mappings = {}
-		self.bot.loop.create_task(self.load_mappings_and_emoji(), name = "Load Battlerite mappings and emoji")
 	
-	async def load_mappings_and_emoji(self):
-		await self.load_mappings()
-		await self.load_emoji()
-	
-	async def load_emoji(self):
-		# TODO: Check only within Emoji Server emojis?
-		champions = filter(lambda m: m["Type"] == "Characters", self.mappings.values())
-		champions = set(c["Name"].lower().replace(' ', '_') for c in champions)
-		champions.discard("random_champion")
-		champions.discard("egg_bakko")  # For Easter Event Egg Brawl
-		champions.discard("egg_raigon")  # For Easter Event Egg Brawl
-		champions.discard("rabbit")  # For Battlerite Royale
-		await self.bot.wait_until_ready()
-		for champion in champions:
-			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
-	
-	async def load_mappings(self):
+	async def cog_load(self):
+		# Load mappings
 		create_folder(self.bot.data_path + "/battlerite")
 		if os.path.isfile(self.bot.data_path + "/battlerite/mappings.json"):
 			with open(self.bot.data_path + "/battlerite/mappings.json", 'r') as mappings_file:
@@ -78,6 +62,17 @@ class Battlerite(commands.Cog):
 			self.mappings[str(item["StackableId"])] = {"Name": name, "Type": item["StackableRangeName"]}
 		with open(self.bot.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
 			json.dump(self.mappings, mappings_file, indent = 4)
+		# Load emoji
+		# TODO: Check only within Emoji Server emojis?
+		champions = filter(lambda m: m["Type"] == "Characters", self.mappings.values())
+		champions = set(c["Name"].lower().replace(' ', '_') for c in champions)
+		champions.discard("random_champion")
+		champions.discard("egg_bakko")  # For Easter Event Egg Brawl
+		champions.discard("egg_raigon")  # For Easter Event Egg Brawl
+		champions.discard("rabbit")  # For Battlerite Royale
+		await self.bot.wait_until_ready()
+		for champion in champions:
+			setattr(self, champion + "_emoji", discord.utils.get(self.bot.emojis, name = "battlerite_" + champion) or "")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)

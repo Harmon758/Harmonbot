@@ -27,9 +27,7 @@ class Adventure(commands.Cog):
 		self.bot = bot
 		self.adventure_players = {}
 		
-		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
-	
-	async def initialize_database(self):
+	async def cog_load(self):
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS adventure")
 		await self.bot.db.execute(

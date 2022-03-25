@@ -38,10 +38,8 @@ class Games(commands.Cog):
 		for value in self.blackjack_ranks["values"]:
 			self.blackjack_ranks["values"][value] += 1
 		#check default values
-		
-		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
 
-	async def initialize_database(self):
+	async def cog_load(self):
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS games")
 		await self.bot.db.execute(

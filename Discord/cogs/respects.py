@@ -19,9 +19,8 @@ class Respects(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.bot.loop.create_task(self.initialize_database(), name = "Initialize database")
 	
-	async def initialize_database(self):
+	async def cog_load(self):
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS respects")
 		await self.bot.db.execute(
