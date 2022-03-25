@@ -486,10 +486,21 @@ class Meta(commands.Cog):
 		else:
 			raise commands.NotOwner
 	
-	@commands.command(hidden = True)
+	@commands.group(
+		case_insensitive = True, hidden = True, invoke_without_command = True
+	)
 	@commands.is_owner()
 	async def sync_tree(self, ctx):
 		synced = await ctx.bot.tree.sync()
+		await ctx.embed_reply(
+			title = "Synced",
+			description = ctx.bot.PY_CODE_BLOCK.format(synced)
+		)
+	
+	@sync_tree.command(name = "guild", hidden = True)
+	@commands.is_owner()
+	async def sync_tree_guild(self, ctx):
+		synced = await ctx.bot.tree.sync(guild = ctx.guild)
 		await ctx.embed_reply(
 			title = "Synced",
 			description = ctx.bot.PY_CODE_BLOCK.format(synced)
