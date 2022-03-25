@@ -29,6 +29,7 @@ sys.path.pop(0)
 
 def setup(bot):
 	bot.add_cog(Meta(bot))
+	bot.tree.add_command(link, override = True)
 
 class Meta(commands.Cog):
 	
@@ -730,4 +731,9 @@ class Meta(commands.Cog):
 		await ctx.embed_reply(', '.join(f"`{task.get_coro().__qualname__}`" 
 										if (name := task.get_name()).startswith("Task-") 
 										else name for task in asyncio.all_tasks()))
+
+
+@app_commands.context_menu()
+async def link(interaction, message: discord.Message):
+	await interaction.response.send_message(message.jump_url)
 
