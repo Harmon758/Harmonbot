@@ -276,17 +276,6 @@ class Bot(commands.Bot):
 		self.add_command(reload)
 		load.add_command(load_aiml)
 		unload.add_command(unload_aiml)
-		
-		# Load cogs
-		for file in sorted(os.listdir("cogs")):
-			if file.endswith(".py") and not file.startswith(("images", "info", "random", "reactions")):
-				self.load_extension("cogs." + file[:-3])
-		self.load_extension("cogs.images")
-		self.load_extension("cogs.info")
-		self.load_extension("cogs.random")
-		self.load_extension("cogs.reactions")
-		# TODO: Document inter-cog dependencies/subcommands
-		# TODO: Catch exceptions on fail to load?
 	
 	async def setup_hook(self):
 		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
@@ -294,6 +283,16 @@ class Bot(commands.Bot):
 		await self.initialize_database()
 		await initialize_aiohttp_access_logging(self.database)
 		self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
+		# Load cogs
+		for file in sorted(os.listdir("cogs")):
+			if file.endswith(".py") and not file.startswith(("images", "info", "random", "reactions")):
+				await self.load_extension("cogs." + file[:-3])
+		await self.load_extension("cogs.images")
+		await self.load_extension("cogs.info")
+		await self.load_extension("cogs.random")
+		await self.load_extension("cogs.reactions")
+		# TODO: Document inter-cog dependencies/subcommands
+		# TODO: Catch exceptions on fail to load?
 	
 	def print(self, message):
 		print(f"[{datetime.datetime.now().isoformat()}] {self.console_message_prefix}{message}")
