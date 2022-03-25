@@ -131,7 +131,6 @@ class Bot(commands.Bot):
 		self.listing_sites = {}
 		# TODO: Include owner variable for user object?
 		# TODO: emote constants/variables
-		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
 		
 		# Variables
 		self.guild_settings = {}
@@ -251,9 +250,6 @@ class Bot(commands.Bot):
 			self.aiml_kernel.bootstrap(learnFiles = self.data_path + "/aiml/std-startup.xml", commands = "load aiml b")
 			self.aiml_kernel.saveBrain(self.data_path + "/aiml/aiml_brain.brn")
 		
-		# Aiohttp Client Session
-		self.loop.run_until_complete(self.initialize_aiohttp_client_session())
-		
 		# Inflect engine
 		self.inflect_engine = inflect.engine()
 		
@@ -261,10 +257,8 @@ class Bot(commands.Bot):
 		self.db = self.database = self.database_connection_pool = None
 		self.connected_to_database = asyncio.Event()
 		self.connected_to_database.set()
-		self.loop.run_until_complete(self.initialize_database())
 		
 		# HTTP Web Server
-		self.loop.run_until_complete(initialize_aiohttp_access_logging(self.database))
 		self.aiohttp_web_app = web.Application()
 		self.aiohttp_web_app.add_routes([web.get('/', self.web_server_get_handler), 
 										web.post('/', self.web_server_post_handler), 
@@ -293,7 +287,12 @@ class Bot(commands.Bot):
 		self.load_extension("cogs.reactions")
 		# TODO: Document inter-cog dependencies/subcommands
 		# TODO: Catch exceptions on fail to load?
-		
+	
+	async def setup_hook(self):
+		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
+		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
+		await self.initialize_database()
+		await initialize_aiohttp_access_logging(self.database)
 		self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
 	
 	def print(self, message):
@@ -304,9 +303,6 @@ class Bot(commands.Bot):
 		if not hasattr(self, "_app_info"):
 			self._app_info = await self.application_info()
 		return self._app_info
-	
-	async def initialize_aiohttp_client_session(self):
-		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
 	
 	async def connect_to_database(self):
 		if self.database_connection_pool:
