@@ -104,7 +104,6 @@ class Meta(commands.Cog):
 			embed.description = (f"```Name: {guild.name}\n"
 									f"ID: {guild.id}\n"
 									f"Owner: {guild.owner} ({guild.owner.id})\n"
-									f"Server Region: {guild.region}\n"
 									f"Members: {guild.member_count}\n"
 									f"Created at: {guild.created_at}\n```")
 			embed.set_thumbnail(url = guild.icon.url)
