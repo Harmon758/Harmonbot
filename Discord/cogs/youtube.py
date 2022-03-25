@@ -50,6 +50,7 @@ class YouTube(commands.Cog):
 														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
 		streams_command.add_command(commands.Command(streams_channels, name = "channels", aliases = ["streams"], 
 														checks = [checks.not_forbidden().predicate]))
+		"""
 		uploads_command = commands.Group(self.uploads, aliases = ["videos"], 
 											invoke_without_command = True, case_insensitive = True, 
 											checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate])
@@ -59,15 +60,16 @@ class YouTube(commands.Cog):
 														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
 		uploads_command.add_command(commands.Command(self.uploads_channels, name = "channels", aliases = ["uploads", "videos"], 
 														checks = [checks.not_forbidden().predicate]))
+		"""
 		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
 			parent.add_command(streams_command)
-			parent.add_command(uploads_command)
+			# parent.add_command(uploads_command)
 		else:
 			command = commands.Group(youtube, aliases = ["yt"], 
 										invoke_without_command = True, case_insensitive = True, 
 										checks = [checks.not_forbidden().predicate])
 			command.add_command(streams_command)
-			command.add_command(uploads_command)
+			# command.add_command(uploads_command)
 			self.bot.add_command(command)
 		
 		self.streams_task = self.check_streams.start()
