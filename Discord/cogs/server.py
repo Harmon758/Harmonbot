@@ -72,12 +72,15 @@ class Server(commands.Cog):
 			footer_icon_url = guild_owner.display_avatar.url
 		)
 	
-	@server.command()
+	@server.command(hidden = True)
 	@commands.guild_only()
 	@checks.not_forbidden()
 	async def region(self, ctx):
-		'''The server region'''
-		await ctx.embed_reply(str(ctx.guild.region).replace('-', ' ').title().replace("Vip", "VIP").replace("Us", "US").replace("Eu", "EU"))
+		'''
+		Deprecated, as server regions are deprecated by Discord
+		https://github.com/discord/discord-api-docs/pull/3001
+		'''
+		await ctx.send_help(ctx.command)
 	
 	@server.group(aliases = ["setting"], invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
