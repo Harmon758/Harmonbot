@@ -1014,7 +1014,7 @@ class Bot(commands.Bot):
 async def load(ctx, cog: str):
 	'''Load cog'''
 	try:
-		ctx.bot.load_extension("cogs." + cog)
+		await ctx.bot.load_extension("cogs." + cog)
 	except commands.ExtensionAlreadyLoaded:
 		await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog already loaded")
 	except commands.ExtensionFailed as e:
@@ -1035,7 +1035,7 @@ async def load(ctx, cog: str):
 async def unload(ctx, cog: str):
 	'''Unload cog'''
 	try:
-		ctx.bot.unload_extension("cogs." + cog)
+		await ctx.bot.unload_extension("cogs." + cog)
 	except commands.ExtensionNotLoaded:
 		await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog not found/loaded")
 	except commands.ExtensionError as e:
@@ -1050,7 +1050,7 @@ async def unload(ctx, cog: str):
 async def reload(ctx, cog: str):
 	'''Reload cog'''
 	try:
-		ctx.bot.reload_extension("cogs." + cog)
+		await ctx.bot.reload_extension("cogs." + cog)
 	except commands.ExtensionFailed as e:
 		await ctx.embed_reply(f"{ctx.bot.error_emoji} Error loading cog: {e.original.__class__.__name__}: {e.original}")
 	except commands.ExtensionNotFound:
