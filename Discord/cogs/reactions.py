@@ -130,9 +130,9 @@ class Reactions(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.reaction_commands = (
-			(self.guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
-			(self.playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
-			(self.wolframalpha, "Search", "wolframalpha", ["wa", "wolfram_alpha"], [checks.not_forbidden().predicate])
+			(guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
+			(playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
+			(wolframalpha, "Search", "wolframalpha", ["wa", "wolfram_alpha"], [checks.not_forbidden().predicate])
 		)
 		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
 			self.reactions.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
@@ -153,45 +153,46 @@ class Reactions(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	# TODO: rtg
-	
-	async def guess(self, ctx):
-		'''Guessing game menu'''
-		await GuessMenu().start(ctx)
-	
-	async def playing(self, ctx):
-		'''Audio player'''
-		await PlayingMenu().start(ctx)
-	
-	async def wolframalpha(self, ctx, *, search):
-		'''Wolfram|Alpha menu'''
-		# TODO: process asynchronously
-		# TODO: location option?
-		location = ctx.bot.fake_location
+
+
+async def guess(ctx):
+	'''Guessing game menu'''
+	await GuessMenu().start(ctx)
+
+async def playing(ctx):
+	'''Audio player'''
+	await PlayingMenu().start(ctx)
+
+async def wolframalpha(ctx, *, search):
+	'''Wolfram|Alpha menu'''
+	# TODO: process asynchronously
+	# TODO: location option?
+	location = ctx.bot.fake_location
+	try:
+		result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
+	except Exception as e:
+		if str(e).startswith("Error "):
+			return await ctx.embed_reply(f":no_entry: {e}")
+		raise
+	# TODO: other options?
+	if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
+		if result.didyoumeans["@count"] == '1':
+			didyoumean = result.didyoumeans["didyoumean"]["#text"]
+		else:
+			didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
+		await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
 		try:
-			result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
+			result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
 		except Exception as e:
 			if str(e).startswith("Error "):
 				return await ctx.embed_reply(f":no_entry: {e}")
 			raise
-		# TODO: other options?
-		if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
-			if result.didyoumeans["@count"] == '1':
-				didyoumean = result.didyoumeans["didyoumean"]["#text"]
-			else:
-				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
-			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
-			try:
-				result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
-			except Exception as e:
-				if str(e).startswith("Error "):
-					return await ctx.embed_reply(f":no_entry: {e}")
-				raise
-		if hasattr(result, "pod"):
-			await WolframAlphaMenu([(pod, subpod) for pod in result.pods for subpod in pod.subpods]).start(ctx)
-			if result.timedout:
-				await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
-		elif result.timedout:
-			await ctx.embed_reply("Standard computation time exceeded")
-		else:
-			await ctx.embed_reply(":no_entry: No results found")
+	if hasattr(result, "pod"):
+		await WolframAlphaMenu([(pod, subpod) for pod in result.pods for subpod in pod.subpods]).start(ctx)
+		if result.timedout:
+			await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
+	elif result.timedout:
+		await ctx.embed_reply("Standard computation time exceeded")
+	else:
+		await ctx.embed_reply(":no_entry: No results found")
 
