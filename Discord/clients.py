@@ -84,7 +84,6 @@ class Bot(commands.Bot):
 		self.version = "1.0.0-rc.9+g" + git.Repo("..").git.rev_parse("--short", "HEAD")
 		self.owner_id = 115691005197549570
 		self.listener_id = 180994984038760448
-		self.cache_channel_id = 254051856219635713
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.console_line_limit = 167
 		self.console_message_prefix = "Discord Harmonbot: "
@@ -125,7 +124,6 @@ class Bot(commands.Bot):
 		self.EMBED_TOTAL_CHARACTER_LIMIT = self.EMBED_TOTAL_CHAR_LIMIT = self.EToCL = 6000
 		## Functional
 		### Set on ready
-		self.cache_channel = None
 		self.invite_url = None
 		self.listener_bot = None  # User object
 		self.listing_sites = {}
@@ -499,7 +497,6 @@ class Bot(commands.Bot):
 	async def initialize_constant_objects(self):
 		await self.wait_until_ready()
 		app_info = await self.app_info
-		self.cache_channel = self.get_channel(self.cache_channel_id)
 		self.invite_url = discord.utils.oauth_url(app_info.id, scopes = ("bot", "applications.commands"))
 		self.listener_bot = await self.fetch_user(self.listener_id)
 		# TODO: Handle NotFound and HTTPException?
