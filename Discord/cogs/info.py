@@ -106,9 +106,6 @@ class Info(commands.Cog):
 	
 	async def server(self, ctx):
 		'''Information about the server'''
-		region = str(ctx.guild.region).replace('-', ' ').title()
-		region = region.replace("Vip", "VIP").replace("Us", "US").replace("Eu ", "EU ")
-		region = region.replace("Hongkong", "Hong Kong").replace("Southafrica", "South Africa")
 		text_count = sum(isinstance(channel, discord.TextChannel) for channel in ctx.guild.channels)
 		voice_count = sum(channel.type is discord.ChannelType.voice for channel in ctx.guild.channels)
 		bot_count = sum(m.bot for m in ctx.guild.members)
@@ -123,7 +120,7 @@ class Info(commands.Cog):
 		fields = [("Owner", guild_owner.mention), ("ID", ctx.guild.id), 
 					("Channels", f"{text_count} text\n{voice_count} voice"), 
 					("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"), 
-					("Roles", len(ctx.guild.roles)), ("Region", region), 
+					("Roles", len(ctx.guild.roles)), 
 					("AFK Channel", getattr(ctx.guild.afk_channel, "mention", ctx.guild.afk_channel)), 
 					("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."), 
 					("System Messages", system_messages), 
