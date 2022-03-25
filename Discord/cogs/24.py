@@ -20,10 +20,8 @@ class TwentyFour(commands.Cog, name = "24"):
     @checks.not_forbidden()
     async def twenty_four(self, ctx):
         '''24 Game'''
-        numbers = generate_numbers()
-
+        numbers = list(map(str, generate_numbers()))
         CEK = '\N{COMBINING ENCLOSING KEYCAP}'
-        numbers = list(map(str, numbers))
         await ctx.embed_reply(
             f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
             f"{numbers[2]}{CEK}{numbers[3]}{CEK}\n"
