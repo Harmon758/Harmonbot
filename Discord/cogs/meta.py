@@ -488,6 +488,15 @@ class Meta(commands.Cog):
 	
 	@commands.command(hidden = True)
 	@commands.is_owner()
+	async def sync_tree(self, ctx):
+		synced = await ctx.bot.tree.sync()
+		await ctx.embed_reply(
+			title = "Synced",
+			description = ctx.bot.PY_CODE_BLOCK.format(synced)
+		)
+	
+	@commands.command(hidden = True)
+	@commands.is_owner()
 	async def update_listing_stats(self, ctx, site = None):
 		'''
 		Update stats on sites listing Discord bots
