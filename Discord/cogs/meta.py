@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import asyncio
@@ -534,6 +535,11 @@ class Meta(commands.Cog):
 	async def test(self, ctx):
 		'''Basic test command'''
 		await ctx.send("Hello, World!")
+	
+	@app_commands.command(name = "test")
+	async def slash_test(self, interaction):
+		'''Basic test command'''
+		await interaction.response.send_message("Hello, World!")
 	
 	@test.command(name = "delete")
 	@commands.is_owner()
