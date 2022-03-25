@@ -187,11 +187,6 @@ class Bot(commands.Bot):
 			self.weather_manager = self.owm_client.weather_manager()
 		except AssertionError as e:
 			self.print(f"Failed to initialize OpenWeatherMap client: {e}")
-		## Twitch
-		self.twitch_client = twitchio.Client(
-			client_id = self.TWITCH_CLIENT_ID,
-			client_secret = self.TWITCH_CLIENT_SECRET
-		)
 		## Twitter
 		try:
 			self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
@@ -280,6 +275,11 @@ class Bot(commands.Bot):
 	async def setup_hook(self):
 		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
+		self.twitch_client = twitchio.Client(
+			client_id = self.TWITCH_CLIENT_ID,
+			client_secret = self.TWITCH_CLIENT_SECRET,
+			loop = self.loop
+		)
 		await self.initialize_database()
 		await initialize_aiohttp_access_logging(self.database)
 		self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
