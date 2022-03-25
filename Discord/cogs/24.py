@@ -19,7 +19,7 @@ class TwentyFour(commands.Cog, name = "24"):
     @commands.command(name = "24", aliases = ["twenty-four"])
     @checks.not_forbidden()
     async def twenty_four(self, ctx):
-        '''24 Game'''
+        """24 Game"""
         numbers = list(map(str, generate_numbers()))
         CEK = '\N{COMBINING ENCLOSING KEYCAP}'
         await ctx.embed_reply(
