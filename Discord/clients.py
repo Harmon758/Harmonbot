@@ -280,14 +280,12 @@ class Bot(commands.Bot):
 		self.add_command(self.load)
 		self.add_command(self.unload)
 		self.add_command(self.reload)
-		self.load.add_command(self.load_aiml)
-		self.unload.add_command(self.unload_aiml)
+		self.load.add_command(load_aiml)
+		self.unload.add_command(unload_aiml)
 		# Necessary?
 		self.load = staticmethod(self.load)
 		self.unload = staticmethod(self.unload)
 		self.reload = staticmethod(self.reload)
-		self.load_aiml = staticmethod(self.load_aiml)
-		self.unload_aiml = staticmethod(self.unload_aiml)
 		
 		# Load cogs
 		for file in sorted(os.listdir("cogs")):
@@ -1040,19 +1038,6 @@ class Bot(commands.Bot):
 		else:
 			await ctx.embed_reply(f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} Loaded `{cog}` cog \N{GEAR}")
 	
-	@commands.command(name = "aiml", aliases = ["brain"])
-	@commands.is_owner()
-	async def load_aiml(ctx):
-		'''Load AIML'''
-		for predicate, value in ctx.bot.aiml_predicates.items():
-			ctx.bot.aiml_kernel.setBotPredicate(predicate, value)
-		if os.path.isfile(ctx.bot.data_path + "/aiml/aiml_brain.brn"):
-			ctx.bot.aiml_kernel.bootstrap(brainFile = ctx.bot.data_path + "/aiml/aiml_brain.brn")
-		elif os.path.isfile(ctx.bot.data_path + "/aiml/std-startup.xml"):
-			ctx.bot.aiml_kernel.bootstrap(learnFiles = ctx.bot.data_path + "/aiml/std-startup.xml", commands = "load aiml b")
-			ctx.bot.aiml_kernel.saveBrain(ctx.bot.data_path + "/aiml/aiml_brain.brn")
-		await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Loaded AIML")
-	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
 	async def unload(ctx, cog: str):
@@ -1067,13 +1052,6 @@ class Bot(commands.Bot):
 			await ctx.embed_reply(f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} Failed to unload `{cog}` cog\n{type(e).__name__}: {e}")
 		else:
 			await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded `{cog}` cog \N{GEAR}")
-	
-	@commands.command(name = "aiml", aliases = ["brain"])
-	@commands.is_owner()
-	async def unload_aiml(ctx):
-		'''Unload AIML'''
-		ctx.bot.aiml_kernel.resetBrain()
-		await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded AIML")
 	
 	@commands.command()
 	@commands.is_owner()
@@ -1103,6 +1081,27 @@ class Bot(commands.Bot):
 				ctx.bot.online_time
 			)
 			await ctx.embed_reply(f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} Reloaded `{cog}` cog \N{GEAR}")
+
+
+@commands.command(name = "aiml", aliases = ["brain"])
+@commands.is_owner()
+async def load_aiml(ctx):
+	'''Load AIML'''
+	for predicate, value in ctx.bot.aiml_predicates.items():
+		ctx.bot.aiml_kernel.setBotPredicate(predicate, value)
+	if os.path.isfile(ctx.bot.data_path + "/aiml/aiml_brain.brn"):
+		ctx.bot.aiml_kernel.bootstrap(brainFile = ctx.bot.data_path + "/aiml/aiml_brain.brn")
+	elif os.path.isfile(ctx.bot.data_path + "/aiml/std-startup.xml"):
+		ctx.bot.aiml_kernel.bootstrap(learnFiles = ctx.bot.data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+		ctx.bot.aiml_kernel.saveBrain(ctx.bot.data_path + "/aiml/aiml_brain.brn")
+	await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Loaded AIML")
+
+@commands.command(name = "aiml", aliases = ["brain"])
+@commands.is_owner()
+async def unload_aiml(ctx):
+	'''Unload AIML'''
+	ctx.bot.aiml_kernel.resetBrain()
+	await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded AIML")
 
 
 def create_file(filename, content = None, filetype = "json"):
