@@ -38,24 +38,24 @@ class Random(commands.Cog):
 				self.bot.add_command(command)
 				self.random.add_command(command)
 		# Add fact subcommands as subcommands of corresponding commands
-		for command, parent in ((self.fact_cat, self.cat), (self.fact_date, self.date), (self.fact_number, self.number)):
+		for command, parent in ((fact_cat, self.cat), (fact_date, self.date), (fact_number, self.number)):
 			self.fact.add_command(commands.Command(command, name = parent.name, aliases = [parent.name + 's'], 
 													checks = [checks.not_forbidden().predicate]))
 			parent.add_command(commands.Command(command, name = "fact", aliases = ["facts"], 
 													checks = [checks.not_forbidden().predicate]))
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_commands = (
-			(self.blob, "Blobs", "blobs", []), 
-			(self.color, "Resources", "color", ["colour"]), 
-			(self.giphy, "Images", "giphy", []), 
-			(self.map, "Location", "map", []), 
-			(self.photo, "Images", "image", ["image"]), 
-			(self.streetview, "Location", "streetview", []), 
-			(self.time, "Location", "time", []), 
-			(self.uesp, "Search", "uesp", []), 
-			(self.user, "User", "user", ["member"]), 
-			(self.wikipedia, "Search", "wikipedia", ["wiki"]), 
-			(self.xkcd, "Entertainment", "xkcd", [])
+			(blob, "Blobs", "blobs", []), 
+			(color, "Resources", "color", ["colour"]), 
+			(giphy, "Images", "giphy", []), 
+			(map, "Location", "map", []), 
+			(photo, "Images", "image", ["image"]), 
+			(streetview, "Location", "streetview", []), 
+			(time, "Location", "time", []), 
+			(uesp, "Search", "uesp", []), 
+			(user, "User", "user", ["member"]), 
+			(wikipedia, "Search", "wikipedia", ["wiki"]), 
+			(xkcd, "Entertainment", "xkcd", [])
 		)
 		for command, cog_name, parent_name, aliases in self.random_commands:
 			self.random.add_command(commands.Command(command, aliases = aliases, checks = [checks.not_forbidden().predicate]))
@@ -87,112 +87,6 @@ class Random(commands.Cog):
 		'''
 		# TODO: random random
 		await ctx.embed_reply(":grey_question: Random what?")
-	
-	async def blob(self, ctx):
-		'''Random blob emoji'''
-		if "Blobs" in ctx.bot.cogs:
-			record = await ctx.bot.db.fetchrow("SELECT * FROM blobs.blobs TABLESAMPLE BERNOULLI (1) LIMIT 1")
-			await ctx.embed_reply(title = record["blob"], image_url = record["image"])
-	
-	async def color(self, ctx):
-		'''Information on a random color'''
-		url = "http://www.colourlovers.com/api/colors/random"
-		params = {"numResults": 1}
-		if cog := ctx.bot.get_cog("Resources"):
-			await cog.process_color(ctx, url, params)
-	
-	async def giphy(self, ctx):
-		'''Random gif from giphy'''
-		url = "http://api.giphy.com/v1/gifs/random"
-		params = {"api_key": ctx.bot.GIPHY_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		await ctx.embed_reply(image_url = data["data"]["image_url"])
-	
-	async def map(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap"):
-		'''
-		See map of random location
-		Zoom: 0 - 21+
-		Map Types: roadmap, satellite, hybrid, terrain
-		'''
-		latitude = random.uniform(-90, 90)
-		longitude = random.uniform(-180, 180)
-		url = "https://maps.googleapis.com/maps/api/staticmap"
-		params = {"center": f"{latitude},{longitude}", "zoom": zoom, "maptype": maptype, "size": "640x640", 
-					"key": ctx.bot.GOOGLE_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.read()
-		await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
-								image_url = "attachment://map.png", 
-								file = discord.File(io.BytesIO(data), filename = "map.png"))
-	
-	async def photo(self, ctx, *, query = ""):
-		'''Random photo from Unsplash'''
-		url = "https://api.unsplash.com/photos/random"
-		headers = {"Accept-Version": "v1", "Authorization": f"Client-ID {ctx.bot.UNSPLASH_ACCESS_KEY}"}
-		params = {"query": query}
-		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
-			data = await resp.json()
-		if "errors" in data:
-			errors = '\n'.join(data["errors"])
-			return await ctx.embed_reply(f":no_entry: Error:\n{errors}")
-		await ctx.embed_reply(data["description"] or "", 
-								author_name = f"{data['user']['name']} on Unsplash", 
-								author_url = f"{data['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
-								author_icon_url = data["user"]["profile_image"]["small"], 
-								image_url = data["urls"]["full"])
-	
-	async def streetview(self, ctx, radius: int = 5_000_000):
-		'''
-		Generate street view of a random location
-		`radius`: sets a radius, specified in meters, in which to search for a panorama, centered on the given latitude and longitude.
-		Valid values are non-negative integers.
-		'''
-		latitude = random.uniform(-90, 90)
-		longitude = random.uniform(-180, 180)
-		url = "https://maps.googleapis.com/maps/api/streetview"
-		params = {"location": f"{latitude},{longitude}", "size": "640x640", "fov": 120, "radius": radius, 
-					"key": ctx.bot.GOOGLE_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.read()
-		await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
-								image_url = "attachment://streetview.png", 
-								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
-	
-	async def time(self, ctx):
-		'''Random time'''
-		await ctx.embed_reply(f"{random.randint(0, 23):02}:{random.randint(0, 59):02}")
-	
-	async def uesp(self, ctx):
-		'''
-		Random UESP page
-		[UESP](http://uesp.net/wiki/Main_Page)
-		'''
-		if cog := ctx.bot.get_cog("Search"):
-			await cog.process_uesp(ctx, None, random = True)
-		else:
-			await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random")  # necessary?
-	
-	async def user(self, ctx):
-		'''Random user/member'''
-		await ctx.embed_reply(random.choice(ctx.guild.members).mention)
-	
-	async def wikipedia(self, ctx):
-		'''Random Wikipedia article'''
-		if cog := ctx.bot.get_cog("Search"):
-			await cog.process_wikipedia(ctx, None, random = True)
-		else:
-			await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")  # necessary?
-	
-	async def xkcd(self, ctx):
-		'''Random xkcd'''
-		url = "http://xkcd.com/info.0.json"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
-			data = await resp.json()
-		number = random.randint(1, data['num'])
-		url = f"http://xkcd.com/{number}/info.0.json"
-		if cog := ctx.bot.get_cog("Entertainment"):
-			await cog.process_xkcd(ctx, url)
 	
 	@commands.command(aliases = ["rabbit"])
 	async def bunny(self, ctx):
@@ -356,38 +250,10 @@ class Random(commands.Cog):
 		await ctx.embed_reply(BeautifulSoup(data[0]["fact"], "lxml").text, 
 								image_url = data[0]["primaryImage"])
 	
-	async def fact_cat(self, ctx):
-		'''Random fact about cats'''
-		url = "https://cat-facts-as-a-service.appspot.com/fact"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
-			fact = await resp.text()
-		await ctx.embed_reply(fact)
-	
-	async def fact_date(self, ctx, date: str):
-		'''
-		Random fact about a date
-		Format: month/date
-		Example: 1/1
-		'''
-		url = f"http://numbersapi.com/{date}/date"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
-			if resp.status == 404:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
-				return
-			data = await resp.text()
-		await ctx.embed_reply(data)
-	
 	@fact.command(name = "math")
 	async def fact_math(self, ctx, number: int):
 		'''Random math fact about a number'''
 		url = f"http://numbersapi.com/{number}/math"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
-			data = await resp.text()
-		await ctx.embed_reply(data)
-	
-	async def fact_number(self, ctx, number: int):
-		'''Random fact about a number'''
-		url = f"http://numbersapi.com/{number}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
@@ -554,4 +420,139 @@ class Random(commands.Cog):
 		await ctx.embed_reply(
 			self.bot.wordnik_words_api.getRandomWord().word.capitalize()
 		)
+
+
+async def blob(ctx):
+	'''Random blob emoji'''
+	if "Blobs" in ctx.bot.cogs:
+		record = await ctx.bot.db.fetchrow("SELECT * FROM blobs.blobs TABLESAMPLE BERNOULLI (1) LIMIT 1")
+		await ctx.embed_reply(title = record["blob"], image_url = record["image"])
+
+async def color(ctx):
+	'''Information on a random color'''
+	url = "http://www.colourlovers.com/api/colors/random"
+	params = {"numResults": 1}
+	if cog := ctx.bot.get_cog("Resources"):
+		await cog.process_color(ctx, url, params)
+
+async def fact_cat(ctx):
+	'''Random fact about cats'''
+	url = "https://cat-facts-as-a-service.appspot.com/fact"
+	async with ctx.bot.aiohttp_session.get(url) as resp:
+		fact = await resp.text()
+	await ctx.embed_reply(fact)
+
+async def fact_date(ctx, date: str):
+	'''
+	Random fact about a date
+	Format: month/date
+	Example: 1/1
+	'''
+	url = f"http://numbersapi.com/{date}/date"
+	async with ctx.bot.aiohttp_session.get(url) as resp:
+		if resp.status == 404:
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+			return
+		data = await resp.text()
+	await ctx.embed_reply(data)
+
+async def fact_number(ctx, number: int):
+	'''Random fact about a number'''
+	url = f"http://numbersapi.com/{number}"
+	async with ctx.bot.aiohttp_session.get(url) as resp:
+		data = await resp.text()
+	await ctx.embed_reply(data)
+
+async def giphy( ctx):
+	'''Random gif from giphy'''
+	url = "http://api.giphy.com/v1/gifs/random"
+	params = {"api_key": ctx.bot.GIPHY_API_KEY}
+	async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		data = await resp.json()
+	await ctx.embed_reply(image_url = data["data"]["image_url"])
+
+async def map(ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap"):
+	'''
+	See map of random location
+	Zoom: 0 - 21+
+	Map Types: roadmap, satellite, hybrid, terrain
+	'''
+	latitude = random.uniform(-90, 90)
+	longitude = random.uniform(-180, 180)
+	url = "https://maps.googleapis.com/maps/api/staticmap"
+	params = {"center": f"{latitude},{longitude}", "zoom": zoom, "maptype": maptype, "size": "640x640", 
+				"key": ctx.bot.GOOGLE_API_KEY}
+	async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		data = await resp.read()
+	await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
+							image_url = "attachment://map.png", 
+							file = discord.File(io.BytesIO(data), filename = "map.png"))
+
+async def photo(ctx, *, query = ""):
+	'''Random photo from Unsplash'''
+	url = "https://api.unsplash.com/photos/random"
+	headers = {"Accept-Version": "v1", "Authorization": f"Client-ID {ctx.bot.UNSPLASH_ACCESS_KEY}"}
+	params = {"query": query}
+	async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
+		data = await resp.json()
+	if "errors" in data:
+		errors = '\n'.join(data["errors"])
+		return await ctx.embed_reply(f":no_entry: Error:\n{errors}")
+	await ctx.embed_reply(data["description"] or "", 
+							author_name = f"{data['user']['name']} on Unsplash", 
+							author_url = f"{data['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
+							author_icon_url = data["user"]["profile_image"]["small"], 
+							image_url = data["urls"]["full"])
+
+async def streetview(ctx, radius: int = 5_000_000):
+	'''
+	Generate street view of a random location
+	`radius`: sets a radius, specified in meters, in which to search for a panorama, centered on the given latitude and longitude.
+	Valid values are non-negative integers.
+	'''
+	latitude = random.uniform(-90, 90)
+	longitude = random.uniform(-180, 180)
+	url = "https://maps.googleapis.com/maps/api/streetview"
+	params = {"location": f"{latitude},{longitude}", "size": "640x640", "fov": 120, "radius": radius, 
+				"key": ctx.bot.GOOGLE_API_KEY}
+	async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		data = await resp.read()
+	await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
+							image_url = "attachment://streetview.png", 
+							file = discord.File(io.BytesIO(data), filename = "streetview.png"))
+
+async def time(ctx):
+	'''Random time'''
+	await ctx.embed_reply(f"{random.randint(0, 23):02}:{random.randint(0, 59):02}")
+
+async def uesp(ctx):
+	'''
+	Random UESP page
+	[UESP](http://uesp.net/wiki/Main_Page)
+	'''
+	if cog := ctx.bot.get_cog("Search"):
+		await cog.process_uesp(ctx, None, random = True)
+	else:
+		await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random")  # necessary?
+
+async def user(ctx):
+	'''Random user/member'''
+	await ctx.embed_reply(random.choice(ctx.guild.members).mention)
+
+async def wikipedia(ctx):
+	'''Random Wikipedia article'''
+	if cog := ctx.bot.get_cog("Search"):
+		await cog.process_wikipedia(ctx, None, random = True)
+	else:
+		await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")  # necessary?
+
+async def xkcd(ctx):
+	'''Random xkcd'''
+	url = "http://xkcd.com/info.0.json"
+	async with ctx.bot.aiohttp_session.get(url) as resp:
+		data = await resp.json()
+	number = random.randint(1, data['num'])
+	url = f"http://xkcd.com/{number}/info.0.json"
+	if cog := ctx.bot.get_cog("Entertainment"):
+		await cog.process_xkcd(ctx, url)
 
