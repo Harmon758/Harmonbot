@@ -69,7 +69,9 @@ class TwentyFour(commands.Cog, name = "24"):
             view = view
         )
 
-        view.message = await interaction.original_message()
+        message = await interaction.original_message()
+        # Fetch Message, as InteractionMessage token expires after 15 min.
+        view.message = await message.fetch()
         interaction.client.views.append(view)
 
 
