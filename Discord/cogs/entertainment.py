@@ -1,10 +1,11 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import contextlib
 from math import inf
-from typing import Union
+from typing import Optional, Union
 
 from bs4 import BeautifulSoup
 
@@ -249,14 +250,48 @@ class Entertainment(commands.Cog):
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 	
-	async def search_for_xkcd(self, ctx, query):
+	@app_commands.command(name = "xkcd")
+	@app_commands.describe(number = "Comic number")
+	@app_commands.describe(query = (
+		"Search query (This is ignored if the comic number is provided)"
+	))
+	async def xkcd_slash(
+		self, interaction, number: Optional[int], query: Optional[str]
+	):
+		"""xkcd comics"""
+		if number is not None:
+			initial_page = number
+		elif query is not None:
+			if not (
+				initial_page := await self.search_for_xkcd(interaction, query)
+			):
+				await interaction.message.send_message("xkcd comic not found")
+				return
+		else:
+			initial_page = inf
+		
+		paginator = ButtonPaginator(
+			interaction, XKCDSource(interaction), initial_page = initial_page
+		)
+		await paginator.start()
+		interaction.client.views.append(paginator)
+	
+	async def search_for_xkcd(self, ctx_or_interaction, query):
+		if isinstance(ctx_or_interaction, commands.Context):
+			bot = ctx_or_interaction.bot
+		elif isinstance(ctx_or_interaction, discord.Interaction):
+			bot = ctx_or_interaction.client
+		else:
+			raise RuntimeError(
+				"search_for_xkcd passed neither Context nor Interaction"
+			)
 		# Query by title
 		url = "https://www.explainxkcd.com/wiki/api.php"
 		params = {
 			"action": "query", "list": "search", "format": "json", 
 			"srsearch": query, "srwhat": "title", "srlimit": "max"
 		}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if results := data["query"]["search"]:
 			for result in results:
@@ -264,12 +299,12 @@ class Entertainment(commands.Cog):
 					return int(result['title'].split(':')[0])
 		# Query by text
 		params["srwhat"] = "text"
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		results = data["query"]["search"]
 		# Query by exact text in quotation marks
 		params["srsearch"] = f'"{query}"'
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		exact_results = data["query"]["search"]
 		# Look for query in target sections
@@ -284,7 +319,7 @@ class Entertainment(commands.Cog):
 						"action": "parse", "pageid": page_id,
 						"prop": "sections", "format": "json"
 					}
-					async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+					async with bot.aiohttp_session.get(url, params = params) as resp:
 						data = await resp.json()
 					sections[page_id] = data["parse"]["sections"]
 				# Find target section
@@ -300,7 +335,7 @@ class Entertainment(commands.Cog):
 						"prop": "parsetree", "section": section["index"],
 						"format": "json"
 					}
-					async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+					async with bot.aiohttp_session.get(url, params = params) as resp:
 						data = await resp.json()
 					section_text = data["parse"]["parsetree"]['*'].lower()
 					# Check for query in section text

@@ -7,11 +7,23 @@ class ButtonPaginator(discord.ui.View):
 
     # TODO: Track pages paginated and number of paginators
 
-    def __init__(self, ctx, source, initial_page = 1):
+    def __init__(self, ctx_or_interaction, source, initial_page = 1):
         super().__init__(timeout = None)
-        self.ctx = ctx
+
+        self.ctx_or_interaction = ctx_or_interaction
         self.source = source
         self.current_page = initial_page - 1
+
+        if isinstance(ctx_or_interaction, commands.Context):
+            self.bot = ctx_or_interaction.bot
+            self.user = ctx_or_interaction.author
+        elif isinstance(ctx_or_interaction, discord.Interaction):
+            self.bot = ctx_or_interaction.client
+            self.user = ctx_or_interaction.user
+        else:
+            raise RuntimeError(
+                "ButtonPaginator passed neither Context nor Interaction"
+            )
 
         self.message = None
 
@@ -70,9 +82,7 @@ class ButtonPaginator(discord.ui.View):
         await self.stop(interaction = interaction)
 
     async def interaction_check(self, interaction):
-        if interaction.user.id not in (
-            self.ctx.author.id, self.ctx.bot.owner_id
-        ):
+        if interaction.user.id not in (self.user.id, self.bot.owner_id):
             await interaction.response.send_message(
                 "You didn't invoke this command.",
                 ephemeral = True
@@ -104,8 +114,23 @@ class ButtonPaginator(discord.ui.View):
         else:
             self.clear_items()
 
-        self.message = await self.ctx.send(**kwargs, view = self)
-        await self.ctx.bot.attempt_delete_message(self.ctx.message)
+        if isinstance(self.ctx_or_interaction, commands.Context):
+            self.message = await self.ctx_or_interaction.send(
+                **kwargs, view = self
+            )
+            await self.bot.attempt_delete_message(
+                self.ctx_or_interaction.message
+            )
+        elif isinstance(self.ctx_or_interaction, discord.Interaction):
+            await self.ctx_or_interaction.response.send_message(
+                **kwargs, view = self
+            )
+            message = await self.ctx_or_interaction.original_message()
+            self.message = await message.fetch()
+        else:
+            raise RuntimeError(
+                "ButtonPaginator using neither Context nor Interaction"
+            )
 
     async def show_page(self, interaction, page_number):
         self.current_page = page_number

@@ -1,14 +1,23 @@
 
 import discord
-from discord.ext import menus
+from discord.ext import commands, menus
 
 import datetime
 
 
 class XKCDSource(menus.PageSource):
 
-    def __init__(self, ctx):
-        self.bot = ctx.bot
+    def __init__(self, ctx_or_interaction):
+        self.ctx_or_interaction = ctx_or_interaction
+
+        if isinstance(ctx_or_interaction, commands.Context):
+            self.bot = ctx_or_interaction.bot
+        elif isinstance(ctx_or_interaction, discord.Interaction):
+            self.bot = ctx_or_interaction.client
+        else:
+            raise RuntimeError(
+                "XKCDSource passed neither Context nor Interaction"
+            )
 
     async def prepare(self):
         url = "http://xkcd.com/info.0.json"
@@ -28,22 +37,34 @@ class XKCDSource(menus.PageSource):
             return await resp.json()
 
     async def format_page(self, menu, page):
+        kwargs = {}
+
         embed = discord.Embed(
             title = page["title"],
             url = f"http://xkcd.com/{page['num']}",
-            color = menu.ctx.bot.bot_color
+            color = self.bot.bot_color
         )
-        embed.set_author(
-            name = menu.ctx.author.display_name,
-            icon_url = menu.ctx.author.avatar.url
-        )
+
+        if isinstance(self.ctx_or_interaction, commands.Context):
+            embed.set_author(
+                name = self.ctx_or_interaction.author.display_name,
+                icon_url = self.ctx_or_interaction.author.avatar.url
+            )
+            kwargs["content"] = (
+                "In response to: "
+                f"`{self.ctx_or_interaction.message.clean_content}`"
+            )
+        elif not isinstance(self.ctx_or_interaction, discord.Interaction):
+            raise RuntimeError(
+                "XKCDSource using neither Context nor Interaction"
+            )
+
         embed.set_image(url = page["img"])
         embed.set_footer(text = page["alt"])
         embed.timestamp = datetime.datetime(
             int(page["year"]), int(page["month"]), int(page["day"])
         )
-        return {
-            "content": f"In response to: `{menu.ctx.message.clean_content}`",
-            "embed": embed
-        }
+
+        kwargs["embed"] = embed
+        return kwargs
 
