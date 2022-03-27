@@ -274,6 +274,37 @@ class Meta(commands.Cog):
 		)
 		await message.edit(embed = embed)
 	
+	@app_commands.command(name = "ping")
+	async def slash_ping(self, interaction):
+		'''Latency information'''
+		start = time.perf_counter_ns()
+		await interaction.client.db.execute("SELECT 1")
+		database_latency = time.perf_counter_ns() - start
+		
+		embed = discord.Embed(color = interaction.client.bot_color).add_field(
+			name = "Discord HTTPS/REST API latency", value = "Checking..."
+		).add_field(
+			name = "Discord WebSocket Latency",
+			value = self.format_ns(
+				round(interaction.client.latency * 1000 ** 3)
+			)
+		).add_field(
+			name = "PostgreSQL Database Latency",
+			value = self.format_ns(database_latency)
+		)
+		
+		start = time.perf_counter_ns()
+		await interaction.response.send_message(embed = embed)
+		api_latency = time.perf_counter_ns() - start
+		
+		message = await interaction.original_message()
+		embed = message.embeds[0]
+		embed.set_field_at(
+			0, name = "Discord HTTPS/REST API latency",
+			value = self.format_ns(api_latency)
+		)
+		await message.edit(embed = embed)
+	
 	# TODO: Move to time unit
 	def format_ns(self, ns):
 		if ns > 1000 ** 3:
