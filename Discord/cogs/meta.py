@@ -249,39 +249,41 @@ class Meta(commands.Cog):
 		start = time.perf_counter_ns()
 		await ctx.bot.db.execute("SELECT 1")
 		database_latency = time.perf_counter_ns() - start
-		if database_latency > 1000:
-			database_latency = f"{database_latency / 1000} µs"
-		else:
-			database_latency = f"{database_latency} ns"
-		
-		if ctx.bot.latency < 1:
-			websocket_latency = f"{ctx.bot.latency * 1000:.6} ms"
-		else:
-			websocket_latency = f"{ctx.bot.latency:.6} s"
 		
 		start = time.perf_counter_ns()
 		message = await ctx.embed_reply(
 			title = "Pong" if ctx.invoked_with == "ping" else None,
 			fields = (
 				("Discord HTTPS/REST API latency", "Checking..."),
-				("Discord WebSocket Latency", websocket_latency),
-				("PostgreSQL Database Latency", database_latency)
+				(
+					"Discord WebSocket Latency",
+					self.format_ns(round(ctx.bot.latency * 1000 ** 3))
+				),
+				(
+					"PostgreSQL Database Latency",
+					self.format_ns(database_latency)
+				)
 			)
 		)
 		api_latency = time.perf_counter_ns() - start
 		
-		if api_latency > 1000 ** 2:
-			api_latency = f"{api_latency / 1000 ** 2} ms"
-		elif api_latency > 1000:
-			api_latency = f"{api_latency / 1000} µs"
-		else:
-			api_latency = f"{api_latency} ns"
-		
 		embed = message.embeds[0]
 		embed.set_field_at(
-			0, name = "Discord HTTPS/REST API latency", value = api_latency
+			0, name = "Discord HTTPS/REST API latency",
+			value = self.format_ns(api_latency)
 		)
 		await message.edit(embed = embed)
+	
+	# TODO: Move to time unit
+	def format_ns(self, ns):
+		if ns > 1000 ** 3:
+			return f"{ns / 1000 ** 3} s"
+		elif ns > 1000 ** 2:
+			return f"{ns / 1000 ** 2} ms"
+		elif ns > 1000:
+			return f"{ns / 1000} µs"
+		else:
+			return f"{ns} ns"
 	
 	@commands.command()
 	async def stats(self, ctx):
