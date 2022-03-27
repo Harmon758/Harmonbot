@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands, menus
 
 import asyncio
@@ -254,6 +255,36 @@ class MazeCog(commands.Cog, name = "Maze"):
 		await menu.start(ctx, wait = True)
 		self.menus.remove(menu)
 	
+	@app_commands.command(name = "maze")
+	@app_commands.describe(height = "Maze height")
+	@app_commands.describe(width = "Maze width")
+	@app_commands.describe(
+		random_start = "Whether to start at a random place in the Maze"
+	)
+	@app_commands.describe(
+		random_end = "Whether to end at a random place in the Maze"
+	)
+	async def maze_slash(
+		self, interaction, height: app_commands.Range[int, 2, 100] = 5,
+		width: app_commands.Range[int, 2, 100] = 5, random_start: bool = False,
+		random_end: bool = False
+	):
+		"""Maze Game"""
+		maze = Maze(height, width, random_start, random_end)
+		embed = discord.Embed(
+			color = interaction.client.bot_color,
+			description = interaction.client.CODE_BLOCK.format(str(maze))
+		).set_footer(
+			text = f"Your current position: {maze.column + 1}, {maze.row + 1}"
+		)
+		view = MazeView(maze, interaction.user)
+		await interaction.response.send_message(embed = embed, view = view)
+		
+		message = await interaction.original_message()
+		# Fetch Message, as InteractionMessage token expires after 15 min.
+		view.message = await message.fetch()
+		interaction.client.views.append(view)
+	
 	# TODO: maze stats
 
 class MazeMenu(Menu):
@@ -289,4 +320,113 @@ class MazeMenu(Menu):
 		await self.ctx.reply("Your maze is attached", 
 								file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
 													filename = "maze.txt"))
+
+class MazeView(discord.ui.View):
+	
+	def __init__(self, maze, user):
+		super().__init__(timeout = None)
+		self.arrows = {
+			'\N{UPWARDS BLACK ARROW}': Direction.UP,
+			'\N{LEFTWARDS BLACK ARROW}': Direction.LEFT,
+			'\N{BLACK RIGHTWARDS ARROW}': Direction.RIGHT,
+			'\N{DOWNWARDS BLACK ARROW}': Direction.DOWN
+		}
+		
+		self.maze = maze
+		self.user = user
+		
+		self.message = None
+		
+		# First row
+		self.add_blank_disabled_button()
+		self.add_item(MazeDirectionButton(emoji = '\N{UPWARDS BLACK ARROW}'))
+		self.add_blank_disabled_button()
+		self.add_blank_disabled_button()
+		self.add_item(MazeFileButton())
+		# Second row
+		self.add_item(MazeDirectionButton(emoji = '\N{LEFTWARDS BLACK ARROW}'))
+		self.add_blank_disabled_button()
+		self.add_item(MazeDirectionButton(
+			emoji = '\N{BLACK RIGHTWARDS ARROW}'
+		))
+		self.add_blank_disabled_button()
+		self.add_blank_disabled_button()
+		# Third row
+		self.add_blank_disabled_button()
+		self.add_item(MazeDirectionButton(emoji = '\N{DOWNWARDS BLACK ARROW}'))
+		self.add_blank_disabled_button()
+		self.add_blank_disabled_button()
+		self.add_blank_disabled_button()
+	
+	def add_blank_disabled_button(self):
+		self.add_item(discord.ui.Button(label = ' ', disabled = True))
+	
+	async def interaction_check(self, interaction):
+		if interaction.user.id not in (self.user, interaction.client.owner_id):
+			await interaction.response.send_message(
+				"This isn't your maze.", ephemeral = True
+			)
+			return False
+		return True
+	
+	async def stop(self):
+		self.children[1].disabled = True
+		self.children[4].disabled = True
+		self.children[5].disabled = True
+		self.children[7].disabled = True
+		self.children[11].disabled = True
+		
+		if self.message:
+			try:
+				await self.message.edit(view = self)
+			except discord.HTTPException as e:
+				if e.code != 50083:  # 50083 == Thread is archived
+					raise
+		
+		super().stop()
+
+class MazeDirectionButton(discord.ui.Button):
+	
+	def __init__(self, emoji):
+		super().__init__(emoji = emoji)
+		self.emoji = emoji
+	
+	async def callback(self, interaction):
+		embed = interaction.message.embeds[0]
+		if not self.view.maze.move(self.view.arrows[str(self.emoji)]):
+			await interaction.response.send_message(
+				f"{interaction.client.error_emoji} You can't go that way",
+				ephemeral = True
+			)
+		elif self.view.maze.reached_end:
+			embed.description = (
+				interaction.client.CODE_BLOCK.format(str(self.view.maze)) +
+				"\nCongratulations! You reached the end of the maze in "
+				f"{self.view.maze.move_counter} moves"
+			)
+			embed.remove_footer()
+			await interaction.response.edit_message(embed = embed, view = None)
+		else:
+			embed.description = interaction.client.CODE_BLOCK.format(
+				str(self.view.maze)
+			)
+			embed.set_footer(text = (
+				"Your current position: "
+				f"{self.view.maze.column + 1}, {self.view.maze.row + 1}"
+			))
+			await interaction.response.edit_message(embed = embed)
+
+class MazeFileButton(discord.ui.Button):
+	
+	def __init__(self):
+		super().__init__(emoji = '\N{PRINTER}')
+	
+	async def callback(self, interaction):
+		await interaction.response.send_message(
+			"Your maze is attached",
+			file = discord.File(
+				io.BytesIO(('\n'.join(self.view.maze.visible)).encode()), 
+				filename = "maze.txt"
+			)
+	)
 
