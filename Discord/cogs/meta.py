@@ -238,6 +238,11 @@ class Meta(commands.Cog):
 		await ctx.embed_reply(ctx.bot.invite_url)
 	
 	@commands.command()
+	async def latency(self, ctx):
+		'''Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds'''
+		await ctx.embed_reply(f"{ctx.bot.latency:.6}s")
+	
+	@commands.command()
 	async def stats(self, ctx):
 		'''
 		Bot stats
@@ -652,12 +657,6 @@ class Meta(commands.Cog):
 			await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"))
 			return
 		await ctx.embed_reply("Successfully executed")
-	
-	@commands.command()
-	@commands.is_owner()
-	async def latency(self, ctx):
-		'''Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds'''
-		await ctx.embed_reply(f"{ctx.bot.latency:.6}s")
 	
 	@commands.command(name = "query")
 	@commands.is_owner()
