@@ -240,9 +240,13 @@ class Meta(commands.Cog):
 	@commands.command(aliases = ["ping"])
 	async def latency(self, ctx):
 		'''Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds'''
+		if ctx.bot.latency < 1:
+			websocket_latency = f"{ctx.bot.latency * 1000:.6} ms"
+		else:
+			websocket_latency = f"{ctx.bot.latency:.6} s"
 		await ctx.embed_reply(
 			title = "Pong" if ctx.invoked_with == "ping" else None,
-			description = f"{ctx.bot.latency:.6}s"
+			fields = (("Discord WebSocket Latency", websocket_latency),)
 		)
 	
 	@commands.command()
