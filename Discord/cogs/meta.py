@@ -575,7 +575,7 @@ class Meta(commands.Cog):
 		fields = self.format_synced_commands(synced)
 		await ctx.embed_reply(title = "Synced (Global)", fields = fields)
 	
-	@sync_tree.command(name = "guild", hidden = True)
+	@sync_tree.command(name = "guild", aliases = ["server"], hidden = True)
 	@commands.is_owner()
 	async def sync_tree_guild(self, ctx):
 		synced = await ctx.bot.tree.sync(guild = ctx.guild)
