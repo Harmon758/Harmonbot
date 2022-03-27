@@ -5,19 +5,15 @@ from discord.ext import commands
 
 class ButtonPaginator(discord.ui.View):
 
-    # TODO: Track pages paginated
+    # TODO: Track pages paginated and number of paginators
 
-    def __init__(self, ctx, source):
+    def __init__(self, ctx, source, initial_page = 1):
         super().__init__(timeout = None)
         self.ctx = ctx
         self.source = source
+        self.current_page = initial_page - 1
 
         self.message = None
-
-        if source.is_paginating():
-            self.end_button.label = self.source.get_max_pages()
-        else:
-            self.clear_items()
 
     @discord.ui.button(
         style = discord.ButtonStyle.grey,
@@ -86,14 +82,27 @@ class ButtonPaginator(discord.ui.View):
 
     async def start(self):
         # TODO: Check embed permissions
+        await self.source.prepare()
 
-        self.current_page = 0
-        page = await self.source.get_page(0)
+        if self.current_page <= 0:
+            self.current_page = 0
+            self.start_button.disabled = True
+            self.previous_button.disabled = True
+        elif self.current_page >= (
+            max_page := self.source.get_max_pages() - 1
+        ):
+            self.current_page = max_page
+            self.end_button.disabled = True
+            self.next_button.disabled = True
+
+        page = await self.source.get_page(self.current_page)
         kwargs = await self.source.format_page(self, page)
 
-        self.start_button.disabled = True
-        self.current_button.label = 1
-        self.previous_button.disabled = True
+        if self.source.is_paginating():
+            self.current_button.label = self.current_page + 1
+            self.end_button.label = self.source.get_max_pages()
+        else:
+            self.clear_items()
 
         self.message = await self.ctx.send(**kwargs, view = self)
         await self.ctx.bot.attempt_delete_message(self.ctx.message)

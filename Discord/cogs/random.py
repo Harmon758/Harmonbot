@@ -24,6 +24,8 @@ import pyparsing
 
 from utilities import checks
 from utilities.converters import Maptype
+from utilities.menu_sources import XKCDSource
+from utilities.paginator import ButtonPaginator
 
 async def setup(bot):
 	await bot.add_cog(Random(bot))
@@ -547,12 +549,15 @@ async def wikipedia(ctx):
 		await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")  # necessary?
 
 async def xkcd(ctx):
-	'''Random xkcd'''
+	'''Random xkcd comic'''
 	url = "http://xkcd.com/info.0.json"
 	async with ctx.bot.aiohttp_session.get(url) as resp:
 		data = await resp.json()
 	number = random.randint(1, data['num'])
-	url = f"http://xkcd.com/{number}/info.0.json"
-	if cog := ctx.bot.get_cog("Entertainment"):
-		await cog.process_xkcd(ctx, url)
+	# TODO: Optimize random comic / page selection?
+	paginator = ButtonPaginator(
+		ctx, XKCDSource(ctx), initial_page = number
+	)
+	await paginator.start()
+	ctx.bot.views.append(paginator)
 
