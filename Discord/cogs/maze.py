@@ -32,7 +32,12 @@ class Direction(IntEnum):
 	@property
 	def vector(self):
 		# (-y, x) to match vertical, horizontal / row, column
-		return {self.UP: (-1, 0), self.RIGHT: (0, 1), self.DOWN: (1, 0), self.LEFT: (0, -1)}[self]
+		return {
+			self.UP: (-1, 0),
+			self.RIGHT: (0, 1),
+			self.DOWN: (1, 0),
+			self.LEFT: (0, -1)
+		}[self]
 
 class Maze:
 	
