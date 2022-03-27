@@ -9,6 +9,7 @@ import copy
 import ctypes
 import importlib.metadata
 import inspect
+from operator import attrgetter
 import os
 import random
 import subprocess
@@ -571,19 +572,54 @@ class Meta(commands.Cog):
 	@commands.is_owner()
 	async def sync_tree(self, ctx):
 		synced = await ctx.bot.tree.sync()
-		await ctx.embed_reply(
-			title = "Synced",
-			description = ctx.bot.PY_CODE_BLOCK.format(synced)
-		)
+		fields = self.format_synced_commands(synced)
+		await ctx.embed_reply(title = "Synced (Global)", fields = fields)
 	
 	@sync_tree.command(name = "guild", hidden = True)
 	@commands.is_owner()
 	async def sync_tree_guild(self, ctx):
 		synced = await ctx.bot.tree.sync(guild = ctx.guild)
-		await ctx.embed_reply(
-			title = "Synced",
-			description = ctx.bot.PY_CODE_BLOCK.format(synced)
-		)
+		fields = self.format_synced_commands(synced)
+		await ctx.embed_reply(title = "Synced (Server)", fields = fields)
+	
+	def format_synced_commands(self, commands):
+		slash_commands = []
+		message_context_menu_commands = []
+		user_context_menu_commands = []
+		for command in sorted(commands, key = attrgetter("id")):
+			if command.type is discord.AppCommandType.chat_input:
+				slash_commands.append(command)
+			elif command.type is discord.AppCommandType.message:
+				message_context_menu_commands.append(command)
+			elif command.type is discord.AppCommandType.user:
+				user_context_menu_commands.append(command)
+		
+		fields = []
+		if slash_commands:
+			fields.append((
+				"Slash Commands",
+				self.bot.CODE_BLOCK.format('\n'.join(
+					f"({command.id}) {command.name}"
+					for command in slash_commands
+				)), False
+			))
+		if message_context_menu_commands:
+			fields.append((
+				"Menu Context Menu Commands",
+				self.bot.CODE_BLOCK.format('\n'.join(
+					f"({command.id}) {command.name}"
+					for command in message_context_menu_commands
+				)), False
+			))
+		if user_context_menu_commands:
+			fields.append((
+				"User Context Menu Commands",
+				self.bot.CODE_BLOCK.format('\n'.join(
+					f"({command.id}) {command.name}"
+					for command in user_context_menu_commands
+				)), False
+			))
+		return fields
 	
 	@commands.command(hidden = True)
 	@commands.is_owner()
