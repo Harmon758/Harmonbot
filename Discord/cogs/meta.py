@@ -242,6 +242,7 @@ class Meta(commands.Cog):
 	async def latency(self, ctx):
 		'''
 		Latency information:
+		• Discord HTTPS/REST API latency from sending a message
 		• Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds
 		• PostgreSQL database latency from a SELECT 1 query
 		'''
@@ -258,13 +259,29 @@ class Meta(commands.Cog):
 		else:
 			websocket_latency = f"{ctx.bot.latency:.6} s"
 		
-		await ctx.embed_reply(
+		start = time.perf_counter_ns()
+		message = await ctx.embed_reply(
 			title = "Pong" if ctx.invoked_with == "ping" else None,
 			fields = (
+				("Discord HTTPS/REST API latency", "Checking..."),
 				("Discord WebSocket Latency", websocket_latency),
 				("PostgreSQL Database Latency", database_latency)
 			)
 		)
+		api_latency = time.perf_counter_ns() - start
+		
+		if api_latency > 1000 ** 2:
+			api_latency = f"{api_latency / 1000 ** 2} ms"
+		elif api_latency > 1000:
+			api_latency = f"{api_latency / 1000} µs"
+		else:
+			api_latency = f"{api_latency} ns"
+		
+		embed = message.embeds[0]
+		embed.set_field_at(
+			0, name = "Discord HTTPS/REST API latency", value = api_latency
+		)
+		await message.edit(embed = embed)
 	
 	@commands.command()
 	async def stats(self, ctx):
