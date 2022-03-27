@@ -156,11 +156,6 @@ class Misc(commands.Cog):
 		await ctx.embed_reply(output)
 	
 	@commands.command()
-	async def ping(self, ctx):
-		'''Basic ping - pong command'''
-		await ctx.embed_reply("pong")
-	
-	@commands.command()
 	async def poke(self, ctx, *, user: discord.Member):
 		'''Poke someone'''
 		if user == self.bot.user:

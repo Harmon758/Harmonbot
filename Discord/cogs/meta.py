@@ -237,10 +237,13 @@ class Meta(commands.Cog):
 		'''Link to invite me to a server'''
 		await ctx.embed_reply(ctx.bot.invite_url)
 	
-	@commands.command()
+	@commands.command(aliases = ["ping"])
 	async def latency(self, ctx):
 		'''Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds'''
-		await ctx.embed_reply(f"{ctx.bot.latency:.6}s")
+		await ctx.embed_reply(
+			title = "Pong" if ctx.invoked_with == "ping" else None,
+			description = f"{ctx.bot.latency:.6}s"
+		)
 	
 	@commands.command()
 	async def stats(self, ctx):
