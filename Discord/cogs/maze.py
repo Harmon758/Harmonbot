@@ -22,7 +22,12 @@ class Direction(IntEnum):
 	
 	@property
 	def reverse(self):
-		return {self.UP: self.DOWN, self.LEFT: self.RIGHT, self.DOWN: self.UP, self.RIGHT: self.LEFT}[self]
+		return {
+			self.UP: self.DOWN,
+			self.LEFT: self.RIGHT,
+			self.DOWN: self.UP,
+			self.RIGHT: self.LEFT
+		}[self]
 	
 	@property
 	def vector(self):
