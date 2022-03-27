@@ -1,7 +1,7 @@
 
 import discord
 from discord import app_commands
-from discord.ext import commands, menus
+from discord.ext import commands
 
 import asyncio
 from enum import IntEnum
@@ -9,7 +9,6 @@ import io
 import random
 
 from utilities import checks
-from utilities.menu import Menu
 
 
 async def setup(bot):
@@ -189,7 +188,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 
     def __init__(self):
         self.mazes = {}
-        self.menus = []
         self.tasks = []
         self.move_mapping = {
             'w': Direction.UP,
@@ -207,8 +205,6 @@ class MazeCog(commands.Cog, name = "Maze"):
 
     def cog_unload(self):
         # TODO: Persistence - store running mazes and add way to continue previous ones
-        for menu in self.menus:
-            menu.stop()
         for task in self.tasks:
             task.cancel()
 
@@ -270,19 +266,6 @@ class MazeCog(commands.Cog, name = "Maze"):
                 ":no_entry: There's no maze game currently going on"
             )
 
-    @maze.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
-    async def menu_command(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
-        '''
-        Maze game menu
-        height: 2 - 100
-        width: 2 - 100
-        React with an arrow key to move
-        '''
-        menu = MazeMenu(height, width, random_start, random_end)
-        self.menus.append(menu)
-        await menu.start(ctx, wait = True)
-        self.menus.remove(menu)
-
     @app_commands.command(name = "maze")
     @app_commands.describe(height = "Maze height")
     @app_commands.describe(width = "Maze width")
@@ -314,41 +297,6 @@ class MazeCog(commands.Cog, name = "Maze"):
         interaction.client.views.append(view)
 
     # TODO: maze stats
-
-
-class MazeMenu(Menu):
-
-    def __init__(self, height, width, random_start, random_end):
-        super().__init__(timeout = None, clear_reactions_after = True, check_embeds = True)
-        self.maze = Maze(height, width, random_start, random_end)
-        self.arrows = {'\N{LEFTWARDS BLACK ARROW}': Direction.LEFT, '\N{UPWARDS BLACK ARROW}': Direction.UP, 
-                        '\N{DOWNWARDS BLACK ARROW}': Direction.DOWN, '\N{BLACK RIGHTWARDS ARROW}': Direction.RIGHT}
-        for number, emoji in enumerate(self.arrows.keys(), start = 1):
-            self.add_button(menus.Button(emoji, self.on_direction, position = menus.Position(number)))
-
-    async def send_initial_message(self, ctx, channel):
-        return await ctx.embed_reply(ctx.bot.CODE_BLOCK.format(str(self.maze)), 
-                                        footer_text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
-
-    async def on_direction(self, payload):
-        embed = self.message.embeds[0]
-        if not self.maze.move(self.arrows[str(payload.emoji)]):
-            embed.description = (self.bot.CODE_BLOCK.format(str(self.maze))
-                                    + "\n:no_entry: You can't go that way")
-        elif self.maze.reached_end:
-            embed.description = (self.bot.CODE_BLOCK.format(str(self.maze))
-                                    + f"\nCongratulations! You reached the end of the maze in {self.maze.move_counter} moves")
-            self.stop()
-        else:
-            embed.description = self.bot.CODE_BLOCK.format(str(self.maze))
-        embed.set_footer(text = f"Your current position: {self.maze.column + 1}, {self.maze.row + 1}")
-        await self.message.edit(embed = embed)
-
-    @menus.button("\N{PRINTER}", position = menus.Last(), lock = False)
-    async def on_printer(self, payload):
-        await self.ctx.reply("Your maze is attached", 
-                                file = discord.File(io.BytesIO(('\n'.join(self.maze.visible)).encode()), 
-                                                    filename = "maze.txt"))
 
 
 class MazeView(discord.ui.View):
