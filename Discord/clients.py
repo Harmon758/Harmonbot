@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands, menus
 
 import asyncio
@@ -389,10 +390,26 @@ class Bot(commands.Bot):
 		)
 		await self.db.execute(
 			"""
+			CREATE TABLE IF NOT EXISTS meta.message_context_menu_commands (
+				command			TEXT PRIMARY KEY, 
+				invocations		BIGINT
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
 			CREATE TABLE IF NOT EXISTS meta.restart_channels (
 				channel_id				BIGINT PRIMARY KEY, 
 				player_text_channel_id	BIGINT, 
 				restart_message_id		BIGINT
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS meta.slash_commands (
+				command			TEXT PRIMARY KEY, 
+				invocations		BIGINT
 			)
 			"""
 		)
@@ -406,6 +423,14 @@ class Bot(commands.Bot):
 				commands_invoked	BIGINT, 
 				reaction_responses	BIGINT, 
 				menu_reactions		BIGINT
+			)
+			"""
+		)
+		await self.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS meta.user_context_menu_commands (
+				command			TEXT PRIMARY KEY, 
+				invocations		BIGINT
 			)
 			"""
 		)
@@ -437,8 +462,11 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS users.stats (
-				user_id				BIGINT PRIMARY KEY, 
-				commands_invoked	INT
+				user_id										BIGINT PRIMARY KEY, 
+				commands_invoked							INT, 
+				slash_command_invocations					BIGINT, 
+				message_context_menu_command_invocations	BIGINT, 
+				user_context_menu_command_invocations		BIGINT
 			)
 			"""
 		)
@@ -637,11 +665,78 @@ class Bot(commands.Bot):
 			INSERT INTO users.stats (user_id, commands_invoked)
 			VALUES ($1, 1)
 			ON CONFLICT (user_id) DO
-			UPDATE SET commands_invoked = stats.commands_invoked + 1
+			UPDATE SET commands_invoked = COALESCE(stats.commands_invoked, 0) + 1
 			""", 
 			ctx.author.id
 		)
 		# TODO: Track names
+	
+	async def on_interaction(self, interaction):
+		if not interaction.command:
+			return
+		
+		# TODO: Track session invocations?
+		if isinstance(interaction.command, app_commands.Command):
+			await self.db.execute(
+				"""
+				INSERT INTO meta.slash_commands (command, invocations)
+				VALUES ($1, 1)
+				ON CONFLICT (command) DO
+				UPDATE SET invocations = slash_commands.invocations + 1
+				""", 
+				interaction.command.name  # TODO: Handle full name
+			)
+			await self.db.execute(
+				"""
+				INSERT INTO users.stats (user_id, slash_command_invocations)
+				VALUES ($1, 1)
+				ON CONFLICT (user_id) DO
+				UPDATE SET slash_command_invocations = COALESCE(stats.slash_command_invocations, 0) + 1
+				""", 
+				interaction.user.id
+			)
+			# TODO: Track command names?
+		elif isinstance(interaction.command, app_commands.ContextMenu):
+			if interaction.command.type is discord.AppCommandType.message:
+				await self.db.execute(
+					"""
+					INSERT INTO meta.message_context_menu_commands (command, invocations)
+					VALUES ($1, 1)
+					ON CONFLICT (command) DO
+					UPDATE SET invocations = message_context_menu_commands.invocations + 1
+					""", 
+					interaction.command.name
+				)
+				await self.db.execute(
+					"""
+					INSERT INTO users.stats (user_id, message_context_menu_command_invocations)
+					VALUES ($1, 1)
+					ON CONFLICT (user_id) DO
+					UPDATE SET message_context_menu_command_invocations = COALESCE(stats.message_context_menu_command_invocations, 0) + 1
+					""", 
+					interaction.user.id
+				)
+				# TODO: Track command names?
+			elif interaction.command.type is discord.AppCommandType.user:
+				await self.db.execute(
+					"""
+					INSERT INTO meta.user_context_menu_commands (command, invocations)
+					VALUES ($1, 1)
+					ON CONFLICT (command) DO
+					UPDATE SET invocations = user_context_menu_commands.invocations + 1
+					""", 
+					interaction.command.name
+				)
+				await self.db.execute(
+					"""
+					INSERT INTO users.stats (user_id, user_context_menu_command_invocations)
+					VALUES ($1, 1)
+					ON CONFLICT (user_id) DO
+					UPDATE SET user_context_menu_command_invocations = COALESCE(stats.user_context_menu_command_invocations, 0) + 1
+					""", 
+					interaction.user.id
+				)
+				# TODO: Track command names?
 	
 	async def on_command_error(self, ctx, error):
 		# Ignore
