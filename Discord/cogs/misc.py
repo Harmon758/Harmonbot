@@ -158,9 +158,6 @@ class Misc(commands.Cog):
 	@commands.command()
 	async def ping(self, ctx):
 		'''Basic ping - pong command'''
-		# for #general and #development in Discord Bots
-		if ctx.message.channel.id in (110373943822540800, 110374153562886144):
-			return
 		await ctx.embed_reply("pong")
 	
 	@commands.command()
