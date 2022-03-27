@@ -13,6 +13,7 @@ import os
 import random
 import subprocess
 import sys
+import time
 import traceback
 from typing import Optional
 
@@ -239,14 +240,30 @@ class Meta(commands.Cog):
 	
 	@commands.command(aliases = ["ping"])
 	async def latency(self, ctx):
-		'''Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds'''
+		'''
+		Latency information:
+		• Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds
+		• PostgreSQL database latency from a SELECT 1 query
+		'''
+		start = time.perf_counter_ns()
+		await ctx.bot.db.execute("SELECT 1")
+		database_latency = time.perf_counter_ns() - start
+		if database_latency > 1000:
+			database_latency = f"{database_latency / 1000} µs"
+		else:
+			database_latency = f"{database_latency} ns"
+		
 		if ctx.bot.latency < 1:
 			websocket_latency = f"{ctx.bot.latency * 1000:.6} ms"
 		else:
 			websocket_latency = f"{ctx.bot.latency:.6} s"
+		
 		await ctx.embed_reply(
 			title = "Pong" if ctx.invoked_with == "ping" else None,
-			fields = (("Discord WebSocket Latency", websocket_latency),)
+			fields = (
+				("Discord WebSocket Latency", websocket_latency),
+				("PostgreSQL Database Latency", database_latency)
+			)
 		)
 	
 	@commands.command()
