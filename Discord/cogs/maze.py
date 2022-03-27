@@ -258,11 +258,17 @@ class MazeCog(commands.Cog, name = "Maze"):
     async def file(self, ctx):
         '''Text file of the current maze game'''
         if maze := self.mazes.get(ctx.channel.id):
-            await ctx.reply("Your maze is attached", 
-                            file = discord.File(io.BytesIO(('\n'.join(maze.visible)).encode()), 
-                                                filename = "maze.txt"))
+            await ctx.reply(
+                "Your maze is attached",
+                file = discord.File(
+                    io.BytesIO(('\n'.join(maze.visible)).encode()),
+                    filename = "maze.txt"
+                )
+            )
         else:
-            await ctx.embed_reply(":no_entry: There's no maze game currently going on")
+            await ctx.embed_reply(
+                ":no_entry: There's no maze game currently going on"
+            )
 
     @maze.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
     async def menu_command(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
