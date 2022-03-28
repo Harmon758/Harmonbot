@@ -210,7 +210,7 @@ class Location(commands.Cog):
 		await ctx.embed_reply(image_url = "attachment://streetview.png", 
 								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
 	
-	@commands.group(aliases = ["timezone"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["timezone"], case_insensitive = True, invoke_without_command = True)
 	async def time(self, ctx, *, location: str):
 		'''Current time of a location'''
 		try:
