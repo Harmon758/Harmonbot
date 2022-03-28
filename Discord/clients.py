@@ -177,6 +177,7 @@ class Bot(commands.Bot):
 		## OpenWeatherMap
 		try:
 			self.owm_client = pyowm.OWM(self.OWM_API_KEY)
+			self.geocoding_manager = self.owm_client.geocoding_manager()
 			self.weather_manager = self.owm_client.weather_manager()
 		except AssertionError as e:
 			self.print(f"Failed to initialize OpenWeatherMap client: {e}")

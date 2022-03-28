@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands, ui
 from discord.ext import commands
 
 import io
@@ -227,43 +228,311 @@ class Location(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
 		
-		if wind_direction := observation.weather.wnd.get("deg", ""):
-			wind_direction = wind_degrees_to_direction(wind_direction)
-		pressure = observation.weather.pressure["press"]
+		embed = format_weather_embed(ctx, observation.weather)
+		embed.title = (
+			f"{observation.location.name}, {observation.location.country}"
+		)
 		
-		fields = [
-			("Conditions", f"{observation.weather.status}"),
-			(
-				"Temperature",
-				f"{observation.weather.temperature(unit = 'celsius')['temp']}°C\n"
-				f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F"
-			), 
-			(
-				"Wind",
-				f"{wind_direction} {observation.weather.wind(unit = 'km_hour')['speed']:.2f} km/h\n"
-				f"{wind_direction} {observation.weather.wind(unit = 'miles_hour')['speed']:.2f} mi/h"
-			), 
-			("Humidity", f"{observation.weather.humidity}%"),
-			(
-				"Pressure",
+		await ctx.send(embed = embed)
+		await self.bot.attempt_delete_message(ctx.message)
+	
+	@app_commands.command(name = "weather")
+	@app_commands.describe(location = "Location to query")
+	async def slash_weather(self, interaction, location: str):
+		"""Weather"""
+		try:
+			geocode_data = await get_geocode_data(
+				location, aiohttp_session = interaction.client.aiohttp_session
+			)
+			lat = geocode_data["geometry"]["location"]["lat"]
+			lon = geocode_data["geometry"]["location"]["lng"]
+		except UnitOutputError:
+			locations = interaction.client.geocoding_manager.geocode(
+				location, limit = 1
+			)
+			
+			if not locations:
+				await interaction.response.send_message(
+					"Error: Location not found", ephemeral = True
+				)
+				return
+			
+			lat = locations[0].lat
+			lon = locations[0].lon
+		
+		one_call = interaction.client.weather_manager.one_call(
+			lat = lat, lon = lon
+		)
+		
+		embed = format_weather_embed(interaction, one_call.current)
+		embed.title = geocode_data['formatted_address']
+		
+		view = WeatherView(
+			geocode_data['formatted_address'], one_call, interaction.user
+		)
+		await interaction.response.send_message(
+			embed = embed,
+			view = view
+		)
+		message = await interaction.original_message()
+        # Fetch Message, as InteractionMessage token expires after 15 min.
+		view.message = await message.fetch()
+		interaction.client.views.append(view)
+
+class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
+	
+	def __init__(self, location, one_call, user):
+		super().__init__(timeout = None)
+		
+		self.location = location
+		self.one_call = one_call
+		self.user = user
+		
+		self.forecast_index = 0
+		self.forecast_precision = "daily"
+		self.message = None
+	
+	@ui.button(
+		emoji = (
+			'\N{LEFTWARDS BLACK ARROW}'
+			'\N{VARIATION SELECTOR-16}'
+		),
+		disabled = True
+	)
+	async def previous_button(self, button, interaction):
+		self.forecast_index -= 1
+		forecasts = getattr(
+			self.one_call,
+			f"forecast_{self.forecast_precision}"
+		)
+		weather = forecasts[self.forecast_index]
+		embed = format_weather_embed(interaction, weather)
+		embed.title = self.location
+		
+		if not self.forecast_index:
+			button.disabled = True
+		self.next_button.disabled = False
+		
+		await interaction.response.edit_message(embed = embed, view = self)
+	
+	@ui.button(label = "Current")
+	async def current_button(self, button, interaction):
+		embed = format_weather_embed(interaction, self.one_call.current)
+		embed.title = self.location
+		
+		self.previous_button.disabled = True
+		self.forecast_index = 0
+		self.next_button.disabled = False
+		
+		await interaction.response.edit_message(embed = embed, view = self)
+	
+	@ui.button(
+		emoji = (
+			'\N{BLACK RIGHTWARDS ARROW}'
+			'\N{VARIATION SELECTOR-16}'
+		)
+	)
+	async def next_button(self, button, interaction):
+		self.forecast_index += 1
+		forecasts = getattr(
+			self.one_call,
+			f"forecast_{self.forecast_precision}"
+		)
+		weather = forecasts[self.forecast_index]
+		embed = format_weather_embed(
+			interaction, weather,
+			humidity = self.forecast_precision != "minutely"
+		)
+		embed.title = self.location
+		
+		self.previous_button.disabled = False
+		if len(forecasts) == self.forecast_index + 1:
+			button.disabled = True
+		
+		await interaction.response.edit_message(embed = embed, view = self)
+	
+	@ui.select(
+		placeholder = "Forecast Precision - Daily",
+		options = [
+			discord.SelectOption(label = "Daily"),
+			discord.SelectOption(label = "Hourly"),
+			discord.SelectOption(label = "Minutely")
+		]
+	)
+	async def forecast_precision_select(self, select, interaction):
+		forecasts = getattr(
+			self.one_call, f"forecast_{select.values[0].lower()}"
+		)
+		
+		if not forecasts:
+			await interaction.response.send_message(
+				select.values[0] +
+				" forecast not available for this location.",
+				ephemeral = True
+			)
+			await interaction.message.edit(view = self)
+			return
+		
+		self.forecast_precision = select.values[0].lower()
+		self.forecast_index = 0
+		weather = forecasts[self.forecast_index]
+		embed = format_weather_embed(
+			interaction, weather,
+			humidity = self.forecast_precision != "minutely"
+		)
+		embed.title = self.location
+		
+		select.placeholder = f"Forecast Precision - {select.values[0]}"
+		self.previous_button.disabled = True
+		self.next_button.disabled = False
+		
+		await interaction.response.edit_message(embed = embed, view = self)
+	
+	@ui.button(label = "Alerts", row = 2)
+	async def alerts_button(self, button, interaction):
+		embed = discord.Embed(
+			color = interaction.client.bot_color,
+			title = self.location
+		)
+		for alert in self.one_call.national_weather_alerts:
+			embed.add_field(
+				name = f"{alert.title} - {alert.sender}",
+				value = alert.description,
+				inline = False
+			)
+		
+		self.previous_button.disabled = True
+		self.next_button.disabled = True
+		
+		await interaction.response.edit_message(embed = embed, view = self)
+	
+	@ui.button(
+		style = discord.ButtonStyle.red,
+		emoji = '\N{OCTAGONAL SIGN}',
+		row = 2
+	)
+	async def stop_button(self, button, interaction):
+		await self.stop(interaction = interaction)
+	
+	async def interaction_check(self, interaction):
+		if interaction.user.id not in (
+			self.user.id, interaction.client.owner_id
+		):
+			await interaction.response.send_message(
+				"You didn't invoke this command.", ephemeral = True
+			)
+			return False
+		return True
+	
+	async def stop(self, interaction = None):
+		self.previous_button.disabled = True
+		self.forecast_precision_select.disabled = True
+		self.next_button.disabled = True
+		self.current_button.disabled = True
+		self.alerts_button.disabled = True
+		self.remove_item(self.stop_button)
+		
+		if interaction:
+			await interaction.response.edit_message(view = self)
+		elif self.message:
+			try:
+				await self.message.edit(view = self)
+			except discord.HTTPException as e:
+				if e.code != 50083:  # 50083 == Thread is archived
+					raise
+
+def format_weather_embed(ctx_or_interaction, weather, humidity = True):
+	embed = discord.Embed(
+		timestamp = weather.reference_time(timeformat = "date")
+	).set_thumbnail(
+		url = weather.weather_icon_url()
+	)
+	if weather.status:
+		embed.add_field(
+			name = "Conditions",
+			value = weather.status
+		)
+	if "temp" in weather.temp:
+		embed.add_field(
+			name = "Temperature",
+			value = (
+				f"{weather.temperature(unit = 'celsius')['temp']}°C\n"
+				f"{weather.temperature(unit = 'fahrenheit')['temp']}°F"
+			)
+		)
+	elif "min" in weather.temp and "max" in weather.temp:
+		embed.add_field(
+			name = "Minimum Temperature",
+			value = (
+				f"{weather.temperature(unit = 'celsius')['min']}°C\n"
+				f"{weather.temperature(unit = 'fahrenheit')['min']}°F"
+			)
+		)
+		embed.add_field(
+			name = "Maximum Temperature",
+			value = (
+				f"{weather.temperature(unit = 'celsius')['max']}°C\n"
+				f"{weather.temperature(unit = 'fahrenheit')['max']}°F"
+			)
+		)
+	if wind_direction := weather.wnd.get("deg", ""):
+		wind_direction = wind_degrees_to_direction(wind_direction)
+	if weather.wnd:
+		embed.add_field(
+			name = "Wind",
+			value = (
+				f"{wind_direction} {weather.wind(unit = 'km_hour')['speed']:.2f} km/h\n"
+				f"{wind_direction} {weather.wind(unit = 'miles_hour')['speed']:.2f} mi/h"
+			)
+		)
+	if humidity:
+		embed.add_field(
+			name = "Humidity",
+			value = f"{weather.humidity}%"
+		)
+	if pressure := weather.pressure["press"]:
+		embed.add_field(
+			name = "Pressure",
+			value = (
 				f"{pressure} mb (hPa)\n"
 				f"{pressure * 0.0295299830714:.2f} inHg"
 			)
-		]
-		
-		if visibility := observation.weather.visibility_distance:
-			fields.append((
-				"Visibility",
+		)
+	if visibility := weather.visibility_distance:
+		embed.add_field(
+			name = "Visibility",
+			value = (
 				f"{visibility / 1000:.2f} km\n"
 				f"{visibility * 0.000621371192237:.2f} mi"
-			))
-		
-		await ctx.embed_reply(
-			title = f"{observation.location.name}, {observation.location.country}",
-			thumbnail_url = observation.weather.weather_icon_url(),
-			fields = fields,
-			timestamp = observation.weather.reference_time(timeformat = "date")
+			)
+		)
+	if weather.precipitation_probability:
+		embed.add_field(
+			name = "Precipitation",
+			value = f"{weather.precipitation_probability * 100}%"
+		)
+	elif "all" in weather.rain:
+		embed.add_field(
+			name = "Precipitation",
+			value = f"{weather.rain['all'] * 100}%"
 		)
 	
-	# TODO: Forecast; menu
+	if isinstance(ctx_or_interaction, commands.Context):
+		embed.color = ctx_or_interaction.bot.bot_color
+		embed.set_author(
+			name = ctx_or_interaction.author.display_name,
+			icon_url = ctx_or_interaction.author.display_avatar.url
+		)
+		embed.set_footer(text = (
+			"In response to: " +
+			ctx_or_interaction.message.clean_content
+		))
+	elif isinstance(ctx_or_interaction, discord.Interaction):
+		embed.color = ctx_or_interaction.client.bot_color
+	else:
+		raise RuntimeError(
+			"format_weather_embed passed neither Context nor Interaction"
+		)
+	
+	return embed
 
