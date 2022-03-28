@@ -525,7 +525,7 @@ class Bot(commands.Bot):
 	async def initialize_constant_objects(self):
 		await self.wait_until_ready()
 		app_info = await self.app_info
-		self.invite_url = discord.utils.oauth_url(app_info.id, scopes = ("bot", "applications.commands"))
+		self.invite_url = discord.utils.oauth_url(app_info.id)
 		self.listener_bot = await self.fetch_user(self.listener_id)
 		# TODO: Handle NotFound and HTTPException?
 		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
