@@ -135,12 +135,16 @@ class Location(commands.Cog):
 	async def geocode(self, ctx, *, address: str):
 		'''Convert addresses to geographic coordinates'''
 		try:
-			data = await get_geocode_data(address, aiohttp_session = ctx.bot.aiohttp_session)
+			data = await get_geocode_data(
+				address, aiohttp_session = ctx.bot.aiohttp_session
+			)
 		except UnitOutputError as e:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		title = "Geographic Coordinates for " + data["formatted_address"]
-		fields = (("Latitude", data["geometry"]["location"]["lat"]), 
-					("Longitude", data["geometry"]["location"]["lng"]))
+		fields = (
+			("Latitude", data["geometry"]["location"]["lat"]),
+			("Longitude", data["geometry"]["location"]["lng"])
+		)
 		await ctx.embed_reply(title = title, fields = fields)
 	
 	@geocode.command(name = "reverse")
