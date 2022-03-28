@@ -139,13 +139,16 @@ class Location(commands.Cog):
 				address, aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except UnitOutputError as e:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
-		title = "Geographic Coordinates for " + data["formatted_address"]
-		fields = (
-			("Latitude", data["geometry"]["location"]["lat"]),
-			("Longitude", data["geometry"]["location"]["lng"])
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			return
+		
+		await ctx.embed_reply(
+			title = "Geographic Coordinates for " + data["formatted_address"],
+			fields = (
+				("Latitude", data["geometry"]["location"]["lat"]),
+				("Longitude", data["geometry"]["location"]["lng"])
+			)
 		)
-		await ctx.embed_reply(title = title, fields = fields)
 	
 	@geocode.command(name = "reverse")
 	async def geocode_reverse(self, ctx, latitude: float, longitude: float):
