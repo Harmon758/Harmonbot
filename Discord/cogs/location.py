@@ -131,7 +131,7 @@ class Location(commands.Cog):
 			country_name += f" ({country_data['nativeName']})"
 		await ctx.embed_reply(title = country_name, fields = fields)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def geocode(self, ctx, *, address: str):
 		'''Convert addresses to geographic coordinates'''
 		try:
