@@ -210,24 +210,39 @@ class Location(commands.Cog):
 		await ctx.embed_reply(image_url = "attachment://streetview.png", 
 								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
 	
-	@commands.group(aliases = ["timezone"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["timezone"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def time(self, ctx, *, location: str):
 		'''Current time of a location'''
 		try:
-			geocode_data = await get_geocode_data(location, aiohttp_session = ctx.bot.aiohttp_session)
+			geocode_data = await get_geocode_data(
+				location, aiohttp_session = ctx.bot.aiohttp_session
+			)
 			latitude = geocode_data["geometry"]["location"]["lat"]
 			longitude = geocode_data["geometry"]["location"]["lng"]
-			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
-													aiohttp_session = ctx.bot.aiohttp_session)
+			timezone_data = await get_timezone_data(
+				latitude = latitude, longitude = longitude,
+				aiohttp_session = ctx.bot.aiohttp_session
+			)
 		except UnitOutputError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
-		location_time = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
-														timezone_data["dstOffset"] + timezone_data["rawOffset"])
+		
+		location_time = datetime.datetime.fromtimestamp(
+			datetime.datetime.utcnow().timestamp() +
+			timezone_data["dstOffset"] + timezone_data["rawOffset"]
+		)
 		title = "Time at " + geocode_data["formatted_address"]
-		description = (f"{location_time.strftime('%I:%M:%S %p').lstrip('0')}\n"
-						f"{location_time.strftime('%Y-%m-%d %A')}")
-		fields = (("Timezone", f"{timezone_data['timeZoneName']}\n{timezone_data['timeZoneId']}"),)
+		description = (
+			f"{location_time.strftime('%I:%M:%S %p').lstrip('0')}\n"
+			f"{location_time.strftime('%Y-%m-%d %A')}"
+		)
+		fields = ((
+			"Timezone",
+			f"{timezone_data['timeZoneName']}\n{timezone_data['timeZoneId']}"
+		),)
 		await ctx.embed_reply(description, title = title, fields = fields)
 	
 	@commands.command()
