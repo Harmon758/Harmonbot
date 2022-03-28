@@ -166,7 +166,7 @@ class Location(commands.Cog):
 	
 	# TODO: random address command?
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def map(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap", *, location: str):
 		'''
 		See map of location
