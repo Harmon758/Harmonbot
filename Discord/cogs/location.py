@@ -224,10 +224,13 @@ class Location(commands.Cog):
 			pyowm.commons.exceptions.NotFoundError,
 			pyowm.commons.exceptions.BadGatewayError
 		) as e:  # TODO: Catch base exceptions?
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			return
+		
 		if wind_direction := observation.weather.wnd.get("deg", ""):
 			wind_direction = wind_degrees_to_direction(wind_direction)
 		pressure = observation.weather.pressure["press"]
+		
 		fields = [
 			("Conditions", f"{observation.weather.status}"),
 			(
@@ -247,12 +250,14 @@ class Location(commands.Cog):
 				f"{pressure * 0.0295299830714:.2f} inHg"
 			)
 		]
+		
 		if visibility := observation.weather.visibility_distance:
 			fields.append((
 				"Visibility",
 				f"{visibility / 1000:.2f} km\n"
 				f"{visibility * 0.000621371192237:.2f} mi"
 			))
+		
 		await ctx.embed_reply(
 			title = f"{observation.location.name}, {observation.location.country}",
 			thumbnail_url = observation.weather.weather_icon_url(),
