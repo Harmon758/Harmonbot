@@ -254,7 +254,7 @@ class Location(commands.Cog):
 				f"{visibility * 0.000621371192237:.2f} mi"
 			))
 		await ctx.embed_reply(
-			f"**__{observation.location.name}, {observation.location.country}__**",
+			title = f"{observation.location.name}, {observation.location.country}",
 			thumbnail_url = observation.weather.weather_icon_url(),
 			fields = fields,
 			timestamp = observation.weather.reference_time(timeformat = "date")
