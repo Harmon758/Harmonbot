@@ -234,16 +234,21 @@ class Location(commands.Cog):
 			datetime.datetime.utcnow().timestamp() +
 			timezone_data["dstOffset"] + timezone_data["rawOffset"]
 		)
-		title = "Time at " + geocode_data["formatted_address"]
-		description = (
-			f"{location_time.strftime('%I:%M:%S %p').lstrip('0')}\n"
-			f"{location_time.strftime('%Y-%m-%d %A')}"
+		
+		await ctx.embed_reply(
+			title = "Time at " + geocode_data["formatted_address"],
+			description = (
+				f"{location_time.strftime('%I:%M:%S %p').lstrip('0')}\n"
+				f"{location_time.strftime('%Y-%m-%d %A')}"
+			),
+			fields = ((
+				"Timezone",
+				(
+					f"{timezone_data['timeZoneName']}\n"
+					f"{timezone_data['timeZoneId']}"
+				)
+			),)
 		)
-		fields = ((
-			"Timezone",
-			f"{timezone_data['timeZoneName']}\n{timezone_data['timeZoneId']}"
-		),)
-		await ctx.embed_reply(description, title = title, fields = fields)
 	
 	@commands.command()
 	async def weather(self, ctx, *, location: str):
