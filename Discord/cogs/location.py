@@ -220,7 +220,7 @@ class Location(commands.Cog):
 			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
 													aiohttp_session = ctx.bot.aiohttp_session)
 		except UnitOutputError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
 		location_time = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
 														timezone_data["dstOffset"] + timezone_data["rawOffset"])
