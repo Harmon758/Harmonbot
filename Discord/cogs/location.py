@@ -220,27 +220,45 @@ class Location(commands.Cog):
 		'''Weather'''
 		try:
 			observation = self.bot.weather_manager.weather_at_place(location)
-		except (pyowm.commons.exceptions.NotFoundError, 
-				pyowm.commons.exceptions.BadGatewayError) as e:
-			# TODO: Catch base exceptions?
+		except (
+			pyowm.commons.exceptions.NotFoundError,
+			pyowm.commons.exceptions.BadGatewayError
+		) as e:  # TODO: Catch base exceptions?
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		if wind_direction := observation.weather.wnd.get("deg", ""):
 			wind_direction = wind_degrees_to_direction(wind_direction)
 		pressure = observation.weather.pressure["press"]
-		fields = [("Conditions", f"{observation.weather.status}"), 
-					("Temperature", f"{observation.weather.temperature(unit = 'celsius')['temp']}°C\n"
-										f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F"), 
-					("Wind", f"{wind_direction} {observation.weather.wind(unit = 'km_hour')['speed']:.2f} km/h\n"
-								f"{wind_direction} {observation.weather.wind(unit = 'miles_hour')['speed']:.2f} mi/h"), 
-					("Humidity", f"{observation.weather.humidity}%"), 
-					("Pressure", f"{pressure} mb (hPa)\n"
-									f"{pressure * 0.0295299830714:.2f} inHg")]
+		fields = [
+			("Conditions", f"{observation.weather.status}"),
+			(
+				"Temperature",
+				f"{observation.weather.temperature(unit = 'celsius')['temp']}°C\n"
+				f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F"
+			), 
+			(
+				"Wind",
+				f"{wind_direction} {observation.weather.wind(unit = 'km_hour')['speed']:.2f} km/h\n"
+				f"{wind_direction} {observation.weather.wind(unit = 'miles_hour')['speed']:.2f} mi/h"
+			), 
+			("Humidity", f"{observation.weather.humidity}%"),
+			(
+				"Pressure",
+				f"{pressure} mb (hPa)\n"
+				f"{pressure * 0.0295299830714:.2f} inHg"
+			)
+		]
 		if visibility := observation.weather.visibility_distance:
-			fields.append(("Visibility", f"{visibility / 1000:.2f} km\n"
-											f"{visibility * 0.000621371192237:.2f} mi"))
-		await ctx.embed_reply(f"**__{observation.location.name}, {observation.location.country}__**", 
-								thumbnail_url = observation.weather.weather_icon_url(), fields = fields, 
-								timestamp = observation.weather.reference_time(timeformat = "date"))
+			fields.append((
+				"Visibility",
+				f"{visibility / 1000:.2f} km\n"
+				f"{visibility * 0.000621371192237:.2f} mi"
+			))
+		await ctx.embed_reply(
+			f"**__{observation.location.name}, {observation.location.country}__**",
+			thumbnail_url = observation.weather.weather_icon_url(),
+			fields = fields,
+			timestamp = observation.weather.reference_time(timeformat = "date")
+		)
 	
 	# TODO: Forecast; menu
 
