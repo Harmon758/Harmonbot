@@ -340,7 +340,9 @@ class MazeView(discord.ui.View):
         self.add_item(discord.ui.Button(label = ' ', disabled = True))
 
     async def interaction_check(self, interaction):
-        if interaction.user.id not in (self.user.id, interaction.client.owner_id):
+        if interaction.user.id not in (
+            self.user.id, interaction.client.owner_id
+        ):
             await interaction.response.send_message(
                 "This isn't your maze.", ephemeral = True
             )
