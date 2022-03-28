@@ -167,19 +167,26 @@ class Location(commands.Cog):
 	# TODO: random address command?
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
-	async def map(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap", *, location: str):
+	async def map(
+		self, ctx, zoom: Optional[int] = 13,
+		maptype: Optional[Maptype] = "roadmap", *, location: str
+	):
 		'''
 		See map of location
 		Zoom: 0 - 21+
 		Map Types: roadmap, satellite, hybrid, terrain
 		'''
 		url = "https://maps.googleapis.com/maps/api/staticmap"
-		params = {"center": location, "zoom": zoom, "maptype": maptype, "size": "640x640", 
-					"key": ctx.bot.GOOGLE_API_KEY}
+		params = {
+			"center": location, "zoom": zoom, "maptype": maptype,
+			"size": "640x640", "key": ctx.bot.GOOGLE_API_KEY
+		}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.read()
-		await ctx.embed_reply(image_url = "attachment://map.png", 
-								file = discord.File(io.BytesIO(data), filename = "map.png"))
+		await ctx.embed_reply(
+			image_url = "attachment://map.png",
+			file = discord.File(io.BytesIO(data), filename = "map.png")
+		)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def streetview(self, ctx, pitch: Optional[int] = 0, heading: Optional[int] = None, *, location: str):
