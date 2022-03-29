@@ -430,13 +430,14 @@ class Astronomy(commands.Cog):
 				async with ctx.bot.aiohttp_session.get(url) as resp:
 					observatory_data = await resp.json()
 				
-				fields = [
-					(
-						"Observatory", "[{0[name]}]({0[homepage_url]})".format(observatory_data)
-						if observatory_data["homepage_url"]
-						else observatory_data["name"]
+				if observatory_url := observatory_data["homepage_url"]:
+					observatory = (
+						f"[{observatory_data['name']}]({observatory_url})"
 					)
-				]
+				else:
+					observatory = observatory_data["name"]
+				
+				fields = [("Observatory", observatory)]
 				if _telescope["mounting"] != "Unknown":
 					fields.append(("Mounting", _telescope["mounting"]))
 				if _telescope["optical_design"] != "Unknown":
