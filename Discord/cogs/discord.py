@@ -27,7 +27,7 @@ ACTIVITES = {
 	"SpellCast": 852509694341283871,
 	"Watch Together": 880218394199220334,
 	"Word Snacks": 879863976006127627,
-	"YouTube Together": 755600276941176913
+	# "YouTube Together": 755600276941176913  # Now Watch Together
 }
 
 async def setup(bot):
@@ -79,8 +79,7 @@ class Discord(commands.Cog):
 			("Putt Party", "putt", ["golf"]),
 			("Sketch Hands", "sketch", ["doodle"]),
 			("SpellCast", "spellcast", ["spell"]),
-			("YouTube Together", "youtube", ["yt"]),
-			("Watch Together", "watch", []),
+			("Watch Together", "watch", ["youtube", "yt"]),
 			("Word Snacks", "word", [])
 		):
 			command = commands.Command(
