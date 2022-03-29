@@ -86,10 +86,10 @@ class Bot(commands.Bot):
 			name = random.choice(self.game_statuses), url = self.stream_url
 		)
 		super().__init__(
-			command_prefix = self.get_command_prefix,
-			help_command = help_command,
 			activity = activity,
-			case_insensitive = True
+			case_insensitive = True,
+			command_prefix = self.get_command_prefix,
+			help_command = help_command
 		)
 		
 		# Constants
