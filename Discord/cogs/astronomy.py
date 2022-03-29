@@ -421,9 +421,9 @@ class Astronomy(commands.Cog):
 		# TODO: list?
 		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/telescopes/", params = {"format": "json"}) as resp:
 			data = await resp.json()
-		for _telescope in data:
+		for _telescope in data["results"]:
 			if telescope.lower() in _telescope["name"].lower():
-				async with ctx.bot.aiohttp_session.get(_telescope["observing_site"]) as resp:
+				async with ctx.bot.aiohttp_session.get(f"https://api.arcsecond.io/observingsites/{_telescope['observing_site']}/") as resp:
 					observatory_data = await resp.json()
 				fields = [("Observatory", "[{0[name]}]({0[homepage_url]})".format(observatory_data) if observatory_data["homepage_url"] else observatory_data["name"])]
 				if _telescope["mounting"] != "Unknown": fields.append(("Mounting", _telescope["mounting"]))
