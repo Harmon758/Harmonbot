@@ -14,7 +14,6 @@ import dateutil.parser
 import feedparser
 import isodate
 
-import clients
 from utilities import checks
 
 sys.path.insert(0, "..")
@@ -25,6 +24,22 @@ errors_logger = logging.getLogger("errors")
 
 async def setup(bot):
 	await bot.add_cog(YouTube(bot))
+
+
+beta = any("beta" in arg.lower() for arg in sys.argv)
+data_path = "data/beta" if beta else "data"
+
+def create_file(filename, content = None, filetype = "json"):
+	if content is None:
+		content = {}
+	try:
+		with open(f"{data_path}/{filename}.{filetype}", 'x') as file:
+			json.dump(content, file, indent = 4)
+	except FileExistsError:
+		pass
+	except OSError:
+		pass  # TODO: Handle?
+
 
 class YouTube(commands.Cog):
 	
@@ -75,7 +90,8 @@ class YouTube(commands.Cog):
 		self.streams_task = self.check_streams.start()
 		self.streams_task.set_name("YouTube streams")
 		
-		clients.create_file("youtube_uploads", content = {})
+		# TODO: Use database
+		create_file("youtube_uploads", content = {})
 		with open(self.bot.data_path + "/youtube_uploads.json", 'r') as uploads_file:
 			self.uploads_info = json.load(uploads_file)
 		self.uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)

@@ -45,9 +45,6 @@ sys.path.insert(0, "..")
 from units.files import create_folder
 sys.path.pop(0)
 
-# TODO: Relocate as Bot variables
-beta = any("beta" in arg.lower() for arg in sys.argv)  # Moved, only for data_path
-data_path = "data/beta" if beta else "data"  # Moved, update all references to
 
 class Bot(commands.Bot):
 	
@@ -1187,16 +1184,4 @@ async def unload_aiml(ctx):
 	'''Unload AIML'''
 	ctx.bot.aiml_kernel.resetBrain()
 	await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded AIML")
-
-
-def create_file(filename, content = None, filetype = "json"):
-	if content is None:
-		content = {}
-	try:
-		with open(f"{data_path}/{filename}.{filetype}", 'x') as file:
-			json.dump(content, file, indent = 4)
-	except FileExistsError:
-		pass
-	except OSError:
-		pass  # TODO: Handle?
 
