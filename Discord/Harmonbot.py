@@ -16,7 +16,7 @@ if __name__ == "__main__":
 	import dotenv
 	import pkg_resources  # from setuptools
 	
-	import clients
+	import bot
 	from modules import conversions
 	
 	discord.http._set_api_version(9)
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 	dotenv.load_dotenv()
 	
 	# Initialize client
-	client = clients.Bot()
+	client = bot.Bot()
 	
 	# TODO: Move to utilities
 	def replace_null_character(data):
