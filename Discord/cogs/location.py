@@ -428,12 +428,15 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 			color = interaction.client.bot_color,
 			title = self.location
 		)
-		for alert in self.one_call.national_weather_alerts:
-			embed.add_field(
-				name = f"{alert.title} - {alert.sender}",
-				value = alert.description,
-				inline = False
-			)
+		if not self.one_call.national_weather_alerts:
+			embed.description = "No national weather alerts"
+		else:
+			for alert in self.one_call.national_weather_alerts:
+				embed.add_field(
+					name = f"{alert.title} - {alert.sender}",
+					value = alert.description,
+					inline = False
+				)
 		
 		self.previous_button.disabled = True
 		self.next_button.disabled = True
