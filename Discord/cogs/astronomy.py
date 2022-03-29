@@ -488,11 +488,11 @@ class TelescopeSource(menus.ListPageSource):
 			)
 		
 		properties = []
-		if telescope["has_active_optics"]:
+		if telescope["has_active_optics"] == "true":
 			properties.append("Active Optics")
-		if telescope["has_adaptative_optics"]:
+		if telescope["has_adaptative_optics"] == "true":
 			properties.append("Adaptative Optics")
-		if telescope["has_laser_guide_star"]:
+		if telescope["has_laser_guide_star"] == "true":
 			properties.append("Laser Guide Star")
 		
 		if properties:
