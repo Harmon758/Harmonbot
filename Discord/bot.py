@@ -53,29 +53,44 @@ class Bot(commands.Bot):
 		# Constants necessary for initialization
 		self.beta = any("beta" in arg.lower() for arg in sys.argv)
 		self.data_path = "data/beta" if self.beta else "data"
-		self.game_statuses = (' ', "for the other team", "gigs", "Goldbach's conjecture", 
-								"Goldbach's conjecture solution", "Google Ultron", "hard to get", "music", 
-								"not enough space here to", "the meaning of life is", "the Reimann hypothesis", 
-								"the Reimann proof", "the Turing test", "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", 
-								"to win", "with Alexa", "with BB-8", "with Bumblebee", "with C-3PO", "with Cleverbot", 
-								"with Curiousity", "with Data", "with Extra-terrestrial Vegetation Evaluator", "with Harmon", 
-								"with humans", "with i7-2670QM", "with Just A Rather Very Intelligent System", "with KIPP", 
-								"with machine learning", "with mainframes", "with memory", "with neural networks", 
-								"with Opportunity", "with Optimus Prime", "with P vs NP", "with quantum entanglement", 
-								"with quantum foam", "with R2-D2", "with RSS Bot", "with Samantha", "with Siri", "with Skynet", 
-								"with Spirit in the sand pit", "with TARS", "with the infinity gauntlet", "with the NSA", 
-								"with Voyager 1", "with Waste Allocation Load Lifter: Earth-Class", "world domination", 
-								"with Clyde")
+		self.game_statuses = (
+			' ', "for the other team", "gigs", "Goldbach's conjecture",
+			"Goldbach's conjecture solution", "Google Ultron", "hard to get",
+			"music", "not enough space here to", "the meaning of life is",
+			"the Reimann hypothesis", "the Reimann proof", "the Turing test",
+			"tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "to win",
+			"with Alexa", "with BB-8", "with Bumblebee", "with C-3PO",
+			"with Cleverbot", "with Curiousity", "with Data",
+			"with Extra-terrestrial Vegetation Evaluator", "with Harmon",
+			"with humans", "with i7-2670QM",
+			"with Just A Rather Very Intelligent System", "with KIPP",
+			"with machine learning", "with mainframes", "with memory",
+			"with neural networks", "with Opportunity", "with Optimus Prime",
+			"with P vs NP", "with quantum entanglement", "with quantum foam",
+			"with R2-D2", "with RSS Bot", "with Samantha", "with Siri",
+			"with Skynet", "with Spirit in the sand pit", "with TARS",
+			"with the infinity gauntlet", "with the NSA", "with Voyager 1",
+			"with Waste Allocation Load Lifter: Earth-Class",
+			"world domination", "with Clyde"
+		)
 		self.stream_url = "https://www.twitch.tv/harmonbot"
 		
 		# Initialize logging
 		initialize_logging(self.data_path)
 		
 		# Initialization
-		help_command = HelpCommand(command_attrs = {"aliases": ["commands"], "hidden": True})
-		activity = discord.Streaming(name = random.choice(self.game_statuses), url = self.stream_url)
-		super().__init__(command_prefix = self.get_command_prefix, help_command = help_command, 
-							activity = activity, case_insensitive = True)
+		help_command = HelpCommand(
+			command_attrs = {"aliases": ["commands"], "hidden": True}
+		)
+		activity = discord.Streaming(
+			name = random.choice(self.game_statuses), url = self.stream_url
+		)
+		super().__init__(
+			command_prefix = self.get_command_prefix,
+			help_command = help_command,
+			activity = activity,
+			case_insensitive = True
+		)
 		
 		# Constants
 		## Custom
