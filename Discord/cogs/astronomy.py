@@ -26,6 +26,8 @@ class Astronomy(commands.Cog):
 		for name, command in inspect.getmembers(self):
 			if isinstance(command, commands.Command) and name in ("exoplanet", "iss", "observatory", "telescope"):
 				self.bot.add_command(command)
+		
+		self.telescopes = []
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -418,13 +420,14 @@ class Astronomy(commands.Cog):
 		Telescopes and instruments
 		At observing sites on Earth
 		'''
-		# TODO: list?
-		url = "https://api.arcsecond.io/telescopes/"
-		params = {"format": "json"}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
+		if not self.telescopes:
+			data = {"next": "https://api.arcsecond.io/telescopes/?format=json"}
+			while data["next"]:
+				async with ctx.bot.aiohttp_session.get(data["next"]) as resp:
+					data = await resp.json()
+				self.telescopes.extend(data["results"])
 		
-		for _telescope in data["results"]:
+		for _telescope in self.telescopes:
 			if telescope.lower() in _telescope["name"].lower():
 				url = f"https://api.arcsecond.io/observingsites/{_telescope['observing_site']}/"
 				async with ctx.bot.aiohttp_session.get(url) as resp:
@@ -464,4 +467,6 @@ class Astronomy(commands.Cog):
 		await ctx.embed_reply(
 			f"{ctx.bot.error_emoji} Telescope/Instrument not found"
 		)
+		
+		# TODO: Menu
 
