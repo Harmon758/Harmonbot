@@ -454,5 +454,7 @@ class Astronomy(commands.Cog):
 					title = _telescope["name"], fields = fields
 				)
 				return
-		await ctx.embed_reply(":no_entry: Telescope/Instrument not found")
+		await ctx.embed_reply(
+			f"{ctx.bot.error_emoji} Telescope/Instrument not found"
+		)
 
