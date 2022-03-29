@@ -1,6 +1,6 @@
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, menus
 
 import datetime
 import dateutil.parser
@@ -8,8 +8,10 @@ import inspect
 import io
 import re
 import sys
+from typing import Optional
 
 from utilities import checks
+from utilities.paginator import ButtonPaginator
 
 sys.path.insert(0, "..")
 from units.time import duration_to_string
@@ -415,7 +417,7 @@ class Astronomy(commands.Cog):
 								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else None)
 	
 	@astronomy.command(aliases = ["instrument"])
-	async def telescope(self, ctx, *, telescope: str):
+	async def telescope(self, ctx, *, telescope: Optional[str]):
 		'''
 		Telescopes and instruments
 		At observing sites on Earth
@@ -427,46 +429,76 @@ class Astronomy(commands.Cog):
 					data = await resp.json()
 				self.telescopes.extend(data["results"])
 		
-		for _telescope in self.telescopes:
-			if telescope.lower() in _telescope["name"].lower():
-				url = f"https://api.arcsecond.io/observingsites/{_telescope['observing_site']}/"
-				async with ctx.bot.aiohttp_session.get(url) as resp:
-					observatory_data = await resp.json()
-				
-				if observatory_url := observatory_data["homepage_url"]:
-					observatory = (
-						f"[{observatory_data['name']}]({observatory_url})"
-					)
-				else:
-					observatory = observatory_data["name"]
-				
-				fields = [("Observatory", observatory)]
-				if _telescope["mounting"] != "Unknown":
-					fields.append(("Mounting", _telescope["mounting"]))
-				if _telescope["optical_design"] != "Unknown":
-					fields.append((
-						"Optical Design", _telescope["optical_design"]
-					))
-				
-				properties = []
-				if _telescope["has_active_optics"]:
-					properties.append("Active Optics")
-				if _telescope["has_adaptative_optics"]:
-					properties.append("Adaptative Optics")
-				if _telescope["has_laser_guide_star"]:
-					properties.append("Laser Guide Star")
-				
-				if properties:
-					fields.append(("Properties", '\n'.join(properties)))
-				
+		if telescope:
+			telescopes = [
+				_telescope for _telescope in self.telescopes
+				if telescope.lower() in _telescope["name"].lower()
+			]
+			if not telescopes:
 				await ctx.embed_reply(
-					title = _telescope["name"], fields = fields
+					f"{ctx.bot.error_emoji} Telescope/Instrument not found"
 				)
 				return
+		else:
+			telescopes = self.telescopes
 		
-		await ctx.embed_reply(
-			f"{ctx.bot.error_emoji} Telescope/Instrument not found"
+		paginator = ButtonPaginator(ctx, TelescopeSource(telescopes))
+		await paginator.start()
+		ctx.bot.views.append(paginator)
+
+class TelescopeSource(menus.ListPageSource):
+	
+	def __init__(self, telescopes):
+		super().__init__(telescopes, per_page = 1)
+	
+	async def format_page(self, menu, telescope):
+		url = f"https://api.arcsecond.io/observingsites/{telescope['observing_site']}/"
+		async with menu.ctx.bot.aiohttp_session.get(url) as resp:
+			observatory_data = await resp.json()
+		
+		embed = discord.Embed(
+			title = telescope["name"],
+			color = menu.ctx.bot.bot_color
+		).set_author(
+			name = menu.ctx.author.display_name,
+			icon_url = menu.ctx.author.display_avatar.url
+		).set_footer(
+			text = f"In response to: {menu.ctx.message.clean_content}"
 		)
 		
-		# TODO: Menu
+		if observatory_url := observatory_data["homepage_url"]:
+			observatory = (
+				f"[{observatory_data['name']}]({observatory_url})"
+			)
+		else:
+			observatory = observatory_data["name"]
+		
+		embed.add_field(
+			name = "Observatory", value = observatory
+		)
+
+		if telescope["mounting"] != "Unknown":
+			embed.add_field(
+				name = "Mounting", value = telescope["mounting"]
+			)
+		
+		if telescope["optical_design"] != "Unknown":
+			embed.add_field(
+				name = "Optical Design", value = telescope["optical_design"]
+			)
+		
+		properties = []
+		if telescope["has_active_optics"]:
+			properties.append("Active Optics")
+		if telescope["has_adaptative_optics"]:
+			properties.append("Adaptative Optics")
+		if telescope["has_laser_guide_star"]:
+			properties.append("Laser Guide Star")
+		
+		if properties:
+			embed.add_field(
+				name = "Properties", value = '\n'.join(properties)
+			)
+		
+		return {"embed": embed}
 
