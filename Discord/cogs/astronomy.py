@@ -423,11 +423,13 @@ class Astronomy(commands.Cog):
 		params = {"format": "json"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		
 		for _telescope in data["results"]:
 			if telescope.lower() in _telescope["name"].lower():
 				url = f"https://api.arcsecond.io/observingsites/{_telescope['observing_site']}/"
 				async with ctx.bot.aiohttp_session.get(url) as resp:
 					observatory_data = await resp.json()
+				
 				fields = [
 					(
 						"Observatory", "[{0[name]}]({0[homepage_url]})".format(observatory_data)
@@ -441,6 +443,7 @@ class Astronomy(commands.Cog):
 					fields.append((
 						"Optical Design", _telescope["optical_design"]
 					))
+				
 				properties = []
 				if _telescope["has_active_optics"]:
 					properties.append("Active Optics")
@@ -448,12 +451,15 @@ class Astronomy(commands.Cog):
 					properties.append("Adaptative Optics")
 				if _telescope["has_laser_guide_star"]:
 					properties.append("Laser Guide Star")
+				
 				if properties:
 					fields.append(("Properties", '\n'.join(properties)))
+				
 				await ctx.embed_reply(
 					title = _telescope["name"], fields = fields
 				)
 				return
+		
 		await ctx.embed_reply(
 			f"{ctx.bot.error_emoji} Telescope/Instrument not found"
 		)
