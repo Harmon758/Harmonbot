@@ -419,21 +419,40 @@ class Astronomy(commands.Cog):
 		At observing sites on Earth
 		'''
 		# TODO: list?
-		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/telescopes/", params = {"format": "json"}) as resp:
+		url = "https://api.arcsecond.io/telescopes/"
+		params = {"format": "json"}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		for _telescope in data["results"]:
 			if telescope.lower() in _telescope["name"].lower():
-				async with ctx.bot.aiohttp_session.get(f"https://api.arcsecond.io/observingsites/{_telescope['observing_site']}/") as resp:
+				url = f"https://api.arcsecond.io/observingsites/{_telescope['observing_site']}/"
+				async with ctx.bot.aiohttp_session.get(url) as resp:
 					observatory_data = await resp.json()
-				fields = [("Observatory", "[{0[name]}]({0[homepage_url]})".format(observatory_data) if observatory_data["homepage_url"] else observatory_data["name"])]
-				if _telescope["mounting"] != "Unknown": fields.append(("Mounting", _telescope["mounting"]))
-				if _telescope["optical_design"] != "Unknown": fields.append(("Optical Design", _telescope["optical_design"]))
+				fields = [
+					(
+						"Observatory", "[{0[name]}]({0[homepage_url]})".format(observatory_data)
+						if observatory_data["homepage_url"]
+						else observatory_data["name"]
+					)
+				]
+				if _telescope["mounting"] != "Unknown":
+					fields.append(("Mounting", _telescope["mounting"]))
+				if _telescope["optical_design"] != "Unknown":
+					fields.append((
+						"Optical Design", _telescope["optical_design"]
+					))
 				properties = []
-				if _telescope["has_active_optics"]: properties.append("Active Optics")
-				if _telescope["has_adaptative_optics"]: properties.append("Adaptative Optics")
-				if _telescope["has_laser_guide_star"]: properties.append("Laser Guide Star")
-				if properties: fields.append(("Properties", '\n'.join(properties)))
-				await ctx.embed_reply(title = _telescope["name"], fields = fields)
+				if _telescope["has_active_optics"]:
+					properties.append("Active Optics")
+				if _telescope["has_adaptative_optics"]:
+					properties.append("Adaptative Optics")
+				if _telescope["has_laser_guide_star"]:
+					properties.append("Laser Guide Star")
+				if properties:
+					fields.append(("Properties", '\n'.join(properties)))
+				await ctx.embed_reply(
+					title = _telescope["name"], fields = fields
+				)
 				return
 		await ctx.embed_reply(":no_entry: Telescope/Instrument not found")
 
