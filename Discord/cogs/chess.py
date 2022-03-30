@@ -373,7 +373,7 @@ class ChessChallengeView(discord.ui.View):
         self.challengee = challengee
 
     @discord.ui.button(label = "Yes", style = discord.ButtonStyle.green)
-    async def yes(self, button, interaction):
+    async def yes(self, interaction, button):
         if interaction.user != self.challengee:
             await interaction.response.send_message(
                 "You are not the one being challenged",
@@ -386,7 +386,7 @@ class ChessChallengeView(discord.ui.View):
         self.stop()
 
     @discord.ui.button(label = "No", style = discord.ButtonStyle.red)
-    async def no(self, button, interaction):
+    async def no(self, interaction, button):
         if interaction.user != self.challengee:
             await interaction.response.send_message(
                 "You are not the one being challenged",
@@ -408,7 +408,7 @@ class ChessMatchView(discord.ui.View):
         self.resending = False
 
     @discord.ui.button(label = "FEN")
-    async def fen(self, button, interaction):
+    async def fen(self, interaction, button):
         embed = discord.Embed(color = self.bot.bot_color)
         embed.set_author(
             icon_url = interaction.user.display_avatar.url,
@@ -419,7 +419,7 @@ class ChessMatchView(discord.ui.View):
         await interaction.response.send_message(embed = embed)
 
     @discord.ui.button(label = "Text")
-    async def text(self, button, interaction):
+    async def text(self, interaction, button):
         embed = discord.Embed(color = self.bot.bot_color)
         embed.set_author(
             icon_url = interaction.user.display_avatar.url,
@@ -432,7 +432,7 @@ class ChessMatchView(discord.ui.View):
     @discord.ui.button(
         label = "Resend Message", style = discord.ButtonStyle.blurple
     )
-    async def resend_message(self, button, interaction):
+    async def resend_message(self, interaction, button):
         if self.resending:
             return
         self.resending = True

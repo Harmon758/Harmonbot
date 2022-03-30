@@ -34,7 +34,7 @@ class ButtonPaginator(discord.ui.View):
             '\N{VARIATION SELECTOR-16}'
         )
     )
-    async def start_button(self, button, interaction):
+    async def start_button(self, interaction, button):
         await self.show_page(interaction, 0)
 
     @discord.ui.button(
@@ -44,14 +44,14 @@ class ButtonPaginator(discord.ui.View):
             '\N{VARIATION SELECTOR-16}'
         )
     )
-    async def previous_button(self, button, interaction):
+    async def previous_button(self, interaction, button):
         await self.show_page(interaction, self.current_page - 1)
 
     @discord.ui.button(
         style = discord.ButtonStyle.blurple,
         disabled = True
     )
-    async def current_button(self, button, interaction):
+    async def current_button(self, interaction, button):
         return
 
     @discord.ui.button(
@@ -61,7 +61,7 @@ class ButtonPaginator(discord.ui.View):
             '\N{VARIATION SELECTOR-16}'
         )
     )
-    async def next_button(self, button, interaction):
+    async def next_button(self, interaction, button):
         await self.show_page(interaction, self.current_page + 1)
 
     @discord.ui.button(
@@ -71,14 +71,14 @@ class ButtonPaginator(discord.ui.View):
             '\N{VARIATION SELECTOR-16}'
         )
     )
-    async def end_button(self, button, interaction):
+    async def end_button(self, interaction, button):
         await self.show_page(interaction, self.source.get_max_pages() - 1)
 
     @discord.ui.button(
         style = discord.ButtonStyle.red,
         emoji = '\N{OCTAGONAL SIGN}'
     )
-    async def stop_button(self, button, interaction):
+    async def stop_button(self, interaction, button):
         await self.stop(interaction = interaction)
 
     async def interaction_check(self, interaction):

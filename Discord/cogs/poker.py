@@ -212,7 +212,7 @@ class PokerLobby(discord.ui.View):
         self.started = False
 
     @discord.ui.button(label = "Join", style = discord.ButtonStyle.green)
-    async def join(self, button, interaction):
+    async def join(self, interaction, button):
         if interaction.user in self.poker_hand.hands:
             return await interaction.response.send_message(
                 "You've already joined", ephemeral = True
@@ -229,7 +229,7 @@ class PokerLobby(discord.ui.View):
         )
 
     @discord.ui.button(label = "Start", style = discord.ButtonStyle.green)
-    async def start(self, button, interaction):
+    async def start(self, interaction, button):
         if not len(self.poker_hand.hands):
             return await interaction.response.send_message(
                 "Nobody has joined yet", ephemeral = True
@@ -258,7 +258,7 @@ class PokerLobby(discord.ui.View):
         self.stop()
 
     @discord.ui.button(label = "Resend Message", style = discord.ButtonStyle.blurple)
-    async def resend_message(self, button, interaction):
+    async def resend_message(self, interaction, button):
         if self.resending:
             return
         self.resending = True
@@ -299,7 +299,7 @@ class PokerRound(discord.ui.View):
         await self.poker_hand.fold()
 
     @discord.ui.button(label = "Check Hand", style = discord.ButtonStyle.grey)
-    async def check_hand(self, button, interaction):
+    async def check_hand(self, interaction, button):
         if interaction.user not in self.poker_hand.hands:
             return await interaction.response.send_message(
                 "You're not in this match", ephemeral = True
@@ -311,7 +311,7 @@ class PokerRound(discord.ui.View):
         )
 
     @discord.ui.button(label = "Check / Call", style = discord.ButtonStyle.green)
-    async def call(self, button, interaction):
+    async def call(self, interaction, button):
         if interaction.user != self.poker_hand.turn:
             return await interaction.response.send_message(
                 "It's not your turn", ephemeral = True
@@ -328,7 +328,7 @@ class PokerRound(discord.ui.View):
         await self.poker_hand.call()
 
     @discord.ui.button(label = "Bet / Raise", style = discord.ButtonStyle.blurple)
-    async def bet(self, button, interaction):
+    async def bet(self, interaction, button):
         if interaction.user != self.poker_hand.turn:
             return await interaction.response.send_message(
                 "It's not your turn", ephemeral = True
@@ -379,7 +379,7 @@ class PokerRound(discord.ui.View):
             return False
 
     @discord.ui.button(label = "Fold", style = discord.ButtonStyle.red)
-    async def fold(self, button, interaction):
+    async def fold(self, interaction, button):
         if interaction.user != self.poker_hand.turn:
             return await interaction.response.send_message(
                 "It's not your turn", ephemeral = True
@@ -401,7 +401,7 @@ class PokerRound(discord.ui.View):
         await self.poker_hand.fold()
 
     @discord.ui.button(label = "Resend Message", style = discord.ButtonStyle.blurple)
-    async def resend_message(self, button, interaction):
+    async def resend_message(self, interaction, button):
         if self.resending:
             return
         self.resending = True
@@ -433,7 +433,7 @@ class PokerMuck(discord.ui.View):
         return not not_user
 
     @discord.ui.button(label = "Yes", style = discord.ButtonStyle.green)
-    async def yes(self, button, interaction):
+    async def yes(self, interaction, button):
         self.poker_hand.lines.append(
             f"{interaction.user.mention}'s hand was {cards_to_string(self.poker_hand.hands[interaction.user])}"
         )
@@ -445,7 +445,7 @@ class PokerMuck(discord.ui.View):
         self.stop()
 
     @discord.ui.button(label = "No", style = discord.ButtonStyle.red)
-    async def no(self, button, interaction):
+    async def no(self, interaction, button):
         self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
         await interaction.response.edit_message(
             embed = self.poker_hand.embed, view = None

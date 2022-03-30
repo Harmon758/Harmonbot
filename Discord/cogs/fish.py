@@ -195,7 +195,7 @@ class GoFishLobby(discord.ui.View):
         self.resending = False
 
     @discord.ui.button(label = "Join", style = discord.ButtonStyle.green)
-    async def join(self, button, interaction):
+    async def join(self, interaction, button):
         if interaction.user in self.match.players:
             return await interaction.response.send_message(
                 "You've already joined", ephemeral = True
@@ -219,7 +219,7 @@ class GoFishLobby(discord.ui.View):
         )
 
     @discord.ui.button(label = "Start", style = discord.ButtonStyle.green)
-    async def start(self, button, interaction):
+    async def start(self, interaction, button):
         if not len(self.match.players):
             return await interaction.response.send_message(
                 "Nobody has joined yet", ephemeral = True
@@ -250,7 +250,7 @@ class GoFishLobby(discord.ui.View):
         self.stop()
 
     @discord.ui.button(label = "Resend Message", style = discord.ButtonStyle.blurple)
-    async def resend_message(self, button, interaction):
+    async def resend_message(self, interaction, button):
         if self.resending:
             return
         self.resending = True
@@ -363,7 +363,7 @@ class GoFishTurn(discord.ui.View):
             self.add_item(GoFishNumberButton(number))
 
     @discord.ui.button(label = "Check Hand", style = discord.ButtonStyle.grey)
-    async def check_hand(self, button, interaction):
+    async def check_hand(self, interaction, button):
         if interaction.user not in self.match.players:
             return await interaction.response.send_message(
                 "You're not in this match", ephemeral = True
@@ -375,7 +375,7 @@ class GoFishTurn(discord.ui.View):
         )
 
     @discord.ui.button(label = "Resend Message", style = discord.ButtonStyle.blurple)
-    async def resend_message(self, button, interaction):
+    async def resend_message(self, interaction, button):
         if self.resending:
             return
         self.resending = True

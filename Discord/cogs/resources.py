@@ -547,7 +547,7 @@ class NewsButtonPaginator(ButtonPaginator):
 	@discord.ui.button(
 		label = "Send Article Link", style = discord.ButtonStyle.blurple
 	)
-	async def send_article_link(self, button, interaction):
+	async def send_article_link(self, interaction, button):
 		await interaction.response.send_message(
 			f"{interaction.user.mention}: {self.source.entries[self.current_page]['url']}"
 		)

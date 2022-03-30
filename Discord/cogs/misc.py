@@ -216,7 +216,7 @@ class Misc(commands.Cog):
 class Counter(discord.ui.View):
 
 	@discord.ui.button(label = '0', style = discord.ButtonStyle.grey)
-	async def count(self, button, interaction):
+	async def count(self, interaction, button):
 		button.label = str(int(button.label) + 1)
 		await interaction.response.edit_message(view = self)
 

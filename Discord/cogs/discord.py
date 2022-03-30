@@ -474,13 +474,13 @@ class ActivityView(discord.ui.View):
 	@discord.ui.button(
 		label = "Send Invite", style = discord.ButtonStyle.blurple
 	)
-	async def send(self, button, interaction):
+	async def send(self, interaction, button):
 		await interaction.response.send_message(self.invite)
 	
 	@discord.ui.button(
 		label = "Revoke Invite", style = discord.ButtonStyle.red
 	)
-	async def revoke(self, button, interaction):
+	async def revoke(self, interaction, button):
 		if (
 			interaction.user.id not in (
 				self.ctx.author.id, self.ctx.bot.owner_id

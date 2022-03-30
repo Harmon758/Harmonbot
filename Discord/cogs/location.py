@@ -335,7 +335,7 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 		),
 		disabled = True
 	)
-	async def previous_button(self, button, interaction):
+	async def previous_button(self, interaction, button):
 		self.forecast_index -= 1
 		forecasts = getattr(
 			self.one_call,
@@ -352,7 +352,7 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 		await interaction.response.edit_message(embed = embed, view = self)
 	
 	@ui.button(label = "Current")
-	async def current_button(self, button, interaction):
+	async def current_button(self, interaction, button):
 		embed = format_weather_embed(interaction, self.one_call.current)
 		embed.title = self.location
 		
@@ -368,7 +368,7 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 			'\N{VARIATION SELECTOR-16}'
 		)
 	)
-	async def next_button(self, button, interaction):
+	async def next_button(self, interaction, button):
 		self.forecast_index += 1
 		forecasts = getattr(
 			self.one_call,
@@ -395,7 +395,7 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 			discord.SelectOption(label = "Minutely")
 		]
 	)
-	async def forecast_precision_select(self, select, interaction):
+	async def forecast_precision_select(self, interaction, select):
 		forecasts = getattr(
 			self.one_call, f"forecast_{select.values[0].lower()}"
 		)
@@ -425,7 +425,7 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 		await interaction.response.edit_message(embed = embed, view = self)
 	
 	@ui.button(label = "Alerts", row = 2)
-	async def alerts_button(self, button, interaction):
+	async def alerts_button(self, interaction, button):
 		embed = discord.Embed(
 			color = interaction.client.bot_color,
 			title = self.location
@@ -450,7 +450,7 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 		emoji = '\N{OCTAGONAL SIGN}',
 		row = 2
 	)
-	async def stop_button(self, button, interaction):
+	async def stop_button(self, interaction, button):
 		await self.stop(interaction = interaction)
 	
 	async def interaction_check(self, interaction):
