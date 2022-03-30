@@ -34,6 +34,7 @@ import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
 import youtube_dl
 
+from tree import CommandTree
 from utilities import errors
 from utilities.audio_player import AudioPlayer
 from utilities.context import Context
@@ -89,7 +90,8 @@ class Bot(commands.Bot):
 			activity = activity,
 			case_insensitive = True,
 			command_prefix = self.get_command_prefix,
-			help_command = help_command
+			help_command = help_command,
+			tree_cls = CommandTree
 		)
 		
 		# Constants
