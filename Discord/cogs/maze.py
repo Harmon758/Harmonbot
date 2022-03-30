@@ -288,7 +288,7 @@ class MazeCog(commands.Cog, name = "Maze"):
         ).set_footer(
             text = f"Your current position: {maze.column + 1}, {maze.row + 1}"
         )
-        view = MazeView(maze, interaction.user)
+        view = MazeView(interaction.client, maze, interaction.user)
         await interaction.response.send_message(embed = embed, view = view)
 
         message = await interaction.original_message()
@@ -301,7 +301,7 @@ class MazeCog(commands.Cog, name = "Maze"):
 
 class MazeView(discord.ui.View):
 
-    def __init__(self, maze, user):
+    def __init__(self, bot, maze, user):
         super().__init__(timeout = None)
         self.arrows = {
             '\N{UPWARDS BLACK ARROW}': Direction.UP,
@@ -310,6 +310,7 @@ class MazeView(discord.ui.View):
             '\N{DOWNWARDS BLACK ARROW}': Direction.DOWN
         }
 
+        self.bot = bot
         self.maze = maze
         self.user = user
 
@@ -357,11 +358,7 @@ class MazeView(discord.ui.View):
         self.children[11].disabled = True
 
         if self.message:
-            try:
-                await self.message.edit(view = self)
-            except discord.HTTPException as e:
-                if e.code != 50083:  # 50083 == Thread is archived
-                    raise
+            await self.bot.attempt_edit_message(self.message, view = self)
 
         super().stop()
 
