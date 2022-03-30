@@ -902,7 +902,10 @@ class Bot(commands.Bot):
 			await message.delete()
 	
 	async def attempt_edit_message(self, message, **fields):
-		with contextlib.suppress(aiohttp.ClientOSError, discord.Forbidden, discord.DiscordServerError):
+		with contextlib.suppress(
+			aiohttp.ClientOSError, discord.Forbidden,
+			discord.DiscordServerError
+		):
 			await message.edit(**fields)
 	
 	async def wait_for_raw_reaction_add_or_remove(self, *, emoji = None, message = None, user = None, timeout = None):
