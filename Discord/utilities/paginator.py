@@ -157,11 +157,7 @@ class ButtonPaginator(discord.ui.View):
         if interaction:
             await interaction.response.edit_message(view = self)
         elif self.message:
-            try:
-                await self.message.edit(view = self)
-            except discord.HTTPException as e:
-                if e.code != 50083:  # 50083 == Thread is archived
-                    raise
+            await self.bot.attempt_edit_message(self.message, view = self)
 
         super().stop()
 
