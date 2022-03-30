@@ -302,7 +302,8 @@ class Location(commands.Cog):
 		embed.title = geocode_data['formatted_address']
 		
 		view = WeatherView(
-			geocode_data['formatted_address'], one_call, interaction.user
+			interaction.client, geocode_data['formatted_address'], one_call,
+			interaction.user
 		)
 		await interaction.response.send_message(
 			embed = embed,
@@ -315,9 +316,10 @@ class Location(commands.Cog):
 
 class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 	
-	def __init__(self, location, one_call, user):
+	def __init__(self, bot, location, one_call, user):
 		super().__init__(timeout = None)
 		
+		self.bot = bot
 		self.location = location
 		self.one_call = one_call
 		self.user = user
@@ -472,11 +474,9 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 		if interaction:
 			await interaction.response.edit_message(view = self)
 		elif self.message:
-			try:
-				await self.message.edit(view = self)
-			except discord.HTTPException as e:
-				if e.code != 50083:  # 50083 == Thread is archived
-					raise
+			await self.bot.attempt_edit_message(
+				self.message, view = self
+			)
 
 def format_weather_embed(ctx_or_interaction, weather, humidity = True):
 	embed = discord.Embed(
