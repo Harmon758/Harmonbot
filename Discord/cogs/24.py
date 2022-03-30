@@ -62,7 +62,7 @@ class TwentyFour(commands.Cog, name = "24"):
         """24 Game"""
         numbers = list(map(str, generate_numbers()))
         CEK = '\N{COMBINING ENCLOSING KEYCAP}'
-        view = TwentyFourView(numbers)
+        view = TwentyFourView(interaction.client, numbers)
         await interaction.response.send_message(
             f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
             f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
@@ -77,8 +77,10 @@ class TwentyFour(commands.Cog, name = "24"):
 
 class TwentyFourView(ui.View):
 
-    def __init__(self, numbers):
+    def __init__(self, bot, numbers):
         super().__init__(timeout = None)
+
+        self.bot = bot
 
         self.add_item(TwentyFourSubmitSolutionButton(numbers))
 
@@ -88,11 +90,7 @@ class TwentyFourView(ui.View):
         self.children[0].disabled = True
 
         if self.message:
-            try:
-                await self.message.edit(view = self)
-            except discord.HTTPException as e:
-                if e.code != 50083:  # 50083 == Thread is archived
-                    raise
+            await self.bot.attempt_edit_message(self.message, view = self)
 
         super().stop()
 
