@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands, menus
 
 import textwrap
@@ -77,6 +78,36 @@ class Words(commands.Cog):
         paginator = ButtonPaginator(ctx, DefineSource(definitions))
         await paginator.start()
         ctx.bot.views.append(paginator)
+
+    @app_commands.command(name = "define")
+    @app_commands.describe(word = "Word to define")
+    async def define_slash(self, interaction, word: str):
+        '''Define a word'''
+        try:
+            definitions = interaction.client.wordnik_word_api.getDefinitions(
+                word
+            )
+            # useCanonical = True ?
+        except urllib.error.HTTPError as e:
+            if e.code in (404, 429):
+                await interaction.response.send_message(
+                    f"Error: {e.reason}", ephemeral = True
+                )
+                return
+            raise
+
+        definitions = [
+            definition for definition in definitions if definition.text
+        ]
+
+        if not definitions:
+            await interaction.response.send_message(
+                f"{interaction.client.error_emoji} Definition not found"
+            )
+
+        paginator = ButtonPaginator(interaction, DefineSource(definitions))
+        await paginator.start()
+        interaction.client.views.append(paginator)
 
     @commands.command(aliases = ["audiodefine", "pronounce"])
     async def pronunciation(self, ctx, word: str):
@@ -305,21 +336,34 @@ class DefineSource(menus.ListPageSource):
         super().__init__(definitions, per_page = 1)
 
     async def format_page(self, menu, definition):
-        return {
-            "content": f"In response to: `{menu.ctx.message.clean_content}`",
-            "embed": discord.Embed(
-                title = definition.word,
-                description = BeautifulSoup(
-                    definition.text, "html.parser"
-                ).get_text(),
-                color = menu.ctx.bot.bot_color
-            ).set_author(
+        kwargs = {}
+
+        embed = discord.Embed(
+            title = definition.word,
+            description = BeautifulSoup(
+                definition.text, "html.parser"
+            ).get_text(),
+            color = menu.bot.bot_color
+        ).set_footer(
+            text = definition.attributionText
+        )
+
+        if isinstance(menu.ctx_or_interaction, commands.Context):
+            embed.set_author(
                 name = menu.ctx.author.display_name,
                 icon_url = menu.ctx.author.display_avatar.url
-            ).set_footer(
-                text = definition.attributionText
             )
-        }
+            kwargs["content"] = (
+                f"In response to: `{menu.ctx.message.clean_content}`"
+            )
+        elif not isinstance(menu.ctx_or_interaction, discord.Interaction):
+            raise RuntimeError(
+                "DefineSource using neither Context nor Interaction"
+            )
+
+        kwargs["embed"] = embed
+
+        return kwargs
 
 class UrbanDictionarySource(menus.ListPageSource):
 
