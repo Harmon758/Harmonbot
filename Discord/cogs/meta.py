@@ -566,6 +566,93 @@ class Meta(commands.Cog):
 		else:
 			raise commands.NotOwner
 	
+	# Instance-Specific
+	
+	@harmonbot.command(name = "info")
+	@commands.is_owner()
+	async def harmonbot_info(self, ctx):
+		await ctx.send(embeds = [
+			discord.Embed(
+				title = "Invite links for this server",
+				description = (
+					f"{ctx.bot.get_channel(229501861353357312).mention}: **https://discord.gg/MNAVKMd**\n"
+					f"{ctx.bot.get_channel(147208000132743168).mention}: **https://discord.gg/ak5cjha**\n"
+					f"{ctx.bot.get_channel(152368116783906817).mention}: **https://discord.gg/a2rbZPu**\n"
+					f"{ctx.bot.get_channel(216304196482236416).mention}: **https://discord.gg/tm8FbrN**"
+				),
+				color = ctx.bot.bot_color
+			),
+			discord.Embed(
+				title = "Discord Harmonbot",
+				description = (
+					f"{ctx.me.mention}\n"
+					"Uses discord.py (Python)\n"
+					"For more detailed information, see `!info`/`!about`\n"
+					f"[**Invite link**]({ctx.bot.invite_url})\n"
+					"[**Github repository**](https://github.com/Harmon758/Harmonbot)"
+				),
+				color = ctx.bot.bot_color
+			).set_thumbnail(
+				url = ctx.me.avatar.url
+			).set_footer(
+				text = "Created on February 10th, 2016"
+			),
+			discord.Embed(
+				title = "Other Discord Harmonbots",
+				color = ctx.bot.bot_color
+			).add_field(
+				name = "Listener",
+				value = (
+					ctx.bot.listener_bot.mention +
+					"\nUsed for speech recognition\nUses discordgo (Go)"
+				)
+			).add_field(
+				name= "Alias/Backup",
+				value = "<@170709691523923975>"
+			).add_field(
+				name = "Beta",
+				value = "<@236911677180739585>"
+			).add_field(
+				name = "Eta",
+				value = (
+					"<@274547045203705856>\n"
+					"Uses discord.hs (Haskell)\n"
+					"Not continuously running"
+				)
+			).add_field(
+				name = "Decommissioned/Assimilated",
+				value = "<@180206397533716490>"
+			),
+			discord.Embed(
+				title = "Twitch Harmonbot",
+				url = "https://www.twitch.tv/harmonbot",
+				description = (
+					"Originally, it used mIRC's mSL\n"
+					"Currently, v2.0 using pydle (Python) is in development\n"
+					"[Documentation](https://docs.google.com/document/d/1tsGQ-JAZiW-Y2sLQbd1UG441dhZhNtLmzFXx936YG08/) (currently outdated)"
+				),
+				color = ctx.bot.bot_color
+			).set_thumbnail(
+				url = "https://i.imgur.com/VllifIJ.png"
+			).set_footer(
+				text = "Created on December 12th, 2014"
+			),
+			discord.Embed(
+				title = "Telegram Harmonbot",
+				url = "https://t.me/harmon_bot",
+				description = (
+					"Currently a WIP\n"
+					"[Group](https://t.me/joinchat/AAAAAAuABgo_g6xutkZYrg)"
+				),
+				color = ctx.bot.bot_color
+			).set_thumbnail(
+				url = "https://i.imgur.com/uGdy4xg.png"
+			).set_footer(
+				text = "Created on February 10th, 2017"
+			)
+		])
+		await ctx.bot.attempt_delete_message(ctx.message)
+	
 	@commands.group(
 		case_insensitive = True, hidden = True, invoke_without_command = True
 	)
