@@ -236,7 +236,7 @@ class Random(commands.Cog):
 	@commands.command(aliases = ["emoji"])
 	async def emote(self, ctx):
 		'''Random emote/emoji'''
-		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI)))
+		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI["en"])))
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def fact(self, ctx):
