@@ -392,8 +392,6 @@ class Lichess(commands.Cog):
 		# %#d for removal of leading zero on Windows with native Python executable
 		if "completionRate" in user_data:
 			fields.append(("Game Completion Rate", f"{user_data['completionRate']}%"))
-		fields.append(("Followers", user_data["nbFollowers"]))
-		fields.append(("Following", user_data["nbFollowing"]))
 		playtime = user_data.get("playTime", {})
 		if "total" in playtime:
 			fields.append(("Time Spent Playing", 
