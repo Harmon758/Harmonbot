@@ -1095,7 +1095,8 @@ class Bot(commands.Bot):
 						voice_client.channel.id, player.text_channel.id
 					)
 		# Stop views
-		for view in self.views:
+		for count, view in enumerate(self.views, start = 1):
+			self.print(f"Stopping View {count} / {len(self.views)}")
 			await view.stop()
 		# TODO: Move to shutdown tasks?
 	
