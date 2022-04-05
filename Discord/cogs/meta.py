@@ -415,7 +415,10 @@ class Meta(commands.Cog):
 	
 	@version.command(name = "stockfish")
 	async def version_stockfish(self, ctx):
-		transport, engine = await chess.engine.popen_uci(f"bin/{STOCKFISH_EXECUTABLE}", creationflags = subprocess.CREATE_NO_WINDOW)
+		transport, engine = await chess.engine.popen_uci(
+			f"bin/{STOCKFISH_EXECUTABLE}",
+			creationflags = subprocess.CREATE_NO_WINDOW
+		)
 		await ctx.embed_reply(engine.id["name"])
 	
 	# Update Bot Stuff
