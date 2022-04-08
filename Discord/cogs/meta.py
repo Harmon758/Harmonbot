@@ -373,7 +373,7 @@ class Meta(commands.Cog):
 	
 	@commands.command()
 	async def uptime(self, ctx):
-		'''Bot uptime'''
+		"""Bot uptime"""
 		await ctx.embed_reply(
 			duration_to_string(
 				datetime.datetime.now(
