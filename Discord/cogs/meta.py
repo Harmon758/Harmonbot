@@ -385,7 +385,7 @@ class Meta(commands.Cog):
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def version(self, ctx):
-		'''Bot version'''
+		"""Bot version"""
 		await ctx.embed_reply(f"I am Harmonbot `v{self.bot.version}`")
 	
 	@version.command(name = "ffmpeg")
