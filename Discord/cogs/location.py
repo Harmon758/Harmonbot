@@ -3,6 +3,7 @@ import discord
 from discord import app_commands, ui
 from discord.ext import commands
 
+from decimal import Decimal
 import io
 import sys
 from typing import Optional
@@ -546,7 +547,7 @@ def format_weather_embed(ctx_or_interaction, weather, humidity = True):
 	if weather.precipitation_probability:
 		embed.add_field(
 			name = "Precipitation",
-			value = f"{weather.precipitation_probability * 100}%"
+			value = f"{(Decimal(str(weather.precipitation_probability)) * 100).normalize()}%"
 		)
 	elif "all" in weather.rain:
 		embed.add_field(
