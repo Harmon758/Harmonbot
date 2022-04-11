@@ -390,7 +390,7 @@ class Meta(commands.Cog):
 	
 	@version.command(name = "ffmpeg")
 	async def version_ffmpeg(self, ctx):
-		'''FFmpeg version'''
+		"""FFmpeg version"""
 		output = subprocess.run(
 			"bin/ffmpeg -version", capture_output = True, 
 			creationflags = subprocess.CREATE_NO_WINDOW
