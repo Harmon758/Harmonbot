@@ -53,9 +53,15 @@ class Words(commands.Cog):
         aliases = ["definition", "definitions", "dictionary"],
         case_insensitive = True, invoke_without_command = True
     )
-    @app_commands.describe(word = "Word to define")
     async def define(self, ctx, word: str):
-        """Define a word"""
+        """
+        Define a word
+
+        Parameters
+        ----------
+        word
+            Word to define
+        """
         try:
             definitions = ctx.bot.wordnik_word_api.getDefinitions(word)
             # useCanonical = True ?
