@@ -267,20 +267,25 @@ class MazeCog(commands.Cog, name = "Maze"):
             )
 
     @app_commands.command(name = "maze")
-    @app_commands.describe(height = "Maze height")
-    @app_commands.describe(width = "Maze width")
-    @app_commands.describe(
-        random_start = "Whether to start at a random place in the Maze"
-    )
-    @app_commands.describe(
-        random_end = "Whether to end at a random place in the Maze"
-    )
     async def maze_slash(
         self, interaction, height: app_commands.Range[int, 2, 100] = 5,
         width: app_commands.Range[int, 2, 100] = 5, random_start: bool = False,
         random_end: bool = False
     ):
-        """Maze Game"""
+        """
+        Maze Game
+
+        Parameters
+        ----------
+        height
+            Maze height
+        width
+            Maze width
+        random_start
+            Whether to start at a random place in the Maze
+        random_end
+            Whether to end at a random place in the Maze
+        """
         maze = Maze(height, width, random_start, random_end)
         embed = discord.Embed(
             color = interaction.client.bot_color,
