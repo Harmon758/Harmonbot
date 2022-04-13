@@ -239,10 +239,10 @@ class Meta(commands.Cog):
 		'''Link to invite me to a server'''
 		await ctx.embed_reply(ctx.bot.invite_url)
 	
-	@commands.command(aliases = ["ping"])
-	async def latency(self, ctx):
+	@commands.hybrid_command(aliases = ["latency"])
+	async def ping(self, ctx):
 		'''
-		Latency information:
+		Latency information
 		• Discord HTTPS/REST API latency from sending a message
 		• Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds
 		• PostgreSQL database latency from a SELECT 1 query
@@ -268,37 +268,6 @@ class Meta(commands.Cog):
 		)
 		api_latency = time.perf_counter_ns() - start
 		
-		embed = message.embeds[0]
-		embed.set_field_at(
-			0, name = "Discord HTTPS/REST API latency",
-			value = self.format_ns(api_latency)
-		)
-		await message.edit(embed = embed)
-	
-	@app_commands.command(name = "ping")
-	async def slash_ping(self, interaction):
-		'''Latency information'''
-		start = time.perf_counter_ns()
-		await interaction.client.db.execute("SELECT 1")
-		database_latency = time.perf_counter_ns() - start
-		
-		embed = discord.Embed(color = interaction.client.bot_color).add_field(
-			name = "Discord HTTPS/REST API latency", value = "Checking..."
-		).add_field(
-			name = "Discord WebSocket Latency",
-			value = self.format_ns(
-				round(interaction.client.latency * 1000 ** 3)
-			)
-		).add_field(
-			name = "PostgreSQL Database Latency",
-			value = self.format_ns(database_latency)
-		)
-		
-		start = time.perf_counter_ns()
-		await interaction.response.send_message(embed = embed)
-		api_latency = time.perf_counter_ns() - start
-		
-		message = await interaction.original_message()
 		embed = message.embeds[0]
 		embed.set_field_at(
 			0, name = "Discord HTTPS/REST API latency",
