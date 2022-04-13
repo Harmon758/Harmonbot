@@ -11,11 +11,13 @@ class Context(commands.Context):
 	):
 		if not self.interaction:
 			in_response_to_text = "In response to"
+			
 			if "author_name" not in kwargs and "author_icon_url" not in kwargs:
 				kwargs["author_name"] = self.author.display_name
 				kwargs["author_icon_url"] = self.author.display_avatar.url
 			else:
 				in_response_to_text += f" {self.author} ({self.author.id})"
+			
 			if in_response_to:
 				if "footer_text" not in kwargs:
 					kwargs["footer_text"] = (
@@ -27,9 +29,12 @@ class Context(commands.Context):
 						f"{in_response_to_text}: "
 						f"`{self.message.clean_content}`"
 					)
+		
 		message = await self.embed_send(*args, **kwargs)
+		
 		if attempt_delete and not self.interaction:
 			await self.bot.attempt_delete_message(self.message)
+		
 		return message
 	
 	# TODO: optimize/improve clarity
