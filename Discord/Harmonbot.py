@@ -189,15 +189,10 @@ if __name__ == "__main__":
 				return await ctx.embed_reply(f"Units, {unit1} and/or {unit2}, not found\nSee the conversions command")
 			return await ctx.embed_reply(f"{value} {unit1} = {converted_value} {unit2}")
 		
-		mentions = (ctx.me.mention, 
-					ctx.me.mention.replace('!', "") if '!' in ctx.me.mention else ctx.me.mention.replace('@', "@!"))
-		
 		# DM or mention
-		if channel.type is discord.ChannelType.private or any(mention in message.content for mention in mentions):
-			content = message.content
-			for mention in mentions:
-				content = content.replace(mention, "")
-			content = content.strip().lower()
+		if channel.type is discord.ChannelType.private or ctx.me.mention in message.content:
+			content = message.content.replace(ctx.me.mention, "").strip()
+			content = content.lower()
 			try:
 				prefixes = await ctx.bot.command_prefix(ctx.bot, message)
 			except TypeError:  # if Beta (*)
@@ -211,7 +206,7 @@ if __name__ == "__main__":
 				return await ctx.embed_reply("Prefixes: " + ' '.join(f"`{prefix}`" for prefix in prefixes))
 		
 		# Chatbot
-		if message.content.startswith(mentions):
+		if message.content.startswith(ctx.me.mention):
 			content = message.clean_content.replace('@' + ctx.me.display_name, "", 1).strip()
 			embed = discord.Embed(color = ctx.bot.bot_color)
 			# TODO: Handle brain not loaded?
