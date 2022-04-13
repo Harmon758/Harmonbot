@@ -5,7 +5,6 @@ from discord.ext import commands
 import contextlib
 import sys
 import textwrap
-from typing import Optional
 # import unicodedata
 import urllib
 
@@ -225,11 +224,8 @@ async def server(ctx):
 							thumbnail_url = ctx.guild.icon.url, fields = fields, 
 							footer_text = "Created", timestamp = ctx.guild.created_at)
 
-async def user(ctx, *, user: Optional[discord.Member]):
+async def user(ctx, *, user: discord.Member = commands.Author):
 	'''Information about a user'''
-	if not user:
-		user = ctx.author
-	
 	title = str(user)
 	if user.public_flags.verified_bot:
 		title += " [Verified Bot]"
