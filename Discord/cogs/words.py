@@ -49,10 +49,11 @@ class Words(commands.Cog):
             description = ", ".join(antonyms[0].words)
         )
 
-    @commands.group(
+    @commands.hybrid_command(
         aliases = ["definition", "definitions", "dictionary"],
         case_insensitive = True, invoke_without_command = True
     )
+    @app_commands.describe(word = "Word to define")
     async def define(self, ctx, word: str):
         '''Define a word'''
         try:
@@ -78,36 +79,6 @@ class Words(commands.Cog):
         paginator = ButtonPaginator(ctx, DefineSource(definitions))
         await paginator.start()
         ctx.bot.views.append(paginator)
-
-    @app_commands.command(name = "define")
-    @app_commands.describe(word = "Word to define")
-    async def define_slash(self, interaction, word: str):
-        '''Define a word'''
-        try:
-            definitions = interaction.client.wordnik_word_api.getDefinitions(
-                word
-            )
-            # useCanonical = True ?
-        except urllib.error.HTTPError as e:
-            if e.code in (404, 429):
-                await interaction.response.send_message(
-                    f"Error: {e.reason}", ephemeral = True
-                )
-                return
-            raise
-
-        definitions = [
-            definition for definition in definitions if definition.text
-        ]
-
-        if not definitions:
-            await interaction.response.send_message(
-                f"{interaction.client.error_emoji} Definition not found"
-            )
-
-        paginator = ButtonPaginator(interaction, DefineSource(definitions))
-        await paginator.start()
-        interaction.client.views.append(paginator)
 
     @commands.command(aliases = ["audiodefine", "pronounce"])
     async def pronunciation(self, ctx, word: str):
@@ -349,13 +320,14 @@ class DefineSource(menus.ListPageSource):
         )
 
         if isinstance(menu.ctx_or_interaction, commands.Context):
-            embed.set_author(
-                name = menu.ctx.author.display_name,
-                icon_url = menu.ctx.author.display_avatar.url
-            )
-            kwargs["content"] = (
-                f"In response to: `{menu.ctx.message.clean_content}`"
-            )
+            if not menu.ctx_or_interaction.interaction:
+                embed.set_author(
+                    name = menu.ctx.author.display_name,
+                    icon_url = menu.ctx.author.display_avatar.url
+                )
+                kwargs["content"] = (
+                    f"In response to: `{menu.ctx.message.clean_content}`"
+                )
         elif not isinstance(menu.ctx_or_interaction, discord.Interaction):
             raise RuntimeError(
                 "DefineSource using neither Context nor Interaction"
