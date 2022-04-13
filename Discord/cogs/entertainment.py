@@ -251,14 +251,19 @@ class Entertainment(commands.Cog):
 		ctx.bot.views.append(paginator)
 	
 	@app_commands.command(name = "xkcd")
-	@app_commands.describe(number = "Comic number")
-	@app_commands.describe(query = (
-		"Search query (This is ignored if the comic number is provided)"
-	))
 	async def xkcd_slash(
 		self, interaction, number: Optional[int], query: Optional[str]
 	):
-		"""xkcd comics"""
+		"""
+		xkcd comics
+		
+		Parameters
+		----------
+		number
+			Comic number
+		query
+			Search query (This is ignored if the comic number is provided)
+		"""
 		if number is not None:
 			initial_page = number
 		elif query is not None:
