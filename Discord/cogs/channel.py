@@ -121,9 +121,10 @@ class Channel(commands.Cog):
 	@text.command(name = "id")
 	@commands.guild_only()
 	@checks.not_forbidden()
-	async def text_id(self, ctx, *, channel: discord.TextChannel = None):
+	async def text_id(
+		self, ctx, *, channel: discord.TextChannel = commands.CurrentChannel
+	):
 		'''ID of a text channel'''
-		if not channel: channel = ctx.channel
 		await ctx.embed_reply(channel.id)
 	
 	@text.command(name = "name")
