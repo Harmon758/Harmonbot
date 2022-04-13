@@ -241,12 +241,12 @@ class Meta(commands.Cog):
 	
 	@commands.hybrid_command(aliases = ["latency"])
 	async def ping(self, ctx):
-		'''
+		"""
 		Latency information
 		• Discord HTTPS/REST API latency from sending a message
 		• Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds
 		• PostgreSQL database latency from a SELECT 1 query
-		'''
+		"""
 		start = time.perf_counter_ns()
 		await ctx.bot.db.execute("SELECT 1")
 		database_latency = time.perf_counter_ns() - start
