@@ -71,7 +71,7 @@ class Resources(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data:
-			return await ctx.embed_reply(":no_entry: Error")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		data = data[0]
 		fields = (("RGB", f"{data['rgb']['red']}, {data['rgb']['green']}, {data['rgb']['blue']}"), 
 					("HSV", f"{data['hsv']['hue']}°, {data['hsv']['saturation']}%, {data['hsv']['value']}%"))
