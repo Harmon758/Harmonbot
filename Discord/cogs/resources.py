@@ -67,11 +67,15 @@ class Resources(commands.Cog):
 	async def process_color(self, ctx, url, params = None):
 		if params is None:
 			params = {}
+		
 		params["format"] = "json"
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		
 		if not data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+			return
+		
 		data = data[0]
 		fields = (
 			(
@@ -88,8 +92,10 @@ class Resources(commands.Cog):
 			)
 		)
 		await ctx.embed_reply(
-			f"#{data['hex']}", title = data["title"].capitalize(),
-			image_url = data["imageUrl"], fields = fields
+			title = data["title"].capitalize(),
+			description = f"#{data['hex']}",
+			image_url = data["imageUrl"],
+			fields = fields
 		)
 	
 	@commands.command()
