@@ -73,10 +73,24 @@ class Resources(commands.Cog):
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		data = data[0]
-		fields = (("RGB", f"{data['rgb']['red']}, {data['rgb']['green']}, {data['rgb']['blue']}"), 
-					("HSV", f"{data['hsv']['hue']}°, {data['hsv']['saturation']}%, {data['hsv']['value']}%"))
-		await ctx.embed_reply(f"#{data['hex']}", title = data["title"].capitalize(), 
-								image_url = data["imageUrl"], fields = fields)
+		fields = (
+			(
+				"RGB",
+				f"{data['rgb']['red']}, "
+				f"{data['rgb']['green']}, "
+				f"{data['rgb']['blue']}"
+			),
+			(
+				"HSV",
+				f"{data['hsv']['hue']}°, "
+				f"{data['hsv']['saturation']}%, "
+				f"{data['hsv']['value']}%"
+			)
+		)
+		await ctx.embed_reply(
+			f"#{data['hex']}", title = data["title"].capitalize(),
+			image_url = data["imageUrl"], fields = fields
+		)
 	
 	@commands.command()
 	@checks.not_forbidden()
