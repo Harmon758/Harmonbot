@@ -25,7 +25,7 @@ class Tweepy(commands.Cog):
     @tweepy.command()
     async def issue(self, ctx, *, query: str):
         """
-        Search Tweey GitHub issues
+        Search Tweepy GitHub issues
 
         Parameters
         ----------
