@@ -68,8 +68,11 @@ class Resources(commands.Cog):
 		if params is None:
 			params = {}
 		
+		headers = {"User-Agent": ctx.bot.user_agent}
 		params["format"] = "json"
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			url, headers = headers, params = params
+		) as resp:
 			data = await resp.json()
 		
 		if not data:
