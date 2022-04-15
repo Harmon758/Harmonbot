@@ -9,6 +9,7 @@ import datetime
 import json
 import logging
 import os
+from platform import python_version
 import random
 import sys
 import traceback
@@ -106,7 +107,11 @@ class Bot(commands.Bot):
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
 		self.library_path = "D:/Music/"
-		self.user_agent = "Discord Bot"  # TODO: Make more specific?
+		self.user_agent = (
+			"Harmonbot (Discord Bot) "
+			f"Python/{python_version()} "
+			f"aiohttp/{aiohttp.__version__}"
+		)
 		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.rss_color = self.rss_colour = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
 		self.twitch_color = self.twitch_colour = 0x6441a4
