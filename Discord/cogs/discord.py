@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import asyncio
@@ -32,6 +33,7 @@ ACTIVITES = {
 
 async def setup(bot):
 	await bot.add_cog(Discord(bot))
+	bot.tree.add_command(timestamp, override = True)
 
 class Discord(commands.Cog):
 	
@@ -514,4 +516,18 @@ class ActivityView(discord.ui.View):
 		await interaction.response.edit_message(view = self)
 		
 		self.stop()
+
+
+@app_commands.context_menu()
+async def timestamp(interaction, message: discord.Message):
+	"""Timestamp of a message"""
+	time = discord.utils.snowflake_time(message.id).replace(
+		tzinfo = datetime.timezone.utc
+	)
+	await interaction.response.send_message(embed = discord.Embed(
+		title = f"Timestamp of message from {message.author}",
+		url = message.jump_url,
+		description = f"{discord.utils.format_dt(time)}\n{time}",
+		color = interaction.client.bot_color
+	))
 
