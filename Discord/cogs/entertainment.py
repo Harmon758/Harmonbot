@@ -18,13 +18,6 @@ async def setup(bot):
 
 class Entertainment(commands.Cog):
 	
-	def __init__(self):
-		self.menus = []
-	
-	def cog_unload(self):
-		for menu in self.menus:
-			menu.stop()
-	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
