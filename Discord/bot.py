@@ -107,6 +107,7 @@ class Bot(commands.Bot):
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
 		self.library_path = "D:/Music/"
+		self.simple_user_agent = "Harmonbot (Discord Bot)"
 		self.user_agent = (
 			"Harmonbot (Discord Bot) "
 			f"Python/{python_version()} "
