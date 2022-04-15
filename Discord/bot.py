@@ -21,6 +21,7 @@ import aiohttp
 from aiohttp import web
 from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import service_pb2_grpc
+import gidgethub.aiohttp
 import git
 import google.auth
 import google.cloud.translate
@@ -165,16 +166,17 @@ class Bot(commands.Bot):
 			"CLEVERBOT_API_KEY", "DISCORDBOTLIST.COM_API_TOKEN",
 			"DISCORD.BOTS.GG_API_TOKEN", "DISCORDBOTS.ORG_API_KEY",
 			"FIXER_API_KEY", "FONO_API_TOKEN", "GIPHY_PUBLIC_BETA_API_KEY",
-			"GOOGLE_API_KEY", "GOOGLE_CUSTOM_SEARCH_ENGINE_ID",
-			"HTTP_SERVER_CALLBACK_URL", "IMGUR_CLIENT_ID",
-			"IMGUR_CLIENT_SECRET", "NEWSAPI.ORG_API_KEY", "OMDB_API_KEY",
-			"OSU_API_KEY", "OWM_API_KEY", "PAGE2IMAGES_REST_API_KEY",
-			"SENTRY_DSN", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET_KEY",
-			"STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET",
-			"TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_SECRET",
-			"TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET",
-			"UNSPLASH_ACCESS_KEY", "WARGAMING_APPLICATION_ID",
-			"WOLFRAM_ALPHA_APP_ID", "WORDNIK_API_KEY"
+			"GITHUB_PERSONAL_ACCESS_TOKEN", "GOOGLE_API_KEY",
+			"GOOGLE_CUSTOM_SEARCH_ENGINE_ID", "HTTP_SERVER_CALLBACK_URL",
+			"IMGUR_CLIENT_ID", "IMGUR_CLIENT_SECRET", "NEWSAPI.ORG_API_KEY",
+			"OMDB_API_KEY", "OSU_API_KEY", "OWM_API_KEY",
+			"PAGE2IMAGES_REST_API_KEY", "SENTRY_DSN", "SPOTIFY_CLIENT_ID",
+			"SPOTIFY_CLIENT_SECRET_KEY", "STEAM_WEB_API_KEY",
+			"TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET", "TWITTER_CONSUMER_KEY",
+			"TWITTER_CONSUMER_SECRET", "TWITTER_ACCESS_TOKEN",
+			"TWITTER_ACCESS_TOKEN_SECRET", "UNSPLASH_ACCESS_KEY",
+			"WARGAMING_APPLICATION_ID", "WOLFRAM_ALPHA_APP_ID",
+			"WORDNIK_API_KEY"
 		):
 			setattr(self, credential.replace('.', '_'), os.getenv(credential))
 		if not self.BATTLE_NET_API_KEY:
@@ -290,6 +292,10 @@ class Bot(commands.Bot):
 	async def setup_hook(self):
 		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
+		self.github_api = gidgethub.aiohttp.GitHubAPI(
+			self.aiohttp_session, self.user_agent,
+			oauth_token = self.GITHUB_PERSONAL_ACCESS_TOKEN
+		)
 		try:
 			self.google_cloud_translation_service_client = (
 				google.cloud.translate.TranslationServiceAsyncClient()
