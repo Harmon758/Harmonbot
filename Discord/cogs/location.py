@@ -396,9 +396,8 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 		]
 	)
 	async def forecast_precision_select(self, interaction, select):
-		forecasts = getattr(
-			self.one_call, f"forecast_{select.values[0].split()[0].lower()}"
-		)
+		precision = select.values[0].split()[0].lower()
+		forecasts = getattr(self.one_call, f"forecast_{precision}")
 		
 		if not forecasts:
 			await interaction.response.send_message(
@@ -408,7 +407,7 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 			await interaction.message.edit(view = self)
 			return
 		
-		self.forecast_precision = select.values[0].split()[0].lower()
+		self.forecast_precision = precision
 		self.forecast_index = 0
 		weather = forecasts[self.forecast_index]
 		embed = format_weather_embed(
