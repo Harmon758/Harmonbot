@@ -272,9 +272,15 @@ class Location(commands.Cog):
 		await self.bot.attempt_delete_message(ctx.message)
 	
 	@app_commands.command(name = "weather")
-	@app_commands.describe(location = "Location to query")
 	async def slash_weather(self, interaction, location: str):
-		"""Weather"""
+		"""
+		Weather
+		
+		Parameters
+		----------
+		location
+			Location to query
+		"""
 		try:
 			geocode_data = await get_geocode_data(
 				location, aiohttp_session = interaction.client.aiohttp_session
