@@ -389,28 +389,26 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 		await interaction.response.edit_message(embed = embed, view = self)
 	
 	@ui.select(
-		placeholder = "Forecast Precision - Daily",
 		options = [
-			discord.SelectOption(label = "Daily"),
-			discord.SelectOption(label = "Hourly"),
-			discord.SelectOption(label = "Minutely")
+			discord.SelectOption(label = "Daily Forecast", default = True),
+			discord.SelectOption(label = "Hourly Forecast"),
+			discord.SelectOption(label = "Minutely Forecast")
 		]
 	)
 	async def forecast_precision_select(self, interaction, select):
 		forecasts = getattr(
-			self.one_call, f"forecast_{select.values[0].lower()}"
+			self.one_call, f"forecast_{select.values[0].split()[0].lower()}"
 		)
 		
 		if not forecasts:
 			await interaction.response.send_message(
-				select.values[0] +
-				" forecast not available for this location.",
+				select.values[0] + " not available for this location.",
 				ephemeral = True
 			)
 			await interaction.message.edit(view = self)
 			return
 		
-		self.forecast_precision = select.values[0].lower()
+		self.forecast_precision = select.values[0].split()[0].lower()
 		self.forecast_index = 0
 		weather = forecasts[self.forecast_index]
 		embed = format_weather_embed(
@@ -419,7 +417,8 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 		)
 		embed.title = self.location
 		
-		select.placeholder = f"Forecast Precision - {select.values[0]}"
+		for option in select.options:
+			option.default = option.label == select.values[0]
 		self.previous_button.disabled = True
 		self.next_button.disabled = False
 		
