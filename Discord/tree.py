@@ -10,10 +10,10 @@ import sentry_sdk
 
 class CommandTree(app_commands.CommandTree):
 
-    async def on_error(self, interaction, command, error):
+    async def on_error(self, interaction, error):
         sentry_sdk.capture_exception(error)
         print(
-            f"Ignoring exception in slash command {command.name}",
+            f"Ignoring exception in slash command {interaction.command.name}",
             # TODO: Use full name
             file = sys.stderr
         )
