@@ -53,9 +53,7 @@ class Tweepy(commands.Cog):
             data = await resp.read()
         self.sphinx_inventory = sphobjinv.Inventory(data)
 
-    @commands.hybrid_group(
-        case_insensitive = True, invoke_without_command = True
-    )
+    @commands.hybrid_group(case_insensitive = True)
     async def tweepy(self, ctx):
         """
         Tweepy Python library
