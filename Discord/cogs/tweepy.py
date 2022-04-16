@@ -19,7 +19,10 @@ class Tweepy(commands.Cog):
         case_insensitive = True, invoke_without_command = True
     )
     async def tweepy(self, ctx):
-        """Tweepy"""
+        """
+        Tweepy Python library
+        https://github.com/tweepy/tweepy
+        """
         await ctx.send_help(ctx.command)
 
     @tweepy.command()
