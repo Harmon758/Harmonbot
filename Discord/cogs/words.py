@@ -95,7 +95,7 @@ class Words(commands.Cog):
 
     @commands.command(aliases = ["audiodefine", "pronounce"])
     async def pronunciation(self, ctx, word: str):
-        '''Pronunciation of a word'''
+        """Pronunciation of a word"""
         try:
             pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(
                 word, limit = 1
