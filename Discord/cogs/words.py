@@ -96,9 +96,18 @@ class Words(commands.Cog):
     @commands.command(aliases = ["audiodefine", "pronounce"])
     async def pronunciation(self, ctx, word: str):
         '''Pronunciation of a word'''
-        pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(
-            word, limit = 1
-        )
+        try:
+            pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(
+                word, limit = 1
+            )
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                await ctx.embed_reply(
+                    f"{ctx.bot.error_emoji} Word or pronunciation not found"
+                )
+                return
+            raise
+
         description = (
             pronunciation[0].raw.strip("()")
             if pronunciation else "Audio File Link"
