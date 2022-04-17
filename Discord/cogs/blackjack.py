@@ -55,16 +55,13 @@ class Blackjack(commands.Cog):
                 f"Dealer: {game.dealer_string} ({game.dealer_total})\n"
                 f"{ctx.author.display_name}: {game.player_string} ({game.player_total})\n"
             )
-            if game.dealer_total > 21:
-                embed.description += "\N{COLLISION SYMBOL} The dealer busted"
-                embed.set_footer(text = "You win!")
-                await response.edit(embed = embed)
-                return
-            elif game.dealer_total > game.player_total:
+
+            if game.dealer_total > game.player_total:
                 embed.description += "The dealer beat you"
                 embed.set_footer(text = "You lost :(")
                 await response.edit(embed = embed)
                 return
+
             embed.set_footer(text = "Dealer's turn..")
             await response.edit(embed = embed)
 
