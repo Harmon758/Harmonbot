@@ -3,17 +3,16 @@ from discord import ui
 from discord.ext import commands
 
 import asyncio
-import copy
 
 import pydealer
 
 from utilities import checks
 
 
-BLACKJACK_RANKS = copy.deepcopy(pydealer.const.DEFAULT_RANKS)
-BLACKJACK_RANKS["values"].update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
-for value in BLACKJACK_RANKS["values"]:
-    BLACKJACK_RANKS["values"][value] += 1
+BLACKJACK_VALUES = pydealer.const.DEFAULT_RANKS["values"].copy()
+BLACKJACK_VALUES.update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
+for value in BLACKJACK_VALUES:
+    BLACKJACK_VALUES[value] += 1
 
 SUIT_EMOJI = {
     "Clubs": '\N{BLACK CLUB SUIT}',
@@ -137,7 +136,7 @@ class BlackjackGame:
 
 
 def calculate_total(cards):
-    total = sum(BLACKJACK_RANKS["values"][card.value] for card in cards)
+    total = sum(BLACKJACK_VALUES[card.value] for card in cards)
 
     if pydealer.tools.find_card(
         cards, term = "Ace", limit = 1
