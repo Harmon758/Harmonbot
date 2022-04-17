@@ -75,12 +75,12 @@ class Blackjack(commands.Cog):
 
             if game.dealer_total > 21:
                 embed.description += f"\n\N{COLLISION SYMBOL} {ctx.me.mention} busted"
-                embed.set_footer(text = "You win!")
+                embed.set_footer(text = "You won!")
             elif game.dealer_total > game.player_total:
                 embed.description += f"\n{ctx.me.mention} beat you"
                 embed.set_footer(text = "You lost :(")
             elif game.dealer_total == game.player_total == 21:
-                embed.set_footer(text = "It's a push (tie)")
+                embed.set_footer(text = "It was a push (tie)")
 
             await response.edit(embed = embed)
 
