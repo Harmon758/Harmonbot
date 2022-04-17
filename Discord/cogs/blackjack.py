@@ -37,30 +37,38 @@ class Blackjack(commands.Cog):
         player_string = cards_to_string(player.cards)
         dealer_total = calculate_total(dealer.cards)
         player_total = calculate_total(player.cards)
+
         response = await ctx.embed_reply(
-            f"Dealer: {dealer_string} (?)"
-            f"\n{ctx.author.display_name}: {player_string} ({player_total})\n",
-            title = "Blackjack", footer_text = "Hit or Stay?"
+            title = "Blackjack",
+            description = (
+                f"Dealer: {dealer_string} (?)"
+                f"\n{ctx.author.display_name}: {player_string} ({player_total})\n"
+            ),
+            footer_text = "Hit or Stay?"
         )
         embed = response.embeds[0]
+
         while True:
             action = await ctx.bot.wait_for(
                 "message",
-                check = (lambda m: (
-                    m.author == ctx.author and
-                    m.content.lower().strip('!') in ("hit", "stay")
+                check = (lambda message: (
+                    message.author == ctx.author and
+                    message.content.lower().strip('!') in ("hit", "stay")
                 ))
             )
             await ctx.bot.attempt_delete_message(action)
+
             if action.content.lower().strip('!') == "hit":
                 player.add(deck.deal())
                 player_string = cards_to_string(player.cards)
                 player_total = calculate_total(player.cards)
+
                 embed.description = (
                     f"Dealer: {dealer_string} (?)\n"
                     f"{ctx.author.display_name}: {player_string} ({player_total})\n"
                 )
                 await response.edit(embed = embed)
+
                 if player_total > 21:
                     embed.description += ":boom: You have busted"
                     embed.set_footer(text = "You lost :(")
@@ -81,6 +89,7 @@ class Blackjack(commands.Cog):
                     break
                 embed.set_footer(text = "Dealer's turn..")
                 await response.edit(embed = embed)
+
                 while dealer_total < 21 and dealer_total <= player_total:
                     await asyncio.sleep(5)
                     dealer.add(deck.deal())
@@ -91,6 +100,7 @@ class Blackjack(commands.Cog):
                         f"{ctx.author.display_name}: {player_string} ({player_total})\n"
                     )
                     await response.edit(embed = embed)
+
                 if dealer_total > 21:
                     embed.description += ":boom: The dealer busted"
                     embed.set_footer(text = "You win!")
@@ -100,6 +110,7 @@ class Blackjack(commands.Cog):
                 elif dealer_total == player_total == 21:
                     embed.set_footer(text = "It's a push (tie)")
                 break
+
         await response.edit(embed = embed)
 
 
