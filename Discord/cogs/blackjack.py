@@ -35,8 +35,8 @@ class Blackjack(commands.Cog):
         player = deck.deal(2)
         dealer_string = f":grey_question: :{dealer.cards[1].suit.lower()}: {dealer.cards[1].value}"
         player_string = self.cards_to_string(player.cards)
-        dealer_total = self.blackjack_total(dealer.cards)
-        player_total = self.blackjack_total(player.cards)
+        dealer_total = self.calculate_total(dealer.cards)
+        player_total = self.calculate_total(player.cards)
         response = await ctx.embed_reply(f"Dealer: {dealer_string} (?)\n{ctx.author.display_name}: {player_string} ({player_total})\n", title = "Blackjack", footer_text = "Hit or Stay?")
         embed = response.embeds[0]
         while True:
@@ -45,7 +45,7 @@ class Blackjack(commands.Cog):
             if action.content.lower().strip('!') == "hit":
                 player.add(deck.deal())
                 player_string = self.cards_to_string(player.cards)
-                player_total = self.blackjack_total(player.cards)
+                player_total = self.calculate_total(player.cards)
                 embed.description = f"Dealer: {dealer_string} (?)\n{ctx.author.display_name}: {player_string} ({player_total})\n"
                 await response.edit(embed = embed)
                 if player_total > 21:
@@ -69,7 +69,7 @@ class Blackjack(commands.Cog):
                     await asyncio.sleep(5)
                     dealer.add(deck.deal())
                     dealer_string = self.cards_to_string(dealer.cards)
-                    dealer_total = self.blackjack_total(dealer.cards)
+                    dealer_total = self.calculate_total(dealer.cards)
                     embed.description = f"Dealer: {dealer_string} ({dealer_total})\n{ctx.author.display_name}: {player_string} ({player_total})\n"
                     await response.edit(embed = embed)
                 if dealer_total > 21:
@@ -83,7 +83,7 @@ class Blackjack(commands.Cog):
                 break
         await response.edit(embed = embed)
 
-    def blackjack_total(self, cards):
+    def calculate_total(self, cards):
         total = sum(BLACKJACK_RANKS["values"][card.value] for card in cards)
         if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11:
             total += 10
