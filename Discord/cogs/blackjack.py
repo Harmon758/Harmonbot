@@ -154,8 +154,10 @@ class BlackjackView(ui.View):
 
         embed = interaction.message.embeds[0]
         embed.description = (
-            f"{interaction.client.user.mention}: {self.game.dealer_string} (**?**)\n"
-            f"{interaction.user.mention}: {self.game.player_string} (**{self.game.player_total}**)\n"
+            f"{interaction.client.user.mention}: "
+            f"{self.game.dealer_string} (**?**)\n"
+            f"{interaction.user.mention}: "
+            f"{self.game.player_string} (**{self.game.player_total}**)\n"
         )
 
         if self.game.player_total > 21:
