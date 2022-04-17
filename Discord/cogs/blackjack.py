@@ -33,7 +33,7 @@ class Blackjack(commands.Cog):
         response = await ctx.embed_reply(
             title = "Blackjack",
             description = (
-                f"Dealer: {game.dealer_string} (?)"
+                f"{ctx.me.mention}: {game.dealer_string} (?)"
                 f"\n{ctx.author.mention}: {game.player_string} ({game.player_total})\n"
             ),
             footer_text = "Hit or Stay?",
@@ -49,12 +49,12 @@ class Blackjack(commands.Cog):
             game.dealer_turn = True
 
             embed.description = (
-                f"Dealer: {game.dealer_string} ({game.dealer_total})\n"
+                f"{ctx.me.mention}: {game.dealer_string} ({game.dealer_total})\n"
                 f"{ctx.author.mention}: {game.player_string} ({game.player_total})\n"
             )
 
             if game.dealer_total > game.player_total:
-                embed.description += "The dealer beat you"
+                embed.description += f"{ctx.me.mention} beat you"
                 embed.set_footer(text = "You lost :(")
                 await response.edit(embed = embed)
                 return
@@ -68,16 +68,16 @@ class Blackjack(commands.Cog):
                 game.dealer_hit()
 
                 embed.description = (
-                    f"Dealer: {game.dealer_string} ({game.dealer_total})\n"
+                    f"{ctx.me.mention}: {game.dealer_string} ({game.dealer_total})\n"
                     f"{ctx.author.mention}: {game.player_string} ({game.player_total})\n"
                 )
                 await response.edit(embed = embed)
 
             if game.dealer_total > 21:
-                embed.description += "\N{COLLISION SYMBOL} The dealer busted"
+                embed.description += f"\N{COLLISION SYMBOL} {ctx.me.mention} busted"
                 embed.set_footer(text = "You win!")
             elif game.dealer_total > game.player_total:
-                embed.description += "The dealer beat you"
+                embed.description += f"{ctx.me.mention} beat you"
                 embed.set_footer(text = "You lost :(")
             elif game.dealer_total == game.player_total == 21:
                 embed.set_footer(text = "It's a push (tie)")
@@ -146,7 +146,7 @@ class BlackjackView(ui.View):
 
         embed = interaction.message.embeds[0]
         embed.description = (
-            f"Dealer: {self.game.dealer_string} (?)\n"
+            f"{interaction.client.user.mention}: {self.game.dealer_string} (?)\n"
             f"{interaction.user.mention}: {self.game.player_string} ({self.game.player_total})\n"
         )
 
