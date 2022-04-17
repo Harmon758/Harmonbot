@@ -25,10 +25,7 @@ class Blackjack(commands.Cog):
     @commands.command()
     @checks.not_forbidden()
     async def blackjack(self, ctx):
-        """
-        Play a game of blackjack
-        Manage Messages permission required for message cleanup
-        """
+        """Play a game of blackjack"""
         # TODO: S17
         game = BlackjackGame()
 
