@@ -124,7 +124,7 @@ class BlackjackGame:
         if self.dealer_turn:
             return cards_to_string(self.dealer.cards)
         else:
-            return f":grey_question: :{self.dealer.cards[1].suit.lower()}: {self.dealer.cards[1].value}"
+            return f"\N{WHITE QUESTION MARK ORNAMENT} :{self.dealer.cards[1].suit.lower()}: {self.dealer.cards[1].value}"
 
     @property
     def dealer_total(self):
