@@ -9,6 +9,12 @@ import pydealer
 from utilities import checks
 
 
+BLACKJACK_RANKS = copy.deepcopy(pydealer.const.DEFAULT_RANKS)
+BLACKJACK_RANKS["values"].update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
+for value in BLACKJACK_RANKS["values"]:
+    BLACKJACK_RANKS["values"][value] += 1
+
+
 async def setup(bot):
     await bot.add_cog(Blackjack(bot))
 
@@ -17,10 +23,6 @@ class Blackjack(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.blackjack_ranks = copy.deepcopy(pydealer.const.DEFAULT_RANKS)
-        self.blackjack_ranks["values"].update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
-        for value in self.blackjack_ranks["values"]:
-            self.blackjack_ranks["values"][value] += 1
 
     @commands.command()
     @checks.not_forbidden()
@@ -85,7 +87,7 @@ class Blackjack(commands.Cog):
         await response.edit(embed = embed)
 
     def blackjack_total(self, cards):
-        total = sum(self.blackjack_ranks["values"][card.value] for card in cards)
+        total = sum(BLACKJACK_RANKS["values"][card.value] for card in cards)
         if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11: total += 10
         return total
 
