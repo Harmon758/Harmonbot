@@ -15,6 +15,13 @@ BLACKJACK_RANKS["values"].update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
 for value in BLACKJACK_RANKS["values"]:
     BLACKJACK_RANKS["values"][value] += 1
 
+SUIT_EMOJI = {
+    "Clubs": '\N{BLACK CLUB SUIT}',
+    "Diamonds": '\N{BLACK DIAMOND SUIT}',
+    "Hearts": '\N{BLACK HEART SUIT}',
+    "Spades": '\N{BLACK SPADE SUIT}'
+}
+
 
 async def setup(bot):
     await bot.add_cog(Blackjack())
@@ -111,7 +118,7 @@ class BlackjackGame:
         if self.dealer_turn:
             return cards_to_string(self.dealer.cards)
         else:
-            return f"\N{WHITE QUESTION MARK ORNAMENT} :{self.dealer.cards[1].suit.lower()}: {self.dealer.cards[1].value}"
+            return f"\N{WHITE QUESTION MARK ORNAMENT} {SUIT_EMOJI[self.dealer.cards[1].suit]} {self.dealer.cards[1].value}"
 
     @property
     def dealer_total(self):
@@ -136,7 +143,7 @@ def calculate_total(cards):
     return total
 
 def cards_to_string(cards):
-    return "".join(f":{card.suit.lower()}: {card.value} " for card in cards)
+    return "".join(f"{SUIT_EMOJI[card.suit]} {card.value} " for card in cards)
 
 
 class BlackjackView(ui.View):
