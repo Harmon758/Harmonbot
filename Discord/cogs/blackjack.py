@@ -56,7 +56,7 @@ class Blackjack(commands.Cog):
                 f"{ctx.author.display_name}: {game.player_string} ({game.player_total})\n"
             )
             if game.dealer_total > 21:
-                embed.description += ":boom: The dealer busted"
+                embed.description += "\N{COLLISION SYMBOL} The dealer busted"
                 embed.set_footer(text = "You win!")
                 await response.edit(embed = embed)
                 return
@@ -80,7 +80,7 @@ class Blackjack(commands.Cog):
                 await response.edit(embed = embed)
 
             if game.dealer_total > 21:
-                embed.description += ":boom: The dealer busted"
+                embed.description += "\N{COLLISION SYMBOL} The dealer busted"
                 embed.set_footer(text = "You win!")
             elif game.dealer_total > game.player_total:
                 embed.description += "The dealer beat you"
@@ -157,7 +157,7 @@ class BlackjackView(ui.View):
         )
 
         if self.game.player_total > 21:
-            embed.description += ":boom: You have busted"
+            embed.description += "\N{COLLISION SYMBOL} You have busted"
             embed.set_footer(text = "You lost :(")
             await self.stop(interaction = interaction, embed = embed)
         else:
