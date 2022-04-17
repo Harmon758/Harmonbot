@@ -33,8 +33,10 @@ class Blackjack(commands.Cog):
         response = await ctx.embed_reply(
             title = "Blackjack",
             description = (
-                f"{ctx.me.mention}: {game.dealer_string} (?)"
-                f"\n{ctx.author.mention}: {game.player_string} ({game.player_total})\n"
+                f"{ctx.me.mention}:"
+                f"{game.dealer_string} (?)\n"
+                f"{ctx.author.mention}: "
+                f"{game.player_string} ({game.player_total})\n"
             ),
             footer_text = "Hit or Stay?",
             view = view
@@ -49,8 +51,10 @@ class Blackjack(commands.Cog):
             game.dealer_turn = True
 
             embed.description = (
-                f"{ctx.me.mention}: {game.dealer_string} ({game.dealer_total})\n"
-                f"{ctx.author.mention}: {game.player_string} ({game.player_total})\n"
+                f"{ctx.me.mention}: "
+                f"{game.dealer_string} ({game.dealer_total})\n"
+                f"{ctx.author.mention}: "
+                f"{game.player_string} ({game.player_total})\n"
             )
 
             if game.dealer_total > game.player_total:
@@ -68,13 +72,17 @@ class Blackjack(commands.Cog):
                 game.dealer_hit()
 
                 embed.description = (
-                    f"{ctx.me.mention}: {game.dealer_string} ({game.dealer_total})\n"
-                    f"{ctx.author.mention}: {game.player_string} ({game.player_total})\n"
+                    f"{ctx.me.mention}: "
+                    f"{game.dealer_string} ({game.dealer_total})\n"
+                    f"{ctx.author.mention}: "
+                    f"{game.player_string} ({game.player_total})\n"
                 )
                 await response.edit(embed = embed)
 
             if game.dealer_total > 21:
-                embed.description += f"\n\N{COLLISION SYMBOL} {ctx.me.mention} busted"
+                embed.description += (
+                    f"\n\N{COLLISION SYMBOL} {ctx.me.mention} busted"
+                )
                 embed.set_footer(text = "You won!")
             elif game.dealer_total > game.player_total:
                 embed.description += f"\n{ctx.me.mention} beat you"
