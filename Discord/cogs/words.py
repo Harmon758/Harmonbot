@@ -24,7 +24,7 @@ class Words(commands.Cog):
 
     @commands.command(aliases = ["antonyms"])
     async def antonym(self, ctx, word: str):
-        '''Antonyms of a word'''
+        """Antonyms of a word"""
         try:
             antonyms = ctx.bot.wordnik_word_api.getRelatedWords(
                 word, relationshipTypes = "antonym",
