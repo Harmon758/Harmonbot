@@ -34,9 +34,9 @@ class Blackjack(commands.Cog):
             title = "Blackjack",
             description = (
                 f"{ctx.me.mention}:"
-                f"{game.dealer_string} (?)\n"
+                f"{game.dealer_string} (**?**)\n"
                 f"{ctx.author.mention}: "
-                f"{game.player_string} ({game.player_total})\n"
+                f"{game.player_string} (**{game.player_total}**)\n"
             ),
             footer_text = "Hit or Stay?",
             view = view
@@ -52,9 +52,9 @@ class Blackjack(commands.Cog):
 
             embed.description = (
                 f"{ctx.me.mention}: "
-                f"{game.dealer_string} ({game.dealer_total})\n"
+                f"{game.dealer_string} (**{game.dealer_total}**)\n"
                 f"{ctx.author.mention}: "
-                f"{game.player_string} ({game.player_total})\n"
+                f"{game.player_string} (**{game.player_total}**)\n"
             )
 
             if game.dealer_total > game.player_total:
@@ -73,9 +73,9 @@ class Blackjack(commands.Cog):
 
                 embed.description = (
                     f"{ctx.me.mention}: "
-                    f"{game.dealer_string} ({game.dealer_total})\n"
+                    f"{game.dealer_string} (**{game.dealer_total}**)\n"
                     f"{ctx.author.mention}: "
-                    f"{game.player_string} ({game.player_total})\n"
+                    f"{game.player_string} (**{game.player_total}**)\n"
                 )
                 await response.edit(embed = embed)
 
@@ -154,8 +154,8 @@ class BlackjackView(ui.View):
 
         embed = interaction.message.embeds[0]
         embed.description = (
-            f"{interaction.client.user.mention}: {self.game.dealer_string} (?)\n"
-            f"{interaction.user.mention}: {self.game.player_string} ({self.game.player_total})\n"
+            f"{interaction.client.user.mention}: {self.game.dealer_string} (**?**)\n"
+            f"{interaction.user.mention}: {self.game.player_string} (**{self.game.player_total}**)\n"
         )
 
         if self.game.player_total > 21:
