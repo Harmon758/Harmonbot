@@ -22,9 +22,16 @@ class Words(commands.Cog):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    @commands.command(aliases = ["antonyms"])
-    async def antonym(self, ctx, word: str):
-        """Antonyms of a word"""
+    @commands.hybrid_command(aliases = ["antonym"])
+    async def antonyms(self, ctx, word: str):
+        """
+        Antonyms of a word
+
+        Parameters
+        ----------
+        word
+            Word to get antonyms for
+        """
         try:
             antonyms = ctx.bot.wordnik_word_api.getRelatedWords(
                 word, relationshipTypes = "antonym",
