@@ -29,20 +29,13 @@ class Blackjack(commands.Cog):
         Manage Messages permission required for message cleanup
         """
         # TODO: S17
-        deck = pydealer.Deck()
-        deck.shuffle()
-        dealer = deck.deal(2)
-        player = deck.deal(2)
-        dealer_string = f":grey_question: :{dealer.cards[1].suit.lower()}: {dealer.cards[1].value}"
-        player_string = cards_to_string(player.cards)
-        dealer_total = calculate_total(dealer.cards)
-        player_total = calculate_total(player.cards)
+        game = BlackjackGame()
 
         response = await ctx.embed_reply(
             title = "Blackjack",
             description = (
-                f"Dealer: {dealer_string} (?)"
-                f"\n{ctx.author.display_name}: {player_string} ({player_total})\n"
+                f"Dealer: {game.dealer_string} (?)"
+                f"\n{ctx.author.display_name}: {game.player_string} ({game.player_total})\n"
             ),
             footer_text = "Hit or Stay?"
         )
@@ -59,59 +52,94 @@ class Blackjack(commands.Cog):
             await ctx.bot.attempt_delete_message(action)
 
             if action.content.lower().strip('!') == "hit":
-                player.add(deck.deal())
-                player_string = cards_to_string(player.cards)
-                player_total = calculate_total(player.cards)
+                game.player_hit()
 
                 embed.description = (
-                    f"Dealer: {dealer_string} (?)\n"
-                    f"{ctx.author.display_name}: {player_string} ({player_total})\n"
+                    f"Dealer: {game.dealer_string} (?)\n"
+                    f"{ctx.author.display_name}: {game.player_string} ({game.player_total})\n"
                 )
                 await response.edit(embed = embed)
 
-                if player_total > 21:
+                if game.player_total > 21:
                     embed.description += ":boom: You have busted"
                     embed.set_footer(text = "You lost :(")
                     break
             else:
-                dealer_string = cards_to_string(dealer.cards)
+                game.dealer_turn = True
+
                 embed.description = (
-                    f"Dealer: {dealer_string} ({dealer_total})\n"
-                    f"{ctx.author.display_name}: {player_string} ({player_total})\n"
+                    f"Dealer: {game.dealer_string} ({game.dealer_total})\n"
+                    f"{ctx.author.display_name}: {game.player_string} ({game.player_total})\n"
                 )
-                if dealer_total > 21:
+                if game.dealer_total > 21:
                     embed.description += ":boom: The dealer busted"
                     embed.set_footer(text = "You win!")
                     break
-                elif dealer_total > player_total:
+                elif game.dealer_total > game.player_total:
                     embed.description += "The dealer beat you"
                     embed.set_footer(text = "You lost :(")
                     break
                 embed.set_footer(text = "Dealer's turn..")
                 await response.edit(embed = embed)
 
-                while dealer_total < 21 and dealer_total <= player_total:
+                while game.dealer_total < 21 and game.dealer_total <= game.player_total:
                     await asyncio.sleep(5)
-                    dealer.add(deck.deal())
-                    dealer_string = cards_to_string(dealer.cards)
-                    dealer_total = calculate_total(dealer.cards)
+
+                    game.dealer_hit()
+
                     embed.description = (
-                        f"Dealer: {dealer_string} ({dealer_total})\n"
-                        f"{ctx.author.display_name}: {player_string} ({player_total})\n"
+                        f"Dealer: {game.dealer_string} ({game.dealer_total})\n"
+                        f"{ctx.author.display_name}: {game.player_string} ({game.player_total})\n"
                     )
                     await response.edit(embed = embed)
 
-                if dealer_total > 21:
+                if game.dealer_total > 21:
                     embed.description += ":boom: The dealer busted"
                     embed.set_footer(text = "You win!")
-                elif dealer_total > player_total:
+                elif game.dealer_total > game.player_total:
                     embed.description += "The dealer beat you"
                     embed.set_footer(text = "You lost :(")
-                elif dealer_total == player_total == 21:
+                elif game.dealer_total == game.player_total == 21:
                     embed.set_footer(text = "It's a push (tie)")
                 break
 
         await response.edit(embed = embed)
+
+
+class BlackjackGame:
+
+    def __init__(self):
+        self.deck = pydealer.Deck()
+        self.deck.shuffle()
+        self.dealer = self.deck.deal(2)
+        self.player = self.deck.deal(2)
+
+        self.dealer_turn = False
+
+    def dealer_hit(self):
+        self.dealer.add(self.deck.deal())
+
+    @property
+    def dealer_string(self):
+        if self.dealer_turn:
+            return cards_to_string(self.dealer.cards)
+        else:
+            return f":grey_question: :{self.dealer.cards[1].suit.lower()}: {self.dealer.cards[1].value}"
+
+    @property
+    def dealer_total(self):
+        return calculate_total(self.dealer.cards)
+
+    def player_hit(self):
+        self.player.add(self.deck.deal())
+
+    @property
+    def player_string(self):
+        return cards_to_string(self.player.cards)
+
+    @property
+    def player_total(self):
+        return calculate_total(self.player.cards)
 
 
 def calculate_total(cards):
