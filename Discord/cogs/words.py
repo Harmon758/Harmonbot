@@ -93,9 +93,16 @@ class Words(commands.Cog):
         await paginator.start()
         ctx.bot.views.append(paginator)
 
-    @commands.command(aliases = ["audiodefine", "pronounce"])
-    async def pronunciation(self, ctx, word: str):
-        """Pronunciation of a word"""
+    @commands.hybrid_command(aliases = ["audiodefine", "pronunciation"])
+    async def pronounce(self, ctx, word: str):
+        """
+        Pronunciation of a word
+
+        Parameters
+        ----------
+        word
+            Word to get pronunciation for
+        """
         try:
             pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(
                 word, limit = 1
