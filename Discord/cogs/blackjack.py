@@ -25,10 +25,10 @@ class Blackjack(commands.Cog):
     @commands.command()
     @checks.not_forbidden()
     async def blackjack(self, ctx):
-        '''
+        """
         Play a game of blackjack
         Manage Messages permission required for message cleanup
-        '''
+        """
         # TODO: S17
         deck = pydealer.Deck()
         deck.shuffle()
