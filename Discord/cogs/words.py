@@ -121,7 +121,7 @@ class Words(commands.Cog):
             return
 
         await ctx.embed_reply(
-            title = f"Pronunciation of {word.capitalize()}",
+            title = f"Pronunciation of \"{word}\"",
             description = description,
             file = file
         )
