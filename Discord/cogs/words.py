@@ -148,9 +148,16 @@ class Words(commands.Cog):
                 ' '.join(checker.correction(word) for word in words)
             )
 
-    @commands.command(aliases = ["synonyms"])
-    async def synonym(self, ctx, word: str):
-        """Synonyms of a word"""
+    @commands.hybrid_command(aliases = ["synonym"])
+    async def synonyms(self, ctx, word: str):
+        """
+        Synonyms of a word
+
+        Parameters
+        ----------
+        word
+            Word to get synonyms for
+        """
         try:
             synonyms = ctx.bot.wordnik_word_api.getRelatedWords(
                 word, relationshipTypes = "synonym",
