@@ -34,9 +34,9 @@ class Blackjack(commands.Cog):
         dealer = deck.deal(2)
         player = deck.deal(2)
         dealer_string = f":grey_question: :{dealer.cards[1].suit.lower()}: {dealer.cards[1].value}"
-        player_string = self.cards_to_string(player.cards)
-        dealer_total = self.calculate_total(dealer.cards)
-        player_total = self.calculate_total(player.cards)
+        player_string = cards_to_string(player.cards)
+        dealer_total = calculate_total(dealer.cards)
+        player_total = calculate_total(player.cards)
         response = await ctx.embed_reply(f"Dealer: {dealer_string} (?)\n{ctx.author.display_name}: {player_string} ({player_total})\n", title = "Blackjack", footer_text = "Hit or Stay?")
         embed = response.embeds[0]
         while True:
@@ -44,8 +44,8 @@ class Blackjack(commands.Cog):
             await ctx.bot.attempt_delete_message(action)
             if action.content.lower().strip('!') == "hit":
                 player.add(deck.deal())
-                player_string = self.cards_to_string(player.cards)
-                player_total = self.calculate_total(player.cards)
+                player_string = cards_to_string(player.cards)
+                player_total = calculate_total(player.cards)
                 embed.description = f"Dealer: {dealer_string} (?)\n{ctx.author.display_name}: {player_string} ({player_total})\n"
                 await response.edit(embed = embed)
                 if player_total > 21:
@@ -53,7 +53,7 @@ class Blackjack(commands.Cog):
                     embed.set_footer(text = "You lost :(")
                     break
             else:
-                dealer_string = self.cards_to_string(dealer.cards)
+                dealer_string = cards_to_string(dealer.cards)
                 embed.description = f"Dealer: {dealer_string} ({dealer_total})\n{ctx.author.display_name}: {player_string} ({player_total})\n"
                 if dealer_total > 21:
                     embed.description += ":boom: The dealer busted"
@@ -68,8 +68,8 @@ class Blackjack(commands.Cog):
                 while dealer_total < 21 and dealer_total <= player_total:
                     await asyncio.sleep(5)
                     dealer.add(deck.deal())
-                    dealer_string = self.cards_to_string(dealer.cards)
-                    dealer_total = self.calculate_total(dealer.cards)
+                    dealer_string = cards_to_string(dealer.cards)
+                    dealer_total = calculate_total(dealer.cards)
                     embed.description = f"Dealer: {dealer_string} ({dealer_total})\n{ctx.author.display_name}: {player_string} ({player_total})\n"
                     await response.edit(embed = embed)
                 if dealer_total > 21:
@@ -83,11 +83,12 @@ class Blackjack(commands.Cog):
                 break
         await response.edit(embed = embed)
 
-    def calculate_total(self, cards):
-        total = sum(BLACKJACK_RANKS["values"][card.value] for card in cards)
-        if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11:
-            total += 10
-        return total
 
-    def cards_to_string(self, cards):
-        return "".join(f":{card.suit.lower()}: {card.value} " for card in cards)
+def calculate_total(cards):
+    total = sum(BLACKJACK_RANKS["values"][card.value] for card in cards)
+    if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11:
+        total += 10
+    return total
+
+def cards_to_string(cards):
+    return "".join(f":{card.suit.lower()}: {card.value} " for card in cards)
