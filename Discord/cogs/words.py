@@ -112,7 +112,7 @@ class Words(commands.Cog):
 
     @commands.command(aliases = ["rhymes"])
     async def rhyme(self, ctx, word: str):
-        '''Rhymes of a word'''
+        """Rhymes of a word"""
         try:
             rhymes = ctx.bot.wordnik_word_api.getRelatedWords(
                 word, relationshipTypes = "rhyme",
