@@ -138,9 +138,14 @@ class BlackjackGame:
 
 def calculate_total(cards):
     total = sum(BLACKJACK_RANKS["values"][card.value] for card in cards)
-    if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11:
+
+    if pydealer.tools.find_card(
+        cards, term = "Ace", limit = 1
+    ) and total <= 11:
         total += 10
+
     return total
+
 
 def cards_to_string(cards):
     return "".join(f"{SUIT_EMOJI[card.suit]} {card.value} " for card in cards)
