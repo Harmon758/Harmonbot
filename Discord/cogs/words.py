@@ -3,6 +3,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands, menus
 
+import io
 import textwrap
 from typing import Optional
 import urllib.error
@@ -104,8 +105,15 @@ class Words(commands.Cog):
         )
 
         audio_file = ctx.bot.wordnik_word_api.getAudio(word, limit = 1)
+        file = None
         if audio_file:
-            description = f"[{description}]({audio_file[0].fileUrl})"
+            file_url = audio_file[0].fileUrl
+            async with ctx.bot.aiohttp_session.get(file_url) as resp:
+                data = await resp.read()
+
+            file = discord.File(
+                io.BytesIO(data), filename = f"Pronunciation_of_{word}.mp3"
+            )
         elif not pronunciation:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Word or pronunciation not found"
@@ -114,7 +122,8 @@ class Words(commands.Cog):
 
         await ctx.embed_reply(
             title = f"Pronunciation of {word.capitalize()}",
-            description = description
+            description = description,
+            file = file
         )
 
     @commands.hybrid_command(aliases = ["rhyme"])
