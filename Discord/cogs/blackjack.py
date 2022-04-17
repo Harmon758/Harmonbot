@@ -85,7 +85,8 @@ class Blackjack(commands.Cog):
 
     def blackjack_total(self, cards):
         total = sum(BLACKJACK_RANKS["values"][card.value] for card in cards)
-        if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11: total += 10
+        if pydealer.tools.find_card(cards, term = "Ace", limit = 1) and total <= 11:
+            total += 10
         return total
 
     def cards_to_string(self, cards):
