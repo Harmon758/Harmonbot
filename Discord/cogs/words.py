@@ -50,8 +50,7 @@ class Words(commands.Cog):
         )
 
     @commands.hybrid_command(
-        aliases = ["definition", "definitions", "dictionary"],
-        case_insensitive = True, invoke_without_command = True
+        aliases = ["definition", "definitions", "dictionary"]
     )
     async def define(self, ctx, word: str):
         """
