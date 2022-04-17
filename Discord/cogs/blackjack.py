@@ -16,13 +16,10 @@ for value in BLACKJACK_RANKS["values"]:
 
 
 async def setup(bot):
-    await bot.add_cog(Blackjack(bot))
+    await bot.add_cog(Blackjack())
 
 
 class Blackjack(commands.Cog):
-
-    def __init__(self, bot):
-        self.bot = bot
 
     @commands.command()
     @checks.not_forbidden()
@@ -43,8 +40,8 @@ class Blackjack(commands.Cog):
         response = await ctx.embed_reply(f"Dealer: {dealer_string} (?)\n{ctx.author.display_name}: {player_string} ({player_total})\n", title = "Blackjack", footer_text = "Hit or Stay?")
         embed = response.embeds[0]
         while True:
-            action = await self.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.content.lower().strip('!') in ("hit", "stay"))
-            await self.bot.attempt_delete_message(action)
+            action = await ctx.bot.wait_for("message", check = lambda m: m.author == ctx.author and m.content.lower().strip('!') in ("hit", "stay"))
+            await ctx.bot.attempt_delete_message(action)
             if action.content.lower().strip('!') == "hit":
                 player.add(deck.deal())
                 player_string = self.cards_to_string(player.cards)
