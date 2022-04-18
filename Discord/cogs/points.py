@@ -19,4 +19,6 @@ class Points(commands.Cog):
             """, 
             ctx.author.id
         )
-        await ctx.embed_reply(f"You have {commands_invoked} points")
+        await ctx.embed_reply(
+            f"You have {commands_invoked} (`\N{CURRENCY SIGN}`) points"
+        )
