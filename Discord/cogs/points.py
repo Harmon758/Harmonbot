@@ -10,7 +10,7 @@ class Points(commands.Cog):
 
     @commands.command()
     async def points(self, ctx):
-        '''WIP'''
+        """WIP"""
         commands_invoked = await ctx.bot.db.fetchval(
             """
             SELECT commands_invoked
