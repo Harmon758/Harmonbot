@@ -114,7 +114,7 @@ tornado==6.1
 tzdata==2022.1
 tzlocal==4.2
 uritemplate==4.1.1
-websockets==10.2
+websockets==10.3
 xmltodict==0.12.0
 yarl==1.7.2
 
