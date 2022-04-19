@@ -51,7 +51,7 @@ class Points(commands.Cog):
             SELECT points
             FROM users.points
             WHERE user_id = $1
-            """, 
+            """,
             ctx.author.id
         )
         await ctx.embed_reply(
