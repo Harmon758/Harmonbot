@@ -17,7 +17,7 @@ class Points(commands.Cog):
         await self.bot.db.execute(
             """
             CREATE TABLE IF NOT EXISTS users.points (
-                user_id  BIGINT PRIMARY KEY, 
+                user_id  BIGINT PRIMARY KEY,
                 points   BIGINT
             )
             """
