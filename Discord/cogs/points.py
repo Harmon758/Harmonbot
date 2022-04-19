@@ -49,7 +49,7 @@ class Points(commands.Cog):
     async def subtract(self, *, user, points = 1):
         return await self.add(user = user, points = -points)
 
-    @commands.command()
+    @commands.group(case_insensitive =True, invoke_without_command = True)
     async def points(self, ctx):
         """
         Points (¤)
@@ -64,4 +64,29 @@ class Points(commands.Cog):
         user_points = await self.get(ctx.author)
         await ctx.embed_reply(
             f"You have {user_points:,} (`\N{CURRENCY SIGN}`) points"
+        )
+
+    @points.command(
+        aliases = ["leaders", "most", "ranks", "scoreboard", "top"]
+    )
+    async def leaderboard(self, ctx, number: int = 10):
+        """Points (¤) leaderboard"""
+        if number > 15:
+            number = 15
+
+        fields = []
+        async with ctx.bot.database_connection_pool.acquire() as connection:
+            async with connection.transaction():
+                # Postgres requires non-scrollable cursors to be created
+                # and used in a transaction.
+                async for record in connection.cursor(
+                    "SELECT * FROM users.points ORDER BY points DESC LIMIT $1",
+                    number
+                ):
+                    if not (user := ctx.bot.get_user(record["user_id"])):
+                        user = await ctx.bot.fetch_user(record["user_id"])
+                    fields.append((str(user), f"{record['points']:,}"))
+
+        await ctx.embed_reply(
+            title = f"Points (¤) Top {number}", fields = fields
         )
