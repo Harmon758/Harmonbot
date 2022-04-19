@@ -49,7 +49,10 @@ class Points(commands.Cog):
     async def subtract(self, *, user, points = 1):
         return await self.add(user = user, points = -points)
 
-    @commands.group(case_insensitive =True, invoke_without_command = True)
+    @commands.group(
+        aliases = ["credits"],
+        case_insensitive =True, invoke_without_command = True
+    )
     async def points(self, ctx):
         """
         Points (¤)
