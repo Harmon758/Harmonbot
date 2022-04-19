@@ -698,10 +698,15 @@ class Bot(commands.Bot):
 			ctx.author.id
 		)
 		# TODO: Track names
+		if points_cog := self.get_cog("Points"):
+			await points_cog.add(user = ctx.author)
 	
 	async def on_interaction(self, interaction):
 		if not interaction.command:
 			return
+		
+		if points_cog := self.get_cog("Points"):
+			await points_cog.add(user = interaction.user)
 		
 		# TODO: Track session invocations?
 		if isinstance(interaction.command, app_commands.Command):

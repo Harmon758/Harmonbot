@@ -168,6 +168,8 @@ class Trivia(commands.Cog):
 				""", 
 				correct_player.id
 			)
+			if points_cog := ctx.bot.get_cog("Points"):
+				await points_cog.add(user = correct_player, points = 10)
 		for incorrect_player in incorrect_players:
 			await ctx.bot.db.execute(
 				"""
