@@ -35,8 +35,8 @@ class Points(commands.Cog):
             user.id, points
         )
 
-    async def subtract(self, user, *, points = 1):
-        return await self.add(user, point = -points)
+    async def subtract(self, *, user, points = 1):
+        return await self.add(user = user, points = -points)
 
     @commands.command()
     async def points(self, ctx):
