@@ -47,7 +47,7 @@ class Slots(commands.Cog):
         Win:
         • 10 ¤ for a 7️⃣
         • 10 ¤ for a pair
-        • 50 ¤ for a pair of 7️⃣s
+        • 77 ¤ for a pair of 7️⃣s
         • 100 ¤ for three of a kind
         • 1,000 ¤ for three 7️⃣s
         """
@@ -87,8 +87,8 @@ class Slots(commands.Cog):
             footer_text = "You won 100 \N{CURRENCY SIGN} !!"
             points += 100
         elif sevens == 2:
-            footer_text = "You won 50 \N{CURRENCY SIGN} !!"
-            points += 50
+            footer_text = "You won 77 \N{CURRENCY SIGN} !!"
+            points += 77
         elif (
             emojis[0] == emojis[1] or
             emojis[1] == emojis[2] or
