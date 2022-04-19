@@ -94,8 +94,12 @@ class Slots(commands.Cog):
             emojis[1] == emojis[2] or
             emojis[0] == emojis[2]
         ):
-            footer_text = "You won 10 \N{CURRENCY SIGN} !"
-            points += 10
+            if sevens == 1:
+                footer_text = "You won 20 \N{CURRENCY SIGN} !"
+                points += 20
+            else:
+                footer_text = "You won 10 \N{CURRENCY SIGN} !"
+                points += 10
         elif sevens == 1:
             footer_text = "You won 10 \N{CURRENCY SIGN} !"
             points += 10
