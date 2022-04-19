@@ -120,7 +120,11 @@ class HelpCommand(commands.HelpCommand):
 				name = ctx.author.display_name,
 				icon_url = ctx.author.display_avatar.url
 			)
+			embed.set_footer(
+				text = f"In response to: {ctx.message.clean_content}"
+			)
 			await ctx.channel.send(embed = embed)
+			await ctx.bot.attempt_delete_message(ctx.message)
 		else:
 			for embed in embeds:
 				await ctx.whisper(embed = embed)
