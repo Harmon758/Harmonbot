@@ -23,60 +23,6 @@ class Points(commands.Cog):
             """
         )
 
-        await self.bot.db.execute("TRUNCATE users.points")
-        async with self.bot.database_connection_pool.acquire() as connection:
-            async with connection.transaction():
-                # Postgres requires non-scrollable cursors to be created
-                # and used in a transaction.
-                async for record in connection.cursor(
-                    "SELECT * FROM users.stats"
-                ):
-                    await connection.execute(
-                        """
-                        INSERT INTO users.points (user_id, points)
-                        VALUES ($1, $2)
-                        """,
-                        record["user_id"],
-                        (
-                            (record["commands_invoked"] or 0) +
-                            (record["slash_command_invocations"] or 0) +
-                            (
-                                record[
-                                    "message_context_menu_command_invocations"
-                                ] or 0
-                             ) +
-                            (
-                                record[
-                                    "user_context_menu_command_invocations"
-                                ] or 0
-                            )
-                        )
-                    )
-                async for record in connection.cursor(
-                    """SELECT * FROM respects.users"""
-                ):
-                    await connection.execute(
-                        """
-                        INSERT INTO users.points (user_id, points)
-                        VALUES ($1, $2)
-                        ON CONFLICT (user_id) DO
-                        UPDATE SET points = points.points + $2
-                        """,
-                        record["user_id"], record["respects"]
-                    )
-                async for record in connection.cursor(
-                    """SELECT * FROM trivia.users"""
-                ):
-                    await connection.execute(
-                        """
-                        INSERT INTO users.points (user_id, points)
-                        VALUES ($1, $2)
-                        ON CONFLICT (user_id) DO
-                        UPDATE SET points = points.points + $2
-                        """,
-                        record["user_id"], record["correct"] * 10
-                    )
-
     async def add(self, *, user, points = 1):
         return await self.bot.db.fetchval(
             """
