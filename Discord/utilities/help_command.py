@@ -115,8 +115,12 @@ class HelpCommand(commands.HelpCommand):
 			embeds[-1].add_field(name = ctx.bot.ZERO_WIDTH_SPACE, value = page, inline = False)
 		
 		if len(embeds) == 1:
-			await ctx.channel.send(embed = embeds[0].set_author(name = ctx.author.display_name, 
-																icon_url = ctx.author.display_avatar.url))
+			embed = embeds[0]
+			embed.set_author(
+				name = ctx.author.display_name,
+				icon_url = ctx.author.display_avatar.url
+			)
+			await ctx.channel.send(embed = embed)
 		else:
 			for embed in embeds:
 				await ctx.whisper(embed = embed)
