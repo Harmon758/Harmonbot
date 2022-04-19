@@ -55,5 +55,5 @@ class Points(commands.Cog):
             ctx.author.id
         )
         await ctx.embed_reply(
-            f"You have {user_points} (`\N{CURRENCY SIGN}`) points"
+            f"You have {user_points:,} (`\N{CURRENCY SIGN}`) points"
         )
