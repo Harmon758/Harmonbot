@@ -30,7 +30,6 @@ class Games(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.war_channel, self.war_players = None, []
-		self.taboo_players = []
 		#check default values
 
 	async def cog_load(self):
@@ -426,26 +425,6 @@ class Games(commands.Cog):
 	async def taboo(self, ctx):
 		'''WIP'''
 		return
-	
-	@taboo.command(hidden = True, name = "start")
-	@commands.guild_only()
-	async def taboo_start(self, ctx, player : str):
-		'''WIP'''
-		self.taboo_players.append(ctx.author)
-		for member in self.message.guild.members:
-			if member.name == player:
-				self.taboo_players.append(member)
-				break
-		await ctx.embed_reply(" has started a game of Taboo with " + taboo_players[1].mention)
-		await ctx.whisper("You have started a game of Taboo with " + taboo_players[1].name)
-		await self.bot.send_message(taboo_players[1], ctx.author.name + " has started a game of Taboo with you.")
-	
-	@taboo.command(hidden = True, name = "nextround")
-	# @commands.guild_only() ?
-	async def taboo_nextround(self, ctx):
-		'''WIP'''
-		if message.guild:
-			pass
 	
 	@commands.group(case_insensitive = True)
 	@checks.not_forbidden()
