@@ -35,6 +35,17 @@ class Points(commands.Cog):
             user.id, points
         )
 
+    async def get(self, user):
+        points = await self.bot.db.fetchval(
+            """
+            SELECT points
+            FROM users.points
+            WHERE user_id = $1
+            """,
+            user.id
+        )
+        return points or 0
+
     async def subtract(self, *, user, points = 1):
         return await self.add(user = user, points = -points)
 
@@ -46,14 +57,7 @@ class Points(commands.Cog):
         • 1 for each respect paid
         • 10 for each trivia question answered correctly
         """
-        user_points = await ctx.bot.db.fetchval(
-            """
-            SELECT points
-            FROM users.points
-            WHERE user_id = $1
-            """,
-            ctx.author.id
-        )
+        user_points = await self.get(ctx.author)
         await ctx.embed_reply(
             f"You have {user_points:,} (`\N{CURRENCY SIGN}`) points"
         )
