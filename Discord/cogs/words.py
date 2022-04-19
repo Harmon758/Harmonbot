@@ -249,10 +249,10 @@ class Words(commands.Cog):
         await ctx.embed_reply(
             translation.translated_text,
             footer_text = f"Detected Language Code: {translation.detected_language_code}",
-            reference = ctx.message.reference,
+            reference = ctx.message.reference if not text else None,
             mention_author = (
                 referenced_message.author in ctx.message.mentions
-                if ctx.message.reference else None
+                if ctx.message.reference and not text else None
             )
         )
 
