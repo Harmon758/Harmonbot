@@ -3,6 +3,7 @@ import discord
 from discord import ui
 from discord.ext import commands
 
+import itertools
 import random
 
 
@@ -71,6 +72,14 @@ class Slots(commands.Cog):
             await ctx.embed_reply(f"You've played slots {plays:,} {times}")
         else:
             await ctx.embed_reply(f"You haven't played slots yet")
+
+    @slots.command()
+    @commands.is_owner()
+    async def value(self, ctx):
+        value = 0
+        for reels in itertools.product(EMOJI, repeat = 3):
+            value += calculate_slots_points(list(reels))
+        await ctx.embed_reply(value / (len(EMOJI) ** 3))
 
 
 async def play_slots(ctx_or_interaction, *, message = None, view = None):
@@ -175,6 +184,29 @@ async def play_slots(ctx_or_interaction, *, message = None, view = None):
         )
         view.message = message
         bot.views.append(view)
+
+def calculate_slots_points(emojis):
+    sevens = emojis.count(EMOJI[0])
+
+    if sevens == 3:
+        return 1000
+    elif emojis[0] == emojis[1] == emojis[2]:
+        return 100
+    elif sevens == 2:
+        return 77
+    elif (
+        emojis[0] == emojis[1] or
+        emojis[1] == emojis[2] or
+        emojis[0] == emojis[2]
+    ):
+        if sevens == 1:
+            return 20
+        else:
+            return 10
+    elif sevens == 1:
+        return 10
+    else:
+        return 0
 
 
 class SlotsView(ui.View):
