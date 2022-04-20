@@ -35,7 +35,7 @@ class Blackjack(commands.Cog):
         # TODO: S17
         game = BlackjackGame()
 
-        view = BlackjackView(game = game, user = ctx.author)
+        view = BlackjackView(bot = ctx.bot, game = game, user = ctx.author)
         response = await ctx.embed_reply(
             title = "Blackjack",
             description = (
@@ -152,9 +152,10 @@ def cards_to_string(cards):
 
 class BlackjackView(ui.View):
 
-    def __init__(self, *, game, user):
+    def __init__(self, *, bot, game, user):
         super().__init__(timeout = None)
 
+        self.bot = bot
         self.game = game
         self.user = user
 
