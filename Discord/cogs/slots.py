@@ -12,12 +12,14 @@ EMOJI = [
     '\N{BANANA}',
     '\N{BELL}',
     '\N{CHERRIES}',
+    '\N{CROWN}',
     '\N{FOUR LEAF CLOVER}',
     '\N{GEM STONE}',
     '\N{GRAPES}',
     '\N{LEMON}',
     '\N{TANGERINE}',
     '\N{WATERMELON}',
+    '\N{WHITE MEDIUM STAR}'
 ]
 
 
@@ -48,11 +50,11 @@ class Slots(commands.Cog):
         Slot machine
         10 Points (¤) to play
         Win:
-        • 10 ¤ for a 7️⃣
-        • 10 ¤ for a pair
+        • 7 ¤ for a 7️⃣
+        • 20 ¤ for a pair
         • 77 ¤ for a pair of 7️⃣s
-        • 100 ¤ for three of a kind
-        • 1,000 ¤ for three 7️⃣s
+        • 300 ¤ for three of a kind
+        • 777 ¤ for three 7️⃣s
         """
         await play_slots(ctx)
 
@@ -134,37 +136,17 @@ async def play_slots(ctx_or_interaction, *, message = None, view = None):
     )
 
     emojis = [random.choice(EMOJI) for reel in range(3)]
-    sevens = emojis.count(EMOJI[0])
 
-    points = -10
-    if sevens == 3:
-        footer_text = "You won 1,000 \N{CURRENCY SIGN} !!!"
-        points += 1000
-    elif emojis[0] == emojis[1] == emojis[2]:
-        footer_text = "You won 100 \N{CURRENCY SIGN} !!"
-        points += 100
-    elif sevens == 2:
-        footer_text = "You won 77 \N{CURRENCY SIGN} !!"
-        points += 77
-    elif (
-        emojis[0] == emojis[1] or
-        emojis[1] == emojis[2] or
-        emojis[0] == emojis[2]
-    ):
-        if sevens == 1:
-            footer_text = "You won 20 \N{CURRENCY SIGN} !"
-            points += 20
-        else:
-            footer_text = "You won 10 \N{CURRENCY SIGN} !"
-            points += 10
-    elif sevens == 1:
-        footer_text = "You won 10 \N{CURRENCY SIGN} !"
-        points += 10
+    if points := calculate_slots_points(emojis):
+        footer_text = (
+            f"You won {points} \N{CURRENCY SIGN} {'!' * len(str(points))}"
+        )
     else:
         footer_text = "You didn't win anything this time"
 
-    if points:
-        await points_cog.add(user = user, points = points)
+    points -= 10
+
+    await points_cog.add(user = user, points = points)
 
     if message:
         view.count += 1
@@ -189,9 +171,9 @@ def calculate_slots_points(emojis):
     sevens = emojis.count(EMOJI[0])
 
     if sevens == 3:
-        return 1000
+        return 777
     elif emojis[0] == emojis[1] == emojis[2]:
-        return 100
+        return 300
     elif sevens == 2:
         return 77
     elif (
@@ -200,11 +182,11 @@ def calculate_slots_points(emojis):
         emojis[0] == emojis[2]
     ):
         if sevens == 1:
-            return 20
+            return 27
         else:
-            return 10
+            return 20
     elif sevens == 1:
-        return 10
+        return 7
     else:
         return 0
 
