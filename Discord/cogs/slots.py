@@ -41,7 +41,7 @@ class Slots(commands.Cog):
             """
         )
 
-    @commands.group(case_insensitive =True, invoke_without_command = True)
+    @commands.group(case_insensitive = True, invoke_without_command = True)
     async def slots(self, ctx):
         """
         Slot machine
