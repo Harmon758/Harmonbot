@@ -35,7 +35,7 @@ class Blackjack(commands.Cog):
         # TODO: S17
         game = BlackjackGame()
 
-        view = BlackjackView(game = game)
+        view = BlackjackView(game = game, user = ctx.author)
         response = await ctx.embed_reply(
             title = "Blackjack",
             description = (
@@ -152,10 +152,11 @@ def cards_to_string(cards):
 
 class BlackjackView(ui.View):
 
-    def __init__(self, *, game):
+    def __init__(self, *, game, user):
         super().__init__(timeout = None)
 
         self.game = game
+        self.user = user
 
         self.message = None
 
@@ -181,6 +182,17 @@ class BlackjackView(ui.View):
     @ui.button(label = "Stay")
     async def stay(self, interaction, button):
         await self.stop(interaction = interaction)
+
+    async def interaction_check(self, interaction):
+        if interaction.user.id not in (
+            self.user.id, interaction.client.owner_id
+        ):
+            await interaction.response.send_message(
+                "You aren't the one playing this blackjack game.",
+                ephemeral = True
+            )
+            return False
+        return True
 
     async def stop(self, *, interaction = None, embed = None):
         self.hit.disabled = True
