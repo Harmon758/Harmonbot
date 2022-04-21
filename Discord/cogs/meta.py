@@ -221,7 +221,7 @@ class Meta(commands.Cog):
 								"units: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]", 
 								title = "Conversion Commands")
 	
-	@commands.command(aliases = ["oauth"])
+	@commands.hybrid_command(aliases = ["oauth"])
 	async def invite(self, ctx):
 		"""Link to invite me to a server"""
 		await ctx.embed_reply(ctx.bot.invite_url)
