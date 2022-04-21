@@ -223,7 +223,7 @@ class Meta(commands.Cog):
 	
 	@commands.command(aliases = ["oauth"])
 	async def invite(self, ctx):
-		'''Link to invite me to a server'''
+		"""Link to invite me to a server"""
 		await ctx.embed_reply(ctx.bot.invite_url)
 	
 	@commands.hybrid_command(aliases = ["latency"])
