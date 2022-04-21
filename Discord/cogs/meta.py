@@ -327,7 +327,7 @@ class Meta(commands.Cog):
 			fields.append(("(This Session)", '\n'.join(f"{uses:,} {command}" for command, uses in session_top_5)))
 		await ctx.embed_reply("__**Stats**__ :bar_chart:", fields = fields)
 	
-	@commands.command()
+	@commands.hybrid_command()
 	async def uptime(self, ctx):
 		"""Bot uptime"""
 		await ctx.embed_reply(
