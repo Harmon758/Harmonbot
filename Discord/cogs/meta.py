@@ -330,12 +330,31 @@ class Meta(commands.Cog):
 	@commands.hybrid_command()
 	async def uptime(self, ctx):
 		"""Bot uptime"""
+		total_recorded_uptime = await ctx.bot.db.fetchval(
+			"""
+			SELECT uptime FROM meta.stats
+			WHERE timestamp = $1
+			""", 
+			ctx.bot.online_time
+		)
 		await ctx.embed_reply(
-			duration_to_string(
-				datetime.datetime.now(
-					datetime.timezone.utc
-				) - ctx.bot.online_time, 
-				abbreviate = True
+			fields = (
+				(
+					"Uptime",
+					duration_to_string(
+						datetime.datetime.now(
+							datetime.timezone.utc
+						) - ctx.bot.online_time, 
+						abbreviate = True
+					)
+				),
+				(
+					"Total Recorded Uptime",
+					duration_to_string(
+						total_recorded_uptime,
+						abbreviate = True
+					) 
+				)
 			)
 		)
 	
