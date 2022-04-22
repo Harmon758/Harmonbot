@@ -120,7 +120,14 @@ class Words(commands.Cog):
             if pronunciation else "Audio File Link"
         )
 
-        audio_file = ctx.bot.wordnik_word_api.getAudio(word, limit = 1)
+        try:
+            audio_file = ctx.bot.wordnik_word_api.getAudio(word, limit = 1)
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                audio_file = None
+            else:
+                raise
+
         file = None
         if audio_file:
             file_url = audio_file[0].fileUrl
