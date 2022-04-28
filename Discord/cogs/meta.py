@@ -903,7 +903,7 @@ class Meta(commands.Cog):
 	
 	@commands.command(aliases = ["github"])
 	@checks.not_forbidden()
-	async def source(self, ctx, *, command : str = ""):
+	async def source(self, ctx, *, command: str = ""):
 		'''
 		Displays my full source code or for a specific command
 		To display the source code of a subcommand, separate it by spaces or periods
