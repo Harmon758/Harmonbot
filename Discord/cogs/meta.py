@@ -933,9 +933,12 @@ class Meta(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def tasks(self, ctx):
-		await ctx.embed_reply(', '.join(f"`{task.get_coro().__qualname__}`" 
-										if (name := task.get_name()).startswith("Task-") 
-										else name for task in asyncio.all_tasks()))
+		await ctx.embed_reply(
+			', '.join(f"`{task.get_coro().__qualname__}`"
+			if (name := task.get_name()).startswith("Task-")
+			else name
+			for task in asyncio.all_tasks())
+		)
 
 
 @app_commands.context_menu()
