@@ -556,7 +556,7 @@ def format_weather_embed(ctx_or_interaction, weather, humidity = True):
 	elif "all" in weather.rain:
 		embed.add_field(
 			name = "Precipitation",
-			value = f"{weather.rain['all'] * 100}%"
+			value = f"{Decimal(str(weather.rain['all'])):%}"
 		)
 	
 	if isinstance(ctx_or_interaction, commands.Context):
