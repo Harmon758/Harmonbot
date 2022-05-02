@@ -20,6 +20,11 @@ markdown_converter = MarkdownConverter(
     heading_style = "ATX_CLOSED"
 )
 
+ANCHOR_LINK_REGEX_PATTERN = re.compile(r"\[\uF0C1\]\(.+\)")
+
+def remove_anchor_links(text):
+    return ANCHOR_LINK_REGEX_PATTERN.sub("", text)
+
 NEWLINES_REGEX_PATTERN = re.compile(r"\n\s*\n")
 
 def remove_extra_newlines(text):
@@ -214,8 +219,11 @@ async def format_documentation_section(
             )
         else:
             embed.description = remove_extra_newlines(
-                markdown_converter.convert_soup(content)
-            ).replace('\uF0C1', "")
+                remove_anchor_links(
+                    markdown_converter.convert_soup(content)
+                )
+            )
+
             if len(embed.description) > bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
                 embed.description = (
                     embed.description[:bot.EDCL - 4].rsplit(
