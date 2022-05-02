@@ -349,7 +349,10 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 			f"forecast_{self.forecast_precision}"
 		)
 		weather = forecasts[self.forecast_index]
-		embed = format_weather_embed(interaction, weather)
+		embed = format_weather_embed(
+			interaction, weather,
+			humidity = self.forecast_precision != "minutely"
+		)
 		embed.title = self.location
 		
 		if not self.forecast_index:
