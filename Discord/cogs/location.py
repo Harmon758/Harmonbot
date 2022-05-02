@@ -548,7 +548,7 @@ def format_weather_embed(ctx_or_interaction, weather, humidity = True):
 				f"{visibility * 0.000621371192237:.2f} mi"
 			)
 		)
-	if weather.precipitation_probability:
+	if weather.precipitation_probability is not None:
 		embed.add_field(
 			name = "Precipitation",
 			value = f"{Decimal(str(weather.precipitation_probability)):%}"
