@@ -222,7 +222,13 @@ async def format_documentation_section(
                 remove_anchor_links(
                     markdown_converter.convert_soup(content)
                 )
+            ).strip()
+
+            first_line, newline, subsequent_lines = (
+                embed.description.partition('\n')
             )
+            if first_line.strip("# `") == embed.title:
+                embed.description = subsequent_lines.lstrip()
 
             if len(embed.description) > bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
                 embed.description = (
