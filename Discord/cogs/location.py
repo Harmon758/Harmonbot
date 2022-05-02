@@ -551,7 +551,7 @@ def format_weather_embed(ctx_or_interaction, weather, humidity = True):
 	if weather.precipitation_probability:
 		embed.add_field(
 			name = "Precipitation",
-			value = f"{(Decimal(str(weather.precipitation_probability)) * 100):g}%"
+			value = f"{Decimal(str(weather.precipitation_probability)):%}"
 		)
 	elif "all" in weather.rain:
 		embed.add_field(
