@@ -23,7 +23,7 @@ google-cloud-translate==3.6.1
 hypothesis==6.43.1
 imageio==2.16.2
 imgurpython==1.1.7
-inflect==5.5.2
+inflect==5.6.0
 isodate==0.6.1
 markdownify==0.11.2
 matplotlib==3.5.1
