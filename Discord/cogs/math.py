@@ -127,13 +127,15 @@ class Math(commands.Cog):
 		x = sympy.symbols('x')
 		try:
 			await ctx.embed_reply(
-				f"`{sympy.diff(equation.strip('`'), x)}`",
-				title = f"Derivative of {equation}"
+				title = f"Derivative of {equation}",
+				description = f"`{sympy.diff(equation.strip('`'), x)}`"
 			)
 		except Exception as e:
 			await ctx.embed_reply(
-				ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
-				title = "Error"
+				title = "Error",
+				description = (
+					ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}")
+				)
 			)
 	
 	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True, case_insensitive = True)
