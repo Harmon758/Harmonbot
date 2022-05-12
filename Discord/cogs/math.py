@@ -138,7 +138,7 @@ class Math(commands.Cog):
 				)
 			)
 	
-	@commands.group(aliases = ["integral", "integration"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["integral", "integration"], case_insensitive = True, invoke_without_command = True)
 	async def integrate(self, ctx, *, equation: str):
 		'''
 		Integrate an equation
