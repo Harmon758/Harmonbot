@@ -82,7 +82,7 @@ google-auth==2.3.3
 google-cloud-core==2.1.0
 googleapis-common-protos==1.56.0
 grpcio==1.45.0
-grpcio-status==1.45.0
+grpcio-status==1.46.1
 idna==3.3
 jaraco.context==4.1.1
 jsonschema==4.4.0
