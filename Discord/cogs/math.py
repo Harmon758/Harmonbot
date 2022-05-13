@@ -138,7 +138,10 @@ class Math(commands.Cog):
 				)
 			)
 	
-	@commands.group(aliases = ["integral", "integration"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["integral", "integration"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def integrate(self, ctx, *, equation: str):
 		'''
 		Integrate an equation
@@ -146,11 +149,15 @@ class Math(commands.Cog):
 		'''
 		x = sympy.symbols('x')
 		try:
-			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), x)}`",
-                                    title = f"Integral of {equation}")
+			await ctx.embed_reply(
+				f"`{sympy.integrate(equation.strip('`'), x)}`",
+				title = f"Integral of {equation}"
+			)
 		except Exception as e:
-			await ctx.embed_reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
-                                    title = "Error")
+			await ctx.embed_reply(
+				ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
+				title = "Error"
+			)
 	
 	@integrate.command(name = "definite")
 	async def integrate_definite(self, ctx, lower_limit: str, upper_limit: str, *, equation: str):
