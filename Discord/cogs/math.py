@@ -150,13 +150,15 @@ class Math(commands.Cog):
 		x = sympy.symbols('x')
 		try:
 			await ctx.embed_reply(
-				f"`{sympy.integrate(equation.strip('`'), x)}`",
-				title = f"Integral of {equation}"
+				title = f"Integral of {equation}",
+				description = f"`{sympy.integrate(equation.strip('`'), x)}`"
 			)
 		except Exception as e:
 			await ctx.embed_reply(
-				ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
-				title = "Error"
+				title = "Error",
+				description = ctx.bot.PY_CODE_BLOCK.format(
+					f"{type(e).__name__}: {e}"
+				)
 			)
 	
 	@integrate.command(name = "definite")
