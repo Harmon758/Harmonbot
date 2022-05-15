@@ -133,8 +133,8 @@ class Math(commands.Cog):
 		except Exception as e:
 			await ctx.embed_reply(
 				title = "Error",
-				description = (
-					ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}")
+				description = ctx.bot.PY_CODE_BLOCK.format(
+					f"{type(e).__name__}: {e}"
 				)
 			)
 	
