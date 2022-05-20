@@ -69,7 +69,7 @@ APScheduler==3.6.3
 async-timeout==4.0.2
 attrs==21.2.0
 cachetools==4.2.2
-certifi==2021.10.8
+certifi==2022.5.18.1
 cffi==1.15.0
 charset-normalizer==2.0.12
 cycler==0.11.0
