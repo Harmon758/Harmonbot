@@ -162,18 +162,24 @@ class Math(commands.Cog):
 			)
 	
 	@integrate.command(name = "definite")
-	async def integrate_definite(self, ctx, lower_limit: str, upper_limit: str, *, equation: str):
+	async def integrate_definite(
+		self, ctx, lower_limit: str, upper_limit: str, *, equation: str
+	):
 		'''
 		Definite integral of an equation
 		with respect to x (dx)
 		'''
 		x = sympy.symbols('x')
 		try:
-			await ctx.embed_reply(f"`{sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))}`",
-                                    title = f"Definite Integral of {equation} from {lower_limit} to {upper_limit}")
+			await ctx.embed_reply(
+				f"`{sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))}`",
+				title = f"Definite Integral of {equation} from {lower_limit} to {upper_limit}"
+			)
 		except Exception as e:
-			await ctx.embed_reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
-                                    title = "Error")
+			await ctx.embed_reply(
+				ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
+				title = "Error"
+			)
 	
 	# Trigonometry
 	# TODO: a(sin/cos/tan)h aliases
