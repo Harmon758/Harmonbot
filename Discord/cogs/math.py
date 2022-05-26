@@ -172,13 +172,15 @@ class Math(commands.Cog):
 		x = sympy.symbols('x')
 		try:
 			await ctx.embed_reply(
-				f"`{sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))}`",
-				title = f"Definite Integral of {equation} from {lower_limit} to {upper_limit}"
+				title = f"Definite Integral of {equation} from {lower_limit} to {upper_limit}",
+				description = f"`{sympy.integrate(equation.strip('`'), (x, lower_limit, upper_limit))}`"
 			)
 		except Exception as e:
 			await ctx.embed_reply(
-				ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"),
-				title = "Error"
+				title = "Error",
+				description = ctx.bot.PY_CODE_BLOCK.format(
+					f"{type(e).__name__}: {e}"
+				)
 			)
 	
 	# Trigonometry
