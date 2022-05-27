@@ -186,7 +186,12 @@ class Math(commands.Cog):
 	# Trigonometry
 	# TODO: a(sin/cos/tan)h aliases
 	
-	@commands.command(alises = ["acosine", "arccos", "arccosine", "a_cosine", "arc_cos", "arc_cosine"])
+	@commands.command(
+		alises = [
+			"acosine", "arccos", "arccosine", "a_cosine", "arc_cos",
+			"arc_cosine"
+		]
+	)
 	async def acos(self, ctx, value: float):
 		'''Arc cosine function'''
 		await ctx.embed_reply(math.acos(value))
