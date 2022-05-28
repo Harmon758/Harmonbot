@@ -196,7 +196,12 @@ class Math(commands.Cog):
 		'''Arc cosine function'''
 		await ctx.embed_reply(math.acos(value))
 	
-	@commands.command(alises = ["acosineh", "arccosh", "arccosineh", "a_cosineh", "arc_cosh", "arc_cosineh"])
+	@commands.command(
+		alises = [
+			"acosineh", "arccosh", "arccosineh", "a_cosineh", "arc_cosh",
+			"arc_cosineh"
+		]
+	)
 	async def acosh(self, ctx, value: float):
 		'''Inverse hyperbolic cosine function'''
 		await ctx.embed_reply(math.acosh(value))
