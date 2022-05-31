@@ -215,7 +215,11 @@ class Math(commands.Cog):
 		'''Arc sine function'''
 		await ctx.embed_reply(math.asin(value))
 	
-	@commands.command(alises = ["asineh", "arcsinh", "arcsineh", "a_sineh", "arc_sinh", "arc_sineh"])
+	@commands.command(
+		alises = [
+			"asineh", "arcsinh", "arcsineh", "a_sineh", "arc_sinh", "arc_sineh"
+		]
+	)
 	async def asinh(self, ctx, value: float):
 		'''Inverse hyperbolic sine function'''
 		await ctx.embed_reply(math.asinh(value))
