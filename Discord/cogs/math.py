@@ -235,7 +235,12 @@ class Math(commands.Cog):
 		'''Arc tangent function'''
 		await ctx.embed_reply(math.atan(value))
 	
-	@commands.command(alises = ["atangenth", "arctanh", "arctangenth", "a_tangenth", "arc_tanh", "arc_tangenth"])
+	@commands.command(
+		alises = [
+			"atangenth", "arctanh", "arctangenth", "a_tangenth", "arc_tanh",
+			"arc_tangenth"
+		]
+	)
 	async def atanh(self, ctx, value: float):
 		'''Inverse hyperbolic tangent function'''
 		await ctx.embed_reply(math.atanh(value))
