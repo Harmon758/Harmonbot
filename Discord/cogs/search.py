@@ -60,7 +60,7 @@ class Search(commands.Cog):
 	
 	@commands.command()
 	async def amazon(self, ctx, *search: str):
-		'''Search with Amazon'''
+		"""Search with Amazon"""
 		await ctx.embed_reply(
 			f"[Amazon search for \"{' '.join(search)}\"]"
 			f"(https://smile.amazon.com/s/?field-keywords={'+'.join(search)})"
