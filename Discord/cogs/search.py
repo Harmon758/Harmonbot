@@ -100,7 +100,7 @@ class Search(commands.Cog):
 	
 	@commands.command()
 	async def duckduckgo(self, ctx, *search: str):
-		'''Search with DuckDuckGo'''
+		"""Search with DuckDuckGo"""
 		await ctx.embed_reply(
 			f"[DuckDuckGo search for \"{' '.join(search)}\"]"
 			f"(https://www.duckduckgo.com/?q={'+'.join(search)})"
