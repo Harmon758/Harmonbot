@@ -116,7 +116,7 @@ class Search(commands.Cog):
 	
 	@commands.command(aliases = ["im_feeling_lucky"])
 	async def imfeelinglucky(self, ctx, *search: str):
-		'''First Google result of a search'''
+		"""First Google result of a search"""
 		await ctx.embed_reply(
 			f"[First Google result of \"{' '.join(search)}\"]"
 			f"(https://www.google.com/search?btnI&q={'+'.join(search)})"
