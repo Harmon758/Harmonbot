@@ -124,7 +124,7 @@ class Search(commands.Cog):
 	
 	@commands.command(name = "lma.ctfy")
 	async def lma_ctfy(self, ctx, *search: str):
-		'''Let Me Ask.Com That For You'''
+		"""Let Me Ask.Com That For You"""
 		await ctx.embed_reply(
 			f"[LMA.CTFY: \"{' '.join(search)}\"]"
 			f"(http://lmgtfy.com/?s=k&q={'+'.join(search)})"
