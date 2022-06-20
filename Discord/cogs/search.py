@@ -187,7 +187,7 @@ class Search(commands.Cog):
 	
 	@commands.command()
 	async def startpage(self, ctx, *search: str):
-		'''Search with StartPage'''
+		"""Search with StartPage"""
 		await ctx.embed_reply(
 			f"[StartPage search for \"{' '.join(search)}\"]"
 			f"(https://www.startpage.com/do/search?query={'+'.join(search)})"
