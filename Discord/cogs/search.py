@@ -196,7 +196,7 @@ class Search(commands.Cog):
 	@commands.group(description = "[UESP](http://uesp.net/wiki/Main_Page)", 
 					invoke_without_command = True, case_insensitive = True)
 	async def uesp(self, ctx, *, search: str):
-		'''Look something up on the Unofficial Elder Scrolls Pages'''
+		"""Look something up on the Unofficial Elder Scrolls Pages"""
 		await self.process_uesp(ctx, search)
 	
 	async def process_uesp(self, ctx, search, random = False, redirect = True):
