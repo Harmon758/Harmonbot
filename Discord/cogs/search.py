@@ -313,10 +313,10 @@ class Search(commands.Cog):
 	
 	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True, case_insensitive = True)
 	async def wolframalpha(self, ctx, *, search: str):
-		'''
+		"""
 		Wolfram|Alpha
 		http://www.wolframalpha.com/examples/
-		'''
+		"""
 		await self.process_wolframalpha(ctx, search)
 	
 	@wolframalpha.command(name = "location")
