@@ -311,7 +311,7 @@ class Search(commands.Cog):
 			image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
 			await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url)  # canonicalurl?
 	
-	@commands.group(aliases = ["wa", "wolfram_alpha"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["wa", "wolfram_alpha"], case_insensitive = True, invoke_without_command = True)
 	async def wolframalpha(self, ctx, *, search: str):
 		"""
 		Wolfram|Alpha
