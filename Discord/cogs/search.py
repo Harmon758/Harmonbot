@@ -390,5 +390,8 @@ class Search(commands.Cog):
 	@commands.command()
 	async def yahoo(self, ctx, *search: str):
 		"""Search with Yahoo"""
-		await ctx.embed_reply(f"[Yahoo search for \"{' '.join(search)}\"](https://search.yahoo.com/search?q={'+'.join(search)})")
+		await ctx.embed_reply(
+			f"[Yahoo search for \"{' '.join(search)}\"]"
+			f"(https://search.yahoo.com/search?q={'+'.join(search)})"
+		)
 
