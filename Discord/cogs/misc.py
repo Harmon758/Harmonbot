@@ -60,7 +60,7 @@ class Misc(commands.Cog):
 	
 	@commands.command(aliases = ["bigmote"])
 	async def bigmoji(self, ctx, emoji: discord.PartialEmoji):
-		'''See larger versions of custom emoji'''
+		"""See larger versions of custom emoji"""
 		await ctx.embed_reply(image_url = emoji.url)
 	
 	@commands.command(aliases = ["count"])
