@@ -87,7 +87,7 @@ idna==3.3
 jaraco.context==4.1.1
 jsonschema==4.4.0
 kiwisolver==1.4.2
-lxml==4.8.0
+lxml==4.9.1
 mpmath==1.2.1
 multidict==6.0.2
 oauthlib==3.2.0
