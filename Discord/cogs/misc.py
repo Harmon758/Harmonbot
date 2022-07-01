@@ -65,7 +65,7 @@ class Misc(commands.Cog):
 	
 	@commands.command(aliases = ["count"])
 	async def counter(self, ctx):
-		'''A counter'''
+		"""A counter"""
 		await ctx.embed_reply(
 			title = "Counter", 
 			footer_text = None, 
