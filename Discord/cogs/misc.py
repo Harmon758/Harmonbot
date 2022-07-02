@@ -74,7 +74,7 @@ class Misc(commands.Cog):
 	
 	@commands.command(aliases = ["emotify"])
 	async def emojify(self, ctx, *, text: str):
-		'''Emojify text'''
+		"""Emojify text"""
 		output = ""
 		for character in text:
 			if 'a' <= character.lower() <= 'z':
