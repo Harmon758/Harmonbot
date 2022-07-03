@@ -91,7 +91,7 @@ class Misc(commands.Cog):
 	
 	@commands.command()
 	async def fancify(self, ctx, *, text: str):
-		'''Fancify text'''
+		"""Fancify text"""
 		output = ""
 		for character in text:
 			if 'A' <= character <= 'Z':
