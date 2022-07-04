@@ -109,7 +109,7 @@ class Misc(commands.Cog):
 	
 	@commands.command(aliases = ["full-width", "full_width"])
 	async def fullwidth(self, ctx, *, text: str):
-		'''Make text fullwidth'''
+		"""Make text fullwidth"""
 		output = ""
 		for character in text:
 			if '!' <= character <= '~':
