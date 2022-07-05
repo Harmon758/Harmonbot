@@ -120,7 +120,7 @@ class Misc(commands.Cog):
 	
 	@commands.command()
 	async def fingers(self, ctx, *, text: str = ""):
-		'''Add fingers'''
+		"""Add fingers"""
 		await ctx.embed_reply(f"\N{WHITE RIGHT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone} "
 								f"{text} \N{WHITE LEFT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}")
 	
