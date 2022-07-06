@@ -121,8 +121,11 @@ class Misc(commands.Cog):
 	@commands.command()
 	async def fingers(self, ctx, *, text: str = ""):
 		"""Add fingers"""
-		await ctx.embed_reply(f"\N{WHITE RIGHT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone} "
-								f"{text} \N{WHITE LEFT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}")
+		await ctx.embed_reply(
+			f"\N{WHITE RIGHT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}"
+			f" {text} "
+			f"\N{WHITE LEFT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}"
+		)
 	
 	@commands.command()
 	async def loading_bar(self, ctx):
