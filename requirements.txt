@@ -91,7 +91,7 @@ lxml==4.8.0
 mpmath==1.2.1
 multidict==6.0.2
 oauthlib==3.2.0
-orjson==3.6.8
+orjson==3.7.7
 packaging==21.3
 protobuf==3.20.1
 proto-plus==1.20.3
