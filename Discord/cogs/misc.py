@@ -146,7 +146,7 @@ class Misc(commands.Cog):
 	
 	@commands.command()
 	async def lorem(self, ctx):
-		'''Lorem Ipsum generator'''
+		"""Lorem Ipsum generator"""
 		# TODO: add options?
 		async with ctx.bot.aiohttp_session.get("http://loripsum.net/api/plaintext") as resp:
 			output = await resp.text()
