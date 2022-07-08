@@ -148,14 +148,17 @@ class Misc(commands.Cog):
 	async def lorem(self, ctx):
 		"""Lorem Ipsum generator"""
 		# TODO: add options?
-		async with ctx.bot.aiohttp_session.get("http://loripsum.net/api/plaintext") as resp:
+		url = "http://loripsum.net/api/plaintext"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
 			output = await resp.text()
+		
 		if len(output) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 			paragraphs = output.split("\n\n")
 			output = ""
 			while len(output) + len(paragraphs[0]) < ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 				output += "\n\n" + paragraphs.pop()
 			output = output[2:]
+		
 		await ctx.embed_reply(output)
 	
 	@commands.command()
