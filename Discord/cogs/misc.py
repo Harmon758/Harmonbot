@@ -165,7 +165,8 @@ class Misc(commands.Cog):
 	async def poke(self, ctx, *, user: discord.Member):
 		"""Poke someone"""
 		if user == self.bot.user:
-			return await ctx.embed_reply(f"!poke {ctx.author.mention}")
+			await ctx.embed_reply(f"!poke {ctx.author.mention}")
+			return
 		times = await ctx.bot.db.fetchval(
 			"""
 			INSERT INTO pokes.pokes (poker, pokee, count)
