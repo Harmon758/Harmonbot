@@ -174,7 +174,7 @@ class Misc(commands.Cog):
 			ON CONFLICT (poker, pokee) DO
 			UPDATE SET count = pokes.count + 1
 			RETURNING count
-			""", 
+			""",
 			ctx.message.author.id, user.id
 		)
 		times = ctx.bot.inflect_engine.ordinal(times)
@@ -186,7 +186,9 @@ class Misc(commands.Cog):
 		except discord.HTTPException as e:
 			if e.code != 50007:  # 50007 - Cannot send messages to this user
 				raise
-		await ctx.embed_reply(f"You have poked {user.mention} for the {times} time!")
+		await ctx.embed_reply(
+			f"You have poked {user.mention} for the {times} time!"
+		)
 	
 	@commands.command(aliases = ["select"])
 	async def selector(self, ctx, *options: str):
