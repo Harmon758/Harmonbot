@@ -26,11 +26,11 @@ class Matrix(commands.Cog):
 	
 	@commands.group(aliases = ["matrices"], invoke_without_command = True, case_insensitive = True)
 	async def matrix(self, ctx):
-		'''
+		"""
 		Matrix operations
 		Input matrices as a list of lists (array of arrays)
 		e.g.: [[1,2],[3,4]]
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@matrix.command(aliases = ["addition", "plus", '+'])
