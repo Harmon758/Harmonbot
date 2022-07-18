@@ -24,7 +24,10 @@ class Matrix(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["matrices"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["matrices"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def matrix(self, ctx):
 		"""
 		Matrix operations
