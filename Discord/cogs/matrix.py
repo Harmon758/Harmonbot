@@ -40,7 +40,9 @@ class Matrix(commands.Cog):
 	async def add(self, ctx, matrix_a: Matrix, matrix_b: Matrix):
 		"""Add two matrices"""
 		# TODO: unlimited number?
-		await ctx.embed_reply(str(numpy.matrix(matrix_a) + numpy.matrix(matrix_b)))
+		await ctx.embed_reply(
+			str(numpy.matrix(matrix_a) + numpy.matrix(matrix_b))
+		)
 	
 	@matrix.group(aliases = ["cosine"], invoke_without_command = True, case_insensitive = True)
 	async def cos(self, ctx, *, matrix: Matrix):
