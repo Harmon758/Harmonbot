@@ -46,7 +46,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.group(aliases = ["cosine"], invoke_without_command = True, case_insensitive = True)
 	async def cos(self, ctx, *, matrix: Matrix):
-		'''Cosine of a matrix'''
+		"""Cosine of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.cosm(matrix)))
 	
 	@cos.command(name = "hyperbolic", aliases = ['h'])
