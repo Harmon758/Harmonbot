@@ -44,7 +44,10 @@ class Matrix(commands.Cog):
 			str(numpy.matrix(matrix_a) + numpy.matrix(matrix_b))
 		)
 	
-	@matrix.group(aliases = ["cosine"], case_insensitive = True, invoke_without_command = True)
+	@matrix.group(
+		aliases = ["cosine"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def cos(self, ctx, *, matrix: Matrix):
 		"""Cosine of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.cosm(matrix)))
