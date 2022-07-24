@@ -54,7 +54,7 @@ class Matrix(commands.Cog):
 	
 	@cos.command(name = "hyperbolic", aliases = ['h'])
 	async def cos_hyperbolic(self, ctx, *, matrix: Matrix):
-		'''Hyperbolic cosine of a matrix'''
+		"""Hyperbolic cosine of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.coshm(matrix)))
 	
 	@matrix.command()
