@@ -59,7 +59,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.command()
 	async def determinant(self, ctx, *, matrix: Matrix):
-		'''Determinant of a matrix'''
+		"""Determinant of a matrix"""
 		await ctx.embed_reply(scipy.linalg.det(matrix))
 	
 	@matrix.command(aliases = ["division", '/'])
