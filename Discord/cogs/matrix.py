@@ -65,7 +65,9 @@ class Matrix(commands.Cog):
 	@matrix.command(aliases = ["division", '/'])
 	async def divide(self, ctx, matrix_a: Matrix, matrix_b: Matrix):
 		"""Divide two matrices"""
-		await ctx.embed_reply(str(numpy.matrix(matrix_a) / numpy.matrix(matrix_b)))
+		await ctx.embed_reply(
+			str(numpy.matrix(matrix_a) / numpy.matrix(matrix_b))
+		)
 	
 	@matrix.command(naliases = ["exponential"])
 	async def exp(self, ctx, matrix: Matrix):
