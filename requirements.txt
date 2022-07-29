@@ -67,7 +67,7 @@ youtube-dl==2021.12.17
 aiosignal==1.2.0
 APScheduler==3.6.3
 async-timeout==4.0.2
-attrs==21.2.0
+attrs==22.1.0
 cachetools==4.2.2
 certifi==2021.10.8
 cffi==1.15.0
