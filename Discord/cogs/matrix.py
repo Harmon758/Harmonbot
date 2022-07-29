@@ -76,7 +76,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.command()
 	async def inverse(self, ctx, *, matrix: Matrix):
-		'''Inverse of a matrix'''
+		"""Inverse of a matrix"""
 		await ctx.embed_reply(str(numpy.matrix(matrix).I))
 	
 	@matrix.command(aliases = ["logarithm"])
