@@ -92,7 +92,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.group(aliases = ["times", '*'], invoke_without_command = True, case_insensitive = True)
 	async def multiply(self, ctx, matrix_a: Matrix, matrix_b: Matrix):
-		'''Multiply two matrices'''
+		"""Multiply two matrices"""
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) * numpy.matrix(matrix_b)))
 	
 	@multiply.command(name = "scalar")
