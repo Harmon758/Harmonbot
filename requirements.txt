@@ -116,5 +116,5 @@ tzlocal==4.2
 uritemplate==4.1.1
 websockets==10.3
 xmltodict==0.12.0
-yarl==1.7.2
+yarl==1.8.1
 
