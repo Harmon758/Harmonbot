@@ -107,7 +107,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.command(aliases = ['^', "**"])
 	async def power(self, ctx, matrix: Matrix, power: int):
-		'''Raise a matrix to a power'''
+		"""Raise a matrix to a power"""
 		try:
 			await ctx.embed_reply(str(numpy.matrix(matrix) ** power))
 		except ValueError as e:  # not square matrix
