@@ -115,7 +115,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.command()
 	async def rank(self, ctx, matrix: Matrix):
-		'''Rank of a matrix'''
+		"""Rank of a matrix"""
 		await ctx.embed_reply(numpy.linalg.matrix_rank(matrix))
 	
 	@matrix.command()
