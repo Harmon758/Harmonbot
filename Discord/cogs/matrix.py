@@ -120,7 +120,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.command()
 	async def sign(self, ctx, matrix: Matrix):
-		'''Matrix sign function'''
+		"""Matrix sign function"""
 		await ctx.embed_reply(str(scipy.linalg.signm(matrix)))
 	
 	@matrix.group(aliases = ["sine"], invoke_without_command = True, case_insensitive = True)
