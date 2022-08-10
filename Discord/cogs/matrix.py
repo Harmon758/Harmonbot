@@ -123,7 +123,10 @@ class Matrix(commands.Cog):
 		"""Matrix sign function"""
 		await ctx.embed_reply(str(scipy.linalg.signm(matrix)))
 	
-	@matrix.group(aliases = ["sine"], case_insensitive = True, invoke_without_command = True)
+	@matrix.group(
+		aliases = ["sine"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def sin(self, ctx, *, matrix: Matrix):
 		"""Sine of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.sinm(matrix)))
