@@ -133,7 +133,7 @@ class Matrix(commands.Cog):
 	
 	@sin.command(name = "hyperbolic", aliases = ['h'])
 	async def sin_hyperbolic(self, ctx, *, matrix: Matrix):
-		'''Hyperbolic sine of a matrix'''
+		"""Hyperbolic sine of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.sinhm(matrix)))
 	
 	@matrix.command(aliases = ["squareroot", "square_root", '√'])
