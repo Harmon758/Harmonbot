@@ -143,7 +143,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.command(aliases = ["subtraction", "minus", '-'])
 	async def subtract(self, ctx, matrix_a: Matrix, matrix_b: Matrix):
-		'''Subtract two matrices'''
+		"""Subtract two matrices"""
 		await ctx.embed_reply(str(numpy.matrix(matrix_a) - numpy.matrix(matrix_b)))
 	
 	@matrix.group(aliases = ["tangent"], invoke_without_command = True, case_insensitive = True)
