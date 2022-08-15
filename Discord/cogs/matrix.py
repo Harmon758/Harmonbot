@@ -150,7 +150,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.group(aliases = ["tangent"], invoke_without_command = True, case_insensitive = True)
 	async def tan(self, ctx, *, matrix: Matrix):
-		'''Tangent of a matrix'''
+		"""Tangent of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.tanm(matrix)))
 	
 	@tan.command(name = "hyperbolic", aliases = ['h'])
