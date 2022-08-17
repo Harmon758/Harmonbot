@@ -148,7 +148,10 @@ class Matrix(commands.Cog):
 			str(numpy.matrix(matrix_a) - numpy.matrix(matrix_b))
 		)
 	
-	@matrix.group(aliases = ["tangent"], case_insensitive = True, invoke_without_command = True)
+	@matrix.group(
+		aliases = ["tangent"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def tan(self, ctx, *, matrix: Matrix):
 		"""Tangent of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.tanm(matrix)))
