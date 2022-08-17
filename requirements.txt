@@ -85,7 +85,7 @@ grpcio==1.45.0
 grpcio-status==1.45.0
 idna==3.3
 jaraco.context==4.1.1
-jsonschema==4.4.0
+jsonschema==4.10.1
 kiwisolver==1.4.2
 lxml==4.8.0
 mpmath==1.2.1
