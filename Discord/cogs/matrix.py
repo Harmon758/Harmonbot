@@ -158,7 +158,7 @@ class Matrix(commands.Cog):
 	
 	@tan.command(name = "hyperbolic", aliases = ['h'])
 	async def tan_hyperbolic(self, ctx, *, matrix: Matrix):
-		'''Hyperbolic tangent of a matrix'''
+		"""Hyperbolic tangent of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.tanhm(matrix)))
 	
 	@matrix.group(aliases = ["transposition"], invoke_without_command = True, case_insensitive = True)
