@@ -163,7 +163,7 @@ class Matrix(commands.Cog):
 	
 	@matrix.group(aliases = ["transposition"], invoke_without_command = True, case_insensitive = True)
 	async def transpose(self, ctx, *, matrix: Matrix):
-		'''Transpose of a matrix'''
+		"""Transpose of a matrix"""
 		await ctx.embed_reply(str(numpy.matrix(matrix).T))
 	
 	@transpose.command(name = "conjugate")
