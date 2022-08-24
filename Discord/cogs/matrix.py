@@ -161,7 +161,7 @@ class Matrix(commands.Cog):
 		"""Hyperbolic tangent of a matrix"""
 		await ctx.embed_reply(str(scipy.linalg.tanhm(matrix)))
 	
-	@matrix.group(aliases = ["transposition"], invoke_without_command = True, case_insensitive = True)
+	@matrix.group(aliases = ["transposition"], case_insensitive = True, invoke_without_command = True)
 	async def transpose(self, ctx, *, matrix: Matrix):
 		"""Transpose of a matrix"""
 		await ctx.embed_reply(str(numpy.matrix(matrix).T))
