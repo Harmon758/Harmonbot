@@ -30,7 +30,7 @@ class Osu(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["osu!"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["osu!"], case_insensitive = True, invoke_without_command = True)
 	async def osu(self, ctx):
 		'''osu!'''
 		await ctx.send_help(ctx.command)
