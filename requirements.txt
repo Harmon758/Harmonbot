@@ -40,7 +40,7 @@ pydealer==1.4.0
 pygost==5.6
 pyowm==3.3.0
 pyparsing==2.4.7
-pyspellchecker==0.6.3
+pyspellchecker==0.7.0
 python-aiml==0.9.3
 python-dateutil==2.8.2
 python-dotenv==0.20.0
