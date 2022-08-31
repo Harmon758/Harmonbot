@@ -38,7 +38,7 @@ class Osu(commands.Cog):
 		'''osu!'''
 		await ctx.send_help(ctx.command)
 	
-	@osu.group(invoke_without_command = True, case_insensitive = True)
+	@osu.group(case_insensitive = True, invoke_without_command = True)
 	async def taiko(self, ctx):
 		'''Taiko'''
 		await ctx.send_help(ctx.command)
