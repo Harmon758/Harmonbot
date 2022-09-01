@@ -43,7 +43,7 @@ class Osu(commands.Cog):
 		'''Taiko'''
 		await ctx.send_help(ctx.command)
 	
-	@osu.group(invoke_without_command = True, case_insensitive = True)
+	@osu.group(case_insensitive = True, invoke_without_command = True)
 	async def mania(self, ctx):
 		'''osu!mania'''
 		await ctx.send_help(ctx.command)
