@@ -68,34 +68,36 @@ class Osu(commands.Cog):
 		params = {'k': ctx.bot.OSU_API_KEY, 'u': user, 'm': mode}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
+		
 		if not data:
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Error: User not found"
 			)
 			return
+		
 		data = data[0]
-		title_url = f"https://osu.ppy.sh/users/{data['user_id']}"
 		country_name = pycountry.countries.get(alpha_2 = data["country"]).name
-		fields = (
-			("Ranked Score", f"{int(data['ranked_score']):,}"),
-			("Hit Accuracy", f"{float(data['accuracy']):6g}%"),
-			("Play Count", data["playcount"]),
-			("Total Score", f"{int(data['total_score']):,}"),
-			("Performance", f"{float(data['pp_raw']):,}pp"),
-			("Rank", f"#{int(data['pp_rank']):,}"),
-			("Level", data["level"]),
-			("Country Rank", f"{country_name} #{int(data['pp_country_rank']):,}"),
-			("Total Hits", f"{int(data['count300']) + int(data['count100']) + int(data['count50']):,}"),
-			("300 Hits", f"{int(data['count300']):,}"),
-			("100 Hits", f"{int(data['count100']):,}"),
-			("50 Hits", f"{int(data['count50']):,}"),
-			(self.ssh_emoji, data["count_rank_ssh"]),
-			(self.ss_emoji, data["count_rank_ss"]),
-			(self.sh_emoji, data["count_rank_sh"]),
-			(self.s_emoji, data["count_rank_s"]),
-			(self.a_emoji, data["count_rank_a"])
-		)
 		await ctx.embed_reply(
-			title = data["username"], title_url = title_url, fields = fields
+			title = data["username"],
+			title_url = f"https://osu.ppy.sh/users/{data['user_id']}",
+			fields = (
+				("Ranked Score", f"{int(data['ranked_score']):,}"),
+				("Hit Accuracy", f"{float(data['accuracy']):6g}%"),
+				("Play Count", data["playcount"]),
+				("Total Score", f"{int(data['total_score']):,}"),
+				("Performance", f"{float(data['pp_raw']):,}pp"),
+				("Rank", f"#{int(data['pp_rank']):,}"),
+				("Level", data["level"]),
+				("Country Rank", f"{country_name} #{int(data['pp_country_rank']):,}"),
+				("Total Hits", f"{int(data['count300']) + int(data['count100']) + int(data['count50']):,}"),
+				("300 Hits", f"{int(data['count300']):,}"),
+				("100 Hits", f"{int(data['count100']):,}"),
+				("50 Hits", f"{int(data['count50']):,}"),
+				(self.ssh_emoji, data["count_rank_ssh"]),
+				(self.ss_emoji, data["count_rank_ss"]),
+				(self.sh_emoji, data["count_rank_sh"]),
+				(self.s_emoji, data["count_rank_s"]),
+				(self.a_emoji, data["count_rank_a"])
+			)
 		)
 
