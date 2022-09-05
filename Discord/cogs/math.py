@@ -75,7 +75,7 @@ class Math(commands.Cog):
 	
 	@commands.command()
 	async def factorial(self, ctx, value: int):
-		'''Factorial'''
+		"""Factorial"""
 		try:
 			await ctx.embed_reply(math.factorial(value))
 		except OverflowError as e:
