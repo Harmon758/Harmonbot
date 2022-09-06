@@ -82,9 +82,9 @@ class Math(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@commands.command(aliases = ["greatest_common_divisor"])
-	async def gcd(self, ctx, value_a: int, value_b: int):
+	async def gcd(self, ctx, *integers: int):
 		"""Greatest common divisor"""
-		await ctx.embed_reply(math.gcd(value_a, value_b))
+		await ctx.embed_reply(math.gcd(*integers))
 	
 	@commands.command(aliases = ['π'])
 	async def pi(self, ctx, digits: int = 3, start: int = 1):
