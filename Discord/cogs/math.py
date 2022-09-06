@@ -83,7 +83,7 @@ class Math(commands.Cog):
 	
 	@commands.command(aliases = ["greatest_common_divisor"])
 	async def gcd(self, ctx, value_a: int, value_b: int):
-		'''Greatest common divisor'''
+		"""Greatest common divisor"""
 		await ctx.embed_reply(math.gcd(value_a, value_b))
 	
 	@commands.command(aliases = ['π'])
