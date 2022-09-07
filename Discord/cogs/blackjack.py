@@ -28,7 +28,7 @@ async def setup(bot):
 
 class Blackjack(commands.Cog):
 
-    @commands.command()
+    @commands.hybrid_command()
     @checks.not_forbidden()
     async def blackjack(self, ctx):
         """Play a game of blackjack"""
