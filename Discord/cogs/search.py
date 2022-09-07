@@ -266,9 +266,9 @@ class Search(commands.Cog):
 		aliases = ["wiki"],
 		case_insensitive = True, invoke_without_command = True
 	)
-	async def wikipedia(self, ctx, *, search: str):
+	async def wikipedia(self, ctx, *, query: str):
 		"""Search for an article on Wikipedia"""
-		await self.process_wikipedia(ctx, search)
+		await self.process_wikipedia(ctx, query)
 	
 	async def process_wikipedia(
 		self, ctx, search, random = False, redirect = True
