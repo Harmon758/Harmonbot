@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import asyncio
@@ -30,10 +31,11 @@ from utilities.paginator import ButtonPaginator
 async def setup(bot):
 	await bot.add_cog(Random(bot))
 
-class Random(commands.Cog):
+class Random(commands.Cog, app_commands.Group, name = "random"):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		super().__init__()
 		# Add commands as random subcommands
 		for name, command in inspect.getmembers(self):
 			if isinstance(command, commands.Command) and command.parent is None and name != "random":
@@ -422,6 +424,12 @@ class Random(commands.Cog):
 		await ctx.embed_reply(
 			ctx.bot.wordnik_words_api.getRandomWord().word
 		)
+	
+	@app_commands.command(name = "word")
+	async def slash_word(self, interaction):
+		"""Random word"""
+		ctx = await interaction.client.get_context(interaction)
+		await self.word(ctx)
 
 
 async def blob(ctx):
