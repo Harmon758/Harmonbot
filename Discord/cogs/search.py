@@ -267,7 +267,7 @@ class Search(commands.Cog):
 		case_insensitive = True, invoke_without_command = True
 	)
 	async def wikipedia(self, ctx, *, search: str):
-		"""Look something up on Wikipedia"""
+		"""Search for an article on Wikipedia"""
 		await self.process_wikipedia(ctx, search)
 	
 	async def process_wikipedia(
