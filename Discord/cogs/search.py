@@ -274,7 +274,7 @@ class Search(commands.Cog):
 		self, ctx, search, random = False, redirect = True
 	):
 		# TODO: Add User-Agent
-		# TODO: use textwrap
+		# TODO: Use textwrap
 		url = "https://en.wikipedia.org/w/api.php"
 		if random:
 			params = {
@@ -304,8 +304,8 @@ class Search(commands.Cog):
 			"inprop": "url", "exintro": "", "explaintext": "",
 			"pithumbsize": 9000, "pilicense": "any", "format": "json"
 		}
+		# TODO: Use exchars?
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			# exchars?
 			data = await resp.json()
 		if "pages" not in data["query"]:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
@@ -331,7 +331,7 @@ class Search(commands.Cog):
 			await ctx.embed_reply(
 				description, title = page["title"],
 				title_url = page["fullurl"], image_url = image_url
-			)  # canonicalurl?
+			)  # TODO: Use canonicalurl?
 	
 	@commands.group(
 		aliases = ["wa", "wolfram_alpha"],
