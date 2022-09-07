@@ -103,13 +103,13 @@ class Resources(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def cve(self, ctx, identifier_number: str):
+	async def cve(self, ctx, identifier: str):
 		"""Lookup Common Vulnerabilities and Exposures"""
-		identifier_number = identifier_number.lower().lstrip('-')
-		if not identifier_number.startswith("cve-"):
-			identifier_number = "cve-" + identifier_number
+		identifier = identifier.lower().lstrip('-')
+		if not identifier.startswith("cve-"):
+			identifier = "cve-" + identifier
 		
-		url = f"http://cve.circl.lu/api/cve/{identifier_number}"
+		url = f"http://cve.circl.lu/api/cve/{identifier}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		
