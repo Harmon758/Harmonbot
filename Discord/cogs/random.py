@@ -240,6 +240,12 @@ class Random(commands.Cog, app_commands.Group, name = "random"):
 		"""Random emoji"""
 		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI["en"])))
 	
+	@app_commands.command(name = "emoji")
+	async def slash_emoji(self, interaction):
+		"""Random emoji"""
+		ctx = await interaction.client.get_context(interaction)
+		await self.emoji(ctx)
+	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def fact(self, ctx):
 		'''Random fact'''
