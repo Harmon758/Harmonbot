@@ -354,6 +354,12 @@ class Random(commands.Cog, app_commands.Group, name = "random"):
 		"""Random letter"""
 		await ctx.embed_reply(random.choice(string.ascii_uppercase))
 	
+	@app_commands.command(name = "letter")
+	async def slash_letter(self, interaction):
+		"""Random letter"""
+		ctx = await interaction.client.get_context(interaction)
+		await self.letter(ctx)
+	
 	@commands.command()
 	async def location(self, ctx):
 		'''Random location'''
