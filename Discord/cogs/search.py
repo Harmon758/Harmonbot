@@ -286,21 +286,21 @@ class Search(commands.Cog):
 			if search := data["query"]["search"]:
 				search = search[0]["title"]
 			elif not (search := data["query"].get("searchinfo", {}).get("suggestion")):
-				await ctx.embed_reply(":no_entry: Page not found")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Page not found")
 				return
 		params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, 
 					"inprop": "url", "exintro": "", "explaintext": "", "pithumbsize": 9000, "pilicense": "any", "format": "json"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:  # exchars?
 			data = await resp.json()
 		if "pages" not in data["query"]:
-			await ctx.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 			return
 		page_id = list(data["query"]["pages"].keys())[0]
 		page = data["query"]["pages"][page_id]
 		if "missing" in page:
-			await ctx.embed_reply(":no_entry: Page not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Page not found")
 		elif "invalid" in page:
-			await ctx.embed_reply(f":no_entry: Error: {page['invalidreason']}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {page['invalidreason']}")
 		elif redirect and "redirects" in data["query"]:
 			await self.process_wikipedia(ctx, data["query"]["redirects"][-1]["to"], redirect = False)
 			# TODO: Handle section links/tofragments
