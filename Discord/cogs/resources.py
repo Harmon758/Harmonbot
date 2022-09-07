@@ -108,12 +108,15 @@ class Resources(commands.Cog):
 		identifier_number = identifier_number.lower().lstrip('-')
 		if not identifier_number.startswith("cve-"):
 			identifier_number = "cve-" + identifier_number
+		
 		url = f"http://cve.circl.lu/api/cve/{identifier_number}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
+		
 		if not data:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Not found")
 			return
+		
 		await ctx.embed_reply(
 			title = data["id"],
 			description = data["summary"],
