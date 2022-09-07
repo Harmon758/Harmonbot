@@ -276,21 +276,26 @@ class Search(commands.Cog):
 		# TODO: Add User-Agent
 		# TODO: Use textwrap
 		url = "https://en.wikipedia.org/w/api.php"
+		
 		if random:
-			params = {
-				"action": "query", "list": "random", "rnnamespace": 0,
-				"format": "json"
-			}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				url, params = {
+					"action": "query", "list": "random", "rnnamespace": 0,
+					"format": "json"
+				}
+			) as resp:
 				data = await resp.json()
+			
 			search = data["query"]["random"][0]["title"]
 		else:
-			params = {
-				"action": "query", "list": "search", "srsearch": search,
-				"srinfo": "suggestion", "srlimit": 1, "format": "json"
-			}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				url, params = {
+					"action": "query", "list": "search", "srsearch": search,
+					"srinfo": "suggestion", "srlimit": 1, "format": "json"
+				}
+			) as resp:
 				data = await resp.json()
+			
 			if search := data["query"]["search"]:
 				search = search[0]["title"]
 			elif not (
@@ -298,20 +303,24 @@ class Search(commands.Cog):
 			):
 				await ctx.embed_reply(f"{ctx.bot.error_emoji} Page not found")
 				return
-		params = {
-			"action": "query", "redirects": "",
-			"prop": "info|extracts|pageimages", "titles": search,
-			"inprop": "url", "exintro": "", "explaintext": "",
-			"pithumbsize": 9000, "pilicense": "any", "format": "json"
-		}
-		# TODO: Use exchars?
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		
+		async with ctx.bot.aiohttp_session.get(
+			url, params = {
+				"action": "query", "redirects": "",
+				"prop": "info|extracts|pageimages", "titles": search,
+				"inprop": "url", "exintro": "", "explaintext": "",
+				"pithumbsize": 9000, "pilicense": "any", "format": "json"
+			}  # TODO: Use exchars?
+		) as resp:
 			data = await resp.json()
+		
 		if "pages" not in data["query"]:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 			return
+		
 		page_id = list(data["query"]["pages"].keys())[0]
 		page = data["query"]["pages"][page_id]
+		
 		if "missing" in page:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Page not found")
 		elif "invalid" in page:
@@ -324,14 +333,21 @@ class Search(commands.Cog):
 			)
 			# TODO: Handle section links/tofragments
 		else:
-			description = page["extract"] if len(page["extract"]) <= 512 else page["extract"][:512] + "..."
-			description = re.sub(r"\s+ \s+", ' ', description)
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
-			image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
 			await ctx.embed_reply(
-				description, title = page["title"],
-				title_url = page["fullurl"], image_url = image_url
-			)  # TODO: Use canonicalurl?
+				title = page["title"],
+				title_url = page["fullurl"],  # TODO: Use canonicalurl?
+				description = re.sub(
+					r"\s+ \s+", ' ',
+					page["extract"] if len(page["extract"]) <= 512
+					else page["extract"][:512] + "..."
+				),
+				image_url = (
+					thumbnail["source"].replace(
+						f"{thumbnail['width']}px", "1200px"
+					) if thumbnail else None
+				)
+			)
 	
 	@commands.group(
 		aliases = ["wa", "wolfram_alpha"],
