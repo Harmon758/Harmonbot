@@ -235,8 +235,8 @@ class Random(commands.Cog, app_commands.Group, name = "random"):
 										for breed, subs in breeds.items()), 
 								footer_text = "Sub-breeds are in parentheses after the corresponding breed")
 	
-	@commands.command(aliases = ["emoji"])
-	async def emote(self, ctx):
+	@commands.command(aliases = ["emote"])
+	async def emoji(self, ctx):
 		'''Random emote/emoji'''
 		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI["en"])))
 	
