@@ -351,7 +351,7 @@ class Random(commands.Cog, app_commands.Group, name = "random"):
 	
 	@commands.command()
 	async def letter(self, ctx):
-		'''Random letter'''
+		"""Random letter"""
 		await ctx.embed_reply(random.choice(string.ascii_uppercase))
 	
 	@commands.command()
