@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import functools
@@ -12,10 +13,11 @@ from utilities import checks
 async def setup(bot):
 	await bot.add_cog(Search(bot))
 
-class Search(commands.Cog):
+class Search(commands.Cog, app_commands.Group, name = "search"):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		super().__init__()
 		# Add commands as search subcommands
 		for name, command in inspect.getmembers(self):
 			if isinstance(command, commands.Command) and command.parent is None and name != "search":
@@ -269,6 +271,19 @@ class Search(commands.Cog):
 	async def wikipedia(self, ctx, *, query: str):
 		"""Search for an article on Wikipedia"""
 		await self.process_wikipedia(ctx, query)
+	
+	@app_commands.command(name = "wikipedia")
+	async def slash_wikipedia(self, interaction, *, query: str):
+		"""
+		Search for an article on Wikipedia
+		
+		Parameters
+		----------
+		query
+			Query to search for
+		"""
+		ctx = await interaction.client.get_context(interaction)
+		await self.wikipedia(ctx, query = query)
 	
 	async def process_wikipedia(
 		self, ctx, search, random = False, redirect = True
