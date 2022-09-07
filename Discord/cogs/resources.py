@@ -112,7 +112,7 @@ class Resources(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		if not data:
-			return await ctx.embed_reply(":no_entry: Error: Not found")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Not found")
 		await ctx.embed_reply(data["summary"], title = data["id"], fields = (("CVSS", data["cvss"]),), 
 								footer_text = "Published", timestamp = dateutil.parser.parse(data["Published"]))
 	
