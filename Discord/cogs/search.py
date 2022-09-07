@@ -283,9 +283,9 @@ class Search(commands.Cog):
 			params = {"action": "query", "list": "search", "srsearch": search, "srinfo": "suggestion", "srlimit": 1, "format": "json"}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 				data = await resp.json()
-			try:
-				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
-			except IndexError:
+			if search := data["query"]["search"]:
+				search = search[0]["title"]
+			elif not (search := data["query"].get("searchinfo", {}).get("suggestion")):
 				await ctx.embed_reply(":no_entry: Page not found")
 				return
 		params = {"action": "query", "redirects": "", "prop": "info|extracts|pageimages", "titles": search, 
