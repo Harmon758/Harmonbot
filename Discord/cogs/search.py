@@ -9,6 +9,8 @@ import re
 import youtube_dl
 
 from utilities import checks
+from utilities.menu_sources import WolframAlphaSource
+from utilities.paginator import ButtonPaginator
 
 async def setup(bot):
 	await bot.add_cog(Search(bot))
@@ -379,6 +381,51 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 	async def wolframalpha_location(self, ctx, location: str, *, search: str):
 		'''Input location'''
 		await self.process_wolframalpha(ctx, search, location = location)
+	
+	@app_commands.command(name = "wolframalpha")
+	async def slash_wolframalpha(self, interaction, *, query: str):
+		"""
+		Query Wolfram|Alpha
+		
+		Parameters
+		----------
+		query
+			Search query
+		"""
+		ctx = await interaction.client.get_context(interaction)
+		# TODO: process asynchronously
+		# TODO: location option?
+		location = ctx.bot.fake_location
+		try:
+			result = ctx.bot.wolfram_alpha_client.query(query.strip('`'), ip = ctx.bot.fake_ip, location = location)
+		except Exception as e:
+			if str(e).startswith("Error "):
+				return await ctx.embed_reply(f":no_entry: {e}")
+			raise
+		# TODO: other options?
+		if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
+			if result.didyoumeans["@count"] == '1':
+				didyoumean = result.didyoumeans["didyoumean"]["#text"]
+			else:
+				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
+			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
+			try:
+				result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
+			except Exception as e:
+				if str(e).startswith("Error "):
+					return await ctx.embed_reply(f":no_entry: {e}")
+				raise
+		if hasattr(result, "pod"):
+			paginator = ButtonPaginator(interaction, WolframAlphaSource([(pod, subpod) for pod in result.pods for subpod in pod.subpods]))
+			await paginator.start()
+			interaction.client.views.append(paginator)
+
+			if result.timedout:
+				await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
+		elif result.timedout:
+			await ctx.embed_reply("Standard computation time exceeded")
+		else:
+			await ctx.embed_reply(":no_entry: No results found")
 	
 	async def process_wolframalpha(self, ctx, search, location = None):
 		# TODO: process asynchronously

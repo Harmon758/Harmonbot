@@ -5,6 +5,37 @@ from discord.ext import commands, menus
 import datetime
 
 
+class WolframAlphaSource(menus.ListPageSource):
+
+    def __init__(self, subpods):
+        super().__init__(subpods, per_page = 1)
+
+    async def format_page(self, menu, subpod):
+        kwargs = {}
+        pod, subpod = subpod
+        embed = discord.Embed(title = pod.title, color = menu.bot.bot_color)
+
+        if isinstance(menu.ctx_or_interaction, commands.Context):
+            embed.set_author(
+                name = menu.ctx_or_interaction.author.display_name,
+                icon_url = menu.ctx_or_interaction.author.avatar.url
+            )
+            kwargs["content"] = (
+                "In response to: "
+                f"`{menu.ctx_or_interaction.message.clean_content}`"
+            )
+        elif not isinstance(menu.ctx_or_interaction, discord.Interaction):
+            raise RuntimeError(
+                "WolframAlphaSource using neither Context nor Interaction"
+            )
+
+        embed.set_image(url = subpod.img.src)
+        embed.set_footer(text = f"Pod {menu.current_page + 1} of {self.get_max_pages()}")
+
+        kwargs["embed"] = embed
+        return kwargs
+
+
 class XKCDSource(menus.PageSource):
 
     def __init__(self, ctx_or_interaction):

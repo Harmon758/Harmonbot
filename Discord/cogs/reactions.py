@@ -1,5 +1,4 @@
 
-import discord
 from discord.ext import commands, menus
 
 import random
@@ -102,37 +101,13 @@ class PlayingMenu(Menu):
 				await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
 											"There's nothing playing right now")
 
-class WolframAlphaSource(menus.ListPageSource):
-	
-	def __init__(self, subpods):
-		super().__init__(subpods, per_page = 1)
-	
-	async def format_page(self, menu, subpod):
-		pod, subpod = subpod
-		embed = discord.Embed(title = pod.title, color = menu.bot.bot_color)
-		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar.url)
-		embed.set_image(url = subpod.img.src)
-		embed.set_footer(text = f"Pod {menu.current_page + 1} of {self.get_max_pages()}")
-		return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
-
-class WolframAlphaMenu(Menu, menus.MenuPages):
-	
-	def __init__(self, subpods):
-		super().__init__(WolframAlphaSource(subpods), timeout = None, clear_reactions_after = True, check_embeds = True)
-	
-	async def send_initial_message(self, ctx, channel):
-		message = await super().send_initial_message(ctx, channel)
-		await ctx.bot.attempt_delete_message(ctx.message)
-		return message
-
 class Reactions(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
 		self.reaction_commands = (
 			(guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
-			(playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
-			(wolframalpha, "Search", "wolframalpha", ["wa", "wolfram_alpha"], [checks.not_forbidden().predicate])
+			(playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate])
 		)
 		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
 			self.reactions.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
@@ -162,37 +137,4 @@ async def guess(ctx):
 async def playing(ctx):
 	'''Audio player'''
 	await PlayingMenu().start(ctx)
-
-async def wolframalpha(ctx, *, search):
-	'''Wolfram|Alpha menu'''
-	# TODO: process asynchronously
-	# TODO: location option?
-	location = ctx.bot.fake_location
-	try:
-		result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
-	except Exception as e:
-		if str(e).startswith("Error "):
-			return await ctx.embed_reply(f":no_entry: {e}")
-		raise
-	# TODO: other options?
-	if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
-		if result.didyoumeans["@count"] == '1':
-			didyoumean = result.didyoumeans["didyoumean"]["#text"]
-		else:
-			didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
-		await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
-		try:
-			result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
-		except Exception as e:
-			if str(e).startswith("Error "):
-				return await ctx.embed_reply(f":no_entry: {e}")
-			raise
-	if hasattr(result, "pod"):
-		await WolframAlphaMenu([(pod, subpod) for pod in result.pods for subpod in pod.subpods]).start(ctx)
-		if result.timedout:
-			await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
-	elif result.timedout:
-		await ctx.embed_reply("Standard computation time exceeded")
-	else:
-		await ctx.embed_reply(":no_entry: No results found")
 
