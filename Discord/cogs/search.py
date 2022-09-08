@@ -400,7 +400,7 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 			result = ctx.bot.wolfram_alpha_client.query(query.strip('`'), ip = ctx.bot.fake_ip, location = location)
 		except Exception as e:
 			if str(e).startswith("Error "):
-				return await ctx.embed_reply(f":no_entry: {e}")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 			raise
 		# TODO: other options?
 		if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
@@ -413,7 +413,7 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 				result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
 			except Exception as e:
 				if str(e).startswith("Error "):
-					return await ctx.embed_reply(f":no_entry: {e}")
+					return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 				raise
 		if hasattr(result, "pod"):
 			paginator = ButtonPaginator(interaction, WolframAlphaSource([(pod, subpod) for pod in result.pods for subpod in pod.subpods]))
@@ -425,7 +425,7 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 		elif result.timedout:
 			await ctx.embed_reply("Standard computation time exceeded")
 		else:
-			await ctx.embed_reply(":no_entry: No results found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 	
 	async def process_wolframalpha(self, ctx, search, location = None):
 		# TODO: process asynchronously
