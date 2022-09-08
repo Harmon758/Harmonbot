@@ -397,7 +397,9 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 		# TODO: location option?
 		location = ctx.bot.fake_location
 		try:
-			result = ctx.bot.wolfram_alpha_client.query(query.strip('`'), ip = ctx.bot.fake_ip, location = location)
+			result = ctx.bot.wolfram_alpha_client.query(
+				query.strip('`'), ip = ctx.bot.fake_ip, location = location
+			)
 		except Exception as e:
 			if str(e).startswith("Error "):
 				await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
@@ -409,21 +411,33 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
-			await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
+			await ctx.embed_reply(
+				f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`"
+			)
 			try:
-				result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
+				result = ctx.bot.wolfram_alpha_client.query(
+					didyoumean, ip = ctx.bot.fake_ip, location = location
+				)
 			except Exception as e:
 				if str(e).startswith("Error "):
 					await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 					return
 				raise
 		if hasattr(result, "pod"):
-			paginator = ButtonPaginator(interaction, WolframAlphaSource([(pod, subpod) for pod in result.pods for subpod in pod.subpods]))
+			paginator = ButtonPaginator(
+				interaction,
+				WolframAlphaSource([
+					(pod, subpod)
+					for pod in result.pods for subpod in pod.subpods
+				])
+			)
 			await paginator.start()
 			interaction.client.views.append(paginator)
-
+			
 			if result.timedout:
-				await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
+				await ctx.embed_reply(
+					f"Some results timed out: {result.timedout.replace(',', ', ')}"
+				)
 		elif result.timedout:
 			await ctx.embed_reply("Standard computation time exceeded")
 		else:
