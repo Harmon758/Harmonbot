@@ -30,7 +30,6 @@ class WolframAlphaSource(menus.ListPageSource):
             )
 
         embed.set_image(url = subpod.img.src)
-        embed.set_footer(text = f"Pod {menu.current_page + 1} of {self.get_max_pages()}")
 
         kwargs["embed"] = embed
         return kwargs
