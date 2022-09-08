@@ -400,7 +400,8 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 			result = ctx.bot.wolfram_alpha_client.query(query.strip('`'), ip = ctx.bot.fake_ip, location = location)
 		except Exception as e:
 			if str(e).startswith("Error "):
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+				return
 			raise
 		# TODO: other options?
 		if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
@@ -413,7 +414,8 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 				result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
 			except Exception as e:
 				if str(e).startswith("Error "):
-					return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+					await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+					return
 				raise
 		if hasattr(result, "pod"):
 			paginator = ButtonPaginator(interaction, WolframAlphaSource([(pod, subpod) for pod in result.pods for subpod in pod.subpods]))
