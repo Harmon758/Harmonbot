@@ -267,7 +267,7 @@ class MazeCog(commands.Cog, name = "Maze"):
             )
 
     @app_commands.command(name = "maze")
-    async def maze_slash(
+    async def slash_maze(
         self, interaction, height: app_commands.Range[int, 2, 100] = 5,
         width: app_commands.Range[int, 2, 100] = 5, random_start: bool = False,
         random_end: bool = False
