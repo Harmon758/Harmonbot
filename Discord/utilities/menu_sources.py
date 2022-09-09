@@ -11,7 +11,7 @@ class WolframAlphaSource(menus.ListPageSource):
 
     def __init__(self, pods, *, didyoumean = None, timedout = None):
         self.didyoumean = didyoumean
-        self.timedout = timedout.replace(',', ', ')
+        self.timedout = timedout.replace(',', ", ")
         super().__init__(
             [
                 (pod, subpods)
