@@ -231,6 +231,8 @@ class Misc(commands.Cog):
 	async def think(self, interaction):
 		"""🤔"""
 		await interaction.response.defer()
+		await asyncio.sleep(600)
+		await interaction.followup.send('\N{THINKING FACE}')
 
 class Counter(discord.ui.View):
 
