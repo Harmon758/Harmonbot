@@ -9,25 +9,46 @@ from more_itertools import chunked
 
 class WolframAlphaSource(menus.ListPageSource):
 
-    def __init__(self, pods):
+    def __init__(self, pods, *, didyoumean = None, timedout = None):
+        self.didyoumean = didyoumean
+        self.timedout = timedout.replace(',', ', ')
         super().__init__(
             [
                 (pod, subpods)
                 for pod in pods
-                for subpods in chunked(pod.subpods, 10)
+                for subpods in chunked(
+                    pod.subpods,
+                    10 - (bool(didyoumean) or bool(timedout))
+                )
             ],
             per_page = 1
         )
 
     async def format_page(self, menu, pods):
+        embeds = []
         kwargs = {}
         pod, subpods = pods
 
-        embeds = [
+        description = ""
+        if self.didyoumean:
+            description += (
+                "Using closest Wolfram|Alpha interpretation: "
+                f"`{self.didyoumean}`\n"
+            )
+        if self.timedout:
+            description += f"Some results timed out: {self.timedout}"
+        if description:
+            embeds.append(
+                discord.Embed(
+                    description = description, color = menu.bot.bot_color
+                )
+            )
+
+        embeds.append(
             discord.Embed(
                 title = pod.title, color = menu.bot.bot_color
             ).set_image(url = subpods[0].img.src)
-        ]
+        )
 
         if isinstance(menu.ctx_or_interaction, commands.Context):
             embeds[0].set_author(

@@ -407,34 +407,35 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 				return
 			raise
 		# TODO: other options?
+		didyoumean = None
 		if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
 			if result.didyoumeans["@count"] == '1':
 				didyoumean = result.didyoumeans["didyoumean"]["#text"]
 			else:
 				didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
-			await ctx.embed_reply(
-				f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`"
-			)
 			try:
 				result = ctx.bot.wolfram_alpha_client.query(
 					didyoumean, ip = ctx.bot.fake_ip, location = location
 				)
 			except Exception as e:
 				if str(e).startswith("Error "):
-					await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+					await ctx.embed_reply(
+						f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`\n"
+						f"{ctx.bot.error_emoji} {e}"
+					)
 					return
 				raise
 		if hasattr(result, "pod"):
 			paginator = ButtonPaginator(
-				interaction, WolframAlphaSource(result.pods)
+				interaction,
+				WolframAlphaSource(
+					result.pods,
+					didyoumean = didyoumean,
+					timedout = result.timedout
+				)
 			)
 			await paginator.start()
 			interaction.client.views.append(paginator)
-			
-			if result.timedout:
-				await ctx.embed_reply(
-					f"Some results timed out: {result.timedout.replace(',', ', ')}"
-				)
 		elif result.timedout:
 			await ctx.embed_reply("Standard computation time exceeded")
 		else:
