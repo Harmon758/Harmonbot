@@ -251,6 +251,19 @@ class Location(commands.Cog):
 			),)
 		)
 	
+	@app_commands.command(name = "time")
+	async def slash_time(self, interaction, *, location: str):
+		"""
+		Current time at a location
+		
+		Parameters
+		----------
+		location
+			Location to query
+		"""
+		ctx = await interaction.client.get_context(interaction)
+		await self.time(ctx, location = location)
+	
 	@commands.command()
 	async def weather(self, ctx, *, location: str):
 		'''Weather'''
