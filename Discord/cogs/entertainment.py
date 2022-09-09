@@ -244,7 +244,7 @@ class Entertainment(commands.Cog):
 		ctx.bot.views.append(paginator)
 	
 	@app_commands.command(name = "xkcd")
-	async def xkcd_slash(
+	async def slash_xckd(
 		self, interaction, number: Optional[int], query: Optional[str]
 	):
 		"""
