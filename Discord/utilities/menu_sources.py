@@ -4,19 +4,33 @@ from discord.ext import commands, menus
 
 import datetime
 
+from more_itertools import chunked
+
 
 class WolframAlphaSource(menus.ListPageSource):
 
-    def __init__(self, subpods):
-        super().__init__(subpods, per_page = 1)
+    def __init__(self, pods):
+        super().__init__(
+            [
+                (pod, subpods)
+                for pod in pods
+                for subpods in chunked(pod.subpods, 10)
+            ],
+            per_page = 1
+        )
 
-    async def format_page(self, menu, subpod):
+    async def format_page(self, menu, pods):
         kwargs = {}
-        pod, subpod = subpod
-        embed = discord.Embed(title = pod.title, color = menu.bot.bot_color)
+        pod, subpods = pods
+
+        embeds = [
+            discord.Embed(
+                title = pod.title, color = menu.bot.bot_color
+            ).set_image(url = subpods[0].img.src)
+        ]
 
         if isinstance(menu.ctx_or_interaction, commands.Context):
-            embed.set_author(
+            embeds[0].set_author(
                 name = menu.ctx_or_interaction.author.display_name,
                 icon_url = menu.ctx_or_interaction.author.avatar.url
             )
@@ -29,9 +43,14 @@ class WolframAlphaSource(menus.ListPageSource):
                 "WolframAlphaSource using neither Context nor Interaction"
             )
 
-        embed.set_image(url = subpod.img.src)
+        for subpod in subpods[1:]:
+            embeds.append(
+                discord.Embed(
+                    color = menu.bot.bot_color
+                ).set_image(url = subpod.img.src)
+            )
 
-        kwargs["embed"] = embed
+        kwargs["embeds"] = embeds
         return kwargs
 
 

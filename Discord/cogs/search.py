@@ -425,11 +425,7 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 				raise
 		if hasattr(result, "pod"):
 			paginator = ButtonPaginator(
-				interaction,
-				WolframAlphaSource([
-					(pod, subpod)
-					for pod in result.pods for subpod in pod.subpods
-				])
+				interaction, WolframAlphaSource(result.pods)
 			)
 			await paginator.start()
 			interaction.client.views.append(paginator)
