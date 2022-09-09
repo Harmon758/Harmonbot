@@ -93,7 +93,7 @@ class Bot(commands.Bot):
 			case_insensitive = True,
 			command_prefix = self.get_command_prefix,
 			help_command = help_command,
-			intents=discord.Intents.default(),
+			intents = discord.Intents.default(),
 			tree_cls = CommandTree
 		)
 		
