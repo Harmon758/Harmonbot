@@ -392,6 +392,7 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 		query
 			Search query
 		"""
+		await interaction.response.defer()
 		ctx = await interaction.client.get_context(interaction)
 		# TODO: process asynchronously
 		# TODO: location option?
