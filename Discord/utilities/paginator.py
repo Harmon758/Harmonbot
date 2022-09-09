@@ -122,11 +122,16 @@ class ButtonPaginator(discord.ui.View):
                 self.ctx_or_interaction.message
             )
         elif isinstance(self.ctx_or_interaction, discord.Interaction):
-            await self.ctx_or_interaction.response.send_message(
-                **kwargs, view = self
-            )
-            message = await self.ctx_or_interaction.original_message()
-            self.message = await message.fetch()
+            if self.ctx_or_interaction.response.is_done():
+                self.message = await self.ctx_or_interaction.followup.send(
+                    **kwargs, view = self, wait = True
+                )
+            else:
+                await self.ctx_or_interaction.response.send_message(
+                    **kwargs, view = self
+                )
+                message = await self.ctx_or_interaction.original_message()
+                self.message = await message.fetch()
         else:
             raise RuntimeError(
                 "ButtonPaginator using neither Context nor Interaction"
