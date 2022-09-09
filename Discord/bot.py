@@ -82,11 +82,11 @@ class Bot(commands.Bot):
 		initialize_logging(self.data_path)
 		
 		# Initialization
-		help_command = HelpCommand(
-			command_attrs = {"aliases": ["commands"], "hidden": True}
-		)
 		activity = discord.Streaming(
 			name = random.choice(self.game_statuses), url = self.stream_url
+		)
+		help_command = HelpCommand(
+			command_attrs = {"aliases": ["commands"], "hidden": True}
 		)
 		super().__init__(
 			activity = activity,
