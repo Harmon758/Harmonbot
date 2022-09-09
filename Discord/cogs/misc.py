@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import asyncio
@@ -225,6 +226,11 @@ class Misc(commands.Cog):
 		Supports: 0 1 2 3 4 5 6 7 8 9 + - = ( ) i n
 		"""
 		await ctx.embed_reply(utilities.superscript(text))
+	
+	@app_commands.command()
+	async def think(self, interaction):
+		"""🤔"""
+		await interaction.response.defer()
 
 class Counter(discord.ui.View):
 
