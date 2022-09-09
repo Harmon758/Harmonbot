@@ -420,7 +420,8 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 			except Exception as e:
 				if str(e).startswith("Error "):
 					await ctx.embed_reply(
-						f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`\n"
+						"Using closest Wolfram|Alpha interpretation: "
+						f"`{didyoumean}`\n"
 						f"{ctx.bot.error_emoji} {e}"
 					)
 					return
