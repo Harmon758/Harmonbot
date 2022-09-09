@@ -49,6 +49,12 @@ class Steam(commands.Cog):
         }
         async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
             data = await resp.json()
+        if not data["response"]:
+            await ctx.embed_reply(
+                f"[{account['personaname']}]({account['profileurl']})'s "
+                "game details are not public"
+            )
+            return
         gamecount = data["response"]["game_count"]
         await ctx.embed_reply(
             f"[{account['personaname']}]({account['profileurl']}) has {gamecount} games",
