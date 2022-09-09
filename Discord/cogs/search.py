@@ -6,6 +6,7 @@ from discord.ext import commands
 import functools
 import inspect
 import re
+from typing import Optional
 
 import youtube_dl
 
@@ -384,7 +385,9 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 		await self.process_wolframalpha(ctx, search, location = location)
 	
 	@app_commands.command(name = "wolframalpha")
-	async def slash_wolframalpha(self, interaction, *, query: str):
+	async def slash_wolframalpha(
+		self, interaction, location: Optional[str], *, query: str
+	):
 		"""
 		Query Wolfram|Alpha
 		
@@ -392,12 +395,13 @@ class Search(commands.Cog, app_commands.Group, name = "search"):
 		----------
 		query
 			Search query
+		location
+			Location to associate with query
 		"""
 		await interaction.response.defer()
 		ctx = await interaction.client.get_context(interaction)
 		# TODO: process asynchronously
-		# TODO: location option?
-		location = ctx.bot.fake_location
+		location = location or ctx.bot.fake_location
 		try:
 			result = ctx.bot.wolfram_alpha_client.query(
 				query.strip('`'), ip = ctx.bot.fake_ip, location = location
