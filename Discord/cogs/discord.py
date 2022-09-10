@@ -22,6 +22,7 @@ ACTIVITES = {
 	"Chess In The Park": 832012774040141894,
 	# "Doodle Crew": 878067389634314250,  # Now Sketch Hands
 	"Fishington.io": 814288819477020702,
+	"Know What I Meme": 950505761862189096,
 	"Land-io": 903769130790969345,
 	"Letter League": 879863686565621790,
 	"Poker Night": 755827207812677713,
@@ -79,6 +80,7 @@ class Discord(commands.Cog):
 			("Checkers In The Park", "checkers", []),
 			("Chess In The Park", "chess", []),
 			("Fishington.io", "fishington", ["fishing", "fishington.io"]),
+			("Know What I Meme", "meme", ["kwim"]),
 			("Land-io", "land", ["land-io", "snake"]),
 			("Letter League", "letter", ["scrabble"]),
 			("Poker Night", "poker", []),
