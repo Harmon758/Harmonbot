@@ -16,6 +16,7 @@ from utilities import checks
 ACTIVITES = {
 	"Betrayal.io": 773336526917861400,
 	"Blazing 8s": 832025144389533716,
+	"Bobble League": 947957217959759964,
 	"Checkers In The Park": 832013003968348200,
 	"Chess In The Park": 832012774040141894,
 	# "Doodle Crew": 878067389634314250,  # Now Sketch Hands
@@ -72,6 +73,7 @@ class Discord(commands.Cog):
 		for activity, name, aliases in (
 			("Betrayal.io", "betrayal", ["betrayal.io"]),
 			("Blazing 8s", "eights", ["ocho", "8s"]),
+			("Bobble League", "bobble", []),
 			("Checkers In The Park", "checkers", []),
 			("Chess In The Park", "chess", []),
 			("Fishington.io", "fishington", ["fishing", "fishington.io"]),
