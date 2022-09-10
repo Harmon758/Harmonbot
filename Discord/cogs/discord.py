@@ -14,6 +14,7 @@ from modules import conversions
 from utilities import checks
 
 ACTIVITES = {
+	"Ask Away": 976052223358406656,
 	"Betrayal.io": 773336526917861400,
 	"Blazing 8s": 832025144389533716,
 	"Bobble League": 947957217959759964,
@@ -71,6 +72,7 @@ class Discord(commands.Cog):
 			return activity_command
 		
 		for activity, name, aliases in (
+			("Ask Away", "ask", []),
 			("Betrayal.io", "betrayal", ["betrayal.io"]),
 			("Blazing 8s", "eights", ["ocho", "8s"]),
 			("Bobble League", "bobble", []),
