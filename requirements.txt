@@ -15,7 +15,7 @@ clarifai-grpc==8.0.0
 cryptography==38.0.1
 dice==3.1.2
 emoji==1.7.0
-feedparser==6.0.8
+feedparser==6.0.10
 gidgethub==5.1.0
 gitpython==3.1.8
 google-api-core[grpc]==2.2.2
