@@ -62,7 +62,7 @@ class Osu(commands.Cog):
     @mania.command(name = "user")
     async def mania_user(self, ctx, *, user: str):
         """General osu!mania user information"""
-        await self.get_user(ctx, user, 2)
+        await self.get_user(ctx, user, 3)
 
     async def get_user(self, ctx, user, mode = 0):
         url = "https://osu.ppy.sh/api/get_user"
