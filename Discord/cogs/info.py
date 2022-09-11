@@ -125,22 +125,29 @@ class Info(commands.Cog):
 		if 'v' not in query:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid input")
 			return
-		api_url = "https://www.googleapis.com/youtube/v3/videos"
-		params = {
-			"id": query['v'][0], "key": ctx.bot.GOOGLE_API_KEY,
-			"part": "snippet,contentDetails,statistics"
-		}
-		async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
+		
+		async with ctx.bot.aiohttp_session.get(
+			"https://www.googleapis.com/youtube/v3/videos",
+			params = {
+				"id": query['v'][0],
+				"part": "snippet,contentDetails,statistics",
+				"key": ctx.bot.GOOGLE_API_KEY
+			}
+		) as resp:
 			data = await resp.json()
+		
 		if not data or not data["items"]:
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Error: Unable to retrieve video information"
 			)
 			return
+		
 		data = data["items"][0]
-		duration = isodate.parse_duration(data["contentDetails"]["duration"])
 		fields = []
-		if length := duration_to_string(duration, abbreviate = True):
+		if length := duration_to_string(
+			isodate.parse_duration(data["contentDetails"]["duration"]),
+			abbreviate = True
+		):
 			fields.append(("Length", length))
 		if "likeCount" in data["statistics"]:
 			fields.append(
@@ -161,12 +168,14 @@ class Info(commands.Cog):
 				f"(https://www.youtube.com/channel/{data['snippet']['channelId']})"
 			)
 		)
-		# data["snippet"]["description"]
-		timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"])
+		# TODO: Use data["snippet"]["description"]
 		await ctx.embed_reply(
-			title = data["snippet"]["title"], title_url = url,
+			title = data["snippet"]["title"],
+			title_url = url,
 			thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"],
-			fields = fields, footer_text = "Published", timestamp = timestamp
+			fields = fields,
+			footer_text = "Published",
+			timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"])
 		)
 		# TODO: Handle invalid url
 
