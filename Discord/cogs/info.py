@@ -126,12 +126,16 @@ class Info(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid input")
 			return
 		api_url = "https://www.googleapis.com/youtube/v3/videos"
-		params = {"id": query['v'][0], "key": ctx.bot.GOOGLE_API_KEY,
-					"part": "snippet,contentDetails,statistics"}
+		params = {
+			"id": query['v'][0], "key": ctx.bot.GOOGLE_API_KEY,
+			"part": "snippet,contentDetails,statistics"
+		}
 		async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
 			data = await resp.json()
 		if not data or not data["items"]:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unable to retrieve video information")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Unable to retrieve video information"
+			)
 			return
 		data = data["items"][0]
 		duration = isodate.parse_duration(data["contentDetails"]["duration"])
@@ -139,18 +143,31 @@ class Info(commands.Cog):
 		if length := duration_to_string(duration, abbreviate = True):
 			fields.append(("Length", length))
 		if "likeCount" in data["statistics"]:
-			fields.append(("Likes", f"{int(data['statistics']['likeCount']):,}"))
+			fields.append(
+				("Likes", f"{int(data['statistics']['likeCount']):,}")
+			)
 		if "viewCount" in data["statistics"]:
-			fields.append(("Views", f"{int(data['statistics']['viewCount']):,}"))
+			fields.append(
+				("Views", f"{int(data['statistics']['viewCount']):,}")
+			)
 		if "commentCount" in data["statistics"]:
-			fields.append(("Comments", f"{int(data['statistics']['commentCount']):,}"))
-		fields.append(("Channel", f"[{data['snippet']['channelTitle']}](https://www.youtube.com/channel/{data['snippet']['channelId']})"))
+			fields.append(
+				("Comments", f"{int(data['statistics']['commentCount']):,}")
+			)
+		fields.append(
+			(
+				"Channel",
+				f"[{data['snippet']['channelTitle']}]"
+				f"(https://www.youtube.com/channel/{data['snippet']['channelId']})"
+			)
+		)
 		# data["snippet"]["description"]
 		timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"])
-		await ctx.embed_reply(title = data["snippet"]["title"], title_url = url, 
-								thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], 
-								fields = fields, footer_text = "Published", 
-								timestamp = timestamp)
+		await ctx.embed_reply(
+			title = data["snippet"]["title"], title_url = url,
+			thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"],
+			fields = fields, footer_text = "Published", timestamp = timestamp
+		)
 		# TODO: Handle invalid url
 
 
