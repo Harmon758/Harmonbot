@@ -143,39 +143,36 @@ class Info(commands.Cog):
 			return
 		
 		data = data["items"][0]
+		snippet = data["snippet"]
+		statistics = data["statistics"]
+		
 		fields = []
 		if length := duration_to_string(
 			isodate.parse_duration(data["contentDetails"]["duration"]),
 			abbreviate = True
 		):
 			fields.append(("Length", length))
-		if "likeCount" in data["statistics"]:
-			fields.append(
-				("Likes", f"{int(data['statistics']['likeCount']):,}")
-			)
-		if "viewCount" in data["statistics"]:
-			fields.append(
-				("Views", f"{int(data['statistics']['viewCount']):,}")
-			)
-		if "commentCount" in data["statistics"]:
-			fields.append(
-				("Comments", f"{int(data['statistics']['commentCount']):,}")
-			)
+		if (like_count := statistics.get("likeCount")) is not None:
+			fields.append(("Likes", f"{int(like_count):,}"))
+		if (view_count := statistics.get("viewCount")) is not None:
+			fields.append(("Views", f"{int(view_count):,}"))
+		if (comment_count := statistics.get("commentCount")) is not None:
+			fields.append(("Comments", f"{int(comment_count):,}"))
 		fields.append(
 			(
 				"Channel",
-				f"[{data['snippet']['channelTitle']}]"
-				f"(https://www.youtube.com/channel/{data['snippet']['channelId']})"
+				f"[{snippet['channelTitle']}]"
+				f"(https://www.youtube.com/channel/{snippet['channelId']})"
 			)
 		)
-		# TODO: Use data["snippet"]["description"]
+		# TODO: Use snippet["description"]
 		await ctx.embed_reply(
-			title = data["snippet"]["title"],
+			title = snippet["title"],
 			title_url = url,
-			thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"],
+			thumbnail_url = snippet["thumbnails"]["high"]["url"],
 			fields = fields,
 			footer_text = "Published",
-			timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"])
+			timestamp = dateutil.parser.parse(snippet["publishedAt"])
 		)
 		# TODO: Handle invalid url
 
