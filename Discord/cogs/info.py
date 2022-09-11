@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import contextlib
@@ -35,10 +36,11 @@ BADGE_EMOJI_IDS = {
 async def setup(bot):
 	await bot.add_cog(Info(bot))
 
-class Info(commands.Cog):
+class Info(commands.Cog, app_commands.Group, name = "information"):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		super().__init__()
 		# Add info subcommands as subcommands of corresponding commands
 		self.info_commands = (
 			(role, "Role", "role", [], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
@@ -175,6 +177,19 @@ class Info(commands.Cog):
 			timestamp = dateutil.parser.parse(snippet["publishedAt"])
 		)
 		# TODO: Handle invalid url
+	
+	@app_commands.command(name = "youtube")
+	async def slash_youtube(self, interaction, link: str):
+		"""
+		Information about a YouTube video
+		
+		Parameters
+		----------
+		link
+			YouTube video URL
+		"""
+		ctx = await interaction.client.get_context(interaction)
+		await self.youtube(ctx, url = link)
 
 
 async def role(ctx, *, role: discord.Role):
