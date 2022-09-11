@@ -31,7 +31,7 @@ class Osu(commands.Cog):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    @commands.group(
+    @commands.hybrid_group(
         aliases = ["osu!"],
         case_insensitive = True, invoke_without_command = True
     )
@@ -56,22 +56,50 @@ class Osu(commands.Cog):
 
     @osu.command()
     async def user(self, ctx, *, user: str):
-        """General osu! user information"""
+        """
+        General osu! user information
+
+        Parameters
+        ----------
+        user
+            User to retrieve osu! information about
+        """
         await self.get_user(ctx, user)
 
     @taiko.command(name = "user")
     async def taiko_user(self, ctx, *, user: str):
-        """General osu!taiko user information"""
+        """
+        General osu!taiko user information
+
+        Parameters
+        ----------
+        user
+            User to retrieve osu!taiko information about
+        """
         await self.get_user(ctx, user, 1)
 
     @catch.command(name = "user")
     async def catch_user(self, ctx, *, user: str):
-        """General osu!catch user information"""
+        """
+        General osu!catch user information
+
+        Parameters
+        ----------
+        user
+            User to retrieve osu!catch information about
+        """
         await self.get_user(ctx, user, 2)
 
     @mania.command(name = "user")
     async def mania_user(self, ctx, *, user: str):
-        """General osu!mania user information"""
+        """
+        General osu!mania user information
+
+        Parameters
+        ----------
+        user
+            User to retrieve osu!mania information about
+        """
         await self.get_user(ctx, user, 3)
 
     async def get_user(self, ctx, user, mode = 0):
