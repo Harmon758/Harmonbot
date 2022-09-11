@@ -35,32 +35,32 @@ class Osu(commands.Cog):
 		case_insensitive = True, invoke_without_command = True
 	)
 	async def osu(self, ctx):
-		'''osu!'''
+		"""osu!"""
 		await ctx.send_help(ctx.command)
 	
 	@osu.group(case_insensitive = True, invoke_without_command = True)
 	async def taiko(self, ctx):
-		'''Taiko'''
+		"""Taiko"""
 		await ctx.send_help(ctx.command)
 	
 	@osu.group(case_insensitive = True, invoke_without_command = True)
 	async def mania(self, ctx):
-		'''osu!mania'''
+		"""osu!mania"""
 		await ctx.send_help(ctx.command)
 	
 	@osu.command()
 	async def user(self, ctx, *, user: str):
-		'''General user information'''
+		"""General user information"""
 		await self.get_user(ctx, user)
 	
 	@taiko.command(name = "user")
 	async def taiko_user(self, ctx, *, user: str):
-		'''General user information'''
+		"""General user information"""
 		await self.get_user(ctx, user, 1)
 	
 	@mania.command(name = "user")
 	async def mania_user(self, ctx, *, user: str):
-		'''General user information'''
+		"""General user information"""
 		await self.get_user(ctx, user, 2)
 	
 	async def get_user(self, ctx, user, mode = 0):
