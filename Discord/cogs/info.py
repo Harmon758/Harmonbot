@@ -123,14 +123,16 @@ class Info(commands.Cog):
 		url_data = urllib.parse.urlparse(url)
 		query = urllib.parse.parse_qs(url_data.query)
 		if 'v' not in query:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid input")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid input")
+			return
 		api_url = "https://www.googleapis.com/youtube/v3/videos"
 		params = {"id": query['v'][0], "key": ctx.bot.GOOGLE_API_KEY,
 					"part": "snippet,contentDetails,statistics"}
 		async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
 			data = await resp.json()
 		if not data or not data["items"]:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unable to retrieve video information")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unable to retrieve video information")
+			return
 		data = data["items"][0]
 		duration = isodate.parse_duration(data["contentDetails"]["duration"])
 		fields = []
