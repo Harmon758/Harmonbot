@@ -18,11 +18,11 @@ async def setup(bot):
 
 class Battlerite(commands.Cog):
 	
-	'''
+	"""
 	Deprecated now that the Battlerite API is closed/shut down:
 	https://developer.battlerite.com/
 	https://twitter.com/Battlerite/status/1151092200106876933
-	'''
+	"""
 	
 	def __init__(self, bot):
 		self.bot = bot
@@ -80,13 +80,13 @@ class Battlerite(commands.Cog):
 	@commands.group(hidden = True, 
 					invoke_without_command = True, case_insensitive = True)
 	async def battlerite(self, ctx):
-		'''
+		"""
 		Battlerite
 		Deprecated now that the Battlerite API is closed/shut down:
 		https://developer.battlerite.com/
 		https://twitter.com/Battlerite/status/1151092200106876933
 		Was previously using revision 67104 mappings
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	# TODO: Make converter?
@@ -105,7 +105,7 @@ class Battlerite(commands.Cog):
 	@battlerite.group(enabled = False, hidden = True, 
 						invoke_without_command = True, case_insensitive = True)
 	async def player(self, ctx, player: str):
-		'''Player'''
+		"""Player"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
@@ -140,7 +140,7 @@ class Battlerite(commands.Cog):
 	
 	@player.command(enabled = False, hidden = True, name = "brawl")
 	async def player_brawl(self, ctx, player: str):
-		'''Brawl'''
+		"""Brawl"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
@@ -155,7 +155,7 @@ class Battlerite(commands.Cog):
 	@player.group(enabled = False, hidden = True, 
 					name = "casual", aliases = ["unranked"], case_insensitive = True)
 	async def player_casual(self, ctx, player: str):
-		'''Casual'''
+		"""Casual"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
@@ -179,7 +179,7 @@ class Battlerite(commands.Cog):
 	@player.command(enabled = False, hidden = True, 
 					name = "levels", aliases = ["level", "xp", "exp", "experience"])
 	async def player_levels(self, ctx, player: str):
-		'''Levels'''
+		"""Levels"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
@@ -202,7 +202,7 @@ class Battlerite(commands.Cog):
 	@player.group(enabled = False, hidden = True, 
 					name = "ranked", aliases = ["comp", "competitive", "league"], case_insensitive = True)
 	async def player_ranked(self, ctx, player: str):
-		'''Ranked'''
+		"""Ranked"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
@@ -226,7 +226,7 @@ class Battlerite(commands.Cog):
 	@player.command(enabled = False, hidden = True, 
 					name = "time", aliases = ["played"])
 	async def player_time(self, ctx, player: str):
-		'''Time Played'''
+		"""Time Played"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
@@ -246,7 +246,7 @@ class Battlerite(commands.Cog):
 	@player.command(enabled = False, hidden = True, 
 					name = "wins", aliases = ["losses"])
 	async def player_wins(self, ctx, player: str):
-		'''Wins/Losses'''
+		"""Wins/Losses"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
@@ -273,13 +273,13 @@ class Battlerite(commands.Cog):
 	@battlerite.group(enabled = False, hidden = True, 
 						invoke_without_command = True, case_insensitive = True)
 	async def royale(self, ctx):
-		'''Battlerite Royale'''
+		"""Battlerite Royale"""
 		await ctx.send_help(ctx.command)
 	
 	@royale.group(enabled = False, hidden = True, 
 					name = "player", invoke_without_command = True, case_insensitive = True)
 	async def royale_player(self, ctx, player: str):
-		'''Player'''
+		"""Player"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
@@ -299,7 +299,7 @@ class Battlerite(commands.Cog):
 	@royale_player.command(enabled = False, hidden = True, 
 							name = "levels", aliases = ["level", "xp", "exp", "experience"])
 	async def royale_player_levels(self, ctx, player: str):
-		'''Levels'''
+		"""Levels"""
 		data = await self.get_player(player)
 		if not data:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
