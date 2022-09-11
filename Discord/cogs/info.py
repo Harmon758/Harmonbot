@@ -133,24 +133,22 @@ class Info(commands.Cog):
 			return await ctx.embed_reply(":no_entry: Error: Unable to retrieve video information")
 		data = data["items"][0]
 		duration = isodate.parse_duration(data["contentDetails"]["duration"])
-		info = f"Length: {duration_to_string(duration, abbreviate = True)}"
+		fields = []
+		if length := duration_to_string(duration, abbreviate = True):
+			fields.append(("Length", length))
 		if "likeCount" in data["statistics"]:
-			likes = int(data["statistics"]["likeCount"])
-			dislikes = int(data["statistics"]["dislikeCount"])
-			info += f"\nLikes: {likes:,}, Dislikes: {dislikes:,}"
-			if likes + dislikes != 0:
-				info += f" ({likes / (likes + dislikes) * 100:.2f}%)"
+			fields.append(("Likes", f"{int(data['statistics']['likeCount']):,}"))
 		if "viewCount" in data["statistics"]:
-			info += f"\nViews: {int(data['statistics']['viewCount']):,}"
+			fields.append(("Views", f"{int(data['statistics']['viewCount']):,}"))
 		if "commentCount" in data["statistics"]:
-			info += f", Comments: {int(data['statistics']['commentCount']):,}"
-		info += f"\nChannel: [{data['snippet']['channelTitle']}]"
-		info += f"(https://www.youtube.com/channel/{data['snippet']['channelId']})"
+			fields.append(("Comments", f"{int(data['statistics']['commentCount']):,}"))
+		fields.append(("Channel", f"[{data['snippet']['channelTitle']}](https://www.youtube.com/channel/{data['snippet']['channelId']})"))
 		# data["snippet"]["description"]
 		timestamp = dateutil.parser.parse(data["snippet"]["publishedAt"])
-		await ctx.embed_reply(info, title = data["snippet"]["title"], title_url = url, 
+		await ctx.embed_reply(title = data["snippet"]["title"], title_url = url, 
 								thumbnail_url = data["snippet"]["thumbnails"]["high"]["url"], 
-								footer_text = "Published", timestamp = timestamp)
+								fields = fields, footer_text = "Published", 
+								timestamp = timestamp)
 		# TODO: Handle invalid url
 
 
