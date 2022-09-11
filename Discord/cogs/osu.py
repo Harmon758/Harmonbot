@@ -45,6 +45,11 @@ class Osu(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @osu.group(case_insensitive = True, invoke_without_command = True)
+    async def catch(self, ctx):
+        """osu!catch"""
+        await ctx.send_help(ctx.command)
+
+    @osu.group(case_insensitive = True, invoke_without_command = True)
     async def mania(self, ctx):
         """osu!mania"""
         await ctx.send_help(ctx.command)
@@ -58,6 +63,11 @@ class Osu(commands.Cog):
     async def taiko_user(self, ctx, *, user: str):
         """General osu!taiko user information"""
         await self.get_user(ctx, user, 1)
+
+    @catch.command(name = "user")
+    async def catch_user(self, ctx, *, user: str):
+        """General osu!catch user information"""
+        await self.get_user(ctx, user, 2)
 
     @mania.command(name = "user")
     async def mania_user(self, ctx, *, user: str):
