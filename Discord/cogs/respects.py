@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import io
@@ -126,6 +127,12 @@ class Respects(commands.Cog):
 			response += f"Total respects paid in this server: {guild_respects:,}\n"
 		response += f"Total respects paid so far: {total_respects:,}"
 		await ctx.embed_reply(response)
+	
+	@app_commands.command(name = 'f')
+	async def slash_f(self, interaction):
+		"""Pay Respects"""
+		ctx = await interaction.client.get_context(interaction)
+		await self.pay(ctx)
 	
 	@respects.command(aliases = ["statistics"])
 	async def stats(self, ctx):
