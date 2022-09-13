@@ -671,6 +671,9 @@ class Bot(commands.Bot):
 	
 	# TODO: on_command_completion
 	async def on_command(self, ctx):
+		if ctx.interaction:  # Ignore hybrid commands invoked as slash commands
+			return
+		
 		self.session_commands_invoked[ctx.command.name] = self.session_commands_invoked.get(ctx.command.name, 0) + 1
 		await self.db.execute(
 			"""
