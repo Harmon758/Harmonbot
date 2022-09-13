@@ -44,12 +44,12 @@ async def setup(bot):
 
     for emoji in EMOJI_MAPPING:
         command = EmojiCommand(emoji = emoji)
-        setattr(Emoji, emoji, command)
-        Emoji.__cog_commands__.append(command)
+        setattr(EmojiCog, emoji, command)
+        EmojiCog.__cog_commands__.append(command)
 
-    await bot.add_cog(Emoji())
+    await bot.add_cog(EmojiCog())
 
-class Emoji(commands.Cog):
+class EmojiCog(commands.Cog, name = "Emoji"):
 
     ...
 
