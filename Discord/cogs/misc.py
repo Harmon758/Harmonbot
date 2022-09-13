@@ -82,6 +82,15 @@ class Misc(commands.Cog):
 				output += character
 		await ctx.embed_reply(output)
 	
+	@commands.command()
+	async def fingers(self, ctx, *, text: str = ""):
+		"""Add fingers"""
+		await ctx.embed_reply(
+			f"\N{WHITE RIGHT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}"
+			f" {text} "
+			f"\N{WHITE LEFT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}"
+		)
+	
 	@commands.hybrid_command(aliases = ["full-width", "full_width"])
 	async def fullwidth(self, ctx, *, text: str):
 		"""
@@ -99,15 +108,6 @@ class Misc(commands.Cog):
 			else:
 				output += character
 		await ctx.embed_reply(output)
-	
-	@commands.command()
-	async def fingers(self, ctx, *, text: str = ""):
-		"""Add fingers"""
-		await ctx.embed_reply(
-			f"\N{WHITE RIGHT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}"
-			f" {text} "
-			f"\N{WHITE LEFT POINTING BACKHAND INDEX}{ctx.bot.emoji_skin_tone}"
-		)
 	
 	@commands.command()
 	async def loading_bar(self, ctx):
