@@ -10,26 +10,26 @@ from utilities import checks
 
 async def setup(bot):
 	
-	def emote_wrapper(emote):
-		async def emote_command(self, ctx):
-			await ctx.embed_reply(f":{emote}:")
-		return emote_command
+	def emoji_wrapper(emoji):
+		async def emoji_command(self, ctx):
+			await ctx.embed_reply(f":{emoji}:")
+		return emoji_command
 	
-	for emote in (
+	for emoji in (
 		"frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard",
 		"minidisc", "horse", "penguin", "dragon", "eagle", "bird"
 	):
 		command = commands.Command(
-			emote_wrapper(emote), name = emote,
-			help = emote.capitalize() + " emote",
+			emoji_wrapper(emoji), name = emoji,
+			help = emoji.capitalize() + " emoji",
 			checks = [checks.not_forbidden().predicate]
 		)
-		setattr(Misc, emote, command)
+		setattr(Misc, emoji, command)
 		Misc.__cog_commands__.append(command)
-	for name, emote in (("cow", "cow2"), ("panda", "panda_face")):
+	for name, emoji in (("cow", "cow2"), ("panda", "panda_face")):
 		command = commands.Command(
-			emote_wrapper(emote), name = name,
-			help = name.capitalize() + " emote",
+			emoji_wrapper(emoji), name = name,
+			help = name.capitalize() + " emoji",
 			checks = [checks.not_forbidden().predicate]
 		)
 		setattr(Misc, name, command)
