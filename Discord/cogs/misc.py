@@ -8,30 +8,33 @@ import asyncio
 from modules import utilities
 from utilities import checks
 
-async def setup(bot):
+def emoji_wrapper(emoji):
+	async def emoji_command(self, ctx):
+		await ctx.embed_reply(f":{emoji}:")
+	return emoji_command
+
+class EmojiCommand(commands.Command):
 	
-	def emoji_wrapper(emoji):
-		async def emoji_command(self, ctx):
-			await ctx.embed_reply(f":{emoji}:")
-		return emoji_command
+	def __init__(self, *args, emoji = None, name = None):
+		super().__init__(
+			emoji_wrapper(emoji),
+			name = name or emoji,
+			help = (name or emoji).capitalize() + " emoji",
+			checks = [checks.not_forbidden().predicate]
+		)
+		self.params = {}
+
+async def setup(bot):
 	
 	for emoji in (
 		"frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard",
 		"minidisc", "horse", "penguin", "dragon", "eagle", "bird"
 	):
-		command = commands.Command(
-			emoji_wrapper(emoji), name = emoji,
-			help = emoji.capitalize() + " emoji",
-			checks = [checks.not_forbidden().predicate]
-		)
+		command = EmojiCommand(emoji = emoji)
 		setattr(Misc, emoji, command)
 		Misc.__cog_commands__.append(command)
 	for name, emoji in (("cow", "cow2"), ("panda", "panda_face")):
-		command = commands.Command(
-			emoji_wrapper(emoji), name = name,
-			help = name.capitalize() + " emoji",
-			checks = [checks.not_forbidden().predicate]
-		)
+		command = EmojiCommand(emoji = emoji, name = name)
 		setattr(Misc, name, command)
 		Misc.__cog_commands__.append(command)
 	
