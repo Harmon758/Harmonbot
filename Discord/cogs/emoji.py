@@ -5,21 +5,21 @@ from utilities import checks
 
 
 EMOJI_MAPPING = {
-    "frog": '\N{FROG FACE}',
-    "turtle": '\N{TURTLE}',
-    "gun": '\N{PISTOL}',
-    "tomato": '\N{TOMATO}',
-    "cucumber": '\N{CUCUMBER}',
-    "eggplant": '\N{AUBERGINE}',
-    "lizard": '\N{LIZARD}',
-    "minidisc": '\N{MINIDISC}',
-    "horse": '\N{HORSE FACE}',
-    "penguin": '\N{PENGUIN}',
-    "dragon": '\N{DRAGON}',
-    "eagle": '\N{EAGLE}',
     "bird": '\N{BIRD}',
     "cow": '\N{COW}',
-    "panda": '\N{PANDA FACE}'
+    "cucumber": '\N{CUCUMBER}',
+    "dragon": '\N{DRAGON}',
+    "eagle": '\N{EAGLE}',
+    "eggplant": '\N{AUBERGINE}',
+    "frog": '\N{FROG FACE}',
+    "gun": '\N{PISTOL}',
+    "horse": '\N{HORSE FACE}',
+    "lizard": '\N{LIZARD}',
+    "minidisc": '\N{MINIDISC}',
+    "panda": '\N{PANDA FACE}',
+    "penguin": '\N{PENGUIN}',
+    "tomato": '\N{TOMATO}',
+    "turtle": '\N{TURTLE}'
 }
 
 
