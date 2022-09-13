@@ -8,34 +8,45 @@ import asyncio
 from modules import utilities
 from utilities import checks
 
+EMOJI_MAPPING = {
+	"frog": '\N{FROG FACE}',
+	"turtle": '\N{TURTLE}',
+	"gun": '\N{PISTOL}',
+	"tomato": '\N{TOMATO}',
+	"cucumber": '\N{CUCUMBER}',
+	"eggplant": '\N{AUBERGINE}',
+	"lizard": '\N{LIZARD}',
+	"minidisc": '\N{MINIDISC}',
+	"horse": '\N{HORSE FACE}',
+	"penguin": '\N{PENGUIN}',
+	"dragon": '\N{DRAGON}',
+	"eagle": '\N{EAGLE}',
+	"bird": '\N{BIRD}',
+	"cow": '\N{COW}',
+	"panda": '\N{PANDA FACE}'
+}
+
 def emoji_wrapper(emoji):
 	async def emoji_command(self, ctx):
-		await ctx.embed_reply(f":{emoji}:")
+		await ctx.embed_reply(EMOJI_MAPPING[emoji])
 	return emoji_command
 
 class EmojiCommand(commands.Command):
 	
-	def __init__(self, *args, emoji = None, name = None):
+	def __init__(self, *args, emoji = None):
 		super().__init__(
 			emoji_wrapper(emoji),
-			name = name or emoji,
-			help = (name or emoji).capitalize() + " emoji",
+			name = emoji,
+			help = emoji.capitalize() + " emoji",
 			checks = [checks.not_forbidden().predicate]
 		)
 		self.params = {}
 
 async def setup(bot):
 	
-	for emoji in (
-		"frog", "turtle", "gun", "tomato", "cucumber", "eggplant", "lizard",
-		"minidisc", "horse", "penguin", "dragon", "eagle", "bird"
-	):
+	for emoji in EMOJI_MAPPING:
 		command = EmojiCommand(emoji = emoji)
 		setattr(Misc, emoji, command)
-		Misc.__cog_commands__.append(command)
-	for name, emoji in (("cow", "cow2"), ("panda", "panda_face")):
-		command = EmojiCommand(emoji = emoji, name = name)
-		setattr(Misc, name, command)
 		Misc.__cog_commands__.append(command)
 	
 	await bot.add_cog(Misc(bot))
