@@ -55,7 +55,7 @@ sphobjinv==2.2.2
 sympy==1.10.1
 tabulate==0.8.9
 treys==0.1.3
-tweepy==4.9.0
+tweepy==4.10.1
 unicodedata2==13.0.0.post2
 urllib3==1.26.9
 wand==0.6.7
