@@ -26,7 +26,7 @@ EMOJI_MAPPING = {
 	"panda": '\N{PANDA FACE}'
 }
 
-def emoji_wrapper(emoji):
+def emoji_command_wrapper(emoji):
 	async def emoji_command(self, ctx):
 		await ctx.embed_reply(EMOJI_MAPPING[emoji])
 	return emoji_command
@@ -35,7 +35,7 @@ class EmojiCommand(commands.Command):
 	
 	def __init__(self, *args, emoji = None):
 		super().__init__(
-			emoji_wrapper(emoji),
+			emoji_command_wrapper(emoji),
 			name = emoji,
 			help = emoji.capitalize() + " emoji",
 			checks = [checks.not_forbidden().predicate]
