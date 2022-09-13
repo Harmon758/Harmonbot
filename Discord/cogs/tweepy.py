@@ -49,7 +49,12 @@ class Tweepy(commands.Cog):
             url, headers = headers
         ) as resp:
             data = await resp.json()
-        self.rtd_version = data["results"][0]["slug"]
+
+        highest_id = 0
+        for result in data["results"]:
+            if result["id"] > highest_id:
+                self.rtd_version = result["slug"]
+                highest_id = result["id"]
 
         url = (
             f"https://tweepy.readthedocs.io/en/{self.rtd_version}/objects.inv"
