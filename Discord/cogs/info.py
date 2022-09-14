@@ -36,7 +36,7 @@ BADGE_EMOJI_IDS = {
 async def setup(bot):
 	await bot.add_cog(Info(bot))
 
-class Info(commands.GroupCog, name = "information"):
+class Info(commands.GroupCog, group_name = "information"):
 	
 	def __init__(self, bot):
 		self.bot = bot
