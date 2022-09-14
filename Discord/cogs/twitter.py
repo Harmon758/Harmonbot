@@ -126,18 +126,18 @@ class Twitter(commands.Cog):
 			response = await self.bot.twitter_client.get_me(
 				user_fields = ["protected"]
 			)
-			twitter_account = response.data
-			if twitter_account.protected:
+			account = response.data
+			if account.protected:
 				self.blacklisted_handles.append(
-					twitter_account.username.lower()
+					account.username.lower()
 				)
 			# TODO: Handle more than 1000 friends/following
 			response = await self.bot.twitter_client.get_users_following(
-				twitter_account.id, max_results = 1000,
-				user_fields = ["protected"], user_auth = True
+				account.id, max_results = 1000, user_fields = ["protected"],
+				user_auth = True
 			)
-			twitter_friends = response.data
-			for friend in twitter_friends:
+			following = response.data
+			for friend in following:
 				if friend.protected:
 					self.blacklisted_handles.append(friend.username.lower())
 		except (AttributeError, tweepy.TweepyException) as e:
