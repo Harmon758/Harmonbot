@@ -105,19 +105,6 @@ class Twitter(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.blacklisted_handles = []
-		try:
-			twitter_account = self.bot.twitter_api.verify_credentials()
-			if twitter_account.protected:
-				self.blacklisted_handles.append(twitter_account.screen_name.lower())
-			# TODO: Handle more than 5000 friends/following
-			twitter_friends = self.bot.twitter_api.get_friend_ids(screen_name = twitter_account.screen_name)
-			for interval in range(0, len(twitter_friends), 100):
-				some_friends = self.bot.twitter_api.lookup_users(user_id = twitter_friends[interval:interval + 100])
-				for friend in some_friends:
-					if friend.protected:
-						self.blacklisted_handles.append(friend.screen_name.lower())
-		except (AttributeError, tweepy.TweepyException) as e:
-			self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
 		self.stream = TwitterStream(bot)
 	
 	async def cog_load(self):
@@ -135,6 +122,19 @@ class Twitter(commands.Cog):
 			)
 			"""
 		)
+		try:
+			response = await self.bot.twitter_client.get_me(user_fields = ["protected"])
+			twitter_account = response.data
+			if twitter_account.protected:
+				self.blacklisted_handles.append(twitter_account.username.lower())
+			# TODO: Handle more than 1000 friends/following
+			response = await self.bot.twitter_client.get_users_following(twitter_account.id, max_results = 1000, user_fields = ["protected"], user_auth = True)
+			twitter_friends = response.data
+			for friend in twitter_friends:
+				if friend.protected:
+					self.blacklisted_handles.append(friend.username.lower())
+		except (AttributeError, tweepy.TweepyException) as e:
+			self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
 		self.task = self.bot.loop.create_task(self.start_twitter_feeds(), name = "Start Twitter Stream")
 	
 	def cog_unload(self):
