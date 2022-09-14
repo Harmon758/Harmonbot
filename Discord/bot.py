@@ -726,11 +726,6 @@ class Bot(commands.Bot):
 		
 		# TODO: Track session invocations?
 		if isinstance(interaction.command, app_commands.Command):
-			command = interaction.command
-			command_name = command.name
-			while command.parent:
-				command_name = f"{command.parent.name} {command_name}"
-				command = command.parent
 			await self.db.execute(
 				"""
 				INSERT INTO meta.slash_commands (command, invocations)
@@ -738,7 +733,7 @@ class Bot(commands.Bot):
 				ON CONFLICT (command) DO
 				UPDATE SET invocations = slash_commands.invocations + 1
 				""", 
-				command_name
+				interaction.command.qualified_name
 			)
 			await self.db.execute(
 				"""
