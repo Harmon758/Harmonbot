@@ -1,4 +1,5 @@
 
+import discord
 from discord import app_commands
 from discord.ext import commands
 
@@ -52,6 +53,11 @@ async def setup(bot):
     await bot.add_cog(EmojiCog())
 
 class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
+
+    @commands.command(aliases = ["bigmote"])
+    async def bigmoji(self, ctx, emoji: discord.PartialEmoji):
+        """See larger versions of custom emoji"""
+        await ctx.embed_reply(image_url = emoji.url)
 
     @app_commands.command()
     async def send(self, interaction, *, emoji: EMOJI):
