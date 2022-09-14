@@ -122,6 +122,7 @@ class Twitter(commands.Cog):
 			)
 			"""
 		)
+		# Initialize blacklist
 		try:
 			response = await self.bot.twitter_client.get_me(
 				user_fields = ["protected"]
@@ -142,6 +143,7 @@ class Twitter(commands.Cog):
 					self.blacklisted_handles.append(friend.username.lower())
 		except (AttributeError, tweepy.TweepyException) as e:
 			self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
+		# Start stream
 		self.task = self.bot.loop.create_task(
 			self.start_twitter_feeds(), name = "Start Twitter Stream"
 		)
