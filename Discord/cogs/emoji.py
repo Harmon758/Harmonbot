@@ -51,17 +51,17 @@ async def setup(bot):
 
     await bot.add_cog(EmojiCog())
 
-class EmojiCog(commands.Cog, name = "Emoji"):
+class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
 
     @app_commands.command()
-    async def emoji(self, interaction, *, emoji: EMOJI):
+    async def send(self, interaction, *, emoji: EMOJI):
         """
-        Emoji
+        Send emoji
 
         Parameters
         ----------
         emoji
-            Emoji
+            Emoji to send
         """
         ctx = await interaction.client.get_context(interaction)
         await ctx.embed_reply(emoji.value)
