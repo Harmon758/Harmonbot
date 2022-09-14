@@ -657,6 +657,52 @@ class Meta(commands.Cog):
 		fields = self.format_synced_commands(synced)
 		await ctx.embed_reply(title = "Synced (Server)", fields = fields)
 	
+	@sync_tree.command(
+		name = "preview", aliases = ["test", "dry-run", "dry_run"],
+		hidden = True
+	)
+	@commands.is_owner()
+	async def sync_tree_preview(self, ctx):
+		await ctx.embed_reply(
+			title = "Slash Commands",
+			description = self.bot.CODE_BLOCK.format(
+				'\n'.join(
+					sorted(
+						command.qualified_name
+						for command in ctx.bot.tree.walk_commands()
+					)
+				)
+			),
+			fields = (
+				(
+					"Message Context Menu Commands",
+					self.bot.CODE_BLOCK.format(
+						'\n'.join(
+							sorted(
+								command.qualified_name
+								for command in ctx.bot.tree.walk_commands(
+									type = discord.AppCommandType.message
+								)
+							)
+						)
+					)
+				),
+				(
+					"User Context Menu Commands",
+					self.bot.CODE_BLOCK.format(
+						'\n'.join(
+							sorted(
+								command.qualified_name
+								for command in ctx.bot.tree.walk_commands(
+									type = discord.AppCommandType.user
+								)
+							)
+						)
+					)
+				)
+			)
+		)
+	
 	def format_synced_commands(self, commands):
 		slash_commands = []
 		message_context_menu_commands = []
