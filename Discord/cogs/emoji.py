@@ -56,7 +56,7 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
 
     @commands.command(aliases = ["bigmote"])
     async def bigmoji(self, ctx, emoji: discord.PartialEmoji):
-        """See larger versions of custom emoji"""
+        """Enlarge custom emoji"""
         await ctx.embed_reply(image_url = emoji.url)
 
     @app_commands.command()
