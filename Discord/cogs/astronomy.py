@@ -11,7 +11,7 @@ import sys
 from typing import Optional
 
 from utilities import checks
-from utilities.paginator import ButtonPaginator
+from utilities.paginators import ButtonPaginator
 
 sys.path.insert(0, "..")
 from units.time import duration_to_string

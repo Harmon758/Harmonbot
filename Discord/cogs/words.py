@@ -13,7 +13,7 @@ from google.api_core.exceptions import InvalidArgument
 import spellchecker
 
 from utilities import checks
-from utilities.paginator import ButtonPaginator
+from utilities.paginators import ButtonPaginator
 
 async def setup(bot):
     await bot.add_cog(Words())

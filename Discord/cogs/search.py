@@ -12,7 +12,7 @@ import youtube_dl
 
 from utilities import checks
 from utilities.menu_sources import WolframAlphaSource
-from utilities.paginator import ButtonPaginator
+from utilities.paginators import ButtonPaginator
 
 async def setup(bot):
 	await bot.add_cog(Search(bot))

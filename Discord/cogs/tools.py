@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFont
 import seaborn
 
 from utilities import checks
-from utilities.paginator import Paginator
+from utilities.paginators import Paginator
 
 async def setup(bot):
 	await bot.add_cog(Tools(bot))

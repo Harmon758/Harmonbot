@@ -11,7 +11,7 @@ import dateutil
 from markdownify import MarkdownConverter
 import sphobjinv
 
-from utilities.paginator import ButtonPaginator
+from utilities.paginators import ButtonPaginator
 
 
 markdown_converter = MarkdownConverter(

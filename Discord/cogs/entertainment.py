@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 from utilities import checks
 from utilities.menu_sources import XKCDSource
-from utilities.paginator import ButtonPaginator
+from utilities.paginators import ButtonPaginator
 
 async def setup(bot):
 	await bot.add_cog(Entertainment())

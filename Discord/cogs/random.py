@@ -26,7 +26,7 @@ import pyparsing
 from utilities import checks
 from utilities.converters import Maptype
 from utilities.menu_sources import XKCDSource
-from utilities.paginator import ButtonPaginator
+from utilities.paginators import ButtonPaginator
 
 async def setup(bot):
 	await bot.add_cog(Random(bot))
