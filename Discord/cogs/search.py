@@ -17,7 +17,7 @@ from utilities.paginators import ButtonPaginator
 async def setup(bot):
 	await bot.add_cog(Search(bot))
 
-class Search(commands.GroupCog, name = "search"):
+class Search(commands.GroupCog, group_name = "search"):
 	
 	def __init__(self, bot):
 		self.bot = bot
