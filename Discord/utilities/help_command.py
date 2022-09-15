@@ -60,8 +60,8 @@ class HelpCommand(commands.HelpCommand):
 				), 
 				(
 					"Also see:",
-					f"`{ctx.prefix}about`\n`"
-					f"{ctx.prefix}{self.invoked_with} help`\n"
+					f"`{ctx.prefix}about`\n"
+					f"`{ctx.prefix}{self.invoked_with} help`\n"
 					f"`{ctx.prefix}{self.invoked_with} other`"
 				),  # TODO: Include stats?
 				(
