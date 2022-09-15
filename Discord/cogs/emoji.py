@@ -6,6 +6,7 @@ from discord.ext import commands
 from enum import Enum
 
 from utilities import checks
+from utilities.transformers import PartialEmojiTransformer
 
 
 class EMOJI(Enum):
@@ -58,6 +59,24 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
     async def bigmoji(self, ctx, emoji: discord.PartialEmoji):
         """Enlarge custom emoji"""
         await ctx.embed_reply(image_url = emoji.url)
+
+    @app_commands.command()
+    async def enlarge(
+        self, interaction, *,
+        emoji: app_commands.Transform[
+            discord.PartialEmoji, PartialEmojiTransformer
+        ]
+    ):
+        """
+        Enlarge custom emoji
+
+        Parameters
+        ----------
+        emoji
+            Custom emoji to enlarge
+        """
+        ctx = await interaction.client.get_context(interaction)
+        await self.bigmoji(ctx, emoji = emoji)
 
     @app_commands.command()
     async def send(self, interaction, *, emoji: EMOJI):
