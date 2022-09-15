@@ -411,6 +411,61 @@ class Meta(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
+	@app_commands.command(name = "help")
+	async def slash_help(self, interaction):
+		if not (channel := interaction.channel) and interaction.channel_id:
+			if not (channel := self.bot.get_channel(interaction.channel_id)):
+				channel = await self.bot.fetch_channel(interaction.channel_id)
+		
+		if not channel:
+			prefixes = ('!',)
+		elif channel.type is discord.ChannelType.private:
+			prefixes = await self.bot.db.fetchval(
+				"""
+				SELECT prefixes
+				FROM direct_messages.prefixes
+				WHERE channel_id = $1
+				""", 
+				channel.id
+			)
+		else:
+			prefixes = await self.bot.db.fetchval(
+				"""
+				SELECT prefixes
+				FROM guilds.prefixes
+				WHERE guild_id = $1
+				""", 
+				channel.guild.id
+			)
+		prefix = prefixes[0] if prefixes else '!'
+		
+		embed = discord.Embed(
+			title = "Categories", 
+			description = "  ".join(
+				f"`{category}`"
+				for category in sorted(self.bot.cogs, key = str.lower)
+			), 
+			color = self.bot.bot_color
+		)
+		embed.add_field(
+			name = "For more info:", 
+			value = f"`{prefix}help [category]`\n"
+					f"`{prefix}help [command]`\n"
+					f"`{prefix}help [command] [subcommand]`"
+		)
+		embed.add_field(
+			name = "Also see:", 
+			value = f"`{prefix}about`\n`"
+					f"{prefix}help help`\n"
+					f"`{prefix}help other`"
+		)  # TODO: Include stats?
+		embed.add_field(
+			name = "For all commands:", 
+			value = f"`{prefix}help all`", 
+			inline = False
+		)
+		await interaction.response.send_message(embed = embed)
+	
 	@harmonbot.group(name = "activity", aliases = ["game", "playing", "status"], 
 						invoke_without_command = True, case_insensitive = True)
 	@commands.guild_only()
