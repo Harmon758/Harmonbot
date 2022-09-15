@@ -66,9 +66,13 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
         output = ""
         for character in text:
             if 'a' <= character.lower() <= 'z':
-                output += f":regional_indicator_{character.lower()}:"
+                output += chr(ord(character.lower()) + 127365) + ' '
+                # ord('🇦') - ord('a') = 127365
             elif '0' <= character <= '9':
-                output += f":{ctx.bot.inflect_engine.number_to_words(int(character))}:"
+                output += (
+                    character +
+                    "\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} "
+                )
             else:
                 output += character
         try:
