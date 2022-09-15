@@ -118,6 +118,8 @@ class ButtonPaginator(discord.ui.View):
             self.message = await self.ctx_or_interaction.send(
                 **kwargs, view = self
             )
+            if self.ctx_or_interaction.interaction:
+                self.message = await self.message.fetch()
             await self.bot.attempt_delete_message(
                 self.ctx_or_interaction.message
             )
