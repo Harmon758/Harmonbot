@@ -63,7 +63,7 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
     @commands.command(aliases = ["emotify"])
     async def emojify(self, ctx, *, text: str):
         """
-        Emojify text
+        Convert text to emoji
         Note: Discord currently only renders up to 199 emoji per message
         """
         output = ""
