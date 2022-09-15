@@ -43,23 +43,6 @@ class Misc(commands.Cog):
             view = Counter(timeout = None)
         )
 
-    @commands.command(aliases = ["emotify"])
-    async def emojify(self, ctx, *, text: str):
-        """Emojify text"""
-        output = ""
-        for character in text:
-            if 'a' <= character.lower() <= 'z':
-                output += f":regional_indicator_{character.lower()}:"
-            elif '0' <= character <= '9':
-                output += f":{ctx.bot.inflect_engine.number_to_words(int(character))}:"
-            else:
-                output += character
-        try:
-            await ctx.embed_reply(output)
-        except discord.HTTPException:
-            # TODO: use textwrap/paginate
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
-
     @commands.command()
     async def fancify(self, ctx, *, text: str):
         """Fancify text"""

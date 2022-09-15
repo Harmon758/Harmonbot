@@ -60,6 +60,23 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
         """Enlarge custom emoji"""
         await ctx.embed_reply(image_url = emoji.url)
 
+    @commands.command(aliases = ["emotify"])
+    async def emojify(self, ctx, *, text: str):
+        """Emojify text"""
+        output = ""
+        for character in text:
+            if 'a' <= character.lower() <= 'z':
+                output += f":regional_indicator_{character.lower()}:"
+            elif '0' <= character <= '9':
+                output += f":{ctx.bot.inflect_engine.number_to_words(int(character))}:"
+            else:
+                output += character
+        try:
+            await ctx.embed_reply(output)
+        except discord.HTTPException:
+            # TODO: use textwrap/paginate
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+
     @app_commands.command()
     async def enlarge(
         self, interaction, *,
