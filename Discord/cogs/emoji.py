@@ -115,3 +115,16 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
         ctx = await interaction.client.get_context(interaction)
         await ctx.embed_reply(emoji.value)
 
+    @app_commands.command(name = "text")
+    async def slash_text(self, interaction, *, text: str):
+        """
+        Convert text to emoji
+
+        Parameters
+        ----------
+        text
+            Text to convert to emoji
+        """
+        ctx = await interaction.client.get_context(interaction)
+        await self.emojify(ctx, text = text)
+
