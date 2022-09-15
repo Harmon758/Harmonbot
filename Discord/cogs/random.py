@@ -31,7 +31,7 @@ from utilities.paginators import ButtonPaginator
 async def setup(bot):
 	await bot.add_cog(Random(bot))
 
-class Random(commands.GroupCog, name = "random"):
+class Random(commands.GroupCog, group_name = "random"):
 	
 	def __init__(self, bot):
 		self.bot = bot
