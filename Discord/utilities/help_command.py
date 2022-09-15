@@ -45,15 +45,32 @@ class HelpCommand(commands.HelpCommand):
 	
 	async def send_bot_help(self, mapping):
 		ctx = self.context
-		description = "  ".join(f"`{category}`" for category in sorted(ctx.bot.cogs, key = str.lower))
-		fields = (("For more info:", f"`{ctx.prefix}{self.invoked_with} [category]`\n"
-										f"`{ctx.prefix}{self.invoked_with} [command]`\n"
-										f"`{ctx.prefix}{self.invoked_with} [command] [subcommand]`"), 
-					("Also see:", f"`{ctx.prefix}about`\n`"
-									f"{ctx.prefix}{self.invoked_with} help`\n"
-									f"`{ctx.prefix}{self.invoked_with} other`"),  # TODO: Include stats?
-					("For all commands:", f"`{ctx.prefix}{self.invoked_with} all`", False))
-		await ctx.embed_reply(description, title = "Categories", fields = fields)
+		await ctx.embed_reply(
+			title = "Categories",
+			description = "  ".join(
+				f"`{category}`"
+				for category in sorted(ctx.bot.cogs, key = str.lower)
+			),
+			fields = (
+				(
+					"For more info:",
+					f"`{ctx.prefix}{self.invoked_with} [category]`\n"
+					f"`{ctx.prefix}{self.invoked_with} [command]`\n"
+					f"`{ctx.prefix}{self.invoked_with} [command] [subcommand]`"
+				), 
+				(
+					"Also see:",
+					f"`{ctx.prefix}about`\n`"
+					f"{ctx.prefix}{self.invoked_with} help`\n"
+					f"`{ctx.prefix}{self.invoked_with} other`"
+				),  # TODO: Include stats?
+				(
+					"For all commands:",
+					f"`{ctx.prefix}{self.invoked_with} all`",
+					False
+				)
+			)
+		)
 	
 	async def send_cog_help(self, cog):
 		ctx = self.context
