@@ -81,7 +81,7 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
         try:
             await ctx.embed_reply(output)
         except discord.HTTPException:
-            # TODO: use textwrap/paginate
+            # TODO: Use textwrap/paginate
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 
     @app_commands.command()
