@@ -60,7 +60,7 @@ class RuneScape(commands.Cog):
                 ("Category", data["type"])
             )
         )
-        # id?, members
+        # TODO: Include id?, members
 
     @runescape.command(aliases = ["bestiary"])
     async def monster(self, ctx, *, monster: str):
