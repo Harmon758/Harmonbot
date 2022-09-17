@@ -18,6 +18,7 @@ async def setup(bot):
 	await bot.add_cog(Search(bot))
 
 class Search(commands.GroupCog, group_name = "search"):
+	"""Search"""
 	
 	def __init__(self, bot):
 		self.bot = bot
