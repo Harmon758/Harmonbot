@@ -1,4 +1,5 @@
 
+from discord import app_commands
 from discord.ext import commands
 
 import collections
@@ -16,7 +17,7 @@ sys.path.pop(0)
 async def setup(bot):
     await bot.add_cog(RuneScape(bot))
 
-class RuneScape(commands.Cog):
+class RuneScape(commands.GroupCog, group_name = "runescape"):
 
     def __init__(self, bot):
         self.bot = bot
@@ -61,6 +62,19 @@ class RuneScape(commands.Cog):
             )
         )
         # TODO: Include id?, members
+
+    @app_commands.command(name = "ge")
+    async def slash_ge(self, interaction, *, item: str):
+        """
+        Look up an item on the Grand Exchange
+
+        Parameters
+        ----------
+        item
+            Item to look up on the Grand Exchange
+        """
+        ctx = await interaction.client.get_context(interaction)
+        await self.ge(ctx, item = item)
 
     @runescape.command(aliases = ["bestiary"])
     async def monster(self, ctx, *, monster: str):
