@@ -54,6 +54,7 @@ async def setup(bot):
     await bot.add_cog(EmojiCog())
 
 class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
+    """Emoji"""
 
     @commands.command(aliases = ["bigmote"])
     async def bigmoji(self, ctx, emoji: discord.PartialEmoji):
