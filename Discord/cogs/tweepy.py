@@ -205,14 +205,6 @@ async def format_documentation_section(
                         )
                 description_list.extract()
 
-            if len(embed) > bot.EMBED_TOTAL_CHARACTER_LIMIT:
-                embed.remove_field(-1)
-                embed.add_field(
-                    name = "...",
-                    value = bot.ZERO_WIDTH_SPACE,
-                    inline = False
-                )
-
             if references_heading := content.find(
                 'p', class_ = "rubric", string = "References"
             ):
@@ -233,6 +225,27 @@ async def format_documentation_section(
                     markdown_converter.convert_soup(content.find("dd"))
                 )
             )
+
+            while len(embed) > bot.EMBED_TOTAL_CHARACTER_LIMIT:
+                if embed.fields[-1].name == "...":
+                    embed.remove_field(-2)
+                elif embed.fields[-2].name == "...":
+                    embed.remove_field(-3)
+                elif embed.fields[-1].name == "References":
+                    embed.remove_field(-2)
+                    embed.insert_field_at(
+                        -1,
+                        name = "...",
+                        value = bot.ZERO_WIDTH_SPACE,
+                        inline = False
+                    )
+                else:
+                    embed.remove_field(-1)
+                    embed.add_field(
+                        name = "...",
+                        value = bot.ZERO_WIDTH_SPACE,
+                        inline = False
+                    )
         else:
             embed.description = remove_extra_newlines(
                 remove_anchor_links(
