@@ -29,7 +29,7 @@ class RuneScape(commands.Cog):
         case_insensitive = True, invoke_without_command = True
     )
     async def runescape(self, ctx):
-        '''RuneScape'''
+        """RuneScape"""
         await ctx.send_help(ctx.command)
 
     @runescape.command(aliases = ["grandexchange", "grand_exchange"])
