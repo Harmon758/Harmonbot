@@ -18,6 +18,7 @@ async def setup(bot):
     await bot.add_cog(RuneScape(bot))
 
 class RuneScape(commands.GroupCog, group_name = "runescape"):
+    """RuneScape"""
 
     def __init__(self, bot):
         self.bot = bot
