@@ -32,6 +32,7 @@ async def setup(bot):
 	await bot.add_cog(Random(bot))
 
 class Random(commands.GroupCog, group_name = "random"):
+	"""Random"""
 	
 	def __init__(self, bot):
 		self.bot = bot
