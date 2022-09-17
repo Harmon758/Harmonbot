@@ -37,6 +37,7 @@ async def setup(bot):
 	await bot.add_cog(Info(bot))
 
 class Info(commands.GroupCog, group_name = "information"):
+	"""Information"""
 	
 	def __init__(self, bot):
 		self.bot = bot
