@@ -306,6 +306,13 @@ class Search(commands.GroupCog, group_name = "search"):
 		"""Search for an article on The Lord of The Rings Wiki"""
 		await self.process_wiki(ctx, "https://lotr.fandom.com/api.php", query)
 	
+	@commands.command()
+	async def tolkien(self, ctx, *, query: str):
+		"""Search for an article on Tolkien Gateway"""
+		await self.process_wiki(
+			ctx, "https://tolkiengateway.net/w/api.php", query
+		)
+	
 	async def process_wiki(
 		self, ctx, url, search, random = False, redirect = True
 	):
