@@ -363,7 +363,8 @@ class Search(commands.GroupCog, group_name = "search"):
 			)
 		elif redirect and "redirects" in data["query"]:
 			await self.process_wiki(
-				ctx, data["query"]["redirects"][-1]["to"], redirect = False
+				ctx, url, data["query"]["redirects"][-1]["to"],
+				redirect = False
 			)
 			# TODO: Handle section links/tofragments
 		else:
