@@ -565,7 +565,7 @@ async def user(ctx):
 async def wikipedia(ctx):
 	'''Random Wikipedia article'''
 	if cog := ctx.bot.get_cog("Search"):
-		await cog.process_wikipedia(ctx, None, random = True)
+		await cog.process_wiki(ctx, "https://en.wikipedia.org/w/api.php", None, random = True)
 	else:
 		await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")  # necessary?
 

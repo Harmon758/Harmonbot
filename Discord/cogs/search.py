@@ -8,6 +8,7 @@ import inspect
 import re
 from typing import Optional
 
+from bs4 import BeautifulSoup
 import youtube_dl
 
 from utilities import checks
@@ -275,7 +276,9 @@ class Search(commands.GroupCog, group_name = "search"):
 	)
 	async def wikipedia(self, ctx, *, query: str):
 		"""Search for an article on Wikipedia"""
-		await self.process_wikipedia(ctx, query)
+		await self.process_wiki(
+			ctx, "https://en.wikipedia.org/w/api.php", query
+		)
 	
 	@app_commands.command(name = "wikipedia")
 	async def slash_wikipedia(self, interaction, *, query: str):
@@ -290,13 +293,24 @@ class Search(commands.GroupCog, group_name = "search"):
 		ctx = await interaction.client.get_context(interaction)
 		await self.wikipedia(ctx, query = query)
 	
-	async def process_wikipedia(
-		self, ctx, search, random = False, redirect = True
+	@commands.group(
+		aliases = ["wikia", "wikicities"],
+		case_insensitive = True, invoke_without_command = True
+	)
+	async def fandom(self, ctx):
+		"""Search for an article on a Fandom wiki"""
+		await ctx.send_help(ctx.command)
+	
+	@fandom.command(aliases = ["lord_of_the_rings"])
+	async def lotr(self, ctx, *, query: str):
+		"""Search for an article on The Lord of The Rings Wiki"""
+		await self.process_wiki(ctx, "https://lotr.fandom.com/api.php", query)
+	
+	async def process_wiki(
+		self, ctx, url, search, random = False, redirect = True
 	):
 		# TODO: Add User-Agent
 		# TODO: Use textwrap
-		url = "https://en.wikipedia.org/w/api.php"
-		
 		if random:
 			async with ctx.bot.aiohttp_session.get(
 				url, params = {
@@ -348,20 +362,51 @@ class Search(commands.GroupCog, group_name = "search"):
 				f"{ctx.bot.error_emoji} Error: {page['invalidreason']}"
 			)
 		elif redirect and "redirects" in data["query"]:
-			await self.process_wikipedia(
+			await self.process_wiki(
 				ctx, data["query"]["redirects"][-1]["to"], redirect = False
 			)
 			# TODO: Handle section links/tofragments
 		else:
 			thumbnail = data["query"]["pages"][page_id].get("thumbnail")
-			await ctx.embed_reply(
-				title = page["title"],
-				title_url = page["fullurl"],  # TODO: Use canonicalurl?
+			
+			if "extract" not in page:
+				async with ctx.bot.aiohttp_session.get(
+					url, params = {
+						"action": "parse", "page": search, "prop": "text",
+						"format": "json"
+					}
+				) as resp:
+					data = await resp.json()
+				
+				p = BeautifulSoup(
+					data["parse"]["text"]['*'], "lxml"
+				).body.div.find_all('p', recursive = False)
+				
+				first_p = p[0]
+				if first_p.aside:
+					first_p.aside.clear()
+				description = first_p.get_text()
+				
+				if len(p) > 1:
+					second_p = p[1]
+					description += '\n' + second_p.get_text()
+				
+				description = re.sub(
+					r"\n\s*\n", "\n\n",
+					description if len(description) <= 512
+					else description[:512] + "..."
+				)
+			else:
 				description = re.sub(
 					r"\s+ \s+", ' ',
 					page["extract"] if len(page["extract"]) <= 512
 					else page["extract"][:512] + "..."
-				),
+				)
+			
+			await ctx.embed_reply(
+				title = page["title"],
+				title_url = page["fullurl"],  # TODO: Use canonicalurl?
+				description = description,
 				image_url = (
 					thumbnail["source"].replace(
 						f"{thumbnail['width']}px", "1200px"
