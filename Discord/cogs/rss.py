@@ -275,7 +275,9 @@ class RSS(commands.Cog):
 					if thumbnail_url:
 						if not urllib.parse.urlparse(thumbnail_url).netloc:
 							thumbnail_url = feed_info.feed.link + thumbnail_url
-						embed.set_thumbnail(url = thumbnail_url)
+						if len(thumbnail_url) <= self.bot.ETUCL:
+							# ETUCL: Embed Thumbnail URL Character Limit
+							embed.set_thumbnail(url = thumbnail_url)
 					# Get and set footer icon url
 					footer_icon_url = (
 						feed_info.feed.get("icon") or feed_info.feed.get("logo") or 
