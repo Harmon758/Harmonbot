@@ -331,7 +331,7 @@ class Location(commands.Cog):
 			view = view,
 			wait = True
 		)
-        # Fetch Message, as InteractionMessage token expires after 15 min.
+		# Fetch Message, as InteractionMessage token expires after 15 min.
 		view.message = await message.fetch()
 		interaction.client.views.append(view)
 
