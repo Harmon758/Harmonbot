@@ -294,6 +294,7 @@ class Location(commands.Cog):
 		location
 			Location to query
 		"""
+		await interaction.response.defer()
 		try:
 			geocode_data = await get_geocode_data(
 				location, aiohttp_session = interaction.client.aiohttp_session
