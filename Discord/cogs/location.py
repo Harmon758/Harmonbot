@@ -307,8 +307,8 @@ class Location(commands.Cog):
 			)
 			
 			if not locations:
-				await interaction.response.send_message(
-					"Error: Location not found", ephemeral = True
+				await interaction.followup.send(
+					"Error: Location not found"
 				)
 				return
 			
@@ -326,11 +326,11 @@ class Location(commands.Cog):
 			interaction.client, geocode_data['formatted_address'], one_call,
 			interaction.user
 		)
-		await interaction.response.send_message(
+		message = await interaction.followup.send(
 			embed = embed,
-			view = view
+			view = view,
+			wait = True
 		)
-		message = await interaction.original_message()
         # Fetch Message, as InteractionMessage token expires after 15 min.
 		view.message = await message.fetch()
 		interaction.client.views.append(view)
