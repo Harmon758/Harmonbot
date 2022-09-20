@@ -16,7 +16,7 @@ async def setup(bot):
 	await bot.add_cog(Math())
 
 class Math(commands.Cog):
-	'''Also see Matrix category'''
+	"""Also see Matrix category"""
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
