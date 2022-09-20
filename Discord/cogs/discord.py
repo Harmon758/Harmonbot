@@ -15,6 +15,7 @@ from utilities import checks
 
 ACTIVITES = {
 	"Ask Away": 976052223358406656,
+	"Bash Out": 1006584476094177371,
 	"Betrayal.io": 773336526917861400,
 	"Blazing 8s": 832025144389533716,
 	"Bobble League": 947957217959759964,
@@ -74,6 +75,7 @@ class Discord(commands.Cog):
 		
 		for activity, name, aliases in (
 			("Ask Away", "ask", []),
+			("Bash Out", "bash", []),
 			("Betrayal.io", "betrayal", ["betrayal.io"]),
 			("Blazing 8s", "eights", ["ocho", "8s"]),
 			("Bobble League", "bobble", []),
