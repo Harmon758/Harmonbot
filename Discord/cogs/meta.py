@@ -150,7 +150,7 @@ class Meta(commands.Cog):
 	async def type(self, ctx):
 		'''Sends typing status'''
 		# TODO: Add seconds option
-		await ctx.trigger_typing()
+		await ctx.typing()
 	
 	# Public Info
 	
