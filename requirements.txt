@@ -113,6 +113,7 @@ smmap==4.0.0
 sortedcontainers==2.4.0
 soupsieve==2.3.2.post1
 tornado==6.1
+types-cryptography==3.3.23
 tzdata==2022.1
 tzlocal==4.2
 uritemplate==4.1.1
