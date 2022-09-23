@@ -95,7 +95,7 @@ multidict==6.0.2
 oauthlib==3.2.1
 orjson==3.6.8
 packaging==21.3
-protobuf==3.20.1
+protobuf==3.20.2
 proto-plus==1.20.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
