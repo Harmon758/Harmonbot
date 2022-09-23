@@ -61,8 +61,8 @@ def check_answer(answer, response, inflect_engine = None):
     # Remove article prefixes
     answer = remove_article_prefix(answer)
     response = remove_article_prefix(response)
-    # Return False if empty response
-    if not response:
+    # Return False if empty response or answer
+    if not response or not answer:
         return False
 
     # Get items in lists
