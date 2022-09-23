@@ -25,6 +25,7 @@ class TestCheckAnswer(unittest.TestCase):
 
     def test_wrong_encoding(self):
         self.assertTrue(check_answer("a rÃ©sumÃ©", "resume"))
+        self.assertTrue(check_answer("TenochtitlÃ¡n", "Tenochtitlan"))
 
 
 if __name__ == "__main__":
