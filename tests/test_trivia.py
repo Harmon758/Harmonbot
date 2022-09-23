@@ -12,6 +12,17 @@ class TestCheckAnswer(unittest.TestCase):
     def test_incorrect_answer(self):
         self.assertFalse(check_answer("correct", "incorrect"))
 
+    def test_parentheses_with_article_prefix(self):
+        self.assertTrue(
+            check_answer(
+                "the ISS (the International Space Station)",
+                "International Space Station"
+            )
+        )
+        self.assertTrue(
+            check_answer("Holland (The Netherlands)", "Netherlands")
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
