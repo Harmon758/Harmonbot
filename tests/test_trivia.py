@@ -23,6 +23,9 @@ class TestCheckAnswer(unittest.TestCase):
             check_answer("Holland (The Netherlands)", "Netherlands")
         )
 
+    def test_wrong_encoding(self):
+        self.assertTrue(check_answer("a rÃ©sumÃ©", "resume"))
+
 
 if __name__ == "__main__":
     unittest.main()
