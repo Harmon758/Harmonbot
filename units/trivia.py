@@ -191,6 +191,9 @@ def check_answer(answer, response, inflect_engine = None):
         if item.endswith(" accepted"):
             accepted.append(item[:-9])
             accepted.append(remove_article_prefix(item[:-9]))
+    accepted = set(accepted)
+    for item in accepted.copy():
+        accepted.add(remove_article_prefix(item))
     if response in accepted:
         return True
     # Check XX YY (or ZZ accepted)
