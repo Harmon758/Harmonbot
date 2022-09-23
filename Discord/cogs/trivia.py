@@ -409,10 +409,12 @@ class Trivia(commands.Cog):
 			return
 		if message.author.id == self.bot.user.id:
 			return
-		if (self.active_jeopardy[message.guild.id]["question_countdown"] and 
-			not self.active_jeopardy[message.guild.id]["answerer"] and 
-			check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content, inflect_engine = self.bot.inflect_engine)):
-				self.active_jeopardy[message.guild.id]["answerer"] = message.author
+		if not self.active_jeopardy[message.guild.id]["question_countdown"]:
+			return
+		if self.active_jeopardy[message.guild.id]["answerer"]:
+			return
+		if check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content, inflect_engine = self.bot.inflect_engine):
+			self.active_jeopardy[message.guild.id]["answerer"] = message.author
 	
 	# TODO: jeopardy stats
 
