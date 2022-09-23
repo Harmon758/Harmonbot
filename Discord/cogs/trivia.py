@@ -407,6 +407,8 @@ class Trivia(commands.Cog):
 			return
 		if message.channel.id != self.active_jeopardy[message.guild.id]["channel_id"]:
 			return
+		if message.author.id == self.bot.user.id:
+			return
 		if (self.active_jeopardy[message.guild.id]["question_countdown"] and 
 			not self.active_jeopardy[message.guild.id]["answerer"] and 
 			check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content, inflect_engine = self.bot.inflect_engine)):
