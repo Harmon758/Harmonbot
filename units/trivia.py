@@ -57,14 +57,14 @@ def check_answer(answer, response, inflect_engine = None):
         return True
     if answer_copy.replace('-', "") == response_copy.replace('-', ""):
         return True
-    
+
     # Remove article prefixes
     answer = remove_article_prefix(answer)
     response = remove_article_prefix(response)
     # Return False if empty response
     if not response:
         return False
-    
+
     # Get items in lists
     answer_items = [item.strip() for item in answer.split(',')]
     answer_items[-1:] = [
