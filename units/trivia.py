@@ -35,6 +35,8 @@ def check_answer(answer, response, inflect_engine = None):
             answer = answer.replace(character, "")
         if character in response:
             response = response.replace(character, "")
+    # Fix wrong encoding
+    answer = answer.encode("ISO-8859-1").decode("UTF-8")
     # Remove diacritics
     answer = "".join(
         character for character in unicodedata.normalize("NFD", answer) 
