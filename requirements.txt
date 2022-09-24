@@ -70,7 +70,7 @@ async-lru==1.0.3
 async-timeout==4.0.2
 attrs==21.2.0
 cachetools==4.2.2
-certifi==2022.9.14
+certifi==2022.9.24
 cffi==1.15.0
 charset-normalizer==2.0.12
 contourpy==1.0.5
