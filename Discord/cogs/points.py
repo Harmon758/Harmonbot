@@ -71,18 +71,15 @@ class Points(commands.Cog):
     @points.command(
         aliases = ["leaders", "most", "ranks", "scoreboard", "top"]
     )
-    async def leaderboard(self, ctx, number: int = 10):
+    async def leaderboard(self, ctx, number: commands.Range[int, 1, 15] = 10):
         """
         Points (¤) leaderboard
 
         Parameters
         ----------
         number
-            Number of Points (¤) leaders to show
+            Number of Points (¤) leaders to show (between 1 and 15)
         """
-        if number > 15:
-            number = 15
-
         fields = []
         async with ctx.bot.database_connection_pool.acquire() as connection:
             async with connection.transaction():
