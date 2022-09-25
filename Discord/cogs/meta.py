@@ -330,6 +330,7 @@ class Meta(commands.Cog):
 	@commands.hybrid_command()
 	async def uptime(self, ctx):
 		"""Bot uptime"""
+		await ctx.defer()
 		total_recorded_uptime = await ctx.bot.db.fetchval(
 			"""
 			SELECT uptime FROM meta.stats
