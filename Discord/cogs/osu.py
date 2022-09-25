@@ -31,25 +31,22 @@ class Osu(commands.Cog):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    @commands.hybrid_group(
-        aliases = ["osu!"],
-        case_insensitive = True, invoke_without_command = True
-    )
+    @commands.hybrid_group(aliases = ["osu!"], case_insensitive = True)
     async def osu(self, ctx):
         """osu!"""
         await ctx.send_help(ctx.command)
 
-    @osu.group(case_insensitive = True, invoke_without_command = True)
+    @osu.group(case_insensitive = True)
     async def taiko(self, ctx):
         """osu!taiko"""
         await ctx.send_help(ctx.command)
 
-    @osu.group(case_insensitive = True, invoke_without_command = True)
+    @osu.group(case_insensitive = True)
     async def catch(self, ctx):
         """osu!catch"""
         await ctx.send_help(ctx.command)
 
-    @osu.group(case_insensitive = True, invoke_without_command = True)
+    @osu.group(case_insensitive = True)
     async def mania(self, ctx):
         """osu!mania"""
         await ctx.send_help(ctx.command)
