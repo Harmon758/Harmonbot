@@ -49,9 +49,8 @@ class Points(commands.Cog):
     async def subtract(self, *, user, points = 1):
         return await self.add(user = user, points = -points)
 
-    @commands.group(
-        aliases = ["credits"],
-        case_insensitive =True, invoke_without_command = True
+    @commands.hybrid_group(
+        aliases = ["credits"], case_insensitive =True, fallback = "balance"
     )
     async def points(self, ctx):
         """
@@ -73,7 +72,14 @@ class Points(commands.Cog):
         aliases = ["leaders", "most", "ranks", "scoreboard", "top"]
     )
     async def leaderboard(self, ctx, number: int = 10):
-        """Points (¤) leaderboard"""
+        """
+        Points (¤) leaderboard
+
+        Parameters
+        ----------
+        number
+            Number of Points (¤) leaders to show
+        """
         if number > 15:
             number = 15
 
