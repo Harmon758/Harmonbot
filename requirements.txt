@@ -108,7 +108,7 @@ pycares==4.2.2
 pycparser==2.21
 pycryptodomex==3.15.0
 PyJWT[crypto]==2.5.0
-pynacl==1.5.0
+PyNaCl==1.5.0
 pyrsistent==0.18.1
 pysocks==1.7.1
 pytz-deprecation-shim==0.1.0.post0
