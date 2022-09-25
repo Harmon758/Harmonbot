@@ -165,6 +165,8 @@ class Words(commands.Cog):
         word
             Word to get rhymes for
         """
+        await ctx.defer()
+
         try:
             rhymes = ctx.bot.wordnik_word_api.getRelatedWords(
                 word, relationshipTypes = "rhyme",
