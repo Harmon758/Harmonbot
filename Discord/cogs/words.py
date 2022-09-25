@@ -33,6 +33,8 @@ class Words(commands.Cog):
         word
             Word to get antonyms for
         """
+        await ctx.defer()
+
         try:
             antonyms = ctx.bot.wordnik_word_api.getRelatedWords(
                 word, relationshipTypes = "antonym",
