@@ -71,6 +71,8 @@ class Words(commands.Cog):
         word
             Word to define
         """
+        await ctx.defer()
+
         try:
             definitions = ctx.bot.wordnik_word_api.getDefinitions(word)
             # useCanonical = True ?
