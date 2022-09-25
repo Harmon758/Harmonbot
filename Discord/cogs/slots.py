@@ -44,7 +44,7 @@ class Slots(commands.Cog):
             """
         )
 
-    @commands.group(case_insensitive = True, invoke_without_command = True)
+    @commands.hybrid_group(case_insensitive = True, fallback = "play")
     async def slots(self, ctx):
         """
         Slot machine
@@ -75,7 +75,7 @@ class Slots(commands.Cog):
         else:
             await ctx.embed_reply(f"You haven't played slots yet")
 
-    @slots.command()
+    @slots.command(with_app_command = False)
     @commands.is_owner()
     async def value(self, ctx):
         value = 0
