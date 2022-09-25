@@ -35,7 +35,7 @@ import tweepy.asynchronous
 import twitchio
 import wolframalpha
 from wordnik import swagger, WordApi, WordsApi
-import youtube_dl
+import yt_dlp as youtube_dl
 
 from tree import CommandTree
 from utilities import errors
