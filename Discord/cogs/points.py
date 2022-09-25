@@ -50,7 +50,7 @@ class Points(commands.Cog):
         return await self.add(user = user, points = -points)
 
     @commands.hybrid_group(
-        aliases = ["credits"], case_insensitive =True, fallback = "balance"
+        aliases = ["credits"], case_insensitive = True, fallback = "balance"
     )
     async def points(self, ctx):
         """
