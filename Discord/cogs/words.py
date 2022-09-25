@@ -107,6 +107,8 @@ class Words(commands.Cog):
         word
             Word to get pronunciation for
         """
+        await ctx.defer()
+
         try:
             pronunciation = ctx.bot.wordnik_word_api.getTextPronunciations(
                 word, limit = 1
