@@ -145,14 +145,14 @@ class ChessCog(commands.Cog, name = "Chess"):
 
             if view.accepted:
                 await challenge.edit(
-                    f"{opponent.mention}: You have accepted {ctx.author}'s challenge"
+                    content = f"{opponent.mention}: You have accepted {ctx.author}'s challenge"
                 )
                 await ctx.send(
                     f"{ctx.author.mention}: {opponent} has accepted your challenge"
                 )
             else:
                 await challenge.edit(
-                    f"{opponent.mention}: You have declined {ctx.author}'s challenge"
+                    content = f"{opponent.mention}: You have declined {ctx.author}'s challenge"
                 )
                 await ctx.send(
                     f"{ctx.author.mention}: {opponent} has declined your challenge"
