@@ -1,5 +1,4 @@
 
-from discord import app_commands
 from discord.ext import commands
 
 import collections
@@ -17,7 +16,7 @@ sys.path.pop(0)
 async def setup(bot):
     await bot.add_cog(RuneScape(bot))
 
-class RuneScape(commands.GroupCog, group_name = "runescape"):
+class RuneScape(commands.Cog):
     """RuneScape"""
 
     def __init__(self, bot):
@@ -26,7 +25,7 @@ class RuneScape(commands.GroupCog, group_name = "runescape"):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    @commands.group(
+    @commands.hybrid_group(
         aliases = ["rs"],
         case_insensitive = True, invoke_without_command = True
     )
@@ -36,7 +35,14 @@ class RuneScape(commands.GroupCog, group_name = "runescape"):
 
     @runescape.command(aliases = ["grandexchange", "grand_exchange"])
     async def ge(self, ctx, *, item: str):
-        """Grand Exchange"""
+        """
+        Look up an item on the Grand Exchange
+
+        Parameters
+        ----------
+        item
+            Item to look up on the Grand Exchange
+        """
         try:
             item_id = await get_item_id(
                 item, aiohttp_session = ctx.bot.aiohttp_session
@@ -64,20 +70,7 @@ class RuneScape(commands.GroupCog, group_name = "runescape"):
         )
         # TODO: Include id?, members
 
-    @app_commands.command(name = "ge")
-    async def slash_ge(self, interaction, *, item: str):
-        """
-        Look up an item on the Grand Exchange
-
-        Parameters
-        ----------
-        item
-            Item to look up on the Grand Exchange
-        """
-        ctx = await interaction.client.get_context(interaction)
-        await self.ge(ctx, item = item)
-
-    @runescape.command(aliases = ["bestiary"])
+    @runescape.command(aliases = ["bestiary"], with_app_command = False)
     async def monster(self, ctx, *, monster: str):
         '''Bestiary'''
         try:
@@ -99,7 +92,10 @@ class RuneScape(commands.GroupCog, group_name = "runescape"):
         )
         # add other? - https://runescape.wiki/w/RuneScape_Bestiary#beastData
 
-    @runescape.command(aliases = ["levels", "level", "xp", "ranks", "rank"])
+    @runescape.command(
+        aliases = ["levels", "level", "xp", "ranks", "rank"],
+        with_app_command = False
+    )
     async def stats(self, ctx, *, username: str):
         '''Stats'''
         url = "http://services.runescape.com/m=hiscore/index_lite.ws"
@@ -151,12 +147,12 @@ class RuneScape(commands.GroupCog, group_name = "runescape"):
             title = username, title_url = title_url, fields = fields
         )
 
-    @runescape.command()
+    @runescape.command(with_app_command = False)
     async def wiki(self, ctx):
         '''WIP'''
         ...
 
-    @runescape.command(hidden = True)
+    @runescape.command(hidden = True, with_app_command = False)
     async def zybez(self, ctx):
         '''
         This command has been deprecated
