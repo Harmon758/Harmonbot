@@ -212,6 +212,8 @@ class Words(commands.Cog):
         word
             Word to get synonyms for
         """
+        await ctx.defer()
+
         try:
             synonyms = ctx.bot.wordnik_word_api.getRelatedWords(
                 word, relationshipTypes = "synonym",
