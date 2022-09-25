@@ -63,6 +63,7 @@ class Points(commands.Cog):
         You can spend Points (¤) on:
         • Slots
         """
+        await ctx.defer()
         user_points = await self.get(ctx.author)
         await ctx.embed_reply(
             f"You have {user_points:,} (`\N{CURRENCY SIGN}`) points"
