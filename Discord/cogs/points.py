@@ -82,6 +82,7 @@ class Points(commands.Cog):
             Number of Points (¤) leaders to show (between 1 and 15)
         """
         await ctx.defer()
+
         fields = []
         async with ctx.bot.database_connection_pool.acquire() as connection:
             async with connection.transaction():
