@@ -43,6 +43,7 @@ class RuneScape(commands.Cog):
         item
             Item to look up on the Grand Exchange
         """
+        await ctx.defer()
         try:
             item_id = await get_item_id(
                 item, aiohttp_session = ctx.bot.aiohttp_session
