@@ -100,18 +100,22 @@ class Trivia(commands.Cog):
 		try:
 			async with ctx.bot.aiohttp_session.get("http://jservice.io/api/random") as resp:
 				if resp.status == 503:
-					return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Error connecting to API")
+					await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Error connecting to API")
+					return
 				data = (await resp.json())[0]
 		except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Error connecting to API")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Error connecting to API")
+			return
 		if not data.get("question") or not data.get("category") or data["question"] == '=' or not data.get("answer"):
 			if response:
 				embed = response.embeds[0]
 				embed.description += f"\n{ctx.bot.error_emoji} Error: API response missing question/category/answer"
-				return await response.edit(embed = embed)
+				await response.edit(embed = embed)
+				return
 			else:
 				response = await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: API response missing question/category/answer\nRetrying...")
-				return await self.trivia_round(ctx, bet, response)
+				await self.trivia_round(ctx, bet, response)
+				return
 		# Add message about making POST request to API/invalid with id?
 		# Include site page to send ^?
 		if bet:
