@@ -65,7 +65,9 @@ class Tools(commands.Cog):
 		except SyntaxError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
+		
 		x = numpy.linspace(lower_limit, upper_limit, 250)
+		
 		try:
 			y = numexpr.evaluate(equation)
 		except Exception as e:
@@ -73,6 +75,7 @@ class Tools(commands.Cog):
 				ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}")
 			)
 			return
+		
 		figure = matplotlib.figure.Figure()
 		axes = figure.add_subplot()
 		try:
@@ -80,6 +83,7 @@ class Tools(commands.Cog):
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
+		
 		buffer = io.BytesIO()
 		figure.savefig(buffer, format = "PNG")
 		buffer.seek(0)
