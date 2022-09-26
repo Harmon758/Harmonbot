@@ -51,10 +51,7 @@ class Tools(commands.Cog):
 			"""
 		)
 	
-	@commands.group(
-		aliases = ["plot"],
-		case_insensitive = True, invoke_without_command = True
-	)
+	@commands.command(aliases = ["plot"])
 	@checks.not_forbidden()
 	async def graph(
 		self, ctx, lower_limit: int, upper_limit: int, *, equation: str
@@ -115,7 +112,7 @@ class Tools(commands.Cog):
 			string = string.replace(old, new)
 		return string
 	
-	@graph.command(name = "alternative", aliases = ["alt", "complex"])
+	@commands.command(aliases = ["graph_alt", "graph_complex"])
 	@commands.is_owner()
 	async def graph_alternative(self, ctx, *, data : str):
 		'''WIP'''
