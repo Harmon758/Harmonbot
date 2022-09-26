@@ -98,13 +98,19 @@ class Trivia(commands.Cog):
 	
 	async def trivia_round(self, ctx, bet = False, response = None):
 		try:
-			async with ctx.bot.aiohttp_session.get("http://jservice.io/api/random") as resp:
+			async with ctx.bot.aiohttp_session.get(
+				"http://jservice.io/api/random"
+			) as resp:
 				if resp.status == 503:
-					await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Error connecting to API")
+					await ctx.embed_reply(
+						f"{ctx.bot.error_emoji} Error: Error connecting to API"
+					)
 					return
 				data = (await resp.json())[0]
 		except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Error connecting to API")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Error connecting to API"
+			)
 			return
 		if not data.get("question") or not data.get("category") or data["question"] == '=' or not data.get("answer"):
 			if response:
@@ -113,34 +119,49 @@ class Trivia(commands.Cog):
 				await response.edit(embed = embed)
 				return
 			else:
-				response = await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: API response missing question/category/answer\nRetrying...")
+				response = await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: API response missing question/category/answer\nRetrying..."
+				)
 				await self.trivia_round(ctx, bet, response)
 				return
 		# Add message about making POST request to API/invalid with id?
 		# Include site page to send ^?
 		if bet:
 			self.active_trivia[ctx.guild.id]["bet_countdown"] = self.wait_time
-			bet_message = await ctx.embed_reply(author_name = None, title = capwords(data["category"]["title"]), 
-												footer_text = f"You have {self.active_trivia[ctx.guild.id]['bet_countdown']} seconds left to bet")
+			bet_message = await ctx.embed_reply(
+				author_name = None,
+				title = capwords(data["category"]["title"]),
+				footer_text = f"You have {self.active_trivia[ctx.guild.id]['bet_countdown']} seconds left to bet"
+			)
 			embed = bet_message.embeds[0]
 			while self.active_trivia[bet_message.guild.id]["bet_countdown"]:
 				await asyncio.sleep(1)
 				self.active_trivia[bet_message.guild.id]["bet_countdown"] -= 1
-				embed.description = '\n'.join(f"{player.mention} has bet ${bet}" for player, bet in self.active_trivia[bet_message.guild.id]["bets"].items())
-				embed.set_footer(text = f"You have {self.active_trivia[bet_message.guild.id]['bet_countdown']} seconds left to bet")
+				embed.description = '\n'.join(
+					f"{player.mention} has bet ${bet}"
+					for player, bet in self.active_trivia[bet_message.guild.id]["bets"].items()
+				)
+				embed.set_footer(
+					text = f"You have {self.active_trivia[bet_message.guild.id]['bet_countdown']} seconds left to bet"
+				)
 				await bet_message.edit(embed = embed)
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
 		self.active_trivia[ctx.guild.id]["question_countdown"] = self.wait_time
-		question_message = await ctx.embed_reply(data["question"], author_name = None, 
-													title = capwords(data["category"]["title"]), 
-													footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
-													timestamp = dateutil.parser.parse(data["airdate"]))
+		question_message = await ctx.embed_reply(
+			data["question"],
+			author_name = None,
+			title = capwords(data["category"]["title"]),
+			footer_text = f"You have {self.wait_time} seconds left to answer | Air Date",
+			timestamp = dateutil.parser.parse(data["airdate"])
+		)
 		embed = question_message.embeds[0]
 		while self.active_trivia[question_message.guild.id]["question_countdown"]:
 			await asyncio.sleep(1)
 			self.active_trivia[question_message.guild.id]["question_countdown"] -= 1
-			embed.set_footer(text = f"You have {self.active_trivia[question_message.guild.id]['question_countdown']} seconds left to answer | Air Date")
+			embed.set_footer(
+				text = f"You have {self.active_trivia[question_message.guild.id]['question_countdown']} seconds left to answer | Air Date"
+			)
 			try:
 				await question_message.edit(embed = embed)
 			except (aiohttp.ClientConnectionError, discord.NotFound):
@@ -153,12 +174,17 @@ class Trivia(commands.Cog):
 		correct_players = []
 		incorrect_players = []
 		for player, response in self.active_trivia[ctx.guild.id]["responses"].items():
-			if check_answer(data["answer"], response, inflect_engine = self.bot.inflect_engine):
+			if check_answer(
+				data["answer"], response,
+				inflect_engine = self.bot.inflect_engine
+			):
 				correct_players.append(player)
 			else:
 				incorrect_players.append(player)
 		if correct_players:
-			correct_players_output = ctx.bot.inflect_engine.join([player.display_name for player in correct_players])
+			correct_players_output = ctx.bot.inflect_engine.join(
+				[player.display_name for player in correct_players]
+			)
 			correct_players_output += f" {ctx.bot.inflect_engine.plural('was', len(correct_players))} right!"
 		else:
 			correct_players_output = "Nobody got it right!"
@@ -184,10 +210,15 @@ class Trivia(commands.Cog):
 				""", 
 				incorrect_player.id
 			)
-		answer = BeautifulSoup(html.unescape(data["answer"]), "html.parser").get_text().replace("\\'", "'")
-		await ctx.embed_reply(f"The answer was `{answer}`", 
-								footer_text = correct_players_output, 
-								author_name = None, in_response_to = False)
+		answer = BeautifulSoup(
+			html.unescape(data["answer"]), "html.parser"
+		).get_text().replace("\\'", "'")
+		await ctx.embed_reply(
+			f"The answer was `{answer}`",
+			footer_text = correct_players_output,
+			author_name = None,
+			in_response_to = False
+		)
 		if bet and self.active_trivia[ctx.guild.id]["bets"]:
 			bets_output = []
 			for player, player_bet in self.active_trivia[ctx.guild.id]["bets"].items():
@@ -206,7 +237,9 @@ class Trivia(commands.Cog):
 					""", 
 					player.id, difference
 				)
-				bets_output.append(f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}")
+				bets_output.append(
+					f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}"
+				)
 			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
 	
 	@commands.Cog.listener("on_message")
