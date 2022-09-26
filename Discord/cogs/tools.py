@@ -59,7 +59,18 @@ class Tools(commands.Cog):
 	async def graph(
 		self, ctx, lower_limit: int, upper_limit: int, *, equation: str
 	):
-		"""WIP"""
+		"""
+		Generate a graph
+		
+		Parameters
+		----------
+		lower_limit
+			The lower limit of x for the graph
+		upper_limit
+			The upper limit of x for the graph
+		equation
+			The equation/expression y = in terms of x
+		"""
 		equation = equation.lstrip("y =")
 		
 		try:
