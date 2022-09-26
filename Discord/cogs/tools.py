@@ -104,7 +104,11 @@ class Tools(commands.Cog):
 	
 	def string_to_equation(self, string):
 		replacements = {'^': "**"}
-		allowed_words = ('x', "sin", "cos", "tan", "arcsin", "arccos", "arctan", "arctan2", "sinh", "cosh", "tanh", "arcsinh", "arccosh", "arctanh", "log", "log10", "log1p", "exp", "expm1", "sqrt", "abs", "conj", "complex")
+		allowed_words = (
+			'x', "sin", "cos", "tan", "arcsin", "arccos", "arctan", "arctan2",
+			"sinh", "cosh", "tanh", "arcsinh", "arccosh", "arctanh", "log",
+			"log10", "log1p", "exp", "expm1", "sqrt", "abs", "conj", "complex"
+		)
 		for word in re.findall("[a-zA-Z_]+", string):
 			if word not in allowed_words:
 				raise SyntaxError(f"`{word}` is not supported")
