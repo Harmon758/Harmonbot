@@ -59,7 +59,7 @@ class Tools(commands.Cog):
 	async def graph(
 		self, ctx, lower_limit: int, upper_limit: int, *, equation: str
 	):
-		'''WIP'''
+		"""WIP"""
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
