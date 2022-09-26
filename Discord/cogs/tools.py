@@ -58,7 +58,7 @@ class Tools(commands.Cog):
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
 		x = numpy.linspace(lower_limit, upper_limit, 250)
 		try:
@@ -71,7 +71,7 @@ class Tools(commands.Cog):
 		try:
 			axes.plot(x, y)
 		except ValueError as e:
-			await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
 		buffer = io.BytesIO()
 		figure.savefig(buffer, format = "PNG")
