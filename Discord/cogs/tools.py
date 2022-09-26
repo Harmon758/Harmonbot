@@ -51,7 +51,7 @@ class Tools(commands.Cog):
 			"""
 		)
 	
-	@commands.command(aliases = ["plot"])
+	@commands.hybrid_command(aliases = ["plot"])
 	@checks.not_forbidden()
 	async def graph(
 		self, ctx, lower_limit: int, upper_limit: int, *, equation: str
