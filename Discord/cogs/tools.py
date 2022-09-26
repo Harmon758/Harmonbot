@@ -58,18 +58,21 @@ class Tools(commands.Cog):
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
-			return await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f":no_entry: Error: {e}")
+			return
 		x = numpy.linspace(lower_limit, upper_limit, 250)
 		try:
 			y = numexpr.evaluate(equation)
 		except Exception as e:
-			return await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"))
+			await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"))
+			return
 		figure = matplotlib.figure.Figure()
 		axes = figure.add_subplot()
 		try:
 			axes.plot(x, y)
 		except ValueError as e:
-			return await ctx.embed_reply(f":no_entry: Error: {e}")
+			await ctx.embed_reply(f":no_entry: Error: {e}")
+			return
 		buffer = io.BytesIO()
 		figure.savefig(buffer, format = "PNG")
 		buffer.seek(0)
