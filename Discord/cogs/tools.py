@@ -60,6 +60,8 @@ class Tools(commands.Cog):
 		self, ctx, lower_limit: int, upper_limit: int, *, equation: str
 	):
 		"""WIP"""
+		equation = equation.lstrip("y =")
+		
 		try:
 			equation = self.string_to_equation(equation)
 		except SyntaxError as e:
