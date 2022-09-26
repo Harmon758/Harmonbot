@@ -9,7 +9,7 @@ from pyparsing import Forward, Group, printables, OneOrMore, Suppress, Word, Zer
 
 
 def capwords(string):
-    '''string.capwords with abbreviation handling'''
+    """string.capwords with abbreviation handling"""
     return ' '.join(
         word.upper() if word.count('.') > 1 and not word.endswith("..")
         or word == "tv"
