@@ -5,7 +5,9 @@ import unicodedata
 
 from bs4 import BeautifulSoup
 import inflect
-from pyparsing import Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
+from pyparsing import (
+    Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
+)
 
 
 def capwords(string):
@@ -51,7 +53,8 @@ def check_answer(answer, response, inflect_engine = None):
     answer = ' '.join(answer.split()).lower()
     response = ' '.join(response.split()).lower()
 
-    # Check removal of/replacement of - with space (prior to removing article prefixes)
+    # Check removal of/replacement of - with space
+    # (prior to removing article prefixes)
     # Remove commas beforehand
     answer_copy = answer.replace(',', "")
     response_copy = response.replace(',', "")
@@ -107,12 +110,18 @@ def check_answer(answer, response, inflect_engine = None):
     last = answer_items[-1].split()
     if len(last) > 1:
         suffix = last[-1]
-        if set([f"{item} {suffix}" for item in answer_items[:-1]] + [answer_items[-1]]) == set(response_items):
+        if set(response_items) == set(
+            [f"{item} {suffix}" for item in answer_items[:-1]] +
+            [answer_items[-1]]
+        ):
             return True
     last = response_items[-1].split()
     if len(last) > 1:
         suffix = last[-1]
-        if set(answer_items) == set([f"{item} {suffix}" for item in response_items[:-1]] + [response_items[-1]]):
+        if set(answer_items) == set(
+            [f"{item} {suffix}" for item in response_items[:-1]] +
+            [response_items[-1]]
+        ):
             return True
     # Remove commas
     if ',' in answer:
@@ -120,7 +129,10 @@ def check_answer(answer, response, inflect_engine = None):
     if ',' in response:
         response = response.replace(',', "")
     # Check for list separated by /
-    if set(item.strip() for item in answer.split('/')) == set(item.strip() for item in response.split('/')):
+    if (
+        set(item.strip() for item in answer.split('/')) ==
+        set(item.strip() for item in response.split('/'))
+    ):
         return True
     # Check removal of/replacement of - with space
     if answer.replace('-', ' ') == response.replace('-', ' '):
@@ -128,7 +140,9 @@ def check_answer(answer, response, inflect_engine = None):
     if answer.replace('-', "") == response.replace('-', ""):
         return True
     # Check removal of parentheses
-    if response == remove_article_prefix(answer.replace('(', "").replace(')', "")):
+    if response == remove_article_prefix(
+        answer.replace('(', "").replace(')', "")
+    ):
         return True
     # Check XX or YY
     if response in answer.split(" or "):
@@ -144,9 +158,16 @@ def check_answer(answer, response, inflect_engine = None):
     answers = answer_words[0].split('/')
     for answer_word in answer_words[1:]:
         if '/' in answer_word:
-            answers = [f"{permutation} {word}" for permutation in answers for word in answer_word.split('/')]
+            answers = [
+                f"{permutation} {word}"
+                for permutation in answers
+                for word in answer_word.split('/')
+            ]
         else:
-            answers = [f"{permutation} {answer_word}" for permutation in answers]
+            answers = [
+                f"{permutation} {answer_word}"
+                for permutation in answers
+            ]
     if response in answers:
         return True
     # Check numbers to words conversion
@@ -167,8 +188,12 @@ def check_answer(answer, response, inflect_engine = None):
         if isinstance(item, list):
             accepted = add_optional_accepted(accepted, item)
         else:
-            for accepted_index, accepted_item in enumerate(accepted[initial_length:]):
-                accepted[initial_length + accepted_index] = f"{accepted_item} {item}".lstrip()
+            for accepted_index, accepted_item in enumerate(
+                accepted[initial_length:]
+            ):
+                accepted[initial_length + accepted_index] = (
+                    f"{accepted_item} {item}".lstrip()
+                )
         return accepted
     def add_optional_accepted(accepted, optional):
         initial_length = len(accepted)
@@ -199,13 +224,23 @@ def check_answer(answer, response, inflect_engine = None):
     if response in accepted:
         return True
     # Check XX YY (or ZZ accepted)
-    matches = re.search(r"(.+?)\s?\((?:or )?(?:a |an |the )?(.+?)(?: accepted)?\)", answer)
-    if matches and response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}":
+    matches = re.search(
+        r"(.+?)\s?\((?:or )?(?:a |an |the )?(.+?)(?: accepted)?\)",
+        answer
+    )
+    if (
+        matches and
+        response == f"{matches.group(1).rsplit(' ', 1)[0]} {matches.group(2)}"
+    ):
         return True
     # Check abbreviations
-    for abbreviation, word in (("dr", "doctor"), ("mt", "mount"), ("st", "saint")):
-        if (re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", answer) == 
-            re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", response)):
+    for abbreviation, word in (
+        ("dr", "doctor"), ("mt", "mount"), ("st", "saint")
+    ):
+        if (
+            re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", answer) ==
+            re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", response)
+        ):
             return True
     return False
 
