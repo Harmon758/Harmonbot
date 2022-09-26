@@ -53,7 +53,7 @@ class Tools(commands.Cog):
 	
 	@commands.group(aliases = ["plot"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def graph(self, ctx, lower_limit : int, upper_limit : int, *, equation : str):
+	async def graph(self, ctx, lower_limit: int, upper_limit: int, *, equation: str):
 		'''WIP'''
 		try:
 			equation = self.string_to_equation(equation)
