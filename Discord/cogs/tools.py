@@ -51,9 +51,14 @@ class Tools(commands.Cog):
 			"""
 		)
 	
-	@commands.group(aliases = ["plot"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["plot"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	@checks.not_forbidden()
-	async def graph(self, ctx, lower_limit: int, upper_limit: int, *, equation: str):
+	async def graph(
+		self, ctx, lower_limit: int, upper_limit: int, *, equation: str
+	):
 		'''WIP'''
 		try:
 			equation = self.string_to_equation(equation)
@@ -64,7 +69,9 @@ class Tools(commands.Cog):
 		try:
 			y = numexpr.evaluate(equation)
 		except Exception as e:
-			await ctx.reply(ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}"))
+			await ctx.reply(
+				ctx.bot.PY_CODE_BLOCK.format(f"{type(e).__name__}: {e}")
+			)
 			return
 		figure = matplotlib.figure.Figure()
 		axes = figure.add_subplot()
@@ -76,8 +83,10 @@ class Tools(commands.Cog):
 		buffer = io.BytesIO()
 		figure.savefig(buffer, format = "PNG")
 		buffer.seek(0)
-		await ctx.embed_reply(image_url = "attachment://graph.png", 
-								file = discord.File(buffer, filename = "graph.png"))
+		await ctx.embed_reply(
+			image_url = "attachment://graph.png", 
+			file = discord.File(buffer, filename = "graph.png")
+		)
 	
 	def string_to_equation(self, string):
 		replacements = {'^': "**"}
