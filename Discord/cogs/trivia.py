@@ -112,6 +112,7 @@ class Trivia(commands.Cog):
 				f"{ctx.bot.error_emoji} Error: Error connecting to API"
 			)
 			return
+		
 		if not data.get("question") or not data.get("category") or data["question"] == '=' or not data.get("answer"):
 			if response:
 				embed = response.embeds[0]
@@ -147,15 +148,17 @@ class Trivia(commands.Cog):
 				await bet_message.edit(embed = embed)
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
+		
 		self.active_trivia[ctx.guild.id]["question_countdown"] = self.wait_time
 		question_message = await ctx.embed_reply(
-			data["question"],
 			author_name = None,
 			title = capwords(data["category"]["title"]),
+			description = data["question"],
 			footer_text = f"You have {self.wait_time} seconds left to answer | Air Date",
 			timestamp = dateutil.parser.parse(data["airdate"])
 		)
 		embed = question_message.embeds[0]
+		
 		while self.active_trivia[question_message.guild.id]["question_countdown"]:
 			await asyncio.sleep(1)
 			self.active_trivia[question_message.guild.id]["question_countdown"] -= 1
@@ -166,11 +169,13 @@ class Trivia(commands.Cog):
 				await question_message.edit(embed = embed)
 			except (aiohttp.ClientConnectionError, discord.NotFound):
 				continue
+		
 		embed.set_footer(text = "Time's up! | Air Date")
 		try:
 			await question_message.edit(embed = embed)
 		except discord.NotFound:
 			pass
+		
 		correct_players = []
 		incorrect_players = []
 		for player, response in self.active_trivia[ctx.guild.id]["responses"].items():
@@ -210,15 +215,17 @@ class Trivia(commands.Cog):
 				""", 
 				incorrect_player.id
 			)
+		
 		answer = BeautifulSoup(
 			html.unescape(data["answer"]), "html.parser"
 		).get_text().replace("\\'", "'")
 		await ctx.embed_reply(
-			f"The answer was `{answer}`",
-			footer_text = correct_players_output,
 			author_name = None,
+			footer_text = correct_players_output,
+			description = f"The answer was `{answer}`",
 			in_response_to = False
 		)
+		
 		if bet and self.active_trivia[ctx.guild.id]["bets"]:
 			bets_output = []
 			for player, player_bet in self.active_trivia[ctx.guild.id]["bets"].items():
