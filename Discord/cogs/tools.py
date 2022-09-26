@@ -51,7 +51,7 @@ class Tools(commands.Cog):
 			"""
 		)
 	
-	@commands.group(aliases = ["plot"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["plot"], case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def graph(self, ctx, lower_limit: int, upper_limit: int, *, equation: str):
 		'''WIP'''
