@@ -99,13 +99,17 @@ class Info(commands.GroupCog, group_name = "information"):
 	@commands.guild_only()
 	async def role(self, ctx, *, role: discord.Role):
 		"""Information about a role"""
-		await ctx.embed_reply(role.mention, title = role.name, 
-								fields = (("ID", role.id), ("Members", len(role.members)), 
-											("Color", role.color), ("Mentionable", role.mentionable), 
-											("Displayed Separately", role.hoist), 
-											("Default", role.is_default()), ("Managed", role.managed), 
-											("Position", role.position)), 
-								footer_text = "Created", timestamp = role.created_at)
+		await ctx.embed_reply(
+			role.mention, title = role.name,
+			fields = (
+				("ID", role.id), ("Members", len(role.members)),
+				("Color", role.color), ("Mentionable", role.mentionable),
+				("Displayed Separately", role.hoist),
+				("Default", role.is_default()), ("Managed", role.managed),
+				("Position", role.position)
+			),
+			footer_text = "Created", timestamp = role.created_at
+		)
 	
 	@information.command()
 	async def spotify(self, ctx, url: str):
