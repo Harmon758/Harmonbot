@@ -854,13 +854,13 @@ class Meta(commands.Cog):
 	@commands.group(aliases = ["echo", "say"], invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
 	async def send(self, ctx, *, message):
-		'''Send a message'''
+		"""Send a message"""
 		await ctx.send(message)
 	
 	@send.command(name = "embed")
 	@commands.is_owner()
 	async def send_embed(self, ctx, *, message):
-		'''Send an embed'''
+		"""Send an embed"""
 		await ctx.embed_send(message)
 	
 	@commands.command()
