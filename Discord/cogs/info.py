@@ -99,6 +99,7 @@ class Info(commands.GroupCog, group_name = "information"):
 	@commands.guild_only()
 	async def role(self, ctx, *, role: discord.Role):
 		"""Information about a role"""
+		# Note: role information command invokes this command
 		await ctx.embed_reply(
 			title = role.name,
 			description = role.mention,
