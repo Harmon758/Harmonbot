@@ -80,7 +80,7 @@ class Role(commands.Cog):
 	async def information(self, ctx, *, role: discord.Role):
 		"""Information about a role"""
 		if command := ctx.bot.get_command("information role"):
-			await command(ctx, role = role)
+			await ctx.invoke(command, role = role)
 		else:
 			raise RuntimeError(
 				"information role command not found "
