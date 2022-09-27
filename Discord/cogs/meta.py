@@ -851,16 +851,16 @@ class Meta(commands.Cog):
 			ctx = await self.bot.get_context(msg)
 			await self.bot.invoke(ctx)
 	
-	@commands.group(aliases = ["say"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["echo", "say"], invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
-	async def echo(self, ctx, *, message):
-		'''Echoes the message'''
+	async def send(self, ctx, *, message):
+		'''Send a message'''
 		await ctx.send(message)
 	
-	@echo.command(name = "embed")
+	@send.command(name = "embed")
 	@commands.is_owner()
-	async def echo_embed(self, ctx, *, message):
-		'''Echoes the message in an embed'''
+	async def send_embed(self, ctx, *, message):
+		'''Send an embed'''
 		await ctx.embed_send(message)
 	
 	@commands.command()
