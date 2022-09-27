@@ -48,21 +48,21 @@ class Info(commands.GroupCog, group_name = "information"):
 			(user, "User", "user", ["member"], [checks.not_forbidden().predicate])
 		)
 		for command, cog_name, parent_name, aliases, command_checks in self.info_commands:
-			self.info.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
+			self.information.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
 			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
-				parent.add_command(commands.Command(command, name = "info", aliases = ["information"], checks = command_checks))
+				parent.add_command(commands.Command(command, name = "information", aliases = ["info"], checks = command_checks))
 	
 	def cog_unload(self):
 		for command, cog_name, parent_name, *_ in self.info_commands:
 			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
-				parent.remove_command("info")
+				parent.remove_command("information")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["information"], invoke_without_command = True, case_insensitive = True)
-	async def info(self, ctx):
-		'''Info'''
+	@commands.group(aliases = ["info"], invoke_without_command = True, case_insensitive = True)
+	async def information(self, ctx):
+		'''Information'''
 		if cog := self.bot.get_cog("Meta"):
 			await ctx.invoke(cog.about)
 		else:
@@ -72,7 +72,7 @@ class Info(commands.GroupCog, group_name = "information"):
 	# TODO: Add soundcloud info
 	# TODO: Add member info
 	
-	@info.command(aliases = ["char"])
+	@information.command(aliases = ["char"])
 	async def character(self, ctx, character: str):
 		'''Information about a Unicode character'''
 		output = []
@@ -95,7 +95,7 @@ class Info(commands.GroupCog, group_name = "information"):
 				output = output[:output.rfind('\n')]
 			await ctx.embed_reply(output)
 	
-	@info.command()
+	@information.command()
 	@commands.guild_only()
 	async def role(self, ctx, *, role: discord.Role):
 		'''Information about a role'''
@@ -107,7 +107,7 @@ class Info(commands.GroupCog, group_name = "information"):
 											("Position", role.position)), 
 								footer_text = "Created", timestamp = role.created_at)
 	
-	@info.command()
+	@information.command()
 	async def spotify(self, ctx, url: str):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
@@ -129,7 +129,7 @@ class Info(commands.GroupCog, group_name = "information"):
 								thumbnail_url = data["album"]["images"][0]["url"])
 		# TODO: keep spotify embed?
 	
-	@info.command(aliases = ["yt"])
+	@information.command(aliases = ["yt"])
 	async def youtube(self, ctx, url: str):
 		"""Information about a YouTube video"""
 		# TODO: Automatic on YouTube links, server specific toggleable option
