@@ -18,7 +18,7 @@ class Role(commands.Cog):
 	@commands.group(aliases = ["roles"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
 	async def role(self, ctx):
-		'''Role'''
+		"""Role"""
 		await ctx.send_help(ctx.command)
 	
 	# TODO: check role hierarchy
