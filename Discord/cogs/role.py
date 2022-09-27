@@ -28,8 +28,8 @@ class Role(commands.Cog):
 	# TODO: check role hierarchy
 	# TODO: reason options?
 	
-	@role.command(name = "color", aliases = ["colour"])
-	async def role_color(self, ctx, role: discord.Role, *, color: discord.Color = None):
+	@role.command(aliases = ["colour"])
+	async def color(self, ctx, role: discord.Role, *, color: discord.Color = None):
 		'''The color of a role'''
 		if color:
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
@@ -39,22 +39,22 @@ class Role(commands.Cog):
 		else:
 			await ctx.embed_reply(role.mention + "'s color is {}".format(role.color))
 	
-	@role.command(name = "create", aliases = ["make", "new"])
+	@role.command(aliases = ["make", "new"])
 	@commands.bot_has_guild_permissions(manage_roles = True)
 	@commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner())
-	async def role_create(self, ctx, *, name: str = ""):
+	async def create(self, ctx, *, name: str = ""):
 		'''Creates a role'''
 		# TODO: Add more options
 		role = await ctx.guild.create_role(name = name)
 		await ctx.embed_reply(role.mention + " created")
 	
-	@role.command(name = "default")
-	async def role_default(self, ctx, *, role: discord.Role):
+	@role.command()
+	async def default(self, ctx, *, role: discord.Role):
 		'''Whether a role is the default role or not'''
 		await ctx.embed_reply(role.mention + " is {}the default role".format("" if role.is_default() else "not "))
 	
-	@role.command(name = "hoisted", aliases = ["hoist"])
-	async def role_hoisted(self, ctx, role: discord.Role, hoist: bool = None):
+	@role.command(aliases = ["hoist"])
+	async def hoisted(self, ctx, role: discord.Role, hoist: bool = None):
 		'''Whether a role is displayed separately from other members or not'''
 		if hoist is not None:
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
@@ -64,18 +64,18 @@ class Role(commands.Cog):
 		else:
 			await ctx.embed_reply(role.mention + " is {}hoisted".format("" if role.hoist else "not "))
 	
-	@role.command(name = "id")
-	async def role_id(self, ctx, *, role: discord.Role):
+	@role.command()
+	async def id(self, ctx, *, role: discord.Role):
 		'''The ID of a role'''
 		await ctx.embed_reply(role.id)
 	
-	@role.command(name = "managed")
-	async def role_managed(self, ctx, *, role: discord.Role):
+	@role.command()
+	async def managed(self, ctx, *, role: discord.Role):
 		'''Indicates if the role is managed by the guild through some form of integrations such as Twitch'''
 		await ctx.embed_reply(role.mention + " is {}managed".format("" if role.managed else "not "))
 	
-	@role.command(name = "mentionable")
-	async def role_mentionable(self, ctx, role: discord.Role, mentionable: bool = None):
+	@role.command()
+	async def mentionable(self, ctx, role: discord.Role, mentionable: bool = None):
 		'''Whether a role is mentionable or not'''
 		if mentionable is not None:
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
@@ -85,8 +85,8 @@ class Role(commands.Cog):
 		else:
 			await ctx.embed_reply(role.mention + " is {}mentionable".format("" if role.mentionable else "not "))
 	
-	@role.command(name = "name")
-	async def role_name(self, ctx, role: discord.Role, *, name: str = ""):
+	@role.command()
+	async def name(self, ctx, role: discord.Role, *, name: str = ""):
 		'''The name of a role'''
 		if name:
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
@@ -96,8 +96,8 @@ class Role(commands.Cog):
 		else:
 			await ctx.embed_reply(role.name)
 	
-	@role.command(name = "position")
-	async def role_position(self, ctx, role: discord.Role, position: int = None):
+	@role.command()
+	async def position(self, ctx, role: discord.Role, position: int = None):
 		'''
 		The position of a role
 		This number is usually positive
@@ -112,8 +112,8 @@ class Role(commands.Cog):
 			await ctx.embed_reply(role.mention + "'s position is {}".format(role.position))
 	
 	# TODO: move to server cog
-	@role.command(name = "positions")
-	async def role_positions(self, ctx):
+	@role.command()
+	async def positions(self, ctx):
 		'''
 		WIP
 		Positions of roles in the server
