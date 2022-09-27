@@ -100,7 +100,8 @@ class Info(commands.GroupCog, group_name = "information"):
 	async def role(self, ctx, *, role: discord.Role):
 		"""Information about a role"""
 		await ctx.embed_reply(
-			role.mention, title = role.name,
+			title = role.name,
+			description = role.mention,
 			fields = (
 				("ID", role.id), ("Members", len(role.members)),
 				("Color", role.color), ("Mentionable", role.mentionable),
