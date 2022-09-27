@@ -69,6 +69,17 @@ class Role(commands.Cog):
 		'''The ID of a role'''
 		await ctx.embed_reply(role.id)
 	
+	@role.command(aliases = ["info"])
+	async def information(self, ctx, *, role: discord.Role):
+		"""Information about a role"""
+		if command := ctx.bot.get_command("information role"):
+			await command(ctx, role = role)
+		else:
+			raise RuntimeError(
+				"information role command not found "
+				"when role information command invoked"
+			)
+	
 	@role.command()
 	async def managed(self, ctx, *, role: discord.Role):
 		'''Indicates if the role is managed by the guild through some form of integrations such as Twitch'''

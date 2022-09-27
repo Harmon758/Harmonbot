@@ -44,7 +44,6 @@ class Info(commands.GroupCog, group_name = "information"):
 		super().__init__()
 		# Add info subcommands as subcommands of corresponding commands
 		self.info_commands = (
-			(role, "Role", "role", [], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
 			(server, "Server", "server", ["guild"], [checks.not_forbidden().predicate, commands.guild_only().predicate]), 
 			(user, "User", "user", ["member"], [checks.not_forbidden().predicate])
 		)
@@ -95,6 +94,18 @@ class Info(commands.GroupCog, group_name = "information"):
 				output = output[:ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT]
 				output = output[:output.rfind('\n')]
 			await ctx.embed_reply(output)
+	
+	@info.command()
+	@commands.guild_only()
+	async def role(self, ctx, *, role: discord.Role):
+		'''Information about a role'''
+		await ctx.embed_reply(role.mention, title = role.name, 
+								fields = (("ID", role.id), ("Members", len(role.members)), 
+											("Color", role.color), ("Mentionable", role.mentionable), 
+											("Displayed Separately", role.hoist), 
+											("Default", role.is_default()), ("Managed", role.managed), 
+											("Position", role.position)), 
+								footer_text = "Created", timestamp = role.created_at)
 	
 	@info.command()
 	async def spotify(self, ctx, url: str):
@@ -192,16 +203,6 @@ class Info(commands.GroupCog, group_name = "information"):
 		ctx = await interaction.client.get_context(interaction)
 		await self.youtube(ctx, url = link)
 
-
-async def role(ctx, *, role: discord.Role):
-	'''Information about a role'''
-	await ctx.embed_reply(role.mention, title = role.name, 
-							fields = (("ID", role.id), ("Members", len(role.members)), 
-										("Color", role.color), ("Mentionable", role.mentionable), 
-										("Displayed Separately", role.hoist), 
-										("Default", role.is_default()), ("Managed", role.managed), 
-										("Position", role.position)), 
-							footer_text = "Created", timestamp = role.created_at)
 
 async def server(ctx):
 	'''Information about the server'''
