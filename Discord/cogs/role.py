@@ -10,11 +10,10 @@ async def setup(bot):
 	await bot.add_cog(Role(bot))
 
 class Role(commands.Cog):
+	"""Role"""
 	
 	def __init__(self, bot):
 		self.bot = bot
-	
-	# Role
 	
 	@commands.group(aliases = ["roles"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
