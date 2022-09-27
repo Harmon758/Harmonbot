@@ -64,9 +64,16 @@ class Role(commands.Cog):
 		else:
 			await ctx.embed_reply(role.mention + " is {}hoisted".format("" if role.hoist else "not "))
 	
-	@role.command(with_app_command = False)
+	@role.command()
 	async def id(self, ctx, *, role: discord.Role):
-		'''The ID of a role'''
+		'''
+		Show ID of a role
+		
+		Parameters
+		----------
+		role
+			Role to show ID of
+		'''
 		await ctx.embed_reply(role.id)
 	
 	@role.command(aliases = ["info"], with_app_command = False)
