@@ -107,7 +107,7 @@ class Cryptography(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: data length must be at least 16")
 		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).decrypt(bytearray.fromhex(data)).decode("UTF-8"))
 	
-	@decode.command(name = "morse", with_app_command = False)
+	@decode.command(name = "morse")
 	async def decode_morse(self, ctx, *, message: str):
 		'''Decodes morse code'''
 		try:
