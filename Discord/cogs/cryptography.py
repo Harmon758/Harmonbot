@@ -300,7 +300,9 @@ class Cryptography(commands.Cog):
 		'''GOST 34.11-94 hash function'''
 		await ctx.embed_reply(pygost.gost341194.GOST341194(data.encode("UTF-8")).hexdigest())
 	
-	@encode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
+	@encode_gost.command(
+		name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"]
+	)
 	async def encode_gost_34_12_2015(self, ctx, key: str, *, data: str):
 		'''
 		GOST 34.12-2015 128-bit block cipher
@@ -309,10 +311,18 @@ class Cryptography(commands.Cog):
 		'''
 		# TODO: Add encode kuznyechik alias
 		if len(key) < 32:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: key length must be at least 32")
+			return await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: key length must be at least 32"
+			)
 		if len(data) < 16:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: data length must be at least 16")
-		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).encrypt(data.encode("UTF-8")).hex())
+			return await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: data length must be at least 16"
+			)
+		await ctx.embed_reply(
+			pygost.gost3412.GOST3412Kuznechik(
+				key.encode("UTF-8")
+			).encrypt(data.encode("UTF-8")).hex()
+		)
 	
 	@encode.command(name = "md4")
 	async def encode_md4(self, ctx, *, message: str):
