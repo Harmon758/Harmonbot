@@ -81,14 +81,16 @@ class Cryptography(commands.Cog):
 		"""
 		# TODO: Add decode magma alias
 		try:
+			key = key.encode("UTF-8")
+			data = bytearray.fromhex(data)
 			if mode == "cbc":
-				await ctx.embed_reply(pygost.gost28147.cbc_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
+				await ctx.embed_reply(pygost.gost28147.cbc_decrypt(key, data).decode("UTF-8"))
 			elif mode == "cfb":
-				await ctx.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
+				await ctx.embed_reply(pygost.gost28147.cfb_decrypt(key, data).decode("UTF-8"))
 			elif mode == "cnt":
-				await ctx.embed_reply(pygost.gost28147.cnt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
+				await ctx.embed_reply(pygost.gost28147.cnt(key, data).decode("UTF-8"))
 			elif mode == "ecb":
-				await ctx.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
+				await ctx.embed_reply(pygost.gost28147.ecb_decrypt(key, data).decode("UTF-8"))
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
