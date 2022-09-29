@@ -215,10 +215,10 @@ class Cryptography(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@encode_gost.command(
-		name = "28147-89", aliases = ["магма", "magma"],
+		name = "magma", aliases = ["28147-89", "магма"],
 		with_app_command = False
 	)
-	async def encode_gost_28147_89(
+	async def encode_gost_magma(
 		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb", "mac"], key: str,
 		*, data: str
 	):
