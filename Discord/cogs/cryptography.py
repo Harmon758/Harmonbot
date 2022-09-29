@@ -257,10 +257,10 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@encode_gost.command(
-		name = "34.11-2012", aliases = ["стрибог", "streebog"],
+		name = "streebog", aliases = ["34.11-2012", "стрибог"],
 		with_app_command = False
 	)
-	async def encode_gost_34_11_2012(
+	async def encode_gost_streebog(
 		self, ctx, digest_size: Literal[256, 512], *, data: str
 	):
 		'''
