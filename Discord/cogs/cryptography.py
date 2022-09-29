@@ -257,24 +257,26 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@encode_gost.command(
-		name = "streebog", aliases = ["34.11-2012", "стрибог"],
-		with_app_command = False
+		name = "streebog", aliases = ["34.11-2012", "стрибог"]
 	)
 	async def encode_gost_streebog(
 		self, ctx, digest_size: Literal[256, 512], *, data: str
 	):
 		'''
-		GOST 34.11-2012 hash function
-		Also known as Стрибог or Streebog
+		GOST 34.11-2012 hash function, also known as Стрибог or Streebog
+		256-bit or 512-bit, also known as Streebog-256 or Streebog-512
+		
+		Parameters
+		----------
+		digest_size
+			Digest/Block size: 256-bit or 512-bit
+		data
+			Data to hash
 		'''
 		# TODO: Add encode streebog-256 and encode streebog-512 aliases
 		if digest_size == 256:
-			# GOST 34.11-2012 256-bit hash function
-			# Also known as Streebog-256
 			await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 32).hexdigest())
 		elif digest_size == 512:
-			# GOST 34.11-2012 512-bit hash function
-			# Also known as Streebog-512
 			await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 64).hexdigest())
 	
 	@encode_gost.command(name = "34.11-94", with_app_command = False)
