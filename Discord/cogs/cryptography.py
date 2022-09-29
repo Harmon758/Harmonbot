@@ -203,12 +203,12 @@ class Cryptography(commands.Cog):
 	
 	@encode.group(name = "gost", aliases = ["гост"], case_insensitive = True)
 	async def encode_gost(self, ctx):
-		'''
+		"""
 		Russian Federation/Soviet Union GOST
 		Межгосударственный стандарт
 		From GOsudarstvennyy STandart
 		(ГОсударственный СТандарт)
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@encode_gost.command(name = "magma", aliases = ["28147-89", "магма"])
