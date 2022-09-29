@@ -57,12 +57,12 @@ class Cryptography(commands.Cog):
 		case_insensitive = True, with_app_command = False
 	)
 	async def decode_gost(self, ctx):
-		'''
+		"""
 		Russian Federation/Soviet Union GOST
 		Межгосударственный стандарт
 		From GOsudarstvennyy STandart
 		(ГОсударственный СТандарт)
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@decode_gost.command(
