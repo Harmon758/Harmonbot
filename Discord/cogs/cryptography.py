@@ -195,8 +195,10 @@ class Cryptography(commands.Cog):
 		'''Compute CRC32 checksum'''
 		await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 	
-	@encode.group(name = "gost", aliases = ["гост"], 
-					invoke_without_command = True, case_insensitive = True)
+	@encode.group(
+		name = "gost", aliases = ["гост"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def encode_gost(self, ctx):
 		'''
 		Russian Federation/Soviet Union GOST
