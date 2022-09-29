@@ -234,13 +234,21 @@ class Cryptography(commands.Cog):
 			key = key.encode("UTF-8")
 			data = data.encode("UTF-8")
 			if mode == "cbc":
-				await ctx.embed_reply(pygost.gost28147.cbc_encrypt(key, data).hex())
+				await ctx.embed_reply(
+					pygost.gost28147.cbc_encrypt(key, data).hex()
+				)
 			elif mode == "cfb":
-				await ctx.embed_reply(pygost.gost28147.cfb_encrypt(key, data).hex())
+				await ctx.embed_reply(
+					pygost.gost28147.cfb_encrypt(key, data).hex()
+				)
 			elif mode == "cnt":
-				await ctx.embed_reply(pygost.gost28147.cnt(key, data).hex())
+				await ctx.embed_reply(
+					pygost.gost28147.cnt(key, data).hex()
+				)
 			elif mode == "ecb":
-				await ctx.embed_reply(pygost.gost28147.ecb_encrypt(key, data).hex())
+				await ctx.embed_reply(
+					pygost.gost28147.ecb_encrypt(key, data).hex()
+				)
 			elif mode == "mac":
 				mac = pygost.gost28147_mac.MAC(key)
 				mac.update(data)
