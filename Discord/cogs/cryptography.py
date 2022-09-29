@@ -334,9 +334,16 @@ class Cryptography(commands.Cog):
 		except UnitOutputError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
-	@encode.command(name = "qr", with_app_command = False)
+	@encode.command(name = "qr")
 	async def encode_qr(self, ctx, *, message: str):
-		'''Encode a message in a QR code'''
+		'''
+		Encode a message in a QR code
+		
+		Parameters
+		----------
+		message
+			Message to encode
+		'''
 		url = f"https://api.qrserver.com/v1/create-qr-code/?data={message.replace(' ', '+')}"
 		await ctx.embed_reply(image_url = url)
 	
