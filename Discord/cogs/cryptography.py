@@ -208,8 +208,10 @@ class Cryptography(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@encode_gost.group(name = "28147-89", aliases = ["магма", "magma"], 
-						invoke_without_command = True, case_insensitive = True)
+	@encode_gost.group(
+		name = "28147-89", aliases = ["магма", "magma"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def encode_gost_28147_89(self, ctx):
 		'''
 		GOST 28147-89 block cipher
