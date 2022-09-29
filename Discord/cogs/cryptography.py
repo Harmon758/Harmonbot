@@ -273,11 +273,12 @@ class Cryptography(commands.Cog):
 		data
 			Data to hash
 		"""
-		# TODO: Add encode streebog-256 and encode streebog-512 aliases
+		# TODO: Add encode streebog-256 and encode streebog-512 
+		data = data.encode("UTF-8")
 		if digest_size == 256:
-			await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 32).hexdigest())
+			await ctx.embed_reply(pygost.gost34112012.GOST34112012(data, digest_size = 32).hexdigest())
 		elif digest_size == 512:
-			await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 64).hexdigest())
+			await ctx.embed_reply(pygost.gost34112012.GOST34112012(data, digest_size = 64).hexdigest())
 	
 	@encode_gost.command(name = "34.11-94", with_app_command = False)
 	async def encode_gost_34_11_94(self, ctx, *, data: str):
