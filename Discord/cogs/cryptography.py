@@ -267,8 +267,10 @@ class Cryptography(commands.Cog):
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
-	@encode_gost.group(name = "34.11-2012", aliases = ["стрибог", "streebog"], 
-						invoke_without_command = True, case_insensitive = True)
+	@encode_gost.group(
+		name = "34.11-2012", aliases = ["стрибог", "streebog"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def encode_gost_34_11_2012(self, ctx):
 		'''
 		GOST 34.11-2012 hash function
