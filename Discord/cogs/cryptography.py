@@ -34,7 +34,7 @@ class Cryptography(commands.Cog):
 	
 	@commands.hybrid_group(aliases = ["decrpyt"], case_insensitive = True)
 	async def decode(self, ctx):
-		"""Decode coded messages"""
+		"""Decode encoded messages"""
 		await ctx.send_help(ctx.command)
 	
 	@decode.group(
