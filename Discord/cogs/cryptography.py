@@ -161,43 +161,49 @@ class Cryptography(commands.Cog):
 		'''Reverses text'''
 		await ctx.embed_reply(message[::-1])
 	
-	@commands.group(aliases = ["encrypt"], invoke_without_command = True, case_insensitive = True)
+	@commands.hybrid_group(aliases = ["encrypt"], case_insensitive = True)
 	async def encode(self, ctx):
 		"""Encode messages"""
 		await ctx.send_help(ctx.command)
 	
-	@encode.command(name = "adler32", aliases = ["adler-32"])
+	@encode.command(
+		name = "adler32", aliases = ["adler-32"], with_app_command = False
+	)
 	async def encode_adler32(self, ctx, *, message: str):
 		'''Compute Adler-32 checksum'''
 		await ctx.embed_reply(zlib.adler32(message.encode("UTF-8")))
 	
-	@encode.command(name = "blake2b")
+	@encode.command(name = "blake2b", with_app_command = False)
 	async def encode_blake2b(self, ctx, *, message: str):
 		'''64-byte digest BLAKE2b'''
 		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2b(64), backend = openssl_backend)
 		digest.update(message.encode("UTF-8"))
 		await ctx.embed_reply(digest.finalize())
 	
-	@encode.command(name = "blake2s")
+	@encode.command(name = "blake2s", with_app_command = False)
 	async def encode_blake2s(self, ctx, *, message: str):
 		'''32-byte digest BLAKE2s'''
 		digest = crypto_hashes.Hash(crypto_hashes.BLAKE2s(32), backend = openssl_backend)
 		digest.update(message.encode("UTF-8"))
 		await ctx.embed_reply(digest.finalize())
 	
-	@encode.command(name = "caesar", aliases = ["rot"])
+	@encode.command(
+		name = "caesar", aliases = ["rot"], with_app_command = False
+	)
 	async def encode_caesar(self, ctx, key: int, *, message: str):
 		'''Encode a message using a caesar cipher'''
 		await ctx.embed_reply(encode_caesar_cipher(message, key))
 	
-	@encode.command(name = "crc32", aliases = ["crc-32"])
+	@encode.command(
+		name = "crc32", aliases = ["crc-32"], with_app_command = False
+	)
 	async def encode_crc32(self, ctx, *, message: str):
 		'''Compute CRC32 checksum'''
 		await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 	
 	@encode.group(
 		name = "gost", aliases = ["гост"],
-		invoke_without_command = True, case_insensitive = True
+		case_insensitive = True, with_app_command = False
 	)
 	async def encode_gost(self, ctx):
 		'''
@@ -208,7 +214,10 @@ class Cryptography(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@encode_gost.command(name = "28147-89", aliases = ["магма", "magma"])
+	@encode_gost.command(
+		name = "28147-89", aliases = ["магма", "magma"],
+		with_app_command = False
+	)
 	async def encode_gost_28147_89(
 		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb", "mac"], key: str,
 		*, data: str
@@ -239,7 +248,8 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@encode_gost.command(
-		name = "34.11-2012", aliases = ["стрибог", "streebog"]
+		name = "34.11-2012", aliases = ["стрибог", "streebog"],
+		with_app_command = False
 	)
 	async def encode_gost_34_11_2012(
 		self, ctx, digest_size: Literal[256, 512], *, data: str
@@ -258,13 +268,14 @@ class Cryptography(commands.Cog):
 			# Also known as Streebog-512
 			await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 64).hexdigest())
 	
-	@encode_gost.command(name = "34.11-94")
+	@encode_gost.command(name = "34.11-94", with_app_command = False)
 	async def encode_gost_34_11_94(self, ctx, *, data: str):
 		'''GOST 34.11-94 hash function'''
 		await ctx.embed_reply(pygost.gost341194.GOST341194(data.encode("UTF-8")).hexdigest())
 	
 	@encode_gost.command(
-		name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"]
+		name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"],
+		with_app_command = False
 	)
 	async def encode_gost_34_12_2015(self, ctx, key: str, *, data: str):
 		'''
@@ -287,19 +298,19 @@ class Cryptography(commands.Cog):
 			).encrypt(data.encode("UTF-8")).hex()
 		)
 	
-	@encode.command(name = "md4")
+	@encode.command(name = "md4", with_app_command = False)
 	async def encode_md4(self, ctx, *, message: str):
 		'''Generate MD4 hash'''
 		md4_hash = hashlib.new("MD4")
 		md4_hash.update(message.encode("UTF-8"))
 		await ctx.embed_reply(md4_hash.hexdigest())
 	
-	@encode.command(name = "md5")
+	@encode.command(name = "md5", with_app_command = False)
 	async def encode_md5(self, ctx, *, message: str):
 		'''Generate MD5 hash'''
 		await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 	
-	@encode.command(name = "morse")
+	@encode.command(name = "morse", with_app_command = False)
 	async def encode_morse(self, ctx, *, message: str):
 		'''Encode a message in morse code'''
 		try:
@@ -307,50 +318,62 @@ class Cryptography(commands.Cog):
 		except UnitOutputError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
-	@encode.command(name = "qr")
+	@encode.command(name = "qr", with_app_command = False)
 	async def encode_qr(self, ctx, *, message: str):
 		'''Encode a message in a QR code'''
 		url = f"https://api.qrserver.com/v1/create-qr-code/?data={message.replace(' ', '+')}"
 		await ctx.embed_reply(image_url = url)
 	
-	@encode.command(name = "reverse")
+	@encode.command(name = "reverse", with_app_command = False)
 	async def encode_reverse(self, ctx, *, message: str):
 		'''Reverses text'''
 		await ctx.embed_reply(message[::-1])
 	
-	@encode.command(name = "ripemd160", aliases = ["ripemd-160"])
+	@encode.command(
+		name = "ripemd160", aliases = ["ripemd-160"], with_app_command = False
+	)
 	async def encode_ripemd160(self, ctx, *, message: str):
 		'''Generate RIPEMD-160 hash'''
 		h = hashlib.new("RIPEMD160")
 		h.update(message.encode("UTF-8"))
 		await ctx.embed_reply(h.hexdigest())
 	
-	@encode.command(name = "sha1", aliases = ["sha-1"])
+	@encode.command(
+		name = "sha1", aliases = ["sha-1"], with_app_command = False
+	)
 	async def encode_sha1(self, ctx, *, message: str):
 		'''Generate SHA-1 hash'''
 		await ctx.embed_reply(hashlib.sha1(message.encode("UTF-8")).hexdigest())
 	
-	@encode.command(name = "sha224", aliases = ["sha-224"])
+	@encode.command(
+		name = "sha224", aliases = ["sha-224"], with_app_command = False
+	)
 	async def encode_sha224(self, ctx, *, message: str):
 		'''Generate SHA-224 hash'''
 		await ctx.embed_reply(hashlib.sha224(message.encode("UTF-8")).hexdigest())
 	
-	@encode.command(name = "sha256", aliases = ["sha-256"])
+	@encode.command(
+		name = "sha256", aliases = ["sha-256"], with_app_command = False
+	)
 	async def encode_sha256(self, ctx, *, message: str):
 		'''Generate SHA-256 hash'''
 		await ctx.embed_reply(hashlib.sha256(message.encode("UTF-8")).hexdigest())
 	
-	@encode.command(name = "sha384", aliases = ["sha-384"])
+	@encode.command(
+		name = "sha384", aliases = ["sha-384"], with_app_command = False
+	)
 	async def encode_sha384(self, ctx, *, message: str):
 		'''Generate SHA-384 hash'''
 		await ctx.embed_reply(hashlib.sha384(message.encode("UTF-8")).hexdigest())
 	
-	@encode.command(name = "sha512", aliases = ["sha-512"])
+	@encode.command(
+		name = "sha512", aliases = ["sha-512"], with_app_command = False
+	)
 	async def encode_sha512(self, ctx, *, message: str):
 		'''Generate SHA-512 hash'''
 		await ctx.embed_reply(hashlib.sha512(message.encode("UTF-8")).hexdigest())
 	
-	@encode.command(name = "whirlpool")
+	@encode.command(name = "whirlpool", with_app_command = False)
 	async def encode_whirlpool(self, ctx, *, message: str):
 		'''Generate WHIRLPOOL hash'''
 		h = hashlib.new("WHIRLPOOL")
