@@ -127,14 +127,14 @@ class Cryptography(commands.Cog):
 		image_url: Optional[str]
 	):
 		"""
-		Decodes QR codes
-		Input a file url or attach an image
+		Decode QR code
+		If both an image and an image URL are provided, the image is used
 		"""
 		if image:
 			image_url = image.url
 		elif not image_url:
 			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Please input an image url or attach an image"
+				f"{ctx.bot.error_emoji} Image or image URL required"
 			)
 			return
 		
