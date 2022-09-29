@@ -201,10 +201,7 @@ class Cryptography(commands.Cog):
 		'''Compute CRC32 checksum'''
 		await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 	
-	@encode.group(
-		name = "gost", aliases = ["гост"],
-		case_insensitive = True, with_app_command = False
-	)
+	@encode.group(name = "gost", aliases = ["гост"], case_insensitive = True)
 	async def encode_gost(self, ctx):
 		'''
 		Russian Federation/Soviet Union GOST
@@ -214,33 +211,35 @@ class Cryptography(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@encode_gost.command(
-		name = "magma", aliases = ["28147-89", "магма"],
-		with_app_command = False
-	)
+	@encode_gost.command(name = "magma", aliases = ["28147-89", "магма"])
 	async def encode_gost_magma(
 		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb", "mac"], key: str,
 		*, data: str
 	):
 		'''
-		GOST 28147-89 block cipher
-		Also known as Магма or Magma
-		key length must be 32 (256-bit)
+		GOST 28147-89 block cipher, also known as Магма or Magma
+		
+		Parameters
+		----------
+		mode
+			Mode of operation
+		key
+			Key to use for the cipher; Length must be 32 (256-bit)
+		data
+			Data to encode; For ECB mode, block size must be 8 (64-bit),
+			meaning length must be a multiple of 8
 		'''
 		# TODO: Add encode magma alias
 		try:
-			if mode == "cbc":  # Magma with CBC mode of operation
+			if mode == "cbc":
 				await ctx.embed_reply(pygost.gost28147.cbc_encrypt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
-			elif mode == "cfb":  # Magma with CFB mode of operation
+			elif mode == "cfb":
 				await ctx.embed_reply(pygost.gost28147.cfb_encrypt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
-			elif mode == "cnt":  # Magma with CNT mode of operation
+			elif mode == "cnt":
 				await ctx.embed_reply(pygost.gost28147.cnt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
 			elif mode == "ecb":
-				# Magma with ECB mode of operation
-				# data block size must be 8 (64-bit)
-				# This means the data length must be a multiple of 8
 				await ctx.embed_reply(pygost.gost28147.ecb_encrypt(key.encode("UTF-8"), data.encode("UTF-8")).hex())
-			elif mode == "mac":  # Magma with MAC mode of operation
+			elif mode == "mac":
 				mac = pygost.gost28147_mac.MAC(key = key.encode("UTF-8"))
 				mac.update(data.encode("UTF-8"))
 				await ctx.embed_reply(mac.hexdigest())
