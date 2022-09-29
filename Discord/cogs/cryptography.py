@@ -213,7 +213,7 @@ class Cryptography(commands.Cog):
 	
 	@encode_gost.command(name = "magma", aliases = ["28147-89", "магма"])
 	async def encode_gost_magma(
-		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb", "mac"], key: str,
+		self, ctx, mode: Literal["CBC", "CFB", "CNT", "ECB", "MAC"], key: str,
 		*, data: str
 	):
 		"""
@@ -233,23 +233,23 @@ class Cryptography(commands.Cog):
 		try:
 			key = key.encode("UTF-8")
 			data = data.encode("UTF-8")
-			if mode == "cbc":
+			if mode == "CBC":
 				await ctx.embed_reply(
 					pygost.gost28147.cbc_encrypt(key, data).hex()
 				)
-			elif mode == "cfb":
+			elif mode == "CFB":
 				await ctx.embed_reply(
 					pygost.gost28147.cfb_encrypt(key, data).hex()
 				)
-			elif mode == "cnt":
+			elif mode == "CNT":
 				await ctx.embed_reply(
 					pygost.gost28147.cnt(key, data).hex()
 				)
-			elif mode == "ecb":
+			elif mode == "ECB":
 				await ctx.embed_reply(
 					pygost.gost28147.ecb_encrypt(key, data).hex()
 				)
-			elif mode == "mac":
+			elif mode == "MAC":
 				mac = pygost.gost28147_mac.MAC(key)
 				mac.update(data)
 				await ctx.embed_reply(mac.hexdigest())
