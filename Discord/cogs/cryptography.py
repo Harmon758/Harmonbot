@@ -336,14 +336,14 @@ class Cryptography(commands.Cog):
 	
 	@encode.command(name = "qr")
 	async def encode_qr(self, ctx, *, message: str):
-		'''
+		"""
 		Encode a message in a QR code
 		
 		Parameters
 		----------
 		message
 			Message to encode
-		'''
+		"""
 		message = message.replace(' ', '+')
 		url = "https://api.qrserver.com/v1/create-qr-code/?data=" + message
 		await ctx.embed_reply(image_url = url)
