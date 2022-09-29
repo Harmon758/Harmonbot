@@ -312,7 +312,14 @@ class Cryptography(commands.Cog):
 	
 	@encode.command(name = "morse")
 	async def encode_morse(self, ctx, *, message: str):
-		"""Encode a message in morse code"""
+		"""
+		Encode a message in Morse code
+		
+		Parameters
+		----------
+		message
+			Message to encode
+		"""
 		try:
 			await ctx.embed_reply(encode_morse_code(message))
 		except UnitOutputError as e:
