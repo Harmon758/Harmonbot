@@ -66,10 +66,10 @@ class Cryptography(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@decode_gost.command(
-		name = "28147-89", aliases = ["магма", "magma"],
+		name = "magma", aliases = ["28147-89", "магма"],
 		with_app_command = False
 	)
-	async def decode_gost_28147_89(
+	async def decode_gost_magma(
 		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb"], key: str, *,
 		data: str
 	):
