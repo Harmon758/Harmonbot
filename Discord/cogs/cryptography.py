@@ -216,7 +216,7 @@ class Cryptography(commands.Cog):
 		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb", "mac"], key: str,
 		*, data: str
 	):
-		'''
+		"""
 		GOST 28147-89 block cipher, also known as Магма or Magma
 		
 		Parameters
@@ -228,7 +228,7 @@ class Cryptography(commands.Cog):
 		data
 			Data to encode; For ECB mode, block size must be 8 (64-bit),
 			meaning length must be a multiple of 8
-		'''
+		"""
 		# TODO: Add encode magma alias
 		try:
 			key = key.encode("UTF-8")
