@@ -134,27 +134,34 @@ class Cryptography(commands.Cog):
 					f"{ctx.bot.error_emoji} Please input a file url or attach an image"
 				)
 				return
-		# TODO: use textwrap
-		url = f"https://api.qrserver.com/v1/read-qr-code/"
-		params = {"fileurl": file_url}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.qrserver.com/v1/read-qr-code/",
+			params = {"fileurl": file_url}
+		) as resp:
 			if resp.status == 400:
 				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 				return
+			
 			data = await resp.json()
+		
 		if data[0]["symbol"][0]["error"]:
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Error: {data[0]['symbol'][0]['error']}"
 			)
 			return
+		
 		decoded = data[0]["symbol"][0]["data"].replace("QR-Code:", "")
+		
+		# TODO: Use textwrap
 		if len(decoded) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 			await ctx.embed_reply(
-				decoded[:ctx.bot.EDCL - 3] + "...",
+				description = decoded[:ctx.bot.EDCL - 3] + "...",
+				# EDCL: Embed Description Character Limit
 				footer_text = "Decoded message exceeded character limit"
 			)
-			# EDCL: Embed Description Character Limit
 			return
+		
 		await ctx.embed_reply(decoded)
 	
 	@decode.command(name = "reverse", with_app_command = False)
