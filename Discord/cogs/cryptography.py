@@ -262,7 +262,7 @@ class Cryptography(commands.Cog):
 	async def encode_gost_streebog(
 		self, ctx, digest_size: Literal[256, 512], *, data: str
 	):
-		'''
+		"""
 		GOST 34.11-2012 hash function, also known as Стрибог or Streebog
 		256-bit or 512-bit, also known as Streebog-256 or Streebog-512
 		
@@ -272,7 +272,7 @@ class Cryptography(commands.Cog):
 			Digest/Block size: 256-bit or 512-bit
 		data
 			Data to hash
-		'''
+		"""
 		# TODO: Add encode streebog-256 and encode streebog-512 aliases
 		if digest_size == 256:
 			await ctx.embed_reply(pygost.gost34112012.GOST34112012(data.encode("UTF-8"), digest_size = 32).hexdigest())
