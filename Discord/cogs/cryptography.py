@@ -52,10 +52,7 @@ class Cryptography(commands.Cog):
 		# TODO: Paginate if too long
 		await ctx.embed_reply('\n'.join(f"{key}: {decode_caesar_cipher(message, key)}" for key in range(26)))
 	
-	@decode.group(
-		name = "gost", aliases = ["гост"],
-		case_insensitive = True, with_app_command = False
-	)
+	@decode.group(name = "gost", aliases = ["гост"], case_insensitive = True)
 	async def decode_gost(self, ctx):
 		"""
 		Russian Federation/Soviet Union GOST
@@ -65,31 +62,32 @@ class Cryptography(commands.Cog):
 		"""
 		await ctx.send_help(ctx.command)
 	
-	@decode_gost.command(
-		name = "magma", aliases = ["28147-89", "магма"],
-		with_app_command = False
-	)
+	@decode_gost.command(name = "magma", aliases = ["28147-89", "магма"])
 	async def decode_gost_magma(
 		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb"], key: str, *,
 		data: str
 	):
 		'''
-		GOST 28147-89 block cipher
-		Also known as Магма or Magma
-		key length must be 32 (256-bit)
+		GOST 28147-89 block cipher, also known as Магма or Magma
+		
+		Parameters
+		----------
+		mode
+			Mode of operation
+		key
+			Key to use for the cipher
+		data
+			Data to decode
 		'''
 		# TODO: Add decode magma alias
 		try:
-			if mode == "cbc":  # Magma with CBC mode of operation
+			if mode == "cbc":
 				await ctx.embed_reply(pygost.gost28147.cbc_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
-			elif mode == "cfb":  # Magma with CFB mode of operation
+			elif mode == "cfb":
 				await ctx.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
-			elif mode == "cnt":  # Magma with CNT mode of operation
+			elif mode == "cnt":
 				await ctx.embed_reply(pygost.gost28147.cnt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
 			elif mode == "ecb":
-				# Magma with ECB mode of operation
-				# data block size must be 8 (64-bit)
-				# This means the data length must be a multiple of 8
 				await ctx.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
