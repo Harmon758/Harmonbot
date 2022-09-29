@@ -122,10 +122,10 @@ class Cryptography(commands.Cog):
 	
 	@decode.command(name = "qr", with_app_command = False)
 	async def decode_qr(self, ctx, file_url: Optional[str]):
-		'''
+		"""
 		Decodes QR codes
 		Input a file url or attach an image
-		'''
+		"""
 		if not file_url:
 			if ctx.message.attachments:
 				file_url = ctx.message.attachments[0].url
