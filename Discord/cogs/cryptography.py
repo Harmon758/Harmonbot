@@ -64,7 +64,7 @@ class Cryptography(commands.Cog):
 	
 	@decode_gost.command(name = "magma", aliases = ["28147-89", "магма"])
 	async def decode_gost_magma(
-		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb"], key: str, *,
+		self, ctx, mode: Literal["CBC", "CFB", "CNT", "ECB"], key: str, *,
 		data: str
 	):
 		"""
@@ -83,19 +83,19 @@ class Cryptography(commands.Cog):
 		try:
 			key = key.encode("UTF-8")
 			data = bytearray.fromhex(data)
-			if mode == "cbc":
+			if mode == "CBC":
 				await ctx.embed_reply(
 					pygost.gost28147.cbc_decrypt(key, data).decode("UTF-8")
 				)
-			elif mode == "cfb":
+			elif mode == "CFB":
 				await ctx.embed_reply(
 					pygost.gost28147.cfb_decrypt(key, data).decode("UTF-8")
 				)
-			elif mode == "cnt":
+			elif mode == "CNT":
 				await ctx.embed_reply(
 					pygost.gost28147.cnt(key, data).decode("UTF-8")
 				)
-			elif mode == "ecb":
+			elif mode == "ECB":
 				await ctx.embed_reply(
 					pygost.gost28147.ecb_decrypt(key, data).decode("UTF-8")
 				)
