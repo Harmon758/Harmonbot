@@ -109,7 +109,12 @@ class Cryptography(commands.Cog):
 	
 	@decode.command(name = "morse")
 	async def decode_morse(self, ctx, *, message: str):
-		"""Decodes morse code"""
+		"""
+		Decode Morse code
+		
+		message
+			Morse code to decode
+		"""
 		try:
 			await ctx.embed_reply(decode_morse_code(message))
 		except UnitOutputError as e:
