@@ -163,7 +163,7 @@ class Cryptography(commands.Cog):
 	
 	@commands.group(aliases = ["encrypt"], invoke_without_command = True, case_insensitive = True)
 	async def encode(self, ctx):
-		'''Encode messages'''
+		"""Encode messages"""
 		await ctx.send_help(ctx.command)
 	
 	@encode.command(name = "adler32", aliases = ["adler-32"])
