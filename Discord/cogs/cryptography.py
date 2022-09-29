@@ -67,7 +67,7 @@ class Cryptography(commands.Cog):
 		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb"], key: str, *,
 		data: str
 	):
-		'''
+		"""
 		GOST 28147-89 block cipher, also known as Магма or Magma
 		
 		Parameters
@@ -78,7 +78,7 @@ class Cryptography(commands.Cog):
 			Key to use for the cipher
 		data
 			Data to decode
-		'''
+		"""
 		# TODO: Add decode magma alias
 		try:
 			if mode == "cbc":
