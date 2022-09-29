@@ -310,7 +310,7 @@ class Cryptography(commands.Cog):
 		'''Generate MD5 hash'''
 		await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 	
-	@encode.command(name = "morse", with_app_command = False)
+	@encode.command(name = "morse")
 	async def encode_morse(self, ctx, *, message: str):
 		'''Encode a message in morse code'''
 		try:
