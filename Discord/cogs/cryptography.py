@@ -121,14 +121,14 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@decode.command(name = "qr", with_app_command = False)
-	async def decode_qr(self, ctx, file_url: Optional[str]):
+	async def decode_qr(self, ctx, image_url: Optional[str]):
 		"""
 		Decodes QR codes
 		Input a file url or attach an image
 		"""
-		if not file_url:
+		if not image_url:
 			if ctx.message.attachments:
-				file_url = ctx.message.attachments[0].url
+				image_url = ctx.message.attachments[0].url
 			else:
 				await ctx.embed_reply(
 					f"{ctx.bot.error_emoji} Please input a file url or attach an image"
@@ -137,7 +137,7 @@ class Cryptography(commands.Cog):
 		
 		async with ctx.bot.aiohttp_session.get(
 			"https://api.qrserver.com/v1/read-qr-code/",
-			params = {"fileurl": file_url}
+			params = {"fileurl": image_url}
 		) as resp:
 			if resp.status == 400:
 				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
