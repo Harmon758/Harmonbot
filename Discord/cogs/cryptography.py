@@ -121,22 +121,32 @@ class Cryptography(commands.Cog):
 		except UnitOutputError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
-	@decode.command(name = "qr", with_app_command = False)
+	@decode.command(name = "qr")
 	async def decode_qr(
 		self, ctx, image: Optional[discord.Attachment],
 		image_url: Optional[str]
 	):
 		"""
 		Decode QR code
-		If both an image and an image URL are provided, the image is used
+		If both an image and image URL are provided, the image is used
+		
+		Parameters
+		----------
+		image
+			QR code to decode
+		image_url
+			URL for QR code to decode
 		"""
 		if image:
 			image_url = image.url
 		elif not image_url:
 			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Image or image URL required"
+				f"{ctx.bot.error_emoji} Image or image URL required",
+				ephemeral = True
 			)
 			return
+		
+		await ctx.defer()
 		
 		async with ctx.bot.aiohttp_session.get(
 			"https://api.qrserver.com/v1/read-qr-code/",
