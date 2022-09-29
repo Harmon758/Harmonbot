@@ -69,12 +69,12 @@ class Trivia(commands.Cog):
 	
 	@commands.group(max_concurrency = max_concurrency, invoke_without_command = True, case_insensitive = True)
 	async def trivia(self, ctx):
-		'''
+		"""
 		Trivia game
 		Only your last answer is accepted
 		Answers prepended with ! or > are ignored
 		Questions are taken from Jeopardy!
-		'''
+		"""
 		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}}
 		try:
 			await self.trivia_round(ctx)
