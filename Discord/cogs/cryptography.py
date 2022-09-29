@@ -344,7 +344,8 @@ class Cryptography(commands.Cog):
 		message
 			Message to encode
 		'''
-		url = f"https://api.qrserver.com/v1/create-qr-code/?data={message.replace(' ', '+')}"
+		message = message.replace(' ', '+')
+		url = "https://api.qrserver.com/v1/create-qr-code/?data=" + message
 		await ctx.embed_reply(image_url = url)
 	
 	@encode.command(name = "reverse", with_app_command = False)
