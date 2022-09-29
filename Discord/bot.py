@@ -831,7 +831,7 @@ class Bot(commands.Bot):
 		if isinstance(error, commands.ArgumentParsingError):
 			return await ctx.embed_reply(f"{self.error_emoji} Error parsing input: " + str(error).replace("'", '`'))
 		## Invalid input
-		if isinstance(error, (commands.BadArgument, commands.BadUnionArgument)):
+		if isinstance(error, (commands.BadArgument, commands.BadLiteralArgument, commands.BadUnionArgument)):
 			return await ctx.embed_reply(f"{self.error_emoji} Error: Invalid Input: {error}")
 		# Command Invoke Error
 		if isinstance(error, commands.CommandInvokeError):
