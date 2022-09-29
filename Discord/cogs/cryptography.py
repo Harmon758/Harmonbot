@@ -51,8 +51,10 @@ class Cryptography(commands.Cog):
 		# TODO: Paginate if too long
 		await ctx.embed_reply('\n'.join(f"{key}: {decode_caesar_cipher(message, key)}" for key in range(26)))
 	
-	@decode.group(name = "gost", aliases = ["гост"], 
-					invoke_without_command = True, case_insensitive = True)
+	@decode.group(
+		name = "gost", aliases = ["гост"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def decode_gost(self, ctx):
 		'''
 		Russian Federation/Soviet Union GOST
