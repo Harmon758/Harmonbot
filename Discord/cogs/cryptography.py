@@ -64,52 +64,29 @@ class Cryptography(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@decode_gost.group(
-		name = "28147-89", aliases = ["магма", "magma"],
-		invoke_without_command = True, case_insensitive = True
-	)
-	async def decode_gost_28147_89(self, ctx):
+	@decode_gost.command(name = "28147-89", aliases = ["магма", "magma"])
+	async def decode_gost_28147_89(
+		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb"], key: str, *,
+		data: str
+	):
 		'''
 		GOST 28147-89 block cipher
 		Also known as Магма or Magma
 		key length must be 32 (256-bit)
 		'''
 		# TODO: Add decode magma alias
-		await ctx.send_help(ctx.command)
-	
-	@decode_gost_28147_89.command(name = "cbc")
-	async def decode_gost_28147_89_cbc(self, ctx, key: str, *, data: str):
-		'''Magma with CBC mode of operation'''
 		try:
-			await ctx.embed_reply(pygost.gost28147.cbc_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
-		except ValueError as e:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
-	
-	@decode_gost_28147_89.command(name = "cfb")
-	async def decode_gost_28147_89_cfb(self, ctx, key: str, *, data: str):
-		'''Magma with CFB mode of operation'''
-		try:
-			await ctx.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
-		except ValueError as e:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
-	
-	@decode_gost_28147_89.command(name = "cnt")
-	async def decode_gost_28147_89_cnt(self, ctx, key: str, *, data: str):
-		'''Magma with CNT mode of operation'''
-		try:
-			await ctx.embed_reply(pygost.gost28147.cnt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
-		except ValueError as e:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
-	
-	@decode_gost_28147_89.command(name = "ecb")
-	async def decode_gost_28147_89_ecb(self, ctx, key: str, *, data: str):
-		'''
-		Magma with ECB mode of operation
-		data block size must be 8 (64-bit)
-		This means the data length must be a multiple of 8
-		'''
-		try:
-			await ctx.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
+			if mode == "cbc":  # Magma with CBC mode of operation
+				await ctx.embed_reply(pygost.gost28147.cbc_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
+			elif mode == "cfb":  # Magma with CFB mode of operation
+				await ctx.embed_reply(pygost.gost28147.cfb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
+			elif mode == "cnt":  # Magma with CNT mode of operation
+				await ctx.embed_reply(pygost.gost28147.cnt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
+			elif mode == "ecb":
+				# Magma with ECB mode of operation
+				# data block size must be 8 (64-bit)
+				# This means the data length must be a multiple of 8
+				await ctx.embed_reply(pygost.gost28147.ecb_decrypt(key.encode("UTF-8"), bytearray.fromhex(data)).decode("UTF-8"))
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
