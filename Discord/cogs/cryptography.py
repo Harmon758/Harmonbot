@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import hashlib
@@ -121,19 +122,21 @@ class Cryptography(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
 	@decode.command(name = "qr", with_app_command = False)
-	async def decode_qr(self, ctx, image_url: Optional[str]):
+	async def decode_qr(
+		self, ctx, image: Optional[discord.Attachment],
+		image_url: Optional[str]
+	):
 		"""
 		Decodes QR codes
 		Input a file url or attach an image
 		"""
-		if not image_url:
-			if ctx.message.attachments:
-				image_url = ctx.message.attachments[0].url
-			else:
-				await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} Please input a file url or attach an image"
-				)
-				return
+		if image:
+			image_url = image.url
+		elif not image_url:
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Please input an image url or attach an image"
+			)
+			return
 		
 		async with ctx.bot.aiohttp_session.get(
 			"https://api.qrserver.com/v1/read-qr-code/",
