@@ -32,20 +32,20 @@ class Cryptography(commands.Cog):
 	
 	# TODO: not forbidden global check?
 	
-	@commands.group(aliases = ["decrpyt"], invoke_without_command = True, case_insensitive = True)
+	@commands.hybrid_group(aliases = ["decrpyt"], case_insensitive = True)
 	async def decode(self, ctx):
 		'''Decode coded messages'''
 		await ctx.send_help(ctx.command)
 	
 	@decode.group(
 		name = "caesar", aliases = ["rot"],
-		invoke_without_command = True, case_insensitive = True
+		case_insensitive = True, with_app_command = False
 	)
 	async def decode_caesar(self, ctx, key: int, *, message: str):
 		'''Decode caesar cipher'''
 		await ctx.embed_reply(decode_caesar_cipher(message, key))
 	
-	@decode_caesar.command(name = "brute")
+	@decode_caesar.command(name = "brute", with_app_command = False)
 	async def decode_caesar_brute(self, ctx, *, message: str):
 		'''Brute force decode caesar cipher'''
 		# TODO: Paginate if too long
@@ -53,7 +53,7 @@ class Cryptography(commands.Cog):
 	
 	@decode.group(
 		name = "gost", aliases = ["гост"],
-		invoke_without_command = True, case_insensitive = True
+		case_insensitive = True, with_app_command = False
 	)
 	async def decode_gost(self, ctx):
 		'''
@@ -64,7 +64,10 @@ class Cryptography(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@decode_gost.command(name = "28147-89", aliases = ["магма", "magma"])
+	@decode_gost.command(
+		name = "28147-89", aliases = ["магма", "magma"],
+		with_app_command = False
+	)
 	async def decode_gost_28147_89(
 		self, ctx, mode: Literal["cbc", "cfb", "cnt", "ecb"], key: str, *,
 		data: str
@@ -90,7 +93,7 @@ class Cryptography(commands.Cog):
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
-	@decode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"])
+	@decode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"], with_app_command = False)
 	async def decode_gost_34_12_2015(self, ctx, key: str, *, data: str):
 		'''
 		GOST 34.12-2015 128-bit block cipher
@@ -104,7 +107,7 @@ class Cryptography(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: data length must be at least 16")
 		await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).decrypt(bytearray.fromhex(data)).decode("UTF-8"))
 	
-	@decode.command(name = "morse")
+	@decode.command(name = "morse", with_app_command = False)
 	async def decode_morse(self, ctx, *, message: str):
 		'''Decodes morse code'''
 		try:
@@ -112,7 +115,7 @@ class Cryptography(commands.Cog):
 		except UnitOutputError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
-	@decode.command(name = "qr")
+	@decode.command(name = "qr", with_app_command = False)
 	async def decode_qr(self, ctx, file_url: Optional[str]):
 		'''
 		Decodes QR codes
@@ -139,7 +142,7 @@ class Cryptography(commands.Cog):
 			# EDCL: Embed Description Character Limit
 		await ctx.embed_reply(decoded)
 	
-	@decode.command(name = "reverse")
+	@decode.command(name = "reverse", with_app_command = False)
 	async def decode_reverse(self, ctx, *, message: str):
 		'''Reverses text'''
 		await ctx.embed_reply(message[::-1])
