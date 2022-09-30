@@ -94,7 +94,7 @@ class Games(commands.Cog):
 		name = "8-ball", aliases = ["8ball", "eightball", '\N{BILLIARDS}']
 	)
 	@checks.not_forbidden()
-	async def eightball(self, ctx, *, question: Optional[str]):
+	async def eightball(self, ctx, *, question: Optional[str] = None):
 		"""
 		Ask 8-ball a yes or no question
 		Also triggers on \N{BILLIARDS} without prefix
