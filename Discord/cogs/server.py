@@ -12,6 +12,11 @@ class Server(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
+	async def cog_check(self, ctx):
+		guild_only = await commands.guild_only().predicate(ctx)
+		not_forbidden = await checks.not_forbidden().predicate(ctx)
+		return guild_only and not_forbidden
+	
 	# TODO: Add subcommands:
 	#         for info in info command: emojis, afk timeout, afk channel, mfa level, verification level, 
 	#                                   explicit content filter, default notifications, premium tier, 
@@ -30,14 +35,11 @@ class Server(commands.Cog):
 	# TODO: Server settings
 	
 	@commands.group(aliases = ["guild"], invoke_without_command = True, case_insensitive = True)
-	@checks.not_forbidden()
 	async def server(self, ctx):
 		'''Server'''
 		await ctx.send_help(ctx.command)
 	
 	@server.command()
-	@commands.guild_only()
-	@checks.not_forbidden()
 	async def icon(self, ctx):
 		'''See a bigger version of the server icon'''
 		if not ctx.guild.icon:
@@ -46,15 +48,11 @@ class Server(commands.Cog):
 			await ctx.embed_reply("This server's icon:", image_url = ctx.guild.icon.url)
 	
 	@server.command()
-	@commands.guild_only()
-	@checks.not_forbidden()
 	async def id(self, ctx):
 		'''The server's ID'''
 		await ctx.embed_reply(ctx.guild.id)
 	
 	@server.command(aliases = ["info"])
-	@commands.guild_only()
-	@checks.not_forbidden()
 	async def information(self, ctx):
 		"""Information about the server"""
 		if command := ctx.bot.get_command("information server"):
@@ -66,15 +64,11 @@ class Server(commands.Cog):
 			)
 	
 	@server.command()
-	@commands.guild_only()
-	@checks.not_forbidden()
 	async def name(self, ctx):
 		'''The server's name'''
 		await ctx.embed_reply(ctx.guild.name)
 	
 	@server.command()
-	@commands.guild_only()
-	@checks.not_forbidden()
 	async def owner(self, ctx):
 		'''The owner of the server'''
 		if not (guild_owner := ctx.guild.owner):
@@ -86,8 +80,6 @@ class Server(commands.Cog):
 		)
 	
 	@server.command(hidden = True)
-	@commands.guild_only()
-	@checks.not_forbidden()
 	async def region(self, ctx):
 		'''
 		Deprecated, as server regions are deprecated by Discord
@@ -96,7 +88,6 @@ class Server(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@server.group(aliases = ["setting"], invoke_without_command = True, case_insensitive = True)
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings(self, ctx, setting : str, on_off : bool):
 		'''WIP'''
@@ -106,70 +97,60 @@ class Server(commands.Cog):
 		await ctx.embed_reply(f"{setting} set to {on_off}")
 	
 	@settings.group(name = "logs", aliases = ["log"], case_insensitive = True)
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs.command(name = "channel")
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_channel(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs.command(name = "typing", aliases = ["type"])
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_typing(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs.group(name = "message", aliases = ["messages"], case_insensitive = True)
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_message(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_message.command(name = "send")
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_message_send(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_message.command(name = "delete")
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_message_delete(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_message.command(name = "edit")
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_message_edit(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs.group(name = "reaction", aliases = ["reactions"], case_insensitive = True)
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_reaction(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_reaction.command(name = "add")
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_reaction_add(self, ctx):
 		'''WIP'''
 		...
 	
 	@settings_logs_reaction.command(name = "remove")
-	@commands.guild_only()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs_reaction_remove(self, ctx):
 		'''WIP'''
