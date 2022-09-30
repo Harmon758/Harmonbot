@@ -95,7 +95,7 @@ class Games(commands.Cog):
 	)
 	@checks.not_forbidden()
 	async def eightball(self, ctx, *, question: Optional[str]):
-		'''
+		"""
 		Ask 8-ball a yes or no question
 		Also triggers on \N{BILLIARDS} without prefix
 		
@@ -103,7 +103,7 @@ class Games(commands.Cog):
 		----------
 		question
 			Yes or no question to ask 8-ball
-		'''
+		"""
 		await ctx.embed_reply(f"\N{BILLIARDS} {games.eightball()}")
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
