@@ -52,6 +52,19 @@ class Server(commands.Cog):
 		'''The server's ID'''
 		await ctx.embed_reply(ctx.guild.id)
 	
+	@server.command(aliases = ["info"])
+	@commands.guild_only()
+	@checks.not_forbidden()
+	async def information(self, ctx):
+		"""Information about the server"""
+		if command := ctx.bot.get_command("information server"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"information server command not found "
+				"when server information command invoked"
+			)
+	
 	@server.command()
 	@commands.guild_only()
 	@checks.not_forbidden()
