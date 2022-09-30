@@ -67,12 +67,12 @@ class Role(commands.Cog):
 	@role.command()
 	async def id(self, ctx, *, role: discord.Role):
 		"""
-		Show ID of a role
+		Show the ID of a role
 		
 		Parameters
 		----------
 		role
-			Role to show ID of
+			Role to show the ID of
 		"""
 		await ctx.embed_reply(role.id)
 	
