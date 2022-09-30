@@ -90,11 +90,11 @@ class Games(commands.Cog):
 			data = await resp.json()
 		return data["output"]
 	
-	@commands.command(name = "8ball", aliases = ["eightball", '\N{BILLIARDS}'])
+	@commands.command(name = "8-ball", aliases = ["8ball", "eightball", '\N{BILLIARDS}'])
 	@checks.not_forbidden()
 	async def eightball(self, ctx):
 		'''
-		Ask 8ball a yes or no question
+		Ask 8-ball a yes or no question
 		Also triggers on \N{BILLIARDS} without prefix
 		'''
 		await ctx.embed_reply(f"\N{BILLIARDS} {games.eightball()}")
