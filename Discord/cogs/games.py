@@ -90,7 +90,9 @@ class Games(commands.Cog):
 			data = await resp.json()
 		return data["output"]
 	
-	@commands.command(name = "8-ball", aliases = ["8ball", "eightball", '\N{BILLIARDS}'])
+	@commands.hybrid_command(
+		name = "8-ball", aliases = ["8ball", "eightball", '\N{BILLIARDS}']
+	)
 	@checks.not_forbidden()
 	async def eightball(self, ctx):
 		'''
