@@ -36,7 +36,7 @@ class Server(commands.Cog):
 	
 	@commands.group(aliases = ["guild"], invoke_without_command = True, case_insensitive = True)
 	async def server(self, ctx):
-		'''Server'''
+		"""Server"""
 		await ctx.send_help(ctx.command)
 	
 	@server.command()
