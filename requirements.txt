@@ -60,7 +60,7 @@ unicodedata2==13.0.0.post2
 urllib3==1.26.12
 wand==0.6.10
 wolframalpha==5.0.0
-wordcloud==1.8.1
+wordcloud==1.8.2.2
 wordnik-py3==2.1.2
 youtube-dl==2021.12.17
 yt-dlp==2022.9.1
