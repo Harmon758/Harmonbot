@@ -82,7 +82,7 @@ class Server(commands.Cog):
 	@server.command(hidden = True)
 	async def region(self, ctx):
 		"""
-		Deprecated, as server regions are deprecated by Discord
+		This command is deprecated, as server regions have been deprecated by Discord
 		https://github.com/discord/discord-api-docs/pull/3001
 		"""
 		await ctx.send_help(ctx.command)
