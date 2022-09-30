@@ -49,7 +49,7 @@ class Server(commands.Cog):
 	
 	@server.command()
 	async def id(self, ctx):
-		"""The server's ID"""
+		"""Show the ID of the server"""
 		await ctx.embed_reply(ctx.guild.id)
 	
 	@server.command(aliases = ["info"])
