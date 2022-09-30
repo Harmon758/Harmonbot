@@ -81,10 +81,10 @@ class Server(commands.Cog):
 	
 	@server.command(hidden = True)
 	async def region(self, ctx):
-		'''
+		"""
 		Deprecated, as server regions are deprecated by Discord
 		https://github.com/discord/discord-api-docs/pull/3001
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@server.group(aliases = ["setting"], invoke_without_command = True, case_insensitive = True)
