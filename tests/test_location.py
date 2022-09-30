@@ -85,7 +85,10 @@ class TestWindDegreesToDirection(unittest.TestCase):
 	def test_nw_output(self, degrees):
 		self.assertEqual(wind_degrees_to_direction(degrees), "NW")
 	
-	@given(floats(min_value = 326.25, max_value = 348.75, exclude_min = True))
+	@given(floats(
+		min_value = 326.25, max_value = 348.75,
+		exclude_min = True, exclude_max = True
+	))
 	def test_nnw_output(self, degrees):
 		self.assertEqual(wind_degrees_to_direction(degrees), "NNW")
 
