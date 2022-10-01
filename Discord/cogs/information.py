@@ -36,7 +36,7 @@ BADGE_EMOJI_IDS = {
 async def setup(bot):
 	await bot.add_cog(Information(bot))
 
-class Information(commands.GroupCog):
+class Information(commands.Cog):
 	"""Information"""
 	
 	def __init__(self, bot):
@@ -46,7 +46,7 @@ class Information(commands.GroupCog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["info"], invoke_without_command = True, case_insensitive = True)
+	@commands.hybrid_group(aliases = ["info"], case_insensitive = True)
 	async def information(self, ctx):
 		'''Information'''
 		if cog := self.bot.get_cog("Meta"):
@@ -58,7 +58,7 @@ class Information(commands.GroupCog):
 	# TODO: Add soundcloud info
 	# TODO: Add member info
 	
-	@information.command(aliases = ["char"])
+	@information.command(aliases = ["char"], with_app_command = False)
 	async def character(self, ctx, character: str):
 		'''Information about a Unicode character'''
 		output = []
@@ -81,7 +81,7 @@ class Information(commands.GroupCog):
 				output = output[:output.rfind('\n')]
 			await ctx.embed_reply(output)
 	
-	@information.command()
+	@information.command(with_app_command = False)
 	@commands.guild_only()
 	async def role(self, ctx, *, role: discord.Role):
 		"""Information about a role"""
@@ -99,7 +99,7 @@ class Information(commands.GroupCog):
 			footer_text = "Created", timestamp = role.created_at
 		)
 	
-	@information.command(aliases = ["guild"])
+	@information.command(aliases = ["guild"], with_app_command = False)
 	@commands.guild_only()
 	async def server(self, ctx):
 		'''Information about the server'''
@@ -162,7 +162,7 @@ class Information(commands.GroupCog):
 								thumbnail_url = ctx.guild.icon.url, fields = fields, 
 								footer_text = "Created", timestamp = ctx.guild.created_at)
 	
-	@information.command()
+	@information.command(with_app_command = False)
 	async def spotify(self, ctx, url: str):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
@@ -184,7 +184,7 @@ class Information(commands.GroupCog):
 								thumbnail_url = data["album"]["images"][0]["url"])
 		# TODO: keep spotify embed?
 	
-	@information.command(aliases = ["member"])
+	@information.command(aliases = ["member"], with_app_command = False)
 	async def user(self, ctx, *, user: discord.Member = commands.Author):
 		'''Information about a user'''
 		# Note: user information command invokes this command
@@ -257,7 +257,7 @@ class Information(commands.GroupCog):
 		# TODO: More detailed activities?
 		# TODO: Guild permissions?, separate command?
 	
-	@information.command(aliases = ["yt"])
+	@information.command(aliases = ["yt"], with_app_command = False)
 	async def youtube(self, ctx, url: str):
 		"""Information about a YouTube video"""
 		# TODO: Automatic on YouTube links, server specific toggleable option
