@@ -42,19 +42,6 @@ class Info(commands.GroupCog, group_name = "information"):
 	def __init__(self, bot):
 		self.bot = bot
 		super().__init__()
-		# Add info subcommands as subcommands of corresponding commands
-		self.info_commands = (
-			(user, "User", "user", ["member"], [checks.not_forbidden().predicate]),
-		)
-		for command, cog_name, parent_name, aliases, command_checks in self.info_commands:
-			self.information.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
-			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
-				parent.add_command(commands.Command(command, name = "information", aliases = ["info"], checks = command_checks))
-	
-	def cog_unload(self):
-		for command, cog_name, parent_name, *_ in self.info_commands:
-			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
-				parent.remove_command("information")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -197,6 +184,79 @@ class Info(commands.GroupCog, group_name = "information"):
 								thumbnail_url = data["album"]["images"][0]["url"])
 		# TODO: keep spotify embed?
 	
+	@information.command(aliases = ["member"])
+	async def user(self, ctx, *, user: discord.Member = commands.Author):
+		'''Information about a user'''
+		# Note: user information command invokes this command
+		title = str(user)
+		if user.public_flags.verified_bot:
+			title += " [Verified Bot]"
+		elif user.bot:
+			title += " [Bot]"
+		
+		description = "".join(
+			str(badge_emoji) for flag_name, flag_value in user.public_flags
+			if flag_value and (
+				badge_emoji := ctx.bot.get_emoji(
+					BADGE_EMOJI_IDS.get(
+						getattr(discord.PublicUserFlags, flag_name), None
+					)
+				)
+			)
+		)
+		
+		statuses = user.status.name.capitalize().replace("Dnd", "Do Not Disturb")
+		for status_type in ("desktop", "web", "mobile"):
+			if (status := getattr(user, f"{status_type}_status")) is not discord.Status.offline:
+				statuses += f"\n{status_type.capitalize()}: {status.name.capitalize().replace('Dnd', 'Do Not Disturb')}"
+		fields = [
+			("User", user.mention), ("ID", user.id), ("Status", statuses),
+			(
+				ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), 
+				# inflect_engine.plural("Activity") returns "Activitys"
+				'\n'.join(
+					f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
+					+ (activity.name if isinstance(activity, discord.Activity) else str(activity))
+					for activity in user.activities
+				) or None
+			), 
+			(
+				"Color",
+				f"#{user.color.value:0>6X}\n{user.color.to_rgb()}"
+				if user.color.value else None
+			),
+			(
+				"Roles",
+				", ".join(role.mention for role in user.roles[1:]) or None
+			),
+			(
+				"Joined",
+				f"{discord.utils.format_dt(user.joined_at)} ({user.joined_at.isoformat(timespec = 'milliseconds')})"
+			)
+		]
+		if user.premium_since:
+			fields.append((
+				"Boosting Since",
+				f"{discord.utils.format_dt(user.premium_since)} ({user.premium_since.isoformat(timespec = 'milliseconds')})"
+			))
+		
+		fetched_user = await ctx.bot.fetch_user(user.id)
+		
+		await ctx.embed_reply(
+			title = title, title_url = user.display_avatar.url,
+			thumbnail_url = user.display_avatar.url,
+			description = description,
+			fields = fields,
+			image_url = fetched_user.banner.url if fetched_user.banner else None,
+			footer_text = "Created", timestamp = user.created_at,
+			color = fetched_user.accent_color
+		)
+		
+		# TODO: Add voice state?
+		# TODO: Accept User input?
+		# TODO: More detailed activities?
+		# TODO: Guild permissions?, separate command?
+	
 	@information.command(aliases = ["yt"])
 	async def youtube(self, ctx, url: str):
 		"""Information about a YouTube video"""
@@ -270,76 +330,4 @@ class Info(commands.GroupCog, group_name = "information"):
 		"""
 		ctx = await interaction.client.get_context(interaction)
 		await self.youtube(ctx, url = link)
-
-
-async def user(ctx, *, user: discord.Member = commands.Author):
-	'''Information about a user'''
-	title = str(user)
-	if user.public_flags.verified_bot:
-		title += " [Verified Bot]"
-	elif user.bot:
-		title += " [Bot]"
-	
-	description = "".join(
-		str(badge_emoji) for flag_name, flag_value in user.public_flags
-		if flag_value and (
-			badge_emoji := ctx.bot.get_emoji(
-				BADGE_EMOJI_IDS.get(
-					getattr(discord.PublicUserFlags, flag_name), None
-				)
-			)
-		)
-	)
-	
-	statuses = user.status.name.capitalize().replace("Dnd", "Do Not Disturb")
-	for status_type in ("desktop", "web", "mobile"):
-		if (status := getattr(user, f"{status_type}_status")) is not discord.Status.offline:
-			statuses += f"\n{status_type.capitalize()}: {status.name.capitalize().replace('Dnd', 'Do Not Disturb')}"
-	fields = [
-		("User", user.mention), ("ID", user.id), ("Status", statuses),
-		(
-			ctx.bot.inflect_engine.plural("activity", len(user.activities)).capitalize(), 
-			# inflect_engine.plural("Activity") returns "Activitys"
-			'\n'.join(
-				f"{activity.type.name.capitalize().replace('Listening', 'Listening to').replace('Custom', 'Custom status:')} "
-				+ (activity.name if isinstance(activity, discord.Activity) else str(activity))
-				for activity in user.activities
-			) or None
-		), 
-		(
-			"Color",
-			f"#{user.color.value:0>6X}\n{user.color.to_rgb()}"
-			if user.color.value else None
-		),
-		(
-			"Roles",
-			", ".join(role.mention for role in user.roles[1:]) or None
-		),
-		(
-			"Joined",
-			f"{discord.utils.format_dt(user.joined_at)} ({user.joined_at.isoformat(timespec = 'milliseconds')})"
-		)
-	]
-	if user.premium_since:
-		fields.append((
-			"Boosting Since",
-			f"{discord.utils.format_dt(user.premium_since)} ({user.premium_since.isoformat(timespec = 'milliseconds')})"
-		))
-	
-	fetched_user = await ctx.bot.fetch_user(user.id)
-	
-	await ctx.embed_reply(
-		title = title, title_url = user.display_avatar.url,
-		thumbnail_url = user.display_avatar.url,
-		description = description,
-		fields = fields,
-		image_url = fetched_user.banner.url if fetched_user.banner else None,
-		footer_text = "Created", timestamp = user.created_at,
-		color = fetched_user.accent_color
-	)
-	
-	# TODO: Add voice state?
-	# TODO: Accept User input?
-	# TODO: More detailed activities?
-	# TODO: Guild permissions?, separate command?
 

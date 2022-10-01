@@ -123,6 +123,19 @@ class User(commands.Cog):
         """Get ID of user"""
         await ctx.invoke(self.user_id, user = user)
 
+    @user.command(aliases = ["info"])
+    async def information(
+        self, ctx, *, user: discord.Member = commands.Author
+    ):
+        """Information about a user"""
+        if command := ctx.bot.get_command("information user"):
+            await ctx.invoke(command, user = user)
+        else:
+            raise RuntimeError(
+                "information user command not found "
+                "when user information command invoked"
+            )
+
     # TODO: Make general name command with subcommands
     @user.command(name = "name")
     async def user_name(self, ctx, *, user: Optional[discord.Member]):
