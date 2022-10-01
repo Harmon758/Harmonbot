@@ -96,63 +96,12 @@ class Server(commands.Cog):
 		# await ctx.embed_reply("Setting not found")
 		await ctx.embed_reply(f"{setting} set to {on_off}")
 	
-	@settings.group(name = "logs", aliases = ["log"], case_insensitive = True)
+	@settings.command(name = "logs", aliases = ["log"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs(self, ctx):
 		'''WIP'''
-		...
-	
-	@settings_logs.command(name = "channel")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_channel(self, ctx):
-		'''WIP'''
-		...
-	
-	@settings_logs.command(name = "typing", aliases = ["type"])
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_typing(self, ctx):
-		'''WIP'''
-		...
-	
-	@settings_logs.group(name = "message", aliases = ["messages"], case_insensitive = True)
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_message(self, ctx):
-		'''WIP'''
-		...
-	
-	@settings_logs_message.command(name = "send")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_message_send(self, ctx):
-		'''WIP'''
-		...
-	
-	@settings_logs_message.command(name = "delete")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_message_delete(self, ctx):
-		'''WIP'''
-		...
-	
-	@settings_logs_message.command(name = "edit")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_message_edit(self, ctx):
-		'''WIP'''
-		...
-	
-	@settings_logs.group(name = "reaction", aliases = ["reactions"], case_insensitive = True)
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_reaction(self, ctx):
-		'''WIP'''
-		...
-	
-	@settings_logs_reaction.command(name = "add")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_reaction_add(self, ctx):
-		'''WIP'''
-		...
-	
-	@settings_logs_reaction.command(name = "remove")
-	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def settings_logs_reaction_remove(self, ctx):
-		'''WIP'''
-		...
+		# TODO:
+		# Choose channel
+		# Ability to log: typing?, message send?, message edit, message delete,
+		# reaction add?, reaction remove?
 
