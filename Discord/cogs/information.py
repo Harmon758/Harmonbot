@@ -257,9 +257,16 @@ class Information(commands.Cog):
 		# TODO: More detailed activities?
 		# TODO: Guild permissions?, separate command?
 	
-	@information.command(aliases = ["yt"], with_app_command = False)
+	@information.command(aliases = ["yt"])
 	async def youtube(self, ctx, url: str):
-		"""Information about a YouTube video"""
+		"""
+		Information about a YouTube video
+		
+		Parameters
+		----------
+		url
+			YouTube video URL
+		"""
 		# TODO: Automatic on YouTube links, server specific toggleable option
 		# TODO: Handle playlists
 		url_data = urllib.parse.urlparse(url)
@@ -317,17 +324,4 @@ class Information(commands.Cog):
 			timestamp = dateutil.parser.parse(snippet["publishedAt"])
 		)
 		# TODO: Handle invalid url
-	
-	@app_commands.command(name = "youtube")
-	async def slash_youtube(self, interaction, link: str):
-		"""
-		Information about a YouTube video
-		
-		Parameters
-		----------
-		link
-			YouTube video URL
-		"""
-		ctx = await interaction.client.get_context(interaction)
-		await self.youtube(ctx, url = link)
 
