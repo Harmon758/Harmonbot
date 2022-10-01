@@ -23,10 +23,7 @@ class User(commands.Cog):
     #       ban, role removal
     #       username?, nickname?
 
-    @commands.group(
-        aliases = ["member"],
-        case_insensitive = True, invoke_without_command = True
-    )
+    @commands.hybrid_group(aliases = ["member"], case_insensitive = True)
     async def user(self, ctx):
         '''
         User
@@ -35,7 +32,9 @@ class User(commands.Cog):
         await ctx.send_help(ctx.command)
 
     # TODO: Integrate with role command
-    @user.command(name = "add_role", aliases = ["addrole"])
+    @user.command(
+        name = "add_role", aliases = ["addrole"], with_app_command = False
+    )
     @commands.bot_has_guild_permissions(manage_roles = True)
     @commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner())
     async def user_add_role(self, ctx, member : discord.Member, *, role : discord.Role):
@@ -55,7 +54,7 @@ class User(commands.Cog):
         """Gives a user a role"""
         await ctx.invoke(self.user_add_role, member = member, role = role)
 
-    @user.command(name = "avatar")
+    @user.command(name = "avatar", with_app_command = False)
     async def user_avatar(self, ctx, *, user: Optional[discord.Member]):
         '''
         See a bigger version of an avatar
@@ -80,7 +79,7 @@ class User(commands.Cog):
         """
         await ctx.invoke(self.user_avatar, user = user)
 
-    @user.command(name = "discriminator")
+    @user.command(name = "discriminator", with_app_command = False)
     async def user_discriminator(self, ctx, *, user: Optional[discord.Member]):
         '''
         Get a discriminator
@@ -106,7 +105,7 @@ class User(commands.Cog):
         await ctx.invoke(self.user_discriminator, user = user)
 
     # TODO: Make general ID command with subcommands
-    @user.command(name = "id")
+    @user.command(name = "id", with_app_command = False)
     async def user_id(self, ctx, *, user: Optional[discord.Member]):
         '''Get ID of user'''
         if not user:
@@ -123,7 +122,7 @@ class User(commands.Cog):
         """Get ID of user"""
         await ctx.invoke(self.user_id, user = user)
 
-    @user.command(aliases = ["info"])
+    @user.command(aliases = ["info"], with_app_command = False)
     async def information(
         self, ctx, *, user: discord.Member = commands.Author
     ):
@@ -137,7 +136,7 @@ class User(commands.Cog):
             )
 
     # TODO: Make general name command with subcommands
-    @user.command(name = "name")
+    @user.command(name = "name", with_app_command = False)
     async def user_name(self, ctx, *, user: Optional[discord.Member]):
         '''The name of a user'''
         if not user:
