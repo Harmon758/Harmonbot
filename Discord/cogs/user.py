@@ -107,7 +107,7 @@ class User(commands.Cog):
     # TODO: Make general ID command with subcommands
     @user.command(name = "id")
     async def user_id(self, ctx, *, user: Optional[discord.Member]):
-        '''Get ID of user'''
+        '''Show the ID of a user'''
         if not user:
             await ctx.embed_reply(f"Your ID: {ctx.author.id}")
         else:
@@ -119,7 +119,7 @@ class User(commands.Cog):
 
     @commands.command()
     async def id(self, ctx, *, user: Optional[discord.Member]):
-        """Get ID of user"""
+        """Show the ID of a user"""
         await ctx.invoke(self.user_id, user = user)
 
     @user.command(aliases = ["info"], with_app_command = False)
