@@ -25,10 +25,10 @@ class User(commands.Cog):
 
     @commands.hybrid_group(aliases = ["member"], case_insensitive = True)
     async def user(self, ctx):
-        '''
+        """
         User
         All user subcommands are also commands
-        '''
+        """
         await ctx.send_help(ctx.command)
 
     # TODO: Integrate with role command
