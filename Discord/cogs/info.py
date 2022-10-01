@@ -112,7 +112,7 @@ class Info(commands.GroupCog, group_name = "information"):
 			footer_text = "Created", timestamp = role.created_at
 		)
 	
-	@information.command()
+	@information.command(aliases = ["guild"])
 	@commands.guild_only()
 	async def server(self, ctx):
 		'''Information about the server'''
