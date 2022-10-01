@@ -326,10 +326,9 @@ class Bot(commands.Bot):
 		self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
 		# Load cogs
 		for file in sorted(os.listdir("cogs")):
-			if file.endswith(".py") and not file.startswith(("images", "info", "random", "reactions")):
+			if file.endswith(".py") and not file.startswith(("images", "random", "reactions")):
 				await self.load_extension("cogs." + file[:-3])
 		await self.load_extension("cogs.images")
-		await self.load_extension("cogs.info")
 		await self.load_extension("cogs.random")
 		await self.load_extension("cogs.reactions")
 		# TODO: Document inter-cog dependencies/subcommands
