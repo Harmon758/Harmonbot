@@ -1,4 +1,5 @@
 
+import contextlib
 import html
 import re
 import unicodedata
@@ -175,7 +176,8 @@ def check_answer(answer, response, inflect_engine = None):
     for words in (answer_words, response_words):
         for index, word in enumerate(words):
             if word[0].isdigit():
-                words[index] = inflect_engine.number_to_words(word)
+                with contextlib.suppress(inflect.NumOutOfRangeError):
+                    words[index] = inflect_engine.number_to_words(word)
     if ' '.join(answer_words) == ' '.join(response_words):
         return True
     # Handle optional parentheses
