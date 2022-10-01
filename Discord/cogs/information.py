@@ -260,7 +260,7 @@ class Information(commands.Cog):
 	@information.command(aliases = ["yt"])
 	async def youtube(self, ctx, url: str):
 		"""
-		Information about a YouTube video
+		Show information about a YouTube video
 		
 		Parameters
 		----------
