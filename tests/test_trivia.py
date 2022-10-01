@@ -12,6 +12,14 @@ class TestCheckAnswer(unittest.TestCase):
     def test_incorrect_answer(self):
         self.assertFalse(check_answer("correct", "incorrect"))
 
+    def test_large_number(self):
+        self.assertFalse(
+            check_answer(
+                "33 1/3",
+                "128347192834719283561293847129384719238471234"
+            )
+        )
+
     def test_parentheses_with_article_prefix(self):
         self.assertTrue(
             check_answer(
