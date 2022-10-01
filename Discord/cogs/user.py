@@ -105,7 +105,7 @@ class User(commands.Cog):
         await ctx.invoke(self.user_discriminator, user = user)
 
     # TODO: Make general ID command with subcommands
-    @user.command(name = "id", with_app_command = False)
+    @user.command(name = "id")
     async def user_id(self, ctx, *, user: Optional[discord.Member]):
         '''Get ID of user'''
         if not user:
