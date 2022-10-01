@@ -47,7 +47,7 @@ class Server(commands.Cog):
 		else:
 			await ctx.embed_reply("This server's icon:", image_url = ctx.guild.icon.url)
 	
-	@server.command(with_app_command = False)
+	@server.command()
 	async def id(self, ctx):
 		"""Show the ID of the server"""
 		await ctx.embed_reply(ctx.guild.id)
