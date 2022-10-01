@@ -111,7 +111,7 @@ class User(commands.Cog):
         """Show the ID of a user"""
         await ctx.embed_reply(
             description = f"{user.mention}'s ID: {user.id}",
-            footer_icon_url = user.avatar.url,
+            footer_icon_url = user.display_avatar.url,
             footer_text = str(user)
         )
 
