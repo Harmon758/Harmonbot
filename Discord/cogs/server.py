@@ -34,12 +34,12 @@ class Server(commands.Cog):
 	#       Add option to set/edit: icon, name, region
 	# TODO: Server settings
 	
-	@commands.group(aliases = ["guild"], invoke_without_command = True, case_insensitive = True)
+	@commands.hybrid_group(aliases = ["guild"], case_insensitive = True)
 	async def server(self, ctx):
 		"""Server"""
 		await ctx.send_help(ctx.command)
 	
-	@server.command()
+	@server.command(with_app_command = False)
 	async def icon(self, ctx):
 		'''See a bigger version of the server icon'''
 		if not ctx.guild.icon:
@@ -47,12 +47,12 @@ class Server(commands.Cog):
 		else:
 			await ctx.embed_reply("This server's icon:", image_url = ctx.guild.icon.url)
 	
-	@server.command()
+	@server.command(with_app_command = False)
 	async def id(self, ctx):
 		"""Show the ID of the server"""
 		await ctx.embed_reply(ctx.guild.id)
 	
-	@server.command(aliases = ["info"])
+	@server.command(aliases = ["info"], with_app_command = False)
 	async def information(self, ctx):
 		"""Information about the server"""
 		if command := ctx.bot.get_command("information server"):
@@ -63,12 +63,12 @@ class Server(commands.Cog):
 				"when server information command invoked"
 			)
 	
-	@server.command()
+	@server.command(with_app_command = False)
 	async def name(self, ctx):
 		'''The server's name'''
 		await ctx.embed_reply(ctx.guild.name)
 	
-	@server.command()
+	@server.command(with_app_command = False)
 	async def owner(self, ctx):
 		'''The owner of the server'''
 		if not (guild_owner := ctx.guild.owner):
@@ -79,7 +79,7 @@ class Server(commands.Cog):
 			footer_icon_url = guild_owner.display_avatar.url
 		)
 	
-	@server.command(hidden = True)
+	@server.command(hidden = True, with_app_command = False)
 	async def region(self, ctx):
 		"""
 		This command is deprecated, as server regions have been deprecated by Discord
@@ -87,7 +87,7 @@ class Server(commands.Cog):
 		"""
 		await ctx.send_help(ctx.command)
 	
-	@server.group(aliases = ["setting"], invoke_without_command = True, case_insensitive = True)
+	@server.group(aliases = ["setting"], case_insensitive = True, with_app_command = False)
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings(self, ctx, setting : str, on_off : bool):
 		'''WIP'''
@@ -96,7 +96,9 @@ class Server(commands.Cog):
 		# await ctx.embed_reply("Setting not found")
 		await ctx.embed_reply(f"{setting} set to {on_off}")
 	
-	@settings.command(name = "logs", aliases = ["log"])
+	@settings.command(
+		name = "logs", aliases = ["log"], with_app_command = False
+	)
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs(self, ctx):
 		'''WIP'''
