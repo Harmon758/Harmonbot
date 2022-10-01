@@ -12,6 +12,15 @@ class TestCheckAnswer(unittest.TestCase):
     def test_incorrect_answer(self):
         self.assertFalse(check_answer("correct", "incorrect"))
 
+    def test_correct_encoding(self):
+        self.assertTrue(
+            check_answer("Brontë Sisters (The Brontës)", "Brontes")
+        )
+
+    def test_incorrect_encoding(self):
+        self.assertTrue(check_answer("a rÃ©sumÃ©", "resume"))
+        self.assertTrue(check_answer("TenochtitlÃ¡n", "Tenochtitlan"))
+
     def test_large_number(self):
         self.assertFalse(
             check_answer(
@@ -30,10 +39,6 @@ class TestCheckAnswer(unittest.TestCase):
         self.assertTrue(
             check_answer("Holland (The Netherlands)", "Netherlands")
         )
-
-    def test_wrong_encoding(self):
-        self.assertTrue(check_answer("a rÃ©sumÃ©", "resume"))
-        self.assertTrue(check_answer("TenochtitlÃ¡n", "Tenochtitlan"))
 
 
 if __name__ == "__main__":
