@@ -58,7 +58,6 @@ class Random(commands.GroupCog, group_name = "random"):
 			(streetview, "Location", "streetview", []), 
 			(time, "Location", "time", []), 
 			(uesp, "Search", "uesp", []), 
-			(user, "User", "user", ["member"]), 
 			(wikipedia, "Search", "wikipedia", ["wiki"]), 
 			(xkcd, "Entertainment", "xkcd", [])
 		)
@@ -431,6 +430,12 @@ class Random(commands.GroupCog, group_name = "random"):
 			footer_text = data["quoteAuthor"]
 		)  # TODO: quoteLink?
 	
+	@random.command(aliases = ["member"])
+	async def user(self, ctx):
+		'''Random user/member'''
+		# Note: user random command invokes this command
+		await ctx.embed_reply(random.choice(ctx.guild.members).mention)
+	
 	@commands.command()
 	async def word(self, ctx):
 		"""Random word"""
@@ -557,10 +562,6 @@ async def uesp(ctx):
 		await cog.process_uesp(ctx, None, random = True)
 	else:
 		await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random")  # necessary?
-
-async def user(ctx):
-	'''Random user/member'''
-	await ctx.embed_reply(random.choice(ctx.guild.members).mention)
 
 async def wikipedia(ctx):
 	'''Random Wikipedia article'''

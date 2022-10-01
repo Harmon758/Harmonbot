@@ -152,3 +152,14 @@ class User(commands.Cog):
         """The name of a user"""
         await ctx.invoke(self.user_name, user = user)
 
+    @user.command(with_app_command = False)
+    async def random(self, ctx):
+        """Random user/member"""
+        if command := ctx.bot.get_command("random user"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "random user command not found "
+                "when user random command invoked"
+            )
+
