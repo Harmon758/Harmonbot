@@ -104,19 +104,18 @@ class User(commands.Cog):
         """
         await ctx.invoke(self.user_discriminator, user = user)
 
-    # TODO: Make general ID command with subcommands
     @user.command(name = "id")
-    async def user_id(self, ctx, *, user: Optional[discord.Member]):
+    async def user_id(
+        self, ctx, *, user: Optional[discord.Member] = commands.Author
+    ):
         """Show the ID of a user"""
-        if not user:
-            await ctx.embed_reply(f"Your ID: {ctx.author.id}")
-        else:
-            await ctx.embed_reply(
-                description = f"{user.mention}'s ID: {user.id}",
-                footer_icon_url = user.avatar.url,
-                footer_text = str(user)
-            )
+        await ctx.embed_reply(
+            description = f"{user.mention}'s ID: {user.id}",
+            footer_icon_url = user.avatar.url,
+            footer_text = str(user)
+        )
 
+    # TODO: Make general ID command with subcommands
     @commands.command()
     async def id(self, ctx, *, user: Optional[discord.Member]):
         """Show the ID of a user"""
