@@ -3,8 +3,9 @@ import contextlib
 import html
 import re
 import unicodedata
+import warnings
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
 import inflect
 from pyparsing import (
     Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
@@ -26,7 +27,11 @@ def check_answer(answer, response, inflect_engine = None):
         inflect_engine = inflect.engine()
 
     # Unescape HTML entities in answer and extract text between HTML tags
-    answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", category = MarkupResemblesLocatorWarning
+        )
+        answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
     # Replace in answer: \' -> '
     # Replace in response: ’ -> '
     # Replace: & -> and
