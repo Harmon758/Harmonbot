@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-import inspect
 from typing import Optional
 
 from utilities import checks
@@ -16,10 +15,6 @@ class User(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        for name, command in inspect.getmembers(self):
-            if isinstance(command, commands.Command) and command.parent is None and name != "user":
-                self.bot.add_command(command)
-                self.user.add_command(command)
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
@@ -40,16 +35,28 @@ class User(commands.Cog):
         await ctx.send_help(ctx.command)
 
     # TODO: Integrate with role command
-    @commands.command(aliases = ["addrole"])
+    @user.command(name = "add_role", aliases = ["addrole"])
     @commands.bot_has_guild_permissions(manage_roles = True)
     @commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner())
-    async def add_role(self, ctx, member : discord.Member, *, role : discord.Role):
+    async def user_add_role(self, ctx, member : discord.Member, *, role : discord.Role):
         '''Gives a user a role'''
         await member.add_roles(role)
         await ctx.embed_reply("I gave the role, {}, to {}".format(role, member))
 
-    @commands.command()
-    async def avatar(self, ctx, *, user: Optional[discord.Member]):
+    @commands.command(aliases = ["addrole"])
+    @commands.bot_has_guild_permissions(manage_roles = True)
+    @commands.check_any(
+        commands.has_guild_permissions(manage_roles = True),
+        commands.is_owner()
+    )
+    async def add_role(
+        self, ctx, member: discord.Member, *, role: discord.Role
+    ):
+        """Gives a user a role"""
+        await ctx.invoke(self.user_add_role, member = member, role = role)
+
+    @user.command(name = "avatar")
+    async def user_avatar(self, ctx, *, user: Optional[discord.Member]):
         '''
         See a bigger version of an avatar
         Your own or someone else's avatar
@@ -66,7 +73,15 @@ class User(commands.Cog):
             )
 
     @commands.command()
-    async def discriminator(self, ctx, *, user: Optional[discord.Member]):
+    async def avatar(self, ctx, *, user: Optional[discord.Member]):
+        """
+        See a bigger version of an avatar
+        Your own or someone else's avatar
+        """
+        await ctx.invoke(self.user_avatar, user = user)
+
+    @user.command(name = "discriminator")
+    async def user_discriminator(self, ctx, *, user: Optional[discord.Member]):
         '''
         Get a discriminator
         Your own or someone else's discriminator
@@ -82,9 +97,17 @@ class User(commands.Cog):
                 footer_icon_url = user.display_avatar.url
             )
 
-    # TODO: Make general ID command with subcommands
     @commands.command()
-    async def id(self, ctx, *, user: Optional[discord.Member]):
+    async def discriminator(self, ctx, *, user: Optional[discord.Member]):
+        """
+        Get a discriminator
+        Your own or someone else's discriminator
+        """
+        await ctx.invoke(self.user_discriminator, user = user)
+
+    # TODO: Make general ID command with subcommands
+    @user.command(name = "id")
+    async def user_id(self, ctx, *, user: Optional[discord.Member]):
         '''Get ID of user'''
         if not user:
             await ctx.embed_reply(f"Your ID: {ctx.author.id}")
@@ -95,9 +118,14 @@ class User(commands.Cog):
                 footer_icon_url = user.avatar.url
             )
 
-    # TODO: Make general name command with subcommands
     @commands.command()
-    async def name(self, ctx, *, user: Optional[discord.Member]):
+    async def id(self, ctx, *, user: Optional[discord.Member]):
+        """Get ID of user"""
+        await ctx.invoke(self.user_id, user = user)
+
+    # TODO: Make general name command with subcommands
+    @user.command(name = "name")
+    async def user_name(self, ctx, *, user: Optional[discord.Member]):
         '''The name of a user'''
         if not user:
             await ctx.embed_reply(ctx.author.mention)
@@ -107,4 +135,9 @@ class User(commands.Cog):
                 footer_text = str(user),
                 footer_icon_url = user.avatar.url
             )
+
+    @commands.command()
+    async def name(self, ctx, *, user: Optional[discord.Member]):
+        """The name of a user"""
+        await ctx.invoke(self.user_name, user = user)
 
