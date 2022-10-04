@@ -10,7 +10,6 @@ import io
 import logging
 import re
 import sys
-import time
 import textwrap
 import traceback
 import urllib
