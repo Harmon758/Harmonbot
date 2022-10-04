@@ -179,12 +179,23 @@ class RSS(commands.Cog):
 			await self.new_feed.wait()
 		for record in records:
 			feed = record["feed"]
-			if record["ttl"] and datetime.datetime.now(datetime.timezone.utc) < record["last_checked"] + datetime.timedelta(minutes = record["ttl"]):
+			if record["ttl"] and datetime.datetime.now(
+				datetime.timezone.utc
+			) < record["last_checked"] + datetime.timedelta(
+				minutes = record["ttl"]
+			):
 				continue
 			try:
 				async with self.bot.aiohttp_session.get(feed) as resp:
 					feed_text = await resp.text()
-				feed_info = await self.bot.loop.run_in_executor(None, functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), response_headers = {"Content-Location": feed}))
+				feed_info = await self.bot.loop.run_in_executor(
+					None,
+					functools.partial(
+						feedparser.parse,
+						io.BytesIO(feed_text.encode("UTF-8")),
+						response_headers = {"Content-Location": feed}
+					)
+				)
 				# Still necessary to run in executor?
 				ttl = None
 				if "ttl" in feed_info.feed:
@@ -219,30 +230,42 @@ class RSS(commands.Cog):
 					timestamp = None
 					try:
 						if "published" in entry and entry.published:
-							timestamp = dateutil.parser.parse(entry.published, tzinfos = self.tzinfos)
+							timestamp = dateutil.parser.parse(
+								entry.published, tzinfos = self.tzinfos
+							)
 						elif "updated" in entry:  # and entry.updated necessary?; check updated first?
-							timestamp = dateutil.parser.parse(entry.updated, tzinfos = self.tzinfos)
+							timestamp = dateutil.parser.parse(
+								entry.updated, tzinfos = self.tzinfos
+							)
 					except ValueError:
 						pass
 					# Get and set description, title, url + set timestamp
 					if not (description := entry.get("summary")) and "content" in entry:
 						description = entry["content"][0].get("value")
 					if description:
-						description = BeautifulSoup(description, "lxml").get_text(separator = '\n')
+						description = BeautifulSoup(
+							description, "lxml"
+						).get_text(separator = '\n')
 						description = re.sub(r"\n\s*\n", '\n', description)
 						if len(description) > self.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-							space_index = description.rfind(' ', 0, self.bot.EDCL - 3)
+							space_index = description.rfind(
+								' ', 0, self.bot.EDCL - 3
+							)
 							# EDCL: Embed Description Character Limit
 							description = description[:space_index] + "..."
 					if title := entry.get("title"):
-						title = textwrap.shorten(title, width = self.bot.ETiCL, placeholder = "...")
+						title = textwrap.shorten(
+							title, width = self.bot.ETiCL, placeholder = "..."
+						)
 						title = html.unescape(title)
 					# ETiCL: Embed Title Character Limit
-					embed = discord.Embed(title = title, 
-											url = entry.link, 
-											description = description, 
-											timestamp = timestamp, 
-											color = self.bot.rss_color)
+					embed = discord.Embed(
+						title = title,
+						url = entry.link,
+						description = description,
+						timestamp = timestamp,
+						color = self.bot.rss_color
+					)
 					# Get and set thumbnail url
 					thumbnail_url = (
 						(media_thumbnail := entry.get("media_thumbnail")) and media_thumbnail[0].get("url") or 
@@ -320,9 +343,11 @@ class RSS(commands.Cog):
 								else:
 									raise
 						# TODO: Remove text channel data if now non-existent
-			except (aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, 
-					aiohttp.TooManyRedirects, asyncio.TimeoutError, 
-					UnicodeDecodeError) as e:
+			except (
+				aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, 
+				aiohttp.TooManyRedirects, asyncio.TimeoutError, 
+				UnicodeDecodeError
+			) as e:
 				await self.bot.db.execute(
 					"""
 					INSERT INTO rss.errors (feed, type, message)
@@ -339,8 +364,13 @@ class RSS(commands.Cog):
 				await asyncio.sleep(60)
 			except Exception as e:
 				print("Exception in RSS Task", file = sys.stderr)
-				traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-				errors_logger.error("Uncaught RSS Task exception\n", exc_info = (type(e), e, e.__traceback__))
+				traceback.print_exception(
+					type(e), e, e.__traceback__, file = sys.stderr
+				)
+				errors_logger.error(
+					"Uncaught RSS Task exception\n",
+					exc_info = (type(e), e, e.__traceback__)
+				)
 				print(f" (feed: {feed})")
 				await asyncio.sleep(60)
 	
