@@ -13,9 +13,10 @@ import sys
 import textwrap
 import traceback
 import urllib
+import warnings
 
 import aiohttp
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 import dateutil.parser
 import dateutil.tz
 import feedparser
@@ -278,12 +279,16 @@ class RSS(commands.Cog):
 							# ETUCL: Embed Thumbnail URL Character Limit
 							embed.set_thumbnail(url = thumbnail_url)
 					# Get and set footer icon url
-					footer_icon_url = (
-						feed_info.feed.get("icon") or feed_info.feed.get("logo") or 
-						(feed_image := feed_info.feed.get("image")) and feed_image.get("href") or 
-						(parsed_image := BeautifulSoup(feed_text, "lxml").image) and next(iter(parsed_image.attrs.values()), None) or 
-						None
-					)
+					with warnings.catch_warnings():
+						warnings.filterwarnings(
+							"ignore", category = XMLParsedAsHTMLWarning
+						)
+						footer_icon_url = (
+							feed_info.feed.get("icon") or feed_info.feed.get("logo") or 
+							(feed_image := feed_info.feed.get("image")) and feed_image.get("href") or 
+							(parsed_image := BeautifulSoup(feed_text, "lxml").image) and next(iter(parsed_image.attrs.values()), None) or 
+							None
+						)
 					embed.set_footer(text = feed_info.feed.get("title", feed), icon_url = footer_icon_url)
 					# Send embed(s)
 					channel_records = await self.bot.db.fetch("SELECT channel_id FROM rss.feeds WHERE feed = $1", feed)
