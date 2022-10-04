@@ -174,17 +174,21 @@ class RSS(commands.Cog):
 			ORDER BY feed, last_checked
 			"""
 		)
+		
 		if not records:
 			self.new_feed.clear()
 			await self.new_feed.wait()
+		
 		for record in records:
 			feed = record["feed"]
+			
 			if record["ttl"] and datetime.datetime.now(
 				datetime.timezone.utc
 			) < record["last_checked"] + datetime.timedelta(
 				minutes = record["ttl"]
 			):
 				continue
+			
 			try:
 				async with self.bot.aiohttp_session.get(feed) as resp:
 					feed_text = await resp.text()
