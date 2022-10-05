@@ -166,13 +166,16 @@ class Information(commands.Cog):
 	async def spotify(self, ctx, url: str):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
+		
 		if path[:7] != "/track/":
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Syntax error")
 			return
+		
 		spotify_access_token = await self.bot.cogs["Audio"].get_spotify_access_token()
-		url = "https://api.spotify.com/v1/tracks/" + path[7:]
-		headers = {"Authorization": f"Bearer {spotify_access_token}"}
-		async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.spotify.com/v1/tracks/" + path[7:],
+			headers = {"Authorization": f"Bearer {spotify_access_token}"}
+		) as resp:
 			data = await resp.json()
 		# tracknumber = str(data["track_number"])
 		# TODO: handle track not found
@@ -184,7 +187,9 @@ class Information(commands.Cog):
 		if preview_url := data["preview_url"]:
 			description += f"\n[Preview]({preview_url})"
 		await ctx.embed_reply(
-			description, title = data["name"], title_url = url,
+			title = data["name"],
+			title_url = url,
+			description = description,
 			thumbnail_url = data["album"]["images"][0]["url"]
 		)
 		# TODO: keep spotify embed?
