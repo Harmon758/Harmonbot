@@ -219,7 +219,7 @@ if __name__ == "__main__":
 		
 		# :8ball: command
 		if message.content.startswith('\N{BILLIARDS}') and (command := ctx.bot.get_command('\N{BILLIARDS}')):
-			return await ctx.invoke(command)
+			return await ctx.invoke(command, question = message.clean_content[1:])
 		
 		# Respects (f) system
 		if message.content.lower() == 'f' or message.content == '\N{REGIONAL INDICATOR SYMBOL LETTER F}':
