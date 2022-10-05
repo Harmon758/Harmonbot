@@ -16,7 +16,9 @@ import urllib
 import warnings
 
 import aiohttp
-from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
+from bs4 import (
+	BeautifulSoup, MarkupResemblesLocatorWarning, XMLParsedAsHTMLWarning
+)
 import dateutil.parser
 import dateutil.tz
 import feedparser
@@ -247,9 +249,14 @@ class RSS(commands.Cog):
 					if not (description := entry.get("summary")) and "content" in entry:
 						description = entry["content"][0].get("value")
 					if description:
-						description = BeautifulSoup(
-							description, "lxml"
-						).get_text(separator = '\n')
+						with warnings.catch_warnings():
+							warnings.filterwarnings(
+								"ignore",
+								category = MarkupResemblesLocatorWarning
+							)
+							description = BeautifulSoup(
+								description, "lxml"
+							).get_text(separator = '\n')
 						description = re.sub(r"\n\s*\n", '\n', description)
 						if len(description) > self.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 							space_index = description.rfind(
