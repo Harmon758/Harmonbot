@@ -176,13 +176,17 @@ class Information(commands.Cog):
 			data = await resp.json()
 		# tracknumber = str(data["track_number"])
 		# TODO: handle track not found
-		description = (f"Artist: [{data['artists'][0]['name']}]({data['artists'][0]['external_urls']['spotify']})\n"
-						f"Album: [{data['album']['name']}]({data['album']['external_urls']['spotify']})\n"
-						f"Duration: {utilities.secs_to_colon_format(data['duration_ms'] / 1000)}")
+		description = (
+			f"Artist: [{data['artists'][0]['name']}]({data['artists'][0]['external_urls']['spotify']})\n"
+			f"Album: [{data['album']['name']}]({data['album']['external_urls']['spotify']})\n"
+			f"Duration: {utilities.secs_to_colon_format(data['duration_ms'] / 1000)}"
+		)
 		if preview_url := data["preview_url"]:
 			description += f"\n[Preview]({preview_url})"
-		await ctx.embed_reply(description, title = data["name"], title_url = url, 
-								thumbnail_url = data["album"]["images"][0]["url"])
+		await ctx.embed_reply(
+			description, title = data["name"], title_url = url,
+			thumbnail_url = data["album"]["images"][0]["url"]
+		)
 		# TODO: keep spotify embed?
 	
 	@information.command(aliases = ["member"], with_app_command = False)
