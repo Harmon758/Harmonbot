@@ -271,35 +271,7 @@ class RSS(commands.Cog):
 						color = self.bot.rss_color
 					)
 					# Get and set thumbnail url
-					thumbnail_url = (
-						(media_thumbnail := entry.get("media_thumbnail")) and media_thumbnail[0].get("url") or 
-						(
-							(media_content := entry.get("media_content")) and 
-							(media_image := discord.utils.find(lambda c: "image" in c.get("medium", ""), media_content)) and 
-							media_image.get("url")
-						) or 
-						(
-							(links := entry.get("links")) and 
-							(image_link := discord.utils.find(lambda l: "image" in l.get("type", ""), links)) and 
-							image_link.get("href")
-						 ) or 
-						(
-							(content := entry.get("content")) and (content_value := content[0].get("value")) and 
-							(content_img := getattr(BeautifulSoup(content_value, "lxml"), "img")) and 
-							content_img.get("src")
-						) or 
-						(
-							(media_content := entry.get("media_content")) and 
-							(media_content := discord.utils.find(lambda c: "url" in c, media_content)) and 
-							media_content["url"]
-						) or 
-						(
-							(description := entry.get("description")) and 
-							(description_img := getattr(BeautifulSoup(description, "lxml"), "img")) and 
-							description_img.get("src")
-						)
-					)
-					if thumbnail_url:
+					if thumbnail_url := parse_thumbnail_url(entry):
 						if not urllib.parse.urlparse(thumbnail_url).netloc:
 							thumbnail_url = feed_info.feed.link + thumbnail_url
 						if len(thumbnail_url) <= self.bot.ETUCL:
@@ -386,4 +358,63 @@ class RSS(commands.Cog):
 	@check_feeds.after_loop
 	async def after_check_feeds(self):
 		self.bot.print("RSS task cancelled")
+
+
+def parse_thumbnail_url(entry):
+	if (
+		(media_thumbnail := entry.get("media_thumbnail")) and
+		(thumbnail_url := media_thumbnail[0].get("url"))
+	):
+		return thumbnail_url
+	
+	if (
+		(media_content := entry.get("media_content")) and
+		(media_image := discord.utils.find(
+			lambda c: "image" in c.get("medium", ""),
+			media_content
+		)) and
+		(thumbnail_url := media_image.get("url"))
+	):
+		return thumbnail_url
+	
+	if (
+		(links := entry.get("links")) and
+		(image_link := discord.utils.find(
+			lambda l: "image" in l.get("type", ""),
+			links
+		)) and
+		(thumbnail_url := image_link.get("href"))
+	):
+		return thumbnail_url
+	
+	if (
+		(content := entry.get("content")) and
+		(content_value := content[0].get("value")) and
+		(content_img := getattr(
+			BeautifulSoup(content_value, "lxml"),
+			"img"
+		)) and
+		(thumbnail_url := content_img.get("src"))
+	):
+		return thumbnail_url
+	
+	if (
+		(media_content := entry.get("media_content")) and
+		(media_content := discord.utils.find(
+			lambda c: "url" in c,
+			media_content
+		)) and
+		(thumbnail_url := media_content["url"])
+	):
+		return thumbnail_url
+	
+	if (
+		(description := entry.get("description")) and
+		(description_img := getattr(
+			BeautifulSoup(description, "lxml"),
+			"img"
+		)) and
+		(thumbnail_url := description_img.get("src"))
+	):
+		return thumbnail_url
 
