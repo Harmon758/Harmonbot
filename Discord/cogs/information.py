@@ -167,7 +167,8 @@ class Information(commands.Cog):
 		'''Information about a Spotify track'''
 		path = urllib.parse.urlparse(url).path
 		if path[:7] != "/track/":
-			return await ctx.embed_reply(":no_entry: Syntax error")
+			await ctx.embed_reply(":no_entry: Syntax error")
+			return
 		spotify_access_token = await self.bot.cogs["Audio"].get_spotify_access_token()
 		url = "https://api.spotify.com/v1/tracks/" + path[7:]
 		headers = {"Authorization": f"Bearer {spotify_access_token}"}
