@@ -8,6 +8,7 @@ import logging
 import sys
 import traceback
 
+from more_itertools import chunked
 import tweepy
 import tweepy.asynchronous
 
@@ -290,24 +291,26 @@ class Twitter(commands.Cog):
 		await self.bot.wait_until_ready()
 		feeds = {}
 		try:
-			self.bot.twitter_client.wait_on_rate_limit = True
-			async with self.bot.database_connection_pool.acquire() as connection:
-				async with connection.transaction():
-					# Postgres requires non-scrollable cursors to be created and used in a transaction.
-					async for record in connection.cursor("SELECT * FROM twitter.handles"):
-						try:
-							response = await self.bot.twitter_client.get_user(username = record["handle"].lstrip('@'))
-							user = response.data
-							if user:
-								feeds[record["channel_id"]] = feeds.get(record["channel_id"], []) + [user.id]
-						except (tweepy.Forbidden, tweepy.NotFound):
-							continue
+			records = await self.bot.db.fetch("SELECT * FROM twitter.handles")
+			usernames = {}
+			for record in records:
+				usernames[record["handle"].lstrip('@').lower()] = (
+					usernames.get(record["handle"].lstrip('@').lower(), []) +
+					[record["channel_id"]]
+				)
+			for usernames_chunk in chunked(usernames, 100):
+				response = await self.bot.twitter_client.get_users(
+					usernames = usernames_chunk
+				)
+				for user in response.data:
+					for channel_id in usernames[user.username.lower()]:
+						feeds[channel_id] = (
+							feeds.get(channel_id, []) + [user.id]
+						)
 			await self.stream.start_feeds(feeds = feeds)
 		except Exception as e:
 			print("Exception in Twitter Task", file = sys.stderr)
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 			errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			return
-		finally:
-			self.bot.twitter_client.wait_on_rate_limit = False
 
