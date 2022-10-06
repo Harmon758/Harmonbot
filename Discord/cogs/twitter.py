@@ -84,7 +84,7 @@ class Twitter(commands.Cog):
 		self, ctx, handle: str, replies: bool = False, retweets: bool = False
 	):
 		'''
-		Get twitter status
+		Show a Twitter user's most recent Tweet
 		Excludes replies and retweets by default
 		Limited to 3200 most recent Tweets
 		'''
