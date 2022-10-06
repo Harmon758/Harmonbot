@@ -147,7 +147,9 @@ def calculate_total(cards):
 
 
 def cards_to_string(cards):
-    return "".join(f"{SUIT_EMOJI[card.suit]} {card.value} " for card in cards)
+    return " | ".join(
+        f"{SUIT_EMOJI[card.suit]} {card.value}" for card in cards
+    )
 
 
 class BlackjackView(ui.View):
