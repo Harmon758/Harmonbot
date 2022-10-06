@@ -88,15 +88,19 @@ class Twitter(commands.Cog):
 		Excludes replies and retweets by default
 		Limited to 3200 most recent Tweets
 		'''
-		tweet = None
 		if handle.lower().strip('@') in self.blacklisted_handles:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unauthorized")
 			return
+		
+		tweet = None
 		try:
 			for status in tweepy.Cursor(
-				self.bot.twitter_api.user_timeline, screen_name = handle,
-				exclude_replies = not replies, include_rts = retweets,
-				tweet_mode = "extended", count = 200
+				self.bot.twitter_api.user_timeline,
+				screen_name = handle,
+				count = 200,
+				exclude_replies = not replies,
+				include_rts = retweets,
+				tweet_mode = "extended"
 			).items():
 				tweet = status
 				break
@@ -108,13 +112,15 @@ class Twitter(commands.Cog):
 		except tweepy.TweepyException as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
+		
 		if not tweet:
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Error: Status not found"
 			)
 			return
-		text = process_tweet_text(tweet.full_text, tweet.entities)
+		
 		image_url = None
+		text = process_tweet_text(tweet.full_text, tweet.entities)
 		if (
 			hasattr(tweet, "extended_entities") and
 			tweet.extended_entities["media"][0]["type"] == "photo"
@@ -122,11 +128,14 @@ class Twitter(commands.Cog):
 			image_url = tweet.extended_entities["media"][0]["media_url_https"]
 			text = text.replace(tweet.extended_entities["media"][0]["url"], "")
 		await ctx.embed_reply(
-			text, title = '@' + tweet.user.screen_name, image_url = image_url,
+			color = self.bot.twitter_color,
+			title = '@' + tweet.user.screen_name,
 			title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}",
-			footer_text = tweet.user.name,
+			description = text,
+			image_url = image_url,
 			footer_icon_url = tweet.user.profile_image_url,
-			timestamp = tweet.created_at, color = self.bot.twitter_color
+			footer_text = tweet.user.name,
+			timestamp = tweet.created_at
 		)
 	
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
