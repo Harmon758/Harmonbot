@@ -132,7 +132,10 @@ if __name__ == "__main__":
 		# Forward DMs
 		if channel.type is discord.ChannelType.private:
 			if not channel.recipient:
-				channel = await ctx.bot.fetch_channel(channel.id)
+				channel = (
+					ctx.bot.get_channel(channel.id) or
+					await ctx.bot.fetch_channel(channel.id)
+				)
 			# `message.channel` is a `DMChannel` here for an ephemeral message
 			# even if it was not sent as a DM.
 			# This is an issue with discord.py caused by Discord's API not
