@@ -88,7 +88,8 @@ class Twitter(commands.Cog):
 		'''
 		tweet = None
 		if handle.lower().strip('@') in self.blacklisted_handles:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unauthorized")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unauthorized")
+			return
 		try:
 			for status in tweepy.Cursor(self.bot.twitter_api.user_timeline, screen_name = handle, 
 										exclude_replies = not replies, include_rts = retweets, 
@@ -96,11 +97,14 @@ class Twitter(commands.Cog):
 				tweet = status
 				break
 		except tweepy.NotFound:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: @{handle} not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: @{handle} not found")
+			return
 		except tweepy.TweepyException as e:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+			return
 		if not tweet:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Status not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Status not found")
+			return
 		text = process_tweet_text(tweet.full_text, tweet.entities)
 		image_url = None
 		if hasattr(tweet, "extended_entities") and tweet.extended_entities["media"][0]["type"] == "photo":
