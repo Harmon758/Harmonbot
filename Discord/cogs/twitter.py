@@ -310,14 +310,17 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 		self.reconnecting = False
 	
 	async def add_feed(self, channel, handle):
-		user_id = self.bot.twitter_api.get_user(screen_name = handle).id
+		response = await self.bot.twitter_client.get_user(username = handle)
+		user_id = response.data.id
 		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [user_id]
 		if user_id not in self.unique_feeds:
 			self.unique_feeds.add(user_id)
 			await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
-		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(screen_name = handle).id)
+		response = await self.bot.twitter_client.get_user(username = handle)
+		user_id = response.data.id
+		self.feeds[channel.id].remove(user_id)
 		self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
 		await self.start_feeds()  # Necessary?
 	
