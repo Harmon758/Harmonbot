@@ -219,7 +219,6 @@ class Twitter(commands.Cog):
 	
 	async def start_stream(self):
 		await self.bot.wait_until_ready()
-		feeds = {}
 		try:
 			records = await self.bot.db.fetch("SELECT * FROM twitter.handles")
 			usernames = {}
@@ -228,16 +227,14 @@ class Twitter(commands.Cog):
 					usernames.get(record["handle"].lower(), []) +
 					[record["channel_id"]]
 				)
+			user_ids = {}
 			for usernames_chunk in chunked(usernames, 100):
 				response = await self.bot.twitter_client.get_users(
 					usernames = usernames_chunk
 				)
 				for user in response.data:
-					for channel_id in usernames[user.username.lower()]:
-						feeds[channel_id] = (
-							feeds.get(channel_id, []) + [user.id]
-						)
-			await self.stream.start_feeds(feeds = feeds)
+					user_ids[user.id] = usernames[user.username.lower()]
+			await self.stream.start_feeds(user_ids = user_ids)
 		except Exception as e:
 			print("Exception in Twitter Task", file = sys.stderr)
 			traceback.print_exception(
@@ -286,25 +283,19 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 			bot.TWITTER_ACCESS_TOKEN, bot.TWITTER_ACCESS_TOKEN_SECRET
 		)
 		self.bot = bot
-		self.feeds = {}
 		self.user_ids = {}
 		self.reconnect_ready = asyncio.Event()
 		self.reconnect_ready.set()
 		self.reconnecting = False
 	
-	async def start_feeds(self, *, feeds = None):
+	async def start_feeds(self, *, user_ids = None):
 		if self.reconnecting:
 			return await self.reconnect_ready.wait()
 		self.reconnecting = True
 		await self.reconnect_ready.wait()
 		self.reconnect_ready.clear()
-		if feeds:
-			self.feeds = feeds
-			for channel_id, user_ids in feeds.items():
-				for user_id in user_ids:
-					self.user_ids[user_id] = (
-						self.user_ids.get(user_id, []) + [channel_id]
-					)
+		if user_ids:
+			self.user_ids = user_ids
 		if self.task:
 			self.disconnect()
 			await self.task
@@ -316,7 +307,7 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 	async def add_feed(self, channel, handle):
 		response = await self.bot.twitter_client.get_user(username = handle)
 		user_id = response.data.id
-		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [user_id]
+		
 		if channels := self.user_ids.get(user_id):
 			channels.append(channel.id)
 		else:
@@ -326,11 +317,6 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 	async def remove_feed(self, channel, handle):
 		response = await self.bot.twitter_client.get_user(username = handle)
 		user_id = response.data.id
-		
-		user_ids = self.feeds[channel.id]
-		user_ids.remove(user_id)
-		if not user_ids:
-			del self.feeds[channel.id]
 		
 		channel_ids = self.user_ids[user_id]
 		channel_ids.remove(channel.id)
