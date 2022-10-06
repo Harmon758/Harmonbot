@@ -51,14 +51,14 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 		self.reconnecting = False
 	
 	async def add_feed(self, channel, handle):
-		user_id = self.bot.twitter_api.get_user(screen_name = handle).id_str
+		user_id = self.bot.twitter_api.get_user(screen_name = handle).id
 		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [user_id]
 		if user_id not in self.unique_feeds:
 			self.unique_feeds.add(user_id)
 			await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
-		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(screen_name = handle).id_str)
+		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(screen_name = handle).id)
 		self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
 		await self.start_feeds()  # Necessary?
 	
@@ -66,10 +66,10 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 		if status.in_reply_to_status_id:
 			# Ignore replies
 			return
-		if status.user.id_str in self.unique_feeds:
+		if status.user.id in self.unique_feeds:
 			# TODO: Settings for including replies, retweets, etc.
 			for channel_id, channel_feeds in self.feeds.items():
-				if status.user.id_str in channel_feeds:
+				if status.user.id in channel_feeds:
 					channel = self.bot.get_channel(channel_id)
 					if channel:
 						if hasattr(status, "extended_tweet"):
