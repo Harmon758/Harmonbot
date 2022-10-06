@@ -122,6 +122,23 @@ class Twitter(commands.Cog):
 			)
 			"""
 		)
+		# Strip starting @
+		async with self.bot.database_connection_pool.acquire() as connection:
+				async with connection.transaction():
+					# Postgres requires non-scrollable cursors to be created
+					# and used in a transaction.
+					async for record in connection.cursor(
+						"SELECT * FROM twitter.handles"
+					):
+						await self.bot.db.execute(
+							"""
+							UPDATE twitter.handles
+							SET handle = $3
+							WHERE channel_id = $1 and handle = $2
+							""",
+							record["channel_id"], record["handle"],
+							record["handle"].lstrip('@')
+						)
 		# Initialize blacklist
 		try:
 			response = await self.bot.twitter_client.get_me(
@@ -294,8 +311,8 @@ class Twitter(commands.Cog):
 			records = await self.bot.db.fetch("SELECT * FROM twitter.handles")
 			usernames = {}
 			for record in records:
-				usernames[record["handle"].lstrip('@').lower()] = (
-					usernames.get(record["handle"].lstrip('@').lower(), []) +
+				usernames[record["handle"].lower()] = (
+					usernames.get(record["handle"].lower(), []) +
 					[record["channel_id"]]
 				)
 			for usernames_chunk in chunked(usernames, 100):
