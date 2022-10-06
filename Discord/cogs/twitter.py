@@ -302,15 +302,24 @@ class Twitter(commands.Cog):
 def process_tweet_text(text, entities):
 	mentions = {}
 	for mention in entities["user_mentions"]:
-		mentions[text[mention["indices"][0]:mention["indices"][1]]] = mention["screen_name"]
+		mentions[text[mention["indices"][0]:mention["indices"][1]]] = (
+			mention["screen_name"]
+		)
 	for mention, screen_name in mentions.items():
-		text = text.replace(mention, f"[{mention}](https://twitter.com/{screen_name})")
+		text = text.replace(
+			mention,
+			f"[{mention}](https://twitter.com/{screen_name})"
+		)
 	for hashtag in entities["hashtags"]:
-		text = text.replace('#' + hashtag["text"], 
-							f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})")
+		text = text.replace(
+			'#' + hashtag["text"],
+			f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})"
+		)
 	for symbol in entities["symbols"]:
-		text = text.replace('$' + symbol["text"],
-							f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})")
+		text = text.replace(
+			'$' + symbol["text"],
+			f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})"
+		)
 	for url in entities["urls"]:
 		text = text.replace(url["url"], url["expanded_url"])
 	# Remove Variation Selector-16 characters
