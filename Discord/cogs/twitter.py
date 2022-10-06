@@ -325,9 +325,10 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 		await self.start_feeds()  # Necessary?
 	
 	async def on_status(self, status):
+		# Ignore replies
 		if status.in_reply_to_status_id:
-			# Ignore replies
 			return
+		# Ignore removed handles
 		if status.user.id not in self.unique_feeds:
 			return
 		# TODO: Settings for including replies, retweets, etc.
@@ -350,10 +351,11 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 				entities = status.entities
 				extended_entities = getattr(status, "extended_entities", None)
 			embed = discord.Embed(
+				color = self.bot.twitter_color,
 				title = '@' + status.user.screen_name,
 				url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}",
 				description = process_tweet_text(text, entities),
-				timestamp = status.created_at, color = self.bot.twitter_color
+				timestamp = status.created_at,
 			)
 			embed.set_author(
 				name = status.user.name,
@@ -370,7 +372,8 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 					extended_entities["media"][0]["url"], ""
 				)
 			embed.set_footer(
-				text = "Twitter", icon_url = self.bot.twitter_icon_url
+				icon_url = self.bot.twitter_icon_url,
+				text = "Twitter"
 			)
 			try:
 				await channel.send(embed = embed)
