@@ -122,23 +122,6 @@ class Twitter(commands.Cog):
 			)
 			"""
 		)
-		# Strip starting @
-		async with self.bot.database_connection_pool.acquire() as connection:
-				async with connection.transaction():
-					# Postgres requires non-scrollable cursors to be created
-					# and used in a transaction.
-					async for record in connection.cursor(
-						"SELECT * FROM twitter.handles"
-					):
-						await self.bot.db.execute(
-							"""
-							UPDATE twitter.handles
-							SET handle = $3
-							WHERE channel_id = $1 and handle = $2
-							""",
-							record["channel_id"], record["handle"],
-							record["handle"].lstrip('@')
-						)
 		# Initialize blacklist
 		try:
 			response = await self.bot.twitter_client.get_me(
@@ -216,6 +199,7 @@ class Twitter(commands.Cog):
 		Add a Twitter handle to a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
+		handle = handle.lstrip('@')
 		following = await ctx.bot.db.fetchval(
 			"""
 			SELECT EXISTS (
@@ -251,6 +235,7 @@ class Twitter(commands.Cog):
 		Remove a Twitter handle from a text channel
 		A delay of up to 2 min. is possible due to Twitter rate limits
 		'''
+		handle = handle.lstrip('@')
 		deleted = await ctx.bot.db.fetchval(
 			"""
 			DELETE FROM twitter.handles
