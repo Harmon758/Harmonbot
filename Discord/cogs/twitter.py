@@ -82,7 +82,7 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 							extended_entities = getattr(status, "extended_entities", None)
 						embed = discord.Embed(title = '@' + status.user.screen_name, 
 												url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}", 
-												description = self.bot.cogs["Twitter"].process_tweet_text(text, entities), 
+												description = process_tweet_text(text, entities), 
 												timestamp = status.created_at, color = self.bot.twitter_color)
 						embed.set_author(name = status.user.name, icon_url = status.user.profile_image_url)
 						if extended_entities and extended_entities["media"][0]["type"] == "photo":
@@ -182,7 +182,7 @@ class Twitter(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 		if not tweet:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Status not found")
-		text = self.process_tweet_text(tweet.full_text, tweet.entities)
+		text = process_tweet_text(tweet.full_text, tweet.entities)
 		image_url = None
 		if hasattr(tweet, "extended_entities") and tweet.extended_entities["media"][0]["type"] == "photo":
 			image_url = tweet.extended_entities["media"][0]["media_url_https"]
@@ -271,24 +271,6 @@ class Twitter(commands.Cog):
 		)
 		# TODO: Add message if none
 	
-	def process_tweet_text(self, text, entities):
-		mentions = {}
-		for mention in entities["user_mentions"]:
-			mentions[text[mention["indices"][0]:mention["indices"][1]]] = mention["screen_name"]
-		for mention, screen_name in mentions.items():
-			text = text.replace(mention, f"[{mention}](https://twitter.com/{screen_name})")
-		for hashtag in entities["hashtags"]:
-			text = text.replace('#' + hashtag["text"], 
-								f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})")
-		for symbol in entities["symbols"]:
-			text = text.replace('$' + symbol["text"],
-								f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})")
-		for url in entities["urls"]:
-			text = text.replace(url["url"], url["expanded_url"])
-		# Remove Variation Selector-16 characters
-		# Unescape HTML entities (&gt;, &lt;, &amp;, etc.)
-		return html.unescape(text.replace('\uFE0F', ""))
-	
 	async def start_stream(self):
 		await self.bot.wait_until_ready()
 		feeds = {}
@@ -315,4 +297,23 @@ class Twitter(commands.Cog):
 			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
 			errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			return
+
+
+def process_tweet_text(text, entities):
+	mentions = {}
+	for mention in entities["user_mentions"]:
+		mentions[text[mention["indices"][0]:mention["indices"][1]]] = mention["screen_name"]
+	for mention, screen_name in mentions.items():
+		text = text.replace(mention, f"[{mention}](https://twitter.com/{screen_name})")
+	for hashtag in entities["hashtags"]:
+		text = text.replace('#' + hashtag["text"], 
+							f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})")
+	for symbol in entities["symbols"]:
+		text = text.replace('$' + symbol["text"],
+							f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})")
+	for url in entities["urls"]:
+		text = text.replace(url["url"], url["expanded_url"])
+	# Remove Variation Selector-16 characters
+	# Unescape HTML entities (&gt;, &lt;, &amp;, etc.)
+	return html.unescape(text.replace('\uFE0F', ""))
 
