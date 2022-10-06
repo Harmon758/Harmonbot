@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 import asyncio
-import functools
 import html
 import logging
 import sys
@@ -291,15 +290,16 @@ class Twitter(commands.Cog):
 		await self.bot.wait_until_ready()
 		feeds = {}
 		try:
-			self.bot.twitter_api.wait_on_rate_limit = True
+			self.bot.twitter_client.wait_on_rate_limit = True
 			async with self.bot.database_connection_pool.acquire() as connection:
 				async with connection.transaction():
 					# Postgres requires non-scrollable cursors to be created and used in a transaction.
 					async for record in connection.cursor("SELECT * FROM twitter.handles"):
 						try:
-							partial = functools.partial(self.bot.twitter_api.get_user, screen_name = record["handle"])
-							user = await self.bot.loop.run_in_executor(None, partial)
-							feeds[record["channel_id"]] = feeds.get(record["channel_id"], []) + [user.id_str]
+							response = await self.bot.twitter_client.get_user(username = record["handle"].lstrip('@'))
+							user = response.data
+							if user:
+								feeds[record["channel_id"]] = feeds.get(record["channel_id"], []) + [user.id]
 						except (tweepy.Forbidden, tweepy.NotFound):
 							continue
 			await self.stream.start_feeds(feeds = feeds)
@@ -309,5 +309,5 @@ class Twitter(commands.Cog):
 			errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
 			return
 		finally:
-			self.bot.twitter_api.wait_on_rate_limit = False
+			self.bot.twitter_client.wait_on_rate_limit = False
 
