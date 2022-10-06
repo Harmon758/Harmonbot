@@ -80,7 +80,9 @@ class Twitter(commands.Cog):
 	
 	@twitter.command(name = "status")
 	@checks.not_forbidden()
-	async def twitter_status(self, ctx, handle: str, replies: bool = False, retweets: bool = False):
+	async def twitter_status(
+		self, ctx, handle: str, replies: bool = False, retweets: bool = False
+	):
 		'''
 		Get twitter status
 		Excludes replies and retweets by default
@@ -91,29 +93,41 @@ class Twitter(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unauthorized")
 			return
 		try:
-			for status in tweepy.Cursor(self.bot.twitter_api.user_timeline, screen_name = handle, 
-										exclude_replies = not replies, include_rts = retweets, 
-										tweet_mode = "extended", count = 200).items():
+			for status in tweepy.Cursor(
+				self.bot.twitter_api.user_timeline, screen_name = handle,
+				exclude_replies = not replies, include_rts = retweets,
+				tweet_mode = "extended", count = 200
+			).items():
 				tweet = status
 				break
 		except tweepy.NotFound:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: @{handle} not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: @{handle} not found"
+			)
 			return
 		except tweepy.TweepyException as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
 		if not tweet:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Status not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Status not found"
+			)
 			return
 		text = process_tweet_text(tweet.full_text, tweet.entities)
 		image_url = None
-		if hasattr(tweet, "extended_entities") and tweet.extended_entities["media"][0]["type"] == "photo":
+		if (
+			hasattr(tweet, "extended_entities") and
+			tweet.extended_entities["media"][0]["type"] == "photo"
+		):
 			image_url = tweet.extended_entities["media"][0]["media_url_https"]
 			text = text.replace(tweet.extended_entities["media"][0]["url"], "")
-		await ctx.embed_reply(text, title = '@' + tweet.user.screen_name, image_url = image_url, 
-								title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}", 
-								footer_text = tweet.user.name, footer_icon_url = tweet.user.profile_image_url, 
-								timestamp = tweet.created_at, color = self.bot.twitter_color)
+		await ctx.embed_reply(
+			text, title = '@' + tweet.user.screen_name, image_url = image_url,
+			title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}",
+			footer_text = tweet.user.name,
+			footer_icon_url = tweet.user.profile_image_url,
+			timestamp = tweet.created_at, color = self.bot.twitter_color
+		)
 	
 	@twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
