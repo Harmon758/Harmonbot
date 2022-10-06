@@ -287,7 +287,7 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 		)
 		self.bot = bot
 		self.feeds = {}
-		self.user_ids = set()
+		self.user_ids = {}
 		self.reconnect_ready = asyncio.Event()
 		self.reconnect_ready.set()
 		self.reconnecting = False
@@ -300,11 +300,15 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 		self.reconnect_ready.clear()
 		if feeds:
 			self.feeds = feeds
-			self.user_ids = set(id for feeds in self.feeds.values() for id in feeds)
+			for channel_id, user_ids in feeds.items():
+				for user_id in user_ids:
+					self.user_ids[user_id] = (
+						self.user_ids.get(user_id, []) + [channel_id]
+					)
 		if self.task:
 			self.disconnect()
 			await self.task
-		if self.feeds:
+		if self.user_ids:
 			self.filter(follow = self.user_ids)
 		self.bot.loop.call_later(120, self.reconnect_ready.set)
 		self.reconnecting = False
@@ -313,29 +317,34 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 		response = await self.bot.twitter_client.get_user(username = handle)
 		user_id = response.data.id
 		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [user_id]
-		if user_id not in self.user_ids:
-			self.user_ids.add(user_id)
+		if channels := self.user_ids.get(user_id):
+			channels.append(channel.id)
+		else:
+			self.user_ids[user_id] = [channel.id]
 			await self.start_feeds()
 	
 	async def remove_feed(self, channel, handle):
 		response = await self.bot.twitter_client.get_user(username = handle)
 		user_id = response.data.id
-		self.feeds[channel.id].remove(user_id)
-		self.user_ids = set(id for feeds in self.feeds.values() for id in feeds)
+		
+		user_ids = self.feeds[channel.id]
+		user_ids.remove(user_id)
+		if not user_ids:
+			del self.feeds[channel.id]
+		
+		channel_ids = self.user_ids[user_id]
+		channel_ids.remove(channel.id)
+		if not channel_ids:
+			del self.user_ids[user_id]
+		
 		await self.start_feeds()  # Necessary?
 	
 	async def on_status(self, status):
 		# Ignore replies
 		if status.in_reply_to_status_id:
 			return
-		# Ignore removed handles
-		if status.user.id not in self.user_ids:
-			return
 		# TODO: Settings for including replies, retweets, etc.
-		for channel_id, channel_feeds in self.feeds.items():
-			if status.user.id not in channel_feeds:
-				# TODO: Optimize determining channels to send to
-				continue
+		for channel_id in self.user_ids.get(status.user.id, ()):
 			channel = self.bot.get_channel(channel_id)
 			if not channel:
 				# TODO: Handle channel no longer accessible
