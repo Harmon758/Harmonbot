@@ -328,36 +328,60 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
 		if status.in_reply_to_status_id:
 			# Ignore replies
 			return
-		if status.user.id in self.unique_feeds:
-			# TODO: Settings for including replies, retweets, etc.
-			for channel_id, channel_feeds in self.feeds.items():
-				if status.user.id in channel_feeds:
-					channel = self.bot.get_channel(channel_id)
-					if channel:
-						if hasattr(status, "extended_tweet"):
-							text = status.extended_tweet["full_text"]
-							entities = status.extended_tweet["entities"]
-							extended_entities = status.extended_tweet.get("extended_entities")
-						else:
-							text = status.text
-							entities = status.entities
-							extended_entities = getattr(status, "extended_entities", None)
-						embed = discord.Embed(title = '@' + status.user.screen_name, 
-												url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}", 
-												description = process_tweet_text(text, entities), 
-												timestamp = status.created_at, color = self.bot.twitter_color)
-						embed.set_author(name = status.user.name, icon_url = status.user.profile_image_url)
-						if extended_entities and extended_entities["media"][0]["type"] == "photo":
-							embed.set_image(url = extended_entities["media"][0]["media_url_https"])
-							embed.description = embed.description.replace(extended_entities["media"][0]["url"], "")
-						embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
-						try:
-							await channel.send(embed = embed)
-						except discord.Forbidden:
-							# TODO: Handle unable to send embeds/messages in text channel
-							self.bot.print(f"Twitter Stream: Missing permissions to send embed in #{channel.name} in {channel.guild.name}")
-						except discord.DiscordServerError as e:
-							self.bot.print(f"Twitter Stream Discord Server Error: {e}")
+		if status.user.id not in self.unique_feeds:
+			return
+		# TODO: Settings for including replies, retweets, etc.
+		for channel_id, channel_feeds in self.feeds.items():
+			if status.user.id not in channel_feeds:
+				# TODO: Optimize determining channels to send to
+				continue
+			channel = self.bot.get_channel(channel_id)
+			if not channel:
+				# TODO: Handle channel no longer accessible
+				continue
+			if hasattr(status, "extended_tweet"):
+				text = status.extended_tweet["full_text"]
+				entities = status.extended_tweet["entities"]
+				extended_entities = status.extended_tweet.get(
+					"extended_entities"
+				)
+			else:
+				text = status.text
+				entities = status.entities
+				extended_entities = getattr(status, "extended_entities", None)
+			embed = discord.Embed(
+				title = '@' + status.user.screen_name,
+				url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}",
+				description = process_tweet_text(text, entities),
+				timestamp = status.created_at, color = self.bot.twitter_color
+			)
+			embed.set_author(
+				name = status.user.name,
+				icon_url = status.user.profile_image_url
+			)
+			if (
+				extended_entities and
+				extended_entities["media"][0]["type"] == "photo"
+			):
+				embed.set_image(
+					url = extended_entities["media"][0]["media_url_https"]
+				)
+				embed.description = embed.description.replace(
+					extended_entities["media"][0]["url"], ""
+				)
+			embed.set_footer(
+				text = "Twitter", icon_url = self.bot.twitter_icon_url
+			)
+			try:
+				await channel.send(embed = embed)
+			except discord.Forbidden:
+				# TODO: Handle unable to send embeds/messages in text channel
+				self.bot.print(
+					"Twitter Stream: Missing permissions to send embed in "
+					f"#{channel.name} in {channel.guild.name}"
+				)
+			except discord.DiscordServerError as e:
+				self.bot.print(f"Twitter Stream Discord Server Error: {e}")
 	
 	async def on_request_error(self, status_code):
 		self.bot.print(f"Twitter Error: {status_code}")
