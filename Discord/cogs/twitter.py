@@ -240,8 +240,13 @@ class Twitter(commands.Cog):
 			await self.stream.start_feeds(feeds = feeds)
 		except Exception as e:
 			print("Exception in Twitter Task", file = sys.stderr)
-			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-			errors_logger.error("Uncaught Twitter Task exception\n", exc_info = (type(e), e, e.__traceback__))
+			traceback.print_exception(
+				type(e), e, e.__traceback__, file = sys.stderr
+			)
+			errors_logger.error(
+				"Uncaught Twitter Task exception\n",
+				exc_info = (type(e), e, e.__traceback__)
+			)
 			return
 
 
