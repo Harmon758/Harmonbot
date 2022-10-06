@@ -19,87 +19,6 @@ errors_logger = logging.getLogger("errors")
 async def setup(bot):
 	await bot.add_cog(Twitter(bot))
 
-class TwitterStream(tweepy.asynchronous.AsyncStream):
-	
-	def __init__(self, bot):
-		super().__init__(
-			bot.TWITTER_CONSUMER_KEY, bot.TWITTER_CONSUMER_SECRET,
-			bot.TWITTER_ACCESS_TOKEN, bot.TWITTER_ACCESS_TOKEN_SECRET
-		)
-		self.bot = bot
-		self.feeds = {}
-		self.unique_feeds = set()
-		self.reconnect_ready = asyncio.Event()
-		self.reconnect_ready.set()
-		self.reconnecting = False
-	
-	async def start_feeds(self, *, feeds = None):
-		if self.reconnecting:
-			return await self.reconnect_ready.wait()
-		self.reconnecting = True
-		await self.reconnect_ready.wait()
-		self.reconnect_ready.clear()
-		if feeds:
-			self.feeds = feeds
-			self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
-		if self.task:
-			self.disconnect()
-			await self.task
-		if self.feeds:
-			self.filter(follow = self.unique_feeds)
-		self.bot.loop.call_later(120, self.reconnect_ready.set)
-		self.reconnecting = False
-	
-	async def add_feed(self, channel, handle):
-		user_id = self.bot.twitter_api.get_user(screen_name = handle).id
-		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [user_id]
-		if user_id not in self.unique_feeds:
-			self.unique_feeds.add(user_id)
-			await self.start_feeds()
-	
-	async def remove_feed(self, channel, handle):
-		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(screen_name = handle).id)
-		self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
-		await self.start_feeds()  # Necessary?
-	
-	async def on_status(self, status):
-		if status.in_reply_to_status_id:
-			# Ignore replies
-			return
-		if status.user.id in self.unique_feeds:
-			# TODO: Settings for including replies, retweets, etc.
-			for channel_id, channel_feeds in self.feeds.items():
-				if status.user.id in channel_feeds:
-					channel = self.bot.get_channel(channel_id)
-					if channel:
-						if hasattr(status, "extended_tweet"):
-							text = status.extended_tweet["full_text"]
-							entities = status.extended_tweet["entities"]
-							extended_entities = status.extended_tweet.get("extended_entities")
-						else:
-							text = status.text
-							entities = status.entities
-							extended_entities = getattr(status, "extended_entities", None)
-						embed = discord.Embed(title = '@' + status.user.screen_name, 
-												url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}", 
-												description = process_tweet_text(text, entities), 
-												timestamp = status.created_at, color = self.bot.twitter_color)
-						embed.set_author(name = status.user.name, icon_url = status.user.profile_image_url)
-						if extended_entities and extended_entities["media"][0]["type"] == "photo":
-							embed.set_image(url = extended_entities["media"][0]["media_url_https"])
-							embed.description = embed.description.replace(extended_entities["media"][0]["url"], "")
-						embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
-						try:
-							await channel.send(embed = embed)
-						except discord.Forbidden:
-							# TODO: Handle unable to send embeds/messages in text channel
-							self.bot.print(f"Twitter Stream: Missing permissions to send embed in #{channel.name} in {channel.guild.name}")
-						except discord.DiscordServerError as e:
-							self.bot.print(f"Twitter Stream Discord Server Error: {e}")
-	
-	async def on_request_error(self, status_code):
-		self.bot.print(f"Twitter Error: {status_code}")
-
 class Twitter(commands.Cog):
 	
 	def __init__(self, bot):
@@ -325,4 +244,86 @@ def process_tweet_text(text, entities):
 	# Remove Variation Selector-16 characters
 	# Unescape HTML entities (&gt;, &lt;, &amp;, etc.)
 	return html.unescape(text.replace('\uFE0F', ""))
+
+
+class TwitterStream(tweepy.asynchronous.AsyncStream):
+	
+	def __init__(self, bot):
+		super().__init__(
+			bot.TWITTER_CONSUMER_KEY, bot.TWITTER_CONSUMER_SECRET,
+			bot.TWITTER_ACCESS_TOKEN, bot.TWITTER_ACCESS_TOKEN_SECRET
+		)
+		self.bot = bot
+		self.feeds = {}
+		self.unique_feeds = set()
+		self.reconnect_ready = asyncio.Event()
+		self.reconnect_ready.set()
+		self.reconnecting = False
+	
+	async def start_feeds(self, *, feeds = None):
+		if self.reconnecting:
+			return await self.reconnect_ready.wait()
+		self.reconnecting = True
+		await self.reconnect_ready.wait()
+		self.reconnect_ready.clear()
+		if feeds:
+			self.feeds = feeds
+			self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
+		if self.task:
+			self.disconnect()
+			await self.task
+		if self.feeds:
+			self.filter(follow = self.unique_feeds)
+		self.bot.loop.call_later(120, self.reconnect_ready.set)
+		self.reconnecting = False
+	
+	async def add_feed(self, channel, handle):
+		user_id = self.bot.twitter_api.get_user(screen_name = handle).id
+		self.feeds[channel.id] = self.feeds.get(channel.id, []) + [user_id]
+		if user_id not in self.unique_feeds:
+			self.unique_feeds.add(user_id)
+			await self.start_feeds()
+	
+	async def remove_feed(self, channel, handle):
+		self.feeds[channel.id].remove(self.bot.twitter_api.get_user(screen_name = handle).id)
+		self.unique_feeds = set(id for feeds in self.feeds.values() for id in feeds)
+		await self.start_feeds()  # Necessary?
+	
+	async def on_status(self, status):
+		if status.in_reply_to_status_id:
+			# Ignore replies
+			return
+		if status.user.id in self.unique_feeds:
+			# TODO: Settings for including replies, retweets, etc.
+			for channel_id, channel_feeds in self.feeds.items():
+				if status.user.id in channel_feeds:
+					channel = self.bot.get_channel(channel_id)
+					if channel:
+						if hasattr(status, "extended_tweet"):
+							text = status.extended_tweet["full_text"]
+							entities = status.extended_tweet["entities"]
+							extended_entities = status.extended_tweet.get("extended_entities")
+						else:
+							text = status.text
+							entities = status.entities
+							extended_entities = getattr(status, "extended_entities", None)
+						embed = discord.Embed(title = '@' + status.user.screen_name, 
+												url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}", 
+												description = process_tweet_text(text, entities), 
+												timestamp = status.created_at, color = self.bot.twitter_color)
+						embed.set_author(name = status.user.name, icon_url = status.user.profile_image_url)
+						if extended_entities and extended_entities["media"][0]["type"] == "photo":
+							embed.set_image(url = extended_entities["media"][0]["media_url_https"])
+							embed.description = embed.description.replace(extended_entities["media"][0]["url"], "")
+						embed.set_footer(text = "Twitter", icon_url = self.bot.twitter_icon_url)
+						try:
+							await channel.send(embed = embed)
+						except discord.Forbidden:
+							# TODO: Handle unable to send embeds/messages in text channel
+							self.bot.print(f"Twitter Stream: Missing permissions to send embed in #{channel.name} in {channel.guild.name}")
+						except discord.DiscordServerError as e:
+							self.bot.print(f"Twitter Stream Discord Server Error: {e}")
+	
+	async def on_request_error(self, status_code):
+		self.bot.print(f"Twitter Error: {status_code}")
 
