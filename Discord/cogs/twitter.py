@@ -145,7 +145,7 @@ class Twitter(commands.Cog):
 			self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
 		# Start stream
 		self.task = self.bot.loop.create_task(
-			self.start_twitter_feeds(), name = "Start Twitter Stream"
+			self.start_stream(), name = "Start Twitter Stream"
 		)
 	
 	def cog_unload(self):
@@ -287,7 +287,7 @@ class Twitter(commands.Cog):
 		# Unescape HTML entities (&gt;, &lt;, &amp;, etc.)
 		return html.unescape(text.replace('\uFE0F', ""))
 	
-	async def start_twitter_feeds(self):
+	async def start_stream(self):
 		await self.bot.wait_until_ready()
 		feeds = {}
 		try:
