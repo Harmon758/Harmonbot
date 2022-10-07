@@ -415,13 +415,17 @@ def parse_thumbnail_url(entry):
 	):
 		return thumbnail_url
 	
-	if (
-		(description := entry.get("description")) and
-		(description_img := getattr(
-			BeautifulSoup(description, "lxml"),
-			"img"
-		)) and
-		(thumbnail_url := description_img.get("src"))
-	):
-		return thumbnail_url
+	with warnings.catch_warnings():
+		warnings.filterwarnings(
+			"ignore", category = MarkupResemblesLocatorWarning
+		)
+		if (
+			(description := entry.get("description")) and
+			(description_img := getattr(
+				BeautifulSoup(description, "lxml"),
+				"img"
+			)) and
+			(thumbnail_url := description_img.get("src"))
+		):
+			return thumbnail_url
 
