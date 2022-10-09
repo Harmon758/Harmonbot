@@ -54,7 +54,7 @@ class Resources(commands.Cog):
 		Information on colors
 		Accepts hex color codes and search by keyword
 		'''
-		if type(color) is discord.Color:
+		if isinstance(color, discord.Color):
 			url = f"http://www.colourlovers.com/api/color/{color.value:0>6X}"
 			await self.process_color(ctx, url)
 		else:
