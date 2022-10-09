@@ -56,9 +56,9 @@ class Audio(commands.Cog):
 		'''
 		if song and song.lower().startswith("info "):
 			if ctx.invoked_with.lower() == "spotify":
-				return await ctx.invoke(self.bot.cogs["Info"].spotify, song.lstrip(song.split()[0]).lstrip())
+				return await ctx.invoke(self.bot.cogs["Information"].spotify, song.lstrip(song.split()[0]).lstrip())
 			elif ctx.invoked_with.lower() in ("yt", "youtube"):
-				return await ctx.invoke(self.bot.cogs["Info"].youtube, song.lstrip(song.split()[0]).lstrip())
+				return await ctx.invoke(self.bot.cogs["Information"].youtube, song.lstrip(song.split()[0]).lstrip())
 		if not ctx.guild.voice_client:
 			if ctx.guild.id not in self.players:
 				self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
