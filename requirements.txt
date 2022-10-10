@@ -97,7 +97,7 @@ kiwisolver==1.4.4
 lxml==4.9.1
 mpmath==1.2.1
 multidict==6.0.2
-mutagen==1.45.1
+mutagen==1.46.0
 oauthlib==3.2.1
 orjson==3.6.8
 packaging==21.3
