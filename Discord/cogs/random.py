@@ -42,12 +42,6 @@ class Random(commands.GroupCog, group_name = "random"):
 			if isinstance(command, commands.Command) and command.parent is None and name != "random":
 				self.bot.add_command(command)
 				self.random.add_command(command)
-		# Add fact subcommands as subcommands of corresponding commands
-		for command, parent in ((fact_number, self.number),):
-			self.fact.add_command(commands.Command(command, name = parent.name, aliases = [parent.name + 's'], 
-													checks = [checks.not_forbidden().predicate]))
-			parent.add_command(commands.Command(command, name = "fact", aliases = ["facts"], 
-													checks = [checks.not_forbidden().predicate]))
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_commands = (
 			(blob, "Blobs", "blobs", []), 
@@ -321,6 +315,17 @@ class Random(commands.GroupCog, group_name = "random"):
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
+	@fact.command(name = "number")
+	async def fact_number(self, ctx, number: int):
+		"""Random fact about a number"""
+		if command := ctx.bot.get_command("random number fact"):
+			await ctx.invoke(command, number = number)
+		else:
+			raise RuntimeError(
+				"random number fact command not found "
+				"when random fact number command invoked"
+			)
+	
 	@fact.command(name = "year")
 	async def fact_year(self, ctx, year: int):
 		'''Random fact about a year'''
@@ -447,6 +452,15 @@ class Random(commands.GroupCog, group_name = "random"):
 				f"{ctx.bot.error_emoji} Error: Input must be >= 1"
 			)
 	
+	@number.command(name = "fact")
+	async def number_fact(self, ctx, number: int):
+		'''Random fact about a number'''
+		# Note: random fact number command invokes this command
+		url = f"http://numbersapi.com/{number}"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
+			data = await resp.text()
+		await ctx.embed_reply(data)
+	
 	@commands.command(aliases = ["why"])
 	async def question(self, ctx):
 		'''Random question'''
@@ -515,13 +529,6 @@ async def color(ctx):
 	params = {"numResults": 1}
 	if cog := ctx.bot.get_cog("Resources"):
 		await cog.process_color(ctx, url, params)
-
-async def fact_number(ctx, number: int):
-	'''Random fact about a number'''
-	url = f"http://numbersapi.com/{number}"
-	async with ctx.bot.aiohttp_session.get(url) as resp:
-		data = await resp.text()
-	await ctx.embed_reply(data)
 
 async def giphy( ctx):
 	'''Random gif from giphy'''
