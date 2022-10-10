@@ -141,10 +141,12 @@ class Random(commands.GroupCog, group_name = "random"):
 	async def cat_fact(self, ctx):
 		'''Random fact about cats'''
 		# Note: random fact cat command invokes this command
-		url = "https://cat-facts-as-a-service.appspot.com/fact"
+		url = "https://catfact.ninja/fact"
+		# https://cat-facts-as-a-service.appspot.com/fact returns a 500 Server
+		# Error now
 		async with ctx.bot.aiohttp_session.get(url) as resp:
-			fact = await resp.text()
-		await ctx.embed_reply(fact)
+			data = await resp.json()
+		await ctx.embed_reply(data["fact"])
 	
 	@commands.command(aliases = ["choice", "pick"], require_var_positional = True)
 	async def choose(self, ctx, *choices: str):
