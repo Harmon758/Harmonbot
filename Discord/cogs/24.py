@@ -83,6 +83,13 @@ class TwentyFourView(ui.View):
         self.bot = bot
 
         self.add_item(TwentyFourSubmitSolutionButton(numbers))
+        self.add_item(
+            ui.Button(
+                style = discord.ButtonStyle.link,
+                emoji = '\N{INFORMATION SOURCE}',
+                url = "https://en.wikipedia.org/wiki/24_(puzzle)"
+            )
+        )
 
         self.message = None
 
