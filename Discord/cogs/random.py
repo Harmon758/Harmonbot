@@ -43,7 +43,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				self.bot.add_command(command)
 				self.random.add_command(command)
 		# Add fact subcommands as subcommands of corresponding commands
-		for command, parent in ((fact_date, self.date), (fact_number, self.number)):
+		for command, parent in ((fact_number, self.number),):
 			self.fact.add_command(commands.Command(command, name = parent.name, aliases = [parent.name + 's'], 
 													checks = [checks.not_forbidden().predicate]))
 			parent.add_command(commands.Command(command, name = "fact", aliases = ["facts"], 
@@ -209,6 +209,22 @@ class Random(commands.GroupCog, group_name = "random"):
 			).strftime("%B %d")
 		)
 	
+	@date.command(name = "fact")
+	async def date_fact(self, ctx, date: str):
+		'''
+		Random fact about a date
+		Format: month/date
+		Example: 1/1
+		'''
+		# Note: random fact date command invokes this command
+		url = f"http://numbersapi.com/{date}/date"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
+			if resp.status == 404:
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+				return
+			data = await resp.text()
+		await ctx.embed_reply(data)
+	
 	@commands.command()
 	async def day(self, ctx):
 		'''Random day of week'''
@@ -280,6 +296,21 @@ class Random(commands.GroupCog, group_name = "random"):
 			raise RuntimeError(
 				"random cat fact command not found "
 				"when random fact cat command invoked"
+			)
+	
+	@fact.command(name = "date")
+	async def fact_date(self, ctx, date: str):
+		"""
+		Random fact about a date
+		Format: month/date
+		Example: 1/1
+		"""
+		if command := ctx.bot.get_command("random date fact"):
+			await ctx.invoke(command, date = date)
+		else:
+			raise RuntimeError(
+				"random date fact command not found "
+				"when random fact date command invoked"
 			)
 	
 	@fact.command(name = "math")
@@ -484,20 +515,6 @@ async def color(ctx):
 	params = {"numResults": 1}
 	if cog := ctx.bot.get_cog("Resources"):
 		await cog.process_color(ctx, url, params)
-
-async def fact_date(ctx, date: str):
-	'''
-	Random fact about a date
-	Format: month/date
-	Example: 1/1
-	'''
-	url = f"http://numbersapi.com/{date}/date"
-	async with ctx.bot.aiohttp_session.get(url) as resp:
-		if resp.status == 404:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
-			return
-		data = await resp.text()
-	await ctx.embed_reply(data)
 
 async def fact_number(ctx, number: int):
 	'''Random fact about a number'''
