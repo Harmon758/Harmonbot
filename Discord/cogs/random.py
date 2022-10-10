@@ -43,7 +43,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				self.bot.add_command(command)
 				self.random.add_command(command)
 		# Add fact subcommands as subcommands of corresponding commands
-		for command, parent in ((fact_cat, self.cat), (fact_date, self.date), (fact_number, self.number)):
+		for command, parent in ((fact_date, self.date), (fact_number, self.number)):
 			self.fact.add_command(commands.Command(command, name = parent.name, aliases = [parent.name + 's'], 
 													checks = [checks.not_forbidden().predicate]))
 			parent.add_command(commands.Command(command, name = "fact", aliases = ["facts"], 
@@ -136,6 +136,15 @@ class Random(commands.GroupCog, group_name = "random"):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		else:
 			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
+	
+	@cat.command(name = "fact")
+	async def cat_fact(self, ctx):
+		'''Random fact about cats'''
+		# Note: random fact cat command invokes this command
+		url = "https://cat-facts-as-a-service.appspot.com/fact"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
+			fact = await resp.text()
+		await ctx.embed_reply(fact)
 	
 	@commands.command(aliases = ["choice", "pick"], require_var_positional = True)
 	async def choose(self, ctx, *choices: str):
@@ -259,6 +268,17 @@ class Random(commands.GroupCog, group_name = "random"):
 			data = await resp.json(content_type = "text/plain")
 		await ctx.embed_reply(BeautifulSoup(data[0]["fact"], "lxml").text, 
 								image_url = data[0]["primaryImage"])
+	
+	@fact.command(name = "cat")
+	async def fact_cat(self, ctx):
+		"""Random fact about cats"""
+		if command := ctx.bot.get_command("random cat fact"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random cat fact command not found "
+				"when random fact cat command invoked"
+			)
 	
 	@fact.command(name = "math")
 	async def fact_math(self, ctx, number: int):
@@ -462,13 +482,6 @@ async def color(ctx):
 	params = {"numResults": 1}
 	if cog := ctx.bot.get_cog("Resources"):
 		await cog.process_color(ctx, url, params)
-
-async def fact_cat(ctx):
-	'''Random fact about cats'''
-	url = "https://cat-facts-as-a-service.appspot.com/fact"
-	async with ctx.bot.aiohttp_session.get(url) as resp:
-		fact = await resp.text()
-	await ctx.embed_reply(fact)
 
 async def fact_date(ctx, date: str):
 	'''
