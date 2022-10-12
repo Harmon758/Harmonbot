@@ -50,7 +50,6 @@ class Random(commands.GroupCog, group_name = "random"):
 			(map, "Location", "map", []), 
 			(photo, "Images", "image", ["image"]), 
 			(streetview, "Location", "streetview", []), 
-			(time, "Location", "time", []), 
 			(uesp, "Search", "uesp", []), 
 			(wikipedia, "Search", "wikipedia", ["wiki"])
 		)
@@ -496,6 +495,12 @@ class Random(commands.GroupCog, group_name = "random"):
 			footer_text = data["quoteAuthor"]
 		)  # TODO: quoteLink?
 	
+	@random.command()
+	async def time(self, ctx):
+		'''Random time'''
+		# Note: time random command invokes this command
+		await ctx.embed_reply(f"{random.randint(0, 23):02}:{random.randint(0, 59):02}")
+	
 	@random.command(aliases = ["member"])
 	async def user(self, ctx):
 		'''Random user/member'''
@@ -601,10 +606,6 @@ async def streetview(ctx, radius: int = 5_000_000):
 	await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
 							image_url = "attachment://streetview.png", 
 							file = discord.File(io.BytesIO(data), filename = "streetview.png"))
-
-async def time(ctx):
-	'''Random time'''
-	await ctx.embed_reply(f"{random.randint(0, 23):02}:{random.randint(0, 59):02}")
 
 async def uesp(ctx):
 	'''

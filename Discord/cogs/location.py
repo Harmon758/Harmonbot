@@ -251,6 +251,17 @@ class Location(commands.Cog):
 			),)
 		)
 	
+	@time.command(name = "random")
+	async def time_random(self, ctx):
+		"""Random time"""
+		if command := ctx.bot.get_command("random time"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random time command not found "
+				"when time random command invoked"
+			)
+	
 	@app_commands.command(name = "time")
 	async def slash_time(self, interaction, *, location: str):
 		"""
