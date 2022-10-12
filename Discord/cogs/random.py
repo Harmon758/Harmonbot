@@ -52,8 +52,7 @@ class Random(commands.GroupCog, group_name = "random"):
 			(streetview, "Location", "streetview", []), 
 			(time, "Location", "time", []), 
 			(uesp, "Search", "uesp", []), 
-			(wikipedia, "Search", "wikipedia", ["wiki"]), 
-			(xkcd, "Entertainment", "xkcd", [])
+			(wikipedia, "Search", "wikipedia", ["wiki"])
 		)
 		for command, cog_name, parent_name, aliases in self.random_commands:
 			self.random.add_command(commands.Command(command, aliases = aliases, checks = [checks.not_forbidden().predicate]))
@@ -515,6 +514,21 @@ class Random(commands.GroupCog, group_name = "random"):
 		"""Random word"""
 		ctx = await interaction.client.get_context(interaction)
 		await self.word(ctx)
+	
+	@random.command()
+	async def xkcd(self, ctx):
+		'''Random xkcd comic'''
+		# Note: xkcd random command invokes this command
+		url = "http://xkcd.com/info.0.json"
+		async with ctx.bot.aiohttp_session.get(url) as resp:
+			data = await resp.json()
+		number = random.randint(1, data['num'])
+		# TODO: Optimize random comic / page selection?
+		paginator = ButtonPaginator(
+			ctx, XKCDSource(ctx), initial_page = number
+		)
+		await paginator.start()
+		ctx.bot.views.append(paginator)
 
 
 async def blob(ctx):
@@ -608,17 +622,4 @@ async def wikipedia(ctx):
 		await cog.process_wiki(ctx, "https://en.wikipedia.org/w/api.php", None, random = True)
 	else:
 		await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")  # necessary?
-
-async def xkcd(ctx):
-	'''Random xkcd comic'''
-	url = "http://xkcd.com/info.0.json"
-	async with ctx.bot.aiohttp_session.get(url) as resp:
-		data = await resp.json()
-	number = random.randint(1, data['num'])
-	# TODO: Optimize random comic / page selection?
-	paginator = ButtonPaginator(
-		ctx, XKCDSource(ctx), initial_page = number
-	)
-	await paginator.start()
-	ctx.bot.views.append(paginator)
 

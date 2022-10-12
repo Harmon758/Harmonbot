@@ -243,6 +243,17 @@ class Entertainment(commands.Cog):
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 	
+	@xkcd.command(name = "random")
+	async def xkcd_random(self, ctx):
+		"""Random xkcd comic"""
+		if command := ctx.bot.get_command("random xkcd"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random xkcd command not found "
+				"when xkcd random command invoked"
+			)
+	
 	@app_commands.command(name = "xkcd")
 	async def slash_xckd(
 		self, interaction, number: Optional[int], query: Optional[str]
