@@ -551,7 +551,7 @@ async def color(ctx):
 	if cog := ctx.bot.get_cog("Resources"):
 		await cog.process_color(ctx, url, params)
 
-async def giphy( ctx):
+async def giphy(ctx):
 	'''Random gif from giphy'''
 	url = "http://api.giphy.com/v1/gifs/random"
 	params = {"api_key": ctx.bot.GIPHY_API_KEY}
