@@ -47,7 +47,6 @@ class Random(commands.GroupCog, group_name = "random"):
 			(blob, "Blobs", "blobs", []), 
 			(color, "Resources", "color", ["colour"]), 
 			(giphy, "Images", "giphy", []), 
-			(map, "Location", "map", []), 
 			(photo, "Images", "image", ["image"]), 
 			(streetview, "Location", "streetview", []), 
 			(uesp, "Search", "uesp", []), 
@@ -434,6 +433,25 @@ class Random(commands.GroupCog, group_name = "random"):
 		'''Random longitude'''
 		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
+	@random.command()
+	async def map(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap"):
+		'''
+		See map of random location
+		Zoom: 0 - 21+
+		Map Types: roadmap, satellite, hybrid, terrain
+		'''
+		# Note: map random command invokes this command
+		latitude = random.uniform(-90, 90)
+		longitude = random.uniform(-180, 180)
+		url = "https://maps.googleapis.com/maps/api/staticmap"
+		params = {"center": f"{latitude},{longitude}", "zoom": zoom, "maptype": maptype, "size": "640x640", 
+					"key": ctx.bot.GOOGLE_API_KEY}
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			data = await resp.read()
+		await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
+								image_url = "attachment://map.png", 
+								file = discord.File(io.BytesIO(data), filename = "map.png"))
+	
 	@commands.group(
 		aliases = ["rng"],
 		case_insensitive = True, invoke_without_command = True
@@ -558,23 +576,6 @@ async def giphy(ctx):
 	async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 		data = await resp.json()
 	await ctx.embed_reply(image_url = data["data"]["image_url"])
-
-async def map(ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap"):
-	'''
-	See map of random location
-	Zoom: 0 - 21+
-	Map Types: roadmap, satellite, hybrid, terrain
-	'''
-	latitude = random.uniform(-90, 90)
-	longitude = random.uniform(-180, 180)
-	url = "https://maps.googleapis.com/maps/api/staticmap"
-	params = {"center": f"{latitude},{longitude}", "zoom": zoom, "maptype": maptype, "size": "640x640", 
-				"key": ctx.bot.GOOGLE_API_KEY}
-	async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-		data = await resp.read()
-	await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
-							image_url = "attachment://map.png", 
-							file = discord.File(io.BytesIO(data), filename = "map.png"))
 
 async def photo(ctx, *, query = ""):
 	'''Random photo from Unsplash'''

@@ -189,6 +189,21 @@ class Location(commands.Cog):
 			file = discord.File(io.BytesIO(data), filename = "map.png")
 		)
 	
+	@map.command(name = "random")
+	async def map_random(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap"):
+		"""
+		See map of random location
+		Zoom: 0 - 21+
+		Map Types: roadmap, satellite, hybrid, terrain
+		"""
+		if command := ctx.bot.get_command("random map"):
+			await ctx.invoke(command, zoom = zoom, maptype = maptype)
+		else:
+			raise RuntimeError(
+				"random map command not found "
+				"when map random command invoked"
+			)
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def streetview(self, ctx, pitch: Optional[int] = 0, heading: Optional[int] = None, *, location: str):
 		'''
