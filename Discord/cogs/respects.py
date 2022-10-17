@@ -59,7 +59,10 @@ class Respects(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["respect"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["respect"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def respects(self, ctx):
 		'''
 		Press F to Pay Respects
