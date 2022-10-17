@@ -122,7 +122,7 @@ smmap==4.0.0
 sortedcontainers==2.4.0
 soupsieve==2.3.2.post1
 tornado==6.2
-types-cryptography==3.3.23
+types-cryptography==3.3.23.1
 typing-extensions==4.4.0
 tzdata==2022.5
 tzlocal==4.2
