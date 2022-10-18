@@ -64,10 +64,10 @@ class Respects(commands.Cog):
 		case_insensitive = True, invoke_without_command = True
 	)
 	async def respects(self, ctx):
-		'''
+		"""
 		Press F to Pay Respects
 		https://knowyourmeme.com/memes/press-f-to-pay-respects
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@respects.command()
