@@ -77,12 +77,18 @@ class Respects(commands.Cog):
 		Record of respects paid by each user began on 2016-12-20
 		Record of respects paid by each server began on 2018-09-04
 		'''
-		user_respects = await ctx.bot.db.fetchval("SELECT respects FROM respects.users WHERE user_id = $1", 
-													ctx.author.id) or 0
+		user_respects = await ctx.bot.db.fetchval(
+			"SELECT respects FROM respects.users WHERE user_id = $1",
+			ctx.author.id
+		) or 0
 		if ctx.guild:
-			guild_respects = await ctx.bot.db.fetchval("SELECT respects FROM respects.guilds WHERE guild_id = $1", 
-														ctx.guild.id) or 0
-		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respects.stats WHERE stat = 'total'")
+			guild_respects = await ctx.bot.db.fetchval(
+				"SELECT respects FROM respects.guilds WHERE guild_id = $1",
+				ctx.guild.id
+			) or 0
+		total_respects = await ctx.bot.db.fetchval(
+			"SELECT value FROM respects.stats WHERE stat = 'total'"
+		)
 		response = f"You have paid {user_respects:,} respects\n"
 		if ctx.guild:
 			response += f"This server has paid {guild_respects:,} respects\n"
