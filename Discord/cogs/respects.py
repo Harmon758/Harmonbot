@@ -72,11 +72,11 @@ class Respects(commands.Cog):
 	
 	@respects.command()
 	async def paid(self, ctx):
-		'''
+		"""
 		Respects paid
 		Record of respects paid by each user began on 2016-12-20
 		Record of respects paid by each server began on 2018-09-04
-		'''
+		"""
 		user_respects = await ctx.bot.db.fetchval(
 			"SELECT respects FROM respects.users WHERE user_id = $1",
 			ctx.author.id
