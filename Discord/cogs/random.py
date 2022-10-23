@@ -218,7 +218,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	
 	@commands.command()
 	async def day(self, ctx):
-		'''Random day of week'''
+		"""Random day of week"""
 		await ctx.embed_reply(random.choice(calendar.day_name))
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
