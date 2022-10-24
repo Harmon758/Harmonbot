@@ -407,7 +407,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	
 	@commands.command(aliases = ["lat"])
 	async def latitude(self, ctx):
-		'''Random latitude'''
+		"""Random latitude"""
 		await ctx.embed_reply(str(random.uniform(-90, 90)))
 	
 	@commands.command()
