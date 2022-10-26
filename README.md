@@ -1,5 +1,6 @@
 # Harmonbot
 
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/ho2tkm1y127llfn6?svg=true)](https://ci.appveyor.com/project/Harmon/harmonbot)
 [![CircleCI status](https://circleci.com/gh/Harmon758/Harmonbot.svg?style=svg)](https://circleci.com/gh/Harmon758/Harmonbot)
 [![GitHub Actions workflow status](https://github.com/Harmon758/Harmonbot/workflows/Platforms/badge.svg?branch=rewrite)](https://github.com/Harmon758/Harmonbot/actions)
 [![GitLab pipeline status](https://gitlab.com/Harmon758/Harmonbot/badges/rewrite/pipeline.svg)](https://gitlab.com/Harmon758/Harmonbot/commits/rewrite)
