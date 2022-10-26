@@ -28,7 +28,7 @@ isodate==0.6.1
 markdownify==0.11.6
 matplotlib==3.6.1
 more-itertools==8.14.0
-numexpr==2.8.3
+numexpr==2.8.4
 numpy==1.23.3
 pandas==1.5.0
 parsedatetime==2.6
