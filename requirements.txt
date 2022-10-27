@@ -98,7 +98,7 @@ lxml==4.9.1
 mpmath==1.2.1
 multidict==6.0.2
 mutagen==1.46.0
-oauthlib==3.2.1
+oauthlib==3.2.2
 orjson==3.8.1
 packaging==21.3
 protobuf==3.20.2
