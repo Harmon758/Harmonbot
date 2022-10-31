@@ -430,7 +430,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	
 	@commands.command(aliases = ["long"])
 	async def longitude(self, ctx):
-		'''Random longitude'''
+		"""Random longitude"""
 		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
 	@random.command()
