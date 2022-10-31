@@ -515,7 +515,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	
 	@random.command()
 	async def time(self, ctx):
-		'''Random time'''
+		"""Random time"""
 		# Note: time random command invokes this command
 		await ctx.embed_reply(
 			f"{random.randint(0, 23):02}:{random.randint(0, 59):02}"
