@@ -547,7 +547,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	
 	@random.command()
 	async def xkcd(self, ctx):
-		'''Random xkcd comic'''
+		"""Random xkcd comic"""
 		# Note: xkcd random command invokes this command
 		url = "http://xkcd.com/info.0.json"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
