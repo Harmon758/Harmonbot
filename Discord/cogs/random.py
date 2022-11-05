@@ -428,7 +428,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	
 	@commands.command()
 	async def location(self, ctx):
-		'''Random location'''
+		"""Random location"""
 		await ctx.embed_reply(
 			f"{random.uniform(-90, 90)}, {random.uniform(-180, 180)}"
 		)
