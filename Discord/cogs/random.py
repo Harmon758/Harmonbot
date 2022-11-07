@@ -475,7 +475,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	
 	@number.command(name = "fact")
 	async def number_fact(self, ctx, number: int):
-		'''Random fact about a number'''
+		"""Random fact about a number"""
 		# Note: random fact number command invokes this command
 		url = f"http://numbersapi.com/{number}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
