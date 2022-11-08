@@ -1,4 +1,4 @@
-version: 1.18.0-{build}
+version: 1.18.1-{build}
 
 environment:
   # https://www.appveyor.com/docs/services-databases/#postgresql
@@ -30,7 +30,7 @@ matrix:
     # PostgreSQL not available for macOS images yet
     # https://www.appveyor.com/docs/macos-images-software/
 
-stack: Python 3.9.13, PostgreSQL 12.1
+stack: Python 3.9, PostgreSQL 12.1
 
 # services:
 #   - postgresql12
