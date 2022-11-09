@@ -44,7 +44,6 @@ class Random(commands.GroupCog, group_name = "random"):
 				self.random.add_command(command)
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_commands = (
-			(blob, "Blobs", "blobs", []), 
 			(color, "Resources", "color", ["colour"]), 
 			(giphy, "Images", "giphy", []), 
 			(photo, "Images", "image", ["image"]), 
@@ -82,6 +81,17 @@ class Random(commands.GroupCog, group_name = "random"):
 		'''
 		# TODO: random random
 		await ctx.embed_reply(":grey_question: Random what?")
+	
+	@random.command()
+	async def blob(self, ctx):
+		"""Random blob emoji"""
+		if command := ctx.bot.get_command("blob random"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"blob random command not found "
+				"when random blob command invoked"
+			)
 	
 	@commands.command(aliases = ["rabbit"])
 	async def bunny(self, ctx):
@@ -560,12 +570,6 @@ class Random(commands.GroupCog, group_name = "random"):
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 
-
-async def blob(ctx):
-	'''Random blob emoji'''
-	if "Blobs" in ctx.bot.cogs:
-		record = await ctx.bot.db.fetchrow("SELECT * FROM blobs.blobs TABLESAMPLE BERNOULLI (1) LIMIT 1")
-		await ctx.embed_reply(title = record["blob"], image_url = record["image"])
 
 async def color(ctx):
 	'''Information on a random color'''

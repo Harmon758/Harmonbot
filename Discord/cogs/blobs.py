@@ -144,6 +144,14 @@ class Blobs(commands.Cog):
 		await menu.start(ctx, wait = True)
 		self.menus.remove(menu)
 	
+	@blobs.command()
+	@checks.not_forbidden()
+	async def random(self, ctx):
+		'''Random blob emoji'''
+		# Note: random blob command invokes this command
+		record = await ctx.bot.db.fetchrow("SELECT * FROM blobs.blobs TABLESAMPLE BERNOULLI (1) LIMIT 1")
+		await ctx.embed_reply(title = record["blob"], image_url = record["image"])
+	
 	@blobs.command(aliases = ["delete"])
 	@commands.is_owner()
 	async def remove(self, ctx, name : str):
