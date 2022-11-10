@@ -15,6 +15,7 @@ from utilities.audio_player import AudioPlayer
 from utilities import audio_sources
 from utilities import checks
 from utilities import errors
+from utilities import parameters
 
 sys.path.insert(0, "..")
 from units.files import create_folder
@@ -103,12 +104,17 @@ class Audio(commands.Cog):
 	
 	@commands.command(aliases = ["summon", "move"])
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-	async def join(self, ctx, *, channel: Optional[discord.VoiceChannel]):
+	async def join(
+		self, ctx, *,
+		channel: Optional[
+			discord.VoiceChannel
+		] = parameters.CurrentVoiceChannel
+	):
 		'''Get me to join a voice channel'''
 		# TODO: Permit all when not in voice channel?
 		if ctx.guild.id not in self.players:
 			self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
-		if not channel and (not ctx.author.voice or not (channel := ctx.author.voice.channel)):
+		if not channel:
 			return await ctx.embed_reply(":no_entry: Voice channel not found")
 		try:
 			if ctx.guild.voice_client:
