@@ -12,6 +12,25 @@ import sentry_sdk
 class CommandTree(app_commands.CommandTree):
 
     async def on_error(self, interaction, error):
+        # Command Invoke Error
+        if isinstance(error, app_commands.CommandInvokeError):
+            # Bot missing permissions
+            if isinstance(error.original, commands.BotMissingPermissions):
+                bot = interaction.client
+                ctx = await bot.get_context(interaction)
+                missing_permissions = bot.inflect_engine.join([
+                    f"`{permission}`"
+                    for permission in error.original.missing_permissions
+                ])
+                permission_declension = bot.inflect_engine.plural(
+                    'permission', len(error.original.missing_permissions)
+                )
+                await ctx.embed_reply(
+                    "I don't have permission to do that here\n"
+                    f"I need the {missing_permissions} {permission_declension}"
+                )
+                return
+
         if (
             isinstance(error, app_commands.TransformerError) and
             isinstance(
