@@ -115,7 +115,8 @@ class Audio(commands.Cog):
 		if ctx.guild.id not in self.players:
 			self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
 		if not channel:
-			return await ctx.embed_reply(":no_entry: Voice channel not found")
+			await ctx.embed_reply(":no_entry: Voice channel not found")
+			return
 		try:
 			if ctx.guild.voice_client:
 				await ctx.guild.voice_client.move_to(channel)
