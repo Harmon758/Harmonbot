@@ -103,8 +103,11 @@ class Audio(commands.Cog):
 			await response.edit(embed = embed)
 	
 	@commands.command(aliases = ["summon", "move"])
-	@commands.has_guild_permissions(move_members = True)
-	# TODO: Check channel-specific permission?
+	@commands.check_any(
+		checks.is_permitted(),
+		commands.has_guild_permissions(move_members = True)
+		# TODO: Check channel-specific permission?
+	)
 	async def join(
 		self, ctx, *,
 		channel: Optional[
@@ -137,8 +140,11 @@ class Audio(commands.Cog):
 	
 	@commands.command()
 	@checks.is_voice_connected()
-	@commands.has_guild_permissions(move_members = True)
-	# TODO: Check channel-specific permission?
+	@commands.check_any(
+		checks.is_permitted(),
+		commands.has_guild_permissions(move_members = True)
+		# TODO: Check channel-specific permission?
+	)
 	async def leave(self, ctx):
 		'''Tell me to leave the voice channel'''
 		if (await self.players[ctx.guild.id].leave_channel()):
