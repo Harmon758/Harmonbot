@@ -46,8 +46,8 @@ class CommandTree(app_commands.CommandTree):
 
         sentry_sdk.capture_exception(error)
         print(
-            f"Ignoring exception in slash command {interaction.command.name}",
-            # TODO: Use full name
+            "Ignoring exception in slash command /" +
+            interaction.command.qualified_name,
             file = sys.stderr
         )
         traceback.print_exception(
