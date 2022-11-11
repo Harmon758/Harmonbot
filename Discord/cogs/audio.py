@@ -375,7 +375,10 @@ class Audio(commands.Cog):
 	@tts.command(name = "options")
 	@checks.not_forbidden()
 	@checks.is_voice_connected()
-	async def tts_options(self, ctx, amplitude: int, pitch: int, speed: int, word_gap: int, voice: str, *, message : str):
+	async def tts_options(
+		self, ctx, amplitude: int, pitch: int, speed: int, word_gap: int,
+		voice: str, *, message : str
+	):
 		'''
 		Text to speech with options
 		amplitude, pitch, speed, word_gap, voice
@@ -387,16 +390,32 @@ class Audio(commands.Cog):
 		https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md#languages
 		https://github.com/espeak-ng/espeak-ng/tree/master/espeak-ng-data/voices/!v
 		'''
-		if amplitude == -1: amplitude = 100
-		if pitch == -1: pitch = 50
-		if speed == -1: speed = 150
-		if word_gap == -1: word_gap = 0
-		if voice == "-1": voice = "en-us+f1"
-		if amplitude > 1000: amplitude = 1000
-		if speed > 9000: speed = 9000
-		if word_gap > 1000: word_gap = 1000
-		if not (await self.players[ctx.guild.id].play_tts(ctx, message, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)):
-			await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
+		if amplitude == -1:
+			amplitude = 100
+		if pitch == -1:
+			pitch = 50
+		if speed == -1:
+			speed = 150
+		if word_gap == -1:
+			word_gap = 0
+		if voice == "-1":
+			voice = "en-us+f1"
+		if amplitude > 1000:
+			amplitude = 1000
+		if speed > 9000:
+			speed = 9000
+		if word_gap > 1000:
+			word_gap = 1000
+		if not (
+			await self.players[ctx.guild.id].play_tts(
+				ctx, message, amplitude = amplitude, pitch = pitch,
+				speed = speed, word_gap = word_gap, voice = voice
+			)
+		):
+			await ctx.embed_reply(
+				":warning: Something else is already playing\n"
+				"Please stop it first"
+			)
 	
 	@commands.command()
 	@checks.is_voice_connected()
