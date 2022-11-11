@@ -169,6 +169,7 @@ class Random(commands.Cog):
 		url = "https://catfact.ninja/fact"
 		# https://cat-facts-as-a-service.appspot.com/fact returns a 500 Server
 		# Error now
+		await ctx.defer()
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(data["fact"])
