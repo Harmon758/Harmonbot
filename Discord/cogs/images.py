@@ -163,6 +163,24 @@ class Images(commands.Cog):
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
+	@image.command(name = "random")
+	async def image_random(self, ctx, *, query = ""):
+		'''Random photo from Unsplash'''
+		# Note: random photo command invokes this command
+		url = "https://api.unsplash.com/photos/random"
+		headers = {"Accept-Version": "v1", "Authorization": f"Client-ID {ctx.bot.UNSPLASH_ACCESS_KEY}"}
+		params = {"query": query}
+		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
+			data = await resp.json()
+		if "errors" in data:
+			errors = '\n'.join(data["errors"])
+			return await ctx.embed_reply(f":no_entry: Error:\n{errors}")
+		await ctx.embed_reply(data["description"] or "", 
+								author_name = f"{data['user']['name']} on Unsplash", 
+								author_url = f"{data['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
+								author_icon_url = data["user"]["profile_image"]["small"], 
+								image_url = data["urls"]["full"])
+	
 	@image.command(name = "recognition")
 	async def image_recognition(self, ctx, image_url: Optional[str]):
 		'''Image recognition'''

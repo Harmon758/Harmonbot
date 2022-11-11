@@ -43,7 +43,6 @@ class Random(commands.GroupCog, group_name = "random"):
 				self.random.add_command(command)
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_commands = (
-			(photo, "Images", "image", ["image"]), 
 			(uesp, "Search", "uesp", []), 
 			(wikipedia, "Search", "wikipedia", ["wiki"])
 		)
@@ -509,6 +508,17 @@ class Random(commands.GroupCog, group_name = "random"):
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
+	@random.command(aliases = ["image"])
+	async def photo(self, ctx, *, query: Optional[str] = ""):
+		"""Random photo from Unsplash"""
+		if command := ctx.bot.get_command("image random"):
+			await ctx.invoke(command, query = query)
+		else:
+			raise RuntimeError(
+				"image random command not found "
+				"when random photo command invoked"
+			)
+	
 	@commands.command(aliases = ["why"])
 	async def question(self, ctx):
 		'''Random question'''
@@ -602,22 +612,6 @@ class Random(commands.GroupCog, group_name = "random"):
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 
-
-async def photo(ctx, *, query = ""):
-	'''Random photo from Unsplash'''
-	url = "https://api.unsplash.com/photos/random"
-	headers = {"Accept-Version": "v1", "Authorization": f"Client-ID {ctx.bot.UNSPLASH_ACCESS_KEY}"}
-	params = {"query": query}
-	async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
-		data = await resp.json()
-	if "errors" in data:
-		errors = '\n'.join(data["errors"])
-		return await ctx.embed_reply(f":no_entry: Error:\n{errors}")
-	await ctx.embed_reply(data["description"] or "", 
-							author_name = f"{data['user']['name']} on Unsplash", 
-							author_url = f"{data['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
-							author_icon_url = data["user"]["profile_image"]["small"], 
-							image_url = data["urls"]["full"])
 
 async def uesp(ctx):
 	'''
