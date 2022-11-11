@@ -448,7 +448,10 @@ class Random(commands.GroupCog, group_name = "random"):
 		await ctx.embed_reply(str(random.uniform(-180, 180)))
 	
 	@random.command()
-	async def map(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap"):
+	async def map(
+		self, ctx, zoom: Optional[int] = 13,
+		maptype: Optional[Maptype] = "roadmap"
+	):
 		"""
 		See map of random location
 		Zoom: 0 - 21+
