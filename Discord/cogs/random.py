@@ -994,7 +994,7 @@ class Random(commands.Cog):
 		# Note: user random command invokes this command
 		await ctx.embed_reply(random.choice(ctx.guild.members).mention)
 	
-	@random.command(aliases = ["wiki"], with_app_command = False)
+	@random.command(aliases = ["wiki"])
 	async def wikipedia(self, ctx):
 		"""Random Wikipedia article"""
 		if command := ctx.bot.get_command("wikipedia random"):
