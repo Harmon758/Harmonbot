@@ -166,11 +166,12 @@ class Random(commands.Cog):
 		# Note: cat fact command invokes this command
 		# Note: fact cat command invokes this command
 		# Note: random fact cat command invokes this command
-		url = "https://catfact.ninja/fact"
-		# https://cat-facts-as-a-service.appspot.com/fact returns a 500 Server
-		# Error now
 		await ctx.defer()
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://catfact.ninja/fact"
+			# https://cat-facts-as-a-service.appspot.com/fact returns a 500
+			# Server Error now
+		) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(data["fact"])
 	
