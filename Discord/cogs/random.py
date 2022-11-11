@@ -29,12 +29,11 @@ from utilities.paginators import ButtonPaginator
 async def setup(bot):
 	await bot.add_cog(Random(bot))
 
-class Random(commands.GroupCog, group_name = "random"):
+class Random(commands.Cog):
 	"""Random"""
 	
 	def __init__(self, bot):
 		self.bot = bot
-		super().__init__()
 		# Import jokes
 		self.jokes = []
 		try:
@@ -48,7 +47,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.hybrid_group(case_insensitive = True)
 	async def random(self, ctx):
 		'''
 		Random things
@@ -57,7 +56,7 @@ class Random(commands.GroupCog, group_name = "random"):
 		# TODO: random random
 		await ctx.embed_reply(":grey_question: Random what?")
 	
-	@random.command()
+	@random.command(with_app_command = False)
 	async def blob(self, ctx):
 		"""Random blob emoji"""
 		if command := ctx.bot.get_command("blob random"):
@@ -68,7 +67,9 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random blob command invoked"
 			)
 	
-	@random.command(name = "bunny", aliases = ["rabbit"])
+	@random.command(
+		name = "bunny", aliases = ["rabbit"], with_app_command = False
+	)
 	async def random_bunny(self, ctx):
 		'''Random bunny'''
 		# Note: bunny command invokes this command
@@ -88,7 +89,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random bunny command not found when bunny command invoked"
 			)
 	
-	@random.command(name = "card")
+	@random.command(name = "card", with_app_command = False)
 	async def random_card(self, ctx):
 		'''Random playing card'''
 		# Note: card command invokes this command
@@ -105,7 +106,7 @@ class Random(commands.GroupCog, group_name = "random"):
 			)
 	
 	@random.group(
-		name = "cat", case_insensitive = True, invoke_without_command = True
+		name = "cat", case_insensitive = True, with_app_command = False
 	)
 	async def random_cat(self, ctx, category: Optional[str]):
 		'''Random image of a cat'''
@@ -135,7 +136,9 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random cat command not found when cat command invoked"
 			)
 	
-	@random_cat.command(name = "categories", aliases = ["cats"])
+	@random_cat.command(
+		name = "categories", aliases = ["cats"], with_app_command = False
+	)
 	async def random_cat_categories(self, ctx):
 		'''Categories of cat images'''
 		# Note: cat categories command invokes this command
@@ -160,7 +163,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when cat categories command invoked"
 			)
 	
-	@random_cat.command(name = "fact")
+	@random_cat.command(name = "fact", with_app_command = False)
 	async def random_cat_fact(self, ctx):
 		'''Random fact about cats'''
 		# Note: cat fact command invokes this command
@@ -184,7 +187,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when cat fact command invoked"
 			)
 	
-	@random.command(name = "choose", aliases = ["choice", "pick"], require_var_positional = True)
+	@random.command(name = "choose", aliases = ["choice", "pick"], require_var_positional = True, with_app_command = False)
 	async def random_choose(self, ctx, *choices: str):
 		'''
 		Randomly chooses between multiple options
@@ -208,7 +211,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random choose command not found when choose command invoked"
 			)
 	
-	@random.command(name = "coin", aliases = ["flip"])
+	@random.command(name = "coin", aliases = ["flip"], with_app_command = False)
 	async def random_coin(self, ctx):
 		'''Flip a coin'''
 		# Note: coin command invokes this command
@@ -224,7 +227,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random coin command not found when coin command invoked"
 			)
 	
-	@random.command(aliases = ["colour"])
+	@random.command(aliases = ["colour"], with_app_command = False)
 	async def color(self, ctx):
 		"""Information on a random color"""
 		if command := ctx.bot.get_command("color random"):
@@ -235,7 +238,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random color command invoked"
 			)
 	
-	@random.command(name = "command")
+	@random.command(name = "command", with_app_command = False)
 	async def random_command(self, ctx):
 		'''Random command'''
 		# Note: command command invokes this command
@@ -251,7 +254,9 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random command command not found when command command invoked"
 			)
 	
-	@random.command(name = "dice", aliases = ["die", "roll"])
+	@random.command(
+		name = "dice", aliases = ["die", "roll"], with_app_command = False
+	)
 	async def random_dice(self, ctx, *, input: str = '6'):
 		'''
 		Roll dice
@@ -306,7 +311,7 @@ class Random(commands.GroupCog, group_name = "random"):
 			)
 	
 	@random.group(
-		name = "date", case_insensitive = True, invoke_without_command = True
+		name = "date", case_insensitive = True, with_app_command = False
 	)
 	async def random_date(self, ctx):
 		'''Random date'''
@@ -327,7 +332,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random date command not found when date command invoked"
 			)
 	
-	@random_date.command(name = "fact")
+	@random_date.command(name = "fact", with_app_command = False)
 	async def random_date_fact(self, ctx, date: str):
 		'''
 		Random fact about a date
@@ -360,7 +365,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when date fact command invoked"
 			)
 	
-	@random.command(name = "day")
+	@random.command(name = "day", with_app_command = False)
 	async def random_day(self, ctx):
 		"""Random day of week"""
 		# Note: day command invokes this command
@@ -377,7 +382,7 @@ class Random(commands.GroupCog, group_name = "random"):
 			)
 	
 	@random.group(
-		name = "dog", case_insensitive = True, invoke_without_command = True
+		name = "dog", case_insensitive = True, with_app_command = False
 	)
 	async def random_dog(self, ctx, *, breed: Optional[str]):
 		'''
@@ -412,7 +417,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random dog command not found when dog command invoked"
 			)
 	
-	@random_dog.command(name = "breeds", aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"])
+	@random_dog.command(name = "breeds", aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"], with_app_command = False)
 	async def random_dog_breeds(self, ctx):
 		'''Breeds and sub-breeds of dogs for which images are categorized under'''
 		# Note: dog breeds command invokes this command
@@ -457,14 +462,8 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random emoji command not found when emoji command invoked"
 			)
 	
-	@app_commands.command(name = "emoji")
-	async def slash_emoji(self, interaction):
-		"""Random emoji"""
-		ctx = await interaction.client.get_context(interaction)
-		await self.random_emoji(ctx)
-	
 	@random.group(
-		name = "fact", case_insensitive = True, invoke_without_command = True
+		name = "fact", case_insensitive = True, with_app_command = False
 	)
 	async def random_fact(self, ctx):
 		'''Random fact'''
@@ -495,7 +494,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random fact command not found when fact command invoked"
 			)
 	
-	@random_fact.command(name = "cat")
+	@random_fact.command(name = "cat", with_app_command = False)
 	async def random_fact_cat(self, ctx):
 		"""Random fact about cats"""
 		if command := ctx.bot.get_command("random cat fact"):
@@ -517,7 +516,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when fact cat command invoked"
 			)
 	
-	@random_fact.command(name = "date")
+	@random_fact.command(name = "date", with_app_command = False)
 	async def random_fact_date(self, ctx, date: str):
 		"""
 		Random fact about a date
@@ -547,7 +546,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when fact date command invoked"
 			)
 	
-	@random_fact.command(name = "math")
+	@random_fact.command(name = "math", with_app_command = False)
 	async def random_fact_math(self, ctx, number: int):
 		'''Random math fact about a number'''
 		# Note: fact math command invokes this command
@@ -567,7 +566,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when fact math command invoked"
 			)
 	
-	@random_fact.command(name = "number")
+	@random_fact.command(name = "number", with_app_command = False)
 	async def random_fact_number(self, ctx, number: int):
 		"""Random fact about a number"""
 		if command := ctx.bot.get_command("random number fact"):
@@ -589,7 +588,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when fact number command invoked"
 			)
 	
-	@random_fact.command(name = "year")
+	@random_fact.command(name = "year", with_app_command = False)
 	async def random_fact_year(self, ctx, year: int):
 		'''Random fact about a year'''
 		# Note: fact year command invokes this command
@@ -609,7 +608,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when fact year command invoked"
 			)
 	
-	@random.command()
+	@random.command(with_app_command = False)
 	async def giphy(self, ctx):
 		"""Random gif from giphy"""
 		if command := ctx.bot.get_command("giphy random"):
@@ -620,7 +619,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random giphy command invoked"
 			)
 	
-	@random.command(name = "idea")
+	@random.command(name = "idea", with_app_command = False)
 	async def random_idea(self, ctx):
 		'''Random idea'''
 		# Note: idea command invokes this command
@@ -639,7 +638,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random idea command not found when idea command invoked"
 			)
 	
-	@random.command(name = "insult")
+	@random.command(name = "insult", with_app_command = False)
 	async def random_insult(self, ctx):
 		'''Random insult'''
 		# Note: insult command invokes this command
@@ -665,7 +664,7 @@ class Random(commands.GroupCog, group_name = "random"):
 			)
 	
 	@random.group(
-		name = "joke", case_insensitive = True, invoke_without_command = True
+		name = "joke", case_insensitive = True, with_app_command = False
 	)
 	async def random_joke(self, ctx):
 		'''Random joke'''
@@ -687,7 +686,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random joke command not found when joke command invoked"
 			)
 	
-	@random_joke.command(name = "dad")
+	@random_joke.command(name = "dad", with_app_command = False)
 	async def random_joke_dad(
 		self, ctx, image: Optional[bool] = False, joke_id: Optional[str] = None
 	):
@@ -738,7 +737,9 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when joke dad command invoked"
 			)
 	
-	@random.command(name = "laititude", aliases = ["lat"])
+	@random.command(
+		name = "laititude", aliases = ["lat"], with_app_command = False
+	)
 	async def random_latitude(self, ctx):
 		"""Random latitude"""
 		# Note: latitude command invokes this command
@@ -771,13 +772,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random letter command not found when letter command invoked"
 			)
 	
-	@app_commands.command(name = "letter")
-	async def slash_letter(self, interaction):
-		"""Random letter"""
-		ctx = await interaction.client.get_context(interaction)
-		await self.random_letter(ctx)
-	
-	@random.command(name = "location")
+	@random.command(name = "location", with_app_command = False)
 	async def random_location(self, ctx):
 		"""Random location"""
 		# Note: location command invokes this command
@@ -796,7 +791,9 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when location command invoked"
 			)
 	
-	@random.command(name = "longitude", aliases = ["long"])
+	@random.command(
+		name = "longitude", aliases = ["long"], with_app_command = False
+	)
 	async def random_longitude(self, ctx):
 		"""Random longitude"""
 		# Note: longitude command invokes this command
@@ -813,7 +810,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when longitude command invoked"
 			)
 	
-	@random.command()
+	@random.command(with_app_command = False)
 	async def map(
 		self, ctx, zoom: Optional[int] = 13,
 		maptype: Optional[Maptype] = "roadmap"
@@ -833,7 +830,7 @@ class Random(commands.GroupCog, group_name = "random"):
 	
 	@random.group(
 		name = "number", aliases = ["rng"],
-		case_insensitive = True, invoke_without_command = True
+		case_insensitive = True, with_app_command = False
 	)
 	async def random_number(self, ctx, number: int = 10):
 		'''
@@ -864,7 +861,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random number command not found when number command invoked"
 			)
 	
-	@random_number.command(name = "fact")
+	@random_number.command(name = "fact", with_app_command = False)
 	async def random_number_fact(self, ctx, number: int):
 		"""Random fact about a number"""
 		# Note: fact number command invokes this command
@@ -886,7 +883,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when number fact command invoked"
 			)
 	
-	@random.command(aliases = ["image"])
+	@random.command(aliases = ["image"], with_app_command = False)
 	async def photo(self, ctx, *, query: Optional[str] = ""):
 		"""Random photo from Unsplash"""
 		if command := ctx.bot.get_command("image random"):
@@ -897,7 +894,9 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random photo command invoked"
 			)
 	
-	@random.command(name = "question", aliases = ["why"])
+	@random.command(
+		name = "question", aliases = ["why"], with_app_command = False
+	)
 	async def random_question(self, ctx):
 		'''Random question'''
 		# Note: question command invokes this command
@@ -917,7 +916,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when question command invoked"
 			)
 	
-	@random.command(name = "quote")
+	@random.command(name = "quote", with_app_command = False)
 	async def random_quote(self, ctx):
 		'''Random quote'''
 		# Note: quote command invokes this command
@@ -953,7 +952,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random quote command not found when quote command invoked"
 			)
 	
-	@random.command()
+	@random.command(with_app_command = False)
 	async def streetview(self, ctx, radius: int = 5_000_000):
 		"""
 		Generate street view of a random location
@@ -968,7 +967,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random streetview command invoked"
 			)
 	
-	@random.command()
+	@random.command(with_app_command = False)
 	async def time(self, ctx):
 		"""Random time"""
 		# Note: time random command invokes this command
@@ -976,7 +975,7 @@ class Random(commands.GroupCog, group_name = "random"):
 			f"{random.randint(0, 23):02}:{random.randint(0, 59):02}"
 		)
 	
-	@random.command()
+	@random.command(with_app_command = False)
 	async def uesp(self, ctx):
 		"""
 		Random UESP page
@@ -990,13 +989,13 @@ class Random(commands.GroupCog, group_name = "random"):
 				title_url = "http://uesp.net/wiki/Special:Random"
 			)
 	
-	@random.command(aliases = ["member"])
+	@random.command(aliases = ["member"], with_app_command = False)
 	async def user(self, ctx):
 		'''Random user/member'''
 		# Note: user random command invokes this command
 		await ctx.embed_reply(random.choice(ctx.guild.members).mention)
 	
-	@random.command(aliases = ["wiki"])
+	@random.command(aliases = ["wiki"], with_app_command = False)
 	async def wikipedia(self, ctx):
 		"""Random Wikipedia article"""
 		if command := ctx.bot.get_command("wikipedia random"):
@@ -1025,13 +1024,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random word command not found when word command invoked"
 			)
 	
-	@app_commands.command(name = "word")
-	async def slash_word(self, interaction):
-		"""Random word"""
-		ctx = await interaction.client.get_context(interaction)
-		await self.word(ctx)
-	
-	@random.command()
+	@random.command(with_app_command = False)
 	async def xkcd(self, ctx):
 		"""Random xkcd comic"""
 		# Note: xkcd random command invokes this command
