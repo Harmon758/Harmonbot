@@ -126,7 +126,7 @@ typing-extensions==4.4.0
 tzdata==2022.6
 tzlocal==4.2
 uritemplate==4.1.1
-websockets==10.3
+websockets==10.4
 xmltodict==0.13.0
 yarl==1.8.1
 
