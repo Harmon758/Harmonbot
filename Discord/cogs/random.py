@@ -47,7 +47,6 @@ class Random(commands.GroupCog, group_name = "random"):
 			(color, "Resources", "color", ["colour"]), 
 			(giphy, "Images", "giphy", []), 
 			(photo, "Images", "image", ["image"]), 
-			(streetview, "Location", "streetview", []), 
 			(uesp, "Search", "uesp", []), 
 			(wikipedia, "Search", "wikipedia", ["wiki"])
 		)
@@ -529,6 +528,21 @@ class Random(commands.GroupCog, group_name = "random"):
 		)  # TODO: quoteLink?
 	
 	@random.command()
+	async def streetview(self, ctx, radius: int = 5_000_000):
+		"""
+		Generate street view of a random location
+		`radius`: sets a radius, specified in meters, in which to search for a panorama, centered on the given latitude and longitude.
+		Valid values are non-negative integers.
+		"""
+		if command := ctx.bot.get_command("streetview random"):
+			await ctx.invoke(command, radius = radius)
+		else:
+			raise RuntimeError(
+				"streetview random command not found "
+				"when random streetview command invoked"
+			)
+	
+	@random.command()
 	async def time(self, ctx):
 		"""Random time"""
 		# Note: time random command invokes this command
@@ -601,23 +615,6 @@ async def photo(ctx, *, query = ""):
 							author_url = f"{data['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
 							author_icon_url = data["user"]["profile_image"]["small"], 
 							image_url = data["urls"]["full"])
-
-async def streetview(ctx, radius: int = 5_000_000):
-	'''
-	Generate street view of a random location
-	`radius`: sets a radius, specified in meters, in which to search for a panorama, centered on the given latitude and longitude.
-	Valid values are non-negative integers.
-	'''
-	latitude = random.uniform(-90, 90)
-	longitude = random.uniform(-180, 180)
-	url = "https://maps.googleapis.com/maps/api/streetview"
-	params = {"location": f"{latitude},{longitude}", "size": "640x640", "fov": 120, "radius": radius, 
-				"key": ctx.bot.GOOGLE_API_KEY}
-	async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-		data = await resp.read()
-	await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
-							image_url = "attachment://streetview.png", 
-							file = discord.File(io.BytesIO(data), filename = "streetview.png"))
 
 async def uesp(ctx):
 	'''
