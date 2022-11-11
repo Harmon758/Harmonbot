@@ -919,9 +919,10 @@ class Random(commands.Cog):
 	async def random_quote(self, ctx):
 		'''Random quote'''
 		# Note: quote command invokes this command
-		url = "http://api.forismatic.com/api/1.0/"
-		params = {"method": "getQuote", "format": "json", "lang": "en"}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://api.forismatic.com/api/1.0/",
+			params = {"method": "getQuote", "format": "json", "lang": "en"}
+		) as resp:
 			try:
 				data = await resp.json()
 			except json.JSONDecodeError:
