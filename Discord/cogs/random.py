@@ -915,7 +915,7 @@ class Random(commands.Cog):
 				"when question command invoked"
 			)
 	
-	@random.command(name = "quote", with_app_command = False)
+	@random.command(name = "quote")
 	async def random_quote(self, ctx):
 		'''Random quote'''
 		# Note: quote command invokes this command
