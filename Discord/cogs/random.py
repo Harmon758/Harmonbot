@@ -41,14 +41,6 @@ class Random(commands.GroupCog, group_name = "random"):
 			if isinstance(command, commands.Command) and command.parent is None and name != "random":
 				self.bot.add_command(command)
 				self.random.add_command(command)
-		# Add random subcommands as subcommands of corresponding commands
-		self.random_commands = (
-			(wikipedia, "Search", "wikipedia", ["wiki"]),
-		)
-		for command, cog_name, parent_name, aliases in self.random_commands:
-			self.random.add_command(commands.Command(command, aliases = aliases, checks = [checks.not_forbidden().predicate]))
-			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
-				parent.add_command(commands.Command(command, name = "random", checks = [checks.not_forbidden().predicate]))
 		# Import jokes
 		self.jokes = []
 		try:
@@ -58,11 +50,6 @@ class Random(commands.GroupCog, group_name = "random"):
 					self.jokes.append(row[0])
 		except FileNotFoundError:
 			pass
-	
-	def cog_unload(self):
-		for command, cog_name, parent_name, _ in self.random_commands:
-			if (cog := self.bot.get_cog(cog_name)) and (parent := getattr(cog, parent_name)):
-				parent.remove_command("random")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -597,6 +584,17 @@ class Random(commands.GroupCog, group_name = "random"):
 		# Note: user random command invokes this command
 		await ctx.embed_reply(random.choice(ctx.guild.members).mention)
 	
+	@random.command(aliases = ["wiki"])
+	async def wikipedia(self, ctx):
+		"""Random Wikipedia article"""
+		if command := ctx.bot.get_command("wikipedia random"):
+			await ctx.invoke(command)
+		else:
+			await ctx.embed_reply(
+				title = "Random Wikipedia article",
+				title_url = "https://wikipedia.org/wiki/Special:Random"
+			)
+	
 	@commands.command()
 	async def word(self, ctx):
 		"""Random word"""
@@ -624,12 +622,4 @@ class Random(commands.GroupCog, group_name = "random"):
 		)
 		await paginator.start()
 		ctx.bot.views.append(paginator)
-
-
-async def wikipedia(ctx):
-	'''Random Wikipedia article'''
-	if cog := ctx.bot.get_cog("Search"):
-		await cog.process_wiki(ctx, "https://en.wikipedia.org/w/api.php", None, random = True)
-	else:
-		await ctx.embed_reply(title = "Random Wikipedia article", title_url = "https://wikipedia.org/wiki/Special:Random")  # necessary?
 
