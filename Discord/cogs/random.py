@@ -115,13 +115,19 @@ class Random(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.text()
 		try:
-			if (url := xml.etree.ElementTree.fromstring(data).find(".//url")) is None:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Category not found")
+			if (
+				url := xml.etree.ElementTree.fromstring(data).find(".//url")
+			) is None:
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: Category not found"
+				)
 				return
 		except xml.etree.ElementTree.ParseError:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		else:
-			await ctx.embed_reply(f"[\N{CAT FACE}]({url.text})", image_url = url.text)
+			await ctx.embed_reply(
+				f"[\N{CAT FACE}]({url.text})", image_url = url.text
+			)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def cat(self, ctx, category: Optional[str]):
