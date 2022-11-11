@@ -190,7 +190,10 @@ class Location(commands.Cog):
 		)
 	
 	@map.command(name = "random")
-	async def map_random(self, ctx, zoom: Optional[int] = 13, maptype: Optional[Maptype] = "roadmap"):
+	async def map_random(
+		self, ctx, zoom: Optional[int] = 13,
+		maptype: Optional[Maptype] = "roadmap"
+	):
 		"""
 		See map of random location
 		Zoom: 0 - 21+
