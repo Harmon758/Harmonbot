@@ -917,7 +917,7 @@ class Random(commands.Cog):
 	
 	@random.command(name = "quote")
 	async def random_quote(self, ctx):
-		'''Random quote'''
+		"""Random quote"""
 		# Note: quote command invokes this command
 		async with ctx.bot.aiohttp_session.get(
 			"http://api.forismatic.com/api/1.0/",
