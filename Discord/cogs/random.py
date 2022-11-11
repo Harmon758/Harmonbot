@@ -108,6 +108,7 @@ class Random(commands.Cog):
 	async def random_cat(self, ctx, category: Optional[str]):
 		"""Random image of a cat"""
 		# Note: cat command invokes this command
+		await ctx.defer()
 		async with ctx.bot.aiohttp_session.get(
 			"http://thecatapi.com/api/images/get",
 			params = {"format": "xml", "results_per_page": 1} | (
