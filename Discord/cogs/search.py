@@ -207,6 +207,15 @@ class Search(commands.GroupCog, group_name = "search"):
 		"""Look something up on the Unofficial Elder Scrolls Pages"""
 		await self.process_uesp(ctx, search)
 	
+	@uesp.command(name = "random")
+	async def uesp_random(self, ctx):
+		'''
+		Random UESP page
+		[UESP](http://uesp.net/wiki/Main_Page)
+		'''
+		# Note: random uesp command invokes this command
+		await self.process_uesp(ctx, None, random = True)
+	
 	async def process_uesp(self, ctx, search, random = False, redirect = True):
 		# TODO: Add User-Agent
 		url = "https://en.uesp.net/w/api.php"

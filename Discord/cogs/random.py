@@ -43,8 +43,7 @@ class Random(commands.GroupCog, group_name = "random"):
 				self.random.add_command(command)
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_commands = (
-			(uesp, "Search", "uesp", []), 
-			(wikipedia, "Search", "wikipedia", ["wiki"])
+			(wikipedia, "Search", "wikipedia", ["wiki"]),
 		)
 		for command, cog_name, parent_name, aliases in self.random_commands:
 			self.random.add_command(commands.Command(command, aliases = aliases, checks = [checks.not_forbidden().predicate]))
@@ -578,6 +577,20 @@ class Random(commands.GroupCog, group_name = "random"):
 			f"{random.randint(0, 23):02}:{random.randint(0, 59):02}"
 		)
 	
+	@random.command()
+	async def uesp(self, ctx):
+		"""
+		Random UESP page
+		[UESP](http://uesp.net/wiki/Main_Page)
+		"""
+		if command := ctx.bot.get_command("uesp random"):
+			await ctx.invoke(command)
+		else:
+			await ctx.embed_reply(
+				title = "Random UESP page",
+				title_url = "http://uesp.net/wiki/Special:Random"
+			)
+	
 	@random.command(aliases = ["member"])
 	async def user(self, ctx):
 		'''Random user/member'''
@@ -612,16 +625,6 @@ class Random(commands.GroupCog, group_name = "random"):
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 
-
-async def uesp(ctx):
-	'''
-	Random UESP page
-	[UESP](http://uesp.net/wiki/Main_Page)
-	'''
-	if cog := ctx.bot.get_cog("Search"):
-		await cog.process_uesp(ctx, None, random = True)
-	else:
-		await ctx.embed_reply(title = "Random UESP page", title_url = "http://uesp.net/wiki/Special:Random")  # necessary?
 
 async def wikipedia(ctx):
 	'''Random Wikipedia article'''
