@@ -35,11 +35,6 @@ class Random(commands.GroupCog, group_name = "random"):
 	def __init__(self, bot):
 		self.bot = bot
 		super().__init__()
-		# Add commands as random subcommands
-		for name, command in inspect.getmembers(self):
-			if isinstance(command, commands.Command) and command.parent is None and name != "random":
-				self.bot.add_command(command)
-				self.random.add_command(command)
 		# Import jokes
 		self.jokes = []
 		try:
@@ -73,23 +68,48 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random blob command invoked"
 			)
 	
-	@commands.command(aliases = ["rabbit"])
-	async def bunny(self, ctx):
+	@random.command(name = "bunny", aliases = ["rabbit"])
+	async def random_bunny(self, ctx):
 		'''Random bunny'''
+		# Note: bunny command invokes this command
 		url = "https://api.bunnies.io/v2/loop/random/?media=gif"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		gif = data["media"]["gif"]
 		await ctx.embed_reply(f"[:rabbit2:]({gif})", image_url = gif)
 	
-	@commands.command()
-	async def card(self, ctx):
+	@commands.command(aliases = ["rabbit"])
+	async def bunny(self, ctx):
+		"""Random bunny"""
+		if command := ctx.bot.get_command("random bunny"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random bunny command not found when bunny command invoked"
+			)
+	
+	@random.command(name = "card")
+	async def random_card(self, ctx):
 		'''Random playing card'''
+		# Note: card command invokes this command
 		await ctx.embed_reply(f":{random.choice(pydealer.const.SUITS).lower()}: {random.choice(pydealer.const.VALUES)}")
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True)
-	async def cat(self, ctx, category: Optional[str]):
+	@commands.command()
+	async def card(self, ctx):
+		"""Random playing card"""
+		if command := ctx.bot.get_command("random card"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random card command not found when card command invoked"
+			)
+	
+	@random.group(
+		name = "cat", case_insensitive = True, invoke_without_command = True
+	)
+	async def random_cat(self, ctx, category: Optional[str]):
 		'''Random image of a cat'''
+		# Note: cat command invokes this command
 		url = "http://thecatapi.com/api/images/get"
 		params = {"format": "xml", "results_per_page": 1}
 		if category:
@@ -105,9 +125,20 @@ class Random(commands.GroupCog, group_name = "random"):
 		else:
 			await ctx.embed_reply(f"[\N{CAT FACE}]({url.text})", image_url = url.text)
 	
-	@cat.command(name = "categories", aliases = ["cats"])
-	async def cat_categories(self, ctx):
+	@commands.group(case_insensitive = True, invoke_without_command = True)
+	async def cat(self, ctx, category: Optional[str]):
+		"""Random image of a cat"""
+		if command := ctx.bot.get_command("random cat"):
+			await ctx.invoke(command, category = category)
+		else:
+			raise RuntimeError(
+				"random cat command not found when cat command invoked"
+			)
+	
+	@random_cat.command(name = "categories", aliases = ["cats"])
+	async def random_cat_categories(self, ctx):
 		'''Categories of cat images'''
+		# Note: cat categories command invokes this command
 		url = "http://thecatapi.com/api/categories/list"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
@@ -118,9 +149,22 @@ class Random(commands.GroupCog, group_name = "random"):
 		else:
 			await ctx.embed_reply('\n'.join(sorted(category.text for category in categories)))
 	
-	@cat.command(name = "fact")
-	async def cat_fact(self, ctx):
+	@cat.command(name = "categories", aliases = ["cats"])
+	async def cat_categories(self, ctx):
+		"""Categories of cat images"""
+		if command := ctx.bot.get_command("random cat categories"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random cat categories command not found "
+				"when cat categories command invoked"
+			)
+	
+	@random_cat.command(name = "fact")
+	async def random_cat_fact(self, ctx):
 		'''Random fact about cats'''
+		# Note: cat fact command invokes this command
+		# Note: fact cat command invokes this command
 		# Note: random fact cat command invokes this command
 		url = "https://catfact.ninja/fact"
 		# https://cat-facts-as-a-service.appspot.com/fact returns a 500 Server
@@ -129,18 +173,56 @@ class Random(commands.GroupCog, group_name = "random"):
 			data = await resp.json()
 		await ctx.embed_reply(data["fact"])
 	
-	@commands.command(aliases = ["choice", "pick"], require_var_positional = True)
-	async def choose(self, ctx, *choices: str):
+	@cat.command(name = "fact")
+	async def cat_fact(self, ctx):
+		"""Random fact about cats"""
+		if command := ctx.bot.get_command("random cat fact"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random cat fact command not found "
+				"when cat fact command invoked"
+			)
+	
+	@random.command(name = "choose", aliases = ["choice", "pick"], require_var_positional = True)
+	async def random_choose(self, ctx, *choices: str):
 		'''
 		Randomly chooses between multiple options
 		choose <option1> <option2> <...>
 		'''
+		# Note: choose command invokes this command
 		await ctx.embed_reply(random.choice(choices))
+	
+	@commands.command(
+		aliases = ["choice", "pick"], require_var_positional = True
+	)
+	async def choose(self, ctx, *choices: str):
+		"""
+		Randomly chooses between multiple options
+		choose <option1> <option2> <...>
+		"""
+		if command := ctx.bot.get_command("random choose"):
+			await ctx.invoke(command, *choices)
+		else:
+			raise RuntimeError(
+				"random choose command not found when choose command invoked"
+			)
+	
+	@random.command(name = "coin", aliases = ["flip"])
+	async def random_coin(self, ctx):
+		'''Flip a coin'''
+		# Note: coin command invokes this command
+		await ctx.embed_reply(random.choice(("Heads!", "Tails!")))
 	
 	@commands.command(aliases = ["flip"])
 	async def coin(self, ctx):
-		'''Flip a coin'''
-		await ctx.embed_reply(random.choice(("Heads!", "Tails!")))
+		"""Flip a coin"""
+		if command := ctx.bot.get_command("random coin"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random coin command not found when coin command invoked"
+			)
 	
 	@random.command(aliases = ["colour"])
 	async def color(self, ctx):
@@ -153,13 +235,24 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random color command invoked"
 			)
 	
-	@commands.command()
-	async def command(self, ctx):
+	@random.command(name = "command")
+	async def random_command(self, ctx):
 		'''Random command'''
+		# Note: command command invokes this command
 		await ctx.embed_reply(f"{ctx.prefix}{random.choice(tuple(set(command.name for command in self.bot.commands)))}")
 	
-	@commands.command(aliases = ["die", "roll"])
-	async def dice(self, ctx, *, input: str = '6'):
+	@commands.command()
+	async def command(self, ctx):
+		"""Random command"""
+		if command := ctx.bot.get_command("random command"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random command command not found when command command invoked"
+			)
+	
+	@random.command(name = "dice", aliases = ["die", "roll"])
+	async def random_dice(self, ctx, *, input: str = '6'):
 		'''
 		Roll dice
 		Inputs:                                      Examples:
@@ -170,6 +263,7 @@ class Random(commands.GroupCog, group_name = "random"):
 		AdS^H | ^H - return highest H rolls          [10d6^4 | 2d7^1]
 		AdSvL | vL - return lowest L rolls           [15d7v2 | 8d9v2]
 		'''
+		# Note: dice command invokes this command
 		# TODO: Add documentation on arithmetic/basic integer operations
 		if 'd' not in input:
 			input = 'd' + input
@@ -192,22 +286,56 @@ class Random(commands.GroupCog, group_name = "random"):
 			except dice.DiceFatalException as e:
 				await ctx.embed_reply(f":no_entry: Error: {e}")
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True)
-	async def date(self, ctx):
+	@commands.command(aliases = ["die", "roll"])
+	async def dice(self, ctx, *, input: str = '6'):
+		"""
+		Roll dice
+		Inputs:                                      Examples:
+		S     |  S - number of sides (default is 6)  [6      | 12]
+		AdS   |  A - amount (default is 1)           [5d6    | 2d10]
+		AdSt  |  t - return total                    [2d6t   | 20d5t]
+		AdSs  |  s - return sorted                   [4d6s   | 5d8s]
+		AdS^H | ^H - return highest H rolls          [10d6^4 | 2d7^1]
+		AdSvL | vL - return lowest L rolls           [15d7v2 | 8d9v2]
+		"""
+		if command := ctx.bot.get_command("random dice"):
+			await ctx.invoke(command, input = input)
+		else:
+			raise RuntimeError(
+				"random dice command not found when dice command invoked"
+			)
+	
+	@random.group(
+		name = "date", case_insensitive = True, invoke_without_command = True
+	)
+	async def random_date(self, ctx):
 		'''Random date'''
+		# Note: date command invokes this command
 		await ctx.embed_reply(
 			datetime.date.fromordinal(
 				random.randint(1, 365)
 			).strftime("%B %d")
 		)
 	
-	@date.command(name = "fact")
-	async def date_fact(self, ctx, date: str):
+	@commands.group(case_insensitive = True, invoke_without_command = True)
+	async def date(self, ctx):
+		"""Random date"""
+		if command := ctx.bot.get_command("random date"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random date command not found when date command invoked"
+			)
+	
+	@random_date.command(name = "fact")
+	async def random_date_fact(self, ctx, date: str):
 		'''
 		Random fact about a date
 		Format: month/date
 		Example: 1/1
 		'''
+		# Note: date fact command invokes this command
+		# Note: fact date command invokes this command
 		# Note: random fact date command invokes this command
 		url = f"http://numbersapi.com/{date}/date"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
@@ -217,17 +345,46 @@ class Random(commands.GroupCog, group_name = "random"):
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
+	@date.command(name = "fact")
+	async def date_fact(self, ctx, date: str):
+		"""
+		Random fact about a date
+		Format: month/date
+		Example: 1/1
+		"""
+		if command := ctx.bot.get_command("random date fact"):
+			await ctx.invoke(command, date = date)
+		else:
+			raise RuntimeError(
+				"random date fact command not found "
+				"when date fact command invoked"
+			)
+	
+	@random.command(name = "day")
+	async def random_day(self, ctx):
+		"""Random day of week"""
+		# Note: day command invokes this command
+		await ctx.embed_reply(random.choice(calendar.day_name))
+	
 	@commands.command()
 	async def day(self, ctx):
 		"""Random day of week"""
-		await ctx.embed_reply(random.choice(calendar.day_name))
+		if command := ctx.bot.get_command("random day"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random day command not found when day command invoked"
+			)
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True)
-	async def dog(self, ctx, *, breed: Optional[str]):
+	@random.group(
+		name = "dog", case_insensitive = True, invoke_without_command = True
+	)
+	async def random_dog(self, ctx, *, breed: Optional[str]):
 		'''
 		Random image of a dog
 		[breed] [sub-breed] to specify a specific sub-breed
 		'''
+		# Note: dog command invokes this command
 		if breed:
 			url = f"https://dog.ceo/api/breed/{breed.lower().replace(' ', '/')}/images/random"
 			async with ctx.bot.aiohttp_session.get(url) as resp:
@@ -242,9 +399,23 @@ class Random(commands.GroupCog, group_name = "random"):
 				data = await resp.json()
 			await ctx.embed_reply(f"[:dog2:]({data['message']})", image_url = data["message"])
 	
-	@dog.command(name = "breeds", aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"])
-	async def dog_breeds(self, ctx):
+	@commands.group(case_insensitive = True, invoke_without_command = True)
+	async def dog(self, ctx, *, breed: Optional[str]):
+		"""
+		Random image of a dog
+		[breed] [sub-breed] to specify a specific sub-breed
+		"""
+		if command := ctx.bot.get_command("random dog"):
+			await ctx.invoke(command, breed = breed)
+		else:
+			raise RuntimeError(
+				"random dog command not found when dog command invoked"
+			)
+	
+	@random_dog.command(name = "breeds", aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"])
+	async def random_dog_breeds(self, ctx):
 		'''Breeds and sub-breeds of dogs for which images are categorized under'''
+		# Note: dog breeds command invokes this command
 		url = "https://dog.ceo/api/breeds/list/all"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
@@ -254,20 +425,50 @@ class Random(commands.GroupCog, group_name = "random"):
 										for breed, subs in breeds.items()), 
 								footer_text = "Sub-breeds are in parentheses after the corresponding breed")
 	
+	@dog.command(
+		name = "breeds",
+		aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"]
+	)
+	async def dog_breeds(self, ctx):
+		"""
+		Breeds and sub-breeds of dogs for which images are categorized under
+		"""
+		if command := ctx.bot.get_command("random dog breeds"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random dog breeds command not found "
+				"when dog breeds command invoked"
+			)
+	
+	@random.command(name = "emoji", aliases = ["emote"])
+	async def random_emoji(self, ctx):
+		"""Random emoji"""
+		# Note: emoji command invokes this command
+		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI["en"])))
+	
 	@commands.command(aliases = ["emote"])
 	async def emoji(self, ctx):
 		"""Random emoji"""
-		await ctx.embed_reply(random.choice(list(emoji.UNICODE_EMOJI["en"])))
+		if command := ctx.bot.get_command("random emoji"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random emoji command not found when emoji command invoked"
+			)
 	
 	@app_commands.command(name = "emoji")
 	async def slash_emoji(self, interaction):
 		"""Random emoji"""
 		ctx = await interaction.client.get_context(interaction)
-		await self.emoji(ctx)
+		await self.random_emoji(ctx)
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True)
-	async def fact(self, ctx):
+	@random.group(
+		name = "fact", case_insensitive = True, invoke_without_command = True
+	)
+	async def random_fact(self, ctx):
 		'''Random fact'''
+		# Note: fact command invokes this command
 		url = "https://mentalfloss.com/api/facts"
 		# params = {"limit": 1, "cb": random.random()}
 		# https://mentalfloss.com/amazingfactgenerator
@@ -284,6 +485,27 @@ class Random(commands.GroupCog, group_name = "random"):
 			image_url = data[0]["primaryImage"]
 		)
 	
+	@commands.group(case_insensitive = True, invoke_without_command = True)
+	async def fact(self, ctx):
+		"""Random fact"""
+		if command := ctx.bot.get_command("random fact"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random fact command not found when fact command invoked"
+			)
+	
+	@random_fact.command(name = "cat")
+	async def random_fact_cat(self, ctx):
+		"""Random fact about cats"""
+		if command := ctx.bot.get_command("random cat fact"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random cat fact command not found "
+				"when random fact cat command invoked"
+			)
+	
 	@fact.command(name = "cat")
 	async def fact_cat(self, ctx):
 		"""Random fact about cats"""
@@ -292,7 +514,22 @@ class Random(commands.GroupCog, group_name = "random"):
 		else:
 			raise RuntimeError(
 				"random cat fact command not found "
-				"when random fact cat command invoked"
+				"when fact cat command invoked"
+			)
+	
+	@random_fact.command(name = "date")
+	async def random_fact_date(self, ctx, date: str):
+		"""
+		Random fact about a date
+		Format: month/date
+		Example: 1/1
+		"""
+		if command := ctx.bot.get_command("random date fact"):
+			await ctx.invoke(command, date = date)
+		else:
+			raise RuntimeError(
+				"random date fact command not found "
+				"when random fact date command invoked"
 			)
 	
 	@fact.command(name = "date")
@@ -307,19 +544,31 @@ class Random(commands.GroupCog, group_name = "random"):
 		else:
 			raise RuntimeError(
 				"random date fact command not found "
-				"when random fact date command invoked"
+				"when fact date command invoked"
 			)
 	
-	@fact.command(name = "math")
-	async def fact_math(self, ctx, number: int):
+	@random_fact.command(name = "math")
+	async def random_fact_math(self, ctx, number: int):
 		'''Random math fact about a number'''
+		# Note: fact math command invokes this command
 		url = f"http://numbersapi.com/{number}/math"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
-	@fact.command(name = "number")
-	async def fact_number(self, ctx, number: int):
+	@fact.command(name = "math")
+	async def fact_math(self, ctx, number: int):
+		"""Random math fact about a number"""
+		if command := ctx.bot.get_command("random fact math"):
+			await ctx.invoke(command, number = number)
+		else:
+			raise RuntimeError(
+				"random fact math command not found "
+				"when fact math command invoked"
+			)
+	
+	@random_fact.command(name = "number")
+	async def random_fact_number(self, ctx, number: int):
 		"""Random fact about a number"""
 		if command := ctx.bot.get_command("random number fact"):
 			await ctx.invoke(command, number = number)
@@ -329,13 +578,36 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random fact number command invoked"
 			)
 	
-	@fact.command(name = "year")
-	async def fact_year(self, ctx, year: int):
+	@fact.command(name = "number")
+	async def fact_number(self, ctx, number: int):
+		"""Random fact about a number"""
+		if command := ctx.bot.get_command("random number fact"):
+			await ctx.invoke(command, number = number)
+		else:
+			raise RuntimeError(
+				"random number fact command not found "
+				"when fact number command invoked"
+			)
+	
+	@random_fact.command(name = "year")
+	async def random_fact_year(self, ctx, year: int):
 		'''Random fact about a year'''
+		# Note: fact year command invokes this command
 		url = f"http://numbersapi.com/{year}/year"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
+	
+	@fact.command(name = "year")
+	async def fact_year(self, ctx, year: int):
+		"""Random fact about a year"""
+		if command := ctx.bot.get_command("random fact year"):
+			await ctx.invoke(command, year = year)
+		else:
+			raise RuntimeError(
+				"random fact year command not found "
+				"when fact year command invoked"
+			)
 	
 	@random.command()
 	async def giphy(self, ctx):
@@ -348,17 +620,29 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random giphy command invoked"
 			)
 	
-	@commands.command()
-	async def idea(self, ctx):
+	@random.command(name = "idea")
+	async def random_idea(self, ctx):
 		'''Random idea'''
+		# Note: idea command invokes this command
 		url = "http://itsthisforthat.com/api.php"
 		async with ctx.bot.aiohttp_session.get(url, params = "json") as resp:
 			data = await resp.json(content_type = "text/javascript")
 		await ctx.embed_reply(f"{data['this']} for {data['that']}")
 	
 	@commands.command()
-	async def insult(self, ctx):
+	async def idea(self, ctx):
+		"""Random idea"""
+		if command := ctx.bot.get_command("random idea"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random idea command not found when idea command invoked"
+			)
+	
+	@random.command(name = "insult")
+	async def random_insult(self, ctx):
 		'''Random insult'''
+		# Note: insult command invokes this command
 		url = "http://quandyfactory.com/insult/json"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if resp.status == 500:
@@ -370,9 +654,22 @@ class Random(commands.GroupCog, group_name = "random"):
 			data = await resp.json()
 		await ctx.embed_reply(data["insult"])
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True)
-	async def joke(self, ctx):
+	@commands.command()
+	async def insult(self, ctx):
+		"""Random insult"""
+		if command := ctx.bot.get_command("random insult"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random insult command not found when insult command invoked"
+			)
+	
+	@random.group(
+		name = "joke", case_insensitive = True, invoke_without_command = True
+	)
+	async def random_joke(self, ctx):
 		'''Random joke'''
+		# Note: joke command invokes this command
 		# Sources:
 		# https://github.com/KiaFathi/tambalAPI
 		# https://www.kaggle.com/abhinavmoudgil95/short-jokes 
@@ -380,11 +677,22 @@ class Random(commands.GroupCog, group_name = "random"):
 		if self.jokes:
 			await ctx.embed_reply(random.choice(self.jokes))
 	
-	@joke.group(
+	@commands.group(case_insensitive = True, invoke_without_command = True)
+	async def joke(self, ctx):
+		"""Random joke"""
+		if command := ctx.bot.get_command("random joke"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random joke command not found when joke command invoked"
+			)
+	
+	@random_joke.group(
 		name = "dad", case_insensitive = True, invoke_without_command = True
 	)
-	async def joke_dad(self, ctx, joke_id: Optional[str]):
+	async def random_joke_dad(self, ctx, joke_id: Optional[str]):
 		'''Random dad joke'''
+		# Note: joke dad command invokes this command
 		# TODO: search, GraphQL?
 		url = "https://icanhazdadjoke.com/"
 		if joke_id:
@@ -405,9 +713,23 @@ class Random(commands.GroupCog, group_name = "random"):
 			data["joke"], footer_text = f"Joke ID: {data['id']}"
 		)
 	
-	@joke_dad.command(name = "image")
-	async def joke_dad_image(self, ctx, joke_id: Optional[str]):
+	@joke.group(
+		name = "dad", case_insensitive = True, invoke_without_command = True
+	)
+	async def joke_dad(self, ctx, joke_id: Optional[str]):
+		"""Random dad joke"""
+		if command := ctx.bot.get_command("random joke dad"):
+			await ctx.invoke(command, joke_id = joke_id)
+		else:
+			raise RuntimeError(
+				"random joke dad command not found "
+				"when joke dad command invoked"
+			)
+	
+	@random_joke_dad.command(name = "image")
+	async def random_joke_dad_image(self, ctx, joke_id: Optional[str]):
 		'''Random dad joke as an image'''
+		# Note: joke dad image command invokes this command
 		if not joke_id:
 			url = "https://icanhazdadjoke.com/"
 			headers = {
@@ -422,33 +744,91 @@ class Random(commands.GroupCog, group_name = "random"):
 			image_url = f"https://icanhazdadjoke.com/j/{joke_id}.png"
 		)
 	
-	@commands.command(aliases = ["lat"])
-	async def latitude(self, ctx):
+	@joke_dad.command(name = "image")
+	async def joke_dad_image(self, ctx, joke_id: Optional[str]):
+		"""Random dad joke as an image"""
+		if command := ctx.bot.get_command("random joke dad image"):
+			await ctx.invoke(command, joke_id = joke_id)
+		else:
+			raise RuntimeError(
+				"random joke dad image command not found "
+				"when joke dad image command invoked"
+			)
+	
+	@random.command(name = "laititude", aliases = ["lat"])
+	async def random_latitude(self, ctx):
 		"""Random latitude"""
+		# Note: latitude command invokes this command
 		await ctx.embed_reply(str(random.uniform(-90, 90)))
+	
+	@commands.command(aliases =["lat"])
+	async def laititude(self, ctx):
+		"""Random laititude"""
+		if command := ctx.bot.get_command("random laititude"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random laititude command not found "
+				"when laititude command invoked"
+			)
+	
+	@random.command(name = "letter")
+	async def random_letter(self, ctx):
+		"""Random letter"""
+		# Note: letter command invokes this command
+		await ctx.embed_reply(random.choice(string.ascii_uppercase))
 	
 	@commands.command()
 	async def letter(self, ctx):
 		"""Random letter"""
-		await ctx.embed_reply(random.choice(string.ascii_uppercase))
+		if command := ctx.bot.get_command("random letter"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random letter command not found when letter command invoked"
+			)
 	
 	@app_commands.command(name = "letter")
 	async def slash_letter(self, interaction):
 		"""Random letter"""
 		ctx = await interaction.client.get_context(interaction)
-		await self.letter(ctx)
+		await self.random_letter(ctx)
 	
-	@commands.command()
-	async def location(self, ctx):
+	@random.command(name = "location")
+	async def random_location(self, ctx):
 		"""Random location"""
+		# Note: location command invokes this command
 		await ctx.embed_reply(
 			f"{random.uniform(-90, 90)}, {random.uniform(-180, 180)}"
 		)
 	
+	@commands.command()
+	async def location(self, ctx):
+		"""Random location"""
+		if command := ctx.bot.get_command("random location"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random location command not found "
+				"when location command invoked"
+			)
+	
+	@random.command(name = "longitude", aliases = ["long"])
+	async def random_longitude(self, ctx):
+		"""Random longitude"""
+		# Note: longitude command invokes this command
+		await ctx.embed_reply(str(random.uniform(-180, 180)))
+	
 	@commands.command(aliases = ["long"])
 	async def longitude(self, ctx):
 		"""Random longitude"""
-		await ctx.embed_reply(str(random.uniform(-180, 180)))
+		if command := ctx.bot.get_command("random longitude"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random longitude command not found "
+				"when longitude command invoked"
+			)
 	
 	@random.command()
 	async def map(
@@ -468,15 +848,16 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random map command invoked"
 			)
 	
-	@commands.group(
-		aliases = ["rng"],
+	@random.group(
+		name = "number", aliases = ["rng"],
 		case_insensitive = True, invoke_without_command = True
 	)
-	async def number(self, ctx, number: int = 10):
+	async def random_number(self, ctx, number: int = 10):
 		'''
 		Random number
 		Default range is 1 to 10
 		'''
+		# Note: number command invokes this command
 		try:
 			await ctx.embed_reply(random.randint(1, number))
 		except ValueError:
@@ -484,14 +865,43 @@ class Random(commands.GroupCog, group_name = "random"):
 				f"{ctx.bot.error_emoji} Error: Input must be >= 1"
 			)
 	
-	@number.command(name = "fact")
-	async def number_fact(self, ctx, number: int):
+	@commands.group(
+		aliases = ["rng"],
+		case_insensitive = True, invoke_without_command = True
+	)
+	async def number(self, ctx, number: int = 10):
+		"""
+		Random number
+		Default range is 1 to 10
+		"""
+		if command := ctx.bot.get_command("random number"):
+			await ctx.invoke(command, number = number)
+		else:
+			raise RuntimeError(
+				"random number command not found when number command invoked"
+			)
+	
+	@random_number.command(name = "fact")
+	async def random_number_fact(self, ctx, number: int):
 		"""Random fact about a number"""
+		# Note: fact number command invokes this command
+		# Note: number fact command invokes this command
 		# Note: random fact number command invokes this command
 		url = f"http://numbersapi.com/{number}"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.text()
 		await ctx.embed_reply(data)
+	
+	@number.command(name = "fact")
+	async def number_fact(self, ctx, number: int):
+		"""Random fact about a number"""
+		if command := ctx.bot.get_command("random number fact"):
+			await ctx.invoke(command, number = number)
+		else:
+			raise RuntimeError(
+				"random number fact command not found "
+				"when number fact command invoked"
+			)
 	
 	@random.command(aliases = ["image"])
 	async def photo(self, ctx, *, query: Optional[str] = ""):
@@ -504,28 +914,30 @@ class Random(commands.GroupCog, group_name = "random"):
 				"when random photo command invoked"
 			)
 	
-	@commands.command(aliases = ["why"])
-	async def question(self, ctx):
+	@random.command(name = "question", aliases = ["why"])
+	async def random_question(self, ctx):
 		'''Random question'''
+		# Note: question command invokes this command
 		async with ctx.bot.aiohttp_session.get("http://xkcd.com/why.txt") as resp:
 			data = await resp.text()
 		questions = data.split('\n')
 		await ctx.embed_reply("{}?".format(random.choice(questions).capitalize()))
 	
-	@commands.command()
-	async def quote(self, ctx, message: Optional[discord.Message]):
-		'''Random quote or quote a message'''
-		# TODO: separate message quoting
-		# TODO: other options to quote by?
-		if message:
-			await ctx.embed_reply(
-				author_name = message.author.display_name,
-				author_icon_url = message.author.display_avatar.url,
-				description = message.content,
-				footer_text = "Sent", timestamp = message.created_at
+	@commands.command(aliases = ["why"])
+	async def question(self, ctx):
+		"""Random question"""
+		if command := ctx.bot.get_command("random question"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random question command not found "
+				"when question command invoked"
 			)
-			return
-		
+	
+	@random.command(name = "quote")
+	async def random_quote(self, ctx):
+		'''Random quote'''
+		# Note: quote command invokes this command
 		url = "http://api.forismatic.com/api/1.0/"
 		params = {"method": "getQuote", "format": "json", "lang": "en"}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
@@ -539,6 +951,24 @@ class Random(commands.GroupCog, group_name = "random"):
 			description = data["quoteText"],
 			footer_text = data["quoteAuthor"]
 		)  # TODO: quoteLink?
+	
+	@commands.command()
+	async def quote(self, ctx, message: Optional[discord.Message]):
+		"""Random quote or quote a message"""
+		# TODO: other options to quote by?
+		if message:
+			await ctx.embed_reply(
+				author_name = message.author.display_name,
+				author_icon_url = message.author.display_avatar.url,
+				description = message.content,
+				footer_text = "Sent", timestamp = message.created_at
+			)
+		elif command := ctx.bot.get_command("random quote"):
+			await ctx.invoke(command, message = message)
+		else:
+			raise RuntimeError(
+				"random quote command not found when quote command invoked"
+			)
 	
 	@random.command()
 	async def streetview(self, ctx, radius: int = 5_000_000):
@@ -594,12 +1024,23 @@ class Random(commands.GroupCog, group_name = "random"):
 				title_url = "https://wikipedia.org/wiki/Special:Random"
 			)
 	
-	@commands.command()
-	async def word(self, ctx):
+	@random.command(name = "word")
+	async def random_word(self, ctx):
 		"""Random word"""
+		# Note: word command invokes this command
 		await ctx.embed_reply(
 			ctx.bot.wordnik_words_api.getRandomWord().word
 		)
+	
+	@commands.command()
+	async def word(self, ctx):
+		"""Random word"""
+		if command := ctx.bot.get_command("random word"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"random word command not found when word command invoked"
+			)
 	
 	@app_commands.command(name = "word")
 	async def slash_word(self, interaction):
