@@ -687,19 +687,26 @@ class Random(commands.GroupCog, group_name = "random"):
 				"random joke command not found when joke command invoked"
 			)
 	
-	@random_joke.group(
-		name = "dad", case_insensitive = True, invoke_without_command = True
-	)
-	async def random_joke_dad(self, ctx, joke_id: Optional[str]):
+	@random_joke.command(name = "dad")
+	async def random_joke_dad(
+		self, ctx, image: Optional[bool] = False, joke_id: Optional[str] = None
+	):
 		'''Random dad joke'''
 		# Note: joke dad command invokes this command
 		# TODO: search, GraphQL?
+		if image and joke_id:
+			await ctx.embed_reply(
+				image_url = f"https://icanhazdadjoke.com/j/{joke_id}.png"
+			)
+			return
+		
 		url = "https://icanhazdadjoke.com/"
-		if joke_id:
-			url += "j/" + joke_id
 		headers = {
 			"Accept": "application/json", "User-Agent": ctx.bot.user_agent
 		}
+		
+		if joke_id:
+			url += "j/" + joke_id
 		async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
 			data = await resp.json()
 		
@@ -709,50 +716,26 @@ class Random(commands.GroupCog, group_name = "random"):
 			)
 			return
 		
-		await ctx.embed_reply(
-			data["joke"], footer_text = f"Joke ID: {data['id']}"
-		)
+		if image:
+			await ctx.embed_reply(
+				image_url = f"https://icanhazdadjoke.com/j/{data['id']}.png"
+			)
+		else:
+			await ctx.embed_reply(
+				data["joke"], footer_text = f"Joke ID: {data['id']}"
+			)
 	
-	@joke.group(
-		name = "dad", case_insensitive = True, invoke_without_command = True
-	)
-	async def joke_dad(self, ctx, joke_id: Optional[str]):
+	@joke.command(name = "dad")
+	async def joke_dad(
+		self, ctx, image: Optional[bool] = False, joke_id: Optional[str] = None
+	):
 		"""Random dad joke"""
 		if command := ctx.bot.get_command("random joke dad"):
-			await ctx.invoke(command, joke_id = joke_id)
+			await ctx.invoke(command, image = image, joke_id = joke_id)
 		else:
 			raise RuntimeError(
 				"random joke dad command not found "
 				"when joke dad command invoked"
-			)
-	
-	@random_joke_dad.command(name = "image")
-	async def random_joke_dad_image(self, ctx, joke_id: Optional[str]):
-		'''Random dad joke as an image'''
-		# Note: joke dad image command invokes this command
-		if not joke_id:
-			url = "https://icanhazdadjoke.com/"
-			headers = {
-				"Accept": "application/json", "User-Agent": ctx.bot.user_agent
-			}
-			async with ctx.bot.aiohttp_session.get(
-				url, headers = headers
-			) as resp:
-				data = await resp.json()
-			joke_id = data["id"]
-		await ctx.embed_reply(
-			image_url = f"https://icanhazdadjoke.com/j/{joke_id}.png"
-		)
-	
-	@joke_dad.command(name = "image")
-	async def joke_dad_image(self, ctx, joke_id: Optional[str]):
-		"""Random dad joke as an image"""
-		if command := ctx.bot.get_command("random joke dad image"):
-			await ctx.invoke(command, joke_id = joke_id)
-		else:
-			raise RuntimeError(
-				"random joke dad image command not found "
-				"when joke dad image command invoked"
 			)
 	
 	@random.command(name = "laititude", aliases = ["lat"])
