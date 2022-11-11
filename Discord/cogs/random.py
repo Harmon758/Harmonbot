@@ -1011,6 +1011,7 @@ class Random(commands.Cog):
 	async def random_word(self, ctx):
 		"""Random word"""
 		# Note: word command invokes this command
+		await ctx.defer()
 		await ctx.embed_reply(
 			ctx.bot.wordnik_words_api.getRandomWord().word
 		)
