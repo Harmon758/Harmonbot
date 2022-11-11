@@ -106,7 +106,7 @@ class Random(commands.Cog):
 	
 	@random.group(name = "cat", fallback = "image", case_insensitive = True)
 	async def random_cat(self, ctx, category: Optional[str]):
-		'''Random image of a cat'''
+		"""Random image of a cat"""
 		# Note: cat command invokes this command
 		url = "http://thecatapi.com/api/images/get"
 		params = {"format": "xml", "results_per_page": 1}
