@@ -600,7 +600,7 @@ async def giphy(ctx):
 	params = {"api_key": ctx.bot.GIPHY_API_KEY}
 	async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 		data = await resp.json()
-	await ctx.embed_reply(image_url = data["data"]["image_url"])
+	await ctx.embed_reply(image_url = data["data"]["images"]["original"]["url"])
 
 async def photo(ctx, *, query = ""):
 	'''Random photo from Unsplash'''
