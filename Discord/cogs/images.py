@@ -90,43 +90,6 @@ class Images(commands.Cog):
 					for color in sorted(response.outputs[0].data.colors, key = lambda c: c.value, reverse = True)]
 		await ctx.embed_reply(title = "Color Density", fields = fields, thumbnail_url = image_url)
 	
-	async def google(self, ctx, *, search: str):
-		'''Google image search something'''
-		url = "https://www.googleapis.com/customsearch/v1"
-		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
-					"searchType": "image", 'q': search, "num": 1, "safe": "active"}
-		# TODO: Option to disable SafeSearch
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			if resp.status == 403:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Daily limit exceeded")
-			data = await resp.json()
-		if "items" not in data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No images with that search found")
-		await ctx.embed_reply(image_url = data["items"][0]["link"], 
-								title = f"Image of {search}", 
-								title_url = data["items"][0]["link"])
-		# TODO: handle 403 daily limit exceeded error
-	
-	@image.command(name = "recognition")
-	async def image_recognition(self, ctx, image_url: Optional[str]):
-		'''Image recognition'''
-		if not image_url:
-			if not ctx.message.attachments:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Please input an image and/or url")
-			image_url = ctx.message.attachments[0].url
-		response = ctx.bot.clarifai_stub.PostModelOutputs(
-			service_pb2.PostModelOutputsRequest(
-				model_id = CLARIFAI_GENERAL_MODEL_ID, 
-				inputs = [resources_pb2.Input(data=resources_pb2.Data(image=resources_pb2.Image(url = image_url)))]
-			), metadata = (("authorization", f"Key {ctx.bot.CLARIFAI_API_KEY}"),)
-		)
-		if response.status.code != status_code_pb2.SUCCESS:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}")
-		output = ", ".join(f"**{concept.name}**: {concept.value * 100:.2f}%"
-							for concept in sorted(response.outputs[0].data.concepts, 
-													key = lambda c: c.value, reverse = True))
-		await ctx.embed_reply(output, thumbnail_url = image_url)
-	
 	# TODO: add as search subcommand
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def giphy(self, ctx, *, search: str):
@@ -156,10 +119,38 @@ class Images(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
+	async def google(self, ctx, *, search: str):
+		'''Google image search something'''
+		url = "https://www.googleapis.com/customsearch/v1"
+		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
+					"searchType": "image", 'q': search, "num": 1, "safe": "active"}
+		# TODO: Option to disable SafeSearch
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			if resp.status == 403:
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Daily limit exceeded")
+			data = await resp.json()
+		if "items" not in data:
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No images with that search found")
+		await ctx.embed_reply(image_url = data["items"][0]["link"], 
+								title = f"Image of {search}", 
+								title_url = data["items"][0]["link"])
+		# TODO: handle 403 daily limit exceeded error
+	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def imgur(self, ctx):
 		'''Imgur'''
 		await ctx.send_help(ctx.command)
+	
+	async def imgur_search(self, ctx, *, search: str):
+		'''Search images on Imgur'''
+		if not (result := self.bot.imgur_client.gallery_search(search, sort = "top")):
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
+		result = result[0]
+		if result.is_album:
+			result = self.bot.imgur_client.get_album(result.id).images[0]
+			await ctx.embed_reply(image_url = result["link"])
+		else:
+			await ctx.embed_reply(image_url = result.link)
 	
 	@imgur.command(name = "upload")
 	async def imgur_upload(self, ctx, url: str = ""):
@@ -172,16 +163,25 @@ class Images(commands.Cog):
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
-	async def imgur_search(self, ctx, *, search: str):
-		'''Search images on Imgur'''
-		if not (result := self.bot.imgur_client.gallery_search(search, sort = "top")):
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
-		result = result[0]
-		if result.is_album:
-			result = self.bot.imgur_client.get_album(result.id).images[0]
-			await ctx.embed_reply(image_url = result["link"])
-		else:
-			await ctx.embed_reply(image_url = result.link)
+	@image.command(name = "recognition")
+	async def image_recognition(self, ctx, image_url: Optional[str]):
+		'''Image recognition'''
+		if not image_url:
+			if not ctx.message.attachments:
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Please input an image and/or url")
+			image_url = ctx.message.attachments[0].url
+		response = ctx.bot.clarifai_stub.PostModelOutputs(
+			service_pb2.PostModelOutputsRequest(
+				model_id = CLARIFAI_GENERAL_MODEL_ID, 
+				inputs = [resources_pb2.Input(data=resources_pb2.Data(image=resources_pb2.Image(url = image_url)))]
+			), metadata = (("authorization", f"Key {ctx.bot.CLARIFAI_API_KEY}"),)
+		)
+		if response.status.code != status_code_pb2.SUCCESS:
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}")
+		output = ", ".join(f"**{concept.name}**: {concept.value * 100:.2f}%"
+							for concept in sorted(response.outputs[0].data.concepts, 
+													key = lambda c: c.value, reverse = True))
+		await ctx.embed_reply(output, thumbnail_url = image_url)
 	
 	@commands.command()
 	async def nsfw(self, ctx, image_url: Optional[str]):
