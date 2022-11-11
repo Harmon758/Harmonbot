@@ -44,7 +44,6 @@ class Random(commands.GroupCog, group_name = "random"):
 				self.random.add_command(command)
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_commands = (
-			(color, "Resources", "color", ["colour"]), 
 			(giphy, "Images", "giphy", []), 
 			(photo, "Images", "image", ["image"]), 
 			(uesp, "Search", "uesp", []), 
@@ -160,6 +159,17 @@ class Random(commands.GroupCog, group_name = "random"):
 	async def coin(self, ctx):
 		'''Flip a coin'''
 		await ctx.embed_reply(random.choice(("Heads!", "Tails!")))
+	
+	@random.command(aliases = ["colour"])
+	async def color(self, ctx):
+		"""Information on a random color"""
+		if command := ctx.bot.get_command("color random"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"color random command not found "
+				"when random color command invoked"
+			)
 	
 	@commands.command()
 	async def command(self, ctx):
@@ -583,13 +593,6 @@ class Random(commands.GroupCog, group_name = "random"):
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 
-
-async def color(ctx):
-	'''Information on a random color'''
-	url = "http://www.colourlovers.com/api/colors/random"
-	params = {"numResults": 1}
-	if cog := ctx.bot.get_cog("Resources"):
-		await cog.process_color(ctx, url, params)
 
 async def giphy(ctx):
 	'''Random gif from giphy'''

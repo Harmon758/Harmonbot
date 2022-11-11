@@ -64,6 +64,15 @@ class Resources(commands.Cog):
 		# TODO: Random color when no input
 		# TODO: Allow explicit keyword search, to fix ambiguity for hex vs keyword, e.g. fab
 	
+	@color.command(name = "random")
+	@checks.not_forbidden()
+	async def color_random(self, ctx):
+		'''Information on a random color'''
+		# Note: random color command invokes this command
+		url = "http://www.colourlovers.com/api/colors/random"
+		params = {"numResults": 1}
+		await self.process_color(ctx, url, params)
+	
 	async def process_color(self, ctx, url, params = None):
 		if params is None:
 			params = {}
