@@ -293,6 +293,7 @@ class Search(commands.GroupCog, group_name = "search"):
 	async def wikipedia_random(self, ctx):
 		'''Random Wikipedia article'''
 		# Note: random wikipedia command invokes this command
+		await ctx.defer()
 		await self.process_wiki(ctx, "https://en.wikipedia.org/w/api.php", None, random = True)
 	
 	@app_commands.command(name = "wikipedia")
