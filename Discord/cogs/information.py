@@ -40,7 +40,6 @@ class Information(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		super().__init__()
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
