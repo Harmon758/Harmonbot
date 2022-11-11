@@ -44,7 +44,6 @@ class Random(commands.GroupCog, group_name = "random"):
 				self.random.add_command(command)
 		# Add random subcommands as subcommands of corresponding commands
 		self.random_commands = (
-			(giphy, "Images", "giphy", []), 
 			(photo, "Images", "image", ["image"]), 
 			(uesp, "Search", "uesp", []), 
 			(wikipedia, "Search", "wikipedia", ["wiki"])
@@ -355,6 +354,17 @@ class Random(commands.GroupCog, group_name = "random"):
 			data = await resp.text()
 		await ctx.embed_reply(data)
 	
+	@random.command()
+	async def giphy(self, ctx):
+		"""Random gif from giphy"""
+		if command := ctx.bot.get_command("giphy random"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"giphy random command not found "
+				"when random giphy command invoked"
+			)
+	
 	@commands.command()
 	async def idea(self, ctx):
 		'''Random idea'''
@@ -593,14 +603,6 @@ class Random(commands.GroupCog, group_name = "random"):
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 
-
-async def giphy(ctx):
-	'''Random gif from giphy'''
-	url = "http://api.giphy.com/v1/gifs/random"
-	params = {"api_key": ctx.bot.GIPHY_API_KEY}
-	async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-		data = await resp.json()
-	await ctx.embed_reply(image_url = data["data"]["images"]["original"]["url"])
 
 async def photo(ctx, *, query = ""):
 	'''Random photo from Unsplash'''
