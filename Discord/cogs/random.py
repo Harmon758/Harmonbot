@@ -945,7 +945,7 @@ class Random(commands.Cog):
 				footer_text = "Sent", timestamp = message.created_at
 			)
 		elif command := ctx.bot.get_command("random quote"):
-			await ctx.invoke(command, message = message)
+			await ctx.invoke(command)
 		else:
 			raise RuntimeError(
 				"random quote command not found when quote command invoked"
