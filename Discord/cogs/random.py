@@ -162,7 +162,7 @@ class Random(commands.Cog):
 	
 	@random_cat.command(name = "fact")
 	async def random_cat_fact(self, ctx):
-		'''Random fact about cats'''
+		"""Random fact about cats"""
 		# Note: cat fact command invokes this command
 		# Note: fact cat command invokes this command
 		# Note: random fact cat command invokes this command
