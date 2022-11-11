@@ -274,7 +274,7 @@ class Random(commands.Cog):
 			input = 'd' + input
 		with multiprocessing.Pool(1) as pool:
 			async_result = pool.apply_async(dice.roll, (input,))
-			future = self.bot.loop.run_in_executor(None, async_result.get, 10.0)
+			future = ctx.bot.loop.run_in_executor(None, async_result.get, 10.0)
 			try:
 				result = await asyncio.wait_for(future, 10.0)
 				if isinstance(result, int):
