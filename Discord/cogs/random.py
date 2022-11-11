@@ -967,7 +967,7 @@ class Random(commands.Cog):
 				"when random streetview command invoked"
 			)
 	
-	@random.command(with_app_command = False)
+	@random.command()
 	async def time(self, ctx):
 		"""Random time"""
 		# Note: time random command invokes this command
