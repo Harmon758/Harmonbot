@@ -919,6 +919,7 @@ class Random(commands.Cog):
 	async def random_quote(self, ctx):
 		"""Random quote"""
 		# Note: quote command invokes this command
+		await ctx.defer()
 		async with ctx.bot.aiohttp_session.get(
 			"http://api.forismatic.com/api/1.0/",
 			params = {"method": "getQuote", "format": "json", "lang": "en"}
