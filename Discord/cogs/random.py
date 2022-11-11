@@ -104,9 +104,7 @@ class Random(commands.Cog):
 				"random card command not found when card command invoked"
 			)
 	
-	@random.group(
-		name = "cat", case_insensitive = True, with_app_command = False
-	)
+	@random.group(name = "cat", case_insensitive = True)
 	async def random_cat(self, ctx, category: Optional[str]):
 		'''Random image of a cat'''
 		# Note: cat command invokes this command
@@ -162,7 +160,7 @@ class Random(commands.Cog):
 				"when cat categories command invoked"
 			)
 	
-	@random_cat.command(name = "fact", with_app_command = False)
+	@random_cat.command(name = "fact")
 	async def random_cat_fact(self, ctx):
 		'''Random fact about cats'''
 		# Note: cat fact command invokes this command
