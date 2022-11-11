@@ -242,7 +242,7 @@ class Random(commands.Cog):
 	async def random_command(self, ctx):
 		'''Random command'''
 		# Note: command command invokes this command
-		await ctx.embed_reply(f"{ctx.prefix}{random.choice(tuple(set(command.name for command in self.bot.commands)))}")
+		await ctx.embed_reply(f"{ctx.prefix}{random.choice(tuple(set(command.name for command in ctx.bot.commands)))}")
 	
 	@commands.command()
 	async def command(self, ctx):
