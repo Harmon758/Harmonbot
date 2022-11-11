@@ -108,11 +108,12 @@ class Random(commands.Cog):
 	async def random_cat(self, ctx, category: Optional[str]):
 		"""Random image of a cat"""
 		# Note: cat command invokes this command
-		url = "http://thecatapi.com/api/images/get"
-		params = {"format": "xml", "results_per_page": 1}
-		if category:
-			params["category"] = category
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://thecatapi.com/api/images/get",
+			params = {"format": "xml", "results_per_page": 1} | (
+				{"category": category} if category else {}
+			)
+		) as resp:
 			data = await resp.text()
 		try:
 			if (
@@ -126,7 +127,8 @@ class Random(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 		else:
 			await ctx.embed_reply(
-				f"[\N{CAT FACE}]({url.text})", image_url = url.text
+				description = f"[\N{CAT FACE}]({url.text})",
+				image_url = url.text
 			)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
