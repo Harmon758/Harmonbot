@@ -403,12 +403,16 @@ class Random(commands.Cog):
 			if data["status"] == "error":
 				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
 				return
-			await ctx.embed_reply(f"[\N{DOG}]({data['message']})", image_url = data["message"])
+			await ctx.embed_reply(
+				f"[\N{DOG}]({data['message']})", image_url = data["message"]
+			)
 		else:
 			url = "https://dog.ceo/api/breeds/image/random"
 			async with ctx.bot.aiohttp_session.get(url) as resp:
 				data = await resp.json()
-			await ctx.embed_reply(f"[\N{DOG}]({data['message']})", image_url = data["message"])
+			await ctx.embed_reply(
+				f"[\N{DOG}]({data['message']})", image_url = data["message"]
+			)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def dog(self, ctx, *, breed: Optional[str]):
