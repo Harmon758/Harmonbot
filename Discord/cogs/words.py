@@ -192,7 +192,7 @@ class Words(commands.Cog):
 
     @commands.command()
     async def spellcheck(self, ctx, *words: str):
-        '''Check the spelling of words'''
+        """Check the spelling of words"""
         checker = spellchecker.SpellChecker()
         if len(words) == 1:
             candidates = checker.candidates(words[0])
