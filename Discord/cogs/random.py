@@ -321,13 +321,13 @@ class Random(commands.Cog):
 
     @random.command(name = "day", with_app_command = False)
     async def random_day(self, ctx):
-        """Random day of week"""
+        """Random day of the week"""
         # Note: day command invokes this command
         await ctx.embed_reply(random.choice(calendar.day_name))
 
     @commands.command()
     async def day(self, ctx):
-        """Random day of week"""
+        """Random day of the week"""
         if command := ctx.bot.get_command("random day"):
             await ctx.invoke(command)
         else:
