@@ -43,7 +43,7 @@ class Context(commands.Context):
 		author_name = "", author_url = None, author_icon_url = None,
 		image_url = None, thumbnail_url = None, footer_text = None,
 		footer_icon_url = None, timestamp = None, fields = [], color = None,
-		**kwargs
+		embeds = [], **kwargs
 	):
 		embed = discord.Embed(
 			title = title, url = title_url, timestamp = timestamp,
@@ -74,11 +74,15 @@ class Context(commands.Context):
 				"embed_links", None
 			)
 		):
-			return await self.send(*args, embed = embed, **kwargs)
+			if embeds:
+				embeds.insert(0, embed)
+				return await self.send(*args, embeds = embeds, **kwargs)
+			else:
+				return await self.send(*args, embed = embed, **kwargs)
 		elif (
 			not (
 				title or title_url or image_url or thumbnail_url or
-				footer_icon_url or timestamp or fields
+				footer_icon_url or timestamp or fields or embeds
 			) and (
 				not footer_text or footer_text.startswith("In response to")
 			)
