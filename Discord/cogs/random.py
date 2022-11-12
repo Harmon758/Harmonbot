@@ -465,17 +465,24 @@ class Random(commands.Cog):
         Breeds and sub-breeds of dogs for which images are categorized under
         """
         # Note: dog breeds command invokes this command
-        url = "https://dog.ceo/api/breeds/list/all"
-        async with ctx.bot.aiohttp_session.get(url) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "https://dog.ceo/api/breeds/list/all"
+        ) as resp:
             data = await resp.json()
+
         breeds = data["message"]
+        description = ""
+        for breed, sub_breeds in breeds.items():
+            description += f", **{breed.capitalize()}**"
+            if sub_breeds:
+                sub_breeds = ', '.join(
+                    sub_breed.capitalize() for sub_breed in sub_breeds
+                )
+                description += f" ({sub_breeds})"
+        description = description[2:]
+
         await ctx.embed_reply(
-            ", ".join(
-                f"**{breed.capitalize()}** "
-                f"({', '.join(sub.capitalize() for sub in subs)})"
-                if subs else f"**{breed.capitalize()}**"
-                for breed, subs in breeds.items()
-            ),
+            description = description,
             footer_text = (
                 "Sub-breeds are in parentheses after the corresponding breed"
             )
