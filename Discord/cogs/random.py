@@ -319,7 +319,7 @@ class Random(commands.Cog):
                 "when date fact command invoked"
             )
 
-    @random.command(name = "day", with_app_command = False)
+    @random.command(name = "day")
     async def random_day(self, ctx):
         """Random day of the week"""
         # Note: day command invokes this command
