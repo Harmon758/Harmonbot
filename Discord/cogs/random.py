@@ -324,7 +324,7 @@ class Random(commands.Cog):
         name = "date", case_insensitive = True, with_app_command = False
     )
     async def random_date(self, ctx):
-        '''Random date'''
+        """Random date"""
         # Note: date command invokes this command
         await ctx.embed_reply(
             datetime.date.fromordinal(
