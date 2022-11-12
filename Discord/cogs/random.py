@@ -321,7 +321,7 @@ class Random(commands.Cog):
             )
 
     @random.group(
-        name = "date", case_insensitive = True, with_app_command = False
+        name = "date", fallback = "generation", case_insensitive = True
     )
     async def random_date(self, ctx):
         """Random date"""
