@@ -457,10 +457,7 @@ class Random(commands.Cog):
 	
 	@random_dog.command(
 		name = "breeds",
-		aliases = [
-			"breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"
-		],
-		with_app_command = False
+		aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"]
 	)
 	async def random_dog_breeds(self, ctx):
 		"""
