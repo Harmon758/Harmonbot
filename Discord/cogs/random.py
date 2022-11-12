@@ -455,18 +455,33 @@ class Random(commands.Cog):
 				"random dog command not found when dog command invoked"
 			)
 	
-	@random_dog.command(name = "breeds", aliases = ["breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"], with_app_command = False)
+	@random_dog.command(
+		name = "breeds",
+		aliases = [
+			"breed", "subbreeds", "subbreed", "sub-breeds", "sub-breed"
+		],
+		with_app_command = False
+	)
 	async def random_dog_breeds(self, ctx):
-		'''Breeds and sub-breeds of dogs for which images are categorized under'''
+		'''
+		Breeds and sub-breeds of dogs for which images are categorized under
+		'''
 		# Note: dog breeds command invokes this command
 		url = "https://dog.ceo/api/breeds/list/all"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			data = await resp.json()
 		breeds = data["message"]
-		await ctx.embed_reply(", ".join(f"**{breed.capitalize()}** ({', '.join(sub.capitalize() for sub in subs)})" if subs 
-										else f"**{breed.capitalize()}**"
-										for breed, subs in breeds.items()), 
-								footer_text = "Sub-breeds are in parentheses after the corresponding breed")
+		await ctx.embed_reply(
+			", ".join(
+				f"**{breed.capitalize()}** "
+				f"({', '.join(sub.capitalize() for sub in subs)})"
+				if subs else f"**{breed.capitalize()}**"
+				for breed, subs in breeds.items()
+			), 
+			footer_text = (
+				"Sub-breeds are in parentheses after the corresponding breed"
+			)
+		)
 	
 	@dog.command(
 		name = "breeds",
