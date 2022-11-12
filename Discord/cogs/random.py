@@ -390,15 +390,25 @@ class Random(commands.Cog):
 			)
 	
 	@random.group(name = "dog", fallback = "image", case_insensitive = True)
-	async def random_dog(self, ctx, *, breed: Optional[str]):
+	async def random_dog(
+		self, ctx, breed: Optional[str], sub_breed: Optional[str]
+	):
 		'''
 		Random image of a dog
-		[breed] [sub-breed] to specify a specific sub-breed
+		
+		Parameters
+		----------
+		breed
+			Breed of dog to display image of
+		sub_breed
+			Sub-breed of dog to display image of
+			(This is ignored if breed isn't specified)
 		'''
 		# Note: dog command invokes this command
 		if breed:
 			async with ctx.bot.aiohttp_session.get(
-				f"https://dog.ceo/api/breed/{breed.lower().replace(' ', '/')}/images/random"
+				f"https://dog.ceo/api/breed/{breed.lower()}"
+				f"{'/' + sub_breed.lower() if sub_breed else ''}/images/random"
 			) as resp:
 				data = await resp.json()
 			
@@ -422,13 +432,20 @@ class Random(commands.Cog):
 			)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
-	async def dog(self, ctx, *, breed: Optional[str]):
+	async def dog(self, ctx, breed: Optional[str], sub_breed: Optional[str]):
 		"""
 		Random image of a dog
-		[breed] [sub-breed] to specify a specific sub-breed
+		
+		Parameters
+		----------
+		breed
+			Breed of dog to display image of
+		sub_breed
+			Sub-breed of dog to display image of
+			(This is ignored if breed isn't specified)
 		"""
 		if command := ctx.bot.get_command("random dog"):
-			await ctx.invoke(command, breed = breed)
+			await ctx.invoke(command, breed = breed, sub_breed = sub_breed)
 		else:
 			raise RuntimeError(
 				"random dog command not found when dog command invoked"
