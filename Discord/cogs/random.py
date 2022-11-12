@@ -466,6 +466,7 @@ class Random(commands.Cog):
         Breeds and sub-breeds of dogs for which images are categorized under
         """
         # Note: dog breeds command invokes this command
+        await ctx.defer()
         async with ctx.bot.aiohttp_session.get(
             "https://dog.ceo/api/breeds/list/all"
         ) as resp:
