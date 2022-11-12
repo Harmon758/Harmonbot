@@ -190,7 +190,7 @@ class Words(commands.Cog):
             description = ", ".join(rhymes[0].words)
         )
 
-    @commands.command()
+    @commands.command(require_var_positional = True)
     async def spellcheck(self, ctx, *words: str):
         """Check the spelling of words"""
         checker = spellchecker.SpellChecker()
