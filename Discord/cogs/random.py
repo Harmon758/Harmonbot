@@ -408,6 +408,7 @@ class Random(commands.Cog):
             (This is ignored if breed isn't specified)
         """
         # Note: dog command invokes this command
+        await ctx.defer()
         if breed:
             async with ctx.bot.aiohttp_session.get(
                 f"https://dog.ceo/api/breed/{breed.lower()}"
