@@ -264,62 +264,6 @@ class Random(commands.Cog):
                 "random command command not found when command command invoked"
             )
 
-    @random.command(
-        name = "dice", aliases = ["die", "roll"], with_app_command = False
-    )
-    async def random_dice(self, ctx, *, input: str = '6'):
-        '''
-        Roll dice
-        Inputs:                                      Examples:
-        S     |  S - number of sides (default is 6)  [6      | 12]
-        AdS   |  A - amount (default is 1)           [5d6    | 2d10]
-        AdSt  |  t - return total                    [2d6t   | 20d5t]
-        AdSs  |  s - return sorted                   [4d6s   | 5d8s]
-        AdS^H | ^H - return highest H rolls          [10d6^4 | 2d7^1]
-        AdSvL | vL - return lowest L rolls           [15d7v2 | 8d9v2]
-        '''
-        # Note: dice command invokes this command
-        # TODO: Add documentation on arithmetic/basic integer operations
-        if 'd' not in input:
-            input = 'd' + input
-        with multiprocessing.Pool(1) as pool:
-            async_result = pool.apply_async(dice.roll, (input,))
-            future = ctx.bot.loop.run_in_executor(None, async_result.get, 10.0)
-            try:
-                result = await asyncio.wait_for(future, 10.0)
-                if isinstance(result, int):
-                    await ctx.embed_reply(result)
-                else:
-                    await ctx.embed_reply(", ".join(str(roll) for roll in result))
-            except discord.HTTPException:
-                # TODO: use textwrap/paginate
-                await ctx.embed_reply(":no_entry: Output too long")
-            except pyparsing.ParseException:
-                await ctx.embed_reply(":no_entry: Invalid input")
-            except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
-                await ctx.embed_reply(":no_entry: Execution exceeded time limit")
-            except dice.DiceFatalException as e:
-                await ctx.embed_reply(f":no_entry: Error: {e}")
-
-    @commands.command(aliases = ["die", "roll"])
-    async def dice(self, ctx, *, input: str = '6'):
-        """
-        Roll dice
-        Inputs:                                      Examples:
-        S     |  S - number of sides (default is 6)  [6      | 12]
-        AdS   |  A - amount (default is 1)           [5d6    | 2d10]
-        AdSt  |  t - return total                    [2d6t   | 20d5t]
-        AdSs  |  s - return sorted                   [4d6s   | 5d8s]
-        AdS^H | ^H - return highest H rolls          [10d6^4 | 2d7^1]
-        AdSvL | vL - return lowest L rolls           [15d7v2 | 8d9v2]
-        """
-        if command := ctx.bot.get_command("random dice"):
-            await ctx.invoke(command, input = input)
-        else:
-            raise RuntimeError(
-                "random dice command not found when dice command invoked"
-            )
-
     @random.group(
         name = "date", fallback = "generation", case_insensitive = True
     )
@@ -389,6 +333,62 @@ class Random(commands.Cog):
         else:
             raise RuntimeError(
                 "random day command not found when day command invoked"
+            )
+
+    @random.command(
+        name = "dice", aliases = ["die", "roll"], with_app_command = False
+    )
+    async def random_dice(self, ctx, *, input: str = '6'):
+        '''
+        Roll dice
+        Inputs:                                      Examples:
+        S     |  S - number of sides (default is 6)  [6      | 12]
+        AdS   |  A - amount (default is 1)           [5d6    | 2d10]
+        AdSt  |  t - return total                    [2d6t   | 20d5t]
+        AdSs  |  s - return sorted                   [4d6s   | 5d8s]
+        AdS^H | ^H - return highest H rolls          [10d6^4 | 2d7^1]
+        AdSvL | vL - return lowest L rolls           [15d7v2 | 8d9v2]
+        '''
+        # Note: dice command invokes this command
+        # TODO: Add documentation on arithmetic/basic integer operations
+        if 'd' not in input:
+            input = 'd' + input
+        with multiprocessing.Pool(1) as pool:
+            async_result = pool.apply_async(dice.roll, (input,))
+            future = ctx.bot.loop.run_in_executor(None, async_result.get, 10.0)
+            try:
+                result = await asyncio.wait_for(future, 10.0)
+                if isinstance(result, int):
+                    await ctx.embed_reply(result)
+                else:
+                    await ctx.embed_reply(", ".join(str(roll) for roll in result))
+            except discord.HTTPException:
+                # TODO: use textwrap/paginate
+                await ctx.embed_reply(":no_entry: Output too long")
+            except pyparsing.ParseException:
+                await ctx.embed_reply(":no_entry: Invalid input")
+            except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
+                await ctx.embed_reply(":no_entry: Execution exceeded time limit")
+            except dice.DiceFatalException as e:
+                await ctx.embed_reply(f":no_entry: Error: {e}")
+
+    @commands.command(aliases = ["die", "roll"])
+    async def dice(self, ctx, *, input: str = '6'):
+        """
+        Roll dice
+        Inputs:                                      Examples:
+        S     |  S - number of sides (default is 6)  [6      | 12]
+        AdS   |  A - amount (default is 1)           [5d6    | 2d10]
+        AdSt  |  t - return total                    [2d6t   | 20d5t]
+        AdSs  |  s - return sorted                   [4d6s   | 5d8s]
+        AdS^H | ^H - return highest H rolls          [10d6^4 | 2d7^1]
+        AdSvL | vL - return lowest L rolls           [15d7v2 | 8d9v2]
+        """
+        if command := ctx.bot.get_command("random dice"):
+            await ctx.invoke(command, input = input)
+        else:
+            raise RuntimeError(
+                "random dice command not found when dice command invoked"
             )
 
     @random.group(name = "dog", fallback = "image", case_insensitive = True)
