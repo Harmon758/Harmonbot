@@ -195,10 +195,36 @@ class Words(commands.Cog):
         '''Check the spelling of words'''
         checker = spellchecker.SpellChecker()
         if len(words) == 1:
-            await ctx.embed_reply(", ".join(checker.candidates(words[0])))
+            candidates = checker.candidates(words[0])
+            if candidates:
+                await ctx.embed_reply(", ".join(candidates))
+            else:
+                await ctx.embed_reply(
+                    f"{ctx.bot.error_emoji} No candidate spellings found"
+                )
         else:
+            corrected_output = ""
+            corrected_words = ""
+            for word in words:
+                correction = checker.correction(word)
+                if correction:
+                    corrected_output += correction + ' '
+                    if correction != word:
+                        corrected_words += f"{word} -> {correction}\n"
+                else:
+                    corrected_output += word + ' '
+                    corrected_words += (
+                        f"No candidate spelling found for \"{word}\"\n"
+                    )
             await ctx.embed_reply(
-                ' '.join(checker.correction(word) for word in words)
+                description = corrected_output[:-1],
+                footer_text = None,
+                embeds = [
+                    discord.Embed(
+                        color = ctx.bot.bot_color,
+                        description = corrected_words[:-1]
+                    )
+                ]
             )
 
     @commands.hybrid_command(aliases = ["synonym"])
