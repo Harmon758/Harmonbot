@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import asyncio
@@ -390,6 +391,7 @@ class Random(commands.Cog):
 			)
 	
 	@random.group(name = "dog", fallback = "image", case_insensitive = True)
+	@app_commands.rename(sub_breed = "sub-breed")
 	async def random_dog(
 		self, ctx, breed: Optional[str], sub_breed: Optional[str]
 	):
