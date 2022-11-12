@@ -393,7 +393,7 @@ class Random(commands.Cog):
 	async def random_dog(
 		self, ctx, breed: Optional[str], sub_breed: Optional[str]
 	):
-		'''
+		"""
 		Random image of a dog
 		
 		Parameters
@@ -403,7 +403,7 @@ class Random(commands.Cog):
 		sub_breed
 			Sub-breed of dog to display image of
 			(This is ignored if breed isn't specified)
-		'''
+		"""
 		# Note: dog command invokes this command
 		if breed:
 			async with ctx.bot.aiohttp_session.get(
