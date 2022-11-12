@@ -463,9 +463,9 @@ class Random(commands.Cog):
 		with_app_command = False
 	)
 	async def random_dog_breeds(self, ctx):
-		'''
+		"""
 		Breeds and sub-breeds of dogs for which images are categorized under
-		'''
+		"""
 		# Note: dog breeds command invokes this command
 		url = "https://dog.ceo/api/breeds/list/all"
 		async with ctx.bot.aiohttp_session.get(url) as resp:
