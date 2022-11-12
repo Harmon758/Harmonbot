@@ -389,9 +389,7 @@ class Random(commands.Cog):
 				"random day command not found when day command invoked"
 			)
 	
-	@random.group(
-		name = "dog", case_insensitive = True, with_app_command = False
-	)
+	@random.group(name = "dog", fallback = "image", case_insensitive = True)
 	async def random_dog(self, ctx, *, breed: Optional[str]):
 		'''
 		Random image of a dog
