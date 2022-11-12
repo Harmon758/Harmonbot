@@ -413,7 +413,9 @@ class Random(commands.Cog):
 				data = await resp.json()
 			
 			if data["status"] == "error":
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: {data['message']}"
+				)
 				return
 			
 			await ctx.embed_reply(
