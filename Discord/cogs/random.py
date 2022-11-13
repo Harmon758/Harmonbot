@@ -527,13 +527,14 @@ class Random(commands.Cog):
     async def random_fact(self, ctx):
         '''Random fact'''
         # Note: fact command invokes this command
-        url = "https://facts-service.mmsport.voltaxservices.io/widget/properties/mentalfloss/random-facts"
-        params = {"limit": 1}
-        async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "https://facts-service.mmsport.voltaxservices.io/widget/properties/mentalfloss/random-facts",
+            params = {"limit": 1}
+        ) as resp:
             data = await resp.json()
         data = data["data"][0]
         await ctx.embed_reply(
-            data["body"],
+            description = data["body"],
             image_url = data["image"]["value"]["url"]
         )
 
