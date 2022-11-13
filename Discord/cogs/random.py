@@ -525,7 +525,7 @@ class Random(commands.Cog):
         name = "fact", case_insensitive = True, with_app_command = False
     )
     async def random_fact(self, ctx):
-        '''Random fact'''
+        """Random fact"""
         # Note: fact command invokes this command
         async with ctx.bot.aiohttp_session.get(
             "https://facts-service.mmsport.voltaxservices.io/widget/properties/mentalfloss/random-facts",
