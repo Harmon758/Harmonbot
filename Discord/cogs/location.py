@@ -209,13 +209,18 @@ class Location(commands.Cog):
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
 		url = "https://maps.googleapis.com/maps/api/staticmap"
-		params = {"center": f"{latitude},{longitude}", "zoom": zoom, "maptype": maptype, "size": "640x640", 
-					"key": ctx.bot.GOOGLE_API_KEY}
+		params = {
+			"center": f"{latitude},{longitude}", "zoom": zoom,
+			"maptype": maptype, "size": "640x640",
+			"key": ctx.bot.GOOGLE_API_KEY
+		}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.read()
-		await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
-								image_url = "attachment://map.png", 
-								file = discord.File(io.BytesIO(data), filename = "map.png"))
+		await ctx.embed_reply(
+			fields = (("latitude", latitude), ("longitude", longitude)),
+			image_url = "attachment://map.png",
+			file = discord.File(io.BytesIO(data), filename = "map.png")
+		)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def streetview(self, ctx, pitch: Optional[int] = 0, heading: Optional[int] = None, *, location: str):
