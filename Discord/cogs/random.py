@@ -15,7 +15,6 @@ import string
 from typing import Optional
 import xml.etree.ElementTree
 
-from bs4 import BeautifulSoup
 import dice
 import emoji
 import pydealer
@@ -528,20 +527,14 @@ class Random(commands.Cog):
     async def random_fact(self, ctx):
         '''Random fact'''
         # Note: fact command invokes this command
-        url = "https://mentalfloss.com/api/facts"
-        # params = {"limit": 1, "cb": random.random()}
-        # https://mentalfloss.com/amazingfactgenerator
-        # uses page, limit, and cb parameters, seemingly to no effect
-        async with ctx.bot.aiohttp_session.get(url) as resp:
-            if resp.status == 503:
-                await ctx.embed_reply(
-                    f"{ctx.bot.error_emoji} Error: API Service Unavailable"
-                )
-                return
-            data = await resp.json(content_type = "text/plain")
+        url = "https://facts-service.mmsport.voltaxservices.io/widget/properties/mentalfloss/random-facts"
+        params = {"limit": 1}
+        async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+            data = await resp.json()
+        data = data["data"][0]
         await ctx.embed_reply(
-            BeautifulSoup(data[0]["fact"], "lxml").text,
-            image_url = data[0]["primaryImage"]
+            data["body"],
+            image_url = data["image"]["value"]["url"]
         )
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
