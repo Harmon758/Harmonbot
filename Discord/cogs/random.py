@@ -12,7 +12,7 @@ import json
 import multiprocessing
 import random
 import string
-from typing import Optional
+from typing import Literal, Optional
 import xml.etree.ElementTree
 
 import dice
@@ -21,7 +21,6 @@ import pydealer
 import pyparsing
 
 from utilities import checks
-from utilities.converters import Maptype
 from utilities.menu_sources import XKCDSource
 from utilities.paginators import ButtonPaginator
 
@@ -867,12 +866,13 @@ class Random(commands.Cog):
     @random.command(with_app_command = False)
     async def map(
         self, ctx, zoom: Optional[int] = 13,
-        maptype: Optional[Maptype] = "roadmap"
+        maptype: Optional[
+            Literal["roadmap", "satellite", "hybrid", "terrain"]
+        ] = "roadmap"
     ):
         """
         See map of random location
         Zoom: 0 - 21+
-        Map Types: roadmap, satellite, hybrid, terrain
         """
         if command := ctx.bot.get_command("map random"):
             await ctx.invoke(command, zoom = zoom, maptype = maptype)
