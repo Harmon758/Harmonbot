@@ -208,13 +208,14 @@ class Location(commands.Cog):
 		# Note: random map command invokes this command
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
-		url = "https://maps.googleapis.com/maps/api/staticmap"
-		params = {
-			"center": f"{latitude},{longitude}", "zoom": zoom,
-			"maptype": maptype, "size": "640x640",
-			"key": ctx.bot.GOOGLE_API_KEY
-		}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://maps.googleapis.com/maps/api/staticmap",
+			params = {
+				"center": f"{latitude},{longitude}", "zoom": zoom,
+				"maptype": maptype, "size": "640x640",
+				"key": ctx.bot.GOOGLE_API_KEY
+			}
+		) as resp:
 			data = await resp.read()
 		await ctx.embed_reply(
 			fields = (("latitude", latitude), ("longitude", longitude)),
