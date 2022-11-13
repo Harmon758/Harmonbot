@@ -44,7 +44,7 @@ STOCKFISH_EXECUTABLE += ".exe"
 
 
 async def setup(bot):
-    await bot.add_cog(ChessCog(bot))
+    await bot.add_cog(ChessCog())
 
 
 class ChessCog(commands.Cog, name = "Chess"):
