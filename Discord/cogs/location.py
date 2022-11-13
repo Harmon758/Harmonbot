@@ -7,13 +7,12 @@ from decimal import Decimal
 import io
 import random
 import sys
-from typing import Optional
+from typing import Literal, Optional
 
 import datetime
 import pyowm.commons.exceptions
 
 from utilities import checks
-from utilities.converters import Maptype
 
 sys.path.insert(0, "..")
 from units.location import get_geocode_data, get_timezone_data, wind_degrees_to_direction, UnitOutputError
@@ -171,12 +170,15 @@ class Location(commands.Cog):
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def map(
 		self, ctx, zoom: Optional[int] = 13,
-		maptype: Optional[Maptype] = "roadmap", *, location: str
+		maptype: Optional[
+			Literal["roadmap", "satellite", "hybrid", "terrain"]
+		] = "roadmap",
+		# https://developers.google.com/maps/documentation/maps-static/start#MapTypes
+		*, location: str
 	):
 		'''
 		See map of location
 		Zoom: 0 - 21+
-		Map Types: roadmap, satellite, hybrid, terrain
 		'''
 		async with ctx.bot.aiohttp_session.get(
 			"https://maps.googleapis.com/maps/api/staticmap",
@@ -194,12 +196,14 @@ class Location(commands.Cog):
 	@map.command(name = "random")
 	async def map_random(
 		self, ctx, zoom: Optional[int] = 13,
-		maptype: Optional[Maptype] = "roadmap"
+		maptype: Optional[
+			Literal["roadmap", "satellite", "hybrid", "terrain"]
+		] = "roadmap"
+		# https://developers.google.com/maps/documentation/maps-static/start#MapTypes
 	):
 		'''
 		See map of random location
 		Zoom: 0 - 21+
-		Map Types: roadmap, satellite, hybrid, terrain
 		'''
 		# Note: random map command invokes this command
 		latitude = random.uniform(-90, 90)
