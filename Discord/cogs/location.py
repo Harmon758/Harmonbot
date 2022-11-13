@@ -178,12 +178,13 @@ class Location(commands.Cog):
 		Zoom: 0 - 21+
 		Map Types: roadmap, satellite, hybrid, terrain
 		'''
-		url = "https://maps.googleapis.com/maps/api/staticmap"
-		params = {
-			"center": location, "zoom": zoom, "maptype": maptype,
-			"size": "640x640", "key": ctx.bot.GOOGLE_API_KEY
-		}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://maps.googleapis.com/maps/api/staticmap",
+			params = {
+				"center": location, "zoom": zoom, "maptype": maptype,
+				"size": "640x640", "key": ctx.bot.GOOGLE_API_KEY
+			}
+		) as resp:
 			data = await resp.read()
 		await ctx.embed_reply(
 			image_url = "attachment://map.png",
