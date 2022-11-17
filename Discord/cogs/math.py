@@ -200,7 +200,7 @@ class Math(commands.Cog):
 		]
 	)
 	async def acosh(self, ctx, value: float):
-		'''Inverse hyperbolic cosine function'''
+		"""Inverse hyperbolic cosine function"""
 		await ctx.embed_reply(math.acosh(value))
 	
 	@commands.command(
