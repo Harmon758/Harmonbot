@@ -209,7 +209,7 @@ class Math(commands.Cog):
 		]
 	)
 	async def asin(self, ctx, value: float):
-		'''Arc sine function'''
+		"""Arc sine function"""
 		await ctx.embed_reply(math.asin(value))
 	
 	@commands.command(
