@@ -218,7 +218,7 @@ class Math(commands.Cog):
 		]
 	)
 	async def asinh(self, ctx, value: float):
-		'''Inverse hyperbolic sine function'''
+		"""Inverse hyperbolic sine function"""
 		await ctx.embed_reply(math.asinh(value))
 	
 	# TODO: atan2
