@@ -229,7 +229,7 @@ class Math(commands.Cog):
 		]
 	)
 	async def atan(self, ctx, value: float):
-		'''Arc tangent function'''
+		"""Arc tangent function"""
 		await ctx.embed_reply(math.atan(value))
 	
 	@commands.command(
