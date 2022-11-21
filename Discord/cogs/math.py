@@ -239,7 +239,7 @@ class Math(commands.Cog):
 		]
 	)
 	async def atanh(self, ctx, value: float):
-		'''Inverse hyperbolic tangent function'''
+		"""Inverse hyperbolic tangent function"""
 		await ctx.embed_reply(math.atanh(value))
 	
 	@commands.command(alises = ["cosine"])
