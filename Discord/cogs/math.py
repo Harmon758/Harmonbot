@@ -244,7 +244,7 @@ class Math(commands.Cog):
 	
 	@commands.command(alises = ["cosine"])
 	async def cos(self, ctx, value: float):
-		'''Cosine function'''
+		"""Cosine function"""
 		await ctx.embed_reply(math.cos(value))
 	
 	@commands.command(alises = ["cosineh"])
