@@ -48,7 +48,7 @@ pytz==2022.6
 requests[socks]==2.28.1
 scipy==1.9.3
 seaborn==0.11.2
-sentry-sdk==1.10.1
+sentry-sdk==1.11.1
 setuptools==65.5.1
 speechrecognition==3.8.1
 sphobjinv==2.3
