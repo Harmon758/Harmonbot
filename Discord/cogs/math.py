@@ -249,7 +249,7 @@ class Math(commands.Cog):
 	
 	@commands.command(alises = ["cosineh"])
 	async def cosh(self, ctx, value: float):
-		'''Hyperbolic cosine function'''
+		"""Hyperbolic cosine function"""
 		await ctx.embed_reply(math.cosh(value))
 	
 	@commands.command(alises = ["sine"])
