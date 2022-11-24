@@ -254,7 +254,7 @@ class Math(commands.Cog):
 	
 	@commands.command(alises = ["sine"])
 	async def sin(self, ctx, value: float):
-		'''Sine function'''
+		"""Sine function"""
 		await ctx.embed_reply(math.sin(value))
 	
 	@commands.command(alises = ["sineh"])
