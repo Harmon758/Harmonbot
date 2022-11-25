@@ -259,7 +259,7 @@ class Math(commands.Cog):
 	
 	@commands.command(alises = ["sineh"])
 	async def sinh(self, ctx, value: float):
-		'''Hyperbolic sine function'''
+		"""Hyperbolic sine function"""
 		await ctx.embed_reply(math.sinh(value))
 	
 	@commands.command(alises = ["tangent"])
