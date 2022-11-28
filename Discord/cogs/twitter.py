@@ -156,13 +156,13 @@ class Twitter(commands.Cog):
 			ctx.channel.id, handle
 		)
 		if following:
-			return await ctx.embed_reply(":no_entry: This text channel is already following that Twitter handle")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel is already following that Twitter handle")
 		message = await ctx.embed_reply(":hourglass: Please wait")
 		embed = message.embeds[0]
 		try:
 			await self.stream.add_feed(ctx.channel, handle)
 		except tweepy.TweepyException as e:
-			embed.description = f":no_entry: Error: {e}"
+			embed.description = f"{ctx.bot.error_emoji} Error: {e}"
 			return await message.edit(embed = embed)
 		await ctx.bot.db.execute(
 			"""
