@@ -157,7 +157,7 @@ class Twitter(commands.Cog):
 		)
 		if following:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel is already following that Twitter handle")
-		message = await ctx.embed_reply(":hourglass: Please wait")
+		message = await ctx.embed_reply("\N{HOURGLASS} Please wait")
 		embed = message.embeds[0]
 		try:
 			await self.stream.add_feed(ctx.channel, handle)
