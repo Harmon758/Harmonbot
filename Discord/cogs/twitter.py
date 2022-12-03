@@ -193,7 +193,8 @@ class Twitter(commands.Cog):
 			ctx.channel.id, handle
 		)
 		if not deleted:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that Twitter handle")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that Twitter handle")
+			return
 		message = await ctx.embed_reply("\N{HOURGLASS} Please wait")
 		await self.stream.remove_feed(ctx.channel, handle)
 		embed = message.embeds[0]
