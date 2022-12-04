@@ -1,6 +1,6 @@
 
 import discord
-from discord import app_commands, ui
+from discord import ui
 from discord.ext import commands
 
 import sys
@@ -18,16 +18,30 @@ async def setup(bot):
 
 class TwentyFour(commands.Cog, name = "24"):
 
-    @commands.command(name = "24", aliases = ["twenty-four"])
+    @commands.hybrid_command(name = "24", aliases = ["twenty-four"])
     @checks.not_forbidden()
     async def twenty_four(self, ctx):
         """24 Game"""
         numbers = list(map(str, generate_numbers()))
         CEK = '\N{COMBINING ENCLOSING KEYCAP}'
-        await ctx.embed_reply(
-            f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
-            f"{numbers[2]}{CEK}{numbers[3]}{CEK}\n"
-        )
+        view = TwentyFourView(ctx.bot, numbers)
+        if ctx.interaction:
+            message = await ctx.send(
+                f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
+                f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
+                view = view
+            )
+            # Fetch Message, as InteractionMessage token expires after 15 min.
+            message = await message.fetch()
+        else:
+            message = await ctx.embed_reply(
+                f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
+                f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
+                footer_text = None,
+                view = view
+            )
+        view.message = message
+        ctx.bot.views.append(view)
 
         async def incorrect(message, value):
             response_ctx = await ctx.bot.get_context(message)
@@ -56,23 +70,7 @@ class TwentyFour(commands.Cog, name = "24"):
             title = "Correct!", description = f"`{message.content} = 24`",
             in_response_to = False, attempt_delete = False
         )
-
-    @app_commands.command(name = "24")
-    async def slash_twenty_four(self, interaction):
-        """24 Game"""
-        numbers = list(map(str, generate_numbers()))
-        CEK = '\N{COMBINING ENCLOSING KEYCAP}'
-        view = TwentyFourView(interaction.client, numbers)
-        await interaction.response.send_message(
-            f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
-            f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
-            view = view
-        )
-
-        message = await interaction.original_message()
-        # Fetch Message, as InteractionMessage token expires after 15 min.
-        view.message = await message.fetch()
-        interaction.client.views.append(view)
+        await view.stop()
 
 
 class TwentyFourView(ui.View):
