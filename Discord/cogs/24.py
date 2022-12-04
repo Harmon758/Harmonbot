@@ -26,29 +26,31 @@ class TwentyFour(commands.Cog, name = "24"):
         CEK = '\N{COMBINING ENCLOSING KEYCAP}'
         view = TwentyFourView(ctx.bot, numbers)
         if ctx.interaction:
-            message = await ctx.send(
+            response = await ctx.send(
                 f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
                 f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
                 view = view
             )
             # Fetch Message, as InteractionMessage token expires after 15 min.
-            message = await message.fetch()
+            response = await response.fetch()
         else:
-            message = await ctx.embed_reply(
+            response = await ctx.embed_reply(
                 f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
                 f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
                 footer_text = None,
                 view = view
             )
-        view.message = message
+        view.message = response
         ctx.bot.views.append(view)
 
         async def incorrect(message, value):
             response_ctx = await ctx.bot.get_context(message)
             await response_ctx.embed_reply(
+                reference = response,
                 title = "Incorrect",
                 description = f"`{message.content} = {value}`",
-                in_response_to = False, attempt_delete = False
+                in_response_to = False,
+                attempt_delete = False
             )
 
         def check(message):
@@ -67,8 +69,11 @@ class TwentyFour(commands.Cog, name = "24"):
         message = await ctx.bot.wait_for('message', check = check)
         ctx = await ctx.bot.get_context(message)
         await ctx.embed_reply(
-            title = "Correct!", description = f"`{message.content} = 24`",
-            in_response_to = False, attempt_delete = False
+            reference = response,
+            title = "Correct!",
+            description = f"`{message.content} = 24`",
+            in_response_to = False,
+            attempt_delete = False
         )
         await view.stop()
 
