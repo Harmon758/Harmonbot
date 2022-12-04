@@ -10,6 +10,7 @@ from utilities.transformers import PartialEmojiTransformer
 
 
 class EMOJI(Enum):
+    bear = '\N{BEAR FACE}'
     bird = '\N{BIRD}'
     cow = '\N{COW}'
     cucumber = '\N{CUCUMBER}'
