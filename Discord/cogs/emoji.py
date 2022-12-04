@@ -20,6 +20,7 @@ class EMOJI(Enum):
     frog = '\N{FROG FACE}'
     gun = '\N{PISTOL}'
     horse = '\N{HORSE FACE}'
+    lemon = '\N{LEMON}'
     lizard = '\N{LIZARD}'
     minidisc = '\N{MINIDISC}'
     panda = '\N{PANDA FACE}'
