@@ -725,12 +725,28 @@ class Meta(commands.Cog):
 		
 		fields = []
 		if slash_commands:
+			field_value = ""
+			for command in slash_commands:
+				line = f"({command.id}) {command.name}\n"
+				if 8 + len(field_value) + len(line) > self.bot.EFVCL:
+				# len(self.bot.CODE_BLOCK) == 8
+				# EFVCL: Embed Field Value Character Limit
+					fields.append((
+						(
+							'\N{ZERO WIDTH SPACE}'
+							if len(fields)
+							else "Slash Commands"
+						),
+						self.bot.CODE_BLOCK.format(field_value),
+						False
+					))
+					field_value = line
+				else:
+					field_value += line
 			fields.append((
-				"Slash Commands",
-				self.bot.CODE_BLOCK.format('\n'.join(
-					f"({command.id}) {command.name}"
-					for command in slash_commands
-				)), False
+				'\N{ZERO WIDTH SPACE}' if len(fields) else "Slash Commands",
+				self.bot.CODE_BLOCK.format(field_value),
+				False
 			))
 		if message_context_menu_commands:
 			fields.append((
