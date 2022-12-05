@@ -6,7 +6,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import time
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
@@ -17,7 +17,7 @@ ACTIVITES = {
 	"Ask Away": 976052223358406656,
 	"Bash Out": 1006584476094177371,
 	"Betrayal.io": 773336526917861400,
-	"Blazing 8s": 832025144389533716,
+	"Blazing 8s": 832025144389533716,  # Previously known as Ocho
 	"Bobble League": 947957217959759964,
 	"Checkers In The Park": 832013003968348200,
 	"Chess In The Park": 832012774040141894,
@@ -47,78 +47,72 @@ class Discord(commands.Cog):
 		self.calendar = Calendar(version = VERSION_CONTEXT_STYLE)
 		# Add mo as valid abbreviation for month
 		self.calendar.ptc.units["months"].append("mo")
-		
-		def activity_wrapper(activity):
-			async def activity_command(
-				ctx, *, channel: Optional[discord.VoiceChannel]
-			):
-				if not channel and (
-					not ctx.author.voice or not (
-						channel := ctx.author.voice.channel
-					)
-				):
-					await ctx.embed_reply(
-						f"{ctx.bot.error_emoji} Voice channel not found"
-					)
-					return
-				invite = await channel.create_invite(
-					reason = f"{activity} activity",
-					target_type = discord.InviteTarget.embedded_application,
-					target_application_id = ACTIVITES[activity]
-				)
-				await ctx.embed_reply(
-					title = activity,
-					footer_text = None,
-					view = ActivityView(ctx, invite)
-				)
-			return activity_command
-		
-		for activity, name, aliases in (
-			("Ask Away", "ask", []),
-			("Bash Out", "bash", []),
-			("Betrayal.io", "betrayal", ["betrayal.io"]),
-			("Blazing 8s", "eights", ["ocho", "8s"]),
-			("Bobble League", "bobble", []),
-			("Checkers In The Park", "checkers", []),
-			("Chess In The Park", "chess", []),
-			("Fishington.io", "fishington", ["fishing", "fishington.io"]),
-			("Know What I Meme", "meme", ["kwim"]),
-			("Land-io", "land", ["land-io", "snake"]),
-			("Letter League", "letter", ["scrabble"]),
-			("Poker Night", "poker", []),
-			("Putt Party", "putt", ["golf"]),
-			("Sketch Hands", "sketch", ["doodle"]),
-			("SpellCast", "spellcast", ["spell"]),
-			("Watch Together", "watch", ["youtube", "yt"]),
-			("Word Snacks", "word", [])
-		):
-			command = commands.Command(
-				activity_wrapper(activity),
-				name = name,
-				aliases = aliases,
-				help = "Create an invite for " + activity,
-				checks = [
-					commands.guild_only().predicate,
-					checks.not_forbidden().predicate,
-					commands.bot_has_permissions(
-						create_instant_invite = True
-					).predicate,
-					commands.check_any(
-						commands.has_permissions(create_instant_invite = True),
-						commands.is_owner()
-					).predicate
-				]
-			)
-			setattr(self, name, command)
-			self.activity.add_command(command)
 	
 	# TODO: Include spaces in quotes explanation (in help)
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True)
+	@commands.hybrid_command(name = "activity")
+	@commands.guild_only()
+	@commands.bot_has_permissions(create_instant_invite = True)
+	@commands.check_any(
+		commands.has_permissions(create_instant_invite = True),
+		commands.is_owner()
+	)
 	@checks.not_forbidden()
-	async def activity(self, ctx):
-		"""Create an invite for a voice channel activity"""
-		await ctx.send_help(ctx.command)
+	async def activity_command(
+		self, ctx, channel: Optional[discord.VoiceChannel], *,
+		activity: Literal[
+			"Ask Away", "Bash Out", "Betrayal.io", "Blazing 8s",
+			"Bobble League", "Checkers In The Park", "Chess In The Park",
+			"Doodle Crew", "Fishington.io", "Know What I Meme", "Land-io",
+			"Letter League", "Ocho", "Poker Night", "Putt Party",
+			"Sketch Hands", "SpellCast", "Watch Together", "Word Snacks",
+			"YouTube Together"
+		]
+	):
+		"""
+		Create an invite for a voice channel activity
+		
+		Doodle Crew is now known as Sketch Hands
+		Ocho is now known as Blazing 8s
+		YouTube Together is now known as Watch Together
+		
+		Parameters
+		----------
+		activity
+			Voice channel activity to create an invite for
+		channel
+			Voice channel to create an activity invite for;
+			defaults to your current voice channel
+		"""
+		if not channel and (
+			not ctx.author.voice or not (
+				channel := ctx.author.voice.channel
+			)
+		):  # TODO: Support voice channel chat
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Voice channel not found"
+			)
+			return
+		
+		# TODO: Use match with Python 3.10
+		if activity == "Doodle Crew":
+			activity = "Sketch Hands"
+		elif activity == "Ocho":
+			activity = "Blazing 8s"
+		elif activity == "YouTube Together":
+			activity = "Watch Together"
+		
+		invite = await channel.create_invite(
+			reason = f"{activity} activity",
+			target_type = discord.InviteTarget.embedded_application,
+			target_application_id = ACTIVITES[activity]
+		)
+		
+		await ctx.embed_reply(
+			title = activity,
+			footer_text = None,
+			view = ActivityView(ctx, invite)
+		)
 	
 	# TODO: Merge with quote command?
 	@commands.command()
