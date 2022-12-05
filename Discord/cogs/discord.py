@@ -81,8 +81,8 @@ class Discord(commands.Cog):
 		activity
 			Voice channel activity to create an invite for
 		channel
-			Voice channel to create an activity invite for;
-			defaults to your current voice channel
+			Voice channel to create an activity invite for
+			(Defaults to your current voice channel)
 		"""
 		if not channel and (
 			not ctx.author.voice or not (
