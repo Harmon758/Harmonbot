@@ -157,6 +157,9 @@ class HelpCommand(commands.HelpCommand):
 		if "  " in command.help:
 			description = ctx.bot.CODE_BLOCK.format(description)
 		description += '\n' + command.description
+		if len(title) > ctx.bot.EMBED_TITLE_CHARACTER_LIMIT:
+			description = f"**{title}**\n{description}"
+			title = None
 		if len(description) <= ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 			return await ctx.embed_reply(title = title, description = description)
 		paginator = Paginator(max_size = ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT)
