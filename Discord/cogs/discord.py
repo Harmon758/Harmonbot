@@ -117,7 +117,7 @@ class Discord(commands.Cog):
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def activity(self, ctx):
-		'''Create an invite for a voice channel activity'''
+		"""Create an invite for a voice channel activity"""
 		await ctx.send_help(ctx.command)
 	
 	# TODO: Merge with quote command?
