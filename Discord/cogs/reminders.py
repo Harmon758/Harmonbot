@@ -138,7 +138,8 @@ class Reminders(commands.Cog):
 			reminder_id, ctx.author.id
 		)
 		if not cancelled:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unable to find and cancel reminder")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unable to find and cancel reminder")
+			return
 		if self.current_timer and self.current_timer["id"] == reminder_id:
 			self.restarting_timer = True
 			self.timer.restart()
