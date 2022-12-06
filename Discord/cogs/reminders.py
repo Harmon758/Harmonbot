@@ -127,7 +127,7 @@ class Reminders(commands.Cog):
 	
 	@reminder_command.command(aliases = ["delete", "remove"])
 	async def cancel(self, ctx, reminder_id: int):
-		'''Cancel a reminder'''
+		"""Cancel a reminder"""
 		cancelled = await ctx.bot.db.fetchrow(
 			"""
 			UPDATE reminders.reminders
