@@ -733,7 +733,7 @@ class Meta(commands.Cog):
 				# EFVCL: Embed Field Value Character Limit
 					fields.append((
 						(
-							'\N{ZERO WIDTH SPACE}'
+							self.bot.ZERO_WIDTH_SPACE
 							if len(fields)
 							else "Slash Commands"
 						),
@@ -744,7 +744,7 @@ class Meta(commands.Cog):
 				else:
 					field_value += line
 			fields.append((
-				'\N{ZERO WIDTH SPACE}' if len(fields) else "Slash Commands",
+				self.bot.ZERO_WIDTH_SPACE if len(fields) else "Slash Commands",
 				self.bot.CODE_BLOCK.format(field_value),
 				False
 			))
