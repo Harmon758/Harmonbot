@@ -151,10 +151,10 @@ class Reminders(commands.Cog):
 	async def list_reminders(
 		self, ctx, per_page: Optional[commands.Range[int, 1, 10]] = 10
 	):
-		'''
+		"""
 		List reminders
 		Max per_page is 10
-		'''
+		"""
 		records = await ctx.bot.db.fetch(
 			"""
 			SELECT id, channel_id, message_id, remind_time, reminder
