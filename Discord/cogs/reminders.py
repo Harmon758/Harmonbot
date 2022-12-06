@@ -64,9 +64,14 @@ class Reminders(commands.Cog):
 	
 	# TODO: Allow setting timezone (+ for time command as well)
 	
-	@commands.group(name = "reminder", aliases = ["remind", "reminders", "timer", "timers"], 
-					invoke_without_command = True, case_insensitive = True)
-	async def reminder_command(self, ctx, *, reminder: Optional[commands.clean_content]):
+	@commands.group(
+		name = "reminder",
+		aliases = ["remind", "reminders", "timer", "timers"],
+		invoke_without_command = True, case_insensitive = True
+	)
+	async def reminder_command(
+		self, ctx, *, reminder: Optional[commands.clean_content]
+	):
 		'''
 		See and set reminders
 		Times are in UTC
@@ -95,17 +100,21 @@ class Reminders(commands.Cog):
 			raise commands.BadArgument("Time not specified")
 		parsed_datetime, context, start_pos, end_pos, matched_text = matches[0]
 		if not context.hasTime:
-			parsed_datetime = parsed_datetime.replace(hour = now.hour, minute = now.minute, 
-														second = now.second, microsecond = now.microsecond)
+			parsed_datetime = parsed_datetime.replace(
+				hour = now.hour, minute = now.minute,
+				second = now.second, microsecond = now.microsecond
+			)
 		parsed_datetime = parsed_datetime.replace(tzinfo = datetime.timezone.utc)
 		if parsed_datetime < now:
 			raise commands.BadArgument("Time is in the past")
 		# Respond
 		reminder = reminder[:start_pos] + reminder[end_pos + 1:]
 		reminder = reminder.strip()
-		response = await ctx.embed_reply(fields = (("Reminder", reminder or ctx.bot.ZWS),), 
-											footer_text = f"Set for {parsed_datetime.isoformat(timespec = 'seconds').replace('+00:00', 'Z')}", 
-											timestamp = parsed_datetime)
+		response = await ctx.embed_reply(
+			fields = (("Reminder", reminder or ctx.bot.ZWS),),
+			footer_text = f"Set for {parsed_datetime.isoformat(timespec = 'seconds').replace('+00:00', 'Z')}",
+			timestamp = parsed_datetime
+		)
 		# Insert into database
 		created_time = ctx.message.created_at.replace(tzinfo = datetime.timezone.utc)
 		await self.bot.db.execute(
@@ -113,7 +122,8 @@ class Reminders(commands.Cog):
 			INSERT INTO reminders.reminders (user_id, channel_id, message_id, created_time, remind_time, reminder)
 			VALUES ($1, $2, $3, $4, $5, $6)
 			""", 
-			ctx.author.id, ctx.channel.id, response.id, created_time, parsed_datetime, reminder
+			ctx.author.id, ctx.channel.id, response.id, created_time,
+			parsed_datetime, reminder
 		)
 		# Update timer
 		if self.current_timer and parsed_datetime < self.current_timer["remind_time"]:
