@@ -23,20 +23,12 @@ class Reminders(commands.Cog):
 		# Add mo as valid abbreviation for month
 		self.calendar.ptc.units["months"].append("mo")
 		
-		# Add menu as subcommand of reminder and reminder list commands
-		self.reminder_command.add_command(self.menu_command)
-		self.list_reminders.add_command(self.menu_command)
-		
-		self.menus = []
-		
 		self.current_timer = None
 		self.new_reminder = asyncio.Event()
 		self.restarting_timer = False
 		self.timer.start().set_name("Reminders")
 	
 	def cog_unload(self):
-		for menu in self.menus:
-			menu.stop()
 		self.timer.cancel()
 	
 	async def initialize_database(self):
@@ -155,41 +147,10 @@ class Reminders(commands.Cog):
 								footer_text = f"Set for {cancelled['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}", 
 								timestamp = cancelled["remind_time"])
 	
-	@reminder_command.group(name = "list", invoke_without_command = True, case_insensitive = True)
-	async def list_reminders(self, ctx, offset: Optional[int] = 0, count: Optional[int] = 10):
+	@reminder_command.command(name = "list")
+	async def list_reminders(self, ctx, per_page: Optional[int] = 10):
 		'''
 		List reminders
-		Max count is 10
-		'''
-		records = await ctx.bot.db.fetch(
-			"""
-			SELECT id, channel_id, message_id, remind_time, reminder
-			FROM reminders.reminders
-			WHERE user_id = $1 AND reminded = FALSE AND cancelled = FALSE AND failed = FALSE
-			ORDER BY remind_time
-			LIMIT $2 OFFSET $3
-			""", 
-			ctx.author.id, min(count, 10), offset
-		)
-		fields = []
-		for record in records:
-			value = record["reminder"] or "Reminder"
-			if channel := ctx.bot.get_channel(record["channel_id"]):
-				try:
-					message = await channel.fetch_message(record["message_id"])
-					value = f"[{value}]({message.jump_url})"
-				except discord.NotFound:
-					pass
-				value += f"\nIn {getattr(channel, 'mention', 'DMs')}"
-			# TODO: Attempt to fetch channel?
-			value += f"\nAt {record['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}"
-			fields.append((f"ID: {record['id']}", value))
-		await ctx.embed_reply(title = "Reminders", fields = fields)
-	
-	@commands.command(name = "menu", aliases = ['m', "menus", 'r', "reaction", "reactions"])
-	async def menu_command(self, ctx, per_page: Optional[int] = 10):
-		'''
-		Reminders menu
 		Max per_page is 10
 		'''
 		records = await ctx.bot.db.fetch(
