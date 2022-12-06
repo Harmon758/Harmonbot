@@ -9,7 +9,7 @@ from typing import Optional
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
 from utilities import checks
-from utilities.menu import Menu
+from utilities.paginators import ButtonPaginator
 
 async def setup(bot):
 	await bot.add_cog(Reminders(bot))
@@ -201,10 +201,11 @@ class Reminders(commands.Cog):
 			""", 
 			ctx.author.id
 		)
-		menu = RemindersMenu(records, per_page = min(per_page, 10))
-		self.menus.append(menu)
-		await menu.start(ctx, wait = True)
-		self.menus.remove(menu)
+		paginator = ButtonPaginator(
+			ctx, RemindersSource(records, per_page = min(per_page, 10))
+		)
+		await paginator.start()
+		ctx.bot.views.append(paginator)
 	
 	# TODO: clear subcommand
 	
@@ -258,16 +259,6 @@ class Reminders(commands.Cog):
 		else:
 			self.bot.print("Reminders task cancelled")
 
-class RemindersMenu(Menu, menus.MenuPages):
-	
-	def __init__(self, records, per_page):
-		super().__init__(RemindersSource(records, per_page), timeout = None, clear_reactions_after = True, check_embeds = True)
-	
-	async def send_initial_message(self, ctx, channel):
-		message = await super().send_initial_message(ctx, channel)
-		await ctx.bot.attempt_delete_message(ctx.message)
-		return message
-
 class RemindersSource(menus.ListPageSource):
 	
 	def __init__(self, records, per_page):
@@ -281,12 +272,11 @@ class RemindersSource(menus.ListPageSource):
 		for record in records:
 			value = record["reminder"] or "Reminder"
 			if channel := menu.bot.get_channel(record["channel_id"]):
-				try:
-					message = await channel.fetch_message(record["message_id"])
-					value = f"[{value}]({message.jump_url})"
-				except discord.NotFound:
-					pass
-				value += f"\nIn {getattr(channel, 'mention', 'DMs')}"
+				message = channel.get_partial_message(record["message_id"])
+				value = (
+					f"[{value}]({message.jump_url})\n"
+					f"In {getattr(channel, 'mention', 'DMs')}"
+				)
 			# TODO: Attempt to fetch channel?
 			value += f"\nAt {record['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}"
 			embed.add_field(name = f"ID: {record['id']}", value = value)
