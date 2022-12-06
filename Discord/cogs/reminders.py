@@ -138,15 +138,21 @@ class Reminders(commands.Cog):
 			reminder_id, ctx.author.id
 		)
 		if not cancelled:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unable to find and cancel reminder")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Unable to find and cancel reminder"
+			)
 			return
 		if self.current_timer and self.current_timer["id"] == reminder_id:
 			self.restarting_timer = True
 			self.timer.restart()
 			self.timer.get_task().set_name("Reminders")
-		await ctx.embed_reply(fields = (("Cancelled Reminder", cancelled["reminder"] or ctx.bot.ZWS),), 
-								footer_text = f"Set for {cancelled['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}", 
-								timestamp = cancelled["remind_time"])
+		await ctx.embed_reply(
+			fields = (
+				("Cancelled Reminder", cancelled["reminder"] or ctx.bot.ZWS),
+			),
+			footer_text = f"Set for {cancelled['remind_time'].isoformat(timespec = 'seconds').replace('+00:00', 'Z')}",
+			timestamp = cancelled["remind_time"]
+		)
 	
 	@reminder_command.command(name = "list")
 	async def list_reminders(
