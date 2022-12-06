@@ -148,7 +148,9 @@ class Reminders(commands.Cog):
 								timestamp = cancelled["remind_time"])
 	
 	@reminder_command.command(name = "list")
-	async def list_reminders(self, ctx, per_page: Optional[int] = 10):
+	async def list_reminders(
+		self, ctx, per_page: Optional[commands.Range[int, 1, 10]] = 10
+	):
 		'''
 		List reminders
 		Max per_page is 10
@@ -163,7 +165,7 @@ class Reminders(commands.Cog):
 			ctx.author.id
 		)
 		paginator = ButtonPaginator(
-			ctx, RemindersSource(records, per_page = min(per_page, 10))
+			ctx, RemindersSource(records, per_page = per_page)
 		)
 		await paginator.start()
 		ctx.bot.views.append(paginator)
