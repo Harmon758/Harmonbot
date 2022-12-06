@@ -72,10 +72,10 @@ class Reminders(commands.Cog):
 	async def reminder_command(
 		self, ctx, *, reminder: Optional[commands.clean_content]
 	):
-		'''
+		"""
 		See and set reminders
 		Times are in UTC
-		'''
+		"""
 		# Invoke list subcommand for reminders and timers invocations
 		if ctx.invoked_with in ("reminders", "timers"):
 			offset = 0
