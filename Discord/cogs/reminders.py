@@ -67,7 +67,7 @@ class Reminders(commands.Cog):
 	@commands.group(
 		name = "reminder",
 		aliases = ["remind", "reminders", "timer", "timers"],
-		invoke_without_command = True, case_insensitive = True
+		case_insensitive = True, invoke_without_command = True
 	)
 	async def reminder_command(
 		self, ctx, *, reminder: Optional[commands.clean_content]
