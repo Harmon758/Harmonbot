@@ -35,6 +35,7 @@ class ButtonPaginator(discord.ui.View):
         )
     )
     async def start_button(self, interaction, button):
+        await interaction.response.defer()
         await self.show_page(interaction, 0)
 
     @discord.ui.button(
@@ -45,6 +46,7 @@ class ButtonPaginator(discord.ui.View):
         )
     )
     async def previous_button(self, interaction, button):
+        await interaction.response.defer()
         await self.show_page(interaction, self.current_page - 1)
 
     @discord.ui.button(
@@ -62,6 +64,7 @@ class ButtonPaginator(discord.ui.View):
         )
     )
     async def next_button(self, interaction, button):
+        await interaction.response.defer()
         await self.show_page(interaction, self.current_page + 1)
 
     @discord.ui.button(
@@ -72,6 +75,7 @@ class ButtonPaginator(discord.ui.View):
         )
     )
     async def end_button(self, interaction, button):
+        await interaction.response.defer()
         await self.show_page(interaction, self.source.get_max_pages() - 1)
 
     @discord.ui.button(
@@ -152,7 +156,7 @@ class ButtonPaginator(discord.ui.View):
             page_number + 1 == self.source.get_max_pages()
         )
 
-        await interaction.response.edit_message(**kwargs, view = self)
+        await interaction.message.edit(**kwargs, view = self)
 
     async def stop(self, interaction = None):
         self.start_button.disabled = True
