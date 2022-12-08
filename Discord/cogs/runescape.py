@@ -152,11 +152,11 @@ class RuneScape(commands.Cog):
 
     @runescape.command(hidden = True, with_app_command = False)
     async def zybez(self, ctx):
-        '''
+        """
         This command has been deprecated
         Zybez RuneScape Community was shut down on September 17th, 2018
         https://forums.zybez.net/topic/1783583-exit-post-the-end/
-        '''
+        """
         # Previously used
         # https://forums.zybez.net/runescape-2007-prices/api/?info
         await ctx.embed_reply(
