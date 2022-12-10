@@ -141,9 +141,13 @@ class RuneScape(commands.Cog):
         ]
         fields.append(("| Level | Experience", '\n'.join(output)))
 
-        title_url = f"http://services.runescape.com/m=hiscore/compare?user1={username.replace(' ', '+')}"
         await ctx.embed_reply(
-            title = username, title_url = title_url, fields = fields
+            title = username,
+            title_url = (
+                "http://services.runescape.com/m=hiscore/compare?user1=" +
+                username.replace(' ', '+')
+            ),
+            fields = fields
         )
 
     @runescape.command(with_app_command = False)
