@@ -95,7 +95,7 @@ class RuneScape(commands.Cog):
         with_app_command = False
     )
     async def stats(self, ctx, *, username: str):
-        '''Stats'''
+        """Stats"""
         url = "http://services.runescape.com/m=hiscore/index_lite.ws"
         params = {"player": username}
         async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
