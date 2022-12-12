@@ -96,9 +96,10 @@ class RuneScape(commands.Cog):
     )
     async def stats(self, ctx, *, username: str):
         """Stats"""
-        url = "http://services.runescape.com/m=hiscore/index_lite.ws"
-        params = {"player": username}
-        async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "http://services.runescape.com/m=hiscore/index_lite.ws",
+            params = {"player": username}
+        ) as resp:
             if resp.status == 404:
                 await ctx.embed_reply(
                     f"{ctx.bot.error_emoji} Player not found"
