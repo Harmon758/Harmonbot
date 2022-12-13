@@ -25,7 +25,7 @@ class Pokemon(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@pokemon.command()
-	async def ability(self, ctx, id_or_name : str):
+	async def ability(self, ctx, id_or_name: str):
 		'''
 		WIP
 		Abilities provide passive effects for Pokémon in battle or in the overworld
@@ -71,7 +71,10 @@ class Pokemon(commands.Cog):
 		))  # TODO: Handle -gmax and -hisui suffixes
 		
 		await ctx.embed_reply(
-			title = f"{ability_data['name'].capitalize()} ({ability_data['id']})",
+			title = (
+				f"{ability_data['name'].capitalize()} "
+				f"({ability_data['id']})"
+			),
 			fields = fields
 		)
 	
