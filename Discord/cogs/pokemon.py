@@ -32,7 +32,8 @@ class Pokemon(commands.Cog):
 		'''
 		async with ctx.bot.aiohttp_session.get("https://pokeapi.co/api/v2/ability/" + id_or_name) as resp:
 			if resp.status == 404:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {await resp.text()}")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {await resp.text()}")
+				return
 			data = await resp.json()
 		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
 								fields = (("Generation", data["generation"]["name"]),))
