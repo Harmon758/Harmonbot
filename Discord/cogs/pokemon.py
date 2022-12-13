@@ -15,6 +15,8 @@ class Pokemon(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
+	# TODO: Cache API responses
+	
 	@commands.group(aliases = ["pokémon"], invoke_without_command = True, case_insensitive = True)
 	async def pokemon(self, ctx, id_or_name : str):
 		'''WIP'''
@@ -38,10 +40,39 @@ class Pokemon(commands.Cog):
 					f"{ctx.bot.error_emoji} Error: {await resp.text()}"
 				)
 				return
-			data = await resp.json()
+			ability_data = await resp.json()
+		
+		fields = []
+		
+		for effect_entry in ability_data["effect_entries"]:
+			if effect_entry["language"]["name"] == "en":
+				fields.append(("Effect", effect_entry["effect"], False))
+				break
+		
+		# TODO: Flavor Text?
+		
+		async with ctx.bot.aiohttp_session.get(
+			ability_data["generation"]["url"]
+		) as resp:
+			generation_data = await resp.json()
+		
+		for generation_name_data in generation_data["names"]:
+			if generation_name_data["language"]["name"] == "en":
+				fields.append(("Generation", generation_name_data["name"]))
+				break
+		
+		fields.append((
+			"Pokémon",
+			", ".join(
+				pokemon_data["pokemon"]["name"].capitalize()
+				for pokemon_data in ability_data["pokemon"]
+			),
+			False
+		))  # TODO: Handle -gmax and -hisui suffixes
+		
 		await ctx.embed_reply(
-			title = f"{data['name'].capitalize()} ({data['id']})",
-			fields = (("Generation", data["generation"]["name"]),)
+			title = f"{ability_data['name'].capitalize()} ({ability_data['id']})",
+			fields = fields
 		)
 	
 	@pokemon.command()
