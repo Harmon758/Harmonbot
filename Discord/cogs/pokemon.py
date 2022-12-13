@@ -26,12 +26,12 @@ class Pokemon(commands.Cog):
 	
 	@pokemon.command()
 	async def ability(self, ctx, id_or_name: str):
-		'''
+		"""
 		WIP
 		Abilities provide passive effects for Pokémon in battle or in the overworld
 		Pokémon have multiple possible abilities but can have only one ability at a time
 		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Ability) for greater detail
-		'''
+		"""
 		async with ctx.bot.aiohttp_session.get(
 			"https://pokeapi.co/api/v2/ability/" + id_or_name
 		) as resp:
