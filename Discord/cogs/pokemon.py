@@ -42,6 +42,12 @@ class Pokemon(commands.Cog):
 				return
 			ability_data = await resp.json()
 		
+		ability_name = ability_data['name'].capitalize()
+		for name_data in ability_data["names"]:
+			if name_data["language"]["name"] == "en":
+				ability_name = name_data["name"]
+				break
+		
 		fields = []
 		
 		for effect_entry in ability_data["effect_entries"]:
@@ -71,10 +77,7 @@ class Pokemon(commands.Cog):
 		))  # TODO: Handle -gmax and -hisui suffixes
 		
 		await ctx.embed_reply(
-			title = (
-				f"{ability_data['name'].capitalize()} "
-				f"({ability_data['id']})"
-			),
+			title = f"{ability_name} ({ability_data['id']})",
 			fields = fields
 		)
 	
