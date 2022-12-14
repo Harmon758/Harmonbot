@@ -330,6 +330,11 @@ class Trivia(commands.Cog):
 			url = "http://jservice.io/api/random"
 			params = {"count": 6 - len(board)}
 			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				if resp.status in (500, 503):
+					embed = message.embeds[0]
+					embed.description = f"{ctx.bot.error_emoji} Error: Error connecting to API"
+					await message.edit(embed = embed)
+					return
 				data = await resp.json()
 			for random_clue in data:
 				category_id = random_clue["category_id"]
