@@ -101,7 +101,7 @@ class Trivia(commands.Cog):
 			async with ctx.bot.aiohttp_session.get(
 				"http://jservice.io/api/random"
 			) as resp:
-				if resp.status == 503:
+				if resp.status in (500, 503):
 					await ctx.embed_reply(
 						f"{ctx.bot.error_emoji} Error: Error connecting to API"
 					)
