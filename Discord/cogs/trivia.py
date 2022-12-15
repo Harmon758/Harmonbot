@@ -192,7 +192,7 @@ class Trivia(commands.Cog):
 	
 	@trivia.command(aliases = ["levels", "ranks", "scoreboard", "scores", "top"])
 	async def leaderboard(self, ctx, number: commands.Range[int, 1, 15] = 10):
-		'''
+		"""
 		Trivia leaderboard
 		
 		Parameters
@@ -200,7 +200,7 @@ class Trivia(commands.Cog):
 		number
 			Number of users to display on the leaderboard
 			(1 - 15, default is 10)
-		'''
+		"""
 		await ctx.defer()
 		fields = []
 		async with ctx.bot.database_connection_pool.acquire() as connection:
