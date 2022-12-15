@@ -193,7 +193,8 @@ class Trivia(commands.Cog):
 		total = record["correct"] + record["incorrect"]
 		correct_percentage = record["correct"] / total * 100
 		await ctx.embed_reply(
-			f"You have answered {record['correct']:,} / {total:,} ({correct_percentage:.2f}%) correctly."
+			f"You have answered {record['correct']:,} / {total:,} "
+			f"({correct_percentage:.2f}%) trivia questions correctly"
 		)
 	
 	@trivia.command(
