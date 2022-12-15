@@ -31,10 +31,6 @@ class Trivia(commands.Cog):
 		
 		self.jeopardy_matches = {}
 		self.trivia_questions = {}
-		
-		# Add jeopardy as trivia subcommand
-		self.bot.add_command(self.jeopardy)
-		self.trivia.add_command(self.jeopardy)
 	
 	async def cog_load(self):
 		await self.bot.connect_to_database()
@@ -110,6 +106,33 @@ class Trivia(commands.Cog):
 		finally:
 			del self.trivia_questions[ctx.guild.id]
 	
+	@trivia.group(
+		aliases = ["jeopardy"], case_insensitive = True,
+		invoke_without_command = True, max_concurrency = max_concurrency
+	)
+	async def board(self, ctx):
+		"""
+		Trivia with categories
+		[row number] [value] to pick the question
+		Based on Jeopardy!
+		"""
+		if command := ctx.bot.get_command("jeopardy"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"jeopardy command not found when trivia board command invoked"
+			)
+	
+	@board.command(name = "buzzer")
+	async def board_buzzer(self, ctx):
+		if command := ctx.bot.get_command("jeopardy buzzer"):
+			await ctx.invoke(command)
+		else:
+			raise RuntimeError(
+				"jeopardy buzzer command not found "
+				"when trivia board buzzer command invoked"
+			)
+	
 	@commands.Cog.listener("on_message")
 	async def trivia_on_message(self, message):
 		if message.author.id == self.bot.user.id:
@@ -183,6 +206,7 @@ class Trivia(commands.Cog):
 		[row number] [value] to pick the question
 		Based on Jeopardy!
 		'''
+		# Note: trivia board command invokes this command
 		# TODO: Daily Double?
 		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, 
 												"answer": None, "answerer": None}
@@ -330,6 +354,7 @@ class Trivia(commands.Cog):
 	
 	@jeopardy.command()
 	async def buzzer(self, ctx):
+		# Note: trivia board buzzer command invokes this command
 		if match := self.jeopardy_matches.get(ctx.channel.id):
 			await ctx.embed_reply(
 				f"[There's already a Jeopardy match in progress here]({match.message.jump_url})"
