@@ -923,10 +923,16 @@ class TriviaQuestion:
 		answer = BeautifulSoup(
 			html.unescape(data["answer"]), "html.parser"
 		).get_text().replace("\\'", "'")
+		description = f"The answer was: `{answer}`\n\n"
+		for player, response in self.responses.items():
+			description += (
+				f"{player.mention} answered:\n"
+				f"> {response}\n\n"
+			)
 		await ctx.embed_reply(
 			author_name = None,
 			footer_text = correct_players_output,
-			description = f"The answer was `{answer}`",
+			description = description,
 			in_response_to = False
 		)
 		
