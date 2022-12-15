@@ -75,8 +75,9 @@ class Trivia(commands.Cog):
 					"but neither active trivia nor jeopardy found."
 				)
 	
-	@commands.group(
-		case_insensitive = True, invoke_without_command = True,
+	@commands.hybrid_group(
+		case_insensitive = True,
+		fallback = "question",
 		max_concurrency = max_concurrency
 	)
 	async def trivia(self, ctx):
@@ -92,7 +93,10 @@ class Trivia(commands.Cog):
 		finally:
 			del self.trivia_questions[ctx.guild.id]
 	
-	@trivia.command(name = "bet", max_concurrency = max_concurrency)
+	@trivia.command(
+		name = "bet",
+		max_concurrency = max_concurrency, with_app_command = False
+	)
 	async def trivia_bet(self, ctx):
 		'''
 		Trivia with betting
@@ -108,7 +112,7 @@ class Trivia(commands.Cog):
 	
 	@trivia.group(
 		aliases = ["jeopardy"], case_insensitive = True,
-		invoke_without_command = True, max_concurrency = max_concurrency
+		max_concurrency = max_concurrency, with_app_command = False
 	)
 	async def board(self, ctx):
 		"""
@@ -123,7 +127,7 @@ class Trivia(commands.Cog):
 				"jeopardy command not found when trivia board command invoked"
 			)
 	
-	@board.command(name = "buzzer")
+	@board.command(name = "buzzer", with_app_command = False)
 	async def board_buzzer(self, ctx):
 		if command := ctx.bot.get_command("jeopardy buzzer"):
 			await ctx.invoke(command)
@@ -161,7 +165,7 @@ class Trivia(commands.Cog):
 		elif self.trivia_questions[message.guild.id].question_countdown and not message.content.startswith(('!', '>')):
 			self.trivia_questions[message.guild.id].responses[message.author] = message.content
 	
-	@trivia.command(name = "money", aliases = ["cash"])
+	@trivia.command(name = "money", aliases = ["cash"], with_app_command = False)
 	async def trivia_money(self, ctx):
 		'''Trivia money'''
 		money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", ctx.author.id)
@@ -169,7 +173,7 @@ class Trivia(commands.Cog):
 			return await ctx.embed_reply("You have not played any trivia yet")
 		await ctx.embed_reply(f"You have ${money:,}")
 	
-	@trivia.command(name = "score", aliases = ["points", "rank", "level"])
+	@trivia.command(name = "score", aliases = ["points", "rank", "level"], with_app_command = False)
 	async def trivia_score(self, ctx):
 		'''Trivia score'''
 		record = await ctx.bot.db.fetchrow("SELECT correct, incorrect FROM trivia.users WHERE user_id = $1", ctx.author.id)
@@ -179,7 +183,7 @@ class Trivia(commands.Cog):
 		correct_percentage = record["correct"] / total * 100
 		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
 	
-	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"])
+	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"], with_app_command = False)
 	async def trivia_scores(self, ctx, number: int = 10):
 		'''Trivia scores'''
 		if number > 15:
