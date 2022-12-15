@@ -69,7 +69,7 @@ class Trivia(commands.Cog):
 				channel = ctx.guild.get_channel_or_thread(channel_id)
 				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of {game} in {channel.mention}")
 	
-	@commands.group(max_concurrency = max_concurrency, invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True, max_concurrency = max_concurrency)
 	async def trivia(self, ctx):
 		"""
 		Trivia game
