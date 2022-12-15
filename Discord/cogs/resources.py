@@ -113,7 +113,7 @@ class Resources(commands.Cog):
 	@commands.command()
 	@checks.not_forbidden()
 	async def cve(self, ctx, identifier: str):
-		"""Lookup Common Vulnerabilities and Exposures"""
+		"""Look up Common Vulnerabilities and Exposures"""
 		identifier = identifier.lower().lstrip('-')
 		if not identifier.startswith("cve-"):
 			identifier = "cve-" + identifier
