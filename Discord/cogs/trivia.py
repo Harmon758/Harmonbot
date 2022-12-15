@@ -1,5 +1,6 @@
 
 import discord
+from discord import ui
 from discord.ext import commands
 
 import asyncio
@@ -592,7 +593,7 @@ class JeopardyMatch:
 		)
 
 
-class JeopardySelectionView(discord.ui.View):
+class JeopardySelectionView(ui.View):
 	
 	def __init__(self, match):
 		super().__init__(timeout = None)
@@ -608,10 +609,10 @@ class JeopardySelectionView(discord.ui.View):
 		for value in self.match.VALUES:
 			self.add_item(JeopardyValueButton(value))
 	
-	@discord.ui.select(placeholder = "Select a category")
+	@ui.select(placeholder = "Select a category")
 	async def category(self, interaction, select):
 		for item in self.children:
-			if isinstance(item, discord.ui.Button):
+			if isinstance(item, ui.Button):
 				item.disabled = not self.match.board[int(select.values[0]) - 1]["clues"][int(item.label)]
 		
 		select.placeholder = select.values[0]
@@ -619,7 +620,7 @@ class JeopardySelectionView(discord.ui.View):
 		await interaction.response.edit_message(view = self)
 
 
-class JeopardyValueButton(discord.ui.Button):
+class JeopardyValueButton(ui.Button):
 	
 	def __init__(self, label):
 		super().__init__(style = discord.ButtonStyle.blurple, label = label)
@@ -653,7 +654,7 @@ class JeopardyValueButton(discord.ui.Button):
 		await self.view.match.select(category_number, value)
 
 
-class JeopardyBuzzerView(discord.ui.View):
+class JeopardyBuzzerView(ui.View):
 	
 	def __init__(self, match):
 		super().__init__(timeout = 15)
@@ -662,7 +663,7 @@ class JeopardyBuzzerView(discord.ui.View):
 		
 		self.hit = False
 	
-	@discord.ui.button(style = discord.ButtonStyle.red, label = "Buzzer")
+	@ui.button(style = discord.ButtonStyle.red, label = "Buzzer")
 	async def buzzer(self, interaction, button):
 		if self.hit:
 			return
@@ -759,7 +760,8 @@ class TriviaQuestion:
 			title = capwords(data["category"]["title"]),
 			description = data["question"],
 			footer_text = f"You have {self.wait_time} seconds left to answer | Air Date",
-			timestamp = dateutil.parser.parse(data["airdate"])
+			timestamp = dateutil.parser.parse(data["airdate"]),
+			view = TriviaView(self)
 		)
 		embed = self.response.embeds[0]
 		
@@ -859,4 +861,48 @@ class TriviaQuestion:
 					f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}"
 				)
 			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
+
+
+class TriviaView(ui.View):
+	
+	def __init__(self, question):
+		super().__init__(timeout = 15)
+		
+		self.question = question
+	
+	@ui.button(style = discord.ButtonStyle.red, label = "Answer")
+	async def answer(self, interaction, button):
+		await interaction.response.send_modal(
+			TriviaAnswerModal(self.question)
+		)
+	
+	async def on_timeout(self):
+		await self.question.response.edit(view = None)
+		self.stop()
+
+
+class TriviaAnswerModal(ui.Modal, title = "Answer"):
+	
+	answer = ui.TextInput(label = "Answer")
+	
+	def __init__(self, question):
+		super().__init__()
+		self.question = question
+	
+	async def on_submit(self, interaction):
+		previously_answered = interaction.user in self.question.responses
+		
+		self.question.responses[interaction.user] = self.answer.value
+		
+		if previously_answered:
+			await interaction.response.send_message(
+				f"You've changed your answer to:\n> {self.answer.value}",
+				ephemeral = True
+			)
+
+		else:
+			await interaction.response.send_message(
+				f"You've answered:\n> {self.answer.value}",
+				ephemeral = True
+			)
 
