@@ -69,7 +69,10 @@ class Trivia(commands.Cog):
 				channel = ctx.guild.get_channel_or_thread(channel_id)
 				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of {game} in {channel.mention}")
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True, max_concurrency = max_concurrency)
+	@commands.group(
+		case_insensitive = True, invoke_without_command = True,
+		max_concurrency = max_concurrency
+	)
 	async def trivia(self, ctx):
 		"""
 		Trivia game
@@ -77,7 +80,11 @@ class Trivia(commands.Cog):
 		Answers prepended with ! or > are ignored
 		Questions are taken from Jeopardy!
 		"""
-		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}}
+		self.active_trivia[ctx.guild.id] = {
+			"channel_id": ctx.channel.id,
+			"question_countdown": 0,
+			"responses": {}
+		}
 		try:
 			await self.trivia_round(ctx)
 		finally:
