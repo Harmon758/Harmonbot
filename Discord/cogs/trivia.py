@@ -54,9 +54,18 @@ class Trivia(commands.Cog):
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.MaxConcurrencyReached):
 			if trivia_question := self.trivia_questions[ctx.guild.id]:
-				await ctx.embed_reply(
-					f"[There's already an active trivia question here]({trivia_question.response.jump_url})"
-				)
+				description = "There's already an active trivia question here"
+				if trivia_question.response:
+					description = f"[{description}]({trivia_question.response.jump_url})"
+				elif (
+					channel_id := trivia_question.channel_id
+				) and ctx.channel.id != channel_id:
+					channel = ctx.guild.get_channel_or_thread(channel_id)
+					description = (
+						"There's already an active trivia question in " +
+						channel.mention
+					)
+				await ctx.embed_reply(description)
 				return
 			elif ctx.guild.id in self.active_jeopardy:
 				channel_id = self.active_jeopardy[ctx.guild.id].channel_id
