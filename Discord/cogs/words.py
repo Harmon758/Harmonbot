@@ -7,6 +7,7 @@ import textwrap
 from typing import Optional
 import urllib.error
 
+from async_lru import alru_cache
 from bs4 import BeautifulSoup
 from google.api_core.exceptions import InvalidArgument
 import spellchecker
@@ -14,10 +15,17 @@ import spellchecker
 from utilities import checks
 from utilities.paginators import ButtonPaginator
 
+
+async_cache = alru_cache(maxsize=None)
+# https://github.com/python/cpython/issues/90780
+
 async def setup(bot):
-    await bot.add_cog(Words())
+    await bot.add_cog(Words(bot))
 
 class Words(commands.Cog):
+
+    def __init__(self, bot):
+        self.bot = bot
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
@@ -323,16 +331,21 @@ class Words(commands.Cog):
     )
     async def translate_languages(self, ctx, language_code: str = "en"):
         '''Language Codes'''
-        response = await ctx.bot.google_cloud_translation_service_client.get_supported_languages(
-            display_language_code = language_code,
-            parent = f"projects/{ctx.bot.google_cloud_project_id}/locations/global",
-        )
+        languages = await self.supported_translation_languages()
         await ctx.embed_reply(
             ", ".join(
                 f"{language.display_name} ({language.language_code})"
-                for language in response.languages
+                for language in languages
             )
         )
+
+    @async_cache
+    async def supported_translation_languages(self, language_code: str = "en"):
+        response = await self.bot.google_cloud_translation_service_client.get_supported_languages(
+            display_language_code = language_code,
+            parent = f"projects/{self.bot.google_cloud_project_id}/locations/global",
+        )
+        return response.languages
 
     @translate.command(name = "to")
     async def translate_to(
