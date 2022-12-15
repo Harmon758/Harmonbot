@@ -110,10 +110,19 @@ class Resources(commands.Cog):
 			fields = fields
 		)
 	
-	@commands.command()
+	@commands.hybrid_command()
 	@checks.not_forbidden()
 	async def cve(self, ctx, identifier: str):
-		"""Look up Common Vulnerabilities and Exposures"""
+		"""
+		Look up Common Vulnerabilities and Exposures
+		
+		Parameters
+		----------
+		identifier
+			ID of CVE to look up
+		"""
+		await ctx.defer()
+		
 		identifier = identifier.lower().lstrip('-')
 		if not identifier.startswith("cve-"):
 			identifier = "cve-" + identifier
