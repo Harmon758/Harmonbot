@@ -185,7 +185,8 @@ class Trivia(commands.Cog):
 		'''Trivia score'''
 		record = await ctx.bot.db.fetchrow("SELECT correct, incorrect FROM trivia.users WHERE user_id = $1", ctx.author.id)
 		if not record:
-			return await ctx.embed_reply("You have not played any trivia yet")
+			await ctx.embed_reply("You have not played any trivia yet")
+			return
 		total = record["correct"] + record["incorrect"]
 		correct_percentage = record["correct"] / total * 100
 		await ctx.embed_reply(f"You have answered {record['correct']:,} / {total:,} ({correct_percentage:.2f}%) correctly.")
