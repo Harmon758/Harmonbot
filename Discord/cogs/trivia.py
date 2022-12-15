@@ -155,13 +155,15 @@ class Trivia(commands.Cog):
 	
 	@commands.Cog.listener("on_message")
 	async def trivia_on_message(self, message):
+		if not message.guild or not (
+			trivia_question := self.trivia_questions.get(message.guild.id)
+		):
+			return
+		if message.channel.id != trivia_question.channel_id:
+			return
 		if message.author.id == self.bot.user.id:
 			return
-		if not message.guild or message.guild.id not in self.trivia_questions:
-			return
-		if message.channel.id != self.trivia_questions[message.guild.id].channel_id:
-			return
-		if self.trivia_questions[message.guild.id].bet_countdown and message.content.isdigit():
+		if trivia_question.bet_countdown and message.content.isdigit():
 			ctx = await self.bot.get_context(message)
 			money = await self.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
 			if not money:
@@ -174,12 +176,12 @@ class Trivia(commands.Cog):
 					message.author.id
 				)
 			if int(message.content) <= money:
-				self.trivia_questions[message.guild.id].bets[message.author] = int(message.content)
+				trivia_question.bets[message.author] = int(message.content)
 				await self.bot.attempt_delete_message(message)
 			else:
 				await ctx.embed_reply("You don't have that much money to bet!")
-		elif self.trivia_questions[message.guild.id].question_countdown and not message.content.startswith(('!', '>')):
-			self.trivia_questions[message.guild.id].responses[message.author] = message.content
+		elif trivia_question.question_countdown and not message.content.startswith(('!', '>')):
+			trivia_question.responses[message.author] = message.content
 	
 	@trivia.command(name = "money", aliases = ["cash"], with_app_command = False)
 	async def trivia_money(self, ctx):
