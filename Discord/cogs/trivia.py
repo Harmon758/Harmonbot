@@ -87,6 +87,7 @@ class Trivia(commands.Cog):
 		Answers prepended with ! or > are ignored
 		Questions are taken from Jeopardy!
 		"""
+		await ctx.defer()
 		try:
 			self.trivia_questions[ctx.guild.id] = TriviaQuestion()
 			await self.trivia_questions[ctx.guild.id].start(ctx)
