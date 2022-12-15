@@ -387,6 +387,9 @@ class Twitch(commands.Cog):
 				keyword = record["keyword"]
 				params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
 				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
+					if resp.status == 502:
+						self.bot.print(f"Twitch Task Bad Gateway Error")
+						continue
 					keywords_data = await resp.json()
 				streams = keywords_data.get("streams", [])
 				stream_ids += [str(stream["_id"]) for stream in streams]
