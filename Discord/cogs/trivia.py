@@ -190,9 +190,18 @@ class Trivia(commands.Cog):
 		correct_percentage = record["correct"] / total * 100
 		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
 	
-	@trivia.command(aliases = ["levels", "ranks", "scoreboard", "scores", "top"], with_app_command = False)
+	@trivia.command(aliases = ["levels", "ranks", "scoreboard", "scores", "top"])
 	async def leaderboard(self, ctx, number: commands.Range[int, 1, 15] = 10):
-		'''Trivia leaderboard'''
+		'''
+		Trivia leaderboard
+		
+		Parameters
+		----------
+		number
+			Number of users to display on the leaderboard
+			(1 - 15, default is 10)
+		'''
+		await ctx.defer()
 		fields = []
 		async with ctx.bot.database_connection_pool.acquire() as connection:
 			async with connection.transaction():
