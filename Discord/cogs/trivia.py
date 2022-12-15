@@ -685,10 +685,11 @@ class TriviaQuestion:
 		self.bets = {}
 		self.channel_id = None
 		self.question_countdown = 0
-		self.responses = {}
+		self.response = None  # Bot response to command
+		self.responses = {}  # User responses to question
 		self.wait_time = 15
 	
-	async def start(self, ctx, bet = False, response = None):
+	async def start(self, ctx, bet = False):
 		self.channel_id = ctx.channel.id
 		
 		try:
@@ -708,16 +709,16 @@ class TriviaQuestion:
 			return
 		
 		if not data.get("question") or not data.get("category") or data["question"] == '=' or not data.get("answer"):
-			if response:
-				embed = response.embeds[0]
+			if self.response:
+				embed = self.response.embeds[0]
 				embed.description += f"\n{ctx.bot.error_emoji} Error: API response missing question/category/answer"
-				await response.edit(embed = embed)
+				await self.response.edit(embed = embed)
 				return
 			else:
-				response = await ctx.embed_reply(
+				self.response = await ctx.embed_reply(
 					f"{ctx.bot.error_emoji} Error: API response missing question/category/answer\nRetrying..."
 				)
-				await self.start(ctx, bet, response)
+				await self.start(ctx, bet)
 				return
 		
 		# Add message about making POST request to API/invalid with id?
@@ -745,14 +746,14 @@ class TriviaQuestion:
 			await bet_message.edit(embed = embed)
 		
 		self.question_countdown = self.wait_time
-		question_message = await ctx.embed_reply(
+		self.response = await ctx.embed_reply(
 			author_name = None,
 			title = capwords(data["category"]["title"]),
 			description = data["question"],
 			footer_text = f"You have {self.wait_time} seconds left to answer | Air Date",
 			timestamp = dateutil.parser.parse(data["airdate"])
 		)
-		embed = question_message.embeds[0]
+		embed = self.response.embeds[0]
 		
 		while self.question_countdown:
 			await asyncio.sleep(1)
@@ -768,13 +769,13 @@ class TriviaQuestion:
 				text = f"You have {self.question_countdown} seconds left to answer | Air Date"
 			)
 			try:
-				await question_message.edit(embed = embed)
+				await self.response.edit(embed = embed)
 			except (aiohttp.ClientConnectionError, discord.NotFound):
 				continue
 		
 		embed.set_footer(text = "Time's up! | Air Date")
 		try:
-			await question_message.edit(embed = embed)
+			await self.response.edit(embed = embed)
 		except discord.NotFound:
 			pass
 		
