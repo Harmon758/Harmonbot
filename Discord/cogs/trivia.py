@@ -8,6 +8,7 @@ import datetime
 import html
 import random
 import sys
+from typing import Optional
 
 import aiohttp
 from bs4 import BeautifulSoup
@@ -89,7 +90,10 @@ class Trivia(commands.Cog):
 		fallback = "question",
 		max_concurrency = max_concurrency
 	)
-	async def trivia(self, ctx, seconds: commands.Range[int, 1, 60] = 15):
+	async def trivia(
+		self, ctx, override_modal_answers: Optional[bool] = False,
+		seconds: commands.Range[int, 1, 60] = 15
+	):
 		"""
 		Trivia game
 		Only your last answer is accepted
@@ -98,13 +102,18 @@ class Trivia(commands.Cog):
 		
 		Parameters
 		----------
+		override_modal_answers
+			Whether or not to override modal answers with message answers
+			(defaults to False)
 		seconds
 			How long to accept answers for, in seconds
 			(1 - 60, default is 15)
 		"""
 		await ctx.defer()
 		try:
-			self.trivia_questions[ctx.guild.id] = TriviaQuestion(seconds)
+			self.trivia_questions[ctx.guild.id] = TriviaQuestion(
+				seconds, override_modal_answers = override_modal_answers
+			)
 			await self.trivia_questions[ctx.guild.id].start(ctx)
 		finally:
 			del self.trivia_questions[ctx.guild.id]
@@ -181,6 +190,11 @@ class Trivia(commands.Cog):
 			else:
 				await ctx.embed_reply("You don't have that much money to bet!")
 		elif trivia_question.question_countdown and not message.content.startswith(('!', '>')):
+			if (
+				not trivia_question.override_modal_answers and
+				message.author in trivia_question.answered_through_modal
+			):
+				return
 			trivia_question.responses[message.author] = message.content
 	
 	@trivia.command(name = "money", aliases = ["cash"], with_app_command = False)
@@ -760,10 +774,12 @@ class JeopardyBuzzerView(ui.View):
 
 class TriviaQuestion:
 	
-	def __init__(self, seconds):
+	def __init__(self, seconds, override_modal_answers = False):
+		self.answered_through_modal = set()
 		self.bet_countdown = 0
 		self.bets = {}
 		self.channel_id = None
+		self.override_modal_answers = override_modal_answers
 		self.question_countdown = 0
 		self.response = None  # Bot response to command
 		self.responses = {}  # User responses to question
@@ -992,13 +1008,14 @@ class TriviaAnswerModal(ui.Modal, title = "Answer"):
 		previously_answered = interaction.user in self.question.responses
 		
 		self.question.responses[interaction.user] = self.answer.value
+		self.question.answered_through_modal.add(interaction.user)
 		
 		if previously_answered:
 			await interaction.response.send_message(
 				f"You've changed your answer to:\n> {self.answer.value}",
 				ephemeral = True
 			)
-
+		
 		else:
 			await interaction.response.send_message(
 				f"You've answered:\n> {self.answer.value}",
