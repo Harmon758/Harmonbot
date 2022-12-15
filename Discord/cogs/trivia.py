@@ -190,9 +190,9 @@ class Trivia(commands.Cog):
 		correct_percentage = record["correct"] / total * 100
 		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
 	
-	@trivia.command(name = "scores", aliases = ["scoreboard", "top", "ranks", "levels"], with_app_command = False)
-	async def trivia_scores(self, ctx, number: int = 10):
-		'''Trivia scores'''
+	@trivia.command(aliases = ["levels", "ranks", "scoreboard", "scores", "top"], with_app_command = False)
+	async def leaderboard(self, ctx, number: int = 10):
+		'''Trivia leaderboard'''
 		if number > 15:
 			number = 15
 		fields = []
