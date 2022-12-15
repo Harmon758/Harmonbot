@@ -57,17 +57,26 @@ class Trivia(commands.Cog):
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.MaxConcurrencyReached):
 			if trivia_question := self.trivia_questions[ctx.guild.id]:
-				await ctx.embed_reply(f"[There's already an active trivia question here]({trivia_question.response.jump_url})")
+				await ctx.embed_reply(
+					f"[There's already an active trivia question here]({trivia_question.response.jump_url})"
+				)
 				return
 			elif ctx.guild.id in self.active_jeopardy:
 				channel_id = self.active_jeopardy[ctx.guild.id].channel_id
 				if ctx.channel.id == channel_id:
-					await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of jeopardy here")
+					await ctx.embed_reply(
+						f"{ctx.bot.error_emoji} Error: There is already an ongoing game of jeopardy here"
+					)
 				else:
 					channel = ctx.guild.get_channel_or_thread(channel_id)
-					await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of jeopardy in {channel.mention}")
+					await ctx.embed_reply(
+						f"{ctx.bot.error_emoji} Error: There is already an ongoing game of jeopardy in {channel.mention}"
+					)
 			else:
-				raise RuntimeError("Trivia max concurrency reached, but neither active trivia nor jeopardy found.")
+				raise RuntimeError(
+					"Trivia max concurrency reached, "
+					"but neither active trivia nor jeopardy found."
+				)
 	
 	@commands.group(
 		case_insensitive = True, invoke_without_command = True,
