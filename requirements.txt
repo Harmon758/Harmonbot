@@ -96,7 +96,7 @@ jsonschema==4.17.3
 kiwisolver==1.4.4
 lxml==4.9.2
 mpmath==1.2.1
-multidict==6.0.2
+multidict==6.0.3
 mutagen==1.46.0
 oauthlib==3.2.2
 orjson==3.8.3
