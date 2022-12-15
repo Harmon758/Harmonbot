@@ -26,10 +26,10 @@ class Trivia(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.wait_time = 15
-		self.active_trivia = {}
 		self.active_jeopardy = {}
 		
 		self.jeopardy_matches = {}
+		self.trivia_questions = {}
 		
 		# Add jeopardy as trivia subcommand
 		self.bot.add_command(self.jeopardy)
@@ -56,13 +56,14 @@ class Trivia(commands.Cog):
 	
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.MaxConcurrencyReached):
-			if ctx.guild.id in self.active_trivia:
+			if ctx.guild.id in self.trivia_questions:
 				game = "trivia"
+				channel_id = self.trivia_questions[ctx.guild.id].channel_id
 			elif ctx.guild.id in self.active_jeopardy:
 				game = "jeopardy"
+				channel_id = self.active_jeopardy[ctx.guild.id].channel_id
 			else:
 				raise RuntimeError("Trivia max concurrency reached, but neither active trivia nor jeopardy found.")
-			channel_id = getattr(self, f"active_{game}")[ctx.guild.id]["channel_id"]
 			if ctx.channel.id == channel_id:
 				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: There is already an ongoing game of {game} here")
 			else:
@@ -80,15 +81,11 @@ class Trivia(commands.Cog):
 		Answers prepended with ! or > are ignored
 		Questions are taken from Jeopardy!
 		"""
-		self.active_trivia[ctx.guild.id] = {
-			"channel_id": ctx.channel.id,
-			"question_countdown": 0,
-			"responses": {}
-		}
 		try:
-			await self.trivia_round(ctx)
+			self.trivia_questions[ctx.guild.id] = TriviaQuestion()
+			await self.trivia_questions[ctx.guild.id].start(ctx)
 		finally:
-			del self.active_trivia[ctx.guild.id]
+			del self.trivia_questions[ctx.guild.id]
 	
 	@trivia.command(name = "bet", max_concurrency = max_concurrency)
 	async def trivia_bet(self, ctx):
@@ -98,182 +95,21 @@ class Trivia(commands.Cog):
 		Enter any amount under or equal to the money you have to bet
 		Currently, you start with $100,000
 		'''
-		self.active_trivia[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, "responses": {}, 
-											"bet_countdown": 0, "bets": {}}
 		try:
-			await self.trivia_round(ctx, bet = True)
+			self.trivia_questions[ctx.guild.id] = TriviaQuestion()
+			await self.trivia_questions[ctx.guild.id].start(ctx, bet = True)
 		finally:
-			del self.active_trivia[ctx.guild.id]
-	
-	async def trivia_round(self, ctx, bet = False, response = None):
-		try:
-			async with ctx.bot.aiohttp_session.get(
-				"http://jservice.io/api/random"
-			) as resp:
-				if resp.status in (500, 503):
-					await ctx.embed_reply(
-						f"{ctx.bot.error_emoji} Error: Error connecting to API"
-					)
-					return
-				data = (await resp.json())[0]
-		except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: Error connecting to API"
-			)
-			return
-		
-		if not data.get("question") or not data.get("category") or data["question"] == '=' or not data.get("answer"):
-			if response:
-				embed = response.embeds[0]
-				embed.description += f"\n{ctx.bot.error_emoji} Error: API response missing question/category/answer"
-				await response.edit(embed = embed)
-				return
-			else:
-				response = await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} Error: API response missing question/category/answer\nRetrying..."
-				)
-				await self.trivia_round(ctx, bet, response)
-				return
-		# Add message about making POST request to API/invalid with id?
-		# Include site page to send ^?
-		if bet:
-			self.active_trivia[ctx.guild.id]["bet_countdown"] = self.wait_time
-			bet_message = await ctx.embed_reply(
-				author_name = None,
-				title = capwords(data["category"]["title"]),
-				footer_text = f"You have {self.active_trivia[ctx.guild.id]['bet_countdown']} seconds left to bet"
-			)
-			embed = bet_message.embeds[0]
-			while self.active_trivia[bet_message.guild.id]["bet_countdown"]:
-				await asyncio.sleep(1)
-				self.active_trivia[bet_message.guild.id]["bet_countdown"] -= 1
-				embed.description = '\n'.join(
-					f"{player.mention} has bet ${bet}"
-					for player, bet in self.active_trivia[bet_message.guild.id]["bets"].items()
-				)
-				embed.set_footer(
-					text = f"You have {self.active_trivia[bet_message.guild.id]['bet_countdown']} seconds left to bet"
-				)
-				await bet_message.edit(embed = embed)
-			embed.set_footer(text = "Betting is over")
-			await bet_message.edit(embed = embed)
-		
-		self.active_trivia[ctx.guild.id]["question_countdown"] = self.wait_time
-		question_message = await ctx.embed_reply(
-			author_name = None,
-			title = capwords(data["category"]["title"]),
-			description = data["question"],
-			footer_text = f"You have {self.wait_time} seconds left to answer | Air Date",
-			timestamp = dateutil.parser.parse(data["airdate"])
-		)
-		embed = question_message.embeds[0]
-		
-		while self.active_trivia[question_message.guild.id]["question_countdown"]:
-			await asyncio.sleep(1)
-			self.active_trivia[question_message.guild.id]["question_countdown"] -= 1
-			embed.description = data["question"]
-			if responses := self.active_trivia[ctx.guild.id]['responses']:
-				users = ', '.join(user.mention for user in responses)
-				has_or_have = ctx.bot.inflect_engine.plural(
-					'has', len(responses)
-				)
-				embed.description += f"\n\n{users} {has_or_have} answered"
-			embed.set_footer(
-				text = f"You have {self.active_trivia[question_message.guild.id]['question_countdown']} seconds left to answer | Air Date"
-			)
-			try:
-				await question_message.edit(embed = embed)
-			except (aiohttp.ClientConnectionError, discord.NotFound):
-				continue
-		
-		embed.set_footer(text = "Time's up! | Air Date")
-		try:
-			await question_message.edit(embed = embed)
-		except discord.NotFound:
-			pass
-		
-		correct_players = []
-		incorrect_players = []
-		for player, response in self.active_trivia[ctx.guild.id]["responses"].items():
-			if check_answer(
-				data["answer"], response,
-				inflect_engine = self.bot.inflect_engine
-			):
-				correct_players.append(player)
-			else:
-				incorrect_players.append(player)
-		if correct_players:
-			correct_players_output = ctx.bot.inflect_engine.join(
-				[player.display_name for player in correct_players]
-			)
-			correct_players_output += f" {ctx.bot.inflect_engine.plural('was', len(correct_players))} right!"
-		else:
-			correct_players_output = "Nobody got it right!"
-		for correct_player in correct_players:
-			await ctx.bot.db.execute(
-				"""
-				INSERT INTO trivia.users (user_id, correct, incorrect, money)
-				VALUES ($1, 1, 0, 100000)
-				ON CONFLICT (user_id) DO
-				UPDATE SET correct = users.correct + 1
-				""", 
-				correct_player.id
-			)
-			if points_cog := ctx.bot.get_cog("Points"):
-				await points_cog.add(user = correct_player, points = 10)
-		for incorrect_player in incorrect_players:
-			await ctx.bot.db.execute(
-				"""
-				INSERT INTO trivia.users (user_id, correct, incorrect, money)
-				VALUES ($1, 0, 1, 100000)
-				ON CONFLICT (user_id) DO
-				UPDATE SET incorrect = users.incorrect + 1
-				""", 
-				incorrect_player.id
-			)
-		
-		answer = BeautifulSoup(
-			html.unescape(data["answer"]), "html.parser"
-		).get_text().replace("\\'", "'")
-		await ctx.embed_reply(
-			author_name = None,
-			footer_text = correct_players_output,
-			description = f"The answer was `{answer}`",
-			in_response_to = False
-		)
-		
-		if bet and self.active_trivia[ctx.guild.id]["bets"]:
-			bets_output = []
-			for player, player_bet in self.active_trivia[ctx.guild.id]["bets"].items():
-				if player in correct_players:
-					difference = player_bet
-					action_text = "won"
-				else:
-					difference = -player_bet
-					action_text = "lost"
-				money = await ctx.bot.db.fetchval(
-					"""
-					UPDATE trivia.users
-					SET money = money + $2
-					WHERE user_id = $1
-					RETURNING money
-					""", 
-					player.id, difference
-				)
-				bets_output.append(
-					f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}"
-				)
-			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
+			del self.trivia_questions[ctx.guild.id]
 	
 	@commands.Cog.listener("on_message")
 	async def trivia_on_message(self, message):
 		if message.author.id == self.bot.user.id:
 			return
-		if not message.guild or message.guild.id not in self.active_trivia:
+		if not message.guild or message.guild.id not in self.trivia_questions:
 			return
-		if message.channel.id != self.active_trivia[message.guild.id]["channel_id"]:
+		if message.channel.id != self.trivia_questions[message.guild.id].channel_id:
 			return
-		if self.active_trivia[message.guild.id].get("bet_countdown") and message.content.isdigit():
+		if self.trivia_questions[message.guild.id].bet_countdown and message.content.isdigit():
 			ctx = await self.bot.get_context(message)
 			money = await self.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
 			if not money:
@@ -286,12 +122,12 @@ class Trivia(commands.Cog):
 					message.author.id
 				)
 			if int(message.content) <= money:
-				self.active_trivia[message.guild.id]["bets"][message.author] = int(message.content)
+				self.trivia_questions[message.guild.id].bets[message.author] = int(message.content)
 				await self.bot.attempt_delete_message(message)
 			else:
 				await ctx.embed_reply("You don't have that much money to bet!")
-		elif self.active_trivia[message.guild.id]["question_countdown"] and not message.content.startswith(('!', '>')):
-			self.active_trivia[message.guild.id]["responses"][message.author] = message.content
+		elif self.trivia_questions[message.guild.id].question_countdown and not message.content.startswith(('!', '>')):
+			self.trivia_questions[message.guild.id].responses[message.author] = message.content
 	
 	@trivia.command(name = "money", aliases = ["cash"])
 	async def trivia_money(self, ctx):
@@ -840,4 +676,178 @@ class JeopardyBuzzerView(discord.ui.View):
 		self.stop()
 		
 		await self.match.timeout()
+
+
+class TriviaQuestion:
+	
+	def __init__(self):
+		self.bet_countdown = 0
+		self.bets = {}
+		self.channel_id = None
+		self.question_countdown = 0
+		self.responses = {}
+		self.wait_time = 15
+	
+	async def start(self, ctx, bet = False, response = None):
+		self.channel_id = ctx.channel.id
+		
+		try:
+			async with ctx.bot.aiohttp_session.get(
+				"http://jservice.io/api/random"
+			) as resp:
+				if resp.status in (500, 503):
+					await ctx.embed_reply(
+						f"{ctx.bot.error_emoji} Error: Error connecting to API"
+					)
+					return
+				data = (await resp.json())[0]
+		except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Error connecting to API"
+			)
+			return
+		
+		if not data.get("question") or not data.get("category") or data["question"] == '=' or not data.get("answer"):
+			if response:
+				embed = response.embeds[0]
+				embed.description += f"\n{ctx.bot.error_emoji} Error: API response missing question/category/answer"
+				await response.edit(embed = embed)
+				return
+			else:
+				response = await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: API response missing question/category/answer\nRetrying..."
+				)
+				await self.start(ctx, bet, response)
+				return
+		
+		# Add message about making POST request to API/invalid with id?
+		# Include site page to send ^?
+		if bet:
+			self.bet_countdown = self.wait_time
+			bet_message = await ctx.embed_reply(
+				author_name = None,
+				title = capwords(data["category"]["title"]),
+				footer_text = f"You have {self.bet_countdown} seconds left to bet"
+			)
+			embed = bet_message.embeds[0]
+			while self.bet_countdown:
+				await asyncio.sleep(1)
+				self.bet_countdown -= 1
+				embed.description = '\n'.join(
+					f"{player.mention} has bet ${bet}"
+					for player, bet in self.bets.items()
+				)
+				embed.set_footer(
+					text = f"You have {self.bet_countdown} seconds left to bet"
+				)
+				await bet_message.edit(embed = embed)
+			embed.set_footer(text = "Betting is over")
+			await bet_message.edit(embed = embed)
+		
+		self.question_countdown = self.wait_time
+		question_message = await ctx.embed_reply(
+			author_name = None,
+			title = capwords(data["category"]["title"]),
+			description = data["question"],
+			footer_text = f"You have {self.wait_time} seconds left to answer | Air Date",
+			timestamp = dateutil.parser.parse(data["airdate"])
+		)
+		embed = question_message.embeds[0]
+		
+		while self.question_countdown:
+			await asyncio.sleep(1)
+			self.question_countdown -= 1
+			embed.description = data["question"]
+			if responses := self.responses:
+				users = ', '.join(user.mention for user in responses)
+				has_or_have = ctx.bot.inflect_engine.plural(
+					'has', len(responses)
+				)
+				embed.description += f"\n\n{users} {has_or_have} answered"
+			embed.set_footer(
+				text = f"You have {self.question_countdown} seconds left to answer | Air Date"
+			)
+			try:
+				await question_message.edit(embed = embed)
+			except (aiohttp.ClientConnectionError, discord.NotFound):
+				continue
+		
+		embed.set_footer(text = "Time's up! | Air Date")
+		try:
+			await question_message.edit(embed = embed)
+		except discord.NotFound:
+			pass
+		
+		correct_players = []
+		incorrect_players = []
+		for player, response in self.responses.items():
+			if check_answer(
+				data["answer"], response,
+				inflect_engine = ctx.bot.inflect_engine
+			):
+				correct_players.append(player)
+			else:
+				incorrect_players.append(player)
+		if correct_players:
+			correct_players_output = ctx.bot.inflect_engine.join(
+				[player.display_name for player in correct_players]
+			)
+			correct_players_output += f" {ctx.bot.inflect_engine.plural('was', len(correct_players))} right!"
+		else:
+			correct_players_output = "Nobody got it right!"
+		for correct_player in correct_players:
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO trivia.users (user_id, correct, incorrect, money)
+				VALUES ($1, 1, 0, 100000)
+				ON CONFLICT (user_id) DO
+				UPDATE SET correct = users.correct + 1
+				""", 
+				correct_player.id
+			)
+			if points_cog := ctx.bot.get_cog("Points"):
+				await points_cog.add(user = correct_player, points = 10)
+		for incorrect_player in incorrect_players:
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO trivia.users (user_id, correct, incorrect, money)
+				VALUES ($1, 0, 1, 100000)
+				ON CONFLICT (user_id) DO
+				UPDATE SET incorrect = users.incorrect + 1
+				""", 
+				incorrect_player.id
+			)
+		
+		answer = BeautifulSoup(
+			html.unescape(data["answer"]), "html.parser"
+		).get_text().replace("\\'", "'")
+		await ctx.embed_reply(
+			author_name = None,
+			footer_text = correct_players_output,
+			description = f"The answer was `{answer}`",
+			in_response_to = False
+		)
+		
+		if bet and self.bets:
+			bets_output = []
+			for player, player_bet in self.bets.items():
+				if player in correct_players:
+					difference = player_bet
+					action_text = "won"
+				else:
+					difference = -player_bet
+					action_text = "lost"
+				money = await ctx.bot.db.fetchval(
+					"""
+					UPDATE trivia.users
+					SET money = money + $2
+					WHERE user_id = $1
+					RETURNING money
+					""", 
+					player.id, difference
+				)
+				bets_output.append(
+					f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}"
+				)
+			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
 
