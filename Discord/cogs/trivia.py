@@ -190,7 +190,9 @@ class Trivia(commands.Cog):
 		correct_percentage = record["correct"] / total * 100
 		await ctx.embed_reply(f"You have answered {record['correct']}/{total} ({correct_percentage:.2f}%) correctly.")
 	
-	@trivia.command(aliases = ["levels", "ranks", "scoreboard", "scores", "top"])
+	@trivia.command(
+		aliases = ["levels", "ranks", "scoreboard", "scores", "top"]
+	)
 	async def leaderboard(self, ctx, number: commands.Range[int, 1, 15] = 10):
 		"""
 		Trivia leaderboard
@@ -207,14 +209,20 @@ class Trivia(commands.Cog):
 			async with connection.transaction():
 				# Postgres requires non-scrollable cursors to be created
 				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM trivia.users ORDER BY correct DESC LIMIT $1", number):
+				async for record in connection.cursor(
+					"SELECT * FROM trivia.users ORDER BY correct DESC LIMIT $1",
+					number
+				):
 					# SELECT user_id, correct, incorrect?
 					user = ctx.bot.get_user(record["user_id"])
 					if not user:
 						user = await ctx.bot.fetch_user(record["user_id"])
 					total = record["correct"] + record["incorrect"]
 					correct_percentage = record["correct"] / total * 100
-					fields.append((str(user), f"{record['correct']}/{total} correct ({correct_percentage:.2f}%)"))
+					fields.append((
+						str(user),
+						f"{record['correct']}/{total} correct ({correct_percentage:.2f}%)"
+					))
 		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 	
 	@commands.group(max_concurrency = max_concurrency, invoke_without_command = True, case_insensitive = True)
