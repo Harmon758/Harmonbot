@@ -174,7 +174,10 @@ class Trivia(commands.Cog):
 			return
 		if trivia_question.bet_countdown and message.content.isdigit():
 			ctx = await self.bot.get_context(message)
-			money = await self.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", message.author.id)
+			money = await self.bot.db.fetchval(
+				"SELECT money FROM trivia.users WHERE user_id = $1",
+				message.author.id
+			)
 			if not money:
 				money = await self.bot.db.fetchval(
 					"""
@@ -189,7 +192,9 @@ class Trivia(commands.Cog):
 				await self.bot.attempt_delete_message(message)
 			else:
 				await ctx.embed_reply("You don't have that much money to bet!")
-		elif trivia_question.question_countdown and not message.content.startswith(('!', '>')):
+		elif trivia_question.question_countdown:
+			if message.content.startswith(('!', '>')):
+				return
 			if (
 				not trivia_question.override_modal_answers and
 				message.author in trivia_question.answered_through_modal
