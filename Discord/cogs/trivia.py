@@ -728,9 +728,7 @@ class TriviaQuestion:
 		self.responses = {}  # User responses to question
 		self.wait_time = 15
 	
-	async def start(self, ctx, bet = False):
-		self.channel_id = ctx.channel.id
-		
+	async def get_question(self, ctx):
 		try:
 			async with ctx.bot.aiohttp_session.get(
 				"http://jservice.io/api/random"
@@ -740,28 +738,49 @@ class TriviaQuestion:
 						f"{ctx.bot.error_emoji} Error: Error connecting to API"
 					)
 					return
-				data = (await resp.json())[0]
+				return (await resp.json())[0]
 		except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Error: Error connecting to API"
 			)
 			return
+	
+	async def start(self, ctx, bet = False):
+		self.channel_id = ctx.channel.id
 		
-		if not data.get("question") or not data.get("category") or data["question"] == '=' or not data.get("answer"):
-			if self.response:
+		if not (data := await self.get_question(ctx)):
+			return
+		
+		tries = 1
+		while (
+			not data.get("question") or
+			not data.get("category") or
+			data["question"] == '=' or
+			not data.get("answer")
+		):
+			error_message = (
+				ctx.bot.error_emoji +
+				" Error: API response missing question/category/answer"
+			)
+			if tries >= 5:
 				embed = self.response.embeds[0]
-				embed.description += f"\n{ctx.bot.error_emoji} Error: API response missing question/category/answer"
+				embed.description += '\n' + error_message
 				await self.response.edit(embed = embed)
 				return
+			if self.response:
+				embed = self.response.embeds[0]
+				embed.description += f"\n{error_message}\nRetrying..."
+				await self.response.edit(embed = embed)
 			else:
 				self.response = await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} Error: API response missing question/category/answer\nRetrying..."
+					f"{error_message}\nRetrying..."
 				)
-				await self.start(ctx, bet)
+			if not (data := await self.get_question(ctx)):
 				return
-		
+			tries += 1
 		# Add message about making POST request to API/invalid with id?
 		# Include site page to send ^?
+		
 		if bet:
 			self.bet_countdown = self.wait_time
 			bet_message = await ctx.embed_reply(
