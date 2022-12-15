@@ -171,6 +171,13 @@ class Trivia(commands.Cog):
 		while self.active_trivia[question_message.guild.id]["question_countdown"]:
 			await asyncio.sleep(1)
 			self.active_trivia[question_message.guild.id]["question_countdown"] -= 1
+			embed.description = data["question"]
+			if responses := self.active_trivia[ctx.guild.id]['responses']:
+				users = ', '.join(user.mention for user in responses)
+				has_or_have = ctx.bot.inflect_engine.plural(
+					'has', len(responses)
+				)
+				embed.description += f"\n\n{users} {has_or_have} answered"
 			embed.set_footer(
 				text = f"You have {self.active_trivia[question_message.guild.id]['question_countdown']} seconds left to answer | Air Date"
 			)
