@@ -80,16 +80,22 @@ class Trivia(commands.Cog):
 		fallback = "question",
 		max_concurrency = max_concurrency
 	)
-	async def trivia(self, ctx):
+	async def trivia(self, ctx, seconds: commands.Range[int, 1, 60] = 15):
 		"""
 		Trivia game
 		Only your last answer is accepted
 		Answers prepended with ! or > are ignored
 		Questions are taken from Jeopardy!
+		
+		Parameters
+		----------
+		seconds
+			How long to accept answers for, in seconds
+			(1 - 60, default is 15)
 		"""
 		await ctx.defer()
 		try:
-			self.trivia_questions[ctx.guild.id] = TriviaQuestion()
+			self.trivia_questions[ctx.guild.id] = TriviaQuestion(seconds)
 			await self.trivia_questions[ctx.guild.id].start(ctx)
 		finally:
 			del self.trivia_questions[ctx.guild.id]
@@ -106,7 +112,7 @@ class Trivia(commands.Cog):
 		Currently, you start with $100,000
 		'''
 		try:
-			self.trivia_questions[ctx.guild.id] = TriviaQuestion()
+			self.trivia_questions[ctx.guild.id] = TriviaQuestion(15)
 			await self.trivia_questions[ctx.guild.id].start(ctx, bet = True)
 		finally:
 			del self.trivia_questions[ctx.guild.id]
@@ -719,13 +725,14 @@ class JeopardyBuzzerView(ui.View):
 
 class TriviaQuestion:
 	
-	def __init__(self):
+	def __init__(self, seconds):
 		self.bet_countdown = 0
 		self.bets = {}
 		self.channel_id = None
 		self.question_countdown = 0
 		self.response = None  # Bot response to command
 		self.responses = {}  # User responses to question
+		self.seconds = seconds
 		self.wait_time = 15
 	
 	async def get_question(self, ctx):
@@ -803,14 +810,14 @@ class TriviaQuestion:
 			embed.set_footer(text = "Betting is over")
 			await bet_message.edit(embed = embed)
 		
-		self.question_countdown = self.wait_time
+		self.question_countdown = self.seconds
 		self.response = await ctx.embed_reply(
 			author_name = None,
 			title = capwords(data["category"]["title"]),
 			description = data["question"],
-			footer_text = f"You have {self.wait_time} seconds left to answer | Air Date",
+			footer_text = f"You have {self.question_countdown} seconds left to answer | Air Date",
 			timestamp = dateutil.parser.parse(data["airdate"]),
-			view = TriviaView(self)
+			view = TriviaView(self, self.seconds)
 		)
 		embed = self.response.embeds[0]
 		
@@ -914,8 +921,8 @@ class TriviaQuestion:
 
 class TriviaView(ui.View):
 	
-	def __init__(self, question):
-		super().__init__(timeout = 15)
+	def __init__(self, question, timeout):
+		super().__init__(timeout = timeout)
 		
 		self.question = question
 	
