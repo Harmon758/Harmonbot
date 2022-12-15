@@ -850,7 +850,9 @@ class TriviaQuestion:
 			self.question_countdown -= 1
 			embed.description = data["question"]
 			if responses := self.responses:
-				users = ', '.join(user.mention for user in responses)
+				users = ctx.bot.inflect_engine.join(
+					[user.mention for user in responses]
+				)
 				has_or_have = ctx.bot.inflect_engine.plural(
 					'has', len(responses)
 				)
