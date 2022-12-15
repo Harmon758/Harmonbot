@@ -1022,9 +1022,9 @@ class Meta(commands.Cog):
 		final_url = f"{source_url}/blob/{branch}/Discord/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}"
 		await ctx.embed_reply(final_url)
 	
-	@commands.command()
+	@commands.command(name = "tasks")
 	@commands.is_owner()
-	async def tasks(self, ctx):
+	async def tasks_command(self, ctx):
 		await ctx.embed_reply(
 			', '.join(f"`{task.get_coro().__qualname__}`"
 			if (name := task.get_name()).startswith("Task-")
