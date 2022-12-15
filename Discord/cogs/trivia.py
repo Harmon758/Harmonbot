@@ -183,13 +183,18 @@ class Trivia(commands.Cog):
 	@trivia.command(aliases = ["level", "points", "rank", "score", "stats"])
 	async def statistics(self, ctx):
 		'''Trivia statistics'''
-		record = await ctx.bot.db.fetchrow("SELECT correct, incorrect FROM trivia.users WHERE user_id = $1", ctx.author.id)
+		record = await ctx.bot.db.fetchrow(
+			"SELECT correct, incorrect FROM trivia.users WHERE user_id = $1",
+			ctx.author.id
+		)
 		if not record:
 			await ctx.embed_reply("You have not played any trivia yet")
 			return
 		total = record["correct"] + record["incorrect"]
 		correct_percentage = record["correct"] / total * 100
-		await ctx.embed_reply(f"You have answered {record['correct']:,} / {total:,} ({correct_percentage:.2f}%) correctly.")
+		await ctx.embed_reply(
+			f"You have answered {record['correct']:,} / {total:,} ({correct_percentage:.2f}%) correctly."
+		)
 	
 	@trivia.command(
 		aliases = ["levels", "ranks", "scoreboard", "scores", "top"]
