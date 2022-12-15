@@ -260,6 +260,8 @@ class Trivia(commands.Cog):
 	
 	@commands.Cog.listener("on_message")
 	async def trivia_on_message(self, message):
+		if message.author.id == self.bot.user.id:
+			return
 		if not message.guild or message.guild.id not in self.active_trivia:
 			return
 		if message.channel.id != self.active_trivia[message.guild.id]["channel_id"]:
