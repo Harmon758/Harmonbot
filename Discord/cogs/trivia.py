@@ -180,8 +180,8 @@ class Trivia(commands.Cog):
 			return await ctx.embed_reply("You have not played any trivia yet")
 		await ctx.embed_reply(f"You have ${money:,}")
 	
-	@trivia.command(name = "score", aliases = ["points", "rank", "level"], with_app_command = False)
-	async def trivia_score(self, ctx):
+	@trivia.command(aliases = ["points", "rank", "level"], with_app_command = False)
+	async def score(self, ctx):
 		'''Trivia score'''
 		record = await ctx.bot.db.fetchrow("SELECT correct, incorrect FROM trivia.users WHERE user_id = $1", ctx.author.id)
 		if not record:
