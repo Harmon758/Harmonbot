@@ -1,7 +1,7 @@
 
 import discord
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 import asyncio
 import datetime
@@ -29,6 +29,10 @@ sys.path.insert(0, "..")
 from units.time import duration_to_string
 sys.path.pop(0)
 
+
+# ID of #github channel in Harmonbot server
+GITHUB_CHANNEL_ID = 233510987737726977
+
 async def setup(bot):
 	await bot.add_cog(Meta(bot))
 	bot.tree.add_command(link, override = True)
@@ -38,6 +42,24 @@ class Meta(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.github_publication.start().set_name(
+			"GitHub channel message publication"
+		)
+	
+	async def inititalize_database(self):
+		await self.bot.connect_to_database()
+		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS meta")
+		await self.bot.db.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS meta.github_publication (
+				timestamp	TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(),
+				message_id	BIGINT
+			)
+			"""
+		)
+	
+	def cog_unload(self):
+		self.github_publication.cancel()
 	
 	@commands.command()
 	@commands.is_owner()
@@ -1009,6 +1031,55 @@ class Meta(commands.Cog):
 			else name
 			for task in asyncio.all_tasks())
 		)
+	
+	# R/PT1H
+	@tasks.loop(hours = 1)
+	async def github_publication(self):
+		if not (
+			github_channel := self.bot.get_channel(GITHUB_CHANNEL_ID)
+		):
+			return
+		
+		if message_id := await self.bot.db.fetchval(
+			"""
+			SELECT message_id FROM meta.github_publication
+			ORDER BY timestamp DESC LIMIT 1
+			"""
+		):
+			async for message in github_channel.history(
+				after = discord.Object(message_id), limit = 10
+			):
+				try:
+					await message.publish()
+				except discord.HTTPException as e:
+					if e.code != 40033:
+					# 40033 - This message has already been crossposted
+						raise
+				await self.bot.db.execute(
+					"""
+					INSERT INTO meta.github_publication (message_id)
+					VALUES ($1)
+					""",
+					message.id
+				)
+		else:
+			async for message in github_channel.history(limit = 1):
+				await self.bot.db.execute(
+					"""
+					INSERT INTO meta.github_publication (message_id)
+					VALUES ($1)
+					""",
+					message.id
+				)
+	
+	@github_publication.before_loop
+	async def before_github_publication(self):
+		await self.inititalize_database()
+		await self.bot.wait_until_ready()
+	
+	@github_publication.after_loop
+	async def after_github_publication(self):
+		self.bot.print("GitHub publication task cancelled")
 
 
 @app_commands.context_menu()
