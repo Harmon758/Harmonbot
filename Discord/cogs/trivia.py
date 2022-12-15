@@ -221,7 +221,8 @@ class Trivia(commands.Cog):
 					correct_percentage = record["correct"] / total * 100
 					fields.append((
 						str(user),
-						f"{record['correct']}/{total} correct ({correct_percentage:.2f}%)"
+						f"{record['correct']:,} correct ({correct_percentage:.2f}%)\n"
+						f"{total:,} answered"
 					))
 		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 	
