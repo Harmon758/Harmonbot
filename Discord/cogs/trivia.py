@@ -104,7 +104,7 @@ class Trivia(commands.Cog):
 		----------
 		override_modal_answers
 			Whether or not to override modal answers with message answers
-			(defaults to False)
+			(default is False)
 		seconds
 			How long to accept answers for, in seconds
 			(1 - 60, default is 15)
