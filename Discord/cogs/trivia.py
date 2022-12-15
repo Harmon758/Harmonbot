@@ -182,7 +182,7 @@ class Trivia(commands.Cog):
 	
 	@trivia.command(aliases = ["level", "points", "rank", "score", "stats"])
 	async def statistics(self, ctx):
-		'''Trivia statistics'''
+		"""Trivia statistics"""
 		record = await ctx.bot.db.fetchrow(
 			"SELECT correct, incorrect FROM trivia.users WHERE user_id = $1",
 			ctx.author.id
