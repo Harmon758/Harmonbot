@@ -95,7 +95,12 @@ class Context(commands.Context):
 			raise commands.BotMissingPermissions(["embed_links"])
 	
 	def reply(self, content, *args, **kwargs):
-		return self.send(f"{self.author.display_name}:\n{content}", **kwargs)
+		if self.interaction:
+			return self.send(content, **kwargs)
+		else:
+			return self.send(
+				f"{self.author.display_name}:\n{content}", **kwargs
+			)
 	
 	def whisper(self, *args, **kwargs):
 		return self.author.send(*args, **kwargs)
