@@ -96,7 +96,8 @@ class Pokemon(commands.Cog):
 		async with ctx.bot.aiohttp_session.get("https://pokeapi.co/api/v2/berry/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
+				await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
+				return
 		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
 								fields = (("Item Name", data["item"]["name"].capitalize()), 
 											("Growth Time", f"{data['growth_time']}h*4"), ("Max Harvest", data["max_harvest"]), 
