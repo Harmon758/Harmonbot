@@ -147,7 +147,8 @@ class Pokemon(commands.Cog):
 		async with ctx.bot.aiohttp_session.get("https://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				return await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
+				await ctx.embed_reply(f":no_entry: Error: {data['detail']}")
+				return
 		name = discord.utils.find(lambda n: n["language"]["name"] == "en", data["names"])
 		color = name["color"]
 		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
