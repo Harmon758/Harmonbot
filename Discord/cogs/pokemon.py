@@ -138,7 +138,7 @@ class Pokemon(commands.Cog):
 	@contest.command(
 		name = "condition", aliases = ["type"], with_app_command = False
 	)
-	async def contest_condition(self, ctx, id_or_name : str):
+	async def contest_condition(self, ctx, id_or_name: str):
 		'''
 		Contest conditions
 		Categories judges use to weigh a Pokémon's condition in Pokémon contests
