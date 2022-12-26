@@ -144,15 +144,25 @@ class Pokemon(commands.Cog):
 		Categories judges use to weigh a Pokémon's condition in Pokémon contests
 		Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Contest_condition) for greater detail
 		'''
-		async with ctx.bot.aiohttp_session.get("https://pokeapi.co/api/v2/contest-type/" + id_or_name) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://pokeapi.co/api/v2/contest-type/" + id_or_name
+		) as resp:
 			data = await resp.json()
 			if resp.status == 404:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['detail']}")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: {data['detail']}"
+				)
 				return
-		name = discord.utils.find(lambda n: n["language"]["name"] == "en", data["names"])
+		name = discord.utils.find(
+			lambda n: n["language"]["name"] == "en", data["names"]
+		)
 		color = name["color"]
-		await ctx.embed_reply(title = f"{data['name'].capitalize()} ({data['id']})", 
-								fields = (("Flavor", data["berry_flavor"]["name"]), ("Color", color)))
+		await ctx.embed_reply(
+			title = f"{data['name'].capitalize()} ({data['id']})",
+			fields = (
+				("Flavor", data["berry_flavor"]["name"]), ("Color", color)
+			)
+		)
 	
 	@pokemon.group(case_insensitive = True, with_app_command = False)
 	async def encounter(self, ctx):
