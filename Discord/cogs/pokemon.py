@@ -87,7 +87,7 @@ class Pokemon(commands.Cog):
 		)
 	
 	@pokemon.command(with_app_command = False)
-	async def berry(self, ctx, id_or_name : str):
+	async def berry(self, ctx, id_or_name: str):
 		'''
 		Berries
 		Small fruits that can provide HP and status condition restoration, stat enhancement, and even damage negation when eaten by Pokémon
