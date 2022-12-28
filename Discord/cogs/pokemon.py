@@ -18,7 +18,7 @@ class Pokemon(commands.Cog):
 	# TODO: Cache API responses
 	
 	@commands.hybrid_group(aliases = ["pokémon"], case_insensitive = True)
-	async def pokemon(self, ctx, id_or_name : str):
+	async def pokemon(self, ctx, id_or_name: str):
 		'''WIP'''
 		# TODO: colors?, egg groups?, forms?, genders?, habitats?, 
 		#		pokeathlon stats?, shapes?, stats?, version groups?
