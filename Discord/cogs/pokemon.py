@@ -125,7 +125,7 @@ class Pokemon(commands.Cog):
 		)
 	
 	@pokemon.command(with_app_command = False)
-	async def characteristic(self, ctx, id : int):
+	async def characteristic(self, ctx, id: int):
 		'''WIP'''
 		...
 	
