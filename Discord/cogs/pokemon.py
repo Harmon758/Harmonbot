@@ -171,7 +171,7 @@ class Pokemon(commands.Cog):
 		...
 	
 	@encounter.command(name = "method", with_app_command = False)
-	async def encounter_method(self, ctx, id_or_name : str):
+	async def encounter_method(self, ctx, id_or_name: str):
 		'''WIP'''
 		...
 	
