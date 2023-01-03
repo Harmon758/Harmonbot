@@ -54,7 +54,7 @@ class Trivia(commands.Cog):
 	
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.MaxConcurrencyReached):
-			if trivia_question := self.trivia_questions[ctx.guild.id]:
+			if trivia_question := self.trivia_questions.get(ctx.guild.id):
 				description = "There's already an active trivia question here"
 				if trivia_question.response:
 					description = f"[{description}]({trivia_question.response.jump_url})"
