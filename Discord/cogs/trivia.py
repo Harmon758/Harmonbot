@@ -297,6 +297,11 @@ class Trivia(commands.Cog):
 				async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 					if resp.status == 404:
 						continue
+					elif resp.status == 503:
+						embed = message.embeds[0]
+						embed.description = f"{ctx.bot.error_emoji} Error: Error connecting to API"
+						await message.edit(embed = embed)
+						return
 					data = await resp.json()
 				# The first round originally ranged from $100 to $500
 				# and was doubled to $200 to $1,000 on November 26, 2001
