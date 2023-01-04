@@ -87,7 +87,7 @@ geojson==2.5.0
 gitdb==4.0.7
 google-auth==2.3.3
 google-cloud-core==2.3.2
-googleapis-common-protos==1.56.4
+googleapis-common-protos==1.57.1
 grpcio==1.50.0
 grpcio-status==1.45.0
 h11==0.14.0
