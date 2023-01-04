@@ -9,7 +9,7 @@ import os
 import dotenv
 
 
-version = "0.3.4"
+version = "0.3.5"
 
 # TODO: set up logging and/or make Beta bot for CI
 
@@ -45,8 +45,7 @@ async def post_start(application):
     while not application.updater.running:
         await asyncio.sleep(1)
 
-    bot = telegram.Bot(token = token)
-    bot_info = await bot.get_me()
+    bot_info = await application.bot.get_me()
     print(
         f"Started up Telegram Harmonbot ({bot_info['username']}) ({bot_info['id']})"
     )
