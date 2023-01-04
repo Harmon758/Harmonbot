@@ -9,13 +9,9 @@ import os
 import dotenv
 
 
-version = "0.3.8"
+version = "0.3.9"
 
 # TODO: Set up logging and/or make Beta bot for CI
-
-# Load credentials from .env
-dotenv.load_dotenv()
-token = os.getenv("TELEGRAM_BOT_API_TOKEN")
 
 async def ping(update, context):
     await context.bot.send_message(
@@ -61,6 +57,10 @@ async def post_start(application):
         asyncio.get_event_loop().stop()
 
 def main():
+    # Load credentials from .env
+    dotenv.load_dotenv()
+    token = os.getenv("TELEGRAM_BOT_API_TOKEN")
+
     builder = Application.builder()
     builder.token(token)
     builder.post_init(post_init)
