@@ -8,7 +8,7 @@ import os
 
 import dotenv
 
-version = "0.3.0"
+version = "0.3.1"
 
 # TODO: set up logging and/or make Beta bot for CI
 
@@ -42,7 +42,7 @@ async def post_start(application):
 	print(f"Started up Telegram Harmonbot ({bot_info['username']}) ({bot_info['id']})")
 
 	if os.getenv("CI") or os.getenv("GITHUB_ACTION"):
-		application.stop()
+		await application.stop()
 
 def main():
 	application = telegram.ext.Application.builder().token(token).post_init(post_init).build()
