@@ -9,7 +9,7 @@ import os
 import dotenv
 
 
-version = "0.3.3"
+version = "0.3.4"
 
 # TODO: set up logging and/or make Beta bot for CI
 
@@ -18,12 +18,12 @@ dotenv.load_dotenv()
 token = os.getenv("TELEGRAM_BOT_API_TOKEN")
 
 async def test(update, context):
-    await context.bot.sendMessage(
+    await context.bot.send_message(
         chat_id = update.message.chat_id, text = "Hello, World!"
     )
 
 async def ping(update, context):
-    await context.bot.sendMessage(
+    await context.bot.send_message(
         chat_id = update.message.chat_id, text = "pong"
     )
 
@@ -46,7 +46,7 @@ async def post_start(application):
         await asyncio.sleep(1)
 
     bot = telegram.Bot(token = token)
-    bot_info = await bot.getMe()
+    bot_info = await bot.get_me()
     print(
         f"Started up Telegram Harmonbot ({bot_info['username']}) ({bot_info['id']})"
     )
