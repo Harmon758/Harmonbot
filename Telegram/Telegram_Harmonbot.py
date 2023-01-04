@@ -1,6 +1,6 @@
 
-import telegram
-import telegram.ext
+from telegram.error import Conflict, NetworkError
+from telegram.ext import Application, CommandHandler
 
 import asyncio
 import datetime
@@ -9,7 +9,7 @@ import os
 import dotenv
 
 
-version = "0.3.5"
+version = "0.3.6"
 
 # TODO: set up logging and/or make Beta bot for CI
 
@@ -28,10 +28,10 @@ async def ping(update, context):
     )
 
 async def error_handler(update, context):
-    if isinstance(context.error, telegram.error.Conflict):
+    if isinstance(context.error, Conflict):
         # probably CI
         print(f"Conflict @ {datetime.datetime.now().isoformat()}")
-    elif isinstance(context.error, telegram.error.NetworkError):
+    elif isinstance(context.error, NetworkError):
         print(
             f"Network Error: {context.error} @ {datetime.datetime.now().isoformat()}"
         )
@@ -54,12 +54,12 @@ async def post_start(application):
         asyncio.get_event_loop().stop()
 
 def main():
-    application = telegram.ext.Application.builder().token(token).post_init(post_init).build()
+    application = Application.builder().token(token).post_init(post_init).build()
 
-    test_handler = telegram.ext.CommandHandler("test", test)
+    test_handler = CommandHandler("test", test)
     application.add_handler(test_handler)
 
-    ping_handler = telegram.ext.CommandHandler("ping", ping)
+    ping_handler = CommandHandler("ping", ping)
     application.add_handler(ping_handler)
 
     application.add_error_handler(error_handler)
