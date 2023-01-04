@@ -1141,18 +1141,21 @@ class Bot(commands.Bot):
 		uptime = now - self.online_time
 		with contextlib.suppress(asyncpg.UndefinedTableError):
 			# Table might not have been created yet for CI
-			await self.db.execute(
-				"""
-				UPDATE meta.stats
-				SET uptime = uptime + $2
-				WHERE timestamp = $1
-				""", 
-				self.online_time, uptime
-			)
+			if self.db:  # Might not be connected to database yet for CI
+				await self.db.execute(
+					"""
+					UPDATE meta.stats
+					SET uptime = uptime + $2
+					WHERE timestamp = $1
+					""", 
+					self.online_time, uptime
+				)
 		# Close aiohttp session
 		await self.aiohttp_session.close()
 		# Close database connection
-		await self.database_connection_pool.close()
+		if self.database_connection_pool:
+			# Might not be connected to database yet for CI
+			await self.database_connection_pool.close()
 		# Stop web server
 		await self.aiohttp_app_runner.cleanup()
 
