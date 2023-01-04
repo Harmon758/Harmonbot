@@ -19,6 +19,7 @@ from urllib import parse
 import aiml
 import aiohttp
 from aiohttp import web
+import asyncpg
 from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import service_pb2_grpc
 import gidgethub.aiohttp
@@ -1138,14 +1139,16 @@ class Bot(commands.Bot):
 		# Save uptime
 		now = datetime.datetime.now(datetime.timezone.utc)
 		uptime = now - self.online_time
-		await self.db.execute(
-			"""
-			UPDATE meta.stats
-			SET uptime = uptime + $2
-			WHERE timestamp = $1
-			""", 
-			self.online_time, uptime
-		)
+		with contextlib.suppress(asyncpg.UndefinedTableError):
+			# Table might not have been created yet for CI
+			await self.db.execute(
+				"""
+				UPDATE meta.stats
+				SET uptime = uptime + $2
+				WHERE timestamp = $1
+				""", 
+				self.online_time, uptime
+			)
 		# Close aiohttp session
 		await self.aiohttp_session.close()
 		# Close database connection
