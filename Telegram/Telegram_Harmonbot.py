@@ -9,7 +9,7 @@ import os
 import dotenv
 
 
-version = "0.3.6"
+version = "0.3.7"
 
 # TODO: set up logging and/or make Beta bot for CI
 
@@ -33,7 +33,8 @@ async def error_handler(update, context):
         print(f"Conflict @ {datetime.datetime.now().isoformat()}")
     elif isinstance(context.error, NetworkError):
         print(
-            f"Network Error: {context.error} @ {datetime.datetime.now().isoformat()}"
+            f"Network Error: {context.error}"
+            f" @ {datetime.datetime.now().isoformat()}"
         )
     else:
         raise context.error
@@ -47,7 +48,8 @@ async def post_start(application):
 
     bot_info = await application.bot.get_me()
     print(
-        f"Started up Telegram Harmonbot ({bot_info['username']}) ({bot_info['id']})"
+        "Started up Telegram Harmonbot "
+        f"({bot_info['username']}) ({bot_info['id']})"
     )
 
     if os.getenv("CI") or os.getenv("GITHUB_ACTION"):
