@@ -9,27 +9,29 @@ import os
 import dotenv
 
 
-version = "0.3.7"
+version = "0.3.8"
 
-# TODO: set up logging and/or make Beta bot for CI
+# TODO: Set up logging and/or make Beta bot for CI
 
 # Load credentials from .env
 dotenv.load_dotenv()
 token = os.getenv("TELEGRAM_BOT_API_TOKEN")
 
-async def test(update, context):
-    await context.bot.send_message(
-        chat_id = update.message.chat_id, text = "Hello, World!"
-    )
-
 async def ping(update, context):
     await context.bot.send_message(
-        chat_id = update.message.chat_id, text = "pong"
+        chat_id = update.message.chat_id,
+        text = "pong"
+    )
+
+async def test(update, context):
+    await context.bot.send_message(
+        chat_id = update.message.chat_id,
+        text = "Hello, World!"
     )
 
 async def error_handler(update, context):
     if isinstance(context.error, Conflict):
-        # probably CI
+        # Probably due to CI
         print(f"Conflict @ {datetime.datetime.now().isoformat()}")
     elif isinstance(context.error, NetworkError):
         print(
@@ -40,7 +42,10 @@ async def error_handler(update, context):
         raise context.error
 
 async def post_init(application):
-    asyncio.create_task(post_start(application), name = "post_start")
+    asyncio.create_task(
+        post_start(application),
+        name = "post_start"
+    )
 
 async def post_start(application):
     while not application.updater.running:
@@ -56,13 +61,13 @@ async def post_start(application):
         asyncio.get_event_loop().stop()
 
 def main():
-    application = Application.builder().token(token).post_init(post_init).build()
+    builder = Application.builder()
+    builder.token(token)
+    builder.post_init(post_init)
+    application = builder.build()
 
-    test_handler = CommandHandler("test", test)
-    application.add_handler(test_handler)
-
-    ping_handler = CommandHandler("ping", ping)
-    application.add_handler(ping_handler)
+    application.add_handler(CommandHandler("ping", ping))
+    application.add_handler(CommandHandler("test", test))
 
     application.add_error_handler(error_handler)
 
