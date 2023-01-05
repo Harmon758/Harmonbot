@@ -264,7 +264,10 @@ class Trivia(commands.Cog):
 					))
 		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 	
-	@commands.group(max_concurrency = max_concurrency, invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		max_concurrency = max_concurrency,
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def jeopardy(self, ctx):
 		'''
 		Trivia with categories
@@ -273,18 +276,26 @@ class Trivia(commands.Cog):
 		'''
 		# Note: trivia board command invokes this command
 		# TODO: Daily Double?
-		self.active_jeopardy[ctx.guild.id] = {"channel_id": ctx.channel.id, "question_countdown": 0, 
-												"answer": None, "answerer": None}
-		message = await ctx.embed_reply("Generating board..", title = "Jeopardy!", author_name = None)
+		self.active_jeopardy[ctx.guild.id] = {
+			"channel_id": ctx.channel.id, "question_countdown": 0,
+			"answer": None, "answerer": None
+		}
+		message = await ctx.embed_reply(
+			"Generating board..", title = "Jeopardy!", author_name = None
+		)
 		board = {}
 		values = [200, 400, 600, 800, 1000]
 		while len(board) < 6:
 			url = "http://jservice.io/api/random"
 			params = {"count": 6 - len(board)}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				url, params = params
+			) as resp:
 				if resp.status in (500, 503):
 					embed = message.embeds[0]
-					embed.description = f"{ctx.bot.error_emoji} Error: Error connecting to API"
+					embed.description = (
+						f"{ctx.bot.error_emoji} Error: Error connecting to API"
+					)
 					await message.edit(embed = embed)
 					return
 				data = await resp.json()
@@ -294,12 +305,16 @@ class Trivia(commands.Cog):
 					continue
 				url = "http://jservice.io/api/category"
 				params = {"id": category_id}
-				async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				async with ctx.bot.aiohttp_session.get(
+					url, params = params
+				) as resp:
 					if resp.status == 404:
 						continue
 					elif resp.status == 503:
 						embed = message.embeds[0]
-						embed.description = f"{ctx.bot.error_emoji} Error: Error connecting to API"
+						embed.description = (
+							f"{ctx.bot.error_emoji} Error: Error connecting to API"
+						)
 						await message.edit(embed = embed)
 						return
 					data = await resp.json()
@@ -309,7 +324,9 @@ class Trivia(commands.Cog):
 				# http://www.j-archive.com/showgame.php?game_id=1062
 				# jService uses noon UTC for airdates
 				# jService doesn't include Double Jeopardy! clues
-				transition_date = datetime.datetime(2001, 11, 26, 12, tzinfo = datetime.timezone.utc)
+				transition_date = datetime.datetime(
+					2001, 11, 26, 12, tzinfo = datetime.timezone.utc
+				)
 				clues = {value: [] for value in values}
 				for clue in data["clues"]:
 					if not clue["question"] or not clue["value"]:
@@ -321,24 +338,43 @@ class Trivia(commands.Cog):
 				if not all(clues.values()):
 					continue
 				clues = [random.choice(clues[value]) for value in values]
-				board[category_id] = {"title": capwords(random_clue["category"]["title"]), 
-										"clues": clues}
+				board[category_id] = {
+					"title": capwords(random_clue["category"]["title"]),
+					"clues": clues
+				}
 		for category_id, category_info in board.items():
 			category_title = category_info["title"]
-			category_title_line_character_limit = ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
+			category_title_line_character_limit = (
+				ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
+			)
 			# len("#) " + "  200 400 600 800 1000") = 25
 			if len(category_title) > category_title_line_character_limit:
-				split_index = category_title.rfind(' ', 0, category_title_line_character_limit)
-				board[category_id]["title"] = category_title[:split_index] + '\n' + category_title[split_index + 1:]
-		max_width = max(len(section) for category in board.values() for section in category["title"].split('\n'))
+				split_index = category_title.rfind(
+					' ', 0, category_title_line_character_limit
+				)
+				board[category_id]["title"] = (
+					category_title[:split_index] + '\n' +
+					category_title[split_index + 1:]
+				)
+		max_width = max(
+			len(section)
+			for category in board.values()
+			for section in category["title"].split('\n')
+		)
 		board_lines = []
-		for number, category_title in enumerate(category["title"] for category in board.values()):
+		for number, category_title in enumerate(
+			category["title"] for category in board.values()
+		):
 			try:
 				split_index = category_title.index('\n')
-				board_lines.append(f"{number + 1}) {category_title[:split_index]}\n"
-									f"   {category_title[split_index + 1:].ljust(max_width)}  200 400 600 800 1000")
+				board_lines.append(
+					f"{number + 1}) {category_title[:split_index]}\n"
+					f"   {category_title[split_index + 1:].ljust(max_width)}  200 400 600 800 1000"
+				)
 			except ValueError:
-				board_lines.append(f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000")
+				board_lines.append(
+					f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
+				)
 		embed = message.embeds[0]
 		embed.description = ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
 		await message.edit(embed = embed)
@@ -352,7 +388,9 @@ class Trivia(commands.Cog):
 				return False
 			return parts[0].isdecimal() and parts[1].isdecimal()
 		
-		while any(clue for category in board.values() for clue in category["clues"]):
+		while any(
+			clue for category in board.values() for clue in category["clues"]
+		):
 			message = await ctx.bot.wait_for("message", check = choice_check)
 			# TODO: Timeout?
 			# TODO: Enforce last person to answer correctly chooses?
@@ -361,50 +399,74 @@ class Trivia(commands.Cog):
 			row_number = int(message_parts[0])
 			value = int(message_parts[1])
 			if row_number < 1 or row_number > 6:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} That's not a valid row number")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} That's not a valid row number"
+				)
 				continue
 			if value not in values:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} That's not a valid value")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} That's not a valid value"
+				)
 				continue
 			value_index = values.index(value)
 			category_id = list(board.keys())[row_number - 1]
 			if not (clue := board[category_id]["clues"][value_index]):
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} That question has already been chosen")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} That question has already been chosen"
+				)
 				continue
 			self.active_jeopardy[ctx.guild.id]["answerer"] = None
 			self.active_jeopardy[ctx.guild.id]["answer"] = clue["answer"]
 			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
-			message = await ctx.embed_reply(clue["question"], title = board[category_id]["title"], author_name = None, 
-											footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
-											timestamp = dateutil.parser.parse(clue["airdate"]))
+			message = await ctx.embed_reply(
+				clue["question"], title = board[category_id]["title"],
+				author_name = None,
+				footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
+				timestamp = dateutil.parser.parse(clue["airdate"])
+			)
 			embed = message.embeds[0]
 			while self.active_jeopardy[ctx.guild.id]["question_countdown"]:
 				await asyncio.sleep(1)
 				self.active_jeopardy[ctx.guild.id]["question_countdown"] -= 1
-				embed.set_footer(text = f"You have {self.active_jeopardy[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date")
+				embed.set_footer(
+					text = f"You have {self.active_jeopardy[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date"
+				)
 				await ctx.bot.attempt_edit_message(message, embed = embed)
 				if self.active_jeopardy[ctx.guild.id]["answerer"]:
 					break
 			embed.set_footer(text = "Time's up! | Air Date")
 			await message.edit(embed = embed)
-			answer = BeautifulSoup(html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]), 
-									"html.parser").get_text().replace("\\'", "'")
+			answer = BeautifulSoup(
+				html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]),
+				"html.parser"
+			).get_text().replace("\\'", "'")
 			response = f"The answer was `{answer}`\n"
 			if answerer := self.active_jeopardy[ctx.guild.id]["answerer"]:
 				scores[answerer] = scores.get(answerer, 0) + int(value)
 				response += f"{answerer.mention} was right! They now have ${scores[answerer]}\n"
 			else:
 				response += "Nobody got it right\n"
-			response += ", ".join(f"{player.mention}: ${score}" for player, score in scores.items()) + '\n'
+			response += ", ".join(
+				f"{player.mention}: ${score}"
+				for player, score in scores.items()
+			) + '\n'
 			board[category_id]["clues"][value_index] = None
-			board_lines[row_number - 1] = (len(str(value)) * ' ').join(board_lines[row_number - 1].rsplit(str(value), 1))
+			board_lines[row_number - 1] = (len(str(value)) * ' ').join(
+				board_lines[row_number - 1].rsplit(str(value), 1)
+			)
 			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
 			await ctx.embed_send(response)
 		highest_score = max(scores.values())
-		winners = [answerer.mention for answerer, score in scores.items() if score == highest_score]
-		await ctx.embed_send(f"{ctx.bot.inflect_engine.join(winners)} {ctx.bot.inflect_engine.plural('is', len(winners))} "
-								f"the {ctx.bot.inflect_engine.plural('winner', len(winners))} with ${highest_score}!", 
-								title = "Jeopardy!")
+		winners = [
+			answerer.mention
+			for answerer, score in scores.items()
+			if score == highest_score
+		]
+		await ctx.embed_send(
+			f"{ctx.bot.inflect_engine.join(winners)} {ctx.bot.inflect_engine.plural('is', len(winners))} "
+			f"the {ctx.bot.inflect_engine.plural('winner', len(winners))} with ${highest_score}!",
+			title = "Jeopardy!"
+		)
 		del self.active_jeopardy[ctx.guild.id]
 	
 	@commands.Cog.listener("on_message")
