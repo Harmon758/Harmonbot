@@ -27,7 +27,6 @@ class Trivia(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.wait_time = 15
 		self.active_jeopardy = {}
 		
 		self.jeopardy_matches = {}
@@ -135,31 +134,18 @@ class Trivia(commands.Cog):
 		finally:
 			del self.trivia_questions[ctx.guild.id]
 	
-	@trivia.group(
-		aliases = ["jeopardy"], case_insensitive = True,
-		max_concurrency = max_concurrency, with_app_command = False
-	)
-	async def board(self, ctx):
+	@trivia.command(aliases = ["jeopardy"], with_app_command = False)
+	async def board(self, ctx, buzzer = False, turns = False):
 		"""
 		Trivia with categories
 		[row number] [value] to pick the question
 		Based on Jeopardy!
 		"""
 		if command := ctx.bot.get_command("jeopardy"):
-			await ctx.invoke(command)
+			await ctx.invoke(command, buzzer = buzzer, turns = turns)
 		else:
 			raise RuntimeError(
 				"jeopardy command not found when trivia board command invoked"
-			)
-	
-	@board.command(name = "buzzer", with_app_command = False)
-	async def board_buzzer(self, ctx):
-		if command := ctx.bot.get_command("jeopardy buzzer"):
-			await ctx.invoke(command)
-		else:
-			raise RuntimeError(
-				"jeopardy buzzer command not found "
-				"when trivia board buzzer command invoked"
 			)
 	
 	@commands.Cog.listener("on_message")
@@ -264,11 +250,8 @@ class Trivia(commands.Cog):
 					))
 		await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 	
-	@commands.group(
-		max_concurrency = max_concurrency,
-		invoke_without_command = True, case_insensitive = True
-	)
-	async def jeopardy(self, ctx):
+	@commands.command()
+	async def jeopardy(self, ctx, buzzer: bool = False, turns: bool = False):
 		'''
 		Trivia with categories
 		[row number] [value] to pick the question
@@ -276,228 +259,63 @@ class Trivia(commands.Cog):
 		'''
 		# Note: trivia board command invokes this command
 		# TODO: Daily Double?
-		self.active_jeopardy[ctx.guild.id] = {
-			"channel_id": ctx.channel.id, "question_countdown": 0,
-			"answer": None, "answerer": None
-		}
-		message = await ctx.embed_reply(
-			"Generating board..", title = "Jeopardy!", author_name = None
-		)
-		board = {}
-		values = [200, 400, 600, 800, 1000]
-		while len(board) < 6:
-			async with ctx.bot.aiohttp_session.get(
-				"http://jservice.io/api/random",
-				params = {"count": 6 - len(board)}
-			) as resp:
-				if resp.status in (500, 503):
-					embed = message.embeds[0]
-					embed.description = (
-						f"{ctx.bot.error_emoji} Error: Error connecting to API"
-					)
-					await message.edit(embed = embed)
-					return
-				data = await resp.json()
-			for random_clue in data:
-				category_id = random_clue["category_id"]
-				if category_id is None or category_id in board:
-					continue
-				async with ctx.bot.aiohttp_session.get(
-					"http://jservice.io/api/category",
-					params = {"id": category_id}
-				) as resp:
-					if resp.status == 404:
-						continue
-					elif resp.status == 503:
-						embed = message.embeds[0]
-						embed.description = (
-							f"{ctx.bot.error_emoji} Error: Error connecting to API"
-						)
-						await message.edit(embed = embed)
-						return
-					data = await resp.json()
-				# The first round originally ranged from $100 to $500
-				# and was doubled to $200 to $1,000 on November 26, 2001
-				# https://en.wikipedia.org/wiki/Jeopardy!
-				# http://www.j-archive.com/showgame.php?game_id=1062
-				# jService uses noon UTC for airdates
-				# jService doesn't include Double Jeopardy! clues
-				transition_date = datetime.datetime(
-					2001, 11, 26, 12, tzinfo = datetime.timezone.utc
-				)
-				clues = {value: [] for value in values}
-				for clue in data["clues"]:
-					if not clue["question"] or not clue["value"]:
-						continue
-					if dateutil.parser.parse(clue["airdate"]) < transition_date:
-						clues[clue["value"] * 2].append(clue)
-					else:
-						clues[clue["value"]].append(clue)
-				if not all(clues.values()):
-					continue
-				clues = [random.choice(clues[value]) for value in values]
-				board[category_id] = {
-					"title": capwords(random_clue["category"]["title"]),
-					"clues": clues
-				}
-		for category_id, category_info in board.items():
-			category_title = category_info["title"]
-			category_title_line_character_limit = (
-				ctx.bot.EMBED_DESCRIPTION_CODE_BLOCK_ROW_CHARACTER_LIMIT - 25
-			)
-			# len("#) " + "  200 400 600 800 1000") = 25
-			if len(category_title) > category_title_line_character_limit:
-				split_index = category_title.rfind(
-					' ', 0, category_title_line_character_limit
-				)
-				board[category_id]["title"] = (
-					category_title[:split_index] + '\n' +
-					category_title[split_index + 1:]
-				)
-		max_width = max(
-			len(section)
-			for category in board.values()
-			for section in category["title"].split('\n')
-		)
-		board_lines = []
-		for number, category_title in enumerate(
-			category["title"] for category in board.values()
-		):
-			try:
-				split_index = category_title.index('\n')
-				board_lines.append(
-					f"{number + 1}) {category_title[:split_index]}\n"
-					f"   {category_title[split_index + 1:].ljust(max_width)}  200 400 600 800 1000"
-				)
-			except ValueError:
-				board_lines.append(
-					f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
-				)
-		embed = message.embeds[0]
-		embed.description = ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
-		await message.edit(embed = embed)
-		scores = {}
-		
-		def choice_check(message):
-			if message.channel.id != ctx.channel.id:
-				return False
-			parts = message.content.split()
-			if len(parts) < 2:
-				return False
-			return parts[0].isdecimal() and parts[1].isdecimal()
-		
-		while any(
-			clue for category in board.values() for clue in category["clues"]
-		):
-			message = await ctx.bot.wait_for("message", check = choice_check)
-			# TODO: Timeout?
-			# TODO: Enforce last person to answer correctly chooses?
-			ctx = await ctx.bot.get_context(message)
-			message_parts = message.content.split()
-			row_number = int(message_parts[0])
-			value = int(message_parts[1])
-			if row_number < 1 or row_number > 6:
-				await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} That's not a valid row number"
-				)
-				continue
-			if value not in values:
-				await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} That's not a valid value"
-				)
-				continue
-			value_index = values.index(value)
-			category_id = list(board.keys())[row_number - 1]
-			if not (clue := board[category_id]["clues"][value_index]):
-				await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} That question has already been chosen"
-				)
-				continue
-			self.active_jeopardy[ctx.guild.id]["answerer"] = None
-			self.active_jeopardy[ctx.guild.id]["answer"] = clue["answer"]
-			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
-			message = await ctx.embed_reply(
-				author_name = None,
-				title = board[category_id]["title"],
-				description = clue["question"],
-				footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
-				timestamp = dateutil.parser.parse(clue["airdate"])
-			)
-			embed = message.embeds[0]
-			while self.active_jeopardy[ctx.guild.id]["question_countdown"]:
-				await asyncio.sleep(1)
-				self.active_jeopardy[ctx.guild.id]["question_countdown"] -= 1
-				embed.set_footer(
-					text = f"You have {self.active_jeopardy[ctx.guild.id]['question_countdown']} seconds left to answer | Air Date"
-				)
-				await ctx.bot.attempt_edit_message(message, embed = embed)
-				if self.active_jeopardy[ctx.guild.id]["answerer"]:
-					break
-			embed.set_footer(text = "Time's up! | Air Date")
-			await message.edit(embed = embed)
-			answer = BeautifulSoup(
-				html.unescape(self.active_jeopardy[ctx.guild.id]["answer"]),
-				"html.parser"
-			).get_text().replace("\\'", "'")
-			response = f"The answer was `{answer}`\n"
-			if answerer := self.active_jeopardy[ctx.guild.id]["answerer"]:
-				scores[answerer] = scores.get(answerer, 0) + int(value)
-				response += f"{answerer.mention} was right! They now have ${scores[answerer]}\n"
-			else:
-				response += "Nobody got it right\n"
-			response += ", ".join(
-				f"{player.mention}: ${score}"
-				for player, score in scores.items()
-			) + '\n'
-			board[category_id]["clues"][value_index] = None
-			board_lines[row_number - 1] = (len(str(value)) * ' ').join(
-				board_lines[row_number - 1].rsplit(str(value), 1)
-			)
-			response += ctx.bot.CODE_BLOCK.format('\n'.join(board_lines))
-			await ctx.embed_send(response)
-		highest_score = max(scores.values())
-		winners = [
-			answerer.mention
-			for answerer, score in scores.items()
-			if score == highest_score
-		]
-		await ctx.embed_send(
-			title = "Jeopardy!",
-			description = (
-				f"{ctx.bot.inflect_engine.join(winners)} {ctx.bot.inflect_engine.plural('is', len(winners))} "
-				f"the {ctx.bot.inflect_engine.plural('winner', len(winners))} with ${highest_score}!"
-			)
-		)
-		del self.active_jeopardy[ctx.guild.id]
-	
-	@commands.Cog.listener("on_message")
-	async def jeopardy_on_message(self, message):
-		if not message.guild or message.guild.id not in self.active_jeopardy:
-			return
-		if message.channel.id != self.active_jeopardy[message.guild.id]["channel_id"]:
-			return
-		if message.author.id == self.bot.user.id:
-			return
-		if not self.active_jeopardy[message.guild.id]["question_countdown"]:
-			return
-		if self.active_jeopardy[message.guild.id]["answerer"]:
-			return
-		if check_answer(self.active_jeopardy[message.guild.id]["answer"], message.content, inflect_engine = self.bot.inflect_engine):
-			self.active_jeopardy[message.guild.id]["answerer"] = message.author
-	
-	@jeopardy.command()
-	async def buzzer(self, ctx):
-		# Note: trivia board buzzer command invokes this command
 		if match := self.jeopardy_matches.get(ctx.channel.id):
 			await ctx.embed_reply(
 				f"[There's already a Jeopardy match in progress here]({match.message.jump_url})"
 			)
 			return
 		
-		self.jeopardy_matches[ctx.channel.id] = JeopardyMatch()
+		if not (jeopardy_match := JeopardyMatch(buzzer = buzzer, turns = turns)):
+			return
+		
+		self.jeopardy_matches[ctx.channel.id] = jeopardy_match
 		await self.jeopardy_matches[ctx.channel.id].start(ctx)
 		await self.jeopardy_matches[ctx.channel.id].ended.wait()
 		del self.jeopardy_matches[ctx.channel.id]
+	
+	@commands.Cog.listener("on_message")
+	async def jeopardy_on_message(self, message):
+		if not (
+			jeopardy_match := self.jeopardy_matches.get(message.channel.id)
+		):
+			return
+		if jeopardy_match.awaiting_answer:
+			if message.author.id == self.bot.user.id:
+				return
+			await jeopardy_match.answer(message.author, message.content)
+			return
+		if not jeopardy_match.awaiting_selection:
+			return
+		if len(message_parts := message.content.split()) < 2:
+			return
+		try:
+			category_number = int(message_parts[0])
+			value = int(message_parts[1])
+		except ValueError:
+			return
+		if category_number < 1 or category_number > len(jeopardy_match.board):
+			return
+		if value not in jeopardy_match.VALUES:
+			return
+		if jeopardy_match.turns and message.author != jeopardy_match.turn:
+			ctx = await self.bot.get_context(message)
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} It's not your turn"
+			)
+			return
+		if not jeopardy_match.board[category_number - 1]["clues"][value]:
+			ctx = await self.bot.get_context(message)
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} That question has already been chosen"
+			)
+			return
+		category_title = jeopardy_match.board[category_number - 1]['title']
+		embed = jeopardy_match.message.embeds[0]
+		embed.description += (
+			f"\n{message.author.mention} chose {category_title} for `{value}`"
+		)
+		await jeopardy_match.message.edit(embed = embed, view = None)
+		await jeopardy_match.select(category_number, value)
 	
 	# TODO: jeopardy stats
 
@@ -506,10 +324,20 @@ class JeopardyMatch:
 	
 	VALUES = (200, 400, 600, 800, 1000)
 	
-	def __init__(self):
+	def __init__(self, buzzer = True, turns = True):
+		self.awaiting_answer = False  # This is not used if buzzer == True
+		self.awaiting_selection = False  # TODO: Selection timeout?
 		self.board = []
 		self.board_lines = []
+		# Whether or not to have a buzzer
+		# If not, allows everyone to answer at once
+		self.buzzer = buzzer
 		self.scores = {}
+		self.turn = None  # Who's turn it is
+		# Whether or not to enforce turns
+		# with last person to answer correctly selecting
+		self.turns = turns
+		self.wait_time = 15  # TODO: Custom
 		
 		self.ended = asyncio.Event()
 	
@@ -522,81 +350,112 @@ class JeopardyMatch:
 			description = "Generating board..", 
 			footer_text = None
 		)
-		self.turn = ctx.author  # who's turn it is
+		if self.turns:
+			self.turn = ctx.author  # Command invoker goes first
 		
-		await self.generate_board()
+		if not (await self.generate_board()):
+			return False
 		
 		embed = self.message.embeds[0]
 		embed.description = ctx.bot.CODE_BLOCK.format('\n'.join(self.board_lines))
-		embed.description += f"\nIt's {self.turn.mention}'s turn"
+		if self.turns:
+			embed.description += f"\nIt's {self.turn.mention}'s turn"
 		await self.message.edit(embed = embed, view = JeopardySelectionView(self))
+		self.awaiting_selection = True
+		return True
 	
-	async def answer(self, player):
-		self.answered.append(player)
-		self.answerer = player
-		
-		answer_prompt_message = await self.ctx.embed_send(
-			title = "Jeopardy!", 
-			title_url = self.message.jump_url, 
-			description = (
-				f"{player.mention} hit the buzzer\n"
-				f"{player.mention}: What's your answer?"
-			), 
-			footer_text = "You have 15 seconds to answer"
-		)
-		
-		try:
-			message = await self.bot.wait_for("message", check = self.answer_check, timeout = 15)
-		except asyncio.TimeoutError:
-			self.scores[player] = self.scores.get(player, 0) - int(self.value)
-			await self.ctx.embed_send(
+	async def answer(self, player, answer = None):
+		if self.buzzer:
+			self.answered.append(player)
+			self.answerer = player
+			
+			answer_prompt_message = await self.ctx.embed_send(
 				title = "Jeopardy!", 
-				title_url = answer_prompt_message.jump_url, 
+				title_url = self.message.jump_url, 
 				description = (
-					f"{player.mention} ran out of time and lost `{self.value}`\n"
-					f"{player.mention} now has `{self.scores[player]}`"
+					f"{player.mention} hit the buzzer\n"
+					f"{player.mention}: What's your answer?"
+				), 
+				footer_text = f"You have {self.wait_time} seconds to answer"
+			)
+			
+			try:
+				message = await self.bot.wait_for("message", check = self.answer_check, timeout = self.wait_time)
+			except asyncio.TimeoutError:
+				self.scores[player] = self.scores.get(player, 0) - int(self.value)
+				await self.ctx.embed_send(
+					title = "Jeopardy!", 
+					title_url = answer_prompt_message.jump_url, 
+					description = (
+						f"{player.mention} ran out of time and lost `{self.value}`\n"
+						f"{player.mention} now has `{self.scores[player]}`"
+					)
 				)
-			)
-			self.message = await self.ctx.send(
-				embed = self.message.embeds[0], 
-				view = JeopardyBuzzerView(self)
-			)
-			return
+				self.message = await self.ctx.send(
+					embed = self.message.embeds[0], 
+					view = JeopardyBuzzerView(self, self.wait_time)
+				)
+				return
+			
+			answer = message.content
 		
-		if check_answer(self.correct_answer, message.content, inflect_engine = self.bot.inflect_engine):
+		if check_answer(self.correct_answer, answer, inflect_engine = self.bot.inflect_engine):
 			# Correct answer
-			answer = BeautifulSoup(html.unescape(self.correct_answer), "html.parser").get_text().replace("\\'", "'")
+			self.awaiting_answer = False
+			
+			answer = BeautifulSoup(
+				html.unescape(self.correct_answer),
+				"html.parser"
+			).get_text().replace("\\'", "'")
 			self.scores[player] = self.scores.get(player, 0) + int(self.value)
 			
 			response = (
 				f"The answer was `{answer}`\n"
 				f"{player.mention} was correct and won `{self.value}`\n\n"
 			)
-			if scores := ", ".join(f"{player.mention}: `{score}`" for player, score in self.scores.items()):
+			if scores := ", ".join(
+				f"{player.mention}: `{score}`"
+				for player, score in self.scores.items()
+			):
 				response += scores + '\n'
 			
 			self.board[self.category_number - 1]["clues"][self.value] = None
-			self.board_lines[self.category_number - 1] = (len(str(self.value)) * ' ').join(self.board_lines[self.category_number - 1].rsplit(str(self.value), 1))
+			self.board_lines[self.category_number - 1] = (
+				(len(str(self.value)) * ' ').join(
+					self.board_lines[self.category_number - 1].rsplit(
+						str(self.value), 1
+					)
+				)
+			)
 			response += self.bot.CODE_BLOCK.format('\n'.join(self.board_lines))
 			
-			if clues_left := any(clue for category in self.board for clue in category["clues"].values()):
-				self.turn = player
-				response += f"\nIt's {self.turn.mention}'s turn"
+			if clues_left := any(
+				clue
+				for category in self.board
+				for clue in category["clues"].values()
+			):
+				if self.turns:
+					self.turn = player
+					response += f"\nIt's {self.turn.mention}'s turn"
 				view = JeopardySelectionView(self)
 			else:
 				view = None
 			
 			self.message = await self.ctx.embed_send(
 				title = "Jeopardy!", 
-				title_url = answer_prompt_message.jump_url, 
+				title_url = (
+					answer_prompt_message.jump_url if self.buzzer
+					else self.message.jump_url
+				), 
 				description = response, 
 				view = view
 			)
+			self.awaiting_selection = True
 			
 			if not clues_left:
 				await self.send_winner()
 				self.ended.set()
-		else:
+		elif self.buzzer:
 			# Incorrect answer
 			self.scores[player] = self.scores.get(player, 0) - int(self.value)
 			await self.ctx.embed_send(
@@ -609,7 +468,7 @@ class JeopardyMatch:
 			)
 			self.message = await self.ctx.send(
 				embed = self.message.embeds[0], 
-				view = JeopardyBuzzerView(self)
+				view = JeopardyBuzzerView(self, self.wait_time)
 			)
 	
 	def answer_check(self, message):
@@ -619,42 +478,87 @@ class JeopardyMatch:
 		return message.author == self.answerer
 	
 	async def select(self, category_number, value):
+		self.awaiting_selection = False
+		
 		self.category_number = category_number
 		self.value = value
 		
 		clue = self.board[category_number - 1]["clues"][self.value]
 		
 		self.correct_answer = clue["answer"]
-		self.answered = []
+		self.answered = []  # This is only used if buzzer == True
 		
+		action = "hit the buzzer" if self.buzzer else "answer"
 		self.message = await self.ctx.embed_send(
 			title = f"{self.board[category_number - 1]['title']}\n(for {value})", 
 			title_url = self.message.jump_url, 
 			description = clue["question"], 
-			footer_text = f"You have 15 seconds to hit the buzzer | Air Date",  # TODO: Dynamic wait time
+			footer_text = (
+				f"You have {self.wait_time} seconds to {action} | "
+				"Air Date"
+			),
 			timestamp = dateutil.parser.parse(clue["airdate"]), 
-			view = JeopardyBuzzerView(self)
+			view = (
+				JeopardyBuzzerView(self, self.wait_time) if self.buzzer
+				else None
+			)
 		)
+		
+		if not self.buzzer:
+			self.awaiting_answer = True
+			countdown = self.wait_time
+			message = self.message
+			embed = message.embeds[0]
+			while self.awaiting_answer and countdown:
+				await asyncio.sleep(1)
+				countdown -= 1
+				embed.set_footer(
+					text = (
+						f"You have {countdown} seconds left to {action} | "
+						"Air Date"
+					)
+				)
+				await message.edit(embed = embed)
+			self.awaiting_answer = False
+			if not countdown:
+				await self.timeout()
 	
 	async def timeout(self):
 		embed = self.message.embeds[0]
 		embed.set_footer(text = "Time's up! | Air Date")
 		await self.message.edit(embed = embed)
 		
-		answer = BeautifulSoup(html.unescape(self.correct_answer), "html.parser").get_text().replace("\\'", "'")
+		answer = BeautifulSoup(
+			html.unescape(self.correct_answer),
+			"html.parser"
+		).get_text().replace("\\'", "'")
 		response = (
 			f"The answer was `{answer}`\n"
 			"Nobody got it right\n\n"
 		)
-		if scores := ", ".join(f"{player.mention}: `{score}`" for player, score in self.scores.items()):
+		if scores := ", ".join(
+			f"{player.mention}: `{score}`"
+			for player, score in self.scores.items()
+		):
 			response += scores + '\n'
 		
 		self.board[self.category_number - 1]["clues"][self.value] = None
-		self.board_lines[self.category_number - 1] = (len(str(self.value)) * ' ').join(self.board_lines[self.category_number - 1].rsplit(str(self.value), 1))
+		self.board_lines[self.category_number - 1] = (
+			(len(str(self.value)) * ' ').join(
+				self.board_lines[self.category_number - 1].rsplit(
+					str(self.value), 1
+				)
+			)
+		)
 		response += self.bot.CODE_BLOCK.format('\n'.join(self.board_lines))
 		
-		if clues_left := any(clue for category in self.board for clue in category["clues"].values()):
-			response += f"\nIt's {self.turn.mention}'s turn"
+		if clues_left := any(
+			clue
+			for category in self.board
+			for clue in category["clues"].values()
+		):
+			if self.turn:
+				response += f"\nIt's {self.turn.mention}'s turn"
 			view = JeopardySelectionView(self)
 		else:
 			view = None
@@ -665,6 +569,7 @@ class JeopardyMatch:
 			description = response, 
 			view = view
 		)
+		self.awaiting_selection = True
 		
 		if not clues_left:
 			await self.send_winner()
@@ -672,22 +577,40 @@ class JeopardyMatch:
 	
 	async def generate_board(self):
 		while len(self.board) < 6:
-			url = "http://jservice.io/api/random"
-			params = {"count": 6 - len(self.board)}
-			async with self.bot.aiohttp_session.get(url, params = params) as resp:
+			async with self.bot.aiohttp_session.get(
+				"http://jservice.io/api/random",
+				params = {"count": 6 - len(self.board)}
+			) as resp:
+				if resp.status in (500, 503):
+					embed = self.message.embeds[0]
+					embed.description = (
+						f"{self.ctx.bot.error_emoji} Error: "
+						"Error connecting to API"
+					)
+					await self.message.edit(embed = embed)
+					return False
 				data = await resp.json()
 			
 			for random_clue in data:
 				category_id = random_clue["category_id"]
 				
 				if category_id is None or category_id in self.board:
+					# TODO: Fix duplicate category check
 					continue
 				
-				url = "http://jservice.io/api/category"
-				params = {"id": category_id}
-				async with self.bot.aiohttp_session.get(url, params = params) as resp:
+				async with self.bot.aiohttp_session.get(
+					"http://jservice.io/api/category",
+					params = {"id": category_id}
+				) as resp:
 					if resp.status == 404:
 						continue
+					elif resp.status == 503:
+						embed = self.message.embeds[0]
+						embed.description = (
+							f"{self.ctx.bot.error_emoji} Error: Error connecting to API"
+						)
+						await self.message.edit(embed = embed)
+						return False
 					data = await resp.json()
 				
 				# The first round originally ranged from $100 to $500
@@ -696,7 +619,9 @@ class JeopardyMatch:
 				# http://www.j-archive.com/showgame.php?game_id=1062
 				# jService uses noon UTC for airdates
 				# jService doesn't include Double Jeopardy! clues
-				transition_date = datetime.datetime(2001, 11, 26, 12, tzinfo = datetime.timezone.utc)
+				transition_date = datetime.datetime(
+					2001, 11, 26, 12, tzinfo = datetime.timezone.utc
+				)
 				clues = {value: [] for value in self.VALUES}
 				for clue in data["clues"]:
 					if not clue["question"] or not clue["value"]:
@@ -722,11 +647,22 @@ class JeopardyMatch:
 		for category in self.board:
 			category_title = category["formatted_title"] = category["title"]
 			if len(category_title) > category_title_line_character_limit:
-				split_index = category_title.rfind(' ', 0, category_title_line_character_limit)
-				category["formatted_title"] = category_title[:split_index] + '\n' + category_title[split_index + 1:]
+				split_index = category_title.rfind(
+					' ', 0, category_title_line_character_limit
+				)
+				category["formatted_title"] = (
+					category_title[:split_index] + '\n' +
+					category_title[split_index + 1:]
+				)
 		
-		max_width = max(len(section) for category in self.board for section in category["formatted_title"].split('\n'))
-		for number, category_title in enumerate(category["formatted_title"] for category in self.board):
+		max_width = max(
+			len(section)
+			for category in self.board
+			for section in category["formatted_title"].split('\n')
+		)
+		for number, category_title in enumerate(
+			category["formatted_title"] for category in self.board
+		):
 			try:
 				split_index = category_title.index('\n')
 				self.board_lines.append(
@@ -737,10 +673,16 @@ class JeopardyMatch:
 				self.board_lines.append(
 					f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
 				)
+		
+		return True
 	
 	async def send_winner(self):
 		highest_score = max(self.scores.values())
-		winners = [answerer.mention for answerer, score in self.scores.items() if score == highest_score]
+		winners = [
+			answerer.mention
+			for answerer, score in self.scores.items()
+			if score == highest_score
+		]
 		await self.ctx.embed_send(
 			title = "Jeopardy!", 
 			title_url = self.message.jump_url, 
@@ -784,7 +726,7 @@ class JeopardyValueButton(ui.Button):
 		super().__init__(style = discord.ButtonStyle.blurple, label = label)
 	
 	async def callback(self, interaction):
-		if interaction.user != self.view.match.turn:
+		if self.view.match.turns and interaction.user != self.view.match.turn:
 			await interaction.response.send_message(
 				"It's not your turn", ephemeral = True
 			)
@@ -814,8 +756,8 @@ class JeopardyValueButton(ui.Button):
 
 class JeopardyBuzzerView(ui.View):
 	
-	def __init__(self, match):
-		super().__init__(timeout = 15)
+	def __init__(self, match, timeout):
+		super().__init__(timeout = timeout)
 		
 		self.match = match
 		
