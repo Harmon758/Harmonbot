@@ -305,11 +305,11 @@ class Trivia(commands.Cog):
 	
 	@commands.command()
 	async def jeopardy(self, ctx, buzzer: bool = False, turns: bool = False):
-		'''
+		"""
 		Trivia with categories
 		[row number] [value] to pick the question
 		Based on Jeopardy!
-		'''
+		"""
 		if command := ctx.bot.get_command("trivia board"):
 			await ctx.invoke(command, buzzer = buzzer, turns = turns)
 		else:
