@@ -40,6 +40,9 @@ class TestCheckAnswer(unittest.TestCase):
             check_answer("Holland (The Netherlands)", "Netherlands")
         )
 
+    def test_plural_validation_handling(self):
+        self.assertFalse(check_answer("Kellogg's", "'s"))
+
 
 if __name__ == "__main__":
     unittest.main()

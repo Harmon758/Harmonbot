@@ -7,6 +7,7 @@ import warnings
 
 from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
 import inflect
+import pydantic
 from pyparsing import (
     Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
 )
@@ -111,8 +112,9 @@ def check_answer(answer, response, inflect_engine = None):
     # Check plurality
     if response == inflect_engine.plural(answer):
         return True
-    if answer == inflect_engine.plural(response):
-        return True
+    with contextlib.suppress(pydantic.ValidationError):
+        if answer == inflect_engine.plural(response):
+            return True
     # Check XX and YY ZZ
     last = answer_items[-1].split()
     if len(last) > 1:
