@@ -286,10 +286,9 @@ class Trivia(commands.Cog):
 		board = {}
 		values = [200, 400, 600, 800, 1000]
 		while len(board) < 6:
-			url = "http://jservice.io/api/random"
-			params = {"count": 6 - len(board)}
 			async with ctx.bot.aiohttp_session.get(
-				url, params = params
+				"http://jservice.io/api/random",
+				params = {"count": 6 - len(board)}
 			) as resp:
 				if resp.status in (500, 503):
 					embed = message.embeds[0]
@@ -303,10 +302,9 @@ class Trivia(commands.Cog):
 				category_id = random_clue["category_id"]
 				if category_id is None or category_id in board:
 					continue
-				url = "http://jservice.io/api/category"
-				params = {"id": category_id}
 				async with ctx.bot.aiohttp_session.get(
-					url, params = params
+					"http://jservice.io/api/category",
+					params = {"id": category_id}
 				) as resp:
 					if resp.status == 404:
 						continue
@@ -419,8 +417,9 @@ class Trivia(commands.Cog):
 			self.active_jeopardy[ctx.guild.id]["answer"] = clue["answer"]
 			self.active_jeopardy[ctx.guild.id]["question_countdown"] = self.wait_time
 			message = await ctx.embed_reply(
-				clue["question"], title = board[category_id]["title"],
 				author_name = None,
+				title = board[category_id]["title"],
+				description = clue["question"],
 				footer_text = f"You have {self.wait_time} seconds left to answer | Air Date", 
 				timestamp = dateutil.parser.parse(clue["airdate"])
 			)
@@ -463,9 +462,11 @@ class Trivia(commands.Cog):
 			if score == highest_score
 		]
 		await ctx.embed_send(
-			f"{ctx.bot.inflect_engine.join(winners)} {ctx.bot.inflect_engine.plural('is', len(winners))} "
-			f"the {ctx.bot.inflect_engine.plural('winner', len(winners))} with ${highest_score}!",
-			title = "Jeopardy!"
+			title = "Jeopardy!",
+			description = (
+				f"{ctx.bot.inflect_engine.join(winners)} {ctx.bot.inflect_engine.plural('is', len(winners))} "
+				f"the {ctx.bot.inflect_engine.plural('winner', len(winners))} with ${highest_score}!"
+			)
 		)
 		del self.active_jeopardy[ctx.guild.id]
 	
