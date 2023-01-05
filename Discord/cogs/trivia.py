@@ -95,7 +95,7 @@ class Trivia(commands.Cog):
         seconds: commands.Range[int, 1, 60] = 15
     ):
         """
-        Trivia game
+        Trivia question
         Only your last answer is accepted
         Answers prepended with ! or > are ignored
         Questions are taken from Jeopardy!
@@ -175,12 +175,23 @@ class Trivia(commands.Cog):
         finally:
             del self.trivia_questions[ctx.guild.id]
 
-    @trivia.command(aliases = ["jeopardy"], with_app_command = False)
+    @trivia.command(aliases = ["jeopardy"])
     async def board(self, ctx, buzzer = False, turns = False):
         """
-        Trivia with categories
-        [row number] [value] to pick the question
+        Trivia board
         Based on Jeopardy!
+        [category number] [value] can also be used to select clues
+
+        Parameters
+        ----------
+        buzzer
+            True: penalizes incorrect answers;
+            False: allows everyone to answer at once
+            (Defaults to False)
+        turns
+            True: invoker and last person to answer correctly select;
+            False: anyone selects
+            (Defaults to False)
         """
         # Note: jeopardy command invokes this command
         # TODO: Daily Double?
@@ -307,9 +318,20 @@ class Trivia(commands.Cog):
     @commands.command()
     async def jeopardy(self, ctx, buzzer: bool = False, turns: bool = False):
         """
-        Trivia with categories
-        [row number] [value] to pick the question
+        Trivia board
         Based on Jeopardy!
+        [category number] [value] can also be used to select clues
+
+        Parameters
+        ----------
+        buzzer
+            True: penalizes incorrect answers;
+            False: allows everyone to answer at once
+            (Defaults to False)
+        turns
+            True: invoker and last person to answer correctly select;
+            False: anyone selects
+            (Defaults to False)
         """
         if command := ctx.bot.get_command("trivia board"):
             await ctx.invoke(command, buzzer = buzzer, turns = turns)
