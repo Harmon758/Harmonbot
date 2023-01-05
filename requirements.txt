@@ -92,7 +92,7 @@ grpcio==1.50.0
 grpcio-status==1.45.0
 h11==0.14.0
 httpcore==0.16.3
-httpx==0.23.2
+httpx==0.23.3
 idna==3.4
 jaraco.context==4.2.0
 jsonschema==4.17.3
