@@ -512,8 +512,10 @@ class JeopardyMatch:
 			countdown = self.wait_time
 			message = self.message
 			embed = message.embeds[0]
-			while self.awaiting_answer and countdown:
+			while countdown:
 				await asyncio.sleep(1)
+				if not self.awaiting_answer:
+					return
 				countdown -= 1
 				embed.set_footer(
 					text = (
@@ -523,8 +525,7 @@ class JeopardyMatch:
 				)
 				await message.edit(embed = embed)
 			self.awaiting_answer = False
-			if not countdown:
-				await self.timeout()
+			await self.timeout()
 	
 	async def timeout(self):
 		embed = self.message.embeds[0]
