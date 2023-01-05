@@ -29,7 +29,7 @@ class Trivia(commands.Cog):
 		self.bot = bot
 		self.active_jeopardy = {}
 		
-		self.jeopardy_matches = {}
+		self.trivia_boards = {}
 		self.trivia_questions = {}
 	
 	async def cog_load(self):
@@ -117,39 +117,8 @@ class Trivia(commands.Cog):
 		finally:
 			del self.trivia_questions[ctx.guild.id]
 	
-	@trivia.command(
-		name = "bet",
-		max_concurrency = max_concurrency, with_app_command = False
-	)
-	async def trivia_bet(self, ctx):
-		'''
-		Trivia with betting
-		The category is shown first during the betting phase
-		Enter any amount under or equal to the money you have to bet
-		Currently, you start with $100,000
-		'''
-		try:
-			self.trivia_questions[ctx.guild.id] = TriviaQuestion(15)
-			await self.trivia_questions[ctx.guild.id].start(ctx, bet = True)
-		finally:
-			del self.trivia_questions[ctx.guild.id]
-	
-	@trivia.command(aliases = ["jeopardy"], with_app_command = False)
-	async def board(self, ctx, buzzer = False, turns = False):
-		"""
-		Trivia with categories
-		[row number] [value] to pick the question
-		Based on Jeopardy!
-		"""
-		if command := ctx.bot.get_command("jeopardy"):
-			await ctx.invoke(command, buzzer = buzzer, turns = turns)
-		else:
-			raise RuntimeError(
-				"jeopardy command not found when trivia board command invoked"
-			)
-	
 	@commands.Cog.listener("on_message")
-	async def trivia_on_message(self, message):
+	async def on_trivia_question_message(self, message):
 		if not message.guild or not (
 			trivia_question := self.trivia_questions.get(message.guild.id)
 		):
@@ -187,6 +156,90 @@ class Trivia(commands.Cog):
 			):
 				return
 			trivia_question.responses[message.author] = message.content
+	
+	@trivia.command(
+		name = "bet",
+		max_concurrency = max_concurrency, with_app_command = False
+	)
+	async def trivia_bet(self, ctx):
+		'''
+		Trivia with betting
+		The category is shown first during the betting phase
+		Enter any amount under or equal to the money you have to bet
+		Currently, you start with $100,000
+		'''
+		try:
+			self.trivia_questions[ctx.guild.id] = TriviaQuestion(15)
+			await self.trivia_questions[ctx.guild.id].start(ctx, bet = True)
+		finally:
+			del self.trivia_questions[ctx.guild.id]
+	
+	@trivia.command(aliases = ["jeopardy"], with_app_command = False)
+	async def board(self, ctx, buzzer = False, turns = False):
+		"""
+		Trivia with categories
+		[row number] [value] to pick the question
+		Based on Jeopardy!
+		"""
+		# Note: jeopardy command invokes this command
+		# TODO: Daily Double?
+		if match := self.trivia_boards.get(ctx.channel.id):
+			await ctx.embed_reply(
+				f"[There's already a trivia board in progress here]({match.message.jump_url})"
+			)
+			return
+		
+		if not (trivia_board := TriviaBoard(buzzer = buzzer, turns = turns)):
+			return
+		
+		self.trivia_boards[ctx.channel.id] = trivia_board
+		await self.trivia_boards[ctx.channel.id].start(ctx)
+		await self.trivia_boards[ctx.channel.id].ended.wait()
+		del self.trivia_boards[ctx.channel.id]
+	
+	@commands.Cog.listener("on_message")
+	async def on_trivia_board_message(self, message):
+		if not (trivia_board := self.trivia_boards.get(message.channel.id)):
+			return
+		if trivia_board.awaiting_answer:
+			if message.author.id == self.bot.user.id:
+				return
+			await trivia_board.answer(message.author, message.content)
+			return
+		if not trivia_board.awaiting_selection:
+			return
+		if len(message_parts := message.content.split()) < 2:
+			return
+		try:
+			category_number = int(message_parts[0])
+			value = int(message_parts[1])
+		except ValueError:
+			return
+		if category_number < 1 or category_number > len(trivia_board.board):
+			return
+		if value not in trivia_board.VALUES:
+			return
+		if trivia_board.turns and message.author != trivia_board.turn:
+			ctx = await self.bot.get_context(message)
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} It's not your turn"
+			)
+			return
+		if not trivia_board.board[category_number - 1]["clues"][value]:
+			ctx = await self.bot.get_context(message)
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} That question has already been chosen"
+			)
+			return
+		category_title = trivia_board.board[category_number - 1]['title']
+		embed = trivia_board.message.embeds[0]
+		embed.description += (
+			f"\n{message.author.mention} chose {category_title} for `{value}`"
+		)
+		await trivia_board.message.edit(embed = embed, view = None)
+		await trivia_board.select(category_number, value)
+	
+	# TODO: trivia board stats
 	
 	@trivia.command(name = "money", aliases = ["cash"], with_app_command = False)
 	async def trivia_money(self, ctx):
@@ -257,70 +310,15 @@ class Trivia(commands.Cog):
 		[row number] [value] to pick the question
 		Based on Jeopardy!
 		'''
-		# Note: trivia board command invokes this command
-		# TODO: Daily Double?
-		if match := self.jeopardy_matches.get(ctx.channel.id):
-			await ctx.embed_reply(
-				f"[There's already a Jeopardy match in progress here]({match.message.jump_url})"
+		if command := ctx.bot.get_command("trivia board"):
+			await ctx.invoke(command, buzzer = buzzer, turns = turns)
+		else:
+			raise RuntimeError(
+				"trivia board command not found when jeopardy command invoked"
 			)
-			return
-		
-		if not (jeopardy_match := JeopardyMatch(buzzer = buzzer, turns = turns)):
-			return
-		
-		self.jeopardy_matches[ctx.channel.id] = jeopardy_match
-		await self.jeopardy_matches[ctx.channel.id].start(ctx)
-		await self.jeopardy_matches[ctx.channel.id].ended.wait()
-		del self.jeopardy_matches[ctx.channel.id]
-	
-	@commands.Cog.listener("on_message")
-	async def jeopardy_on_message(self, message):
-		if not (
-			jeopardy_match := self.jeopardy_matches.get(message.channel.id)
-		):
-			return
-		if jeopardy_match.awaiting_answer:
-			if message.author.id == self.bot.user.id:
-				return
-			await jeopardy_match.answer(message.author, message.content)
-			return
-		if not jeopardy_match.awaiting_selection:
-			return
-		if len(message_parts := message.content.split()) < 2:
-			return
-		try:
-			category_number = int(message_parts[0])
-			value = int(message_parts[1])
-		except ValueError:
-			return
-		if category_number < 1 or category_number > len(jeopardy_match.board):
-			return
-		if value not in jeopardy_match.VALUES:
-			return
-		if jeopardy_match.turns and message.author != jeopardy_match.turn:
-			ctx = await self.bot.get_context(message)
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} It's not your turn"
-			)
-			return
-		if not jeopardy_match.board[category_number - 1]["clues"][value]:
-			ctx = await self.bot.get_context(message)
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} That question has already been chosen"
-			)
-			return
-		category_title = jeopardy_match.board[category_number - 1]['title']
-		embed = jeopardy_match.message.embeds[0]
-		embed.description += (
-			f"\n{message.author.mention} chose {category_title} for `{value}`"
-		)
-		await jeopardy_match.message.edit(embed = embed, view = None)
-		await jeopardy_match.select(category_number, value)
-	
-	# TODO: jeopardy stats
 
 
-class JeopardyMatch:
+class TriviaBoard:
 	
 	VALUES = (200, 400, 600, 800, 1000)
 	
@@ -346,7 +344,7 @@ class JeopardyMatch:
 		self.ctx = ctx
 		self.message = await ctx.embed_reply(
 			author_name = None, 
-			title = "Jeopardy!", 
+			title = "Trivia Board", 
 			description = "Generating board..", 
 			footer_text = None
 		)
@@ -360,7 +358,7 @@ class JeopardyMatch:
 		embed.description = ctx.bot.CODE_BLOCK.format('\n'.join(self.board_lines))
 		if self.turns:
 			embed.description += f"\nIt's {self.turn.mention}'s turn"
-		await self.message.edit(embed = embed, view = JeopardySelectionView(self))
+		await self.message.edit(embed = embed, view = TriviaBoardSelectionView(self))
 		self.awaiting_selection = True
 		return True
 	
@@ -370,7 +368,7 @@ class JeopardyMatch:
 			self.answerer = player
 			
 			answer_prompt_message = await self.ctx.embed_send(
-				title = "Jeopardy!", 
+				title = "Trivia Board", 
 				title_url = self.message.jump_url, 
 				description = (
 					f"{player.mention} hit the buzzer\n"
@@ -384,7 +382,7 @@ class JeopardyMatch:
 			except asyncio.TimeoutError:
 				self.scores[player] = self.scores.get(player, 0) - int(self.value)
 				await self.ctx.embed_send(
-					title = "Jeopardy!", 
+					title = "Trivia Board", 
 					title_url = answer_prompt_message.jump_url, 
 					description = (
 						f"{player.mention} ran out of time and lost `{self.value}`\n"
@@ -393,7 +391,7 @@ class JeopardyMatch:
 				)
 				self.message = await self.ctx.send(
 					embed = self.message.embeds[0], 
-					view = JeopardyBuzzerView(self, self.wait_time)
+					view = TriviaBoardBuzzerView(self, self.wait_time)
 				)
 				return
 			
@@ -437,12 +435,12 @@ class JeopardyMatch:
 				if self.turns:
 					self.turn = player
 					response += f"\nIt's {self.turn.mention}'s turn"
-				view = JeopardySelectionView(self)
+				view = TriviaBoardSelectionView(self)
 			else:
 				view = None
 			
 			self.message = await self.ctx.embed_send(
-				title = "Jeopardy!", 
+				title = "Trivia Board", 
 				title_url = (
 					answer_prompt_message.jump_url if self.buzzer
 					else self.message.jump_url
@@ -459,7 +457,7 @@ class JeopardyMatch:
 			# Incorrect answer
 			self.scores[player] = self.scores.get(player, 0) - int(self.value)
 			await self.ctx.embed_send(
-				title = "Jeopardy!", 
+				title = "Trivia Board", 
 				title_url = answer_prompt_message.jump_url, 
 				description = (
 					f"{player.mention} was incorrect and lost `{self.value}`\n"
@@ -468,7 +466,7 @@ class JeopardyMatch:
 			)
 			self.message = await self.ctx.send(
 				embed = self.message.embeds[0], 
-				view = JeopardyBuzzerView(self, self.wait_time)
+				view = TriviaBoardBuzzerView(self, self.wait_time)
 			)
 	
 	def answer_check(self, message):
@@ -502,7 +500,7 @@ class JeopardyMatch:
 			),
 			timestamp = dateutil.parser.parse(clue["airdate"]), 
 			view = (
-				JeopardyBuzzerView(self, self.wait_time) if self.buzzer
+				TriviaBoardBuzzerView(self, self.wait_time) if self.buzzer
 				else None
 			)
 		)
@@ -563,12 +561,12 @@ class JeopardyMatch:
 		):
 			if self.turn:
 				response += f"\nIt's {self.turn.mention}'s turn"
-			view = JeopardySelectionView(self)
+			view = TriviaBoardSelectionView(self)
 		else:
 			view = None
 		
 		self.message = await self.ctx.embed_send(
-			title = "Jeopardy!", 
+			title = "Trivia Board", 
 			title_url = self.message.jump_url, 
 			description = response, 
 			view = view
@@ -688,7 +686,7 @@ class JeopardyMatch:
 			if score == highest_score
 		]
 		await self.ctx.embed_send(
-			title = "Jeopardy!", 
+			title = "Trivia Board", 
 			title_url = self.message.jump_url, 
 			description = (
 				f"{self.bot.inflect_engine.join(winners)} {self.bot.inflect_engine.plural('is', len(winners))} "
@@ -697,7 +695,7 @@ class JeopardyMatch:
 		)
 
 
-class JeopardySelectionView(ui.View):
+class TriviaBoardSelectionView(ui.View):
 	
 	def __init__(self, match):
 		super().__init__(timeout = None)
@@ -711,7 +709,7 @@ class JeopardySelectionView(ui.View):
 				# TODO: Handle description longer than 50 characters?
 		
 		for value in self.match.VALUES:
-			self.add_item(JeopardyValueButton(value))
+			self.add_item(TriviaBoardValueButton(value))
 	
 	@ui.select(placeholder = "Select a category")
 	async def category(self, interaction, select):
@@ -724,7 +722,7 @@ class JeopardySelectionView(ui.View):
 		await interaction.response.edit_message(view = self)
 
 
-class JeopardyValueButton(ui.Button):
+class TriviaBoardValueButton(ui.Button):
 	
 	def __init__(self, label):
 		super().__init__(style = discord.ButtonStyle.blurple, label = label)
@@ -758,7 +756,7 @@ class JeopardyValueButton(ui.Button):
 		await self.view.match.select(category_number, value)
 
 
-class JeopardyBuzzerView(ui.View):
+class TriviaBoardBuzzerView(ui.View):
 	
 	def __init__(self, match, timeout):
 		super().__init__(timeout = timeout)
@@ -887,7 +885,7 @@ class TriviaQuestion:
 			description = data["question"],
 			footer_text = f"You have {self.question_countdown} seconds left to answer | Air Date",
 			timestamp = dateutil.parser.parse(data["airdate"]),
-			view = TriviaView(self, self.seconds)
+			view = TriviaQuestionView(self, self.seconds)
 		)
 		embed = self.response.embeds[0]
 		
@@ -997,7 +995,7 @@ class TriviaQuestion:
 			await ctx.embed_reply('\n'.join(bets_output), author_name = None)
 
 
-class TriviaView(ui.View):
+class TriviaQuestionView(ui.View):
 	
 	def __init__(self, question, timeout):
 		super().__init__(timeout = timeout)
@@ -1007,7 +1005,7 @@ class TriviaView(ui.View):
 	@ui.button(style = discord.ButtonStyle.red, label = "Answer")
 	async def answer(self, interaction, button):
 		await interaction.response.send_modal(
-			TriviaAnswerModal(self.question)
+			TriviaQuestionAnswerModal(self.question)
 		)
 	
 	async def on_timeout(self):
@@ -1015,7 +1013,7 @@ class TriviaView(ui.View):
 		self.stop()
 
 
-class TriviaAnswerModal(ui.Modal, title = "Answer"):
+class TriviaQuestionAnswerModal(ui.Modal, title = "Answer"):
 	
 	answer = ui.TextInput(label = "Answer")
 	
