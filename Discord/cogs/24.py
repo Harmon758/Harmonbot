@@ -138,7 +138,7 @@ class TwentyFourSubmitSolutionModal(ui.Modal, title = "Submit Solution"):
         embed = discord.Embed(color = interaction.client.bot_color)
         embed.set_author(
             name = interaction.user.display_name,
-            icon_url = interaction.user.avatar.url
+            icon_url = interaction.user.display_avatar.url
         )
         if value == 24:
             embed.title = "Correct!"
