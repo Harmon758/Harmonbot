@@ -176,7 +176,10 @@ class Trivia(commands.Cog):
             del self.trivia_questions[ctx.guild.id]
 
     @trivia.command(aliases = ["jeopardy"])
-    async def board(self, ctx, buzzer = False, turns = False):
+    async def board(
+        self, ctx, buzzer: bool = False,
+        seconds: commands.Range[int, 1, 60] = 15, turns: bool = False
+    ):
         """
         Trivia board
         Based on Jeopardy!
@@ -188,6 +191,9 @@ class Trivia(commands.Cog):
             True: penalizes incorrect answers;
             False: allows everyone to answer at once
             (Defaults to False)
+        seconds
+            How long to accept answers for, in seconds
+            (1 - 60, default is 15)
         turns
             True: invoker and last person to answer correctly select;
             False: anyone selects
@@ -201,7 +207,11 @@ class Trivia(commands.Cog):
             )
             return
 
-        if not (trivia_board := TriviaBoard(buzzer = buzzer, turns = turns)):
+        if not (
+            trivia_board := TriviaBoard(
+                seconds, buzzer = buzzer, turns = turns
+            )
+        ):
             return
 
         self.trivia_boards[ctx.channel.id] = trivia_board
@@ -316,7 +326,10 @@ class Trivia(commands.Cog):
         await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 
     @commands.command()
-    async def jeopardy(self, ctx, buzzer: bool = False, turns: bool = False):
+    async def jeopardy(
+        self, ctx, buzzer: bool = False,
+        seconds: commands.Range[int, 1, 60] = 15, turns: bool = False
+    ):
         """
         Trivia board
         Based on Jeopardy!
@@ -328,13 +341,18 @@ class Trivia(commands.Cog):
             True: penalizes incorrect answers;
             False: allows everyone to answer at once
             (Defaults to False)
+        seconds
+            How long to accept answers for, in seconds
+            (1 - 60, default is 15)
         turns
             True: invoker and last person to answer correctly select;
             False: anyone selects
             (Defaults to False)
         """
         if command := ctx.bot.get_command("trivia board"):
-            await ctx.invoke(command, buzzer = buzzer, turns = turns)
+            await ctx.invoke(
+                command, buzzer = buzzer, seconds = seconds, turns = turns
+            )
         else:
             raise RuntimeError(
                 "trivia board command not found when jeopardy command invoked"
@@ -345,7 +363,7 @@ class TriviaBoard:
 
     VALUES = (200, 400, 600, 800, 1000)
 
-    def __init__(self, buzzer = True, turns = True):
+    def __init__(self, seconds, buzzer = True, turns = True):
         self.awaiting_answer = False  # This is not used if buzzer == True
         self.awaiting_selection = False  # TODO: Selection timeout?
         self.board = []
@@ -354,11 +372,11 @@ class TriviaBoard:
         # If not, allows everyone to answer at once
         self.buzzer = buzzer
         self.scores = {}
+        self.seconds = seconds
         self.turn = None  # Who's turn it is
         # Whether or not to enforce turns
         # with last person to answer correctly selecting
         self.turns = turns
-        self.wait_time = 15  # TODO: Custom
 
         self.ended = asyncio.Event()
 
@@ -397,11 +415,11 @@ class TriviaBoard:
                     f"{player.mention} hit the buzzer\n"
                     f"{player.mention}: What's your answer?"
                 ),
-                footer_text = f"You have {self.wait_time} seconds to answer"
+                footer_text = f"You have {self.seconds} seconds to answer"
             )
 
             try:
-                message = await self.bot.wait_for("message", check = self.answer_check, timeout = self.wait_time)
+                message = await self.bot.wait_for("message", check = self.answer_check, timeout = self.seconds)
             except asyncio.TimeoutError:
                 self.scores[player] = self.scores.get(player, 0) - int(self.value)
                 await self.ctx.embed_send(
@@ -414,7 +432,7 @@ class TriviaBoard:
                 )
                 self.message = await self.ctx.send(
                     embed = self.message.embeds[0],
-                    view = TriviaBoardBuzzerView(self, self.wait_time)
+                    view = TriviaBoardBuzzerView(self, self.seconds)
                 )
                 return
 
@@ -489,7 +507,7 @@ class TriviaBoard:
             )
             self.message = await self.ctx.send(
                 embed = self.message.embeds[0],
-                view = TriviaBoardBuzzerView(self, self.wait_time)
+                view = TriviaBoardBuzzerView(self, self.seconds)
             )
 
     def answer_check(self, message):
@@ -518,19 +536,19 @@ class TriviaBoard:
             title_url = self.message.jump_url,
             description = clue["question"],
             footer_text = (
-                f"You have {self.wait_time} seconds to {action} | "
+                f"You have {self.seconds} seconds to {action} | "
                 "Air Date"
             ),
             timestamp = dateutil.parser.parse(clue["airdate"]),
             view = (
-                TriviaBoardBuzzerView(self, self.wait_time) if self.buzzer
+                TriviaBoardBuzzerView(self, self.seconds) if self.buzzer
                 else None
             )
         )
 
         if not self.buzzer:
             self.awaiting_answer = True
-            countdown = self.wait_time
+            countdown = self.seconds
             message = self.message
             embed = message.embeds[0]
             while countdown:
