@@ -478,6 +478,9 @@ class JeopardyMatch:
 		return message.author == self.answerer
 	
 	async def select(self, category_number, value):
+		if not self.awaiting_selection:
+			return
+		
 		self.awaiting_selection = False
 		
 		self.category_number = category_number
