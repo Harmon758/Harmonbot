@@ -766,18 +766,14 @@ class TriviaBoardSelectionView(ui.View):
 class TriviaBoardValueButton(ui.Button):
 
     def __init__(self, label):
-        super().__init__(style = discord.ButtonStyle.blurple, label = label)
+        super().__init__(
+            style = discord.ButtonStyle.blurple, disabled = True, label = label
+        )
 
     async def callback(self, interaction):
         if self.view.match.turns and interaction.user != self.view.match.turn:
             await interaction.response.send_message(
                 "It's not your turn", ephemeral = True
-            )
-            return
-
-        if not self.view.category.values:
-            await interaction.response.send_message(
-                "Select a category first", ephemeral = True
             )
             return
 
