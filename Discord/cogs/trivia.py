@@ -396,10 +396,14 @@ class TriviaBoard:
             return False
 
         embed = self.message.embeds[0]
-        embed.description = ctx.bot.CODE_BLOCK.format('\n'.join(self.board_lines))
+        embed.description = ctx.bot.CODE_BLOCK.format(
+            '\n'.join(self.board_lines)
+        )
         if self.turns:
             embed.description += f"\nIt's {self.turn.mention}'s turn"
-        await self.message.edit(embed = embed, view = TriviaBoardSelectionView(self))
+        await self.message.edit(
+            embed = embed, view = TriviaBoardSelectionView(self)
+        )
         self.awaiting_selection = True
         return True
 
@@ -419,9 +423,14 @@ class TriviaBoard:
             )
 
             try:
-                message = await self.bot.wait_for("message", check = self.answer_check, timeout = self.seconds)
+                message = await self.bot.wait_for(
+                    "message",
+                    check = self.answer_check, timeout = self.seconds
+                )
             except asyncio.TimeoutError:
-                self.scores[player] = self.scores.get(player, 0) - int(self.value)
+                self.scores[player] = (
+                    self.scores.get(player, 0) - int(self.value)
+                )
                 await self.ctx.embed_send(
                     title = "Trivia Board",
                     title_url = answer_prompt_message.jump_url,
@@ -438,7 +447,10 @@ class TriviaBoard:
 
             answer = message.content
 
-        if check_answer(self.correct_answer, answer, inflect_engine = self.bot.inflect_engine):
+        if check_answer(
+            self.correct_answer, answer,
+            inflect_engine = self.bot.inflect_engine
+        ):
             # Correct answer
             self.awaiting_answer = False
 
@@ -532,7 +544,9 @@ class TriviaBoard:
 
         action = "hit the buzzer" if self.buzzer else "answer"
         self.message = await self.ctx.embed_send(
-            title = f"{self.board[category_number - 1]['title']}\n(for {value})",
+            title = (
+                f"{self.board[category_number - 1]['title']}\n(for {value})"
+            ),
             title_url = self.message.jump_url,
             description = clue["question"],
             footer_text = (
