@@ -253,7 +253,7 @@ class Trivia(commands.Cog):
                 f"{ctx.bot.error_emoji} That question has already been chosen"
             )
             return
-        category_title = trivia_board.board[category_number - 1]['title']
+        category_title = trivia_board.board[category_number - 1]["title"]
         embed = trivia_board.message.embeds[0]
         embed.description += (
             f"\n{message.author.mention} chose {category_title} for `{value}`"
