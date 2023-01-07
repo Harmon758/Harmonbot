@@ -958,10 +958,10 @@ class TriviaQuestion:
                 users = ctx.bot.inflect_engine.join(
                     [user.mention for user in responses]
                 )
-                has_or_have = ctx.bot.inflect_engine.plural(
+                has_declension = ctx.bot.inflect_engine.plural(
                     'has', len(responses)
                 )
-                embed.description += f"\n\n{users} {has_or_have} answered"
+                embed.description += f"\n\n{users} {has_declension} answered"
             second_declension = ctx.bot.inflect_engine.plural(
                 "second", self.question_countdown
             )
