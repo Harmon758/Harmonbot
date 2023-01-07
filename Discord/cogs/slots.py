@@ -70,8 +70,10 @@ class Slots(commands.Cog):
             ctx.author.id
         )
         if plays:
-            times = ctx.bot.inflect_engine.plural("time", plays)
-            await ctx.embed_reply(f"You've played slots {plays:,} {times}")
+            time_declension = ctx.bot.inflect_engine.plural("time", plays)
+            await ctx.embed_reply(
+                f"You've played slots {plays:,} {time_declension}"
+            )
         else:
             await ctx.embed_reply(f"You haven't played slots yet")
 
