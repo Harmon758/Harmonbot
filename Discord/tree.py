@@ -23,7 +23,7 @@ class CommandTree(app_commands.CommandTree):
                     for permission in error.original.missing_permissions
                 ])
                 permission_declension = bot.inflect_engine.plural(
-                    'permission', len(error.original.missing_permissions)
+                    "permission", len(error.original.missing_permissions)
                 )
                 await ctx.embed_reply(
                     "I don't have permission to do that here\n"
