@@ -17,6 +17,7 @@ import dateutil.parser
 from utilities import checks
 
 sys.path.insert(0, "..")
+from units.ansi import affix_ansi, TextColor
 from units.trivia import capwords, check_answer
 sys.path.pop(0)
 
@@ -396,7 +397,7 @@ class TriviaBoard:
             return False
 
         embed = self.message.embeds[0]
-        embed.description = ctx.bot.CODE_BLOCK.format(
+        embed.description = ctx.bot.ANSI_CODE_BLOCK.format(
             '\n'.join(self.board_lines)
         )
         if self.turns:
@@ -478,7 +479,9 @@ class TriviaBoard:
                     )
                 )
             )
-            response += self.bot.CODE_BLOCK.format('\n'.join(self.board_lines))
+            response += self.bot.ANSI_CODE_BLOCK.format(
+                '\n'.join(self.board_lines)
+            )
 
             if clues_left := any(
                 clue
@@ -601,7 +604,9 @@ class TriviaBoard:
                 )
             )
         )
-        response += self.bot.CODE_BLOCK.format('\n'.join(self.board_lines))
+        response += self.bot.ANSI_CODE_BLOCK.format(
+            '\n'.join(self.board_lines)
+        )
 
         if clues_left := any(
             clue
@@ -693,8 +698,23 @@ class TriviaBoard:
                 })
 
         for number, category in enumerate(self.board, start = 1):
-            self.board_lines.append(f"{number}) {category['title']}")
-            self.board_lines.append("   200 400 600 800 1000")
+            self.board_lines.append(
+                affix_ansi(
+                    str(number) + ')',
+                    bold = True,
+                    text_color = TextColor.GREEN
+                ) + ' ' + affix_ansi(
+                    category["title"],
+                    bold = True,
+                    text_color = TextColor.CYAN
+                )
+            )
+            self.board_lines.append(
+                affix_ansi(
+                    "   200 400 600 800 1000",
+                    text_color = TextColor.BLUE
+                )
+            )
 
         return True
 

@@ -137,6 +137,7 @@ class Bot(commands.Bot):
 		self.error_emoji = self.error_emote = '\N{NO ENTRY}'
 		## Constant
 		self.CODE_BLOCK = "```\n{}\n```"  # TODO: Change to method?
+		self.ANSI_CODE_BLOCK = "```ansi\n{}\n```"  # TODO: Change to method?
 		self.PY_CODE_BLOCK = "```py\n{}\n```"  # TODO: Change to method?
 		self.ZERO_WIDTH_SPACE = self.ZWSP = self.ZWS = '\N{ZERO WIDTH SPACE}'
 		### Discord
