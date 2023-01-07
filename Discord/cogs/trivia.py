@@ -471,10 +471,10 @@ class TriviaBoard:
                 response += scores + '\n'
 
             self.board[self.category_number - 1]["clues"][self.value] = None
-            self.board_lines[self.category_number - 1] = (
+            self.board_lines[2 * self.category_number - 1] = (
                 (len(str(self.value)) * ' ').join(
-                    self.board_lines[self.category_number - 1].rsplit(
-                        str(self.value), 1
+                    self.board_lines[2 * self.category_number - 1].split(
+                        str(self.value), maxsplit = 1
                     )
                 )
             )
@@ -594,10 +594,10 @@ class TriviaBoard:
             response += scores + '\n'
 
         self.board[self.category_number - 1]["clues"][self.value] = None
-        self.board_lines[self.category_number - 1] = (
+        self.board_lines[2 * self.category_number - 1] = (
             (len(str(self.value)) * ' ').join(
-                self.board_lines[self.category_number - 1].rsplit(
-                    str(self.value), 1
+                self.board_lines[2 * self.category_number - 1].split(
+                    str(self.value), maxsplit = 1
                 )
             )
         )
@@ -692,38 +692,9 @@ class TriviaBoard:
                     }
                 })
 
-        category_title_line_character_limit = self.bot.EDCBRCL - 25
-        # EDCBRCL = Embed Description Code Block Row Character Limit
-        # len("#) " + "  200 400 600 800 1000") = 25
-        for category in self.board:
-            category_title = category["formatted_title"] = category["title"]
-            if len(category_title) > category_title_line_character_limit:
-                split_index = category_title.rfind(
-                    ' ', 0, category_title_line_character_limit
-                )
-                category["formatted_title"] = (
-                    category_title[:split_index] + '\n' +
-                    category_title[split_index + 1:]
-                )
-
-        max_width = max(
-            len(section)
-            for category in self.board
-            for section in category["formatted_title"].split('\n')
-        )
-        for number, category_title in enumerate(
-            category["formatted_title"] for category in self.board
-        ):
-            try:
-                split_index = category_title.index('\n')
-                self.board_lines.append(
-                    f"{number + 1}) {category_title[:split_index]}\n"
-                    f"   {category_title[split_index + 1:].ljust(max_width)}  200 400 600 800 1000"
-                )
-            except ValueError:
-                self.board_lines.append(
-                    f"{number + 1}) {category_title.ljust(max_width)}  200 400 600 800 1000"
-                )
+        for number, category in enumerate(self.board, start = 1):
+            self.board_lines.append(f"{number}) {category['title']}")
+            self.board_lines.append("   200 400 600 800 1000")
 
         return True
 
