@@ -413,6 +413,9 @@ class TriviaBoard:
             self.answered.append(player)
             self.answerer = player
 
+            second_declension = self.bot.inflect_engine.plural(
+                "second", self.seconds
+            )
             answer_prompt_message = await self.ctx.embed_send(
                 title = "Trivia Board",
                 title_url = self.message.jump_url,
@@ -420,7 +423,7 @@ class TriviaBoard:
                     f"{player.mention} hit the buzzer\n"
                     f"{player.mention}: What's your answer?"
                 ),
-                footer_text = f"{self.seconds} seconds to answer"
+                footer_text = f"{self.seconds} {second_declension} to answer"
             )
 
             try:
@@ -546,13 +549,18 @@ class TriviaBoard:
         self.answered = []  # This is only used if buzzer == True
 
         action = "hit the buzzer" if self.buzzer else "answer"
+        second_declension = self.bot.inflect_engine.plural(
+            "second", self.seconds
+        )
         self.message = await self.ctx.embed_send(
             title = (
                 f"{self.board[category_number - 1]['title']}\n(for {value})"
             ),
             title_url = self.message.jump_url,
             description = clue["question"],
-            footer_text = f"{self.seconds} seconds to {action} | Air Date",
+            footer_text = (
+                f"{self.seconds} {second_declension} to {action} | Air Date"
+            ),
             timestamp = dateutil.parser.parse(clue["airdate"]),
             view = (
                 TriviaBoardBuzzerView(self, self.seconds) if self.buzzer
@@ -570,8 +578,11 @@ class TriviaBoard:
                 if not self.awaiting_answer:
                     return
                 countdown -= 1
+                second_declension = self.bot.inflect_engine.plural(
+                    "second", countdown
+                )
                 embed.set_footer(
-                    text = f"{countdown} seconds left to {action} | Air Date"
+                    text = f"{countdown} {second_declension} left to {action} | Air Date"
                 )
                 await message.edit(embed = embed)
             self.awaiting_answer = False
@@ -897,10 +908,15 @@ class TriviaQuestion:
 
         if bet:
             self.bet_countdown = self.wait_time
+            second_declension = ctx.bot.inflect_engine.plural(
+                "second", self.bet_countdown
+            )
             bet_message = await ctx.embed_reply(
                 author_name = None,
                 title = capwords(data["category"]["title"]),
-                footer_text = f"{self.bet_countdown} seconds left to bet"
+                footer_text = (
+                    f"{self.bet_countdown} {second_declension} left to bet"
+                )
             )
             embed = bet_message.embeds[0]
             while self.bet_countdown:
@@ -910,19 +926,25 @@ class TriviaQuestion:
                     f"{player.mention} has bet ${bet}"
                     for player, bet in self.bets.items()
                 )
+                second_declension = ctx.bot.inflect_engine.plural(
+                    "second", self.bet_countdown
+                )
                 embed.set_footer(
-                    text = f"{self.bet_countdown} seconds left to bet"
+                    text = f"{self.bet_countdown} {second_declension} left to bet"
                 )
                 await bet_message.edit(embed = embed)
             embed.set_footer(text = "Betting is over")
             await bet_message.edit(embed = embed)
 
         self.question_countdown = self.seconds
+        second_declension = ctx.bot.inflect_engine.plural(
+            "second", self.question_countdown
+        )
         self.response = await ctx.embed_reply(
             author_name = None,
             title = capwords(data["category"]["title"]),
             description = data["question"],
-            footer_text = f"{self.question_countdown} seconds left to answer | Air Date",
+            footer_text = f"{self.question_countdown} {second_declension} left to answer | Air Date",
             timestamp = dateutil.parser.parse(data["airdate"]),
             view = TriviaQuestionView(self, self.seconds)
         )
@@ -940,8 +962,11 @@ class TriviaQuestion:
                     'has', len(responses)
                 )
                 embed.description += f"\n\n{users} {has_or_have} answered"
+            second_declension = ctx.bot.inflect_engine.plural(
+                "second", self.question_countdown
+            )
             embed.set_footer(
-                text = f"{self.question_countdown} seconds left to answer | Air Date"
+                text = f"{self.question_countdown} {second_declension} left to answer | Air Date"
             )
             try:
                 await self.response.edit(embed = embed)
