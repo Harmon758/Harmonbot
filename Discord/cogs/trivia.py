@@ -419,7 +419,7 @@ class TriviaBoard:
                     f"{player.mention} hit the buzzer\n"
                     f"{player.mention}: What's your answer?"
                 ),
-                footer_text = f"You have {self.seconds} seconds to answer"
+                footer_text = f"{self.seconds} seconds to answer"
             )
 
             try:
@@ -549,10 +549,7 @@ class TriviaBoard:
             ),
             title_url = self.message.jump_url,
             description = clue["question"],
-            footer_text = (
-                f"You have {self.seconds} seconds to {action} | "
-                "Air Date"
-            ),
+            footer_text = f"{self.seconds} seconds to {action} | Air Date",
             timestamp = dateutil.parser.parse(clue["airdate"]),
             view = (
                 TriviaBoardBuzzerView(self, self.seconds) if self.buzzer
@@ -571,10 +568,7 @@ class TriviaBoard:
                     return
                 countdown -= 1
                 embed.set_footer(
-                    text = (
-                        f"You have {countdown} seconds left to {action} | "
-                        "Air Date"
-                    )
+                    text = f"{countdown} seconds left to {action} | Air Date"
                 )
                 await message.edit(embed = embed)
             self.awaiting_answer = False
@@ -912,7 +906,7 @@ class TriviaQuestion:
             bet_message = await ctx.embed_reply(
                 author_name = None,
                 title = capwords(data["category"]["title"]),
-                footer_text = f"You have {self.bet_countdown} seconds left to bet"
+                footer_text = f"{self.bet_countdown} seconds left to bet"
             )
             embed = bet_message.embeds[0]
             while self.bet_countdown:
@@ -923,7 +917,7 @@ class TriviaQuestion:
                     for player, bet in self.bets.items()
                 )
                 embed.set_footer(
-                    text = f"You have {self.bet_countdown} seconds left to bet"
+                    text = f"{self.bet_countdown} seconds left to bet"
                 )
                 await bet_message.edit(embed = embed)
             embed.set_footer(text = "Betting is over")
@@ -934,7 +928,7 @@ class TriviaQuestion:
             author_name = None,
             title = capwords(data["category"]["title"]),
             description = data["question"],
-            footer_text = f"You have {self.question_countdown} seconds left to answer | Air Date",
+            footer_text = f"{self.question_countdown} seconds left to answer | Air Date",
             timestamp = dateutil.parser.parse(data["airdate"]),
             view = TriviaQuestionView(self, self.seconds)
         )
@@ -953,7 +947,7 @@ class TriviaQuestion:
                 )
                 embed.description += f"\n\n{users} {has_or_have} answered"
             embed.set_footer(
-                text = f"You have {self.question_countdown} seconds left to answer | Air Date"
+                text = f"{self.question_countdown} seconds left to answer | Air Date"
             )
             try:
                 await self.response.edit(embed = embed)
