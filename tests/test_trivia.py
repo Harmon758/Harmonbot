@@ -46,6 +46,14 @@ class TestCheckAnswer(unittest.TestCase):
     def test_plural_validation_handling(self):
         self.assertFalse(check_answer("Kellogg's", "'s"))
 
+    def test_rearranged_list_with_following_word(self):
+        self.assertTrue(
+            check_answer(
+                "North and South Carolina",
+                "South and North Carolina"
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

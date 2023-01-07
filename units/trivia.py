@@ -116,22 +116,29 @@ def check_answer(answer, response, inflect_engine = None):
         if answer == inflect_engine.plural(response):
             return True
     # Check XX and YY ZZ
-    last = answer_items[-1].split()
-    if len(last) > 1:
-        suffix = last[-1]
+    answer_last = answer_items[-1].split()
+    if len(answer_last) > 1:
         if set(response_items) == set(
-            [f"{item} {suffix}" for item in answer_items[:-1]] +
+            [f"{item} {answer_last[-1]}" for item in answer_items[:-1]] +
             [answer_items[-1]]
         ):
             return True
-    last = response_items[-1].split()
-    if len(last) > 1:
-        suffix = last[-1]
+    response_last = response_items[-1].split()
+    if len(response_last) > 1:
         if set(answer_items) == set(
-            [f"{item} {suffix}" for item in response_items[:-1]] +
+            [f"{item} {response_last[-1]}" for item in response_items[:-1]] +
             [response_items[-1]]
         ):
             return True
+    if (
+        answer_last[-1] == response_last[-1] and
+        set(
+            answer_items[:-1] + [' '.join(answer_last[:-1])]
+        ) == set(
+            response_items[:-1] + [' '.join(response_last[:-1])]
+        )
+    ):
+        return True
     # Remove commas
     if ',' in answer:
         answer = answer.replace(',', "")
