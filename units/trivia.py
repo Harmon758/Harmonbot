@@ -72,8 +72,8 @@ def check_answer(answer, response, inflect_engine = None):
         return True
 
     # Remove article prefixes
-    answer = remove_article_prefix(answer)
-    response = remove_article_prefix(response)
+    answer = remove_preceding_words(answer)
+    response = remove_preceding_words(response)
     # Return False if empty response or answer
     if not response or not answer:
         return False
@@ -92,9 +92,9 @@ def check_answer(answer, response, inflect_engine = None):
         return False
     # Remove article prefixes
     for index, item in enumerate(answer_items):
-        answer_items[index] = remove_article_prefix(item)
+        answer_items[index] = remove_preceding_words(item)
     for index, item in enumerate(response_items):
-        response_items[index] = remove_article_prefix(item)
+        response_items[index] = remove_preceding_words(item)
     # Check equivalence
     if set(answer_items) == set(response_items):
         return True
@@ -149,7 +149,7 @@ def check_answer(answer, response, inflect_engine = None):
     if answer.replace('-', "") == response.replace('-', ""):
         return True
     # Check removal of parentheses
-    if response == remove_article_prefix(
+    if response == remove_preceding_words(
         answer.replace('(', "").replace(')', "")
     ):
         return True
@@ -224,13 +224,13 @@ def check_answer(answer, response, inflect_engine = None):
     for item in accepted:
         if item.startswith("or "):
             accepted.append(item[3:])
-            accepted.append(remove_article_prefix(item[3:]))
+            accepted.append(remove_preceding_words(item[3:]))
         if item.endswith(" accepted"):
             accepted.append(item[:-9])
-            accepted.append(remove_article_prefix(item[:-9]))
+            accepted.append(remove_preceding_words(item[:-9]))
     accepted = set(accepted)
     for item in accepted.copy():
-        accepted.add(remove_article_prefix(item))
+        accepted.add(remove_preceding_words(item))
     if response in accepted:
         return True
     # Check XX YY (or ZZ accepted)
@@ -255,9 +255,12 @@ def check_answer(answer, response, inflect_engine = None):
     return False
 
 
-def remove_article_prefix(string):
-    for article in ("a ", "an ", "the "):
-        if string.startswith(article):
-            return string[len(article):]
+def remove_preceding_words(string):
+    for word in (
+        ("a ", "an ", "the ") +  # articles
+        ("to ",)  # prepositions
+    ):
+        if string.startswith(word):
+            return string[len(word):]
     return string
 
