@@ -461,7 +461,7 @@ class TriviaBoard:
             self.scores[player] = self.scores.get(player, 0) + int(self.value)
 
             response = (
-                f"The answer was `{answer}`\n"
+                f"The answer was: `{answer}`\n"
                 f"{player.mention} was correct and won `{self.value}`\n\n"
             )
             if scores := ", ".join(
@@ -584,7 +584,7 @@ class TriviaBoard:
             "html.parser"
         ).get_text().replace("\\'", "'")
         response = (
-            f"The answer was `{answer}`\n"
+            f"The answer was: `{answer}`\n"
             "Nobody got it right\n\n"
         )
         if scores := ", ".join(
