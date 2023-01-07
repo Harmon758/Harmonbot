@@ -265,6 +265,7 @@ def check_answer(answer, response, inflect_engine = None):
 def remove_preceding_words(string):
     for word in (
         ("a ", "an ", "the ") +  # articles
+        ("her ", "his ", "its ", "their ", "your ") +  # possessive determiners
         ("to ",)  # prepositions
     ):
         if string.startswith(word):

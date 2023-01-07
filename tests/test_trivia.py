@@ -40,6 +40,9 @@ class TestCheckAnswer(unittest.TestCase):
             check_answer("Holland (The Netherlands)", "Netherlands")
         )
 
+    def test_preceding_possessive_determiner_removal(self):
+        self.assertTrue(check_answer("its head", "head"))
+
     def test_preceding_preposition_removal(self):
         self.assertTrue(check_answer("to carp", "carp"))
 
