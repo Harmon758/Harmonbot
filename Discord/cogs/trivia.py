@@ -178,7 +178,7 @@ class Trivia(commands.Cog):
 
     @trivia.command(aliases = ["jeopardy"])
     async def board(
-        self, ctx, buzzer: bool = False,
+        self, ctx, buzzer: bool = False, react: bool = False, 
         seconds: commands.Range[int, 1, 60] = 15, turns: bool = False
     ):
         """
@@ -191,6 +191,9 @@ class Trivia(commands.Cog):
         buzzer
             True: penalizes incorrect answers;
             False: allows everyone to answer at once
+            (Defaults to False)
+        react
+            Whether or not to add reactions to submitted answers
             (Defaults to False)
         seconds
             How long to accept answers for, in seconds
@@ -210,7 +213,7 @@ class Trivia(commands.Cog):
 
         if not (
             trivia_board := TriviaBoard(
-                seconds, buzzer = buzzer, turns = turns
+                seconds, buzzer = buzzer, react = react, turns = turns
             )
         ):
             return
@@ -227,7 +230,14 @@ class Trivia(commands.Cog):
         if trivia_board.awaiting_answer:
             if message.author.id == self.bot.user.id:
                 return
-            await trivia_board.answer(message.author, message.content)
+            correct = await trivia_board.answer(
+                message.author, message.content
+            )
+            if trivia_board.react:
+                if correct:
+                    await message.add_reaction('\N{WHITE HEAVY CHECK MARK}')
+                else:
+                    await message.add_reaction('\N{CROSS MARK}')
             return
         if not trivia_board.awaiting_selection:
             return
@@ -328,7 +338,7 @@ class Trivia(commands.Cog):
 
     @commands.command()
     async def jeopardy(
-        self, ctx, buzzer: bool = False,
+        self, ctx, buzzer: bool = False, react: bool = False,
         seconds: commands.Range[int, 1, 60] = 15, turns: bool = False
     ):
         """
@@ -342,6 +352,9 @@ class Trivia(commands.Cog):
             True: penalizes incorrect answers;
             False: allows everyone to answer at once
             (Defaults to False)
+        react
+            Whether or not to add reactions to submitted answers
+            (Defaults to False)
         seconds
             How long to accept answers for, in seconds
             (1 - 60, default is 15)
@@ -352,7 +365,8 @@ class Trivia(commands.Cog):
         """
         if command := ctx.bot.get_command("trivia board"):
             await ctx.invoke(
-                command, buzzer = buzzer, seconds = seconds, turns = turns
+                command, buzzer = buzzer, react = react, seconds = seconds,
+                turns = turns
             )
         else:
             raise RuntimeError(
@@ -364,7 +378,7 @@ class TriviaBoard:
 
     VALUES = (200, 400, 600, 800, 1000)
 
-    def __init__(self, seconds, buzzer = True, turns = True):
+    def __init__(self, seconds, buzzer = True, react = True, turns = True):
         self.awaiting_answer = False  # This is not used if buzzer == True
         self.awaiting_selection = False  # TODO: Selection timeout?
         self.board = []
@@ -372,6 +386,8 @@ class TriviaBoard:
         # Whether or not to have a buzzer
         # If not, allows everyone to answer at once
         self.buzzer = buzzer
+        # Whether or not to add reactions to submitted answers
+        self.react = react
         self.scores = {}
         self.seconds = seconds
         self.turn = None  # Who's turn it is
@@ -512,8 +528,11 @@ class TriviaBoard:
             if not clues_left:
                 await self.send_winner()
                 self.ended.set()
-        elif self.buzzer:
-            # Incorrect answer
+
+            return True
+
+        # Incorrect answer
+        if self.buzzer:
             self.scores[player] = self.scores.get(player, 0) - int(self.value)
             await self.ctx.embed_send(
                 title = "Trivia Board",
@@ -527,6 +546,8 @@ class TriviaBoard:
                 embed = self.message.embeds[0],
                 view = TriviaBoardBuzzerView(self, self.seconds)
             )
+        else:
+            return False
 
     def answer_check(self, message):
         if message.channel != self.ctx.channel:
