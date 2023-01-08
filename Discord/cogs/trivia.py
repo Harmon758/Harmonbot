@@ -48,6 +48,10 @@ class Trivia(commands.Cog):
             """
         )
 
+    async def cog_unload(self):
+        for trivia_board in self.trivia_boards.values():
+            await trivia_board.stop()
+
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
@@ -418,9 +422,12 @@ class TriviaBoard:
         )
         if self.turns:
             embed.description += f"\nIt's {self.turn.mention}'s turn"
+
+        self.view = TriviaBoardSelectionView(self)
         await self.message.edit(
-            embed = embed, view = TriviaBoardSelectionView(self)
+            embed = embed, view = self.view
         )
+
         self.awaiting_selection = True
         return True
 
@@ -459,9 +466,10 @@ class TriviaBoard:
                         f"{player.mention} now has `{self.scores[player]}`"
                     )
                 )
+                self.view = TriviaBoardBuzzerView(self, self.seconds)
                 self.message = await self.ctx.send(
                     embed = self.message.embeds[0],
-                    view = TriviaBoardBuzzerView(self, self.seconds)
+                    view = self.view
                 )
                 return
 
@@ -510,9 +518,9 @@ class TriviaBoard:
                 if self.turns:
                     self.turn = player
                     response += f"\nIt's {self.turn.mention}'s turn"
-                view = TriviaBoardSelectionView(self)
+                self.view = TriviaBoardSelectionView(self)
             else:
-                view = None
+                self.view = None
 
             self.message = await self.ctx.embed_send(
                 title = "Trivia Board",
@@ -521,7 +529,7 @@ class TriviaBoard:
                     else self.message.jump_url
                 ),
                 description = response,
-                view = view
+                view = self.view
             )
             self.awaiting_selection = True
 
@@ -542,9 +550,10 @@ class TriviaBoard:
                     f"{player.mention} now has `{self.scores[player]}`"
                 )
             )
+            self.view = TriviaBoardBuzzerView(self, self.seconds)
             self.message = await self.ctx.send(
                 embed = self.message.embeds[0],
-                view = TriviaBoardBuzzerView(self, self.seconds)
+                view = self.view
             )
         else:
             return False
@@ -573,6 +582,10 @@ class TriviaBoard:
         second_declension = self.bot.inflect_engine.plural(
             "second", self.seconds
         )
+        self.view = (
+            TriviaBoardBuzzerView(self, self.seconds) if self.buzzer
+            else None
+        )
         self.message = await self.ctx.embed_send(
             title = (
                 f"{self.board[category_number - 1]['title']}\n(for {value})"
@@ -583,10 +596,7 @@ class TriviaBoard:
                 f"{self.seconds} {second_declension} to {action} | Air Date"
             ),
             timestamp = dateutil.parser.parse(clue["airdate"]),
-            view = (
-                TriviaBoardBuzzerView(self, self.seconds) if self.buzzer
-                else None
-            )
+            view = self.view
         )
 
         if not self.buzzer:
@@ -647,15 +657,15 @@ class TriviaBoard:
         ):
             if self.turn:
                 response += f"\nIt's {self.turn.mention}'s turn"
-            view = TriviaBoardSelectionView(self)
+            self.view = TriviaBoardSelectionView(self)
         else:
-            view = None
+            self.view = None
 
         self.message = await self.ctx.embed_send(
             title = "Trivia Board",
             title_url = self.message.jump_url,
             description = response,
-            view = view
+            view = self.view
         )
         self.awaiting_selection = True
 
@@ -766,6 +776,12 @@ class TriviaBoard:
             )
         )
 
+    async def stop(self):
+        if self.view:
+            await self.view.stop()
+
+        self.ended.set()
+
 
 class TriviaBoardSelectionView(ui.View):
 
@@ -792,6 +808,14 @@ class TriviaBoardSelectionView(ui.View):
         select.placeholder = select.values[0]
 
         await interaction.response.edit_message(view = self)
+
+    async def stop(self):
+        for item in self.children:
+            item.disabled = True
+
+        await self.match.message.edit(view = self)
+
+        super().stop()
 
 
 class TriviaBoardValueButton(ui.Button):
@@ -858,6 +882,12 @@ class TriviaBoardBuzzerView(ui.View):
         self.stop()
 
         await self.match.timeout()
+
+    async def stop(self):
+        self.buzzer.disabled = True
+        await self.match.message.edit(view = self)
+
+        super().stop()
 
 
 class TriviaQuestion:
