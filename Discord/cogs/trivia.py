@@ -9,9 +9,10 @@ import html
 import random
 import sys
 from typing import Optional
+import warnings
 
 import aiohttp
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
 import dateutil.parser
 
 from utilities import checks
@@ -482,10 +483,15 @@ class TriviaBoard:
             # Correct answer
             self.awaiting_answer = False
 
-            answer = BeautifulSoup(
-                html.unescape(self.correct_answer),
-                "html.parser"
-            ).get_text().replace("\\'", "'")
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore", category = MarkupResemblesLocatorWarning
+                )
+                answer = BeautifulSoup(
+                    html.unescape(self.correct_answer),
+                    "html.parser"
+                ).get_text().replace("\\'", "'")
+
             self.scores[player] = self.scores.get(player, 0) + int(self.value)
 
             response = (
@@ -624,10 +630,15 @@ class TriviaBoard:
         embed.set_footer(text = "Time's up! | Air Date")
         await self.message.edit(embed = embed)
 
-        answer = BeautifulSoup(
-            html.unescape(self.correct_answer),
-            "html.parser"
-        ).get_text().replace("\\'", "'")
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", category = MarkupResemblesLocatorWarning
+            )
+            answer = BeautifulSoup(
+                html.unescape(self.correct_answer),
+                "html.parser"
+            ).get_text().replace("\\'", "'")
+
         response = (
             f"The answer was: `{answer}`\n"
             "Nobody got it right\n\n"
@@ -1070,9 +1081,15 @@ class TriviaQuestion:
                 incorrect_player.id
             )
 
-        answer = BeautifulSoup(
-            html.unescape(data["answer"]), "html.parser"
-        ).get_text().replace("\\'", "'")
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", category = MarkupResemblesLocatorWarning
+            )
+            answer = BeautifulSoup(
+                html.unescape(data["answer"]),
+                "html.parser"
+            ).get_text().replace("\\'", "'")
+
         description = f"The answer was: `{answer}`\n\n"
         for player, response in self.responses.items():
             description += (
