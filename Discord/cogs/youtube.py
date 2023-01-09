@@ -232,7 +232,10 @@ class YouTube(commands.Cog):
 									)
 						video_ids.append(video_id)
 					await asyncio.sleep(1)
-				except (aiohttp.ClientOSError, asyncio.TimeoutError) as e:
+				except (
+					aiohttp.ClientOSError, aiohttp.ClientPayloadError,
+					asyncio.TimeoutError
+				) as e:
 					await self.bot.db.execute(
 						"""
 						INSERT INTO youtube.stream_errors (channel_id, type, message)
