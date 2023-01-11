@@ -884,13 +884,13 @@ class TriviaBoardBuzzerView(ui.View):
             return
 
         await interaction.response.edit_message(view = None)
-        self.stop()
+        await self.stop()
 
         await self.match.answer(interaction.user)
 
     async def on_timeout(self):
         await self.match.message.edit(view = None)
-        self.stop()
+        await self.stop()
 
         await self.match.timeout()
 
