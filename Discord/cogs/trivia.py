@@ -211,9 +211,10 @@ class Trivia(commands.Cog):
         # Note: jeopardy command invokes this command
         # TODO: Daily Double?
         if match := self.trivia_boards.get(ctx.channel.id):
-            await ctx.embed_reply(
-                f"[There's already a trivia board in progress here]({match.message.jump_url})"
-            )
+            description = "There's already a trivia board in progress here"
+            if match.message:
+                description = f"[{description}]({match.message.jump_url})"
+            await ctx.embed_reply(description)
             return
 
         if not (
@@ -391,6 +392,7 @@ class TriviaBoard:
         # Whether or not to have a buzzer
         # If not, allows everyone to answer at once
         self.buzzer = buzzer
+        self.message = None
         # Whether or not to add reactions to submitted answers
         self.react = react
         self.scores = {}
