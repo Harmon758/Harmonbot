@@ -83,6 +83,11 @@ class Math(commands.Cog):
 		"""Greatest common divisor"""
 		await ctx.embed_reply(math.gcd(*integers))
 	
+	@commands.command(aliases = ["least_common_multiple"])
+	async def lcm(self, ctx, *integers: int):
+		"""Least common multiple"""
+		await ctx.embed_reply(math.lcm(*integers))
+	
 	@commands.command(aliases = ['π'])
 	async def pi(self, ctx, digits: int = 3, start: int = 1):
 		'''Digits of pi'''
