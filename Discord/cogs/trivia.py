@@ -275,7 +275,9 @@ class Trivia(commands.Cog):
         embed.description += (
             f"\n{message.author.mention} chose `{category_title}` for `{value}`"
         )
-        await trivia_board.message.edit(embed = embed, view = None)
+        await self.bot.attempt_edit_message(
+            trivia_board.message, embed = embed, view = None
+        )
         await trivia_board.select(category_number, value)
 
     # TODO: trivia board stats
