@@ -100,6 +100,7 @@ class PokerHand:
             all(bet == self.current_bet for bet in self.bets.values())
         ):
             self.pot += sum(self.bets.values())
+            self.turn = None
             return await self.new_round()
 
         players = list(self.hands)
