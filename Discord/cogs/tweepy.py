@@ -74,7 +74,7 @@ class Tweepy(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.guild.id != TWEEPY_GUILD_ID:
+        if message.guild and message.guild.id != TWEEPY_GUILD_ID:
             return
         if message.author.get_role(TWEEPY_GUILD_ADMIN_ROLE_ID):
             return
