@@ -14,6 +14,15 @@ import sphobjinv
 from utilities.paginators import ButtonPaginator
 
 
+DISCORD_INVITE_REGEX_PATTERN = re.compile(
+    r"(?:https?://)?discord(?:app)?\.(?:com/invite|gg)/[a-zA-Z0-9]+/?"
+)
+
+PYTHON_GUILD_ID = 267624335836053506
+TWEEPY_GUILD_ADMIN_ROLE_ID = 432751422673649666
+TWEEPY_GUILD_ID = 432685901596852224
+TWEEPY_GUILD_MODERATOR_ONLY_CHANNEL_ID = 758188869941985321
+
 markdown_converter = MarkdownConverter(
     bullets = '•',
     escape_underscores = False,
@@ -62,6 +71,41 @@ class Tweepy(commands.Cog):
         async with self.bot.aiohttp_session.get(url) as resp:
             data = await resp.read()
         self.sphinx_inventory = sphobjinv.Inventory(data)
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.guild.id != TWEEPY_GUILD_ID:
+            return
+        if message.author.get_role(TWEEPY_GUILD_ADMIN_ROLE_ID):
+            return
+        for match in DISCORD_INVITE_REGEX_PATTERN.finditer(
+            message.content
+        ):
+            invite = await self.bot.fetch_invite(match.group())
+            if invite.guild.id not in (TWEEPY_GUILD_ID, PYTHON_GUILD_ID):
+                ctx = await self.bot.get_context(message)
+                await ctx.embed_reply(
+                    author_name = None,
+                    description = (
+                        ctx.author.mention +
+                        ": Please don't send Discord invites here"
+                    ),
+                    in_response_to = False
+                )
+                await self.bot.get_channel(
+                    TWEEPY_GUILD_MODERATOR_ONLY_CHANNEL_ID
+                ).send(
+                    embed = discord.Embed(
+                        description = (
+                            "Deleted message with invite "
+                            f"from {ctx.author.mention} "
+                            f"in {message.channel.mention}:"
+                            f"\n{message.content}"
+                        ),
+                        color = self.bot.bot_color
+                    )
+                )
+                return
 
     @commands.hybrid_group(case_insensitive = True)
     async def tweepy(self, ctx):
