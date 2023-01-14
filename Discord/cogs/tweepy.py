@@ -74,7 +74,9 @@ class Tweepy(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.guild and message.guild.id != TWEEPY_GUILD_ID:
+        if message.guild is None:
+            return
+        if message.guild.id != TWEEPY_GUILD_ID:
             return
         if not isinstance(message.author, discord.Member):
             return
