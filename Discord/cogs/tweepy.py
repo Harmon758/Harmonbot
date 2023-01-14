@@ -76,6 +76,8 @@ class Tweepy(commands.Cog):
     async def on_message(self, message):
         if message.guild and message.guild.id != TWEEPY_GUILD_ID:
             return
+        if not isinstance(message.author, discord.Member):
+            return
         if message.author.get_role(TWEEPY_GUILD_ADMIN_ROLE_ID):
             return
         for match in DISCORD_INVITE_REGEX_PATTERN.finditer(
