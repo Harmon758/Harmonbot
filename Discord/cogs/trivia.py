@@ -151,7 +151,6 @@ class Trivia(commands.Cog):
             bet = min(int(message.content), 100)
             if bet <= points:
                 trivia_question.bets[message.author] = bet
-                await self.bot.attempt_delete_message(message)
             else:
                 await ctx.embed_reply(
                     "You don't have that many points (`\N{CURRENCY SIGN}`) "
