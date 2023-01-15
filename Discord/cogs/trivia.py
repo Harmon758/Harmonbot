@@ -619,7 +619,10 @@ class TriviaBoard:
                     "second", countdown
                 )
                 embed.set_footer(
-                    text = f"{countdown} {second_declension} left to {action} | Air Date"
+                    text = (
+                        f"{countdown} {second_declension} left to {action} | "
+                        "Air Date"
+                    )
                 )
                 await message.edit(embed = embed)
             self.awaiting_answer = False
