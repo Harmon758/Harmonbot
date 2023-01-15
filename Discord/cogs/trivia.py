@@ -282,10 +282,15 @@ class Trivia(commands.Cog):
 
     # TODO: trivia board stats
 
-    @trivia.command(name = "money", aliases = ["cash"], with_app_command = False)
+    @trivia.command(
+        name = "money", aliases = ["cash"], with_app_command = False
+    )
     async def trivia_money(self, ctx):
         '''Trivia money'''
-        money = await ctx.bot.db.fetchval("SELECT money FROM trivia.users WHERE user_id = $1", ctx.author.id)
+        money = await ctx.bot.db.fetchval(
+            "SELECT money FROM trivia.users WHERE user_id = $1",
+            ctx.author.id
+        )
         if money is None:
             await ctx.embed_reply("You have not played any trivia yet")
             return
