@@ -781,12 +781,16 @@ class TriviaBoard:
             for answerer, score in self.scores.items()
             if score == highest_score
         ]
+        is_declension = self.bot.inflect_engine.plural("is", len(winners))
+        winner_declension = self.bot.inflect_engine.plural(
+            "winner", len(winners)
+        )
         await self.ctx.embed_send(
             title = "Trivia Board",
             title_url = self.message.jump_url,
             description = (
-                f"{self.bot.inflect_engine.join(winners)} {self.bot.inflect_engine.plural('is', len(winners))} "
-                f"the {self.bot.inflect_engine.plural('winner', len(winners))} with `{highest_score}`!"
+                f"{self.bot.inflect_engine.join(winners)} {is_declension} "
+                f"the {winner_declension} with `{highest_score}`!"
             )
         )
 
