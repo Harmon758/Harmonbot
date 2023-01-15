@@ -117,14 +117,13 @@ class Trivia(commands.Cog):
             Whether or not to override modal answers with message answers
             (Defaults to False)
         seconds
-            How long to accept answers for, in seconds
+            How long to accept answers (and bets) for, in seconds
             (1 - 60, default is 15)
-            (This is ignored if betting)
         """
         await ctx.defer()
         try:
             self.trivia_questions[ctx.guild.id] = TriviaQuestion(
-                15 if betting else seconds,
+                seconds,
                 betting = betting,
                 override_modal_answers = override_modal_answers
             )
@@ -912,7 +911,6 @@ class TriviaQuestion:
         self.response = None  # Bot response to command
         self.responses = {}  # User responses to question
         self.seconds = seconds
-        self.wait_time = 15
 
     async def get_question(self, ctx):
         try:
@@ -968,7 +966,7 @@ class TriviaQuestion:
         # Include site page to send ^?
 
         if self.betting:
-            self.bet_countdown = self.wait_time
+            self.bet_countdown = self.seconds
             second_declension = ctx.bot.inflect_engine.plural(
                 "second", self.bet_countdown
             )
