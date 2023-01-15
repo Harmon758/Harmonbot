@@ -864,7 +864,8 @@ class TriviaBoardValueButton(ui.Button):
         category_title = self.view.match.board[category_number - 1]["title"]
         embed = interaction.message.embeds[0]
         embed.description += (
-            f"\n{interaction.user.mention} chose `{category_title}` for `{value}`"
+            f"\n{interaction.user.mention} chose "
+            f"`{category_title}` for `{value}`"
         )
         await interaction.response.edit_message(embed = embed, view = None)
 
