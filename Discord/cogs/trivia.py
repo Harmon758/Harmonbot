@@ -258,7 +258,8 @@ class Trivia(commands.Cog):
         category_title = trivia_board.board[category_number - 1]["title"]
         embed = trivia_board.message.embeds[0]
         embed.description += (
-            f"\n{message.author.mention} chose `{category_title}` for `{value}`"
+            f"\n{message.author.mention} chose "
+            f"`{category_title}` for `{value}`"
         )
         await self.bot.attempt_edit_message(
             trivia_board.message, embed = embed, view = None
