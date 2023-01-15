@@ -169,12 +169,12 @@ class Trivia(commands.Cog):
         max_concurrency = max_concurrency, with_app_command = False
     )
     async def trivia_bet(self, ctx):
-        '''
+        """
         Trivia with betting
         The category is shown first during the betting phase
         Enter any amount under or equal to the money you have to bet
         Currently, you start with $100,000
-        '''
+        """
         try:
             self.trivia_questions[ctx.guild.id] = TriviaQuestion(15)
             await self.trivia_questions[ctx.guild.id].start(ctx, bet = True)
