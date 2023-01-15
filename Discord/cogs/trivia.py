@@ -1147,7 +1147,10 @@ class TriviaQuestion:
                     f"{points:,} {points_point_declension} "
                     "(`\N{CURRENCY SIGN}`)"
                 )
-            await ctx.embed_reply('\n'.join(bets_output), author_name = None)
+            await ctx.embed_reply(
+                author_name = None,
+                description = '\n'.join(bets_output)
+            )
 
 
 class TriviaQuestionView(ui.View):
