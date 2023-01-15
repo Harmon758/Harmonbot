@@ -97,5 +97,6 @@ class Points(commands.Cog):
                     fields.append((str(user), f"{record['points']:,}"))
 
         await ctx.embed_reply(
-            title = f"Points (¤) Top {number}", fields = fields
+            title = f"Points (`\N{CURRENCY SIGN}`) Top {number}",
+            fields = fields
         )
