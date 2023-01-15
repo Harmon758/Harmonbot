@@ -320,7 +320,10 @@ class Trivia(commands.Cog):
                 # Postgres requires non-scrollable cursors to be created
                 # and used in a transaction.
                 async for record in connection.cursor(
-                    "SELECT * FROM trivia.users ORDER BY correct DESC LIMIT $1",
+                    """
+                    SELECT * FROM trivia.users
+                    ORDER BY correct DESC LIMIT $1
+                    """,
                     number
                 ):
                     # SELECT user_id, correct, incorrect?
@@ -331,7 +334,8 @@ class Trivia(commands.Cog):
                     correct_percentage = record["correct"] / total * 100
                     fields.append((
                         str(user),
-                        f"{record['correct']:,} correct ({correct_percentage:.2f}%)\n"
+                        f"{record['correct']:,} correct "
+                        f"({correct_percentage:.2f}%)\n"
                         f"{total:,} answered"
                     ))
         await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
