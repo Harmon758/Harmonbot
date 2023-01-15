@@ -140,7 +140,7 @@ class Trivia(commands.Cog):
                 "SELECT money FROM trivia.users WHERE user_id = $1",
                 message.author.id
             )
-            if not money:
+            if money is None:
                 money = await self.bot.db.fetchval(
                     """
                     INSERT INTO trivia.users (user_id, correct, incorrect, money)
