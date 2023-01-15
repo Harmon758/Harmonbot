@@ -286,7 +286,7 @@ class Trivia(commands.Cog):
         name = "money", aliases = ["cash"], with_app_command = False
     )
     async def trivia_money(self, ctx):
-        '''Trivia money'''
+        """Trivia money"""
         money = await ctx.bot.db.fetchval(
             "SELECT money FROM trivia.users WHERE user_id = $1",
             ctx.author.id
