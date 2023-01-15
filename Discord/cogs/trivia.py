@@ -811,7 +811,9 @@ class TriviaBoardSelectionView(ui.View):
 
         for number, category in enumerate(self.match.board, start = 1):
             if any(category["clues"].values()):
-                self.category.add_option(label = number, description = category["title"])
+                self.category.add_option(
+                    label = number, description = category["title"]
+                )
                 # TODO: Handle description longer than 50 characters?
 
         for value in self.match.VALUES:
