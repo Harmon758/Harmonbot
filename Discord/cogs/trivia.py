@@ -110,9 +110,8 @@ class Trivia(commands.Cog):
         Parameters
         ----------
         betting
-            Whether or not to enable betting based on the category
+            Whether or not to enable betting with points (¤) based on the category
             (Defaults to False)
-            (Currently, you start with $100,000)
         override_modal_answers
             Whether or not to override modal answers with message answers
             (Defaults to False)
@@ -143,24 +142,21 @@ class Trivia(commands.Cog):
             return
         if trivia_question.bet_countdown and message.content.isdigit():
             ctx = await self.bot.get_context(message)
-            money = await self.bot.db.fetchval(
-                "SELECT money FROM trivia.users WHERE user_id = $1",
-                message.author.id
-            )
-            if money is None:
-                money = await self.bot.db.fetchval(
-                    """
-                    INSERT INTO trivia.users (user_id, correct, incorrect, money)
-                    VALUES ($1, 0, 0, 100000)
-                    RETURNING money
-                    """,
-                    message.author.id
+            if points_cog := ctx.bot.get_cog("Points"):
+                points = await points_cog.get(message.author)
+            else:
+                raise RuntimeError(
+                    "Points cog not loaded during trivia betting"
                 )
-            if int(message.content) <= money:
-                trivia_question.bets[message.author] = int(message.content)
+            bet = min(int(message.content), 100)
+            if bet <= points:
+                trivia_question.bets[message.author] = bet
                 await self.bot.attempt_delete_message(message)
             else:
-                await ctx.embed_reply("You don't have that much money to bet!")
+                await ctx.embed_reply(
+                    "You don't have that many points (`\N{CURRENCY SIGN}`) "
+                    "to bet!"
+                )
         elif trivia_question.question_countdown:
             if message.content.startswith(('!', '>')):
                 return
@@ -293,11 +289,16 @@ class Trivia(commands.Cog):
             return
         total = record["correct"] + record["incorrect"]
         correct_percentage = record["correct"] / total * 100
-        await ctx.embed_reply(
+        description = (
             f"You have answered {record['correct']:,} / {total:,} "
-            f"({correct_percentage:.2f}%) trivia questions correctly\n"
-            f"You have ${record['money']:,}"
+            f"({correct_percentage:.2f}%) trivia questions correctly"
         )
+        if (money := record["money"]) is not None:
+            description += (
+                f"\nYou had ${money:,} before betting was updated "
+                "to use points (`\N{CURRENCY SIGN}`)"
+            )
+        await ctx.embed_reply(description)
 
     @trivia.command(
         aliases = ["levels", "ranks", "scoreboard", "scores", "top"]
@@ -982,7 +983,9 @@ class TriviaQuestion:
                 await asyncio.sleep(1)
                 self.bet_countdown -= 1
                 embed.description = '\n'.join(
-                    f"{player.mention} has bet ${bet}"
+                    f"{player.mention} has bet {bet} "
+                    f"{ctx.bot.inflect_engine.plural('point', bet)} "
+                    "(`\N{CURRENCY SIGN}`)"
                     for player, bet in self.bets.items()
                 )
                 second_declension = ctx.bot.inflect_engine.plural(
@@ -1058,8 +1061,8 @@ class TriviaQuestion:
         for correct_player in correct_players:
             await ctx.bot.db.execute(
                 """
-                INSERT INTO trivia.users (user_id, correct, incorrect, money)
-                VALUES ($1, 1, 0, 100000)
+                INSERT INTO trivia.users (user_id, correct, incorrect)
+                VALUES ($1, 1, 0)
                 ON CONFLICT (user_id) DO
                 UPDATE SET correct = users.correct + 1
                 """,
@@ -1070,8 +1073,8 @@ class TriviaQuestion:
         for incorrect_player in incorrect_players:
             await ctx.bot.db.execute(
                 """
-                INSERT INTO trivia.users (user_id, correct, incorrect, money)
-                VALUES ($1, 0, 1, 100000)
+                INSERT INTO trivia.users (user_id, correct, incorrect)
+                VALUES ($1, 0, 1)
                 ON CONFLICT (user_id) DO
                 UPDATE SET incorrect = users.incorrect + 1
                 """,
@@ -1109,17 +1112,26 @@ class TriviaQuestion:
                 else:
                     difference = -player_bet
                     action_text = "lost"
-                money = await ctx.bot.db.fetchval(
-                    """
-                    UPDATE trivia.users
-                    SET money = money + $2
-                    WHERE user_id = $1
-                    RETURNING money
-                    """,
-                    player.id, difference
+                if points_cog := ctx.bot.get_cog("Points"):
+                    points = await points_cog.add(
+                        user = player, points = difference
+                    )
+                else:
+                    raise RuntimeError(
+                        "Points cog not loaded during trivia betting"
+                    )
+                player_bet_point_declension = ctx.bot.inflect_engine.plural(
+                    "point", player_bet
+                )
+                points_point_declension = ctx.bot.inflect_engine.plural(
+                    "point", points
                 )
                 bets_output.append(
-                    f"{player.mention} {action_text} ${player_bet:,} and now has ${money:,}"
+                    f"{player.mention} {action_text} "
+                    f"{player_bet} {player_bet_point_declension} "
+                    f"(`\N{CURRENCY SIGN}`) and now has "
+                    f"{points:,} {points_point_declension} "
+                    "(`\N{CURRENCY SIGN}`)"
                 )
             await ctx.embed_reply('\n'.join(bets_output), author_name = None)
 
