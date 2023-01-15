@@ -283,25 +283,19 @@ class Trivia(commands.Cog):
     # TODO: trivia board stats
 
     @trivia.command(
-        name = "money", aliases = ["cash"], with_app_command = False
+        aliases = [
+            "cash", "level", "money", "points", "rank", "score", "stats"
+        ]
     )
-    async def trivia_money(self, ctx):
-        """Trivia money"""
-        money = await ctx.bot.db.fetchval(
-            "SELECT money FROM trivia.users WHERE user_id = $1",
-            ctx.author.id
-        )
-        if money is None:
-            await ctx.embed_reply("You have not played any trivia yet")
-            return
-        await ctx.embed_reply(f"You have ${money:,}")
-
-    @trivia.command(aliases = ["level", "points", "rank", "score", "stats"])
     async def statistics(self, ctx):
         """Trivia statistics"""
         await ctx.defer()
         record = await ctx.bot.db.fetchrow(
-            "SELECT correct, incorrect FROM trivia.users WHERE user_id = $1",
+            """
+            SELECT correct, incorrect, money
+            FROM trivia.users
+            WHERE user_id = $1
+            """,
             ctx.author.id
         )
         if not record:
@@ -311,7 +305,8 @@ class Trivia(commands.Cog):
         correct_percentage = record["correct"] / total * 100
         await ctx.embed_reply(
             f"You have answered {record['correct']:,} / {total:,} "
-            f"({correct_percentage:.2f}%) trivia questions correctly"
+            f"({correct_percentage:.2f}%) trivia questions correctly\n"
+            f"You have ${record['money']:,}"
         )
 
     @trivia.command(
