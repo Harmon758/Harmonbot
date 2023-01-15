@@ -97,7 +97,8 @@ class Trivia(commands.Cog):
         max_concurrency = max_concurrency
     )
     async def trivia(
-        self, ctx, override_modal_answers: Optional[bool] = False,
+        self, ctx, betting: Optional[bool] = False, 
+        override_modal_answers: Optional[bool] = False,
         seconds: commands.Range[int, 1, 60] = 15
     ):
         """
@@ -108,17 +109,24 @@ class Trivia(commands.Cog):
 
         Parameters
         ----------
+        betting
+            Whether or not to enable betting based on the category
+            (Defaults to False)
+            (Currently, you start with $100,000)
         override_modal_answers
             Whether or not to override modal answers with message answers
-            (default is False)
+            (Defaults to False)
         seconds
             How long to accept answers for, in seconds
             (1 - 60, default is 15)
+            (This is ignored if betting)
         """
         await ctx.defer()
         try:
             self.trivia_questions[ctx.guild.id] = TriviaQuestion(
-                seconds, override_modal_answers = override_modal_answers
+                15 if betting else seconds,
+                betting = betting,
+                override_modal_answers = override_modal_answers
             )
             await self.trivia_questions[ctx.guild.id].start(ctx)
         finally:
@@ -163,23 +171,6 @@ class Trivia(commands.Cog):
             ):
                 return
             trivia_question.responses[message.author] = message.content
-
-    @trivia.command(
-        name = "bet",
-        max_concurrency = max_concurrency, with_app_command = False
-    )
-    async def trivia_bet(self, ctx):
-        """
-        Trivia with betting
-        The category is shown first during the betting phase
-        Enter any amount under or equal to the money you have to bet
-        Currently, you start with $100,000
-        """
-        try:
-            self.trivia_questions[ctx.guild.id] = TriviaQuestion(15)
-            await self.trivia_questions[ctx.guild.id].start(ctx, bet = True)
-        finally:
-            del self.trivia_questions[ctx.guild.id]
 
     @trivia.command(aliases = ["jeopardy"])
     async def board(
@@ -908,10 +899,13 @@ class TriviaBoardBuzzerView(ui.View):
 
 class TriviaQuestion:
 
-    def __init__(self, seconds, override_modal_answers = False):
+    def __init__(
+        self, seconds, betting = False, override_modal_answers = False
+    ):
         self.answered_through_modal = set()
         self.bet_countdown = 0
         self.bets = {}
+        self.betting = betting
         self.channel_id = None
         self.override_modal_answers = override_modal_answers
         self.question_countdown = 0
@@ -937,7 +931,7 @@ class TriviaQuestion:
             )
             return
 
-    async def start(self, ctx, bet = False):
+    async def start(self, ctx):
         self.channel_id = ctx.channel.id
 
         if not (data := await self.get_question(ctx)):
@@ -973,7 +967,7 @@ class TriviaQuestion:
         # Add message about making POST request to API/invalid with id?
         # Include site page to send ^?
 
-        if bet:
+        if self.betting:
             self.bet_countdown = self.wait_time
             second_declension = ctx.bot.inflect_engine.plural(
                 "second", self.bet_countdown
@@ -1108,7 +1102,7 @@ class TriviaQuestion:
             in_response_to = False
         )
 
-        if bet and self.bets:
+        if self.betting and self.bets:
             bets_output = []
             for player, player_bet in self.bets.items():
                 if player in correct_players:
