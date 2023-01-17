@@ -58,10 +58,14 @@ class Points(commands.Cog):
         • 1 for each command invoked
         • 1 for each respect paid
         • 10 for each trivia question answered correctly
+
         You can also earn Points (¤) from:
         • Slots
+        • Trivia betting
+
         You can spend Points (¤) on:
         • Slots
+        • Trivia betting
         """
         await ctx.defer()
         user_points = await self.get(ctx.author)
