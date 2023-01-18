@@ -27,9 +27,10 @@ class Poker(commands.Cog):
     async def poker(self, ctx):
         '''Texas Hold'em'''
         if poker_hand := self.poker_hands.get(ctx.channel.id):
-            return await ctx.embed_reply(
+            await ctx.embed_reply(
                 f"[There's already a poker match in progress here]({poker_hand.message.jump_url})"
             )
+            return
 
         self.poker_hands[ctx.channel.id] = PokerHand(ctx)
         await self.poker_hands[ctx.channel.id].start(ctx)
