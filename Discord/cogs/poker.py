@@ -28,7 +28,8 @@ class Poker(commands.Cog):
         '''Texas Hold'em'''
         if poker_hand := self.poker_hands.get(ctx.channel.id):
             await ctx.embed_reply(
-                f"[There's already a poker match in progress here]({poker_hand.message.jump_url})"
+                "[There's already a poker match in progress here]"
+                f"({poker_hand.message.jump_url})"
             )
             return
 
