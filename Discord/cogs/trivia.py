@@ -637,8 +637,9 @@ class TriviaBoard:
                     )
                 )
                 await message.edit(embed = embed)
-            self.awaiting_answer = False
-            await self.timeout()
+            if self.awaiting_answer:
+                self.awaiting_answer = False
+                await self.timeout()
 
     async def timeout(self):
         embed = self.message.embeds[0]
