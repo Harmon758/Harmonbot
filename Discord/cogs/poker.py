@@ -138,7 +138,8 @@ class PokerHand:
             self.lines.append("")
             self.lines.append(f"The pot: {self.pot}")
             self.lines.append(
-                f"The {self.STAGES[self.stage]}: {cards_to_string(self.community_cards[:number_of_cards])}"
+                f"The {self.STAGES[self.stage]}: "
+                f"{cards_to_string(self.community_cards[:number_of_cards])}"
             )
             await self.message.edit(embed = self.embed)
 
