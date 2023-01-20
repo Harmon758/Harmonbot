@@ -168,7 +168,8 @@ class Trivia(commands.Cog):
 
     @trivia.command(aliases = ["jeopardy"])
     async def board(
-        self, ctx, buzzer: bool = False, react: bool = False, 
+        self, ctx, buzzer: bool = False,
+        delete_selection_messages: bool = True, react: bool = False,
         seconds: commands.Range[int, 1, 60] = 15, turns: bool = False
     ):
         """
@@ -182,6 +183,9 @@ class Trivia(commands.Cog):
             True: penalizes incorrect answers;
             False: allows everyone to answer at once
             (Defaults to False)
+        delete_selection_messages
+            Whether or not to attempt to delete messages selecting clues
+            (Defaults to True)
         react
             Whether or not to add reactions to submitted answers
             (Defaults to False)
@@ -204,7 +208,9 @@ class Trivia(commands.Cog):
 
         if not (
             trivia_board := TriviaBoard(
-                seconds, buzzer = buzzer, react = react, turns = turns
+                seconds, buzzer = buzzer,
+                delete_selection_messages = delete_selection_messages,
+                react = react, turns = turns
             )
         ):
             return
@@ -264,6 +270,8 @@ class Trivia(commands.Cog):
         await self.bot.attempt_edit_message(
             trivia_board.message, embed = embed, view = None
         )
+        if trivia_board.delete_selection_messages:
+            await self.bot.attempt_delete_message(message)
         await trivia_board.select(category_number, value)
 
     # TODO: trivia board stats
@@ -382,7 +390,10 @@ class TriviaBoard:
 
     VALUES = (200, 400, 600, 800, 1000)
 
-    def __init__(self, seconds, buzzer = True, react = True, turns = True):
+    def __init__(
+        self, seconds, buzzer = True, delete_selection_messages = True,
+        react = True, turns = True
+    ):
         self.awaiting_answer = False  # This is not used if buzzer == True
         self.awaiting_selection = False  # TODO: Selection timeout?
         self.board = []
@@ -390,6 +401,7 @@ class TriviaBoard:
         # Whether or not to have a buzzer
         # If not, allows everyone to answer at once
         self.buzzer = buzzer
+        self.delete_selection_messages = delete_selection_messages
         self.message = None
         # Whether or not to add reactions to submitted answers
         self.react = react
