@@ -14,9 +14,12 @@ class SteamID64(commands.Converter):
 		try:
 			return int(argument)
 		except ValueError:
-			url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/"
-			params = {"vanityurl": argument, "key": ctx.bot.STEAM_WEB_API_KEY}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				"http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/",
+				params = {
+					"vanityurl": argument, "key": ctx.bot.STEAM_WEB_API_KEY
+				}
+			) as resp:
 				# TODO: Handle 429?
 				data = await resp.json()
 			if data["response"]["success"] == 42:  # NoMatch, https://partner.steamgames.com/doc/api/steam_api#EResult
