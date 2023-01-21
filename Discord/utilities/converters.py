@@ -1,6 +1,8 @@
 
 from discord.ext import commands
 
+import contextlib
+
 
 # https://developer.valvesoftware.com/wiki/SteamID
 STEAM_ID_64_BASE = int("0x110000100000000", 16) 
@@ -14,22 +16,21 @@ class SteamID32(commands.Converter):
 
 class SteamID64(commands.Converter):
     async def convert(self, ctx, argument):
-        try:
+        with contextlib.suppress(ValueError):
             return int(argument)
-        except ValueError:
-            async with ctx.bot.aiohttp_session.get(
-                "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/",
-                params = {
-                    "vanityurl": argument, "key": ctx.bot.STEAM_WEB_API_KEY
-                }
-            ) as resp:
-                # TODO: Handle 429?
-                data = await resp.json()
-            if data["response"]["success"] == 42:
-                # NoMatch
-                # https://partner.steamgames.com/doc/api/steam_api#EResult
-                raise commands.BadArgument("Account not found")
-            return int(data['response']['steamid'])
+
+        async with ctx.bot.aiohttp_session.get(
+            "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/",
+            params = {
+                "vanityurl": argument, "key": ctx.bot.STEAM_WEB_API_KEY
+            }
+        ) as resp:
+            # TODO: Handle 429?
+            data = await resp.json()
+        if data["response"]["success"] == 42:
+            # NoMatch, https://partner.steamgames.com/doc/api/steam_api#EResult
+            raise commands.BadArgument("Account not found")
+        return int(data['response']['steamid'])
 
 
 class SteamProfile(commands.Converter):
