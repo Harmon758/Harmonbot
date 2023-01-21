@@ -40,42 +40,38 @@ class Brawlhalla(commands.Cog):
         name
             Name of legend to show information about
         """
-        for legend in (await self.all_legends()):
-            if name.lower() in (
-                legend["legend_name_key"], legend["bio_name"].lower()
-            ):
-                await ctx.embed_reply(
-                    title = legend["bio_name"],
-                    description = legend["bio_aka"],
-                    fields = (
-                        (
-                            "Weapons",
-                            f"{legend['weapon_one']}, {legend['weapon_two']}"
-                        ),
-                        ("Strength", legend["strength"]),
-                        ("Dexterity", legend["dexterity"]),
-                        ("Defense", legend["defense"]),
-                        ("Speed", legend["speed"])
-                    )
-                )
-                return
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Legend not found")
+        try:
+            legend = (await self.all_legends())[name.lower()]
+        except KeyError:
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Legend not found")
+            return
+
+        await ctx.embed_reply(
+            title = legend["bio_name"],
+            description = legend["bio_aka"],
+            fields = (
+                (
+                    "Weapons",
+                    f"{legend['weapon_one']}, {legend['weapon_two']}"
+                ),
+                ("Strength", legend["strength"]),
+                ("Dexterity", legend["dexterity"]),
+                ("Defense", legend["defense"]),
+                ("Speed", legend["speed"])
+            )
+        )
 
     @legend.autocomplete("name")
     async def legend_autocomplete(self, interaction, current):
-        current = current.lower()
-        matching = [
+        matching = {
             app_commands.Choice(
-                name = legend["bio_name"],
-                value = legend["legend_name_key"]
+                name = data["bio_name"],
+                value = data["legend_name_key"]
             )
-            for legend in (await self.all_legends())
-            if (
-                current in legend["legend_name_key"] or
-                current in legend["bio_name"].lower()
-            )
-        ]
-        return matching[:25]  # TODO: Use difflib?
+            for name, data in (await self.all_legends()).items()
+            if current.lower() in name
+        }
+        return list(matching)[:25]  # TODO: Use difflib?
 
     @async_cache
     async def all_legends(self):
@@ -83,5 +79,14 @@ class Brawlhalla(commands.Cog):
             "https://api.brawlhalla.com/legend/all",
             params = {"api_key": self.bot.BRAWLHALLA_API_KEY}
         ) as resp:
-            return await resp.json()  # TODO: Return dictionary?
+            data = await resp.json()
+
+        legends = {}
+        for legend_data in data:
+            name_key = legend_data["legend_name_key"]
+            legends[name_key] = legend_data
+            if (bio_name := legend_data["bio_name"].lower()) != name_key:
+                legends[bio_name] = legend_data
+
+        return legends
 
