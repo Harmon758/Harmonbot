@@ -104,7 +104,7 @@ class Trivia(commands.Cog):
         """
         Trivia question
         Only your last answer is accepted
-        Answers prepended with ! or > are ignored
+        Answers prepended with !, >, or | are ignored
         Questions are taken from Jeopardy!
 
         Parameters
@@ -157,7 +157,7 @@ class Trivia(commands.Cog):
                     "to bet!"
                 )
         elif trivia_question.question_countdown:
-            if message.content.startswith(('!', '>')):
+            if message.content.startswith(('!', '>', '|')):
                 return
             if (
                 not trivia_question.override_modal_answers and
