@@ -63,15 +63,27 @@ class Brawlhalla(commands.Cog):
 
     @legend.autocomplete("name")
     async def legend_autocomplete(self, interaction, current):
-        matching = {
+        current = current.lower()
+        legends = await self.all_legends()
+
+        primary_matches = set()
+        secondary_matches = set()
+
+        for name, data in legends.items():
+            if name.startswith(current):
+                primary_matches.add(data["legend_name_key"])
+            elif current in name:
+                secondary_matches.add(data["legend_name_key"])
+
+        matches = sorted(primary_matches) + sorted(secondary_matches)
+
+        return [
             app_commands.Choice(
-                name = data["bio_name"],
-                value = data["legend_name_key"]
+                name = legends[match]["bio_name"],
+                value = match
             )
-            for name, data in (await self.all_legends()).items()
-            if current.lower() in name
-        }
-        return list(matching)[:25]  # TODO: Use difflib?
+            for match in matches[:25]
+        ]
 
     @async_cache
     async def all_legends(self):
