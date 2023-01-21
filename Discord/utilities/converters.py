@@ -25,8 +25,12 @@ class SteamID64(commands.Converter):
 
 class SteamProfile(commands.Converter):
 	async def convert(self, ctx, argument):
-		url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/"
-		params = {"steamids": await SteamID64().convert(ctx, argument), "key": ctx.bot.STEAM_WEB_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/",
+			params = {
+				"steamids": await SteamID64().convert(ctx, argument),
+				"key": ctx.bot.STEAM_WEB_API_KEY
+			}
+		) as resp:
 			return (await resp.json())["response"]["players"][0]
 
