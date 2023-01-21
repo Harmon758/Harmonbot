@@ -59,8 +59,7 @@ class Brawlhalla(commands.Cog):
                     )
                 )
                 return
-        else:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Legend not found")
+        await ctx.embed_reply(f"{ctx.bot.error_emoji} Legend not found")
 
     @legend.autocomplete("name")
     async def legend_autocomplete(self, interaction, current):
