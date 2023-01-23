@@ -119,6 +119,7 @@ class Trivia(commands.Cog):
             How long to accept answers (and bets) for, in seconds
             (1 - 60, default is 15)
         """
+        # Note: trivia bet command invokes this command
         await ctx.defer()
         try:
             self.trivia_questions[ctx.guild.id] = TriviaQuestion(
@@ -165,6 +166,37 @@ class Trivia(commands.Cog):
             ):
                 return
             trivia_question.responses[message.author] = message.content
+
+    @trivia.command(max_concurrency = max_concurrency)
+    async def bet(
+        self, ctx, override_modal_answers: Optional[bool] = False,
+        seconds: commands.Range[int, 1, 60] = 15
+    ):
+        """
+        Trivia question with betting
+        Only your last answer is accepted
+        Answers prepended with !, >, or | are ignored
+        Questions are taken from Jeopardy!
+
+        Parameters
+        ----------
+        override_modal_answers
+            Whether or not to override modal answers with message answers
+            (Defaults to False)
+        seconds
+            How long to accept answers (and bets) for, in seconds
+            (1 - 60, default is 15)
+        """
+        if command := ctx.bot.get_command("trivia"):
+            await ctx.invoke(
+                command, betting = True,
+                override_modal_answers = override_modal_answers,
+                seconds = seconds
+            )
+        else:
+            raise RuntimeError(
+                "trivia command not found when trivia bet command invoked"
+            )
 
     @trivia.command(aliases = ["jeopardy"])
     async def board(
