@@ -24,8 +24,8 @@ class Overwatch(commands.Cog):
 	# TODO: Finish Stats (Add Achievements, Improve)
 	# TODO: Maps, Items
 	
-	@overwatch.command(name = "ability", aliases = ["weapon"], hidden = True)
-	async def overwatch_ability(self, ctx):
+	@overwatch.command(aliases = ["weapon"], hidden = True)
+	async def ability(self, ctx):
 		'''
 		Overwatch Abilities/Weapons
 		Deprecated, as the API this command used to use does not exist anymore
