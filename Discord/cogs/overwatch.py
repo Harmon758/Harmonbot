@@ -63,13 +63,15 @@ class Overwatch(commands.Cog):
 		fields.append(("Difficulty", '★' * hero_data["difficulty"] + '☆' * (3 - hero_data["difficulty"]), False))
 		await ctx.embed_reply(hero_data["description"], title = hero_data["name"], fields = fields)
 	
-	@overwatch.command()
-	async def item(self, ctx, *, item : str):
+	@overwatch.command(hidden = True)
+	async def item(self, ctx):
 		'''
-		WIP
-		Items
+		Overwatch Items
+		Deprecated, as the API this command used to use does not exist anymore
+		https://overwatch-api.net/
+		https://github.com/jamesmcfadden/overwatch-api
 		'''
-		...
+		await ctx.send_help(ctx.command)
 	
 	@overwatch.command()
 	async def map(self, ctx, *, map : str):
