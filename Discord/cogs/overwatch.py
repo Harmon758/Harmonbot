@@ -34,23 +34,15 @@ class Overwatch(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@overwatch.command(name = "achievement")
-	async def overwatch_achievement(self, ctx, *, achievement : str):
-		'''Achievements'''
-		url = "https://overwatch-api.net/api/v1/achievement"
-		async with ctx.bot.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
-			data = await resp.json()
-		data = data["data"]
-		achievement_data = discord.utils.find(lambda a: a["name"].lower() == achievement.lower(), data)
-		if not achievement_data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Achievement not found")
-			return
-		fields = [("Reward", (achievement_data["reward"]["name"] + " " + 
-								achievement_data["reward"]["type"]["name"]))]
-		if achievement_data["hero"]:
-			fields.append(("Hero", achievement_data["hero"]["name"]))
-		await ctx.embed_reply(achievement_data["description"], title = achievement_data["name"], 
-								fields = fields)
+	@overwatch.command(name = "achievement", hidden = True)
+	async def overwatch_achievement(self, ctx):
+		'''
+		Overwatch Achievements
+		Deprecated, as the API this command used to use does not exist anymore
+		https://overwatch-api.net/
+		https://github.com/jamesmcfadden/overwatch-api
+		'''
+		await ctx.send_help(ctx.command)
 	
 	@overwatch.command(name = "hero")
 	async def overwatch_hero(self, ctx, *, hero : str):
