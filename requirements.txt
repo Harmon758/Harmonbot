@@ -20,7 +20,7 @@ feedparser==6.0.10
 gidgethub==5.2.1
 gitpython==3.1.8
 google-api-core[grpc]==2.11.0
-google-cloud-translate==3.8.4
+google-cloud-translate==3.10.1
 hypothesis==6.64.0
 imageio==2.24.0
 imgurpython==1.1.7
