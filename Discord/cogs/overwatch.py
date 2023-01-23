@@ -44,8 +44,8 @@ class Overwatch(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@overwatch.command(name = "hero")
-	async def overwatch_hero(self, ctx, *, hero : str):
+	@overwatch.command()
+	async def hero(self, ctx, *, hero : str):
 		'''Heroes'''
 		url = "https://overwatch-api.net/api/v1/hero"
 		async with ctx.bot.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
