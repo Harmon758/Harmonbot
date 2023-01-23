@@ -44,24 +44,15 @@ class Overwatch(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@overwatch.command()
-	async def hero(self, ctx, *, hero : str):
-		'''Heroes'''
-		url = "https://overwatch-api.net/api/v1/hero"
-		async with ctx.bot.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
-			data = await resp.json()
-		data = data["data"]
-		hero_data = discord.utils.find(lambda h: h["name"].lower() == hero.lower(), data)
-		if not hero_data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Hero not found")
-			return
-		fields = [("Health", hero_data["health"]), ("Armor", hero_data["armour"]), 
-					("Shield", hero_data["shield"]), ("Real Name", hero_data["real_name"])]
-		for field in ("age", "height", "affiliation", "base_of_operations"):
-			if hero_data.get(field):
-				fields.append((field.replace('_', ' ').title(), hero_data[field]))
-		fields.append(("Difficulty", '★' * hero_data["difficulty"] + '☆' * (3 - hero_data["difficulty"]), False))
-		await ctx.embed_reply(hero_data["description"], title = hero_data["name"], fields = fields)
+	@overwatch.command(hidden = True)
+	async def hero(self, ctx):
+		'''
+		Heroes
+		Deprecated, as the API this command used to use does not exist anymore
+		https://overwatch-api.net/
+		https://github.com/jamesmcfadden/overwatch-api
+		'''
+		await ctx.send_help(ctx.command)
 	
 	@overwatch.command(hidden = True)
 	async def item(self, ctx):
