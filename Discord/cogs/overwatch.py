@@ -24,19 +24,15 @@ class Overwatch(commands.Cog):
 	# TODO: Finish Stats (Add Achievements, Improve)
 	# TODO: Maps, Items
 	
-	@overwatch.command(name = "ability", aliases = ["weapon"])
-	async def overwatch_ability(self, ctx, *, ability : str):
-		'''Abilities/Weapons'''
-		url = "https://overwatch-api.net/api/v1/ability"
-		async with ctx.bot.aiohttp_session.get(url, params = {"limit": self.request_limit}) as resp:
-			data = await resp.json()
-		data = data["data"]
-		ability_data = discord.utils.find(lambda a: a["name"].lower() == ability.lower(), data)
-		if not ability_data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Ability not found")
-			return
-		fields = (("Hero", ability_data["hero"]["name"]), ("Ultimate", ability_data["is_ultimate"]))
-		await ctx.embed_reply(ability_data["description"], title = ability_data["name"], fields = fields)
+	@overwatch.command(name = "ability", aliases = ["weapon"], hidden = True)
+	async def overwatch_ability(self, ctx):
+		'''
+		Overwatch Abilities/Weapons
+		Deprecated, as the API this command used to use does not exist anymore
+		https://overwatch-api.net/
+		https://github.com/jamesmcfadden/overwatch-api
+		'''
+		await ctx.send_help(ctx.command)
 	
 	@overwatch.command(name = "achievement")
 	async def overwatch_achievement(self, ctx, *, achievement : str):
