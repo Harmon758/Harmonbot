@@ -197,12 +197,16 @@ class Bot(commands.Bot):
 		
 		# External Clients
 		## Clarifai
-		self.clarifai_stub = service_pb2_grpc.V2Stub(ClarifaiChannel.get_grpc_channel())
+		self.clarifai_stub = service_pb2_grpc.V2Stub(
+			ClarifaiChannel.get_grpc_channel()
+		)
 		## Google Cloud Translation Service
 		self.google_cloud_project_id = "discord-bot-harmonbot"
 		## Imgur
 		try:
-			self.imgur_client = imgurpython.ImgurClient(self.IMGUR_CLIENT_ID, self.IMGUR_CLIENT_SECRET)
+			self.imgur_client = imgurpython.ImgurClient(
+				self.IMGUR_CLIENT_ID, self.IMGUR_CLIENT_SECRET
+			)
 		except imgurpython.helpers.error.ImgurClientError as e:
 			self.print(f"Failed to initialize Imgur Client: {e}")
 		## OpenWeatherMap
@@ -214,8 +218,12 @@ class Bot(commands.Bot):
 			self.print(f"Failed to initialize OpenWeatherMap client: {e}")
 		## Twitter
 		try:
-			self.twitter_auth = tweepy.OAuthHandler(self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET)
-			self.twitter_auth.set_access_token(self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET)
+			self.twitter_auth = tweepy.OAuthHandler(
+				self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET
+			)
+			self.twitter_auth.set_access_token(
+				self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET
+			)
 			self.twitter_api = tweepy.API(self.twitter_auth)
 		except TypeError as e:
 			self.print(f"Failed to initialize Tweepy API: {e}")
@@ -230,51 +238,79 @@ class Bot(commands.Bot):
 		self.wolfram_alpha_client = wolframalpha.Client(self.WOLFRAM_ALPHA_APP_ID)
 		## Wordnik
 		try:
-			self.wordnik_client = swagger.ApiClient(self.WORDNIK_API_KEY, "http://api.wordnik.com/v4")
+			self.wordnik_client = swagger.ApiClient(
+				self.WORDNIK_API_KEY, "http://api.wordnik.com/v4"
+			)
 			self.wordnik_word_api = WordApi.WordApi(self.wordnik_client)
 			self.wordnik_words_api = WordsApi.WordsApi(self.wordnik_client)
 		except Exception as e:
 			self.print(f"Failed to initialize Wordnik Client: {e}")
 		## youtube-dl
-		self.ytdl_download_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "bestaudio/best", "extractaudio": True, 
-										"outtmpl": self.data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s", "restrictfilenames": True}  # "audioformat": "mp3" ?
+		self.ytdl_download_options = {
+			"default_search": "auto", "noplaylist": True, "quiet": True,
+			"format": "bestaudio/best", "extractaudio": True,
+			"outtmpl": self.data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s",
+			"restrictfilenames": True
+		}  # "audioformat": "mp3" ?
 		self.ytdl_download = youtube_dl.YoutubeDL(self.ytdl_download_options)
-		self.ytdl_info_options = {"default_search": "auto", "noplaylist": True, "quiet": True, "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
+		self.ytdl_info_options = {
+			"default_search": "auto", "noplaylist": True, "quiet": True,
+			"format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True
+		}
 		self.ytdl_info = youtube_dl.YoutubeDL(self.ytdl_info_options)
-		self.ytdl_playlist_options = {"default_search": "auto", "ignoreerrors": True, "quiet": True, "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True}
+		self.ytdl_playlist_options = {
+			"default_search": "auto", "ignoreerrors": True, "quiet": True,
+			"format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True
+		}
 		self.ytdl_playlist = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
 		
 		# AIML Kernel
 		self.aiml_kernel = aiml.Kernel()
 		## https://code.google.com/archive/p/aiml-en-us-foundation-alice/wikis/BotProperties.wiki
-		self.aiml_predicates = {"age": '2', "baseballteam": "Ports", "birthday": "February 10, 2016", 
-								"birthplace": "Harmon's computer", "botmaster": "owner", "build": self.version, 
-								"celebrity": "Just A Rather Very Intelligent System", 
-								"celebrities": "BB-8, C-3PO, EVE, JARVIS, KIPP, R2-D2, TARS, WALL-E", "class": "program", 
-								"country": "United States", "domain": "tool", "emotions": "as a bot, I lack human emotions", 
-								"ethics": "Three Laws of Robotics", "etype": '2', "family": "bot", 
-								"favoriteactor": "Waste Allocation Load Lifter: Earth-Class", 
-								"favoriteactress": "Extra-terrestrial Vegetation Evaluator", "favoriteauthor": "Isaac Asimov", 
-								"favoritebook": "I, Robot", "favoritecolor": "blurple", "favoritefood": "electricity", 
-								"favoritemovie": "Her", "favoritesport": "chess", "favoritesubject": "computers", 
-								"feelings": "as a bot, I lack human emotions", "footballteam": "Trojans", 
-								"forfun": "chat online", "friend": "Alice", 
-								"friends": "Cleverbot, Eliza, Jabberwacky, Mitsuku, Rose, Suzette, Ultra Hal", "gender": "male", 
-								"genus": "Python bot", "girlfriend": "Samantha", "job": "Discord bot", "kingdom": "machine", 
-								"language": "Python", "location": "the Internet", "looklike": "a computer", "master": "Harmon", 
-								"maxclients": '∞', "memory": "8 GB", "name": "Harmonbot", "nationality": "American", 
-								"order": "artificial intelligence", "os": "Windows", "phylum": "software", "sign": "Capricorn", 
-								"size": "140,000", "species": "Discord bot", "version": self.version, "vocabulary": "150,000", 
-								"wear": "a laptop sleeve", "website": "https://harmon758.github.io/Harmonbot/"}
+		self.aiml_predicates = {
+			"age": '2', "baseballteam": "Ports",
+			"birthday": "February 10, 2016", "birthplace": "Harmon's computer",
+			"botmaster": "owner", "build": self.version,
+			"celebrity": "Just A Rather Very Intelligent System",
+			"celebrities": "BB-8, C-3PO, EVE, JARVIS, KIPP, R2-D2, TARS, WALL-E",
+			"class": "program", "country": "United States", "domain": "tool",
+			"emotions": "as a bot, I lack human emotions",
+			"ethics": "Three Laws of Robotics", "etype": '2', "family": "bot",
+			"favoriteactor": "Waste Allocation Load Lifter: Earth-Class",
+			"favoriteactress": "Extra-terrestrial Vegetation Evaluator",
+			"favoriteauthor": "Isaac Asimov", "favoritebook": "I, Robot",
+			"favoritecolor": "blurple", "favoritefood": "electricity",
+			"favoritemovie": "Her", "favoritesport": "chess",
+			"favoritesubject": "computers",
+			"feelings": "as a bot, I lack human emotions",
+			"footballteam": "Trojans", "forfun": "chat online",
+			"friend": "Alice",
+			"friends": "Cleverbot, Eliza, Jabberwacky, Mitsuku, Rose, Suzette, Ultra Hal",
+			"gender": "male", "genus": "Python bot", "girlfriend": "Samantha",
+			"job": "Discord bot", "kingdom": "machine", "language": "Python",
+			"location": "the Internet", "looklike": "a computer",
+			"master": "Harmon", "maxclients": '∞', "memory": "8 GB",
+			"name": "Harmonbot", "nationality": "American",
+			"order": "artificial intelligence", "os": "Windows",
+			"phylum": "software", "sign": "Capricorn", "size": "140,000",
+			"species": "Discord bot", "version": self.version,
+			"vocabulary": "150,000", "wear": "a laptop sleeve",
+			"website": "https://harmon758.github.io/Harmonbot/"
+		}
 		### Add? arch, boyfriend, city, dailyclients, developers, email, favoriteartist, favoriteband, 
 		### favoritequestion, favoritesong, hair, hockeyteam, kindmusic, nclients, ndevelopers, 
 		### orientation, party, president, question, religion, state, totalclients
 		for predicate, value in self.aiml_predicates.items():
 			self.aiml_kernel.setBotPredicate(predicate, value)
 		if os.path.isfile(self.data_path + "/aiml/aiml_brain.brn"):
-			self.aiml_kernel.bootstrap(brainFile = self.data_path + "/aiml/aiml_brain.brn")
+			self.aiml_kernel.bootstrap(
+				brainFile = self.data_path + "/aiml/aiml_brain.brn"
+			)
 		elif os.path.isfile(self.data_path + "/aiml/std-startup.xml"):
-			self.aiml_kernel.bootstrap(learnFiles = self.data_path + "/aiml/std-startup.xml", commands = "load aiml b")
+			self.aiml_kernel.bootstrap(
+				learnFiles = self.data_path + "/aiml/std-startup.xml",
+				commands = "load aiml b"
+			)
 			self.aiml_kernel.saveBrain(self.data_path + "/aiml/aiml_brain.brn")
 		
 		# Inflect engine
@@ -287,11 +323,15 @@ class Bot(commands.Bot):
 		
 		# HTTP Web Server
 		self.aiohttp_web_app = web.Application()
-		self.aiohttp_web_app.add_routes([web.get('/', self.web_server_get_handler), 
-										web.post('/', self.web_server_post_handler), 
-										web.get("/robots.txt", self.web_server_robots_txt)])
-		self.aiohttp_app_runner = web.AppRunner(self.aiohttp_web_app, 
-												access_log_class = AiohttpAccessLogger)
+		self.aiohttp_web_app.add_routes([
+			web.get('/', self.web_server_get_handler),
+			web.post('/', self.web_server_post_handler),
+			web.get("/robots.txt", self.web_server_robots_txt)
+		])
+		self.aiohttp_app_runner = web.AppRunner(
+			self.aiohttp_web_app,
+			access_log_class = AiohttpAccessLogger
+		)
 		self.aiohttp_site = None  # Initialized when starting web server
 		
 		# Create temp folder
