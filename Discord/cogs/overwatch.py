@@ -34,8 +34,8 @@ class Overwatch(commands.Cog):
 		'''
 		await ctx.send_help(ctx.command)
 	
-	@overwatch.command(name = "achievement", hidden = True)
-	async def overwatch_achievement(self, ctx):
+	@overwatch.command(hidden = True)
+	async def achievement(self, ctx):
 		'''
 		Overwatch Achievements
 		Deprecated, as the API this command used to use does not exist anymore
