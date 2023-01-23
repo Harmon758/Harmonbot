@@ -99,7 +99,7 @@ class Trivia(commands.Cog):
     async def trivia(
         self, ctx, betting: Optional[bool] = False, 
         override_modal_answers: Optional[bool] = False,
-        seconds: commands.Range[int, 1, 60] = 15
+        react: Optional[bool] = True, seconds: commands.Range[int, 1, 60] = 15
     ):
         """
         Trivia question
@@ -115,6 +115,9 @@ class Trivia(commands.Cog):
         override_modal_answers
             Whether or not to override modal answers with message answers
             (Defaults to False)
+        react
+            Whether or not to add reactions to submitted bets
+            (Defaults to True)
         seconds
             How long to accept answers (and bets) for, in seconds
             (1 - 60, default is 15)
@@ -125,7 +128,8 @@ class Trivia(commands.Cog):
             self.trivia_questions[ctx.guild.id] = TriviaQuestion(
                 seconds,
                 betting = betting,
-                override_modal_answers = override_modal_answers
+                override_modal_answers = override_modal_answers,
+                react = react
             )
             await self.trivia_questions[ctx.guild.id].start(ctx)
         finally:
@@ -149,9 +153,17 @@ class Trivia(commands.Cog):
                 raise RuntimeError(
                     "Points cog not loaded during trivia betting"
                 )
-            bet = min(int(message.content), 100)
+            input_bet = int(message.content)
+            bet = min(input_bet, 100)
             if bet <= points:
                 trivia_question.bets[message.author] = bet
+                if trivia_question.react:
+                    if input_bet <= 100:
+                        await message.add_reaction(
+                            '\N{WHITE HEAVY CHECK MARK}'
+                        )
+                    else:
+                        await message.add_reaction('\N{HUNDRED POINTS SYMBOL}')
             else:
                 await ctx.embed_reply(
                     "You don't have that many points (`\N{CURRENCY SIGN}`) "
@@ -170,7 +182,7 @@ class Trivia(commands.Cog):
     @trivia.command(max_concurrency = max_concurrency)
     async def bet(
         self, ctx, override_modal_answers: Optional[bool] = False,
-        seconds: commands.Range[int, 1, 60] = 15
+        react: Optional[bool] = True, seconds: commands.Range[int, 1, 60] = 15
     ):
         """
         Trivia question with betting
@@ -183,6 +195,9 @@ class Trivia(commands.Cog):
         override_modal_answers
             Whether or not to override modal answers with message answers
             (Defaults to False)
+        react
+            Whether or not to add reactions to submitted bets
+            (Defaults to True)
         seconds
             How long to accept answers (and bets) for, in seconds
             (1 - 60, default is 15)
@@ -191,7 +206,7 @@ class Trivia(commands.Cog):
             await ctx.invoke(
                 command, betting = True,
                 override_modal_answers = override_modal_answers,
-                seconds = seconds
+                react = react, seconds = seconds
             )
         else:
             raise RuntimeError(
@@ -959,7 +974,8 @@ class TriviaBoardBuzzerView(ui.View):
 class TriviaQuestion:
 
     def __init__(
-        self, seconds, betting = False, override_modal_answers = False
+        self, seconds, betting = False, override_modal_answers = False,
+        react = True
     ):
         self.answered_through_modal = set()
         self.bet_countdown = 0
@@ -968,6 +984,7 @@ class TriviaQuestion:
         self.channel_id = None
         self.override_modal_answers = override_modal_answers
         self.question_countdown = 0
+        self.react = react
         self.response = None  # Bot response to command
         self.responses = {}  # User responses to question
         self.seconds = seconds
