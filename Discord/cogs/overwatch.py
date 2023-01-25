@@ -30,12 +30,12 @@ class Overwatch(commands.Cog):
 	
 	@overwatch.command(aliases = ["weapon"], hidden = True)
 	async def ability(self, ctx):
-		'''
+		"""
 		Overwatch Abilities/Weapons
 		Deprecated, as the API this command used to use does not exist anymore
 		https://overwatch-api.net/
 		https://github.com/jamesmcfadden/overwatch-api
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@overwatch.command(hidden = True)
