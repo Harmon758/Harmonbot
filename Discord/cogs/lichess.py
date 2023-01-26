@@ -26,7 +26,7 @@ class LichessUser(commands.Converter):
 			data = await resp.json()
 		if not data:
 			raise commands.BadArgument("User not found")
-		if data.get("closed"):
+		if data.get("closed") or data.get("disabled"):
 			raise commands.BadArgument("This account is closed")
 		return data
 
