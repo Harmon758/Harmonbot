@@ -58,7 +58,7 @@ class User(commands.Cog):
     async def user_avatar(
         self, ctx, *, user: Optional[discord.User] = commands.Author
     ):
-        '''
+        """
         Show the avatar of a user
 
         Parameters
@@ -66,7 +66,7 @@ class User(commands.Cog):
         user
             User to show avatar of
             (Defaults to command invoker)
-        '''
+        """
         # Note avatar command invokes this command
         await ctx.embed_reply(
             author_name = None,
