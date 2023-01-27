@@ -55,12 +55,14 @@ class User(commands.Cog):
         await ctx.invoke(self.user_add_role, member = member, role = role)
 
     @user.command(name = "avatar", with_app_command = False)
-    async def user_avatar(self, ctx, *, user: Optional[discord.Member]):
+    async def user_avatar(
+        self, ctx, *, user: Optional[discord.User] = commands.Author
+    ):
         '''
         See a bigger version of an avatar
         Your own or someone else's avatar
         '''
-        if not user:
+        if user == ctx.author:
             await ctx.embed_reply(
                 title = "Your avatar",
                 image_url = ctx.author.display_avatar.url
@@ -72,7 +74,9 @@ class User(commands.Cog):
             )
 
     @commands.command()
-    async def avatar(self, ctx, *, user: Optional[discord.Member]):
+    async def avatar(
+        self, ctx, *, user: Optional[discord.User] = commands.Author
+    ):
         """
         See a bigger version of an avatar
         Your own or someone else's avatar
