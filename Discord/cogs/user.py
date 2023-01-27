@@ -68,16 +68,10 @@ class User(commands.Cog):
             (Defaults to command invoker)
         '''
         # Note avatar command invokes this command
-        if user == ctx.author:
-            await ctx.embed_reply(
-                title = "Your avatar",
-                image_url = ctx.author.display_avatar.url
-            )
-        else:
-            await ctx.embed_reply(
-                title = f"{user}'s avatar",
-                image_url = user.display_avatar.url
-            )
+        await ctx.embed_reply(
+            description = f"{user.mention}**'s avatar:**",
+            image_url = user.display_avatar.url
+        )
 
     @commands.command()
     async def avatar(
