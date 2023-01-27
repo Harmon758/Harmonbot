@@ -2,7 +2,10 @@
 import discord
 from discord.ext import commands
 
+import io
 from typing import Optional
+
+from PIL import Image, ImageOps
 
 from utilities import checks
 
@@ -56,38 +59,68 @@ class User(commands.Cog):
 
     @user.command(name = "avatar")
     async def user_avatar(
-        self, ctx, *, user: Optional[discord.User] = commands.Author
+        self, ctx, mirror: Optional[bool] = False, *,
+        user: Optional[discord.User] = commands.Author
     ):
         """
         Show the avatar of a user
 
         Parameters
         ----------
+        mirror
+            Whether or not to mirror the avatar horizontally
+            (Defaults to False)
         user
             User to show avatar of
             (Defaults to command invoker)
         """
         # Note avatar command invokes this command
+        description = f"{user.mention}**'s "
+        file = None
+        image_url = user.display_avatar.url
+
+        if mirror:
+            buffer = io.BytesIO()
+            await ctx.author.display_avatar.save(buffer, seek_begin = True)
+            avatar = Image.open(buffer)
+
+            mirrored = ImageOps.mirror(avatar)
+
+            buffer = io.BytesIO()
+            mirrored.save(fp = buffer, format = "PNG")
+            buffer.seek(0)
+
+            description += "(mirrored) "
+            file = discord.File(buffer, filename = "avatar.png")
+            image_url = "attachment://avatar.png"
+
+        description += "avatar:**"
+
         await ctx.embed_reply(
             author_name = None,
-            description = f"{user.mention}**'s avatar:**",
-            image_url = user.display_avatar.url
+            description = description,
+            image_url = image_url,
+            file = file
         )
 
     @commands.command()
     async def avatar(
-        self, ctx, *, user: Optional[discord.User] = commands.Author
+        self, ctx, mirror: Optional[bool] = False, *,
+        user: Optional[discord.User] = commands.Author
     ):
         """
         Show the avatar of a user
 
         Parameters
         ----------
+        mirror
+            Whether or not to mirror the avatar horizontally
+            (Defaults to False)
         user
             User to show avatar of
             (Defaults to command invoker)
         """
-        await ctx.invoke(self.user_avatar, user = user)
+        await ctx.invoke(self.user_avatar, mirror = mirror, user = user)
 
     @user.command(name = "discriminator", with_app_command = False)
     async def user_discriminator(self, ctx, *, user: Optional[discord.Member]):
