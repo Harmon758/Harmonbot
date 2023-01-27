@@ -54,14 +54,20 @@ class User(commands.Cog):
         """Gives a user a role"""
         await ctx.invoke(self.user_add_role, member = member, role = role)
 
-    @user.command(name = "avatar", with_app_command = False)
+    @user.command(name = "avatar")
     async def user_avatar(
         self, ctx, *, user: Optional[discord.User] = commands.Author
     ):
         '''
-        See a bigger version of an avatar
-        Your own or someone else's avatar
+        Show the avatar of a user
+
+        Parameters
+        ----------
+        user
+            User to show avatar of
+            (Defaults to command invoker)
         '''
+        # Note avatar command invokes this command
         if user == ctx.author:
             await ctx.embed_reply(
                 title = "Your avatar",
@@ -78,8 +84,13 @@ class User(commands.Cog):
         self, ctx, *, user: Optional[discord.User] = commands.Author
     ):
         """
-        See a bigger version of an avatar
-        Your own or someone else's avatar
+        Show the avatar of a user
+
+        Parameters
+        ----------
+        user
+            User to show avatar of
+            (Defaults to command invoker)
         """
         await ctx.invoke(self.user_avatar, user = user)
 
