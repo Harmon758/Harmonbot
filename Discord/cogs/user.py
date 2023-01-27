@@ -108,7 +108,16 @@ class User(commands.Cog):
     async def user_id(
         self, ctx, *, user: Optional[discord.User] = commands.Author
     ):
-        """Show the ID of a user"""
+        """
+        Show the ID of a user
+
+        Parameters
+        ----------
+        user
+            User to show ID of
+            (Defaults to command invoker)
+        """
+        # Note: id command invokes this command
         await ctx.embed_reply(
             description = f"{user.mention}'s ID: {user.id}",
             footer_icon_url = user.display_avatar.url,
@@ -118,7 +127,15 @@ class User(commands.Cog):
     # TODO: Make general ID command with subcommands
     @commands.command()
     async def id(self, ctx, *, user: Optional[discord.User] = commands.Author):
-        """Show the ID of a user"""
+        """
+        Show the ID of a user
+
+        Parameters
+        ----------
+        user
+            User to show ID of
+            (Defaults to command invoker)
+        """
         await ctx.invoke(self.user_id, user = user)
 
     @user.command(aliases = ["info"], with_app_command = False)
