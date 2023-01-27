@@ -59,7 +59,8 @@ class User(commands.Cog):
 
     @user.command(name = "avatar")
     async def user_avatar(
-        self, ctx, mirror: Optional[bool] = False, *,
+        self, ctx, flip: Optional[bool] = False,
+        mirror: Optional[bool] = False, *,
         user: Optional[discord.User] = commands.Author
     ):
         """
@@ -67,6 +68,9 @@ class User(commands.Cog):
 
         Parameters
         ----------
+        flip
+            Whether or not to flip the avatar vertically
+            (Defaults to False)
         mirror
             Whether or not to mirror the avatar horizontally
             (Defaults to False)
@@ -79,18 +83,23 @@ class User(commands.Cog):
         file = None
         image_url = user.display_avatar.url
 
-        if mirror:
+        if flip or mirror:
             buffer = io.BytesIO()
             await ctx.author.display_avatar.save(buffer, seek_begin = True)
             avatar = Image.open(buffer)
 
-            mirrored = ImageOps.mirror(avatar)
+            if flip:
+                avatar = ImageOps.flip(avatar)
+                description += "(flipped) "
+
+            if mirror:
+                avatar = ImageOps.mirror(avatar)
+                description += "(mirrored) "
 
             buffer = io.BytesIO()
-            mirrored.save(fp = buffer, format = "PNG")
+            avatar.save(fp = buffer, format = "PNG")
             buffer.seek(0)
 
-            description += "(mirrored) "
             file = discord.File(buffer, filename = "avatar.png")
             image_url = "attachment://avatar.png"
 
@@ -105,7 +114,8 @@ class User(commands.Cog):
 
     @commands.command()
     async def avatar(
-        self, ctx, mirror: Optional[bool] = False, *,
+        self, ctx, flip: Optional[bool] = False,
+        mirror: Optional[bool] = False, *,
         user: Optional[discord.User] = commands.Author
     ):
         """
@@ -113,6 +123,9 @@ class User(commands.Cog):
 
         Parameters
         ----------
+        flip
+            Whether or not to flip the avatar vertically
+            (Defaults to False)
         mirror
             Whether or not to mirror the avatar horizontally
             (Defaults to False)
@@ -120,7 +133,9 @@ class User(commands.Cog):
             User to show avatar of
             (Defaults to command invoker)
         """
-        await ctx.invoke(self.user_avatar, mirror = mirror, user = user)
+        await ctx.invoke(
+            self.user_avatar, flip = flip, mirror = mirror, user = user
+        )
 
     @user.command(name = "discriminator", with_app_command = False)
     async def user_discriminator(self, ctx, *, user: Optional[discord.Member]):
