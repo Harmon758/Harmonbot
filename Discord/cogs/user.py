@@ -85,7 +85,7 @@ class User(commands.Cog):
 
         if flip or mirror:
             buffer = io.BytesIO()
-            await ctx.author.display_avatar.save(buffer, seek_begin = True)
+            await user.display_avatar.save(buffer, seek_begin = True)
             avatar = Image.open(buffer)
 
             if flip:
