@@ -69,6 +69,7 @@ class User(commands.Cog):
         '''
         # Note avatar command invokes this command
         await ctx.embed_reply(
+            author_name = None,
             description = f"{user.mention}**'s avatar:**",
             image_url = user.display_avatar.url
         )
