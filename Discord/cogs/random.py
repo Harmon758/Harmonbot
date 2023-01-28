@@ -504,6 +504,32 @@ class Random(commands.Cog):
                 "when dog breeds command invoked"
             )
 
+    @random.command(name = "duck")
+    async def random_duck(self, ctx):
+        """Random duck"""
+        # Note: duck command invokes this command
+        await ctx.defer()
+
+        async with ctx.bot.aiohttp_session.get(
+            "https://random-d.uk/api/v2/random"
+        ) as resp:
+            data = await resp.json()
+
+        await ctx.embed_reply(
+            description = f"[\N{DUCK}]({data['url']})",
+            image_url = data["url"]
+        )
+
+    @commands.command()
+    async def duck(self, ctx):
+        """Random duck"""
+        if command := ctx.bot.get_command("random duck"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "random duck command not found when duck command invoked"
+            )
+
     @random.command(name = "emoji", aliases = ["emote"])
     async def random_emoji(self, ctx):
         """Random emoji"""
