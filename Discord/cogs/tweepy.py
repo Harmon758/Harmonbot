@@ -190,6 +190,7 @@ class Tweepy(commands.Cog):
         query
             The query to search
         """
+        await ctx.defer()
         data = ctx.bot.github_api.getiter(
             "/search/issues?q={q}", {'q': "repo:tweepy/tweepy " + query}
         )
