@@ -256,6 +256,8 @@ class Meta(commands.Cog):
 		• Discord WebSocket protocol latency between a HEARTBEAT and a HEARTBEAT_ACK in seconds
 		• PostgreSQL database latency from a SELECT 1 query
 		"""
+		await ctx.defer()
+		
 		start = time.perf_counter_ns()
 		await ctx.bot.db.execute("SELECT 1")
 		database_latency = time.perf_counter_ns() - start
