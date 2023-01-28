@@ -129,6 +129,8 @@ class Tweepy(commands.Cog):
         query
             The query to search
         """
+        await ctx.defer()
+
         suggestions = self.sphinx_inventory.suggest(
             query, thresh = 64, with_index = True
         )
