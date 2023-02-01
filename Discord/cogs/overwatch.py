@@ -51,7 +51,7 @@ class Overwatch(commands.Cog):
 	@overwatch.command(hidden = True)
 	async def hero(self, ctx):
 		"""
-		Heroes
+		Overwatch Heroes
 		Deprecated, as the API this command used to use does not exist anymore
 		https://overwatch-api.net/
 		https://github.com/jamesmcfadden/overwatch-api
