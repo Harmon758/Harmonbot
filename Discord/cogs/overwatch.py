@@ -60,12 +60,12 @@ class Overwatch(commands.Cog):
 	
 	@overwatch.command(hidden = True)
 	async def item(self, ctx):
-		'''
+		"""
 		Overwatch Items
 		Deprecated, as the API this command used to use does not exist anymore
 		https://overwatch-api.net/
 		https://github.com/jamesmcfadden/overwatch-api
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@overwatch.command(hidden = True)
