@@ -70,12 +70,12 @@ class Overwatch(commands.Cog):
 	
 	@overwatch.command(hidden = True)
 	async def map(self, ctx):
-		'''
+		"""
 		Overwatch Maps
 		Deprecated, as the API this command used to use does not exist anymore
 		https://overwatch-api.net/
 		https://github.com/jamesmcfadden/overwatch-api
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@overwatch.group(name = "stats", aliases = ["statistics"], 
