@@ -187,7 +187,7 @@ class Pokemon(commands.Cog):
         ...
 
     @evolution.command(name = "trigger", with_app_command = False)
-    async def evolution_trigger(self, ctx, id_or_name : str):
+    async def evolution_trigger(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
