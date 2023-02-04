@@ -182,7 +182,7 @@ class Pokemon(commands.Cog):
         ...
 
     @evolution.command(name = "chain", with_app_command = False)
-    async def evolution_chain(self, ctx, id : int):
+    async def evolution_chain(self, ctx, id: int):
         '''WIP'''
         ...
 
