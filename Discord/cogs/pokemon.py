@@ -192,7 +192,7 @@ class Pokemon(commands.Cog):
         ...
 
     @pokemon.command(with_app_command = False)
-    async def generation(self, ctx, id_or_name : str):
+    async def generation(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
