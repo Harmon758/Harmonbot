@@ -200,7 +200,7 @@ class Pokemon(commands.Cog):
         aliases = ["rate", "growthrate", "growth_rate"],
         with_app_command = False
     )
-    async def growth(self, ctx, id_or_name : str):
+    async def growth(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
