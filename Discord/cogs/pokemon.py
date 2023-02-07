@@ -205,7 +205,7 @@ class Pokemon(commands.Cog):
         ...
 
     @pokemon.group(case_insensitive = True, with_app_command = False)
-    async def item(self, ctx, id_or_name : str):
+    async def item(self, ctx, id_or_name: str):
         '''WIP'''
         # TODO: fling effect?
         ...
