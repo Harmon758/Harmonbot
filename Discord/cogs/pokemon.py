@@ -216,7 +216,7 @@ class Pokemon(commands.Cog):
         ...
 
     @item.command(name = "category", with_app_command = False)
-    async def item_category(self, ctx, id_or_name : str):
+    async def item_category(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
