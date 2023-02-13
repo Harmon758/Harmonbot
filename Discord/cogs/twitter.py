@@ -129,13 +129,14 @@ class Twitter(commands.Cog):
             image_url = tweet.extended_entities["media"][0]["media_url_https"]
             text = text.replace(tweet.extended_entities["media"][0]["url"], "")
         await ctx.embed_reply(
+            content = f"<https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}>",
             color = self.bot.twitter_color,
-            title = '@' + tweet.user.screen_name,
-            title_url = f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}",
+            author_icon_url = tweet.user.profile_image_url,
+            author_name = f"{tweet.user.name} (@{tweet.user.screen_name})",
+            author_url = f"https://twitter.com/{tweet.user.screen_name}",
             description = text,
             image_url = image_url,
-            footer_icon_url = tweet.user.profile_image_url,
-            footer_text = tweet.user.name,
+            footer_text = None,
             timestamp = tweet.created_at
         )
 
