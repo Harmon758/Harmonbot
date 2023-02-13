@@ -84,11 +84,11 @@ class Twitter(commands.Cog):
     async def twitter_status(
         self, ctx, handle: str, replies: bool = False, retweets: bool = False
     ):
-        '''
+        """
         Show a Twitter user's most recent Tweet
         Excludes replies and retweets by default
         Limited to 3200 most recent Tweets
-        '''
+        """
         try:
             response = await self.bot.twitter_client.get_user(
                 username = handle.lstrip('@'),
