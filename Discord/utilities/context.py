@@ -23,11 +23,17 @@ class Context(commands.Context):
 					kwargs["footer_text"] = (
 						f"{in_response_to_text}: {self.message.clean_content}"
 					)
-				elif len(args) < 2:
+				elif len(args) < 2 and "content" not in kwargs:
 					args = (
 						next(iter(args), kwargs.pop("description", None)),
 						f"{in_response_to_text}: "
 						f"`{self.message.clean_content}`"
+					)
+				elif "content" in kwargs:
+					kwargs["content"] = (
+						f"{in_response_to_text}: "
+						f"`{self.message.clean_content}`\n"
+						f"{kwargs['content']}"
 					)
 		
 		message = await self.embed_send(*args, **kwargs)
