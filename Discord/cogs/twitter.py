@@ -89,51 +89,76 @@ class Twitter(commands.Cog):
         Excludes replies and retweets by default
         Limited to 3200 most recent Tweets
         '''
-        if handle.lower().strip('@') in self.blacklisted_handles:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Unauthorized")
-            return
-
-        tweet = None
         try:
-            for status in tweepy.Cursor(
-                self.bot.twitter_api.user_timeline,
-                screen_name = handle,
-                count = 200,
-                exclude_replies = not replies,
-                include_rts = retweets,
-                tweet_mode = "extended"
-            ).items():
-                tweet = status
-                break
-        except tweepy.NotFound:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: @{handle} not found"
+            response = await self.bot.twitter_client.get_user(
+                username = handle.lstrip('@'),
+                user_fields = ["profile_image_url"]
             )
-            return
-        except tweepy.TweepyException as e:
+        except tweepy.BadRequest as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
             return
 
-        if not tweet:
+        if response.errors:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Error:\n" +
+                '\n'.join(error['detail'] for error in response.errors)
+            )
+            return
+
+        user = response.data
+
+        async for tweet in tweepy.asynchronous.AsyncPaginator(
+            self.bot.twitter_client.get_users_tweets,
+            user.id,
+            exclude = (
+                ["replies"] if not replies else [] +
+                ["retweets"] if not retweets else []
+            ) or None,
+            max_results = 100
+        ).flatten():
+            response = await self.bot.twitter_client.get_tweet(
+                tweet.id,
+                expansions = ["attachments.media_keys"],
+                media_fields = ["url"],
+                tweet_fields = ["attachments", "created_at", "entities"]
+            )
+            break
+        else:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Error: Status not found"
             )
             return
 
+        tweet = response.data
+
+        medias = {
+            media["media_key"]: media
+            for media in response.includes.get("media", ())
+        }
+
         image_url = None
-        text = process_tweet_text(tweet.full_text, tweet.entities)
-        if (
-            hasattr(tweet, "extended_entities") and
-            tweet.extended_entities["media"][0]["type"] == "photo"
+        if tweet.attachments and (
+            media_keys := tweet.attachments.get("media_keys")
         ):
-            image_url = tweet.extended_entities["media"][0]["media_url_https"]
-            text = text.replace(tweet.extended_entities["media"][0]["url"], "")
+            for media_key in media_keys:
+                media = medias[media_key]
+                if media["type"] == "photo":
+                    image_url = media["url"]
+                    break
+
+        text = process_tweet_text(tweet.text, tweet.entities)
+
+        if image_url:
+            for url in tweet.entities["urls"]:
+                if url.get("media_key") == media_key:
+                    text = text.replace(url["expanded_url"], "")
+
         await ctx.embed_reply(
-            content = f"<https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}>",
+            content = f"<https://twitter.com/{user.username}/status/{tweet.id}>",
             color = self.bot.twitter_color,
-            author_icon_url = tweet.user.profile_image_url,
-            author_name = f"{tweet.user.name} (@{tweet.user.screen_name})",
-            author_url = f"https://twitter.com/{tweet.user.screen_name}",
+            author_icon_url = user.profile_image_url,
+            author_name = f"{user.name} (@{user.username})",
+            author_url = f"https://twitter.com/{user.username}",
             description = text,
             image_url = image_url,
             footer_text = None,
@@ -254,25 +279,37 @@ class Twitter(commands.Cog):
 
 def process_tweet_text(text, entities):
     mentions = {}
-    for mention in entities["user_mentions"]:
-        mentions[text[mention["indices"][0]:mention["indices"][1]]] = (
-            mention["screen_name"]
-        )
+    if "user_mentions" in entities:
+        for mention in entities["user_mentions"]:
+            mentions[text[mention["indices"][0]:mention["indices"][1]]] = (
+                mention["screen_name"]
+            )
+    else:
+        for mention in entities.get("mentions", ()):
+            mentions[text[mention["start"]:mention["end"]]] = mention["tag"]
     for mention, screen_name in mentions.items():
         text = text.replace(
             mention,
             f"[{mention}](https://twitter.com/{screen_name})"
         )
-    for hashtag in entities["hashtags"]:
+    for hashtag in entities.get("hashtags", ()):
+        tag = hashtag.get("text") or hashtag.get("tag")
         text = text.replace(
-            '#' + hashtag["text"],
-            f"[#{hashtag['text']}](https://twitter.com/hashtag/{hashtag['text']})"
+            '#' + tag,
+            f"[#{tag}](https://twitter.com/hashtag/{tag})"
         )
-    for symbol in entities["symbols"]:
-        text = text.replace(
-            '$' + symbol["text"],
-            f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})"
-        )
+    if "symbols" in entities:
+        for symbol in entities["symbols"]:
+            text = text.replace(
+                '$' + symbol["text"],
+                f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})"
+            )
+    else:
+        for cashtag in entities.get("cashtags", ()):
+            text = text.replace(
+                '$' + cashtag["tag"],
+                f"[${cashtag['tag']}](https://twitter.com/search?q=${cashtag['tag']})"
+            )
     for url in entities["urls"]:
         text = text.replace(url["url"], url["expanded_url"])
     # Remove Variation Selector-16 characters
