@@ -203,7 +203,10 @@ class Twitter(commands.Cog):
             ctx.channel.id, handle
         )
         if following:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel is already following that Twitter handle")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} This text channel "
+                "is already following that Twitter handle"
+            )
             return
         message = await ctx.embed_reply("\N{HOURGLASS} Please wait")
         embed = message.embeds[0]
@@ -220,7 +223,11 @@ class Twitter(commands.Cog):
             """,
             ctx.channel.id, handle
         )
-        embed.description = f"Added the Twitter handle, [`{handle}`](https://twitter.com/{handle}), to this text channel"
+        embed.description = (
+            "Added the Twitter handle, "
+            f"[`{handle}`](https://twitter.com/{handle}), "
+            "to this text channel"
+        )
         await message.edit(embed = embed)
 
     @twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"], with_app_command = False)
