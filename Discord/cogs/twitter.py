@@ -141,40 +141,45 @@ class Twitter(commands.Cog):
             )
             return
 
-        tweet = response.data
-
         medias = {
             media["media_key"]: media
             for media in response.includes.get("media", ())
         }
-
-        image_url = None
-        if tweet.attachments and (
-            media_keys := tweet.attachments.get("media_keys")
-        ):
-            for media_key in media_keys:
-                media = medias[media_key]
-                if media["type"] == "photo":
-                    image_url = media["url"]
-                    break
+        tweet = response.data
+        tweet_url = f"https://twitter.com/{user.username}/status/{tweet.id}"
 
         text = process_tweet_text(tweet.text, tweet.entities)
 
-        if image_url:
-            for url in tweet.entities["urls"]:
-                if url.get("media_key") == media_key:
-                    text = text.replace(url["expanded_url"], "")
+        image_url = None
+        embeds = []
+        for media_key in (tweet.attachments or {}).get("media_keys"):
+            media = medias[media_key]
+            if media["type"] != "photo":
+                continue
+            if not image_url:
+                image_url = media["url"]
+                for url in tweet.entities["urls"]:
+                    if url.get("media_key") == media_key:
+                        text = text.replace(url["expanded_url"], "")
+            else:
+                embeds.append(
+                    discord.Embed(
+                        url = tweet_url
+                    ).set_image(url = media["url"])
+                )
 
         await ctx.embed_reply(
-            content = f"<https://twitter.com/{user.username}/status/{tweet.id}>",
+            content = f"<{tweet_url}>",
             color = self.bot.twitter_color,
+            title_url = tweet_url,
             author_icon_url = user.profile_image_url,
             author_name = f"{user.name} (@{user.username})",
             author_url = f"https://twitter.com/{user.username}",
             description = text,
             image_url = image_url,
             footer_text = None,
-            timestamp = tweet.created_at
+            timestamp = tweet.created_at,
+            embeds = embeds
         )
 
     @twitter.command(
