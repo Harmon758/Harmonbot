@@ -326,7 +326,7 @@ def process_tweet_text(text, entities):
                 '$' + cashtag["tag"],
                 f"[${cashtag['tag']}](https://twitter.com/search?q=${cashtag['tag']})"
             )
-    for url in entities["urls"]:
+    for url in entities.get("urls", ()):
         text = text.replace(url["url"], url["expanded_url"])
     # Remove Variation Selector-16 characters
     # Unescape HTML entities (&gt;, &lt;, &amp;, etc.)
