@@ -76,7 +76,7 @@ class Twitter(commands.Cog):
     @commands.hybrid_group(case_insensitive = True)
     @checks.not_forbidden()
     async def twitter(self, ctx):
-        '''Twitter'''
+        """Twitter"""
         await ctx.send_help(ctx.command)
 
     @twitter.command(name = "status")
