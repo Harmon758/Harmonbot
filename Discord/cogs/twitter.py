@@ -73,7 +73,7 @@ class Twitter(commands.Cog):
             self.stream.disconnect()
         self.task.cancel()
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
+    @commands.hybrid_group(case_insensitive = True)
     @checks.not_forbidden()
     async def twitter(self, ctx):
         '''Twitter'''
@@ -86,8 +86,18 @@ class Twitter(commands.Cog):
     ):
         """
         Show a Twitter user's most recent Tweet
-        Excludes replies and retweets by default
         Limited to 3200 most recent Tweets
+
+        Parameters
+        ----------
+        handle
+            Handle/Username of Twitter user for which to show most recent Tweet
+        replies
+            Whether or not to include replies
+            (Defaults to False)
+        retweets
+            Whether or not to include retweets
+            (Defaults to False)
         """
         try:
             response = await self.bot.twitter_client.get_user(
@@ -165,7 +175,10 @@ class Twitter(commands.Cog):
             timestamp = tweet.created_at
         )
 
-    @twitter.command(name = "add", aliases = ["addhandle", "handleadd"])
+    @twitter.command(
+        name = "add", aliases = ["addhandle", "handleadd"],
+        with_app_command = False
+    )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def twitter_add(self, ctx, handle: str):
         '''
@@ -203,7 +216,7 @@ class Twitter(commands.Cog):
         embed.description = f"Added the Twitter handle, [`{handle}`](https://twitter.com/{handle}), to this text channel"
         await message.edit(embed = embed)
 
-    @twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"])
+    @twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"], with_app_command = False)
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def twitter_remove(self, ctx, handle: str):
         '''
@@ -228,7 +241,10 @@ class Twitter(commands.Cog):
         embed.description = f"Removed the Twitter handle, [`{handle}`](https://twitter.com/{handle}), from this text channel."
         await message.edit(embed = embed)
 
-    @twitter.command(aliases = ["handle", "feeds", "feed", "list"])
+    @twitter.command(
+        aliases = ["handle", "feeds", "feed", "list"],
+        with_app_command = False
+    )
     @checks.not_forbidden()
     async def handles(self, ctx):
         '''Show Twitter handles being followed in a text channel'''
