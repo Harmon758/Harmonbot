@@ -99,6 +99,8 @@ class Twitter(commands.Cog):
             Whether or not to include retweets
             (Defaults to False)
         """
+        await ctx.defer()
+
         try:
             response = await self.bot.twitter_client.get_user(
                 username = handle.lstrip('@'),
