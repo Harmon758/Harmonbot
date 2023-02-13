@@ -230,7 +230,14 @@ class Twitter(commands.Cog):
         )
         await message.edit(embed = embed)
 
-    @twitter.command(name = "remove", aliases = ["delete", "removehandle", "handleremove", "deletehandle", "handledelete"], with_app_command = False)
+    @twitter.command(
+        name = "remove",
+        aliases = [
+            "delete", "removehandle", "handleremove", "deletehandle",
+            "handledelete"
+        ],
+        with_app_command = False
+    )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def twitter_remove(self, ctx, handle: str):
         '''
@@ -247,12 +254,19 @@ class Twitter(commands.Cog):
             ctx.channel.id, handle
         )
         if not deleted:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel isn't following that Twitter handle")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} This text channel "
+                "isn't following that Twitter handle"
+            )
             return
         message = await ctx.embed_reply("\N{HOURGLASS} Please wait")
         await self.stream.remove_feed(ctx.channel, handle)
         embed = message.embeds[0]
-        embed.description = f"Removed the Twitter handle, [`{handle}`](https://twitter.com/{handle}), from this text channel."
+        embed.description = (
+            "Removed the Twitter handle, "
+            f"[`{handle}`](https://twitter.com/{handle}), "
+            "from this text channel."
+        )
         await message.edit(embed = embed)
 
     @twitter.command(
