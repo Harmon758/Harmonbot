@@ -217,16 +217,6 @@ class Bot(commands.Bot):
 		except AssertionError as e:
 			self.print(f"Failed to initialize OpenWeatherMap client: {e}")
 		## Twitter
-		try:
-			self.twitter_auth = tweepy.OAuthHandler(
-				self.TWITTER_CONSUMER_KEY, self.TWITTER_CONSUMER_SECRET
-			)
-			self.twitter_auth.set_access_token(
-				self.TWITTER_ACCESS_TOKEN, self.TWITTER_ACCESS_TOKEN_SECRET
-			)
-			self.twitter_api = tweepy.API(self.twitter_auth)
-		except TypeError as e:
-			self.print(f"Failed to initialize Tweepy API: {e}")
 		self.twitter_client = tweepy.asynchronous.AsyncClient(
 			bearer_token = self.TWITTER_BEARER_TOKEN,
 			consumer_key = self.TWITTER_v2_CONSUMER_KEY,
