@@ -61,6 +61,7 @@ class Osu(commands.Cog):
         user
             User to retrieve osu! information about
         """
+        await ctx.defer()
         await self.get_user(ctx, user)
 
     @taiko.command(name = "user")
