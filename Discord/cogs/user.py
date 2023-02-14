@@ -79,6 +79,8 @@ class User(commands.Cog):
             (Defaults to command invoker)
         """
         # Note avatar command invokes this command
+        await ctx.defer()
+
         description = f"{user.mention}**'s "
         file = None
         image_url = user.display_avatar.url
