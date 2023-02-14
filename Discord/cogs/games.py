@@ -106,6 +106,7 @@ class Games(commands.Cog):
 		question
 			Yes or no question to ask 8-ball
 		"""
+		await ctx.defer()
 		await ctx.embed_reply(
 			f"{ctx.author.mention}: {question}\n"
 			f"\N{BILLIARDS} {games.eightball()}"
