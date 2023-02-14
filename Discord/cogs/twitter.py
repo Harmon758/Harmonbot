@@ -433,14 +433,13 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
                 extended_entities = getattr(status, "extended_entities", None)
             embed = discord.Embed(
                 color = self.bot.twitter_color,
-                title = '@' + status.user.screen_name,
-                url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}",
                 description = process_tweet_text(text, entities),
                 timestamp = status.created_at,
             )
             embed.set_author(
-                name = status.user.name,
-                icon_url = status.user.profile_image_url
+                name = f"{status.user.name} (@{status.user.screen_name})",
+                icon_url = status.user.profile_image_url,
+                url = f"https://twitter.com/{status.user.screen_name}"
             )
             if (
                 extended_entities and
@@ -457,7 +456,10 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
                 text = "Twitter"
             )
             try:
-                await channel.send(embed = embed)
+                await channel.send(
+                    content = f"https://twitter.com/{status.user.screen_name}/status/{status.id}",
+                    embed = embed
+                )
             except discord.Forbidden:
                 # TODO: Handle unable to send embeds/messages in text channel
                 self.bot.print(
