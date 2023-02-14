@@ -87,6 +87,7 @@ class Osu(commands.Cog):
         user
             User to retrieve osu!catch information about
         """
+        await ctx.defer()
         await self.get_user(ctx, user, 2)
 
     @mania.command(name = "user")
