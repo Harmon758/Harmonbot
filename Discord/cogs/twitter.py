@@ -457,7 +457,7 @@ class TwitterStream(tweepy.asynchronous.AsyncStream):
             )
             try:
                 await channel.send(
-                    content = f"https://twitter.com/{status.user.screen_name}/status/{status.id}",
+                    content = f"<https://twitter.com/{status.user.screen_name}/status/{status.id}>",
                     embed = embed
                 )
             except discord.Forbidden:
