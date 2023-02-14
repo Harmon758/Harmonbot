@@ -100,6 +100,7 @@ class Osu(commands.Cog):
         user
             User to retrieve osu!mania information about
         """
+        await ctx.defer()
         await self.get_user(ctx, user, 3)
 
     async def get_user(self, ctx, user, mode = 0):
