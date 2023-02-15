@@ -128,7 +128,7 @@ smmap==4.0.0
 sniffio==1.3.0
 sortedcontainers==2.4.0
 soupsieve==2.3.2.post1
-typing-extensions==4.4.0
+typing-extensions==4.5.0
 uritemplate==4.1.1
 websockets==10.4
 xmltodict==0.13.0
