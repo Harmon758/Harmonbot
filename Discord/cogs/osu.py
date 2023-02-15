@@ -116,28 +116,106 @@ class Osu(commands.Cog):
             return
 
         data = data[0]
-        country_name = pycountry.countries.get(alpha_2 = data["country"]).name
+        fields = []
+        if (ranked_score := data["ranked_score"]) is not None:
+            fields.append((
+                "Ranked Score",
+                f"{int(ranked_score):,}"
+            ))
+        if (accuracy := data["accuracy"]) is not None:
+            fields.append((
+                "Hit Accuracy",
+                f"{float(accuracy):6g}%"
+            ))
+        if (playcount := data["playcount"]) is not None:
+            fields.append((
+                "Play Count",
+                playcount
+            ))
+        if (total_score := data["total_score"]) is not None:
+            fields.append((
+                "Total Score",
+                f"{int(total_score):,}"
+            ))
+        if (pp_raw := data["pp_raw"]) is not None:
+            fields.append((
+                "Performance",
+                f"{float(pp_raw):,}pp"
+            ))
+        if (pp_rank := data["pp_rank"]) is not None:
+            fields.append((
+                "Rank",
+                f"#{int(pp_rank):,}"
+            ))
+        if (level := data["level"]) is not None:
+            fields.append((
+                "Level",
+                level
+            ))
+        if (pp_country_rank := data["pp_country_rank"]) is not None:
+            country_name = pycountry.countries.get(
+                alpha_2 = data["country"]
+            ).name
+            fields.append((
+                "Country Rank",
+                f"{country_name} #{int(pp_country_rank):,}"
+            ))
+        if (count300 := data["count300"]) is not None:
+            count300 = int(count300)
+        if (count100 := data["count100"]) is not None:
+            count100 = int(count100)
+        if (count50 := data["count50"]) is not None:
+            count50 = int(count50)
+        total_hits = (count300 or 0) + (count100 or 0) + (count50 or 0)
+        if count300 is not None or count100 is not None or count50 is not None:
+            fields.append((
+                "Total Hits",
+                f"{total_hits:,}"
+            ))
+        if count300 is not None:
+            fields.append((
+                "300 Hits",
+                f"{count300:,}"
+            ))
+        if count100 is not None:
+            fields.append((
+                "100 Hits",
+                f"{count100:,}"
+            ))
+        if count50 is not None:
+            fields.append((
+                "50 Hits",
+                f"{count50:,}"
+            ))
+        if (count_rank_ssh := data["count_rank_ssh"]) is not None:
+            fields.append((
+                self.ssh_emoji,
+                count_rank_ssh
+            ))
+        if (count_rank_ss := data["count_rank_ss"]) is not None:
+            fields.append((
+                self.ss_emoji,
+                count_rank_ss
+            ))
+        if (count_rank_sh := data["count_rank_sh"]) is not None:
+            fields.append((
+                self.sh_emoji,
+                count_rank_sh
+            ))
+        if (count_rank_s := data["count_rank_s"]) is not None:
+            fields.append((
+                self.s_emoji,
+                count_rank_s
+            ))
+        if (count_rank_a := data["count_rank_a"]) is not None:
+            fields.append((
+                self.a_emoji,
+                count_rank_a
+            ))
+
         await ctx.embed_reply(
             title = data["username"],
             title_url = f"https://osu.ppy.sh/users/{data['user_id']}",
-            fields = (
-                ("Ranked Score", f"{int(data['ranked_score']):,}"),
-                ("Hit Accuracy", f"{float(data['accuracy']):6g}%"),
-                ("Play Count", data["playcount"]),
-                ("Total Score", f"{int(data['total_score']):,}"),
-                ("Performance", f"{float(data['pp_raw']):,}pp"),
-                ("Rank", f"#{int(data['pp_rank']):,}"),
-                ("Level", data["level"]),
-                ("Country Rank", f"{country_name} #{int(data['pp_country_rank']):,}"),
-                ("Total Hits", f"{int(data['count300']) + int(data['count100']) + int(data['count50']):,}"),
-                ("300 Hits", f"{int(data['count300']):,}"),
-                ("100 Hits", f"{int(data['count100']):,}"),
-                ("50 Hits", f"{int(data['count50']):,}"),
-                (self.ssh_emoji, data["count_rank_ssh"]),
-                (self.ss_emoji, data["count_rank_ss"]),
-                (self.sh_emoji, data["count_rank_sh"]),
-                (self.s_emoji, data["count_rank_s"]),
-                (self.a_emoji, data["count_rank_a"])
-            )
+            fields = fields
         )
 
