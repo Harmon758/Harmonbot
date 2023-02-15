@@ -104,9 +104,10 @@ class Osu(commands.Cog):
         await self.get_user(ctx, user, 3)
 
     async def get_user(self, ctx, user, mode = 0):
-        url = "https://osu.ppy.sh/api/get_user"
-        params = {'k': ctx.bot.OSU_API_KEY, 'u': user, 'm': mode}
-        async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "https://osu.ppy.sh/api/get_user",
+            params = {'k': ctx.bot.OSU_API_KEY, 'u': user, 'm': mode}
+        ) as resp:
             data = await resp.json()
 
         if not data:
