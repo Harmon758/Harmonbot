@@ -1,3 +1,3 @@
 :loop
-py -3.9 Telegram_Harmonbot.py
+py -3.10 Telegram_Harmonbot.py
 goto loop
