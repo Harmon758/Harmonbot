@@ -6,7 +6,7 @@ version: 2
 jobs:
   test-python:
     docker:
-      - image: cimg/python:3.10.2
+      - image: cimg/python:3.10.3
       - image: postgres:12.1
         environment:
           POSTGRES_USER: harmonbot
