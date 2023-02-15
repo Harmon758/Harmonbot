@@ -2,6 +2,9 @@
 import discord
 from discord.ext import commands
 
+import datetime
+
+import dateutil
 import pycountry
 
 from utilities import checks
@@ -217,6 +220,10 @@ class Osu(commands.Cog):
         await ctx.embed_reply(
             title = data["username"],
             title_url = f"https://osu.ppy.sh/users/{data['user_id']}",
-            fields = fields
+            fields = fields,
+            footer_text = "Joined",
+            timestamp = dateutil.parser.parse(
+                data["join_date"]
+            ).replace(tzinfo = datetime.timezone.utc)
         )
 
