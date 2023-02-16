@@ -343,7 +343,9 @@ class MazeView(discord.ui.View):
         self.add_blank_disabled_button()
 
     def add_blank_disabled_button(self):
-        self.add_item(discord.ui.Button(label = ' ', disabled = True))
+        self.add_item(
+            discord.ui.Button(label = '\N{ZERO WIDTH SPACE}', disabled = True)
+        )
 
     async def interaction_check(self, interaction):
         if interaction.user.id not in (
