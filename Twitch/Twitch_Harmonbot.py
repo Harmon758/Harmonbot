@@ -23,7 +23,7 @@ sys.path.pop(0)
 class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 
     def __init__(self):
-        self.version = "3.0.0-a.2"
+        self.version = "3.0.0-a.3"
         # irc logger
         irc_logger = logging.getLogger("irc")
         irc_logger.setLevel(logging.DEBUG)
@@ -102,7 +102,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
             self.bonezone_task = connection.reactor.loop.create_task(self.bonezone())
 
     async def bonezone(self):
-        while self.connected:
+        while self.connection.connected:
             wait = random.randint(60, 3600)
             await asyncio.sleep(wait)
             await self.message("#mikki", "BoneZone")
