@@ -22,7 +22,7 @@ sys.path.pop(0)
 class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 	
 	def __init__(self):
-		self.version = "3.0.0-a.0"
+		self.version = "3.0.0-a.1"
 		# irc logger
 		irc_logger = logging.getLogger("irc")
 		irc_logger.setLevel(logging.DEBUG)
@@ -47,6 +47,8 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 			with open(f"data/variables/{category}.json", 'r') as variables_file:
 				setattr(self, f"{category}_variables", json.load(variables_file))
 		self.status_settings = {"on": True, "off": False, "mod": None}
+		# Initialized on connect
+		self.bonezone_task = None
 	
 	def on_welcome(self, connection, event):
 		# Initialize aiohttp Client Session
@@ -82,6 +84,16 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 				channel_logger.addHandler(channel_logger_handler)
 		# Console output
 		print(f"Started up Twitch Harmonbot | Connected to {' | '.join('#' + channel for channel in self.CHANNELS)}")
+		# BoneZone task
+		if not self.bonezone_task:
+			self.bonezone_task = connection.reactor.loop.create_task(self.bonezone())
+	
+	async def bonezone(self):
+		while self.connected:
+			wait = random.randint(60, 3600)
+			await asyncio.sleep(wait)
+			await self.message("#mikki", "BoneZone")
+			await asyncio.sleep(3600 - wait)
 	
 	def on_join(self, connection, event):
 		channel_logger = logging.getLogger(event.target)
@@ -247,6 +259,11 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 				elif (self.mikki_variables["alt.status"] or 
 						(self.is_mod(target, source) and self.mikki_variables["alt.status"] is None)):
 					self.message(target, f"Bad {source.capitalize()}!")
+			elif "BoneZone" in message:
+				self.mikki_variables["BoneZone"] += 1
+				with open("data/variables/mikki.json", 'w') as variables_file:
+					json.dump(self.mikki_variables, variables_file, indent = 4)
+				self.message(target, f"BoneZone {self.mikki_variables['BoneZone']}")
 			elif message.startswith("!caught"):
 				if len(message.split()) == 1:
 					caught = source.capitalize()
@@ -255,6 +272,33 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 				else:
 					caught = ' '.join(message.split()[1:]).capitalize()
 				self.message(target, f"Mikki has caught a wild {caught}!")
+			elif "git gud" in message.lower():
+				self.message(target, "git: 'gud' is not a git command. See 'git --help'.")
+			elif message.endswith('?') and any(word in message.lower() for word in ("border", "glow", "highlight", "outline")):
+				self.message(target, "The colored outlines are RuneLite Inventory Tags. It makes switching gear a bit easier.")
+				# TODO: Fix - link to command
+			elif (any(word in message.lower() for word in ("how", "what", "why")) and 
+					any(word in message.lower() for word in ("border", "glow", "highlight", "outline"))):
+				words = message.lower().split()
+				index = 0
+				for word in reversed(words):
+					index -= 1
+					if any(keyword in word for keyword in ("border", "glow", "highlight", "outline")):
+						break
+				for word in words[:index]:
+					if any(keyword in word for keyword in ("how", "what", "why")):
+						self.message(target, "The colored outlines are RuneLite Inventory Tags. It makes switching gear a bit easier.")
+						break
+				# TODO: Fix - link to command
+			elif "host meowicles" in message.lower():
+				self.message(target, "https://clips.twitch.tv/AssiduousVictoriousDugongJebaited https://www.twitch.tv/meowicles")
+			elif "mikkiGa" in message:
+				self.mikki_variables["mikkiGa"] += 1
+				with open("data/variables/mikki.json", 'w') as variables_file:
+					json.dump(self.mikki_variables, variables_file, indent = 4)
+				self.message(target, f"mikkiGa {self.mikki_variables['mikkiGa']}")
+			elif "meowko" in message.lower():
+				self.message(target, "@Crandog")
 			elif message.split()[0] == "mirosz88autotimeout" and source != "mirosz88" and len(message.split()) > 1:
 				if message.split()[1] == "on":
 					self.mikki_variables["mirosz88autotimeout.status"] = True
@@ -266,6 +310,8 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 					with open("data/variables/mikki.json", 'w') as variables_file:
 						json.dump(self.mikki_variables, variables_file, indent = 4)
 					self.message(target, "mirosz88 auto timeout is off")
+			elif "oly" in [word.rstrip('?"').lstrip('!"') for word in message.lower().split()]:
+				self.message(target, "♿lympus")
 			elif message.startswith("!pi"):
 				if self.is_mod(target, source):
 					self.message(target, ("3.14159265358979323846264338327 9502884197169399375105820974944 "
@@ -279,6 +325,16 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 											"1949129833673362440656643086021 3949463952247371907021798609437"))
 				else:
 					self.message(target, "3.14")
+			elif ((message.endswith('?') or any(word in message.lower() for word in ("do ", "if ", "is "))) and 
+					any(word in message.lower() for word in (" death", " die", " safe", " status"))):
+				words = message.lower().split()
+				index = 0
+				for word in reversed(words):
+					index -= 1
+					if word.rstrip('?') in ("death", "die", "safe", "status"):
+						break
+				if (message.endswith('?') and words[:index]) or any(word in words[:index] for word in ("do", "if", "is")):
+					self.message(target, "Inferno is a safe minigame" )
 			elif "sheep" in message.lower():
 				if (self.is_mod(target, source) and len(message.split()) > 1
 					and message.split()[1] in self.status_settings):
