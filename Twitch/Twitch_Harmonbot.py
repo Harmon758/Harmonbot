@@ -23,7 +23,7 @@ sys.path.pop(0)
 class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 
     def __init__(self):
-        self.version = "3.0.0-a.5"
+        self.version = "3.0.0-a.6"
         # irc logger
         irc_logger = logging.getLogger("irc")
         irc_logger.setLevel(logging.DEBUG)
@@ -45,7 +45,6 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
             "gameflubdojo", "vayces", "tbestnuclear", "cantilena", "nordryd",
             "babyastron"
         ]
-        self.PING_TIMEOUT = 600
         # Credentials
         self.RIOT_GAMES_API_KEY = os.getenv("RIOT_GAMES_API_KEY")
         self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
