@@ -23,17 +23,20 @@ sys.path.pop(0)
 class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 
     def __init__(self):
-        self.version = "3.0.0-a.4"
+        self.version = "3.0.0-a.5"
         # irc logger
         irc_logger = logging.getLogger("irc")
         irc_logger.setLevel(logging.DEBUG)
-        irc_logger_handler = logging.FileHandler(
-            filename = "data/logs/irc.log",
-            encoding = "UTF-8",
-            mode = 'a'
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(logging.ERROR)
+        console_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+        irc_logger.addHandler(console_handler)
+        file_handler = logging.handlers.TimedRotatingFileHandler(
+            filename = "data/logs/irc/irc.log", when = "midnight",
+            backupCount = 3650000, encoding = "UTF-8"
         )
-        irc_logger_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
-        irc_logger.addHandler(irc_logger_handler)
+        file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
+        irc_logger.addHandler(file_handler)
         # Initialize
         super().__init__()
         # Constants
@@ -63,20 +66,6 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
         """
         if not self.aiohttp_session:
             self.aiohttp_session = aiohttp.ClientSession(loop = connection.reactor.loop)
-        """
-        # Client logger
-        """
-        self.logger.setLevel(logging.DEBUG)
-        if not self.logger.handlers:
-            console_handler = logging.StreamHandler(sys.stdout)
-            console_handler.setLevel(logging.ERROR)
-            console_handler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
-            self.logger.addHandler(console_handler)
-            file_handler = logging.handlers.TimedRotatingFileHandler(
-                filename = "data/logs/client/client.log", when = "midnight",
-                backupCount = 3650000, encoding = "UTF-8")
-            file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
-            self.logger.addHandler(file_handler)
         """
         # Request capabilities
         connection.cap("REQ", ":twitch.tv/membership")
@@ -729,7 +718,7 @@ def secs_to_duration(secs):
 if __name__ == "__main__":
     print("Starting up Twitch Harmonbot...")
     create_folder("data/logs/channels")
-    create_folder("data/logs/client")
+    create_folder("data/logs/irc")
     create_folder("data/variables")
     # Load credentials from .env
     dotenv.load_dotenv()
