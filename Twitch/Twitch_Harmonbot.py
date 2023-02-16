@@ -23,7 +23,7 @@ sys.path.pop(0)
 class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 
     def __init__(self):
-        self.version = "3.0.0-a.3"
+        self.version = "3.0.0-a.4"
         # irc logger
         irc_logger = logging.getLogger("irc")
         irc_logger.setLevel(logging.DEBUG)
@@ -122,6 +122,10 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
         else:
             self.connection.privmsg(target, message)
 
+    def on_whisper(self, connection, event):
+        event.target = event.source.split('!', 1)[0]
+        self.on_pubmsg(connection, event)
+
     def on_pubmsg(self, connection, event):
         message = event.arguments[0]
         source = event.source.split('!', 1)[0]
@@ -130,8 +134,6 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
         channel_logger = logging.getLogger(target)
         channel_logger.info(f"{source}: {message}")
 
-        if target == "harmonbot":
-            target = source
         if event.source == "harmonbot":
             return
 
