@@ -195,14 +195,20 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                     )
                 ]
                 if self.is_mod(target, source):
-                    choices.append("BANG! ... You were shot, but live! "
-                                    f"There must be secert powers in your mod armor, {source.capitalize()}")
-                    choices.append("BANG! ... The bullet missed, "
-                                    f"you only have your born moderation powers to thank, {source.capitalize()}")
+                    choices.append(
+                        "BANG! ... You were shot, but live! "
+                        f"There must be secert powers in your mod armor, {source.capitalize()}"
+                    )
+                    choices.append(
+                        "BANG! ... The bullet missed, "
+                        f"you only have your born moderation powers to thank, {source.capitalize()}"
+                    )
                 else:
                     choices.append(f"BANG!... Roulette claims another soul. R.I.P {source.capitalize()}")
-                    choices.append(f"BANG!... {source.capitalize()} was a great viewer, "
-                                    f"and now {source.capitalize()} is a dead viewer. R.I.P")
+                    choices.append(
+                        f"BANG!... {source.capitalize()} was a great viewer, "
+                        f"and now {source.capitalize()} is a dead viewer. R.I.P"
+                    )
                 self.message(target, random.choice(choices))
         elif message.startswith("!rps"):
             if len(message.split()) == 1:
@@ -275,8 +281,11 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                     self.mikki_variables["3accs"] += 1
                     with open("data/variables/mikki.json", 'w') as variables_file:
                         json.dump(self.mikki_variables, variables_file, indent = 4)
-                    self.message(target, ("Yes, Mikki is playing 3 accounts. "
-                                            f"This question has been asked {self.mikki_variables['3accs']} times."))
+                    self.message(
+                        target,
+                        "Yes, Mikki is playing 3 accounts. "
+                        f"This question has been asked {self.mikki_variables['3accs']} times."
+                    )
             elif "alt" in message.lower():
                 if (self.is_mod(target, source) and len(message.split()) > 1
                     and message.split()[1] in self.status_settings):
@@ -309,7 +318,11 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
             elif "git gud" in message.lower():
                 self.message(target, "git: 'gud' is not a git command. See 'git --help'.")
             elif message.endswith('?') and any(word in message.lower() for word in ("border", "glow", "highlight", "outline")):
-                self.message(target, "The colored outlines are RuneLite Inventory Tags. It makes switching gear a bit easier.")
+                self.message(
+                    target,
+                    "The colored outlines are RuneLite Inventory Tags. "
+                    "It makes switching gear a bit easier."
+                )
                 # TODO: Fix - link to command
             elif (
                 any(word in message.lower() for word in ("how", "what", "why")) and
@@ -323,11 +336,19 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                         break
                 for word in words[:index]:
                     if any(keyword in word for keyword in ("how", "what", "why")):
-                        self.message(target, "The colored outlines are RuneLite Inventory Tags. It makes switching gear a bit easier.")
+                        self.message(
+                            target,
+                            "The colored outlines are RuneLite Inventory Tags. "
+                            "It makes switching gear a bit easier."
+                        )
                         break
                 # TODO: Fix - link to command
             elif "host meowicles" in message.lower():
-                self.message(target, "https://clips.twitch.tv/AssiduousVictoriousDugongJebaited https://www.twitch.tv/meowicles")
+                self.message(
+                    target,
+                    "https://clips.twitch.tv/AssiduousVictoriousDugongJebaited "
+                    "https://www.twitch.tv/meowicles"
+                )
             elif "mikkiGa" in message:
                 self.mikki_variables["mikkiGa"] += 1
                 with open("data/variables/mikki.json", 'w') as variables_file:
@@ -350,15 +371,18 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                 self.message(target, "♿lympus")
             elif message.startswith("!pi"):
                 if self.is_mod(target, source):
-                    self.message(target, ("3.14159265358979323846264338327 9502884197169399375105820974944 "
-                                            "5923078164062862089986280348253 4211706798214808651328230664709 "
-                                            "3844609550582231725359408128481 1174502841027019385211055596446 "
-                                            "2294895493038196442881097566593 3446128475648233786783165271201 "
-                                            "9091456485669234603486104543266 4821339360726024914127372458700 "
-                                            "6606315588174881520920962829254 0917153643678925903600113305305 "
-                                            "4882046652138414695194151160943 3057270365759591953092186117381 "
-                                            "9326117931051185480744623799627 4956735188575272489122793818301 "
-                                            "1949129833673362440656643086021 3949463952247371907021798609437"))
+                    self.message(
+                        target,
+                        "3.14159265358979323846264338327 9502884197169399375105820974944 "
+                        "5923078164062862089986280348253 4211706798214808651328230664709 "
+                        "3844609550582231725359408128481 1174502841027019385211055596446 "
+                        "2294895493038196442881097566593 3446128475648233786783165271201 "
+                        "9091456485669234603486104543266 4821339360726024914127372458700 "
+                        "6606315588174881520920962829254 0917153643678925903600113305305 "
+                        "4882046652138414695194151160943 3057270365759591953092186117381 "
+                        "9326117931051185480744623799627 4956735188575272489122793818301 "
+                        "1949129833673362440656643086021 3949463952247371907021798609437"
+                    )
                 else:
                     self.message(target, "3.14")
             elif (
@@ -399,8 +423,11 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                 self.mikki_variables["ticks"] += 1
                 with open("data/variables/mikki.json", 'w') as variables_file:
                     json.dump(self.mikki_variables, variables_file, indent = 4)
-                self.message(target, (f"Mikki has wasted {self.mikki_variables['ticks']} ticks. "
-                                        "http://i.imgur.com/bSCnFb1.png"))
+                self.message(
+                    target,
+                    f"Mikki has wasted {self.mikki_variables['ticks']} ticks. "
+                    "http://i.imgur.com/bSCnFb1.png"
+                )
 
             if source == "mirosz88" and self.mikki_variables["mirosz88autotimeout.status"]:
                 self.message(target,  "/timeout mirosz88 1")
@@ -540,9 +567,17 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                     r"total (level|xp)).*\?", message
                 )
             ):
-                self.message(target, "http://services.runescape.com/m=hiscore_oldschool/hiscorepersonal.ws?user1=Arts")
+                self.message(
+                    target,
+                    "http://services.runescape.com/m=hiscore_oldschool/hiscorepersonal.ws?user1=Arts"
+                )
             elif message.startswith("!tits") or "show tits" in message.lower():
-                self.message(target, "https://en.wikipedia.org/wiki/Tit_(bird) https://en.wikipedia.org/wiki/Great_tit http://i.imgur.com/40Ese5S.jpg")
+                self.message(
+                    target,
+                    "https://en.wikipedia.org/wiki/Tit_(bird) "
+                    "https://en.wikipedia.org/wiki/Great_tit "
+                    "http://i.imgur.com/40Ese5S.jpg"
+                )
             elif message.startswith("!troll"):
                 if self.is_mod(target, source) and len(message.split()) > 1 and message.split()[1] == "inc":
                     if len(message.split()) > 2 and is_number(message.split()[2]):
@@ -629,11 +664,19 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
         if message.startswith(("!kitten", "!kitty")):
             self.message(target, random.choice(("CoolCat", "DxCat")))
         elif message.startswith("!puppy"):
-            self.message(target, random.choice(("BegWan", "ChefFrank", "CorgiDerp", "FrankerZ", "RalpherZ")))
+            self.message(
+                target, random.choice((
+                    "BegWan", "ChefFrank", "CorgiDerp", "FrankerZ", "RalpherZ"
+                ))
+            )
 
         # Unit Conversion Commands
         # TODO: Add support for non-integers/floats, improve formatting
-        if message.startswith(("!ctof", "!ftoc", "!lbtokg", "!kgtolb", "!fttom", "!mtoft", "!mtofi", "!gtooz", "!oztog", "!mitokm", "!kmtomi", "!ozttog", "!gtoozt", "!ozttooz", "!oztoozt")):
+        if message.startswith((
+            "!ctof", "!ftoc", "!lbtokg", "!kgtolb", "!fttom", "!mtoft",
+            "!mtofi", "!gtooz", "!oztog", "!mitokm", "!kmtomi", "!ozttog",
+            "!gtoozt", "!ozttooz", "!oztoozt"
+        )):
             if len(message.split()) == 1:
                 self.message(target, "Please enter input.")
                 return
@@ -641,42 +684,107 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                 self.message(target, "Syntax error.")
                 return
         if message.startswith("!ctof"):
-            self.message(target, f"{message.split()[1]} °C = {int(message.split()[1]) * 9 / 5 + 32} °F")
+            self.message(
+                target,
+                f"{message.split()[1]} °C = "
+                f"{int(message.split()[1]) * 9 / 5 + 32} °F"
+            )
         elif message.startswith("!ftoc"):
-            self.message(target, f"{message.split()[1]} °F = {(int(message.split()[1]) - 32) * 5 / 9} °C")
+            self.message(
+                target,
+                f"{message.split()[1]} °F = "
+                f"{(int(message.split()[1]) - 32) * 5 / 9} °C"
+            )
         elif message.startswith("!lbtokg"):
-            self.message(target, f"{message.split()[1]} lb = {int(message.split()[1]) * 0.45359237} kg")
+            self.message(
+                target,
+                f"{message.split()[1]} lb = "
+                f"{int(message.split()[1]) * 0.45359237} kg"
+            )
         elif message.startswith("!kgtolb"):
-            self.message(target, f"{message.split()[1]} kg = {int(message.split()[1]) * 2.2046} lb")
+            self.message(
+                target,
+                f"{message.split()[1]} kg = "
+                f"{int(message.split()[1]) * 2.2046} lb"
+            )
         elif message.startswith("!fttom"):
-            self.message(target, f"{message.split()[1]} ft = {int(message.split()[1]) * 0.3048} m")
+            self.message(
+                target,
+                f"{message.split()[1]} ft = "
+                f"{int(message.split()[1]) * 0.3048} m"
+            )
         elif message.startswith("!mtoft"):
-            self.message(target, f"{message.split()[1]} m = {int(message.split()[1]) * 3.2808} ft")
+            self.message(
+                target,
+                f"{message.split()[1]} m = "
+                f"{int(message.split()[1]) * 3.2808} ft"
+            )
         elif message.startswith("!fitom"):
             if len(message.split()) > 2 and is_number(message.split()[1]) and is_number(message.split()[2]):
-                self.message(target, f"{message.split()[1]} ft {message.split()[2]} in = {(int(message.split()[1]) + int(message.split()[2]) / 12) * 0.3048} m")
+                self.message(
+                    target,
+                    f"{message.split()[1]} ft {message.split()[2]} in = "
+                    f"{(int(message.split()[1]) + int(message.split()[2]) / 12) * 0.3048} m"
+                )
             elif len(message.split()) == 1:
                 self.message(target, "Please enter input.")
             else:
                 self.message(target, "Syntax error.")
         elif message.startswith("!mtofi"):
-            self.message(target, f"{message.split()[1]} m = {int(message.split()[1]) * 39.37 // 12} ft {int(message.split()[1]) * 39.37 - (int(message.split()[1]) * 39.37 // 12) * 12} in")
+            self.message(
+                target,
+                f"{message.split()[1]} m = "
+                f"{int(message.split()[1]) * 39.37 // 12} ft "
+                f"{int(message.split()[1]) * 39.37 - (int(message.split()[1]) * 39.37 // 12) * 12} in"
+            )
         elif message.startswith("!gtooz"):
-            self.message(target, f"{message.split()[1]} g = {int(message.split()[1]) * 0.035274} oz")
+            self.message(
+                target,
+                f"{message.split()[1]} g = "
+                f"{int(message.split()[1]) * 0.035274} oz"
+            )
         elif message.startswith("!oztog"):
-            self.message(target, f"{message.split()[1]} oz = {int(message.split()[1]) / 0.035274} g")
+            self.message(
+                target,
+                f"{message.split()[1]} oz = "
+                f"{int(message.split()[1]) / 0.035274} g"
+            )
         elif message.startswith("!mitokm"):
-            self.message(target, f"{message.split()[1]} mi = {int(message.split()[1]) / 0.62137} km")
+            self.message(
+                target,
+                f"{message.split()[1]} mi = "
+                f"{int(message.split()[1]) / 0.62137} km"
+            )
         elif message.startswith("!kmtomi"):
-            self.message(target, f"{message.split()[1]} km = {int(message.split()[1]) * 0.62137} mi")
+            self.message(
+                target,
+                f"{message.split()[1]} km = "
+                f"{int(message.split()[1]) * 0.62137} mi"
+            )
         elif message.startswith("!ozttog"):
-            self.message(target, f"{message.split()[1]} oz t = {int(message.split()[1]) / 0.032151} g")
+            self.message(
+                target,
+                f"{message.split()[1]} oz t = "
+                f"{int(message.split()[1]) / 0.032151} g"
+            )
         elif message.startswith("!gtoozt"):
-            self.message(target, f"{message.split()[1]} g = {int(message.split()[1]) * 0.032151} oz t")
+            self.message(
+                target,
+                f"{message.split()[1]} g = "
+                f"{int(message.split()[1]) * 0.032151} oz t"
+            )
         elif message.startswith("!ozttooz"):
-            self.message(target, f"{message.split()[1]} oz t = {int(message.split()[1]) * 1.09714996656} oz")
+            self.message(
+                target,
+                f"{message.split()[1]} oz t = "
+                f"{int(message.split()[1]) * 1.09714996656} oz"
+            )
         elif message.startswith("!oztoozt"):
-            self.message(target, f"{message.split()[1]} oz = {int(message.split()[1]) * 0.911452427176} oz t")
+            self.message(
+                target,
+                f"{message.split()[1]} oz = "
+                f"{int(message.split()[1]) * 0.911452427176} oz t"
+            )
 
         if message == "!restart" and source == "harmon758":
             self.message(target, "Restarting")
@@ -689,7 +797,9 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
         return source in self.channels[target]["modes"].get('o', [])
 
     def random_viewer(self, target):
-        return random.choice(list(self.channels.get(target, {}).get("users", ["N/A"]))).capitalize()
+        return random.choice(
+            list(self.channels.get(target, {}).get("users", ["N/A"]))
+        ).capitalize()
 
 
 def is_number(characters):
@@ -702,26 +812,34 @@ def is_number(characters):
 
 def secs_to_duration(secs):
     output = ""
-    for dur_name, dur_in_secs in (("year", 31536000), ("week", 604800), ("day", 86400), ("hour", 3600), ("minute", 60)):
+    for dur_name, dur_in_secs in (
+        ("year", 31536000), ("week", 604800), ("day", 86400), ("hour", 3600),
+        ("minute", 60)
+    ):
         if secs >= dur_in_secs:
             num_dur = int(secs / dur_in_secs)
             output += f" {num_dur} {dur_name}"
-            if (num_dur > 1): output += 's'
+            if (num_dur > 1):
+                output += 's'
             secs -= num_dur * dur_in_secs
     if secs != 0:
         output += f" {secs} second"
-        if (secs != 1): output += 's'
+        if (secs != 1):
+            output += 's'
     return output[1:] if output else f"{secs} seconds"
 
 
 if __name__ == "__main__":
     print("Starting up Twitch Harmonbot...")
+
     create_folder("data/logs/channels")
     create_folder("data/logs/irc")
     create_folder("data/variables")
+
     # Load credentials from .env
     dotenv.load_dotenv()
     oauth_token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN")
+
     client = TwitchClient()
     client.connect("irc.chat.twitch.tv", 6667, "Harmon758", oauth_token)
     try:
