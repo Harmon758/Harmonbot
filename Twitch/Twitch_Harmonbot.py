@@ -11,7 +11,7 @@ import re
 import sys
 # import unicodedata
 
-import aiohttp
+# import aiohttp
 import dotenv
 import unicodedata2 as unicodedata
 
@@ -23,7 +23,7 @@ sys.path.pop(0)
 class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 
     def __init__(self):
-        self.version = "3.0.0-a.1"
+        self.version = "3.0.0-a.2"
         # irc logger
         irc_logger = logging.getLogger("irc")
         irc_logger.setLevel(logging.DEBUG)
@@ -47,7 +47,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
         self.RIOT_GAMES_API_KEY = os.getenv("RIOT_GAMES_API_KEY")
         self.TWITCH_CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
         # aiohttp Client Session - initialized on connect
-        self.aiohttp_session = None
+        # self.aiohttp_session = None
         # Dynamically load variables
         for file in os.listdir("data/variables"):
             category = file[:-5]  # - .json
@@ -57,10 +57,13 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
         # Initialized on connect
         self.bonezone_task = None
 
+    # TODO: Re-enable League of Legends commands
     def on_welcome(self, connection, event):
         # Initialize aiohttp Client Session
+        """
         if not self.aiohttp_session:
             self.aiohttp_session = aiohttp.ClientSession(loop = connection.reactor.loop)
+        """
         # Client logger
         """
         self.logger.setLevel(logging.DEBUG)
