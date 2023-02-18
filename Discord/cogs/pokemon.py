@@ -226,7 +226,7 @@ class Pokemon(commands.Cog):
         ...
 
     @pokemon.group(case_insensitive = True, with_app_command = False)
-    async def location(self, ctx, id : int):
+    async def location(self, ctx, id: int):
         '''WIP'''
         # TODO: pal park areas?
         ...
