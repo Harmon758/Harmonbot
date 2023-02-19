@@ -6,7 +6,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import time
-from typing import Literal, Optional, Union
+from typing import Literal, Optional
 
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
@@ -342,8 +342,8 @@ class Discord(commands.Cog):
 	@commands.command()
 	@checks.not_forbidden()
 	async def timestamp(
-		self, ctx, ID: Optional[Union[discord.Message, discord.Object]],
-		*, time: Optional[str]
+		self, ctx, ID: discord.Message | discord.Object | None,
+		*, time: str | None
 	):
 		'''
 		Timestamp of a Discord ID or message or formatted markdown for a time
