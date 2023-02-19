@@ -2,12 +2,10 @@
 import discord
 from discord.ext import commands
 
-from typing import Union
-
 
 def default_voice_channel(
     ctx: commands.Context
-) -> Union[discord.VoiceChannel, None]:  # TODO: Use | with Python 3.10
+) -> discord.VoiceChannel | None:
     if isinstance(ctx.channel, discord.VoiceChannel):
         return ctx.channel
     if ctx.author.voice:
