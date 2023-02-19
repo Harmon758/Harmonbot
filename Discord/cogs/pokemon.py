@@ -232,7 +232,7 @@ class Pokemon(commands.Cog):
         ...
 
     @location.command(name = "area", with_app_command = False)
-    async def location_area(self, ctx, id : int):
+    async def location_area(self, ctx, id: int):
         '''WIP'''
         ...
 
