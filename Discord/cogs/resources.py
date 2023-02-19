@@ -5,7 +5,7 @@ from discord.ext import commands, menus
 import asyncio
 import datetime
 import json
-from typing import Optional, Union
+from typing import Optional
 import unicodedata
 
 import dateutil
@@ -49,7 +49,7 @@ class Resources(commands.Cog):
 	
 	@commands.group(aliases = ["colour"], case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def color(self, ctx, *, color: Union[discord.Color, str]):
+	async def color(self, ctx, *, color: discord.Color | str):
 		'''
 		Information on colors
 		Accepts hex color codes and search by keyword
