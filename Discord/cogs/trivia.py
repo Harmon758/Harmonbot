@@ -212,7 +212,9 @@ class Trivia(commands.Cog):
                 trivia_question.response, embeds = embeds
             )
 
-    @trivia.command(max_concurrency = max_concurrency)
+    @trivia.command(
+        max_concurrency = max_concurrency, with_app_command = False
+    )
     async def bet(
         self, ctx, override_modal_answers: Optional[bool] = False,
         react: Optional[bool] = True, seconds: commands.Range[int, 1, 60] = 15
