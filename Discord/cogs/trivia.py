@@ -4,6 +4,7 @@ from discord import ui
 from discord.ext import commands
 
 import asyncio
+import contextlib
 import datetime
 import html
 import random
@@ -169,7 +170,7 @@ class Trivia(commands.Cog):
                     "You don't have that many points (`\N{CURRENCY SIGN}`) "
                     "to bet!"
                 )
-        elif trivia_question.question_countdown:
+        elif trivia_question.accepting_answers:
             if message.content.startswith(('!', '>', '|')):
                 return
             if (
@@ -178,6 +179,24 @@ class Trivia(commands.Cog):
             ):
                 return
             trivia_question.responses[message.author] = message.content
+            embeds = trivia_question.response.embeds
+            del embeds[2:]
+            users = self.bot.inflect_engine.join(
+                [user.mention for user in trivia_question.responses]
+            )
+            has_declension = self.bot.inflect_engine.plural(
+                'has', len(trivia_question.responses)
+            )
+            embeds.append(
+                discord.Embed(
+                    description = f"{users} {has_declension} answered",
+                    color = self.bot.bot_color
+                )
+            )
+            with contextlib.suppress(
+                aiohttp.ClientConnectionError, discord.NotFound
+            ):
+                await trivia_question.response.edit(embeds = embeds)
 
     @trivia.command(max_concurrency = max_concurrency)
     async def bet(
@@ -977,13 +996,13 @@ class TriviaQuestion:
         self, seconds, betting = False, override_modal_answers = False,
         react = True
     ):
+        self.accepting_answers = False
         self.answered_through_modal = set()
         self.bet_countdown = 0
         self.bets = {}
         self.betting = betting
         self.channel_id = None
         self.override_modal_answers = override_modal_answers
-        self.question_countdown = 0
         self.react = react
         self.response = None  # Bot response to command
         self.responses = {}  # User responses to question
@@ -1074,46 +1093,34 @@ class TriviaQuestion:
             embed.set_footer(text = "Betting is over")
             await bet_message.edit(embed = embed)
 
-        self.question_countdown = self.seconds
-        second_declension = ctx.bot.inflect_engine.plural(
-            "second", self.question_countdown
-        )
+        embeds = [
+            discord.Embed(
+                description = "Showing answer " + discord.utils.format_dt(
+                    datetime.datetime.now(datetime.timezone.utc) +
+                    datetime.timedelta(seconds = self.seconds),
+                    style = 'R'
+                ),
+                color = ctx.bot.bot_color
+            )
+        ]
         self.response = await ctx.embed_reply(
             author_name = None,
             title = capwords(data["category"]["title"]),
             description = data["question"],
-            footer_text = f"{self.question_countdown} {second_declension} left to answer | Air Date",
+            footer_text = "Air Date",
             timestamp = dateutil.parser.parse(data["airdate"]),
-            view = TriviaQuestionView(self, self.seconds)
+            view = TriviaQuestionView(self, self.seconds),
+            embeds = embeds
         )
-        embed = self.response.embeds[0]
 
-        while self.question_countdown:
-            await asyncio.sleep(1)
-            self.question_countdown -= 1
-            embed.description = data["question"]
-            if responses := self.responses:
-                users = ctx.bot.inflect_engine.join(
-                    [user.mention for user in responses]
-                )
-                has_declension = ctx.bot.inflect_engine.plural(
-                    'has', len(responses)
-                )
-                embed.description += f"\n\n{users} {has_declension} answered"
-            second_declension = ctx.bot.inflect_engine.plural(
-                "second", self.question_countdown
-            )
-            embed.set_footer(
-                text = f"{self.question_countdown} {second_declension} left to answer | Air Date"
-            )
-            try:
-                await self.response.edit(embed = embed)
-            except (aiohttp.ClientConnectionError, discord.NotFound):
-                continue
+        self.accepting_answers = True
+        await asyncio.sleep(self.seconds)
+        self.accepting_answers = False
 
-        embed.set_footer(text = "Time's up! | Air Date")
+        embeds = self.response.embeds
+        del embeds[1]
         try:
-            await self.response.edit(embed = embed)
+            await self.response.edit(embeds = embeds)
         except discord.NotFound:
             pass
 
