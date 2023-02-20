@@ -4,7 +4,6 @@ from discord import ui
 from discord.ext import commands
 
 import asyncio
-import contextlib
 import datetime
 import html
 import random
@@ -1118,8 +1117,7 @@ class TriviaQuestion:
 
         embeds = self.response.embeds
         del embeds[1]
-        with contextlib.suppress(discord.NotFound):
-            await self.response.edit(embeds = embeds)
+        await ctx.bot.attempt_edit_message(self.response, embeds = embeds)
 
         correct_players = []
         incorrect_players = []
