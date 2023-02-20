@@ -1218,8 +1218,10 @@ class TriviaQuestion:
                     "(`\N{CURRENCY SIGN}`)"
                 )
             await ctx.embed_reply(
+                reference = self.bet_message,
                 author_name = None,
-                description = '\n'.join(bets_output)
+                description = '\n'.join(bets_output),
+                in_response_to = False
             )
 
 
