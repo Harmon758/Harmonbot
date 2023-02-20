@@ -1119,10 +1119,8 @@ class TriviaQuestion:
 
         embeds = self.response.embeds
         del embeds[1]
-        try:
+        with contextlib.suppress(discord.NotFound):
             await self.response.edit(embeds = embeds)
-        except discord.NotFound:
-            pass
 
         correct_players = []
         incorrect_players = []
