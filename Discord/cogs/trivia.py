@@ -476,8 +476,8 @@ class TriviaBoard:
         self, seconds, buzzer = True, delete_selection_messages = True,
         react = True, turns = True
     ):
-        self.answered = asyncio.Event()  # This is not used if buzzer == True
-        self.awaiting_answer = False  # This is not used if buzzer == True
+        self.answered = asyncio.Event()  # This is not used if buzzer is True
+        self.awaiting_answer = False  # This is not used if buzzer is True
         self.awaiting_selection = False  # TODO: Selection timeout?
         self.board = []
         self.board_lines = []
@@ -703,7 +703,7 @@ class TriviaBoard:
         clue = self.board[category_number - 1]["clues"][self.value]
 
         self.correct_answer = clue["answer"]
-        self.players_answered = []  # This is only used if buzzer == True
+        self.players_answered = []  # This is only used if buzzer is True
 
         self.view = (
             TriviaBoardBuzzerView(self, self.seconds) if self.buzzer
