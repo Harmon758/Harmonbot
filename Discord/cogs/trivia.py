@@ -1175,6 +1175,7 @@ class TriviaQuestion:
                 f"> {response}\n\n"
             )
         await ctx.embed_reply(
+            reference = self.response,
             author_name = None,
             footer_text = correct_players_output,
             description = description,
