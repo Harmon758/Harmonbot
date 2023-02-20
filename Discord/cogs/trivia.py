@@ -193,10 +193,9 @@ class Trivia(commands.Cog):
                     color = self.bot.bot_color
                 )
             )
-            with contextlib.suppress(
-                aiohttp.ClientConnectionError, discord.NotFound
-            ):
-                await trivia_question.response.edit(embeds = embeds)
+            await self.bot.attempt_edit_message(
+                trivia_question.response, embeds = embeds
+            )
 
     @trivia.command(max_concurrency = max_concurrency)
     async def bet(
