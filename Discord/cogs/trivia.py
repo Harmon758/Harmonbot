@@ -145,7 +145,7 @@ class Trivia(commands.Cog):
             return
         if message.author.id == self.bot.user.id:
             return
-        if trivia_question.bet_countdown and message.content.isdigit():
+        if trivia_question.accepting_bets and message.content.isdigit():
             ctx = await self.bot.get_context(message)
             if points_cog := ctx.bot.get_cog("Points"):
                 points = await points_cog.get(message.author)
@@ -157,6 +157,22 @@ class Trivia(commands.Cog):
             bet = min(input_bet, 100)
             if bet <= points:
                 trivia_question.bets[message.author] = bet
+
+                embeds = trivia_question.bet_message.embeds
+                del embeds[1:]
+                embeds.append(
+                    discord.Embed(
+                        description = '\n'.join(
+                            f"{player.mention} has bet {bet} "
+                            f"{self.bot.inflect_engine.plural('point', bet)} "
+                            "(`\N{CURRENCY SIGN}`)"
+                            for player, bet in trivia_question.bets.items()
+                        ),
+                        color = self.bot.bot_color
+                    )
+                )
+                await trivia_question.bet_message.edit(embeds = embeds)
+
                 if trivia_question.react:
                     if input_bet <= 100:
                         await message.add_reaction(
@@ -995,8 +1011,9 @@ class TriviaQuestion:
         react = True
     ):
         self.accepting_answers = False
+        self.accepting_bets = False
         self.answered_through_modal = set()
-        self.bet_countdown = 0
+        self.bet_message = None
         self.bets = {}
         self.betting = betting
         self.channel_id = None
@@ -1060,36 +1077,24 @@ class TriviaQuestion:
         # Include site page to send ^?
 
         if self.betting:
-            self.bet_countdown = self.seconds
-            second_declension = ctx.bot.inflect_engine.plural(
-                "second", self.bet_countdown
-            )
-            bet_message = await ctx.embed_reply(
+            self.bet_message = await ctx.embed_reply(
                 author_name = None,
                 title = capwords(data["category"]["title"]),
-                footer_text = (
-                    f"{self.bet_countdown} {second_declension} left to bet"
-                )
+                description = "Showing question " + discord.utils.format_dt(
+                    datetime.datetime.now(datetime.timezone.utc) +
+                    datetime.timedelta(seconds = self.seconds),
+                    style = 'R'
+                ),
+                footer_text = None
             )
-            embed = bet_message.embeds[0]
-            while self.bet_countdown:
-                await asyncio.sleep(1)
-                self.bet_countdown -= 1
-                embed.description = '\n'.join(
-                    f"{player.mention} has bet {bet} "
-                    f"{ctx.bot.inflect_engine.plural('point', bet)} "
-                    "(`\N{CURRENCY SIGN}`)"
-                    for player, bet in self.bets.items()
-                )
-                second_declension = ctx.bot.inflect_engine.plural(
-                    "second", self.bet_countdown
-                )
-                embed.set_footer(
-                    text = f"{self.bet_countdown} {second_declension} left to bet"
-                )
-                await bet_message.edit(embed = embed)
-            embed.set_footer(text = "Betting is over")
-            await bet_message.edit(embed = embed)
+
+            self.accepting_bets = True
+            await asyncio.sleep(self.seconds)
+            self.accepting_bets = False
+
+            embeds = self.bet_message.embeds
+            embeds[0].description = None
+            await self.bet_message.edit(embeds = embeds)
 
         embeds = [
             discord.Embed(
