@@ -476,6 +476,7 @@ class TriviaBoard:
         self, seconds, buzzer = True, delete_selection_messages = True,
         react = True, turns = True
     ):
+        self.answered = asyncio.Event()  # This is not used if buzzer == True
         self.awaiting_answer = False  # This is not used if buzzer == True
         self.awaiting_selection = False  # TODO: Selection timeout?
         self.board = []
@@ -528,12 +529,12 @@ class TriviaBoard:
 
     async def answer(self, player, answer = None):
         if self.buzzer:
-            self.answered.append(player)
+            embed = self.message.embeds[0]
+            await self.message.edit(embed = embed)
+
+            self.players_answered.append(player)
             self.answerer = player
 
-            second_declension = self.bot.inflect_engine.plural(
-                "second", self.seconds
-            )
             answer_prompt_message = await self.ctx.embed_send(
                 title = "Trivia Board",
                 title_url = self.message.jump_url,
@@ -541,7 +542,16 @@ class TriviaBoard:
                     f"{player.mention} hit the buzzer\n"
                     f"{player.mention}: What's your answer?"
                 ),
-                footer_text = f"{self.seconds} {second_declension} to answer"
+                embeds = [
+                    discord.Embed(
+                        description = "Time's up " + discord.utils.format_dt(
+                            datetime.datetime.now(datetime.timezone.utc) +
+                            datetime.timedelta(seconds = self.seconds),
+                            style = 'R'
+                        ),
+                        color = self.bot.bot_color
+                    )
+                ]
             )
 
             try:
@@ -567,6 +577,9 @@ class TriviaBoard:
                     view = self.view
                 )
                 return
+            finally:
+                embed = answer_prompt_message.embeds[0]
+                await answer_prompt_message.edit(embed = embed)
 
             answer = message.content
 
@@ -576,6 +589,10 @@ class TriviaBoard:
         ):
             # Correct answer
             self.awaiting_answer = False
+            self.answered.set()
+
+            embed = self.message.embeds[0]
+            await self.message.edit(embed = embed)
 
             with warnings.catch_warnings():
                 warnings.filterwarnings(
@@ -652,7 +669,17 @@ class TriviaBoard:
             )
             self.view = TriviaBoardBuzzerView(self, self.seconds)
             self.message = await self.ctx.send(
-                embed = self.message.embeds[0],
+                embeds = [
+                    self.message.embeds[0], 
+                    discord.Embed(
+                        description = "Time's up " + discord.utils.format_dt(
+                            datetime.datetime.now(datetime.timezone.utc) +
+                            datetime.timedelta(seconds = self.seconds),
+                            style = 'R'
+                        ),
+                        color = self.bot.bot_color
+                    )
+                ],
                 view = self.view
             )
         else:
@@ -676,12 +703,8 @@ class TriviaBoard:
         clue = self.board[category_number - 1]["clues"][self.value]
 
         self.correct_answer = clue["answer"]
-        self.answered = []  # This is only used if buzzer == True
+        self.players_answered = []  # This is only used if buzzer == True
 
-        action = "hit the buzzer" if self.buzzer else "answer"
-        second_declension = self.bot.inflect_engine.plural(
-            "second", self.seconds
-        )
         self.view = (
             TriviaBoardBuzzerView(self, self.seconds) if self.buzzer
             else None
@@ -692,40 +715,35 @@ class TriviaBoard:
             ),
             title_url = self.message.jump_url,
             description = clue["question"],
-            footer_text = (
-                f"{self.seconds} {second_declension} to {action} | Air Date"
-            ),
+            footer_text = "Air Date",
             timestamp = dateutil.parser.parse(clue["airdate"]),
+            embeds = [
+                discord.Embed(
+                    description = "Time's up " + discord.utils.format_dt(
+                        datetime.datetime.now(datetime.timezone.utc) +
+                        datetime.timedelta(seconds = self.seconds),
+                        style = 'R'
+                    ),
+                    color = self.bot.bot_color
+                )
+            ],
             view = self.view
         )
 
         if not self.buzzer:
+            self.answered.clear()
             self.awaiting_answer = True
-            countdown = self.seconds
-            message = self.message
-            embed = message.embeds[0]
-            while countdown:
-                await asyncio.sleep(1)
-                if not self.awaiting_answer:
-                    return
-                countdown -= 1
-                second_declension = self.bot.inflect_engine.plural(
-                    "second", countdown
+            try:
+                await asyncio.wait_for(
+                    self.answered.wait(), timeout = self.seconds
                 )
-                embed.set_footer(
-                    text = (
-                        f"{countdown} {second_declension} left to {action} | "
-                        "Air Date"
-                    )
-                )
-                await message.edit(embed = embed)
-            if self.awaiting_answer:
+            except asyncio.TimeoutError:
+                # Replace with TimeoutError in Python 3.11
                 self.awaiting_answer = False
                 await self.timeout()
 
     async def timeout(self):
         embed = self.message.embeds[0]
-        embed.set_footer(text = "Time's up! | Air Date")
         await self.message.edit(embed = embed)
 
         with warnings.catch_warnings():
@@ -982,7 +1000,7 @@ class TriviaBoardBuzzerView(ui.View):
             return
         self.hit = True
 
-        if interaction.user in self.match.answered:
+        if interaction.user in self.match.players_answered:
             await interaction.response.send_message(
                 "You already hit the buzzer", ephemeral = True
             )
