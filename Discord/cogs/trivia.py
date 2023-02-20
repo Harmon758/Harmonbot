@@ -146,8 +146,7 @@ class Trivia(commands.Cog):
         if message.author.id == self.bot.user.id:
             return
         if trivia_question.accepting_bets and message.content.isdigit():
-            ctx = await self.bot.get_context(message)
-            if points_cog := ctx.bot.get_cog("Points"):
+            if points_cog := self.bot.get_cog("Points"):
                 points = await points_cog.get(message.author)
             else:
                 raise RuntimeError(
@@ -181,6 +180,7 @@ class Trivia(commands.Cog):
                     else:
                         await message.add_reaction('\N{HUNDRED POINTS SYMBOL}')
             else:
+                ctx = await self.bot.get_context(message)
                 await ctx.embed_reply(
                     "You don't have that many points (`\N{CURRENCY SIGN}`) "
                     "to bet!"
