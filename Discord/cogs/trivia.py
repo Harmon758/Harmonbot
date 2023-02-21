@@ -55,35 +55,7 @@ class Trivia(commands.Cog):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    max_concurrency = commands.MaxConcurrency(1, per = commands.BucketType.guild, wait = False)
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.MaxConcurrencyReached):
-            if trivia_question := self.trivia_questions.get(ctx.guild.id):
-                description = "There's already an active trivia question here"
-                if trivia_question.response:
-                    description = f"[{description}]({trivia_question.response.jump_url})"
-                elif (
-                    channel_id := trivia_question.channel_id
-                ) and ctx.channel.id != channel_id:
-                    channel = ctx.guild.get_channel_or_thread(channel_id)
-                    description = (
-                        "There's already an active trivia question in " +
-                        channel.mention
-                    )
-                await ctx.embed_reply(description)
-                return
-            else:
-                raise RuntimeError(
-                    "Trivia max concurrency reached, "
-                    "but active trivia question not found"
-                )
-
-    @commands.hybrid_group(
-        case_insensitive = True,
-        fallback = "question",
-        max_concurrency = max_concurrency
-    )
+    @commands.hybrid_group(case_insensitive = True, fallback = "question")
     async def trivia(
         self, ctx, betting: Optional[bool] = False, 
         override_modal_answers: Optional[bool] = False,
@@ -112,24 +84,30 @@ class Trivia(commands.Cog):
         """
         # Note: trivia bet command invokes this command
         await ctx.defer()
+
+        if question := self.trivia_questions.get(ctx.channel.id):
+            description = "There's already an active trivia question here"
+            if question.response:
+                description = f"[{description}]({question.response.jump_url})"
+            await ctx.embed_reply(description)
+            return
+
         try:
-            self.trivia_questions[ctx.guild.id] = TriviaQuestion(
+            self.trivia_questions[ctx.channel.id] = TriviaQuestion(
                 seconds,
                 betting = betting,
                 override_modal_answers = override_modal_answers,
                 react = react
             )
-            await self.trivia_questions[ctx.guild.id].start(ctx)
+            await self.trivia_questions[ctx.channel.id].start(ctx)
         finally:
-            del self.trivia_questions[ctx.guild.id]
+            del self.trivia_questions[ctx.channel.id]
 
     @commands.Cog.listener("on_message")
     async def on_trivia_question_message(self, message):
-        if not message.guild or not (
-            trivia_question := self.trivia_questions.get(message.guild.id)
+        if not (
+            trivia_question := self.trivia_questions.get(message.channel.id)
         ):
-            return
-        if message.channel.id != trivia_question.channel_id:
             return
         if message.author.id == self.bot.user.id:
             return
@@ -200,9 +178,7 @@ class Trivia(commands.Cog):
                 trivia_question.response, embeds = embeds
             )
 
-    @trivia.command(
-        max_concurrency = max_concurrency, with_app_command = False
-    )
+    @trivia.command(with_app_command = False)
     async def bet(
         self, ctx, override_modal_answers: Optional[bool] = False,
         react: Optional[bool] = True, seconds: commands.Range[int, 1, 60] = 15
@@ -1026,7 +1002,6 @@ class TriviaQuestion:
         self.bet_message = None
         self.bets = {}
         self.betting = betting
-        self.channel_id = None
         self.override_modal_answers = override_modal_answers
         self.react = react
         self.response = None  # Bot response to command
@@ -1051,8 +1026,6 @@ class TriviaQuestion:
             return
 
     async def start(self, ctx):
-        self.channel_id = ctx.channel.id
-
         if not (data := await self.get_question(ctx)):
             return
 
