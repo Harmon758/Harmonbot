@@ -269,6 +269,8 @@ class Trivia(commands.Cog):
         """
         # Note: jeopardy command invokes this command
         # TODO: Daily Double?
+        await ctx.defer()
+
         if match := self.trivia_boards.get(ctx.channel.id):
             description = "There's already a trivia board in progress here"
             if match.message:
