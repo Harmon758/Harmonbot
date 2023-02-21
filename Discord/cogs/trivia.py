@@ -271,10 +271,10 @@ class Trivia(commands.Cog):
         # TODO: Daily Double?
         await ctx.defer()
 
-        if match := self.trivia_boards.get(ctx.channel.id):
+        if board := self.trivia_boards.get(ctx.channel.id):
             description = "There's already an active trivia board here"
-            if match.message:
-                description = f"[{description}]({match.message.jump_url})"
+            if board.message:
+                description = f"[{description}]({board.message.jump_url})"
             await ctx.embed_reply(description)
             return
 
