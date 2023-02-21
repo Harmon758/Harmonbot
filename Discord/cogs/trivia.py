@@ -272,7 +272,7 @@ class Trivia(commands.Cog):
         await ctx.defer()
 
         if match := self.trivia_boards.get(ctx.channel.id):
-            description = "There's already a trivia board in progress here"
+            description = "There's already an active trivia board here"
             if match.message:
                 description = f"[{description}]({match.message.jump_url})"
             await ctx.embed_reply(description)
