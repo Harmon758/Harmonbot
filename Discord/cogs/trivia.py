@@ -30,7 +30,6 @@ class Trivia(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.active_jeopardy = {}
 
         self.trivia_boards = {}
         self.trivia_questions = {}
@@ -74,21 +73,10 @@ class Trivia(commands.Cog):
                     )
                 await ctx.embed_reply(description)
                 return
-            elif ctx.guild.id in self.active_jeopardy:
-                channel_id = self.active_jeopardy[ctx.guild.id].channel_id
-                if ctx.channel.id == channel_id:
-                    await ctx.embed_reply(
-                        f"{ctx.bot.error_emoji} Error: There is already an ongoing game of jeopardy here"
-                    )
-                else:
-                    channel = ctx.guild.get_channel_or_thread(channel_id)
-                    await ctx.embed_reply(
-                        f"{ctx.bot.error_emoji} Error: There is already an ongoing game of jeopardy in {channel.mention}"
-                    )
             else:
                 raise RuntimeError(
                     "Trivia max concurrency reached, "
-                    "but neither active trivia nor jeopardy found."
+                    "but active trivia question not found"
                 )
 
     @commands.hybrid_group(
