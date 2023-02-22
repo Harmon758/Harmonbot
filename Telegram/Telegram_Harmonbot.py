@@ -9,7 +9,7 @@ import os
 import dotenv
 
 
-version = "0.3.9"
+version = "0.3.10"
 
 # TODO: Set up logging and/or make Beta bot for CI
 
@@ -57,6 +57,8 @@ async def post_start(application):
         asyncio.get_event_loop().stop()
 
 def main():
+    print("Starting up Telegram Harmonbot...")
+
     # Load credentials from .env
     dotenv.load_dotenv()
     token = os.getenv("TELEGRAM_BOT_API_TOKEN")
