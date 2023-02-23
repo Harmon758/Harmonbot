@@ -237,7 +237,7 @@ class Pokemon(commands.Cog):
         ...
 
     @pokemon.command(with_app_command = False)
-    async def machine(self, ctx, id_or_name : str):
+    async def machine(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
