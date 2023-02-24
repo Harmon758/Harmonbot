@@ -242,7 +242,7 @@ class Pokemon(commands.Cog):
         ...
 
     @pokemon.group(case_insensitive = True, with_app_command = False)
-    async def move(self, ctx, id_or_name : str):
+    async def move(self, ctx, id_or_name: str):
         '''WIP'''
         # TODO: damage classes?, learn methods?, targets?
         ...
