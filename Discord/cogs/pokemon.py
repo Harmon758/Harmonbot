@@ -248,7 +248,7 @@ class Pokemon(commands.Cog):
         ...
 
     @move.command(name = "ailment", with_app_command = False)
-    async def move_ailment(self, ctx, id_or_name : str):
+    async def move_ailment(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
