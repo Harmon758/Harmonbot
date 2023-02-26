@@ -253,7 +253,7 @@ class Pokemon(commands.Cog):
         ...
 
     @move.command(name = "category", with_app_command = False)
-    async def move_category(self, ctx, id_or_name : str):
+    async def move_category(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
