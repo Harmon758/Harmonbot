@@ -284,7 +284,8 @@ class Twitter(commands.Cog):
             ctx.channel.id
         )
         await ctx.embed_reply(
-            '\n'.join(sorted(
+            title = "Twitter handles being followed in this channel",
+            description = '\n'.join(sorted(
                 [record["handle"] for record in records],
                 key = str.casefold
             ))
