@@ -258,7 +258,7 @@ class Pokemon(commands.Cog):
         ...
 
     @pokemon.command(with_app_command = False)
-    async def nature(self, ctx, id_or_name : str):
+    async def nature(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
