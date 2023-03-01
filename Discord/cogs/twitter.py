@@ -321,7 +321,45 @@ class Twitter(commands.Cog):
                         "(i.e. was deleted)."
                     )
             except discord.Forbidden:
-                print(f"Forbidden: {channel_id}")
+                ctx.bot.print(f"Forbidden: {channel_id}")
+
+        usernames = set(record["handle"] for record in records)
+        usernames_not_found = []
+        for usernames_chunk in chunked(usernames, 100):
+            response = await self.bot.twitter_client.get_users(
+                usernames = usernames_chunk
+            )
+            for error in response.errors:
+                if error["title"] == "Not Found Error":
+                    usernames_not_found.append(error["value"])
+        for username in usernames_not_found:
+            deleted = await ctx.bot.db.fetch(
+                """
+                DELETE FROM twitter.handles
+                WHERE handle = $1
+                RETURNING *
+                """,
+                username
+            )
+            for record in deleted:
+                notice = (
+                    f"<#{record['channel_id']}> is no longer following"
+                    f"`{record['handle']}` as a Twitter handle, "
+                    "as the handle can no longer be found "
+                    "(i.e. no longer exists)."
+                )
+                ctx.bot.print(notice)
+                try:
+                    channel = ctx.bot.get_channel(record["channel_id"]) or (
+                        await ctx.bot.fetch_channel(record["channel_id"])
+                    )
+                except discord.Forbidden:
+                    await last_resort_notices_channel.send(notice)
+                else:
+                    try:
+                        await channel.send(notice)
+                    except discord.Forbidden:
+                        await last_resort_notices_channel.send(notice)
 
         await ctx.embed_reply("Purge complete")
 
