@@ -111,6 +111,7 @@ class Bot(commands.Bot):
 		self.console_message_prefix = "Discord Harmonbot: "
 		self.fake_ip = "nice try"
 		self.fake_location = "Fort Yukon, Alaska"
+		self.last_resort_notices_channel_id = 955950052747137104
 		self.library_path = "D:/Music/"
 		self.simple_user_agent = "Harmonbot (Discord Bot)"
 		self.user_agent = (

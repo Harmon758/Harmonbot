@@ -292,6 +292,39 @@ class Twitter(commands.Cog):
         )
         # TODO: Add message if none
 
+    @twitter.command(aliases = ["maintenance"], with_app_command = False)
+    @commands.is_owner()
+    async def purge(self, ctx):
+        last_resort_notices_channel = ctx.bot.get_channel(
+            ctx.bot.last_resort_notices_channel_id
+        )
+
+        records = await ctx.bot.db.fetch("SELECT * FROM twitter.handles")
+        channel_ids = set(record["channel_id"] for record in records)
+        for channel_id in channel_ids:
+            try:
+                await ctx.bot.fetch_channel(channel_id)
+            except discord.NotFound:
+                deleted = await ctx.bot.db.fetch(
+                    """
+                    DELETE FROM twitter.handles
+                    WHERE channel_id = $1
+                    RETURNING *
+                    """,
+                    channel_id
+                )
+                for record in deleted:
+                    await last_resort_notices_channel.send(
+                        f"<#{record['channel_id']}> is no longer following "
+                        f"`{record['handle']}` as a Twitter handle, "
+                        "as the channel can no longer be found "
+                        "(i.e. was deleted)."
+                    )
+            except discord.Forbidden:
+                print(f"Forbidden: {channel_id}")
+
+        await ctx.embed_reply("Purge complete")
+
     async def start_stream(self):
         await self.bot.wait_until_ready()
         try:
