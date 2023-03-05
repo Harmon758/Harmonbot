@@ -105,7 +105,10 @@ class Cryptography(commands.Cog):
         except ValueError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
-    @decode_gost.command(name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"], with_app_command = False)
+    @decode_gost.command(
+        name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"],
+        with_app_command = False
+    )
     async def decode_gost_34_12_2015(self, ctx, key: str, *, data: str):
         '''
         GOST 34.12-2015 128-bit block cipher
@@ -114,12 +117,22 @@ class Cryptography(commands.Cog):
         '''
         # TODO: Add decode kuznyechik alias
         if len(key) < 32:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: key length must be at least 32")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Error: key length must be at least 32"
+            )
             return
         if len(data) < 16:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: data length must be at least 16")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Error: data length must be at least 16"
+            )
             return
-        await ctx.embed_reply(pygost.gost3412.GOST3412Kuznechik(key.encode("UTF-8")).decrypt(bytearray.fromhex(data)).decode("UTF-8"))
+        await ctx.embed_reply(
+            pygost.gost3412.GOST3412Kuznechik(
+                key.encode("UTF-8")
+            ).decrypt(
+                bytearray.fromhex(data)
+            ).decode("UTF-8")
+        )
 
     @decode.command(name = "morse")
     async def decode_morse(self, ctx, *, message: str):
