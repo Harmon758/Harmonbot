@@ -205,7 +205,7 @@ class Cryptography(commands.Cog):
 
     @decode.command(name = "reverse", with_app_command = False)
     async def decode_reverse(self, ctx, *, message: str):
-        '''Reverses text'''
+        """Reverses text"""
         await ctx.embed_reply(message[::-1])
 
     @commands.hybrid_group(aliases = ["encrypt"], case_insensitive = True)
