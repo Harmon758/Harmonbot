@@ -223,7 +223,9 @@ class Cryptography(commands.Cog):
     @encode.command(name = "blake2b", with_app_command = False)
     async def encode_blake2b(self, ctx, *, message: str):
         '''64-byte digest BLAKE2b'''
-        digest = crypto_hashes.Hash(crypto_hashes.BLAKE2b(64), backend = openssl_backend)
+        digest = crypto_hashes.Hash(
+            crypto_hashes.BLAKE2b(64), backend = openssl_backend
+        )
         digest.update(message.encode("UTF-8"))
         await ctx.embed_reply(digest.finalize())
 
