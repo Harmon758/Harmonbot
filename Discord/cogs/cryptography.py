@@ -249,7 +249,7 @@ class Cryptography(commands.Cog):
         name = "crc32", aliases = ["crc-32"], with_app_command = False
     )
     async def encode_crc32(self, ctx, *, message: str):
-        '''Compute CRC32 checksum'''
+        """Compute CRC32 checksum"""
         await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 
     @encode.group(name = "gost", aliases = ["гост"], case_insensitive = True)
