@@ -341,7 +341,7 @@ class Cryptography(commands.Cog):
 
     @encode_gost.command(name = "34.11-94", with_app_command = False)
     async def encode_gost_34_11_94(self, ctx, *, data: str):
-        '''GOST 34.11-94 hash function'''
+        """GOST 34.11-94 hash function"""
         await ctx.embed_reply(
             pygost.gost341194.GOST341194(
                 data.encode("UTF-8")
