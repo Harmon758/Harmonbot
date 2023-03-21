@@ -353,11 +353,11 @@ class Cryptography(commands.Cog):
         with_app_command = False
     )
     async def encode_gost_34_12_2015(self, ctx, key: str, *, data: str):
-        '''
+        """
         GOST 34.12-2015 128-bit block cipher
         Also known as Кузнечик or Kuznyechik
         key length >= 32, data length >= 16
-        '''
+        """
         # TODO: Add encode kuznyechik alias
         if len(key) < 32:
             await ctx.embed_reply(
