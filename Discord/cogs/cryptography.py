@@ -386,7 +386,7 @@ class Cryptography(commands.Cog):
 
     @encode.command(name = "md5", with_app_command = False)
     async def encode_md5(self, ctx, *, message: str):
-        '''Generate MD5 hash'''
+        """Generate MD5 hash"""
         await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 
     @encode.command(name = "morse")
