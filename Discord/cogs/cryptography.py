@@ -437,7 +437,11 @@ class Cryptography(commands.Cog):
     )
     async def encode_sha1(self, ctx, *, message: str):
         '''Generate SHA-1 hash'''
-        await ctx.embed_reply(hashlib.sha1(message.encode("UTF-8")).hexdigest())
+        await ctx.embed_reply(
+            hashlib.sha1(
+                message.encode("UTF-8")
+            ).hexdigest()
+        )
 
     @encode.command(
         name = "sha224", aliases = ["sha-224"], with_app_command = False
