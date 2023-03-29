@@ -447,7 +447,7 @@ class Cryptography(commands.Cog):
         name = "sha224", aliases = ["sha-224"], with_app_command = False
     )
     async def encode_sha224(self, ctx, *, message: str):
-        '''Generate SHA-224 hash'''
+        """Generate SHA-224 hash"""
         await ctx.embed_reply(
             hashlib.sha224(
                 message.encode("UTF-8")
