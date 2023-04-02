@@ -481,7 +481,11 @@ class Cryptography(commands.Cog):
     )
     async def encode_sha512(self, ctx, *, message: str):
         '''Generate SHA-512 hash'''
-        await ctx.embed_reply(hashlib.sha512(message.encode("UTF-8")).hexdigest())
+        await ctx.embed_reply(
+            hashlib.sha512(
+                message.encode("UTF-8")
+            ).hexdigest()
+        )
 
     @encode.command(name = "whirlpool", with_app_command = False)
     async def encode_whirlpool(self, ctx, *, message: str):
