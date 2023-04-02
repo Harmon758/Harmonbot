@@ -469,7 +469,7 @@ class Cryptography(commands.Cog):
         name = "sha384", aliases = ["sha-384"], with_app_command = False
     )
     async def encode_sha384(self, ctx, *, message: str):
-        '''Generate SHA-384 hash'''
+        """Generate SHA-384 hash"""
         await ctx.embed_reply(
             hashlib.sha384(
                 message.encode("UTF-8")
