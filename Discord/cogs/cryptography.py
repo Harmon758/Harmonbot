@@ -480,7 +480,7 @@ class Cryptography(commands.Cog):
         name = "sha512", aliases = ["sha-512"], with_app_command = False
     )
     async def encode_sha512(self, ctx, *, message: str):
-        '''Generate SHA-512 hash'''
+        """Generate SHA-512 hash"""
         await ctx.embed_reply(
             hashlib.sha512(
                 message.encode("UTF-8")
