@@ -489,7 +489,7 @@ class Cryptography(commands.Cog):
 
     @encode.command(name = "whirlpool", with_app_command = False)
     async def encode_whirlpool(self, ctx, *, message: str):
-        '''Generate WHIRLPOOL hash'''
+        """Generate WHIRLPOOL hash"""
         h = hashlib.new("WHIRLPOOL")
         h.update(message.encode("UTF-8"))
         await ctx.embed_reply(h.hexdigest())
