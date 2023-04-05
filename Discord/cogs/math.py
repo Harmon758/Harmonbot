@@ -112,7 +112,7 @@ class Math(commands.Cog):
 	
 	@commands.command(aliases = ["squareroot", "square_root"])
 	async def sqrt(self, ctx, value: float):
-		'''Square root'''
+		"""Square root"""
 		try:
 			await ctx.embed_reply(math.sqrt(value))
 		except ValueError as e:
