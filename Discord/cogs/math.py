@@ -97,17 +97,21 @@ class Math(commands.Cog):
 			# Don't exceed 1000 digit limit
 			if 1 < digits < 1000:
 				digits += 1
-		url = "https://api.pi.delivery/v1/pi"
-		params = {"start": start, "numberOfDigits": digits}
 		try:
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				"https://api.pi.delivery/v1/pi",
+				params = {"start": start, "numberOfDigits": digits}
+			) as resp:
 				data = await resp.json()
 		except aiohttp.ClientConnectorCertificateError:
-			url = url.replace("https", "http")
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				"http://api.pi.delivery/v1/pi",
+				params = {"start": start, "numberOfDigits": digits}
+			) as resp:
 				data = await resp.json()
 		if "content" in data:
-			return await ctx.embed_reply(data["content"])
+			await ctx.embed_reply(data["content"])
+			return
 		await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data.get('Error', 'N/A')}")
 	
 	@commands.command(aliases = ["squareroot", "square_root"])
