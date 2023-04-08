@@ -111,10 +111,10 @@ class Math(commands.Cog):
 				data = await resp.json()
 		if "content" in data:
 			await ctx.embed_reply(data["content"])
-			return
-		await ctx.embed_reply(
-			f"{ctx.bot.error_emoji} Error: {data.get('Error', 'N/A')}"
-		)
+		else:
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data.get('Error', 'N/A')}"
+			)
 	
 	@commands.command(aliases = ["squareroot", "square_root"])
 	async def sqrt(self, ctx, value: float):
