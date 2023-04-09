@@ -113,7 +113,7 @@ mpmath==1.2.1
 multidict==6.0.4
 mutagen==1.46.0
 oauthlib==3.2.2
-orjson==3.8.7
+orjson==3.8.10
 packaging==23.0
 protobuf==4.22.0
 proto-plus==1.22.2
