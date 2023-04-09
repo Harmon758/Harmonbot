@@ -90,7 +90,7 @@ class Math(commands.Cog):
 	
 	@commands.command(aliases = ['π'])
 	async def pi(self, ctx, digits: int = 3, start: int = 1):
-		'''Digits of pi'''
+		"""Digits of pi"""
 		# Handle decimal point being considered digit
 		if start <= 1:
 			start = 0
