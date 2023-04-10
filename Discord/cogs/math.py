@@ -128,10 +128,10 @@ class Math(commands.Cog):
 	
 	@commands.command(aliases = ["differ", "derivative", "differentiation"])
 	async def differentiate(self, ctx, *, equation: str):
-		'''
+		"""
 		Differentiate an equation
 		with respect to x (dx)
-		'''
+		"""
 		x = sympy.symbols('x')
 		try:
 			await ctx.embed_reply(
