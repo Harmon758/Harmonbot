@@ -151,10 +151,10 @@ class Math(commands.Cog):
 		case_insensitive = True, invoke_without_command = True
 	)
 	async def integrate(self, ctx, *, equation: str):
-		'''
+		"""
 		Integrate an equation
 		with respect to x (dx)
-		'''
+		"""
 		x = sympy.symbols('x')
 		try:
 			await ctx.embed_reply(
