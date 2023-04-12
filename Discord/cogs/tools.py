@@ -128,7 +128,7 @@ class Tools(commands.Cog):
 	
 	@commands.command(aliases = ["spoil"], hidden = True)
 	@checks.not_forbidden()
-	async def spoiler(self, ctx, name : str, *, text : str):
+	async def spoiler(self, ctx, name: str, *, text: str):
 		'''
 		Spoiler GIF
 		This command is now deprecated, as Discord now has native [spoiler tags](https://support.discordapp.com/hc/en-us/articles/360022320632-Spoiler-Tags-)
