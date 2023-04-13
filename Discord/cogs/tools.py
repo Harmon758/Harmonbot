@@ -198,7 +198,7 @@ class Tools(commands.Cog):
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], 
 					invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def tag(self, ctx, tag : str = ""):
+	async def tag(self, ctx, tag: str = ""):
 		'''Tags/notes that you can trigger later'''
 		if not tag:
 			await ctx.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
