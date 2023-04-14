@@ -263,7 +263,7 @@ class Tools(commands.Cog):
 			await ctx.embed_reply(page, title = "Your tags:")
 	
 	@tag.command(name = "add", aliases = ["make", "new", "create"])
-	async def tag_add(self, ctx, tag : str, *, content : str):
+	async def tag_add(self, ctx, tag: str, *, content: str):
 		'''Add a tag'''
 		inserted = await ctx.bot.db.fetchrow(
 			"""
