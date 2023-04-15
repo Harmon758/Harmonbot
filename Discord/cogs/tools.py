@@ -279,7 +279,7 @@ class Tools(commands.Cog):
 		await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Your tag has been added")
 	
 	@tag.command(name = "edit", aliases = ["update"])
-	async def tag_edit(self, ctx, tag : str, *, content : str):
+	async def tag_edit(self, ctx, tag: str, *, content: str):
 		'''Edit one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
