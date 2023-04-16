@@ -293,7 +293,7 @@ class Tools(commands.Cog):
 		await ctx.embed_reply(f":ok_hand:{ctx.bot.emoji_skin_tone} Your tag has been edited")
 	
 	@tag.command(name = "delete", aliases = ["remove", "destroy"])
-	async def tag_delete(self, ctx, tag : str):
+	async def tag_delete(self, ctx, tag: str):
 		'''Delete one of your tags'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
