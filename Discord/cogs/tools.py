@@ -311,7 +311,7 @@ class Tools(commands.Cog):
 	
 	@tag.command(name = "expunge")
 	@commands.is_owner()
-	async def tag_expunge(self, ctx, owner : discord.Member, tag : str):
+	async def tag_expunge(self, ctx, owner: discord.Member, tag: str):
 		'''Delete someone else's tags'''
 		deleted = await ctx.bot.db.fetchrow(
 			"""
