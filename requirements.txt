@@ -138,7 +138,7 @@ soupsieve==2.4
 tempora==5.2.1
 typing-extensions==4.5.0
 uritemplate==4.1.1
-websockets==10.4
+websockets==11.0.2
 xmltodict==0.13.0
 yarl==1.8.2
 
