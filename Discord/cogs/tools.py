@@ -345,7 +345,7 @@ class Tools(commands.Cog):
 		await ctx.embed_reply(f"No tags found{close_matches}")
 	
 	@tag.command(name = "globalize", aliases = ["globalise"])
-	async def tag_globalize(self, ctx, tag : str):
+	async def tag_globalize(self, ctx, tag: str):
 		'''Globalize a tag'''
 		if (await self.check_no_tags(ctx)): return
 		if (await self.check_no_tag(ctx, tag)): return
