@@ -387,7 +387,7 @@ class Tools(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@tag_global.command(name = "add", aliases = ["make", "new", "create"])
-	async def tag_global_add(self, ctx, tag : str, *, content : str):
+	async def tag_global_add(self, ctx, tag: str, *, content: str):
 		'''Add a global tag'''
 		inserted = await ctx.bot.db.fetchrow(
 			"""
