@@ -404,7 +404,7 @@ class Tools(commands.Cog):
 		await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Your tag has been added")
 	
 	@tag_global.command(name = "edit", aliases = ["update"])
-	async def tag_global_edit(self, ctx, tag : str, *, content : str):
+	async def tag_global_edit(self, ctx, tag: str, *, content: str):
 		'''Edit one of your global tags'''
 		owner_id = await ctx.bot.db.fetchval(
 			"""
