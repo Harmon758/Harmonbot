@@ -263,7 +263,7 @@ class Pokemon(commands.Cog):
         ...
 
     @pokemon.command(with_app_command = False)
-    async def pokedex(self, ctx, id_or_name : str):
+    async def pokedex(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
