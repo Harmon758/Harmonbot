@@ -268,7 +268,7 @@ class Pokemon(commands.Cog):
         ...
 
     @pokemon.command(with_app_command = False)
-    async def region(self, ctx, id_or_name : str):
+    async def region(self, ctx, id_or_name: str):
         '''WIP'''
         ...
 
