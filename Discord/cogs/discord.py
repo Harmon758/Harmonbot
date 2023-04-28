@@ -152,7 +152,7 @@ class Discord(commands.Cog):
 		# TODO: Include message.edited_at
 	
 	@commands.group(aliases = ["purge", "clean"], invoke_without_command = True, case_insensitive = True)
-	async def delete(self, ctx, number : int, *, user : discord.Member = None):
+	async def delete(self, ctx, number: int, *, user: discord.Member = None):
 		'''
 		Delete messages
 		If used in a DM, delete <number> deletes <number> of Harmonbot's messages
