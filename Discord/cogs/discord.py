@@ -176,7 +176,7 @@ class Discord(commands.Cog):
 	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
-	async def delete_attachments(self, ctx, number : int):
+	async def delete_attachments(self, ctx, number: int):
 		'''Deletes the <number> most recent messages with attachments'''
 		await self.delete_number(ctx, number, check = lambda m: m.attachments)
 	
