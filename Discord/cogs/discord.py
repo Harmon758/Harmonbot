@@ -185,7 +185,7 @@ class Discord(commands.Cog):
 	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
-	async def delete_contains(self, ctx, string : str, number : int):
+	async def delete_contains(self, ctx, string: str, number: int):
 		'''Deletes the <number> most recent messages with <string> in them'''
 		await self.delete_number(ctx, number, check = lambda m: string in m.content)
 	
