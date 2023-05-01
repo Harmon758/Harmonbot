@@ -22,7 +22,7 @@ gitpython==3.1.8
 google-api-core[grpc]==2.11.0
 google-cloud-translate==3.8.4
 hypothesis==6.68.2
-imageio==2.26.0
+imageio==2.28.1
 imgurpython==1.1.7
 inflect==6.0.2
 isodate==0.6.1
