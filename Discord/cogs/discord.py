@@ -203,7 +203,7 @@ class Discord(commands.Cog):
 	@commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
 	@commands.guild_only()
 	# TODO: Handle in DMs
-	async def delete_time(self, ctx, minutes : int):
+	async def delete_time(self, ctx, minutes: int):
 		'''Deletes messages in the past <minutes> minutes'''
 		await self.bot.attempt_delete_message(ctx.message)
 		await ctx.channel.purge(after = datetime.datetime.utcnow() - datetime.timedelta(minutes = minutes), 
