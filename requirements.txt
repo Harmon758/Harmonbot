@@ -140,5 +140,5 @@ typing-extensions==4.5.0
 uritemplate==4.1.1
 websockets==10.4
 xmltodict==0.13.0
-yarl==1.8.2
+yarl==1.9.2
 
