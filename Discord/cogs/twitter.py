@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 
-import asyncio
 import html
 import logging
 import sys
@@ -25,7 +24,7 @@ class Twitter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.blacklisted_handles = []
-        self.stream = TwitterStream(bot)
+        self.streaming_client = TwitterStreamingClient(bot)
 
     async def cog_load(self):
         # Initialize database
@@ -69,8 +68,8 @@ class Twitter(commands.Cog):
         )
 
     def cog_unload(self):
-        if self.stream:
-            self.stream.disconnect()
+        if self.streaming_client:
+            self.streaming_client.disconnect()
         self.task.cancel()
 
     @commands.hybrid_group(case_insensitive = True)
@@ -211,7 +210,7 @@ class Twitter(commands.Cog):
         message = await ctx.embed_reply("\N{HOURGLASS} Please wait")
         embed = message.embeds[0]
         try:
-            await self.stream.add_feed(ctx.channel, handle)
+            await self.streaming_client.add_feed(ctx.channel, handle)
         except tweepy.TweepyException as e:
             embed.description = f"{ctx.bot.error_emoji} Error: {e}"
             await message.edit(embed = embed)
@@ -260,7 +259,7 @@ class Twitter(commands.Cog):
             )
             return
         message = await ctx.embed_reply("\N{HOURGLASS} Please wait")
-        await self.stream.remove_feed(ctx.channel, handle)
+        await self.streaming_client.remove_feed(ctx.channel, handle)
         embed = message.embeds[0]
         embed.description = (
             "Removed the Twitter handle, "
@@ -373,14 +372,7 @@ class Twitter(commands.Cog):
                     usernames.get(record["handle"].lower(), []) +
                     [record["channel_id"]]
                 )
-            user_ids = {}
-            for usernames_chunk in chunked(usernames, 100):
-                response = await self.bot.twitter_client.get_users(
-                    usernames = usernames_chunk
-                )
-                for user in response.data:
-                    user_ids[user.id] = usernames[user.username.lower()]
-            await self.stream.start_feeds(user_ids = user_ids)
+            await self.streaming_client.start_feeds(usernames = usernames)
         except Exception as e:
             print("Exception in Twitter Task", file = sys.stderr)
             traceback.print_exception(
@@ -395,14 +387,8 @@ class Twitter(commands.Cog):
 
 def process_tweet_text(text, entities):
     mentions = {}
-    if "user_mentions" in entities:
-        for mention in entities["user_mentions"]:
-            mentions[text[mention["indices"][0]:mention["indices"][1]]] = (
-                mention["screen_name"]
-            )
-    else:
-        for mention in entities.get("mentions", ()):
-            mentions[text[mention["start"]:mention["end"]]] = mention["tag"]
+    for mention in entities.get("mentions", ()):
+        mentions[text[mention["start"]:mention["end"]]] = mention["tag"]
     for mention, screen_name in mentions.items():
         text = text.replace(
             mention,
@@ -414,18 +400,11 @@ def process_tweet_text(text, entities):
             '#' + tag,
             f"[#{tag}](https://twitter.com/hashtag/{tag})"
         )
-    if "symbols" in entities:
-        for symbol in entities["symbols"]:
-            text = text.replace(
-                '$' + symbol["text"],
-                f"[${symbol['text']}](https://twitter.com/search?q=${symbol['text']})"
-            )
-    else:
-        for cashtag in entities.get("cashtags", ()):
-            text = text.replace(
-                '$' + cashtag["tag"],
-                f"[${cashtag['tag']}](https://twitter.com/search?q=${cashtag['tag']})"
-            )
+    for cashtag in entities.get("cashtags", ()):
+        text = text.replace(
+            '$' + cashtag["tag"],
+            f"[${cashtag['tag']}](https://twitter.com/search?q=${cashtag['tag']})"
+        )
     for url in entities.get("urls", ()):
         text = text.replace(url["url"], url["expanded_url"])
     # Remove Variation Selector-16 characters
@@ -433,104 +412,110 @@ def process_tweet_text(text, entities):
     return html.unescape(text.replace('\uFE0F', ""))
 
 
-class TwitterStream(tweepy.asynchronous.AsyncStream):
+class TwitterStreamingClient(tweepy.asynchronous.AsyncStreamingClient):
 
     def __init__(self, bot):
-        super().__init__(
-            bot.TWITTER_CONSUMER_KEY, bot.TWITTER_CONSUMER_SECRET,
-            bot.TWITTER_ACCESS_TOKEN, bot.TWITTER_ACCESS_TOKEN_SECRET
-        )
+        super().__init__(bot.TWITTER_BEARER_TOKEN)
         self.bot = bot
-        self.user_ids = {}
-        self.reconnect_ready = asyncio.Event()
-        self.reconnect_ready.set()
-        self.reconnecting = False
+        self.usernames = {}
 
-    async def start_feeds(self, *, user_ids = None):
-        if self.reconnecting:
-            return await self.reconnect_ready.wait()
-        self.reconnecting = True
-        await self.reconnect_ready.wait()
-        self.reconnect_ready.clear()
-        if user_ids:
-            self.user_ids = user_ids
-        if self.task:
-            self.disconnect()
-            await self.task
-        if self.user_ids:
-            self.filter(follow = self.user_ids)
-        self.bot.loop.call_later(120, self.reconnect_ready.set)
-        self.reconnecting = False
+    async def start_feeds(self, *, usernames = None):
+        if usernames:
+            self.usernames = usernames
+
+        response = await self.get_rules()
+        if rules := response.data:
+            await self.delete_rules([rule.id for rule in rules])
+
+        rule = ""
+        rules = []
+        for username in self.usernames:
+            if len(rule) + len(username) + 5 > 512:  # 5 == len("from:")
+                rules.append(tweepy.StreamRule(rule[:-4]))  # 4 == len(" OR ")
+                rule = ""
+            rule += f"from:{username} OR "
+        rules.append(tweepy.StreamRule(rule[:-4]))  # 4 == len(" OR ")
+        await self.add_rules(rules)
+
+        if self.task is None:
+            await self.filter(
+                expansions = ["attachments.media_keys", "author_id"],
+                media_fields = ["url"],
+                tweet_fields = [
+                    "attachments", "created_at", "entities",
+                    "in_reply_to_user_id"
+                ],
+                user_fields = ["profile_image_url"]
+            )
 
     async def add_feed(self, channel, handle):
-        response = await self.bot.twitter_client.get_user(username = handle)
-        user_id = response.data.id
-
-        if channels := self.user_ids.get(user_id):
+        if channels := self.usernames.get(handle):
             channels.append(channel.id)
         else:
-            self.user_ids[user_id] = [channel.id]
+            self.usernames[handle] = [channel.id]
             await self.start_feeds()
 
     async def remove_feed(self, channel, handle):
-        response = await self.bot.twitter_client.get_user(username = handle)
-        user_id = response.data.id
-
-        channel_ids = self.user_ids[user_id]
+        channel_ids = self.usernames[handle]
         channel_ids.remove(channel.id)
         if not channel_ids:
-            del self.user_ids[user_id]
+            del self.usernames[handle]
 
         await self.start_feeds()  # Necessary?
 
-    async def on_status(self, status):
+    async def on_response(self, response):
+        tweet = response.data
+        author = response.includes["users"][0]
         # Ignore replies
-        if status.in_reply_to_status_id:
+        if tweet.in_reply_to_user_id:
             return
         # TODO: Settings for including replies, retweets, etc.
-        for channel_id in self.user_ids.get(status.user.id, ()):
+        for channel_id in self.usernames.get(author.username.lower(), ()):
             channel = self.bot.get_channel(channel_id)
             if not channel:
                 # TODO: Handle channel no longer accessible
                 continue
-            if hasattr(status, "extended_tweet"):
-                text = status.extended_tweet["full_text"]
-                entities = status.extended_tweet["entities"]
-                extended_entities = status.extended_tweet.get(
-                    "extended_entities"
+            embeds = [
+                discord.Embed(
+                    color = self.bot.twitter_color,
+                    description = process_tweet_text(tweet.text, tweet.entities),
+                    timestamp = tweet.created_at,
+                ).set_author(
+                    name = f"{author.name} (@{author.username})",
+                    icon_url = author.profile_image_url,
+                    url = f"https://twitter.com/{author.username}"
+                ).set_footer(
+                    icon_url = self.bot.twitter_icon_url,
+                    text = "Twitter"
                 )
-            else:
-                text = status.text
-                entities = status.entities
-                extended_entities = getattr(status, "extended_entities", None)
-            embed = discord.Embed(
-                color = self.bot.twitter_color,
-                description = process_tweet_text(text, entities),
-                timestamp = status.created_at,
-            )
-            embed.set_author(
-                name = f"{status.user.name} (@{status.user.screen_name})",
-                icon_url = status.user.profile_image_url,
-                url = f"https://twitter.com/{status.user.screen_name}"
-            )
-            if (
-                extended_entities and
-                extended_entities["media"][0]["type"] == "photo"
-            ):
-                embed.set_image(
-                    url = extended_entities["media"][0]["media_url_https"]
-                )
-                embed.description = embed.description.replace(
-                    extended_entities["media"][0]["url"], ""
-                )
-            embed.set_footer(
-                icon_url = self.bot.twitter_icon_url,
-                text = "Twitter"
-            )
+            ]
+            medias = {
+                media["media_key"]: media
+                for media in response.includes.get("media", ())
+            }
+            tweet_url = f"https://twitter.com/{author.username}/status/{tweet.id}"
+            for media_key in (tweet.attachments or {}).get("media_keys", ()):
+                media = medias[media_key]
+                if media["type"] != "photo":
+                    continue
+                if not embeds[0].image:
+                    embeds[0].set_image(url = media["url"])
+                    for url in tweet.entities["urls"]:
+                        if url.get("media_key") == media_key:
+                            embeds[0].description = embeds[0].description.replace(
+                                url["expanded_url"], ""
+                            )
+                    embeds[0].url = tweet_url
+                else:
+                    embeds.append(
+                        discord.Embed(
+                            url = tweet_url
+                        ).set_image(url = media["url"])
+                    )
             try:
                 await channel.send(
-                    content = f"<https://twitter.com/{status.user.screen_name}/status/{status.id}>",
-                    embed = embed
+                    content = f"<{tweet_url}>",
+                    embeds = embeds
                 )
             except discord.Forbidden:
                 # TODO: Handle unable to send embeds/messages in text channel
