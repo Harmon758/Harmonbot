@@ -518,11 +518,14 @@ class TwitterStreamingClient(tweepy.asynchronous.AsyncStreamingClient):
                     embeds = embeds
                 )
             except discord.Forbidden:
-                # TODO: Handle unable to send embeds/messages in text channel
-                self.bot.print(
-                    "Twitter Stream: Missing permissions to send embed in "
-                    f"#{channel.name} in {channel.guild.name}"
-                )
+                try:
+                    await channel.send(content = tweet_url)
+                except discord.Forbidden:
+                    # TODO: Handle unable to send messages in text channel
+                    self.bot.print(
+                        "Twitter Stream: Missing permissions to send message "
+                        f"in #{channel.name} in {channel.guild.name}"
+                    )
             except discord.DiscordServerError as e:
                 self.bot.print(f"Twitter Stream Discord Server Error: {e}")
 
