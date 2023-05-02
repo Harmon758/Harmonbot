@@ -388,7 +388,7 @@ class Twitter(commands.Cog):
 def process_tweet_text(text, entities):
     mentions = {}
     for mention in entities.get("mentions", ()):
-        mentions[text[mention["start"]:mention["end"]]] = mention["tag"]
+        mentions[text[mention["start"]:mention["end"]]] = mention["username"]
     for mention, screen_name in mentions.items():
         text = text.replace(
             mention,
