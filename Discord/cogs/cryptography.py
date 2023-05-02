@@ -9,11 +9,11 @@ import zlib
 
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
 from cryptography.hazmat.primitives import hashes as crypto_hashes
-import pygost.gost28147
-import pygost.gost28147_mac
-import pygost.gost34112012
-import pygost.gost341194
-import pygost.gost3412
+# import pygost.gost28147
+# import pygost.gost28147_mac
+# import pygost.gost34112012
+# import pygost.gost341194
+# import pygost.gost3412
 
 from utilities import checks
 
@@ -55,23 +55,41 @@ class Cryptography(commands.Cog):
         # TODO: Paginate if too long
         await ctx.embed_reply('\n'.join(f"{key}: {decode_caesar_cipher(message, key)}" for key in range(26)))
 
-    @decode.group(name = "gost", aliases = ["гост"], case_insensitive = True)
+    @decode.group(
+        name = "gost", aliases = ["гост"],
+        case_insensitive = True, hidden = True
+    )
     async def decode_gost(self, ctx):
         """
         Russian Federation/Soviet Union GOST
         Межгосударственный стандарт
         From GOsudarstvennyy STandart
         (ГОсударственный СТандарт)
-        """
-        await ctx.send_help(ctx.command)
 
-    @decode_gost.command(name = "magma", aliases = ["28147-89", "магма"])
+        This command has been deprecated, as the library it used to use,
+        PyGOST, is no longer publicly available on PyPI, the Python Package
+        Index
+        """
+        await ctx.embed_reply(
+            "This command has been deprecated, as the library it used to use, "
+            "PyGOST, is no longer publicly available on PyPI, the Python "
+            "Package Index"
+        )
+        # await ctx.send_help(ctx.command)
+
+    @decode_gost.command(
+        name = "magma", aliases = ["28147-89", "магма"], hidden = True
+    )
     async def decode_gost_magma(
         self, ctx, mode: Literal["CBC", "CFB", "CNT", "ECB"], key: str, *,
         data: str
     ):
         """
         GOST 28147-89 block cipher, also known as Магма or Magma
+
+        This command has been deprecated, as the library it used to use,
+        PyGOST, is no longer publicly available on PyPI, the Python Package
+        Index
 
         Parameters
         ----------
@@ -82,57 +100,71 @@ class Cryptography(commands.Cog):
         data
             Data to decode
         """
+        await ctx.embed_reply(
+            "This command has been deprecated, as the library it used to use, "
+            "PyGOST, is no longer publicly available on PyPI, the Python "
+            "Package Index"
+        )
         # TODO: Add decode magma alias
-        try:
-            key = key.encode("UTF-8")
-            data = bytearray.fromhex(data)
-            if mode == "CBC":
-                await ctx.embed_reply(
-                    pygost.gost28147.cbc_decrypt(key, data).decode("UTF-8")
-                )
-            elif mode == "CFB":
-                await ctx.embed_reply(
-                    pygost.gost28147.cfb_decrypt(key, data).decode("UTF-8")
-                )
-            elif mode == "CNT":
-                await ctx.embed_reply(
-                    pygost.gost28147.cnt(key, data).decode("UTF-8")
-                )
-            elif mode == "ECB":
-                await ctx.embed_reply(
-                    pygost.gost28147.ecb_decrypt(key, data).decode("UTF-8")
-                )
-        except ValueError as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+        # try:
+        #     key = key.encode("UTF-8")
+        #     data = bytearray.fromhex(data)
+        #     if mode == "CBC":
+        #         await ctx.embed_reply(
+        #             pygost.gost28147.cbc_decrypt(key, data).decode("UTF-8")
+        #         )
+        #     elif mode == "CFB":
+        #         await ctx.embed_reply(
+        #             pygost.gost28147.cfb_decrypt(key, data).decode("UTF-8")
+        #         )
+        #     elif mode == "CNT":
+        #         await ctx.embed_reply(
+        #             pygost.gost28147.cnt(key, data).decode("UTF-8")
+        #         )
+        #     elif mode == "ECB":
+        #         await ctx.embed_reply(
+        #             pygost.gost28147.ecb_decrypt(key, data).decode("UTF-8")
+        #         )
+        # except ValueError as e:
+        #     await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
     @decode_gost.command(
         name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"],
-        with_app_command = False
+        hidden = True, with_app_command = False
     )
     async def decode_gost_34_12_2015(self, ctx, key: str, *, data: str):
         """
         GOST 34.12-2015 128-bit block cipher
         Also known as Кузнечик or Kuznyechik
         key length >= 32, data length >= 16
+
+        This command has been deprecated, as the library it used to use,
+        PyGOST, is no longer publicly available on PyPI, the Python Package
+        Index
         """
-        # TODO: Add decode kuznyechik alias
-        if len(key) < 32:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: key length must be at least 32"
-            )
-            return
-        if len(data) < 16:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: data length must be at least 16"
-            )
-            return
         await ctx.embed_reply(
-            pygost.gost3412.GOST3412Kuznechik(
-                key.encode("UTF-8")
-            ).decrypt(
-                bytearray.fromhex(data)
-            ).decode("UTF-8")
+            "This command has been deprecated, as the library it used to use, "
+            "PyGOST, is no longer publicly available on PyPI, the Python "
+            "Package Index"
         )
+        # TODO: Add decode kuznyechik alias
+        # if len(key) < 32:
+        #     await ctx.embed_reply(
+        #         f"{ctx.bot.error_emoji} Error: key length must be at least 32"
+        #     )
+        #     return
+        # if len(data) < 16:
+        #     await ctx.embed_reply(
+        #         f"{ctx.bot.error_emoji} Error: data length must be at least 16"
+        #     )
+        #     return
+        # await ctx.embed_reply(
+        #     pygost.gost3412.GOST3412Kuznechik(
+        #         key.encode("UTF-8")
+        #     ).decrypt(
+        #         bytearray.fromhex(data)
+        #     ).decode("UTF-8")
+        # )
 
     @decode.command(name = "morse")
     async def decode_morse(self, ctx, *, message: str):
@@ -252,23 +284,41 @@ class Cryptography(commands.Cog):
         """Compute CRC32 checksum"""
         await ctx.embed_reply(zlib.crc32(message.encode("UTF-8")))
 
-    @encode.group(name = "gost", aliases = ["гост"], case_insensitive = True)
+    @encode.group(
+        name = "gost", aliases = ["гост"],
+        case_insensitive = True, hidden = True
+    )
     async def encode_gost(self, ctx):
         """
         Russian Federation/Soviet Union GOST
         Межгосударственный стандарт
         From GOsudarstvennyy STandart
         (ГОсударственный СТандарт)
-        """
-        await ctx.send_help(ctx.command)
 
-    @encode_gost.command(name = "magma", aliases = ["28147-89", "магма"])
+        This command has been deprecated, as the library it used to use,
+        PyGOST, is no longer publicly available on PyPI, the Python Package
+        Index
+        """
+        await ctx.embed_reply(
+            "This command has been deprecated, as the library it used to use, "
+            "PyGOST, is no longer publicly available on PyPI, the Python "
+            "Package Index"
+        )
+        # await ctx.send_help(ctx.command)
+
+    @encode_gost.command(
+        name = "magma", aliases = ["28147-89", "магма"], hidden = True
+    )
     async def encode_gost_magma(
         self, ctx, mode: Literal["CBC", "CFB", "CNT", "ECB", "MAC"], key: str,
         *, data: str
     ):
         """
         GOST 28147-89 block cipher, also known as Магма or Magma
+
+        This command has been deprecated, as the library it used to use,
+        PyGOST, is no longer publicly available on PyPI, the Python Package
+        Index
 
         Parameters
         ----------
@@ -280,35 +330,40 @@ class Cryptography(commands.Cog):
             Data to encode; For ECB mode, block size must be 8 (64-bit),
             meaning length must be a multiple of 8
         """
+        await ctx.embed_reply(
+            "This command has been deprecated, as the library it used to use, "
+            "PyGOST, is no longer publicly available on PyPI, the Python "
+            "Package Index"
+        )
         # TODO: Add encode magma alias
-        try:
-            key = key.encode("UTF-8")
-            data = data.encode("UTF-8")
-            if mode == "CBC":
-                await ctx.embed_reply(
-                    pygost.gost28147.cbc_encrypt(key, data).hex()
-                )
-            elif mode == "CFB":
-                await ctx.embed_reply(
-                    pygost.gost28147.cfb_encrypt(key, data).hex()
-                )
-            elif mode == "CNT":
-                await ctx.embed_reply(
-                    pygost.gost28147.cnt(key, data).hex()
-                )
-            elif mode == "ECB":
-                await ctx.embed_reply(
-                    pygost.gost28147.ecb_encrypt(key, data).hex()
-                )
-            elif mode == "MAC":
-                mac = pygost.gost28147_mac.MAC(key)
-                mac.update(data)
-                await ctx.embed_reply(mac.hexdigest())
-        except ValueError as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+        # try:
+        #     key = key.encode("UTF-8")
+        #     data = data.encode("UTF-8")
+        #     if mode == "CBC":
+        #         await ctx.embed_reply(
+        #             pygost.gost28147.cbc_encrypt(key, data).hex()
+        #         )
+        #     elif mode == "CFB":
+        #         await ctx.embed_reply(
+        #             pygost.gost28147.cfb_encrypt(key, data).hex()
+        #         )
+        #     elif mode == "CNT":
+        #         await ctx.embed_reply(
+        #             pygost.gost28147.cnt(key, data).hex()
+        #         )
+        #     elif mode == "ECB":
+        #         await ctx.embed_reply(
+        #             pygost.gost28147.ecb_encrypt(key, data).hex()
+        #         )
+        #     elif mode == "MAC":
+        #         mac = pygost.gost28147_mac.MAC(key)
+        #         mac.update(data)
+        #         await ctx.embed_reply(mac.hexdigest())
+        # except ValueError as e:
+        #     await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
     @encode_gost.command(
-        name = "streebog", aliases = ["34.11-2012", "стрибог"]
+        name = "streebog", aliases = ["34.11-2012", "стрибог"], hidden = True
     )
     async def encode_gost_streebog(
         self, ctx, digest_size: Literal[256, 512], *, data: str
@@ -317,6 +372,10 @@ class Cryptography(commands.Cog):
         GOST 34.11-2012 hash function, also known as Стрибог or Streebog
         256-bit or 512-bit, also known as Streebog-256 or Streebog-512
 
+        This command has been deprecated, as the library it used to use,
+        PyGOST, is no longer publicly available on PyPI, the Python Package
+        Index
+
         Parameters
         ----------
         digest_size
@@ -324,58 +383,85 @@ class Cryptography(commands.Cog):
         data
             Data to hash
         """
-        # TODO: Add encode streebog-256 and encode streebog-512 
-        data = data.encode("UTF-8")
-        if digest_size == 256:
-            await ctx.embed_reply(
-                pygost.gost34112012.GOST34112012(
-                    data, digest_size = 32
-                ).hexdigest()
-            )
-        elif digest_size == 512:
-            await ctx.embed_reply(
-                pygost.gost34112012.GOST34112012(
-                    data, digest_size = 64
-                ).hexdigest()
-            )
-
-    @encode_gost.command(name = "34.11-94", with_app_command = False)
-    async def encode_gost_34_11_94(self, ctx, *, data: str):
-        """GOST 34.11-94 hash function"""
         await ctx.embed_reply(
-            pygost.gost341194.GOST341194(
-                data.encode("UTF-8")
-            ).hexdigest()
+            "This command has been deprecated, as the library it used to use, "
+            "PyGOST, is no longer publicly available on PyPI, the Python "
+            "Package Index"
         )
+        # TODO: Add encode streebog-256 and encode streebog-512 
+        # data = data.encode("UTF-8")
+        # if digest_size == 256:
+        #     await ctx.embed_reply(
+        #         pygost.gost34112012.GOST34112012(
+        #             data, digest_size = 32
+        #         ).hexdigest()
+        #     )
+        # elif digest_size == 512:
+        #     await ctx.embed_reply(
+        #         pygost.gost34112012.GOST34112012(
+        #             data, digest_size = 64
+        #         ).hexdigest()
+        #     )
+
+    @encode_gost.command(
+        name = "34.11-94", hidden = True, with_app_command = False
+    )
+    async def encode_gost_34_11_94(self, ctx, *, data: str):
+        """
+        GOST 34.11-94 hash function
+
+        This command has been deprecated, as the library it used to use,
+        PyGOST, is no longer publicly available on PyPI, the Python Package
+        Index
+        """
+        await ctx.embed_reply(
+            "This command has been deprecated, as the library it used to use, "
+            "PyGOST, is no longer publicly available on PyPI, the Python "
+            "Package Index"
+        )
+        # await ctx.embed_reply(
+        #     pygost.gost341194.GOST341194(
+        #         data.encode("UTF-8")
+        #     ).hexdigest()
+        # )
 
     @encode_gost.command(
         name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"],
-        with_app_command = False
+        hidden = True, with_app_command = False
     )
     async def encode_gost_34_12_2015(self, ctx, key: str, *, data: str):
         """
         GOST 34.12-2015 128-bit block cipher
         Also known as Кузнечик or Kuznyechik
         key length >= 32, data length >= 16
+
+        This command has been deprecated, as the library it used to use,
+        PyGOST, is no longer publicly available on PyPI, the Python Package
+        Index
         """
-        # TODO: Add encode kuznyechik alias
-        if len(key) < 32:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: key length must be at least 32"
-            )
-            return
-        if len(data) < 16:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: data length must be at least 16"
-            )
-            return
         await ctx.embed_reply(
-            pygost.gost3412.GOST3412Kuznechik(
-                key.encode("UTF-8")
-            ).encrypt(
-                data.encode("UTF-8")
-            ).hex()
+            "This command has been deprecated, as the library it used to use, "
+            "PyGOST, is no longer publicly available on PyPI, the Python "
+            "Package Index"
         )
+        # TODO: Add encode kuznyechik alias
+        # if len(key) < 32:
+        #     await ctx.embed_reply(
+        #         f"{ctx.bot.error_emoji} Error: key length must be at least 32"
+        #     )
+        #     return
+        # if len(data) < 16:
+        #     await ctx.embed_reply(
+        #         f"{ctx.bot.error_emoji} Error: data length must be at least 16"
+        #     )
+        #     return
+        # await ctx.embed_reply(
+        #     pygost.gost3412.GOST3412Kuznechik(
+        #         key.encode("UTF-8")
+        #     ).encrypt(
+        #         data.encode("UTF-8")
+        #     ).hex()
+        # )
 
     @encode.command(name = "md4", with_app_command = False)
     async def encode_md4(self, ctx, *, message: str):
