@@ -109,11 +109,8 @@ class Discord(commands.Cog):
 			target_application_id = ACTIVITES[activity]
 		)
 		
-		await ctx.embed_reply(
-			title = activity,
-			footer_text = None,
-			view = ActivityView(ctx, invite)
-		)
+		# TODO: Improve traditional command response
+		await ctx.send(invite.url, view = ActivityView(ctx, invite))
 	
 	# TODO: Merge with quote command?
 	@commands.command()
@@ -467,20 +464,6 @@ class ActivityView(discord.ui.View):
 		super().__init__(timeout = None)
 		self.ctx = ctx
 		self.invite = invite
-		
-		self.clear_items()
-		self.start = discord.ui.Button(
-			label = "Start/Join", url = str(invite)
-		)
-		self.add_item(self.start)
-		self.add_item(self.send)
-		self.add_item(self.revoke)
-	
-	@discord.ui.button(
-		label = "Send Invite", style = discord.ButtonStyle.blurple
-	)
-	async def send(self, interaction, button):
-		await interaction.response.send_message(self.invite)
 	
 	@discord.ui.button(
 		label = "Revoke Invite", style = discord.ButtonStyle.red
@@ -512,10 +495,8 @@ class ActivityView(discord.ui.View):
 		except discord.NotFound:
 			pass
 		
-		self.start.disabled = True
-		self.send.disabled = True
-		self.revoke.disabled = True
-		self.revoke.label = "Invite Revoked"
+		button.disabled = True
+		button.label = "Invite Revoked"
 		await interaction.response.edit_message(view = self)
 		
 		self.stop()
