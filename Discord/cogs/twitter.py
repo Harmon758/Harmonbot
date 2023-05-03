@@ -23,7 +23,6 @@ class Twitter(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.blacklisted_handles = []
         self.streaming_client = TwitterStreamingClient(bot)
 
     async def cog_load(self):
@@ -41,27 +40,6 @@ class Twitter(commands.Cog):
             )
             """
         )
-        # Initialize blacklist
-        try:
-            response = await self.bot.twitter_client.get_me(
-                user_fields = ["protected"]
-            )
-            account = response.data
-            if account.protected:
-                self.blacklisted_handles.append(
-                    account.username.lower()
-                )
-            # TODO: Handle more than 1000 friends/following
-            response = await self.bot.twitter_client.get_users_following(
-                account.id, max_results = 1000, user_fields = ["protected"],
-                user_auth = True
-            )
-            following = response.data
-            for friend in following:
-                if friend.protected:
-                    self.blacklisted_handles.append(friend.username.lower())
-        except (AttributeError, tweepy.TweepyException) as e:
-            self.bot.print(f"Failed to initialize Twitter cog blacklist: {e}")
         # Start stream
         self.task = self.bot.loop.create_task(
             self.start_stream(), name = "Start Twitter Stream"
