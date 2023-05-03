@@ -274,7 +274,7 @@ class Twitter(commands.Cog):
     )
     @checks.not_forbidden()
     async def handles(self, ctx):
-        '''Show Twitter handles being followed in a text channel'''
+        """Show Twitter handles being followed in a text channel"""
         records = await ctx.bot.db.fetch(
             """
             SELECT handle FROM twitter.handles
