@@ -190,7 +190,7 @@ class Tools(commands.Cog):
 			frames.append(buffer)
 		# Create + send .gif
 		buffer = io.BytesIO()
-		imageio.mimsave(buffer, [imageio.imread(frame) for frame in frames], "GIF", loop = 1, duration = 0.5)
+		imageio.mimsave(buffer, [imageio.imread(frame) for frame in frames], "GIF-PIL", loop = 1, duration = 0.5)
 		buffer.seek(0)
 		await ctx.channel.send(file = discord.File(buffer, filename = "spoiler.gif"))
 		await ctx.bot.attempt_delete_message(response)
