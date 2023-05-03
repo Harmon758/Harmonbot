@@ -180,9 +180,9 @@ class Bot(commands.Bot):
 			"PAGE2IMAGES_REST_API_KEY", "READ_THE_DOCS_API_TOKEN",
 			"SENTRY_DSN", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET_KEY",
 			"STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET",
-			"TWITTER_BEARER_TOKEN", "TWITTER_v2_CONSUMER_KEY",
-			"TWITTER_v2_CONSUMER_SECRET", "TWITTER_v2_ACCESS_TOKEN",
-			"TWITTER_v2_ACCESS_TOKEN_SECRET","UNSPLASH_ACCESS_KEY",
+			"TWITTER_BEARER_TOKEN", "TWITTER_CONSUMER_KEY",
+			"TWITTER_CONSUMER_SECRET", "TWITTER_ACCESS_TOKEN",
+			"TWITTER_ACCESS_TOKEN_SECRET","UNSPLASH_ACCESS_KEY",
 			"WARGAMING_APPLICATION_ID", "WOLFRAM_ALPHA_APP_ID",
 			"WORDNIK_API_KEY"
 		):
@@ -218,10 +218,10 @@ class Bot(commands.Bot):
 		## Twitter
 		self.twitter_client = tweepy.asynchronous.AsyncClient(
 			bearer_token = self.TWITTER_BEARER_TOKEN,
-			consumer_key = self.TWITTER_v2_CONSUMER_KEY,
-			consumer_secret = self.TWITTER_v2_CONSUMER_SECRET,
-			access_token = self.TWITTER_v2_ACCESS_TOKEN,
-			access_token_secret = self.TWITTER_v2_ACCESS_TOKEN_SECRET
+			consumer_key = self.TWITTER_CONSUMER_KEY,
+			consumer_secret = self.TWITTER_CONSUMER_SECRET,
+			access_token = self.TWITTER_ACCESS_TOKEN,
+			access_token_secret = self.TWITTER_ACCESS_TOKEN_SECRET
 		)
 		## Wolfram Alpha
 		self.wolfram_alpha_client = wolframalpha.Client(self.WOLFRAM_ALPHA_APP_ID)
