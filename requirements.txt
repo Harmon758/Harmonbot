@@ -137,6 +137,7 @@ sortedcontainers==2.4.0
 soupsieve==2.4
 tempora==5.2.1
 typing-extensions==4.5.0
+tzdata==2023.3
 uritemplate==4.1.1
 websockets==10.4
 xmltodict==0.13.0
