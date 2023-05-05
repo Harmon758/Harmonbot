@@ -390,6 +390,9 @@ class Twitch(commands.Cog):
 					if resp.status == 502:
 						self.bot.print(f"Twitch Task Bad Gateway Error")
 						continue
+					if resp.status == 503:
+						self.bot.print(f"Twitch Task Service Unavailable Error: {resp.reason}")
+						continue
 					keywords_data = await resp.json()
 				streams = keywords_data.get("streams", [])
 				stream_ids += [str(stream["_id"]) for stream in streams]
