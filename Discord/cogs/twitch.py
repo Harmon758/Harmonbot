@@ -388,7 +388,7 @@ class Twitch(commands.Cog):
 				params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
 				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
 					if resp.status == 502:
-						self.bot.print(f"Twitch Task Bad Gateway Error")
+						self.bot.print("Twitch Task Bad Gateway Error")
 						continue
 					if resp.status == 503:
 						self.bot.print(f"Twitch Task Service Unavailable Error: {resp.reason}")
