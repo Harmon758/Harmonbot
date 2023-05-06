@@ -401,6 +401,9 @@ class TwitterStreamingClient(tweepy.asynchronous.AsyncStreamingClient):
         if usernames:
             self.usernames = usernames
 
+        if self.session and self.session.closed:
+            self.session = None
+
         response = await self.get_rules()
         if rules := response.data:
             await self.delete_rules([rule.id for rule in rules])
@@ -415,8 +418,8 @@ class TwitterStreamingClient(tweepy.asynchronous.AsyncStreamingClient):
         rules.append(tweepy.StreamRule(rule[:-4]))  # 4 == len(" OR ")
         await self.add_rules(rules)
 
-        if self.task is None:
-            await self.filter(
+        if self.task is None or self.task.done():
+            self.filter(
                 expansions = ["attachments.media_keys", "author_id"],
                 media_fields = ["url"],
                 tweet_fields = [
@@ -442,6 +445,9 @@ class TwitterStreamingClient(tweepy.asynchronous.AsyncStreamingClient):
         await self.start_feeds()  # Necessary?
 
     async def on_response(self, response):
+        if response.errors and not response.data:
+            return
+
         tweet = response.data
         author = response.includes["users"][0]
         # Ignore replies
@@ -506,6 +512,26 @@ class TwitterStreamingClient(tweepy.asynchronous.AsyncStreamingClient):
                     )
             except discord.DiscordServerError as e:
                 self.bot.print(f"Twitter Stream Discord Server Error: {e}")
+
+    async def on_errors(self, errors):
+        for error in errors:
+            if (
+                error.get("title") == "operational-disconnect" or
+                error.get("disconnect_type") == "OperationalDisconnect"
+            ):
+                self.bot.print(
+                    "Twitter stream reconnecting from operational disconnect"
+                )
+                self.bot.loop.create_task(
+                    self.reconnect(), name = "Reconnect Twitter Stream"
+                )
+            else:
+                self.bot.print(f"Twitter Stream received error: {error}")
+
+    async def reconnect(self):
+        self.disconnect()
+        await self.task
+        await self.start_feeds()
 
     async def on_request_error(self, status_code):
         self.bot.print(f"Twitter Error: {status_code}")
