@@ -88,7 +88,7 @@ class Lichess(commands.Cog):
 	def generate_user_mode_commands(self):
 		# Creates user subcommand for a mode
 		def user_mode_wrapper(mode, name, emoji):
-			async def user_mode_command(ctx, username : LichessUser):
+			async def user_mode_command(ctx, username: LichessUser):
 				mode_data = username["perfs"][mode]
 				prov = ""
 				if username["perfs"][mode].get("prov"):
