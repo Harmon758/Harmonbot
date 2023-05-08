@@ -537,7 +537,7 @@ class Resources(commands.Cog):
 		Use qoutes for spaces in the question or options
 		'''
 		url = "https://www.strawpoll.me/api/v2/polls"
-		data = json.dumps({"title" : question, "options" : options})
+		data = json.dumps({"title": question, "options": options})
 		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
 			poll = await resp.json()
 			if resp.status == 400 or "errorCode" in poll:
