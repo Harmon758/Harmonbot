@@ -536,12 +536,14 @@ class Resources(commands.Cog):
 		Generate a strawpoll link
 		Use qoutes for spaces in the question or options
 		'''
-		url = "https://www.strawpoll.me/api/v2/polls"
-		data = json.dumps({"title": question, "options": options})
-		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
+		async with ctx.bot.aiohttp_session.post(
+			"https://www.strawpoll.me/api/v2/polls",
+			data = json.dumps({"title": question, "options": options})
+		) as resp:
 			poll = await resp.json()
 			if resp.status == 400 or "errorCode" in poll:
-				return await ctx.embed_reply(f":no_entry: Error: {poll['errorMessage']}")
+				await ctx.embed_reply(f":no_entry: Error: {poll['errorMessage']}")
+				return
 		await ctx.reply("http://strawpoll.me/" + str(poll["id"]))
 	
 	@commands.command()
