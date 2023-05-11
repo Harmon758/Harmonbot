@@ -569,7 +569,7 @@ class Resources(commands.Cog):
 			elif data["status"] == "finished":
 				return await ctx.embed_reply(f"Your screenshot of {url}:", image_url = data["image_url"])
 			elif data["status"] == "error":
-				return await ctx.embed_reply(f":no_entry: Error: {data['msg']}")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['msg']}")
 	
 	@commands.command(aliases = ["whatare"])
 	@checks.not_forbidden()
