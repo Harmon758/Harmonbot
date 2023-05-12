@@ -100,7 +100,7 @@ httpx==0.24.0
 hyperframe==6.0.1
 idna==3.4
 jaraco.classes==3.2.3
-jaraco.collections==3.8.0
+jaraco.collections==4.1.0
 jaraco.context==4.3.0
 jaraco.functools==3.6.0
 jaraco.logging==3.1.2
