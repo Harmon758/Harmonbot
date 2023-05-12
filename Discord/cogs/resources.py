@@ -552,24 +552,38 @@ class Resources(commands.Cog):
 		'''Take a screenshot of a website'''
 		response = None
 		api_url = "http://api.page2images.com/restfullink"
-		params = {"p2i_url": url, "p2i_screen": "1280x1024", "p2i_size": "1280x0", 
-					"p2i_fullpage": 1, "p2i_key": ctx.bot.PAGE2IMAGES_REST_API_KEY}
+		params = {
+			"p2i_url": url, "p2i_screen": "1280x1024", "p2i_size": "1280x0",
+			"p2i_fullpage": 1, "p2i_key": ctx.bot.PAGE2IMAGES_REST_API_KEY
+		}
 		while True:
-			async with ctx.bot.aiohttp_session.get(api_url, params = params) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				api_url, params = params
+			) as resp:
 				data = await resp.json(content_type = "text/html")
 			if data["status"] == "processing":
 				wait_time = int(data["estimated_need_time"])
 				if response:
 					embed = response.embeds[0]
-					embed.description = f"Processing {url}\nEstimated wait time: {wait_time} sec"
+					embed.description = (
+						f"Processing {url}\n"
+						f"Estimated wait time: {wait_time} sec"
+					)
 					await response.edit(embed = embed)
 				else:
-					response = await ctx.embed_reply(f"Processing {url}\nEstimated wait time: {wait_time} sec")
+					response = await ctx.embed_reply(
+						f"Processing {url}\n"
+						f"Estimated wait time: {wait_time} sec"
+					)
 				await asyncio.sleep(wait_time)
 			elif data["status"] == "finished":
-				return await ctx.embed_reply(f"Your screenshot of {url}:", image_url = data["image_url"])
+				return await ctx.embed_reply(
+					f"Your screenshot of {url}:", image_url = data["image_url"]
+				)
 			elif data["status"] == "error":
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['msg']}")
+				return await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: {data['msg']}"
+				)
 	
 	@commands.command(aliases = ["whatare"])
 	@checks.not_forbidden()
