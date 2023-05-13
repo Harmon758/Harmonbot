@@ -138,7 +138,7 @@ tempora==5.2.2
 typing-extensions==4.5.0
 tzdata==2023.3
 uritemplate==4.1.1
-websockets==10.4
+websockets==11.0.3
 xmltodict==0.13.0
 yarl==1.9.2
 
