@@ -551,14 +551,14 @@ class Resources(commands.Cog):
 	async def websitescreenshot(self, ctx, url: str):
 		'''Take a screenshot of a website'''
 		response = None
-		api_url = "http://api.page2images.com/restfullink"
-		params = {
-			"p2i_url": url, "p2i_screen": "1280x1024", "p2i_size": "1280x0",
-			"p2i_fullpage": 1, "p2i_key": ctx.bot.PAGE2IMAGES_REST_API_KEY
-		}
 		while True:
 			async with ctx.bot.aiohttp_session.get(
-				api_url, params = params
+				"http://api.page2images.com/restfullink",
+				params = {
+					"p2i_url": url, "p2i_screen": "1280x1024",
+					"p2i_size": "1280x0", "p2i_fullpage": 1,
+					"p2i_key": ctx.bot.PAGE2IMAGES_REST_API_KEY
+				}
 			) as resp:
 				data = await resp.json(content_type = "text/html")
 			if data["status"] == "processing":
@@ -577,13 +577,15 @@ class Resources(commands.Cog):
 					)
 				await asyncio.sleep(wait_time)
 			elif data["status"] == "finished":
-				return await ctx.embed_reply(
+				await ctx.embed_reply(
 					f"Your screenshot of {url}:", image_url = data["image_url"]
 				)
+				return
 			elif data["status"] == "error":
-				return await ctx.embed_reply(
+				await ctx.embed_reply(
 					f"{ctx.bot.error_emoji} Error: {data['msg']}"
 				)
+				return
 	
 	@commands.command(aliases = ["whatare"])
 	@checks.not_forbidden()
