@@ -542,7 +542,9 @@ class Resources(commands.Cog):
 		) as resp:
 			poll = await resp.json()
 			if resp.status == 400 or "errorCode" in poll:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {poll['errorMessage']}")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: {poll['errorMessage']}"
+				)
 				return
 		await ctx.reply("http://strawpoll.me/" + str(poll["id"]))
 	
