@@ -115,7 +115,7 @@ mutagen==1.46.0
 oauthlib==3.2.2
 orjson==3.8.12
 packaging==23.1
-protobuf==4.23.0
+protobuf==4.23.1
 proto-plus==1.22.2
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
