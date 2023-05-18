@@ -384,10 +384,10 @@ class Resources(commands.Cog):
 	async def phone(self, ctx, *, phone: str):
 		'''Get phone specifications'''
 		# TODO: Add menu version
-		async with ctx.bot.aiohttp_session.get("https://fonoapi.freshpixl.com/v1/getdevice?device={}&position=0&token={}".format(phone.replace(' ', '+'), ctx.bot.FONO_API_TOKEN)) as resp:
+		async with ctx.bot.aiohttp_session.get(f"https://fonoapi.freshpixl.com/v1/getdevice?device={phone.replace(' ', '+')}&position=0&token={ctx.bot.FONO_API_TOKEN}") as resp:
 			data = await resp.json()
 		if "status" in data and data["status"] == "error":
-			await ctx.embed_reply(":no_entry: Error: {}".format(data["message"]))
+			await ctx.embed_reply(f":no_entry: Error: {data['message']}")
 			return
 		data = data[0]
 		embed = discord.Embed(title = data["DeviceName"], color = ctx.bot.bot_color)
