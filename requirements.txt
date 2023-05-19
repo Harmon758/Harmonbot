@@ -91,7 +91,7 @@ google-auth==2.18.0
 google-cloud-core==2.3.2
 googleapis-common-protos==1.59.0
 grpcio==1.54.2
-grpcio-status==1.54.0
+grpcio-status==1.54.2
 h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
