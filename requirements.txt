@@ -96,7 +96,7 @@ h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
 httpcore==0.17.1
-httpx==0.24.0
+httpx==0.24.1
 hyperframe==6.0.1
 idna==3.4
 jaraco.classes==3.2.3
