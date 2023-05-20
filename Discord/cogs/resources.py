@@ -384,121 +384,240 @@ class Resources(commands.Cog):
 	async def phone(self, ctx, *, phone: str):
 		'''Get phone specifications'''
 		# TODO: Add menu version
-		async with ctx.bot.aiohttp_session.get(f"https://fonoapi.freshpixl.com/v1/getdevice?device={phone.replace(' ', '+')}&position=0&token={ctx.bot.FONO_API_TOKEN}") as resp:
+		async with ctx.bot.aiohttp_session.get(
+			f"https://fonoapi.freshpixl.com/v1/getdevice?device={phone.replace(' ', '+')}&position=0&token={ctx.bot.FONO_API_TOKEN}"
+		) as resp:
 			data = await resp.json()
 		if "status" in data and data["status"] == "error":
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['message']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['message']}"
+			)
 			return
 		data = data[0]
-		embed = discord.Embed(title = data["DeviceName"], color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar.url)
+		embed = discord.Embed(
+			title = data["DeviceName"], color = ctx.bot.bot_color
+		)
+		embed.set_author(
+			name = ctx.author.display_name, icon_url = ctx.author.avatar.url
+		)
 		# Brand
-		if "Brand" in data: embed.add_field(name = "Brand", value = data["Brand"])
+		if "Brand" in data:
+			embed.add_field(name = "Brand", value = data["Brand"])
 		# Network (network_c?)
 		network_info = []
-		if "technology" in data: network_info.append("Technology: " + data["technology"])
-		if "_2g_bands" in data: network_info.append("2G bands: " + data["_2g_bands"])
-		if "_3g_bands" in data: network_info.append("3G Network: " + data["_3g_bands"])
-		if "_4g_bands" in data: network_info.append("4G Network: " + data["_4g_bands"])
-		if "speed" in data: network_info.append("Speed: " + data["speed"])
-		if "gprs" in data: network_info.append("GPRS: " + data["gprs"])
-		if "edge" in data: network_info.append("EDGE: " + data["edge"])
-		if network_info: embed.add_field(name = "Network", value = '\n'.join(network_info), inline = False)
+		if "technology" in data:
+			network_info.append("Technology: " + data["technology"])
+		if "_2g_bands" in data:
+			network_info.append("2G bands: " + data["_2g_bands"])
+		if "_3g_bands" in data:
+			network_info.append("3G Network: " + data["_3g_bands"])
+		if "_4g_bands" in data:
+			network_info.append("4G Network: " + data["_4g_bands"])
+		if "speed" in data:
+			network_info.append("Speed: " + data["speed"])
+		if "gprs" in data:
+			network_info.append("GPRS: " + data["gprs"])
+		if "edge" in data:
+			network_info.append("EDGE: " + data["edge"])
+		if network_info:
+			embed.add_field(
+				name = "Network", value = '\n'.join(network_info),
+				inline = False
+			)
 		# Launch
 		launch_info = []
-		if "announced" in data: launch_info.append("Announced: " + data["announced"])
-		if "status" in data: launch_info.append("Status: " + data["status"])
-		if launch_info: embed.add_field(name = "Launch", value = '\n'.join(launch_info), inline = False)
+		if "announced" in data:
+			launch_info.append("Announced: " + data["announced"])
+		if "status" in data:
+			launch_info.append("Status: " + data["status"])
+		if launch_info:
+			embed.add_field(
+				name = "Launch", value = '\n'.join(launch_info), inline = False
+			)
 		# Body
 		body_info = []
-		if "dimensions" in data: body_info.append("Dimensions: " + data["dimensions"])
-		if "weight" in data: body_info.append("Weight: " + data["weight"])
-		if "keyboard" in data: body_info.append("Keyboard: " + data["keyboard"])
-		if "build" in data: body_info.append("Build: " + data["build"])
-		if "sim" in data: body_info.append("SIM: " + data["sim"])
-		if "body_c" in data: body_info.append(data["body_c"])
-		if body_info: embed.add_field(name = "Body", value = '\n'.join(body_info), inline = False)
+		if "dimensions" in data:
+			body_info.append("Dimensions: " + data["dimensions"])
+		if "weight" in data:
+			body_info.append("Weight: " + data["weight"])
+		if "keyboard" in data:
+			body_info.append("Keyboard: " + data["keyboard"])
+		if "build" in data:
+			body_info.append("Build: " + data["build"])
+		if "sim" in data:
+			body_info.append("SIM: " + data["sim"])
+		if "body_c" in data:
+			body_info.append(data["body_c"])
+		if body_info:
+			embed.add_field(
+				name = "Body", value = '\n'.join(body_info), inline = False
+			)
 		# Display
 		display_info = []
-		if "type" in data: display_info.append("Type: " + data["type"])
-		if "size" in data: display_info.append("Size: " + data["size"])
-		if "resolution" in data: display_info.append("Resolution: " + data["resolution"])
-		if "multitouch" in data: display_info.append("Multitouch: " + data["multitouch"])
-		if "protection" in data: display_info.append("Protection: " + data["protection"])
-		if "display_c" in data: display_info.append(data["display_c"])
-		if display_info: embed.add_field(name = "Display", value = '\n'.join(display_info), inline = False)
+		if "type" in data:
+			display_info.append("Type: " + data["type"])
+		if "size" in data:
+			display_info.append("Size: " + data["size"])
+		if "resolution" in data:
+			display_info.append("Resolution: " + data["resolution"])
+		if "multitouch" in data:
+			display_info.append("Multitouch: " + data["multitouch"])
+		if "protection" in data:
+			display_info.append("Protection: " + data["protection"])
+		if "display_c" in data:
+			display_info.append(data["display_c"])
+		if display_info:
+			embed.add_field(
+				name = "Display", value = '\n'.join(display_info),
+				inline = False
+			)
 		# Platform
 		platform_info = []
-		if "os" in data: platform_info.append("OS: " + data["os"])
-		if "chipset" in data: platform_info.append("Chipset: " + data["chipset"])
-		if "cpu" in data: platform_info.append("CPU: " + data["cpu"])
-		if "gpu" in data: platform_info.append("GPU: " + data["gpu"])
-		if platform_info: embed.add_field(name = "Platform", value = '\n'.join(platform_info), inline = False)
+		if "os" in data:
+			platform_info.append("OS: " + data["os"])
+		if "chipset" in data:
+			platform_info.append("Chipset: " + data["chipset"])
+		if "cpu" in data:
+			platform_info.append("CPU: " + data["cpu"])
+		if "gpu" in data:
+			platform_info.append("GPU: " + data["gpu"])
+		if platform_info:
+			embed.add_field(
+				name = "Platform", value = '\n'.join(platform_info),
+				inline = False
+			)
 		# Memory
 		memory_info = []
-		if "card_slot" in data: memory_info.append("Card slot: " + data["card_slot"])
-		if "phonebook" in data: memory_info.append("Phonebook: " + data["phonebook"])
-		if "call_records" in data: memory_info.append("Call records: " + data["call_records"])
-		if "internal" in data: memory_info.append("Internal: " + data["internal"])
-		if "memory_c" in data: memory_info.append(data["memory_c"])
-		if memory_info: embed.add_field(name = "Memory", value = '\n'.join(memory_info), inline = False)
+		if "card_slot" in data:
+			memory_info.append("Card slot: " + data["card_slot"])
+		if "phonebook" in data:
+			memory_info.append("Phonebook: " + data["phonebook"])
+		if "call_records" in data:
+			memory_info.append("Call records: " + data["call_records"])
+		if "internal" in data:
+			memory_info.append("Internal: " + data["internal"])
+		if "memory_c" in data:
+			memory_info.append(data["memory_c"])
+		if memory_info:
+			embed.add_field(
+				name = "Memory", value = '\n'.join(memory_info), inline = False
+			)
 		# Camera
 		camera_info = []
-		if "primary_" in data: camera_info.append("Primary: " + data["primary_"])
-		if "features" in data: camera_info.append("Features: " + data["features"])
-		if "video" in data: camera_info.append("Video: " + data["video"])
-		if "secondary" in data: camera_info.append("Secondary: " + data["secondary"])
-		if "camera_c" in data: camera_info.append(data["camera_c"])
-		if camera_info: embed.add_field(name = "Camera", value = '\n'.join(camera_info), inline = False)
+		if "primary_" in data:
+			camera_info.append("Primary: " + data["primary_"])
+		if "features" in data:
+			camera_info.append("Features: " + data["features"])
+		if "video" in data:
+			camera_info.append("Video: " + data["video"])
+		if "secondary" in data:
+			camera_info.append("Secondary: " + data["secondary"])
+		if "camera_c" in data:
+			camera_info.append(data["camera_c"])
+		if camera_info:
+			embed.add_field(
+				name = "Camera", value = '\n'.join(camera_info), inline = False
+			)
 		# Sound
 		sound_info = []
-		if "alert_types" in data: sound_info.append("Alert types: " + data["alert_types"])
-		if "loudspeaker_" in data: sound_info.append("Loudspeaker: " + data["loudspeaker_"])
-		if "_3_5mm_jack_" in data: sound_info.append("3.5mm jack: " + data["_3_5mm_jack_"])
-		if "sound_c" in data: sound_info.append(data["sound_c"])
-		if sound_info: embed.add_field(name = "Sound", value = '\n'.join(sound_info), inline = False)
+		if "alert_types" in data:
+			sound_info.append("Alert types: " + data["alert_types"])
+		if "loudspeaker_" in data:
+			sound_info.append("Loudspeaker: " + data["loudspeaker_"])
+		if "_3_5mm_jack_" in data:
+			sound_info.append("3.5mm jack: " + data["_3_5mm_jack_"])
+		if "sound_c" in data:
+			sound_info.append(data["sound_c"])
+		if sound_info:
+			embed.add_field(
+				name = "Sound", value = '\n'.join(sound_info), inline = False
+			)
 		# Comms
 		comms_info = []
-		if "wlan" in data: comms_info.append("WLAN: " + data["wlan"])
-		if "bluetooth" in data: comms_info.append("Bluetooth: " + data["bluetooth"])
-		if "gps" in data: comms_info.append("GPS: " + data["gps"])
-		if "nfc" in data: comms_info.append("NFC: " + data["nfc"])
-		if "infrared_port" in data: comms_info.append("Infrared port: " + data["infrared_port"])
-		if "radio" in data: comms_info.append("Radio: " + data["radio"])
-		if "usb" in data: comms_info.append("USB: " + data["usb"])
-		if comms_info: embed.add_field(name = "Comms", value = '\n'.join(comms_info), inline = False)
+		if "wlan" in data:
+			comms_info.append("WLAN: " + data["wlan"])
+		if "bluetooth" in data:
+			comms_info.append("Bluetooth: " + data["bluetooth"])
+		if "gps" in data:
+			comms_info.append("GPS: " + data["gps"])
+		if "nfc" in data:
+			comms_info.append("NFC: " + data["nfc"])
+		if "infrared_port" in data:
+			comms_info.append("Infrared port: " + data["infrared_port"])
+		if "radio" in data:
+			comms_info.append("Radio: " + data["radio"])
+		if "usb" in data:
+			comms_info.append("USB: " + data["usb"])
+		if comms_info:
+			embed.add_field(
+				name = "Comms", value = '\n'.join(comms_info), inline = False
+			)
 		# Features
 		features_info = []
-		if "sensors" in data: features_info.append("Sensors: " + data["sensors"])
-		if "messaging" in data: features_info.append("Messaging: " + data["messaging"])
-		if "browser" in data: features_info.append("Browser: " + data["browser"])
-		if "clock" in data: features_info.append("Clock: " + data["clock"])
-		if "alarm" in data: features_info.append("Alarm: " + data["alarm"])
-		if "games" in data: features_info.append("Games: " + data["games"])
-		if "languages" in data: features_info.append("Languages: " + data["languages"])
-		if "java" in data: features_info.append("Java: " + data["java"])
-		if "features_c" in data: features_info.append(data["features_c"])
-		if features_info: embed.add_field(name = "Features", value = '\n'.join(features_info), inline = False)
+		if "sensors" in data:
+			features_info.append("Sensors: " + data["sensors"])
+		if "messaging" in data:
+			features_info.append("Messaging: " + data["messaging"])
+		if "browser" in data:
+			features_info.append("Browser: " + data["browser"])
+		if "clock" in data:
+			features_info.append("Clock: " + data["clock"])
+		if "alarm" in data:
+			features_info.append("Alarm: " + data["alarm"])
+		if "games" in data:
+			features_info.append("Games: " + data["games"])
+		if "languages" in data:
+			features_info.append("Languages: " + data["languages"])
+		if "java" in data:
+			features_info.append("Java: " + data["java"])
+		if "features_c" in data:
+			features_info.append(data["features_c"])
+		if features_info:
+			embed.add_field(
+				name = "Features", value = '\n'.join(features_info),
+				inline = False
+			)
 		# Battery
 		battery_info = []
-		if "battery_c" in data: battery_info.append(data["battery_c"])
-		if "stand_by" in data: battery_info.append("Stand-by: " + data["stand_by"])
-		if "talk_time" in data: battery_info.append("Talk time: " + data["talk_time"])
-		if "music_play" in data: battery_info.append("Music play: " + data["music_play"])
-		if battery_info: embed.add_field(name = "Battery", value = '\n'.join(battery_info), inline = False)
+		if "battery_c" in data:
+			battery_info.append(data["battery_c"])
+		if "stand_by" in data:
+			battery_info.append("Stand-by: " + data["stand_by"])
+		if "talk_time" in data:
+			battery_info.append("Talk time: " + data["talk_time"])
+		if "music_play" in data:
+			battery_info.append("Music play: " + data["music_play"])
+		if battery_info:
+			embed.add_field(
+				name = "Battery", value = '\n'.join(battery_info),
+				inline = False
+			)
 		# Misc
 		misc_info = []
-		if "colors" in data: misc_info.append("Colors: " + data["colors"])
-		if misc_info: embed.add_field(name = "Misc", value = '\n'.join(misc_info), inline = False)
+		if "colors" in data:
+			misc_info.append("Colors: " + data["colors"])
+		if misc_info:
+			embed.add_field(
+				name = "Misc", value = '\n'.join(misc_info), inline = False
+			)
 		# Tests
 		tests_info = []
-		if "performance" in data: tests_info.append("Performance: " + data["performance"])
-		if "display" in data: tests_info.append("Display: " + data["display"])
-		if "camera" in data: tests_info.append("Camera: " + data["camera"])
-		if "loudspeaker" in data: tests_info.append("Loudspeaker: " + data["loudspeaker"])
-		if "audio_quality" in data: tests_info.append("Audio quality: " + data["audio_quality"])
-		if "battery_life" in data: tests_info.append("Battery_life: " + data["battery_life"])
-		if tests_info: embed.add_field(name = "Tests", value = '\n'.join(tests_info), inline = False)
+		if "performance" in data:
+			tests_info.append("Performance: " + data["performance"])
+		if "display" in data:
+			tests_info.append("Display: " + data["display"])
+		if "camera" in data:
+			tests_info.append("Camera: " + data["camera"])
+		if "loudspeaker" in data:
+			tests_info.append("Loudspeaker: " + data["loudspeaker"])
+		if "audio_quality" in data:
+			tests_info.append("Audio quality: " + data["audio_quality"])
+		if "battery_life" in data:
+			tests_info.append("Battery_life: " + data["battery_life"])
+		if tests_info:
+			embed.add_field(
+				name = "Tests", value = '\n'.join(tests_info), inline = False
+			)
 		# Send
 		await ctx.send(embed = embed)
 	
