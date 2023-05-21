@@ -375,9 +375,9 @@ class Resources(commands.Cog):
 			# TODO: Handle no graph
 			await ctx.embed_reply(image_url = f"https://oeis.org/A{data['results'][0]['number']:06d}/graph?png=1")
 		elif data["count"]:
-			await ctx.embed_reply(":no_entry: Too many sequences found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Too many sequences found")
 		else:
-			await ctx.embed_reply(":no_entry: Sequence not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Sequence not found")
 	
 	@commands.command()
 	@checks.not_forbidden()
