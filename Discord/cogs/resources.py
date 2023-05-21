@@ -359,9 +359,9 @@ class Resources(commands.Cog):
 		if data["results"]:
 			await ctx.embed_reply(data["results"][0]["data"], title = data["results"][0]["name"])
 		elif data["count"]:
-			await ctx.embed_reply(":no_entry: Too many sequences found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Too many sequences found")
 		else:
-			await ctx.embed_reply(":no_entry: Sequence not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Sequence not found")
 	
 	@oeis.command(name = "graph")
 	@checks.not_forbidden()
