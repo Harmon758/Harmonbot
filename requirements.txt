@@ -90,7 +90,7 @@ gitdb==4.0.10
 google-auth==2.18.1
 google-cloud-core==2.3.2
 googleapis-common-protos==1.59.0
-grpcio==1.54.2
+grpcio==1.55.0
 grpcio-status==1.54.2
 h11==0.14.0
 h2==4.1.0
