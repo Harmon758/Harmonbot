@@ -164,7 +164,7 @@ class Resources(commands.Cog):
 		url = "https://hastebin.com/documents"
 		async with ctx.bot.aiohttp_session.post(url, data = contents) as resp:
 			if resp.status == 503:
-				return await ctx.embed_reply(f":no_entry: Error: {resp.reason}")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {resp.reason}")
 			data = await resp.json()
 		await ctx.embed_reply("https://hastebin.com/" + data["key"])
 	
