@@ -292,7 +292,7 @@ class Resources(commands.Cog):
 		params = {"shortUrl": url, "key": ctx.bot.GOOGLE_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 400:
-				return await ctx.embed_reply(":no_entry: Error")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 			data = await resp.json()
 		await ctx.embed_reply(data["longUrl"])
 	
