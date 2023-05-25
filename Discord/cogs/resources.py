@@ -277,10 +277,10 @@ class Resources(commands.Cog):
 		# TODO: Add jpg + pdf format options
 		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
 			if resp.status == 500:
-				return await ctx.embed_reply(":no_entry: Error")
+				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 			data = await resp.json()
 		if data["status"] == "error":
-			return await ctx.embed_reply(f":no_entry: Error: {data['description']}")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['description']}")
 			# TODO: Include log?
 		await ctx.embed_reply(image_url = f"{url}/{data['filename']}")
 	
