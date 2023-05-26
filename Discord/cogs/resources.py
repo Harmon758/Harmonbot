@@ -288,11 +288,13 @@ class Resources(commands.Cog):
 	@commands.command(enabled = False, hidden = True)
 	async def longurl(self, ctx, url: str):
 		'''Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html'''
-		url = "https://www.googleapis.com/urlshortener/v1/url"
-		params = {"shortUrl": url, "key": ctx.bot.GOOGLE_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://www.googleapis.com/urlshortener/v1/url",
+			params = {"shortUrl": url, "key": ctx.bot.GOOGLE_API_KEY}
+		) as resp:
 			if resp.status == 400:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+				return
 			data = await resp.json()
 		await ctx.embed_reply(data["longUrl"])
 	
