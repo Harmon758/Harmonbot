@@ -287,7 +287,9 @@ class Resources(commands.Cog):
 	# TODO: Use other URL unshortener API?
 	@commands.command(enabled = False, hidden = True)
 	async def longurl(self, ctx, url: str):
-		"""Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html"""
+		"""
+		Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html
+		"""
 		async with ctx.bot.aiohttp_session.get(
 			"https://www.googleapis.com/urlshortener/v1/url",
 			params = {"shortUrl": url, "key": ctx.bot.GOOGLE_API_KEY}
