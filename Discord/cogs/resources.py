@@ -262,25 +262,30 @@ class Resources(commands.Cog):
 		'''
 		# http://rtex.probablyaweb.site/docs
 		url = "http://rtex.probablyaweb.site/api/v2"
-		latex_input = (
-			R"\documentclass{article}" '\n'
-			R"\usepackage{amsmath}" '\n'
-			R"\usepackage{mathtools}" '\n'
-			R"\usepackage{pagecolor}" '\n'
-			R"\begin{document}" '\n'
-			R"\pagecolor{white}" '\n'
-			f"{latex_input}\n"
-			R"\pagenumbering{gobble}" '\n'
-			R"\end{document}"
-		)
-		data = {"code": latex_input, "format": "png"}
-		# TODO: Add jpg + pdf format options
-		async with ctx.bot.aiohttp_session.post(url, data = data) as resp:
+		async with ctx.bot.aiohttp_session.post(
+			url,
+			data = {
+				"code": (
+					R"\documentclass{article}" '\n'
+					R"\usepackage{amsmath}" '\n'
+					R"\usepackage{mathtools}" '\n'
+					R"\usepackage{pagecolor}" '\n'
+					R"\begin{document}" '\n'
+					R"\pagecolor{white}" '\n'
+					f"{latex_input}\n"
+					R"\pagenumbering{gobble}" '\n'
+					R"\end{document}"
+				),
+				"format": "png"  # TODO: Add jpg + pdf format options
+			}
+		) as resp:
 			if resp.status == 500:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+				return
 			data = await resp.json()
 		if data["status"] == "error":
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['description']}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['description']}")
+			return
 			# TODO: Include log?
 		await ctx.embed_reply(image_url = f"{url}/{data['filename']}")
 	
