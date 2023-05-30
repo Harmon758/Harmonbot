@@ -312,9 +312,10 @@ class Resources(commands.Cog):
 		News
 		Powered by NewsAPI.org
 		'''
-		url = "https://newsapi.org/v2/top-headlines"
-		params = {"sources": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://newsapi.org/v2/top-headlines",
+			params = {"sources": source, "apiKey": ctx.bot.NEWSAPI_ORG_API_KEY}
+		) as resp:
 			data = await resp.json()
 		
 		if data["status"] != "ok":
