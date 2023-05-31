@@ -341,8 +341,9 @@ class Resources(commands.Cog):
 		News sources
 		https://newsapi.org/sources
 		'''
-		url = "https://newsapi.org/v1/sources"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://newsapi.org/v1/sources"
+		) as resp:
 			data = await resp.json()
 		
 		if data["status"] != "ok":
