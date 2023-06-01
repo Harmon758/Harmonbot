@@ -284,7 +284,9 @@ class Resources(commands.Cog):
 				return
 			data = await resp.json()
 		if data["status"] == "error":
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['description']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['description']}"
+			)
 			return
 			# TODO: Include log?
 		await ctx.embed_reply(image_url = f"{url}/{data['filename']}")
