@@ -365,9 +365,10 @@ class Resources(commands.Cog):
 	@checks.not_forbidden()
 	async def oeis(self, ctx, *, search: str):
 		'''The On-Line Encyclopedia of Integer Sequences'''
-		url = "http://oeis.org/search"
-		params = {"fmt": "json", 'q': search.replace(' ', "")}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://oeis.org/search",
+			params = {"fmt": "json", 'q': search.replace(' ', "")}
+		) as resp:
 			data = await resp.json()
 		if data["results"]:
 			await ctx.embed_reply(data["results"][0]["data"], title = data["results"][0]["name"])
