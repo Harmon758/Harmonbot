@@ -646,7 +646,7 @@ class Resources(commands.Cog):
 	@commands.command(enabled = False, hidden = True)
 	async def shorturl(self, ctx, url: str):
 		'''Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html'''
-		url = f"https://www.googleapis.com/urlshortener/v1/url"
+		url = "https://www.googleapis.com/urlshortener/v1/url"
 		params = {"key": self.bot.GOOGLE_API_KEY}
 		headers = {"Content-Type": "application/json"}
 		data = f'{{"longUrl": "{url}"}}'
