@@ -646,11 +646,12 @@ class Resources(commands.Cog):
 	@commands.command(enabled = False, hidden = True)
 	async def shorturl(self, ctx, url: str):
 		'''Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html'''
-		url = "https://www.googleapis.com/urlshortener/v1/url"
-		params = {"key": self.bot.GOOGLE_API_KEY}
-		headers = {"Content-Type": "application/json"}
-		data = f'{{"longUrl": "{url}"}}'
-		async with self.bot.aiohttp_session.post(url, params = params, headers = headers, data = data) as resp:
+		async with self.bot.aiohttp_session.post(
+			"https://www.googleapis.com/urlshortener/v1/url",
+			params = {"key": self.bot.GOOGLE_API_KEY},
+			data = f'{{"longUrl": "{url}"}}',
+			headers = {"Content-Type": "application/json"}
+		) as resp:
 			data = await resp.json()
 		await ctx.embed_reply(data["id"])
 	
