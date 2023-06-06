@@ -645,7 +645,7 @@ class Resources(commands.Cog):
 	# TODO: Use other URL shortener API? e.g. Bitly?, Ow.ly?
 	@commands.command(enabled = False, hidden = True)
 	async def shorturl(self, ctx, url: str):
-		'''Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html'''
+		"""Deprecated due to https://developers.googleblog.com/2018/03/transitioning-google-url-shortener.html"""
 		async with self.bot.aiohttp_session.post(
 			"https://www.googleapis.com/urlshortener/v1/url",
 			params = {"key": self.bot.GOOGLE_API_KEY},
