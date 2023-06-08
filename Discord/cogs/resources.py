@@ -171,20 +171,21 @@ class Resources(commands.Cog):
 	# TODO: Pwned Passwords API?
 	@commands.command(aliases = ["hibp"], enabled = False, hidden = True)
 	async def haveibeenpwned(self, ctx, name: str):
-		'''Deprecated, due to https://www.troyhunt.com/authentication-and-the-have-i-been-pwned-api/'''
-		url = "https://haveibeenpwned.com/api/v2/breachedaccount/" + name
-		headers = {"User-Agent": ctx.bot.user_agent}
-		params = {"truncateResponse": "true"}
+		'''Deprecated due to https://www.troyhunt.com/authentication-and-the-have-i-been-pwned-api/'''
 		async with ctx.bot.aiohttp_session.get(
-			url, headers = headers, params = params
+			"https://haveibeenpwned.com/api/v2/breachedaccount/" + name,
+			params = {"truncateResponse": "true"},
+			headers = {"User-Agent": ctx.bot.user_agent}
 		) as resp:
 			if resp.status in (400, 404):
 				breachedaccounts = "None"
 			else:
 				data = await resp.json()
 				breachedaccounts = ", ".join(acc["Name"] for acc in data)
-		url = "https://haveibeenpwned.com/api/v2/pasteaccount/" + name
-		async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://haveibeenpwned.com/api/v2/pasteaccount/" + name,
+			headers = {"User-Agent": ctx.bot.user_agent}
+		) as resp:
 			if resp.status in (400, 404):
 				pastedaccounts = "None"
 			else:
