@@ -171,7 +171,7 @@ class Resources(commands.Cog):
 	# TODO: Pwned Passwords API?
 	@commands.command(aliases = ["hibp"], enabled = False, hidden = True)
 	async def haveibeenpwned(self, ctx, name: str):
-		'''Deprecated due to https://www.troyhunt.com/authentication-and-the-have-i-been-pwned-api/'''
+		"""Deprecated due to https://www.troyhunt.com/authentication-and-the-have-i-been-pwned-api/"""
 		async with ctx.bot.aiohttp_session.get(
 			"https://haveibeenpwned.com/api/v2/breachedaccount/" + name,
 			params = {"truncateResponse": "true"},
