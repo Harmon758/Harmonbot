@@ -29,8 +29,9 @@ class Steam(commands.Cog):
     @steam.command()
     async def appid(self, ctx, *, app: str):
         '''Get the AppID'''
-        url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
-        async with ctx.bot.aiohttp_session.get(url) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
+        ) as resp:
             data = await resp.json()
         apps = data["applist"]["apps"]
         appid = 0
