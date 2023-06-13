@@ -2,12 +2,15 @@
 import discord
 from discord.ext import commands
 
+import functools
 import html
+import io
 import logging
 import sys
 import traceback
 
 from more_itertools import chunked
+import feedparser
 import tweepy
 import tweepy.asynchronous
 
@@ -63,7 +66,6 @@ class Twitter(commands.Cog):
     ):
         """
         Show a Twitter user's most recent Tweet
-        Limited to 3200 most recent Tweets
 
         Parameters
         ----------
@@ -78,86 +80,47 @@ class Twitter(commands.Cog):
         """
         await ctx.defer()
 
-        try:
-            response = await self.bot.twitter_client.get_user(
-                username = handle.lstrip('@'),
-                user_fields = ["profile_image_url"]
-            )
-        except tweepy.BadRequest as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
-            return
+        username = handle.lstrip('@')
 
-        if response.errors:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error:\n" +
-                '\n'.join(error['detail'] for error in response.errors)
-            )
-            return
-
-        user = response.data
-
-        async for tweet in tweepy.asynchronous.AsyncPaginator(
-            self.bot.twitter_client.get_users_tweets,
-            user.id,
-            exclude = (
-                ["replies"] if not replies else [] +
-                ["retweets"] if not retweets else []
-            ) or None,
-            max_results = 100
-        ).flatten():
-            response = await self.bot.twitter_client.get_tweet(
-                tweet.id,
-                expansions = ["attachments.media_keys"],
-                media_fields = ["url"],
-                tweet_fields = ["attachments", "created_at", "entities"]
-            )
-            break
-        else:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: Status not found"
-            )
-            return
-
-        medias = {
-            media["media_key"]: media
-            for media in response.includes.get("media", ())
-        }
-        tweet = response.data
-        tweet_url = f"https://twitter.com/{user.username}/status/{tweet.id}"
-
-        text = process_tweet_text(tweet.text, tweet.entities)
-
-        image_url = None
-        embeds = []
-        for media_key in (tweet.attachments or {}).get("media_keys"):
-            media = medias[media_key]
-            if media["type"] != "photo":
-                continue
-            if not image_url:
-                image_url = media["url"]
-                for url in tweet.entities["urls"]:
-                    if url.get("media_key") == media_key:
-                        text = text.replace(url["expanded_url"], "")
-            else:
-                embeds.append(
-                    discord.Embed(
-                        url = tweet_url
-                    ).set_image(url = media["url"])
+        async with ctx.bot.aiohttp_session.get(
+            "https://openrss.org/twitter.com/" + username
+        ) as resp:
+            if resp.status == 404:
+                await ctx.embed_reply(
+                    f"{ctx.bot.error_emoji} Error: User not found"
                 )
+                return
+            feed_text = await resp.text()
 
-        await ctx.embed_reply(
-            content = f"<{tweet_url}>",
-            color = self.bot.twitter_color,
-            title_url = tweet_url,
-            author_icon_url = user.profile_image_url,
-            author_name = f"{user.name} (@{user.username})",
-            author_url = f"https://twitter.com/{user.username}",
-            description = text,
-            image_url = image_url,
-            footer_text = None,
-            timestamp = tweet.created_at,
-            embeds = embeds
+        feed_info = await self.bot.loop.run_in_executor(
+            None,
+            functools.partial(
+                feedparser.parse,
+                io.BytesIO(feed_text.encode("UTF-8"))
+            )
         )
+        # Necessary to run in executor?
+
+        # TODO: Change to pagination
+        for entry in feed_info.entries:
+            if not retweets and (
+                entry.title[
+                    :len(username) + 13  # 13 == len("@ retweeted: ")
+                ].lower() == f"@{username.lower()} retweeted: "
+            ):
+                continue
+
+            if not replies and (
+                entry.title[
+                    :len(username) + 14  #14 == len("@ replied to: ")
+                ].lower() == f"@{username.lower()} replied to: "
+            ):
+                continue
+
+            await ctx.reply(entry.link)
+            return
+
+        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Status not found")
 
     @twitter.command(
         name = "add", aliases = ["addhandle", "handleadd"],
