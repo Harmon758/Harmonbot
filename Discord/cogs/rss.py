@@ -107,7 +107,10 @@ class RSS(commands.Cog):
 			ctx.channel.id, url
 		)
 		if following:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel is already following that feed")
+			return await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} "
+				"This text channel is already following that feed"
+			)
 		max_age = None
 		async with ctx.bot.aiohttp_session.get(url) as resp:
 			if cache_control := resp.headers.get("Cache-Control"):
@@ -118,8 +121,11 @@ class RSS(commands.Cog):
 					max_age = int(max_age_matches[0])
 			feed_text = await resp.text()
 		# TODO: Handle issues getting URL
-		partial = functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), 
-																	response_headers = {"Content-Location": url})
+		partial = functools.partial(
+			feedparser.parse,
+			io.BytesIO(feed_text.encode("UTF-8")),
+			response_headers = {"Content-Location": url}
+		)
 		feed_info = await self.bot.loop.run_in_executor(None, partial)
 		# Still necessary to run in executor?
 		# TODO: Handle if feed already being followed elsewhere
@@ -149,7 +155,9 @@ class RSS(commands.Cog):
 			""", 
 			ctx.channel.id, url, ttl, max_age
 		)
-		await ctx.embed_reply(f"The feed, {url}, has been added to this channel")
+		await ctx.embed_reply(
+			f"The feed, {url}, has been added to this channel"
+		)
 		self.new_feed.set()
 
 	@rss.command(aliases = ["delete"])
