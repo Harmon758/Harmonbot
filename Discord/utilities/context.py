@@ -101,13 +101,17 @@ class Context(commands.Context):
 		else:
 			raise commands.BotMissingPermissions(["embed_links"])
 	
-	def reply(self, content, *args, **kwargs):
+	async def reply(self, content, *args, **kwargs):
 		if self.interaction:
-			return self.send(content, **kwargs)
+			return await self.send(content, **kwargs)
 		else:
-			return self.send(
-				f"{self.author.display_name}:\n{content}", **kwargs
+			message = await self.send(
+				f"In response to {self.author} ({self.author.id}): "
+				f"`{self.message.clean_content}`\n{content}",
+				**kwargs
 			)
+			await self.bot.attempt_delete_message(self.message)
+			return message
 	
 	def whisper(self, *args, **kwargs):
 		return self.author.send(*args, **kwargs)
