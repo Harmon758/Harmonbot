@@ -108,7 +108,14 @@ class RSS(commands.Cog):
 		)
 		if following:
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} This text channel is already following that feed")
+		max_age = None
 		async with ctx.bot.aiohttp_session.get(url) as resp:
+			if cache_control := resp.headers.get("Cache-Control"):
+				max_age_matches = MAX_AGE_REGEX_PATTERN.findall(
+					cache_control
+				)
+				if len(max_age_matches) == 1:
+					max_age = int(max_age_matches[0])
 			feed_text = await resp.text()
 		# TODO: Handle issues getting URL
 		partial = functools.partial(feedparser.parse, io.BytesIO(feed_text.encode("UTF-8")), 
@@ -137,10 +144,10 @@ class RSS(commands.Cog):
 				return
 		await ctx.bot.db.execute(
 			"""
-			INSERT INTO rss.feeds (channel_id, feed, last_checked, ttl)
-			VALUES ($1, $2, NOW(), $3)
+			INSERT INTO rss.feeds (channel_id, feed, last_checked, ttl, max_age)
+			VALUES ($1, $2, NOW(), $3, $4)
 			""", 
-			ctx.channel.id, url, ttl
+			ctx.channel.id, url, ttl, max_age
 		)
 		await ctx.embed_reply(f"The feed, {url}, has been added to this channel")
 		self.new_feed.set()
