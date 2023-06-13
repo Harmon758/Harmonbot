@@ -105,8 +105,10 @@ class Context(commands.Context):
 		if self.interaction:
 			return await self.send(content, **kwargs)
 		else:
+			if "allowed_mentions" not in kwargs:
+				kwargs["allowed_mentions"] = discord.AllowedMentions.none()
 			message = await self.send(
-				f"In response to {self.author} ({self.author.id}): "
+				f"In response to {self.author.mention}: "
 				f"`{self.message.clean_content}`\n{content}",
 				**kwargs
 			)
