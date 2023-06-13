@@ -118,7 +118,6 @@ class Context(commands.Context):
 				str(description),
 				allowed_mentions = discord.AllowedMentions.none()
 			)
-			# TODO: Clean role + user mentions, etc.?
 		else:
 			raise commands.BotMissingPermissions(["embed_links"])
 	
