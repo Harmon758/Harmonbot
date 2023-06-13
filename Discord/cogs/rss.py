@@ -139,21 +139,21 @@ class RSS(commands.Cog):
 			ttl = int(feed_info.feed.ttl)
 		
 		for entry in feed_info.entries:
-			try:
-				await ctx.bot.db.execute(
-					"""
-					INSERT INTO rss.entries (entry, feed)
-					VALUES ($1, $2)
-					ON CONFLICT (entry, feed) DO NOTHING
-					""", 
-					entry.id, url
-				)
-			except AttributeError:
+			if not (entry_id := entry.get("id") or entry.get("link")):
 				await ctx.embed_reply(
 					f"{ctx.bot.error_emoji} "
-					"Error processing feed: Feed entry missing ID"
+					"Error processing feed: Feed entry missing ID and link"
 				)
 				return
+			
+			await ctx.bot.db.execute(
+				"""
+				INSERT INTO rss.entries (entry, feed)
+				VALUES ($1, $2)
+				ON CONFLICT (entry, feed) DO NOTHING
+				""", 
+				entry_id, url
+			)
 		
 		await ctx.bot.db.execute(
 			"""
@@ -256,7 +256,7 @@ class RSS(commands.Cog):
 					ttl, max_age, feed
 				)
 				for entry in feed_info.entries:
-					if "id" not in entry:
+					if not (entry_id := entry.get("id") or entry.get("link")):
 						continue
 					inserted = await self.bot.db.fetchrow(
 						"""
@@ -265,7 +265,7 @@ class RSS(commands.Cog):
 						ON CONFLICT DO NOTHING
 						RETURNING *
 						""", 
-						entry.id, feed
+						entry_id, feed
 					)
 					if not inserted:
 						continue
