@@ -28,6 +28,8 @@ from utilities import checks
 
 errors_logger = logging.getLogger("errors")
 
+MAX_AGE_REGEX_PATTERN = re.compile(r"max-age=(\d+)")
+
 async def setup(bot):
 	await bot.add_cog(RSS(bot))
 
@@ -60,6 +62,7 @@ class RSS(commands.Cog):
 				feed			TEXT, 
 				last_checked	TIMESTAMPTZ, 
 				ttl				INT, 
+				max_age			INT, 
 				PRIMARY KEY		(channel_id, feed)
 			)
 			"""
@@ -171,7 +174,7 @@ class RSS(commands.Cog):
 	async def check_feeds(self):
 		records = await self.bot.db.fetch(
 			"""
-			SELECT DISTINCT ON (feed) feed, last_checked, ttl
+			SELECT DISTINCT ON (feed) feed, last_checked, ttl, max_age
 			FROM rss.feeds
 			ORDER BY feed, last_checked
 			"""
@@ -191,8 +194,22 @@ class RSS(commands.Cog):
 			):
 				continue
 			
+			if record["max_age"] and datetime.datetime.now(
+				datetime.timezone.utc
+			) < record["last_checked"] + datetime.timedelta(
+				seconds = record["max_age"]
+			):
+				continue
+			
 			try:
+				max_age = None
 				async with self.bot.aiohttp_session.get(feed) as resp:
+					if cache_control := resp.headers.get("Cache-Control"):
+						max_age_matches = MAX_AGE_REGEX_PATTERN.findall(
+							cache_control
+						)
+						if len(max_age_matches) == 1:
+							max_age = int(max_age_matches[0])
 					feed_text = await resp.text()
 				feed_info = await self.bot.loop.run_in_executor(
 					None,
@@ -210,10 +227,11 @@ class RSS(commands.Cog):
 					"""
 					UPDATE rss.feeds
 					SET last_checked = NOW(), 
-						ttl = $1
-					WHERE feed = $2
+						ttl = $1, 
+						max_age = $2
+					WHERE feed = $3
 					""", 
-					ttl, feed
+					ttl, max_age, feed
 				)
 				for entry in feed_info.entries:
 					if "id" not in entry:
