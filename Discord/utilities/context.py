@@ -94,7 +94,8 @@ class Context(commands.Context):
 			)
 		):
 			return await self.reply(
-				discord.utils.escape_mentions(str(description))
+				str(description),
+				allowed_mentions = discord.AllowedMentions.none()
 			)
 			# TODO: Clean role + user mentions, etc.?
 		else:
