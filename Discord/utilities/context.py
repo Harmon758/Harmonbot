@@ -10,26 +10,47 @@ class Context(commands.Context):
 		self, *args, in_response_to = True, attempt_delete = True, **kwargs
 	):
 		if not self.interaction:
-			in_response_to_text = "In response to"
-			
-			if "author_name" not in kwargs and "author_icon_url" not in kwargs:
+			if not (
+				author_used := (
+					"author_name" in kwargs or "author_icon_url" in kwargs
+				)
+			):
 				kwargs["author_name"] = self.author.display_name
 				kwargs["author_icon_url"] = self.author.display_avatar.url
-			else:
-				in_response_to_text += f" {self.author} ({self.author.id})"
 			
 			if in_response_to:
+				in_response_to_text = "In response to"
+				
 				if "footer_text" not in kwargs:
+					if author_used:
+						in_response_to_text += (
+							f" {self.author} ({self.author.id})"
+						)
+					
 					kwargs["footer_text"] = (
 						f"{in_response_to_text}: {self.message.clean_content}"
 					)
 				elif len(args) < 2 and "content" not in kwargs:
+					if author_used:
+						in_response_to_text += f" {self.author.mention}"
+						if "allowed_mentions" not in kwargs:
+							kwargs["allowed_mentions"] = (
+								discord.AllowedMentions.none()
+							)
+					
 					args = (
 						next(iter(args), kwargs.pop("description", None)),
 						f"{in_response_to_text}: "
 						f"`{self.message.clean_content}`"
 					)
 				elif "content" in kwargs:
+					if author_used:
+						in_response_to_text += f" {self.author.mention}"
+						if "allowed_mentions" not in kwargs:
+							kwargs["allowed_mentions"] = (
+								discord.AllowedMentions.none()
+							)
+					
 					kwargs["content"] = (
 						f"{in_response_to_text}: "
 						f"`{self.message.clean_content}`\n"
