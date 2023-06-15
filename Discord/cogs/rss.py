@@ -115,15 +115,20 @@ class RSS(commands.Cog):
 			return
 		
 		max_age = None
-		async with ctx.bot.aiohttp_session.get(url) as resp:
-			if cache_control := resp.headers.get("Cache-Control"):
-				max_age_matches = MAX_AGE_REGEX_PATTERN.findall(
-					cache_control
-				)
-				if len(max_age_matches) == 1:
-					max_age = int(max_age_matches[0])
-			feed_text = await resp.text()
-		# TODO: Handle issues getting URL
+		try:
+			async with ctx.bot.aiohttp_session.get(url) as resp:
+				if cache_control := resp.headers.get("Cache-Control"):
+					max_age_matches = MAX_AGE_REGEX_PATTERN.findall(
+						cache_control
+					)
+					if len(max_age_matches) == 1:
+						max_age = int(max_age_matches[0])
+				feed_text = await resp.text()
+		except aiohttp.ClientConnectorError:
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error retrieving feed"
+			)
+			return
 		feed_info = await self.bot.loop.run_in_executor(
 			None,
 			functools.partial(
