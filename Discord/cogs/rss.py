@@ -129,6 +129,9 @@ class RSS(commands.Cog):
 				f"{ctx.bot.error_emoji} Error retrieving feed"
 			)
 			return
+		except aiohttp.InvalidURL:
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid URL")
+			return
 		feed_info = await self.bot.loop.run_in_executor(
 			None,
 			functools.partial(
