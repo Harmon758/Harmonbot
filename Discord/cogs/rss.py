@@ -49,10 +49,8 @@ class RSS(commands.Cog):
 		self.new_feed = asyncio.Event()
 		self.check_feeds.start().set_name("RSS")
 	
-	def cog_unload(self):
-		self.check_feeds.cancel()
-	
-	async def inititalize_database(self):
+	async def cog_load(self):
+		# Initialize database
 		await self.bot.connect_to_database()
 		await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS rss")
 		await self.bot.db.execute(
@@ -86,6 +84,9 @@ class RSS(commands.Cog):
 			)
 			"""
 		)
+	
+	def cog_unload(self):
+		self.check_feeds.cancel()
 	
 	@commands.group(aliases = ["feed"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
@@ -399,7 +400,6 @@ class RSS(commands.Cog):
 	
 	@check_feeds.before_loop
 	async def before_check_feeds(self):
-		await self.inititalize_database()
 		await self.bot.wait_until_ready()
 	
 	@check_feeds.after_loop
