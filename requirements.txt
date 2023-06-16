@@ -15,7 +15,7 @@ chess==1.9.4
 clarifai-grpc==9.5.0
 cryptography==41.0.1
 dice==3.1.2
-emoji==1.7.0
+emoji==2.5.1
 feedparser==6.0.10
 gidgethub==5.3.0
 gitpython==3.1.31
