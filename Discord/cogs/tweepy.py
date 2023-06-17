@@ -304,6 +304,7 @@ async def format_documentation_section(
                 )
             ).strip()
 
+            # pylint: disable-next=unused-variable
             first_line, newline, subsequent_lines = (
                 embed.description.partition('\n')
             )
