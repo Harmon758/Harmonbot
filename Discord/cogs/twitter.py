@@ -1,23 +1,26 @@
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
+import asyncio
+import calendar
+import datetime
 import functools
-import html
 import io
 import logging
+import re
 import sys
 import traceback
 
 from more_itertools import chunked
 import feedparser
-import tweepy
-import tweepy.asynchronous
 
 from utilities import checks
 
 
 errors_logger = logging.getLogger("errors")
+
+MAX_AGE_REGEX_PATTERN = re.compile(r"max-age=(\d+)")
 
 async def setup(bot):
     await bot.add_cog(Twitter(bot))
@@ -26,7 +29,8 @@ class Twitter(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.streaming_client = TwitterStreamingClient(bot)
+
+        self.check_tweets.start().set_name("Twitter")
 
     async def cog_load(self):
         # Initialize database
@@ -35,23 +39,38 @@ class Twitter(commands.Cog):
         await self.bot.db.execute(
             """
             CREATE TABLE IF NOT EXISTS twitter.handles (
-                channel_id   BIGINT,
-                handle       TEXT,
-                replies      BOOL,
-                retweets     BOOL,
-                PRIMARY KEY  (channel_id, handle)
+                channel_id    BIGINT,
+                handle        TEXT,
+                replies       BOOL,
+                retweets      BOOL,
+                last_checked  TIMESTAMPTZ,
+                ttl           INT,
+                max_age       INT,
+                etag          TEXT,
+                PRIMARY KEY   (channel_id, handle)
             )
             """
         )
-        # Start stream
-        self.task = self.bot.loop.create_task(
-            self.start_stream(), name = "Start Twitter Stream"
+        await self.bot.db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS twitter.tweets (
+                link  TEXT PRIMARY KEY
+            )
+            """
+        )
+        await self.bot.db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS twitter.errors (
+                timestamp  TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
+                handle     TEXT, 
+                type       TEXT, 
+                message	   TEXT
+            )
+            """
         )
 
     def cog_unload(self):
-        if self.streaming_client:
-            self.streaming_client.disconnect()
-        self.task.cancel()
+        self.check_tweets.cancel()
 
     @commands.hybrid_group(case_insensitive = True)
     @checks.not_forbidden()
@@ -133,6 +152,7 @@ class Twitter(commands.Cog):
         A delay of up to 2 min. is possible due to Twitter rate limits
         """
         handle = handle.lstrip('@')
+
         following = await ctx.bot.db.fetchval(
             """
             SELECT EXISTS (
@@ -142,33 +162,115 @@ class Twitter(commands.Cog):
             """,
             ctx.channel.id, handle
         )
+
         if following:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} This text channel "
                 "is already following that Twitter handle"
             )
             return
-        message = await ctx.embed_reply("\N{HOURGLASS} Please wait")
-        embed = message.embeds[0]
-        try:
-            await self.streaming_client.add_feed(ctx.channel, handle)
-        except tweepy.TweepyException as e:
-            embed.description = f"{ctx.bot.error_emoji} Error: {e}"
-            await message.edit(embed = embed)
-            return
-        await ctx.bot.db.execute(
+
+        record = await ctx.bot.db.fetchrow(
             """
-            INSERT INTO twitter.handles (channel_id, handle)
-            VALUES ($1, $2)
+            SELECT * FROM twitter.handles
+            WHERE handle = $1
+            LIMIT 1
             """,
-            ctx.channel.id, handle
+            handle
         )
-        embed.description = (
+
+        if record:  # Following elsewhere
+            await self.bot.db.execute(
+                """
+                INSERT INTO twitter.handles (channel_id, handle, last_checked, ttl, max_age, etag)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                """, 
+                ctx.channel.id, handle, record["last_checked"], record["ttl"],
+                record["max_age"], record["etag"]
+            )
+        else:
+            max_age = None
+
+            async with self.bot.aiohttp_session.get(
+                "https://openrss.org/twitter.com/" + handle,
+            ) as resp:
+                if cache_control := resp.headers.get("Cache-Control"):
+                    max_age_matches = MAX_AGE_REGEX_PATTERN.findall(
+                        cache_control
+                    )
+                    if len(max_age_matches) == 1:
+                        max_age = int(max_age_matches[0])
+
+                # TODO: Use structural pattern matching with Python 3.10
+                if resp.status == 400:
+                    await ctx.embed_reply(
+                        f"{ctx.bot.error_emoji} User not found:\n"
+                        f"> `{handle}` doesn't appear to be a valid Twitter "
+                        f"user at https://twitter.com/{handle}\n"
+                        "> If the user existed before, they may have been "
+                        "suspended or banned."
+                    )
+                    return
+                elif resp.status == 404:
+                    await ctx.embed_reply(
+                        f"{ctx.bot.error_emoji} User not found:\n"
+                        f"> The page at https://twitter.com/{handle} is "
+                        "either invalid, private, requires login, or doesn't "
+                        "exist"
+                    )
+                    return
+                elif resp.status == 500:
+                    await ctx.embed_reply(
+                        f"{ctx.bot.error_emoji} Internal Server Error from "
+                        "the service used to follow Twitter users:\n"
+                        "> This may happen from time to time when the servers "
+                        "we rely on (but don't control) become unavailable "
+                        "but usually resolves itself within a few minutes."
+                    )
+                    return
+
+                etag = resp.headers.get("Etag")
+
+                feed_text = await resp.text()
+
+            feed_info = await self.bot.loop.run_in_executor(
+                None,
+                functools.partial(
+                    feedparser.parse,
+                    io.BytesIO(feed_text.encode("UTF-8"))
+                )
+            )
+            # Necessary to run in executor?
+
+            ttl = None
+            if "ttl" in feed_info.feed:
+                ttl = int(feed_info.feed.ttl)
+            await self.bot.db.execute(
+                """
+                INSERT INTO twitter.handles (channel_id, handle, last_checked, ttl, max_age, etag)
+                VALUES ($1, $2, NOW(), $3, $4, $5)
+                """, 
+                ctx.channel.id, handle, ttl, max_age, etag
+            )
+
+            for entry in feed_info.entries:
+                if not (link := entry.get("link")):
+                    # TODO: Handle?
+                    continue
+                await self.bot.db.execute(
+                    """
+                    INSERT INTO twitter.tweets (link)
+                    VALUES ($1)
+                    ON CONFLICT DO NOTHING
+                    """,
+                    link
+                )
+
+        await ctx.embed_reply(
             "Added the Twitter handle, "
             f"[`{handle}`](https://twitter.com/{handle}), "
             "to this text channel"
         )
-        await message.edit(embed = embed)
 
     @twitter.command(
         name = "remove",
@@ -199,15 +301,11 @@ class Twitter(commands.Cog):
                 "isn't following that Twitter handle"
             )
             return
-        message = await ctx.embed_reply("\N{HOURGLASS} Please wait")
-        await self.streaming_client.remove_feed(ctx.channel, handle)
-        embed = message.embeds[0]
-        embed.description = (
+        await ctx.embed_reply(
             "Removed the Twitter handle, "
             f"[`{handle}`](https://twitter.com/{handle}), "
             "from this text channel."
         )
-        await message.edit(embed = embed)
 
     @twitter.command(
         aliases = ["handle", "feeds", "feed", "list"],
@@ -303,199 +401,204 @@ class Twitter(commands.Cog):
 
         await ctx.embed_reply("Purge complete")
 
-    async def start_stream(self):
-        await self.bot.wait_until_ready()
-        try:
-            records = await self.bot.db.fetch("SELECT * FROM twitter.handles")
-            usernames = {}
-            for record in records:
-                usernames[record["handle"].lower()] = (
-                    usernames.get(record["handle"].lower(), []) +
-                    [record["channel_id"]]
-                )
-            await self.streaming_client.start_feeds(usernames = usernames)
-        except Exception as e:
-            print("Exception in Twitter Task", file = sys.stderr)
-            traceback.print_exception(
-                type(e), e, e.__traceback__, file = sys.stderr
-            )
-            errors_logger.error(
-                "Uncaught Twitter Task exception\n",
-                exc_info = (type(e), e, e.__traceback__)
-            )
-            return
-
-
-def process_tweet_text(text, entities):
-    mentions = {}
-    for mention in entities.get("mentions", ()):
-        mentions[text[mention["start"]:mention["end"]]] = mention["username"]
-    for mention, screen_name in mentions.items():
-        text = text.replace(
-            mention,
-            f"[{mention}](https://twitter.com/{screen_name})"
+    # R/PT60S
+    @tasks.loop(seconds = 60)
+    async def check_tweets(self):
+        # TODO: Handle case-sensitivity
+        # TODO: Optimize
+        records = await self.bot.db.fetch(
+            """
+            SELECT DISTINCT ON (handle, last_checked) handle, last_checked, ttl, max_age, etag
+            FROM twitter.handles
+            ORDER BY last_checked
+            """
         )
-    for hashtag in entities.get("hashtags", ()):
-        tag = hashtag.get("text") or hashtag.get("tag")
-        text = text.replace(
-            '#' + tag,
-            f"[#{tag}](https://twitter.com/hashtag/{tag})"
-        )
-    for cashtag in entities.get("cashtags", ()):
-        text = text.replace(
-            '$' + cashtag["tag"],
-            f"[${cashtag['tag']}](https://twitter.com/search?q=${cashtag['tag']})"
-        )
-    for url in entities.get("urls", ()):
-        text = text.replace(url["url"], url["expanded_url"])
-    # Remove Variation Selector-16 characters
-    # Unescape HTML entities (&gt;, &lt;, &amp;, etc.)
-    return html.unescape(text.replace('\uFE0F', ""))
 
+        for record in records:
+            handle = record["handle"]
 
-class TwitterStreamingClient(tweepy.asynchronous.AsyncStreamingClient):
-
-    def __init__(self, bot):
-        super().__init__(bot.TWITTER_BEARER_TOKEN)
-        self.bot = bot
-        self.usernames = {}
-
-    async def start_feeds(self, *, usernames = None):
-        if usernames:
-            self.usernames = usernames
-
-        if self.session and self.session.closed:
-            self.session = None
-
-        response = await self.get_rules()
-        if rules := response.data:
-            await self.delete_rules([rule.id for rule in rules])
-
-        rule = ""
-        rules = []
-        for username in self.usernames:
-            if len(rule) + len(username) + 5 > 512:  # 5 == len("from:")
-                rules.append(tweepy.StreamRule(rule[:-4]))  # 4 == len(" OR ")
-                rule = ""
-            rule += f"from:{username} OR "
-        rules.append(tweepy.StreamRule(rule[:-4]))  # 4 == len(" OR ")
-        await self.add_rules(rules)
-
-        if self.task is None or self.task.done():
-            self.filter(
-                expansions = ["attachments.media_keys", "author_id"],
-                media_fields = ["url"],
-                tweet_fields = [
-                    "attachments", "created_at", "entities",
-                    "in_reply_to_user_id"
-                ],
-                user_fields = ["profile_image_url"]
-            )
-
-    async def add_feed(self, channel, handle):
-        if channels := self.usernames.get(handle):
-            channels.append(channel.id)
-        else:
-            self.usernames[handle] = [channel.id]
-            await self.start_feeds()
-
-    async def remove_feed(self, channel, handle):
-        channel_ids = self.usernames[handle]
-        channel_ids.remove(channel.id)
-        if not channel_ids:
-            del self.usernames[handle]
-
-        await self.start_feeds()  # Necessary?
-
-    async def on_response(self, response):
-        if response.errors and not response.data:
-            return
-
-        tweet = response.data
-        author = response.includes["users"][0]
-        # Ignore replies
-        if tweet.in_reply_to_user_id:
-            return
-        # TODO: Settings for including replies, retweets, etc.
-        for channel_id in self.usernames.get(author.username.lower(), ()):
-            channel = self.bot.get_channel(channel_id)
-            if not channel:
-                # TODO: Handle channel no longer accessible
+            if record["ttl"] and datetime.datetime.now(
+                datetime.timezone.utc
+            ) < record["last_checked"] + datetime.timedelta(
+                minutes = record["ttl"]
+            ):
                 continue
-            embeds = [
-                discord.Embed(
-                    color = self.bot.twitter_color,
-                    description = process_tweet_text(tweet.text, tweet.entities),
-                    timestamp = tweet.created_at,
-                ).set_author(
-                    name = f"{author.name} (@{author.username})",
-                    icon_url = author.profile_image_url,
-                    url = f"https://twitter.com/{author.username}"
-                ).set_footer(
-                    icon_url = self.bot.twitter_icon_url,
-                    text = "Twitter"
-                )
-            ]
-            medias = {
-                media["media_key"]: media
-                for media in response.includes.get("media", ())
-            }
-            tweet_url = f"https://twitter.com/{author.username}/status/{tweet.id}"
-            for media_key in (tweet.attachments or {}).get("media_keys", ()):
-                media = medias[media_key]
-                if media["type"] != "photo":
-                    continue
-                if not embeds[0].image:
-                    embeds[0].set_image(url = media["url"])
-                    for url in tweet.entities["urls"]:
-                        if url.get("media_key") == media_key:
-                            embeds[0].description = embeds[0].description.replace(
-                                url["expanded_url"], ""
-                            )
-                    embeds[0].url = tweet_url
-                else:
-                    embeds.append(
-                        discord.Embed(
-                            url = tweet_url
-                        ).set_image(url = media["url"])
-                    )
+
+            if record["max_age"] and datetime.datetime.now(
+                datetime.timezone.utc
+            ) < record["last_checked"] + datetime.timedelta(
+                seconds = record["max_age"]
+            ):
+                continue
+
+            headers = None
+            if etag := record["etag"]:
+                headers = {"If-None-Match": etag}
+
+            max_age = None
+            not_modified = False
+
             try:
-                await channel.send(
-                    content = f"<{tweet_url}>",
-                    embeds = embeds
+                # TODO: Handle connection errors?
+                async with self.bot.aiohttp_session.get(
+                    "https://openrss.org/twitter.com/" + handle,
+                    headers = headers
+                ) as resp:
+                    if cache_control := resp.headers.get("Cache-Control"):
+                        max_age_matches = MAX_AGE_REGEX_PATTERN.findall(
+                            cache_control
+                        )
+                        if len(max_age_matches) == 1:
+                            max_age = int(max_age_matches[0])
+
+                    # TODO: Use structural pattern matching with Python 3.10
+                    if resp.status == 304:
+                        not_modified = True
+                    elif resp.status == 400:
+                        # TODO: Handle 400
+                        continue
+                    elif resp.status == 404:
+                        # TODO: Handle 404
+                        continue
+                    elif resp.status == 500:
+                        # TODO: Log
+                        await asyncio.sleep(1)
+                        continue
+                    elif resp.status != 200:
+                        self.bot.print(
+                            f"Twitter Open RSS feed returned {resp.status} "
+                            f"status with handle, {handle}"
+                        )
+
+                    etag = resp.headers.get("Etag")
+
+                    feed_text = await resp.text()
+
+                feed_info = await self.bot.loop.run_in_executor(
+                    None,
+                    functools.partial(
+                        feedparser.parse,
+                        io.BytesIO(feed_text.encode("UTF-8"))
+                    )
                 )
-            except discord.Forbidden:
-                try:
-                    await channel.send(content = tweet_url)
-                except discord.Forbidden:
-                    # TODO: Handle unable to send messages in text channel
-                    self.bot.print(
-                        "Twitter Stream: Missing permissions to send message "
-                        f"in #{channel.name} in {channel.guild.name}"
+                # Necessary to run in executor?
+
+                ttl = None
+                if "ttl" in feed_info.feed:
+                    ttl = int(feed_info.feed.ttl)
+                await self.bot.db.execute(
+                    """
+                    UPDATE twitter.handles
+                    SET last_checked = NOW(),
+                        ttl = $1,
+                        max_age = $2
+                    WHERE handle = $3
+                    """, 
+                    ttl, max_age, handle
+                )
+
+                if not_modified:
+                    continue
+
+                for entry in feed_info.entries:
+                    if not (link := entry.get("link")):
+                        # TODO: Handle?
+                        continue
+                    inserted = await self.bot.db.fetchrow(
+                        """
+                        INSERT INTO twitter.tweets (link)
+                        VALUES ($1)
+                        ON CONFLICT DO NOTHING
+                        RETURNING *
+                        """,
+                        link
+                    )
+                    if not inserted:
+                        continue
+
+                    embed = None
+                    if (
+                        entry.title[:len(handle) + 13].lower() ==
+                        # 13 == len("@ retweeted: ")
+                        f"@{handle.lower()} retweeted: "
+                    ):
+                        embed = discord.Embed(
+                            color = self.bot.twitter_color,
+                            description = entry.title,
+                            # TODO: Use entry.description?
+                            timestamp = datetime.datetime.fromtimestamp(
+                                calendar.timegm(entry.published_parsed)
+                            )
+                            # TODO: Use dateutil.parser.parse to parse entry.published?
+                        ).set_author(
+                            name = feed_info.feed.title,
+                            icon_url = feed_info.feed.image.href,
+                            url = feed_info.feed.link
+                        ).set_footer(
+                            icon_url = self.bot.twitter_icon_url,
+                            text = "Twitter"
+                        )
+
+                    if (
+                        entry.title[:len(handle) + 14].lower() ==
+                        # 14 == len("@ replied to: ")
+                        f"@{handle.lower()} replied to: "
+                    ):
+                        continue
+                    # TODO: Settings for including replies, retweets, etc.
+
+                    # Send message
+                    channel_records = await self.bot.db.fetch(
+                        """
+                        SELECT channel_id
+                        FROM twitter.handles
+                        WHERE handle = $1
+                        """,
+                        handle
+                    )
+                    for record in channel_records:
+                        text_channel = self.bot.get_channel(record["channel_id"])
+                        if not text_channel:
+                            # TODO: Handle channel no longer accessible
+                            continue
+                        try:
+                            await text_channel.send(link, embed = embed)
+                        except discord.Forbidden:
+                            # TODO: Handle unable to send messages in text channel
+                            self.bot.print(
+                                "Twitter Task: Missing permissions to send message "
+                                f"in #{text_channel.name} in {text_channel.guild.name}"
+                            )
+
+                if etag:
+                    await self.bot.db.execute(
+                        """
+                        UPDATE twitter.handles
+                        SET etag = $1
+                        WHERE handle = $2
+                        """, 
+                        etag, handle
                     )
             except discord.DiscordServerError as e:
-                self.bot.print(f"Twitter Stream Discord Server Error: {e}")
-
-    async def on_errors(self, errors):
-        for error in errors:
-            if (
-                error.get("title") == "operational-disconnect" or
-                error.get("disconnect_type") == "OperationalDisconnect"
-            ):
-                self.bot.print(
-                    "Twitter stream reconnecting from operational disconnect"
+                self.bot.print(f"Twitter Task Discord Server Error: {e}")
+                await asyncio.sleep(60)
+            except Exception as e:
+                print("Exception in Twitter Task", file = sys.stderr)
+                traceback.print_exception(
+                    type(e), e, e.__traceback__, file = sys.stderr
                 )
-                self.bot.loop.create_task(
-                    self.reconnect(), name = "Reconnect Twitter Stream"
+                errors_logger.error(
+                    "Uncaught Twitter Task exception\n",
+                    exc_info = (type(e), e, e.__traceback__)
                 )
-            else:
-                self.bot.print(f"Twitter Stream received error: {error}")
+                print(f" (handle: {handle})")
+                await asyncio.sleep(60)
 
-    async def reconnect(self):
-        self.disconnect()
-        await self.task
-        await self.start_feeds()
+    @check_tweets.before_loop
+    async def before_check_tweets(self):
+        await self.bot.wait_until_ready()
 
-    async def on_request_error(self, status_code):
-        self.bot.print(f"Twitter Error: {status_code}")
+    @check_tweets.after_loop
+    async def after_check_tweets(self):
+        self.bot.print("Twitter task cancelled")
 
