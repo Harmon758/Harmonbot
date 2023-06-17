@@ -454,11 +454,56 @@ class Twitter(commands.Cog):
                     # TODO: Use structural pattern matching with Python 3.10
                     if resp.status == 304:
                         not_modified = True
-                    elif resp.status == 400:
-                        # TODO: Handle 400
-                        continue
-                    elif resp.status == 404:
-                        # TODO: Handle 404
+                    elif resp.status in (400, 404):
+                        channel_records = await self.bot.db.fetch(
+                            """
+                            SELECT channel_id
+                            FROM twitter.handles
+                            WHERE handle = $1
+                            """,
+                            handle
+                        )
+                        for record in channel_records:
+                            text_channel = self.bot.get_channel(
+                                record["channel_id"]
+                            )
+                            if not text_channel:
+                                # TODO: Handle channel no longer accessible
+                                continue
+                            try:
+                                await text_channel.send(
+                                    embed = discord.Embed(
+                                        color = self.bot.bot_color,
+                                        description = (
+                                            f"`{handle}` doesn't appear to be "
+                                            "a valid Twitter user at "
+                                            f"https://twitter.com/{handle} "
+                                            "anymore, so this channel is no "
+                                            "longer following that handle\n"
+                                            "(Their account may have been "
+                                            "suspended or restricted / made "
+                                            "unavailable, their Tweets may be "
+                                            "private/protected now, or they "
+                                            "may have changed their "
+                                            "handle/username or deactived "
+                                            "their account)"
+                                        )
+                                    )
+                                )
+                            except discord.Forbidden:
+                                # TODO: Handle unable to send messages in text channel
+                                self.bot.print(
+                                    "Twitter Task: Missing permissions to send message "
+                                    f"in #{text_channel.name} in {text_channel.guild.name}"
+                                )
+                                continue
+                            await self.bot.db.execute(
+                                """
+                                DELETE FROM twitter.handles
+                                WHERE channel_id = $1 AND handle = $2
+                                """,
+                                record["channel_id"], handle
+                            )
                         continue
                     elif resp.status == 500:
                         # TODO: Log
