@@ -505,7 +505,7 @@ class Twitter(commands.Cog):
                                 record["channel_id"], handle
                             )
                         continue
-                    elif resp.status == 500:
+                    elif resp.status in (500, 502, 503, 504):
                         # TODO: Log
                         await asyncio.sleep(1)
                         continue
