@@ -584,11 +584,14 @@ class Twitter(commands.Cog):
                             text = "Twitter"
                         )
 
-                    if (
+                    elif (
                         entry.title[:len(handle) + 14].lower() ==
                         # 14 == len("@ replied to: ")
                         f"@{handle.lower()} replied to: "
                     ):
+                        continue
+
+                    elif entry.title.startswith('@'):
                         continue
                     # TODO: Settings for including replies, retweets, etc.
 
