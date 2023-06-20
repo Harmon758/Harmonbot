@@ -66,8 +66,9 @@ class Steam(commands.Cog):
     @steam.command(aliases = ["game_info"])
     async def gameinfo(self, ctx, *, game: str):
         '''Information about a game'''
-        url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
-        async with ctx.bot.aiohttp_session.get(url) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
+        ) as resp:
             data = await resp.json()
 
         if not (
@@ -81,20 +82,23 @@ class Steam(commands.Cog):
 
         appid = str(app["appid"])
 
-        url = "http://store.steampowered.com/api/appdetails/"
-        params = {"appids": appid}
-        async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "http://store.steampowered.com/api/appdetails/",
+            params = {"appids": appid}
+        ) as resp:
             data = await resp.json()
 
         data = data[appid]["data"]
         await ctx.embed_reply(
-            title = data["name"], title_url = data["website"],
+            title = data["name"],
+            title_url = data["website"],
             description = data["short_description"],
             fields = (
                 ("Release Date", data["release_date"]["date"]),
                 ("Free", "Yes" if data["is_free"] else "No"),
                 ("App ID", data["steam_appid"])
-            ), image_url = data["header_image"]
+            ),
+            image_url = data["header_image"]
         )
 
     @steam.command(aliases = ["launch"])
