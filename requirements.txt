@@ -65,7 +65,7 @@ wolframalpha==5.0.0
 wordcloud==1.9.2
 wordnik-py3==2.1.2
 youtube-dl==2021.12.17
-yt-dlp==2023.2.17
+yt-dlp==2023.6.22
 
 aiodns==3.0.0
 aiosignal==1.3.1
