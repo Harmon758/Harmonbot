@@ -53,7 +53,7 @@ class Blobs(commands.Cog):
 	
 	@commands.group(aliases = ["blob"], invoke_without_command = True, case_insensitive = True)
 	@checks.not_forbidden()
-	async def blobs(self, ctx, *, blob : str):
+	async def blobs(self, ctx, *, blob: str):
 		'''Blob/Google Emoji'''
 		records = await ctx.bot.db.fetch(
 			"""
