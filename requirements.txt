@@ -116,7 +116,7 @@ oauthlib==3.2.2
 orjson==3.9.1
 packaging==23.1
 protobuf==4.23.3
-proto-plus==1.22.2
+proto-plus==1.22.3
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
 pycares==4.3.0
