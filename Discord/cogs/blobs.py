@@ -86,7 +86,7 @@ class Blobs(commands.Cog):
 	
 	@blobs.command(aliases = ["edit"])
 	@commands.is_owner()
-	async def add(self, ctx, name : str, image_url : str, *aliases : str):
+	async def add(self, ctx, name: str, image_url: str, *aliases: str):
 		'''Add or edit a blob'''
 		await ctx.bot.db.execute(
 			"""
