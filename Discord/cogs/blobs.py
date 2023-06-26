@@ -114,7 +114,7 @@ class Blobs(commands.Cog):
 	
 	@blobs.command(aliases = ["details"])
 	@commands.is_owner()
-	async def info(self, ctx, name : str):
+	async def info(self, ctx, name: str):
 		'''Information about a blob'''
 		if not (image_url := await ctx.bot.db.fetchval("SELECT image FROM blobs.blobs WHERE blob = $1", name)):
 			if not (name := await ctx.bot.db.fetchval("SELECT blob FROM blobs.aliases WHERE alias = $1", name)):
