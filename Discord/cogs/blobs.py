@@ -154,7 +154,7 @@ class Blobs(commands.Cog):
 	
 	@blobs.command(aliases = ["delete"])
 	@commands.is_owner()
-	async def remove(self, ctx, name : str):
+	async def remove(self, ctx, name: str):
 		'''Remove a blob'''
 		await ctx.bot.db.execute("DELETE FROM blobs.blobs WHERE blob = $1", name)
 		await ctx.embed_reply("Blob removed")
