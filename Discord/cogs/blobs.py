@@ -161,7 +161,7 @@ class Blobs(commands.Cog):
 	
 	@blobs.command()
 	@checks.not_forbidden()
-	async def stats(self, ctx, *, blob : str):
+	async def stats(self, ctx, *, blob: str):
 		'''Blob emoji stats'''
 		records = await ctx.bot.db.fetch("SELECT blob FROM blobs.blobs UNION SELECT alias FROM blobs.aliases")
 		blob_names = [record["blob"] for record in records]
