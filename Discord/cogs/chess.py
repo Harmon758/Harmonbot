@@ -22,13 +22,11 @@ from utilities import checks
 
 
 # TODO: Dynamically load chess engine not locked to version?
-STOCKFISH_EXECUTABLE = "stockfish-windows-2022-x86-64"
+STOCKFISH_EXECUTABLE = "stockfish-windows-x86-64"
 try:
     CPUID = cpuinfo.CPUID()
     CPU_FLAGS = CPUID.get_flags(CPUID.get_max_extension_support())
-    if "bmi2" in CPU_FLAGS:
-        STOCKFISH_EXECUTABLE = "stockfish_15.1_x64_bmi2"
-    elif "avx2" in CPU_FLAGS:
+    if "avx2" in CPU_FLAGS:
         STOCKFISH_EXECUTABLE += "-avx2"
     elif "sse4_1" in CPU_FLAGS and "popcnt" in CPU_FLAGS:
         STOCKFISH_EXECUTABLE += "-modern"
