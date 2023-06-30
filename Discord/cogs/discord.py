@@ -40,6 +40,7 @@ ACTIVITES = {
 async def setup(bot):
 	await bot.add_cog(Discord(bot))
 	bot.tree.add_command(link, override = True)
+	bot.tree.add_command(quote, override = True)
 	bot.tree.add_command(timestamp, override = True)
 	bot.tree.add_command(avatar, override = True)
 
@@ -508,6 +509,32 @@ class ActivityView(discord.ui.View):
 @app_commands.context_menu()
 async def link(interaction, message: discord.Message):
 	await interaction.response.send_message(message.jump_url)
+
+
+@app_commands.context_menu()
+async def quote(interaction, message: discord.Message):
+	if not message.content:
+		await interaction.response.send_message(
+			"There's nothing to quote in that message.",
+			ephemeral = True
+		)
+		return
+
+	await interaction.response.send_message(
+		embed = discord.Embed(
+			description = (
+				'\n'.join(
+					"> " + line
+					for line in message.content.split('\n')
+				) + f"\n\- {message.author.mention} ({message.jump_url})"
+			),
+			timestamp = message.created_at,
+			color = interaction.client.bot_color
+		).set_author(
+			name = message.author.display_name,
+			icon_url = message.author.display_avatar.url
+		)
+	)
 
 
 @app_commands.context_menu()
