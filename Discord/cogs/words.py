@@ -99,6 +99,7 @@ class Words(commands.Cog):
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Definition not found"
             )
+            return
 
         paginator = ButtonPaginator(ctx, DefineSource(definitions))
         await paginator.start()
