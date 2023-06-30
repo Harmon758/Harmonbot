@@ -35,8 +35,6 @@ GITHUB_CHANNEL_ID = 233510987737726977
 
 async def setup(bot):
 	await bot.add_cog(Meta(bot))
-	bot.tree.add_command(link, override = True)
-	bot.tree.add_command(avatar, override = True)
 
 class Meta(commands.Cog):
 	
@@ -1082,14 +1080,4 @@ class Meta(commands.Cog):
 	@github_publication.after_loop
 	async def after_github_publication(self):
 		self.bot.print("GitHub publication task cancelled")
-
-
-@app_commands.context_menu()
-async def link(interaction, message: discord.Message):
-	await interaction.response.send_message(message.jump_url)
-
-
-@app_commands.context_menu()
-async def avatar(interaction, user: discord.User):
-	await interaction.response.send_message(user.display_avatar.url)
 

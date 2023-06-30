@@ -39,7 +39,9 @@ ACTIVITES = {
 
 async def setup(bot):
 	await bot.add_cog(Discord(bot))
+	bot.tree.add_command(link, override = True)
 	bot.tree.add_command(timestamp, override = True)
+	bot.tree.add_command(avatar, override = True)
 
 class Discord(commands.Cog):
 	
@@ -504,6 +506,11 @@ class ActivityView(discord.ui.View):
 
 
 @app_commands.context_menu()
+async def link(interaction, message: discord.Message):
+	await interaction.response.send_message(message.jump_url)
+
+
+@app_commands.context_menu()
 async def timestamp(interaction, message: discord.Message):
 	"""Timestamp of a message"""
 	time = discord.utils.snowflake_time(message.id).replace(
@@ -515,4 +522,9 @@ async def timestamp(interaction, message: discord.Message):
 		description = f"{discord.utils.format_dt(time)}\n{time}",
 		color = interaction.client.bot_color
 	))
+
+
+@app_commands.context_menu()
+async def avatar(interaction, user: discord.User):
+	await interaction.response.send_message(user.display_avatar.url)
 
