@@ -29,6 +29,9 @@ class TestCheckAnswer(unittest.TestCase):
             )
         )
 
+    def test_only_comma(self):
+        self.assertFalse(check_answer("colon", ','))
+
     def test_parentheses_with_article_prefix(self):
         self.assertTrue(
             check_answer(

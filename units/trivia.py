@@ -90,6 +90,9 @@ def check_answer(answer, response, inflect_engine = None):
     # Return False if only "and"
     if not response_items:
         return False
+    # Return False if only ','
+    if not any(response_items):
+        return False
     # Remove article prefixes
     for index, item in enumerate(answer_items):
         answer_items[index] = remove_preceding_words(item)
