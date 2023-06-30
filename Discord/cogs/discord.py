@@ -516,12 +516,14 @@ async def timestamp(interaction, message: discord.Message):
 	time = discord.utils.snowflake_time(message.id).replace(
 		tzinfo = datetime.timezone.utc
 	)
-	await interaction.response.send_message(embed = discord.Embed(
-		title = f"Timestamp of message from {message.author}",
-		url = message.jump_url,
-		description = f"{discord.utils.format_dt(time)}\n{time}",
-		color = interaction.client.bot_color
-	))
+	await interaction.response.send_message(
+		embed = discord.Embed(
+			title = f"Timestamp of message from {message.author}",
+			url = message.jump_url,
+			description = f"{discord.utils.format_dt(time)}\n{time}",
+			color = interaction.client.bot_color
+		)
+	)
 
 
 @app_commands.context_menu()
