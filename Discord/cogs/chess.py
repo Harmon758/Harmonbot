@@ -456,7 +456,10 @@ class ChessMatchView(discord.ui.View):
         if self.match.is_game_over():
             footer_text = None
         else:
-            footer_text = f"It's {['black', 'white'][int(self.match.turn)]}'s ({[self.match.black_player, self.match.white_player][int(self.match.turn)]}'s) turn to move"
+            footer_text = (
+                f"It's {['black', 'white'][int(self.match.turn)]}'s "
+                f"({[self.match.black_player, self.match.white_player][int(self.match.turn)]}'s) turn to move"
+            )
         await self.match.update_match_embed(
             footer_text = footer_text, send = True
         )
