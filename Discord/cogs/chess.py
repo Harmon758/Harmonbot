@@ -57,7 +57,9 @@ class ChessCog(commands.Cog, name = "Chess"):
             match.task.cancel()
 
     # TODO: Use max concurrency?
-    @commands.group(name = "chess", invoke_without_command = True, case_insensitive = True)
+    @commands.group(
+        name = "chess", invoke_without_command = True, case_insensitive = True
+    )
     async def chess_command(self, ctx):
         '''
         Play chess
