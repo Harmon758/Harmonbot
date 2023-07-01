@@ -68,7 +68,7 @@ class ChessCog(commands.Cog, name = "Chess"):
         color: Literal["white", "black", "random"] = "random",
         level: commands.Range[int, 0, 20] = 20
     ):
-        '''
+        """
         Play chess
         Supports standard algebraic and UCI notation
         The color parameter is not applicable when playing against yourself
@@ -85,7 +85,7 @@ class ChessCog(commands.Cog, name = "Chess"):
         level
             If playing against me, the skill level you would like to play me at
             (0 - 20, default is 20)
-        '''
+        """
         if match := self.get_match(ctx.channel, ctx.author):
             await ctx.embed_reply(
                 f"[You're already playing a chess match here]({match.message.jump_url})"
