@@ -241,9 +241,11 @@ class ChessMatch(chess.Board):
         self.skill_level = skill_level
         self.bot = ctx.bot
         self.ended = asyncio.Event()
-        self.engine_transport, self.chess_engine = await chess.engine.popen_uci(
-            f"bin/{STOCKFISH_EXECUTABLE}",
-            creationflags = subprocess.CREATE_NO_WINDOW
+        self.engine_transport, self.chess_engine = (
+            await chess.engine.popen_uci(
+                f"bin/{STOCKFISH_EXECUTABLE}",
+                creationflags = subprocess.CREATE_NO_WINDOW
+            )
         )
         if skill_level is not None:
             await self.chess_engine.configure({"Skill Level": skill_level})
@@ -319,7 +321,10 @@ class ChessMatch(chess.Board):
                     footer_text = None
                     self.ended.set()
                 else:
-                    footer_text = f"It is {['black', 'white'][int(self.turn)]}'s ({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
+                    footer_text = (
+                        f"It is {['black', 'white'][int(self.turn)]}'s "
+                        f"({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
+                    )
                 await self.update_match_embed(footer_text = footer_text)
 
                 await self.bot.attempt_delete_message(message)
@@ -335,7 +340,9 @@ class ChessMatch(chess.Board):
 
         chess_pgn = chess.pgn.Game.from_board(self)
         chess_pgn.headers["Site"] = "Discord"
-        chess_pgn.headers["Date"] = datetime.datetime.utcnow().strftime("%Y.%m.%d")
+        chess_pgn.headers["Date"] = (
+            datetime.datetime.utcnow().strftime("%Y.%m.%d")
+        )
         chess_pgn.headers["White"] = self.white_player.mention
         chess_pgn.headers["Black"] = self.black_player.mention
         if self.white_player == self.bot.user:
