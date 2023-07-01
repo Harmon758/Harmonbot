@@ -88,13 +88,15 @@ class ChessCog(commands.Cog, name = "Chess"):
         """
         if match := self.get_match(ctx.channel, ctx.author):
             await ctx.embed_reply(
-                f"[You're already playing a chess match here]({match.message.jump_url})"
+                "[You're already playing a chess match here]"
+                f"({match.message.jump_url})"
             )
             return
 
         if opponent != ctx.me and self.get_match(ctx.channel, opponent):
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Your chosen opponent is already playing a chess match here"
+                f"{ctx.bot.error_emoji} "
+                "Your chosen opponent is already playing a chess match here"
             )
             return
 
@@ -114,7 +116,8 @@ class ChessCog(commands.Cog, name = "Chess"):
         if opponent not in (ctx.me, ctx.author):
             view = ChessChallengeView(opponent)
             challenge = await ctx.send(
-                f"{opponent.mention}: {ctx.author} has challenged you to a chess match\n"
+                f"{opponent.mention}: "
+                f"{ctx.author} has challenged you to a chess match\n"
                 "Would you like to accept?",
                 view = view
             )
@@ -122,17 +125,25 @@ class ChessCog(commands.Cog, name = "Chess"):
 
             if view.accepted:
                 await challenge.edit(
-                    content = f"{opponent.mention}: You have accepted {ctx.author}'s challenge"
+                    content = (
+                        f"{opponent.mention}: "
+                        f"You have accepted {ctx.author}'s challenge"
+                    )
                 )
                 await ctx.send(
-                    f"{ctx.author.mention}: {opponent} has accepted your challenge"
+                    f"{ctx.author.mention}: "
+                    f"{opponent} has accepted your challenge"
                 )
             else:
                 await challenge.edit(
-                    content = f"{opponent.mention}: You have declined {ctx.author}'s challenge"
+                    content = (
+                        f"{opponent.mention}: "
+                        f"You have declined {ctx.author}'s challenge"
+                    )
                 )
                 await ctx.send(
-                    f"{ctx.author.mention}: {opponent} has declined your challenge"
+                    f"{ctx.author.mention}: "
+                    f"{opponent} has declined your challenge"
                 )
                 return
 
