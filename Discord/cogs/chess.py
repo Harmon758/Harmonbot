@@ -185,7 +185,8 @@ class ChessCog(commands.Cog, name = "Chess"):
         '''Previous move'''
         match = self.get_match(ctx.channel, ctx.author)
         if not match:
-            return await ctx.embed_reply(":no_entry: Chess match not found")
+            await ctx.embed_reply(":no_entry: Chess match not found")
+            return
         try:
             await ctx.embed_reply(match.peek())
         except IndexError:
