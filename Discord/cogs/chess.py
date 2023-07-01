@@ -19,6 +19,7 @@ except ImportError as e:
     print(f"Failed to import Wand in Chess cog:\n{e}")
 
 from utilities import checks
+from utilities import parameters
 
 
 # TODO: Dynamically load chess engine not locked to version?
@@ -60,11 +61,19 @@ class ChessCog(commands.Cog, name = "Chess"):
     @commands.hybrid_group(
         name = "chess", fallback = "play", case_insensitive = True
     )
-    async def chess_command(self, ctx):
+    async def chess_command(
+        self, ctx, opponent: discord.Member = parameters.Me
+    ):
         '''
         Play chess
         You can play me as well, at levels 0-20
         Supports standard algebraic and UCI notation
+
+        Parameters
+        ----------
+        opponent
+            Who you would like to play against
+            (Defaults to me)
         '''
         if match := self.get_match(ctx.channel, ctx.author):
             await ctx.embed_reply(
@@ -72,33 +81,7 @@ class ChessCog(commands.Cog, name = "Chess"):
             )
             return
 
-        await ctx.embed_reply(
-            "Who would you like to play?"
-        )
-        message = await ctx.bot.wait_for(
-            "message",
-            check = lambda message: (
-                message.author == ctx.author and
-                message.channel == ctx.channel
-            )
-        )
-
-        if message.content.lower() in ("harmonbot", "you"):
-            opponent = ctx.bot.user
-        elif message.content.lower() in ("myself", "me"):
-            opponent = ctx.author
-        else:
-            try:
-                opponent = await commands.MemberConverter().convert(
-                    ctx, message.content
-                )
-            except commands.BadArgument:
-                await ctx.embed_reply(
-                    f"{ctx.bot.error_emoji} Opponent not found"
-                )
-                return
-
-        if opponent != ctx.bot.user and self.get_match(ctx.channel, opponent):
+        if opponent != ctx.me and self.get_match(ctx.channel, opponent):
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Your chosen opponent is already playing a chess match here"
             )
@@ -133,7 +116,7 @@ class ChessCog(commands.Cog, name = "Chess"):
             black_player = ctx.author
 
         skill_level = None
-        if opponent == ctx.bot.user:
+        if opponent == ctx.me:
             await ctx.embed_reply(
                 "What level would you like to play me at? (0-20)"
             )
