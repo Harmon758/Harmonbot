@@ -205,7 +205,8 @@ class ChessCog(commands.Cog, name = "Chess"):
         '''Who's turn it is to move'''
         match = self.get_match(ctx.channel, ctx.author)
         if not match:
-            return await ctx.embed_reply(":no_entry: Chess match not found")
+            await ctx.embed_reply(":no_entry: Chess match not found")
+            return
         if match.turn:
             await ctx.embed_reply("It's white's turn to move")
         else:
