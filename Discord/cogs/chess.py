@@ -61,7 +61,7 @@ class ChessCog(commands.Cog, name = "Chess"):
     async def chess_command(self, ctx):
         '''
         Play chess
-        You can play me as well
+        You can play me as well, at levels 0-20
         Supports standard algebraic and UCI notation
         '''
         if match := self.get_match(ctx.channel, ctx.author):
@@ -130,7 +130,22 @@ class ChessCog(commands.Cog, name = "Chess"):
             white_player = opponent
             black_player = ctx.author
 
-        if opponent != ctx.bot.user and opponent != ctx.author:
+        skill_level = None
+        if opponent == ctx.bot.user:
+            await ctx.embed_reply(
+                "What level would you like to play me at? (0-20)"
+            )
+            message = await ctx.bot.wait_for(
+                "message",
+                check = lambda message: (
+                    message.author == ctx.author and
+                    message.channel == ctx.channel and
+                    message.content.isdigit() and
+                    0 <= int(message.content) <= 20
+                )
+            )
+            skill_level = int(message.content)
+        elif opponent != ctx.author:
             view = ChessChallengeView(opponent)
             challenge = await ctx.send(
                 f"{opponent.mention}: {ctx.author} has challenged you to a chess match\n"
@@ -155,7 +170,9 @@ class ChessCog(commands.Cog, name = "Chess"):
                 )
                 return
 
-        match = await ChessMatch.start(ctx, white_player, black_player)
+        match = await ChessMatch.start(
+            ctx, white_player, black_player, skill_level = skill_level
+        )
         self.matches.append(match)
         await match.ended.wait()
         self.matches.remove(match)
@@ -227,17 +244,20 @@ class ChessCog(commands.Cog, name = "Chess"):
 class ChessMatch(chess.Board):
 
     @classmethod
-    async def start(cls, ctx, white_player, black_player):
+    async def start(cls, ctx, white_player, black_player, skill_level = None):
         self = cls()
         self.ctx = ctx
         self.white_player = white_player
         self.black_player = black_player
+        self.skill_level = skill_level
         self.bot = ctx.bot
         self.ended = asyncio.Event()
         self.engine_transport, self.chess_engine = await chess.engine.popen_uci(
             f"bin/{STOCKFISH_EXECUTABLE}",
             creationflags = subprocess.CREATE_NO_WINDOW
         )
+        if skill_level is not None:
+            await self.chess_engine.configure({"Skill Level": skill_level})
         self.message = None
         self.task = ctx.bot.loop.create_task(
             self.match_task(), name = "Chess Match"
@@ -329,6 +349,10 @@ class ChessMatch(chess.Board):
         chess_pgn.headers["Date"] = datetime.datetime.utcnow().strftime("%Y.%m.%d")
         chess_pgn.headers["White"] = self.white_player.mention
         chess_pgn.headers["Black"] = self.black_player.mention
+        if self.white_player == self.bot.user:
+            chess_pgn.headers["White"] += f" (Level {self.skill_level})"
+        elif self.black_player == self.bot.user:
+            chess_pgn.headers["Black"] += f" (Level {self.skill_level})"
 
         embed.description = str(chess_pgn).replace('*', "\*")
 
