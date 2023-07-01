@@ -62,18 +62,23 @@ class ChessCog(commands.Cog, name = "Chess"):
         name = "chess", fallback = "play", case_insensitive = True
     )
     async def chess_command(
-        self, ctx, opponent: discord.Member = parameters.Me
+        self, ctx, opponent: discord.Member = parameters.Me,
+        color: Literal["white", "black", "random"] = "random"
     ):
         '''
         Play chess
         You can play me as well, at levels 0-20
         Supports standard algebraic and UCI notation
+        The color parameter is not applicable when playing against yourself
 
         Parameters
         ----------
         opponent
             Who you would like to play against
             (Defaults to me)
+        color
+            What color you would like to play as
+            (Defaults to random)
         '''
         if match := self.get_match(ctx.channel, ctx.author):
             await ctx.embed_reply(
@@ -88,30 +93,15 @@ class ChessCog(commands.Cog, name = "Chess"):
             return
 
         if opponent == ctx.author:
-            color = 'w'
-        else:
-            await ctx.embed_reply(
-                "Would you like to play white, black, or random?"
-            )
-            message = await ctx.bot.wait_for(
-                "message",
-                check = lambda message: (
-                    message.author == ctx.author and
-                    message.channel == ctx.channel and
-                    message.content.lower() in (
-                        "white", "black", "random", 'w', 'b', 'r'
-                    )
-                )
-            )
-            color = message.content.lower()
+            color = "white"
 
-        if color in ("random", 'r'):
-            color = random.choice(('w', 'b'))
+        if color == "random":
+            color = random.choice(("white", "black"))
 
-        if color in ("white", 'w'):
+        if color == "white":
             white_player = ctx.author
             black_player = opponent
-        elif color in ("black", 'b'):
+        elif color == "black":
             white_player = opponent
             black_player = ctx.author
 
