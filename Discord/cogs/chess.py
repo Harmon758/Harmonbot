@@ -57,8 +57,8 @@ class ChessCog(commands.Cog, name = "Chess"):
             match.task.cancel()
 
     # TODO: Use max concurrency?
-    @commands.group(
-        name = "chess", invoke_without_command = True, case_insensitive = True
+    @commands.hybrid_group(
+        name = "chess", fallback = "play", case_insensitive = True
     )
     async def chess_command(self, ctx):
         '''
@@ -194,14 +194,18 @@ class ChessCog(commands.Cog, name = "Chess"):
     # TODO: Log matches?
 
     """
-    @chess_command.command(name = "(╯°□°）╯︵", hidden = True)
+    @chess_command.command(
+        name = "(╯°□°）╯︵", with_app_command = False, hidden = True
+    )
     async def flip(self, ctx):
         '''Flip the table over'''
         self._chess_board.clear()
         await ctx.say(ctx.author.name + " flipped the table over in anger!")
     """
 
-    @chess_command.command(aliases = ["last"], hidden = True)
+    @chess_command.command(
+        aliases = ["last"], with_app_command = False, hidden = True
+    )
     async def previous(self, ctx):
         '''Previous move'''
         match = self.get_match(ctx.channel, ctx.author)
@@ -213,14 +217,14 @@ class ChessCog(commands.Cog, name = "Chess"):
             await ctx.embed_reply(":no_entry: There was no previous move")
 
     """
-    @chess_command.command()
+    @chess_command.command(with_app_command = False)
     async def reset(self, ctx):
         '''Reset the board'''
         self._chess_board.reset()
         await ctx.embed_reply("The board has been reset")
     """
 
-    @chess_command.command(hidden = True)
+    @chess_command.command(with_app_command = False, hidden = True)
     async def turn(self, ctx):
         '''Who's turn it is to move'''
         match = self.get_match(ctx.channel, ctx.author)
@@ -232,7 +236,7 @@ class ChessCog(commands.Cog, name = "Chess"):
             await ctx.embed_reply("It's black's turn to move")
 
     """
-    @chess_command.command()
+    @chess_command.command(with_app_command = False)
     async def undo(self, ctx):
         '''Undo the previous move'''
         try:
