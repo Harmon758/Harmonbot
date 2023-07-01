@@ -7,6 +7,7 @@ import datetime
 import io
 import random
 import subprocess
+from typing import Literal
 
 import chess
 import chess.engine
@@ -62,14 +63,16 @@ class ChessCog(commands.Cog, name = "Chess"):
         name = "chess", fallback = "play", case_insensitive = True
     )
     async def chess_command(
-        self, ctx, opponent: discord.Member = parameters.Me,
-        color: Literal["white", "black", "random"] = "random"
+        self, ctx,
+        opponent: discord.Member = parameters.Me,
+        color: Literal["white", "black", "random"] = "random",
+        level: commands.Range[int, 0, 20] = 20
     ):
         '''
         Play chess
-        You can play me as well, at levels 0-20
         Supports standard algebraic and UCI notation
         The color parameter is not applicable when playing against yourself
+        The level parameter is not applicable when not playing against me
 
         Parameters
         ----------
@@ -77,8 +80,11 @@ class ChessCog(commands.Cog, name = "Chess"):
             Who you would like to play against
             (Defaults to me)
         color
-            What color you would like to play as
+            The color you would like to play as
             (Defaults to random)
+        level
+            If playing against me, the skill level you would like to play me at
+            (0 - 20, default is 20)
         '''
         if match := self.get_match(ctx.channel, ctx.author):
             await ctx.embed_reply(
@@ -105,22 +111,7 @@ class ChessCog(commands.Cog, name = "Chess"):
             white_player = opponent
             black_player = ctx.author
 
-        skill_level = None
-        if opponent == ctx.me:
-            await ctx.embed_reply(
-                "What level would you like to play me at? (0-20)"
-            )
-            message = await ctx.bot.wait_for(
-                "message",
-                check = lambda message: (
-                    message.author == ctx.author and
-                    message.channel == ctx.channel and
-                    message.content.isdigit() and
-                    0 <= int(message.content) <= 20
-                )
-            )
-            skill_level = int(message.content)
-        elif opponent != ctx.author:
+        if opponent not in (ctx.me, ctx.author):
             view = ChessChallengeView(opponent)
             challenge = await ctx.send(
                 f"{opponent.mention}: {ctx.author} has challenged you to a chess match\n"
@@ -146,7 +137,7 @@ class ChessCog(commands.Cog, name = "Chess"):
                 return
 
         match = await ChessMatch.start(
-            ctx, white_player, black_player, skill_level = skill_level
+            ctx, white_player, black_player, skill_level = level
         )
         self.matches.append(match)
         await match.ended.wait()
