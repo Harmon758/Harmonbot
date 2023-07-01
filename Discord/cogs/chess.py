@@ -330,7 +330,7 @@ class ChessMatch(chess.Board):
         chess_pgn.headers["White"] = self.white_player.mention
         chess_pgn.headers["Black"] = self.black_player.mention
 
-        embed.description = str(chess_pgn)
+        embed.description = str(chess_pgn).replace('*', "\*")
 
         ## svg = self._repr_svg_()
         svg = chess.svg.board(
