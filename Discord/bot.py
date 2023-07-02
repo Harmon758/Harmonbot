@@ -592,19 +592,29 @@ class Bot(commands.Bot):
 		self.invite_url = discord.utils.oauth_url(self.application_id)
 		self.listener_bot = await self.fetch_user(self.listener_id)
 		# TODO: Handle NotFound and HTTPException?
-		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
-													"url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", 
-													"data": {"guildCount": len(self.guilds)}, 
-													"guild_count_name": "guildCount"}, 
-								"discordbots.org": {"name": "Discord Bot List", "token": self.DISCORDBOTS_ORG_API_KEY, 
-													"url": f"https://discordbots.org/api/bots/{self.user.id}/stats", 
-													"data": {"server_count": len(self.guilds)}, 
-													"guild_count_name": "server_count"}, 
-								"discordbotlist.com": {"name": "Discord Bot List", 
-														"token": f"Bot {self.DISCORDBOTLIST_COM_API_TOKEN}", 
-														"url": f"https://discordbotlist.com/api/bots/{self.user.id}/stats", 
-														"data": {"guilds": len(self.guilds)}, 
-														"guild_count_name": "guilds"}}
+		self.listing_sites = {
+			"discord.bots.gg": {
+				"name": "Discord Bots",
+				"token": self.DISCORD_BOTS_GG_API_TOKEN,
+				"url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats",
+				"data": {"guildCount": len(self.guilds)},
+				"guild_count_name": "guildCount"
+			},
+			"discordbots.org": {
+				"name": "Discord Bot List",
+				"token": self.DISCORDBOTS_ORG_API_KEY,
+				"url": f"https://discordbots.org/api/bots/{self.user.id}/stats",
+				"data": {"server_count": len(self.guilds)},
+				"guild_count_name": "server_count"
+			},
+			"discordbotlist.com": {
+				"name": "Discord Bot List", 
+				"token": f"Bot {self.DISCORDBOTLIST_COM_API_TOKEN}",
+				"url": f"https://discordbotlist.com/api/bots/{self.user.id}/stats",
+				"data": {"guilds": len(self.guilds)},
+				"guild_count_name": "guilds"
+			}
+		}
 		# TODO: Add users and voice_connections for discordbotlist.com
 		# TODO: https://bots.ondiscord.xyz/
 		# TODO: https://botlist.space/
