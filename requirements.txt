@@ -1,5 +1,5 @@
 # discord.py[speed,voice]==2.0.0a
-discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@7857a84
+discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@e543abd
 # discord-ext-menus==1.0.0a
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@8686b5d
 # TwitchIO@master (1.2.0)
