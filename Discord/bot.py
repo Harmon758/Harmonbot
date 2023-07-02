@@ -367,12 +367,6 @@ class Bot(commands.Bot):
 	def print(self, message):
 		print(f"[{datetime.datetime.now().isoformat()}] {self.console_message_prefix}{message}")
 	
-	@property
-	async def app_info(self):
-		if not hasattr(self, "_app_info"):
-			self._app_info = await self.application_info()
-		return self._app_info
-	
 	async def connect_to_database(self):
 		if self.database_connection_pool:
 			return
@@ -595,8 +589,7 @@ class Bot(commands.Bot):
 	
 	async def initialize_constant_objects(self):
 		await self.wait_until_ready()
-		app_info = await self.app_info
-		self.invite_url = discord.utils.oauth_url(app_info.id)
+		self.invite_url = discord.utils.oauth_url(self.application_id)
 		self.listener_bot = await self.fetch_user(self.listener_id)
 		# TODO: Handle NotFound and HTTPException?
 		self.listing_sites = {"discord.bots.gg": {"name": "Discord Bots", "token": self.DISCORD_BOTS_GG_API_TOKEN, 
