@@ -1,7 +1,7 @@
 # discord.py[speed,voice]==2.0.0a
 discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@f24f34e
 # discord-ext-menus==1.0.0a
-discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@fbb8803
+discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@8686b5d
 # TwitchIO@master (1.2.0)
 twitchio @ git+https://github.com/TwitchIO/Twitchio.git@01f3c17
 irc==20.1.0
