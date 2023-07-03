@@ -363,6 +363,7 @@ class Location(commands.Cog):
 			geocode_data = await get_geocode_data(
 				location, aiohttp_session = interaction.client.aiohttp_session
 			)
+			location = geocode_data["formatted_address"]
 			lat = geocode_data["geometry"]["location"]["lat"]
 			lon = geocode_data["geometry"]["location"]["lng"]
 		except UnitOutputError:
@@ -376,6 +377,9 @@ class Location(commands.Cog):
 				)
 				return
 			
+			location = locations[0].name
+			if country := locations[0].country:
+				location += f", {country}"
 			lat = locations[0].lat
 			lon = locations[0].lon
 		
@@ -384,11 +388,10 @@ class Location(commands.Cog):
 		)
 		
 		embed = format_weather_embed(interaction, one_call.current)
-		embed.title = geocode_data['formatted_address']
+		embed.title = location
 		
 		view = WeatherView(
-			interaction.client, geocode_data['formatted_address'], one_call,
-			interaction.user
+			interaction.client, location, one_call, interaction.user
 		)
 		message = await interaction.followup.send(
 			embed = embed,
