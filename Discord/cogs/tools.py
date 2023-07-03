@@ -159,11 +159,11 @@ class Tools(commands.Cog):
 		guide_font = ImageFont.truetype(guide_font, guide_font_size)
 		# Determine font width + height
 		draw = ImageDraw.Draw(Image.new("1", (1, 1), 1))
-		text_width, text_height = map(max, zip(*[draw.textsize(t, font = content_font) for t in (spoiler_text, spoiler_title)]))
-		## use functools.partial?
-		## text_width, text_height = map(max, zip(*map(functools.partial(draw.textsize, font = content_font), (spoiler_text, spoiler_title))))
-		## more optimal, but doesn't handle multiline
-		## text_width, text_height = map(max, zip(*map(content_font.getsize, (spoiler_text, spoiler_title))))
+		text_left, text_top, text_right, text_bottom = draw.textbbox((0,0), spoiler_text, content_font)
+		title_left, title_top, title_right, title_bottom = draw.textbbox((0,0), spoiler_title, content_font)
+		text_height = max(text_bottom - text_top, title_top - title_bottom)
+		text_width = max(text_right - text_left, title_right - title_left)
+		# content_font.getbbox doesn't handle multiline
 		# Create frames
 		frames = []
 		for frame_text in (spoiler_title, spoiler_text):
