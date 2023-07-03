@@ -21,6 +21,7 @@ ACTIVITES = {
 	"Bobble League": 947957217959759964,
 	"Checkers In The Park": 832013003968348200,
 	"Chess In The Park": 832012774040141894,
+	"Color Together": 1039835161136746497,
 	# "Doodle Crew": 878067389634314250,  # Now Sketch Hands
 	"Fishington.io": 814288819477020702,
 	"Gartic Phone": 1007373802981822582,
@@ -68,8 +69,8 @@ class Discord(commands.Cog):
 		activity: Literal[
 			"Ask Away", "Bash Out", "Betrayal.io", "Blazing 8s",
 			"Bobble League", "Checkers In The Park", "Chess In The Park",
-			"Doodle Crew", "Fishington.io", "Gartic Phone", "Jamspace",
-			"Know What I Meme", "Land-io", "Letter League", "Ocho",
+			"Color Together", "Doodle Crew", "Fishington.io", "Gartic Phone",
+			"Jamspace", "Know What I Meme", "Land-io", "Letter League", "Ocho",
 			"Poker Night", "Putt Party", "Sketch Hands", "SpellCast",
 			"Watch Together", "Word Snacks", "YouTube Together"
 		]
