@@ -14,7 +14,7 @@ if __name__ == "__main__":
 	
 	from aiohttp import web
 	import dotenv
-	import pkg_resources  # from setuptools
+	from packaging.version import Version
 	
 	import bot
 	from modules import conversions
@@ -251,7 +251,7 @@ if __name__ == "__main__":
 					harmonbot_opus_version = harmonbot_opus_version[8:]
 				### Discard additional information from git describe
 				harmonbot_opus_version = harmonbot_opus_version.split('-')[0]
-				harmonbot_opus_version = pkg_resources.parse_version(harmonbot_opus_version)
+				harmonbot_opus_version = Version(harmonbot_opus_version)
 				## Load Opus provided by discord.py
 				discord.opus._load_default()
 				## Get Opus version provided by discord.py
@@ -261,7 +261,7 @@ if __name__ == "__main__":
 					library_opus_version = library_opus_version[8:]
 				### Discard additional information from git describe
 				library_opus_version = library_opus_version.split('-')[0]
-				library_opus_version = pkg_resources.parse_version(library_opus_version)
+				library_opus_version = Version(library_opus_version)
 				## Compare Opus versions and use bin folder one if newer
 				if harmonbot_opus_version > library_opus_version:
 					discord.opus._lib = opus
