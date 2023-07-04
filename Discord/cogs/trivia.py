@@ -460,6 +460,7 @@ class TriviaBoard:
         # Whether or not to enforce turns
         # with last person to answer correctly selecting
         self.turns = turns
+        self.view = None
 
         self.ended = asyncio.Event()
 
@@ -476,6 +477,7 @@ class TriviaBoard:
             self.turn = ctx.author  # Command invoker goes first
 
         if not (await self.generate_board()):
+            await self.stop()
             return False
 
         embed = self.message.embeds[0]
