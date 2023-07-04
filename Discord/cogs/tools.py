@@ -136,7 +136,9 @@ class Tools(commands.Cog):
 		Otherwise, the spoiler will automatically be displayed
 		This setting is under User Settings -> Text & Images
 		'''
-		response = await ctx.embed_reply("Generating spoiler", in_response_to = False)
+		response = await ctx.embed_reply(
+			"Generating spoiler", in_response_to = False
+		)
 		# TODO: add border?, adjust fonts?
 		# Constants
 		content_font = "pala.ttf"
@@ -150,7 +152,9 @@ class Tools(commands.Cog):
 		character_wrap = 55
 		# Initialize values
 		spoiler_text = textwrap.fill(text, character_wrap)
-		spoiler_title = textwrap.fill(f"{ctx.author.display_name}'s {name} spoiler", character_wrap)
+		spoiler_title = textwrap.fill(
+			f"{ctx.author.display_name}'s {name} spoiler", character_wrap
+		)
 		buffer = io.BytesIO()
 		await ctx.author.display_avatar.save(buffer, seek_begin = True)
 		avatar = Image.open(buffer)
@@ -159,30 +163,58 @@ class Tools(commands.Cog):
 		guide_font = ImageFont.truetype(guide_font, guide_font_size)
 		# Determine font width + height
 		draw = ImageDraw.Draw(Image.new("1", (1, 1), 1))
-		text_left, text_top, text_right, text_bottom = draw.textbbox((0,0), spoiler_text, content_font)
-		title_left, title_top, title_right, title_bottom = draw.textbbox((0,0), spoiler_title, content_font)
+		text_left, text_top, text_right, text_bottom = draw.textbbox(
+			(0,0), spoiler_text, content_font
+		)
+		title_left, title_top, title_right, title_bottom = draw.textbbox(
+			(0,0), spoiler_title, content_font
+		)
 		text_height = max(text_bottom - text_top, title_top - title_bottom)
 		text_width = max(text_right - text_left, title_right - title_left)
 		# content_font.getbbox doesn't handle multiline
 		# Create frames
 		frames = []
 		for frame_text in (spoiler_title, spoiler_text):
-			frame = Image.new("RGBA", 
-								(text_width + (avatar_size + 2 * margin_size) * 2, text_height + text_vertical_margin * 2), 
-								discord.Color(ctx.bot.dark_theme_background_color).to_rgb())
+			frame = Image.new(
+				"RGBA",
+				(
+					text_width + (avatar_size + 2 * margin_size) * 2,
+					text_height + text_vertical_margin * 2
+				),
+				discord.Color(ctx.bot.dark_theme_background_color).to_rgb()
+			)
 			try:
 				frame.paste(avatar, (margin_size, margin_size), avatar)
 			except ValueError:  # if bad transparency mask
 				frame.paste(avatar, (margin_size, margin_size))
-			transparent_text = Image.new("RGBA", frame.size, discord.Color(ctx.bot.white_color).to_rgb() + (0,))
+			transparent_text = Image.new(
+				"RGBA",
+				frame.size,
+				discord.Color(ctx.bot.white_color).to_rgb() + (0,)
+			)
 			draw = ImageDraw.Draw(transparent_text)
-			draw.text((avatar_size + 2 * margin_size, text_vertical_margin), frame_text, 
-						fill = discord.Color(ctx.bot.white_color).to_rgb() + (text_opacity,), 
-						font = content_font)
+			draw.text(
+				(avatar_size + 2 * margin_size, text_vertical_margin),
+				frame_text,
+				fill = (
+					discord.Color(ctx.bot.white_color).to_rgb() +
+					(text_opacity,)
+				),
+				font = content_font
+			)
 			if not frames:
-				draw.text((avatar_size + 2 * margin_size, text_height + 2 * margin_size), 
-							"(Hover to reveal spoiler)", font = guide_font, 
-							fill = discord.Color(ctx.bot.white_color).to_rgb() + (text_opacity,))
+				draw.text(
+					(
+						avatar_size + 2 * margin_size,
+						text_height + 2 * margin_size
+					),
+					"(Hover to reveal spoiler)",
+					font = guide_font,
+					fill = (
+						discord.Color(ctx.bot.white_color).to_rgb() +
+						(text_opacity,)
+					)
+				)
 			frame = Image.alpha_composite(frame, transparent_text)
 			buffer = io.BytesIO()
 			frame.save(buffer, "PNG")
@@ -190,9 +222,17 @@ class Tools(commands.Cog):
 			frames.append(buffer)
 		# Create + send .gif
 		buffer = io.BytesIO()
-		imageio.mimsave(buffer, [imageio.imread(frame) for frame in frames], "GIF-PIL", loop = 1, duration = 0.5)
+		imageio.mimsave(
+			buffer,
+			[imageio.imread(frame) for frame in frames],
+			"GIF-PIL",
+			loop = 1,
+			duration = 0.5
+		)
 		buffer.seek(0)
-		await ctx.channel.send(file = discord.File(buffer, filename = "spoiler.gif"))
+		await ctx.channel.send(
+			file = discord.File(buffer, filename = "spoiler.gif")
+		)
 		await ctx.bot.attempt_delete_message(response)
 	
 	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], 
