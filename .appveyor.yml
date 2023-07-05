@@ -1,4 +1,4 @@
-version: 1.29.0-{build}
+version: 1.30.0-{build}
 
 environment:
   # https://www.appveyor.com/docs/services-databases/#postgresql
@@ -15,9 +15,9 @@ environment:
       PYTHON: C:\Python310-x64
       PYTHON_VERSION: 3.10.10
       PYTHON_ARCH: 64
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
       PLATFORM: Discord
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
       PLATFORM: Telegram
     - APPVEYOR_BUILD_WORKER_IMAGE: macos
       PLATFORM: Discord
