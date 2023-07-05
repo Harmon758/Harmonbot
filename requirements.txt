@@ -108,7 +108,7 @@ jaraco.stream==3.0.3
 jaraco.text==3.11.1
 jsonschema==4.17.3
 kiwisolver==1.4.4
-lxml==4.9.2
+lxml==4.9.3
 mpmath==1.3.0
 multidict==6.0.4
 mutagen==1.46.0
