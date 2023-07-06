@@ -774,7 +774,10 @@ class TriviaBoard:
                 "http://jservice.io/api/random",
                 params = {"count": 6 - len(self.board)}
             ) as resp:
-                if resp.status in (500, 503):
+                if resp.status == 429:
+                    await asyncio.sleep(30)
+                    continue
+                elif resp.status in (500, 503):
                     embed = self.message.embeds[0]
                     embed.description = (
                         f"{self.ctx.bot.error_emoji} Error: "
@@ -796,6 +799,9 @@ class TriviaBoard:
                     params = {"id": category_id}
                 ) as resp:
                     if resp.status == 404:
+                        continue
+                    elif resp.status == 429:
+                        await asyncio.sleep(30)
                         continue
                     elif resp.status == 503:
                         embed = self.message.embeds[0]
