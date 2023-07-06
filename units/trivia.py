@@ -17,7 +17,7 @@ def capwords(string):
     """string.capwords with abbreviation handling"""
     return ' '.join(
         word.upper() if word.count('.') > 1 and not word.endswith("..")
-        or word == "tv"
+        or word.upper == "TV"
         else word.capitalize()
         for word in string.split()
     )
