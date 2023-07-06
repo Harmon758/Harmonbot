@@ -783,11 +783,12 @@ class TriviaBoard:
                 return False
             data = await resp.json()
 
+        category_ids = set()
+
         for random_clue in data:
             category_id = random_clue["category_id"]
 
-            if category_id is None or category_id in self.board:
-                # TODO: Fix duplicate category check
+            if category_id is None or category_id in category_ids:
                 continue
 
             async with self.bot.aiohttp_session.get(
@@ -835,6 +836,8 @@ class TriviaBoard:
                     for value in self.VALUES
                 }
             })
+
+            category_ids.add(category_id)
 
             if len(self.board) == 6:
                 break
