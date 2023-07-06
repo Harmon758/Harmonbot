@@ -769,76 +769,75 @@ class TriviaBoard:
             self.ended.set()
 
     async def generate_board(self):
-        while len(self.board) < 6:
+        async with self.bot.aiohttp_session.get(
+            "http://jservice.io/api/random",
+            params = {"count": 100}
+        ) as resp:
+            if resp.status in (500, 503):
+                embed = self.message.embeds[0]
+                embed.description = (
+                    f"{self.ctx.bot.error_emoji} Error: "
+                    "Error connecting to API"
+                )
+                await self.message.edit(embed = embed)
+                return False
+            data = await resp.json()
+
+        for random_clue in data:
+            category_id = random_clue["category_id"]
+
+            if category_id is None or category_id in self.board:
+                # TODO: Fix duplicate category check
+                continue
+
             async with self.bot.aiohttp_session.get(
-                "http://jservice.io/api/random",
-                params = {"count": 6 - len(self.board)}
+                "http://jservice.io/api/category",
+                params = {"id": category_id}
             ) as resp:
-                if resp.status == 429:
+                if resp.status == 404:
+                    continue
+                elif resp.status == 429:
                     await asyncio.sleep(30)
                     continue
-                elif resp.status in (500, 503):
+                elif resp.status == 503:
                     embed = self.message.embeds[0]
                     embed.description = (
-                        f"{self.ctx.bot.error_emoji} Error: "
-                        "Error connecting to API"
+                        f"{self.ctx.bot.error_emoji} Error: Error connecting to API"
                     )
                     await self.message.edit(embed = embed)
                     return False
                 data = await resp.json()
 
-            for random_clue in data:
-                category_id = random_clue["category_id"]
-
-                if category_id is None or category_id in self.board:
-                    # TODO: Fix duplicate category check
+            # The first round originally ranged from $100 to $500
+            # and was doubled to $200 to $1,000 on November 26, 2001
+            # https://en.wikipedia.org/wiki/Jeopardy!
+            # http://www.j-archive.com/showgame.php?game_id=1062
+            # jService uses noon UTC for airdates
+            # jService doesn't include Double Jeopardy! clues
+            transition_date = datetime.datetime(
+                2001, 11, 26, 12, tzinfo = datetime.timezone.utc
+            )
+            clues = {value: [] for value in self.VALUES}
+            for clue in data["clues"]:
+                if not clue["question"] or not clue["value"]:
                     continue
+                if dateutil.parser.parse(clue["airdate"]) < transition_date:
+                    clues[clue["value"] * 2].append(clue)
+                else:
+                    clues[clue["value"]].append(clue)
+            if not all(clues.values()):
+                continue
 
-                async with self.bot.aiohttp_session.get(
-                    "http://jservice.io/api/category",
-                    params = {"id": category_id}
-                ) as resp:
-                    if resp.status == 404:
-                        continue
-                    elif resp.status == 429:
-                        await asyncio.sleep(30)
-                        continue
-                    elif resp.status == 503:
-                        embed = self.message.embeds[0]
-                        embed.description = (
-                            f"{self.ctx.bot.error_emoji} Error: Error connecting to API"
-                        )
-                        await self.message.edit(embed = embed)
-                        return False
-                    data = await resp.json()
+            self.board.append({
+                "title": capwords(random_clue["category"]["title"]),
+                "clues": {
+                    value: random.choice(clues[value])
+                    for value in self.VALUES
+                }
+            })
 
-                # The first round originally ranged from $100 to $500
-                # and was doubled to $200 to $1,000 on November 26, 2001
-                # https://en.wikipedia.org/wiki/Jeopardy!
-                # http://www.j-archive.com/showgame.php?game_id=1062
-                # jService uses noon UTC for airdates
-                # jService doesn't include Double Jeopardy! clues
-                transition_date = datetime.datetime(
-                    2001, 11, 26, 12, tzinfo = datetime.timezone.utc
-                )
-                clues = {value: [] for value in self.VALUES}
-                for clue in data["clues"]:
-                    if not clue["question"] or not clue["value"]:
-                        continue
-                    if dateutil.parser.parse(clue["airdate"]) < transition_date:
-                        clues[clue["value"] * 2].append(clue)
-                    else:
-                        clues[clue["value"]].append(clue)
-                if not all(clues.values()):
-                    continue
-
-                self.board.append({
-                    "title": capwords(random_clue["category"]["title"]),
-                    "clues": {
-                        value: random.choice(clues[value])
-                        for value in self.VALUES
-                    }
-                })
+            if len(self.board) == 6:
+                break
 
         for number, category in enumerate(self.board, start = 1):
             self.board_lines.append(
