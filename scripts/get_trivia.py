@@ -87,7 +87,8 @@ for a in parsed.table.find_all('a'):
                 airdate = season_a.text.split("aired")[1].strip()
         except (KeyError, IndexError):
             if not game_url.startswith((
-                "http://www.j-archive.com/media/", "https://youtu.be/",
+                "http://www.j-archive.com/media/",
+                "https://www.j-archive.com/media/", "https://youtu.be/",
                 "https://www.youtube.com/", "showplayer.php"
             )):
                 print(f"Skipping URL: {game_url}")
