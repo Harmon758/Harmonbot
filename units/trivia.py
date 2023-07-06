@@ -16,8 +16,10 @@ from pyparsing import (
 def capwords(string):
     """string.capwords with abbreviation handling"""
     return ' '.join(
-        word.upper() if word.count('.') > 1 and not word.endswith("..")
-        or word.upper() in ("TV", "DC-3")
+        word.upper() if (
+            word.count('.') > 1 and not word.endswith("..")
+            or word.upper() in ("TV", "DC-3")
+        )
         else word.capitalize()
         for word in string.split()
     )
