@@ -117,13 +117,10 @@ for a in parsed.table.find_all('a'):
         )
         parsed_game = BeautifulSoup(game_response.text, "lxml")
 
-        if (
-            (
-                season_name == "Trebek pilots" and
-                parsed_game.title.text.split("taped")[1].strip() != airdate
-            ) or
-            parsed_game.title.text.split("aired")[1].strip() != airdate
-        ):
+        if season_name == "Trebek pilots":
+            if parsed_game.title.text.split("taped")[1].strip() != airdate:
+                print(f"Airdate mismatch for game {game_id}")
+        elif parsed_game.title.text.split("aired")[1].strip() != airdate:
             print(f"Airdate mismatch for game {game_id}")
 
         round_tables = parsed_game.find_all("table", class_ = "round")
