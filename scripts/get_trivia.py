@@ -131,8 +131,9 @@ for a in parsed.table.find_all('a'):
             ):
                 categories.append(categonry_td.text)
 
-            category_index = 0
+            category_index = -1
             for clue_td in round_table.find_all("td", class_ = "clue"):
+                category_index += 1
                 daily_double = False
 
                 if clue_td.contents == ['\n']:
@@ -173,7 +174,6 @@ for a in parsed.table.find_all('a'):
                     daily_double = True
 
                 category = categories[category_index % len(categories)]
-                category_index += 1
 
                 connection.execute(
                     """
