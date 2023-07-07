@@ -6,13 +6,11 @@ from discord.ext import commands
 import asyncio
 import datetime
 import html
-import random
 import sys
 from typing import Optional
 import warnings
 
 from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
-import dateutil.parser
 
 from utilities import checks
 
@@ -681,9 +679,11 @@ class TriviaBoard:
                 f"{self.board[category_number - 1]['title']}\n(for {value})"
             ),
             title_url = self.message.jump_url,
-            description = clue["question"],
+            description = clue["text"],
             footer_text = "Air Date",
-            timestamp = dateutil.parser.parse(clue["airdate"]),
+            timestamp = datetime.datetime.combine(
+                clue["airdate"], datetime.time(), datetime.timezone.utc
+            ),
             embeds = [
                 discord.Embed(
                     description = "Time's up " + discord.utils.format_dt(
@@ -768,78 +768,69 @@ class TriviaBoard:
             self.ended.set()
 
     async def generate_board(self):
-        async with self.bot.aiohttp_session.get(
-            "http://jservice.io/api/random",
-            params = {"count": 100}
-        ) as resp:
-            if resp.status in (500, 503):
-                embed = self.message.embeds[0]
-                embed.description = (
-                    f"{self.ctx.bot.error_emoji} Error: "
-                    "Error connecting to API"
+        records = await self.bot.db.fetch(
+            """
+            SELECT clues.text, clues.answer, clues.value, clues.category,
+                   clues.daily_double, clues.double, games.airdate
+            FROM trivia.clues
+            JOIN trivia.games
+            ON clues.game_id = games.id
+            WHERE (clues.category, clues.game_id) in (
+                SELECT clues.category, clues.game_id
+                FROM trivia.clues
+                TABLESAMPLE BERNOULLI (0.1)
+                WHERE (clues.category, clues.game_id) in (
+                    SELECT clues.category, clues.game_id
+                    FROM trivia.clues
+                    GROUP BY clues.category, clues.game_id
+                    HAVING COUNT(*) = 5
                 )
-                await self.message.edit(embed = embed)
-                return False
-            data = await resp.json()
-
-        category_ids = set()
-
-        for random_clue in data:
-            category_id = random_clue["category_id"]
-
-            if category_id is None or category_id in category_ids:
-                continue
-
-            async with self.bot.aiohttp_session.get(
-                "http://jservice.io/api/category",
-                params = {"id": category_id}
-            ) as resp:
-                if resp.status == 404:
-                    continue
-                elif resp.status == 429:
-                    await asyncio.sleep(30)
-                    continue
-                elif resp.status == 503:
-                    embed = self.message.embeds[0]
-                    embed.description = (
-                        f"{self.ctx.bot.error_emoji} Error: Error connecting to API"
-                    )
-                    await self.message.edit(embed = embed)
-                    return False
-                data = await resp.json()
-
-            # The first round originally ranged from $100 to $500
-            # and was doubled to $200 to $1,000 on November 26, 2001
-            # https://en.wikipedia.org/wiki/Jeopardy!
-            # http://www.j-archive.com/showgame.php?game_id=1062
-            # jService uses noon UTC for airdates
-            # jService doesn't include Double Jeopardy! clues
-            transition_date = datetime.datetime(
-                2001, 11, 26, 12, tzinfo = datetime.timezone.utc
+                GROUP BY clues.category, clues.game_id
+                ORDER BY RANDOM()
+                LIMIT 6
             )
-            clues = {value: [] for value in self.VALUES}
-            for clue in data["clues"]:
-                if not clue["question"] or not clue["value"]:
-                    continue
-                if dateutil.parser.parse(clue["airdate"]) < transition_date:
-                    clues[clue["value"] * 2].append(clue)
-                else:
-                    clues[clue["value"]].append(clue)
-            if not all(clues.values()):
+            """
+        )
+
+        # The first round originally ranged from $100 to $500
+        # and was doubled to $200 to $1,000 on November 26, 2001
+        # https://en.wikipedia.org/wiki/Jeopardy!
+        # http://www.j-archive.com/showgame.php?game_id=1062
+        transition_date = datetime.date(2001, 11, 26)
+
+        categories = {}
+        daily_doubles = []
+        for record in records:
+            if record["daily_double"]:
+                daily_doubles.append(record)
                 continue
 
-            self.board.append({
-                "title": capwords(random_clue["category"]["title"]),
-                "clues": {
-                    value: random.choice(clues[value])
-                    for value in self.VALUES
-                }
-            })
+            value = record["value"]
+            if record["airdate"] < transition_date:
+                value *= 2
+            if record["double"]:
+                value //= 2
 
-            category_ids.add(category_id)
+            if value not in self.VALUES:
+                raise RuntimeError(
+                    "Invalid clue value in trivia board generation"
+                )
 
-            if len(self.board) == 6:
-                break
+            category = record["category"]
+            categories[category] = (
+                categories.get(category, {}) | {value: record}
+            )
+
+        for daily_double in daily_doubles:
+            category = daily_double["category"]
+            for value in self.VALUES:
+                if value not in categories[category]:
+                    categories[category][value] = daily_double
+
+        self.board = [
+            {"title": capwords(category), "clues": clues}
+            for category, clues in categories.items()
+        ]
 
         for number, category in enumerate(self.board, start = 1):
             self.board_lines.append(
