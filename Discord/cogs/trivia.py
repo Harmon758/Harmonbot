@@ -11,7 +11,6 @@ import sys
 from typing import Optional
 import warnings
 
-import aiohttp
 from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
 import dateutil.parser
 
@@ -1018,61 +1017,24 @@ class TriviaQuestion:
         self.responses = {}  # User responses to question
         self.seconds = seconds
 
-    async def get_question(self, ctx):
-        try:
-            async with ctx.bot.aiohttp_session.get(
-                "http://jservice.io/api/random"
-            ) as resp:
-                if resp.status in (500, 503):
-                    await ctx.embed_reply(
-                        f"{ctx.bot.error_emoji} Error: Error connecting to API"
-                    )
-                    return
-                return (await resp.json())[0]
-        except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: Error connecting to API"
-            )
-            return
-
     async def start(self, ctx):
-        if not (data := await self.get_question(ctx)):
-            return
+        record = await ctx.bot.db.fetchrow(
+            """
+            SELECT clues.text, clues.answer, clues.category, games.airdate
+            FROM trivia.clues
+            TABLESAMPLE BERNOULLI (0.01)
+            JOIN trivia.games
+            ON clues.game_id = games.id
+            LIMIT 1
+            """
+        )
 
-        tries = 1
-        while (
-            not data.get("question") or
-            not data.get("category") or
-            data["question"] == '=' or
-            not data.get("answer")
-        ):
-            error_message = (
-                ctx.bot.error_emoji +
-                " Error: API response missing question/category/answer"
-            )
-            if tries >= 5:
-                embed = self.response.embeds[0]
-                embed.description += '\n' + error_message
-                await self.response.edit(embed = embed)
-                return
-            if self.response:
-                embed = self.response.embeds[0]
-                embed.description += f"\n{error_message}\nRetrying..."
-                await self.response.edit(embed = embed)
-            else:
-                self.response = await ctx.embed_reply(
-                    f"{error_message}\nRetrying..."
-                )
-            if not (data := await self.get_question(ctx)):
-                return
-            tries += 1
-        # Add message about making POST request to API/invalid with id?
-        # Include site page to send ^?
+        # TODO: Add method of reporting issues with clue?
 
         if self.betting:
             self.bet_message = await ctx.embed_reply(
                 author_name = None,
-                title = capwords(data["category"]["title"]),
+                title = capwords(record["category"]),
                 description = "Showing question " + discord.utils.format_dt(
                     datetime.datetime.now(datetime.timezone.utc) +
                     datetime.timedelta(seconds = self.seconds),
@@ -1101,10 +1063,12 @@ class TriviaQuestion:
         ]
         self.response = await ctx.embed_reply(
             author_name = None,
-            title = capwords(data["category"]["title"]),
-            description = data["question"],
+            title = capwords(record["category"]),
+            description = record["text"],
             footer_text = "Air Date",
-            timestamp = dateutil.parser.parse(data["airdate"]),
+            timestamp = datetime.datetime.combine(
+                record["airdate"], datetime.time(), datetime.timezone.utc
+            ),
             view = TriviaQuestionView(self, self.seconds),
             embeds = embeds
         )
@@ -1121,7 +1085,7 @@ class TriviaQuestion:
         incorrect_players = []
         for player, response in self.responses.items():
             if check_answer(
-                data["answer"], response,
+                record["answer"], response,
                 inflect_engine = ctx.bot.inflect_engine
             ):
                 correct_players.append(player)
@@ -1162,7 +1126,7 @@ class TriviaQuestion:
                 "ignore", category = MarkupResemblesLocatorWarning
             )
             answer = BeautifulSoup(
-                html.unescape(data["answer"]),
+                html.unescape(record["answer"]),
                 "html.parser"
             ).get_text().replace("\\'", "'")
 
