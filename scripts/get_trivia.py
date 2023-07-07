@@ -201,7 +201,8 @@ for a in parsed.table.find_all('a'):
                 )
                 connection.commit()
 
-            print(f"Skipped {skipped_count} clues in game {game_id}")
+            if skipped_count:
+                print(f"Skipped {skipped_count} clues in game {game_id}")
 
         # TODO: Final round?, clue ID not exposed
 
