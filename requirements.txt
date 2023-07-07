@@ -9,7 +9,7 @@ python-telegram-bot==20.3
 
 aiohttp==3.8.4
 async-lru==2.0.2
-asyncpg==0.27.0
+asyncpg==0.28.0
 beautifulsoup4==4.12.2
 chess==1.9.4
 clarifai-grpc==9.5.0
