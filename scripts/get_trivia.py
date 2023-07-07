@@ -141,13 +141,18 @@ for a in parsed.table.find_all('a'):
                 if clue_td.contents == ['\n']:
                     continue
 
+                suggest_correction_a = clue_td.find(
+                    'a', title = "Suggest a correction for this clue"
+                )
+
+                if not suggest_correction_a:
+                    print(f"Skipping clue in game {game_id}")
+                    continue
+
                 clue_id = int(
                     parse_qs(
                         urlparse(
-                            clue_td.find(
-                                'a',
-                                title = "Suggest a correction for this clue"
-                            )["href"]
+                            suggest_correction_a["href"]
                         ).query
                     )["clue_id"][0]
                 )
