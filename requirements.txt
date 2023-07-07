@@ -115,7 +115,7 @@ multidict==6.0.4
 mutagen==1.46.0
 oauthlib==3.2.2
 orjson==3.9.1
-protobuf==4.23.3
+protobuf==4.23.4
 proto-plus==1.22.3
 psycopg-binary==3.1.9
 pyasn1==0.5.0
