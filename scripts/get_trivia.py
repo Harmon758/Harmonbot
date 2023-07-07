@@ -132,6 +132,7 @@ for a in parsed.table.find_all('a'):
                 categories.append(categonry_td.text)
 
             category_index = -1
+            skipped_count = 0
             for clue_td in round_table.find_all("td", class_ = "clue"):
                 category_index += 1
                 daily_double = False
@@ -144,7 +145,7 @@ for a in parsed.table.find_all('a'):
                 )
 
                 if not suggest_correction_a:
-                    print(f"Skipping clue in game {game_id}")
+                    skipped_count += 1
                     continue
 
                 clue_id = int(
@@ -199,6 +200,8 @@ for a in parsed.table.find_all('a'):
                     }
                 )
                 connection.commit()
+
+            print(f"Skipped {skipped_count} clues in game {game_id}")
 
         # TODO: Final round?, clue ID not exposed
 
