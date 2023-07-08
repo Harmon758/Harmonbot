@@ -158,17 +158,17 @@ if __name__ == "__main__":
 				if author == ctx.bot.user:
 					try:
 						await owner.send(
-							f"To {channel.recipient}: {message.content}",
+							f"To {channel.recipient.mention} ({channel.recipient}): {message.content}",
 							embed = message.embeds[0] if message.embeds else None
 						)
 					except discord.HTTPException:
 						# TODO: use textwrap/paginate
 						await owner.send(
-							f"To {channel.recipient}: `DM too long to forward`"
+							f"To {channel.recipient.mention} ({channel.recipient}): `DM too long to forward`"
 						)
 				else:
 					await owner.send(
-						f"From {author}: {message.content}",
+						f"From {author.mention} ({author}): {message.content}",
 						embed = message.embeds[0] if message.embeds else None
 					)
 		
