@@ -150,24 +150,24 @@ if __name__ == "__main__":
 				)
 			elif channel.recipient.id != ctx.bot.owner_id:
 				if not (
-					me := discord.utils.get(
+					owner := discord.utils.get(
 						ctx.bot.get_all_members(), id = ctx.bot.owner_id
 					)
 				):
-					me = await ctx.bot.fetch_user(ctx.bot.owner_id)
+					owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
 				if author == ctx.bot.user:
 					try:
-						await me.send(
+						await owner.send(
 							f"To {channel.recipient}: {message.content}",
 							embed = message.embeds[0] if message.embeds else None
 						)
 					except discord.HTTPException:
 						# TODO: use textwrap/paginate
-						await me.send(
+						await owner.send(
 							f"To {channel.recipient}: `DM too long to forward`"
 						)
 				else:
-					await me.send(
+					await owner.send(
 						f"From {author}: {message.content}",
 						embed = message.embeds[0] if message.embeds else None
 					)
