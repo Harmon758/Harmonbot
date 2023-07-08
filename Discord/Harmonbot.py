@@ -145,18 +145,32 @@ if __name__ == "__main__":
 			# https://github.com/Rapptz/discord.py/issues/7370
 			# https://discord.com/channels/336642139381301249/336642776609456130/875382864919797760
 			if channel.type is not discord.ChannelType.private:
-				ctx.bot.print(f"Ephemeral message with erroneous DMChannel channel attribute: {message.id}")
+				ctx.bot.print(
+					f"Ephemeral message with erroneous DMChannel channel attribute: {message.id}"
+				)
 			elif channel.recipient.id != ctx.bot.owner_id:
-				if not (me := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
+				if not (
+					me := discord.utils.get(
+						ctx.bot.get_all_members(), id = ctx.bot.owner_id
+					)
+				):
 					me = await ctx.bot.fetch_user(ctx.bot.owner_id)
 				if author == ctx.bot.user:
 					try:
-						await me.send(f"To {channel.recipient}: {message.content}", embed = message.embeds[0] if message.embeds else None)
+						await me.send(
+							f"To {channel.recipient}: {message.content}",
+							embed = message.embeds[0] if message.embeds else None
+						)
 					except discord.HTTPException:
 						# TODO: use textwrap/paginate
-						await me.send(f"To {channel.recipient}: `DM too long to forward`")
+						await me.send(
+							f"To {channel.recipient}: `DM too long to forward`"
+						)
 				else:
-					await me.send(f"From {author}: {message.content}", embed = message.embeds[0] if message.embeds else None)
+					await me.send(
+						f"From {author}: {message.content}",
+						embed = message.embeds[0] if message.embeds else None
+					)
 		
 		# Ignore own and blank messages
 		if author == ctx.bot.user or not message.content:
