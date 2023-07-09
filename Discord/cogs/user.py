@@ -105,7 +105,7 @@ class User(commands.Cog):
             file = discord.File(buffer, filename = "avatar.png")
             image_url = "attachment://avatar.png"
 
-        description += "avatar:**"
+        description += f"[avatar]({user.display_avatar.url}):**"
 
         await ctx.embed_reply(
             author_name = None,
