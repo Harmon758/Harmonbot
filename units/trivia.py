@@ -18,7 +18,7 @@ def capwords(string):
     return ' '.join(
         word.upper() if (
             word.count('.') > 1 and not word.endswith("..")
-            or word.upper() in ("TV", "DC-3")
+            or word.upper() in ("DC-3", "NBA", "TV")
         )
         else word.capitalize()
         for word in string.split()
