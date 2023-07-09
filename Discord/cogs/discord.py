@@ -556,5 +556,12 @@ async def timestamp(interaction, message: discord.Message):
 
 @app_commands.context_menu()
 async def avatar(interaction, user: discord.User):
-	await interaction.response.send_message(user.display_avatar.url)
+	await interaction.response.send_message(
+		embed = discord.Embed(
+			description = f"{user.mention}**'s avatar:**",
+			color = interaction.client.bot_color
+		).set_image(
+			url = user.display_avatar.url
+		)
+	)
 
