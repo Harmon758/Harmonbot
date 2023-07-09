@@ -782,6 +782,7 @@ class TriviaBoard:
                 WHERE (clues.category, clues.game_id) in (
                     SELECT clues.category, clues.game_id
                     FROM trivia.clues
+                    WHERE clues.invalid = FALSE
                     GROUP BY clues.category, clues.game_id
                     HAVING COUNT(*) = 5
                 )
