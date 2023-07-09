@@ -1016,6 +1016,7 @@ class TriviaQuestion:
             TABLESAMPLE BERNOULLI (0.01)
             JOIN trivia.games
             ON clues.game_id = games.id
+            WHERE clues.invalid = FALSE
             LIMIT 1
             """
         )
