@@ -558,7 +558,9 @@ async def timestamp(interaction, message: discord.Message):
 async def avatar(interaction, user: discord.User):
 	await interaction.response.send_message(
 		embed = discord.Embed(
-			description = f"{user.mention}**'s avatar:**",
+			description = (
+				f"{user.mention}**'s [avatar]({user.display_avatar.url}):**"
+			),
 			color = interaction.client.bot_color
 		).set_image(
 			url = user.display_avatar.url
