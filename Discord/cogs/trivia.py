@@ -548,11 +548,22 @@ class TriviaBoard:
 
             answer = message.content
 
-        if check_answer(
+        correct = False
+        if self.correct_answers:
+            for correct_answer in self.correct_answers:
+                if check_answer(
+                    correct_answer, answer,
+                    inflect_engine = self.bot.inflect_engine
+                ):
+                    correct = True
+                    break
+        elif check_answer(
             self.correct_answer, answer,
             inflect_engine = self.bot.inflect_engine
         ):
-            # Correct answer
+            correct = True
+
+        if correct:
             self.awaiting_answer = False
             self.answered.set()
 
@@ -668,6 +679,7 @@ class TriviaBoard:
         clue = self.board[category_number - 1]["clues"][self.value]
 
         self.correct_answer = clue["answer"]
+        self.correct_answers = clue["acceptable_answers"]
         self.players_answered = []  # This is only used if buzzer is True
 
         self.view = (
@@ -771,7 +783,8 @@ class TriviaBoard:
         records = await self.bot.db.fetch(
             """
             SELECT clues.text, clues.answer, clues.value, clues.category,
-                   clues.daily_double, clues.double, games.airdate
+                   clues.daily_double, clues.double, clues.acceptable_answers,
+                   games.airdate
             FROM trivia.clues
             JOIN trivia.games
             ON clues.game_id = games.id
@@ -1012,7 +1025,8 @@ class TriviaQuestion:
     async def start(self, ctx):
         record = await ctx.bot.db.fetchrow(
             """
-            SELECT clues.text, clues.answer, clues.category, games.airdate
+            SELECT clues.text, clues.answer, clues.category,
+                   clues.acceptable_answers, games.airdate
             FROM trivia.clues
             TABLESAMPLE BERNOULLI (0.01)
             JOIN trivia.games
@@ -1077,7 +1091,17 @@ class TriviaQuestion:
         correct_players = []
         incorrect_players = []
         for player, response in self.responses.items():
-            if check_answer(
+            if record["acceptable_answers"]:
+                for answer in record["acceptable_answers"]:
+                    if check_answer(
+                        answer, response,
+                        inflect_engine = ctx.bot.inflect_engine
+                    ):
+                        correct_players.append(player)
+                        break
+                else:
+                    incorrect_players.append(player)
+            elif check_answer(
                 record["answer"], response,
                 inflect_engine = ctx.bot.inflect_engine
             ):
