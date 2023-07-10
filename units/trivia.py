@@ -189,8 +189,14 @@ def check_answer(answer, response, inflect_engine = None):
                 f"{permutation} {answer_word}"
                 for permutation in answers
             ]
-    if response in answers:
-        return True
+    for answer in answers:
+        if response == answer:
+            return True
+        if response == inflect_engine.plural(answer):
+            return True
+        with contextlib.suppress(pydantic.ValidationError):
+            if answer == inflect_engine.plural(response):
+                return True
     # Check numbers to words conversion
     response_words = response.split()
     for words in (answer_words, response_words):

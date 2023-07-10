@@ -49,8 +49,16 @@ class TestCheckAnswer(unittest.TestCase):
     def test_preceding_preposition_removal(self):
         self.assertTrue(check_answer("to carp", "carp"))
 
-    def test_plural_validation_handling(self):
+    def test_plurality_validation_handling(self):
         self.assertFalse(check_answer("Kellogg's", "'s"))
+
+    def test_plurality_with_partial_slash(self):
+        self.assertTrue(
+            check_answer("Junior/Community Colleges", "community college")
+        )
+        self.assertTrue(
+            check_answer("Junior/Community Colleges", "junior college")
+        )
 
     def test_rearranged_list_with_following_word(self):
         self.assertTrue(
