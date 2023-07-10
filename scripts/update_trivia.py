@@ -14,6 +14,13 @@ connection = psycopg.connect(
     f"host={os.getenv('POSTGRES_HOST') or 'localhost'}"
 )
 
+# Add acceptable_answers and invalid columns
+connection.execute(
+    """
+    ALTER TABLE trivia.clues
+    ADD COLUMN IF NOT EXISTS acceptable_answers TEXT[]
+    """
+)
 connection.execute(
     """
     ALTER TABLE trivia.clues
@@ -21,6 +28,8 @@ connection.execute(
     """
 )
 connection.commit()
+
+# Denote invalid clues
 
 connection.execute(
     """
