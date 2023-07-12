@@ -33,13 +33,17 @@ class Math(commands.Cog):
 	async def calculate(self, ctx, *, equation: str):
 		'''Calculator'''
 		#_equation = re.sub("[^[0-9]+-/*^%\.]", "", equation).replace('^', "**") #words
-		replacements = {"pi" : "math.pi", 'e' : "math.e", "sin" : "math.sin", 
-                        "cos" : "math.cos", "tan" : "math.tan", '^' : "**"}
+		replacements = {
+			"pi": "math.pi", 'e': "math.e", "sin": "math.sin",
+			"cos": "math.cos", "tan": "math.tan", '^': "**"
+		}
 		allowed = set("0123456789.+-*/^%()")
 		for key, value in replacements.items():
 			equation = equation.replace(key, value)
 		# TODO: use filter
-		equation = "".join(character for character in equation if character in allowed)
+		equation = "".join(
+			character for character in equation if character in allowed
+		)
 		print("Calculated " + equation)
 		with multiprocessing.Pool(1) as pool:
 			async_result = pool.apply_async(eval, (equation,))
@@ -56,8 +60,13 @@ class Math(commands.Cog):
 				await ctx.embed_reply(f":no_entry: Error: {e}")
 			except ZeroDivisionError:
 				await ctx.embed_reply(":no_entry: Error: Division by zero")
-			except (asyncio.TimeoutError, concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
-				await ctx.embed_reply(":no_entry: Execution exceeded time limit")
+			except (
+				asyncio.TimeoutError, concurrent.futures.TimeoutError,
+				multiprocessing.context.TimeoutError
+			):
+				await ctx.embed_reply(
+					":no_entry: Execution exceeded time limit"
+				)
 	
 	@commands.command()
 	async def exp(self, ctx, value: float):
