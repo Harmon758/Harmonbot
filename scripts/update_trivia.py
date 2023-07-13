@@ -81,6 +81,17 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY[
+        $$JFK's mother$$,$$John F. Kennedy's mother$$,$$John Kennedy's mother$$
+    ]
+    WHERE answer = $$John Kennedy's mother$$
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['Abraham Lincoln','Lincoln']
     WHERE text LIKE '%president %' and answer = 'Lincoln'
     """
