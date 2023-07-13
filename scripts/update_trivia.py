@@ -96,3 +96,12 @@ connection.execute(
 )
 connection.commit()
 
+connection.execute(
+    """
+    UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['femoral','femoral arteries']
+    WHERE game_id = 3656 and answer = 'the femoral arteries'
+    """
+)
+connection.commit()
+
