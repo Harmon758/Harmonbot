@@ -101,6 +101,15 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['Nicolas Sarkozy','Sarkozy']
+    WHERE answer = 'Sarkozy'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['bantam','bantam chicken']
     WHERE game_id = 8158 and answer = 'the bantam chicken'
     """
