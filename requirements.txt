@@ -107,7 +107,7 @@ jaraco.functools==3.8.0
 jaraco.logging==3.1.2
 jaraco.stream==3.0.3
 jaraco.text==3.11.1
-jsonschema==4.18.0
+jsonschema==4.18.2
 jsonschema-specifications==2023.6.1
 kiwisolver==1.4.4
 lxml==4.9.3
