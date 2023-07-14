@@ -125,3 +125,12 @@ connection.execute(
 )
 connection.commit()
 
+connection.execute(
+    """
+    UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['lawnmowers','lawnmower racing']
+    WHERE game_id = 4245 and answer = 'lawnmower racing'
+    """
+)
+connection.commit()
+
