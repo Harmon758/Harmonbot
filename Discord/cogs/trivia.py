@@ -827,7 +827,7 @@ class TriviaBoard:
 
             if value not in self.VALUES:
                 raise RuntimeError(
-                    "Invalid clue value in trivia board generation"
+                    f"Invalid clue value in trivia board generation: {record}"
                 )
 
             category = record["category"]
