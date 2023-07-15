@@ -319,6 +319,38 @@ class Trivia(commands.Cog):
             await self.bot.attempt_delete_message(message)
         await trivia_board.select(category_number, value)
 
+    @trivia.command(aliases = ["data", "info"])
+    async def information(self, ctx):
+        """Information about trivia clues"""
+        await ctx.defer()
+        count = await ctx.bot.db.fetchval(
+            """
+            SELECT COUNT (*)
+            FROM trivia.clues
+            WHERE invalid != TRUE
+            """
+        )
+        earliest_date = await ctx.bot.db.fetchval(
+            """
+            SELECT airdate
+            FROM trivia.games
+            ORDER by airdate
+            LIMIT 1
+            """
+        )
+        latest_date = await ctx.bot.db.fetchval(
+            """
+            SELECT airdate
+            FROM trivia.games
+            ORDER by airdate DESC
+            LIMIT 1
+            """
+        )
+        await ctx.embed_reply(
+            f"There are currently {count:,} trivia clues\n"
+            f"from dates ranging from {earliest_date} to {latest_date}"
+        )
+
     # TODO: trivia board stats
 
     @trivia.command(
