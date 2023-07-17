@@ -77,7 +77,7 @@ class Trivia(commands.Cog):
             (Defaults to True)
         seconds
             How long to accept answers (and bets) for, in seconds
-            (1 - 60, default is 15)
+            (1–60, default is 15)
         """
         # Note: trivia bet command invokes this command
         await ctx.defer()
