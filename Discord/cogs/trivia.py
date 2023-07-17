@@ -446,7 +446,7 @@ class Trivia(commands.Cog):
             (Defaults to False)
         seconds
             How long to accept answers for, in seconds
-            (1 - 60, default is 15)
+            (1–60, default is 15)
         turns
             True: invoker and last person to answer correctly select;
             False: anyone selects
