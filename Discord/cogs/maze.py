@@ -278,13 +278,15 @@ class MazeCog(commands.Cog, name = "Maze"):
         Parameters
         ----------
         height
-            Maze height
+            Maze height (2–100, default is 5)
         width
-            Maze width
+            Maze width (2–100, default is 5)
         random_start
             Whether to start at a random place in the Maze
+            (Defaults to False)
         random_end
             Whether to end at a random place in the Maze
+            (Defaults to False)
         """
         maze = Maze(height, width, random_start, random_end)
         embed = discord.Embed(
