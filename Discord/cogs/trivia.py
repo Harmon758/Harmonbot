@@ -196,7 +196,7 @@ class Trivia(commands.Cog):
             (Defaults to True)
         seconds
             How long to accept answers (and bets) for, in seconds
-            (1 - 60, default is 15)
+            (1–60, default is 15)
         """
         if command := ctx.bot.get_command("trivia"):
             await ctx.invoke(
