@@ -39,7 +39,7 @@ psutil==5.9.5
 psycopg[binary]==3.1.9 
 py-cpuinfo==9.0.0
 pycountry==22.3.5
-pydantic==1.10.9
+pydantic==2.0.3
 pydealer==1.4.0
 # pygost==5.6  # No longer on PyPI
 pyowm==3.3.0
