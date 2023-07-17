@@ -396,7 +396,7 @@ class Trivia(commands.Cog):
         ----------
         number
             Number of users to display on the leaderboard
-            (1 - 15, default is 10)
+            (1–15, default is 10)
         """
         await ctx.defer()
         fields = []
