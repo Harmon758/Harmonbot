@@ -83,7 +83,7 @@ class Points(commands.Cog):
         Parameters
         ----------
         number
-            Number of Points (¤) leaders to show (between 1 and 15)
+            Number of Points (¤) leaders to show (1–15, default is 10)
         """
         await ctx.defer()
 
