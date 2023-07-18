@@ -53,19 +53,21 @@ class Math(commands.Cog):
 				await ctx.embed_reply(f"{equation} = {result}")
 			except discord.HTTPException:
 				# TODO: use textwrap/paginate
-				await ctx.embed_reply(":no_entry: Output too long")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Output too long")
 			except SyntaxError:
-				await ctx.embed_reply(":no_entry: Syntax error")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Syntax error")
 			except TypeError as e:
-				await ctx.embed_reply(f":no_entry: Error: {e}")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			except ZeroDivisionError:
-				await ctx.embed_reply(":no_entry: Error: Division by zero")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: Division by zero"
+				)
 			except (
 				asyncio.TimeoutError, concurrent.futures.TimeoutError,
 				multiprocessing.context.TimeoutError
 			):
 				await ctx.embed_reply(
-					":no_entry: Execution exceeded time limit"
+					f"{ctx.bot.error_emoji} Execution exceeded time limit"
 				)
 	
 	@commands.command()
