@@ -119,6 +119,17 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY[
+        'by kiss','by kissing him','kiss','with a kiss'
+    ]
+    WHERE answer = 'with a kiss'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['bantam','bantam chicken']
     WHERE game_id = 8158 and answer = 'the bantam chicken'
     """
