@@ -251,6 +251,9 @@ def check_answer(answer, response, inflect_engine = None):
         accepted.add(remove_preceding_words(item))
     if response in accepted:
         return True
+    with contextlib.suppress(pydantic.ValidationError):
+        if inflect_engine.plural(response) in accepted:
+            return True
     # Check XX YY (or ZZ accepted)
     matches = re.search(
         r"(.+?)\s?\((?:or )?(?:a |an |the )?(.+?)(?: accepted)?\)",

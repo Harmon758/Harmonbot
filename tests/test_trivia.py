@@ -60,6 +60,10 @@ class TestCheckAnswer(unittest.TestCase):
             check_answer("Junior/Community Colleges", "junior college")
         )
 
+    def test_plurality_with_parentheses(self):
+        self.assertTrue(check_answer("pigs (hogs)", "pig"))
+        self.assertTrue(check_answer("pigs (hogs)", "hog"))
+
     def test_rearranged_list_with_following_word(self):
         self.assertTrue(
             check_answer(
