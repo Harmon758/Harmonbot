@@ -297,7 +297,9 @@ class Meta(commands.Cog):
 	
 	@commands.hybrid_command()
 	async def stats(
-		self, ctx, session: Optional[bool] = False,
+		self, ctx,
+		session: Optional[bool] = False,
+		top_application_commands: Optional[bool] = False,
 		top_commands: Optional[bool] = False
 	):
 		"""
@@ -314,53 +316,21 @@ class Meta(commands.Cog):
 		session
 			Whether or not to include session-specific stats
 			(Defaults to False)
+		top_application_commands
+			Whether or not to include top slash and context menu command invocations
+			(Defaults to False)
 		top_commands
 			Whether or not to include top commands invoked
 			(Defaults to False)
 		"""
 		await ctx.defer()
+		
 		stats = await ctx.bot.db.fetchrow(
 			"""
 			SELECT * FROM meta.stats
 			WHERE timestamp = $1
 			""", 
 			ctx.bot.online_time
-		)
-		slash_command_invocations = await ctx.bot.db.fetch(
-			"""
-			SELECT * FROM meta.slash_commands
-			ORDER BY invocations DESC
-			LIMIT 5
-			"""
-		)
-		message_context_menu_command_invocations = await ctx.bot.db.fetch(
-			"""
-			SELECT * FROM meta.message_context_menu_commands
-			ORDER BY invocations DESC
-			LIMIT 5
-			"""
-		)
-		user_context_menu_command_invocations = await ctx.bot.db.fetch(
-			"""
-			SELECT * FROM meta.user_context_menu_commands
-			ORDER BY invocations DESC
-			LIMIT 5
-			"""
-		)
-		total_slash_command_invocations = await ctx.bot.db.fetchval(
-			"""
-			SELECT SUM (invocations) FROM meta.slash_commands
-			"""
-		)
-		total_message_context_menu_command_invocations = await ctx.bot.db.fetchval(
-			"""
-			SELECT SUM (invocations) FROM meta.message_context_menu_commands
-			"""
-		)
-		total_user_context_menu_command_invocations = await ctx.bot.db.fetchval(
-			"""
-			SELECT SUM (invocations) FROM meta.user_context_menu_commands
-			"""
 		)
 		
 		channel_types = [type(c) for c in ctx.bot.get_all_channels()]
@@ -440,35 +410,72 @@ class Meta(commands.Cog):
 					)
 				)
 		
-		embeds.append(
-			discord.Embed(
-				color = ctx.bot.bot_color
-			).add_field(
-				name = "Top Slash Command Invocations",
-				value = (
-					'\n'.join(
-						f"{record['invocations']:,} {record['command']}"
-						for record in slash_command_invocations
-					) + f"\n**Total**: {total_slash_command_invocations}"
-				)
-			).add_field(
-				name = "Message Context Menu Command Invocations",
-				value = (
-					'\n'.join(
-						f"{record['invocations']:,} {record['command']}"
-						for record in message_context_menu_command_invocations
-					) + f"\n**Total**: {total_message_context_menu_command_invocations}"
-				)
-			).add_field(
-				name = "User Context Menu Command Invocations",
-				value = (
-					'\n'.join(
-						f"{record['invocations']:,} {record['command']}"
-						for record in user_context_menu_command_invocations
-					) + f"\n**Total**: {total_user_context_menu_command_invocations}"
+		if top_application_commands:
+			slash_command_invocations = await ctx.bot.db.fetch(
+				"""
+				SELECT * FROM meta.slash_commands
+				ORDER BY invocations DESC
+				LIMIT 5
+				"""
+			)
+			message_context_menu_command_invocations = await ctx.bot.db.fetch(
+				"""
+				SELECT * FROM meta.message_context_menu_commands
+				ORDER BY invocations DESC
+				LIMIT 5
+				"""
+			)
+			user_context_menu_command_invocations = await ctx.bot.db.fetch(
+				"""
+				SELECT * FROM meta.user_context_menu_commands
+				ORDER BY invocations DESC
+				LIMIT 5
+				"""
+			)
+			total_slash_command_invocations = await ctx.bot.db.fetchval(
+				"""
+				SELECT SUM (invocations) FROM meta.slash_commands
+				"""
+			)
+			total_message_context_menu_command_invocations = await ctx.bot.db.fetchval(
+				"""
+				SELECT SUM (invocations) FROM meta.message_context_menu_commands
+				"""
+			)
+			total_user_context_menu_command_invocations = await ctx.bot.db.fetchval(
+				"""
+				SELECT SUM (invocations) FROM meta.user_context_menu_commands
+				"""
+			)
+			embeds.append(
+				discord.Embed(
+					color = ctx.bot.bot_color
+				).add_field(
+					name = "Top Slash Command Invocations",
+					value = (
+						'\n'.join(
+							f"{record['invocations']:,} {record['command']}"
+							for record in slash_command_invocations
+						) + f"\n**Total**: {total_slash_command_invocations}"
+					)
+				).add_field(
+					name = "Message Context Menu Command Invocations",
+					value = (
+						'\n'.join(
+							f"{record['invocations']:,} {record['command']}"
+							for record in message_context_menu_command_invocations
+						) + f"\n**Total**: {total_message_context_menu_command_invocations}"
+					)
+				).add_field(
+					name = "User Context Menu Command Invocations",
+					value = (
+						'\n'.join(
+							f"{record['invocations']:,} {record['command']}"
+							for record in user_context_menu_command_invocations
+						) + f"\n**Total**: {total_user_context_menu_command_invocations}"
+					)
 				)
 			)
-		)
 		
 		if session:
 			embeds.append(
