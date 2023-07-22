@@ -295,15 +295,15 @@ class Meta(commands.Cog):
 		else:
 			return f"{ns} ns"
 	
-	@commands.hybrid_command()
-	async def stats(
+	@commands.hybrid_command(aliases = ["stats"])
+	async def statistics(
 		self, ctx,
 		session: Optional[bool] = False,
 		top_application_commands: Optional[bool] = False,
 		top_commands: Optional[bool] = False
 	):
 		"""
-		Bot stats
+		Bot statistics
 		Total uptime and restarts recorded since 2016-04-17
 		Total commands invoked and cogs reloaded recorded since 2016-06-10
 		Top total commands invoked recorded since 2016-11-14
