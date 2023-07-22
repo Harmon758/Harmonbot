@@ -486,7 +486,7 @@ class Meta(commands.Cog):
 		)
 		
 		await ctx.embed_reply(
-			"__**Stats**__ :bar_chart:",
+			"__**Stats**__ \N{BAR CHART}",
 			fields = fields,
 			footer_text = None,
 			embeds = embeds
