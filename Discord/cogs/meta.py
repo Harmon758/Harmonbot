@@ -363,7 +363,6 @@ class Meta(commands.Cog):
 		total_members_online = sum(1 for m in ctx.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(ctx.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
-		top_commands = [(record["command"], record["invokes"]) for record in commands_invoked]
 		
 		fields = [
 			("Total Recorded Uptime", duration_to_string(stats["uptime"], abbreviate = True)),
@@ -371,36 +370,70 @@ class Meta(commands.Cog):
 			("Cogs Reloaded", f"{stats['cogs_reloaded']:,}"),  # TODO: cogs reloaded this session
 			("Commands", f"{len(ctx.bot.commands)} main\n{len(set(ctx.bot.walk_commands()))} total"),
 			("Total Recorded Commands Invoked", f"{stats['commands_invoked']:,}"),
-			("Servers", len(ctx.bot.guilds)),
-			("Channels", f"{channel_types.count(discord.TextChannel)} text\n"
-							f"{voice_count} voice"),
-			("Members (Online)", f"{total_members:,} total ({total_members_online:,})\n"
-									f"{len(unique_members):,} unique ({unique_members_online:,})")
 		]
-		if top_commands[:5]:
-			fields.append(("Top Commands Invoked", '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[:5])))
-		if top_commands[5:10]:
-			fields.append(("(Total Recorded)", '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[5:10])))
-		
-		fields.append((
-			"Top Slash Command Invocations",
-			'\n'.join(f"{record['invocations']:,} {record['command']}" for record in slash_command_invocations) +
-			f"\n**Total**: {total_slash_command_invocations}"
-		))
-		
-		fields.append((
-			"Message Context Menu Command Invocations",
-			'\n'.join(f"{record['invocations']:,} {record['command']}" for record in message_context_menu_command_invocations) +
-			f"\n**Total**: {total_message_context_menu_command_invocations}"
-		))
-		
-		fields.append((
-			"User Context Menu Command Invocations",
-			'\n'.join(f"{record['invocations']:,} {record['command']}" for record in user_context_menu_command_invocations) +
-			f"\n**Total**: {total_user_context_menu_command_invocations}"
-		))
 		
 		embeds = [
+			discord.Embed(
+				color = ctx.bot.bot_color
+			).add_field(
+				name = "Servers",
+				value = f"{len(ctx.bot.guilds):,}"
+			).add_field(
+				name = "Channels",
+				value = (
+					f"{channel_types.count(discord.TextChannel)} text\n"
+					f"{voice_count} voice"
+				)
+			).add_field(
+				name = "Members (Online)",
+				value = (
+					f"{total_members:,} total ({total_members_online:,})\n"
+					f"{len(unique_members):,} unique ({unique_members_online:,})"
+				)
+			)
+		]
+		
+		top_commands = [(record["command"], record["invokes"]) for record in commands_invoked]
+		if top_commands[:5]:
+			embeds.append(
+				discord.Embed(
+					color = ctx.bot.bot_color
+				).add_field(
+					name = "Top Commands Invoked",
+					value = '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[:5])
+				)
+			)
+		if top_commands[5:10]:
+			embeds[-1].add_field(
+				name = "(Total Recorded)",
+				value = '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[5:10])
+			)
+		
+		embeds.append(
+			discord.Embed(
+				color = ctx.bot.bot_color
+			).add_field(
+				name = "Top Slash Command Invocations",
+				value = (
+					'\n'.join(f"{record['invocations']:,} {record['command']}" for record in slash_command_invocations) +
+					f"\n**Total**: {total_slash_command_invocations}"
+				)
+			).add_field(
+				name = "Message Context Menu Command Invocations",
+				value = (
+					'\n'.join(f"{record['invocations']:,} {record['command']}" for record in message_context_menu_command_invocations) +
+					f"\n**Total**: {total_message_context_menu_command_invocations}"
+				)
+			).add_field(
+				name = "User Context Menu Command Invocations",
+				value = (
+					'\n'.join(f"{record['invocations']:,} {record['command']}" for record in user_context_menu_command_invocations) +
+					f"\n**Total**: {total_user_context_menu_command_invocations}"
+				)
+			)
+		)
+		
+		embeds.append(
 			discord.Embed(
 				color = ctx.bot.bot_color,
 				title = "Session Stats"
@@ -414,7 +447,7 @@ class Meta(commands.Cog):
 				name = "Commands Invoked",
 				value = f"{sum(ctx.bot.session_commands_invoked.values()):,}"
 			)
-		]
+		)
 		session_top_5 = sorted(
 			ctx.bot.session_commands_invoked.items(),
 			key = lambda i: i[1],
