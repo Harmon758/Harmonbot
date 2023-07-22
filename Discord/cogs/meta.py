@@ -317,7 +317,7 @@ class Meta(commands.Cog):
 			"""
 			SELECT * FROM meta.commands_invoked
 			ORDER BY invokes DESC
-			LIMIT 10
+			LIMIT 15
 			"""
 		)
 		slash_command_invocations = await ctx.bot.db.fetch(
@@ -415,6 +415,14 @@ class Meta(commands.Cog):
 				value = '\n'.join(
 					f"{uses:,} {command}"
 					for command, uses in top_commands[5:10]
+				)
+			)
+		if top_commands[10:15]:
+			embeds[-1].add_field(
+				name = ctx.bot.ZERO_WIDTH_SPACE,
+				value = '\n'.join(
+					f"{uses:,} {command}"
+					for command, uses in top_commands[10:15]
 				)
 			)
 		
