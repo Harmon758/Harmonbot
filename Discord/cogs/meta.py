@@ -296,7 +296,7 @@ class Meta(commands.Cog):
 			return f"{ns} ns"
 	
 	@commands.hybrid_command()
-	async def stats(self, ctx):
+	async def stats(self, ctx, session: Optional[bool] = False):
 		"""
 		Bot stats
 		Total uptime and restarts recorded since 2016-04-17
@@ -305,6 +305,12 @@ class Meta(commands.Cog):
 		Slash command invocations tracked since 2022-03-27
 		Message context menu command invocations tracked since 2022-03-27
 		User context menu command invocations tracked since 2022-03-27
+		
+		Parameters
+		----------
+		session
+			Whether or not to include session-specific stats
+			(Defaults to False)
 		"""
 		await ctx.defer()
 		stats = await ctx.bot.db.fetchrow(
@@ -457,42 +463,43 @@ class Meta(commands.Cog):
 			)
 		)
 		
-		embeds.append(
-			discord.Embed(
-				color = ctx.bot.bot_color,
-				title = "Session Stats"
-			).add_field(
-				name = "Uptime",
-				value = duration_to_string(
-					datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time,
-					abbreviate = True
+		if session:
+			embeds.append(
+				discord.Embed(
+					color = ctx.bot.bot_color,
+					title = "Session Stats"
+				).add_field(
+					name = "Uptime",
+					value = duration_to_string(
+						datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time,
+						abbreviate = True
+					)
+				).add_field(
+					name = "Commands Invoked",
+					value = f"{sum(ctx.bot.session_commands_invoked.values()):,}"
 				)
-			).add_field(
-				name = "Commands Invoked",
-				value = f"{sum(ctx.bot.session_commands_invoked.values()):,}"
 			)
-		)
-		session_top_5 = sorted(
-			ctx.bot.session_commands_invoked.items(),
-			key = lambda i: i[1],
-			reverse = True
-		)[:5]
-		if session_top_5:
+			session_top_5 = sorted(
+				ctx.bot.session_commands_invoked.items(),
+				key = lambda i: i[1],
+				reverse = True
+			)[:5]
+			if session_top_5:
+				embeds[-1].add_field(
+					name = "Top Commands Invoked",
+					value = '\n'.join(
+						f"{uses:,} {command}"
+						for command, uses in session_top_5
+					)
+				)
+			playing_in_voice_count = sum(
+				vc.is_playing() for vc in ctx.bot.voice_clients
+			)
+			in_voice_count = len(ctx.bot.cogs["Audio"].players)
 			embeds[-1].add_field(
-				name = "Top Commands Invoked",
-				value = '\n'.join(
-					f"{uses:,} {command}"
-					for command, uses in session_top_5
-				)
+				name = "Voice Channels",
+				value = f"Playing in {playing_in_voice_count}/{in_voice_count}"
 			)
-		playing_in_voice_count = sum(
-			vc.is_playing() for vc in ctx.bot.voice_clients
-		)
-		in_voice_count = len(ctx.bot.cogs["Audio"].players)
-		embeds[-1].add_field(
-			name = "Voice Channels",
-			value = f"Playing in {playing_in_voice_count}/{in_voice_count}"
-		)
 		
 		await ctx.embed_reply(
 			"__**Stats**__ \N{BAR CHART}",
