@@ -295,7 +295,7 @@ class Meta(commands.Cog):
 		else:
 			return f"{ns} ns"
 	
-	@commands.command()
+	@commands.hybrid_command()
 	async def stats(self, ctx):
 		'''
 		Bot stats
@@ -306,6 +306,7 @@ class Meta(commands.Cog):
 		Message context menu command invocations tracked since 2022-03-27
 		User context menu command invocations tracked since 2022-03-27
 		'''
+		await ctx.defer()
 		stats = await ctx.bot.db.fetchrow(
 			"""
 			SELECT * FROM meta.stats
