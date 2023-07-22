@@ -128,6 +128,15 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['po boy',$$po' boy$$,'po-boy','poor boy']
+    WHERE answer = $$a po' boy$$
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['Sam Adams','Samuel Adams']
     WHERE answer = 'Sam Adams'
     """
