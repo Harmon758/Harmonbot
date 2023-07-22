@@ -296,7 +296,10 @@ class Meta(commands.Cog):
 			return f"{ns} ns"
 	
 	@commands.hybrid_command()
-	async def stats(self, ctx, session: Optional[bool] = False):
+	async def stats(
+		self, ctx, session: Optional[bool] = False,
+		top_commands: Optional[bool] = False
+	):
 		"""
 		Bot stats
 		Total uptime and restarts recorded since 2016-04-17
@@ -311,6 +314,9 @@ class Meta(commands.Cog):
 		session
 			Whether or not to include session-specific stats
 			(Defaults to False)
+		top_commands
+			Whether or not to include top commands invoked
+			(Defaults to False)
 		"""
 		await ctx.defer()
 		stats = await ctx.bot.db.fetchrow(
@@ -319,13 +325,6 @@ class Meta(commands.Cog):
 			WHERE timestamp = $1
 			""", 
 			ctx.bot.online_time
-		)
-		commands_invoked = await ctx.bot.db.fetch(
-			"""
-			SELECT * FROM meta.commands_invoked
-			ORDER BY invokes DESC
-			LIMIT 15
-			"""
 		)
 		slash_command_invocations = await ctx.bot.db.fetch(
 			"""
@@ -400,38 +399,46 @@ class Meta(commands.Cog):
 			)
 		]
 		
-		top_commands = [
-			(record["command"], record["invokes"])
-			for record in commands_invoked
-		]
-		if top_commands[:5]:
-			embeds.append(
-				discord.Embed(
-					color = ctx.bot.bot_color
-				).add_field(
-					name = "Top Commands Invoked",
-					value = '\n'.join(
-						f"{uses:,} {command}"
-						for command, uses in top_commands[:5]
+		if top_commands:
+			commands_invoked = await ctx.bot.db.fetch(
+				"""
+				SELECT * FROM meta.commands_invoked
+				ORDER BY invokes DESC
+				LIMIT 15
+				"""
+			)
+			top_commands_invoked = [
+				(record["command"], record["invokes"])
+				for record in commands_invoked
+			]
+			if top_commands_invoked[:5]:
+				embeds.append(
+					discord.Embed(
+						color = ctx.bot.bot_color
+					).add_field(
+						name = "Top Commands Invoked",
+						value = '\n'.join(
+							f"{uses:,} {command}"
+							for command, uses in top_commands_invoked[:5]
+						)
 					)
 				)
-			)
-		if top_commands[5:10]:
-			embeds[-1].add_field(
-				name = ctx.bot.ZERO_WIDTH_SPACE,
-				value = '\n'.join(
-					f"{uses:,} {command}"
-					for command, uses in top_commands[5:10]
+			if top_commands_invoked[5:10]:
+				embeds[-1].add_field(
+					name = ctx.bot.ZERO_WIDTH_SPACE,
+					value = '\n'.join(
+						f"{uses:,} {command}"
+						for command, uses in top_commands_invoked[5:10]
+					)
 				)
-			)
-		if top_commands[10:15]:
-			embeds[-1].add_field(
-				name = ctx.bot.ZERO_WIDTH_SPACE,
-				value = '\n'.join(
-					f"{uses:,} {command}"
-					for command, uses in top_commands[10:15]
+			if top_commands_invoked[10:15]:
+				embeds[-1].add_field(
+					name = ctx.bot.ZERO_WIDTH_SPACE,
+					value = '\n'.join(
+						f"{uses:,} {command}"
+						for command, uses in top_commands_invoked[10:15]
+					)
 				)
-			)
 		
 		embeds.append(
 			discord.Embed(
