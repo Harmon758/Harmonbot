@@ -75,10 +75,7 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
                 output += chr(ord(character.lower()) + 127365) + ' '
                 # ord('🇦') - ord('a') = 127365
             elif '0' <= character <= '9':
-                output += (
-                    character +
-                    "\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} "
-                )
+                output += character + "\N{COMBINING ENCLOSING KEYCAP} "
             else:
                 output += character
         try:
