@@ -8,7 +8,7 @@ import random
 
 
 EMOJI = [
-    '7\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP}',
+    '7\N{COMBINING ENCLOSING KEYCAP}',
     '\N{BANANA}',
     '\N{BELL}',
     '\N{CHERRIES}',
