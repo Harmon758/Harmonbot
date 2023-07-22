@@ -297,7 +297,7 @@ class Meta(commands.Cog):
 	
 	@commands.hybrid_command()
 	async def stats(self, ctx):
-		'''
+		"""
 		Bot stats
 		Total uptime and restarts recorded since 2016-04-17
 		Total commands invoked and cogs reloaded recorded since 2016-06-10
@@ -305,7 +305,7 @@ class Meta(commands.Cog):
 		Slash command invocations tracked since 2022-03-27
 		Message context menu command invocations tracked since 2022-03-27
 		User context menu command invocations tracked since 2022-03-27
-		'''
+		"""
 		await ctx.defer()
 		stats = await ctx.bot.db.fetchrow(
 			"""
