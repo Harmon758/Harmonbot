@@ -493,6 +493,7 @@ class Meta(commands.Cog):
 					value = f"{sum(ctx.bot.session_commands_invoked.values()):,}"
 				)
 			)
+			
 			session_top_5 = sorted(
 				ctx.bot.session_commands_invoked.items(),
 				key = lambda i: i[1],
@@ -506,6 +507,13 @@ class Meta(commands.Cog):
 						for command, uses in session_top_5
 					)
 				)
+			
+			trivia_boards_count = len(ctx.bot.cogs["Trivia"].trivia_boards)
+			embeds[-1].add_field(
+				name = "Trivia Boards",
+				value = f"{trivia_boards_count} active"
+			)
+			
 			playing_in_voice_count = sum(
 				vc.is_playing() for vc in ctx.bot.voice_clients
 			)
