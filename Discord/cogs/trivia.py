@@ -939,7 +939,6 @@ class TriviaBoardSelectionView(ui.View):
                 self.category.add_option(
                     label = number, description = category["title"]
                 )
-                # TODO: Handle description longer than 50 characters?
 
         for value in self.match.VALUES:
             self.add_item(TriviaBoardValueButton(value))
