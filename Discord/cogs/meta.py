@@ -381,8 +381,8 @@ class Meta(commands.Cog):
 			).add_field(
 				name = "Channels",
 				value = (
-					f"{channel_types.count(discord.TextChannel)} text\n"
-					f"{voice_count} voice"
+					f"{channel_types.count(discord.TextChannel):,} text\n"
+					f"{voice_count:,} voice"
 				)
 			).add_field(
 				name = "Members (Online)",
