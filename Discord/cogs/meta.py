@@ -411,7 +411,7 @@ class Meta(commands.Cog):
 			)
 		if top_commands[5:10]:
 			embeds[-1].add_field(
-				name = "(Total Recorded)",
+				name = ctx.bot.ZERO_WIDTH_SPACE,
 				value = '\n'.join(
 					f"{uses:,} {command}"
 					for command, uses in top_commands[5:10]
