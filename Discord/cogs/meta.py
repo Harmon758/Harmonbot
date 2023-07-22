@@ -302,6 +302,9 @@ class Meta(commands.Cog):
 		Total uptime and restarts recorded since 2016-04-17
 		Total commands invoked and cogs reloaded recorded since 2016-06-10
 		Top total commands invoked recorded since 2016-11-14
+		Slash command invocations tracked since 2022-03-27
+		Message context menu command invocations tracked since 2022-03-27
+		User context menu command invocations tracked since 2022-03-27
 		'''
 		stats = await ctx.bot.db.fetchrow(
 			"""
@@ -310,11 +313,47 @@ class Meta(commands.Cog):
 			""", 
 			ctx.bot.online_time
 		)
-		records = await ctx.bot.db.fetch(
+		commands_invoked = await ctx.bot.db.fetch(
 			"""
 			SELECT * FROM meta.commands_invoked
 			ORDER BY invokes DESC
 			LIMIT 10
+			"""
+		)
+		slash_command_invocations = await ctx.bot.db.fetch(
+			"""
+			SELECT * FROM meta.slash_commands
+			ORDER BY invocations DESC
+			LIMIT 5
+			"""
+		)
+		message_context_menu_command_invocations = await ctx.bot.db.fetch(
+			"""
+			SELECT * FROM meta.message_context_menu_commands
+			ORDER BY invocations DESC
+			LIMIT 5
+			"""
+		)
+		user_context_menu_command_invocations = await ctx.bot.db.fetch(
+			"""
+			SELECT * FROM meta.user_context_menu_commands
+			ORDER BY invocations DESC
+			LIMIT 5
+			"""
+		)
+		total_slash_command_invocations = await ctx.bot.db.fetchval(
+			"""
+			SELECT SUM (invocations) FROM meta.slash_commands
+			"""
+		)
+		total_message_context_menu_command_invocations = await ctx.bot.db.fetchval(
+			"""
+			SELECT SUM (invocations) FROM meta.message_context_menu_commands
+			"""
+		)
+		total_user_context_menu_command_invocations = await ctx.bot.db.fetchval(
+			"""
+			SELECT SUM (invocations) FROM meta.user_context_menu_commands
 			"""
 		)
 		
@@ -326,7 +365,7 @@ class Meta(commands.Cog):
 		total_members_online = sum(1 for m in ctx.bot.get_all_members() if m.status != discord.Status.offline)
 		unique_members = set(ctx.bot.get_all_members())
 		unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
-		top_commands = [(record["command"], record["invokes"]) for record in records]
+		top_commands = [(record["command"], record["invokes"]) for record in commands_invoked]
 		session_top_5 = sorted(ctx.bot.session_commands_invoked.items(), key = lambda i: i[1], reverse = True)[:5]
 		
 		fields = [("Uptime", duration_to_string(datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time, abbreviate = True)), 
@@ -347,6 +386,25 @@ class Meta(commands.Cog):
 			fields.append(("(Total Recorded)", '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[5:10])))
 		if session_top_5:
 			fields.append(("(This Session)", '\n'.join(f"{uses:,} {command}" for command, uses in session_top_5)))
+		
+		fields.append((
+			"Top Slash Command Invocations",
+			'\n'.join(f"{record['invocations']:,} {record['command']}" for record in slash_command_invocations) +
+			f"\n**Total**: {total_slash_command_invocations}"
+		))
+		
+		fields.append((
+			"Message Context Menu Command Invocations",
+			'\n'.join(f"{record['invocations']:,} {record['command']}" for record in message_context_menu_command_invocations) +
+			f"\n**Total**: {total_message_context_menu_command_invocations}"
+		))
+		
+		fields.append((
+			"User Context Menu Command Invocations",
+			'\n'.join(f"{record['invocations']:,} {record['command']}" for record in user_context_menu_command_invocations) +
+			f"\n**Total**: {total_user_context_menu_command_invocations}"
+		))
+		
 		await ctx.embed_reply("__**Stats**__ :bar_chart:", fields = fields)
 	
 	@commands.hybrid_command()
