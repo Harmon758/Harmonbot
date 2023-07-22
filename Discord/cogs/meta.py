@@ -393,20 +393,29 @@ class Meta(commands.Cog):
 			)
 		]
 		
-		top_commands = [(record["command"], record["invokes"]) for record in commands_invoked]
+		top_commands = [
+			(record["command"], record["invokes"])
+			for record in commands_invoked
+		]
 		if top_commands[:5]:
 			embeds.append(
 				discord.Embed(
 					color = ctx.bot.bot_color
 				).add_field(
 					name = "Top Commands Invoked",
-					value = '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[:5])
+					value = '\n'.join(
+						f"{uses:,} {command}"
+						for command, uses in top_commands[:5]
+					)
 				)
 			)
 		if top_commands[5:10]:
 			embeds[-1].add_field(
 				name = "(Total Recorded)",
-				value = '\n'.join(f"{uses:,} {command}" for command, uses in top_commands[5:10])
+				value = '\n'.join(
+					f"{uses:,} {command}"
+					for command, uses in top_commands[5:10]
+				)
 			)
 		
 		embeds.append(
@@ -415,20 +424,26 @@ class Meta(commands.Cog):
 			).add_field(
 				name = "Top Slash Command Invocations",
 				value = (
-					'\n'.join(f"{record['invocations']:,} {record['command']}" for record in slash_command_invocations) +
-					f"\n**Total**: {total_slash_command_invocations}"
+					'\n'.join(
+						f"{record['invocations']:,} {record['command']}"
+						for record in slash_command_invocations
+					) + f"\n**Total**: {total_slash_command_invocations}"
 				)
 			).add_field(
 				name = "Message Context Menu Command Invocations",
 				value = (
-					'\n'.join(f"{record['invocations']:,} {record['command']}" for record in message_context_menu_command_invocations) +
-					f"\n**Total**: {total_message_context_menu_command_invocations}"
+					'\n'.join(
+						f"{record['invocations']:,} {record['command']}"
+						for record in message_context_menu_command_invocations
+					) + f"\n**Total**: {total_message_context_menu_command_invocations}"
 				)
 			).add_field(
 				name = "User Context Menu Command Invocations",
 				value = (
-					'\n'.join(f"{record['invocations']:,} {record['command']}" for record in user_context_menu_command_invocations) +
-					f"\n**Total**: {total_user_context_menu_command_invocations}"
+					'\n'.join(
+						f"{record['invocations']:,} {record['command']}"
+						for record in user_context_menu_command_invocations
+					) + f"\n**Total**: {total_user_context_menu_command_invocations}"
 				)
 			)
 		)
