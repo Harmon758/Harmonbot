@@ -156,6 +156,17 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY[
+        'Churchill','Sir Winston Churchill','Winston Churchill'
+    ]
+    WHERE answer = 'Sir Winston Churchill'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
+    SET acceptable_answers = ARRAY[
         'by kiss','by kissing him','kiss','with a kiss'
     ]
     WHERE answer = 'with a kiss'
