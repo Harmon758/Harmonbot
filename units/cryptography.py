@@ -22,9 +22,9 @@ def encode_caesar_cipher(message: str, key: int):
 
 def decode_caesar_cipher(message: str, key: int):
 	if not isinstance(message, str):
-		raise UnitExecutionError("message must be str")
+		raise TypeError("message must be str")
 	if not isinstance(key, int):
-		raise UnitExecutionError("key must be int")
+		raise TypeError("key must be int")
 	return encode_caesar_cipher(message, -key)
 
 # Morse Code

@@ -12,7 +12,7 @@ class TestCaesarCipher(unittest.TestCase):
 	
 	@given(uuids(), integers())
 	def test_decode_invalid_message_type(self, message, key):
-		self.assertRaises(UnitExecutionError, decode_caesar_cipher, message, key)
+		self.assertRaises(TypeError, decode_caesar_cipher, message, key)
 	
 	@given(uuids(), integers())
 	def test_encode_invalid_message_type(self, message, key):
@@ -20,7 +20,7 @@ class TestCaesarCipher(unittest.TestCase):
 	
 	@given(text(), uuids())
 	def test_decode_invalid_key_type(self, message, key):
-		self.assertRaises(UnitExecutionError, decode_caesar_cipher, message, key)
+		self.assertRaises(TypeError, decode_caesar_cipher, message, key)
 	
 	@given(text(), uuids())
 	def test_encode_invalid_key_type(self, message, key):
