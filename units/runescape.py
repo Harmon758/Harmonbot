@@ -49,19 +49,22 @@ async def get_item_id(
 
 
 async def get_ge_data(item, item_id = None, aiohttp_session = None):
-    if not aiohttp_session:
-        raise UnitExecutionError("aiohttp session required")
-        # TODO: Default aiohttp session?
-    if not item_id:
-        item_id = await get_item_id(item, aiohttp_session = aiohttp_session)
-    async with aiohttp_session.get(
-        "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json",
-        params = {"item": item_id}
-    ) as resp:
-        if resp.status == 404:
-            raise UnitOutputError(f"{item} not found on the Grand Exchange")
-        data = await resp.json(content_type = "text/html")
-    return data["item"]
+    if aiohttp_session_not_passed := (aiohttp_session is None):
+        aiohttp_session = aiohttp.ClientSession()
+    try:
+        if not item_id:
+            item_id = await get_item_id(item, aiohttp_session = aiohttp_session)
+        async with aiohttp_session.get(
+            "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json",
+            params = {"item": item_id}
+        ) as resp:
+            if resp.status == 404:
+                raise UnitOutputError(f"{item} not found on the Grand Exchange")
+            data = await resp.json(content_type = "text/html")
+        return data["item"]
+    finally:
+        if aiohttp_session_not_passed:
+            await aiohttp_session.close()
 
 
 async def get_monster_data(monster, aiohttp_session = None):
