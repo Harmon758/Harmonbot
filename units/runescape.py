@@ -48,7 +48,7 @@ async def get_item_id(
             await aiohttp_session.close()
 
 
-async def get_ge_data(item, item_id = None, aiohttp_session = None):
+async def get_ge_data(item, *, item_id = None, aiohttp_session = None):
     if aiohttp_session_not_passed := (aiohttp_session is None):
         aiohttp_session = aiohttp.ClientSession()
     try:
