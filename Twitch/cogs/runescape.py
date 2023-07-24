@@ -184,7 +184,7 @@ class Runescape:
 	async def monster(self, ctx, *, monster):
 		try:
 			data = await get_monster_data(monster, aiohttp_session = self.bot.aiohttp_session)
-		except UnitOutputError as e:
+		except ValueError as e:
 			return await ctx.send(f"Error: {e}")
 		await ctx.send(f"{data['name']}: {data['description']}, "
 						f"Level: {data.get('level', 'N/A')}, "

@@ -75,7 +75,7 @@ class RuneScape(commands.Cog):
             data = await get_monster_data(
                 monster, aiohttp_session = ctx.bot.aiohttp_session
             )
-        except UnitOutputError as e:
+        except ValueError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
             return
         await ctx.embed_reply(

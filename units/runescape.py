@@ -84,7 +84,7 @@ async def get_monster_data(
         ) as resp:
             data = await resp.json(content_type = "text/html")
         if "value" not in data[0]:
-            raise UnitOutputError("Monster not found")
+            raise ValueError("Monster not found")
         async with aiohttp_session.get(
             "http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json",
             params = {"beastid": data[0]["value"]}
