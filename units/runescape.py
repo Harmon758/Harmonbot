@@ -9,17 +9,20 @@ async def get_item_id(item, aiohttp_session = None):
     # https://runescape.wiki/w/Application_programming_interface#Grand_Exchange_Database_API
     # https://www.mediawiki.org/wiki/API:Opensearch
     # TODO: Handle redirects?
-    url = "https://runescape.wiki/api.php"
-    params = {"action": "opensearch", "search": item}
-    async with aiohttp_session.get(url, params = params) as resp:
+    async with aiohttp_session.get(
+        "https://runescape.wiki/api.php",
+        params = {"action": "opensearch", "search": item}
+    ) as resp:
         data = await resp.json()
     if not data[1]:
         raise UnitOutputError("Item not found")
     for item in data[1]:
         # https://www.semantic-mediawiki.org/wiki/Help:Ask
         # https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
-        params = {"action": "ask", "query": f"[[{item}]]|?Item_ID", "format": "json"}
-        async with aiohttp_session.get(url, params = params) as resp:
+        async with aiohttp_session.get(
+            "https://runescape.wiki/api.php",
+            params = {"action": "ask", "query": f"[[{item}]]|?Item_ID", "format": "json"}
+        ) as resp:
             data = await resp.json()
         item_id = list(data["query"]["results"].values())[0]["printouts"]["Item ID"]
         if item_id:
