@@ -53,7 +53,7 @@ def encode_morse_code(message: str):
 
 def decode_morse_code(message: str):
 	if not isinstance(message, str):
-		raise UnitExecutionError("message must be str")
+		raise TypeError("message must be str")
 	try:
 		return ' '.join("".join(morse_to_character[character] for character in word.split()) 
 						for word in message.split(" / "))

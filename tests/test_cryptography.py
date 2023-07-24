@@ -36,7 +36,7 @@ class TestMorseCode(unittest.TestCase):
 	
 	@given(uuids())
 	def test_decode_invalid_message_type(self, message):
-		self.assertRaises(UnitExecutionError, decode_morse_code, message)
+		self.assertRaises(TypeError, decode_morse_code, message)
 	
 	@given(uuids())
 	def test_encode_invalid_message_type(self, message):
