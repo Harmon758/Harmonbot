@@ -57,7 +57,7 @@ async def get_ge_data(
     if aiohttp_session_not_passed := (aiohttp_session is None):
         aiohttp_session = aiohttp.ClientSession()
     try:
-        if not item_id:
+        if item_id is None:
             item_id = await get_item_id(item, aiohttp_session = aiohttp_session)
         async with aiohttp_session.get(
             "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json",
