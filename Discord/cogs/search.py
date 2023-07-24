@@ -306,7 +306,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		Parameters
 		----------
 		query
-			Query to search for
+			Search query
 		"""
 		ctx = await interaction.client.get_context(interaction)
 		await self.wikipedia(ctx, query = query)
