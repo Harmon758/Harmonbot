@@ -7,7 +7,7 @@ import sys
 import time
 
 sys.path.insert(0, "..")
-from units.runescape import get_ge_data, get_monster_data, UnitOutputError
+from units.runescape import get_ge_data, get_monster_data
 from units.time import duration_to_string
 sys.path.pop(0)
 
@@ -105,7 +105,7 @@ class Runescape:
 	async def ge(self, ctx, *, item):
 		try:
 			data = await get_ge_data(item, aiohttp_session = self.bot.aiohttp_session)
-		except UnitOutputError as e:
+		except ValueError as e:
 			return await ctx.send(f"Error: {e}")
 		await ctx.send(f"Price of {data['name']}: {data['current']['price']} gp")
 	

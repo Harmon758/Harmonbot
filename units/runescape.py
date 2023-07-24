@@ -1,8 +1,6 @@
 
 import aiohttp
 
-from .errors import UnitOutputError
-
 
 async def get_item_id(
     item: str, *, aiohttp_session: aiohttp.ClientSession | None = None
@@ -20,7 +18,7 @@ async def get_item_id(
             data = await resp.json()
 
         if not data[1]:
-            raise UnitOutputError("Item not found")
+            raise ValueError("Item not found")
 
         for item in data[1]:
             # https://www.semantic-mediawiki.org/wiki/Help:Ask
@@ -42,7 +40,7 @@ async def get_item_id(
             ):
                 return item_id[0]
 
-        raise UnitOutputError(f"{item} is not an item")
+        raise ValueError(f"{item} is not an item")
     finally:
         if aiohttp_session_not_passed:
             await aiohttp_session.close()
@@ -64,7 +62,7 @@ async def get_ge_data(
             params = {"item": item_id}
         ) as resp:
             if resp.status == 404:
-                raise UnitOutputError(f"{item} not found on the Grand Exchange")
+                raise ValueError(f"{item} not found on the Grand Exchange")
             data = await resp.json(content_type = "text/html")
         return data["item"]
     finally:

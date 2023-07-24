@@ -8,9 +8,7 @@ import sys
 from utilities import checks
 
 sys.path.insert(0, "..")
-from units.runescape import (
-    get_ge_data, get_item_id, get_monster_data, UnitOutputError
-)
+from units.runescape import get_ge_data, get_item_id, get_monster_data
 sys.path.pop(0)
 
 async def setup(bot):
@@ -49,7 +47,7 @@ class RuneScape(commands.Cog):
                 item, item_id = item_id,
                 aiohttp_session = ctx.bot.aiohttp_session
             )
-        except UnitOutputError as e:
+        except ValueError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
             return
         await ctx.embed_reply(
