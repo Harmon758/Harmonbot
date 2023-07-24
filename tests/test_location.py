@@ -12,15 +12,18 @@ class TestWindDegreesToDirection(unittest.TestCase):
 
     @given(uuids())
     def test_invalid_degrees_type(self, degrees):
-        self.assertRaises(UnitExecutionError, wind_degrees_to_direction, degrees)
+        with self.assertRaises(UnitExecutionError):
+            wind_degrees_to_direction(degrees)
 
     @given(floats(max_value = 0, exclude_max = True))
     def test_negative_degrees(self, degrees):
-        self.assertRaises(UnitExecutionError, wind_degrees_to_direction, degrees)
+        with self.assertRaises(UnitExecutionError):
+            wind_degrees_to_direction(degrees)
 
     @given(floats(min_value = 360, exclude_min = True))
     def test_degrees_greater_than_360(self, degrees):
-        self.assertRaises(UnitExecutionError, wind_degrees_to_direction, degrees)
+        with self.assertRaises(UnitExecutionError):
+            wind_degrees_to_direction(degrees)
 
     @given(floats(min_value = 0, max_value = 360))
     def test_output_type(self, degrees):
