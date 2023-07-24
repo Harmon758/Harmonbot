@@ -72,7 +72,9 @@ async def get_ge_data(
             await aiohttp_session.close()
 
 
-async def get_monster_data(monster, *, aiohttp_session = None):
+async def get_monster_data(
+    monster: str, *, aiohttp_session: aiohttp.ClientSession | None = None
+) -> dict:
     if aiohttp_session_not_passed := (aiohttp_session is None):
         aiohttp_session = aiohttp.ClientSession()
     try:
