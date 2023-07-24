@@ -6,7 +6,7 @@ from hypothesis.strategies import characters, integers, text, uuids
 
 from units.cryptography import (decode_caesar_cipher, encode_caesar_cipher, 
 								decode_morse_code, encode_morse_code)
-from units.errors import UnitExecutionError, UnitOutputError
+from units.errors import UnitOutputError
 
 class TestCaesarCipher(unittest.TestCase):
 	

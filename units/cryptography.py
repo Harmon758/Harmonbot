@@ -1,7 +1,7 @@
 
 from string import ascii_lowercase, ascii_uppercase
 
-from .errors import UnitExecutionError, UnitOutputError
+from .errors import UnitOutputError
 
 # Caesar Cipher
 
