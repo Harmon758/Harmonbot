@@ -7,13 +7,12 @@ from hypothesis import assume, given
 from hypothesis.strategies import timedeltas, times
 
 from units.time import duration_to_string
-from units.errors import UnitExecutionError
 
 class TestDurationToString(unittest.TestCase):
 	
 	@given(times())
 	def test_invalid_duration_type(self, duration):
-		self.assertRaises(UnitExecutionError, duration_to_string, duration)
+		self.assertRaises(TypeError, duration_to_string, duration)
 	
 	@given(timedeltas())
 	def test_output_type(self, duration):

@@ -1,8 +1,6 @@
 
 import datetime
 
-from .errors import UnitExecutionError
-
 
 def duration_to_string(
     duration: datetime.timedelta,
@@ -15,7 +13,7 @@ def duration_to_string(
     # TODO: Support colon format
     # TODO: Default output for duration of 0?
     if not isinstance(duration, datetime.timedelta):
-        raise UnitExecutionError("duration must be datetime.timedelta")
+        raise TypeError("duration must be datetime.timedelta")
 
     negative = False
     if duration.total_seconds() < 0:
