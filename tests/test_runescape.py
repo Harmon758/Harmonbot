@@ -9,6 +9,9 @@ from units.runescape import get_item_id, get_ge_data, get_monster_data
 
 class TestGetItemID(unittest.IsolatedAsyncioTestCase):
 
+    async def asyncSetUp(self):
+        asyncio.get_running_loop().slow_callback_duration = 1
+
     @vcr.use_cassette("runescape/get_item_id/get_vial_id.yaml")
     async def test_get_vial_id(self):
         self.assertEqual(await get_item_id("vial"), 229)
@@ -30,6 +33,9 @@ class TestGetItemID(unittest.IsolatedAsyncioTestCase):
 
 
 class TestGetGEData(unittest.IsolatedAsyncioTestCase):
+
+    async def asyncSetUp(self):
+        asyncio.get_running_loop().slow_callback_duration = 1
 
     @vcr.use_cassette("runescape/get_ge_data/get_vial_ge_data.yaml")
     async def test_get_vial_ge_data(self):
@@ -56,6 +62,9 @@ class TestGetGEData(unittest.IsolatedAsyncioTestCase):
 
 
 class TestGetMonsterData(unittest.IsolatedAsyncioTestCase):
+
+    async def asyncSetUp(self):
+        asyncio.get_running_loop().slow_callback_duration = 1
 
     @vcr.use_cassette("runescape/get_monster_data/get_cow_data.yaml")
     async def test_get_cow_data(self):
