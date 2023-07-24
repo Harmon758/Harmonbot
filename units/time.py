@@ -5,18 +5,23 @@ from .errors import UnitExecutionError
 
 
 def duration_to_string(
-    duration: datetime.timedelta, weeks: bool = True,
-    milliseconds: bool = False, microseconds: bool = False,
-    abbreviate: bool = False, separator: str = ' '
+    duration: datetime.timedelta,
+    weeks: bool = True,
+    milliseconds: bool = False,
+    microseconds: bool = False,
+    abbreviate: bool = False,
+    separator: str = ' '
 ) -> str:
     # TODO: Support colon format
     # TODO: Default output for duration of 0?
     if not isinstance(duration, datetime.timedelta):
         raise UnitExecutionError("duration must be datetime.timedelta")
+
     negative = False
     if duration.total_seconds() < 0:
         duration = abs(duration)
         negative = True
+
     units = {"year": duration.days // 365}
     if weeks:
         units["week"] = duration.days % 365 // 7
@@ -32,6 +37,7 @@ def duration_to_string(
             units["microsecond"] = duration.microseconds % 1000
     elif microseconds:
         units["microsecond"] = duration.microseconds
+
     outputs = []
     for name, value in units.items():
         if not value:
@@ -50,5 +56,6 @@ def duration_to_string(
             if abs(value) > 1:
                 output += 's'
         outputs.append(output)
+
     return separator.join(outputs)
 
