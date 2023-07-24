@@ -12,6 +12,7 @@ from utilities.transformers import PartialEmojiTransformer
 class EMOJI(Enum):
     bear = '\N{BEAR FACE}'
     bird = '\N{BIRD}'
+    chipmunk = '\N{CHIPMUNK}'
     cow = '\N{COW}'
     cucumber = '\N{CUCUMBER}'
     dragon = '\N{DRAGON}'
