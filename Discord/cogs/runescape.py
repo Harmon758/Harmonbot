@@ -153,14 +153,14 @@ class RuneScape(commands.Cog):
 
     @runescape.command()
     async def wiki(self, ctx, *, query):
-        '''
+        """
         Search for an article on The RuneScape Wiki
 
         Parameters
         ----------
         query
             Search query
-        '''
+        """
         await ctx.bot.cogs["Search"].process_wiki(
             ctx, "https://runescape.wiki/api.php", query
         )
