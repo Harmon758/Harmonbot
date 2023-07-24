@@ -12,7 +12,8 @@ class TestDurationToString(unittest.TestCase):
 	
 	@given(times())
 	def test_invalid_duration_type(self, duration):
-		self.assertRaises(TypeError, duration_to_string, duration)
+		with self.assertRaises(TypeError):
+			duration_to_string(duration)
 	
 	@given(timedeltas())
 	def test_output_type(self, duration):
