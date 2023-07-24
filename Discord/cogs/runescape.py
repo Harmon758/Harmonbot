@@ -152,9 +152,11 @@ class RuneScape(commands.Cog):
         )
 
     @runescape.command(with_app_command = False)
-    async def wiki(self, ctx):
-        '''WIP'''
-        ...
+    async def wiki(self, ctx, *, query):
+        '''Search for an article on The RuneScape Wiki'''
+        await ctx.bot.cogs["Search"].process_wiki(
+            ctx, "https://runescape.wiki/api.php", query
+        )
 
     @runescape.command(hidden = True, with_app_command = False)
     async def zybez(self, ctx):
