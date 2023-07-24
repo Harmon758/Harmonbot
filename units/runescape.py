@@ -4,7 +4,7 @@ import aiohttp
 from .errors import UnitExecutionError, UnitOutputError
 
 
-async def get_item_id(item, aiohttp_session = None):
+async def get_item_id(item, *, aiohttp_session = None):
     if aiohttp_session_not_passed := (aiohttp_session is None):
         aiohttp_session = aiohttp.ClientSession()
     try:
