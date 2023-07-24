@@ -7,9 +7,9 @@ from .errors import UnitExecutionError, UnitOutputError
 
 def encode_caesar_cipher(message: str, key: int):
 	if not isinstance(message, str):
-		raise UnitExecutionError("message must be str")
+		raise TypeError("message must be str")
 	if not isinstance(key, int):
-		raise UnitExecutionError("key must be int")
+		raise TypeError("key must be int")
 	encoded_message = ""
 	for character in message:
 		if not character.isalpha() or not character.isascii():
