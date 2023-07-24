@@ -1,0 +1,230 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=opensearch&search=completionist+cape
+  response:
+    body:
+      string: '["completionist cape",["Completionist cape","Completionist cape (t)","Completionist
+        Cape Keyring","Completionist Cape achievements","Completionist Cape (achievement)","Completionist
+        cape rework","Completionist cape hood"],["","","","","","",""],["https://runescape.wiki/w/Completionist_cape","https://runescape.wiki/w/Completionist_cape_(t)","https://runescape.wiki/w/Completionist_Cape_Keyring","https://runescape.wiki/w/Completionist_Cape_achievements","https://runescape.wiki/w/Completionist_Cape_(achievement)","https://runescape.wiki/w/Completionist_cape_rework","https://runescape.wiki/w/Completionist_cape_hood"]]'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - MISS
+      CF-RAY:
+      - 7ebb44041ce62cb5-DFW
+      Cache-Control:
+      - max-age=1200, s-maxage=1200, stale-while-revalidate=60, public
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '172'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 09:51:37 GMT
+      Expires:
+      - Mon, 24 Jul 2023 10:11:37 GMT
+      Last-Modified:
+      - Mon, 24 Jul 2023 09:51:37 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding, Treat-as-Untrusted, Cookie, Authorization
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-opensearch-type:
+      - prefix
+      x-request-id:
+      - 44c97d7bd6cccf7080cde72312deec55
+      x-search-id:
+      - 6so3atrmjv3q4vtl9xf8hb41i
+      x-server:
+      - nginx-7c5755d5cf-c2555
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=opensearch&search=completionist+cape
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=ask&query=%5B%5BCompletionist+cape%5D%5D%7C?Item_ID&format=json
+  response:
+    body:
+      string: '{"query":{"printrequests":[{"label":"","key":"","redi":"","typeid":"_wpg","mode":2},{"label":"Item
+        ID","key":"Item_ID","redi":"","typeid":"_num","mode":1,"format":""}],"results":{"Completionist
+        cape":{"printouts":{"Item ID":[20769]},"fulltext":"Completionist cape","fullurl":"https://runescape.wiki/w/Completionist_cape","namespace":0,"exists":"1","displaytitle":""}},"serializer":"SMW\\Serializers\\QueryResultSerializer","version":2,"meta":{"hash":"7fc023ba2bb417b9b08527e4d2454978","count":1,"offset":0,"source":"","time":"0.002069"}}}'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - BYPASS
+      CF-RAY:
+      - 7ebb44056dfe2cb5-DFW
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '336'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 09:51:37 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-request-id:
+      - 4028435454fd08c0736c13456e4ff184
+      x-server:
+      - nginx-7c5755d5cf-qdbdm
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=ask&query=%5B%5BCompletionist+cape%5D%5D%7C?Item_ID&format=json
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Host:
+      - services.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=20769
+  response:
+    body: {}
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '138'
+      Content-Type:
+      - text/html
+      Date:
+      - Mon, 24 Jul 2023 09:51:38 GMT
+      Location:
+      - https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=20769
+      Server:
+      - nginx
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+    status:
+      code: 302
+      message: Moved Temporarily
+    url: https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=20769
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Cookie:
+      - JGSTAFFNAME=; JGSTAFFPASS=
+      Host:
+      - secure.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=20769
+  response:
+    body:
+      string: '<!DOCTYPE html><html><head><title>404 - Page not found</title> <meta
+        charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"
+        /><style>body, html{margin: 0; padding: 0; height: 100%; overflow: hidden;}#content{position:absolute;
+        left: 0; right: 0; bottom: 0; top: 0px;}.error-frame{height: 100%;width: 100%;border:
+        0;}</style></head><body><div id="content"><iframe class="error-frame" src="https://www.runescape.com/error404"></iframe></div><script
+        src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script
+        type="text/javascript" src="https://www.runescape.com/js/rs3/plugins-7.js"></script><script
+        src="https://www.runescape.com/js/rs3/gtm-0.js"></script><script>(function(){var
+        js = "window[''__CF$cv$params'']={r:''7ebb4409bbe816cc''};_cpo=document.createElement(''script'');_cpo.nonce='''',_cpo.src=''/cdn-cgi/challenge-platform/scripts/invisible.js'',document.getElementsByTagName(''head'')[0].appendChild(_cpo);";var
+        _0xh = document.createElement(''iframe'');_0xh.height = 1;_0xh.width = 1;_0xh.style.position
+        = ''absolute'';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border =
+        ''none'';_0xh.style.visibility = ''hidden'';document.body.appendChild(_0xh);function
+        handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if
+        (_0xi) {var _0xj = _0xi.createElement(''script'');_0xj.innerHTML = js;_0xi.getElementsByTagName(''head'')[0].appendChild(_0xj);}}if
+        (document.readyState !== ''loading'') {handler();} else if (window.addEventListener)
+        {document.addEventListener(''DOMContentLoaded'', handler);} else {var prev
+        = document.onreadystatechange || function () {};document.onreadystatechange
+        = function (e) {prev(e);if (document.readyState !== ''loading'') {document.onreadystatechange
+        = prev;handler();}};}})();</script></body></html>
+
+        '
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 7ebb4409bbe816cc-IAH
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - text/html
+      Date:
+      - Mon, 24 Jul 2023 09:51:38 GMT
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      - settings=wwGlrZHF5gKN6D3mDdihco3oPeYN2KFybL9hUUFqOvk; version=1; path=/; domain=.runescape.com;
+        Expires=Thu, 23-Jul-2026 09:51:38 GMT; Max-Age=94608000
+      - __cf_bm=gXSVDis.sVnkaTJB6gHxOB4oecKjsKLDDMPW_NDSrG0-1690192298-0-AaWJDi9rXgZRdKhXhAnrru+yp0WWXeV+SclJYj5+ZHYRGIrshcjHhqr5e7l72o5csIP7gUEmcfH+RefZ8WWOXgA1U/MC4H1/BKR5Rv8GZExf;
+        path=/; expires=Mon, 24-Jul-23 10:21:38 GMT; domain=.runescape.com; HttpOnly;
+        Secure; SameSite=None
+      Strict-Transport-Security:
+      - max-age=31536000;
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 404
+      message: Not Found
+    url: https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=20769
+version: 1

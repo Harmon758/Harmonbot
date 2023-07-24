@@ -1,0 +1,96 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Host:
+      - services.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=nonexistent
+  response:
+    body: {}
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '138'
+      Content-Type:
+      - text/html
+      Date:
+      - Mon, 24 Jul 2023 09:21:53 GMT
+      Location:
+      - https://secure.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=nonexistent
+      Server:
+      - nginx
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+    status:
+      code: 302
+      message: Moved Temporarily
+    url: http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=nonexistent
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Cookie:
+      - JGSTAFFNAME=; JGSTAFFPASS=
+      Host:
+      - secure.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: https://secure.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=nonexistent
+  response:
+    body:
+      string: '["none"]'
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 7ebb1877ca462751-IAH
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Security-Policy:
+      - frame-ancestors https://*.runescape.com:* https://*.jagex.com:*
+      Content-Type:
+      - text/html; charset=ISO-8859-1
+      Date:
+      - Mon, 24 Jul 2023 09:21:54 GMT
+      Expires:
+      - Thu, 01-Jan-1970 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      - __cf_bm=cQw1siRh_TFGIsHlNgyUWBkHnGyzWc10cwBGc.fhrxo-1690190514-0-ASzsiL8zrKEcBAkk3LE0pAjJ6y461RbIZ/RPbmfMeeqlEU0gV44KlHABFpgeF4RoCTic8xK16phBMZ05nHEtu8nK1x2EKniW9514zeprazak;
+        path=/; expires=Mon, 24-Jul-23 09:51:54 GMT; domain=.runescape.com; HttpOnly;
+        Secure; SameSite=None
+      Strict-Transport-Security:
+      - max-age=31536000;
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - sameorigin
+    status:
+      code: 200
+      message: OK
+    url: https://secure.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=nonexistent
+version: 1

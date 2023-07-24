@@ -1,0 +1,287 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=opensearch&search=Cook's+Assistant
+  response:
+    body:
+      string: '["Cook''s Assistant",["Cook''s Assistant","Cook''s Assistant/Quick
+        guide","Cook''s Assistant (achievement)","Cook''s Assistant (task)"],["","","",""],["https://runescape.wiki/w/Cook%27s_Assistant","https://runescape.wiki/w/Cook%27s_Assistant/Quick_guide","https://runescape.wiki/w/Cook%27s_Assistant_(achievement)","https://runescape.wiki/w/Cook%27s_Assistant_(task)"]]'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - MISS
+      CF-RAY:
+      - 7ebb3bdf1dc5461d-DFW
+      Cache-Control:
+      - max-age=1200, s-maxage=1200, stale-while-revalidate=60, public
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '143'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 09:46:04 GMT
+      Expires:
+      - Mon, 24 Jul 2023 10:06:04 GMT
+      Last-Modified:
+      - Mon, 24 Jul 2023 09:46:04 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding, Treat-as-Untrusted, Cookie, Authorization
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-opensearch-type:
+      - prefix
+      x-request-id:
+      - c83925598c741b5647c37cd9d9826f15
+      x-search-id:
+      - ar7fdh0kt326briulf0tvvmqj
+      x-server:
+      - nginx-7c5755d5cf-c2555
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=opensearch&search=Cook's+Assistant
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=ask&query=%5B%5BCook's+Assistant%5D%5D%7C?Item_ID&format=json
+  response:
+    body:
+      string: '{"query":{"printrequests":[{"label":"","key":"","redi":"","typeid":"_wpg","mode":2},{"label":"Item
+        ID","key":"Item_ID","redi":"","typeid":"_num","mode":1,"format":""}],"results":{"Cook''s
+        Assistant":{"printouts":{"Item ID":[]},"fulltext":"Cook''s Assistant","fullurl":"https://runescape.wiki/w/Cook%27s_Assistant","namespace":0,"exists":"1","displaytitle":""}},"serializer":"SMW\\Serializers\\QueryResultSerializer","version":2,"meta":{"hash":"86232e383907ba4aa3681cb7a1f7fa17","count":1,"offset":0,"source":"","time":"0.002037"}}}'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - BYPASS
+      CF-RAY:
+      - 7ebb3be08ea6461d-DFW
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '337'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 09:46:04 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-request-id:
+      - 029b2c46d9e405fb86be5b0beb9d597c
+      x-server:
+      - nginx-7c5755d5cf-qdbdm
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=ask&query=%5B%5BCook's+Assistant%5D%5D%7C?Item_ID&format=json
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=ask&query=%5B%5BCook's+Assistant/Quick+guide%5D%5D%7C?Item_ID&format=json
+  response:
+    body:
+      string: '{"query":{"printrequests":[{"label":"","key":"","redi":"","typeid":"_wpg","mode":2},{"label":"Item
+        ID","key":"Item_ID","redi":"","typeid":"_num","mode":1,"format":""}],"results":{"Cook''s
+        Assistant/Quick guide":{"printouts":{"Item ID":[]},"fulltext":"Cook''s Assistant/Quick
+        guide","fullurl":"https://runescape.wiki/w/Cook%27s_Assistant/Quick_guide","namespace":0,"exists":"1","displaytitle":"Cook''s
+        Assistant - Quick guide"}},"serializer":"SMW\\Serializers\\QueryResultSerializer","version":2,"meta":{"hash":"600b95222590e0b32b37009cf3f408dc","count":1,"offset":0,"source":"","time":"0.002523"}}}'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - BYPASS
+      CF-RAY:
+      - 7ebb3be1df55461d-DFW
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '360'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 09:46:04 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-request-id:
+      - aae5659ac784c0cce7a85f9172adbc59
+      x-server:
+      - nginx-7c5755d5cf-qdbdm
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=ask&query=%5B%5BCook's+Assistant/Quick+guide%5D%5D%7C?Item_ID&format=json
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=ask&query=%5B%5BCook's+Assistant+(achievement)%5D%5D%7C?Item_ID&format=json
+  response:
+    body:
+      string: '{"query":{"printrequests":[{"label":"","key":"","redi":"","typeid":"_wpg","mode":2},{"label":"Item
+        ID","key":"Item_ID","redi":"","typeid":"_num","mode":1,"format":""}],"results":{"Cook''s
+        Assistant (achievement)":{"printouts":{"Item ID":[]},"fulltext":"Cook''s Assistant
+        (achievement)","fullurl":"https://runescape.wiki/w/Cook%27s_Assistant_(achievement)","namespace":0,"exists":"1","displaytitle":""}},"serializer":"SMW\\Serializers\\QueryResultSerializer","version":2,"meta":{"hash":"be68af70683392ebd4ccef301f4e791d","count":1,"offset":0,"source":"","time":"0.002015"}}}'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - BYPASS
+      CF-RAY:
+      - 7ebb3be418af461d-DFW
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '352'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 09:46:04 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-request-id:
+      - a35ae199461ef30fe811440e1760feef
+      x-server:
+      - nginx-7c5755d5cf-qdbdm
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=ask&query=%5B%5BCook's+Assistant+(achievement)%5D%5D%7C?Item_ID&format=json
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=ask&query=%5B%5BCook's+Assistant+(task)%5D%5D%7C?Item_ID&format=json
+  response:
+    body:
+      string: '{"query":{"printrequests":[{"label":"","key":"","redi":"","typeid":"_wpg","mode":2},{"label":"Item
+        ID","key":"Item_ID","redi":"","typeid":"_num","mode":1,"format":""}],"results":{"Achievement
+        Paths":{"printouts":{"Item ID":[]},"fulltext":"Achievement Paths","fullurl":"https://runescape.wiki/w/Achievement_Paths","namespace":0,"exists":"1","displaytitle":""}},"serializer":"SMW\\Serializers\\QueryResultSerializer","version":2,"meta":{"hash":"8667b8761292412703d69b2109fbe05e","count":1,"offset":0,"source":"","time":"0.001903"}}}'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - BYPASS
+      CF-RAY:
+      - 7ebb3be5595d461d-DFW
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '334'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 09:46:05 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-request-id:
+      - ee49aa3a280ba73eebec011e26156e2d
+      x-server:
+      - nginx-7c5755d5cf-qdbdm
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=ask&query=%5B%5BCook's+Assistant+(task)%5D%5D%7C?Item_ID&format=json
+version: 1

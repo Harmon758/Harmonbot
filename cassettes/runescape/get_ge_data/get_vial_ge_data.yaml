@@ -1,0 +1,221 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=opensearch&search=vial
+  response:
+    body:
+      string: '["vial",["Vial","Vial of water","Vial of stench (a)","Vial of stench","Vial
+        of stench (a) (A Guild of Our Own)","Vial of vile water","Vial of water (Lunar
+        Diplomacy)","Vial (Dungeoneering)","Vial of water pack","Vial (jangerberries
+        and guam leaves)"],["","","","","","","","","",""],["https://runescape.wiki/w/Vial","https://runescape.wiki/w/Vial_of_water","https://runescape.wiki/w/Vial_of_stench_(a)","https://runescape.wiki/w/Vial_of_stench","https://runescape.wiki/w/Vial_of_stench_(a)_(A_Guild_of_Our_Own)","https://runescape.wiki/w/Vial_of_vile_water","https://runescape.wiki/w/Vial_of_water_(Lunar_Diplomacy)","https://runescape.wiki/w/Vial_(Dungeoneering)","https://runescape.wiki/w/Vial_of_water_pack","https://runescape.wiki/w/Vial_(jangerberries_and_guam_leaves)"]]'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '771'
+      CF-Cache-Status:
+      - HIT
+      CF-RAY:
+      - 7ebae07de8754623-DFW
+      Cache-Control:
+      - max-age=1200, s-maxage=1200, stale-while-revalidate=60, public
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '255'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 08:43:41 GMT
+      Expires:
+      - Mon, 24 Jul 2023 08:47:49 GMT
+      Last-Modified:
+      - Mon, 24 Jul 2023 08:27:49 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding, Treat-as-Untrusted, Cookie, Authorization
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-opensearch-type:
+      - prefix
+      x-request-id:
+      - fc04003d8d6db1a35f55f1a460106c9b
+      x-search-id:
+      - f1y4x4l0cw4dtw1of48nqkavu
+      x-server:
+      - nginx-7c5755d5cf-qdbdm
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=opensearch&search=vial
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://runescape.wiki/api.php?action=ask&query=%5B%5BVial%5D%5D%7C?Item_ID&format=json
+  response:
+    body:
+      string: '{"query":{"printrequests":[{"label":"","key":"","redi":"","typeid":"_wpg","mode":2},{"label":"Item
+        ID","key":"Item_ID","redi":"","typeid":"_num","mode":1,"format":""}],"results":{"Vial":{"printouts":{"Item
+        ID":[229]},"fulltext":"Vial","fullurl":"https://runescape.wiki/w/Vial","namespace":0,"exists":"1","displaytitle":""}},"serializer":"SMW\\Serializers\\QueryResultSerializer","version":2,"meta":{"hash":"603c073ccb8e43b9b3bb2a7ad8135431","count":1,"offset":0,"source":"","time":"0.001882"}}}'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - BYPASS
+      CF-RAY:
+      - 7ebae07e38a64623-DFW
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '320'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 24 Jul 2023 08:43:41 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 google
+      alt-svc:
+      - h3=":443"; ma=86400
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-request-id:
+      - 9f4c7ade82aad70312970bdf2101be28
+      x-server:
+      - nginx-7c5755d5cf-c2555
+    status:
+      code: 200
+      message: OK
+    url: https://runescape.wiki/api.php?action=ask&query=%5B%5BVial%5D%5D%7C?Item_ID&format=json
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Host:
+      - services.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=229
+  response:
+    body: {}
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '138'
+      Content-Type:
+      - text/html
+      Date:
+      - Mon, 24 Jul 2023 08:43:41 GMT
+      Location:
+      - https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=229
+      Server:
+      - nginx
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+    status:
+      code: 302
+      message: Moved Temporarily
+    url: https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=229
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Cookie:
+      - JGSTAFFNAME=; JGSTAFFPASS=
+      Host:
+      - secure.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=229
+  response:
+    body:
+      string: '{"item":{"icon":"https://secure.runescape.com/m=itemdb_rs/1689589691823_obj_sprite.gif?id=229","icon_large":"https://secure.runescape.com/m=itemdb_rs/1689589691823_obj_big.gif?id=229","id":229,"type":"Herblore
+        materials","typeIcon":"https://www.runescape.com/img/categories/Herblore materials","name":"Vial","description":"An
+        empty glass vial.","current":{"trend":"neutral","price":1},"today":{"trend":"neutral","price":0},"members":"false","day30":{"trend":"neutral","change":"0.0%"},"day90":{"trend":"neutral","change":"0.0%"},"day180":{"trend":"negative","change":"-50.0%"}}}'
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 7ebae0822875feea-IAH
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Security-Policy:
+      - frame-ancestors https://*.runescape.com:* https://*.jagex.com:*
+      Content-Type:
+      - text/html; charset=ISO-8859-1
+      Date:
+      - Mon, 24 Jul 2023 08:43:42 GMT
+      Expires:
+      - Thu, 01-Jan-1970 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      - settings=wwGlrZHF5gKN6D3mDdihco3oPeYN2KFybL9hUUFqOvk; version=1; path=/; domain=.runescape.com;
+        Expires=Thu, 23-Jul-2026 08:43:42 GMT; Max-Age=94608000
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      - __cf_bm=lHvlk2T.rh9MP3Uml5ki8Oi2v_5eZDtX8Qg45O.a61I-1690188222-0-AYZljg+xmWFq10w7ePR2WCoxboxOWA1uREDleLmv3E11RFtGfCrruU+URpWs7PKv1xQ4Izxd11JK/86xQNXHxBY+wnp17nZCap666BCzhPpp;
+        path=/; expires=Mon, 24-Jul-23 09:13:42 GMT; domain=.runescape.com; HttpOnly;
+        Secure; SameSite=None
+      Strict-Transport-Security:
+      - max-age=31536000;
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - sameorigin
+    status:
+      code: 200
+      message: OK
+    url: https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=229
+version: 1

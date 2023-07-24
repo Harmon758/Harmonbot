@@ -1,0 +1,198 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Host:
+      - services.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=cow
+  response:
+    body: {}
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '138'
+      Content-Type:
+      - text/html
+      Date:
+      - Mon, 24 Jul 2023 10:03:42 GMT
+      Location:
+      - https://secure.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=cow
+      Server:
+      - nginx
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+    status:
+      code: 302
+      message: Moved Temporarily
+    url: http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=cow
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Cookie:
+      - JGSTAFFNAME=; JGSTAFFPASS=
+      Host:
+      - secure.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: https://secure.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=cow
+  response:
+    body:
+      string: '[{"label":"Cow (4)","value":81},{"label":"Cow (4)","value":397},{"label":"Cow
+        (1)","value":3309},{"label":"Cow (1)","value":14999},{"label":"Cow (4)","value":20969},{"label":"Cow
+        (4)","value":20970},{"label":"Cow (4)","value":20971},{"label":"Cow (4)","value":20974},{"label":"Cowardly
+        Bandit","value":1886},{"label":"Cow calf (1)","value":2310},{"label":"Coward
+        in armour (82)","value":5097},{"label":"Coward with bow (105)","value":6049},{"label":"Cow
+        calf (1)","value":20978},{"label":"Cow calf (1)","value":20979},{"label":"Undead
+        cow (4)","value":1691},{"label":"Plague cow","value":1998},{"label":"Plague
+        cow","value":1999},{"label":"Unicow (57)","value":5603},{"label":"Zombie cow
+        (1)","value":18597},{"label":"Zombie cow (1)","value":20928},{"label":"Super
+        Cow (5)","value":21497},{"label":"Dairy cow","value":22418},{"label":"Armoured
+        cow thing (62)","value":5986},{"label":"Armoured cow thing (62)","value":6048}]'
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 7ebb55b548f216b9-IAH
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Security-Policy:
+      - frame-ancestors https://*.runescape.com:* https://*.jagex.com:*
+      Content-Type:
+      - text/html; charset=ISO-8859-1
+      Date:
+      - Mon, 24 Jul 2023 10:03:42 GMT
+      Expires:
+      - Thu, 01-Jan-1970 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      - __cf_bm=3BRaHhmoQYeO2dwyiefbtkSzoyRiYaZgKVSPSdER7UU-1690193022-0-AcepqzRhRUnzdRzsUOHZdaua90vwGJz7JvMBwruuL3lFAhTqhzTpwgA+D74xh4dWAu2YIr2KJ4kvzkGaUXHg3DGnfli2+DITWeQ/w1XWHQmB;
+        path=/; expires=Mon, 24-Jul-23 10:33:42 GMT; domain=.runescape.com; HttpOnly;
+        Secure; SameSite=None
+      Strict-Transport-Security:
+      - max-age=31536000;
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - sameorigin
+    status:
+      code: 200
+      message: OK
+    url: https://secure.runescape.com/m=itemdb_rs/bestiary/beastSearch.json?term=cow
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Host:
+      - services.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid=81
+  response:
+    body: {}
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '138'
+      Content-Type:
+      - text/html
+      Date:
+      - Mon, 24 Jul 2023 10:03:42 GMT
+      Location:
+      - https://secure.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid=81
+      Server:
+      - nginx
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+    status:
+      code: 302
+      message: Moved Temporarily
+    url: http://services.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid=81
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Cookie:
+      - JGSTAFFNAME=; JGSTAFFPASS=; __cf_bm=3BRaHhmoQYeO2dwyiefbtkSzoyRiYaZgKVSPSdER7UU-1690193022-0-AcepqzRhRUnzdRzsUOHZdaua90vwGJz7JvMBwruuL3lFAhTqhzTpwgA+D74xh4dWAu2YIr2KJ4kvzkGaUXHg3DGnfli2+DITWeQ/w1XWHQmB
+      Host:
+      - secure.runescape.com
+      User-Agent:
+      - Python/3.10 aiohttp/3.8.5
+    method: GET
+    uri: https://secure.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid=81
+  response:
+    body:
+      string: '{"magic":1,"slayercat":"Cows","defence":3,"level":4,"description":"Converts
+        grass to beef.","areas":["RuneScape Surface"],"poisonous":false,"weakness":"Earth","size":2,"ranged":1,"attack":3,"members":false,"animations":{"death":32199,"attack":32198},"name":"Cow","xp":"24.9","lifepoints":150,"id":81,"aggressive":false,"attackable":true}'
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 7ebb55b88a0616b9-IAH
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Security-Policy:
+      - frame-ancestors https://*.runescape.com:* https://*.jagex.com:*
+      Content-Type:
+      - text/html; charset=ISO-8859-1
+      Date:
+      - Mon, 24 Jul 2023 10:03:43 GMT
+      Expires:
+      - Thu, 01-Jan-1970 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFNAME=; version=1; path=/; domain=.runescape.com; secure;
+      - JGSTAFFPASS=; version=1; path=/; domain=.runescape.com; secure;
+      Strict-Transport-Security:
+      - max-age=31536000;
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - sameorigin
+    status:
+      code: 200
+      message: OK
+    url: https://secure.runescape.com/m=itemdb_rs/bestiary/beastData.json?beastid=81
+version: 1
