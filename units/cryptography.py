@@ -45,7 +45,7 @@ morse_to_character = {value: key for key, value in character_to_morse.items()}
 
 def encode_morse_code(message: str):
 	if not isinstance(message, str):
-		raise UnitExecutionError("message must be str")
+		raise TypeError("message must be str")
 	try:
 		return ' '.join(character_to_morse[character] for character in message.upper())
 	except KeyError as e:

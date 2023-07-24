@@ -40,7 +40,7 @@ class TestMorseCode(unittest.TestCase):
 	
 	@given(uuids())
 	def test_encode_invalid_message_type(self, message):
-		self.assertRaises(UnitExecutionError, encode_morse_code, message)
+		self.assertRaises(TypeError, encode_morse_code, message)
 	
 	@given(text(alphabet = characters(blacklist_characters = ".-/")))
 	def test_decode_undefined_characters(self, message):
