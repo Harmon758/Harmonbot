@@ -159,6 +159,7 @@ class RuneScape(commands.Cog):
         query
             Search query
         """
+        await ctx.defer()
         await ctx.bot.cogs["Search"].process_wiki(
             ctx, "https://runescape.wiki/api.php", query
         )
