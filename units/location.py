@@ -21,7 +21,7 @@ async def get_geocode_data(
             geocode_data = await resp.json()
 
         if geocode_data["status"] == "ZERO_RESULTS":
-            raise UnitOutputError("Address/Location not found")
+            raise ValueError("Address/Location not found")
 
         if geocode_data["status"] != "OK":
             raise UnitOutputError()

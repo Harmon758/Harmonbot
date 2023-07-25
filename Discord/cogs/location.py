@@ -139,7 +139,7 @@ class Location(commands.Cog):
 			data = await get_geocode_data(
 				address, aiohttp_session = ctx.bot.aiohttp_session
 			)
-		except UnitOutputError as e:
+		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
 		
@@ -366,7 +366,7 @@ class Location(commands.Cog):
 			location = geocode_data["formatted_address"]
 			lat = geocode_data["geometry"]["location"]["lat"]
 			lon = geocode_data["geometry"]["location"]["lng"]
-		except UnitOutputError:
+		except ValueError:
 			locations = interaction.client.geocoding_manager.geocode(
 				location, limit = 1
 			)
