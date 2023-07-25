@@ -1,6 +1,6 @@
 
 import discord
-from discord import app_commands
+from discord import app_commands, ui
 from discord.ext import commands, tasks
 
 import asyncio
@@ -304,12 +304,7 @@ class Meta(commands.Cog):
             return f"{ns} ns"
 
     @commands.hybrid_command(aliases = ["stats"])
-    async def statistics(
-        self, ctx,
-        session: Optional[bool] = False,
-        top_application_commands: Optional[bool] = False,
-        top_commands: Optional[bool] = False
-    ):
+    async def statistics(self, ctx):
         """
         Bot statistics
         Total uptime and restarts recorded since 2016-04-17
@@ -318,225 +313,19 @@ class Meta(commands.Cog):
         Slash command invocations tracked since 2022-03-27
         Message context menu command invocations tracked since 2022-03-27
         User context menu command invocations tracked since 2022-03-27
-
-        Parameters
-        ----------
-        session
-            Whether or not to include session-specific stats
-            (Defaults to False)
-        top_application_commands
-            Whether or not to include top slash and context menu command invocations
-            (Defaults to False)
-        top_commands
-            Whether or not to include top commands invoked
-            (Defaults to False)
         """
         await ctx.defer()
 
-        stats = await ctx.bot.db.fetchrow(
-            """
-            SELECT * FROM meta.stats
-            WHERE timestamp = $1
-            """,
-            ctx.bot.online_time
+        view = StatisticsView()
+        await view.construct_embeds(ctx)
+
+        message = await ctx.reply(
+            "",
+            embeds = view.general_embeds,
+            view = view
         )
-
-        channel_types = [type(c) for c in ctx.bot.get_all_channels()]
-        voice_count = channel_types.count(discord.VoiceChannel)
-        total_members = sum(len(g.members) for g in ctx.bot.guilds)
-        total_members_online = sum(1 for m in ctx.bot.get_all_members() if m.status != discord.Status.offline)
-        unique_members = set(ctx.bot.get_all_members())
-        unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
-
-        fields = [
-            ("Total Recorded Uptime", duration_to_string(stats["uptime"], abbreviate = True)),
-            ("Recorded Restarts", f"{stats['restarts']:,}"),
-            ("Cogs Reloaded", f"{stats['cogs_reloaded']:,}"),  # TODO: cogs reloaded this session
-            ("Commands", f"{len(ctx.bot.commands)} main\n{len(set(ctx.bot.walk_commands()))} total"),
-            ("Total Recorded Commands Invoked", f"{stats['commands_invoked']:,}"),
-        ]
-
-        embeds = [
-            discord.Embed(
-                color = ctx.bot.bot_color
-            ).add_field(
-                name = "Servers",
-                value = f"{len(ctx.bot.guilds):,}"
-            ).add_field(
-                name = "Channels",
-                value = (
-                    f"{channel_types.count(discord.TextChannel):,} text\n"
-                    f"{voice_count:,} voice"
-                )
-            ).add_field(
-                name = "Members (Online)",
-                value = (
-                    f"{total_members:,} total ({total_members_online:,})\n"
-                    f"{len(unique_members):,} unique ({unique_members_online:,})"
-                )
-            )
-        ]
-
-        if top_commands:
-            commands_invoked = await ctx.bot.db.fetch(
-                """
-                SELECT * FROM meta.commands_invoked
-                ORDER BY invokes DESC
-                LIMIT 15
-                """
-            )
-            top_commands_invoked = [
-                (record["command"], record["invokes"])
-                for record in commands_invoked
-            ]
-            if top_commands_invoked[:5]:
-                embeds.append(
-                    discord.Embed(
-                        color = ctx.bot.bot_color
-                    ).add_field(
-                        name = "Top Commands Invoked",
-                        value = '\n'.join(
-                            f"{uses:,} {command}"
-                            for command, uses in top_commands_invoked[:5]
-                        )
-                    )
-                )
-            if top_commands_invoked[5:10]:
-                embeds[-1].add_field(
-                    name = ctx.bot.ZERO_WIDTH_SPACE,
-                    value = '\n'.join(
-                        f"{uses:,} {command}"
-                        for command, uses in top_commands_invoked[5:10]
-                    )
-                )
-            if top_commands_invoked[10:15]:
-                embeds[-1].add_field(
-                    name = ctx.bot.ZERO_WIDTH_SPACE,
-                    value = '\n'.join(
-                        f"{uses:,} {command}"
-                        for command, uses in top_commands_invoked[10:15]
-                    )
-                )
-
-        if top_application_commands:
-            slash_command_invocations = await ctx.bot.db.fetch(
-                """
-                SELECT * FROM meta.slash_commands
-                ORDER BY invocations DESC
-                LIMIT 5
-                """
-            )
-            message_context_menu_command_invocations = await ctx.bot.db.fetch(
-                """
-                SELECT * FROM meta.message_context_menu_commands
-                ORDER BY invocations DESC
-                LIMIT 5
-                """
-            )
-            user_context_menu_command_invocations = await ctx.bot.db.fetch(
-                """
-                SELECT * FROM meta.user_context_menu_commands
-                ORDER BY invocations DESC
-                LIMIT 5
-                """
-            )
-            total_slash_command_invocations = await ctx.bot.db.fetchval(
-                """
-                SELECT SUM (invocations) FROM meta.slash_commands
-                """
-            )
-            total_message_context_menu_command_invocations = await ctx.bot.db.fetchval(
-                """
-                SELECT SUM (invocations) FROM meta.message_context_menu_commands
-                """
-            )
-            total_user_context_menu_command_invocations = await ctx.bot.db.fetchval(
-                """
-                SELECT SUM (invocations) FROM meta.user_context_menu_commands
-                """
-            )
-            embeds.append(
-                discord.Embed(
-                    color = ctx.bot.bot_color
-                ).add_field(
-                    name = "Top Slash Command Invocations",
-                    value = (
-                        '\n'.join(
-                            f"{record['invocations']:,} {record['command']}"
-                            for record in slash_command_invocations
-                        ) + f"\n**Total**: {total_slash_command_invocations}"
-                    )
-                ).add_field(
-                    name = "Message Context Menu Command Invocations",
-                    value = (
-                        '\n'.join(
-                            f"{record['invocations']:,} {record['command']}"
-                            for record in message_context_menu_command_invocations
-                        ) + f"\n**Total**: {total_message_context_menu_command_invocations}"
-                    )
-                ).add_field(
-                    name = "User Context Menu Command Invocations",
-                    value = (
-                        '\n'.join(
-                            f"{record['invocations']:,} {record['command']}"
-                            for record in user_context_menu_command_invocations
-                        ) + f"\n**Total**: {total_user_context_menu_command_invocations}"
-                    )
-                )
-            )
-
-        if session:
-            embeds.append(
-                discord.Embed(
-                    color = ctx.bot.bot_color,
-                    title = "Session Stats"
-                ).add_field(
-                    name = "Uptime",
-                    value = duration_to_string(
-                        datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time,
-                        abbreviate = True
-                    )
-                ).add_field(
-                    name = "Commands Invoked",
-                    value = f"{sum(ctx.bot.session_commands_invoked.values()):,}"
-                )
-            )
-
-            session_top_5 = sorted(
-                ctx.bot.session_commands_invoked.items(),
-                key = lambda i: i[1],
-                reverse = True
-            )[:5]
-            if session_top_5:
-                embeds[-1].add_field(
-                    name = "Top Commands Invoked",
-                    value = '\n'.join(
-                        f"{uses:,} {command}"
-                        for command, uses in session_top_5
-                    )
-                )
-
-            trivia_boards_count = len(ctx.bot.cogs["Trivia"].trivia_boards)
-            embeds[-1].add_field(
-                name = "Trivia Boards",
-                value = f"{trivia_boards_count} active"
-            )
-
-            playing_in_voice_count = sum(
-                vc.is_playing() for vc in ctx.bot.voice_clients
-            )
-            in_voice_count = len(ctx.bot.cogs["Audio"].players)
-            embeds[-1].add_field(
-                name = "Voice Channels",
-                value = f"Playing in {playing_in_voice_count}/{in_voice_count}"
-            )
-
-        await ctx.embed_reply(
-            "__**Stats**__ \N{BAR CHART}",
-            fields = fields,
-            footer_text = None,
-            embeds = embeds
-        )
+        view.message = message
+        ctx.bot.views.append(view)
 
     @commands.hybrid_command()
     async def uptime(self, ctx):
@@ -1269,4 +1058,272 @@ class Meta(commands.Cog):
     @github_publication.after_loop
     async def after_github_publication(self):
         self.bot.print("GitHub publication task cancelled")
+
+
+class StatisticsView(ui.View):
+
+    def __init__(self):
+        super().__init__(timeout = None)
+        # TODO: Timeout?
+
+    async def construct_embeds(self, ctx):
+        stats = await ctx.bot.db.fetchrow(
+            """
+            SELECT * FROM meta.stats
+            WHERE timestamp = $1
+            """,
+            ctx.bot.online_time
+        )
+
+        channel_types = [type(c) for c in ctx.bot.get_all_channels()]
+        voice_count = channel_types.count(discord.VoiceChannel)
+        total_members = sum(len(g.members) for g in ctx.bot.guilds)
+        total_members_online = sum(1 for m in ctx.bot.get_all_members() if m.status != discord.Status.offline)
+        unique_members = set(ctx.bot.get_all_members())
+        unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
+
+        self.general_embeds = [
+            discord.Embed(
+                color = ctx.bot.bot_color,
+                title = "__General Statistics__",
+            ).add_field(
+                name = "Total Recorded Uptime",
+                value = duration_to_string(stats["uptime"], abbreviate = True)
+            ).add_field(
+                name = "Recorded Restarts",
+                value = f"{stats['restarts']:,}"
+            ).add_field(
+                name = "Cogs Reloaded",  # TODO: Session-specific
+                value = f"{stats['cogs_reloaded']:,}"
+            ).add_field(
+                name = "Commands",
+                value = f"{len(ctx.bot.commands)} main\n{len(set(ctx.bot.walk_commands()))} total"
+            ).add_field(
+                name = "Total Recorded Commands Invoked",
+                value = f"{stats['commands_invoked']:,}"
+            ),
+            discord.Embed(
+                color = ctx.bot.bot_color
+            ).add_field(
+                name = "Servers",
+                value = f"{len(ctx.bot.guilds):,}"
+            ).add_field(
+                name = "Channels",
+                value = (
+                    f"{channel_types.count(discord.TextChannel):,} text\n"
+                    f"{voice_count:,} voice"
+                )
+            ).add_field(
+                name = "Members (Online)",
+                value = (
+                    f"{total_members:,} total ({total_members_online:,})\n"
+                    f"{len(unique_members):,} unique ({unique_members_online:,})"
+                )
+            )
+        ]
+
+        self.session_embeds = [
+            discord.Embed(
+                color = ctx.bot.bot_color,
+                title = "__Session-Specific Statistics__"
+            ).add_field(
+                name = "Uptime",
+                value = duration_to_string(
+                    datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time,
+                    abbreviate = True
+                )
+            ).add_field(
+                name = "Commands Invoked",
+                value = f"{sum(ctx.bot.session_commands_invoked.values()):,}"
+            )
+        ]
+
+        session_top_5 = sorted(
+            ctx.bot.session_commands_invoked.items(),
+            key = lambda i: i[1],
+            reverse = True
+        )[:5]
+        if session_top_5:
+            self.session_embeds[0].add_field(
+                name = "Top Commands Invoked",
+                value = '\n'.join(
+                    f"{uses:,} {command}"
+                    for command, uses in session_top_5
+                )
+            )
+
+        trivia_boards_count = len(ctx.bot.cogs["Trivia"].trivia_boards)
+        self.session_embeds[0].add_field(
+            name = "Trivia Boards",
+            value = f"{trivia_boards_count} active"
+        )
+
+        playing_in_voice_count = sum(
+            vc.is_playing() for vc in ctx.bot.voice_clients
+        )
+        in_voice_count = len(ctx.bot.cogs["Audio"].players)
+        self.session_embeds[0].add_field(
+            name = "Voice Channels",
+            value = f"Playing in {playing_in_voice_count}/{in_voice_count}"
+        )
+
+        commands_invoked = await ctx.bot.db.fetch(
+            """
+            SELECT * FROM meta.commands_invoked
+            ORDER BY invokes DESC
+            LIMIT 15
+            """
+        )
+
+        self.top_commands_embeds = []
+        top_commands_invoked = [
+            (record["command"], record["invokes"])
+            for record in commands_invoked
+        ]
+        if top_commands_invoked[:5]:
+            self.top_commands_embeds.append(
+                discord.Embed(
+                    color = ctx.bot.bot_color,
+                    title = "__Top Commands Invoked__",
+                ).add_field(
+                    name = ctx.bot.ZERO_WIDTH_SPACE,
+                    value = '\n'.join(
+                        f"{uses:,} {command}"
+                        for command, uses in top_commands_invoked[:5]
+                    )
+                )
+            )
+        if top_commands_invoked[5:10]:
+            self.top_commands_embeds[0].add_field(
+                name = ctx.bot.ZERO_WIDTH_SPACE,
+                value = '\n'.join(
+                    f"{uses:,} {command}"
+                    for command, uses in top_commands_invoked[5:10]
+                )
+            )
+        if top_commands_invoked[10:15]:
+            self.top_commands_embeds[0].add_field(
+                name = ctx.bot.ZERO_WIDTH_SPACE,
+                value = '\n'.join(
+                    f"{uses:,} {command}"
+                    for command, uses in top_commands_invoked[10:15]
+                )
+            )
+
+        slash_command_invocations = await ctx.bot.db.fetch(
+            """
+            SELECT * FROM meta.slash_commands
+            ORDER BY invocations DESC
+            LIMIT 5
+            """
+        )
+        message_context_menu_command_invocations = await ctx.bot.db.fetch(
+            """
+            SELECT * FROM meta.message_context_menu_commands
+            ORDER BY invocations DESC
+            LIMIT 5
+            """
+        )
+        user_context_menu_command_invocations = await ctx.bot.db.fetch(
+            """
+            SELECT * FROM meta.user_context_menu_commands
+            ORDER BY invocations DESC
+            LIMIT 5
+            """
+        )
+        total_slash_command_invocations = await ctx.bot.db.fetchval(
+            """
+            SELECT SUM (invocations) FROM meta.slash_commands
+            """
+        )
+        total_message_context_menu_command_invocations = await ctx.bot.db.fetchval(
+            """
+            SELECT SUM (invocations) FROM meta.message_context_menu_commands
+            """
+        )
+        total_user_context_menu_command_invocations = await ctx.bot.db.fetchval(
+            """
+            SELECT SUM (invocations) FROM meta.user_context_menu_commands
+            """
+        )
+
+        self.top_commands_embeds.append(
+            discord.Embed(
+                color = ctx.bot.bot_color
+            ).add_field(
+                name = "Top Slash Command Invocations",
+                value = (
+                    '\n'.join(
+                        f"{record['invocations']:,} {record['command']}"
+                        for record in slash_command_invocations
+                    ) + f"\n**Total**: {total_slash_command_invocations}"
+                )
+            ).add_field(
+                name = "Message Context Menu Command Invocations",
+                value = (
+                    '\n'.join(
+                        f"{record['invocations']:,} {record['command']}"
+                        for record in message_context_menu_command_invocations
+                    ) + f"\n**Total**: {total_message_context_menu_command_invocations}"
+                )
+            ).add_field(
+                name = "User Context Menu Command Invocations",
+                value = (
+                    '\n'.join(
+                        f"{record['invocations']:,} {record['command']}"
+                        for record in user_context_menu_command_invocations
+                    ) + f"\n**Total**: {total_user_context_menu_command_invocations}"
+                )
+            )
+        )
+
+    @ui.select(
+        placeholder = "Select a category",
+        options = [
+            discord.SelectOption(
+                label = "General Statistics",
+                emoji = '\N{BAR CHART}',
+                default = True
+            ),
+            discord.SelectOption(
+                label = "Session-Specific Statistics",
+                emoji = "\N{MEMO}"
+            ),
+            discord.SelectOption(
+                label = "Top Commands Invoked",
+                emoji = '\N{TOP WITH UPWARDS ARROW ABOVE}'
+            ),
+            discord.SelectOption(
+                label = "All Statistics",
+                emoji = '\N{PAGE WITH CURL}'
+            )
+        ]
+    )
+    async def category(self, interaction, select):
+        for option in select.options:
+            option.default = False
+
+        if select.values[0] == "General Statistics":
+            embeds = self.general_embeds
+            select.options[0].default = True
+        elif select.values[0] == "Session-Specific Statistics":
+            embeds = self.session_embeds
+            select.options[1].default = True
+        elif select.values[0] == "Top Commands Invoked":
+            embeds = self.top_commands_embeds
+            select.options[2].default = True
+        elif select.values[0] == "All Statistics":
+            embeds = (
+                self.general_embeds +
+                self.session_embeds +
+                self.top_commands_embeds
+            )
+            select.options[3].default = True
+
+        await interaction.response.edit_message(embeds = embeds, view = self)
+
+    async def stop(self):
+        self.category.disabled = True
+        await self.message.edit(view = self)
+        super().stop()
 
