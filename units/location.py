@@ -33,30 +33,36 @@ async def get_timezone_data(
     if not aiohttp_session:
         raise UnitExecutionError("aiohttp session required")
         # TODO: Default aiohttp session?
+
     if not (latitude and longitude):
         if not location:
             raise TypeError("location or latitude and longitude required")
+
         geocode_data = await get_geocode_data(
             location, aiohttp_session = aiohttp_session
         )
         latitude = geocode_data["geometry"]["location"]["lat"]
         longitude = geocode_data["geometry"]["location"]["lng"]
-    current_utc_timestamp = datetime.datetime.utcnow().timestamp()
-    url = "https://maps.googleapis.com/maps/api/timezone/json"
-    params = {
-        "location": f"{latitude}, {longitude}",
-        "timestamp": str(current_utc_timestamp),
-        "key": os.getenv("GOOGLE_API_KEY")
-    }
-    async with aiohttp_session.get(url, params = params) as resp:
+
+    async with aiohttp_session.get(
+        "https://maps.googleapis.com/maps/api/timezone/json",
+        params = {
+            "location": f"{latitude}, {longitude}",
+            "timestamp": str(datetime.datetime.utcnow().timestamp()),
+            "key": os.getenv("GOOGLE_API_KEY")
+        }
+    ) as resp:
         timezone_data = await resp.json()
+
     if timezone_data["status"] == "ZERO_RESULTS":
         raise UnitOutputError("Timezone data not found")
+
     if timezone_data["status"] != "OK":
         error_message = timezone_data.get(
             "errorMessage", timezone_data["status"]
         )
         raise UnitOutputError(f"Error: {error_message}")
+
     return timezone_data
 
 
