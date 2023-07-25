@@ -99,9 +99,16 @@ async def search_wiki(
             )
             # TODO: Handle section links/tofragments
         else:
-            thumbnail = data["query"]["pages"][page_id].get("thumbnail")
+            thumbnail = page.get("thumbnail")
 
-            if "extract" not in page:
+            if "extract" in page:
+                extract = re.sub(
+                    r"\s+ \s+", ' ',
+                    page["extract"] if len(page["extract"]) <= 512
+                    else page["extract"][:512] + '…'
+                )
+            else:
+                # https://www.mediawiki.org/wiki/API:Parsing_wikitext
                 async with aiohttp_session.get(
                     url, params = {
                         "action": "parse", "page": search, "prop": "text",
@@ -127,12 +134,6 @@ async def search_wiki(
                     r"\n\s*\n", "\n\n",
                     extract if len(extract) <= 512
                     else extract[:512] + '…'
-                )
-            else:
-                extract = re.sub(
-                    r"\s+ \s+", ' ',
-                    page["extract"] if len(page["extract"]) <= 512
-                    else page["extract"][:512] + '…'
                 )
 
             return WikiArticle(
