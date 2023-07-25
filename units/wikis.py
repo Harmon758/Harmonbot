@@ -91,6 +91,7 @@ async def search_wiki(
             raise ValueError("Page not found")
         if "invalid" in page:
             raise ValueError(page["invalidreason"])
+
         if redirect and "redirects" in data["query"]:
             return await search_wiki(
                 url, data["query"]["redirects"][-1]["to"],
@@ -98,54 +99,60 @@ async def search_wiki(
                 redirect = False
             )
             # TODO: Handle section links/tofragments
-        else:
-            thumbnail = page.get("thumbnail")
 
-            if "extract" in page:
-                extract = re.sub(
-                    r"\s+ \s+", ' ',
+        if "extract" in page:
+            extract = re.sub(
+                r"\s+ \s+", ' ',
+                (
                     page["extract"] if len(page["extract"]) <= 512
                     else page["extract"][:512] + '…'
                 )
-            else:
-                # https://www.mediawiki.org/wiki/API:Parsing_wikitext
-                async with aiohttp_session.get(
-                    url, params = {
-                        "action": "parse", "page": search, "prop": "text",
-                        "format": "json"
-                    }
-                ) as resp:
-                    data = await resp.json()
+            )
+        else:
+            # https://www.mediawiki.org/wiki/API:Parsing_wikitext
+            async with aiohttp_session.get(
+                url, params = {
+                    "action": "parse", "page": search, "prop": "text",
+                    "format": "json"
+                }
+            ) as resp:
+                data = await resp.json()
 
-                p = BeautifulSoup(
-                    data["parse"]["text"]['*'], "lxml"
-                ).body.div.find_all('p', recursive = False)
+            p = BeautifulSoup(
+                data["parse"]["text"]['*'], "lxml"
+            ).body.div.find_all(
+                'p', recursive = False
+            )
 
-                first_p = p[0]
-                if first_p.aside:
-                    first_p.aside.clear()
-                extract = first_p.get_text()
+            first_p = p[0]
+            if first_p.aside:
+                first_p.aside.clear()
+            extract = first_p.get_text()
 
-                if len(p) > 1:
-                    second_p = p[1]
-                    extract += '\n' + second_p.get_text()
+            if len(p) > 1:
+                second_p = p[1]
+                extract += '\n' + second_p.get_text()
 
-                extract = re.sub(
-                    r"\n\s*\n", "\n\n",
+            extract = re.sub(
+                r"\n\s*\n", "\n\n",
+                (
                     extract if len(extract) <= 512
                     else extract[:512] + '…'
                 )
-
-            return WikiArticle(
-                title = page["title"],
-                url = page["fullurl"],  # TODO: Use canonicalurl?
-                extract = extract,
-                image_url = (
-                    thumbnail["source"].replace(
-                        f"{thumbnail['width']}px", "1200px"
-                    ) if thumbnail else None
-                )
             )
+
+        thumbnail = page.get("thumbnail")
+
+        return WikiArticle(
+            title = page["title"],
+            url = page["fullurl"],  # TODO: Use canonicalurl?
+            extract = extract,
+            image_url = (
+                thumbnail["source"].replace(
+                    f"{thumbnail['width']}px", "1200px"
+                ) if thumbnail else None
+            )
+        )
     finally:
         if aiohttp_session_not_passed:
             await aiohttp_session.close()
