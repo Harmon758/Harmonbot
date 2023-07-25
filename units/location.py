@@ -4,8 +4,6 @@ import os
 
 import aiohttp
 
-from .errors import UnitExecutionError
-
 
 async def get_geocode_data(
     location: str, *, aiohttp_session: aiohttp.ClientSession | None = None
@@ -38,40 +36,42 @@ async def get_geocode_data(
 async def get_timezone_data(
     location = None, latitude = None, longitude = None, aiohttp_session = None
 ):
-    if not aiohttp_session:
-        raise UnitExecutionError("aiohttp session required")
-        # TODO: Default aiohttp session?
+    if aiohttp_session_not_passed := (aiohttp_session is None):
+        aiohttp_session = aiohttp.ClientSession()
+    try:
+        if not (latitude and longitude):
+            if not location:
+                raise TypeError("location or latitude and longitude required")
 
-    if not (latitude and longitude):
-        if not location:
-            raise TypeError("location or latitude and longitude required")
+            geocode_data = await get_geocode_data(
+                location, aiohttp_session = aiohttp_session
+            )
+            latitude = geocode_data["geometry"]["location"]["lat"]
+            longitude = geocode_data["geometry"]["location"]["lng"]
 
-        geocode_data = await get_geocode_data(
-            location, aiohttp_session = aiohttp_session
-        )
-        latitude = geocode_data["geometry"]["location"]["lat"]
-        longitude = geocode_data["geometry"]["location"]["lng"]
+        async with aiohttp_session.get(
+            "https://maps.googleapis.com/maps/api/timezone/json",
+            params = {
+                "location": f"{latitude}, {longitude}",
+                "timestamp": str(datetime.datetime.utcnow().timestamp()),
+                "key": os.getenv("GOOGLE_API_KEY")
+            }
+        ) as resp:
+            timezone_data = await resp.json()
 
-    async with aiohttp_session.get(
-        "https://maps.googleapis.com/maps/api/timezone/json",
-        params = {
-            "location": f"{latitude}, {longitude}",
-            "timestamp": str(datetime.datetime.utcnow().timestamp()),
-            "key": os.getenv("GOOGLE_API_KEY")
-        }
-    ) as resp:
-        timezone_data = await resp.json()
+        if timezone_data["status"] == "ZERO_RESULTS":
+            raise ValueError("Timezone data not found")
 
-    if timezone_data["status"] == "ZERO_RESULTS":
-        raise ValueError("Timezone data not found")
+        if timezone_data["status"] != "OK":
+            error_message = timezone_data.get(
+                "errorMessage", timezone_data["status"]
+            )
+            raise RuntimeError(f"Error: {error_message}")
 
-    if timezone_data["status"] != "OK":
-        error_message = timezone_data.get(
-            "errorMessage", timezone_data["status"]
-        )
-        raise RuntimeError(f"Error: {error_message}")
-
-    return timezone_data
+        return timezone_data
+    finally:
+        if aiohttp_session_not_passed:
+            await aiohttp_session.close()
 
 
 DEGREES_RANGES_TO_DIRECTIONS = {
