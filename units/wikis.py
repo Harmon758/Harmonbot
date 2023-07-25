@@ -49,7 +49,7 @@ async def search_wiki(
                 }
             ) as resp:  # https://www.mediawiki.org/wiki/API:Random
                 data = await resp.json()
-            
+
             search = data["query"]["random"][0]["title"]
         else:
             async with aiohttp_session.get(
@@ -59,34 +59,34 @@ async def search_wiki(
                 }
             ) as resp:  # https://www.mediawiki.org/wiki/API:Search
                 data = await resp.json()
-            
+
             if search := data["query"]["search"]:
                 search = search[0]["title"]
             elif not (
                 search := data["query"].get("searchinfo", {}).get("suggestion")
             ):
                 raise ValueError("Page not found")
-        
+
         async with aiohttp_session.get(
             url, params = {
                 "action": "query", "redirects": "",
                 "prop": "info|extracts|pageimages", "titles": search,
                 "inprop": "url", "exintro": "", "explaintext": "",
                 "pithumbsize": 9000, "pilicense": "any", "format": "json"
-            } 
+            }
             # TODO: Use exchars?
             # TODO: Use images prop?
             # TODO: Use revisions prop and content rvprop?
             #       for links, italics, bold
         ) as resp:  # https://www.mediawiki.org/wiki/API:Query
             data = await resp.json()
-        
+
         if "pages" not in data["query"]:
             raise ValueError("Error")  # TODO: More descriptive error
-        
+
         page_id = list(data["query"]["pages"].keys())[0]
         page = data["query"]["pages"][page_id]
-        
+
         if "missing" in page:
             raise ValueError("Page not found")
         if "invalid" in page:
@@ -100,7 +100,7 @@ async def search_wiki(
             # TODO: Handle section links/tofragments
         else:
             thumbnail = data["query"]["pages"][page_id].get("thumbnail")
-            
+
             if "extract" not in page:
                 async with aiohttp_session.get(
                     url, params = {
@@ -109,20 +109,20 @@ async def search_wiki(
                     }
                 ) as resp:
                     data = await resp.json()
-                
+
                 p = BeautifulSoup(
                     data["parse"]["text"]['*'], "lxml"
                 ).body.div.find_all('p', recursive = False)
-                
+
                 first_p = p[0]
                 if first_p.aside:
                     first_p.aside.clear()
                 extract = first_p.get_text()
-                
+
                 if len(p) > 1:
                     second_p = p[1]
                     extract += '\n' + second_p.get_text()
-                
+
                 extract = re.sub(
                     r"\n\s*\n", "\n\n",
                     extract if len(extract) <= 512
@@ -134,7 +134,7 @@ async def search_wiki(
                     page["extract"] if len(page["extract"]) <= 512
                     else page["extract"][:512] + "..."
                 )
-            
+
             return WikiArticle(
                 title = page["title"],
                 url = page["fullurl"],  # TODO: Use canonicalurl?
