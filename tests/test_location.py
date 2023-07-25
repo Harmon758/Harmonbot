@@ -32,10 +32,6 @@ class TestWindDegreesToDirection(unittest.TestCase):
     def test_low_n_output(self, degrees):
         self.assertEqual(wind_degrees_to_direction(degrees), 'N')
 
-    @given(floats(min_value = 348.75, max_value = 360))
-    def test_high_n_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), 'N')
-
     @given(floats(min_value = 33.75, max_value = 56.25, exclude_min = True))
     def test_ne_output(self, degrees):
         self.assertEqual(wind_degrees_to_direction(degrees), "NE")
@@ -88,12 +84,13 @@ class TestWindDegreesToDirection(unittest.TestCase):
     def test_nw_output(self, degrees):
         self.assertEqual(wind_degrees_to_direction(degrees), "NW")
 
-    @given(floats(
-        min_value = 326.25, max_value = 348.75,
-        exclude_min = True, exclude_max = True
-    ))
+    @given(floats(min_value = 326.25, max_value = 348.75, exclude_min = True))
     def test_nnw_output(self, degrees):
         self.assertEqual(wind_degrees_to_direction(degrees), "NNW")
+
+    @given(floats(min_value = 348.75, max_value = 360, exclude_min = True))
+    def test_high_n_output(self, degrees):
+        self.assertEqual(wind_degrees_to_direction(degrees), 'N')
 
 
 if __name__ == "__main__":
