@@ -30,7 +30,7 @@ async def get_timezone_data(
         # TODO: Default aiohttp session?
     if not (latitude and longitude):
         if not location:
-            raise UnitExecutionError("location or latitude and longitude required")
+            raise TypeError("location or latitude and longitude required")
         geocode_data = await get_geocode_data(
             location, aiohttp_session = aiohttp_session
         )
