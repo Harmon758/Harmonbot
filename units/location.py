@@ -4,7 +4,7 @@ import os
 
 import aiohttp
 
-from .errors import UnitExecutionError, UnitOutputError
+from .errors import UnitExecutionError
 
 
 async def get_geocode_data(
@@ -67,7 +67,7 @@ async def get_timezone_data(
         error_message = timezone_data.get(
             "errorMessage", timezone_data["status"]
         )
-        raise UnitOutputError(f"Error: {error_message}")
+        raise RuntimeError(f"Error: {error_message}")
 
     return timezone_data
 
