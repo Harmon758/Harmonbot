@@ -47,7 +47,7 @@ async def search_wiki(
                     "action": "query", "list": "random",
                     "rnnamespace": random_namespaces, "format": "json"
                 }
-            ) as resp:
+            ) as resp:  # https://www.mediawiki.org/wiki/API:Random
                 data = await resp.json()
             
             search = data["query"]["random"][0]["title"]
@@ -57,7 +57,7 @@ async def search_wiki(
                     "action": "query", "list": "search", "srsearch": search,
                     "srinfo": "suggestion", "srlimit": 1, "format": "json"
                 }
-            ) as resp:
+            ) as resp:  # https://www.mediawiki.org/wiki/API:Search
                 data = await resp.json()
             
             if search := data["query"]["search"]:
@@ -78,7 +78,7 @@ async def search_wiki(
             # TODO: Use images prop?
             # TODO: Use revisions prop and content rvprop?
             #       for links, italics, bold
-        ) as resp:
+        ) as resp:  # https://www.mediawiki.org/wiki/API:Query
             data = await resp.json()
         
         if "pages" not in data["query"]:
@@ -89,9 +89,9 @@ async def search_wiki(
         
         if "missing" in page:
             raise ValueError("Page not found")
-        elif "invalid" in page:
+        if "invalid" in page:
             raise ValueError(page["invalidreason"])
-        elif redirect and "redirects" in data["query"]:
+        if redirect and "redirects" in data["query"]:
             await search_wiki(
                 url, data["query"]["redirects"][-1]["to"],
                 aiohttp_session = aiohttp_session,
