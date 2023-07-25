@@ -48,17 +48,20 @@ class TestMorseCode(unittest.TestCase):
 
     @given(uuids())
     def test_decode_invalid_message_type(self, message):
-        self.assertRaises(TypeError, decode_morse_code, message)
+        with self.assertRaises(TypeError):
+            decode_morse_code(message)
 
     @given(uuids())
     def test_encode_invalid_message_type(self, message):
-        self.assertRaises(TypeError, encode_morse_code, message)
+        with self.assertRaises(TypeError):
+            encode_morse_code(message)
 
     @given(text(alphabet = characters(blacklist_characters = ".-/")))
     def test_decode_undefined_characters(self, message):
         assume(message)
         assume(not message.isspace())
-        self.assertRaises(ValueError, decode_morse_code, message)
+        with self.assertRaises(ValueError):
+            decode_morse_code(message)
 
     @given(text(
         alphabet = characters(
@@ -78,7 +81,8 @@ class TestMorseCode(unittest.TestCase):
         )
         # Ignore test failure for ligatures
         assume(len(message.upper()) == len(message))
-        self.assertRaises(ValueError, encode_morse_code, message)
+        with self.assertRaises(ValueError):
+            encode_morse_code(message)
 
     @given(text(
         alphabet = characters(
