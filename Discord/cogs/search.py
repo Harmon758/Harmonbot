@@ -5,11 +5,9 @@ from discord.ext import commands
 
 import functools
 import inspect
-import re
 import sys
 from typing import Optional
 
-from bs4 import BeautifulSoup
 import youtube_dl
 
 from utilities import checks
@@ -210,7 +208,20 @@ class Search(commands.GroupCog, group_name = "search"):
 					invoke_without_command = True, case_insensitive = True)
 	async def uesp(self, ctx, *, search: str):
 		"""Look something up on the Unofficial Elder Scrolls Pages"""
-		await self.process_uesp(ctx, search)
+		try:
+			article = await search_wiki(
+				"https://en.uesp.net/w/api.php", search,
+				aiohttp_session = ctx.bot.aiohttp_session
+			)
+		except ValueError as e:
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+		else:
+			await ctx.embed_reply(
+				title = article.title,
+				title_url = article.url,
+				description = article.extract,
+				image_url = article.image_url
+			)
 	
 	@uesp.command(name = "random")
 	async def uesp_random(self, ctx):
@@ -219,70 +230,24 @@ class Search(commands.GroupCog, group_name = "search"):
 		[UESP](http://uesp.net/wiki/Main_Page)
 		'''
 		# Note: random uesp command invokes this command
-		await self.process_uesp(ctx, None, random = True)
-	
-	async def process_uesp(self, ctx, search, random = False, redirect = True):
-		# TODO: Add User-Agent
-		url = "https://en.uesp.net/w/api.php"
-		if random:
-			params = {"action": "query", "list": "random", 
-						"rnnamespace": f"0|{'|'.join(str(i) for i in range(100, 152))}|200|201", 
-						"format": "json"}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			search = data["query"]["random"][0]["title"]
+		try:
+			article = await search_wiki(
+				"https://en.uesp.net/w/api.php", None,
+				aiohttp_session = ctx.bot.aiohttp_session,
+				random = True,
+				random_namespaces = [0] + list(range(100, 152)) + [200, 201]
+				# https://en.uesp.net/wiki/UESPWiki:Namespaces
+				# https://en.uesp.net/w/api.php?action=query&meta=siteinfo&siprop=namespaces&formatversion=2
+			)
+		except ValueError as e:
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 		else:
-			params = {"action": "query", "list": "search", 
-						"srsearch": search, "srinfo": "suggestion", "srlimit": 1, 
-						"format": "json"}
-			async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-				data = await resp.json()
-			try:
-				search = data["query"].get("searchinfo", {}).get("suggestion") or data["query"]["search"][0]["title"]
-			except IndexError:
-				return await ctx.embed_reply(":no_entry: Page not found")
-		params = {"action": "query", "redirects": "", "prop": "info|revisions|images", 
-					"titles": search, "inprop": "url", "rvprop": "content", "format": "json"}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			data = await resp.json()
-		if "pages" not in data["query"]:
-			return await ctx.embed_reply(":no_entry: Error")
-		page_id = list(data["query"]["pages"].keys())[0]
-		page = data["query"]["pages"][page_id]
-		if "missing" in page:
-			return await ctx.embed_reply(":no_entry: Page not found")
-		if "invalid" in page:
-			return await ctx.embed_reply(f":no_entry: Error: {page['invalidreason']}")
-		if redirect and "redirects" in data["query"]:
-			return await self.process_uesp(ctx, data["query"]["redirects"][-1]["to"], redirect = False)
-			# TODO: Handle section links/tofragments
-		description = page["revisions"][0]['*']
-		description = re.sub(r"\s+ \s+", ' ', description)
-		while re.findall("{{[^{]+?}}", description):
-			description = re.sub("{{[^{]+?}}", "", description)
-		while re.findall("{[^{]*?}", description):
-			description = re.sub("{[^{]*?}", "", description)
-		description = re.sub("<.+?>", "", description, flags = re.DOTALL)
-		description = re.sub("__.+?__", "", description)
-		description = description.strip()
-		description = '\n'.join(line.lstrip(':') for line in description.split('\n'))
-		while len(description) > 1024:
-			description = '\n'.join(description.split('\n')[:-1])
-		description = description.split("==")[0]
-		## description = description if len(description) <= 1024 else description[:1024] + "..."
-		description = re.sub(r"\[\[Category:.+?\]\]", "", description)
-		description = re.sub(
-			r"\[\[(.+?)\|(.+?)\]\]|\[(.+?)[ ](.+?)\]", 
-			lambda match: 
-				f"[{match.group(2)}](https://en.uesp.net/wiki/{match.group(1).replace(' ', '_')})"
-				if match.group(1) else f"[{match.group(4)}]({match.group(3)})", 
-			description
-		)
-		description = description.replace("'''", "**").replace("''", "*")
-		description = re.sub("\n+", '\n', description)
-		thumbnail = data["query"]["pages"][page_id].get("thumbnail")
-		image_url = thumbnail["source"].replace(f"{thumbnail['width']}px", "1200px") if thumbnail else None
-		await ctx.embed_reply(description, title = page["title"], title_url = page["fullurl"], image_url = image_url)  # canonicalurl?
+			await ctx.embed_reply(
+				title = article.title,
+				title_url = article.url,
+				description = article.extract,
+				image_url = article.image_url
+			)
 	
 	@commands.group(
 		aliases = ["wiki"],

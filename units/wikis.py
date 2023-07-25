@@ -1,9 +1,15 @@
 
+from __future__ import annotations
+
 import re
+from typing import TYPE_CHECKING
 
 import aiohttp
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class WikiArticle(BaseModel):
@@ -19,6 +25,11 @@ async def search_wiki(
     *,
     aiohttp_session: aiohttp.ClientSession | None = None,
     random: bool = False,
+    random_namespaces: Iterable[int | str] | int | str = 0,
+    # https://www.mediawiki.org/wiki/API:Random
+    # https://www.mediawiki.org/wiki/Help:Namespaces
+    # https://en.wikipedia.org/wiki/Wikipedia:Namespace
+    # https://community.fandom.com/wiki/Help:Namespaces
     redirect: bool = True
 ) -> WikiArticle:
     # TODO: Add User-Agent
@@ -27,10 +38,14 @@ async def search_wiki(
         aiohttp_session = aiohttp.ClientSession()
     try:
         if random:
+            if not isinstance(random_namespaces, int | str):
+                random_namespaces = '|'.join(
+                    str(namespace) for namespace in random_namespaces
+                )
             async with aiohttp_session.get(
                 url, params = {
-                    "action": "query", "list": "random", "rnnamespace": 0,
-                    "format": "json"
+                    "action": "query", "list": "random",
+                    "rnnamespace": random_namespaces, "format": "json"
                 }
             ) as resp:
                 data = await resp.json()
@@ -58,7 +73,11 @@ async def search_wiki(
                 "prop": "info|extracts|pageimages", "titles": search,
                 "inprop": "url", "exintro": "", "explaintext": "",
                 "pithumbsize": 9000, "pilicense": "any", "format": "json"
-            }  # TODO: Use exchars?
+            } 
+            # TODO: Use exchars?
+            # TODO: Use images prop?
+            # TODO: Use revisions prop and content rvprop?
+            #       for links, italics, bold
         ) as resp:
             data = await resp.json()
         
