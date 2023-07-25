@@ -10,15 +10,20 @@ async def get_geocode_data(location, aiohttp_session = None):
     if not aiohttp_session:
         raise UnitExecutionError("aiohttp session required")
         # TODO: Default aiohttp session?
-    url = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {"address": location, "key": os.getenv("GOOGLE_API_KEY")}
-    async with aiohttp_session.get(url, params = params) as resp:
+
+    async with aiohttp_session.get(
+        "https://maps.googleapis.com/maps/api/geocode/json",
+        params = {"address": location, "key": os.getenv("GOOGLE_API_KEY")}
+    ) as resp:
         geocode_data = await resp.json()
+
     if geocode_data["status"] == "ZERO_RESULTS":
         raise UnitOutputError("Address/Location not found")
+
     if geocode_data["status"] != "OK":
         raise UnitOutputError()
         # TODO: error descriptions?
+
     return geocode_data["results"][0]
 
 
