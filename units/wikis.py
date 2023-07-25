@@ -126,13 +126,13 @@ async def search_wiki(
                 extract = re.sub(
                     r"\n\s*\n", "\n\n",
                     extract if len(extract) <= 512
-                    else extract[:512] + "..."
+                    else extract[:512] + '…'
                 )
             else:
                 extract = re.sub(
                     r"\s+ \s+", ' ',
                     page["extract"] if len(page["extract"]) <= 512
-                    else page["extract"][:512] + "..."
+                    else page["extract"][:512] + '…'
                 )
 
             return WikiArticle(
