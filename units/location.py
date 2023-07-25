@@ -34,7 +34,11 @@ async def get_geocode_data(
 
 
 async def get_timezone_data(
-    location = None, latitude = None, longitude = None, aiohttp_session = None
+    location = None,
+    *,
+    latitude = None,
+    longitude = None,
+    aiohttp_session = None
 ):
     if aiohttp_session_not_passed := (aiohttp_session is None):
         aiohttp_session = aiohttp.ClientSession()
