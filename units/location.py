@@ -24,8 +24,10 @@ async def get_geocode_data(
             raise ValueError("Address/Location not found")
 
         if geocode_data["status"] != "OK":
-            raise RuntimeError()
-            # TODO: error descriptions?
+            error_message = geocode_data.get(
+                "errorMessage", geocode_data["status"]
+            )
+            raise RuntimeError(f"Error: {error_message}")
 
         return geocode_data["results"][0]
     finally:
