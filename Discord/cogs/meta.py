@@ -324,6 +324,9 @@ class Meta(commands.Cog):
             embeds = view.general_embeds,
             view = view
         )
+        if ctx.interaction:
+            # Fetch Message, as InteractionMessage token expires after 15 min.
+            message = await message.fetch()
         view.message = message
         ctx.bot.views.append(view)
 
