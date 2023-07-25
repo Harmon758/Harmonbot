@@ -46,7 +46,7 @@ async def get_timezone_data(location = None, latitude = None, longitude = None, 
 def wind_degrees_to_direction(degrees):
 	# http://snowfence.umn.edu/Components/winddirectionanddegreeswithouttable3.htm
 	if not isinstance(degrees, (int, float)):
-		raise UnitExecutionError("degrees must be a number")
+		raise TypeError("degrees must be a number")
 	if degrees < 0:
 		raise UnitExecutionError("degrees must be greater than zero")
 	if degrees > 360:

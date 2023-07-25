@@ -12,7 +12,7 @@ class TestWindDegreesToDirection(unittest.TestCase):
 
     @given(uuids())
     def test_invalid_degrees_type(self, degrees):
-        with self.assertRaises(UnitExecutionError):
+        with self.assertRaises(TypeError):
             wind_degrees_to_direction(degrees)
 
     @given(floats(max_value = 0, exclude_max = True))
