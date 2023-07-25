@@ -100,13 +100,13 @@ class Discord(commands.Cog):
 			)
 			return
 		
-		# TODO: Use match with Python 3.10
-		if activity == "Doodle Crew":
-			activity = "Sketch Hands"
-		elif activity == "Ocho":
-			activity = "Blazing 8s"
-		elif activity == "YouTube Together":
-			activity = "Watch Together"
+		match activity:
+			case "Doodle Crew":
+				activity = "Sketch Hands"
+			case "Ocho":
+				activity = "Blazing 8s"
+			case "YouTube Together":
+				activity = "Watch Together"
 		
 		invite = await channel.create_invite(
 			reason = f"{activity} activity",
