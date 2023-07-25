@@ -201,3 +201,12 @@ connection.execute(
 )
 connection.commit()
 
+connection.execute(
+    """
+    UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['San Andreas','San Andreas Fault']
+    WHERE id IN (109115, 144801, 331840) and answer = 'San Andreas Fault'
+    """
+)
+connection.commit()
+
