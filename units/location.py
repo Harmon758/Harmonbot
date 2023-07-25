@@ -61,7 +61,7 @@ async def get_timezone_data(
         timezone_data = await resp.json()
 
     if timezone_data["status"] == "ZERO_RESULTS":
-        raise UnitOutputError("Timezone data not found")
+        raise ValueError("Timezone data not found")
 
     if timezone_data["status"] != "OK":
         error_message = timezone_data.get(

@@ -7,7 +7,7 @@ import sys
 import dateutil.easter
 
 sys.path.insert(0, "..")
-from units.location import get_geocode_data, get_timezone_data, UnitOutputError
+from units.location import get_geocode_data, get_timezone_data
 from units.time import duration_to_string
 sys.path.pop(0)
 
@@ -47,7 +47,7 @@ class Time:
 		if location:
 			try:
 				timezone_data = await get_timezone_data(location = location, aiohttp_session = self.bot.aiohttp_session)
-			except UnitOutputError as e:
+			except ValueError as e:
 				return await ctx.send(f"Error: {e}")
 			now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
 													timezone_data["dstOffset"] + timezone_data["rawOffset"])
@@ -86,7 +86,7 @@ class Time:
 			longitude = geocode_data["geometry"]["location"]["lng"]
 			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
 													aiohttp_session = self.bot.aiohttp_session)
-		except UnitOutputError as e:
+		except ValueError as e:
 			return await ctx.send(f"Error: {e}")
 		location_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(
 						seconds = timezone_data["dstOffset"] + timezone_data["rawOffset"])))

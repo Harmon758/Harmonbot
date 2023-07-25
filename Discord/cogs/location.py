@@ -15,7 +15,7 @@ import pyowm.commons.exceptions
 from utilities import checks
 
 sys.path.insert(0, "..")
-from units.location import get_geocode_data, get_timezone_data, wind_degrees_to_direction, UnitOutputError
+from units.location import get_geocode_data, get_timezone_data, wind_degrees_to_direction
 sys.path.pop(0)
 
 async def setup(bot):
@@ -280,7 +280,7 @@ class Location(commands.Cog):
 				latitude = latitude, longitude = longitude,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
-		except UnitOutputError as e:
+		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 			return
 		
