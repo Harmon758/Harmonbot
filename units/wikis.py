@@ -92,7 +92,7 @@ async def search_wiki(
         if "invalid" in page:
             raise ValueError(page["invalidreason"])
         if redirect and "redirects" in data["query"]:
-            await search_wiki(
+            return await search_wiki(
                 url, data["query"]["redirects"][-1]["to"],
                 aiohttp_session = aiohttp_session,
                 redirect = False
