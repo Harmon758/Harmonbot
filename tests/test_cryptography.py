@@ -8,7 +8,6 @@ from units.cryptography import (
     decode_caesar_cipher, encode_caesar_cipher,
     decode_morse_code, encode_morse_code
 )
-from units.errors import UnitOutputError
 
 
 class TestCaesarCipher(unittest.TestCase):
@@ -59,7 +58,7 @@ class TestMorseCode(unittest.TestCase):
     def test_decode_undefined_characters(self, message):
         assume(message)
         assume(not message.isspace())
-        self.assertRaises(UnitOutputError, decode_morse_code, message)
+        self.assertRaises(ValueError, decode_morse_code, message)
 
     @given(text(
         alphabet = characters(

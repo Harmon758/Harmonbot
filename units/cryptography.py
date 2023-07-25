@@ -1,8 +1,6 @@
 
 from string import ascii_lowercase, ascii_uppercase
 
-from .errors import UnitOutputError
-
 
 # Caesar Cipher
 
@@ -73,5 +71,5 @@ def decode_morse_code(message: str):
             for word in message.split(" / ")
         )
     except KeyError as e:
-        raise UnitOutputError(f"Unable to decode {e}")
+        raise ValueError(f"Unable to decode {e}")
 

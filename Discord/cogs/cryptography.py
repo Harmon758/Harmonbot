@@ -20,8 +20,7 @@ from utilities import checks
 sys.path.insert(0, "..")
 from units.cryptography import (
     decode_caesar_cipher, encode_caesar_cipher,
-    decode_morse_code, encode_morse_code,
-    UnitOutputError
+    decode_morse_code, encode_morse_code
 )
 sys.path.pop(0)
 
@@ -176,7 +175,7 @@ class Cryptography(commands.Cog):
         """
         try:
             await ctx.embed_reply(decode_morse_code(message))
-        except UnitOutputError as e:
+        except ValueError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
     @decode.command(name = "qr")
