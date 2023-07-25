@@ -43,7 +43,7 @@ async def get_timezone_data(
     if aiohttp_session_not_passed := (aiohttp_session is None):
         aiohttp_session = aiohttp.ClientSession()
     try:
-        if not (latitude and longitude):
+        if latitude is None and longitude is None:
             if not location:
                 raise TypeError("location or latitude and longitude required")
 
