@@ -5,7 +5,6 @@ from hypothesis import given
 from hypothesis.strategies import floats, uuids
 
 from units.location import wind_degrees_to_direction
-from units.errors import UnitExecutionError
 
 
 class TestWindDegreesToDirection(unittest.TestCase):
@@ -17,12 +16,12 @@ class TestWindDegreesToDirection(unittest.TestCase):
 
     @given(floats(max_value = 0, exclude_max = True))
     def test_negative_degrees(self, degrees):
-        with self.assertRaises(UnitExecutionError):
+        with self.assertRaises(ValueError):
             wind_degrees_to_direction(degrees)
 
     @given(floats(min_value = 360, exclude_min = True))
     def test_degrees_greater_than_360(self, degrees):
-        with self.assertRaises(UnitExecutionError):
+        with self.assertRaises(ValueError):
             wind_degrees_to_direction(degrees)
 
     @given(floats(min_value = 0, max_value = 360))

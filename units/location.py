@@ -48,9 +48,9 @@ def wind_degrees_to_direction(degrees):
 	if not isinstance(degrees, (int, float)):
 		raise TypeError("degrees must be a number")
 	if degrees < 0:
-		raise UnitExecutionError("degrees must be greater than zero")
+		raise ValueError("degrees must be greater than zero")
 	if degrees > 360:
-		raise UnitExecutionError("degrees must be less than 360")
+		raise ValueError("degrees must be less than 360")
 	if degrees <= 11.25 or 348.75 <= degrees: return 'N'
 	if 11.25 <= degrees <= 33.75: return "NNE"
 	if 33.75 <= degrees <= 56.25: return "NE"
