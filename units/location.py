@@ -7,7 +7,9 @@ import aiohttp
 from .errors import UnitExecutionError, UnitOutputError
 
 
-async def get_geocode_data(location, *, aiohttp_session = None):
+async def get_geocode_data(
+    location: str, *, aiohttp_session: aiohttp.ClientSession | None = None
+) -> dict:
     # TODO: Add reverse option
     if aiohttp_session_not_passed := (aiohttp_session is None):
         aiohttp_session = aiohttp.ClientSession()
