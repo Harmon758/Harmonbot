@@ -79,7 +79,7 @@ class TestMorseCode(unittest.TestCase):
         )
         # Ignore test failure for ligatures
         assume(len(message.upper()) == len(message))
-        self.assertRaises(UnitOutputError, encode_morse_code, message)
+        self.assertRaises(ValueError, encode_morse_code, message)
 
     @given(text(
         alphabet = characters(

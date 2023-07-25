@@ -59,7 +59,7 @@ def encode_morse_code(message: str):
             character_to_morse[character] for character in message.upper()
         )
     except KeyError as e:
-        raise UnitOutputError(f"Unable to encode {e}")
+        raise ValueError(f"Unable to encode {e}")
 
 def decode_morse_code(message: str):
     if not isinstance(message, str):
