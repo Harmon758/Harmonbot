@@ -4,6 +4,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from enum import Enum
+from operator import attrgetter
 
 from utilities import checks
 from utilities.transformers import PartialEmojiTransformer
@@ -30,6 +31,14 @@ class EMOJI(Enum):
     turtle = '\N{TURTLE}'
 
 
+class EMOJI_ALIASES(Enum):
+    squirrel = "chipmunk"
+    # https://www.unicode.org/L2/L2017/17442-squirrel-emoji.pdf
+    # https://www.unicode.org/L2/L2018/18024-emoji-recs12.pdf
+    # https://unicode.org/emoji/proposals.html
+    # https://www.unicode.org/mail-arch/unicode-ml/y2018-m08/0010.html
+
+
 def emoji_command_wrapper(emoji):
     async def emoji_command(self, ctx):
         await ctx.embed_reply(emoji.value)
@@ -41,6 +50,11 @@ class EmojiCommand(commands.Command):
         super().__init__(
             emoji_command_wrapper(emoji),
             name = emoji.name,
+            aliases = [
+                alias.name
+                for alias in EMOJI_ALIASES
+                if alias.value == emoji.name
+            ],
             help = emoji.name.capitalize() + " emoji",
             checks = [checks.not_forbidden().predicate]
         )
@@ -104,7 +118,21 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
         await self.bigmoji(ctx, emoji = emoji)
 
     @app_commands.command()
-    async def send(self, interaction, *, emoji: EMOJI):
+    @app_commands.choices(
+        emoji = sorted(
+            [
+                app_commands.Choice(name = member.name, value = member.value)
+                for member in EMOJI
+            ] + [
+                app_commands.Choice(
+                    name = member.name, value = EMOJI[member.value].value
+                )
+                for member in EMOJI_ALIASES
+            ],
+            key = attrgetter("name")
+        )
+    )
+    async def send(self, interaction, *, emoji: app_commands.Choice[str]):
         """
         Send emoji
 
