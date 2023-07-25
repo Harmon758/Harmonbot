@@ -2,13 +2,13 @@
 from discord import app_commands
 from discord.ext import commands
 
-from async_lru import alru_cache
+import sys
 
 from utilities import checks
 
-
-async_cache = alru_cache(maxsize=None)
-# https://github.com/python/cpython/issues/90780
+sys.path.insert(0, "..")
+from units.cache import async_cache
+sys.path.pop(0)
 
 
 async def setup(bot):

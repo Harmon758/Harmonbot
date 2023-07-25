@@ -3,11 +3,11 @@ import discord
 from discord.ext import commands, menus
 
 import io
+import sys
 import textwrap
 from typing import Optional
 import urllib.error
 
-from async_lru import alru_cache
 from bs4 import BeautifulSoup
 from google.api_core.exceptions import InvalidArgument
 import spellchecker
@@ -15,9 +15,10 @@ import spellchecker
 from utilities import checks
 from utilities.paginators import ButtonPaginator
 
+sys.path.insert(0, "..")
+from units.cache import async_cache
+sys.path.pop(0)
 
-async_cache = alru_cache(maxsize=None)
-# https://github.com/python/cpython/issues/90780
 
 async def setup(bot):
     await bot.add_cog(Words(bot))
