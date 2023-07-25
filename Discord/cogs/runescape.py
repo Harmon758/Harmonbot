@@ -9,6 +9,7 @@ from utilities import checks
 
 sys.path.insert(0, "..")
 from units.runescape import get_ge_data, get_item_id, get_monster_data
+from units.wikis import search_wiki
 sys.path.pop(0)
 
 async def setup(bot):
@@ -160,9 +161,20 @@ class RuneScape(commands.Cog):
             Search query
         """
         await ctx.defer()
-        await ctx.bot.cogs["Search"].process_wiki(
-            ctx, "https://runescape.wiki/api.php", query
-        )
+        try:
+            article = await search_wiki(
+                "https://runescape.wiki/api.php", query,
+                aiohttp_session = ctx.bot.aiohttp_session
+            )
+        except ValueError as e:
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+        else:
+            await ctx.embed_reply(
+                title = article.title,
+                title_url = article.url,
+                description = article.extract,
+                image_url = article.image_url
+            )
 
     @runescape.command(hidden = True, with_app_command = False)
     async def zybez(self, ctx):
