@@ -122,15 +122,26 @@ async def search_wiki(
             ):
                 raise ValueError("Page not found")
 
-        # https://www.mediawiki.org/wiki/API:Query
-        # https://www.mediawiki.org/wiki/API:Siteinfo
         async with aiohttp_session.get(
             api_url, params = {
-                "action": "query", "redirects": "",
-                "prop": "info|extracts|pageimages|revisions", "titles": search,
-                "inprop": "url", "exintro": "", "explaintext": "",
-                "pithumbsize": 9000, "pilicense": "any", "rvprop": "content",
-                "meta": "siteinfo", "format": "json"
+                # https://www.mediawiki.org/wiki/API:Query
+                "action": "query",
+                "prop": "info|extracts|pageimages|revisions",
+                "titles": search,
+                "redirects": "",
+                # https://www.mediawiki.org/wiki/API:Info
+                "inprop": "url",
+                # https://www.mediawiki.org/wiki/Extension:TextExtracts
+                "exintro": "",
+                "explaintext": "",
+                # https://www.mediawiki.org/wiki/Extension:PageImages
+                "pithumbsize": 9000,
+                "pilicense": "any",
+                # https://www.mediawiki.org/wiki/API:Revisions
+                "rvprop": "content",
+                # https://www.mediawiki.org/wiki/API:Siteinfo
+                "meta": "siteinfo",
+                "format": "json"
             }
             # TODO: Use exchars?
             # TODO: Use images prop?
