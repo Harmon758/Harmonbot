@@ -159,13 +159,7 @@ async def search_wiki(
         wiki_info_data = data["query"]["general"]
 
         if "extract" in page:
-            extract = re.sub(
-                r"\s+ \s+", ' ',
-                (
-                    page["extract"] if len(page["extract"]) <= 512
-                    else page["extract"][:512] + '…'
-                )
-            )
+            extract = re.sub(r"\s+ \s+", ' ', page["extract"])
         else:
             # https://www.mediawiki.org/wiki/API:Parsing_wikitext
             async with aiohttp_session.get(
@@ -191,13 +185,10 @@ async def search_wiki(
                 second_p = p[1]
                 extract += '\n' + second_p.get_text()
 
-            extract = re.sub(
-                r"\n\s*\n", "\n\n",
-                (
-                    extract if len(extract) <= 512
-                    else extract[:512] + '…'
-                )
-            )
+            extract = re.sub(r"\n\s*\n", "\n\n", extract)
+
+        extract = extract if len(extract) <= 512 else extract[:512] + '…'
+        # TODO: Update character limit?, Discord now uses 350
 
         article_path = wiki_info_data["articlepath"]
         url = url.rstrip('/')
