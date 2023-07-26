@@ -127,15 +127,13 @@ async def search_wiki(
         async with aiohttp_session.get(
             api_url, params = {
                 "action": "query", "redirects": "",
-                "prop": "info|extracts|pageimages", "titles": search,
+                "prop": "info|extracts|pageimages|revisions", "titles": search,
                 "inprop": "url", "exintro": "", "explaintext": "",
-                "pithumbsize": 9000, "pilicense": "any", "meta": "siteinfo",
-                "format": "json"
+                "pithumbsize": 9000, "pilicense": "any", "rvprop": "content",
+                "meta": "siteinfo", "format": "json"
             }
             # TODO: Use exchars?
             # TODO: Use images prop?
-            # TODO: Use revisions prop and content rvprop?
-            #       for links, italics, bold
         ) as resp:
             data = await resp.json()
 
@@ -199,15 +197,55 @@ async def search_wiki(
                 )
             )
 
-        wiki_info = data["query"]["general"]
-        logo = wiki_info["logo"]
+        wiki_info_data = data["query"]["general"]
+        logo = wiki_info_data["logo"]
         if logo.startswith("//"):
             logo = "https:" + logo
 
         wiki_info = WikiInfo(
-            name = wiki_info["sitename"],
+            name = wiki_info_data["sitename"],
             logo = logo
         )
+
+        article_path = wiki_info_data["articlepath"]
+        url = url.rstrip('/')
+        replacement_texts = {}
+
+        # https://www.mediawiki.org/wiki/Help:Links
+        for link in re.finditer(
+            (
+                r"\[\[([^\[\]]+?)\|([^\[\]]+?)\]\]" + r'|' +
+                r"\[\[([^\|]+?)\]\]" + r'|' +
+                r"(?<!\[)\[([^\[\]]+?)[ ]([^\[\]]+?)\](?!\])"
+            ),
+            page["revisions"][0]['*']
+        ):
+            if (target := link.group(1)) and (text := link.group(2)):
+                # Piped Internal Link
+                if target.startswith("Category:"):
+                    # Ignore Category Links
+                    continue
+                target = target.replace(' ', '_')
+                replacement_texts[re.escape(text)] = (
+                    f"[{text}]({url}{article_path.replace('$1', target)})"
+                )
+            elif (text := link.group(3)):  # Non-Piped Internal Link
+                target = text.replace(' ', '_')
+                replacement_texts[re.escape(text)] = (
+                    f"[{text}]({url}{article_path.replace('$1', target)})"
+                )
+            else:  # External Link
+                target = link.group(4)
+                text = link.group(5)
+                replacement_texts[re.escape(text)] = f"[{text}]({target})"
+
+        extract = re.sub(
+            '|'.join(replacement_texts.keys()),
+            lambda match: replacement_texts[re.escape(match.group(0))],
+            extract
+        )
+
+        # TODO: Handle bold (''' -> **) and italics ('' -> *)
 
         thumbnail = page.get("thumbnail")
 
