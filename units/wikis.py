@@ -239,7 +239,10 @@ async def search_wiki(
 
         # TODO: Handle bold (''' -> **) and italics ('' -> *)
 
-        thumbnail = page.get("thumbnail")
+        if (thumbnail := page.get("thumbnail")):
+            thumbnail = thumbnail["source"].replace(
+                f"{thumbnail['width']}px", "1200px"
+            )
 
         logo = wiki_info_data["logo"]
         if logo.startswith("//"):
@@ -254,11 +257,7 @@ async def search_wiki(
             title = page["title"],
             url = page["fullurl"],  # TODO: Use canonicalurl?
             extract = extract,
-            image_url = (
-                thumbnail["source"].replace(
-                    f"{thumbnail['width']}px", "1200px"
-                ) if thumbnail else None
-            ),
+            image_url = thumbnail,
             wiki = wiki_info
         )
 
