@@ -310,6 +310,7 @@ class Search(commands.GroupCog, group_name = "search"):
 			Search query
 		"""
 		ctx = await interaction.client.get_context(interaction)
+		await ctx.defer()
 		await self.wikipedia(ctx, query = query)
 	
 	@commands.group(
