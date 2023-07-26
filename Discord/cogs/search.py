@@ -220,7 +220,9 @@ class Search(commands.GroupCog, group_name = "search"):
 				title = article.title,
 				title_url = article.url,
 				description = article.extract,
-				image_url = article.image_url
+				image_url = article.image_url,
+				footer_icon_url = article.wiki.logo,
+				footer_text = article.wiki.name
 			)
 	
 	@uesp.command(name = "random")
@@ -246,7 +248,9 @@ class Search(commands.GroupCog, group_name = "search"):
 				title = article.title,
 				title_url = article.url,
 				description = article.extract,
-				image_url = article.image_url
+				image_url = article.image_url,
+				footer_icon_url = article.wiki.logo,
+				footer_text = article.wiki.name
 			)
 	
 	@commands.group(
@@ -267,7 +271,9 @@ class Search(commands.GroupCog, group_name = "search"):
 				title = article.title,
 				title_url = article.url,
 				description = article.extract,
-				image_url = article.image_url
+				image_url = article.image_url,
+				footer_icon_url = article.wiki.logo,
+				footer_text = article.wiki.name
 			)
 	
 	@wikipedia.command(name = "random")
@@ -288,7 +294,9 @@ class Search(commands.GroupCog, group_name = "search"):
 				title = article.title,
 				title_url = article.url,
 				description = article.extract,
-				image_url = article.image_url
+				image_url = article.image_url,
+				footer_icon_url = article.wiki.logo,
+				footer_text = article.wiki.name
 			)
 	
 	@app_commands.command(name = "wikipedia")
@@ -327,7 +335,9 @@ class Search(commands.GroupCog, group_name = "search"):
 				title = article.title,
 				title_url = article.url,
 				description = article.extract,
-				image_url = article.image_url
+				image_url = article.image_url,
+				footer_icon_url = article.wiki.logo,
+				footer_text = article.wiki.name
 			)
 	
 	@commands.command()
@@ -345,7 +355,9 @@ class Search(commands.GroupCog, group_name = "search"):
 				title = article.title,
 				title_url = article.url,
 				description = article.extract,
-				image_url = article.image_url
+				image_url = article.image_url,
+				footer_icon_url = article.wiki.logo,
+				footer_text = article.wiki.name
 			)
 	
 	@commands.group(

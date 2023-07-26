@@ -173,7 +173,9 @@ class RuneScape(commands.Cog):
                 title = article.title,
                 title_url = article.url,
                 description = article.extract,
-                image_url = article.image_url
+                image_url = article.image_url,
+                footer_icon_url = article.wiki.logo,
+                footer_text = article.wiki.name
             )
 
     @runescape.command(hidden = True, with_app_command = False)

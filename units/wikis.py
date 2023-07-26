@@ -8,10 +8,16 @@ from bs4 import BeautifulSoup
 from pydantic import BaseModel
 
 from .aiohttp_client import ensure_session
+from .cache import async_cache
 
 if TYPE_CHECKING:
     import aiohttp
     from collections.abc import Iterable
+
+
+class WikiInfo(BaseModel):
+    name: str
+    logo: str
 
 
 class WikiArticle(BaseModel):
@@ -19,6 +25,32 @@ class WikiArticle(BaseModel):
     url: str
     extract: str
     image_url: str | None
+    wiki: WikiInfo | None
+
+
+@async_cache
+async def get_wiki_info(
+    url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
+) -> WikiInfo:
+    # TODO: Add User-Agent
+    async with ensure_session(aiohttp_session) as aiohttp_session:
+        async with aiohttp_session.get(
+            url, params = {
+                "action": "query", "meta": "siteinfo",
+                "format": "json", "formatversion": 2
+            }
+        ) as resp:  # https://www.mediawiki.org/wiki/API:Siteinfo
+            data = await resp.json()
+
+        wiki_info = data["query"]["general"]
+        logo = wiki_info["logo"]
+        if logo.startswith("//"):
+            logo = "https:" + logo
+
+        return WikiInfo(
+            name = wiki_info["sitename"],
+            logo = logo
+        )
 
 
 async def search_wiki(
@@ -32,7 +64,8 @@ async def search_wiki(
     # https://www.mediawiki.org/wiki/Help:Namespaces
     # https://en.wikipedia.org/wiki/Wikipedia:Namespace
     # https://community.fandom.com/wiki/Help:Namespaces
-    redirect: bool = True
+    redirect: bool = True,
+    wiki_info: bool = True
 ) -> WikiArticle:
     # TODO: Add User-Agent
     # TODO: Use textwrap
@@ -151,6 +184,10 @@ async def search_wiki(
                 thumbnail["source"].replace(
                     f"{thumbnail['width']}px", "1200px"
                 ) if thumbnail else None
+            ),
+            wiki = (
+                await get_wiki_info(url, aiohttp_session = aiohttp_session)
+                if wiki_info else None
             )
         )
 
