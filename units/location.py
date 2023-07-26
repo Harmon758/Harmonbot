@@ -1,17 +1,21 @@
 
+from __future__ import annotations
+
 import datetime
 import os
+from typing import TYPE_CHECKING
 
-import aiohttp
+from .aiohttp_client import ensure_session
+
+if TYPE_CHECKING:
+    import aiohttp
 
 
 async def get_geocode_data(
     location: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> dict:
     # TODO: Add reverse option
-    if aiohttp_session_not_passed := (aiohttp_session is None):
-        aiohttp_session = aiohttp.ClientSession()
-    try:
+    async with ensure_session(aiohttp_session) as aiohttp_session:
         async with aiohttp_session.get(
             "https://maps.googleapis.com/maps/api/geocode/json",
             params = {"address": location, "key": os.getenv("GOOGLE_API_KEY")}
@@ -28,9 +32,6 @@ async def get_geocode_data(
             raise RuntimeError(f"Error: {error_message}")
 
         return geocode_data["results"][0]
-    finally:
-        if aiohttp_session_not_passed:
-            await aiohttp_session.close()
 
 
 async def get_timezone_data(
@@ -40,9 +41,7 @@ async def get_timezone_data(
     longitude: float | int | str | None = None,
     aiohttp_session: aiohttp.ClientSession | None = None
 ) -> dict:
-    if aiohttp_session_not_passed := (aiohttp_session is None):
-        aiohttp_session = aiohttp.ClientSession()
-    try:
+    async with ensure_session(aiohttp_session) as aiohttp_session:
         if latitude is None and longitude is None:
             if not location:
                 raise TypeError("location or latitude and longitude required")
@@ -73,9 +72,6 @@ async def get_timezone_data(
             raise RuntimeError(f"Error: {error_message}")
 
         return timezone_data
-    finally:
-        if aiohttp_session_not_passed:
-            await aiohttp_session.close()
 
 
 DEGREES_RANGES_TO_DIRECTIONS = {

@@ -1,13 +1,18 @@
 
-import aiohttp
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from .aiohttp_client import ensure_session
+
+if TYPE_CHECKING:
+    import aiohttp
 
 
 async def get_item_id(
     item: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> int:
-    if aiohttp_session_not_passed := (aiohttp_session is None):
-        aiohttp_session = aiohttp.ClientSession()
-    try:
+    async with ensure_session(aiohttp_session) as aiohttp_session:
         # https://runescape.wiki/w/Application_programming_interface#Grand_Exchange_Database_API
         # https://www.mediawiki.org/wiki/API:Opensearch
         # TODO: Handle redirects?
@@ -41,9 +46,6 @@ async def get_item_id(
                 return item_id[0]
 
         raise ValueError(f"{item} is not an item")
-    finally:
-        if aiohttp_session_not_passed:
-            await aiohttp_session.close()
 
 
 async def get_ge_data(
@@ -52,9 +54,7 @@ async def get_ge_data(
     item_id: int | str | None  = None,
     aiohttp_session: aiohttp.ClientSession | None = None
 ) -> dict:
-    if aiohttp_session_not_passed := (aiohttp_session is None):
-        aiohttp_session = aiohttp.ClientSession()
-    try:
+    async with ensure_session(aiohttp_session) as aiohttp_session:
         if item_id is None:
             item_id = await get_item_id(item, aiohttp_session = aiohttp_session)
         async with aiohttp_session.get(
@@ -65,17 +65,12 @@ async def get_ge_data(
                 raise ValueError(f"{item} not found on the Grand Exchange")
             data = await resp.json(content_type = "text/html")
         return data["item"]
-    finally:
-        if aiohttp_session_not_passed:
-            await aiohttp_session.close()
 
 
 async def get_monster_data(
     monster: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> dict:
-    if aiohttp_session_not_passed := (aiohttp_session is None):
-        aiohttp_session = aiohttp.ClientSession()
-    try:
+    async with ensure_session(aiohttp_session) as aiohttp_session:
         async with aiohttp_session.get(
             "http://services.runescape.com/m=itemdb_rs/bestiary/beastSearch.json",
             params = {"term": monster}
@@ -89,7 +84,4 @@ async def get_monster_data(
         ) as resp:
             data = await resp.json(content_type = "text/html")
         return data
-    finally:
-        if aiohttp_session_not_passed:
-            await aiohttp_session.close()
 

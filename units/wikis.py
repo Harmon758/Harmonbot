@@ -4,11 +4,13 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-import aiohttp
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
 
+from .aiohttp_client import ensure_session
+
 if TYPE_CHECKING:
+    import aiohttp
     from collections.abc import Iterable
 
 
@@ -34,9 +36,7 @@ async def search_wiki(
 ) -> WikiArticle:
     # TODO: Add User-Agent
     # TODO: Use textwrap
-    if aiohttp_session_not_passed := (aiohttp_session is None):
-        aiohttp_session = aiohttp.ClientSession()
-    try:
+    async with ensure_session(aiohttp_session) as aiohttp_session:
         if random:
             if not isinstance(random_namespaces, int | str):
                 random_namespaces = '|'.join(
@@ -153,7 +153,4 @@ async def search_wiki(
                 ) if thumbnail else None
             )
         )
-    finally:
-        if aiohttp_session_not_passed:
-            await aiohttp_session.close()
 
