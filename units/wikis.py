@@ -156,6 +156,8 @@ async def search_wiki(
             )
             # TODO: Handle section links/tofragments
 
+        wiki_info_data = data["query"]["general"]
+
         if "extract" in page:
             extract = re.sub(
                 r"\s+ \s+", ' ',
@@ -196,16 +198,6 @@ async def search_wiki(
                     else extract[:512] + '…'
                 )
             )
-
-        wiki_info_data = data["query"]["general"]
-        logo = wiki_info_data["logo"]
-        if logo.startswith("//"):
-            logo = "https:" + logo
-
-        wiki_info = WikiInfo(
-            name = wiki_info_data["sitename"],
-            logo = logo
-        )
 
         article_path = wiki_info_data["articlepath"]
         url = url.rstrip('/')
@@ -248,6 +240,15 @@ async def search_wiki(
         # TODO: Handle bold (''' -> **) and italics ('' -> *)
 
         thumbnail = page.get("thumbnail")
+
+        logo = wiki_info_data["logo"]
+        if logo.startswith("//"):
+            logo = "https:" + logo
+
+        wiki_info = WikiInfo(
+            name = wiki_info_data["sitename"],
+            logo = logo
+        )
 
         return WikiArticle(
             title = page["title"],
