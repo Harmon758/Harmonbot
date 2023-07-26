@@ -210,7 +210,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		"""Look something up on the Unofficial Elder Scrolls Pages"""
 		try:
 			article = await search_wiki(
-				"https://en.uesp.net/w/api.php", search,
+				"https://en.uesp.net/", search,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:
@@ -234,7 +234,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		# Note: random uesp command invokes this command
 		try:
 			article = await search_wiki(
-				"https://en.uesp.net/w/api.php", None,
+				"https://en.uesp.net/", None,
 				aiohttp_session = ctx.bot.aiohttp_session,
 				random = True,
 				random_namespaces = [0] + list(range(100, 152)) + [200, 201]
@@ -261,7 +261,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		"""Search for an article on Wikipedia"""
 		try:
 			article = await search_wiki(
-				"https://en.wikipedia.org/w/api.php", query,
+				"https://en.wikipedia.org/", query,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:
@@ -283,7 +283,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		await ctx.defer()
 		try:
 			article = await search_wiki(
-				"https://en.wikipedia.org/w/api.php", None,
+				"https://en.wikipedia.org/", None,
 				aiohttp_session = ctx.bot.aiohttp_session,
 				random = True
 			)
@@ -325,7 +325,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		"""Search for an article on The Lord of The Rings Wiki"""
 		try:
 			article = await search_wiki(
-				"https://lotr.fandom.com/api.php", query,
+				"https://lotr.fandom.com/", query,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:
@@ -345,7 +345,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		"""Search for an article on Tolkien Gateway"""
 		try:
 			article = await search_wiki(
-				"https://tolkiengateway.net/w/api.php", query,
+				"https://tolkiengateway.net/", query,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:

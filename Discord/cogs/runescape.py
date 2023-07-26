@@ -163,7 +163,7 @@ class RuneScape(commands.Cog):
         await ctx.defer()
         try:
             article = await search_wiki(
-                "https://runescape.wiki/api.php", query,
+                "https://runescape.wiki/", query,
                 aiohttp_session = ctx.bot.aiohttp_session
             )
         except ValueError as e:

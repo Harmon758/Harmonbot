@@ -29,13 +29,33 @@ class WikiArticle(BaseModel):
 
 
 @async_cache
+async def get_api_endpoint(
+    url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
+) -> str:
+    # TODO: Add User-Agent
+    async with ensure_session(aiohttp_session) as aiohttp_session:
+        url = url.rstrip('/')
+        for script_path in ('/w', ""):
+            async with aiohttp_session.get(
+                api_url := f"{url}{script_path}/api.php"
+            ) as resp:
+                if resp.status == 200:
+                    return api_url
+
+        raise RuntimeError(f"Unable to find wiki API endpoint URL for {url}")
+
+
+@async_cache
 async def get_wiki_info(
     url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> WikiInfo:
     # TODO: Add User-Agent
     async with ensure_session(aiohttp_session) as aiohttp_session:
+        api_url = await get_api_endpoint(
+            url, aiohttp_session = aiohttp_session
+        )
         async with aiohttp_session.get(
-            url, params = {
+            api_url, params = {
                 "action": "query", "meta": "siteinfo",
                 "format": "json", "formatversion": 2
             }
@@ -70,13 +90,16 @@ async def search_wiki(
     # TODO: Add User-Agent
     # TODO: Use textwrap
     async with ensure_session(aiohttp_session) as aiohttp_session:
+        api_url = await get_api_endpoint(
+            url, aiohttp_session = aiohttp_session
+        )
         if random:
             if not isinstance(random_namespaces, int | str):
                 random_namespaces = '|'.join(
                     str(namespace) for namespace in random_namespaces
                 )
             async with aiohttp_session.get(
-                url, params = {
+                api_url, params = {
                     "action": "query", "list": "random",
                     "rnnamespace": random_namespaces, "format": "json"
                 }
@@ -86,7 +109,7 @@ async def search_wiki(
             search = data["query"]["random"][0]["title"]
         else:
             async with aiohttp_session.get(
-                url, params = {
+                api_url, params = {
                     "action": "query", "list": "search", "srsearch": search,
                     "srinfo": "suggestion", "srlimit": 1, "format": "json"
                 }
@@ -101,7 +124,7 @@ async def search_wiki(
                 raise ValueError("Page not found")
 
         async with aiohttp_session.get(
-            url, params = {
+            api_url, params = {
                 "action": "query", "redirects": "",
                 "prop": "info|extracts|pageimages", "titles": search,
                 "inprop": "url", "exintro": "", "explaintext": "",
@@ -144,7 +167,7 @@ async def search_wiki(
         else:
             # https://www.mediawiki.org/wiki/API:Parsing_wikitext
             async with aiohttp_session.get(
-                url, params = {
+                api_url, params = {
                     "action": "parse", "page": search, "prop": "text",
                     "format": "json"
                 }
