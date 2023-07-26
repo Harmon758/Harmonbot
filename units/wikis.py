@@ -84,8 +84,7 @@ async def search_wiki(
     # https://www.mediawiki.org/wiki/Help:Namespaces
     # https://en.wikipedia.org/wiki/Wikipedia:Namespace
     # https://community.fandom.com/wiki/Help:Namespaces
-    redirect: bool = True,
-    wiki_info: bool = True
+    redirect: bool = True
 ) -> WikiArticle:
     # TODO: Add User-Agent
     # TODO: Use textwrap
@@ -123,18 +122,21 @@ async def search_wiki(
             ):
                 raise ValueError("Page not found")
 
+        # https://www.mediawiki.org/wiki/API:Query
+        # https://www.mediawiki.org/wiki/API:Siteinfo
         async with aiohttp_session.get(
             api_url, params = {
                 "action": "query", "redirects": "",
                 "prop": "info|extracts|pageimages", "titles": search,
                 "inprop": "url", "exintro": "", "explaintext": "",
-                "pithumbsize": 9000, "pilicense": "any", "format": "json"
+                "pithumbsize": 9000, "pilicense": "any", "meta": "siteinfo",
+                "format": "json"
             }
             # TODO: Use exchars?
             # TODO: Use images prop?
             # TODO: Use revisions prop and content rvprop?
             #       for links, italics, bold
-        ) as resp:  # https://www.mediawiki.org/wiki/API:Query
+        ) as resp:
             data = await resp.json()
 
         if "pages" not in data["query"]:
@@ -197,6 +199,16 @@ async def search_wiki(
                 )
             )
 
+        wiki_info = data["query"]["general"]
+        logo = wiki_info["logo"]
+        if logo.startswith("//"):
+            logo = "https:" + logo
+
+        wiki_info = WikiInfo(
+            name = wiki_info["sitename"],
+            logo = logo
+        )
+
         thumbnail = page.get("thumbnail")
 
         return WikiArticle(
@@ -208,9 +220,6 @@ async def search_wiki(
                     f"{thumbnail['width']}px", "1200px"
                 ) if thumbnail else None
             ),
-            wiki = (
-                await get_wiki_info(url, aiohttp_session = aiohttp_session)
-                if wiki_info else None
-            )
+            wiki = wiki_info
         )
 
