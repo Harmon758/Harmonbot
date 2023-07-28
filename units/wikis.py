@@ -85,7 +85,7 @@ async def search_wiki(
     # https://en.wikipedia.org/wiki/Wikipedia:Namespace
     # https://community.fandom.com/wiki/Help:Namespaces
     redirect: bool = True
-) -> WikiArticle:
+) -> list[WikiArticle]:
     # TODO: Add User-Agent
     # TODO: Use textwrap
     async with ensure_session(aiohttp_session) as aiohttp_session:
@@ -105,21 +105,23 @@ async def search_wiki(
             ) as resp:  # https://www.mediawiki.org/wiki/API:Random
                 data = await resp.json()
 
-            search = data["query"]["random"][0]["title"]
+            titles = [data["query"]["random"][0]["title"]]
         else:
             async with aiohttp_session.get(
                 api_url, params = {
                     "action": "query", "list": "search", "srsearch": search,
-                    "srinfo": "suggestion", "srlimit": 1, "format": "json"
-                }
+                    "srinfo": "suggestion", "srlimit": 20, "format": "json"
+                }  # max exlimit is 20
             ) as resp:  # https://www.mediawiki.org/wiki/API:Search
                 data = await resp.json()
 
-            if search := data["query"]["search"]:
-                search = search[0]["title"]
-            elif not (
-                search := data["query"].get("searchinfo", {}).get("suggestion")
+            if results := data["query"]["search"]:
+                titles = [result["title"] for result in results]
+            elif suggestion := data["query"].get("searchinfo", {}).get(
+                "suggestion"
             ):
+                titles = [suggestion]
+            else:
                 raise ValueError("Page not found")
 
         async with aiohttp_session.get(
@@ -127,7 +129,7 @@ async def search_wiki(
                 # https://www.mediawiki.org/wiki/API:Query
                 "action": "query",
                 "prop": "info|extracts|pageimages|revisions",
-                "titles": search,
+                "titles": '|'.join(titles),
                 "redirects": "",
                 # https://www.mediawiki.org/wiki/API:Info
                 "inprop": "url",
@@ -148,102 +150,7 @@ async def search_wiki(
         ) as resp:
             data = await resp.json()
 
-        if "pages" not in data["query"]:
-            raise ValueError("Error")  # TODO: More descriptive error
-
-        page = list(data["query"]["pages"].values())[0]
-
-        if "missing" in page:
-            raise ValueError("Page not found")
-        if "invalid" in page:
-            raise ValueError(page["invalidreason"])
-
-        if redirect and "redirects" in data["query"]:
-            return await search_wiki(
-                url, data["query"]["redirects"][-1]["to"],
-                aiohttp_session = aiohttp_session,
-                redirect = False
-            )
-            # TODO: Handle section links/tofragments
-
         wiki_info_data = data["query"]["general"]
-
-        if "extract" in page:
-            extract = re.sub(r"\s+ \s+", ' ', page["extract"])
-        else:
-            # https://www.mediawiki.org/wiki/API:Parsing_wikitext
-            async with aiohttp_session.get(
-                api_url, params = {
-                    "action": "parse", "page": search, "prop": "text",
-                    "format": "json"
-                }
-            ) as resp:
-                data = await resp.json()
-
-            p = BeautifulSoup(
-                data["parse"]["text"]['*'], "lxml"
-            ).body.div.find_all(
-                'p', recursive = False
-            )
-
-            first_p = p[0]
-            if first_p.aside:
-                first_p.aside.clear()
-            extract = first_p.get_text()
-
-            if len(p) > 1:
-                second_p = p[1]
-                extract += '\n' + second_p.get_text()
-
-            extract = re.sub(r"\n\s*\n", "\n\n", extract)
-
-        extract = extract if len(extract) <= 512 else extract[:512] + '…'
-        # TODO: Update character limit?, Discord now uses 350
-
-        article_path = wiki_info_data["articlepath"]
-        url = url.rstrip('/')
-        replacement_texts = {}
-
-        # https://www.mediawiki.org/wiki/Help:Links
-        for link in re.finditer(
-            (
-                r"\[\[([^\[\]]+?)\|([^\[\]]+?)\]\]" + r'|' +
-                r"\[\[([^\|]+?)\]\]" + r'|' +
-                r"(?<!\[)\[([^\[\]]+?)[ ]([^\[\]]+?)\](?!\])"
-            ),
-            page["revisions"][0]['*']
-        ):
-            if (target := link.group(1)) and (text := link.group(2)):
-                # Piped Internal Link
-                if target.startswith("Category:"):
-                    # Ignore Category Links
-                    continue
-                target = target.replace(' ', '_')
-                replacement_texts[re.escape(text)] = (
-                    f"[{text}]({url}{article_path.replace('$1', target)})"
-                )
-            elif (text := link.group(3)):  # Non-Piped Internal Link
-                target = text.replace(' ', '_')
-                replacement_texts[re.escape(text)] = (
-                    f"[{text}]({url}{article_path.replace('$1', target)})"
-                )
-            else:  # External Link
-                target = link.group(4)
-                text = link.group(5)
-                replacement_texts[re.escape(text)] = f"[{text}]({target})"
-
-        extract = re.sub(
-            '|'.join(replacement_texts.keys()),
-            lambda match: replacement_texts[re.escape(match.group(0))],
-            extract
-        )
-
-        # TODO: Handle bold (''' -> **) and italics ('' -> *)
-
-        if (thumbnail := page.get("thumbnail")):
-            thumbnail = thumbnail["source"].replace(
-                f"{thumbnail['width']}px", "1200px"
-            )
 
         logo = wiki_info_data["logo"]
         if logo.startswith("//"):
@@ -254,11 +161,135 @@ async def search_wiki(
             logo = logo
         )
 
-        return WikiArticle(
-            title = page["title"],
-            url = page["fullurl"],  # TODO: Use canonicalurl?
-            extract = extract,
-            image_url = thumbnail,
-            wiki = wiki_info
-        )
+        if "pages" not in data["query"]:
+            raise ValueError("Error")  # TODO: More descriptive error
+
+        articles = {}
+        invalid_pages = []
+
+        for page in data["query"]["pages"].values():
+            if "missing" in page:
+                continue
+            if "invalid" in page:
+                invalid_pages.append(page)
+                continue
+
+            title = page["title"]
+
+            if "extract" in page:
+                extract = re.sub(r"\s+ \s+", ' ', page["extract"])
+            else:
+                continue  # TODO: Handle no extracts efficiently
+                # https://www.mediawiki.org/wiki/API:Parsing_wikitext
+                async with aiohttp_session.get(
+                    api_url, params = {
+                        "action": "parse", "page": search, "prop": "text",
+                        "format": "json"
+                    }
+                ) as resp:
+                    data = await resp.json()
+
+                p = BeautifulSoup(
+                    data["parse"]["text"]['*'], "lxml"
+                ).body.div.find_all(
+                    'p', recursive = False
+                )
+
+                first_p = p[0]
+                if first_p.aside:
+                    first_p.aside.clear()
+                extract = first_p.get_text()
+
+                if len(p) > 1:
+                    second_p = p[1]
+                    extract += '\n' + second_p.get_text()
+
+                extract = re.sub(r"\n\s*\n", "\n\n", extract)
+
+            extract = extract if len(extract) <= 512 else extract[:512] + '…'
+            # TODO: Update character limit?, Discord now uses 350
+
+            article_path = wiki_info_data["articlepath"]
+            url = url.rstrip('/')
+            replacement_texts = {}
+
+            # https://www.mediawiki.org/wiki/Help:Links
+            for link in re.finditer(
+                (
+                    r"\[\[([^\[\]]+?)\|([^\[\]]+?)\]\]" + r'|' +
+                    r"\[\[([^\|]+?)\]\]" + r'|' +
+                    r"(?<!\[)\[([^\[\]]+?)[ ]([^\[\]]+?)\](?!\])"
+                ),
+                page["revisions"][0]['*']
+            ):
+                if (target := link.group(1)) and (text := link.group(2)):
+                    # Piped Internal Link
+                    if target.startswith("Category:"):
+                        # Ignore Category Links
+                        continue
+                    target = target.replace(' ', '_')
+                    replacement_texts[re.escape(text)] = (
+                        f"[{text}]({url}{article_path.replace('$1', target)})"
+                    )
+                elif (text := link.group(3)):  # Non-Piped Internal Link
+                    target = text.replace(' ', '_')
+                    replacement_texts[re.escape(text)] = (
+                        f"[{text}]({url}{article_path.replace('$1', target)})"
+                    )
+                else:  # External Link
+                    target = link.group(4)
+                    text = link.group(5)
+                    replacement_texts[re.escape(text)] = f"[{text}]({target})"
+
+            extract = re.sub(
+                '|'.join(replacement_texts.keys()),
+                lambda match: replacement_texts[re.escape(match.group(0))],
+                extract
+            )
+
+            # TODO: Handle bold (''' -> **) and italics ('' -> *)
+
+            if (thumbnail := page.get("thumbnail")):
+                thumbnail = thumbnail["source"].replace(
+                    f"{thumbnail['width']}px", "1200px"
+                )
+
+            articles[title] = WikiArticle(
+                title = title,
+                url = page["fullurl"],  # TODO: Use canonicalurl?
+                extract = extract,
+                image_url = thumbnail,
+                wiki = wiki_info
+            )
+
+        if not articles:
+            if invalid_pages:
+                raise ValueError(
+                    "Error(s):\n" + '\n'.join(
+                        invalid_page["invalidreason"]
+                        for invalid_page in invalid_pages
+                    )
+                )
+            else:
+                raise ValueError("Page not found")
+
+        if redirect and "redirects" in data["query"]:
+            # TODO: Handle redirects
+            """
+            return await search_wiki(
+                url, data["query"]["redirects"][-1]["to"],
+                aiohttp_session = aiohttp_session,
+                redirect = False
+            )
+            # TODO: Handle section links/tofragments
+            """
+
+        ordered_articles = []
+        for title in titles:
+            try:
+                ordered_articles.append(articles[title])
+            except KeyError:
+                pass  # TODO: Handle?
+
+        return ordered_articles
 

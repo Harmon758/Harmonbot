@@ -6,6 +6,7 @@ import csv
 import sys
 
 from utilities import checks
+from utilities.views import WikiArticlesView
 
 sys.path.insert(0, "..")
 from units.runescape import get_ge_data, get_item_id, get_monster_data
@@ -162,21 +163,26 @@ class RuneScape(commands.Cog):
         """
         await ctx.defer()
         try:
-            article = await search_wiki(
+            articles = await search_wiki(
                 "https://runescape.wiki/", query,
                 aiohttp_session = ctx.bot.aiohttp_session
             )
         except ValueError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-        else:
-            await ctx.embed_reply(
-                title = article.title,
-                title_url = article.url,
-                description = article.extract,
-                image_url = article.image_url,
-                footer_icon_url = article.wiki.logo,
-                footer_text = article.wiki.name
-            )
+            return
+        
+        view = WikiArticlesView(articles)
+        message = await ctx.reply(
+            "",
+            embed = view.initial_embed(ctx),
+            view = view
+        )
+        
+        if ctx.interaction:
+            # Fetch Message, as InteractionMessage token expires after 15 min.
+            message = await message.fetch()
+        view.message = message
+        ctx.bot.views.append(view)
 
     @runescape.command(hidden = True, with_app_command = False)
     async def zybez(self, ctx):

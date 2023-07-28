@@ -13,6 +13,7 @@ import youtube_dl
 from utilities import checks
 from utilities.menu_sources import WolframAlphaSource
 from utilities.paginators import ButtonPaginator
+from utilities.views import WikiArticlesView
 
 sys.path.insert(0, "..")
 from units.wikis import search_wiki
@@ -209,21 +210,26 @@ class Search(commands.GroupCog, group_name = "search"):
 	async def uesp(self, ctx, *, search: str):
 		"""Look something up on the Unofficial Elder Scrolls Pages"""
 		try:
-			article = await search_wiki(
+			articles = await search_wiki(
 				"https://en.uesp.net/", search,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-		else:
-			await ctx.embed_reply(
-				title = article.title,
-				title_url = article.url,
-				description = article.extract,
-				image_url = article.image_url,
-				footer_icon_url = article.wiki.logo,
-				footer_text = article.wiki.name
-			)
+			return
+		
+		view = WikiArticlesView(articles)
+		message = await ctx.reply(
+			"",
+			embed = view.initial_embed(ctx),
+			view = view
+		)
+		
+		if ctx.interaction:
+			# Fetch Message, as InteractionMessage token expires after 15 min.
+			message = await message.fetch()
+		view.message = message
+		ctx.bot.views.append(view)
 	
 	@uesp.command(name = "random")
 	async def uesp_random(self, ctx):
@@ -233,7 +239,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		'''
 		# Note: random uesp command invokes this command
 		try:
-			article = await search_wiki(
+			articles = await search_wiki(
 				"https://en.uesp.net/", None,
 				aiohttp_session = ctx.bot.aiohttp_session,
 				random = True,
@@ -244,6 +250,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 		else:
+			article = articles[0]
 			await ctx.embed_reply(
 				title = article.title,
 				title_url = article.url,
@@ -260,21 +267,26 @@ class Search(commands.GroupCog, group_name = "search"):
 	async def wikipedia(self, ctx, *, query: str):
 		"""Search for an article on Wikipedia"""
 		try:
-			article = await search_wiki(
+			articles = await search_wiki(
 				"https://en.wikipedia.org/", query,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-		else:
-			await ctx.embed_reply(
-				title = article.title,
-				title_url = article.url,
-				description = article.extract,
-				image_url = article.image_url,
-				footer_icon_url = article.wiki.logo,
-				footer_text = article.wiki.name
-			)
+			return
+		
+		view = WikiArticlesView(articles)
+		message = await ctx.reply(
+			"",
+			embed = view.initial_embed(ctx),
+			view = view
+		)
+		
+		if ctx.interaction:
+			# Fetch Message, as InteractionMessage token expires after 15 min.
+			message = await message.fetch()
+		view.message = message
+		ctx.bot.views.append(view)
 	
 	@wikipedia.command(name = "random")
 	async def wikipedia_random(self, ctx):
@@ -282,7 +294,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		# Note: random wikipedia command invokes this command
 		await ctx.defer()
 		try:
-			article = await search_wiki(
+			articles = await search_wiki(
 				"https://en.wikipedia.org/", None,
 				aiohttp_session = ctx.bot.aiohttp_session,
 				random = True
@@ -290,6 +302,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 		else:
+			article = articles[0]
 			await ctx.embed_reply(
 				title = article.title,
 				title_url = article.url,
@@ -325,41 +338,51 @@ class Search(commands.GroupCog, group_name = "search"):
 	async def lotr(self, ctx, *, query: str):
 		"""Search for an article on The Lord of The Rings Wiki"""
 		try:
-			article = await search_wiki(
+			articles = await search_wiki(
 				"https://lotr.fandom.com/", query,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-		else:
-			await ctx.embed_reply(
-				title = article.title,
-				title_url = article.url,
-				description = article.extract,
-				image_url = article.image_url,
-				footer_icon_url = article.wiki.logo,
-				footer_text = article.wiki.name
-			)
+			return
+		
+		view = WikiArticlesView(articles)
+		message = await ctx.reply(
+			"",
+			embed = view.initial_embed(ctx),
+			view = view
+		)
+		
+		if ctx.interaction:
+			# Fetch Message, as InteractionMessage token expires after 15 min.
+			message = await message.fetch()
+		view.message = message
+		ctx.bot.views.append(view)
 	
 	@commands.command()
 	async def tolkien(self, ctx, *, query: str):
 		"""Search for an article on Tolkien Gateway"""
 		try:
-			article = await search_wiki(
+			articles = await search_wiki(
 				"https://tolkiengateway.net/", query,
 				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-		else:
-			await ctx.embed_reply(
-				title = article.title,
-				title_url = article.url,
-				description = article.extract,
-				image_url = article.image_url,
-				footer_icon_url = article.wiki.logo,
-				footer_text = article.wiki.name
-			)
+			return
+		
+		view = WikiArticlesView(articles)
+		message = await ctx.reply(
+			"",
+			embed = view.initial_embed(ctx),
+			view = view
+		)
+		
+		if ctx.interaction:
+			# Fetch Message, as InteractionMessage token expires after 15 min.
+			message = await message.fetch()
+		view.message = message
+		ctx.bot.views.append(view)
 	
 	@commands.group(
 		aliases = ["wa", "wolfram_alpha"],
