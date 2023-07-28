@@ -27,6 +27,12 @@ class WikiArticle(BaseModel):
     image_url: str | None
     wiki: WikiInfo | None
 
+    def __eq__(self, other):
+        return self.url == other.url
+
+    def __hash__(self):
+        return hash(self.url)
+
 
 @async_cache
 async def get_api_endpoint(
@@ -51,7 +57,8 @@ async def get_articles(
     *,
     aiohttp_session: aiohttp.ClientSession | None = None,
     ordered: bool = True,
-    redirect: bool = True
+    redirect: bool = True,
+    remove_duplicate = True
 ) -> list[WikiArticle]:
     # TODO: Add User-Agent
     async with ensure_session(aiohttp_session) as aiohttp_session:
@@ -200,7 +207,7 @@ async def get_articles(
             redirected_articles = await get_articles(
                 url, [redirect["to"] for redirect in redirects],
                 aiohttp_session = aiohttp_session,
-                ordered = False, redirect = False
+                ordered = False, redirect = False, remove_duplicate = False
             )
             # TODO: Handle section links/tofragments
             redirected_articles = {
@@ -228,13 +235,25 @@ async def get_articles(
 
         if ordered:
             ordered_articles = []
+            unique_articles = set()
+
             for title in titles:
                 try:
-                    ordered_articles.append(articles[title])
+                    article = articles[title]
                 except KeyError:
                     pass  # TODO: Handle?
 
+                if remove_duplicate:
+                    if article in unique_articles:
+                        continue
+                    else:
+                        unique_articles.add(article)
+
+                ordered_articles.append(article)
+
             return ordered_articles
+        elif remove_duplicate:
+            return list(set(articles.values()))
         else:
             return list(articles.values())
 
