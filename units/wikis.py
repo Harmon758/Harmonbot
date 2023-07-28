@@ -50,7 +50,7 @@ async def get_articles(
     titles: Iterable[str],
     *,
     aiohttp_session: aiohttp.ClientSession | None = None,
-    ordered = True,
+    ordered: bool = True,
     redirect: bool = True
 ) -> list[WikiArticle]:
     # TODO: Add User-Agent
