@@ -151,8 +151,7 @@ async def search_wiki(
         if "pages" not in data["query"]:
             raise ValueError("Error")  # TODO: More descriptive error
 
-        page_id = list(data["query"]["pages"].keys())[0]
-        page = data["query"]["pages"][page_id]
+        page = list(data["query"]["pages"].values())[0]
 
         if "missing" in page:
             raise ValueError("Page not found")
