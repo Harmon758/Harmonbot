@@ -85,6 +85,15 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['Cosmo Kramer', 'Kramer']
+    WHERE answer = 'Cosmo Kramer'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['gall bladder', 'gallbladder']
     WHERE answer = 'gall bladder'
     """
@@ -126,15 +135,6 @@ connection.execute(
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['Ken Starr', 'Kenneth Starr', 'Starr']
     WHERE answer = '(Kenneth) Starr'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Cosmo Kramer', 'Kramer']
-    WHERE answer = 'Cosmo Kramer'
     """
 )
 connection.commit()
