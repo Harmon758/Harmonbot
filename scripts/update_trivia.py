@@ -151,6 +151,15 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['Phnom Penh', 'Phnom Penh, Cambodia']
+    WHERE answer = 'Phnom Penh, Cambodia'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['po boy', $$po' boy$$, 'po-boy', 'poor boy']
     WHERE answer = $$a po' boy$$
     """
