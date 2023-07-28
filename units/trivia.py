@@ -34,7 +34,7 @@ def check_answer(answer, response, inflect_engine = None):
         warnings.filterwarnings(
             "ignore", category = MarkupResemblesLocatorWarning
         )
-        answer = BeautifulSoup(html.unescape(answer), "html.parser").get_text()
+        answer = BeautifulSoup(html.unescape(answer), "lxml").get_text()
     # Replace in answer: \' -> '
     # Replace in response: ’ -> '
     # Replace: & -> and
