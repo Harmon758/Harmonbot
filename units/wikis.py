@@ -45,85 +45,19 @@ async def get_api_endpoint(
         raise RuntimeError(f"Unable to find wiki API endpoint URL for {url}")
 
 
-@async_cache
-async def get_wiki_info(
-    url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
-) -> WikiInfo:
-    # TODO: Add User-Agent
-    async with ensure_session(aiohttp_session) as aiohttp_session:
-        api_url = await get_api_endpoint(
-            url, aiohttp_session = aiohttp_session
-        )
-        async with aiohttp_session.get(
-            api_url, params = {
-                "action": "query", "meta": "siteinfo",
-                "format": "json", "formatversion": 2
-            }
-        ) as resp:  # https://www.mediawiki.org/wiki/API:Siteinfo
-            data = await resp.json()
-
-        wiki_info = data["query"]["general"]
-        logo = wiki_info["logo"]
-        if logo.startswith("//"):
-            logo = "https:" + logo
-
-        return WikiInfo(
-            name = wiki_info["sitename"],
-            logo = logo
-        )
-
-
-async def search_wiki(
+async def get_articles(
     url: str,
-    search: str,
+    titles: Iterable[str],
     *,
     aiohttp_session: aiohttp.ClientSession | None = None,
-    random: bool = False,
-    random_namespaces: Iterable[int | str] | int | str = 0,
-    # https://www.mediawiki.org/wiki/API:Random
-    # https://www.mediawiki.org/wiki/Help:Namespaces
-    # https://en.wikipedia.org/wiki/Wikipedia:Namespace
-    # https://community.fandom.com/wiki/Help:Namespaces
+    ordered = True,
     redirect: bool = True
 ) -> list[WikiArticle]:
     # TODO: Add User-Agent
-    # TODO: Use textwrap
     async with ensure_session(aiohttp_session) as aiohttp_session:
         api_url = await get_api_endpoint(
             url, aiohttp_session = aiohttp_session
         )
-        if random:
-            if not isinstance(random_namespaces, int | str):
-                random_namespaces = '|'.join(
-                    str(namespace) for namespace in random_namespaces
-                )
-            async with aiohttp_session.get(
-                api_url, params = {
-                    "action": "query", "list": "random",
-                    "rnnamespace": random_namespaces, "format": "json"
-                }
-            ) as resp:  # https://www.mediawiki.org/wiki/API:Random
-                data = await resp.json()
-
-            titles = [data["query"]["random"][0]["title"]]
-        else:
-            async with aiohttp_session.get(
-                api_url, params = {
-                    "action": "query", "list": "search", "srsearch": search,
-                    "srinfo": "suggestion", "srlimit": 20, "format": "json"
-                }  # max exlimit is 20
-            ) as resp:  # https://www.mediawiki.org/wiki/API:Search
-                data = await resp.json()
-
-            if results := data["query"]["search"]:
-                titles = [result["title"] for result in results]
-            elif suggestion := data["query"].get("searchinfo", {}).get(
-                "suggestion"
-            ):
-                titles = [suggestion]
-            else:
-                raise ValueError("Page not found")
-
         async with aiohttp_session.get(
             api_url, params = {
                 # https://www.mediawiki.org/wiki/API:Query
@@ -276,7 +210,7 @@ async def search_wiki(
         if redirect and "redirects" in data["query"]:
             # TODO: Handle redirects
             """
-            return await search_wiki(
+            return await get_articles(
                 url, data["query"]["redirects"][-1]["to"],
                 aiohttp_session = aiohttp_session,
                 redirect = False
@@ -284,12 +218,98 @@ async def search_wiki(
             # TODO: Handle section links/tofragments
             """
 
-        ordered_articles = []
-        for title in titles:
-            try:
-                ordered_articles.append(articles[title])
-            except KeyError:
-                pass  # TODO: Handle?
+        if ordered:
+            ordered_articles = []
+            for title in titles:
+                try:
+                    ordered_articles.append(articles[title])
+                except KeyError:
+                    pass  # TODO: Handle?
 
-        return ordered_articles
+            return ordered_articles
+        else:
+            return articles
+
+
+@async_cache
+async def get_wiki_info(
+    url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
+) -> WikiInfo:
+    # TODO: Add User-Agent
+    async with ensure_session(aiohttp_session) as aiohttp_session:
+        api_url = await get_api_endpoint(
+            url, aiohttp_session = aiohttp_session
+        )
+        async with aiohttp_session.get(
+            api_url, params = {
+                "action": "query", "meta": "siteinfo",
+                "format": "json", "formatversion": 2
+            }
+        ) as resp:  # https://www.mediawiki.org/wiki/API:Siteinfo
+            data = await resp.json()
+
+        wiki_info = data["query"]["general"]
+        logo = wiki_info["logo"]
+        if logo.startswith("//"):
+            logo = "https:" + logo
+
+        return WikiInfo(
+            name = wiki_info["sitename"],
+            logo = logo
+        )
+
+
+async def search_wiki(
+    url: str,
+    search: str,
+    *,
+    aiohttp_session: aiohttp.ClientSession | None = None,
+    random: bool = False,
+    random_namespaces: Iterable[int | str] | int | str = 0
+    # https://www.mediawiki.org/wiki/API:Random
+    # https://www.mediawiki.org/wiki/Help:Namespaces
+    # https://en.wikipedia.org/wiki/Wikipedia:Namespace
+    # https://community.fandom.com/wiki/Help:Namespaces
+) -> list[WikiArticle]:
+    # TODO: Add User-Agent
+    # TODO: Use textwrap
+    async with ensure_session(aiohttp_session) as aiohttp_session:
+        api_url = await get_api_endpoint(
+            url, aiohttp_session = aiohttp_session
+        )
+        if random:
+            if not isinstance(random_namespaces, int | str):
+                random_namespaces = '|'.join(
+                    str(namespace) for namespace in random_namespaces
+                )
+            async with aiohttp_session.get(
+                api_url, params = {
+                    "action": "query", "list": "random",
+                    "rnnamespace": random_namespaces, "format": "json"
+                }
+            ) as resp:  # https://www.mediawiki.org/wiki/API:Random
+                data = await resp.json()
+
+            titles = [data["query"]["random"][0]["title"]]
+        else:
+            async with aiohttp_session.get(
+                api_url, params = {
+                    "action": "query", "list": "search", "srsearch": search,
+                    "srinfo": "suggestion", "srlimit": 20, "format": "json"
+                }  # max exlimit is 20
+            ) as resp:  # https://www.mediawiki.org/wiki/API:Search
+                data = await resp.json()
+
+            if results := data["query"]["search"]:
+                titles = [result["title"] for result in results]
+            elif suggestion := data["query"].get("searchinfo", {}).get(
+                "suggestion"
+            ):
+                titles = [suggestion]
+            else:
+                raise ValueError("Page not found")
+
+        return await get_articles(
+            url, titles, aiohttp_session = aiohttp_session
+        )
 
