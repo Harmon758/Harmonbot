@@ -63,6 +63,15 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['Antony', 'Mark Antony']
+    WHERE answer = 'Antony'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY[
         'Capitol', 'Capitol Building',
         'United States Capitol', 'United States Capitol Building',
