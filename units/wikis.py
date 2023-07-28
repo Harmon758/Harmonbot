@@ -196,6 +196,25 @@ async def get_articles(
                 wiki = wiki_info
             )
 
+        if redirect and (redirects := data["query"].get("redirects")):
+            redirected_articles = await get_articles(
+                url, [redirect["to"] for redirect in redirects],
+                aiohttp_session = aiohttp_session,
+                ordered = False, redirect = False
+            )
+            # TODO: Handle section links/tofragments
+            redirected_articles = {
+                redirected_article.title: redirected_article
+                for redirected_article in redirected_articles
+            }
+            for redirect in redirects:
+                if redirected_article := redirected_articles.get(
+                    redirect["to"]
+                ):
+                    articles[redirect["from"]] = redirected_article
+                else:
+                    pass  # TODO: Handle?
+
         if not articles:
             if invalid_pages:
                 raise ValueError(
@@ -207,17 +226,6 @@ async def get_articles(
             else:
                 raise ValueError("Page not found")
 
-        if redirect and "redirects" in data["query"]:
-            # TODO: Handle redirects
-            """
-            return await get_articles(
-                url, data["query"]["redirects"][-1]["to"],
-                aiohttp_session = aiohttp_session,
-                redirect = False
-            )
-            # TODO: Handle section links/tofragments
-            """
-
         if ordered:
             ordered_articles = []
             for title in titles:
@@ -228,7 +236,7 @@ async def get_articles(
 
             return ordered_articles
         else:
-            return articles
+            return list(articles.values())
 
 
 @async_cache
