@@ -258,6 +258,41 @@ async def get_articles(
             return list(articles.values())
 
 
+async def get_random_article(
+    url: str,
+    *,
+    aiohttp_session: aiohttp.ClientSession | None = None,
+    random_namespaces: Iterable[int | str] | int | str = 0
+    # https://www.mediawiki.org/wiki/API:Random
+    # https://www.mediawiki.org/wiki/Help:Namespaces
+    # https://en.wikipedia.org/wiki/Wikipedia:Namespace
+    # https://community.fandom.com/wiki/Help:Namespaces
+):
+    async with ensure_session(aiohttp_session) as aiohttp_session:
+        api_url = await get_api_endpoint(
+            url, aiohttp_session = aiohttp_session
+        )
+        if not isinstance(random_namespaces, int | str):
+            random_namespaces = '|'.join(
+                str(namespace) for namespace in random_namespaces
+            )
+        async with aiohttp_session.get(
+            api_url, params = {
+                "action": "query", "list": "random",
+                "rnnamespace": random_namespaces, "format": "json"
+            }
+        ) as resp:  # https://www.mediawiki.org/wiki/API:Random
+            data = await resp.json()
+
+        return (
+            await get_articles(
+                url, (data["query"]["random"][0]["title"],),
+                aiohttp_session = aiohttp_session,
+                ordered = False, remove_duplicate = False
+            )
+        )[0]
+
+
 @async_cache
 async def get_wiki_info(
     url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
@@ -290,13 +325,7 @@ async def search_wiki(
     url: str,
     search: str,
     *,
-    aiohttp_session: aiohttp.ClientSession | None = None,
-    random: bool = False,
-    random_namespaces: Iterable[int | str] | int | str = 0
-    # https://www.mediawiki.org/wiki/API:Random
-    # https://www.mediawiki.org/wiki/Help:Namespaces
-    # https://en.wikipedia.org/wiki/Wikipedia:Namespace
-    # https://community.fandom.com/wiki/Help:Namespaces
+    aiohttp_session: aiohttp.ClientSession | None = None
 ) -> list[WikiArticle]:
     # TODO: Add User-Agent
     # TODO: Use textwrap
@@ -304,37 +333,22 @@ async def search_wiki(
         api_url = await get_api_endpoint(
             url, aiohttp_session = aiohttp_session
         )
-        if random:
-            if not isinstance(random_namespaces, int | str):
-                random_namespaces = '|'.join(
-                    str(namespace) for namespace in random_namespaces
-                )
-            async with aiohttp_session.get(
-                api_url, params = {
-                    "action": "query", "list": "random",
-                    "rnnamespace": random_namespaces, "format": "json"
-                }
-            ) as resp:  # https://www.mediawiki.org/wiki/API:Random
-                data = await resp.json()
+        async with aiohttp_session.get(
+            api_url, params = {
+                "action": "query", "list": "search", "srsearch": search,
+                "srinfo": "suggestion", "srlimit": 20, "format": "json"
+            }  # max exlimit is 20
+        ) as resp:  # https://www.mediawiki.org/wiki/API:Search
+            data = await resp.json()
 
-            titles = [data["query"]["random"][0]["title"]]
+        if results := data["query"]["search"]:
+            titles = [result["title"] for result in results]
+        elif suggestion := data["query"].get("searchinfo", {}).get(
+            "suggestion"
+        ):
+            titles = [suggestion]
         else:
-            async with aiohttp_session.get(
-                api_url, params = {
-                    "action": "query", "list": "search", "srsearch": search,
-                    "srinfo": "suggestion", "srlimit": 20, "format": "json"
-                }  # max exlimit is 20
-            ) as resp:  # https://www.mediawiki.org/wiki/API:Search
-                data = await resp.json()
-
-            if results := data["query"]["search"]:
-                titles = [result["title"] for result in results]
-            elif suggestion := data["query"].get("searchinfo", {}).get(
-                "suggestion"
-            ):
-                titles = [suggestion]
-            else:
-                raise ValueError("Page not found")
+            raise ValueError("Page not found")
 
         return await get_articles(
             url, titles, aiohttp_session = aiohttp_session

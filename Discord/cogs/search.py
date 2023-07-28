@@ -16,7 +16,7 @@ from utilities.paginators import ButtonPaginator
 from utilities.views import WikiArticlesView
 
 sys.path.insert(0, "..")
-from units.wikis import search_wiki
+from units.wikis import get_random_article, search_wiki
 sys.path.pop(0)
 
 async def setup(bot):
@@ -239,10 +239,9 @@ class Search(commands.GroupCog, group_name = "search"):
 		'''
 		# Note: random uesp command invokes this command
 		try:
-			articles = await search_wiki(
-				"https://en.uesp.net/", None,
+			article = await get_random_article(
+				"https://en.uesp.net/",
 				aiohttp_session = ctx.bot.aiohttp_session,
-				random = True,
 				random_namespaces = [0] + list(range(100, 152)) + [200, 201]
 				# https://en.uesp.net/wiki/UESPWiki:Namespaces
 				# https://en.uesp.net/w/api.php?action=query&meta=siteinfo&siprop=namespaces&formatversion=2
@@ -250,7 +249,6 @@ class Search(commands.GroupCog, group_name = "search"):
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 		else:
-			article = articles[0]
 			await ctx.embed_reply(
 				title = article.title,
 				title_url = article.url,
@@ -294,15 +292,13 @@ class Search(commands.GroupCog, group_name = "search"):
 		# Note: random wikipedia command invokes this command
 		await ctx.defer()
 		try:
-			articles = await search_wiki(
-				"https://en.wikipedia.org/", None,
-				aiohttp_session = ctx.bot.aiohttp_session,
-				random = True
+			article = await get_random_article(
+				"https://en.wikipedia.org/",
+				aiohttp_session = ctx.bot.aiohttp_session
 			)
 		except ValueError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
 		else:
-			article = articles[0]
 			await ctx.embed_reply(
 				title = article.title,
 				title_url = article.url,
