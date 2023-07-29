@@ -31,14 +31,6 @@ class Images(commands.Cog):
 			if isinstance(command, commands.Command) and command.parent is None and name != "image":
 				self.bot.add_command(command)
 				self.image.add_command(command)
-		# Add imgur search / search imgur subcommands
-		self.imgur.add_command(commands.Command(self.imgur_search, name = "search", checks = [checks.not_forbidden().predicate]))
-		if (cog := self.bot.get_cog("Search")) and (parent := getattr(cog, "search")):
-			parent.add_command(commands.Command(self.imgur_search, name = "imgur", checks = [checks.not_forbidden().predicate]))
-	
-	def cog_unload(self):
-		if (cog := self.bot.get_cog("Search")) and (parent := getattr(cog, "search")):
-			parent.remove_command("imgur")
 	
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
@@ -138,8 +130,10 @@ class Images(commands.Cog):
 		'''Imgur'''
 		await ctx.send_help(ctx.command)
 	
+	@imgur.command(name = "search")
 	async def imgur_search(self, ctx, *, search: str):
 		'''Search images on Imgur'''
+		# Note: search imgur command invokes this command
 		if not (result := self.bot.imgur_client.gallery_search(search, sort = "top")):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 		result = result[0]

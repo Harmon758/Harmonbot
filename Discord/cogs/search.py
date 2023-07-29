@@ -239,6 +239,17 @@ class Search(commands.GroupCog, group_name = "search"):
                 "when imfeelinglucky command invoked"
             )
 
+    @search.command(name = "imgur")
+    async def search_imgur(self, ctx, *, search: str):
+        '''Search images on Imgur'''
+        if command := ctx.bot.get_command("imgur search"):
+            await ctx.invoke(command, search = search)
+        else:
+            raise RuntimeError(
+                "imgur search command not found "
+                "when search imgur command invoked"
+            )
+
     @search.command(name = "lma.ctfy")
     async def search_lma_ctfy(self, ctx, *search: str):
         """Let Me Ask.Com That For You"""
