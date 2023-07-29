@@ -127,7 +127,7 @@ pyasn1-modules==0.3.0
 pycares==4.3.0
 pycparser==2.21
 pycryptodomex==3.17
-pydantic-core==2.3.0
+pydantic-core==2.4.0
 PyJWT[crypto]==2.8.0
 PyNaCl==1.5.0
 pyrsistent==0.19.3
