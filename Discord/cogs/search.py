@@ -425,7 +425,7 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @search.group(
         name = "uesp", description = "[UESP](http://uesp.net/wiki/Main_Page)",
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     async def search_uesp(self, ctx, *, search: str):
         """Look something up on the Unofficial Elder Scrolls Pages"""
@@ -454,7 +454,7 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @commands.group(
         description = "[UESP](http://uesp.net/wiki/Main_Page)",
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     async def uesp(self, ctx, *, search: str):
         """Look something up on the Unofficial Elder Scrolls Pages"""
