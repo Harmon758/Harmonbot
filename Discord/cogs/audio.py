@@ -359,7 +359,7 @@ class Audio(commands.Cog):
 	@audio.command(name = "search")
 	@checks.not_forbidden()
 	async def audio_search(self, ctx, *, search):
-		'''Find a Youtube video'''
+		'''Search for a YouTube video'''
 		# TODO: Only invoke when parent command invoked with youtube or yt
 		if command := ctx.bot.get_command("search youtube"):
 			await ctx.invoke(command, search = search)
