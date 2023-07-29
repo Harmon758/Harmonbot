@@ -31,19 +31,13 @@ class Images(commands.Cog):
 			if isinstance(command, commands.Command) and command.parent is None and name != "image":
 				self.bot.add_command(command)
 				self.image.add_command(command)
-		# Add image google / google images subcommands
-		self.image.add_command(commands.Command(self.google, aliases = ["search"], checks = [checks.not_forbidden().predicate]))
-		if (cog := self.bot.get_cog("Search")) and (parent := getattr(cog, "google")):
-			parent.add_command(commands.Command(self.google, name = "images", aliases = ["image"], checks = [checks.not_forbidden().predicate]))
 		# Add imgur search / search imgur subcommands
 		self.imgur.add_command(commands.Command(self.imgur_search, name = "search", checks = [checks.not_forbidden().predicate]))
-		if cog and (parent := getattr(cog, "search")):
+		if (cog := self.bot.get_cog("Search")) and (parent := getattr(cog, "search")):
 			parent.add_command(commands.Command(self.imgur_search, name = "imgur", checks = [checks.not_forbidden().predicate]))
 	
 	def cog_unload(self):
-		if (cog := self.bot.get_cog("Search")) and (parent := getattr(cog, "google")):
-			parent.remove_command("images")
-		if cog and (parent := getattr(cog, "search")):
+		if (cog := self.bot.get_cog("Search")) and (parent := getattr(cog, "search")):
 			parent.remove_command("imgur")
 	
 	async def cog_check(self, ctx):
@@ -119,8 +113,11 @@ class Images(commands.Cog):
 			data = await resp.json()
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
+	@image.command(aliases = ["search"])
 	async def google(self, ctx, *, search: str):
 		'''Google image search something'''
+		# Note: google images command invokes this command
+		# Note: search google images command invokes this command
 		url = "https://www.googleapis.com/customsearch/v1"
 		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
 					"searchType": "image", 'q': search, "num": 1, "safe": "active"}

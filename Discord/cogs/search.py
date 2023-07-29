@@ -122,6 +122,17 @@ class Search(commands.GroupCog, group_name = "search"):
             f"(https://www.google.com/search?q={search.replace(' ', '+')})"
         )
 
+    @google.command(name = "images", aliases = ["image"])
+    async def google_images(self, ctx, *, search: str):
+        '''Google image search something'''
+        if command := ctx.bot.get_command("image google"):
+            await ctx.invoke(command, search = search)
+        else:
+            raise RuntimeError(
+                "image google command not found "
+                "when google images command invoked"
+            )
+
     @commands.command(aliases = ["im_feeling_lucky"])
     async def imfeelinglucky(self, ctx, *search: str):
         """First Google result of a search"""
