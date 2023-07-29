@@ -62,14 +62,14 @@ class Search(commands.GroupCog, group_name = "search"):
         '''Find a Youtube video'''
         ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
         func = functools.partial(ydl.extract_info, search, download = False)
-        info = await self.bot.loop.run_in_executor(None, func)
+        try:
+            info = await self.bot.loop.run_in_executor(None, func)
+        except youtube_dl.utils.DownloadError as e:
+            await ctx.embed_reply(f":no_entry: Error: {e}")
+            return
         if not info.get("entries"):
             return await ctx.embed_reply(f"{ctx.bot.error_emoji} Video not found")
         await ctx.message.reply(info["entries"][0].get("webpage_url"))
-
-    async def youtube_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, youtube_dl.utils.DownloadError):
-            await ctx.embed_reply(f":no_entry: Error: {error.original}")
 
     @commands.command()
     async def amazon(self, ctx, *search: str):
