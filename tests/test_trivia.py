@@ -21,6 +21,9 @@ class TestCheckAnswer(unittest.TestCase):
         self.assertTrue(check_answer("a rÃ©sumÃ©", "resume"))
         self.assertTrue(check_answer("TenochtitlÃ¡n", "Tenochtitlan"))
 
+    def test_ampersand(self):
+        self.assertTrue(check_answer("AT&T", "at&t"))
+
     def test_large_number(self):
         self.assertFalse(
             check_answer(
