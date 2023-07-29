@@ -24,6 +24,9 @@ class TestCheckAnswer(unittest.TestCase):
     def test_ampersand(self):
         self.assertTrue(check_answer("AT&T", "at&t"))
 
+    def test_honorific(self):
+        self.assertTrue(check_answer("Sir Isaac Newton", "Isaac Newton"))
+
     def test_large_number(self):
         self.assertFalse(
             check_answer(

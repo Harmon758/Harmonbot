@@ -280,7 +280,8 @@ def remove_preceding_words(string):
     for word in (
         ("a ", "an ", "the ") +  # articles
         ("her ", "his ", "its ", "their ", "your ") +  # possessive determiners
-        ("to ",)  # prepositions
+        ("to ",) +  # prepositions
+        ("sir",)  # honorifics
     ):
         if string.startswith(word):
             return string[len(word):]
