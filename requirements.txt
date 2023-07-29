@@ -8,7 +8,7 @@ irc==20.1.0
 python-telegram-bot==20.4
 
 aiohttp==3.8.5
-async-lru==2.0.3
+async-lru==2.0.4
 asyncpg==0.28.0
 beautifulsoup4==4.12.2
 chess==1.9.4
