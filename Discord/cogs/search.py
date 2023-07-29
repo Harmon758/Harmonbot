@@ -65,7 +65,7 @@ class Search(commands.GroupCog, group_name = "search"):
         try:
             info = await self.bot.loop.run_in_executor(None, func)
         except youtube_dl.utils.DownloadError as e:
-            await ctx.embed_reply(f":no_entry: Error: {e}")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
             return
         if not info.get("entries"):
             return await ctx.embed_reply(f"{ctx.bot.error_emoji} Video not found")
