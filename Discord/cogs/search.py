@@ -21,14 +21,11 @@ sys.path.pop(0)
 
 
 async def setup(bot):
-    await bot.add_cog(Search(bot))
+    await bot.add_cog(Search())
+
 
 class Search(commands.GroupCog, group_name = "search"):
     """Search"""
-
-    def __init__(self, bot):
-        self.bot = bot
-        super().__init__()
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
@@ -50,7 +47,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
         func = functools.partial(ydl.extract_info, search, download = False)
         try:
-            info = await self.bot.loop.run_in_executor(None, func)
+            info = await ctx.bot.loop.run_in_executor(None, func)
         except youtube_dl.utils.DownloadError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
             return
