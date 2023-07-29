@@ -4,7 +4,6 @@ from discord import app_commands
 from discord.ext import commands
 
 import functools
-import inspect
 import sys
 from typing import Optional
 
