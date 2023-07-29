@@ -67,8 +67,11 @@ class Search(commands.GroupCog, group_name = "search"):
         except youtube_dl.utils.DownloadError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
             return
+
         if not info.get("entries"):
-            return await ctx.embed_reply(f"{ctx.bot.error_emoji} Video not found")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Video not found")
+            return
+
         await ctx.message.reply(info["entries"][0].get("webpage_url"))
 
     @commands.command()
