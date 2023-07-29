@@ -18,12 +18,13 @@ if TYPE_CHECKING:
 class WikiInfo(BaseModel):
     name: str
     logo: str
+    api_url: str
 
 
 class WikiArticle(BaseModel):
     title: str
     url: str
-    extract: str
+    extract: str | None
     image_url: str | None
     wiki: WikiInfo | None
 
@@ -49,6 +50,50 @@ async def get_api_endpoint(
                     return api_url
 
         raise RuntimeError(f"Unable to find wiki API endpoint URL for {url}")
+
+
+async def get_article_beginning(
+    article: WikiArticle,
+    *,
+    aiohttp_session: aiohttp.ClientSession | None = None
+):
+    async with ensure_session(aiohttp_session) as aiohttp_session:
+        # https://www.mediawiki.org/wiki/API:Parsing_wikitext
+        async with aiohttp_session.get(
+            article.wiki.api_url, params = {
+                "action": "parse", "page": article.title, "prop": "text",
+                "format": "json"
+            }
+        ) as resp:
+            data = await resp.json()
+
+        p = BeautifulSoup(
+            data["parse"]["text"]['*'], "lxml"
+        ).body.div.find_all(
+            'p', recursive = False
+        )
+
+        first_p = p[0]
+        if first_p.aside:
+            first_p.aside.clear()
+        beginning = first_p.get_text()
+
+        if len(p) > 1:
+            second_p = p[1]
+            beginning += '\n' + second_p.get_text()
+
+        if len(p) > 2:
+            third_p = p[2]
+            beginning += '\n' + third_p.get_text()
+
+        beginning = re.sub(r"\n\s*\n", "\n\n", beginning)
+
+        beginning = (
+            beginning if len(beginning) <= 512 else beginning[:512] + '…'
+        )
+        # TODO: Update character limit?, Discord now uses 350
+
+        return beginning
 
 
 async def get_articles(
@@ -99,7 +144,8 @@ async def get_articles(
 
         wiki_info = WikiInfo(
             name = wiki_info_data["sitename"],
-            logo = logo
+            logo = logo,
+            api_url = api_url
         )
 
         if "pages" not in data["query"]:
@@ -117,36 +163,8 @@ async def get_articles(
 
             title = page["title"]
 
-            if "extract" in page:
-                extract = re.sub(r"\s+ \s+", ' ', page["extract"])
-            else:
-                continue  # TODO: Handle no extracts efficiently
-                # https://www.mediawiki.org/wiki/API:Parsing_wikitext
-                async with aiohttp_session.get(
-                    api_url, params = {
-                        "action": "parse", "page": search, "prop": "text",
-                        "format": "json"
-                    }
-                ) as resp:
-                    data = await resp.json()
-
-                p = BeautifulSoup(
-                    data["parse"]["text"]['*'], "lxml"
-                ).body.div.find_all(
-                    'p', recursive = False
-                )
-
-                first_p = p[0]
-                if first_p.aside:
-                    first_p.aside.clear()
-                extract = first_p.get_text()
-
-                if len(p) > 1:
-                    second_p = p[1]
-                    extract += '\n' + second_p.get_text()
-
-                extract = re.sub(r"\n\s*\n", "\n\n", extract)
-
+            extract = page.get("extract", "")
+            extract = re.sub(r"\s+ \s+", ' ', extract)
             extract = extract if len(extract) <= 512 else extract[:512] + '…'
             # TODO: Update character limit?, Discord now uses 350
 
@@ -198,7 +216,7 @@ async def get_articles(
             articles[title] = WikiArticle(
                 title = title,
                 url = page["fullurl"],  # TODO: Use canonicalurl?
-                extract = extract,
+                extract = extract or None,
                 image_url = thumbnail,
                 wiki = wiki_info
             )

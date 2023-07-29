@@ -1,6 +1,8 @@
 
 import discord
 
+from units.wikis import get_article_beginning
+
 
 class WikiArticlesView(discord.ui.View):
 
@@ -15,13 +17,22 @@ class WikiArticlesView(discord.ui.View):
 
         self.article.options[0].default = True
 
-    def initial_embed(self, ctx):
+    async def initial_embed(self, ctx):
         article = self.articles[0]
+
+        if article.extract:
+            description = article.extract
+        else:
+            description = await get_article_beginning(
+                article,
+                aiohttp_session = ctx.bot.aiohttp_session
+            )
+
         return discord.Embed(
             color = ctx.bot.bot_color,
             title = article.title,
             url = article.url,
-            description = article.extract
+            description = description
         ).set_image(
             url = article.image_url
         ).set_footer(
@@ -31,17 +42,27 @@ class WikiArticlesView(discord.ui.View):
 
     @discord.ui.select()
     async def article(self, interaction, select):
+        # TODO: Defer?
+
         for option in select.options:
             option.default = False
 
         selected = int(select.values[0])
         article = self.articles[selected]
 
+        if article.extract:
+            description = article.extract
+        else:
+            description = await get_article_beginning(
+                article,
+                aiohttp_session = interaction.client.aiohttp_session
+            )
+
         embed = discord.Embed(
             color = interaction.client.bot_color,
             title = article.title,
             url = article.url,
-            description = article.extract
+            description = description
         ).set_image(
             url = article.image_url
         ).set_footer(

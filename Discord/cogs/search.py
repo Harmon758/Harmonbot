@@ -221,7 +221,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		view = WikiArticlesView(articles)
 		message = await ctx.reply(
 			"",
-			embed = view.initial_embed(ctx),
+			embed = await view.initial_embed(ctx),
 			view = view
 		)
 		
@@ -276,7 +276,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		view = WikiArticlesView(articles)
 		message = await ctx.reply(
 			"",
-			embed = view.initial_embed(ctx),
+			embed = await view.initial_embed(ctx),
 			view = view
 		)
 		
@@ -345,7 +345,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		view = WikiArticlesView(articles)
 		message = await ctx.reply(
 			"",
-			embed = view.initial_embed(ctx),
+			embed = await view.initial_embed(ctx),
 			view = view
 		)
 		
@@ -370,7 +370,7 @@ class Search(commands.GroupCog, group_name = "search"):
 		view = WikiArticlesView(articles)
 		message = await ctx.reply(
 			"",
-			embed = view.initial_embed(ctx),
+			embed = await view.initial_embed(ctx),
 			view = view
 		)
 		

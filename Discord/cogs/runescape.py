@@ -174,7 +174,7 @@ class RuneScape(commands.Cog):
         view = WikiArticlesView(articles)
         message = await ctx.reply(
             "",
-            embed = view.initial_embed(ctx),
+            embed = await view.initial_embed(ctx),
             view = view
         )
         
