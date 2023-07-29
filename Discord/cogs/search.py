@@ -60,7 +60,9 @@ class Search(commands.GroupCog, group_name = "search"):
 
     async def youtube(self, ctx, *, search: str):
         '''Find a Youtube video'''
-        ydl = youtube_dl.YoutubeDL({"default_search": "auto", "noplaylist": True, "quiet": True})
+        ydl = youtube_dl.YoutubeDL(
+            {"default_search": "auto", "noplaylist": True, "quiet": True}
+        )
         func = functools.partial(ydl.extract_info, search, download = False)
         try:
             info = await self.bot.loop.run_in_executor(None, func)
