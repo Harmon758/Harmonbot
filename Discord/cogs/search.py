@@ -212,8 +212,10 @@ class Search(commands.GroupCog, group_name = "search"):
             f"(https://www.startpage.com/do/search?query={'+'.join(search)})"
         )
 
-    @commands.group(description = "[UESP](http://uesp.net/wiki/Main_Page)",
-                    invoke_without_command = True, case_insensitive = True)
+    @commands.group(
+        description = "[UESP](http://uesp.net/wiki/Main_Page)",
+        invoke_without_command = True, case_insensitive = True
+    )
     async def uesp(self, ctx, *, search: str):
         """Look something up on the Unofficial Elder Scrolls Pages"""
         try:
