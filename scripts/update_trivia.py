@@ -124,8 +124,10 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Isaac Newton', 'Newton']
-    WHERE answer = 'Isaac Newton'
+    SET acceptable_answers = ARRAY[
+        'Isaac Newton', 'Newton', 'Sir Isaac Newton'
+    ]
+    WHERE answer = 'Isaac Newton' OR answer = 'Sir Isaac Newton'
     """
 )
 connection.commit()
