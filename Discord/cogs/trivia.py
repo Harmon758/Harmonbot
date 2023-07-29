@@ -608,7 +608,7 @@ class TriviaBoard:
                 )
                 answer = BeautifulSoup(
                     html.unescape(self.correct_answer),
-                    "html.parser"
+                    "lxml"
                 ).get_text().replace("\\'", "'")
 
             self.scores[player] = self.scores.get(player, 0) + int(self.value)
@@ -763,7 +763,7 @@ class TriviaBoard:
             )
             answer = BeautifulSoup(
                 html.unescape(self.correct_answer),
-                "html.parser"
+                "lxml"
             ).get_text().replace("\\'", "'")
 
         response = (
@@ -1175,7 +1175,7 @@ class TriviaQuestion:
             )
             answer = BeautifulSoup(
                 html.unescape(record["answer"]),
-                "html.parser"
+                "lxml"
             ).get_text().replace("\\'", "'")
 
         description = f"The answer was: `{answer}`\n\n"
