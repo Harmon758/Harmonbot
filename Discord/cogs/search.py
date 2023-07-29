@@ -29,11 +29,6 @@ class Search(commands.GroupCog, group_name = "search"):
     def __init__(self, bot):
         self.bot = bot
         super().__init__()
-        # Add commands as search subcommands
-        for name, command in inspect.getmembers(self):
-            if isinstance(command, commands.Command) and command.parent is None and name != "search":
-                self.bot.add_command(command)
-                self.search.add_command(command)
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
@@ -46,8 +41,8 @@ class Search(commands.GroupCog, group_name = "search"):
         '''
         await ctx.embed_reply(":grey_question: Search what?")
 
-    @search.command(aliases = ["yt"])
-    async def youtube(self, ctx, *, search: str):
+    @search.command(name = "youtube", aliases = ["yt"])
+    async def search_youtube(self, ctx, *, search: str):
         '''Find a Youtube video'''
         # Note: audio search command invokes this command
         ydl = youtube_dl.YoutubeDL(
@@ -66,61 +61,156 @@ class Search(commands.GroupCog, group_name = "search"):
 
         await ctx.message.reply(info["entries"][0].get("webpage_url"))
 
-    @commands.command()
-    async def amazon(self, ctx, *search: str):
+    @search.command(name = "amazon")
+    async def search_amazon(self, ctx, *search: str):
         """Search with Amazon"""
+        # Note: amazon command invokes this command
         await ctx.embed_reply(
             f"[Amazon search for \"{' '.join(search)}\"]"
             f"(https://smile.amazon.com/s/?field-keywords={'+'.join(search)})"
         )
 
     @commands.command()
-    async def aol(self, ctx, *search: str):
+    async def amazon(self, ctx, *search: str):
+        """Search with Amazon"""
+        if command := ctx.bot.get_command("search amazon"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search amazon command not found when amazon command invoked"
+            )
+
+    @search.command(name = "aol")
+    async def search_aol(self, ctx, *search: str):
         """Search with AOL"""
+        # Note: aol command invokes this command
         await ctx.embed_reply(
             f"[AOL search for \"{' '.join(search)}\"]"
             f"(https://search.aol.com/aol/search?q={'+'.join(search)})"
         )
 
-    @commands.command(name = "ask.com")
-    async def ask_com(self, ctx, *search: str):
+    @commands.command()
+    async def aol(self, ctx, *search: str):
+        """Search with AOL"""
+        if command := ctx.bot.get_command("search aol"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search aol command not found when aol command invoked"
+            )
+
+    @search.command(name = "ask.com")
+    async def search_ask_com(self, ctx, *search: str):
         """Search with Ask.com"""
+        # Note: ask.com command invokes this command
         await ctx.embed_reply(
             f"[Ask.com search for \"{' '.join(search)}\"]"
             f"(http://www.ask.com/web?q={'+'.join(search)})"
         )
 
-    @commands.command()
-    async def baidu(self, ctx, *search: str):
+    @commands.command(name = "ask.com")
+    async def ask_com(self, ctx, *search: str):
+        """Search with Ask.com"""
+        if command := ctx.bot.get_command("search ask.com"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search ask.com command not found when ask.com command invoked"
+            )
+
+    @search.command(name = "baidu")
+    async def search_baidu(self, ctx, *search: str):
         """Search with Baidu"""
+        # Note: baidu command invokes this command
         await ctx.embed_reply(
             f"[Baidu search for \"{' '.join(search)}\"]"
             f"(http://www.baidu.com/s?wd={'+'.join(search)})"
         )
 
     @commands.command()
-    async def bing(self, ctx, *search: str):
+    async def baidu(self, ctx, *search: str):
+        """Search with Baidu"""
+        if command := ctx.bot.get_command("search baidu"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search baidu command not found when baidu command invoked"
+            )
+
+    @search.command(name = "bing")
+    async def search_bing(self, ctx, *search: str):
         """Search with Bing"""
+        # Note: bing command invokes this command
         await ctx.embed_reply(
             f"[Bing search for \"{' '.join(search)}\"]"
             f"(http://www.bing.com/search?q={'+'.join(search)})"
         )
 
     @commands.command()
-    async def duckduckgo(self, ctx, *search: str):
+    async def bing(self, ctx, *search: str):
+        """Search with Bing"""
+        if command := ctx.bot.get_command("search bing"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search bing command not found when bing command invoked"
+            )
+
+    @search.command(name = "duckduckgo")
+    async def search_duckduckgo(self, ctx, *search: str):
         """Search with DuckDuckGo"""
+        # Note: duckduckgo command invokes this command
         await ctx.embed_reply(
             f"[DuckDuckGo search for \"{' '.join(search)}\"]"
             f"(https://www.duckduckgo.com/?q={'+'.join(search)})"
         )
 
-    @commands.group(case_insensitive = True, invoke_without_command = True)
-    async def google(self, ctx, *, search: str):
+    @commands.command()
+    async def duckduckgo(self, ctx, *search: str):
+        """Search with DuckDuckGo"""
+        if command := ctx.bot.get_command("search duckduckgo"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search duckduckgo command not found "
+                "when duckduckgo command invoked"
+            )
+
+    @search.group(
+        name = "google",
+        case_insensitive = True, invoke_without_command = True
+    )
+    async def search_google(self, ctx, *, search: str):
         """Google search"""
+        # Note: google command invokes this command
         await ctx.embed_reply(
             f"[Google search for \"{search}\"]"
             f"(https://www.google.com/search?q={search.replace(' ', '+')})"
         )
+
+    @commands.group(
+        name = "google",
+        case_insensitive = True, invoke_without_command = True
+    )
+    async def google(self, ctx, *, search: str):
+        """Google search"""
+        if command := ctx.bot.get_command("search google"):
+            await ctx.invoke(command, search = search)
+        else:
+            raise RuntimeError(
+                "search google command not found when google command invoked"
+            )
+
+    @search_google.command(name = "images", aliases = ["image"])
+    async def search_google_images(self, ctx, *, search: str):
+        '''Google image search something'''
+        if command := ctx.bot.get_command("image google"):
+            await ctx.invoke(command, search = search)
+        else:
+            raise RuntimeError(
+                "image google command not found "
+                "when search google images command invoked"
+            )
 
     @google.command(name = "images", aliases = ["image"])
     async def google_images(self, ctx, *, search: str):
@@ -133,91 +223,206 @@ class Search(commands.GroupCog, group_name = "search"):
                 "when google images command invoked"
             )
 
-    @commands.command(aliases = ["im_feeling_lucky"])
-    async def imfeelinglucky(self, ctx, *search: str):
+    @search.command(name = "imfeelinglucky", aliases = ["im_feeling_lucky"])
+    async def search_imfeelinglucky(self, ctx, *search: str):
         """First Google result of a search"""
+        # Note: imfeelinglucky command invokes this command
         await ctx.embed_reply(
             f"[First Google result of \"{' '.join(search)}\"]"
             f"(https://www.google.com/search?btnI&q={'+'.join(search)})"
         )
 
-    @commands.command(name = "lma.ctfy")
-    async def lma_ctfy(self, ctx, *search: str):
+    @commands.command(aliases = ["im_feeling_lucky"])
+    async def imfeelinglucky(self, ctx, *search: str):
+        """First Google result of a search"""
+        if command := ctx.bot.get_command("search imfeelinglucky"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search imfeelinglucky command not found "
+                "when imfeelinglucky command invoked"
+            )
+
+    @search.command(name = "lma.ctfy")
+    async def search_lma_ctfy(self, ctx, *search: str):
         """Let Me Ask.Com That For You"""
+        # Note: lma.ctfy command invokes this command
         await ctx.embed_reply(
             f"[LMA.CTFY: \"{' '.join(search)}\"]"
             f"(http://lmgtfy.com/?s=k&q={'+'.join(search)})"
         )
 
-    @commands.command()
-    async def lmaoltfy(self, ctx, *search: str):
+    @commands.command(name = "lma.ctfy")
+    async def lma_ctfy(self, ctx, *search: str):
+        """Let Me Ask.Com That For You"""
+        if command := ctx.bot.get_command("search lma.ctfy"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search lma.ctfy command not found "
+                "when lma.ctfy command invoked"
+            )
+
+    @search.command(name = "lmaoltfy")
+    async def search_lmaoltfy(self, ctx, *search: str):
         """Let Me AOL That For You"""
+        # Note: lmaoltfy command invokes this command
         await ctx.embed_reply(
             f"[LMAOLTFY: \"{' '.join(search)}\"]"
             f"(http://lmgtfy.com/?s=a&q={'+'.join(search)})"
         )
 
     @commands.command()
-    async def lmatfy(self, ctx, *search: str):
+    async def lmaoltfy(self, ctx, *search: str):
+        """Let Me AOL That For You"""
+        if command := ctx.bot.get_command("search lmaoltfy"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search lmaoltfy command not found "
+                "when lmaoltfy command invoked"
+            )
+
+    @search.command(name = "lmatfy")
+    async def search_lmatfy(self, ctx, *search: str):
         """Let Me Amazon That For You"""
+        # Note: lmatfy command invokes this command
         await ctx.embed_reply(
             f"[LMATFY: \"{' '.join(search)}\"]"
             f"(http://lmatfy.co/?q={'+'.join(search)})"
         )
 
     @commands.command()
-    async def lmbdtfy(self, ctx, *search: str):
+    async def lmatfy(self, ctx, *search: str):
+        """Let Me Amazon That For You"""
+        if command := ctx.bot.get_command("search lmatfy"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search lmatfy command not found when lmatfy command invoked"
+            )
+
+    @search.command(name = "lmbdtfy")
+    async def search_lmbdtfy(self, ctx, *search: str):
         """Let Me Baidu That For You"""
+        # Note: lmbdtfy command invokes this command
         await ctx.embed_reply(
             f"[LMBDTFY: \"{' '.join(search)}\"]"
             f"(https://lmbtfy.cn/?{'+'.join(search)})"
         )
 
     @commands.command()
-    async def lmbtfy(self, ctx, *search: str):
+    async def lmbdtfy(self, ctx, *search: str):
+        """Let Me Baidu That For You"""
+        if command := ctx.bot.get_command("search lmbdtfy"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search lmbdtfy command not found when lmbdtfy command invoked"
+            )
+
+    @search.command(name = "lmbtfy")
+    async def search_lmbtfy(self, ctx, *search: str):
         """Let Me Bing That For You"""
+        # Note: lmbtfy command invokes this command
         output = f"[LMBTFY: \"{' '.join(search)}\"](http://lmbtfy.com/?s=b&q={'+'.join(search)})\n"
         output += f"[LMBTFY: \"{' '.join(search)}\"](http://letmebingthatforyou.com/?q={'+'.join(search)})"
         await ctx.embed_reply(output)
 
     @commands.command()
-    async def lmdtfy(self, ctx, *search: str):
+    async def lmbtfy(self, ctx, *search: str):
+        """Let Me Bing That For You"""
+        if command := ctx.bot.get_command("search lmbtfy"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search lmbtfy command not found when lmbtfy command invoked"
+            )
+
+    @search.command(name = "lmdtfy")
+    async def search_lmdtfy(self, ctx, *search: str):
         """Let Me DuckDuckGo That For You"""
+        # Note: lmdtfy command invokes this command
         await ctx.embed_reply(
             f"[LMDTFY: \"{' '.join(search)}\"]"
             f"(http://lmgtfy.com/?s=d&q={'+'.join(search)})"
         )
 
     @commands.command()
-    async def lmgtfy(self, ctx, *search: str):
+    async def lmdtfy(self, ctx, *search: str):
+        """Let Me DuckDuckGo That For You"""
+        if command := ctx.bot.get_command("search lmdtfy"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search lmdtfy command not found when lmdtfy command invoked"
+            )
+
+    @search.command(name = "lmgtfy")
+    async def search_lmgtfy(self, ctx, *search: str):
         """Let Me Google That For You"""
+        # Note: lmgtfy command invokes this command
         await ctx.embed_reply(
             f"[LMGTFY: \"{' '.join(search)}\"]"
             f"(http://lmgtfy.com/?q={'+'.join(search)})"
         )
 
     @commands.command()
-    async def lmytfy(self, ctx, *search: str):
+    async def lmgtfy(self, ctx, *search: str):
+        """Let Me Google That For You"""
+        if command := ctx.bot.get_command("search lmgtfy"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search lmgtfy command not found when lmgtfy command invoked"
+            )
+
+    @search.command(name = "lmytfy")
+    async def search_lmytfy(self, ctx, *search: str):
         """Let Me Yahoo That For You"""
+        # Note: lmytfy command invokes this command
         await ctx.embed_reply(
             f"[LMYTFY: \"{' '.join(search)}\"]"
             f"(http://lmgtfy.com/?s=y&q={'+'.join(search)})"
         )
 
     @commands.command()
-    async def startpage(self, ctx, *search: str):
+    async def lmytfy(self, ctx, *search: str):
+        """Let Me Yahoo That For You"""
+        if command := ctx.bot.get_command("search lmytfy"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search lmytfy command not found when lmytfy command invoked"
+            )
+
+    @search.command(name = "startpage")
+    async def search_startpage(self, ctx, *search: str):
         """Search with StartPage"""
+        # Note: startpage command invokes this command
         await ctx.embed_reply(
             f"[StartPage search for \"{' '.join(search)}\"]"
             f"(https://www.startpage.com/do/search?query={'+'.join(search)})"
         )
 
-    @commands.group(
-        description = "[UESP](http://uesp.net/wiki/Main_Page)",
+    @commands.command()
+    async def startpage(self, ctx, *search: str):
+        """Search with StartPage"""
+        if command := ctx.bot.get_command("search startpage"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search startpage command not found "
+                "when startpage command invoked"
+            )
+
+    @search.group(
+        name = "uesp", description = "[UESP](http://uesp.net/wiki/Main_Page)",
         invoke_without_command = True, case_insensitive = True
     )
-    async def uesp(self, ctx, *, search: str):
+    async def search_uesp(self, ctx, *, search: str):
         """Look something up on the Unofficial Elder Scrolls Pages"""
+        # Note: uesp command invokes this command
         try:
             articles = await search_wiki(
                 "https://en.uesp.net/", search,
@@ -240,13 +445,27 @@ class Search(commands.GroupCog, group_name = "search"):
         view.message = message
         ctx.bot.views.append(view)
 
-    @uesp.command(name = "random")
-    async def uesp_random(self, ctx):
+    @commands.group(
+        description = "[UESP](http://uesp.net/wiki/Main_Page)",
+        invoke_without_command = True, case_insensitive = True
+    )
+    async def uesp(self, ctx, *, search: str):
+        """Look something up on the Unofficial Elder Scrolls Pages"""
+        if command := ctx.bot.get_command("search uesp"):
+            await ctx.invoke(command, search = search)
+        else:
+            raise RuntimeError(
+                "search uesp command not found when uesp command invoked"
+            )
+
+    @search_uesp.command(name = "random")
+    async def search_uesp_random(self, ctx):
         '''
         Random UESP page
         [UESP](http://uesp.net/wiki/Main_Page)
         '''
         # Note: random uesp command invokes this command
+        # Note: uesp random command invokes this command
         try:
             article = await get_random_article(
                 "https://en.uesp.net/",
@@ -267,12 +486,27 @@ class Search(commands.GroupCog, group_name = "search"):
                 footer_text = article.wiki.name
             )
 
-    @commands.group(
-        aliases = ["wiki"],
+    @uesp.command(name = "random")
+    async def uesp_random(self, ctx):
+        '''
+        Random UESP page
+        [UESP](http://uesp.net/wiki/Main_Page)
+        '''
+        if command := ctx.bot.get_command("search uesp random"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "search uesp random command not found "
+                "when uesp random command invoked"
+            )
+
+    @search.group(
+        name = "wikipedia", aliases = ["wiki"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def wikipedia(self, ctx, *, query: str):
+    async def search_wikipedia(self, ctx, *, query: str):
         """Search for an article on Wikipedia"""
+        # Note: wikipedia command invokes this command
         try:
             articles = await search_wiki(
                 "https://en.wikipedia.org/", query,
@@ -295,10 +529,25 @@ class Search(commands.GroupCog, group_name = "search"):
         view.message = message
         ctx.bot.views.append(view)
 
-    @wikipedia.command(name = "random")
-    async def wikipedia_random(self, ctx):
+    @commands.group(
+        aliases = ["wiki"],
+        case_insensitive = True, invoke_without_command = True
+    )
+    async def wikipedia(self, ctx, *, query: str):
+        """Search for an article on Wikipedia"""
+        if command := ctx.bot.get_command("search wikipedia"):
+            await ctx.invoke(command, query = query)
+        else:
+            raise RuntimeError(
+                "search wikipedia command not found "
+                "when wikipedia command invoked"
+            )
+
+    @search_wikipedia.command(name = "random")
+    async def search_wikipedia_random(self, ctx):
         """Random Wikipedia article"""
         # Note: random wikipedia command invokes this command
+        # Note: wikipedia random command invokes this command
         await ctx.defer()
         try:
             article = await get_random_article(
@@ -317,6 +566,17 @@ class Search(commands.GroupCog, group_name = "search"):
                 footer_text = article.wiki.name
             )
 
+    @wikipedia.command(name = "random")
+    async def wikipedia_random(self, ctx):
+        """Random Wikipedia article"""
+        if command := ctx.bot.get_command("search wikipedia random"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "search wikipedia random command not found "
+                "when wikipedia random command invoked"
+            )
+
     @app_commands.command(name = "wikipedia")
     async def slash_wikipedia(self, interaction, *, query: str):
         """
@@ -331,17 +591,32 @@ class Search(commands.GroupCog, group_name = "search"):
         await ctx.defer()
         await self.wikipedia(ctx, query = query)
 
+    @search.group(
+        name = "fandom", aliases = ["wikia", "wikicities"],
+        case_insensitive = True, invoke_without_command = True
+    )
+    async def search_fandom(self, ctx):
+        """Search for an article on a Fandom wiki"""
+        # Note: fandom command invokes this command
+        await ctx.send_help(ctx.command)
+
     @commands.group(
         aliases = ["wikia", "wikicities"],
         case_insensitive = True, invoke_without_command = True
     )
     async def fandom(self, ctx):
         """Search for an article on a Fandom wiki"""
-        await ctx.send_help(ctx.command)
+        if command := ctx.bot.get_command("search fandom"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "search fandom command not found when fandom command invoked"
+            )
 
-    @fandom.command(aliases = ["lord_of_the_rings"])
-    async def lotr(self, ctx, *, query: str):
+    @search_fandom.command(name = "lotr", aliases = ["lord_of_the_rings"])
+    async def search_fandom_lotr(self, ctx, *, query: str):
         """Search for an article on The Lord of The Rings Wiki"""
+        # Note: fandom lotr command invokes this command
         try:
             articles = await search_wiki(
                 "https://lotr.fandom.com/", query,
@@ -364,9 +639,21 @@ class Search(commands.GroupCog, group_name = "search"):
         view.message = message
         ctx.bot.views.append(view)
 
-    @commands.command()
-    async def tolkien(self, ctx, *, query: str):
+    @fandom.command(name = "lotr", aliases = ["lord_of_the_rings"])
+    async def fandom_lotr(self, ctx, *, query: str):
+        """Search for an article on The Lord of The Rings Wiki"""
+        if command := ctx.bot.get_command("search fandom lotr"):
+            await ctx.invoke(command, query = query)
+        else:
+            raise RuntimeError(
+                "search fandom lotr command not found "
+                "when fandom lotr command invoked"
+            )
+
+    @search.command(name = "tolkien")
+    async def search_tolkien(self, ctx, *, query: str):
         """Search for an article on Tolkien Gateway"""
+        # Note: tolkien command invokes this command
         try:
             articles = await search_wiki(
                 "https://tolkiengateway.net/", query,
@@ -389,6 +676,28 @@ class Search(commands.GroupCog, group_name = "search"):
         view.message = message
         ctx.bot.views.append(view)
 
+    @commands.command()
+    async def tolkien(self, ctx, *, query: str):
+        """Search for an article on Tolkien Gateway"""
+        if command := ctx.bot.get_command("search tolkien"):
+            await ctx.invoke(command, query = query)
+        else:
+            raise RuntimeError(
+                "search tolkien command not found when tolkien command invoked"
+            )
+
+    @search.group(
+        name = "wolframalpha", aliases = ["wa", "wolfram_alpha"],
+        case_insensitive = True, invoke_without_command = True
+    )
+    async def search_wolframalpha(self, ctx, *, search: str):
+        """
+        Wolfram|Alpha
+        http://www.wolframalpha.com/examples/
+        """
+        # Note: wolframalpha command invokes this command
+        await self.process_wolframalpha(ctx, search)
+
     @commands.group(
         aliases = ["wa", "wolfram_alpha"],
         case_insensitive = True, invoke_without_command = True
@@ -398,12 +707,32 @@ class Search(commands.GroupCog, group_name = "search"):
         Wolfram|Alpha
         http://www.wolframalpha.com/examples/
         """
-        await self.process_wolframalpha(ctx, search)
+        if command := ctx.bot.get_command("search wolframalpha"):
+            await ctx.invoke(command, search = search)
+        else:
+            raise RuntimeError(
+                "search wolframalpha command not found "
+                "when wolframalpha command invoked"
+            )
+
+    @search_wolframalpha.command(name = "location")
+    async def search_wolframalpha_location(
+        self, ctx, location: str, *, search: str
+    ):
+        '''Input location'''
+        # Note: wolframalpha location command invokes this command
+        await self.process_wolframalpha(ctx, search, location = location)
 
     @wolframalpha.command(name = "location")
     async def wolframalpha_location(self, ctx, location: str, *, search: str):
         '''Input location'''
-        await self.process_wolframalpha(ctx, search, location = location)
+        if command := ctx.bot.get_command("search wolframalpha location"):
+            await ctx.invoke(command, location = location, search = search)
+        else:
+            raise RuntimeError(
+                "search wolframalpha location command not found "
+                "when wolframalpha location command invoked"
+            )
 
     @app_commands.command(name = "wolframalpha")
     async def slash_wolframalpha(
@@ -528,11 +857,22 @@ class Search(commands.GroupCog, group_name = "search"):
         if result.timedout:
             await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
 
-    @commands.command()
-    async def yahoo(self, ctx, *search: str):
+    @search.command(name = "yahoo")
+    async def search_yahoo(self, ctx, *search: str):
         """Search with Yahoo"""
+        # Note: yahoo command invokes this command
         await ctx.embed_reply(
             f"[Yahoo search for \"{' '.join(search)}\"]"
             f"(https://search.yahoo.com/search?q={'+'.join(search)})"
         )
+
+    @commands.command()
+    async def yahoo(self, ctx, *search: str):
+        """Search with Yahoo"""
+        if command := ctx.bot.get_command("search yahoo"):
+            await ctx.invoke(command, *search)
+        else:
+            raise RuntimeError(
+                "search yahoo command not found when yahoo command invoked"
+            )
 

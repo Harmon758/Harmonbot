@@ -1063,7 +1063,7 @@ class Random(commands.Cog):
         Random UESP page
         [UESP](http://uesp.net/wiki/Main_Page)
         """
-        if command := ctx.bot.get_command("uesp random"):
+        if command := ctx.bot.get_command("search uesp random"):
             await ctx.invoke(command)
         else:
             await ctx.embed_reply(
@@ -1080,7 +1080,7 @@ class Random(commands.Cog):
     @random.command(aliases = ["wiki"])
     async def wikipedia(self, ctx):
         """Random Wikipedia article"""
-        if command := ctx.bot.get_command("wikipedia random"):
+        if command := ctx.bot.get_command("search wikipedia random"):
             await ctx.invoke(command)
         else:
             await ctx.embed_reply(
