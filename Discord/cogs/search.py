@@ -34,18 +34,6 @@ class Search(commands.GroupCog, group_name = "search"):
             if isinstance(command, commands.Command) and command.parent is None and name != "search":
                 self.bot.add_command(command)
                 self.search.add_command(command)
-        # Add search youtube / youtube (audio) search subcommands
-        command = commands.Command(self.youtube, aliases = ["yt"], checks = [checks.not_forbidden().predicate])
-        command.error(self.youtube_error)
-        self.search.add_command(command)
-        if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
-            command = commands.Command(self.youtube, name = "search", checks = [checks.not_forbidden().predicate])
-            command.error(self.youtube_error)
-            parent.add_command(command)
-
-    def cog_unload(self):
-        if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
-            parent.remove_command("search")
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
@@ -58,8 +46,10 @@ class Search(commands.GroupCog, group_name = "search"):
         '''
         await ctx.embed_reply(":grey_question: Search what?")
 
+    @search.command(aliases = ["yt"])
     async def youtube(self, ctx, *, search: str):
         '''Find a Youtube video'''
+        # Note: audio search command invokes this command
         ydl = youtube_dl.YoutubeDL(
             {"default_search": "auto", "noplaylist": True, "quiet": True}
         )

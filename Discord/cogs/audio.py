@@ -356,6 +356,19 @@ class Audio(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: Radio is already off")
 	
+	@audio.command(name = "search")
+	@checks.not_forbidden()
+	async def audio_search(self, ctx, *, search):
+		'''Find a Youtube video'''
+		# TODO: Only invoke when parent command invoked with youtube or yt
+		if command := ctx.bot.get_command("search youtube"):
+			await ctx.invoke(command, search = search)
+		else:
+			raise RuntimeError(
+				"search youtube command not found "
+				"when audio search command invoked"
+			)
+	
 	@commands.command(aliases = ["set_text"])
 	@checks.is_voice_connected()
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
