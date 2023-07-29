@@ -37,26 +37,6 @@ class Search(commands.GroupCog, group_name = "search"):
         '''
         await ctx.embed_reply(":grey_question: Search what?")
 
-    @search.command(name = "youtube", aliases = ["yt"])
-    async def search_youtube(self, ctx, *, search: str):
-        '''Find a Youtube video'''
-        # Note: audio search command invokes this command
-        ydl = youtube_dl.YoutubeDL(
-            {"default_search": "auto", "noplaylist": True, "quiet": True}
-        )
-        func = functools.partial(ydl.extract_info, search, download = False)
-        try:
-            info = await ctx.bot.loop.run_in_executor(None, func)
-        except youtube_dl.utils.DownloadError as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
-            return
-
-        if not info.get("entries"):
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Video not found")
-            return
-
-        await ctx.message.reply(info["entries"][0].get("webpage_url"))
-
     @search.command(name = "amazon")
     async def search_amazon(self, ctx, *search: str):
         """Search with Amazon"""
@@ -882,4 +862,24 @@ class Search(commands.GroupCog, group_name = "search"):
             raise RuntimeError(
                 "search yahoo command not found when yahoo command invoked"
             )
+
+    @search.command(name = "youtube", aliases = ["yt"])
+    async def search_youtube(self, ctx, *, search: str):
+        '''Find a Youtube video'''
+        # Note: audio search command invokes this command
+        ydl = youtube_dl.YoutubeDL(
+            {"default_search": "auto", "noplaylist": True, "quiet": True}
+        )
+        func = functools.partial(ydl.extract_info, search, download = False)
+        try:
+            info = await ctx.bot.loop.run_in_executor(None, func)
+        except youtube_dl.utils.DownloadError as e:
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
+            return
+
+        if not info.get("entries"):
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Video not found")
+            return
+
+        await ctx.message.reply(info["entries"][0].get("webpage_url"))
 
