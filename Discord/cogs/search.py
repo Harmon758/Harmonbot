@@ -67,7 +67,7 @@ class Search(commands.GroupCog, group_name = "search"):
         # Note: amazon command invokes this command
         await ctx.embed_reply(
             f"[Amazon search for \"{' '.join(search)}\"]"
-            f"(https://smile.amazon.com/s/?field-keywords={'+'.join(search)})"
+            f"(https://www.amazon.com/s?k={'+'.join(search)})"
         )
 
     @commands.command()
