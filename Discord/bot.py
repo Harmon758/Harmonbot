@@ -345,7 +345,7 @@ class Bot(commands.Bot):
 	
 	@property
 	def twitch_color(self):
-		return 0x6441a4
+		return 0x6441A4
 	
 	@property
 	def twitch_colour(self):
