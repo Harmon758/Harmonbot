@@ -133,7 +133,8 @@ class Brawlhalla(commands.Cog):
                     )
                     return
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} {legend} information for {stats['name']} not found"
+                f"{ctx.bot.error_emoji} "
+                f"{legend} information for {stats['name']} not found"
             )
         else:
             await ctx.embed_reply(
