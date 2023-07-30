@@ -78,7 +78,6 @@ class Bot(commands.Bot):
 			"with Waste Allocation Load Lifter: Earth-Class",
 			"world domination", "with Clyde"
 		)
-		self.stream_url = "https://www.twitch.tv/harmonbot"
 		
 		# Initialize logging
 		initialize_logging(self.data_path)
@@ -332,6 +331,10 @@ class Bot(commands.Bot):
 		self.add_command(reload)
 		load.add_command(load_aiml)
 		unload.add_command(unload_aiml)
+	
+	@property
+	def stream_url(self):
+		return "https://www.twitch.tv/harmonbot"
 	
 	async def setup_hook(self):
 		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
