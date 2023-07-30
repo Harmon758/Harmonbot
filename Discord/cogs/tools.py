@@ -5,6 +5,7 @@ from discord.ext import commands
 import difflib
 import io
 import re
+import sys
 import textwrap
 
 import imageio
@@ -17,6 +18,10 @@ import seaborn
 
 from utilities import checks
 from utilities.paginators import Paginator
+
+sys.path.insert(0, "..")
+from units.colors import WHITE
+sys.path.pop(0)
 
 async def setup(bot):
 	await bot.add_cog(Tools(bot))
@@ -190,14 +195,14 @@ class Tools(commands.Cog):
 			transparent_text = Image.new(
 				"RGBA",
 				frame.size,
-				discord.Color(ctx.bot.white_color).to_rgb() + (0,)
+				discord.Color(WHITE).to_rgb() + (0,)
 			)
 			draw = ImageDraw.Draw(transparent_text)
 			draw.text(
 				(avatar_size + 2 * margin_size, text_vertical_margin),
 				frame_text,
 				fill = (
-					discord.Color(ctx.bot.white_color).to_rgb() +
+					discord.Color(WHITE).to_rgb() +
 					(text_opacity,)
 				),
 				font = content_font
@@ -211,7 +216,7 @@ class Tools(commands.Cog):
 					"(Hover to reveal spoiler)",
 					font = guide_font,
 					fill = (
-						discord.Color(ctx.bot.white_color).to_rgb() +
+						discord.Color(WHITE).to_rgb() +
 						(text_opacity,)
 					)
 				)

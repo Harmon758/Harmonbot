@@ -128,7 +128,6 @@ class Bot(commands.Bot):
 		self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 		self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
 		self.dark_theme_background_color = self.dark_theme_background_colour = 0x36393e
-		self.white_color = self.white_colour = 0xFFFFFF
 		### Colors from https://discordapp.com/branding
 		self.greyple_color = self.greyple_colour = 0x99aab5
 		self.dark_but_not_black_color = self.dark_but_not_black_colour = 0x2c2f33
