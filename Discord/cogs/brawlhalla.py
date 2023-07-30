@@ -3,7 +3,6 @@ from discord import app_commands
 from discord.ext import commands
 
 import sys
-from typing import Optional
 
 from utilities import checks
 from utilities.converters import SteamID64
@@ -105,7 +104,7 @@ class Brawlhalla(commands.Cog):
         return legends
 
     @brawlhalla.command()
-    async def player(self, ctx, name: SteamID64, legend: Optional[str] = None):
+    async def player(self, ctx, name: SteamID64, legend: str | None = None):
         """
         Show information about a Brawlhalla player
 
