@@ -38,6 +38,8 @@ def evaluate_stack(stack):
 
 def calculate(input_string: str):
     expression_stack.clear()
-    expression.parse_string(input_string, parse_all=True)  # can raise pyparsing.ParseException
-    return evaluate_stack(expression_stack)  # can raise ZeroDivisionError
+    expression.parse_string(
+        input_string, parse_all = True
+    )  # Can raise pyparsing.ParseException
+    return evaluate_stack(expression_stack)  # Can raise ZeroDivisionError
 
