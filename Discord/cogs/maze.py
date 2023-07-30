@@ -8,6 +8,8 @@ from enum import IntEnum
 import io
 import random
 
+from typing_extensions import assert_never
+
 from utilities import checks
 
 
@@ -174,6 +176,8 @@ class Maze:
                 self.row += 1
             case Direction.LEFT:
                 self.column -= 1
+            case _:
+                assert_never(direction)
 
         # self.visited[self.row][self.column] = True
         self.move_counter += 1
