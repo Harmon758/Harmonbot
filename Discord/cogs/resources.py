@@ -669,24 +669,14 @@ class Resources(commands.Cog):
 		else:
 			await ctx.embed_reply(":no_entry: Error")
 	
-	@commands.command()
+	@commands.command(hidden = True)
 	@checks.not_forbidden()
-	async def strawpoll(self, ctx, question: str, *options: str):
+	async def strawpoll(self, ctx):
 		'''
-		Generate a strawpoll link
-		Use qoutes for spaces in the question or options
+		This command has been deprecated, as StrawPoll.me has closed
+		https://support.fandom.com/hc/en-us/articles/7951865547671
 		'''
-		async with ctx.bot.aiohttp_session.post(
-			"https://www.strawpoll.me/api/v2/polls",
-			data = json.dumps({"title": question, "options": options})
-		) as resp:
-			poll = await resp.json()
-			if resp.status == 400 or "errorCode" in poll:
-				await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} Error: {poll['errorMessage']}"
-				)
-				return
-		await ctx.reply("http://strawpoll.me/" + str(poll["id"]))
+		await ctx.send_help(ctx.command)
 	
 	@commands.command()
 	@checks.not_forbidden()
