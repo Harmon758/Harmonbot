@@ -672,10 +672,10 @@ class Resources(commands.Cog):
 	@commands.command(hidden = True)
 	@checks.not_forbidden()
 	async def strawpoll(self, ctx):
-		'''
+		"""
 		This command has been deprecated, as StrawPoll.me has closed
 		https://support.fandom.com/hc/en-us/articles/7951865547671
-		'''
+		"""
 		await ctx.send_help(ctx.command)
 	
 	@commands.command()
