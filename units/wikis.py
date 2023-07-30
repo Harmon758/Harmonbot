@@ -26,7 +26,7 @@ class WikiArticle(BaseModel):
     url: str
     extract: str | None
     image_url: str | None
-    wiki: WikiInfo | None
+    wiki: WikiInfo
 
     def __eq__(self, other):
         return self.url == other.url
