@@ -169,9 +169,9 @@ class Maze:
             self.row -= 1
         elif direction is Direction.RIGHT:
             self.column += 1
-        elif direction is direction.DOWN:
+        elif direction is Direction.DOWN:
             self.row += 1
-        elif direction is direction.LEFT:
+        elif direction is Direction.LEFT:
             self.column -= 1
 
         # self.visited[self.row][self.column] = True
