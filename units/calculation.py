@@ -15,9 +15,9 @@ term       :: atom [ ('*' | '/') atom ]*
 expression :: term [ ('+' | '-') term ]*
 """
 expression = Forward()
-atom = (Word(nums)).setParseAction(push_first) | Group(Suppress('(') + expression + Suppress(')'))
-term = atom + ((Literal('*') | Literal('/')) + atom).setParseAction(push_first)[...]
-expression <<= term + ((Literal('+') | Literal('-')) + term).setParseAction(push_first)[...]
+atom = (Word(nums)).set_parse_action(push_first) | Group(Suppress('(') + expression + Suppress(')'))
+term = atom + ((Literal('*') | Literal('/')) + atom).set_parse_action(push_first)[...]
+expression <<= term + ((Literal('+') | Literal('-')) + term).set_parse_action(push_first)[...]
 
 operations = {
     '+': operator.add,
@@ -38,6 +38,6 @@ def evaluate_stack(stack):
 
 def calculate(input_string: str):
     expression_stack.clear()
-    expression.parseString(input_string, parseAll=True)  # can raise pyparsing.ParseException
+    expression.parse_string(input_string, parse_all=True)  # can raise pyparsing.ParseException
     return evaluate_stack(expression_stack)  # can raise ZeroDivisionError
 
