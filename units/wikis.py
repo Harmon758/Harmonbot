@@ -222,21 +222,21 @@ async def get_articles(
             )
 
         if redirect and (redirects := data["query"].get("redirects")):
-            redirected_articles = await get_articles(
+            redirected_articles_list = await get_articles(
                 url, [redirect["to"] for redirect in redirects],
                 aiohttp_session = aiohttp_session,
                 ordered = False, redirect = False, remove_duplicate = False
             )
             # TODO: Handle section links/tofragments
-            redirected_articles = {
+            redirected_articles_dict = {
                 redirected_article.title: redirected_article
-                for redirected_article in redirected_articles
+                for redirected_article in redirected_articles_list
             }
-            for redirect in redirects:
-                if redirected_article := redirected_articles.get(
-                    redirect["to"]
+            for redirect_dict in redirects:
+                if redirected_article := redirected_articles_dict.get(
+                    redirect_dict["to"]
                 ):
-                    articles[redirect["from"]] = redirected_article
+                    articles[redirect_dict["from"]] = redirected_article
                 else:
                     pass  # TODO: Handle?
 
