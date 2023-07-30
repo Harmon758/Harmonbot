@@ -335,7 +335,8 @@ async def get_wiki_info(
 
         return WikiInfo(
             name = wiki_info["sitename"],
-            logo = logo
+            logo = logo,
+            api_url = api_url
         )
 
 
