@@ -337,15 +337,15 @@ class Bot(commands.Bot):
 	@functools.cache
 	def config(self):
 		with open("../config.toml", "rb") as config_file:
-			return tomli.load(config_file)["Discord"]
+			return tomli.load(config_file)
 	
 	@property
 	def stream_url(self):
-		return self.config["stream_url"]
+		return self.config["Discord"]["stream_url"]
 	
 	@property
 	def twitch_color(self):
-		return 0x6441A4
+		return self.config["Colors"]["Twitch"]["purple"]
 	
 	@property
 	def twitch_colour(self):
