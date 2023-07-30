@@ -107,3 +107,7 @@ def wind_degrees_to_direction(degrees: int | float) -> str:
         if degrees_range[0] <= degrees <= degrees_range[1]:
             return direction
 
+    raise RuntimeError(
+        f"Impossible degrees, {degrees}, for which to get direction"
+    )
+
