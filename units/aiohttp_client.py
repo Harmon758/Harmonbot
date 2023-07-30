@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING
 from aiohttp import ClientSession
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import AsyncIterator
 
 
 @asynccontextmanager
 async def ensure_session(
     session: ClientSession | None
-) -> Iterator[ClientSession]:
+) -> AsyncIterator[ClientSession]:
     if session_not_passed := (session is None):
         session = ClientSession()
     try:
