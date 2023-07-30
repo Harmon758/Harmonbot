@@ -29,7 +29,10 @@ class WikiArticle(BaseModel):
     wiki: WikiInfo
 
     def __eq__(self, other):
-        return self.url == other.url
+        if isinstance(other, WikiArticle):
+            return self.url == other.url
+        else:
+            return NotImplemented
 
     def __hash__(self) -> int:
         return hash(self.url)
