@@ -60,7 +60,7 @@ async def get_article_beginning(
     article: WikiArticle,
     *,
     aiohttp_session: aiohttp.ClientSession | None = None
-):
+) -> str:
     async with ensure_session(aiohttp_session) as aiohttp_session:
         # https://www.mediawiki.org/wiki/API:Parsing_wikitext
         async with aiohttp_session.get(
