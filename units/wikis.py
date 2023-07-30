@@ -13,6 +13,7 @@ from .cache import async_cache
 if TYPE_CHECKING:
     import aiohttp
     from collections.abc import Iterable
+    from types import NotImplementedType
 
 
 class WikiInfo(BaseModel):
@@ -28,7 +29,7 @@ class WikiArticle(BaseModel):
     image_url: str | None
     wiki: WikiInfo
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool | NotImplementedType:
         if isinstance(other, WikiArticle):
             return self.url == other.url
         else:
