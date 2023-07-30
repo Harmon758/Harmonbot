@@ -115,7 +115,15 @@ class Brawlhalla(commands.Cog):
         legend
             Specific legend to show player information about
         """
-        brawlhalla_id = await self.brawlhalla_id(name)
+        try:
+            brawlhalla_id = await self.brawlhalla_id(name)
+        except ValueError:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} "
+                "Brawlhalla player not found for that Steam user"
+            )
+            return
+
         async with self.bot.aiohttp_session.get(
             f"https://api.brawlhalla.com/player/{brawlhalla_id}/stats",
             params = {"api_key": self.bot.BRAWLHALLA_API_KEY}
@@ -159,5 +167,10 @@ class Brawlhalla(commands.Cog):
                 "steamid": steam_id, "api_key": self.bot.BRAWLHALLA_API_KEY
             }
         ) as resp:
-            return (await resp.json())["brawlhalla_id"]
+            data = await resp.json()
+
+        if not data:
+            raise ValueError
+
+        return data["brawlhalla_id"]
 
