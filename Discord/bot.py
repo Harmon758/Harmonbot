@@ -6,6 +6,7 @@ from discord.ext import commands, menus
 import asyncio
 import contextlib
 import datetime
+import functools
 import json
 import logging
 import os
@@ -31,6 +32,7 @@ import inflect
 import pyowm
 import requests
 import sentry_sdk
+import tomli  # Use tomllib in Python 3.11
 import tweepy
 import tweepy.asynchronous
 import twitchio
@@ -333,8 +335,14 @@ class Bot(commands.Bot):
 		unload.add_command(unload_aiml)
 	
 	@property
+	@functools.cache
+	def config(self):
+		with open("../config.toml", "rb") as config_file:
+			return tomli.load(config_file)["Discord"]
+	
+	@property
 	def stream_url(self):
-		return "https://www.twitch.tv/harmonbot"
+		return self.config["stream_url"]
 	
 	async def setup_hook(self):
 		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
