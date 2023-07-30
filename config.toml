@@ -1,6 +1,6 @@
 
-[Colors.Twitch]
-purple = 0x6441A4
+[colors.Twitch]
+Purple = 0x6441A4
 
 [Discord]
 stream_url = "https://www.twitch.tv/harmonbot"
