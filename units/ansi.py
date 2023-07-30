@@ -26,8 +26,10 @@ class BackgroundColor(IntEnum):
 
 def affix_ansi(
     string: str,
-    bold: bool = False, underline: bool = False,
-    text_color: TextColor = None, background_color: BackgroundColor = None
+    bold: bool = False,
+    underline: bool = False,
+    text_color: TextColor | None = None,
+    background_color: BackgroundColor | None = None
 ):
     prefix = "\N{ESCAPE}["
 
