@@ -122,7 +122,6 @@ class Bot(commands.Bot):
 		)
 		self.bot_color = self.bot_colour = discord.Color.blurple()  # previously 0x738bd7
 		self.rss_color = self.rss_colour = 0xfa9b39  # other options: f26522, ee802f, ff6600; http://www.strawpoll.me/12384409
-		self.twitch_color = self.twitch_colour = 0x6441a4
 		self.twitter_color = self.twitter_colour = 0x00ACED
 		self.youtube_color = self.youtube_colour = 0xcd201f  # change to ff0000?; previously on https://www.youtube.com/yt/brand/color.html
 		self.twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
@@ -343,6 +342,14 @@ class Bot(commands.Bot):
 	@property
 	def stream_url(self):
 		return self.config["stream_url"]
+	
+	@property
+	def twitch_color(self):
+		return 0x6441a4
+	
+	@property
+	def twitch_colour(self):
+		return self.twitch_color
 	
 	async def setup_hook(self):
 		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
