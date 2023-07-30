@@ -165,14 +165,15 @@ class Maze:
         row_offset = 2 * self.row + 1
         column_offset = 4 * self.column + 2
         self.visible[row_offset] = self.visible[row_offset][:column_offset] + ' ' + self.visible[row_offset][column_offset + 1:]
-        if direction is Direction.UP:
-            self.row -= 1
-        elif direction is Direction.RIGHT:
-            self.column += 1
-        elif direction is Direction.DOWN:
-            self.row += 1
-        elif direction is Direction.LEFT:
-            self.column -= 1
+        match direction:
+            case Direction.UP:
+                self.row -= 1
+            case Direction.RIGHT:
+                self.column += 1
+            case Direction.DOWN:
+                self.row += 1
+            case Direction.LEFT:
+                self.column -= 1
 
         # self.visited[self.row][self.column] = True
         self.move_counter += 1
