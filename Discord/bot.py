@@ -345,7 +345,7 @@ class Bot(commands.Bot):
 	
 	@property
 	def twitch_color(self):
-		return self.config["colors"]["Twitch"]["Purple"]
+		return self.config["colors"]["Twitch"]["old_Purple"]
 	
 	@property
 	def twitch_colour(self):
