@@ -338,11 +338,11 @@ class Bot(commands.Bot):
 	
 	@property
 	def fake_ip(self):
-		return "0.0.0.0"
+		return self.config["mock"]["ip"]
 	
 	@property
 	def fake_location(self):
-		return "Fort Yukon, Alaska"
+		return self.config["mock"]["location"]
 	
 	@property
 	def stream_url(self):

@@ -33,3 +33,7 @@ old_Purple = 0x6441A4
 
 [Discord]
 stream_url = "https://www.twitch.tv/harmonbot"
+
+[mock]
+ip = "0.0.0.0"
+location = "Fort Yukon, Alaska"
