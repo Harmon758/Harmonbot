@@ -276,7 +276,7 @@ def check_answer(answer, response, inflect_engine = None):
     return False
 
 
-def remove_preceding_words(string):
+def remove_preceding_words(string: str) -> str:
     for word in (
         ("a ", "an ", "the ") +  # articles
         ("her ", "his ", "its ", "their ", "your ") +  # possessive determiners
