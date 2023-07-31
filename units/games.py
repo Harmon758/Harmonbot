@@ -2,7 +2,7 @@
 import random
 
 
-def eightball():
+def eightball() -> str:
     # https://en.wikipedia.org/wiki/Magic_8-Ball#Possible_answers
     return random.choice((  # nosec random
         "It is certain", "It is decidedly so", "Without a doubt",
