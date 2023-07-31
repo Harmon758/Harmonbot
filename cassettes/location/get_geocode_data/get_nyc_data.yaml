@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://maps.googleapis.com/maps/api/geocode/json?address=New+York+City
+  response:
+    body:
+      string: "{\n   \"results\" : [\n      {\n         \"address_components\" : [\n
+        \           {\n               \"long_name\" : \"New York\",\n               \"short_name\"
+        : \"New York\",\n               \"types\" : [ \"locality\", \"political\"
+        ]\n            },\n            {\n               \"long_name\" : \"New York\",\n
+        \              \"short_name\" : \"NY\",\n               \"types\" : [ \"administrative_area_level_1\",
+        \"political\" ]\n            },\n            {\n               \"long_name\"
+        : \"United States\",\n               \"short_name\" : \"US\",\n               \"types\"
+        : [ \"country\", \"political\" ]\n            }\n         ],\n         \"formatted_address\"
+        : \"New York, NY, USA\",\n         \"geometry\" : {\n            \"bounds\"
+        : {\n               \"northeast\" : {\n                  \"lat\" : 40.9175771,\n
+        \                 \"lng\" : -73.70027209999999\n               },\n               \"southwest\"
+        : {\n                  \"lat\" : 40.4773991,\n                  \"lng\" :
+        -74.25908989999999\n               }\n            },\n            \"location\"
+        : {\n               \"lat\" : 40.7127753,\n               \"lng\" : -74.0059728\n
+        \           },\n            \"location_type\" : \"APPROXIMATE\",\n            \"viewport\"
+        : {\n               \"northeast\" : {\n                  \"lat\" : 40.9175771,\n
+        \                 \"lng\" : -73.70027209999999\n               },\n               \"southwest\"
+        : {\n                  \"lat\" : 40.4773991,\n                  \"lng\" :
+        -74.25908989999999\n               }\n            }\n         },\n         \"place_id\"
+        : \"ChIJOwg_06VPwokRYv534QaPC8g\",\n         \"types\" : [ \"locality\", \"political\"
+        ]\n      }\n   ],\n   \"status\" : \"OK\"\n}\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, must-revalidate
+      Content-Length:
+      - '1565'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 31 Jul 2023 06:12:56 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - mafe
+      Server-Timing:
+      - gfet4t7; dur=95
+      Vary:
+      - Accept-Language
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Goog-Maps-Metro-Area:
+      - New York, NY
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,40 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://maps.googleapis.com/maps/api/geocode/json?address=nonexistent
+  response:
+    body:
+      string: "{\n   \"results\" : [],\n   \"status\" : \"ZERO_RESULTS\"\n}\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, must-revalidate
+      Content-Length:
+      - '52'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 31 Jul 2023 06:12:56 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - mafe
+      Server-Timing:
+      - gfet4t7; dur=99
+      Vary:
+      - Accept-Language
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1
