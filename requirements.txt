@@ -65,7 +65,7 @@ types-beautifulsoup4==4.12.0.5
 typing-extensions==4.7.1
 unicodedata2==14.0.0
 urllib3==1.26.14
-vcrpy==5.0.0
+vcrpy==5.1.0
 wand==0.6.11
 wolframalpha==5.0.0
 wordcloud==1.9.2
