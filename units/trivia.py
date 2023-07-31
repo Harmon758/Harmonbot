@@ -13,7 +13,7 @@ from pyparsing import (
 )
 
 
-def capwords(string):
+def capwords(string: str) -> str:
     """string.capwords with abbreviation handling"""
     return ' '.join(
         word.upper() if (
