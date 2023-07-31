@@ -291,7 +291,7 @@ async def get_random_article(
     # https://www.mediawiki.org/wiki/Help:Namespaces
     # https://en.wikipedia.org/wiki/Wikipedia:Namespace
     # https://community.fandom.com/wiki/Help:Namespaces
-):
+) -> WikiArticle:
     async with ensure_session(aiohttp_session) as aiohttp_session:
         api_url = await get_api_endpoint(
             url, aiohttp_session = aiohttp_session
