@@ -91,16 +91,20 @@ acceptable_answers_dict = {
     "with a kiss": ["by kiss", "by kissing him", "kiss", "with a kiss"]
 }
 
-for answer, acceptable_answers in acceptable_answers_dict.items():
-    connection.execute(
-        """
-        UPDATE trivia.clues
-        SET acceptable_answers = %s
-        WHERE answer = %s
-        """,
-        (acceptable_answers, answer)
-    )
-    connection.commit()
+with connection.cursor() as cursor:
+    for answer, acceptable_answers in acceptable_answers_dict.items():
+        cursor.execute(
+            """
+            UPDATE trivia.clues
+            SET acceptable_answers = %s
+            WHERE answer = %s AND acceptable_answers IS NULL
+            """,
+            (acceptable_answers, answer)
+        )
+        connection.commit()
+
+        if cursor.rowcount:
+            print(f'Updated {cursor.rowcount} rows for "{answer}"')
 
 connection.execute(
     """
