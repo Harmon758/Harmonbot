@@ -249,9 +249,8 @@ if __name__ == "__main__":
 	async def main():
 		async with client:
 			ci = os.getenv("CI")
-			github_action = os.getenv("GITHUB_ACTION")
 			
-			if ci or github_action or client.beta:
+			if ci or client.beta:
 				client.command_prefix = '*'
 				token = os.getenv("DISCORD_BETA_BOT_TOKEN")
 			else:
@@ -287,7 +286,7 @@ if __name__ == "__main__":
 				# Try port >1024? or sudo? for CI
 			
 			try:
-				if ci or github_action:
+				if ci:
 					client.loop.create_task(client.start(token), name = "Client")
 					await asyncio.sleep(10)
 					# TODO: stop after ready
