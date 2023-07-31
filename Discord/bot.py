@@ -110,7 +110,6 @@ class Bot(commands.Bot):
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.console_line_limit = 167
 		self.console_message_prefix = "Discord Harmonbot: "
-		self.fake_ip = "0.0.0.0"
 		self.fake_location = "Fort Yukon, Alaska"
 		self.last_resort_notices_channel_id = 955950052747137104
 		self.library_path = "D:/Music/"
@@ -337,6 +336,10 @@ class Bot(commands.Bot):
 	def config(self):
 		with open("../config.toml", "rb") as config_file:
 			return tomli.load(config_file)
+	
+	@property
+	def fake_ip(self):
+		return "0.0.0.0"
 	
 	@property
 	def stream_url(self):
