@@ -60,72 +60,43 @@ connection.commit()
 
 # Add acceptable answers
 
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Antony', 'Mark Antony']
-    WHERE answer = 'Antony'
-    """
-)
-connection.commit()
+acceptable_answers_dict = {
+    "Antony": ["Antony", "Mark Antony"],
+    "Benjamin Franklin": ["Ben Franklin", "Benjamin Franklin"],
+    "the Capitol": [
+        "Capitol", "Capitol Building", "United States Capitol",
+        "United States Capitol Building", "U.S. Capitol",
+        "U.S. Capitol Building"
+    ],
+    "Cosmo Kramer": ["Cosmo Kramer", "Kramer"],
+    "Creedence Clearwater Revival": ["CCR", "Creedence Clearwater Revival"],
+    "gall bladder": ["gall bladder", "gallbladder"],
+    "Harry S. Truman": ["Harry S. Truman", "Truman"],
+    "Judas Iscariot": ["Judas", "Judas Iscariot"],
+    "(Kenneth) Starr": ["Ken Starr", "Kenneth Starr", "Starr"],
+    "Luciano Pavarotti": ["Luciano Pavarotti", "Pavarotti"],
+    "Louis Pasteur": ["Louis Pasteur", "Pasteur"],
+    "Louis Renault": ["Louis Renault", "Renault"],
+    "Love Canal (Niagara)": ["Love Canal", "Niagara", "Niagara Falls"],
+    "Phnom Penh, Cambodia": ["Phnom Penh", "Phnom Penh, Cambodia"],
+    "Sam Adams": ["Sam Adams", "Samuel Adams"],
+    "Sarkozy": ["Nicolas Sarkozy", "Sarkozy"],
+    "Sir Winston Churchill": [
+        "Churchill", "Sir Winston Churchill", "Winston Churchill"
+    ],
+    "with a kiss": ["by kiss", "by kissing him", "kiss", "with a kiss"]
+}
 
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Ben Franklin', 'Benjamin Franklin']
-    WHERE answer = 'Benjamin Franklin'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY[
-        'Capitol', 'Capitol Building',
-        'United States Capitol', 'United States Capitol Building',
-        'U.S. Capitol', 'U.S. Capitol Building'
-    ]
-    WHERE answer = 'the Capitol'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Cosmo Kramer', 'Kramer']
-    WHERE answer = 'Cosmo Kramer'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['CCR', 'Creedence Clearwater Revival']
-    WHERE answer = 'Creedence Clearwater Revival'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['gall bladder', 'gallbladder']
-    WHERE answer = 'gall bladder'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Harry S. Truman', 'Truman']
-    WHERE answer = 'Harry S. Truman'
-    """
-)
-connection.commit()
+for answer, acceptable_answers in acceptable_answers_dict.items():
+    connection.execute(
+        """
+        UPDATE trivia.clues
+        SET acceptable_answers = %s
+        WHERE answer = %s
+        """,
+        (acceptable_answers, answer)
+    )
+    connection.commit()
 
 connection.execute(
     """
@@ -153,33 +124,6 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Judas', 'Judas Iscariot']
-    WHERE answer = 'Judas Iscariot'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Ken Starr', 'Kenneth Starr', 'Starr']
-    WHERE answer = '(Kenneth) Starr'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Luciano Pavarotti', 'Pavarotti']
-    WHERE answer = 'Luciano Pavarotti'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['peregrine', 'peregrine falcon']
     WHERE text LIKE '%falcon %' and answer = 'the peregrine falcon'
     """
@@ -198,84 +142,8 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Louis Pasteur', 'Pasteur']
-    WHERE answer = 'Louis Pasteur'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Louis Renault', 'Renault']
-    WHERE answer = 'Louis Renault'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Love Canal', 'Niagara', 'Niagara Falls']
-    WHERE answer = 'Love Canal (Niagara)'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Phnom Penh', 'Phnom Penh, Cambodia']
-    WHERE answer = 'Phnom Penh, Cambodia'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['po boy', $$po' boy$$, 'po-boy', 'poor boy']
     WHERE answer = $$a po' boy$$
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Sam Adams', 'Samuel Adams']
-    WHERE answer = 'Sam Adams'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['Nicolas Sarkozy', 'Sarkozy']
-    WHERE answer = 'Sarkozy'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY[
-        'Churchill', 'Sir Winston Churchill', 'Winston Churchill'
-    ]
-    WHERE answer = 'Sir Winston Churchill'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY[
-        'by kiss', 'by kissing him', 'kiss', 'with a kiss'
-    ]
-    WHERE answer = 'with a kiss'
     """
 )
 connection.commit()
