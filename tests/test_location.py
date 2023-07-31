@@ -5,9 +5,19 @@ from hypothesis import given
 from hypothesis.strategies import floats, uuids
 
 import asyncio
+import os
 
 from tests import vcr
 from units.location import get_geocode_data, wind_degrees_to_direction
+
+
+def setUpModule():
+    if not os.getenv("GOOGLE_API_KEY"):
+        os.putenv("GOOGLE_API_KEY", "MOCK_KEY")
+
+def tearDownModule():
+    if os.getenv("GOOGLE_API_KEY") == "MOCK_KEY":
+        os.unsetenv("GOOGLE_API_KEY")
 
 
 class TestGetGeocodeData(unittest.IsolatedAsyncioTestCase):
