@@ -337,11 +337,11 @@ class Bot(commands.Bot):
 			return tomli.load(config_file)
 	
 	@property
-	def fake_ip(self):
+	def mock_ip(self):
 		return self.config["mock"]["ip"]
 	
 	@property
-	def fake_location(self):
+	def mock_location(self):
 		return self.config["mock"]["location"]
 	
 	@property

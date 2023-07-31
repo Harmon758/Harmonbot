@@ -738,10 +738,10 @@ class Search(commands.GroupCog, group_name = "search"):
         await interaction.response.defer()
         ctx = await interaction.client.get_context(interaction)
         # TODO: process asynchronously
-        location = location or ctx.bot.fake_location
+        location = location or ctx.bot.mock_location
         try:
             result = ctx.bot.wolfram_alpha_client.query(
-                query.strip('`'), ip = ctx.bot.fake_ip, location = location
+                query.strip('`'), ip = ctx.bot.mock_ip, location = location
             )
         except Exception as e:
             if str(e).startswith("Error "):
@@ -757,7 +757,7 @@ class Search(commands.GroupCog, group_name = "search"):
                 didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
             try:
                 result = ctx.bot.wolfram_alpha_client.query(
-                    didyoumean, ip = ctx.bot.fake_ip, location = location
+                    didyoumean, ip = ctx.bot.mock_ip, location = location
                 )
             except Exception as e:
                 if str(e).startswith("Error "):
@@ -787,9 +787,9 @@ class Search(commands.GroupCog, group_name = "search"):
     async def process_wolframalpha(self, ctx, search, location = None):
         # TODO: process asynchronously
         if not location:
-            location = ctx.bot.fake_location
+            location = ctx.bot.mock_location
         try:
-            result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.fake_ip, location = location)
+            result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.mock_ip, location = location)
         except Exception as e:
             if str(e).startswith("Error "):
                 return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
@@ -802,7 +802,7 @@ class Search(commands.GroupCog, group_name = "search"):
                 didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
             await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
             try:
-                result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.fake_ip, location = location)
+                result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.mock_ip, location = location)
             except Exception as e:
                 if str(e).startswith("Error "):
                     return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
