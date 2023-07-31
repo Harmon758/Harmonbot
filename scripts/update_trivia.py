@@ -72,6 +72,9 @@ acceptable_answers_dict = {
     "Creedence Clearwater Revival": ["CCR", "Creedence Clearwater Revival"],
     "gall bladder": ["gall bladder", "gallbladder"],
     "Harry S. Truman": ["Harry S. Truman", "Truman"],
+    "John Kennedy's mother": [
+        "JFK's mother", "John F. Kennedy's mother", "John Kennedy's mother"
+    ],
     "Judas Iscariot": ["Judas", "Judas Iscariot"],
     "(Kenneth) Starr": ["Ken Starr", "Kenneth Starr", "Starr"],
     "Luciano Pavarotti": ["Luciano Pavarotti", "Pavarotti"],
@@ -79,6 +82,7 @@ acceptable_answers_dict = {
     "Louis Renault": ["Louis Renault", "Renault"],
     "Love Canal (Niagara)": ["Love Canal", "Niagara", "Niagara Falls"],
     "Phnom Penh, Cambodia": ["Phnom Penh", "Phnom Penh, Cambodia"],
+    "a po' boy": ["po boy", "po' boy", "po-boy", "poor boy"],
     "Sam Adams": ["Sam Adams", "Samuel Adams"],
     "Sarkozy": ["Nicolas Sarkozy", "Sarkozy"],
     "Sir Winston Churchill": [
@@ -97,18 +101,6 @@ for answer, acceptable_answers in acceptable_answers_dict.items():
         (acceptable_answers, answer)
     )
     connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY[
-        $$JFK's mother$$, $$John F. Kennedy's mother$$,
-        $$John Kennedy's mother$$
-    ]
-    WHERE answer = $$John Kennedy's mother$$
-    """
-)
-connection.commit()
 
 connection.execute(
     """
@@ -135,15 +127,6 @@ connection.execute(
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['Abraham Lincoln', 'Lincoln']
     WHERE text LIKE '%president %' and answer = 'Lincoln'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['po boy', $$po' boy$$, 'po-boy', 'poor boy']
-    WHERE answer = $$a po' boy$$
     """
 )
 connection.commit()
