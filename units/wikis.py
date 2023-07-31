@@ -109,7 +109,7 @@ async def get_articles(
     aiohttp_session: aiohttp.ClientSession | None = None,
     ordered: bool = True,
     redirect: bool = True,
-    remove_duplicate = True
+    remove_duplicate: bool = True
 ) -> list[WikiArticle]:
     # TODO: Add User-Agent
     async with ensure_session(aiohttp_session) as aiohttp_session:
