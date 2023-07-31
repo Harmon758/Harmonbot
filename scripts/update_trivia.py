@@ -103,6 +103,15 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['CCR', 'Creedence Clearwater Revival']
+    WHERE answer = 'Creedence Clearwater Revival'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['gall bladder', 'gallbladder']
     WHERE answer = 'gall bladder'
     """
