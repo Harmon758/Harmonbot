@@ -1,6 +1,6 @@
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 import asyncio
 import datetime
@@ -13,9 +13,8 @@ import aiohttp
 import dateutil.parser
 import feedparser
 import isodate
-import sentry_sdk
 
-from utilities import checks
+from utilities import checks, tasks
 
 sys.path.insert(0, "..")
 from units.time import duration_to_string
@@ -285,21 +284,6 @@ class YouTube(commands.Cog):
 	@check_streams.after_loop
 	async def after_check_streams(self):
 		self.bot.print("YouTube streams task cancelled")
-	
-	@check_streams.error
-	async def check_streams_error(self, error):
-		sentry_sdk.capture_exception(error)
-		print(
-			f"Unhandled exception in YouTube streams task",
-			file = sys.stderr
-		)
-		traceback.print_exception(
-			type(error), error, error.__traceback__, file = sys.stderr
-		)
-		logging.getLogger("errors").error(
-			"Uncaught exception\n",
-			exc_info = (type(error), error, error.__traceback__)
-		)
 	
 	# TODO: Follow channels/new video uploads
 	

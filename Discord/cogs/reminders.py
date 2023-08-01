@@ -1,18 +1,14 @@
 
 import discord
-from discord.ext import commands, menus, tasks
+from discord.ext import commands, menus
 
 import asyncio
 import datetime
-import logging
-import sys
-import traceback
 from typing import Optional
 
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
-import sentry_sdk
 
-from utilities import checks
+from utilities import checks, tasks
 from utilities.paginators import ButtonPaginator
 
 async def setup(bot):
@@ -232,18 +228,6 @@ class Reminders(commands.Cog):
 			self.restarting_timer = False
 		else:
 			self.bot.print("Reminders task cancelled")
-	
-	@timer.error
-	async def timer_error(self, error):
-		sentry_sdk.capture_exception(error)
-		print(f"Unhandled exception in Reminders task", file = sys.stderr)
-		traceback.print_exception(
-			type(error), error, error.__traceback__, file = sys.stderr
-		)
-		logging.getLogger("errors").error(
-			"Uncaught exception\n",
-			exc_info = (type(error), error, error.__traceback__)
-		)
 
 class RemindersSource(menus.ListPageSource):
 	

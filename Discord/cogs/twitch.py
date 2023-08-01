@@ -1,6 +1,6 @@
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 import asyncio
 from itertools import zip_longest
@@ -10,9 +10,8 @@ import traceback
 
 import aiohttp
 import dateutil.parser
-import sentry_sdk
 
-from utilities import checks
+from utilities import checks, tasks
 
 errors_logger = logging.getLogger("errors")
 
@@ -466,18 +465,6 @@ class Twitch(commands.Cog):
 	@check_streams.after_loop
 	async def after_check_streams(self):
 		self.bot.print("Twitch task cancelled")
-	
-	@check_streams.error
-	async def check_streams_error(self, error):
-		sentry_sdk.capture_exception(error)
-		print(f"Unhandled exception in Twitch task", file = sys.stderr)
-		traceback.print_exception(
-			type(error), error, error.__traceback__, file = sys.stderr
-		)
-		logging.getLogger("errors").error(
-			"Uncaught exception\n",
-			exc_info = (type(error), error, error.__traceback__)
-		)
 	
 	async def process_streams(self, streams, type, game = None, match = None):
 		# TODO: use textwrap
