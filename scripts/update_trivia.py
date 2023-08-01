@@ -35,7 +35,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET invalid = TRUE
-    WHERE text = '=' or answer = '='
+    WHERE text = '=' OR answer = '='
     """
 )
 connection.commit()
@@ -44,7 +44,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET invalid = TRUE
-    WHERE game_id = 1740 and category = 'A'
+    WHERE game_id = 1740 AND category = 'A'
     """
 )
 connection.commit()
@@ -53,7 +53,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET invalid = TRUE
-    WHERE game_id = 4279 and text = '1'
+    WHERE game_id = 4279 AND text = '1'
     """
 )
 connection.commit()
@@ -121,7 +121,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['peregrine', 'peregrine falcon']
-    WHERE text LIKE '%falcon %' and answer = 'the peregrine falcon'
+    WHERE text LIKE '%falcon%' AND answer = 'the peregrine falcon'
     """
 )
 connection.commit()
@@ -130,7 +130,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['Abraham Lincoln', 'Lincoln']
-    WHERE text LIKE '%president %' and answer = 'Lincoln'
+    WHERE text LIKE '%president %' AND answer = 'Lincoln'
     """
 )
 connection.commit()
@@ -139,7 +139,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['bantam', 'bantam chicken']
-    WHERE game_id = 8158 and answer = 'the bantam chicken'
+    WHERE game_id = 8158 AND answer = 'the bantam chicken'
     """
 )
 connection.commit()
@@ -148,7 +148,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['femoral', 'femoral arteries']
-    WHERE game_id = 3656 and answer = 'the femoral arteries'
+    WHERE game_id = 3656 AND answer = 'the femoral arteries'
     """
 )
 connection.commit()
@@ -157,7 +157,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['lawnmowers', 'lawnmower racing']
-    WHERE game_id = 4245 and answer = 'lawnmower racing'
+    WHERE game_id = 4245 AND answer = 'lawnmower racing'
     """
 )
 connection.commit()
@@ -166,7 +166,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['San Andreas', 'San Andreas Fault']
-    WHERE id IN (109115, 144801, 331840) and answer = 'San Andreas Fault'
+    WHERE id IN (109115, 144801, 331840) AND answer = 'San Andreas Fault'
     """
 )
 connection.commit()
