@@ -104,7 +104,7 @@ with connection.cursor() as cursor:
         connection.commit()
 
         if cursor.rowcount:
-            print(f'Updated {cursor.rowcount} rows for "{answer}"')
+            print(f'Updated {cursor.rowcount} row(s) for "{answer}"')
 
 connection.execute(
     """
