@@ -9,6 +9,7 @@ import copy
 import ctypes
 import importlib.metadata
 import inspect
+import logging
 from operator import attrgetter
 import os
 import random
@@ -21,6 +22,7 @@ from typing import Optional
 import chess.engine
 import git
 import psutil
+import sentry_sdk
 
 from cogs.chess import STOCKFISH_EXECUTABLE
 from utilities import checks
@@ -1061,6 +1063,21 @@ class Meta(commands.Cog):
     @github_publication.after_loop
     async def after_github_publication(self):
         self.bot.print("GitHub publication task cancelled")
+
+    @github_publication.error
+    async def github_publication_error(self, error):
+        sentry_sdk.capture_exception(error)
+        print(
+            f"Unhandled exception in GitHub publication task",
+            file = sys.stderr
+        )
+        traceback.print_exception(
+            type(error), error, error.__traceback__, file = sys.stderr
+        )
+        logging.getLogger("errors").error(
+            "Uncaught exception\n",
+            exc_info = (type(error), error, error.__traceback__)
+        )
 
 
 class StatisticsView(ui.View):

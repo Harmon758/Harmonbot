@@ -23,6 +23,7 @@ import dateutil.parser
 import dateutil.tz
 import feedparser
 import pytz
+import sentry_sdk
 
 from utilities import checks
 
@@ -407,6 +408,21 @@ class RSS(commands.Cog):
 	@check_feeds.after_loop
 	async def after_check_feeds(self):
 		self.bot.print("RSS task cancelled")
+	
+	@check_feeds.error
+	async def check_feeds_error(self, error):
+		sentry_sdk.capture_exception(error)
+		print(
+			f"Unhandled exception in GitHub publication task",
+			file = sys.stderr
+		)
+		traceback.print_exception(
+			type(error), error, error.__traceback__, file = sys.stderr
+		)
+		logging.getLogger("errors").error(
+			"Uncaught exception\n",
+			exc_info = (type(error), error, error.__traceback__)
+		)
 
 
 def parse_thumbnail_url(entry):

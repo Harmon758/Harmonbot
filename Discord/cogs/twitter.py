@@ -14,6 +14,7 @@ import traceback
 
 from more_itertools import chunked
 import feedparser
+import sentry_sdk
 
 from utilities import checks
 
@@ -649,4 +650,19 @@ class Twitter(commands.Cog):
     @check_tweets.after_loop
     async def after_check_tweets(self):
         self.bot.print("Twitter task cancelled")
+
+    @check_tweets.error
+    async def check_tweets_error(self, error):
+        sentry_sdk.capture_exception(error)
+        print(
+            f"Unhandled exception in GitHub publication task",
+            file = sys.stderr
+        )
+        traceback.print_exception(
+            type(error), error, error.__traceback__, file = sys.stderr
+        )
+        logging.getLogger("errors").error(
+            "Uncaught exception\n",
+            exc_info = (type(error), error, error.__traceback__)
+        )
 

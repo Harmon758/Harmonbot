@@ -13,6 +13,7 @@ import aiohttp
 import dateutil.parser
 import feedparser
 import isodate
+import sentry_sdk
 
 from utilities import checks
 
@@ -284,6 +285,21 @@ class YouTube(commands.Cog):
 	@check_streams.after_loop
 	async def after_check_streams(self):
 		self.bot.print("YouTube streams task cancelled")
+	
+	@check_streams.error
+	async def check_streams_error(self, error):
+		sentry_sdk.capture_exception(error)
+		print(
+			f"Unhandled exception in GitHub publication task",
+			file = sys.stderr
+		)
+		traceback.print_exception(
+			type(error), error, error.__traceback__, file = sys.stderr
+		)
+		logging.getLogger("errors").error(
+			"Uncaught exception\n",
+			exc_info = (type(error), error, error.__traceback__)
+		)
 	
 	# TODO: Follow channels/new video uploads
 	
