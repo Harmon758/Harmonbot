@@ -378,12 +378,23 @@ class Bot(commands.Bot):
 		await initialize_aiohttp_access_logging(self.database)
 		self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
 		# Load cogs
-		for file in sorted(os.listdir("cogs")):
-			if file.endswith(".py") and not file.startswith("reactions"):
-				await self.load_extension("cogs." + file[:-3])
-		await self.load_extension("cogs.reactions")
-		# TODO: Document inter-cog dependencies/subcommands
-		# TODO: Catch exceptions on fail to load?
+		try:
+			for file in sorted(os.listdir("cogs")):
+				if file.endswith(".py") and not file.startswith("reactions"):
+					await self.load_extension("cogs." + file[:-3])
+			await self.load_extension("cogs.reactions")
+		except Exception as e:
+			sentry_sdk.capture_exception(e)
+			# TODO: Include name of specific cog
+			print(f"Unhandled exception when loading cogs", file = sys.stderr)
+			traceback.print_exception(
+				type(e), e, e.__traceback__, file = sys.stderr
+			)
+			logging.getLogger("errors").error(
+				"Uncaught exception\n",
+				exc_info = (type(e), e, e.__traceback__)
+			)
+			raise RuntimeError from e
 	
 	def print(self, message):
 		print(f"[{datetime.datetime.now().isoformat()}] {self.console_message_prefix}{message}")
