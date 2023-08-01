@@ -290,7 +290,7 @@ class YouTube(commands.Cog):
 	async def check_streams_error(self, error):
 		sentry_sdk.capture_exception(error)
 		print(
-			f"Unhandled exception in GitHub publication task",
+			f"Unhandled exception in YouTube streams task",
 			file = sys.stderr
 		)
 		traceback.print_exception(

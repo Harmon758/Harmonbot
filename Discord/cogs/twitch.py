@@ -470,10 +470,7 @@ class Twitch(commands.Cog):
 	@check_streams.error
 	async def check_streams_error(self, error):
 		sentry_sdk.capture_exception(error)
-		print(
-			f"Unhandled exception in GitHub publication task",
-			file = sys.stderr
-		)
+		print(f"Unhandled exception in Twitch task", file = sys.stderr)
 		traceback.print_exception(
 			type(error), error, error.__traceback__, file = sys.stderr
 		)

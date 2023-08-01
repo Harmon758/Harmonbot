@@ -236,10 +236,7 @@ class Reminders(commands.Cog):
 	@timer.error
 	async def timer_error(self, error):
 		sentry_sdk.capture_exception(error)
-		print(
-			f"Unhandled exception in GitHub publication task",
-			file = sys.stderr
-		)
+		print(f"Unhandled exception in Reminders task", file = sys.stderr)
 		traceback.print_exception(
 			type(error), error, error.__traceback__, file = sys.stderr
 		)

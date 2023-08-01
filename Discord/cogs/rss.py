@@ -412,10 +412,7 @@ class RSS(commands.Cog):
 	@check_feeds.error
 	async def check_feeds_error(self, error):
 		sentry_sdk.capture_exception(error)
-		print(
-			f"Unhandled exception in GitHub publication task",
-			file = sys.stderr
-		)
+		print(f"Unhandled exception in RSS task", file = sys.stderr)
 		traceback.print_exception(
 			type(error), error, error.__traceback__, file = sys.stderr
 		)

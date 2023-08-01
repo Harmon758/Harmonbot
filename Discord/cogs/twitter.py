@@ -654,10 +654,7 @@ class Twitter(commands.Cog):
     @check_tweets.error
     async def check_tweets_error(self, error):
         sentry_sdk.capture_exception(error)
-        print(
-            f"Unhandled exception in GitHub publication task",
-            file = sys.stderr
-        )
+        print(f"Unhandled exception in Twitter task", file = sys.stderr)
         traceback.print_exception(
             type(error), error, error.__traceback__, file = sys.stderr
         )
