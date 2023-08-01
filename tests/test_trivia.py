@@ -53,6 +53,16 @@ class TestCheckAnswer(unittest.TestCase):
                 )  # Nominal subject (nsubj) is "city"
             )
         )
+        self.assertTrue(
+            check_answer(
+                answer = "Vatican City",
+                response = "vatican",
+                clue = (
+                    "The nation with the fewest people, about 890, is this "
+                    '"City" where the pope lives'
+                )  # Attribute (attr) is "City"
+            )
+        )
 
     def test_honorific(self):
         self.assertTrue(
