@@ -120,6 +120,15 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['Bragg', 'Fort Bragg']
+    WHERE text LIKE '%fort%' AND answer = 'Fort Bragg'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['peregrine', 'peregrine falcon']
     WHERE text LIKE '%falcon%' AND answer = 'the peregrine falcon'
     """
