@@ -11,6 +11,10 @@ import pydantic
 from pyparsing import (
     Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
 )
+import spacy
+
+
+nlp = spacy.load("en_core_web_sm")
 
 
 def capwords(string: str) -> str:
@@ -275,11 +279,17 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
             return True
     # Check for clue text subject redundancy
     if clue:
-        clue = clue.lower()
-        if len(fragments := clue.split("this ", maxsplit = 1)) == 2:
-            subject = fragments[1].split(maxsplit = 1)[0]
-            if answer in (f"{response} {subject}", f"{subject} {response}"):
-                return True
+        doc = nlp(clue)
+        for token in doc:
+            if token.dep_ in (
+                "nsubj",  # Nominal subject
+                "dobj"  # Direct object
+            ):
+                subject = token.text.lower()
+                if answer in (
+                    f"{response} {subject}", f"{subject} {response}"
+                ):
+                    return True
     return False
 
 

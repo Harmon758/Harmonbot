@@ -40,7 +40,17 @@ class TestCheckAnswer(unittest.TestCase):
                 clue = (
                     "A job of Roman tribunes was to protect this class from "
                     "Patrician judicial abuses"
-                )
+                )  # Direct object (dobj) is "class"
+            )
+        )
+        self.assertTrue(
+            check_answer(
+                answer = "New York City",
+                response = "New York",
+                clue = (
+                    "With about 8 million, this East Coast city is the most "
+                    "populous U.S. city"
+                )  # Nominal subject (nsubj) is "city"
             )
         )
 
