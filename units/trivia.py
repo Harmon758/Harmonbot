@@ -25,7 +25,7 @@ def capwords(string: str) -> str:
     )
 
 
-def check_answer(answer, response, inflect_engine = None):
+def check_answer(*, answer, response, inflect_engine = None):
     if not inflect_engine:
         inflect_engine = inflect.engine()
 

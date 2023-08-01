@@ -584,13 +584,13 @@ class TriviaBoard:
         if self.correct_answers:
             for correct_answer in self.correct_answers:
                 if check_answer(
-                    correct_answer, answer,
+                    answer = correct_answer, response = answer,
                     inflect_engine = self.bot.inflect_engine
                 ):
                     correct = True
                     break
         elif check_answer(
-            self.correct_answer, answer,
+            answer = self.correct_answer, response = answer,
             inflect_engine = self.bot.inflect_engine
         ):
             correct = True
@@ -1125,7 +1125,7 @@ class TriviaQuestion:
             if record["acceptable_answers"]:
                 for answer in record["acceptable_answers"]:
                     if check_answer(
-                        answer, response,
+                        answer = answer, response = response,
                         inflect_engine = ctx.bot.inflect_engine
                     ):
                         correct_players.append(player)
@@ -1133,7 +1133,7 @@ class TriviaQuestion:
                 else:
                     incorrect_players.append(player)
             elif check_answer(
-                record["answer"], response,
+                answer = record["answer"], response = response,
                 inflect_engine = ctx.bot.inflect_engine
             ):
                 correct_players.append(player)
