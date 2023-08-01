@@ -25,7 +25,7 @@ def capwords(string: str) -> str:
     )
 
 
-def check_answer(*, answer, response, inflect_engine = None):
+def check_answer(*, answer, response, clue = None, inflect_engine = None):
     if not inflect_engine:
         inflect_engine = inflect.engine()
 
@@ -273,6 +273,13 @@ def check_answer(*, answer, response, inflect_engine = None):
             re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", response)
         ):
             return True
+    # Check for clue text subject redundancy
+    if clue:
+        clue = clue.lower()
+        if len(fragments := clue.split("this ", maxsplit = 1)) == 2:
+            subject = fragments[1].split(maxsplit = 1)[0]
+            if answer in (f"{response} {subject}", f"{subject} {response}"):
+                return True
     return False
 
 

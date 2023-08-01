@@ -32,6 +32,18 @@ class TestCheckAnswer(unittest.TestCase):
     def test_ampersand(self):
         self.assertTrue(check_answer(answer = "AT&T", response = "at&t"))
 
+    def test_clue_text_subject_redundancy(self):
+        self.assertTrue(
+            check_answer(
+                answer = "Plebeian class",
+                response = "plebeian",
+                clue = (
+                    "A job of Roman tribunes was to protect this class from "
+                    "Patrician judicial abuses"
+                )
+            )
+        )
+
     def test_honorific(self):
         self.assertTrue(
             check_answer(

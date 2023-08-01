@@ -581,16 +581,20 @@ class TriviaBoard:
             answer = message.content
 
         correct = False
-        if self.correct_answers:
-            for correct_answer in self.correct_answers:
+        if correct_answers := self.clue["acceptable_answers"]:
+            for correct_answer in correct_answers:
                 if check_answer(
-                    answer = correct_answer, response = answer,
+                    clue = self.clue["text"],
+                    answer = correct_answer,
+                    response = answer,
                     inflect_engine = self.bot.inflect_engine
                 ):
                     correct = True
                     break
         elif check_answer(
-            answer = self.correct_answer, response = answer,
+            clue = self.clue["text"], 
+            answer = self.clue["answer"],
+            response = answer,
             inflect_engine = self.bot.inflect_engine
         ):
             correct = True
@@ -607,7 +611,7 @@ class TriviaBoard:
                     "ignore", category = MarkupResemblesLocatorWarning
                 )
                 answer = BeautifulSoup(
-                    html.unescape(self.correct_answer),
+                    html.unescape(self.clue["answer"]),
                     "lxml"
                 ).get_text().replace("\\'", "'")
 
@@ -708,10 +712,8 @@ class TriviaBoard:
         self.category_number = category_number
         self.value = value
 
-        clue = self.board[category_number - 1]["clues"][self.value]
+        self.clue = self.board[category_number - 1]["clues"][self.value]
 
-        self.correct_answer = clue["answer"]
-        self.correct_answers = clue["acceptable_answers"]
         self.players_answered = []  # This is only used if buzzer is True
 
         self.view = (
@@ -723,10 +725,10 @@ class TriviaBoard:
                 f"{self.board[category_number - 1]['title']}\n(for {value})"
             ),
             title_url = self.message.jump_url,
-            description = clue["text"],
+            description = self.clue["text"],
             footer_text = "Air Date",
             timestamp = datetime.datetime.combine(
-                clue["airdate"], datetime.time(), datetime.timezone.utc
+                self.clue["airdate"], datetime.time(), datetime.timezone.utc
             ),
             embeds = [
                 discord.Embed(
@@ -762,7 +764,7 @@ class TriviaBoard:
                 "ignore", category = MarkupResemblesLocatorWarning
             )
             answer = BeautifulSoup(
-                html.unescape(self.correct_answer),
+                html.unescape(self.clue["answer"]),
                 "lxml"
             ).get_text().replace("\\'", "'")
 
@@ -1125,7 +1127,9 @@ class TriviaQuestion:
             if record["acceptable_answers"]:
                 for answer in record["acceptable_answers"]:
                     if check_answer(
-                        answer = answer, response = response,
+                        clue = record["text"],
+                        answer = answer,
+                        response = response,
                         inflect_engine = ctx.bot.inflect_engine
                     ):
                         correct_players.append(player)
@@ -1133,7 +1137,9 @@ class TriviaQuestion:
                 else:
                     incorrect_players.append(player)
             elif check_answer(
-                answer = record["answer"], response = response,
+                clue = record["text"],
+                answer = record["answer"],
+                response = response,
                 inflect_engine = ctx.bot.inflect_engine
             ):
                 correct_players.append(player)
