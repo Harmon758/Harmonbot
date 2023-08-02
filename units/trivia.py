@@ -282,10 +282,12 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         doc = nlp(clue)
         for token in doc:
             if token.dep_ in (
+                # https://stackoverflow.com/questions/40288323/what-do-spacys-part-of-speech-and-dependency-tags-mean
                 "nsubj",  # Nominal subject
                 "dobj",  # Direct object
-                "attr"  # Attribute
+                "attr",  # Attribute
                 # https://stackoverflow.com/questions/62895997/nlp-what-is-exactly-a-grammar-dependence-tag-attr
+                "npadvmod"  # Noun phrase as adverbial modifier
             ):
                 subject = token.text.lower()
                 if answer in (

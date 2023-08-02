@@ -63,6 +63,16 @@ class TestCheckAnswer(unittest.TestCase):
                 )  # Attribute (attr) is "City"
             )
         )
+        self.assertTrue(
+            check_answer(
+                answer = "Fort Bragg",
+                response = "bragg",
+                clue = (
+                    "During WWII the Army trained its first 2 airborne "
+                    "divisions at this N.C. fort"
+                )  # Noun phrase as adverbial modifier (npadvmod) is "fort"
+            )
+        )
 
     def test_honorific(self):
         self.assertTrue(
