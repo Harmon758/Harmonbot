@@ -32,6 +32,18 @@ class TestCheckAnswer(unittest.TestCase):
     def test_ampersand(self):
         self.assertTrue(check_answer(answer = "AT&T", response = "at&t"))
 
+    def test_clue_text_plural_subject_redundancy(self):
+        self.assertTrue(
+            check_answer(
+                clue = (
+                    "These glands secrete an oily substance which lubricates "
+                    "your hair & keeps it soft"
+                ),
+                answer = "the sebaceous glands",
+                response = "sebaceous"
+            )
+        )
+
     def test_clue_text_subject_redundancy(self):
         for clue, answer, response in (
             (

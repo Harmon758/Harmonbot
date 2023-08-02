@@ -281,7 +281,7 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     if clue:
         doc = nlp(clue)
         for noun_chunk in doc.noun_chunks:
-            if noun_chunk.text.lower().startswith("this "):
+            if noun_chunk.text.lower().startswith(("this ", "these ")):
                 subject = noun_chunk.root.text.lower()
                 if answer in (
                     f"{response} {subject}", f"{subject} {response}"
