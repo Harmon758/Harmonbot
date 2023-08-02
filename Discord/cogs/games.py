@@ -134,6 +134,7 @@ class Games(commands.Cog):
 				max_value = 10
 			else:
 				max_value = int(max_value.content)
+		
 		if not tries:
 			await ctx.embed_reply("How many tries would you like?")
 			try:
@@ -151,6 +152,7 @@ class Games(commands.Cog):
 				tries = 1
 			else:
 				tries = int(tries.content)
+		
 		answer = random.randint(1, max_value)
 		await ctx.embed_reply(f"Guess a number between 1 to {max_value}")
 		while tries != 0:
@@ -166,11 +168,13 @@ class Games(commands.Cog):
 					)
 				)
 			except asyncio.TimeoutError:
-				return await ctx.embed_reply(
+				await ctx.embed_reply(
 					f"Sorry, you took too long\nIt was {answer}"
 				)
+				return
 			if int(guess.content) == answer:
-				return await ctx.embed_reply("You are right!")
+				await ctx.embed_reply("You are right!")
+				return
 			elif tries != 1 and int(guess.content) > answer:
 				await ctx.embed_reply("It's less than " + guess.content)
 				tries -= 1
@@ -178,7 +182,8 @@ class Games(commands.Cog):
 				await ctx.embed_reply("It's greater than " + guess.content)
 				tries -= 1
 			else:
-				return await ctx.embed_reply(f"Sorry, it was actually {answer}")
+				await ctx.embed_reply(f"Sorry, it was actually {answer}")
+				return
 	
 	@commands.group(aliases = ["hrmp"], case_insensitive = True, hidden = True)
 	@checks.not_forbidden()
