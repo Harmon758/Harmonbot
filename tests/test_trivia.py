@@ -33,16 +33,27 @@ class TestCheckAnswer(unittest.TestCase):
         self.assertTrue(check_answer(answer = "AT&T", response = "at&t"))
 
     def test_clue_text_plural_subject_redundancy(self):
-        self.assertTrue(
-            check_answer(
-                clue = (
+        for clue, answer, response in (
+            (
+                (
+                    'From the Latin for "thigh", these main arteries of the '
+                    "thigh supply blood to the lower extremities"
+                ),
+                "the femoral arteries",
+                "femoral"
+            ),
+            (
+                (
                     "These glands secrete an oily substance which lubricates "
                     "your hair & keeps it soft"
                 ),
-                answer = "the sebaceous glands",
-                response = "sebaceous"
+                "the sebaceous glands",
+                "sebaceous"
             )
-        )
+        ):
+            self.assertTrue(
+                check_answer(clue = clue, answer = answer, response = response)
+            )
 
     def test_clue_text_subject_redundancy(self):
         for clue, answer, response in (

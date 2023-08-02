@@ -147,15 +147,6 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
-    SET acceptable_answers = ARRAY['femoral', 'femoral arteries']
-    WHERE game_id = 3656 AND answer = 'the femoral arteries'
-    """
-)
-connection.commit()
-
-connection.execute(
-    """
-    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['lawnmowers', 'lawnmower racing']
     WHERE game_id = 4245 AND answer = 'lawnmower racing'
     """
