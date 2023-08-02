@@ -112,7 +112,7 @@ class Games(commands.Cog):
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def guess(self, ctx, max_value: Optional[int], tries: Optional[int]):
+	async def guess(self, ctx, max_value: int | None, tries: int | None):
 		'''Guessing game'''
 		wait_time = 15.0
 		if not max_value:
