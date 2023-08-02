@@ -110,7 +110,7 @@ class Games(commands.Cog):
 			f"\N{BILLIARDS} {games.eightball()}"
 		)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def guess(self, ctx, max_value: Optional[int], tries: Optional[int]):
 		'''Guessing game'''
