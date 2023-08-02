@@ -89,6 +89,7 @@ acceptable_answers_dict = {
     "Sir Winston Churchill": [
         "Churchill", "Sir Winston Churchill", "Winston Churchill"
     ],
+    "Theodore Roosevelt": ["Teddy Roosevelt", "Theodore Roosevelt"],
     "with a kiss": ["by kiss", "by kissing him", "kiss", "with a kiss"]
 }
 
