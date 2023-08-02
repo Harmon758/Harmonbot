@@ -116,7 +116,7 @@ class Games(commands.Cog):
 		self, ctx, max_value: int | None = 10, tries: int | None = 1
 	):
 		'''Guessing game'''
-		answer = random.randint(1, max_value)
+		correct_number = random.randint(1, max_value)
 		await ctx.embed_reply(f"Guess a number between 1 to {max_value}")
 		while tries != 0:
 			try:
@@ -132,20 +132,22 @@ class Games(commands.Cog):
 				)
 			except asyncio.TimeoutError:
 				await ctx.embed_reply(
-					f"Sorry, you took too long\nIt was {answer}"
+					f"Sorry, you took too long\nIt was {correct_number}"
 				)
 				return
-			if int(guess.content) == answer:
+			if int(guess.content) == correct_number:
 				await ctx.embed_reply("You are right!")
 				return
-			elif tries != 1 and int(guess.content) > answer:
+			elif tries != 1 and int(guess.content) > correct_number:
 				await ctx.embed_reply("It's less than " + guess.content)
 				tries -= 1
-			elif tries != 1 and int(guess.content) < answer:
+			elif tries != 1 and int(guess.content) < correct_number:
 				await ctx.embed_reply("It's greater than " + guess.content)
 				tries -= 1
 			else:
-				await ctx.embed_reply(f"Sorry, it was actually {answer}")
+				await ctx.embed_reply(
+					f"Sorry, it was actually {correct_number}"
+				)
 				return
 	
 	@commands.group(aliases = ["hrmp"], case_insensitive = True, hidden = True)
