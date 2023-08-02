@@ -83,6 +83,7 @@ acceptable_answers_dict = {
     "Love Canal (Niagara)": ["Love Canal", "Niagara", "Niagara Falls"],
     "Phnom Penh, Cambodia": ["Phnom Penh", "Phnom Penh, Cambodia"],
     "a po' boy": ["po boy", "po' boy", "po-boy", "poor boy"],
+    "Robert Bruce": ["Robert Bruce", "Robert the Bruce"],
     "Sam Adams": ["Sam Adams", "Samuel Adams"],
     "Sarkozy": ["Nicolas Sarkozy", "Sarkozy"],
     "Sir Winston Churchill": [
