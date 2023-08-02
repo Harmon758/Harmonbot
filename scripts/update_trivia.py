@@ -62,6 +62,7 @@ connection.commit()
 
 acceptable_answers_dict = {
     "Antony": ["Antony", "Mark Antony"],
+    "Ben-Gurion": ["Ben-Gurion", "David Ben-Gurion"],
     "Benjamin Franklin": ["Ben Franklin", "Benjamin Franklin"],
     "the Capitol": [
         "Capitol", "Capitol Building", "United States Capitol",
