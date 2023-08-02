@@ -36,6 +36,14 @@ class TestCheckAnswer(unittest.TestCase):
         for clue, answer, response in (
             (
                 (
+                    "During WWII the Army trained its first 2 airborne "
+                    "divisions at this N.C. fort"
+                ),
+                "Fort Bragg",
+                "bragg"
+            ),
+            (
+                (
                     "A job of Roman tribunes was to protect this class from "
                     "Patrician judicial abuses"
                 ),
@@ -60,11 +68,27 @@ class TestCheckAnswer(unittest.TestCase):
             ),
             (
                 (
-                    "During WWII the Army trained its first 2 airborne "
-                    "divisions at this N.C. fort"
+                    "Around 3,000 Americans lost their lives in the war, most "
+                    "to typhoid & this fever rather than combat"
                 ),
-                "Fort Bragg",
-                "bragg"
+                "yellow fever",
+                "yellow"
+            ),
+            (
+                (
+                    "This gland which regulates growth is also called the "
+                    "hypophysis"
+                ),
+                "the pituitary gland",
+                "pituitary"
+            ),
+            (
+                (
+                    "This gland that controls cell metabolism has 2 lobes, 1 "
+                    "on each side of your trachea"
+                ),
+                "the thyroid gland",
+                "thyroid"
             )
         ):
             self.assertTrue(
