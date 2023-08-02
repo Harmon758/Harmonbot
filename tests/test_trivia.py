@@ -33,46 +33,43 @@ class TestCheckAnswer(unittest.TestCase):
         self.assertTrue(check_answer(answer = "AT&T", response = "at&t"))
 
     def test_clue_text_subject_redundancy(self):
-        self.assertTrue(
-            check_answer(
-                answer = "Plebeian class",
-                response = "plebeian",
-                clue = (
+        for clue, answer, response in (
+            (
+                (
                     "A job of Roman tribunes was to protect this class from "
                     "Patrician judicial abuses"
-                )  # Direct object (dobj) is "class"
-            )
-        )
-        self.assertTrue(
-            check_answer(
-                answer = "New York City",
-                response = "New York",
-                clue = (
+                ),
+                "Plebeian class",
+                "plebeian"
+            ),
+            (
+                (
                     "With about 8 million, this East Coast city is the most "
                     "populous U.S. city"
-                )  # Nominal subject (nsubj) is "city"
-            )
-        )
-        self.assertTrue(
-            check_answer(
-                answer = "Vatican City",
-                response = "vatican",
-                clue = (
+                ),
+                "New York City",
+                "new york"
+            ),
+            (
+                (
                     "The nation with the fewest people, about 890, is this "
                     '"City" where the pope lives'
-                )  # Attribute (attr) is "City"
-            )
-        )
-        self.assertTrue(
-            check_answer(
-                answer = "Fort Bragg",
-                response = "bragg",
-                clue = (
+                ),
+                "Vatican City",
+                "vatican"
+            ),
+            (
+                (
                     "During WWII the Army trained its first 2 airborne "
                     "divisions at this N.C. fort"
-                )  # Noun phrase as adverbial modifier (npadvmod) is "fort"
+                ),
+                "Fort Bragg",
+                "bragg"
             )
-        )
+        ):
+            self.assertTrue(
+                check_answer(clue = clue, answer = answer, response = response)
+            )
 
     def test_honorific(self):
         self.assertTrue(

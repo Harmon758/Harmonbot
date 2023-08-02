@@ -14,7 +14,7 @@ from pyparsing import (
 import spacy
 
 
-nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("en_core_web_md")
 
 
 def capwords(string: str) -> str:
@@ -280,16 +280,9 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     # Check for clue text subject redundancy
     if clue:
         doc = nlp(clue)
-        for token in doc:
-            if token.dep_ in (
-                # https://stackoverflow.com/questions/40288323/what-do-spacys-part-of-speech-and-dependency-tags-mean
-                "nsubj",  # Nominal subject
-                "dobj",  # Direct object
-                "attr",  # Attribute
-                # https://stackoverflow.com/questions/62895997/nlp-what-is-exactly-a-grammar-dependence-tag-attr
-                "npadvmod"  # Noun phrase as adverbial modifier
-            ):
-                subject = token.text.lower()
+        for noun_chunk in doc.noun_chunks:
+            if noun_chunk.text.lower().startswith("this "):
+                subject = noun_chunk.root.text.lower()
                 if answer in (
                     f"{response} {subject}", f"{subject} {response}"
                 ):
