@@ -126,7 +126,7 @@ jaraco.logging==3.1.2
 jaraco.stream==3.0.3
 jaraco.text==3.11.1
 jinja2==3.1.2
-jsonschema==4.18.4
+jsonschema==4.18.6
 jsonschema-specifications==2023.7.1
 kiwisolver==1.4.4
 langcodes==3.3.0
