@@ -1,6 +1,7 @@
 [project]
 name = "Harmonbot"
 dynamic = ["version"]
+requires-python = "==3.10.10"
 
 [tool.mypy]
 packages = ["units"]
