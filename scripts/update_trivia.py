@@ -64,6 +64,7 @@ acceptable_answers_dict = {
     "Antony": ["Antony", "Mark Antony"],
     "Ben-Gurion": ["Ben-Gurion", "David Ben-Gurion"],
     "Benjamin Franklin": ["Ben Franklin", "Benjamin Franklin"],
+    "Bernardo Bertolucci": ["Bernardo Bertolucci", "Bertolucci"],
     "the Capitol": [
         "Capitol", "Capitol Building", "United States Capitol",
         "United States Capitol Building", "U.S. Capitol",
