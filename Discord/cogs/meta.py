@@ -455,7 +455,7 @@ class Meta(commands.Cog):
             await self.bot.change_presence() # status
             await ctx.embed_reply("Activity cleared")
         else:
-            await ctx.embed_reply(":no_entry: There is no activity to clear")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} There is no activity to clear")
 
     @harmonbot_activity.command(name = "random", hidden = True)
     @commands.guild_only()
