@@ -500,7 +500,7 @@ class Meta(commands.Cog):
                 await self.bot.change_presence(activity = activity)
                 await ctx.embed_reply("Updated activity type")
             else:
-                await ctx.embed_reply(":no_entry: That's not a valid activity type")
+                await ctx.embed_reply(f"{ctx.bot.error_emoji} That's not a valid activity type")
         else:
             raise commands.NotOwner
 
