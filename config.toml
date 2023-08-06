@@ -36,4 +36,4 @@ stream_url = "https://www.twitch.tv/harmonbot"
 
 [mock]
 ip = "0.0.0.0"
-location = "Fort Yukon, Alaska"
+location = "Geneva, Switzerland"
