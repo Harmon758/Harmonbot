@@ -33,6 +33,7 @@ async def get_random_quote(
                 data = await resp.text()
 
                 # Unescape single quotes
+                data = data.replace("\\''", "'")
                 data = data.replace("\\'", "'")
 
                 # Escape double quotes
