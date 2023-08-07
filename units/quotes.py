@@ -29,10 +29,25 @@ async def get_random_quote(
         ) as resp:
             try:
                 data = await resp.json()
-            except json.JSONDecodeError:
-                # Handle invalid JSON - escaped single quotes
+            except json.JSONDecodeError:  # Handle invalid JSON
                 data = await resp.text()
-                data = json.loads(data.replace("\\'", "'"))
+
+                # Unescape single quotes
+                data = data.replace("\\'", "'")
+
+                # Escape double quotes
+                before, quote_text, after_quote_text = data.partition(
+                    "\"quoteText\":\""
+                )
+                text, quote_author, after = after_quote_text.partition(
+                    "\", \"quoteAuthor\""
+                )
+                data = (
+                    before + quote_text + text.replace('"', '\\"') +
+                    quote_author + after
+                )
+
+                data = json.loads(data)
 
         return Quote(
             text = data["quoteText"],
