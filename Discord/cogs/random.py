@@ -12,6 +12,7 @@ import json
 import multiprocessing
 import random
 import string
+import sys
 from typing import Literal, Optional
 import xml.etree.ElementTree
 
@@ -23,6 +24,10 @@ import pyparsing
 from utilities import checks
 from utilities.menu_sources import XKCDSource
 from utilities.paginators import ButtonPaginator
+
+sys.path.insert(0, "..")
+from units.quotes import get_random_quote
+sys.path.pop(0)
 
 
 async def setup(bot):
@@ -1001,20 +1006,13 @@ class Random(commands.Cog):
         """Random quote"""
         # Note: quote command invokes this command
         await ctx.defer()
-        async with ctx.bot.aiohttp_session.get(
-            "http://api.forismatic.com/api/1.0/",
-            params = {"method": "getQuote", "format": "json", "lang": "en"}
-        ) as resp:
-            try:
-                data = await resp.json()
-            except json.JSONDecodeError:
-                # Handle invalid JSON - escaped single quotes
-                data = await resp.text()
-                data = json.loads(data.replace("\\'", "'"))
+        quote = await get_random_quote(
+            aiohttp_session = ctx.bot.aiohttp_session
+        )
         await ctx.embed_reply(
-            description = data["quoteText"],
-            footer_text = data["quoteAuthor"]
-        )  # TODO: quoteLink?
+            description = quote.text,
+            footer_text = quote.author
+        )
 
     @commands.command()
     async def quote(self, ctx, message: Optional[discord.Message]):

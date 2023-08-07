@@ -1,0 +1,82 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Strength to carry on despite the odds means you have
+        faith in your own abilities and know how. ", "quoteAuthor":"Byron Pulsifer",
+        "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/5741a3ae4f/"}'
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 7f2bdd541a86463b-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 07 Aug 2023 01:49:42 GMT
+      NEL:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=DuO1t1jAapB%2BXt7hBzQP95Wi4bXk7RJt6%2BX%2BIbKYQWciqouAIfvBzotYhkamqk4d%2FMXGN6baO00uxFuGc05PbUUbVfZ%2FuzfahHeH2Xk2WG6g1Z7QPllZFzan9L42Wdb2FFKc7iQrtPlrOiBbNxpwXlM%3D"}],"group":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Reason and free inquiry are the only effectual agents
+        against error. ", "quoteAuthor":"Thomas Jefferson", "senderName":"", "senderLink":"",
+        "quoteLink":"http://forismatic.com/en/bd0cb51f7b/"}'
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 7f2bdf165802e746-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 07 Aug 2023 01:50:54 GMT
+      NEL:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=6%2FeyFwGmx%2F3DMuhTkaYnHaE6Te89OploNxhxTqChy1MJqAV1d1Ot5w%2B6t6LxS1XP1hGyLtH00KHDIHmUh0U9%2Br7L2h2M97rC9YONPMQRr7BgIVp%2Fz4%2B8R8tqZXAQhdOUq%2F8%2Bqpa4kPIE9NP8PArV0XM%3D"}],"group":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+    status:
+      code: 200
+      message: OK
+version: 1
