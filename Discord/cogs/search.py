@@ -617,7 +617,7 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @search_fandom.command(name = "lotr", aliases = ["lord_of_the_rings"])
     async def search_fandom_lotr(self, ctx, *, query: str):
-        """Search for an article on The Lord of The Rings Wiki"""
+        """Search for an article on The Lord of the Rings Wiki"""
         # Note: fandom lotr command invokes this command
         try:
             articles = await search_wiki(
@@ -643,7 +643,7 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @fandom.command(name = "lotr", aliases = ["lord_of_the_rings"])
     async def fandom_lotr(self, ctx, *, query: str):
-        """Search for an article on The Lord of The Rings Wiki"""
+        """Search for an article on The Lord of the Rings Wiki"""
         if command := ctx.bot.get_command("search fandom lotr"):
             await ctx.invoke(command, query = query)
         else:
