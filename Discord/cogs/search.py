@@ -20,7 +20,8 @@ sys.path.pop(0)
 
 
 FANDOM_WIKIS = {
-    "The Lord of the Rings": "https://lotr.fandom.com/"
+    "The Lord of the Rings": "https://lotr.fandom.com/",
+    "Transformers Movie": "https://michaelbaystransformers.fandom.com/"
 }
 
 
@@ -600,7 +601,9 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @search.command(name = "fandom", aliases = ["wikia", "wikicities"])
     async def search_fandom(
-        self, ctx, wiki: Literal["The Lord of the Rings"], *, query: str
+        self, ctx,
+        wiki: Literal["The Lord of the Rings", "Transformers Movie"], *,
+        query: str
     ):
         """
         Search for an article on a Fandom wiki
@@ -638,7 +641,8 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @app_commands.command(name = "fandom")
     async def slash_search_fandom(
-        self, interaction, wiki: Literal["The Lord of the Rings"], *,
+        self, interaction,
+        wiki: Literal["The Lord of the Rings", "Transformers Movie"], *,
         query: str
     ):
         """
@@ -663,7 +667,9 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @commands.command(aliases = ["wikia", "wikicities"])
     async def fandom(
-        self, ctx, wiki: Literal["The Lord of the Rings"], *, query: str
+        self, ctx,
+        wiki: Literal["The Lord of the Rings", "Transformers Movie"], *,
+        query: str
     ):
         """
         Search for an article on a Fandom wiki
