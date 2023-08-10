@@ -5,7 +5,7 @@ from discord.ext import commands
 
 import functools
 import sys
-from typing import Optional
+from typing import Literal, Optional
 
 import youtube_dl
 
@@ -17,6 +17,11 @@ from utilities.views import WikiArticlesView
 sys.path.insert(0, "..")
 from units.wikis import get_random_article, search_wiki
 sys.path.pop(0)
+
+
+FANDOM_WIKIS = {
+    "The Lord of the Rings": "https://lotr.fandom.com/"
+}
 
 
 async def setup(bot):
@@ -593,35 +598,15 @@ class Search(commands.GroupCog, group_name = "search"):
                 "when wikipedia random command invoked"
             )
 
-    @search.group(
-        name = "fandom", aliases = ["wikia", "wikicities"],
-        case_insensitive = True, invoke_without_command = True
-    )
-    async def search_fandom(self, ctx):
+    @search.command(name = "fandom", aliases = ["wikia", "wikicities"])
+    async def search_fandom(
+        self, ctx, wiki: Literal["The Lord of the Rings"], *, query: str
+    ):
         """Search for an article on a Fandom wiki"""
         # Note: fandom command invokes this command
-        await ctx.send_help(ctx.command)
-
-    @commands.group(
-        aliases = ["wikia", "wikicities"],
-        case_insensitive = True, invoke_without_command = True
-    )
-    async def fandom(self, ctx):
-        """Search for an article on a Fandom wiki"""
-        if command := ctx.bot.get_command("search fandom"):
-            await ctx.invoke(command)
-        else:
-            raise RuntimeError(
-                "search fandom command not found when fandom command invoked"
-            )
-
-    @search_fandom.command(name = "lotr", aliases = ["lord_of_the_rings"])
-    async def search_fandom_lotr(self, ctx, *, query: str):
-        """Search for an article on The Lord of the Rings Wiki"""
-        # Note: fandom lotr command invokes this command
         try:
             articles = await search_wiki(
-                "https://lotr.fandom.com/", query,
+                FANDOM_WIKIS[wiki], query,
                 aiohttp_session = ctx.bot.aiohttp_session
             )
         except ValueError as e:
@@ -641,15 +626,16 @@ class Search(commands.GroupCog, group_name = "search"):
         view.message = message
         ctx.bot.views.append(view)
 
-    @fandom.command(name = "lotr", aliases = ["lord_of_the_rings"])
-    async def fandom_lotr(self, ctx, *, query: str):
-        """Search for an article on The Lord of the Rings Wiki"""
-        if command := ctx.bot.get_command("search fandom lotr"):
-            await ctx.invoke(command, query = query)
+    @commands.command(aliases = ["wikia", "wikicities"])
+    async def fandom(
+        self, ctx, wiki: Literal["The Lord of the Rings"], *, query: str
+    ):
+        """Search for an article on a Fandom wiki"""
+        if command := ctx.bot.get_command("search fandom"):
+            await ctx.invoke(command, wiki = wiki, query = query)
         else:
             raise RuntimeError(
-                "search fandom lotr command not found "
-                "when fandom lotr command invoked"
+                "search fandom command not found when fandom command invoked"
             )
 
     @search.command(name = "tolkien")
