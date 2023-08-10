@@ -602,7 +602,17 @@ class Search(commands.GroupCog, group_name = "search"):
     async def search_fandom(
         self, ctx, wiki: Literal["The Lord of the Rings"], *, query: str
     ):
-        """Search for an article on a Fandom wiki"""
+        """
+        Search for an article on a Fandom wiki
+
+        Parameters
+        ----------
+        query
+            Search query
+        wiki
+            Fandom wiki to search
+        """
+        # Note: /search fandom command invokes this command
         # Note: fandom command invokes this command
         try:
             articles = await search_wiki(
@@ -626,11 +636,45 @@ class Search(commands.GroupCog, group_name = "search"):
         view.message = message
         ctx.bot.views.append(view)
 
+    @app_commands.command(name = "fandom")
+    async def slash_search_fandom(
+        self, interaction, wiki: Literal["The Lord of the Rings"], *,
+        query: str
+    ):
+        """
+        Search for an article on a Fandom wiki
+
+        Parameters
+        ----------
+        query
+            Search query
+        wiki
+            Fandom wiki to search
+        """
+        ctx = await interaction.client.get_context(interaction)
+        await ctx.defer()
+
+        if command := ctx.bot.get_command("search fandom"):
+            await ctx.invoke(command, wiki = wiki, query = query)
+        else:
+            raise RuntimeError(
+                "search fandom command not found when fandom command invoked"
+            )
+
     @commands.command(aliases = ["wikia", "wikicities"])
     async def fandom(
         self, ctx, wiki: Literal["The Lord of the Rings"], *, query: str
     ):
-        """Search for an article on a Fandom wiki"""
+        """
+        Search for an article on a Fandom wiki
+
+        Parameters
+        ----------
+        query
+            Search query
+        wiki
+            Fandom wiki to search
+        """
         if command := ctx.bot.get_command("search fandom"):
             await ctx.invoke(command, wiki = wiki, query = query)
         else:
