@@ -492,7 +492,15 @@ class Search(commands.GroupCog, group_name = "search"):
         case_insensitive = True, invoke_without_command = True
     )
     async def search_wikipedia(self, ctx, *, query: str):
-        """Search for an article on Wikipedia"""
+        """
+        Search for an article on Wikipedia
+
+        Parameters
+        ----------
+        query
+            Search query
+        """
+        # Note: /search wikipedia command invokes this command
         # Note: wikipedia command invokes this command
         try:
             articles = await search_wiki(
@@ -516,12 +524,33 @@ class Search(commands.GroupCog, group_name = "search"):
         view.message = message
         ctx.bot.views.append(view)
 
+    @app_commands.command(name = "wikipedia")
+    async def slash_wikipedia(self, interaction, *, query: str):
+        """
+        Search for an article on Wikipedia
+
+        Parameters
+        ----------
+        query
+            Search query
+        """
+        ctx = await interaction.client.get_context(interaction)
+        await ctx.defer()
+        await self.wikipedia(ctx, query = query)
+
     @commands.group(
         aliases = ["wiki"],
         case_insensitive = True, invoke_without_command = True
     )
     async def wikipedia(self, ctx, *, query: str):
-        """Search for an article on Wikipedia"""
+        """
+        Search for an article on Wikipedia
+
+        Parameters
+        ----------
+        query
+            Search query
+        """
         if command := ctx.bot.get_command("search wikipedia"):
             await ctx.invoke(command, query = query)
         else:
@@ -563,20 +592,6 @@ class Search(commands.GroupCog, group_name = "search"):
                 "search wikipedia random command not found "
                 "when wikipedia random command invoked"
             )
-
-    @app_commands.command(name = "wikipedia")
-    async def slash_wikipedia(self, interaction, *, query: str):
-        """
-        Search for an article on Wikipedia
-
-        Parameters
-        ----------
-        query
-            Search query
-        """
-        ctx = await interaction.client.get_context(interaction)
-        await ctx.defer()
-        await self.wikipedia(ctx, query = query)
 
     @search.group(
         name = "fandom", aliases = ["wikia", "wikicities"],
