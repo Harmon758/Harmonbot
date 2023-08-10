@@ -525,7 +525,7 @@ class Search(commands.GroupCog, group_name = "search"):
         ctx.bot.views.append(view)
 
     @app_commands.command(name = "wikipedia")
-    async def slash_wikipedia(self, interaction, *, query: str):
+    async def slash_search_wikipedia(self, interaction, *, query: str):
         """
         Search for an article on Wikipedia
 
@@ -737,7 +737,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @app_commands.command(name = "wolframalpha")
-    async def slash_wolframalpha(
+    async def slash_search_wolframalpha(
         self, interaction, location: Optional[str], *, query: str
     ):
         """
