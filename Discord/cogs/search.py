@@ -20,6 +20,7 @@ sys.path.pop(0)
 
 
 FANDOM_WIKIS = {
+    "Memory Alpha": "https://memory-alpha.fandom.com/",
     "Seinfeld": "https://seinfeld.fandom.com/",
     "The Lord of the Rings": "https://lotr.fandom.com/",
     "Transformers": "https://transformers.fandom.com/",
@@ -605,8 +606,8 @@ class Search(commands.GroupCog, group_name = "search"):
     async def search_fandom(
         self, ctx,
         wiki: Literal[
-            "Seinfeld", "The Lord of the Rings", "Transformers",
-            "Transformers Movie"
+            "Memory Alpha", "Seinfeld", "The Lord of the Rings",
+            "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
@@ -648,8 +649,8 @@ class Search(commands.GroupCog, group_name = "search"):
     async def slash_search_fandom(
         self, interaction,
         wiki: Literal[
-            "Seinfeld", "The Lord of the Rings", "Transformers",
-            "Transformers Movie"
+            "Memory Alpha", "Seinfeld", "The Lord of the Rings",
+            "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
@@ -677,8 +678,8 @@ class Search(commands.GroupCog, group_name = "search"):
     async def fandom(
         self, ctx,
         wiki: Literal[
-            "Seinfeld", "The Lord of the Rings", "Transformers",
-            "Transformers Movie"
+            "Memory Alpha", "Seinfeld", "The Lord of the Rings",
+            "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
