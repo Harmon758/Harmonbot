@@ -96,6 +96,9 @@ acceptable_answers_dict = {
     ],
     "Spielberg": ["Spielberg", "Steven Spielberg"],
     "Theodore Roosevelt": ["Teddy Roosevelt", "Theodore Roosevelt"],
+    "the University of Southern California": [
+        "the University of Southern California", "USC"
+    ],
     "U.S. Route 66": ["Route 66", "U.S. Route 66"],
     "Winston Churchill": ["Churchill", "Winston Churchill"],
     "with a kiss": ["by kiss", "by kissing him", "kiss", "with a kiss"]
