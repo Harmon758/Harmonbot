@@ -176,7 +176,7 @@ spacy-loggers==1.0.4
 srsly==2.4.7
 tempora==5.5.0
 thinc==8.1.11
-tqdm==4.65.0
+tqdm==4.66.1
 typer==0.9.0
 types-html5lib==1.1.11.15
 tzdata==2023.3
