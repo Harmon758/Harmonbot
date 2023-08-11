@@ -95,6 +95,7 @@ acceptable_answers_dict = {
         "Churchill", "Sir Winston Churchill", "Winston Churchill"
     ],
     "Spielberg": ["Spielberg", "Steven Spielberg"],
+    "take a temperature": ["take a temperature", "take your temperature"],
     "Theodore Roosevelt": ["Teddy Roosevelt", "Theodore Roosevelt"],
     "the University of Southern California": [
         "the University of Southern California", "USC"
