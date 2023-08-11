@@ -152,7 +152,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['bantam', 'bantam chicken']
-    WHERE game_id = 8158 AND answer = 'the bantam chicken'
+    WHERE id = 476175 AND answer = 'the bantam chicken'
     """
 )
 connection.commit()
@@ -170,7 +170,7 @@ connection.execute(
     """
     UPDATE trivia.clues
     SET acceptable_answers = ARRAY['lawnmowers', 'lawnmower racing']
-    WHERE game_id = 4245 AND answer = 'lawnmower racing'
+    WHERE id = 240380 AND answer = 'lawnmower racing'
     """
 )
 connection.commit()
