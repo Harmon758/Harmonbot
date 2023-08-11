@@ -62,6 +62,7 @@ connection.commit()
 
 acceptable_answers_dict = {
     "Antony": ["Antony", "Mark Antony"],
+    "the Appalachian Mountains": ["Appalachian Mountains", "Appalachians"],
     "Aretha Franklin Delano Roosevelt": [
         "Aretha Franklin D. Roosevelt", "Aretha Franklin Delano Roosevelt"
     ],
