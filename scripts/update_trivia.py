@@ -97,6 +97,7 @@ acceptable_answers_dict = {
     "Spielberg": ["Spielberg", "Steven Spielberg"],
     "Theodore Roosevelt": ["Teddy Roosevelt", "Theodore Roosevelt"],
     "U.S. Route 66": ["Route 66", "U.S. Route 66"],
+    "Winston Churchill": ["Churchill", "Winston Churchill"],
     "with a kiss": ["by kiss", "by kissing him", "kiss", "with a kiss"]
 }
 
