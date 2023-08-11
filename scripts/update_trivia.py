@@ -99,7 +99,7 @@ acceptable_answers_dict = {
     "take a temperature": ["take a temperature", "take your temperature"],
     "Theodore Roosevelt": ["Teddy Roosevelt", "Theodore Roosevelt"],
     "the University of Southern California": [
-        "the University of Southern California", "USC"
+        "University of Southern California", "USC"
     ],
     "U.S. Route 66": ["Route 66", "U.S. Route 66"],
     "Winston Churchill": ["Churchill", "Winston Churchill"],
