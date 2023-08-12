@@ -722,7 +722,7 @@ class Random(commands.Cog):
                 "random idea command not found when idea command invoked"
             )
 
-    @random.command(name = "insult", with_app_command = False)
+    @random.command(name = "insult")
     async def random_insult(self, ctx):
         '''Random insult'''
         # Note: insult command invokes this command
