@@ -545,7 +545,14 @@ class Search(commands.GroupCog, group_name = "search"):
         """
         ctx = await interaction.client.get_context(interaction)
         await ctx.defer()
-        await self.wikipedia(ctx, query = query)
+
+        if command := ctx.bot.get_command("search wikipedia"):
+            await ctx.invoke(command, query = query)
+        else:
+            raise RuntimeError(
+                "search wikipedia command not found "
+                "when slash search wikipedia command invoked"
+            )
 
     @commands.group(
         aliases = ["wiki"],
