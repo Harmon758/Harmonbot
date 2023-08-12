@@ -724,7 +724,7 @@ class Random(commands.Cog):
 
     @random.command(name = "insult")
     async def random_insult(self, ctx):
-        '''Random insult'''
+        """Random insult"""
         # Note: insult command invokes this command
         await ctx.embed_reply(generate_elizabethan_insult())
 
