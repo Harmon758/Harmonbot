@@ -26,6 +26,7 @@ from utilities.menu_sources import XKCDSource
 from utilities.paginators import ButtonPaginator
 
 sys.path.insert(0, "..")
+from units.insults import generate_elizabethan_insult
 from units.quotes import get_random_quote
 sys.path.pop(0)
 
@@ -726,16 +727,7 @@ class Random(commands.Cog):
     async def random_insult(self, ctx):
         '''Random insult'''
         # Note: insult command invokes this command
-        url = "http://quandyfactory.com/insult/json"
-        async with ctx.bot.aiohttp_session.get(url) as resp:
-            if resp.status == 500:
-                await ctx.embed_reply(
-                    f"{ctx.bot.error_emoji} API Error: "
-                    f"{resp.status} {resp.reason}"
-                )
-                return
-            data = await resp.json()
-        await ctx.embed_reply(data["insult"])
+        await ctx.embed_reply(generate_elizabethan_insult())
 
     @commands.command()
     async def insult(self, ctx):
