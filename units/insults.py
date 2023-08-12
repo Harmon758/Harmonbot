@@ -39,7 +39,7 @@ ELIZABETHAN_NOUNS = (
 )
 
 
-def generate_elizabethan_insult():
+def generate_elizabethan_insult() -> str:
     # https://web.archive.org/web/20170717092231/http://www.museangel.net/insult.html
     # https://gist.github.com/quandyfactory/258915
     # https://quandyfactory.com/insult
