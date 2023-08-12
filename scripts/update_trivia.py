@@ -62,45 +62,31 @@ connection.commit()
 
 acceptable_answers_dict = {
     "Antony": ["Antony", "Mark Antony"],
-    "the Appalachian Mountains": ["Appalachian Mountains", "Appalachians"],
     "Aretha Franklin Delano Roosevelt": [
         "Aretha Franklin D. Roosevelt", "Aretha Franklin Delano Roosevelt"
     ],
     "Ben-Gurion": ["Ben-Gurion", "David Ben-Gurion"],
-    "Benjamin Franklin": ["Ben Franklin", "Benjamin Franklin"],
     "Bernardo Bertolucci": ["Bernardo Bertolucci", "Bertolucci"],
     "the Capitol": [
         "Capitol", "Capitol Building", "United States Capitol",
         "United States Capitol Building", "U.S. Capitol",
         "U.S. Capitol Building"
     ],
-    "Cosmo Kramer": ["Cosmo Kramer", "Kramer"],
-    "Creedence Clearwater Revival": ["CCR", "Creedence Clearwater Revival"],
-    "gall bladder": ["gall bladder", "gallbladder"],
-    "Harry S. Truman": ["Harry S. Truman", "Truman"],
     "John Kennedy's mother": [
         "JFK's mother", "John F. Kennedy's mother", "John Kennedy's mother"
     ],
-    "Judas Iscariot": ["Judas", "Judas Iscariot"],
     "(Kenneth) Starr": ["Ken Starr", "Kenneth Starr", "Starr"],
     "Luciano Pavarotti": ["Luciano Pavarotti", "Pavarotti"],
-    "Louis Pasteur": ["Louis Pasteur", "Pasteur"],
     "Louis Renault": ["Louis Renault", "Renault"],
     "Love Canal (Niagara)": ["Love Canal", "Niagara", "Niagara Falls"],
     "Phnom Penh, Cambodia": ["Phnom Penh", "Phnom Penh, Cambodia"],
     "a po' boy": ["po boy", "po' boy", "po-boy", "poor boy"],
     "Robert Bruce": ["Robert Bruce", "Robert the Bruce"],
-    "Sam Adams": ["Sam Adams", "Samuel Adams"],
     "Sarkozy": ["Nicolas Sarkozy", "Sarkozy"],
     "Sir Winston Churchill": [
         "Churchill", "Sir Winston Churchill", "Winston Churchill"
     ],
-    "Spielberg": ["Spielberg", "Steven Spielberg"],
     "take a temperature": ["take a temperature", "take your temperature"],
-    "Theodore Roosevelt": ["Teddy Roosevelt", "Theodore Roosevelt"],
-    "the University of Southern California": [
-        "University of Southern California", "USC"
-    ],
     "U.S. Route 66": ["Route 66", "U.S. Route 66"],
     "Winston Churchill": ["Churchill", "Winston Churchill"],
     "with a kiss": ["by kiss", "by kissing him", "kiss", "with a kiss"]

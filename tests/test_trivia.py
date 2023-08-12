@@ -133,6 +133,23 @@ class TestCheckAnswer(unittest.TestCase):
             )
         )
 
+    def test_matching_named_entity(self):
+        for answer, response in (
+            ("the Appalachian Mountains", "appalachians"),
+            ("Benjamin Franklin", "ben franklin"),
+            ("Creedence Clearwater Revival", "ccr"),
+            ("Cosmo Kramer", "kramer"),
+            ("the gall bladder", "gallbladder"),
+            ("Harry S. Truman", "truman"),
+            ("Judas Iscariot", "judas"),
+            ("Louis Pasteur", "pasteur"),
+            ("Sam Adams", "samuel adams"),
+            ("Spielberg", "steven spielberg"),
+            ("Theodore Roosevelt", "teddy roosevelt"),
+            ("the University of Southern California", "usc")
+        ):
+            self.assertTrue(check_answer(answer = answer, response = response))
+
     def test_only_comma(self):
         self.assertFalse(check_answer(answer = "colon", response = ','))
 
