@@ -671,7 +671,8 @@ class Search(commands.GroupCog, group_name = "search"):
             await ctx.invoke(command, wiki = wiki, query = query)
         else:
             raise RuntimeError(
-                "search fandom command not found when fandom command invoked"
+                "search fandom command not found "
+                "when slash search fandom command invoked"
             )
 
     @commands.command(aliases = ["wikia", "wikicities"])
