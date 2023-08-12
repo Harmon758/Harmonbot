@@ -148,7 +148,10 @@ class TestCheckAnswer(unittest.TestCase):
             ("Theodore Roosevelt", "teddy roosevelt"),
             ("the University of Southern California", "usc")
         ):
-            self.assertTrue(check_answer(answer = answer, response = response))
+            self.assertTrue(
+                check_answer(answer = answer, response = response),
+                f'answer: "{answer}", response: "{response}"'
+            )
 
     def test_only_comma(self):
         self.assertFalse(check_answer(answer = "colon", response = ','))
