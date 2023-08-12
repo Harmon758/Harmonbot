@@ -15,6 +15,7 @@ import spacy
 
 
 nlp = spacy.load("en_core_web_md")
+nlp.add_pipe("entityLinker", last = True)  # spacy-entity-linker
 
 
 def capwords(string: str) -> str:
@@ -63,9 +64,12 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         if not unicodedata.combining(character)
     )
     # Remove extra whitespace
+    answer = ' '.join(answer.split())
+    response = ' '.join(response.split())
     # Make lowercase
-    answer = ' '.join(answer.split()).lower()
-    response = ' '.join(response.split()).lower()
+    case_sensitive_answer = answer
+    answer = answer.lower()
+    response = response.lower()
 
     # Check removal of/replacement of - with space
     # (prior to removing article prefixes)
@@ -287,6 +291,16 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
                     f"{response} {subject}", f"{subject} {response}"
                 ):
                     return True
+    # Check for matching named entity
+    answer_doc = nlp(case_sensitive_answer)
+    response_doc = nlp(response)
+    if (
+        len(answer_entities := answer_doc._.linkedEntities) == 1 and
+        len(response_entities := response_doc._.linkedEntities) == 1 and
+        answer_entities[0].identifier == response_entities[0].identifier
+    ):
+        return True
+
     return False
 
 
