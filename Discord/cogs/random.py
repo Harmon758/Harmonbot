@@ -8,7 +8,6 @@ import calendar
 import concurrent.futures
 import csv
 import datetime
-import json
 import multiprocessing
 import random
 import string
