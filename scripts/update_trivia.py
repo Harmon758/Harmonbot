@@ -157,6 +157,15 @@ connection.commit()
 connection.execute(
     """
     UPDATE trivia.clues
+    SET acceptable_answers = ARRAY['Goodman', 'John Goodman']
+    WHERE id = 414251 AND answer = 'Goodman'
+    """
+)
+connection.commit()
+
+connection.execute(
+    """
+    UPDATE trivia.clues
     SET acceptable_answers = ARRAY['lawnmowers', 'lawnmower racing']
     WHERE id = 240380 AND answer = 'lawnmower racing'
     """
