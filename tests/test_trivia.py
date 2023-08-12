@@ -118,6 +118,13 @@ class TestCheckAnswer(unittest.TestCase):
                 check_answer(clue = clue, answer = answer, response = response)
             )
 
+    def test_dash_removal_with_article_prefix(self):
+        self.assertTrue(
+            check_answer(
+                answer = '"A-Tisket, A-Tasket"', response = "a tisket a tasket"
+            )
+        )
+
     def test_honorific(self):
         self.assertTrue(
             check_answer(
