@@ -153,6 +153,11 @@ class TestCheckAnswer(unittest.TestCase):
                 f'answer: "{answer}", response: "{response}"'
             )
 
+    def test_partial_matching_named_entity(self):
+        self.assertFalse(
+            check_answer(answer = "bean sprouts", response = "soy beans")
+        )
+
     def test_only_comma(self):
         self.assertFalse(check_answer(answer = "colon", response = ','))
 

@@ -66,16 +66,12 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     # Remove extra whitespace
     answer = ' '.join(answer.split())
     response = ' '.join(response.split())
-    # Make lowercase
-    case_sensitive_answer = answer
-    answer = answer.lower()
-    response = response.lower()
 
     # Check removal of/replacement of - with space
     # (prior to removing article prefixes)
-    # Remove commas beforehand
-    answer_copy = answer.replace(',', "")
-    response_copy = response.replace(',', "")
+    # Remove commas and make lowercase beforehand
+    answer_copy = answer.replace(',', "").lower()
+    response_copy = response.replace(',', "").lower()
     if answer_copy.replace('-', ' ') == response_copy.replace('-', ' '):
         return True
     if answer_copy.replace('-', "") == response_copy.replace('-', ""):
@@ -87,6 +83,11 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     # Return False if empty response or answer
     if not response or not answer:
         return False
+
+    # Make lowercase
+    case_sensitive_answer = answer
+    answer = answer.lower()
+    response = response.lower()
 
     # Get items in lists
     answer_items = [item.strip() for item in answer.split(',')]
@@ -292,14 +293,12 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
                 ):
                     return True
     # Check for matching named entity
-    answer_doc = nlp(case_sensitive_answer)
-    response_doc = nlp(response)
-    if (
-        len(answer_entities := answer_doc._.linkedEntities) == 1 and
-        len(response_entities := response_doc._.linkedEntities) == 1 and
-        answer_entities[0].identifier == response_entities[0].identifier
-    ):
-        return True
+    for answer_entity in nlp(case_sensitive_answer)._.linkedEntities:
+        if len(answer_entity.get_span().text) == len(case_sensitive_answer):
+            for response_entity in nlp(response)._.linkedEntities:
+                if response_entity.identifier == answer_entity.identifier:
+                    return True
+            break
 
     return False
 
