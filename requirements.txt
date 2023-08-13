@@ -4,7 +4,7 @@ discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@b3a2484
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@8686b5d
 # TwitchIO@master (1.2.0)
 twitchio @ git+https://github.com/TwitchIO/Twitchio.git@01f3c17
-irc==20.1.0
+irc==20.3.0
 python-telegram-bot==20.4
 
 aiohttp==3.8.5
