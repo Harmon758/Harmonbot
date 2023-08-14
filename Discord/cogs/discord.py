@@ -72,7 +72,7 @@ class Discord(commands.Cog):
 			"Color Together", "Doodle Crew", "Fishington.io", "Gartic Phone",
 			"Jamspace", "Know What I Meme", "Land-io", "Letter League", "Ocho",
 			"Poker Night", "Putt Party", "Sketch Hands", "SpellCast",
-			"Watch Together", "Word Snacks", "YouTube Together"
+			"Watch Together", "Whiteboard", "Word Snacks", "YouTube Together"
 		]
 	):
 		"""
@@ -105,6 +105,8 @@ class Discord(commands.Cog):
 				activity = "Sketch Hands"
 			case "Ocho":
 				activity = "Blazing 8s"
+			case "Whiteboard":
+				activity = "Jamspace"
 			case "YouTube Together":
 				activity = "Watch Together"
 		
