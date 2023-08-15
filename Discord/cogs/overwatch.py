@@ -28,8 +28,7 @@ class Overwatch(commands.Cog):
     @overwatch.command(aliases = ["weapon"], hidden = True)
     async def ability(self, ctx):
         """
-        Overwatch Abilities/Weapons
-        Deprecated, as the API this command used to use does not exist anymore
+        This command is deprecated, as the API this command used to use does not exist anymore
         https://overwatch-api.net/
         https://github.com/jamesmcfadden/overwatch-api
         """
@@ -38,8 +37,7 @@ class Overwatch(commands.Cog):
     @overwatch.command(hidden = True)
     async def achievement(self, ctx):
         """
-        Overwatch Achievements
-        Deprecated, as the API this command used to use does not exist anymore
+        This command is deprecated, as the API this command used to use does not exist anymore
         https://overwatch-api.net/
         https://github.com/jamesmcfadden/overwatch-api
         """
@@ -48,8 +46,7 @@ class Overwatch(commands.Cog):
     @overwatch.command(hidden = True)
     async def hero(self, ctx):
         """
-        Overwatch Heroes
-        Deprecated, as the API this command used to use does not exist anymore
+        This command is deprecated, as the API this command used to use does not exist anymore
         https://overwatch-api.net/
         https://github.com/jamesmcfadden/overwatch-api
         """
@@ -58,8 +55,7 @@ class Overwatch(commands.Cog):
     @overwatch.command(hidden = True)
     async def item(self, ctx):
         """
-        Overwatch Items
-        Deprecated, as the API this command used to use does not exist anymore
+        This command is deprecated, as the API this command used to use does not exist anymore
         https://overwatch-api.net/
         https://github.com/jamesmcfadden/overwatch-api
         """
@@ -68,8 +64,7 @@ class Overwatch(commands.Cog):
     @overwatch.command(hidden = True)
     async def map(self, ctx):
         """
-        Overwatch Maps
-        Deprecated, as the API this command used to use does not exist anymore
+        This command is deprecated, as the API this command used to use does not exist anymore
         https://overwatch-api.net/
         https://github.com/jamesmcfadden/overwatch-api
         """
