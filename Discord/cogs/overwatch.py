@@ -101,8 +101,10 @@ class Overwatch(commands.Cog):
         '''
         await ctx.send_help(ctx.command)
 
-    @stats.group(name = "competitive", aliases = ["comp"], hidden = True, 
-                    invoke_without_command = True, case_insensitive = True)
+    @stats.group(
+        name = "competitive", aliases = ["comp"], hidden = True,
+        invoke_without_command = True, case_insensitive = True
+    )
     async def stats_competitive(self, ctx):
         '''
         This command is deprecated, as the API this command used to use has been discontinued
