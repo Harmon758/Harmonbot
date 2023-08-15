@@ -107,9 +107,9 @@ class Overwatch(commands.Cog):
 
     @stats_quickplay.command(name = "heroes", hidden = True)
     async def stats_quickplay_heroes(self, ctx):
-        '''
+        """
         This command is deprecated, as the API this command used to use has been discontinued
         https://github.com/Fuyukai/OWAPI/issues/302
-        '''
+        """
         await ctx.send_help(ctx.command)
 
