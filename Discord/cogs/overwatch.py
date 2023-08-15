@@ -79,8 +79,10 @@ class Overwatch(commands.Cog):
         """
         await ctx.send_help(ctx.command)
 
-    @overwatch.group(name = "stats", aliases = ["statistics"], hidden = True,
-                        invoke_without_command = True, case_insensitive = True)
+    @overwatch.group(
+        name = "stats", aliases = ["statistics"], hidden = True,
+        invoke_without_command = True, case_insensitive = True
+    )
     async def stats(self, ctx):
         '''
         This command is deprecated, as the API this command used to use has been discontinued
