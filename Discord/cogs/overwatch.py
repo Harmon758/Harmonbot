@@ -13,7 +13,7 @@ class Overwatch(commands.Cog):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
+    @commands.group(case_insensitive = True, invoke_without_command = True)
     async def overwatch(self, ctx):
         """
         The ability, achievement, hero, item, and map commands have been
