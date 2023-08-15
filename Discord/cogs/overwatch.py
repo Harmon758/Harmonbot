@@ -91,10 +91,10 @@ class Overwatch(commands.Cog):
         case_insensitive = True, invoke_without_command = True
     )
     async def stats_quickplay(self, ctx):
-        '''
+        """
         This command is deprecated, as the API this command used to use has been discontinued
         https://github.com/Fuyukai/OWAPI/issues/302
-        '''
+        """
         await ctx.send_help(ctx.command)
 
     @stats.command(name = "competitive", aliases = ["comp"], hidden = True)
