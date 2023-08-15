@@ -16,14 +16,13 @@ class Overwatch(commands.Cog):
     @commands.group(invoke_without_command = True, case_insensitive = True)
     async def overwatch(self, ctx):
         '''
-        BattleTags are case sensitive
-
         The ability, achievement, hero, item, and map commands have been
         deprecated, as the API they used to use does not exist anymore
+
+        The stats commands have been deprecated, as the API they used to use
+        has been discontinued
         '''
         await ctx.send_help(ctx.command)
-
-    # TODO: Finish Stats (Add Achievements, Improve)
 
     @overwatch.command(aliases = ["weapon"], hidden = True)
     async def ability(self, ctx):
