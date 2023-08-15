@@ -939,7 +939,9 @@ class TriviaBoardSelectionView(ui.View):
         for number, category in enumerate(self.match.board, start = 1):
             if any(category["clues"].values()):
                 self.category.add_option(
-                    label = number, description = category["title"]
+                    emoji = f"{number}\N{COMBINING ENCLOSING KEYCAP}",
+                    label = category["title"],
+                    value = number
                 )
 
         for value in self.match.VALUES:
@@ -947,11 +949,16 @@ class TriviaBoardSelectionView(ui.View):
 
     @ui.select(placeholder = "Select a category")
     async def category(self, interaction, select):
+        for option in select.options:
+            option.default = False
+
+        selected = int(select.values[0]) - 1
+
         for item in self.children:
             if isinstance(item, ui.Button):
-                item.disabled = not self.match.board[int(select.values[0]) - 1]["clues"][int(item.label)]
+                item.disabled = not self.match.board[selected]["clues"][int(item.label)]
 
-        select.placeholder = select.values[0]
+        select.options[selected].default = True
 
         await interaction.response.edit_message(view = self)
 
