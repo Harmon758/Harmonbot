@@ -5,14 +5,10 @@ from utilities import checks
 
 
 async def setup(bot):
-    await bot.add_cog(Overwatch(bot))
+    await bot.add_cog(Overwatch())
 
 
 class Overwatch(commands.Cog):
-
-    def __init__(self, bot):
-        self.bot = bot
-        self.request_limit = 1000
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
