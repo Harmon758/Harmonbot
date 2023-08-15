@@ -15,13 +15,13 @@ class Overwatch(commands.Cog):
 
     @commands.group(invoke_without_command = True, case_insensitive = True)
     async def overwatch(self, ctx):
-        '''
+        """
         The ability, achievement, hero, item, and map commands have been
         deprecated, as the API they used to use does not exist anymore
 
         The stats commands have been deprecated, as the API they used to use
         has been discontinued
-        '''
+        """
         await ctx.send_help(ctx.command)
 
     @overwatch.command(aliases = ["weapon"], hidden = True)
