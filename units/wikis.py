@@ -39,7 +39,7 @@ class WikiArticle(BaseModel):
         return hash(self.url)
 
 
-@async_cache
+@async_cache(ignore_kwargs = "aiohttp_session")
 async def get_api_endpoint(
     url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> str:
@@ -317,7 +317,7 @@ async def get_random_article(
         )[0]
 
 
-@async_cache
+@async_cache(ignore_kwargs = "aiohttp_session")
 async def get_wiki_info(
     url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> WikiInfo:
