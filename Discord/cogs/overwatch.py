@@ -77,7 +77,7 @@ class Overwatch(commands.Cog):
 
     @overwatch.group(
         name = "stats", aliases = ["statistics"], hidden = True,
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     async def stats(self, ctx):
         '''
