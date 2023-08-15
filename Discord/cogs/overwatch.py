@@ -88,7 +88,7 @@ class Overwatch(commands.Cog):
 
     @stats.group(
         name = "quickplay", aliases = ["qp"], hidden = True,
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     async def stats_quickplay(self, ctx):
         '''
