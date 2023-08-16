@@ -702,11 +702,13 @@ class Bot(commands.Bot):
 				)
 			return f"{first_line[:-1]}\n{second_line[:-1]}\n{third_line[:-1]}"
 		else:
+			# TODO: Unicode card characters option
+			# TODO: non-emoji version option
 			SUIT_EMOJI = {
-				"Clubs": '\N{BLACK CLUB SUIT}',
-				"Diamonds": '\N{BLACK DIAMOND SUIT}',
-				"Hearts": '\N{BLACK HEART SUIT}',
-				"Spades": '\N{BLACK SPADE SUIT}'
+				"Clubs": "\N{BLACK CLUB SUIT}\N{VARIATION SELECTOR-16}",
+				"Diamonds": "\N{BLACK DIAMOND SUIT}\N{VARIATION SELECTOR-16}",
+				"Hearts": "\N{BLACK HEART SUIT}\N{VARIATION SELECTOR-16}",
+				"Spades": "\N{BLACK SPADE SUIT}\N{VARIATION SELECTOR-16}"
 			}
 			return " | ".join(
 				f"{SUIT_EMOJI[card.suit]} {card.value}" for card in cards
