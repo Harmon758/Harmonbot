@@ -364,7 +364,7 @@ class Bot(commands.Bot):
 	async def setup_hook(self):
 		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
 		self.loop.create_task(
-			self.initialize_emoji(),
+			self.initialize_custom_emoji(),
 			name = "Initialize custom emoji as constant attributes of Bot"
 		)
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
@@ -663,7 +663,7 @@ class Bot(commands.Bot):
 		#       https://discord.boats/
 		await self.update_all_listing_stats()
 	
-	async def initialize_emoji(self):
+	async def initialize_custom_emoji(self):
 		await self.wait_until_ready()
 		for guild_id in self.EMOJI_GUILD_IDS:
 			guild = self.get_guild(guild_id)
