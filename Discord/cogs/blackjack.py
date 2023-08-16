@@ -32,10 +32,12 @@ class Blackjack(commands.Cog):
         response = await ctx.embed_reply(
             title = "Blackjack",
             description = (
-                f"{ctx.me.mention}:"
-                f"{game.dealer_string} (**?**)\n"
-                f"{ctx.author.mention}: "
-                f"{game.player_string} (**{game.player_total}**)\n"
+                f"{ctx.me.mention}:\n"
+                f"{game.dealer_string}\n"
+                f"(**?**)\n\n"
+                f"{ctx.author.mention}:\n"
+                f"{game.player_string}\n"
+                f"(**{game.player_total}**)\n"
             ),
             footer_text = "Hit or Stay?",
             view = view
@@ -50,10 +52,12 @@ class Blackjack(commands.Cog):
             game.dealer_turn = True
 
             embed.description = (
-                f"{ctx.me.mention}: "
-                f"{game.dealer_string} (**{game.dealer_total}**)\n"
-                f"{ctx.author.mention}: "
-                f"{game.player_string} (**{game.player_total}**)\n"
+                f"{ctx.me.mention}:\n"
+                f"{game.dealer_string}\n"
+                f"(**{game.dealer_total}**)\n\n"
+                f"{ctx.author.mention}:\n"
+                f"{game.player_string}\n"
+                f"(**{game.player_total}**)\n"
             )
 
             if game.dealer_total > game.player_total:
@@ -71,10 +75,12 @@ class Blackjack(commands.Cog):
                 game.dealer_hit()
 
                 embed.description = (
-                    f"{ctx.me.mention}: "
-                    f"{game.dealer_string} (**{game.dealer_total}**)\n"
-                    f"{ctx.author.mention}: "
-                    f"{game.player_string} (**{game.player_total}**)\n"
+                    f"{ctx.me.mention}:\n"
+                    f"{game.dealer_string}\n"
+                    f"(**{game.dealer_total}**)\n\n"
+                    f"{ctx.author.mention}:\n"
+                    f"{game.player_string}\n"
+                    f"(**{game.player_total}**)\n"
                 )
                 await response.edit(embed = embed)
 
@@ -110,11 +116,13 @@ class BlackjackGame:
     @property
     def dealer_string(self):
         if self.dealer_turn:
-            return self.bot.cards_to_string(self.dealer.cards)
+            return self.bot.cards_to_string(
+                self.dealer.cards, custom_emoji = True
+            )
         else:
-            return (
-                "\N{WHITE QUESTION MARK ORNAMENT} | " +
-                self.bot.cards_to_string(self.dealer.cards[1])
+            return self.bot.cards_to_string(
+                self.dealer.cards[1], custom_emoji = True,
+                hidden_card_indexes = 0
             )
 
     @property
@@ -126,7 +134,7 @@ class BlackjackGame:
 
     @property
     def player_string(self):
-        return self.bot.cards_to_string(self.player.cards)
+        return self.bot.cards_to_string(self.player.cards, custom_emoji = True)
 
     @property
     def player_total(self):
@@ -161,10 +169,12 @@ class BlackjackView(ui.View):
 
         embed = interaction.message.embeds[0]
         embed.description = (
-            f"{interaction.client.user.mention}: "
-            f"{self.game.dealer_string} (**?**)\n"
-            f"{interaction.user.mention}: "
-            f"{self.game.player_string} (**{self.game.player_total}**)\n"
+            f"{interaction.client.user.mention}:\n"
+            f"{self.game.dealer_string}\n"
+            f"(**?**)\n\n"
+            f"{interaction.user.mention}:\n"
+            f"{self.game.player_string}\n"
+            f"(**{self.game.player_total}**)\n"
         )
 
         if self.game.player_total > 21:
