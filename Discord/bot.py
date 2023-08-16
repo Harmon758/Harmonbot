@@ -110,6 +110,9 @@ class Bot(commands.Bot):
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.console_line_limit = 167
 		self.console_message_prefix = "Discord Harmonbot: "
+		self.EMOJI_GUILD_IDS = (
+			314198658985754625, 436072973061980161, 1027378240106532906
+		)
 		self.last_resort_notices_channel_id = 955950052747137104
 		self.library_path = "D:/Music/"
 		self.simple_user_agent = "Harmonbot (Discord Bot)"
@@ -358,6 +361,10 @@ class Bot(commands.Bot):
 	
 	async def setup_hook(self):
 		self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
+		self.loop.create_task(
+			self.initialize_emoji(),
+			name = "Initialize custom emoji as constant attributes of Bot"
+		)
 		self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
 		self.github_api = gidgethub.aiohttp.GitHubAPI(
 			self.aiohttp_session, self.user_agent,
@@ -653,6 +660,25 @@ class Bot(commands.Bot):
 		#       https://botsfordiscord.com/
 		#       https://discord.boats/
 		await self.update_all_listing_stats()
+	
+	async def initialize_emoji(self):
+		await self.wait_until_ready()
+		
+		emojis = []
+		for guild_id in self.EMOJI_GUILD_IDS:
+			guild = self.get_guild(guild_id)
+			emojis.extend(guild.emojis)
+		
+		self.playing_card_emojis = {}
+		for suit in pydealer.SUITS:
+			suit_emojis = {}
+			for value in pydealer.VALUES:
+				if emoji := discord.utils.get(
+					emojis, name = f"{value.lower()}_of_{suit.lower()}"
+				):
+					suit_emojis[value] = emoji
+			if suit_emojis:
+				self.playing_card_emojis[suit] = suit_emojis
 	
 	async def startup_tasks(self):
 		await self.wait_until_ready()
