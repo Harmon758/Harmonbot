@@ -155,6 +155,7 @@ class Bot(commands.Bot):
 		self.EMBED_TOTAL_CHARACTER_LIMIT = self.EMBED_TOTAL_CHAR_LIMIT = self.EToCL = 6000
 		## Functional
 		### Set on ready
+		self.custom_emojis = {}
 		self.invite_url = None
 		self.listener_bot = None  # User object
 		self.listing_sites = {}
@@ -664,22 +665,10 @@ class Bot(commands.Bot):
 	
 	async def initialize_emoji(self):
 		await self.wait_until_ready()
-		
-		emojis = []
 		for guild_id in self.EMOJI_GUILD_IDS:
 			guild = self.get_guild(guild_id)
-			emojis.extend(guild.emojis)
-		
-		self.playing_card_emojis = {}
-		for suit in pydealer.SUITS:
-			suit_emojis = {}
-			for value in pydealer.VALUES:
-				if emoji := discord.utils.get(
-					emojis, name = f"{value.lower()}_of_{suit.lower()}"
-				):
-					suit_emojis[value] = emoji
-			if suit_emojis:
-				self.playing_card_emojis[suit] = suit_emojis
+			for emoji in guild.emojis:
+				self.custom_emojis[emoji.name] = emoji
 	
 	def cards_to_string(self, cards, custom_emoji = False):
 		if isinstance(cards, pydealer.Card):
