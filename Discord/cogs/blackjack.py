@@ -14,13 +14,6 @@ BLACKJACK_VALUES.update({"Ace": 0, "King": 9, "Queen": 9, "Jack": 9})
 for value in BLACKJACK_VALUES:
     BLACKJACK_VALUES[value] += 1
 
-SUIT_EMOJI = {
-    "Clubs": '\N{BLACK CLUB SUIT}',
-    "Diamonds": '\N{BLACK DIAMOND SUIT}',
-    "Hearts": '\N{BLACK HEART SUIT}',
-    "Spades": '\N{BLACK SPADE SUIT}'
-}
-
 
 async def setup(bot):
     await bot.add_cog(Blackjack())
@@ -33,7 +26,7 @@ class Blackjack(commands.Cog):
     async def blackjack(self, ctx):
         """Play a game of blackjack"""
         # TODO: S17
-        game = BlackjackGame()
+        game = BlackjackGame(bot = ctx.bot)
 
         view = BlackjackView(bot = ctx.bot, game = game, user = ctx.author)
         response = await ctx.embed_reply(
@@ -101,7 +94,9 @@ class Blackjack(commands.Cog):
 
 class BlackjackGame:
 
-    def __init__(self):
+    def __init__(self, bot):
+        self.bot = bot
+
         self.deck = pydealer.Deck()
         self.deck.shuffle()
         self.dealer = self.deck.deal(2)
@@ -115,9 +110,12 @@ class BlackjackGame:
     @property
     def dealer_string(self):
         if self.dealer_turn:
-            return cards_to_string(self.dealer.cards)
+            return self.bot.cards_to_string(self.dealer.cards)
         else:
-            return f"\N{WHITE QUESTION MARK ORNAMENT} {SUIT_EMOJI[self.dealer.cards[1].suit]} {self.dealer.cards[1].value}"
+            return (
+                "\N{WHITE QUESTION MARK ORNAMENT} | " +
+                self.bot.cards_to_string(self.dealer.cards[1])
+            )
 
     @property
     def dealer_total(self):
@@ -128,7 +126,7 @@ class BlackjackGame:
 
     @property
     def player_string(self):
-        return cards_to_string(self.player.cards)
+        return self.bot.cards_to_string(self.player.cards)
 
     @property
     def player_total(self):
@@ -144,12 +142,6 @@ def calculate_total(cards):
         total += 10
 
     return total
-
-
-def cards_to_string(cards):
-    return " | ".join(
-        f"{SUIT_EMOJI[card.suit]} {card.value}" for card in cards
-    )
 
 
 class BlackjackView(ui.View):
