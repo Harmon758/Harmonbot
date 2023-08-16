@@ -949,16 +949,14 @@ class TriviaBoardSelectionView(ui.View):
 
     @ui.select(placeholder = "Select a category")
     async def category(self, interaction, select):
-        for option in select.options:
-            option.default = False
+        selected = int(select.values[0])
 
-        selected = int(select.values[0]) - 1
+        for option in select.options:
+            option.default = option.value == selected
 
         for item in self.children:
             if isinstance(item, ui.Button):
-                item.disabled = not self.match.board[selected]["clues"][int(item.label)]
-
-        select.options[selected].default = True
+                item.disabled = not self.match.board[selected - 1]["clues"][int(item.label)]
 
         await interaction.response.edit_message(view = self)
 
