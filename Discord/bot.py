@@ -29,6 +29,7 @@ import google.auth
 import google.cloud.translate
 import imgurpython
 import inflect
+import pydealer
 import pyowm
 import requests
 import sentry_sdk
@@ -679,6 +680,26 @@ class Bot(commands.Bot):
 					suit_emojis[value] = emoji
 			if suit_emojis:
 				self.playing_card_emojis[suit] = suit_emojis
+	
+	def cards_to_string(self, cards, custom_emoji = False):
+		if isinstance(cards, pydealer.Card):
+			cards = (cards,)
+		
+		if custom_emoji and self.playing_card_emojis:
+			return "".join(
+				str(self.playing_card_emojis[card.suit][card.value])
+				for card in cards
+			)
+		else:
+			SUIT_EMOJI = {
+				"Clubs": '\N{BLACK CLUB SUIT}',
+				"Diamonds": '\N{BLACK DIAMOND SUIT}',
+				"Hearts": '\N{BLACK HEART SUIT}',
+				"Spades": '\N{BLACK SPADE SUIT}'
+			}
+			return " | ".join(
+				f"{SUIT_EMOJI[card.suit]} {card.value}" for card in cards
+			)
 	
 	async def startup_tasks(self):
 		await self.wait_until_ready()
