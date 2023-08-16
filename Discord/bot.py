@@ -674,11 +674,33 @@ class Bot(commands.Bot):
 		if isinstance(cards, pydealer.Card):
 			cards = (cards,)
 		
-		if custom_emoji and self.playing_card_emojis:
-			return "".join(
-				str(self.playing_card_emojis[card.suit][card.value])
-				for card in cards
-			)
+		if custom_emoji and self.custom_emojis:
+			first_line = ""
+			second_line = ""
+			third_line = ""
+			for card in cards:
+				color = "black" if card.suit in ("Clubs", "Spades") else "red"
+				value = card.value if len(card.value) < 3 else card.value[0]
+				first_line += (
+					str(
+						self.custom_emojis[f"{color}_top_left_{value}_segment"]
+					) +
+					str(self.custom_emojis["blank_top_right_segment"]) + ' '
+				)
+				second_line += (
+					str(
+						self.custom_emojis[f"{card.suit.lower()}_segment"]
+					) * 2 + ' '
+				)
+				third_line += (
+					str(self.custom_emojis["blank_bottom_left_segment"]) + 
+					str(
+						self.custom_emojis[
+							f"{color}_bottom_right_{value}_segment"
+						]
+					) + ' '
+				)
+			return f"{first_line[:-1]}\n{second_line[:-1]}\n{third_line[:-1]}"
 		else:
 			SUIT_EMOJI = {
 				"Clubs": '\N{BLACK CLUB SUIT}',
