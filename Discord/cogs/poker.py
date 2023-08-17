@@ -136,13 +136,13 @@ class PokerHand:
                 title = "Poker",
                 title_url = self.message.jump_url,
                 description = (
-                    f"The pot: {self.pot}\n"
                     f"The {self.STAGES[self.stage]}:\n" +
                     self.bot.cards_to_string(
                         self.community_cards[:number_of_cards],
                         custom_emoji = True
                     )
-                )
+                ),
+                fields = (("Pot", self.pot),)
             )
             self.embeds = self.message.embeds
 
