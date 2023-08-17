@@ -60,14 +60,13 @@ class PokerHand:
         self.ended = asyncio.Event()
 
     async def start(self, ctx):
-        self.lines = [f"{ctx.author.mention} is initiating a poker match"]
         self.message = await ctx.embed_reply(
-            self.lines[0],
+            f"{ctx.author.mention} is initiating a poker match",
             author_name = None,
             footer_text = None,
             view = PokerLobby(self)
         )
-        self.embed = self.message.embeds[0]
+        self.embeds = self.message.embeds
         await self.ended.wait()
 
     def add_player(self, player):
@@ -113,12 +112,12 @@ class PokerHand:
         else:
             self.turn = players[players.index(self.turn) + 1]
 
-        self.embed.description = (
-            '\n'.join(self.lines) + ('\n' if self.lines[-1] else "") +
+        self.embeds[-1].description = (
+            '\n'.join(self.lines) + ('\n' if self.lines else "") +
             f"\n{self.turn.mention}'s turn:"
         )
         await self.message.edit(
-            embed = self.embed,
+            embeds = self.embeds,
             view = PokerRound(
                 self, call = self.current_bet - self.bets.get(self.turn, 0)
             )
@@ -132,32 +131,41 @@ class PokerHand:
 
         if self.stage:
             number_of_cards = min(self.stage + 2, 5)
-            self.lines.append("")
-            self.lines.append(f"The pot: {self.pot}")
-            self.lines.append(
-                f"The {self.STAGES[self.stage]}: "
-                f"{self.bot.cards_to_string(self.community_cards[:number_of_cards])}"
+            await self.message.edit(view = None)
+            self.message = await self.ctx.embed_reply(
+                description = (
+                    f"The pot: {self.pot}\n"
+                    f"The {self.STAGES[self.stage]}:\n" +
+                    self.bot.cards_to_string(
+                        self.community_cards[:number_of_cards],
+                        custom_emoji = True
+                    )
+                ),
+                author_name = None,
+                footer_text = None
             )
-            await self.message.edit(embed = self.embed)
+            self.embeds = self.message.embeds
 
         if self.stage == 4:
             return await self.showdown_end()
 
-        self.lines.append("")
+        self.embeds.append(discord.Embed(color = self.bot.bot_color))
+        self.lines = []
 
         await self.next_turn()
 
     async def last_remaining_end(self):
         winner, hand = next(iter(self.hands.items()))
 
-        self.lines.append("")
+        self.embeds.append(discord.Embed(color = self.bot.bot_color))
+        self.lines = []
         self.lines.append(f"{winner.mention} is the winner of {self.pot}")
-        self.embed.description = (
+        self.embeds[-1].description = (
             '\n'.join(self.lines) +
             f"\n{winner.mention}: Would you like to show your hand?"
         )
         await self.message.edit(
-            embed = self.embed, view = PokerMuck(self, winner)
+            embeds = self.embeds, view = PokerMuck(self, winner)
         )
 
         self.ended.set()
@@ -185,17 +193,23 @@ class PokerHand:
                 # TODO: Handle multiple winners
 
         hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
-        self.lines.append("")
+        self.embeds.append(discord.Embed(color = self.bot.bot_color))
+        self.lines = []
         self.lines.append(f"{winner.mention} is the winner of {self.pot} with a {hand_name}")
-        self.lines.append(f"{winner.mention}'s hand: {self.bot.cards_to_string(self.hands.pop(winner))}")
+        self.lines.append(f"{winner.mention}'s hand:")
+        self.lines.append(
+            self.bot.cards_to_string(
+                self.hands.pop(winner), custom_emoji = True
+            )
+        )
 
         for player, hand in self.hands.items():
-            self.embed.description = (
+            self.embeds[-1].description = (
                 '\n'.join(self.lines) +
                 f"\n\n{player.mention}: Would you like to show your hand?"
             )
             view = PokerMuck(self, player)
-            await self.message.edit(embed = self.embed, view = view)
+            await self.message.edit(embeds = self.embeds, view = view)
             await view.wait()
 
         await self.message.edit(view = None)
@@ -223,10 +237,11 @@ class PokerLobby(discord.ui.View):
             return
 
         self.poker_hand.add_player(interaction.user)
-        self.poker_hand.lines.append(f"{interaction.user.mention} has joined")
-        self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
+        self.poker_hand.embeds[-1].description += (
+            f"\n{interaction.user.mention} has joined"
+        )
         await interaction.response.edit_message(
-            embed = self.poker_hand.embed, view = self
+            embeds = self.poker_hand.embeds, view = self
         )
 
     @discord.ui.button(label = "Start", style = discord.ButtonStyle.green)
@@ -246,12 +261,11 @@ class PokerLobby(discord.ui.View):
             return
         self.started = True
 
-        self.poker_hand.lines.append(
-            f"{interaction.user.mention} has started the match"
+        self.poker_hand.embeds[-1].description += (
+            f"\n{interaction.user.mention} has started the match"
         )
-        self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
         await interaction.response.edit_message(
-            embed = self.poker_hand.embed, view = None
+            embeds = self.poker_hand.embeds, view = None
         )
 
         await self.poker_hand.new_round()
@@ -266,7 +280,7 @@ class PokerLobby(discord.ui.View):
 
         self.poker_hand.message = await interaction.channel.send(
             interaction.message.content,
-            embed = self.poker_hand.embed,
+            embeds = self.poker_hand.embeds,
             view = self
         )
         await self.poker_hand.bot.attempt_delete_message(interaction.message)
@@ -307,7 +321,7 @@ class PokerRound(discord.ui.View):
             )
 
         await interaction.response.send_message(
-            f"Your poker hand: {self.bot.cards_to_string(self.poker_hand.hands[interaction.user].cards)}",
+            f"Your poker hand:\n{self.bot.cards_to_string(self.poker_hand.hands[interaction.user].cards, custom_emoji = True)}",
             ephemeral = True
         )
 
@@ -321,8 +335,12 @@ class PokerRound(discord.ui.View):
         self.poker_hand.lines.append(
             f"{interaction.user.mention} has {button.label.split()[0].lower()}ed"
         )
-        self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
-        await interaction.response.edit_message(embed = self.poker_hand.embed)
+        self.poker_hand.embeds[-1].description = (
+            '\n'.join(self.poker_hand.lines)
+        )
+        await interaction.response.edit_message(
+            embeds = self.poker_hand.embeds
+        )
 
         self.stop()
 
@@ -335,11 +353,13 @@ class PokerRound(discord.ui.View):
                 "It's not your turn", ephemeral = True
             )
 
-        self.poker_hand.embed.description = (
+        self.poker_hand.embeds[-1].description = (
             '\n'.join(self.poker_hand.lines) + ('\n' if self.poker_hand.lines[-1] else "") +
             f"\n{interaction.user.mention}: How much would you like to {button.label.lower()}?"
         )
-        await interaction.response.edit_message(embed = self.poker_hand.embed)
+        await interaction.response.edit_message(
+            embeds = self.poker_hand.embeds
+        )
 
         try:
             message = await self.bot.wait_for(
@@ -362,8 +382,10 @@ class PokerRound(discord.ui.View):
             self.poker_hand.lines.append(
                 f"{interaction.user.mention} has raised {amount}; current bet: {self.poker_hand.current_bet + amount}"
             )
-        self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
-        await self.poker_hand.message.edit(embed = self.poker_hand.embed)
+        self.poker_hand.embeds[-1].description = (
+            '\n'.join(self.poker_hand.lines)
+        )
+        await self.poker_hand.message.edit(embeds = self.poker_hand.embeds)
         await self.bot.attempt_delete_message(message)
 
         self.stop()
@@ -387,13 +409,13 @@ class PokerRound(discord.ui.View):
             )
 
         self.poker_hand.lines.append(f"{interaction.user.mention} has folded")
-        self.poker_hand.embed.description = (
+        self.poker_hand.embeds[-1].description = (
             '\n'.join(self.poker_hand.lines) +
             f"\n{interaction.user.mention}: Would you like to show your hand?"
         )
         view = PokerMuck(self.poker_hand, interaction.user)
         await interaction.response.edit_message(
-            embed = self.poker_hand.embed, view = view
+            embeds = self.poker_hand.embeds, view = view
         )
         await view.wait()
 
@@ -409,7 +431,7 @@ class PokerRound(discord.ui.View):
 
         self.poker_hand.message = await interaction.channel.send(
             interaction.message.content,
-            embed = self.poker_hand.embed,
+            embeds = self.poker_hand.embeds,
             view = self
         )
         await self.poker_hand.bot.attempt_delete_message(interaction.message)
@@ -437,28 +459,35 @@ class PokerMuck(discord.ui.View):
     @discord.ui.button(label = "Yes", style = discord.ButtonStyle.green)
     async def yes(self, interaction, button):
         self.poker_hand.lines.append(
-            f"{interaction.user.mention}'s hand was {self.bot.cards_to_string(self.poker_hand.hands[interaction.user])}"
+            f"{interaction.user.mention}'s hand was:\n"
+            f"{self.bot.cards_to_string(self.poker_hand.hands[interaction.user], custom_emoji = True)}"
         )
-        self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
+        self.poker_hand.embeds[-1].description = (
+            '\n'.join(self.poker_hand.lines)
+        )
         await interaction.response.edit_message(
-            embed = self.poker_hand.embed, view = None
+            embeds = self.poker_hand.embeds, view = None
         )
 
         self.stop()
 
     @discord.ui.button(label = "No", style = discord.ButtonStyle.red)
     async def no(self, interaction, button):
-        self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
+        self.poker_hand.embeds[-1].description = (
+            '\n'.join(self.poker_hand.lines)
+        )
         await interaction.response.edit_message(
-            embed = self.poker_hand.embed, view = None
+            embeds = self.poker_hand.embeds, view = None
         )
 
         self.stop()
 
     async def on_timeout(self):
-        self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
+        self.poker_hand.embeds[-1].description = (
+            '\n'.join(self.poker_hand.lines)
+        )
         await self.poker_hand.message.edit(
-            embed = self.poker_hand.embed, view = None
+            embeds = self.poker_hand.embeds, view = None
         )
 
         self.stop()
