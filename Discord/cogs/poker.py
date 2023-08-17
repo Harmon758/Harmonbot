@@ -132,7 +132,9 @@ class PokerHand:
         if self.stage:
             number_of_cards = min(self.stage + 2, 5)
             await self.message.edit(view = None)
-            self.message = await self.ctx.embed_reply(
+            self.message = await self.ctx.embed_send(
+                title = "Poker",
+                title_url = self.message.jump_url,
                 description = (
                     f"The pot: {self.pot}\n"
                     f"The {self.STAGES[self.stage]}:\n" +
@@ -140,9 +142,7 @@ class PokerHand:
                         self.community_cards[:number_of_cards],
                         custom_emoji = True
                     )
-                ),
-                author_name = None,
-                footer_text = None
+                )
             )
             self.embeds = self.message.embeds
 
