@@ -355,7 +355,7 @@ class PokerRound(discord.ui.View):
             )
 
         self.poker_hand.embeds[-1].description = (
-            '\n'.join(self.poker_hand.lines) + ('\n' if self.poker_hand.lines[-1] else "") +
+            '\n'.join(self.poker_hand.lines) + ('\n' if self.poker_hand.lines else "") +
             f"\n{interaction.user.mention}: How much would you like to {button.label.lower()}?"
         )
         await interaction.response.edit_message(
