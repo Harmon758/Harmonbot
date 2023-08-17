@@ -111,9 +111,6 @@ class Bot(commands.Bot):
 		self.changelog = "https://discord.gg/a2rbZPu"
 		self.console_line_limit = 167
 		self.console_message_prefix = "Discord Harmonbot: "
-		self.EMOJI_GUILD_IDS = (
-			314198658985754625, 436072973061980161, 1027378240106532906
-		)
 		self.last_resort_notices_channel_id = 955950052747137104
 		self.library_path = "D:/Music/"
 		self.simple_user_agent = "Harmonbot (Discord Bot)"
@@ -340,6 +337,10 @@ class Bot(commands.Bot):
 	def config(self):
 		with open("../config.toml", "rb") as config_file:
 			return tomli.load(config_file)
+	
+	@property
+	def emoji_guild_ids(self):
+		return self.config["Discord"]["emoji_guild_ids"]
 	
 	@property
 	def mock_ip(self):
@@ -665,7 +666,7 @@ class Bot(commands.Bot):
 	
 	async def initialize_custom_emoji(self):
 		await self.wait_until_ready()
-		for guild_id in self.EMOJI_GUILD_IDS:
+		for guild_id in self.emoji_guild_ids:
 			guild = self.get_guild(guild_id)
 			for emoji in guild.emojis:
 				self.custom_emojis[emoji.name] = emoji
