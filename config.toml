@@ -32,6 +32,7 @@ Zero = 0x1E69FF
 old_Purple = 0x6441A4
 
 [Discord]
+emoji_guild_ids = [314198658985754625, 436072973061980161, 1027378240106532906]
 stream_url = "https://www.twitch.tv/harmonbot"
 
 [mock]
