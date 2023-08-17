@@ -13,9 +13,6 @@ from utilities import checks
 async def setup(bot):
     await bot.add_cog(Poker())
 
-def cards_to_string(cards):
-    return " | ".join(f":{card.suit.lower()}: {card.value}" for card in cards)
-
 
 class Poker(commands.Cog):
 
@@ -139,7 +136,7 @@ class PokerHand:
             self.lines.append(f"The pot: {self.pot}")
             self.lines.append(
                 f"The {self.STAGES[self.stage]}: "
-                f"{cards_to_string(self.community_cards[:number_of_cards])}"
+                f"{self.bot.cards_to_string(self.community_cards[:number_of_cards])}"
             )
             await self.message.edit(embed = self.embed)
 
@@ -190,7 +187,7 @@ class PokerHand:
         hand_name = evaluator.class_to_string(evaluator.get_rank_class(best_hand_value))
         self.lines.append("")
         self.lines.append(f"{winner.mention} is the winner of {self.pot} with a {hand_name}")
-        self.lines.append(f"{winner.mention}'s hand: {cards_to_string(self.hands.pop(winner))}")
+        self.lines.append(f"{winner.mention}'s hand: {self.bot.cards_to_string(self.hands.pop(winner))}")
 
         for player, hand in self.hands.items():
             self.embed.description = (
@@ -310,7 +307,7 @@ class PokerRound(discord.ui.View):
             )
 
         await interaction.response.send_message(
-            f"Your poker hand: {cards_to_string(self.poker_hand.hands[interaction.user].cards)}",
+            f"Your poker hand: {self.bot.cards_to_string(self.poker_hand.hands[interaction.user].cards)}",
             ephemeral = True
         )
 
@@ -424,6 +421,7 @@ class PokerMuck(discord.ui.View):
 
     def __init__(self, poker_hand, user):
         super().__init__(timeout = 10)
+        self.bot = poker_hand.bot
         self.poker_hand = poker_hand
         self.user = user
 
@@ -439,7 +437,7 @@ class PokerMuck(discord.ui.View):
     @discord.ui.button(label = "Yes", style = discord.ButtonStyle.green)
     async def yes(self, interaction, button):
         self.poker_hand.lines.append(
-            f"{interaction.user.mention}'s hand was {cards_to_string(self.poker_hand.hands[interaction.user])}"
+            f"{interaction.user.mention}'s hand was {self.bot.cards_to_string(self.poker_hand.hands[interaction.user])}"
         )
         self.poker_hand.embed.description = '\n'.join(self.poker_hand.lines)
         await interaction.response.edit_message(
