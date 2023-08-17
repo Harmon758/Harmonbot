@@ -281,7 +281,8 @@ class PokerLobby(discord.ui.View):
         self.poker_hand.message = await interaction.channel.send(
             interaction.message.content,
             embeds = self.poker_hand.embeds,
-            view = self
+            view = self,
+            allowed_mentions = discord.AllowedMentions.none()
         )
         await self.poker_hand.bot.attempt_delete_message(interaction.message)
 
