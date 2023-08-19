@@ -165,7 +165,7 @@ class Images(commands.Cog):
 			data = await resp.json()
 		if "errors" in data:
 			errors = '\n'.join(data["errors"])
-			return await ctx.embed_reply(f":no_entry: Error:\n{errors}")
+			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error:\n{errors}")
 		await ctx.embed_reply(data["description"] or "", 
 								author_name = f"{data['user']['name']} on Unsplash", 
 								author_url = f"{data['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
