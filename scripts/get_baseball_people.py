@@ -52,6 +52,7 @@ dataframe.to_sql(
     "people", engine,
     schema = "baseball", if_exists = "replace", index = False,
     dtype = {  # https://github.com/pandas-dev/pandas/issues/35347
+        "key_uuid": sqlalchemy.UUID,
         "birth_year": sqlalchemy.INT,
         "birth_month": sqlalchemy.INT,
         "birth_day": sqlalchemy.INT,
