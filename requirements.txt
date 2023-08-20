@@ -175,7 +175,7 @@ spacy-legacy==3.0.12
 spacy-loggers==1.0.4
 srsly==2.4.7
 tempora==5.5.0
-thinc==8.1.11
+thinc==8.2.0
 tqdm==4.66.1
 typer==0.9.0
 types-html5lib==1.1.11.15
