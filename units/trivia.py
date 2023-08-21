@@ -92,11 +92,11 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     # Get items in lists
     answer_items = [item.strip() for item in answer.split(',')]
     answer_items[-1:] = [
-        item.strip() for item in answer_items[-1].split("and") if item
+        item.strip() for item in answer_items[-1].split(" and ") if item
     ]
     response_items = [item.strip() for item in response.split(',')]
     response_items[-1:] = [
-        item.strip() for item in response_items[-1].split("and") if item
+        item.strip() for item in response_items[-1].split(" and ") if item
     ]
     # Return False if only "and"
     if not response_items:

@@ -29,6 +29,14 @@ class TestCheckAnswer(unittest.TestCase):
             check_answer(answer = "TenochtitlÃ¡n", response = "Tenochtitlan")
         )
 
+    def test_and_with_and_in_item(self):
+        self.assertTrue(
+            check_answer(
+                answer = "Rhode Island & Delaware",
+                response = "delaware and rhode island"
+            )
+        )
+
     def test_ampersand(self):
         self.assertTrue(check_answer(answer = "AT&T", response = "at&t"))
 
