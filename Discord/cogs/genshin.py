@@ -53,6 +53,8 @@ class GenshinImpact(commands.Cog, name = "Genshin Impact"):
             name, aiohttp_session = ctx.bot.aiohttp_session
         )
 
+        # birth year is always 0000
+        # pylint: disable-next=unused-variable
         birth_year, birth_month, birth_day = map(
             int, character.birthday.split('-')
         )
