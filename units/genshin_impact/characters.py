@@ -82,7 +82,7 @@ async def get_character(
 ) -> Character:
     async with ensure_session(aiohttp_session) as aiohttp_session:
         async with aiohttp_session.get(
-            f"{API_BASE_URL}/characters/{name}"
+            f"{API_BASE_URL}/characters/{name.lower().replace(' ', '-')}"
         ) as resp:
             if resp.status == 404:
                 raise ValueError("Character not found")
@@ -101,7 +101,7 @@ async def get_character_images(
 ) -> list[str]:
     async with ensure_session(aiohttp_session) as aiohttp_session:
         async with aiohttp_session.get(
-            f"{API_BASE_URL}/characters/{name}/list"
+            f"{API_BASE_URL}/characters/{name.lower().replace(' ', '-')}/list"
         ) as resp:
             return await resp.json()
 
