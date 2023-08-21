@@ -23,6 +23,7 @@ FANDOM_WIKIS = {
     "Genshin Impact": "https://genshin-impact.fandom.com/",
     "Memory Alpha": "https://memory-alpha.fandom.com/",
     "Seinfeld": "https://seinfeld.fandom.com/",
+    "Suits": "https://suits.fandom.com/",
     "The Lord of the Rings": "https://lotr.fandom.com/",
     "Transformers": "https://transformers.fandom.com/",
     "Transformers Movie": "https://michaelbaystransformers.fandom.com/"
@@ -614,7 +615,7 @@ class Search(commands.GroupCog, group_name = "search"):
     async def search_fandom(
         self, ctx,
         wiki: Literal[
-            "Genshin Impact", "Memory Alpha", "Seinfeld",
+            "Genshin Impact", "Memory Alpha", "Seinfeld", "Suits",
             "The Lord of the Rings", "Transformers", "Transformers Movie"
         ],
         *, query: str
@@ -631,6 +632,7 @@ class Search(commands.GroupCog, group_name = "search"):
         """
         # Note: /search fandom command invokes this command
         # Note: fandom command invokes this command
+        # Note: genshin_impact wiki command invokes this command
         try:
             articles = await search_wiki(
                 FANDOM_WIKIS[wiki], query,
@@ -657,7 +659,7 @@ class Search(commands.GroupCog, group_name = "search"):
     async def slash_search_fandom(
         self, interaction,
         wiki: Literal[
-            "Genshin Impact", "Memory Alpha", "Seinfeld",
+            "Genshin Impact", "Memory Alpha", "Seinfeld", "Suits",
             "The Lord of the Rings", "Transformers", "Transformers Movie"
         ],
         *, query: str
@@ -687,7 +689,7 @@ class Search(commands.GroupCog, group_name = "search"):
     async def fandom(
         self, ctx,
         wiki: Literal[
-            "Genshin Impact", "Memory Alpha", "Seinfeld",
+            "Genshin Impact", "Memory Alpha", "Seinfeld", "Suits",
             "The Lord of the Rings", "Transformers", "Transformers Movie"
         ],
         *, query: str
