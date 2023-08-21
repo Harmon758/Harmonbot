@@ -3,15 +3,15 @@ interactions:
     body: null
     headers: {}
     method: GET
-    uri: https://api.genshin.dev/characters/Amber/list
+    uri: https://api.genshin.dev/characters/amber/list
   response:
     body:
       string: '["card","constellation","constellation-1","constellation-2","constellation-3","constellation-4","constellation-5","constellation-6","gacha-card","gacha-splash","icon","icon-big","icon-side","portrait","talent-burst","talent-na","talent-passive-0","talent-passive-1","talent-passive-2","talent-skill"]'
     headers:
       CF-Cache-Status:
-      - MISS
+      - EXPIRED
       CF-RAY:
-      - 7fa1b2193a1a462a-DFW
+      - 7fa1f5bf0f38e6f6-DFW
       Cache-Control:
       - max-age=14400
       Connection:
@@ -25,17 +25,17 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 21 Aug 2023 09:02:11 GMT
+      - Mon, 21 Aug 2023 09:48:22 GMT
       Expect-CT:
       - max-age=0
       Last-Modified:
-      - Mon, 21 Aug 2023 09:02:11 GMT
+      - Mon, 21 Aug 2023 04:34:35 GMT
       NEL:
       - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
       Referrer-Policy:
       - no-referrer
       Report-To:
-      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=EMzdcuEQB%2FV3NXRXGuSIAEAQ%2FldFqgXBzjiQskMvvU6uPOUVSm%2B3BG%2FM2YCoXuD0tNbNdIpY4C2tpSCFBDHJ9D4UM6o8BF2CsBPMwY2lbX0RDkHTuHIe%2Bfd9wO5Kt7%2BoXas0%2FvPCpc2BKYhEaKc%3D"}],"group":"cf-nel","max_age":604800}'
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=kFQ3R0tAQSMhvLvl29PFEoFGOJ3mpYxIY5JzT0iNN0uWAqbvQfqTCI%2BLJALJeB0YcRDVHcmwmYGOevBE4ViBDCbcV7sd5QmcT%2FLhfKiICEfE7dgXw3%2FwelEOPHuMAOTtQret9p82LxdRIFh6MR4%3D"}],"group":"cf-nel","max_age":604800}'
       Server:
       - cloudflare
       Strict-Transport-Security:

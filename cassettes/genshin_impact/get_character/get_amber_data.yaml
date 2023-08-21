@@ -3,7 +3,7 @@ interactions:
     body: null
     headers: {}
     method: GET
-    uri: https://api.genshin.dev/characters/Amber
+    uri: https://api.genshin.dev/characters/amber
   response:
     body:
       string: '{"name":"Amber","title":"Gliding Champion","vision":"Pyro","weapon":"Bow","gender":"Female","nation":"Mondstadt","affiliation":"Knights
@@ -54,7 +54,7 @@ interactions:
       CF-Cache-Status:
       - MISS
       CF-RAY:
-      - 7fa1b214f98e46d2-DFW
+      - 7fa1f5bb0e9aea90-DFW
       Cache-Control:
       - max-age=14400
       Connection:
@@ -68,17 +68,17 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 21 Aug 2023 09:02:11 GMT
+      - Mon, 21 Aug 2023 09:48:21 GMT
       Expect-CT:
       - max-age=0
       Last-Modified:
-      - Mon, 21 Aug 2023 09:02:11 GMT
+      - Mon, 21 Aug 2023 09:48:21 GMT
       NEL:
       - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
       Referrer-Policy:
       - no-referrer
       Report-To:
-      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=Ow%2Fl4WU3zUOAuqmvTNf5IWTQ7t9AXIQHUkoWK6owoPjBN1O%2Bl9ERLXJ9FK92HAKZ5boDfEDAvLojTPy%2BSOVKSFq4TQuYwzzptmjQVpaW6clcx1ediTazX03ZphlRS9X5CMYhXhekXjniHH4yvLo%3D"}],"group":"cf-nel","max_age":604800}'
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=F5v2mxyx8KQqaQCDm2fs6zN80FQcIxDv6%2FIlRUAdGOmcaZQhacbbAiiYWKx4Pd6ART582UTwl6IDRyaz6j6%2FfaZRs0yRIME6mGLkni5xDcnzpZUqMbjZdx%2FiRxX8CkSamAzgjqylM6%2BnyI9gaRw%3D"}],"group":"cf-nel","max_age":604800}'
       Server:
       - cloudflare
       Strict-Transport-Security:
