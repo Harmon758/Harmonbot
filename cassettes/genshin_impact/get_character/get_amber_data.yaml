@@ -1,0 +1,107 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://api.genshin.dev/characters/Amber
+  response:
+    body:
+      string: '{"name":"Amber","title":"Gliding Champion","vision":"Pyro","weapon":"Bow","gender":"Female","nation":"Mondstadt","affiliation":"Knights
+        of Favonius","specialDish":"Outrider''s Champion Steak!","rarity":4,"constellation":"Lepus","birthday":"0000-08-10","description":"Always
+        energetic and full of life, Amber''s the best - albeit only - Outrider of
+        the Knights of Favonius.","skillTalents":[{"name":"Sharpshooter","unlock":"Normal
+        Attack","description":"Normal Attack\nPerforms up to 5 consecutive shots with
+        a bow.\nCharged Attack\nPerform a more precise Aimed Shot with increased DMG.\n\nWhile
+        aiming, flames accumulates on the arrowhead. A fully charged flaming arrow
+        will deal Pyro DMG.\nPlunging Attack\nFires off a shower of arrows in mid-air
+        before falling and striking the ground, dealing AoE DMG upon impact.","upgrades":[{"name":"1-Hit
+        DMG","value":"36.1%"},{"name":"2-Hit DMG","value":"36.1%"},{"name":"3-Hit
+        DMG","value":"46.4%"},{"name":"4-Hit DMG","value":"47.3%"},{"name":"5-Hit
+        DMG","value":"59.3%"},{"name":"Aimed Shot","value":"43.9%"},{"name":"Fully-Charged
+        Aimed Shot","value":"124%"},{"name":"Plunge DMG","value":"56.8%"},{"name":"Low
+        / High Plunge DMG","value":"114% / 142%"}],"type":"NORMAL_ATTACK"},{"name":"Explosive
+        Puppet","unlock":"Elemental Skill","description":"Baron Bunny\n\nContinuously
+        taunts the enemy, drawing their fire.\nBaron Bunny''s HP scales with Amber''s
+        Max HP.\nWhen destroyed or when its timer expires, Baron Bunny explodes, dealing
+        AoE Pyro DMG.\n\nHold\nAdjusts the throwing direction of Baron Bunny.\n\nThe
+        longer the button is held, the further the throw.","upgrades":[{"name":"Inherited
+        HP","value":"41.4%"},{"name":"Explosion DMG","value":"123%"},{"name":"CD","value":"15s"}],"type":"ELEMENTAL_SKILL"},{"name":"Fiery
+        Rain","unlock":"Elemental Burst","description":"Fires of a shower of arrows,
+        dealing continuous AoE Pyro DMG.","upgrades":[{"name":"Fiery Rain DMG Per
+        Wave","value":"28.1%"},{"name":"Total Fiery Rain DMG","value":"505%"},{"name":"Duration","value":"2s"},{"name":"CD","value":"12s"},{"name":"Energy
+        Cost","value":"40"}],"type":"ELEMENTAL_BURST"}],"passiveTalents":[{"name":"Every
+        Arrow Finds Its Target","unlock":"Unlocked at Ascension 1","description":"Increases
+        the CRIT Rate of Fiery Rain by 10% and widens its AoE by 30%.","level":1},{"name":"Precise
+        Shot","unlock":"Unlocked at Ascension 4","description":"Aimed Shot hits on
+        weak spots increase Base ATK by 15% for 10s.","level":4},{"name":"Gliding
+        Champion","unlock":"Unlocked Automatically","description":"Decreases all party
+        members'' gliding Stamina Consumption by 20%.\nThe greatest effect out of
+        all Talents of the same type prevails."}],"constellations":[{"name":"One Arrow
+        to Rule Them All","unlock":"Constellation Lv. 1","description":"Fires 2 arrows
+        per Aimed Shot. The second arrow deals 20% of the first arrow''s DMG.","level":1},{"name":"Bunny
+        Triggered","unlock":"Constellation Lv. 2","description":"Baron Bunny, new
+        and improved! Hitting Baron Bunny''s foot with a fully-charged Aimed Shot
+        manually detonates it.\nExplosion via manual detonation deals 200% additional
+        DMG.","level":2},{"name":"It Burns!","unlock":"Constellation Lv. 3","description":"Increases
+        the Level of Fiery Rain by 3.\nMaximum upgrade level is 15.","level":3},{"name":"It''s
+        Not Just Any Doll...","unlock":"Constellation Lv. 4","description":"Decreases
+        Explosive Puppet''s CD by 20%. Adds 1 additional charge.","level":4},{"name":"It''s
+        Baron Bunny!","unlock":"Constellation Lv. 5","description":"Increase the Level
+        of Explosive Puppet by 3.\nMaximum upgrade level is 15.","level":5},{"name":"Wildfire","unlock":"Constellation
+        Lv. 6","description":"Fiery Rain increases Amber''s Movement SPD by 15% and
+        Base ATK by 15% for 10s.","level":6}],"vision_key":"PYRO","weapon_type":"BOW"}'
+    headers:
+      CF-Cache-Status:
+      - MISS
+      CF-RAY:
+      - 7fa1b214f98e46d2-DFW
+      Cache-Control:
+      - max-age=14400
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Security-Policy:
+      - 'default-src ''self'';base-uri ''self'';block-all-mixed-content;font-src ''self''
+        https: data:;frame-ancestors ''self'';img-src ''self'' data:;object-src ''none'';script-src
+        ''self'';script-src-attr ''none'';style-src ''self'' https: ''unsafe-inline'';upgrade-insecure-requests'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 21 Aug 2023 09:02:11 GMT
+      Expect-CT:
+      - max-age=0
+      Last-Modified:
+      - Mon, 21 Aug 2023 09:02:11 GMT
+      NEL:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Referrer-Policy:
+      - no-referrer
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=Ow%2Fl4WU3zUOAuqmvTNf5IWTQ7t9AXIQHUkoWK6owoPjBN1O%2Bl9ERLXJ9FK92HAKZ5boDfEDAvLojTPy%2BSOVKSFq4TQuYwzzptmjQVpaW6clcx1ediTazX03ZphlRS9X5CMYhXhekXjniHH4yvLo%3D"}],"group":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin, Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      alt-svc:
+      - h3=":443"; ma=86400
+    status:
+      code: 200
+      message: OK
+version: 1
