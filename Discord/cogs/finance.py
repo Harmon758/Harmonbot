@@ -32,8 +32,8 @@ class Finance(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(
-		description = bitcoin.CREDIT, 
-		invoke_without_command = True, case_insensitive = True
+		case_insensitive = True, invoke_without_command = True,
+		description = bitcoin.CREDIT
 	)
 	async def bitcoin(self, ctx, currency: str = ""):
 		'''
