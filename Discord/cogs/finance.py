@@ -24,8 +24,10 @@ class Finance(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(description = "Powered by [CoinDesk](https://www.coindesk.com/price/)", 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		description = "Powered by [CoinDesk](https://www.coindesk.com/price/)", 
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def bitcoin(self, ctx, currency: str = ""):
 		'''
 		Bitcoin Price Index (BPI)
@@ -53,12 +55,17 @@ class Finance(commands.Cog):
 			description = ""
 			fields = []
 			for currency in data["bpi"].values():
-				fields.append((currency["description"], f"{currency['code']} {html.unescape(currency['symbol'])}{currency['rate']}"))
+				fields.append((
+					currency["description"],
+					f"{currency['code']} {html.unescape(currency['symbol'])}{currency['rate']}"
+				))
 		description += "Powered by [CoinDesk](https://www.coindesk.com/price/)"
 		footer_text = data["disclaimer"].rstrip('.') + ". Updated"
 		timestamp = dateutil.parser.parse(data["time"]["updated"])
-		await ctx.embed_reply(description, title = title, fields = fields, 
-								footer_text = footer_text, timestamp = timestamp)
+		await ctx.embed_reply(
+			description, title = title, fields = fields,
+			footer_text = footer_text, timestamp = timestamp
+		)
 	
 	@bitcoin.command(name = "currencies")
 	async def bitcoin_currencies(self, ctx):
