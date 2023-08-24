@@ -34,12 +34,12 @@ class Finance(commands.Cog):
 	@commands.hybrid_group(fallback = "price", case_insensitive = True)
 	async def bitcoin(self, ctx, currency: str = ""):
 		'''
-		Bitcoin Price Index (BPI)
+		Bitcoin price
 		
 		Parameters
 		----------
 		currency
-			Supported currency to show price in, as its ISO 4217 currency code
+			Supported currency (ISO 4217 currency code) in which to show price
 		'''
 		# TODO: Include credit in docstring
 		await ctx.defer()
