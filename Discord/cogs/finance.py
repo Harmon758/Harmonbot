@@ -60,25 +60,25 @@ class Finance(commands.Cog):
 				data = await resp.json(content_type = "application/javascript")
 			title = data["chartName"]
 			description = None
-			fields = []
-			for currency in data["bpi"].values():
-				fields.append((
+			fields = [
+				(
 					currency["description"],
 					f"{currency['code']} {html.unescape(currency['symbol'])}{currency['rate']}"
-				))
-		embeds = [
-			discord.Embed(
-				color = ctx.bot.bot_color,
-				description = bitcoin.CREDIT
-			).set_footer(
-				text = data["disclaimer"]
-			)
-		]
-		footer_text = "Updated"
-		timestamp = dateutil.parser.parse(data["time"]["updated"])
+				)
+				for currency in data["bpi"].values()
+			]
 		await ctx.embed_reply(
 			description, title = title, fields = fields,
-			footer_text = footer_text, timestamp = timestamp, embeds = embeds
+			footer_text = "Updated",
+			timestamp = dateutil.parser.parse(data["time"]["updated"]),
+			embeds = [
+				discord.Embed(
+					color = ctx.bot.bot_color,
+					description = bitcoin.CREDIT
+				).set_footer(
+					text = data["disclaimer"]
+				)
+			]
 		)
 	
 	@bitcoin.command(name = "currencies")
