@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 # https://web.archive.org/web/20191106152143/https://www.coindesk.com/api
 # https://web.archive.org/web/20210802085504/https://www.coindesk.com/coindesk-api
+CREDIT = "Powered by [CoinDesk](https://www.coindesk.com/price/)"
 
 
 class Currency(BaseModel):
