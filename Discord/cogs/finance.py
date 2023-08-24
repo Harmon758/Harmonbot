@@ -80,7 +80,10 @@ class Finance(commands.Cog):
 			aiohttp_session = ctx.bot.aiohttp_session
 		)
 		await ctx.embed_reply(
-			", ".join(f"{c.code} ({c.country})" for c in supported_currencies)
+			", ".join(
+				f"{currency.code} ({currency.country})"
+				for currency in supported_currencies
+			)
 		)
 	
 	@bitcoin.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
