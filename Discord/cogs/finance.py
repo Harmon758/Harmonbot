@@ -32,7 +32,7 @@ class Finance(commands.Cog):
 		return await checks.not_forbidden().predicate(ctx)
 	
 	@commands.group(
-		description = "Powered by [CoinDesk](https://www.coindesk.com/price/)", 
+		description = bitcoin.CREDIT, 
 		invoke_without_command = True, case_insensitive = True
 	)
 	async def bitcoin(self, ctx, currency: str = ""):
@@ -69,9 +69,7 @@ class Finance(commands.Cog):
 		embeds = [
 			discord.Embed(
 				color = ctx.bot.bot_color,
-				description = (
-					"Powered by [CoinDesk](https://www.coindesk.com/price/)"
-				)
+				description = bitcoin.CREDIT
 			).set_footer(
 				text = data["disclaimer"]
 			)
