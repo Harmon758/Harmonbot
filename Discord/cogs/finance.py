@@ -70,9 +70,13 @@ class Finance(commands.Cog):
 	@bitcoin.command(name = "currencies")
 	async def bitcoin_currencies(self, ctx):
 		'''Supported currencies for BPI conversion'''
-		async with ctx.bot.aiohttp_session.get("https://api.coindesk.com/v1/bpi/supported-currencies.json") as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.coindesk.com/v1/bpi/supported-currencies.json"
+		) as resp:
 			data = await resp.json(content_type = "text/html")
-		await ctx.embed_reply(", ".join("{0[currency]} ({0[country]})".format(c) for c in data))
+		await ctx.embed_reply(
+			", ".join("{0[currency]} ({0[country]})".format(c) for c in data)
+		)
 	
 	@bitcoin.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
 	async def bitcoin_historical(self, ctx, date: str = "", currency: str = ""):
