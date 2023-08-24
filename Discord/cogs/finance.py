@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import datetime
@@ -50,7 +51,7 @@ class Finance(commands.Cog):
 				data = await resp.json(content_type = "application/javascript")
 			currency_data = data["bpi"][currency.upper()]
 			title = currency_data["description"]
-			description = f"{currency_data['code']} {currency_data['rate']}\n"
+			description = f"{currency_data['code']} {currency_data['rate']}"
 			fields = ()
 		else:
 			async with ctx.bot.aiohttp_session.get(
@@ -58,19 +59,28 @@ class Finance(commands.Cog):
 			) as resp:
 				data = await resp.json(content_type = "application/javascript")
 			title = data["chartName"]
-			description = ""
+			description = None
 			fields = []
 			for currency in data["bpi"].values():
 				fields.append((
 					currency["description"],
 					f"{currency['code']} {html.unescape(currency['symbol'])}{currency['rate']}"
 				))
-		description += "Powered by [CoinDesk](https://www.coindesk.com/price/)"
-		footer_text = data["disclaimer"].rstrip('.') + ". Updated"
+		embeds = [
+			discord.Embed(
+				color = ctx.bot.bot_color,
+				description = (
+					"Powered by [CoinDesk](https://www.coindesk.com/price/)"
+				)
+			).set_footer(
+				text = data["disclaimer"]
+			)
+		]
+		footer_text = "Updated"
 		timestamp = dateutil.parser.parse(data["time"]["updated"])
 		await ctx.embed_reply(
 			description, title = title, fields = fields,
-			footer_text = footer_text, timestamp = timestamp
+			footer_text = footer_text, timestamp = timestamp, embeds = embeds
 		)
 	
 	@bitcoin.command(name = "currencies")
