@@ -48,8 +48,10 @@ class Finance(commands.Cog):
 					error = await resp.text()
 					await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {error}")
 					return
+				
 				data = await resp.json(content_type = "application/javascript")
 			currency_data = data["bpi"][currency.upper()]
+			
 			title = currency_data["description"]
 			description = f"{currency_data['code']} {currency_data['rate']}"
 			fields = ()
@@ -58,6 +60,7 @@ class Finance(commands.Cog):
 				"https://api.coindesk.com/v1/bpi/currentprice.json"
 			) as resp:
 				data = await resp.json(content_type = "application/javascript")
+			
 			title = data["chartName"]
 			description = None
 			fields = [
@@ -67,8 +70,9 @@ class Finance(commands.Cog):
 				)
 				for currency in data["bpi"].values()
 			]
+		
 		await ctx.embed_reply(
-			description, title = title, fields = fields,
+			title = title, description = description, fields = fields,
 			footer_text = "Updated",
 			timestamp = dateutil.parser.parse(data["time"]["updated"]),
 			embeds = [
