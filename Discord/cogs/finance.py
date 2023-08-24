@@ -41,7 +41,7 @@ class Finance(commands.Cog):
 		currency
 			Supported currency (ISO 4217 currency code) in which to show price
 		'''
-		# TODO: Include credit in docstring
+		# TODO: Include acknowledgement in docstring
 		await ctx.defer()
 		
 		if currency:
@@ -82,7 +82,7 @@ class Finance(commands.Cog):
 			embeds = [
 				discord.Embed(
 					color = ctx.bot.bot_color,
-					description = bitcoin.CREDIT
+					description = bitcoin.ACKNOWLEDGEMENT
 				).set_footer(
 					text = data["disclaimer"]
 				)
