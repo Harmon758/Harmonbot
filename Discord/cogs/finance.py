@@ -32,26 +32,28 @@ class Finance(commands.Cog):
 		To specify a currency, enter the three-character currency code (e.g. USD, GBP, EUR)
 		'''
 		if currency:
-			url = "https://api.coindesk.com/v1/bpi/currentprice/" + currency
-			async with ctx.bot.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				"https://api.coindesk.com/v1/bpi/currentprice/" + currency
+			) as resp:
 				if resp.status == 404:
 					error = await resp.text()
-					return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {error}")
+					await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {error}")
+					return
 				data = await resp.json(content_type = "application/javascript")
 			currency_data = data["bpi"][currency.upper()]
 			title = currency_data["description"]
 			description = f"{currency_data['code']} {currency_data['rate']}\n"
 			fields = ()
 		else:
-			url = "https://api.coindesk.com/v1/bpi/currentprice.json"
-			async with ctx.bot.aiohttp_session.get(url) as resp:
+			async with ctx.bot.aiohttp_session.get(
+				"https://api.coindesk.com/v1/bpi/currentprice.json"
+			) as resp:
 				data = await resp.json(content_type = "application/javascript")
 			title = data["chartName"]
 			description = ""
 			fields = []
 			for currency in data["bpi"].values():
-				field_value = f"{currency['code']} {html.unescape(currency['symbol'])}{currency['rate']}"
-				fields.append((currency["description"], field_value))
+				fields.append((currency["description"], f"{currency['code']} {html.unescape(currency['symbol'])}{currency['rate']}"))
 		description += "Powered by [CoinDesk](https://www.coindesk.com/price/)"
 		footer_text = data["disclaimer"].rstrip('.') + ". Updated"
 		timestamp = dateutil.parser.parse(data["time"]["updated"])
