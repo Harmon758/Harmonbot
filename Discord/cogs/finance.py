@@ -5,6 +5,7 @@ import datetime
 import html
 import math
 import re
+import sys
 import textwrap
 
 import dateutil.parser
@@ -12,6 +13,11 @@ import more_itertools
 import tabulate
 
 from utilities import checks
+
+sys.path.insert(0, "..")
+from units import bitcoin
+sys.path.pop(0)
+
 
 async def setup(bot):
 	await bot.add_cog(Finance(bot))
@@ -70,12 +76,11 @@ class Finance(commands.Cog):
 	@bitcoin.command(name = "currencies")
 	async def bitcoin_currencies(self, ctx):
 		'''Supported currencies for BPI conversion'''
-		async with ctx.bot.aiohttp_session.get(
-			"https://api.coindesk.com/v1/bpi/supported-currencies.json"
-		) as resp:
-			data = await resp.json(content_type = "text/html")
+		supported_currencies = await bitcoin.get_supported_currencies(
+			aiohttp_session = ctx.bot.aiohttp_session
+		)
 		await ctx.embed_reply(
-			", ".join("{0[currency]} ({0[country]})".format(c) for c in data)
+			", ".join(f"{c.code} ({c.country})" for c in supported_currencies)
 		)
 	
 	@bitcoin.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
