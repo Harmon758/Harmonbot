@@ -31,15 +31,19 @@ class Finance(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(
-		case_insensitive = True, invoke_without_command = True,
-		description = bitcoin.CREDIT
-	)
+	@commands.hybrid_group(fallback = "price", case_insensitive = True)
 	async def bitcoin(self, ctx, currency: str = ""):
 		'''
 		Bitcoin Price Index (BPI)
-		To specify a currency, enter the three-character currency code (e.g. USD, GBP, EUR)
+		
+		Parameters
+		----------
+		currency
+			Supported currency to show price in, as its ISO 4217 currency code
 		'''
+		# TODO: Include credit in docstring
+		await ctx.defer()
+		
 		if currency:
 			async with ctx.bot.aiohttp_session.get(
 				"https://api.coindesk.com/v1/bpi/currentprice/" + currency
@@ -85,7 +89,7 @@ class Finance(commands.Cog):
 			]
 		)
 	
-	@bitcoin.command(name = "currencies")
+	@bitcoin.command(name = "currencies", with_app_command = False)
 	async def bitcoin_currencies(self, ctx):
 		'''Supported currencies for BPI conversion'''
 		supported_currencies = await bitcoin.get_supported_currencies(
@@ -98,7 +102,7 @@ class Finance(commands.Cog):
 			)
 		)
 	
-	@bitcoin.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"])
+	@bitcoin.command(name = "historical", aliases = ["history", "past", "previous", "day", "date"], with_app_command = False)
 	async def bitcoin_historical(self, ctx, date: str = "", currency: str = ""):
 		'''
 		Historical BPI
