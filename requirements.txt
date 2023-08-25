@@ -133,7 +133,7 @@ jaraco.text==3.11.1
 jinja2==3.1.2
 jsonschema==4.19.1
 jsonschema-specifications==2023.7.1
-kiwisolver==1.4.4
+kiwisolver==1.4.5
 langcodes==3.3.0
 lxml==4.9.3
 MarkupSafe==2.1.3
