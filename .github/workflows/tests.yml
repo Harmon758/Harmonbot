@@ -7,7 +7,7 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3.5.3
+    - uses: actions/checkout@v3.6.0
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
       with:
@@ -31,7 +31,7 @@ jobs:
     name: Mypy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3.5.3
+    - uses: actions/checkout@v3.6.0
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
       with:
