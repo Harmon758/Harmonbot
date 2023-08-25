@@ -30,6 +30,13 @@ updates:
       time: "00:00"
     allow:
       - dependency-type: "all"
+    groups:
+      psycopg:
+        patterns:
+          - "psycopg*"
+      pydantic:
+        patterns:
+          - "pydantic*"
     labels:
       - "dependency update"
     open-pull-requests-limit: 1000
