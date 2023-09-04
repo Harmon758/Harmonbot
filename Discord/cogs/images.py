@@ -150,7 +150,7 @@ class Images(commands.Cog):
 			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Please input an image and/or url")
 		image = url or ctx.message.attachments[0].url
 		try:
-			await ctx.embed_reply(self.bot.imgur_client.upload_from_url(image)["link"])
+			await ctx.embed_reply(ctx.bot.imgur_client.upload_from_url(image)["link"])
 		except imgurpython.helpers.error.ImgurClientError as e:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 	
