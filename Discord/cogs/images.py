@@ -80,10 +80,14 @@ class Images(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def giphy(self, ctx, *, search: str):
 		'''Find an image on giphy'''
-		url = "http://api.giphy.com/v1/gifs/search"
-		params = {"api_key": ctx.bot.GIPHY_API_KEY, 'q': search, "limit": 1}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://api.giphy.com/v1/gifs/search",
+			params = {
+				"api_key": ctx.bot.GIPHY_API_KEY, 'q': search, "limit": 1
+			}
+		) as resp:
 			data = await resp.json()
+		
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
 	@giphy.command(name = "random")
