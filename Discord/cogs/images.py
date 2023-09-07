@@ -94,10 +94,12 @@ class Images(commands.Cog):
 	async def giphy_random(self, ctx):
 		'''Random gif from giphy'''
 		# Note: random giphy command invokes this command
-		url = "http://api.giphy.com/v1/gifs/random"
-		params = {"api_key": ctx.bot.GIPHY_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://api.giphy.com/v1/gifs/random",
+			params = {"api_key": ctx.bot.GIPHY_API_KEY}
+		) as resp:
 			data = await resp.json()
+		
 		await ctx.embed_reply(image_url = data["data"]["images"]["original"]["url"])
 	
 	@giphy.command(name = "trending")
