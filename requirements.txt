@@ -91,7 +91,7 @@ async-timeout==4.0.3
 attrs==23.1.0
 autocommand==2.2.2
 blis==0.7.10
-Brotli==1.0.9
+Brotli==1.1.0
 cachetools==5.3.1
 catalogue==2.0.9
 cchardet==2.1.7
