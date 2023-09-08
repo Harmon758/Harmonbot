@@ -142,7 +142,7 @@ murmurhash==1.0.9
 mutagen==1.46.0
 mypy-extensions==1.0.0
 oauthlib==3.2.2
-orjson==3.9.5
+orjson==3.9.6
 pathy==0.10.2
 preshed==3.0.8
 protobuf==4.24.1
