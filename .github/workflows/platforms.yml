@@ -30,7 +30,7 @@ jobs:
         python-version-file: pyproject.toml
         architecture: x64
     - name: Cache pip
-      uses: actions/cache@v3.3.1
+      uses: actions/cache@v3.3.2
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -64,21 +64,21 @@ jobs:
       with:
         python-version-file: pyproject.toml
         architecture: x64
-    - uses: actions/cache@v3.3.1
+    - uses: actions/cache@v3.3.2
       if: startsWith(runner.os, 'Linux')
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    - uses: actions/cache@v3.3.1
+    - uses: actions/cache@v3.3.2
       if: startsWith(runner.os, 'macOS')
       with:
         path: ~/Library/Caches/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    - uses: actions/cache@v3.3.1
+    - uses: actions/cache@v3.3.2
       if: startsWith(runner.os, 'Windows')
       with:
         path: ~\AppData\Local\pip\Cache
