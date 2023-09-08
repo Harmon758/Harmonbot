@@ -105,10 +105,12 @@ class Images(commands.Cog):
 	@giphy.command(name = "trending")
 	async def giphy_trending(self, ctx):
 		'''Trending gif'''
-		url = "http://api.giphy.com/v1/gifs/trending"
-		params = {"api_key": ctx.bot.GIPHY_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://api.giphy.com/v1/gifs/trending",
+			params = {"api_key": ctx.bot.GIPHY_API_KEY}
+		) as resp:
 			data = await resp.json()
+		
 		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
 	
 	@image.command(aliases = ["search"])
