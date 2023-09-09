@@ -38,14 +38,22 @@ class Images(commands.Cog):
 	@commands.group(aliases = ["images", "photo", "photos"], invoke_without_command = True, case_insensitive = True)
 	async def image(self, ctx, *, query):
 		'''Images/Photos'''
-		url = "https://api.unsplash.com/search/photos"
-		headers = {"Accept-Version": "v1", "Authorization": f"Client-ID {ctx.bot.UNSPLASH_ACCESS_KEY}"}
-		params = {"query": query, "per_page": 1}
-		async with ctx.bot.aiohttp_session.get(url, headers = headers, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.unsplash.com/search/photos",
+			headers = {
+				"Accept-Version": "v1",
+				"Authorization": f"Client-ID {ctx.bot.UNSPLASH_ACCESS_KEY}"
+			},
+			params = {"query": query, "per_page": 1}
+		) as resp:
 			data = await resp.json()
+		
 		if not data["results"]:
-			return await ctx.embed_reply("No photo results found")
+			await ctx.embed_reply("No photo results found")
+			return
+		
 		photo = data["results"][0]
+		
 		await ctx.embed_reply(photo["description"] or "", 
 								author_name = f"{photo['user']['name']} on Unsplash", 
 								author_url = f"{photo['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
