@@ -35,7 +35,7 @@ class Images(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["images", "photo", "photos"], invoke_without_command = True, case_insensitive = True)
+	@commands.group(aliases = ["images", "photo", "photos"], case_insensitive = True, invoke_without_command = True)
 	async def image(self, ctx, *, query):
 		'''Images/Photos'''
 		async with ctx.bot.aiohttp_session.get(
