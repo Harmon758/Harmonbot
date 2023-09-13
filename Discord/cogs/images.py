@@ -35,7 +35,10 @@ class Images(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["images", "photo", "photos"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["images", "photo", "photos"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def image(self, ctx, *, query):
 		'''Images/Photos'''
 		async with ctx.bot.aiohttp_session.get(
@@ -54,11 +57,13 @@ class Images(commands.Cog):
 		
 		photo = data["results"][0]
 		
-		await ctx.embed_reply(photo["description"] or "", 
-								author_name = f"{photo['user']['name']} on Unsplash", 
-								author_url = f"{photo['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
-								author_icon_url = photo["user"]["profile_image"]["small"], 
-								image_url = photo["urls"]["full"])
+		await ctx.embed_reply(
+			photo["description"] or "",
+			author_name = f"{photo['user']['name']} on Unsplash",
+			author_url = f"{photo['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral",
+			author_icon_url = photo["user"]["profile_image"]["small"],
+			image_url = photo["urls"]["full"]
+		)
 	
 	@image.command(name = "color", aliases = ["colour"])
 	async def image_color(self, ctx, image_url: Optional[str]):
