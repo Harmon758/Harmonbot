@@ -73,16 +73,22 @@ class Images(commands.Cog):
 		'''
 		if not image_url:
 			if not ctx.message.attachments:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Please input an image and/or url")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Please input an image and/or url")
+				return
 			image_url = ctx.message.attachments[0].url
+		
 		response = ctx.bot.clarifai_stub.PostModelOutputs(
 			service_pb2.PostModelOutputsRequest(
 				model_id = CLARIFAI_COLOR_MODEL_ID, 
 				inputs = [resources_pb2.Input(data=resources_pb2.Data(image=resources_pb2.Image(url = image_url)))]
-			), metadata = (("authorization", f"Key {ctx.bot.CLARIFAI_API_KEY}"),)
+			),
+			metadata = (("authorization", f"Key {ctx.bot.CLARIFAI_API_KEY}"),)
 		)
+		
 		if response.status.code != status_code_pb2.SUCCESS:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}")
+			return
+		
 		fields = [(color.raw_hex.upper(), f"{color.value * 100:.2f}%\n"
 											f"{re.sub(r'(?!^)(?=[A-Z])', ' ', color.w3c.name)}\n"
 											f"({color.w3c.hex.upper()})")
