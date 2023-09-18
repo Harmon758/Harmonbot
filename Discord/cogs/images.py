@@ -118,7 +118,7 @@ class Images(commands.Cog):
 		)
 	
 	# TODO: add as search subcommand
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def giphy(self, ctx, *, search: str):
 		'''Find an image on giphy'''
 		async with ctx.bot.aiohttp_session.get(
