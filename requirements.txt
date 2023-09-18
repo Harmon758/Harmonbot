@@ -39,7 +39,7 @@ numpy==1.25.2
 packaging==23.1
 pandas==2.0.3
 parsedatetime==2.6
-pillow==10.0.0
+pillow==10.0.1
 psutil==5.9.5
 psycopg[binary]==3.1.10
 py-cpuinfo==9.0.0
