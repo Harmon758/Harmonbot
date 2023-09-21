@@ -129,7 +129,9 @@ class Images(commands.Cog):
 		) as resp:
 			data = await resp.json()
 		
-		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
+		await ctx.embed_reply(
+			image_url = data["data"][0]["images"]["original"]["url"]
+		)
 	
 	@giphy.command(name = "random")
 	async def giphy_random(self, ctx):
