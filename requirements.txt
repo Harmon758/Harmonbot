@@ -173,7 +173,7 @@ sortedcontainers==2.4.0
 soupsieve==2.4.1
 spacy-legacy==3.0.12
 spacy-loggers==1.0.4
-srsly==2.4.7
+srsly==2.4.8
 tempora==5.5.0
 thinc==8.1.11
 tqdm==4.66.1
