@@ -143,7 +143,9 @@ class Images(commands.Cog):
 		) as resp:
 			data = await resp.json()
 		
-		await ctx.embed_reply(image_url = data["data"]["images"]["original"]["url"])
+		await ctx.embed_reply(
+			image_url = data["data"]["images"]["original"]["url"]
+		)
 	
 	@giphy.command(name = "trending")
 	async def giphy_trending(self, ctx):
