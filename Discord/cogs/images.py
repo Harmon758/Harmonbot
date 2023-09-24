@@ -156,7 +156,9 @@ class Images(commands.Cog):
 		) as resp:
 			data = await resp.json()
 		
-		await ctx.embed_reply(image_url = data["data"][0]["images"]["original"]["url"])
+		await ctx.embed_reply(
+			image_url = data["data"][0]["images"]["original"]["url"]
+		)
 	
 	@image.command(aliases = ["search"])
 	async def google(self, ctx, *, search: str):
