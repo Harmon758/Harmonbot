@@ -165,16 +165,24 @@ class Images(commands.Cog):
 		'''Google image search something'''
 		# Note: google images command invokes this command
 		# Note: search google images command invokes this command
-		url = "https://www.googleapis.com/customsearch/v1"
-		params = {"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID, 
-					"searchType": "image", 'q': search, "num": 1, "safe": "active"}
 		# TODO: Option to disable SafeSearch
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://www.googleapis.com/customsearch/v1",
+			params = {
+				"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
+				"searchType": "image", 'q': search, "num": 1, "safe": "active"
+			}
+		) as resp:
 			if resp.status == 403:
-				return await ctx.embed_reply(f"{ctx.bot.error_emoji} Daily limit exceeded")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Daily limit exceeded")
+				return
+			
 			data = await resp.json()
+		
 		if "items" not in data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No images with that search found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} No images with that search found")
+			return
+		
 		await ctx.embed_reply(image_url = data["items"][0]["link"], 
 								title = f"Image of {search}", 
 								title_url = data["items"][0]["link"])
