@@ -169,23 +169,30 @@ class Images(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(
 			"https://www.googleapis.com/customsearch/v1",
 			params = {
-				"key": ctx.bot.GOOGLE_API_KEY, "cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
+				"key": ctx.bot.GOOGLE_API_KEY,
+				"cx": ctx.bot.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
 				"searchType": "image", 'q': search, "num": 1, "safe": "active"
 			}
 		) as resp:
 			if resp.status == 403:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} Daily limit exceeded")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Daily limit exceeded"
+				)
 				return
 			
 			data = await resp.json()
 		
 		if "items" not in data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} No images with that search found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} No images with that search found"
+			)
 			return
 		
-		await ctx.embed_reply(image_url = data["items"][0]["link"], 
-								title = f"Image of {search}", 
-								title_url = data["items"][0]["link"])
+		await ctx.embed_reply(
+			image_url = data["items"][0]["link"],
+			title = f"Image of {search}",
+			title_url = data["items"][0]["link"]
+		)
 		# TODO: handle 403 daily limit exceeded error
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
