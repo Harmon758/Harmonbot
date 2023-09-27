@@ -189,11 +189,11 @@ class Images(commands.Cog):
 			return
 		
 		await ctx.embed_reply(
-			image_url = data["items"][0]["link"],
 			title = f"Image of {search}",
-			title_url = data["items"][0]["link"]
+			title_url = data["items"][0]["link"],
+			image_url = data["items"][0]["link"]
 		)
-		# TODO: handle 403 daily limit exceeded error
+		# TODO: Handle 403 daily limit exceeded error
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def imgur(self, ctx):
