@@ -195,7 +195,7 @@ class Images(commands.Cog):
 		)
 		# TODO: Handle 403 daily limit exceeded error
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def imgur(self, ctx):
 		'''Imgur'''
 		await ctx.send_help(ctx.command)
