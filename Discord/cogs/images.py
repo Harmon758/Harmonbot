@@ -205,8 +205,11 @@ class Images(commands.Cog):
 		'''Search images on Imgur'''
 		# Note: search imgur command invokes this command
 		if not (result := ctx.bot.imgur_client.gallery_search(search, sort = "top")):
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
+			return
+		
 		result = result[0]
+		
 		if result.is_album:
 			result = ctx.bot.imgur_client.get_album(result.id).images[0]
 			await ctx.embed_reply(image_url = result["link"])
