@@ -36,7 +36,7 @@ more-itertools==10.1.0
 mypy==1.5.1
 numexpr==2.8.5
 numpy==1.25.2
-packaging==23.1
+packaging==23.2
 pandas==2.0.3
 parsedatetime==2.6
 pillow==10.0.0
