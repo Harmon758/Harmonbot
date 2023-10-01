@@ -204,7 +204,9 @@ class Images(commands.Cog):
 	async def imgur_search(self, ctx, *, search: str):
 		'''Search images on Imgur'''
 		# Note: search imgur command invokes this command
-		if not (result := ctx.bot.imgur_client.gallery_search(search, sort = "top")):
+		if not (
+			result := ctx.bot.imgur_client.gallery_search(search, sort = "top")
+		):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 			return
 		
