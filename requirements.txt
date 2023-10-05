@@ -145,7 +145,7 @@ oauthlib==3.2.2
 orjson==3.9.5
 pathy==0.10.2
 preshed==3.0.8
-protobuf==4.24.1
+protobuf==4.24.4
 proto-plus==1.22.3
 psycopg-binary==3.1.10
 pyasn1==0.5.0
