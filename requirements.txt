@@ -58,7 +58,7 @@ requests[socks]==2.31.0
 scipy==1.11.2
 seaborn==0.12.2
 sentry-sdk==1.29.2
-spacy==3.6.1
+spacy==3.7.1
 spacy-entity-linker==1.0.3
 speechrecognition==3.8.1
 sphobjinv==2.3.1
