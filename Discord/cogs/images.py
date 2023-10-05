@@ -255,11 +255,13 @@ class Images(commands.Cog):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error:\n{errors}")
 			return
 		
-		await ctx.embed_reply(data["description"] or "", 
-								author_name = f"{data['user']['name']} on Unsplash", 
-								author_url = f"{data['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral", 
-								author_icon_url = data["user"]["profile_image"]["small"], 
-								image_url = data["urls"]["full"])
+		await ctx.embed_reply(
+			data["description"] or "",
+			author_name = f"{data['user']['name']} on Unsplash",
+			author_url = f"{data['user']['links']['html']}?utm_source=Harmonbot&utm_medium=referral",
+			author_icon_url = data["user"]["profile_image"]["small"],
+			image_url = data["urls"]["full"]
+		)
 	
 	@image.command(name = "recognition")
 	async def image_recognition(self, ctx, image_url: Optional[str]):
