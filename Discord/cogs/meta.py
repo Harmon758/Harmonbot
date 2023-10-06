@@ -290,7 +290,7 @@ class Meta(commands.Cog):
             0, name = "Discord HTTPS/REST API latency",
             value = self.format_ns(api_latency)
         )
-        await message.edit(embed = embed)
+        await ctx.bot.attempt_edit_message(message, embed = embed)
 
     # TODO: Move to time unit
     def format_ns(self, ns):
