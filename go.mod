@@ -1,6 +1,6 @@
 module harmonbot
 
-go 1.16
+go 1.17
 
 require (
 	github.com/bwmarrin/dgvoice v0.0.0-20210225172318-caaac756e02e
