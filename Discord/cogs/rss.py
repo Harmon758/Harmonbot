@@ -25,6 +25,8 @@ import feedparser
 import pytz
 
 from utilities import checks, tasks
+from utilities.menu_sources import TextSource
+from utilities.paginators import ButtonPaginator
 
 errors_logger = logging.getLogger("errors")
 
@@ -197,10 +199,16 @@ class RSS(commands.Cog):
 		records = await ctx.bot.db.fetch(
 			"SELECT feed FROM rss.feeds WHERE channel_id = $1", ctx.channel.id
 		)
-		await ctx.embed_reply(
-			title = "RSS feeds being followed in this channel",
-			description = '\n'.join(record["feed"] for record in records)
+		paginator = ButtonPaginator(
+			ctx,
+			TextSource(
+				'\n'.join(record["feed"] for record in records),
+				character_limit = ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT,
+				embed_title = "RSS feeds being followed in this channel"
+			)
 		)
+		await paginator.start()
+		ctx.bot.views.append(paginator)
 	
 	# R/PT60S
 	@tasks.loop(seconds = 60)
