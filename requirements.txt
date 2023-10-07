@@ -37,7 +37,7 @@ mypy==1.5.1
 numexpr==2.8.5
 numpy==1.25.2
 packaging==23.1
-pandas==2.0.3
+pandas==2.1.1
 parsedatetime==2.6
 pillow==10.0.1
 psutil==5.9.5
