@@ -3,8 +3,63 @@ import discord
 from discord.ext import commands, menus
 
 import datetime
+from math import inf
 
 from more_itertools import chunked
+
+
+class TextSource(menus.PageSource):
+
+    def __init__(self, text, *, character_limit = inf, embed_title = None):
+        self.text = text
+        self.character_limit = character_limit
+        self.embed_title = embed_title
+
+        self.pages = []
+
+    async def prepare(self):
+        lines = self.text.split('\n')
+        while lines:
+            self.pages.append("")
+            while (
+                lines and
+                len(self.pages[-1]) + len(lines[0]) < self.character_limit
+            ):
+                self.pages[-1] += '\n' + lines.pop(0)
+            self.pages[-1] = self.pages[-1][1:]
+
+    def is_paginating(self):
+        return len(self.pages) > 1
+
+    def get_max_pages(self):
+        return len(self.pages)
+
+    async def get_page(self, page_number):
+        return self.pages[page_number]
+
+    async def format_page(self, menu, page):
+        kwargs = {}
+
+        embed = discord.Embed(
+            color = menu.bot.bot_color,
+            title = self.embed_title,
+            description = page
+        )
+
+        if isinstance(menu.ctx_or_interaction, commands.Context):
+            kwargs["allowed_mentions"] = discord.AllowedMentions.none()
+            message = menu.ctx_or_interaction.message
+            kwargs["content"] = (
+                f"In response to {message.author.mention}: "
+                f"`{message.clean_content}`"
+            )
+        elif not isinstance(menu.ctx_or_interaction, discord.Interaction):
+            raise RuntimeError(
+                "TextSource using neither Context nor Interaction"
+            )
+
+        kwargs["embed"] = embed
+        return kwargs
 
 
 class WolframAlphaSource(menus.ListPageSource):
