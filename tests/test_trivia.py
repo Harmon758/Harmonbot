@@ -144,6 +144,12 @@ class TestCheckAnswer(unittest.TestCase):
                 answer = "Sir Isaac Newton", response = "Isaac Newton"
             )
         )
+        self.assertTrue(
+            check_answer(
+                answer = "Dr. (Martin Luther) King (Jr.)",
+                response = "martin luther king jr"
+            )
+        )
 
     def test_large_number(self):
         self.assertFalse(

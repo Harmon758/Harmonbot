@@ -77,7 +77,7 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     if answer_copy.replace('-', "") == response_copy.replace('-', ""):
         return True
 
-    # Remove article prefixes
+    # Remove preceding words
     answer = remove_preceding_words(answer)
     response = remove_preceding_words(response)
     # Return False if empty response or answer
@@ -104,7 +104,7 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     # Return False if only ','
     if not any(response_items):
         return False
-    # Remove article prefixes
+    # Remove preceding words
     for index, item in enumerate(answer_items):
         answer_items[index] = remove_preceding_words(item)
     for index, item in enumerate(response_items):
@@ -308,7 +308,7 @@ def remove_preceding_words(string: str) -> str:
         ("a ", "an ", "the ") +  # articles
         ("her ", "his ", "its ", "their ", "your ") +  # possessive determiners
         ("to ",) +  # prepositions
-        ("sir ",)  # honorifics
+        ("dr ", "sir ")  # honorifics
     ):
         if string.startswith(word):
             return string[len(word):]
