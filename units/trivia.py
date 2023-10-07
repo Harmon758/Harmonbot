@@ -278,8 +278,13 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         ("dr", "doctor"), ("mt", "mount"), ("st", "saint")
     ):
         if (
-            re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", answer) ==
-            re.sub(fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3", response)
+            re.sub(
+                fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3",
+                answer.replace('(', "").replace(')', "")
+            ) == re.sub(
+                fr"(^|\W)({abbreviation})($|\W)", fr"\1{word}\3",
+                response.replace('(', "").replace(')', "")
+            )
         ):
             return True
     # Check for clue text subject redundancy

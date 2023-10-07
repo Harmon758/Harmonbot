@@ -34,6 +34,11 @@ class TestCheckAnswer(unittest.TestCase):
             check_answer(answer = "TenochtitlÃ¡n", response = "Tenochtitlan")
         )
 
+    def test_abbreviation_with_parentheses(self):
+        self.assertTrue(
+            check_answer(answer = "(Mount) Olympus", response = "mt olympus")
+        )
+
     def test_and_with_and_in_item(self):
         self.assertTrue(
             check_answer(
