@@ -20,6 +20,11 @@ class TestCheckAnswer(unittest.TestCase):
                 answer = "Brontë Sisters (The Brontës)", response = "Brontes"
             )
         )
+        self.assertFalse(
+            check_answer(
+                answer = "(Antonín) Dvořák", response = "stravinsky"
+            )
+        )
 
     def test_incorrect_encoding(self):
         self.assertTrue(
