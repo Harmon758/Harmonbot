@@ -20,6 +20,7 @@ sys.path.pop(0)
 
 
 FANDOM_WIKIS = {
+    "Disney": "https://disney.fandom.com/",
     "Foundation": "https://foundation.fandom.com/",
     "Genshin Impact": "https://genshin-impact.fandom.com/",
     "Memory Alpha": "https://memory-alpha.fandom.com/",
@@ -616,8 +617,8 @@ class Search(commands.GroupCog, group_name = "search"):
     async def search_fandom(
         self, ctx,
         wiki: Literal[
-            "Foundation", "Genshin Impact", "Memory Alpha", "Seinfeld",
-            "Suits", "The Lord of the Rings", "Transformers",
+            "Disney", "Foundation", "Genshin Impact", "Memory Alpha",
+            "Seinfeld", "Suits", "The Lord of the Rings", "Transformers",
             "Transformers Movie"
         ],
         *, query: str
@@ -661,8 +662,8 @@ class Search(commands.GroupCog, group_name = "search"):
     async def slash_search_fandom(
         self, interaction,
         wiki: Literal[
-            "Foundation", "Genshin Impact", "Memory Alpha", "Seinfeld",
-            "Suits", "The Lord of the Rings", "Transformers",
+            "Disney", "Foundation", "Genshin Impact", "Memory Alpha",
+            "Seinfeld", "Suits", "The Lord of the Rings", "Transformers",
             "Transformers Movie"
         ],
         *, query: str
@@ -692,8 +693,8 @@ class Search(commands.GroupCog, group_name = "search"):
     async def fandom(
         self, ctx,
         wiki: Literal[
-            "Foundation", "Genshin Impact", "Memory Alpha", "Seinfeld",
-            "Suits", "The Lord of the Rings", "Transformers",
+            "Disney", "Foundation", "Genshin Impact", "Memory Alpha",
+            "Seinfeld", "Suits", "The Lord of the Rings", "Transformers",
             "Transformers Movie"
         ],
         *, query: str
