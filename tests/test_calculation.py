@@ -86,7 +86,7 @@ class TestCalculate(unittest.TestCase):
 		self.assertRaises(pyparsing.ParseException, calculate, f"*{operand_1}")
 		self.assertRaises(pyparsing.ParseException, calculate, f"/{operand_1}")
 	
-	@given(text(alphabet = characters(blacklist_characters = pyparsing.nums)))
+	@given(text(alphabet = characters(exclude_characters = pyparsing.nums)))
 	def test_non_numeric(self, non_numeric):
 		self.assertRaises(pyparsing.ParseException, calculate, non_numeric)
 	

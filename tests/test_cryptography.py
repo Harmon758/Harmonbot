@@ -56,7 +56,7 @@ class TestMorseCode(unittest.TestCase):
         with self.assertRaises(TypeError):
             encode_morse_code(message)
 
-    @given(text(alphabet = characters(blacklist_characters = ".-/")))
+    @given(text(alphabet = characters(exclude_characters = ".-/")))
     def test_decode_undefined_characters(self, message):
         assume(message)
         assume(not message.isspace())
@@ -66,7 +66,7 @@ class TestMorseCode(unittest.TestCase):
     @given(text(
         alphabet = characters(
             min_codepoint = 123,
-            whitelist_characters = (
+            include_characters = (
                 [chr(code) for code in range(32)] +
                 invalid_morse_code_characters
             )
@@ -87,7 +87,7 @@ class TestMorseCode(unittest.TestCase):
     @given(text(
         alphabet = characters(
             min_codepoint = 32, max_codepoint = 122,
-            blacklist_characters = invalid_morse_code_characters
+            exclude_characters = invalid_morse_code_characters
         )
     ))
     def test_decode_inverts_encode(self, message):
