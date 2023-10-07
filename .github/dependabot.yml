@@ -31,6 +31,9 @@ updates:
     allow:
       - dependency-type: "all"
     groups:
+      grpcio:
+        patterns:
+          - "grpcio*"
       psycopg:
         patterns:
           - "psycopg*"
