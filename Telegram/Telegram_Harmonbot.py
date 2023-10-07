@@ -9,7 +9,7 @@ import os
 import dotenv
 
 
-version = "0.3.10"
+version = "0.3.11"
 
 # TODO: Set up logging and/or make Beta bot for CI
 
@@ -54,7 +54,7 @@ async def post_start(application):
     )
 
     if os.getenv("CI") or os.getenv("GITHUB_ACTION"):
-        asyncio.get_event_loop().stop()
+        application.stop_running()
 
 def main():
     print("Starting up Telegram Harmonbot...")
