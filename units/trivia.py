@@ -52,7 +52,7 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         if character in response:
             response = response.replace(character, "")
     # Fix wrong encoding
-    with contextlib.suppress(UnicodeDecodeError):
+    with contextlib.suppress(UnicodeDecodeError, UnicodeEncodeError):
         answer = answer.encode("ISO-8859-1").decode("UTF-8")
     # Remove diacritics
     answer = "".join(
