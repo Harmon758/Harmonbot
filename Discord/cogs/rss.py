@@ -198,8 +198,8 @@ class RSS(commands.Cog):
 			"SELECT feed FROM rss.feeds WHERE channel_id = $1", ctx.channel.id
 		)
 		await ctx.embed_reply(
-			'\n'.join(record["feed"] for record in records),
-			title = "RSS feeds being followed in this channel"
+			title = "RSS feeds being followed in this channel",
+			description = '\n'.join(record["feed"] for record in records)
 		)
 	
 	# R/PT60S
