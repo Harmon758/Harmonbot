@@ -7,8 +7,7 @@ from units.wikis import get_article_beginning
 class WikiArticlesView(discord.ui.View):
 
     def __init__(self, articles):
-        super().__init__(timeout = None)
-        # TODO: Timeout?
+        super().__init__(timeout = 600)
 
         self.articles = articles
 
@@ -80,4 +79,7 @@ class WikiArticlesView(discord.ui.View):
         await self.message.edit(view = self)
 
         super().stop()
+
+    async def on_timeout(self):
+        await self.stop()
 
