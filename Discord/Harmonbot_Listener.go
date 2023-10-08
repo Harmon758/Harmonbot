@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"runtime"
 	"strings"
@@ -183,7 +182,7 @@ func Listen(v *discordgo.VoiceConnection) {
 
 // Helper function to change the avatar
 func changeAvatar(s *discordgo.Session) {
-	img, err := ioutil.ReadFile("data/avatars/discord_harmonbot_listener_icon.png")
+	img, err := os.ReadFile("data/avatars/discord_harmonbot_listener_icon.png")
 	check(err)
 	// add file name input
 
