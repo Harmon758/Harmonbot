@@ -71,8 +71,6 @@ func main() {
 		dgv.Close()
 	}
 	dg.Close()
-
-	return
 }
 
 func ready(s *discordgo.Session, event *discordgo.Ready) {
