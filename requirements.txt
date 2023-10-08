@@ -35,7 +35,7 @@ matplotlib==3.7.2
 more-itertools==10.1.0
 mypy==1.5.1
 numexpr==2.8.7
-numpy==1.25.2
+numpy==1.26.0
 packaging==23.1
 pandas==2.0.3
 parsedatetime==2.6
