@@ -9,7 +9,7 @@ import os
 import dotenv
 
 
-version = "0.3.13"
+version = "0.3.14"
 
 # TODO: Set up logging and/or make Beta bot for CI
 
@@ -74,7 +74,7 @@ def main():
 
     application.add_error_handler(error_handler)
 
-    application.run_polling()
+    application.run_polling(read_timeout = 30)
 
 if __name__ == "__main__":
     main()
