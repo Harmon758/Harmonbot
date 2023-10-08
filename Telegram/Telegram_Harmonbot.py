@@ -1,6 +1,6 @@
 
 from telegram.error import Conflict, NetworkError
-from telegram.ext import Application, CommandHandler
+from telegram.ext import Application, CommandHandler, filters
 
 import asyncio
 import contextlib
@@ -10,7 +10,7 @@ import os
 import dotenv
 
 
-version = "0.3.16"
+version = "0.4.0"
 
 # TODO: Set up logging and/or make Beta bot for CI
 
@@ -19,6 +19,9 @@ async def ping(update, context):
         chat_id = update.message.chat_id,
         text = "pong"
     )
+
+async def restart(update, context):
+    context.application.stop_running()
 
 async def test(update, context):
     await context.bot.send_message(
@@ -70,6 +73,11 @@ def main():
     application = builder.build()
 
     application.add_handler(CommandHandler("ping", ping))
+    application.add_handler(
+        CommandHandler(
+            "restart", restart, filters.User(username = "Harmon758")
+        )
+    )
     application.add_handler(CommandHandler("test", test))
 
     application.add_error_handler(error_handler)
