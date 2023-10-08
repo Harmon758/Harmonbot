@@ -60,7 +60,7 @@ func main() {
 
 	fmt.Printf("Started up %s#%s (%s)\n", me.Username, me.Discriminator, me.ID)
 
-	if os.Getenv("CI") == "" && os.Getenv("GITHUB_ACTION") == "" {
+	if os.Getenv("CI") == "" {
 		<-_continue
 	}
 
