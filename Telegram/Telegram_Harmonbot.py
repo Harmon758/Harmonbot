@@ -9,7 +9,7 @@ import os
 import dotenv
 
 
-version = "0.3.11"
+version = "0.3.12"
 
 # TODO: Set up logging and/or make Beta bot for CI
 
@@ -54,6 +54,7 @@ async def post_start(application):
     )
 
     if os.getenv("CI") or os.getenv("GITHUB_ACTION"):
+        await asyncio.sleep(10)
         application.stop_running()
 
 def main():
