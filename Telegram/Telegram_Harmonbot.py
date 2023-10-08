@@ -3,13 +3,14 @@ from telegram.error import Conflict, NetworkError
 from telegram.ext import Application, CommandHandler
 
 import asyncio
+import contextlib
 import datetime
 import os
 
 import dotenv
 
 
-version = "0.3.15"
+version = "0.3.16"
 
 # TODO: Set up logging and/or make Beta bot for CI
 
@@ -73,7 +74,8 @@ def main():
 
     application.add_error_handler(error_handler)
 
-    application.run_polling(read_timeout = 30)
+    with contextlib.suppress(Conflict):
+        application.run_polling(read_timeout = 30)
 
 if __name__ == "__main__":
     main()
