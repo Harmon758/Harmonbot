@@ -144,7 +144,7 @@ mypy-extensions==1.0.0
 oauthlib==3.2.2
 orjson==3.9.5
 pathy==0.10.2
-preshed==3.0.8
+preshed==4.0.0
 protobuf==4.24.4
 proto-plus==1.22.3
 psycopg-binary==3.1.10
