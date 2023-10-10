@@ -1067,8 +1067,7 @@ class Meta(commands.Cog):
 class StatisticsView(ui.View):
 
     def __init__(self):
-        super().__init__(timeout = None)
-        # TODO: Timeout?
+        super().__init__(timeout = 600)
 
     async def construct_embeds(self, ctx):
         stats = await ctx.bot.db.fetchrow(
@@ -1330,4 +1329,7 @@ class StatisticsView(ui.View):
         self.category.disabled = True
         await self.message.edit(view = self)
         super().stop()
+
+    async def on_timeout(self):
+        await self.stop()
 
