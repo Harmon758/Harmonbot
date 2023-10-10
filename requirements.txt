@@ -71,7 +71,7 @@ tweepy[async]==4.14.0
 types-beautifulsoup4==4.12.0.6
 typing-extensions==4.7.1
 unicodedata2==14.0.0
-urllib3==1.26.14
+urllib3==2.0.6
 vcrpy==5.1.0
 wand==0.6.11
 wolframalpha==5.0.0
