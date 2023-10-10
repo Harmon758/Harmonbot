@@ -1294,8 +1294,8 @@ class Bot(commands.Bot):
 					)
 		# Stop views
 		for count, view in enumerate(self.views, start = 1):
-			self.print(f"Stopping View {count} / {len(self.views)}")
 			if not view.is_finished():
+				self.print(f"Stopping View {count} / {len(self.views)}")
 				await view.stop()
 		# TODO: Move to shutdown tasks?
 	
