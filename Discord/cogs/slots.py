@@ -196,7 +196,7 @@ def calculate_slots_points(emojis):
 class SlotsView(ui.View):
 
     def __init__(self, *, bot, user):
-        super().__init__(timeout = None)
+        super().__init__(timeout = 600)
 
         self.bot = bot
         self.user = user
@@ -207,10 +207,6 @@ class SlotsView(ui.View):
     @ui.button(label = "Play Again", style = discord.ButtonStyle.green)
     async def play_again(self, interaction, button):
         await play_slots(interaction, message = self.message, view = self)
-
-    @ui.button(emoji = '\N{OCTAGONAL SIGN}', style = discord.ButtonStyle.red)
-    async def stop_button(self, interaction, button):
-        await self.stop(interaction = interaction)
 
     async def interaction_check(self, interaction):
         if interaction.user.id not in (
@@ -225,7 +221,6 @@ class SlotsView(ui.View):
 
     async def stop(self, *, interaction = None):
         self.play_again.disabled = True
-        self.remove_item(self.stop_button)
 
         if interaction:
             await interaction.response.edit_message(view = self)
@@ -233,3 +228,6 @@ class SlotsView(ui.View):
             await self.bot.attempt_edit_message(self.message, view = self)
 
         super().stop()
+
+    async def on_timeout(self):
+        await self.stop()
