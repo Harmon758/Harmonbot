@@ -30,7 +30,7 @@ def affix_ansi(
     underline: bool = False,
     text_color: TextColor | None = None,
     background_color: BackgroundColor | None = None
-):
+) -> str:
     prefix = "\N{ESCAPE}["
 
     if bold and underline:
