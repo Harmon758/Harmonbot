@@ -1098,7 +1098,7 @@ class Bot(commands.Bot):
 		return destination.send(embed = embed)
 	
 	async def attempt_delete_message(self, message):
-		with contextlib.suppress(discord.Forbidden, discord.NotFound):
+		with contextlib.suppress(discord.HTTPException):
 			await message.delete()
 	
 	async def attempt_edit_message(self, message, **fields):
