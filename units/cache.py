@@ -1,7 +1,7 @@
 
 # https://github.com/python/cpython/issues/90780
 
-from aiocache import cached  # type: ignore
+from aiocache import cached  # type: ignore[import-untyped]
 # https://github.com/aio-libs/aiocache/issues/512
 # https://github.com/aio-libs/aiocache/issues/667
 from async_lru import alru_cache
