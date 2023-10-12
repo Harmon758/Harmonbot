@@ -1103,8 +1103,7 @@ class Bot(commands.Bot):
 	
 	async def attempt_edit_message(self, message, **fields):
 		with contextlib.suppress(
-			aiohttp.ClientConnectionError, discord.Forbidden,
-			discord.DiscordServerError, discord.HTTPException
+			aiohttp.ClientConnectionError, discord.HTTPException
 		):
 			await message.edit(**fields)
 	
