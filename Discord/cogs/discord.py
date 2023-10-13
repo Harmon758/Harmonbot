@@ -6,7 +6,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import time
-from typing import Literal, Optional
+from typing import Optional
 
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
@@ -39,6 +39,13 @@ ACTIVITES = {
 	# "YouTube Together": 755600276941176913  # Now Watch Together
 }
 
+ACTIVITES_ALIASES = {
+	"Doodle Crew": "Sketch Hands",
+	"Ocho": "Blazing 8s",
+	"Whiteboard": "Jamspace",
+	"YouTube Together": "Watch Together"
+}
+
 async def setup(bot):
 	await bot.add_cog(Discord(bot))
 	bot.tree.add_command(link, override = True)
@@ -66,15 +73,7 @@ class Discord(commands.Cog):
 	)
 	@checks.not_forbidden()
 	async def activity_command(
-		self, ctx, channel: Optional[discord.VoiceChannel], *,
-		activity: Literal[
-			"Ask Away", "Bash Out", "Betrayal.io", "Blazing 8s", "Bobble Bash",
-			"Bobble League", "Checkers In The Park", "Chess In The Park",
-			"Color Together", "Doodle Crew", "Fishington.io", "Gartic Phone",
-			"Jamspace", "Know What I Meme", "Land-io", "Letter League", "Ocho",
-			"Poker Night", "Putt Party", "Sketch Hands", "SpellCast",
-			"Watch Together", "Whiteboard", "Word Snacks", "YouTube Together"
-		]
+		self, ctx, channel: Optional[discord.VoiceChannel], *, activity: str
 	):
 		"""
 		Create an invite for a voice channel activity
@@ -111,6 +110,10 @@ class Discord(commands.Cog):
 			case "YouTube Together":
 				activity = "Watch Together"
 		
+		if activity not in ACTIVITES:
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Activity not found")
+			return
+		
 		invite = await channel.create_invite(
 			reason = f"{activity} activity",
 			target_type = discord.InviteTarget.embedded_application,
@@ -119,6 +122,28 @@ class Discord(commands.Cog):
 		
 		# TODO: Improve traditional command response
 		await ctx.send(invite.url, view = ActivityView(ctx, invite))
+	
+	@activity_command.autocomplete(name = "activity")
+	async def activity_autocomplete(self, interaction, current):
+		current = current.lower()
+		
+		activities = list(ACTIVITES.keys()) + list(ACTIVITES_ALIASES.keys())
+		
+		primary_matches = set()
+		secondary_matches = set()
+		
+		for activity in activities:
+			if activity.lower().startswith(current):
+				primary_matches.add(activity)
+			elif current in activity.lower():
+				secondary_matches.add(activity)
+		
+		matches = sorted(primary_matches) + sorted(secondary_matches)
+		
+		return [
+			app_commands.Choice(name = match, value = match)
+			for match in matches[:25]
+		]
 	
 	# TODO: Merge with quote command?
 	@commands.command()
