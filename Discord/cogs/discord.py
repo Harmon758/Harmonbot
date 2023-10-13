@@ -24,7 +24,7 @@ ACTIVITES = {
 	"Chef Showdown": 1037680572660727838,
 	"Chess In The Park": 832012774040141894,
 	"Color Together": 1039835161136746497,
-	# "Doodle Crew": 878067389634314250,  # Now Sketch Hands
+	# "Doodle Crew": 878067389634314250,  # Now Sketch Heads
 	"Fishington.io": 814288819477020702,
 	"Gartic Phone": 1007373802981822582,
 	"Jamspace": 1070087967294631976,
@@ -33,7 +33,7 @@ ACTIVITES = {
 	"Letter League": 879863686565621790,
 	"Poker Night": 755827207812677713,
 	"Putt Party": 945737671223947305,
-	"Sketch Hands": 902271654783242291,
+	"Sketch Heads": 902271654783242291,
 	"SpellCast": 852509694341283871,
 	"Watch Together": 880218394199220334,
 	"Word Snacks": 879863976006127627,
@@ -41,7 +41,7 @@ ACTIVITES = {
 }
 
 ACTIVITES_ALIASES = {
-	"Doodle Crew": "Sketch Hands",
+	"Doodle Crew": "Sketch Heads",
 	"Ocho": "Blazing 8s",
 	"Whiteboard": "Jamspace",
 	"YouTube Together": "Watch Together"
@@ -79,7 +79,7 @@ class Discord(commands.Cog):
 		"""
 		Create an invite for a voice channel activity
 		
-		Doodle Crew is now known as Sketch Hands
+		Doodle Crew is now known as Sketch Heads
 		Ocho is now known as Blazing 8s
 		YouTube Together is now known as Watch Together
 		
