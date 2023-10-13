@@ -27,7 +27,6 @@ ACTIVITES = {
 	# "Doodle Crew": 878067389634314250,  # Now Sketch Heads
 	"Fishington.io": 814288819477020702,
 	"Gartic Phone": 1007373802981822582,
-	"Jamspace": 1070087967294631976,
 	"Know What I Meme": 950505761862189096,
 	"Land-io": 903769130790969345,
 	"Letter League": 879863686565621790,
@@ -36,14 +35,15 @@ ACTIVITES = {
 	"Sketch Heads": 902271654783242291,
 	"SpellCast": 852509694341283871,
 	"Watch Together": 880218394199220334,
+	"Whiteboard": 1070087967294631976,
 	"Word Snacks": 879863976006127627,
 	# "YouTube Together": 755600276941176913  # Now Watch Together
 }
 
 ACTIVITES_ALIASES = {
 	"Doodle Crew": "Sketch Heads",
+	"Jamspace": "Whiteboard",
 	"Ocho": "Blazing 8s",
-	"Whiteboard": "Jamspace",
 	"YouTube Together": "Watch Together"
 }
 
@@ -80,6 +80,7 @@ class Discord(commands.Cog):
 		Create an invite for a voice channel activity
 		
 		Doodle Crew is now known as Sketch Heads
+		Jamspace is now known as Whiteboard
 		Ocho is now known as Blazing 8s
 		YouTube Together is now known as Watch Together
 		
