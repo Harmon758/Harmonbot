@@ -21,6 +21,7 @@ ACTIVITES = {
 	"Bobble Bash": 1107689944685748377,
 	"Bobble League": 947957217959759964,
 	"Checkers In The Park": 832013003968348200,
+	"Chef Showdown": 1037680572660727838,
 	"Chess In The Park": 832012774040141894,
 	"Color Together": 1039835161136746497,
 	# "Doodle Crew": 878067389634314250,  # Now Sketch Hands
