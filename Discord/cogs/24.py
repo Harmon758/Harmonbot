@@ -45,10 +45,11 @@ class TwentyFour(commands.Cog, name = "24"):
 
         async def incorrect(message, value):
             response_ctx = await ctx.bot.get_context(message)
+            solution = message.content.replace('\\', "")
             await response_ctx.embed_reply(
                 reference = response,
                 title = "Incorrect",
-                description = f"`{message.content} = {value}`",
+                description = f"`{solution} = {value}`",
                 in_response_to = False,
                 attempt_delete = False
             )
@@ -68,10 +69,11 @@ class TwentyFour(commands.Cog, name = "24"):
 
         message = await ctx.bot.wait_for('message', check = check)
         ctx = await ctx.bot.get_context(message)
+        solution = message.content.replace('\\', "")
         await ctx.embed_reply(
             reference = response,
             title = "Correct!",
-            description = f"`{message.content} = 24`",
+            description = f"`{solution} = 24`",
             in_response_to = False,
             attempt_delete = False
         )
@@ -126,11 +128,13 @@ class TwentyFourSubmitSolutionModal(ui.Modal, title = "Submit Solution"):
         self.numbers = numbers
 
     async def on_submit(self, interaction):
-        value = check_solution(self.numbers, self.solution.value)
+        solution = self.solution.value.replace('\\', "")
+
+        value = check_solution(self.numbers, solution)
 
         if value is False:
             await interaction.response.send_message(
-                f"`{self.solution.value}` is an invalid solution",
+                f"`{solution}` is an invalid solution",
                 ephemeral = True
             )
             return
@@ -142,9 +146,9 @@ class TwentyFourSubmitSolutionModal(ui.Modal, title = "Submit Solution"):
         )
         if value == 24:
             embed.title = "Correct!"
-            embed.description = f"||`{self.solution.value} = 24`||"
+            embed.description = f"||`{solution} = 24`||"
             await interaction.response.send_message(embed = embed)
         else:
             embed.title = "Incorrect"
-            embed.description = f"`{self.solution.value} = {value}`"
+            embed.description = f"`{solution} = {value}`"
             await interaction.response.send_message(embed = embed)
