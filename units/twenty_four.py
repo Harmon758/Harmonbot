@@ -30,7 +30,7 @@ def check_valid_numbers(numbers):
                 return any(abs(value - 24) < 0.1 for value in values)
     return False
 
-def generate_numbers():
+def generate_numbers() -> list[int]:
     while not check_valid_numbers(
         numbers := [random.randint(1,9) for _ in range(4)]
     ):
