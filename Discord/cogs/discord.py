@@ -18,6 +18,7 @@ ACTIVITES = {
 	"Bash Out": 1006584476094177371,
 	"Betrayal.io": 773336526917861400,
 	"Blazing 8s": 832025144389533716,  # Previously known as Ocho
+	"Bobble Bash": 1107689944685748377,
 	"Bobble League": 947957217959759964,
 	"Checkers In The Park": 832013003968348200,
 	"Chess In The Park": 832012774040141894,
@@ -67,7 +68,7 @@ class Discord(commands.Cog):
 	async def activity_command(
 		self, ctx, channel: Optional[discord.VoiceChannel], *,
 		activity: Literal[
-			"Ask Away", "Bash Out", "Betrayal.io", "Blazing 8s",
+			"Ask Away", "Bash Out", "Betrayal.io", "Blazing 8s", "Bobble Bash",
 			"Bobble League", "Checkers In The Park", "Chess In The Park",
 			"Color Together", "Doodle Crew", "Fishington.io", "Gartic Phone",
 			"Jamspace", "Know What I Meme", "Land-io", "Letter League", "Ocho",
