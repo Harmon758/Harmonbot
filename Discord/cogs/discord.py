@@ -100,19 +100,14 @@ class Discord(commands.Cog):
 			)
 			return
 		
-		match activity:
-			case "Doodle Crew":
-				activity = "Sketch Hands"
-			case "Ocho":
-				activity = "Blazing 8s"
-			case "Whiteboard":
-				activity = "Jamspace"
-			case "YouTube Together":
-				activity = "Watch Together"
-		
 		if activity not in ACTIVITES:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Activity not found")
-			return
+			try:
+				activity = ACTIVITES_ALIASES[activity]
+			except KeyError:
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Activity not found"
+				)
+				return
 		
 		invite = await channel.create_invite(
 			reason = f"{activity} activity",
