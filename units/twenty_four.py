@@ -38,6 +38,7 @@ def generate_numbers():
     return numbers
 
 def check_solution(numbers, solution):
+    solution = solution.replace('\\', "")
     if any(
         character not in numbers + [' ', '+', '-', '*', '/', '(', ')']
         for character in solution
