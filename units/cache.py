@@ -7,15 +7,16 @@ from aiocache import cached  # type: ignore[import-untyped]
 from async_lru import alru_cache
 
 
-def async_cache(function = None, *, ignore_kwargs = None):
+def async_cache(function = None, *, ignore_kwargs = None, ttl = None):
     if callable(function):
         return alru_cache(maxsize = None)(function)
     elif ignore_kwargs:
         return cached(
-            key_builder = custom_key_builder(ignore_kwargs = ignore_kwargs)
+            key_builder = custom_key_builder(ignore_kwargs = ignore_kwargs),
+            ttl = ttl
         )
     else:
-        return alru_cache(maxsize = None)
+        return alru_cache(maxsize = None, ttl = ttl)
 
 
 def custom_key_builder(ignore_kwargs = ()):
