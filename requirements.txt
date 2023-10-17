@@ -143,7 +143,6 @@ mutagen==1.46.0
 mypy_extensions==1.0.0
 oauthlib==3.2.2
 orjson==3.9.9
-pathy==0.10.2
 preshed==3.0.9
 protobuf==4.24.4
 proto-plus==1.22.3
