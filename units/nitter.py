@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 @async_cache(ignore_kwargs = "aiohttp_session", ttl = 900)
 async def get_healthy_rss_instances(
     *, aiohttp_session: aiohttp.ClientSession | None = None
-) -> str:
+) -> list[dict]:
     # TODO: Add User-Agent
     async with ensure_session(aiohttp_session) as aiohttp_session:
         async with aiohttp_session.get(
