@@ -295,14 +295,16 @@ class Images(commands.Cog):
 			)
 			return
 		
-		output = ", ".join(
-			f"**{concept.name}**: {concept.value * 100:.2f}%"
-			for concept in sorted(
-				response.outputs[0].data.concepts,
-				key = lambda c: c.value, reverse = True
-			)
+		await ctx.embed_reply(
+			", ".join(
+				f"**{concept.name}**: {concept.value * 100:.2f}%"
+				for concept in sorted(
+					response.outputs[0].data.concepts,
+					key = lambda c: c.value, reverse = True
+				)
+			),
+			thumbnail_url = image_url
 		)
-		await ctx.embed_reply(output, thumbnail_url = image_url)
 	
 	@commands.command()
 	async def nsfw(self, ctx, image_url: Optional[str]):
