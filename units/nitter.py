@@ -12,6 +12,11 @@ if TYPE_CHECKING:
     import aiohttp
 
 
+BLACKLIST = [
+    "https://nitter.privacydev.net"  # Low rate limit
+]
+
+
 @async_cache(ignore_kwargs = "aiohttp_session", ttl = 900)
 async def get_healthy_rss_instances(
     *, aiohttp_session: aiohttp.ClientSession | None = None
@@ -26,7 +31,10 @@ async def get_healthy_rss_instances(
     return [
         instance
         for instance in data["hosts"]
-        if instance["healthy"] and instance["rss"]
+        if (
+            instance["healthy"] and instance["rss"] and
+            instance["url"] not in BLACKLIST
+        )
     ]
 
 
