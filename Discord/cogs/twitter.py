@@ -490,13 +490,8 @@ class Twitter(commands.Cog):
                             f"status with handle, {handle}"
                         )
                         continue
-                    elif resp.status in (500, 502, 503, 504):
+                    elif resp.status in (500, 502, 503, 504, 522):
                         # TODO: Log
-                        self.bot.print(
-                            f"Twitter feed returned {resp.status} "
-                            f"status with handle, {handle}, and "
-                            f"Nitter instance, {nitter_instance_url}"
-                        )
                         await asyncio.sleep(1)
                         continue
                     elif resp.status != 200:
