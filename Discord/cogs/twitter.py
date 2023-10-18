@@ -12,6 +12,7 @@ import sys
 import traceback
 import urllib.parse
 
+import aiohttp
 from more_itertools import chunked
 import feedparser
 
@@ -606,6 +607,9 @@ class Twitter(commands.Cog):
             except discord.DiscordServerError as e:
                 self.bot.print(f"Twitter Task Discord Server Error: {e}")
                 await asyncio.sleep(60)
+            except aiohttp.ServerDisconnectedError:
+                # TODO: Log
+                await asyncio.sleep(1)
             except Exception as e:
                 print("Exception in Twitter Task", file = sys.stderr)
                 traceback.print_exception(
