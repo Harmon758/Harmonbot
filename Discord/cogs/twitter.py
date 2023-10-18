@@ -11,11 +11,16 @@ import logging
 import re
 import sys
 import traceback
+import urllib.parse
 
 from more_itertools import chunked
 import feedparser
 
 from utilities import checks, tasks
+
+sys.path.insert(0, "..")
+from units import nitter
+sys.path.pop(0)
 
 
 errors_logger = logging.getLogger("errors")
@@ -101,8 +106,10 @@ class Twitter(commands.Cog):
 
         username = handle.lstrip('@')
 
+        nitter_instance_url = await nitter.get_best_healthy_rss_instance_url()
+
         async with ctx.bot.aiohttp_session.get(
-            "https://openrss.org/twitter.com/" + username
+            f"{nitter_instance_url}/{username}/rss"
         ) as resp:
             if resp.status == 404:
                 await ctx.embed_reply(
@@ -123,20 +130,21 @@ class Twitter(commands.Cog):
         # TODO: Change to pagination
         for entry in feed_info.entries:
             if not retweets and (
-                entry.title[
-                    :len(username) + 13  # 13 == len("@ retweeted: ")
-                ].lower() == f"@{username.lower()} retweeted: "
+                entry.author.lstrip('@').lower() != username.lower()
             ):
                 continue
 
-            if not replies and (
-                entry.title[
-                    :len(username) + 14  #14 == len("@ replied to: ")
-                ].lower() == f"@{username.lower()} replied to: "
-            ):
+            if not replies and entry.title.startswith("R to @"):
+                # TODO: Handle false positives
                 continue
 
-            await ctx.reply(entry.link)
+            await ctx.reply(
+                urllib.parse.urlparse(entry.link)._replace(
+                    scheme = "https",
+                    netloc = "twitter.com",
+                    fragment = ""
+                ).geturl()
+            )
             return
 
         await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Status not found")
