@@ -491,7 +491,7 @@ class Twitter(commands.Cog):
                             f"status with handle, {handle}"
                         )
                         continue
-                    elif resp.status in (500, 502, 503, 504, 522):
+                    elif resp.status in (500, 502, 503, 504, 520, 522):
                         # TODO: Log
                         await asyncio.sleep(1)
                         continue
