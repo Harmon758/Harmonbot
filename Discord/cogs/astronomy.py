@@ -102,7 +102,7 @@ class Astronomy(commands.Cog):
 		https://archive.stsci.edu/hst/
 		'''
 		async with ctx.bot.aiohttp_session.get(
-			"https://api.arcsecond.io/archives/HST/{}/summary/".format(proposal_id),
+			f"https://api.arcsecond.io/archives/HST/{proposal_id}/summary/",
 			params = {"format": "json"}
 		) as resp:
 			data = await resp.json()
