@@ -6,7 +6,6 @@ from discord.ext import commands
 import asyncio
 import datetime
 import time
-from typing import Optional
 
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
