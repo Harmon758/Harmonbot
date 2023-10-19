@@ -345,8 +345,10 @@ class Tools(commands.Cog):
 	@tag.command(name = "delete", aliases = ["remove", "destroy"])
 	async def tag_delete(self, ctx, tag: str):
 		'''Delete one of your tags'''
-		if (await self.check_no_tags(ctx)): return
-		if (await self.check_no_tag(ctx, tag)): return
+		if (await self.check_no_tags(ctx)):
+			return
+		if (await self.check_no_tag(ctx, tag)):
+			return
 		deleted = await ctx.bot.db.fetchrow(
 			"""
 			DELETE FROM tags.individual
@@ -358,7 +360,9 @@ class Tools(commands.Cog):
 		if not deleted:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Tag not found")
 			return
-		await ctx.embed_reply(f":ok_hand:{ctx.bot.emoji_skin_tone} Your tag has been deleted")
+		await ctx.embed_reply(
+			f":ok_hand:{ctx.bot.emoji_skin_tone} Your tag has been deleted"
+		)
 	
 	@tag.command(name = "expunge")
 	@commands.is_owner()
