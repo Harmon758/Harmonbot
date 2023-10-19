@@ -32,7 +32,7 @@ def check_valid_numbers(numbers):
 
 def generate_numbers() -> list[int]:
     while not check_valid_numbers(
-        numbers := [random.randint(1, 9) for count in range(4)]
+        numbers := [random.randint(1, 9) for _count in range(4)]
     ):
         pass
 
