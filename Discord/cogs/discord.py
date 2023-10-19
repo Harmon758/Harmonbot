@@ -90,8 +90,9 @@ class Discord(commands.Cog):
 				)
 				return
 		
-		# TODO: Improve traditional command response
-		await ctx.send(f"https://discord.com/activities/{ACTIVITES[activity]}")
+		await ctx.reply(
+			f"https://discord.com/activities/{ACTIVITES[activity]}"
+		)
 	
 	@activity_command.autocomplete(name = "activity")
 	async def activity_autocomplete(self, interaction, current):
