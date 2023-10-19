@@ -66,16 +66,8 @@ class Discord(commands.Cog):
 	# TODO: Include spaces in quotes explanation (in help)
 	
 	@commands.hybrid_command(name = "activity")
-	@commands.guild_only()
-	@commands.bot_has_permissions(create_instant_invite = True)
-	@commands.check_any(
-		commands.has_permissions(create_instant_invite = True),
-		commands.is_owner()
-	)
 	@checks.not_forbidden()
-	async def activity_command(
-		self, ctx, channel: Optional[discord.VoiceChannel], *, activity: str
-	):
+	async def activity_command(self, ctx, *, activity: str):
 		"""
 		Create an invite for a voice channel activity
 		
@@ -88,20 +80,7 @@ class Discord(commands.Cog):
 		----------
 		activity
 			Voice channel activity to create an invite for
-		channel
-			Voice channel to create an activity invite for
-			(Defaults to your current voice channel)
 		"""
-		if not channel and (
-			not ctx.author.voice or not (
-				channel := ctx.author.voice.channel
-			)
-		):  # TODO: Support voice channel chat
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Voice channel not found"
-			)
-			return
-		
 		if activity not in ACTIVITES:
 			try:
 				activity = ACTIVITES_ALIASES[activity]
@@ -111,14 +90,8 @@ class Discord(commands.Cog):
 				)
 				return
 		
-		invite = await channel.create_invite(
-			reason = f"{activity} activity",
-			target_type = discord.InviteTarget.embedded_application,
-			target_application_id = ACTIVITES[activity]
-		)
-		
 		# TODO: Improve traditional command response
-		await ctx.send(invite.url, view = ActivityView(ctx, invite))
+		await ctx.send(f"https://discord.com/activities/{ACTIVITES[activity]}")
 	
 	@activity_command.autocomplete(name = "activity")
 	async def activity_autocomplete(self, interaction, current):
@@ -487,49 +460,6 @@ class Discord(commands.Cog):
 				await self.bot.delete_channel(temp_voice_channel)
 				await self.bot.delete_channel(temp_text_channel)
 				return
-
-class ActivityView(discord.ui.View):
-	
-	def __init__(self, ctx, invite):
-		super().__init__(timeout = None)
-		self.ctx = ctx
-		self.invite = invite
-	
-	@discord.ui.button(
-		label = "Revoke Invite", style = discord.ButtonStyle.red
-	)
-	async def revoke(self, interaction, button):
-		if (
-			interaction.user.id not in (
-				self.ctx.author.id, self.ctx.bot.owner_id
-			)
-		) and (
-			not self.invite.channel.permissions_for(
-				interaction.user
-			).manage_channels
-		):
-			await interaction.response.send_message(
-				"You don't have permission to do that.",
-				ephemeral = True
-			)
-			return
-		
-		try:
-			await self.invite.delete()
-		except discord.Forbidden:
-			await interaction.response.send_message(
-				"I need the \"manage channel(s)\" permission to do that.",
-				ephemeral = True
-			)
-			return
-		except discord.NotFound:
-			pass
-		
-		button.disabled = True
-		button.label = "Invite Revoked"
-		await interaction.response.edit_message(view = self)
-		
-		self.stop()
 
 
 @app_commands.context_menu()
