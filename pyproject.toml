@@ -11,4 +11,8 @@ python_version = "3.10"
 
 [tool.ruff]
 include = ["units/*.py"]
+select = [
+    "E4", "E7", "E9", "F",  # default
+    "PYI041"  # redundant-numeric-union
+]
 target-version = "py310"
