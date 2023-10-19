@@ -126,7 +126,10 @@ class Astronomy(commands.Cog):
 	async def exoplanet(self, ctx, *, exoplanet: str):
 		'''Exoplanets'''
 		# TODO: list?
-		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/exoplanets/{}".format(exoplanet), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.arcsecond.io/exoplanets/{}".format(exoplanet),
+			params = {"format": "json"}
+		) as resp:
 			if resp.status in (404, 500):
 				await ctx.embed_reply(":no_entry: Error")
 				return
@@ -136,41 +139,67 @@ class Astronomy(commands.Cog):
 				await ctx.embed_reply(":no_entry: Error: {}".format(data["detail"]))
 				return
 			'''
-		# TODO: include mass?, radius?, bibcodes?, omega_angle?, anomaly angle?, angular_distance?, time_radial_velocity_zero?, hottest_point_longitude?, surface_gravity?, mass_detection_method?, radius_detection_method?
-		# TODO: handle one of error_min or error_max, but not other? (SWEEPS-11)
+		# TODO: include mass?, radius?, bibcodes?, omega_angle?,
+		#       anomaly angle?, angular_distance?, time_radial_velocity_zero?,
+		#       hottest_point_longitude?, surface_gravity?,
+		#       mass_detection_method?, radius_detection_method?
+		# TODO: handle one of error_min or error_max, but not other?
+		#       (SWEEPS-11)
 		# TODO: improve efficiency with for loop?
 		fields = [("System", data["coordinates"]["system"])]
-		if data["coordinates"]["right_ascension"]: fields.append(("Right Ascension", "{}{}".format(data["coordinates"]["right_ascension"], '°' if data["coordinates"]["right_ascension_units"] == "degrees" else ' ' + data["coordinates"]["right_ascension_units"])))
-		if data["coordinates"]["declination"]: fields.append(("Right Declination", "{}{}".format(data["coordinates"]["declination"], '°' if data["coordinates"]["declination_units"] == "degrees" else ' ' + data["coordinates"]["declination_units"])))
+		if data["coordinates"]["right_ascension"]:
+			fields.append(
+				("Right Ascension", "{}{}".format(data["coordinates"]["right_ascension"], '°' if data["coordinates"]["right_ascension_units"] == "degrees" else ' ' + data["coordinates"]["right_ascension_units"]))
+			)
+		if data["coordinates"]["declination"]:
+			fields.append(
+				("Right Declination", "{}{}".format(data["coordinates"]["declination"], '°' if data["coordinates"]["declination_units"] == "degrees" else ' ' + data["coordinates"]["declination_units"]))
+			)
 		# Inclination
 		inclination = ""
-		if data["inclination"]["value"]: inclination += str(data["inclination"]["value"])
+		if data["inclination"]["value"]:
+			inclination += str(data["inclination"]["value"])
 		if data["inclination"]["error_min"] or data["inclination"]["error_max"]:
-			if data["inclination"]["error_min"] == data["inclination"]["error_max"]: inclination += '±' + str(data["inclination"]["error_min"])
-			else: inclination += "(-{0[error_min]}/+{0[error_max]})".format(data["inclination"])
-		if data["inclination"]["value"]: inclination += data["inclination"]["unit"]
-		if inclination: fields.append(("Inclination", inclination))
+			if data["inclination"]["error_min"] == data["inclination"]["error_max"]:
+				inclination += '±' + str(data["inclination"]["error_min"])
+			else:
+				inclination += "(-{0[error_min]}/+{0[error_max]})".format(data["inclination"])
+		if data["inclination"]["value"]:
+			inclination += data["inclination"]["unit"]
+		if inclination:
+			fields.append(("Inclination", inclination))
 		# Semi-Major Axis
 		semi_major_axis = ""
-		if data["semi_major_axis"]["value"]: semi_major_axis += str(data["semi_major_axis"]["value"])
+		if data["semi_major_axis"]["value"]:
+			semi_major_axis += str(data["semi_major_axis"]["value"])
 		if data["semi_major_axis"]["error_min"] or data["semi_major_axis"]["error_max"]:
-			if data["semi_major_axis"]["error_min"] == data["semi_major_axis"]["error_max"]: semi_major_axis += '±' + str(data["semi_major_axis"]["error_min"])
-			else: semi_major_axis += "(-{0[error_min]}/+{0[error_max]})".format(data["semi_major_axis"])
-		if data["semi_major_axis"]["value"]: semi_major_axis += " AU" if data["semi_major_axis"]["unit"] == "astronomical unit" else ' ' + data["semi_major_axis"]["unit"]
-		if semi_major_axis: fields.append(("Semi-Major Axis", semi_major_axis))
+			if data["semi_major_axis"]["error_min"] == data["semi_major_axis"]["error_max"]:
+				semi_major_axis += '±' + str(data["semi_major_axis"]["error_min"])
+			else:
+				semi_major_axis += "(-{0[error_min]}/+{0[error_max]})".format(data["semi_major_axis"])
+		if data["semi_major_axis"]["value"]:
+			semi_major_axis += " AU" if data["semi_major_axis"]["unit"] == "astronomical unit" else ' ' + data["semi_major_axis"]["unit"]
+		if semi_major_axis:
+			fields.append(("Semi-Major Axis", semi_major_axis))
 		# Orbital Period
 		# TODO: include orbital_period error_max + error_min?
-		if data["orbital_period"]["value"]: fields.append(("Orbital Period", "{} {}".format(data["orbital_period"]["value"], data["orbital_period"]["unit"])))
+		if data["orbital_period"]["value"]:
+			fields.append(("Orbital Period", "{} {}".format(data["orbital_period"]["value"], data["orbital_period"]["unit"])))
 		# Eccentricity
 		eccentricity = ""
-		if data["eccentricity"]["value"]: eccentricity += str(data["eccentricity"]["value"])
+		if data["eccentricity"]["value"]:
+			eccentricity += str(data["eccentricity"]["value"])
 		if data["eccentricity"]["error_min"] or data["eccentricity"]["error_max"]:
-			if data["eccentricity"]["error_min"] == data["eccentricity"]["error_max"]: eccentricity += '±' + str(data["eccentricity"]["error_min"])
-			else: eccentricity += "(-{0[error_min]}/+{0[error_max]})".format(data["eccentricity"])
-		if eccentricity: fields.append(("Eccentricity", eccentricity))
+			if data["eccentricity"]["error_min"] == data["eccentricity"]["error_max"]:
+				eccentricity += '±' + str(data["eccentricity"]["error_min"])
+			else:
+				eccentricity += "(-{0[error_min]}/+{0[error_max]})".format(data["eccentricity"])
+		if eccentricity:
+			fields.append(("Eccentricity", eccentricity))
 		# Lambda Angle
 		# Spin-Orbit Misalignment
-		# Sky-projected angle between the planetary orbital spin and the stellar rotational spin
+		# Sky-projected angle between the planetary orbital spin and the
+		# stellar rotational spin
 		lambda_angle = ""
 		lambda_angle_data = data.get("lambda_angle") or {}
 		if lambda_angle_data.get("value"):
@@ -187,11 +216,15 @@ class Astronomy(commands.Cog):
 		# Periastron Time
 		# https://exoplanetarchive.ipac.caltech.edu/docs/parhelp.html#Obs_Time_Periastron
 		time_periastron = ""
-		if data["time_periastron"]["value"]: time_periastron += str(data["time_periastron"]["value"])
+		if data["time_periastron"]["value"]:
+			time_periastron += str(data["time_periastron"]["value"])
 		if data["time_periastron"]["error_min"] or data["time_periastron"]["error_max"]:
-			if data["time_periastron"]["error_min"] == data["time_periastron"]["error_max"]: time_periastron += '±' + str(data["time_periastron"]["error_min"])
-			else: time_periastron += "(-{0[error_min]}/+{0[error_max]})".format(data["time_periastron"]) # Necessary?
-		if time_periastron: fields.append(("Periastron Time", time_periastron))
+			if data["time_periastron"]["error_min"] == data["time_periastron"]["error_max"]:
+				time_periastron += '±' + str(data["time_periastron"]["error_min"])
+			else:
+				time_periastron += "(-{0[error_min]}/+{0[error_max]})".format(data["time_periastron"])  # Necessary?
+		if time_periastron:
+			fields.append(("Periastron Time", time_periastron))
 		# Conjunction Time
 		time_conjonction = ""
 		time_conjonction_data = data.get("time_conjonction") or {}
@@ -201,7 +234,7 @@ class Astronomy(commands.Cog):
 			if time_conjonction_data.get("error_min") == time_conjonction_data("error_max"):
 				time_conjonction += '±' + str(time_conjonction_data["error_min"])
 			else:
-				time_conjonction += "(-{0[error_min]}/+{0[error_max]})".format(time_conjonction_data) # Necessary?
+				time_conjonction += "(-{0[error_min]}/+{0[error_max]})".format(time_conjonction_data)  # Necessary?
 		if time_conjonction:
 			fields.append(("Conjunction Time", time_conjonction))
 		# Primary Transit
@@ -214,7 +247,7 @@ class Astronomy(commands.Cog):
 			if primary_transit_data.get("error_min") == primary_transit_data.get("error_max"):
 				primary_transit += '±' + str(primary_transit_data["error_min"])
 			else:
-				primary_transit += "(-{0[error_min]}/+{0[error_max]})".format(primary_transit_data) # Necessary?
+				primary_transit += "(-{0[error_min]}/+{0[error_max]})".format(primary_transit_data)  # Necessary?
 		if primary_transit:
 			fields.append(("Primary Transit", primary_transit))
 		# Secondary Transit
@@ -239,19 +272,26 @@ class Astronomy(commands.Cog):
 			if impact_parameter_data.get("error_min") == impact_parameter_data.get("error_max"):
 				impact_parameter += '±' + str(impact_parameter_data["error_min"])
 			else:
-				impact_parameter += "(-{0[error_min]}/+{0[error_max]})".format(impact_parameter_data) # Necessary?
+				impact_parameter += "(-{0[error_min]}/+{0[error_max]})".format(impact_parameter_data)  # Necessary?
 		if impact_parameter_data.get("value"):
 			impact_parameter += impact_parameter_data["unit"]
 		if impact_parameter:
 			fields.append(("Impact Parameter", impact_parameter))
 		# Radial Velocity Semi-Amplitude
 		velocity_semiamplitude = ""
-		if data["velocity_semiamplitude"]["value"]: velocity_semiamplitude += str(data["velocity_semiamplitude"]["value"])
+		if data["velocity_semiamplitude"]["value"]:
+			velocity_semiamplitude += str(data["velocity_semiamplitude"]["value"])
 		if data["velocity_semiamplitude"]["error_min"] or data["velocity_semiamplitude"]["error_max"]:
-			if data["velocity_semiamplitude"]["error_min"] == data["velocity_semiamplitude"]["error_max"]: velocity_semiamplitude += '±' + str(data["velocity_semiamplitude"]["error_min"])
-			else: velocity_semiamplitude += "(-{0[error_min]}/+{0[error_max]})".format(data["velocity_semiamplitude"]) # Necessary?
-		if data["velocity_semiamplitude"]["value"]: velocity_semiamplitude += ' ' + data["velocity_semiamplitude"]["unit"]
-		if velocity_semiamplitude: fields.append(("Radial Velocity Semi-Amplitude", velocity_semiamplitude))
+			if data["velocity_semiamplitude"]["error_min"] == data["velocity_semiamplitude"]["error_max"]:
+				velocity_semiamplitude += '±' + str(data["velocity_semiamplitude"]["error_min"])
+			else:
+				velocity_semiamplitude += "(-{0[error_min]}/+{0[error_max]})".format(data["velocity_semiamplitude"])  # Necessary?
+		if data["velocity_semiamplitude"]["value"]:
+			velocity_semiamplitude += ' ' + data["velocity_semiamplitude"]["unit"]
+		if velocity_semiamplitude:
+			fields.append(
+				("Radial Velocity Semi-Amplitude", velocity_semiamplitude)
+			)
 		# Calculated Temperature
 		calculated_temperature = ""
 		calculated_temperature_data = data.get("calculated_temperature") or {}
@@ -261,7 +301,7 @@ class Astronomy(commands.Cog):
 			if calculated_temperature_data.get("error_min") == calculated_temperature_data.get("error_max"):
 				calculated_temperature += '±' + str(calculated_temperature_data["error_min"])
 			else:
-				calculated_temperature += "(-{0[error_min]}/+{0[error_max]})".format(calculated_temperature_data) # Necessary?
+				calculated_temperature += "(-{0[error_min]}/+{0[error_max]})".format(calculated_temperature_data)  # Necessary?
 		if calculated_temperature_data.get("value"):
 			calculated_temperature += " K" if calculated_temperature_data.get("unit") == "Kelvin" else ' ' + calculated_temperature_data.get("unit")
 		if calculated_temperature:
@@ -270,12 +310,18 @@ class Astronomy(commands.Cog):
 		# TODO: include measured_temperature error_max + error_min?
 		measured_temperature_data = data.get("measured_temperature") or {}
 		if measured_temperature_data.get("value"):
-			fields.append(("Measured Temperature", "{} {}".format(measured_temperature_data["value"], 'K' if measured_temperature_data.get("unit") == "Kelvin" else measured_temperature_data.get("unit"))))
+			fields.append(
+				("Measured Temperature", "{} {}".format(measured_temperature_data["value"], 'K' if measured_temperature_data.get("unit") == "Kelvin" else measured_temperature_data.get("unit")))
+			)
 		# Geometric Albedo
 		# TODO: include geometric_albedo error_max + error_min?
-		if data["geometric_albedo"]["value"]: fields.append(("Geometric Albedo", data["geometric_albedo"]["value"]))
+		if data["geometric_albedo"]["value"]:
+			fields.append(
+				("Geometric Albedo", data["geometric_albedo"]["value"])
+			)
 		# Detection Method
-		if data["detection_method"] != "Unknown": fields.append(("Detection Method", data["detection_method"]))
+		if data["detection_method"] != "Unknown":
+			fields.append(("Detection Method", data["detection_method"]))
 		# Parent Star
 		parent_star_data = data.get("parent_star") or {}
 		if parent_star_data.get("name"):
