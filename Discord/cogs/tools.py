@@ -292,7 +292,8 @@ class Tools(commands.Cog):
 	@tag.command(name = "list", aliases = ["all", "mine"])
 	async def tag_list(self, ctx):
 		'''List your tags'''
-		if (await self.check_no_tags(ctx)): return
+		if (await self.check_no_tags(ctx)):
+			return
 		tags_paginator = Paginator(seperator = ", ")
 		records = await ctx.bot.db.fetch(
 			"""
