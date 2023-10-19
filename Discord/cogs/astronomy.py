@@ -384,22 +384,38 @@ class Astronomy(commands.Cog):
 		Observing sites on Earth
 		'''
 		# TODO: list?
-		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/observingsites/", params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.arcsecond.io/observingsites/",
+			params = {"format": "json"}
+		) as resp:
 			data = await resp.json()
 		for _observatory in data:
 			if observatory.lower() in _observatory["name"].lower():
-				fields = [("Latitude", _observatory["coordinates"]["latitude"]), ("Longitude", _observatory["coordinates"]["longitude"]), ("Height", "{}m".format(_observatory["coordinates"]["height"])), ("Continent", _observatory["address"]["continent"]), ("Country", _observatory["address"]["country"])]
+				fields = [
+					("Latitude", _observatory["coordinates"]["latitude"]),
+					("Longitude", _observatory["coordinates"]["longitude"]),
+					("Height", "{}m".format(_observatory["coordinates"]["height"])),
+					("Continent", _observatory["address"]["continent"]),
+					("Country", _observatory["address"]["country"])
+				]
 				time_zone = "{0[time_zone_name]}\n({0[time_zone]})".format(_observatory["address"])
-				if len(time_zone) <= 22: time_zone = time_zone.replace('\n', ' ') # 22: embed field value limit without offset
+				if len(time_zone) <= 22:
+					time_zone = time_zone.replace('\n', ' ')  # 22: embed field value limit without offset
 				fields.append(("Time Zone", time_zone))
-				if _observatory["IAUCode"]: fields.append(("IAU Code", _observatory["IAUCode"]))
+				if _observatory["IAUCode"]:
+					fields.append(("IAU Code", _observatory["IAUCode"]))
 				telescopes = []
 				for telescope in _observatory["telescopes"]:
 					async with ctx.bot.aiohttp_session.get(telescope) as resp:
 						telescope_data = await resp.json()
 					telescopes.append(telescope_data["name"])
-				if telescopes: fields.append(("Telescopes", '\n'.join(telescopes)))
-				await ctx.embed_reply(title = _observatory["name"], title_url = _observatory["homepage_url"] or None, fields = fields)
+				if telescopes:
+					fields.append(("Telescopes", '\n'.join(telescopes)))
+				await ctx.embed_reply(
+					title = _observatory["name"],
+					title_url = _observatory["homepage_url"] or None,
+					fields = fields
+				)
 				return
 		await ctx.embed_reply(":no_entry: Observatory not found")
 	
