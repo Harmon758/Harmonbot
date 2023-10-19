@@ -1,5 +1,5 @@
 
-from . import colors as colours
+from . import colors as colours  # noqa: F401 (unused-import)
 
 from dotenv import load_dotenv
 
