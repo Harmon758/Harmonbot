@@ -101,14 +101,26 @@ class Astronomy(commands.Cog):
 		Hubble Space Telescope (HST)
 		https://archive.stsci.edu/hst/
 		'''
-		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/archives/HST/{}/summary/".format(proposal_id), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.arcsecond.io/archives/HST/{}/summary/".format(proposal_id),
+			params = {"format": "json"}
+		) as resp:
 			data = await resp.json()
-		# TODO: include allocation?, pi_institution?, programme_type_auxiliary?, programme_status?, related_programmes?
+		# TODO: include allocation?, pi_institution?,
+		#       programme_type_auxiliary?, programme_status?,
+		#       related_programmes?
 		fields = []
-		if data["cycle"]: fields.append(("Cycle", data["cycle"]))
-		if data["principal_investigator"]: fields.append(("Principal Investigator", data["principal_investigator"]))
-		if data["programme_type"] and data["programme_type"] != "(Undefined)": fields.append(("Proposal Type", data["programme_type"]))
-		await ctx.embed_reply(data["abstract"], title = data["title"], fields = fields)
+		if data["cycle"]:
+			fields.append(("Cycle", data["cycle"]))
+		if data["principal_investigator"]:
+			fields.append(
+				("Principal Investigator", data["principal_investigator"])
+			)
+		if data["programme_type"] and data["programme_type"] != "(Undefined)":
+			fields.append(("Proposal Type", data["programme_type"]))
+		await ctx.embed_reply(
+			data["abstract"], title = data["title"], fields = fields
+		)
 	
 	@astronomy.command()
 	async def exoplanet(self, ctx, *, exoplanet: str):
