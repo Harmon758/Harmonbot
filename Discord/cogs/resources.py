@@ -4,7 +4,6 @@ from discord.ext import commands, menus
 
 import asyncio
 import datetime
-import json
 from typing import Optional
 import unicodedata
 
