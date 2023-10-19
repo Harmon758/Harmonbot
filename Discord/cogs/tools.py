@@ -384,7 +384,8 @@ class Tools(commands.Cog):
 	@tag.command(name = "search", aliases = ["contains", "find"])
 	async def tag_search(self, ctx, *, search: str):
 		'''Search your tags'''
-		if (await self.check_no_tags(ctx)): return
+		if (await self.check_no_tags(ctx)):
+			return
 		records = await ctx.bot.db.fetch(
 			"""
 			SELECT tag FROM tags.individual
@@ -394,9 +395,14 @@ class Tools(commands.Cog):
 		)
 		tags = [record["tag"] for record in records]
 		if results := [tag for tag in tags if search in tag]:
-			return await ctx.embed_reply(f"{len(results)} tags found: {', '.join(results)}")
+			return await ctx.embed_reply(
+				f"{len(results)} tags found: {', '.join(results)}"
+			)
 		close_matches = difflib.get_close_matches(search, tags)
-		close_matches = "\nDid you mean:\n" + '\n'.join(close_matches) if close_matches else ""
+		close_matches = (
+			"\nDid you mean:\n" + '\n'.join(close_matches) if close_matches
+			else ""
+		)
 		await ctx.embed_reply(f"No tags found{close_matches}")
 	
 	@tag.command(name = "globalize", aliases = ["globalise"])
