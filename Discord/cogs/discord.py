@@ -68,7 +68,7 @@ class Discord(commands.Cog):
 	@checks.not_forbidden()
 	async def activity_command(self, ctx, *, activity: str):
 		"""
-		Create an invite for a voice channel activity
+		Link a Discord Activity
 		
 		Doodle Crew is now known as Sketch Heads
 		Jamspace is now known as Whiteboard
@@ -78,7 +78,7 @@ class Discord(commands.Cog):
 		Parameters
 		----------
 		activity
-			Voice channel activity to create an invite for
+			Discord Ativity to link
 		"""
 		if activity not in ACTIVITES:
 			try:
