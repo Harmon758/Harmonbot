@@ -1083,15 +1083,27 @@ class Bot(commands.Bot):
 		)
 	
 	# TODO: optimize/overhaul
-	def send_embed(self, destination, description = None, *, title = None, title_url = None, 
-	author_name = "", author_url = None, author_icon_url = None, 
-	image_url = None, thumbnail_url = None, footer_text = None, footer_icon_url = None, 
-	timestamp = None, fields = []):
-		embed = discord.Embed(title = title, url = title_url, timestamp = timestamp, color = self.bot_color)
+	def send_embed(
+		self, destination, description = None, *, title = None,
+		title_url = None, author_name = "", author_url = None,
+		author_icon_url = None, image_url = None, thumbnail_url = None,
+		footer_text = None, footer_icon_url = None, timestamp = None,
+		fields = []
+	):
+		embed = discord.Embed(
+			title = title, url = title_url, timestamp = timestamp,
+			color = self.bot_color
+		)
 		embed.description = str(description) if description else None
-		if author_name: embed.set_author(name = author_name, url = author_url, icon_url = author_icon_url)
-		if image_url: embed.set_image(url = image_url)
-		if thumbnail_url: embed.set_thumbnail(url = thumbnail_url)
+		if author_name:
+			embed.set_author(
+				name = author_name, url = author_url,
+				icon_url = author_icon_url
+			)
+		if image_url:
+			embed.set_image(url = image_url)
+		if thumbnail_url:
+			embed.set_thumbnail(url = thumbnail_url)
 		embed.set_footer(text = footer_text, icon_url = footer_icon_url)
 		for field_name, field_value in fields:
 			embed.add_field(name = field_name, value = field_value)
