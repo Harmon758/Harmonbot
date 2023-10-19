@@ -408,8 +408,10 @@ class Tools(commands.Cog):
 	@tag.command(name = "globalize", aliases = ["globalise"])
 	async def tag_globalize(self, ctx, tag: str):
 		'''Globalize a tag'''
-		if (await self.check_no_tags(ctx)): return
-		if (await self.check_no_tag(ctx, tag)): return
+		if (await self.check_no_tags(ctx)):
+			return
+		if (await self.check_no_tag(ctx, tag)):
+			return
 		exists = await ctx.bot.db.fetchval(
 			"""
 			SELECT EXISTS (
@@ -420,7 +422,10 @@ class Tools(commands.Cog):
 			tag
 		)
 		if exists:
-			await ctx.embed_reply(f"That global tag already exists\nIf you own it, use `{ctx.prefix}tag global edit <tag> <content>` to edit it")
+			await ctx.embed_reply(
+				"That global tag already exists\n"
+				f"If you own it, use `{ctx.prefix}tag global edit <tag> <content>` to edit it"
+			)
 			return
 		deleted = await ctx.bot.db.fetchrow(
 			"""
@@ -438,7 +443,9 @@ class Tools(commands.Cog):
 			tag, deleted["content"], ctx.author.id
 		)
 		# TODO: Optimize into single query
-		await ctx.embed_reply(f":thumbsup:{ctx.bot.emoji_skin_tone} Your tag has been {ctx.invoked_with}d")
+		await ctx.embed_reply(
+			f":thumbsup:{ctx.bot.emoji_skin_tone} Your tag has been {ctx.invoked_with}d"
+		)
 	
 	# TODO: rename, aliases
 	
