@@ -461,22 +461,38 @@ class Astronomy(commands.Cog):
 		http://www.astronomerstelegram.org/
 		'''
 		# TODO: use textwrap
-		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/telegrams/ATel/{}/".format(number), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.arcsecond.io/telegrams/ATel/{}/".format(number),
+			params = {"format": "json"}
+		) as resp:
 			if resp.status == 500:
 				await ctx.embed_reply(":no_entry: Error")
 				return
 			data = await resp.json()
-		# TODO: include credential_certification?, authors?, referring_telegrams?, external_links?
+		# TODO: include credential_certification?, authors?,
+		#       referring_telegrams?, external_links?
 		description = data["content"].replace('\n', ' ')
-		if len(description) > 1000: description = description[:1000] + "..."
+		if len(description) > 1000:
+			description = description[:1000] + "..."
 		fields = []
-		if len(data["subjects"]) > 1 or data["subjects"][0] != "Undefined": fields.append(("Subjects", ", ".join(sorted(data["subjects"]))))
-		related = ["[{0}](http://www.astronomerstelegram.org/?read={0})".format(related_telegram) for related_telegram in sorted(data["related_telegrams"])]
+		if len(data["subjects"]) > 1 or data["subjects"][0] != "Undefined":
+			fields.append(("Subjects", ", ".join(sorted(data["subjects"]))))
+		related = [
+			"[{0}](http://www.astronomerstelegram.org/?read={0})".format(related_telegram)
+			for related_telegram in sorted(data["related_telegrams"])
+		]
 		if related:
 			for i in range(0, len(related), 18):
 				fields.append(("Related Telegrams", ", ".join(related[i: i + 18])))
-		if data["detected_objects"]: fields.append(("Detected Objects", ", ".join(sorted(data["detected_objects"]))))
-		await ctx.embed_reply(description, title = data["title"], title_url = "http://www.astronomerstelegram.org/?read={}".format(number), fields = fields)
+		if data["detected_objects"]:
+			fields.append(
+				("Detected Objects", ", ".join(sorted(data["detected_objects"])))
+			)
+		await ctx.embed_reply(
+			description, title = data["title"],
+			title_url = "http://www.astronomerstelegram.org/?read={}".format(number),
+			fields = fields
+		)
 	
 	@telegram.command(name = "gcn", aliases = ["circulars"])
 	async def telegram_gcn(self, ctx, number: str):
