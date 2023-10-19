@@ -8,3 +8,7 @@ requires-python = "==3.10"
 [tool.mypy]
 packages = ["units"]
 python_version = "3.10"
+
+[tool.ruff]
+include = ["units/*.py"]
+target-version = "py310"
