@@ -37,8 +37,8 @@ async def get_geocode_data(
 async def get_timezone_data(
     location: str | None = None,
     *,
-    latitude: float | int | str | None = None,
-    longitude: float | int | str | None = None,
+    latitude: float | str | None = None,
+    longitude: float | str | None = None,
     aiohttp_session: aiohttp.ClientSession | None = None
 ) -> dict:
     async with ensure_session(aiohttp_session) as aiohttp_session:
