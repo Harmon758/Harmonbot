@@ -430,13 +430,24 @@ class Astronomy(commands.Cog):
 	@astronomy.command()
 	async def publication(self, ctx, *, bibcode: str):
 		'''Publications'''
-		async with ctx.bot.aiohttp_session.get("https://api.arcsecond.io/publications/{}/".format(bibcode), params = {"format": "json"}) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.arcsecond.io/publications/{}/".format(bibcode),
+			params = {"format": "json"}
+		) as resp:
 			data = await resp.json()
 		if not data:
 			await ctx.embed_reply(":no_entry: Publication not found")
 			return
-		if isinstance(data, list): data = data[0]
-		await ctx.embed_reply(title = data["title"], fields = (("Journal", data["journal"]), ("Year", data["year"]), ("Authors", data["authors"])))
+		if isinstance(data, list):
+			data = data[0]
+		await ctx.embed_reply(
+			title = data["title"],
+			fields = (
+				("Journal", data["journal"]),
+				("Year", data["year"]),
+				("Authors", data["authors"])
+			)
+		)
 	
 	@astronomy.group(invoke_without_command = True, case_insensitive = True)
 	async def telegram(self, ctx):
