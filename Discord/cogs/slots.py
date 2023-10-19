@@ -75,7 +75,7 @@ class Slots(commands.Cog):
                 f"You've played slots {plays:,} {time_declension}"
             )
         else:
-            await ctx.embed_reply(f"You haven't played slots yet")
+            await ctx.embed_reply("You haven't played slots yet")
 
     @slots.command(with_app_command = False)
     @commands.is_owner()
