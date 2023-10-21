@@ -206,7 +206,7 @@ class Resources(commands.Cog):
 			"Aquarius", "Aries", "Cancer", "Capricorn", "Gemini", "Leo",
 			"Libra", "Pisces", "Sagittarius", "Scorpio", "Taurus", "Virgo"
 		],
-		day: str = "today"
+		day: str = "today", weekly: bool = False, monthly: bool = False
 	):
 		"""
 		Show horoscope
@@ -218,6 +218,12 @@ class Resources(commands.Cog):
 		day
 			Day for which to show horoscope
 			("today" (default), "tomorrow", "yesterday", or YYYY-MM-DD)
+		weekly
+			Whether or not to include weekly horoscope
+			(Defaults to False)
+		monthly
+			Whether or not to include monthly horoscope
+			(Defaults to False)
 		"""
 		# https://horoscope-app-api.vercel.app/
 		# Alternatives APIs:
@@ -226,6 +232,7 @@ class Resources(commands.Cog):
 		# https://github.com/sandipbgt/theastrologer-api/issues/15#issuecomment-1315530973
 		# https://github.com/sameerkumar18/aztro/issues/42
 		
+		# TODO: Cache
 		async with ctx.bot.aiohttp_session.get(
 			"https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily",
 			params = {"sign": sign, "day": day}
@@ -237,17 +244,56 @@ class Resources(commands.Cog):
 					f"{ctx.bot.error_emoji} Error: {data['message']}"
 				)
 				return
+			
+			daily_data = data["data"]
+		
+		embeds = []
+		
+		if weekly:
+			# TODO: Cache
+			async with ctx.bot.aiohttp_session.get(
+				"https://horoscope-app-api.vercel.app/api/v1/get-horoscope/weekly",
+				params = {"sign": sign}
+			) as resp:
+				data = await resp.json()
+				weekly_data = data["data"]
+			
+			embeds.append(
+				discord.Embed(
+					color = ctx.bot.bot_color,
+					title = weekly_data["week"],
+					description = weekly_data["horoscope_data"]
+				)
+			)
+		
+		if monthly:
+			# TODO: Cache
+			async with ctx.bot.aiohttp_session.get(
+				"https://horoscope-app-api.vercel.app/api/v1/get-horoscope/monthly",
+				params = {"sign": sign}
+			) as resp:
+				data = await resp.json()
+				monthly_data = data["data"]
+			
+			embeds.append(
+				discord.Embed(
+					color = ctx.bot.bot_color,
+					title = monthly_data["month"],
+					description = monthly_data["horoscope_data"]
+				)
+			)
 		
 		await ctx.embed_reply(
 			title = f"{sign} {emoji.emojize(f':{sign}:')}",
-			description = data["data"]["horoscope_data"],
+			description = daily_data["horoscope_data"],
 			timestamp = (
 				datetime.datetime.strptime(
-					data["data"]["date"], "%b %d, %Y"
+					daily_data["date"], "%b %d, %Y"
 				).replace(
 					tzinfo = datetime.timezone.utc
 				)
-			)
+			),
+			embeds = embeds
 		)
 	
 	@commands.command(usage = "<input>")
