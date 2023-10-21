@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands, menus
 
 import asyncio
-import datetime
 from typing import Literal, Optional
 
 import dateutil
