@@ -949,58 +949,73 @@ class Bot(commands.Bot):
 			error = error.errors[0]
 		## Guild only
 		if isinstance(error, commands.NoPrivateMessage):
-			return await ctx.embed_reply("Please use that command in a server")
+			await ctx.embed_reply("Please use that command in a server")
+			return
 		## User missing permissions
 		if isinstance(error, (errors.NotGuildOwner, commands.MissingPermissions)):
 			# Also for commands.NotOwner?
-			return await ctx.embed_reply(f"{self.error_emoji} You don't have permission to do that")
+			await ctx.embed_reply(f"{self.error_emoji} You don't have permission to do that")
+			return
 		## Bot missing permissions
 		if isinstance(error, commands.BotMissingPermissions):
 			missing_permissions = self.inflect_engine.join([f"`{permission}`" for permission in error.missing_permissions])
-			return await ctx.embed_reply("I don't have permission to do that here\n"
-											f"I need the {missing_permissions} {self.inflect_engine.plural('permission', len(error.missing_permissions))}")
+			await ctx.embed_reply("I don't have permission to do that here\n"
+									f"I need the {missing_permissions} {self.inflect_engine.plural('permission', len(error.missing_permissions))}")
+			return
 		## User not permitted to use command
 		if isinstance(error, errors.NotPermitted):
-			return await ctx.embed_reply(f"{self.error_emoji} You don't have permission to use that command here")
+			await ctx.embed_reply(f"{self.error_emoji} You don't have permission to use that command here")
+			return
 		## Not in voice channel + user permitted
 		if isinstance(error, errors.PermittedVoiceNotConnected):
-			return await ctx.embed_reply("I'm not in a voice channel\n"
-											f"Please use `{ctx.prefix}join` first")
+			await ctx.embed_reply("I'm not in a voice channel\n"
+									f"Please use `{ctx.prefix}join` first")
+			return
 		## Not in voice channel + user not permitted
 		if isinstance(error, errors.NotPermittedVoiceNotConnected):
-			return await ctx.embed_reply("I'm not in a voice channel\n"
-											f"Please ask someone with permission to use `{ctx.prefix}join` first")
+			await ctx.embed_reply("I'm not in a voice channel\n"
+									f"Please ask someone with permission to use `{ctx.prefix}join` first")
+			return
 		# User Input Error
 		## Missing required input
 		if isinstance(error, commands.MissingRequiredArgument):
-			return await ctx.embed_reply(str(error).rstrip('.').replace("argument", "input"))
+			await ctx.embed_reply(str(error).rstrip('.').replace("argument", "input"))
+			return
 		## Input parsing error
 		if isinstance(error, commands.ArgumentParsingError):
-			return await ctx.embed_reply(f"{self.error_emoji} Error parsing input: " + str(error).replace("'", '`'))
+			await ctx.embed_reply(f"{self.error_emoji} Error parsing input: " + str(error).replace("'", '`'))
+			return
 		## Invalid input
 		if isinstance(error, (commands.BadArgument, commands.BadLiteralArgument, commands.BadUnionArgument)):
-			return await ctx.embed_reply(f"{self.error_emoji} Error: Invalid Input: {error}")
+			await ctx.embed_reply(f"{self.error_emoji} Error: Invalid Input: {error}")
+			return
 		# Command Invoke Error
 		if isinstance(error, commands.CommandInvokeError):
 			# Unable to bulk delete messages older than 14 days
 			if isinstance(error.original, discord.HTTPException) and error.original.code == 50034:
-				return await ctx.embed_reply(f"{self.error_emoji} Error: You can only bulk delete messages that are under 14 days old")
+				await ctx.embed_reply(f"{self.error_emoji} Error: You can only bulk delete messages that are under 14 days old")
+				return
 			# Menus
 			if isinstance(error.original, menus.CannotEmbedLinks):
-				return await ctx.embed_reply("I need to be able to send embeds to show menus\n"
-												"Plese give me permission to Embed Links")
+				await ctx.embed_reply("I need to be able to send embeds to show menus\n"
+										"Plese give me permission to Embed Links")
+				return
 			if isinstance(error.original, menus.CannotAddReactions):
-				return await ctx.embed_reply("I need to be able to add reactions to show menus\n"
-												"Please give me permission to Add Reactions")
+				await ctx.embed_reply("I need to be able to add reactions to show menus\n"
+										"Please give me permission to Add Reactions")
+				return
 			if isinstance(error.original, menus.CannotReadMessageHistory):
-				return await ctx.embed_reply("I need to be able to read message history to show menus\n"
-												"Please give me permission to Read Message History")
+				await ctx.embed_reply("I need to be able to read message history to show menus\n"
+										"Please give me permission to Read Message History")
+				return
 			# Bot missing permissions (Unhandled)
 			if isinstance(error.original, (discord.Forbidden, menus.CannotSendMessages)):
-				return self.print(f"Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}")
+				self.print(f"Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}")
+				return
 			# Discord Server Error
 			if isinstance(error.original, discord.DiscordServerError):
-				return self.print(f"Discord Server Error for {ctx.command.qualified_name}: {error.original}")
+				self.print(f"Discord Server Error for {ctx.command.qualified_name}: {error.original}")
+				return
 			# Handled with local error handler
 			if isinstance(error.original, youtube_dl.utils.DownloadError):
 				return
