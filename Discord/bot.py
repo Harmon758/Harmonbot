@@ -575,8 +575,10 @@ class Bot(commands.Bot):
             if "YouTube" not in self.cogs:
                 return web.Response(status = 503)  # Return 503 Service Unavailable
             channel_id = parse.parse_qs(parse.urlparse(request.query.get("hub.topic")).query)["channel_id"][0]
-            if ((channel_id in self.get_cog("YouTube").uploads_following and hub_mode == "subscribe") or 
-                (channel_id not in self.get_cog("YouTube").uploads_following and hub_mode == "unsubscribe")):
+            if (
+                (channel_id in self.get_cog("YouTube").uploads_following and hub_mode == "subscribe") or
+                (channel_id not in self.get_cog("YouTube").uploads_following and hub_mode == "unsubscribe")
+            ):
                 return web.Response(body = request.query.get("hub.challenge"))
             else:
                 return web.Response(status = 404)  # Return 404 Not Found
