@@ -203,8 +203,8 @@ class Resources(commands.Cog):
 	async def horoscope(
 		self, ctx,
 		sign: Literal[
-			"Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra",
-			"Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+			"Aquarius", "Aries", "Cancer", "Capricorn", "Gemini", "Leo",
+			"Libra", "Pisces", "Sagittarius", "Scorpio", "Taurus", "Virgo"
 		],
 		day: str = "today"
 	):
