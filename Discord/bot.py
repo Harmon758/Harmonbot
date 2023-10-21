@@ -1224,8 +1224,10 @@ class Bot(commands.Bot):
             raise asyncio.TimeoutError
         return done.pop().result()
 
-    async def wait_for_yes_or_no(self, *, channel = None, message = None, user = None, timeout = None, 
-                                    accept_text = True, use_reactions = False, cleanup = True):
+    async def wait_for_yes_or_no(
+        self, *, channel = None, message = None, user = None, timeout = None,
+        accept_text = True, use_reactions = False, cleanup = True
+    ):
         def message_check(message):
             if channel and message.channel != channel:
                 return False
@@ -1242,7 +1244,9 @@ class Bot(commands.Bot):
                 return False
             if not payload.emoji.is_unicode_emoji():
                 return False
-            if payload.emoji.name not in ('\N{HEAVY CHECK MARK}', '\N{HEAVY MULTIPLICATION X}'):
+            if payload.emoji.name not in (
+                '\N{HEAVY CHECK MARK}', '\N{HEAVY MULTIPLICATION X}'
+            ):
                 return False
             return True
 
@@ -1255,16 +1259,29 @@ class Bot(commands.Bot):
             # TODO: Handle unable to add reactions
             await message.add_reaction('\N{HEAVY CHECK MARK}')
             await message.add_reaction('\N{HEAVY MULTIPLICATION X}')
-            to_wait_for.append(self.wait_for("raw_reaction_add", check = raw_reaction_check))
-            to_wait_for.append(self.wait_for("raw_reaction_remove", check = raw_reaction_check))
+            to_wait_for.append(
+                self.wait_for("raw_reaction_add", check = raw_reaction_check)
+            )
+            to_wait_for.append(
+                self.wait_for(
+                    "raw_reaction_remove", check = raw_reaction_check
+                )
+            )
 
-        done, pending = await asyncio.wait(to_wait_for, return_when = asyncio.FIRST_COMPLETED, timeout = timeout)
+        done, pending = await asyncio.wait(
+            to_wait_for, return_when = asyncio.FIRST_COMPLETED,
+            timeout = timeout
+        )
         for task in pending:
             task.cancel()
 
         if message and use_reactions and cleanup:
-            await message.remove_reaction('\N{HEAVY CHECK MARK}', message.guild.me)
-            await message.remove_reaction('\N{HEAVY MULTIPLICATION X}', message.guild.me)
+            await message.remove_reaction(
+                '\N{HEAVY CHECK MARK}', message.guild.me
+            )
+            await message.remove_reaction(
+                '\N{HEAVY MULTIPLICATION X}', message.guild.me
+            )
 
         if not done:
             raise asyncio.TimeoutError
