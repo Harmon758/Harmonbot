@@ -246,8 +246,8 @@ class Resources(commands.Cog):
 				)
 				return
 			
-			# data = await resp.json(content_type = "text/html")
 			data = await resp.json()
+			# data = await resp.json(content_type = "text/html")
 			
 			if resp.status == 400:
 				await ctx.embed_reply(
@@ -256,12 +256,12 @@ class Resources(commands.Cog):
 				return
 		
 		date = [int(d) for d in data["date"].split('-')]
-		# await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""),
 		await ctx.embed_reply(
-			data["horoscope"],
 			title = data["sunsign"],
+			description = data["horoscope"],
+			# data["horoscope"].replace(data["credit"], "")
 			fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()),
-			# footer_text = data["credit"], timestamp = timestamp)
+			# footer_text = data["credit"], timestamp = timestamp),
 			timestamp = datetime.datetime(date[0], date[1], date[2])
 		)
 	
