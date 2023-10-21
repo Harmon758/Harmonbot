@@ -233,38 +233,32 @@ class Resources(commands.Cog):
 		await self.process_horoscope(ctx, sign, "yesterday")
 	
 	async def process_horoscope(self, ctx, sign, day):
+		# https://horoscope-app-api.vercel.app/
+		# Alternatives APIs:
+		# https://ohmanda.com/api/horoscope/
 		# https://github.com/sandipbgt/theastrologer-api/issues/13
+		# https://github.com/sandipbgt/theastrologer-api/issues/15#issuecomment-1315530973
+		# https://github.com/sameerkumar18/aztro/issues/42
 		if len(sign) == 1:
 			sign = unicodedata.name(sign)
 		sign = sign.lower()
 		
 		async with ctx.bot.aiohttp_session.get(
-			# f"http://sandipbgt.com/theastrologer/api/horoscope/{sign}/{day}/"
-			f"http://theastrologer-api.herokuapp.com/api/horoscope/{sign}/{day}"
+			"https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily",
+			params = {"sign": sign, "day": day}
 		) as resp:
-			if resp.status in (404, 500, 503):
-				await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} API Error: {resp.status} {resp.reason}"
-				)
-				return
-			
 			data = await resp.json()
-			# data = await resp.json(content_type = "text/html")
-			
-			if resp.status == 400:
-				await ctx.embed_reply(
-					f"{ctx.bot.error_emoji} API Error: {data.get('message')}"
-				)
-				return
 		
-		date = [int(d) for d in data["date"].split('-')]
 		await ctx.embed_reply(
-			title = data["sunsign"],
-			description = data["horoscope"],
-			# data["horoscope"].replace(data["credit"], "")
-			fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()),
-			# footer_text = data["credit"], timestamp = timestamp),
-			timestamp = datetime.datetime(date[0], date[1], date[2])
+			# title = data["sunsign"],
+			description = data["data"]["horoscope_data"],
+			timestamp = (
+				datetime.datetime.strptime(
+					data["data"]["date"], "%b %d, %Y"
+				).replace(
+					tzinfo = datetime.timezone.utc
+				)
+			)
 		)
 	
 	@commands.command(usage = "<input>")
