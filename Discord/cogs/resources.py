@@ -786,6 +786,7 @@ class Resources(commands.Cog):
         else:
             await ctx.embed_reply("I don't know what that is")
 
+
 class NewsButtonPaginator(ButtonPaginator):
 
     def __init__(self, ctx, source):
@@ -808,6 +809,7 @@ class NewsButtonPaginator(ButtonPaginator):
     async def stop(self, interaction = None):
         self.send_article_link.disabled = True
         await super().stop(interaction = interaction)
+
 
 class NewsSource(menus.ListPageSource):
 
