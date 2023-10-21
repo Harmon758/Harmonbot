@@ -1083,32 +1083,35 @@ class Bot(commands.Bot):
 		logging.getLogger("errors").error("Uncaught exception\n", exc_info = (error_type, value, error_traceback))
 	
 	async def on_message_edit(self, before, after):
-		if after.edited_at != before.edited_at:
-			if before.content != after.content:
-				await self.db.execute(
-					"""
-					INSERT INTO chat.edits (edited_at, message_id, before_content, after_content)
-					SELECT $1, $2, $3, $4
-					WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
-					ON CONFLICT (edited_at, message_id) DO
-					UPDATE SET before_content = $3, after_content = $4
-					""", 
-					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, 
-					before.content.replace('\N{NULL}', ""), after.content.replace('\N{NULL}', "")
-				)
-			before_embeds = [embed.to_dict() for embed in before.embeds]
-			after_embeds = [embed.to_dict() for embed in after.embeds]
-			if before_embeds != after_embeds:
-				await self.db.execute(
-					"""
-					INSERT INTO chat.edits (edited_at, message_id, before_embeds, after_embeds)
-					SELECT $1, $2, $3, $4
-					WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
-					ON CONFLICT (edited_at, message_id) DO
-					UPDATE SET before_embeds = CAST($3 AS jsonb[]), after_embeds = CAST($4 AS jsonb[])
-					""", 
-					after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before_embeds, after_embeds
-				)
+		try:
+			if after.edited_at != before.edited_at:
+				if before.content != after.content:
+					await self.db.execute(
+						"""
+						INSERT INTO chat.edits (edited_at, message_id, before_content, after_content)
+						SELECT $1, $2, $3, $4
+						WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
+						ON CONFLICT (edited_at, message_id) DO
+						UPDATE SET before_content = $3, after_content = $4
+						""", 
+						after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, 
+						before.content.replace('\N{NULL}', ""), after.content.replace('\N{NULL}', "")
+					)
+				before_embeds = [embed.to_dict() for embed in before.embeds]
+				after_embeds = [embed.to_dict() for embed in after.embeds]
+				if before_embeds != after_embeds:
+					await self.db.execute(
+						"""
+						INSERT INTO chat.edits (edited_at, message_id, before_embeds, after_embeds)
+						SELECT $1, $2, $3, $4
+						WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
+						ON CONFLICT (edited_at, message_id) DO
+						UPDATE SET before_embeds = CAST($3 AS jsonb[]), after_embeds = CAST($4 AS jsonb[])
+						""", 
+						after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before_embeds, after_embeds
+					)
+		except OSError as e:
+			self.print(f"Error processing message edit: {e}")
 	
 	async def on_socket_event_type(self, event_type):
 		self.socket_events[event_type] = self.socket_events.get(event_type, 0) + 1
