@@ -590,9 +590,11 @@ class Bot(commands.Bot):
         async for line in request.content:
             print(line)
         '''
-        if (request.headers.get("User-Agent") == "FeedFetcher-Google; (+http://www.google.com/feedfetcher.html)" and 
-            request.headers.get("From") == "googlebot(at)googlebot.com" and 
-            request.content_type == "application/atom+xml"):
+        if (
+            request.headers.get("User-Agent") == "FeedFetcher-Google; (+http://www.google.com/feedfetcher.html)" and
+            request.headers.get("From") == "googlebot(at)googlebot.com" and
+            request.content_type == "application/atom+xml"
+        ):
             if "YouTube" not in self.cogs:
                 return web.Response(status = 503)  # Return 503 Service Unavailable
             for link in requests.utils.parse_header_links(request.headers.get("Link")):
