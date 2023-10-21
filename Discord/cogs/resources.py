@@ -5,9 +5,9 @@ from discord.ext import commands, menus
 import asyncio
 import datetime
 from typing import Literal, Optional
-import unicodedata
 
 import dateutil
+import emoji
 
 from utilities import checks
 from utilities.paginators import ButtonPaginator
@@ -239,7 +239,7 @@ class Resources(commands.Cog):
 				return
 		
 		await ctx.embed_reply(
-			# title = data["sunsign"],
+			title = f"{sign} {emoji.emojize(f':{sign}:')}",
 			description = data["data"]["horoscope_data"],
 			timestamp = (
 				datetime.datetime.strptime(
