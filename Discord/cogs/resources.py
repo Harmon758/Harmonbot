@@ -4,7 +4,7 @@ from discord.ext import commands, menus
 
 import asyncio
 import datetime
-from typing import Optional
+from typing import Literal, Optional
 import unicodedata
 
 import dateutil
@@ -198,9 +198,16 @@ class Resources(commands.Cog):
 			f"Breached accounts: {breachedaccounts}\nPastes: {pastedaccounts}"
 		)
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True)
+	@commands.command()
 	@checks.not_forbidden()
-	async def horoscope(self, ctx, sign: str, day: str = "today"):
+	async def horoscope(
+		self, ctx,
+		sign: Literal[
+			"Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra",
+			"Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+		],
+		day: str = "today"
+	):
 		'''Horoscope'''
 		# https://horoscope-app-api.vercel.app/
 		# Alternatives APIs:
@@ -208,9 +215,6 @@ class Resources(commands.Cog):
 		# https://github.com/sandipbgt/theastrologer-api/issues/13
 		# https://github.com/sandipbgt/theastrologer-api/issues/15#issuecomment-1315530973
 		# https://github.com/sameerkumar18/aztro/issues/42
-		if len(sign) == 1:
-			sign = unicodedata.name(sign)
-		sign = sign.lower()
 		
 		async with ctx.bot.aiohttp_session.get(
 			"https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily",
@@ -235,16 +239,6 @@ class Resources(commands.Cog):
 				)
 			)
 		)
-	
-	@horoscope.command(name = "signs", aliases = ["sun_signs", "sunsigns"])
-	@checks.not_forbidden()
-	async def horoscope_signs(self, ctx):
-		'''Sun signs'''
-		async with ctx.bot.aiohttp_session.get(
-			"http://sandipbgt.com/theastrologer/api/sunsigns"
-		) as resp:
-			data = await resp.json(content_type = "text/html")
-		await ctx.embed_reply(", ".join(data))
 	
 	@commands.command(usage = "<input>")
 	@checks.not_forbidden()
