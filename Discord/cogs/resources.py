@@ -208,7 +208,7 @@ class Resources(commands.Cog):
 		],
 		day: str = "today"
 	):
-		'''
+		"""
 		Show horoscope
 		
 		Parameters
@@ -218,7 +218,7 @@ class Resources(commands.Cog):
 		day
 			Day for which to show horoscope
 			("today" (default), "tomorrow", "yesterday", or YYYY-MM-DD)
-		'''
+		"""
 		# https://horoscope-app-api.vercel.app/
 		# Alternatives APIs:
 		# https://ohmanda.com/api/horoscope/
