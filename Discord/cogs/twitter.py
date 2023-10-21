@@ -607,7 +607,7 @@ class Twitter(commands.Cog):
             except discord.DiscordServerError as e:
                 self.bot.print(f"Twitter Task Discord Server Error: {e}")
                 await asyncio.sleep(60)
-            except aiohttp.ClientConnectionError:
+            except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
                 # TODO: Log
                 await asyncio.sleep(1)
             except Exception as e:
