@@ -1062,9 +1062,6 @@ class Bot(commands.Bot):
 					f"Discord Server Error for {ctx.command.qualified_name}: {error.original}"
 				)
 				return
-			# Handled with local error handler
-			if isinstance(error.original, youtube_dl.utils.DownloadError):
-				return
 		# Handled with cog error handler
 		if isinstance(error, commands.MaxConcurrencyReached):
 			return
