@@ -241,22 +241,29 @@ class Resources(commands.Cog):
 			f"http://theastrologer-api.herokuapp.com/api/horoscope/{sign}/{day}"
 		) as resp:
 			if resp.status in (404, 500, 503):
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} API Error: {resp.status} {resp.reason}")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} API Error: {resp.status} {resp.reason}"
+				)
 				return
 			
 			# data = await resp.json(content_type = "text/html")
 			data = await resp.json()
 			
 			if resp.status == 400:
-				await ctx.embed_reply(f"{ctx.bot.error_emoji} API Error: {data.get('message')}")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} API Error: {data.get('message')}"
+				)
 				return
 		
 		date = [int(d) for d in data["date"].split('-')]
-		# await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""), 
-		await ctx.embed_reply(data["horoscope"], 
-								title = data["sunsign"], fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()), 
-		#						footer_text = data["credit"], timestamp = timestamp)
-								timestamp = datetime.datetime(date[0], date[1], date[2]))
+		# await ctx.embed_reply(data["horoscope"].replace(data["credit"], ""),
+		await ctx.embed_reply(
+			data["horoscope"],
+			title = data["sunsign"],
+			fields = sorted((k.capitalize(), v) for k, v in data["meta"].items()),
+			# footer_text = data["credit"], timestamp = timestamp)
+			timestamp = datetime.datetime(date[0], date[1], date[2])
+		)
 	
 	@commands.command(usage = "<input>")
 	@checks.not_forbidden()
