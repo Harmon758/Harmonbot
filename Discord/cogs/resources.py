@@ -214,10 +214,10 @@ class Resources(commands.Cog):
 		Parameters
 		----------
 		sign
-			Astrological star/sun sign
+			Astrological star/sun sign for which to show horoscope
 		day
-			"today", "tomorrow", "yesterday", or YYYY-MM-DD
-			(Defaults to "today")
+			Day for which to show horoscope
+			("today" (default), "tomorrow", "yesterday", or YYYY-MM-DD)
 		'''
 		# https://horoscope-app-api.vercel.app/
 		# Alternatives APIs:
