@@ -198,7 +198,7 @@ class Resources(commands.Cog):
 			f"Breached accounts: {breachedaccounts}\nPastes: {pastedaccounts}"
 		)
 	
-	@commands.command()
+	@commands.hybrid_command()
 	@checks.not_forbidden()
 	async def horoscope(
 		self, ctx,
@@ -208,7 +208,17 @@ class Resources(commands.Cog):
 		],
 		day: str = "today"
 	):
-		'''Horoscope'''
+		'''
+		Show horoscope
+		
+		Parameters
+		----------
+		sign
+			Astrological star/sun sign
+		day
+			"today", "tomorrow", "yesterday", or YYYY-MM-DD
+			(Defaults to "today")
+		'''
 		# https://horoscope-app-api.vercel.app/
 		# Alternatives APIs:
 		# https://ohmanda.com/api/horoscope/
