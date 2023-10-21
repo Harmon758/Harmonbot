@@ -288,6 +288,7 @@ class Resources(commands.Cog):
 			author_name = f"{sign} {emoji.emojize(f':{sign}:')}",
 			title = daily_data["date"],
 			description = daily_data["horoscope_data"],
+			footer_text = None,
 			embeds = embeds
 		)
 	
