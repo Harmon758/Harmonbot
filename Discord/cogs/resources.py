@@ -231,6 +231,7 @@ class Resources(commands.Cog):
 		# https://github.com/sandipbgt/theastrologer-api/issues/13
 		# https://github.com/sandipbgt/theastrologer-api/issues/15#issuecomment-1315530973
 		# https://github.com/sameerkumar18/aztro/issues/42
+		await ctx.defer()
 		
 		# TODO: Cache
 		async with ctx.bot.aiohttp_session.get(
