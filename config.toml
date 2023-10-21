@@ -40,7 +40,7 @@ game_statuses = [
     "the Reimann hypothesis", "the Reimann proof", "the Turing test",
     "tic-tac-toe with Joshua", "tic-tac-toe with WOPR", "to win", "with Alexa",
     "with BB-8", "with Bumblebee", "with C-3PO", "with Cleverbot",
-    "with Curiousity", "with Data",
+    "with Clyde", "with Curiousity", "with Data",
     "with Extra-terrestrial Vegetation Evaluator", "with Harmon",
     "with humans", "with i7-2670QM",
     "with Just A Rather Very Intelligent System", "with KIPP",
@@ -51,7 +51,6 @@ game_statuses = [
     "with Spirit in the sand pit", "with TARS", "with the infinity gauntlet",
     "with the NSA", "with Voyager 1",
     "with Waste Allocation Load Lifter: Earth-Class", "world domination",
-    "with Clyde"
 ]
 stream_url = "https://www.twitch.tv/harmonbot"
 
