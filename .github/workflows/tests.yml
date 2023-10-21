@@ -13,13 +13,7 @@ jobs:
       with:
         python-version-file: pyproject.toml
         architecture: x64
-    - name: Cache pip
-      uses: actions/cache@v3.3.2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        cache: pip
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -37,13 +31,7 @@ jobs:
       with:
         python-version-file: pyproject.toml
         architecture: x64
-    - name: Cache pip
-      uses: actions/cache@v3.3.2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        cache: pip
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -61,13 +49,7 @@ jobs:
       with:
         python-version-file: pyproject.toml
         architecture: x64
-    - name: Cache pip
-      uses: actions/cache@v3.3.2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        cache: pip
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
