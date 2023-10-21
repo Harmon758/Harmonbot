@@ -147,16 +147,27 @@ class Resources(commands.Cog):
 	async def gender(self, ctx, name: str):
 		'''Gender of a name'''
 		# TODO: add localization options?
-		async with ctx.bot.aiohttp_session.get("https://api.genderize.io/", params = {"name": name}) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://api.genderize.io/",
+			params = {"name": name}
+		) as resp:
 			# TODO: check status code
 			data = await resp.json()
 		
 		if not data["gender"]:
-			await ctx.embed_reply("Gender: Unknown", title = data["name"].capitalize())
+			await ctx.embed_reply(
+				"Gender: Unknown",
+				title = data["name"].capitalize()
+			)
 			return
 		
-		await ctx.embed_reply(f"Gender: {data['gender']}", title = data["name"].capitalize(), 
-								footer_text = f"Probability: {data['probability']:.0%} ({data['count']} data entries examined)")
+		await ctx.embed_reply(
+			f"Gender: {data['gender']}",
+			title = data["name"].capitalize(),
+			footer_text = (
+				f"Probability: {data['probability']:.0%} ({data['count']} data entries examined)"
+			)
+		)
 	
 	@commands.command()
 	@checks.not_forbidden()
