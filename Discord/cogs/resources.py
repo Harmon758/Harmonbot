@@ -285,15 +285,9 @@ class Resources(commands.Cog):
 			)
 		
 		await ctx.embed_reply(
-			title = f"{sign} {emoji.emojize(f':{sign}:')}",
+			author_name = f"{sign} {emoji.emojize(f':{sign}:')}",
+			title = daily_data["date"],
 			description = daily_data["horoscope_data"],
-			timestamp = (
-				datetime.datetime.strptime(
-					daily_data["date"], "%b %d, %Y"
-				).replace(
-					tzinfo = datetime.timezone.utc
-				)
-			),
 			embeds = embeds
 		)
 	
