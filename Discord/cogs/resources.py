@@ -200,39 +200,8 @@ class Resources(commands.Cog):
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
-	async def horoscope(self, ctx, sign: str):
+	async def horoscope(self, ctx, sign: str, day: str = "today"):
 		'''Horoscope'''
-		await self.process_horoscope(ctx, sign, "today")
-	
-	@horoscope.command(name = "signs", aliases = ["sun_signs", "sunsigns"])
-	@checks.not_forbidden()
-	async def horoscope_signs(self, ctx):
-		'''Sun signs'''
-		async with ctx.bot.aiohttp_session.get(
-			"http://sandipbgt.com/theastrologer/api/sunsigns"
-		) as resp:
-			data = await resp.json(content_type = "text/html")
-		await ctx.embed_reply(", ".join(data))
-	
-	@horoscope.command(name = "today")
-	@checks.not_forbidden()
-	async def horoscope_today(self, ctx, sign):
-		'''Today's horoscope'''
-		await self.process_horoscope(ctx, sign, "today")
-	
-	@horoscope.command(name = "tomorrow")
-	@checks.not_forbidden()
-	async def horoscope_tomorrow(self, ctx, sign):
-		'''Tomorrow's horoscope'''
-		await self.process_horoscope(ctx, sign, "tomorrow")
-	
-	@horoscope.command(name = "yesterday")
-	@checks.not_forbidden()
-	async def horoscope_yesterday(self, ctx, sign):
-		'''Yesterday's horoscope'''
-		await self.process_horoscope(ctx, sign, "yesterday")
-	
-	async def process_horoscope(self, ctx, sign, day):
 		# https://horoscope-app-api.vercel.app/
 		# Alternatives APIs:
 		# https://ohmanda.com/api/horoscope/
@@ -248,6 +217,12 @@ class Resources(commands.Cog):
 			params = {"sign": sign, "day": day}
 		) as resp:
 			data = await resp.json()
+			
+			if resp.status == 400:
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: {data['message']}"
+				)
+				return
 		
 		await ctx.embed_reply(
 			# title = data["sunsign"],
@@ -260,6 +235,16 @@ class Resources(commands.Cog):
 				)
 			)
 		)
+	
+	@horoscope.command(name = "signs", aliases = ["sun_signs", "sunsigns"])
+	@checks.not_forbidden()
+	async def horoscope_signs(self, ctx):
+		'''Sun signs'''
+		async with ctx.bot.aiohttp_session.get(
+			"http://sandipbgt.com/theastrologer/api/sunsigns"
+		) as resp:
+			data = await resp.json(content_type = "text/html")
+		await ctx.embed_reply(", ".join(data))
 	
 	@commands.command(usage = "<input>")
 	@checks.not_forbidden()
