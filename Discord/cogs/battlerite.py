@@ -36,16 +36,16 @@ class Battlerite(commands.Cog):
 				self.mappings = json.load(mappings_file)
 			return
 		if not os.path.isfile(self.bot.data_path + "/battlerite/stackables.json"):
-			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"67104/stackables.json")
-			async with self.bot.aiohttp_session.get(url) as resp:
+			async with self.bot.aiohttp_session.get(
+				"https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/67104/stackables.json"
+			) as resp:
 				data = await resp.content.read()
 			with open(self.bot.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
 				stackables_file.write(data)
 		if not os.path.isfile(self.bot.data_path + "/battlerite/English.ini"):
-			url = ("https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/"
-					"67104/Localization/English.ini")
-			async with self.bot.aiohttp_session.get(url) as resp:
+			async with self.bot.aiohttp_session.get(
+				"https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/67104/Localization/English.ini"
+			) as resp:
 				data = await resp.content.read()
 			with open(self.bot.data_path + "/battlerite/English.ini", "wb") as localization_file:
 				localization_file.write(data)
