@@ -30,29 +30,35 @@ class Battlerite(commands.Cog):
 	
 	async def cog_load(self):
 		# Load mappings
-		create_folder(self.bot.data_path + "/battlerite")
-		if os.path.isfile(self.bot.data_path + "/battlerite/mappings.json"):
-			with open(self.bot.data_path + "/battlerite/mappings.json", 'r') as mappings_file:
+		battlerite_folder = self.bot.data_path + "/battlerite"
+		create_folder(battlerite_folder)
+		
+		if os.path.isfile(battlerite_folder + "/mappings.json"):
+			with open(battlerite_folder + "/mappings.json", 'r') as mappings_file:
 				self.mappings = json.load(mappings_file)
 			return
-		if not os.path.isfile(self.bot.data_path + "/battlerite/stackables.json"):
+		
+		if not os.path.isfile(battlerite_folder + "/stackables.json"):
 			async with self.bot.aiohttp_session.get(
 				"https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/67104/stackables.json"
 			) as resp:
 				data = await resp.content.read()
-			with open(self.bot.data_path + "/battlerite/stackables.json", "wb") as stackables_file:
+			with open(battlerite_folder + "/stackables.json", "wb") as stackables_file:
 				stackables_file.write(data)
-		if not os.path.isfile(self.bot.data_path + "/battlerite/English.ini"):
+		
+		if not os.path.isfile(battlerite_folder + "/English.ini"):
 			async with self.bot.aiohttp_session.get(
 				"https://raw.githubusercontent.com/StunlockStudios/battlerite-assets/master/mappings/67104/Localization/English.ini"
 			) as resp:
 				data = await resp.content.read()
-			with open(self.bot.data_path + "/battlerite/English.ini", "wb") as localization_file:
+			with open(battlerite_folder + "/English.ini", "wb") as localization_file:
 				localization_file.write(data)
-		with open(self.bot.data_path + "/battlerite/stackables.json", 'r') as stackables_file:
+		
+		with open(battlerite_folder + "/stackables.json", 'r') as stackables_file:
 			stackables = json.load(stackables_file)
+		
 		localization = {}
-		with open(self.bot.data_path + "/battlerite/English.ini", 'r', encoding = "UTF-16") as localization_file:
+		with open(battlerite_folder + "/English.ini", 'r', encoding = "UTF-16") as localization_file:
 			for line in localization_file:
 				id_name = line.strip().split('=', maxsplit = 1)
 				localization[id_name[0]] = id_name[1]
@@ -60,7 +66,7 @@ class Battlerite(commands.Cog):
 		for item in stackables["Mappings"]:
 			name = localization.get(item.get("LocalizedName"), item["DevName"])
 			self.mappings[str(item["StackableId"])] = {"Name": name, "Type": item["StackableRangeName"]}
-		with open(self.bot.data_path + "/battlerite/mappings.json", 'w') as mappings_file:
+		with open(battlerite_folder + "/mappings.json", 'w') as mappings_file:
 			json.dump(self.mappings, mappings_file, indent = 4)
 		# Load emoji
 		# TODO: Check only within Emoji Server emojis?
