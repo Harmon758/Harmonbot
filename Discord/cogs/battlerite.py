@@ -99,7 +99,10 @@ class Battlerite(commands.Cog):
 	async def get_player(self, player):
 		async with self.bot.aiohttp_session.get(
 			"https://api.developer.battlerite.com/shards/global/players",
-			headers = {"Authorization": self.bot.BATTLERITE_API_KEY, "Accept": "application/vnd.api+json"},
+			headers = {
+				"Authorization": self.bot.BATTLERITE_API_KEY,
+				"Accept": "application/vnd.api+json"
+			},
 			params = {"filter[playerNames]": player}
 		) as resp:
 			data = await resp.json()
