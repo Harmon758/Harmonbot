@@ -344,7 +344,8 @@ class AudioPlayer:
 				self.listener.cancel()
 			self.listener = None
 			await self.finish_listening()
-			if self.listen_paused: self.resume()
+			if self.listen_paused:
+				self.resume()
 			self.not_interrupted.set()
 	
 	async def listen_task(self):
