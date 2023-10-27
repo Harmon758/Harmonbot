@@ -2,13 +2,10 @@
 from twitchio.ext import commands
 
 import datetime
-import sys
 
 import dateutil.parser
 
-sys.path.insert(0, "..")
 from units.time import duration_to_string
-sys.path.pop(0)
 
 @commands.cog()
 class Twitch:

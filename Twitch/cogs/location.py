@@ -2,13 +2,10 @@
 from twitchio.ext import commands
 
 import datetime
-import sys
 
 import pyowm
 
-sys.path.insert(0, "..")
 from units.location import wind_degrees_to_direction
-sys.path.pop(0)
 
 @commands.cog()
 class Location:

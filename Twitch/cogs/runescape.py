@@ -3,13 +3,10 @@ from twitchio.ext import commands
 
 import bisect
 import datetime
-import sys
 import time
 
-sys.path.insert(0, "..")
 from units.runescape import get_ge_data, get_monster_data
 from units.time import duration_to_string
-sys.path.pop(0)
 
 @commands.cog()
 class Runescape:

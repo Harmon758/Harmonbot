@@ -2,14 +2,11 @@
 from twitchio.ext import commands
 
 import datetime
-import sys
 
 import dateutil.easter
 
-sys.path.insert(0, "..")
 from units.location import get_geocode_data, get_timezone_data
 from units.time import duration_to_string
-sys.path.pop(0)
 
 @commands.cog()
 class Time:

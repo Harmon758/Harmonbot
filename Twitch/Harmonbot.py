@@ -4,19 +4,16 @@ from twitchio.ext import commands
 import asyncio
 import datetime
 import os
-import sys
 
 import aiohttp
 import asyncpg
 import dotenv
 import pyowm
 
+from units.games import eightball
 from utilities import context
 from utilities import logging
 
-sys.path.insert(0, "..")
-from units.games import eightball
-sys.path.pop(0)
 
 class Bot(commands.Bot):
 	
