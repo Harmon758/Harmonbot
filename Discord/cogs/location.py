@@ -6,17 +6,14 @@ from discord.ext import commands
 from decimal import Decimal
 import io
 import random
-import sys
 from typing import Literal, Optional
 
 import datetime
 import pyowm.commons.exceptions
 
+from units.location import get_geocode_data, get_timezone_data, wind_degrees_to_direction
 from utilities import checks
 
-sys.path.insert(0, "..")
-from units.location import get_geocode_data, get_timezone_data, wind_degrees_to_direction
-sys.path.pop(0)
 
 async def setup(bot):
 	await bot.add_cog(Location(bot))

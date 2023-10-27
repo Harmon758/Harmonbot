@@ -6,18 +6,14 @@ import datetime
 import html
 import math
 import re
-import sys
 import textwrap
 
 import dateutil.parser
 import more_itertools
 import tabulate
 
-from utilities import checks
-
-sys.path.insert(0, "..")
 from units import bitcoin
-sys.path.pop(0)
+from utilities import checks
 
 
 async def setup(bot):

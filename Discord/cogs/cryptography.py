@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 import hashlib
-import sys
 from typing import Literal, Optional
 import zlib
 
@@ -15,14 +14,11 @@ from cryptography.hazmat.primitives import hashes as crypto_hashes
 # import pygost.gost341194
 # import pygost.gost3412
 
-from utilities import checks
-
-sys.path.insert(0, "..")
 from units.cryptography import (
     decode_caesar_cipher, encode_caesar_cipher,
     decode_morse_code, encode_morse_code
 )
-sys.path.pop(0)
+from utilities import checks
 
 
 async def setup(bot):

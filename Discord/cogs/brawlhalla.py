@@ -2,14 +2,9 @@
 from discord import app_commands
 from discord.ext import commands
 
-import sys
-
+from units.cache import async_cache
 from utilities import checks
 from utilities.converters import SteamID64
-
-sys.path.insert(0, "..")
-from units.cache import async_cache
-sys.path.pop(0)
 
 
 async def setup(bot):

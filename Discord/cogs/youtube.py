@@ -14,11 +14,9 @@ import dateutil.parser
 import feedparser
 import isodate
 
+from units.time import duration_to_string
 from utilities import checks, tasks
 
-sys.path.insert(0, "..")
-from units.time import duration_to_string
-sys.path.pop(0)
 
 errors_logger = logging.getLogger("errors")
 

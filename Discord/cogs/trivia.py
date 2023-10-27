@@ -6,18 +6,14 @@ from discord.ext import commands
 import asyncio
 import datetime
 import html
-import sys
 from typing import Optional
 import warnings
 
 from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
 
-from utilities import checks
-
-sys.path.insert(0, "..")
 from units.ansi import affix_ansi, TextColor
 from units.trivia import capwords, check_answer
-sys.path.pop(0)
+from utilities import checks
 
 
 async def setup(bot):

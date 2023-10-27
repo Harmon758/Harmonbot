@@ -3,15 +3,11 @@ from discord import app_commands
 from discord.ext import commands
 
 import calendar
-import sys
 
-from utilities import checks
-
-sys.path.insert(0, "..")
 from units.genshin_impact import (
     API_BASE_URL, get_character, get_character_images, get_characters
 )
-sys.path.pop(0)
+from utilities import checks
 
 
 async def setup(bot):

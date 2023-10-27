@@ -5,18 +5,15 @@ from discord.ext import commands
 import asyncio
 import random
 import re
-import sys
 import timeit
 from typing import Optional
 
 from bs4 import BeautifulSoup
 
 # from modules import war
+from units import games
 from utilities import checks
 
-sys.path.insert(0, "..")
-from units import games
-sys.path.pop(0)
 
 async def setup(bot):
 	await bot.add_cog(Games(bot))

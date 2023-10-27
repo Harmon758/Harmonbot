@@ -7,15 +7,12 @@ import dateutil.parser
 import inspect
 import io
 import re
-import sys
 from typing import Optional
 
+from units.time import duration_to_string
 from utilities import checks
 from utilities.paginators import ButtonPaginator
 
-sys.path.insert(0, "..")
-from units.time import duration_to_string
-sys.path.pop(0)
 
 async def setup(bot):
 	await bot.add_cog(Astronomy(bot))

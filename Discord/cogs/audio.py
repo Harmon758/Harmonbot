@@ -6,20 +6,17 @@ import base64
 import concurrent.futures
 import inspect
 import random
-import sys
 from typing import Optional
 import urllib
 
 from modules import utilities
+from units.files import create_folder
 from utilities.audio_player import AudioPlayer
 from utilities import audio_sources
 from utilities import checks
 from utilities import errors
 from utilities import parameters
 
-sys.path.insert(0, "..")
-from units.files import create_folder
-sys.path.pop(0)
 
 async def setup(bot):
 	await bot.add_cog(Audio(bot))

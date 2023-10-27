@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands, menus
 
 import io
-import sys
 import textwrap
 from typing import Optional
 import urllib.error
@@ -12,12 +11,9 @@ from bs4 import BeautifulSoup
 from google.api_core.exceptions import InvalidArgument
 import spellchecker
 
+from units.cache import async_cache
 from utilities import checks
 from utilities.paginators import ButtonPaginator
-
-sys.path.insert(0, "..")
-from units.cache import async_cache
-sys.path.pop(0)
 
 
 async def setup(bot):

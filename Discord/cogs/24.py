@@ -3,13 +3,8 @@ import discord
 from discord import ui
 from discord.ext import commands
 
-import sys
-
-from utilities import checks
-
-sys.path.insert(0, "..")
 from units.twenty_four import check_solution, generate_numbers
-sys.path.pop(0)
+from utilities import checks
 
 
 async def setup(bot):

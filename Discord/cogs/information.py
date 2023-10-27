@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 import contextlib
-import sys
 import textwrap
 # import unicodedata
 import urllib
@@ -13,11 +12,9 @@ import isodate
 import unicodedata2 as unicodedata
 
 from modules import utilities
+from units.time import duration_to_string
 from utilities import checks
 
-sys.path.insert(0, "..")
-from units.time import duration_to_string
-sys.path.pop(0)
 
 BADGE_EMOJI_IDS = {
 	discord.PublicUserFlags.staff: 773894866656034816, 

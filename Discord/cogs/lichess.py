@@ -3,16 +3,13 @@ import discord
 from discord.ext import commands
 
 import datetime
-import sys
 
 import emoji
 import pycountry
 
+from units.time import duration_to_string
 from utilities import checks
 
-sys.path.insert(0, "..")
-from units.time import duration_to_string
-sys.path.pop(0)
 
 async def setup(bot):
 	await bot.add_cog(Lichess(bot))

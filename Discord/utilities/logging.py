@@ -7,11 +7,9 @@ import sys
 
 from aiohttp.web_log import AccessLogger
 
+from units.files import create_folder
 from utilities.database import create_database_connection
 
-sys.path.insert(0, "..")
-from units.files import create_folder
-sys.path.pop(0)
 
 class ConsoleLogger(object):
 	

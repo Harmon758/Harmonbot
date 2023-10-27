@@ -3,15 +3,12 @@ from discord.ext import commands
 
 import collections
 import csv
-import sys
 
+from units.runescape import get_ge_data, get_item_id, get_monster_data
+from units.wikis import search_wiki
 from utilities import checks
 from utilities.views import WikiArticlesView
 
-sys.path.insert(0, "..")
-from units.runescape import get_ge_data, get_item_id, get_monster_data
-from units.wikis import search_wiki
-sys.path.pop(0)
 
 async def setup(bot):
     await bot.add_cog(RuneScape(bot))

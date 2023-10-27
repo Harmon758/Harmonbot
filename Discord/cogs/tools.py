@@ -5,7 +5,6 @@ from discord.ext import commands
 import difflib
 import io
 import re
-import sys
 import textwrap
 
 import imageio
@@ -16,12 +15,10 @@ import pandas
 from PIL import Image, ImageDraw, ImageFont
 import seaborn
 
+from units.colors import WHITE
 from utilities import checks
 from utilities.paginators import Paginator
 
-sys.path.insert(0, "..")
-from units.colors import WHITE
-sys.path.pop(0)
 
 async def setup(bot):
 	await bot.add_cog(Tools(bot))

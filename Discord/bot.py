@@ -42,16 +42,13 @@ from wordnik import swagger, WordApi, WordsApi
 import yt_dlp as youtube_dl
 
 from tree import CommandTree
+from units.files import create_folder
 from utilities import errors
 from utilities.audio_player import AudioPlayer
 from utilities.context import Context
 from utilities.database import create_database_pool
 from utilities.help_command import HelpCommand
 from utilities.logging import AiohttpAccessLogger, initialize_aiohttp_access_logging, initialize_logging
-
-sys.path.insert(0, "..")
-from units.files import create_folder
-sys.path.pop(0)
 
 
 class Bot(commands.Bot):

@@ -4,14 +4,11 @@ from discord.ext import commands
 
 import json
 import os
-import sys
 
 from modules import utilities
+from units.files import create_folder
 from utilities import checks
 
-sys.path.insert(0, "..")
-from units.files import create_folder
-sys.path.pop(0)
 
 async def setup(bot):
 	await bot.add_cog(Battlerite(bot))

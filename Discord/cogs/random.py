@@ -11,7 +11,6 @@ import datetime
 import multiprocessing
 import random
 import string
-import sys
 from typing import Literal, Optional
 import xml.etree.ElementTree
 
@@ -20,14 +19,11 @@ import emoji
 import pydealer
 import pyparsing
 
+from units.insults import generate_elizabethan_insult
+from units.quotes import get_random_quote
 from utilities import checks
 from utilities.menu_sources import XKCDSource
 from utilities.paginators import ButtonPaginator
-
-sys.path.insert(0, "..")
-from units.insults import generate_elizabethan_insult
-from units.quotes import get_random_quote
-sys.path.pop(0)
 
 
 async def setup(bot):

@@ -4,19 +4,15 @@ from discord import app_commands
 from discord.ext import commands
 
 import functools
-import sys
 from typing import Literal, Optional
 
 import youtube_dl
 
+from units.wikis import get_random_article, search_wiki
 from utilities import checks
 from utilities.menu_sources import WolframAlphaSource
 from utilities.paginators import ButtonPaginator
 from utilities.views import WikiArticlesView
-
-sys.path.insert(0, "..")
-from units.wikis import get_random_article, search_wiki
-sys.path.pop(0)
 
 
 FANDOM_WIKIS = {

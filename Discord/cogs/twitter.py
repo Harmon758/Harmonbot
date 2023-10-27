@@ -16,11 +16,8 @@ import aiohttp
 from more_itertools import chunked
 import feedparser
 
-from utilities import checks, tasks
-
-sys.path.insert(0, "..")
 from units import nitter
-sys.path.pop(0)
+from utilities import checks, tasks
 
 
 errors_logger = logging.getLogger("errors")

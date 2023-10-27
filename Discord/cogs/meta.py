@@ -23,11 +23,8 @@ import git
 import psutil
 
 from cogs.chess import STOCKFISH_EXECUTABLE
-from utilities import checks, tasks
-
-sys.path.insert(0, "..")
 from units.time import duration_to_string
-sys.path.pop(0)
+from utilities import checks, tasks
 
 
 # ID of #github channel in Harmonbot server
