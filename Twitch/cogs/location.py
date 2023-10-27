@@ -41,7 +41,10 @@ class Location:
 			)
 			await ctx.send(f"Location set to {location}")
 			return
-		location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
+		location = await self.bot.db.fetchval(
+			"SELECT location FROM twitch.locations WHERE channel = $1",
+			ctx.channel.name
+		)
 		if not location:
 			await ctx.send("Error: Location not specified")
 			return
