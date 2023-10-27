@@ -172,7 +172,8 @@ class YTDLSource(ModifiedPCMVolumeTransformer):
 		return source
 	
 	def cleanup(self):
-		if self.initialized: super().cleanup()
+		if self.initialized:
+			super().cleanup()
 		if self.filename and os.path.exists(self.filename):
 			try:
 				os.remove(self.filename)
