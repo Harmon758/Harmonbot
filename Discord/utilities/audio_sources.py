@@ -106,7 +106,8 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 		return source
 	
 	def cleanup(self):
-		if self.initialized: super().cleanup()
+		if self.initialized:
+			super().cleanup()
 		'''
 		if os.path.exists(self.bot.data_path + "/temp/tts.wav"):
 			try:
