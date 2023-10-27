@@ -57,15 +57,21 @@ class Location:
 	async def forecast(self, ctx, *, location = ""):
 		# TODO: Detailed forecast option?
 		if not location or location.lower() == ctx.channel.name:
-			location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
+			location = await self.bot.db.fetchval(
+				"SELECT location FROM twitch.locations WHERE channel = $1",
+				ctx.channel.name
+			)
 			if not location:
 				await ctx.send("Error: Location not specified")
 				return
 		try:
-			forecaster = self.bot.weather_manager.forecast_at_place(location, "daily")
-		except (pyowm.commons.exceptions.NotFoundError, 
-				pyowm.commons.exceptions.BadGatewayError) as e:
-			# TODO: Catch base exceptions?
+			forecaster = self.bot.weather_manager.forecast_at_place(
+				location, "daily"
+			)
+		except (
+			pyowm.commons.exceptions.NotFoundError,
+			pyowm.commons.exceptions.BadGatewayError
+		) as e:  # TODO: Catch base exceptions?
 			await ctx.send(f"Error: {e}")
 			return
 		output = f"{forecaster.forecast.location.name}, {forecaster.forecast.location.country}"
@@ -75,9 +81,11 @@ class Location:
 				continue
 			temperature_c = weather.temperature(unit = "celsius")
 			temperature_f = weather.temperature(unit = "fahrenheit")
-			weather_output = (f" | {date.strftime('%A')}: {weather.status}. "
-								f"High: {temperature_c['max']}°C/{temperature_f['max']}°F, "
-								f"Low: {temperature_c['min']}°C/{temperature_f['min']}°F")
+			weather_output = (
+				f" | {date.strftime('%A')}: {weather.status}. "
+				f"High: {temperature_c['max']}°C/{temperature_f['max']}°F, "
+				f"Low: {temperature_c['min']}°C/{temperature_f['min']}°F"
+			)
 			if len(output + weather_output) > self.bot.character_limit:
 				break
 			output += weather_output
