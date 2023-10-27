@@ -96,13 +96,15 @@ class Location:
 		if not location or location.lower() == ctx.channel.name:
 			location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
 			if not location:
-				return await ctx.send(f"Error: Location not specified")
+				await ctx.send("Error: Location not specified")
+				return
 		try:
 			observation = self.bot.weather_manager.weather_at_place(location)
 		except (pyowm.commons.exceptions.NotFoundError, 
 				pyowm.commons.exceptions.BadGatewayError) as e:
 			# TODO: Catch base exceptions?
-			return await ctx.send(f"Error: {e}")
+			await ctx.send(f"Error: {e}")
+			return
 		output = (f"{observation.location.name}, {observation.location.country}: "
 					f"{observation.weather.status} and "
 					f"{observation.weather.temperature(unit = 'celsius')['temp']}°C / "
