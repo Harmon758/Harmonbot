@@ -25,7 +25,8 @@ class Time:
 			try:
 				date = datetime.date(year = now.year, month = month, day = day)
 			except ValueError as e:
-				return await ctx.send(f"Error: {e}")
+				await ctx.send(f"Error: {e}")
+				return
 			await self.bot.db.execute(
 				"""
 				INSERT INTO twitch.birthdays (channel, month, day)
@@ -35,17 +36,20 @@ class Time:
 				""", 
 				ctx.channel.name, month, day
 			)
-			return await ctx.send(f"Birthday set to {date.strftime('%B %#d')}")
+			await ctx.send(f"Birthday set to {date.strftime('%B %#d')}")
+			return
 			# %#d for removal of leading zero on Windows with native Python executable
 		record = await self.bot.db.fetchrow("SELECT month, day FROM twitch.birthdays WHERE channel = $1", ctx.channel.name)
 		if not record or not record["month"] or not record["day"]:
-			return await ctx.send(f"Error: Birthday not set")
+			await ctx.send("Error: Birthday not set")
+			return
 		location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
 		if location:
 			try:
 				timezone_data = await get_timezone_data(location = location, aiohttp_session = self.bot.aiohttp_session)
 			except ValueError as e:
-				return await ctx.send(f"Error: {e}")
+				await ctx.send(f"Error: {e}")
+				return
 			now = datetime.datetime.fromtimestamp(datetime.datetime.utcnow().timestamp() + 
 													timezone_data["dstOffset"] + timezone_data["rawOffset"])
 		birthday = datetime.datetime(now.year, record["month"], record["day"])
