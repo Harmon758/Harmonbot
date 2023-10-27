@@ -354,19 +354,20 @@ class YouTube(commands.Cog):
 		)  # Necessary to run in executor?
 		if (
 			request_info.entries and
-			not request_info.entries[0].yt_videoid in self.uploads_processed
+			request_info.entries[0].yt_videoid not in self.uploads_processed
 		):
 			video_data = request_info.entries[0]
 			self.uploads_processed.append(video_data.yt_videoid)
 			time_published = dateutil.parser.parse(video_data.published)
+			
 			# Don't process videos published more than an hour ago
 			if time_published < datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours = 1):
 				return
+			
 			embed = discord.Embed(
 				title = video_data.title, url = video_data.link,
 				timestamp = time_published, color = self.bot.youtube_color
-			)
-			embed.set_author(
+			).set_author(
 				name = f"{video_data.author} just uploaded a video on YouTube",
 				url = video_data.author_detail.href,
 				icon_url = self.bot.youtube_icon_url
@@ -383,18 +384,23 @@ class YouTube(commands.Cog):
 			) as resp:
 				data = await resp.json()
 			data = next(iter(data.get("items", [])), {})
+			
 			if data.get("snippet", {}).get("liveBroadcastContent") in ("live", "upcoming"):
 				return
+			
 			description = data.get("snippet", {}).get("description", "")
 			if len(description) > 200:
 				description = description[:200].rsplit(' ', 1)[0] + "..."
 			embed.description = description or ""
+			
 			thumbnail_url = data.get("snippet", {}).get("thumbnails", {}).get("high", {}).get("url", None)
 			if thumbnail_url:
 				embed.set_thumbnail(url = thumbnail_url)
+			
 			duration = data.get("contentDetails", {}).get("duration")
 			if duration:
 				embed.description += f"\nLength: {duration_to_string(isodate.parse_duration(duration), abbreviate = True)}"
+			
 			for text_channel_id, yt_channels in self.uploads_info.items():
 				if channel_id in yt_channels:
 					text_channel = self.bot.get_channel(int(text_channel_id))
