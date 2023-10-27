@@ -397,17 +397,35 @@ class AudioPlayer:
 		await self.bot.delete_message(stop_message)
 	
 	async def process_listen(self):
-		if not os.path.isfile(self.bot.data_path + "/temp/heard.pcm") or os.stat(self.bot.data_path + "/temp/heard.pcm").st_size == 0:
-			await self.bot.send_embed(self.text_channel, ":warning: No input found")
+		if (
+			not os.path.isfile(self.bot.data_path + "/temp/heard.pcm") or
+			os.stat(self.bot.data_path + "/temp/heard.pcm").st_size == 0
+		):
+			await self.bot.send_embed(
+				self.text_channel, ":warning: No input found"
+			)
 			return
-		func = functools.partial(subprocess.call, ["ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2", "-i", self.bot.data_path + "/temp/heard.pcm", self.bot.data_path + "/temp/heard.wav"], shell = True)
-		# TODO: Use creationflags = subprocess.CREATE_NO_WINDOW in place of shell = True
+		func = functools.partial(
+			subprocess.call,
+			[
+				"ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2",
+				"-i", self.bot.data_path + "/temp/heard.pcm",
+				self.bot.data_path + "/temp/heard.wav"
+			],
+			shell = True
+		)
+		# TODO: Use creationflags = subprocess.CREATE_NO_WINDOW in place of
+		# shell = True
 		await self.bot.loop.run_in_executor(None, func)
-		with speech_recognition.AudioFile(self.bot.data_path + "/temp/heard.wav") as source:
+		with speech_recognition.AudioFile(
+			self.bot.data_path + "/temp/heard.wav"
+		) as source:
 			audio = self.recognizer.record(source)
 		'''
 		try:
-			await self.bot.reply("Sphinx thinks you said: " + recognizer.recognize_sphinx(audio))
+			await self.bot.reply(
+				"Sphinx thinks you said: " + recognizer.recognize_sphinx(audio)
+			)
 		except speech_recognition.UnknownValueError:
 			await self.bot.reply("Sphinx could not understand audio")
 		except speech_recognition.RequestError as e:
@@ -415,20 +433,33 @@ class AudioPlayer:
 		'''
 		try:
 			text = self.recognizer.recognize_google(audio)
-			await self.bot.send_embed(self.text_channel, f"I think you said: `{text}`")
+			await self.bot.send_embed(
+				self.text_channel, f"I think you said: `{text}`"
+			)
 		except speech_recognition.UnknownValueError:
-			# await self.bot.send_embed(self.text_channel, ":no_entry: Google Speech Recognition could not understand audio")
-			await self.bot.send_embed(self.text_channel, ":no_entry: I couldn't understand that")
+			# await self.bot.send_embed(
+			# 	self.text_channel,
+			# 	":no_entry: Google Speech Recognition could not understand audio"
+			# )
+			await self.bot.send_embed(
+				self.text_channel, ":no_entry: I couldn't understand that"
+			)
 		except speech_recognition.RequestError as e:
-			await self.bot.send_embed(self.text_channel, f":warning: Could not request results from Google Speech Recognition service; {e}")
+			await self.bot.send_embed(
+				self.text_channel,
+				f":warning: Could not request results from Google Speech Recognition service; {e}"
+			)
 		else:
 			response = self.bot.aiml_kernel.respond(text)
 			# TODO: Handle brain not loaded?
 			if not response:
 				games_cog = self.bot.get_cog("Games")
-				if not games_cog: return
+				if not games_cog:
+					return
 				response = await games_cog.cleverbot_get_reply(text)
-			await self.bot.send_embed(self.text_channel, f"Responding with: `{response}`")
+			await self.bot.send_embed(
+				self.text_channel, f"Responding with: `{response}`"
+			)
 			await self.play_tts(response, self.bot.user)
 		# open(self.bot.data_path + "/heard.pcm", 'w').close() # necessary?
 		# os.remove ?
