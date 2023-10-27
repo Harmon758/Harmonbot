@@ -11,6 +11,7 @@ python_version = "3.10"
 include = ["tests/*.py", "units/*.py"]
 select = [
     "E4", "E7", "E9", "F",  # default
-    "PYI041"  # redundant-numeric-union
+    "PYI041",  # redundant-numeric-union
+    "UP035",  # deprecated-import
 ]
 target-version = "py310"
