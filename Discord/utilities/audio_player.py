@@ -411,16 +411,16 @@ class AudioPlayer:
 		except speech_recognition.UnknownValueError:
 			await self.bot.reply("Sphinx could not understand audio")
 		except speech_recognition.RequestError as e:
-			await self.bot.reply("Sphinx error; {0}".format(e))
+			await self.bot.reply(f"Sphinx error; {e}")
 		'''
 		try:
 			text = self.recognizer.recognize_google(audio)
-			await self.bot.send_embed(self.text_channel, "I think you said: `{}`".format(text))
+			await self.bot.send_embed(self.text_channel, f"I think you said: `{text}`")
 		except speech_recognition.UnknownValueError:
 			# await self.bot.send_embed(self.text_channel, ":no_entry: Google Speech Recognition could not understand audio")
 			await self.bot.send_embed(self.text_channel, ":no_entry: I couldn't understand that")
 		except speech_recognition.RequestError as e:
-			await self.bot.send_embed(self.text_channel, ":warning: Could not request results from Google Speech Recognition service; {}".format(e))
+			await self.bot.send_embed(self.text_channel, f":warning: Could not request results from Google Speech Recognition service; {e}")
 		else:
 			response = self.bot.aiml_kernel.respond(text)
 			# TODO: Handle brain not loaded?
@@ -428,7 +428,7 @@ class AudioPlayer:
 				games_cog = client.get_cog("Games")
 				if not games_cog: return
 				response = await games_cog.cleverbot_get_reply(text)
-			await self.bot.send_embed(self.text_channel, "Responding with: `{}`".format(response))
+			await self.bot.send_embed(self.text_channel, f"Responding with: `{response}`")
 			await self.play_tts(response, self.bot.user)
 		# open(self.bot.data_path + "/heard.pcm", 'w').close() # necessary?
 		# os.remove ?
