@@ -349,9 +349,10 @@ class AudioPlayer:
 			self.not_interrupted.set()
 	
 	async def listen_task(self):
-		while (await self.listen_once()): pass
+		while (await self.listen_once()):
+			pass
 		self.listener = None
-				
+	
 	async def listen_once(self):
 		if self.interrupted:
 			return False
