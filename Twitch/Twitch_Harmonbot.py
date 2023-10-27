@@ -15,9 +15,7 @@ import sys
 import dotenv
 import unicodedata2 as unicodedata
 
-sys.path.insert(0, "..")
 from units.files import create_folder
-sys.path.pop(0)
 
 
 class TwitchClient(irc.client_aio.AioSimpleIRCClient):
