@@ -92,23 +92,38 @@ class Time:
 	@commands.command()
 	async def time(self, ctx, *, location = ""):
 		if not location or location.lower() == ctx.channel.name:
-			location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
+			location = await self.bot.db.fetchval(
+				"SELECT location FROM twitch.locations WHERE channel = $1",
+				ctx.channel.name
+			)
 			if not location:
 				await ctx.send("Error: Location not specified")
 				return
 		try:
-			geocode_data = await get_geocode_data(location, aiohttp_session = self.bot.aiohttp_session)
+			geocode_data = await get_geocode_data(
+				location, aiohttp_session = self.bot.aiohttp_session
+			)
 			latitude = geocode_data["geometry"]["location"]["lat"]
 			longitude = geocode_data["geometry"]["location"]["lng"]
-			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
-													aiohttp_session = self.bot.aiohttp_session)
+			timezone_data = await get_timezone_data(
+				latitude = latitude, longitude = longitude,
+				aiohttp_session = self.bot.aiohttp_session
+			)
 		except ValueError as e:
 			await ctx.send(f"Error: {e}")
 			return
-		location_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(
-						seconds = timezone_data["dstOffset"] + timezone_data["rawOffset"])))
+		location_time = datetime.datetime.now(
+			datetime.timezone(
+				datetime.timedelta(
+					seconds = timezone_data["dstOffset"] + timezone_data["rawOffset"]
+				)
+			)
+		)
 		# TODO: Use method for Discord time command
-		time_string = location_time.strftime(f"%#I:%M %p on %b. %#d (%a.) in {geocode_data['formatted_address']} (%Z)")
-		# %#I and %#d for removal of leading zero on Windows with native Python executable
+		time_string = location_time.strftime(
+			f"%#I:%M %p on %b. %#d (%a.) in {geocode_data['formatted_address']} (%Z)"
+		)
+		# %#I and %#d for removal of leading zero on Windows with native Python
+		# executable
 		await ctx.send(f"It is currently {time_string}.")
 
