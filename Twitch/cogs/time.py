@@ -94,7 +94,8 @@ class Time:
 		if not location or location.lower() == ctx.channel.name:
 			location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
 			if not location:
-				return await ctx.send(f"Error: Location not specified")
+				await ctx.send("Error: Location not specified")
+				return
 		try:
 			geocode_data = await get_geocode_data(location, aiohttp_session = self.bot.aiohttp_session)
 			latitude = geocode_data["geometry"]["location"]["lat"]
@@ -102,7 +103,8 @@ class Time:
 			timezone_data = await get_timezone_data(latitude = latitude, longitude = longitude, 
 													aiohttp_session = self.bot.aiohttp_session)
 		except ValueError as e:
-			return await ctx.send(f"Error: {e}")
+			await ctx.send(f"Error: {e}")
+			return
 		location_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(
 						seconds = timezone_data["dstOffset"] + timezone_data["rawOffset"])))
 		# TODO: Use method for Discord time command
