@@ -425,7 +425,7 @@ class AudioPlayer:
 			response = self.bot.aiml_kernel.respond(text)
 			# TODO: Handle brain not loaded?
 			if not response:
-				games_cog = client.get_cog("Games")
+				games_cog = self.bot.get_cog("Games")
 				if not games_cog: return
 				response = await games_cog.cleverbot_get_reply(text)
 			await self.bot.send_embed(self.text_channel, f"Responding with: `{response}`")
