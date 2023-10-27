@@ -80,7 +80,8 @@ class Pinboard(commands.Cog):
 		threshold = record["threshold"] or self.default_threshold
 		private_channels_setting = record["private_channels"]
 		if not pinboard_channel_id:
-			return await ctx.embed_reply(":no_entry: Error: Pinboard channel not set")
+			await ctx.embed_reply(":no_entry: Error: Pinboard channel not set")
+			return
 		response = await ctx.embed_reply("Backfilling...")
 		pinboard_channel = self.bot.get_channel(pinboard_channel_id)
 		async with ctx.bot.database_connection_pool.acquire() as connection:
