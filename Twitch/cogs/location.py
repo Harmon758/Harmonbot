@@ -94,26 +94,34 @@ class Location:
 	@commands.command()
 	async def weather(self, ctx, *, location = ""):
 		if not location or location.lower() == ctx.channel.name:
-			location = await self.bot.db.fetchval("SELECT location FROM twitch.locations WHERE channel = $1", ctx.channel.name)
+			location = await self.bot.db.fetchval(
+				"SELECT location FROM twitch.locations WHERE channel = $1",
+				ctx.channel.name
+			)
 			if not location:
 				await ctx.send("Error: Location not specified")
 				return
 		try:
 			observation = self.bot.weather_manager.weather_at_place(location)
-		except (pyowm.commons.exceptions.NotFoundError, 
-				pyowm.commons.exceptions.BadGatewayError) as e:
-			# TODO: Catch base exceptions?
+		except (
+			pyowm.commons.exceptions.NotFoundError,
+			pyowm.commons.exceptions.BadGatewayError
+		) as e:  # TODO: Catch base exceptions?
 			await ctx.send(f"Error: {e}")
 			return
-		output = (f"{observation.location.name}, {observation.location.country}: "
-					f"{observation.weather.status} and "
-					f"{observation.weather.temperature(unit = 'celsius')['temp']}°C / "
-					f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F | Wind: ")
+		output = (
+			f"{observation.location.name}, {observation.location.country}: "
+			f"{observation.weather.status} and "
+			f"{observation.weather.temperature(unit = 'celsius')['temp']}°C / "
+			f"{observation.weather.temperature(unit = 'fahrenheit')['temp']}°F | Wind: "
+		)
 		if wind_degrees := observation.weather.wnd.get("deg", ""):
 			output += f"{wind_degrees_to_direction(wind_degrees)} "
-		output += (f"{observation.weather.wind(unit = 'km_hour')['speed']:.2f} km/h / "
-					f"{observation.weather.wind(unit = 'miles_hour')['speed']:.2f} mi/h"
-					f" | Humidity: {observation.weather.humidity}%")
+		output += (
+			f"{observation.weather.wind(unit = 'km_hour')['speed']:.2f} km/h / "
+			f"{observation.weather.wind(unit = 'miles_hour')['speed']:.2f} mi/h"
+			f" | Humidity: {observation.weather.humidity}%"
+		)
 		pressure = observation.weather.pressure["press"]
 		output += f" | Pressure: {pressure} mb (hPa) / {pressure * 0.0295299830714:.2f} inHg"
 		if visibility := observation.weather.visibility_distance:
