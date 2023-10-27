@@ -50,7 +50,7 @@ class TestCheckAnswer(unittest.TestCase):
     def test_ampersand(self):
         self.assertTrue(check_answer(answer = "AT&T", response = "at&t"))
 
-    def test_clue_text_plural_subject_redundancy(self):
+    def test_clue_text_plural_subject_redundancy_in_answer(self):
         for clue, answer, response in (
             (
                 (
@@ -73,7 +73,7 @@ class TestCheckAnswer(unittest.TestCase):
                 check_answer(clue = clue, answer = answer, response = response)
             )
 
-    def test_clue_text_subject_redundancy(self):
+    def test_clue_text_subject_redundancy_in_answer(self):
         for clue, answer, response in (
             (
                 (
@@ -135,6 +135,20 @@ class TestCheckAnswer(unittest.TestCase):
             self.assertTrue(
                 check_answer(clue = clue, answer = answer, response = response)
             )
+
+    def test_clue_text_subject_redundancy_in_response_with_preceding_word(
+        self
+    ):
+        self.assertTrue(
+            check_answer(
+                clue = (
+                    "Sure, my skull's been growing & my jaw's protruding a "
+                    "tad--I doubt I have acromegaly, a disorder of this gland"
+                ),
+                answer = "the pituitary",
+                response = "pituitary gland"
+            )
+        )
 
     def test_dash_removal_with_article_prefix(self):
         self.assertTrue(

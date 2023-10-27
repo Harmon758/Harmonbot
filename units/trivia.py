@@ -293,8 +293,13 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         for noun_chunk in doc.noun_chunks:
             if noun_chunk.text.lower().startswith(("this ", "these ")):
                 subject = noun_chunk.root.text.lower()
-                if answer in (
+                if remove_preceding_words(answer) in (
                     f"{response} {subject}", f"{subject} {response}"
+                ):
+                    return True
+                if response in (
+                    f"{remove_preceding_words(answer)} {subject}",
+                    f"{subject} {remove_preceding_words(answer)}"
                 ):
                     return True
     # Check for matching named entity
