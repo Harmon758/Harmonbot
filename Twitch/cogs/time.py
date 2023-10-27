@@ -15,7 +15,7 @@ class Time:
 		self.bot = bot
 	
 	@commands.command(aliases = ("bday",))
-	async def birthday(self, ctx, month : int = None, day : int = None):
+	async def birthday(self, ctx, month: int = None, day: int = None):
 		# TODO: Document
 		# TODO: Add ability to reset
 		# TODO: Handle leap day
