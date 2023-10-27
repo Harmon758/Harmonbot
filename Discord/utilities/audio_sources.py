@@ -148,7 +148,8 @@ class YTDLSource(ModifiedPCMVolumeTransformer):
 		logging.getLogger("discord").info(f"playing URL {self.url}")
 		
 		self.stream = self.info.get("is_live") or self.stream
-		if "title" in self.info: self.title += f"`{self.info['title']}`"
+		if "title" in self.info:
+			self.title += f"`{self.info['title']}`"
 	
 	async def initialize_source(self, volume):
 		if self.stream:
