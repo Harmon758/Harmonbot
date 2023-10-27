@@ -308,10 +308,13 @@ class AudioPlayer:
 			if was_playing := self.guild.voice_client.is_playing():
 				self.guild.voice_client.pause()
 			while self.guild.voice_client and self.radio_flag:
-				url = f"https://www.googleapis.com/youtube/v3/search"
-				params = {"part": "snippet", "type": "video", 
-							"relatedToVideoId": videoid, "key": ctx.bot.GOOGLE_API_KEY}
-				async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+				async with ctx.bot.aiohttp_session.get(
+					"https://www.googleapis.com/youtube/v3/search",
+					params = {
+						"part": "snippet", "type": "video",
+						"relatedToVideoId": videoid, "key": ctx.bot.GOOGLE_API_KEY
+					}
+				) as resp:
 					data = await resp.json()
 				videoid = random.choice(data["items"])["id"]["videoId"]
 				
