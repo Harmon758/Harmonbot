@@ -248,9 +248,16 @@ class AudioPlayer:
 	def list_files(self):
 		return ", ".join(self.audio_files)
 	
-	async def play_tts(self, ctx, message, *, amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
-		if self.interrupted: return False
-		source = TTSSource(ctx, message, amplitude = amplitude, pitch = pitch, speed = speed, word_gap = word_gap, voice = voice)
+	async def play_tts(
+		self, ctx, message, *, amplitude = 100, pitch = 50, speed = 150,
+		word_gap = 0, voice = "en-us+f1"
+	):
+		if self.interrupted:
+			return False
+		source = TTSSource(
+			ctx, message, amplitude = amplitude, pitch = pitch, speed = speed,
+			word_gap = word_gap, voice = voice
+		)
 		await source.generate_file()
 		source.initialize_source(self.default_volume)
 		interrupt_message = await self.interrupt(source)
