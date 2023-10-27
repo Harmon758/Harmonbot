@@ -357,7 +357,7 @@ class AudioPlayer:
 		if self.interrupted:
 			return False
 		if self.bot.listener_bot not in self.guild.voice_client.channel.voice_members:
-			await self.bot.send_embed(self.text_channel, ":no_entry: {} needs to be in the voice channel".format(self.bot.listener_bot.mention))
+			await self.bot.send_embed(self.text_channel, f":no_entry: {self.bot.listener_bot.mention} needs to be in the voice channel")
 			return None
 		try:
 			self.pause()
