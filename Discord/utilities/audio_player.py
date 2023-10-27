@@ -192,19 +192,27 @@ class AudioPlayer:
 	
 	async def add_playlist(self, ctx, playlist):
 		response = await ctx.embed_reply(":cd: Loading..")
-		func = functools.partial(self.bot.ytdl_playlist.extract_info, playlist, download = False)
+		func = functools.partial(
+			self.bot.ytdl_playlist.extract_info, playlist, download = False
+		)
 		info = await self.bot.loop.run_in_executor(None, func)
 		for position, video in enumerate(info["entries"], start = 1):
-			if not video: continue
+			if not video:
+				continue
 			try:
 				source = YTDLSource(ctx, video["id"])
 				source.set_info(video)
 				await self.queue.put(source)
 			except Exception as e:
 				try:
-					await self.bot.send_embed(self.text_channel, f"{ctx.author.mention}: :warning: Error loading video {position} (<https://www.youtube.com/watch?v={video['id']}>) from <{playlist}>\n{type(e).__name__}: {e}")
+					await self.bot.send_embed(
+						self.text_channel,
+						f"{ctx.author.mention}: :warning: Error loading video {position} (<https://www.youtube.com/watch?v={video['id']}>) from <{playlist}>\n{type(e).__name__}: {e}"
+					)
 				except discord.HTTPException:
-					await self.bot.send_embed(self.text_channel, f"{ctx.author.mention}: :warning: Error loading video {position} (<https://www.youtube.com/watch?v={video['id']}>) from <{playlist}>")
+					await self.bot.send_embed(
+						self.text_channel, f"{ctx.author.mention}: :warning: Error loading video {position} (<https://www.youtube.com/watch?v={video['id']}>) from <{playlist}>"
+					)
 		embed = response.embeds[0]
 		embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
 		await response.edit(embed = embed)
