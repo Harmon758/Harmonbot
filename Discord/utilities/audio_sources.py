@@ -145,10 +145,10 @@ class YTDLSource(ModifiedPCMVolumeTransformer):
 	
 	def set_info(self, info):
 		self.info = next(iter(info.get("entries", [])), info)
-		logging.getLogger("discord").info("playing URL {}".format(self.url))
+		logging.getLogger("discord").info(f"playing URL {self.url}")
 		
 		self.stream = self.info.get("is_live") or self.stream
-		if "title" in self.info: self.title += "`{}`".format(self.info["title"])
+		if "title" in self.info: self.title += f"`{self.info['title']}`"
 	
 	async def initialize_source(self, volume):
 		if self.stream:
