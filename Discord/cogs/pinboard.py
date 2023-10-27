@@ -102,7 +102,7 @@ class Pinboard(commands.Cog):
 						if pin_count < threshold:
 							continue
 						pinned_message_channel = self.bot.get_channel(record["channel_id"])
-						if not private_channels_setting and pinned_message_channel.overwrites_for(ctx.guild.default_role).read_messages == False:
+						if not private_channels_setting and pinned_message_channel.overwrites_for(ctx.guild.default_role).read_messages is False:
 							continue
 						pinned_message = await pinned_message_channel.fetch_message(record["message_id"])
 						pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
