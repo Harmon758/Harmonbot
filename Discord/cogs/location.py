@@ -73,7 +73,9 @@ class Location(commands.Cog):
 		if len(languages) == 1 and len(languages[0]) > 22:  # 22: embed field value limit without offset
 			languages = languages[0]
 		else:
-			languages = '\n'.join(l.replace('\n', ' ') for l in languages)
+			languages = '\n'.join(
+				language.replace('\n', ' ') for language in languages
+			)
 		field_title = ctx.bot.inflect_engine.plural("Language", len(country_data["languages"]))
 		fields.append((field_title, languages))
 		# Currencies
