@@ -441,7 +441,7 @@ def parse_thumbnail_url(entry):
 	if (
 		(links := entry.get("links")) and
 		(image_link := discord.utils.find(
-			lambda l: "image" in l.get("type", ""),
+			lambda link: "image" in link.get("type", ""),
 			links
 		)) and
 		(thumbnail_url := image_link.get("href"))
