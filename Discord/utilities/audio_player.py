@@ -340,7 +340,7 @@ class AudioPlayer:
 	
 	async def stop_listening(self):
 		if self.listener:
-			if not (self.listener is True):
+			if self.listener is not True:
 				self.listener.cancel()
 			self.listener = None
 			await self.finish_listening()
