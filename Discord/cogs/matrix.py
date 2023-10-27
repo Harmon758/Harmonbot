@@ -88,7 +88,9 @@ class Matrix(commands.Cog):
     @matrix.command()
     async def lu(self, ctx, *, matrix: Matrix):
         """LU decomposition of a matrix"""
-        p, l, u = scipy.linalg.lu(matrix)
+        p, l, u = (  # noqa: E741 (ambiguous-variable-name)
+            scipy.linalg.lu(matrix)
+        )
         await ctx.embed_reply(fields = (("P", p), ("L", l), ("U", u)))
 
     @matrix.group(
