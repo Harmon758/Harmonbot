@@ -158,7 +158,6 @@ pycryptodomex==3.17
 pydantic-core==2.10.1
 PyJWT[crypto]==2.8.0
 PyNaCl==1.5.0
-pyrsistent==0.19.3
 pysocks==1.7.1
 PyYAML==6.0.1
 referencing==0.30.2
