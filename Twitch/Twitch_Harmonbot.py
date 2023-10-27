@@ -585,19 +585,6 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                     with open("data/variables/imagrill.json", 'w') as variables_file:
                         json.dump(self.imagrill_variables, variables_file, indent = 4)
                 self.message(target, f"There have been {self.imagrill_variables['trolls']} trolls.")
-            elif message.split()[0] == "pmpls" and source != "pmfornudes" and len(message.split()) > 1:
-                if message.split()[1] == "on":
-                    self.imagrill_variables["pmpls"] = True
-                    with open("data/variables/imagrill.json", 'w') as variables_file:
-                        json.dump(self.imagrill_variables, variables_file, indent = 4)
-                    self.message(target, f"pmpls is on.")
-                elif message.split()[1] == "off":
-                    self.imagrill_variables["pmpls"] = False
-                    with open("data/variables/imagrill.json", 'w') as variables_file:
-                        json.dump(self.imagrill_variables, variables_file, indent = 4)
-                    self.message(target, f"pmpls is off.")
-            if self.imagrill_variables["pmpls"] and source == "pmfornudes":
-                self.message(target, "PMFornud pls")
 
         # League of Legends Commands
         # WIP using development API key
