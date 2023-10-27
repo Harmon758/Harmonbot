@@ -3,6 +3,10 @@ name = "Harmonbot"
 dynamic = ["version"]
 requires-python = "==3.10.11"
 
+[build-system]
+requires = ["setuptools==68.2.2"]
+build-backend = "setuptools.build_meta"
+
 [tool.mypy]
 packages = ["units"]
 python_version = "3.10"
@@ -15,3 +19,6 @@ select = [
     "UP035",  # deprecated-import
 ]
 target-version = "py310"
+
+[tool.setuptools]
+packages = ["units"]

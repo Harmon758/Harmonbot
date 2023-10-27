@@ -1,3 +1,5 @@
+-e . --config-settings editable_mode=compat
+
 # discord.py[speed,voice]==2.0.0a
 discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@b3a2484
 # discord-ext-menus==1.0.0a
