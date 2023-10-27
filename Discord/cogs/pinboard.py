@@ -88,13 +88,17 @@ class Pinboard(commands.Cog):
 			async with connection.transaction():
 				# Postgres requires non-scrollable cursors to be created
 				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM pinboard.pins WHERE guild_id = $1 ORDER BY message_id", 
-														ctx.guild.id):
+				async for record in connection.cursor(
+					"SELECT * FROM pinboard.pins WHERE guild_id = $1 ORDER BY message_id",
+					ctx.guild.id
+				):
 					try:
 						await pinboard_channel.fetch_message(record["pinboard_message_id"])
 					except (discord.NotFound, discord.HTTPException):
-						pin_count = await self.bot.db.fetchval("SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
-																record["message_id"])
+						pin_count = await self.bot.db.fetchval(
+							"SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
+							record["message_id"]
+						)
 						if pin_count < threshold:
 							continue
 						pinned_message_channel = self.bot.get_channel(record["channel_id"])
@@ -102,8 +106,10 @@ class Pinboard(commands.Cog):
 							continue
 						pinned_message = await pinned_message_channel.fetch_message(record["message_id"])
 						pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
-						await self.bot.db.execute("UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
-													pinboard_message.id, record["message_id"])
+						await self.bot.db.execute(
+							"UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
+							pinboard_message.id, record["message_id"]
+						)
 		if ctx.channel.id == pinboard_channel_id:
 			await ctx.bot.attempt_delete_message(response)
 		else:
