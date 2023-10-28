@@ -136,6 +136,18 @@ class TestCheckAnswer(unittest.TestCase):
                 check_answer(clue = clue, answer = answer, response = response)
             )
 
+    def test_clue_text_subject_redundancy_in_response(self):
+        self.assertTrue(
+            check_answer(
+                clue = (
+                    "The Peace of Nicias in 421 B.C. brought a temporary end "
+                    "to the fighting in this Greek war"
+                ),
+                answer = "Peloponnesian",
+                response = "peloponnesian war"
+            )
+        )
+
     def test_clue_text_subject_redundancy_in_response_with_preceding_word(
         self
     ):
