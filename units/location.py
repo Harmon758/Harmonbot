@@ -96,7 +96,7 @@ DEGREES_RANGES_TO_DIRECTIONS = {
 # http://snowfence.umn.edu/Components/winddirectionanddegreeswithouttable3.htm
 
 def wind_degrees_to_direction(degrees: float) -> str:
-    if not isinstance(degrees, (int, float)):
+    if not isinstance(degrees, int | float):
         raise TypeError("degrees must be a number")
     if degrees < 0:
         raise ValueError("degrees must be greater than zero")
