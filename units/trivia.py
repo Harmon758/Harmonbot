@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
 import inflect
 import pydantic
 from pyparsing import (
-    Forward, Group, printables, OneOrMore, Suppress, Word, ZeroOrMore
+    Forward, Group, OneOrMore, printables, Suppress, Word, ZeroOrMore
 )
 import spacy
 
