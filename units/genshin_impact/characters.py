@@ -66,9 +66,7 @@ async def get_all_characters(
 ) -> list[Character]:
     async with (
         ensure_session(aiohttp_session) as aiohttp_session,
-        aiohttp_session.get(
-            f"{API_BASE_URL}/characters/all"
-        ) as resp
+        aiohttp_session.get(f"{API_BASE_URL}/characters/all") as resp
     ):
         data = await resp.json()
 
