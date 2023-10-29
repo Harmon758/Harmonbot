@@ -64,11 +64,13 @@ class Constellation(BaseModel):
 async def get_all_characters(
     *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> list[Character]:
-    async with ensure_session(aiohttp_session) as aiohttp_session:
-        async with aiohttp_session.get(
+    async with (
+        ensure_session(aiohttp_session) as aiohttp_session,
+        aiohttp_session.get(
             f"{API_BASE_URL}/characters/all"
-        ) as resp:
-            data = await resp.json()
+        ) as resp
+    ):
+        data = await resp.json()
 
     try:
         return [Character.model_validate(character) for character in data]
