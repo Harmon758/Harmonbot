@@ -221,14 +221,16 @@ class Respects(commands.Cog):
 		if number > 10:
 			number = 10
 		fields = []
-		async with ctx.bot.database_connection_pool.acquire() as connection:
-			async with connection.transaction():
-				# Postgres requires non-scrollable cursors to be created
-				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM respects.users ORDER BY respects DESC LIMIT $1", number):
-					user = ctx.bot.get_user(record["user_id"])
-					if not user:
-						user = await ctx.bot.fetch_user(record["user_id"])
-					fields.append((str(user), f"{record['respects']:,}"))
+		async with (
+			ctx.bot.database_connection_pool.acquire() as connection,
+			connection.transaction()
+			# Postgres requires non-scrollable cursors to be created
+			# and used in a transaction.
+		):
+			async for record in connection.cursor("SELECT * FROM respects.users ORDER BY respects DESC LIMIT $1", number):
+				user = ctx.bot.get_user(record["user_id"])
+				if not user:
+					user = await ctx.bot.fetch_user(record["user_id"])
+				fields.append((str(user), f"{record['respects']:,}"))
 		await ctx.embed_reply(title = "Top Respects Paid", fields = fields)
 
