@@ -50,9 +50,8 @@ class Trivia(commands.Cog):
 
     @commands.hybrid_group(case_insensitive = True, fallback = "question")
     async def trivia(
-        self, ctx, betting: Optional[bool] = False, 
-        override_modal_answers: Optional[bool] = False,
-        react: Optional[bool] = True, seconds: commands.Range[int, 1, 60] = 15
+        self, ctx, betting: bool = False, override_modal_answers: bool = False,
+        react: bool = True, seconds: commands.Range[int, 1, 60] = 15
     ):
         """
         Trivia question
