@@ -6,7 +6,6 @@ from discord.ext import commands
 import asyncio
 import datetime
 import html
-from typing import Optional
 import warnings
 
 from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
