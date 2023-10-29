@@ -100,7 +100,7 @@ class Misc(commands.Cog):
         embed = loading_message.embeds[0]
         while counter <= 10:
             counter += 1
-            bar = chr(9632) + bar[:-1] #9608
+            bar = chr(9632) + bar[:-1]  # 9608
             await asyncio.sleep(1)
             embed.description = f"Loading: [{bar}]"
             await loading_message.edit(embed = embed)
