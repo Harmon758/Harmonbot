@@ -131,19 +131,23 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
             return True
     # Check XX and YY ZZ
     answer_last = answer_items[-1].split()
-    if len(answer_last) > 1:
-        if set(response_items) == set(
+    if (
+        len(answer_last) > 1 and
+        set(response_items) == set(
             [f"{item} {answer_last[-1]}" for item in answer_items[:-1]] +
             [answer_items[-1]]
-        ):
-            return True
+        )
+    ):
+        return True
     response_last = response_items[-1].split()
-    if len(response_last) > 1:
-        if set(answer_items) == set(
+    if (
+        len(response_last) > 1 and
+        set(answer_items) == set(
             [f"{item} {response_last[-1]}" for item in response_items[:-1]] +
             [response_items[-1]]
-        ):
-            return True
+        )
+    ):
+        return True
     if (
         answer_last[-1] == response_last[-1] and
         set(
