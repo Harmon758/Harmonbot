@@ -24,9 +24,7 @@ async def get_healthy_rss_instances(
     # TODO: Add User-Agent
     async with (
         ensure_session(aiohttp_session) as aiohttp_session,
-        aiohttp_session.get(
-            "https://status.d420.de/api/v1/instances"
-        ) as resp
+        aiohttp_session.get("https://status.d420.de/api/v1/instances") as resp
     ):
         data = await resp.json()
 
