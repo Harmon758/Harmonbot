@@ -103,11 +103,13 @@ async def get_character(
 async def get_character_images(
     name: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> list[str]:
-    async with ensure_session(aiohttp_session) as aiohttp_session:
-        async with aiohttp_session.get(
+    async with (
+        ensure_session(aiohttp_session) as aiohttp_session,
+        aiohttp_session.get(
             f"{API_BASE_URL}/characters/{name.lower().replace(' ', '-')}/list"
-        ) as resp:
-            return await resp.json()
+        ) as resp
+    ):
+        return await resp.json()
 
 
 @async_cache(ignore_kwargs = "aiohttp_session")
