@@ -4,7 +4,6 @@ from discord.ext import commands, menus
 
 import io
 import textwrap
-from typing import Optional
 import urllib.error
 
 from bs4 import BeautifulSoup
@@ -346,9 +345,7 @@ class Words(commands.Cog):
         return response.languages
 
     @translate.command(name = "to")
-    async def translate_to(
-        self, ctx, language_code: str, *, text: Optional[str]
-    ):
+    async def translate_to(self, ctx, language_code: str, *, text: str | None):
         '''Translate to a specific language'''
         if not text:
             if ctx.message.reference:
