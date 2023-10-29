@@ -106,7 +106,7 @@ class Random(commands.Cog):
             )
 
     @random.group(name = "cat", fallback = "image", case_insensitive = True)
-    async def random_cat(self, ctx, category: Optional[str]):
+    async def random_cat(self, ctx, category: str | None):
         """Random image of a cat"""
         # Note: cat command invokes this command
         await ctx.defer()
