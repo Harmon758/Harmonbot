@@ -883,9 +883,9 @@ class Random(commands.Cog):
 
     @random.command(with_app_command = False)
     async def map(
-        self, ctx, zoom: Optional[int] = 13,
-        maptype: Optional[
-            Literal["roadmap", "satellite", "hybrid", "terrain"]
+        self, ctx, zoom: int = 13,
+        maptype: Literal[
+            "roadmap", "satellite", "hybrid", "terrain"
         ] = "roadmap"
     ):
         """
