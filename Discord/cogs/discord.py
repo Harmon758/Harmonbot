@@ -235,11 +235,15 @@ class Discord(commands.Cog):
     # TODO: use purge with no limit?, increment count in check?
     async def delete_number(self, ctx, number, check, delete_command = True):
         if number <= 0:
-            return await ctx.embed_reply(":no_entry: Error: Number of messages to delete must be greater than 0")
+            await ctx.embed_reply(":no_entry: Error: Number of messages to delete must be greater than 0")
+            return
+
         to_delete = []
         count = 0
+
         if delete_command:
             await ctx.bot.attempt_delete_message(ctx.message)
+
         async for message in ctx.history(limit = None).filter(check):
             if (message.id < int((time.time() - 14 * 24 * 60 * 60) * 1000 - discord.utils.DISCORD_EPOCH) << 22 or 
                 ctx.channel.type is discord.ChannelType.private):
@@ -247,13 +251,17 @@ class Discord(commands.Cog):
                 await ctx.bot.attempt_delete_message(message)
             else:
                 to_delete.append(message)
+
             count += 1
+
             if count == number:
                 break
-            elif len(to_delete) == 100:
+
+            if len(to_delete) == 100:
                 await ctx.channel.delete_messages(to_delete)
                 to_delete.clear()
                 await asyncio.sleep(1)  # Necessary?
+
         if len(to_delete) == 1:
             await ctx.bot.attempt_delete_message(to_delete[0])
         elif len(to_delete) > 1:
