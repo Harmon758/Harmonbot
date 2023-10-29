@@ -116,9 +116,9 @@ async def get_character_images(
 async def get_characters(
     *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> list[str]:
-    async with ensure_session(aiohttp_session) as aiohttp_session:
-        async with aiohttp_session.get(
-            f"{API_BASE_URL}/characters"
-        ) as resp:
-            return await resp.json()
+    async with (
+        ensure_session(aiohttp_session) as aiohttp_session,
+        aiohttp_session.get(f"{API_BASE_URL}/characters") as resp
+    ):
+        return await resp.json()
 
