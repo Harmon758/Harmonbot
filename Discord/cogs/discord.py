@@ -399,7 +399,7 @@ class Discord(commands.Cog):
             parsed_datetime, context, start_pos, end_pos, matched_text = matches[0]
             if not context.hasTime:
                 parsed_datetime = parsed_datetime.replace(
-                    hour = now.hour, minute = now.minute, 
+                    hour = now.hour, minute = now.minute,
                     second = now.second, microsecond = now.microsecond
                 )
             time = parsed_datetime.replace(
