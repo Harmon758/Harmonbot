@@ -22,11 +22,13 @@ async def get_healthy_rss_instances(
     *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> list[dict]:
     # TODO: Add User-Agent
-    async with ensure_session(aiohttp_session) as aiohttp_session:
-        async with aiohttp_session.get(
+    async with (
+        ensure_session(aiohttp_session) as aiohttp_session,
+        aiohttp_session.get(
             "https://status.d420.de/api/v1/instances"
-        ) as resp:
-            data = await resp.json()
+        ) as resp
+    ):
+        data = await resp.json()
 
     return [
         instance
