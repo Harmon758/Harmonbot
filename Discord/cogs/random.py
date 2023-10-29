@@ -134,7 +134,7 @@ class Random(commands.Cog):
             )
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
-    async def cat(self, ctx, category: Optional[str]):
+    async def cat(self, ctx, category: str | None):
         """Random image of a cat"""
         if command := ctx.bot.get_command("random cat"):
             await ctx.invoke(command, category = category)
