@@ -11,7 +11,7 @@ import datetime
 import multiprocessing
 import random
 import string
-from typing import Literal, Optional
+from typing import Literal
 import xml.etree.ElementTree
 
 import dice
@@ -1002,7 +1002,7 @@ class Random(commands.Cog):
         )
 
     @commands.command()
-    async def quote(self, ctx, message: Optional[discord.Message]):
+    async def quote(self, ctx, message: discord.Message | None):
         """Random quote or quote a message"""
         # TODO: other options to quote by?
         if message:
