@@ -759,7 +759,7 @@ class Random(commands.Cog):
 
     @random_joke.command(name = "dad", with_app_command = False)
     async def random_joke_dad(
-        self, ctx, image: bool = False, joke_id: Optional[str] = None
+        self, ctx, image: bool = False, joke_id: str | None = None
     ):
         '''Random dad joke'''
         # Note: joke dad command invokes this command
