@@ -956,7 +956,7 @@ class Random(commands.Cog):
             )
 
     @random.command(aliases = ["image"], with_app_command = False)
-    async def photo(self, ctx, *, query: Optional[str] = ""):
+    async def photo(self, ctx, *, query: str = ""):
         """Random photo from Unsplash"""
         if command := ctx.bot.get_command("image random"):
             await ctx.invoke(command, query = query)
