@@ -127,11 +127,15 @@ class Discord(commands.Cog):
 		# TODO: Use system_content?
 		fields = []
 		for embed in message.embeds:
-			fields.append(("Embed", ctx.bot.CODE_BLOCK.format(embed.to_dict()), False))
+			fields.append(
+				("Embed", ctx.bot.CODE_BLOCK.format(embed.to_dict()), False)
+			)
 		reactions = ""
 		for reaction in message.reactions:
 			users = await reaction.users(limit = 3).flatten()
-			users_message = ", ".join(user.mention for user in sorted(users, key = str))
+			users_message = ", ".join(
+				user.mention for user in sorted(users, key = str)
+			)
 			if reaction.count > 3:
 				users_message += ", etc."
 			reaction_string = f"{reaction.emoji}: {reaction.count} ({users_message})"
@@ -146,10 +150,14 @@ class Discord(commands.Cog):
 			image_url = message.attachments[0].url
 		# TODO: Handle non-image attachments
 		# TODO: Handle multiple attachments
-		await ctx.embed_reply(message.content, 
-								author_name = message.author.display_name, author_icon_url = message.author.avatar.url, 
-								fields = fields, image_url = image_url, 
-								footer_text = f"In #{message.channel}", timestamp = message.created_at)
+		await ctx.embed_reply(
+			message.content,
+			author_name = message.author.display_name,
+			author_icon_url = message.author.avatar.url,
+			fields = fields, image_url = image_url,
+			footer_text = f"In #{message.channel}",
+			timestamp = message.created_at
+		)
 		# TODO: Include message author ID/username#discriminator
 		# TODO: Mention channel or include channel ID
 		# TODO: Include message.edited_at
