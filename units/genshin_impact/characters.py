@@ -82,14 +82,16 @@ async def get_all_characters(
 async def get_character(
     name: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> Character:
-    async with ensure_session(aiohttp_session) as aiohttp_session:
-        async with aiohttp_session.get(
+    async with (
+        ensure_session(aiohttp_session) as aiohttp_session,
+        aiohttp_session.get(
             f"{API_BASE_URL}/characters/{name.lower().replace(' ', '-')}"
-        ) as resp:
-            if resp.status == 404:
-                raise ValueError("Character not found")
+        ) as resp
+    ):
+        if resp.status == 404:
+            raise ValueError("Character not found")
 
-            data = await resp.json()
+        data = await resp.json()
 
     try:
         return Character.model_validate(data)
