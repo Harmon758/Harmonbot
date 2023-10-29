@@ -27,6 +27,7 @@ ACTIVITES = {
 	"Fishington.io": 814288819477020702,
 	"Gartic Phone": 1007373802981822582,
 	"Know What I Meme": 950505761862189096,
+	"Krunker Strike FRVR": 1011683823555199066,
 	"Land-io": 903769130790969345,
 	"Letter League": 879863686565621790,
 	"Poker Night": 755827207812677713,
@@ -42,6 +43,7 @@ ACTIVITES = {
 ACTIVITES_ALIASES = {
 	"Doodle Crew": "Sketch Heads",
 	"Jamspace": "Whiteboard",
+	"Krunker": "Krunker Strike FRVR",
 	"Ocho": "Blazing 8s",
 	"YouTube Together": "Watch Together"
 }
