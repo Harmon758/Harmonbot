@@ -294,7 +294,7 @@ class Discord(commands.Cog):
         # TODO: Rework
         if not color:
             color_value = ctx.author.color.value
-            await ctx.embed_reply("#{}".format(conversions.inttohex(color_value)))
+            await ctx.embed_reply(f"#{conversions.inttohex(color_value)}")
             return
         # check color
         try:
@@ -309,12 +309,12 @@ class Discord(commands.Cog):
             new_colour = new_role.colour
             new_colour.value = color_value
             await self.bot.edit_role(ctx.guild, new_role, name = ctx.author.name, colour = new_colour)
-            await ctx.embed_reply("Created your role with the color, {}".format(color))
+            await ctx.embed_reply(f"Created your role with the color, {color}")
         else:
             new_colour = role_to_change.colour
             new_colour.value = color_value
             await self.bot.edit_role(ctx.guild, role_to_change, colour = new_colour)
-            await ctx.embed_reply("Changed your role color to {}".format(color))
+            await ctx.embed_reply(f"Changed your role color to {color}")
 
     @commands.group(invoke_without_command = True, case_insensitive = True)
     @commands.bot_has_permissions(manage_messages = True)
