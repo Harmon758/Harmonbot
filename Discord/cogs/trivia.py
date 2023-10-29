@@ -396,29 +396,31 @@ class Trivia(commands.Cog):
         """
         await ctx.defer()
         fields = []
-        async with ctx.bot.database_connection_pool.acquire() as connection:
-            async with connection.transaction():
-                # Postgres requires non-scrollable cursors to be created
-                # and used in a transaction.
-                async for record in connection.cursor(
-                    """
-                    SELECT * FROM trivia.users
-                    ORDER BY correct DESC LIMIT $1
-                    """,
-                    number
-                ):
-                    # SELECT user_id, correct, incorrect?
-                    user = ctx.bot.get_user(record["user_id"])
-                    if not user:
-                        user = await ctx.bot.fetch_user(record["user_id"])
-                    total = record["correct"] + record["incorrect"]
-                    correct_percentage = record["correct"] / total * 100
-                    fields.append((
-                        str(user),
-                        f"{record['correct']:,} correct "
-                        f"({correct_percentage:.2f}%)\n"
-                        f"{total:,} answered"
-                    ))
+        async with (
+            ctx.bot.database_connection_pool.acquire() as connection,
+            connection.transaction()
+            # Postgres requires non-scrollable cursors to be created
+            # and used in a transaction.
+        ):
+            async for record in connection.cursor(
+                """
+                SELECT * FROM trivia.users
+                ORDER BY correct DESC LIMIT $1
+                """,
+                number
+            ):
+                # SELECT user_id, correct, incorrect?
+                user = ctx.bot.get_user(record["user_id"])
+                if not user:
+                    user = await ctx.bot.fetch_user(record["user_id"])
+                total = record["correct"] + record["incorrect"]
+                correct_percentage = record["correct"] / total * 100
+                fields.append((
+                    str(user),
+                    f"{record['correct']:,} correct "
+                    f"({correct_percentage:.2f}%)\n"
+                    f"{total:,} answered"
+                ))
         await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 
     @commands.command()
