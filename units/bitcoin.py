@@ -28,11 +28,13 @@ class Currency(BaseModel):
 async def get_supported_currencies(
     *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> list[Currency]:
-    async with ensure_session(aiohttp_session) as aiohttp_session:
-        async with aiohttp_session.get(
+    async with (
+        ensure_session(aiohttp_session) as aiohttp_session,
+        aiohttp_session.get(
             "https://api.coindesk.com/v1/bpi/supported-currencies.json"
-        ) as resp:
-            data = await resp.json(content_type = "text/html")
+        ) as resp
+    ):
+        data = await resp.json(content_type = "text/html")
 
     return [Currency.model_validate(currency) for currency in data]
 
