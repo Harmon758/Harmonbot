@@ -227,7 +227,10 @@ class Respects(commands.Cog):
 			# Postgres requires non-scrollable cursors to be created
 			# and used in a transaction.
 		):
-			async for record in connection.cursor("SELECT * FROM respects.users ORDER BY respects DESC LIMIT $1", number):
+			async for record in connection.cursor(
+				"SELECT * FROM respects.users ORDER BY respects DESC LIMIT $1",
+				number
+			):
 				user = ctx.bot.get_user(record["user_id"])
 				if not user:
 					user = await ctx.bot.fetch_user(record["user_id"])
