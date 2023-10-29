@@ -172,8 +172,8 @@ class Trivia(commands.Cog):
 
     @trivia.command(with_app_command = False)
     async def bet(
-        self, ctx, override_modal_answers: Optional[bool] = False,
-        react: Optional[bool] = True, seconds: commands.Range[int, 1, 60] = 15
+        self, ctx, override_modal_answers: bool = False, react: bool = True,
+        seconds: commands.Range[int, 1, 60] = 15
     ):
         """
         Trivia question with betting
