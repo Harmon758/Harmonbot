@@ -236,7 +236,7 @@ class Discord(commands.Cog):
     async def delete_number(self, ctx, number, check, delete_command = True):
         if number <= 0:
             await ctx.embed_reply(
-                ":no_entry: Error: Number of messages to delete must be greater than 0"
+                f"{ctx.bot.error_emoji} Error: Number of messages to delete must be greater than 0"
             )
             return
 
