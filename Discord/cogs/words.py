@@ -270,7 +270,7 @@ class Words(commands.Cog):
         )
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
-    async def translate(self, ctx, *, text: Optional[str]):
+    async def translate(self, ctx, *, text: str | None):
         '''Translate to English'''
         # TODO: From and to language code options?
         if not text:
