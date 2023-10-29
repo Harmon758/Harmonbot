@@ -148,12 +148,14 @@ class Respects(commands.Cog):
 		'''Statistics'''
 		total_respects = await ctx.bot.db.fetchval("SELECT value FROM respects.stats WHERE stat = 'total'")
 		respects_paid = []
-		async with ctx.bot.database_connection_pool.acquire() as connection:
-			async with connection.transaction():
-				# Postgres requires non-scrollable cursors to be created
-				# and used in a transaction.
-				async for record in connection.cursor("SELECT * FROM respects.users"):
-					respects_paid.append(record["respects"])
+		async with (
+			ctx.bot.database_connection_pool.acquire() as connection,
+			connection.transaction()
+			# Postgres requires non-scrollable cursors to be created
+			# and used in a transaction.
+		):
+			async for record in connection.cursor("SELECT * FROM respects.users"):
+				respects_paid.append(record["respects"])
 		# TODO: Optimize
 		# TODO: Fit curve
 		## n, bins, _ = matplotlib.pyplot.hist(respects_paid, log = True, 
