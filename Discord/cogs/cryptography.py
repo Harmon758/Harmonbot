@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 
 import hashlib
-from typing import Literal, Optional
+from typing import Literal
 import zlib
 
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
@@ -176,8 +176,7 @@ class Cryptography(commands.Cog):
 
     @decode.command(name = "qr")
     async def decode_qr(
-        self, ctx, image: Optional[discord.Attachment],
-        image_url: Optional[str]
+        self, ctx, image: discord.Attachment | None, image_url: str | None
     ):
         """
         Decode QR code
