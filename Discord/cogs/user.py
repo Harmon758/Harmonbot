@@ -184,7 +184,7 @@ class User(commands.Cog):
 
     # TODO: Make general ID command with subcommands
     @commands.command()
-    async def id(self, ctx, *, user: Optional[discord.User] = commands.Author):
+    async def id(self, ctx, *, user: discord.User = commands.Author):
         """
         Show the ID of a user
 
