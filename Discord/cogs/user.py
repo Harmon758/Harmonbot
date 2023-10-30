@@ -164,7 +164,7 @@ class User(commands.Cog):
 
     @user.command(name = "id")
     async def user_id(
-        self, ctx, *, user: Optional[discord.User] = commands.Author
+        self, ctx, *, user: discord.User = commands.Author
     ):
         """
         Show the ID of a user
