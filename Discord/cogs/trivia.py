@@ -175,7 +175,9 @@ class Trivia(commands.Cog):
 
     @trivia.command(with_app_command = False)
     async def bet(
-        self, ctx, override_modal_answers: bool = False, react: bool = True,
+        self, ctx,
+        override_modal_answers: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        react: Optional[bool] = True,  # noqa: UP007 (non-pep604-annotation)
         seconds: commands.Range[int, 1, 60] = 15
     ):
         """
