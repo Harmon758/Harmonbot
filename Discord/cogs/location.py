@@ -222,7 +222,7 @@ class Location(commands.Cog):
 			file = discord.File(io.BytesIO(data), filename = "map.png")
 		)
 	
-	@commands.group(invoke_without_command = True, case_insensitive = True)
+	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def streetview(
 		self, ctx, pitch: int = 0, heading: int | None = None, *, location: str
 	):
