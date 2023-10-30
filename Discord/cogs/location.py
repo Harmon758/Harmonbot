@@ -197,9 +197,10 @@ class Location(commands.Cog):
 
     @map.command(name = "random")
     async def map_random(
-        self, ctx, zoom: int = 13,
-        maptype: Literal[
-            "roadmap", "satellite", "hybrid", "terrain"
+        self, ctx,
+        zoom: Optional[int] = 13,  # noqa: UP007 (non-pep604-annotation)
+        maptype: Optional[  # noqa: UP007 (non-pep604-annotation)
+            Literal["roadmap", "satellite", "hybrid", "terrain"]
         ] = "roadmap"
         # https://developers.google.com/maps/documentation/maps-static/start#MapTypes
     ):
