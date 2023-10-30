@@ -242,10 +242,12 @@ class Location(commands.Cog):
 		}
 		if heading is not None:
 			params["heading"] = heading
+		
 		async with ctx.bot.aiohttp_session.get(
 			"https://maps.googleapis.com/maps/api/streetview", params = params
 		) as resp:
 			data = await resp.read()
+		
 		await ctx.embed_reply(
 			image_url = "attachment://streetview.png",
 			file = discord.File(io.BytesIO(data), filename = "streetview.png")
