@@ -88,17 +88,19 @@ class Points(commands.Cog):
         await ctx.defer()
 
         fields = []
-        async with ctx.bot.database_connection_pool.acquire() as connection:
-            async with connection.transaction():
-                # Postgres requires non-scrollable cursors to be created
-                # and used in a transaction.
-                async for record in connection.cursor(
-                    "SELECT * FROM users.points ORDER BY points DESC LIMIT $1",
-                    number
-                ):
-                    if not (user := ctx.bot.get_user(record["user_id"])):
-                        user = await ctx.bot.fetch_user(record["user_id"])
-                    fields.append((str(user), f"{record['points']:,}"))
+        async with (
+            ctx.bot.database_connection_pool.acquire() as connection,
+            connection.transaction()
+            # Postgres requires non-scrollable cursors to be created
+            # and used in a transaction.
+        ):
+            async for record in connection.cursor(
+                "SELECT * FROM users.points ORDER BY points DESC LIMIT $1",
+                number
+            ):
+                if not (user := ctx.bot.get_user(record["user_id"])):
+                    user = await ctx.bot.fetch_user(record["user_id"])
+                fields.append((str(user), f"{record['points']:,}"))
 
         await ctx.embed_reply(
             title = f"Points (`\N{CURRENCY SIGN}`) Top {number}",
