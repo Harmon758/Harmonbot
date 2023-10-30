@@ -11,7 +11,7 @@ import datetime
 import multiprocessing
 import random
 import string
-from typing import Literal
+from typing import Literal, Optional
 import xml.etree.ElementTree
 
 import dice
@@ -759,7 +759,9 @@ class Random(commands.Cog):
 
     @random_joke.command(name = "dad", with_app_command = False)
     async def random_joke_dad(
-        self, ctx, image: bool = False, joke_id: str | None = None
+        self, ctx,
+        image: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        joke_id: str | None = None
     ):
         '''Random dad joke'''
         # Note: joke dad command invokes this command
