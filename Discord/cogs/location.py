@@ -6,7 +6,7 @@ from discord.ext import commands
 from decimal import Decimal
 import io
 import random
-from typing import Literal
+from typing import Literal, Optional
 
 import datetime
 import pyowm.commons.exceptions
@@ -170,9 +170,10 @@ class Location(commands.Cog):
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def map(
-        self, ctx, zoom: int = 13,
-        maptype: Literal[
-            "roadmap", "satellite", "hybrid", "terrain"
+        self, ctx,
+        zoom: Optional[int] = 13,  # noqa: UP007 (non-pep604-annotation)
+        maptype: Optional[  # noqa: UP007 (non-pep604-annotation)
+            Literal["roadmap", "satellite", "hybrid", "terrain"]
         ] = "roadmap",
         # https://developers.google.com/maps/documentation/maps-static/start#MapTypes
         *, location: str
