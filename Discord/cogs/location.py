@@ -271,9 +271,11 @@ class Location(commands.Cog):
 			}
 		) as resp:
 			data = await resp.read()
-		await ctx.embed_reply(fields = (("latitude", latitude), ("longitude", longitude)), 
-								image_url = "attachment://streetview.png", 
-								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
+		await ctx.embed_reply(
+			fields = (("latitude", latitude), ("longitude", longitude)),
+			image_url = "attachment://streetview.png",
+			file = discord.File(io.BytesIO(data), filename = "streetview.png")
+		)
 	
 	@commands.group(
 		aliases = ["timezone"],
