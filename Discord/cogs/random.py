@@ -887,9 +887,10 @@ class Random(commands.Cog):
 
     @random.command(with_app_command = False)
     async def map(
-        self, ctx, zoom: int = 13,
-        maptype: Literal[
-            "roadmap", "satellite", "hybrid", "terrain"
+        self, ctx,
+        zoom: Optional[int] = 13,  # noqa: UP007 (non-pep604-annotation)
+        maptype: Optional[  # noqa: UP007 (non-pep604-annotation)
+            Literal["roadmap", "satellite", "hybrid", "terrain"]
         ] = "roadmap"
     ):
         """
