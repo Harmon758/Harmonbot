@@ -6,6 +6,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import html
+from typing import Optional
 import warnings
 
 from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
@@ -49,8 +50,11 @@ class Trivia(commands.Cog):
 
     @commands.hybrid_group(case_insensitive = True, fallback = "question")
     async def trivia(
-        self, ctx, betting: bool = False, override_modal_answers: bool = False,
-        react: bool = True, seconds: commands.Range[int, 1, 60] = 15
+        self, ctx,
+        betting: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        override_modal_answers: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        react: Optional[bool] = True,  # noqa: UP007 (non-pep604-annotation)
+        seconds: commands.Range[int, 1, 60] = 15
     ):
         """
         Trivia question
