@@ -799,7 +799,9 @@ class Random(commands.Cog):
 
     @joke.command(name = "dad")
     async def joke_dad(
-        self, ctx, image: bool = False, joke_id: str | None = None
+        self, ctx,
+        image: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        joke_id: str | None = None
     ):
         """Random dad joke"""
         if command := ctx.bot.get_command("random joke dad"):
