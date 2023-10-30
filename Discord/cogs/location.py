@@ -6,7 +6,7 @@ from discord.ext import commands
 from decimal import Decimal
 import io
 import random
-from typing import Literal, Optional
+from typing import Literal
 
 import datetime
 import pyowm.commons.exceptions
@@ -223,7 +223,7 @@ class Location(commands.Cog):
 		)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def streetview(self, ctx, pitch: int = 0, heading: Optional[int] = None, *, location: str):
+	async def streetview(self, ctx, pitch: int = 0, heading: int | None = None, *, location: str):
 		'''
 		Generate street view of a location
 		`pitch`: specifies the up or down angle of the camera relative to the Street View vehicle.
