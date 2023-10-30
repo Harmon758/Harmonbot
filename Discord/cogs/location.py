@@ -168,9 +168,9 @@ class Location(commands.Cog):
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def map(
-		self, ctx, zoom: Optional[int] = 13,
-		maptype: Optional[
-			Literal["roadmap", "satellite", "hybrid", "terrain"]
+		self, ctx, zoom: int = 13,
+		maptype: Literal[
+			"roadmap", "satellite", "hybrid", "terrain"
 		] = "roadmap",
 		# https://developers.google.com/maps/documentation/maps-static/start#MapTypes
 		*, location: str
