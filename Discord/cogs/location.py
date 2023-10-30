@@ -424,6 +424,7 @@ class Location(commands.Cog):
         view.message = await message.fetch()
         interaction.client.views.append(view)
 
+
 class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
 
     def __init__(self, bot, location, one_call, user):
@@ -588,6 +589,7 @@ class WeatherView(ui.View):  # TODO: Use ButtonPaginator?
             await self.bot.attempt_edit_message(
                 self.message, view = self
             )
+
 
 def format_weather_embed(ctx_or_interaction, weather, humidity = True):
     embed = discord.Embed(
