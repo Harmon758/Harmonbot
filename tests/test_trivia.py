@@ -266,6 +266,14 @@ class TestCheckAnswer(unittest.TestCase):
             )
         )
 
+    def test_serial_commas_in_response(self):
+        self.assertTrue(
+            check_answer(
+                answer = "Elaine, George & Kramer",
+                response = "elaine, kramer, and george"
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
