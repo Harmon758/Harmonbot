@@ -223,7 +223,9 @@ class Location(commands.Cog):
 		)
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
-	async def streetview(self, ctx, pitch: int = 0, heading: int | None = None, *, location: str):
+	async def streetview(
+		self, ctx, pitch: int = 0, heading: int | None = None, *, location: str
+	):
 		'''
 		Generate street view of a location
 		`pitch`: specifies the up or down angle of the camera relative to the Street View vehicle.
@@ -234,16 +236,20 @@ class Location(commands.Cog):
 		Accepted values are from `0` to `360` (both values indicating North, with `90` indicating East, and `180` South).
 		If no heading is specified, a value will be calculated that directs the camera towards the specified `location`, from the point at which the closest photograph was taken.
 		'''
-		params = {"location": location, "size": "640x640", "fov": 120, "pitch": pitch, 
-					"key": ctx.bot.GOOGLE_API_KEY}
+		params = {
+			"location": location, "size": "640x640", "fov": 120,
+			"pitch": pitch, "key": ctx.bot.GOOGLE_API_KEY
+		}
 		if heading is not None:
 			params["heading"] = heading
 		async with ctx.bot.aiohttp_session.get(
 			"https://maps.googleapis.com/maps/api/streetview", params = params
 		) as resp:
 			data = await resp.read()
-		await ctx.embed_reply(image_url = "attachment://streetview.png", 
-								file = discord.File(io.BytesIO(data), filename = "streetview.png"))
+		await ctx.embed_reply(
+			image_url = "attachment://streetview.png",
+			file = discord.File(io.BytesIO(data), filename = "streetview.png")
+		)
 	
 	@streetview.command(name = "random")
 	async def streetview_random(self, ctx, radius: int = 5_000_000):
