@@ -115,9 +115,8 @@ class User(commands.Cog):
 
     @commands.command()
     async def avatar(
-        self, ctx, flip: Optional[bool] = False,
-        mirror: Optional[bool] = False, *,
-        user: Optional[discord.User] = commands.Author
+        self, ctx, flip: bool = False, mirror: bool = False, *,
+        user: discord.User = commands.Author
     ):
         """
         Show the avatar of a user
