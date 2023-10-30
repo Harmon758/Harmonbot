@@ -59,8 +59,10 @@ class User(commands.Cog):
 
     @user.command(name = "avatar")
     async def user_avatar(
-        self, ctx, flip: bool = False, mirror: bool = False, *,
-        user: discord.User = commands.Author
+        self, ctx,
+        flip: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        mirror: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        *, user: discord.User = commands.Author
     ):
         """
         Show the avatar of a user
