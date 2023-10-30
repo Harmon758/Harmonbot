@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands, menus
 
 import asyncio
-from typing import Literal, Optional
+from typing import Literal
 
 import dateutil
 import emoji
@@ -773,7 +773,7 @@ class Resources(commands.Cog):
 
     @commands.command(aliases = ["whatare"])
     @checks.not_forbidden()
-    async def whatis(self, ctx, *, search: Optional[str]):
+    async def whatis(self, ctx, *, search: str | None):
         '''WIP'''
         if not search:
             return await ctx.embed_reply("What is what?")
