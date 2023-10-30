@@ -228,7 +228,10 @@ class Location(commands.Cog):
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def streetview(
-        self, ctx, pitch: int = 0, heading: int | None = None, *, location: str
+        self, ctx,
+        pitch: Optional[int] = 0,  # noqa: UP007 (non-pep604-annotation)
+        heading: Optional[int] = None,  # noqa: UP007 (non-pep604-annotation)
+        *, location: str
     ):
         '''
         Generate street view of a location
