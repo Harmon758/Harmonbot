@@ -1,4 +1,5 @@
--e . --config-settings editable_mode=compat
+-e .  # --config-settings editable_mode=compat
+# https://github.com/dependabot/dependabot-core/issues/8297
 
 # discord.py[speed,voice]==2.0.0a
 discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@b3a2484
