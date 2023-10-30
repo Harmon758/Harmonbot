@@ -263,6 +263,7 @@ class Location(commands.Cog):
 		# Note: random streetview command invokes this command
 		latitude = random.uniform(-90, 90)
 		longitude = random.uniform(-180, 180)
+		
 		async with ctx.bot.aiohttp_session.get(
 			"https://maps.googleapis.com/maps/api/streetview",
 			params = {
@@ -271,6 +272,7 @@ class Location(commands.Cog):
 			}
 		) as resp:
 			data = await resp.read()
+		
 		await ctx.embed_reply(
 			fields = (("latitude", latitude), ("longitude", longitude)),
 			image_url = "attachment://streetview.png",
