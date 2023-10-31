@@ -13,9 +13,12 @@ class Channel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def cog_check(self, ctx):
+        guild_only = await commands.guild_only().predicate(ctx)
+        not_forbidden = await checks.not_forbidden().predicate(ctx)
+        return guild_only and not_forbidden
+
     @commands.group(invoke_without_command = True, case_insensitive = True)
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def channel(self, ctx):
         '''Channel'''
         await ctx.send_help(ctx.command)
@@ -26,8 +29,6 @@ class Channel(commands.Cog):
     # TODO: default channel?: text, voice, category
 
     @channel.group(invoke_without_command = True, case_insensitive = True)
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def category(self, ctx):
         '''Category'''
         await ctx.send_help(ctx.command)
@@ -41,15 +42,11 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @category.command(name = "id")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def category_id(self, ctx, *, channel : discord.CategoryChannel):
         '''ID of a category'''
         await ctx.embed_reply(channel.id)
 
     @category.command(name = "name")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def category_name(self, ctx, channel : discord.CategoryChannel, *, name : str = ""):
         '''Name of a category'''
         if name:
@@ -61,8 +58,6 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @category.command(name = "nsfw")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def category_nsfw(self, ctx, channel : discord.CategoryChannel, nsfw : bool = None):
         '''Whether a category is NSFW or not'''
         if nsfw is not None:
@@ -74,8 +69,6 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel.mention + " is {}NSFW".format("" if channel.is_nsfw() else "not "))
 
     @category.command(name = "position")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def category_position(self, ctx, channel : discord.CategoryChannel, position : int = None):
         '''
         The position in the category list
@@ -92,15 +85,11 @@ class Channel(commands.Cog):
 
     # TODO: Alias text channel subcommands as channel subcommands
     @channel.group(invoke_without_command = True, case_insensitive = True)
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def text(self, ctx):
         '''Text Channel'''
         await ctx.send_help(ctx.command)
 
     @text.command(name = "category")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def text_category(self, ctx, channel : discord.TextChannel, *, category : discord.CategoryChannel = None):
         '''Category the text channel belongs to'''
         if category:
@@ -120,8 +109,6 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @text.command(name = "id")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def text_id(
         self, ctx, *, channel: discord.TextChannel = commands.CurrentChannel
     ):
@@ -129,8 +116,6 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.id)
 
     @text.command(name = "name")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def text_name(self, ctx, channel : discord.TextChannel, *, name : str = ""):
         '''Name of a text channel'''
         if name:
@@ -142,8 +127,6 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @text.command(name = "nsfw")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def text_nsfw(self, ctx, channel : discord.TextChannel, nsfw : bool = None):
         '''Whether a text channel is NSFW or not'''
         if nsfw is not None:
@@ -155,8 +138,6 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel.mention + " is {}NSFW".format("" if channel.is_nsfw() else "not "))
 
     @text.command(name = "position")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def text_position(self, ctx, channel : discord.TextChannel, position : int = None):
         '''
         The position in the channel list
@@ -172,8 +153,6 @@ class Channel(commands.Cog):
             await ctx.embed_reply(f"{channel.mention}'s position is {channel.position}")
 
     @text.command(name = "slowmode")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def text_slowmode(self, ctx, channel : discord.TextChannel, slowmode_delay : int = None):
         '''
         Slowmode setting
@@ -200,15 +179,12 @@ class Channel(commands.Cog):
     @text.command(name = "sync")
     @commands.bot_has_permissions(manage_channels = True, manage_permissions = True)
     @commands.check_any(commands.has_permissions(manage_channels = True, manage_permissions = True), commands.is_owner())
-    @commands.guild_only()
     async def text_sync(self, ctx, *, channel : discord.TextChannel):
         '''Sync permissions with category the text channel belongs to'''
         await channel.edit(sync_permissions = True)
         await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
 
     @text.command(name = "topic")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def text_topic(self, ctx, channel : discord.TextChannel, *, topic : str = ""):
         '''Name of a text channel'''
         if topic:
@@ -224,7 +200,6 @@ class Channel(commands.Cog):
     @commands.check_any(
         commands.has_permissions(manage_webhooks = True), commands.is_owner()
     )
-    @commands.guild_only()
     async def text_webhooks(self, ctx):
         '''This text channel's webhooks'''
         webhooks = await ctx.channel.webhooks()
@@ -237,15 +212,11 @@ class Channel(commands.Cog):
     # TODO: webhooks menu command
 
     @channel.group(invoke_without_command = True, case_insensitive = True)
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def voice(self, ctx):
         '''Voice Channel'''
         await ctx.send_help(ctx.command)
 
     @voice.command(name = "bitrate")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def voice_bitrate(self, ctx, channel : discord.VoiceChannel, bitrate : int = None):
         '''Voice channel’s preferred audio bitrate in bits per second'''
         if bitrate is not None:
@@ -257,8 +228,6 @@ class Channel(commands.Cog):
             await ctx.embed_reply(f"{channel.mention}'s bitrate is {channel.bitrate}")
 
     @voice.command(name = "category")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def voice_category(self, ctx, channel : discord.VoiceChannel, *, category : discord.CategoryChannel = None):
         '''Category the voice channel belongs to'''
         if category:
@@ -278,15 +247,11 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @voice.command(name = "id")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def voice_id(self, ctx, *, channel : discord.VoiceChannel):
         '''ID of a voice channel'''
         await ctx.embed_reply(channel.id)
 
     @voice.command(name = "name")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def voice_name(self, ctx, channel : discord.VoiceChannel, *, name : str = ""):
         '''Name of a voice channel'''
         if name:
@@ -298,8 +263,6 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @voice.command(name = "position")
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def voice_position(self, ctx, channel : discord.VoiceChannel, position : int = None):
         '''
         The position in the channel list
@@ -317,15 +280,12 @@ class Channel(commands.Cog):
     @voice.command(name = "sync")
     @commands.bot_has_permissions(manage_channels = True, manage_permissions = True)
     @commands.check_any(commands.has_permissions(manage_channels = True, manage_permissions = True), commands.is_owner())
-    @commands.guild_only()
     async def voice_sync(self, ctx, *, channel : discord.VoiceChannel):
         '''Sync permissions with category the voice channel belongs to'''
         await channel.edit(sync_permissions = True)
         await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
 
     @voice.command(name = "user_limit", aliases = ["userlimit"])
-    @commands.guild_only()
-    @checks.not_forbidden()
     async def voice_user_limit(self, ctx, channel : discord.VoiceChannel, user_limit : int = None):
         '''Limit for number of members that can be in the voice channel'''
         if user_limit is not None:
