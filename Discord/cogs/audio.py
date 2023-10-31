@@ -228,9 +228,9 @@ class Audio(commands.Cog):
 		try:
 			songs = await self.players[ctx.guild.id].skip_to_song(number)
 		except errors.AudioError as e:
-			await ctx.embed_reply(":no_entry: {}".format(e))
+			await ctx.embed_reply(f":no_entry: {e}")
 		else:
-			await ctx.embed_reply(":put_litter_in_its_place: Skipped to #{} in the queue".format(number))
+			await ctx.embed_reply(f":put_litter_in_its_place: Skipped to #{number} in the queue")
 			del songs
 	
 	@commands.command(aliases = ["repeat"])
