@@ -142,7 +142,7 @@ class Permissions(commands.Cog):
 		Get permissions for a user, role, command, or everyone
 		Defaults to everyone if no user, role, or command is specified or found
 		'''
-		if isinstance(subject, (discord.Member, discord.Role)):
+		if isinstance(subject, discord.Member | discord.Role):
 			subject_type = type(subject).__name__.lower().replace("member", "user")
 			records = await ctx.bot.db.fetch(
 				f"""
