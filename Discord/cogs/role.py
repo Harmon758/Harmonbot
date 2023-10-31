@@ -134,5 +134,13 @@ class Role(commands.Cog):
         WIP
         Positions of roles in the server
         '''
-        await ctx.embed_reply(', '.join(f"{role.mention}: {role.position}" for role in sorted(ctx.guild.roles[1:], key = attrgetter("position"), reverse = True)))
+        await ctx.embed_reply(
+            ', '.join(
+                f"{role.mention}: {role.position}"
+                for role in sorted(
+                    ctx.guild.roles[1:],
+                    key = attrgetter("position"), reverse = True
+                )
+            )
+        )
 
