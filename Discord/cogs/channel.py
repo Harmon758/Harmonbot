@@ -247,9 +247,9 @@ class Channel(commands.Cog):
 			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(bitrate = bitrate)
-			await ctx.embed_reply(channel.mention + "'s bitrate has been set to {}".format(bitrate))
+			await ctx.embed_reply(f"{channel.mention}'s bitrate has been set to {bitrate}")
 		else:
-			await ctx.embed_reply(channel.mention + "'s bitrate is {}".format(channel.bitrate))
+			await ctx.embed_reply(f"{channel.mention}'s bitrate is {channel.bitrate}")
 	
 	@voice.command(name = "category")
 	@commands.guild_only()
