@@ -27,11 +27,18 @@ class Role(commands.Cog):
     # TODO: reason options?
 
     @role.command(aliases = ["colour"], with_app_command = False)
-    async def color(self, ctx, role: discord.Role, *, color: discord.Color = None):
+    async def color(
+        self, ctx, role: discord.Role, *, color: discord.Color = None
+    ):
         '''The color of a role'''
         if color:
-            await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
-            await commands.bot_has_guild_permissions(manage_roles = True).predicate(ctx)
+            await commands.check_any(
+                commands.has_guild_permissions(manage_roles = True),
+                commands.is_owner()
+            ).predicate(ctx)
+            await commands.bot_has_guild_permissions(
+                manage_roles = True
+            ).predicate(ctx)
             await role.edit(color = color)
             await ctx.embed_reply(role.mention + " has been recolored")
         else:
