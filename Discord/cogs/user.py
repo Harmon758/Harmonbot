@@ -43,7 +43,7 @@ class User(commands.Cog):
     async def user_add_role(self, ctx, member: discord.Member, *, role: discord.Role):
         '''Gives a user a role'''
         await member.add_roles(role)
-        await ctx.embed_reply("I gave the role, {}, to {}".format(role, member))
+        await ctx.embed_reply(f"I gave the role, {role}, to {member}")
 
     @commands.command(aliases = ["addrole"])
     @commands.bot_has_guild_permissions(manage_roles = True)
