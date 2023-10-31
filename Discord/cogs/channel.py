@@ -327,7 +327,7 @@ class Channel(commands.Cog):
 			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(user_limit = user_limit)
-			await ctx.embed_reply(channel.mention + "'s user limit has been set to {}".format(user_limit))
+			await ctx.embed_reply(f"{channel.mention}'s user limit has been set to {user_limit}")
 		else:
-			await ctx.embed_reply(channel.mention + "'s user limit is {}".format(channel.user_limit))
+			await ctx.embed_reply(f"{channel.mention}'s user limit is {channel.user_limit}")
 
