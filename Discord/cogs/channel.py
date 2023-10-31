@@ -166,9 +166,9 @@ class Channel(commands.Cog):
 			await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
 			await channel.edit(position = position)
-			await ctx.embed_reply(channel.mention + "'s position has been set to {}".format(position))
+			await ctx.embed_reply(f"{channel.mention}'s position has been set to {position}")
 		else:
-			await ctx.embed_reply(channel.mention + "'s position is {}".format(channel.position))
+			await ctx.embed_reply(f"{channel.mention}'s position is {channel.position}")
 	
 	@text.command(name = "slowmode")
 	@commands.guild_only()
