@@ -105,8 +105,13 @@ class Role(commands.Cog):
     async def name(self, ctx, role: discord.Role, *, name: str = ""):
         '''The name of a role'''
         if name:
-            await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
-            await commands.bot_has_guild_permissions(manage_roles = True).predicate(ctx)
+            await commands.check_any(
+                commands.has_guild_permissions(manage_roles = True),
+                commands.is_owner()
+            ).predicate(ctx)
+            await commands.bot_has_guild_permissions(
+                manage_roles = True
+            ).predicate(ctx)
             await role.edit(name = name)
             await ctx.embed_reply(role.mention + " has been renamed")
         else:
