@@ -125,9 +125,9 @@ class Role(commands.Cog):
 			await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
 			await commands.bot_has_guild_permissions(manage_roles = True).predicate(ctx)
 			await role.edit(position = position)
-			await ctx.embed_reply(role.mention + "'s position has been set to {}".format(position))
+			await ctx.embed_reply(f"{role.mention}'s position has been set to {position}")
 		else:
-			await ctx.embed_reply(role.mention + "'s position is {}".format(role.position))
+			await ctx.embed_reply(f"{role.mention}'s position is {role.position}")
 	
 	# TODO: move to server cog
 	@role.command(with_app_command = False)
