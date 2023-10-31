@@ -23,6 +23,14 @@ class Channel(commands.Cog):
         '''Channel'''
         await ctx.send_help(ctx.command)
 
+    @channel.command(name = "id")
+    async def channel_id(
+        self, ctx, *,
+        channel: discord.abc.GuildChannel = commands.CurrentChannel
+    ):
+        '''ID of a channel'''
+        await ctx.embed_reply(channel.id)
+
     # TODO: help - filter subcommands list
 
     # TODO: commands/parameters; reason options?
@@ -40,11 +48,6 @@ class Channel(commands.Cog):
         '''Create category'''
         channel = await ctx.guild.create_category_channel(name)
         await ctx.embed_reply(channel.mention + " created")
-
-    @category.command(name = "id")
-    async def category_id(self, ctx, *, channel: discord.CategoryChannel):
-        '''ID of a category'''
-        await ctx.embed_reply(channel.id)
 
     @category.command(name = "name")
     async def category_name(self, ctx, channel : discord.CategoryChannel, *, name : str = ""):
@@ -107,13 +110,6 @@ class Channel(commands.Cog):
         '''Create text channel'''
         channel = await ctx.guild.create_text_channel(name)
         await ctx.embed_reply(channel.mention + " created")
-
-    @text.command(name = "id")
-    async def text_id(
-        self, ctx, *, channel: discord.TextChannel = commands.CurrentChannel
-    ):
-        '''ID of a text channel'''
-        await ctx.embed_reply(channel.id)
 
     @text.command(name = "name")
     async def text_name(self, ctx, channel : discord.TextChannel, *, name : str = ""):
@@ -245,11 +241,6 @@ class Channel(commands.Cog):
         '''Create voice channel'''
         channel = await ctx.guild.create_voice_channel(name)
         await ctx.embed_reply(channel.mention + " created")
-
-    @voice.command(name = "id")
-    async def voice_id(self, ctx, *, channel: discord.VoiceChannel):
-        '''ID of a voice channel'''
-        await ctx.embed_reply(channel.id)
 
     @voice.command(name = "name")
     async def voice_name(self, ctx, channel : discord.VoiceChannel, *, name : str = ""):
