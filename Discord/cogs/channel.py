@@ -220,13 +220,17 @@ class Channel(commands.Cog):
 	
 	@text.command(name = "webhooks", aliases = ["webhook"])
 	@commands.bot_has_permissions(manage_webhooks = True)
-	@commands.check_any(commands.has_permissions(manage_webhooks = True), commands.is_owner())
+	@commands.check_any(
+		commands.has_permissions(manage_webhooks = True), commands.is_owner()
+	)
 	@commands.guild_only()
 	async def text_webhooks(self, ctx):
 		'''This text channel's webhooks'''
 		webhooks = await ctx.channel.webhooks()
-		await ctx.embed_reply('\n'.join(webhook.name for webhook in webhooks), 
-								title = "This Channel's Webhooks")
+		await ctx.embed_reply(
+			'\n'.join(webhook.name for webhook in webhooks),
+			title = "This Channel's Webhooks"
+		)
 	
 	# TODO: following command?
 	# TODO: webhooks menu command
