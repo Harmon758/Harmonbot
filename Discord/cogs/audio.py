@@ -244,7 +244,7 @@ class Audio(commands.Cog):
 		try:
 			await self.players[ctx.guild.id].replay()
 		except errors.AudioError as e:
-			embed.description = ":no_entry: {}".format(e)
+			embed.description = f":no_entry: {e}"
 		else:
 			embed.description = ":repeat_one: Restarted song"
 		finally:
