@@ -247,7 +247,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @voice.command(name = "id")
-    async def voice_id(self, ctx, *, channel : discord.VoiceChannel):
+    async def voice_id(self, ctx, *, channel: discord.VoiceChannel):
         '''ID of a voice channel'''
         await ctx.embed_reply(channel.id)
 
