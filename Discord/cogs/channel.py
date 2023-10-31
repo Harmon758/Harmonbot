@@ -42,7 +42,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @category.command(name = "id")
-    async def category_id(self, ctx, *, channel : discord.CategoryChannel):
+    async def category_id(self, ctx, *, channel: discord.CategoryChannel):
         '''ID of a category'''
         await ctx.embed_reply(channel.id)
 
