@@ -195,10 +195,10 @@ class Audio(commands.Cog):
 				if not ctx.guild.voice_client.is_playing() and not ctx.guild.voice_client.is_paused():
 					await ctx.embed_reply(":no_entry: There is no song to skip")
 				elif ctx.author.id in player.skip_votes:
-					await ctx.embed_reply(":no_entry: You've already voted to skip. Skips: {}/{}".format(len(player.skip_votes), player.skip_votes_required))
+					await ctx.embed_reply(f":no_entry: You've already voted to skip. Skips: {len(player.skip_votes)}/{player.skip_votes_required}")
 				else:
 					vote = player.vote_skip(ctx.author)
-					await ctx.embed_reply(":white_check_mark: You voted to skip the current song\n{}".format("Skips: {}/{}".format(vote, player.skip_votes_required) if vote else ":next_track: Song skipped"))
+					await ctx.embed_reply(":white_check_mark: You voted to skip the current song\n{}".format(f"Skips: {vote}/{player.skip_votes_required}" if vote else ":next_track: Song skipped"))
 			else:
 				await ctx.embed_reply(":no_entry: You're not even listening!")
 		else:
@@ -206,9 +206,9 @@ class Audio(commands.Cog):
 				try:
 					song = await player.skip_specific(number)
 				except errors.AudioError as e:
-					await ctx.embed_reply(":no_entry: {}".format(e))
+					await ctx.embed_reply(f":no_entry: {e}")
 				else:
-					await ctx.embed_reply(":put_litter_in_its_place: Skipped #{} in the queue: `{}`".format(number, song.info["title"]))
+					await ctx.embed_reply(f":put_litter_in_its_place: Skipped #{number} in the queue: `{song.info['title']}`")
 					del song
 			else:
 				if self.players[ctx.guild.id].skip():
