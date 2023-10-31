@@ -28,7 +28,7 @@ class Channel(commands.Cog):
         self, ctx, *,
         channel: discord.abc.GuildChannel = commands.CurrentChannel
     ):
-        '''Show the ID of a channel'''
+        """Show the ID of a channel"""
         await ctx.embed_reply(channel.id)
 
     # TODO: help - filter subcommands list
