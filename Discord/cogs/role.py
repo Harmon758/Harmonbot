@@ -120,12 +120,21 @@ class Role(commands.Cog):
         The bottom role has a position of 0
         '''
         if position is not None:
-            await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
-            await commands.bot_has_guild_permissions(manage_roles = True).predicate(ctx)
+            await commands.check_any(
+                commands.has_guild_permissions(manage_roles = True),
+                commands.is_owner()
+            ).predicate(ctx)
+            await commands.bot_has_guild_permissions(
+                manage_roles = True
+            ).predicate(ctx)
             await role.edit(position = position)
-            await ctx.embed_reply(f"{role.mention}'s position has been set to {position}")
+            await ctx.embed_reply(
+                f"{role.mention}'s position has been set to {position}"
+            )
         else:
-            await ctx.embed_reply(f"{role.mention}'s position is {role.position}")
+            await ctx.embed_reply(
+                f"{role.mention}'s position is {role.position}"
+            )
 
     # TODO: move to server cog
     @role.command(with_app_command = False)
