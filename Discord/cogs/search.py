@@ -24,6 +24,7 @@ FANDOM_WIKIS = {
     "Redwall": "https://redwall.fandom.com/",
     "Seinfeld": "https://seinfeld.fandom.com/",
     "Suits": "https://suits.fandom.com/",
+    "The Hunger Games": "https://thehungergames.fandom.com/",
     "The Lord of the Rings": "https://lotr.fandom.com/",
     "Transformers": "https://transformers.fandom.com/",
     "Transformers Movie": "https://michaelbaystransformers.fandom.com/"
@@ -616,8 +617,8 @@ class Search(commands.GroupCog, group_name = "search"):
         self, ctx,
         wiki: Literal[
             "Disney", "Foundation", "Genshin Impact", "Memory Alpha", "Pixar",
-            "Redwall", "Seinfeld", "Suits", "The Lord of the Rings",
-            "Transformers", "Transformers Movie"
+            "Redwall", "Seinfeld", "Suits", "The Hunger Games",
+            "The Lord of the Rings", "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
@@ -661,8 +662,8 @@ class Search(commands.GroupCog, group_name = "search"):
         self, interaction,
         wiki: Literal[
             "Disney", "Foundation", "Genshin Impact", "Memory Alpha", "Pixar",
-            "Redwall", "Seinfeld", "Suits", "The Lord of the Rings",
-            "Transformers", "Transformers Movie"
+            "Redwall", "Seinfeld", "Suits", "The Hunger Games",
+            "The Lord of the Rings", "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
@@ -692,8 +693,8 @@ class Search(commands.GroupCog, group_name = "search"):
         self, ctx,
         wiki: Literal[
             "Disney", "Foundation", "Genshin Impact", "Memory Alpha", "Pixar",
-            "Redwall", "Seinfeld", "Suits", "The Lord of the Rings",
-            "Transformers", "Transformers Movie"
+            "Redwall", "Seinfeld", "Suits", "The Hunger Games",
+            "The Lord of the Rings", "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
