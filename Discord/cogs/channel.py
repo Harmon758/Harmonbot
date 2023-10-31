@@ -18,7 +18,7 @@ class Channel(commands.Cog):
         not_forbidden = await checks.not_forbidden().predicate(ctx)
         return guild_only and not_forbidden
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
+    @commands.group(case_insensitive = True, invoke_without_command = True)
     async def channel(self, ctx):
         '''Channel'''
         await ctx.send_help(ctx.command)
