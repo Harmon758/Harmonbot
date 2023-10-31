@@ -52,7 +52,7 @@ class FileSource(ModifiedPCMVolumeTransformer):
 		self.filename = filename
 		self.volume = volume
 		self.title_prefix = title_prefix
-		self.title = title_prefix + "`{}`".format(os.path.basename(self.filename))
+		self.title = f"{title_prefix}`{os.path.basename(self.filename)}`"
 		super().__init__(ModifiedFFmpegPCMAudio(ctx, filename), volume)
 	
 	@classmethod
