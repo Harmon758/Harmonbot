@@ -8,13 +8,10 @@ from utilities import checks
 
 
 async def setup(bot):
-    await bot.add_cog(Role(bot))
+    await bot.add_cog(Role())
 
 class Role(commands.Cog):
     """Role"""
-
-    def __init__(self, bot):
-        self.bot = bot
 
     async def cog_check(self, ctx):
         guild_only = await commands.guild_only().predicate(ctx)
