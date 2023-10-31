@@ -37,7 +37,7 @@ class Role(commands.Cog):
 			await role.edit(color = color)
 			await ctx.embed_reply(role.mention + " has been recolored")
 		else:
-			await ctx.embed_reply(role.mention + "'s color is {}".format(role.color))
+			await ctx.embed_reply(f"{role.mention}'s color is {role.color}")
 	
 	@role.command(aliases = ["make", "new"], with_app_command = False)
 	@commands.bot_has_guild_permissions(manage_roles = True)
