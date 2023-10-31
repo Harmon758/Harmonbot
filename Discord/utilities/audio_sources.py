@@ -81,7 +81,7 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 		self.voice = voice
 		
 		self.initialized = False
-		self.title = "TTS Message: `{}`".format(self.message)
+		self.title = f"TTS Message: `{self.message}`"
 	
 	async def generate_file(self):
 		func = functools.partial(subprocess.run, ["bin/eSpeak NG/espeak-ng", "--path=bin/eSpeak NG", 
