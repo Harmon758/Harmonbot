@@ -575,7 +575,7 @@ class Audio(commands.Cog):
 					playing_bar = playing_bar[:button_spot] + ":radio_button: " + playing_bar[button_spot + 1:]
 					played_duration = utilities.secs_to_colon_format(played_duration)
 					total_duration = utilities.secs_to_colon_format(total_duration)
-					description = ":arrow_forward: {}`[{}/{}]`".format(playing_bar, played_duration, total_duration)  # Add :sound:?
+					description = f":arrow_forward: {playing_bar}`[{played_duration}/{total_duration}]`"  # Add :sound:?
 				views = ctx.guild.voice_client.source.info.get("view_count")
 				likes = ctx.guild.voice_client.source.info.get("like_count")
 				dislikes = ctx.guild.voice_client.source.info.get("dislike_count")
