@@ -3,11 +3,10 @@ import discord
 from discord.ext import commands
 
 from operator import attrgetter
-from typing import Union
 
 
 Me = commands.parameter(
-    converter = Union[discord.Member, discord.User],
+    converter = discord.Member | discord.User,
     default = attrgetter("me"),
     displayed_default = "<me>",
 )
