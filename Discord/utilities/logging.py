@@ -11,7 +11,7 @@ from units.files import create_folder
 from utilities.database import create_database_connection
 
 
-class ConsoleLogger(object):
+class ConsoleLogger:
 	
 	'''Console Logger'''
 	
