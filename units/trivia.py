@@ -90,11 +90,17 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     response = response.lower()
 
     # Get items in lists
+    one_of = False
+    if answer.startswith("(1 of) "):
+        answer = answer[7:]  # 7 == len("(1 of) ")
+        one_of = True
     answer_items = answer.split(',')
     answer_items[-1:] = [
         item for item in answer_items[-1].split(" and ") if item
     ]
     answer_items = [item.strip() for item in answer_items]
+    if one_of and response in answer_items:
+        return True
     response_items = response.split(',')
     response_items[-1:] = [
         item for item in response_items[-1].split(" and ") if item

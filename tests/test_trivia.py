@@ -210,6 +210,20 @@ class TestCheckAnswer(unittest.TestCase):
                 f'answer: "{answer}", response: "{response}"'
             )
 
+    def test_one_of_in_answer(self):
+        self.assertFalse(
+            check_answer(
+                answer = "(1 of) James Lovell, Fred Haise, & Jack Swigert",
+                response = "1 of"
+            )
+        )
+        self.assertTrue(
+            check_answer(
+                answer = "(1 of) James Lovell, Fred Haise, & Jack Swigert",
+                response = "Jack Swigert"
+            )
+        )
+
     def test_partial_matching_named_entity(self):
         self.assertFalse(
             check_answer(answer = "bean sprouts", response = "soy beans")
