@@ -15,7 +15,7 @@ def secs_to_duration(secs, limit = 0):
 	return duration
 
 def duration_to_letter_format(duration):
-	return ' '.join(filter(None, ["{}{}".format(duration[i], letter) if duration[i] else "" for i, letter in enumerate(['y', 'w', 'd', 'h', 'm', 's'])])) or "0s"
+	return ' '.join(filter(None, [f"{duration[i]}{letter}" if duration[i] else "" for i, letter in enumerate(['y', 'w', 'd', 'h', 'm', 's'])])) or "0s"
 
 def duration_to_colon_format(duration):
 	return ':'.join([str(unit).rjust(2, '0') if unit else "00" for unit in duration]).lstrip("0:").rjust(2, '0').rjust(3, ':').rjust(4, '0')
