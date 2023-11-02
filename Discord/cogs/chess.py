@@ -317,15 +317,21 @@ class ChessMatch(chess.Board):
 
                 self.make_move(message.content)
 
+                player = [self.black_player, self.white_player][int(self.turn)]
                 if self.is_game_over():
                     footer_text = None
                     self.ended.set()
                 else:
                     footer_text = (
                         f"It is {['black', 'white'][int(self.turn)]}'s "
-                        f"({[self.black_player, self.white_player][int(self.turn)]}'s) turn to move"
+                        f"({player}'s) turn to move"
                     )
-                await self.update_match_embed(footer_text = footer_text)
+                await self.update_match_embed(
+                    footer_text = footer_text,
+                    orientation = (
+                        not self.turn if player == self.bot.user else None
+                    )
+                )
 
                 await self.bot.attempt_delete_message(message)
 
@@ -358,7 +364,7 @@ class ChessMatch(chess.Board):
         svg = chess.svg.board(
             self, lastmove = self.peek() if self.move_stack else None,
             check = self.king(self.turn) if self.is_check() else None,
-            orientation = orientation or self.turn
+            orientation = orientation if orientation is not None else self.turn
         )
 
         buffer = io.BytesIO()
