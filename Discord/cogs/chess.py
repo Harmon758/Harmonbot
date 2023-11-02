@@ -53,10 +53,10 @@ class ChessCog(commands.Cog, name = "Chess"):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    def cog_unload(self):
+    async def cog_unload(self):
         # TODO: Persistence - store running chess matches and add way to continue previous ones
         for match in self.matches:
-            match.task.cancel()
+            await match.stop()
 
     # TODO: Use max concurrency?
     @commands.hybrid_group(
@@ -250,6 +250,7 @@ class ChessMatch(chess.Board):
         if skill_level is not None:
             await self.chess_engine.configure({"Skill Level": skill_level})
         self.message = None
+        self.view = None
         self.task = ctx.bot.loop.create_task(
             self.match_task(), name = "Chess Match"
         )
@@ -376,18 +377,26 @@ class ChessMatch(chess.Board):
         embed.set_image(url = "attachment://chess_board.png")
         embed.set_footer(text = footer_text)
 
+        self.view = ChessMatchView(self.bot, self)
+
         if send:
             self.message = await self.ctx.send(
                 embed = embed,
                 file = discord.File(buffer, filename = "chess_board.png"),
-                view = ChessMatchView(self.bot, self)
+                view = self.view
             )
         else:
             await self.message.edit(
                 attachments = [
                     discord.File(buffer, filename = "chess_board.png")
-                ], embed = embed, view = ChessMatchView(self.bot, self)
+                ], embed = embed, view = self.view
             )
+
+    async def stop(self):
+        if self.view:
+            await self.view.stop()
+
+        self.task.cancel()
 
 
 class ChessChallengeView(discord.ui.View):
@@ -475,4 +484,12 @@ class ChessMatchView(discord.ui.View):
         await self.match.bot.attempt_delete_message(interaction.message)
 
         self.resending = False
+
+    async def stop(self):
+        self.fen.disabled = True
+        self.text.disabled = True
+        self.resend_message.disabled = True
+        await self.match.message.edit(view = self)
+
+        super().stop()
 
