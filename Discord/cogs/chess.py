@@ -289,7 +289,7 @@ class ChessMatch(chess.Board):
                 )
 
                 result = await self.chess_engine.play(
-                    self, chess.engine.Limit(time = 2)
+                    self, chess.engine.Limit(time = 0.05 * self.skill_level)
                 )
                 self.push(result.move)
 
