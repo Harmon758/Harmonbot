@@ -350,7 +350,9 @@ class ChessMatch(chess.Board):
         elif self.black_player == self.bot.user:
             chess_pgn.headers["Black"] += f" (Level {self.skill_level})"
 
-        embed.description = str(chess_pgn).replace('*', "\*")
+        embed.description = (
+            str(chess_pgn).replace('*', "\*").replace("1. ", "1\. ")
+        )
 
         ## svg = self._repr_svg_()
         svg = chess.svg.board(
