@@ -256,6 +256,10 @@ class ChessMatch(chess.Board):
         )
         return self
 
+    @property
+    def player(self):
+        return [self.black_player, self.white_player][int(self.turn)]
+
     def make_move(self, move):
         try:
             self.push_san(move)
@@ -281,10 +285,9 @@ class ChessMatch(chess.Board):
         await self.update_match_embed()
 
         while not self.ended.is_set():
-            player = [self.black_player, self.white_player][int(self.turn)]
             embed = self.message.embeds[0]
 
-            if player == self.bot.user:
+            if self.player == self.bot.user:
                 await self.message.edit(
                     embed = embed.set_footer(text = "I'm thinking..")
                 )
@@ -305,7 +308,7 @@ class ChessMatch(chess.Board):
                 message = await self.bot.wait_for(
                     "message",
                     check = lambda msg: (
-                        msg.author == player and
+                        msg.author == self.player and
                         msg.channel == self.ctx.channel and
                         self.valid_move(msg.content)
                     )
@@ -318,19 +321,18 @@ class ChessMatch(chess.Board):
 
                 self.make_move(message.content)
 
-                player = [self.black_player, self.white_player][int(self.turn)]
                 if self.is_game_over():
                     footer_text = None
                     self.ended.set()
                 else:
                     footer_text = (
                         f"It is {['black', 'white'][int(self.turn)]}'s "
-                        f"({player}'s) turn to move"
+                        f"({self.player}'s) turn to move"
                     )
                 await self.update_match_embed(
                     footer_text = footer_text,
                     orientation = (
-                        not self.turn if player == self.bot.user else None
+                        not self.turn if self.player == self.bot.user else None
                     )
                 )
 
@@ -475,7 +477,7 @@ class ChessMatchView(discord.ui.View):
         else:
             footer_text = (
                 f"It's {['black', 'white'][int(self.match.turn)]}'s "
-                f"({[self.match.black_player, self.match.white_player][int(self.match.turn)]}'s) turn to move"
+                f"({self.match.player}'s) turn to move"
             )
         await self.match.update_match_embed(
             footer_text = footer_text, send = True
