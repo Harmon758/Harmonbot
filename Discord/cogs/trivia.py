@@ -240,7 +240,6 @@ class Trivia(commands.Cog):
             False: anyone selects
             (Defaults to False)
         """
-        # Note: jeopardy command invokes this command
         # TODO: Daily Double?
         await ctx.defer()
 
@@ -427,42 +426,16 @@ class Trivia(commands.Cog):
                 ))
         await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
 
-    @commands.command()
-    async def jeopardy(
-        self, ctx, buzzer: bool = False, react: bool = False,
-        seconds: commands.Range[int, 1, 60] = 15, turns: bool = False
-    ):
+    @commands.command(hidden = True)
+    async def jeopardy(self, ctx):
         """
-        Trivia board
-        Based on Jeopardy!
-        [category number] [value] can also be used to select clues
-
-        Parameters
-        ----------
-        buzzer
-            True: penalizes incorrect answers;
-            False: allows everyone to answer at once
-            (Defaults to False)
-        react
-            Whether or not to add reactions to submitted answers
-            (Defaults to False)
-        seconds
-            How long to accept answers for, in seconds
-            (1–60, default is 15)
-        turns
-            True: invoker and last person to answer correctly select;
-            False: anyone selects
-            (Defaults to False)
+        This command alias has been deprecated
+        Use the trivia board command instead
         """
-        if command := ctx.bot.get_command("trivia board"):
-            await ctx.invoke(
-                command, buzzer = buzzer, react = react, seconds = seconds,
-                turns = turns
-            )
-        else:
-            raise RuntimeError(
-                "trivia board command not found when jeopardy command invoked"
-            )
+        await ctx.embed_reply(
+            "This command alias has been deprecated\n"
+            f"Use `{ctx.prefix}trivia board` or {ctx.bot.tree.app_command_models['trivia board'].mention} instead"
+        )
 
 
 class TriviaBoard:
