@@ -346,15 +346,19 @@ class Bot(commands.Bot):
             self.initialize_constant_objects(),
             name = "Initialize Discord objects as constant attributes of Bot"
         )
+
         self.loop.create_task(
             self.initialize_custom_emoji(),
             name = "Initialize custom emoji as constant attributes of Bot"
         )
+
         self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
+
         self.github_api = gidgethub.aiohttp.GitHubAPI(
             self.aiohttp_session, self.user_agent,
             oauth_token = self.GITHUB_PERSONAL_ACCESS_TOKEN
         )
+
         try:
             self.google_cloud_translation_service_client = (
                 google.cloud.translate.TranslationServiceAsyncClient()
@@ -363,14 +367,19 @@ class Bot(commands.Bot):
             self.print(
                 f"Failed to initialize Google Cloud Translation Service Client: {e}"
             )
+
         self.twitch_client = twitchio.Client(
             client_id = self.TWITCH_CLIENT_ID,
             client_secret = self.TWITCH_CLIENT_SECRET,
             loop = self.loop
         )
+
         await self.initialize_database()
+
         await initialize_aiohttp_access_logging(self.database)
+
         self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
+
         # Load cogs
         try:
             for file in sorted(os.listdir("cogs")):
