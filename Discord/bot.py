@@ -380,6 +380,9 @@ class Bot(commands.Bot):
 
         self.loop.create_task(self.startup_tasks(), name = "Bot startup tasks")
 
+        # Fetch AppCommand models
+        await self.tree.fetch_commands()
+
         # Load cogs
         try:
             for file in sorted(os.listdir("cogs")):
