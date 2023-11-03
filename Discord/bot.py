@@ -63,19 +63,17 @@ class Bot(commands.Bot):
         initialize_logging(self.data_path)
 
         # Initialization
-        activity = discord.Streaming(
-            name = random.choice(self.game_statuses), url = self.stream_url
-        )
-        help_command = HelpCommand(
-            command_attrs = {"aliases": ["commands"], "hidden": True}
-        )
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(
-            activity = activity,
+            activity = discord.Streaming(
+                name = random.choice(self.game_statuses), url = self.stream_url
+            ),
             case_insensitive = True,
             command_prefix = self.get_command_prefix,
-            help_command = help_command,
+            help_command = HelpCommand(
+                command_attrs = {"aliases": ["commands"], "hidden": True}
+            ),
             intents = intents,
             tree_cls = CommandTree
         )
