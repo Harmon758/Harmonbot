@@ -11,6 +11,10 @@ import sentry_sdk
 
 class CommandTree(app_commands.CommandTree):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app_command_models = {}
+
     async def on_error(self, interaction, error):
         # Command Invoke Error
         if isinstance(error, app_commands.CommandInvokeError):
@@ -57,3 +61,33 @@ class CommandTree(app_commands.CommandTree):
             "Uncaught exception\n",
             exc_info = (type(error), error, error.__traceback__)
         )
+
+    async def fetch_commands(self, *, guild = None):
+        app_command_models = await super().fetch_commands(guild = guild)
+
+        if not guild:
+            await self.update_app_command_models(app_command_models)
+
+        return app_command_models
+
+    async def sync(self, *, guild = None):
+        app_command_models = await super().sync(guild = guild)
+
+        if not guild:
+            await self.update_app_command_models(app_command_models)
+
+        return app_command_models
+
+    async def update_app_command_models(self, app_command_models):
+        self.app_command_models = {}
+        for command in app_command_models:
+            self.app_command_models[command.name] = command
+            for option in command.options:
+                if isinstance(option, app_commands.AppCommandGroup):
+                    self.app_command_models[option.qualified_name] = option
+                    for suboption in option.options:
+                        if isinstance(suboption, app_commands.AppCommandGroup):
+                            self.app_command_models[
+                                suboption.qualified_name
+                            ] = suboption
+
