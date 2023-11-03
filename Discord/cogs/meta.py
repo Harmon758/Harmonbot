@@ -246,6 +246,13 @@ class Meta(commands.Cog):
                                 "units: [amu, me, bagc, bagpc, barge, kt, ct, clove, crith, da, drt, drav, ev, gamma, gr, gv, longcwt, cwt, shcwt, kg, kip, mark, mite, mitem, ozt, ozav, oz, dwt, pwt, point, lb, lbav, lbm, lbt, quarterimp, quarterinf, quarterlinf, q, sap, sheet, slug, st, atl, ats, longtn, ton, shtn, t, wey, g]",
                                 title = "Conversion Commands")
 
+    @app_commands.command(name = "help")
+    async def slash_help(self, interaction):
+        ctx = await interaction.client.get_context(interaction)
+        prefixes = await ctx.bot.get_command_prefix(ctx.bot, ctx.message)
+        ctx.prefix = prefixes[0]
+        await ctx.send_help()
+
     @commands.hybrid_command(aliases = ["oauth"])
     async def invite(self, ctx):
         """Link to invite me to a server"""
@@ -412,13 +419,6 @@ class Meta(commands.Cog):
         Also see help and about commands
         '''
         await ctx.send_help(ctx.command)
-
-    @app_commands.command(name = "help")
-    async def slash_help(self, interaction):
-        ctx = await interaction.client.get_context(interaction)
-        prefixes = await ctx.bot.get_command_prefix(ctx.bot, ctx.message)
-        ctx.prefix = prefixes[0]
-        await ctx.send_help()
 
     @harmonbot.group(name = "activity", aliases = ["game", "playing", "status"],
                         invoke_without_command = True, case_insensitive = True)
