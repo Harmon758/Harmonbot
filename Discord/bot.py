@@ -344,7 +344,10 @@ class Bot(commands.Bot):
         return self.twitch_color
 
     async def setup_hook(self):
-        self.loop.create_task(self.initialize_constant_objects(), name = "Initialize Discord objects as constant attributes of Bot")
+        self.loop.create_task(
+            self.initialize_constant_objects(),
+            name = "Initialize Discord objects as constant attributes of Bot"
+        )
         self.loop.create_task(
             self.initialize_custom_emoji(),
             name = "Initialize custom emoji as constant attributes of Bot"
@@ -359,7 +362,9 @@ class Bot(commands.Bot):
                 google.cloud.translate.TranslationServiceAsyncClient()
             )
         except google.auth.exceptions.DefaultCredentialsError as e:
-            self.print(f"Failed to initialize Google Cloud Translation Service Client: {e}")
+            self.print(
+                f"Failed to initialize Google Cloud Translation Service Client: {e}"
+            )
         self.twitch_client = twitchio.Client(
             client_id = self.TWITCH_CLIENT_ID,
             client_secret = self.TWITCH_CLIENT_SECRET,
