@@ -1431,7 +1431,9 @@ class Bot(commands.Bot):
                     self.online_time, uptime
                 )
         # Close aiohttp session
-        await self.aiohttp_session.close()
+        with contextlib.suppress(AttributeError):
+            # Might not be initialized yet for CI
+            await self.aiohttp_session.close()
         # Close database connection
         if self.database_connection_pool:
             # Might not be connected to database yet for CI
