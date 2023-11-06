@@ -1041,6 +1041,9 @@ class TriviaBoardBuzzerView(ui.View):
     @ui.button(style = discord.ButtonStyle.red, label = "Buzzer")
     async def buzzer(self, interaction, button):
         if self.hit:
+            await interaction.response.send_message(
+                "Someone else already hit the buzzer", ephemeral = True
+            )
             return
         self.hit = True
 
