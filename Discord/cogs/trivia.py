@@ -567,7 +567,7 @@ class TriviaBoard:
                     correct = True
                     break
         elif check_answer(
-            clue = self.clue["text"], 
+            clue = self.clue["text"],
             answer = self.clue["answer"],
             response = answer,
             inflect_engine = self.bot.inflect_engine
@@ -608,7 +608,7 @@ class TriviaBoard:
             self.view = TriviaBoardBuzzerView(self, self.seconds)
             self.message = await self.ctx.send(
                 embeds = [
-                    self.message.embeds[0], 
+                    self.message.embeds[0],
                     discord.Embed(
                         description = "Time's up " + discord.utils.format_dt(
                             datetime.datetime.now(datetime.timezone.utc) +
