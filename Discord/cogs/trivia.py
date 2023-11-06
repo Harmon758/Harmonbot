@@ -575,16 +575,22 @@ class TriviaBoard:
             correct = True
 
         if correct:
-            if not self.awaiting_answer:
+            if not self.buzzer and not self.awaiting_answer:
                 return True
+
             self.awaiting_answer = False
             self.answered.set()
 
             embed = self.message.embeds[0]
             await self.message.edit(embed = embed)
 
-            correct_message = await self.check_messages_for_answer()
-            await self.handle_correct_message(correct_message)
+            if self.buzzer:
+                await self.handle_correct_message(
+                    message, answer_prompt_message = answer_prompt_message
+                )
+            else:
+                correct_message = await self.check_messages_for_answer()
+                await self.handle_correct_message(correct_message)
 
             return True
 
@@ -643,8 +649,9 @@ class TriviaBoard:
             ):
                 return message
 
-    async def handle_correct_message(self, correct_message):
-        embed = self.message.embeds[0]
+    async def handle_correct_message(
+        self, correct_message, *, answer_prompt_message = None
+    ):
         player = correct_message.author
 
         with warnings.catch_warnings():
@@ -658,7 +665,7 @@ class TriviaBoard:
 
         self.scores[player] = self.scores.get(player, 0) + int(self.value)
 
-        embed.description = (
+        description = (
             f"The answer was: `{answer}`\n"
             f"{player.mention} was correct and won `{self.value}`\n\n"
         )
@@ -666,7 +673,7 @@ class TriviaBoard:
             f"{player.mention}: `{score}`"
             for player, score in self.scores.items()
         ):
-            embed.description += scores + '\n'
+            description += scores + '\n'
 
         self.board[self.category_number - 1]["clues"][self.value] = None
         self.board_lines[2 * self.category_number - 1] = (
@@ -676,7 +683,7 @@ class TriviaBoard:
                 )
             )
         )
-        embed.description += self.bot.ANSI_CODE_BLOCK.format(
+        description += self.bot.ANSI_CODE_BLOCK.format(
             '\n'.join(self.board_lines)
         )
 
@@ -687,12 +694,22 @@ class TriviaBoard:
         ):
             if self.turns:
                 self.turn = player
-                embed.description += f"\nIt's {self.turn.mention}'s turn"
+                description += f"\nIt's {self.turn.mention}'s turn"
             self.view = TriviaBoardSelectionView(self)
         else:
             self.view = None
 
-        await self.message.edit(embed = embed, view = self.view)
+        if answer_prompt_message:
+            self.message = await self.ctx.embed_send(
+                title = "Trivia Board",
+                title_url = answer_prompt_message.jump_url,
+                description = description,
+                view = self.view
+            )
+        else:
+            embed = self.message.embeds[0]
+            embed.description = description
+            await self.message.edit(embed = embed, view = self.view)
 
         self.awaiting_selection = True
 
@@ -756,6 +773,12 @@ class TriviaBoard:
         embed = self.message.embeds[0]
         await self.message.edit(embed = embed)
 
+        if not self.buzzer:
+            correct_message = await self.check_messages_for_answer()
+            if correct_message:
+                await self.handle_correct_message(correct_message)
+                return
+
         with warnings.catch_warnings():
             warnings.filterwarnings(
                 "ignore", category = MarkupResemblesLocatorWarning
@@ -765,7 +788,7 @@ class TriviaBoard:
                 "lxml"
             ).get_text().replace("\\'", "'")
 
-        embed.description = (
+        description = (
             f"The answer was: `{answer}`\n"
             "Nobody got it right\n\n"
         )
@@ -773,7 +796,7 @@ class TriviaBoard:
             f"{player.mention}: `{score}`"
             for player, score in self.scores.items()
         ):
-            embed.description += scores + '\n'
+            description += scores + '\n'
 
         self.board[self.category_number - 1]["clues"][self.value] = None
         self.board_lines[2 * self.category_number - 1] = (
@@ -783,7 +806,7 @@ class TriviaBoard:
                 )
             )
         )
-        embed.description += self.bot.ANSI_CODE_BLOCK.format(
+        description += self.bot.ANSI_CODE_BLOCK.format(
             '\n'.join(self.board_lines)
         )
 
@@ -793,12 +816,22 @@ class TriviaBoard:
             for clue in category["clues"].values()
         ):
             if self.turn:
-                embed.description += f"\nIt's {self.turn.mention}'s turn"
+                description += f"\nIt's {self.turn.mention}'s turn"
             self.view = TriviaBoardSelectionView(self)
         else:
             self.view = None
 
-        await self.message.edit(embed = embed, view = self.view)
+        if self.buzzer:
+            self.message = await self.ctx.embed_send(
+                title = "Trivia Board",
+                title_url = self.message.jump_url,
+                description = description,
+                view = self.view
+            )
+        else:
+            embed = self.message.embeds[0]
+            embed.description = description
+            await self.message.edit(embed = embed, view = self.view)
 
         self.awaiting_selection = True
 
