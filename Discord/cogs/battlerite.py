@@ -150,7 +150,8 @@ class Battlerite(commands.Cog):
 		"""Brawl"""
 		data = await self.get_player(player)
 		if not data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			return
 		stats = data["attributes"]["stats"]
 		wins = stats.get("18", 0)
 		losses = stats.get("19", 0)
