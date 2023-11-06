@@ -641,8 +641,17 @@ class TriviaBoard:
         async for message in self.ctx.channel.history(
             after = clue_message, before = self.message
         ):
-            if check_answer(
-                clue = self.clue["text"], 
+            if correct_answers := self.clue["acceptable_answers"]:
+                for correct_answer in correct_answers:
+                    if check_answer(
+                        clue = self.clue["text"],
+                        answer = correct_answer,
+                        response = message.content,
+                        inflect_engine = self.bot.inflect_engine
+                    ):
+                        return message
+            elif check_answer(
+                clue = self.clue["text"],
                 answer = self.clue["answer"],
                 response = message.content,
                 inflect_engine = self.bot.inflect_engine
