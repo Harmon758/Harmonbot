@@ -575,71 +575,16 @@ class TriviaBoard:
             correct = True
 
         if correct:
+            if not self.awaiting_answer:
+                return True
             self.awaiting_answer = False
             self.answered.set()
 
             embed = self.message.embeds[0]
             await self.message.edit(embed = embed)
 
-            with warnings.catch_warnings():
-                warnings.filterwarnings(
-                    "ignore", category = MarkupResemblesLocatorWarning
-                )
-                answer = BeautifulSoup(
-                    html.unescape(self.clue["answer"]),
-                    "lxml"
-                ).get_text().replace("\\'", "'")
-
-            self.scores[player] = self.scores.get(player, 0) + int(self.value)
-
-            response = (
-                f"The answer was: `{answer}`\n"
-                f"{player.mention} was correct and won `{self.value}`\n\n"
-            )
-            if scores := ", ".join(
-                f"{player.mention}: `{score}`"
-                for player, score in self.scores.items()
-            ):
-                response += scores + '\n'
-
-            self.board[self.category_number - 1]["clues"][self.value] = None
-            self.board_lines[2 * self.category_number - 1] = (
-                (len(str(self.value)) * ' ').join(
-                    self.board_lines[2 * self.category_number - 1].split(
-                        str(self.value), maxsplit = 1
-                    )
-                )
-            )
-            response += self.bot.ANSI_CODE_BLOCK.format(
-                '\n'.join(self.board_lines)
-            )
-
-            if clues_left := any(
-                clue
-                for category in self.board
-                for clue in category["clues"].values()
-            ):
-                if self.turns:
-                    self.turn = player
-                    response += f"\nIt's {self.turn.mention}'s turn"
-                self.view = TriviaBoardSelectionView(self)
-            else:
-                self.view = None
-
-            self.message = await self.ctx.embed_send(
-                title = "Trivia Board",
-                title_url = (
-                    answer_prompt_message.jump_url if self.buzzer
-                    else self.message.jump_url
-                ),
-                description = response,
-                view = self.view
-            )
-            self.awaiting_selection = True
-
-            if not clues_left:
-                await self.send_winner()
-                self.ended.set()
+            correct_message = await self.check_messages_for_answer()
+            await self.handle_correct_message(correct_message)
 
             return True
 
@@ -677,6 +622,83 @@ class TriviaBoard:
             return False
 
         return message.author == self.answerer
+
+    async def check_messages_for_answer(self):
+        clue_message = self.message
+
+        self.message = await self.ctx.embed_send(
+            title = "Trivia Board",
+            title_url = self.message.jump_url,
+            description = "Checking answers.."
+        )
+
+        async for message in self.ctx.channel.history(
+            after = clue_message, before = self.message
+        ):
+            if check_answer(
+                clue = self.clue["text"], 
+                answer = self.clue["answer"],
+                response = message.content,
+                inflect_engine = self.bot.inflect_engine
+            ):
+                return message
+
+    async def handle_correct_message(self, correct_message):
+        embed = self.message.embeds[0]
+        player = correct_message.author
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", category = MarkupResemblesLocatorWarning
+            )
+            answer = BeautifulSoup(
+                html.unescape(self.clue["answer"]),
+                "lxml"
+            ).get_text().replace("\\'", "'")
+
+        self.scores[player] = self.scores.get(player, 0) + int(self.value)
+
+        embed.description = (
+            f"The answer was: `{answer}`\n"
+            f"{player.mention} was correct and won `{self.value}`\n\n"
+        )
+        if scores := ", ".join(
+            f"{player.mention}: `{score}`"
+            for player, score in self.scores.items()
+        ):
+            embed.description += scores + '\n'
+
+        self.board[self.category_number - 1]["clues"][self.value] = None
+        self.board_lines[2 * self.category_number - 1] = (
+            (len(str(self.value)) * ' ').join(
+                self.board_lines[2 * self.category_number - 1].split(
+                    str(self.value), maxsplit = 1
+                )
+            )
+        )
+        embed.description += self.bot.ANSI_CODE_BLOCK.format(
+            '\n'.join(self.board_lines)
+        )
+
+        if clues_left := any(
+            clue
+            for category in self.board
+            for clue in category["clues"].values()
+        ):
+            if self.turns:
+                self.turn = player
+                embed.description += f"\nIt's {self.turn.mention}'s turn"
+            self.view = TriviaBoardSelectionView(self)
+        else:
+            self.view = None
+
+        await self.message.edit(embed = embed, view = self.view)
+
+        self.awaiting_selection = True
+
+        if not clues_left:
+            await self.send_winner()
+            self.ended.set()
 
     async def select(self, category_number, value):
         if not self.awaiting_selection:
@@ -743,7 +765,7 @@ class TriviaBoard:
                 "lxml"
             ).get_text().replace("\\'", "'")
 
-        response = (
+        embed.description = (
             f"The answer was: `{answer}`\n"
             "Nobody got it right\n\n"
         )
@@ -751,7 +773,7 @@ class TriviaBoard:
             f"{player.mention}: `{score}`"
             for player, score in self.scores.items()
         ):
-            response += scores + '\n'
+            embed.description += scores + '\n'
 
         self.board[self.category_number - 1]["clues"][self.value] = None
         self.board_lines[2 * self.category_number - 1] = (
@@ -761,7 +783,7 @@ class TriviaBoard:
                 )
             )
         )
-        response += self.bot.ANSI_CODE_BLOCK.format(
+        embed.description += self.bot.ANSI_CODE_BLOCK.format(
             '\n'.join(self.board_lines)
         )
 
@@ -771,17 +793,13 @@ class TriviaBoard:
             for clue in category["clues"].values()
         ):
             if self.turn:
-                response += f"\nIt's {self.turn.mention}'s turn"
+                embed.description += f"\nIt's {self.turn.mention}'s turn"
             self.view = TriviaBoardSelectionView(self)
         else:
             self.view = None
 
-        self.message = await self.ctx.embed_send(
-            title = "Trivia Board",
-            title_url = self.message.jump_url,
-            description = response,
-            view = self.view
-        )
+        await self.message.edit(embed = embed, view = self.view)
+
         self.awaiting_selection = True
 
         if not clues_left:
