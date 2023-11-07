@@ -239,7 +239,7 @@ class Trivia(commands.Cog):
             True: invoker and last person to answer correctly select;
             False: anyone selects
             (Defaults to False)
-        """
+        """  # noqa: RUF002 (ambiguous-unicode-character-docstring)
         # TODO: Daily Double?
         await ctx.defer()
 
