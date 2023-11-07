@@ -19,6 +19,7 @@ ignore = [
 include = ["tests/*.py", "units/*.py"]
 select = [
     "E",  # pycodestyle error
+    "EXE",  # flake8-executable
     "F",  # Pyflakes
     "PYI",  # flake8-pyi
     "UP",  # pyupgrade
