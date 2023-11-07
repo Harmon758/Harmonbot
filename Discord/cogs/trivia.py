@@ -77,7 +77,6 @@ class Trivia(commands.Cog):
             How long to accept answers (and bets) for, in seconds
             (1–60, default is 15)
         """  # noqa: RUF002 (ambiguous-unicode-character-docstring)
-        # Note: trivia bet command invokes this command
         await ctx.defer()
 
         if question := self.trivia_questions.get(ctx.channel.id):
@@ -173,41 +172,16 @@ class Trivia(commands.Cog):
                 trivia_question.response, embeds = embeds
             )
 
-    @trivia.command(with_app_command = False)
-    async def bet(
-        self, ctx,
-        override_modal_answers: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        react: Optional[bool] = True,  # noqa: UP007 (non-pep604-annotation)
-        seconds: commands.Range[int, 1, 60] = 15
-    ):
+    @trivia.command(hidden = True, with_app_command = False)
+    async def bet(self, ctx):
         """
-        Trivia question with betting
-        Only your last answer is accepted
-        Answers prepended with !, >, or | are ignored
-        Questions are taken from Jeopardy!
-
-        Parameters
-        ----------
-        override_modal_answers
-            Whether or not to override modal answers with message answers
-            (Defaults to False)
-        react
-            Whether or not to add reactions to submitted bets
-            (Defaults to True)
-        seconds
-            How long to accept answers (and bets) for, in seconds
-            (1–60, default is 15)
-        """  # noqa: RUF002 (ambiguous-unicode-character-docstring)
-        if command := ctx.bot.get_command("trivia"):
-            await ctx.invoke(
-                command, betting = True,
-                override_modal_answers = override_modal_answers,
-                react = react, seconds = seconds
-            )
-        else:
-            raise RuntimeError(
-                "trivia command not found when trivia bet command invoked"
-            )
+        This command alias has been deprecated
+        Use the trivia (question) command instead
+        """
+        await ctx.embed_reply(
+            "This command alias has been deprecated\n"
+            f"Use `{ctx.prefix}trivia` or {ctx.bot.tree.app_command_models['trivia question'].mention} instead"
+        )
 
     @trivia.command(aliases = ["jeopardy"])
     async def board(
