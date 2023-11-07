@@ -112,7 +112,9 @@ if __name__ == "__main__":
         output_queues[process] = output_queue
         for output_type in ("stdout", "stderr"):
             process_output = getattr(processes[process], output_type)
-            output_thread = Thread(target = enqueue_output, args = (process_output, output_queue))
+            output_thread = Thread(
+                target = enqueue_output, args = (process_output, output_queue)
+            )
             output_threads[output_type][process] = output_thread
             output_thread.daemon = True
             output_thread.start()
