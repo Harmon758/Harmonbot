@@ -237,13 +237,19 @@ class Tools(commands.Cog):
 		)
 		await ctx.bot.attempt_delete_message(response)
 	
-	@commands.group(aliases = ["trigger", "note", "tags", "triggers", "notes"], 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		aliases = ["trigger", "note", "tags", "triggers", "notes"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	@checks.not_forbidden()
 	async def tag(self, ctx, tag: str = ""):
 		'''Tags/notes that you can trigger later'''
 		if not tag:
-			await ctx.embed_reply(f"Add a tag with `{ctx.prefix}tag add [tag] [content]`\nUse `{ctx.prefix}tag [tag]` to trigger the tag you added\n`{ctx.prefix}tag edit [tag] [content]` to edit it and `{ctx.prefix}tag delete [tag]` to delete it")
+			await ctx.embed_reply(
+				f"Add a tag with `{ctx.prefix}tag add [tag] [content]`\n"
+				f"Use `{ctx.prefix}tag [tag]` to trigger the tag you added\n"
+				f"`{ctx.prefix}tag edit [tag] [content]` to edit it and `{ctx.prefix}tag delete [tag]` to delete it"
+			)
 			return
 		
 		content = await ctx.bot.db.fetchval(
@@ -287,7 +293,10 @@ class Tools(commands.Cog):
 		)
 		global_records = await ctx.bot.db.fetch("SELECT tag FROM tags.global")
 		# TODO: Optimize into single query?
-		tags = [record["tag"] for record in individual_records] + [record["tag"] for record in global_records]
+		tags = (
+			[record["tag"] for record in individual_records] +
+			[record["tag"] for record in global_records]
+		)
 		if close_matches := difflib.get_close_matches(tag, tags):
 			await ctx.embed_reply(
 				"Tag not found\n"
