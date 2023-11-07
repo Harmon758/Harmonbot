@@ -23,6 +23,7 @@ select = [
     "F",  # Pyflakes
     "FA",  # flake8-future-annotations
     "PYI",  # flake8-pyi
+    "TD",  # flake8-todos
     "UP",  # pyupgrade
 ]
 target-version = "py310"
