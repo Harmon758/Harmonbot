@@ -30,7 +30,10 @@ class HarmonbotGUI:
         for bot in self.bots:
             frame = Frame(self.overview_tab)
             setattr(self, f"overview_{bot}_frame", frame)
-            text = Text(frame, wrap = NONE, background = self.text_background_color, font = self.text_font)
+            text = Text(
+                frame, wrap = NONE,
+                background = self.text_background_color, font = self.text_font
+            )
             setattr(self, f"overview_{bot}_text", text)
             text.pack()
         self.overview_discord_frame.grid(row = 1, column = 1)
@@ -43,14 +46,18 @@ class HarmonbotGUI:
         self.overview_tab.grid_rowconfigure(2, weight = 1)
 
         self.overview_controls_frame = Frame(self.overview_tab)
-        self.overview_controls_frame.grid(row = 1, column = 3, rowspan = 2, ipadx = 30)
+        self.overview_controls_frame.grid(
+            row = 1, column = 3, rowspan = 2, ipadx = 30
+        )
         self.overview_tab.grid_columnconfigure(3, weight = 1)
 
         for bot in self.bots:
             setattr(self, f"autorestart_{bot}", BooleanVar())
-            checkbutton = Checkbutton(self.overview_controls_frame, 
-                                        text = f"Auto-Restart {bot.replace('_', ' ').title()}", 
-                                        variable = getattr(self, f"autorestart_{bot}"))
+            checkbutton = Checkbutton(
+                self.overview_controls_frame,
+                text = f"Auto-Restart {bot.replace('_', ' ').title()}",
+                variable = getattr(self, f"autorestart_{bot}")
+            )
             setattr(self, f"autorestart_{bot}_checkbutton", checkbutton)
             checkbutton.pack()
             checkbutton.select()
@@ -59,7 +66,10 @@ class HarmonbotGUI:
             frame = Frame(notebook_tab)
             setattr(self, f"{bot}_frame", frame)
             frame.pack(expand = True, fill = BOTH)
-            text = Text(frame, background = self.text_background_color, font = self.text_font)
+            text = Text(
+                frame,
+                background = self.text_background_color, font = self.text_font
+            )
             setattr(self, f"{bot}_text", text)
             text.pack(expand = True, fill = BOTH)
 
