@@ -41,7 +41,7 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         )
         answer = BeautifulSoup(html.unescape(answer), "lxml").get_text()
     # Replace in answer: \' -> '
-    # Replace in response: ’ -> '
+    # Replace in response: ’ -> '  # noqa: RUF003 (ambiguous-unicode-character-comment)
     # Replace: & -> and
     answer = answer.replace("\\'", "'").replace('&', "and")
     response = response.replace('’', "'").replace('&', "and")
