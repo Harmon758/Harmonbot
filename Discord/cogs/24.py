@@ -17,6 +17,8 @@ class TwentyFour(commands.Cog, name = "24"):
     @checks.not_forbidden()
     async def twenty_four(self, ctx):
         """24 Game"""
+        await ctx.defer()
+
         numbers = list(map(str, generate_numbers()))
         CEK = '\N{COMBINING ENCLOSING KEYCAP}'
         view = TwentyFourView(ctx.bot, numbers)
