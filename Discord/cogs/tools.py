@@ -245,6 +245,7 @@ class Tools(commands.Cog):
 		if not tag:
 			await ctx.embed_reply(f"Add a tag with `{ctx.prefix}tag add [tag] [content]`\nUse `{ctx.prefix}tag [tag]` to trigger the tag you added\n`{ctx.prefix}tag edit [tag] [content]` to edit it and `{ctx.prefix}tag delete [tag]` to delete it")
 			return
+		
 		content = await ctx.bot.db.fetchval(
 			"""
 			SELECT content FROM tags.individual
@@ -252,8 +253,11 @@ class Tools(commands.Cog):
 			""", 
 			ctx.author.id, tag
 		)
+		
 		if content:
-			return await ctx.reply(content)
+			await ctx.reply(content)
+			return
+		
 		content = await ctx.bot.db.fetchval(
 			"""
 			SELECT content FROM tags.global
@@ -261,6 +265,7 @@ class Tools(commands.Cog):
 			""", 
 			tag
 		)
+		
 		if content:
 			await ctx.reply(content)
 			await ctx.bot.db.execute(
@@ -272,6 +277,7 @@ class Tools(commands.Cog):
 			)
 			# TODO: Optimize into single query
 			return
+		
 		individual_records = await ctx.bot.db.fetch(
 			"""
 			SELECT tag FROM tags.individual
@@ -280,7 +286,7 @@ class Tools(commands.Cog):
 			ctx.author.id
 		)
 		global_records = await ctx.bot.db.fetch("SELECT tag FROM tags.global")
-		# TODO Optimize into single query?
+		# TODO: Optimize into single query?
 		tags = [record["tag"] for record in individual_records] + [record["tag"] for record in global_records]
 		close_matches = difflib.get_close_matches(tag, tags)
 		close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
