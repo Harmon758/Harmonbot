@@ -15,6 +15,7 @@ python_version = "3.10"
 ignore = [
     "E501",  # line-too-long
     "TD002",  # missing-todo-author
+    "TD003",  # missing-todo-link
     "UP015",  # redundant-open-modes
 ]
 include = ["tests/*.py", "units/*.py"]
