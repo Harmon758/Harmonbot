@@ -84,7 +84,7 @@ class Points(commands.Cog):
         ----------
         number
             Number of Points (¤) leaders to show (1–15, default is 10)
-        """
+        """  # noqa: RUF002 (ambiguous-unicode-character-docstring)
         await ctx.defer()
 
         fields = []
