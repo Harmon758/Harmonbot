@@ -396,7 +396,7 @@ class Trivia(commands.Cog):
         number
             Number of users to display on the leaderboard
             (1–15, default is 10)
-        """
+        """  # noqa: RUF002 (ambiguous-unicode-character-docstring)
         await ctx.defer()
         fields = []
         async with (
