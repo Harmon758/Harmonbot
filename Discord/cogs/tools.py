@@ -288,9 +288,13 @@ class Tools(commands.Cog):
 		global_records = await ctx.bot.db.fetch("SELECT tag FROM tags.global")
 		# TODO: Optimize into single query?
 		tags = [record["tag"] for record in individual_records] + [record["tag"] for record in global_records]
-		close_matches = difflib.get_close_matches(tag, tags)
-		close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
-		await ctx.embed_reply(f"Tag not found{close_matches}")
+		if close_matches := difflib.get_close_matches(tag, tags):
+			await ctx.embed_reply(
+				"Tag not found\n"
+				"Did you mean:\n" + '\n'.join(close_matches)
+			)
+		else:
+			await ctx.embed_reply("Tag not found")
 	
 	@tag.command(name = "list", aliases = ["all", "mine"])
 	async def tag_list(self, ctx):
