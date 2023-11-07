@@ -76,7 +76,7 @@ class Trivia(commands.Cog):
         seconds
             How long to accept answers (and bets) for, in seconds
             (1–60, default is 15)
-        """
+        """  # noqa: RUF002 (ambiguous-unicode-character-docstring)
         # Note: trivia bet command invokes this command
         await ctx.defer()
 
