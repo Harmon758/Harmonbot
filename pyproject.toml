@@ -27,6 +27,7 @@ select = [
     "PYI",  # flake8-pyi
     "TD",  # flake8-todos
     "UP",  # pyupgrade
+    "YTT",  # flake8-2020
 ]
 target-version = "py310"
 
