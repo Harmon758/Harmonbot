@@ -25,6 +25,7 @@ select = [
     "F",  # Pyflakes
     "FA",  # flake8-future-annotations
     "PYI",  # flake8-pyi
+    "SLOT",  # flake8-slots
     "TD",  # flake8-todos
     "UP",  # pyupgrade
     "YTT",  # flake8-2020
