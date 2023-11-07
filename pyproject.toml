@@ -21,6 +21,7 @@ select = [
     "E",  # pycodestyle error
     "EXE",  # flake8-executable
     "F",  # Pyflakes
+    "FA",  # flake8-future-annotations
     "PYI",  # flake8-pyi
     "UP",  # pyupgrade
 ]
