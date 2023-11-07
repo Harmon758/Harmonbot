@@ -41,10 +41,12 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         )
         answer = BeautifulSoup(html.unescape(answer), "lxml").get_text()
     # Replace in answer: \' -> '
+    answer = answer.replace("\\'", "'")
     # Replace in response: ’ -> '  # noqa: RUF003 (ambiguous-unicode-character-comment)
+    response = response.replace('’', "'")  # noqa: RUF001 (ambiguous-unicode-character-string)
     # Replace: & -> and
-    answer = answer.replace("\\'", "'").replace('&', "and")
-    response = response.replace('’', "'").replace('&', "and")
+    answer = answer.replace('&', "and")
+    response = response.replace('&', "and")
     # Remove exclamation marks, periods, quotation marks, and interpuncts
     for character in '!."·':
         if character in answer:
