@@ -243,7 +243,7 @@ class Tools(commands.Cog):
 	async def tag(self, ctx, tag: str = ""):
 		'''Tags/notes that you can trigger later'''
 		if not tag:
-			await ctx.embed_reply("Add a tag with `{0}tag add [tag] [content]`\nUse `{0}tag [tag]` to trigger the tag you added\n`{0}tag edit [tag] [content]` to edit it and `{0}tag delete [tag]` to delete it".format(ctx.prefix))
+			await ctx.embed_reply(f"Add a tag with `{ctx.prefix}tag add [tag] [content]`\nUse `{ctx.prefix}tag [tag]` to trigger the tag you added\n`{ctx.prefix}tag edit [tag] [content]` to edit it and `{ctx.prefix}tag delete [tag]` to delete it")
 			return
 		content = await ctx.bot.db.fetchval(
 			"""
@@ -284,7 +284,7 @@ class Tools(commands.Cog):
 		tags = [record["tag"] for record in individual_records] + [record["tag"] for record in global_records]
 		close_matches = difflib.get_close_matches(tag, tags)
 		close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
-		await ctx.embed_reply("Tag not found{}".format(close_matches))
+		await ctx.embed_reply(f"Tag not found{close_matches}")
 	
 	@tag.command(name = "list", aliases = ["all", "mine"])
 	async def tag_list(self, ctx):
