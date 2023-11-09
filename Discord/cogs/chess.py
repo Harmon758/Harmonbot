@@ -165,7 +165,6 @@ class ChessCog(commands.Cog, name = "Chess"):
         )
 
     # TODO: Handle matches in DMs
-    # TODO: Allow resignation
     # TODO: Allow draw offers
     # TODO: Track stats
     # TODO: Log matches?
@@ -347,6 +346,9 @@ class ChessMatch(chess.Board):
                 )
 
                 await self.bot.attempt_delete_message(message)
+
+        self.view.resign.disabled = True
+        await self.message.edit(view = self.view)
 
     async def update_match_embed(
         self, *, orientation = None, footer_text = None, resigned = False,
