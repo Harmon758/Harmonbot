@@ -86,6 +86,8 @@ class ChessCog(commands.Cog, name = "Chess"):
             If playing against me, the skill level you would like to play me at
             (0 - 20, default is 20)
         """
+        await ctx.defer()
+
         if match := self.get_match(ctx.channel, ctx.author):
             await ctx.embed_reply(
                 "[You're already playing a chess match here]"
