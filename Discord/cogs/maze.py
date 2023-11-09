@@ -303,7 +303,7 @@ class MazeCog(commands.Cog, name = "Maze"):
         view = MazeView(interaction.client, maze, interaction.user)
         await interaction.response.send_message(embed = embed, view = view)
 
-        message = await interaction.original_message()
+        message = await interaction.original_response()
         # Fetch Message, as InteractionMessage token expires after 15 min.
         view.message = await message.fetch()
         interaction.client.views.append(view)

@@ -521,7 +521,7 @@ class ChessMatchView(discord.ui.View):
             view = view
         )
         self.resignation_confirmation_message = (
-            await interaction.original_message()
+            await interaction.original_response()
         )
         await view.wait()
 

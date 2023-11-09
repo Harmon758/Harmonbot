@@ -136,7 +136,7 @@ class ButtonPaginator(discord.ui.View):
                 await self.ctx_or_interaction.response.send_message(
                     **kwargs, view = self
                 )
-                message = await self.ctx_or_interaction.original_message()
+                message = await self.ctx_or_interaction.original_response()
                 self.message = await message.fetch()
         else:
             raise RuntimeError(
