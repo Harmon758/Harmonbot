@@ -54,7 +54,7 @@ class Trivia(commands.Cog):
         betting: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
         override_modal_answers: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
         react: Optional[bool] = True,  # noqa: UP007 (non-pep604-annotation)
-        seconds: commands.Range[int, 1, 60] = 15
+        seconds: Optional[commands.Range[int, 1, 60]] = 15  # noqa: UP007 (non-pep604-annotation)
     ):
         """
         Trivia question
