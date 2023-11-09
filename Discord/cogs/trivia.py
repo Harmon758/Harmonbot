@@ -473,6 +473,9 @@ class TriviaBoard:
             embed = embed, view = self.view
         )
 
+        if ctx.interaction:
+            self.ctx = await ctx.bot.get_context(self.ctx.message)
+
         self.awaiting_selection = True
         return True
 
