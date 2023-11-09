@@ -185,9 +185,12 @@ class Trivia(commands.Cog):
 
     @trivia.command(aliases = ["jeopardy"])
     async def board(
-        self, ctx, buzzer: bool = False,
-        delete_selection_messages: bool = True, react: bool = False,
-        seconds: commands.Range[int, 1, 60] = 15, turns: bool = False
+        self, ctx,
+        buzzer: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        delete_selection_messages: Optional[bool] = True,  # noqa: UP007 (non-pep604-annotation)
+        react: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        seconds: Optional[commands.Range[int, 1, 60]] = 15,  # noqa: UP007 (non-pep604-annotation)
+        turns: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
     ):
         """
         Trivia board
