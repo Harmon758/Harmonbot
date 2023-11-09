@@ -280,6 +280,11 @@ class ChessMatch(chess.Board):
                 return False
         return True
 
+    async def resign(self):
+        self.ended.set()
+        self.task.cancel()
+        await self.update_match_embed(resigned = True)
+
     async def match_task(self):
         self.message = await self.ctx.embed_send("Loading..")
         await self.update_match_embed()
@@ -319,6 +324,9 @@ class ChessMatch(chess.Board):
                     embed = embed.set_footer(text = "Processing move..")
                 )
 
+                if self.view.resignation_confirmation_message:
+                    await self.view.resignation_confirmation_message.delete()
+
                 self.make_move(message.content)
 
                 if self.is_game_over():
@@ -339,7 +347,7 @@ class ChessMatch(chess.Board):
                 await self.bot.attempt_delete_message(message)
 
     async def update_match_embed(
-        self, *, orientation = None, footer_text = None,
+        self, *, orientation = None, footer_text = None, resigned = False,
         send = False
     ):
         if self.message:
@@ -359,9 +367,16 @@ class ChessMatch(chess.Board):
         elif self.black_player == self.bot.user:
             chess_pgn.headers["Black"] += f" (Level {self.skill_level})"
 
-        embed.description = (
-            str(chess_pgn).replace('*', "\*").replace("1. ", "1\. ")
-        )
+        embed.description = str(chess_pgn)
+
+        if resigned:
+            embed.description = embed.description.replace(
+                '*', "0-1" if self.turn else "1-0"
+            )
+        else:
+            embed.description = embed.description.replace('*', "\*")
+
+        embed.description = embed.description.replace("1. ", "1\. ")
 
         ## svg = self._repr_svg_()
         svg = chess.svg.board(
@@ -379,7 +394,8 @@ class ChessMatch(chess.Board):
         embed.set_image(url = "attachment://chess_board.png")
         embed.set_footer(text = footer_text)
 
-        self.view = ChessMatchView(self.bot, self)
+        if not self.view:
+            self.view = ChessMatchView(self.bot, self)
 
         if send:
             self.message = await self.ctx.send(
@@ -441,6 +457,7 @@ class ChessMatchView(discord.ui.View):
         self.bot = bot
         self.match = match
         self.resending = False
+        self.resignation_confirmation_message = None
 
     @discord.ui.button(label = "FEN")
     async def fen(self, interaction, button):
@@ -487,11 +504,78 @@ class ChessMatchView(discord.ui.View):
 
         self.resending = False
 
+    @discord.ui.button(label = "Resign", style = discord.ButtonStyle.red)
+    async def resign(self, interaction, button):
+        if interaction.user != self.match.player:
+            await interaction.response.send_message(
+                "It's not your turn", ephemeral = True
+            )
+            return
+
+        self.resign.disabled = True
+        await self.match.message.edit(view = self)
+
+        view = ChessMatchResignView(self.match.player)
+        await interaction.response.send_message(
+            "Are you sure you want to resign?",
+            view = view
+        )
+        self.resignation_confirmation_message = (
+            await interaction.original_message()
+        )
+        await view.wait()
+
+        if view.resigned:
+            await self.resignation_confirmation_message.edit(
+                content = f"{self.match.player.mention} has resigned",
+                allowed_mentions = discord.AllowedMentions.none()
+            )
+
+            await self.match.resign()
+        else:
+            await self.resignation_confirmation_message.delete()
+            self.resign.enabled = True
+            await self.match.message.edit(view = self)
+
     async def stop(self):
         self.fen.disabled = True
         self.text.disabled = True
         self.resend_message.disabled = True
+        self.resign.disabled = True
         await self.match.message.edit(view = self)
 
         super().stop()
+
+
+class ChessMatchResignView(discord.ui.View):
+
+    def __init__(self, resigner):
+        super().__init__(timeout = None)
+        self.resigner = resigner
+
+    @discord.ui.button(label = "Yes", style = discord.ButtonStyle.green)
+    async def yes(self, interaction, button):
+        if interaction.user != self.resigner:
+            await interaction.response.send_message(
+                "You are not the one resigning",
+                ephemeral = True
+            )
+            return
+
+        self.resigned = True
+        await interaction.response.edit_message(view = None)
+        self.stop()
+
+    @discord.ui.button(label = "No", style = discord.ButtonStyle.red)
+    async def no(self, interaction, button):
+        if interaction.user != self.resigner:
+            await interaction.response.send_message(
+                "You are not the one resigning",
+                ephemeral = True
+            )
+            return
+
+        self.resigned = False
+        await interaction.response.edit_message(view = None)
+        self.stop()
 
