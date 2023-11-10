@@ -288,6 +288,10 @@ class ChessMatch(chess.Board):
 
     async def match_task(self):
         self.message = await self.ctx.embed_send("Loading..")
+
+        if self.ctx.interaction:
+            self.message = await self.message.fetch()
+
         await self.update_match_embed()
 
         while not self.ended.is_set():
