@@ -26,7 +26,6 @@ class WoW(commands.Cog):
 	@wow.command()
 	async def character(self, ctx, character : str, *, realm : str):
 		'''WIP'''
-		# get classes
 		classes = {}
 		async with ctx.bot.aiohttp_session.get(
 			"https://us.api.battle.net/wow/data/character/classes",
@@ -35,7 +34,7 @@ class WoW(commands.Cog):
 			data = await resp.json()
 		for wow_class in data["classes"]:
 			classes[wow_class["id"]] = wow_class["name"]
-		# get races
+		
 		races = {}
 		async with ctx.bot.aiohttp_session.get(
 			"https://us.api.battle.net/wow/data/character/races",
@@ -44,7 +43,8 @@ class WoW(commands.Cog):
 			data = await resp.json()
 		for wow_race in data["races"]:
 			races[wow_race["id"]] = wow_race["name"]
-			# add side/faction?
+			# TODO: Add side/faction?
+		
 		genders = {0: "Male", 1: "Female"}
 		async with ctx.bot.aiohttp_session.get(
 			f"https://us.api.battle.net/wow/character/{realm}/{character}",
@@ -54,22 +54,25 @@ class WoW(commands.Cog):
 			if resp.status != 200:
 				await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
 				return
-		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}"
-		thumbnail_url = f"https://render-us.worldofwarcraft.com/character/{data['thumbnail']}"
-		fields = [
-			("Level", data["level"]),
-			("Achievement Points", data["achievementPoints"]),
-			("Class", f"{classes.get(data['class'], 'Unknown')}"),
-			("Race", races.get(data["race"], "Unknown")),
-			("Gender", genders.get(data["gender"], "Unknown"))
-		]
-		timestamp = datetime.datetime.utcfromtimestamp(data["lastModified"] / 1000.0)
+		
 		await ctx.embed_reply(
-			f"{data['realm']} ({data['battlegroup']})", title = data["name"],
-			title_url = title_url, thumbnail_url = thumbnail_url,
-			fields = fields, footer_text = "Last seen", timestamp = timestamp
+			title = data["name"],
+			title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}",
+			thumbnail_url = f"https://render-us.worldofwarcraft.com/character/{data['thumbnail']}",
+			description = f"{data['realm']} ({data['battlegroup']})",
+			fields = [
+				("Level", data["level"]),
+				("Achievement Points", data["achievementPoints"]),
+				("Class", f"{classes.get(data['class'], 'Unknown')}"),
+				("Race", races.get(data["race"], "Unknown")),
+				("Gender", genders.get(data["gender"], "Unknown"))
+			],
+			footer_text = "Last seen",
+			timestamp = datetime.datetime.utcfromtimestamp(
+				data["lastModified"] / 1000.0
+			)
 		)
-		# faction and total honorable kills?
+		# TODO: faction and total honorable kills?
 	
 	@wow.command()
 	async def statistics(self, ctx, character : str, *, realm : str):
