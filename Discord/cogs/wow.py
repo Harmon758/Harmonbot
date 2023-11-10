@@ -56,14 +56,19 @@ class WoW(commands.Cog):
 				return
 		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}"
 		thumbnail_url = f"https://render-us.worldofwarcraft.com/character/{data['thumbnail']}"
-		fields = [("Level", data["level"]), ("Achievement Points", data["achievementPoints"]), 
-					("Class", f"{classes.get(data['class'], 'Unknown')}"), 
-					("Race", races.get(data["race"], "Unknown")), 
-					("Gender", genders.get(data["gender"], "Unknown"))]
+		fields = [
+			("Level", data["level"]),
+			("Achievement Points", data["achievementPoints"]),
+			("Class", f"{classes.get(data['class'], 'Unknown')}"),
+			("Race", races.get(data["race"], "Unknown")),
+			("Gender", genders.get(data["gender"], "Unknown"))
+		]
 		timestamp = datetime.datetime.utcfromtimestamp(data["lastModified"] / 1000.0)
-		await ctx.embed_reply(f"{data['realm']} ({data['battlegroup']})", title = data["name"], 
-								title_url = title_url, thumbnail_url = thumbnail_url, fields = fields, 
-								footer_text = "Last seen", timestamp = timestamp)
+		await ctx.embed_reply(
+			f"{data['realm']} ({data['battlegroup']})", title = data["name"],
+			title_url = title_url, thumbnail_url = thumbnail_url,
+			fields = fields, footer_text = "Last seen", timestamp = timestamp
+		)
 		# faction and total honorable kills?
 	
 	@wow.command()
