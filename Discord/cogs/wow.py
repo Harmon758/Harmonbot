@@ -84,7 +84,7 @@ class WoW(commands.Cog):
 		# TODO: faction and total honorable kills?
 	
 	@wow.command()
-	async def statistics(self, ctx, character : str, *, realm : str):
+	async def statistics(self, ctx, character: str, *, realm: str):
 		'''WIP'''
 		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
 		params = {"fields": "statistics", "apikey": ctx.bot.BATTLE_NET_API_KEY}
