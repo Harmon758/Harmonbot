@@ -138,6 +138,7 @@ class Bot(commands.Bot):
         self.guild_settings = {}
         self.online_time = datetime.datetime.now(datetime.timezone.utc)
         self.session_commands_invoked = {}
+        self.session_slash_commands_invoked = {}
         self.socket_events = {}
         self.views = []
 
@@ -916,8 +917,10 @@ class Bot(commands.Bot):
         if points_cog := self.get_cog("Points"):
             await points_cog.add(user = interaction.user)
 
-        # TODO: Track session invocations?
         if isinstance(interaction.command, app_commands.Command):
+            self.session_slash_commands_invoked[interaction.command.qualified_name] = (
+                self.session_slash_commands_invoked.get(interaction.command.qualified_name, 0) + 1
+            )
             await self.db.execute(
                 """
                 INSERT INTO meta.slash_commands (command, invocations)

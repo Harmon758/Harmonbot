@@ -1135,6 +1135,21 @@ class StatisticsView(ui.View):
             ).add_field(
                 name = "Commands Invoked",
                 value = f"{sum(ctx.bot.session_commands_invoked.values()):,}"
+            ).add_field(
+                name = "Slash Commands Invoked",
+                value = f"{sum(ctx.bot.session_slash_commands_invoked.values()):,}"
+            ),
+            discord.Embed(
+                color = ctx.bot.bot_color
+            ).add_field(
+                name = "Chess Matches",
+                value = f"{len(ctx.bot.cogs['Chess'].matches)} active"
+            ).add_field(
+                name = "Trivia Boards",
+                value = f"{len(ctx.bot.cogs['Trivia'].trivia_boards)} active"
+            ).add_field(
+                name = "Voice Channels",
+                value = f"Playing in {sum(vc.is_playing() for vc in ctx.bot.voice_clients)}/{len(ctx.bot.cogs['Audio'].players)}"
             )
         ]
 
@@ -1152,26 +1167,19 @@ class StatisticsView(ui.View):
                 )
             )
 
-        chess_matches_count = len(ctx.bot.cogs["Chess"].matches)
-        self.session_embeds[0].add_field(
-            name = "Chess Matches",
-            value = f"{chess_matches_count} active"
-        )
-
-        trivia_boards_count = len(ctx.bot.cogs["Trivia"].trivia_boards)
-        self.session_embeds[0].add_field(
-            name = "Trivia Boards",
-            value = f"{trivia_boards_count} active"
-        )
-
-        playing_in_voice_count = sum(
-            vc.is_playing() for vc in ctx.bot.voice_clients
-        )
-        in_voice_count = len(ctx.bot.cogs["Audio"].players)
-        self.session_embeds[0].add_field(
-            name = "Voice Channels",
-            value = f"Playing in {playing_in_voice_count}/{in_voice_count}"
-        )
+        session_top_5_slash = sorted(
+            ctx.bot.session_slash_commands_invoked.items(),
+            key = lambda i: i[1],
+            reverse = True
+        )[:5]
+        if session_top_5_slash:
+            self.session_embeds[0].add_field(
+                name = "Top Slash Commands Invoked",
+                value = '\n'.join(
+                    f"{uses:,} {command}"
+                    for command, uses in session_top_5_slash
+                )
+            )
 
         commands_invoked = await ctx.bot.db.fetch(
             """
