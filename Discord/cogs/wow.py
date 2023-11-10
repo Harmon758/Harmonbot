@@ -2,20 +2,9 @@
 from discord.ext import commands
 
 import datetime
-import os
 
-import aiohttp
-
+from units.battle_net import request_access_token
 from utilities import checks
-
-
-BATTLE_NET_CLIENT_ID = BLIZZARD_CLIENT_ID = (
-    os.getenv("BATTLE_NET_CLIENT_ID") or os.getenv("BLIZZARD_CLIENT_ID")
-)
-BATTLE_NET_CLIENT_SECRET = BLIZZARD_CLIENT_SECRET = (
-    os.getenv("BATTLE_NET_CLIENT_SECRET") or
-    os.getenv("BLIZZARD_CLIENT_SECRET")
-)
 
 
 async def setup(bot):
@@ -39,16 +28,9 @@ class WoW(commands.Cog):
     @wow.command()
     async def character(self, ctx, character: str, *, realm: str):
         '''WIP'''
-        async with ctx.bot.aiohttp_session.post(
-            "https://oauth.battle.net/token",
-            auth = aiohttp.BasicAuth(
-                BATTLE_NET_CLIENT_ID, BATTLE_NET_CLIENT_SECRET
-            ),
-            data = {"grant_type": "client_credentials"}
-        ) as resp:
-            data = await resp.json()
-
-        access_token = data["access_token"]
+        access_token = await request_access_token(
+            aiohttp_session = ctx.bot.aiohttp_session
+        )
 
         async with ctx.bot.aiohttp_session.get(
             f"https://us.api.blizzard.com/profile/wow/character/{realm}/{character}",
@@ -88,16 +70,9 @@ class WoW(commands.Cog):
     @wow.command()
     async def statistics(self, ctx, character: str, *, realm: str):
         '''WIP'''
-        async with ctx.bot.aiohttp_session.post(
-            "https://oauth.battle.net/token",
-            auth = aiohttp.BasicAuth(
-                BATTLE_NET_CLIENT_ID, BATTLE_NET_CLIENT_SECRET
-            ),
-            data = {"grant_type": "client_credentials"}
-        ) as resp:
-            data = await resp.json()
-
-        access_token = data["access_token"]
+        access_token = await request_access_token(
+            aiohttp_session = ctx.bot.aiohttp_session
+        )
 
         async with ctx.bot.aiohttp_session.get(
             f"https://us.api.blizzard.com/profile/wow/character/{realm}/{character}/statistics",
