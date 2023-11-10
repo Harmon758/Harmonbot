@@ -52,6 +52,7 @@ game_statuses = [
     "with the NSA", "with Voyager 1",
     "with Waste Allocation Load Lifter: Earth-Class", "world domination",
 ]
+last_resort_notices_channel_id = 955950052747137104
 stream_url = "https://www.twitch.tv/harmonbot"
 
 [mock]
