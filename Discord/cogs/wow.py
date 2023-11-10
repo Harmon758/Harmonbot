@@ -24,7 +24,7 @@ class WoW(commands.Cog):
 		await ctx.send_help(ctx.command)
 	
 	@wow.command()
-	async def character(self, ctx, character : str, *, realm : str):
+	async def character(self, ctx, character: str, *, realm: str):
 		'''WIP'''
 		classes = {}
 		async with ctx.bot.aiohttp_session.get(
