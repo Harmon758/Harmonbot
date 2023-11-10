@@ -17,7 +17,7 @@ class WoW(commands.Cog):
 
     @commands.group(
         aliases = ["worldofwarcraft", "world_of_warcraft"],
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     async def wow(self, ctx):
         '''World of Warcraft'''
