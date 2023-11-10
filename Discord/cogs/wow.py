@@ -20,7 +20,7 @@ class WoW(commands.Cog):
         case_insensitive = True, invoke_without_command = True
     )
     async def wow(self, ctx):
-        '''World of Warcraft'''
+        """World of Warcraft"""
         await ctx.send_help(ctx.command)
 
     # TODO: Subcommands: classes, races
