@@ -17,8 +17,10 @@ class WoW(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["worldofwarcraft", "world_of_warcraft"], 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		aliases = ["worldofwarcraft", "world_of_warcraft"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def wow(self, ctx):
 		'''World of Warcraft'''
 		await ctx.send_help(ctx.command)
