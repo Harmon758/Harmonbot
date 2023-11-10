@@ -54,7 +54,9 @@ class WoW(commands.Cog):
 		) as resp:
 			data = await resp.json()
 			if resp.status != 200:
-				await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
+				await ctx.embed_reply(
+					f"{ctx.bot.error_emoji} Error: {data['reason']}"
+				)
 				return
 		
 		await ctx.embed_reply(
