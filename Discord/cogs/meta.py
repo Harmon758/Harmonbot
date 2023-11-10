@@ -1152,6 +1152,12 @@ class StatisticsView(ui.View):
                 )
             )
 
+        chess_matches_count = len(ctx.bot.cogs["Chess"].matches)
+        self.session_embeds[0].add_field(
+            name = "Chess Matches",
+            value = f"{chess_matches_count} active"
+        )
+
         trivia_boards_count = len(ctx.bot.cogs["Trivia"].trivia_boards)
         self.session_embeds[0].add_field(
             name = "Trivia Boards",
