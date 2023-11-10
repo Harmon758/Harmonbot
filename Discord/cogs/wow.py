@@ -86,9 +86,12 @@ class WoW(commands.Cog):
 	@wow.command()
 	async def statistics(self, ctx, character: str, *, realm: str):
 		'''WIP'''
-		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
-		params = {"fields": "statistics", "apikey": ctx.bot.BATTLE_NET_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			f"https://us.api.battle.net/wow/character/{realm}/{character}",
+			params = {
+				"fields": "statistics", "apikey": ctx.bot.BATTLE_NET_API_KEY
+			}
+		) as resp:
 			data = await resp.json()
 		statistics = data["statistics"]
 		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
