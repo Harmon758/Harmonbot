@@ -20,6 +20,9 @@ BATTLE_NET_CLIENT_SECRET = BLIZZARD_CLIENT_SECRET = (
 async def request_access_token(
     *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> str:
+    if BATTLE_NET_CLIENT_ID is None or BATTLE_NET_CLIENT_SECRET is None:
+        raise RuntimeError("Missing Battle.net API credentials")
+
     async with (
         ensure_session(aiohttp_session) as aiohttp_session,
         aiohttp_session.post(
