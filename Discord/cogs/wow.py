@@ -2,8 +2,14 @@
 from discord.ext import commands
 
 import datetime
+import os
 
 from utilities import checks
+
+
+BATTLE_NET_API_KEY = BLIZZARD_API_KEY = (
+    os.getenv("BATTLE_NET_API_KEY") or os.getenv("BLIZZARD_API_KEY")
+)
 
 
 async def setup(bot):
@@ -27,7 +33,7 @@ class WoW(commands.Cog):
         '''WIP'''
         async with ctx.bot.aiohttp_session.get(
             "https://us.api.battle.net/wow/data/character/classes",
-            params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
+            params = {"apikey": BATTLE_NET_API_KEY}
         ) as resp:
             data = await resp.json()
 
@@ -37,7 +43,7 @@ class WoW(commands.Cog):
 
         async with ctx.bot.aiohttp_session.get(
             "https://us.api.battle.net/wow/data/character/races",
-            params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
+            params = {"apikey": BATTLE_NET_API_KEY}
         ) as resp:
             data = await resp.json()
 
@@ -49,7 +55,7 @@ class WoW(commands.Cog):
 
         async with ctx.bot.aiohttp_session.get(
             f"https://us.api.battle.net/wow/character/{realm}/{character}",
-            params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
+            params = {"apikey": BATTLE_NET_API_KEY}
         ) as resp:
             data = await resp.json()
             if resp.status != 200:
@@ -86,7 +92,7 @@ class WoW(commands.Cog):
         async with ctx.bot.aiohttp_session.get(
             f"https://us.api.battle.net/wow/character/{realm}/{character}",
             params = {
-                "fields": "statistics", "apikey": ctx.bot.BATTLE_NET_API_KEY
+                "fields": "statistics", "apikey": BATTLE_NET_API_KEY
             }
         ) as resp:
             data = await resp.json()
