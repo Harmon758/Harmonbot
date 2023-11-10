@@ -7,12 +7,9 @@ from utilities import checks
 
 
 async def setup(bot):
-    await bot.add_cog(WoW(bot))
+    await bot.add_cog(WoW())
 
 class WoW(commands.Cog):
-
-    def __init__(self, bot):
-        self.bot = bot
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
