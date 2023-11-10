@@ -28,26 +28,32 @@ class WoW(commands.Cog):
 		'''WIP'''
 		# get classes
 		classes = {}
-		url = "https://us.api.battle.net/wow/data/character/classes"
-		params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://us.api.battle.net/wow/data/character/classes",
+			params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
+		) as resp:
 			data = await resp.json()
 		for wow_class in data["classes"]:
 			classes[wow_class["id"]] = wow_class["name"]
 		# get races
 		races = {}
-		url = "https://us.api.battle.net/wow/data/character/races"
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"https://us.api.battle.net/wow/data/character/races",
+			params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
+		) as resp:
 			data = await resp.json()
 		for wow_race in data["races"]:
 			races[wow_race["id"]] = wow_race["name"]
 			# add side/faction?
 		genders = {0: "Male", 1: "Female"}
-		url = f"https://us.api.battle.net/wow/character/{realm}/{character}"
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			f"https://us.api.battle.net/wow/character/{realm}/{character}",
+			params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
+		) as resp:
 			data = await resp.json()
 			if resp.status != 200:
-				return await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
+				await ctx.embed_reply(f":no_entry: Error: {data['reason']}")
+				return
 		title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}"
 		thumbnail_url = f"https://render-us.worldofwarcraft.com/character/{data['thumbnail']}"
 		fields = [("Level", data["level"]), ("Achievement Points", data["achievementPoints"]), 
