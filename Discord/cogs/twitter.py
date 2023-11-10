@@ -330,10 +330,6 @@ class Twitter(commands.Cog):
     @twitter.command(aliases = ["maintenance"], with_app_command = False)
     @commands.is_owner()
     async def purge(self, ctx):
-        last_resort_notices_channel = ctx.bot.get_channel(
-            ctx.bot.last_resort_notices_channel_id
-        )
-
         records = await ctx.bot.db.fetch("SELECT * FROM twitter.handles")
         channel_ids = set(record["channel_id"] for record in records)
         for channel_id in channel_ids:
@@ -349,7 +345,7 @@ class Twitter(commands.Cog):
                     channel_id
                 )
                 for record in deleted:
-                    await last_resort_notices_channel.send(
+                    await ctx.bot.last_resort_notices_channel.send(
                         f"<#{record['channel_id']}> is no longer following "
                         f"`{record['handle']}` as a Twitter handle, "
                         "as the channel can no longer be found "
@@ -389,12 +385,12 @@ class Twitter(commands.Cog):
                         await ctx.bot.fetch_channel(record["channel_id"])
                     )
                 except discord.Forbidden:
-                    await last_resort_notices_channel.send(notice)
+                    await ctx.bot.last_resort_notices_channel.send(notice)
                 else:
                     try:
                         await channel.send(notice)
                     except discord.Forbidden:
-                        await last_resort_notices_channel.send(notice)
+                        await ctx.bot.last_resort_notices_channel.send(notice)
 
         await ctx.embed_reply("Purge complete")
 
