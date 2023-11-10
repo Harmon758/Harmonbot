@@ -26,24 +26,27 @@ class WoW(commands.Cog):
 	@wow.command()
 	async def character(self, ctx, character: str, *, realm: str):
 		'''WIP'''
-		classes = {}
 		async with ctx.bot.aiohttp_session.get(
 			"https://us.api.battle.net/wow/data/character/classes",
 			params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
 		) as resp:
 			data = await resp.json()
-		for wow_class in data["classes"]:
-			classes[wow_class["id"]] = wow_class["name"]
 		
-		races = {}
+		classes = {
+			wow_class["id"]: wow_class["name"] for wow_class in data["classes"]
+		}
+		
 		async with ctx.bot.aiohttp_session.get(
 			"https://us.api.battle.net/wow/data/character/races",
 			params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
 		) as resp:
 			data = await resp.json()
-		for wow_race in data["races"]:
-			races[wow_race["id"]] = wow_race["name"]
-			# TODO: Add side/faction?
+		
+		races = {
+			wow_race["id"]: wow_race["name"] for wow_race in data["races"]
+		}
+		
+		# TODO: Add side/faction?
 		
 		genders = {0: "Male", 1: "Female"}
 		async with ctx.bot.aiohttp_session.get(
