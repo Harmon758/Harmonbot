@@ -4,11 +4,17 @@ from discord.ext import commands
 import datetime
 import os
 
+import aiohttp
+
 from utilities import checks
 
 
-BATTLE_NET_API_KEY = BLIZZARD_API_KEY = (
-    os.getenv("BATTLE_NET_API_KEY") or os.getenv("BLIZZARD_API_KEY")
+BATTLE_NET_CLIENT_ID = BLIZZARD_CLIENT_ID = (
+    os.getenv("BATTLE_NET_CLIENT_ID") or os.getenv("BLIZZARD_CLIENT_ID")
+)
+BATTLE_NET_CLIENT_SECRET = BLIZZARD_CLIENT_SECRET = (
+    os.getenv("BATTLE_NET_CLIENT_SECRET") or
+    os.getenv("BLIZZARD_CLIENT_SECRET")
 )
 
 
@@ -28,76 +34,81 @@ class WoW(commands.Cog):
         '''World of Warcraft'''
         await ctx.send_help(ctx.command)
 
+    # TODO: Subcommands: classes, races
+
     @wow.command()
     async def character(self, ctx, character: str, *, realm: str):
         '''WIP'''
-        async with ctx.bot.aiohttp_session.get(
-            "https://us.api.battle.net/wow/data/character/classes",
-            params = {"apikey": BATTLE_NET_API_KEY}
+        async with ctx.bot.aiohttp_session.post(
+            "https://oauth.battle.net/token",
+            auth = aiohttp.BasicAuth(
+                BATTLE_NET_CLIENT_ID, BATTLE_NET_CLIENT_SECRET
+            ),
+            data = {"grant_type": "client_credentials"}
         ) as resp:
             data = await resp.json()
 
-        classes = {
-            wow_class["id"]: wow_class["name"] for wow_class in data["classes"]
-        }
+        access_token = data["access_token"]
 
         async with ctx.bot.aiohttp_session.get(
-            "https://us.api.battle.net/wow/data/character/races",
-            params = {"apikey": BATTLE_NET_API_KEY}
+            f"https://us.api.blizzard.com/profile/wow/character/{realm}/{character}",
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Battlenet-Namespace": "profile-us"
+            }
         ) as resp:
             data = await resp.json()
 
-        races = {
-            wow_race["id"]: wow_race["name"] for wow_race in data["races"]
-        }
-
-        # TODO: Add side/faction?
-
-        async with ctx.bot.aiohttp_session.get(
-            f"https://us.api.battle.net/wow/character/{realm}/{character}",
-            params = {"apikey": BATTLE_NET_API_KEY}
-        ) as resp:
-            data = await resp.json()
-            if resp.status != 200:
+            if resp.status == 404:
                 await ctx.embed_reply(
-                    f"{ctx.bot.error_emoji} Error: {data['reason']}"
+                    f"{ctx.bot.error_emoji} Error: {data['detail']}"
                 )
                 return
 
         await ctx.embed_reply(
             title = data["name"],
-            title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}",
-            thumbnail_url = f"https://render-us.worldofwarcraft.com/character/{data['thumbnail']}",
-            description = f"{data['realm']} ({data['battlegroup']})",
+            title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm']['slug']}/{data['name']}",
+            # thumbnail_url = f"https://render-us.worldofwarcraft.com/character/{data['thumbnail']}",
+            # description = f"{data['realm']['name']['en_US']} ({data['battlegroup']})",
+            description = data["realm"]["name"]["en_US"],
             fields = [
                 ("Level", data["level"]),
-                ("Achievement Points", data["achievementPoints"]),
-                ("Class", f"{classes.get(data['class'], 'Unknown')}"),
-                ("Race", races.get(data["race"], "Unknown")),
-                (
-                    "Gender",
-                    {0: "Male", 1: "Female"}.get(data["gender"], "Unknown")
-                )
+                ("Achievement Points", data["achievement_points"]),
+                ("Class", data["character_class"]["name"]["en_US"]),
+                ("Race", data["race"]["name"]["en_US"]),
+                ("Gender", data["gender"]["name"]["en_US"])
             ],
-            footer_text = "Last seen",
+            footer_text = "Last login",
             timestamp = datetime.datetime.utcfromtimestamp(
-                data["lastModified"] / 1000.0
+                data["last_login_timestamp"] / 1000.0
             )
         )
-        # TODO: faction and total honorable kills?
+        # TODO: Add faction
 
     @wow.command()
     async def statistics(self, ctx, character: str, *, realm: str):
         '''WIP'''
+        async with ctx.bot.aiohttp_session.post(
+            "https://oauth.battle.net/token",
+            auth = aiohttp.BasicAuth(
+                BATTLE_NET_CLIENT_ID, BATTLE_NET_CLIENT_SECRET
+            ),
+            data = {"grant_type": "client_credentials"}
+        ) as resp:
+            data = await resp.json()
+
+        access_token = data["access_token"]
+
         async with ctx.bot.aiohttp_session.get(
-            f"https://us.api.battle.net/wow/character/{realm}/{character}",
-            params = {
-                "fields": "statistics", "apikey": BATTLE_NET_API_KEY
+            f"https://us.api.blizzard.com/profile/wow/character/{realm}/{character}/statistics",
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Battlenet-Namespace": "profile-us"
             }
         ) as resp:
             data = await resp.json()
-        statistics = data["statistics"]
-        title_url = f"https://worldofwarcraft.com/en-us/character/{data['realm'].replace(' ', '-')}/{data['name']}/"
+
+        title_url = f"https://worldofwarcraft.com/en-us/character/{data['character']['realm']['slug']}/{data['name']}/"
         # await ctx.embed_reply(
         #     f"{data['realm']} ({data['battlegroup']})",
         #     title = data["name"], title_url = title_url
