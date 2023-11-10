@@ -86,7 +86,6 @@ class Bot(commands.Bot):
         self.changelog = "https://discord.gg/a2rbZPu"
         self.console_line_limit = 167
         self.console_message_prefix = "Discord Harmonbot: "
-        self.last_resort_notices_channel_id = 955950052747137104
         self.library_path = "D:/Music/"
         self.simple_user_agent = "Harmonbot (Discord Bot)"
         self.user_agent = (
@@ -321,6 +320,10 @@ class Bot(commands.Bot):
     @property
     def game_statuses(self):
         return self.config["Discord"]["game_statuses"]
+
+    @property
+    def last_resort_notices_channel_id(self):
+        return self.config["Discord"]["last_resort_notices_channel_id"]
 
     @property
     def mock_ip(self):
