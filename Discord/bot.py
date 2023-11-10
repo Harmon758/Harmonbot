@@ -128,6 +128,7 @@ class Bot(commands.Bot):
         ### Set on ready
         self.custom_emojis = {}
         self.invite_url = None
+        self.last_resort_notices_channel = None
         self.listener_bot = None  # User object
         self.listing_sites = {}
         # TODO: Include owner variable for user object?
@@ -636,6 +637,9 @@ class Bot(commands.Bot):
     async def initialize_constant_objects(self):
         await self.wait_until_ready()
         self.invite_url = discord.utils.oauth_url(self.application_id)
+        self.last_resort_notices_channel = self.get_channel(
+            self.last_resort_notices_channel_id
+        )
         self.listener_bot = await self.fetch_user(self.listener_id)
         # TODO: Handle NotFound and HTTPException?
         self.listing_sites = {
