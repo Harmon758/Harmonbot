@@ -48,7 +48,6 @@ class WoW(commands.Cog):
 		
 		# TODO: Add side/faction?
 		
-		genders = {0: "Male", 1: "Female"}
 		async with ctx.bot.aiohttp_session.get(
 			f"https://us.api.battle.net/wow/character/{realm}/{character}",
 			params = {"apikey": ctx.bot.BATTLE_NET_API_KEY}
@@ -68,7 +67,10 @@ class WoW(commands.Cog):
 				("Achievement Points", data["achievementPoints"]),
 				("Class", f"{classes.get(data['class'], 'Unknown')}"),
 				("Race", races.get(data["race"], "Unknown")),
-				("Gender", genders.get(data["gender"], "Unknown"))
+				(
+					"Gender",
+					{0: "Male", 1: "Female"}.get(data["gender"], "Unknown")
+				)
 			],
 			footer_text = "Last seen",
 			timestamp = datetime.datetime.utcfromtimestamp(
