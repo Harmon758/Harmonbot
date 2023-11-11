@@ -223,16 +223,22 @@ class Battlerite(commands.Cog):
 			fields = fields
 		)
 	
-	@player.command(enabled = False, hidden = True, 
-					name = "levels", aliases = ["level", "xp", "exp", "experience"])
+	@player.command(
+		enabled = False, hidden = True,
+		name = "levels", aliases = ["level", "xp", "exp", "experience"]
+	)
 	async def player_levels(self, ctx, player: str):
 		"""Levels"""
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		stats = data["attributes"]["stats"]
-		fields = [("Account Level", f"{stats['26']} ({stats['25']:,} XP)", False)]
+		fields = [
+			("Account Level", f"{stats['26']} ({stats['25']:,} XP)", False)
+		]
 		levels = {}
 		xp = {}
 		for stat, value in stats.items():
@@ -243,9 +249,16 @@ class Battlerite(commands.Cog):
 		# levels.pop("Random Champion", None)
 		xp = sorted(xp.items(), key = lambda x: x[1], reverse = True)
 		for name, value in xp:
-			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
-			fields.append((f"{emoji} {name}", f"{levels[name]} ({value:,} XP)"))
-		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+			emoji = getattr(
+				self, name.lower().replace(' ', '_') + "_emoji", ""
+			)
+			fields.append(
+				(f"{emoji} {name}", f"{levels[name]} ({value:,} XP)")
+			)
+		await ctx.embed_reply(
+			f"ID: {data['id']}", title = data["attributes"]["name"],
+			fields = fields
+		)
 	
 	@player.group(enabled = False, hidden = True, 
 					name = "ranked", aliases = ["comp", "competitive", "league"], case_insensitive = True)
