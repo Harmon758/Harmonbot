@@ -181,30 +181,47 @@ class Battlerite(commands.Cog):
 			fields.append(("Brawl Winrate", f"{wins / (wins + losses) * 100:.2f}%"))
 		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
 	
-	@player.group(enabled = False, hidden = True, 
-					name = "casual", aliases = ["unranked"], case_insensitive = True)
+	@player.group(
+		enabled = False, hidden = True,
+		name = "casual", aliases = ["unranked"], case_insensitive = True
+	)
 	async def player_casual(self, ctx, player: str):
 		"""Casual"""
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		stats = data["attributes"]["stats"]
 		wins_2v2 = stats.get("10", 0)
 		losses_2v2 = stats.get("11", 0)
 		wins_3v3 = stats.get("12", 0)
 		losses_3v3 = stats.get("13", 0)
-		fields = [("Casual 2v2 Wins", wins_2v2), ("Casual 2v2 Losses", losses_2v2)]
+		fields = [
+			("Casual 2v2 Wins", wins_2v2), ("Casual 2v2 Losses", losses_2v2)
+		]
 		if wins_2v2 + losses_2v2:
-			fields.append(("Casual 2v2 Winrate", f"{wins_2v2 / (wins_2v2 + losses_2v2) * 100:.2f}%"))
+			fields.append((
+				"Casual 2v2 Winrate",
+				f"{wins_2v2 / (wins_2v2 + losses_2v2) * 100:.2f}%"
+			))
 		elif wins_3v3 + losses_3v3:
 			fields.append(("Casual 2v2 Winrate", "N/A"))
-		fields.extend((("Casual 3v3 Wins", wins_3v3), ("Casual 3v3 Losses", losses_3v3)))
+		fields.extend((
+			("Casual 3v3 Wins", wins_3v3), ("Casual 3v3 Losses", losses_3v3)
+		))
 		if wins_3v3 + losses_3v3:
-			fields.append(("Casual 3v3 Winrate", f"{wins_3v3 / (wins_3v3 + losses_3v3) * 100:.2f}%"))
+			fields.append((
+				"Casual 3v3 Winrate",
+				f"{wins_3v3 / (wins_3v3 + losses_3v3) * 100:.2f}%"
+			))
 		elif wins_2v2 + losses_2v2:
 			fields.append(("Casual 3v3 Winrate", "N/A"))
-		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+		await ctx.embed_reply(
+			f"ID: {data['id']}", title = data["attributes"]["name"],
+			fields = fields
+		)
 	
 	@player.command(enabled = False, hidden = True, 
 					name = "levels", aliases = ["level", "xp", "exp", "experience"])
