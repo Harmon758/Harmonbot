@@ -594,7 +594,24 @@ class Twitter(commands.Cog):
                         try:
                             await text_channel.send(content)
                         except discord.Forbidden:
-                            # TODO: Handle unable to send messages in text channel
+                            if not text_channel.permissions_for(text_channel.guild.me).send_messages:
+                                deleted = await self.bot.db.fetch(
+                                    """
+                                    DELETE FROM twitter.handles
+                                    WHERE channel_id = $1
+                                    RETURNING *
+                                    """,
+                                    record["channel_id"]
+                                )
+                                for record in deleted:
+                                    await self.bot.last_resort_notices_channel.send(
+                                        f"{text_channel.mention} is no longer "
+                                        f"following `{record['handle']}` as a "
+                                        "Twitter handle, as I no longer have "
+                                        "permission to send messages in that "
+                                        "channel."
+                                    )
+                                continue
                             self.bot.print(
                                 "Twitter Task: Missing permissions to send message "
                                 f"in #{text_channel.name} in {text_channel.guild.name}"
