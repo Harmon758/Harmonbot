@@ -80,8 +80,9 @@ class Battlerite(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(hidden = True, 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		hidden = True, invoke_without_command = True, case_insensitive = True
+	)
 	async def battlerite(self, ctx):
 		"""
 		Battlerite
