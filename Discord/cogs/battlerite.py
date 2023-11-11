@@ -10,6 +10,9 @@ from units.files import create_folder
 from utilities import checks
 
 
+BATTLERITE_API_KEY = os.getenv("BATTLERITE_API_KEY")
+
+
 async def setup(bot):
     await bot.add_cog(Battlerite(bot))
 
@@ -98,7 +101,7 @@ class Battlerite(commands.Cog):
         async with self.bot.aiohttp_session.get(
             "https://api.developer.battlerite.com/shards/global/players",
             headers = {
-                "Authorization": self.bot.BATTLERITE_API_KEY,
+                "Authorization": BATTLERITE_API_KEY,
                 "Accept": "application/vnd.api+json"
             },
             params = {"filter[playerNames]": player}
