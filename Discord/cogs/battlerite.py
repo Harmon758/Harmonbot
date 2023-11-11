@@ -116,7 +116,8 @@ class Battlerite(commands.Cog):
 		"""Player"""
 		data = await self.get_player(player)
 		if not data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			return
 		stats = data["attributes"]["stats"]
 		'''
 		# Code to print/list mappings:
