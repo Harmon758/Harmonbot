@@ -11,6 +11,7 @@ import traceback
 import aiohttp
 import dateutil.parser
 
+from units import colors
 from utilities import checks, tasks
 
 errors_logger = logging.getLogger("errors")
@@ -512,7 +513,7 @@ class Twitch(commands.Cog):
 				embed = discord.Embed(title = title, url = f"https://www.twitch.tv/{stream['user_login']}", 
 										description = description, 
 										timestamp = dateutil.parser.parse(stream["started_at"]), 
-										color = self.bot.twitch_color)
+										color = colors.Twitch.OLD_PURPLE)
 				embed.set_author(name = f"{stream['user_name']} just went live on Twitch", 
 									icon_url = self.bot.twitch_icon_url)
 				# TODO: Include profile image (logo), follower count, viewer count?

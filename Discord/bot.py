@@ -313,14 +313,6 @@ class Bot(commands.Bot):
     def stream_url(self):
         return self.config["Discord"]["stream_url"]
 
-    @property
-    def twitch_color(self):
-        return self.config["colors"]["Twitch"]["old_Purple"]
-
-    @property
-    def twitch_colour(self):
-        return self.twitch_color
-
     async def setup_hook(self):
         self.loop.create_task(
             self.initialize_constant_objects(),

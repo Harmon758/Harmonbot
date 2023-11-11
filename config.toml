@@ -50,39 +50,6 @@ vocabulary = "150,000"
 wear = "a laptop sleeve"
 website = "https://harmon758.github.io/Harmonbot/"
 
-[colors.Twitch]
-# https://brand.twitch.tv/
-# https://brand.twitch.tv/brand/
-new_Purple = 0x9146FF
-# Muted
-Ice = 0xF0F0FF
-Jiggle = 0xFAB4FF
-Worm = 0xFACDCD
-Isabelle = 0xFEEE85
-Droid = 0xBEFAE1
-Wipe_Out = 0x00C8AF
-Smoke = 0x00C8AF
-Widow = 0xBFABFF
-Peach = 0xFC6675
-Pac-Man = 0xFFCA5F
-Felicia = 0x57BEE6
-Sonic = 0x0014A5
-# Accent
-Dragon = 0x8205B4
-Cuddle = 0xFA1ED2
-Bandit = 0xFF6905
-Lightning = 0xFAFA19
-K_O_ = 0xBEFF00
-Mega = 0x00FAFA
-Nights = 0x41145F
-Osu = 0xBE0078
-Sniper = 0xFA2828
-Egg = 0x00FA05
-Legend = 0x69FFC3
-Zero = 0x1E69FF
-# https://web.archive.org/web/20190916073532/https://www.twitch.tv/p/brand/
-old_Purple = 0x6441A4
-
 [Discord]
 emoji_guild_ids = [314198658985754625, 436072973061980161, 1027378240106532906]
 game_statuses = [
