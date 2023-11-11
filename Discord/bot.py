@@ -226,40 +226,6 @@ class Bot(commands.Bot):
 
         # AIML Kernel
         self.aiml_kernel = aiml.Kernel()
-        ## https://code.google.com/archive/p/aiml-en-us-foundation-alice/wikis/BotProperties.wiki
-        self.aiml_predicates = {
-            "age": '2', "baseballteam": "Ports",
-            "birthday": "February 10, 2016", "birthplace": "Harmon's computer",
-            "botmaster": "owner", "build": self.version,
-            "celebrity": "Just A Rather Very Intelligent System",
-            "celebrities": "BB-8, C-3PO, EVE, JARVIS, KIPP, R2-D2, TARS, WALL-E",
-            "class": "program", "country": "United States", "domain": "tool",
-            "emotions": "as a bot, I lack human emotions",
-            "ethics": "Three Laws of Robotics", "etype": '2', "family": "bot",
-            "favoriteactor": "Waste Allocation Load Lifter: Earth-Class",
-            "favoriteactress": "Extra-terrestrial Vegetation Evaluator",
-            "favoriteauthor": "Isaac Asimov", "favoritebook": "I, Robot",
-            "favoritecolor": "blurple", "favoritefood": "electricity",
-            "favoritemovie": "Her", "favoritesport": "chess",
-            "favoritesubject": "computers",
-            "feelings": "as a bot, I lack human emotions",
-            "footballteam": "Trojans", "forfun": "chat online",
-            "friend": "Alice",
-            "friends": "Cleverbot, Eliza, Jabberwacky, Mitsuku, Rose, Suzette, Ultra Hal",
-            "gender": "male", "genus": "Python bot", "girlfriend": "Samantha",
-            "job": "Discord bot", "kingdom": "machine", "language": "Python",
-            "location": "the Internet", "looklike": "a computer",
-            "master": "Harmon", "maxclients": '∞', "memory": "8 GB",
-            "name": "Harmonbot", "nationality": "American",
-            "order": "artificial intelligence", "os": "Windows",
-            "phylum": "software", "sign": "Capricorn", "size": "140,000",
-            "species": "Discord bot", "version": self.version,
-            "vocabulary": "150,000", "wear": "a laptop sleeve",
-            "website": "https://harmon758.github.io/Harmonbot/"
-        }
-        ### Add? arch, boyfriend, city, dailyclients, developers, email, favoriteartist, favoriteband,
-        ### favoritequestion, favoritesong, hair, hockeyteam, kindmusic, nclients, ndevelopers,
-        ### orientation, party, president, question, religion, state, totalclients
         for predicate, value in self.aiml_predicates.items():
             self.aiml_kernel.setBotPredicate(predicate, value)
         if os.path.isfile(self.data_path + "/aiml/aiml_brain.brn"):
@@ -303,6 +269,18 @@ class Bot(commands.Bot):
         self.add_command(reload)
         load.add_command(load_aiml)
         unload.add_command(unload_aiml)
+
+    @property
+    def aiml_predicates(self):
+        ## https://code.google.com/archive/p/aiml-en-us-foundation-alice/wikis/BotProperties.wiki
+        return (
+            self.config["aiml_predicates"] | {
+                "build": self.version, "version": self.version
+            }
+        )
+        ### Add? arch, boyfriend, city, dailyclients, developers, email, favoriteartist, favoriteband,
+        ### favoritequestion, favoritesong, hair, hockeyteam, kindmusic, nclients, ndevelopers,
+        ### orientation, party, president, question, religion, state, totalclients
 
     @property
     @functools.cache
