@@ -342,13 +342,17 @@ class Battlerite(commands.Cog):
 			fields = fields
 		)
 	
-	@player.command(enabled = False, hidden = True, 
-					name = "wins", aliases = ["losses"])
+	@player.command(
+		enabled = False, hidden = True,
+		name = "wins", aliases = ["losses"]
+	)
 	async def player_wins(self, ctx, player: str):
 		"""Wins/Losses"""
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		stats = data["attributes"]["stats"]
 		field_value = f"{stats['2']} - {stats['3']} ({stats['2'] / (stats['2'] + stats['3']) * 100:.2f}%)"
@@ -361,14 +365,23 @@ class Battlerite(commands.Cog):
 				wins[self.mappings[stat]["Name"]] = value
 			elif self.mappings.get(stat, {}).get("Type") == "CharacterLosses":
 				losses[self.mappings[stat]["Name"]] = value
-		wins = sorted(wins.items(), key = lambda x: losses.get(x[0], 0) + x[1], reverse = True)
+		wins = sorted(
+			wins.items(),
+			key = lambda x: losses.get(x[0], 0) + x[1],
+			reverse = True
+		)
 		# TODO: Handle character with losses and no wins
 		for name, value in wins:
-			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
+			emoji = getattr(
+				self, name.lower().replace(' ', '_') + "_emoji", ""
+			)
 			field_value = f"{value} - {losses.get(name, 0)} ({value / (value + losses.get(name, 0)) * 100:.2f}%)"
 			# TODO: Handle division by 0
 			fields.append((f"{emoji} {name}", field_value))
-		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+		await ctx.embed_reply(
+			f"ID: {data['id']}", title = data["attributes"]["name"],
+			fields = fields
+		)
 	
 	@battlerite.group(enabled = False, hidden = True, 
 						invoke_without_command = True, case_insensitive = True)
