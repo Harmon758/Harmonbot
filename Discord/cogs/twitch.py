@@ -527,13 +527,18 @@ class Twitch(commands.Cog):
 					text_channel = self.bot.get_channel(record["channel_id"])
 					# TODO: Handle text channel not existing anymore
 					try:
-						message = await text_channel.fetch_message(record["message_id"])
+						message = await text_channel.fetch_message(
+							record["message_id"]
+						)
 					except discord.NotFound:
 						# Notification was deleted
 						continue
 					embed = message.embeds[0]
-					embed.set_author(name = embed.author.name.replace("was", "just went"), 
-										url = embed.author.url, icon_url = embed.author.icon_url)
+					embed.set_author(
+						name = embed.author.name.replace("was", "just went"),
+						url = embed.author.url,
+						icon_url = embed.author.icon_url
+					)
 					await message.edit(embed = embed)
 					await self.bot.db.execute(
 						"""
@@ -553,12 +558,17 @@ class Twitch(commands.Cog):
 					description = f"{stream['user_name']} is playing {stream['game_name']}"
 				else:
 					description = None
-				embed = discord.Embed(title = title, url = f"https://www.twitch.tv/{stream['user_login']}", 
-										description = description, 
-										timestamp = dateutil.parser.parse(stream["started_at"]), 
-										color = colors.Twitch.OLD_PURPLE)
-				embed.set_author(name = f"{stream['user_name']} just went live on Twitch", 
-									icon_url = self.bot.twitch_icon_url)
+				embed = discord.Embed(
+					title = title,
+					url = f"https://www.twitch.tv/{stream['user_login']}",
+					description = description,
+					timestamp = dateutil.parser.parse(stream["started_at"]),
+					color = colors.Twitch.OLD_PURPLE
+				)
+				embed.set_author(
+					name = f"{stream['user_name']} just went live on Twitch",
+					icon_url = self.bot.twitch_icon_url
+				)
 				# TODO: Include profile image (logo), follower count, viewer count?
 				# Get text channel IDs
 				if game:
@@ -616,9 +626,11 @@ class Twitch(commands.Cog):
 									""", 
 									channel_id, game["game_id"]
 								)
-								await text_channel.send("I am unable to send the embed notification in this text channel for "
-														f"a stream going live on Twitch matching the game, {game['game_name']}, "
-														f"so this text channel is no longer following that game for Twitch streams.")
+								await text_channel.send(
+									"I am unable to send the embed notification in this text channel for "
+									f"a stream going live on Twitch matching the game, {game['game_name']}, "
+									f"so this text channel is no longer following that game for Twitch streams."
+								)
 							elif not match:
 								await self.bot.db.execute(
 									"""
@@ -627,9 +639,11 @@ class Twitch(commands.Cog):
 									""", 
 									channel_id, stream["user_id"]
 								)
-								await text_channel.send("I am unable to send the embed notification in this text channel for "
-														f"{stream['user_name']} going live on Twitch, "
-														"so this text channel is no longer following that Twitch channel.")
+								await text_channel.send(
+									"I am unable to send the embed notification in this text channel for "
+									f"{stream['user_name']} going live on Twitch, "
+									"so this text channel is no longer following that Twitch channel."
+								)
 							else:
 								await self.bot.db.execute(
 									f"""
@@ -638,12 +652,16 @@ class Twitch(commands.Cog):
 									""", 
 									channel_id, match
 								)
-								await text_channel.send("I am unable to send the embed notification in this text channel for "
-														f"a stream going live on Twitch matching the {type[:-1]}, {match}, "
-														f"so this text channel is no longer following that {type[:-1]} for Twitch streams.")
+								await text_channel.send(
+									"I am unable to send the embed notification in this text channel for "
+									f"a stream going live on Twitch matching the {type[:-1]}, {match}, "
+									f"so this text channel is no longer following that {type[:-1]} for Twitch streams."
+								)
 						else:
 							# TODO: Handle no longer able to send messages in text channel
-							print(f"Twitch Task: Missing permissions to send message in #{text_channel.name} in {text_channel.guild.name}")
+							print(
+								f"Twitch Task: Missing permissions to send message in #{text_channel.name} in {text_channel.guild.name}"
+							)
 						continue
 					await self.bot.db.execute(
 						"""
