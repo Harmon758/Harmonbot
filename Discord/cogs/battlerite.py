@@ -435,7 +435,8 @@ class Battlerite(commands.Cog):
 		"""Levels"""
 		data = await self.get_player(player)
 		if not data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			return
 		stats = data["attributes"]["stats"]
 		fields = []
 		account_level_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountLevel", self.mappings.items())[0]
