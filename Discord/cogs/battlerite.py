@@ -383,8 +383,10 @@ class Battlerite(commands.Cog):
 			fields = fields
 		)
 	
-	@battlerite.group(enabled = False, hidden = True, 
-						invoke_without_command = True, case_insensitive = True)
+	@battlerite.group(
+		enabled = False, hidden = True,
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def royale(self, ctx):
 		"""Battlerite Royale"""
 		await ctx.send_help(ctx.command)
