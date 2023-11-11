@@ -272,15 +272,16 @@ class Bot(commands.Bot):
 
     @property
     def aiml_predicates(self):
-        ## https://code.google.com/archive/p/aiml-en-us-foundation-alice/wikis/BotProperties.wiki
+        # https://code.google.com/archive/p/aiml-en-us-foundation-alice/wikis/BotProperties.wiki
         return (
             self.config["aiml_predicates"] | {
                 "build": self.version, "version": self.version
             }
         )
-        ### Add? arch, boyfriend, city, dailyclients, developers, email, favoriteartist, favoriteband,
-        ### favoritequestion, favoritesong, hair, hockeyteam, kindmusic, nclients, ndevelopers,
-        ### orientation, party, president, question, religion, state, totalclients
+        # TODO: Add?: arch, boyfriend, city, dailyclients, developers, email,
+        # favoriteartist, favoriteband, favoritequestion, favoritesong, hair,
+        # hockeyteam, kindmusic, nclients, ndevelopers, orientation, party,
+        # president, question, religion, state, totalclients
 
     @property
     @functools.cache
