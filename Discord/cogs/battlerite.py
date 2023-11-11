@@ -229,7 +229,8 @@ class Battlerite(commands.Cog):
 		"""Levels"""
 		data = await self.get_player(player)
 		if not data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			return
 		stats = data["attributes"]["stats"]
 		fields = [("Account Level", f"{stats['26']} ({stats['25']:,} XP)", False)]
 		levels = {}
