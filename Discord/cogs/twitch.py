@@ -266,8 +266,10 @@ class Twitch(commands.Cog):
 			""", 
 			ctx.channel.id
 		)
-		await ctx.embed_reply('\n'.join(record["keyword"] for record in records), 
-								title = "Twitch keywords being followed in this text channel")
+		await ctx.embed_reply(
+			'\n'.join(record["keyword"] for record in records),
+			title = "Twitch keywords being followed in this text channel"
+		)
 	
 	@twitch.group(
 		aliases = ["delete"],
