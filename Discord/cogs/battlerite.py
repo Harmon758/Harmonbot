@@ -303,26 +303,44 @@ class Battlerite(commands.Cog):
 			fields = fields
 		)
 	
-	@player.command(enabled = False, hidden = True, 
-					name = "time", aliases = ["played"])
+	@player.command(
+		enabled = False, hidden = True,
+		name = "time", aliases = ["played"]
+	)
 	async def player_time(self, ctx, player: str):
 		"""Time Played"""
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		stats = data["attributes"]["stats"]
-		fields = [("Total Time Played", utilities.secs_to_letter_format(stats['8'], limit = 3600), False)]
+		fields = [(
+			"Total Time Played",
+			utilities.secs_to_letter_format(stats['8'], limit = 3600),
+			False
+		)]
 		time_played = {}
 		for stat, value in stats.items():
 			if self.mappings.get(stat, {}).get("Type") == "CharacterTimePlayed":
 				time_played[self.mappings[stat]["Name"]] = value
 		time_played.pop("Random Champion", None)
-		time_played = sorted(time_played.items(), key = lambda x: x[1], reverse = True)
+		time_played = sorted(
+			time_played.items(), key = lambda x: x[1], reverse = True
+		)
 		for name, value in time_played:
-			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
-			fields.append((f"{emoji} {name}", utilities.secs_to_letter_format(value, limit = 3600)))
-		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+			emoji = getattr(
+				self, name.lower().replace(' ', '_') + "_emoji", ""
+			)
+			fields.append((
+				f"{emoji} {name}",
+				utilities.secs_to_letter_format(value, limit = 3600)
+			))
+		await ctx.embed_reply(
+			f"ID: {data['id']}", title = data["attributes"]["name"],
+			fields = fields
+		)
 	
 	@player.command(enabled = False, hidden = True, 
 					name = "wins", aliases = ["losses"])
