@@ -110,36 +110,55 @@ class Battlerite(commands.Cog):
 	# TODO: Handle missing Battlerite Arena stats
 	# TODO: Get values safely + handle division by zero
 	# TODO: Get values by type name
-	@battlerite.group(enabled = False, hidden = True, 
-						invoke_without_command = True, case_insensitive = True)
+	@battlerite.group(
+		enabled = False, hidden = True,
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def player(self, ctx, player: str):
 		"""Player"""
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		stats = data["attributes"]["stats"]
 		'''
 		# Code to print/list mappings:
 		for stat, value in stats.items():
 			if stat in self.mappings:
-				print(f"{self.mappings[stat]['Name']} {self.mappings[stat]['Type']} ({stat}): {value}")
+				print(
+					f"{self.mappings[stat]['Name']} {self.mappings[stat]['Type']} ({stat}): {value}"
+				)
 			else:
 				print(f"Missing Mapping ({stat}): {value}")
 		'''
-		fields = (("Account Level", stats["26"]), ("Account XP", f"{stats['25']:,}"), 
-					("Time Played", utilities.secs_to_letter_format(stats['8'], limit = 3600)), 
-					("Wins", stats['2']), ("Losses", stats['3']), 
-					("Winrate", f"{stats['2'] / (stats['2'] + stats['3']) * 100:.2f}%"), 
-					("Ranked 2v2 Wins - Losses (Winrate)", 
-						f"{stats['14']} - {stats['15']} ({stats['14'] / (stats['14'] + stats['15']) * 100:.2f}%)"), 
-					("Ranked 3v3 Wins - Losses (Winrate)", 
-						f"{stats['16']} - {stats['17']} ({stats['16'] / (stats['16'] + stats['17']) * 100:.2f}%)"), 
-					("Casual 2v2 Wins - Losses (Winrate)", 
-						f"{stats['10']} - {stats['11']} ({stats['10'] / (stats['10'] + stats['11']) * 100:.2f}%)"), 
-					("Casual 3v3 Wins - Losses (Winrate)", 
-						f"{stats['12']} - {stats['13']} ({stats['12'] / (stats['12'] + stats['13']) * 100:.2f}%)"))
-		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+		fields = (
+			("Account Level", stats["26"]), ("Account XP", f"{stats['25']:,}"),
+			("Time Played", utilities.secs_to_letter_format(stats['8'], limit = 3600)),
+			("Wins", stats['2']), ("Losses", stats['3']),
+			("Winrate", f"{stats['2'] / (stats['2'] + stats['3']) * 100:.2f}%"),
+			(
+				"Ranked 2v2 Wins - Losses (Winrate)",
+				f"{stats['14']} - {stats['15']} ({stats['14'] / (stats['14'] + stats['15']) * 100:.2f}%)"
+			),
+			(
+				"Ranked 3v3 Wins - Losses (Winrate)",
+				f"{stats['16']} - {stats['17']} ({stats['16'] / (stats['16'] + stats['17']) * 100:.2f}%)"
+			),
+			(
+				"Casual 2v2 Wins - Losses (Winrate)",
+				f"{stats['10']} - {stats['11']} ({stats['10'] / (stats['10'] + stats['11']) * 100:.2f}%)"
+			),
+			(
+				"Casual 3v3 Wins - Losses (Winrate)",
+				f"{stats['12']} - {stats['13']} ({stats['12'] / (stats['12'] + stats['13']) * 100:.2f}%)"
+			)
+		)
+		await ctx.embed_reply(
+			f"ID: {data['id']}", title = data["attributes"]["name"],
+			fields = fields
+		)
 	
 	# TODO: Handle 25+ fields
 	# TODO: Dynamic champion commands?
