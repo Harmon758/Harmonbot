@@ -429,20 +429,33 @@ class Battlerite(commands.Cog):
 			fields = fields
 		)
 	
-	@royale_player.command(enabled = False, hidden = True, 
-							name = "levels", aliases = ["level", "xp", "exp", "experience"])
+	@royale_player.command(
+		enabled = False, hidden = True,
+		name = "levels", aliases = ["level", "xp", "exp", "experience"]
+	)
 	async def royale_player_levels(self, ctx, player: str):
 		"""Levels"""
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		stats = data["attributes"]["stats"]
 		fields = []
-		account_level_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountLevel", self.mappings.items())[0]
-		account_xp_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountXP", self.mappings.items())[0]
+		account_level_id = discord.utils.find(
+			lambda m: m[1]["Type"] == "RoyaleAccountLevel",
+			self.mappings.items()
+		)[0]
+		account_xp_id = discord.utils.find(
+			lambda m: m[1]["Type"] == "RoyaleAccountXP", self.mappings.items()
+		)[0]
 		if account_level_id in stats and account_xp_id in stats:
-			fields.append(("Account Level", f"{stats[account_level_id]} ({stats[account_xp_id]:,} XP)", False))
+			fields.append((
+				"Account Level",
+				f"{stats[account_level_id]} ({stats[account_xp_id]:,} XP)",
+				False
+			))
 		levels = {}
 		xp = {}
 		for stat, value in stats.items():
@@ -452,7 +465,14 @@ class Battlerite(commands.Cog):
 				xp[self.mappings[stat]["Name"]] = value
 		xp = sorted(xp.items(), key = lambda x: x[1], reverse = True)
 		for name, value in xp:
-			emoji = getattr(self, name.lower().replace(' ', '_') + "_emoji", "")
-			fields.append((f"{emoji} {name}", f"{levels[name]} ({value:,} XP)"))
-		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+			emoji = getattr(
+				self, name.lower().replace(' ', '_') + "_emoji", ""
+			)
+			fields.append(
+				(f"{emoji} {name}", f"{levels[name]} ({value:,} XP)")
+			)
+		await ctx.embed_reply(
+			f"ID: {data['id']}", title = data["attributes"]["name"],
+			fields = fields
+		)
 
