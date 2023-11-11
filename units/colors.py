@@ -17,7 +17,7 @@ class Twitch(IntEnum):
     ISABELLE = 0xFEEE85
     DROID = 0xBEFAE1
     WIPE_OUT = 0x00C8AF
-    SMOKE = 0x00C8AF
+    SMOKE = 0xD2D2E6
     WIDOW = 0xBFABFF
     PEACH = 0xFC6675
     PAC_MAN = 0xFFCA5F
