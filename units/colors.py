@@ -9,7 +9,7 @@ WHITE = 0xFFFFFF
 class Twitch(IntEnum):
     # https://brand.twitch.tv/
     # https://brand.twitch.tv/brand/
-    NEW_PURPLE = 0x9146FF
+    PURPLE = 0x9146FF
     # Muted
     ICE = 0xF0F0FF
     JIGGLE = 0xFAB4FF
