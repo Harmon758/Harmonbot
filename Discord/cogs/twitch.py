@@ -190,10 +190,14 @@ class Twitch(commands.Cog):
 			ctx.channel.id, keyword
 		)
 		if not inserted:
-			await ctx.embed_reply(f"This text channel is already following the keyword, `{keyword}`")
+			await ctx.embed_reply(
+				f"This text channel is already following the keyword, `{keyword}`"
+			)
 			return
-		await ctx.embed_reply(f"Added the keyword search, `{keyword}`, to this text channel\n"
-								"I will now announce here when Twitch streams with this keyword go live")
+		await ctx.embed_reply(
+			f"Added the keyword search, `{keyword}`, to this text channel\n"
+			"I will now announce here when Twitch streams with this keyword go live"
+		)
 	
 	@twitch.command(aliases = ["streams"])
 	@checks.not_forbidden()
