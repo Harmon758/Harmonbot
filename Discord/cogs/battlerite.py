@@ -391,26 +391,43 @@ class Battlerite(commands.Cog):
 		"""Battlerite Royale"""
 		await ctx.send_help(ctx.command)
 	
-	@royale.group(enabled = False, hidden = True, 
-					name = "player", invoke_without_command = True, case_insensitive = True)
+	@royale.group(
+		enabled = False, hidden = True,
+		name = "player", invoke_without_command = True, case_insensitive = True
+	)
 	async def royale_player(self, ctx, player: str):
 		"""Player"""
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		stats = data["attributes"]["stats"]
 		fields = []
-		level_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountLevel", self.mappings.items())[0]
+		level_id = discord.utils.find(
+			lambda m: m[1]["Type"] == "RoyaleAccountLevel",
+			self.mappings.items()
+		)[0]
 		if level_id in stats:
 			fields.append(("Account Level", stats[level_id]))
-		xp_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleAccountXP", self.mappings.items())[0]
+		xp_id = discord.utils.find(
+			lambda m: m[1]["Type"] == "RoyaleAccountXP", self.mappings.items()
+		)[0]
 		if xp_id in stats:
 			fields.append(("Account XP", f"{stats[xp_id]:,}"))
-		time_id = discord.utils.find(lambda m: m[1]["Type"] == "RoyaleTimePlayed", self.mappings.items())[0]
+		time_id = discord.utils.find(
+			lambda m: m[1]["Type"] == "RoyaleTimePlayed", self.mappings.items()
+		)[0]
 		if time_id in stats:
-			fields.append(("Time Played", utilities.secs_to_letter_format(stats[time_id], limit = 3600)))
-		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+			fields.append((
+				"Time Played",
+				utilities.secs_to_letter_format(stats[time_id], limit = 3600)
+			))
+		await ctx.embed_reply(
+			f"ID: {data['id']}", title = data["attributes"]["name"],
+			fields = fields
+		)
 	
 	@royale_player.command(enabled = False, hidden = True, 
 							name = "levels", aliases = ["level", "xp", "exp", "experience"])
