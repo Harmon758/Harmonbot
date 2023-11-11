@@ -377,7 +377,6 @@ class Twitch(commands.Cog):
 	# R/PT60S
 	@tasks.loop(seconds = 60)
 	async def check_streams(self):
-		headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
 		try:
 			stream_ids = []
 			# Games
@@ -390,11 +389,13 @@ class Twitch(commands.Cog):
 				await asyncio.sleep(1)
 			# Keywords
 			records = await self.bot.db.fetch("SELECT DISTINCT keyword FROM twitch_notifications.keywords")
-			url = "https://api.twitch.tv/kraken/search/streams"
 			for record in records:
 				keyword = record["keyword"]
-				params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100}
-				async with self.bot.aiohttp_session.get(url, params = params, headers = headers) as resp:
+				async with self.bot.aiohttp_session.get(
+					"https://api.twitch.tv/kraken/search/streams",
+					params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100},
+					headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
+				) as resp:
 					if resp.status == 502:
 						self.bot.print("Twitch Task Bad Gateway Error")
 						continue
