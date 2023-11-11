@@ -260,30 +260,48 @@ class Battlerite(commands.Cog):
 			fields = fields
 		)
 	
-	@player.group(enabled = False, hidden = True, 
-					name = "ranked", aliases = ["comp", "competitive", "league"], case_insensitive = True)
+	@player.group(
+		enabled = False, hidden = True,
+		name = "ranked", aliases = ["comp", "competitive", "league"],
+		case_insensitive = True
+	)
 	async def player_ranked(self, ctx, player: str):
 		"""Ranked"""
 		data = await self.get_player(player)
 		if not data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		stats = data["attributes"]["stats"]
 		wins_2v2 = stats.get("14", 0)
 		losses_2v2 = stats.get("15", 0)
 		wins_3v3 = stats.get("16", 0)
 		losses_3v3 = stats.get("17", 0)
-		fields = [("Ranked 2v2 Wins", wins_2v2), ("Ranked 2v2 Losses", losses_2v2)]
+		fields = [
+			("Ranked 2v2 Wins", wins_2v2), ("Ranked 2v2 Losses", losses_2v2)
+		]
 		if wins_2v2 + losses_2v2:
-			fields.append(("Ranked 2v2 Winrate", f"{wins_2v2 / (wins_2v2 + losses_2v2) * 100:.2f}%"))
+			fields.append((
+				"Ranked 2v2 Winrate",
+				f"{wins_2v2 / (wins_2v2 + losses_2v2) * 100:.2f}%"
+			))
 		elif wins_3v3 + losses_3v3:
 			fields.append(("Ranked 2v2 Winrate", "N/A"))
-		fields.extend((("Ranked 3v3 Wins", wins_3v3), ("Ranked 3v3 Losses", losses_3v3)))
+		fields.extend((
+			("Ranked 3v3 Wins", wins_3v3), ("Ranked 3v3 Losses", losses_3v3)
+		))
 		if wins_3v3 + losses_3v3:
-			fields.append(("Ranked 3v3 Winrate", f"{wins_3v3 / (wins_3v3 + losses_3v3) * 100:.2f}%"))
+			fields.append((
+				"Ranked 3v3 Winrate",
+				f"{wins_3v3 / (wins_3v3 + losses_3v3) * 100:.2f}%"
+			))
 		elif wins_2v2 + losses_2v2:
 			fields.append(("Ranked 3v3 Winrate", "N/A"))
-		await ctx.embed_reply(f"ID: {data['id']}", title = data["attributes"]["name"], fields = fields)
+		await ctx.embed_reply(
+			f"ID: {data['id']}", title = data["attributes"]["name"],
+			fields = fields
+		)
 	
 	@player.command(enabled = False, hidden = True, 
 					name = "time", aliases = ["played"])
