@@ -380,37 +380,58 @@ class Twitch(commands.Cog):
 		try:
 			stream_ids = []
 			# Games
-			records = await self.bot.db.fetch("SELECT DISTINCT game_id FROM twitch_notifications.games")
+			records = await self.bot.db.fetch(
+				"SELECT DISTINCT game_id FROM twitch_notifications.games"
+			)
 			for record in records:
 				game_id = record["game_id"]
-				streams = await self.bot.twitch_client.get_streams(game_id = game_id, limit = 100)
+				streams = await self.bot.twitch_client.get_streams(
+					game_id = game_id, limit = 100
+				)
 				stream_ids += [stream["id"] for stream in streams]
 				await self.process_streams(streams, "games", game = record)
 				await asyncio.sleep(1)
 			# Keywords
-			records = await self.bot.db.fetch("SELECT DISTINCT keyword FROM twitch_notifications.keywords")
+			records = await self.bot.db.fetch(
+				"SELECT DISTINCT keyword FROM twitch_notifications.keywords"
+			)
 			for record in records:
 				keyword = record["keyword"]
 				async with self.bot.aiohttp_session.get(
 					"https://api.twitch.tv/kraken/search/streams",
-					params = {"query": keyword, "client_id": self.bot.TWITCH_CLIENT_ID, "limit": 100},
+					params = {
+						"query": keyword,
+						"client_id": self.bot.TWITCH_CLIENT_ID,
+						"limit": 100
+					},
 					headers = {"Accept": "application/vnd.twitchtv.v5+json"}  # Use Twitch API v5
 				) as resp:
 					if resp.status == 502:
 						self.bot.print("Twitch Task Bad Gateway Error")
 						continue
 					if resp.status == 503:
-						self.bot.print(f"Twitch Task Service Unavailable Error: {resp.reason}")
+						self.bot.print(
+							f"Twitch Task Service Unavailable Error: {resp.reason}"
+						)
 						continue
 					keywords_data = await resp.json()
 				streams = keywords_data.get("streams", [])
 				stream_ids += [str(stream["_id"]) for stream in streams]
-				await self.process_streams(streams, "keywords", match = keyword)
+				await self.process_streams(
+					streams, "keywords", match = keyword
+				)
 				await asyncio.sleep(1)
 			# Streams
-			records = await self.bot.db.fetch("SELECT DISTINCT user_id FROM twitch_notifications.channels")
+			records = await self.bot.db.fetch(
+				"SELECT DISTINCT user_id FROM twitch_notifications.channels"
+			)
 			for records_chunk in zip_longest(*[iter(records)] * 100):
-				streams = await self.bot.twitch_client.get_streams(channels = [record["user_id"] for record in records_chunk if record], limit = 100)
+				streams = await self.bot.twitch_client.get_streams(
+					channels = [
+						record["user_id"] for record in records_chunk if record
+					],
+					limit = 100
+				)
 				stream_ids += [stream["id"] for stream in streams]
 				await self.process_streams(streams, "streams")
 				await asyncio.sleep(1)
@@ -427,7 +448,9 @@ class Twitch(commands.Cog):
 					text_channel = self.bot.get_channel(record["channel_id"])
 					# TODO: Handle text channel not existing anymore
 					try:
-						message = await text_channel.fetch_message(record["message_id"])
+						message = await text_channel.fetch_message(
+							record["message_id"]
+						)
 					except discord.Forbidden:
 						# TODO: Handle can't access text channel anymore
 						continue
@@ -435,8 +458,11 @@ class Twitch(commands.Cog):
 						# Notification was deleted
 						continue
 					embed = message.embeds[0]
-					embed.set_author(name = embed.author.name.replace("just went", "was"), 
-										url = embed.author.url, icon_url = embed.author.icon_url)
+					embed.set_author(
+						name = embed.author.name.replace("just went", "was"),
+						url = embed.author.url,
+						icon_url = embed.author.icon_url
+					)
 					try:
 						await message.edit(embed = embed)
 					except discord.Forbidden:
@@ -452,18 +478,27 @@ class Twitch(commands.Cog):
 					)
 				# TODO: Handle no longer being followed?
 		except aiohttp.ClientConnectionError as e:
-			self.bot.print(f"Twitch Task Connection Error: {type(e).__name__}: {e}")
+			self.bot.print(
+				f"Twitch Task Connection Error: {type(e).__name__}: {e}"
+			)
 			await asyncio.sleep(10)
 		except asyncio.TimeoutError as e:
-			self.bot.print(f"Twitch Task Timeout Error: {type(e).__name__}: {e}")
+			self.bot.print(
+				f"Twitch Task Timeout Error: {type(e).__name__}: {e}"
+			)
 			await asyncio.sleep(10)
 		except discord.DiscordServerError as e:
 			self.bot.print(f"Twitch Task Discord Server Error: {e}")
 			await asyncio.sleep(60)
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
-			traceback.print_exception(type(e), e, e.__traceback__, file = sys.stderr)
-			errors_logger.error("Uncaught Twitch Task exception\n", exc_info = (type(e), e, e.__traceback__))
+			traceback.print_exception(
+				type(e), e, e.__traceback__, file = sys.stderr
+			)
+			errors_logger.error(
+				"Uncaught Twitch Task exception\n",
+				exc_info = (type(e), e, e.__traceback__)
+			)
 			await asyncio.sleep(60)
 	
 	@check_streams.before_loop
