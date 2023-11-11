@@ -659,7 +659,7 @@ class Twitch(commands.Cog):
 								)
 						else:
 							# TODO: Handle no longer able to send messages in text channel
-							print(
+							self.bot.print(
 								f"Twitch Task: Missing permissions to send message in #{text_channel.name} in {text_channel.guild.name}"
 							)
 						continue
