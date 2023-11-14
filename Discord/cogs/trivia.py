@@ -195,6 +195,7 @@ class Trivia(commands.Cog):
     ):
         """
         Trivia board
+
         Based on Jeopardy!
         [category number] [value] can also be used to select clues
 
