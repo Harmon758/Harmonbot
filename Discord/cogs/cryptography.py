@@ -9,6 +9,7 @@ import zlib
 from Cryptodome.Hash import MD2, MD4, RIPEMD160
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
 from cryptography.hazmat.primitives import hashes as crypto_hashes
+from cryptography.hazmat.primitives.hashes import Hash, SM3
 # import pygost.gost28147
 # import pygost.gost28147_mac
 # import pygost.gost34112012
@@ -751,4 +752,18 @@ class Cryptography(commands.Cog):
                 message.encode("UTF-8")
             ).hexdigest(length)
         )
+
+    @hash.command()
+    async def sm3(self, ctx, *, message: str):
+        """
+        Hash using SM3 (ShangMi 3)
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        digest = Hash(SM3())
+        digest.update(message.encode("UTF-8"))
+        await ctx.embed_reply(digest.finalize().hex())
 
