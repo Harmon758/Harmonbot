@@ -94,6 +94,7 @@ class Games(commands.Cog):
 	async def eightball(self, ctx, *, question: Optional[str] = ""):
 		"""
 		Ask 8-ball a yes or no question
+		
 		Also triggers on \N{BILLIARDS} without prefix
 		
 		Parameters
