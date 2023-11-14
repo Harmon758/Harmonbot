@@ -6,6 +6,7 @@ import hashlib
 from typing import Literal
 import zlib
 
+from Cryptodome.Hash import MD4
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
 from cryptography.hazmat.primitives import hashes as crypto_hashes
 # import pygost.gost28147
@@ -460,13 +461,6 @@ class Cryptography(commands.Cog):
         #     ).hex()
         # )
 
-    @encode.command(name = "md4", with_app_command = False)
-    async def encode_md4(self, ctx, *, message: str):
-        """Generate MD4 hash"""
-        md4_hash = hashlib.new("MD4")
-        md4_hash.update(message.encode("UTF-8"))
-        await ctx.embed_reply(md4_hash.hexdigest())
-
     @encode.command(name = "morse")
     async def encode_morse(self, ctx, *, message: str):
         """
@@ -521,6 +515,19 @@ class Cryptography(commands.Cog):
     async def hash(self, ctx):
         """Use hash algorithms/functions"""
         await ctx.send_help(ctx.command)
+
+    @hash.command()
+    async def md4(self, ctx, *, message: str):
+        """
+        Hash using MD4 Message-Digest Algorithm
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        # TODO: Add warning
+        await ctx.embed_reply(MD4.new(message.encode("UTF-8")).hexdigest())
 
     @hash.command()
     async def md5(self, ctx, *, message: str):
