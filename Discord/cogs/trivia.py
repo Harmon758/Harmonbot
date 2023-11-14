@@ -58,6 +58,7 @@ class Trivia(commands.Cog):
     ):
         """
         Trivia question
+
         Only your last answer is accepted
         Answers prepended with !, >, or | are ignored
         Questions are taken from Jeopardy!
