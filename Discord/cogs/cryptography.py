@@ -6,7 +6,7 @@ import hashlib
 from typing import Literal
 import zlib
 
-from Cryptodome.Hash import MD4
+from Cryptodome.Hash import MD2, MD4
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
 from cryptography.hazmat.primitives import hashes as crypto_hashes
 # import pygost.gost28147
@@ -515,6 +515,19 @@ class Cryptography(commands.Cog):
     async def hash(self, ctx):
         """Use hash algorithms/functions"""
         await ctx.send_help(ctx.command)
+
+    @hash.command()
+    async def md2(self, ctx, *, message: str):
+        """
+        Hash using MD2 Message-Digest Algorithm
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        # TODO: Add warning
+        await ctx.embed_reply(MD2.new(message.encode("UTF-8")).hexdigest())
 
     @hash.command()
     async def md4(self, ctx, *, message: str):
