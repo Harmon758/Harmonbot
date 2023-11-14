@@ -516,17 +516,6 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(h.hexdigest())
 
     @encode.command(
-        name = "sha1", aliases = ["sha-1"], with_app_command = False
-    )
-    async def encode_sha1(self, ctx, *, message: str):
-        """Generate SHA-1 hash"""
-        await ctx.embed_reply(
-            hashlib.sha1(  # nosec hashlib
-                message.encode("UTF-8")
-            ).hexdigest()
-        )
-
-    @encode.command(
         name = "sha224", aliases = ["sha-224"], with_app_command = False
     )
     async def encode_sha224(self, ctx, *, message: str):
@@ -576,4 +565,26 @@ class Cryptography(commands.Cog):
         h = hashlib.new("WHIRLPOOL")
         h.update(message.encode("UTF-8"))
         await ctx.embed_reply(h.hexdigest())
+
+    @commands.hybrid_group(case_insensitive = True)
+    async def hash(self, ctx):
+        """Use hash algorithms/functions"""
+        await ctx.send_help(ctx.command)
+
+    @hash.command(name = "sha-1", aliases = ["sha1"])
+    async def sha1(self, ctx, *, message: str):
+        """
+        Hash using SHA-1 (Secure Hash Algorithm 1)
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        # TODO: Add warning
+        await ctx.embed_reply(
+            hashlib.sha1(  # nosec hashlib
+                message.encode("UTF-8")
+            ).hexdigest()
+        )
 
