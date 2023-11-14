@@ -701,3 +701,24 @@ class Cryptography(commands.Cog):
             ).hexdigest(length)
         )
 
+    @hash.command(aliases = ["shake_256"])
+    async def shake256(
+        self, ctx, length: commands.Range[int, 1, 2000], *, message: str
+    ):
+        """
+        Hash using SHAKE256 (Secure Hash Algorithm 3)
+
+        Parameters
+        ----------
+        length
+            Length of digest in number of bytes;
+            The returned hexadecimal string will be double this length
+        message
+            Message to hash
+        """
+        await ctx.embed_reply(
+            hashlib.shake_256(
+                message.encode("UTF-8")
+            ).hexdigest(length)
+        )
+
