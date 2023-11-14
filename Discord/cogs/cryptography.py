@@ -363,8 +363,10 @@ class Cryptography(commands.Cog):
         self, ctx, digest_size: Literal[256, 512], *, data: str
     ):
         """
-        GOST 34.11-2012 hash function, also known as Стрибог or Streebog
-        256-bit or 512-bit, also known as Streebog-256 or Streebog-512
+        GOST 34.11-2012 hash function
+        
+        Also known as Стрибог or Streebog 256-bit or 512-bit, also known as
+        Streebog-256 or Streebog-512
 
         This command has been deprecated, as the library it used to use,
         PyGOST, is no longer publicly available on PyPI, the Python Package
