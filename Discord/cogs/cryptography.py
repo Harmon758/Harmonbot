@@ -540,7 +540,9 @@ class Cryptography(commands.Cog):
             Message to hash
         """
         # TODO: Add warning
-        await ctx.embed_reply(MD4.new(message.encode("UTF-8")).hexdigest())
+        await ctx.embed_reply(
+            MD4.new(message.encode("UTF-8")).hexdigest()  # nosec: md5
+        )
 
     @hash.command()
     async def md5(self, ctx, *, message: str):
