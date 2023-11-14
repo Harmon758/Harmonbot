@@ -6,7 +6,7 @@ import hashlib
 from typing import Literal
 import zlib
 
-from Cryptodome.Hash import MD2, MD4
+from Cryptodome.Hash import MD2, MD4, RIPEMD160
 from cryptography.hazmat.backends.openssl import backend as openssl_backend
 from cryptography.hazmat.primitives import hashes as crypto_hashes
 # import pygost.gost28147
@@ -495,15 +495,6 @@ class Cryptography(commands.Cog):
         """Reverse text"""
         await ctx.embed_reply(message[::-1])
 
-    @encode.command(
-        name = "ripemd160", aliases = ["ripemd-160"], with_app_command = False
-    )
-    async def encode_ripemd160(self, ctx, *, message: str):
-        """Generate RIPEMD-160 hash"""
-        h = hashlib.new("RIPEMD160")
-        h.update(message.encode("UTF-8"))
-        await ctx.embed_reply(h.hexdigest())
-
     @encode.command(name = "whirlpool", with_app_command = False)
     async def encode_whirlpool(self, ctx, *, message: str):
         """Generate WHIRLPOOL hash"""
@@ -558,6 +549,21 @@ class Cryptography(commands.Cog):
         """
         # TODO: Add warning
         await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
+
+    @hash.command(name = "ripemd-160", aliases = ["ripemd160"])
+    async def ripemd160(self, ctx, *, message: str):
+        """
+        Hash using RIPEMD-160 (RIPE Message Digest)
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        # TODO: Add warning
+        await ctx.embed_reply(
+            RIPEMD160.new(message.encode("UTF-8")).hexdigest()
+        )
 
     @hash.command(name = "sha-1", aliases = ["sha1"])
     async def sha1(self, ctx, *, message: str):
