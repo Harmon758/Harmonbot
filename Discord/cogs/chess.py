@@ -70,6 +70,7 @@ class ChessCog(commands.Cog, name = "Chess"):
     ):
         """
         Play chess
+
         Supports standard algebraic and UCI notation
         The color parameter is not applicable when playing against yourself
         The level parameter is not applicable when not playing against me
