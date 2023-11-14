@@ -180,6 +180,7 @@ class Cryptography(commands.Cog):
     ):
         """
         Decode QR code
+
         If both an image and image URL are provided, the image is used
 
         Parameters
