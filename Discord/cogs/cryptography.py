@@ -608,3 +608,19 @@ class Cryptography(commands.Cog):
             ).hexdigest()
         )
 
+    @hash.command(name = "sha3-224", aliases = ["sha3_224"])
+    async def sha3_224(self, ctx, *, message: str):
+        """
+        Hash using SHA3-224 (Secure Hash Algorithm 3)
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        await ctx.embed_reply(
+            hashlib.sha3_224(
+                message.encode("UTF-8")
+            ).hexdigest()
+        )
+
