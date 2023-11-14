@@ -29,6 +29,7 @@ class Pokemon(commands.Cog):
     async def ability(self, ctx, id_or_name: str):
         """
         Look up Pokémon ability
+
         Abilities provide passive effects for Pokémon in battle or in the overworld
         Pokémon have multiple possible abilities but can have only one ability at a time
         Check out [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Ability) for greater detail
