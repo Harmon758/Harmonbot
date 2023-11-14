@@ -516,17 +516,6 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(h.hexdigest())
 
     @encode.command(
-        name = "sha224", aliases = ["sha-224"], with_app_command = False
-    )
-    async def encode_sha224(self, ctx, *, message: str):
-        """Generate SHA-224 hash"""
-        await ctx.embed_reply(
-            hashlib.sha224(
-                message.encode("UTF-8")
-            ).hexdigest()
-        )
-
-    @encode.command(
         name = "sha256", aliases = ["sha-256"], with_app_command = False
     )
     async def encode_sha256(self, ctx, *, message: str):
@@ -584,6 +573,22 @@ class Cryptography(commands.Cog):
         # TODO: Add warning
         await ctx.embed_reply(
             hashlib.sha1(  # nosec hashlib
+                message.encode("UTF-8")
+            ).hexdigest()
+        )
+
+    @hash.command(name = "sha-224", aliases = ["sha224"])
+    async def sha224(self, ctx, *, message: str):
+        """
+        Hash using SHA-224 (Secure Hash Algorithm 2)
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        await ctx.embed_reply(
+            hashlib.sha224(
                 message.encode("UTF-8")
             ).hexdigest()
         )
