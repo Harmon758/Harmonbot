@@ -656,3 +656,19 @@ class Cryptography(commands.Cog):
             ).hexdigest()
         )
 
+    @hash.command(name = "sha3-512", aliases = ["sha3_512"])
+    async def sha3_512(self, ctx, *, message: str):
+        """
+        Hash using SHA3-512 (Secure Hash Algorithm 3)
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        await ctx.embed_reply(
+            hashlib.sha3_512(
+                message.encode("UTF-8")
+            ).hexdigest()
+        )
+
