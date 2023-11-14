@@ -467,11 +467,6 @@ class Cryptography(commands.Cog):
         md4_hash.update(message.encode("UTF-8"))
         await ctx.embed_reply(md4_hash.hexdigest())
 
-    @encode.command(name = "md5", with_app_command = False)
-    async def encode_md5(self, ctx, *, message: str):
-        """Generate MD5 hash"""
-        await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
-
     @encode.command(name = "morse")
     async def encode_morse(self, ctx, *, message: str):
         """
@@ -526,6 +521,19 @@ class Cryptography(commands.Cog):
     async def hash(self, ctx):
         """Use hash algorithms/functions"""
         await ctx.send_help(ctx.command)
+
+    @hash.command()
+    async def md5(self, ctx, *, message: str):
+        """
+        Hash using MD5 Message-Digest Algorithm
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        # TODO: Add warning
+        await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 
     @hash.command(name = "sha-1", aliases = ["sha1"])
     async def sha1(self, ctx, *, message: str):
