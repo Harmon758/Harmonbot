@@ -640,3 +640,19 @@ class Cryptography(commands.Cog):
             ).hexdigest()
         )
 
+    @hash.command(name = "sha3-384", aliases = ["sha3_384"])
+    async def sha3_384(self, ctx, *, message: str):
+        """
+        Hash using SHA3-384 (Secure Hash Algorithm 3)
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        await ctx.embed_reply(
+            hashlib.sha3_384(
+                message.encode("UTF-8")
+            ).hexdigest()
+        )
+
