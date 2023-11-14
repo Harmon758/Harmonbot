@@ -516,17 +516,6 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(h.hexdigest())
 
     @encode.command(
-        name = "sha384", aliases = ["sha-384"], with_app_command = False
-    )
-    async def encode_sha384(self, ctx, *, message: str):
-        """Generate SHA-384 hash"""
-        await ctx.embed_reply(
-            hashlib.sha384(
-                message.encode("UTF-8")
-            ).hexdigest()
-        )
-
-    @encode.command(
         name = "sha512", aliases = ["sha-512"], with_app_command = False
     )
     async def encode_sha512(self, ctx, *, message: str):
@@ -594,6 +583,22 @@ class Cryptography(commands.Cog):
         """
         await ctx.embed_reply(
             hashlib.sha256(
+                message.encode("UTF-8")
+            ).hexdigest()
+        )
+
+    @hash.command(name = "sha-384", aliases = ["sha384"])
+    async def sha384(self, ctx, *, message: str):
+        """
+        Hash using SHA-384 (Secure Hash Algorithm 2)
+
+        Parameters
+        ----------
+        message
+            Message to hash
+        """
+        await ctx.embed_reply(
+            hashlib.sha384(
                 message.encode("UTF-8")
             ).hexdigest()
         )
