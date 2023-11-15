@@ -288,11 +288,10 @@ class ChessMatch(chess.Board):
         await self.update_match_embed(resigned = True)
 
     async def match_task(self):
-        self.message = await self.ctx.embed_send("Loading..")
-
         if self.ctx.interaction:
-            self.message = await self.message.fetch()
             self.ctx = await self.bot.get_context(self.ctx.message)
+
+        self.message = await self.ctx.embed_send("Loading..")
 
         await self.update_match_embed()
 
