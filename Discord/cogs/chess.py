@@ -292,6 +292,7 @@ class ChessMatch(chess.Board):
 
         if self.ctx.interaction:
             self.message = await self.message.fetch()
+            self.ctx = await self.bot.get_context(self.ctx.message)
 
         await self.update_match_embed()
 
