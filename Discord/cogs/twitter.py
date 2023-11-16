@@ -384,13 +384,9 @@ class Twitter(commands.Cog):
                     channel = ctx.bot.get_channel(record["channel_id"]) or (
                         await ctx.bot.fetch_channel(record["channel_id"])
                     )
+                    await channel.send(notice)
                 except discord.Forbidden:
                     await ctx.bot.last_resort_notices_channel.send(notice)
-                else:
-                    try:
-                        await channel.send(notice)
-                    except discord.Forbidden:
-                        await ctx.bot.last_resort_notices_channel.send(notice)
 
         await ctx.embed_reply("Purge complete")
 
