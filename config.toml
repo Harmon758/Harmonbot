@@ -76,6 +76,9 @@ game_statuses = [
 last_resort_notices_channel_id = 955950052747137104
 stream_url = "https://www.twitch.tv/harmonbot"
 
+[Twitter]
+test_handle = "Harmon758Public"
+
 [mock]
 ip = "0.0.0.0"
 location = "Geneva, Switzerland"

@@ -427,70 +427,62 @@ class Twitter(commands.Cog):
                     f"{nitter_instance_url}/{handle}/rss"
                 ) as resp:
                     # TODO: Use structural pattern matching with Python 3.10
-                    if resp.status in (400, 404):
-                        '''
-                        channel_records = await self.bot.db.fetch(
-                            """
-                            SELECT channel_id
-                            FROM twitter.handles
-                            WHERE handle = $1
-                            """,
-                            handle
-                        )
-                        for record in channel_records:
-                            text_channel = self.bot.get_channel(
-                                record["channel_id"]
-                            )
-                            if not text_channel:
-                                # TODO: Handle channel no longer accessible
-                                continue
-                            try:
-                                await text_channel.send(
-                                    embed = discord.Embed(
-                                        color = self.bot.bot_color,
-                                        description = (
-                                            f"`{handle}` doesn't appear to be "
-                                            "a valid Twitter user at "
-                                            f"https://twitter.com/{handle} "
-                                            "anymore, so this channel is no "
-                                            "longer following that handle\n"
-                                            "(Their account may have been "
-                                            "suspended or restricted / made "
-                                            "unavailable, their Tweets may be "
-                                            "private/protected now, or they "
-                                            "may have changed their "
-                                            "handle/username or deactived "
-                                            "their account)"
-                                        )
+                    if resp.status == 404:
+                        async with self.bot.aiohttp_session.get(
+                            f"{nitter_instance_url}/{self.bot.twitter_test_handle}/rss"
+                        ) as resp:
+                            if resp.status == 200:
+                                deleted = await self.bot.db.fetch(
+                                    """
+                                    DELETE FROM twitter.handles
+                                    WHERE handle = $1
+                                    RETURNING *
+                                    """,
+                                    handle
+                                )
+                                for record in deleted:
+                                    notice = (
+                                        f"`{record['handle']}` doesn't appear "
+                                        "to be a valid Twitter user at "
+                                        f"https://twitter.com/{record['handle']} "
+                                        "anymore, so "
+                                        f"<#{record['channel_id']}> is no "
+                                        "longer following that handle\n"
+                                        "(Their account may have been "
+                                        "suspended or restricted / made "
+                                        "unavailable, their Tweets may be "
+                                        "private/protected now, or they may "
+                                        "have changed their handle/username "
+                                        "or deactived their account)"
                                     )
-                                )
-                            except discord.Forbidden:
-                                # TODO: Handle unable to send messages in text channel
-                                self.bot.print(
-                                    "Twitter Task: Missing permissions to send message "
-                                    f"in #{text_channel.name} in {text_channel.guild.name}"
-                                )
+                                    self.bot.print(notice)
+                                    try:
+                                        channel = (
+                                            self.bot.get_channel(
+                                                record["channel_id"]
+                                            ) or (
+                                                await self.bot.fetch_channel(
+                                                    record["channel_id"]
+                                                )
+                                            )
+                                        )
+                                        await channel.send(notice)
+                                    except (
+                                        discord.Forbidden, discord.NotFound
+                                    ):
+                                        await self.bot.last_resort_notices_channel.send(
+                                            notice
+                                        )
                                 continue
-                            await self.bot.db.execute(
-                                """
-                                DELETE FROM twitter.handles
-                                WHERE channel_id = $1 AND handle = $2
-                                """,
-                                record["channel_id"], handle
-                            )
-                        '''
-                        self.bot.print(
-                            f"Twitter feed returned {resp.status} "
-                            f"status with handle, {handle}"
-                        )
-                        continue
+
                     elif resp.status in (
                         500, 502, 503, 504, 520, 521, 522, 524
                     ):
                         # TODO: Log
                         await asyncio.sleep(1)
                         continue
-                    elif resp.status != 200:
+
+                    if resp.status != 200:
                         self.bot.print(
                             f"Twitter feed returned {resp.status} "
                             f"status with handle, {handle}, and "

@@ -313,6 +313,10 @@ class Bot(commands.Bot):
     def stream_url(self):
         return self.config["Discord"]["stream_url"]
 
+    @property
+    def twitter_test_handle(self):
+        return self.config["Twitter"]["test_handle"]
+
     async def setup_hook(self):
         self.loop.create_task(
             self.initialize_constant_objects(),
