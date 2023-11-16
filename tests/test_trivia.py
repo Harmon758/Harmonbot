@@ -50,6 +50,11 @@ class TestCheckAnswer(unittest.TestCase):
     def test_ampersand(self):
         self.assertTrue(check_answer(answer = "AT&T", response = "at&t"))
 
+    def test_asterisks(self):
+        self.assertTrue(
+            check_answer(answer = "*a pine (**a fir)", response = "pine")
+        )
+
     def test_clue_text_plural_subject_redundancy_in_answer(self):
         for clue, answer, response in (
             (

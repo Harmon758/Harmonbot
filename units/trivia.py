@@ -47,8 +47,9 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     # Replace: & -> and
     answer = answer.replace('&', "and")
     response = response.replace('&', "and")
-    # Remove exclamation marks, periods, quotation marks, and interpuncts
-    for character in '!."·':
+    # Remove exclamation marks, quotation marks, asterisks, periods, and
+    # interpuncts
+    for character in '!"*.·':
         if character in answer:
             answer = answer.replace(character, "")
         if character in response:
