@@ -102,7 +102,6 @@ class Bot(commands.Bot):
         self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
         self.dark_theme_background_color = self.dark_theme_background_colour = 0x36393e
         ### Colors from https://discordapp.com/branding
-        self.greyple_color = self.greyple_colour = 0x99aab5
         self.dark_but_not_black_color = self.dark_but_not_black_colour = 0x2c2f33
         self.not_quite_black_color = self.not_quite_black_colour = 0x23272a
         ### Emoji
