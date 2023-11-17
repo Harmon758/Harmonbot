@@ -113,9 +113,11 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 	
 	@classmethod
 	async def replay(cls, original):
-		source = cls(original.ctx, original.message, amplitude = original.amplitude, 
-						pitch = original.pitch, speed = original.speed, 
-						word_gap = original.word_gap, voice = original.voice)
+		source = cls(
+			original.ctx, original.message, amplitude = original.amplitude,
+			pitch = original.pitch, speed = original.speed,
+			word_gap = original.word_gap, voice = original.voice
+		)
 		if not os.path.exists(self.bot.data_path + "/temp/tts.wav"):
 			await source.generate_file()
 		source.initialize_source(original.volume)
