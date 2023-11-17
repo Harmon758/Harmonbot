@@ -58,7 +58,10 @@ class FileSource(ModifiedPCMVolumeTransformer):
 	
 	@classmethod
 	async def replay(cls, original):
-		return cls(original.ctx, original.filename, original.volume, original.title_prefix)
+		return cls(
+			original.ctx, original.filename, original.volume,
+			original.title_prefix
+		)
 
 
 class TTSSource(ModifiedPCMVolumeTransformer):
