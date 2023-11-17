@@ -101,9 +101,6 @@ class Bot(commands.Bot):
         self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
         self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
         self.dark_theme_background_color = self.dark_theme_background_colour = 0x36393e
-        ### Colors from https://discordapp.com/branding
-        self.dark_but_not_black_color = self.dark_but_not_black_colour = 0x2c2f33
-        self.not_quite_black_color = self.not_quite_black_colour = 0x23272a
         ### Emoji
         self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: use everywhere
         self.error_emoji = self.error_emote = '\N{NO ENTRY}'
