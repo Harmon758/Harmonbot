@@ -520,14 +520,14 @@ class Audio(commands.Cog):
 		'''
 		if volume_setting is None:
 			if ctx.guild.voice_client.is_playing():
-				await ctx.embed_reply(":sound: Current volume: {:g}".format(ctx.guild.voice_client.source.volume))
+				await ctx.embed_reply(f":sound: Current volume: {ctx.guild.voice_client.source.volume:g}")
 			else:
 				await ctx.embed_reply(":no_entry: There's nothing playing right now")
 		else:
 			if ctx.guild.voice_client.is_playing():
 				ctx.guild.voice_client.source.volume = volume_setting
 				volume_setting = min(max(0, volume_setting), 2000)
-				await ctx.embed_reply(":sound: Set volume to {:g}".format(volume_setting))
+				await ctx.embed_reply(f":sound: Set volume to {volume_setting:g}")
 			else:
 				await ctx.embed_reply(":no_entry: Couldn't change volume\nThere's nothing playing right now")
 	
