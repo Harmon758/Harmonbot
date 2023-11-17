@@ -12,10 +12,7 @@ import urllib
 from modules import utilities
 from units.files import create_folder
 from utilities.audio_player import AudioPlayer
-from utilities import audio_sources
-from utilities import checks
-from utilities import errors
-from utilities import parameters
+from utilities import audio_sources, checks, errors, parameters
 
 
 async def setup(bot):
