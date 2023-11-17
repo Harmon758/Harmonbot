@@ -324,7 +324,7 @@ async def format_documentation_section(
 class TweepyDocumentationView(ui.View):
 
     def __init__(self, objects, *, bot, rtd_version, user):
-        super().__init__(timeout = None)
+        super().__init__(timeout = 600)
 
         self.bot = bot
         self.user = user
@@ -345,24 +345,16 @@ class TweepyDocumentationView(ui.View):
             return False
         return True
 
-    @ui.button(
-        style = discord.ButtonStyle.red,
-        emoji = '\N{OCTAGONAL SIGN}',
-        row = 1
-    )
-    async def stop_button(self, interaction, button):
-        await self.stop(interaction = interaction)
-
-    async def stop(self, *, interaction = None):
-        self.remove_item(self.stop_button)
+    async def stop(self):
         self.children[0].disabled = True
 
-        if interaction:
-            await interaction.response.edit_message(view = self)
-        elif self.message:
+        if self.message:
             await self.bot.attempt_edit_message(self.message, view = self)
 
         super().stop()
+
+    async def on_timeout(self):
+        await self.stop()
 
 
 class TweepyDocumentationSelect(ui.Select):
