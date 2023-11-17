@@ -119,7 +119,7 @@ class TTSSource(ModifiedPCMVolumeTransformer):
             pitch = original.pitch, speed = original.speed,
             word_gap = original.word_gap, voice = original.voice
         )
-        if not os.path.exists(self.bot.data_path + "/temp/tts.wav"):
+        if not os.path.exists(original.bot.data_path + "/temp/tts.wav"):
             await source.generate_file()
         source.initialize_source(original.volume)
         return source
