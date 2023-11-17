@@ -2,7 +2,7 @@
 # https://github.com/dependabot/dependabot-core/issues/8297
 
 # discord.py[speed,voice]==2.2.0a
-discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@774219a
+discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@f1bd618
 # discord-ext-menus==1.0.0a
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@8686b5d
 # TwitchIO@master (1.2.0)
