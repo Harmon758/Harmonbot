@@ -1,8 +1,8 @@
 -e .  # --config-settings editable_mode=compat
 # https://github.com/dependabot/dependabot-core/issues/8297
 
-# discord.py[speed,voice]==2.2.0a
-discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@bd6bbda
+# discord.py[speed,voice]==2.3.0a
+discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@7a0744c
 # discord-ext-menus==1.0.0a
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@8686b5d
 # TwitchIO@master (1.2.0)
