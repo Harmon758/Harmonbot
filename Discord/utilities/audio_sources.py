@@ -178,7 +178,7 @@ class YTDLSource(ModifiedPCMVolumeTransformer):
             info = await self.bot.loop.run_in_executor(None, func)
             self.filename = self.bot.ytdl_download.prepare_filename(info)
 
-            before_options = "-ss {}".format(self.info["start_time"]) if self.info.get("start_time") else None
+            before_options = f"-ss {self.info['start_time']}" if self.info.get("start_time") else None
             self.previous_played_time = self.info.get("start_time") if self.info.get("start_time") else 0
             super().__init__(ModifiedFFmpegPCMAudio(self.ctx, self.filename, before_options = before_options), volume)
         self.initialized = True
