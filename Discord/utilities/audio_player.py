@@ -3,7 +3,6 @@ import discord
 
 import asyncio
 import functools
-import json
 import os
 import random
 import subprocess
