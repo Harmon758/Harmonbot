@@ -6,6 +6,17 @@ BLACK = 0x000000
 WHITE = 0xFFFFFF
 
 
+class Discord(IntEnum):
+    # https://discordapp.com/branding
+    # Supplements discord.py's discord.Color / discord.Colour
+    # https://discord.com/blog/happy-blurpthday-to-discord-a-place-for-everything-you-can-imagine
+    # https://support.discord.com/hc/en-us/articles/1500009438682
+    # https://web.archive.org/web/20210608130516/https://discord.com/branding
+    OLD_BLURPLE = 0x7289DA
+    DARK_BUT_NOT_BLACK = 0x2C2F33
+    NOT_QUITE_BLACK = 0x23272A
+
+
 class Twitch(IntEnum):
     # https://brand.twitch.tv/
     # https://brand.twitch.tv/brand/
