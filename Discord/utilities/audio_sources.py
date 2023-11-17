@@ -71,8 +71,10 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 	generate_file and initialize_source must be called before usage
 	'''
 	
-	def __init__(self, ctx, message, *, 
-					amplitude = 100, pitch = 50, speed = 150, word_gap = 0, voice = "en-us+f1"):
+	def __init__(
+		self, ctx, message, *, amplitude = 100, pitch = 50, speed = 150,
+		word_gap = 0, voice = "en-us+f1"
+	):
 		self.ctx = ctx
 		self.bot = ctx.bot
 		self.requester = ctx.author
