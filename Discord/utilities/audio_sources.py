@@ -103,7 +103,12 @@ class TTSSource(ModifiedPCMVolumeTransformer):
 		await self.bot.loop.run_in_executor(None, func)
 	
 	def initialize_source(self, volume):
-		super().__init__(ModifiedFFmpegPCMAudio(self.ctx, self.bot.data_path + "/temp/tts.wav"), volume)
+		super().__init__(
+			ModifiedFFmpegPCMAudio(
+				self.ctx, self.bot.data_path + "/temp/tts.wav"
+			),
+			volume
+		)
 		self.initialized = True
 	
 	@classmethod
