@@ -183,7 +183,8 @@ class Tools(commands.Cog):
 					text_width + (avatar_size + 2 * margin_size) * 2,
 					text_height + text_vertical_margin * 2
 				),
-				discord.Color(ctx.bot.dark_theme_background_color).to_rgb()
+				discord.Color.dark_theme().to_rgb()
+				# previously used 0x36393E
 			)
 			try:
 				frame.paste(avatar, (margin_size, margin_size), avatar)
