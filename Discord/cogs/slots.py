@@ -219,12 +219,10 @@ class SlotsView(ui.View):
             return False
         return True
 
-    async def stop(self, *, interaction = None):
+    async def stop(self):
         self.play_again.disabled = True
 
-        if interaction:
-            await interaction.response.edit_message(view = self)
-        elif self.message:
+        if self.message:
             await self.bot.attempt_edit_message(self.message, view = self)
 
         super().stop()
