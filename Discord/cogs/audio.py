@@ -378,18 +378,20 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     async def audio_random(self, ctx):
         '''Play a random song from YouTube's top 50'''
-        url = "https://www.googleapis.com/youtube/v3/videos"
         async with ctx.bot.aiohttp_session.get(
-            url,
+            "https://www.googleapis.com/youtube/v3/videos",
             params = {
                 "part": "id", "chart": "mostPopular", "maxResults": 50,
                 "videoCategoryId": 10, "key": ctx.bot.GOOGLE_API_KEY
             }
         ) as resp:
             data = await resp.json()
+
         song = random.choice([video["id"] for video in data["items"]])
+
         response = await ctx.embed_reply(":cd: Loading..")
         embed = response.embeds[0]
+
         try:
             title, url = await self.players[ctx.guild.id].add_song(ctx, song)
         except Exception as e:
@@ -398,6 +400,7 @@ class Audio(commands.Cog):
             embed.title = title
             embed.url = url
             embed.description = f":ballot_box_with_check: Successfully added `{song}` to the queue"
+
         try:
             await response.edit(embed = embed)
         except discord.HTTPException:  # Necessary?
