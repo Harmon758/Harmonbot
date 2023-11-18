@@ -22,20 +22,28 @@ class WoWS(commands.Cog):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    @commands.group(
+    @commands.hybrid_group(
         aliases = ["worldofwarships", "world_of_warships"],
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True
     )
     async def wows(self, ctx):
-        '''
-        World of Warships
-        Realms/Regions: Asia, EU, NA, RU (Default: NA)
-        '''
+        '''World of Warships'''
         await ctx.send_help(ctx.command)
 
-    @wows.group(invoke_without_command = True, case_insensitive = True)
+    @wows.command()
     async def player(self, ctx, player: str, region: str = "NA"):
-        '''Player details'''
+        '''
+        Show information about a World of Warships player
+
+        Parameters
+        ----------
+        player
+            Player to show information about
+        region
+            Server region for the player
+            (ASIA, EU, NA, or RU)
+            (Defaults to NA)
+        '''
         api_url = API_URLS.get(region.lower(), API_URLS["na"])
 
         async with ctx.bot.aiohttp_session.get(
