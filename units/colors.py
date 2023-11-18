@@ -3,6 +3,9 @@ from enum import IntEnum
 
 
 BLACK = 0x000000
+BLUE = 0x0000FF
+GREEN = 0x00FF00
+RED = 0xFF0000
 WHITE = 0xFFFFFF
 
 
