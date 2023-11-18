@@ -467,7 +467,7 @@ class Audio(commands.Cog):
     ):
         '''Set text channel for messages'''
         self.players[ctx.guild.id].text_channel = channel
-        await ctx.embed_reply(f":writing_hand:{ctx.bot.emoji_skin_tone} Changed text channel to {channel.mention}")
+        await ctx.embed_reply(f"\N{WRITING HAND}{ctx.bot.emoji_skin_tone} Changed text channel to {channel.mention}")
 
     @commands.group(invoke_without_command = True, case_insensitive = True)
     @checks.is_voice_connected()
