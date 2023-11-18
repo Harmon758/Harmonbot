@@ -53,3 +53,12 @@ class Twitch(IntEnum):
     # https://web.archive.org/web/20190916073532/https://www.twitch.tv/p/brand/
     OLD_PURPLE = 0x6441A4
 
+
+class YouTube(IntEnum):
+    # https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors
+    ALMOST_BLACK = 0x282828
+    # https://web.archive.org/web/20170508034223/https://www.youtube.com/yt/brand/color.html
+    # 0xE52D27
+    # 0xB31217
+    FLAT_RED = 0xCD201F
+
