@@ -27,7 +27,7 @@ class Audio(commands.Cog):
             if (
                 isinstance(command, commands.Command) and
                 command.parent is None and
-                name not in ("audio", "join", "leave")
+                name not in ("audio", "join", "leave", "pause")
             ):
                 self.bot.add_command(command)
                 self.audio.add_command(command)
@@ -202,10 +202,10 @@ class Audio(commands.Cog):
                 "audio leave command not found when leave command invoked"
             )
 
-    @commands.command(aliases = ["stop"])
+    @audio.command(name = "pause", aliases = ["stop"])
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def pause(self, ctx):
+    async def audio_pause(self, ctx):
         '''Pause the current song'''
         if ctx.guild.voice_client.is_playing():
             ctx.guild.voice_client.pause()
@@ -214,6 +214,18 @@ class Audio(commands.Cog):
             await ctx.embed_reply(":no_entry: The song is already paused")
         else:
             await ctx.embed_reply(":no_entry: There is no song to pause")
+
+    @commands.command(aliases = ["stop"])
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def pause(self, ctx):
+        '''Pause the current song'''
+        if command := ctx.bot.get_command("audio pause"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio pause command not found when pause command invoked"
+            )
 
     @commands.command(aliases = ["start"])
     @checks.is_voice_connected()
