@@ -791,7 +791,10 @@ class Audio(commands.Cog):
         if not ctx.guild.me.voice.self_mute:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm not muted")
             return
-        await ctx.guild.change_voice_state(channel = ctx.guild.voice_client.channel, self_mute = False, self_deaf = ctx.guild.me.voice.self_deaf)
+        await ctx.guild.change_voice_state(
+            channel = ctx.guild.voice_client.channel, self_mute = False,
+            self_deaf = ctx.guild.me.voice.self_deaf
+        )
         await ctx.embed_reply("I've unmuted myself")
 
     # Voice Input
