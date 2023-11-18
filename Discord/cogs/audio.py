@@ -378,8 +378,14 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     async def audio_random(self, ctx):
         '''Play a random song from YouTube's top 50'''
-        url = "https://www.googleapis.com/youtube/v3/videos?part=id&chart=mostPopular&maxResults=50&videoCategoryId=10&key={}".format(ctx.bot.GOOGLE_API_KEY)
-        async with ctx.bot.aiohttp_session.get(url) as resp:
+        url = "https://www.googleapis.com/youtube/v3/videos"
+        async with ctx.bot.aiohttp_session.get(
+            url,
+            params = {
+                "part": "id", "chart": "mostPopular", "maxResults": 50,
+                "videoCategoryId": 10, "key": ctx.bot.GOOGLE_API_KEY
+            }
+        ) as resp:
             data = await resp.json()
         song = random.choice([video["id"] for video in data["items"]])
         response = await ctx.embed_reply(":cd: Loading..")
