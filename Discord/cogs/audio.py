@@ -27,7 +27,7 @@ class Audio(commands.Cog):
             if (
                 isinstance(command, commands.Command) and
                 command.parent is None and
-                name not in ("audio", "join", "leave", "pause")
+                name not in ("audio", "join", "leave", "pause", "resume")
             ):
                 self.bot.add_command(command)
                 self.audio.add_command(command)
@@ -182,6 +182,7 @@ class Audio(commands.Cog):
     )
     async def audio_leave(self, ctx):
         '''Tell me to leave the voice channel'''
+        # Note: leave command invokes this command
         if (await self.players[ctx.guild.id].leave_channel()):
             await ctx.embed_reply(":door: I've left the voice channel")
         del self.players[ctx.guild.id]
@@ -207,6 +208,7 @@ class Audio(commands.Cog):
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_pause(self, ctx):
         '''Pause the current song'''
+        # Note: pause command invokes this command
         if ctx.guild.voice_client.is_playing():
             ctx.guild.voice_client.pause()
             await ctx.embed_reply(":pause_button: Paused song")
@@ -227,11 +229,12 @@ class Audio(commands.Cog):
                 "audio pause command not found when pause command invoked"
             )
 
-    @commands.command(aliases = ["start"])
+    @audio.command(name = "resume", aliases = ["start"])
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def resume(self, ctx):
+    async def audio_resume(self, ctx):
         '''Resume the current song'''
+        # Note: resume command invokes this command
         if ctx.guild.voice_client.is_paused():
             ctx.guild.voice_client.source.previous_played_time += ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
             ctx.guild.voice_client.resume()
@@ -240,6 +243,18 @@ class Audio(commands.Cog):
             await ctx.embed_reply(":no_entry: The song is already playing")
         else:
             await ctx.embed_reply(":no_entry: There is no song to resume")
+
+    @commands.command(aliases = ["start"])
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def resume(self, ctx):
+        '''Resume the current song'''
+        if command := ctx.bot.get_command("audio resume"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio resume command not found when resume command invoked"
+            )
 
     @commands.group(aliases = ["next", "remove"], invoke_without_command = True, case_insensitive = True)
     @checks.not_forbidden()
