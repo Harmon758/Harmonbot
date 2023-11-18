@@ -80,7 +80,8 @@ class Bot(commands.Bot):
 
         # Constants
         ## Custom
-        self.version = "1.0.0-rc.10+g" + git.Repo("..").git.rev_parse("--short", "HEAD")
+        repo = git.Repo("..")
+        self.version = f"1.0.dev{repo.head.commit.count()}+g{repo.git.rev_parse('--short', 'HEAD')}"
         self.owner_id = 115691005197549570
         self.listener_id = 180994984038760448
         self.changelog = "https://discord.gg/a2rbZPu"
