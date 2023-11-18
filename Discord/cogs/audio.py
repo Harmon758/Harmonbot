@@ -458,10 +458,16 @@ class Audio(commands.Cog):
     @audio.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def text(self, ctx):
+    async def text(
+        self, ctx,
+        channel: 
+            discord.TextChannel | discord.VoiceChannel | discord.Thread |
+            discord.StageChannel
+        = commands.CurrentChannel
+    ):
         '''Set text channel for messages'''
-        self.players[ctx.guild.id].text_channel = ctx.channel
-        await ctx.embed_reply(f":writing_hand:{ctx.bot.emoji_skin_tone} Changed text channel")
+        self.players[ctx.guild.id].text_channel = channel
+        await ctx.embed_reply(f":writing_hand:{ctx.bot.emoji_skin_tone} Changed text channel to {channel.mention}")
 
     @commands.group(invoke_without_command = True, case_insensitive = True)
     @checks.is_voice_connected()
