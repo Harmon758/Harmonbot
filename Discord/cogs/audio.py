@@ -38,10 +38,14 @@ class Audio(commands.Cog):
 	async def cog_check(self, ctx):
 		return await commands.guild_only().predicate(ctx)
 	
-	@commands.group(aliases = ["yt", "youtube", "soundcloud", "voice", "stream", "play", 
-								"playlist", "spotify", "budio", "music", "download"], 
-					description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify", 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		aliases = [
+			"yt", "youtube", "soundcloud", "voice", "stream", "play",
+			"playlist", "spotify", "budio", "music", "download"
+		],
+		description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
+		invoke_without_command = True, case_insensitive = True
+	)
 	@checks.not_forbidden()
 	async def audio(self, ctx, *, song: Optional[str]):  #elif options[0] == "full":
 		'''
@@ -51,10 +55,16 @@ class Audio(commands.Cog):
 		'''
 		if song and song.lower().startswith("info "):
 			if ctx.invoked_with.lower() == "spotify":
-				await ctx.invoke(self.bot.cogs["Information"].spotify, song.lstrip(song.split()[0]).lstrip())
+				await ctx.invoke(
+					self.bot.cogs["Information"].spotify,
+					song.lstrip(song.split()[0]).lstrip()
+				)
 				return
 			elif ctx.invoked_with.lower() in ("yt", "youtube"):
-				await ctx.invoke(self.bot.cogs["Information"].youtube, song.lstrip(song.split()[0]).lstrip())
+				await ctx.invoke(
+					self.bot.cogs["Information"].youtube,
+					song.lstrip(song.split()[0]).lstrip()
+				)
 				return
 		if not ctx.guild.voice_client:
 			if ctx.guild.id not in self.players:
@@ -85,7 +95,9 @@ class Audio(commands.Cog):
 		# TODO: Handle no embed permission
 		embed = response.embeds[0]
 		try:
-			source = await self.players[ctx.guild.id].add_song(ctx, song, stream = ctx.invoked_with == "stream")
+			source = await self.players[ctx.guild.id].add_song(
+				ctx, song, stream = ctx.invoked_with == "stream"
+			)
 		except Exception as e:
 			embed.description = f":warning: Error loading `{song}`\n`{type(e).__name__}: {e}`"
 			if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
