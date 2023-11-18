@@ -455,10 +455,10 @@ class Audio(commands.Cog):
                 "when audio search command invoked"
             )
 
-    @audio.command()
+    @audio.command(name = "text")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def text(
+    async def audio_text(
         self, ctx,
         channel: 
             discord.TextChannel | discord.VoiceChannel | discord.Thread |
