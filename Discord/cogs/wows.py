@@ -47,6 +47,8 @@ class WoWS(commands.Cog):
             Server region for the player
             (Defaults to NA)
         """
+        await ctx.defer()
+
         api_url = API_URLS[region]
 
         async with ctx.bot.aiohttp_session.get(
