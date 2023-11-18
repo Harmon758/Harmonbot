@@ -27,7 +27,7 @@ class WoWS(commands.Cog):
         case_insensitive = True
     )
     async def wows(self, ctx):
-        '''World of Warships'''
+        """World of Warships"""
         await ctx.send_help(ctx.command)
 
     @wows.command()
