@@ -2,6 +2,7 @@
 from discord.ext import commands
 
 import datetime
+from typing import Literal
 
 from utilities import checks
 
@@ -31,7 +32,10 @@ class WoWS(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @wows.command()
-    async def player(self, ctx, player: str, region: str = "NA"):
+    async def player(
+        self, ctx, player: str,
+        region: Literal["ASIA", "EU", "NA", "RU"] = "NA"
+    ):
         '''
         Show information about a World of Warships player
 
@@ -41,7 +45,6 @@ class WoWS(commands.Cog):
             Player to show information about
         region
             Server region for the player
-            (ASIA, EU, NA, or RU)
             (Defaults to NA)
         '''
         api_url = API_URLS.get(region.lower(), API_URLS["na"])
