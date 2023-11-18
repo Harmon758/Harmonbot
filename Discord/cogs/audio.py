@@ -745,7 +745,8 @@ class Audio(commands.Cog):
     async def deafen(self, ctx):
         '''Deafen'''
         if ctx.guild.me.voice.self_deaf:
-            return await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm already deafened")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm already deafened")
+            return
         await ctx.guild.change_voice_state(channel = ctx.guild.voice_client.channel, self_deaf = True, self_mute = ctx.guild.me.voice.self_mute)
         await ctx.embed_reply("I've deafened myself")
 
