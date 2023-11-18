@@ -327,7 +327,7 @@ class RSS(commands.Cog):
 					# ETiCL: Embed Title Character Limit
 					embed = discord.Embed(
 						title = title,
-						url = entry.link,
+						url = entry.get("link"),
 						description = description,
 						timestamp = timestamp,
 						color = self.bot.rss_color
