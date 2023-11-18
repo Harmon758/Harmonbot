@@ -484,25 +484,36 @@ class Audio(commands.Cog):
     @checks.not_forbidden()
     @checks.is_voice_connected()
     async def tts_options(
-        self, ctx, amplitude: int = 100, pitch: int = 50, speed: int = 150,
-        word_gap: int = 0, voice: str = "en-us+f1", *, message : str
+        self, ctx,
+        amplitude: commands.Range[int, 0, 1000] = 100,
+        pitch: commands.Range[int, 0, 99] = 50,
+        speed: commands.Range[int, 80, 9000] = 150,
+        word_gap: commands.Range[int, 0, 1000] = 0,
+        voice: str = "en-us+f1",
+        *, message : str
     ):
         '''
         Text to speech with options
-        amplitude, pitch, speed, word_gap, voice
-        limits: 0-1000, 0-99, 80-9000, 0-1000, valid voice
-        word_gap: length of pause between words, in units of 10 ms
-        voice:
+
+        voices:
         http://espeak.sourceforge.net/languages.html
         https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md#languages
         https://github.com/espeak-ng/espeak-ng/tree/master/espeak-ng-data/voices/!v
-        '''
-        if amplitude > 1000:
-            amplitude = 1000
-        if speed > 9000:
-            speed = 9000
-        if word_gap > 1000:
-            word_gap = 1000
+
+        Parameters
+        ----------
+        amplitude
+            (0–1000, defaults to 100)
+        pitch
+            (0–99, defaults to 50)
+        speed
+            (80–9000, defaults to 150)
+        word_gap
+            Length of pause between words, in units of 10 ms
+            (0–1000, defaults to 0)
+        voice
+            (defaults to en-us+f1)
+        '''  # noqa: RUF002 (ambiguous-unicode-character-docstring)
         if not (
             await self.players[ctx.guild.id].play_tts(
                 ctx, message, amplitude = amplitude, pitch = pitch,
