@@ -20,8 +20,10 @@ class WoWS(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["worldofwarships", "world_of_warships"], 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		aliases = ["worldofwarships", "world_of_warships"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def wows(self, ctx):
 		'''
 		World of Warships
