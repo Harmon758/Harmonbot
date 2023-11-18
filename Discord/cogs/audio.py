@@ -24,7 +24,11 @@ class Audio(commands.Cog):
         self.bot = bot
         self.players = {}
         for name, command in inspect.getmembers(self):
-            if isinstance(command, commands.Command) and command.parent is None and name != "audio":
+            if (
+                isinstance(command, commands.Command) and
+                command.parent is None and
+                name not in ("audio", "join")
+            ):
                 self.bot.add_command(command)
                 self.audio.add_command(command)
         create_folder(self.bot.data_path + "/audio_cache")
@@ -113,19 +117,20 @@ class Audio(commands.Cog):
         finally:
             await response.edit(embed = embed)
 
-    @commands.command(aliases = ["summon", "move"])
+    @audio.command(name = "join", aliases = ["summon", "move"])
     @commands.check_any(
         checks.is_permitted(),
         commands.has_guild_permissions(move_members = True)
         # TODO: Check channel-specific permission?
     )
-    async def join(
+    async def audio_join(
         self, ctx, *,
         channel: Optional[
             discord.VoiceChannel
         ] = parameters.CurrentVoiceChannel
     ):
         '''Get me to join a voice channel'''
+        # Note: join command invokes this command
         # TODO: Permit all when not in voice channel?
         if ctx.guild.id not in self.players:
             self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
@@ -147,6 +152,25 @@ class Audio(commands.Cog):
             await ctx.embed_reply(
                 ":no_entry: Error joining the voice channel\n"
                 "Please check that I'm permitted to join"
+            )
+
+    @commands.command(aliases = ["summon", "move"])
+    @commands.check_any(
+        checks.is_permitted(),
+        commands.has_guild_permissions(move_members = True)
+    )
+    async def join(
+        self, ctx, *,
+        channel: Optional[
+            discord.VoiceChannel
+        ] = parameters.CurrentVoiceChannel
+    ):
+        '''Get me to join a voice channel'''
+        if command := ctx.bot.get_command("audio join"):
+            await ctx.invoke(command, channel = channel)
+        else:
+            raise RuntimeError(
+                "audio join command not found when join command invoked"
             )
 
     @commands.command()
