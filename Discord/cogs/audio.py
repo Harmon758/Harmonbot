@@ -777,7 +777,10 @@ class Audio(commands.Cog):
         if not ctx.guild.me.voice.self_deaf:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm not deafened")
             return
-        await ctx.guild.change_voice_state(channel = ctx.guild.voice_client.channel, self_deaf = False, self_mute = ctx.guild.me.voice.self_mute)
+        await ctx.guild.change_voice_state(
+            channel = ctx.guild.voice_client.channel, self_deaf = False,
+            self_mute = ctx.guild.me.voice.self_mute
+        )
         await ctx.embed_reply("I've undeafened myself")
 
     @commands.command()
