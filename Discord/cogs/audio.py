@@ -455,10 +455,10 @@ class Audio(commands.Cog):
                 "when audio search command invoked"
             )
 
-    @commands.command(aliases = ["set_text"])
+    @audio.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def settext(self, ctx):
+    async def text(self, ctx):
         '''Set text channel for messages'''
         self.players[ctx.guild.id].text_channel = ctx.channel
         await ctx.embed_reply(f":writing_hand:{ctx.bot.emoji_skin_tone} Changed text channel")
