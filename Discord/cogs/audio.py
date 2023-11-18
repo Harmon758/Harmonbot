@@ -484,13 +484,12 @@ class Audio(commands.Cog):
     @checks.not_forbidden()
     @checks.is_voice_connected()
     async def tts_options(
-        self, ctx, amplitude: int, pitch: int, speed: int, word_gap: int,
-        voice: str, *, message : str
+        self, ctx, amplitude: int = 100, pitch: int = 50, speed: int = 150,
+        word_gap: int = 0, voice: str = "en-us+f1", *, message : str
     ):
         '''
         Text to speech with options
         amplitude, pitch, speed, word_gap, voice
-        defaults: 100, 50, 150, 0, en-us+f1 (input -1 for defaults)
         limits: 0-1000, 0-99, 80-9000, 0-1000, valid voice
         word_gap: length of pause between words, in units of 10 ms
         voice:
@@ -498,16 +497,6 @@ class Audio(commands.Cog):
         https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md#languages
         https://github.com/espeak-ng/espeak-ng/tree/master/espeak-ng-data/voices/!v
         '''
-        if amplitude == -1:
-            amplitude = 100
-        if pitch == -1:
-            pitch = 50
-        if speed == -1:
-            speed = 150
-        if word_gap == -1:
-            word_gap = 0
-        if voice == "-1":
-            voice = "en-us+f1"
         if amplitude > 1000:
             amplitude = 1000
         if speed > 9000:
