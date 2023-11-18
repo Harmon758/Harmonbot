@@ -8,10 +8,10 @@ from utilities import checks
 
 
 API_URLS = {
-    "asia": "https://api.worldofwarships.asia/wows/",
-    "eu": "https://api.worldofwarships.eu/wows/",
-    "na": "https://api.worldofwarships.com/wows/",
-    "ru": "https://api.worldofwarships.ru/wows/"
+    "ASIA": "https://api.worldofwarships.asia/wows/",
+    "EU": "https://api.worldofwarships.eu/wows/",
+    "NA": "https://api.worldofwarships.com/wows/",
+    "RU": "https://api.worldofwarships.ru/wows/"
 }
 
 
@@ -47,7 +47,7 @@ class WoWS(commands.Cog):
             Server region for the player
             (Defaults to NA)
         '''
-        api_url = API_URLS.get(region.lower(), API_URLS["na"])
+        api_url = API_URLS[region]
 
         async with ctx.bot.aiohttp_session.get(
             api_url + "account/list/",
