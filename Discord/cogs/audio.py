@@ -51,9 +51,11 @@ class Audio(commands.Cog):
 		'''
 		if song and song.lower().startswith("info "):
 			if ctx.invoked_with.lower() == "spotify":
-				return await ctx.invoke(self.bot.cogs["Information"].spotify, song.lstrip(song.split()[0]).lstrip())
+				await ctx.invoke(self.bot.cogs["Information"].spotify, song.lstrip(song.split()[0]).lstrip())
+				return
 			elif ctx.invoked_with.lower() in ("yt", "youtube"):
-				return await ctx.invoke(self.bot.cogs["Information"].youtube, song.lstrip(song.split()[0]).lstrip())
+				await ctx.invoke(self.bot.cogs["Information"].youtube, song.lstrip(song.split()[0]).lstrip())
+				return
 		if not ctx.guild.voice_client:
 			if ctx.guild.id not in self.players:
 				self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
@@ -70,12 +72,15 @@ class Audio(commands.Cog):
 			else:
 				raise errors.NotPermittedVoiceNotConnected
 		if not song:
-			return await ctx.embed_reply(":grey_question: What would you like to play?")
+			await ctx.embed_reply(":grey_question: What would you like to play?")
+			return
 		if "playlist" in song:
-			return await self.players[ctx.guild.id].add_playlist(ctx, song)
+			await self.players[ctx.guild.id].add_playlist(ctx, song)
+			return
 		if "spotify" in song:
 			if not (song := await self.spotify_to_youtube(song)):
-				return await ctx.embed_reply(":warning: Error")
+				await ctx.embed_reply(":warning: Error")
+				return
 		response = await ctx.embed_reply(":cd: Loading..")
 		# TODO: Handle no embed permission
 		embed = response.embeds[0]
