@@ -36,7 +36,7 @@ class WoWS(commands.Cog):
         self, ctx, player: str,
         region: Literal["ASIA", "EU", "NA", "RU"] = "NA"
     ):
-        '''
+        """
         Show information about a World of Warships player
 
         Parameters
@@ -46,7 +46,7 @@ class WoWS(commands.Cog):
         region
             Server region for the player
             (Defaults to NA)
-        '''
+        """
         api_url = API_URLS[region]
 
         async with ctx.bot.aiohttp_session.get(
