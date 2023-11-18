@@ -27,7 +27,7 @@ class Audio(commands.Cog):
             if (
                 isinstance(command, commands.Command) and
                 command.parent is None and
-                name not in ("audio", "join")
+                name not in ("audio", "join", "leave")
             ):
                 self.bot.add_command(command)
                 self.audio.add_command(command)
@@ -173,19 +173,34 @@ class Audio(commands.Cog):
                 "audio join command not found when join command invoked"
             )
 
-    @commands.command()
+    @audio.command(name = "leave")
     @checks.is_voice_connected()
     @commands.check_any(
         checks.is_permitted(),
         commands.has_guild_permissions(move_members = True)
         # TODO: Check channel-specific permission?
     )
-    async def leave(self, ctx):
+    async def audio_leave(self, ctx):
         '''Tell me to leave the voice channel'''
         if (await self.players[ctx.guild.id].leave_channel()):
             await ctx.embed_reply(":door: I've left the voice channel")
         del self.players[ctx.guild.id]
         await self.bot.attempt_delete_message(ctx.message)
+
+    @commands.command()
+    @checks.is_voice_connected()
+    @commands.check_any(
+        checks.is_permitted(),
+        commands.has_guild_permissions(move_members = True)
+    )
+    async def leave(self, ctx):
+        '''Tell me to leave the voice channel'''
+        if command := ctx.bot.get_command("audio leave"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio leave command not found when leave command invoked"
+            )
 
     @commands.command(aliases = ["stop"])
     @checks.is_voice_connected()
