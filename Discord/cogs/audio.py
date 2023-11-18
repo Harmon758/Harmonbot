@@ -393,15 +393,15 @@ class Audio(commands.Cog):
         try:
             title, url = await self.players[ctx.guild.id].add_song(ctx, song)
         except Exception as e:
-            embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
+            embed.description = f":warning: Error loading `{song}`\n`{type(e).__name__}: {e}`"
         else:
             embed.title = title
             embed.url = url
-            embed.description = ":ballot_box_with_check: Successfully added `{}` to the queue".format(song)
+            embed.description = f":ballot_box_with_check: Successfully added `{song}` to the queue"
         try:
             await response.edit(embed = embed)
         except discord.HTTPException:  # Necessary?
-            embed.description = ":warning: Error loading `{}`".format(song)
+            embed.description = f":warning: Error loading `{song}`"
             await response.edit(embed = embed)
 
     @commands.group(invoke_without_command = True, case_insensitive = True)
