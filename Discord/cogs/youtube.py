@@ -14,6 +14,7 @@ import dateutil.parser
 import feedparser
 import isodate
 
+from units import colors
 from units.time import duration_to_string
 from utilities import checks, tasks
 
@@ -199,7 +200,7 @@ class YouTube(commands.Cog):
 							if not record:
 								text_channel = self.bot.get_channel(channel_record["discord_channel_id"])
 								if text_channel:
-									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = self.bot.youtube_color)
+									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = colors.YouTube.FLAT_RED)
 									embed.set_author(name = f"{item_data['channelTitle']} is live now on YouTube", url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
@@ -366,7 +367,7 @@ class YouTube(commands.Cog):
 			
 			embed = discord.Embed(
 				title = video_data.title, url = video_data.link,
-				timestamp = time_published, color = self.bot.youtube_color
+				timestamp = time_published, color = colors.YouTube.FLAT_RED
 			).set_author(
 				name = f"{video_data.author} just uploaded a video on YouTube",
 				url = video_data.author_detail.href,
