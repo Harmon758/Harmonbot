@@ -43,15 +43,15 @@ class WoWS(commands.Cog):
 			data = await resp.json()
 		
 		if data["status"] == "error":
-			await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['error']['message']}")
 			return
 		
 		if data["status"] != "ok":
-			await ctx.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 			return
 		
 		if not data["meta"]["count"]:
-			await ctx.embed_reply(":no_entry: Error: Player not found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
 			return
 		
 		account_id = data["data"][0]["account_id"]
@@ -65,11 +65,11 @@ class WoWS(commands.Cog):
 			data = await resp.json()
 		
 		if data["status"] == "error":
-			await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['error']['message']}")
 			return
 		
 		if data["status"] != "ok":
-			await ctx.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 			return
 		
 		data = data["data"][str(account_id)]
