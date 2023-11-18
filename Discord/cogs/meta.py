@@ -203,11 +203,11 @@ class Meta(commands.Cog):
 
         view = discord.ui.View()
         view.add_item(discord.ui.Button(
-            label = "Invite",
+            label = "Add To Server (Invite)",
             url = ctx.bot.invite_url
         ))
         view.add_item(discord.ui.Button(
-            label = "Discord Server (#changelog)",
+            label = "Harmonbot Server (#changelog)",
             url = ctx.bot.changelog
         ))
 
