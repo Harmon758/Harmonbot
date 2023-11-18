@@ -19,7 +19,16 @@ from units.time import duration_to_string
 from utilities import checks, tasks
 
 
-YOUTUBE_ICON_URL = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
+# https://developers.google.com/youtube/terms/branding-guidelines
+# https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors
+# https://commons.wikimedia.org/wiki/File:YouTube_full-color_icon_(2017).svg
+YOUTUBE_ICON_URL = (
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/159px-YouTube_full-color_icon_%282017%29.svg.png"
+)
+# https://web.archive.org/web/20170508034038/https://www.youtube.com/yt/brand/using-logo.html
+# https://web.archive.org/web/20170513123135/https://www.youtube.com/yt/brand/downloads.html
+# Previously "https://www.youtube.com/yt/brand/media/image/YouTube-icon-full_color.png"
+# and "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
 
 
 errors_logger = logging.getLogger("errors")
