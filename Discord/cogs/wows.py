@@ -33,23 +33,45 @@ class WoWS(commands.Cog):
 	async def player(self, ctx, player: str, region: str = "NA"):
 		'''Player details'''
 		api_url = API_URLS.get(region.lower(), API_URLS["na"])
-		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "search": player, "limit": 1}
-		async with ctx.bot.aiohttp_session.get(api_url + "account/list/", params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			api_url + "account/list/",
+			params = {
+				"application_id": ctx.bot.WARGAMING_APPLICATION_ID,
+				"search": player, "limit": 1
+			}
+		) as resp:
 			data = await resp.json()
+		
 		if data["status"] == "error":
-			return await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
+			await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
+			return
+		
 		if data["status"] != "ok":
-			return await ctx.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
+			return
+		
 		if not data["meta"]["count"]:
-			return await ctx.embed_reply(":no_entry: Error: Player not found")
+			await ctx.embed_reply(":no_entry: Error: Player not found")
+			return
+		
 		account_id = data["data"][0]["account_id"]
-		params = {"application_id": ctx.bot.WARGAMING_APPLICATION_ID, "account_id": account_id}
-		async with ctx.bot.aiohttp_session.get(api_url + "account/info/", params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			api_url + "account/info/",
+			params = {
+				"application_id": ctx.bot.WARGAMING_APPLICATION_ID,
+				"account_id": account_id
+			}
+		) as resp:
 			data = await resp.json()
+		
 		if data["status"] == "error":
-			return await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
+			await ctx.embed_reply(f":no_entry: Error: {data['error']['message']}")
+			return
+		
 		if data["status"] != "ok":
-			return await ctx.embed_reply(":no_entry: Error")
+			await ctx.embed_reply(":no_entry: Error")
+			return
+		
 		data = data["data"][str(account_id)]
 		# TODO: Handle hidden profile?
 		await ctx.embed_reply(title = data["nickname"], 
