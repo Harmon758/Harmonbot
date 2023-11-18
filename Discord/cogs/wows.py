@@ -33,6 +33,7 @@ class WoWS(commands.Cog):
 	async def player(self, ctx, player: str, region: str = "NA"):
 		'''Player details'''
 		api_url = API_URLS.get(region.lower(), API_URLS["na"])
+		
 		async with ctx.bot.aiohttp_session.get(
 			api_url + "account/list/",
 			params = {
@@ -43,7 +44,9 @@ class WoWS(commands.Cog):
 			data = await resp.json()
 		
 		if data["status"] == "error":
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['error']['message']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['error']['message']}"
+			)
 			return
 		
 		if data["status"] != "ok":
@@ -51,10 +54,13 @@ class WoWS(commands.Cog):
 			return
 		
 		if not data["meta"]["count"]:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Player not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: Player not found"
+			)
 			return
 		
 		account_id = data["data"][0]["account_id"]
+		
 		async with ctx.bot.aiohttp_session.get(
 			api_url + "account/info/",
 			params = {
@@ -65,7 +71,9 @@ class WoWS(commands.Cog):
 			data = await resp.json()
 		
 		if data["status"] == "error":
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['error']['message']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['error']['message']}"
+			)
 			return
 		
 		if data["status"] != "ok":
@@ -74,11 +82,15 @@ class WoWS(commands.Cog):
 		
 		data = data["data"][str(account_id)]
 		# TODO: Handle hidden profile?
-		await ctx.embed_reply(title = data["nickname"], 
-								fields = (("ID", account_id), ("Account Level", data["leveling_tier"]), 
-											("Account XP", f"{data['leveling_points']:,}"), 
-											("Battles Fought", data["statistics"]["battles"]), 
-											("Miles Travelled", data["statistics"]["distance"])), 
-								footer_text = "Account Created", 
-								timestamp = datetime.datetime.utcfromtimestamp(data["created_at"]))
+		await ctx.embed_reply(
+			title = data["nickname"],
+			fields = (
+				("ID", account_id), ("Account Level", data["leveling_tier"]),
+				("Account XP", f"{data['leveling_points']:,}"),
+				("Battles Fought", data["statistics"]["battles"]),
+				("Miles Travelled", data["statistics"]["distance"])
+			),
+			footer_text = "Account Created",
+			timestamp = datetime.datetime.utcfromtimestamp(data["created_at"])
+		)
 
