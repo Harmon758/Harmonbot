@@ -27,7 +27,9 @@ class Audio(commands.Cog):
             if (
                 isinstance(command, commands.Command) and
                 command.parent is None and
-                name not in ("audio", "join", "leave", "pause", "resume")
+                name not in (
+                    "audio", "join", "leave", "pause", "resume", "replay"
+                )
             ):
                 self.bot.add_command(command)
                 self.audio.add_command(command)
@@ -313,11 +315,12 @@ class Audio(commands.Cog):
             await ctx.embed_reply(f":put_litter_in_its_place: Skipped to #{number} in the queue")
             del songs
 
-    @commands.command(aliases = ["repeat"])
+    @audio.command(name = "replay", aliases = ["repeat"])
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def replay(self, ctx):
+    async def audio_replay(self, ctx):
         '''Repeat the current song'''
+        # Note: replay command invokes this command
         # TODO: Add restart alias?
         response = await ctx.embed_reply(":repeat_one: Restarting song..")
         embed = response.embeds[0]
@@ -329,6 +332,18 @@ class Audio(commands.Cog):
             embed.description = ":repeat_one: Restarted song"
         finally:
             await response.edit(embed = embed)
+
+    @commands.command(aliases = ["repeat"])
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def replay(self, ctx):
+        '''Repeat the current song'''
+        if command := ctx.bot.get_command("audio replay"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio replay command not found when replay command invoked"
+            )
 
     @commands.command()
     @checks.is_voice_connected()
