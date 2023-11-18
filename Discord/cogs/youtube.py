@@ -19,6 +19,9 @@ from units.time import duration_to_string
 from utilities import checks, tasks
 
 
+YOUTUBE_ICON_URL = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
+
+
 errors_logger = logging.getLogger("errors")
 
 async def setup(bot):
@@ -201,7 +204,7 @@ class YouTube(commands.Cog):
 								text_channel = self.bot.get_channel(channel_record["discord_channel_id"])
 								if text_channel:
 									embed = discord.Embed(title = item_data["title"], description = item_data["description"], url = "https://www.youtube.com/watch?v=" + video_id, timestamp = dateutil.parser.parse(item_data["publishedAt"]).replace(tzinfo = None), color = colors.YouTube.FLAT_RED)
-									embed.set_author(name = f"{item_data['channelTitle']} is live now on YouTube", url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = self.bot.youtube_icon_url)
+									embed.set_author(name = f"{item_data['channelTitle']} is live now on YouTube", url = "https://www.youtube.com/channel/" + item_data["channelId"], icon_url = YOUTUBE_ICON_URL)
 									# TODO: Add channel icon as author icon?
 									embed.set_thumbnail(url = item_data["thumbnails"]["high"]["url"])
 									message = await text_channel.send(embed = embed)
@@ -371,7 +374,7 @@ class YouTube(commands.Cog):
 			).set_author(
 				name = f"{video_data.author} just uploaded a video on YouTube",
 				url = video_data.author_detail.href,
-				icon_url = self.bot.youtube_icon_url
+				icon_url = YOUTUBE_ICON_URL
 			)
 			# TODO: Add channel icon as author icon?
 			# Add description + thumbnail + length

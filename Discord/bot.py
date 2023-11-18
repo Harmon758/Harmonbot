@@ -98,7 +98,6 @@ class Bot(commands.Bot):
         self.twitter_color = self.twitter_colour = 0x00ACED
         self.twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
         self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
-        self.youtube_icon_url = "https://www.youtube.com/yts/img/ringo/hitchhiker/video_youtube_red-vflovGTdz.png"
         ### Emoji
         self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: use everywhere
         self.error_emoji = self.error_emote = '\N{NO ENTRY}'
