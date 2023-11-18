@@ -737,20 +737,29 @@ class Audio(commands.Cog):
 
 	async def spotify_to_youtube(self, link):
 		path = urllib.parse.urlparse(link).path
+		
 		if path[:7] != "/track/":
 			return False
+		
 		spotify_access_token = await self.get_spotify_access_token()
-		url = f"https://api.spotify.com/v1/tracks/{path[7:]}"
-		headers = {"Authorization": f"Bearer {spotify_access_token}"}
-		async with self.bot.aiohttp_session.get(url, headers = headers) as resp:
+		async with self.bot.aiohttp_session.get(
+			f"https://api.spotify.com/v1/tracks/{path[7:]}",
+			headers = {"Authorization": f"Bearer {spotify_access_token}"}
+		) as resp:
 			data = await resp.json()
+		
 		if "name" not in data:
 			return False
-		url = "https://www.googleapis.com/youtube/v3/search"
-		params = {"part": "snippet", "key": self.bot.GOOGLE_API_KEY, 
-					'q': f"{data['artists'][0]['name']} - {data['name']}"}
-		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+		
+		async with self.bot.aiohttp_session.get(
+			"https://www.googleapis.com/youtube/v3/search",
+			params = {
+				"part": "snippet", "key": self.bot.GOOGLE_API_KEY,
+				'q': f"{data['artists'][0]['name']} - {data['name']}"
+			}
+		) as resp:
 			data = await resp.json()
+		
 		for item in data["items"]:
 			if "videoId" in item["id"]:
 				return "https://www.youtube.com/watch?v=" + item["id"]["videoId"]
