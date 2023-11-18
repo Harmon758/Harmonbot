@@ -485,11 +485,11 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     async def tts_options(
         self, ctx,
-        amplitude: commands.Range[int, 0, 1000] = 100,
-        pitch: commands.Range[int, 0, 99] = 50,
-        speed: commands.Range[int, 80, 9000] = 150,
-        word_gap: commands.Range[int, 0, 1000] = 0,
-        voice: str = "en-us+f1",
+        amplitude: Optional[commands.Range[int, 0, 1000]] = 100,  # noqa: UP007 (non-pep604-annotation)
+        pitch: Optional[commands.Range[int, 0, 99]] = 50,  # noqa: UP007 (non-pep604-annotation)
+        speed: Optional[commands.Range[int, 80, 9000]] = 150,  # noqa: UP007 (non-pep604-annotation)
+        word_gap: Optional[commands.Range[int, 0, 1000]] = 0,  # noqa: UP007 (non-pep604-annotation)
+        voice: Optional[str] = "en-us+f1",  # noqa: UP007 (non-pep604-annotation)
         *, message : str
     ):
         '''
