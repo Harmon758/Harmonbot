@@ -385,7 +385,7 @@ class Audio(commands.Cog):
         response = await ctx.embed_reply(":cd: Loading..")
         embed = response.embeds[0]
         try:
-            title, url = await self.players[ctx.guild.id].add_song(song, ctx.author, ctx.message.created_at)
+            title, url = await self.players[ctx.guild.id].add_song(ctx, song)
         except Exception as e:
             embed.description = ":warning: Error loading `{}`\n`{}: {}`".format(song, type(e).__name__, e)
         else:
