@@ -29,7 +29,7 @@ class Audio(commands.Cog):
                 command.parent is None and
                 name not in (
                     "audio", "join", "leave", "pause", "resume", "replay",
-                    "deafen", "mute"
+                    "deafen", "mute", "undeafen"
                 )
             ):
                 self.bot.add_command(command)
@@ -813,11 +813,12 @@ class Audio(commands.Cog):
                 "audio mute command not found when mute command invoked"
             )
 
-    @commands.command()
+    @commands.command(name = "undeafen")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def undeafen(self, ctx):
+    async def audio_undeafen(self, ctx):
         '''Undeafen'''
+        # Note: undeafen command invokes this command
         if not ctx.guild.me.voice.self_deaf:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm not deafened")
             return
@@ -826,6 +827,19 @@ class Audio(commands.Cog):
             self_mute = ctx.guild.me.voice.self_mute
         )
         await ctx.embed_reply("I've undeafened myself")
+
+    @commands.command()
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def undeafen(self, ctx):
+        '''Undeafen'''
+        if command := ctx.bot.get_command("audio undeafen"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio undeafen command not found "
+                "when undeafen command invoked"
+            )
 
     @commands.command()
     @checks.is_voice_connected()
