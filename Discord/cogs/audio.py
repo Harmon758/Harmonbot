@@ -29,7 +29,7 @@ class Audio(commands.Cog):
                 command.parent is None and
                 name not in (
                     "audio", "join", "leave", "pause", "resume", "replay",
-                    "deafen", "mute", "undeafen", "unmute"
+                    "queue", "deafen", "mute", "undeafen", "unmute"
                 )
             ):
                 self.bot.add_command(command)
@@ -719,11 +719,12 @@ class Audio(commands.Cog):
         else:
             return await ctx.embed_reply(":speaker: There is no song currently playing")
 
-    @commands.command()
+    @audio.command(name = "queue")
     @checks.is_voice_connected()
     @checks.not_forbidden()
-    async def queue(self, ctx):
+    async def audio_queue(self, ctx):
         '''See the current queue'''
+        # Note: queue command invokes this command
         embed = self.players[ctx.guild.id].queue_embed()
         embed.set_author(
             name = ctx.author.display_name,
@@ -731,6 +732,18 @@ class Audio(commands.Cog):
         )
         await ctx.send(embed = embed)
         await self.bot.attempt_delete_message(ctx.message)
+
+    @commands.command()
+    @checks.is_voice_connected()
+    @checks.not_forbidden()
+    async def queue(self, ctx):
+        '''See the current queue'''
+        if command := ctx.bot.get_command("audio queue"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio queue command not found when queue command invoked"
+            )
 
     # Meta
 
