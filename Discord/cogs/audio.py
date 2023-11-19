@@ -630,7 +630,8 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def volume(
-        self, ctx, volume_setting: float = None, default: bool = False
+        self, ctx, volume_setting: commands.Range[float, 0.0, 2000.0] = None,
+        default: bool = False
     ):
         '''
         Change the volume
