@@ -646,20 +646,31 @@ class Audio(commands.Cog):
             Whether to change/show the default volume for the current player
             (Defaults to False — change/show the volume for the current song)
         '''  # noqa: RUF002 (ambiguous-unicode-character-docstring)
+        # TODO: Use '\N{SPEAKER}' when volume/setting is 0
         if default and volume_setting is None:
-            await ctx.embed_reply(f"\N{SPEAKER WITH ONE SOUND WAVE} Current default volume: {self.players[ctx.guild.id].default_volume:g}")
+            await ctx.embed_reply(
+                f"\N{SPEAKER WITH ONE SOUND WAVE} Current default volume: {self.players[ctx.guild.id].default_volume:g}"
+            )
         elif default:
             volume_setting = min(max(0, volume_setting), 2000)
             self.players[ctx.guild.id].default_volume = volume_setting
-            await ctx.embed_reply(f"\N{SPEAKER WITH ONE SOUND WAVE} Set default volume to {volume_setting:g}")
+            await ctx.embed_reply(
+                f"\N{SPEAKER WITH ONE SOUND WAVE} Set default volume to {volume_setting:g}"
+            )
         elif volume_setting is None and ctx.guild.voice_client.is_playing():
-            await ctx.embed_reply(f"\N{SPEAKER WITH ONE SOUND WAVE} Current volume: {ctx.guild.voice_client.source.volume:g}")
+            await ctx.embed_reply(
+                f"\N{SPEAKER WITH ONE SOUND WAVE} Current volume: {ctx.guild.voice_client.source.volume:g}"
+            )
         elif ctx.guild.voice_client.is_playing():
             ctx.guild.voice_client.source.volume = volume_setting
             volume_setting = min(max(0, volume_setting), 2000)
-            await ctx.embed_reply(f"\N{SPEAKER WITH ONE SOUND WAVE} Set volume to {volume_setting:g}")
+            await ctx.embed_reply(
+                f"\N{SPEAKER WITH ONE SOUND WAVE} Set volume to {volume_setting:g}"
+            )
         else:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} There's nothing playing right now")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} There's nothing playing right now"
+            )
 
     @commands.group(aliases = ["current"], invoke_without_command = True, case_insensitive = True)
     @checks.is_voice_connected()
