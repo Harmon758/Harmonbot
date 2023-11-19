@@ -29,7 +29,7 @@ class Audio(commands.Cog):
                 command.parent is None and
                 name not in (
                     "audio", "join", "leave", "pause", "resume", "replay",
-                    "queue", "deafen", "mute", "undeafen", "unmute"
+                    "empty", "queue", "deafen", "mute", "undeafen", "unmute"
                 )
             ):
                 self.bot.add_command(command)
@@ -370,13 +370,26 @@ class Audio(commands.Cog):
         finally:
             await response.edit(embed = embed)
 
+    @audio.command(name = "empty", aliases = ["clear"])
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def audio_empty(self, ctx):
+        '''Empty the queue'''
+        # Note: empty command invokes this command
+        await self.players[ctx.guild.id].empty_queue()
+        await ctx.embed_reply(":wastebasket: Emptied queue")
+
     @commands.command(aliases = ["clear"])
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def empty(self, ctx):
         '''Empty the queue'''
-        await self.players[ctx.guild.id].empty_queue()
-        await ctx.embed_reply(":wastebasket: Emptied queue")
+        if command := ctx.bot.get_command("audio empty"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio empty command not found when empty command invoked"
+            )
 
     @commands.command()
     @checks.is_voice_connected()
