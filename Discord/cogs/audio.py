@@ -29,7 +29,8 @@ class Audio(commands.Cog):
                 command.parent is None and
                 name not in (
                     "audio", "join", "leave", "pause", "resume", "replay",
-                    "empty", "queue", "deafen", "mute", "undeafen", "unmute"
+                    "empty", "shuffle", "queue", "deafen", "mute", "undeafen",
+                    "unmute"
                 )
             ):
                 self.bot.add_command(command)
@@ -391,16 +392,29 @@ class Audio(commands.Cog):
                 "audio empty command not found when empty command invoked"
             )
 
-    @commands.command()
+    @audio.command(name = "shuffle")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def shuffle(self, ctx):
+    async def audio_shuffle(self, ctx):
         '''Shuffle the queue'''
+        # Note: shuffle command invokes this command
         response = await ctx.embed_reply(":twisted_rightwards_arrows: Shuffling..")
         embed = response.embeds[0]
         await self.players[ctx.guild.id].shuffle_queue()
         embed.description = ":twisted_rightwards_arrows: Shuffled songs"
         await response.edit(embed = embed)
+
+    @commands.command()
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def shuffle(self, ctx):
+        '''Shuffle the queue'''
+        if command := ctx.bot.get_command("audio shuffle"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio shuffle command not found when shuffle command invoked"
+            )
 
     @audio.command(name = "random", aliases = ["top"])
     @checks.not_forbidden()
