@@ -634,16 +634,17 @@ class Audio(commands.Cog):
         default: bool = False
     ):
         '''
-        Change the volume
+        Change or show the volume of the current song or player
 
         Parameters
         ----------
         volume_setting
-            0 - 2000
+            Volume to change to
+            (0–2000, defaults to None — show current volume)
         default
-            Whether to change the default volume for the current player
-            (Defaults to False - only change the volume for the current song)
-        '''
+            Whether to change/show the default volume for the current player
+            (Defaults to False — change/show the volume for the current song)
+        '''  # noqa: RUF002 (ambiguous-unicode-character-docstring)
         if default and volume_setting is None:
             await ctx.embed_reply(f":sound: Current default volume: {self.players[ctx.guild.id].default_volume:g}")
         elif default:
