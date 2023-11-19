@@ -28,7 +28,8 @@ class Audio(commands.Cog):
                 isinstance(command, commands.Command) and
                 command.parent is None and
                 name not in (
-                    "audio", "join", "leave", "pause", "resume", "replay"
+                    "audio", "join", "leave", "pause", "resume", "replay",
+                    "deafen"
                 )
             ):
                 self.bot.add_command(command)
@@ -756,11 +757,12 @@ class Audio(commands.Cog):
 
     # Discord Control
 
-    @commands.command()
+    @audio.command(name = "deafen")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def deafen(self, ctx):
+    async def audio_deafen(self, ctx):
         '''Deafen'''
+        # Note: deafen command invokes this command
         if ctx.guild.me.voice.self_deaf:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} I'm already deafened"
@@ -771,6 +773,18 @@ class Audio(commands.Cog):
             self_mute = ctx.guild.me.voice.self_mute
         )
         await ctx.embed_reply("I've deafened myself")
+
+    @commands.command()
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def deafen(self, ctx):
+        '''Deafen'''
+        if command := ctx.bot.get_command("audio deafen"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio deafen command not found when deafen command invoked"
+            )
 
     @commands.command()
     @checks.is_voice_connected()
