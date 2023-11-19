@@ -736,7 +736,7 @@ class Audio(commands.Cog):
     @audio.command()
     @checks.is_voice_connected()
     @checks.not_forbidden()
-    async def latency(
+    async def audio_latency(
         self, ctx,
         average: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
     ):
