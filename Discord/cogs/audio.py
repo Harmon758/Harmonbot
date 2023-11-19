@@ -733,19 +733,26 @@ class Audio(commands.Cog):
 
     # Meta
 
-    @audio.group(invoke_without_command = True, case_insensitive = True)
+    @audio.command()
     @checks.is_voice_connected()
     @checks.not_forbidden()
-    async def latency(self, ctx):
-        '''Latency between a HEARTBEAT and its HEARTBEAT_ACK in seconds'''
-        await ctx.embed_reply(f"{ctx.guild.voice_client.latency}s")
+    async def latency(
+        self, ctx,
+        average: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
+    ):
+        '''
+        Latency between a HEARTBEAT and its HEARTBEAT_ACK in seconds
 
-    @latency.command()
-    @checks.is_voice_connected()
-    @checks.not_forbidden()
-    async def average(self, ctx):
-        '''Average of last 20 HEARTBEAT latencies'''
-        await ctx.embed_reply(f"{ctx.guild.voice_client.average_latency}s")
+        Parameters
+        ----------
+        average
+            Whether to show the average of the last 20 HEARTBEAT latencies
+            (Defaults to False — show the latest latency)
+        '''
+        if average:
+            await ctx.embed_reply(f"{ctx.guild.voice_client.average_latency}s")
+        else:
+            await ctx.embed_reply(f"{ctx.guild.voice_client.latency}s")
 
     # Discord Control
 
