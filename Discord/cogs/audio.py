@@ -450,40 +450,38 @@ class Audio(commands.Cog):
             embed.description = f":warning: Error loading `{song}`"
             await response.edit(embed = embed)
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
+    @commands.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def radio(self, ctx):
+    async def radio(
+        self, ctx,
+        setting: Optional[bool] = None  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''
         Radio station based on the current song
-        No input to turn on/off
+
+        Parameters
+        ----------
+        setting
+            Whether to turn on radio
+            (Defaults to None — toggle on/off)
         '''
-        if self.players[ctx.guild.id].radio_flag:
+        if setting:
+            if self.players[ctx.guild.id].radio_flag:
+                await ctx.embed_reply(":no_entry: Radio is already on")
+            elif (await self.players[ctx.guild.id].radio_on(ctx)) is False:
+                await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
+        elif setting is False:
+            if self.players[ctx.guild.id].radio_flag:
+                self.players[ctx.guild.id].radio_off()
+                await ctx.embed_reply(":stop_sign: Turned radio off")
+            else:
+                await ctx.embed_reply(":no_entry: Radio is already off")
+        elif self.players[ctx.guild.id].radio_flag:
             self.players[ctx.guild.id].radio_off()
             await ctx.embed_reply(":stop_sign: Turned radio off")
         elif (await self.players[ctx.guild.id].radio_on(ctx)) is False:
             await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
-
-    @radio.command(name = "on", aliases = ["start"])
-    @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def radio_on(self, ctx):
-        '''Turn radio on'''
-        if self.players[ctx.guild.id].radio_flag:
-            await ctx.embed_reply(":no_entry: Radio is already on")
-        elif (await self.players[ctx.guild.id].radio_on(ctx)) is False:
-            await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
-
-    @radio.command(name = "off", aliases = ["stop"])
-    @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def radio_off(self, ctx):
-        '''Turn radio off'''
-        if self.players[ctx.guild.id].radio_flag:
-            self.players[ctx.guild.id].radio_off()
-            await ctx.embed_reply(":stop_sign: Turned radio off")
-        else:
-            await ctx.embed_reply(":no_entry: Radio is already off")
 
     @audio.command(name = "search")
     @checks.not_forbidden()
