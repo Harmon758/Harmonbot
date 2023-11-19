@@ -645,22 +645,18 @@ class Audio(commands.Cog):
         '''
         if default and volume_setting is None:
             await ctx.embed_reply(f":sound: Current default volume: {self.players[ctx.guild.id].default_volume:g}")
-        elif volume_setting is None:
-            if ctx.guild.voice_client.is_playing():
-                await ctx.embed_reply(f":sound: Current volume: {ctx.guild.voice_client.source.volume:g}")
-            else:
-                await ctx.embed_reply(f"{ctx.bot.error_emoji} There's nothing playing right now")
         elif default:
             volume_setting = min(max(0, volume_setting), 2000)
             self.players[ctx.guild.id].default_volume = volume_setting
             await ctx.embed_reply(f":sound: Set default volume to {volume_setting:g}")
+        elif volume_setting is None and ctx.guild.voice_client.is_playing():
+            await ctx.embed_reply(f":sound: Current volume: {ctx.guild.voice_client.source.volume:g}")
+        elif ctx.guild.voice_client.is_playing():
+            ctx.guild.voice_client.source.volume = volume_setting
+            volume_setting = min(max(0, volume_setting), 2000)
+            await ctx.embed_reply(f":sound: Set volume to {volume_setting:g}")
         else:
-            if ctx.guild.voice_client.is_playing():
-                ctx.guild.voice_client.source.volume = volume_setting
-                volume_setting = min(max(0, volume_setting), 2000)
-                await ctx.embed_reply(f":sound: Set volume to {volume_setting:g}")
-            else:
-                await ctx.embed_reply(f"{ctx.bot.error_emoji} Couldn't change volume\nThere's nothing playing right now")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} There's nothing playing right now")
 
     @commands.group(aliases = ["current"], invoke_without_command = True, case_insensitive = True)
     @checks.is_voice_connected()
