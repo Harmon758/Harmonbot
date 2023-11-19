@@ -32,6 +32,10 @@ class Twitter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+        self.nitter_instance_blacklist = [
+            "https://nitter.privacydev.net"  # Low rate limit
+        ]
+
         self.check_tweets.start().set_name("Twitter")
 
     async def cog_load(self):
@@ -197,7 +201,9 @@ class Twitter(commands.Cog):
             )
         else:
             nitter_instance_url = (
-                await nitter.get_random_healthy_rss_instance_url()
+                await nitter.get_random_healthy_rss_instance_url(
+                    exclude = self.nitter_instance_blacklist
+                )
             )
             async with self.bot.aiohttp_session.get(
                 f"{nitter_instance_url}/{handle}/rss"
@@ -414,7 +420,9 @@ class Twitter(commands.Cog):
                 continue
 
             nitter_instance_url = (
-                await nitter.get_random_healthy_rss_instance_url()
+                await nitter.get_random_healthy_rss_instance_url(
+                    exclude = self.nitter_instance_blacklist
+                )
             )
 
             try:
