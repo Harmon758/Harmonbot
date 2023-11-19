@@ -29,7 +29,7 @@ class Audio(commands.Cog):
                 command.parent is None and
                 name not in (
                     "audio", "join", "leave", "pause", "resume", "replay",
-                    "deafen", "mute", "undeafen"
+                    "deafen", "mute", "undeafen", "unmute"
                 )
             ):
                 self.bot.add_command(command)
@@ -841,11 +841,12 @@ class Audio(commands.Cog):
                 "when undeafen command invoked"
             )
 
-    @commands.command()
+    @commands.command(name = "unmute")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def unmute(self, ctx):
+    async def audio_unmute(self, ctx):
         '''Unmute'''
+        # Note: unmute command invokes this command
         if not ctx.guild.me.voice.self_mute:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm not muted")
             return
@@ -854,6 +855,18 @@ class Audio(commands.Cog):
             self_deaf = ctx.guild.me.voice.self_deaf
         )
         await ctx.embed_reply("I've unmuted myself")
+
+    @commands.command()
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def unmute(self, ctx):
+        '''Unmute'''
+        if command := ctx.bot.get_command("audio unmute"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio unmute command not found when unmute command invoked"
+            )
 
     # Voice Input
 
