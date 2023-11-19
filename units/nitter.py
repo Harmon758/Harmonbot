@@ -12,14 +12,10 @@ if TYPE_CHECKING:
     import aiohttp
 
 
-BLACKLIST = [
-    "https://nitter.privacydev.net"  # Low rate limit
-]
-
-
 @async_cache(ignore_kwargs = "aiohttp_session", ttl = 900)
 async def get_healthy_rss_instances(
-    *, aiohttp_session: aiohttp.ClientSession | None = None
+    *, aiohttp_session: aiohttp.ClientSession | None = None,
+    exclude: list[str] | tuple[str, ...] = ()
 ) -> list[dict]:
     # TODO: Add User-Agent
     async with (
@@ -33,23 +29,30 @@ async def get_healthy_rss_instances(
         for instance in data["hosts"]
         if (
             instance["healthy"] and instance["rss"] and
-            instance["url"] not in BLACKLIST
+            instance["url"] not in exclude
         )
     ]
 
 
 async def get_best_healthy_rss_instance_url(
-    *, aiohttp_session: aiohttp.ClientSession | None = None
+    *, aiohttp_session: aiohttp.ClientSession | None = None,
+    exclude: list[str] | tuple[str, ...] = ()
 ) -> str:
     return min(
-        await get_healthy_rss_instances(aiohttp_session = aiohttp_session),
+        await get_healthy_rss_instances(
+            aiohttp_session = aiohttp_session, exclude = exclude
+        ),
         key = itemgetter("ping_avg")
     )["url"]
 
 
 async def get_random_healthy_rss_instance_url(
-    *, aiohttp_session: aiohttp.ClientSession | None = None
+    *, aiohttp_session: aiohttp.ClientSession | None = None,
+    exclude: list[str] | tuple[str, ...] = ()
 ) -> str:
     return random.choice(
-        await get_healthy_rss_instances(aiohttp_session = aiohttp_session)
+        await get_healthy_rss_instances(
+            aiohttp_session = aiohttp_session, exclude = exclude
+        )
     )["url"]
+
