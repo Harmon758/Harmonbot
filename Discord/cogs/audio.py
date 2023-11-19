@@ -675,26 +675,28 @@ class Audio(commands.Cog):
             (Defaults to False — change/show the volume for the current song)
         '''  # noqa: RUF002 (ambiguous-unicode-character-docstring)
         # TODO: Use '\N{SPEAKER}' when volume/setting is 0
-        if default and volume_setting is None:
-            await ctx.embed_reply(
-                f"\N{SPEAKER WITH ONE SOUND WAVE} Current default volume: {self.players[ctx.guild.id].default_volume:g}"
-            )
-        elif default:
-            volume_setting = min(max(0, volume_setting), 2000)
-            self.players[ctx.guild.id].default_volume = volume_setting
-            await ctx.embed_reply(
-                f"\N{SPEAKER WITH ONE SOUND WAVE} Set default volume to {volume_setting:g}"
-            )
-        elif volume_setting is None and ctx.guild.voice_client.is_playing():
-            await ctx.embed_reply(
-                f"\N{SPEAKER WITH ONE SOUND WAVE} Current volume: {ctx.guild.voice_client.source.volume:g}"
-            )
+        if default:
+            if volume_setting is None:
+                await ctx.embed_reply(
+                    f"\N{SPEAKER WITH ONE SOUND WAVE} Current default volume: {self.players[ctx.guild.id].default_volume:g}"
+                )
+            else:
+                volume_setting = min(max(0, volume_setting), 2000)
+                self.players[ctx.guild.id].default_volume = volume_setting
+                await ctx.embed_reply(
+                    f"\N{SPEAKER WITH ONE SOUND WAVE} Set default volume to {volume_setting:g}"
+                )
         elif ctx.guild.voice_client.is_playing():
-            ctx.guild.voice_client.source.volume = volume_setting
-            volume_setting = min(max(0, volume_setting), 2000)
-            await ctx.embed_reply(
-                f"\N{SPEAKER WITH ONE SOUND WAVE} Set volume to {volume_setting:g}"
-            )
+            if volume_setting is None:
+                await ctx.embed_reply(
+                    f"\N{SPEAKER WITH ONE SOUND WAVE} Current volume: {ctx.guild.voice_client.source.volume:g}"
+                )
+            else:
+                ctx.guild.voice_client.source.volume = volume_setting
+                volume_setting = min(max(0, volume_setting), 2000)
+                await ctx.embed_reply(
+                    f"\N{SPEAKER WITH ONE SOUND WAVE} Set volume to {volume_setting:g}"
+                )
         else:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} There's nothing playing right now"
