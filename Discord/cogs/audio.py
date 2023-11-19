@@ -626,19 +626,34 @@ class Audio(commands.Cog):
             # TODO: use textwrap/paginate
             await ctx.embed_reply(":no_entry: Too many results\nTry a more specific search")
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
+    @commands.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def volume(self, ctx, *, volume_setting: float = None):
+    async def volume(
+        self, ctx, volume_setting: float = None, default: bool = False
+    ):
         '''
-        Change the volume of the current song
-        volume_setting: 0 - 2000
+        Change the volume
+
+        Parameters
+        ----------
+        volume_setting
+            0 - 2000
+        default
+            Whether to change the default volume for the current player
+            (Defaults to False - only change the volume for the current song)
         '''
-        if volume_setting is None:
+        if default and volume_setting is None:
+            await ctx.embed_reply(f":sound: Current default volume: {self.players[ctx.guild.id].default_volume:g}")
+        elif volume_setting is None:
             if ctx.guild.voice_client.is_playing():
                 await ctx.embed_reply(f":sound: Current volume: {ctx.guild.voice_client.source.volume:g}")
             else:
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} There's nothing playing right now")
+        elif default:
+            volume_setting = min(max(0, volume_setting), 2000)
+            self.players[ctx.guild.id].default_volume = volume_setting
+            await ctx.embed_reply(f":sound: Set default volume to {volume_setting:g}")
         else:
             if ctx.guild.voice_client.is_playing():
                 ctx.guild.voice_client.source.volume = volume_setting
@@ -646,21 +661,6 @@ class Audio(commands.Cog):
                 await ctx.embed_reply(f":sound: Set volume to {volume_setting:g}")
             else:
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Couldn't change volume\nThere's nothing playing right now")
-
-    @volume.command(name = "default")
-    @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def volume_default(self, ctx, *, volume_setting : float = None):
-        '''
-        Change the default volume for the current player
-        volume_setting: 0 - 2000
-        '''
-        if volume_setting is None:
-            await ctx.embed_reply(f":sound: Current default volume: {self.players[ctx.guild.id].default_volume:g}")
-        else:
-            volume_setting = min(max(0, volume_setting), 2000)
-            self.players[ctx.guild.id].default_volume = volume_setting
-            await ctx.embed_reply(f":sound: Set default volume to {volume_setting:g}")
 
     @commands.group(aliases = ["current"], invoke_without_command = True, case_insensitive = True)
     @checks.is_voice_connected()
