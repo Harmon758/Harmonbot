@@ -474,12 +474,12 @@ class Audio(commands.Cog):
         elif setting is False:
             if self.players[ctx.guild.id].radio_flag:
                 self.players[ctx.guild.id].radio_off()
-                await ctx.embed_reply(":stop_sign: Turned radio off")
+                await ctx.embed_reply("\N{OCTAGONAL SIGN} Turned radio off")
             else:
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Radio is already off")
         elif self.players[ctx.guild.id].radio_flag:
             self.players[ctx.guild.id].radio_off()
-            await ctx.embed_reply(":stop_sign: Turned radio off")
+            await ctx.embed_reply("\N{OCTAGONAL SIGN} Turned radio off")
         elif (await self.players[ctx.guild.id].radio_on(ctx)) is False:
             await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
 
