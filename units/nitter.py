@@ -12,7 +12,12 @@ if TYPE_CHECKING:
     import aiohttp
 
 
-@async_cache(ignore_kwargs = "aiohttp_session", ttl = 900)
+# https://status.d420.de/about
+# Uptime check interval: 900s
+TTL = 900
+
+
+@async_cache(ignore_kwargs = "aiohttp_session", ttl = TTL)
 async def get_healthy_rss_instances(
     *, aiohttp_session: aiohttp.ClientSession | None = None,
     exclude: list[str] | tuple[str, ...] = ()
