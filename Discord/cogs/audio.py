@@ -629,7 +629,7 @@ class Audio(commands.Cog):
     @commands.group(invoke_without_command = True, case_insensitive = True)
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def volume(self, ctx, *, volume_setting : float = None):
+    async def volume(self, ctx, *, volume_setting: float = None):
         '''
         Change the volume of the current song
         volume_setting: 0 - 2000
