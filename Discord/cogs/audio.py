@@ -903,7 +903,7 @@ class Audio(commands.Cog):
 
     # Discord Control
 
-    @audio.command(name = "deafen", with_app_command = False)
+    @audio.command(name = "deafen")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_deafen(self, ctx):
