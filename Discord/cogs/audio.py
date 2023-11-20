@@ -50,7 +50,8 @@ class Audio(commands.Cog):
             "music", "download"
         ],
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
-        case_insensitive = True
+        case_insensitive = True,
+        fallback = "play"
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio(self, ctx, *, song: Optional[str]):  #elif options[0] == "full":
