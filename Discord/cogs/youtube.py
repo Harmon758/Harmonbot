@@ -67,33 +67,63 @@ class YouTube(commands.Cog):
 		self.bot = bot
 		self.uploads_processed = []
 		# Add youtube (audio) streams and uploads subcommands and their corresponding subcommands
-		streams_command = commands.Group(streams, aliases = ["stream"], 
-											invoke_without_command = True, case_insensitive = True, 
-											checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate])
-		streams_command.add_command(commands.Command(streams_add, name = "add", 
-														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
-		streams_command.add_command(commands.Command(streams_remove, name = "remove", aliases = ["delete"], 
-														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
-		streams_command.add_command(commands.Command(streams_channels, name = "channels", aliases = ["streams"], 
-														checks = [checks.not_forbidden().predicate]))
+		streams_command = commands.Group(
+			streams, aliases = ["stream"],
+			invoke_without_command = True, case_insensitive = True,
+			checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
+		)
+		streams_command.add_command(
+			commands.Command(
+				streams_add, name = "add",
+				checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
+			)
+		)
+		streams_command.add_command(
+			commands.Command(
+				streams_remove, name = "remove", aliases = ["delete"],
+				checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
+			)
+		)
+		streams_command.add_command(
+			commands.Command(
+				streams_channels, name = "channels", aliases = ["streams"],
+				checks = [checks.not_forbidden().predicate]
+			)
+		)
 		"""
-		uploads_command = commands.Group(self.uploads, aliases = ["videos"], 
-											invoke_without_command = True, case_insensitive = True, 
-											checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate])
-		uploads_command.add_command(commands.Command(self.uploads_add, name = "add", aliases = ["subscribe"], 
-														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
-		uploads_command.add_command(commands.Command(self.uploads_remove, name = "remove", aliases = ["delete", "unsubscribe"], 
-														checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]))
-		uploads_command.add_command(commands.Command(self.uploads_channels, name = "channels", aliases = ["uploads", "videos"], 
-														checks = [checks.not_forbidden().predicate]))
+		uploads_command = commands.Group(
+			self.uploads, aliases = ["videos"],
+			invoke_without_command = True, case_insensitive = True,
+			checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
+		)
+		uploads_command.add_command(
+			commands.Command(
+				self.uploads_add, name = "add", aliases = ["subscribe"],
+				checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
+			)
+		)
+		uploads_command.add_command(
+			commands.Command(
+				self.uploads_remove, name = "remove", aliases = ["delete", "unsubscribe"],
+				checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
+			)
+		)
+		uploads_command.add_command(
+			commands.Command(
+				self.uploads_channels, name = "channels", aliases = ["uploads", "videos"],
+				checks = [checks.not_forbidden().predicate]
+			)
+		)
 		"""
 		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
 			parent.add_command(streams_command)
 			# parent.add_command(uploads_command)
 		else:
-			command = commands.Group(youtube, aliases = ["yt"], 
-										invoke_without_command = True, case_insensitive = True, 
-										checks = [checks.not_forbidden().predicate])
+			command = commands.Group(
+				youtube, aliases = ["yt"],
+				invoke_without_command = True, case_insensitive = True,
+				checks = [checks.not_forbidden().predicate]
+			)
 			command.add_command(streams_command)
 			# command.add_command(uploads_command)
 			self.bot.add_command(command)
@@ -105,7 +135,9 @@ class YouTube(commands.Cog):
 		create_file("youtube_uploads", content = {})
 		with open(self.bot.data_path + "/youtube_uploads.json", 'r') as uploads_file:
 			self.uploads_info = json.load(uploads_file)
-		self.uploads_following = set(channel_id for channels in self.uploads_info.values() for channel_id in channels)
+		self.uploads_following = set(
+			channel_id for channels in self.uploads_info.values() for channel_id in channels
+		)
 	
 	async def cog_load(self):
 		self.renew_uploads_task = self.bot.loop.create_task(self.renew_upload_supscriptions(), name = "Renew YouTube upload subscriptions")
