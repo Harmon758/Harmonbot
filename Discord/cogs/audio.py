@@ -579,7 +579,7 @@ class Audio(commands.Cog):
     @commands.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def file(self, ctx, *, filename : str = ""):
+    async def file(self, ctx, *, filename: str = ""):
         '''Play an audio file'''
         if not (await self.players[ctx.guild.id].play_file(ctx, filename)):
             await ctx.embed_reply(
