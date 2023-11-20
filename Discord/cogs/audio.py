@@ -991,7 +991,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_unmute(self, ctx):
-        '''Unmute'''
+        '''Have me unmute myself'''
         # Note: unmute command invokes this command
         if not ctx.guild.me.voice.self_mute:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm not muted")
@@ -1006,7 +1006,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def unmute(self, ctx):
-        '''Unmute'''
+        '''Have me unmute myself'''
         if command := ctx.bot.get_command("audio unmute"):
             await ctx.invoke(command)
         else:
