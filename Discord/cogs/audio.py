@@ -936,7 +936,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_mute(self, ctx):
-        '''Mute'''
+        '''Have me mute myself'''
         # Note: mute command invokes this command
         if ctx.guild.me.voice.self_mute:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} I'm already muted")
@@ -951,7 +951,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def mute(self, ctx):
-        '''Mute'''
+        '''Have me mute myself'''
         if command := ctx.bot.get_command("audio mute"):
             await ctx.invoke(command)
         else:
