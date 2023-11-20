@@ -29,8 +29,8 @@ class Audio(commands.Cog):
                 command.parent is None and
                 name not in (
                     "audio", "join", "leave", "pause", "resume", "replay",
-                    "empty", "shuffle", "queue", "deafen", "mute", "undeafen",
-                    "unmute"
+                    "empty", "shuffle", "file", "queue", "deafen", "mute",
+                    "undeafen", "unmute"
                 )
             ):
                 self.bot.add_command(command)
@@ -576,15 +576,28 @@ class Audio(commands.Cog):
                 "Please stop it first"
             )
 
+    @audio.command(name = "file")
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def audio_file(self, ctx, *, filename: str = ""):
+        '''Play an audio file'''
+        # Note: file command invokes this command
+        if not (await self.players[ctx.guild.id].play_file(ctx, filename)):
+            await ctx.embed_reply(
+                ":warning: Something else is already playing\n"
+                "Please stop it first"
+            )
+
     @commands.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def file(self, ctx, *, filename: str = ""):
         '''Play an audio file'''
-        if not (await self.players[ctx.guild.id].play_file(ctx, filename)):
-            await ctx.embed_reply(
-                ":warning: Something else is already playing\n"
-                "Please stop it first"
+        if command := ctx.bot.get_command("audio file", filename = filename):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio file command not found when file command invoked"
             )
 
     @commands.command()
