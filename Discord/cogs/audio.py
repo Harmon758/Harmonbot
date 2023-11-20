@@ -351,7 +351,10 @@ class Audio(commands.Cog):
         name = "resume", aliases = ["start"], with_app_command = False
     )
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_resume(self, ctx):
         '''Resume the current song'''
         # Note: resume command invokes this command
@@ -370,7 +373,10 @@ class Audio(commands.Cog):
 
     @commands.command(aliases = ["start"])
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def resume(self, ctx):
         '''Resume the current song'''
         if command := ctx.bot.get_command("audio resume"):
