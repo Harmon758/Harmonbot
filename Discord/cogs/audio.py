@@ -880,7 +880,7 @@ class Audio(commands.Cog):
 
     # Meta
 
-    @audio.command(name = "latency", with_app_command = False)
+    @audio.command(name = "latency")
     @checks.is_voice_connected()
     @checks.not_forbidden()
     async def audio_latency(
