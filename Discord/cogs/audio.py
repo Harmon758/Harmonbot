@@ -233,9 +233,13 @@ class Audio(commands.Cog):
             ctx.guild.voice_client.pause()
             await ctx.embed_reply(":pause_button: Paused song")
         elif ctx.guild.voice_client.is_paused():
-            await ctx.embed_reply(":no_entry: The song is already paused")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} The song is already paused"
+            )
         else:
-            await ctx.embed_reply(":no_entry: There is no song to pause")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} There is no song to pause"
+            )
 
     @commands.command(aliases = ["stop"])
     @checks.is_voice_connected()
