@@ -184,7 +184,7 @@ class Audio(commands.Cog):
                 "audio join command not found when join command invoked"
             )
 
-    @audio.command(name = "leave", with_app_command = False)
+    @audio.command(name = "leave")
     @checks.is_voice_connected()
     @commands.check_any(
         checks.is_permitted(),
