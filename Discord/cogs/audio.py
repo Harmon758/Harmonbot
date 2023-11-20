@@ -558,7 +558,7 @@ class Audio(commands.Cog):
         speed: Optional[commands.Range[int, 80, 9000]] = 150,  # noqa: UP007 (non-pep604-annotation)
         word_gap: Optional[commands.Range[int, 0, 1000]] = 0,  # noqa: UP007 (non-pep604-annotation)
         voice: Optional[str] = "en-us+f1",  # noqa: UP007 (non-pep604-annotation)
-        *, message : str
+        *, message: str
     ):
         '''
         Text to speech
