@@ -313,7 +313,10 @@ class Audio(commands.Cog):
         name = "pause", aliases = ["stop"], with_app_command = False
     )
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_pause(self, ctx):
         '''Pause the current song'''
         # Note: pause command invokes this command
@@ -331,7 +334,10 @@ class Audio(commands.Cog):
 
     @commands.command(aliases = ["stop"])
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def pause(self, ctx):
         '''Pause the current song'''
         if command := ctx.bot.get_command("audio pause"):
