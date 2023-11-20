@@ -932,7 +932,7 @@ class Audio(commands.Cog):
                 "audio deafen command not found when deafen command invoked"
             )
 
-    @audio.command(name = "mute", with_app_command = False)
+    @audio.command(name = "mute")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_mute(self, ctx):
