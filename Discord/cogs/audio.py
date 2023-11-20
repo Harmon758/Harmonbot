@@ -54,7 +54,7 @@ class Audio(commands.Cog):
         fallback = "play"
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def audio(self, ctx, *, song: Optional[str]):  #elif options[0] == "full":
+    async def audio(self, ctx, *, song: str):
         '''
         Audio System - play a song
         All audio subcommands are also commands
@@ -73,9 +73,6 @@ class Audio(commands.Cog):
                 raise RuntimeError(
                     "audo join command not found when audio command invoked"
                 )
-        if not song:
-            await ctx.embed_reply(":grey_question: What would you like to play?")
-            return
         if "playlist" in song:
             await self.players[ctx.guild.id].add_playlist(ctx, song)
             return
@@ -110,7 +107,7 @@ class Audio(commands.Cog):
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify"
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def spotify(self, ctx, *, song: Optional[str]):
+    async def spotify(self, ctx, *, song: str):
         '''
         Audio System - play a song
         All audio subcommands are also commands
@@ -141,7 +138,7 @@ class Audio(commands.Cog):
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def youtube(self, ctx, *, song: Optional[str]):
+    async def youtube(self, ctx, *, song: str):
         '''
         Audio System - play a song
         All audio subcommands are also commands
