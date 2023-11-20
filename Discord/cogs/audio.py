@@ -133,7 +133,7 @@ class Audio(commands.Cog):
         ] = parameters.CurrentVoiceChannel
     ):
         '''
-        Get me to join a voice channel
+        Have me join a voice channel
 
         Parameters
         ----------
@@ -176,7 +176,15 @@ class Audio(commands.Cog):
             discord.VoiceChannel
         ] = parameters.CurrentVoiceChannel
     ):
-        '''Get me to join a voice channel'''
+        '''
+        Have me join a voice channel
+
+        Parameters
+        ----------
+        channel
+            Voice channel for me to join
+            (Defaults to the/your current channel)
+        '''
         if command := ctx.bot.get_command("audio join"):
             await ctx.invoke(command, channel = channel)
         else:
