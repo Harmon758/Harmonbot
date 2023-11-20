@@ -49,16 +49,25 @@ class Audio(commands.Cog):
             "soundcloud", "voice", "stream", "play", "playlist", "budio",
             "music", "download"
         ],
-        description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
         case_insensitive = True,
         fallback = "play"
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio(self, ctx, *, query: str):
         '''
-        Audio System - play a song
+        Play audio
+
         All audio subcommands are also commands
         For cleanup of audio commands, the Manage Messages permission is required
+
+        Supported sites:
+        https://rg3.github.io/youtube-dl/supportedsites.html
+        Spotify
+
+        Parameters
+        ----------
+        query
+            Audio to play
         '''
         # Note: spotify command invokes this command
         # Note: youtube command invokes this command
@@ -102,16 +111,23 @@ class Audio(commands.Cog):
         finally:
             await response.edit(embed = embed)
 
-    @commands.group(
-        case_insensitive = True, invoke_without_command = True,
-        description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify"
-    )
+    @commands.group(case_insensitive = True, invoke_without_command = True)
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def spotify(self, ctx, *, query: str):
         '''
-        Audio System - play a song
+        Play audio
+
         All audio subcommands are also commands
         For cleanup of audio commands, the Manage Messages permission is required
+
+        Supported sites:
+        https://rg3.github.io/youtube-dl/supportedsites.html
+        Spotify
+
+        Parameters
+        ----------
+        query
+            Audio to play
         '''
         if command := ctx.bot.get_command("audio"):
             await ctx.invoke(command, query = query)
@@ -133,16 +149,24 @@ class Audio(commands.Cog):
             )
 
     @commands.hybrid_group(
-        aliases = ["yt"],
-        case_insensitive = True, with_app_command = False,
-        description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
+        aliases = ["yt"], case_insensitive = True, with_app_command = False
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def youtube(self, ctx, *, query: str):
         '''
-        Audio System - play a song
+        Play audio
+
         All audio subcommands are also commands
         For cleanup of audio commands, the Manage Messages permission is required
+
+        Supported sites:
+        https://rg3.github.io/youtube-dl/supportedsites.html
+        Spotify
+
+        Parameters
+        ----------
+        query
+            Audio to play
         '''
         if command := ctx.bot.get_command("audio"):
             await ctx.invoke(command, query = query)
