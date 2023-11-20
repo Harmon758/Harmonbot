@@ -345,9 +345,7 @@ class Audio(commands.Cog):
                 "audio pause command not found when pause command invoked"
             )
 
-    @audio.command(
-        name = "resume", aliases = ["start"], with_app_command = False
-    )
+    @audio.command(name = "resume", aliases = ["start"])
     @checks.is_voice_connected()
     @commands.check_any(
         checks.is_permitted(), commands.has_permissions(administrator = True),
