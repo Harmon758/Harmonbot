@@ -29,8 +29,8 @@ class Audio(commands.Cog):
                 command.parent is None and
                 name not in (
                     "audio", "join", "leave", "pause", "resume", "replay",
-                    "empty", "shuffle", "file", "queue", "deafen", "mute",
-                    "undeafen", "unmute"
+                    "empty", "shuffle", "file", "files", "queue", "deafen",
+                    "mute", "undeafen", "unmute"
                 )
             ):
                 self.bot.add_command(command)
@@ -600,12 +600,25 @@ class Audio(commands.Cog):
                 "audio file command not found when file command invoked"
             )
 
+    @audio.command(name = "files")
+    @checks.not_forbidden()
+    @checks.is_voice_connected()
+    async def audio_files(self, ctx):
+        '''List existing audio files'''
+        # Note: files command invokes this command
+        await ctx.embed_reply(self.players[ctx.guild.id].list_files())
+
     @commands.command()
     @checks.not_forbidden()
     @checks.is_voice_connected()
     async def files(self, ctx):
         '''List existing audio files'''
-        await ctx.embed_reply(self.players[ctx.guild.id].list_files())
+        if command := ctx.bot.get_command("audio files"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio files command not found when files command invoked"
+            )
 
     @commands.group(invoke_without_command = True, case_insensitive = True)
     @checks.is_voice_connected()
