@@ -548,18 +548,10 @@ class Audio(commands.Cog):
             f"Changed text channel to {channel.mention}"
         )
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
+    @commands.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def tts(self, ctx, *, message : str):
-        '''Text to speech'''
-        if not (await self.players[ctx.guild.id].play_tts(ctx, message)):
-            await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
-
-    @tts.command(name = "options")
-    @checks.not_forbidden()
-    @checks.is_voice_connected()
-    async def tts_options(
+    async def tts(
         self, ctx,
         amplitude: Optional[commands.Range[int, 0, 1000]] = 100,  # noqa: UP007 (non-pep604-annotation)
         pitch: Optional[commands.Range[int, 0, 99]] = 50,  # noqa: UP007 (non-pep604-annotation)
@@ -569,7 +561,7 @@ class Audio(commands.Cog):
         *, message : str
     ):
         '''
-        Text to speech with options
+        Text to speech
 
         voices:
         http://espeak.sourceforge.net/languages.html
