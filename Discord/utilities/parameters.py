@@ -20,7 +20,7 @@ def default_voice_channel(
         return ctx.author.voice.channel
 
 CurrentVoiceChannel = commands.parameter(
-    converter = commands.VoiceChannelConverter,
+    converter = discord.VoiceChannel,
     default = default_voice_channel,
     displayed_default = "<your current voice channel>",
 )
