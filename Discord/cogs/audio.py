@@ -31,7 +31,6 @@ class Audio(commands.Cog):
         # playing?
         # radio
         # skip, merge skip subcommand?
-        # tts, merge tts subcommand
         # volume
 
         create_folder(self.bot.data_path + "/audio_cache")
@@ -548,6 +547,56 @@ class Audio(commands.Cog):
             f"Changed text channel to {channel.mention}"
         )
 
+    @audio.command(name = "tts")
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def audio_tts(
+        self, ctx,
+        amplitude: Optional[commands.Range[int, 0, 1000]] = 100,  # noqa: UP007 (non-pep604-annotation)
+        pitch: Optional[commands.Range[int, 0, 99]] = 50,  # noqa: UP007 (non-pep604-annotation)
+        speed: Optional[commands.Range[int, 80, 9000]] = 150,  # noqa: UP007 (non-pep604-annotation)
+        word_gap: Optional[commands.Range[int, 0, 1000]] = 0,  # noqa: UP007 (non-pep604-annotation)
+        voice: Optional[str] = "en-us+f1",  # noqa: UP007 (non-pep604-annotation)
+        *, message: str
+    ):
+        '''
+        Text to speech
+
+        voices:
+        http://espeak.sourceforge.net/languages.html
+        https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md#languages
+        https://github.com/espeak-ng/espeak-ng/tree/master/espeak-ng-data/voices/!v
+
+        Parameters
+        ----------
+        amplitude
+            (0–1000, defaults to 100)
+        pitch
+            (0–99, defaults to 50)
+        speed
+            (80–9000, defaults to 150)
+        word_gap
+            Length of pause between words, in units of 10 ms
+            (0–1000, defaults to 0)
+        voice
+            (defaults to en-us+f1)
+        message
+            Message to say
+        '''  # noqa: RUF002 (ambiguous-unicode-character-docstring)
+        # Note: tts command invokes this command
+        await ctx.defer()
+
+        if not (
+            await self.players[ctx.guild.id].play_tts(
+                ctx, message, amplitude = amplitude, pitch = pitch,
+                speed = speed, word_gap = word_gap, voice = voice
+            )
+        ):
+            await ctx.embed_reply(
+                ":warning: Something else is already playing\n"
+                "Please stop it first"
+            )
+
     @commands.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
@@ -581,16 +630,17 @@ class Audio(commands.Cog):
             (0–1000, defaults to 0)
         voice
             (defaults to en-us+f1)
+        message
+            Message to say
         '''  # noqa: RUF002 (ambiguous-unicode-character-docstring)
-        if not (
-            await self.players[ctx.guild.id].play_tts(
-                ctx, message, amplitude = amplitude, pitch = pitch,
-                speed = speed, word_gap = word_gap, voice = voice
+        if command := ctx.bot.get_command("audio tts"):
+            await ctx.invoke(
+                command, amplitude = amplitude, pitch = pitch, speed = speed,
+                word_gap = word_gap, voice = voice, message = message
             )
-        ):
-            await ctx.embed_reply(
-                ":warning: Something else is already playing\n"
-                "Please stop it first"
+        else:
+            raise RuntimeError(
+                "audio tts command not found when tts command invoked"
             )
 
     @audio.command(name = "file", with_app_command = False)
