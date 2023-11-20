@@ -23,18 +23,17 @@ class Audio(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
-        for name, command in inspect.getmembers(self):
-            if (
-                isinstance(command, commands.Command) and
-                command.parent is None and
-                name not in (
-                    "audio", "join", "leave", "pause", "resume", "replay",
-                    "empty", "shuffle", "file", "files", "queue", "deafen",
-                    "mute", "undeafen", "unmute"
-                )
-            ):
-                self.bot.add_command(command)
-                self.audio.add_command(command)
+
+        # TODO: Add back as audio subcommands:
+        # insert
+        # library, library subcommands
+        # listen, listen subcommands
+        # playing?
+        # radio
+        # skip, merge skip subcommand?
+        # tts, merge tts subcommand
+        # volume
+
         create_folder(self.bot.data_path + "/audio_cache")
         create_folder(self.bot.data_path + "/audio_files")
 
@@ -46,13 +45,13 @@ class Audio(commands.Cog):
     async def cog_check(self, ctx):
         return await commands.guild_only().predicate(ctx)
 
-    @commands.group(
+    @commands.hybrid_group(
         aliases = [
             "yt", "youtube", "soundcloud", "voice", "stream", "play",
             "playlist", "spotify", "budio", "music", "download"
         ],
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True
     )
     @checks.not_forbidden()
     async def audio(self, ctx, *, song: Optional[str]):  #elif options[0] == "full":
@@ -133,7 +132,15 @@ class Audio(commands.Cog):
             discord.VoiceChannel
         ] = parameters.CurrentVoiceChannel
     ):
-        '''Get me to join a voice channel'''
+        '''
+        Get me to join a voice channel
+
+        Parameters
+        ----------
+        channel
+            Voice channel for me to join
+            (Defaults to the/your current channel)
+        '''
         # Note: join command invokes this command
         # TODO: Permit all when not in voice channel?
         if ctx.guild.id not in self.players:
@@ -177,7 +184,7 @@ class Audio(commands.Cog):
                 "audio join command not found when join command invoked"
             )
 
-    @audio.command(name = "leave")
+    @audio.command(name = "leave", with_app_command = False)
     @checks.is_voice_connected()
     @commands.check_any(
         checks.is_permitted(),
@@ -207,7 +214,9 @@ class Audio(commands.Cog):
                 "audio leave command not found when leave command invoked"
             )
 
-    @audio.command(name = "pause", aliases = ["stop"])
+    @audio.command(
+        name = "pause", aliases = ["stop"], with_app_command = False
+    )
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_pause(self, ctx):
@@ -233,7 +242,9 @@ class Audio(commands.Cog):
                 "audio pause command not found when pause command invoked"
             )
 
-    @audio.command(name = "resume", aliases = ["start"])
+    @audio.command(
+        name = "resume", aliases = ["start"], with_app_command = False
+    )
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_resume(self, ctx):
@@ -317,7 +328,9 @@ class Audio(commands.Cog):
             await ctx.embed_reply(f":put_litter_in_its_place: Skipped to #{number} in the queue")
             del songs
 
-    @audio.command(name = "replay", aliases = ["repeat"])
+    @audio.command(
+        name = "replay", aliases = ["repeat"], with_app_command = False
+    )
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_replay(self, ctx):
@@ -371,7 +384,9 @@ class Audio(commands.Cog):
         finally:
             await response.edit(embed = embed)
 
-    @audio.command(name = "empty", aliases = ["clear"])
+    @audio.command(
+        name = "empty", aliases = ["clear"], with_app_command = False
+    )
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_empty(self, ctx):
@@ -392,7 +407,7 @@ class Audio(commands.Cog):
                 "audio empty command not found when empty command invoked"
             )
 
-    @audio.command(name = "shuffle")
+    @audio.command(name = "shuffle", with_app_command = False)
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_shuffle(self, ctx):
@@ -416,7 +431,9 @@ class Audio(commands.Cog):
                 "audio shuffle command not found when shuffle command invoked"
             )
 
-    @audio.command(name = "random", aliases = ["top"])
+    @audio.command(
+        name = "random", aliases = ["top"], with_app_command = False
+    )
     @checks.not_forbidden()
     @checks.is_voice_connected()
     async def audio_random(self, ctx):
@@ -493,7 +510,7 @@ class Audio(commands.Cog):
                 "Please stop it first"
             )
 
-    @audio.command(name = "search")
+    @audio.command(name = "search", with_app_command = False)
     @checks.not_forbidden()
     async def audio_search(self, ctx, *, search):
         '''Search for a YouTube video'''
@@ -506,7 +523,7 @@ class Audio(commands.Cog):
                 "when audio search command invoked"
             )
 
-    @audio.command(name = "text")
+    @audio.command(name = "text", with_app_command = False)
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_text(
@@ -576,7 +593,7 @@ class Audio(commands.Cog):
                 "Please stop it first"
             )
 
-    @audio.command(name = "file")
+    @audio.command(name = "file", with_app_command = False)
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_file(self, ctx, *, filename: str = ""):
@@ -600,7 +617,7 @@ class Audio(commands.Cog):
                 "audio file command not found when file command invoked"
             )
 
-    @audio.command(name = "files")
+    @audio.command(name = "files", with_app_command = False)
     @checks.not_forbidden()
     @checks.is_voice_connected()
     async def audio_files(self, ctx):
@@ -785,7 +802,7 @@ class Audio(commands.Cog):
         else:
             return await ctx.embed_reply(":speaker: There is no song currently playing")
 
-    @audio.command(name = "queue")
+    @audio.command(name = "queue", with_app_command = False)
     @checks.is_voice_connected()
     @checks.not_forbidden()
     async def audio_queue(self, ctx):
@@ -813,7 +830,7 @@ class Audio(commands.Cog):
 
     # Meta
 
-    @audio.command(name = "latency")
+    @audio.command(name = "latency", with_app_command = False)
     @checks.is_voice_connected()
     @checks.not_forbidden()
     async def audio_latency(
@@ -836,7 +853,7 @@ class Audio(commands.Cog):
 
     # Discord Control
 
-    @audio.command(name = "deafen")
+    @audio.command(name = "deafen", with_app_command = False)
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_deafen(self, ctx):
@@ -865,7 +882,7 @@ class Audio(commands.Cog):
                 "audio deafen command not found when deafen command invoked"
             )
 
-    @audio.command(name = "mute")
+    @audio.command(name = "mute", with_app_command = False)
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_mute(self, ctx):
@@ -892,7 +909,7 @@ class Audio(commands.Cog):
                 "audio mute command not found when mute command invoked"
             )
 
-    @audio.command(name = "undeafen")
+    @audio.command(name = "undeafen", with_app_command = False)
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_undeafen(self, ctx):
@@ -920,7 +937,7 @@ class Audio(commands.Cog):
                 "when undeafen command invoked"
             )
 
-    @audio.command(name = "unmute")
+    @audio.command(name = "unmute", with_app_command = False)
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_unmute(self, ctx):

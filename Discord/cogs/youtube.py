@@ -67,50 +67,55 @@ class YouTube(commands.Cog):
 		self.bot = bot
 		self.uploads_processed = []
 		# Add youtube (audio) streams and uploads subcommands and their corresponding subcommands
-		streams_command = commands.Group(
+		streams_command = commands.HybridGroup(
 			streams, aliases = ["stream"],
-			invoke_without_command = True, case_insensitive = True,
+			case_insensitive = True, with_app_command = False,
 			checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
 		)
 		streams_command.add_command(
-			commands.Command(
-				streams_add, name = "add",
+			commands.HybridCommand(
+				streams_add, name = "add", with_app_command = False,
 				checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
 			)
 		)
 		streams_command.add_command(
-			commands.Command(
+			commands.HybridCommand(
 				streams_remove, name = "remove", aliases = ["delete"],
+				with_app_command = False,
 				checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
 			)
 		)
 		streams_command.add_command(
-			commands.Command(
+			commands.HybridCommand(
 				streams_channels, name = "channels", aliases = ["streams"],
+				with_app_command = False,
 				checks = [checks.not_forbidden().predicate]
 			)
 		)
 		"""
-		uploads_command = commands.Group(
+		uploads_command = commands.HybridGroup(
 			self.uploads, aliases = ["videos"],
-			invoke_without_command = True, case_insensitive = True,
+			case_insensitive = True, with_app_command = False,
 			checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
 		)
 		uploads_command.add_command(
-			commands.Command(
+			commands.HybridCommand(
 				self.uploads_add, name = "add", aliases = ["subscribe"],
+				with_app_command = False,
 				checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
 			)
 		)
 		uploads_command.add_command(
-			commands.Command(
+			commands.HybridCommand(
 				self.uploads_remove, name = "remove", aliases = ["delete", "unsubscribe"],
+				with_app_command = False,
 				checks = [commands.check_any(checks.is_permitted(), checks.is_guild_owner()).predicate]
 			)
 		)
 		uploads_command.add_command(
-			commands.Command(
+			commands.HybridCommand(
 				self.uploads_channels, name = "channels", aliases = ["uploads", "videos"],
+				with_app_command = False,
 				checks = [checks.not_forbidden().predicate]
 			)
 		)
