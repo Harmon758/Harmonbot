@@ -582,7 +582,10 @@ class Audio(commands.Cog):
     async def file(self, ctx, *, filename : str = ""):
         '''Play an audio file'''
         if not (await self.players[ctx.guild.id].play_file(ctx, filename)):
-            await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
+            await ctx.embed_reply(
+                ":warning: Something else is already playing\n"
+                "Please stop it first"
+            )
 
     @commands.command()
     @checks.not_forbidden()
