@@ -62,13 +62,16 @@ class Audio(commands.Cog):
         # Note: spotify command invokes this command
         # Note: youtube command invokes this command
         if not ctx.guild.voice_client:
-            if ctx.guild.id not in self.players:
-                self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
-            if ctx.author.voice and ctx.author.voice.channel:
-                await ctx.author.voice.channel.connect()
-                await ctx.embed_reply(":headphones: I've joined the voice channel")
+            if command := ctx.bot.get_command("audio join"):
+                joined = await ctx.invoke(
+                    command, channel = parameters.default_voice_channel(ctx)
+                )
+                if not joined:
+                    return
             else:
-                raise errors.PermittedVoiceNotConnected
+                raise RuntimeError(
+                    "audo join command not found when audio command invoked"
+                )
         if not song:
             await ctx.embed_reply(":grey_question: What would you like to play?")
             return
@@ -192,13 +195,14 @@ class Audio(commands.Cog):
             Voice channel for me to join
             (Defaults to the/your current channel)
         '''
+        # Note: audio command invokes this command
         # Note: join command invokes this command
         # TODO: Permit all when not in voice channel?
         if ctx.guild.id not in self.players:
             self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
         if not channel:
             await ctx.embed_reply(":no_entry: Voice channel not found")
-            return
+            return False
         try:
             if ctx.guild.voice_client:
                 await ctx.guild.voice_client.move_to(channel)
@@ -210,11 +214,13 @@ class Audio(commands.Cog):
                 await ctx.embed_reply(
                     ":headphones: I've joined the voice channel"
                 )
+            return True
         except concurrent.futures.TimeoutError:
             await ctx.embed_reply(
                 ":no_entry: Error joining the voice channel\n"
                 "Please check that I'm permitted to join"
             )
+            return False
 
     @commands.command(aliases = ["summon", "move"])
     @commands.check_any(
