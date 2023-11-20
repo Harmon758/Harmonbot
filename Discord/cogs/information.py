@@ -160,6 +160,7 @@ class Information(commands.Cog):
 	@information.command(with_app_command = False)
 	async def spotify(self, ctx, url: str):
 		'''Information about a Spotify track'''
+		# Note: spotify information command invokes this command
 		path = urllib.parse.urlparse(url).path
 		
 		if path[:7] != "/track/":

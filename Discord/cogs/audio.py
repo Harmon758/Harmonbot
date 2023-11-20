@@ -46,8 +46,8 @@ class Audio(commands.Cog):
 
     @commands.hybrid_group(
         aliases = [
-            "soundcloud", "voice", "stream", "play", "playlist", "spotify",
-            "budio", "music", "download"
+            "soundcloud", "voice", "stream", "play", "playlist", "budio",
+            "music", "download"
         ],
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
         case_insensitive = True
@@ -59,14 +59,8 @@ class Audio(commands.Cog):
         All audio subcommands are also commands
         For cleanup of audio commands, the Manage Messages permission is required
         '''
+        # Note: spotify command invokes this command
         # Note: youtube command invokes this command
-        if song and song.lower().startswith("info "):
-            if ctx.invoked_with.lower() == "spotify":
-                await ctx.invoke(
-                    self.bot.cogs["Information"].spotify,
-                    song.lstrip(song.split()[0]).lstrip()
-                )
-                return
         if not ctx.guild.voice_client:
             if ctx.guild.id not in self.players:
                 self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
@@ -113,6 +107,36 @@ class Audio(commands.Cog):
                 embed.description = f"{ctx.bot.error_emoji} Video not found"
         finally:
             await response.edit(embed = embed)
+
+    @commands.group(
+        case_insensitive = True, invoke_without_command = True,
+        description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify"
+    )
+    @checks.not_forbidden()
+    async def spotify(self, ctx, *, song: Optional[str]):
+        '''
+        Audio System - play a song
+        All audio subcommands are also commands
+        For cleanup of audio commands, the Manage Messages permission is required
+        '''
+        if command := ctx.bot.get_command("audio"):
+            await ctx.invoke(command, song = song)
+        else:
+            raise RuntimeError(
+                "audio command not found when spotify command invoked"
+            )
+
+    @spotify.command(name = "information", aliases = ["info"])
+    @checks.not_forbidden()
+    async def spotify_information(self, ctx, url: str):
+        '''Information about a Spotify track'''
+        if command := ctx.bot.get_command("information spotify"):
+            await ctx.invoke(command, url = url)
+        else:
+            raise RuntimeError(
+                "information spotify command not found "
+                "when spotify information command invoked"
+            )
 
     @commands.hybrid_group(
         aliases = ["yt"],
