@@ -987,7 +987,7 @@ class Audio(commands.Cog):
                 "when undeafen command invoked"
             )
 
-    @audio.command(name = "unmute", with_app_command = False)
+    @audio.command(name = "unmute")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_unmute(self, ctx):
