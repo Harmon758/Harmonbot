@@ -610,8 +610,8 @@ class Audio(commands.Cog):
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def file(self, ctx, *, filename: str = ""):
         '''Play an audio file'''
-        if command := ctx.bot.get_command("audio file", filename = filename):
-            await ctx.invoke(command)
+        if command := ctx.bot.get_command("audio file"):
+            await ctx.invoke(command, filename = filename)
         else:
             raise RuntimeError(
                 "audio file command not found when file command invoked"
