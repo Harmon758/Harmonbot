@@ -46,8 +46,8 @@ class Audio(commands.Cog):
 
     @commands.hybrid_group(
         aliases = [
-            "yt", "youtube", "soundcloud", "voice", "stream", "play",
-            "playlist", "spotify", "budio", "music", "download"
+            "soundcloud", "voice", "stream", "play", "playlist", "spotify",
+            "budio", "music", "download"
         ],
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
         case_insensitive = True
@@ -59,16 +59,11 @@ class Audio(commands.Cog):
         All audio subcommands are also commands
         For cleanup of audio commands, the Manage Messages permission is required
         '''
+        # Note: youtube command invokes this command
         if song and song.lower().startswith("info "):
             if ctx.invoked_with.lower() == "spotify":
                 await ctx.invoke(
                     self.bot.cogs["Information"].spotify,
-                    song.lstrip(song.split()[0]).lstrip()
-                )
-                return
-            elif ctx.invoked_with.lower() in ("yt", "youtube"):
-                await ctx.invoke(
-                    self.bot.cogs["Information"].youtube,
                     song.lstrip(song.split()[0]).lstrip()
                 )
                 return
@@ -118,6 +113,46 @@ class Audio(commands.Cog):
                 embed.description = f"{ctx.bot.error_emoji} Video not found"
         finally:
             await response.edit(embed = embed)
+
+    @commands.hybrid_group(
+        aliases = ["yt"],
+        case_insensitive = True, with_app_command = False,
+        description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
+    )
+    @checks.not_forbidden()
+    async def youtube(self, ctx, *, song: Optional[str]):
+        '''
+        Audio System - play a song
+        All audio subcommands are also commands
+        For cleanup of audio commands, the Manage Messages permission is required
+        '''
+        if command := ctx.bot.get_command("audio"):
+            await ctx.invoke(command, song = song)
+        else:
+            raise RuntimeError(
+                "audio command not found when youtube command invoked"
+            )
+
+    @youtube.command(
+        name = "information", aliases = ["info"], with_app_command = False
+    )
+    @checks.not_forbidden()
+    async def youtube_information(self, ctx, url: str):
+        """
+        Show information about a YouTube video
+        
+        Parameters
+        ----------
+        url
+            YouTube video URL
+        """
+        if command := ctx.bot.get_command("information youtube"):
+            await ctx.invoke(command, url = url)
+        else:
+            raise RuntimeError(
+                "information youtube command not found "
+                "when youtube information command invoked"
+            )
 
     @audio.command(name = "join", aliases = ["summon", "move"])
     @commands.check_any(

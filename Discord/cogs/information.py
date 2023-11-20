@@ -272,6 +272,7 @@ class Information(commands.Cog):
 		url
 			YouTube video URL
 		"""
+		# Note: youtube information command invokes this command
 		# TODO: Automatic on YouTube links, server specific toggleable option
 		# TODO: Handle playlists
 		url_data = urllib.parse.urlparse(url)

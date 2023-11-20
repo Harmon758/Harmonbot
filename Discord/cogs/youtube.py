@@ -120,7 +120,7 @@ class YouTube(commands.Cog):
 			)
 		)
 		"""
-		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "audio")):
+		if (cog := self.bot.get_cog("Audio")) and (parent := getattr(cog, "youtube")):
 			parent.add_command(streams_command)
 			# parent.add_command(uploads_command)
 		else:
