@@ -959,7 +959,7 @@ class Audio(commands.Cog):
                 "audio mute command not found when mute command invoked"
             )
 
-    @audio.command(name = "undeafen", with_app_command = False)
+    @audio.command(name = "undeafen")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_undeafen(self, ctx):
