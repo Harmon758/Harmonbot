@@ -52,7 +52,7 @@ class Audio(commands.Cog):
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
         case_insensitive = True
     )
-    @checks.not_forbidden()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio(self, ctx, *, song: Optional[str]):  #elif options[0] == "full":
         '''
         Audio System - play a song
@@ -64,18 +64,11 @@ class Audio(commands.Cog):
         if not ctx.guild.voice_client:
             if ctx.guild.id not in self.players:
                 self.players[ctx.guild.id] = AudioPlayer.from_context(ctx)
-            try:
-                is_guild_owner = await checks.is_guild_owner().predicate(ctx)
-            except errors.NotGuildOwner:
-                is_guild_owner = False
-            if is_guild_owner or await ctx.get_permission("join", user = ctx.author):
-                if ctx.author.voice and ctx.author.voice.channel:
-                    await ctx.author.voice.channel.connect()
-                    await ctx.embed_reply(":headphones: I've joined the voice channel")
-                else:
-                    raise errors.PermittedVoiceNotConnected
+            if ctx.author.voice and ctx.author.voice.channel:
+                await ctx.author.voice.channel.connect()
+                await ctx.embed_reply(":headphones: I've joined the voice channel")
             else:
-                raise errors.NotPermittedVoiceNotConnected
+                raise errors.PermittedVoiceNotConnected
         if not song:
             await ctx.embed_reply(":grey_question: What would you like to play?")
             return
@@ -112,7 +105,7 @@ class Audio(commands.Cog):
         case_insensitive = True, invoke_without_command = True,
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify"
     )
-    @checks.not_forbidden()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def spotify(self, ctx, *, song: Optional[str]):
         '''
         Audio System - play a song
@@ -143,7 +136,7 @@ class Audio(commands.Cog):
         case_insensitive = True, with_app_command = False,
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
     )
-    @checks.not_forbidden()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def youtube(self, ctx, *, song: Optional[str]):
         '''
         Audio System - play a song
