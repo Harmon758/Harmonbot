@@ -51,7 +51,10 @@ class Audio(commands.Cog):
         case_insensitive = True,
         fallback = "play"
     )
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio(self, ctx, *, query: str):
         '''
         Play audio
@@ -111,7 +114,10 @@ class Audio(commands.Cog):
             await response.edit(embed = embed)
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def spotify(self, ctx, *, query: str):
         '''
         Play audio
@@ -150,7 +156,10 @@ class Audio(commands.Cog):
     @commands.hybrid_group(
         aliases = ["yt"], case_insensitive = True, with_app_command = False
     )
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def youtube(self, ctx, *, query: str):
         '''
         Play audio
