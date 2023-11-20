@@ -54,7 +54,7 @@ class Audio(commands.Cog):
         fallback = "play"
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def audio(self, ctx, *, song: str):
+    async def audio(self, ctx, *, query: str):
         '''
         Audio System - play a song
         All audio subcommands are also commands
@@ -73,11 +73,11 @@ class Audio(commands.Cog):
                 raise RuntimeError(
                     "audo join command not found when audio command invoked"
                 )
-        if "playlist" in song:
-            await self.players[ctx.guild.id].add_playlist(ctx, song)
+        if "playlist" in query:
+            await self.players[ctx.guild.id].add_playlist(ctx, query)
             return
-        if "spotify" in song:
-            if not (song := await self.spotify_to_youtube(song)):
+        if "spotify" in query:
+            if not (query := await self.spotify_to_youtube(query)):
                 await ctx.embed_reply(":warning: Error")
                 return
         response = await ctx.embed_reply(":cd: Loading..")
@@ -85,18 +85,18 @@ class Audio(commands.Cog):
         embed = response.embeds[0]
         try:
             source = await self.players[ctx.guild.id].add_song(
-                ctx, song, stream = ctx.invoked_with == "stream"
+                ctx, query, stream = ctx.invoked_with == "stream"
             )
         except Exception as e:
-            embed.description = f":warning: Error loading `{song}`\n`{type(e).__name__}: {e}`"
+            embed.description = f":warning: Error loading `{query}`\n`{type(e).__name__}: {e}`"
             if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
                 embed.description = embed.description[:ctx.bot.EDCL - 4] + "...`"
                 # EDCL: Embed Description Character Limit
         else:
-            if source.info["webpage_url"] != "ytsearch:" + song:
+            if source.info["webpage_url"] != "ytsearch:" + query:
                 embed.title = source.info["title"]
                 embed.url = source.info["webpage_url"]
-                embed.description = f":ballot_box_with_check: Successfully added `{song}` to the queue"
+                embed.description = f":ballot_box_with_check: Successfully added `{query}` to the queue"
             else:
                 embed.description = f"{ctx.bot.error_emoji} Video not found"
         finally:
@@ -107,14 +107,14 @@ class Audio(commands.Cog):
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify"
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def spotify(self, ctx, *, song: str):
+    async def spotify(self, ctx, *, query: str):
         '''
         Audio System - play a song
         All audio subcommands are also commands
         For cleanup of audio commands, the Manage Messages permission is required
         '''
         if command := ctx.bot.get_command("audio"):
-            await ctx.invoke(command, song = song)
+            await ctx.invoke(command, query = query)
         else:
             raise RuntimeError(
                 "audio command not found when spotify command invoked"
@@ -138,14 +138,14 @@ class Audio(commands.Cog):
         description = "Supports [these sites](https://rg3.github.io/youtube-dl/supportedsites.html) and Spotify",
     )
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def youtube(self, ctx, *, song: str):
+    async def youtube(self, ctx, *, query: str):
         '''
         Audio System - play a song
         All audio subcommands are also commands
         For cleanup of audio commands, the Manage Messages permission is required
         '''
         if command := ctx.bot.get_command("audio"):
-            await ctx.invoke(command, song = song)
+            await ctx.invoke(command, query = query)
         else:
             raise RuntimeError(
                 "audio command not found when youtube command invoked"
