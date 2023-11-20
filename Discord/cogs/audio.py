@@ -907,7 +907,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_deafen(self, ctx):
-        '''Deafen'''
+        '''Have me deafen myself'''
         # Note: deafen command invokes this command
         if ctx.guild.me.voice.self_deaf:
             await ctx.embed_reply(
@@ -924,7 +924,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def deafen(self, ctx):
-        '''Deafen'''
+        '''Have me deafen myself'''
         if command := ctx.bot.get_command("audio deafen"):
             await ctx.invoke(command)
         else:
