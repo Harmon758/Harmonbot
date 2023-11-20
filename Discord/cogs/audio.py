@@ -309,9 +309,7 @@ class Audio(commands.Cog):
                 "audio leave command not found when leave command invoked"
             )
 
-    @audio.command(
-        name = "pause", aliases = ["stop"], with_app_command = False
-    )
+    @audio.command(name = "pause", aliases = ["stop"])
     @checks.is_voice_connected()
     @commands.check_any(
         checks.is_permitted(), commands.has_permissions(administrator = True),
