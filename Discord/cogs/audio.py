@@ -200,7 +200,7 @@ class Audio(commands.Cog):
         # TODO: Check channel-specific permission?
     )
     async def audio_leave(self, ctx):
-        '''Tell me to leave the voice channel'''
+        '''Have me leave the voice channel'''
         # Note: leave command invokes this command
         if (await self.players[ctx.guild.id].leave_channel()):
             await ctx.embed_reply(":door: I've left the voice channel")
@@ -214,7 +214,7 @@ class Audio(commands.Cog):
         commands.has_guild_permissions(move_members = True)
     )
     async def leave(self, ctx):
-        '''Tell me to leave the voice channel'''
+        '''Have me leave the voice channel'''
         if command := ctx.bot.get_command("audio leave"):
             await ctx.invoke(command)
         else:
