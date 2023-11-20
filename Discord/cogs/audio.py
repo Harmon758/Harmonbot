@@ -266,9 +266,13 @@ class Audio(commands.Cog):
             ctx.guild.voice_client.resume()
             await ctx.embed_reply(":play_pause: Resumed song")
         elif ctx.guild.voice_client.is_playing():
-            await ctx.embed_reply(":no_entry: The song is already playing")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} The song is already playing"
+            )
         else:
-            await ctx.embed_reply(":no_entry: There is no song to resume")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} There is no song to resume"
+            )
 
     @commands.command(aliases = ["start"])
     @checks.is_voice_connected()
