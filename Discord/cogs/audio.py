@@ -60,7 +60,7 @@ class Audio(commands.Cog):
         For cleanup of audio commands, the Manage Messages permission is required
 
         Supported sites:
-        https://rg3.github.io/youtube-dl/supportedsites.html
+        https://ytdl-org.github.io/youtube-dl/supportedsites.html
         Spotify
 
         Parameters
@@ -120,7 +120,7 @@ class Audio(commands.Cog):
         For cleanup of audio commands, the Manage Messages permission is required
 
         Supported sites:
-        https://rg3.github.io/youtube-dl/supportedsites.html
+        https://ytdl-org.github.io/youtube-dl/supportedsites.html
         Spotify
 
         Parameters
@@ -159,7 +159,7 @@ class Audio(commands.Cog):
         For cleanup of audio commands, the Manage Messages permission is required
 
         Supported sites:
-        https://rg3.github.io/youtube-dl/supportedsites.html
+        https://ytdl-org.github.io/youtube-dl/supportedsites.html
         Spotify
 
         Parameters
