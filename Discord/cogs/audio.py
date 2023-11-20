@@ -4,7 +4,6 @@ from discord.ext import commands
 
 import base64
 import concurrent.futures
-import inspect
 import random
 from typing import Optional
 import urllib
