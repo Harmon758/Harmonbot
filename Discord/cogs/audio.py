@@ -1117,7 +1117,10 @@ class Audio(commands.Cog):
 
     @audio.command(name = "unmute")
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_unmute(self, ctx):
         '''Have me unmute myself'''
         # Note: unmute command invokes this command
@@ -1132,7 +1135,10 @@ class Audio(commands.Cog):
 
     @commands.command()
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def unmute(self, ctx):
         '''Have me unmute myself'''
         if command := ctx.bot.get_command("audio unmute"):
