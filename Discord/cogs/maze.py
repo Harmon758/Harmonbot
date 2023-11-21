@@ -304,8 +304,12 @@ class MazeCog(commands.Cog, name = "Maze"):
         await interaction.response.send_message(embed = embed, view = view)
 
         message = await interaction.original_response()
-        # Fetch Message, as InteractionMessage token expires after 15 min.
-        view.message = await message.fetch()
+        # InteractionMessage token expires after 15 min.
+        try:
+            view.message = await message.fetch()
+        except discord.Forbidden:
+            view.timeout = 600
+            view.message = await message.edit(view = view)
         interaction.client.views.append(view)
 
     # TODO: maze stats
@@ -363,6 +367,9 @@ class MazeView(discord.ui.View):
             )
             return False
         return True
+
+    async def on_timeout(self):
+        await self.stop()
 
     async def stop(self):
         self.children[1].disabled = True
