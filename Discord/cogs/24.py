@@ -28,8 +28,12 @@ class TwentyFour(commands.Cog, name = "24"):
                 f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
                 view = view
             )
-            # Fetch Message, as InteractionMessage token expires after 15 min.
-            response = await response.fetch()
+            # InteractionMessage token expires after 15 min.
+            try:
+                response = await response.fetch()
+            except discord.Forbidden:
+                view.timeout = 600
+                response = await response.edit(view = view)
         else:
             response = await ctx.embed_reply(
                 f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
@@ -94,6 +98,9 @@ class TwentyFourView(ui.View):
         )
 
         self.message = None
+
+    async def on_timeout(self):
+        await self.stop()
 
     async def stop(self):
         self.children[0].disabled = True
