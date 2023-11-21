@@ -323,15 +323,11 @@ class Meta(commands.Cog):
         view = StatisticsView()
         await view.construct_embeds(ctx)
 
-        message = await ctx.reply(
+        view.message = await ctx.reply(
             "",
             embeds = view.general_embeds,
             view = view
         )
-        if ctx.interaction:
-            # Fetch Message, as InteractionMessage token expires after 15 min.
-            message = await message.fetch()
-        view.message = message
         ctx.bot.views.append(view)
 
     @commands.hybrid_command()
