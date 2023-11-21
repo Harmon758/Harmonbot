@@ -1015,7 +1015,10 @@ class Audio(commands.Cog):
 
     @audio.command(name = "deafen")
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_deafen(self, ctx):
         '''Have me deafen myself'''
         # Note: deafen command invokes this command
@@ -1032,7 +1035,10 @@ class Audio(commands.Cog):
 
     @commands.command()
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def deafen(self, ctx):
         '''Have me deafen myself'''
         if command := ctx.bot.get_command("audio deafen"):
