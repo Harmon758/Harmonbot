@@ -8,7 +8,7 @@ class ButtonPaginator(discord.ui.View):
     # TODO: Track pages paginated and number of paginators
 
     def __init__(self, ctx_or_interaction, source, initial_page = 1):
-        super().__init__(timeout = None)
+        super().__init__(timeout = 600)
 
         self.ctx = self.ctx_or_interaction = ctx_or_interaction
         self.source = source
@@ -78,13 +78,6 @@ class ButtonPaginator(discord.ui.View):
         await interaction.response.defer()
         await self.show_page(interaction, self.source.get_max_pages() - 1)
 
-    @discord.ui.button(
-        style = discord.ButtonStyle.red,
-        emoji = '\N{OCTAGONAL SIGN}'
-    )
-    async def stop_button(self, interaction, button):
-        await self.stop(interaction = interaction)
-
     async def interaction_check(self, interaction):
         if interaction.user.id not in (self.user.id, self.bot.owner_id):
             await interaction.response.send_message(
@@ -122,8 +115,6 @@ class ButtonPaginator(discord.ui.View):
             self.message = await self.ctx_or_interaction.send(
                 **kwargs, view = self
             )
-            if self.ctx_or_interaction.interaction:
-                self.message = await self.message.fetch()
             await self.bot.attempt_delete_message(
                 self.ctx_or_interaction.message
             )
@@ -136,8 +127,6 @@ class ButtonPaginator(discord.ui.View):
                 await self.ctx_or_interaction.response.send_message(
                     **kwargs, view = self
                 )
-                message = await self.ctx_or_interaction.original_response()
-                self.message = await message.fetch()
         else:
             raise RuntimeError(
                 "ButtonPaginator using neither Context nor Interaction"
@@ -158,12 +147,14 @@ class ButtonPaginator(discord.ui.View):
 
         await interaction.message.edit(**kwargs, view = self)
 
+    async def on_timeout(self):
+        await self.stop()
+
     async def stop(self, interaction = None):
         self.start_button.disabled = True
         self.previous_button.disabled = True
         self.next_button.disabled = True
         self.end_button.disabled = True
-        self.remove_item(self.stop_button)
 
         if interaction:
             await interaction.response.edit_message(view = self)
