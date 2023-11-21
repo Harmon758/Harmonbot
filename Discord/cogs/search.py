@@ -724,16 +724,11 @@ class Search(commands.GroupCog, group_name = "search"):
             return
 
         view = WikiArticlesView(articles)
-        message = await ctx.reply(
+        view.message = await ctx.reply(
             "",
             embed = await view.initial_embed(ctx),
             view = view
         )
-
-        if ctx.interaction:
-            # Fetch Message, as InteractionMessage token expires after 15 min.
-            message = await message.fetch()
-        view.message = message
         ctx.bot.views.append(view)
 
     @commands.command()
