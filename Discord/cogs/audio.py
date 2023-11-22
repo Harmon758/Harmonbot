@@ -1052,7 +1052,9 @@ class Audio(commands.Cog):
         # Note: audio shuffle command invokes this command
         # Note: queue shuffle command invokes this command
         # Note: shuffle command invokes this command
-        response = await ctx.embed_reply("\N{TWISTED RIGHTWARDS ARROWS} Shuffling..")
+        response = await ctx.embed_reply(
+            "\N{TWISTED RIGHTWARDS ARROWS} Shuffling.."
+        )
         embed = response.embeds[0]
         await self.players[ctx.guild.id].shuffle_queue()
         embed.description = "\N{TWISTED RIGHTWARDS ARROWS} Shuffled songs"
