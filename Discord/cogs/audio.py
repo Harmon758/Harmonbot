@@ -499,7 +499,10 @@ class Audio(commands.Cog):
         name = "empty", aliases = ["clear"], with_app_command = False
     )
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_empty(self, ctx):
         '''Empty the queue'''
         if command := ctx.bot.get_command("audio queue empty"):
@@ -512,7 +515,10 @@ class Audio(commands.Cog):
 
     @commands.command(aliases = ["clear"])
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def empty(self, ctx):
         '''Empty the queue'''
         if command := ctx.bot.get_command("audio queue empty"):
@@ -999,7 +1005,10 @@ class Audio(commands.Cog):
         name = "empty", aliases = ["clear"], with_app_command = False
     )
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_queue_empty(self, ctx):
         '''Empty the queue'''
         # Note: audio empty command invokes this command
@@ -1010,7 +1019,10 @@ class Audio(commands.Cog):
 
     @queue.command(name = "empty", aliases = ["clear"])
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def queue_empty(self, ctx):
         '''Empty the queue'''
         if command := ctx.bot.get_command("audio queue empty"):
