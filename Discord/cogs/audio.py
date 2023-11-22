@@ -531,7 +531,10 @@ class Audio(commands.Cog):
 
     @audio.command(name = "shuffle", with_app_command = False)
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_shuffle(self, ctx):
         '''Shuffle the queue'''
         if command := ctx.bot.get_command("audio queue shuffle"):
@@ -544,7 +547,10 @@ class Audio(commands.Cog):
 
     @commands.command()
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def shuffle(self, ctx):
         '''Shuffle the queue'''
         if command := ctx.bot.get_command("audio queue shuffle"):
@@ -1035,7 +1041,10 @@ class Audio(commands.Cog):
 
     @audio_queue.command(name = "shuffle", with_app_command = False)
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_queue_shuffle(self, ctx):
         '''Shuffle the queue'''
         # Note: audio shuffle command invokes this command
@@ -1049,7 +1058,10 @@ class Audio(commands.Cog):
 
     @queue.command(name = "shuffle")
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def queue_shuffle(self, ctx):
         '''Shuffle the queue'''
         if command := ctx.bot.get_command("audio queue shuffle"):
