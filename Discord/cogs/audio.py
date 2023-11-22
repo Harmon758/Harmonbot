@@ -1007,9 +1007,7 @@ class Audio(commands.Cog):
                 "audio queue command not found when queue command invoked"
             )
 
-    @audio_queue.command(
-        name = "empty", aliases = ["clear"], with_app_command = False
-    )
+    @audio_queue.command(name = "empty", aliases = ["clear"])
     @checks.is_voice_connected()
     @commands.check_any(
         checks.is_permitted(), commands.has_permissions(administrator = True),
