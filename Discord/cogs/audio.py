@@ -891,7 +891,10 @@ class Audio(commands.Cog):
 
     @audio.command(name = "volume")
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_volume(
         self, ctx,
         volume_setting: Optional[commands.Range[float, 0.0, 2000.0]] = None,  # noqa: UP007 (non-pep604-annotation)
@@ -940,7 +943,10 @@ class Audio(commands.Cog):
 
     @commands.command()
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def volume(
         self, ctx,
         volume_setting: Optional[commands.Range[float, 0.0, 2000.0]] = None,  # noqa: UP007 (non-pep604-annotation)
