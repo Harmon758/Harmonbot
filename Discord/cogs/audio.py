@@ -528,23 +528,25 @@ class Audio(commands.Cog):
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_shuffle(self, ctx):
         '''Shuffle the queue'''
-        # Note: shuffle command invokes this command
-        response = await ctx.embed_reply(":twisted_rightwards_arrows: Shuffling..")
-        embed = response.embeds[0]
-        await self.players[ctx.guild.id].shuffle_queue()
-        embed.description = ":twisted_rightwards_arrows: Shuffled songs"
-        await response.edit(embed = embed)
+        if command := ctx.bot.get_command("audio queue shuffle"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio queue shuffle command not found "
+                "when audio shuffle command invoked"
+            )
 
     @commands.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def shuffle(self, ctx):
         '''Shuffle the queue'''
-        if command := ctx.bot.get_command("audio shuffle"):
+        if command := ctx.bot.get_command("audio queue shuffle"):
             await ctx.invoke(command)
         else:
             raise RuntimeError(
-                "audio shuffle command not found when shuffle command invoked"
+                "audio queue shuffle command not found "
+                "when shuffle command invoked"
             )
 
     @audio.command(
@@ -1017,6 +1019,33 @@ class Audio(commands.Cog):
             raise RuntimeError(
                 "audio queue empty command not found "
                 "when queue empty command invoked"
+            )
+
+    @audio_queue.command(name = "shuffle", with_app_command = False)
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def audio_queue_shuffle(self, ctx):
+        '''Shuffle the queue'''
+        # Note: audio shuffle command invokes this command
+        # Note: queue shuffle command invokes this command
+        # Note: shuffle command invokes this command
+        response = await ctx.embed_reply(":twisted_rightwards_arrows: Shuffling..")
+        embed = response.embeds[0]
+        await self.players[ctx.guild.id].shuffle_queue()
+        embed.description = ":twisted_rightwards_arrows: Shuffled songs"
+        await response.edit(embed = embed)
+
+    @queue.command(name = "shuffle")
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def queue_shuffle(self, ctx):
+        '''Shuffle the queue'''
+        if command := ctx.bot.get_command("audio queue shuffle"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio queue shuffle command not found "
+                "when queue shuffle command invoked"
             )
 
     # Meta
