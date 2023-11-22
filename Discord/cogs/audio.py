@@ -655,7 +655,10 @@ class Audio(commands.Cog):
 
     @audio.command(name = "text", with_app_command = False)
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_text(
         self, ctx,
         channel: 
