@@ -1021,7 +1021,9 @@ class Audio(commands.Cog):
         # Note: empty command invokes this command
         # Note: queue empty command invokes this command
         await self.players[ctx.guild.id].empty_queue()
-        await ctx.embed_reply(":wastebasket: Emptied queue")
+        await ctx.embed_reply(
+            "\N{WASTEBASKET}\N{VARIATION SELECTOR-16} Emptied queue"
+        )
 
     @queue.command(name = "empty", aliases = ["clear"])
     @checks.is_voice_connected()
