@@ -1039,7 +1039,7 @@ class Audio(commands.Cog):
                 "when queue empty command invoked"
             )
 
-    @audio_queue.command(name = "shuffle", with_app_command = False)
+    @audio_queue.command(name = "shuffle")
     @checks.is_voice_connected()
     @commands.check_any(
         checks.is_permitted(), commands.has_permissions(administrator = True),
