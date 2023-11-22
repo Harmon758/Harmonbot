@@ -981,11 +981,11 @@ class Audio(commands.Cog):
         else:
             return await ctx.embed_reply(":speaker: There is no song currently playing")
 
-    @audio.group(name = "queue", with_app_command = False)
+    @audio.group(name = "queue", fallback = "show")
     @checks.is_voice_connected()
     @checks.not_forbidden()
     async def audio_queue(self, ctx):
-        '''See the current queue'''
+        '''Show the current queue'''
         # Note: queue command invokes this command
         embed = self.players[ctx.guild.id].queue_embed()
         embed.set_author(
@@ -999,7 +999,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @checks.not_forbidden()
     async def queue(self, ctx):
-        '''See the current queue'''
+        '''Show the current queue'''
         if command := ctx.bot.get_command("audio queue"):
             await ctx.invoke(command)
         else:
