@@ -30,7 +30,6 @@ class Audio(commands.Cog):
         # playing?
         # radio
         # skip, merge skip subcommand?
-        # volume
 
         create_folder(self.bot.data_path + "/audio_cache")
         create_folder(self.bot.data_path + "/audio_files")
@@ -890,10 +889,10 @@ class Audio(commands.Cog):
             # TODO: use textwrap/paginate
             await ctx.embed_reply(":no_entry: Too many results\nTry a more specific search")
 
-    @commands.command()
+    @audio.command(name = "volume")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def volume(
+    async def audio_volume(
         self, ctx,
         volume_setting: Optional[commands.Range[float, 0.0, 2000.0]] = None,  # noqa: UP007 (non-pep604-annotation)
         default: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
@@ -910,6 +909,7 @@ class Audio(commands.Cog):
             Whether to change/show the default volume for the current player
             (Defaults to False — change/show the volume for the current song)
         '''  # noqa: RUF002 (ambiguous-unicode-character-docstring)
+        # Note: volume command invokes this command
         # TODO: Use '\N{SPEAKER}' when volume/setting is 0
         if default:
             if volume_setting is None:
@@ -936,6 +936,35 @@ class Audio(commands.Cog):
         else:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} There's nothing playing right now"
+            )
+
+    @commands.command()
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def volume(
+        self, ctx,
+        volume_setting: Optional[commands.Range[float, 0.0, 2000.0]] = None,  # noqa: UP007 (non-pep604-annotation)
+        default: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
+    ):
+        '''
+        Change or show the volume of the current song or player
+
+        Parameters
+        ----------
+        volume_setting
+            Volume to change to
+            (0–2000, defaults to None — show current volume)
+        default
+            Whether to change/show the default volume for the current player
+            (Defaults to False — change/show the volume for the current song)
+        '''  # noqa: RUF002 (ambiguous-unicode-character-docstring)
+        if command := ctx.bot.get_command("audio volume"):
+            await ctx.invoke(
+                command, volume_setting = volume_setting, default = default
+            )
+        else:
+            raise RuntimeError(
+                "audio volume command not found when volume command invoked"
             )
 
     @commands.group(aliases = ["current"], invoke_without_command = True, case_insensitive = True)
