@@ -21,8 +21,6 @@ import aiml
 import aiohttp
 from aiohttp import web
 import asyncpg
-from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
-from clarifai_grpc.grpc.api import service_pb2_grpc
 import gidgethub.aiohttp
 import git
 import google.auth
@@ -138,7 +136,7 @@ class Bot(commands.Bot):
 
         # Credentials
         for credential in (
-            "BRAWLHALLA_API_KEY", "CLARIFAI_API_KEY", "CLEVERBOT_API_KEY",
+            "BRAWLHALLA_API_KEY", "CLEVERBOT_API_KEY",
             "DISCORDBOTLIST.COM_API_TOKEN", "DISCORD.BOTS.GG_API_TOKEN",
             "DISCORDBOTS.ORG_API_KEY", "FIXER_API_KEY", "FONO_API_TOKEN",
             "GIPHY_API_KEY", "GITHUB_PERSONAL_ACCESS_TOKEN", "GOOGLE_API_KEY",
@@ -160,10 +158,6 @@ class Bot(commands.Bot):
         sentry_sdk.init(self.SENTRY_DSN, release = self.version)
 
         # External Clients
-        ## Clarifai
-        self.clarifai_stub = service_pb2_grpc.V2Stub(
-            ClarifaiChannel.get_grpc_channel()
-        )
         ## Google Cloud Translation Service
         self.google_cloud_project_id = "discord-bot-harmonbot"
         ## Imgur

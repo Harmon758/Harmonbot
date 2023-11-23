@@ -5,16 +5,10 @@ import inspect
 import re
 from typing import Optional
 
-from clarifai_grpc.grpc.api import service_pb2, resources_pb2
-from clarifai_grpc.grpc.api.status import status_code_pb2
 import imgurpython
 
+from units import clarifai
 from utilities import checks
-
-
-CLARIFAI_COLOR_MODEL_ID = "eeed0b6733a644cea07cf4c60f87ebb7"
-CLARIFAI_GENERAL_MODEL_ID = "aaa03c23b3724a16a56b629203edc62c"
-CLARIFAI_NSFW_MODEL_ID = "e9576d86d2004ed1a38ba0cf39ecb4b1"
 
 
 async def setup(bot):
@@ -82,23 +76,11 @@ class Images(commands.Cog):
                 return
             image_url = ctx.message.attachments[0].url
 
-        response = ctx.bot.clarifai_stub.PostModelOutputs(
-            service_pb2.PostModelOutputsRequest(
-                model_id = CLARIFAI_COLOR_MODEL_ID,
-                inputs = [
-                    resources_pb2.Input(
-                        data = resources_pb2.Data(
-                            image = resources_pb2.Image(url = image_url)
-                        )
-                    )
-                ]
-            ),
-            metadata = (("authorization", f"Key {ctx.bot.CLARIFAI_API_KEY}"),)
-        )
-
-        if response.status.code != status_code_pb2.SUCCESS:
+        try:
+            colors = clarifai.image_color(image_url)
+        except Exception as e:
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}"
+                f"{ctx.bot.error_emoji} Error: {e}"
             )
             return
 
@@ -107,13 +89,12 @@ class Images(commands.Cog):
                 color.raw_hex.upper(),
                 (
                     f"{color.value * 100:.2f}%\n"
-                    f"{re.sub(r'(?!^)(?=[A-Z])', ' ', color.w3c.name)}\n"
-                    f"({color.w3c.hex.upper()})"
+                    f"{re.sub(r'(?!^)(?=[A-Z])', ' ', color.w3c_name)}\n"
+                    f"({color.w3c_hex.upper()})"
                 )
             )
             for color in sorted(
-                response.outputs[0].data.colors,
-                key = lambda c: c.value, reverse = True
+                colors, key = lambda c: c.value, reverse = True
             )
         ]
         await ctx.embed_reply(
@@ -278,23 +259,11 @@ class Images(commands.Cog):
 
             image_url = ctx.message.attachments[0].url
 
-        response = ctx.bot.clarifai_stub.PostModelOutputs(
-            service_pb2.PostModelOutputsRequest(
-                model_id = CLARIFAI_GENERAL_MODEL_ID,
-                inputs = [
-                    resources_pb2.Input(
-                        data = resources_pb2.Data(
-                            image = resources_pb2.Image(url = image_url)
-                        )
-                    )
-                ]
-            ),
-            metadata = (("authorization", f"Key {ctx.bot.CLARIFAI_API_KEY}"),)
-        )
-
-        if response.status.code != status_code_pb2.SUCCESS:
+        try:
+            concepts = clarifai.image_recognition(image_url)
+        except Exception as e:
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}"
+                f"{ctx.bot.error_emoji} Error: {e}"
             )
             return
 
@@ -302,8 +271,7 @@ class Images(commands.Cog):
             ", ".join(
                 f"**{concept.name}**: {concept.value * 100:.2f}%"
                 for concept in sorted(
-                    response.outputs[0].data.concepts,
-                    key = lambda c: c.value, reverse = True
+                    concepts, key = lambda c: c.value, reverse = True
                 )
             ),
             thumbnail_url = image_url
@@ -320,31 +288,15 @@ class Images(commands.Cog):
                 return
             image_url = ctx.message.attachments[0].url
 
-        response = ctx.bot.clarifai_stub.PostModelOutputs(
-            service_pb2.PostModelOutputsRequest(
-                model_id = CLARIFAI_NSFW_MODEL_ID, 
-                inputs = [
-                    resources_pb2.Input(
-                        data = resources_pb2.Data(
-                            image = resources_pb2.Image(url = image_url)
-                        )
-                    )
-                ]
-            ),
-            metadata = (("authorization", f"Key {ctx.bot.CLARIFAI_API_KEY}"),)
-        )
-
-        if response.status.code != status_code_pb2.SUCCESS:
+        try:
+            percentage = clarifai.image_nsfw(image_url) * 100
+        except Exception as e:
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: {response.outputs[0].status.description}"
+                f"{ctx.bot.error_emoji} Error: {e}"
             )
             return
 
-        percentages = {
-            concept.name: concept.value * 100
-            for concept in response.outputs[0].data.concepts
-        }
         await ctx.embed_reply(
-            f"NSFW: {percentages['nsfw']:.2f}%", thumbnail_url = image_url
+            f"NSFW: {percentage:.2f}%", thumbnail_url = image_url
         )
 

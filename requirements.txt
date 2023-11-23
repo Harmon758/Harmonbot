@@ -17,7 +17,6 @@ asyncpg==0.28.0
 beautifulsoup4==4.12.2
 chess==1.9.4
 clarifai==9.10.2
-clarifai-grpc==9.10.0
 cryptography==41.0.5
 dice==4.0.0
 emoji==1.7.0
@@ -104,6 +103,7 @@ catalogue==2.0.10
 certifi==2023.11.17
 cffi==1.16.0
 charset-normalizer==3.2.0
+clarifai-grpc==9.10.0
 click==8.1.7
 cloudpathlib==0.16.0
 colorama==0.4.6
