@@ -473,7 +473,7 @@ class Audio(commands.Cog):
     @commands.command()
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def insert(self, ctx, position_number : int, *, song : str):
+    async def insert(self, ctx, position_number: int, *, song: str):
         '''Insert a song into the queue'''
         if "spotify" in song:
             song = await self.spotify_to_youtube(song)
