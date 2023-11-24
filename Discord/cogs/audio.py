@@ -981,56 +981,59 @@ class Audio(commands.Cog):
     @checks.not_forbidden()
     async def playing(self, ctx):
         '''See the currently playing song'''
-        if ctx.guild.voice_client.is_playing():
-            requester = ctx.guild.voice_client.source.requester
-            # Description
-            if self.players[ctx.guild.id].radio_flag:
-                description = ":radio: Radio is currently playing"
-            elif self.players[ctx.guild.id].library_flag:
-                description = ":notes: Playing song from my library"
-            elif isinstance(ctx.guild.voice_client.source, audio_sources.FileSource):
-                description = ":floppy_disk: Playing audio file"
-            elif isinstance(ctx.guild.voice_client.source, audio_sources.TTSSource):
-                description = ":speaking_head: Playing TTS Message"
-            else:
-                description = ":musical_note: Currently playing"
-                played_duration = (
-                    ctx.guild.voice_client.source.previous_played_time +
-                    ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
-                )
-                total_duration = ctx.guild.voice_client.source.info.get("duration")
-                if total_duration:
-                    playing_bar = "▬" * 10
-                    button_spot = int(played_duration / (total_duration / 10))
-                    playing_bar = playing_bar[:button_spot] + ":radio_button: " + playing_bar[button_spot + 1:]
-                    played_duration = utilities.secs_to_colon_format(played_duration)
-                    total_duration = utilities.secs_to_colon_format(total_duration)
-                    description = f":arrow_forward: {playing_bar}`[{played_duration}/{total_duration}]`"  # Add :sound:?
-                views = ctx.guild.voice_client.source.info.get("view_count")
-                likes = ctx.guild.voice_client.source.info.get("like_count")
-                dislikes = ctx.guild.voice_client.source.info.get("dislike_count")
-                description += '\n' if views or likes or dislikes else ""
-                description += f"{views:,} :eye:" if views else ""
-                description += " | " if views and (likes or dislikes) else ""
-                description += f"{likes:,} :thumbsup::skin-tone-2:" if likes else ""
-                description += " | " if likes and dislikes else ""
-                description += f"{dislikes:,} :thumbsdown::skin-tone-2:" if dislikes else ""
-            if hasattr(ctx.guild.voice_client.source, "info"):
-                title = ctx.guild.voice_client.source.info.get("title")
-                title_url = ctx.guild.voice_client.source.info.get("webpage_url")
-            else:
-                title = ctx.guild.voice_client.source.title
-                title_url = None
-            await ctx.embed_reply(
-                description, title = title, title_url = title_url,
-                footer_text = "Added by " + requester.display_name,
-                footer_icon_url = requester.display_avatar.url,
-                timestamp = ctx.guild.voice_client.source.timestamp
-            )
-            return
-        else:
+        if not ctx.guild.voice_client.is_playing():
             await ctx.embed_reply(":speaker: There is no song currently playing")
             return
+
+        if self.players[ctx.guild.id].radio_flag:
+            description = ":radio: Radio is currently playing"
+        elif self.players[ctx.guild.id].library_flag:
+            description = ":notes: Playing song from my library"
+        elif isinstance(ctx.guild.voice_client.source, audio_sources.FileSource):
+            description = ":floppy_disk: Playing audio file"
+        elif isinstance(ctx.guild.voice_client.source, audio_sources.TTSSource):
+            description = ":speaking_head: Playing TTS Message"
+        else:
+            description = ":musical_note: Currently playing"
+            played_duration = (
+                ctx.guild.voice_client.source.previous_played_time +
+                ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
+            )
+            total_duration = ctx.guild.voice_client.source.info.get("duration")
+            if total_duration:
+                playing_bar = "▬" * 10
+                button_spot = int(played_duration / (total_duration / 10))
+                playing_bar = playing_bar[:button_spot] + ":radio_button: " + playing_bar[button_spot + 1:]
+                played_duration = utilities.secs_to_colon_format(played_duration)
+                total_duration = utilities.secs_to_colon_format(total_duration)
+                description = f":arrow_forward: {playing_bar}`[{played_duration}/{total_duration}]`"  # Add :sound:?
+            views = ctx.guild.voice_client.source.info.get("view_count")
+            likes = ctx.guild.voice_client.source.info.get("like_count")
+            dislikes = ctx.guild.voice_client.source.info.get("dislike_count")
+            description += '\n' if views or likes or dislikes else ""
+            description += f"{views:,} :eye:" if views else ""
+            description += " | " if views and (likes or dislikes) else ""
+            description += f"{likes:,} :thumbsup::skin-tone-2:" if likes else ""
+            description += " | " if likes and dislikes else ""
+            description += f"{dislikes:,} :thumbsdown::skin-tone-2:" if dislikes else ""
+
+        if hasattr(ctx.guild.voice_client.source, "info"):
+            title = ctx.guild.voice_client.source.info.get("title")
+            title_url = ctx.guild.voice_client.source.info.get("webpage_url")
+        else:
+            title = ctx.guild.voice_client.source.title
+            title_url = None
+
+        requester = ctx.guild.voice_client.source.requester
+
+        await ctx.embed_reply(
+            title = title,
+            title_url = title_url,
+            description = description,
+            footer_text = "Added by " + requester.display_name,
+            footer_icon_url = requester.display_avatar.url,
+            timestamp = ctx.guild.voice_client.source.timestamp
+        )
 
     @audio.group(name = "queue", fallback = "show")
     @checks.is_voice_connected()
