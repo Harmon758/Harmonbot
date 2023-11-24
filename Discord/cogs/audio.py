@@ -973,7 +973,10 @@ class Audio(commands.Cog):
                 "audio volume command not found when volume command invoked"
             )
 
-    @commands.group(aliases = ["current"], invoke_without_command = True, case_insensitive = True)
+    @commands.group(
+        aliases = ["current"],
+        invoke_without_command = True, case_insensitive = True
+    )
     @checks.is_voice_connected()
     @checks.not_forbidden()
     async def playing(self, ctx):
@@ -991,7 +994,10 @@ class Audio(commands.Cog):
                 description = ":speaking_head: Playing TTS Message"
             else:
                 description = ":musical_note: Currently playing"
-                played_duration = ctx.guild.voice_client.source.previous_played_time + ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
+                played_duration = (
+                    ctx.guild.voice_client.source.previous_played_time +
+                    ctx.guild.voice_client._player.DELAY * ctx.guild.voice_client._player.loops
+                )
                 total_duration = ctx.guild.voice_client.source.info.get("duration")
                 if total_duration:
                     playing_bar = "▬" * 10
@@ -1015,7 +1021,12 @@ class Audio(commands.Cog):
             else:
                 title = ctx.guild.voice_client.source.title
                 title_url = None
-            await ctx.embed_reply(description, title = title, title_url = title_url, footer_text = "Added by " + requester.display_name, footer_icon_url = requester.display_avatar.url, timestamp = ctx.guild.voice_client.source.timestamp)
+            await ctx.embed_reply(
+                description, title = title, title_url = title_url,
+                footer_text = "Added by " + requester.display_name,
+                footer_icon_url = requester.display_avatar.url,
+                timestamp = ctx.guild.voice_client.source.timestamp
+            )
             return
         else:
             await ctx.embed_reply(":speaker: There is no song currently playing")
