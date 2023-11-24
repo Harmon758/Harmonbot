@@ -16,8 +16,8 @@ def remove_root_logger_handlers():
 remove_root_logger_handlers()
 
 
-# Note: CLARIFAI_PAT must be set as env variable.
 APP_ID = os.getenv("CLARIFAI_APP_ID")
+PAT = os.getenv("CLARIFAI_PAT")
 USER_ID = os.getenv("CLARIFAI_USER_ID")
 
 
@@ -36,7 +36,8 @@ class Concept(BaseModel):
 
 def image_color(url: str) -> list[Color]:
     model = Model(
-        app_id = APP_ID, user_id = USER_ID, model_id = "color-recognition"
+        app_id = APP_ID, pat = PAT, user_id = USER_ID,
+        model_id = "color-recognition"
     )
     response = model.predict_by_url(url, input_type = "image")
     remove_root_logger_handlers()
@@ -53,7 +54,8 @@ def image_color(url: str) -> list[Color]:
 
 def image_nsfw(url: str) -> float:
     model = Model(
-        app_id = APP_ID, user_id = USER_ID, model_id = "nsfw-recognition"
+        app_id = APP_ID, pat = PAT, user_id = USER_ID,
+        model_id = "nsfw-recognition"
     )
     response = model.predict_by_url(url, input_type = "image")
     remove_root_logger_handlers()
@@ -69,7 +71,7 @@ def image_nsfw(url: str) -> float:
 
 def image_recognition(url: str) -> list[Concept]:
     model = Model(
-        app_id = APP_ID, user_id = USER_ID,
+        app_id = APP_ID, pat = PAT, user_id = USER_ID,
         model_id = "general-image-recognition"
     )
     response = model.predict_by_url(url, input_type = "image")
