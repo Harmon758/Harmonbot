@@ -230,8 +230,7 @@ class Tools(commands.Cog):
         imageio.mimsave(
             buffer,
             [imageio.imread(frame) for frame in frames],
-            "GIF-PIL",
-            loop = 1,
+            "GIF",
             duration = 0.5
         )
         buffer.seek(0)
