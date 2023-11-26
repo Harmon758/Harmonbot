@@ -471,7 +471,10 @@ class Audio(commands.Cog):
 
     @commands.command()
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def insert(self, ctx, position_number: int, *, song: str):
         '''
         Insert a song into the queue
@@ -493,7 +496,10 @@ class Audio(commands.Cog):
 
     @audio.command(name = "insert", with_app_command = False)
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_insert(self, ctx, position_number: int, *, song: str):
         '''
         Insert a song into the queue
@@ -1114,7 +1120,10 @@ class Audio(commands.Cog):
 
     @audio_queue.command(name = "insert")
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def audio_queue_insert(
         self, ctx, position_number: int, *, song: str
     ):
@@ -1150,7 +1159,10 @@ class Audio(commands.Cog):
 
     @queue.command(name = "insert")
     @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    @commands.check_any(
+        checks.is_permitted(), commands.has_permissions(administrator = True),
+        commands.is_owner()
+    )
     async def queue_insert(self, ctx, position_number: int, *, song: str):
         '''
         Insert a song into the queue
