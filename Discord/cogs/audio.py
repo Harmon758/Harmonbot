@@ -473,7 +473,14 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def insert(self, ctx, position_number: int, *, song: str):
-        '''Insert a song into the queue'''
+        '''
+        Insert a song into the queue
+
+        position_number
+            Position number to insert the song into the queue at
+        song
+            Song to insert into the queue
+        '''
         if command := ctx.bot.get_command("audio queue insert"):
             await ctx.invoke(
                 command, position_number = position_number, song = song
@@ -488,7 +495,14 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_insert(self, ctx, position_number: int, *, song: str):
-        '''Insert a song into the queue'''
+        '''
+        Insert a song into the queue
+
+        position_number
+            Position number to insert the song into the queue at
+        song
+            Song to insert into the queue
+        '''
         if command := ctx.bot.get_command("audio queue insert"):
             await ctx.invoke(
                 command, position_number = position_number, song = song
@@ -1098,13 +1112,20 @@ class Audio(commands.Cog):
                 "when queue empty command invoked"
             )
 
-    @audio_queue.command(name = "insert", with_app_command = False)
+    @audio_queue.command(name = "insert")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def audio_queue_insert(
         self, ctx, position_number: int, *, song: str
     ):
-        '''Insert a song into the queue'''
+        '''
+        Insert a song into the queue
+
+        position_number
+            Position number to insert the song into the queue at
+        song
+            Song to insert into the queue
+        '''
         # audio insert command invokes this command
         # insert command invokes this command
         # queue insert command invokes this command
@@ -1131,7 +1152,14 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def queue_insert(self, ctx, position_number: int, *, song: str):
-        '''Insert a song into the queue'''
+        '''
+        Insert a song into the queue
+
+        position_number
+            Position number to insert the song into the queue at
+        song
+            Song to insert into the queue
+        '''
         if command := ctx.bot.get_command("audio queue insert"):
             await ctx.invoke(
                 command, position_number = position_number, song = song
