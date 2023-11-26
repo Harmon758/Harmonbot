@@ -392,7 +392,8 @@ class ChessMatch(chess.Board):
         svg = chess.svg.board(
             self, lastmove = self.peek() if self.move_stack else None,
             check = self.king(self.turn) if self.is_check() else None,
-            orientation = orientation if orientation is not None else self.turn
+            orientation = orientation if orientation is not None else self.turn,
+            borders = True
         )
 
         buffer = io.BytesIO()
