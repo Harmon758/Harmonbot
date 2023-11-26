@@ -72,7 +72,7 @@ class Twitter(commands.Cog):
                 timestamp  TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
                 handle     TEXT, 
                 type       TEXT, 
-                message	   TEXT
+                message    TEXT
             )
             """
         )
