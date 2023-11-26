@@ -24,7 +24,6 @@ class Audio(commands.Cog):
         self.players = {}
 
         # TODO: Add back as audio subcommands:
-        # insert
         # library, library subcommands
         # listen, listen subcommands
         # playing?
@@ -475,24 +474,30 @@ class Audio(commands.Cog):
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def insert(self, ctx, position_number: int, *, song: str):
         '''Insert a song into the queue'''
-        if "spotify" in song:
-            song = await self.spotify_to_youtube(song)
-            if not song:
-                await ctx.embed_reply(":warning: Error")
-                return
-        response = await ctx.embed_reply(":cd: Loading..")
-        embed = response.embeds[0]
-        try:
-            source = await self.players[ctx.guild.id].insert_song(ctx, song, position_number)
-        except Exception as e:
-            embed.description = f":warning: Error loading `{song}`\n`{type(e).__name__}: {e}`"
-            if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-                embed.description = embed.description[:ctx.bot.EDCL - 4] + "...`"
-                # EDCL: Embed Description Character Limit
+        if command := ctx.bot.get_command("audio queue insert"):
+            await ctx.invoke(
+                command, position_number = position_number, song = song
+            )
         else:
-            embed.description = f":ballot_box_with_check: `{source.title}` has been inserted into position #{position_number} in the queue"
-        finally:
-            await response.edit(embed = embed)
+            raise RuntimeError(
+                "audio queue insert command not found "
+                "when insert command invoked"
+            )
+
+    @audio.command(name = "insert", with_app_command = False)
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def audio_insert(self, ctx, position_number: int, *, song: str):
+        '''Insert a song into the queue'''
+        if command := ctx.bot.get_command("audio queue insert"):
+            await ctx.invoke(
+                command, position_number = position_number, song = song
+            )
+        else:
+            raise RuntimeError(
+                "audio queue insert command not found "
+                "when audio insert command invoked"
+            )
 
     @audio.command(
         name = "empty", aliases = ["clear"], with_app_command = False
@@ -1091,6 +1096,50 @@ class Audio(commands.Cog):
             raise RuntimeError(
                 "audio queue empty command not found "
                 "when queue empty command invoked"
+            )
+
+    @audio_queue.command(name = "insert", with_app_command = False)
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def audio_queue_insert(
+        self, ctx, position_number: int, *, song: str
+    ):
+        '''Insert a song into the queue'''
+        # audio insert command invokes this command
+        # insert command invokes this command
+        # queue insert command invokes this command
+        if "spotify" in song:
+            song = await self.spotify_to_youtube(song)
+            if not song:
+                await ctx.embed_reply(":warning: Error")
+                return
+        response = await ctx.embed_reply(":cd: Loading..")
+        embed = response.embeds[0]
+        try:
+            source = await self.players[ctx.guild.id].insert_song(ctx, song, position_number)
+        except Exception as e:
+            embed.description = f":warning: Error loading `{song}`\n`{type(e).__name__}: {e}`"
+            if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+                embed.description = embed.description[:ctx.bot.EDCL - 4] + "...`"
+                # EDCL: Embed Description Character Limit
+        else:
+            embed.description = f":ballot_box_with_check: `{source.title}` has been inserted into position #{position_number} in the queue"
+        finally:
+            await response.edit(embed = embed)
+
+    @queue.command(name = "insert")
+    @checks.is_voice_connected()
+    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
+    async def queue_insert(self, ctx, position_number: int, *, song: str):
+        '''Insert a song into the queue'''
+        if command := ctx.bot.get_command("audio queue insert"):
+            await ctx.invoke(
+                command, position_number = position_number, song = song
+            )
+        else:
+            raise RuntimeError(
+                "audio queue insert command not found "
+                "when queue insert command invoked"
             )
 
     @audio_queue.command(name = "shuffle")
