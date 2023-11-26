@@ -475,18 +475,18 @@ class Audio(commands.Cog):
         checks.is_permitted(), commands.has_permissions(administrator = True),
         commands.is_owner()
     )
-    async def insert(self, ctx, position_number: int, *, song: str):
+    async def insert(self, ctx, position: int, *, query: str):
         '''
-        Insert a song into the queue
+        Insert audio into the queue
 
-        position_number
-            Position number to insert the song into the queue at
-        song
-            Song to insert into the queue
+        position
+            Position number to insert the audio into the queue at
+        query
+            Audio to insert into the queue
         '''
         if command := ctx.bot.get_command("audio queue insert"):
             await ctx.invoke(
-                command, position_number = position_number, song = song
+                command, position = position, query = query
             )
         else:
             raise RuntimeError(
@@ -500,18 +500,18 @@ class Audio(commands.Cog):
         checks.is_permitted(), commands.has_permissions(administrator = True),
         commands.is_owner()
     )
-    async def audio_insert(self, ctx, position_number: int, *, song: str):
+    async def audio_insert(self, ctx, position: int, *, query: str):
         '''
-        Insert a song into the queue
+        Insert audio into the queue
 
-        position_number
-            Position number to insert the song into the queue at
-        song
-            Song to insert into the queue
+        position
+            Position number to insert the audio into the queue at
+        query
+            Audio to insert into the queue
         '''
         if command := ctx.bot.get_command("audio queue insert"):
             await ctx.invoke(
-                command, position_number = position_number, song = song
+                command, position = position, query = query
             )
         else:
             raise RuntimeError(
@@ -1124,36 +1124,34 @@ class Audio(commands.Cog):
         checks.is_permitted(), commands.has_permissions(administrator = True),
         commands.is_owner()
     )
-    async def audio_queue_insert(
-        self, ctx, position_number: int, *, song: str
-    ):
+    async def audio_queue_insert(self, ctx, position: int, *, query: str):
         '''
-        Insert a song into the queue
+        Insert audio into the queue
 
-        position_number
-            Position number to insert the song into the queue at
-        song
-            Song to insert into the queue
+        position
+            Position number to insert the audio into the queue at
+        query
+            Audio to insert into the queue
         '''
         # audio insert command invokes this command
         # insert command invokes this command
         # queue insert command invokes this command
-        if "spotify" in song:
-            song = await self.spotify_to_youtube(song)
-            if not song:
+        if "spotify" in query:
+            query = await self.spotify_to_youtube(query)
+            if not query:
                 await ctx.embed_reply(":warning: Error")
                 return
         response = await ctx.embed_reply(":cd: Loading..")
         embed = response.embeds[0]
         try:
-            source = await self.players[ctx.guild.id].insert_song(ctx, song, position_number)
+            source = await self.players[ctx.guild.id].insert_song(ctx, query, position)
         except Exception as e:
-            embed.description = f":warning: Error loading `{song}`\n`{type(e).__name__}: {e}`"
+            embed.description = f":warning: Error loading `{query}`\n`{type(e).__name__}: {e}`"
             if len(embed.description) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
                 embed.description = embed.description[:ctx.bot.EDCL - 4] + "...`"
                 # EDCL: Embed Description Character Limit
         else:
-            embed.description = f":ballot_box_with_check: `{source.title}` has been inserted into position #{position_number} in the queue"
+            embed.description = f":ballot_box_with_check: `{source.title}` has been inserted into position #{position} in the queue"
         finally:
             await response.edit(embed = embed)
 
@@ -1163,18 +1161,18 @@ class Audio(commands.Cog):
         checks.is_permitted(), commands.has_permissions(administrator = True),
         commands.is_owner()
     )
-    async def queue_insert(self, ctx, position_number: int, *, song: str):
+    async def queue_insert(self, ctx, position: int, *, query: str):
         '''
-        Insert a song into the queue
+        Insert audio into the queue
 
-        position_number
-            Position number to insert the song into the queue at
-        song
-            Song to insert into the queue
+        position
+            Position number to insert the audio into the queue at
+        query
+            Audio to insert into the queue
         '''
         if command := ctx.bot.get_command("audio queue insert"):
             await ctx.invoke(
-                command, position_number = position_number, song = song
+                command, position = position, query = query
             )
         else:
             raise RuntimeError(
