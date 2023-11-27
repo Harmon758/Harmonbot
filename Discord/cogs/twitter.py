@@ -431,7 +431,9 @@ class Twitter(commands.Cog):
                     f"{nitter_instance_url}/{handle}/rss"
                 ) as resp:
                     # TODO: Use structural pattern matching with Python 3.10
-                    if resp.status == 404:
+                    if resp.status == 404 and (
+                        await nitter.confirm_status_code(handle, 404)
+                    ):
                         async with self.bot.aiohttp_session.get(
                             f"{nitter_instance_url}/{self.bot.twitter_test_handle}/rss"
                         ) as resp:
