@@ -61,3 +61,22 @@ async def get_random_healthy_rss_instance_url(
         )
     )["url"]
 
+
+async def confirm_status_code(
+    handle: str, status_code: int, *,
+    aiohttp_session: aiohttp.ClientSession | None = None,
+    exclude: list[str] | tuple[str, ...] = ()
+) -> bool:
+    async with ensure_session(aiohttp_session) as aiohttp_session:
+        instances = await get_healthy_rss_instances(
+            aiohttp_session = aiohttp_session, exclude = exclude
+        )
+        for instance in instances:
+            async with aiohttp_session.get(
+                f"{instance['url']}/{handle}/rss"
+            ) as resp:
+                if resp.status != status_code:
+                    return False
+
+    return True
+
