@@ -132,27 +132,26 @@ class TwentyFourSubmitSolutionModal(ui.Modal, title = "Submit Solution"):
         self.numbers = numbers
 
     async def on_submit(self, interaction):
+        await interaction.response.defer(thinking = True)
+
         solution = self.solution.value.replace('\\', "")
 
         value = check_solution(self.numbers, solution)
-
-        if value is False:
-            await interaction.response.send_message(
-                f"`{solution}` is an invalid solution",
-                ephemeral = True
-            )
-            return
 
         embed = discord.Embed(color = interaction.client.bot_color)
         embed.set_author(
             name = interaction.user.display_name,
             icon_url = interaction.user.display_avatar.url
         )
-        if value == 24:
+        if value is False:
+            embed.title = "Invalid"
+            embed.description = f"`{solution}` is an invalid solution"
+        elif value == 24:
             embed.title = "Correct!"
             embed.description = f"||`{solution} = 24`||"
-            await interaction.response.send_message(embed = embed)
         else:
             embed.title = "Incorrect"
             embed.description = f"`{solution} = {value}`"
-            await interaction.response.send_message(embed = embed)
+
+        await interaction.followup.send(embed = embed)
+
